@@ -236,3 +236,10 @@ Emoji
 📚 Insert 🛠️ Bulk 📥 Insert 📑FromPage
 📝 Log 🏡 Home 🎞️ ShowWhatIHave
 <font color="C00000">From now on, we'll have demo! See them below!</font>
+
+Quick Commands from Git
+git add CHANGELOG.md
+git commit -m "docs: update changelog for v0.4.0"
+git tag -a v0.4.0 -m "release 0.4.0"
+git push origin v0.4.0
+

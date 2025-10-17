@@ -97,7 +97,7 @@ Question Dolved - 12~13
 22.  集成wordloom的开发工具箱（比如tree，比如路径修复，比如gif转化）采用GUI框架，并成功弄出一个小程序，会在后期设置中英双语。并增加一键打包脚本bat。
 ![alt text](image.png)
 23.  设置jwt
-24.  一切顺畅，准备将streamlit换位更强的前端
+24.  一切顺畅，准备将streamlit换为更强的前端
 25.  GIFmaker:默认生成位置问题，第二是点开目录问题
 
 ## 2025-10-17~ | New Trial + 1
@@ -106,3 +106,10 @@ Question Dolved - 12~13
 3. 关于回滚文件与安全返回点：
 4. 前端设计
 5. 学习相关术语与英语，以及及时把Git落实到框架上
+6. Wordloom/
+│
+├─ VERSION                     ← 全局版本号
+├─ WordloomBackend/api/VERSION  ← 后端版本
+├─ WordloomFrontend/streamlit/VERSION ← 前端版本
+└─ assets/VERSION               ← 资源版本
+7. 
