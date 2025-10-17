@@ -1,5 +1,8 @@
 # 📜 Wordloom Changelog
 
+## [0.2.0] - 2025-10-17
+- feat(frontend): unify admin panel toolbar
+
 ## [0.4.0] - 2025-10-17
 ### Added
 - Unified project: backend (FastAPI), frontend (Streamlit), assets, and toolkit are now in one repo.
