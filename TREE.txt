@@ -1,3 +1,5 @@
+.gitignore
+CHANGELOG.md
 TREE.md
 TREE.txt
     assets/
@@ -100,6 +102,7 @@ TREE.txt
         media/
         tmp/
     tools/
+        release.py
         WordloomToolkit/
             app.py
             README.txt
