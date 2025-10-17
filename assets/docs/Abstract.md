@@ -243,3 +243,16 @@ git commit -m "docs: update changelog for v0.4.0"
 git tag -a v0.4.0 -m "release 0.4.0"
 git push origin v0.4.0
 
+随手提交：
+git add -A
+git commit -m "feat(frontend): merge Home Admin & Bulk Edit into unified panel"
+
+| 类型       | 说明           |
+| -------- | ------------ |
+| feat     | 新功能（feature） |
+| fix      | 修bug         |
+| refactor | 重构逻辑，不改功能    |
+| doc      | 写文档          |
+| chore    | 杂项、小维护       |
+| style    | 改前端样式        |
+
