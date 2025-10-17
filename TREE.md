@@ -1,4 +1,5 @@
-path_manager.py
+.gitignore
+CHANGELOG.md
 TREE.md
 TREE.txt
     assets/
@@ -31,18 +32,19 @@ TREE.txt
                     ID_Display.gif
                     Insert_First.gif
                     PointFocus_WPS_Recording.gif
+                    Show_Me_Path.gif
                     Wordloom_Welcome.gif
                 img/
                     image-1.png
                     image-2.png
                     image-3.png
                     image-4.png
-                    image.png
                     Module_10.png
                     Module_11.png
                     Module_12.png
                     Module_13.png
                     Module_15.png
+                    Module_34.png
                     Module_7.png
                     Module_8.png
                     Module_9_1.png
@@ -58,6 +60,9 @@ TREE.txt
                     ID_Display_thumb.jpg
                     PointFocus_WPS_Recording_thumb.jpg
                     Seperation_Issue.jpg
+                    Show_Me_Path_thumb.jpg
+                txt/
+                    Module_31.txt
                 video/
                     Choco.mp4
                     From_Page.mp4
@@ -68,6 +73,7 @@ TREE.txt
                     Insert_First.mp4
                     PointFocus_WPS_Recording.mp4
                     Seperation_Issue.mp4
+                    Show_Me_Path.mp4
                     Welcome_Page.mp4
             styles/
     recyclables/
@@ -96,6 +102,7 @@ TREE.txt
         media/
         tmp/
     tools/
+        release.py
         WordloomToolkit/
             app.py
             README.txt
