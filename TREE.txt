@@ -1,7 +1,9 @@
 .gitignore
 CHANGELOG.md
+pr_demo.txt
 TREE.md
 TREE.txt
+VERSION
     assets/
         docs/
             2025-10-01-03_DEV_LOG.md

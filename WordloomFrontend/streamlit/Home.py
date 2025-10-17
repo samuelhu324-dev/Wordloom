@@ -201,3 +201,22 @@ else:
 
 # 页脚
 st.caption(f"现在是 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} · 已连接 API: {API_BASE}")
+
+import streamlit as st
+from pathlib import Path
+
+# 优先读前端自己的 VERSION，读不到就回退到仓库根
+version_file = Path(__file__).resolve().parent / "VERSION"
+if not version_file.exists():
+    version_file = Path(__file__).resolve().parents[2] / "VERSION"
+
+try:
+    version = version_file.read_text(encoding="utf-8").strip()
+except Exception:
+    version = "unknown"
+
+st.markdown(
+    f"<hr><div style='text-align:center;color:gray;font-size:12px;'>"
+    f"<i>Wordloom Frontend v{version}</i></div>",
+    unsafe_allow_html=True
+)

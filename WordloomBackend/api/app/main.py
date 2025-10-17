@@ -55,3 +55,28 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 # === 👆 新增结束 ===
+
+from pathlib import Path
+from fastapi import FastAPI
+
+def read_version():
+    # 优先读后端自己的 VERSION，读不到就回退到仓库根
+    here = Path(__file__).resolve()
+    backend_ver = here.parents[1] / "VERSION"              # WordloomBackend/api/VERSION
+    root_ver    = here.parents[4] / "VERSION"              # Wordloom/VERSION
+    vf = backend_ver if backend_ver.exists() else root_ver
+    try:
+        return vf.read_text(encoding="utf-8").strip()
+    except Exception:
+        return "unknown"
+
+app = FastAPI(
+    title="Wordloom API",
+    version=read_version(),   # Swagger 右上角显示
+)
+
+@app.get("/version")
+def get_version():
+    return {
+        "backend": read_version()
+    }

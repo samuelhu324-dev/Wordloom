@@ -112,4 +112,5 @@ Question Dolved - 12~13
 ├─ WordloomBackend/api/VERSION  ← 后端版本
 ├─ WordloomFrontend/streamlit/VERSION ← 前端版本
 └─ assets/VERSION               ← 资源版本
-7. 
+7. Git学习完毕进入实操阶段，记得每次弄完commit以及发布新的CHANGELOG
+8. 版本号追加
