@@ -231,6 +231,7 @@ clean 的最小职责：
   - Metrics delta 断言（处理 “before 在刺激之前” 的竞态，run 顺序已调整以保证 delta 可判定）
   - Worker 运行日志证据落盘（用于复核与交接）
   - Tracing 导出（作为解释性证据；对 `collector_down` 允许缺失，但必须落盘 export 失败说明）
+- CI 稳定性补强：`collector_down` 的 verify 增加 DB 兜底断言（outbox row 处理完成），并在失败时打印更详细的 observed/why，降低 scrape 时序抖动导致的误判。
 
 **archived**:
 
@@ -367,6 +368,8 @@ clean 的最小职责：
   - CI 启动 infra：`docker compose -f docker-compose.infra.yml up -d` + `docker compose -f docker-compose.devtest-db.yml up -d`
   - 执行顺序固定：`run → verify → export → clean`
   - 证据包上传：上传 `docs/labs/_snapshot/auto/` 作为 artifact
+- 已支持 `scenario=all`：在单次 workflow run 中循环执行 A–H 全场景，且全部 PASS，并可生成/上传证据包 artifact（用于回放与审计）。
+- 环境对齐已落地：workflow 内生成并 `source` `.env.test`、等待 ES/PG ready、执行 alembic migrate，并提供 `Environment fingerprint (CI)` 写入 `GITHUB_STEP_SUMMARY`（脱敏）以快速定位环境分叉。
 - Job Summary 的 `_result.json → GITHUB_STEP_SUMMARY` 解析仍保留在 draft（当前优先保证 artifact 可回放）。
 
 **archived**:
