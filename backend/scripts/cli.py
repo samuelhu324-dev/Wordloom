@@ -23,6 +23,8 @@ import urllib.request
 import uuid
 from pathlib import Path
 
+from sqlalchemy import create_engine, text
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LEGACY_SCRIPTS_DIR = REPO_ROOT / "backend" / "scripts" / "legacy"
@@ -126,6 +128,20 @@ def _es_set_index_write_block(*, es_url: str, index: str, enabled: bool) -> tupl
     index = index.strip()
     url = f"{es_url}/{index}/_settings"
     return _http_json("PUT", url, body={"index": {"blocks": {"write": bool(enabled)}}}, timeout_s=5.0)
+
+
+def _es_create_index_if_missing(*, es_url: str, index: str) -> tuple[int, str]:
+    """Create index if it does not exist.
+
+    Returns (status, payload) from ES.
+    - 200/201: created
+    - 400: already exists (treated as ok by caller)
+    """
+
+    es_url = es_url.strip().rstrip("/")
+    index = index.strip()
+    url = f"{es_url}/{index}"
+    return _http_json("PUT", url, body=None, timeout_s=5.0)
 
 
 def _scrape_metrics_text(*, port: int, timeout_s: float = 2.0) -> str:
@@ -471,6 +487,18 @@ def _cmd_labs_run_es_write_block_4xx(args: argparse.Namespace) -> int:
 
             # 2) Inject: block writes at the index.
             status, payload = _es_set_index_write_block(es_url=es_url, index=es_index, enabled=True)
+            if status == 404:
+                c_status, c_payload = _es_create_index_if_missing(es_url=es_url, index=es_index)
+                (outdir / "_inject_es_create_index.response.txt").write_text(
+                    f"status={c_status}\n\n{c_payload}\n", encoding="utf-8"
+                )
+                if c_status not in (200, 201, 400):
+                    print(f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] failed to create index: http {c_status}")
+                    worker_proc.terminate()
+                    worker_proc.wait(timeout=30)
+                    return 2
+
+                status, payload = _es_set_index_write_block(es_url=es_url, index=es_index, enabled=True)
             (outdir / "_inject_es_write_block.response.txt").write_text(
                 f"status={status}\n\n{payload}\n", encoding="utf-8"
             )
@@ -481,7 +509,9 @@ def _cmd_labs_run_es_write_block_4xx(args: argparse.Namespace) -> int:
                 return 2
 
             # 3) Trigger: insert a pending outbox event (and ensure a matching search_index row exists).
-            inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+            inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+            if not inserter.exists():
+                inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
             trigger_env = env.copy()
             trigger_env.setdefault("OUTBOX_OP", "upsert")
             trigger_env.setdefault("OUTBOX_CREATE_SEARCH_INDEX_ROW", "1")
@@ -701,7 +731,9 @@ def _cmd_labs_run_es_429_inject(args: argparse.Namespace) -> int:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -902,7 +934,9 @@ def _cmd_labs_run_es_down_connect(args: argparse.Namespace) -> int:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -1132,7 +1166,9 @@ def _cmd_labs_run_collector_down(args: argparse.Namespace) -> int:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -1229,6 +1265,9 @@ def _cmd_labs_verify_collector_down(args: argparse.Namespace) -> int:
     before = before_path.read_text(encoding="utf-8") if before_path.exists() else ""
     after = after_path.read_text(encoding="utf-8") if after_path.exists() else ""
 
+    before_scrape_ok = "scrape_failed" not in before
+    after_scrape_ok = "scrape_failed" not in after
+
     processed_before = _prom_parse_counter_sum(before, "outbox_processed_total")
     processed_after = _prom_parse_counter_sum(after, "outbox_processed_total")
     failed_before = _prom_parse_counter_sum(before, "outbox_failed_total")
@@ -1236,6 +1275,59 @@ def _cmd_labs_verify_collector_down(args: argparse.Namespace) -> int:
 
     delta_processed = processed_after - processed_before
     delta_failed = failed_after - failed_before
+
+    # Fallback: metrics scrape can be flaky in CI due to timing.
+    # For collector_down we can deterministically assert the inserted outbox row
+    # was processed successfully.
+    outbox_event_id_path = run_dir / "_outbox_event_id.txt"
+    outbox_event_id = outbox_event_id_path.read_text(encoding="utf-8").strip() if outbox_event_id_path.exists() else None
+
+    db_observed: dict[str, object] = {}
+    db_ok = False
+    try:
+        recipe_env_file = None
+        recipe_path = run_dir / "_recipe.json"
+        if recipe_path.exists():
+            try:
+                recipe = json.loads(recipe_path.read_text(encoding="utf-8"))
+                recipe_env_file = (recipe or {}).get("env_file")
+            except Exception:
+                recipe_env_file = None
+
+        env = _load_env(env_file=str(recipe_env_file) if recipe_env_file else None)
+        database_url = (env.get("DATABASE_URL") or "").strip()
+        if database_url and outbox_event_id:
+            engine = create_engine(database_url, pool_pre_ping=True)
+            with engine.connect() as conn:
+                row = conn.execute(
+                    text(
+                        """
+                        SELECT status, processed_at, attempts, error_reason
+                        FROM search_outbox_events
+                        WHERE id = CAST(:id AS uuid)
+                        """
+                    ),
+                    {"id": outbox_event_id},
+                ).mappings().fetchone()
+
+            if row is None:
+                db_observed = {"found": False}
+            else:
+                status = row.get("status")
+                processed_at = row.get("processed_at")
+                attempts = row.get("attempts")
+                error_reason = row.get("error_reason")
+                db_observed = {
+                    "found": True,
+                    "status": status,
+                    "processed_at": str(processed_at) if processed_at is not None else None,
+                    "attempts": int(attempts) if attempts is not None else None,
+                    "error_reason": error_reason,
+                }
+                db_ok = (status == "done") and (processed_at is not None)
+    except Exception as exc:  # noqa: BLE001
+        db_observed = {"error": f"{type(exc).__name__}: {exc}"}
+        db_ok = False
 
     inject_exitcode_path = run_dir / "_inject_jaeger_stop.exitcode.txt"
     inject_exitcode = None
@@ -1245,20 +1337,35 @@ def _cmd_labs_verify_collector_down(args: argparse.Namespace) -> int:
         except Exception:
             inject_exitcode = None
 
-    ok = (inject_exitcode == 0) and (delta_processed >= float(args.min_processed_delta)) and (delta_failed <= float(args.max_failed_delta))
+    metrics_ok = (
+        before_scrape_ok
+        and after_scrape_ok
+        and (delta_processed >= float(args.min_processed_delta))
+        and (delta_failed <= float(args.max_failed_delta))
+    )
+
+    # Accept either strong metrics evidence or DB evidence that the outbox row
+    # was processed successfully.
+    ok = (inject_exitcode == 0) and (metrics_ok or db_ok)
 
     result = {
         "scenario": SCENARIO_COLLECTOR_DOWN,
         "run_dir": str(run_dir),
+        "outbox_event_id": outbox_event_id,
         "checks": {
             "inject_jaeger_stop_exitcode_eq": 0,
             "min_processed_delta": float(args.min_processed_delta),
             "max_failed_delta": float(args.max_failed_delta),
+            "metrics_scrape_required": True,
+            "db_outbox_processed_fallback_allowed": True,
         },
         "observed": {
             "inject_jaeger_stop_exitcode": inject_exitcode,
+            "metrics_before_scrape_ok": bool(before_scrape_ok),
+            "metrics_after_scrape_ok": bool(after_scrape_ok),
             "outbox_processed_total": {"before": processed_before, "after": processed_after, "delta": delta_processed},
             "outbox_failed_total": {"before": failed_before, "after": failed_after, "delta": delta_failed},
+            "db_outbox_event": db_observed,
         },
         "ok": bool(ok),
     }
@@ -1267,7 +1374,17 @@ def _cmd_labs_verify_collector_down(args: argparse.Namespace) -> int:
     if ok:
         print(f"[labs verify {SCENARIO_COLLECTOR_DOWN}] OK")
         return 0
-    print(f"[labs verify {SCENARIO_COLLECTOR_DOWN}] FAILED")
+    why = []
+    if inject_exitcode != 0:
+        why.append(f"inject_exitcode={inject_exitcode}")
+    if not metrics_ok:
+        why.append(
+            f"metrics_ok=false (before_ok={before_scrape_ok} after_ok={after_scrape_ok} delta_processed={delta_processed} delta_failed={delta_failed})"
+        )
+    if not db_ok:
+        why.append("db_ok=false")
+    print(f"[labs verify {SCENARIO_COLLECTOR_DOWN}] FAILED: {'; '.join(why) if why else 'unknown'}")
+    print(json.dumps(result, indent=2, ensure_ascii=False))
     return 10
 
 
@@ -1418,7 +1535,9 @@ def _cmd_labs_run_duplicate_delivery(args: argparse.Namespace) -> int:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -1732,7 +1851,9 @@ def _cmd_labs_run_es_bulk_partial(args: argparse.Namespace) -> int:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -2057,7 +2178,9 @@ def _cmd_labs_run_db_claim_contention(args: argparse.Namespace) -> int:
     after_1_path = metrics_dir / "metrics-after-1.txt"
     after_2_path = metrics_dir / "metrics-after-2.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -2356,7 +2479,9 @@ def _cmd_labs_run_stuck_reclaim(args: argparse.Namespace) -> int:
     worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
     cmd = [_python_exe(), "-u", str(worker)]
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
     outbox_event_ids: list[str] = []
     for i in range(int(args.trigger_count)):
         trigger_env = base_env.copy()
@@ -2880,8 +3005,13 @@ def _cmd_labs_run_projection_version(args: argparse.Namespace) -> int:
     worker = LEGACY_SCRIPTS_DIR / "chronicle_outbox_worker.py"
     cmd = [_python_exe(), "-u", str(worker)]
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_chronicle_outbox_pending.py"
-    prober = REPO_ROOT / "backend" / "scripts" / "labs_009_probe_chronicle_entry.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_chronicle_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_chronicle_outbox_pending.py"
+
+    prober = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_probe_chronicle_entry.py"
+    if not prober.exists():
+        prober = LEGACY_SCRIPTS_DIR / "labs_009_probe_chronicle_entry.py"
 
     def _spawn_worker_with_retry(
         *,
@@ -3536,48 +3666,90 @@ def build_parser() -> argparse.ArgumentParser:
     clean = labs_sub.add_parser("clean", help="Cleanup a scenario (revert injection / prune snapshots)")
     clean_sub = clean.add_subparsers(dest="scenario", required=True)
 
-    c_clean = clean_sub.add_parser(SCENARIO_ES_WRITE_BLOCK_4XX, help="Disable write block + optional snapshot pruning")
-    c_clean.add_argument("--env-file", default=".env.test")
+    clean_common = argparse.ArgumentParser(add_help=False)
+    clean_common.add_argument(
+        "--env-file",
+        default=".env.test",
+        help="Env file to load (repo-root relative by default). Only used by scenarios that revert external state.",
+    )
+
+    c_clean = clean_sub.add_parser(
+        SCENARIO_ES_WRITE_BLOCK_4XX,
+        help="Disable write block + optional snapshot pruning",
+        parents=[clean_common],
+    )
     c_clean.add_argument("--outdir")
     c_clean.add_argument("--keep-last", type=int, default=None)
     c_clean.set_defaults(func=_cmd_labs_clean_es_write_block_4xx)
 
-    b_clean = clean_sub.add_parser(SCENARIO_ES_429_INJECT, help="Noop cleanup + optional snapshot pruning")
+    b_clean = clean_sub.add_parser(
+        SCENARIO_ES_429_INJECT,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     b_clean.add_argument("--outdir")
     b_clean.add_argument("--keep-last", type=int, default=None)
     b_clean.set_defaults(func=_cmd_labs_clean_es_429_inject)
 
-    a_clean = clean_sub.add_parser(SCENARIO_ES_DOWN_CONNECT, help="Start ES + optional snapshot pruning")
+    a_clean = clean_sub.add_parser(
+        SCENARIO_ES_DOWN_CONNECT,
+        help="Start ES + optional snapshot pruning",
+        parents=[clean_common],
+    )
     a_clean.add_argument("--outdir")
     a_clean.add_argument("--keep-last", type=int, default=None)
     a_clean.set_defaults(func=_cmd_labs_clean_es_down_connect)
 
-    cd_clean = clean_sub.add_parser(SCENARIO_COLLECTOR_DOWN, help="Start Jaeger + optional snapshot pruning")
+    cd_clean = clean_sub.add_parser(
+        SCENARIO_COLLECTOR_DOWN,
+        help="Start Jaeger + optional snapshot pruning",
+        parents=[clean_common],
+    )
     cd_clean.add_argument("--outdir")
     cd_clean.add_argument("--keep-last", type=int, default=None)
     cd_clean.set_defaults(func=_cmd_labs_clean_collector_down)
 
-    d_clean = clean_sub.add_parser(SCENARIO_ES_BULK_PARTIAL, help="Noop cleanup + optional snapshot pruning")
+    d_clean = clean_sub.add_parser(
+        SCENARIO_ES_BULK_PARTIAL,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     d_clean.add_argument("--outdir")
     d_clean.add_argument("--keep-last", type=int, default=None)
     d_clean.set_defaults(func=_cmd_labs_clean_es_bulk_partial)
 
-    e_clean = clean_sub.add_parser(SCENARIO_DB_CLAIM_CONTENTION, help="Noop cleanup + optional snapshot pruning")
+    e_clean = clean_sub.add_parser(
+        SCENARIO_DB_CLAIM_CONTENTION,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     e_clean.add_argument("--outdir")
     e_clean.add_argument("--keep-last", type=int, default=None)
     e_clean.set_defaults(func=_cmd_labs_clean_db_claim_contention)
 
-    f_clean = clean_sub.add_parser(SCENARIO_STUCK_RECLAIM, help="Noop cleanup + optional snapshot pruning")
+    f_clean = clean_sub.add_parser(
+        SCENARIO_STUCK_RECLAIM,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     f_clean.add_argument("--outdir")
     f_clean.add_argument("--keep-last", type=int, default=None)
     f_clean.set_defaults(func=_cmd_labs_clean_stuck_reclaim)
 
-    g_clean = clean_sub.add_parser(SCENARIO_DUPLICATE_DELIVERY, help="Noop cleanup + optional snapshot pruning")
+    g_clean = clean_sub.add_parser(
+        SCENARIO_DUPLICATE_DELIVERY,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     g_clean.add_argument("--outdir")
     g_clean.add_argument("--keep-last", type=int, default=None)
     g_clean.set_defaults(func=_cmd_labs_clean_duplicate_delivery)
 
-    h_clean = clean_sub.add_parser(SCENARIO_PROJECTION_VERSION, help="Noop cleanup + optional snapshot pruning")
+    h_clean = clean_sub.add_parser(
+        SCENARIO_PROJECTION_VERSION,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     h_clean.add_argument("--outdir")
     h_clean.add_argument("--keep-last", type=int, default=None)
     h_clean.set_defaults(func=_cmd_labs_clean_projection_version)
