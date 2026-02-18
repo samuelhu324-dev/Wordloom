@@ -50,17 +50,6 @@
 默认输出目录：
 - `docs/labs/_snapshot/auto/S2B-1A-2A/shadow_verify_search_index/<run_id>/_result.json`
 
-### 1.2 本地运行（脚本直跑，可选）
-
-如果只想要最小检查 + 退出码：
-- `DATABASE_URL=... python backend/scripts/labs/lab-S2B-1A-2A.py`
-
-如果希望也写出 `_result.json`（便于留证）：
-- `OUTDIR=... RUN_ID=... DATABASE_URL=... python backend/scripts/labs/lab-S2B-1A-2A.py`
-
-可选 scope（脚本版）：
-- `LIBRARY_ID=<uuid>`
-
 ---
 
 ## 2) 结果解释（验收口径）
@@ -101,7 +90,6 @@ Tags 在当前实现里不做 library 归属：
 ## 3) 证据与关联位置
 
 - 稳定 CLI 入口：`backend/scripts/cli.py`（`labs shadow-verify-search-index`）
-- Shadow verify 脚本：`backend/scripts/labs/lab-S2B-1A-2A.py`
 - 投影写入实现：`backend/infra/search/search_indexer.py`
 - 投影表模型：`backend/infra/database/models/search_index_models.py`
 - Outbox 表模型：`backend/infra/database/models/search_outbox_models.py`

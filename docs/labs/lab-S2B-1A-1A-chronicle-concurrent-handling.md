@@ -53,14 +53,6 @@
 默认输出目录：
 - `docs/labs/_snapshot/auto/S2B-1A-1A/shadow_verify_chronicle_entries/<run_id>/_result.json`
 
-### 1.2 本地运行（脚本直跑，可选）
-
-如果只想要最小检查 + 退出码：
-- `DATABASE_URL=... python backend/scripts/labs/lab-S2B-1A-1A.py`
-
-如果希望也写出 `_result.json`（便于留证）：
-- `OUTDIR=... RUN_ID=... DATABASE_URL=... python backend/scripts/labs/lab-S2B-1A-1A.py`
-
 ---
 
 ## 2) 结果解释（验收口径）
@@ -117,7 +109,7 @@ Artifacts 规范（简单版）：
 - Settings：`backend/api/app/config/setting.py`
 - Wiring tests：`backend/api/app/tests/test_chronicle/test_merged_read_flag.py`
 - Entries read-only repo：`backend/infra/storage/chronicle_entries_repository_impl.py`
-- Shadow verify script：`backend/scripts/labs/lab-S2B-1A-1A.py`
+- Shadow verify（stable CLI）：`backend/scripts/cli.py`（`labs shadow-verify-chronicle-entries`）
 
 ---
 

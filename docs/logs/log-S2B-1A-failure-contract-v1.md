@@ -60,9 +60,12 @@
 - Flag → settings：`backend/api/app/config/setting.py`（`merged_read_enabled`）
 - Flag wiring test：`backend/api/app/tests/test_chronicle/test_merged_read_flag.py`
 - Read-side adapter（entries read-only）：`backend/infra/storage/chronicle_entries_repository_impl.py`
-- Shadow verify script：`backend/scripts/labs/lab-S2B-1A-1A.py`
+- Chronicle shadow verify（stable CLI）：`backend/scripts/cli.py`（`labs shadow-verify-chronicle-entries`）
 - Search flag wiring test：`backend/api/app/tests/test_search/test_search_merged_read_flag.py`
-- Search shadow verify script：`backend/scripts/labs/lab-S2B-1A-2A.py`
+- Search shadow verify（stable CLI）：`backend/scripts/cli.py`（`labs shadow-verify-search-index`）
+- Lab manuals：
+  - `docs/labs/lab-S2B-1A-1A-chronicle-concurrent-handling.md`
+  - `docs/labs/lab-S2B-1A-2A-search-concurrent-handling.md`
 - Runbook（统一入口）：`docs/runbook/run-S2B-projection-table-merge.md`
 - Actions workflow（scenario dropdown）：`.github/workflows/drill-shadow-verify-entries.yml`
 

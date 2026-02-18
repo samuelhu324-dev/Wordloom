@@ -48,6 +48,10 @@ Search（v0 先做 shadow verify）：
   - `docs/labs/_snapshot/auto/S2B-1A-1A/shadow_verify_chronicle_entries/<run_id>/`
   - `docs/labs/_snapshot/auto/S2B-1A-2A/shadow_verify_search_index/<run_id>/`
 
+v2（write-gate，S2B-2A-1A）：
+
+- `docs/labs/_snapshot/auto/S2B-2A-1A/shadow_verify_search_index_write_gate/<run_id>/`
+
 ### 3.2 Minimal contract
 
 每次运行至少生成：
@@ -61,6 +65,7 @@ GitHub Actions drill 额外生成（用于截图1-2约定的 artifacts）：
 ## 4) One-click Automation（GitHub Actions）
 
 - Workflow：`.github/workflows/drill-shadow-verify-entries.yml`
+- Workflow（write-gate 专用）：`.github/workflows/drill-write-gate.yml`
 - 行为约定（截图1-2）：
   - 成功：仅上传 `summary.json`
   - 失败：上传完整 `artifacts.zip`（包含 summary/logs/traces）并让 job 失败
@@ -71,6 +76,13 @@ GitHub Actions drill 额外生成（用于截图1-2约定的 artifacts）：
 - 输入：
   - `book_id`（可选，限定单本书；为空则全量）
 - 运行后：下载 artifact `drill-shadow_verify_chronicle_entries-<run_id>`
+
+write-gate：
+
+- 打开 GitHub Actions：`drill-write-gate`
+- 输入：
+  - `scenario=shadow_verify_search_index_write_gate`
+  - `library_id`（可选；为空则全量）
 
 ## 5) Local Operation
 
@@ -104,6 +116,14 @@ Search（限定 library，可选）：
 输出目录（默认）：
 
 - `docs/labs/_snapshot/auto/S2B-1A-2A/shadow_verify_search_index/<run_id>/_result.json`
+
+Search write-gate（v2 1A，唯一性/幂等最小代理）：
+
+- `python backend/scripts/cli.py labs shadow-verify-search-index-write-gate --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test"`
+
+输出目录（默认）：
+
+- `docs/labs/_snapshot/auto/S2B-2A-1A/shadow_verify_search_index_write_gate/<run_id>/_result.json`
 
 ### 5.4 Evidence note（2026-02-18 本地 5 次运行）
 
