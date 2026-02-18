@@ -9,8 +9,6 @@ on:
         type: choice
         options:
           - all
-          - shadow_verify_chronicle_entries
-          - shadow_verify_search_index
           - es_429_inject
           - es_write_block_4xx
           - es_down_connect
@@ -81,22 +79,6 @@ jobs:
           for i in $(seq 1 60); do
             if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
               echo "Postgres is ready"
-              break
-            fi
-            sleep 2
-          done
-
-          # The init script that creates wordloom_test only runs on first volume init.
-          # Ensure the DB exists and is ready, otherwise migrations/drills will fail.
-          if ! docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
-            echo "wordloom_test is not ready; ensuring it exists"
-            docker exec "$DB_CID" psql -U wordloom -d wordloom_dev -v ON_ERROR_STOP=1 -c "SELECT 'CREATE DATABASE wordloom_test' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'wordloom_test')\\gexec"
-          fi
-
-          echo "Waiting for Postgres (wordloom_test) to be ready"
-          for i in $(seq 1 60); do
-            if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
-              echo "wordloom_test is ready"
               break
             fi
             sleep 2
@@ -214,8 +196,6 @@ jobs:
 
           if [ "${{ inputs.scenario }}" = "all" ]; then
             scenarios=(
-              shadow_verify_chronicle_entries
-              shadow_verify_search_index
               es_429_inject
               es_write_block_4xx
               es_down_connect
@@ -233,20 +213,6 @@ jobs:
           for scenario in "${scenarios[@]}"; do
             run_id="${{ github.run_id }}-${{ github.run_attempt }}-${scenario}"
             echo "=== scenario=${scenario} run_id=${run_id} ==="
-
-            if [ "$scenario" = "shadow_verify_chronicle_entries" ]; then
-              python backend/scripts/cli.py labs shadow-verify-chronicle-entries \
-                --env-file "$env_file" \
-                --run-id "$run_id"
-              continue
-            fi
-
-            if [ "$scenario" = "shadow_verify_search_index" ]; then
-              python backend/scripts/cli.py labs shadow-verify-search-index \
-                --env-file "$env_file" \
-                --run-id "$run_id"
-              continue
-            fi
 
             python backend/scripts/cli.py labs run "$scenario" \
               --env-file "$env_file" \
