@@ -1,0 +1,149 @@
+name: drill-shadow-verify-entries
+
+on:
+  workflow_dispatch:
+    inputs:
+      book_id:
+        description: "Optional scope: book_id (UUID)"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  drill:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Start DB (devtest)
+        run: |
+          set -euo pipefail
+
+          docker compose -f docker-compose.devtest-db.yml up -d --wait
+
+          echo "Waiting for Postgres (wordloom_test)"
+          DB_CID="$(docker compose -f docker-compose.devtest-db.yml ps -q db_devtest)"
+          if [ -z "$DB_CID" ]; then
+            echo "db_devtest container not found" >&2
+            exit 2
+          fi
+          for i in $(seq 1 60); do
+            if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+              echo "Postgres is ready"
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Install backend
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r backend/requirements.txt
+
+      - name: Migrate DB (alembic)
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test
+        run: |
+          set -euo pipefail
+          python -m alembic -c alembic.ini upgrade head
+
+      - name: Run drill (shadow verify) → write artifacts
+        id: drill
+        continue-on-error: true
+        env:
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test
+        run: |
+          set -euo pipefail
+
+          scenario="shadow_verify_chronicle_entries"
+          run_id="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+
+          rm -rf artifacts .drill_snapshot
+          mkdir -p artifacts .drill_snapshot
+
+          # Keep command output as a stable artifact.
+          {
+            echo "scenario=${scenario}"
+            echo "run_id=${run_id}"
+            echo "book_id=${{ inputs.book_id }}"
+            echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo
+          } > artifacts/logs.txt
+
+          set +e
+          python backend/scripts/cli.py labs shadow-verify-chronicle-entries \
+            --database-url "$DATABASE_URL" \
+            --book-id "${{ inputs.book_id }}" \
+            --run-id "$run_id" \
+            --outdir .drill_snapshot \
+            2>&1 | tee -a artifacts/logs.txt
+          rc=${PIPESTATUS[0]}
+          set -e
+
+          # Minimal traces placeholder (this drill doesn't collect traces yet).
+          echo "[]" > artifacts/traces.json
+
+          if [ -f .drill_snapshot/_result.json ]; then
+            cp .drill_snapshot/_result.json artifacts/summary.json
+          else
+            echo '{"scenario":"'"${scenario}"'","run_id":"'"${run_id}"'","ok":false,"error":"missing _result.json"}' > artifacts/summary.json
+            rc=2
+          fi
+
+          if [ "$rc" -eq 0 ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "scenario=${scenario}" >> "$GITHUB_OUTPUT"
+          echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
+          echo "exit_code=${rc}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload summary (success only)
+        if: steps.drill.outputs.ok == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: drill-${{ steps.drill.outputs.scenario }}-${{ steps.drill.outputs.run_id }}
+          path: artifacts/summary.json
+
+      - name: Zip artifacts (failure only)
+        if: steps.drill.outputs.ok != 'true'
+        run: |
+          set -euo pipefail
+          python - << 'PY'
+          import os
+          import zipfile
+
+          os.makedirs('artifacts', exist_ok=True)
+          with zipfile.ZipFile('artifacts.zip', 'w', compression=zipfile.ZIP_DEFLATED) as z:
+              for root, _, files in os.walk('artifacts'):
+                  for f in files:
+                      path = os.path.join(root, f)
+                      z.write(path, arcname=os.path.relpath(path, 'artifacts'))
+          PY
+
+      - name: Upload full zip (failure only)
+        if: steps.drill.outputs.ok != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: drill-${{ steps.drill.outputs.scenario }}-${{ steps.drill.outputs.run_id }}
+          path: artifacts.zip
+
+      - name: Fail job if drill failed
+        if: steps.drill.outputs.ok != 'true'
+        run: |
+          echo "Drill failed (exit_code=${{ steps.drill.outputs.exit_code }}). See uploaded artifacts." >&2
+          exit 1
