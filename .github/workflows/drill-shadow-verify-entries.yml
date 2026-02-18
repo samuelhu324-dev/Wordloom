@@ -46,6 +46,26 @@ jobs:
             sleep 2
           done
 
+          # The init script that creates wordloom_test only runs on first volume init.
+          # Ensure the DB exists and is ready, otherwise migrations/drills will fail.
+          if ! docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+            echo "wordloom_test is not ready; ensuring it exists"
+            docker exec "$DB_CID" psql -U wordloom -d wordloom_dev -v ON_ERROR_STOP=1 -c "SELECT 'CREATE DATABASE wordloom_test' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'wordloom_test')\\gexec"
+          fi
+
+          echo "Waiting for Postgres (wordloom_test) to be ready"
+          for i in $(seq 1 60); do
+            if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+              echo "wordloom_test is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Timed out waiting for wordloom_test" >&2
+          docker exec "$DB_CID" psql -U wordloom -d wordloom_dev -c "\\l" || true
+          exit 2
+
       - name: Install backend
         run: |
           set -euo pipefail
@@ -84,9 +104,16 @@ jobs:
           } > artifacts/logs.txt
 
           set +e
+          book_id="${{ inputs.book_id }}"
+          if [ -n "${book_id}" ]; then
+            book_id_args=("--book-id" "${book_id}")
+          else
+            book_id_args=()
+          fi
+
           python backend/scripts/cli.py labs shadow-verify-chronicle-entries \
             --database-url "$DATABASE_URL" \
-            --book-id "${{ inputs.book_id }}" \
+            "${book_id_args[@]}" \
             --run-id "$run_id" \
             --outdir .drill_snapshot \
             2>&1 | tee -a artifacts/logs.txt
