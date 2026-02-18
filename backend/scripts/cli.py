@@ -32,6 +32,9 @@ LABS_SNAPSHOT_ROOT = REPO_ROOT / "docs" / "labs" / "_snapshot"
 
 
 LAB_ID_S3A_2A_3A = "S3A-2A-3A"
+LAB_ID_S2B_1A_1A = "S2B-1A-1A"
+
+SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES = "shadow_verify_chronicle_entries"
 SCENARIO_ES_WRITE_BLOCK_4XX = "es_write_block_4xx"
 SCENARIO_ES_429_INJECT = "es_429_inject"
 SCENARIO_ES_DOWN_CONNECT = "es_down_connect"
@@ -89,6 +92,10 @@ def _load_env(*, env_file: str | None) -> dict[str, str]:
 
 def _default_labs_auto_run_dir(*, scenario: str, run_id: str) -> Path:
     return LABS_SNAPSHOT_ROOT / "auto" / LAB_ID_S3A_2A_3A / scenario / run_id
+
+
+def _default_s2b_auto_run_dir(*, scenario: str, run_id: str) -> Path:
+    return LABS_SNAPSHOT_ROOT / "auto" / LAB_ID_S2B_1A_1A / scenario / run_id
 
 
 def _latest_child_dir(base: Path) -> Path | None:
@@ -285,6 +292,161 @@ def _read_json_file(path: Path) -> dict[str, object] | None:
         return json.loads(path.read_text(encoding="utf-8", errors="replace"))
     except Exception:
         return None
+
+
+def _cmd_labs_shadow_verify_chronicle_entries(args: argparse.Namespace) -> int:
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+        scenario=SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES,
+        run_id=run_id,
+    )
+    _ensure_dir(outdir)
+
+    env = _load_env(env_file=args.env_file)
+    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
+    if not database_url:
+        print("[labs shadow-verify-chronicle-entries] DATABASE_URL is required (via env or --database-url)")
+        return 2
+
+    book_id = (args.book_id or "").strip() or None
+    if book_id is not None:
+        try:
+            uuid.UUID(book_id)
+        except ValueError:
+            print(f"[labs shadow-verify-chronicle-entries] invalid --book-id: {book_id}")
+            return 2
+
+    engine = create_engine(database_url)
+    with engine.connect() as conn:
+        if book_id is None:
+            events_total = int(conn.execute(text("SELECT COUNT(*) FROM chronicle_events")).scalar() or 0)
+            entries_total = int(conn.execute(text("SELECT COUNT(*) FROM chronicle_entries")).scalar() or 0)
+            missing_entries = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_events e
+                        LEFT JOIN chronicle_entries p ON p.id = e.id
+                        WHERE p.id IS NULL
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            extra_entries = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_entries p
+                        LEFT JOIN chronicle_events e ON e.id = p.id
+                        WHERE e.id IS NULL
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            mismatched_book_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_events e
+                        JOIN chronicle_entries p ON p.id = e.id
+                        WHERE p.book_id <> e.book_id
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            scope = "all"
+        else:
+            events_total = int(
+                conn.execute(
+                    text("SELECT COUNT(*) FROM chronicle_events WHERE book_id = :book_id"),
+                    {"book_id": book_id},
+                ).scalar()
+                or 0
+            )
+            entries_total = int(
+                conn.execute(
+                    text("SELECT COUNT(*) FROM chronicle_entries WHERE book_id = :book_id"),
+                    {"book_id": book_id},
+                ).scalar()
+                or 0
+            )
+            missing_entries = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_events e
+                        LEFT JOIN chronicle_entries p ON p.id = e.id
+                        WHERE e.book_id = :book_id AND p.id IS NULL
+                        """
+                    ),
+                    {"book_id": book_id},
+                ).scalar()
+                or 0
+            )
+            extra_entries = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_entries p
+                        LEFT JOIN chronicle_events e ON e.id = p.id
+                        WHERE p.book_id = :book_id AND e.id IS NULL
+                        """
+                    ),
+                    {"book_id": book_id},
+                ).scalar()
+                or 0
+            )
+            mismatched_book_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_events e
+                        JOIN chronicle_entries p ON p.id = e.id
+                        WHERE e.book_id = :book_id AND p.book_id <> e.book_id
+                        """
+                    ),
+                    {"book_id": book_id},
+                ).scalar()
+                or 0
+            )
+            scope = f"book:{book_id}"
+
+    ok = (missing_entries == 0) and (extra_entries == 0) and (mismatched_book_id == 0)
+    result = {
+        "lab_id": LAB_ID_S2B_1A_1A,
+        "scenario": SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES,
+        "run_id": run_id,
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scope": scope,
+        "events_total": events_total,
+        "entries_total": entries_total,
+        "missing_entries": missing_entries,
+        "extra_entries": extra_entries,
+        "mismatched_book_id": mismatched_book_id,
+        "ok": bool(ok),
+    }
+
+    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    print("labs-010.shadow_verify_chronicle_entries")
+    print(f"scope={scope}")
+    print(f"events_total={events_total}")
+    print(f"entries_total={entries_total}")
+    print(f"missing_entries={missing_entries}")
+    print(f"extra_entries={extra_entries}")
+    print(f"mismatched_book_id={mismatched_book_id}")
+    print(f"outputs: {outdir}")
+
+    return 0 if ok else 2
 
 
 def _cmd_labs_export_jaeger(args: argparse.Namespace) -> int:
@@ -3364,6 +3526,17 @@ def build_parser() -> argparse.ArgumentParser:
     exp.add_argument("--claim-batch-id")
     exp.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
     exp.set_defaults(func=_cmd_labs_export_jaeger)
+
+    sv = labs_sub.add_parser(
+        "shadow-verify-chronicle-entries",
+        help="Labs-010: shadow verify chronicle_entries vs chronicle_events (writes _result.json)",
+    )
+    sv.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    sv.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    sv.add_argument("--book-id", help="Optional book_id scope (UUID)")
+    sv.add_argument("--run-id", help="Optional run_id folder name")
+    sv.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    sv.set_defaults(func=_cmd_labs_shadow_verify_chronicle_entries)
 
     b = labs_sub.add_parser("expb-es429", help="Run Labs-009 ExpB (ES 429 injection) bounded")
     b.add_argument("--service", default="wordloom-search-outbox-worker")
