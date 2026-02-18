@@ -34,9 +34,11 @@ LABS_SNAPSHOT_ROOT = REPO_ROOT / "docs" / "labs" / "_snapshot"
 LAB_ID_S3A_2A_3A = "S3A-2A-3A"
 LAB_ID_S2B_1A_1A = "S2B-1A-1A"
 LAB_ID_S2B_1A_2A = "S2B-1A-2A"
+LAB_ID_S2B_2A_1A = "S2B-2A-1A"
 
 SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES = "shadow_verify_chronicle_entries"
 SCENARIO_SHADOW_VERIFY_SEARCH_INDEX = "shadow_verify_search_index"
+SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE = "shadow_verify_search_index_write_gate"
 SCENARIO_ES_WRITE_BLOCK_4XX = "es_write_block_4xx"
 SCENARIO_ES_429_INJECT = "es_429_inject"
 SCENARIO_ES_DOWN_CONNECT = "es_down_connect"
@@ -899,6 +901,164 @@ def _cmd_labs_shadow_verify_search_index(args: argparse.Namespace) -> int:
     print(f"outbox_processing={outbox_processing}")
     print(f"outbox_done={outbox_done}")
     print(f"outbox_failed={outbox_failed}")
+    print(f"outputs: {outdir}")
+
+    return 0 if ok else 2
+
+
+def _cmd_labs_shadow_verify_search_index_write_gate(args: argparse.Namespace) -> int:
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+        lab_id=LAB_ID_S2B_2A_1A,
+        scenario=SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE,
+        run_id=run_id,
+    )
+    _ensure_dir(outdir)
+
+    env = _load_env(env_file=args.env_file)
+    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
+    if not database_url:
+        print("[labs shadow-verify-search-index-write-gate] DATABASE_URL is required (via env or --database-url)")
+        return 2
+
+    library_id = (args.library_id or "").strip() or None
+    if library_id is not None:
+        try:
+            uuid.UUID(library_id)
+        except ValueError:
+            print(f"[labs shadow-verify-search-index-write-gate] invalid --library-id: {library_id}")
+            return 2
+
+    engine = create_engine(database_url)
+    with engine.connect() as conn:
+        duplicates_groups_total = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COUNT(*)
+                    FROM (
+                      SELECT entity_type, entity_id
+                      FROM search_index
+                      GROUP BY entity_type, entity_id
+                      HAVING COUNT(*) > 1
+                    ) t
+                    """
+                )
+            ).scalar()
+            or 0
+        )
+        duplicates_extra_rows_total = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COALESCE(SUM(cnt - 1), 0)
+                    FROM (
+                      SELECT COUNT(*) AS cnt
+                      FROM search_index
+                      GROUP BY entity_type, entity_id
+                      HAVING COUNT(*) > 1
+                    ) t
+                    """
+                )
+            ).scalar()
+            or 0
+        )
+        rows = conn.execute(
+            text(
+                """
+                SELECT entity_type,
+                       COUNT(*) AS duplicate_groups,
+                       COALESCE(SUM(cnt - 1), 0) AS duplicate_extra_rows
+                FROM (
+                  SELECT entity_type, entity_id, COUNT(*) AS cnt
+                  FROM search_index
+                  GROUP BY entity_type, entity_id
+                  HAVING COUNT(*) > 1
+                ) t
+                GROUP BY entity_type
+                ORDER BY entity_type
+                """
+            )
+        ).all()
+        duplicates_by_entity_type = [
+            {
+                "entity_type": str(r[0]),
+                "duplicate_groups": int(r[1] or 0),
+                "duplicate_extra_rows": int(r[2] or 0),
+            }
+            for r in rows
+        ]
+
+        if library_id is None:
+            scope = "all"
+            duplicates_groups_scoped = None
+            duplicates_extra_rows_scoped = None
+        else:
+            scope = f"library:{library_id}"
+            duplicates_groups_scoped = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM (
+                          SELECT entity_type, entity_id
+                          FROM search_index
+                          WHERE library_id = :library_id
+                          GROUP BY entity_type, entity_id
+                          HAVING COUNT(*) > 1
+                        ) t
+                        """
+                    ),
+                    {"library_id": library_id},
+                ).scalar()
+                or 0
+            )
+            duplicates_extra_rows_scoped = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COALESCE(SUM(cnt - 1), 0)
+                        FROM (
+                          SELECT COUNT(*) AS cnt
+                          FROM search_index
+                          WHERE library_id = :library_id
+                          GROUP BY entity_type, entity_id
+                          HAVING COUNT(*) > 1
+                        ) t
+                        """
+                    ),
+                    {"library_id": library_id},
+                ).scalar()
+                or 0
+            )
+
+    ok = duplicates_extra_rows_total == 0
+    result: dict[str, object] = {
+        "lab_id": LAB_ID_S2B_2A_1A,
+        "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE,
+        "run_id": run_id,
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scope": scope,
+        "duplicates_groups_total": duplicates_groups_total,
+        "duplicates_extra_rows_total": duplicates_extra_rows_total,
+        "duplicates_by_entity_type": duplicates_by_entity_type,
+        "ok": bool(ok),
+    }
+    if duplicates_groups_scoped is not None:
+        result["duplicates_groups_scoped"] = duplicates_groups_scoped
+    if duplicates_extra_rows_scoped is not None:
+        result["duplicates_extra_rows_scoped"] = duplicates_extra_rows_scoped
+
+    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    print("labs-012.shadow_verify_search_index_write_gate")
+    print(f"scope={scope}")
+    print(f"duplicates_groups_total={duplicates_groups_total}")
+    print(f"duplicates_extra_rows_total={duplicates_extra_rows_total}")
+    if duplicates_groups_scoped is not None:
+        print(f"duplicates_groups_scoped={duplicates_groups_scoped}")
+    if duplicates_extra_rows_scoped is not None:
+        print(f"duplicates_extra_rows_scoped={duplicates_extra_rows_scoped}")
     print(f"outputs: {outdir}")
 
     return 0 if ok else 2
@@ -4003,6 +4163,17 @@ def build_parser() -> argparse.ArgumentParser:
     sv_search.add_argument("--run-id", help="Optional run_id folder name")
     sv_search.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
     sv_search.set_defaults(func=_cmd_labs_shadow_verify_search_index)
+
+    sv_search_gate = labs_sub.add_parser(
+        "shadow-verify-search-index-write-gate",
+        help="Labs-012: write-gate verify search_index uniqueness (writes _result.json)",
+    )
+    sv_search_gate.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    sv_search_gate.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    sv_search_gate.add_argument("--library-id", help="Optional library_id scope (UUID)")
+    sv_search_gate.add_argument("--run-id", help="Optional run_id folder name")
+    sv_search_gate.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    sv_search_gate.set_defaults(func=_cmd_labs_shadow_verify_search_index_write_gate)
 
     b = labs_sub.add_parser("expb-es429", help="Run Labs-009 ExpB (ES 429 injection) bounded")
     b.add_argument("--service", default="wordloom-search-outbox-worker")

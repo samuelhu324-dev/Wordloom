@@ -53,7 +53,6 @@
 - Chronicle 样板 log：`docs/logs/log-S2B-1A-1A-chronicle-concurrent-handling.md`
 - Chronicle CI workflow（证据链样板）：`.github/workflows/drill-shadow-verify-entries.yml`
 - Search worker（现状入口，后续 verify/观测会围绕它）：`backend/scripts/legacy/search_outbox_worker.py`
-- Search shadow verify（v0, script）：`backend/scripts/labs/lab-S2B-1A-2A.py`
 - Search shadow verify（stable CLI）：`backend/scripts/cli.py`（`labs shadow-verify-search-index`）
 - Search lab manual：`docs/labs/lab-S2B-1A-2A-search-concurrent-handling.md`
 

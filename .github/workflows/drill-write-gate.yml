@@ -1,22 +1,15 @@
-name: drill-shadow-verify-entries
+name: drill-write-gate
 
 on:
   workflow_dispatch:
     inputs:
       scenario:
-        description: "Scenario"
+        description: "Write-gate scenario"
         required: true
-        default: shadow_verify_chronicle_entries
+        default: shadow_verify_search_index_write_gate
         type: choice
         options:
-          - shadow_verify_chronicle_entries
-          - shadow_verify_search_index
           - shadow_verify_search_index_write_gate
-      book_id:
-        description: "Optional scope: book_id (UUID)"
-        required: false
-        default: ""
-        type: string
       library_id:
         description: "Optional scope: library_id (UUID)"
         required: false
@@ -60,8 +53,6 @@ jobs:
             sleep 2
           done
 
-          # The init script that creates wordloom_test only runs on first volume init.
-          # Ensure the DB exists and is ready, otherwise migrations/drills will fail.
           if ! docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
             echo "wordloom_test is not ready; ensuring it exists"
             docker exec "$DB_CID" psql -U wordloom -d wordloom_dev -v ON_ERROR_STOP=1 -c "SELECT 'CREATE DATABASE wordloom_test' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'wordloom_test')\\gexec"
@@ -93,11 +84,10 @@ jobs:
         run: |
           set -euo pipefail
           python -m alembic -c alembic.ini upgrade head
-    
+
       - name: Sanity check DB (connect + tables)
         env:
           DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
-          SCENARIO: ${{ inputs.scenario }}
         run: |
           set -euo pipefail
           python - << 'PY'
@@ -105,15 +95,10 @@ jobs:
           import sqlalchemy as sa
 
           url = os.environ["DATABASE_URL"]
-          scenario = os.environ.get("SCENARIO") or "shadow_verify_chronicle_entries"
           engine = sa.create_engine(url)
           with engine.connect() as conn:
               conn.execute(sa.text("SELECT 1"))
-              if scenario in ("shadow_verify_search_index", "shadow_verify_search_index_write_gate"):
-                  expected = ("search_index",)
-              else:
-                  expected = ("chronicle_events", "chronicle_entries")
-
+              expected = ("search_index",)
               for t in expected:
                   exists = conn.execute(sa.text("SELECT to_regclass(:t)"), {"t": t}).scalar()
                   if not exists:
@@ -121,7 +106,7 @@ jobs:
           print("[ok] DB connect + tables")
           PY
 
-      - name: Run drill (shadow verify) → write artifacts
+      - name: Run drill (write gate) → write artifacts
         id: drill
         continue-on-error: true
         env:
@@ -137,8 +122,6 @@ jobs:
           rm -rf artifacts .drill_snapshot
           mkdir -p artifacts .drill_snapshot
 
-          # IMPORTANT: write default outputs immediately so downstream steps never see empty
-          # values even if this script crashes before the EXIT trap runs.
           {
             echo "ok=${ok}"
             echo "scenario=${scenario}"
@@ -146,7 +129,6 @@ jobs:
             echo "exit_code=${rc}"
           } >> "$GITHUB_OUTPUT"
 
-          # Also create a placeholder summary early; finalize() will overwrite it.
           python -c "import json; from pathlib import Path; Path('artifacts').mkdir(parents=True, exist_ok=True); payload={'scenario': '${{ inputs.scenario }}','ok':False,'error':'drill did not complete'}; Path('artifacts/summary.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8')"
 
           finalize() {
@@ -159,13 +141,12 @@ jobs:
               ls -la .drill_snapshot || true
             } >> artifacts/logs.txt 2>&1 || true
 
-            # Minimal traces placeholder (this drill doesn't collect traces yet).
             echo "[]" > artifacts/traces.json 2>/dev/null || true
 
             if [ -f .drill_snapshot/_result.json ]; then
               cp .drill_snapshot/_result.json artifacts/summary.json
             else
-              python -c "import json, os; from pathlib import Path; payload={'scenario': os.environ.get('SCENARIO','shadow_verify_chronicle_entries'),'run_id': os.environ.get('RUN_ID'), 'ok': False, 'error': 'missing _result.json', 'exit_code': int((os.environ.get('EXIT_CODE') or '2'))}; Path('.drill_snapshot').mkdir(parents=True, exist_ok=True); Path('.drill_snapshot/_result.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8'); Path('artifacts/summary.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8')"
+              python -c "import json, os; from pathlib import Path; payload={'scenario': os.environ.get('SCENARIO','shadow_verify_search_index_write_gate'),'run_id': os.environ.get('RUN_ID'), 'ok': False, 'error': 'missing _result.json', 'exit_code': int((os.environ.get('EXIT_CODE') or '2'))}; Path('.drill_snapshot').mkdir(parents=True, exist_ok=True); Path('.drill_snapshot/_result.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8'); Path('artifacts/summary.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8')"
             fi
 
             echo "ok=${ok}" >> "$GITHUB_OUTPUT"
@@ -179,7 +160,6 @@ jobs:
           {
             echo "scenario=${scenario}"
             echo "run_id=${run_id}"
-            echo "book_id=${{ inputs.book_id }}"
             echo "library_id=${{ inputs.library_id }}"
             echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             echo
@@ -194,17 +174,8 @@ jobs:
             python --version || true
             python -m pip --version || true
             echo
-            echo "--- cli.py --help ---"
-            python backend/scripts/cli.py --help || true
-            echo
-            echo "--- cli.py labs --help ---"
-            python backend/scripts/cli.py labs --help || true
-            echo
-            echo "--- cli.py labs shadow-verify-chronicle-entries --help ---"
-            python backend/scripts/cli.py labs shadow-verify-chronicle-entries --help || true
-            echo
-            echo "--- cli.py labs shadow-verify-search-index --help ---"
-            python backend/scripts/cli.py labs shadow-verify-search-index --help || true
+            echo "--- cli.py labs shadow-verify-search-index-write-gate --help ---"
+            python backend/scripts/cli.py labs shadow-verify-search-index-write-gate --help || true
             echo
           } >> artifacts/logs.txt 2>&1
 
@@ -224,36 +195,9 @@ jobs:
               --outdir .drill_snapshot \
               2>&1 | tee -a artifacts/logs.txt
             rc=${PIPESTATUS[0]}
-          elif [ "${scenario}" = "shadow_verify_search_index" ]; then
-            library_id="${{ inputs.library_id }}"
-            if [ -n "${library_id}" ]; then
-              library_id_args=("--library-id" "${library_id}")
-            else
-              library_id_args=()
-            fi
-
-            python backend/scripts/cli.py labs shadow-verify-search-index \
-              --database-url "$DATABASE_URL" \
-              "${library_id_args[@]}" \
-              --run-id "$run_id" \
-              --outdir .drill_snapshot \
-              2>&1 | tee -a artifacts/logs.txt
-            rc=${PIPESTATUS[0]}
           else
-            book_id="${{ inputs.book_id }}"
-            if [ -n "${book_id}" ]; then
-              book_id_args=("--book-id" "${book_id}")
-            else
-              book_id_args=()
-            fi
-
-            python backend/scripts/cli.py labs shadow-verify-chronicle-entries \
-              --database-url "$DATABASE_URL" \
-              "${book_id_args[@]}" \
-              --run-id "$run_id" \
-              --outdir .drill_snapshot \
-              2>&1 | tee -a artifacts/logs.txt
-            rc=${PIPESTATUS[0]}
+            echo "Unknown scenario: ${scenario}" | tee -a artifacts/logs.txt
+            rc=2
           fi
           set -e
 

@@ -56,7 +56,7 @@
 - Flag → settings：`backend/api/app/config/setting.py`（`merged_read_enabled`）
 - Flag wiring test：`backend/api/app/tests/test_chronicle/test_merged_read_flag.py`
 - Read-side adapter（entries read-only）：`backend/infra/storage/chronicle_entries_repository_impl.py`
-- Shadow verify script：`backend/scripts/labs/lab-S2B-1A-1A.py`
+- Shadow verify（stable CLI）：`backend/scripts/cli.py`（`labs shadow-verify-chronicle-entries`）
 - CI workflow：`.github/workflows/drill-shadow-verify-entries.yml`
 
 Registry:
