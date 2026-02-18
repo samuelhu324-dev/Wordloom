@@ -192,13 +192,26 @@ jobs:
           fi
 
           set +e
-          python backend/scripts/cli.py labs shadow-verify-chronicle-entries \
-            --database-url "$DATABASE_URL" \
-            "${book_id_args[@]}" \
-            --run-id "$run_id" \
-            --outdir .drill_snapshot \
-            2>&1 | tee -a artifacts/logs.txt
-          rc=${PIPESTATUS[0]}
+          if python backend/scripts/cli.py labs shadow-verify-chronicle-entries --help >/dev/null 2>&1; then
+            python backend/scripts/cli.py labs shadow-verify-chronicle-entries \
+              --database-url "$DATABASE_URL" \
+              "${book_id_args[@]}" \
+              --run-id "$run_id" \
+              --outdir .drill_snapshot \
+              2>&1 | tee -a artifacts/logs.txt
+            rc=${PIPESTATUS[0]}
+          else
+            echo "[warn] cli.py lacks 'labs shadow-verify-chronicle-entries'; falling back to lab script" | tee -a artifacts/logs.txt
+            if [ -n "${book_id}" ]; then
+              export BOOK_ID="${book_id}"
+            else
+              unset BOOK_ID || true
+            fi
+            export OUTDIR=".drill_snapshot"
+            export RUN_ID="${run_id}"
+            python backend/scripts/labs/lab-S2B-1A-1A.py 2>&1 | tee -a artifacts/logs.txt
+            rc=${PIPESTATUS[0]}
+          fi
           set -e
 
           if [ "$rc" -eq 0 ]; then
