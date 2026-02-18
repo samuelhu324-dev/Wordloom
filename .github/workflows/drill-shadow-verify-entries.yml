@@ -3,8 +3,21 @@ name: drill-shadow-verify-entries
 on:
   workflow_dispatch:
     inputs:
+      scenario:
+        description: "Scenario"
+        required: true
+        default: shadow_verify_chronicle_entries
+        type: choice
+        options:
+          - shadow_verify_chronicle_entries
+          - shadow_verify_search_index
       book_id:
         description: "Optional scope: book_id (UUID)"
+        required: false
+        default: ""
+        type: string
+      library_id:
+        description: "Optional scope: library_id (UUID)"
         required: false
         default: ""
         type: string
@@ -46,6 +59,26 @@ jobs:
             sleep 2
           done
 
+          # The init script that creates wordloom_test only runs on first volume init.
+          # Ensure the DB exists and is ready, otherwise migrations/drills will fail.
+          if ! docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+            echo "wordloom_test is not ready; ensuring it exists"
+            docker exec "$DB_CID" psql -U wordloom -d wordloom_dev -v ON_ERROR_STOP=1 -c "SELECT 'CREATE DATABASE wordloom_test' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'wordloom_test')\\gexec"
+          fi
+
+          echo "Waiting for Postgres (wordloom_test) to be ready"
+          for i in $(seq 1 60); do
+            if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+              echo "wordloom_test is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Timed out waiting for wordloom_test" >&2
+          docker exec "$DB_CID" psql -U wordloom -d wordloom_dev -c "\\l" || true
+          exit 2
+
       - name: Install backend
         run: |
           set -euo pipefail
@@ -55,72 +88,200 @@ jobs:
       - name: Migrate DB (alembic)
         working-directory: backend
         env:
-          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
         run: |
           set -euo pipefail
           python -m alembic -c alembic.ini upgrade head
+    
+      - name: Sanity check DB (connect + tables)
+        env:
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
+          SCENARIO: ${{ inputs.scenario }}
+        run: |
+          set -euo pipefail
+          python - << 'PY'
+          import os
+          import sqlalchemy as sa
+
+          url = os.environ["DATABASE_URL"]
+          scenario = os.environ.get("SCENARIO") or "shadow_verify_chronicle_entries"
+          engine = sa.create_engine(url)
+          with engine.connect() as conn:
+              conn.execute(sa.text("SELECT 1"))
+              if scenario == "shadow_verify_search_index":
+                  expected = ("search_index",)
+              else:
+                  expected = ("chronicle_events", "chronicle_entries")
+
+              for t in expected:
+                  exists = conn.execute(sa.text("SELECT to_regclass(:t)"), {"t": t}).scalar()
+                  if not exists:
+                      raise SystemExit(f"missing table: {t}")
+          print("[ok] DB connect + tables")
+          PY
 
       - name: Run drill (shadow verify) → write artifacts
         id: drill
         continue-on-error: true
         env:
-          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
         run: |
           set -euo pipefail
 
-          scenario="shadow_verify_chronicle_entries"
+          scenario="${{ inputs.scenario }}"
           run_id="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          rc=2
+          ok=false
 
           rm -rf artifacts .drill_snapshot
           mkdir -p artifacts .drill_snapshot
 
-          # Keep command output as a stable artifact.
+          # IMPORTANT: write default outputs immediately so downstream steps never see empty
+          # values even if this script crashes before the EXIT trap runs.
+          {
+            echo "ok=${ok}"
+            echo "scenario=${scenario}"
+            echo "run_id=${run_id}"
+            echo "exit_code=${rc}"
+          } >> "$GITHUB_OUTPUT"
+
+          # Also create a placeholder summary early; finalize() will overwrite it.
+          python -c "import json; from pathlib import Path; Path('artifacts').mkdir(parents=True, exist_ok=True); payload={'scenario': '${{ inputs.scenario }}','ok':False,'error':'drill did not complete'}; Path('artifacts/summary.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8')"
+
+          finalize() {
+            {
+              echo
+              echo "--- snapshot debug ---"
+              pwd
+              ls -la
+              echo "[tree] .drill_snapshot"
+              ls -la .drill_snapshot || true
+            } >> artifacts/logs.txt 2>&1 || true
+
+            # Minimal traces placeholder (this drill doesn't collect traces yet).
+            echo "[]" > artifacts/traces.json 2>/dev/null || true
+
+            if [ -f .drill_snapshot/_result.json ]; then
+              cp .drill_snapshot/_result.json artifacts/summary.json
+            else
+              python -c "import json, os; from pathlib import Path; payload={'scenario': os.environ.get('SCENARIO','shadow_verify_chronicle_entries'),'run_id': os.environ.get('RUN_ID'), 'ok': False, 'error': 'missing _result.json', 'exit_code': int((os.environ.get('EXIT_CODE') or '2'))}; Path('.drill_snapshot').mkdir(parents=True, exist_ok=True); Path('.drill_snapshot/_result.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8'); Path('artifacts/summary.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8')"
+            fi
+
+            echo "ok=${ok}" >> "$GITHUB_OUTPUT"
+            echo "scenario=${scenario}" >> "$GITHUB_OUTPUT"
+            echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
+            echo "exit_code=${rc}" >> "$GITHUB_OUTPUT"
+          }
+
+          trap 'SCENARIO="$scenario" RUN_ID="$run_id" EXIT_CODE="$rc" finalize' EXIT
+
           {
             echo "scenario=${scenario}"
             echo "run_id=${run_id}"
             echo "book_id=${{ inputs.book_id }}"
+            echo "library_id=${{ inputs.library_id }}"
             echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             echo
           } > artifacts/logs.txt
 
+          {
+            echo "--- repo ---"
+            git rev-parse HEAD || true
+            git status --porcelain=v1 -b || true
+            echo
+            echo "--- python ---"
+            python --version || true
+            python -m pip --version || true
+            echo
+            echo "--- cli.py --help ---"
+            python backend/scripts/cli.py --help || true
+            echo
+            echo "--- cli.py labs --help ---"
+            python backend/scripts/cli.py labs --help || true
+            echo
+            echo "--- cli.py labs shadow-verify-chronicle-entries --help ---"
+            python backend/scripts/cli.py labs shadow-verify-chronicle-entries --help || true
+            echo
+            echo "--- cli.py labs shadow-verify-search-index --help ---"
+            python backend/scripts/cli.py labs shadow-verify-search-index --help || true
+            echo
+          } >> artifacts/logs.txt 2>&1
+
           set +e
-          python backend/scripts/cli.py labs shadow-verify-chronicle-entries \
-            --database-url "$DATABASE_URL" \
-            --book-id "${{ inputs.book_id }}" \
-            --run-id "$run_id" \
-            --outdir .drill_snapshot \
-            2>&1 | tee -a artifacts/logs.txt
-          rc=${PIPESTATUS[0]}
+          if [ "${scenario}" = "shadow_verify_search_index" ]; then
+            library_id="${{ inputs.library_id }}"
+            if [ -n "${library_id}" ]; then
+              library_id_args=("--library-id" "${library_id}")
+            else
+              library_id_args=()
+            fi
+
+            if python backend/scripts/cli.py labs shadow-verify-search-index --help >/dev/null 2>&1; then
+              python backend/scripts/cli.py labs shadow-verify-search-index \
+                --database-url "$DATABASE_URL" \
+                "${library_id_args[@]}" \
+                --run-id "$run_id" \
+                --outdir .drill_snapshot \
+                2>&1 | tee -a artifacts/logs.txt
+              rc=${PIPESTATUS[0]}
+            else
+              echo "[warn] cli.py lacks 'labs shadow-verify-search-index'; falling back to lab script" | tee -a artifacts/logs.txt
+              if [ -n "${library_id}" ]; then
+                export LIBRARY_ID="${library_id}"
+              else
+                unset LIBRARY_ID || true
+              fi
+              export OUTDIR=".drill_snapshot"
+              export RUN_ID="${run_id}"
+              python backend/scripts/labs/lab-S2B-1A-2A.py 2>&1 | tee -a artifacts/logs.txt
+              rc=${PIPESTATUS[0]}
+            fi
+          else
+            book_id="${{ inputs.book_id }}"
+            if [ -n "${book_id}" ]; then
+              book_id_args=("--book-id" "${book_id}")
+            else
+              book_id_args=()
+            fi
+
+            if python backend/scripts/cli.py labs shadow-verify-chronicle-entries --help >/dev/null 2>&1; then
+              python backend/scripts/cli.py labs shadow-verify-chronicle-entries \
+                --database-url "$DATABASE_URL" \
+                "${book_id_args[@]}" \
+                --run-id "$run_id" \
+                --outdir .drill_snapshot \
+                2>&1 | tee -a artifacts/logs.txt
+              rc=${PIPESTATUS[0]}
+            else
+              echo "[warn] cli.py lacks 'labs shadow-verify-chronicle-entries'; falling back to lab script" | tee -a artifacts/logs.txt
+              if [ -n "${book_id}" ]; then
+                export BOOK_ID="${book_id}"
+              else
+                unset BOOK_ID || true
+              fi
+              export OUTDIR=".drill_snapshot"
+              export RUN_ID="${run_id}"
+              python backend/scripts/labs/lab-S2B-1A-1A.py 2>&1 | tee -a artifacts/logs.txt
+              rc=${PIPESTATUS[0]}
+            fi
+          fi
           set -e
 
-          # Minimal traces placeholder (this drill doesn't collect traces yet).
-          echo "[]" > artifacts/traces.json
-
-          if [ -f .drill_snapshot/_result.json ]; then
-            cp .drill_snapshot/_result.json artifacts/summary.json
-          else
-            echo '{"scenario":"'"${scenario}"'","run_id":"'"${run_id}"'","ok":false,"error":"missing _result.json"}' > artifacts/summary.json
-            rc=2
-          fi
-
           if [ "$rc" -eq 0 ]; then
-            echo "ok=true" >> "$GITHUB_OUTPUT"
+            ok=true
           else
-            echo "ok=false" >> "$GITHUB_OUTPUT"
+            ok=false
           fi
-          echo "scenario=${scenario}" >> "$GITHUB_OUTPUT"
-          echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
-          echo "exit_code=${rc}" >> "$GITHUB_OUTPUT"
 
       - name: Upload summary (success only)
-        if: steps.drill.outputs.ok == 'true'
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: drill-${{ steps.drill.outputs.scenario }}-${{ steps.drill.outputs.run_id }}
           path: artifacts/summary.json
 
       - name: Zip artifacts (failure only)
-        if: steps.drill.outputs.ok != 'true'
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
         run: |
           set -euo pipefail
           python - << 'PY'
@@ -136,14 +297,23 @@ jobs:
           PY
 
       - name: Upload full zip (failure only)
-        if: steps.drill.outputs.ok != 'true'
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: drill-${{ steps.drill.outputs.scenario }}-${{ steps.drill.outputs.run_id }}
           path: artifacts.zip
 
       - name: Fail job if drill failed
-        if: steps.drill.outputs.ok != 'true'
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
         run: |
-          echo "Drill failed (exit_code=${{ steps.drill.outputs.exit_code }}). See uploaded artifacts." >&2
+          echo "Drill failed (exit_code=${{ steps.drill.outputs.exit_code }})." >&2
+          if [ -f artifacts/summary.json ]; then
+            echo "--- summary.json ---" >&2
+            cat artifacts/summary.json >&2
+          fi
+          if [ -f artifacts/logs.txt ]; then
+            echo "--- logs.txt (tail) ---" >&2
+            tail -n 200 artifacts/logs.txt >&2 || true
+          fi
+          echo "See uploaded artifacts." >&2
           exit 1

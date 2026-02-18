@@ -12,6 +12,8 @@ Async Pattern (Nov 17, 2025):
 """
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.app.config.setting import get_settings
+
 from infra.storage.library_repository_impl import SQLAlchemyLibraryRepository
 from infra.storage.bookshelf_repository_impl import SQLAlchemyBookshelfRepository
 from infra.storage.book_repository_impl import SQLAlchemyBookRepository
@@ -23,6 +25,7 @@ from infra.storage.library_tag_association_repository_impl import (
 )
 from infra.storage.tag_repository_impl import SQLAlchemyTagRepository
 from infra.storage.chronicle_repository_impl import SQLAlchemyChronicleRepository
+from infra.storage.chronicle_entries_repository_impl import SQLAlchemyChronicleEntriesRepository
 from infra.storage.maturity_repository_impl import SQLAlchemyMaturitySnapshotRepository
 from api.app.shared.events import get_event_bus
 from api.app.modules.tag.application.adapters import (
@@ -66,7 +69,9 @@ class DIContainerReal:
         self.basement_repo = SQLAlchemyBasementRepository(session)
         self.library_tag_repo = SQLAlchemyLibraryTagAssociationRepository(session)
         self.tag_repo = SQLAlchemyTagRepository(session)
+        # Chronicle: write-side (events) + read-side (projection entries)
         self.chronicle_repo = SQLAlchemyChronicleRepository(session)
+        self.chronicle_entries_repo = SQLAlchemyChronicleEntriesRepository(session)
         self.maturity_snapshot_repo = SQLAlchemyMaturitySnapshotRepository(session)
         self.book_maturity_score_service = BookMaturityScoreService()
         self.maturity_data_provider = BookAggregateMaturityDataProvider(
@@ -472,4 +477,7 @@ class DIContainerReal:
         return ChronicleRecorderService(self.chronicle_repo)
 
     def get_chronicle_query_service(self) -> ChronicleQueryService:
+        settings = get_settings()
+        if settings.merged_read_enabled:
+            return ChronicleQueryService(self.chronicle_entries_repo)
         return ChronicleQueryService(self.chronicle_repo)

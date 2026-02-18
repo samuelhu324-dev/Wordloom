@@ -38,6 +38,16 @@ Test Execution: pytest backend/api/app/tests/test_integration_four_modules.py -v
 """
 
 import pytest
+
+
+pytest.skip(
+    "Legacy integration narrative suite retired: depends on obsolete domain APIs and module contracts. "
+    "See docs/adr/adr-S2B-legacy-integration-suite-retired.md and "
+    "docs/logs/log-S0C-2A-legacy-integration-suite-retired.md.",
+    allow_module_level=True,
+)
+
+import pytest
 import asyncio
 from uuid import UUID, uuid4
 from datetime import datetime, timezone

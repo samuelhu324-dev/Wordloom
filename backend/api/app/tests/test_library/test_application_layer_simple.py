@@ -26,7 +26,11 @@ from api.app.modules.library.application.ports.input import (
     RestoreLibraryRequest,
     ListBasementBooksRequest,
 )
-from api.app.modules.library.exceptions import LibraryNotFoundError, LibraryForbiddenError
+from api.app.modules.library.exceptions import (
+    LibraryNotFoundError,
+    LibraryForbiddenError,
+    InvalidLibraryNameError,
+)
 from api.app.shared.exceptions import IllegalStateError, ResourceNotFoundError
 from api.app.modules.library.domain.library import Library
 from api.app.modules.bookshelf.domain import Bookshelf
@@ -190,6 +194,10 @@ class MockLibraryRepository:
         if library:
             self._user_libraries.pop(library.user_id, None)
 
+    async def list_by_user_id(self, user_id):
+        library = await self.get_by_user_id(user_id)
+        return [library] if library is not None else []
+
     async def get_all(self):
         return list(self._libraries.values())
 
@@ -289,7 +297,7 @@ class TestCreateLibrary:
 
         request = CreateLibraryRequest(user_id=user_id, name="")
 
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidLibraryNameError):
             await use_case.execute(request)
 
     @pytest.mark.asyncio
@@ -302,7 +310,7 @@ class TestCreateLibrary:
 
         request = CreateLibraryRequest(user_id=user_id, name="x" * 256)
 
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidLibraryNameError):
             await use_case.execute(request)
 
     @pytest.mark.asyncio
@@ -382,8 +390,8 @@ class TestGetLibrary:
             )
 
     @pytest.mark.asyncio
-    async def test_get_library_by_user_id_rejected(self):
-        """✗ Querying by user ID is deprecated and raises ValueError"""
+    async def test_get_library_by_user_id_found(self):
+        """✓ Querying by user ID returns the user's library"""
         repo = MockLibraryRepository()
         bus = MockEventBus()
         create_uc, _ = _make_create_library_use_case(repo, bus)
@@ -394,20 +402,20 @@ class TestGetLibrary:
         create_req = CreateLibraryRequest(user_id=user_id, name="User Library")
         await create_uc.execute(create_req)
 
-        # Get library by user ID should raise ValueError per use case contract
         get_req = GetLibraryRequest(user_id=user_id)
-        with pytest.raises(ValueError):
-            await get_uc.execute(get_req)
+        resp = await get_uc.execute(get_req)
+        assert resp.user_id == user_id
+        assert resp.name == "User Library"
 
     @pytest.mark.asyncio
-    async def test_get_library_by_user_id_not_supported_without_data(self):
-        """✗ Querying by user ID without data also raises ValueError"""
+    async def test_get_library_by_user_id_not_found(self):
+        """✗ Querying by user ID with no library raises LibraryNotFoundError"""
         repo = MockLibraryRepository()
         get_uc = GetLibraryUseCase(repository=repo)
 
         request = GetLibraryRequest(user_id=uuid4())
 
-        with pytest.raises(ValueError):
+        with pytest.raises(LibraryNotFoundError):
             await get_uc.execute(request)
 
 
@@ -518,12 +526,12 @@ class TestBusinessRules:
         assert len(resp2.name) == 255
 
         # Invalid: empty
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidLibraryNameError):
             req3 = CreateLibraryRequest(user_id=uuid4(), name="")
             await use_case.execute(req3)
 
         # Invalid: 256 characters
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidLibraryNameError):
             req4 = CreateLibraryRequest(user_id=uuid4(), name="x" * 256)
             await use_case.execute(req4)
 

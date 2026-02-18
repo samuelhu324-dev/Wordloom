@@ -17,8 +17,7 @@ from uuid import UUID
 import logging
 
 from api.app.modules.library.domain.library import Library
-from api.app.modules.library.domain.library_name import LibraryName
-from api.app.modules.library.domain.exceptions import LibraryNotFoundError, InvalidLibraryNameError
+from api.app.modules.library.exceptions import LibraryNotFoundError, InvalidLibraryNameError
 from api.app.modules.library.application.ports.input import (
     RenameLibraryRequest,
     RenameLibraryResponse,
@@ -95,13 +94,15 @@ class RenameLibraryUseCase(IRenameLibraryUseCase):
         library: Library = await self.repository.get_by_id(request.library_id)
         if not library:
             logger.error(f"Library not found: {request.library_id}")
-            raise LibraryNotFoundError(f"Library {request.library_id} not found")
+            raise LibraryNotFoundError(library_id=str(request.library_id))
 
-        # Step 2: Validate name (will raise InvalidLibraryNameError if invalid)
-        new_name = LibraryName(request.new_name)
+        old_name = library.name.value
 
-        # Step 3: Update library name in domain
-        library.rename(new_name)
+        # Step 2: Update library name in domain (validates via LibraryName internally)
+        try:
+            library.rename(request.new_name)
+        except ValueError as e:
+            raise InvalidLibraryNameError(name=request.new_name, reason=str(e))
 
         # Step 4: Persist updated library
         await self.repository.save(library)
@@ -109,4 +110,9 @@ class RenameLibraryUseCase(IRenameLibraryUseCase):
         logger.info(f"Library renamed successfully: {library.id}")
 
         # Step 5: Convert domain object to response DTO
-        return RenameLibraryResponse.from_domain(library)
+        return RenameLibraryResponse(
+            library_id=library.id,
+            old_name=old_name,
+            new_name=library.name.value,
+            updated_at=library.updated_at,
+        )

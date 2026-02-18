@@ -47,6 +47,12 @@ class Settings(BaseSettings):
     # Feature flags
     enable_search_projection: bool = True
 
+    # Dual-run / merge migration flags
+    merged_read_enabled: bool = False
+
+    # Search dual-run / merge migration flags (independent from Chronicle)
+    search_merged_read_enabled: bool = False
+
     model_config = SettingsConfigDict(
         env_file=str(Path(__file__).parent.parent.parent / ".env"),
         case_sensitive=False,

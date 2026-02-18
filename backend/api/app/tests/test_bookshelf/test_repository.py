@@ -19,7 +19,7 @@ from uuid import uuid4
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock
 
-from modules.bookshelf.domain import Bookshelf, BookshelfName
+from modules.bookshelf.domain import Bookshelf, BookshelfName, BookshelfType
 from modules.bookshelf.exceptions import (
     BookshelfNotFoundError,
     BookshelfAlreadyExistsError,
@@ -34,7 +34,7 @@ class MockBookshelfRepository:
 
     async def save(self, bookshelf: Bookshelf) -> Bookshelf:
         """Save or update bookshelf"""
-        self.store[bookshelf.bookshelf_id] = bookshelf
+        self.store[bookshelf.id] = bookshelf
         return bookshelf
 
     async def find_by_id(self, bookshelf_id) -> Bookshelf:
@@ -78,35 +78,35 @@ class TestBookshelfRepositoryCRUD:
     async def test_save_bookshelf_creates_new(self, repository):
         """✓ save() creates a new Bookshelf"""
         bookshelf = Bookshelf(
-            bookshelf_id=uuid4(),
+            id=uuid4(),
             library_id=uuid4(),
             name=BookshelfName(value="New Bookshelf"),
-            is_basement=False,
+            type=BookshelfType.NORMAL,
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
 
         saved = await repository.save(bookshelf)
 
-        assert saved.bookshelf_id == bookshelf.bookshelf_id
+        assert saved.id == bookshelf.id
         assert saved.library_id == bookshelf.library_id
 
     @pytest.mark.asyncio
     async def test_find_by_id_returns_bookshelf(self, repository):
         """✓ find_by_id() retrieves Bookshelf"""
         bookshelf = Bookshelf(
-            bookshelf_id=uuid4(),
+            id=uuid4(),
             library_id=uuid4(),
             name=BookshelfName(value="Test"),
-            is_basement=False,
+            type=BookshelfType.NORMAL,
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
 
         await repository.save(bookshelf)
-        found = await repository.find_by_id(bookshelf.bookshelf_id)
+        found = await repository.find_by_id(bookshelf.id)
 
-        assert found.bookshelf_id == bookshelf.bookshelf_id
+        assert found.id == bookshelf.id
 
     @pytest.mark.asyncio
     async def test_find_by_id_not_found(self, repository):
@@ -120,18 +120,18 @@ class TestBookshelfRepositoryCRUD:
         library_id = uuid4()
 
         bs1 = Bookshelf(
-            bookshelf_id=uuid4(),
+            id=uuid4(),
             library_id=library_id,
             name=BookshelfName(value="Bookshelf 1"),
-            is_basement=False,
+            type=BookshelfType.NORMAL,
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
         bs2 = Bookshelf(
-            bookshelf_id=uuid4(),
+            id=uuid4(),
             library_id=library_id,
             name=BookshelfName(value="Bookshelf 2"),
-            is_basement=False,
+            type=BookshelfType.NORMAL,
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
@@ -149,10 +149,10 @@ class TestBookshelfRepositoryCRUD:
         library_id = uuid4()
 
         basement = Bookshelf(
-            bookshelf_id=uuid4(),
+            id=uuid4(),
             library_id=library_id,
             name=BookshelfName(value="Basement"),
-            is_basement=True,
+            type=BookshelfType.BASEMENT,
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
@@ -162,25 +162,25 @@ class TestBookshelfRepositoryCRUD:
         found = await repository.find_basement_by_library_id(library_id)
 
         assert found.is_basement is True
-        assert found.bookshelf_id == basement.bookshelf_id
+        assert found.id == basement.id
 
     @pytest.mark.asyncio
     async def test_delete_bookshelf(self, repository):
         """✓ delete() removes bookshelf"""
         bookshelf = Bookshelf(
-            bookshelf_id=uuid4(),
+            id=uuid4(),
             library_id=uuid4(),
             name=BookshelfName(value="To Delete"),
-            is_basement=False,
+            type=BookshelfType.NORMAL,
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
 
         await repository.save(bookshelf)
-        await repository.delete(bookshelf.bookshelf_id)
+        await repository.delete(bookshelf.id)
 
         with pytest.raises(BookshelfNotFoundError):
-            await repository.find_by_id(bookshelf.bookshelf_id)
+            await repository.find_by_id(bookshelf.id)
 
 
 class TestBookshelfRepositoryInvariants:
@@ -193,10 +193,10 @@ class TestBookshelfRepositoryInvariants:
 
         for i in range(5):
             bs = Bookshelf(
-                bookshelf_id=uuid4(),
+                id=uuid4(),
                 library_id=library_id,
                 name=BookshelfName(value=f"Bookshelf {i}"),
-                is_basement=False,
+                type=BookshelfType.NORMAL,
                 created_at=datetime.now(timezone.utc),
                 updated_at=datetime.now(timezone.utc),
             )
@@ -210,15 +210,15 @@ class TestBookshelfRepositoryInvariants:
         """✓ RULE-005: Bookshelf belongs to Library"""
         library_id = uuid4()
         bookshelf = Bookshelf(
-            bookshelf_id=uuid4(),
+            id=uuid4(),
             library_id=library_id,
             name=BookshelfName(value="Test"),
-            is_basement=False,
+            type=BookshelfType.NORMAL,
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
 
         await repository.save(bookshelf)
-        found = await repository.find_by_id(bookshelf.bookshelf_id)
+        found = await repository.find_by_id(bookshelf.id)
 
         assert found.library_id == library_id

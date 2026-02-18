@@ -79,9 +79,16 @@ class GetLibraryUseCase(IGetLibraryUseCase):
                 logger.debug(f"Querying by library_id: {request.library_id}")
                 library = await self.repository.get_by_id(request.library_id)
             else:
-                # Under multi-library, user_id may map to many libraries.
-                # Direct single fetch by user_id is deprecated in favor of listing.
-                raise ValueError("Query by user_id is deprecated. Use list libraries endpoint.")
+                logger.debug(f"Querying by user_id: {request.user_id}")
+                libraries = await self.repository.list_by_user_id(request.user_id)  # type: ignore[arg-type]
+                if len(libraries) == 1:
+                    library = libraries[0]
+                elif len(libraries) == 0:
+                    library = None
+                else:
+                    raise ValueError(
+                        "Query by user_id is ambiguous under multi-library. Use list libraries endpoint."
+                    )
         except Exception as e:
             logger.error(f"Repository query failed: {e}", exc_info=True)
             raise
@@ -89,7 +96,8 @@ class GetLibraryUseCase(IGetLibraryUseCase):
         if not library:
             logger.warning(f"Library not found: library_id={request.library_id}, user_id={request.user_id}")
             raise LibraryNotFoundError(
-                f"Library not found (library_id={request.library_id}, user_id={request.user_id})"
+                library_id=str(request.library_id) if request.library_id else None,
+                user_id=str(request.user_id) if request.user_id else None,
             )
 
         # ================================================================

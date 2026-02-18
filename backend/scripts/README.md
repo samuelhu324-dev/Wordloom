@@ -35,6 +35,14 @@ Status: draft
 - 运行实验 B（ES 429 注入，样板入口）：
   - `python backend/scripts/cli.py labs expb-es429 --duration 30 --service wordloom-search-outbox-worker`
 
+- Chronicle 读切换前的 shadow verify（对账证据，产出 `_result.json`）：
+  - `python backend/scripts/cli.py labs shadow-verify-chronicle-entries --database-url "postgresql://..."`
+  - 可选：`--book-id <uuid>` 将范围限制到单本书
+
+脚本（可选直跑，用于最小检查/退出码）：
+
+- `python backend/scripts/labs/lab-S2B-1A-1A.py`
+
 ## 输出目录约定（_snapshot）
 
 Labs 统一输出根：`docs/labs/_snapshot/`

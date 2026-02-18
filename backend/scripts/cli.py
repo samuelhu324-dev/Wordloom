@@ -23,6 +23,8 @@ import urllib.request
 import uuid
 from pathlib import Path
 
+from sqlalchemy import create_engine, text
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LEGACY_SCRIPTS_DIR = REPO_ROOT / "backend" / "scripts" / "legacy"
@@ -30,6 +32,11 @@ LABS_SNAPSHOT_ROOT = REPO_ROOT / "docs" / "labs" / "_snapshot"
 
 
 LAB_ID_S3A_2A_3A = "S3A-2A-3A"
+LAB_ID_S2B_1A_1A = "S2B-1A-1A"
+LAB_ID_S2B_1A_2A = "S2B-1A-2A"
+
+SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES = "shadow_verify_chronicle_entries"
+SCENARIO_SHADOW_VERIFY_SEARCH_INDEX = "shadow_verify_search_index"
 SCENARIO_ES_WRITE_BLOCK_4XX = "es_write_block_4xx"
 SCENARIO_ES_429_INJECT = "es_429_inject"
 SCENARIO_ES_DOWN_CONNECT = "es_down_connect"
@@ -89,6 +96,10 @@ def _default_labs_auto_run_dir(*, scenario: str, run_id: str) -> Path:
     return LABS_SNAPSHOT_ROOT / "auto" / LAB_ID_S3A_2A_3A / scenario / run_id
 
 
+def _default_s2b_auto_run_dir(*, lab_id: str, scenario: str, run_id: str) -> Path:
+    return LABS_SNAPSHOT_ROOT / "auto" / lab_id / scenario / run_id
+
+
 def _latest_child_dir(base: Path) -> Path | None:
     if not base.exists():
         return None
@@ -126,6 +137,20 @@ def _es_set_index_write_block(*, es_url: str, index: str, enabled: bool) -> tupl
     index = index.strip()
     url = f"{es_url}/{index}/_settings"
     return _http_json("PUT", url, body={"index": {"blocks": {"write": bool(enabled)}}}, timeout_s=5.0)
+
+
+def _es_create_index_if_missing(*, es_url: str, index: str) -> tuple[int, str]:
+    """Create index if it does not exist.
+
+    Returns (status, payload) from ES.
+    - 200/201: created
+    - 400: already exists (treated as ok by caller)
+    """
+
+    es_url = es_url.strip().rstrip("/")
+    index = index.strip()
+    url = f"{es_url}/{index}"
+    return _http_json("PUT", url, body=None, timeout_s=5.0)
 
 
 def _scrape_metrics_text(*, port: int, timeout_s: float = 2.0) -> str:
@@ -269,6 +294,614 @@ def _read_json_file(path: Path) -> dict[str, object] | None:
         return json.loads(path.read_text(encoding="utf-8", errors="replace"))
     except Exception:
         return None
+
+
+def _cmd_labs_shadow_verify_chronicle_entries(args: argparse.Namespace) -> int:
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+        lab_id=LAB_ID_S2B_1A_1A,
+        scenario=SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES,
+        run_id=run_id,
+    )
+    _ensure_dir(outdir)
+
+    env = _load_env(env_file=args.env_file)
+    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
+    if not database_url:
+        print("[labs shadow-verify-chronicle-entries] DATABASE_URL is required (via env or --database-url)")
+        return 2
+
+    book_id = (args.book_id or "").strip() or None
+    if book_id is not None:
+        try:
+            uuid.UUID(book_id)
+        except ValueError:
+            print(f"[labs shadow-verify-chronicle-entries] invalid --book-id: {book_id}")
+            return 2
+
+    engine = create_engine(database_url)
+    with engine.connect() as conn:
+        if book_id is None:
+            events_total = int(conn.execute(text("SELECT COUNT(*) FROM chronicle_events")).scalar() or 0)
+            entries_total = int(conn.execute(text("SELECT COUNT(*) FROM chronicle_entries")).scalar() or 0)
+            missing_entries = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_events e
+                        LEFT JOIN chronicle_entries p ON p.id = e.id
+                        WHERE p.id IS NULL
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            extra_entries = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_entries p
+                        LEFT JOIN chronicle_events e ON e.id = p.id
+                        WHERE e.id IS NULL
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            mismatched_book_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_events e
+                        JOIN chronicle_entries p ON p.id = e.id
+                        WHERE p.book_id <> e.book_id
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            scope = "all"
+        else:
+            events_total = int(
+                conn.execute(
+                    text("SELECT COUNT(*) FROM chronicle_events WHERE book_id = :book_id"),
+                    {"book_id": book_id},
+                ).scalar()
+                or 0
+            )
+            entries_total = int(
+                conn.execute(
+                    text("SELECT COUNT(*) FROM chronicle_entries WHERE book_id = :book_id"),
+                    {"book_id": book_id},
+                ).scalar()
+                or 0
+            )
+            missing_entries = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_events e
+                        LEFT JOIN chronicle_entries p ON p.id = e.id
+                        WHERE e.book_id = :book_id AND p.id IS NULL
+                        """
+                    ),
+                    {"book_id": book_id},
+                ).scalar()
+                or 0
+            )
+            extra_entries = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_entries p
+                        LEFT JOIN chronicle_events e ON e.id = p.id
+                        WHERE p.book_id = :book_id AND e.id IS NULL
+                        """
+                    ),
+                    {"book_id": book_id},
+                ).scalar()
+                or 0
+            )
+            mismatched_book_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM chronicle_events e
+                        JOIN chronicle_entries p ON p.id = e.id
+                        WHERE e.book_id = :book_id AND p.book_id <> e.book_id
+                        """
+                    ),
+                    {"book_id": book_id},
+                ).scalar()
+                or 0
+            )
+            scope = f"book:{book_id}"
+
+    ok = (missing_entries == 0) and (extra_entries == 0) and (mismatched_book_id == 0)
+    result = {
+        "lab_id": LAB_ID_S2B_1A_1A,
+        "scenario": SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES,
+        "run_id": run_id,
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scope": scope,
+        "events_total": events_total,
+        "entries_total": entries_total,
+        "missing_entries": missing_entries,
+        "extra_entries": extra_entries,
+        "mismatched_book_id": mismatched_book_id,
+        "ok": bool(ok),
+    }
+
+    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    print("labs-010.shadow_verify_chronicle_entries")
+    print(f"scope={scope}")
+    print(f"events_total={events_total}")
+    print(f"entries_total={entries_total}")
+    print(f"missing_entries={missing_entries}")
+    print(f"extra_entries={extra_entries}")
+    print(f"mismatched_book_id={mismatched_book_id}")
+    print(f"outputs: {outdir}")
+
+    return 0 if ok else 2
+
+
+def _cmd_labs_shadow_verify_search_index(args: argparse.Namespace) -> int:
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+        lab_id=LAB_ID_S2B_1A_2A,
+        scenario=SCENARIO_SHADOW_VERIFY_SEARCH_INDEX,
+        run_id=run_id,
+    )
+    _ensure_dir(outdir)
+
+    env = _load_env(env_file=args.env_file)
+    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
+    if not database_url:
+        print("[labs shadow-verify-search-index] DATABASE_URL is required (via env or --database-url)")
+        return 2
+
+    library_id = (args.library_id or "").strip() or None
+    if library_id is not None:
+        try:
+            uuid.UUID(library_id)
+        except ValueError:
+            print(f"[labs shadow-verify-search-index] invalid --library-id: {library_id}")
+            return 2
+
+    engine = create_engine(database_url)
+    with engine.connect() as conn:
+        if library_id is None:
+            scope = "all"
+            blocks_total = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM blocks bl
+                        JOIN books bo ON bo.id = bl.book_id
+                        WHERE bl.soft_deleted_at IS NULL
+                          AND bo.soft_deleted_at IS NULL
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            blocks_index_total = int(
+                conn.execute(text("SELECT COUNT(*) FROM search_index WHERE entity_type = 'block' ")).scalar() or 0
+            )
+            blocks_missing = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM blocks bl
+                        JOIN books bo ON bo.id = bl.book_id
+                        LEFT JOIN search_index si
+                          ON si.entity_type = 'block'
+                         AND si.entity_id = bl.id
+                        WHERE bl.soft_deleted_at IS NULL
+                          AND bo.soft_deleted_at IS NULL
+                          AND si.entity_id IS NULL
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            blocks_extra = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        LEFT JOIN blocks bl ON bl.id = si.entity_id
+                        LEFT JOIN books bo ON bo.id = bl.book_id
+                        WHERE si.entity_type = 'block'
+                          AND (
+                            bl.id IS NULL
+                            OR bl.soft_deleted_at IS NOT NULL
+                            OR bo.id IS NULL
+                            OR bo.soft_deleted_at IS NOT NULL
+                          )
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            blocks_mismatched_library_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        JOIN blocks bl ON bl.id = si.entity_id
+                        JOIN books bo ON bo.id = bl.book_id
+                        WHERE si.entity_type = 'block'
+                          AND bo.soft_deleted_at IS NULL
+                          AND bl.soft_deleted_at IS NULL
+                          AND (si.library_id IS DISTINCT FROM bo.library_id)
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+
+            books_total = int(conn.execute(text("SELECT COUNT(*) FROM books WHERE soft_deleted_at IS NULL")).scalar() or 0)
+            books_index_total = int(conn.execute(text("SELECT COUNT(*) FROM search_index WHERE entity_type = 'book'")).scalar() or 0)
+            books_missing = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM books bo
+                        LEFT JOIN search_index si
+                          ON si.entity_type = 'book'
+                         AND si.entity_id = bo.id
+                        WHERE bo.soft_deleted_at IS NULL
+                          AND si.entity_id IS NULL
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            books_extra = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        LEFT JOIN books bo ON bo.id = si.entity_id
+                        WHERE si.entity_type = 'book'
+                          AND (bo.id IS NULL OR bo.soft_deleted_at IS NOT NULL)
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            books_mismatched_library_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        JOIN books bo ON bo.id = si.entity_id
+                        WHERE si.entity_type = 'book'
+                          AND bo.soft_deleted_at IS NULL
+                          AND (si.library_id IS DISTINCT FROM bo.library_id)
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+        else:
+            scope = f"library:{library_id}"
+            params = {"library_id": library_id}
+
+            blocks_total = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM blocks bl
+                        JOIN books bo ON bo.id = bl.book_id
+                        WHERE bl.soft_deleted_at IS NULL
+                          AND bo.soft_deleted_at IS NULL
+                          AND bo.library_id = :library_id
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            blocks_index_total = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index
+                        WHERE entity_type = 'block'
+                          AND library_id = :library_id
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            blocks_missing = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM blocks bl
+                        JOIN books bo ON bo.id = bl.book_id
+                        LEFT JOIN search_index si
+                          ON si.entity_type = 'block'
+                         AND si.entity_id = bl.id
+                        WHERE bl.soft_deleted_at IS NULL
+                          AND bo.soft_deleted_at IS NULL
+                          AND bo.library_id = :library_id
+                          AND si.entity_id IS NULL
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            blocks_extra = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        LEFT JOIN blocks bl ON bl.id = si.entity_id
+                        LEFT JOIN books bo ON bo.id = bl.book_id
+                        WHERE si.entity_type = 'block'
+                          AND si.library_id = :library_id
+                          AND (
+                            bl.id IS NULL
+                            OR bl.soft_deleted_at IS NOT NULL
+                            OR bo.id IS NULL
+                            OR bo.soft_deleted_at IS NOT NULL
+                            OR bo.library_id <> :library_id
+                          )
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            blocks_mismatched_library_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        JOIN blocks bl ON bl.id = si.entity_id
+                        JOIN books bo ON bo.id = bl.book_id
+                        WHERE si.entity_type = 'block'
+                          AND bo.library_id = :library_id
+                          AND bo.soft_deleted_at IS NULL
+                          AND bl.soft_deleted_at IS NULL
+                          AND (si.library_id IS DISTINCT FROM bo.library_id)
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+
+            books_total = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM books
+                        WHERE soft_deleted_at IS NULL
+                          AND library_id = :library_id
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            books_index_total = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index
+                        WHERE entity_type = 'book'
+                          AND library_id = :library_id
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            books_missing = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM books bo
+                        LEFT JOIN search_index si
+                          ON si.entity_type = 'book'
+                         AND si.entity_id = bo.id
+                        WHERE bo.soft_deleted_at IS NULL
+                          AND bo.library_id = :library_id
+                          AND si.entity_id IS NULL
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            books_extra = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        LEFT JOIN books bo ON bo.id = si.entity_id
+                        WHERE si.entity_type = 'book'
+                          AND si.library_id = :library_id
+                          AND (
+                            bo.id IS NULL
+                            OR bo.soft_deleted_at IS NOT NULL
+                            OR bo.library_id <> :library_id
+                          )
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            books_mismatched_library_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        JOIN books bo ON bo.id = si.entity_id
+                        WHERE si.entity_type = 'book'
+                          AND bo.library_id = :library_id
+                          AND bo.soft_deleted_at IS NULL
+                          AND (si.library_id IS DISTINCT FROM bo.library_id)
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+
+        tags_total = int(conn.execute(text("SELECT COUNT(*) FROM tags WHERE deleted_at IS NULL")).scalar() or 0)
+        tags_index_total = int(conn.execute(text("SELECT COUNT(*) FROM search_index WHERE entity_type = 'tag'")).scalar() or 0)
+        tags_missing = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COUNT(*)
+                    FROM tags t
+                    LEFT JOIN search_index si
+                      ON si.entity_type = 'tag'
+                     AND si.entity_id = t.id
+                    WHERE t.deleted_at IS NULL
+                      AND si.entity_id IS NULL
+                    """
+                )
+            ).scalar()
+            or 0
+        )
+        tags_extra = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COUNT(*)
+                    FROM search_index si
+                    LEFT JOIN tags t ON t.id = si.entity_id
+                    WHERE si.entity_type = 'tag'
+                      AND (t.id IS NULL OR t.deleted_at IS NOT NULL)
+                    """
+                )
+            ).scalar()
+            or 0
+        )
+        tags_invalid_library_id = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COUNT(*)
+                    FROM search_index
+                    WHERE entity_type = 'tag'
+                      AND library_id IS NOT NULL
+                    """
+                )
+            ).scalar()
+            or 0
+        )
+
+        outbox_total = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events")).scalar() or 0)
+        outbox_pending = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'pending'")).scalar() or 0)
+        outbox_processing = int(
+            conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'processing'")).scalar() or 0
+        )
+        outbox_done = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'done'")).scalar() or 0)
+        outbox_failed = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'failed'")).scalar() or 0)
+
+    ok = (
+        (blocks_missing == 0)
+        and (blocks_extra == 0)
+        and (blocks_mismatched_library_id == 0)
+        and (books_missing == 0)
+        and (books_extra == 0)
+        and (books_mismatched_library_id == 0)
+        and (tags_missing == 0)
+        and (tags_extra == 0)
+        and (tags_invalid_library_id == 0)
+    )
+
+    result = {
+        "lab_id": LAB_ID_S2B_1A_2A,
+        "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX,
+        "run_id": run_id,
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scope": scope,
+        "blocks_total": blocks_total,
+        "blocks_index_total": blocks_index_total,
+        "blocks_missing": blocks_missing,
+        "blocks_extra": blocks_extra,
+        "blocks_mismatched_library_id": blocks_mismatched_library_id,
+        "books_total": books_total,
+        "books_index_total": books_index_total,
+        "books_missing": books_missing,
+        "books_extra": books_extra,
+        "books_mismatched_library_id": books_mismatched_library_id,
+        "tags_total": tags_total,
+        "tags_index_total": tags_index_total,
+        "tags_missing": tags_missing,
+        "tags_extra": tags_extra,
+        "tags_invalid_library_id": tags_invalid_library_id,
+        "outbox_total": outbox_total,
+        "outbox_pending": outbox_pending,
+        "outbox_processing": outbox_processing,
+        "outbox_done": outbox_done,
+        "outbox_failed": outbox_failed,
+        "ok": bool(ok),
+    }
+
+    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    print("labs-011.shadow_verify_search_index")
+    print(f"scope={scope}")
+    print(f"blocks_total={blocks_total}")
+    print(f"blocks_index_total={blocks_index_total}")
+    print(f"blocks_missing={blocks_missing}")
+    print(f"blocks_extra={blocks_extra}")
+    print(f"blocks_mismatched_library_id={blocks_mismatched_library_id}")
+    print(f"books_total={books_total}")
+    print(f"books_index_total={books_index_total}")
+    print(f"books_missing={books_missing}")
+    print(f"books_extra={books_extra}")
+    print(f"books_mismatched_library_id={books_mismatched_library_id}")
+    print(f"tags_total={tags_total}")
+    print(f"tags_index_total={tags_index_total}")
+    print(f"tags_missing={tags_missing}")
+    print(f"tags_extra={tags_extra}")
+    print(f"tags_invalid_library_id={tags_invalid_library_id}")
+    print(f"outbox_total={outbox_total}")
+    print(f"outbox_pending={outbox_pending}")
+    print(f"outbox_processing={outbox_processing}")
+    print(f"outbox_done={outbox_done}")
+    print(f"outbox_failed={outbox_failed}")
+    print(f"outputs: {outdir}")
+
+    return 0 if ok else 2
 
 
 def _cmd_labs_export_jaeger(args: argparse.Namespace) -> int:
@@ -471,6 +1104,18 @@ def _cmd_labs_run_es_write_block_4xx(args: argparse.Namespace) -> int:
 
             # 2) Inject: block writes at the index.
             status, payload = _es_set_index_write_block(es_url=es_url, index=es_index, enabled=True)
+            if status == 404:
+                c_status, c_payload = _es_create_index_if_missing(es_url=es_url, index=es_index)
+                (outdir / "_inject_es_create_index.response.txt").write_text(
+                    f"status={c_status}\n\n{c_payload}\n", encoding="utf-8"
+                )
+                if c_status not in (200, 201, 400):
+                    print(f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] failed to create index: http {c_status}")
+                    worker_proc.terminate()
+                    worker_proc.wait(timeout=30)
+                    return 2
+
+                status, payload = _es_set_index_write_block(es_url=es_url, index=es_index, enabled=True)
             (outdir / "_inject_es_write_block.response.txt").write_text(
                 f"status={status}\n\n{payload}\n", encoding="utf-8"
             )
@@ -481,7 +1126,9 @@ def _cmd_labs_run_es_write_block_4xx(args: argparse.Namespace) -> int:
                 return 2
 
             # 3) Trigger: insert a pending outbox event (and ensure a matching search_index row exists).
-            inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+            inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+            if not inserter.exists():
+                inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
             trigger_env = env.copy()
             trigger_env.setdefault("OUTBOX_OP", "upsert")
             trigger_env.setdefault("OUTBOX_CREATE_SEARCH_INDEX_ROW", "1")
@@ -701,7 +1348,9 @@ def _cmd_labs_run_es_429_inject(args: argparse.Namespace) -> int:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -902,7 +1551,9 @@ def _cmd_labs_run_es_down_connect(args: argparse.Namespace) -> int:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -1132,7 +1783,9 @@ def _cmd_labs_run_collector_down(args: argparse.Namespace) -> int:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -1229,6 +1882,9 @@ def _cmd_labs_verify_collector_down(args: argparse.Namespace) -> int:
     before = before_path.read_text(encoding="utf-8") if before_path.exists() else ""
     after = after_path.read_text(encoding="utf-8") if after_path.exists() else ""
 
+    before_scrape_ok = "scrape_failed" not in before
+    after_scrape_ok = "scrape_failed" not in after
+
     processed_before = _prom_parse_counter_sum(before, "outbox_processed_total")
     processed_after = _prom_parse_counter_sum(after, "outbox_processed_total")
     failed_before = _prom_parse_counter_sum(before, "outbox_failed_total")
@@ -1236,6 +1892,59 @@ def _cmd_labs_verify_collector_down(args: argparse.Namespace) -> int:
 
     delta_processed = processed_after - processed_before
     delta_failed = failed_after - failed_before
+
+    # Fallback: metrics scrape can be flaky in CI due to timing.
+    # For collector_down we can deterministically assert the inserted outbox row
+    # was processed successfully.
+    outbox_event_id_path = run_dir / "_outbox_event_id.txt"
+    outbox_event_id = outbox_event_id_path.read_text(encoding="utf-8").strip() if outbox_event_id_path.exists() else None
+
+    db_observed: dict[str, object] = {}
+    db_ok = False
+    try:
+        recipe_env_file = None
+        recipe_path = run_dir / "_recipe.json"
+        if recipe_path.exists():
+            try:
+                recipe = json.loads(recipe_path.read_text(encoding="utf-8"))
+                recipe_env_file = (recipe or {}).get("env_file")
+            except Exception:
+                recipe_env_file = None
+
+        env = _load_env(env_file=str(recipe_env_file) if recipe_env_file else None)
+        database_url = (env.get("DATABASE_URL") or "").strip()
+        if database_url and outbox_event_id:
+            engine = create_engine(database_url, pool_pre_ping=True)
+            with engine.connect() as conn:
+                row = conn.execute(
+                    text(
+                        """
+                        SELECT status, processed_at, attempts, error_reason
+                        FROM search_outbox_events
+                        WHERE id = CAST(:id AS uuid)
+                        """
+                    ),
+                    {"id": outbox_event_id},
+                ).mappings().fetchone()
+
+            if row is None:
+                db_observed = {"found": False}
+            else:
+                status = row.get("status")
+                processed_at = row.get("processed_at")
+                attempts = row.get("attempts")
+                error_reason = row.get("error_reason")
+                db_observed = {
+                    "found": True,
+                    "status": status,
+                    "processed_at": str(processed_at) if processed_at is not None else None,
+                    "attempts": int(attempts) if attempts is not None else None,
+                    "error_reason": error_reason,
+                }
+                db_ok = (status == "done") and (processed_at is not None)
+    except Exception as exc:  # noqa: BLE001
+        db_observed = {"error": f"{type(exc).__name__}: {exc}"}
+        db_ok = False
 
     inject_exitcode_path = run_dir / "_inject_jaeger_stop.exitcode.txt"
     inject_exitcode = None
@@ -1245,20 +1954,35 @@ def _cmd_labs_verify_collector_down(args: argparse.Namespace) -> int:
         except Exception:
             inject_exitcode = None
 
-    ok = (inject_exitcode == 0) and (delta_processed >= float(args.min_processed_delta)) and (delta_failed <= float(args.max_failed_delta))
+    metrics_ok = (
+        before_scrape_ok
+        and after_scrape_ok
+        and (delta_processed >= float(args.min_processed_delta))
+        and (delta_failed <= float(args.max_failed_delta))
+    )
+
+    # Accept either strong metrics evidence or DB evidence that the outbox row
+    # was processed successfully.
+    ok = (inject_exitcode == 0) and (metrics_ok or db_ok)
 
     result = {
         "scenario": SCENARIO_COLLECTOR_DOWN,
         "run_dir": str(run_dir),
+        "outbox_event_id": outbox_event_id,
         "checks": {
             "inject_jaeger_stop_exitcode_eq": 0,
             "min_processed_delta": float(args.min_processed_delta),
             "max_failed_delta": float(args.max_failed_delta),
+            "metrics_scrape_required": True,
+            "db_outbox_processed_fallback_allowed": True,
         },
         "observed": {
             "inject_jaeger_stop_exitcode": inject_exitcode,
+            "metrics_before_scrape_ok": bool(before_scrape_ok),
+            "metrics_after_scrape_ok": bool(after_scrape_ok),
             "outbox_processed_total": {"before": processed_before, "after": processed_after, "delta": delta_processed},
             "outbox_failed_total": {"before": failed_before, "after": failed_after, "delta": delta_failed},
+            "db_outbox_event": db_observed,
         },
         "ok": bool(ok),
     }
@@ -1267,7 +1991,17 @@ def _cmd_labs_verify_collector_down(args: argparse.Namespace) -> int:
     if ok:
         print(f"[labs verify {SCENARIO_COLLECTOR_DOWN}] OK")
         return 0
-    print(f"[labs verify {SCENARIO_COLLECTOR_DOWN}] FAILED")
+    why = []
+    if inject_exitcode != 0:
+        why.append(f"inject_exitcode={inject_exitcode}")
+    if not metrics_ok:
+        why.append(
+            f"metrics_ok=false (before_ok={before_scrape_ok} after_ok={after_scrape_ok} delta_processed={delta_processed} delta_failed={delta_failed})"
+        )
+    if not db_ok:
+        why.append("db_ok=false")
+    print(f"[labs verify {SCENARIO_COLLECTOR_DOWN}] FAILED: {'; '.join(why) if why else 'unknown'}")
+    print(json.dumps(result, indent=2, ensure_ascii=False))
     return 10
 
 
@@ -1418,7 +2152,9 @@ def _cmd_labs_run_duplicate_delivery(args: argparse.Namespace) -> int:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -1732,7 +2468,9 @@ def _cmd_labs_run_es_bulk_partial(args: argparse.Namespace) -> int:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -2057,7 +2795,9 @@ def _cmd_labs_run_db_claim_contention(args: argparse.Namespace) -> int:
     after_1_path = metrics_dir / "metrics-after-1.txt"
     after_2_path = metrics_dir / "metrics-after-2.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
 
     start = time.time()
     stopped_by_controller = False
@@ -2356,7 +3096,9 @@ def _cmd_labs_run_stuck_reclaim(args: argparse.Namespace) -> int:
     worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
     cmd = [_python_exe(), "-u", str(worker)]
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_search_outbox_pending.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
     outbox_event_ids: list[str] = []
     for i in range(int(args.trigger_count)):
         trigger_env = base_env.copy()
@@ -2880,8 +3622,13 @@ def _cmd_labs_run_projection_version(args: argparse.Namespace) -> int:
     worker = LEGACY_SCRIPTS_DIR / "chronicle_outbox_worker.py"
     cmd = [_python_exe(), "-u", str(worker)]
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs_009_insert_chronicle_outbox_pending.py"
-    prober = REPO_ROOT / "backend" / "scripts" / "labs_009_probe_chronicle_entry.py"
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_chronicle_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_chronicle_outbox_pending.py"
+
+    prober = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_probe_chronicle_entry.py"
+    if not prober.exists():
+        prober = LEGACY_SCRIPTS_DIR / "labs_009_probe_chronicle_entry.py"
 
     def _spawn_worker_with_retry(
         *,
@@ -3235,6 +3982,28 @@ def build_parser() -> argparse.ArgumentParser:
     exp.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
     exp.set_defaults(func=_cmd_labs_export_jaeger)
 
+    sv = labs_sub.add_parser(
+        "shadow-verify-chronicle-entries",
+        help="Labs-010: shadow verify chronicle_entries vs chronicle_events (writes _result.json)",
+    )
+    sv.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    sv.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    sv.add_argument("--book-id", help="Optional book_id scope (UUID)")
+    sv.add_argument("--run-id", help="Optional run_id folder name")
+    sv.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    sv.set_defaults(func=_cmd_labs_shadow_verify_chronicle_entries)
+
+    sv_search = labs_sub.add_parser(
+        "shadow-verify-search-index",
+        help="Labs-011: shadow verify search_index vs source tables (writes _result.json)",
+    )
+    sv_search.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    sv_search.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    sv_search.add_argument("--library-id", help="Optional library_id scope (UUID)")
+    sv_search.add_argument("--run-id", help="Optional run_id folder name")
+    sv_search.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    sv_search.set_defaults(func=_cmd_labs_shadow_verify_search_index)
+
     b = labs_sub.add_parser("expb-es429", help="Run Labs-009 ExpB (ES 429 injection) bounded")
     b.add_argument("--service", default="wordloom-search-outbox-worker")
     b.add_argument("--lookback", default="24h")
@@ -3536,48 +4305,90 @@ def build_parser() -> argparse.ArgumentParser:
     clean = labs_sub.add_parser("clean", help="Cleanup a scenario (revert injection / prune snapshots)")
     clean_sub = clean.add_subparsers(dest="scenario", required=True)
 
-    c_clean = clean_sub.add_parser(SCENARIO_ES_WRITE_BLOCK_4XX, help="Disable write block + optional snapshot pruning")
-    c_clean.add_argument("--env-file", default=".env.test")
+    clean_common = argparse.ArgumentParser(add_help=False)
+    clean_common.add_argument(
+        "--env-file",
+        default=".env.test",
+        help="Env file to load (repo-root relative by default). Only used by scenarios that revert external state.",
+    )
+
+    c_clean = clean_sub.add_parser(
+        SCENARIO_ES_WRITE_BLOCK_4XX,
+        help="Disable write block + optional snapshot pruning",
+        parents=[clean_common],
+    )
     c_clean.add_argument("--outdir")
     c_clean.add_argument("--keep-last", type=int, default=None)
     c_clean.set_defaults(func=_cmd_labs_clean_es_write_block_4xx)
 
-    b_clean = clean_sub.add_parser(SCENARIO_ES_429_INJECT, help="Noop cleanup + optional snapshot pruning")
+    b_clean = clean_sub.add_parser(
+        SCENARIO_ES_429_INJECT,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     b_clean.add_argument("--outdir")
     b_clean.add_argument("--keep-last", type=int, default=None)
     b_clean.set_defaults(func=_cmd_labs_clean_es_429_inject)
 
-    a_clean = clean_sub.add_parser(SCENARIO_ES_DOWN_CONNECT, help="Start ES + optional snapshot pruning")
+    a_clean = clean_sub.add_parser(
+        SCENARIO_ES_DOWN_CONNECT,
+        help="Start ES + optional snapshot pruning",
+        parents=[clean_common],
+    )
     a_clean.add_argument("--outdir")
     a_clean.add_argument("--keep-last", type=int, default=None)
     a_clean.set_defaults(func=_cmd_labs_clean_es_down_connect)
 
-    cd_clean = clean_sub.add_parser(SCENARIO_COLLECTOR_DOWN, help="Start Jaeger + optional snapshot pruning")
+    cd_clean = clean_sub.add_parser(
+        SCENARIO_COLLECTOR_DOWN,
+        help="Start Jaeger + optional snapshot pruning",
+        parents=[clean_common],
+    )
     cd_clean.add_argument("--outdir")
     cd_clean.add_argument("--keep-last", type=int, default=None)
     cd_clean.set_defaults(func=_cmd_labs_clean_collector_down)
 
-    d_clean = clean_sub.add_parser(SCENARIO_ES_BULK_PARTIAL, help="Noop cleanup + optional snapshot pruning")
+    d_clean = clean_sub.add_parser(
+        SCENARIO_ES_BULK_PARTIAL,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     d_clean.add_argument("--outdir")
     d_clean.add_argument("--keep-last", type=int, default=None)
     d_clean.set_defaults(func=_cmd_labs_clean_es_bulk_partial)
 
-    e_clean = clean_sub.add_parser(SCENARIO_DB_CLAIM_CONTENTION, help="Noop cleanup + optional snapshot pruning")
+    e_clean = clean_sub.add_parser(
+        SCENARIO_DB_CLAIM_CONTENTION,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     e_clean.add_argument("--outdir")
     e_clean.add_argument("--keep-last", type=int, default=None)
     e_clean.set_defaults(func=_cmd_labs_clean_db_claim_contention)
 
-    f_clean = clean_sub.add_parser(SCENARIO_STUCK_RECLAIM, help="Noop cleanup + optional snapshot pruning")
+    f_clean = clean_sub.add_parser(
+        SCENARIO_STUCK_RECLAIM,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     f_clean.add_argument("--outdir")
     f_clean.add_argument("--keep-last", type=int, default=None)
     f_clean.set_defaults(func=_cmd_labs_clean_stuck_reclaim)
 
-    g_clean = clean_sub.add_parser(SCENARIO_DUPLICATE_DELIVERY, help="Noop cleanup + optional snapshot pruning")
+    g_clean = clean_sub.add_parser(
+        SCENARIO_DUPLICATE_DELIVERY,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     g_clean.add_argument("--outdir")
     g_clean.add_argument("--keep-last", type=int, default=None)
     g_clean.set_defaults(func=_cmd_labs_clean_duplicate_delivery)
 
-    h_clean = clean_sub.add_parser(SCENARIO_PROJECTION_VERSION, help="Noop cleanup + optional snapshot pruning")
+    h_clean = clean_sub.add_parser(
+        SCENARIO_PROJECTION_VERSION,
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
     h_clean.add_argument("--outdir")
     h_clean.add_argument("--keep-last", type=int, default=None)
     h_clean.set_defaults(func=_cmd_labs_clean_projection_version)

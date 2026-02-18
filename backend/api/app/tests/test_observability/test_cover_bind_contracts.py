@@ -12,6 +12,7 @@ from starlette.datastructures import Headers, UploadFile
 from api.app.dependencies import get_di_container
 from api.app.modules.library.exceptions import LibraryNotFoundError
 from api.app.modules.media.exceptions import MediaOperationError
+from api.app.shared.actor import Actor
 
 
 def _make_upload(*, filename: str, content: bytes, content_type: str) -> UploadFile:
@@ -349,6 +350,7 @@ async def test_book_cover_bind_contract_not_found_emits_outcome(monkeypatch, cap
             book_id=book_id,
             request=request,
             file=_make_upload(filename="c.png", content=b"123", content_type="image/png"),
+            actor=Actor(user_id=uuid4()),
             di=di,
         )
 
@@ -381,6 +383,7 @@ async def test_book_cover_bind_contract_validation_failed_not_stable_emits_outco
             book_id=book_id,
             request=request,
             file=_make_upload(filename="c.png", content=b"123", content_type="image/png"),
+            actor=Actor(user_id=uuid4()),
             di=di,
         )
 
@@ -413,6 +416,7 @@ async def test_book_cover_bind_contract_validation_failed_empty_file_emits_outco
             book_id=book_id,
             request=request,
             file=_make_upload(filename="c.png", content=b"", content_type="image/png"),
+            actor=Actor(user_id=uuid4()),
             di=di,
         )
 
@@ -446,6 +450,7 @@ async def test_book_cover_bind_contract_error_storage_failure_emits_outcome(monk
             book_id=book_id,
             request=request,
             file=_make_upload(filename="c.png", content=b"123", content_type="image/png"),
+            actor=Actor(user_id=uuid4()),
             di=di,
         )
 
@@ -488,6 +493,7 @@ async def test_book_cover_bind_contract_success_emits_outcome(monkeypatch, caplo
         book_id=book_id,
         request=request,
         file=_make_upload(filename="c.png", content=b"123", content_type="image/png"),
+        actor=Actor(user_id=uuid4()),
         di=di,
     )
 

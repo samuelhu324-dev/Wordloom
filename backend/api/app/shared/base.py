@@ -110,7 +110,7 @@ class AggregateRoot(ABC):
     id: UUID
     created_at: datetime
     updated_at: datetime
-    _events: List[DomainEvent] = []
+    _events: List[DomainEvent]
 
     def __init__(self):
         # Do NOT set id here - subclasses will set it
@@ -119,8 +119,9 @@ class AggregateRoot(ABC):
             self.created_at = datetime.now(timezone.utc)
         if not hasattr(self, 'updated_at') or self.updated_at is None:
             self.updated_at = datetime.now(timezone.utc)
-        if not hasattr(self, '_events'):
-            self._events = []
+        # IMPORTANT: events must be per-instance.
+        # A class-level list would leak events across aggregate instances.
+        self._events = []
 
     def add_event(self, event: DomainEvent) -> None:
         """

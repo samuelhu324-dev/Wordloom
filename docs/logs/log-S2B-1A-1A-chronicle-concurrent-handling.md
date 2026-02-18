@@ -7,7 +7,7 @@
 **title**: `shadow/concurrent handling`
 **status**: `draft`          # draft | stable | archived
 **scope**: `S2B`
-**tags**: `EVOLUTION, Chronicle, Projection, Search, sub/2`
+**tags**: `EVOLUTION, Chronicle, Projection, sub/2`
 **links**: ``
   **issue**: `#56, #57`
   **pr**: ``

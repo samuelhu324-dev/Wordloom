@@ -53,7 +53,7 @@ class MockLibraryService:
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
-        self.store[library.library_id] = library
+        self.store[library.id] = library
         return library
 
     async def get_library(self, library_id):
@@ -76,7 +76,7 @@ class MockLibraryService:
 
         lib = self.store[library_id]
         updated = Library(
-            library_id=lib.library_id,
+            library_id=lib.id,
             user_id=lib.user_id,
             name=LibraryName(value=update_request.name),
             created_at=lib.created_at,
@@ -250,7 +250,7 @@ class TestLibraryRouterWorkflow:
         )
 
         # Verify service interaction
-        assert library.library_id is not None
+        assert library.id is not None
         assert library.user_id == user_id
         assert library.name.value == "Test Library"
 

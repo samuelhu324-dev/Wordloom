@@ -35,6 +35,7 @@ from api.app.modules.library.domain.library_name import LibraryName
 from api.app.modules.library.application.use_cases.create_library import CreateLibraryUseCase
 from api.app.modules.library.application.use_cases.get_library import GetLibraryUseCase
 from api.app.modules.library.application.use_cases.delete_library import DeleteLibraryUseCase
+from api.app.modules.library.application.use_cases.rename_library import RenameLibraryUseCase
 from api.app.modules.library.application.ports.output import ILibraryRepository
 
 
@@ -78,7 +79,7 @@ def library_domain(user_id: UUID) -> Library:
     """Library domain aggregate instance"""
     return Library.create(
         user_id=user_id,
-        name=LibraryName("My Library"),
+        name="My Library",
     )
 
 
@@ -139,13 +140,26 @@ class MockLibraryRepository(ILibraryRepository):
                     f"RULE-001: One library per user."
                 )
 
+        # Timestamp behavior for tests: set timestamps on first persistence.
+        now = datetime.now(timezone.utc)
+        if library.id not in self._libraries:
+            library.created_at = now
+        library.updated_at = now
+
         # Save to both storage locations
         self._libraries[library.id] = library
         self._user_libraries[library.user_id] = library.id
 
     async def get_by_id(self, library_id: UUID) -> Optional[Library]:
         """Retrieve library by ID"""
-        return self._libraries.get(library_id)
+        library = self._libraries.get(library_id)
+        if library is None:
+            return None
+        if getattr(library, "is_deleted", None) and library.is_deleted():
+            return None
+        if getattr(library, "soft_deleted_at", None) is not None:
+            return None
+        return library
 
     async def get_by_user_id(self, user_id: UUID) -> Optional[Library]:
         """Retrieve library by user ID (RULE-001: one per user)"""
@@ -153,7 +167,29 @@ class MockLibraryRepository(ILibraryRepository):
             return None
 
         library_id = self._user_libraries[user_id]
-        return self._libraries.get(library_id)
+        return await self.get_by_id(library_id)
+
+    async def list_by_user_id(self, user_id: UUID):
+        """Return a list of libraries for a user.
+
+        The domain rule is 1 library per user, so this is either [] or [Library].
+        """
+        library = await self.get_by_user_id(user_id)
+        return [library] if library is not None else []
+
+    async def list_overview(
+        self,
+        *,
+        query=None,
+        include_archived: bool = False,
+        sort=None,
+        pinned_first: bool = True,
+    ):
+        """Return a simplified overview list.
+
+        For unit tests we ignore query/sort knobs and just return all libraries.
+        """
+        return await self.get_all()
 
     async def delete(self, library_id: UUID) -> None:
         """Delete library"""
@@ -178,6 +214,19 @@ class MockBookshelfRepository:
 
     async def save(self, bookshelf):
         self._bookshelves[bookshelf.id] = bookshelf
+
+    async def get_basement_by_library_id(self, library_id):
+        for shelf in self._bookshelves.values():
+            if getattr(shelf, "library_id", None) != library_id:
+                continue
+            shelf_type = getattr(shelf, "type", None)
+            shelf_type_value = getattr(shelf_type, "value", shelf_type)
+            if shelf_type_value == "basement":
+                return shelf
+        return None
+
+    async def delete(self, bookshelf_id):
+        self._bookshelves.pop(bookshelf_id, None)
 
     async def exists(self, bookshelf_id):
         return bookshelf_id in self._bookshelves
@@ -233,3 +282,9 @@ def get_use_case(repository: MockLibraryRepository) -> GetLibraryUseCase:
 def delete_use_case(repository: MockLibraryRepository, event_bus: MockEventBus) -> DeleteLibraryUseCase:
     """DeleteLibraryUseCase with MockRepository and MockEventBus"""
     return DeleteLibraryUseCase(repository=repository, event_bus=event_bus)
+
+
+@pytest.fixture
+def rename_use_case(repository: MockLibraryRepository) -> RenameLibraryUseCase:
+    """RenameLibraryUseCase with MockRepository"""
+    return RenameLibraryUseCase(repository=repository)
