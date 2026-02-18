@@ -18,7 +18,6 @@ from uuid import uuid4
 from datetime import datetime, timezone
 
 from modules.library.domain import Library, LibraryName
-from modules.library.exceptions import InvalidLibraryNameError
 
 
 class TestLibraryName:
@@ -37,18 +36,18 @@ class TestLibraryName:
 
     def test_library_name_empty_raises_error(self):
         """✗ LibraryName rejects empty strings"""
-        with pytest.raises(InvalidLibraryNameError):
+        with pytest.raises(ValueError):
             LibraryName(value="")
 
     def test_library_name_whitespace_only_raises_error(self):
         """✗ LibraryName rejects whitespace-only strings"""
-        with pytest.raises(InvalidLibraryNameError):
+        with pytest.raises(ValueError):
             LibraryName(value="   ")
 
     def test_library_name_too_long_raises_error(self):
         """✗ LibraryName rejects names > 255 characters"""
         long_name = "A" * 256
-        with pytest.raises(InvalidLibraryNameError):
+        with pytest.raises(ValueError):
             LibraryName(value=long_name)
 
     def test_library_name_equality(self):
@@ -79,7 +78,7 @@ class TestLibraryAggregateRoot:
             updated_at=now,
         )
 
-        assert library.library_id == library_id
+        assert library.id == library_id
         assert library.user_id == user_id
         assert library.name == name
         assert library.created_at == now
@@ -195,7 +194,7 @@ class TestLibraryDomainEvents:
 
         # Future: assert library.events contains LibraryCreatedEvent
         # For now, verify domain object is created correctly
-        assert library.library_id is not None
+        assert library.id is not None
 
 
 # ============================================================================

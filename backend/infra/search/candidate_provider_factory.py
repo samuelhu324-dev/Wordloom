@@ -12,16 +12,34 @@ from infra.search.elastic_candidate_provider import ElasticCandidateProvider
 logger = logging.getLogger(__name__)
 
 
+def _env_truthy(name: str) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return False
+    return raw.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
 def get_stage1_candidate_provider(session: AsyncSession) -> CandidateProvider:
     """Factory for Stage1 candidate providers.
 
     Controlled by env var:
       - SEARCH_STAGE1_PROVIDER=postgres|elastic
 
+        Read switch (independent from Chronicle) controlled by env var:
+            - SEARCH_MERGED_READ_ENABLED=0/1
+
+        When enabled, forces provider=postgres (projection-backed), regardless of
+        SEARCH_STAGE1_PROVIDER, to support a safe, rollbackable read switch.
+
     Default is postgres to preserve current behavior.
     """
 
-    provider = (os.getenv("SEARCH_STAGE1_PROVIDER") or "postgres").strip().lower()
+    merged_enabled = _env_truthy("SEARCH_MERGED_READ_ENABLED")
+    provider = (
+        "postgres"
+        if merged_enabled
+        else (os.getenv("SEARCH_STAGE1_PROVIDER") or "postgres").strip().lower()
+    )
 
     if provider == "postgres":
         selected: CandidateProvider = PostgresFTSCandidateProvider(session)
@@ -34,6 +52,7 @@ def get_stage1_candidate_provider(session: AsyncSession) -> CandidateProvider:
         {
             "event": "search.stage1.provider.selected",
             "provider": provider,
+            "search_merged_read_enabled": merged_enabled,
         }
     )
     return selected

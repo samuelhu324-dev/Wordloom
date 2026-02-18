@@ -204,6 +204,11 @@ class Bookshelf(AggregateRoot):
             )
         )
 
+    @property
+    def is_hidden(self) -> bool:
+        """Basement shelves are hidden from normal lists."""
+        return self.is_basement
+
     def update_description(self, new_description: Optional[str]) -> None:
         """
         Update the bookshelf description

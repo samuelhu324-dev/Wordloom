@@ -35,7 +35,7 @@ class MockLibraryRepository:
 
     async def save(self, library: Library) -> Library:
         """Save or update library"""
-        self.store[library.library_id] = library
+        self.store[library.id] = library
         return library
 
     async def find_by_id(self, library_id) -> Library:
@@ -84,7 +84,7 @@ class TestLibraryRepositoryCRUD:
 
         saved = await repository.save(library)
 
-        assert saved.library_id == library.library_id
+        assert saved.id == library.id
         assert saved.user_id == library.user_id
         assert saved.name.value == library.name.value
 
@@ -100,10 +100,10 @@ class TestLibraryRepositoryCRUD:
         )
 
         await repository.save(library)
-        found = await repository.find_by_id(library.library_id)
+        found = await repository.find_by_id(library.id)
 
         assert found is not None
-        assert found.library_id == library.library_id
+        assert found.id == library.id
 
     @pytest.mark.asyncio
     async def test_find_by_id_raises_not_found(self, repository):
@@ -154,7 +154,7 @@ class TestLibraryRepositoryCRUD:
 
         # Update name (in domain model)
         updated_library = Library(
-            library_id=library.library_id,
+            library_id=library.id,
             user_id=library.user_id,
             name=LibraryName(value="Updated Name"),
             created_at=library.created_at,
@@ -177,10 +177,10 @@ class TestLibraryRepositoryCRUD:
         )
 
         await repository.save(library)
-        await repository.delete(library.library_id)
+        await repository.delete(library.id)
 
         with pytest.raises(LibraryNotFoundError):
-            await repository.find_by_id(library.library_id)
+            await repository.find_by_id(library.id)
 
 
 class TestLibraryRepositoryInvariants:
@@ -268,7 +268,7 @@ class TestLibraryRepositoryExceptionHandling:
 
         # Saving again should not raise error
         saved_again = await repository.save(library)
-        assert saved_again.library_id == library.library_id
+        assert saved_again.id == library.id
 
 
 # ============================================================

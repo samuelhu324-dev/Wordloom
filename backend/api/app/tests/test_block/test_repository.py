@@ -20,8 +20,8 @@ from uuid import uuid4
 from datetime import datetime, timezone
 from decimal import Decimal
 
-from modules.block.domain import Block, BlockContent, BlockType
-from modules.block.exceptions import BlockNotFoundError
+from api.app.modules.block.domain import Block, BlockContent, BlockType
+from api.app.modules.block.domain.exceptions import BlockNotFoundError
 
 
 class MockBlockRepository:
@@ -32,7 +32,7 @@ class MockBlockRepository:
 
     async def save(self, block: Block) -> Block:
         """Save or update block"""
-        self.store[block.block_id] = block
+        self.store[block.id] = block
         return block
 
     async def find_by_id(self, block_id) -> Block:
@@ -45,17 +45,17 @@ class MockBlockRepository:
         """Find blocks in a book, ordered by index"""
         blocks = [b for b in self.store.values() if b.book_id == book_id]
         if not include_deleted:
-            blocks = [b for b in blocks if not b.is_deleted]
-        # Sort by Fractional Index
-        return sorted(blocks, key=lambda b: b.index)
+            blocks = [b for b in blocks if b.soft_deleted_at is None]
+        # Sort by Fractional Index (order)
+        return sorted(blocks, key=lambda b: b.order)
 
     async def find_by_book_and_type(self, book_id, block_type) -> list[Block]:
         """Find blocks of specific type"""
         blocks = [
             b for b in self.store.values()
-            if b.book_id == book_id and b.block_type == block_type and not b.is_deleted
+            if b.book_id == book_id and b.type == block_type and b.soft_deleted_at is None
         ]
-        return sorted(blocks, key=lambda b: b.index)
+        return sorted(blocks, key=lambda b: b.order)
 
     async def find_headings(self, book_id) -> list[Block]:
         """Find all HEADING blocks (RULE-016)"""
@@ -88,16 +88,15 @@ class TestBlockRepositoryCRUD:
             block_id=uuid4(),
             book_id=uuid4(),
             block_type=BlockType.TEXT,
-            content=BlockContent(value="New Block"),
-            index=Decimal("1.0"),
-            is_deleted=False,
+            content=BlockContent("New Block"),
+            order=Decimal("1.0"),
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
 
         saved = await repository.save(block)
 
-        assert saved.block_id == block.block_id
+        assert saved.id == block.id
 
     @pytest.mark.asyncio
     async def test_find_by_id_returns_block(self, repository):
@@ -106,17 +105,16 @@ class TestBlockRepositoryCRUD:
             block_id=uuid4(),
             book_id=uuid4(),
             block_type=BlockType.TEXT,
-            content=BlockContent(value="Test"),
-            index=Decimal("1.0"),
-            is_deleted=False,
+            content=BlockContent("Test"),
+            order=Decimal("1.0"),
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
 
         await repository.save(block)
-        found = await repository.find_by_id(block.block_id)
+        found = await repository.find_by_id(block.id)
 
-        assert found.block_id == block.block_id
+        assert found.id == block.id
 
     @pytest.mark.asyncio
     async def test_find_by_id_not_found(self, repository):
@@ -131,18 +129,17 @@ class TestBlockRepositoryCRUD:
             block_id=uuid4(),
             book_id=uuid4(),
             block_type=BlockType.TEXT,
-            content=BlockContent(value="To Delete"),
-            index=Decimal("1.0"),
-            is_deleted=False,
+            content=BlockContent("To Delete"),
+            order=Decimal("1.0"),
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
 
         await repository.save(block)
-        await repository.delete(block.block_id)
+        await repository.delete(block.id)
 
         with pytest.raises(BlockNotFoundError):
-            await repository.find_by_id(block.block_id)
+            await repository.find_by_id(block.id)
 
 
 class TestBlockRepositoryOrdering:
@@ -158,9 +155,8 @@ class TestBlockRepositoryOrdering:
             block_id=uuid4(),
             book_id=book_id,
             block_type=BlockType.TEXT,
-            content=BlockContent(value="First"),
-            index=Decimal("1.0"),
-            is_deleted=False,
+            content=BlockContent("First"),
+            order=Decimal("1.0"),
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
@@ -169,9 +165,8 @@ class TestBlockRepositoryOrdering:
             block_id=uuid4(),
             book_id=book_id,
             block_type=BlockType.TEXT,
-            content=BlockContent(value="Third"),
-            index=Decimal("3.0"),
-            is_deleted=False,
+            content=BlockContent("Third"),
+            order=Decimal("3.0"),
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
@@ -180,9 +175,8 @@ class TestBlockRepositoryOrdering:
             block_id=uuid4(),
             book_id=book_id,
             block_type=BlockType.TEXT,
-            content=BlockContent(value="Second"),
-            index=Decimal("2.0"),
-            is_deleted=False,
+            content=BlockContent("Second"),
+            order=Decimal("2.0"),
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
@@ -195,9 +189,9 @@ class TestBlockRepositoryOrdering:
         blocks = await repository.find_by_book_id(book_id)
 
         assert len(blocks) == 3
-        assert blocks[0].index == Decimal("1.0")
-        assert blocks[1].index == Decimal("2.0")
-        assert blocks[2].index == Decimal("3.0")
+        assert blocks[0].order == Decimal("1.0")
+        assert blocks[1].order == Decimal("2.0")
+        assert blocks[2].order == Decimal("3.0")
 
     @pytest.mark.asyncio
     async def test_blocks_with_fractional_indices(self, repository):
@@ -211,9 +205,8 @@ class TestBlockRepositoryOrdering:
                 block_id=uuid4(),
                 book_id=book_id,
                 block_type=BlockType.TEXT,
-                content=BlockContent(value="Content"),
-                index=idx,
-                is_deleted=False,
+                content=BlockContent("Content"),
+                order=idx,
                 created_at=datetime.now(timezone.utc),
                 updated_at=datetime.now(timezone.utc),
             )
@@ -221,7 +214,7 @@ class TestBlockRepositoryOrdering:
 
         blocks = await repository.find_by_book_id(book_id)
 
-        block_indices = [b.index for b in blocks]
+        block_indices = [b.order for b in blocks]
         assert block_indices == sorted(indices)
 
 
@@ -237,9 +230,8 @@ class TestBlockRepositoryTypes:
             block_id=uuid4(),
             book_id=book_id,
             block_type=BlockType.TEXT,
-            content=BlockContent(value="Text"),
-            index=Decimal("1.0"),
-            is_deleted=False,
+            content=BlockContent("Text"),
+            order=Decimal("1.0"),
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
@@ -248,9 +240,8 @@ class TestBlockRepositoryTypes:
             block_id=uuid4(),
             book_id=book_id,
             block_type=BlockType.CODE,
-            content=BlockContent(value="Code"),
-            index=Decimal("2.0"),
-            is_deleted=False,
+            content=BlockContent("Code"),
+            order=Decimal("2.0"),
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
@@ -261,7 +252,7 @@ class TestBlockRepositoryTypes:
         text_blocks = await repository.find_by_book_and_type(book_id, BlockType.TEXT)
 
         assert len(text_blocks) == 1
-        assert text_blocks[0].block_type == BlockType.TEXT
+        assert text_blocks[0].type == BlockType.TEXT
 
     @pytest.mark.asyncio
     async def test_find_headings(self, repository):
@@ -272,9 +263,9 @@ class TestBlockRepositoryTypes:
             block_id=uuid4(),
             book_id=book_id,
             block_type=BlockType.HEADING,
-            content=BlockContent(value="Section Title"),
-            index=Decimal("1.0"),
-            is_deleted=False,
+            content=BlockContent("Section Title"),
+            order=Decimal("1.0"),
+            heading_level=1,
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
@@ -283,9 +274,8 @@ class TestBlockRepositoryTypes:
             block_id=uuid4(),
             book_id=book_id,
             block_type=BlockType.TEXT,
-            content=BlockContent(value="Content"),
-            index=Decimal("2.0"),
-            is_deleted=False,
+            content=BlockContent("Content"),
+            order=Decimal("2.0"),
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
@@ -296,7 +286,7 @@ class TestBlockRepositoryTypes:
         headings = await repository.find_headings(book_id)
 
         assert len(headings) == 1
-        assert headings[0].block_type == BlockType.HEADING
+        assert headings[0].type == BlockType.HEADING
 
 
 class TestBlockRepositoryInvariants:
@@ -311,14 +301,13 @@ class TestBlockRepositoryInvariants:
             block_id=uuid4(),
             book_id=book_id,
             block_type=BlockType.TEXT,
-            content=BlockContent(value="Content"),
-            index=Decimal("1.0"),
-            is_deleted=False,
+            content=BlockContent("Content"),
+            order=Decimal("1.0"),
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
         )
 
         await repository.save(block)
-        found = await repository.find_by_id(block.block_id)
+        found = await repository.find_by_id(block.id)
 
         assert found.book_id == book_id

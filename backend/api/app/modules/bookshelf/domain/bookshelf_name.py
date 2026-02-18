@@ -16,6 +16,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from api.app.shared.base import ValueObject
 
+from ..exceptions import InvalidBookshelfNameError
+
 
 @dataclass(frozen=True)
 class BookshelfName(ValueObject):
@@ -39,11 +41,12 @@ class BookshelfName(ValueObject):
 
         # Use object.__setattr__ to set frozen dataclass field
         if not trimmed:
-            raise ValueError("Bookshelf name cannot be empty")
+            raise InvalidBookshelfNameError(self.value, "Bookshelf name cannot be empty")
 
         if len(trimmed) > 255:
-            raise ValueError(
-                f"Bookshelf name must not exceed 255 characters (got {len(trimmed)})"
+            raise InvalidBookshelfNameError(
+                self.value,
+                f"Bookshelf name must not exceed 255 characters (got {len(trimmed)})",
             )
 
         # Normalize: store trimmed value

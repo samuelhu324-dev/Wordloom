@@ -222,10 +222,11 @@ class TestBookFieldMapping:
             pytest.skip("BookModel not available")
 
     def test_orm_field_is_deleted(self):
-        """✓ Field 10: is_deleted (Boolean, soft-delete flag)"""
+        """✓ Field 10: soft delete is modeled via soft_deleted_at (not is_deleted)"""
         try:
             from infra.database.models.book_models import BookModel
-            assert hasattr(BookModel, 'is_deleted')
+            assert not hasattr(BookModel, 'is_deleted')
+            assert hasattr(BookModel, 'soft_deleted_at')
         except ImportError:
             pytest.skip("BookModel not available")
 
@@ -253,11 +254,11 @@ class TestRepositoryConversion:
             pytest.skip("Cannot inspect repository")
 
     def test_repository_converts_domain_to_orm(self):
-        """✓ Repository converts domain Book to BookModel"""
+        """✓ Repository converts domain Book to BookModel (direct construction in save)"""
         try:
             from infra.storage.book_repository_impl import SQLAlchemyBookRepository
             source = inspect.getsource(SQLAlchemyBookRepository)
-            assert "_to_orm" in source or "to_orm" in source
+            assert "BookModel(" in source or "model = BookModel" in source
 
         except (ImportError, TypeError):
             pytest.skip("Cannot inspect repository")
@@ -281,10 +282,9 @@ class TestRepositoryConversion:
             from modules.book.domain import Book
 
             # Verify repository methods exist
-            repo = SQLAlchemyBookRepository.__dict__
-            required_methods = ['save', 'get_by_id', 'list_by_bookshelf']
+            required_methods = ['save', 'get_by_id', 'list_by_bookshelf', 'get_deleted_books']
             for method in required_methods:
-                assert any(method in str(k) for k in repo.keys()) or method in dir(SQLAlchemyBookRepository)
+                assert hasattr(SQLAlchemyBookRepository, method)
 
         except ImportError:
             pytest.skip("Cannot access repository")

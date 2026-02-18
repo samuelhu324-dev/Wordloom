@@ -60,7 +60,7 @@ class DeleteLibraryUseCase(IDeleteLibraryUseCase):
         self.repository = repository
         self.event_bus = event_bus
 
-    async def execute(self, request: DeleteLibraryRequest) -> None:
+    async def execute(self, request: DeleteLibraryRequest) -> DeleteLibraryResponse:
         """
         Execute DeleteLibrary business operation
 
@@ -80,7 +80,7 @@ class DeleteLibraryUseCase(IDeleteLibraryUseCase):
         library = await self.repository.get_by_id(library_id)
         if not library:
             logger.warning(f"Library not found: {library_id}")
-            raise LibraryNotFoundError(f"Library {library_id} not found")
+            raise LibraryNotFoundError(library_id=str(library_id))
 
         # Authorization (skeleton): allow router to pass actor_user_id for ownership checks.
         if getattr(request, "enforce_owner_check", True) and getattr(request, "actor_user_id", None) is not None:
@@ -130,3 +130,8 @@ class DeleteLibraryUseCase(IDeleteLibraryUseCase):
             raise
 
         logger.info(f"DeleteLibrary completed successfully: {library_id}")
+
+        return DeleteLibraryResponse(
+            library_id=library.id,
+            deleted_at=library.soft_deleted_at,
+        )

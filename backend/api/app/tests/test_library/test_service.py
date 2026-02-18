@@ -19,13 +19,14 @@ from uuid import uuid4
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock
 
+from pydantic import ValidationError
+
 from modules.library.domain import Library, LibraryName
 from modules.library.service import LibraryService
 from modules.library.schemas import LibraryCreate, LibraryUpdate
 from modules.library.exceptions import (
     LibraryNotFoundError,
     LibraryAlreadyExistsError,
-    InvalidLibraryNameError,
 )
 
 
@@ -37,14 +38,14 @@ class MockLibraryRepository:
         self.call_log = []
 
     async def save(self, library: Library) -> Library:
-        self.call_log.append(("save", library.library_id))
-        self.store[library.library_id] = library
+        self.call_log.append(("save", library.id))
+        self.store[library.id] = library
         return library
 
     async def find_by_id(self, library_id) -> Library:
         self.call_log.append(("find_by_id", library_id))
         if library_id not in self.store:
-            raise LibraryNotFoundError(f"Library {library_id} not found")
+            raise LibraryNotFoundError(library_id=str(library_id))
         return self.store[library_id]
 
     async def find_by_user_id(self, user_id) -> Library:
@@ -52,12 +53,12 @@ class MockLibraryRepository:
         for library in self.store.values():
             if library.user_id == user_id:
                 return library
-        raise LibraryNotFoundError(f"No library for user {user_id}")
+        raise LibraryNotFoundError(user_id=str(user_id))
 
     async def delete(self, library_id) -> None:
         self.call_log.append(("delete", library_id))
         if library_id not in self.store:
-            raise LibraryNotFoundError(f"Library {library_id} not found")
+            raise LibraryNotFoundError(library_id=str(library_id))
         del self.store[library_id]
 
     async def list_all(self) -> list[Library]:
@@ -93,8 +94,8 @@ class TestLibraryServiceCreation:
 
         assert result.user_id == user_id
         assert result.name.value == "My Knowledge Base"
-        assert result.library_id is not None
-        assert ("save",) == ("save",)  # Verify save was called
+        assert result.id is not None
+        assert ("save", result.id) in mock_repository.call_log
 
     @pytest.mark.asyncio
     async def test_create_library_with_whitespace_trim(self, library_service):
@@ -114,7 +115,7 @@ class TestLibraryServiceCreation:
         """✗ create_library() rejects empty names"""
         user_id = uuid4()
 
-        with pytest.raises(InvalidLibraryNameError):
+        with pytest.raises(ValidationError):
             create_request = LibraryCreate(name="")
             await library_service.create_library(
                 user_id=user_id,
@@ -156,9 +157,9 @@ class TestLibraryServiceRetrieval:
             create_request=create_request,
         )
 
-        retrieved = await library_service.get_library(created.library_id)
+        retrieved = await library_service.get_library(created.id)
 
-        assert retrieved.library_id == created.library_id
+        assert retrieved.id == created.id
         assert retrieved.user_id == user_id
 
     @pytest.mark.asyncio
@@ -174,7 +175,7 @@ class TestLibraryServiceRetrieval:
 
         retrieved = await library_service.get_library_for_user(user_id)
 
-        assert retrieved.library_id == created.library_id
+        assert retrieved.id == created.id
         assert retrieved.user_id == user_id
 
     @pytest.mark.asyncio
@@ -210,12 +211,12 @@ class TestLibraryServiceUpdate:
 
         update_request = LibraryUpdate(name="Updated Name")
         updated = await library_service.update_library(
-            library_id=created.library_id,
+            library_id=created.id,
             update_request=update_request,
         )
 
         assert updated.name.value == "Updated Name"
-        assert updated.library_id == created.library_id
+        assert updated.id == created.id
 
     @pytest.mark.asyncio
     async def test_update_library_not_found(self, library_service):
@@ -244,10 +245,10 @@ class TestLibraryServiceDeletion:
             create_request=create_request,
         )
 
-        await library_service.delete_library(created.library_id)
+        await library_service.delete_library(created.id)
 
         with pytest.raises(LibraryNotFoundError):
-            await library_service.get_library(created.library_id)
+            await library_service.get_library(created.id)
 
     @pytest.mark.asyncio
     async def test_delete_library_not_found(self, library_service):
@@ -318,7 +319,7 @@ class TestLibraryServiceExceptionHandling:
         """✓ Service validates input before repository calls"""
         user_id = uuid4()
 
-        with pytest.raises(InvalidLibraryNameError):
+        with pytest.raises(ValidationError):
             await library_service.create_library(
                 user_id=user_id,
                 create_request=LibraryCreate(name=""),

@@ -58,12 +58,13 @@ def _parse_book_id(raw: str) -> Optional[UUID]:
 def _write_artifact(*, outdir: Path, run_id: str | None, result: VerifyResult) -> None:
     outdir.mkdir(parents=True, exist_ok=True)
 
+    ok = (result.missing_entries == 0) and (result.extra_entries == 0) and (result.mismatched_book_id == 0)
     payload: dict[str, object] = {
         "lab_id": LAB_ID,
         "scenario": SCENARIO,
         "run_id": run_id,
         "scope": result.scope,
-        "ok": bool(result.missing_entries == 0),
+        "ok": bool(ok),
         **asdict(result),
     }
     (outdir / "_result.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

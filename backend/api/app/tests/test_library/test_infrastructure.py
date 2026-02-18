@@ -104,14 +104,14 @@ class TestLibraryRepository:
         # Create first library
         lib1 = Library.create(
             user_id=user_id,
-            name=LibraryName("Library One"),
+            name="Library One",
         )
         await repository.save(lib1)
 
         # Try to create second library with same user_id (should fail)
         lib2 = Library.create(
             user_id=user_id,
-            name=LibraryName("Library Two"),
+            name="Library Two",
         )
 
         with pytest.raises(Exception):  # RULE-001 enforces uniqueness
@@ -140,9 +140,9 @@ class TestLibraryRepository:
     async def test_repository_list_all(self, repository, user_id):
         """Test list all libraries"""
         # Create libraries for different users
-        lib1 = Library.create(user_id=user_id, name=LibraryName("Lib 1"))
+        lib1 = Library.create(user_id=user_id, name="Lib 1")
         lib2_user_id = uuid4()
-        lib2 = Library.create(user_id=lib2_user_id, name=LibraryName("Lib 2"))
+        lib2 = Library.create(user_id=lib2_user_id, name="Lib 2")
 
         await repository.save(lib1)
         await repository.save(lib2)

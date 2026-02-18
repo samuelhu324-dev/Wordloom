@@ -26,12 +26,19 @@
   - 再做可回滚 read switch（默认不影响现网）
 - 把“可审计证据链”从实现细节中抽离出来，作为 Failure Contract v1 的可落地样板（先从 Chronicle 开始）。
 
-## 2) Scope（当前仅 Chronicle）
+## 2) Scope（Chronicle + Search v0）
 
 - 旧 SoT：`chronicle_events`
 - 新投影表：`chronicle_entries`
 - Shadow verify 场景：`shadow_verify_chronicle_entries`
 - Read switch 开关：`MERGED_READ_ENABLED=0/1`
+
+Search（v0 先做 shadow verify）：
+
+- SoT：`blocks` / `books` / `tags`
+- 投影表：`search_index`
+- Shadow verify 场景：`shadow_verify_search_index`
+- Read switch（独立开关）：`SEARCH_MERGED_READ_ENABLED=0/1`（不复用 Chronicle 的 `MERGED_READ_ENABLED`）
 
 ## 3) Evidence Bundle（v0）
 
@@ -39,6 +46,7 @@
 
 - 自动快照根目录：
   - `docs/labs/_snapshot/auto/S2B-1A-1A/shadow_verify_chronicle_entries/<run_id>/`
+  - `docs/labs/_snapshot/auto/S2B-1A-2A/shadow_verify_search_index/<run_id>/`
 
 ### 3.2 Minimal contract
 
@@ -85,6 +93,28 @@ GitHub Actions drill 额外生成（用于截图1-2约定的 artifacts）：
 输出目录（默认）：
 - `docs/labs/_snapshot/auto/S2B-1A-1A/shadow_verify_chronicle_entries/<run_id>/_result.json`
 
+Search（全量）：
+
+- `python backend/scripts/cli.py labs shadow-verify-search-index --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test"`
+
+Search（限定 library，可选）：
+
+- `python backend/scripts/cli.py labs shadow-verify-search-index --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --library-id <uuid>`
+
+输出目录（默认）：
+
+- `docs/labs/_snapshot/auto/S2B-1A-2A/shadow_verify_search_index/<run_id>/_result.json`
+
+### 5.4 Evidence note（2026-02-18 本地 5 次运行）
+
+S2B-1A-2A（Search shadow verify）已在本地连续运行 5 次并落盘快照：
+
+- `20260218T151416-search-run1`
+- `20260218T151418-search-run2`
+- `20260218T151420-search-run3`
+- `20260218T151421-search-run4`
+- `20260218T151423-search-run5`
+
 ## 6) Verification / Acceptance（v0 口径）
 
 ### 6.1 Output fields
@@ -107,6 +137,12 @@ GitHub Actions drill 额外生成（用于截图1-2约定的 artifacts）：
 
 - 默认：`MERGED_READ_ENABLED=0`（Chronicle 查询读 events repo）
 - 开启：`MERGED_READ_ENABLED=1`（Chronicle 查询读 entries repo）
+- 回滚：把开关关回 `0`
+
+Search（独立切读开关）：
+
+- 默认：`SEARCH_MERGED_READ_ENABLED=0`（Search stage1 provider 遵循 `SEARCH_STAGE1_PROVIDER`，默认 postgres）
+- 开启：`SEARCH_MERGED_READ_ENABLED=1`（强制 stage1 provider 使用 `postgres`，覆盖 `SEARCH_STAGE1_PROVIDER`）
 - 回滚：把开关关回 `0`
 
 建议顺序：

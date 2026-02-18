@@ -5,16 +5,16 @@
 **id**: `S2B-1A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `maintainability/failure contract v1`
-**status**: `draft`          # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S2B`
 **tags**: `EVOLUTION, Chronicle, Projection, Search, epic/s2, sub/1`
 **links**: ``
   **issue**: `#56`
   **pr**: ``
   **adr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-15`
-**updated**: `2026-02-17`
+**updated**: `2026-02-18`
 
 ---
 
@@ -49,10 +49,10 @@
 
 **Current status（现状）**:
 
-- 已落地一条“可回滚读切换（Read switch）”与“影子对账（shadow verify）”最小闭环（以 Chronicle 为样例），可作为 Failure Contract v1 的最小落地样板：
-  - 读切换开关：`MERGED_READ_ENABLED=0/1` → `Settings.merged_read_enabled`
-  - DI 选择读库（默认 events / 开启 entries），并有测试覆盖
-  - 一份可重复运行的 shadow verify 脚本，失败时非 0 退出码
+- Failure Contract v1 的最小落地样板已覆盖 Chronicle + Search 两条链路：
+  - Chronicle：读切换开关 `MERGED_READ_ENABLED=0/1`（DI 选择读库，含测试覆盖）+ shadow verify（产出 `_result.json`，失败非 0）
+  - Search：独立读切换开关 `SEARCH_MERGED_READ_ENABLED=0/1`（不复用 Chronicle）+ shadow verify v0（产出 `_result.json`，失败非 0）
+  - GitHub Actions 已统一为“同一 workflow，不同 scenario”：同一份证据链（summary/logs/zip）契约对 Chronicle/Search 都成立
 
 **Evidence（代码证据）**:
 
@@ -61,6 +61,10 @@
 - Flag wiring test：`backend/api/app/tests/test_chronicle/test_merged_read_flag.py`
 - Read-side adapter（entries read-only）：`backend/infra/storage/chronicle_entries_repository_impl.py`
 - Shadow verify script：`backend/scripts/labs/lab-S2B-1A-1A.py`
+- Search flag wiring test：`backend/api/app/tests/test_search/test_search_merged_read_flag.py`
+- Search shadow verify script：`backend/scripts/labs/lab-S2B-1A-2A.py`
+- Runbook（统一入口）：`docs/runbook/run-S2B-projection-table-merge.md`
+- Actions workflow（scenario dropdown）：`.github/workflows/drill-shadow-verify-entries.yml`
 
 ## Background
 
@@ -190,4 +194,4 @@ runbook 只保留“人类决策与操作”，把查询语句/脚本命令/路�
 ## References
 
 - `docs/logs/log-S0C-1A-log-extensions.md`（log 结构规范）
-- `docs/logs/log-S2B-projection-table-merge.md`（合表/合 projection 相关上下文）
+- `docs/runbook/run-S2B-projection-table-merge.md`（合表/合 projection 相关上下文）

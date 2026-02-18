@@ -78,6 +78,10 @@ class CreateLibraryResponse:
     views_count: int
     last_viewed_at: Optional[datetime]
 
+    @property
+    def id(self) -> UUID:
+        return self.library_id
+
 
 class ICreateLibraryUseCase(ABC):
     """
@@ -172,6 +176,10 @@ class GetLibraryResponse:
     views_count: int
     last_viewed_at: Optional[datetime]
     theme_color: Optional[str]
+
+    @property
+    def id(self) -> UUID:
+        return self.library_id
 
 
 class IGetLibraryUseCase(ABC):
@@ -281,6 +289,10 @@ class DeleteLibraryResponse:
     library_id: UUID
     deleted_at: datetime
 
+    @property
+    def id(self) -> UUID:
+        return self.library_id
+
 
 class IDeleteLibraryUseCase(ABC):
     """
@@ -310,7 +322,7 @@ class IDeleteLibraryUseCase(ABC):
     """
 
     @abstractmethod
-    async def execute(self, request: DeleteLibraryRequest) -> None:
+    async def execute(self, request: DeleteLibraryRequest) -> DeleteLibraryResponse:
         """
         Execute the DeleteLibrary use case
 
@@ -359,6 +371,14 @@ class RenameLibraryResponse:
     old_name: str
     new_name: str
     updated_at: datetime
+
+    @property
+    def id(self) -> UUID:
+        return self.library_id
+
+    @property
+    def name(self) -> str:
+        return self.new_name
 
 
 class IRenameLibraryUseCase(ABC):

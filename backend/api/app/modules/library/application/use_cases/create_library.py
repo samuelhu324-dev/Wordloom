@@ -18,7 +18,7 @@ from uuid import UUID
 import logging
 
 from api.app.modules.library.domain import Library
-from api.app.modules.library.exceptions import LibraryAlreadyExistsError
+from api.app.modules.library.exceptions import LibraryAlreadyExistsError, InvalidLibraryNameError
 from api.app.modules.library.application.ports.input import (
     CreateLibraryRequest,
     CreateLibraryResponse,
@@ -131,7 +131,7 @@ class CreateLibraryUseCase(ICreateLibraryUseCase):
         except ValueError as e:
             # Name validation failed (RULE-003)
             logger.warning(f"Library creation failed - invalid name: {e}")
-            raise
+            raise InvalidLibraryNameError(name=request.name, reason=str(e))
 
         # ================================================================
         # Step 2: [REPOSITORY] Persist to database
