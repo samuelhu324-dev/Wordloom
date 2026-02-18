@@ -167,6 +167,26 @@ jobs:
             echo
           } > artifacts/logs.txt
 
+          {
+            echo "--- repo ---"
+            git rev-parse HEAD || true
+            git status --porcelain=v1 -b || true
+            echo
+            echo "--- python ---"
+            python --version || true
+            python -m pip --version || true
+            echo
+            echo "--- cli.py --help ---"
+            python backend/scripts/cli.py --help || true
+            echo
+            echo "--- cli.py labs --help ---"
+            python backend/scripts/cli.py labs --help || true
+            echo
+            echo "--- cli.py labs shadow-verify-chronicle-entries --help ---"
+            python backend/scripts/cli.py labs shadow-verify-chronicle-entries --help || true
+            echo
+          } >> artifacts/logs.txt 2>&1
+
           book_id="${{ inputs.book_id }}"
           if [ -n "${book_id}" ]; then
             book_id_args=("--book-id" "${book_id}")
@@ -191,14 +211,14 @@ jobs:
           fi
 
       - name: Upload summary (success only)
-        if: steps.drill.outputs.ok == 'true'
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: drill-${{ steps.drill.outputs.scenario }}-${{ steps.drill.outputs.run_id }}
           path: artifacts/summary.json
 
       - name: Zip artifacts (failure only)
-        if: steps.drill.outputs.ok != 'true'
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
         run: |
           set -euo pipefail
           python - << 'PY'
@@ -214,14 +234,14 @@ jobs:
           PY
 
       - name: Upload full zip (failure only)
-        if: steps.drill.outputs.ok != 'true'
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: drill-${{ steps.drill.outputs.scenario }}-${{ steps.drill.outputs.run_id }}
           path: artifacts.zip
 
       - name: Fail job if drill failed
-        if: steps.drill.outputs.ok != 'true'
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
         run: |
           echo "Drill failed (exit_code=${{ steps.drill.outputs.exit_code }})." >&2
           if [ -f artifacts/summary.json ]; then
