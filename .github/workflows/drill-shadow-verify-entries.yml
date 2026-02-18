@@ -119,8 +119,6 @@ jobs:
                       raise SystemExit(f"missing table: {t}")
           print("[ok] DB connect + tables")
           PY
-        env:
-          SCENARIO: ${{ inputs.scenario }}
 
       - name: Run drill (shadow verify) → write artifacts
         id: drill
@@ -148,7 +146,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
           # Also create a placeholder summary early; finalize() will overwrite it.
-            python -c "import json; from pathlib import Path; Path('artifacts').mkdir(parents=True, exist_ok=True); payload={'scenario': '${{ inputs.scenario }}','ok':False,'error':'drill did not complete'}; Path('artifacts/summary.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8')"
+          python -c "import json; from pathlib import Path; Path('artifacts').mkdir(parents=True, exist_ok=True); payload={'scenario': '${{ inputs.scenario }}','ok':False,'error':'drill did not complete'}; Path('artifacts/summary.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8')"
 
           finalize() {
             {
@@ -210,13 +208,13 @@ jobs:
           } >> artifacts/logs.txt 2>&1
 
           set +e
-            if [ "${scenario}" = "shadow_verify_search_index" ]; then
-              library_id="${{ inputs.library_id }}"
-              if [ -n "${library_id}" ]; then
-                library_id_args=("--library-id" "${library_id}")
-              else
-                library_id_args=()
-              fi
+          if [ "${scenario}" = "shadow_verify_search_index" ]; then
+            library_id="${{ inputs.library_id }}"
+            if [ -n "${library_id}" ]; then
+              library_id_args=("--library-id" "${library_id}")
+            else
+              library_id_args=()
+            fi
 
               python backend/scripts/cli.py labs shadow-verify-search-index \
                 --database-url "$DATABASE_URL" \
