@@ -33,8 +33,10 @@ LABS_SNAPSHOT_ROOT = REPO_ROOT / "docs" / "labs" / "_snapshot"
 
 LAB_ID_S3A_2A_3A = "S3A-2A-3A"
 LAB_ID_S2B_1A_1A = "S2B-1A-1A"
+LAB_ID_S2B_1A_2A = "S2B-1A-2A"
 
 SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES = "shadow_verify_chronicle_entries"
+SCENARIO_SHADOW_VERIFY_SEARCH_INDEX = "shadow_verify_search_index"
 SCENARIO_ES_WRITE_BLOCK_4XX = "es_write_block_4xx"
 SCENARIO_ES_429_INJECT = "es_429_inject"
 SCENARIO_ES_DOWN_CONNECT = "es_down_connect"
@@ -94,8 +96,8 @@ def _default_labs_auto_run_dir(*, scenario: str, run_id: str) -> Path:
     return LABS_SNAPSHOT_ROOT / "auto" / LAB_ID_S3A_2A_3A / scenario / run_id
 
 
-def _default_s2b_auto_run_dir(*, scenario: str, run_id: str) -> Path:
-    return LABS_SNAPSHOT_ROOT / "auto" / LAB_ID_S2B_1A_1A / scenario / run_id
+def _default_s2b_auto_run_dir(*, lab_id: str, scenario: str, run_id: str) -> Path:
+    return LABS_SNAPSHOT_ROOT / "auto" / lab_id / scenario / run_id
 
 
 def _latest_child_dir(base: Path) -> Path | None:
@@ -297,6 +299,7 @@ def _read_json_file(path: Path) -> dict[str, object] | None:
 def _cmd_labs_shadow_verify_chronicle_entries(args: argparse.Namespace) -> int:
     run_id = args.run_id or _now_run_id()
     outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+        lab_id=LAB_ID_S2B_1A_1A,
         scenario=SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES,
         run_id=run_id,
     )
@@ -444,6 +447,458 @@ def _cmd_labs_shadow_verify_chronicle_entries(args: argparse.Namespace) -> int:
     print(f"missing_entries={missing_entries}")
     print(f"extra_entries={extra_entries}")
     print(f"mismatched_book_id={mismatched_book_id}")
+    print(f"outputs: {outdir}")
+
+    return 0 if ok else 2
+
+
+def _cmd_labs_shadow_verify_search_index(args: argparse.Namespace) -> int:
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+        lab_id=LAB_ID_S2B_1A_2A,
+        scenario=SCENARIO_SHADOW_VERIFY_SEARCH_INDEX,
+        run_id=run_id,
+    )
+    _ensure_dir(outdir)
+
+    env = _load_env(env_file=args.env_file)
+    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
+    if not database_url:
+        print("[labs shadow-verify-search-index] DATABASE_URL is required (via env or --database-url)")
+        return 2
+
+    library_id = (args.library_id or "").strip() or None
+    if library_id is not None:
+        try:
+            uuid.UUID(library_id)
+        except ValueError:
+            print(f"[labs shadow-verify-search-index] invalid --library-id: {library_id}")
+            return 2
+
+    engine = create_engine(database_url)
+    with engine.connect() as conn:
+        if library_id is None:
+            scope = "all"
+            blocks_total = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM blocks bl
+                        JOIN books bo ON bo.id = bl.book_id
+                        WHERE bl.soft_deleted_at IS NULL
+                          AND bo.soft_deleted_at IS NULL
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            blocks_index_total = int(
+                conn.execute(text("SELECT COUNT(*) FROM search_index WHERE entity_type = 'block' ")).scalar() or 0
+            )
+            blocks_missing = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM blocks bl
+                        JOIN books bo ON bo.id = bl.book_id
+                        LEFT JOIN search_index si
+                          ON si.entity_type = 'block'
+                         AND si.entity_id = bl.id
+                        WHERE bl.soft_deleted_at IS NULL
+                          AND bo.soft_deleted_at IS NULL
+                          AND si.entity_id IS NULL
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            blocks_extra = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        LEFT JOIN blocks bl ON bl.id = si.entity_id
+                        LEFT JOIN books bo ON bo.id = bl.book_id
+                        WHERE si.entity_type = 'block'
+                          AND (
+                            bl.id IS NULL
+                            OR bl.soft_deleted_at IS NOT NULL
+                            OR bo.id IS NULL
+                            OR bo.soft_deleted_at IS NOT NULL
+                          )
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            blocks_mismatched_library_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        JOIN blocks bl ON bl.id = si.entity_id
+                        JOIN books bo ON bo.id = bl.book_id
+                        WHERE si.entity_type = 'block'
+                          AND bo.soft_deleted_at IS NULL
+                          AND bl.soft_deleted_at IS NULL
+                          AND (si.library_id IS DISTINCT FROM bo.library_id)
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+
+            books_total = int(conn.execute(text("SELECT COUNT(*) FROM books WHERE soft_deleted_at IS NULL")).scalar() or 0)
+            books_index_total = int(conn.execute(text("SELECT COUNT(*) FROM search_index WHERE entity_type = 'book'")).scalar() or 0)
+            books_missing = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM books bo
+                        LEFT JOIN search_index si
+                          ON si.entity_type = 'book'
+                         AND si.entity_id = bo.id
+                        WHERE bo.soft_deleted_at IS NULL
+                          AND si.entity_id IS NULL
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            books_extra = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        LEFT JOIN books bo ON bo.id = si.entity_id
+                        WHERE si.entity_type = 'book'
+                          AND (bo.id IS NULL OR bo.soft_deleted_at IS NOT NULL)
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+            books_mismatched_library_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        JOIN books bo ON bo.id = si.entity_id
+                        WHERE si.entity_type = 'book'
+                          AND bo.soft_deleted_at IS NULL
+                          AND (si.library_id IS DISTINCT FROM bo.library_id)
+                        """
+                    )
+                ).scalar()
+                or 0
+            )
+        else:
+            scope = f"library:{library_id}"
+            params = {"library_id": library_id}
+
+            blocks_total = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM blocks bl
+                        JOIN books bo ON bo.id = bl.book_id
+                        WHERE bl.soft_deleted_at IS NULL
+                          AND bo.soft_deleted_at IS NULL
+                          AND bo.library_id = :library_id
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            blocks_index_total = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index
+                        WHERE entity_type = 'block'
+                          AND library_id = :library_id
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            blocks_missing = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM blocks bl
+                        JOIN books bo ON bo.id = bl.book_id
+                        LEFT JOIN search_index si
+                          ON si.entity_type = 'block'
+                         AND si.entity_id = bl.id
+                        WHERE bl.soft_deleted_at IS NULL
+                          AND bo.soft_deleted_at IS NULL
+                          AND bo.library_id = :library_id
+                          AND si.entity_id IS NULL
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            blocks_extra = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        LEFT JOIN blocks bl ON bl.id = si.entity_id
+                        LEFT JOIN books bo ON bo.id = bl.book_id
+                        WHERE si.entity_type = 'block'
+                          AND si.library_id = :library_id
+                          AND (
+                            bl.id IS NULL
+                            OR bl.soft_deleted_at IS NOT NULL
+                            OR bo.id IS NULL
+                            OR bo.soft_deleted_at IS NOT NULL
+                            OR bo.library_id <> :library_id
+                          )
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            blocks_mismatched_library_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        JOIN blocks bl ON bl.id = si.entity_id
+                        JOIN books bo ON bo.id = bl.book_id
+                        WHERE si.entity_type = 'block'
+                          AND bo.library_id = :library_id
+                          AND bo.soft_deleted_at IS NULL
+                          AND bl.soft_deleted_at IS NULL
+                          AND (si.library_id IS DISTINCT FROM bo.library_id)
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+
+            books_total = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM books
+                        WHERE soft_deleted_at IS NULL
+                          AND library_id = :library_id
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            books_index_total = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index
+                        WHERE entity_type = 'book'
+                          AND library_id = :library_id
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            books_missing = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM books bo
+                        LEFT JOIN search_index si
+                          ON si.entity_type = 'book'
+                         AND si.entity_id = bo.id
+                        WHERE bo.soft_deleted_at IS NULL
+                          AND bo.library_id = :library_id
+                          AND si.entity_id IS NULL
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            books_extra = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        LEFT JOIN books bo ON bo.id = si.entity_id
+                        WHERE si.entity_type = 'book'
+                          AND si.library_id = :library_id
+                          AND (
+                            bo.id IS NULL
+                            OR bo.soft_deleted_at IS NOT NULL
+                            OR bo.library_id <> :library_id
+                          )
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+            books_mismatched_library_id = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index si
+                        JOIN books bo ON bo.id = si.entity_id
+                        WHERE si.entity_type = 'book'
+                          AND bo.library_id = :library_id
+                          AND bo.soft_deleted_at IS NULL
+                          AND (si.library_id IS DISTINCT FROM bo.library_id)
+                        """
+                    ),
+                    params,
+                ).scalar()
+                or 0
+            )
+
+        tags_total = int(conn.execute(text("SELECT COUNT(*) FROM tags WHERE deleted_at IS NULL")).scalar() or 0)
+        tags_index_total = int(conn.execute(text("SELECT COUNT(*) FROM search_index WHERE entity_type = 'tag'")).scalar() or 0)
+        tags_missing = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COUNT(*)
+                    FROM tags t
+                    LEFT JOIN search_index si
+                      ON si.entity_type = 'tag'
+                     AND si.entity_id = t.id
+                    WHERE t.deleted_at IS NULL
+                      AND si.entity_id IS NULL
+                    """
+                )
+            ).scalar()
+            or 0
+        )
+        tags_extra = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COUNT(*)
+                    FROM search_index si
+                    LEFT JOIN tags t ON t.id = si.entity_id
+                    WHERE si.entity_type = 'tag'
+                      AND (t.id IS NULL OR t.deleted_at IS NOT NULL)
+                    """
+                )
+            ).scalar()
+            or 0
+        )
+        tags_invalid_library_id = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COUNT(*)
+                    FROM search_index
+                    WHERE entity_type = 'tag'
+                      AND library_id IS NOT NULL
+                    """
+                )
+            ).scalar()
+            or 0
+        )
+
+        outbox_total = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events")).scalar() or 0)
+        outbox_pending = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'pending'")).scalar() or 0)
+        outbox_processing = int(
+            conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'processing'")).scalar() or 0
+        )
+        outbox_done = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'done'")).scalar() or 0)
+        outbox_failed = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'failed'")).scalar() or 0)
+
+    ok = (
+        (blocks_missing == 0)
+        and (blocks_extra == 0)
+        and (blocks_mismatched_library_id == 0)
+        and (books_missing == 0)
+        and (books_extra == 0)
+        and (books_mismatched_library_id == 0)
+        and (tags_missing == 0)
+        and (tags_extra == 0)
+        and (tags_invalid_library_id == 0)
+    )
+
+    result = {
+        "lab_id": LAB_ID_S2B_1A_2A,
+        "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX,
+        "run_id": run_id,
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scope": scope,
+        "blocks_total": blocks_total,
+        "blocks_index_total": blocks_index_total,
+        "blocks_missing": blocks_missing,
+        "blocks_extra": blocks_extra,
+        "blocks_mismatched_library_id": blocks_mismatched_library_id,
+        "books_total": books_total,
+        "books_index_total": books_index_total,
+        "books_missing": books_missing,
+        "books_extra": books_extra,
+        "books_mismatched_library_id": books_mismatched_library_id,
+        "tags_total": tags_total,
+        "tags_index_total": tags_index_total,
+        "tags_missing": tags_missing,
+        "tags_extra": tags_extra,
+        "tags_invalid_library_id": tags_invalid_library_id,
+        "outbox_total": outbox_total,
+        "outbox_pending": outbox_pending,
+        "outbox_processing": outbox_processing,
+        "outbox_done": outbox_done,
+        "outbox_failed": outbox_failed,
+        "ok": bool(ok),
+    }
+
+    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    print("labs-011.shadow_verify_search_index")
+    print(f"scope={scope}")
+    print(f"blocks_total={blocks_total}")
+    print(f"blocks_index_total={blocks_index_total}")
+    print(f"blocks_missing={blocks_missing}")
+    print(f"blocks_extra={blocks_extra}")
+    print(f"blocks_mismatched_library_id={blocks_mismatched_library_id}")
+    print(f"books_total={books_total}")
+    print(f"books_index_total={books_index_total}")
+    print(f"books_missing={books_missing}")
+    print(f"books_extra={books_extra}")
+    print(f"books_mismatched_library_id={books_mismatched_library_id}")
+    print(f"tags_total={tags_total}")
+    print(f"tags_index_total={tags_index_total}")
+    print(f"tags_missing={tags_missing}")
+    print(f"tags_extra={tags_extra}")
+    print(f"tags_invalid_library_id={tags_invalid_library_id}")
+    print(f"outbox_total={outbox_total}")
+    print(f"outbox_pending={outbox_pending}")
+    print(f"outbox_processing={outbox_processing}")
+    print(f"outbox_done={outbox_done}")
+    print(f"outbox_failed={outbox_failed}")
     print(f"outputs: {outdir}")
 
     return 0 if ok else 2
@@ -3537,6 +3992,17 @@ def build_parser() -> argparse.ArgumentParser:
     sv.add_argument("--run-id", help="Optional run_id folder name")
     sv.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
     sv.set_defaults(func=_cmd_labs_shadow_verify_chronicle_entries)
+
+    sv_search = labs_sub.add_parser(
+        "shadow-verify-search-index",
+        help="Labs-011: shadow verify search_index vs source tables (writes _result.json)",
+    )
+    sv_search.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    sv_search.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    sv_search.add_argument("--library-id", help="Optional library_id scope (UUID)")
+    sv_search.add_argument("--run-id", help="Optional run_id folder name")
+    sv_search.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    sv_search.set_defaults(func=_cmd_labs_shadow_verify_search_index)
 
     b = labs_sub.add_parser("expb-es429", help="Run Labs-009 ExpB (ES 429 injection) bounded")
     b.add_argument("--service", default="wordloom-search-outbox-worker")
