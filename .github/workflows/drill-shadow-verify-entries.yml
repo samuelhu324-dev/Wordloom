@@ -111,11 +111,54 @@ jobs:
 
           scenario="shadow_verify_chronicle_entries"
           run_id="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          rc=2
+          ok=false
 
           rm -rf artifacts .drill_snapshot
           mkdir -p artifacts .drill_snapshot
 
-          # Keep command output as a stable artifact.
+          finalize() {
+            {
+              echo
+              echo "--- snapshot debug ---"
+              pwd
+              ls -la
+              echo "[tree] .drill_snapshot"
+              ls -la .drill_snapshot || true
+            } >> artifacts/logs.txt 2>&1 || true
+
+            # Minimal traces placeholder (this drill doesn't collect traces yet).
+            echo "[]" > artifacts/traces.json 2>/dev/null || true
+
+            if [ -f .drill_snapshot/_result.json ]; then
+              cp .drill_snapshot/_result.json artifacts/summary.json
+            else
+              python - << 'PY'
+              import json
+              import os
+              from pathlib import Path
+
+              payload = {
+                  "scenario": os.environ.get("SCENARIO", "shadow_verify_chronicle_entries"),
+                  "run_id": os.environ.get("RUN_ID"),
+                  "ok": False,
+                  "error": "missing _result.json",
+                  "exit_code": int(os.environ.get("EXIT_CODE", "2") or "2"),
+              }
+              Path(".drill_snapshot").mkdir(parents=True, exist_ok=True)
+              Path(".drill_snapshot/_result.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+              Path("artifacts/summary.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+              PY
+            fi
+
+            echo "ok=${ok}" >> "$GITHUB_OUTPUT"
+            echo "scenario=${scenario}" >> "$GITHUB_OUTPUT"
+            echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
+            echo "exit_code=${rc}" >> "$GITHUB_OUTPUT"
+          }
+
+          trap 'SCENARIO="$scenario" RUN_ID="$run_id" EXIT_CODE="$rc" finalize' EXIT
+
           {
             echo "scenario=${scenario}"
             echo "run_id=${run_id}"
@@ -124,7 +167,6 @@ jobs:
             echo
           } > artifacts/logs.txt
 
-          set +e
           book_id="${{ inputs.book_id }}"
           if [ -n "${book_id}" ]; then
             book_id_args=("--book-id" "${book_id}")
@@ -132,6 +174,7 @@ jobs:
             book_id_args=()
           fi
 
+          set +e
           python backend/scripts/cli.py labs shadow-verify-chronicle-entries \
             --database-url "$DATABASE_URL" \
             "${book_id_args[@]}" \
@@ -141,52 +184,11 @@ jobs:
           rc=${PIPESTATUS[0]}
           set -e
 
-          {
-            echo
-            echo "--- snapshot debug ---"
-            pwd
-            ls -la
-            echo "[tree] .drill_snapshot"
-            ls -la .drill_snapshot || true
-          } >> artifacts/logs.txt
-
-          # Minimal traces placeholder (this drill doesn't collect traces yet).
-          echo "[]" > artifacts/traces.json
-
-          if [ -f .drill_snapshot/_result.json ]; then
-            cp .drill_snapshot/_result.json artifacts/summary.json
-          else
-            # Ensure we still have a machine-readable result, even if the lab crashed.
-            SCENARIO="$scenario" RUN_ID="$run_id" EXIT_CODE="$rc" python - << 'PY'
-            import json
-            import os
-            from pathlib import Path
-
-            scenario = os.environ.get("SCENARIO", "shadow_verify_chronicle_entries")
-            run_id = os.environ.get("RUN_ID")
-            exit_code = int(os.environ.get("EXIT_CODE", "2") or "2")
-            payload = {
-                "scenario": scenario,
-                "run_id": run_id,
-                "ok": False,
-                "error": "missing _result.json",
-                "exit_code": exit_code,
-            }
-            Path(".drill_snapshot").mkdir(parents=True, exist_ok=True)
-            Path(".drill_snapshot/_result.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-            Path("artifacts/summary.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-            PY
-            rc=2
-          fi
-
           if [ "$rc" -eq 0 ]; then
-            echo "ok=true" >> "$GITHUB_OUTPUT"
+            ok=true
           else
-            echo "ok=false" >> "$GITHUB_OUTPUT"
+            ok=false
           fi
-          echo "scenario=${scenario}" >> "$GITHUB_OUTPUT"
-          echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
-          echo "exit_code=${rc}" >> "$GITHUB_OUTPUT"
 
       - name: Upload summary (success only)
         if: steps.drill.outputs.ok == 'true'
@@ -221,5 +223,10 @@ jobs:
       - name: Fail job if drill failed
         if: steps.drill.outputs.ok != 'true'
         run: |
-          echo "Drill failed (exit_code=${{ steps.drill.outputs.exit_code }}). See uploaded artifacts." >&2
+          echo "Drill failed (exit_code=${{ steps.drill.outputs.exit_code }})." >&2
+          if [ -f artifacts/summary.json ]; then
+            echo "--- summary.json ---" >&2
+            cat artifacts/summary.json >&2
+          fi
+          echo "See uploaded artifacts." >&2
           exit 1
