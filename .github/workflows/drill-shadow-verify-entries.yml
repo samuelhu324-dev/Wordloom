@@ -117,6 +117,29 @@ jobs:
           rm -rf artifacts .drill_snapshot
           mkdir -p artifacts .drill_snapshot
 
+          # IMPORTANT: write default outputs immediately so downstream steps never see empty
+          # values even if this script crashes before the EXIT trap runs.
+          {
+            echo "ok=${ok}"
+            echo "scenario=${scenario}"
+            echo "run_id=${run_id}"
+            echo "exit_code=${rc}"
+          } >> "$GITHUB_OUTPUT"
+
+          # Also create a placeholder summary early; finalize() will overwrite it.
+          python - << 'PY'
+          import json
+          from pathlib import Path
+
+          Path('artifacts').mkdir(parents=True, exist_ok=True)
+          payload = {
+              "scenario": "shadow_verify_chronicle_entries",
+              "ok": False,
+              "error": "drill did not complete",
+          }
+          Path('artifacts/summary.json').write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+          PY
+
           finalize() {
             {
               echo
