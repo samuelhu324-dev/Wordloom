@@ -86,6 +86,7 @@ write-gate：
     - `scenario=shadow_verify_search_index_paging_stability`
     - `scenario=shadow_verify_shared_keys`
     - `scenario=shadow_verify_dual_run_readiness_gate`
+    - `scenario=shadow_verify_canary_dual_write`
   - `library_id`（可选；为空则全量）
 
 ## 5) Local Operation
@@ -166,6 +167,21 @@ Search 2A readiness gate（v2 2A，dry-run 准入门：聚合 1A/2A 前置证据
 输出目录（默认）：
 
 - `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_dual_run_readiness_gate/<run_id>/_result.json`
+
+Search canary dual-write（v2 2A，最小真写入 + 默认回滚/cleanup）：
+
+- `python backend/scripts/cli.py labs shadow-verify-canary-dual-write --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test"`
+
+说明：该命令会写入极小 canary 行到：
+
+- `search_index`
+- `search_outbox_events`
+
+并默认执行 cleanup（作为 rollback 证据），以保持 devtest/CI 环境干净。
+
+输出目录（默认）：
+
+- `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_canary_dual_write/<run_id>/_result.json`
 
 ### 5.4 Evidence note（2026-02-18 本地 5 次运行）
 

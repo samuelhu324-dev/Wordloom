@@ -24,7 +24,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-from sqlalchemy import create_engine, text
+from sqlalchemy import bindparam, create_engine, text
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -54,6 +54,7 @@ SCENARIO_COLLECTOR_DOWN = "collector_down"
 
 SCENARIO_SHADOW_VERIFY_SHARED_KEYS = "shadow_verify_shared_keys"
 SCENARIO_SHADOW_VERIFY_DUAL_RUN_READINESS_GATE = "shadow_verify_dual_run_readiness_gate"
+SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE = "shadow_verify_canary_dual_write"
 
 # Keep in sync with backend/scripts/legacy/search_outbox_worker.py
 SEARCH_OUTBOX_OBS_SCHEMA_VERSION = "labs-009-v2"
@@ -1524,6 +1525,292 @@ def _cmd_labs_shadow_verify_dual_run_readiness_gate(args: argparse.Namespace) ->
     print(f"ensure_min_rows_paging={ensure_min_rows_paging}")
     print(f"ensure_min_rows_keys={ensure_min_rows_keys}")
     print(f"ok={ok}")
+    print(f"outputs: {outdir}")
+
+    return 0 if ok else 2
+
+
+def _cmd_labs_shadow_verify_canary_dual_write(args: argparse.Namespace) -> int:
+    """Minimal canary dual-write drill for Search.
+
+    Writes a very small, drill-scoped set of rows to:
+    - search_index (projection)
+    - search_outbox_events (outbox enqueue)
+
+    Then verifies presence and performs cleanup (rollback) by default.
+    """
+
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+        lab_id=LAB_ID_S2B_2A_2A,
+        scenario=SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE,
+        run_id=run_id,
+    )
+    _ensure_dir(outdir)
+
+    env = _load_env(env_file=args.env_file)
+    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
+    if not database_url:
+        print("[labs shadow-verify-canary-dual-write] DATABASE_URL is required (via env or --database-url)")
+        return 2
+
+    library_id = (args.library_id or "").strip() or None
+    if library_id is not None:
+        try:
+            uuid.UUID(library_id)
+        except ValueError:
+            print(f"[labs shadow-verify-canary-dual-write] invalid --library-id: {library_id}")
+            return 2
+
+    max_writes = int(args.max_writes)
+    if max_writes <= 0:
+        print("[labs shadow-verify-canary-dual-write] --max-writes must be > 0")
+        return 2
+
+    cleanup = bool(args.cleanup)
+    scope = "all" if library_id is None else f"library:{library_id}"
+    entity_type = "canary"
+
+    now = datetime.now(timezone.utc)
+    entity_ids: list[str] = [str(uuid.uuid4()) for _ in range(max_writes)]
+    search_index_ids: list[str] = [str(uuid.uuid4()) for _ in range(max_writes)]
+    outbox_ids: list[str] = [str(uuid.uuid4()) for _ in range(max_writes)]
+
+    search_rows = []
+    outbox_rows = []
+    for i in range(max_writes):
+        search_rows.append(
+            {
+                "id": search_index_ids[i],
+                "entity_type": entity_type,
+                "library_id": library_id,
+                "entity_id": entity_ids[i],
+                "text": f"canary:{run_id}:{i}",
+                "snippet": None,
+                "rank_score": 0.0,
+                "created_at": now,
+                "updated_at": now,
+                "event_version": int(i + 1),
+            }
+        )
+        outbox_rows.append(
+            {
+                "id": outbox_ids[i],
+                "entity_type": entity_type,
+                "entity_id": entity_ids[i],
+                "op": "upsert",
+                "event_version": int(i + 1),
+                "created_at": now,
+                "status": "pending",
+                "attempts": 0,
+                "updated_at": now,
+                "replay_count": 0,
+            }
+        )
+
+    engine = create_engine(database_url)
+    inserted_search = 0
+    inserted_outbox = 0
+    verify_search_count = 0
+    verify_outbox_count = 0
+    cleanup_deleted_search = 0
+    cleanup_deleted_outbox = 0
+    cleanup_remaining_search = None
+    cleanup_remaining_outbox = None
+
+    with engine.connect() as conn:
+        # 1) insert projection rows
+        conn.execute(
+            text(
+                """
+                INSERT INTO search_index
+                  (id, entity_type, library_id, entity_id, text, snippet, rank_score, created_at, updated_at, event_version)
+                VALUES
+                  (:id, :entity_type, :library_id, :entity_id, :text, :snippet, :rank_score, :created_at, :updated_at, :event_version)
+                """
+            ),
+            search_rows,
+        )
+        inserted_search = max_writes
+
+        # 2) enqueue outbox rows
+        conn.execute(
+            text(
+                """
+                INSERT INTO search_outbox_events
+                                    (id, entity_type, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
+                VALUES
+                                    (:id, :entity_type, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
+                """
+            ),
+            outbox_rows,
+        )
+        inserted_outbox = max_writes
+
+        conn.commit()
+
+        # 3) verify presence
+        verify_search_count = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COUNT(*)
+                    FROM search_index
+                    WHERE entity_type = :entity_type
+                      AND entity_id IN :entity_ids
+                    """
+                ).bindparams(bindparam("entity_ids", expanding=True)),
+                {"entity_type": entity_type, "entity_ids": entity_ids},
+            ).scalar()
+            or 0
+        )
+        verify_outbox_count = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COUNT(*)
+                    FROM search_outbox_events
+                    WHERE entity_type = :entity_type
+                      AND entity_id IN :entity_ids
+                    """
+                ).bindparams(bindparam("entity_ids", expanding=True)),
+                {"entity_type": entity_type, "entity_ids": entity_ids},
+            ).scalar()
+            or 0
+        )
+
+        # 4) verify write-gate uniqueness still holds
+        dup_extra = int(
+            conn.execute(
+                text(
+                    """
+                    SELECT COALESCE(SUM(cnt - 1), 0)
+                    FROM (
+                      SELECT COUNT(*) AS cnt
+                      FROM search_index
+                      GROUP BY entity_type, entity_id
+                      HAVING COUNT(*) > 1
+                    ) t
+                    """
+                )
+            ).scalar()
+            or 0
+        )
+
+        # 5) cleanup (rollback evidence)
+        if cleanup:
+            conn.execute(
+                text(
+                    """
+                    DELETE FROM search_outbox_events
+                    WHERE entity_type = :entity_type
+                      AND entity_id IN :entity_ids
+                    """
+                ).bindparams(bindparam("entity_ids", expanding=True)),
+                {"entity_type": entity_type, "entity_ids": entity_ids},
+            )
+            conn.execute(
+                text(
+                    """
+                    DELETE FROM search_index
+                    WHERE entity_type = :entity_type
+                      AND entity_id IN :entity_ids
+                    """
+                ).bindparams(bindparam("entity_ids", expanding=True)),
+                {"entity_type": entity_type, "entity_ids": entity_ids},
+            )
+            conn.commit()
+
+            cleanup_remaining_search = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_index
+                        WHERE entity_type = :entity_type
+                          AND entity_id IN :entity_ids
+                        """
+                    ).bindparams(bindparam("entity_ids", expanding=True)),
+                    {"entity_type": entity_type, "entity_ids": entity_ids},
+                ).scalar()
+                or 0
+            )
+            cleanup_remaining_outbox = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_outbox_events
+                        WHERE entity_type = :entity_type
+                          AND entity_id IN :entity_ids
+                        """
+                    ).bindparams(bindparam("entity_ids", expanding=True)),
+                    {"entity_type": entity_type, "entity_ids": entity_ids},
+                ).scalar()
+                or 0
+            )
+
+            cleanup_deleted_search = verify_search_count - cleanup_remaining_search
+            cleanup_deleted_outbox = verify_outbox_count - cleanup_remaining_outbox
+
+    ok = (
+        inserted_search == max_writes
+        and inserted_outbox == max_writes
+        and verify_search_count == max_writes
+        and verify_outbox_count == max_writes
+        and dup_extra == 0
+        and ((not cleanup) or (cleanup_remaining_search == 0 and cleanup_remaining_outbox == 0))
+    )
+
+    result: dict[str, object] = {
+        "lab_id": LAB_ID_S2B_2A_2A,
+        "scenario": SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE,
+        "run_id": run_id,
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scope": scope,
+        "dry_run": False,
+        "targets": {
+            "projection_table": "search_index",
+            "outbox_table": "search_outbox_events",
+            "entrypoint_hint": "backend/infra/search/search_indexer.py::PostgresSearchIndexer (writes search_index + enqueues search_outbox_events)",
+        },
+        "canary": {
+            "entity_type": entity_type,
+            "max_writes": max_writes,
+            "entity_ids": entity_ids,
+            "search_index_ids": search_index_ids,
+            "outbox_event_ids": outbox_ids,
+        },
+        "verify": {
+            "search_index_rows_found": int(verify_search_count),
+            "search_outbox_rows_found": int(verify_outbox_count),
+            "duplicates_extra_rows_total": int(dup_extra),
+        },
+        "rollback": {
+            "cleanup_enabled": bool(cleanup),
+            "deleted_search_index": int(cleanup_deleted_search),
+            "deleted_search_outbox_events": int(cleanup_deleted_outbox),
+            "remaining_search_index": cleanup_remaining_search,
+            "remaining_search_outbox_events": cleanup_remaining_outbox,
+            "note": "Cleanup is executed by default to keep CI/devtest DB clean.",
+        },
+        "ok": bool(ok),
+    }
+
+    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    print("labs-016.shadow_verify_canary_dual_write")
+    print(f"scope={scope}")
+    print(f"max_writes={max_writes}")
+    print(f"verify_search_index_rows_found={verify_search_count}")
+    print(f"verify_search_outbox_rows_found={verify_outbox_count}")
+    print(f"duplicates_extra_rows_total={dup_extra}")
+    print(f"cleanup_enabled={cleanup}")
+    print(f"cleanup_deleted_search_index={cleanup_deleted_search}")
+    print(f"cleanup_deleted_search_outbox_events={cleanup_deleted_outbox}")
+    if cleanup:
+        print(f"cleanup_remaining_search_index={cleanup_remaining_search}")
+        print(f"cleanup_remaining_search_outbox_events={cleanup_remaining_outbox}")
     print(f"outputs: {outdir}")
 
     return 0 if ok else 2
@@ -4690,6 +4977,24 @@ def build_parser() -> argparse.ArgumentParser:
     sv_ready.add_argument("--run-id", help="Optional run_id folder name")
     sv_ready.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
     sv_ready.set_defaults(func=_cmd_labs_shadow_verify_dual_run_readiness_gate)
+
+    sv_canary = labs_sub.add_parser(
+        "shadow-verify-canary-dual-write",
+        help="Labs-016: canary dual-write (projection + outbox) with rollback/cleanup (writes _result.json)",
+    )
+    sv_canary.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    sv_canary.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    sv_canary.add_argument("--library-id", help="Optional library_id scope (UUID)")
+    sv_canary.add_argument("--max-writes", type=int, default=5)
+    sv_canary.add_argument(
+        "--cleanup",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="When enabled, deletes the canary rows (rollback) after verification",
+    )
+    sv_canary.add_argument("--run-id", help="Optional run_id folder name")
+    sv_canary.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    sv_canary.set_defaults(func=_cmd_labs_shadow_verify_canary_dual_write)
 
     b = labs_sub.add_parser("expb-es429", help="Run Labs-009 ExpB (ES 429 injection) bounded")
     b.add_argument("--service", default="wordloom-search-outbox-worker")

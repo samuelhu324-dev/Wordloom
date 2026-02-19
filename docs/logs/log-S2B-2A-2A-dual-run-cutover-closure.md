@@ -58,6 +58,7 @@
   - ✅ 排序/分页稳定性 drill 入口已落地（要求至少 2 页；CI 可通过 `--ensure-min-rows` 确保有足够数据）
   - ✅ 共享键证据包（最小口径）入口已落地（产出 `shared_keys + evidence_queries`）
   - ✅ dry-run readiness gate 入口已落地（聚合 1A/2A 前置验证；不写入）
+  - ✅ canary dual-write（最小真写入 + 默认回滚/cleanup）入口已落地（写入 `search_index` + `search_outbox_events`）
   - ⏳ 强口径共享键互证（logs/metrics/traces 可检索到与 drill 互证的证据）仍待补齐
 
 **Evidence（代码证据 / 入口证据）**:
@@ -75,6 +76,12 @@ CI evidence（2026-02-19）:
 - `drill-write-gate` → `shadow_verify_shared_keys`：run_id=`22164060556-1`（ok=true，seed_rows_inserted=5）
 
 说明：按截图1-2合约，成功时 artifact 下载包内仅包含 `summary.json`（其内容即 drill 的 `_result.json`）。
+
+写入点定位（给 2A dual-run/canary 用）：
+
+- 投影表（projection）：`search_index`
+- Outbox 表（enqueue events）：`search_outbox_events`
+- 入口代码：`backend/infra/search/search_indexer.py` → `PostgresSearchIndexer`（写 `search_index`，并通过 outbox repo enqueue 到 `search_outbox_events`）
 
 **Acceptance checklist（验收清单）**:
 
