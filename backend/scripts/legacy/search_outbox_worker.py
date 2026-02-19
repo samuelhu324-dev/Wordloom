@@ -412,6 +412,12 @@ async def _worker_loop() -> None:
     poll_interval_seconds = _get_float_env("OUTBOX_POLL_INTERVAL_SECONDS", 1.0)
     use_es_bulk_api = _get_bool_env("OUTBOX_USE_ES_BULK", False)
 
+    # Drill/testing knobs: allow one-shot worker runs that exit after the queue
+    # becomes idle. Default is off to preserve production behavior.
+    exit_when_idle = _get_bool_env("OUTBOX_EXIT_WHEN_IDLE", False)
+    idle_polls_before_exit = _get_int_env("OUTBOX_IDLE_POLLS_BEFORE_EXIT", 2)
+    max_runtime_seconds = _get_optional_float_env("OUTBOX_MAX_RUNTIME_SECONDS")
+
     # Labs knobs: deterministic fault injection for Experiment B (ES 429).
     # Disabled by default.
     fault_es_429_ratio = _get_float_env("OUTBOX_EXPERIMENT_ES_429_RATIO", 0.0)
@@ -494,6 +500,12 @@ async def _worker_loop() -> None:
         lease_seconds,
         max_processing_seconds,
     )
+    if exit_when_idle:
+        logger.info(
+            "[LABS] One-shot mode enabled: OUTBOX_EXIT_WHEN_IDLE=1 idle_polls_before_exit=%s max_runtime_seconds=%s",
+            int(idle_polls_before_exit),
+            (str(max_runtime_seconds) if max_runtime_seconds is not None else "<none>"),
+        )
     logger.info(
         "Observability schema: %s (file=%s)",
         OBS_SCHEMA_VERSION,
@@ -629,6 +641,8 @@ async def _worker_loop() -> None:
     last_db_ping_at = 0.0
     last_es_ping_at = 0.0
     stop_requested_at_mono: float | None = None
+    start_mono = time.monotonic()
+    consecutive_idle_polls = 0
 
     def _request_stop(reason: str) -> None:
         nonlocal stop_requested_at_mono
@@ -1053,6 +1067,13 @@ async def _worker_loop() -> None:
                 runtime.set_state("STOPPED")
                 return
 
+            if max_runtime_seconds is not None:
+                elapsed = time.monotonic() - start_mono
+                if elapsed >= float(max_runtime_seconds):
+                    logger.warning("[LABS] Max runtime exceeded; exiting")
+                    runtime.set_state("STOPPED")
+                    return
+
             now_mono = time.monotonic()
 
             # Guardrails: DB ping and (optional) ES ping.
@@ -1262,8 +1283,18 @@ async def _worker_loop() -> None:
                     )
 
             if not claimable:
+                consecutive_idle_polls += 1
+                if exit_when_idle and consecutive_idle_polls >= max(1, int(idle_polls_before_exit)):
+                    logger.info(
+                        "[LABS] Queue idle (%s empty polls); exiting",
+                        int(consecutive_idle_polls),
+                    )
+                    runtime.set_state("STOPPED")
+                    return
                 await asyncio.sleep(poll_interval_seconds)
                 continue
+
+            consecutive_idle_polls = 0
 
             if process_sleep_seconds and float(process_sleep_seconds) > 0:
                 await asyncio.sleep(float(process_sleep_seconds))

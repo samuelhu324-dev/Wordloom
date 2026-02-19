@@ -162,9 +162,9 @@ CI evidence（2026-02-19）:
 - canary dual-write：run_id=`22168857459-1`（`ok=true`，`max_writes=5`，`cleanup_enabled=true`，`remaining=0`）
 - dual-write sampling：run_id=`22170284952-1`（`ok=true`，`strategy=strict`，`ensure_min_rows=25`，`sample_size=20`，`max_total_events=20`，`cleanup_enabled=true`，`remaining=0`）
 
-CI evidence（TBD）:
+CI evidence（2026-02-19）:
 
-- true dual-run stage1 parity：run_id=`TBD`（`ok=true`，Postgres vs ES ordered candidates strict parity）
+- true dual-run stage1 parity：run_id=`22174370696-1`（`ok=true`，Postgres vs ES ordered candidates strict parity）
 
 Local evidence（2026-02-19，devtest DB）:
 
