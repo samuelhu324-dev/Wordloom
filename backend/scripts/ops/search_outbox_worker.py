@@ -12,14 +12,29 @@ from pathlib import Path
 
 
 def main() -> None:
-    backend_root = Path(__file__).resolve().parents[1]
-    if str(backend_root) not in sys.path:
-        sys.path.insert(0, str(backend_root))
+    # Ensure imports work in CI where the project isn't installed as a package.
+    # We need backend/ on sys.path for `import infra.*` and `import api.*`.
+    here = Path(__file__).resolve()
+    repo_root = here.parents[3]
+    backend_root = repo_root / "backend"
 
-    legacy_script = Path(__file__).resolve().parents[1] / "legacy" / "search_outbox_worker.py"
+    for p in (str(backend_root), str(repo_root)):
+        if p and p not in sys.path:
+            sys.path.insert(0, p)
+
+    legacy_script = backend_root / "scripts" / "legacy" / "search_outbox_worker.py"
     if not legacy_script.exists():
         raise SystemExit(f"legacy worker not found: {legacy_script}")
-    runpy.run_path(str(legacy_script), run_name="__main__")
+
+    try:
+        runpy.run_path(str(legacy_script), run_name="__main__")
+    except ModuleNotFoundError as exc:
+        # Common CI failure mode: backend/ not on sys.path => cannot import infra.*
+        print(
+            f"[search_outbox_worker.ops] ModuleNotFoundError: {exc}. backend_root={backend_root} sys.path={sys.path}",
+            file=sys.stderr,
+        )
+        raise
 
 
 if __name__ == "__main__":

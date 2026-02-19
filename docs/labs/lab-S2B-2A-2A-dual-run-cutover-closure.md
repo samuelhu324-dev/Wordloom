@@ -71,6 +71,26 @@
     - 用同一 token 同时查询 Postgres 与 ES，并对比有序 candidates（`--strategy strict|soft`）
   - 输出：`_result.json` + `traces.json`（probe span），并额外落盘 `backfill.log` 便于排查。
 
+- true dual-run stage2（2A：写侧影子闭环，outbox → worker → ES → 对账）：
+  - `python backend/scripts/cli.py labs shadow-verify-dual-run-stage2 --database-url "postgresql://..."`
+  - 说明：该命令在 stage1 的基础上，改为 enqueue `search_outbox_events` 并启动 outbox worker（CI one-shot 模式）来完成投影：
+    - seed `search_index`（drill-scoped）
+    - enqueue outbox events（影子写入）
+    - worker claim/poll → upsert 到 ES → idle 后退出
+    - refresh / search / count / ordered candidates parity（`--strategy strict|soft`）
+  - 输出：`_result.json` + `traces.json`（probe span），并额外落盘 `worker.log`（worker stdout/stderr 的完整日志）便于排查。
+
+- sustained dual-run window（2A：持续窗口验证，worker 常驻 + 周期性 enqueue + drain + 对账）：
+  - `python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url "postgresql://..."`
+  - 说明：该命令用于把 dual-run 从“跑一次闭环”推进到“持续窗口可控”的最小机器证据：
+    - 先确保 ES index mapping
+    - 启动 outbox worker（窗口内不 idle 退出，受 `--worker-max-runtime-seconds` 约束）
+    - 在窗口内按 `--interval-seconds` 周期性 enqueue（上限 `--max-total-events`）
+    - 窗口结束后等待 drain（`--drain-timeout-seconds`），并终止 worker
+    - refresh / search / ordered candidates parity（`--strategy strict|soft`）
+  - 输出：`_result.json`（含 window samples + outbox status_counts）+ `worker.log`。
+  - 补充：window 结束后 labs 会主动停止 worker，因此 `worker.exit_code` 可能为非 0；以 `_result.json.ok=true` 与 outbox drained（`pending/processing=0, failed=0`）为准。
+
 - canary dual-write（2A：最小真写入 + 默认回滚/cleanup）：
   - `python backend/scripts/cli.py labs shadow-verify-canary-dual-write --database-url "postgresql://..."`
   - 说明：该命令会写入极小的 canary 行到两张表：
@@ -166,6 +186,10 @@ CI evidence（2026-02-19）:
 
 - true dual-run stage1 parity：run_id=`22174370696-1`（`ok=true`，Postgres vs ES ordered candidates strict parity）
 
+CI evidence（2026-02-19）:
+
+- true dual-run stage2 parity：run_id=`22178056521-1`（`ok=true`，outbox worker one-shot；Postgres vs ES ordered candidates strict parity）
+
 Local evidence（2026-02-19，devtest DB）:
 
 - true dual-run stage1 parity：run_id=`local-20260219T150925`（`ok=true`，`seed_rows_inserted=25`，`pg_candidates_total=20`，`es_candidates_total=20`，`parity_ok=true`，`strategy=strict`）
@@ -181,3 +205,12 @@ Local evidence（2026-02-19，devtest DB）:
 - 分页不稳定：优先检查稳定排序键与 tie-breaker 是否固定；其次检查游标字段是否存在“同值大量碰撞”。
 - 共享键缺失：优先在 worker/query 侧补日志字段与 trace tags，再回填 drill 的 `evidence_queries`。
 - dual-run 资源争用：先限速/隔离，再做回放与对账，不要直接上来 full speed。
+
+---
+
+## 5) 接下来做什么（最短路径）
+
+- 把 stage2 视为“dual-run 写侧闭环的门槛证据”已就绪；下一步进入 sustained dual-run：以低速/隔离方式让 worker 持续跑一段窗口，观察 backlog/failed/retry（不是只跑一次性 drill）。
+- 最短可执行入口：`python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url "postgresql://..."`；验收口径以 `_result.json` 为准：`ok=true` 且 `outbox.failed=0`，并能在 `drain_timeout_seconds` 内把 `pending/processing` 清零。
+- 补齐 cutover 准入清单的剩余硬项：幂等/唯一性口径 + DLQ/replay 证据 + 可观测共享键在运行窗口内可反查；这些齐了才允许从“能跑通”走向“可切写”。
+- 若希望把本阶段从 `draft` 推到 `stable`：先定义持续窗口阈值（例如连续 N 次/连续 T 分钟无 backlog 增长、failed 受控），并把阈值写入 runbook 的 checklist。
