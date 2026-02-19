@@ -59,6 +59,7 @@
   - ✅ 共享键证据包（最小口径）入口已落地（产出 `shared_keys + evidence_queries`）
   - ✅ dry-run readiness gate 入口已落地（聚合 1A/2A 前置验证；不写入）
   - ✅ canary dual-write（最小真写入 + 默认回滚/cleanup）入口已落地（写入 `search_index` + `search_outbox_events`）
+  - ✅ allowlist/sampling sustained dual-write（持续旁写 + soft/strict + DLQ/replay 证据）入口已落地（写入 `search_outbox_events`，默认 cleanup）
   - ⏳ 强口径共享键互证（logs/metrics/traces 可检索到与 drill 互证的证据）仍待补齐
 
 **Evidence（代码证据 / 入口证据）**:
@@ -74,8 +75,23 @@ CI evidence（2026-02-19）:
 
 - `drill-write-gate` → `shadow_verify_search_index_paging_stability`：run_id=`22164058062-1`（ok=true，pages_checked=2）
 - `drill-write-gate` → `shadow_verify_shared_keys`：run_id=`22164060556-1`（ok=true，seed_rows_inserted=5）
+- `drill-write-gate` → `shadow_verify_canary_dual_write`：run_id=`22168857459-1`（ok=true，max_writes=5，cleanup_enabled=true，remaining=0）
+- `drill-write-gate` → `shadow_verify_dual_write_sampling`：run_id=`(pending)`（ok=(pending)，CI 证据尚未回填）
 
-说明：按截图1-2合约，成功时 artifact 下载包内仅包含 `summary.json`（其内容即 drill 的 `_result.json`）。
+Local evidence（2026-02-19，devtest DB）:
+
+- `labs shadow-verify-dual-write-sampling`（CI-safe strict）：run_id=`20260219T133300-sampling-run1`（ok=true，strategy=strict，inject_failed_rate=0.0，cleanup_enabled=true）
+- `labs shadow-verify-dual-write-sampling`（DLQ+replay demo）：run_id=`20260219T133500-sampling-dlq-replay-run1`（ok=true，strategy=soft，dlq_failed_simulated_total>0，replayed_total>0，cleanup_enabled=true）
+
+### Artifacts / Failure Contract（截图1-2，落地口径）
+
+- 稳定入口：所有 drills/labs 只允许通过 `backend/scripts/cli.py` 触发（禁止 workflow 内分叉脚本入口）。
+- 单一事实源：每次 drill 必须落盘 `_result.json`（作为机器判定与回放的事实源）。
+- GitHub Actions artifacts contract：
+  - 成功（exit code=0）：只上传 `summary.json`（内容等同该次 `_result.json`）。
+  - 失败（exit code≠0，当前约定使用 2）：上传 `artifacts.zip`（至少包含 `summary.json + logs.txt + traces.json`）并让 job 失败。
+
+说明：因此在 Actions UI 里看到“成功时只有 summary.json”是预期行为；需要更详细排查信息时应查看失败时的 zip（或在本地跑同一 CLI drill 取全量快照目录）。
 
 写入点定位（给 2A dual-run/canary 用）：
 
@@ -87,6 +103,7 @@ CI evidence（2026-02-19）:
 
 - [x] 排序/分页稳定性验证落地并进入 `ok` 判定（至少覆盖 2 页以上的游标翻页一致性）
 - [ ] 共享键一致性可通过 logs/metrics/traces 证据定位（drill 产物能反查到观测证据）
+- [x] sustained dual-write（allowlist/sampling）具备 soft/strict 策略，并能落 DLQ/replay 的机器可读证据（写入 `_result.json`）
 - [ ] Dual-run 最小实现上线且具备限速/隔离与回滚（默认不影响外部读写）
 - [ ] runbook 的准入清单可执行（先读后写、每一步有回滚动作与准入证据）
 - [ ] cleanup 的 stub/deprecate/ADR 记账完成

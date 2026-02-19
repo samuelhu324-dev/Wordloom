@@ -87,6 +87,7 @@ write-gate：
     - `scenario=shadow_verify_shared_keys`
     - `scenario=shadow_verify_dual_run_readiness_gate`
     - `scenario=shadow_verify_canary_dual_write`
+    - `scenario=shadow_verify_dual_write_sampling`
   - `library_id`（可选；为空则全量）
 
 ## 5) Local Operation
@@ -183,6 +184,20 @@ Search canary dual-write（v2 2A，最小真写入 + 默认回滚/cleanup）：
 
 - `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_canary_dual_write/<run_id>/_result.json`
 
+Search dual-write sampling（v2 2A，allowlist/sampling sustained dual-write）：
+
+- CI-safe（默认建议）：strict + 不注入失败 + cleanup
+  - `python backend/scripts/cli.py labs shadow-verify-dual-write-sampling --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --sample-size 20 --strategy strict --inject-failed-rate 0.0 --cleanup`
+
+- Demonstrate DLQ + replay（只建议在隔离环境跑）：soft + 注入失败 + replay + cleanup
+  - `python backend/scripts/cli.py labs shadow-verify-dual-write-sampling --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --sample-size 50 --strategy soft --inject-failed-rate 0.2 --replay-failed --replay-by ops --replay-reason "drill evidence" --cleanup`
+
+说明：该命令从 `search_index` 采样既有行，向 `search_outbox_events` enqueue（影子旁写）；并可选模拟新侧失败（DLQ）与回放（replay）证据。
+
+输出目录（默认）：
+
+- `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_dual_write_sampling/<run_id>/_result.json`
+
 ### 5.4 Evidence note（2026-02-18 本地 5 次运行）
 
 S2B-1A-2A（Search shadow verify）已在本地连续运行 5 次并落盘快照：
@@ -209,6 +224,13 @@ CI（GitHub Actions）：
 
 - `drill-write-gate` → `shadow_verify_search_index_paging_stability`：run_id=`22164058062-1`（ok=true，pages_checked=2）
 - `drill-write-gate` → `shadow_verify_shared_keys`：run_id=`22164060556-1`（ok=true）
+- `drill-write-gate` → `shadow_verify_canary_dual_write`：run_id=`22168857459-1`（ok=true，cleanup_enabled=true，remaining=0）
+- `drill-write-gate` → `shadow_verify_dual_write_sampling`：run_id=`(pending)`（CI 证据尚未回填）
+
+Local evidence（2026-02-19，devtest DB）:
+
+- `labs shadow-verify-dual-write-sampling`（CI-safe strict）：run_id=`20260219T133300-sampling-run1`（ok=true）
+- `labs shadow-verify-dual-write-sampling`（DLQ+replay demo）：run_id=`20260219T133500-sampling-dlq-replay-run1`（ok=true，dlq_failed_simulated_total>0，replayed_total>0）
 
 说明：按截图1-2合约，成功时 artifact 下载包内仅包含 `summary.json`（其内容即 drill 的 `_result.json`）。
 
