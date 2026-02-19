@@ -2225,10 +2225,14 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
     seed_text_prefix = f"{token} "
     seed_entity_type = "block"
 
+    # IMPORTANT: Keep the PG candidate scope aligned with the ES query semantics.
+    # ES uses a `match` query on `text`, which won't match arbitrary substrings.
+    # We therefore scope the drill rows to those whose `text` starts with
+    # "<token> ", matching what we seed below.
     where_parts: list[str] = ["entity_type = :entity_type", "text ILIKE :pattern"]
     base_params: dict[str, object] = {
         "entity_type": seed_entity_type,
-        "pattern": f"%{token}%",
+        "pattern": f"{seed_text_prefix}%",
     }
     if library_id is not None:
         where_parts.append("library_id = :library_id")
@@ -2424,6 +2428,31 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
     worker_env["DATABASE_URL"] = database_url
     worker_env["ELASTIC_URL"] = es_url
     worker_env["ELASTIC_INDEX"] = es_index
+
+    # The legacy worker has an optional DB environment guard controlled by WORDLOOM_ENV.
+    # Drills run against ephemeral/local DBs; make this deterministic and avoid accidental
+    # mismatches inherited from the parent environment.
+    try:
+        from urllib.parse import urlparse
+
+        parsed = urlparse(database_url)
+        db_name = (parsed.path or "").lstrip("/").split("/")[0]
+
+        inferred_env: str | None = None
+        if db_name.endswith("_test") or db_name == "wordloom_test":
+            inferred_env = "test"
+        elif db_name.endswith("_dev") or db_name == "wordloom_dev":
+            inferred_env = "dev"
+        elif db_name.endswith("_sandbox") or db_name == "wordloom_sandbox":
+            inferred_env = "sandbox"
+
+        if inferred_env:
+            worker_env["WORDLOOM_ENV"] = inferred_env
+        else:
+            worker_env.pop("WORDLOOM_ENV", None)
+    except Exception:
+        worker_env.pop("WORDLOOM_ENV", None)
+
     worker_env["OUTBOX_EXIT_WHEN_IDLE"] = "1"
     worker_env["OUTBOX_IDLE_POLLS_BEFORE_EXIT"] = str(int(worker_idle_polls_before_exit))
     worker_env["OUTBOX_MAX_RUNTIME_SECONDS"] = str(float(worker_max_runtime_seconds))
@@ -2453,6 +2482,15 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
         encoding="utf-8",
     )
     last_claim_batch_id = _extract_last_claim_batch_id(worker_log_path)
+
+    def _tail(text: str, limit: int = 4000) -> str:
+        t = text or ""
+        if len(t) <= limit:
+            return t
+        return t[-limit:]
+
+    worker_stdout_tail = _tail(worker_proc.stdout or "")
+    worker_stderr_tail = _tail(worker_proc.stderr or "")
 
     # Post-worker: refresh index for deterministic visibility.
     es_refresh_status, _es_refresh_payload = _http_json(
@@ -2740,6 +2778,8 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
             "runtime_seconds": float(worker_runtime_s),
             "log_path": _rel_repo(worker_log_path),
             "last_claim_batch_id": last_claim_batch_id,
+            "stdout_tail": worker_stdout_tail,
+            "stderr_tail": worker_stderr_tail,
         },
         "compare": {
             "pg_ids": pg_ids,
