@@ -12,6 +12,7 @@ on:
           - shadow_verify_search_index_write_gate
           - shadow_verify_search_index_paging_stability
           - shadow_verify_shared_keys
+          - shadow_verify_dual_run_readiness_gate
       library_id:
         description: "Optional scope: library_id (UUID)"
         required: false
@@ -182,6 +183,8 @@ jobs:
             python backend/scripts/cli.py labs shadow-verify-search-index-paging-stability --help || true
             echo "--- cli.py labs shadow-verify-shared-keys --help ---"
             python backend/scripts/cli.py labs shadow-verify-shared-keys --help || true
+            echo "--- cli.py labs shadow-verify-dual-run-readiness-gate --help ---"
+            python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate --help || true
             echo
           } >> artifacts/logs.txt 2>&1
 
@@ -231,6 +234,21 @@ jobs:
               --database-url "$DATABASE_URL" \
               "${library_id_args[@]}" \
               --ensure-min-rows 5 \
+              --run-id "$run_id" \
+              --outdir .drill_snapshot \
+              2>&1 | tee -a artifacts/logs.txt
+            rc=${PIPESTATUS[0]}
+          elif [ "${scenario}" = "shadow_verify_dual_run_readiness_gate" ]; then
+            library_id="${{ inputs.library_id }}"
+            if [ -n "${library_id}" ]; then
+              library_id_args=("--library-id" "${library_id}")
+            else
+              library_id_args=()
+            fi
+
+            python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate \
+              --database-url "$DATABASE_URL" \
+              "${library_id_args[@]}" \
               --run-id "$run_id" \
               --outdir .drill_snapshot \
               2>&1 | tee -a artifacts/logs.txt
