@@ -60,7 +60,7 @@ v2（write-gate，S2B-2A-1A）：
 GitHub Actions drill 额外生成（用于截图1-2约定的 artifacts）：
 - `artifacts/summary.json`
 - `artifacts/logs.txt`
-- `artifacts/traces.json`（当前为占位 `[]`，此 drill 还不采集 tracing）
+- `artifacts/traces.json`（默认可能为占位 `[]`；shared-keys drill 会写入最小 span 以便 logs/traces 互证）
 
 ## 4) One-click Automation（GitHub Actions）
 
@@ -225,7 +225,7 @@ CI（GitHub Actions）：
 - `drill-write-gate` → `shadow_verify_search_index_paging_stability`：run_id=`22164058062-1`（ok=true，pages_checked=2）
 - `drill-write-gate` → `shadow_verify_shared_keys`：run_id=`22164060556-1`（ok=true）
 - `drill-write-gate` → `shadow_verify_canary_dual_write`：run_id=`22168857459-1`（ok=true，cleanup_enabled=true，remaining=0）
-- `drill-write-gate` → `shadow_verify_dual_write_sampling`：run_id=`(pending)`（CI 证据尚未回填）
+- `drill-write-gate` → `shadow_verify_dual_write_sampling`：run_id=`22170284952-1`（ok=true，strategy=strict，ensure_min_rows=25，sample_size=20，max_total_events=20，cleanup_enabled=true，remaining=0）
 
 Local evidence（2026-02-19，devtest DB）:
 
