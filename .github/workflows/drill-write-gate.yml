@@ -15,6 +15,7 @@ on:
           - shadow_verify_dual_run_readiness_gate
           - shadow_verify_dual_run_stage1
           - shadow_verify_dual_run_stage2
+          - shadow_verify_dual_run_window
           - shadow_verify_canary_dual_write
           - shadow_verify_dual_write_sampling
       library_id:
@@ -159,6 +160,11 @@ jobs:
               cp .drill_snapshot/backfill.log artifacts/backfill.log
             fi
 
+            # Optional: copy worker logs (useful for stage2 + outbox experiments).
+            if [ -f .drill_snapshot/worker.log ]; then
+              cp .drill_snapshot/worker.log artifacts/worker.log
+            fi
+
             if [ -f .drill_snapshot/_result.json ]; then
               cp .drill_snapshot/_result.json artifacts/summary.json
             else
@@ -202,6 +208,8 @@ jobs:
             python backend/scripts/cli.py labs shadow-verify-dual-run-stage1 --help || true
             echo "--- cli.py labs shadow-verify-dual-run-stage2 --help ---"
             python backend/scripts/cli.py labs shadow-verify-dual-run-stage2 --help || true
+            echo "--- cli.py labs shadow-verify-dual-run-window --help ---"
+            python backend/scripts/cli.py labs shadow-verify-dual-run-window --help || true
             echo "--- cli.py labs shadow-verify-canary-dual-write --help ---"
             python backend/scripts/cli.py labs shadow-verify-canary-dual-write --help || true
             echo "--- cli.py labs shadow-verify-dual-write-sampling --help ---"
@@ -330,6 +338,42 @@ jobs:
               --worker-poll-interval-seconds 0.2 \
               --worker-idle-polls-before-exit 2 \
               --worker-max-runtime-seconds 60 \
+              --run-id "$run_id" \
+              --outdir .drill_snapshot \
+              2>&1 | tee -a artifacts/logs.txt
+            rc=${PIPESTATUS[0]}
+          elif [ "${scenario}" = "shadow_verify_dual_run_window" ]; then
+            library_id="${{ inputs.library_id }}"
+            if [ -n "${library_id}" ]; then
+              library_id_args=("--library-id" "${library_id}")
+            else
+              library_id_args=()
+            fi
+
+            echo "--- starting ES (infra) ---" | tee -a artifacts/logs.txt
+            docker compose -f docker-compose.infra.yml up -d --wait es 2>&1 | tee -a artifacts/logs.txt
+
+            ES_URL="http://127.0.0.1:19200"
+            ES_INDEX="wordloom-search-index-drill-${run_id}"
+
+            python backend/scripts/cli.py labs shadow-verify-dual-run-window \
+              --database-url "$DATABASE_URL" \
+              "${library_id_args[@]}" \
+              --ensure-min-rows 25 \
+              --candidate-limit 20 \
+              --strategy strict \
+              --duration-seconds 30 \
+              --interval-seconds 1 \
+              --enqueue-batch-size 20 \
+              --max-total-events 200 \
+              --drain-timeout-seconds 20 \
+              --es-url "$ES_URL" \
+              --es-index "$ES_INDEX" \
+              --recreate-index \
+              --worker-batch-size 100 \
+              --worker-concurrency 1 \
+              --worker-poll-interval-seconds 0.2 \
+              --worker-max-runtime-seconds 120 \
               --run-id "$run_id" \
               --outdir .drill_snapshot \
               2>&1 | tee -a artifacts/logs.txt

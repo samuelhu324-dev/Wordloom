@@ -88,6 +88,7 @@ write-gate：
     - `scenario=shadow_verify_dual_run_readiness_gate`
     - `scenario=shadow_verify_dual_run_stage1`
     - `scenario=shadow_verify_dual_run_stage2`
+    - `scenario=shadow_verify_dual_run_window`
     - `scenario=shadow_verify_canary_dual_write`
     - `scenario=shadow_verify_dual_write_sampling`
   - `library_id`（可选；为空则全量）
@@ -171,6 +172,37 @@ Search 2A readiness gate（v2 2A，dry-run 准入门：聚合 1A/2A 前置证据
 
 - `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_dual_run_readiness_gate/<run_id>/_result.json`
 
+Search true dual-run stage1（v2 2A：读侧并行对账，Postgres vs Elasticsearch；CI-safe 不启动 outbox worker）：
+
+- `python backend/scripts/cli.py labs shadow-verify-dual-run-stage1 --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --candidate-limit 20 --strategy strict --es-url "http://127.0.0.1:19200" --es-index "wordloom-search-index-drill-<run_id>" --recreate-index`
+
+说明：该命令会落盘 `backfill.log`，用于排查 ES backfill 过程。
+
+输出目录（默认）：
+
+- `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_dual_run_stage1/<run_id>/_result.json`
+
+Search true dual-run stage2（v2 2A：写侧影子闭环，outbox → worker → ES → 对账；CI-safe one-shot worker）：
+
+- `python backend/scripts/cli.py labs shadow-verify-dual-run-stage2 --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --candidate-limit 20 --strategy strict --es-url "http://127.0.0.1:19200" --es-index "wordloom-search-index-drill-<run_id>" --recreate-index`
+
+说明：该命令会落盘 `worker.log`（用于排查 outbox worker claim/poll/indexing）。
+
+输出目录（默认）：
+
+- `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_dual_run_stage2/<run_id>/_result.json`
+
+Search sustained dual-run window（v2 2A：持续窗口验证，worker 常驻 + 周期性 enqueue + drain + 对账）：
+
+- `python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --candidate-limit 20 --strategy strict --duration-seconds 30 --interval-seconds 1 --enqueue-batch-size 20 --max-total-events 200 --drain-timeout-seconds 20 --es-url "http://127.0.0.1:19200" --es-index "wordloom-search-index-drill-<run_id>" --recreate-index`
+
+说明：该命令会落盘 `worker.log`；并在 `_result.json` 中写入 `window.samples`（每个采样点包含 outbox status_counts），用于在 runbook checklist 中审计“窗口内 backlog 是否受控”。
+补充：window 结束后 labs 会主动停止 worker，因此 `worker.exit_code` 可能为非 0；以 `_result.json.ok=true` 与 outbox drained（`pending/processing=0, failed=0`）为准。
+
+输出目录（默认）：
+
+- `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_dual_run_window/<run_id>/_result.json`
+
 Search canary dual-write（v2 2A，最小真写入 + 默认回滚/cleanup）：
 
 - `python backend/scripts/cli.py labs shadow-verify-canary-dual-write --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test"`
@@ -227,6 +259,7 @@ CI（GitHub Actions）：
 - `drill-write-gate` → `shadow_verify_search_index_paging_stability`：run_id=`22164058062-1`（ok=true，pages_checked=2）
 - `drill-write-gate` → `shadow_verify_shared_keys`：run_id=`22164060556-1`（ok=true）
 - `drill-write-gate` → `shadow_verify_dual_run_stage1`：run_id=`22174370696-1`（ok=true，strict parity；ES backfill + ordered candidates match）
+- `drill-write-gate` → `shadow_verify_dual_run_stage2`：run_id=`22178056521-1`（ok=true，outbox worker one-shot；ordered candidates strict parity）
 - `drill-write-gate` → `shadow_verify_canary_dual_write`：run_id=`22168857459-1`（ok=true，cleanup_enabled=true，remaining=0）
 - `drill-write-gate` → `shadow_verify_dual_write_sampling`：run_id=`22170284952-1`（ok=true，strategy=strict，ensure_min_rows=25，sample_size=20，max_total_events=20，cleanup_enabled=true，remaining=0）
 

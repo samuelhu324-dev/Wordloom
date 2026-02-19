@@ -82,10 +82,12 @@ CI evidence（2026-02-19）:
 CI evidence（2026-02-19）:
 
 - `drill-write-gate` → `shadow_verify_dual_run_stage1`：run_id=`22174370696-1`（ok=true，strict parity；ES backfill + ordered candidates match）
+- `drill-write-gate` → `shadow_verify_dual_run_stage2`：run_id=`22178056521-1`（ok=true，outbox → worker(one-shot) → ES；ordered candidates strict parity）
 
 Local evidence（2026-02-19，devtest DB）:
 
 - `labs shadow-verify-dual-run-stage1`（Postgres vs ES strict parity）：run_id=`local-20260219T150925`（ok=true，seed_rows_inserted=25，pg_candidates_total=20，es_candidates_total=20，parity_ok=true）
+- `labs shadow-verify-dual-run-window`（sustained window，periodic enqueue + drain）：run_id=`local-window-20260219T192757`（ok=true；说明：window 结束会主动停止 worker，`worker.exit_code` 可能非 0，以 `_result.json.ok=true` 为准）
 - `labs shadow-verify-dual-write-sampling`（CI-safe strict）：run_id=`20260219T133300-sampling-run1`（ok=true，strategy=strict，inject_failed_rate=0.0，cleanup_enabled=true）
 - `labs shadow-verify-dual-write-sampling`（DLQ+replay demo）：run_id=`20260219T133500-sampling-dlq-replay-run1`（ok=true，strategy=soft，dlq_failed_simulated_total>0，replayed_total>0，cleanup_enabled=true）
 
@@ -111,6 +113,8 @@ Local evidence（2026-02-19，devtest DB）:
 - [x] 共享键一致性可通过 logs/traces 证据定位（drill 产物可互证；metrics 仍为后续增强项）
 - [x] sustained dual-write（allowlist/sampling）具备 soft/strict 策略，并能落 DLQ/replay 的机器可读证据（写入 `_result.json`）
 - [x] true dual-run stage1（Postgres vs Elasticsearch）对账 drill 可在 CI 跑通，并产出可审计的 `_result.json + traces.json` 证据
+- [x] true dual-run stage2（outbox → worker → ES → 对账）drill 可在 CI 跑通，并产出可审计的 `_result.json + worker.log` 证据
+- [ ] sustained dual-run window（持续窗口：worker 常驻 + 周期性 enqueue + drain）在 CI 跑通，并形成阈值化准入口径（backlog/failed/retry 受控）
 - [ ] Dual-run 最小实现上线且具备限速/隔离与回滚（默认不影响外部读写）
 - [ ] runbook 的准入清单可执行（先读后写、每一步有回滚动作与准入证据）
 - [ ] cleanup 的 stub/deprecate/ADR 记账完成
@@ -144,8 +148,9 @@ v2 在 1A 解决“重复投递/重复副作用”的第一风险后，仍需要
 
 ## Next
 
-- 在 1A 完成后，按本子 log 的 DoD 逐项拆成可执行任务并落到 runbook 与 drill 证据链。
-- 推荐的下一步（优先级最高）：先落地 “dry-run readiness gate”（不写入），把 dual-run/cutover 的开关、范围、回滚、证据链骨架跑通后，再引入最小 canary 写入版本。
+- 把 `shadow_verify_dual_run_stage2` 视为“dual-run 写侧闭环的门槛证据”已就绪；下一步进入 sustained dual-run：以低速/隔离方式让 worker 持续跑一段窗口，观察 backlog/failed/retry（不是只跑一次性 drill）。
+- 补齐 cutover 准入清单的剩余硬项：幂等/唯一性口径 + DLQ/replay 证据 + 可观测共享键在运行窗口内可反查；这些齐了才允许从“能跑通”走向“可切写”。
+- 若希望把本阶段从 `draft` 推到 `stable`：先定义持续窗口阈值（例如连续 N 次/连续 T 分钟无 backlog 增长、failed 受控），并把阈值写入 runbook 的 checklist。
 
 ## References
 

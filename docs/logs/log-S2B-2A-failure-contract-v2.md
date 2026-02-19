@@ -14,7 +14,7 @@
   **adr**: ``
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-18`
-**updated**: `2026-02-18`
+**updated**: `2026-02-19`
 
 ---
 
@@ -67,6 +67,10 @@
   - 子 log 拆分（用于收工 v2）：
     - `docs/logs/log-S2B-2A-1A-shadow-verify-write-gate.md`
     - `docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md`
+
+补充（已具备的最小闭环证据链）：
+
+- `drill-write-gate` workflow 已包含并跑通 `shadow_verify_dual_run_stage2`（outbox → worker → ES → ordered candidates parity；成功时 artifacts 仅 `summary.json`）。
 
 **Acceptance checklist（验收清单）**:
 

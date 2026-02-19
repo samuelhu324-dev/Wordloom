@@ -42,7 +42,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 # script is run from the repo root (python backend/scripts/...) or from
 # backend/ directly (python scripts/...).
 _HERE = Path(__file__).resolve()
-_BACKEND_ROOT = _HERE.parents[1]
+_BACKEND_ROOT = _HERE.parents[2]
 if str(_BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(_BACKEND_ROOT))
 
@@ -557,8 +557,11 @@ async def _worker_loop() -> None:
         logger.info("OUTBOX_USE_ES_BULK enabled: OUTBOX_CONCURRENCY is ignored (bulk uses one request per poll)")
 
     # Expose Prometheus metrics for this worker process.
-    start_http_server(metrics_port)
-    logger.info("Outbox worker metrics listening on :%s", metrics_port)
+    try:
+        start_http_server(metrics_port)
+        logger.info("Outbox worker metrics listening on :%s", metrics_port)
+    except Exception:  # noqa: BLE001
+        logger.exception("Failed to start Prometheus metrics server on :%s", metrics_port)
 
     shutdown_grace_seconds = _get_float_env("OUTBOX_SHUTDOWN_GRACE_SECONDS", 25.0)
     health_max_silence_seconds = _get_float_env("OUTBOX_HEALTH_MAX_SILENCE_SECONDS", 10.0)
