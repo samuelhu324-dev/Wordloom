@@ -37,7 +37,9 @@ from urllib.request import Request, urlopen
 from sqlalchemy import text
 
 
-_BACKEND_DIR = Path(__file__).resolve().parents[1]
+# Ensure `backend/` is on sys.path so `infra.*` imports work when running this
+# script from repo root.
+_BACKEND_DIR = Path(__file__).resolve().parents[2]
 if str(_BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(_BACKEND_DIR))
 

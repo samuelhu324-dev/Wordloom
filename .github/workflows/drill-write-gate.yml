@@ -13,6 +13,7 @@ on:
           - shadow_verify_search_index_paging_stability
           - shadow_verify_shared_keys
           - shadow_verify_dual_run_readiness_gate
+          - shadow_verify_dual_run_stage1
           - shadow_verify_canary_dual_write
           - shadow_verify_dual_write_sampling
       library_id:
@@ -146,7 +147,16 @@ jobs:
               ls -la .drill_snapshot || true
             } >> artifacts/logs.txt 2>&1 || true
 
-            echo "[]" > artifacts/traces.json 2>/dev/null || true
+            if [ -f .drill_snapshot/traces.json ]; then
+              cp .drill_snapshot/traces.json artifacts/traces.json
+            else
+              echo "[]" > artifacts/traces.json 2>/dev/null || true
+            fi
+
+            # Optional: copy extra drill logs (useful for ES backfill parity drill).
+            if [ -f .drill_snapshot/backfill.log ]; then
+              cp .drill_snapshot/backfill.log artifacts/backfill.log
+            fi
 
             if [ -f .drill_snapshot/_result.json ]; then
               cp .drill_snapshot/_result.json artifacts/summary.json
@@ -187,6 +197,8 @@ jobs:
             python backend/scripts/cli.py labs shadow-verify-shared-keys --help || true
             echo "--- cli.py labs shadow-verify-dual-run-readiness-gate --help ---"
             python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate --help || true
+            echo "--- cli.py labs shadow-verify-dual-run-stage1 --help ---"
+            python backend/scripts/cli.py labs shadow-verify-dual-run-stage1 --help || true
             echo "--- cli.py labs shadow-verify-canary-dual-write --help ---"
             python backend/scripts/cli.py labs shadow-verify-canary-dual-write --help || true
             echo "--- cli.py labs shadow-verify-dual-write-sampling --help ---"
@@ -255,6 +267,34 @@ jobs:
             python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate \
               --database-url "$DATABASE_URL" \
               "${library_id_args[@]}" \
+              --run-id "$run_id" \
+              --outdir .drill_snapshot \
+              2>&1 | tee -a artifacts/logs.txt
+            rc=${PIPESTATUS[0]}
+          elif [ "${scenario}" = "shadow_verify_dual_run_stage1" ]; then
+            library_id="${{ inputs.library_id }}"
+            if [ -n "${library_id}" ]; then
+              library_id_args=("--library-id" "${library_id}")
+            else
+              library_id_args=()
+            fi
+
+            echo "--- starting ES (infra) ---" | tee -a artifacts/logs.txt
+            docker compose -f docker-compose.infra.yml up -d --wait es 2>&1 | tee -a artifacts/logs.txt
+
+            ES_URL="http://127.0.0.1:19200"
+            ES_INDEX="wordloom-search-index-drill-${run_id}"
+
+            python backend/scripts/cli.py labs shadow-verify-dual-run-stage1 \
+              --database-url "$DATABASE_URL" \
+              "${library_id_args[@]}" \
+              --ensure-min-rows 25 \
+              --candidate-limit 20 \
+              --strategy strict \
+              --es-url "$ES_URL" \
+              --es-index "$ES_INDEX" \
+              --recreate-index \
+              --backfill-batch-size 200 \
               --run-id "$run_id" \
               --outdir .drill_snapshot \
               2>&1 | tee -a artifacts/logs.txt
