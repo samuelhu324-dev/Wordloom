@@ -55,6 +55,7 @@ SCENARIO_COLLECTOR_DOWN = "collector_down"
 SCENARIO_SHADOW_VERIFY_SHARED_KEYS = "shadow_verify_shared_keys"
 SCENARIO_SHADOW_VERIFY_DUAL_RUN_READINESS_GATE = "shadow_verify_dual_run_readiness_gate"
 SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE = "shadow_verify_canary_dual_write"
+SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING = "shadow_verify_dual_write_sampling"
 
 # Keep in sync with backend/scripts/legacy/search_outbox_worker.py
 SEARCH_OUTBOX_OBS_SCHEMA_VERSION = "labs-009-v2"
@@ -1811,6 +1812,364 @@ def _cmd_labs_shadow_verify_canary_dual_write(args: argparse.Namespace) -> int:
     if cleanup:
         print(f"cleanup_remaining_search_index={cleanup_remaining_search}")
         print(f"cleanup_remaining_search_outbox_events={cleanup_remaining_outbox}")
+    print(f"outputs: {outdir}")
+
+    return 0 if ok else 2
+
+
+def _parse_csv_list(value: str | None) -> list[str]:
+    if not value:
+        return []
+    parts = [p.strip() for p in str(value).split(",")]
+    return [p for p in parts if p]
+
+
+def _cmd_labs_shadow_verify_dual_write_sampling(args: argparse.Namespace) -> int:
+    """Sustained dual-write (outbox enqueue) with allowlist/sampling controls.
+
+    This drill enqueues outbox events (shadow) for a sampled subset of existing
+    `search_index` rows, optionally scoped by library_id and entity_types.
+
+    It records policy evidence for new-side failures:
+    - soft vs strict strategy
+    - DLQ simulation (mark some inserted rows as failed)
+    - replay evidence (failed -> pending with audit fields)
+
+    By default it cleans up inserted outbox rows to keep CI/devtest clean.
+    """
+
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+        lab_id=LAB_ID_S2B_2A_2A,
+        scenario=SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING,
+        run_id=run_id,
+    )
+    _ensure_dir(outdir)
+
+    env = _load_env(env_file=args.env_file)
+    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
+    if not database_url:
+        print("[labs shadow-verify-dual-write-sampling] DATABASE_URL is required (via env or --database-url)")
+        return 2
+
+    library_id = (args.library_id or "").strip() or None
+    if library_id is not None:
+        try:
+            uuid.UUID(library_id)
+        except ValueError:
+            print(f"[labs shadow-verify-dual-write-sampling] invalid --library-id: {library_id}")
+            return 2
+
+    entity_types = _parse_csv_list(args.entity_types)
+    ensure_min_rows = int(args.ensure_min_rows)
+    if ensure_min_rows < 0:
+        print("[labs shadow-verify-dual-write-sampling] --ensure-min-rows must be >= 0")
+        return 2
+
+    sample_size = int(args.sample_size)
+    if sample_size <= 0:
+        print("[labs shadow-verify-dual-write-sampling] --sample-size must be > 0")
+        return 2
+
+    duration_seconds = int(args.duration_seconds)
+    if duration_seconds < 0:
+        print("[labs shadow-verify-dual-write-sampling] --duration-seconds must be >= 0")
+        return 2
+
+    interval_seconds = float(args.interval_seconds)
+    if interval_seconds <= 0:
+        print("[labs shadow-verify-dual-write-sampling] --interval-seconds must be > 0")
+        return 2
+
+    max_total_events = int(args.max_total_events)
+    if max_total_events <= 0:
+        print("[labs shadow-verify-dual-write-sampling] --max-total-events must be > 0")
+        return 2
+
+    strategy = str(args.strategy).strip().lower()
+    if strategy not in {"soft", "strict"}:
+        print("[labs shadow-verify-dual-write-sampling] --strategy must be one of: soft, strict")
+        return 2
+
+    inject_failed_rate = float(args.inject_failed_rate)
+    if inject_failed_rate < 0.0 or inject_failed_rate > 1.0:
+        print("[labs shadow-verify-dual-write-sampling] --inject-failed-rate must be in [0.0, 1.0]")
+        return 2
+
+    replay_failed = bool(args.replay_failed)
+    replay_by = str(args.replay_by or "labs")[:120]
+    replay_reason = str(args.replay_reason or "labs shadow dual-write sampling replay")
+    cleanup = bool(args.cleanup)
+
+    scope = "all" if library_id is None else f"library:{library_id}"
+    engine = create_engine(database_url)
+
+    now = datetime.now(timezone.utc)
+    stop_at = now.timestamp() + float(duration_seconds)
+
+    inserted_outbox_ids: list[str] = []
+    inserted_total = 0
+    dlq_failed_total = 0
+    replayed_total = 0
+    seed_rows_inserted = 0
+    loops = 0
+
+    def _select_candidates(conn, limit: int) -> list[tuple[str, str, int]]:
+        where_parts: list[str] = []
+        params: dict[str, object] = {"limit": int(limit)}
+
+        if library_id is not None:
+            where_parts.append("library_id = :library_id")
+            params["library_id"] = library_id
+
+        if entity_types:
+            where_parts.append("entity_type IN :entity_types")
+            params["entity_types"] = entity_types
+
+        where_sql = ("WHERE " + " AND ".join(where_parts)) if where_parts else ""
+        stmt = text(
+            f"""
+            SELECT entity_type, entity_id::text, event_version
+            FROM search_index
+            {where_sql}
+            ORDER BY updated_at DESC, entity_type, entity_id
+            LIMIT :limit
+            """
+        )
+        if entity_types:
+            stmt = stmt.bindparams(bindparam("entity_types", expanding=True))
+
+        rows = conn.execute(stmt, params).fetchall()
+        return [(str(r[0]), str(r[1]), int(r[2] or 0)) for r in rows]
+
+    with engine.connect() as conn:
+        if ensure_min_rows > 0:
+            seed_rows_inserted = _ensure_search_index_min_rows(
+                conn=conn,
+                ensure_min_rows=ensure_min_rows,
+                library_id=library_id,
+                seed_entity_type="seed_sampling",
+            )
+
+        while True:
+            loops += 1
+            remaining_budget = max_total_events - inserted_total
+            if remaining_budget <= 0:
+                break
+
+            batch_limit = min(int(sample_size), int(remaining_budget))
+            candidates = _select_candidates(conn, limit=batch_limit)
+            if not candidates:
+                break
+
+            batch_now = datetime.now(timezone.utc)
+            outbox_rows = []
+            batch_ids = []
+            for (entity_type, entity_id, event_version) in candidates:
+                outbox_id = str(uuid.uuid4())
+                batch_ids.append(outbox_id)
+                outbox_rows.append(
+                    {
+                        "id": outbox_id,
+                        "entity_type": entity_type,
+                        "entity_id": entity_id,
+                        "op": "upsert",
+                        "event_version": int(event_version),
+                        "created_at": batch_now,
+                        "status": "pending",
+                        "attempts": 0,
+                        "updated_at": batch_now,
+                        "replay_count": 0,
+                    }
+                )
+
+            conn.execute(
+                text(
+                    """
+                    INSERT INTO search_outbox_events
+                      (id, entity_type, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
+                    VALUES
+                      (:id, :entity_type, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
+                    """
+                ),
+                outbox_rows,
+            )
+            conn.commit()
+
+            inserted_outbox_ids.extend(batch_ids)
+            inserted_total += len(batch_ids)
+
+            # DLQ simulation: mark a subset as failed.
+            fail_n = int(round(float(inject_failed_rate) * float(len(batch_ids))))
+            fail_ids = batch_ids[: max(0, min(fail_n, len(batch_ids)))]
+            if fail_ids:
+                conn.execute(
+                    text(
+                        """
+                        UPDATE search_outbox_events
+                        SET status='failed',
+                            error_reason='simulated_new_side_failure',
+                            error='simulated by labs shadow-verify-dual-write-sampling',
+                            updated_at=:now
+                        WHERE id IN :ids
+                        """
+                    ).bindparams(bindparam("ids", expanding=True)),
+                    {"now": datetime.now(timezone.utc), "ids": fail_ids},
+                )
+                conn.commit()
+                dlq_failed_total += len(fail_ids)
+
+            # Replay evidence (failed -> pending with audit fields).
+            if replay_failed and fail_ids:
+                replay_now = datetime.now(timezone.utc)
+                conn.execute(
+                    text(
+                        """
+                        UPDATE search_outbox_events
+                        SET status='pending',
+                            owner=NULL,
+                            lease_until=NULL,
+                            processing_started_at=NULL,
+                            attempts=0,
+                            next_retry_at=NULL,
+                            error_reason=NULL,
+                            error=NULL,
+                            replay_count=(replay_count + 1),
+                            last_replayed_at=:now,
+                            last_replayed_by=:by,
+                            last_replayed_reason=:reason,
+                            updated_at=:now
+                        WHERE id IN :ids
+                          AND status='failed'
+                        """
+                    ).bindparams(bindparam("ids", expanding=True)),
+                    {"now": replay_now, "by": replay_by, "reason": replay_reason, "ids": fail_ids},
+                )
+                conn.commit()
+                replayed_total += len(fail_ids)
+
+            if duration_seconds <= 0:
+                break
+
+            if datetime.now(timezone.utc).timestamp() >= stop_at:
+                break
+
+            time.sleep(interval_seconds)
+
+        # Verify status distribution for inserted rows.
+        pending_count = 0
+        failed_count = 0
+        if inserted_outbox_ids:
+            rows = conn.execute(
+                text(
+                    """
+                    SELECT status, COUNT(*)
+                    FROM search_outbox_events
+                    WHERE id IN :ids
+                    GROUP BY status
+                    """
+                ).bindparams(bindparam("ids", expanding=True)),
+                {"ids": inserted_outbox_ids},
+            ).fetchall()
+            for status, cnt in rows:
+                if str(status) == "pending":
+                    pending_count = int(cnt)
+                elif str(status) == "failed":
+                    failed_count = int(cnt)
+
+        remaining_outbox = None
+        if cleanup and inserted_outbox_ids:
+            conn.execute(
+                text("DELETE FROM search_outbox_events WHERE id IN :ids").bindparams(bindparam("ids", expanding=True)),
+                {"ids": inserted_outbox_ids},
+            )
+            conn.commit()
+            remaining_outbox = int(
+                conn.execute(
+                    text("SELECT COUNT(*) FROM search_outbox_events WHERE id IN :ids").bindparams(
+                        bindparam("ids", expanding=True)
+                    ),
+                    {"ids": inserted_outbox_ids},
+                ).scalar()
+                or 0
+            )
+
+    strict_failed = failed_count > 0
+    ok = True
+    if strategy == "strict" and strict_failed:
+        ok = False
+    if cleanup and inserted_outbox_ids and remaining_outbox not in (0, None):
+        ok = False
+
+    result: dict[str, object] = {
+        "lab_id": LAB_ID_S2B_2A_2A,
+        "scenario": SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING,
+        "run_id": run_id,
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scope": scope,
+        "dry_run": False,
+        "artifacts_contract_hint": "success uploads summary.json only; failure uploads artifacts.zip; _result.json is single source of truth",
+        "targets": {
+            "projection_table": "search_index",
+            "outbox_table": "search_outbox_events",
+            "enqueue_entrypoint": "backend/infra/search/search_outbox_repository.py::SearchOutboxRepository.enqueue",
+            "producer_entrypoint": "backend/infra/search/search_indexer.py::PostgresSearchIndexer",
+            "replay_tool_hint": "backend/scripts/ops/search_outbox_replay_failed.py (stable shim)",
+        },
+        "config": {
+            "library_id": library_id,
+            "entity_types": entity_types,
+            "ensure_min_rows": int(ensure_min_rows),
+            "sample_size": int(sample_size),
+            "duration_seconds": int(duration_seconds),
+            "interval_seconds": float(interval_seconds),
+            "max_total_events": int(max_total_events),
+            "strategy": strategy,
+            "inject_failed_rate": float(inject_failed_rate),
+            "replay_failed": bool(replay_failed),
+            "cleanup": bool(cleanup),
+        },
+        "observed": {
+            "loops": int(loops),
+            "seed_rows_inserted": int(seed_rows_inserted),
+            "outbox_inserted_total": int(inserted_total),
+            "dlq_failed_simulated_total": int(dlq_failed_total),
+            "replayed_total": int(replayed_total),
+            "pending_after": int(pending_count),
+            "failed_after": int(failed_count),
+        },
+        "rollback": {
+            "cleanup_enabled": bool(cleanup),
+            "remaining_outbox_rows": remaining_outbox,
+        },
+        "policy": {
+            "strategy": strategy,
+            "strict_fails_on_failed": True,
+            "soft_allows_failed": True,
+            "dlq_definition": "status=failed rows are treated as terminal by worker; ops can replay to pending with audit fields",
+            "replay_audit_fields": [
+                "replay_count",
+                "last_replayed_at",
+                "last_replayed_by",
+                "last_replayed_reason",
+            ],
+        },
+        "ok": bool(ok),
+    }
+
+    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    print("labs-017.shadow_verify_dual_write_sampling")
+    print(f"scope={scope}")
+    print(f"strategy={strategy}")
+    print(f"outbox_inserted_total={inserted_total}")
+    print(f"pending_after={pending_count}")
+    print(f"failed_after={failed_count}")
+    print(f"dlq_failed_simulated_total={dlq_failed_total}")
+    print(f"replayed_total={replayed_total}")
+    print(f"cleanup_enabled={cleanup}")
+    if cleanup:
+        print(f"remaining_outbox_rows={remaining_outbox}")
     print(f"outputs: {outdir}")
 
     return 0 if ok else 2
@@ -4995,6 +5354,53 @@ def build_parser() -> argparse.ArgumentParser:
     sv_canary.add_argument("--run-id", help="Optional run_id folder name")
     sv_canary.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
     sv_canary.set_defaults(func=_cmd_labs_shadow_verify_canary_dual_write)
+
+    sv_sampling = labs_sub.add_parser(
+        "shadow-verify-dual-write-sampling",
+        help="Labs-017: allowlist/sampling sustained dual-write (outbox enqueue) + DLQ/replay evidence (writes _result.json)",
+    )
+    sv_sampling.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    sv_sampling.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    sv_sampling.add_argument("--library-id", help="Optional library_id allowlist scope (UUID)")
+    sv_sampling.add_argument(
+        "--entity-types",
+        default="",
+        help="Optional allowlist for search_index.entity_type (comma-separated); empty means all",
+    )
+    sv_sampling.add_argument(
+        "--ensure-min-rows",
+        type=int,
+        default=0,
+        help="Optional: seed search_index rows in devtest DB so sampling has candidates",
+    )
+    sv_sampling.add_argument("--sample-size", type=int, default=20)
+    sv_sampling.add_argument("--duration-seconds", type=int, default=0, help="0 means single batch")
+    sv_sampling.add_argument("--interval-seconds", type=float, default=1.0)
+    sv_sampling.add_argument("--max-total-events", type=int, default=100)
+    sv_sampling.add_argument("--strategy", choices=["soft", "strict"], default="strict")
+    sv_sampling.add_argument(
+        "--inject-failed-rate",
+        type=float,
+        default=0.0,
+        help="Simulate new-side failure: fraction of inserted rows to mark failed (DLQ)",
+    )
+    sv_sampling.add_argument(
+        "--replay-failed",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="When enabled, replays simulated failed rows back to pending with audit fields",
+    )
+    sv_sampling.add_argument("--replay-by", default="labs", help="Replay audit: operator identifier")
+    sv_sampling.add_argument("--replay-reason", default="labs drill", help="Replay audit: reason")
+    sv_sampling.add_argument(
+        "--cleanup",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="When enabled, deletes inserted outbox rows after verification",
+    )
+    sv_sampling.add_argument("--run-id", help="Optional run_id folder name")
+    sv_sampling.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    sv_sampling.set_defaults(func=_cmd_labs_shadow_verify_dual_write_sampling)
 
     b = labs_sub.add_parser("expb-es429", help="Run Labs-009 ExpB (ES 429 injection) bounded")
     b.add_argument("--service", default="wordloom-search-outbox-worker")

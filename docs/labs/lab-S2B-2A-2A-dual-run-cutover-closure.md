@@ -43,7 +43,7 @@
 
 ## 1) 执行方式
 
-本阶段的稳定 CLI 入口将分步落地；当前已落地两项（分页稳定性 + 共享键证据包）：
+本阶段的稳定 CLI 入口将分步落地；当前已落地以下入口（分页稳定性 + 共享键证据包 + readiness gate + canary + sampling）：
 
 - 分页稳定性 verify（Search）：
   - `python backend/scripts/cli.py labs shadow-verify-search-index-paging-stability --database-url "postgresql://..."`
@@ -67,6 +67,19 @@
     - `search_outbox_events`（outbox enqueue）
     然后验证写入成功，并默认执行 cleanup（作为 rollback 证据）。
   - 代码定位（写入点）：`backend/infra/search/search_indexer.py` 的 `PostgresSearchIndexer`（写 `search_index` + enqueue `search_outbox_events`）
+
+- allowlist/sampling sustained dual-write（2A：持续旁写 + 策略/回放证据）：
+  - `python backend/scripts/cli.py labs shadow-verify-dual-write-sampling --database-url "postgresql://..."`
+  - 说明：该命令不会改动 `search_index`，而是从 `search_index` 采样既有行，向 `search_outbox_events` enqueue（影子旁写），用于把 dual-run 从“canary 写 5 条”升级到“按 allowlist/sampling 持续旁写”。
+  - allowlist / sampling：
+    - `--library-id <uuid>`：限定租户（最常用的 allowlist）
+    - `--entity-types block,book,tag`：限定 entity_type（可选）
+    - `--duration-seconds / --interval-seconds / --max-total-events`：持续旁写窗口与上限
+  - 新侧失败策略（soft/strict）+ DLQ/replay 证据：
+    - `--strategy strict|soft`：strict 表示发现 failed 立即判定不通过；soft 表示允许 failed 但必须落证据
+    - `--inject-failed-rate 0.2`：模拟新侧失败（把部分 outbox 行标记为 `status=failed`，视作 DLQ）
+    - `--replay-failed --replay-by ops --replay-reason "..."`：模拟/验证 replay（failed -> pending + 审计字段）
+  - 默认会 `--cleanup` 删除本次插入的 outbox 行，保持 CI/devtest 干净（作为 rollback 证据的一部分）。
 
 后续待补齐（2A 里程碑）：
 
@@ -130,6 +143,13 @@ CI evidence（2026-02-19）:
 
 - paging stability：run_id=`22164058062-1`（`ok=true`，`pages_checked=2`）
 - shared keys（evidence bundle）：run_id=`22164060556-1`（`ok=true`）
+- canary dual-write：run_id=`22168857459-1`（`ok=true`，`max_writes=5`，`cleanup_enabled=true`，`remaining=0`）
+- dual-write sampling：run_id=`(pending)`（CI 证据尚未回填）
+
+Local evidence（2026-02-19，devtest DB）:
+
+- dual-write sampling（CI-safe strict）：run_id=`20260219T133300-sampling-run1`（`ok=true`，`strategy=strict`，`inject_failed_rate=0.0`）
+- dual-write sampling（DLQ+replay demo）：run_id=`20260219T133500-sampling-dlq-replay-run1`（`ok=true`，`strategy=soft`，`dlq_failed_simulated_total>0`，`replayed_total>0`）
 
 说明：按截图1-2合约，成功时 Actions artifact 下载包内仅包含 `summary.json`（其内容即 drill 的 `_result.json`）。
 
