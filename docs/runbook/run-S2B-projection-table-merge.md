@@ -82,6 +82,9 @@ write-gate：
 - 打开 GitHub Actions：`drill-write-gate`
 - 输入：
   - `scenario=shadow_verify_search_index_write_gate`
+  - 或：
+    - `scenario=shadow_verify_search_index_paging_stability`
+    - `scenario=shadow_verify_shared_keys`
   - `library_id`（可选；为空则全量）
 
 ## 5) Local Operation
@@ -125,6 +128,30 @@ Search write-gate（v2 1A，唯一性/幂等最小代理）：
 
 - `docs/labs/_snapshot/auto/S2B-2A-1A/shadow_verify_search_index_write_gate/<run_id>/_result.json`
 
+Search paging stability（v2 2A，分页稳定性最小口径）：
+
+- `python backend/scripts/cli.py labs shadow-verify-search-index-paging-stability --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test"`
+
+说明：该命令会要求验证至少 2 页；若数据库数据不足，可追加：
+
+- `--ensure-min-rows 120`
+
+输出目录（默认）：
+
+- `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_search_index_paging_stability/<run_id>/_result.json`
+
+Search shared keys（v2 2A，共享键证据包最小口径）：
+
+- `python backend/scripts/cli.py labs shadow-verify-shared-keys --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test"`
+
+说明：该命令输出 `shared_keys + evidence_queries`，用于后续在 logs/metrics/traces 中反查同一链路；若需要确保 sample 存在，可追加：
+
+- `--ensure-min-rows 5`
+
+输出目录（默认）：
+
+- `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_shared_keys/<run_id>/_result.json`
+
 ### 5.4 Evidence note（2026-02-18 本地 5 次运行）
 
 S2B-1A-2A（Search shadow verify）已在本地连续运行 5 次并落盘快照：
@@ -134,6 +161,18 @@ S2B-1A-2A（Search shadow verify）已在本地连续运行 5 次并落盘快照
 - `20260218T151420-search-run3`
 - `20260218T151421-search-run4`
 - `20260218T151423-search-run5`
+
+S2B-2A-1A（Search write-gate）已在本地连续运行 5 次并落盘快照：
+
+- `20260218T185230-wg-run1`
+- `20260218T185231-wg-run2`
+- `20260218T185232-wg-run3`
+- `20260218T185233-wg-run4`
+- `20260218T185234-wg-run5`
+
+CI（GitHub Actions）：
+
+- `drill-write-gate` 已手动触发并通过（2026-02-18，run #1，约 36s）
 
 ## 6) Verification / Acceptance（v0 口径）
 

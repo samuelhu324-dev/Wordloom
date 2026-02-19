@@ -22,7 +22,7 @@
 
 **Decision**:
 
-- 将 v2 的第二阶段（1B）定义为“完成 write-gate 剩余两项口径 + 形成 dual-run/cutover 的可执行闭环”，以便 `log-S2B-2A` 可以宣告收工：
+- 将 v2 的第二阶段（2A）定义为“完成 write-gate 剩余两项口径 + 形成 dual-run/cutover 的可执行闭环”，以便 `log-S2B-2A` 可以宣告收工：
   - 排序/分页稳定性（读切换后不掉条/不重复）
   - 可观测共享键一致（新旧链路可串联）
   - dual-run（写侧影子并行）最小实现 + cutover（先读后写）准入清单
@@ -53,21 +53,27 @@
 
 **Current status（现状）**:
 
-- ⏳ 未开始（本子 log 用于承接 1A 完成后的下一阶段）。
+- ✅ 1A（write-gate 第一刀：幂等/唯一性）已收工并具备 CI+本地证据：`docs/logs/log-S2B-2A-1A-shadow-verify-write-gate.md`
+- ⏳ 2A 进行中：
+  - ✅ 排序/分页稳定性 drill 入口已落地（要求至少 2 页；CI 可通过 `--ensure-min-rows` 确保有足够数据）
+  - ✅ 共享键证据包（最小口径）入口已落地（产出 `shared_keys + evidence_queries`）
+  - ⏳ 强口径共享键互证（logs/metrics/traces 可检索到与 drill 互证的证据）仍待补齐
 
 **Evidence（代码证据 / 入口证据）**:
 
 - 父 log：`docs/logs/log-S2B-2A-failure-contract-v2.md`
 - 子 log（先决）：`docs/logs/log-S2B-2A-1A-shadow-verify-write-gate.md`
+- Lab manual（本阶段）：`docs/labs/lab-S2B-2A-2A-dual-run-cutover-closure.md`
 - Runbook：`docs/runbook/run-S2B-projection-table-merge.md`
 - Actions workflow（scenario）：`.github/workflows/drill-shadow-verify-entries.yml`
+- Actions workflow（write-gate 专用）：`.github/workflows/drill-write-gate.yml`
 
 **Acceptance checklist（验收清单）**:
 
-- [ ] 排序/分页稳定性验证落地并进入 `ok` 判定
-- [ ] 共享键一致性可通过 logs/metrics/traces 证据定位
-- [ ] Dual-run 最小实现上线且具备限速/隔离与回滚
-- [ ] runbook 的准入清单可执行（切读/切写前的必须条件）
+- [ ] 排序/分页稳定性验证落地并进入 `ok` 判定（至少覆盖 2 页以上的游标翻页一致性）
+- [ ] 共享键一致性可通过 logs/metrics/traces 证据定位（drill 产物能反查到观测证据）
+- [ ] Dual-run 最小实现上线且具备限速/隔离与回滚（默认不影响外部读写）
+- [ ] runbook 的准入清单可执行（先读后写、每一步有回滚动作与准入证据）
 - [ ] cleanup 的 stub/deprecate/ADR 记账完成
 
 ## Background

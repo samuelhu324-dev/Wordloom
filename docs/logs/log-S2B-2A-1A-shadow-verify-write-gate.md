@@ -52,6 +52,7 @@
 - ✅ workflow 已强制统一入口为 CLI（不允许改走 lab 脚本），确保 scenario 执行路径不分叉：`.github/workflows/drill-shadow-verify-entries.yml`
 - ✅ Search/Chronicle CLI 命令已存在并可用：`backend/scripts/cli.py`（`labs shadow-verify-chronicle-entries` / `labs shadow-verify-search-index`）
 - ✅ 已新增 write-gate 专用入口与证据字段：`backend/scripts/cli.py`（`labs shadow-verify-search-index-write-gate`）+ `docs/labs/lab-S2B-2A-1A-shadow-verify-write-gate.md`
+- ✅ CI 已跑通 write-gate drill（`drill-write-gate` 手动触发，2026-02-18，run #1，约 36s）。
 - ✅ 本地已连续运行 write-gate 5 次并落盘快照（2026-02-18）：
   - `20260218T185230-wg-run1`
   - `20260218T185231-wg-run2`
@@ -72,7 +73,7 @@
 
 - [x] Search `_result.json` 增加幂等/唯一性字段（例如 duplicates 统计）
 - [x] `ok` 判定纳入幂等/唯一性（duplicates==0）
-- [ ] CI workflow 运行 Search scenario 时，summary/zip 证据链可重复获得
+- [x] CI workflow 运行 Search scenario 时，summary/zip 证据链可重复获得
 - [x] 文档/Runbook 引用的入口命令不再出现脚本入口分叉
 
 ## Background
