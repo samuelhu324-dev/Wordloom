@@ -194,10 +194,36 @@ Search true dual-run stage2（v2 2A：写侧影子闭环，outbox → worker →
 
 Search sustained dual-run window（v2 2A：持续窗口验证，worker 常驻 + 周期性 enqueue + drain + 对账）：
 
-- `python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --candidate-limit 20 --strategy strict --duration-seconds 30 --interval-seconds 1 --enqueue-batch-size 20 --max-total-events 200 --drain-timeout-seconds 20 --es-url "http://127.0.0.1:19200" --es-index "wordloom-search-index-drill-<run_id>" --recreate-index`
+- `python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --candidate-limit 20 --strategy strict --duration-seconds 30 --interval-seconds 1 --enqueue-batch-size 20 --max-total-events 200 --drain-timeout-seconds 20 --max-outbox-failed 0 --max-outbox-pending 0 --max-outbox-processing 0 --require-outbox-done-eq-enqueued --es-url "http://127.0.0.1:19200" --es-index "wordloom-search-index-drill-<run_id>" --recreate-index`
 
 说明：该命令会落盘 `worker.log`；并在 `_result.json` 中写入 `window.samples`（每个采样点包含 outbox status_counts），用于在 runbook checklist 中审计“窗口内 backlog 是否受控”。
 补充：window 结束后 labs 会主动停止 worker，因此 `worker.exit_code` 可能为非 0；以 `_result.json.ok=true` 与 outbox drained（`pending/processing=0, failed=0`）为准。
+
+Window hard gate（阈值化 checklist；用于从“能跑”推进到“可执行/可放行”）：
+
+- 口径（以 `_result.json` 为事实源）：
+  - `outbox.status_counts.failed <= max_outbox_failed`（默认 0）
+  - `outbox.status_counts.pending <= max_outbox_pending`（默认 0）
+  - `outbox.status_counts.processing <= max_outbox_processing`（默认 0）
+  - `require_outbox_done_eq_enqueued=true` 时：`outbox.status_counts.done == outbox.enqueued_total`
+  - `worker.ok=true`（允许 stop requested；详见 `_result.json.worker.stop_requested`）
+  - `compare.parity_ok=true`（strategy=strict 时为 ordered strict parity）
+- 对应 CLI 参数（CI 可显式传参，保证 hard gate 可审计）：
+  - `--max-outbox-failed 0 --max-outbox-pending 0 --max-outbox-processing 0 --require-outbox-done-eq-enqueued`
+- 推进动作（从“能跑”→“更接近可放行”）：
+  - 先固定 hard gate 不变，把 `--duration-seconds` 拉长（例如 300s），并相应提高 `--max-total-events`（保持低速）；审计 `_result.json.window.samples` 中 `pending/processing` 是否在窗口内反复积压。
+  - 准入门槛建议：至少连续 N 次（例如 N=3）long-window 运行均 `ok=true` 且 outbox drained（`pending/processing=0, failed=0`）。
+
+Manual long window（300s，低速示例；用于拿更接近真实的窗口证据）：
+
+- `python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --candidate-limit 20 --strategy strict --duration-seconds 300 --interval-seconds 5 --enqueue-batch-size 5 --max-total-events 300 --drain-timeout-seconds 90 --max-outbox-failed 0 --max-outbox-pending 0 --max-outbox-processing 0 --require-outbox-done-eq-enqueued --es-url "http://127.0.0.1:19200" --es-index "wordloom-search-index-drill-<run_id>" --recreate-index --worker-max-runtime-seconds 420`
+
+Actions（workflow_dispatch，手动长窗口）：
+
+- `drill-write-gate`：选择 `scenario=shadow_verify_dual_run_window`，并通过 inputs 覆盖：
+  - `window_duration_seconds / window_interval_seconds / window_enqueue_batch_size / window_max_total_events / window_drain_timeout_seconds / window_worker_max_runtime_seconds`
+- 本地快速审计（示例）：
+  - `jq '{ok, outbox: .outbox.status_counts, enqueued: .outbox.enqueued_total, worker_ok: .worker.ok, parity_ok: .compare.parity_ok, stop: .worker.stop_requested}' docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_dual_run_window/<run_id>/_result.json`
 
 输出目录（默认）：
 
