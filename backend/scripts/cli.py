@@ -2429,6 +2429,16 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
     worker_env["ELASTIC_URL"] = es_url
     worker_env["ELASTIC_INDEX"] = es_index
 
+    # Ensure `infra.*` imports work in the worker across environments (notably GH Actions)
+    # by forcing backend/ onto PYTHONPATH for the subprocess.
+    backend_path = str(REPO_ROOT / "backend")
+    existing_pythonpath = str(worker_env.get("PYTHONPATH") or "").strip()
+    if existing_pythonpath:
+        if backend_path not in existing_pythonpath.split(os.pathsep):
+            worker_env["PYTHONPATH"] = backend_path + os.pathsep + existing_pythonpath
+    else:
+        worker_env["PYTHONPATH"] = backend_path
+
     # The legacy worker has an optional DB environment guard controlled by WORDLOOM_ENV.
     # Drills run against ephemeral/local DBs; make this deterministic and avoid accidental
     # mismatches inherited from the parent environment.
