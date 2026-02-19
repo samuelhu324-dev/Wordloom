@@ -86,6 +86,8 @@ write-gate：
     - `scenario=shadow_verify_search_index_paging_stability`
     - `scenario=shadow_verify_shared_keys`
     - `scenario=shadow_verify_dual_run_readiness_gate`
+    - `scenario=shadow_verify_dual_run_stage1`
+    - `scenario=shadow_verify_dual_run_stage2`
     - `scenario=shadow_verify_canary_dual_write`
     - `scenario=shadow_verify_dual_write_sampling`
   - `library_id`（可选；为空则全量）
@@ -224,6 +226,7 @@ CI（GitHub Actions）：
 
 - `drill-write-gate` → `shadow_verify_search_index_paging_stability`：run_id=`22164058062-1`（ok=true，pages_checked=2）
 - `drill-write-gate` → `shadow_verify_shared_keys`：run_id=`22164060556-1`（ok=true）
+- `drill-write-gate` → `shadow_verify_dual_run_stage1`：run_id=`22174370696-1`（ok=true，strict parity；ES backfill + ordered candidates match）
 - `drill-write-gate` → `shadow_verify_canary_dual_write`：run_id=`22168857459-1`（ok=true，cleanup_enabled=true，remaining=0）
 - `drill-write-gate` → `shadow_verify_dual_write_sampling`：run_id=`22170284952-1`（ok=true，strategy=strict，ensure_min_rows=25，sample_size=20，max_total_events=20，cleanup_enabled=true，remaining=0）
 

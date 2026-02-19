@@ -79,9 +79,9 @@ CI evidence（2026-02-19）:
 - `drill-write-gate` → `shadow_verify_canary_dual_write`：run_id=`22168857459-1`（ok=true，max_writes=5，cleanup_enabled=true，remaining=0）
 - `drill-write-gate` → `shadow_verify_dual_write_sampling`：run_id=`22170284952-1`（ok=true，strategy=strict，ensure_min_rows=25，sample_size=20，max_total_events=20，cleanup_enabled=true，remaining=0）
 
-CI evidence（TBD）:
+CI evidence（2026-02-19）:
 
-- `drill-write-gate` → `shadow_verify_dual_run_stage1`：run_id=`TBD`（ok=true，strict parity；ES backfill + ordered candidates match）
+- `drill-write-gate` → `shadow_verify_dual_run_stage1`：run_id=`22174370696-1`（ok=true，strict parity；ES backfill + ordered candidates match）
 
 Local evidence（2026-02-19，devtest DB）:
 
@@ -110,7 +110,7 @@ Local evidence（2026-02-19，devtest DB）:
 - [x] 排序/分页稳定性验证落地并进入 `ok` 判定（至少覆盖 2 页以上的游标翻页一致性）
 - [x] 共享键一致性可通过 logs/traces 证据定位（drill 产物可互证；metrics 仍为后续增强项）
 - [x] sustained dual-write（allowlist/sampling）具备 soft/strict 策略，并能落 DLQ/replay 的机器可读证据（写入 `_result.json`）
-- [ ] true dual-run stage1（Postgres vs Elasticsearch）对账 drill 可在 CI 跑通，并产出可审计的 `_result.json + traces.json` 证据
+- [x] true dual-run stage1（Postgres vs Elasticsearch）对账 drill 可在 CI 跑通，并产出可审计的 `_result.json + traces.json` 证据
 - [ ] Dual-run 最小实现上线且具备限速/隔离与回滚（默认不影响外部读写）
 - [ ] runbook 的准入清单可执行（先读后写、每一步有回滚动作与准入证据）
 - [ ] cleanup 的 stub/deprecate/ADR 记账完成
