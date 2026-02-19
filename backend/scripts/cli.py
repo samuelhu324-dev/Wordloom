@@ -2879,6 +2879,11 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
     max_total_events = int(args.max_total_events)
     drain_timeout_seconds = float(args.drain_timeout_seconds)
 
+    max_outbox_failed = int(args.max_outbox_failed)
+    max_outbox_pending = int(args.max_outbox_pending)
+    max_outbox_processing = int(args.max_outbox_processing)
+    require_outbox_done_eq_enqueued = bool(args.require_outbox_done_eq_enqueued)
+
     worker_batch_size = int(args.worker_batch_size)
     worker_concurrency = int(args.worker_concurrency)
     worker_poll_interval_seconds = float(args.worker_poll_interval_seconds)
@@ -2907,6 +2912,15 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
         return 2
     if drain_timeout_seconds <= 0:
         print("[labs shadow-verify-dual-run-window] --drain-timeout-seconds must be > 0")
+        return 2
+    if max_outbox_failed < 0:
+        print("[labs shadow-verify-dual-run-window] --max-outbox-failed must be >= 0")
+        return 2
+    if max_outbox_pending < 0:
+        print("[labs shadow-verify-dual-run-window] --max-outbox-pending must be >= 0")
+        return 2
+    if max_outbox_processing < 0:
+        print("[labs shadow-verify-dual-run-window] --max-outbox-processing must be >= 0")
         return 2
     if worker_batch_size <= 0:
         print("[labs shadow-verify-dual-run-window] --worker-batch-size must be > 0")
@@ -3410,10 +3424,10 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
         and worker_ok
         and es_refresh_ok
         and es_search_ok
-        and outbox_failed == 0
-        and outbox_pending == 0
-        and outbox_processing == 0
-        and outbox_done == len(outbox_event_ids)
+        and outbox_failed <= max_outbox_failed
+        and outbox_pending <= max_outbox_pending
+        and outbox_processing <= max_outbox_processing
+        and ((not require_outbox_done_eq_enqueued) or (outbox_done == len(outbox_event_ids)))
         and parity_ok
     )
 
@@ -3440,6 +3454,10 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
             "enqueue_batch_size": enqueue_batch_size,
             "max_total_events": max_total_events,
             "drain_timeout_seconds": drain_timeout_seconds,
+            "max_outbox_failed": max_outbox_failed,
+            "max_outbox_pending": max_outbox_pending,
+            "max_outbox_processing": max_outbox_processing,
+            "require_outbox_done_eq_enqueued": bool(require_outbox_done_eq_enqueued),
             "es_url": es_url,
             "es_index": es_index,
             "recreate_index": recreate_index,
@@ -7398,6 +7416,30 @@ def build_parser() -> argparse.ArgumentParser:
     sv_dualrun_window.add_argument("--enqueue-batch-size", type=int, default=20)
     sv_dualrun_window.add_argument("--max-total-events", type=int, default=200)
     sv_dualrun_window.add_argument("--drain-timeout-seconds", type=float, default=20.0)
+    sv_dualrun_window.add_argument(
+        "--max-outbox-failed",
+        type=int,
+        default=0,
+        help="Hard gate: maximum allowed failed outbox events for the inserted ids (default: 0)",
+    )
+    sv_dualrun_window.add_argument(
+        "--max-outbox-pending",
+        type=int,
+        default=0,
+        help="Hard gate: maximum allowed pending outbox events at the end of the drain (default: 0)",
+    )
+    sv_dualrun_window.add_argument(
+        "--max-outbox-processing",
+        type=int,
+        default=0,
+        help="Hard gate: maximum allowed processing outbox events at the end of the drain (default: 0)",
+    )
+    sv_dualrun_window.add_argument(
+        "--require-outbox-done-eq-enqueued",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Hard gate: require outbox done == enqueued_total for the inserted ids (default: true)",
+    )
     sv_dualrun_window.add_argument("--es-url", help="Override ELASTIC_URL (default: env or http://127.0.0.1:19200)")
     sv_dualrun_window.add_argument("--es-index", help="Override ELASTIC_INDEX (default: drill-scoped)")
     sv_dualrun_window.add_argument("--recreate-index", action=argparse.BooleanOptionalAction, default=True)

@@ -90,6 +90,9 @@
     - refresh / search / ordered candidates parity（`--strategy strict|soft`）
   - 输出：`_result.json`（含 window samples + outbox status_counts）+ `worker.log`。
   - 补充：window 结束后 labs 会主动停止 worker，因此 `worker.exit_code` 可能为非 0；以 `_result.json.ok=true` 与 outbox drained（`pending/processing=0, failed=0`）为准。
+  - Window hard gate（阈值化准入口径）：
+    - `--max-outbox-failed 0 --max-outbox-pending 0 --max-outbox-processing 0 --require-outbox-done-eq-enqueued`
+    - 说明：这些阈值参数会参与 `ok` 判定（不满足则返回 exit code=2）；详细口径见 runbook：`docs/runbook/run-S2B-projection-table-merge.md`。
 
 - canary dual-write（2A：最小真写入 + 默认回滚/cleanup）：
   - `python backend/scripts/cli.py labs shadow-verify-canary-dual-write --database-url "postgresql://..."`
@@ -190,6 +193,10 @@ CI evidence（2026-02-19）:
 
 - true dual-run stage2 parity：run_id=`22178056521-1`（`ok=true`，outbox worker one-shot；Postgres vs ES ordered candidates strict parity）
 
+CI evidence（2026-02-19）:
+
+- sustained dual-run window：run_id=`22181124988-1`（`ok=true`，duration=15s，max_total_events=75，outbox.done=75，strict parity）
+
 Local evidence（2026-02-19，devtest DB）:
 
 - true dual-run stage1 parity：run_id=`local-20260219T150925`（`ok=true`，`seed_rows_inserted=25`，`pg_candidates_total=20`，`es_candidates_total=20`，`parity_ok=true`，`strategy=strict`）
@@ -212,5 +219,6 @@ Local evidence（2026-02-19，devtest DB）:
 
 - 把 stage2 视为“dual-run 写侧闭环的门槛证据”已就绪；下一步进入 sustained dual-run：以低速/隔离方式让 worker 持续跑一段窗口，观察 backlog/failed/retry（不是只跑一次性 drill）。
 - 最短可执行入口：`python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url "postgresql://..."`；验收口径以 `_result.json` 为准：`ok=true` 且 `outbox.failed=0`，并能在 `drain_timeout_seconds` 内把 `pending/processing` 清零。
+- 推进到“更接近可放行”：固定 hard gate 不变，把窗口拉长（例如 300s）并保持低速；建议至少连续 N 次（例如 N=3）long-window 运行均 `ok=true`。
 - 补齐 cutover 准入清单的剩余硬项：幂等/唯一性口径 + DLQ/replay 证据 + 可观测共享键在运行窗口内可反查；这些齐了才允许从“能跑通”走向“可切写”。
 - 若希望把本阶段从 `draft` 推到 `stable`：先定义持续窗口阈值（例如连续 N 次/连续 T 分钟无 backlog 增长、failed 受控），并把阈值写入 runbook 的 checklist。

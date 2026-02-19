@@ -24,6 +24,37 @@ on:
         default: ""
         type: string
 
+      window_duration_seconds:
+        description: "[window only] duration seconds (CI default: 15; manual example: 300)"
+        required: false
+        default: "15"
+        type: string
+      window_interval_seconds:
+        description: "[window only] enqueue interval seconds (default: 1; manual example: 5)"
+        required: false
+        default: "1"
+        type: string
+      window_enqueue_batch_size:
+        description: "[window only] enqueue batch size (default: 5)"
+        required: false
+        default: "5"
+        type: string
+      window_max_total_events:
+        description: "[window only] max total enqueued events (default: 75; manual example: 300)"
+        required: false
+        default: "75"
+        type: string
+      window_drain_timeout_seconds:
+        description: "[window only] drain timeout seconds (default: 30; manual example: 90)"
+        required: false
+        default: "30"
+        type: string
+      window_worker_max_runtime_seconds:
+        description: "[window only] worker max runtime seconds (default: 90; manual example: 420)"
+        required: false
+        default: "90"
+        type: string
+
 jobs:
   drill:
     runs-on: ubuntu-latest
@@ -356,24 +387,35 @@ jobs:
             ES_URL="http://127.0.0.1:19200"
             ES_INDEX="wordloom-search-index-drill-${run_id}"
 
+            WINDOW_DURATION_SECONDS="${{ inputs.window_duration_seconds }}"
+            WINDOW_INTERVAL_SECONDS="${{ inputs.window_interval_seconds }}"
+            WINDOW_ENQUEUE_BATCH_SIZE="${{ inputs.window_enqueue_batch_size }}"
+            WINDOW_MAX_TOTAL_EVENTS="${{ inputs.window_max_total_events }}"
+            WINDOW_DRAIN_TIMEOUT_SECONDS="${{ inputs.window_drain_timeout_seconds }}"
+            WINDOW_WORKER_MAX_RUNTIME_SECONDS="${{ inputs.window_worker_max_runtime_seconds }}"
+
             python backend/scripts/cli.py labs shadow-verify-dual-run-window \
               --database-url "$DATABASE_URL" \
               "${library_id_args[@]}" \
               --ensure-min-rows 25 \
               --candidate-limit 20 \
               --strategy strict \
-              --duration-seconds 30 \
-              --interval-seconds 1 \
-              --enqueue-batch-size 20 \
-              --max-total-events 200 \
-              --drain-timeout-seconds 20 \
+              --duration-seconds "$WINDOW_DURATION_SECONDS" \
+              --interval-seconds "$WINDOW_INTERVAL_SECONDS" \
+              --enqueue-batch-size "$WINDOW_ENQUEUE_BATCH_SIZE" \
+              --max-total-events "$WINDOW_MAX_TOTAL_EVENTS" \
+              --drain-timeout-seconds "$WINDOW_DRAIN_TIMEOUT_SECONDS" \
+              --max-outbox-failed 0 \
+              --max-outbox-pending 0 \
+              --max-outbox-processing 0 \
+              --require-outbox-done-eq-enqueued \
               --es-url "$ES_URL" \
               --es-index "$ES_INDEX" \
               --recreate-index \
               --worker-batch-size 100 \
               --worker-concurrency 1 \
               --worker-poll-interval-seconds 0.2 \
-              --worker-max-runtime-seconds 120 \
+              --worker-max-runtime-seconds "$WINDOW_WORKER_MAX_RUNTIME_SECONDS" \
               --run-id "$run_id" \
               --outdir .drill_snapshot \
               2>&1 | tee -a artifacts/logs.txt
