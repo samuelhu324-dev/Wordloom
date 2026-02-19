@@ -13,6 +13,7 @@ on:
           - shadow_verify_search_index_paging_stability
           - shadow_verify_shared_keys
           - shadow_verify_dual_run_readiness_gate
+          - shadow_verify_canary_dual_write
       library_id:
         description: "Optional scope: library_id (UUID)"
         required: false
@@ -101,7 +102,7 @@ jobs:
           engine = sa.create_engine(url)
           with engine.connect() as conn:
               conn.execute(sa.text("SELECT 1"))
-              expected = ("search_index",)
+              expected = ("search_index", "search_outbox_events")
               for t in expected:
                   exists = conn.execute(sa.text("SELECT to_regclass(:t)"), {"t": t}).scalar()
                   if not exists:
@@ -185,6 +186,8 @@ jobs:
             python backend/scripts/cli.py labs shadow-verify-shared-keys --help || true
             echo "--- cli.py labs shadow-verify-dual-run-readiness-gate --help ---"
             python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate --help || true
+            echo "--- cli.py labs shadow-verify-canary-dual-write --help ---"
+            python backend/scripts/cli.py labs shadow-verify-canary-dual-write --help || true
             echo
           } >> artifacts/logs.txt 2>&1
 
@@ -249,6 +252,23 @@ jobs:
             python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate \
               --database-url "$DATABASE_URL" \
               "${library_id_args[@]}" \
+              --run-id "$run_id" \
+              --outdir .drill_snapshot \
+              2>&1 | tee -a artifacts/logs.txt
+            rc=${PIPESTATUS[0]}
+          elif [ "${scenario}" = "shadow_verify_canary_dual_write" ]; then
+            library_id="${{ inputs.library_id }}"
+            if [ -n "${library_id}" ]; then
+              library_id_args=("--library-id" "${library_id}")
+            else
+              library_id_args=()
+            fi
+
+            python backend/scripts/cli.py labs shadow-verify-canary-dual-write \
+              --database-url "$DATABASE_URL" \
+              "${library_id_args[@]}" \
+              --max-writes 5 \
+              --cleanup \
               --run-id "$run_id" \
               --outdir .drill_snapshot \
               2>&1 | tee -a artifacts/logs.txt

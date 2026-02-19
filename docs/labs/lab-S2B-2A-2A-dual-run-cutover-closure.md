@@ -60,10 +60,18 @@
   - 说明：该命令会在一个 `_result.json` 中聚合：write-gate（1A）+ paging stability（2A）+ shared keys evidence bundle（2A）。
     - 这一步仍不等于 dual-run 真正写入/切换，只是把“准入证据链骨架”先跑通。
 
+- canary dual-write（2A：最小真写入 + 默认回滚/cleanup）：
+  - `python backend/scripts/cli.py labs shadow-verify-canary-dual-write --database-url "postgresql://..."`
+  - 说明：该命令会写入极小的 canary 行到两张表：
+    - `search_index`（projection）
+    - `search_outbox_events`（outbox enqueue）
+    然后验证写入成功，并默认执行 cleanup（作为 rollback 证据）。
+  - 代码定位（写入点）：`backend/infra/search/search_indexer.py` 的 `PostgresSearchIndexer`（写 `search_index` + enqueue `search_outbox_events`）
+
 后续待补齐（2A 里程碑）：
 
 - 共享键一致性 verify（logs/metrics/traces 可互证的强口径）
-- Dual-run drill（写侧影子并行，默认不对外）
+- Dual-run drill（新旧链路并行消费 + 对账 + 可回滚的强口径闭环）
 
 默认输出目录约定（与 1A 一致，自动快照）：
 
