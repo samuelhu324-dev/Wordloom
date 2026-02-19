@@ -85,6 +85,7 @@ write-gate：
   - 或：
     - `scenario=shadow_verify_search_index_paging_stability`
     - `scenario=shadow_verify_shared_keys`
+    - `scenario=shadow_verify_dual_run_readiness_gate`
   - `library_id`（可选；为空则全量）
 
 ## 5) Local Operation
@@ -152,6 +153,20 @@ Search shared keys（v2 2A，共享键证据包最小口径）：
 
 - `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_shared_keys/<run_id>/_result.json`
 
+Search 2A readiness gate（v2 2A，dry-run 准入门：聚合 1A/2A 前置证据，不写入）：
+
+- `python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test"`
+
+说明：该命令会在一个 `_result.json` 中聚合：
+
+- write-gate（1A）
+- paging stability（2A）
+- shared keys evidence bundle（2A）
+
+输出目录（默认）：
+
+- `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_dual_run_readiness_gate/<run_id>/_result.json`
+
 ### 5.4 Evidence note（2026-02-18 本地 5 次运行）
 
 S2B-1A-2A（Search shadow verify）已在本地连续运行 5 次并落盘快照：
@@ -173,6 +188,13 @@ S2B-2A-1A（Search write-gate）已在本地连续运行 5 次并落盘快照：
 CI（GitHub Actions）：
 
 - `drill-write-gate` 已手动触发并通过（2026-02-18，run #1，约 36s）
+
+补充（2026-02-19）：
+
+- `drill-write-gate` → `shadow_verify_search_index_paging_stability`：run_id=`22164058062-1`（ok=true，pages_checked=2）
+- `drill-write-gate` → `shadow_verify_shared_keys`：run_id=`22164060556-1`（ok=true）
+
+说明：按截图1-2合约，成功时 artifact 下载包内仅包含 `summary.json`（其内容即 drill 的 `_result.json`）。
 
 ## 6) Verification / Acceptance（v0 口径）
 

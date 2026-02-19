@@ -14,7 +14,7 @@
   **adr**: ``
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-18`
-**updated**: `2026-02-18`
+**updated**: `2026-02-19`
 
 ---
 
@@ -57,6 +57,7 @@
 - ⏳ 2A 进行中：
   - ✅ 排序/分页稳定性 drill 入口已落地（要求至少 2 页；CI 可通过 `--ensure-min-rows` 确保有足够数据）
   - ✅ 共享键证据包（最小口径）入口已落地（产出 `shared_keys + evidence_queries`）
+  - ✅ dry-run readiness gate 入口已落地（聚合 1A/2A 前置验证；不写入）
   - ⏳ 强口径共享键互证（logs/metrics/traces 可检索到与 drill 互证的证据）仍待补齐
 
 **Evidence（代码证据 / 入口证据）**:
@@ -68,9 +69,16 @@
 - Actions workflow（scenario）：`.github/workflows/drill-shadow-verify-entries.yml`
 - Actions workflow（write-gate 专用）：`.github/workflows/drill-write-gate.yml`
 
+CI evidence（2026-02-19）:
+
+- `drill-write-gate` → `shadow_verify_search_index_paging_stability`：run_id=`22164058062-1`（ok=true，pages_checked=2）
+- `drill-write-gate` → `shadow_verify_shared_keys`：run_id=`22164060556-1`（ok=true，seed_rows_inserted=5）
+
+说明：按截图1-2合约，成功时 artifact 下载包内仅包含 `summary.json`（其内容即 drill 的 `_result.json`）。
+
 **Acceptance checklist（验收清单）**:
 
-- [ ] 排序/分页稳定性验证落地并进入 `ok` 判定（至少覆盖 2 页以上的游标翻页一致性）
+- [x] 排序/分页稳定性验证落地并进入 `ok` 判定（至少覆盖 2 页以上的游标翻页一致性）
 - [ ] 共享键一致性可通过 logs/metrics/traces 证据定位（drill 产物能反查到观测证据）
 - [ ] Dual-run 最小实现上线且具备限速/隔离与回滚（默认不影响外部读写）
 - [ ] runbook 的准入清单可执行（先读后写、每一步有回滚动作与准入证据）
@@ -106,6 +114,7 @@ v2 在 1A 解决“重复投递/重复副作用”的第一风险后，仍需要
 ## Next
 
 - 在 1A 完成后，按本子 log 的 DoD 逐项拆成可执行任务并落到 runbook 与 drill 证据链。
+- 推荐的下一步（优先级最高）：先落地 “dry-run readiness gate”（不写入），把 dual-run/cutover 的开关、范围、回滚、证据链骨架跑通后，再引入最小 canary 写入版本。
 
 ## References
 

@@ -14,7 +14,7 @@
   **adr**: ``
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-18`
-**updated**: `2026-02-18`
+**updated**: `2026-02-19`
 
 ---
 
@@ -54,6 +54,11 @@
   - `python backend/scripts/cli.py labs shadow-verify-shared-keys --database-url "postgresql://..."`
   - 说明：该命令输出 `shared_keys + evidence_queries`，用于后续在 logs/metrics/traces 中反查同一链路；若需要确保 sample 存在，可追加：
     - `--ensure-min-rows 5`
+
+- dry-run readiness gate（2A：把 1A/2A 前置条件聚合成一次 drill 证据包，不写入）：
+  - `python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate --database-url "postgresql://..."`
+  - 说明：该命令会在一个 `_result.json` 中聚合：write-gate（1A）+ paging stability（2A）+ shared keys evidence bundle（2A）。
+    - 这一步仍不等于 dual-run 真正写入/切换，只是把“准入证据链骨架”先跑通。
 
 后续待补齐（2A 里程碑）：
 
@@ -112,6 +117,13 @@
 - 子 log（语义与验收）：`docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md`
 - 先决 log（1A）：`docs/logs/log-S2B-2A-1A-shadow-verify-write-gate.md`
 - Runbook：`docs/runbook/run-S2B-projection-table-merge.md`
+
+CI evidence（2026-02-19）:
+
+- paging stability：run_id=`22164058062-1`（`ok=true`，`pages_checked=2`）
+- shared keys（evidence bundle）：run_id=`22164060556-1`（`ok=true`）
+
+说明：按截图1-2合约，成功时 Actions artifact 下载包内仅包含 `summary.json`（其内容即 drill 的 `_result.json`）。
 
 ---
 
