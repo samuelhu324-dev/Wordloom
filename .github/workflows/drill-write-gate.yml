@@ -10,6 +10,8 @@ on:
         type: choice
         options:
           - shadow_verify_search_index_write_gate
+          - shadow_verify_search_index_paging_stability
+          - shadow_verify_shared_keys
       library_id:
         description: "Optional scope: library_id (UUID)"
         required: false
@@ -176,6 +178,10 @@ jobs:
             echo
             echo "--- cli.py labs shadow-verify-search-index-write-gate --help ---"
             python backend/scripts/cli.py labs shadow-verify-search-index-write-gate --help || true
+            echo "--- cli.py labs shadow-verify-search-index-paging-stability --help ---"
+            python backend/scripts/cli.py labs shadow-verify-search-index-paging-stability --help || true
+            echo "--- cli.py labs shadow-verify-shared-keys --help ---"
+            python backend/scripts/cli.py labs shadow-verify-shared-keys --help || true
             echo
           } >> artifacts/logs.txt 2>&1
 
@@ -191,6 +197,40 @@ jobs:
             python backend/scripts/cli.py labs shadow-verify-search-index-write-gate \
               --database-url "$DATABASE_URL" \
               "${library_id_args[@]}" \
+              --run-id "$run_id" \
+              --outdir .drill_snapshot \
+              2>&1 | tee -a artifacts/logs.txt
+            rc=${PIPESTATUS[0]}
+          elif [ "${scenario}" = "shadow_verify_search_index_paging_stability" ]; then
+            library_id="${{ inputs.library_id }}"
+            if [ -n "${library_id}" ]; then
+              library_id_args=("--library-id" "${library_id}")
+            else
+              library_id_args=()
+            fi
+
+            python backend/scripts/cli.py labs shadow-verify-search-index-paging-stability \
+              --database-url "$DATABASE_URL" \
+              "${library_id_args[@]}" \
+              --page-size 50 \
+              --pages-checked 2 \
+              --ensure-min-rows 120 \
+              --run-id "$run_id" \
+              --outdir .drill_snapshot \
+              2>&1 | tee -a artifacts/logs.txt
+            rc=${PIPESTATUS[0]}
+          elif [ "${scenario}" = "shadow_verify_shared_keys" ]; then
+            library_id="${{ inputs.library_id }}"
+            if [ -n "${library_id}" ]; then
+              library_id_args=("--library-id" "${library_id}")
+            else
+              library_id_args=()
+            fi
+
+            python backend/scripts/cli.py labs shadow-verify-shared-keys \
+              --database-url "$DATABASE_URL" \
+              "${library_id_args[@]}" \
+              --ensure-min-rows 5 \
               --run-id "$run_id" \
               --outdir .drill_snapshot \
               2>&1 | tee -a artifacts/logs.txt

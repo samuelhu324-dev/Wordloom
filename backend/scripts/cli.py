@@ -21,6 +21,7 @@ import time
 import urllib.error
 import urllib.request
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 from sqlalchemy import create_engine, text
@@ -35,10 +36,12 @@ LAB_ID_S3A_2A_3A = "S3A-2A-3A"
 LAB_ID_S2B_1A_1A = "S2B-1A-1A"
 LAB_ID_S2B_1A_2A = "S2B-1A-2A"
 LAB_ID_S2B_2A_1A = "S2B-2A-1A"
+LAB_ID_S2B_2A_2A = "S2B-2A-2A"
 
 SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES = "shadow_verify_chronicle_entries"
 SCENARIO_SHADOW_VERIFY_SEARCH_INDEX = "shadow_verify_search_index"
 SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE = "shadow_verify_search_index_write_gate"
+SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY = "shadow_verify_search_index_paging_stability"
 SCENARIO_ES_WRITE_BLOCK_4XX = "es_write_block_4xx"
 SCENARIO_ES_429_INJECT = "es_429_inject"
 SCENARIO_ES_DOWN_CONNECT = "es_down_connect"
@@ -48,6 +51,8 @@ SCENARIO_STUCK_RECLAIM = "stuck_reclaim"
 SCENARIO_DUPLICATE_DELIVERY = "duplicate_delivery"
 SCENARIO_PROJECTION_VERSION = "projection_version"
 SCENARIO_COLLECTOR_DOWN = "collector_down"
+
+SCENARIO_SHADOW_VERIFY_SHARED_KEYS = "shadow_verify_shared_keys"
 
 # Keep in sync with backend/scripts/legacy/search_outbox_worker.py
 SEARCH_OUTBOX_OBS_SCHEMA_VERSION = "labs-009-v2"
@@ -1059,6 +1064,307 @@ def _cmd_labs_shadow_verify_search_index_write_gate(args: argparse.Namespace) ->
         print(f"duplicates_groups_scoped={duplicates_groups_scoped}")
     if duplicates_extra_rows_scoped is not None:
         print(f"duplicates_extra_rows_scoped={duplicates_extra_rows_scoped}")
+    print(f"outputs: {outdir}")
+
+    return 0 if ok else 2
+
+
+def _ensure_search_index_min_rows(
+    *,
+    conn,
+    ensure_min_rows: int,
+    library_id: str | None,
+    seed_entity_type: str = "seed",
+) -> int:
+    if ensure_min_rows <= 0:
+        return 0
+
+    where_parts: list[str] = []
+    params: dict[str, object] = {}
+    if library_id is not None:
+        where_parts.append("library_id = :library_id")
+        params["library_id"] = library_id
+    where_sql = ("WHERE " + " AND ".join(where_parts)) if where_parts else ""
+
+    existing = int(conn.execute(text(f"SELECT COUNT(*) FROM search_index {where_sql}"), params).scalar() or 0)
+    need = int(ensure_min_rows) - existing
+    if need <= 0:
+        return 0
+
+    now = datetime.now(timezone.utc)
+    rows = []
+    for i in range(need):
+        rows.append(
+            {
+                "id": str(uuid.uuid4()),
+                "entity_type": seed_entity_type,
+                "library_id": library_id,
+                "entity_id": str(uuid.uuid4()),
+                "text": f"seed:{seed_entity_type}:{i}",
+                "snippet": None,
+                "rank_score": 0.0,
+                "created_at": now,
+                "updated_at": now,
+                "event_version": int(i + 1),
+            }
+        )
+
+    conn.execute(
+        text(
+            """
+            INSERT INTO search_index
+              (id, entity_type, library_id, entity_id, text, snippet, rank_score, created_at, updated_at, event_version)
+            VALUES
+              (:id, :entity_type, :library_id, :entity_id, :text, :snippet, :rank_score, :created_at, :updated_at, :event_version)
+            """
+        ),
+        rows,
+    )
+    conn.commit()
+    return int(need)
+
+
+def _cmd_labs_shadow_verify_search_index_paging_stability(args: argparse.Namespace) -> int:
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+        lab_id=LAB_ID_S2B_2A_2A,
+        scenario=SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY,
+        run_id=run_id,
+    )
+    _ensure_dir(outdir)
+
+    env = _load_env(env_file=args.env_file)
+    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
+    if not database_url:
+        print(
+            "[labs shadow-verify-search-index-paging-stability] DATABASE_URL is required (via env or --database-url)"
+        )
+        return 2
+
+    library_id = (args.library_id or "").strip() or None
+    if library_id is not None:
+        try:
+            uuid.UUID(library_id)
+        except ValueError:
+            print(f"[labs shadow-verify-search-index-paging-stability] invalid --library-id: {library_id}")
+            return 2
+
+    page_size = int(args.page_size)
+    pages_checked = int(args.pages_checked)
+    ensure_min_rows = int(args.ensure_min_rows)
+    if page_size <= 0:
+        print("[labs shadow-verify-search-index-paging-stability] --page-size must be > 0")
+        return 2
+    if pages_checked < 2:
+        print("[labs shadow-verify-search-index-paging-stability] --pages-checked must be >= 2")
+        return 2
+    if ensure_min_rows < 0:
+        print("[labs shadow-verify-search-index-paging-stability] --ensure-min-rows must be >= 0")
+        return 2
+
+    # Stable ordering contract: (entity_type, entity_id) as tie-breaker.
+    order_key = ["entity_type", "entity_id"]
+    scope = "all" if library_id is None else f"library:{library_id}"
+
+    def _fetch_page(
+        *,
+        conn,
+        cursor_entity_type: str | None,
+        cursor_entity_id: str | None,
+    ) -> list[tuple[str, str]]:
+        where_parts: list[str] = []
+        params: dict[str, object] = {"limit": page_size}
+
+        if library_id is not None:
+            where_parts.append("library_id = :library_id")
+            params["library_id"] = library_id
+
+        if cursor_entity_type is not None and cursor_entity_id is not None:
+            # Keyset pagination on (entity_type, entity_id)
+            where_parts.append(
+                "(entity_type > :cursor_entity_type OR (entity_type = :cursor_entity_type AND entity_id > :cursor_entity_id))"
+            )
+            params["cursor_entity_type"] = cursor_entity_type
+            params["cursor_entity_id"] = cursor_entity_id
+
+        where_sql = ("WHERE " + " AND ".join(where_parts)) if where_parts else ""
+        sql = f"""
+            SELECT entity_type, entity_id
+            FROM search_index
+            {where_sql}
+            ORDER BY entity_type, entity_id
+            LIMIT :limit
+        """
+        rows = conn.execute(text(sql), params).all()
+        return [(str(r[0]), str(r[1])) for r in rows]
+
+    engine = create_engine(database_url)
+    pages: list[list[tuple[str, str]]] = []
+    with engine.connect() as conn:
+        inserted_rows = _ensure_search_index_min_rows(conn=conn, ensure_min_rows=ensure_min_rows, library_id=library_id)
+        count_where = "" if library_id is None else "WHERE library_id = :library_id"
+        count_params = {} if library_id is None else {"library_id": library_id}
+        rows_total = int(conn.execute(text(f"SELECT COUNT(*) FROM search_index {count_where}"), count_params).scalar() or 0)
+
+        cursor_entity_type: str | None = None
+        cursor_entity_id: str | None = None
+
+        for _ in range(pages_checked):
+            page = _fetch_page(
+                conn=conn,
+                cursor_entity_type=cursor_entity_type,
+                cursor_entity_id=cursor_entity_id,
+            )
+            pages.append(page)
+            if not page:
+                break
+            cursor_entity_type, cursor_entity_id = page[-1]
+
+    # Verify ordering and no overlap across pages.
+    ordering_ok = True
+    for page in pages:
+        if page != sorted(page):
+            ordering_ok = False
+            break
+
+    seen: set[tuple[str, str]] = set()
+    duplicates_across_pages_total = 0
+    for page in pages:
+        for k in page:
+            if k in seen:
+                duplicates_across_pages_total += 1
+            else:
+                seen.add(k)
+
+    data_sufficient = rows_total >= (page_size * pages_checked)
+    ok = ordering_ok and duplicates_across_pages_total == 0 and data_sufficient and (len(pages) >= pages_checked)
+    result: dict[str, object] = {
+        "lab_id": LAB_ID_S2B_2A_2A,
+        "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY,
+        "run_id": run_id,
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scope": scope,
+        "order_key": order_key,
+        "rows_total": int(rows_total),
+        "ensure_min_rows": int(ensure_min_rows),
+        "seed_rows_inserted": int(inserted_rows),
+        "data_sufficient": bool(data_sufficient),
+        "page_size": page_size,
+        "pages_checked": pages_checked,
+        "pages_returned": len(pages),
+        "page_lengths": [len(p) for p in pages],
+        "duplicates_across_pages_total": int(duplicates_across_pages_total),
+        "ordering_ok": bool(ordering_ok),
+        "ok": bool(ok),
+    }
+    if pages and pages[0]:
+        result["first_key"] = {"entity_type": pages[0][0][0], "entity_id": pages[0][0][1]}
+        result["last_key"] = {"entity_type": pages[-1][-1][0], "entity_id": pages[-1][-1][1]}
+
+    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    print("labs-013.shadow_verify_search_index_paging_stability")
+    print(f"scope={scope}")
+    print(f"order_key={order_key}")
+    print(f"page_size={page_size}")
+    print(f"pages_checked={pages_checked}")
+    print(f"pages_returned={len(pages)}")
+    print(f"rows_total={rows_total}")
+    print(f"ensure_min_rows={ensure_min_rows}")
+    print(f"seed_rows_inserted={inserted_rows}")
+    print(f"data_sufficient={data_sufficient}")
+    print(f"duplicates_across_pages_total={duplicates_across_pages_total}")
+    print(f"ordering_ok={ordering_ok}")
+    print(f"outputs: {outdir}")
+
+    return 0 if ok else 2
+
+
+def _cmd_labs_shadow_verify_shared_keys(args: argparse.Namespace) -> int:
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+        lab_id=LAB_ID_S2B_2A_2A,
+        scenario=SCENARIO_SHADOW_VERIFY_SHARED_KEYS,
+        run_id=run_id,
+    )
+    _ensure_dir(outdir)
+
+    env = _load_env(env_file=args.env_file)
+    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
+    if not database_url:
+        print("[labs shadow-verify-shared-keys] DATABASE_URL is required (via env or --database-url)")
+        return 2
+
+    library_id = (args.library_id or "").strip() or None
+    if library_id is not None:
+        try:
+            uuid.UUID(library_id)
+        except ValueError:
+            print(f"[labs shadow-verify-shared-keys] invalid --library-id: {library_id}")
+            return 2
+
+    ensure_min_rows = int(args.ensure_min_rows)
+    if ensure_min_rows < 0:
+        print("[labs shadow-verify-shared-keys] --ensure-min-rows must be >= 0")
+        return 2
+
+    scope = "all" if library_id is None else f"library:{library_id}"
+
+    engine = create_engine(database_url)
+    with engine.connect() as conn:
+        inserted_rows = _ensure_search_index_min_rows(conn=conn, ensure_min_rows=ensure_min_rows, library_id=library_id)
+
+        sample_where = "" if library_id is None else "WHERE library_id = :library_id"
+        sample_params = {} if library_id is None else {"library_id": library_id}
+        rows = conn.execute(
+            text(
+                f"""
+                SELECT entity_type, entity_id
+                FROM search_index
+                {sample_where}
+                ORDER BY entity_type, entity_id
+                LIMIT 5
+                """
+            ),
+            sample_params,
+        ).all()
+
+    samples = [{"entity_type": str(r[0]), "entity_id": str(r[1])} for r in rows]
+    ok = len(samples) > 0
+
+    result: dict[str, object] = {
+        "lab_id": LAB_ID_S2B_2A_2A,
+        "scenario": SCENARIO_SHADOW_VERIFY_SHARED_KEYS,
+        "run_id": run_id,
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scope": scope,
+        "shared_keys": {
+            "run_id": run_id,
+            "library_id": library_id,
+            "samples": samples,
+        },
+        "ensure_min_rows": int(ensure_min_rows),
+        "seed_rows_inserted": int(inserted_rows),
+        "evidence_queries": {
+            "artifact_logs_grep": [
+                f"scenario={SCENARIO_SHADOW_VERIFY_SHARED_KEYS}",
+                f"run_id={run_id}",
+                f"scope={scope}",
+            ]
+        },
+        "ok": bool(ok),
+    }
+
+    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    print("labs-014.shadow_verify_shared_keys")
+    print(f"scope={scope}")
+    print(f"ensure_min_rows={ensure_min_rows}")
+    print(f"seed_rows_inserted={inserted_rows}")
+    print(f"samples_total={len(samples)}")
+    if samples:
+        print(f"sample_entity_type={samples[0]['entity_type']}")
+        print(f"sample_entity_id={samples[0]['entity_id']}")
     print(f"outputs: {outdir}")
 
     return 0 if ok else 2
@@ -4174,6 +4480,42 @@ def build_parser() -> argparse.ArgumentParser:
     sv_search_gate.add_argument("--run-id", help="Optional run_id folder name")
     sv_search_gate.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
     sv_search_gate.set_defaults(func=_cmd_labs_shadow_verify_search_index_write_gate)
+
+    sv_search_paging = labs_sub.add_parser(
+        "shadow-verify-search-index-paging-stability",
+        help="Labs-013: verify stable keyset paging over search_index (writes _result.json)",
+    )
+    sv_search_paging.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    sv_search_paging.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    sv_search_paging.add_argument("--library-id", help="Optional library_id scope (UUID)")
+    sv_search_paging.add_argument("--page-size", type=int, default=50)
+    sv_search_paging.add_argument("--pages-checked", type=int, default=2)
+    sv_search_paging.add_argument(
+        "--ensure-min-rows",
+        type=int,
+        default=0,
+        help="Optional: seed search_index rows in devtest DB to make paging checks meaningful",
+    )
+    sv_search_paging.add_argument("--run-id", help="Optional run_id folder name")
+    sv_search_paging.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    sv_search_paging.set_defaults(func=_cmd_labs_shadow_verify_search_index_paging_stability)
+
+    sv_keys = labs_sub.add_parser(
+        "shadow-verify-shared-keys",
+        help="Labs-014: emit shared-key evidence bundle (writes _result.json)",
+    )
+    sv_keys.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    sv_keys.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    sv_keys.add_argument("--library-id", help="Optional library_id scope (UUID)")
+    sv_keys.add_argument(
+        "--ensure-min-rows",
+        type=int,
+        default=0,
+        help="Optional: seed search_index rows in devtest DB to ensure sample keys exist",
+    )
+    sv_keys.add_argument("--run-id", help="Optional run_id folder name")
+    sv_keys.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    sv_keys.set_defaults(func=_cmd_labs_shadow_verify_shared_keys)
 
     b = labs_sub.add_parser("expb-es429", help="Run Labs-009 ExpB (ES 429 injection) bounded")
     b.add_argument("--service", default="wordloom-search-outbox-worker")
