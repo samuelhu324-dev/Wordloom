@@ -2326,6 +2326,9 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
             "replay_count": 0,
             "created_at": now,
             "updated_at": now,
+            # Optional trace context columns exist in some environments; keep binds satisfied.
+            "traceparent": None,
+            "tracestate": None,
         }
         # Keep consistent columns across all rows; only include columns that exist.
         chosen_cols = [
