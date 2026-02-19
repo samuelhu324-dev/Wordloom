@@ -362,18 +362,18 @@ jobs:
               --ensure-min-rows 25 \
               --candidate-limit 20 \
               --strategy strict \
-              --duration-seconds 30 \
+              --duration-seconds 15 \
               --interval-seconds 1 \
-              --enqueue-batch-size 20 \
-              --max-total-events 200 \
-              --drain-timeout-seconds 20 \
+              --enqueue-batch-size 5 \
+              --max-total-events 75 \
+              --drain-timeout-seconds 30 \
               --es-url "$ES_URL" \
               --es-index "$ES_INDEX" \
               --recreate-index \
               --worker-batch-size 100 \
               --worker-concurrency 1 \
               --worker-poll-interval-seconds 0.2 \
-              --worker-max-runtime-seconds 120 \
+              --worker-max-runtime-seconds 90 \
               --run-id "$run_id" \
               --outdir .drill_snapshot \
               2>&1 | tee -a artifacts/logs.txt
