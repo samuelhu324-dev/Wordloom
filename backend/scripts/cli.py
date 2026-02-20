@@ -1802,7 +1802,8 @@ def _cmd_labs_shadow_verify_dual_run_stage1(args: argparse.Namespace) -> int:
 
         pg_sql = f"""
             SELECT entity_id::text AS entity_id,
-                   COALESCE(event_version, 0) AS event_version
+                   COALESCE(event_version, 0) AS event_version,
+                   library_id::text AS library_id
             FROM search_index
             WHERE {where_sql}
             ORDER BY COALESCE(event_version, 0) ASC, entity_id::text ASC
@@ -1811,7 +1812,14 @@ def _cmd_labs_shadow_verify_dual_run_stage1(args: argparse.Namespace) -> int:
         pg_params = dict(base_params)
         pg_params["limit"] = candidate_limit
         pg_rows = conn.execute(text(pg_sql), pg_params).all()
-        pg_candidates = [{"entity_id": str(r[0]), "event_version": int(r[1] or 0)} for r in pg_rows]
+        pg_candidates = [
+            {
+                "entity_id": str(r[0]),
+                "event_version": int(r[1] or 0),
+                "library_id": (str(r[2]) if (len(r) > 2 and r[2] is not None) else None),
+            }
+            for r in pg_rows
+        ]
 
     # Strong mutual evidence: emit a machine-searchable stdout probe.
     probe: dict[str, object] = {
@@ -2341,6 +2349,7 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
             for c in (
                 "id",
                 "entity_type",
+                "library_id",
                 "entity_id",
                 "op",
                 "event_version",
@@ -2359,14 +2368,16 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
         for c in pg_candidates:
             ev_uuid = uuid.uuid4()
             outbox_event_ids.append(str(ev_uuid))
-            rows.append(
-                {
-                    **{k: v for k, v in base_event.items() if k in chosen_cols},
-                    "id": ev_uuid,
-                    "entity_id": uuid.UUID(str(c["entity_id"])),
-                    "event_version": int(c["event_version"] or 0),
-                }
-            )
+            row = {
+                **{k: v for k, v in base_event.items() if k in chosen_cols},
+                "id": ev_uuid,
+                "entity_id": uuid.UUID(str(c["entity_id"])),
+                "event_version": int(c["event_version"] or 0),
+            }
+            if "library_id" in chosen_cols:
+                lib = c.get("library_id") or library_id
+                row["library_id"] = (uuid.UUID(str(lib)) if lib else None)
+            rows.append(row)
 
         cols_sql = ", ".join(chosen_cols)
         placeholders = ", ".join([f":{c}" for c in chosen_cols])
@@ -2429,6 +2440,13 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
     worker_env["DATABASE_URL"] = database_url
     worker_env["ELASTIC_URL"] = es_url
     worker_env["ELASTIC_INDEX"] = es_index
+
+    # If the drill is scoped to a library, scope the worker too.
+    # This matches the worker's claim predicate (library_id IN allowlist).
+    if library_id is not None:
+        worker_env["SEARCH_OUTBOX_LIBRARY_ALLOWLIST"] = str(library_id)
+    else:
+        worker_env.pop("SEARCH_OUTBOX_LIBRARY_ALLOWLIST", None)
 
     # Ensure `infra.*` imports work in subprocess (CI doesn't install the project).
     backend_path = str(REPO_ROOT / "backend")
@@ -3028,7 +3046,8 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
 
         pg_sql = f"""
             SELECT entity_id::text AS entity_id,
-                   COALESCE(event_version, 0) AS event_version
+                   COALESCE(event_version, 0) AS event_version,
+                   library_id::text AS library_id
             FROM search_index
             WHERE {where_sql}
             ORDER BY COALESCE(event_version, 0) ASC, entity_id::text ASC
@@ -3037,7 +3056,14 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
         pg_params = dict(base_params)
         pg_params["limit"] = candidate_limit
         pg_rows = conn.execute(text(pg_sql), pg_params).all()
-        pg_candidates = [{"entity_id": str(r[0]), "event_version": int(r[1] or 0)} for r in pg_rows]
+        pg_candidates = [
+            {
+                "entity_id": str(r[0]),
+                "event_version": int(r[1] or 0),
+                "library_id": (str(r[2]) if (len(r) > 2 and r[2] is not None) else None),
+            }
+            for r in pg_rows
+        ]
         if not pg_candidates:
             print("[labs shadow-verify-dual-run-window] no pg candidates; increase --ensure-min-rows")
             return 2
@@ -3114,6 +3140,13 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
     worker_env["DATABASE_URL"] = database_url
     worker_env["ELASTIC_URL"] = es_url
     worker_env["ELASTIC_INDEX"] = es_index
+
+    # If the drill is scoped to a library, scope the worker too.
+    # This matches the worker's claim predicate (library_id IN allowlist).
+    if library_id is not None:
+        worker_env["SEARCH_OUTBOX_LIBRARY_ALLOWLIST"] = str(library_id)
+    else:
+        worker_env.pop("SEARCH_OUTBOX_LIBRARY_ALLOWLIST", None)
 
     backend_path = str(REPO_ROOT / "backend")
     existing_pythonpath = str(worker_env.get("PYTHONPATH") or "").strip()
@@ -3200,6 +3233,7 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
         for c in (
             "id",
             "entity_type",
+            "library_id",
             "entity_id",
             "op",
             "event_version",
@@ -3249,14 +3283,16 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
                 ev_uuid = uuid.uuid4()
                 outbox_event_ids.append(str(ev_uuid))
                 enqueued_entity_ids.append(str(c["entity_id"]))
-                batch.append(
-                    {
-                        **{k: v for k, v in base_event.items() if k in chosen_cols},
-                        "id": ev_uuid,
-                        "entity_id": uuid.UUID(str(c["entity_id"])),
-                        "event_version": int(c["event_version"] or 0),
-                    }
-                )
+                row = {
+                    **{k: v for k, v in base_event.items() if k in chosen_cols},
+                    "id": ev_uuid,
+                    "entity_id": uuid.UUID(str(c["entity_id"])),
+                    "event_version": int(c["event_version"] or 0),
+                }
+                if "library_id" in chosen_cols:
+                    lib = c.get("library_id") or library_id
+                    row["library_id"] = (uuid.UUID(str(lib)) if lib else None)
+                batch.append(row)
 
             if batch:
                 with engine.connect() as conn:
@@ -3605,6 +3641,7 @@ def _cmd_labs_shadow_verify_canary_dual_write(args: argparse.Namespace) -> int:
             {
                 "id": outbox_ids[i],
                 "entity_type": entity_type,
+                "library_id": library_id,
                 "entity_id": entity_ids[i],
                 "op": "upsert",
                 "event_version": int(i + 1),
@@ -3646,9 +3683,9 @@ def _cmd_labs_shadow_verify_canary_dual_write(args: argparse.Namespace) -> int:
             text(
                 """
                 INSERT INTO search_outbox_events
-                                    (id, entity_type, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
+                                    (id, entity_type, library_id, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
                 VALUES
-                                    (:id, :entity_type, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
+                                    (:id, :entity_type, :library_id, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
                 """
             ),
             outbox_rows,
@@ -3921,7 +3958,7 @@ def _cmd_labs_shadow_verify_dual_write_sampling(args: argparse.Namespace) -> int
     seed_rows_inserted = 0
     loops = 0
 
-    def _select_candidates(conn, limit: int) -> list[tuple[str, str, int]]:
+    def _select_candidates(conn, limit: int) -> list[tuple[str, str, int, str | None]]:
         where_parts: list[str] = []
         params: dict[str, object] = {"limit": int(limit)}
 
@@ -3936,7 +3973,7 @@ def _cmd_labs_shadow_verify_dual_write_sampling(args: argparse.Namespace) -> int
         where_sql = ("WHERE " + " AND ".join(where_parts)) if where_parts else ""
         stmt = text(
             f"""
-            SELECT entity_type, entity_id::text, event_version
+            SELECT entity_type, entity_id::text, event_version, library_id::text AS library_id
             FROM search_index
             {where_sql}
             ORDER BY updated_at DESC, entity_type, entity_id
@@ -3947,7 +3984,7 @@ def _cmd_labs_shadow_verify_dual_write_sampling(args: argparse.Namespace) -> int
             stmt = stmt.bindparams(bindparam("entity_types", expanding=True))
 
         rows = conn.execute(stmt, params).fetchall()
-        return [(str(r[0]), str(r[1]), int(r[2] or 0)) for r in rows]
+        return [(str(r[0]), str(r[1]), int(r[2] or 0), (str(r[3]) if (len(r) > 3 and r[3] is not None) else None)) for r in rows]
 
     with engine.connect() as conn:
         if ensure_min_rows > 0:
@@ -3972,13 +4009,14 @@ def _cmd_labs_shadow_verify_dual_write_sampling(args: argparse.Namespace) -> int
             batch_now = datetime.now(timezone.utc)
             outbox_rows = []
             batch_ids = []
-            for (entity_type, entity_id, event_version) in candidates:
+            for (entity_type, entity_id, event_version, candidate_library_id) in candidates:
                 outbox_id = str(uuid.uuid4())
                 batch_ids.append(outbox_id)
                 outbox_rows.append(
                     {
                         "id": outbox_id,
                         "entity_type": entity_type,
+                        "library_id": candidate_library_id,
                         "entity_id": entity_id,
                         "op": "upsert",
                         "event_version": int(event_version),
@@ -3994,9 +4032,9 @@ def _cmd_labs_shadow_verify_dual_write_sampling(args: argparse.Namespace) -> int
                 text(
                     """
                     INSERT INTO search_outbox_events
-                      (id, entity_type, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
+                                            (id, entity_type, library_id, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
                     VALUES
-                      (:id, :entity_type, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
+                                            (:id, :entity_type, :library_id, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
                     """
                 ),
                 outbox_rows,
