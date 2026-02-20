@@ -216,7 +216,18 @@ Window hard gate（阈值化 checklist；用于从“能跑”推进到“可执
 
 Manual long window（300s，低速示例；用于拿更接近真实的窗口证据）：
 
-- `python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --candidate-limit 20 --strategy strict --duration-seconds 300 --interval-seconds 5 --enqueue-batch-size 5 --max-total-events 300 --drain-timeout-seconds 90 --max-outbox-failed 0 --max-outbox-pending 0 --max-outbox-processing 0 --require-outbox-done-eq-enqueued --es-url "http://127.0.0.1:19200" --es-index "wordloom-search-index-drill-<run_id>" --recreate-index --worker-max-runtime-seconds 420`
+重要：要验证“持续窗口（sustained）”，必须确保整个窗口内都在持续 enqueue。
+
+- 经验公式：`max_total_events >= floor(duration_seconds / interval_seconds) * enqueue_batch_size`
+  - 若 `max_total_events` 过小，会提前达到上限，导致实际 enqueue 只跑了十几秒（窗口未被真正覆盖）。
+
+Profile A（推荐：真实 300s sustained，保持 CI 同款节奏）：
+
+- `python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --candidate-limit 20 --strategy strict --duration-seconds 300 --interval-seconds 1 --enqueue-batch-size 5 --max-total-events 1500 --drain-timeout-seconds 120 --max-outbox-failed 0 --max-outbox-pending 0 --max-outbox-processing 0 --require-outbox-done-eq-enqueued --es-url "http://127.0.0.1:19200" --es-index "wordloom-search-index-drill-<run_id>" --recreate-index --worker-max-runtime-seconds 450`
+
+Profile B（轻量 300s sustained：降低速率，减少总事件数）：
+
+- `python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test" --ensure-min-rows 25 --candidate-limit 20 --strategy strict --duration-seconds 300 --interval-seconds 2 --enqueue-batch-size 2 --max-total-events 300 --drain-timeout-seconds 120 --max-outbox-failed 0 --max-outbox-pending 0 --max-outbox-processing 0 --require-outbox-done-eq-enqueued --es-url "http://127.0.0.1:19200" --es-index "wordloom-search-index-drill-<run_id>" --recreate-index --worker-max-runtime-seconds 450`
 
 Actions（workflow_dispatch，手动长窗口）：
 
@@ -228,6 +239,29 @@ Actions（workflow_dispatch，手动长窗口）：
 输出目录（默认）：
 
 - `docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_dual_run_window/<run_id>/_result.json`
+
+Dual-run 最小上线形态（runtime entrypoint + 一键回滚开关）
+
+目标：把“能跑通的 worker”变成“默认 off、可控启停、可限速/可隔离”的线上形态，避免 Procfile/脚本分叉。
+
+- 稳定入口（Procfile 使用）：
+  - worker 进程：`bash ./backend/scripts/ops/run_worker.sh .env.dev`（见 `Procfile.dev`/`Procfile.test`）
+  - Python 入口：`python backend/scripts/search_outbox_worker.py`
+- 一键回滚（推荐默认关闭，显式开启）：
+  - `SEARCH_OUTBOX_WORKER_ENABLED=0`：worker 启动后立即退出（exit code=0）
+  - `SEARCH_OUTBOX_WORKER_ENABLED=1`：允许 worker 正常运行
+- 限速/隔离常用环境变量（worker 内部读取）：
+  - `OUTBOX_CONCURRENCY`（默认 1）
+  - `OUTBOX_BULK_SIZE` / `OUTBOX_BATCH_SIZE`（默认 100）
+  - `OUTBOX_POLL_INTERVAL_SECONDS`（默认 1.0）
+  - `OUTBOX_LEASE_SECONDS`（默认 30）
+  - `OUTBOX_MAX_RUNTIME_SECONDS`（可选；用于 canary/演练窗口，避免跑飞）
+  - `SEARCH_OUTBOX_LIBRARY_ALLOWLIST`（可选；逗号分隔 UUID；仅 claim 指定 library 的 outbox 行，用于 canary/隔离；默认空=不限制）
+- 最小验证点（上线形态 sanity）：
+  - 临时开启：在 `.env.dev`/`.env.test` 中将 `SEARCH_OUTBOX_WORKER_ENABLED=1`，然后通过 `Procfile.dev`/`Procfile.test` 启动 `worker_search`
+  - 临时关闭（回滚）：将 `SEARCH_OUTBOX_WORKER_ENABLED=0` 并重启 `worker_search`
+  - 开启后，worker log 中应持续出现 `outbox.claim_batch` / `projection.process_batch`（无 backlog 增长）
+  - 关闭开关后，worker 应快速退出；outbox 仍可通过 replay/cleanup runbook 动作回收
 
 Search canary dual-write（v2 2A，最小真写入 + 默认回滚/cleanup）：
 

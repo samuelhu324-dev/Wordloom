@@ -215,6 +215,28 @@ def _get_optional_int_env(name: str) -> int | None:
         raise RuntimeError(f"Invalid int env {name}={raw!r}") from exc
 
 
+def _get_uuid_allowlist_env(name: str) -> list[uuid.UUID] | None:
+    raw = (os.getenv(name) or "").strip()
+    if raw == "":
+        return None
+    parts = [p.strip() for p in raw.split(",") if p.strip()]
+    if not parts:
+        return None
+    out: list[uuid.UUID] = []
+    seen: set[str] = set()
+    for part in parts:
+        try:
+            u = uuid.UUID(part)
+        except ValueError as exc:
+            raise RuntimeError(f"Invalid UUID in {name}: {part!r}") from exc
+        key = str(u)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(u)
+    return out
+
+
 def _classify_status_code(status_code: int | None) -> str:
     if status_code is None:
         return "unknown"
@@ -412,6 +434,11 @@ async def _worker_loop() -> None:
     poll_interval_seconds = _get_float_env("OUTBOX_POLL_INTERVAL_SECONDS", 1.0)
     use_es_bulk_api = _get_bool_env("OUTBOX_USE_ES_BULK", False)
 
+    # Scope/Isolation knobs (production-like): restrict claims to a subset of libraries.
+    # Default is unset (= process all libraries). When set, only outbox rows with
+    # a matching search_outbox_events.library_id will be claimed.
+    library_allowlist = _get_uuid_allowlist_env("SEARCH_OUTBOX_LIBRARY_ALLOWLIST")
+
     # Drill/testing knobs: allow one-shot worker runs that exit after the queue
     # becomes idle. Default is off to preserve production behavior.
     exit_when_idle = _get_bool_env("OUTBOX_EXIT_WHEN_IDLE", False)
@@ -500,6 +527,12 @@ async def _worker_loop() -> None:
         lease_seconds,
         max_processing_seconds,
     )
+    if library_allowlist is not None:
+        logger.info(
+            "Outbox worker scope: SEARCH_OUTBOX_LIBRARY_ALLOWLIST=%s (%s items)",
+            ",".join(str(x) for x in library_allowlist),
+            int(len(library_allowlist)),
+        )
     if exit_when_idle:
         logger.info(
             "[LABS] One-shot mode enabled: OUTBOX_EXIT_WHEN_IDLE=1 idle_polls_before_exit=%s max_runtime_seconds=%s",
@@ -1129,12 +1162,18 @@ async def _worker_loop() -> None:
 
                 now = _utc_now()
                 claim_batch_id = str(uuid.uuid4())
+
+                scope_predicates = []
+                if library_allowlist is not None:
+                    scope_predicates.append(SearchOutboxEventModel.library_id.in_(library_allowlist))
+
                 # Low-cardinality projection freshness gauges.
                 pending_count = (
                     await session.execute(
                         select(func.count()).select_from(SearchOutboxEventModel).where(
                             SearchOutboxEventModel.processed_at.is_(None),
                             SearchOutboxEventModel.status.in_(["pending", "processing", "failed"]),
+                            *scope_predicates,
                         )
                     )
                 ).scalar_one()
@@ -1143,6 +1182,7 @@ async def _worker_loop() -> None:
                         select(func.count()).select_from(SearchOutboxEventModel).where(
                             SearchOutboxEventModel.processed_at.is_(None),
                             SearchOutboxEventModel.status == "processing",
+                            *scope_predicates,
                         )
                     )
                 ).scalar_one()
@@ -1154,7 +1194,8 @@ async def _worker_loop() -> None:
                                 SearchOutboxEventModel,
                                 now=now,
                                 max_processing_seconds=max_processing_seconds,
-                            )
+                            ),
+                            *scope_predicates,
                         )
                     )
                 ).scalar_one()
@@ -1163,6 +1204,7 @@ async def _worker_loop() -> None:
                         select(func.min(SearchOutboxEventModel.created_at)).where(
                             SearchOutboxEventModel.processed_at.is_(None),
                             SearchOutboxEventModel.status.in_(["pending", "processing", "failed"]),
+                            *scope_predicates,
                         )
                     )
                 ).scalar_one_or_none()
@@ -1207,6 +1249,7 @@ async def _worker_loop() -> None:
                         "wordloom.claim_batch_id": claim_batch_id,
                         "batch_size": int(batch_size),
                         "claim_mode": "non_atomic" if break_claim_atomicity else "atomic",
+                        "wordloom.scope.library_allowlist_count": int(len(library_allowlist or [])),
                     },
                 ) as claim_span:
                     claimable = (
@@ -1219,6 +1262,7 @@ async def _worker_loop() -> None:
                                     SearchOutboxEventModel.next_retry_at.is_(None)
                                     | (SearchOutboxEventModel.next_retry_at <= now)
                                 ),
+                                *scope_predicates,
                             )
                             .order_by(SearchOutboxEventModel.event_version.asc())
                             .with_for_update(skip_locked=True)
@@ -1238,6 +1282,7 @@ async def _worker_loop() -> None:
                                         SearchOutboxEventModel.next_retry_at.is_(None)
                                         | (SearchOutboxEventModel.next_retry_at <= now)
                                     ),
+                                    *scope_predicates,
                                 )
                                 .order_by(SearchOutboxEventModel.event_version.asc())
                                 .limit(batch_size)
@@ -1282,6 +1327,9 @@ async def _worker_loop() -> None:
                             "batch_size": int(batch_size),
                             "claimed": int(len(claimable or [])),
                             "claim_mode": "non_atomic" if break_claim_atomicity else "atomic",
+                            "scope_library_allowlist": (
+                                [str(x) for x in library_allowlist] if library_allowlist is not None else None
+                            ),
                         }
                     )
 

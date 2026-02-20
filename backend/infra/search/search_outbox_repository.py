@@ -25,6 +25,7 @@ class SearchOutboxRepository:
         *,
         entity_type: str,
         entity_id: UUID,
+        library_id: UUID | None = None,
         op: str,
         event_version: int,
     ) -> None:
@@ -33,6 +34,7 @@ class SearchOutboxRepository:
             pg_insert(SearchOutboxEventModel).values(
                 entity_type=entity_type,
                 entity_id=entity_id,
+                library_id=library_id,
                 op=op,
                 event_version=event_version,
                 traceparent=traceparent,

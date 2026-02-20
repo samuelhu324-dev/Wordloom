@@ -22,8 +22,6 @@ from api.app.modules.block.domain.events import BlockCreated, BlockUpdated
 from api.app.modules.book.domain.events import BookCreated, BookRenamed
 from api.app.modules.tag.domain.events import TagCreated, TagRenamed
 from infra.database.models.search_index_models import SearchIndexModel
-from infra.database.models.search_outbox_models import SearchOutboxEventModel
-from infra.observability.tracing import inject_trace_context
 from infra.database.models.book_models import BookModel
 from infra.observability.outbox_metrics import outbox_produced_total
 from infra.search.search_outbox_repository import SearchOutboxRepository
@@ -73,6 +71,16 @@ class PostgresSearchIndexer:
             )
         ).scalar_one_or_none()
 
+    async def _get_library_id_for_search_index(self, *, entity_type: str, entity_id: UUID) -> UUID | None:
+        return (
+            await self._db.execute(
+                select(SearchIndexModel.library_id).where(
+                    SearchIndexModel.entity_type == entity_type,
+                    SearchIndexModel.entity_id == entity_id,
+                )
+            )
+        ).scalar_one_or_none()
+
     async def index_block_created(self, event: BlockCreated) -> None:
         occurred_at = event.occurred_at
         version = _event_version(occurred_at)
@@ -99,6 +107,7 @@ class PostgresSearchIndexer:
         await self._outbox.enqueue(
             entity_type="block",
             entity_id=event.block_id,
+            library_id=library_id,
             op="upsert",
             event_version=version,
         )
@@ -137,6 +146,7 @@ class PostgresSearchIndexer:
         await self._outbox.enqueue(
             entity_type="block",
             entity_id=event.block_id,
+            library_id=library_id,
             op="upsert",
             event_version=version,
         )
@@ -144,6 +154,7 @@ class PostgresSearchIndexer:
         logger.info("Search index: updated block %s (outbox enqueued)", event.block_id)
 
     async def delete_block(self, *, block_id: UUID) -> None:
+        library_id = await self._get_library_id_for_search_index(entity_type="block", entity_id=block_id)
         stmt = delete(SearchIndexModel).where(
             SearchIndexModel.entity_type == "block",
             SearchIndexModel.entity_id == block_id,
@@ -156,6 +167,7 @@ class PostgresSearchIndexer:
         await self._outbox.enqueue(
             entity_type="block",
             entity_id=block_id,
+            library_id=library_id,
             op="delete",
             event_version=version,
         )
@@ -188,6 +200,7 @@ class PostgresSearchIndexer:
         await self._outbox.enqueue(
             entity_type="book",
             entity_id=event.book_id,
+            library_id=library_id,
             op="upsert",
             event_version=version,
         )
@@ -227,6 +240,7 @@ class PostgresSearchIndexer:
         await self._outbox.enqueue(
             entity_type="book",
             entity_id=event.book_id,
+            library_id=library_id,
             op="upsert",
             event_version=version,
         )
@@ -234,6 +248,7 @@ class PostgresSearchIndexer:
         logger.info("Search index: updated book %s (outbox enqueued)", event.book_id)
 
     async def delete_book(self, *, book_id: UUID) -> None:
+        library_id = await self._get_library_id_for_search_index(entity_type="book", entity_id=book_id)
         stmt = delete(SearchIndexModel).where(
             SearchIndexModel.entity_type == "book",
             SearchIndexModel.entity_id == book_id,
@@ -244,6 +259,7 @@ class PostgresSearchIndexer:
         await self._outbox.enqueue(
             entity_type="book",
             entity_id=book_id,
+            library_id=library_id,
             op="delete",
             event_version=version,
         )
@@ -271,16 +287,11 @@ class PostgresSearchIndexer:
         )
         await self._db.execute(stmt)
 
-        traceparent, tracestate = inject_trace_context()
-        await self._db.execute(
-            pg_insert(SearchOutboxEventModel).values(
-                entity_type="tag",
-                entity_id=event.tag_id,
-                op="upsert",
-                event_version=version,
-                traceparent=traceparent,
-                tracestate=tracestate,
-            )
+        await self._outbox.enqueue(
+            entity_type="tag",
+            entity_id=event.tag_id,
+            op="upsert",
+            event_version=version,
         )
         outbox_produced_total.labels(event_type="tag.created", entity_type="tag").inc()
         logger.info("Search index: inserted tag %s (outbox enqueued)", event.tag_id)
@@ -312,16 +323,11 @@ class PostgresSearchIndexer:
         )
         await self._db.execute(stmt)
 
-        traceparent, tracestate = inject_trace_context()
-        await self._db.execute(
-            pg_insert(SearchOutboxEventModel).values(
-                entity_type="tag",
-                entity_id=event.tag_id,
-                op="upsert",
-                event_version=version,
-                traceparent=traceparent,
-                tracestate=tracestate,
-            )
+        await self._outbox.enqueue(
+            entity_type="tag",
+            entity_id=event.tag_id,
+            op="upsert",
+            event_version=version,
         )
         outbox_produced_total.labels(event_type="tag.renamed", entity_type="tag").inc()
         logger.info("Search index: updated tag %s (outbox enqueued)", event.tag_id)
@@ -334,16 +340,11 @@ class PostgresSearchIndexer:
         await self._db.execute(stmt)
 
         version = _event_version(datetime.utcnow())
-        traceparent, tracestate = inject_trace_context()
-        await self._db.execute(
-            pg_insert(SearchOutboxEventModel).values(
-                entity_type="tag",
-                entity_id=tag_id,
-                op="delete",
-                event_version=version,
-                traceparent=traceparent,
-                tracestate=tracestate,
-            )
+        await self._outbox.enqueue(
+            entity_type="tag",
+            entity_id=tag_id,
+            op="delete",
+            event_version=version,
         )
         outbox_produced_total.labels(event_type="tag.deleted", entity_type="tag").inc()
         logger.info("Search index: deleted tag %s (outbox enqueued)", tag_id)

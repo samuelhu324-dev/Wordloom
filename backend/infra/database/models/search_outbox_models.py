@@ -24,6 +24,7 @@ class SearchOutboxEventModel(Base):
       - id: Primary key
       - entity_type: "block", "tag", etc.
       - entity_id: UUID of the entity
+    - library_id: optional scope key (when available on search_index)
       - op: operation type ("upsert" or "delete")
       - event_version: same monotonic version as search_index.event_version
       - created_at: enqueue time
@@ -48,6 +49,10 @@ class SearchOutboxEventModel(Base):
 
     entity_type = Column(String(50), nullable=False, index=True)
     entity_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+
+    # Optional scope key. When present, the worker can restrict claim/processing
+    # to specific libraries (canary / dual-run isolation).
+    library_id = Column(UUID(as_uuid=True), nullable=True)
 
     # "upsert" | "delete"
     op = Column(String(20), nullable=False)
@@ -97,6 +102,14 @@ class SearchOutboxEventModel(Base):
 
     __table_args__ = (
         Index("idx_search_outbox_entity", "entity_type", "entity_id"),
+        Index(
+            "idx_search_outbox_library_claim",
+            "library_id",
+            "status",
+            "next_retry_at",
+            "lease_until",
+            "event_version",
+        ),
         Index("idx_search_outbox_processed", "processed_at"),
         Index("idx_search_outbox_claim", "status", "next_retry_at", "lease_until", "event_version"),
         Index("idx_search_outbox_processing_started", "status", "processing_started_at"),

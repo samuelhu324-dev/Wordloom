@@ -14,7 +14,7 @@
   **adr**: ``
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-18`
-**updated**: `2026-02-19`
+**updated**: `2026-02-20`
 
 ---
 
@@ -74,8 +74,8 @@
 
 **Acceptance checklist（验收清单）**:
 
-- [ ] Shadow verify 覆盖“可切写口径”（幂等/唯一性、排序/分页、共享键）
-- [ ] Dual-run 默认不影响外部读写，且资源隔离/限速可控
+- [x] Shadow verify 覆盖“可切写口径”（幂等/唯一性、排序/分页、共享键）
+- [x] Dual-run 默认不影响外部读写，且资源隔离/限速可控
 - [ ] Cutover 先读后写，开关/回滚路径清晰
 - [ ] Cleanup 通过 stub + deprecate window + ADR/Log 记账完成
 
