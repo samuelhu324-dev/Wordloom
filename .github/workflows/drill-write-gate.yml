@@ -24,6 +24,12 @@ on:
         default: ""
         type: string
 
+      worker_library_allowlist:
+        description: "Optional worker scope: SEARCH_OUTBOX_LIBRARY_ALLOWLIST (comma-separated UUIDs)"
+        required: false
+        default: ""
+        type: string
+
       window_duration_seconds:
         description: "[window only] duration seconds (CI default: 15; manual example: 300)"
         required: false
@@ -150,6 +156,7 @@ jobs:
         continue-on-error: true
         env:
           DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
+          SEARCH_OUTBOX_LIBRARY_ALLOWLIST: ${{ inputs.worker_library_allowlist }}
         run: |
           set -euo pipefail
 

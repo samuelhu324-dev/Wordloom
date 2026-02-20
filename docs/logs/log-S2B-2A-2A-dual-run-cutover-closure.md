@@ -14,7 +14,7 @@
   **adr**: ``
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-18`
-**updated**: `2026-02-19`
+**updated**: `2026-02-20`
 
 ---
 
@@ -62,6 +62,7 @@
   - ✅ canary dual-write（最小真写入 + 默认回滚/cleanup）入口已落地（写入 `search_index` + `search_outbox_events`）
   - ✅ allowlist/sampling sustained dual-write（持续旁写 + soft/strict + DLQ/replay 证据）入口已落地（写入 `search_outbox_events`，默认 cleanup）
   - ✅ 强口径共享键互证（artifacts logs + traces 可检索互证；`_result.json` 提供 grep/jq hints）已补齐
+  - ✅ 300s sustained window 证据已补齐（两次 profile 结果均为“真持续 + 真 drain + 严格对账通过”）
 
 **Evidence（代码证据 / 入口证据）**:
 
@@ -84,6 +85,11 @@ CI evidence（2026-02-19）:
 - `drill-write-gate` → `shadow_verify_dual_run_stage1`：run_id=`22174370696-1`（ok=true，strict parity；ES backfill + ordered candidates match）
 - `drill-write-gate` → `shadow_verify_dual_run_stage2`：run_id=`22178056521-1`（ok=true，outbox → worker(one-shot) → ES；ordered candidates strict parity）
 - `drill-write-gate` → `shadow_verify_dual_run_window`：run_id=`22181124988-1`（ok=true，duration=15s，max_total_events=75，outbox.done=75，worker.exit_code=0，strict parity）
+
+Manual long-window evidence（2026-02-19，workflow_dispatch）:
+
+- `drill-write-gate` → `shadow_verify_dual_run_window`（Profile A，300s）：run_id=`22183281887-1`（ok=true，compare.parity_ok=true，worker.exit_code=0，runtime≈301s，total_events=1490；说明：loop 按到时长结束，事件数略小于理论上限属正常）
+- `drill-write-gate` → `shadow_verify_dual_run_window`（Profile B，300s）：run_id=`22183301322-1`（ok=true，compare.parity_ok=true，worker.exit_code=0，runtime≈301s，enqueued_total=300）
 
 Local evidence（2026-02-19，devtest DB）:
 
@@ -116,7 +122,7 @@ Local evidence（2026-02-19，devtest DB）:
 - [x] true dual-run stage1（Postgres vs Elasticsearch）对账 drill 可在 CI 跑通，并产出可审计的 `_result.json + traces.json` 证据
 - [x] true dual-run stage2（outbox → worker → ES → 对账）drill 可在 CI 跑通，并产出可审计的 `_result.json + worker.log` 证据
 - [x] sustained dual-run window（持续窗口：worker 常驻 + 周期性 enqueue + drain）在 CI 跑通，并形成阈值化准入口径（backlog/failed/retry 受控）
-- [ ] Dual-run 最小实现上线且具备限速/隔离与回滚（默认不影响外部读写）
+- [x] Dual-run 最小实现上线且具备限速/隔离与回滚（默认不影响外部读写；`SEARCH_OUTBOX_WORKER_ENABLED=0/1` + `OUTBOX_*` knobs + `SEARCH_OUTBOX_LIBRARY_ALLOWLIST`）
 - [ ] runbook 的准入清单可执行（先读后写、每一步有回滚动作与准入证据）
 - [ ] cleanup 的 stub/deprecate/ADR 记账完成
 
@@ -152,6 +158,7 @@ v2 在 1A 解决“重复投递/重复副作用”的第一风险后，仍需要
 - 把 `shadow_verify_dual_run_stage2` 视为“dual-run 写侧闭环的门槛证据”已就绪；下一步进入 sustained dual-run：以低速/隔离方式让 worker 持续跑一段窗口，观察 backlog/failed/retry（不是只跑一次性 drill）。
 - 准入口径已落到 runbook：`docs/runbook/run-S2B-projection-table-merge.md`（Window hard gate + 300s long-window 示例命令）；建议把“连续 N 次（例如 N=3）long-window 均 ok=true”作为推进到更接近可放行的最小门槛。
 - Actions 手动触发支持长窗口参数：`drill-write-gate` 在 `scenario=shadow_verify_dual_run_window` 时可通过 `window_*` inputs 覆盖窗口参数（CI 默认仍为 15s）。
+- 已验证两次 300s long-window（Profile A/B）均 ok=true 且 strict parity（run_id=`22183281887-1`、`22183301322-1`）。
 - 补齐 cutover 准入清单的剩余硬项：幂等/唯一性口径 + DLQ/replay 证据 + 可观测共享键在运行窗口内可反查；这些齐了才允许从“能跑通”走向“可切写”。
 - 若希望把本阶段从 `draft` 推到 `stable`：先定义持续窗口阈值（例如连续 N 次/连续 T 分钟无 backlog 增长、failed 受控），并把阈值写入 runbook 的 checklist。
 
