@@ -2441,9 +2441,13 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
     worker_env["ELASTIC_URL"] = es_url
     worker_env["ELASTIC_INDEX"] = es_index
 
-    # If the drill is scoped to a library, scope the worker too.
-    # This matches the worker's claim predicate (library_id IN allowlist).
-    if library_id is not None:
+    # Scope precedence for worker claim allowlist:
+    # 1) explicit SEARCH_OUTBOX_LIBRARY_ALLOWLIST from caller/workflow (if provided)
+    # 2) otherwise default to --library-id (if provided)
+    explicit_allowlist = str(worker_env.get("SEARCH_OUTBOX_LIBRARY_ALLOWLIST") or "").strip()
+    if explicit_allowlist:
+        worker_env["SEARCH_OUTBOX_LIBRARY_ALLOWLIST"] = explicit_allowlist
+    elif library_id is not None:
         worker_env["SEARCH_OUTBOX_LIBRARY_ALLOWLIST"] = str(library_id)
     else:
         worker_env.pop("SEARCH_OUTBOX_LIBRARY_ALLOWLIST", None)
@@ -3141,9 +3145,13 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
     worker_env["ELASTIC_URL"] = es_url
     worker_env["ELASTIC_INDEX"] = es_index
 
-    # If the drill is scoped to a library, scope the worker too.
-    # This matches the worker's claim predicate (library_id IN allowlist).
-    if library_id is not None:
+    # Scope precedence for worker claim allowlist:
+    # 1) explicit SEARCH_OUTBOX_LIBRARY_ALLOWLIST from caller/workflow (if provided)
+    # 2) otherwise default to --library-id (if provided)
+    explicit_allowlist = str(worker_env.get("SEARCH_OUTBOX_LIBRARY_ALLOWLIST") or "").strip()
+    if explicit_allowlist:
+        worker_env["SEARCH_OUTBOX_LIBRARY_ALLOWLIST"] = explicit_allowlist
+    elif library_id is not None:
         worker_env["SEARCH_OUTBOX_LIBRARY_ALLOWLIST"] = str(library_id)
     else:
         worker_env.pop("SEARCH_OUTBOX_LIBRARY_ALLOWLIST", None)
