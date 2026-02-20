@@ -5,13 +5,13 @@
 **id**: `S2B-2A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `maintainability/failure contract v2`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S2B`
 **tags**: `EVOLUTION, Chronicle, Projection, Search, epic/s2, sub/2`
 **links**: ``
   **issue**: `#56`
   **pr**: ``
-  **adr**: ``
+  **adr**: `docs/adr/adr-S2B-projection-table-merge.md`
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-18`
 **updated**: `2026-02-20`
@@ -47,7 +47,7 @@
 **Current status（现状）**:
 
 - v1 已覆盖 Chronicle + Search（Shadow verify + Read switch + GitHub Actions artifacts contract）。
-- v2 当前为 draft：本 log 用于把“下一步怎么从 Shadow 进入 Dual-run/cutover”的规则语义结构化，作为后续实现与验收的准绳。
+- v2 已形成可执行闭环：runbook 已补齐 cutover 准入清单与 cleanup ledger，2A 子 log 证据链完备。
 
 **Evidence（代码证据 / 入口证据）**:
 
@@ -76,8 +76,8 @@
 
 - [x] Shadow verify 覆盖“可切写口径”（幂等/唯一性、排序/分页、共享键）
 - [x] Dual-run 默认不影响外部读写，且资源隔离/限速可控
-- [ ] Cutover 先读后写，开关/回滚路径清晰
-- [ ] Cleanup 通过 stub + deprecate window + ADR/Log 记账完成
+- [x] Cutover 先读后写，开关/回滚路径清晰（见 `run-S2B` 第 9 节）
+- [x] Cleanup 通过 stub + deprecate window + ADR/Log 记账完成（见 `run-S2B` 第 10 节 + ADR）
 
 ## Background
 
@@ -129,12 +129,13 @@ Dual-run 的最小交付（按优先级）：
 
 ## Next
 
-- 将 Shadow verify 的校验维度补齐为“可切写口径”，并固化为统一 artifacts 证据链。
-- 上线 Dual-run（写侧影子并行）的最小实现：新 worker/限速/隔离 + 对账证据。
-- 形成 cutover runbook 的“准入清单”：哪些 drills/指标/对账结果必须满足才允许切读/切写。
+- 保持单入口维护（`backend/scripts/cli.py` + `drill-write-gate`）并按窗口周期复验 hard gate。
+- 在后续阶段复用本 ADR/runbook 结构扩展更强语义口径（不新增分叉入口）。
+- 如发生异常，以 run_id 回放 artifacts 并在子 log 增量记账。
 
 ## References
 
 - `docs/logs/log-S0C-1A-log-extensions.md`（log 结构规范）
 - `docs/logs/log-S2B-1A-failure-contract-v1.md`（Failure Contract v1）
 - `docs/runbook/run-S2B-projection-table-merge.md`（合表/合 projection 相关上下文）
+- `docs/adr/adr-S2B-projection-table-merge.md`（S2B 1A/2A 决策与保留空间）
