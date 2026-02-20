@@ -19,13 +19,13 @@ on:
           - shadow_verify_canary_dual_write
           - shadow_verify_dual_write_sampling
       library_id:
-        description: "Optional scope: library_id (UUID)"
+        description: "Optional data scope: library_id (UUID). Scopes seed+enqueue/outbox.library_id."
         required: false
         default: ""
         type: string
 
       worker_library_allowlist:
-        description: "Optional worker scope: SEARCH_OUTBOX_LIBRARY_ALLOWLIST (comma-separated UUIDs)"
+        description: "Optional worker scope: SEARCH_OUTBOX_LIBRARY_ALLOWLIST (comma-separated UUIDs). If set, overrides library_id for worker claim; mismatch is expected to fail."
         required: false
         default: ""
         type: string

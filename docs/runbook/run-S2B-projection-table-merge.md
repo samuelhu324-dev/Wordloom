@@ -5,7 +5,7 @@
 **id**: `S2B-projection-table-merge`
 **kind**: `runbook`               # log | lab | runbook | adr | note
 **title**: `run/S2B-projection-table-merge`
-**status**: `draft`          # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S2B`
 **decision_date**: `2026-02-18`
 **context_issue**:
@@ -372,11 +372,77 @@ Search（独立切读开关）：
 - `mismatched_book_id > 0`：检查 entries 写入时 book_id 映射/回填逻辑。
 - CI 失败：下载失败时的 zip，优先查看 `logs.txt` 与 `summary.json`。
 
-## 9) References
+## 9) Cutover checklist（先读后写 + 回滚动作 + 准入证据）
+
+本节作为 `S2B-2A` 的可执行准入清单；以 `_result.json` 与 workflow artifacts 为事实源。
+
+### 9.1 Read cutover（Step A）
+
+准入前置（全部满足）：
+
+- `shadow_verify_dual_run_readiness_gate` 为 `ok=true`
+- `shadow_verify_dual_run_stage1` 为 strict parity（`compare.parity_ok=true`）
+- `shadow_verify_dual_run_window` 满足 hard gate（`failed/pending/processing` 阈值、`done==enqueued`、`worker.ok=true`）
+
+执行：
+
+1) Staging 先开启 `MERGED_READ_ENABLED=1` / `SEARCH_MERGED_READ_ENABLED=1` 做小窗口验证。
+2) 观察窗口内证据：`_result.json` + logs/traces 可互证（shared keys 可反查）。
+3) 无异常后再扩大范围。
+
+回滚：
+
+- 任一异常（分页漂移、parity 退化、链路不可观测）立即关闭 read switch（回到 `0`）。
+
+### 9.2 Write cutover（Step B）
+
+准入前置（全部满足）：
+
+- Step A 已稳定通过。
+- sustained dual-run window 在约束窗口内通过（建议连续 N 次，默认 N=3）。
+- canary/sampling 证据可回放（含 strict/soft、DLQ/replay 路径）。
+
+执行：
+
+1) 停旧写侧 claim 路径（旧 worker 不再 claim）。
+2) 新写侧 worker 接管（`SEARCH_OUTBOX_WORKER_ENABLED=1`，并保留 `OUTBOX_*` 限速参数）。
+3) 持续观察 backlog 与失败重试曲线。
+
+回滚：
+
+- 立即停止新写侧消费（`SEARCH_OUTBOX_WORKER_ENABLED=0`），恢复旧写侧 claim。
+- 保留本次窗口 artifacts，按 run_id 归档并登记 log。
+
+## 10) Cleanup ledger（stub + deprecate window + ADR/Log 记账）
+
+目标：避免“跑通后遗留双入口”。Cleanup 采用“先标注、后下线”的保守策略。
+
+### 10.1 Stub policy（入口稳定）
+
+- 对历史脚本/文档入口保留 stub 与跳转说明（禁止直接删除造成断链）。
+- workflow/scenario 维持单入口：`drill-write-gate` + `backend/scripts/cli.py`。
+
+### 10.2 Deprecate window（建议）
+
+- T0：在 log/runbook 标注 deprecated（仅保留回滚用途）。
+- T0 + 7d：若无回滚事件，移除默认调用路径（保留手动应急入口）。
+- T0 + 14d：完成 ADR/Log 记账后正式下线 stub（如需）。
+
+### 10.3 Record of completion（S2B-2A）
+
+- Log：`docs/logs/log-S2B-2A-failure-contract-v2.md`
+- Log：`docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md`
+- ADR：`docs/adr/adr-S2B-projection-table-merge.md`
+
+## 11) References
 
 - Logs:
   - `docs/logs/log-S2B-1A-failure-contract-v1.md`
   - `docs/logs/log-S2B-1A-1A-chronicle-concurrent-handling.md`
+  - `docs/logs/log-S2B-2A-failure-contract-v2.md`
+  - `docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md`
+- ADR:
+  - `docs/adr/adr-S2B-projection-table-merge.md`
 - Lab manual:
   - `docs/labs/lab-S2B-1A-1A-chronicle-concurrent-handling.md`
 - Workflow:
