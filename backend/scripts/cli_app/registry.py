@@ -41,6 +41,14 @@ def load_builtin_scenarios() -> None:
     """Import scenario modules so they can self-register via @register."""
 
     from .scenarios import collector_down  # noqa: F401
+    from .scenarios import es_429_inject  # noqa: F401
+    from .scenarios import es_bulk_partial  # noqa: F401
+    from .scenarios import es_down_connect  # noqa: F401
+    from .scenarios import es_write_block_4xx  # noqa: F401
+    from .scenarios import db_claim_contention  # noqa: F401
+    from .scenarios import stuck_reclaim  # noqa: F401
+    from .scenarios import duplicate_delivery  # noqa: F401
+    from .scenarios import projection_version  # noqa: F401
     from .scenarios import shadow_verify_search_index_write_gate  # noqa: F401
     from .scenarios import shadow_verify_search_index_paging_stability  # noqa: F401
     from .scenarios import shadow_verify_shared_keys  # noqa: F401

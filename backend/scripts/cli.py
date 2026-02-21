@@ -2316,6 +2316,26 @@ def _cmd_labs_run_es_write_block_4xx(args: argparse.Namespace) -> int:
     run_id = args.run_id or _now_run_id()
     outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_WRITE_BLOCK_4XX, run_id=run_id)
 
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_write_block_4xx.run")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_write_block_4xx.run",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
+
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_WRITE_BLOCK_4XX, run_id=run_id)
+
     logs_dir = outdir / "_logs"
     metrics_dir = outdir / "_metrics"
     exports_dir = outdir / "_exports"
@@ -2495,6 +2515,25 @@ def _resolve_run_dir(*, run_id: str | None, outdir: str | None, scenario: str) -
 
 def _cmd_labs_verify_es_write_block_4xx(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_WRITE_BLOCK_4XX)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_write_block_4xx.verify")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_write_block_4xx.verify",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
+
+    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_WRITE_BLOCK_4XX)
     metrics_dir = run_dir / "_metrics"
     before_path = metrics_dir / "metrics-before.txt"
     after_path = metrics_dir / "metrics-after.txt"
@@ -2535,6 +2574,25 @@ def _cmd_labs_verify_es_write_block_4xx(args: argparse.Namespace) -> int:
 
 def _cmd_labs_export_es_write_block_4xx(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_WRITE_BLOCK_4XX)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_write_block_4xx.export")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_write_block_4xx.export",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
+    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_WRITE_BLOCK_4XX)
     exports_dir = run_dir / "_exports"
     _ensure_dir(exports_dir)
 
@@ -2560,6 +2618,26 @@ def _cmd_labs_export_es_write_block_4xx(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_run_es_429_inject(args: argparse.Namespace) -> int:
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_429_INJECT, run_id=run_id)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_429_inject.run")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_429_inject.run",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
+
     run_id = args.run_id or _now_run_id()
     outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_429_INJECT, run_id=run_id)
 
@@ -2720,6 +2798,25 @@ def _cmd_labs_run_es_429_inject(args: argparse.Namespace) -> int:
 
 def _cmd_labs_verify_es_429_inject(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_429_INJECT)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_429_inject.verify")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_429_inject.verify",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
+
+    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_429_INJECT)
     metrics_dir = run_dir / "_metrics"
     before_path = metrics_dir / "metrics-before.txt"
     after_path = metrics_dir / "metrics-after.txt"
@@ -2769,6 +2866,26 @@ def _cmd_labs_verify_es_429_inject(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_run_es_down_connect(args: argparse.Namespace) -> int:
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_DOWN_CONNECT, run_id=run_id)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_down_connect.run")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_down_connect.run",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
+
     run_id = args.run_id or _now_run_id()
     outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_DOWN_CONNECT, run_id=run_id)
 
@@ -2921,6 +3038,25 @@ def _cmd_labs_run_es_down_connect(args: argparse.Namespace) -> int:
 
 def _cmd_labs_verify_es_down_connect(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_DOWN_CONNECT)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_down_connect.verify")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_down_connect.verify",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
+
+    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_DOWN_CONNECT)
     metrics_dir = run_dir / "_metrics"
     before_path = metrics_dir / "metrics-before.txt"
     after_path = metrics_dir / "metrics-after.txt"
@@ -2973,6 +3109,25 @@ def _cmd_labs_verify_es_down_connect(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_export_es_down_connect(args: argparse.Namespace) -> int:
+    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_DOWN_CONNECT)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_down_connect.export")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_down_connect.export",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_DOWN_CONNECT)
     exports_dir = run_dir / "_exports"
     _ensure_dir(exports_dir)
@@ -3100,6 +3255,26 @@ def _cmd_labs_run_duplicate_delivery(args: argparse.Namespace) -> int:
     1) Insert 1 upsert for a fixed entity_id and ensure a search_index row exists.
     2) Insert 2 deletes for the same entity_id (second should be a noop: ES 404).
     """
+
+    run_id = args.run_id or _now_run_id()
+    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_DUPLICATE_DELIVERY, run_id=run_id)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("duplicate_delivery.run")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "duplicate_delivery.run",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
     run_id = args.run_id or _now_run_id()
     outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_DUPLICATE_DELIVERY, run_id=run_id)
@@ -3291,6 +3466,25 @@ def _cmd_labs_run_duplicate_delivery(args: argparse.Namespace) -> int:
 
 def _cmd_labs_verify_duplicate_delivery(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_DUPLICATE_DELIVERY)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("duplicate_delivery.verify")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "duplicate_delivery.verify",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
+
+    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_DUPLICATE_DELIVERY)
     metrics_dir = run_dir / "_metrics"
     logs_dir = run_dir / "_logs"
 
@@ -3360,6 +3554,25 @@ def _cmd_labs_verify_duplicate_delivery(args: argparse.Namespace) -> int:
 
 def _cmd_labs_export_duplicate_delivery(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_DUPLICATE_DELIVERY)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("duplicate_delivery.export")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "duplicate_delivery.export",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
+    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_DUPLICATE_DELIVERY)
     exports_dir = run_dir / "_exports"
     _ensure_dir(exports_dir)
 
@@ -3392,6 +3605,23 @@ def _cmd_labs_export_duplicate_delivery(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_clean_duplicate_delivery(args: argparse.Namespace) -> int:
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("duplicate_delivery.clean")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "duplicate_delivery.clean",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": _now_run_id(),
+            "outdir": str(args.outdir) if args.outdir else None,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
     # No external state to revert; optionally prune snapshots.
     if args.keep_last is None:
         return 0
@@ -3410,6 +3640,23 @@ def _cmd_labs_clean_duplicate_delivery(args: argparse.Namespace) -> int:
 def _cmd_labs_run_es_bulk_partial(args: argparse.Namespace) -> int:
     run_id = args.run_id or _now_run_id()
     outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_BULK_PARTIAL, run_id=run_id)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_bulk_partial.run")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_bulk_partial.run",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
     logs_dir = outdir / "_logs"
     metrics_dir = outdir / "_metrics"
@@ -3578,6 +3825,23 @@ def _cmd_labs_run_es_bulk_partial(args: argparse.Namespace) -> int:
 
 def _cmd_labs_verify_es_bulk_partial(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_BULK_PARTIAL)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_bulk_partial.verify")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_bulk_partial.verify",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
     metrics_dir = run_dir / "_metrics"
     before_path = metrics_dir / "metrics-before.txt"
     after_path = metrics_dir / "metrics-after.txt"
@@ -3655,6 +3919,23 @@ def _cmd_labs_verify_es_bulk_partial(args: argparse.Namespace) -> int:
 
 def _cmd_labs_export_es_bulk_partial(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_BULK_PARTIAL)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_bulk_partial.export")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_bulk_partial.export",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
     exports_dir = run_dir / "_exports"
     _ensure_dir(exports_dir)
 
@@ -3688,6 +3969,23 @@ def _cmd_labs_export_es_bulk_partial(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_clean_es_bulk_partial(args: argparse.Namespace) -> int:
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_bulk_partial.clean")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_bulk_partial.clean",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": _now_run_id(),
+            "outdir": str(args.outdir) if args.outdir else None,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
     # No external state to revert: injection is env-only.
     if args.outdir:
         outdir = Path(args.outdir)
@@ -3714,6 +4012,23 @@ def _cmd_labs_clean_es_bulk_partial(args: argparse.Namespace) -> int:
 def _cmd_labs_run_db_claim_contention(args: argparse.Namespace) -> int:
     run_id = args.run_id or _now_run_id()
     outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_DB_CLAIM_CONTENTION, run_id=run_id)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("db_claim_contention.run")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "db_claim_contention.run",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
     logs_dir = outdir / "_logs"
     metrics_dir = outdir / "_metrics"
@@ -3929,6 +4244,23 @@ def _cmd_labs_run_db_claim_contention(args: argparse.Namespace) -> int:
 
 def _cmd_labs_verify_db_claim_contention(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_DB_CLAIM_CONTENTION)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("db_claim_contention.verify")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "db_claim_contention.verify",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
     metrics_dir = run_dir / "_metrics"
 
     before1 = (metrics_dir / "metrics-before-1.txt").read_text(encoding="utf-8") if (metrics_dir / "metrics-before-1.txt").exists() else ""
@@ -3985,6 +4317,23 @@ def _cmd_labs_verify_db_claim_contention(args: argparse.Namespace) -> int:
 
 def _cmd_labs_export_db_claim_contention(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_DB_CLAIM_CONTENTION)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("db_claim_contention.export")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "db_claim_contention.export",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
     exports_dir = run_dir / "_exports"
     _ensure_dir(exports_dir)
 
@@ -4016,6 +4365,23 @@ def _cmd_labs_export_db_claim_contention(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_clean_db_claim_contention(args: argparse.Namespace) -> int:
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("db_claim_contention.clean")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "db_claim_contention.clean",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": _now_run_id(),
+            "outdir": str(args.outdir) if args.outdir else None,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
     # No external state to revert: injection is env-only.
     if args.outdir:
         outdir = Path(args.outdir)
@@ -4042,6 +4408,23 @@ def _cmd_labs_clean_db_claim_contention(args: argparse.Namespace) -> int:
 def _cmd_labs_run_stuck_reclaim(args: argparse.Namespace) -> int:
     run_id = args.run_id or _now_run_id()
     outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_STUCK_RECLAIM, run_id=run_id)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("stuck_reclaim.run")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "stuck_reclaim.run",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
     logs_dir = outdir / "_logs"
     metrics_dir = outdir / "_metrics"
@@ -4366,6 +4749,23 @@ def _cmd_labs_run_stuck_reclaim(args: argparse.Namespace) -> int:
 
 def _cmd_labs_verify_stuck_reclaim(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_STUCK_RECLAIM)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("stuck_reclaim.verify")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "stuck_reclaim.verify",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
     metrics_dir = run_dir / "_metrics"
     logs_dir = run_dir / "_logs"
 
@@ -4444,6 +4844,23 @@ def _cmd_labs_verify_stuck_reclaim(args: argparse.Namespace) -> int:
 
 def _cmd_labs_export_stuck_reclaim(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_STUCK_RECLAIM)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("stuck_reclaim.export")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "stuck_reclaim.export",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
     exports_dir = run_dir / "_exports"
     _ensure_dir(exports_dir)
 
@@ -4468,6 +4885,23 @@ def _cmd_labs_export_stuck_reclaim(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_clean_stuck_reclaim(args: argparse.Namespace) -> int:
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("stuck_reclaim.clean")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "stuck_reclaim.clean",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": _now_run_id(),
+            "outdir": str(args.outdir) if args.outdir else None,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
     if args.keep_last is not None:
         base = LABS_SNAPSHOT_ROOT / "auto" / LAB_ID_S3A_2A_3A / SCENARIO_STUCK_RECLAIM
         if base.exists():
@@ -4481,6 +4915,23 @@ def _cmd_labs_clean_stuck_reclaim(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_clean_es_down_connect(args: argparse.Namespace) -> int:
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_down_connect.clean")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_down_connect.clean",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": _now_run_id(),
+            "outdir": str(args.outdir) if args.outdir else None,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
     # 1) Restore ES
     compose_file = str((REPO_ROOT / "docker-compose.infra.yml").resolve())
     start_proc = _docker_compose(args=["-f", compose_file, "start", "es"], cwd=REPO_ROOT)
@@ -4513,6 +4964,25 @@ def _cmd_labs_clean_es_down_connect(args: argparse.Namespace) -> int:
 
 def _cmd_labs_export_es_429_inject(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_429_INJECT)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_429_inject.export")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_429_inject.export",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
+    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_429_INJECT)
     exports_dir = run_dir / "_exports"
     _ensure_dir(exports_dir)
 
@@ -4538,6 +5008,23 @@ def _cmd_labs_export_es_429_inject(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_clean_es_429_inject(args: argparse.Namespace) -> int:
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_429_inject.clean")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_429_inject.clean",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": _now_run_id(),
+            "outdir": str(args.outdir) if args.outdir else None,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
     # No external state to revert: injection is env-only.
     if args.outdir:
         outdir = Path(args.outdir)
@@ -4562,6 +5049,23 @@ def _cmd_labs_clean_es_429_inject(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_clean_es_write_block_4xx(args: argparse.Namespace) -> int:
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("es_write_block_4xx.clean")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "es_write_block_4xx.clean",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": _now_run_id(),
+            "outdir": str(args.outdir) if args.outdir else None,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
     # 1) Revert injection (index.blocks.write=false)
     env = _load_env(env_file=args.env_file)
     es_url = (env.get("ELASTIC_URL") or "http://localhost:19200").strip().rstrip("/")
@@ -4589,6 +5093,24 @@ def _cmd_labs_clean_es_write_block_4xx(args: argparse.Namespace) -> int:
 def _cmd_labs_run_projection_version(args: argparse.Namespace) -> int:
     run_id = args.run_id or _now_run_id()
     outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_PROJECTION_VERSION, run_id=run_id)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("projection_version.run")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "projection_version.run",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
+
     logs_dir = outdir / "_logs"
     metrics_dir = outdir / "_metrics"
     _ensure_dir(logs_dir)
@@ -4863,6 +5385,24 @@ def _cmd_labs_run_projection_version(args: argparse.Namespace) -> int:
 
 def _cmd_labs_verify_projection_version(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_PROJECTION_VERSION)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("projection_version.verify")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "projection_version.verify",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
+
     if not run_dir.exists():
         print(f"[labs verify {SCENARIO_PROJECTION_VERSION}] run_dir not found: {run_dir}")
         return 2
@@ -4929,6 +5469,24 @@ def _cmd_labs_verify_projection_version(args: argparse.Namespace) -> int:
 
 def _cmd_labs_export_projection_version(args: argparse.Namespace) -> int:
     run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_PROJECTION_VERSION)
+
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("projection_version.export")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "projection_version.export",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": str(args.run_id or run_dir.name),
+            "outdir": str(run_dir),
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
+
     if not run_dir.exists():
         print(f"[labs export {SCENARIO_PROJECTION_VERSION}] run_dir not found: {run_dir}")
         return 2
@@ -4966,6 +5524,23 @@ def _cmd_labs_export_projection_version(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_clean_projection_version(args: argparse.Namespace) -> int:
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get("projection_version.clean")
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": "projection_version.clean",
+            "scope_id": LAB_ID_S3A_2A_3A,
+            "run_id": _now_run_id(),
+            "outdir": str(args.outdir) if args.outdir else None,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    return int(drill.meta.get("exit_code") or 0)
+
     if args.keep_last is not None:
         base = LABS_SNAPSHOT_ROOT / "auto" / LAB_ID_S3A_2A_3A / SCENARIO_PROJECTION_VERSION
         if base.exists():
