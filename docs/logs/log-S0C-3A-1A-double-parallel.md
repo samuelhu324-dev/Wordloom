@@ -93,6 +93,65 @@
   - 跑一次 scenario（在可用环境变量/数据库连接下）
   - 对比 `_result.json` 的结构与关键字段（至少 `ok`、错误结构、summary/meta 的关键字段）
 
+## Evidence（本阶段实证 / 运行证据）
+
+> 目的：证明 shim/double-parallel 在 CI/本地执行中 **不破坏对外契约**（scenario 名、`_result.json`/summary 结构、ok 语义），并形成可回溯证据链。
+
+### Run 1 — shared_keys（OK）
+
+- artifact: `summary.json`
+- scenario: `shadow_verify_shared_keys`
+- run_id: `22250360145-1`
+- result: `ok=true`
+- 关键输出（节选）：
+  - `ensure_min_rows=5`
+  - `seed_rows_inserted=5`
+  - 含 observability 互证字段：
+    - `log_probe_emitted=true`
+    - `trace_probe.traces_json_written=true`
+
+### Run 2 — write_gate（OK）
+
+- artifact: `summary.json`
+- scenario: `shadow_verify_search_index_write_gate`
+- run_id: `22250355123-1`
+- result: `ok=true`
+- 关键输出（节选）：
+  - `duplicates_groups_total=0`
+  - `duplicates_extra_rows_total=0`
+
+### Run 3 — paging_stability（OK）
+
+- artifact: `summary.json`
+- scenario: `shadow_verify_search_index_paging_stability`
+- run_id: `22250357446-1`
+- result: `ok=true`
+- 关键输出（节选）：
+  - `rows_total=120`
+  - `page_size=50`, `pages_checked=2`, `pages_returned=2`
+  - `ordering_ok=true`, `duplicates_across_pages_total=0`
+
+### Run 4 — readiness_gate（OK, 聚合验证）
+
+- artifact: `summary.json`（来自 zip 内）
+- scenario: `shadow_verify_dual_run_readiness_gate`
+- run_id: `22250386470-1`
+- result: `ok=true`
+- 关键输出（节选）：
+  - `dry_run=true`
+  - `checks.write_gate.ok=true`，并引用子检查结果路径：
+    - `.drill_snapshot/_checks/shadow_verify_search_index_write_gate/_result.json`
+  - `checks.paging_stability.ok=true`：
+    - `.drill_snapshot/_checks/shadow_verify_search_index_paging_stability/_result.json`
+  - `checks.shared_keys.ok=true`：
+    - `.drill_snapshot/_checks/shadow_verify_shared_keys/_result.json`
+
+## Status Update（阶段结论）
+
+- Step B（迁移优先级前三个场景 + readiness gate 复合验证）已通过实证：四次运行均 `ok=true`。
+- 结论：shim/double-parallel 路线在当前覆盖范围内可用，可继续按优先级推进迁移；同时 readiness gate 证明“组合调用/子结果引用路径”也未被破坏。
+
+
 ## Risks（风险与缓解）
 
 - 风险：shim 映射时遗漏参数、默认值变化、help 文案/参数顺序变化。
