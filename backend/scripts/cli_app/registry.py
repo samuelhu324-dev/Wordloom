@@ -49,6 +49,8 @@ def load_builtin_scenarios() -> None:
     from .scenarios import stuck_reclaim  # noqa: F401
     from .scenarios import duplicate_delivery  # noqa: F401
     from .scenarios import projection_version  # noqa: F401
+    from .scenarios import shadow_verify_chronicle_entries  # noqa: F401
+    from .scenarios import shadow_verify_search_index  # noqa: F401
     from .scenarios import shadow_verify_search_index_write_gate  # noqa: F401
     from .scenarios import shadow_verify_search_index_paging_stability  # noqa: F401
     from .scenarios import shadow_verify_shared_keys  # noqa: F401
