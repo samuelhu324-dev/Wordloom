@@ -2113,276 +2113,71 @@ def _cmd_labs_shadow_verify_dual_write_sampling(args: argparse.Namespace) -> int
     replay_reason = str(args.replay_reason or "labs shadow dual-write sampling replay")
     cleanup = bool(args.cleanup)
 
-    scope = "all" if library_id is None else f"library:{library_id}"
-    engine = create_engine(database_url)
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING)
 
-    now = datetime.now(timezone.utc)
-    stop_at = now.timestamp() + float(duration_seconds)
-
-    inserted_outbox_ids: list[str] = []
-    inserted_total = 0
-    dlq_failed_total = 0
-    replayed_total = 0
-    seed_rows_inserted = 0
-    loops = 0
-
-    def _select_candidates(conn, limit: int) -> list[tuple[str, str, int, str | None]]:
-        where_parts: list[str] = []
-        params: dict[str, object] = {"limit": int(limit)}
-
-        if library_id is not None:
-            where_parts.append("library_id = :library_id")
-            params["library_id"] = library_id
-
-        if entity_types:
-            where_parts.append("entity_type IN :entity_types")
-            params["entity_types"] = entity_types
-
-        where_sql = ("WHERE " + " AND ".join(where_parts)) if where_parts else ""
-        stmt = text(
-            f"""
-            SELECT entity_type, entity_id::text, event_version, library_id::text AS library_id
-            FROM search_index
-            {where_sql}
-            ORDER BY updated_at DESC, entity_type, entity_id
-            LIMIT :limit
-            """
-        )
-        if entity_types:
-            stmt = stmt.bindparams(bindparam("entity_types", expanding=True))
-
-        rows = conn.execute(stmt, params).fetchall()
-        return [(str(r[0]), str(r[1]), int(r[2] or 0), (str(r[3]) if (len(r) > 3 and r[3] is not None) else None)) for r in rows]
-
-    with engine.connect() as conn:
-        if ensure_min_rows > 0:
-            seed_rows_inserted = _ensure_search_index_min_rows(
-                conn=conn,
-                ensure_min_rows=ensure_min_rows,
-                library_id=library_id,
-                seed_entity_type="seed_sampling",
-            )
-
-        while True:
-            loops += 1
-            remaining_budget = max_total_events - inserted_total
-            if remaining_budget <= 0:
-                break
-
-            batch_limit = min(int(sample_size), int(remaining_budget))
-            candidates = _select_candidates(conn, limit=batch_limit)
-            if not candidates:
-                break
-
-            batch_now = datetime.now(timezone.utc)
-            outbox_rows = []
-            batch_ids = []
-            for (entity_type, entity_id, event_version, candidate_library_id) in candidates:
-                outbox_id = str(uuid.uuid4())
-                batch_ids.append(outbox_id)
-                outbox_rows.append(
-                    {
-                        "id": outbox_id,
-                        "entity_type": entity_type,
-                        "library_id": candidate_library_id,
-                        "entity_id": entity_id,
-                        "op": "upsert",
-                        "event_version": int(event_version),
-                        "created_at": batch_now,
-                        "status": "pending",
-                        "attempts": 0,
-                        "updated_at": batch_now,
-                        "replay_count": 0,
-                    }
-                )
-
-            conn.execute(
-                text(
-                    """
-                    INSERT INTO search_outbox_events
-                                            (id, entity_type, library_id, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
-                    VALUES
-                                            (:id, :entity_type, :library_id, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
-                    """
-                ),
-                outbox_rows,
-            )
-            conn.commit()
-
-            inserted_outbox_ids.extend(batch_ids)
-            inserted_total += len(batch_ids)
-
-            # DLQ simulation: mark a subset as failed.
-            fail_n = int(round(float(inject_failed_rate) * float(len(batch_ids))))
-            fail_ids = batch_ids[: max(0, min(fail_n, len(batch_ids)))]
-            if fail_ids:
-                conn.execute(
-                    text(
-                        """
-                        UPDATE search_outbox_events
-                        SET status='failed',
-                            error_reason='simulated_new_side_failure',
-                            error='simulated by labs shadow-verify-dual-write-sampling',
-                            updated_at=:now
-                        WHERE id IN :ids
-                        """
-                    ).bindparams(bindparam("ids", expanding=True)),
-                    {"now": datetime.now(timezone.utc), "ids": fail_ids},
-                )
-                conn.commit()
-                dlq_failed_total += len(fail_ids)
-
-            # Replay evidence (failed -> pending with audit fields).
-            if replay_failed and fail_ids:
-                replay_now = datetime.now(timezone.utc)
-                conn.execute(
-                    text(
-                        """
-                        UPDATE search_outbox_events
-                        SET status='pending',
-                            owner=NULL,
-                            lease_until=NULL,
-                            processing_started_at=NULL,
-                            attempts=0,
-                            next_retry_at=NULL,
-                            error_reason=NULL,
-                            error=NULL,
-                            replay_count=(replay_count + 1),
-                            last_replayed_at=:now,
-                            last_replayed_by=:by,
-                            last_replayed_reason=:reason,
-                            updated_at=:now
-                        WHERE id IN :ids
-                          AND status='failed'
-                        """
-                    ).bindparams(bindparam("ids", expanding=True)),
-                    {"now": replay_now, "by": replay_by, "reason": replay_reason, "ids": fail_ids},
-                )
-                conn.commit()
-                replayed_total += len(fail_ids)
-
-            if duration_seconds <= 0:
-                break
-
-            if datetime.now(timezone.utc).timestamp() >= stop_at:
-                break
-
-            time.sleep(interval_seconds)
-
-        # Verify status distribution for inserted rows.
-        pending_count = 0
-        failed_count = 0
-        if inserted_outbox_ids:
-            rows = conn.execute(
-                text(
-                    """
-                    SELECT status, COUNT(*)
-                    FROM search_outbox_events
-                    WHERE id IN :ids
-                    GROUP BY status
-                    """
-                ).bindparams(bindparam("ids", expanding=True)),
-                {"ids": inserted_outbox_ids},
-            ).fetchall()
-            for status, cnt in rows:
-                if str(status) == "pending":
-                    pending_count = int(cnt)
-                elif str(status) == "failed":
-                    failed_count = int(cnt)
-
-        remaining_outbox = None
-        if cleanup and inserted_outbox_ids:
-            conn.execute(
-                text("DELETE FROM search_outbox_events WHERE id IN :ids").bindparams(bindparam("ids", expanding=True)),
-                {"ids": inserted_outbox_ids},
-            )
-            conn.commit()
-            remaining_outbox = int(
-                conn.execute(
-                    text("SELECT COUNT(*) FROM search_outbox_events WHERE id IN :ids").bindparams(
-                        bindparam("ids", expanding=True)
-                    ),
-                    {"ids": inserted_outbox_ids},
-                ).scalar()
-                or 0
-            )
-
-    strict_failed = failed_count > 0
-    ok = True
-    if strategy == "strict" and strict_failed:
-        ok = False
-    if cleanup and inserted_outbox_ids and remaining_outbox not in (0, None):
-        ok = False
-
-    result: dict[str, object] = {
-        "lab_id": LAB_ID_S2B_2A_2A,
-        "scenario": SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING,
-        "run_id": run_id,
-        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "scope": scope,
-        "dry_run": False,
-        "artifacts_contract_hint": "success uploads summary.json only; failure uploads artifacts.zip; _result.json is single source of truth",
-        "targets": {
-            "projection_table": "search_index",
-            "outbox_table": "search_outbox_events",
-            "enqueue_entrypoint": "backend/infra/search/search_outbox_repository.py::SearchOutboxRepository.enqueue",
-            "producer_entrypoint": "backend/infra/search/search_indexer.py::PostgresSearchIndexer",
-            "replay_tool_hint": "backend/scripts/ops/search_outbox_replay_failed.py (stable shim)",
-        },
-        "config": {
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING,
+            "scope_id": LAB_ID_S2B_2A_2A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+            "database_url": database_url,
             "library_id": library_id,
             "entity_types": entity_types,
-            "ensure_min_rows": int(ensure_min_rows),
-            "sample_size": int(sample_size),
-            "duration_seconds": int(duration_seconds),
-            "interval_seconds": float(interval_seconds),
-            "max_total_events": int(max_total_events),
+            "ensure_min_rows": ensure_min_rows,
+            "sample_size": sample_size,
+            "duration_seconds": duration_seconds,
+            "interval_seconds": interval_seconds,
+            "max_total_events": max_total_events,
             "strategy": strategy,
-            "inject_failed_rate": float(inject_failed_rate),
-            "replay_failed": bool(replay_failed),
-            "cleanup": bool(cleanup),
-        },
-        "observed": {
-            "loops": int(loops),
-            "seed_rows_inserted": int(seed_rows_inserted),
-            "outbox_inserted_total": int(inserted_total),
-            "dlq_failed_simulated_total": int(dlq_failed_total),
-            "replayed_total": int(replayed_total),
-            "pending_after": int(pending_count),
-            "failed_after": int(failed_count),
-        },
-        "rollback": {
-            "cleanup_enabled": bool(cleanup),
-            "remaining_outbox_rows": remaining_outbox,
-        },
-        "policy": {
-            "strategy": strategy,
-            "strict_fails_on_failed": True,
-            "soft_allows_failed": True,
-            "dlq_definition": "status=failed rows are treated as terminal by worker; ops can replay to pending with audit fields",
-            "replay_audit_fields": [
-                "replay_count",
-                "last_replayed_at",
-                "last_replayed_by",
-                "last_replayed_reason",
-            ],
-        },
-        "ok": bool(ok),
-    }
+            "inject_failed_rate": inject_failed_rate,
+            "replay_failed": replay_failed,
+            "replay_by": replay_by,
+            "replay_reason": replay_reason,
+            "cleanup": cleanup,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    result = drill.meta or {}
+    write_json(outdir / "_result.json", result)
 
-    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    ok = bool(result.get("ok"))
+    scope = str(result.get("scope") or "")
+    observed = result.get("observed")
+    rollback = result.get("rollback")
+    outbox_inserted_total = 0
+    pending_after = 0
+    failed_after = 0
+    dlq_failed_simulated_total = 0
+    replayed_total = 0
+    if isinstance(observed, dict):
+        outbox_inserted_total = int(observed.get("outbox_inserted_total") or 0)
+        pending_after = int(observed.get("pending_after") or 0)
+        failed_after = int(observed.get("failed_after") or 0)
+        dlq_failed_simulated_total = int(observed.get("dlq_failed_simulated_total") or 0)
+        replayed_total = int(observed.get("replayed_total") or 0)
+
+    cleanup_enabled = bool(cleanup)
+    remaining_outbox_rows = None
+    if isinstance(rollback, dict):
+        cleanup_enabled = bool(rollback.get("cleanup_enabled"))
+        remaining_outbox_rows = rollback.get("remaining_outbox_rows")
 
     print("labs-017.shadow_verify_dual_write_sampling")
     print(f"scope={scope}")
     print(f"strategy={strategy}")
-    print(f"outbox_inserted_total={inserted_total}")
-    print(f"pending_after={pending_count}")
-    print(f"failed_after={failed_count}")
-    print(f"dlq_failed_simulated_total={dlq_failed_total}")
+    print(f"outbox_inserted_total={outbox_inserted_total}")
+    print(f"pending_after={pending_after}")
+    print(f"failed_after={failed_after}")
+    print(f"dlq_failed_simulated_total={dlq_failed_simulated_total}")
     print(f"replayed_total={replayed_total}")
-    print(f"cleanup_enabled={cleanup}")
-    if cleanup:
-        print(f"remaining_outbox_rows={remaining_outbox}")
+    print(f"cleanup_enabled={cleanup_enabled}")
+    if cleanup_enabled:
+        print(f"remaining_outbox_rows={remaining_outbox_rows}")
     print(f"outputs: {outdir}")
 
     return 0 if ok else 2

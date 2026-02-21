@@ -199,6 +199,18 @@
   - ES：`health.ok=true`, `index.ok=true`, `refresh.ok=true`
   - compare：`parity_ok=true`
 
+### Run 9 — canary_dual_write（OK, canary 小流量双写 + 回滚验证）
+
+- artifact: `summary.json`
+- scenario: `shadow_verify_canary_dual_write`
+- run_id: `22257277206-1`
+- result: `ok=true`
+- 关键输出（节选）:
+  - canary：`max_writes=5`
+  - verify：`search_index_rows_found=5`, `search_outbox_rows_found=5`, `duplicates_extra_rows_total=0`
+  - rollback：`cleanup_enabled=true`, `deleted_search_index=5`, `deleted_search_outbox_events=5`
+  - rollback：`remaining_search_index=0`, `remaining_search_outbox_events=0`
+
 ## Status Update（阶段结论）
 
 - Step B（迁移优先级前三个场景 + readiness gate 复合验证）已通过实证：`Run 1~4` 均 `ok=true`。
@@ -206,6 +218,7 @@
 - readiness gate 已完成 “shim → scenario” 转接并复跑通过：`Run 6` 为 `ok=true`。
 - dual-run（stage2）已迁移并通过写侧 outbox worker 实证：`Run 7` 为 `ok=true`（strict 对齐）。
 - dual-run（window）已迁移并通过 window drill 端到端实证：`Run 8` 为 `ok=true`（strict 对齐）。
+- canary dual-write 已迁移并通过 canary + 回滚实证：`Run 9` 为 `ok=true`。
 
 
 ## Risks（风险与缓解）

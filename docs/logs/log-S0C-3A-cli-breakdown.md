@@ -137,6 +137,7 @@ backend/scripts/
 - `backend/scripts/cli_app/registry.py`：scenario 注册表 + `load_builtin_scenarios()`
 - `backend/scripts/cli_app/scenarios/*`：已迁移并可注册的场景模块：
   - `shadow_verify_canary_dual_write`
+  - `shadow_verify_dual_write_sampling`
   - `shadow_verify_search_index_write_gate`
   - `shadow_verify_search_index_paging_stability`
   - `shadow_verify_shared_keys`
