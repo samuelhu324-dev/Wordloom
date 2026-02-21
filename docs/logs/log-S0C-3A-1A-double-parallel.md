@@ -14,7 +14,7 @@
   **adr**: ``
   **runbook**: `null`
 **created**: `2026-02-20`
-**updated**: `2026-02-20`
+**updated**: `2026-02-21`
 
 ---
 
@@ -185,12 +185,27 @@
   - ES：`health_ok=true`, `index_ok=true`, `refresh_ok=true`, `search_ok=true`
   - `parity_ok=true`
 
+### Run 8 — dual_run_window（OK, window drill 端到端验证）
+
+- artifact: `summary.json`
+- scenario: `shadow_verify_dual_run_window`
+- run_id: `22256492131-1`
+- result: `ok=true`
+- 关键输出（节选）:
+  - `strategy=strict`
+  - `ensure_min_rows=25`, `seed_rows_inserted=25`
+  - window：`enqueued_total=75`
+  - worker：`ok=true`, `exit_code=0`, `runtime_seconds≈15.29`
+  - ES：`health.ok=true`, `index.ok=true`, `refresh.ok=true`
+  - compare：`parity_ok=true`
+
 ## Status Update（阶段结论）
 
 - Step B（迁移优先级前三个场景 + readiness gate 复合验证）已通过实证：`Run 1~4` 均 `ok=true`。
 - dual-run（stage1）已迁移并在 GitHub Actions 中跑通：`Run 5` 为 `ok=true`（strict 对齐）。
 - readiness gate 已完成 “shim → scenario” 转接并复跑通过：`Run 6` 为 `ok=true`。
 - dual-run（stage2）已迁移并通过写侧 outbox worker 实证：`Run 7` 为 `ok=true`（strict 对齐）。
+- dual-run（window）已迁移并通过 window drill 端到端实证：`Run 8` 为 `ok=true`（strict 对齐）。
 
 
 ## Risks（风险与缓解）
