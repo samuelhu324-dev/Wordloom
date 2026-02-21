@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from typing import Literal
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -124,4 +125,82 @@ def build_evidence_paths_for_dir(snapshot_dir: Path) -> EvidencePaths:
         summary_json=summary_path(snapshot_dir),
         logs_txt=logs_path(snapshot_dir),
         traces_json=traces_path(snapshot_dir),
+    )
+
+
+ZipWhen = Literal["never", "on_failure", "always"]
+
+
+@dataclass(frozen=True)
+class PackedArtifacts:
+    """Represents the concrete files produced by pack_artifacts()."""
+
+    result_json: Path
+    summary_json: Path | None
+    logs_txt: Path | None
+    traces_json: Path | None
+    zip_path: Path | None
+
+
+def pack_artifacts(
+    *,
+    paths: EvidencePaths,
+    result: dict[str, Any],
+    summary: dict[str, Any] | None = None,
+    logs_text: str | None = None,
+    traces: dict[str, Any] | None = None,
+    zip_when: ZipWhen = "never",
+    zip_path: Path | None = None,
+    indent: int = 2,
+) -> PackedArtifacts:
+    """Write evidence artifacts according to the stable contract.
+
+    Contract goals:
+    - Always write `<outdir>/_result.json` (UTF-8, pretty JSON, trailing newline).
+    - Optionally write `artifacts/summary.json`, `artifacts/logs.txt`, `artifacts/traces.json`.
+    - Optionally zip the full `snapshot_dir` for CI/upload, with caller-controlled naming.
+
+    Notes:
+    - This function intentionally does not invent zip naming. When zipping is enabled,
+      callers must provide `zip_path` to preserve existing conventions per workflow.
+    """
+
+    write_json(paths.result_json, result, indent=indent)
+
+    written_summary: Path | None = None
+    written_logs: Path | None = None
+    written_traces: Path | None = None
+
+    if summary is not None:
+        write_json(paths.summary_json, summary, indent=indent)
+        written_summary = paths.summary_json
+
+    if logs_text is not None:
+        write_text(paths.logs_txt, logs_text)
+        written_logs = paths.logs_txt
+
+    if traces is not None:
+        write_json(paths.traces_json, traces, indent=indent)
+        written_traces = paths.traces_json
+
+    ok = bool(result.get("ok"))
+    should_zip = (
+        (zip_when == "always")
+        or (zip_when == "on_failure" and not ok)
+        or (zip_when == "never" and False)
+    )
+
+    written_zip: Path | None = None
+    if should_zip:
+        if zip_path is None:
+            raise ValueError("zip_path is required when zip_when is not 'never'")
+        zip_directory(source_dir=paths.snapshot_dir, zip_path=zip_path)
+        written_zip = zip_path
+
+    return PackedArtifacts(
+        result_json=paths.result_json,
+        summary_json=written_summary,
+        logs_txt=written_logs,
+        traces_json=written_traces,
+        zip_path=written_zip,
     )

@@ -4,8 +4,8 @@
 
 **id**: `S0C-3A-1A`
 **kind**: `log`               # log | lab | runbook | adr | note
-**title**: `tools/cli breakdown`
-**status**: `draft`          # draft | stable | archived
+**title**: `shim/double-parallel`
+**status**: `stable`          # draft | stable | archived
 **scope**: `S0C`
 **tags**: `EVOLOTION, Docs, Projection, Search, chronicle, lab, sub/1`
 **links**: ``
@@ -224,6 +224,27 @@
   - observed：`outbox_inserted_total=20`, `pending_after=20`, `failed_after=0`
   - rollback：`cleanup_enabled=true`, `remaining_outbox_rows=0`
 
+### Run 11 — shadow_verify_chronicle_entries（OK, 新增迁移场景实证）
+
+- artifact: `summary.json`
+- scenario: `shadow_verify_chronicle_entries`
+- run_id: `22259033510-1`
+- result: `ok=true`
+- 关键输出（节选）:
+  - `scope=all`
+  - `events_total=0`, `entries_total=0`
+  - `missing_entries=0`, `extra_entries=0`, `mismatched_book_id=0`
+
+### Run 12 — shadow_verify_search_index（OK, 新增迁移场景实证）
+
+- artifact: `summary.json`
+- scenario: `shadow_verify_search_index`
+- run_id: `22259037326-1`
+- result: `ok=true`
+- 关键输出（节选）:
+  - `scope=all`
+  - blocks/books/tags/outbox 相关计数均为 0（见产物 `summary.json`）
+
 ## Status Update（阶段结论）
 
 - Step B（迁移优先级前三个场景 + readiness gate 复合验证）已通过实证：`Run 1~4` 均 `ok=true`。
@@ -233,6 +254,7 @@
 - dual-run（window）已迁移并通过 window drill 端到端实证：`Run 8` 为 `ok=true`（strict 对齐）。
 - canary dual-write 已迁移并通过 canary + 回滚实证：`Run 9` 为 `ok=true`。
 - dual-write sampling 已迁移并通过 sampling + 回滚实证：`Run 10` 为 `ok=true`（strict）。
+- drill-shadow-verify-entries 新补齐两个场景已本地实证通过：`Run 11~12` 均 `ok=true`。
 
 ### Update — failure-drills 收口（2026-02-21）
 
