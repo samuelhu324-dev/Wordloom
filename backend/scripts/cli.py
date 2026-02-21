@@ -1512,8 +1512,6 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
         print("[labs shadow-verify-dual-run-stage2] --worker-idle-polls-before-exit must be > 0")
         return 2
 
-    scope = "all" if library_id is None else f"library:{library_id}"
-
     es_url = (args.es_url or env.get("ELASTIC_URL") or "http://127.0.0.1:19200").strip().rstrip("/")
     token_default = "dualrun" + re.sub(r"[^0-9A-Za-z]+", "", run_id)
     token = (args.token or token_default).strip() or token_default
@@ -1533,630 +1531,135 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
     es_index = _sanitize_index_name(es_index)
     recreate_index = bool(args.recreate_index)
 
-    seed_text_prefix = f"{token} "
-    seed_entity_type = "block"
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2)
 
-    # IMPORTANT: Keep the PG candidate scope aligned with the ES query semantics.
-    # ES uses a `match` query on `text`, which won't match arbitrary substrings.
-    # We therefore scope the drill rows to those whose `text` starts with
-    # "<token> ", matching what we seed below.
-    where_parts: list[str] = ["entity_type = :entity_type", "text ILIKE :pattern"]
-    base_params: dict[str, object] = {
-        "entity_type": seed_entity_type,
-        "pattern": f"{seed_text_prefix}%",
-    }
-    if library_id is not None:
-        where_parts.append("library_id = :library_id")
-        base_params["library_id"] = library_id
-
-    where_sql = " AND ".join(where_parts)
-
-    engine = create_engine(database_url)
-    inserted_rows = 0
-    pg_candidates: list[dict[str, object]] = []
-    outbox_event_ids: list[str] = []
-
-    def _table_columns(conn, table_name: str) -> set[str]:
-        rows = conn.execute(
-            text(
-                """
-                SELECT column_name
-                FROM information_schema.columns
-                WHERE table_schema = 'public' AND table_name = :t
-                """
-            ),
-            {"t": table_name},
-        ).all()
-        return {str(r[0]) for r in rows if r and r[0]}
-
-    with engine.connect() as conn:
-        existing_for_token = int(
-            conn.execute(text(f"SELECT COUNT(*) FROM search_index WHERE {where_sql}"), base_params).scalar() or 0
-        )
-        need = int(ensure_min_rows) - int(existing_for_token)
-        if need > 0:
-            now = datetime.now(timezone.utc)
-            max_ev = int(conn.execute(text("SELECT COALESCE(MAX(event_version), 0) FROM search_index")).scalar() or 0)
-            rows = []
-            for i in range(int(need)):
-                rows.append(
-                    {
-                        "id": uuid.uuid4(),
-                        "entity_type": seed_entity_type,
-                        "library_id": (uuid.UUID(library_id) if library_id else None),
-                        "entity_id": uuid.uuid4(),
-                        "text": f"{seed_text_prefix}{i}",
-                        "snippet": None,
-                        "rank_score": 0.0,
-                        "created_at": now,
-                        "updated_at": now,
-                        "event_version": int(max_ev + i + 1),
-                    }
-                )
-
-            conn.execute(
-                text(
-                    """
-                    INSERT INTO search_index
-                      (id, entity_type, library_id, entity_id, text, snippet, rank_score, created_at, updated_at, event_version)
-                    VALUES
-                      (:id, :entity_type, :library_id, :entity_id, :text, :snippet, :rank_score, :created_at, :updated_at, :event_version)
-                    """
-                ),
-                rows,
-            )
-            conn.commit()
-            inserted_rows = int(need)
-
-        pg_sql = f"""
-            SELECT entity_id::text AS entity_id,
-                   COALESCE(event_version, 0) AS event_version
-            FROM search_index
-            WHERE {where_sql}
-            ORDER BY COALESCE(event_version, 0) ASC, entity_id::text ASC
-            LIMIT :limit
-        """
-        pg_params = dict(base_params)
-        pg_params["limit"] = candidate_limit
-        pg_rows = conn.execute(text(pg_sql), pg_params).all()
-        pg_candidates = [{"entity_id": str(r[0]), "event_version": int(r[1] or 0)} for r in pg_rows]
-
-        # Enqueue outbox rows for these candidates.
-        outbox_cols = _table_columns(conn, "search_outbox_events")
-        if not outbox_cols:
-            print("[labs shadow-verify-dual-run-stage2] table search_outbox_events not found")
-            return 2
-        required_cols = {"id", "entity_type", "entity_id", "op", "event_version", "status"}
-        missing_required = sorted([c for c in required_cols if c not in outbox_cols])
-        if missing_required:
-            print(f"[labs shadow-verify-dual-run-stage2] search_outbox_events missing required columns: {missing_required}")
-            return 2
-
-        now = datetime.now(timezone.utc)
-        base_event: dict[str, object] = {
-            "entity_type": seed_entity_type,
-            "op": "upsert",
-            "status": "pending",
-            "attempts": 0,
-            "replay_count": 0,
-            "created_at": now,
-            "updated_at": now,
-            # Optional trace context columns exist in some environments; keep binds satisfied.
-            "traceparent": None,
-            "tracestate": None,
-        }
-        # Keep consistent columns across all rows; only include columns that exist.
-        chosen_cols = [
-            c
-            for c in (
-                "id",
-                "entity_type",
-                "library_id",
-                "entity_id",
-                "op",
-                "event_version",
-                "status",
-                "attempts",
-                "replay_count",
-                "created_at",
-                "updated_at",
-                "traceparent",
-                "tracestate",
-            )
-            if c in outbox_cols
-        ]
-
-        rows = []
-        for c in pg_candidates:
-            ev_uuid = uuid.uuid4()
-            outbox_event_ids.append(str(ev_uuid))
-            row = {
-                **{k: v for k, v in base_event.items() if k in chosen_cols},
-                "id": ev_uuid,
-                "entity_id": uuid.UUID(str(c["entity_id"])),
-                "event_version": int(c["event_version"] or 0),
-            }
-            if "library_id" in chosen_cols:
-                lib = c.get("library_id") or library_id
-                row["library_id"] = (uuid.UUID(str(lib)) if lib else None)
-            rows.append(row)
-
-        cols_sql = ", ".join(chosen_cols)
-        placeholders = ", ".join([f":{c}" for c in chosen_cols])
-        outbox_insert_sql = text(
-            f"INSERT INTO search_outbox_events ({cols_sql}) VALUES ({placeholders})"
-        )
-        conn.execute(outbox_insert_sql, rows)
-        conn.commit()
-
-    # Strong mutual evidence: stdout probe.
-    probe: dict[str, object] = {
-        "event": "labs.dual_run.stage2.probe",
-        "lab_id": LAB_ID_S2B_2A_2A,
-        "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2,
-        "run_id": run_id,
-        "scope": scope,
-        "library_id": library_id,
-        "token": token,
-        "pg_candidates_total": len(pg_candidates),
-        "outbox_enqueued_total": len(outbox_event_ids),
-        "es_url": es_url,
-        "es_index": es_index,
-    }
-    print(json.dumps(probe, ensure_ascii=False, separators=(",", ":")))
-
-    # ES health + ensure index mapping.
-    es_health_status, es_health_payload = _http_json("GET", f"{es_url}", body=None, timeout_s=5.0)
-    es_health_ok = bool(es_health_status == 200)
-
-    # Create ES index with explicit mapping (same schema as backfill script).
-    if recreate_index:
-        _http_json("DELETE", f"{es_url}/{es_index}", body=None, timeout_s=10.0)
-
-    mapping = {
-        "mappings": {
-            "properties": {
-                "entity_type": {"type": "keyword"},
-                "library_id": {"type": "keyword"},
-                "entity_id": {"type": "keyword"},
-                "text": {"type": "text"},
-                "snippet": {"type": "text", "index": False},
-                "rank_score": {"type": "float"},
-                "event_version": {"type": "long"},
-                "updated_at": {"type": "date"},
-            }
-        }
-    }
-
-    es_index_status, es_index_payload = _http_json(
-        "PUT",
-        f"{es_url}/{es_index}",
-        body=mapping,
-        timeout_s=10.0,
-    )
-    es_index_ok = bool(es_index_status in {200, 201} or es_index_status == 400)
-
-    # Run worker in one-shot mode: exit when idle.
-    worker_script = REPO_ROOT / "backend" / "scripts" / "ops" / "search_outbox_worker.py"
-    worker_env = env.copy()
-    worker_env["DATABASE_URL"] = database_url
-    worker_env["ELASTIC_URL"] = es_url
-    worker_env["ELASTIC_INDEX"] = es_index
-
-    # Scope precedence for worker claim allowlist:
-    # 1) explicit SEARCH_OUTBOX_LIBRARY_ALLOWLIST from caller/workflow (if provided)
-    # 2) otherwise default to --library-id (if provided)
-    explicit_allowlist = str(worker_env.get("SEARCH_OUTBOX_LIBRARY_ALLOWLIST") or "").strip()
-    if explicit_allowlist:
-        worker_env["SEARCH_OUTBOX_LIBRARY_ALLOWLIST"] = explicit_allowlist
-    elif library_id is not None:
-        worker_env["SEARCH_OUTBOX_LIBRARY_ALLOWLIST"] = str(library_id)
-    else:
-        worker_env.pop("SEARCH_OUTBOX_LIBRARY_ALLOWLIST", None)
-
-    # Ensure `infra.*` imports work in subprocess (CI doesn't install the project).
-    backend_path = str(REPO_ROOT / "backend")
-    existing_pythonpath = (worker_env.get("PYTHONPATH") or "").strip()
-    worker_env["PYTHONPATH"] = (
-        backend_path if not existing_pythonpath else backend_path + os.pathsep + existing_pythonpath
-    )
-
-    # Ensure `infra.*` imports work in the worker across environments (notably GH Actions)
-    # by forcing backend/ onto PYTHONPATH for the subprocess.
-    backend_path = str(REPO_ROOT / "backend")
-    existing_pythonpath = str(worker_env.get("PYTHONPATH") or "").strip()
-    if existing_pythonpath:
-        if backend_path not in existing_pythonpath.split(os.pathsep):
-            worker_env["PYTHONPATH"] = backend_path + os.pathsep + existing_pythonpath
-    else:
-        worker_env["PYTHONPATH"] = backend_path
-
-    # The legacy worker has an optional DB environment guard controlled by WORDLOOM_ENV.
-    # Drills run against ephemeral/local DBs; make this deterministic and avoid accidental
-    # mismatches inherited from the parent environment.
-    try:
-        from urllib.parse import urlparse
-
-        parsed = urlparse(database_url)
-        db_name = (parsed.path or "").lstrip("/").split("/")[0]
-
-        inferred_env: str | None = None
-        if db_name.endswith("_test") or db_name == "wordloom_test":
-            inferred_env = "test"
-        elif db_name.endswith("_dev") or db_name == "wordloom_dev":
-            inferred_env = "dev"
-        elif db_name.endswith("_sandbox") or db_name == "wordloom_sandbox":
-            inferred_env = "sandbox"
-
-        if inferred_env:
-            worker_env["WORDLOOM_ENV"] = inferred_env
-        else:
-            worker_env.pop("WORDLOOM_ENV", None)
-    except Exception:
-        worker_env.pop("WORDLOOM_ENV", None)
-
-    worker_env["OUTBOX_EXIT_WHEN_IDLE"] = "1"
-    worker_env["OUTBOX_IDLE_POLLS_BEFORE_EXIT"] = str(int(worker_idle_polls_before_exit))
-    worker_env["OUTBOX_MAX_RUNTIME_SECONDS"] = str(float(worker_max_runtime_seconds))
-    worker_env["OUTBOX_POLL_INTERVAL_SECONDS"] = str(float(worker_poll_interval_seconds))
-    worker_env["OUTBOX_BULK_SIZE"] = str(int(worker_batch_size))
-    worker_env["OUTBOX_CONCURRENCY"] = str(int(worker_concurrency))
-    worker_env["OUTBOX_REQUIRE_ES_READY"] = "1"
-    worker_env["OUTBOX_SHUTDOWN_GRACE_SECONDS"] = "5"
-
-    t0 = time.time()
-    worker_proc = subprocess.run(
-        [_python_exe(), str(worker_script)],
-        cwd=str(REPO_ROOT),
-        env=worker_env,
-        capture_output=True,
-        text=True,
-        check=False,
-        timeout=float(worker_max_runtime_seconds) + 10.0,
-    )
-    worker_runtime_s = float(time.time() - t0)
-    worker_exit_code = int(worker_proc.returncode)
-    worker_ok = bool(worker_exit_code == 0)
-
-    worker_log_path = outdir / "worker.log"
-    worker_log_path.write_text(
-        (worker_proc.stdout or "") + "\n--- stderr ---\n" + (worker_proc.stderr or "") + "\n",
-        encoding="utf-8",
-    )
-    last_claim_batch_id = _extract_last_claim_batch_id(worker_log_path)
-
-    def _tail(text: str, limit: int = 4000) -> str:
-        t = text or ""
-        if len(t) <= limit:
-            return t
-        return t[-limit:]
-
-    worker_stdout_tail = _tail(worker_proc.stdout or "")
-    worker_stderr_tail = _tail(worker_proc.stderr or "")
-
-    # Post-worker: refresh index for deterministic visibility.
-    es_refresh_status, _es_refresh_payload = _http_json(
-        "POST",
-        f"{es_url}/{es_index}/_refresh",
-        body=None,
-        timeout_s=10.0,
-    )
-    es_refresh_ok = bool(es_refresh_status < 400)
-
-    def _try_parse_json(payload: str) -> dict[str, object]:
-        try:
-            obj = json.loads(payload) if payload else {}
-            return obj if isinstance(obj, dict) else {"_": obj}
-        except Exception:
-            return {"raw": payload}
-
-    es_query_filters: list[dict[str, object]] = [{"term": {"entity_type": seed_entity_type}}]
-    if library_id is not None:
-        es_query_filters.append({"term": {"library_id": library_id}})
-
-    es_search_body: dict[str, object] = {
-        "query": {
-            "bool": {
-                "must": [{"match": {"text": token}}],
-                "filter": es_query_filters,
-            }
-        },
-        "sort": [{"event_version": "asc"}, {"entity_id": "asc"}],
-        "_source": ["entity_id", "event_version", "entity_type", "library_id"],
-        "size": candidate_limit,
-    }
-
-    es_search_status, es_search_payload = _http_json(
-        "POST",
-        f"{es_url}/{es_index}/_search",
-        body=es_search_body,
-        timeout_s=10.0,
-    )
-    es_search_ok = bool(es_search_status < 400)
-    es_search_obj = _try_parse_json(es_search_payload)
-    hits = (((es_search_obj.get("hits") or {}) if isinstance(es_search_obj, dict) else {}).get("hits") or [])
-    if not isinstance(hits, list):
-        hits = []
-
-    es_candidates: list[dict[str, object]] = []
-    for h in hits:
-        if not isinstance(h, dict):
-            continue
-        src = h.get("_source")
-        if not isinstance(src, dict):
-            continue
-        entity_id = src.get("entity_id")
-        event_version = src.get("event_version")
-        if entity_id is None:
-            continue
-        try:
-            ev = int(event_version or 0)
-        except Exception:
-            ev = 0
-        es_candidates.append({"entity_id": str(entity_id), "event_version": ev})
-
-    es_count_status, es_count_payload = _http_json(
-        "POST",
-        f"{es_url}/{es_index}/_count",
-        body={"query": es_search_body.get("query")},
-        timeout_s=10.0,
-    )
-    es_count_obj = _try_parse_json(es_count_payload)
-    es_count = None
-    if isinstance(es_count_obj, dict) and isinstance(es_count_obj.get("count"), int):
-        es_count = int(es_count_obj["count"])
-
-    # Verify outbox statuses.
-    outbox_status_counts: dict[str, int] = {}
-    if outbox_event_ids:
-        outbox_sql = (
-            text(
-                """
-                SELECT status, COUNT(*) AS n
-                FROM search_outbox_events
-                WHERE id IN :ids
-                GROUP BY status
-                """
-            )
-            .bindparams(bindparam("ids", expanding=True))
-        )
-        with engine.connect() as conn:
-            rows = conn.execute(outbox_sql, {"ids": [uuid.UUID(x) for x in outbox_event_ids]}).all()
-            for st, n in rows:
-                outbox_status_counts[str(st)] = int(n or 0)
-
-    outbox_done = int(outbox_status_counts.get("done", 0))
-    outbox_pending = int(outbox_status_counts.get("pending", 0))
-    outbox_processing = int(outbox_status_counts.get("processing", 0))
-    outbox_failed = int(outbox_status_counts.get("failed", 0))
-
-    pg_ids = [str(c["entity_id"]) for c in pg_candidates]
-    es_ids = [str(c["entity_id"]) for c in es_candidates]
-    if strategy == "strict":
-        parity_ok = bool(pg_ids == es_ids)
-    else:
-        parity_ok = bool(set(pg_ids) & set(es_ids))
-
-    ok = bool(
-        len(pg_candidates) > 0
-        and es_health_ok
-        and es_index_ok
-        and worker_ok
-        and es_refresh_ok
-        and es_search_ok
-        and outbox_failed == 0
-        and outbox_pending == 0
-        and outbox_processing == 0
-        and outbox_done == len(outbox_event_ids)
-        and parity_ok
-    )
-
-    traces_written = False
-    traces_error: str | None = None
-    trace_id: str | None = None
-    span_id: str | None = None
-    span_name = "labs.shadow_verify_dual_run_stage2.probe"
-
-    try:
-        from opentelemetry import trace  # type: ignore
-        from opentelemetry.sdk.resources import Resource  # type: ignore
-        from opentelemetry.sdk.trace import TracerProvider  # type: ignore
-        from opentelemetry.sdk.trace.export import (  # type: ignore
-            SimpleSpanProcessor,
-            SpanExporter,
-            SpanExportResult,
-        )
-        from opentelemetry.sdk.trace.sampling import ALWAYS_ON  # type: ignore
-
-        exported_spans: list[dict[str, object]] = []
-
-        class _JsonSpanExporter(SpanExporter):
-            def export(self, spans) -> SpanExportResult:  # type: ignore[override]
-                for s in spans:
-                    ctx = getattr(s, "context", None)
-                    if ctx is not None:
-                        t_id = f"{int(ctx.trace_id):032x}"
-                        s_id = f"{int(ctx.span_id):016x}"
-                    else:
-                        t_id = ""
-                        s_id = ""
-
-                    attrs = dict(getattr(s, "attributes", {}) or {})
-                    exported_spans.append(
-                        {
-                            "name": getattr(s, "name", ""),
-                            "trace_id": t_id,
-                            "span_id": s_id,
-                            "start_time_unix_nano": int(getattr(s, "start_time", 0) or 0),
-                            "end_time_unix_nano": int(getattr(s, "end_time", 0) or 0),
-                            "attributes": attrs,
-                        }
-                    )
-                return SpanExportResult.SUCCESS
-
-            def shutdown(self) -> None:  # type: ignore[override]
-                return None
-
-        provider = TracerProvider(resource=Resource.create({"service.name": "wordloom-labs"}), sampler=ALWAYS_ON)
-        provider.add_span_processor(SimpleSpanProcessor(_JsonSpanExporter()))
-        trace.set_tracer_provider(provider)
-
-        tracer = trace.get_tracer("wordloom.labs")
-        with tracer.start_as_current_span(span_name) as span:
-            span.set_attribute("event", "labs.dual_run.stage2.probe")
-            span.set_attribute("lab_id", LAB_ID_S2B_2A_2A)
-            span.set_attribute("scenario", SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2)
-            span.set_attribute("run_id", run_id)
-            span.set_attribute("scope", scope)
-            span.set_attribute("library_id", library_id or "")
-            span.set_attribute("token", token)
-            span.set_attribute("pg_candidates_total", len(pg_candidates))
-            span.set_attribute("outbox_enqueued_total", len(outbox_event_ids))
-            span.set_attribute("outbox_done", int(outbox_done))
-            span.set_attribute("outbox_failed", int(outbox_failed))
-            span.set_attribute("worker_exit_code", int(worker_exit_code))
-            span.set_attribute("worker_runtime_seconds", float(worker_runtime_s))
-            span.set_attribute("strategy", strategy)
-            span.set_attribute("ok", bool(ok))
-
-            ctx = span.get_span_context()
-            trace_id = f"{int(ctx.trace_id):032x}"
-            span_id = f"{int(ctx.span_id):016x}"
-
-        provider.force_flush()
-
-        (outdir / "traces.json").write_text(
-            json.dumps(
-                {
-                    "service": "wordloom-labs",
-                    "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2,
-                    "run_id": run_id,
-                    "spans": exported_spans,
-                },
-                indent=2,
-                ensure_ascii=False,
-            )
-            + "\n",
-            encoding="utf-8",
-        )
-        traces_written = True
-    except Exception as e:
-        traces_error = f"{type(e).__name__}: {e}"
-        try:
-            (outdir / "traces.json").write_text(
-                json.dumps(
-                    {
-                        "service": "wordloom-labs",
-                        "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2,
-                        "run_id": run_id,
-                        "spans": [],
-                        "error": traces_error,
-                    },
-                    indent=2,
-                    ensure_ascii=False,
-                )
-                + "\n",
-                encoding="utf-8",
-            )
-        except Exception:
-            pass
-
-    def _rel_repo(path: Path) -> str:
-        try:
-            return str(path.resolve().relative_to(REPO_ROOT).as_posix())
-        except Exception:
-            return str(path.as_posix())
-
-    result: dict[str, object] = {
-        "lab_id": LAB_ID_S2B_2A_2A,
-        "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2,
-        "run_id": run_id,
-        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "scope": scope,
-        "inputs": {
-            "token": token,
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2,
+            "scope_id": LAB_ID_S2B_2A_2A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+            "env": env,
+            "database_url": database_url,
+            "library_id": library_id,
             "ensure_min_rows": ensure_min_rows,
-            "seed_entity_type": seed_entity_type,
             "candidate_limit": candidate_limit,
             "strategy": strategy,
-            "es_url": es_url,
-            "es_index": es_index,
-            "recreate_index": recreate_index,
             "worker_batch_size": worker_batch_size,
             "worker_concurrency": worker_concurrency,
             "worker_poll_interval_seconds": worker_poll_interval_seconds,
-            "worker_idle_polls_before_exit": worker_idle_polls_before_exit,
             "worker_max_runtime_seconds": worker_max_runtime_seconds,
-        },
-        "seed_rows_inserted": int(inserted_rows),
-        "postgres": {
-            "query_sql": pg_sql.strip(),
-            "candidates": pg_candidates,
-        },
-        "outbox": {
-            "enqueued_total": int(len(outbox_event_ids)),
-            "event_ids": outbox_event_ids,
-            "status_counts": outbox_status_counts,
-        },
-        "elasticsearch": {
-            "health": {"status": int(es_health_status), "ok": bool(es_health_ok), "payload": es_health_payload},
-            "index": {"status": int(es_index_status), "ok": bool(es_index_ok), "payload": es_index_payload},
-            "refresh": {"status": int(es_refresh_status), "ok": bool(es_refresh_ok)},
-            "search": {
-                "status": int(es_search_status),
-                "ok": bool(es_search_ok),
-                "request": es_search_body,
-                "response_excerpt": {
-                    "hits_total": ((es_search_obj.get("hits") or {}).get("total") if isinstance(es_search_obj, dict) else None),
-                },
-                "candidates": es_candidates,
-            },
-            "count": {"status": int(es_count_status), "count": es_count, "payload": es_count_obj},
-        },
-        "worker": {
-            "script": _rel_repo(worker_script),
-            "exit_code": int(worker_exit_code),
-            "ok": bool(worker_ok),
-            "runtime_seconds": float(worker_runtime_s),
-            "log_path": _rel_repo(worker_log_path),
-            "last_claim_batch_id": last_claim_batch_id,
-            "stdout_tail": worker_stdout_tail,
-            "stderr_tail": worker_stderr_tail,
-        },
-        "compare": {
-            "pg_ids": pg_ids,
-            "es_ids": es_ids,
-            "parity_ok": bool(parity_ok),
-        },
-        "observability": {
-            "log_probe_emitted": True,
-            "trace_probe": {
-                "span_name": span_name,
-                "trace_id": trace_id,
-                "span_id": span_id,
-                "traces_json_written": traces_written,
-                "error": traces_error,
-            },
-        },
-        "ok": bool(ok),
-    }
+            "worker_idle_polls_before_exit": worker_idle_polls_before_exit,
+            "es_url": es_url,
+            "token": token,
+            "es_index": es_index,
+            "recreate_index": recreate_index,
+        }
+    )
 
-    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    result = drill.meta or {}
+    write_json(outdir / "_result.json", result)
+
+    ok = bool(result.get("ok"))
+    scope = str(result.get("scope") or ("all" if library_id is None else f"library:{library_id}"))
+
+    inputs_obj = result.get("inputs") if isinstance(result, dict) else None
+    if not isinstance(inputs_obj, dict):
+        inputs_obj = {}
+
+    token = str(inputs_obj.get("token") or token)
+    strategy = str(inputs_obj.get("strategy") or strategy)
+
+    seed_rows_inserted = int(result.get("seed_rows_inserted") or 0)
+
+    pg_candidates: list[object] = []
+    postgres_obj = result.get("postgres")
+    if isinstance(postgres_obj, dict):
+        cands = postgres_obj.get("candidates")
+        if isinstance(cands, list):
+            pg_candidates = cands
+    pg_candidates_total = int(len(pg_candidates))
+
+    outbox_enqueued_total = 0
+    outbox_done = 0
+    outbox_pending = 0
+    outbox_processing = 0
+    outbox_failed = 0
+    outbox_obj = result.get("outbox")
+    if isinstance(outbox_obj, dict):
+        outbox_enqueued_total = int(outbox_obj.get("enqueued_total") or 0)
+        status_counts = outbox_obj.get("status_counts")
+        if isinstance(status_counts, dict):
+            outbox_done = int(status_counts.get("done") or 0)
+            outbox_pending = int(status_counts.get("pending") or 0)
+            outbox_processing = int(status_counts.get("processing") or 0)
+            outbox_failed = int(status_counts.get("failed") or 0)
+
+    es_obj = result.get("elasticsearch")
+    es_health_ok = False
+    es_index_ok = False
+    es_index_status = 0
+    es_refresh_ok = False
+    es_refresh_status = 0
+    es_search_ok = False
+    es_search_status = 0
+    es_candidates_total = 0
+    if isinstance(es_obj, dict):
+        health = es_obj.get("health")
+        if isinstance(health, dict):
+            es_health_ok = bool(health.get("ok"))
+        idx = es_obj.get("index")
+        if isinstance(idx, dict):
+            es_index_ok = bool(idx.get("ok"))
+            es_index_status = int(idx.get("status") or 0)
+        refresh = es_obj.get("refresh")
+        if isinstance(refresh, dict):
+            es_refresh_ok = bool(refresh.get("ok"))
+            es_refresh_status = int(refresh.get("status") or 0)
+        search = es_obj.get("search")
+        if isinstance(search, dict):
+            es_search_ok = bool(search.get("ok"))
+            es_search_status = int(search.get("status") or 0)
+            es_cands = search.get("candidates")
+            if isinstance(es_cands, list):
+                es_candidates_total = int(len(es_cands))
+
+    worker_ok = False
+    worker_exit_code = 0
+    worker_runtime_s = 0.0
+    worker_obj = result.get("worker")
+    if isinstance(worker_obj, dict):
+        worker_ok = bool(worker_obj.get("ok"))
+        worker_exit_code = int(worker_obj.get("exit_code") or 0)
+        try:
+            worker_runtime_s = float(worker_obj.get("runtime_seconds") or 0.0)
+        except Exception:
+            worker_runtime_s = 0.0
+
+    parity_ok = False
+    compare_obj = result.get("compare")
+    if isinstance(compare_obj, dict):
+        parity_ok = bool(compare_obj.get("parity_ok"))
 
     print("labs-019.shadow_verify_dual_run_stage2")
     print(f"scope={scope}")
     print(f"token={token}")
     print(f"ensure_min_rows={ensure_min_rows}")
-    print(f"seed_rows_inserted={inserted_rows}")
-    print(f"pg_candidates_total={len(pg_candidates)}")
-    print(f"outbox_enqueued_total={len(outbox_event_ids)}")
+    print(f"seed_rows_inserted={seed_rows_inserted}")
+    print(f"pg_candidates_total={pg_candidates_total}")
+    print(f"outbox_enqueued_total={outbox_enqueued_total}")
     print(f"outbox_done={outbox_done} pending={outbox_pending} processing={outbox_processing} failed={outbox_failed}")
     print(f"es_health_ok={es_health_ok}")
     print(f"es_index_ok={es_index_ok} (status={es_index_status})")
     print(f"worker_ok={worker_ok} (rc={worker_exit_code}, runtime_s={worker_runtime_s:.2f})")
     print(f"es_refresh_ok={es_refresh_ok} (status={es_refresh_status})")
     print(f"es_search_ok={es_search_ok} (status={es_search_status})")
-    print(f"es_candidates_total={len(es_candidates)}")
+    print(f"es_candidates_total={es_candidates_total}")
     print(f"parity_ok={parity_ok} (strategy={strategy})")
     print(f"ok={ok}")
     print(f"outputs: {outdir}")
