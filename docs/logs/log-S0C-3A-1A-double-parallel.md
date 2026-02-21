@@ -211,6 +211,19 @@
   - rollback：`cleanup_enabled=true`, `deleted_search_index=5`, `deleted_search_outbox_events=5`
   - rollback：`remaining_search_index=0`, `remaining_search_outbox_events=0`
 
+### Run 10 — dual_write_sampling（OK, sampling 策略与回滚验证）
+
+- artifact: `summary.json`
+- scenario: `shadow_verify_dual_write_sampling`
+- run_id: `22257417222-1`
+- result: `ok=true`
+- 关键输出（节选）:
+  - `strategy=strict`
+  - `ensure_min_rows=25`, `seed_rows_inserted=25`
+  - `sample_size=20`, `max_total_events=20`, `duration_seconds=0`
+  - observed：`outbox_inserted_total=20`, `pending_after=20`, `failed_after=0`
+  - rollback：`cleanup_enabled=true`, `remaining_outbox_rows=0`
+
 ## Status Update（阶段结论）
 
 - Step B（迁移优先级前三个场景 + readiness gate 复合验证）已通过实证：`Run 1~4` 均 `ok=true`。
@@ -219,6 +232,7 @@
 - dual-run（stage2）已迁移并通过写侧 outbox worker 实证：`Run 7` 为 `ok=true`（strict 对齐）。
 - dual-run（window）已迁移并通过 window drill 端到端实证：`Run 8` 为 `ok=true`（strict 对齐）。
 - canary dual-write 已迁移并通过 canary + 回滚实证：`Run 9` 为 `ok=true`。
+- dual-write sampling 已迁移并通过 sampling + 回滚实证：`Run 10` 为 `ok=true`（strict）。
 
 
 ## Risks（风险与缓解）
