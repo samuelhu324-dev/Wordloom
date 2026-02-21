@@ -43,6 +43,18 @@ jobs:
   drills:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: >-
+          ${{ fromJSON(
+            inputs.scenario == 'all'
+            && '["es_429_inject","es_write_block_4xx","es_down_connect","collector_down","es_bulk_partial","db_claim_contention","stuck_reclaim","duplicate_delivery","projection_version"]'
+            || format('["{0}"]', inputs.scenario)
+          ) }}
+
+    name: ${{ matrix.scenario }}
+
     defaults:
       run:
         shell: bash
@@ -178,7 +190,7 @@ jobs:
 
       - name: Run → Verify → Export → Clean
         env:
-          FAULT_SCENARIO: ${{ inputs.scenario }}
+          FAULT_SCENARIO: ${{ matrix.scenario }}
           PYTHONPATH: backend
         run: |
           set -euo pipefail
@@ -194,42 +206,25 @@ jobs:
           source "$env_file"
           set +a
 
-          if [ "${{ inputs.scenario }}" = "all" ]; then
-            scenarios=(
-              es_429_inject
-              es_write_block_4xx
-              es_down_connect
-              collector_down
-              es_bulk_partial
-              db_claim_contention
-              stuck_reclaim
-              duplicate_delivery
-              projection_version
-            )
-          else
-            scenarios=("${{ inputs.scenario }}")
-          fi
+          scenario="${{ matrix.scenario }}"
+          run_id="${{ github.run_id }}-${{ github.run_attempt }}-${scenario}"
+          echo "=== scenario=${scenario} run_id=${run_id} ==="
 
-          for scenario in "${scenarios[@]}"; do
-            run_id="${{ github.run_id }}-${{ github.run_attempt }}-${scenario}"
-            echo "=== scenario=${scenario} run_id=${run_id} ==="
+          python backend/scripts/cli.py labs run "$scenario" \
+            --env-file "$env_file" \
+            --duration "${{ inputs.duration }}" \
+            --run-id "$run_id"
 
-            python backend/scripts/cli.py labs run "$scenario" \
-              --env-file "$env_file" \
-              --duration "${{ inputs.duration }}" \
-              --run-id "$run_id"
+          python backend/scripts/cli.py labs verify "$scenario" --run-id "$run_id"
 
-            python backend/scripts/cli.py labs verify "$scenario" --run-id "$run_id"
+          python backend/scripts/cli.py labs export "$scenario" \
+            --run-id "$run_id" \
+            --lookback "${{ inputs.lookback }}"
 
-            python backend/scripts/cli.py labs export "$scenario" \
-              --run-id "$run_id" \
-              --lookback "${{ inputs.lookback }}"
-
-            python backend/scripts/cli.py labs clean "$scenario" --env-file "$env_file" --keep-last "${{ inputs.keep_last }}"
-          done
+          python backend/scripts/cli.py labs clean "$scenario" --env-file "$env_file" --keep-last "${{ inputs.keep_last }}"
 
       - name: Upload evidence bundle
         uses: actions/upload-artifact@v4
         with:
-          name: labs-evidence-${{ inputs.scenario }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: labs-evidence-${{ matrix.scenario }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: docs/labs/_snapshot/auto/
