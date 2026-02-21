@@ -46,5 +46,6 @@ def load_builtin_scenarios() -> None:
     from .scenarios import shadow_verify_dual_run_stage1  # noqa: F401
     from .scenarios import shadow_verify_dual_run_stage2  # noqa: F401
     from .scenarios import shadow_verify_dual_run_readiness_gate  # noqa: F401
+    from .scenarios import shadow_verify_dual_run_window  # noqa: F401
 
     return None
