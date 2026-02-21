@@ -234,6 +234,26 @@
 - canary dual-write 已迁移并通过 canary + 回滚实证：`Run 9` 为 `ok=true`。
 - dual-write sampling 已迁移并通过 sampling + 回滚实证：`Run 10` 为 `ok=true`（strict）。
 
+### Update — failure-drills 收口（2026-02-21）
+
+- GitHub Actions：failure-drills workflow 已从“单 job 串行跑所有场景”调整为“按场景拆 job”。
+  - `scenario=all` 时仍全量覆盖；选择单一场景时只生成 1 个 job，便于定位与 rerun。
+- CLI：`backend/scripts/cli.py` 中 failure-drills 相关命令已收口到 single-track。
+  - 对外 argparse 契约不变（子命令/参数/退出码/证据产物）。
+  - 对内全部走 `cli_app` scenario registry handler；已删除 shim `return` 之后的 legacy 不可达实现块（double-parallel → single-track）。
+  - 覆盖场景包括（至少）：`es_429_inject`、`es_down_connect`、`es_write_block_4xx`、`duplicate_delivery`、`es_bulk_partial`、`db_claim_contention`、`stuck_reclaim`、`projection_version`。
+
+### Update — drill-shadow-verify-entries 迁移（2026-02-21）
+
+- 补齐 workflow 依赖的 3 个场景覆盖率：
+  - 已存在：`shadow_verify_search_index_write_gate`
+  - 新增迁移：`shadow_verify_chronicle_entries`、`shadow_verify_search_index`
+- `backend/scripts/cli.py` 对应子命令已改为薄 shim：
+  - 仍保留原有参数校验、打印输出、exit code 语义（`ok → 0` / `not ok → 2`）
+  - `_result.json` 的落盘路径与结构保持一致（workflow 继续依赖 `.drill_snapshot/_result.json`）
+- `cli_app.registry.load_builtin_scenarios()` 已补充 import，以保证 shim 可通过 registry 正确分发。
+- 对 `cli.py` 做 AST 结构扫描后，未发现“return 后仍有语句”的 double-parallel 残留（`hits=0`）。
+
 
 ## Risks（风险与缓解）
 
