@@ -43,5 +43,6 @@ def load_builtin_scenarios() -> None:
     from .scenarios import shadow_verify_search_index_write_gate  # noqa: F401
     from .scenarios import shadow_verify_search_index_paging_stability  # noqa: F401
     from .scenarios import shadow_verify_shared_keys  # noqa: F401
+    from .scenarios import shadow_verify_dual_run_stage1  # noqa: F401
 
     return None
