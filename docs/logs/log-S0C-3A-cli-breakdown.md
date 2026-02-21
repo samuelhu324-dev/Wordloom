@@ -14,7 +14,7 @@
   **adr**: ``
   **runbook**: `null`
 **created**: `2026-02-20`
-**updated**: `2026-02-20`
+**updated**: `2026-02-21`
 
 ---
 
@@ -127,6 +127,29 @@ backend/scripts/
 - 先落地“Step A：抽 artifacts contract”，快速把入口文件降维。
 - 然后按“最常跑的 verify 场景”优先级逐个迁移。
 - 若 CI 复杂度/排错成本仍高，再拆 workflow（优先采用“一个 scenario 一个 workflow”先落地）。
+
+## Implementation Status（当前落地情况）
+
+已落地（代码中已存在）：
+
+- `backend/scripts/cli_app/common.py`：evidence paths + `write_json`/`zip_directory` 等基础能力
+- `backend/scripts/cli_app/types.py`：`DrillInputs` / `DrillResult` 输入输出边界
+- `backend/scripts/cli_app/registry.py`：scenario 注册表 + `load_builtin_scenarios()`
+- `backend/scripts/cli_app/scenarios/*`：已迁移并可注册的场景模块：
+  - `shadow_verify_canary_dual_write`
+  - `shadow_verify_search_index_write_gate`
+  - `shadow_verify_search_index_paging_stability`
+  - `shadow_verify_shared_keys`
+  - `shadow_verify_dual_run_readiness_gate`
+  - `shadow_verify_dual_run_stage1`
+  - `shadow_verify_dual_run_stage2`
+  - `shadow_verify_dual_run_window`
+
+仍在进行（与本文目标一致，但未完全收口）：
+
+- `backend/scripts/cli.py` 仍然很大：除已迁移场景外，还有大量 `_cmd_labs_*` 旧实现尚未搬迁
+- Step A（artifacts contract 全量收敛）只完成了“基础库”，尚未把所有旧命令的写盘/打包统一切到 `cli_app/common.py`
+- Step C（入口壳收口到 100~300 行）尚未完成
 
 ## References
 

@@ -1965,237 +1965,52 @@ def _cmd_labs_shadow_verify_canary_dual_write(args: argparse.Namespace) -> int:
         return 2
 
     cleanup = bool(args.cleanup)
-    scope = "all" if library_id is None else f"library:{library_id}"
-    entity_type = "canary"
 
-    now = datetime.now(timezone.utc)
-    entity_ids: list[str] = [str(uuid.uuid4()) for _ in range(max_writes)]
-    search_index_ids: list[str] = [str(uuid.uuid4()) for _ in range(max_writes)]
-    outbox_ids: list[str] = [str(uuid.uuid4()) for _ in range(max_writes)]
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE)
 
-    search_rows = []
-    outbox_rows = []
-    for i in range(max_writes):
-        search_rows.append(
-            {
-                "id": search_index_ids[i],
-                "entity_type": entity_type,
-                "library_id": library_id,
-                "entity_id": entity_ids[i],
-                "text": f"canary:{run_id}:{i}",
-                "snippet": None,
-                "rank_score": 0.0,
-                "created_at": now,
-                "updated_at": now,
-                "event_version": int(i + 1),
-            }
-        )
-        outbox_rows.append(
-            {
-                "id": outbox_ids[i],
-                "entity_type": entity_type,
-                "library_id": library_id,
-                "entity_id": entity_ids[i],
-                "op": "upsert",
-                "event_version": int(i + 1),
-                "created_at": now,
-                "status": "pending",
-                "attempts": 0,
-                "updated_at": now,
-                "replay_count": 0,
-            }
-        )
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE,
+            "scope_id": LAB_ID_S2B_2A_2A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+            "database_url": database_url,
+            "library_id": library_id,
+            "max_writes": max_writes,
+            "cleanup": cleanup,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    result = drill.meta or {}
+    write_json(outdir / "_result.json", result)
 
-    engine = create_engine(database_url)
-    inserted_search = 0
-    inserted_outbox = 0
+    ok = bool(result.get("ok"))
+    scope = str(result.get("scope") or "")
+    verify_obj = result.get("verify")
+    rollback_obj = result.get("rollback")
     verify_search_count = 0
     verify_outbox_count = 0
+    dup_extra = 0
+    if isinstance(verify_obj, dict):
+        verify_search_count = int(verify_obj.get("search_index_rows_found") or 0)
+        verify_outbox_count = int(verify_obj.get("search_outbox_rows_found") or 0)
+        dup_extra = int(verify_obj.get("duplicates_extra_rows_total") or 0)
+
+    cleanup_enabled = bool(cleanup)
     cleanup_deleted_search = 0
     cleanup_deleted_outbox = 0
     cleanup_remaining_search = None
     cleanup_remaining_outbox = None
-
-    with engine.connect() as conn:
-        # 1) insert projection rows
-        conn.execute(
-            text(
-                """
-                INSERT INTO search_index
-                  (id, entity_type, library_id, entity_id, text, snippet, rank_score, created_at, updated_at, event_version)
-                VALUES
-                  (:id, :entity_type, :library_id, :entity_id, :text, :snippet, :rank_score, :created_at, :updated_at, :event_version)
-                """
-            ),
-            search_rows,
-        )
-        inserted_search = max_writes
-
-        # 2) enqueue outbox rows
-        conn.execute(
-            text(
-                """
-                INSERT INTO search_outbox_events
-                                    (id, entity_type, library_id, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
-                VALUES
-                                    (:id, :entity_type, :library_id, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
-                """
-            ),
-            outbox_rows,
-        )
-        inserted_outbox = max_writes
-
-        conn.commit()
-
-        # 3) verify presence
-        verify_search_count = int(
-            conn.execute(
-                text(
-                    """
-                    SELECT COUNT(*)
-                    FROM search_index
-                    WHERE entity_type = :entity_type
-                      AND entity_id IN :entity_ids
-                    """
-                ).bindparams(bindparam("entity_ids", expanding=True)),
-                {"entity_type": entity_type, "entity_ids": entity_ids},
-            ).scalar()
-            or 0
-        )
-        verify_outbox_count = int(
-            conn.execute(
-                text(
-                    """
-                    SELECT COUNT(*)
-                    FROM search_outbox_events
-                    WHERE entity_type = :entity_type
-                      AND entity_id IN :entity_ids
-                    """
-                ).bindparams(bindparam("entity_ids", expanding=True)),
-                {"entity_type": entity_type, "entity_ids": entity_ids},
-            ).scalar()
-            or 0
-        )
-
-        # 4) verify write-gate uniqueness still holds
-        dup_extra = int(
-            conn.execute(
-                text(
-                    """
-                    SELECT COALESCE(SUM(cnt - 1), 0)
-                    FROM (
-                      SELECT COUNT(*) AS cnt
-                      FROM search_index
-                      GROUP BY entity_type, entity_id
-                      HAVING COUNT(*) > 1
-                    ) t
-                    """
-                )
-            ).scalar()
-            or 0
-        )
-
-        # 5) cleanup (rollback evidence)
-        if cleanup:
-            conn.execute(
-                text(
-                    """
-                    DELETE FROM search_outbox_events
-                    WHERE entity_type = :entity_type
-                      AND entity_id IN :entity_ids
-                    """
-                ).bindparams(bindparam("entity_ids", expanding=True)),
-                {"entity_type": entity_type, "entity_ids": entity_ids},
-            )
-            conn.execute(
-                text(
-                    """
-                    DELETE FROM search_index
-                    WHERE entity_type = :entity_type
-                      AND entity_id IN :entity_ids
-                    """
-                ).bindparams(bindparam("entity_ids", expanding=True)),
-                {"entity_type": entity_type, "entity_ids": entity_ids},
-            )
-            conn.commit()
-
-            cleanup_remaining_search = int(
-                conn.execute(
-                    text(
-                        """
-                        SELECT COUNT(*)
-                        FROM search_index
-                        WHERE entity_type = :entity_type
-                          AND entity_id IN :entity_ids
-                        """
-                    ).bindparams(bindparam("entity_ids", expanding=True)),
-                    {"entity_type": entity_type, "entity_ids": entity_ids},
-                ).scalar()
-                or 0
-            )
-            cleanup_remaining_outbox = int(
-                conn.execute(
-                    text(
-                        """
-                        SELECT COUNT(*)
-                        FROM search_outbox_events
-                        WHERE entity_type = :entity_type
-                          AND entity_id IN :entity_ids
-                        """
-                    ).bindparams(bindparam("entity_ids", expanding=True)),
-                    {"entity_type": entity_type, "entity_ids": entity_ids},
-                ).scalar()
-                or 0
-            )
-
-            cleanup_deleted_search = verify_search_count - cleanup_remaining_search
-            cleanup_deleted_outbox = verify_outbox_count - cleanup_remaining_outbox
-
-    ok = (
-        inserted_search == max_writes
-        and inserted_outbox == max_writes
-        and verify_search_count == max_writes
-        and verify_outbox_count == max_writes
-        and dup_extra == 0
-        and ((not cleanup) or (cleanup_remaining_search == 0 and cleanup_remaining_outbox == 0))
-    )
-
-    result: dict[str, object] = {
-        "lab_id": LAB_ID_S2B_2A_2A,
-        "scenario": SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE,
-        "run_id": run_id,
-        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "scope": scope,
-        "dry_run": False,
-        "targets": {
-            "projection_table": "search_index",
-            "outbox_table": "search_outbox_events",
-            "entrypoint_hint": "backend/infra/search/search_indexer.py::PostgresSearchIndexer (writes search_index + enqueues search_outbox_events)",
-        },
-        "canary": {
-            "entity_type": entity_type,
-            "max_writes": max_writes,
-            "entity_ids": entity_ids,
-            "search_index_ids": search_index_ids,
-            "outbox_event_ids": outbox_ids,
-        },
-        "verify": {
-            "search_index_rows_found": int(verify_search_count),
-            "search_outbox_rows_found": int(verify_outbox_count),
-            "duplicates_extra_rows_total": int(dup_extra),
-        },
-        "rollback": {
-            "cleanup_enabled": bool(cleanup),
-            "deleted_search_index": int(cleanup_deleted_search),
-            "deleted_search_outbox_events": int(cleanup_deleted_outbox),
-            "remaining_search_index": cleanup_remaining_search,
-            "remaining_search_outbox_events": cleanup_remaining_outbox,
-            "note": "Cleanup is executed by default to keep CI/devtest DB clean.",
-        },
-        "ok": bool(ok),
-    }
-
-    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if isinstance(rollback_obj, dict):
+        cleanup_enabled = bool(rollback_obj.get("cleanup_enabled"))
+        cleanup_deleted_search = int(rollback_obj.get("deleted_search_index") or 0)
+        cleanup_deleted_outbox = int(rollback_obj.get("deleted_search_outbox_events") or 0)
+        cleanup_remaining_search = rollback_obj.get("remaining_search_index")
+        cleanup_remaining_outbox = rollback_obj.get("remaining_search_outbox_events")
 
     print("labs-016.shadow_verify_canary_dual_write")
     print(f"scope={scope}")
@@ -2203,10 +2018,10 @@ def _cmd_labs_shadow_verify_canary_dual_write(args: argparse.Namespace) -> int:
     print(f"verify_search_index_rows_found={verify_search_count}")
     print(f"verify_search_outbox_rows_found={verify_outbox_count}")
     print(f"duplicates_extra_rows_total={dup_extra}")
-    print(f"cleanup_enabled={cleanup}")
+    print(f"cleanup_enabled={cleanup_enabled}")
     print(f"cleanup_deleted_search_index={cleanup_deleted_search}")
     print(f"cleanup_deleted_search_outbox_events={cleanup_deleted_outbox}")
-    if cleanup:
+    if cleanup_enabled:
         print(f"cleanup_remaining_search_index={cleanup_remaining_search}")
         print(f"cleanup_remaining_search_outbox_events={cleanup_remaining_outbox}")
     print(f"outputs: {outdir}")
