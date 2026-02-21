@@ -1240,106 +1240,33 @@ def _cmd_labs_shadow_verify_dual_run_readiness_gate(args: argparse.Namespace) ->
 
     scope = "all" if library_id is None else f"library:{library_id}"
 
-    checks_root = outdir / "_checks"
-    _ensure_dir(checks_root)
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_DUAL_RUN_READINESS_GATE)
 
-    def _load_result(path: Path) -> dict[str, object] | None:
-        try:
-            return json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
-            return None
-
-    # 1) write-gate uniqueness (1A)
-    wg_dir = checks_root / SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE
-    _ensure_dir(wg_dir)
-    wg_args = argparse.Namespace(
-        env_file=args.env_file,
-        database_url=database_url,
-        library_id=library_id,
-        run_id=run_id,
-        outdir=str(wg_dir),
-    )
-    wg_rc = _cmd_labs_shadow_verify_search_index_write_gate(wg_args)
-
-    # 2) paging stability (2A)
-    paging_dir = checks_root / SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY
-    _ensure_dir(paging_dir)
-    paging_args = argparse.Namespace(
-        env_file=args.env_file,
-        database_url=database_url,
-        library_id=library_id,
-        page_size=page_size,
-        pages_checked=pages_checked,
-        ensure_min_rows=ensure_min_rows_paging,
-        run_id=run_id,
-        outdir=str(paging_dir),
-    )
-    paging_rc = _cmd_labs_shadow_verify_search_index_paging_stability(paging_args)
-
-    # 3) shared keys evidence bundle (2A)
-    keys_dir = checks_root / SCENARIO_SHADOW_VERIFY_SHARED_KEYS
-    _ensure_dir(keys_dir)
-    keys_args = argparse.Namespace(
-        env_file=args.env_file,
-        database_url=database_url,
-        library_id=library_id,
-        ensure_min_rows=ensure_min_rows_keys,
-        run_id=run_id,
-        outdir=str(keys_dir),
-    )
-    keys_rc = _cmd_labs_shadow_verify_shared_keys(keys_args)
-
-    wg_result = _load_result(wg_dir / "_result.json")
-    paging_result = _load_result(paging_dir / "_result.json")
-    keys_result = _load_result(keys_dir / "_result.json")
-
-    checks = {
-        "write_gate": {
-            "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE,
-            "exit_code": int(wg_rc),
-            "ok": bool(wg_rc == 0 and (wg_result or {}).get("ok") is True),
-            "result_path": str((wg_dir / "_result.json").as_posix()),
-            "result": wg_result,
-        },
-        "paging_stability": {
-            "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY,
-            "exit_code": int(paging_rc),
-            "ok": bool(paging_rc == 0 and (paging_result or {}).get("ok") is True),
-            "result_path": str((paging_dir / "_result.json").as_posix()),
-            "result": paging_result,
-        },
-        "shared_keys": {
-            "scenario": SCENARIO_SHADOW_VERIFY_SHARED_KEYS,
-            "exit_code": int(keys_rc),
-            "ok": bool(keys_rc == 0 and (keys_result or {}).get("ok") is True),
-            "result_path": str((keys_dir / "_result.json").as_posix()),
-            "result": keys_result,
-        },
-    }
-
-    ok = bool(all(v["ok"] is True for v in checks.values()))
-    result: dict[str, object] = {
-        "lab_id": LAB_ID_S2B_2A_2A,
-        "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_READINESS_GATE,
-        "run_id": run_id,
-        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "scope": scope,
-        "dry_run": True,
-        "inputs": {
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_READINESS_GATE,
+            "scope_id": LAB_ID_S2B_2A_2A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+            "env": env,
+            "database_url": database_url,
+            "library_id": library_id,
             "page_size": page_size,
             "pages_checked": pages_checked,
             "ensure_min_rows_paging": ensure_min_rows_paging,
             "ensure_min_rows_keys": ensure_min_rows_keys,
-        },
-        "checks": checks,
-        "next_step": {
-            "recommendation": "After this gate is green in CI, add a minimal canary dual-write scenario with strict scope/limit + one-click rollback.",
-            "note": "This gate now emits shared-keys cross-evidence (stdout log probe + traces.json span). Metrics mutual evidence is still out of scope for this drill.",
-        },
-        "ok": bool(ok),
-    }
+        }
+    )
 
-    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    result = drill.meta or {}
+    write_json(outdir / "_result.json", result)
+
+    ok = bool(result.get("ok"))
 
     print("labs-015.shadow_verify_dual_run_readiness_gate")
     print(f"scope={scope}")

@@ -146,10 +146,24 @@
   - `checks.shared_keys.ok=true`：
     - `.drill_snapshot/_checks/shadow_verify_shared_keys/_result.json`
 
+### Run 5 — dual_run_stage1（OK, Actions 通过）
+
+- artifact: `summary.json`
+- scenario: `shadow_verify_dual_run_stage1`
+- run_id: `22255317033-1`
+- result: `ok=true`
+- 关键输出（节选）:
+  - `strategy=strict`
+  - `ensure_min_rows=25`, `seed_rows_inserted=25`
+  - `candidate_limit=20`
+  - `es_health_ok=true`, `backfill_ok=true`, `es_search_ok=true`
+  - `parity_ok=true`
+
 ## Status Update（阶段结论）
 
-- Step B（迁移优先级前三个场景 + readiness gate 复合验证）已通过实证：四次运行均 `ok=true`。
-- 结论：shim/double-parallel 路线在当前覆盖范围内可用，可继续按优先级推进迁移；同时 readiness gate 证明“组合调用/子结果引用路径”也未被破坏。
+- Step B（迁移优先级前三个场景 + readiness gate 复合验证）已通过实证：`Run 1~4` 均 `ok=true`。
+- dual-run（stage1）已迁移并在 GitHub Actions 中跑通：`Run 5` 为 `ok=true`（strict 对齐）。
+- readiness gate 已具备 “shim → scenario” 转接基础，可继续按优先级推进 stage2/window/canary 等迁移，同时保持对外契约不变。
 
 
 ## Risks（风险与缓解）
