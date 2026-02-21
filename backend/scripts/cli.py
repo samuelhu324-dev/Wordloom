@@ -9,6 +9,12 @@ This is intentionally not a full-featured CLI framework.
 """
 
 from __future__ import annotations
+# 在 cli.py 顶部加（或 main 里局部 import 也行）
+# 注意：cli.py 以脚本方式运行（python backend/scripts/cli.py）时，sys.path[0] 是 backend/scripts。
+# 因此应从同级包 cli_app 导入，而不是 backend.scripts.cli_app。
+from cli_app import registry as _wg_registry
+from cli_app.common import build_evidence_paths, build_evidence_paths_for_dir, write_json, zip_directory
+from cli_app.types import DrillInputs
 
 import argparse
 import json
@@ -940,127 +946,32 @@ def _cmd_labs_shadow_verify_search_index_write_gate(args: argparse.Namespace) ->
             print(f"[labs shadow-verify-search-index-write-gate] invalid --library-id: {library_id}")
             return 2
 
-    engine = create_engine(database_url)
-    with engine.connect() as conn:
-        duplicates_groups_total = int(
-            conn.execute(
-                text(
-                    """
-                    SELECT COUNT(*)
-                    FROM (
-                      SELECT entity_type, entity_id
-                      FROM search_index
-                      GROUP BY entity_type, entity_id
-                      HAVING COUNT(*) > 1
-                    ) t
-                    """
-                )
-            ).scalar()
-            or 0
-        )
-        duplicates_extra_rows_total = int(
-            conn.execute(
-                text(
-                    """
-                    SELECT COALESCE(SUM(cnt - 1), 0)
-                    FROM (
-                      SELECT COUNT(*) AS cnt
-                      FROM search_index
-                      GROUP BY entity_type, entity_id
-                      HAVING COUNT(*) > 1
-                    ) t
-                    """
-                )
-            ).scalar()
-            or 0
-        )
-        rows = conn.execute(
-            text(
-                """
-                SELECT entity_type,
-                       COUNT(*) AS duplicate_groups,
-                       COALESCE(SUM(cnt - 1), 0) AS duplicate_extra_rows
-                FROM (
-                  SELECT entity_type, entity_id, COUNT(*) AS cnt
-                  FROM search_index
-                  GROUP BY entity_type, entity_id
-                  HAVING COUNT(*) > 1
-                ) t
-                GROUP BY entity_type
-                ORDER BY entity_type
-                """
-            )
-        ).all()
-        duplicates_by_entity_type = [
-            {
-                "entity_type": str(r[0]),
-                "duplicate_groups": int(r[1] or 0),
-                "duplicate_extra_rows": int(r[2] or 0),
-            }
-            for r in rows
-        ]
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE)
 
-        if library_id is None:
-            scope = "all"
-            duplicates_groups_scoped = None
-            duplicates_extra_rows_scoped = None
-        else:
-            scope = f"library:{library_id}"
-            duplicates_groups_scoped = int(
-                conn.execute(
-                    text(
-                        """
-                        SELECT COUNT(*)
-                        FROM (
-                          SELECT entity_type, entity_id
-                          FROM search_index
-                          WHERE library_id = :library_id
-                          GROUP BY entity_type, entity_id
-                          HAVING COUNT(*) > 1
-                        ) t
-                        """
-                    ),
-                    {"library_id": library_id},
-                ).scalar()
-                or 0
-            )
-            duplicates_extra_rows_scoped = int(
-                conn.execute(
-                    text(
-                        """
-                        SELECT COALESCE(SUM(cnt - 1), 0)
-                        FROM (
-                          SELECT COUNT(*) AS cnt
-                          FROM search_index
-                          WHERE library_id = :library_id
-                          GROUP BY entity_type, entity_id
-                          HAVING COUNT(*) > 1
-                        ) t
-                        """
-                    ),
-                    {"library_id": library_id},
-                ).scalar()
-                or 0
-            )
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE,
+            "scope_id": LAB_ID_S2B_2A_1A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+            "database_url": database_url,
+            "library_id": library_id,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    result = drill.meta or {}
+    write_json(outdir / "_result.json", result)
 
-    ok = duplicates_extra_rows_total == 0
-    result: dict[str, object] = {
-        "lab_id": LAB_ID_S2B_2A_1A,
-        "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE,
-        "run_id": run_id,
-        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "scope": scope,
-        "duplicates_groups_total": duplicates_groups_total,
-        "duplicates_extra_rows_total": duplicates_extra_rows_total,
-        "duplicates_by_entity_type": duplicates_by_entity_type,
-        "ok": bool(ok),
-    }
-    if duplicates_groups_scoped is not None:
-        result["duplicates_groups_scoped"] = duplicates_groups_scoped
-    if duplicates_extra_rows_scoped is not None:
-        result["duplicates_extra_rows_scoped"] = duplicates_extra_rows_scoped
-
-    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    ok = bool(result.get("ok"))
+    scope = str(result.get("scope") or "")
+    duplicates_groups_total = int(result.get("duplicates_groups_total") or 0)
+    duplicates_extra_rows_total = int(result.get("duplicates_extra_rows_total") or 0)
+    duplicates_groups_scoped = result.get("duplicates_groups_scoped")
+    duplicates_extra_rows_scoped = result.get("duplicates_extra_rows_scoped")
 
     print("labs-012.shadow_verify_search_index_write_gate")
     print(f"scope={scope}")
@@ -1170,113 +1081,42 @@ def _cmd_labs_shadow_verify_search_index_paging_stability(args: argparse.Namespa
         print("[labs shadow-verify-search-index-paging-stability] --ensure-min-rows must be >= 0")
         return 2
 
-    # Stable ordering contract: (entity_type, entity_id) as tie-breaker.
-    order_key = ["entity_type", "entity_id"]
-    scope = "all" if library_id is None else f"library:{library_id}"
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY)
 
-    def _fetch_page(
-        *,
-        conn,
-        cursor_entity_type: str | None,
-        cursor_entity_id: str | None,
-    ) -> list[tuple[str, str]]:
-        where_parts: list[str] = []
-        params: dict[str, object] = {"limit": page_size}
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY,
+            "scope_id": LAB_ID_S2B_2A_2A,
+            "run_id": run_id,
+            "outdir": str(outdir),
+            "database_url": database_url,
+            "library_id": library_id,
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    result = drill.meta or {}
+    write_json(outdir / "_result.json", result)
 
-        if library_id is not None:
-            where_parts.append("library_id = :library_id")
-            params["library_id"] = library_id
-
-        if cursor_entity_type is not None and cursor_entity_id is not None:
-            # Keyset pagination on (entity_type, entity_id)
-            where_parts.append(
-                "(entity_type > :cursor_entity_type OR (entity_type = :cursor_entity_type AND entity_id > :cursor_entity_id))"
-            )
-            params["cursor_entity_type"] = cursor_entity_type
-            params["cursor_entity_id"] = cursor_entity_id
-
-        where_sql = ("WHERE " + " AND ".join(where_parts)) if where_parts else ""
-        sql = f"""
-            SELECT entity_type, entity_id
-            FROM search_index
-            {where_sql}
-            ORDER BY entity_type, entity_id
-            LIMIT :limit
-        """
-        rows = conn.execute(text(sql), params).all()
-        return [(str(r[0]), str(r[1])) for r in rows]
-
-    engine = create_engine(database_url)
-    pages: list[list[tuple[str, str]]] = []
-    with engine.connect() as conn:
-        inserted_rows = _ensure_search_index_min_rows(conn=conn, ensure_min_rows=ensure_min_rows, library_id=library_id)
-        count_where = "" if library_id is None else "WHERE library_id = :library_id"
-        count_params = {} if library_id is None else {"library_id": library_id}
-        rows_total = int(conn.execute(text(f"SELECT COUNT(*) FROM search_index {count_where}"), count_params).scalar() or 0)
-
-        cursor_entity_type: str | None = None
-        cursor_entity_id: str | None = None
-
-        for _ in range(pages_checked):
-            page = _fetch_page(
-                conn=conn,
-                cursor_entity_type=cursor_entity_type,
-                cursor_entity_id=cursor_entity_id,
-            )
-            pages.append(page)
-            if not page:
-                break
-            cursor_entity_type, cursor_entity_id = page[-1]
-
-    # Verify ordering and no overlap across pages.
-    ordering_ok = True
-    for page in pages:
-        if page != sorted(page):
-            ordering_ok = False
-            break
-
-    seen: set[tuple[str, str]] = set()
-    duplicates_across_pages_total = 0
-    for page in pages:
-        for k in page:
-            if k in seen:
-                duplicates_across_pages_total += 1
-            else:
-                seen.add(k)
-
-    data_sufficient = rows_total >= (page_size * pages_checked)
-    ok = ordering_ok and duplicates_across_pages_total == 0 and data_sufficient and (len(pages) >= pages_checked)
-    result: dict[str, object] = {
-        "lab_id": LAB_ID_S2B_2A_2A,
-        "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY,
-        "run_id": run_id,
-        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "scope": scope,
-        "order_key": order_key,
-        "rows_total": int(rows_total),
-        "ensure_min_rows": int(ensure_min_rows),
-        "seed_rows_inserted": int(inserted_rows),
-        "data_sufficient": bool(data_sufficient),
-        "page_size": page_size,
-        "pages_checked": pages_checked,
-        "pages_returned": len(pages),
-        "page_lengths": [len(p) for p in pages],
-        "duplicates_across_pages_total": int(duplicates_across_pages_total),
-        "ordering_ok": bool(ordering_ok),
-        "ok": bool(ok),
-    }
-    if pages and pages[0]:
-        result["first_key"] = {"entity_type": pages[0][0][0], "entity_id": pages[0][0][1]}
-        result["last_key"] = {"entity_type": pages[-1][-1][0], "entity_id": pages[-1][-1][1]}
-
-    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    ok = bool(result.get("ok"))
+    scope = str(result.get("scope") or "")
+    order_key = result.get("order_key")
+    rows_total = int(result.get("rows_total") or 0)
+    inserted_rows = int(result.get("seed_rows_inserted") or 0)
+    data_sufficient = bool(result.get("data_sufficient"))
+    duplicates_across_pages_total = int(result.get("duplicates_across_pages_total") or 0)
+    ordering_ok = bool(result.get("ordering_ok"))
+    pages_returned = int(result.get("pages_returned") or 0)
 
     print("labs-013.shadow_verify_search_index_paging_stability")
     print(f"scope={scope}")
     print(f"order_key={order_key}")
     print(f"page_size={page_size}")
     print(f"pages_checked={pages_checked}")
-    print(f"pages_returned={len(pages)}")
+    print(f"pages_returned={pages_returned}")
     print(f"rows_total={rows_total}")
     print(f"ensure_min_rows={ensure_min_rows}")
     print(f"seed_rows_inserted={inserted_rows}")
@@ -1316,193 +1156,31 @@ def _cmd_labs_shadow_verify_shared_keys(args: argparse.Namespace) -> int:
         print("[labs shadow-verify-shared-keys] --ensure-min-rows must be >= 0")
         return 2
 
-    scope = "all" if library_id is None else f"library:{library_id}"
+    _wg_registry.load_builtin_scenarios()
+    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_SHARED_KEYS)
 
-    engine = create_engine(database_url)
-    with engine.connect() as conn:
-        inserted_rows = _ensure_search_index_min_rows(conn=conn, ensure_min_rows=ensure_min_rows, library_id=library_id)
-
-        sample_where = "" if library_id is None else "WHERE library_id = :library_id"
-        sample_params = {} if library_id is None else {"library_id": library_id}
-        rows = conn.execute(
-            text(
-                f"""
-                SELECT entity_type, entity_id
-                FROM search_index
-                {sample_where}
-                ORDER BY entity_type, entity_id
-                LIMIT 5
-                """
-            ),
-            sample_params,
-        ).all()
-
-    samples = [{"entity_type": str(r[0]), "entity_id": str(r[1])} for r in rows]
-    ok = len(samples) > 0
-
-    # Strong mutual evidence (minimal, machine-searchable): emit the same shared keys
-    # into stdout logs + a local traces.json span.
-    probe: dict[str, object] = {
-        "event": "labs.shared_keys.probe",
-        "lab_id": LAB_ID_S2B_2A_2A,
-        "scenario": SCENARIO_SHADOW_VERIFY_SHARED_KEYS,
-        "run_id": run_id,
-        "scope": scope,
-        "library_id": library_id,
-        "samples_total": len(samples),
-        "sample": (samples[0] if samples else None),
-    }
-
-    print(json.dumps(probe, ensure_ascii=False, separators=(",", ":")))
-
-    traces_written = False
-    traces_error: str | None = None
-    trace_id: str | None = None
-    span_id: str | None = None
-    span_name = "labs.shadow_verify_shared_keys.probe"
-
-    try:
-        # Keep this exporter local and deterministic (no external collector required).
-        from opentelemetry import trace  # type: ignore
-        from opentelemetry.sdk.resources import Resource  # type: ignore
-        from opentelemetry.sdk.trace import TracerProvider  # type: ignore
-        from opentelemetry.sdk.trace.export import (  # type: ignore
-            SimpleSpanProcessor,
-            SpanExporter,
-            SpanExportResult,
-        )
-        from opentelemetry.sdk.trace.sampling import ALWAYS_ON  # type: ignore
-
-        exported_spans: list[dict[str, object]] = []
-
-        class _JsonSpanExporter(SpanExporter):
-            def export(self, spans) -> SpanExportResult:  # type: ignore[override]
-                for s in spans:
-                    ctx = getattr(s, "context", None)
-                    if ctx is not None:
-                        t_id = f"{int(ctx.trace_id):032x}"
-                        s_id = f"{int(ctx.span_id):016x}"
-                    else:
-                        t_id = ""
-                        s_id = ""
-
-                    attrs = dict(getattr(s, "attributes", {}) or {})
-                    exported_spans.append(
-                        {
-                            "name": getattr(s, "name", ""),
-                            "trace_id": t_id,
-                            "span_id": s_id,
-                            "start_time_unix_nano": int(getattr(s, "start_time", 0) or 0),
-                            "end_time_unix_nano": int(getattr(s, "end_time", 0) or 0),
-                            "attributes": attrs,
-                        }
-                    )
-                return SpanExportResult.SUCCESS
-
-            def shutdown(self) -> None:  # type: ignore[override]
-                return None
-
-        provider = TracerProvider(resource=Resource.create({"service.name": "wordloom-labs"}), sampler=ALWAYS_ON)
-        provider.add_span_processor(SimpleSpanProcessor(_JsonSpanExporter()))
-        trace.set_tracer_provider(provider)
-
-        tracer = trace.get_tracer("wordloom.labs")
-        with tracer.start_as_current_span(span_name) as span:
-            span.set_attribute("event", "labs.shared_keys.probe")
-            span.set_attribute("lab_id", LAB_ID_S2B_2A_2A)
-            span.set_attribute("scenario", SCENARIO_SHADOW_VERIFY_SHARED_KEYS)
-            span.set_attribute("run_id", run_id)
-            span.set_attribute("scope", scope)
-            span.set_attribute("library_id", library_id or "")
-            span.set_attribute("samples_total", len(samples))
-            if samples:
-                span.set_attribute("sample.entity_type", samples[0]["entity_type"])
-                span.set_attribute("sample.entity_id", samples[0]["entity_id"])
-
-            ctx = span.get_span_context()
-            trace_id = f"{int(ctx.trace_id):032x}"
-            span_id = f"{int(ctx.span_id):016x}"
-
-        provider.force_flush()
-
-        (outdir / "traces.json").write_text(
-            json.dumps(
-                {
-                    "service": "wordloom-labs",
-                    "scenario": SCENARIO_SHADOW_VERIFY_SHARED_KEYS,
-                    "run_id": run_id,
-                    "spans": exported_spans,
-                },
-                indent=2,
-                ensure_ascii=False,
-            )
-            + "\n",
-            encoding="utf-8",
-        )
-        traces_written = True
-    except Exception as e:  # keep drill safe
-        traces_error = f"{type(e).__name__}: {e}"
-        try:
-            (outdir / "traces.json").write_text(
-                json.dumps(
-                    {
-                        "service": "wordloom-labs",
-                        "scenario": SCENARIO_SHADOW_VERIFY_SHARED_KEYS,
-                        "run_id": run_id,
-                        "spans": [],
-                        "error": traces_error,
-                    },
-                    indent=2,
-                    ensure_ascii=False,
-                )
-                + "\n",
-                encoding="utf-8",
-            )
-        except Exception:
-            pass
-
-    result: dict[str, object] = {
-        "lab_id": LAB_ID_S2B_2A_2A,
-        "scenario": SCENARIO_SHADOW_VERIFY_SHARED_KEYS,
-        "run_id": run_id,
-        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "scope": scope,
-        "shared_keys": {
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": SCENARIO_SHADOW_VERIFY_SHARED_KEYS,
+            "scope_id": LAB_ID_S2B_2A_2A,
             "run_id": run_id,
+            "outdir": str(outdir),
+            "database_url": database_url,
             "library_id": library_id,
-            "samples": samples,
-        },
-        "ensure_min_rows": int(ensure_min_rows),
-        "seed_rows_inserted": int(inserted_rows),
-        "evidence_queries": {
-            "artifact_logs_grep": [
-                f"scenario={SCENARIO_SHADOW_VERIFY_SHARED_KEYS}",
-                f"run_id={run_id}",
-                f"scope={scope}",
-            ],
-            "artifact_logs_grep_json": [
-                '"event":"labs.shared_keys.probe"',
-                f'"run_id":"{run_id}"',
-            ],
-            "artifact_traces_jq": [
-                f".spans[] | select(.attributes.run_id==\"{run_id}\")",
-                f".spans[] | select(.attributes.scenario==\"{SCENARIO_SHADOW_VERIFY_SHARED_KEYS}\")",
-            ],
-        },
-        "observability": {
-            "log_probe_emitted": True,
-            "trace_probe": {
-                "span_name": span_name,
-                "trace_id": trace_id,
-                "span_id": span_id,
-                "traces_json_written": traces_written,
-                "error": traces_error,
-            },
-        },
-        "ok": bool(ok),
-    }
+        }
+    )
+    inputs = DrillInputs.model_validate(input_payload)
+    drill = handler(inputs)
+    result = drill.meta or {}
+    write_json(outdir / "_result.json", result)
 
-    (outdir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    ok = bool(result.get("ok"))
+    scope = str(result.get("scope") or "")
+    inserted_rows = int(result.get("seed_rows_inserted") or 0)
+    shared_keys = result.get("shared_keys") or {}
+    samples = list(shared_keys.get("samples") or [])
 
     print("labs-014.shadow_verify_shared_keys")
     print(f"scope={scope}")
@@ -7954,10 +7632,79 @@ def build_parser() -> argparse.ArgumentParser:
 
     return p
 
-
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+
+    # 1) 确保内置 scenarios 被 import 并注册
+    _wg_registry.load_builtin_scenarios()
+
+    # 2) 识别 scenario：统一兼容 write_gate_scenario / scenario + _ / - 命名风格
+    raw_scenario = getattr(args, "write_gate_scenario", None) or getattr(args, "scenario", None)
+    scenario: str | None = None
+    scenario_candidates: list[str] = []
+    if isinstance(raw_scenario, str) and raw_scenario.strip():
+        scenario = raw_scenario.strip()
+        scenario_candidates.append(scenario)
+        if "-" in scenario:
+            scenario_candidates.append(scenario.replace("-", "_"))
+        if "_" in scenario:
+            scenario_candidates.append(scenario.replace("_", "-"))
+
+    # 去重并保持顺序
+    seen: set[str] = set()
+    scenario_candidates = [s for s in scenario_candidates if not (s in seen or seen.add(s))]
+
+    # 3) 只要匹配到“新架构的 scenario”，就抢先执行并退出（不走 args.func）
+    if scenario_candidates:
+        handler = None
+        matched_scenario: str | None = None
+        for candidate in scenario_candidates:
+            try:
+                handler = _wg_registry.get(candidate)
+                matched_scenario = candidate
+                break
+            except KeyError:
+                continue
+
+        if handler is not None:
+            scenario = matched_scenario or scenario_candidates[0]
+            scope_id = getattr(args, "scope_id", None) or "S2B"
+            run_id = getattr(args, "run_id", None) or "local"
+
+            # pydantic 输入边界：自动透传 argparse 字段（extra=allow）
+            input_payload = {k: v for k, v in vars(args).items() if k not in {"func"}}
+            input_payload.update(
+                {
+                    "scenario": scenario,
+                    "scope_id": scope_id,
+                    "run_id": run_id,
+                    "timeout_s": getattr(args, "timeout_s", None),
+                    "sampling": getattr(args, "sampling", None),
+                }
+            )
+            inputs = DrillInputs.model_validate(input_payload)
+
+            result = handler(inputs)
+
+            # 4) 按你的证据 contract 落盘：_result.json + summary.json（先做最小闭环）
+            outdir_arg = getattr(args, "outdir", None)
+            if outdir_arg:
+                paths = build_evidence_paths_for_dir(Path(str(outdir_arg)))
+            else:
+                paths = build_evidence_paths(scope_id=inputs.scope_id, scenario=inputs.scenario, run_id=inputs.run_id)
+
+            # Keep legacy evidence structure: _result.json is the scenario's meta dict.
+            write_json(paths.result_json, result.meta)
+            write_json(paths.summary_json, result.summary)
+
+            # 5) 可选：把整个 snapshot_dir 打 zip（如果你后面 workflow 需要）
+            zip_path = paths.snapshot_dir / "evidence.zip"
+            if not result.ok:
+                zip_directory(source_dir=paths.snapshot_dir, zip_path=zip_path)
+
+            return 0 if result.ok else 2
+
     return int(args.func(args))
 
 
