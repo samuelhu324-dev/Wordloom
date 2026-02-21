@@ -1926,6 +1926,10 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
 
     return 0 if ok else 2
 
+
+def _cmd_labs_shadow_verify_canary_dual_write(args: argparse.Namespace) -> int:
+    """Canary dual-write (projection + outbox) with verification + cleanup.
+
     Writes a very small, drill-scoped set of rows to:
     - search_index (projection)
     - search_outbox_events (outbox enqueue)
