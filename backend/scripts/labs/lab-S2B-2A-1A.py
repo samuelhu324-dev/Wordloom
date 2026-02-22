@@ -15,11 +15,19 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import time
 import uuid
 from pathlib import Path
 
 from sqlalchemy import create_engine, text
+
+
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from cli_app.common import write_json
 
 LAB_ID = "S2B-2A-1A"
 SCENARIO = "shadow_verify_search_index_write_gate"
@@ -161,10 +169,7 @@ def main() -> int:
 
     if outdir is not None:
         _ensure_dir(outdir)
-        (outdir / "_result.json").write_text(
-            json.dumps(result, indent=2, ensure_ascii=False) + "\n",
-            encoding="utf-8",
-        )
+        write_json(outdir / "_result.json", result)
 
     print("labs-012.shadow_verify_search_index_write_gate")
     print(f"scope={scope}")
