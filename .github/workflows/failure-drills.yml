@@ -18,6 +18,11 @@ on:
           - stuck_reclaim
           - duplicate_delivery
           - projection_version
+      force_failure:
+        description: "Force a failure after scenario run to exercise CI failure evidence path"
+        required: true
+        type: boolean
+        default: false
       env_file:
         description: "Env file path"
         required: true
@@ -223,7 +228,14 @@ jobs:
 
           python backend/scripts/cli.py labs clean "$scenario" --env-file "$env_file" --keep-last "${{ inputs.keep_last }}"
 
+      - name: Force failure (manual test)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.force_failure }}
+        run: |
+          echo "Forced failure requested (force_failure=true)" >&2
+          exit 1
+
       - name: Upload evidence bundle
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: labs-evidence-${{ matrix.scenario }}-${{ github.run_id }}-${{ github.run_attempt }}
