@@ -3,6 +3,11 @@ name: failure-drills
 on:
   workflow_dispatch:
     inputs:
+      force_failure:
+        description: "Force a failure after scenario run to exercise CI failure evidence path"
+        required: false
+        type: boolean
+        default: false
       scenario:
         description: "labs scenario"
         required: true
@@ -18,11 +23,6 @@ on:
           - stuck_reclaim
           - duplicate_delivery
           - projection_version
-      force_failure:
-        description: "Force a failure after scenario run to exercise CI failure evidence path"
-        required: true
-        type: boolean
-        default: false
       env_file:
         description: "Env file path"
         required: true

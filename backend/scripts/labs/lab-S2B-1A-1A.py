@@ -26,12 +26,20 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Optional
 from uuid import UUID
 
 import sqlalchemy as sa
+
+
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from cli_app.common import write_json
 
 
 LAB_ID = "S2B-1A-1A"
@@ -67,7 +75,7 @@ def _write_artifact(*, outdir: Path, run_id: str | None, result: VerifyResult) -
         "ok": bool(ok),
         **asdict(result),
     }
-    (outdir / "_result.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(outdir / "_result.json", payload)
 
 
 def main() -> None:

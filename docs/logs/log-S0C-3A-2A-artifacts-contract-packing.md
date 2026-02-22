@@ -134,6 +134,15 @@
   - 统一 UTF-8 / pretty JSON / 末尾换行 / 确保父目录存在
 - 目的：进一步减少入口/场景内部多点手写 JSON 的漂移风险，为 Step C 删除 legacy packing 分支做准备。
 
+### Update — Step B 收口：standalone labs scripts 写盘收敛（2026-02-22）
+
+- 发现 `backend/scripts/labs/` 下仍存在少量脚本直接写 `<OUTDIR>/_result.json`：
+  - `lab-S2B-1A-1A.py`
+  - `lab-S2B-1A-2A.py`
+  - `lab-S2B-2A-1A.py`
+- 改动：将写盘从 `Path.write_text(json.dumps(...)+"\n")` 收敛为复用 `cli_app/common.write_json(...)`（UTF-8 / pretty JSON / 末尾换行一致）。
+- 说明：这些脚本不是 `cli_app` handler，但其产物契约同样是 `_result.json`；因此纳入 Step B 的“写盘实现收敛”范围。
+
 ### Update — Step B 扫描：drill-write-gate workflow（2026-02-22）
 
 - 以 CI 依赖优先（workflow: `drill-write-gate.yml`）扫描其直接调用的场景实现：
@@ -180,11 +189,26 @@
 
 ### CI Evidence — GitHub Actions（2026-02-22）
 
-- artifact: `docs/labs/_snapshot/auto/**/_result.json`（workflow 上传 evidence bundle）
+- workflow: `failure-drills.yml`
+- artifact: `labs-evidence-<scenario>-<GITHUB_RUN_ID>-<GITHUB_RUN_ATTEMPT>`（来自 `docs/labs/_snapshot/auto/`）
 - scenario: `failure-drills`（matrix=9 scenarios）
-- run_id: `GitHub Actions run #13`（9 jobs completed, status=success, artifacts=9）
-- result: `ok=true`（所有 jobs 绿）
-- notes: 验证 failure-drills 的 `verify` 阶段写 `_result.json` 改走 `common.pack_artifacts(...)` 后，CI 证据链不受影响。
+- success run（截图2）：
+  - run_id: `22270016158-1`
+  - result: `ok=true`（9 jobs 全绿，artifacts=9）
+- forced failure run（截图1，`force_failure=true`）：
+  - run_id: `22270015344-1`
+  - result: `ok=false`（9 jobs 全红）
+  - notes: 失败注入发生在 evidence 上传前；`Upload evidence bundle` 采用 `if: always()`，因此即使 job fail 也仍会产出/上传 evidence artifact（用于 failure-only 证据截图）。
+
+### CI Evidence — workflow 侧收敛推广（2026-02-22）
+
+- workflow:
+  - `drill-write-gate.yml`
+  - `drill-shadow-verify-entries.yml`
+- change: 将 workflow 内联的“summary 兜底 + finalize + failure-only zip”收敛为仓内脚本 `backend/scripts/ci/workflow_artifacts.py`（`placeholder/finalize/zip`）
+- artifacts contract（保持不变）：
+  - success-only：上传 `artifacts/summary.json`
+  - failure-only：打包并上传 `artifacts.zip`
 
 ### Local Evidence — smoke test（2026-02-22）
 
@@ -211,6 +235,5 @@
 
 ## Next
 
-- 先落地 Step A：定义并固化 packing API（不改任何业务逻辑）。
-- 然后挑 1 个“打包最复杂且 CI 依赖”的命令做 Step B 的样板迁移。
-- 形成样板后再批量推进其余命令。
+- Step B：已收口完成（非 legacy 路径的 `_result.json`/aux JSON 写盘与 workflow 侧打包/兜底已收敛；残留仅存在于 `backend/scripts/legacy/`）。
+- Step C：待开始（需要显式确认后，才会修改 `backend/scripts/cli.py` 删除/合并 legacy packing 分支）。
