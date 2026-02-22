@@ -1,0 +1,537 @@
+# Scenario catalog (data-driven) for GitHub Actions drills
+#
+# Purpose:
+# - Centralize scenario metadata that is currently scattered across workflows.
+# - Allow future workflows to accept only `scenario_id` and derive defaults/requirements.
+#
+# Conventions:
+# - `id` is the current stable/legacy scenario identifier used by workflows today.
+# - `cli` uses placeholders intended for runner/workflow interpolation:
+#   - $DATABASE_URL, $RUN_ID, $OUTDIR, $ENV_FILE, $DURATION, $LOOKBACK, $KEEP_LAST
+#   - $ES_URL, $ES_INDEX
+#   - $WINDOW_DURATION_SECONDS, $WINDOW_INTERVAL_SECONDS, $WINDOW_ENQUEUE_BATCH_SIZE,
+#     $WINDOW_MAX_TOTAL_EVENTS, $WINDOW_DRAIN_TIMEOUT_SECONDS, $WINDOW_WORKER_MAX_RUNTIME_SECONDS
+#   - Optional scope args (e.g. --library-id/--book-id) can be appended by the runner.
+#
+# Sources:
+# - .github/workflows/drill-write-gate.yml
+# - .github/workflows/drill-shadow-verify-entries.yml
+# - .github/workflows/failure-drills.yml
+
+version: 1
+
+scenarios:
+  - id: shadow_verify_search_index_write_gate
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-search-index-write-gate
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - workflow:drill-write-gate
+      - workflow:drill-shadow-verify-entries
+      - intent:verify
+      - pipeline:search
+      - runtime:db_only
+
+  - id: shadow_verify_search_index_paging_stability
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-search-index-paging-stability
+      --database-url "$DATABASE_URL"
+      --page-size 50
+      --pages-checked 2
+      --ensure-min-rows 120
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults:
+      page_size: 50
+      pages_checked: 2
+      ensure_min_rows: 120
+    tags:
+      - workflow:drill-write-gate
+      - intent:verify
+      - pipeline:search
+      - runtime:db_only
+
+  - id: shadow_verify_shared_keys
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-shared-keys
+      --database-url "$DATABASE_URL"
+      --ensure-min-rows 5
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults:
+      ensure_min_rows: 5
+    tags:
+      - workflow:drill-write-gate
+      - intent:verify
+      - pipeline:obs_infra
+      - runtime:db_only
+
+  - id: shadow_verify_dual_run_readiness_gate
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - workflow:drill-write-gate
+      - intent:readiness
+      - pipeline:search
+      - runtime:db_only
+
+  - id: shadow_verify_dual_run_stage1
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-dual-run-stage1
+      --database-url "$DATABASE_URL"
+      --ensure-min-rows 25
+      --candidate-limit 20
+      --strategy strict
+      --es-url "$ES_URL"
+      --es-index "$ES_INDEX"
+      --recreate-index
+      --backfill-batch-size 200
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: true
+      jaeger: false
+      worker: false
+    defaults:
+      ensure_min_rows: 25
+      candidate_limit: 20
+      strategy: strict
+      recreate_index: true
+      backfill_batch_size: 200
+    tags:
+      - workflow:drill-write-gate
+      - intent:dual_run
+      - pipeline:search
+      - runtime:db_es
+
+  - id: shadow_verify_dual_run_stage2
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-dual-run-stage2
+      --database-url "$DATABASE_URL"
+      --ensure-min-rows 25
+      --candidate-limit 20
+      --strategy strict
+      --es-url "$ES_URL"
+      --es-index "$ES_INDEX"
+      --recreate-index
+      --worker-batch-size 100
+      --worker-concurrency 1
+      --worker-poll-interval-seconds 0.2
+      --worker-idle-polls-before-exit 2
+      --worker-max-runtime-seconds 60
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: true
+      jaeger: false
+      worker: false
+    defaults:
+      ensure_min_rows: 25
+      candidate_limit: 20
+      strategy: strict
+      recreate_index: true
+      worker_batch_size: 100
+      worker_concurrency: 1
+      worker_poll_interval_seconds: 0.2
+      worker_idle_polls_before_exit: 2
+      worker_max_runtime_seconds: 60
+    tags:
+      - workflow:drill-write-gate
+      - intent:dual_run
+      - pipeline:search
+      - runtime:db_es
+
+  - id: shadow_verify_dual_run_window
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-dual-run-window
+      --database-url "$DATABASE_URL"
+      --ensure-min-rows 25
+      --candidate-limit 20
+      --strategy strict
+      --duration-seconds "$WINDOW_DURATION_SECONDS"
+      --interval-seconds "$WINDOW_INTERVAL_SECONDS"
+      --enqueue-batch-size "$WINDOW_ENQUEUE_BATCH_SIZE"
+      --max-total-events "$WINDOW_MAX_TOTAL_EVENTS"
+      --drain-timeout-seconds "$WINDOW_DRAIN_TIMEOUT_SECONDS"
+      --max-outbox-failed 0
+      --max-outbox-pending 0
+      --max-outbox-processing 0
+      --require-outbox-done-eq-enqueued
+      --es-url "$ES_URL"
+      --es-index "$ES_INDEX"
+      --recreate-index
+      --worker-batch-size 100
+      --worker-concurrency 1
+      --worker-poll-interval-seconds 0.2
+      --worker-max-runtime-seconds "$WINDOW_WORKER_MAX_RUNTIME_SECONDS"
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: true
+      jaeger: false
+      worker: false
+    defaults:
+      ensure_min_rows: 25
+      candidate_limit: 20
+      strategy: strict
+      window_duration_seconds: 15
+      window_interval_seconds: 1
+      window_enqueue_batch_size: 5
+      window_max_total_events: 75
+      window_drain_timeout_seconds: 30
+      window_worker_max_runtime_seconds: 90
+      recreate_index: true
+      worker_batch_size: 100
+      worker_concurrency: 1
+      worker_poll_interval_seconds: 0.2
+      max_outbox_failed: 0
+      max_outbox_pending: 0
+      max_outbox_processing: 0
+      require_outbox_done_eq_enqueued: true
+    tags:
+      - workflow:drill-write-gate
+      - intent:dual_run
+      - pipeline:search
+      - runtime:db_es
+
+  - id: shadow_verify_canary_dual_write
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-canary-dual-write
+      --database-url "$DATABASE_URL"
+      --max-writes 5
+      --cleanup
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults:
+      max_writes: 5
+      cleanup: true
+    tags:
+      - workflow:drill-write-gate
+      - intent:dual_write
+      - pipeline:search
+      - runtime:db_only
+
+  - id: shadow_verify_dual_write_sampling
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-dual-write-sampling
+      --database-url "$DATABASE_URL"
+      --ensure-min-rows 25
+      --sample-size 20
+      --duration-seconds 0
+      --max-total-events 20
+      --strategy strict
+      --inject-failed-rate 0.0
+      --no-replay-failed
+      --cleanup
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults:
+      ensure_min_rows: 25
+      sample_size: 20
+      duration_seconds: 0
+      max_total_events: 20
+      strategy: strict
+      inject_failed_rate: 0.0
+      replay_failed: false
+      cleanup: true
+    tags:
+      - workflow:drill-write-gate
+      - intent:dual_write
+      - pipeline:search
+      - runtime:db_only
+
+  - id: shadow_verify_chronicle_entries
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-chronicle-entries
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - workflow:drill-shadow-verify-entries
+      - intent:verify
+      - pipeline:chronicle
+      - runtime:db_only
+
+  - id: shadow_verify_search_index
+    cli: >-
+      python backend/scripts/cli.py labs shadow-verify-search-index
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - workflow:drill-shadow-verify-entries
+      - intent:verify
+      - pipeline:search
+      - runtime:db_only
+
+  - id: all
+    cli: |-
+      # Workflow-level meta option (matrix expansion).
+      # Equivalent to running all FAULT scenarios in failure-drills.yml matrix.
+      (see .github/workflows/failure-drills.yml)
+    requires:
+      db: true
+      es: true
+      jaeger: true
+      worker: false
+    defaults:
+      env_file: .env.test
+      duration_seconds: 25
+      lookback: 30m
+      keep_last: 20
+    tags:
+      - workflow:failure-drills
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_es_jaeger
+      - meta:matrix_all
+
+  - id: es_429_inject
+    cli: |-
+      python backend/scripts/cli.py labs run es_429_inject --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs verify es_429_inject --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs export es_429_inject --run-id "$RUN_ID" --lookback "$LOOKBACK"
+      python backend/scripts/cli.py labs clean es_429_inject --env-file "$ENV_FILE" --keep-last "$KEEP_LAST"
+    requires:
+      db: true
+      es: true
+      jaeger: true
+      worker: false
+    defaults:
+      env_file: .env.test
+      duration_seconds: 25
+      lookback: 30m
+      keep_last: 20
+    tags:
+      - workflow:failure-drills
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_es_jaeger
+
+  - id: es_write_block_4xx
+    cli: |-
+      python backend/scripts/cli.py labs run es_write_block_4xx --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs verify es_write_block_4xx --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs export es_write_block_4xx --run-id "$RUN_ID" --lookback "$LOOKBACK"
+      python backend/scripts/cli.py labs clean es_write_block_4xx --env-file "$ENV_FILE" --keep-last "$KEEP_LAST"
+    requires:
+      db: true
+      es: true
+      jaeger: true
+      worker: false
+    defaults:
+      env_file: .env.test
+      duration_seconds: 25
+      lookback: 30m
+      keep_last: 20
+    tags:
+      - workflow:failure-drills
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_es_jaeger
+
+  - id: es_down_connect
+    cli: |-
+      python backend/scripts/cli.py labs run es_down_connect --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs verify es_down_connect --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs export es_down_connect --run-id "$RUN_ID" --lookback "$LOOKBACK"
+      python backend/scripts/cli.py labs clean es_down_connect --env-file "$ENV_FILE" --keep-last "$KEEP_LAST"
+    requires:
+      db: true
+      es: true
+      jaeger: true
+      worker: false
+    defaults:
+      env_file: .env.test
+      duration_seconds: 25
+      lookback: 30m
+      keep_last: 20
+    tags:
+      - workflow:failure-drills
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_es_jaeger
+
+  - id: collector_down
+    cli: |-
+      python backend/scripts/cli.py labs run collector_down --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs verify collector_down --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs export collector_down --run-id "$RUN_ID" --lookback "$LOOKBACK"
+      python backend/scripts/cli.py labs clean collector_down --env-file "$ENV_FILE" --keep-last "$KEEP_LAST"
+    requires:
+      db: true
+      es: true
+      jaeger: true
+      worker: false
+    defaults:
+      env_file: .env.test
+      duration_seconds: 25
+      lookback: 30m
+      keep_last: 20
+    tags:
+      - workflow:failure-drills
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_es_jaeger
+
+  - id: es_bulk_partial
+    cli: |-
+      python backend/scripts/cli.py labs run es_bulk_partial --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs verify es_bulk_partial --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs export es_bulk_partial --run-id "$RUN_ID" --lookback "$LOOKBACK"
+      python backend/scripts/cli.py labs clean es_bulk_partial --env-file "$ENV_FILE" --keep-last "$KEEP_LAST"
+    requires:
+      db: true
+      es: true
+      jaeger: true
+      worker: false
+    defaults:
+      env_file: .env.test
+      duration_seconds: 25
+      lookback: 30m
+      keep_last: 20
+    tags:
+      - workflow:failure-drills
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_es_jaeger
+
+  - id: db_claim_contention
+    cli: |-
+      python backend/scripts/cli.py labs run db_claim_contention --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs verify db_claim_contention --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs export db_claim_contention --run-id "$RUN_ID" --lookback "$LOOKBACK"
+      python backend/scripts/cli.py labs clean db_claim_contention --env-file "$ENV_FILE" --keep-last "$KEEP_LAST"
+    requires:
+      db: true
+      es: true
+      jaeger: true
+      worker: false
+    defaults:
+      env_file: .env.test
+      duration_seconds: 25
+      lookback: 30m
+      keep_last: 20
+    tags:
+      - workflow:failure-drills
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_es_jaeger
+
+  - id: stuck_reclaim
+    cli: |-
+      python backend/scripts/cli.py labs run stuck_reclaim --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs verify stuck_reclaim --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs export stuck_reclaim --run-id "$RUN_ID" --lookback "$LOOKBACK"
+      python backend/scripts/cli.py labs clean stuck_reclaim --env-file "$ENV_FILE" --keep-last "$KEEP_LAST"
+    requires:
+      db: true
+      es: true
+      jaeger: true
+      worker: false
+    defaults:
+      env_file: .env.test
+      duration_seconds: 25
+      lookback: 30m
+      keep_last: 20
+    tags:
+      - workflow:failure-drills
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_es_jaeger
+
+  - id: duplicate_delivery
+    cli: |-
+      python backend/scripts/cli.py labs run duplicate_delivery --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs verify duplicate_delivery --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs export duplicate_delivery --run-id "$RUN_ID" --lookback "$LOOKBACK"
+      python backend/scripts/cli.py labs clean duplicate_delivery --env-file "$ENV_FILE" --keep-last "$KEEP_LAST"
+    requires:
+      db: true
+      es: true
+      jaeger: true
+      worker: false
+    defaults:
+      env_file: .env.test
+      duration_seconds: 25
+      lookback: 30m
+      keep_last: 20
+    tags:
+      - workflow:failure-drills
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_es_jaeger
+
+  - id: projection_version
+    cli: |-
+      python backend/scripts/cli.py labs run projection_version --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs verify projection_version --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs export projection_version --run-id "$RUN_ID" --lookback "$LOOKBACK"
+      python backend/scripts/cli.py labs clean projection_version --env-file "$ENV_FILE" --keep-last "$KEEP_LAST"
+    requires:
+      db: true
+      es: true
+      jaeger: true
+      worker: false
+    defaults:
+      env_file: .env.test
+      duration_seconds: 25
+      lookback: 30m
+      keep_last: 20
+    tags:
+      - workflow:failure-drills
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_es_jaeger

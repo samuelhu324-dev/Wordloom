@@ -17,7 +17,6 @@
 **updated**: `2026-02-22`
 
 ---
-
 ## Decision / Outcome（结论区）
 
 - 将超大 `backend/scripts/cli.py` 拆分为“薄入口壳 + 场景模块（scenario handlers）”；入口文件 **100~300 行** 作为目标线（非硬性门槛），用于降低工具/Agent 将其整段吞入上下文导致的请求体膨胀风险。
@@ -26,16 +25,11 @@
   - `cli.py` 仅负责：参数解析 → 选择 scenario/command → 调用 handler → 统一 exit code 与产物（artifacts）落盘。
   - 场景/handler 在 `backend/scripts/cli_app/scenarios/*` 注册到 registry；CLI 命令簇的“实现侧”逐步落在 `backend/scripts/cli_app/labs/*`，入口只做薄委托（避免 `cli.py` 长胖）。
 - 拆分策略遵循“先抽共性、再搬场景”的最小可行路径：先抽出 artifacts contract，再逐个 scenario 搬家，确保 **CLI 对外参数/场景名不变**（只搬家、不改行为）。
-- 可选：把聚合型 workflow（如 `drill-write-gate.yml`）按 scenario 拆开，以降低 CI 配置复杂度并提升证据可读性。
 - 类型与校验分层采用组合方案：`cli_app/types.py` 用 **pydantic** 承接来自 GitHub Actions/ENV/CLI flags 的“外部输入解析与校验”；`cli_app/scenarios/*` 内部执行层使用 **dataclasses**（或普通函数参数）承载运行期上下文，保持轻量。
-- 一句话选择：当你要把“外部世界的字符串泥浆”变成“类型干净、可审计的 config”，选 pydantic；当你只是在内部打包数据、不做复杂外部输入校验，选 dataclasses。
 
 ## Background
 
-近期 `cli.py` 演进到 **8000+ 行**后，在你处理 drill/workflow/cli 相关任务时，Copilot Chat/Agent 很容易将其识别为“核心入口文件”并尝试整段读取或检索引用，导致：
-
-- 上下文体积暴涨（请求体像“巨鲸”一样膨胀）
-- 交互出现超时（例如 408）
+近期 `cli.py` 演进到 **8000+ 行**后，在你处理 drill/workflow/cli 相关任务时，Copilot Chat/Agent 很容易将其识别为“核心入口文件”并尝试整段读取或检索引用，导致上下文体积暴涨、交互出现超时（例如 408）。
 
 这不是需要回退功能的问题，而是需要对 CLI 做结构化拆分，使其更符合“稳定证据链（evidence contract）+ drills/runbook”的工程形态。
 
@@ -46,7 +40,7 @@
 - **风险**：
   - 为了“能聊下去”被迫减少上下文或改问法，影响效率。
   - 入口文件继续增长，拆分成本随时间上升。
-  - workflow 继续集中化后变成“航天飞机控制面板”，难维护、难排错。
+  - 场景继续集中化后变成“航天飞机控制面板”，难维护、难排错。
 
 ## What/How to do（落地规则）
 
@@ -88,20 +82,6 @@ backend/scripts/
 - artifacts contract（例如 `_result.json` / `summary.json` / `meta.json` / `zip`）统一封装在 `common.py`
 - `cli.py` 里只保留 `parser + registry.get(scenario).run(cfg)`
 
-补充：为什么这个项目更适合 pydantic（入口层）
-
-你的 CLI/drill 场景有几个典型特征：
-
-- 输入来自：GitHub Actions `workflow_dispatch`、ENV、CLI flags（都是外部输入）
-- 你非常重视：failure contract / artifacts contract / 可重现证据链
-- 你需要：UUID/int/bool/enum 这类类型从字符串稳定解析
-- 你会做：范围约束（例如 max_writes）、window 参数、timeout、sampling 与语义校验
-
-这些几乎就是 pydantic 的主场。因此建议采用“工程上最舒服”的组合拳：
-
-- `cli_app/types.py`：用 pydantic 定义 `InputModel`（CLI/ENV/JSON 的入口）
-- `cli_app/scenarios/*`：内部逻辑用 dataclasses（或普通函数参数）承载执行期上下文，避免把执行层绑死在 pydantic 上
-
 ### 2) 最小可行拆分顺序（不改行为，只减体积）
 
 按下面顺序做，风险最低：
@@ -116,22 +96,10 @@ backend/scripts/
   - dual run window
   - canary dual write
 
-### 3)（可选）workflow 拆分建议
-
-如果当前存在“一个 workflow 承载多个 scenario”的聚合配置，建议两种姿势二选一：
-
-- **姿势 1：一个 scenario 一个 workflow**（最清晰）
-  - 优点：inputs 少、超时/权限/环境隔离清楚、artifact 更聚焦、排错更快
-  - 缺点：workflow 数量增多（但通常是可接受的工程成本）
-- **姿势 2：入口 workflow + reusable workflow_call**（更工程化）
-  - 外层负责选择 scenario/输入参数
-  - 内层复用执行模板
-
 ## Next
 
-- 先落地“Step A：抽 artifacts contract”，快速把入口文件降维。
-- 然后按“最常跑的 verify 场景”优先级逐个迁移。
-- 若 CI 复杂度/排错成本仍高，再拆 workflow（优先采用“一个 scenario 一个 workflow”先落地）。
+- 按“先抽共性、再搬场景”的节奏持续推进（以合约稳定为第一优先级）。
+- 若后续 CI/workflow 仍出现“输入驾驶舱”问题，再把 workflow 也按 scenario/runner 进一步拆分。
 
 ## Implementation Status（当前落地情况）
 
@@ -142,35 +110,15 @@ backend/scripts/
 - `backend/scripts/cli_app/callbacks.py`：`_cmd_labs_*` 回调集中注册（保持 key 稳定，入口进一步变薄）
 - `backend/scripts/cli_app/types.py`：`DrillInputs` / `DrillResult` 输入输出边界
 - `backend/scripts/cli_app/registry.py`：scenario 注册表 + `load_builtin_scenarios()`
-- `backend/scripts/cli_app/scenarios/*`：已迁移并可注册的场景模块（供 registry/handlers 使用）：
-  - `shadow_verify_canary_dual_write`
-  - `shadow_verify_chronicle_entries`
-  - `shadow_verify_dual_write_sampling`
-  - `shadow_verify_search_index`
-  - `shadow_verify_search_index_write_gate`
-  - `shadow_verify_search_index_paging_stability`
-  - `shadow_verify_shared_keys`
-  - `shadow_verify_dual_run_readiness_gate`
-  - `shadow_verify_dual_run_stage1`
-  - `shadow_verify_dual_run_stage2`
-  - `shadow_verify_dual_run_window`
-- `backend/scripts/cli_app/labs/*`：已落地的“命令簇实现侧”（`cli.py` 对其薄委托）：
- - `backend/scripts/cli_app/labs/*`：已落地的“命令簇实现侧”（`cli.py` 对其薄委托）：
-  - `failure_drills.py`
-  - `collector_down.py`
-  - `jaeger_export.py`
-  - `shadow_verify.py`
 
 仍在进行（与本文目标一致，但未完全收口）：
 
-- `backend/scripts/cli.py` 已显著收口为 **dispatch-only 薄入口**：
-  - argparse surface 已抽离到 `backend/scripts/cli_app/parser.py`
-  - `_cmd_labs_*` 回调集中注册已抽离到 `backend/scripts/cli_app/callbacks.py`
-  - 当前行数约 **112 行**（已不再受“入口过大导致上下文膨胀/超时”的主要风险影响）
-- Step A（artifacts contract 全量收敛）仍需持续推进：目前已有 `cli_app/common.py::pack_artifacts()`，但并非所有 legacy 命令都已统一切到同一套写盘/打包路径（需要按命令簇逐步收敛）
+- `backend/scripts/cli.py` 已显著收口为 **dispatch-only 薄入口**（当前行数约 **112 行**）
+- artifacts contract 的“全量收敛”仍需持续推进：目前已有 `cli_app/common.py::pack_artifacts()`，但并非所有 legacy 命令都已统一切到同一套写盘/打包路径
 
 ## References
 
 - `backend/scripts/cli.py`
-- `backend/scripts/cli.py` 所承载的各 drill/scenario 命令
-- 相关 workflow：`.github/workflows/*`（若存在聚合型 drill workflow）
+- `backend/scripts/cli_app/parser.py`
+- `backend/scripts/cli_app/callbacks.py`
+- `backend/scripts/cli_app/registry.py`
