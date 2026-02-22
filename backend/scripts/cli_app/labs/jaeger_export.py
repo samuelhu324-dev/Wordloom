@@ -4,6 +4,9 @@ import argparse
 from collections.abc import Callable
 from pathlib import Path
 
+from cli_app import runtime
+from cli_app.labs import shared as _labs_shared
+
 
 def export_jaeger_snapshot(
     *,
@@ -14,10 +17,10 @@ def export_jaeger_snapshot(
     operation: str | None,
     outbox_event_id: str | None,
     claim_batch_id: str | None,
-    python_exe: Callable[[], str],
-    legacy_scripts_dir: Path,
-    repo_root: Path,
-    run: Callable[[list[str]], int] | Callable[[list[str], Path], int] | Callable[..., int],
+    python_exe: Callable[[], str] = runtime.python_exe,
+    legacy_scripts_dir: Path = runtime.LEGACY_SCRIPTS_DIR,
+    repo_root: Path = runtime.REPO_ROOT,
+    run: Callable[[list[str]], int] | Callable[[list[str], Path], int] | Callable[..., int] = runtime.run,
 ) -> int:
     script = legacy_scripts_dir / "labs_009_export_jaeger.py"
 
@@ -50,13 +53,13 @@ def export_jaeger_snapshot(
 def cmd_labs_export_jaeger(
     args: argparse.Namespace,
     *,
-    default_outdir: Callable[[str], Path],
-    now_run_id: Callable[[], str],
-    ensure_dir: Callable[[Path], None],
-    python_exe: Callable[[], str],
-    legacy_scripts_dir: Path,
-    repo_root: Path,
-    run: Callable[[list[str]], int] | Callable[[list[str], Path], int] | Callable[..., int],
+    default_outdir: Callable[[str], Path] = _labs_shared.default_labs009_expb_outdir,
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    python_exe: Callable[[], str] = runtime.python_exe,
+    legacy_scripts_dir: Path = runtime.LEGACY_SCRIPTS_DIR,
+    repo_root: Path = runtime.REPO_ROOT,
+    run: Callable[[list[str]], int] | Callable[[list[str], Path], int] | Callable[..., int] = runtime.run,
 ) -> int:
     outdir = Path(args.outdir) if args.outdir else default_outdir(now_run_id())
     exports_dir = outdir / "_exports"

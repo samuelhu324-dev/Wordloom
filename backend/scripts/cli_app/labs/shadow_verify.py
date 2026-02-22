@@ -8,6 +8,7 @@ from pathlib import Path
 
 from cli_app import registry as _wg_registry
 from cli_app.common import build_evidence_paths_for_dir, pack_artifacts
+from cli_app.labs import shared as _labs_shared
 from cli_app.types import DrillInputs
 
 
@@ -47,10 +48,10 @@ def cmd_labs_shadow_verify_chronicle_entries(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-chronicle-entries"
 
@@ -108,10 +109,10 @@ def cmd_labs_shadow_verify_search_index(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-search-index"
 
@@ -201,10 +202,10 @@ def cmd_labs_shadow_verify_search_index_write_gate(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-search-index-write-gate"
 
@@ -264,10 +265,10 @@ def cmd_labs_shadow_verify_search_index_paging_stability(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-search-index-paging-stability"
 
@@ -347,10 +348,10 @@ def cmd_labs_shadow_verify_shared_keys(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-shared-keys"
 
@@ -414,10 +415,10 @@ def cmd_labs_shadow_verify_dual_run_readiness_gate(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-dual-run-readiness-gate"
 
@@ -492,10 +493,10 @@ def cmd_labs_shadow_verify_dual_run_stage1(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-dual-run-stage1"
 
@@ -642,10 +643,10 @@ def cmd_labs_shadow_verify_dual_run_stage2(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-dual-run-stage2"
 
@@ -851,10 +852,10 @@ def cmd_labs_shadow_verify_dual_run_window(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-dual-run-window"
 
@@ -1100,10 +1101,10 @@ def cmd_labs_shadow_verify_canary_dual_write(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-canary-dual-write"
 
@@ -1200,10 +1201,10 @@ def cmd_labs_shadow_verify_dual_write_sampling(
     *,
     lab_id: str,
     scenario: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[..., Path],
-    ensure_dir: Callable[[Path], None],
-    load_env: Callable[..., dict[str, str]],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
 ) -> int:
     log_prefix = "labs shadow-verify-dual-write-sampling"
 
