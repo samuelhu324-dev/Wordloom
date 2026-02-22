@@ -5,7 +5,17 @@ from collections.abc import Callable
 from pathlib import Path
 
 from cli_app import registry as _wg_registry
+from cli_app.labs import shared as _labs_shared
+from cli_app.scenarios import _failure_drill_shared as _fd_shared
 from cli_app.types import DrillInputs
+
+
+def _default_outdir(scenario: str, run_id: str) -> Path:
+    return _fd_shared.default_labs_auto_run_dir(scenario=scenario, run_id=run_id)
+
+
+def _resolve_run_dir(run_id: str | None, outdir: str | None, scenario: str) -> Path:
+    return _fd_shared.resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario)
 
 
 def _invoke_scenario(
@@ -35,8 +45,8 @@ def cmd_labs_run(
     scope_id: str,
     scenario: str,
     handler_base: str,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[[str, str], Path],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[[str, str], Path] = _default_outdir,
     fallback_exit_code: int | Callable[[bool], int] = lambda ok: 0 if ok else 2,
 ) -> int:
     run_id = args.run_id or now_run_id()
@@ -62,7 +72,7 @@ def cmd_labs_verify(
     scope_id: str,
     scenario: str,
     handler_base: str,
-    resolve_run_dir: Callable[[str | None, str | None, str], Path],
+    resolve_run_dir: Callable[[str | None, str | None, str], Path] = _resolve_run_dir,
     fallback_exit_code: int | Callable[[bool], int] = lambda ok: 0 if ok else 10,
 ) -> int:
     run_dir = resolve_run_dir(args.run_id, args.outdir, scenario)
@@ -87,7 +97,7 @@ def cmd_labs_export(
     scope_id: str,
     scenario: str,
     handler_base: str,
-    resolve_run_dir: Callable[[str | None, str | None, str], Path],
+    resolve_run_dir: Callable[[str | None, str | None, str], Path] = _resolve_run_dir,
     fallback_exit_code: int | Callable[[bool], int] = 0,
 ) -> int:
     run_dir = resolve_run_dir(args.run_id, args.outdir, scenario)
@@ -111,7 +121,7 @@ def cmd_labs_clean(
     *,
     scope_id: str,
     handler_base: str,
-    now_run_id: Callable[[], str],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
     fallback_exit_code: int | Callable[[bool], int] = 0,
 ) -> int:
     payload = dict(vars(args))

@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Callable
 
 from cli_app import runtime
+from cli_app.labs import shared as _labs_shared
 
 from .jaeger_export import export_jaeger_snapshot
 
@@ -15,9 +16,9 @@ from .jaeger_export import export_jaeger_snapshot
 def cmd_labs_expb_es429(
     args: argparse.Namespace,
     *,
-    now_run_id: Callable[[], str],
-    default_outdir: Callable[[str], Path],
-    ensure_dir: Callable[[Path], None],
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[[str], Path] = _labs_shared.default_labs009_expb_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
     with_backend_pythonpath: Callable[[dict[str, str]], dict[str, str]] = runtime.with_backend_pythonpath,
     python_exe: Callable[[], str] = runtime.python_exe,
     legacy_scripts_dir: Path = runtime.LEGACY_SCRIPTS_DIR,

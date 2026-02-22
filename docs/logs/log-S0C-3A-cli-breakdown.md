@@ -20,7 +20,8 @@
 
 ## Decision / Outcome（结论区）
 
-- 将超大 `backend/scripts/cli.py` 拆分为“薄入口壳 + 场景模块（scenario handlers）”，目标是把入口文件控制在 **100~300 行**，避免工具/Agent 将其整段吞入上下文导致请求体膨胀。
+- 将超大 `backend/scripts/cli.py` 拆分为“薄入口壳 + 场景模块（scenario handlers）”；入口文件 **100~300 行** 作为目标线（非硬性门槛），用于降低工具/Agent 将其整段吞入上下文导致的请求体膨胀风险。
+- 验收口径：以 **dispatch-only + CLI/CI 合约稳定** 为准（命令/参数/help/exit code/evidence contract 不漂移），而不是“卡行数”。
 - 采用“按 scenario 插件化”的拆分方式：
   - `cli.py` 仅负责：参数解析 → 选择 scenario/command → 调用 handler → 统一 exit code 与产物（artifacts）落盘。
   - 场景/handler 在 `backend/scripts/cli_app/scenarios/*` 注册到 registry；CLI 命令簇的“实现侧”逐步落在 `backend/scripts/cli_app/labs/*`，入口只做薄委托（避免 `cli.py` 长胖）。
@@ -137,6 +138,8 @@ backend/scripts/
 已落地（代码中已存在）：
 
 - `backend/scripts/cli_app/common.py`：evidence paths + `write_json`/`zip_directory` 等基础能力
+- `backend/scripts/cli_app/parser.py`：argparse surface 单一事实来源（命令/参数/help 定义集中）
+- `backend/scripts/cli_app/callbacks.py`：`_cmd_labs_*` 回调集中注册（保持 key 稳定，入口进一步变薄）
 - `backend/scripts/cli_app/types.py`：`DrillInputs` / `DrillResult` 输入输出边界
 - `backend/scripts/cli_app/registry.py`：scenario 注册表 + `load_builtin_scenarios()`
 - `backend/scripts/cli_app/scenarios/*`：已迁移并可注册的场景模块（供 registry/handlers 使用）：
@@ -152,6 +155,7 @@ backend/scripts/
   - `shadow_verify_dual_run_stage2`
   - `shadow_verify_dual_run_window`
 - `backend/scripts/cli_app/labs/*`：已落地的“命令簇实现侧”（`cli.py` 对其薄委托）：
+ - `backend/scripts/cli_app/labs/*`：已落地的“命令簇实现侧”（`cli.py` 对其薄委托）：
   - `failure_drills.py`
   - `collector_down.py`
   - `jaeger_export.py`
@@ -159,9 +163,11 @@ backend/scripts/
 
 仍在进行（与本文目标一致，但未完全收口）：
 
-- `backend/scripts/cli.py` 仍然偏大：已从 ~2386 行降到 ~1130 行，但距离 100~300 行目标态仍有差距；除已迁移命令簇外，还有大量 `_cmd_labs_*` 旧实现尚未搬迁
-- Step A（artifacts contract 全量收敛）只完成了“基础库”，尚未把所有旧命令的写盘/打包统一切到 `cli_app/common.py`
-- Step C（入口壳收口到 100~300 行）尚未完成
+- `backend/scripts/cli.py` 已显著收口为 **dispatch-only 薄入口**：
+  - argparse surface 已抽离到 `backend/scripts/cli_app/parser.py`
+  - `_cmd_labs_*` 回调集中注册已抽离到 `backend/scripts/cli_app/callbacks.py`
+  - 当前行数约 **112 行**（已不再受“入口过大导致上下文膨胀/超时”的主要风险影响）
+- Step A（artifacts contract 全量收敛）仍需持续推进：目前已有 `cli_app/common.py::pack_artifacts()`，但并非所有 legacy 命令都已统一切到同一套写盘/打包路径（需要按命令簇逐步收敛）
 
 ## References
 
