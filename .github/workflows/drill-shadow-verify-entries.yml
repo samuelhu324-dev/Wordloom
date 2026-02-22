@@ -147,7 +147,9 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
           # Also create a placeholder summary early; finalize() will overwrite it.
-          python -c "import json; from pathlib import Path; Path('artifacts').mkdir(parents=True, exist_ok=True); payload={'scenario': '${{ inputs.scenario }}','ok':False,'error':'drill did not complete'}; Path('artifacts/summary.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8')"
+          python backend/scripts/ci/workflow_artifacts.py placeholder \
+            --scenario "${scenario}" \
+            --artifacts-dir artifacts
 
           finalize() {
             {
@@ -159,14 +161,12 @@ jobs:
               ls -la .drill_snapshot || true
             } >> artifacts/logs.txt 2>&1 || true
 
-            # Minimal traces placeholder (this drill doesn't collect traces yet).
-            echo "[]" > artifacts/traces.json 2>/dev/null || true
-
-            if [ -f .drill_snapshot/_result.json ]; then
-              cp .drill_snapshot/_result.json artifacts/summary.json
-            else
-              python -c "import json, os; from pathlib import Path; payload={'scenario': os.environ.get('SCENARIO','shadow_verify_chronicle_entries'),'run_id': os.environ.get('RUN_ID'), 'ok': False, 'error': 'missing _result.json', 'exit_code': int((os.environ.get('EXIT_CODE') or '2'))}; Path('.drill_snapshot').mkdir(parents=True, exist_ok=True); Path('.drill_snapshot/_result.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8'); Path('artifacts/summary.json').write_text(json.dumps(payload, indent=2)+'\\n', encoding='utf-8')"
-            fi
+            python backend/scripts/ci/workflow_artifacts.py finalize \
+              --scenario "${scenario}" \
+              --run-id "${run_id}" \
+              --exit-code "${rc}" \
+              --snapshot-dir .drill_snapshot \
+              --artifacts-dir artifacts
 
             echo "ok=${ok}" >> "$GITHUB_OUTPUT"
             echo "scenario=${scenario}" >> "$GITHUB_OUTPUT"
@@ -274,17 +274,9 @@ jobs:
         if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
         run: |
           set -euo pipefail
-          python - << 'PY'
-          import os
-          import zipfile
-
-          os.makedirs('artifacts', exist_ok=True)
-          with zipfile.ZipFile('artifacts.zip', 'w', compression=zipfile.ZIP_DEFLATED) as z:
-              for root, _, files in os.walk('artifacts'):
-                  for f in files:
-                      path = os.path.join(root, f)
-                      z.write(path, arcname=os.path.relpath(path, 'artifacts'))
-          PY
+          python backend/scripts/ci/workflow_artifacts.py zip \
+            --artifacts-dir artifacts \
+            --zip-path artifacts.zip
 
       - name: Upload full zip (failure only)
         if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'

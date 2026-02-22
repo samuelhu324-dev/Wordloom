@@ -5,7 +5,7 @@ import subprocess
 import time
 from pathlib import Path
 
-from ..common import build_evidence_paths_for_dir, pack_artifacts
+from ..common import build_evidence_paths_for_dir, pack_artifacts, write_json
 from ..registry import register
 from ..types import DrillInputs, DrillResult
 from ._failure_drill_shared import (
@@ -110,7 +110,7 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
         },
         "trigger": {"op": str(op), "count": int(trigger_count)},
     }
-    (outdir / "_recipe.json").write_text(json.dumps(recipe, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(outdir / "_recipe.json", recipe)
 
     worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
     cmd = [python_exe(), "-u", str(worker)]
@@ -229,7 +229,7 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
         "worker1": {"returncode": int(proc1.returncode) if proc1.returncode is not None else None},
         "worker2": {"returncode": int(proc2.returncode) if proc2.returncode is not None else None},
     }
-    (outdir / "_worker_exit.json").write_text(json.dumps(exit_info, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(outdir / "_worker_exit.json", exit_info)
 
     combined = (
         "# metrics-after-1\n\n"

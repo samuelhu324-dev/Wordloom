@@ -7,6 +7,7 @@ import subprocess
 import time
 from pathlib import Path
 
+from ..common import build_evidence_paths_for_dir, pack_artifacts, write_json
 from ..registry import register
 from ..types import DrillInputs, DrillResult
 from ._failure_drill_shared import (
@@ -115,7 +116,7 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
         "trigger": {"op": str(op), "count": int(trigger_count)},
         "crash": {"kind": "process_kill", "target": "worker1", "claim_timeout_s": float(claim_timeout)},
     }
-    (outdir / "_recipe.json").write_text(json.dumps(recipe, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(outdir / "_recipe.json", recipe)
 
     worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
     cmd = [python_exe(), "-u", str(worker)]
@@ -336,13 +337,13 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
             "terminated_by_controller": bool(worker2_terminated_by_controller),
         },
     }
-    (outdir / "_worker_exit.json").write_text(json.dumps(exit_info, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(outdir / "_worker_exit.json", exit_info)
 
     ports_info = {
         "worker1": {"metrics_port": int(actual_metrics_port_1), "http_port": int(actual_http_port_1)},
         "worker2": {"metrics_port": int(actual_metrics_port_2), "http_port": int(actual_http_port_2)},
     }
-    (outdir / "_ports.json").write_text(json.dumps(ports_info, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(outdir / "_ports.json", ports_info)
 
     combined = (
         "# metrics-before-1\n\n"
@@ -443,7 +444,7 @@ def verify_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
         },
         "ok": bool(ok),
     }
-    (run_dir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    pack_artifacts(paths=build_evidence_paths_for_dir(run_dir), result=result)
 
     if ok:
         print(f"[labs verify {SCENARIO_STUCK_RECLAIM}] OK")
