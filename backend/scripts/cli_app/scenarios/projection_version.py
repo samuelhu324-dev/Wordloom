@@ -89,7 +89,7 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
             "max_processing_seconds": int(max_processing_seconds),
         },
     }
-    (outdir / "_recipe.json").write_text(json.dumps(recipe, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(outdir / "_recipe.json", recipe)
 
     worker = LEGACY_SCRIPTS_DIR / "chronicle_outbox_worker.py"
     cmd = [python_exe(), "-u", str(worker)]
@@ -312,7 +312,7 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
             "v2": read_json_file(outdir / "_probe_entry_v2.json"),
         },
     }
-    (outdir / "_run.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(outdir / "_run.json", result)
 
     print(f"[labs run {SCENARIO_PROJECTION_VERSION}] chronicle_event_id: {chronicle_event_id}")
     print(f"[labs run {SCENARIO_PROJECTION_VERSION}] done (now run verify/export/clean)")

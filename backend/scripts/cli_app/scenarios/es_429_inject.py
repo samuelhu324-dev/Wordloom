@@ -5,7 +5,7 @@ import subprocess
 import time
 from pathlib import Path
 
-from ..common import build_evidence_paths_for_dir, pack_artifacts
+from ..common import build_evidence_paths_for_dir, pack_artifacts, write_json
 from ..registry import register
 from ..types import DrillInputs, DrillResult
 from ._failure_drill_shared import (
@@ -95,7 +95,7 @@ def run_es_429_inject(inputs: DrillInputs) -> DrillResult:
         "worker": {"duration_s": int(duration), "metrics_port": int(metrics_port)},
         "trigger": {"op": str(op)},
     }
-    (outdir / "_recipe.json").write_text(json.dumps(recipe, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_json(outdir / "_recipe.json", recipe)
 
     worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
     log_path = logs_dir / f"worker-{run_id}.log"
@@ -178,10 +178,7 @@ def run_es_429_inject(inputs: DrillInputs) -> DrillResult:
         worker_proc.wait(timeout=30)
 
     exit_info = {"returncode": int(worker_proc.returncode) if worker_proc.returncode is not None else None}
-    (outdir / "_worker_exit.json").write_text(
-        json.dumps(exit_info, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
+    write_json(outdir / "_worker_exit.json", exit_info)
 
     if not metrics_after_path.exists():
         metrics_after_path.write_text("scrape_failed: missing_metrics_after\n", encoding="utf-8")

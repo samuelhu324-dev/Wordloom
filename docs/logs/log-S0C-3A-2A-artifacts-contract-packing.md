@@ -121,6 +121,46 @@
   - `projection_version`
 - 契约保持不变：仍写入原路径 `_result.json`（UTF-8 / pretty JSON / 末尾换行），仅收敛写盘实现，便于后续统一演进。
 
+### Update — Step B 补齐：stuck_reclaim.verify（2026-02-22）
+
+- 发现并修复 `stuck_reclaim.verify` 场景内仍存在的“直接写 `_result.json`”点：
+  - 从 `(run_dir / "_result.json").write_text(json.dumps(...))` 改为 `common.pack_artifacts(paths=build_evidence_paths_for_dir(run_dir), result=...)`
+- 契约保持不变：仍写入 `<run_dir>/_result.json`，仅统一写盘实现。
+
+### Update — Step B 扩面：统一 ancillary JSON 写盘（2026-02-22）
+
+- 在 failure-drills 相关场景中，将 `_recipe.json` / `_worker_exit.json` / `_ports.json` / `_run.json` 等“辅助 JSON 文件”的写盘，从 `Path.write_text(json.dumps(...))` 收敛为 `common.write_json(...)`：
+  - 保持文件名/路径与字段结构不变
+  - 统一 UTF-8 / pretty JSON / 末尾换行 / 确保父目录存在
+- 目的：进一步减少入口/场景内部多点手写 JSON 的漂移风险，为 Step C 删除 legacy packing 分支做准备。
+
+### Update — Step B 扫描：drill-write-gate workflow（2026-02-22）
+
+- 以 CI 依赖优先（workflow: `drill-write-gate.yml`）扫描其直接调用的场景实现：
+  - 除 readiness gate 的子检查（已在上一个 Update 中落地）外，未发现其它场景在 handler 内部直接写入 `<outdir>/_result.json` 或进行 zip 打包。
+  - 结论：该 workflow 的主 `_result.json` 仍主要由外层 shim 负责写盘（尊重 `--outdir .drill_snapshot` 约束），Step B 下一轮扩面应优先寻找“聚合/子检查/导出”类命令中分散的写盘/打包点。
+
+  ### Update — Step B 扩面：workflow 侧收敛 summary + zip（2026-02-22）
+
+  - 动机：workflow 内联的 `python -c ...`（summary 兜底 / `_result.json` 缺失兜底）与 `zipfile.ZipFile`（失败时打包）属于“contract/packing 的另一套实现”，会造成多点漂移；因此也纳入 Step B 的“CI 依赖优先”收敛范围。
+  - 落地方式：新增仓内共享脚本，将 workflow 的重复实现单点化，并复用 `cli_app/common.py` 的写盘与 zip 能力：
+    - 文件：`backend/scripts/ci/workflow_artifacts.py`
+    - 子命令：
+      - `placeholder`：生成占位 `artifacts/summary.json`（防止脚本中途崩溃导致下游 step 读不到 summary）
+      - `finalize`：
+        - 若存在 `.drill_snapshot/_result.json`，则复制到 `artifacts/summary.json`
+        - 若缺失 `.drill_snapshot/_result.json`，则生成最小兜底 JSON，同时写入 `.drill_snapshot/_result.json` 与 `artifacts/summary.json`
+        - best-effort 复制 `.drill_snapshot/traces.json` → `artifacts/traces.json`（不存在则写 `[]` 占位）
+        - best-effort 复制 `.drill_snapshot/backfill.log` / `.drill_snapshot/worker.log` → `artifacts/`
+      - `zip`：将 `artifacts/` 目录打包为 `artifacts.zip`
+  - 影响范围：
+    - `.github/workflows/drill-write-gate.yml`
+    - `.github/workflows/drill-shadow-verify-entries.yml`
+  - 契约保持不变：
+    - `artifacts/summary.json` 仍是 workflow 上传的 success-only summary
+    - failure-only 仍上传 `artifacts.zip`
+    - `.drill_snapshot/_result.json` 仍作为“单一真相来源”供 snapshot/evidence 链路消费（缺失时兜底补写）
+
 ### Step C：删除 legacy packing 分支（入口真正变薄）
 
 - 当 Step B 覆盖率足够：
@@ -137,6 +177,22 @@
 ## Evidence（本阶段实证 / 运行证据）
 
 > 目的：证明 packing 抽离后不破坏 contract，并能被 workflow 正常消费。
+
+### CI Evidence — GitHub Actions（2026-02-22）
+
+- artifact: `docs/labs/_snapshot/auto/**/_result.json`（workflow 上传 evidence bundle）
+- scenario: `failure-drills`（matrix=9 scenarios）
+- run_id: `GitHub Actions run #13`（9 jobs completed, status=success, artifacts=9）
+- result: `ok=true`（所有 jobs 绿）
+- notes: 验证 failure-drills 的 `verify` 阶段写 `_result.json` 改走 `common.pack_artifacts(...)` 后，CI 证据链不受影响。
+
+### Local Evidence — smoke test（2026-02-22）
+
+- artifact: `backend/scripts/ci/workflow_artifacts.py`
+- scenario: `placeholder/finalize/zip`
+- run_id: `local/.tmp_workflow_artifacts`
+- result: `ok=true`（生成 `artifacts/summary.json`、`artifacts/traces.json`、缺失时补写 `.drill_snapshot/_result.json`、并成功生成 `artifacts.zip`）
+- notes: 证明 workflow shared script 在“_result.json 缺失/存在”的基本分支上可用，并可替代 YAML 内联 python/zipfile 实现。
 
 ### Template
 
