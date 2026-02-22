@@ -1,0 +1,341 @@
+name: reusable-drill-write-gate-runner
+
+on:
+  workflow_call:
+    inputs:
+      scenario:
+        description: "Write-gate scenario"
+        required: true
+        type: string
+      library_id:
+        description: "Optional data scope: library_id (UUID)."
+        required: false
+        type: string
+        default: ""
+      worker_library_allowlist:
+        description: "Optional worker scope: SEARCH_OUTBOX_LIBRARY_ALLOWLIST (comma-separated UUIDs)."
+        required: false
+        type: string
+        default: ""
+      window_duration_seconds:
+        description: "[window only] duration seconds"
+        required: false
+        type: string
+        default: "15"
+      window_interval_seconds:
+        description: "[window only] enqueue interval seconds"
+        required: false
+        type: string
+        default: "1"
+      window_enqueue_batch_size:
+        description: "[window only] enqueue batch size"
+        required: false
+        type: string
+        default: "5"
+      window_max_total_events:
+        description: "[window only] max total enqueued events"
+        required: false
+        type: string
+        default: "75"
+      window_drain_timeout_seconds:
+        description: "[window only] drain timeout seconds"
+        required: false
+        type: string
+        default: "30"
+      window_worker_max_runtime_seconds:
+        description: "[window only] worker max runtime seconds"
+        required: false
+        type: string
+        default: "90"
+
+jobs:
+  drill:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Start DB (devtest)
+        run: |
+          set -euo pipefail
+
+          docker compose -f docker-compose.devtest-db.yml up -d --wait
+
+          echo "Waiting for Postgres (wordloom_test)"
+          DB_CID="$(docker compose -f docker-compose.devtest-db.yml ps -q db_devtest)"
+          if [ -z "$DB_CID" ]; then
+            echo "db_devtest container not found" >&2
+            exit 2
+          fi
+          for i in $(seq 1 60); do
+            if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+              echo "Postgres is ready"
+              break
+            fi
+            sleep 2
+          done
+
+          if ! docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+            echo "wordloom_test is not ready; ensuring it exists"
+            docker exec "$DB_CID" psql -U wordloom -d wordloom_dev -v ON_ERROR_STOP=1 -c "SELECT 'CREATE DATABASE wordloom_test' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'wordloom_test')\\gexec"
+          fi
+
+          echo "Waiting for Postgres (wordloom_test) to be ready"
+          for i in $(seq 1 60); do
+            if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+              echo "wordloom_test is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Timed out waiting for wordloom_test" >&2
+          docker exec "$DB_CID" psql -U wordloom -d wordloom_dev -c "\\l" || true
+          exit 2
+
+      - name: Install backend (+ YAML parser)
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r backend/requirements.txt
+          python -m pip install pyyaml
+
+      - name: Migrate DB (alembic)
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
+        run: |
+          set -euo pipefail
+          python -m alembic -c alembic.ini upgrade head
+
+      - name: Sanity check DB (connect + tables)
+        env:
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
+        run: |
+          set -euo pipefail
+          python - << 'PY'
+          import os
+          import sqlalchemy as sa
+
+          url = os.environ["DATABASE_URL"]
+          engine = sa.create_engine(url)
+          with engine.connect() as conn:
+              conn.execute(sa.text("SELECT 1"))
+              expected = ("search_index", "search_outbox_events")
+              for t in expected:
+                  exists = conn.execute(sa.text("SELECT to_regclass(:t)"), {"t": t}).scalar()
+                  if not exists:
+                      raise SystemExit(f"missing table: {t}")
+          print("[ok] DB connect + tables")
+          PY
+
+      - name: Run drill (write gate) → write artifacts
+        id: drill
+        continue-on-error: true
+        env:
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
+          SEARCH_OUTBOX_LIBRARY_ALLOWLIST: ${{ inputs.worker_library_allowlist }}
+        run: |
+          set -euo pipefail
+
+          scenario="${{ inputs.scenario }}"
+          run_id="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          rc=2
+          ok=false
+
+          rm -rf artifacts .drill_snapshot .tmp
+          mkdir -p artifacts .drill_snapshot .tmp
+
+          {
+            echo "ok=${ok}"
+            echo "scenario=${scenario}"
+            echo "run_id=${run_id}"
+            echo "exit_code=${rc}"
+          } >> "$GITHUB_OUTPUT"
+
+          python backend/scripts/ci/workflow_artifacts.py placeholder \
+            --scenario "${scenario}" \
+            --artifacts-dir artifacts
+
+          finalize() {
+            {
+              echo
+              echo "--- snapshot debug ---"
+              pwd
+              ls -la
+              echo "[tree] .drill_snapshot"
+              ls -la .drill_snapshot || true
+            } >> artifacts/logs.txt 2>&1 || true
+
+            python backend/scripts/ci/workflow_artifacts.py finalize \
+              --scenario "${scenario}" \
+              --run-id "${run_id}" \
+              --exit-code "${rc}" \
+              --snapshot-dir .drill_snapshot \
+              --artifacts-dir artifacts
+
+            echo "ok=${ok}" >> "$GITHUB_OUTPUT"
+            echo "scenario=${scenario}" >> "$GITHUB_OUTPUT"
+            echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
+            echo "exit_code=${rc}" >> "$GITHUB_OUTPUT"
+          }
+
+          trap 'SCENARIO="$scenario" RUN_ID="$run_id" EXIT_CODE="$rc" finalize' EXIT
+
+          {
+            echo "scenario=${scenario}"
+            echo "run_id=${run_id}"
+            echo "library_id=${{ inputs.library_id }}"
+            echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo
+          } > artifacts/logs.txt
+
+          {
+            echo "--- repo ---"
+            git rev-parse HEAD || true
+            git status --porcelain=v1 -b || true
+            echo
+            echo "--- python ---"
+            python --version || true
+            python -m pip --version || true
+            echo
+            echo "--- cli.py labs shadow-verify-search-index-write-gate --help ---"
+            python backend/scripts/cli.py labs shadow-verify-search-index-write-gate --help || true
+            echo "--- cli.py labs shadow-verify-search-index-paging-stability --help ---"
+            python backend/scripts/cli.py labs shadow-verify-search-index-paging-stability --help || true
+            echo "--- cli.py labs shadow-verify-shared-keys --help ---"
+            python backend/scripts/cli.py labs shadow-verify-shared-keys --help || true
+            echo "--- cli.py labs shadow-verify-dual-run-readiness-gate --help ---"
+            python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate --help || true
+            echo "--- cli.py labs shadow-verify-dual-run-stage1 --help ---"
+            python backend/scripts/cli.py labs shadow-verify-dual-run-stage1 --help || true
+            echo "--- cli.py labs shadow-verify-dual-run-stage2 --help ---"
+            python backend/scripts/cli.py labs shadow-verify-dual-run-stage2 --help || true
+            echo "--- cli.py labs shadow-verify-dual-run-window --help ---"
+            python backend/scripts/cli.py labs shadow-verify-dual-run-window --help || true
+            echo "--- cli.py labs shadow-verify-canary-dual-write --help ---"
+            python backend/scripts/cli.py labs shadow-verify-canary-dual-write --help || true
+            echo "--- cli.py labs shadow-verify-dual-write-sampling --help ---"
+            python backend/scripts/cli.py labs shadow-verify-dual-write-sampling --help || true
+            echo
+          } >> artifacts/logs.txt 2>&1
+
+          if [[ "$scenario" == "shadow_verify_dual_run_stage1" || "$scenario" == "shadow_verify_dual_run_stage2" || "$scenario" == "shadow_verify_dual_run_window" ]]; then
+            echo "--- starting ES (infra) ---" | tee -a artifacts/logs.txt
+            docker compose -f docker-compose.infra.yml up -d --wait es 2>&1 | tee -a artifacts/logs.txt
+          fi
+
+          export RUN_ID="$run_id"
+          export SCENARIO="$scenario"
+          export OUTDIR=".drill_snapshot"
+          export DATABASE_URL="$DATABASE_URL"
+          export ES_URL="http://127.0.0.1:19200"
+          export ES_INDEX="wordloom-search-index-drill-${run_id}"
+          export WINDOW_DURATION_SECONDS="${{ inputs.window_duration_seconds }}"
+          export WINDOW_INTERVAL_SECONDS="${{ inputs.window_interval_seconds }}"
+          export WINDOW_ENQUEUE_BATCH_SIZE="${{ inputs.window_enqueue_batch_size }}"
+          export WINDOW_MAX_TOTAL_EVENTS="${{ inputs.window_max_total_events }}"
+          export WINDOW_DRAIN_TIMEOUT_SECONDS="${{ inputs.window_drain_timeout_seconds }}"
+          export WINDOW_WORKER_MAX_RUNTIME_SECONDS="${{ inputs.window_worker_max_runtime_seconds }}"
+          export LIBRARY_ID="${{ inputs.library_id }}"
+
+          python - <<'PY'
+          from __future__ import annotations
+
+          import os
+          from pathlib import Path
+
+          import yaml
+
+          scenario_id = os.environ["SCENARIO"]
+          library_id = os.environ.get("LIBRARY_ID", "").strip()
+
+          catalog_path = Path("docs/labs/scenarios/catalog.yml")
+          if not catalog_path.exists():
+            raise SystemExit(f"catalog not found: {catalog_path}")
+
+          catalog = yaml.safe_load(catalog_path.read_text(encoding="utf-8"))
+          scenarios = catalog.get("scenarios")
+          if not isinstance(scenarios, list):
+            raise SystemExit("invalid catalog: missing scenarios list")
+
+          entry = next((item for item in scenarios if item.get("id") == scenario_id), None)
+          if entry is None:
+            raise SystemExit(f"scenario not found in catalog: {scenario_id}")
+
+          cli = entry.get("cli")
+          if not isinstance(cli, str) or not cli.strip():
+            raise SystemExit(f"scenario has empty cli: {scenario_id}")
+
+          line = cli.strip()
+          if library_id:
+            line = f"{line} --library-id \"$LIBRARY_ID\""
+
+          script_path = Path(".tmp/scenario-cli.sh")
+          script_path.write_text(
+            "#!/usr/bin/env bash\nset -euo pipefail\n" + line + "\n",
+            encoding="utf-8",
+            newline="\n",
+          )
+          print(f"Wrote {script_path}")
+          PY
+
+          chmod +x .tmp/scenario-cli.sh
+
+          set +e
+          bash ./.tmp/scenario-cli.sh 2>&1 | tee -a artifacts/logs.txt
+          rc=${PIPESTATUS[0]}
+          set -e
+
+          if [ "$rc" -eq 0 ]; then
+            ok=true
+          else
+            ok=false
+          fi
+
+      - name: Upload summary (success only)
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: drill-${{ steps.drill.outputs.scenario }}-${{ steps.drill.outputs.run_id }}
+          path: artifacts/summary.json
+
+      - name: Zip artifacts (failure only)
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
+        run: |
+          set -euo pipefail
+          python backend/scripts/ci/workflow_artifacts.py zip \
+            --artifacts-dir artifacts \
+            --zip-path artifacts.zip
+
+      - name: Upload full zip (failure only)
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: drill-${{ steps.drill.outputs.scenario }}-${{ steps.drill.outputs.run_id }}
+          path: artifacts.zip
+
+      - name: Fail job if drill failed
+        if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
+        run: |
+          echo "Drill failed (exit_code=${{ steps.drill.outputs.exit_code }})." >&2
+          if [ -f artifacts/summary.json ]; then
+            echo "--- summary.json ---" >&2
+            cat artifacts/summary.json >&2
+          fi
+          if [ -f artifacts/logs.txt ]; then
+            echo "--- logs.txt (tail) ---" >&2
+            tail -n 200 artifacts/logs.txt >&2 || true
+          fi
+          echo "See uploaded artifacts." >&2
+          exit 1
