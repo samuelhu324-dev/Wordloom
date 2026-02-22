@@ -16,6 +16,45 @@ from collections.abc import Callable
 
 from cli_app import registry as _wg_registry
 from cli_app.common import build_evidence_paths, build_evidence_paths_for_dir, pack_artifacts
+from cli_app.labs.collector_down import cmd_labs_clean_collector_down as _cmd_labs_clean_collector_down_impl
+from cli_app.labs.collector_down import cmd_labs_export_collector_down as _cmd_labs_export_collector_down_impl
+from cli_app.labs.collector_down import cmd_labs_run_collector_down as _cmd_labs_run_collector_down_impl
+from cli_app.labs.collector_down import cmd_labs_verify_collector_down as _cmd_labs_verify_collector_down_impl
+from cli_app.labs.failure_drills import cmd_labs_clean as _cmd_labs_clean_impl
+from cli_app.labs.failure_drills import cmd_labs_export as _cmd_labs_export_impl
+from cli_app.labs.failure_drills import cmd_labs_run as _cmd_labs_run_impl
+from cli_app.labs.failure_drills import cmd_labs_verify as _cmd_labs_verify_impl
+from cli_app.labs.jaeger_export import cmd_labs_export_jaeger as _cmd_labs_export_jaeger_impl
+from cli_app.labs.jaeger_export import export_jaeger_snapshot as _export_jaeger_snapshot
+from cli_app.labs.shadow_verify import (
+    cmd_labs_shadow_verify_canary_dual_write as _cmd_labs_shadow_verify_canary_dual_write_impl,
+)
+from cli_app.labs.shadow_verify import (
+    cmd_labs_shadow_verify_chronicle_entries as _cmd_labs_shadow_verify_chronicle_entries_impl,
+)
+from cli_app.labs.shadow_verify import (
+    cmd_labs_shadow_verify_dual_run_readiness_gate as _cmd_labs_shadow_verify_dual_run_readiness_gate_impl,
+)
+from cli_app.labs.shadow_verify import (
+    cmd_labs_shadow_verify_dual_run_stage1 as _cmd_labs_shadow_verify_dual_run_stage1_impl,
+)
+from cli_app.labs.shadow_verify import (
+    cmd_labs_shadow_verify_dual_run_stage2 as _cmd_labs_shadow_verify_dual_run_stage2_impl,
+)
+from cli_app.labs.shadow_verify import (
+    cmd_labs_shadow_verify_dual_run_window as _cmd_labs_shadow_verify_dual_run_window_impl,
+)
+from cli_app.labs.shadow_verify import (
+    cmd_labs_shadow_verify_dual_write_sampling as _cmd_labs_shadow_verify_dual_write_sampling_impl,
+)
+from cli_app.labs.shadow_verify import cmd_labs_shadow_verify_search_index as _cmd_labs_shadow_verify_search_index_impl
+from cli_app.labs.shadow_verify import (
+    cmd_labs_shadow_verify_search_index_paging_stability as _cmd_labs_shadow_verify_search_index_paging_stability_impl,
+)
+from cli_app.labs.shadow_verify import (
+    cmd_labs_shadow_verify_search_index_write_gate as _cmd_labs_shadow_verify_search_index_write_gate_impl,
+)
+from cli_app.labs.shadow_verify import cmd_labs_shadow_verify_shared_keys as _cmd_labs_shadow_verify_shared_keys_impl
 from cli_app.parser import build_parser as _build_parser
 from cli_app.types import DrillInputs
 
@@ -319,1450 +358,148 @@ def _read_json_file(path: Path) -> dict[str, object] | None:
 
 
 def _cmd_labs_shadow_verify_chronicle_entries(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_chronicle_entries_impl(
+        args,
         lab_id=LAB_ID_S2B_1A_1A,
         scenario=SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print("[labs shadow-verify-chronicle-entries] DATABASE_URL is required (via env or --database-url)")
-        return 2
-
-    book_id = (args.book_id or "").strip() or None
-    if book_id is not None:
-        try:
-            uuid.UUID(book_id)
-        except ValueError:
-            print(f"[labs shadow-verify-chronicle-entries] invalid --book-id: {book_id}")
-            return 2
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES,
-            "scope_id": LAB_ID_S2B_1A_1A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "database_url": database_url,
-            "book_id": book_id,
-        }
-    )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-    scope = str(result.get("scope") or "")
-    events_total = int(result.get("events_total") or 0)
-    entries_total = int(result.get("entries_total") or 0)
-    missing_entries = int(result.get("missing_entries") or 0)
-    extra_entries = int(result.get("extra_entries") or 0)
-    mismatched_book_id = int(result.get("mismatched_book_id") or 0)
-
-    print("labs-010.shadow_verify_chronicle_entries")
-    print(f"scope={scope}")
-    print(f"events_total={events_total}")
-    print(f"entries_total={entries_total}")
-    print(f"missing_entries={missing_entries}")
-    print(f"extra_entries={extra_entries}")
-    print(f"mismatched_book_id={mismatched_book_id}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
 
 
 def _cmd_labs_shadow_verify_search_index(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_search_index_impl(
+        args,
         lab_id=LAB_ID_S2B_1A_2A,
         scenario=SCENARIO_SHADOW_VERIFY_SEARCH_INDEX,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print("[labs shadow-verify-search-index] DATABASE_URL is required (via env or --database-url)")
-        return 2
-
-    library_id = (args.library_id or "").strip() or None
-    if library_id is not None:
-        try:
-            uuid.UUID(library_id)
-        except ValueError:
-            print(f"[labs shadow-verify-search-index] invalid --library-id: {library_id}")
-            return 2
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_SEARCH_INDEX)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX,
-            "scope_id": LAB_ID_S2B_1A_2A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "database_url": database_url,
-            "library_id": library_id,
-        }
-    )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-    scope = str(result.get("scope") or "")
-    blocks_total = int(result.get("blocks_total") or 0)
-    blocks_index_total = int(result.get("blocks_index_total") or 0)
-    blocks_missing = int(result.get("blocks_missing") or 0)
-    blocks_extra = int(result.get("blocks_extra") or 0)
-    blocks_mismatched_library_id = int(result.get("blocks_mismatched_library_id") or 0)
-    books_total = int(result.get("books_total") or 0)
-    books_index_total = int(result.get("books_index_total") or 0)
-    books_missing = int(result.get("books_missing") or 0)
-    books_extra = int(result.get("books_extra") or 0)
-    books_mismatched_library_id = int(result.get("books_mismatched_library_id") or 0)
-    tags_total = int(result.get("tags_total") or 0)
-    tags_index_total = int(result.get("tags_index_total") or 0)
-    tags_missing = int(result.get("tags_missing") or 0)
-    tags_extra = int(result.get("tags_extra") or 0)
-    tags_invalid_library_id = int(result.get("tags_invalid_library_id") or 0)
-    outbox_total = int(result.get("outbox_total") or 0)
-    outbox_pending = int(result.get("outbox_pending") or 0)
-    outbox_processing = int(result.get("outbox_processing") or 0)
-    outbox_done = int(result.get("outbox_done") or 0)
-    outbox_failed = int(result.get("outbox_failed") or 0)
-
-    print("labs-011.shadow_verify_search_index")
-    print(f"scope={scope}")
-    print(f"blocks_total={blocks_total}")
-    print(f"blocks_index_total={blocks_index_total}")
-    print(f"blocks_missing={blocks_missing}")
-    print(f"blocks_extra={blocks_extra}")
-    print(f"blocks_mismatched_library_id={blocks_mismatched_library_id}")
-    print(f"books_total={books_total}")
-    print(f"books_index_total={books_index_total}")
-    print(f"books_missing={books_missing}")
-    print(f"books_extra={books_extra}")
-    print(f"books_mismatched_library_id={books_mismatched_library_id}")
-    print(f"tags_total={tags_total}")
-    print(f"tags_index_total={tags_index_total}")
-    print(f"tags_missing={tags_missing}")
-    print(f"tags_extra={tags_extra}")
-    print(f"tags_invalid_library_id={tags_invalid_library_id}")
-    print(f"outbox_total={outbox_total}")
-    print(f"outbox_pending={outbox_pending}")
-    print(f"outbox_processing={outbox_processing}")
-    print(f"outbox_done={outbox_done}")
-    print(f"outbox_failed={outbox_failed}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
 
 
 def _cmd_labs_shadow_verify_search_index_write_gate(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_search_index_write_gate_impl(
+        args,
         lab_id=LAB_ID_S2B_2A_1A,
         scenario=SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print("[labs shadow-verify-search-index-write-gate] DATABASE_URL is required (via env or --database-url)")
-        return 2
-
-    library_id = (args.library_id or "").strip() or None
-    if library_id is not None:
-        try:
-            uuid.UUID(library_id)
-        except ValueError:
-            print(f"[labs shadow-verify-search-index-write-gate] invalid --library-id: {library_id}")
-            return 2
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_WRITE_GATE,
-            "scope_id": LAB_ID_S2B_2A_1A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "database_url": database_url,
-            "library_id": library_id,
-        }
-    )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-    scope = str(result.get("scope") or "")
-    duplicates_groups_total = int(result.get("duplicates_groups_total") or 0)
-    duplicates_extra_rows_total = int(result.get("duplicates_extra_rows_total") or 0)
-    duplicates_groups_scoped = result.get("duplicates_groups_scoped")
-    duplicates_extra_rows_scoped = result.get("duplicates_extra_rows_scoped")
-
-    print("labs-012.shadow_verify_search_index_write_gate")
-    print(f"scope={scope}")
-    print(f"duplicates_groups_total={duplicates_groups_total}")
-    print(f"duplicates_extra_rows_total={duplicates_extra_rows_total}")
-    if duplicates_groups_scoped is not None:
-        print(f"duplicates_groups_scoped={duplicates_groups_scoped}")
-    if duplicates_extra_rows_scoped is not None:
-        print(f"duplicates_extra_rows_scoped={duplicates_extra_rows_scoped}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
-
-
-def _ensure_search_index_min_rows(
-    *,
-    conn,
-    ensure_min_rows: int,
-    library_id: str | None,
-    seed_entity_type: str = "seed",
-    seed_text_prefix: str | None = None,
-) -> int:
-    if ensure_min_rows <= 0:
-        return 0
-
-    where_parts: list[str] = []
-    params: dict[str, object] = {}
-    if library_id is not None:
-        where_parts.append("library_id = :library_id")
-        params["library_id"] = library_id
-    where_sql = ("WHERE " + " AND ".join(where_parts)) if where_parts else ""
-
-    existing = int(conn.execute(text(f"SELECT COUNT(*) FROM search_index {where_sql}"), params).scalar() or 0)
-    need = int(ensure_min_rows) - existing
-    if need <= 0:
-        return 0
-
-    now = datetime.now(timezone.utc)
-    rows = []
-    for i in range(need):
-        prefix = seed_text_prefix if seed_text_prefix is not None else f"seed:{seed_entity_type}:"
-        rows.append(
-            {
-                "id": str(uuid.uuid4()),
-                "entity_type": seed_entity_type,
-                "library_id": library_id,
-                "entity_id": str(uuid.uuid4()),
-                "text": f"{prefix}{i}",
-                "snippet": None,
-                "rank_score": 0.0,
-                "created_at": now,
-                "updated_at": now,
-                "event_version": int(i + 1),
-            }
-        )
-
-    conn.execute(
-        text(
-            """
-            INSERT INTO search_index
-              (id, entity_type, library_id, entity_id, text, snippet, rank_score, created_at, updated_at, event_version)
-            VALUES
-              (:id, :entity_type, :library_id, :entity_id, :text, :snippet, :rank_score, :created_at, :updated_at, :event_version)
-            """
-        ),
-        rows,
-    )
-    conn.commit()
-    return int(need)
 
 
 def _cmd_labs_shadow_verify_search_index_paging_stability(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_search_index_paging_stability_impl(
+        args,
         lab_id=LAB_ID_S2B_2A_2A,
         scenario=SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print(
-            "[labs shadow-verify-search-index-paging-stability] DATABASE_URL is required (via env or --database-url)"
-        )
-        return 2
-
-    library_id = (args.library_id or "").strip() or None
-    if library_id is not None:
-        try:
-            uuid.UUID(library_id)
-        except ValueError:
-            print(f"[labs shadow-verify-search-index-paging-stability] invalid --library-id: {library_id}")
-            return 2
-
-    page_size = int(args.page_size)
-    pages_checked = int(args.pages_checked)
-    ensure_min_rows = int(args.ensure_min_rows)
-    if page_size <= 0:
-        print("[labs shadow-verify-search-index-paging-stability] --page-size must be > 0")
-        return 2
-    if pages_checked < 2:
-        print("[labs shadow-verify-search-index-paging-stability] --pages-checked must be >= 2")
-        return 2
-    if ensure_min_rows < 0:
-        print("[labs shadow-verify-search-index-paging-stability] --ensure-min-rows must be >= 0")
-        return 2
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_SEARCH_INDEX_PAGING_STABILITY,
-            "scope_id": LAB_ID_S2B_2A_2A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "database_url": database_url,
-            "library_id": library_id,
-        }
-    )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-    scope = str(result.get("scope") or "")
-    order_key = result.get("order_key")
-    rows_total = int(result.get("rows_total") or 0)
-    inserted_rows = int(result.get("seed_rows_inserted") or 0)
-    data_sufficient = bool(result.get("data_sufficient"))
-    duplicates_across_pages_total = int(result.get("duplicates_across_pages_total") or 0)
-    ordering_ok = bool(result.get("ordering_ok"))
-    pages_returned = int(result.get("pages_returned") or 0)
-
-    print("labs-013.shadow_verify_search_index_paging_stability")
-    print(f"scope={scope}")
-    print(f"order_key={order_key}")
-    print(f"page_size={page_size}")
-    print(f"pages_checked={pages_checked}")
-    print(f"pages_returned={pages_returned}")
-    print(f"rows_total={rows_total}")
-    print(f"ensure_min_rows={ensure_min_rows}")
-    print(f"seed_rows_inserted={inserted_rows}")
-    print(f"data_sufficient={data_sufficient}")
-    print(f"duplicates_across_pages_total={duplicates_across_pages_total}")
-    print(f"ordering_ok={ordering_ok}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
 
 
 def _cmd_labs_shadow_verify_shared_keys(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_shared_keys_impl(
+        args,
         lab_id=LAB_ID_S2B_2A_2A,
         scenario=SCENARIO_SHADOW_VERIFY_SHARED_KEYS,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print("[labs shadow-verify-shared-keys] DATABASE_URL is required (via env or --database-url)")
-        return 2
-
-    library_id = (args.library_id or "").strip() or None
-    if library_id is not None:
-        try:
-            uuid.UUID(library_id)
-        except ValueError:
-            print(f"[labs shadow-verify-shared-keys] invalid --library-id: {library_id}")
-            return 2
-
-    ensure_min_rows = int(args.ensure_min_rows)
-    if ensure_min_rows < 0:
-        print("[labs shadow-verify-shared-keys] --ensure-min-rows must be >= 0")
-        return 2
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_SHARED_KEYS)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_SHARED_KEYS,
-            "scope_id": LAB_ID_S2B_2A_2A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "database_url": database_url,
-            "library_id": library_id,
-        }
-    )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-    scope = str(result.get("scope") or "")
-    inserted_rows = int(result.get("seed_rows_inserted") or 0)
-    shared_keys = result.get("shared_keys") or {}
-    samples = list(shared_keys.get("samples") or [])
-
-    print("labs-014.shadow_verify_shared_keys")
-    print(f"scope={scope}")
-    print(f"ensure_min_rows={ensure_min_rows}")
-    print(f"seed_rows_inserted={inserted_rows}")
-    print(f"samples_total={len(samples)}")
-    if samples:
-        print(f"sample_entity_type={samples[0]['entity_type']}")
-        print(f"sample_entity_id={samples[0]['entity_id']}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
 
 
 def _cmd_labs_shadow_verify_dual_run_readiness_gate(args: argparse.Namespace) -> int:
-    """Dry-run gate for 2A: aggregate the prerequisites into one drill evidence bundle.
-
-    This does NOT perform any external writes; it only runs verification-style checks and
-    produces a single _result.json that links to sub-results.
-    """
-
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_dual_run_readiness_gate_impl(
+        args,
         lab_id=LAB_ID_S2B_2A_2A,
         scenario=SCENARIO_SHADOW_VERIFY_DUAL_RUN_READINESS_GATE,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print("[labs shadow-verify-dual-run-readiness-gate] DATABASE_URL is required (via env or --database-url)")
-        return 2
-
-    library_id = (args.library_id or "").strip() or None
-    if library_id is not None:
-        try:
-            uuid.UUID(library_id)
-        except ValueError:
-            print(f"[labs shadow-verify-dual-run-readiness-gate] invalid --library-id: {library_id}")
-            return 2
-
-    page_size = int(args.page_size)
-    pages_checked = int(args.pages_checked)
-    ensure_min_rows_paging = int(args.ensure_min_rows_paging)
-    ensure_min_rows_keys = int(args.ensure_min_rows_keys)
-    if page_size <= 0:
-        print("[labs shadow-verify-dual-run-readiness-gate] --page-size must be > 0")
-        return 2
-    if pages_checked < 2:
-        print("[labs shadow-verify-dual-run-readiness-gate] --pages-checked must be >= 2")
-        return 2
-    if ensure_min_rows_paging < 0 or ensure_min_rows_keys < 0:
-        print("[labs shadow-verify-dual-run-readiness-gate] --ensure-min-rows-* must be >= 0")
-        return 2
-
-    scope = "all" if library_id is None else f"library:{library_id}"
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_DUAL_RUN_READINESS_GATE)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_READINESS_GATE,
-            "scope_id": LAB_ID_S2B_2A_2A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "env": env,
-            "database_url": database_url,
-            "library_id": library_id,
-            "page_size": page_size,
-            "pages_checked": pages_checked,
-            "ensure_min_rows_paging": ensure_min_rows_paging,
-            "ensure_min_rows_keys": ensure_min_rows_keys,
-        }
-    )
-
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-
-    print("labs-015.shadow_verify_dual_run_readiness_gate")
-    print(f"scope={scope}")
-    print(f"page_size={page_size}")
-    print(f"pages_checked={pages_checked}")
-    print(f"ensure_min_rows_paging={ensure_min_rows_paging}")
-    print(f"ensure_min_rows_keys={ensure_min_rows_keys}")
-    print(f"ok={ok}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
 
 
 def _cmd_labs_shadow_verify_dual_run_stage1(args: argparse.Namespace) -> int:
-    """True dual-run (stage1) drill: compare Postgres vs Elasticsearch results.
-
-    CI-safe path:
-    - Seed a small, drill-scoped set of `search_index` rows as `entity_type='block'`.
-    - Backfill Elasticsearch from Postgres using the legacy backfill script.
-    - Query both stores with a deterministic token and compare ordered candidates.
-
-    This does NOT run the outbox worker; it's a parity drill for read-path dual-run.
-    """
-
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_dual_run_stage1_impl(
+        args,
         lab_id=LAB_ID_S2B_2A_2A,
         scenario=SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE1,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print("[labs shadow-verify-dual-run-stage1] DATABASE_URL is required (via env or --database-url)")
-        return 2
-
-    library_id = (args.library_id or "").strip() or None
-    if library_id is not None:
-        try:
-            uuid.UUID(library_id)
-        except ValueError:
-            print(f"[labs shadow-verify-dual-run-stage1] invalid --library-id: {library_id}")
-            return 2
-
-    ensure_min_rows = int(args.ensure_min_rows)
-    candidate_limit = int(args.candidate_limit)
-    backfill_batch_size = int(args.backfill_batch_size)
-    strategy = str(args.strategy)
-
-    if ensure_min_rows < 0:
-        print("[labs shadow-verify-dual-run-stage1] --ensure-min-rows must be >= 0")
-        return 2
-    if candidate_limit <= 0:
-        print("[labs shadow-verify-dual-run-stage1] --candidate-limit must be > 0")
-        return 2
-    if backfill_batch_size <= 0:
-        print("[labs shadow-verify-dual-run-stage1] --backfill-batch-size must be > 0")
-        return 2
-    if strategy not in {"soft", "strict"}:
-        print("[labs shadow-verify-dual-run-stage1] --strategy must be one of: soft, strict")
-        return 2
-
-    es_url = (args.es_url or env.get("ELASTIC_URL") or "http://127.0.0.1:19200").strip().rstrip("/")
-    token_default = "dualrun" + re.sub(r"[^0-9A-Za-z]+", "", run_id)
-    token = (args.token or token_default).strip() or token_default
-
-    def _sanitize_index_name(name: str) -> str:
-        safe = re.sub(r"[^a-z0-9_\-]+", "-", name.lower()).strip("-_")
-        safe = re.sub(r"-+", "-", safe)
-        if not safe:
-            safe = "wordloom-search-index"
-        return safe[:80]
-
-    es_index = (
-        args.es_index
-        or env.get("ELASTIC_INDEX")
-        or _sanitize_index_name(f"wordloom-search-index-dualrun-{token}")
-    ).strip()
-    es_index = _sanitize_index_name(es_index)
-    recreate_index = bool(args.recreate_index)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE1)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE1,
-            "scope_id": LAB_ID_S2B_2A_2A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "env": env,
-            "database_url": database_url,
-            "library_id": library_id,
-            "ensure_min_rows": ensure_min_rows,
-            "candidate_limit": candidate_limit,
-            "backfill_batch_size": backfill_batch_size,
-            "strategy": strategy,
-            "es_url": es_url,
-            "token": token,
-            "es_index": es_index,
-            "recreate_index": recreate_index,
-        }
-    )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-    scope = str(result.get("scope") or "")
-
-    inputs_obj = result.get("inputs") if isinstance(result, dict) else None
-    if not isinstance(inputs_obj, dict):
-        inputs_obj = {}
-
-    token = str(inputs_obj.get("token") or token)
-    strategy = str(inputs_obj.get("strategy") or strategy)
-
-    seed_rows_inserted = int(result.get("seed_rows_inserted") or 0)
-
-    pg_candidates: list[object] = []
-    postgres_obj = result.get("postgres")
-    if isinstance(postgres_obj, dict):
-        cands = postgres_obj.get("candidates")
-        if isinstance(cands, list):
-            pg_candidates = cands
-    pg_candidates_total = int(len(pg_candidates))
-
-    es_obj = result.get("elasticsearch")
-    es_health_ok = False
-    backfill_ok = False
-    backfill_exit_code = 0
-    es_search_ok = False
-    es_search_status = 0
-    es_candidates_total = 0
-    if isinstance(es_obj, dict):
-        health = es_obj.get("health")
-        if isinstance(health, dict):
-            es_health_ok = bool(health.get("ok"))
-        backfill = es_obj.get("backfill")
-        if isinstance(backfill, dict):
-            backfill_ok = bool(backfill.get("ok"))
-            backfill_exit_code = int(backfill.get("exit_code") or 0)
-        search = es_obj.get("search")
-        if isinstance(search, dict):
-            es_search_ok = bool(search.get("ok"))
-            es_search_status = int(search.get("status") or 0)
-            es_cands = search.get("candidates")
-            if isinstance(es_cands, list):
-                es_candidates_total = int(len(es_cands))
-
-    parity_ok = False
-    compare_obj = result.get("compare")
-    if isinstance(compare_obj, dict):
-        parity_ok = bool(compare_obj.get("parity_ok"))
-
-    print("labs-018.shadow_verify_dual_run_stage1")
-    print(f"scope={scope}")
-    print(f"token={token}")
-    print(f"ensure_min_rows={ensure_min_rows}")
-    print(f"seed_rows_inserted={seed_rows_inserted}")
-    print(f"pg_candidates_total={pg_candidates_total}")
-    print(f"es_health_ok={es_health_ok}")
-    print(f"backfill_ok={backfill_ok} (rc={backfill_exit_code})")
-    print(f"es_search_ok={es_search_ok} (status={es_search_status})")
-    print(f"es_candidates_total={es_candidates_total}")
-    print(f"parity_ok={parity_ok} (strategy={strategy})")
-    print(f"ok={ok}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
 
 
 def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
-    """True dual-run (stage2) drill: run the real outbox worker, then verify parity.
-
-    Stage1 verified read-path parity by backfilling ES from Postgres.
-    Stage2 verifies the write-side projection path:
-    - Seed a drill-scoped set of `search_index` rows (entity_type='block').
-    - Enqueue matching `search_outbox_events` rows (op='upsert').
-    - Start Elasticsearch and ensure the index mapping exists.
-    - Run the search outbox worker in one-shot mode (exit when idle).
-    - Refresh + query ES and compare ordered candidates with Postgres.
-    """
-
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_dual_run_stage2_impl(
+        args,
         lab_id=LAB_ID_S2B_2A_2A,
         scenario=SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print("[labs shadow-verify-dual-run-stage2] DATABASE_URL is required (via env or --database-url)")
-        return 2
-
-    library_id = (args.library_id or "").strip() or None
-    if library_id is not None:
-        try:
-            uuid.UUID(library_id)
-        except ValueError:
-            print(f"[labs shadow-verify-dual-run-stage2] invalid --library-id: {library_id}")
-            return 2
-
-    ensure_min_rows = int(args.ensure_min_rows)
-    candidate_limit = int(args.candidate_limit)
-    strategy = str(args.strategy)
-    worker_batch_size = int(args.worker_batch_size)
-    worker_concurrency = int(args.worker_concurrency)
-    worker_poll_interval_seconds = float(args.worker_poll_interval_seconds)
-    worker_max_runtime_seconds = float(args.worker_max_runtime_seconds)
-    worker_idle_polls_before_exit = int(args.worker_idle_polls_before_exit)
-
-    if ensure_min_rows < 0:
-        print("[labs shadow-verify-dual-run-stage2] --ensure-min-rows must be >= 0")
-        return 2
-    if candidate_limit <= 0:
-        print("[labs shadow-verify-dual-run-stage2] --candidate-limit must be > 0")
-        return 2
-    if strategy not in {"soft", "strict"}:
-        print("[labs shadow-verify-dual-run-stage2] --strategy must be one of: soft, strict")
-        return 2
-    if worker_batch_size <= 0:
-        print("[labs shadow-verify-dual-run-stage2] --worker-batch-size must be > 0")
-        return 2
-    if worker_concurrency <= 0:
-        print("[labs shadow-verify-dual-run-stage2] --worker-concurrency must be > 0")
-        return 2
-    if worker_poll_interval_seconds < 0:
-        print("[labs shadow-verify-dual-run-stage2] --worker-poll-interval-seconds must be >= 0")
-        return 2
-    if worker_max_runtime_seconds <= 0:
-        print("[labs shadow-verify-dual-run-stage2] --worker-max-runtime-seconds must be > 0")
-        return 2
-    if worker_idle_polls_before_exit <= 0:
-        print("[labs shadow-verify-dual-run-stage2] --worker-idle-polls-before-exit must be > 0")
-        return 2
-
-    es_url = (args.es_url or env.get("ELASTIC_URL") or "http://127.0.0.1:19200").strip().rstrip("/")
-    token_default = "dualrun" + re.sub(r"[^0-9A-Za-z]+", "", run_id)
-    token = (args.token or token_default).strip() or token_default
-
-    def _sanitize_index_name(name: str) -> str:
-        safe = re.sub(r"[^a-z0-9_\-]+", "-", name.lower()).strip("-_")
-        safe = re.sub(r"-+", "-", safe)
-        if not safe:
-            safe = "wordloom-search-index"
-        return safe[:80]
-
-    es_index = (
-        args.es_index
-        or env.get("ELASTIC_INDEX")
-        or _sanitize_index_name(f"wordloom-search-index-dualrun-{token}")
-    ).strip()
-    es_index = _sanitize_index_name(es_index)
-    recreate_index = bool(args.recreate_index)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2,
-            "scope_id": LAB_ID_S2B_2A_2A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "env": env,
-            "database_url": database_url,
-            "library_id": library_id,
-            "ensure_min_rows": ensure_min_rows,
-            "candidate_limit": candidate_limit,
-            "strategy": strategy,
-            "worker_batch_size": worker_batch_size,
-            "worker_concurrency": worker_concurrency,
-            "worker_poll_interval_seconds": worker_poll_interval_seconds,
-            "worker_max_runtime_seconds": worker_max_runtime_seconds,
-            "worker_idle_polls_before_exit": worker_idle_polls_before_exit,
-            "es_url": es_url,
-            "token": token,
-            "es_index": es_index,
-            "recreate_index": recreate_index,
-        }
-    )
-
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-    scope = str(result.get("scope") or ("all" if library_id is None else f"library:{library_id}"))
-
-    inputs_obj = result.get("inputs") if isinstance(result, dict) else None
-    if not isinstance(inputs_obj, dict):
-        inputs_obj = {}
-
-    token = str(inputs_obj.get("token") or token)
-    strategy = str(inputs_obj.get("strategy") or strategy)
-
-    seed_rows_inserted = int(result.get("seed_rows_inserted") or 0)
-
-    pg_candidates: list[object] = []
-    postgres_obj = result.get("postgres")
-    if isinstance(postgres_obj, dict):
-        cands = postgres_obj.get("candidates")
-        if isinstance(cands, list):
-            pg_candidates = cands
-    pg_candidates_total = int(len(pg_candidates))
-
-    outbox_enqueued_total = 0
-    outbox_done = 0
-    outbox_pending = 0
-    outbox_processing = 0
-    outbox_failed = 0
-    outbox_obj = result.get("outbox")
-    if isinstance(outbox_obj, dict):
-        outbox_enqueued_total = int(outbox_obj.get("enqueued_total") or 0)
-        status_counts = outbox_obj.get("status_counts")
-        if isinstance(status_counts, dict):
-            outbox_done = int(status_counts.get("done") or 0)
-            outbox_pending = int(status_counts.get("pending") or 0)
-            outbox_processing = int(status_counts.get("processing") or 0)
-            outbox_failed = int(status_counts.get("failed") or 0)
-
-    es_obj = result.get("elasticsearch")
-    es_health_ok = False
-    es_index_ok = False
-    es_index_status = 0
-    es_refresh_ok = False
-    es_refresh_status = 0
-    es_search_ok = False
-    es_search_status = 0
-    es_candidates_total = 0
-    if isinstance(es_obj, dict):
-        health = es_obj.get("health")
-        if isinstance(health, dict):
-            es_health_ok = bool(health.get("ok"))
-        idx = es_obj.get("index")
-        if isinstance(idx, dict):
-            es_index_ok = bool(idx.get("ok"))
-            es_index_status = int(idx.get("status") or 0)
-        refresh = es_obj.get("refresh")
-        if isinstance(refresh, dict):
-            es_refresh_ok = bool(refresh.get("ok"))
-            es_refresh_status = int(refresh.get("status") or 0)
-        search = es_obj.get("search")
-        if isinstance(search, dict):
-            es_search_ok = bool(search.get("ok"))
-            es_search_status = int(search.get("status") or 0)
-            es_cands = search.get("candidates")
-            if isinstance(es_cands, list):
-                es_candidates_total = int(len(es_cands))
-
-    worker_ok = False
-    worker_exit_code = 0
-    worker_runtime_s = 0.0
-    worker_obj = result.get("worker")
-    if isinstance(worker_obj, dict):
-        worker_ok = bool(worker_obj.get("ok"))
-        worker_exit_code = int(worker_obj.get("exit_code") or 0)
-        try:
-            worker_runtime_s = float(worker_obj.get("runtime_seconds") or 0.0)
-        except Exception:
-            worker_runtime_s = 0.0
-
-    parity_ok = False
-    compare_obj = result.get("compare")
-    if isinstance(compare_obj, dict):
-        parity_ok = bool(compare_obj.get("parity_ok"))
-
-    print("labs-019.shadow_verify_dual_run_stage2")
-    print(f"scope={scope}")
-    print(f"token={token}")
-    print(f"ensure_min_rows={ensure_min_rows}")
-    print(f"seed_rows_inserted={seed_rows_inserted}")
-    print(f"pg_candidates_total={pg_candidates_total}")
-    print(f"outbox_enqueued_total={outbox_enqueued_total}")
-    print(f"outbox_done={outbox_done} pending={outbox_pending} processing={outbox_processing} failed={outbox_failed}")
-    print(f"es_health_ok={es_health_ok}")
-    print(f"es_index_ok={es_index_ok} (status={es_index_status})")
-    print(f"worker_ok={worker_ok} (rc={worker_exit_code}, runtime_s={worker_runtime_s:.2f})")
-    print(f"es_refresh_ok={es_refresh_ok} (status={es_refresh_status})")
-    print(f"es_search_ok={es_search_ok} (status={es_search_status})")
-    print(f"es_candidates_total={es_candidates_total}")
-    print(f"parity_ok={parity_ok} (strategy={strategy})")
-    print(f"ok={ok}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
 
 
 def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
-    """Sustained dual-run window drill: run worker continuously while enqueueing events.
-
-    Goal: prove that during a sustained window, backlog does not grow unbounded and
-    that the outbox projection path stays healthy (no failed events), while ES parity
-    remains consistent for a deterministic candidate set.
-    """
-
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_dual_run_window_impl(
+        args,
         lab_id=LAB_ID_S2B_2A_2A,
         scenario=SCENARIO_SHADOW_VERIFY_DUAL_RUN_WINDOW,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print("[labs shadow-verify-dual-run-window] DATABASE_URL is required (via env or --database-url)")
-        return 2
-
-    library_id = (args.library_id or "").strip() or None
-    if library_id is not None:
-        try:
-            uuid.UUID(library_id)
-        except ValueError:
-            print(f"[labs shadow-verify-dual-run-window] invalid --library-id: {library_id}")
-            return 2
-
-    ensure_min_rows = int(args.ensure_min_rows)
-    candidate_limit = int(args.candidate_limit)
-    strategy = str(args.strategy)
-    duration_seconds = float(args.duration_seconds)
-    interval_seconds = float(args.interval_seconds)
-    enqueue_batch_size = int(args.enqueue_batch_size)
-    max_total_events = int(args.max_total_events)
-    drain_timeout_seconds = float(args.drain_timeout_seconds)
-
-    max_outbox_failed = int(args.max_outbox_failed)
-    max_outbox_pending = int(args.max_outbox_pending)
-    max_outbox_processing = int(args.max_outbox_processing)
-    require_outbox_done_eq_enqueued = bool(args.require_outbox_done_eq_enqueued)
-
-    worker_batch_size = int(args.worker_batch_size)
-    worker_concurrency = int(args.worker_concurrency)
-    worker_poll_interval_seconds = float(args.worker_poll_interval_seconds)
-    worker_max_runtime_seconds = float(args.worker_max_runtime_seconds)
-
-    if ensure_min_rows < 0:
-        print("[labs shadow-verify-dual-run-window] --ensure-min-rows must be >= 0")
-        return 2
-    if candidate_limit <= 0:
-        print("[labs shadow-verify-dual-run-window] --candidate-limit must be > 0")
-        return 2
-    if strategy not in {"soft", "strict"}:
-        print("[labs shadow-verify-dual-run-window] --strategy must be one of: soft, strict")
-        return 2
-    if duration_seconds <= 0:
-        print("[labs shadow-verify-dual-run-window] --duration-seconds must be > 0")
-        return 2
-    if interval_seconds <= 0:
-        print("[labs shadow-verify-dual-run-window] --interval-seconds must be > 0")
-        return 2
-    if enqueue_batch_size <= 0:
-        print("[labs shadow-verify-dual-run-window] --enqueue-batch-size must be > 0")
-        return 2
-    if max_total_events <= 0:
-        print("[labs shadow-verify-dual-run-window] --max-total-events must be > 0")
-        return 2
-    if drain_timeout_seconds <= 0:
-        print("[labs shadow-verify-dual-run-window] --drain-timeout-seconds must be > 0")
-        return 2
-    if max_outbox_failed < 0:
-        print("[labs shadow-verify-dual-run-window] --max-outbox-failed must be >= 0")
-        return 2
-    if max_outbox_pending < 0:
-        print("[labs shadow-verify-dual-run-window] --max-outbox-pending must be >= 0")
-        return 2
-    if max_outbox_processing < 0:
-        print("[labs shadow-verify-dual-run-window] --max-outbox-processing must be >= 0")
-        return 2
-    if worker_batch_size <= 0:
-        print("[labs shadow-verify-dual-run-window] --worker-batch-size must be > 0")
-        return 2
-    if worker_concurrency <= 0:
-        print("[labs shadow-verify-dual-run-window] --worker-concurrency must be > 0")
-        return 2
-    if worker_poll_interval_seconds < 0:
-        print("[labs shadow-verify-dual-run-window] --worker-poll-interval-seconds must be >= 0")
-        return 2
-    if worker_max_runtime_seconds <= 0:
-        print("[labs shadow-verify-dual-run-window] --worker-max-runtime-seconds must be > 0")
-        return 2
-
-    scope = "all" if library_id is None else f"library:{library_id}"
-
-
-    es_url = (args.es_url or env.get("ELASTIC_URL") or "http://127.0.0.1:19200").strip().rstrip("/")
-    token_default = "dualrun" + re.sub(r"[^0-9A-Za-z]+", "", run_id)
-    token = (args.token or token_default).strip() or token_default
-
-    def _sanitize_index_name(name: str) -> str:
-        safe = re.sub(r"[^a-z0-9_\-]+", "-", name.lower()).strip("-_")
-        safe = re.sub(r"-+", "-", safe)
-        if not safe:
-            safe = "wordloom-search-index"
-        return safe[:80]
-
-    es_index = (
-        args.es_index
-        or env.get("ELASTIC_INDEX")
-        or _sanitize_index_name(f"wordloom-search-index-dualrun-{token}")
-    ).strip()
-    es_index = _sanitize_index_name(es_index)
-    recreate_index = bool(args.recreate_index)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_DUAL_RUN_WINDOW)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_DUAL_RUN_WINDOW,
-            "scope_id": LAB_ID_S2B_2A_2A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "env": env,
-            "database_url": database_url,
-            "library_id": library_id,
-            "ensure_min_rows": ensure_min_rows,
-            "candidate_limit": candidate_limit,
-            "strategy": strategy,
-            "duration_seconds": duration_seconds,
-            "interval_seconds": interval_seconds,
-            "enqueue_batch_size": enqueue_batch_size,
-            "max_total_events": max_total_events,
-            "drain_timeout_seconds": drain_timeout_seconds,
-            "max_outbox_failed": max_outbox_failed,
-            "max_outbox_pending": max_outbox_pending,
-            "max_outbox_processing": max_outbox_processing,
-            "require_outbox_done_eq_enqueued": require_outbox_done_eq_enqueued,
-            "worker_batch_size": worker_batch_size,
-            "worker_concurrency": worker_concurrency,
-            "worker_poll_interval_seconds": worker_poll_interval_seconds,
-            "worker_max_runtime_seconds": worker_max_runtime_seconds,
-            "es_url": es_url,
-            "token": token,
-            "es_index": es_index,
-            "recreate_index": recreate_index,
-        }
-    )
-
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-    scope = str(result.get("scope") or ("all" if library_id is None else f"library:{library_id}"))
-
-    inputs_obj = result.get("inputs") if isinstance(result, dict) else None
-    if not isinstance(inputs_obj, dict):
-        inputs_obj = {}
-
-    token = str(inputs_obj.get("token") or token)
-    strategy = str(inputs_obj.get("strategy") or strategy)
-
-    seed_rows_inserted = int(result.get("seed_rows_inserted") or 0)
-
-    pg_candidates_total = 0
-    postgres_obj = result.get("postgres")
-    if isinstance(postgres_obj, dict):
-        cands = postgres_obj.get("candidates")
-        if isinstance(cands, list):
-            pg_candidates_total = int(len(cands))
-
-    outbox_enqueued_total = 0
-    outbox_done = 0
-    outbox_pending = 0
-    outbox_processing = 0
-    outbox_failed = 0
-    outbox_obj = result.get("outbox")
-    if isinstance(outbox_obj, dict):
-        outbox_enqueued_total = int(outbox_obj.get("enqueued_total") or 0)
-        status_counts = outbox_obj.get("status_counts")
-        if isinstance(status_counts, dict):
-            outbox_done = int(status_counts.get("done") or 0)
-            outbox_pending = int(status_counts.get("pending") or 0)
-            outbox_processing = int(status_counts.get("processing") or 0)
-            outbox_failed = int(status_counts.get("failed") or 0)
-
-    es_obj = result.get("elasticsearch")
-    es_health_ok = False
-    es_index_ok = False
-    es_index_status = 0
-    es_refresh_ok = False
-    es_refresh_status = 0
-    es_search_ok = False
-    es_search_status = 0
-    es_candidates_total = 0
-    if isinstance(es_obj, dict):
-        health = es_obj.get("health")
-        if isinstance(health, dict):
-            es_health_ok = bool(health.get("ok"))
-        idx = es_obj.get("index")
-        if isinstance(idx, dict):
-            es_index_ok = bool(idx.get("ok"))
-            es_index_status = int(idx.get("status") or 0)
-        refresh = es_obj.get("refresh")
-        if isinstance(refresh, dict):
-            es_refresh_ok = bool(refresh.get("ok"))
-            es_refresh_status = int(refresh.get("status") or 0)
-        search = es_obj.get("search")
-        if isinstance(search, dict):
-            es_search_ok = bool(search.get("ok"))
-            es_search_status = int(search.get("status") or 0)
-            es_cands = search.get("candidates")
-            if isinstance(es_cands, list):
-                es_candidates_total = int(len(es_cands))
-
-    worker_ok = False
-    worker_exit_code = 0
-    worker_runtime_s = 0.0
-    worker_obj = result.get("worker")
-    if isinstance(worker_obj, dict):
-        worker_ok = bool(worker_obj.get("ok"))
-        worker_exit_code = int(worker_obj.get("exit_code") or 0)
-        try:
-            worker_runtime_s = float(worker_obj.get("runtime_seconds") or 0.0)
-        except Exception:
-            worker_runtime_s = 0.0
-
-    parity_ok = False
-    compare_obj = result.get("compare")
-    if isinstance(compare_obj, dict):
-        parity_ok = bool(compare_obj.get("parity_ok"))
-
-    print("labs-020.shadow_verify_dual_run_window")
-    print(f"scope={scope}")
-    print(f"token={token}")
-    print(f"ensure_min_rows={ensure_min_rows}")
-    print(f"seed_rows_inserted={seed_rows_inserted}")
-    print(f"pg_candidates_total={pg_candidates_total}")
-    print(f"outbox_enqueued_total={outbox_enqueued_total}")
-    print(f"outbox_done={outbox_done} pending={outbox_pending} processing={outbox_processing} failed={outbox_failed}")
-    print(f"es_health_ok={es_health_ok}")
-    print(f"es_index_ok={es_index_ok} (status={es_index_status})")
-    print(f"worker_ok={worker_ok} (rc={worker_exit_code}, runtime_s={worker_runtime_s:.2f})")
-    print(f"es_refresh_ok={es_refresh_ok} (status={es_refresh_status})")
-    print(f"es_search_ok={es_search_ok} (status={es_search_status})")
-    print(f"es_candidates_total={es_candidates_total}")
-    print(f"parity_ok={parity_ok} (strategy={strategy})")
-    print(f"ok={ok}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
 
 
 def _cmd_labs_shadow_verify_canary_dual_write(args: argparse.Namespace) -> int:
-    """Canary dual-write (projection + outbox) with verification + cleanup.
-
-    Writes a very small, drill-scoped set of rows to:
-    - search_index (projection)
-    - search_outbox_events (outbox enqueue)
-
-    Then verifies presence and performs cleanup (rollback) by default.
-    """
-
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_canary_dual_write_impl(
+        args,
         lab_id=LAB_ID_S2B_2A_2A,
         scenario=SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print("[labs shadow-verify-canary-dual-write] DATABASE_URL is required (via env or --database-url)")
-        return 2
-
-    library_id = (args.library_id or "").strip() or None
-    if library_id is not None:
-        try:
-            uuid.UUID(library_id)
-        except ValueError:
-            print(f"[labs shadow-verify-canary-dual-write] invalid --library-id: {library_id}")
-            return 2
-
-    max_writes = int(args.max_writes)
-    if max_writes <= 0:
-        print("[labs shadow-verify-canary-dual-write] --max-writes must be > 0")
-        return 2
-
-    cleanup = bool(args.cleanup)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE,
-            "scope_id": LAB_ID_S2B_2A_2A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "database_url": database_url,
-            "library_id": library_id,
-            "max_writes": max_writes,
-            "cleanup": cleanup,
-        }
-    )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-    scope = str(result.get("scope") or "")
-    verify_obj = result.get("verify")
-    rollback_obj = result.get("rollback")
-    verify_search_count = 0
-    verify_outbox_count = 0
-    dup_extra = 0
-    if isinstance(verify_obj, dict):
-        verify_search_count = int(verify_obj.get("search_index_rows_found") or 0)
-        verify_outbox_count = int(verify_obj.get("search_outbox_rows_found") or 0)
-        dup_extra = int(verify_obj.get("duplicates_extra_rows_total") or 0)
-
-    cleanup_enabled = bool(cleanup)
-    cleanup_deleted_search = 0
-    cleanup_deleted_outbox = 0
-    cleanup_remaining_search = None
-    cleanup_remaining_outbox = None
-    if isinstance(rollback_obj, dict):
-        cleanup_enabled = bool(rollback_obj.get("cleanup_enabled"))
-        cleanup_deleted_search = int(rollback_obj.get("deleted_search_index") or 0)
-        cleanup_deleted_outbox = int(rollback_obj.get("deleted_search_outbox_events") or 0)
-        cleanup_remaining_search = rollback_obj.get("remaining_search_index")
-        cleanup_remaining_outbox = rollback_obj.get("remaining_search_outbox_events")
-
-    print("labs-016.shadow_verify_canary_dual_write")
-    print(f"scope={scope}")
-    print(f"max_writes={max_writes}")
-    print(f"verify_search_index_rows_found={verify_search_count}")
-    print(f"verify_search_outbox_rows_found={verify_outbox_count}")
-    print(f"duplicates_extra_rows_total={dup_extra}")
-    print(f"cleanup_enabled={cleanup_enabled}")
-    print(f"cleanup_deleted_search_index={cleanup_deleted_search}")
-    print(f"cleanup_deleted_search_outbox_events={cleanup_deleted_outbox}")
-    if cleanup_enabled:
-        print(f"cleanup_remaining_search_index={cleanup_remaining_search}")
-        print(f"cleanup_remaining_search_outbox_events={cleanup_remaining_outbox}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
-
-
-def _parse_csv_list(value: str | None) -> list[str]:
-    if not value:
-        return []
-    parts = [p.strip() for p in str(value).split(",")]
-    return [p for p in parts if p]
 
 
 def _cmd_labs_shadow_verify_dual_write_sampling(args: argparse.Namespace) -> int:
-    """Sustained dual-write (outbox enqueue) with allowlist/sampling controls.
-
-    This drill enqueues outbox events (shadow) for a sampled subset of existing
-    `search_index` rows, optionally scoped by library_id and entity_types.
-
-    It records policy evidence for new-side failures:
-    - soft vs strict strategy
-    - DLQ simulation (mark some inserted rows as failed)
-    - replay evidence (failed -> pending with audit fields)
-
-    By default it cleans up inserted outbox rows to keep CI/devtest clean.
-    """
-
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_s2b_auto_run_dir(
+    return _cmd_labs_shadow_verify_dual_write_sampling_impl(
+        args,
         lab_id=LAB_ID_S2B_2A_2A,
         scenario=SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING,
-        run_id=run_id,
+        now_run_id=_now_run_id,
+        default_outdir=_default_s2b_auto_run_dir,
+        ensure_dir=_ensure_dir,
+        load_env=_load_env,
     )
-    _ensure_dir(outdir)
-
-    env = _load_env(env_file=args.env_file)
-    database_url = (args.database_url or env.get("DATABASE_URL") or "").strip()
-    if not database_url:
-        print("[labs shadow-verify-dual-write-sampling] DATABASE_URL is required (via env or --database-url)")
-        return 2
-
-    library_id = (args.library_id or "").strip() or None
-    if library_id is not None:
-        try:
-            uuid.UUID(library_id)
-        except ValueError:
-            print(f"[labs shadow-verify-dual-write-sampling] invalid --library-id: {library_id}")
-            return 2
-
-    entity_types = _parse_csv_list(args.entity_types)
-    ensure_min_rows = int(args.ensure_min_rows)
-    if ensure_min_rows < 0:
-        print("[labs shadow-verify-dual-write-sampling] --ensure-min-rows must be >= 0")
-        return 2
-
-    sample_size = int(args.sample_size)
-    if sample_size <= 0:
-        print("[labs shadow-verify-dual-write-sampling] --sample-size must be > 0")
-        return 2
-
-    duration_seconds = int(args.duration_seconds)
-    if duration_seconds < 0:
-        print("[labs shadow-verify-dual-write-sampling] --duration-seconds must be >= 0")
-        return 2
-
-    interval_seconds = float(args.interval_seconds)
-    if interval_seconds <= 0:
-        print("[labs shadow-verify-dual-write-sampling] --interval-seconds must be > 0")
-        return 2
-
-    max_total_events = int(args.max_total_events)
-    if max_total_events <= 0:
-        print("[labs shadow-verify-dual-write-sampling] --max-total-events must be > 0")
-        return 2
-
-    strategy = str(args.strategy).strip().lower()
-    if strategy not in {"soft", "strict"}:
-        print("[labs shadow-verify-dual-write-sampling] --strategy must be one of: soft, strict")
-        return 2
-
-    inject_failed_rate = float(args.inject_failed_rate)
-    if inject_failed_rate < 0.0 or inject_failed_rate > 1.0:
-        print("[labs shadow-verify-dual-write-sampling] --inject-failed-rate must be in [0.0, 1.0]")
-        return 2
-
-    replay_failed = bool(args.replay_failed)
-    replay_by = str(args.replay_by or "labs")[:120]
-    replay_reason = str(args.replay_reason or "labs shadow dual-write sampling replay")
-    cleanup = bool(args.cleanup)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get(SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING)
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING,
-            "scope_id": LAB_ID_S2B_2A_2A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-            "database_url": database_url,
-            "library_id": library_id,
-            "entity_types": entity_types,
-            "ensure_min_rows": ensure_min_rows,
-            "sample_size": sample_size,
-            "duration_seconds": duration_seconds,
-            "interval_seconds": interval_seconds,
-            "max_total_events": max_total_events,
-            "strategy": strategy,
-            "inject_failed_rate": inject_failed_rate,
-            "replay_failed": replay_failed,
-            "replay_by": replay_by,
-            "replay_reason": replay_reason,
-            "cleanup": cleanup,
-        }
-    )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    result = drill.meta or {}
-    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
-
-    ok = bool(result.get("ok"))
-    scope = str(result.get("scope") or "")
-    observed = result.get("observed")
-    rollback = result.get("rollback")
-    outbox_inserted_total = 0
-    pending_after = 0
-    failed_after = 0
-    dlq_failed_simulated_total = 0
-    replayed_total = 0
-    if isinstance(observed, dict):
-        outbox_inserted_total = int(observed.get("outbox_inserted_total") or 0)
-        pending_after = int(observed.get("pending_after") or 0)
-        failed_after = int(observed.get("failed_after") or 0)
-        dlq_failed_simulated_total = int(observed.get("dlq_failed_simulated_total") or 0)
-        replayed_total = int(observed.get("replayed_total") or 0)
-
-    cleanup_enabled = bool(cleanup)
-    remaining_outbox_rows = None
-    if isinstance(rollback, dict):
-        cleanup_enabled = bool(rollback.get("cleanup_enabled"))
-        remaining_outbox_rows = rollback.get("remaining_outbox_rows")
-
-    print("labs-017.shadow_verify_dual_write_sampling")
-    print(f"scope={scope}")
-    print(f"strategy={strategy}")
-    print(f"outbox_inserted_total={outbox_inserted_total}")
-    print(f"pending_after={pending_after}")
-    print(f"failed_after={failed_after}")
-    print(f"dlq_failed_simulated_total={dlq_failed_simulated_total}")
-    print(f"replayed_total={replayed_total}")
-    print(f"cleanup_enabled={cleanup_enabled}")
-    if cleanup_enabled:
-        print(f"remaining_outbox_rows={remaining_outbox_rows}")
-    print(f"outputs: {outdir}")
-
-    return 0 if ok else 2
 
 
 def _cmd_labs_export_jaeger(args: argparse.Namespace) -> int:
-    outdir = Path(args.outdir) if args.outdir else _default_labs009_expb_outdir(_now_run_id())
-    exports_dir = outdir / "_exports"
-    _ensure_dir(exports_dir)
-
-    script = LEGACY_SCRIPTS_DIR / "labs_009_export_jaeger.py"
-    cmd = [
-        _python_exe(),
-        str(script),
-        "--outdir",
-        str(exports_dir),
-        "--service",
-        args.service,
-        "--lookback",
-        args.lookback,
-        "--limit",
-        str(args.limit),
-    ]
-
-    if args.operation:
-        cmd += ["--operation", args.operation]
-
-    if args.outbox_event_id:
-        cmd += ["--outbox-event-id", args.outbox_event_id]
-
-    if args.claim_batch_id:
-        cmd += ["--claim-batch-id", args.claim_batch_id]
-
-    return _run(cmd, cwd=REPO_ROOT)
+    return _cmd_labs_export_jaeger_impl(
+        args,
+        default_outdir=_default_labs009_expb_outdir,
+        now_run_id=_now_run_id,
+        ensure_dir=_ensure_dir,
+        python_exe=_python_exe,
+        legacy_scripts_dir=LEGACY_SCRIPTS_DIR,
+        repo_root=REPO_ROOT,
+        run=_run,
+    )
 
 
 def _cmd_labs_expb_es429(args: argparse.Namespace) -> int:
@@ -1843,20 +580,19 @@ def _cmd_labs_expb_es429(args: argparse.Namespace) -> int:
         proc.wait(timeout=30)
 
     # Always export a small Jaeger snapshot at the end.
-    jaeger_script = LEGACY_SCRIPTS_DIR / "labs_009_export_jaeger.py"
-    export_cmd = [
-        _python_exe(),
-        str(jaeger_script),
-        "--outdir",
-        str(exports_dir),
-        "--service",
-        args.service,
-        "--lookback",
-        args.lookback,
-        "--limit",
-        str(args.limit),
-    ]
-    _run(export_cmd, cwd=REPO_ROOT)
+    _export_jaeger_snapshot(
+        exports_dir=exports_dir,
+        service=args.service,
+        lookback=args.lookback,
+        limit=int(args.limit),
+        operation=None,
+        outbox_event_id=None,
+        claim_batch_id=None,
+        python_exe=_python_exe,
+        legacy_scripts_dir=LEGACY_SCRIPTS_DIR,
+        repo_root=REPO_ROOT,
+        run=_run,
+    )
 
     print("[scripts] done")
     print(f"[scripts] outputs: {outdir}")
@@ -1864,25 +600,14 @@ def _cmd_labs_expb_es429(args: argparse.Namespace) -> int:
 
 
 def _cmd_labs_run_es_write_block_4xx(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_WRITE_BLOCK_4XX, run_id=run_id)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_write_block_4xx.run")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_write_block_4xx.run",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-        }
+    return _cmd_labs_run_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_WRITE_BLOCK_4XX,
+        handler_base="es_write_block_4xx",
+        now_run_id=_now_run_id,
+        default_outdir=lambda scenario, run_id: _default_labs_auto_run_dir(scenario=scenario, run_id=run_id),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _resolve_run_dir(*, run_id: str | None, outdir: str | None, scenario: str) -> Path:
@@ -1897,152 +622,75 @@ def _resolve_run_dir(*, run_id: str | None, outdir: str | None, scenario: str) -
 
 
 def _cmd_labs_verify_es_write_block_4xx(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_WRITE_BLOCK_4XX)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_write_block_4xx.verify")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_write_block_4xx.verify",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_verify_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_WRITE_BLOCK_4XX,
+        handler_base="es_write_block_4xx",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
 
 
 def _cmd_labs_export_es_write_block_4xx(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_WRITE_BLOCK_4XX)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_write_block_4xx.export")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_write_block_4xx.export",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_export_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_WRITE_BLOCK_4XX,
+        handler_base="es_write_block_4xx",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_run_es_429_inject(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_429_INJECT, run_id=run_id)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_429_inject.run")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_429_inject.run",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-        }
+    return _cmd_labs_run_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_429_INJECT,
+        handler_base="es_429_inject",
+        now_run_id=_now_run_id,
+        default_outdir=lambda scenario, run_id: _default_labs_auto_run_dir(scenario=scenario, run_id=run_id),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _cmd_labs_verify_es_429_inject(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_429_INJECT)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_429_inject.verify")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_429_inject.verify",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_verify_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_429_INJECT,
+        handler_base="es_429_inject",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
 
 
 def _cmd_labs_run_es_down_connect(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_DOWN_CONNECT, run_id=run_id)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_down_connect.run")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_down_connect.run",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-        }
+    return _cmd_labs_run_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_DOWN_CONNECT,
+        handler_base="es_down_connect",
+        now_run_id=_now_run_id,
+        default_outdir=lambda scenario, run_id: _default_labs_auto_run_dir(scenario=scenario, run_id=run_id),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _cmd_labs_verify_es_down_connect(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_DOWN_CONNECT)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_down_connect.verify")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_down_connect.verify",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_verify_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_DOWN_CONNECT,
+        handler_base="es_down_connect",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
 
 
 def _cmd_labs_export_es_down_connect(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_DOWN_CONNECT)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_down_connect.export")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_down_connect.export",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_export_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_DOWN_CONNECT,
+        handler_base="es_down_connect",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_run_collector_down(args: argparse.Namespace) -> int:
@@ -2052,46 +700,24 @@ def _cmd_labs_run_collector_down(args: argparse.Namespace) -> int:
     Expected behavior: business processing continues; traces export is unavailable.
     """
 
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_COLLECTOR_DOWN, run_id=run_id)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("collector_down.run")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "collector_down.run",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-        }
+    return _cmd_labs_run_collector_down_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_COLLECTOR_DOWN,
+        handler_base="collector_down",
+        now_run_id=_now_run_id,
+        default_outdir=lambda scenario, run_id: _default_labs_auto_run_dir(scenario=scenario, run_id=run_id),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _cmd_labs_verify_collector_down(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_COLLECTOR_DOWN)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("collector_down.verify")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "collector_down.verify",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_verify_collector_down_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_COLLECTOR_DOWN,
+        handler_base="collector_down",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
 
 
 def _cmd_labs_export_collector_down(args: argparse.Namespace) -> int:
@@ -2101,43 +727,22 @@ def _cmd_labs_export_collector_down(args: argparse.Namespace) -> int:
     as expected and still return rc=0 after writing evidence files.
     """
 
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_COLLECTOR_DOWN)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("collector_down.export")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "collector_down.export",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_export_collector_down_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_COLLECTOR_DOWN,
+        handler_base="collector_down",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_clean_collector_down(args: argparse.Namespace) -> int:
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("collector_down.clean")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "collector_down.clean",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": _now_run_id(),
-            "outdir": str(args.outdir) if args.outdir else None,
-        }
+    return _cmd_labs_clean_collector_down_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        handler_base="collector_down",
+        now_run_id=_now_run_id,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_run_duplicate_delivery(args: argparse.Namespace) -> int:
@@ -2148,496 +753,242 @@ def _cmd_labs_run_duplicate_delivery(args: argparse.Namespace) -> int:
     2) Insert 2 deletes for the same entity_id (second should be a noop: ES 404).
     """
 
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_DUPLICATE_DELIVERY, run_id=run_id)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("duplicate_delivery.run")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "duplicate_delivery.run",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-        }
+    return _cmd_labs_run_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_DUPLICATE_DELIVERY,
+        handler_base="duplicate_delivery",
+        now_run_id=_now_run_id,
+        default_outdir=lambda scenario, run_id: _default_labs_auto_run_dir(scenario=scenario, run_id=run_id),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _cmd_labs_verify_duplicate_delivery(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_DUPLICATE_DELIVERY)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("duplicate_delivery.verify")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "duplicate_delivery.verify",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_verify_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_DUPLICATE_DELIVERY,
+        handler_base="duplicate_delivery",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
 
 
 def _cmd_labs_export_duplicate_delivery(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_DUPLICATE_DELIVERY)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("duplicate_delivery.export")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "duplicate_delivery.export",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_export_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_DUPLICATE_DELIVERY,
+        handler_base="duplicate_delivery",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_clean_duplicate_delivery(args: argparse.Namespace) -> int:
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("duplicate_delivery.clean")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "duplicate_delivery.clean",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": _now_run_id(),
-            "outdir": str(args.outdir) if args.outdir else None,
-        }
+    return _cmd_labs_clean_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        handler_base="duplicate_delivery",
+        now_run_id=_now_run_id,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_run_es_bulk_partial(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_ES_BULK_PARTIAL, run_id=run_id)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_bulk_partial.run")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_bulk_partial.run",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-        }
+    return _cmd_labs_run_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_BULK_PARTIAL,
+        handler_base="es_bulk_partial",
+        now_run_id=_now_run_id,
+        default_outdir=lambda scenario, run_id: _default_labs_auto_run_dir(scenario=scenario, run_id=run_id),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _cmd_labs_verify_es_bulk_partial(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_BULK_PARTIAL)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_bulk_partial.verify")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_bulk_partial.verify",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_verify_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_BULK_PARTIAL,
+        handler_base="es_bulk_partial",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
 
 
 def _cmd_labs_export_es_bulk_partial(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_BULK_PARTIAL)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_bulk_partial.export")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_bulk_partial.export",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_export_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_BULK_PARTIAL,
+        handler_base="es_bulk_partial",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_clean_es_bulk_partial(args: argparse.Namespace) -> int:
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_bulk_partial.clean")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_bulk_partial.clean",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": _now_run_id(),
-            "outdir": str(args.outdir) if args.outdir else None,
-        }
+    return _cmd_labs_clean_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        handler_base="es_bulk_partial",
+        now_run_id=_now_run_id,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_run_db_claim_contention(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_DB_CLAIM_CONTENTION, run_id=run_id)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("db_claim_contention.run")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "db_claim_contention.run",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-        }
+    return _cmd_labs_run_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_DB_CLAIM_CONTENTION,
+        handler_base="db_claim_contention",
+        now_run_id=_now_run_id,
+        default_outdir=lambda scenario, run_id: _default_labs_auto_run_dir(scenario=scenario, run_id=run_id),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _cmd_labs_verify_db_claim_contention(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_DB_CLAIM_CONTENTION)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("db_claim_contention.verify")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "db_claim_contention.verify",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_verify_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_DB_CLAIM_CONTENTION,
+        handler_base="db_claim_contention",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
 
 
 def _cmd_labs_export_db_claim_contention(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_DB_CLAIM_CONTENTION)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("db_claim_contention.export")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "db_claim_contention.export",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_export_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_DB_CLAIM_CONTENTION,
+        handler_base="db_claim_contention",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_clean_db_claim_contention(args: argparse.Namespace) -> int:
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("db_claim_contention.clean")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "db_claim_contention.clean",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": _now_run_id(),
-            "outdir": str(args.outdir) if args.outdir else None,
-        }
+    return _cmd_labs_clean_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        handler_base="db_claim_contention",
+        now_run_id=_now_run_id,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_run_stuck_reclaim(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_STUCK_RECLAIM, run_id=run_id)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("stuck_reclaim.run")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "stuck_reclaim.run",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-        }
+    return _cmd_labs_run_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_STUCK_RECLAIM,
+        handler_base="stuck_reclaim",
+        now_run_id=_now_run_id,
+        default_outdir=lambda scenario, run_id: _default_labs_auto_run_dir(scenario=scenario, run_id=run_id),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _cmd_labs_verify_stuck_reclaim(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_STUCK_RECLAIM)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("stuck_reclaim.verify")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "stuck_reclaim.verify",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_verify_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_STUCK_RECLAIM,
+        handler_base="stuck_reclaim",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 10))
 
 
 def _cmd_labs_export_stuck_reclaim(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_STUCK_RECLAIM)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("stuck_reclaim.export")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "stuck_reclaim.export",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_export_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_STUCK_RECLAIM,
+        handler_base="stuck_reclaim",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_clean_stuck_reclaim(args: argparse.Namespace) -> int:
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("stuck_reclaim.clean")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "stuck_reclaim.clean",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": _now_run_id(),
-            "outdir": str(args.outdir) if args.outdir else None,
-        }
+    return _cmd_labs_clean_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        handler_base="stuck_reclaim",
+        now_run_id=_now_run_id,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_clean_es_down_connect(args: argparse.Namespace) -> int:
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_down_connect.clean")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_down_connect.clean",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": _now_run_id(),
-            "outdir": str(args.outdir) if args.outdir else None,
-        }
+    return _cmd_labs_clean_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        handler_base="es_down_connect",
+        now_run_id=_now_run_id,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_export_es_429_inject(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_ES_429_INJECT)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_429_inject.export")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_429_inject.export",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_export_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_ES_429_INJECT,
+        handler_base="es_429_inject",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_clean_es_429_inject(args: argparse.Namespace) -> int:
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_429_inject.clean")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_429_inject.clean",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": _now_run_id(),
-            "outdir": str(args.outdir) if args.outdir else None,
-        }
+    return _cmd_labs_clean_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        handler_base="es_429_inject",
+        now_run_id=_now_run_id,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_clean_es_write_block_4xx(args: argparse.Namespace) -> int:
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("es_write_block_4xx.clean")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "es_write_block_4xx.clean",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": _now_run_id(),
-            "outdir": str(args.outdir) if args.outdir else None,
-        }
+    return _cmd_labs_clean_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        handler_base="es_write_block_4xx",
+        now_run_id=_now_run_id,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _cmd_labs_run_projection_version(args: argparse.Namespace) -> int:
-    run_id = args.run_id or _now_run_id()
-    outdir = Path(args.outdir) if args.outdir else _default_labs_auto_run_dir(scenario=SCENARIO_PROJECTION_VERSION, run_id=run_id)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("projection_version.run")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "projection_version.run",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": run_id,
-            "outdir": str(outdir),
-        }
+    return _cmd_labs_run_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_PROJECTION_VERSION,
+        handler_base="projection_version",
+        now_run_id=_now_run_id,
+        default_outdir=lambda scenario, run_id: _default_labs_auto_run_dir(scenario=scenario, run_id=run_id),
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _cmd_labs_verify_projection_version(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_PROJECTION_VERSION)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("projection_version.verify")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "projection_version.verify",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_verify_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_PROJECTION_VERSION,
+        handler_base="projection_version",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
+        fallback_exit_code=lambda ok: 0 if ok else 2,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _cmd_labs_export_projection_version(args: argparse.Namespace) -> int:
-    run_dir = _resolve_run_dir(run_id=args.run_id, outdir=args.outdir, scenario=SCENARIO_PROJECTION_VERSION)
-
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("projection_version.export")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "projection_version.export",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": str(args.run_id or run_dir.name),
-            "outdir": str(run_dir),
-        }
+    return _cmd_labs_export_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        scenario=SCENARIO_PROJECTION_VERSION,
+        handler_base="projection_version",
+        resolve_run_dir=lambda run_id, outdir, scenario: _resolve_run_dir(run_id=run_id, outdir=outdir, scenario=scenario),
+        fallback_exit_code=lambda ok: 0 if ok else 2,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or (0 if drill.ok else 2))
 
 
 def _cmd_labs_clean_projection_version(args: argparse.Namespace) -> int:
-    _wg_registry.load_builtin_scenarios()
-    handler = _wg_registry.get("projection_version.clean")
-
-    input_payload = dict(vars(args))
-    input_payload.pop("func", None)
-    input_payload.update(
-        {
-            "scenario": "projection_version.clean",
-            "scope_id": LAB_ID_S3A_2A_3A,
-            "run_id": _now_run_id(),
-            "outdir": str(args.outdir) if args.outdir else None,
-        }
+    return _cmd_labs_clean_impl(
+        args,
+        scope_id=LAB_ID_S3A_2A_3A,
+        handler_base="projection_version",
+        now_run_id=_now_run_id,
     )
-    inputs = DrillInputs.model_validate(input_payload)
-    drill = handler(inputs)
-    return int(drill.meta.get("exit_code") or 0)
 
 
 def _build_argparse_callbacks() -> dict[str, Callable[[argparse.Namespace], int]]:
