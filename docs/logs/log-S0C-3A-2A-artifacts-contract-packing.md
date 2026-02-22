@@ -14,7 +14,7 @@
   **adr**: ``
   **runbook**: `null`
 **created**: `2026-02-21`
-**updated**: `2026-02-21`
+**updated**: `2026-02-22`
 
 ---
 
@@ -80,6 +80,14 @@
   - 需要时 zip 打包 outdir（可配置：失败打包/总是打包/从不打包）
 - 输出：对调用方只暴露稳定函数签名，避免每个命令重复拼装。
 
+### Update — Step A 已落地（2026-02-22）
+
+- 已在 `backend/scripts/cli_app/common.py` 落地统一 packing API：
+  - `pack_artifacts(paths, result, summary=None, logs_text=None, traces=None, zip_when='never|on_failure|always', zip_path=None)`
+  - 固化 `_result.json` 写盘细节：UTF-8 / pretty JSON / 末尾换行
+  - 可选写 `artifacts/summary.json`、`artifacts/logs.txt`、`artifacts/traces.json`
+  - zip 采用“调用方显式提供 `zip_path`”策略，避免改变既有命名/路径约定
+
 ### Step B：逐命令切换到统一 packing（保持对外不变）
 
 - 每切换一个命令：
@@ -89,6 +97,29 @@
 - 优先级：从 CI/workflow 依赖最强、产物最复杂的命令开始（最能暴露 contract 问题）：
   - 聚合/打包类场景（readiness gate 类）
   - failure-drills 的 export/打包类命令
+
+### Update — Step B 起步：readiness gate（2026-02-22）
+
+- 已从 readiness gate 聚合场景开始，先收敛其“子检查结果写盘”的 contract：
+  - 文件：`backend/scripts/cli_app/scenarios/shadow_verify_dual_run_readiness_gate.py`
+  - 改动：对子检查 `<outdir>/_checks/<scenario>/_result.json` 的写盘，从零散 `write_json(...)` 改为统一 `common.pack_artifacts(...)`
+- 契约保持不变：
+  - 子检查结果仍落在原路径（`_checks/.../_result.json`），字段结构来自各 child scenario 的 `meta`，未做改名/删字段
+  - readiness gate 主 `_result.json` 仍由外层 shim 写入（本阶段不改主写盘路径/时机，避免影响 workflow）
+
+### Update — Step B 扩面：failure-drills verify（2026-02-22）
+
+- 以 CI 依赖优先（workflow: `failure-drills.yml`）扩面：将 failure-drills 的 9 个场景在 `verify` 阶段写入 `<run_dir>/_result.json` 的实现，统一切到 `common.pack_artifacts(...)`：
+  - `es_429_inject`
+  - `es_write_block_4xx`
+  - `es_down_connect`
+  - `collector_down`
+  - `es_bulk_partial`
+  - `db_claim_contention`
+  - `stuck_reclaim`
+  - `duplicate_delivery`
+  - `projection_version`
+- 契约保持不变：仍写入原路径 `_result.json`（UTF-8 / pretty JSON / 末尾换行），仅收敛写盘实现，便于后续统一演进。
 
 ### Step C：删除 legacy packing 分支（入口真正变薄）
 

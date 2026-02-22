@@ -5,6 +5,7 @@ import subprocess
 import time
 from pathlib import Path
 
+from ..common import build_evidence_paths_for_dir, pack_artifacts
 from ..registry import register
 from ..types import DrillInputs, DrillResult
 from ._failure_drill_shared import (
@@ -243,7 +244,7 @@ def verify_es_429_inject(inputs: DrillInputs) -> DrillResult:
         },
         "ok": bool(ok),
     }
-    (run_dir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    pack_artifacts(paths=build_evidence_paths_for_dir(run_dir), result=result)
 
     if ok:
         print(f"[labs verify {SCENARIO_ES_429_INJECT}] OK")

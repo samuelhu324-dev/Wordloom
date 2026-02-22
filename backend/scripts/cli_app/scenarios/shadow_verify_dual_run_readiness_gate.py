@@ -5,7 +5,7 @@ import time
 import uuid
 from pathlib import Path
 
-from ..common import ensure_dir, write_json
+from ..common import build_evidence_paths_for_dir, ensure_dir, pack_artifacts
 from ..registry import get as get_scenario
 from ..registry import register
 from ..types import DrillInputs, DrillResult
@@ -95,10 +95,11 @@ def run(inputs: DrillInputs) -> DrillResult:
         child_drill = handler(child_inputs)
 
         child_result = child_drill.meta or {}
-        write_json(child_outdir / "_result.json", child_result)
+        child_paths = build_evidence_paths_for_dir(child_outdir)
+        pack_artifacts(paths=child_paths, result=child_result)
 
         exit_code = 0 if bool(child_result.get("ok")) else 2
-        return exit_code, _load_result(child_outdir / "_result.json")
+        return exit_code, _load_result(child_paths.result_json)
 
     wg_dir = checks_root / SCENARIO_WRITE_GATE
     wg_rc, wg_result = _run_child(

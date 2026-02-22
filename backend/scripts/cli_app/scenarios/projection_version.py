@@ -5,6 +5,7 @@ import subprocess
 import time
 from pathlib import Path
 
+from ..common import build_evidence_paths_for_dir, pack_artifacts, write_json
 from ..registry import register
 from ..types import DrillInputs, DrillResult
 from ._failure_drill_shared import (
@@ -377,8 +378,8 @@ def verify_projection_version(inputs: DrillInputs) -> DrillResult:
         "errors": errors,
     }
 
-    (run_dir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    (run_dir / "_verify_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    pack_artifacts(paths=build_evidence_paths_for_dir(run_dir), result=result)
+    write_json(run_dir / "_verify_result.json", result)
 
     if ok:
         print(f"[labs verify {SCENARIO_PROJECTION_VERSION}] OK")
