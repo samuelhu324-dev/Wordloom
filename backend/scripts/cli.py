@@ -13,7 +13,7 @@ from __future__ import annotations
 # 注意：cli.py 以脚本方式运行（python backend/scripts/cli.py）时，sys.path[0] 是 backend/scripts。
 # 因此应从同级包 cli_app 导入，而不是 backend.scripts.cli_app。
 from cli_app import registry as _wg_registry
-from cli_app.common import build_evidence_paths, build_evidence_paths_for_dir, write_json, zip_directory
+from cli_app.common import build_evidence_paths, build_evidence_paths_for_dir, pack_artifacts
 from cli_app.types import DrillInputs
 
 import argparse
@@ -356,7 +356,7 @@ def _cmd_labs_shadow_verify_chronicle_entries(args: argparse.Namespace) -> int:
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
     scope = str(result.get("scope") or "")
@@ -419,7 +419,7 @@ def _cmd_labs_shadow_verify_search_index(args: argparse.Namespace) -> int:
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
     scope = str(result.get("scope") or "")
@@ -512,7 +512,7 @@ def _cmd_labs_shadow_verify_search_index_write_gate(args: argparse.Namespace) ->
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
     scope = str(result.get("scope") or "")
@@ -647,7 +647,7 @@ def _cmd_labs_shadow_verify_search_index_paging_stability(args: argparse.Namespa
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
     scope = str(result.get("scope") or "")
@@ -722,7 +722,7 @@ def _cmd_labs_shadow_verify_shared_keys(args: argparse.Namespace) -> int:
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
     scope = str(result.get("scope") or "")
@@ -812,7 +812,7 @@ def _cmd_labs_shadow_verify_dual_run_readiness_gate(args: argparse.Namespace) ->
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
 
@@ -925,7 +925,7 @@ def _cmd_labs_shadow_verify_dual_run_stage1(args: argparse.Namespace) -> int:
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
     scope = str(result.get("scope") or "")
@@ -1111,7 +1111,7 @@ def _cmd_labs_shadow_verify_dual_run_stage2(args: argparse.Namespace) -> int:
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
     scope = str(result.get("scope") or ("all" if library_id is None else f"library:{library_id}"))
@@ -1372,7 +1372,7 @@ def _cmd_labs_shadow_verify_dual_run_window(args: argparse.Namespace) -> int:
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
     scope = str(result.get("scope") or ("all" if library_id is None else f"library:{library_id}"))
@@ -1534,7 +1534,7 @@ def _cmd_labs_shadow_verify_canary_dual_write(args: argparse.Namespace) -> int:
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
     scope = str(result.get("scope") or "")
@@ -1691,7 +1691,7 @@ def _cmd_labs_shadow_verify_dual_write_sampling(args: argparse.Namespace) -> int
     inputs = DrillInputs.model_validate(input_payload)
     drill = handler(inputs)
     result = drill.meta or {}
-    write_json(outdir / "_result.json", result)
+    pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
 
     ok = bool(result.get("ok"))
     scope = str(result.get("scope") or "")
@@ -3365,13 +3365,13 @@ def main(argv: list[str] | None = None) -> int:
                 paths = build_evidence_paths(scope_id=inputs.scope_id, scenario=inputs.scenario, run_id=inputs.run_id)
 
             # Keep legacy evidence structure: _result.json is the scenario's meta dict.
-            write_json(paths.result_json, result.meta)
-            write_json(paths.summary_json, result.summary)
-
-            # 5) 可选：把整个 snapshot_dir 打 zip（如果你后面 workflow 需要）
-            zip_path = paths.snapshot_dir / "evidence.zip"
-            if not result.ok:
-                zip_directory(source_dir=paths.snapshot_dir, zip_path=zip_path)
+            pack_artifacts(
+                paths=paths,
+                result=result.meta,
+                summary=result.summary,
+                zip_when="on_failure",
+                zip_path=paths.snapshot_dir / "evidence.zip",
+            )
 
             return 0 if result.ok else 2
 

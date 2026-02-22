@@ -5,7 +5,7 @@
 **id**: `S0C-3A-2A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `convergence/artifacts contract packing`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S0C`
 **tags**: `EVOLOTION, Docs, Projection, Search, chronicle, lab, sub/1`
 **links**: ``
@@ -176,6 +176,25 @@
   - 删除 `cli.py` 中零散的写盘/打包实现块
   - 将“证据产物的变化”收敛为：只改 `cli_app/common.py`，避免多点漂移
 
+### Update — Step C 落地：cli.py 分发路径 packing 单点化（2026-02-22）
+
+- 目标：删除/合并 `backend/scripts/cli.py` 中“新架构 scenario 分发路径”的内联 packing（`_result.json` / `artifacts/summary.json` / failure-only `evidence.zip`），改为单点复用 `backend/scripts/cli_app/common.py::pack_artifacts()`。
+- 改动：
+  - `cli.py` 在命中新架构 scenario handler 后，调用 `pack_artifacts(paths=..., result=result.meta, summary=result.summary, zip_when='on_failure', zip_path='<snapshot_dir>/evidence.zip')`。
+  - 结果：入口侧不再直接维护 summary/zip 的实现细节；contract 变更只需在 `common.py` 单点调整。
+- 契约保持不变：
+  - `<outdir>/_result.json` 仍为“单一真相来源”（UTF-8/pretty/newline）
+  - summary 仍写入 `<outdir>/artifacts/summary.json`
+  - failure-only 时仍打包 `<outdir>/evidence.zip`（zip 根为 `<outdir>`，相对路径不变）
+- 验证：VS Code Problems 对 `backend/scripts/cli.py`、`backend/scripts/cli_app/common.py`、`backend/scripts/ci/workflow_artifacts.py` 均为 `No errors found`。
+
+### Update — Step C 收口：cli.py 入口侧 _result.json 写盘单点化（2026-02-22）
+
+- 背景：`cli.py` 中仍存在多处 `write_json(outdir / "_result.json", ...)` 的重复落盘点（属于入口侧“零散 packing”）。
+- 改动：将这些落盘点统一替换为 `common.pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=...)`。
+- 结果：`cli.py` 不再直接写 `_result.json`；所有证据产物写盘细节统一由 `cli_app/common.py` 单点维护。
+- 契约保持不变：仍仅写 `<outdir>/_result.json`（不新增 summary/zip），字段结构来自各场景 `meta`。
+
 ## Verification（验证方式）
 
 - 每完成一个命令的 packing 切换：
@@ -194,9 +213,11 @@
 - scenario: `failure-drills`（matrix=9 scenarios）
 - success run（截图2）：
   - run_id: `22270016158-1`
+  - run_url: https://github.com/samuelhu324-dev/Wordloom/actions/runs/22270016158
   - result: `ok=true`（9 jobs 全绿，artifacts=9）
 - forced failure run（截图1，`force_failure=true`）：
   - run_id: `22270015344-1`
+  - run_url: https://github.com/samuelhu324-dev/Wordloom/actions/runs/22270015344
   - result: `ok=false`（9 jobs 全红）
   - notes: 失败注入发生在 evidence 上传前；`Upload evidence bundle` 采用 `if: always()`，因此即使 job fail 也仍会产出/上传 evidence artifact（用于 failure-only 证据截图）。
 
@@ -218,6 +239,11 @@
 - result: `ok=true`（生成 `artifacts/summary.json`、`artifacts/traces.json`、缺失时补写 `.drill_snapshot/_result.json`、并成功生成 `artifacts.zip`）
 - notes: 证明 workflow shared script 在“_result.json 缺失/存在”的基本分支上可用，并可替代 YAML 内联 python/zipfile 实现。
 
+### Local Evidence — Step C compile check（2026-02-22）
+
+- command: `python -m py_compile backend/scripts/cli.py backend/scripts/cli_app/common.py backend/scripts/ci/workflow_artifacts.py`
+- result: `exit_code=0`
+
 ### Template
 
 - artifact: `_result.json` / `summary.json` / `*.zip`
@@ -236,4 +262,4 @@
 ## Next
 
 - Step B：已收口完成（非 legacy 路径的 `_result.json`/aux JSON 写盘与 workflow 侧打包/兜底已收敛；残留仅存在于 `backend/scripts/legacy/`）。
-- Step C：待开始（需要显式确认后，才会修改 `backend/scripts/cli.py` 删除/合并 legacy packing 分支）。
+- Step C：已收口完成（入口侧 packing 细节已单点化；后续 `cli.py` 变薄/场景搬迁属于 S0C-3A 的拆分工作，不再归入 2A）。
