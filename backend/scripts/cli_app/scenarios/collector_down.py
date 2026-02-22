@@ -11,7 +11,7 @@ from pathlib import Path
 
 from sqlalchemy import create_engine, text
 
-from ..common import REPO_ROOT
+from ..common import REPO_ROOT, build_evidence_paths_for_dir, pack_artifacts
 from ..registry import register
 from ..types import DrillInputs, DrillResult
 
@@ -434,7 +434,7 @@ def verify_collector_down(inputs: DrillInputs) -> DrillResult:
         },
         "ok": bool(ok),
     }
-    (run_dir / "_result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    pack_artifacts(paths=build_evidence_paths_for_dir(run_dir), result=result)
 
     if ok:
         print(f"[labs verify {SCENARIO_COLLECTOR_DOWN}] OK")
