@@ -56,7 +56,7 @@ We also needed a consistent stance on what each signal is responsible for, to av
 
 Key files that embody the decision:
 - Harness entrypoint: `backend/scripts/cli.py`
-- One-click automation: `.github/workflows/failure-drills.yml`
+- One-click automation: `.github/workflows/drill-failures.yml`
 - Contract and troubleshooting history:
   - `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
   - `docs/logs/log-S3A-2A-4B-1A-git-actions.md`

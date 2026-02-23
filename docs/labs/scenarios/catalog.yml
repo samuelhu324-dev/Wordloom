@@ -17,7 +17,7 @@
 # Sources:
 # - .github/workflows/drill-write-gate.yml
 # - .github/workflows/drill-shadow-verify-entries.yml
-# - .github/workflows/failure-drills.yml
+# - .github/workflows/drill-failures.yml
 
 version: 1
 
@@ -347,8 +347,8 @@ scenarios:
       - all
     cli: |-
       # Workflow-level meta option (matrix expansion).
-      # Equivalent to running all FAULT scenarios in failure-drills.yml matrix.
-      (see .github/workflows/failure-drills.yml)
+      # Equivalent to running all FAULT scenarios in drill-failures.yml matrix.
+      (see .github/workflows/drill-failures.yml)
     requires:
       db: true
       es: true
@@ -360,7 +360,7 @@ scenarios:
       lookback: 30m
       keep_last: 20
     tags:
-      - workflow:failure-drills
+      - workflow:drill-failures
       - intent:fault
       - pipeline:obs_infra
       - runtime:db_es_jaeger
@@ -385,7 +385,7 @@ scenarios:
       lookback: 30m
       keep_last: 20
     tags:
-      - workflow:failure-drills
+      - workflow:drill-failures
       - intent:fault
       - pipeline:obs_infra
       - runtime:db_es_jaeger
@@ -409,7 +409,7 @@ scenarios:
       lookback: 30m
       keep_last: 20
     tags:
-      - workflow:failure-drills
+      - workflow:drill-failures
       - intent:fault
       - pipeline:obs_infra
       - runtime:db_es_jaeger
@@ -433,7 +433,7 @@ scenarios:
       lookback: 30m
       keep_last: 20
     tags:
-      - workflow:failure-drills
+      - workflow:drill-failures
       - intent:fault
       - pipeline:obs_infra
       - runtime:db_es_jaeger
@@ -457,7 +457,7 @@ scenarios:
       lookback: 30m
       keep_last: 20
     tags:
-      - workflow:failure-drills
+      - workflow:drill-failures
       - intent:fault
       - pipeline:obs_infra
       - runtime:db_es_jaeger
@@ -481,7 +481,7 @@ scenarios:
       lookback: 30m
       keep_last: 20
     tags:
-      - workflow:failure-drills
+      - workflow:drill-failures
       - intent:fault
       - pipeline:obs_infra
       - runtime:db_es_jaeger
@@ -505,7 +505,7 @@ scenarios:
       lookback: 30m
       keep_last: 20
     tags:
-      - workflow:failure-drills
+      - workflow:drill-failures
       - intent:fault
       - pipeline:obs_infra
       - runtime:db_es_jaeger
@@ -529,7 +529,7 @@ scenarios:
       lookback: 30m
       keep_last: 20
     tags:
-      - workflow:failure-drills
+      - workflow:drill-failures
       - intent:fault
       - pipeline:obs_infra
       - runtime:db_es_jaeger
@@ -553,7 +553,7 @@ scenarios:
       lookback: 30m
       keep_last: 20
     tags:
-      - workflow:failure-drills
+      - workflow:drill-failures
       - intent:fault
       - pipeline:obs_infra
       - runtime:db_es_jaeger
@@ -577,7 +577,7 @@ scenarios:
       lookback: 30m
       keep_last: 20
     tags:
-      - workflow:failure-drills
+      - workflow:drill-failures
       - intent:fault
       - pipeline:obs_infra
       - runtime:db_es_jaeger

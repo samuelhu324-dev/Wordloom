@@ -258,9 +258,18 @@ jobs:
           echo "Forced failure requested (force_failure=true)" >&2
           exit 1
 
+      - name: Compute artifact-safe scenario id
+        if: always()
+        env:
+          SCENARIO_ID: ${{ inputs.scenario_id }}
+        run: |
+          set -euo pipefail
+          safe="${SCENARIO_ID//\//_}"
+          echo "SAFE_SCENARIO_ID=$safe" >> "$GITHUB_ENV"
+
       - name: Upload evidence bundle
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: labs-evidence-${{ inputs.scenario_id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: labs-evidence-${{ env.SAFE_SCENARIO_ID }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: docs/labs/_snapshot/auto/

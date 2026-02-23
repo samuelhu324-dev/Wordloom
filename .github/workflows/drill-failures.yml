@@ -1,4 +1,4 @@
-name: failure-drills
+name: drill-failures
 
 on:
   workflow_dispatch:
