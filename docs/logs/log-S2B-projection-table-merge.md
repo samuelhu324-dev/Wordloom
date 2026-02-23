@@ -11,10 +11,10 @@
 **links**: ``
   **issue**: ``
   **pr**: ``
-  **adr**: ``
-  **runbook**: ``
+  **adr**: `docs/adr/adr-S2B-projection-table-merge.md`
+  **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-15`
-**updated**: `2026-02-15`
+**updated**: `2026-02-23`
 
 ---
 
@@ -55,6 +55,21 @@
 - Phase 1 完成：新增/迁移一个 projection 时，不再复制 claim/retry/reclaim/DLQ/replay/runbook；核心指标与排障链路复用
 - Phase 2 完成：表结构统一后，迁移可回滚；并且不会把 payload 演进变成“垃圾场”
 - 两阶段均可验收：能用 checklist 验证、能产出可观测证据、能跑通 replay
+
+## Implementation Status（当前落地情况）
+
+- ✅ Failure Contract v1 已稳定（Shadow verify + Read switch + 证据链）：`docs/logs/log-S2B-1A-failure-contract-v1.md`
+- ✅ Failure Contract v2 已稳定（write-gate + dual-run/cutover closure + 证据链）：
+  - `docs/logs/log-S2B-2A-failure-contract-v2.md`
+  - `docs/logs/log-S2B-2A-1A-shadow-verify-write-gate.md`
+  - `docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md`
+- ⏳ Phase 1（unified consumer framework）代码侧仍需收口到可复用 outbox_core（避免脚本/legacy 语义漂移）
+
+## Next（下一步做什么 / 开什么 log）
+
+- 建议开启并以其为单一记账点：`docs/logs/log-S2B-3A-unified-consumer-framework.md`
+  - 目标：把 claim/retry/reclaim/DLQ/replay/shared-keys/metrics 等共性从 worker/legacy 中抽到 `backend/infra/outbox_core`，并用现有 drills 持续回归与补证据。
+- Phase 2（table merge）暂不建议立刻开工；等 Phase 1 的 outbox_core 语义与运维资产收口后，再新开一个 Phase 2 log 追踪 schema/migration。
 
 ## Problem（要解决的真正问题）
 

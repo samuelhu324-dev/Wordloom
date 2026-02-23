@@ -14,7 +14,7 @@
   **adr**: `docs/adr/adr-S2B-projection-table-merge.md`
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-18`
-**updated**: `2026-02-20`
+**updated**: `2026-02-23`
 
 ---
 
@@ -54,7 +54,7 @@
 **Current status（现状）**:
 
 - ✅ 1A（write-gate 第一刀：幂等/唯一性）已收工并具备 CI+本地证据：`docs/logs/log-S2B-2A-1A-shadow-verify-write-gate.md`
-- ⏳ 2A 进行中：
+- ✅ 2A 已收工：
   - ✅ 排序/分页稳定性 drill 入口已落地（要求至少 2 页；CI 可通过 `--ensure-min-rows` 确保有足够数据）
   - ✅ 共享键证据包（最小口径）入口已落地（产出 `shared_keys + evidence_queries`）
   - ✅ dry-run readiness gate 入口已落地（聚合 1A/2A 前置验证；不写入）
