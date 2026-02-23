@@ -3,14 +3,11 @@ name: drill-dual-write
 on:
   workflow_dispatch:
     inputs:
-      scenario:
+      scenario_id:
         description: "Dual-write scenario id (canonical intent/pipeline/topic)"
         required: true
-        type: choice
+        type: string
         default: dual_write/search/canary_cleanup
-        options:
-          - dual_write/search/canary_cleanup
-          - dual_write/search/sampling_cleanup
       library_id:
         description: "Optional data scope: library_id (UUID)."
         required: false
@@ -21,5 +18,5 @@ jobs:
   drill:
     uses: ./.github/workflows/reusable-drill-write-gate-runner.yml
     with:
-      scenario: ${{ inputs.scenario }}
+      scenario: ${{ inputs.scenario_id }}
       library_id: ${{ inputs.library_id }}

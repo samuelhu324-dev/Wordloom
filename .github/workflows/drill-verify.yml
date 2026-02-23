@@ -3,15 +3,11 @@ name: drill-verify
 on:
   workflow_dispatch:
     inputs:
-      scenario:
+      scenario_id:
         description: "Verify scenario id (canonical intent/pipeline/topic)"
         required: true
-        type: choice
+        type: string
         default: verify/search/write_gate_idempotency
-        options:
-          - verify/search/write_gate_idempotency
-          - verify/search/paging_stability
-          - verify/obs_infra/shared_keys_bundle
       library_id:
         description: "Optional data scope: library_id (UUID)."
         required: false
@@ -22,5 +18,5 @@ jobs:
   drill:
     uses: ./.github/workflows/reusable-drill-write-gate-runner.yml
     with:
-      scenario: ${{ inputs.scenario }}
+      scenario: ${{ inputs.scenario_id }}
       library_id: ${{ inputs.library_id }}
