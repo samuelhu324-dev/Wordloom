@@ -6,16 +6,10 @@ on:
       scenario:
         description: "Write-gate scenario"
         required: true
-        default: shadow_verify_search_index_write_gate
+        default: shadow_verify_dual_run_readiness_gate
         type: choice
         options:
-          - shadow_verify_search_index_write_gate
-          - shadow_verify_search_index_paging_stability
-          - shadow_verify_shared_keys
           - shadow_verify_dual_run_readiness_gate
-          - shadow_verify_dual_run_stage1
-          - shadow_verify_dual_run_stage2
-          - shadow_verify_dual_run_window
           - shadow_verify_canary_dual_write
           - shadow_verify_dual_write_sampling
       library_id:
@@ -24,53 +18,11 @@ on:
         default: ""
         type: string
 
-      worker_library_allowlist:
-        description: "Optional worker scope: SEARCH_OUTBOX_LIBRARY_ALLOWLIST (comma-separated UUIDs). If set, overrides library_id for worker claim; mismatch is expected to fail."
-        required: false
-        default: ""
-        type: string
-
-      window_duration_seconds:
-        description: "[window only] duration seconds (CI default: 15; manual example: 300)"
-        required: false
-        default: "15"
-        type: string
-      window_interval_seconds:
-        description: "[window only] enqueue interval seconds (default: 1; manual example: 5)"
-        required: false
-        default: "1"
-        type: string
-      window_enqueue_batch_size:
-        description: "[window only] enqueue batch size (default: 5)"
-        required: false
-        default: "5"
-        type: string
-      window_max_total_events:
-        description: "[window only] max total enqueued events (default: 75; manual example: 300)"
-        required: false
-        default: "75"
-        type: string
-      window_drain_timeout_seconds:
-        description: "[window only] drain timeout seconds (default: 30; manual example: 90)"
-        required: false
-        default: "30"
-        type: string
-      window_worker_max_runtime_seconds:
-        description: "[window only] worker max runtime seconds (default: 90; manual example: 420)"
-        required: false
-        default: "90"
-        type: string
-
 jobs:
   drill:
     uses: ./.github/workflows/reusable-drill-write-gate-runner.yml
     with:
       scenario: ${{ inputs.scenario }}
       library_id: ${{ inputs.library_id }}
-      worker_library_allowlist: ${{ inputs.worker_library_allowlist }}
-      window_duration_seconds: ${{ inputs.window_duration_seconds }}
-      window_interval_seconds: ${{ inputs.window_interval_seconds }}
-      window_enqueue_batch_size: ${{ inputs.window_enqueue_batch_size }}
-      window_max_total_events: ${{ inputs.window_max_total_events }}
-      window_drain_timeout_seconds: ${{ inputs.window_drain_timeout_seconds }}
-      window_worker_max_runtime_seconds: ${{ inputs.window_worker_max_runtime_seconds }}
+
+

@@ -1,0 +1,22 @@
+name: drill-dual-write
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: "Dual-write scenario id (e.g. shadow_verify_canary_dual_write | shadow_verify_dual_write_sampling)"
+        required: true
+        type: string
+        default: shadow_verify_canary_dual_write
+      library_id:
+        description: "Optional data scope: library_id (UUID)."
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  drill:
+    uses: ./.github/workflows/reusable-drill-write-gate-runner.yml
+    with:
+      scenario: ${{ inputs.scenario }}
+      library_id: ${{ inputs.library_id }}

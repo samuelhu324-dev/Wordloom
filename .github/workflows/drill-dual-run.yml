@@ -1,0 +1,64 @@
+name: drill-dual-run
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: "Dual-run scenario id (e.g. shadow_verify_dual_run_stage1 | shadow_verify_dual_run_stage2 | shadow_verify_dual_run_window)"
+        required: true
+        type: string
+        default: shadow_verify_dual_run_stage1
+      library_id:
+        description: "Optional data scope: library_id (UUID)."
+        required: false
+        type: string
+        default: ""
+      worker_library_allowlist:
+        description: "Optional worker scope: SEARCH_OUTBOX_LIBRARY_ALLOWLIST (comma-separated UUIDs)."
+        required: false
+        type: string
+        default: ""
+      window_duration_seconds:
+        description: "[window only] duration seconds"
+        required: false
+        type: string
+        default: "15"
+      window_interval_seconds:
+        description: "[window only] enqueue interval seconds"
+        required: false
+        type: string
+        default: "1"
+      window_enqueue_batch_size:
+        description: "[window only] enqueue batch size"
+        required: false
+        type: string
+        default: "5"
+      window_max_total_events:
+        description: "[window only] max total enqueued events"
+        required: false
+        type: string
+        default: "75"
+      window_drain_timeout_seconds:
+        description: "[window only] drain timeout seconds"
+        required: false
+        type: string
+        default: "30"
+      window_worker_max_runtime_seconds:
+        description: "[window only] worker max runtime seconds"
+        required: false
+        type: string
+        default: "90"
+
+jobs:
+  drill:
+    uses: ./.github/workflows/reusable-drill-write-gate-runner.yml
+    with:
+      scenario: ${{ inputs.scenario }}
+      library_id: ${{ inputs.library_id }}
+      worker_library_allowlist: ${{ inputs.worker_library_allowlist }}
+      window_duration_seconds: ${{ inputs.window_duration_seconds }}
+      window_interval_seconds: ${{ inputs.window_interval_seconds }}
+      window_enqueue_batch_size: ${{ inputs.window_enqueue_batch_size }}
+      window_max_total_events: ${{ inputs.window_max_total_events }}
+      window_drain_timeout_seconds: ${{ inputs.window_drain_timeout_seconds }}
+      window_worker_max_runtime_seconds: ${{ inputs.window_worker_max_runtime_seconds }}
