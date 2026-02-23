@@ -127,7 +127,7 @@ S2B-1A / S2B-2A 已经把 Failure Contract（证据链 + 可切写口径 + dual-
   - [x] `backend/scripts/legacy/search_outbox_replay_failed.py`
   - [x] `backend/scripts/legacy/chronicle_outbox_replay_failed.py`
   - [x] `backend/scripts/ops/search_outbox_replay_failed.py` 与 `backend/scripts/ops/chronicle_outbox_replay_failed.py` 不改路径/参数
-- [ ] （可选但推荐）在 replay helper 中复用/对齐 `sanitize_terminal_rows` 的不变量（replay 也要清 owner/lease/processing_started_at 等）
+- [x] （可选但推荐）在 replay helper 中复用/对齐 `sanitize_terminal_rows` 的不变量（replay 也要清 owner/lease/processing_started_at 等）
 
 **S3（Evidence）**：
 
@@ -374,6 +374,56 @@ S3（Regression evidence / after P0-C3-S2 on S2B-3A）：
   - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310199997`
   - status/conclusion: `completed / success`
   - Notes: `S3 regression (after P0-C3-S2): sustained dual-write sampling parity remains green.`
+
+S3（Regression evidence / after P0-C4-S2 on S2B-3A）：
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C4-S2 (commit 505db2dd)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_write_gate`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310877112`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C4-S2): write-gate idempotency/uniqueness gate remains green.`
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C4-S2 (commit 505db2dd)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_paging_stability`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310880752`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C4-S2): paging stability gate remains green.`
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C4-S2 (commit 505db2dd)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_shared_keys`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310883919`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C4-S2): shared keys evidence bundle remains green.`
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C4-S2 (commit 505db2dd)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_run_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310887280`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C4-S2): sustained dual-run window parity remains green.`
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C4-S2 (commit 505db2dd)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_canary_dual_write`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310890445`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C4-S2): canary dual-write + cleanup remains green.`
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C4-S2 (commit 505db2dd)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_write_sampling`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310893365`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C4-S2): sustained dual-write sampling parity remains green.`
 
 ## References
 
