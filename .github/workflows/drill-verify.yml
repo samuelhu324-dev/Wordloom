@@ -1,0 +1,22 @@
+name: drill-verify
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: "Verify scenario id (e.g. shadow_verify_search_index_write_gate | shadow_verify_search_index_paging_stability | shadow_verify_shared_keys)"
+        required: true
+        type: string
+        default: shadow_verify_search_index_write_gate
+      library_id:
+        description: "Optional data scope: library_id (UUID)."
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  drill:
+    uses: ./.github/workflows/reusable-drill-write-gate-runner.yml
+    with:
+      scenario: ${{ inputs.scenario }}
+      library_id: ${{ inputs.library_id }}

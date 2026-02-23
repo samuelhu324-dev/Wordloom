@@ -1,0 +1,28 @@
+name: drill-readiness
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: "Readiness scenario id (e.g. shadow_verify_dual_run_readiness_gate)"
+        required: true
+        type: string
+        default: shadow_verify_dual_run_readiness_gate
+      library_id:
+        description: "Optional data scope: library_id (UUID)."
+        required: false
+        type: string
+        default: ""
+      worker_library_allowlist:
+        description: "Optional worker scope: SEARCH_OUTBOX_LIBRARY_ALLOWLIST (comma-separated UUIDs)."
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  drill:
+    uses: ./.github/workflows/reusable-drill-write-gate-runner.yml
+    with:
+      scenario: ${{ inputs.scenario }}
+      library_id: ${{ inputs.library_id }}
+      worker_library_allowlist: ${{ inputs.worker_library_allowlist }}

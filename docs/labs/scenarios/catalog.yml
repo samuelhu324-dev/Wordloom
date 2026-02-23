@@ -34,8 +34,8 @@ scenarios:
       worker: false
     defaults: {}
     tags:
-      - workflow:drill-write-gate
       - workflow:drill-shadow-verify-entries
+      - workflow:drill-verify
       - intent:verify
       - pipeline:search
       - runtime:db_only
@@ -59,7 +59,7 @@ scenarios:
       pages_checked: 2
       ensure_min_rows: 120
     tags:
-      - workflow:drill-write-gate
+      - workflow:drill-verify
       - intent:verify
       - pipeline:search
       - runtime:db_only
@@ -79,7 +79,7 @@ scenarios:
     defaults:
       ensure_min_rows: 5
     tags:
-      - workflow:drill-write-gate
+      - workflow:drill-verify
       - intent:verify
       - pipeline:obs_infra
       - runtime:db_only
@@ -98,6 +98,7 @@ scenarios:
     defaults: {}
     tags:
       - workflow:drill-write-gate
+      - workflow:drill-readiness
       - intent:readiness
       - pipeline:search
       - runtime:db_only
@@ -127,7 +128,7 @@ scenarios:
       recreate_index: true
       backfill_batch_size: 200
     tags:
-      - workflow:drill-write-gate
+      - workflow:drill-dual-run
       - intent:dual_run
       - pipeline:search
       - runtime:db_es
@@ -165,7 +166,7 @@ scenarios:
       worker_idle_polls_before_exit: 2
       worker_max_runtime_seconds: 60
     tags:
-      - workflow:drill-write-gate
+      - workflow:drill-dual-run
       - intent:dual_run
       - pipeline:search
       - runtime:db_es
@@ -219,7 +220,7 @@ scenarios:
       max_outbox_processing: 0
       require_outbox_done_eq_enqueued: true
     tags:
-      - workflow:drill-write-gate
+      - workflow:drill-dual-run
       - intent:dual_run
       - pipeline:search
       - runtime:db_es
@@ -242,6 +243,7 @@ scenarios:
       cleanup: true
     tags:
       - workflow:drill-write-gate
+      - workflow:drill-dual-write
       - intent:dual_write
       - pipeline:search
       - runtime:db_only
@@ -276,6 +278,7 @@ scenarios:
       cleanup: true
     tags:
       - workflow:drill-write-gate
+      - workflow:drill-dual-write
       - intent:dual_write
       - pipeline:search
       - runtime:db_only
