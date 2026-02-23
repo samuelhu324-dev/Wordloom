@@ -62,6 +62,9 @@ from infra.observability.outbox_metrics import (
     outbox_terminal_failed_total,
 )
 from infra.outbox_core.stuck import stuck_processing_predicate
+from infra.outbox_core.claim import claim_pending_batch as outbox_claim_pending_batch
+from infra.outbox_core.reclaim import reclaim_stuck_processing as outbox_reclaim_stuck_processing
+from infra.outbox_core.retry import ExponentialBackoffSpec, compute_next_retry_at
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
 
 from api.app.config.logging_config import setup_logging
@@ -199,67 +202,30 @@ async def _sanitize_terminal_rows(session) -> None:
 
 async def _reclaim_stuck_processing(session, *, max_processing_seconds: int) -> int:
     now = _utc_now()
-    result = await session.execute(
-        update(ChronicleOutboxEventModel)
-        .where(
-            stuck_processing_predicate(
-                ChronicleOutboxEventModel,
-                now=now,
-                max_processing_seconds=max_processing_seconds,
-            )
-        )
-        .values(
-            status="pending",
-            owner=None,
-            lease_until=None,
-            processing_started_at=None,
-            next_retry_at=None,
-            updated_at=now,
-        )
+    return await outbox_reclaim_stuck_processing(
+        session,
+        ChronicleOutboxEventModel,
+        now=now,
+        max_processing_seconds=max_processing_seconds,
+        clear_next_retry_at=True,
     )
-    return int(getattr(result, "rowcount", 0) or 0)
 
 
 async def _claim_batch(session, *, worker_id: str, lease_seconds: int, batch_size: int) -> list[_OutboxEventRow]:
     now = _utc_now()
 
-    claimable = (
-        await session.execute(
-            select(ChronicleOutboxEventModel)
-            .where(
-                ChronicleOutboxEventModel.processed_at.is_(None),
-                ChronicleOutboxEventModel.status == "pending",
-                (
-                    ChronicleOutboxEventModel.next_retry_at.is_(None)
-                    | (ChronicleOutboxEventModel.next_retry_at <= now)
-                ),
-            )
-            .order_by(ChronicleOutboxEventModel.created_at.asc(), ChronicleOutboxEventModel.id.asc())
-            .with_for_update(skip_locked=True)
-            .limit(batch_size)
-        )
-    ).scalars().all()
+    claimable = await outbox_claim_pending_batch(
+        session,
+        ChronicleOutboxEventModel,
+        now=now,
+        batch_size=int(batch_size),
+        worker_id=worker_id,
+        lease_seconds=float(lease_seconds),
+        order_by=(ChronicleOutboxEventModel.created_at.asc(), ChronicleOutboxEventModel.id.asc()),
+    )
 
     if not claimable:
         return []
-
-    ids = [row.id for row in claimable]
-    lease_until = now + timedelta(seconds=int(lease_seconds))
-    await session.execute(
-        update(ChronicleOutboxEventModel)
-        .where(ChronicleOutboxEventModel.id.in_(ids))
-        .values(
-            status="processing",
-            owner=worker_id,
-            lease_until=lease_until,
-            processing_started_at=now,
-            updated_at=now,
-            error_reason=None,
-            error=None,
-        )
-    )
-
-    await session.commit()
 
     return [
         _OutboxEventRow(
@@ -277,12 +243,17 @@ async def _claim_batch(session, *, worker_id: str, lease_seconds: int, batch_siz
 
 
 def _compute_next_retry_at(now: datetime, *, attempts: int, base: float, max_backoff: float) -> datetime:
-    # Exponential backoff with jitter.
-    # attempt=1 -> base
-    factor = max(0, attempts)
-    backoff = min(max_backoff, base * (2 ** max(0, factor - 1)))
-    jitter = random.random() * backoff * 0.2
-    return now + timedelta(seconds=(backoff + jitter))
+    # Preserve legacy behavior:
+    # - attempt=1 -> base
+    # - jitter up to backoff*0.2 (no fixed-second cap)
+    spec = ExponentialBackoffSpec(
+        base_seconds=float(base),
+        max_backoff_seconds=float(max_backoff),
+        exponent_shift=-1,
+        jitter_ratio=0.2,
+        jitter_cap_seconds=None,
+    )
+    return compute_next_retry_at(now=now, attempt=int(attempts), spec=spec)
 
 
 async def _mark_done(session, *, ev_id: Any, worker_id: str) -> None:

@@ -83,6 +83,12 @@ from infra.outbox_core.lease import renew_lease as outbox_renew_lease
 from infra.outbox_core.claim import claim_pending_batch as outbox_claim_pending_batch
 from infra.outbox_core.reclaim import reclaim_stuck_processing as outbox_reclaim_stuck_processing
 from infra.outbox_core.sanitize import sanitize_terminal_rows as outbox_sanitize_terminal_rows
+from infra.outbox_core.reasons import (
+    is_transient_reason as outbox_is_transient_reason,
+    classify_es_bulk_item_failure as outbox_classify_es_bulk_item_failure,
+    classify_httpx_exception_reason as outbox_classify_httpx_exception_reason,
+)
+from infra.outbox_core.retry import ExponentialBackoffSpec, compute_exponential_backoff_seconds
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
 
 from api.app.config.logging_config import setup_logging
@@ -242,23 +248,6 @@ def _get_uuid_allowlist_env(name: str) -> list[uuid.UUID] | None:
     return out
 
 
-def _classify_status_code(status_code: int | None) -> str:
-    if status_code is None:
-        return "unknown"
-    if status_code == 429:
-        return "429"
-    if 400 <= status_code < 500:
-        return "4xx"
-    if 500 <= status_code < 600:
-        return "5xx"
-    return "other"
-
-
-def _is_deterministic_exception(exc: Exception) -> bool:
-    # Heuristic: common programming/data errors won't be fixed by retry.
-    return isinstance(exc, (ValueError, KeyError, TypeError))
-
-
 def _classify_attempt_outcome(exc: Exception) -> tuple[str, bool]:
     """Return (reason, retryable) for a processing exception.
 
@@ -269,27 +258,7 @@ def _classify_attempt_outcome(exc: Exception) -> tuple[str, bool]:
     they look deterministic.
     """
 
-    if isinstance(exc, httpx.HTTPStatusError):
-        status_code = exc.response.status_code
-        if status_code == 429:
-            return "es_429", True
-        if 500 <= status_code < 600:
-            return "es_5xx", True
-        if 400 <= status_code < 500:
-            return "es_4xx", False
-        return "es_other", True
-
-    if isinstance(exc, httpx.TimeoutException):
-        return "es_timeout", True
-    if isinstance(exc, httpx.ConnectError):
-        return "es_connect", True
-    if isinstance(exc, httpx.RequestError):
-        return "es_request_error", True
-
-    if _is_deterministic_exception(exc):
-        return "deterministic_exception", False
-
-    return "unknown_exception", True
+    return outbox_classify_httpx_exception_reason(exc)
 
 
 def _format_error(exc: Exception) -> str:
@@ -300,29 +269,11 @@ def _format_error(exc: Exception) -> str:
 
 
 def _is_transient_reason(reason: str) -> bool:
-    # Transient dependency failures should not become terminal just because ES
-    # was down for a few minutes.
-    return reason in {
-        "es_429",
-        "es_5xx",
-        "es_timeout",
-        "es_connect",
-        "es_request_error",
-        "es_unknown",
-        "es_other",
-    }
+    return outbox_is_transient_reason(reason)
 
 
 def _classify_bulk_item_failure(*, status_code: int | None) -> tuple[str, bool]:
-    if status_code is None:
-        return "es_unknown", True
-    if status_code == 429:
-        return "es_429", True
-    if 500 <= status_code < 600:
-        return "es_5xx", True
-    if 400 <= status_code < 500:
-        return "es_4xx", False
-    return "es_other", True
+    return outbox_classify_es_bulk_item_failure(status_code=status_code)
 
 
 def _try_parse_int(value: Any) -> int | None:
@@ -362,10 +313,15 @@ def _utc_now() -> datetime:
 
 
 def _compute_backoff_seconds(*, attempt: int, base: float, max_backoff: float) -> float:
-    # Exponential backoff with jitter.
-    exp = min(max_backoff, base * (2 ** max(0, attempt)))
-    jitter = random.uniform(0.0, min(1.0, exp * 0.1))
-    return min(max_backoff, exp + jitter)
+    # Preserve legacy behavior (attempt exponent; jitter cap at 1s).
+    spec = ExponentialBackoffSpec(
+        base_seconds=float(base),
+        max_backoff_seconds=float(max_backoff),
+        exponent_shift=0,
+        jitter_ratio=0.1,
+        jitter_cap_seconds=1.0,
+    )
+    return compute_exponential_backoff_seconds(attempt=int(attempt), spec=spec)
 
 
 async def _process_upsert(session: AsyncSession, client: httpx.AsyncClient, index: str, event: _OutboxEventRow) -> None:
