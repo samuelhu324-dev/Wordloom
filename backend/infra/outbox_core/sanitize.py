@@ -7,6 +7,18 @@ from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
+def terminal_clear_values(*, now: datetime, clear_next_retry_at: bool = False) -> dict[str, Any]:
+    values: dict[str, Any] = {
+        "owner": None,
+        "lease_until": None,
+        "processing_started_at": None,
+        "updated_at": now,
+    }
+    if clear_next_retry_at:
+        values["next_retry_at"] = None
+    return values
+
+
 async def sanitize_terminal_rows(
     session: AsyncSession,
     model: Any,
@@ -33,14 +45,7 @@ async def sanitize_terminal_rows(
     processing_started_at = getattr(model, "processing_started_at")
     next_retry_at = getattr(model, "next_retry_at", None)
 
-    values: dict[str, Any] = {
-        "owner": None,
-        "lease_until": None,
-        "processing_started_at": None,
-        "updated_at": now,
-    }
-    if clear_next_retry_at and next_retry_at is not None:
-        values["next_retry_at"] = None
+    values = terminal_clear_values(now=now, clear_next_retry_at=bool(clear_next_retry_at and next_retry_at is not None))
 
     dirty_fields = owner.is_not(None) | lease_until.is_not(None) | processing_started_at.is_not(None)
     if clear_next_retry_at and next_retry_at is not None:

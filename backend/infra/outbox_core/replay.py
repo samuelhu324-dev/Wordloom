@@ -7,6 +7,8 @@ from typing import Any, Iterable
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from infra.outbox_core.sanitize import terminal_clear_values
+
 
 @dataclass(frozen=True)
 class ReplayFailedResult:
@@ -62,23 +64,21 @@ async def replay_failed_rows(
     if dry_run or will_replay <= 0:
         return ReplayFailedResult(total_matched=total_i, will_replay=will_replay, changed=0)
 
+    terminal_clear = terminal_clear_values(now=now, clear_next_retry_at=True)
+
     result = await session.execute(
         update(model)
         .where(*where)
         .values(
             status="pending",
-            owner=None,
-            lease_until=None,
-            processing_started_at=None,
             attempts=0,
-            next_retry_at=None,
             error_reason=None,
             error=None,
+            **terminal_clear,
             replay_count=(getattr(model, "replay_count") + 1),
             last_replayed_at=now,
             last_replayed_by=str(by)[:120],
             last_replayed_reason=str(reason),
-            updated_at=now,
         )
     )
     await session.commit()
