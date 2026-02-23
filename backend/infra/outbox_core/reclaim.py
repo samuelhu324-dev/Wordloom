@@ -15,6 +15,7 @@ async def reclaim_stuck_processing(
     *,
     now: datetime,
     max_processing_seconds: int,
+    clear_next_retry_at: bool = False,
 ) -> int:
     """Best-effort stuck reclaim.
 
@@ -24,16 +25,20 @@ async def reclaim_stuck_processing(
     Returns affected row count (best-effort).
     """
 
+    values: dict[str, Any] = {
+        "status": "pending",
+        "owner": None,
+        "lease_until": None,
+        "processing_started_at": None,
+        "updated_at": now,
+    }
+    if clear_next_retry_at:
+        values["next_retry_at"] = None
+
     result = await session.execute(
         update(model)
         .where(stuck_processing_predicate(model, now=now, max_processing_seconds=max_processing_seconds))
-        .values(
-            status="pending",
-            owner=None,
-            lease_until=None,
-            processing_started_at=None,
-            updated_at=now,
-        )
+        .values(**values)
     )
 
     return int(getattr(result, "rowcount", 0) or 0)
