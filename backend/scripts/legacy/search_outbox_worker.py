@@ -78,6 +78,11 @@ from infra.observability.outbox_metrics import (
 )
 
 from infra.outbox_core.stuck import stuck_processing_predicate
+from infra.outbox_core.lease import lease_until as outbox_lease_until
+from infra.outbox_core.lease import renew_lease as outbox_renew_lease
+from infra.outbox_core.claim import claim_pending_batch as outbox_claim_pending_batch
+from infra.outbox_core.reclaim import reclaim_stuck_processing as outbox_reclaim_stuck_processing
+from infra.outbox_core.sanitize import sanitize_terminal_rows as outbox_sanitize_terminal_rows
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
 
 from api.app.config.logging_config import setup_logging
@@ -763,30 +768,10 @@ async def _worker_loop() -> None:
 
         now = _utc_now()
         async with session_factory() as session:
-            result = await session.execute(
-                update(SearchOutboxEventModel)
-                .where(
-                    (
-                        SearchOutboxEventModel.processed_at.is_not(None)
-                        | SearchOutboxEventModel.status.in_(["done", "failed"])
-                    ),
-                    (
-                        SearchOutboxEventModel.owner.is_not(None)
-                        | SearchOutboxEventModel.lease_until.is_not(None)
-                        | SearchOutboxEventModel.processing_started_at.is_not(None)
-                    ),
-                )
-                .values(
-                    owner=None,
-                    lease_until=None,
-                    processing_started_at=None,
-                    updated_at=now,
-                )
-            )
+            fixed = await outbox_sanitize_terminal_rows(session, SearchOutboxEventModel, now=now)
             await session.commit()
-            fixed = int(getattr(result, "rowcount", 0) or 0)
-            if fixed:
-                logger.warning("Sanitized %s terminal outbox rows with stray owner/lease", fixed)
+        if fixed:
+            logger.warning("Sanitized %s terminal outbox rows with stray owner/lease", fixed)
 
     async def _reclaim_stuck_processing() -> None:
         if reclaim_interval_seconds <= 0:
@@ -794,45 +779,34 @@ async def _worker_loop() -> None:
         now = _utc_now()
         async with session_factory() as session:
             session = session
-            result = await session.execute(
-                update(SearchOutboxEventModel)
-                .where(stuck_processing_predicate(SearchOutboxEventModel, now=now, max_processing_seconds=max_processing_seconds))
-                .values(
-                    status="pending",
-                    owner=None,
-                    lease_until=None,
-                    processing_started_at=None,
-                    updated_at=now,
-                )
+            reclaimed = await outbox_reclaim_stuck_processing(
+                session,
+                SearchOutboxEventModel,
+                now=now,
+                max_processing_seconds=max_processing_seconds,
             )
             await session.commit()
-            reclaimed = int(getattr(result, "rowcount", 0) or 0)
-            if reclaimed:
-                logger.warning(
-                    "Reclaimed %s stuck outbox events (expired lease or max processing exceeded)",
-                    reclaimed,
-                )
+        if reclaimed:
+            logger.warning(
+                "Reclaimed %s stuck outbox events (expired lease or max processing exceeded)",
+                reclaimed,
+            )
 
     async def _renew_lease(session: AsyncSession, ids: list[Any]) -> None:
         if not ids:
             return
         now = _utc_now()
-        await session.execute(
-            update(SearchOutboxEventModel)
-            .where(
-                SearchOutboxEventModel.id.in_(ids),
-                SearchOutboxEventModel.processed_at.is_(None),
-                SearchOutboxEventModel.status == "processing",
-                SearchOutboxEventModel.owner == worker_id,
-            )
-            .values(
-                lease_until=now + timedelta(seconds=lease_seconds),
-                updated_at=now,
-            )
+        await outbox_renew_lease(
+            session,
+            SearchOutboxEventModel,
+            ids,
+            worker_id=worker_id,
+            lease_seconds=lease_seconds,
+            now=now,
         )
 
     def _lease_until(now: datetime) -> datetime:
-        return now + timedelta(seconds=lease_seconds)
+        return outbox_lease_until(now=now, lease_seconds=lease_seconds)
 
 
     def _entity_key(entity_type: str, entity_id: Any) -> str:
@@ -1252,69 +1226,24 @@ async def _worker_loop() -> None:
                         "wordloom.scope.library_allowlist_count": int(len(library_allowlist or [])),
                     },
                 ) as claim_span:
-                    claimable = (
-                        await session.execute(
-                            select(SearchOutboxEventModel)
-                            .where(
-                                SearchOutboxEventModel.processed_at.is_(None),
-                                SearchOutboxEventModel.status == "pending",
-                                (
-                                    SearchOutboxEventModel.next_retry_at.is_(None)
-                                    | (SearchOutboxEventModel.next_retry_at <= now)
-                                ),
-                                *scope_predicates,
-                            )
-                            .order_by(SearchOutboxEventModel.event_version.asc())
-                            .with_for_update(skip_locked=True)
-                            .limit(batch_size)
-                        )
-                    ).scalars().all()
-
-                    if break_claim_atomicity:
-                        # Re-run without row locking to intentionally allow races.
-                        claimable = (
-                            await session.execute(
-                                select(SearchOutboxEventModel)
-                                .where(
-                                    SearchOutboxEventModel.processed_at.is_(None),
-                                    SearchOutboxEventModel.status == "pending",
-                                    (
-                                        SearchOutboxEventModel.next_retry_at.is_(None)
-                                        | (SearchOutboxEventModel.next_retry_at <= now)
-                                    ),
-                                    *scope_predicates,
-                                )
-                                .order_by(SearchOutboxEventModel.event_version.asc())
-                                .limit(batch_size)
-                            )
-                        ).scalars().all()
+                    claimable = await outbox_claim_pending_batch(
+                        session,
+                        SearchOutboxEventModel,
+                        now=now,
+                        batch_size=int(batch_size),
+                        worker_id=worker_id,
+                        lease_seconds=float(lease_seconds),
+                        scope_predicates=scope_predicates,
+                        order_by=(SearchOutboxEventModel.event_version.asc(),),
+                        break_claim_atomicity=bool(break_claim_atomicity),
+                        break_claim_sleep_seconds=float(break_claim_sleep_seconds or 0.0),
+                    )
 
                     if claim_span is not None:
                         try:
                             claim_span.set_attribute("claimed", int(len(claimable or [])))
                         except Exception:
                             pass
-
-                    if claimable:
-                        if break_claim_atomicity and break_claim_sleep_seconds > 0:
-                            await asyncio.sleep(float(break_claim_sleep_seconds))
-                        ids = [row.id for row in claimable]
-                        await session.execute(
-                            update(SearchOutboxEventModel)
-                            .where(SearchOutboxEventModel.id.in_(ids))
-                            .values(
-                                status="processing",
-                                owner=worker_id,
-                                lease_until=_lease_until(now),
-                                processing_started_at=now,
-                                updated_at=now,
-                                error_reason=None,
-                                error=None,
-                            )
-                        )
-                        await session.commit()
-                    else:
-                        ids = []
 
                     logger.info(
                         {

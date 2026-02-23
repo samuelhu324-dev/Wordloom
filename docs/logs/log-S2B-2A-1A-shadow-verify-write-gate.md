@@ -5,16 +5,16 @@
 **id**: `S2B-2A-1A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `idempotency/shadow verify → write-gate`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S2B`
 **tags**: `EVOLUTION, Projection, Search, Chronicle, sub/2`
 **links**: ``
-  **issue**: `#56`
+  **issue**: `#56, #64, #65`
   **pr**: ``
   **adr**: ``
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-18`
-**updated**: `2026-02-18`
+**updated**: `2026-02-23`
 
 ---
 
@@ -75,6 +75,11 @@
 - [x] `ok` 判定纳入幂等/唯一性（duplicates==0）
 - [x] CI workflow 运行 Search scenario 时，summary/zip 证据链可重复获得
 - [x] 文档/Runbook 引用的入口命令不再出现脚本入口分叉
+
+**Closure（收尾）**:
+
+- 本子 log 的 DoD 已满足，当前标记为 `stable`。
+- 后续增量（排序/分页稳定性、共享键一致性、dual-run/cutover/cleanup）按 v2 路线在 `S2B-2A` 的后续子 log 中推进。
 
 ## Background
 

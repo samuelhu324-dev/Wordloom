@@ -215,3 +215,5 @@ htmlcov/
 
 # Local drill/evidence dumps (repo root scratch dirs)
 .drill_snapshot*/
+
+artifacts/
