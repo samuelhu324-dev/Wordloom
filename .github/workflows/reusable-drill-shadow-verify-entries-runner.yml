@@ -219,7 +219,7 @@ jobs:
 
           import yaml
 
-          scenario_id = os.environ["SCENARIO"]
+          scenario_input = os.environ["SCENARIO"]
           book_id = os.environ.get("BOOK_ID", "").strip()
           library_id = os.environ.get("LIBRARY_ID", "").strip()
 
@@ -232,24 +232,38 @@ jobs:
           if not isinstance(scenarios, list):
             raise SystemExit("invalid catalog: missing scenarios list")
 
-          entry = next((item for item in scenarios if item.get("id") == scenario_id), None)
+          def matches(item: dict) -> bool:
+            if item.get("id") == scenario_input:
+              return True
+            aliases = item.get("aliases")
+            if isinstance(aliases, list) and scenario_input in aliases:
+              return True
+            return False
+
+          entry = next((item for item in scenarios if isinstance(item, dict) and matches(item)), None)
           if entry is None:
-            raise SystemExit(f"scenario not found in catalog: {scenario_id}")
+            raise SystemExit(f"scenario not found in catalog: {scenario_input}")
+
+          canonical_id = entry.get("id")
+          if not isinstance(canonical_id, str) or not canonical_id.strip():
+            raise SystemExit(f"scenario has empty id: {scenario_input}")
 
           cli = entry.get("cli")
           if not isinstance(cli, str) or not cli.strip():
-            raise SystemExit(f"scenario has empty cli: {scenario_id}")
+            raise SystemExit(f"scenario has empty cli: {scenario_input}")
 
           line = cli.strip()
 
-          if scenario_id == "shadow_verify_chronicle_entries":
+          if canonical_id == "verify/chronicle/entries":
             if book_id:
               line = f"{line} --book-id \"$BOOK_ID\""
-          elif scenario_id in ("shadow_verify_search_index", "shadow_verify_search_index_write_gate"):
+          elif canonical_id in ("verify/search/index_consistency", "verify/search/write_gate_idempotency"):
             if library_id:
               line = f"{line} --library-id \"$LIBRARY_ID\""
           else:
-            raise SystemExit(f"unsupported scenario for this workflow: {scenario_id}")
+            raise SystemExit(
+              f"unsupported scenario for this workflow: input={scenario_input} canonical={canonical_id}"
+            )
 
           script_path = Path(".tmp/scenario-cli.sh")
           script_path.write_text(

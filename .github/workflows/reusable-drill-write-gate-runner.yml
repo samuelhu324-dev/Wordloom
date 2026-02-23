@@ -230,7 +230,10 @@ jobs:
             echo
           } >> artifacts/logs.txt 2>&1
 
-          if [[ "$scenario" == "shadow_verify_dual_run_stage1" || "$scenario" == "shadow_verify_dual_run_stage2" || "$scenario" == "shadow_verify_dual_run_window" ]]; then
+          if [[
+            "$scenario" == "shadow_verify_dual_run_stage1" || "$scenario" == "shadow_verify_dual_run_stage2" || "$scenario" == "shadow_verify_dual_run_window" ||
+            "$scenario" == "dual_run/search/stage1_backfill" || "$scenario" == "dual_run/search/stage2_worker" || "$scenario" == "dual_run/search/window_sustained"
+          ]]; then
             echo "--- starting ES (infra) ---" | tee -a artifacts/logs.txt
             docker compose -f docker-compose.infra.yml up -d --wait es 2>&1 | tee -a artifacts/logs.txt
           fi
@@ -257,7 +260,7 @@ jobs:
 
           import yaml
 
-          scenario_id = os.environ["SCENARIO"]
+          scenario_input = os.environ["SCENARIO"]
           library_id = os.environ.get("LIBRARY_ID", "").strip()
 
           catalog_path = Path("docs/labs/scenarios/catalog.yml")
@@ -269,13 +272,21 @@ jobs:
           if not isinstance(scenarios, list):
             raise SystemExit("invalid catalog: missing scenarios list")
 
-          entry = next((item for item in scenarios if item.get("id") == scenario_id), None)
+          def matches(item: dict) -> bool:
+            if item.get("id") == scenario_input:
+              return True
+            aliases = item.get("aliases")
+            if isinstance(aliases, list) and scenario_input in aliases:
+              return True
+            return False
+
+          entry = next((item for item in scenarios if isinstance(item, dict) and matches(item)), None)
           if entry is None:
-            raise SystemExit(f"scenario not found in catalog: {scenario_id}")
+            raise SystemExit(f"scenario not found in catalog: {scenario_input}")
 
           cli = entry.get("cli")
           if not isinstance(cli, str) or not cli.strip():
-            raise SystemExit(f"scenario has empty cli: {scenario_id}")
+            raise SystemExit(f"scenario has empty cli: {scenario_input}")
 
           line = cli.strip()
           if library_id:

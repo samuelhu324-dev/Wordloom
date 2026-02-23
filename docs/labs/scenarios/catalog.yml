@@ -5,7 +5,8 @@
 # - Allow future workflows to accept only `scenario_id` and derive defaults/requirements.
 #
 # Conventions:
-# - `id` is the current stable/legacy scenario identifier used by workflows today.
+# - `id` is the canonical, human-friendly scenario identifier (intent/pipeline/topic).
+# - `aliases` (optional) preserves legacy ids used by older workflows.
 # - `cli` uses placeholders intended for runner/workflow interpolation:
 #   - $DATABASE_URL, $RUN_ID, $OUTDIR, $ENV_FILE, $DURATION, $LOOKBACK, $KEEP_LAST
 #   - $ES_URL, $ES_INDEX
@@ -21,7 +22,9 @@
 version: 1
 
 scenarios:
-  - id: shadow_verify_search_index_write_gate
+  - id: verify/search/write_gate_idempotency
+    aliases:
+      - shadow_verify_search_index_write_gate
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-search-index-write-gate
       --database-url "$DATABASE_URL"
@@ -40,7 +43,9 @@ scenarios:
       - pipeline:search
       - runtime:db_only
 
-  - id: shadow_verify_search_index_paging_stability
+  - id: verify/search/paging_stability
+    aliases:
+      - shadow_verify_search_index_paging_stability
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-search-index-paging-stability
       --database-url "$DATABASE_URL"
@@ -64,7 +69,9 @@ scenarios:
       - pipeline:search
       - runtime:db_only
 
-  - id: shadow_verify_shared_keys
+  - id: verify/obs_infra/shared_keys_bundle
+    aliases:
+      - shadow_verify_shared_keys
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-shared-keys
       --database-url "$DATABASE_URL"
@@ -84,7 +91,9 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_only
 
-  - id: shadow_verify_dual_run_readiness_gate
+  - id: readiness/search/dual_run_gate
+    aliases:
+      - shadow_verify_dual_run_readiness_gate
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-dual-run-readiness-gate
       --database-url "$DATABASE_URL"
@@ -103,7 +112,9 @@ scenarios:
       - pipeline:search
       - runtime:db_only
 
-  - id: shadow_verify_dual_run_stage1
+  - id: dual_run/search/stage1_backfill
+    aliases:
+      - shadow_verify_dual_run_stage1
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-dual-run-stage1
       --database-url "$DATABASE_URL"
@@ -133,7 +144,9 @@ scenarios:
       - pipeline:search
       - runtime:db_es
 
-  - id: shadow_verify_dual_run_stage2
+  - id: dual_run/search/stage2_worker
+    aliases:
+      - shadow_verify_dual_run_stage2
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-dual-run-stage2
       --database-url "$DATABASE_URL"
@@ -171,7 +184,9 @@ scenarios:
       - pipeline:search
       - runtime:db_es
 
-  - id: shadow_verify_dual_run_window
+  - id: dual_run/search/window_sustained
+    aliases:
+      - shadow_verify_dual_run_window
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-dual-run-window
       --database-url "$DATABASE_URL"
@@ -225,7 +240,9 @@ scenarios:
       - pipeline:search
       - runtime:db_es
 
-  - id: shadow_verify_canary_dual_write
+  - id: dual_write/search/canary_cleanup
+    aliases:
+      - shadow_verify_canary_dual_write
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-canary-dual-write
       --database-url "$DATABASE_URL"
@@ -248,7 +265,9 @@ scenarios:
       - pipeline:search
       - runtime:db_only
 
-  - id: shadow_verify_dual_write_sampling
+  - id: dual_write/search/sampling_cleanup
+    aliases:
+      - shadow_verify_dual_write_sampling
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-dual-write-sampling
       --database-url "$DATABASE_URL"
@@ -283,7 +302,9 @@ scenarios:
       - pipeline:search
       - runtime:db_only
 
-  - id: shadow_verify_chronicle_entries
+  - id: verify/chronicle/entries
+    aliases:
+      - shadow_verify_chronicle_entries
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-chronicle-entries
       --database-url "$DATABASE_URL"
@@ -301,7 +322,9 @@ scenarios:
       - pipeline:chronicle
       - runtime:db_only
 
-  - id: shadow_verify_search_index
+  - id: verify/search/index_consistency
+    aliases:
+      - shadow_verify_search_index
     cli: >-
       python backend/scripts/cli.py labs shadow-verify-search-index
       --database-url "$DATABASE_URL"
@@ -319,7 +342,9 @@ scenarios:
       - pipeline:search
       - runtime:db_only
 
-  - id: all
+  - id: fault/obs_infra/all
+    aliases:
+      - all
     cli: |-
       # Workflow-level meta option (matrix expansion).
       # Equivalent to running all FAULT scenarios in failure-drills.yml matrix.
@@ -341,7 +366,9 @@ scenarios:
       - runtime:db_es_jaeger
       - meta:matrix_all
 
-  - id: es_429_inject
+  - id: fault/obs_infra/es_429_inject
+    aliases:
+      - es_429_inject
     cli: |-
       python backend/scripts/cli.py labs run es_429_inject --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
       python backend/scripts/cli.py labs verify es_429_inject --run-id "$RUN_ID"
@@ -363,7 +390,9 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_es_jaeger
 
-  - id: es_write_block_4xx
+  - id: fault/obs_infra/es_write_block_4xx
+    aliases:
+      - es_write_block_4xx
     cli: |-
       python backend/scripts/cli.py labs run es_write_block_4xx --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
       python backend/scripts/cli.py labs verify es_write_block_4xx --run-id "$RUN_ID"
@@ -385,7 +414,9 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_es_jaeger
 
-  - id: es_down_connect
+  - id: fault/obs_infra/es_down_connect
+    aliases:
+      - es_down_connect
     cli: |-
       python backend/scripts/cli.py labs run es_down_connect --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
       python backend/scripts/cli.py labs verify es_down_connect --run-id "$RUN_ID"
@@ -407,7 +438,9 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_es_jaeger
 
-  - id: collector_down
+  - id: fault/obs_infra/collector_down
+    aliases:
+      - collector_down
     cli: |-
       python backend/scripts/cli.py labs run collector_down --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
       python backend/scripts/cli.py labs verify collector_down --run-id "$RUN_ID"
@@ -429,7 +462,9 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_es_jaeger
 
-  - id: es_bulk_partial
+  - id: fault/obs_infra/es_bulk_partial
+    aliases:
+      - es_bulk_partial
     cli: |-
       python backend/scripts/cli.py labs run es_bulk_partial --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
       python backend/scripts/cli.py labs verify es_bulk_partial --run-id "$RUN_ID"
@@ -451,7 +486,9 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_es_jaeger
 
-  - id: db_claim_contention
+  - id: fault/obs_infra/db_claim_contention
+    aliases:
+      - db_claim_contention
     cli: |-
       python backend/scripts/cli.py labs run db_claim_contention --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
       python backend/scripts/cli.py labs verify db_claim_contention --run-id "$RUN_ID"
@@ -473,7 +510,9 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_es_jaeger
 
-  - id: stuck_reclaim
+  - id: fault/obs_infra/stuck_reclaim
+    aliases:
+      - stuck_reclaim
     cli: |-
       python backend/scripts/cli.py labs run stuck_reclaim --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
       python backend/scripts/cli.py labs verify stuck_reclaim --run-id "$RUN_ID"
@@ -495,7 +534,9 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_es_jaeger
 
-  - id: duplicate_delivery
+  - id: fault/obs_infra/duplicate_delivery
+    aliases:
+      - duplicate_delivery
     cli: |-
       python backend/scripts/cli.py labs run duplicate_delivery --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
       python backend/scripts/cli.py labs verify duplicate_delivery --run-id "$RUN_ID"
@@ -517,7 +558,9 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_es_jaeger
 
-  - id: projection_version
+  - id: fault/obs_infra/projection_version
+    aliases:
+      - projection_version
     cli: |-
       python backend/scripts/cli.py labs run projection_version --env-file "$ENV_FILE" --duration "$DURATION" --run-id "$RUN_ID"
       python backend/scripts/cli.py labs verify projection_version --run-id "$RUN_ID"
