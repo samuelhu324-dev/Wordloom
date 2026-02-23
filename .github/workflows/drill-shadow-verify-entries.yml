@@ -4,14 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       scenario:
-        description: "Scenario"
+        description: "Scenario (canonical intent/pipeline/topic)"
         required: true
-        default: shadow_verify_chronicle_entries
+        default: verify/chronicle/entries
         type: choice
         options:
-          - shadow_verify_chronicle_entries
-          - shadow_verify_search_index
-          - shadow_verify_search_index_write_gate
+          - verify/chronicle/entries
+          - verify/search/index_consistency
+          - verify/search/write_gate_idempotency
       book_id:
         description: "Optional scope: book_id (UUID)"
         required: false

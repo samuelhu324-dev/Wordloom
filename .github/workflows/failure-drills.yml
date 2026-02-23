@@ -13,16 +13,16 @@ on:
         required: true
         type: choice
         options:
-          - all
-          - es_429_inject
-          - es_write_block_4xx
-          - es_down_connect
-          - collector_down
-          - es_bulk_partial
-          - db_claim_contention
-          - stuck_reclaim
-          - duplicate_delivery
-          - projection_version
+          - fault/obs_infra/all
+          - fault/obs_infra/es_429_inject
+          - fault/obs_infra/es_write_block_4xx
+          - fault/obs_infra/es_down_connect
+          - fault/obs_infra/collector_down
+          - fault/obs_infra/es_bulk_partial
+          - fault/obs_infra/db_claim_contention
+          - fault/obs_infra/stuck_reclaim
+          - fault/obs_infra/duplicate_delivery
+          - fault/obs_infra/projection_version
       env_file:
         description: "Env file path"
         required: true
@@ -53,8 +53,8 @@ jobs:
       matrix:
         scenario: >-
           ${{ fromJSON(
-            inputs.scenario == 'all'
-            && '["es_429_inject","es_write_block_4xx","es_down_connect","collector_down","es_bulk_partial","db_claim_contention","stuck_reclaim","duplicate_delivery","projection_version"]'
+            inputs.scenario == 'fault/obs_infra/all'
+            && '["fault/obs_infra/es_429_inject","fault/obs_infra/es_write_block_4xx","fault/obs_infra/es_down_connect","fault/obs_infra/collector_down","fault/obs_infra/es_bulk_partial","fault/obs_infra/db_claim_contention","fault/obs_infra/stuck_reclaim","fault/obs_infra/duplicate_delivery","fault/obs_infra/projection_version"]'
             || format('["{0}"]', inputs.scenario)
           ) }}
 

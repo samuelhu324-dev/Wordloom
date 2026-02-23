@@ -4,10 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       scenario:
-        description: "Readiness scenario id (e.g. shadow_verify_dual_run_readiness_gate)"
+        description: "Readiness scenario id (canonical intent/pipeline/topic)"
         required: true
-        type: string
-        default: shadow_verify_dual_run_readiness_gate
+        type: choice
+        default: readiness/search/dual_run_gate
+        options:
+          - readiness/search/dual_run_gate
       library_id:
         description: "Optional data scope: library_id (UUID)."
         required: false

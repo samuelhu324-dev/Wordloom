@@ -105,7 +105,12 @@ jobs:
           engine = sa.create_engine(url)
           with engine.connect() as conn:
               conn.execute(sa.text("SELECT 1"))
-              if scenario in ("shadow_verify_search_index", "shadow_verify_search_index_write_gate"):
+              if scenario in (
+                "shadow_verify_search_index",
+                "shadow_verify_search_index_write_gate",
+                "verify/search/index_consistency",
+                "verify/search/write_gate_idempotency",
+              ):
                   expected = ("search_index",)
               else:
                   expected = ("chronicle_events", "chronicle_entries")

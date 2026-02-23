@@ -4,10 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       scenario:
-        description: "Dual-write scenario id (e.g. shadow_verify_canary_dual_write | shadow_verify_dual_write_sampling)"
+        description: "Dual-write scenario id (canonical intent/pipeline/topic)"
         required: true
-        type: string
-        default: shadow_verify_canary_dual_write
+        type: choice
+        default: dual_write/search/canary_cleanup
+        options:
+          - dual_write/search/canary_cleanup
+          - dual_write/search/sampling_cleanup
       library_id:
         description: "Optional data scope: library_id (UUID)."
         required: false
