@@ -4,10 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       scenario:
-        description: "Dual-run scenario id (e.g. shadow_verify_dual_run_stage1 | shadow_verify_dual_run_stage2 | shadow_verify_dual_run_window)"
+        description: "Dual-run scenario id (canonical intent/pipeline/topic)"
         required: true
-        type: string
-        default: shadow_verify_dual_run_stage1
+        type: choice
+        default: dual_run/search/stage1_backfill
+        options:
+          - dual_run/search/stage1_backfill
+          - dual_run/search/stage2_worker
+          - dual_run/search/window_sustained
       library_id:
         description: "Optional data scope: library_id (UUID)."
         required: false

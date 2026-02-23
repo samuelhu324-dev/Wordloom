@@ -6,12 +6,12 @@ on:
       scenario:
         description: "Write-gate scenario"
         required: true
-        default: shadow_verify_dual_run_readiness_gate
+        default: readiness/search/dual_run_gate
         type: choice
         options:
-          - shadow_verify_dual_run_readiness_gate
-          - shadow_verify_canary_dual_write
-          - shadow_verify_dual_write_sampling
+          - readiness/search/dual_run_gate
+          - dual_write/search/canary_cleanup
+          - dual_write/search/sampling_cleanup
       library_id:
         description: "Optional data scope: library_id (UUID). Scopes seed+enqueue/outbox.library_id."
         required: false
