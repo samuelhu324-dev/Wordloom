@@ -95,7 +95,7 @@ The workflow runs the same harness as local execution:
 
 ### 5.2 Operator instructions
 
-- Open GitHub Actions: `failure-drills`
+- Open GitHub Actions: `drill-failures`（原 `failure-drills`）
 - Choose input:
   - `scenario`: single scenario or `all`
   - `duration`: seconds
@@ -142,6 +142,6 @@ The workflow runs the same harness as local execution:
   - `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
   - `docs/logs/log-S3A-2A-4B-1A-git-actions.md`
 - Workflow:
-  - `.github/workflows/failure-drills.yml`
+  - `.github/workflows/drill-failures.yml`
 - Harness:
   - `backend/scripts/cli.py`

@@ -131,6 +131,7 @@ jobs:
           set -euo pipefail
 
           scenario="${{ inputs.scenario }}"
+          safe_scenario="${scenario//\//_}"
           run_id="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           rc=2
           ok=false
@@ -143,6 +144,7 @@ jobs:
           {
             echo "ok=${ok}"
             echo "scenario=${scenario}"
+            echo "safe_scenario=${safe_scenario}"
             echo "run_id=${run_id}"
             echo "exit_code=${rc}"
           } >> "$GITHUB_OUTPUT"
@@ -171,6 +173,7 @@ jobs:
 
             echo "ok=${ok}" >> "$GITHUB_OUTPUT"
             echo "scenario=${scenario}" >> "$GITHUB_OUTPUT"
+            echo "safe_scenario=${safe_scenario}" >> "$GITHUB_OUTPUT"
             echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
             echo "exit_code=${rc}" >> "$GITHUB_OUTPUT"
           }
@@ -296,7 +299,7 @@ jobs:
         if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: drill-${{ steps.drill.outputs.scenario }}-${{ steps.drill.outputs.run_id }}
+          name: drill-${{ steps.drill.outputs.safe_scenario }}-${{ steps.drill.outputs.run_id }}
           path: artifacts/summary.json
 
       - name: Zip artifacts (failure only)
@@ -311,7 +314,7 @@ jobs:
         if: steps.drill.conclusion != 'skipped' && steps.drill.outputs.ok != 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: drill-${{ steps.drill.outputs.scenario }}-${{ steps.drill.outputs.run_id }}
+          name: drill-${{ steps.drill.outputs.safe_scenario }}-${{ steps.drill.outputs.run_id }}
           path: artifacts.zip
 
       - name: Fail job if drill failed
