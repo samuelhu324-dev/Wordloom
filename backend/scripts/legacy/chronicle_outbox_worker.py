@@ -64,6 +64,7 @@ from infra.observability.outbox_metrics import (
 from infra.outbox_core.stuck import stuck_processing_predicate
 from infra.outbox_core.claim import claim_pending_batch as outbox_claim_pending_batch
 from infra.outbox_core.reclaim import reclaim_stuck_processing as outbox_reclaim_stuck_processing
+from infra.outbox_core.sanitize import sanitize_terminal_rows as outbox_sanitize_terminal_rows
 from infra.outbox_core.retry import ExponentialBackoffSpec, compute_next_retry_at
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
 
@@ -179,25 +180,6 @@ def _fault_inject_entity_id() -> str:
 
 class DeterministicError(Exception):
     pass
-
-
-async def _sanitize_terminal_rows(session) -> None:
-    """Keep terminal rows in a consistent state."""
-
-    now = _utc_now()
-    await session.execute(
-        update(ChronicleOutboxEventModel)
-        .where(
-            ChronicleOutboxEventModel.processed_at.is_(None),
-            ChronicleOutboxEventModel.status == "failed",
-        )
-        .values(
-            owner=None,
-            lease_until=None,
-            next_retry_at=None,
-            updated_at=now,
-        )
-    )
 
 
 async def _reclaim_stuck_processing(session, *, max_processing_seconds: int) -> int:
@@ -576,7 +558,12 @@ async def main_async() -> int:
 
             if reclaim_interval_seconds > 0 and (now_mono - last_reclaim_at) >= reclaim_interval_seconds:
                 async with session_factory() as session:
-                    await _sanitize_terminal_rows(session)
+                    await outbox_sanitize_terminal_rows(
+                        session,
+                        ChronicleOutboxEventModel,
+                        now=_utc_now(),
+                        clear_next_retry_at=True,
+                    )
                     reclaimed = await _reclaim_stuck_processing(session, max_processing_seconds=max_processing_seconds)
                     if reclaimed:
                         logger.info("Reclaimed %s stuck chronicle outbox events", reclaimed)
