@@ -8,6 +8,7 @@
 - Search 投影（模块说明）: ./architecture/modules/search-projection.md
 - Search 投影运行手册（runbook）: ./architecture/operations/runbook-search-projection.md
 - Observability 约定（metrics / logs / dashboards）: ./architecture/operations/observability.md
+- GitHub Actions suite 操作（如何查找/填写 `scenario_id`）: ./runbook/run-S0C-docs-management-v3.md
 
 ## 目录约定
 

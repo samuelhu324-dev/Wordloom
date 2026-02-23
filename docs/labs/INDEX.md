@@ -1,5 +1,7 @@
 # Labs Registry
 
+快速入口：如何查找/填写 GitHub Actions suite 的 `scenario_id` → `../runbook/run-S0C-docs-management-v3.md`
+
 目标：提供一个很轻量的“实验登记表”，解决“我到底有没有跑过 lab/test？”的焦虑。
 
 约定：每个 lab 一行，关注四件事：目标、最近一次运行、CI workflow、状态。

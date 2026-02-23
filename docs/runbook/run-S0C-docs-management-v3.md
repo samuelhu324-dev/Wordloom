@@ -75,6 +75,23 @@ suite workflows 现在统一使用 `scenario_id: string` 输入（不再维护�
 2) 在 Actions 里打开对应 suite（例如 `drill-verify` / `drill-dual-run`）
 3) 把 `scenario_id` 填进去（或直接用默认值先跑通）
 
+### 4.1 Automation (optional): trigger suites + backfill Evidence
+
+如果你希望“批量触发所有 suite，并把 run URL 自动补进 S0C-4A-1A 的 Evidence”，可以用这个脚本：
+
+- `python backend/scripts/ci/trigger_drill_suites_and_log.py --dry-run`
+- `python backend/scripts/ci/trigger_drill_suites_and_log.py`
+
+如果你想在 runs 跑完后把最终结论（success/failure）也补回同一块 Evidence：
+
+- `python backend/scripts/ci/trigger_drill_suites_and_log.py --refresh-conclusions --wait-seconds 900`
+
+说明：
+
+- 依赖：已安装并登录 `gh`（GitHub CLI）
+- 默认会把 run URLs 追加到：`docs/logs/log-S0C-4A-1A-catalog-driven-suites-&-guardrails.md`
+- 你也可以用 `--ref <branch>` 指定触发的分支
+
 ## 5) Fallback: grep catalog directly
 
 如果你不想装 PyYAML，也可以直接在 repo 里 grep：
