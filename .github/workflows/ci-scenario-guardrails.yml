@@ -1,0 +1,39 @@
+name: ci-scenario-guardrails
+
+on:
+  pull_request:
+    paths:
+      - docs/labs/scenarios/catalog.yml
+      - .github/workflows/*.yml
+      - backend/scripts/ci/validate_scenario_catalog.py
+  push:
+    branches:
+      - main
+    paths:
+      - docs/labs/scenarios/catalog.yml
+      - .github/workflows/*.yml
+      - backend/scripts/ci/validate_scenario_catalog.py
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install YAML parser
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install pyyaml
+
+      - name: Validate scenario catalog and workflow references
+        run: |
+          set -euo pipefail
+          python backend/scripts/ci/validate_scenario_catalog.py
