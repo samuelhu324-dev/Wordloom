@@ -3,15 +3,11 @@ name: drill-shadow-verify-entries
 on:
   workflow_dispatch:
     inputs:
-      scenario:
+      scenario_id:
         description: "Scenario (canonical intent/pipeline/topic)"
         required: true
         default: verify/chronicle/entries
-        type: choice
-        options:
-          - verify/chronicle/entries
-          - verify/search/index_consistency
-          - verify/search/write_gate_idempotency
+        type: string
       book_id:
         description: "Optional scope: book_id (UUID)"
         required: false
@@ -27,6 +23,6 @@ jobs:
   drill:
     uses: ./.github/workflows/reusable-drill-shadow-verify-entries-runner.yml
     with:
-      scenario: ${{ inputs.scenario }}
+      scenario: ${{ inputs.scenario_id }}
       book_id: ${{ inputs.book_id }}
       library_id: ${{ inputs.library_id }}

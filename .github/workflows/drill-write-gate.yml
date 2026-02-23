@@ -3,15 +3,11 @@ name: drill-write-gate
 on:
   workflow_dispatch:
     inputs:
-      scenario:
+      scenario_id:
         description: "Write-gate scenario"
         required: true
         default: readiness/search/dual_run_gate
-        type: choice
-        options:
-          - readiness/search/dual_run_gate
-          - dual_write/search/canary_cleanup
-          - dual_write/search/sampling_cleanup
+        type: string
       library_id:
         description: "Optional data scope: library_id (UUID). Scopes seed+enqueue/outbox.library_id."
         required: false
@@ -22,7 +18,7 @@ jobs:
   drill:
     uses: ./.github/workflows/reusable-drill-write-gate-runner.yml
     with:
-      scenario: ${{ inputs.scenario }}
+      scenario: ${{ inputs.scenario_id }}
       library_id: ${{ inputs.library_id }}
 
 

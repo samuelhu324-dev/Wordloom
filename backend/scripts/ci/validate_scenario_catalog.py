@@ -137,6 +137,70 @@ def _collect_workflow_choice_options(doc: Any) -> list[str]:
     return options
 
 
+def _collect_workflow_dispatch_scenario_defaults(doc: Any) -> list[str]:
+    """Collect workflow_dispatch input defaults for scenario-like inputs.
+
+    This supports suites that intentionally avoid `type: choice` + `options`.
+    """
+
+    if not isinstance(doc, dict):
+        return []
+
+    on_section = doc.get("on")
+    if not isinstance(on_section, dict):
+        return []
+
+    wd = on_section.get("workflow_dispatch")
+    if not isinstance(wd, dict):
+        return []
+
+    inputs = wd.get("inputs")
+    if not isinstance(inputs, dict):
+        return []
+
+    defaults: list[str] = []
+    for input_name, spec in inputs.items():
+        if input_name not in {"scenario", "scenario_id"}:
+            continue
+        if not isinstance(spec, dict):
+            continue
+
+        default = spec.get("default")
+        if isinstance(default, str) and default.strip() and "${{" not in default:
+            defaults.append(default.strip())
+
+    return defaults
+
+
+def _collect_static_job_scenarios(doc: Any) -> list[str]:
+    """Collect literal scenario values passed into reusable workflows.
+
+    We only collect plain strings without GitHub expressions to avoid false positives.
+    """
+
+    if not isinstance(doc, dict):
+        return []
+
+    jobs = doc.get("jobs")
+    if not isinstance(jobs, dict):
+        return []
+
+    found: list[str] = []
+    for _, job in jobs.items():
+        if not isinstance(job, dict):
+            continue
+        with_section = job.get("with")
+        if not isinstance(with_section, dict):
+            continue
+
+        for key in ("scenario", "scenario_id"):
+            value = with_section.get(key)
+            if isinstance(value, str) and value.strip() and "${{" not in value:
+                found.append(value.strip())
+
+    return found
+
+
 _BAD_ARTIFACT_NAME_VAR_PATTERNS = (
     "inputs.scenario_id",
     "matrix.scenario",
@@ -202,19 +266,29 @@ def main() -> int:
     valid_keys, errors = _validate_catalog(catalog_path)
 
     workflow_paths = _iter_workflow_paths(workflows_dir)
-    referenced: list[tuple[Path, str]] = []
+    referenced: list[tuple[Path, str, str]] = []
 
     for wf in workflow_paths:
         doc = _load_yaml(wf)
         for opt in _collect_workflow_choice_options(doc):
-            referenced.append((wf, opt))
+            referenced.append((wf, opt, "workflow_dispatch.options"))
+
+        for default in _collect_workflow_dispatch_scenario_defaults(doc):
+            referenced.append((wf, default, "workflow_dispatch.default"))
+
+        for scenario in _collect_static_job_scenarios(doc):
+            referenced.append((wf, scenario, "jobs.*.with"))
 
         errors.extend(_validate_upload_artifact_names(doc, wf))
 
     # Validate that all workflow choice options resolve to some scenario in catalog (id or aliases)
-    for wf, opt in referenced:
-        if opt not in valid_keys:
-            errors.append(ValidationError(f"{wf.name}: workflow_dispatch input option not found in catalog (id/aliases): {opt}"))
+    for wf, value, source in referenced:
+        if value not in valid_keys:
+            errors.append(
+                ValidationError(
+                    f"{wf.name}: referenced scenario not found in catalog (id/aliases) [{source}]: {value}"
+                )
+            )
 
     if errors:
         for e in errors:

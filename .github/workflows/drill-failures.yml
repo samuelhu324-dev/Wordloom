@@ -8,21 +8,11 @@ on:
         required: false
         type: boolean
         default: false
-      scenario:
+      scenario_id:
         description: "labs scenario"
         required: true
-        type: choice
-        options:
-          - fault/obs_infra/all
-          - fault/obs_infra/es_429_inject
-          - fault/obs_infra/es_write_block_4xx
-          - fault/obs_infra/es_down_connect
-          - fault/obs_infra/collector_down
-          - fault/obs_infra/es_bulk_partial
-          - fault/obs_infra/db_claim_contention
-          - fault/obs_infra/stuck_reclaim
-          - fault/obs_infra/duplicate_delivery
-          - fault/obs_infra/projection_version
+        type: string
+        default: fault/obs_infra/all
       env_file:
         description: "Env file path"
         required: true
@@ -53,9 +43,9 @@ jobs:
       matrix:
         scenario: >-
           ${{ fromJSON(
-            inputs.scenario == 'fault/obs_infra/all'
+            inputs.scenario_id == 'fault/obs_infra/all'
             && '["fault/obs_infra/es_429_inject","fault/obs_infra/es_write_block_4xx","fault/obs_infra/es_down_connect","fault/obs_infra/collector_down","fault/obs_infra/es_bulk_partial","fault/obs_infra/db_claim_contention","fault/obs_infra/stuck_reclaim","fault/obs_infra/duplicate_delivery","fault/obs_infra/projection_version"]'
-            || format('["{0}"]', inputs.scenario)
+            || format('["{0}"]', inputs.scenario_id)
           ) }}
 
     with:

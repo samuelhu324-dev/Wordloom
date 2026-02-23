@@ -3,13 +3,11 @@ name: drill-readiness
 on:
   workflow_dispatch:
     inputs:
-      scenario:
+      scenario_id:
         description: "Readiness scenario id (canonical intent/pipeline/topic)"
         required: true
-        type: choice
+        type: string
         default: readiness/search/dual_run_gate
-        options:
-          - readiness/search/dual_run_gate
       library_id:
         description: "Optional data scope: library_id (UUID)."
         required: false
@@ -25,6 +23,6 @@ jobs:
   drill:
     uses: ./.github/workflows/reusable-drill-write-gate-runner.yml
     with:
-      scenario: ${{ inputs.scenario }}
+      scenario: ${{ inputs.scenario_id }}
       library_id: ${{ inputs.library_id }}
       worker_library_allowlist: ${{ inputs.worker_library_allowlist }}
