@@ -105,7 +105,7 @@ S2B-1A / S2B-2A 已经把 Failure Contract（证据链 + 可切写口径 + dual-
   - [x] reclaim（stuck reclaim：基于 lease_until + processing_started_at 的统一判定；已存在 `stuck_processing_predicate` 视为基石）
   - [x] retry/backoff/jitter（同一套重试策略与上限，不再在不同 worker 中各写一份）
   - [x] failure reason 低基数约束（deterministic vs transient 的 reason 分类可枚举/可聚合）
-  - [ ] DLQ + replay（ops/CLI/runbook 入口不变，内部逻辑收口到 outbox_core）
+  - [x] DLQ + replay（ops/CLI/runbook 入口不变，内部逻辑收口到 outbox_core）
 - [x] Search 与 Chronicle 的 worker/daemon（至少 1 条链路先落地）切换为调用 outbox_core 的实现，但外部入口保持不变：
   - [x] workflow / runbook / CLI 仍然只引用既有稳定入口（不新增第二套脚本路径）
   - [x] artifacts contract 不变（summary.json / failure zip / `_result.json` 仍是 SoT）
@@ -119,20 +119,20 @@ S2B-1A / S2B-2A 已经把 Failure Contract（证据链 + 可切写口径 + dual-
 
 **S2（Implementation）**：
 
-- [ ] 新增 `backend/infra/outbox_core/replay.py`（或同名模块）：提供“replay failed → pending + audit fields”的可复用 helper
-  - [ ] 能覆盖 Search/Chronicle 两个 outbox 表的共同字段：`status/owner/lease_until/processing_started_at/attempts/next_retry_at/error_reason/error/replay_count/last_replayed_*/updated_at`
-  - [ ] 支持 filter：`entity_type`、`since_hours`；并支持可选 `ids`（Chronicle 已有该能力）
-  - [ ] 支持 `limit` 与 `dry_run`（保持当前脚本 UX）
-- [ ] 重构 replay 工具的 legacy 实现为“薄壳”调用 outbox_core（稳定入口保持不变）：
-  - [ ] `backend/scripts/legacy/search_outbox_replay_failed.py`
-  - [ ] `backend/scripts/legacy/chronicle_outbox_replay_failed.py`
-  - [ ] `backend/scripts/ops/search_outbox_replay_failed.py` 与 `backend/scripts/ops/chronicle_outbox_replay_failed.py` 不改路径/参数
+- [x] 新增 `backend/infra/outbox_core/replay.py`（或同名模块）：提供“replay failed → pending + audit fields”的可复用 helper
+  - [x] 能覆盖 Search/Chronicle 两个 outbox 表的共同字段：`status/owner/lease_until/processing_started_at/attempts/next_retry_at/error_reason/error/replay_count/last_replayed_*/updated_at`
+  - [x] 支持 filter：`entity_type`、`since_hours`；并支持可选 `ids`（Chronicle 已有该能力）
+  - [x] 支持 `limit` 与 `dry_run`（保持当前脚本 UX）
+- [x] 重构 replay 工具的 legacy 实现为“薄壳”调用 outbox_core（稳定入口保持不变）：
+  - [x] `backend/scripts/legacy/search_outbox_replay_failed.py`
+  - [x] `backend/scripts/legacy/chronicle_outbox_replay_failed.py`
+  - [x] `backend/scripts/ops/search_outbox_replay_failed.py` 与 `backend/scripts/ops/chronicle_outbox_replay_failed.py` 不改路径/参数
 - [ ] （可选但推荐）在 replay helper 中复用/对齐 `sanitize_terminal_rows` 的不变量（replay 也要清 owner/lease/processing_started_at 等）
 
 **S3（Evidence）**：
 
-- [ ] 触发与 S0/S3 相同的一组 write-gate drills（复用你当前的 dispatch 脚本）：`scripts/pr3_write_gate_dispatch.ps1`
-- [ ] 在 Evidence 追加新条目：
+- [x] 触发与 S0/S3 相同的一组 write-gate drills（见 Evidence：run_id=22308739330..22308752185）
+- [x] 在 Evidence 追加新条目：
   - Change 建议用：`S2B-3A/P0-C2-S2S3: extract replay helpers into outbox_core (commit <sha>)`
   - 粘贴 run URL + conclusion（6 个 scenario）
 
