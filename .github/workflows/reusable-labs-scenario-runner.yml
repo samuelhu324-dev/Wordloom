@@ -197,7 +197,15 @@ jobs:
           if not isinstance(scenarios, list):
             raise SystemExit("invalid catalog: missing scenarios list")
 
-          entry = next((item for item in scenarios if item.get("id") == scenario_id), None)
+          def matches(item: dict) -> bool:
+            if item.get("id") == scenario_id:
+              return True
+            aliases = item.get("aliases")
+            if isinstance(aliases, list) and scenario_id in aliases:
+              return True
+            return False
+
+          entry = next((item for item in scenarios if isinstance(item, dict) and matches(item)), None)
           if entry is None:
             raise SystemExit(f"scenario not found in catalog: {scenario_id}")
 
