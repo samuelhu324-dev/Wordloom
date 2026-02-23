@@ -325,6 +325,56 @@ S3（Regression evidence / after P0-C2-S2S3 on S2B-3A）：
   - status/conclusion: `completed / success`
   - Notes: `S3 regression (after S2S3): sustained dual-write sampling parity remains green.`
 
+S3（Regression evidence / after P0-C3-S2 on S2B-3A）：
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C3-S2 (commit ee3d001e)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_write_gate`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310188227`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C3-S2): write-gate idempotency/uniqueness gate remains green.`
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C3-S2 (commit ee3d001e)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_paging_stability`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310191418`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C3-S2): paging stability gate remains green.`
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C3-S2 (commit ee3d001e)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_shared_keys`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310163509`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C3-S2): shared keys evidence bundle remains green.`
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C3-S2 (commit ee3d001e)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_run_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310194207`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C3-S2): sustained dual-run window parity remains green.`
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C3-S2 (commit ee3d001e)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_canary_dual_write`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310197235`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C3-S2): canary dual-write + cleanup remains green.`
+
+- Date: `2026-02-23`
+  - Change: `S2B-3A/P0-C3-S2 (commit ee3d001e)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_write_sampling`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22310199997`
+  - status/conclusion: `completed / success`
+  - Notes: `S3 regression (after P0-C3-S2): sustained dual-write sampling parity remains green.`
+
 ## References
 
 - `docs/logs/log-S2B-projection-table-merge.md`
