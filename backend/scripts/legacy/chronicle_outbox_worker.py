@@ -66,6 +66,7 @@ from infra.outbox_core.claim import claim_pending_batch as outbox_claim_pending_
 from infra.outbox_core.reclaim import reclaim_stuck_processing as outbox_reclaim_stuck_processing
 from infra.outbox_core.lease import renew_lease as outbox_renew_lease
 from infra.outbox_core.sanitize import sanitize_terminal_rows as outbox_sanitize_terminal_rows
+from infra.outbox_core.reasons import classify_exception_reason as outbox_classify_exception_reason
 from infra.outbox_core.retry import ExponentialBackoffSpec, compute_next_retry_at
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
 
@@ -733,38 +734,40 @@ async def main_async() -> int:
                                 outbox_processed_total.labels(projection=PROJECTION_NAME, op=str(db_ev.op)).inc()
                                 outbox_last_success_timestamp_seconds.labels(projection=PROJECTION_NAME).set(now.timestamp())
                             except DeterministicError as exc:
+                                reason = "deterministic_exception"
                                 attempts = int(getattr(ev, "attempts", 0) or 0) + 1
                                 await _mark_failed(
                                     session,
                                     ev_id=ev.id,
-                                    reason="deterministic_exception",
+                                    reason=reason,
                                     error=str(exc),
                                     attempts=attempts,
                                 )
                                 outbox_terminal_failed_total.labels(
                                     projection=PROJECTION_NAME,
                                     op=str(db_ev.op),
-                                    reason="deterministic_exception",
+                                    reason=reason,
                                 ).inc()
                                 outbox_failed_total.labels(
                                     projection=PROJECTION_NAME,
                                     op=str(db_ev.op),
-                                    reason="deterministic_exception",
+                                    reason=reason,
                                 ).inc()
                             except Exception as exc:
                                 attempts = int(getattr(ev, "attempts", 0) or 0) + 1
-                                if attempts >= max_attempts:
+                                reason, retryable = outbox_classify_exception_reason(exc)
+                                if (not retryable) or (attempts >= max_attempts):
                                     await _mark_failed(
                                         session,
                                         ev_id=ev.id,
-                                        reason="unknown_exception",
+                                        reason=reason,
                                         error=str(exc),
                                         attempts=attempts,
                                     )
                                     outbox_terminal_failed_total.labels(
                                         projection=PROJECTION_NAME,
                                         op=str(db_ev.op),
-                                        reason="unknown_exception",
+                                        reason=reason,
                                     ).inc()
                                 else:
                                     next_retry_at = _compute_next_retry_at(
@@ -776,7 +779,7 @@ async def main_async() -> int:
                                     await _mark_retry(
                                         session,
                                         ev_id=ev.id,
-                                        reason="unknown_exception",
+                                        reason=reason,
                                         error=str(exc),
                                         attempts=attempts,
                                         next_retry_at=next_retry_at,
@@ -784,13 +787,13 @@ async def main_async() -> int:
                                     outbox_retry_scheduled_total.labels(
                                         projection=PROJECTION_NAME,
                                         op=str(db_ev.op),
-                                        reason="unknown_exception",
+                                        reason=reason,
                                     ).inc()
 
                                 outbox_failed_total.labels(
                                     projection=PROJECTION_NAME,
                                     op=str(db_ev.op),
-                                    reason="unknown_exception",
+                                    reason=reason,
                                 ).inc()
 
                             await session.commit()
