@@ -64,6 +64,7 @@ from infra.observability.outbox_metrics import (
 from infra.outbox_core.stuck import stuck_processing_predicate
 from infra.outbox_core.claim import claim_pending_batch as outbox_claim_pending_batch
 from infra.outbox_core.reclaim import reclaim_stuck_processing as outbox_reclaim_stuck_processing
+from infra.outbox_core.lease import renew_lease as outbox_renew_lease
 from infra.outbox_core.sanitize import sanitize_terminal_rows as outbox_sanitize_terminal_rows
 from infra.outbox_core.retry import ExponentialBackoffSpec, compute_next_retry_at
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
@@ -700,7 +701,16 @@ async def main_async() -> int:
                                     outbox_owner_mismatch_skips_total.labels(projection=PROJECTION_NAME).inc()
                                 await session.commit()
                                 continue
-                            if db_ev.lease_until is None or db_ev.lease_until <= now:
+
+                            renewed = await outbox_renew_lease(
+                                session,
+                                ChronicleOutboxEventModel,
+                                [ev.id],
+                                worker_id=worker_id,
+                                lease_seconds=float(lease_seconds),
+                                now=now,
+                            )
+                            if renewed <= 0:
                                 await session.commit()
                                 continue
 
