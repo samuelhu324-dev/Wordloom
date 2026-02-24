@@ -116,6 +116,11 @@
 - [x] `P3-C2-S3S4`：Search write cutover window（sustained window；CI drill-dual-run；scenario=`dual_run/search/window_sustained`）。
 - [x] `P3-C2-S5S6`：跑固定 write-gate 回归包 + Evidence 入账。
 
+### P4-C1（cleanup ledger；no deletion yet）
+
+- [x] `P4-C1-S1S2`：记录 stub/deprecate window 与清理计划（不提前删旧路径；回滚优先）。
+- [x] `P4-C1-S3S4`：跑固定 write-gate 回归包 + Evidence 入账（doc-only regression）。
+
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 
 > 本步只做“提案/边界/索引策略草案”，不做 schema migration。
@@ -165,6 +170,33 @@
 **Cutover guard（进入 cutover 前必须满足）**:
 
 - 固定 write-gate 回归包持续全绿；并且窗口类场景（dual-run window / canary / sampling）可从 artifacts 解释。
+
+## P4-C1-S1（Cleanup ledger：stub/deprecate window + cleanup plan）
+
+> 目标：把“什么时候可以删旧路径/旧表/旧 flag”的边界写清楚；本步不做任何删除，保持回滚优先。
+
+### Stub window（保留旧路径，明确禁用/隔离；可随时回滚）
+
+- 旧 read/write 路径与旧表：保留（不删、不重命名），但在 runbook 中标记为 **stub-only**。
+- rollback controls：明确并保留 read switch / worker enable 开关（以“快速止血”为优先级）。
+- 观测约束：stub window 内，只接受“回归包持续全绿 + 关键指标无回归”的变更（不引入新语义）。
+
+### Deprecate window（宣布弃用但仍可回滚；观察窗口内验证）
+
+- 进入条件：
+  - 连续至少 2 轮固定 write-gate 回归包保持全绿（6/6）。
+  - 窗口类演练（dual-run window / sustained window）可解释且无异常回归。
+- 行为：
+  - 把旧路径在文档中标注为 deprecated（仍保留回滚开关与排障入口）。
+  - 把 cleanup 的“删除项”列表化（表/脚本/flag/配置），并声明删除前必须再跑一轮回归包。
+
+### Cleanup（最终删除；需要单独切片与证据）
+
+- 删除前 guard（必须全部满足）：
+  - 旧路径在运行时不再被使用（无读/无写/无 worker 实例在跑）。
+  - 固定 write-gate 回归包在“当前默认开关组合”下保持全绿（6/6）。
+  - 如有问题，能用 artifacts（summary/logs/traces/zip）解释并可回滚。
+- 删除动作：必须单独开切片（未来 `P4-C2` 或后续 cycle），并把删除前后的回归证据入账。
 
 ## Evidence
 
@@ -562,6 +594,57 @@
 
 - Date: `2026-02-24`
   - Conclusion: `P3-C2 rehearsal/window + regression is green: drill-verify + drill-dual-run passed and fixed write-gate pack remains green (6/6).`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P4-C1-S3S4: doc-only cleanup ledger regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_write_gate`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22354111598`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P4-C1-S3S4: doc-only cleanup ledger regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_paging_stability`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22354116129`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P4-C1-S3S4: doc-only cleanup ledger regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_shared_keys`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22354120792`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P4-C1-S3S4: doc-only cleanup ledger regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_run_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22354125424`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P4-C1-S3S4: doc-only cleanup ledger regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_canary_dual_write`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22354129996`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P4-C1-S3S4: doc-only cleanup ledger regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_write_sampling`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22354134571`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Conclusion: `P4-C1 doc-only cleanup ledger is regression-safe: fixed write-gate pack remains green (6/6).`
 
 ## References
 
