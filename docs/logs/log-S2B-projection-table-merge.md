@@ -69,7 +69,7 @@
 
 - 建议开启并以其为单一记账点：`docs/logs/log-S2B-3A-unified-consumer-framework.md`
   - 目标：把 claim/retry/reclaim/DLQ/replay/shared-keys/metrics 等共性从 worker/legacy 中抽到 `backend/infra/outbox_core`，并用现有 drills 持续回归与补证据。
-- Phase 2（table merge）在 Phase 1 完成 + P1 固定回归包落地后开工；Phase 2 记账点：`docs/logs/log-S2B-4A-table-merge-migration.md`。
+- Phase 2（table merge）在 Phase 1 完成 + 固定 write-gate 回归包落地后开工；Phase 2 记账点：`docs/logs/log-S2B-4A-table-merge-migration.md`（该 log 内部 `P0/P1/...` 编号独立 reset）。
 
 ## Problem（要解决的真正问题）
 

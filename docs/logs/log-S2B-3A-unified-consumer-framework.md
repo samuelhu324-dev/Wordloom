@@ -5,7 +5,7 @@
 **id**: `S2B-3A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `extraction/unified consumer framework (outbox_core extraction & rollout)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S2B`
 **tags**: `EVOLUTION, Projection, Outbox, Worker, epic/s2, sub/3`
 **links**: ``
@@ -163,7 +163,7 @@ S2B-1A / S2B-2A 已经把 Failure Contract（证据链 + 可切写口径 + dual-
 
 - [x] Phase 1（P0）完成后，在一段窗口内（连续多轮 write-gate 全绿 + P1 固定回归包已落地）没有出现“语义漂移/指标不可比/排障断链”。
 - [x] runbook 入口与 replay/DLQ 语义保持稳定（不需要按 projection 分裂两套操作手册）。
-- [x] Phase 2 log 已创建：`docs/logs/log-S2B-4A-table-merge-migration.md`（专门追踪 schema/migration/backfill/rollback）。
+- [x] Phase 2 log 已创建：`docs/logs/log-S2B-4A-table-merge-migration.md`（专门追踪 schema/migration/backfill/rollback；其内部 `P0/P1/...` 为本地 reset 编号，不继承本 log 的 `P2`）。
 
 ## Evidence
 
