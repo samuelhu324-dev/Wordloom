@@ -14,7 +14,7 @@
   **adr**: `docs/adr/adr-S2B-projection-table-merge.md`
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-15`
-**updated**: `2026-02-23`
+**updated**: `2026-02-24`
 
 ---
 
@@ -63,7 +63,8 @@
   - `docs/logs/log-S2B-2A-failure-contract-v2.md`
   - `docs/logs/log-S2B-2A-1A-shadow-verify-write-gate.md`
   - `docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md`
-- ⏳ Phase 1（unified consumer framework）代码侧仍需收口到可复用 outbox_core（避免脚本/legacy 语义漂移）
+- ✅ Phase 1（unified consumer framework / outbox_core）已收口并稳定：`docs/logs/log-S2B-3A-unified-consumer-framework.md`
+- ⏳ Phase 2（table merge / migration）进行中（Chronicle-first，含回归证据链）：`docs/logs/log-S2B-4A-table-merge-migration.md`
 
 ## Next（下一步做什么 / 开什么 log）
 
