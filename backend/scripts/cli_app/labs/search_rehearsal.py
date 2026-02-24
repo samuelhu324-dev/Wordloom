@@ -24,7 +24,12 @@ def _invoke_and_pack(*, scenario: str, payload: dict[str, object], outdir: Path)
 
     inputs = DrillInputs.model_validate(payload)
     drill = handler(inputs)
-    result = drill.meta or {}
+    result = dict(drill.meta or {})
+    result.setdefault("ok", bool(drill.ok))
+    if drill.errors and "errors" not in result:
+        result["errors"] = list(drill.errors)
+    if drill.summary and "summary" not in result:
+        result["summary"] = dict(drill.summary)
     pack_artifacts(paths=build_evidence_paths_for_dir(outdir), result=result)
     return result
 
