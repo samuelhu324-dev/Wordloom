@@ -100,6 +100,11 @@
 - [x] `P2-C1-S1S2`：补齐 backfill/重建路径对新列的写入（重建工具 + worker materialize 均写满 envelope 列，避免默认值掩盖数据）。
 - [x] `P2-C1-S3S4`：跑固定 write-gate 回归包 + Evidence 入账。
 
+### P2-C2（migration/backfill 演练；no cutover）
+
+- [x] `P2-C2-S1S2`：演练 backfill（dry-run/小窗口；CI drill-verify）。
+- [x] `P2-C2-S3S4`：跑固定 write-gate 回归包 + Evidence 入账。
+
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 
 > 本步只做“提案/边界/索引策略草案”，不做 schema migration。
@@ -365,6 +370,64 @@
 
 - Date: `2026-02-24`
   - Conclusion: `P2-C1 backfill-prep change is regression-safe: fixed write-gate pack remains green (6/6).`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P2-C2-S1S2: backfill rehearsal (dry-run/small window; payload-first chronicle envelope extraction)`
+  - Drill: `drill-verify`
+  - scenario_id: `rehearsal/chronicle/envelope_backfill_small_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22345362340`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P2-C2-S3S4: regression after P2-C2-S1S2 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_write_gate`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22345558614`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P2-C2-S3S4: regression after P2-C2-S1S2 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_paging_stability`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22345560550`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P2-C2-S3S4: regression after P2-C2-S1S2 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_shared_keys`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22345562343`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P2-C2-S3S4: regression after P2-C2-S1S2 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_run_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22345564130`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P2-C2-S3S4: regression after P2-C2-S1S2 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_canary_dual_write`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22345565700`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P2-C2-S3S4: regression after P2-C2-S1S2 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_write_sampling`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22345567547`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Conclusion: `P2-C2 rehearsal + regression is green: drill-verify passed and fixed write-gate pack remains green (6/6).`
 
 ## References
 
