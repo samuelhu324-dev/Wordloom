@@ -112,8 +112,8 @@
 
 ### P3-C2（cutover + 窗口观察）
 
-- [ ] `P3-C2-S1S2`：Search read switch rehearsal（`SEARCH_MERGED_READ_ENABLED=0/1` provider smoke；CI drill-verify）。
-- [ ] `P3-C2-S3S4`：Search write cutover window（sustained window；CI drill-dual-run；scenario=`dual_run/search/window_sustained`）。
+- [x] `P3-C2-S1S2`：Search read switch rehearsal（`SEARCH_MERGED_READ_ENABLED=0/1` provider smoke；CI drill-verify）。
+- [x] `P3-C2-S3S4`：Search write cutover window（sustained window；CI drill-dual-run；scenario=`dual_run/search/window_sustained`）。
 
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 
@@ -501,15 +501,15 @@
   - Change: `S2B-4A/P3-C2-S1S2: search read switch smoke rehearsal (SEARCH_MERGED_READ_ENABLED=0/1 provider selection)`
   - Drill: `drill-verify`
   - scenario_id: `rehearsal/search/read_switch_smoke`
-  - Run URL: `TBD`
-  - status/conclusion: `TBD`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22348268347`
+  - status/conclusion: `completed / success`
 
 - Date: `2026-02-24`
   - Change: `S2B-4A/P3-C2-S3S4: search write cutover window (sustained enqueue + outbox drain + ES index)`
   - Drill: `drill-dual-run`
   - scenario_id: `dual_run/search/window_sustained`
-  - Run URL: `TBD`
-  - status/conclusion: `TBD`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22348148713`
+  - status/conclusion: `completed / success`
 
 ## References
 
