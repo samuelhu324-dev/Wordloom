@@ -160,6 +160,22 @@ $env:OUTBOX_METRICS_PORT = "9108"
 python backend/scripts/search_outbox_worker.py
 ```
 
+## P1 固定回归包（write-gate drills，一键触发 + 收集 runs）
+
+在 repo 根目录（PowerShell）：
+
+```powershell
+# 触发 6 个固定 scenarios，并等待全部 completed
+\scripts\p1_write_gate_regression.ps1
+
+# 只收集（不触发），用于把最新 runs 写到 artifacts：
+\scripts\p1_write_gate_regression.ps1 -CollectOnly
+```
+
+输出：
+
+- `artifacts/write_gate_runs.latest.json`（run_id ↔ scenario_id 映射；用于从 GH 下载 artifacts 进行排障）
+
 建议做 bulk 实验时只改 1 个参数，然后看：
 
 - `sum(rate(outbox_processed_total{projection="search_index_to_elastic"}[1m]))`

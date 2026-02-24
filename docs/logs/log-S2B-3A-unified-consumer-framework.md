@@ -146,12 +146,15 @@ S2B-1A / S2B-2A 已经把 Failure Contract（证据链 + 可切写口径 + dual-
 
 **P1.DoD（验收字段）**：
 
-- [ ] 选择一组“必须全绿”的回归 drills（建议至少覆盖）：
-  - [ ] write-gate：幂等/唯一性（1A）
-  - [ ] paging stability + shared keys（2A）
-  - [ ] dual-run stage2 / sustained window（2A）
-  - [ ] canary dual-write + sampling sustained dual-write（2A）
-- [ ] 每次触发都在本 log 的 Evidence 区追加 run URL，并在完成后补齐 conclusion（success/failure）。
+- [x] 选择一组“必须全绿”的回归 drills（固定回归包；当前以 `drill-write-gate` 的 6 个 scenarios 为最小集合）：
+  - [x] write-gate：幂等/唯一性（1A）→ `shadow_verify_search_index_write_gate`
+  - [x] paging stability（2A）→ `shadow_verify_search_index_paging_stability`
+  - [x] shared keys（2A）→ `shadow_verify_shared_keys`
+  - [x] sustained dual-run window（2A）→ `shadow_verify_dual_run_window`
+  - [x] canary dual-write（2A）→ `shadow_verify_canary_dual_write`
+  - [x] sustained dual-write sampling（2A）→ `shadow_verify_dual_write_sampling`
+  - [x] 一键触发/收集入口：`scripts/p1_write_gate_regression.ps1`（会写出 `artifacts/write_gate_runs.latest.json` 作为 run↔scenario 映射）
+- [x] 每次触发都在本 log 的 Evidence 区追加 run URL，并在完成后补齐 conclusion（success/failure）。
 - [ ] 若出现 failure：必须能从 artifacts（summary/logs/traces/zip）定位原因，并在 Evidence 备注里写明“原因 + 处置”。
 
 ### P2（建议/后置）：Phase 2（table merge）开工门槛（何时新开 log）
