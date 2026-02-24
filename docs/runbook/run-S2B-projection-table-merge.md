@@ -81,17 +81,22 @@ write-gate：
 
 - 打开 GitHub Actions：`drill-write-gate`
 - 输入：
-  - `scenario=shadow_verify_search_index_write_gate`
+  - `scenario_id=shadow_verify_search_index_write_gate`
   - 或：
-    - `scenario=shadow_verify_search_index_paging_stability`
-    - `scenario=shadow_verify_shared_keys`
-    - `scenario=shadow_verify_dual_run_readiness_gate`
-    - `scenario=shadow_verify_dual_run_stage1`
-    - `scenario=shadow_verify_dual_run_stage2`
-    - `scenario=shadow_verify_dual_run_window`
-    - `scenario=shadow_verify_canary_dual_write`
-    - `scenario=shadow_verify_dual_write_sampling`
+    - `scenario_id=shadow_verify_search_index_paging_stability`
+    - `scenario_id=shadow_verify_shared_keys`
+    - `scenario_id=shadow_verify_dual_run_readiness_gate`
+    - `scenario_id=shadow_verify_dual_run_stage1`
+    - `scenario_id=shadow_verify_dual_run_stage2`
+    - `scenario_id=shadow_verify_dual_run_window`
+    - `scenario_id=shadow_verify_canary_dual_write`
+    - `scenario_id=shadow_verify_dual_write_sampling`
   - `library_id`（可选；为空则全量）
+
+PowerShell 一键（触发 + 等待完成 + 写出 run↔scenario 映射）：
+
+- `\scripts\p1_write_gate_regression.ps1`
+- 输出：`artifacts/write_gate_runs.latest.json`
 
 ## 5) Local Operation
 
@@ -231,7 +236,7 @@ Profile B（轻量 300s sustained：降低速率，减少总事件数）：
 
 Actions（workflow_dispatch，手动长窗口）：
 
-- `drill-write-gate`：选择 `scenario=shadow_verify_dual_run_window`，并通过 inputs 覆盖：
+- `drill-write-gate`：选择 `scenario_id=shadow_verify_dual_run_window`，并通过 inputs 覆盖：
   - `window_duration_seconds / window_interval_seconds / window_enqueue_batch_size / window_max_total_events / window_drain_timeout_seconds / window_worker_max_runtime_seconds`
 - 本地快速审计（示例）：
   - `jq '{ok, outbox: .outbox.status_counts, enqueued: .outbox.enqueued_total, worker_ok: .worker.ok, parity_ok: .compare.parity_ok, stop: .worker.stop_requested}' docs/labs/_snapshot/auto/S2B-2A-2A/shadow_verify_dual_run_window/<run_id>/_result.json`
