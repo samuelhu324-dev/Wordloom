@@ -95,6 +95,11 @@
 - [x] `P1-C2-S1S2`：落地 schema/index migration（Chronicle-first：为 `chronicle_entries` 补齐 envelope 列/索引；不做 cutover/backfill）。
 - [x] `P1-C2-S3S4`：跑固定 write-gate 回归包 + Evidence 入账。
 
+### P2-C1（migration/backfill 演练准备；no cutover）
+
+- [x] `P2-C1-S1S2`：补齐 backfill/重建路径对新列的写入（重建工具 + worker materialize 均写满 envelope 列，避免默认值掩盖数据）。
+- [ ] `P2-C1-S3S4`：跑固定 write-gate 回归包 + Evidence 入账。
+
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 
 > 本步只做“提案/边界/索引策略草案”，不做 schema migration。

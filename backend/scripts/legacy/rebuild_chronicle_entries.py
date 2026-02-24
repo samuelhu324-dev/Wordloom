@@ -76,6 +76,45 @@ def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _normalize_str(v: Any) -> Optional[str]:
+    if v is None:
+        return None
+    s = str(v).strip()
+    return s or None
+
+
+def _normalize_int(v: Any) -> Optional[int]:
+    if v is None:
+        return None
+    if isinstance(v, int):
+        return v
+    s = str(v).strip()
+    if not s:
+        return None
+    try:
+        return int(s)
+    except ValueError:
+        return None
+
+
+def _extract_envelope(event: ChronicleEventModel) -> tuple[int, str, str, str, Optional[str]]:
+    payload: dict[str, Any] = event.payload or {}
+
+    schema_version = getattr(event, "schema_version", None)
+    provenance = getattr(event, "provenance", None)
+    source = getattr(event, "source", None)
+    actor_kind = getattr(event, "actor_kind", None)
+    correlation_id = getattr(event, "correlation_id", None)
+
+    schema_version = _normalize_int(schema_version) or _normalize_int(payload.get("schema_version")) or 1
+    provenance = _normalize_str(provenance) or _normalize_str(payload.get("provenance")) or "unknown"
+    source = _normalize_str(source) or _normalize_str(payload.get("source")) or "unknown"
+    actor_kind = _normalize_str(actor_kind) or _normalize_str(payload.get("actor_kind")) or "unknown"
+    correlation_id = _normalize_str(correlation_id) or _normalize_str(payload.get("correlation_id"))
+
+    return (schema_version, provenance, source, actor_kind, correlation_id)
+
+
 def _summarize(event: ChronicleEventModel) -> str:
     # Minimal deterministic summary. Intentionally conservative; evolve later.
     if event.block_id:
@@ -187,6 +226,7 @@ async def main_async() -> int:
                     )
             else:
                 for ev in events:
+                    (schema_version, provenance, source, actor_kind, correlation_id) = _extract_envelope(ev)
                     stmt2 = insert(ChronicleEntryModel).values(
                         id=ev.id,
                         event_type=ev.event_type,
@@ -196,6 +236,11 @@ async def main_async() -> int:
                         occurred_at=ev.occurred_at,
                         created_at=ev.created_at,
                         payload=ev.payload or {},
+                        schema_version=schema_version,
+                        provenance=provenance,
+                        source=source,
+                        actor_kind=actor_kind,
+                        correlation_id=correlation_id,
                         summary=_summarize(ev),
                         projection_version=projection_version,
                         updated_at=now,
@@ -210,6 +255,11 @@ async def main_async() -> int:
                             "occurred_at": ev.occurred_at,
                             "created_at": ev.created_at,
                             "payload": ev.payload or {},
+                            "schema_version": schema_version,
+                            "provenance": provenance,
+                            "source": source,
+                            "actor_kind": actor_kind,
+                            "correlation_id": correlation_id,
                             "summary": _summarize(ev),
                             "projection_version": projection_version,
                             "updated_at": now,
