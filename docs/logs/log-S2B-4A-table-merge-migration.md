@@ -90,6 +90,11 @@
 - [x] `P1-C1-S1S2`：schema/index proposal（draft）+ rollback/开关点 checklist（不改 DB、不改入口）。
 - [x] `P1-C1-S3S4`：跑固定 write-gate 回归包 + Evidence 入账（证明“只有文档/清单变更也不破坏回归链路”）。
 
+### P1-C2（schema/index migration；DB change，no cutover/backfill）
+
+- [ ] `P1-C2-S1S2`：落地 schema/index migration（Chronicle-first：为 `chronicle_entries` 补齐 envelope 列/索引；不做 cutover/backfill）。
+- [ ] `P1-C2-S3S4`：跑固定 write-gate 回归包 + Evidence 入账。
+
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 
 > 本步只做“提案/边界/索引策略草案”，不做 schema migration。
