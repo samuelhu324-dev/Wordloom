@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from pathlib import Path
+import sys
 from typing import Protocol
 
 from .types import DrillInputs, DrillResult
@@ -39,6 +41,14 @@ def list_scenarios() -> list[str]:
 
 def load_builtin_scenarios() -> None:
     """Import scenario modules so they can self-register via @register."""
+
+    # When running via `python backend/scripts/cli.py`, Python's sys.path[0] is
+    # `backend/scripts`, so top-level imports like `import api` (from backend/api)
+    # won't resolve unless `backend/` is also on sys.path.
+    backend_dir = Path(__file__).resolve().parents[2]
+    backend_dir_str = str(backend_dir)
+    if backend_dir_str not in sys.path:
+        sys.path.insert(0, backend_dir_str)
 
     from .scenarios import collector_down  # noqa: F401
     from .scenarios import es_429_inject  # noqa: F401
