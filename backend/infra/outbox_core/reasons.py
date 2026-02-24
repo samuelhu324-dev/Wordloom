@@ -39,10 +39,23 @@ def classify_es_bulk_item_failure(*, status_code: int | None) -> tuple[str, bool
 
 
 def classify_httpx_exception_reason(exc: Exception) -> tuple[str, bool]:
-    """Return (reason, retryable) for HTTPX-layer exceptions.
+    """Backwards-compatible alias of `classify_exception_reason`.
 
-    Emits low-cardinality `es_*` reasons suitable for aggregation.
+    Historically used by Search worker to produce low-cardinality `es_*` reasons.
+    """
+
+    return classify_exception_reason(exc)
+
+
+def classify_exception_reason(exc: Exception) -> tuple[str, bool]:
+    """Return (reason, retryable) for an exception.
+
+    Emits low-cardinality reasons suitable for aggregation.
     Unknown exceptions are treated as retryable unless they look deterministic.
+
+    Notes:
+    - If HTTPX is installed and this is an HTTPX exception, emits `es_*` reasons.
+    - Otherwise falls back to `deterministic_exception` vs `unknown_exception`.
     """
 
     # Import locally to keep this module usable in contexts where httpx isn't

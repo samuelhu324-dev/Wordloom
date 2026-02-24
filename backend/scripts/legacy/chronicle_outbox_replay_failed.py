@@ -15,10 +15,8 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from pathlib import Path
-
-from sqlalchemy import select, update, func
 
 # Ensure backend root is on sys.path.
 _HERE = Path(__file__).resolve()
@@ -28,6 +26,7 @@ if str(_BACKEND_ROOT) not in sys.path:
 
 from infra.database.session import get_session_factory
 from infra.database.models.chronicle_outbox_models import ChronicleOutboxEventModel
+from infra.outbox_core.replay import replay_failed_rows
 
 
 def _utc_now() -> datetime:
@@ -61,47 +60,26 @@ async def main_async() -> int:
     now = _utc_now()
     session_factory = await get_session_factory()
 
-    where = [ChronicleOutboxEventModel.status == "failed"]
-    if args.ids:
-        where.append(ChronicleOutboxEventModel.id.in_(list(args.ids)))
-    if args.entity_type:
-        where.append(ChronicleOutboxEventModel.entity_type == args.entity_type)
-    if args.since_hours is not None:
-        where.append(ChronicleOutboxEventModel.updated_at >= (now - timedelta(hours=float(args.since_hours))))
-
     async with session_factory() as session:
-        total = (
-            await session.execute(select(func.count()).select_from(ChronicleOutboxEventModel).where(*where))
-        ).scalar_one()
-
-        to_replay = min(int(total), max(0, int(args.limit)))
-        print(f"Matched failed rows: {int(total)}; will replay: {to_replay} (limit={args.limit})")
-
-        if args.dry_run or to_replay <= 0:
-            return 0
-
-        result = await session.execute(
-            update(ChronicleOutboxEventModel)
-            .where(*where)
-            .values(
-                status="pending",
-                owner=None,
-                lease_until=None,
-                processing_started_at=None,
-                attempts=0,
-                next_retry_at=None,
-                error_reason=None,
-                error=None,
-                replay_count=(ChronicleOutboxEventModel.replay_count + 1),
-                last_replayed_at=now,
-                last_replayed_by=str(args.by)[:120],
-                last_replayed_reason=str(args.reason),
-                updated_at=now,
-            )
+        result = await replay_failed_rows(
+            session,
+            ChronicleOutboxEventModel,
+            now=now,
+            by=args.by,
+            reason=str(args.reason),
+            limit=int(args.limit),
+            entity_type=(str(args.entity_type) if args.entity_type else None),
+            since_hours=(float(args.since_hours) if args.since_hours is not None else None),
+            ids=(list(args.ids) if args.ids else None),
+            dry_run=bool(args.dry_run),
         )
-        await session.commit()
-        changed = int(getattr(result, "rowcount", 0) or 0)
-        print(f"Replayed rows: {changed}")
+
+        print(
+            f"Matched failed rows: {int(result.total_matched)}; "
+            f"will replay: {int(result.will_replay)} (limit={args.limit})"
+        )
+        if not args.dry_run and result.will_replay > 0:
+            print(f"Replayed rows: {int(result.changed)}")
 
     return 0
 

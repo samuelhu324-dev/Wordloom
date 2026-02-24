@@ -64,6 +64,14 @@ from infra.observability.outbox_metrics import (
 from infra.outbox_core.stuck import stuck_processing_predicate
 from infra.outbox_core.claim import claim_pending_batch as outbox_claim_pending_batch
 from infra.outbox_core.reclaim import reclaim_stuck_processing as outbox_reclaim_stuck_processing
+from infra.outbox_core.lease import renew_lease as outbox_renew_lease
+from infra.outbox_core.sanitize import sanitize_terminal_rows as outbox_sanitize_terminal_rows
+from infra.outbox_core.reasons import classify_exception_reason as outbox_classify_exception_reason
+from infra.outbox_core.mark import (
+    mark_done as outbox_mark_done,
+    mark_failed as outbox_mark_failed,
+    mark_retry as outbox_mark_retry,
+)
 from infra.outbox_core.retry import ExponentialBackoffSpec, compute_next_retry_at
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
 
@@ -181,25 +189,6 @@ class DeterministicError(Exception):
     pass
 
 
-async def _sanitize_terminal_rows(session) -> None:
-    """Keep terminal rows in a consistent state."""
-
-    now = _utc_now()
-    await session.execute(
-        update(ChronicleOutboxEventModel)
-        .where(
-            ChronicleOutboxEventModel.processed_at.is_(None),
-            ChronicleOutboxEventModel.status == "failed",
-        )
-        .values(
-            owner=None,
-            lease_until=None,
-            next_retry_at=None,
-            updated_at=now,
-        )
-    )
-
-
 async def _reclaim_stuck_processing(session, *, max_processing_seconds: int) -> int:
     now = _utc_now()
     return await outbox_reclaim_stuck_processing(
@@ -258,63 +247,39 @@ def _compute_next_retry_at(now: datetime, *, attempts: int, base: float, max_bac
 
 async def _mark_done(session, *, ev_id: Any, worker_id: str) -> None:
     now = _utc_now()
-    await session.execute(
-        update(ChronicleOutboxEventModel)
-        .where(
-            ChronicleOutboxEventModel.id == ev_id,
-            ChronicleOutboxEventModel.owner == worker_id,
-            ChronicleOutboxEventModel.status == "processing",
-            ChronicleOutboxEventModel.lease_until > now,
-        )
-        .values(
-            status="done",
-            processed_at=now,
-            owner=None,
-            lease_until=None,
-            processing_started_at=None,
-            next_retry_at=None,
-            error_reason=None,
-            error=None,
-            updated_at=now,
-        )
+    await outbox_mark_done(
+        session,
+        ChronicleOutboxEventModel,
+        ev_id=ev_id,
+        worker_id=worker_id,
+        now=now,
     )
 
 
 async def _mark_retry(session, *, ev_id: Any, reason: str, error: str, attempts: int, next_retry_at: datetime) -> None:
     now = _utc_now()
-    await session.execute(
-        update(ChronicleOutboxEventModel)
-        .where(ChronicleOutboxEventModel.id == ev_id)
-        .values(
-            status="pending",
-            owner=None,
-            lease_until=None,
-            processing_started_at=None,
-            attempts=attempts,
-            next_retry_at=next_retry_at,
-            error_reason=reason,
-            error=error[:8000],
-            updated_at=now,
-        )
+    await outbox_mark_retry(
+        session,
+        ChronicleOutboxEventModel,
+        ev_id=ev_id,
+        reason=reason,
+        error=error,
+        attempts=attempts,
+        next_retry_at=next_retry_at,
+        now=now,
     )
 
 
 async def _mark_failed(session, *, ev_id: Any, reason: str, error: str, attempts: int) -> None:
     now = _utc_now()
-    await session.execute(
-        update(ChronicleOutboxEventModel)
-        .where(ChronicleOutboxEventModel.id == ev_id)
-        .values(
-            status="failed",
-            owner=None,
-            lease_until=None,
-            processing_started_at=None,
-            attempts=attempts,
-            next_retry_at=None,
-            error_reason=reason,
-            error=error[:8000],
-            updated_at=now,
-        )
+    await outbox_mark_failed(
+        session,
+        ChronicleOutboxEventModel,
+        ev_id=ev_id,
+        reason=reason,
+        error=error,
+        attempts=attempts,
+        now=now,
     )
 
 
@@ -576,7 +541,12 @@ async def main_async() -> int:
 
             if reclaim_interval_seconds > 0 and (now_mono - last_reclaim_at) >= reclaim_interval_seconds:
                 async with session_factory() as session:
-                    await _sanitize_terminal_rows(session)
+                    await outbox_sanitize_terminal_rows(
+                        session,
+                        ChronicleOutboxEventModel,
+                        now=_utc_now(),
+                        clear_next_retry_at=True,
+                    )
                     reclaimed = await _reclaim_stuck_processing(session, max_processing_seconds=max_processing_seconds)
                     if reclaimed:
                         logger.info("Reclaimed %s stuck chronicle outbox events", reclaimed)
@@ -713,7 +683,16 @@ async def main_async() -> int:
                                     outbox_owner_mismatch_skips_total.labels(projection=PROJECTION_NAME).inc()
                                 await session.commit()
                                 continue
-                            if db_ev.lease_until is None or db_ev.lease_until <= now:
+
+                            renewed = await outbox_renew_lease(
+                                session,
+                                ChronicleOutboxEventModel,
+                                [ev.id],
+                                worker_id=worker_id,
+                                lease_seconds=float(lease_seconds),
+                                now=now,
+                            )
+                            if renewed <= 0:
                                 await session.commit()
                                 continue
 
@@ -736,38 +715,40 @@ async def main_async() -> int:
                                 outbox_processed_total.labels(projection=PROJECTION_NAME, op=str(db_ev.op)).inc()
                                 outbox_last_success_timestamp_seconds.labels(projection=PROJECTION_NAME).set(now.timestamp())
                             except DeterministicError as exc:
+                                reason = "deterministic_exception"
                                 attempts = int(getattr(ev, "attempts", 0) or 0) + 1
                                 await _mark_failed(
                                     session,
                                     ev_id=ev.id,
-                                    reason="deterministic_exception",
+                                    reason=reason,
                                     error=str(exc),
                                     attempts=attempts,
                                 )
                                 outbox_terminal_failed_total.labels(
                                     projection=PROJECTION_NAME,
                                     op=str(db_ev.op),
-                                    reason="deterministic_exception",
+                                    reason=reason,
                                 ).inc()
                                 outbox_failed_total.labels(
                                     projection=PROJECTION_NAME,
                                     op=str(db_ev.op),
-                                    reason="deterministic_exception",
+                                    reason=reason,
                                 ).inc()
                             except Exception as exc:
                                 attempts = int(getattr(ev, "attempts", 0) or 0) + 1
-                                if attempts >= max_attempts:
+                                reason, retryable = outbox_classify_exception_reason(exc)
+                                if (not retryable) or (attempts >= max_attempts):
                                     await _mark_failed(
                                         session,
                                         ev_id=ev.id,
-                                        reason="unknown_exception",
+                                        reason=reason,
                                         error=str(exc),
                                         attempts=attempts,
                                     )
                                     outbox_terminal_failed_total.labels(
                                         projection=PROJECTION_NAME,
                                         op=str(db_ev.op),
-                                        reason="unknown_exception",
+                                        reason=reason,
                                     ).inc()
                                 else:
                                     next_retry_at = _compute_next_retry_at(
@@ -779,7 +760,7 @@ async def main_async() -> int:
                                     await _mark_retry(
                                         session,
                                         ev_id=ev.id,
-                                        reason="unknown_exception",
+                                        reason=reason,
                                         error=str(exc),
                                         attempts=attempts,
                                         next_retry_at=next_retry_at,
@@ -787,13 +768,13 @@ async def main_async() -> int:
                                     outbox_retry_scheduled_total.labels(
                                         projection=PROJECTION_NAME,
                                         op=str(db_ev.op),
-                                        reason="unknown_exception",
+                                        reason=reason,
                                     ).inc()
 
                                 outbox_failed_total.labels(
                                     projection=PROJECTION_NAME,
                                     op=str(db_ev.op),
-                                    reason="unknown_exception",
+                                    reason=reason,
                                 ).inc()
 
                             await session.commit()
