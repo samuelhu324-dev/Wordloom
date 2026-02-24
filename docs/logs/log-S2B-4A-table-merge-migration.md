@@ -114,6 +114,7 @@
 
 - [x] `P3-C2-S1S2`：Search read switch rehearsal（`SEARCH_MERGED_READ_ENABLED=0/1` provider smoke；CI drill-verify）。
 - [x] `P3-C2-S3S4`：Search write cutover window（sustained window；CI drill-dual-run；scenario=`dual_run/search/window_sustained`）。
+- [x] `P3-C2-S5S6`：跑固定 write-gate 回归包 + Evidence 入账。
 
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 
@@ -510,6 +511,57 @@
   - scenario_id: `dual_run/search/window_sustained`
   - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22348148713`
   - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P3-C2-S5S6: regression after P3-C2-S1S2S3S4 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_write_gate`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22348545688`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P3-C2-S5S6: regression after P3-C2-S1S2S3S4 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_paging_stability`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22348549773`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P3-C2-S5S6: regression after P3-C2-S1S2S3S4 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_shared_keys`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22348553869`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P3-C2-S5S6: regression after P3-C2-S1S2S3S4 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_run_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22348558358`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P3-C2-S5S6: regression after P3-C2-S1S2S3S4 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_canary_dual_write`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22348562380`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P3-C2-S5S6: regression after P3-C2-S1S2S3S4 (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_write_sampling`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22348566572`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Conclusion: `P3-C2 rehearsal/window + regression is green: drill-verify + drill-dual-run passed and fixed write-gate pack remains green (6/6).`
 
 ## References
 
