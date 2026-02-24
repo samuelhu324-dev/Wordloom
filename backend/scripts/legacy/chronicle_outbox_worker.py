@@ -165,19 +165,30 @@ def _normalize_int(v: Any) -> Optional[int]:
 
 
 def _extract_envelope(event: ChronicleEventModel) -> tuple[int, str, str, str, Optional[str]]:
-    payload: dict[str, Any] = event.payload or {}
+    # Payload is the source of truth. Columns may be present but defaulted
+    # (e.g. schema_version=1, provenance/source/actor_kind='unknown') for older
+    # rows or direct SQL inserts.
+    payload = event.payload or {}
+    if not isinstance(payload, dict):
+        payload = {}
 
-    schema_version = getattr(event, "schema_version", None)
-    provenance = getattr(event, "provenance", None)
-    source = getattr(event, "source", None)
-    actor_kind = getattr(event, "actor_kind", None)
-    correlation_id = getattr(event, "correlation_id", None)
+    payload_schema_version = _normalize_int(payload.get("schema_version"))
+    payload_provenance = _normalize_str(payload.get("provenance"))
+    payload_source = _normalize_str(payload.get("source"))
+    payload_actor_kind = _normalize_str(payload.get("actor_kind"))
+    payload_correlation_id = _normalize_str(payload.get("correlation_id"))
 
-    schema_version = _normalize_int(schema_version) or _normalize_int(payload.get("schema_version")) or 1
-    provenance = _normalize_str(provenance) or _normalize_str(payload.get("provenance")) or "unknown"
-    source = _normalize_str(source) or _normalize_str(payload.get("source")) or "unknown"
-    actor_kind = _normalize_str(actor_kind) or _normalize_str(payload.get("actor_kind")) or "unknown"
-    correlation_id = _normalize_str(correlation_id) or _normalize_str(payload.get("correlation_id"))
+    col_schema_version = _normalize_int(getattr(event, "schema_version", None))
+    col_provenance = _normalize_str(getattr(event, "provenance", None))
+    col_source = _normalize_str(getattr(event, "source", None))
+    col_actor_kind = _normalize_str(getattr(event, "actor_kind", None))
+    col_correlation_id = _normalize_str(getattr(event, "correlation_id", None))
+
+    schema_version = payload_schema_version or col_schema_version or 1
+    provenance = payload_provenance or col_provenance or "unknown"
+    source = payload_source or col_source or "unknown"
+    actor_kind = payload_actor_kind or col_actor_kind or "unknown"
+    correlation_id = payload_correlation_id or col_correlation_id
 
     return (schema_version, provenance, source, actor_kind, correlation_id)
 
