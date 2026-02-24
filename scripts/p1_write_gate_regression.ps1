@@ -32,6 +32,12 @@ $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 $PSDefaultParameterValues['Add-Content:Encoding'] = 'utf8'
 $PSDefaultParameterValues['Set-Content:Encoding'] = 'utf8'
 
+function Write-Utf8NoBom([string]$Path, [string]$Content) {
+  $encoding = New-Object System.Text.UTF8Encoding($false)
+  $fullPath = [System.IO.Path]::GetFullPath($Path)
+  [System.IO.File]::WriteAllText($fullPath, $Content, $encoding)
+}
+
 if ($DispatchOnly -and $CollectOnly) {
   throw "Use at most one of -DispatchOnly or -CollectOnly."
 }
@@ -159,7 +165,8 @@ while ($true) {
     New-Item -ItemType Directory -Force $outDir | Out-Null
   }
 
-  $selected | ConvertTo-Json -Depth 6 | Set-Content -Encoding utf8 $OutPath
+  $json = $selected | ConvertTo-Json -Depth 6
+  Write-Utf8NoBom -Path $OutPath -Content ($json + "`n")
 
   Write-Host ("Selected runs: {0}/{1}" -f $selected.Count, $expected.Count)
   ($selected | Format-Table -AutoSize scenario_id,run_id,status,conclusion,url | Out-String) | Write-Host
