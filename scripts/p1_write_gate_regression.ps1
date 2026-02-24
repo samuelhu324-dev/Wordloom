@@ -161,7 +161,7 @@ while ($true) {
 
   Write-Host "Evidence snippet (paste into log):"
   foreach ($row in $selected) {
-    Write-Host ("- Drill: `drill-write-gate` | scenario_id: `{0}` | Run URL: {1} | status/conclusion: `{2} / {3}`" -f $row.scenario_id, $row.url, $row.status, $row.conclusion)
+    Write-Host ("- Drill: drill-write-gate | scenario_id: {0} | Run URL: {1} | status/conclusion: {2} / {3}" -f $row.scenario_id, $row.url, $row.status, $row.conclusion)
   }
 
   break
