@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -142,6 +143,12 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--truncate", action="store_true", help="Delete all rows in chronicle_entries first")
     p.add_argument("--emit-outbox", action="store_true", help="Enqueue chronicle_outbox_events instead of writing entries")
     p.add_argument("--limit", type=int, default=0, help="Optional limit (0 means no limit)")
+    p.add_argument(
+        "--event-id",
+        type=str,
+        default="",
+        help="Optional: rebuild only a single chronicle_event id (UUID).",
+    )
     return p.parse_args()
 
 
@@ -174,6 +181,13 @@ async def _set_projection_status(session, *, success: bool, error: Optional[str]
 async def main_async() -> int:
     args = _parse_args()
 
+    event_id: uuid.UUID | None = None
+    if str(getattr(args, "event_id", "") or "").strip():
+        try:
+            event_id = uuid.UUID(str(args.event_id).strip())
+        except Exception as exc:  # noqa: BLE001
+            raise SystemExit(f"Invalid --event-id: {args.event_id!r}") from exc
+
     (
         projection_rebuild_duration_seconds,
         projection_rebuild_last_finished_timestamp_seconds,
@@ -198,7 +212,10 @@ async def main_async() -> int:
                 await session.execute(delete(ChronicleOutboxEventModel))
 
             limit = int(args.limit or 0)
-            stmt = select(ChronicleEventModel).order_by(ChronicleEventModel.occurred_at.asc(), ChronicleEventModel.id.asc())
+            stmt = select(ChronicleEventModel)
+            if event_id is not None:
+                stmt = stmt.where(ChronicleEventModel.id == event_id)
+            stmt = stmt.order_by(ChronicleEventModel.occurred_at.asc(), ChronicleEventModel.id.asc())
             if limit > 0:
                 stmt = stmt.limit(limit)
 

@@ -14,6 +14,9 @@ from cli_app.labs.failure_drills import cmd_labs_export as _cmd_labs_export_impl
 from cli_app.labs.failure_drills import cmd_labs_run as _cmd_labs_run_impl
 from cli_app.labs.failure_drills import cmd_labs_verify as _cmd_labs_verify_impl
 from cli_app.labs.jaeger_export import cmd_labs_export_jaeger as _cmd_labs_export_jaeger_impl
+from cli_app.labs.chronicle_rehearsal import (
+    cmd_labs_chronicle_entries_envelope_backfill_rehearsal as _cmd_labs_chronicle_entries_envelope_backfill_rehearsal_impl,
+)
 from cli_app.labs.shadow_verify import (
     cmd_labs_shadow_verify_canary_dual_write as _cmd_labs_shadow_verify_canary_dual_write_impl,
 )
@@ -47,6 +50,7 @@ LAB_ID_S2B_1A_1A = "S2B-1A-1A"
 LAB_ID_S2B_1A_2A = "S2B-1A-2A"
 LAB_ID_S2B_2A_1A = "S2B-2A-1A"
 LAB_ID_S2B_2A_2A = "S2B-2A-2A"
+LAB_ID_S2B_4A_P2_C2 = "S2B-4A-P2-C2"
 
 SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES = "shadow_verify_chronicle_entries"
 SCENARIO_SHADOW_VERIFY_SEARCH_INDEX = "shadow_verify_search_index"
@@ -59,6 +63,8 @@ SCENARIO_SHADOW_VERIFY_DUAL_RUN_STAGE2 = "shadow_verify_dual_run_stage2"
 SCENARIO_SHADOW_VERIFY_DUAL_RUN_WINDOW = "shadow_verify_dual_run_window"
 SCENARIO_SHADOW_VERIFY_CANARY_DUAL_WRITE = "shadow_verify_canary_dual_write"
 SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING = "shadow_verify_dual_write_sampling"
+
+SCENARIO_REHEARSAL_CHRONICLE_ENTRIES_ENVELOPE_BACKFILL = "rehearsal_chronicle_entries_envelope_backfill"
 
 SCENARIO_ES_WRITE_BLOCK_4XX = "es_write_block_4xx"
 SCENARIO_ES_429_INJECT = "es_429_inject"
@@ -86,6 +92,11 @@ def build_callbacks() -> dict[str, Callback]:
             _cmd_labs_shadow_verify_chronicle_entries_impl,
             lab_id=LAB_ID_S2B_1A_1A,
             scenario=SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES,
+        ),
+        "_cmd_labs_chronicle_entries_envelope_backfill_rehearsal": partial(
+            _cmd_labs_chronicle_entries_envelope_backfill_rehearsal_impl,
+            lab_id=LAB_ID_S2B_4A_P2_C2,
+            scenario=SCENARIO_REHEARSAL_CHRONICLE_ENTRIES_ENVELOPE_BACKFILL,
         ),
         "_cmd_labs_shadow_verify_search_index": partial(
             _cmd_labs_shadow_verify_search_index_impl,

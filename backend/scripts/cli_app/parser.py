@@ -48,6 +48,16 @@ def build_parser(*, callbacks: dict[str, Callback]) -> argparse.ArgumentParser:
     sv.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
     sv.set_defaults(func=cb("_cmd_labs_shadow_verify_chronicle_entries"))
 
+    p2c2 = labs_sub.add_parser(
+        "chronicle-entries-envelope-backfill-rehearsal",
+        help="Labs-P2C2: rehearsal of chronicle_entries envelope backfill (writes _result.json)",
+    )
+    p2c2.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    p2c2.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    p2c2.add_argument("--run-id", help="Optional run_id folder name")
+    p2c2.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    p2c2.set_defaults(func=cb("_cmd_labs_chronicle_entries_envelope_backfill_rehearsal"))
+
     sv_search = labs_sub.add_parser(
         "shadow-verify-search-index",
         help="Labs-011: shadow verify search_index vs source tables (writes _result.json)",
