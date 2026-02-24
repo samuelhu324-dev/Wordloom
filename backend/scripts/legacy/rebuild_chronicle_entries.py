@@ -27,7 +27,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.dialects.postgresql import insert
 
 _HERE = Path(__file__).resolve()
-_BACKEND_ROOT = _HERE.parents[1]
+_BACKEND_ROOT = _HERE.parents[2]
 if str(_BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(_BACKEND_ROOT))
 
