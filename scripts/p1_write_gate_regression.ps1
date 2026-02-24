@@ -117,7 +117,12 @@ while ($true) {
     if ($chosen.Count -ge $expected.Count) { break }
 
     $runId = [int64]$run.databaseId
-    $log = (gh run view $runId --repo $Repo --log 2>$null)
+    $log = $null
+    try {
+      $log = (gh run view $runId --repo $Repo --log 2>$null)
+    } catch {
+      $log = $null
+    }
     $scenarioId = Parse-ScenarioIdFromLog -log $log
     if (-not $scenarioId) { continue }
     if (($expected -notcontains $scenarioId) -or $chosen.ContainsKey($scenarioId)) { continue }
