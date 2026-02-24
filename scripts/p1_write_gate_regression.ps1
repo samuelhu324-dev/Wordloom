@@ -43,9 +43,9 @@ function Require-Command([string]$cmd) {
   }
 }
 
-function Get-GitValue([string[]]$args) {
-  $v = (& git @args).Trim()
-  if (-not $v) { throw "git @($args -join ' ') returned empty" }
+function Get-GitValue([string[]]$gitArgs) {
+  $v = (& git @gitArgs).Trim()
+  if (-not $v) { throw "git @($gitArgs -join ' ') returned empty" }
   return $v
 }
 
