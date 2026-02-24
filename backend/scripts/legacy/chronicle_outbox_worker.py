@@ -67,6 +67,11 @@ from infra.outbox_core.reclaim import reclaim_stuck_processing as outbox_reclaim
 from infra.outbox_core.lease import renew_lease as outbox_renew_lease
 from infra.outbox_core.sanitize import sanitize_terminal_rows as outbox_sanitize_terminal_rows
 from infra.outbox_core.reasons import classify_exception_reason as outbox_classify_exception_reason
+from infra.outbox_core.mark import (
+    mark_done as outbox_mark_done,
+    mark_failed as outbox_mark_failed,
+    mark_retry as outbox_mark_retry,
+)
 from infra.outbox_core.retry import ExponentialBackoffSpec, compute_next_retry_at
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
 
@@ -242,63 +247,39 @@ def _compute_next_retry_at(now: datetime, *, attempts: int, base: float, max_bac
 
 async def _mark_done(session, *, ev_id: Any, worker_id: str) -> None:
     now = _utc_now()
-    await session.execute(
-        update(ChronicleOutboxEventModel)
-        .where(
-            ChronicleOutboxEventModel.id == ev_id,
-            ChronicleOutboxEventModel.owner == worker_id,
-            ChronicleOutboxEventModel.status == "processing",
-            ChronicleOutboxEventModel.lease_until > now,
-        )
-        .values(
-            status="done",
-            processed_at=now,
-            owner=None,
-            lease_until=None,
-            processing_started_at=None,
-            next_retry_at=None,
-            error_reason=None,
-            error=None,
-            updated_at=now,
-        )
+    await outbox_mark_done(
+        session,
+        ChronicleOutboxEventModel,
+        ev_id=ev_id,
+        worker_id=worker_id,
+        now=now,
     )
 
 
 async def _mark_retry(session, *, ev_id: Any, reason: str, error: str, attempts: int, next_retry_at: datetime) -> None:
     now = _utc_now()
-    await session.execute(
-        update(ChronicleOutboxEventModel)
-        .where(ChronicleOutboxEventModel.id == ev_id)
-        .values(
-            status="pending",
-            owner=None,
-            lease_until=None,
-            processing_started_at=None,
-            attempts=attempts,
-            next_retry_at=next_retry_at,
-            error_reason=reason,
-            error=error[:8000],
-            updated_at=now,
-        )
+    await outbox_mark_retry(
+        session,
+        ChronicleOutboxEventModel,
+        ev_id=ev_id,
+        reason=reason,
+        error=error,
+        attempts=attempts,
+        next_retry_at=next_retry_at,
+        now=now,
     )
 
 
 async def _mark_failed(session, *, ev_id: Any, reason: str, error: str, attempts: int) -> None:
     now = _utc_now()
-    await session.execute(
-        update(ChronicleOutboxEventModel)
-        .where(ChronicleOutboxEventModel.id == ev_id)
-        .values(
-            status="failed",
-            owner=None,
-            lease_until=None,
-            processing_started_at=None,
-            attempts=attempts,
-            next_retry_at=None,
-            error_reason=reason,
-            error=error[:8000],
-            updated_at=now,
-        )
+    await outbox_mark_failed(
+        session,
+        ChronicleOutboxEventModel,
+        ev_id=ev_id,
+        reason=reason,
+        error=error,
+        attempts=attempts,
+        now=now,
     )
 
 
