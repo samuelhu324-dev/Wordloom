@@ -85,6 +85,61 @@
 
 - [x] `P0-C1-S1S2`：固定 write-gate 回归包 baseline 已完成，并已在 Evidence 入账（6/6 success）。
 
+### P1-C1（schema/index 提案 + 回滚清单；no DB change）
+
+- [ ] `P1-C1-S1S2`：schema/index proposal（draft）+ rollback/开关点 checklist（不改 DB、不改入口）。
+- [ ] `P1-C1-S3S4`：跑固定 write-gate 回归包 + Evidence 入账（证明“只有文档/清单变更也不破坏回归链路”）。
+
+## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
+
+> 本步只做“提案/边界/索引策略草案”，不做 schema migration。
+
+**Context（来自 runbook/ADR 的事实点）**:
+
+- Chronicle：旧 SoT 为 `chronicle_events`，新投影表为 `chronicle_entries`（runbook）。
+- 固定顺序：`Shadow → Dual-run → Cutover(先读后写) → Cleanup`（ADR）。
+
+**Constraints**:
+
+- 不新增第二套入口：仍以 `docs/runbook/run-S2B-projection-table-merge.md` + `drill-write-gate` + `backend/scripts/cli.py` 为单入口。
+- 列/索引只承载“稳定、低基数、调度/过滤必需”的字段；避免把每个业务细节都变成索引。
+
+**Minimal schema（draft，先写原则与占位；后续 P1-C2 才落地到 DB）**:
+
+- 必需：能够支撑 claim/reclaim/verify 的调度字段（例如 status + available_at/next_retry_at + owner/lease_until/processing_started_at 等“调度维度”）。
+- 必需：能够用于排障与审计的低基数字段（例如 projection / event_type / schema_version / error_reason 的低基数枚举）。
+- payload：高基数业务字段放 payload（JSON/文本），只保留 schema_version 之类稳定路由字段上浮。
+
+**Index policy（draft）**:
+
+- P0（必须）：驱动调度/claim/reclaim 的索引（以 status/available_at/lease_until 等调度字段为中心）。
+- P1（建议）：排障/聚合索引（例如 projection + event_type）。
+- 禁止：为每个临时业务字段随意加索引（需要在本 log 明确“为何必须 + 代价 + 回滚方案”）。
+
+## P1-C1-S2（Rollback / Switch Checklist，no DB change）
+
+> 本步只把“回滚与开关点”写清楚，确保后续切换时是可执行的。
+
+**Read switch（回滚优先级最高）**:
+
+- Chronicle read switch：`MERGED_READ_ENABLED=0/1`（runbook）。
+- Search read switch：`SEARCH_MERGED_READ_ENABLED=0/1`（runbook；不复用 Chronicle 的开关）。
+
+**Write switch / runtime control（先停新写侧，再恢复旧 claim）**:
+
+- Worker 一键回滚（Search outbox worker）：`SEARCH_OUTBOX_WORKER_ENABLED=0/1`（runbook）。
+- 限速/隔离（用于窗口期风险控制）：`OUTBOX_CONCURRENCY`、`OUTBOX_BULK_SIZE`/`OUTBOX_BATCH_SIZE`（runbook）。
+
+**Rollback sequence（最小可执行顺序，draft）**:
+
+- 先回读：将 read switch 置回旧路径（优先级最高；目标是快速止血）。
+- 再停新写：关闭新写侧/worker（若存在），避免继续写入造成状态分叉。
+- 再恢复旧 claim：恢复旧 worker/旧 claim 入口（保持单入口，不新增第二套脚本）。
+
+**Cutover guard（进入 cutover 前必须满足）**:
+
+- 固定 write-gate 回归包持续全绿；并且窗口类场景（dual-run window / canary / sampling）可从 artifacts 解释。
+
 ## Evidence
 
 固定 write-gate 回归包（6 scenarios）run↔scenario 映射：
