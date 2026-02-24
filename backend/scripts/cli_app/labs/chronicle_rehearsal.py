@@ -74,3 +74,53 @@ def cmd_labs_chronicle_entries_envelope_backfill_rehearsal(
     print(f"outputs: {outdir}")
 
     return 0 if ok else 2
+
+
+def cmd_labs_chronicle_read_switch_smoke_rehearsal(
+    args: argparse.Namespace,
+    *,
+    lab_id: str,
+    scenario: str,
+    now_run_id: Callable[[], str] = _labs_shared.now_run_id,
+    default_outdir: Callable[..., Path] = _labs_shared.default_auto_outdir,
+    ensure_dir: Callable[[Path], None] = _labs_shared.ensure_dir,
+    load_env: Callable[..., dict[str, str]] = _labs_shared.load_env,
+) -> int:
+    log_prefix = "labs chronicle-read-switch-smoke-rehearsal"
+
+    run_id = args.run_id or now_run_id()
+    outdir = Path(args.outdir) if args.outdir else default_outdir(lab_id=lab_id, scenario=scenario, run_id=run_id)
+    ensure_dir(outdir)
+
+    env = load_env(env_file=args.env_file)
+    database_url = _require_database_url(env=env, provided=args.database_url, log_prefix=log_prefix)
+    if not database_url:
+        return 2
+
+    input_payload = dict(vars(args))
+    input_payload.pop("func", None)
+    input_payload.update(
+        {
+            "scenario": scenario,
+            "scope_id": lab_id,
+            "run_id": run_id,
+            "outdir": str(outdir),
+            "database_url": database_url,
+        }
+    )
+
+    result = _invoke_and_pack(scenario=scenario, payload=input_payload, outdir=outdir)
+
+    ok = bool(result.get("ok"))
+    event_id = str(result.get("event_id") or "")
+    book_id = str(result.get("book_id") or "")
+
+    print("labs-p3c1.rehearsal_chronicle_read_switch_smoke")
+    if event_id:
+        print(f"event_id={event_id}")
+    if book_id:
+        print(f"book_id={book_id}")
+    print(f"ok={ok}")
+    print(f"outputs: {outdir}")
+
+    return 0 if ok else 2

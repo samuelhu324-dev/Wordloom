@@ -111,6 +111,26 @@ scenarios:
       - pipeline:chronicle
       - runtime:db_only
 
+  - id: rehearsal/chronicle/read_switch_smoke
+    aliases:
+      - rehearsal_chronicle_read_switch_smoke
+    cli: >-
+      python backend/scripts/cli.py labs chronicle-read-switch-smoke-rehearsal
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - workflow:drill-verify
+      - intent:rehearsal
+      - pipeline:chronicle
+      - runtime:db_only
+
   - id: readiness/search/dual_run_gate
     aliases:
       - shadow_verify_dual_run_readiness_gate
