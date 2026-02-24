@@ -579,6 +579,50 @@ S3（Regression evidence / after P0-C7-S2 on S2B-3A）：
   - status/conclusion: `completed / success`
   - Notes: `S3 regression (after P0-C7-S2): sustained dual-write sampling parity remains green.`
 
+P1（固定回归包：write-gate 6 scenarios；一键收集 runs 映射到 `artifacts/write_gate_runs.latest.json`）：
+
+- Date: `2026-02-24`
+  - Change: `S2B-3A/P1 (commit a0c2f6f5)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_write_gate`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22338814416`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-3A/P1 (commit a0c2f6f5)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_paging_stability`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22338815179`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-3A/P1 (commit a0c2f6f5)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_shared_keys`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22338815985`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-3A/P1 (commit a0c2f6f5)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_run_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22338816944`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-3A/P1 (commit a0c2f6f5)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_canary_dual_write`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22338817846`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-24`
+  - Change: `S2B-3A/P1 (commit a0c2f6f5)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_write_sampling`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22338818809`
+  - status/conclusion: `completed / success`
+
 ## References
 
 - `docs/logs/log-S2B-projection-table-merge.md`
