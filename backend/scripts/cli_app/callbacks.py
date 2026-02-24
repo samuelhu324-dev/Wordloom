@@ -20,6 +20,9 @@ from cli_app.labs.chronicle_rehearsal import (
 from cli_app.labs.chronicle_rehearsal import (
     cmd_labs_chronicle_read_switch_smoke_rehearsal as _cmd_labs_chronicle_read_switch_smoke_rehearsal_impl,
 )
+from cli_app.labs.search_rehearsal import (
+    cmd_labs_search_read_switch_smoke_rehearsal as _cmd_labs_search_read_switch_smoke_rehearsal_impl,
+)
 from cli_app.labs.shadow_verify import (
     cmd_labs_shadow_verify_canary_dual_write as _cmd_labs_shadow_verify_canary_dual_write_impl,
 )
@@ -55,6 +58,7 @@ LAB_ID_S2B_2A_1A = "S2B-2A-1A"
 LAB_ID_S2B_2A_2A = "S2B-2A-2A"
 LAB_ID_S2B_4A_P2_C2 = "S2B-4A-P2-C2"
 LAB_ID_S2B_4A_P3_C1 = "S2B-4A-P3-C1"
+LAB_ID_S2B_4A_P3_C2 = "S2B-4A-P3-C2"
 
 SCENARIO_SHADOW_VERIFY_CHRONICLE_ENTRIES = "shadow_verify_chronicle_entries"
 SCENARIO_SHADOW_VERIFY_SEARCH_INDEX = "shadow_verify_search_index"
@@ -70,6 +74,7 @@ SCENARIO_SHADOW_VERIFY_DUAL_WRITE_SAMPLING = "shadow_verify_dual_write_sampling"
 
 SCENARIO_REHEARSAL_CHRONICLE_ENTRIES_ENVELOPE_BACKFILL = "rehearsal_chronicle_entries_envelope_backfill"
 SCENARIO_REHEARSAL_CHRONICLE_READ_SWITCH_SMOKE = "rehearsal_chronicle_read_switch_smoke"
+SCENARIO_REHEARSAL_SEARCH_READ_SWITCH_SMOKE = "rehearsal_search_read_switch_smoke"
 
 SCENARIO_ES_WRITE_BLOCK_4XX = "es_write_block_4xx"
 SCENARIO_ES_429_INJECT = "es_429_inject"
@@ -107,6 +112,11 @@ def build_callbacks() -> dict[str, Callback]:
             _cmd_labs_chronicle_read_switch_smoke_rehearsal_impl,
             lab_id=LAB_ID_S2B_4A_P3_C1,
             scenario=SCENARIO_REHEARSAL_CHRONICLE_READ_SWITCH_SMOKE,
+        ),
+        "_cmd_labs_search_read_switch_smoke_rehearsal": partial(
+            _cmd_labs_search_read_switch_smoke_rehearsal_impl,
+            lab_id=LAB_ID_S2B_4A_P3_C2,
+            scenario=SCENARIO_REHEARSAL_SEARCH_READ_SWITCH_SMOKE,
         ),
         "_cmd_labs_shadow_verify_search_index": partial(
             _cmd_labs_shadow_verify_search_index_impl,

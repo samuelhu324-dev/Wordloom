@@ -72,5 +72,6 @@ def load_builtin_scenarios() -> None:
     from .scenarios import shadow_verify_dual_run_window  # noqa: F401
     from .scenarios import rehearsal_chronicle_entries_envelope_backfill  # noqa: F401
     from .scenarios import rehearsal_chronicle_read_switch_smoke  # noqa: F401
+    from .scenarios import rehearsal_search_read_switch_smoke  # noqa: F401
 
     return None

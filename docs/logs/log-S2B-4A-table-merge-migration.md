@@ -110,6 +110,11 @@
 - [x] `P3-C1-S1S2`：Chronicle read switch rehearsal（`MERGED_READ_ENABLED=0/1` smoke；CI drill-verify）。
 - [x] `P3-C1-S3S4`：跑固定 write-gate 回归包 + Evidence 入账。
 
+### P3-C2（cutover + 窗口观察）
+
+- [ ] `P3-C2-S1S2`：Search read switch rehearsal（`SEARCH_MERGED_READ_ENABLED=0/1` provider smoke；CI drill-verify）。
+- [ ] `P3-C2-S3S4`：Search write cutover window（sustained window；CI drill-dual-run；scenario=`dual_run/search/window_sustained`）。
+
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 
 > 本步只做“提案/边界/索引策略草案”，不做 schema migration。
@@ -491,6 +496,20 @@
 
 - Date: `2026-02-24`
   - Conclusion: `P3-C1 rehearsal + regression is green: drill-verify passed and fixed write-gate pack remains green (6/6).`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P3-C2-S1S2: search read switch smoke rehearsal (SEARCH_MERGED_READ_ENABLED=0/1 provider selection)`
+  - Drill: `drill-verify`
+  - scenario_id: `rehearsal/search/read_switch_smoke`
+  - Run URL: `TBD`
+  - status/conclusion: `TBD`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P3-C2-S3S4: search write cutover window (sustained enqueue + outbox drain + ES index)`
+  - Drill: `drill-dual-run`
+  - scenario_id: `dual_run/search/window_sustained`
+  - Run URL: `TBD`
+  - status/conclusion: `TBD`
 
 ## References
 
