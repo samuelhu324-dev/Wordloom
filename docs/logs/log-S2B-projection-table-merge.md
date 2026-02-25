@@ -14,7 +14,7 @@
   **adr**: `docs/adr/adr-S2B-projection-table-merge.md`
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-15`
-**updated**: `2026-02-24`
+**updated**: `2026-02-25`
 
 ---
 
@@ -65,6 +65,7 @@
   - `docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md`
 - ✅ Phase 1（unified consumer framework / outbox_core）已收口并稳定：`docs/logs/log-S2B-3A-unified-consumer-framework.md`
 - ⏳ Phase 2（table merge / migration）进行中（Chronicle-first，含回归证据链）：`docs/logs/log-S2B-4A-table-merge-migration.md`
+  - `P4-C2` 已完成第一项真实 cleanup（删除 legacy tracked artifacts snapshots），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
 
 ## Next（下一步做什么 / 开什么 log）
 
