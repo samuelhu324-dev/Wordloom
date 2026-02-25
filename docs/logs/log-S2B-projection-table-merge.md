@@ -67,6 +67,7 @@
 - ⏳ Phase 2（table merge / migration）进行中（Chronicle-first，含回归证据链）：`docs/logs/log-S2B-4A-table-merge-migration.md`
   - `P4-C2` 已完成第一项真实 cleanup（删除 legacy tracked artifacts snapshots），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
   - `P4-C3(Search)` 已完成 cleanup（删除冗余 Search ops worker shim，并把 dual-run 场景改用稳定 worker 入口），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
+  - `P4-C4(Chronicle)` 已完成 cleanup（补齐 `backend/scripts/chronicle_*` 稳定入口并移除冗余 Chronicle ops worker shim），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
 
 ## Next（下一步做什么 / 开什么 log）
 

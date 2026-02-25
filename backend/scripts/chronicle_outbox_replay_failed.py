@@ -1,7 +1,7 @@
-"""Stable shim for the chronicle outbox worker.
+"""Stable entrypoint for chronicle outbox replay tool.
 
 The implementation currently lives under backend/scripts/legacy/.
-This file exists to keep historical docs/runbooks working after script taxonomy cutover.
+This shim keeps docs/runbooks using backend/scripts/chronicle_outbox_replay_failed.py working.
 """
 
 from __future__ import annotations
@@ -12,13 +12,14 @@ from pathlib import Path
 
 
 def main() -> None:
-    backend_root = Path(__file__).resolve().parents[1]
+    scripts_dir = Path(__file__).resolve().parent
+    backend_root = scripts_dir.parent
     if str(backend_root) not in sys.path:
         sys.path.insert(0, str(backend_root))
 
-    legacy_script = Path(__file__).resolve().parents[1] / "legacy" / "chronicle_outbox_worker.py"
+    legacy_script = scripts_dir / "legacy" / "chronicle_outbox_replay_failed.py"
     if not legacy_script.exists():
-        raise SystemExit(f"legacy worker not found: {legacy_script}")
+        raise SystemExit(f"legacy tool not found: {legacy_script}")
     runpy.run_path(str(legacy_script), run_name="__main__")
 
 

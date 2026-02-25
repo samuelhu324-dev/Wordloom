@@ -71,7 +71,7 @@
 
 - 关键入口已按“稳定路径优先”的规则落地：
   - Search：`backend/scripts/ops/run_worker.sh` + `backend/scripts/search_outbox_worker.py`
-  - Chronicle：`backend/scripts/ops/chronicle_outbox_worker.py`
+  - Chronicle：`backend/scripts/chronicle_outbox_worker.py`
   - Replay/Rebuild：`backend/scripts/(search_outbox_replay_failed|chronicle_outbox_replay_failed|rebuild_search_index|rebuild_chronicle_entries).py`
 
 **archived**:
