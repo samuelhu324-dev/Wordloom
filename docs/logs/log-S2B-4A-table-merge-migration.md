@@ -757,6 +757,105 @@
 - Date: `2026-02-24`
   - Conclusion: `P4-C2 post-cleanup regression is green: cleanup is regression-safe and fixed write-gate pack remains green (6/6).`
 
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S1S2: pre-cleanup regression (fixed write-gate pack)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_write_gate`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22377902365`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S1S2: pre-cleanup regression (fixed write-gate pack)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_paging_stability`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22377903257`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S1S2: pre-cleanup regression (fixed write-gate pack)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_shared_keys`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22377904316`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S1S2: pre-cleanup regression (fixed write-gate pack)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_run_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22377905240`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S1S2: pre-cleanup regression (fixed write-gate pack)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_canary_dual_write`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22377906221`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S1S2: pre-cleanup regression (fixed write-gate pack)`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_write_sampling`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22377907168`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Conclusion: `P4-C3 pre-cleanup regression is green: fixed write-gate pack remains green (6/6).`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S3: cleanup - remove unused Search ops worker shim (use stable entrypoint)`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S4S5: post-cleanup regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_write_gate`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22378693742`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S4S5: post-cleanup regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_paging_stability`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22378694617`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S4S5: post-cleanup regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_shared_keys`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22378695629`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S4S5: post-cleanup regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_run_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22378696619`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S4S5: post-cleanup regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_canary_dual_write`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22378697373`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Change: `S2B-4A/P4-C3-S4S5: post-cleanup regression (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_write_sampling`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22378698264`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-25`
+  - Conclusion: `P4-C3 post-cleanup regression is green: cleanup is regression-safe and fixed write-gate pack remains green (6/6).`
+
 ## References
 
 - `docs/adr/adr-S2B-projection-table-merge.md`
