@@ -127,6 +127,24 @@
 - [x] `P4-C2-S3`：删除 legacy tracked artifacts snapshots（旧 write-gate run dumps；仅保留 latest SoT）。
 - [x] `P4-C2-S4S5`：cleanup 后再跑固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
 
+### P4-C3（Search cleanup：remove ops worker shim; keep stable entrypoint）
+
+- [x] `P4-C3-S1S2`：cleanup 前跑固定 write-gate 回归包 + Evidence 入账（pre）。
+- [x] `P4-C3-S3`：cleanup - remove unused Search ops worker shim（use stable entrypoint）。
+- [x] `P4-C3-S4S5`：cleanup 后再跑固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
+
+### P4-C4（Chronicle cleanup：restore stable entrypoints; retire ops worker shim）
+
+- [x] `P4-C4-S1S2`：cleanup 前跑固定 write-gate 回归包 + Evidence 入账（pre）。
+- [x] `P4-C4-S3`：cleanup - restore stable chronicle worker/replay entrypoints（scripts/） and retire ops worker shim。
+- [x] `P4-C4-S4S5`：cleanup 后再跑固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
+
+### P4-C5（Search cleanup：add missing stable replay entrypoint）
+
+- [x] `P4-C5-S1S2`：cleanup 前跑固定 write-gate 回归包 + Evidence 入账（pre）。
+- [x] `P4-C5-S3`：cleanup - add missing stable search replay entrypoint（scripts/）。
+- [x] `P4-C5-S4S5`：cleanup 后再跑固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
+
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 
 > 本步只做“提案/边界/索引策略草案”，不做 schema migration。
