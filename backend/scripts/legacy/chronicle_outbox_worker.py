@@ -35,7 +35,7 @@ from sqlalchemy import func, select, update
 from sqlalchemy.dialects.postgresql import insert
 
 _HERE = Path(__file__).resolve()
-_BACKEND_ROOT = _HERE.parents[1]
+_BACKEND_ROOT = _HERE.parents[2]
 if str(_BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(_BACKEND_ROOT))
 
@@ -141,6 +141,56 @@ class _OutboxEventRow:
 
 def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
+
+
+def _normalize_str(v: Any) -> Optional[str]:
+    if v is None:
+        return None
+    s = str(v).strip()
+    return s or None
+
+
+def _normalize_int(v: Any) -> Optional[int]:
+    if v is None:
+        return None
+    if isinstance(v, int):
+        return v
+    s = str(v).strip()
+    if not s:
+        return None
+    try:
+        return int(s)
+    except ValueError:
+        return None
+
+
+def _extract_envelope(event: ChronicleEventModel) -> tuple[int, str, str, str, Optional[str]]:
+    # Payload is the source of truth. Columns may be present but defaulted
+    # (e.g. schema_version=1, provenance/source/actor_kind='unknown') for older
+    # rows or direct SQL inserts.
+    payload = event.payload or {}
+    if not isinstance(payload, dict):
+        payload = {}
+
+    payload_schema_version = _normalize_int(payload.get("schema_version"))
+    payload_provenance = _normalize_str(payload.get("provenance"))
+    payload_source = _normalize_str(payload.get("source"))
+    payload_actor_kind = _normalize_str(payload.get("actor_kind"))
+    payload_correlation_id = _normalize_str(payload.get("correlation_id"))
+
+    col_schema_version = _normalize_int(getattr(event, "schema_version", None))
+    col_provenance = _normalize_str(getattr(event, "provenance", None))
+    col_source = _normalize_str(getattr(event, "source", None))
+    col_actor_kind = _normalize_str(getattr(event, "actor_kind", None))
+    col_correlation_id = _normalize_str(getattr(event, "correlation_id", None))
+
+    schema_version = payload_schema_version or col_schema_version or 1
+    provenance = payload_provenance or col_provenance or "unknown"
+    source = payload_source or col_source or "unknown"
+    actor_kind = payload_actor_kind or col_actor_kind or "unknown"
+    correlation_id = payload_correlation_id or col_correlation_id
+
+    return (schema_version, provenance, source, actor_kind, correlation_id)
 
 
 def _get_int_env(name: str, default: int) -> int:
@@ -301,6 +351,7 @@ async def _process_one(session, row: _OutboxEventRow) -> None:
 
     now = _utc_now()
     projection_version = _get_projection_version()
+    (schema_version, provenance, source, actor_kind, correlation_id) = _extract_envelope(ev)
     stmt = insert(ChronicleEntryModel).values(
         id=ev.id,
         event_type=ev.event_type,
@@ -310,6 +361,11 @@ async def _process_one(session, row: _OutboxEventRow) -> None:
         occurred_at=ev.occurred_at,
         created_at=ev.created_at,
         payload=ev.payload or {},
+        schema_version=schema_version,
+        provenance=provenance,
+        source=source,
+        actor_kind=actor_kind,
+        correlation_id=correlation_id,
         summary=_summarize(ev),
         projection_version=projection_version,
         updated_at=now,
@@ -324,6 +380,11 @@ async def _process_one(session, row: _OutboxEventRow) -> None:
             "occurred_at": ev.occurred_at,
             "created_at": ev.created_at,
             "payload": ev.payload or {},
+            "schema_version": schema_version,
+            "provenance": provenance,
+            "source": source,
+            "actor_kind": actor_kind,
+            "correlation_id": correlation_id,
             "summary": _summarize(ev),
             "projection_version": projection_version,
             "updated_at": now,

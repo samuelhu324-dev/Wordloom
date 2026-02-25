@@ -10,7 +10,7 @@ Design goals:
 
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, DateTime, Index, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, DateTime, Index, Integer, String, Text, ForeignKey, text
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from .base import Base
@@ -33,6 +33,12 @@ class ChronicleEntryModel(Base):
 
     payload = Column(JSONB, nullable=False, server_default="{}")
 
+    schema_version = Column(Integer, nullable=True, server_default=text("1"))
+    provenance = Column(String(32), nullable=True, server_default=text("'unknown'"))
+    source = Column(String(64), nullable=True, server_default=text("'unknown'"))
+    actor_kind = Column(String(32), nullable=True, server_default=text("'unknown'"))
+    correlation_id = Column(String(128), nullable=True)
+
     # Human-ish summary for UI; rules may evolve.
     summary = Column(Text, nullable=True)
 
@@ -44,6 +50,8 @@ class ChronicleEntryModel(Base):
 Index("ix_chronicle_entries_book_time", ChronicleEntryModel.book_id, ChronicleEntryModel.occurred_at.desc())
 Index("ix_chronicle_entries_type_time", ChronicleEntryModel.event_type, ChronicleEntryModel.occurred_at.desc())
 Index("ix_chronicle_entries_created", ChronicleEntryModel.created_at.desc())
+Index("ix_chronicle_entries_correlation_id", ChronicleEntryModel.correlation_id)
+Index("ix_chronicle_entries_source_time", ChronicleEntryModel.source, ChronicleEntryModel.occurred_at.desc())
 
 
 __all__ = ["ChronicleEntryModel"]

@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -26,7 +27,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.dialects.postgresql import insert
 
 _HERE = Path(__file__).resolve()
-_BACKEND_ROOT = _HERE.parents[1]
+_BACKEND_ROOT = _HERE.parents[2]
 if str(_BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(_BACKEND_ROOT))
 
@@ -76,6 +77,56 @@ def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _normalize_str(v: Any) -> Optional[str]:
+    if v is None:
+        return None
+    s = str(v).strip()
+    return s or None
+
+
+def _normalize_int(v: Any) -> Optional[int]:
+    if v is None:
+        return None
+    if isinstance(v, int):
+        return v
+    s = str(v).strip()
+    if not s:
+        return None
+    try:
+        return int(s)
+    except ValueError:
+        return None
+
+
+def _extract_envelope(event: ChronicleEventModel) -> tuple[int, str, str, str, Optional[str]]:
+    # Payload is the source of truth. Columns may be present but defaulted
+    # (e.g. schema_version=1, provenance/source/actor_kind='unknown') for older
+    # rows or direct SQL inserts.
+    payload = event.payload or {}
+    if not isinstance(payload, dict):
+        payload = {}
+
+    payload_schema_version = _normalize_int(payload.get("schema_version"))
+    payload_provenance = _normalize_str(payload.get("provenance"))
+    payload_source = _normalize_str(payload.get("source"))
+    payload_actor_kind = _normalize_str(payload.get("actor_kind"))
+    payload_correlation_id = _normalize_str(payload.get("correlation_id"))
+
+    col_schema_version = _normalize_int(getattr(event, "schema_version", None))
+    col_provenance = _normalize_str(getattr(event, "provenance", None))
+    col_source = _normalize_str(getattr(event, "source", None))
+    col_actor_kind = _normalize_str(getattr(event, "actor_kind", None))
+    col_correlation_id = _normalize_str(getattr(event, "correlation_id", None))
+
+    schema_version = payload_schema_version or col_schema_version or 1
+    provenance = payload_provenance or col_provenance or "unknown"
+    source = payload_source or col_source or "unknown"
+    actor_kind = payload_actor_kind or col_actor_kind or "unknown"
+    correlation_id = payload_correlation_id or col_correlation_id
+
+    return (schema_version, provenance, source, actor_kind, correlation_id)
+
+
 def _summarize(event: ChronicleEventModel) -> str:
     # Minimal deterministic summary. Intentionally conservative; evolve later.
     if event.block_id:
@@ -103,6 +154,12 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--truncate", action="store_true", help="Delete all rows in chronicle_entries first")
     p.add_argument("--emit-outbox", action="store_true", help="Enqueue chronicle_outbox_events instead of writing entries")
     p.add_argument("--limit", type=int, default=0, help="Optional limit (0 means no limit)")
+    p.add_argument(
+        "--event-id",
+        type=str,
+        default="",
+        help="Optional: rebuild only a single chronicle_event id (UUID).",
+    )
     return p.parse_args()
 
 
@@ -135,6 +192,13 @@ async def _set_projection_status(session, *, success: bool, error: Optional[str]
 async def main_async() -> int:
     args = _parse_args()
 
+    event_id: uuid.UUID | None = None
+    if str(getattr(args, "event_id", "") or "").strip():
+        try:
+            event_id = uuid.UUID(str(args.event_id).strip())
+        except Exception as exc:  # noqa: BLE001
+            raise SystemExit(f"Invalid --event-id: {args.event_id!r}") from exc
+
     (
         projection_rebuild_duration_seconds,
         projection_rebuild_last_finished_timestamp_seconds,
@@ -159,7 +223,10 @@ async def main_async() -> int:
                 await session.execute(delete(ChronicleOutboxEventModel))
 
             limit = int(args.limit or 0)
-            stmt = select(ChronicleEventModel).order_by(ChronicleEventModel.occurred_at.asc(), ChronicleEventModel.id.asc())
+            stmt = select(ChronicleEventModel)
+            if event_id is not None:
+                stmt = stmt.where(ChronicleEventModel.id == event_id)
+            stmt = stmt.order_by(ChronicleEventModel.occurred_at.asc(), ChronicleEventModel.id.asc())
             if limit > 0:
                 stmt = stmt.limit(limit)
 
@@ -187,6 +254,7 @@ async def main_async() -> int:
                     )
             else:
                 for ev in events:
+                    (schema_version, provenance, source, actor_kind, correlation_id) = _extract_envelope(ev)
                     stmt2 = insert(ChronicleEntryModel).values(
                         id=ev.id,
                         event_type=ev.event_type,
@@ -196,6 +264,11 @@ async def main_async() -> int:
                         occurred_at=ev.occurred_at,
                         created_at=ev.created_at,
                         payload=ev.payload or {},
+                        schema_version=schema_version,
+                        provenance=provenance,
+                        source=source,
+                        actor_kind=actor_kind,
+                        correlation_id=correlation_id,
                         summary=_summarize(ev),
                         projection_version=projection_version,
                         updated_at=now,
@@ -210,6 +283,11 @@ async def main_async() -> int:
                             "occurred_at": ev.occurred_at,
                             "created_at": ev.created_at,
                             "payload": ev.payload or {},
+                            "schema_version": schema_version,
+                            "provenance": provenance,
+                            "source": source,
+                            "actor_kind": actor_kind,
+                            "correlation_id": correlation_id,
                             "summary": _summarize(ev),
                             "projection_version": projection_version,
                             "updated_at": now,

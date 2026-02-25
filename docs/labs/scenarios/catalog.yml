@@ -91,6 +91,66 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_only
 
+  - id: rehearsal/chronicle/envelope_backfill_small_window
+    aliases:
+      - rehearsal_chronicle_entries_envelope_backfill
+    cli: >-
+      python backend/scripts/cli.py labs chronicle-entries-envelope-backfill-rehearsal
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - workflow:drill-verify
+      - intent:rehearsal
+      - pipeline:chronicle
+      - runtime:db_only
+
+  - id: rehearsal/chronicle/read_switch_smoke
+    aliases:
+      - rehearsal_chronicle_read_switch_smoke
+    cli: >-
+      python backend/scripts/cli.py labs chronicle-read-switch-smoke-rehearsal
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - workflow:drill-verify
+      - intent:rehearsal
+      - pipeline:chronicle
+      - runtime:db_only
+
+  - id: rehearsal/search/read_switch_smoke
+    aliases:
+      - rehearsal_search_read_switch_smoke
+    cli: >-
+      python backend/scripts/cli.py labs search-read-switch-smoke-rehearsal
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "$OUTDIR"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - workflow:drill-verify
+      - intent:rehearsal
+      - pipeline:search
+      - runtime:db_only
+
   - id: readiness/search/dual_run_gate
     aliases:
       - shadow_verify_dual_run_readiness_gate

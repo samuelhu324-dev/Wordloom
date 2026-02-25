@@ -48,6 +48,37 @@ def build_parser(*, callbacks: dict[str, Callback]) -> argparse.ArgumentParser:
     sv.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
     sv.set_defaults(func=cb("_cmd_labs_shadow_verify_chronicle_entries"))
 
+    p2c2 = labs_sub.add_parser(
+        "chronicle-entries-envelope-backfill-rehearsal",
+        help="Labs-P2C2: rehearsal of chronicle_entries envelope backfill (writes _result.json)",
+    )
+    p2c2.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    p2c2.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    p2c2.add_argument("--run-id", help="Optional run_id folder name")
+    p2c2.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    p2c2.set_defaults(func=cb("_cmd_labs_chronicle_entries_envelope_backfill_rehearsal"))
+
+    p3c1 = labs_sub.add_parser(
+        "chronicle-read-switch-smoke-rehearsal",
+        help="Labs-P3C1: rehearsal of Chronicle read switch (MERGED_READ_ENABLED=0/1 smoke; writes _result.json)",
+    )
+    p3c1.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    p3c1.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    p3c1.add_argument("--run-id", help="Optional run_id folder name")
+    p3c1.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    p3c1.set_defaults(func=cb("_cmd_labs_chronicle_read_switch_smoke_rehearsal"))
+
+    p3c2_search = labs_sub.add_parser(
+        "search-read-switch-smoke-rehearsal",
+        help="Labs-P3C2: rehearsal of Search read switch (SEARCH_MERGED_READ_ENABLED=0/1 provider selection smoke; writes _result.json)",
+    )
+    p3c2_search.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
+    p3c2_search.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
+    p3c2_search.add_argument("--library-id", help="Optional library_id scope (UUID; accepted but not required)")
+    p3c2_search.add_argument("--run-id", help="Optional run_id folder name")
+    p3c2_search.add_argument("--outdir", help="Output directory; defaults under docs/labs/_snapshot")
+    p3c2_search.set_defaults(func=cb("_cmd_labs_search_read_switch_smoke_rehearsal"))
+
     sv_search = labs_sub.add_parser(
         "shadow-verify-search-index",
         help="Labs-011: shadow verify search_index vs source tables (writes _result.json)",

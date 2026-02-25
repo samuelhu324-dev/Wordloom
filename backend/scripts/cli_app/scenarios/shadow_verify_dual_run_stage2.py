@@ -343,7 +343,7 @@ def run(inputs: DrillInputs) -> DrillResult:
     )
     es_index_ok = bool(es_index_status in {200, 201} or es_index_status == 400)
 
-    worker_script = REPO_ROOT / "backend" / "scripts" / "ops" / "search_outbox_worker.py"
+    worker_script = REPO_ROOT / "backend" / "scripts" / "search_outbox_worker.py"
 
     worker_env = env.copy()
     worker_env["DATABASE_URL"] = database_url

@@ -1,6 +1,7 @@
 """Stable shim for chronicle outbox replay tool.
 
-The implementation currently lives under backend/scripts/legacy/.
+This entrypoint is kept for backwards compatibility (ops/runbook muscle memory).
+It intentionally forwards to the canonical stable entrypoint under backend/scripts/.
 """
 
 from __future__ import annotations
@@ -11,14 +12,14 @@ from pathlib import Path
 
 
 def main() -> None:
-    backend_root = Path(__file__).resolve().parents[1]
+    backend_root = Path(__file__).resolve().parents[2]
     if str(backend_root) not in sys.path:
         sys.path.insert(0, str(backend_root))
 
-    legacy_script = Path(__file__).resolve().parents[1] / "legacy" / "chronicle_outbox_replay_failed.py"
-    if not legacy_script.exists():
-        raise SystemExit(f"legacy tool not found: {legacy_script}")
-    runpy.run_path(str(legacy_script), run_name="__main__")
+    stable_entrypoint = Path(__file__).resolve().parents[1] / "chronicle_outbox_replay_failed.py"
+    if not stable_entrypoint.exists():
+        raise SystemExit(f"stable entrypoint not found: {stable_entrypoint}")
+    runpy.run_path(str(stable_entrypoint), run_name="__main__")
 
 
 if __name__ == "__main__":

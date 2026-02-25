@@ -14,7 +14,7 @@
   **adr**: `docs/adr/adr-S2B-projection-table-merge.md`
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-15`
-**updated**: `2026-02-23`
+**updated**: `2026-02-25`
 
 ---
 
@@ -63,13 +63,19 @@
   - `docs/logs/log-S2B-2A-failure-contract-v2.md`
   - `docs/logs/log-S2B-2A-1A-shadow-verify-write-gate.md`
   - `docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md`
-- ⏳ Phase 1（unified consumer framework）代码侧仍需收口到可复用 outbox_core（避免脚本/legacy 语义漂移）
+- ✅ Phase 1（unified consumer framework / outbox_core）已收口并稳定：`docs/logs/log-S2B-3A-unified-consumer-framework.md`
+- ⏳ Phase 2（table merge / migration）进行中（Chronicle-first，含回归证据链）：`docs/logs/log-S2B-4A-table-merge-migration.md`
+  - `P4-C2` 已完成第一项真实 cleanup（删除 legacy tracked artifacts snapshots），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
+  - `P4-C3(Search)` 已完成 cleanup（删除冗余 Search ops worker shim，并把 dual-run 场景改用稳定 worker 入口），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
+  - `P4-C4(Chronicle)` 已完成 cleanup（补齐 `backend/scripts/chronicle_*` 稳定入口并移除冗余 Chronicle ops worker shim），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
+  - `P4-C5(Search)` 已完成 cleanup（补齐缺失的 `backend/scripts/search_outbox_replay_failed.py` 稳定入口），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
+  - `P4-C6(Replay shims)` 已完成 cleanup（收敛 ops replay shims：统一 forward 到 `backend/scripts/*_outbox_replay_failed.py` 稳定入口），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
 
 ## Next（下一步做什么 / 开什么 log）
 
 - 建议开启并以其为单一记账点：`docs/logs/log-S2B-3A-unified-consumer-framework.md`
   - 目标：把 claim/retry/reclaim/DLQ/replay/shared-keys/metrics 等共性从 worker/legacy 中抽到 `backend/infra/outbox_core`，并用现有 drills 持续回归与补证据。
-- Phase 2（table merge）在 Phase 1 完成 + P1 固定回归包落地后开工；Phase 2 记账点：`docs/logs/log-S2B-4A-table-merge-migration.md`。
+- Phase 2（table merge）在 Phase 1 完成 + 固定 write-gate 回归包落地后开工；Phase 2 记账点：`docs/logs/log-S2B-4A-table-merge-migration.md`（该 log 内部 `P0/P1/...` 编号独立 reset）。
 
 ## Problem（要解决的真正问题）
 
