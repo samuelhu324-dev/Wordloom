@@ -160,9 +160,9 @@
 
 > 说明：当前 `P3` 的 cutover 相关步骤以 rehearsal/窗口演练为主；`P5` 用于把“真实切换 + 观察窗口”显式化并闭环。
 
-- [ ] `P5-C1-S1S2`：真实 cutover 前跑固定 write-gate 回归包 + Evidence 入账（pre）。
+- [x] `P5-C1-S1S2`：真实 cutover 前跑固定 write-gate 回归包 + Evidence 入账（pre）。
 - [x] `P5-C1-S3`：真实 cutover（Chronicle-first：默认读切到 `chronicle_entries`；保留 `MERGED_READ_ENABLED=0` 一键回滚 + drills/单测语义同步）。
-- [ ] `P5-C1-S4S5`：真实 cutover 后再跑固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
+- [x] `P5-C1-S4S5`：真实 cutover 后再跑固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
 
 - [ ] `P5-C2-S1S2`：deprecate window 观察计划（窗口长度/关键指标/告警阈值/回滚手册）；只写清单不删旧路径。
 - [ ] `P5-C2-S3`：将旧路径标注为 deprecated（runbook + 本 log；仍保留回滚入口）。
@@ -256,6 +256,108 @@
 - 必须跑一轮固定 write-gate 回归包，并把 run URL + conclusion 记到本 log。
 
 **Evidence (auto/manual)**:
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S1S2: pre-cutover regression (fixed write-gate pack; baseline before cutover default)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_write_gate`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22385907779`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S1S2: pre-cutover regression (fixed write-gate pack; baseline before cutover default)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_paging_stability`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22385908706`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S1S2: pre-cutover regression (fixed write-gate pack; baseline before cutover default)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_shared_keys`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22385909608`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S1S2: pre-cutover regression (fixed write-gate pack; baseline before cutover default)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_run_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22385910538`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S1S2: pre-cutover regression (fixed write-gate pack; baseline before cutover default)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_canary_dual_write`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22385911503`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S1S2: pre-cutover regression (fixed write-gate pack; baseline before cutover default)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_write_sampling`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22385912495`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Conclusion: `Pre-cutover baseline confirmed: fixed write-gate pack is green (6/6).`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S4S5: post-cutover regression (fixed write-gate pack) + SoT update (chronicle default read cutover)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_write_gate`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22423951111`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S4S5: post-cutover regression (fixed write-gate pack) + SoT update (chronicle default read cutover)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_search_index_paging_stability`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22423952059`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S4S5: post-cutover regression (fixed write-gate pack) + SoT update (chronicle default read cutover)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_shared_keys`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22423952934`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S4S5: post-cutover regression (fixed write-gate pack) + SoT update (chronicle default read cutover)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_run_window`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22423953832`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S4S5: post-cutover regression (fixed write-gate pack) + SoT update (chronicle default read cutover)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_canary_dual_write`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22423954695`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C1-S4S5: post-cutover regression (fixed write-gate pack) + SoT update (chronicle default read cutover)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Drill: `drill-write-gate`
+  - scenario_id: `shadow_verify_dual_write_sampling`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22423955489`
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Conclusion: `Post-cutover regression is green: fixed write-gate pack remains green (6/6) and SoT mapping updated.`
 
 - Date: `2026-02-24`
   - Change: `S2B-4A/P0-C1-S1S2: Phase 2 baseline (fixed write-gate regression pack)`
