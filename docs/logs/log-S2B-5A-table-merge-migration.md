@@ -146,6 +146,16 @@
 - [x] `P5-C1-S3`：再次跑 sustained window（在更贴近真实扰动/事件量的条件下）并入账。
 - [ ] `P5-C1-S4`：决策复核：确认 “elastic 不再是依赖的恢复段” 后，才允许进入 deletion slice 2（移除回滚开关/elastic provider）。
 
+### P6（deletion slice 2：remove Search read rollback + elastic stage1 dependency）
+
+> Gate：本切片只能在 `P5-C1-S4` 完成签字后推进。
+
+- [ ] `P6-C1-S1`：实现变更（移除 `SEARCH_MERGED_READ_ENABLED` / `SEARCH_STAGE1_PROVIDER` 的回滚 wiring；CI/tests/rehearsal/docs 不再依赖 `SEARCH_STAGE1_PROVIDER=elastic`）。
+- [ ] `P6-C1-S2`：pre 固定 write-gate 6-pack（至少 1 轮）+ Evidence 入账。
+- [ ] `P6-C1-S3`：post 固定 write-gate 6-pack（至少 3 轮，含 jitter）+ Evidence 入账。
+- [ ] `P6-C1-S4`：post sustained window（`dual_run/search/window_sustained`）+ Evidence 入账。
+- [ ] `P6-C1-S5`：SoT 更新：本 log Evidence 区入账（run URLs + headSha）并合入 PR。
+
 ## P3 Cleanup ledger（Search：old paths/flags；no deletion yet）
 
 > 目标：先从 **Search 原有路径/flags** 开始，把“未来可能删除的东西”列清楚，并把每一项的 guard 写死。
