@@ -173,10 +173,14 @@
 > 目标：在 **cutover default 已生效** 的前提下，把“可观察、可回滚、可审计”的窗口操作写成可执行清单。
 > 说明：本窗口不删除旧路径/旧表/旧 flag；旧路径仅作为回滚与对比排障的安全垫。
 
-**Window（建议口径；可按实际调整）**:
+**Evidence window（建议口径；以“轮次/事件量”替代纯时间）**:
 
-- 窗口长度：至少 `48h`（建议覆盖 1 次工作日 + 1 次非工作日访问波动）。
+- 窗口时长（参考）：`2–6h` 通常足够；核心不是等时间，而是跑出足够“扰动 + 轮次 + 事件量”的证据。
 - 窗口开始条件：`P5-C1` post-cutover 固定 write-gate 6-pack 为绿（6/6 success）。
+- 窗口内目标（最小可执行版本）：
+  - 连续跑 `N` 轮固定 write-gate 6-pack（建议 `N>=3`），每轮之间人为引入少量扰动/间隔（sleep/jitter）。
+  - 至少 1 次把 `shadow_verify_dual_run_window`（window sustained）跑成“更高事件量”的 profile（通过 workflow inputs 的 `window_*` 调整 `max_total_events / duration / interval / batch_size`）。
+  - 至少 1 次做“回滚演练”（见下方 Rollback manual；推荐跑 `rehearsal_chronicle_read_switch_smoke` 作为可审计的 smoke）。
 - 窗口结束动作：执行 `P5-C2-S4S5`（再跑一轮固定 6-pack，并入账 Evidence + 更新 SoT）。
 
 **Key signals（只选“最小且能止血”的观测点）**:

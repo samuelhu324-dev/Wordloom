@@ -40,6 +40,7 @@
 - Legacy read 路径（`chronicle_events`）进入 **deprecate window**：
   - 不再作为默认或长期依赖路径
   - 仅保留用于回滚与排障对比（不删除、不重命名）
+  - 窗口验收以“轮次/事件量证据”为准（多轮回归 + window sustained 扰动 + 至少一次回滚演练），不强依赖固定时长
 
 Search（v0 先做 shadow verify）：
 
