@@ -101,6 +101,15 @@
 - [x] `P4-C1-S1`：实现迁移（stable entrypoint 不变；legacy 脚本删除）。
 - [x] `P4-C1-S2`：post 固定 write-gate 6-pack（N=3，含 jitter）+ Evidence 入账。
 
+### P5（保留回滚：证据链补齐后再考虑删除）
+
+> 决策：**先保留 Search read rollback**（`SEARCH_MERGED_READ_ENABLED=0` + `SEARCH_STAGE1_PROVIDER=elastic`）直到证据链满足“可删回滚”的门槛。
+
+- [ ] `P5-C0`：写清楚“何时允许删除回滚”的判定门槛（见下方《P5：判定标准与覆盖检查》）。
+- [ ] `P5-C1`：补齐证据链缺口（失败谱系/故障注入/指标口径）；Evidence 入账。
+- [ ] `P5-C2`：再次跑 sustained window（在更贴近真实扰动/事件量的条件下）并入账。
+- [ ] `P5-C3`：决策复核：确认 “elastic 不再是依赖的恢复段” 后，才允许进入 deletion slice 2（移除回滚开关/elastic provider）。
+
 ## P3 Cleanup ledger（Search：old paths/flags；no deletion yet）
 
 > 目标：先从 **Search 原有路径/flags** 开始，把“未来可能删除的东西”列清楚，并把每一项的 guard 写死。
@@ -158,6 +167,28 @@
 - pre：复用最近一次固定 6-pack 全绿作为 pre（见本 log 的 `P2-C1-S3S4`）。
 - change：stable entrypoint 仍延迟加载 worker，但实现改为 `backend/scripts/search_outbox_worker_impl.py`（非 legacy）；删除 legacy 脚本。
 - post：跑固定 6-pack `N=3`（含 jitter）并入账 Evidence。
+
+## P5（Decision gate：是否保留 Search read rollback）
+
+### P5 判定标准（何时允许删除回滚）
+
+当前策略：**满足任一条件就保留回滚**（不进入 deletion slice 2）。
+
+1) sustained window 的证据包还不够“硬”（例如只跑过 1 次 profile，缺少多轮 6-pack + 扰动菜单 +（可选）replay/backfill + 回滚演练的组合证据）。
+2) Search merged read 的失败谱系还未覆盖完整（例如 ES 429/部分成功、DB contention、确定性 4xx、stuck reclaim 等）。
+3) 回滚路径在 CI/tests/smoke 中仍被依赖（删除会导致“救援通道缺失”与“验收口径断裂”同时发生）。
+
+只有在下列条件**全部成立**时，才允许进入 deletion slice 2：
+
+1) 已形成一份“证据窗口”记录：merged read 在扰动下持续稳定，且指标口径达标（backlog、failed/DLQ、stuck reclaim、replay 等不异常）。
+2) 至少做过 1 次“故意触发回滚”的演练，并证明回滚是可控的（说明当下仍可回滚、且团队知道何时会删）。
+3) 团队明确承诺：elastic 不再是依赖的恢复段（删除后不会反悔）。
+
+### P5 覆盖检查（S2B-5A 当前状态）
+
+- ✅ 已有：固定 6-pack 多轮（N=5 + N=3）+ sustained window profile + rollback rehearsal（见本 log 的 P2 Evidence）。
+- ✅ 已有：worker legacy shim 删除切片（P4）与 post evidence（N=3 jitter；见本 log 的 P4 Evidence）。
+- ⚠️ 仍不足以删回滚：失败谱系/故障注入与“指标口径达标”的证据还未在本 log 入账；同时 CI/tests 仍显式依赖 `SEARCH_STAGE1_PROVIDER=elastic`（删除会牵连 rehearsal/tests/workflows/docs）。
 
 ### D) Elastic env vars（注意：这不是“旧 flags”，而是 Search 投影的运行时依赖）
 
