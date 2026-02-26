@@ -141,7 +141,7 @@
 
 > 说明：这里的 4 项是 **Step（步骤）**；默认放在 `C1`。如果中途需要“修复/补证据后再跑一轮”，再新增 `P5-C2-*`。
 
-- [ ] `P5-C1-S1`：写清楚“何时允许删除回滚”的判定门槛（见下方《P5：判定标准与覆盖检查》）。
+- [x] `P5-C1-S1`：写清楚“何时允许删除回滚”的判定门槛（见下方《P5：判定标准与覆盖检查》）。
 - [ ] `P5-C1-S2`：补齐证据链缺口（失败谱系/故障注入/指标口径）；Evidence 入账。
 - [ ] `P5-C1-S3`：再次跑 sustained window（在更贴近真实扰动/事件量的条件下）并入账。
 - [ ] `P5-C1-S4`：决策复核：确认 “elastic 不再是依赖的恢复段” 后，才允许进入 deletion slice 2（移除回滚开关/elastic provider）。
@@ -225,6 +225,18 @@
 - ✅ 已有：固定 6-pack 多轮（N=5 + N=3）+ sustained window profile + rollback rehearsal（见本 log 的 P2 Evidence）。
 - ✅ 已有：worker legacy shim 删除切片（P4）与 post evidence（N=3 jitter；见本 log 的 P4 Evidence）。
 - ⚠️ 仍不足以删回滚：失败谱系/故障注入与“指标口径达标”的证据还未在本 log 入账；同时 CI/tests 仍显式依赖 `SEARCH_STAGE1_PROVIDER=elastic`（删除会牵连 rehearsal/tests/workflows/docs）。
+
+### P5-C1-S2 失败谱系矩阵（待执行 / evidence pending）
+
+> 目标：把“失败类型 → 触发方式 → 预期信号 → drill/run → evidence”一一对应，避免凭印象判断覆盖度。
+
+| failure type | trigger / setup | expected signal | planned drill/run | evidence |
+| --- | --- | --- | --- | --- |
+| ES 429 / throttle | increase write burst or throttle ES | search errors spike + retry/latency | `drill-dual-run` (custom load) | TBC |
+| partial success | kill worker mid-batch | backlog grows + retry/resume | `drill-write-gate` + manual kill | TBC |
+| DB contention | lock hot rows / reduce conn pool | increased DB latency + backlog | `drill-write-gate` (stress) | TBC |
+| deterministic 4xx | inject invalid payload | stable failure rate + DLQ | `drill-write-gate` (invalid input) | TBC |
+| stuck reclaim | shorten lease + crash worker | reclaim metrics + retry | worker smoke + reclaim probe | TBC |
 
 ### D) Elastic env vars（注意：这不是“旧 flags”，而是 Search 投影的运行时依赖）
 
