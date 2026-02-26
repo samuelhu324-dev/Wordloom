@@ -143,7 +143,7 @@
 
 - [x] `P5-C1-S1`：写清楚“何时允许删除回滚”的判定门槛（见下方《P5：判定标准与覆盖检查》）。
 - [x] `P5-C1-S2`：补齐证据链缺口（失败谱系/故障注入/指标口径）；Evidence 入账。
-- [ ] `P5-C1-S3`：再次跑 sustained window（在更贴近真实扰动/事件量的条件下）并入账。
+- [x] `P5-C1-S3`：再次跑 sustained window（在更贴近真实扰动/事件量的条件下）并入账。
 - [ ] `P5-C1-S4`：决策复核：确认 “elastic 不再是依赖的恢复段” 后，才允许进入 deletion slice 2（移除回滚开关/elastic provider）。
 
 ## P3 Cleanup ledger（Search：old paths/flags；no deletion yet）
@@ -224,9 +224,11 @@
 
 - ✅ 已有：固定 6-pack 多轮（N=5 + N=3）+ sustained window profile + rollback rehearsal（见本 log 的 P2 Evidence）。
 - ✅ 已有：worker legacy shim 删除切片（P4）与 post evidence（N=3 jitter；见本 log 的 P4 Evidence）。
-- ⚠️ 仍不足以删回滚：失败谱系/故障注入与“指标口径达标”的证据还未在本 log 入账；同时 CI/tests 仍显式依赖 `SEARCH_STAGE1_PROVIDER=elastic`（删除会牵连 rehearsal/tests/workflows/docs）。
+- ✅ 已有：失败谱系/故障注入覆盖（P5-C1-S2；见本 log 的 P5 Evidence）。
+- ✅ 已有：更贴近真实扰动/事件量的 sustained window（P5-C1-S3；见本 log 的 P5 Evidence）。
+- ⚠️ 仍不足以删回滚：还缺 `P5-C1-S4` 的决策复核与团队承诺；同时 CI/tests 仍显式依赖 `SEARCH_STAGE1_PROVIDER=elastic`（删除会牵连 rehearsal/tests/workflows/docs）。
 
-### P5-C1-S2 失败谱系矩阵（待执行 / evidence pending）
+### P5-C1-S2 失败谱系矩阵（已执行 / evidence logged）
 
 > 目标：把“失败类型 → 触发方式 → 预期信号 → drill/run → evidence”一一对应，避免凭印象判断覆盖度。
 
@@ -509,5 +511,21 @@ Template C — Rollback rehearsal (must do once)
     - Drill: `drill-failures` | scenario_id: `fault/obs_infra/db_claim_contention` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442760267 | status/conclusion: `completed / success`
     - Drill: `drill-failures` | scenario_id: `fault/obs_infra/es_write_block_4xx` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442762347 | status/conclusion: `completed / success`
     - Drill: `drill-failures` | scenario_id: `fault/obs_infra/stuck_reclaim` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442764131 | status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P5-C1-S3: sustained window (more realistic disturbance/event load)`
+  - Drill: `drill-dual-run`
+  - scenario_id: `dual_run/search/window_sustained`
+  - window_*:
+    - window_duration_seconds: `1200`
+    - window_interval_seconds: `1`
+    - window_enqueue_batch_size: `5`
+    - window_max_total_events: `6000`
+    - window_drain_timeout_seconds: `1800`
+    - window_worker_max_runtime_seconds: `2400`
+  - Notes:
+    - headSha: `a286ceced61fecfd43d20e679cbe235000e1b815`
+  - Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22443218966
+  - status/conclusion: `completed / success`
 
 
