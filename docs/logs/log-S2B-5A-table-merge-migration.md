@@ -96,6 +96,11 @@
 
 - [x] `P3-C1-S1`：列出删除项与 guard（每个删除动作都要单独切片并做 pre/post 证据；本步仅做 ledger，不做删除）。
 
+### P4（deletion slice 1：Search outbox worker legacy shim）
+
+- [x] `P4-C1-S1`：实现迁移（stable entrypoint 不变；legacy 脚本删除）。
+- [ ] `P4-C1-S2`：post 固定 write-gate 6-pack（N=3，含 jitter）+ Evidence 入账。
+
 ## P3 Cleanup ledger（Search：old paths/flags；no deletion yet）
 
 > 目标：先从 **Search 原有路径/flags** 开始，把“未来可能删除的东西”列清楚，并把每一项的 guard 写死。
@@ -136,15 +141,23 @@
 
 ### C) Legacy code paths（shim / legacy implementation）
 
-- 稳定入口 + legacy 实现：
+- 稳定入口 + legacy 实现（已迁移）：
   - `backend/scripts/search_outbox_worker.py`（stable entrypoint；Procfile/runbook 肌肉记忆）
-  - `backend/scripts/legacy/search_outbox_worker.py`（当前实现落点）
-  - 是否删除候选：仅 legacy 脚本是候选；stable entrypoint 不删。
+  - `backend/scripts/search_outbox_worker_impl.py`（实现落点；非 legacy）
+  - 是否删除候选：legacy 脚本已删除；stable entrypoint 不删。
   - 删除 guard（单独切片执行）：
     - pre：固定 write-gate 6-pack（至少 1 轮）
-    - change：把 legacy 实现迁移/内联到 stable entrypoint（或新的非 legacy 模块），并删除 legacy 脚本
+    - change：把 legacy 实现迁移到非 legacy 路径（实现可延迟加载），并删除 legacy 脚本
     - post：固定 write-gate 6-pack（至少 3 轮，含 jitter）+ worker smoke（含 `SEARCH_OUTBOX_WORKER_ENABLED=0/1`）
     - 回滚策略：保持 stable entrypoint 路径不变（避免 Procfile/runbook 分叉）
+
+## P4 Deletion slice 1（Search outbox worker：remove legacy shim）
+
+> 目标：删除 `backend/scripts/legacy/search_outbox_worker.py`，但保持稳定入口 `backend/scripts/search_outbox_worker.py` 不变。
+
+- pre：复用最近一次固定 6-pack 全绿作为 pre（见本 log 的 `P2-C1-S3S4`）。
+- change：stable entrypoint 仍延迟加载 worker，但实现改为 `backend/scripts/search_outbox_worker_impl.py`（非 legacy）；删除 legacy 脚本。
+- post：跑固定 6-pack `N=3`（含 jitter）并入账 Evidence。
 
 ### D) Elastic env vars（注意：这不是“旧 flags”，而是 Search 投影的运行时依赖）
 
@@ -371,4 +384,5 @@ Template C — Rollback rehearsal (must do once)
 
 - Date: `2026-02-26`
   - Conclusion: `P2-C1 complete: evidence window is green (N=5 + N=3 fixed pack), sustained window passed, rollback rehearsal passed.`
+
 
