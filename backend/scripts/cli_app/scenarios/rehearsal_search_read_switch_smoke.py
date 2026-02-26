@@ -37,7 +37,7 @@ async def _probe(*, database_url: str) -> dict[str, Any]:
             before = _env_snapshot(names)
             try:
                 os.environ["SEARCH_STAGE1_PROVIDER"] = "elastic"
-                os.environ.pop("SEARCH_MERGED_READ_ENABLED", None)
+                os.environ["SEARCH_MERGED_READ_ENABLED"] = "0"
                 provider_a = get_stage1_candidate_provider(session)
 
                 os.environ["SEARCH_MERGED_READ_ENABLED"] = "1"

@@ -27,7 +27,7 @@ def test_search_stage1_provider_respects_env_default_postgres(monkeypatch, env_v
 
 def test_search_stage1_provider_can_select_elastic_when_not_merged(monkeypatch):
     monkeypatch.setenv("SEARCH_STAGE1_PROVIDER", "elastic")
-    monkeypatch.delenv("SEARCH_MERGED_READ_ENABLED", raising=False)
+    monkeypatch.setenv("SEARCH_MERGED_READ_ENABLED", "0")
 
     provider = get_stage1_candidate_provider(MagicMock())
     assert isinstance(provider, ElasticCandidateProvider)

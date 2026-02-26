@@ -372,9 +372,8 @@ Local evidence（2026-02-19，devtest DB）:
 
 Search（独立切读开关）：
 
-- 默认：`SEARCH_MERGED_READ_ENABLED=0`（Search stage1 provider 遵循 `SEARCH_STAGE1_PROVIDER`，默认 postgres）
-- 开启：`SEARCH_MERGED_READ_ENABLED=1`（强制 stage1 provider 使用 `postgres`，覆盖 `SEARCH_STAGE1_PROVIDER`）
-- 回滚：把开关关回 `0`
+- 默认（真实 cutover 后）：`SEARCH_MERGED_READ_ENABLED=1`（强制 stage1 provider 使用 `postgres`，覆盖 `SEARCH_STAGE1_PROVIDER`）
+- 回滚：`SEARCH_MERGED_READ_ENABLED=0`（stage1 provider 重新遵循 `SEARCH_STAGE1_PROVIDER`；可设为 `elastic`）
 
 建议顺序：
 1) shadow verify 通过（留证据）

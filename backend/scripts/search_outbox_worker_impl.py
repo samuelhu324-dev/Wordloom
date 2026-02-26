@@ -42,7 +42,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 # script is run from the repo root (python backend/scripts/...) or from
 # backend/ directly (python scripts/...).
 _HERE = Path(__file__).resolve()
-_BACKEND_ROOT = _HERE.parents[2]
+_BACKEND_ROOT = _HERE.parents[1]
 if str(_BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(_BACKEND_ROOT))
 

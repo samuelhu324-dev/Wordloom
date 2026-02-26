@@ -4,7 +4,7 @@ This path is referenced by Procfiles and historical docs:
 
   python backend/scripts/search_outbox_worker.py
 
-Implementation currently lives under backend/scripts/legacy/.
+Implementation currently lives under backend/scripts/search_outbox_worker_impl.py.
 
 Operational controls:
 - SEARCH_OUTBOX_WORKER_ENABLED=0 will exit immediately with code 0.
@@ -39,11 +39,11 @@ def main() -> None:
         if p and p not in sys.path:
             sys.path.insert(0, p)
 
-    legacy_script = backend_root / "scripts" / "legacy" / "search_outbox_worker.py"
-    if not legacy_script.exists():
-        raise SystemExit(f"legacy worker not found: {legacy_script}")
+    impl_script = backend_root / "scripts" / "search_outbox_worker_impl.py"
+    if not impl_script.exists():
+        raise SystemExit(f"worker impl not found: {impl_script}")
 
-    runpy.run_path(str(legacy_script), run_name="__main__")
+    runpy.run_path(str(impl_script), run_name="__main__")
 
 
 if __name__ == "__main__":

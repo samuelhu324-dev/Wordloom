@@ -18,7 +18,7 @@ LABS_SNAPSHOT_ROOT = REPO_ROOT / "docs" / "labs" / "_snapshot"
 LAB_ID_S3A_2A_3A = "S3A-2A-3A"
 LEGACY_SCRIPTS_DIR = REPO_ROOT / "backend" / "scripts" / "legacy"
 
-# Keep in sync with backend/scripts/legacy/search_outbox_worker.py
+# Keep in sync with backend/scripts/search_outbox_worker_impl.py
 SEARCH_OUTBOX_OBS_SCHEMA_VERSION = "labs-009-v2"
 
 
