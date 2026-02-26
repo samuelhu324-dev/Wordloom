@@ -13,6 +13,42 @@ on:
         required: false
         default: ""
         type: string
+      worker_library_allowlist:
+        description: "Optional worker scope: SEARCH_OUTBOX_LIBRARY_ALLOWLIST (comma-separated UUIDs)."
+        required: false
+        default: ""
+        type: string
+
+      window_duration_seconds:
+        description: "[window only] duration seconds"
+        required: false
+        default: "15"
+        type: string
+      window_interval_seconds:
+        description: "[window only] enqueue interval seconds"
+        required: false
+        default: "1"
+        type: string
+      window_enqueue_batch_size:
+        description: "[window only] enqueue batch size"
+        required: false
+        default: "5"
+        type: string
+      window_max_total_events:
+        description: "[window only] max total enqueued events"
+        required: false
+        default: "75"
+        type: string
+      window_drain_timeout_seconds:
+        description: "[window only] drain timeout seconds"
+        required: false
+        default: "30"
+        type: string
+      window_worker_max_runtime_seconds:
+        description: "[window only] worker max runtime seconds"
+        required: false
+        default: "90"
+        type: string
 
 jobs:
   drill:
@@ -20,5 +56,12 @@ jobs:
     with:
       scenario: ${{ inputs.scenario_id }}
       library_id: ${{ inputs.library_id }}
+      worker_library_allowlist: ${{ inputs.worker_library_allowlist }}
+      window_duration_seconds: ${{ inputs.window_duration_seconds }}
+      window_interval_seconds: ${{ inputs.window_interval_seconds }}
+      window_enqueue_batch_size: ${{ inputs.window_enqueue_batch_size }}
+      window_max_total_events: ${{ inputs.window_max_total_events }}
+      window_drain_timeout_seconds: ${{ inputs.window_drain_timeout_seconds }}
+      window_worker_max_runtime_seconds: ${{ inputs.window_worker_max_runtime_seconds }}
 
 

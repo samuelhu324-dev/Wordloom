@@ -20,7 +20,7 @@ def test_chronicle_query_service_uses_events_repo_by_default(monkeypatch):
     di = DIContainerReal(MagicMock())
     service = di.get_chronicle_query_service()
 
-    assert service._repo is di.chronicle_repo
+    assert service._repo is di.chronicle_entries_repo
 
 
 def test_chronicle_query_service_uses_entries_repo_when_enabled(monkeypatch):
@@ -31,3 +31,13 @@ def test_chronicle_query_service_uses_entries_repo_when_enabled(monkeypatch):
     service = di.get_chronicle_query_service()
 
     assert service._repo is di.chronicle_entries_repo
+
+
+def test_chronicle_query_service_uses_events_repo_when_rolled_back(monkeypatch):
+    monkeypatch.setenv("MERGED_READ_ENABLED", "0")
+    get_settings.cache_clear()
+
+    di = DIContainerReal(MagicMock())
+    service = di.get_chronicle_query_service()
+
+    assert service._repo is di.chronicle_repo

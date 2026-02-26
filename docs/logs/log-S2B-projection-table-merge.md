@@ -14,7 +14,7 @@
   **adr**: `docs/adr/adr-S2B-projection-table-merge.md`
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-15`
-**updated**: `2026-02-25`
+**updated**: `2026-02-26`
 
 ---
 
@@ -38,6 +38,11 @@
   - Phase 2：表结构合并（table merge）
 - 决策顺序固定：先判断是否要统一 daemon/runbook/DLQ/replay（治理能力），再决定是否要统一表（结构层面）。
 
+**Current preference（当前优先级选择）**:
+
+- 近期优先：先把运维/治理能力闭环做“可复用模板”（接近 Alternatives 的 Alt A：不急着物理合表）。
+- 物理合表（统一 outbox 表）仍是最终目标，但放到 `P4+`：只有在 payload 治理与容量/隔离策略足够硬之后再进入。
+
 **Drivers**:
 
 - projection 数量 ≥ 2，重复建设 worker/daemon 能力与运维资产开始拖慢演进
@@ -56,26 +61,55 @@
 - Phase 2 完成：表结构统一后，迁移可回滚；并且不会把 payload 演进变成“垃圾场”
 - 两阶段均可验收：能用 checklist 验证、能产出可观测证据、能跑通 replay
 
-## Implementation Status（当前落地情况）
+## Current State（事实点 / 避免“做错合表”）
 
-- ✅ Failure Contract v1 已稳定（Shadow verify + Read switch + 证据链）：`docs/logs/log-S2B-1A-failure-contract-v1.md`
-- ✅ Failure Contract v2 已稳定（write-gate + dual-run/cutover closure + 证据链）：
-  - `docs/logs/log-S2B-2A-failure-contract-v2.md`
-  - `docs/logs/log-S2B-2A-1A-shadow-verify-write-gate.md`
-  - `docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md`
-- ✅ Phase 1（unified consumer framework / outbox_core）已收口并稳定：`docs/logs/log-S2B-3A-unified-consumer-framework.md`
-- ⏳ Phase 2（table merge / migration）进行中（Chronicle-first，含回归证据链）：`docs/logs/log-S2B-4A-table-merge-migration.md`
-  - `P4-C2` 已完成第一项真实 cleanup（删除 legacy tracked artifacts snapshots），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
-  - `P4-C3(Search)` 已完成 cleanup（删除冗余 Search ops worker shim，并把 dual-run 场景改用稳定 worker 入口），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
-  - `P4-C4(Chronicle)` 已完成 cleanup（补齐 `backend/scripts/chronicle_*` 稳定入口并移除冗余 Chronicle ops worker shim），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
-  - `P4-C5(Search)` 已完成 cleanup（补齐缺失的 `backend/scripts/search_outbox_replay_failed.py` 稳定入口），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
-  - `P4-C6(Replay shims)` 已完成 cleanup（收敛 ops replay shims：统一 forward 到 `backend/scripts/*_outbox_replay_failed.py` 稳定入口），并已用固定 write-gate 回归包 pre/post 证明 6/6 全绿。
+- `chronicle_entries` 是 Chronicle-first 的新投影表；目前 **没有** 被 Search 复用为共享“entries”。
+- Search 目前仍走自己的投影/事件表（例如 `search_outbox_events`），并且 Search/Chronicle 之间并不存在“统一物理 outbox 表”。
 
-## Next（下一步做什么 / 开什么 log）
+> 这意味着：当前阶段更像是“能力模板 + 迁移演练 + 可回滚切换”建设；物理合表属于后续更大范围的交付。
 
-- 建议开启并以其为单一记账点：`docs/logs/log-S2B-3A-unified-consumer-framework.md`
-  - 目标：把 claim/retry/reclaim/DLQ/replay/shared-keys/metrics 等共性从 worker/legacy 中抽到 `backend/infra/outbox_core`，并用现有 drills 持续回归与补证据。
-- Phase 2（table merge）在 Phase 1 完成 + 固定 write-gate 回归包落地后开工；Phase 2 记账点：`docs/logs/log-S2B-4A-table-merge-migration.md`（该 log 内部 `P0/P1/...` 编号独立 reset）。
+## Execution Checklist（S2B 总清单 / 新结构）
+
+> 说明：这里用 `P0/P1/P2/...` 管 S2B 的大阶段；具体切片与证据在子 log（例如 `S2B-4A`）里持续细化。
+
+### P0（Failure Contract & Evidence Contract）
+
+- [x] Failure Contract v1：Shadow verify + read switch + 证据链（`docs/logs/log-S2B-1A-failure-contract-v1.md`）
+- [x] Failure Contract v2：write-gate + dual-run/cutover closure + 证据链（`docs/logs/log-S2B-2A-failure-contract-v2.md` / `...-shadow-verify-write-gate.md` / `...-dual-run-cutover-closure.md`）
+
+### P1（Phase 1：unified consumer framework / outbox_core）
+
+- [x] 统一 claim/retry/reclaim/DLQ/replay/runbook 入口与共享观测 keys（SoT：`docs/logs/log-S2B-3A-unified-consumer-framework.md`）
+
+### P2（Phase 2：Chronicle-first table merge migration closure）
+
+- [x] schema/index/backfill/rehearsal（SoT：`docs/logs/log-S2B-4A-table-merge-migration.md`，已完成 `P0–P4` 多轮回归证据）
+- [x] 真实 cutover + deprecate window（SoT：`docs/logs/log-S2B-4A-table-merge-migration.md` 的 `P5`）
+
+### P3（把 Chronicle 的“模板”复用给 Search：同入口/同证据链/同回滚口径）
+
+- [x] Search read switch rehearsal / sustained window（已在 `S2B-4A` 的 `P3-C2` 入账）
+- [x] Search scripts/entrypoints 收敛（已在 `S2B-4A` 的 `P4-C3/P4-C5/P4-C6` 入账）
+- [ ] Search 侧的“cutover + deprecate window”完整闭环（与 Chronicle 对齐：同样的窗口、同样的证据包、同样的回滚顺序）
+
+### P4（进入物理合表前的硬门槛：payload 治理 + 容量/隔离策略）
+
+- [ ] payload contract（`schema_version + DTO 校验 + deterministic failure 直接 failed`）在 Search+Chronicle 两端都落地且可审计
+- [ ] 容量/隔离方案明确（分区/分桶/优先级/限速），并写入 runbook（避免共享“心脏”扩大 blast radius）
+
+### P5（物理合表：unified outbox table migration）
+
+- [ ] 最小 schema proposal + rollback/backfill/dual-write/cutover 方案（含索引策略与禁止项）
+- [ ] Alembic migration（新表 + 索引）+ 双写窗口 + backfill 演练 + cutover（保持 artifacts contract 不变）
+
+### P6（物理合表后的 cleanup）
+
+- [ ] deprecate → 删除旧表/旧路径/旧 flag（每步 pre/post 固定回归包 + Evidence + SoT 更新）
+
+## Evidence（证据与 SoT 规则）
+
+- 固定 write-gate 回归包 run↔scenario 映射 SoT：`artifacts/write_gate_runs.latest.json`
+- 具体 run URL/conclusion 与结论，优先入账到对应子 log（例如 `S2B-4A`），本 log 只作为“总清单 + 决策边界”。
 
 ## Problem（要解决的真正问题）
 

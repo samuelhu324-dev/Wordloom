@@ -33,6 +33,15 @@
 - Shadow verify 场景：`shadow_verify_chronicle_entries`
 - Read switch 开关：`MERGED_READ_ENABLED=0/1`
 
+## 2.1) Current state（cutover + rollback；Chronicle）
+
+- 现状（Phase 2 / `S2B-4A`）：Chronicle **默认读路径已切到** `chronicle_entries`（cutover default）。
+- 一键回滚（止血优先）：设置 `MERGED_READ_ENABLED=0`，强制回到 legacy read（旧路径）。
+- Legacy read 路径（`chronicle_events`）进入 **deprecate window**：
+  - 不再作为默认或长期依赖路径
+  - 仅保留用于回滚与排障对比（不删除、不重命名）
+  - 窗口验收以“轮次/事件量证据”为准（多轮回归 + window sustained 扰动 + 至少一次回滚演练），不强依赖固定时长
+
 Search（v0 先做 shadow verify）：
 
 - SoT：`blocks` / `books` / `tags`
@@ -355,9 +364,11 @@ Local evidence（2026-02-19，devtest DB）:
 
 ## 7) Read switch（切读与回滚）
 
-- 默认：`MERGED_READ_ENABLED=0`（Chronicle 查询读 events repo）
-- 开启：`MERGED_READ_ENABLED=1`（Chronicle 查询读 entries repo）
-- 回滚：把开关关回 `0`
+- 当前（真实 cutover 后）：默认读 `chronicle_entries`（投影表）。
+- 回滚：`MERGED_READ_ENABLED=0`（Chronicle 查询读 events repo / source of truth）
+- 强制开启：`MERGED_READ_ENABLED=1`（Chronicle 查询读 entries repo / projection）
+
+> 注：在 rehearsal 阶段我们曾以 `MERGED_READ_ENABLED=0` 作为默认；进入 `S2B-4A/P5-C1` 后，默认切到 entries，但保留 `0` 的一键回滚。
 
 Search（独立切读开关）：
 
