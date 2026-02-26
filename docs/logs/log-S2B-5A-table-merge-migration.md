@@ -142,7 +142,7 @@
 > 说明：这里的 4 项是 **Step（步骤）**；默认放在 `C1`。如果中途需要“修复/补证据后再跑一轮”，再新增 `P5-C2-*`。
 
 - [x] `P5-C1-S1`：写清楚“何时允许删除回滚”的判定门槛（见下方《P5：判定标准与覆盖检查》）。
-- [ ] `P5-C1-S2`：补齐证据链缺口（失败谱系/故障注入/指标口径）；Evidence 入账。
+- [x] `P5-C1-S2`：补齐证据链缺口（失败谱系/故障注入/指标口径）；Evidence 入账。
 - [ ] `P5-C1-S3`：再次跑 sustained window（在更贴近真实扰动/事件量的条件下）并入账。
 - [ ] `P5-C1-S4`：决策复核：确认 “elastic 不再是依赖的恢复段” 后，才允许进入 deletion slice 2（移除回滚开关/elastic provider）。
 
@@ -232,11 +232,11 @@
 
 | failure type | trigger / setup | expected signal | planned drill/run | evidence |
 | --- | --- | --- | --- | --- |
-| ES 429 / throttle | increase write burst or throttle ES | search errors spike + retry/latency | `drill-dual-run` (custom load) | TBC |
-| partial success | kill worker mid-batch | backlog grows + retry/resume | `drill-write-gate` + manual kill | TBC |
-| DB contention | lock hot rows / reduce conn pool | increased DB latency + backlog | `drill-write-gate` (stress) | TBC |
-| deterministic 4xx | inject invalid payload | stable failure rate + DLQ | `drill-write-gate` (invalid input) | TBC |
-| stuck reclaim | shorten lease + crash worker | reclaim metrics + retry | worker smoke + reclaim probe | TBC |
+| ES 429 / throttle | inject ES 429 failures | retry scheduled + no terminal failure | `drill-failures` (scenario_id=`fault/obs_infra/es_429_inject`) | https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442748238 (`completed/success`) |
+| partial success | inject ES bulk partial responses | partial bulk counters + item retry/DLQ signals | `drill-failures` (scenario_id=`fault/obs_infra/es_bulk_partial`) | https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442758602 (`completed/success`) |
+| DB contention | induce claim contention / DB pressure | backlog grows + recovery + no stuck | `drill-failures` (scenario_id=`fault/obs_infra/db_claim_contention`) | https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442760267 (`completed/success`) |
+| deterministic 4xx | inject ES write 4xx block | stable terminal failure + DLQ increments | `drill-failures` (scenario_id=`fault/obs_infra/es_write_block_4xx`) | https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442762347 (`completed/success`) |
+| stuck reclaim | shorten lease + reclaim stress | reclaim observed + eventual converge | `drill-failures` (scenario_id=`fault/obs_infra/stuck_reclaim`) | https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442764131 (`completed/success`) |
 
 ### D) Elastic env vars（注意：这不是“旧 flags”，而是 Search 投影的运行时依赖）
 
@@ -498,5 +498,16 @@ Template C — Rollback rehearsal (must do once)
 
 - Date: `2026-02-26`
   - Conclusion: `P4-C1 complete: legacy shim removed; post evidence window fixed pack is green (N=3, jitter) on headSha 77d979e7.`
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P5-C1-S2: failure taxonomy evidence (drill-failures)`
+  - Notes:
+    - headSha (all runs): `2191ecd9a0110d54fa02c677311b0c7a031b2705`
+  - Evidence:
+    - Drill: `drill-failures` | scenario_id: `fault/obs_infra/es_429_inject` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442748238 | status/conclusion: `completed / success`
+    - Drill: `drill-failures` | scenario_id: `fault/obs_infra/es_bulk_partial` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442758602 | status/conclusion: `completed / success`
+    - Drill: `drill-failures` | scenario_id: `fault/obs_infra/db_claim_contention` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442760267 | status/conclusion: `completed / success`
+    - Drill: `drill-failures` | scenario_id: `fault/obs_infra/es_write_block_4xx` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442762347 | status/conclusion: `completed / success`
+    - Drill: `drill-failures` | scenario_id: `fault/obs_infra/stuck_reclaim` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22442764131 | status/conclusion: `completed / success`
 
 
