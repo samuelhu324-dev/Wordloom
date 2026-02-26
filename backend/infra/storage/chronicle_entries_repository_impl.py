@@ -3,8 +3,8 @@
 Read-side adapter backed by the chronicle_entries projection table.
 
 This repository exists to support a safe read-switch (shadow/dual-run):
-- Default (MERGED_READ_ENABLED=0): read from chronicle_events (source of truth)
-- Enabled (MERGED_READ_ENABLED=1): read from chronicle_entries (projection)
+- Cutover default: read from chronicle_entries (projection)
+- Rollback (MERGED_READ_ENABLED=0): read from chronicle_events (source of truth)
 
 Write operations are intentionally unsupported here.
 """

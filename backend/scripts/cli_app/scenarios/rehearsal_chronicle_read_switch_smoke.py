@@ -58,8 +58,8 @@ async def _probe_query_service(*, database_url: str, book_id: uuid.UUID, expecte
         async with AsyncSession(engine) as session:
             di = DIContainerReal(session)
 
-            # A) Default path: chronicle_events
-            os.environ.pop("MERGED_READ_ENABLED", None)
+            # A) Rollback path: chronicle_events
+            os.environ["MERGED_READ_ENABLED"] = "0"
             get_settings.cache_clear()
             service_a = di.get_chronicle_query_service()
             events_a, total_a = await service_a.list_book_events(book_id=book_id, limit=50, offset=0)
@@ -218,9 +218,9 @@ def run(inputs: DrillInputs) -> DrillResult:
 
     errors: list[str] = []
     if not probe.get("events_repo_found"):
-        errors.append("events repo did not return seeded event")
+        errors.append("events repo did not return seeded event (MERGED_READ_ENABLED=0 rollback path)")
     if not probe.get("entries_repo_found"):
-        errors.append("entries repo did not return seeded event (MERGED_READ_ENABLED=1)")
+        errors.append("entries repo did not return seeded event (MERGED_READ_ENABLED=1 cutover path)")
 
     ok = not errors
 

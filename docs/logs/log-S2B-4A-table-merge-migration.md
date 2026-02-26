@@ -16,7 +16,7 @@
   **phase1_log**: `docs/logs/log-S2B-3A-unified-consumer-framework.md`
   **parent_log**: `docs/logs/log-S2B-projection-table-merge.md`
 **created**: `2026-02-24`
-**updated**: `2026-02-25`
+**updated**: `2026-02-26`
 
 ---
 
@@ -76,6 +76,11 @@
 
 - P4（cleanup ledger）
   - P4-S1：记录 stub/deprecate window 与清理计划（不提前删旧路径）
+
+- P5（real cutover + deprecate window）
+  - P5-S1：推进真实 cutover（将默认读/写路径切到新表；保留回滚路径）
+  - P5-S2：跑固定 write-gate 回归包（pre/post）
+  - P5-S3：进入 deprecate window（观察窗口 + 证据入账；不做最终删除）
 
 > Cycle 约定：若同一组步骤需要重复一轮（回归重跑/补证据/修正后再跑），在 step 前加 cycle，例如 `P1-C2-S3`；若多个 step 一起提交，可合并写成 `P1-C2-S1S2`。
 
@@ -150,6 +155,18 @@
 - [x] `P4-C6-S1S2`：cleanup 前跑固定 write-gate 回归包 + Evidence 入账（pre）。
 - [x] `P4-C6-S3`：cleanup - make ops replay shims forward canonical stable entrypoints（scripts/），避免双份 shim 漂移。
 - [x] `P4-C6-S4S5`：cleanup 后再跑固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
+
+### P5（real cutover + deprecate window）
+
+> 说明：当前 `P3` 的 cutover 相关步骤以 rehearsal/窗口演练为主；`P5` 用于把“真实切换 + 观察窗口”显式化并闭环。
+
+- [ ] `P5-C1-S1S2`：真实 cutover 前跑固定 write-gate 回归包 + Evidence 入账（pre）。
+- [x] `P5-C1-S3`：真实 cutover（Chronicle-first：默认读切到 `chronicle_entries`；保留 `MERGED_READ_ENABLED=0` 一键回滚 + drills/单测语义同步）。
+- [ ] `P5-C1-S4S5`：真实 cutover 后再跑固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
+
+- [ ] `P5-C2-S1S2`：deprecate window 观察计划（窗口长度/关键指标/告警阈值/回滚手册）；只写清单不删旧路径。
+- [ ] `P5-C2-S3`：将旧路径标注为 deprecated（runbook + 本 log；仍保留回滚入口）。
+- [ ] `P5-C2-S4S5`：窗口期结束后再跑固定 write-gate 回归包 + Evidence 入账。
 
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 

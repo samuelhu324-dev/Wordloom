@@ -48,7 +48,9 @@ class Settings(BaseSettings):
     enable_search_projection: bool = True
 
     # Dual-run / merge migration flags
-    merged_read_enabled: bool = False
+    # Chronicle read cutover default (P5-C1): read from chronicle_entries unless explicitly rolled back.
+    # Rollback: set MERGED_READ_ENABLED=0
+    merged_read_enabled: bool = True
 
     # Search dual-run / merge migration flags (independent from Chronicle)
     search_merged_read_enabled: bool = False
