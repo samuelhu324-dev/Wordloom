@@ -94,7 +94,63 @@
 
 ### P3（cleanup ledger / deletion plan；no deletion yet）
 
-- [ ] `P3-C1-S1`：列出删除项与 guard（每个删除动作都要单独切片并做 pre/post 证据）。
+- [x] `P3-C1-S1`：列出删除项与 guard（每个删除动作都要单独切片并做 pre/post 证据；本步仅做 ledger，不做删除）。
+
+## P3 Cleanup ledger（Search：old paths/flags；no deletion yet）
+
+> 目标：先从 **Search 原有路径/flags** 开始，把“未来可能删除的东西”列清楚，并把每一项的 guard 写死。
+
+### A) Read path（Stage1 provider / read switch）
+
+- `SEARCH_MERGED_READ_ENABLED`
+  - 现状：真实 cutover 后默认 `1`（未设置时也等价启用）；`0` 作为回滚入口（Stage1 provider 重新遵循 `SEARCH_STAGE1_PROVIDER`）。
+  - 是否删除候选：是（但必须在“确认不再需要回滚到 legacy stage1 provider”之后）。
+  - 删除 guard（单独切片执行）：
+    - pre：固定 write-gate 6-pack（至少 1 轮）+ rollback rehearsal 必须先通过
+    - change：移除 read switch / 移除 `SEARCH_MERGED_READ_ENABLED` wiring
+    - post：固定 write-gate 6-pack（至少 3 轮，含 jitter）+ sustained window（`dual_run/search/window_sustained`）
+    - 回滚策略：本项一旦删除，等价于“删除回滚开关”，必须通过正式评审/批准后执行
+
+- `SEARCH_STAGE1_PROVIDER`（尤其是 `elastic` 取值）
+  - 现状：仅在 `SEARCH_MERGED_READ_ENABLED=0` 时生效；用于 legacy stage1 provider 选择（例如 `elastic`）。
+  - 是否删除候选：是（当且仅当决定永久不再支持 stage1=elastic 的读路径）。
+  - 删除 guard（单独切片执行）：
+    - pre：固定 write-gate 6-pack（至少 1 轮）
+    - change：移除 `elastic` provider 分支与 env 解析（`SEARCH_STAGE1_PROVIDER`）
+    - post：固定 write-gate 6-pack（至少 3 轮，含 jitter）
+    - 回滚策略：保留 `SEARCH_MERGED_READ_ENABLED=0` 但 provider 只能是 `postgres`（或同步移除该回滚入口）
+
+### B) Worker control（operational kill switch / canary scope）
+
+- `SEARCH_OUTBOX_WORKER_ENABLED`
+  - 现状：稳定入口 `backend/scripts/search_outbox_worker.py` 使用该开关实现一键止血（`0` 立即退出，`1` 正常运行）。
+  - 是否删除候选：否（建议长期保留；这是线上止血开关，不是迁移遗留）。
+
+- `SEARCH_OUTBOX_LIBRARY_ALLOWLIST`
+  - 现状：worker claim scope 隔离（canary / blast radius 控制）；默认空=不限制。
+  - 是否删除候选：否（建议保留；除非未来有更强的隔离/分区能力替代）。
+
+- `OUTBOX_*` 限速参数（如 `OUTBOX_CONCURRENCY/OUTBOX_BATCH_SIZE/OUTBOX_POLL_INTERVAL_SECONDS/OUTBOX_LEASE_SECONDS/OUTBOX_MAX_RUNTIME_SECONDS`）
+  - 现状：运维限速/窗口保护手段。
+  - 是否删除候选：否（建议保留）。
+
+### C) Legacy code paths（shim / legacy implementation）
+
+- 稳定入口 + legacy 实现：
+  - `backend/scripts/search_outbox_worker.py`（stable entrypoint；Procfile/runbook 肌肉记忆）
+  - `backend/scripts/legacy/search_outbox_worker.py`（当前实现落点）
+  - 是否删除候选：仅 legacy 脚本是候选；stable entrypoint 不删。
+  - 删除 guard（单独切片执行）：
+    - pre：固定 write-gate 6-pack（至少 1 轮）
+    - change：把 legacy 实现迁移/内联到 stable entrypoint（或新的非 legacy 模块），并删除 legacy 脚本
+    - post：固定 write-gate 6-pack（至少 3 轮，含 jitter）+ worker smoke（含 `SEARCH_OUTBOX_WORKER_ENABLED=0/1`）
+    - 回滚策略：保持 stable entrypoint 路径不变（避免 Procfile/runbook 分叉）
+
+### D) Elastic env vars（注意：这不是“旧 flags”，而是 Search 投影的运行时依赖）
+
+- `ELASTIC_URL` / `ELASTIC_INDEX`
+  - 现状：被 Search outbox worker 写 ES 与部分 drills 使用；属于投影运行时依赖。
+  - 是否删除候选：本轮不是（除非未来 Search 投影完全不依赖 ES）。
 
 ## Deprecate window（Search：观察计划 + 回滚手册；draft）
 

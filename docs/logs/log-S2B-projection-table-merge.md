@@ -90,7 +90,7 @@
 
 - [x] Search read switch rehearsal / sustained window（已在 `S2B-4A` 的 `P3-C2` 入账）
 - [x] Search scripts/entrypoints 收敛（已在 `S2B-4A` 的 `P4-C3/P4-C5/P4-C6` 入账）
-- [ ] Search 侧的“cutover + deprecate window”完整闭环（与 Chronicle 对齐：同样的窗口、同样的证据包、同样的回滚顺序；SoT：`docs/logs/log-S2B-5A-table-merge-migration.md`）
+- [x] Search 侧的“cutover + deprecate window”完整闭环（与 Chronicle 对齐：同样的窗口、同样的证据包、同样的回滚顺序；SoT：`docs/logs/log-S2B-5A-table-merge-migration.md`）
 
 ### P4（进入物理合表前的硬门槛：payload 治理 + 容量/隔离策略）
 
