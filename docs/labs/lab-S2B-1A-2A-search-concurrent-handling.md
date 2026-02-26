@@ -34,7 +34,7 @@
 - 已完成 Alembic migrations（保证 `search_index` / `search_outbox_events` 存在）
 - Search projector（EventBus handlers）至少跑过一轮
   - 若 SoT 有数据但 `search_index` 为空，本 lab 应该失败（这是预期信号）
-- 可选（切读开关，独立于 Chronicle）：设置 `SEARCH_MERGED_READ_ENABLED=1` 会强制 Stage1 provider 使用 `postgres`（覆盖 `SEARCH_STAGE1_PROVIDER`），用于可回滚的 Search read switch 验证；默认不设置/为 0 不改变现有行为。
+- 说明：Search read 已为 merged-only（projection-backed Postgres）；不再提供 `SEARCH_MERGED_READ_ENABLED` / `SEARCH_STAGE1_PROVIDER` 回滚开关。
 
 ---
 

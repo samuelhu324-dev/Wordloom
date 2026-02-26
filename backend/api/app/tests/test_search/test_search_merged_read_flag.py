@@ -3,7 +3,6 @@ from unittest.mock import MagicMock
 import pytest
 
 from infra.search.candidate_provider_factory import get_stage1_candidate_provider
-from infra.search.elastic_candidate_provider import ElasticCandidateProvider
 from infra.search.postgres_fts_candidate_provider import PostgresFTSCandidateProvider
 
 
@@ -25,12 +24,12 @@ def test_search_stage1_provider_respects_env_default_postgres(monkeypatch, env_v
     assert isinstance(provider, expected)
 
 
-def test_search_stage1_provider_can_select_elastic_when_not_merged(monkeypatch):
+def test_search_stage1_provider_ignores_elastic_envs(monkeypatch):
     monkeypatch.setenv("SEARCH_STAGE1_PROVIDER", "elastic")
     monkeypatch.setenv("SEARCH_MERGED_READ_ENABLED", "0")
 
     provider = get_stage1_candidate_provider(MagicMock())
-    assert isinstance(provider, ElasticCandidateProvider)
+    assert isinstance(provider, PostgresFTSCandidateProvider)
 
 
 @pytest.mark.parametrize("truthy", ["1", "true", "yes", "on"]) 

@@ -8,7 +8,6 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 from infra.search.candidate_provider_factory import get_stage1_candidate_provider
-from infra.search.elastic_candidate_provider import ElasticCandidateProvider
 from infra.search.postgres_fts_candidate_provider import PostgresFTSCandidateProvider
 
 from ..registry import register
@@ -48,7 +47,7 @@ async def _probe(*, database_url: str) -> dict[str, Any]:
             return {
                 "provider_default_name": type(provider_a).__name__,
                 "provider_merged_name": type(provider_b).__name__,
-                "provider_default_is_elastic": isinstance(provider_a, ElasticCandidateProvider),
+                "provider_default_is_postgres": isinstance(provider_a, PostgresFTSCandidateProvider),
                 "provider_merged_is_postgres": isinstance(provider_b, PostgresFTSCandidateProvider),
             }
     finally:
@@ -69,12 +68,14 @@ def run(inputs: DrillInputs) -> DrillResult:
     except Exception as exc:  # noqa: BLE001
         return DrillResult(ok=False, errors=[f"probe failed: {exc}"], meta={}, summary={})
 
-    ok = bool(probe.get("provider_default_is_elastic")) and bool(probe.get("provider_merged_is_postgres"))
+    ok = bool(probe.get("provider_default_is_postgres")) and bool(probe.get("provider_merged_is_postgres"))
     errors: list[str] = []
-    if not probe.get("provider_default_is_elastic"):
-        errors.append("expected provider=Elastic when SEARCH_STAGE1_PROVIDER=elastic and SEARCH_MERGED_READ_ENABLED=0")
+    if not probe.get("provider_default_is_postgres"):
+        errors.append(
+            "expected provider=Postgres even when legacy envs are set (SEARCH_STAGE1_PROVIDER=elastic, SEARCH_MERGED_READ_ENABLED=0)"
+        )
     if not probe.get("provider_merged_is_postgres"):
-        errors.append("expected provider=Postgres when SEARCH_MERGED_READ_ENABLED=1 (forces postgres)")
+        errors.append("expected provider=Postgres when SEARCH_MERGED_READ_ENABLED=1")
 
     return DrillResult(
         ok=ok,
@@ -84,14 +85,16 @@ def run(inputs: DrillInputs) -> DrillResult:
         },
         summary={
             "search_read_switch": {
-                "search_stage1_provider": "elastic",
-                "merged_read_enabled_values": ["0", "1"],
+                "legacy_env_probe": {
+                    "SEARCH_STAGE1_PROVIDER": "elastic",
+                    "SEARCH_MERGED_READ_ENABLED_values": ["0", "1"],
+                },
                 "expected": {
-                    "merged_disabled": "ElasticCandidateProvider",
+                    "legacy_envs_ignored": "PostgresFTSCandidateProvider",
                     "merged_enabled": "PostgresFTSCandidateProvider",
                 },
                 "observed": {
-                    "merged_disabled": probe.get("provider_default_name"),
+                    "legacy_envs_ignored": probe.get("provider_default_name"),
                     "merged_enabled": probe.get("provider_merged_name"),
                 },
             }
