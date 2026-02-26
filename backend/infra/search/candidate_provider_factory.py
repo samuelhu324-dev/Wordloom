@@ -38,14 +38,14 @@ def get_stage1_candidate_provider(session: AsyncSession) -> CandidateProvider:
         When enabled, forces provider=postgres (projection-backed), regardless of
         SEARCH_STAGE1_PROVIDER, to support a safe, rollbackable read switch.
 
-        Cutover default:
-        - Default to merged-enabled (projection-backed postgres) when the env var is
-            unset.
-        - Rollback: set SEARCH_MERGED_READ_ENABLED=0, and optionally
-            SEARCH_STAGE1_PROVIDER=elastic.
+    Cutover default:
+    - Default to merged-enabled (projection-backed postgres) when the env var is
+      unset.
+    - Rollback: set SEARCH_MERGED_READ_ENABLED=0, and optionally
+      SEARCH_STAGE1_PROVIDER=elastic.
     """
 
-        merged_enabled = _env_truthy_default("SEARCH_MERGED_READ_ENABLED", default=True)
+    merged_enabled = _env_truthy_default("SEARCH_MERGED_READ_ENABLED", default=True)
     provider = (
         "postgres"
         if merged_enabled
