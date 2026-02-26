@@ -31,7 +31,31 @@
 
 **Numbering（编号约定）**:
 
+> 目标：统一复用 `S0C-5A` 的 Step/Cycle 命名法，避免把“执行清单（checklist）”和“计划（Plan）”混在一起。
+
 - 本 log 内的 `P0/P1/P2/...` 是本地切片编号（reset 计数），不与 `S2B-4A` 的 `P0/P1/...` 连续或对齐。
+
+- **Step vs Cycle**（与 `docs/logs/log-S0C-5A-Git-commit+push-descriptions.md` 一致）：
+  - `S<n>`：Step（步骤）。用于表达“在一个切片内，按顺序推进的动作”。
+  - `C<n>`：Cycle（循环轮次）。只有当同一切片的同一组步骤需要“复跑/复验/重做一轮”（例如重新跑证据窗口、补证据、修复后再跑）时才递增。
+  - 组合写法：`S2S3` 表示一次提交/一次 PR 同时覆盖多个步骤（避免用 `+`）。
+
+- **建议的编号落点**：
+  - `Plan（draft）`：只写 `P*-S*`（说明性/规划性，不作为“执行记账”）。
+  - `Execution Checklist` 与 `Evidence.Change`：统一写 `P*-C*-S*`（可执行、可复盘、可审计）。
+
+- **Commit / PR 命名（复用 S0C-5A）**：
+  - 推荐：`S2B-5A/P<phase>-C<cycle>-S<step>: <summary>`
+  - 例：`S2B-5A/P4-C1-S1S2: remove legacy shim for search outbox worker`
+  - 避免：`>`（PowerShell 重定向符）、`+`（组合符号），组合步骤用 `S1S2`。
+
+- **Branch / PR 描述（复用 S0C-5A；便于未来所有 log 复用）**：
+  - Branch：默认使用顶层 `S2B` issue 分支推进（避免额外分支爆炸）；只有在必须并行隔离时才额外开分支。
+  - PR body（最小约定）：必须包含“本 log 的入口 + issue 入口”，并说明以 PR commits 为当前状态来源。
+
+- **Commit → Push → Evidence 顺序（避免证据链断裂）**：
+  - 任何需要跑 drills 的切片：先 commit+push，再跑回归/演练，再把 run URL 入账到 Evidence。
+  - 原则：Evidence 必须能对齐到 push 后的 `headSha`（否则容易出现“本地跑的结果 vs 远端 Actions run”错位）。
 
 **Constraints（约束）**:
 
@@ -54,7 +78,7 @@
 
 ## Plan（draft）
 
-> 注：延续 Step/Cycle 命名法；每个切片都必须闭环：Implementation → Regression（固定 write-gate 回归包）→ Evidence。
+> 注：Plan 只描述“要做什么”（`P*-S*`）；**真正执行与勾选以 Checklist 为准**（`P*-C*-S*`）。每个切片都必须闭环：Implementation → Regression（固定 write-gate 回归包）→ Evidence。
 
 - P0（baseline）
   - P0-S1：跑一轮固定 write-gate 回归包（Search closure baseline）
@@ -72,6 +96,16 @@
 
 - P3（cleanup ledger / deletion plan）
   - P3-S1：列出最终删除项（表/脚本/flag/配置）与 guard（pre/post 回归包 + Evidence）
+
+- P4（deletion slice 1：Search outbox worker legacy shim）
+  - P4-S1：实现迁移（stable entrypoint 不变；legacy 脚本删除）
+  - P4-S2：post 固定 write-gate 6-pack（N=3，含 jitter）+ Evidence 入账
+
+- P5（保留回滚：证据链补齐后再考虑删除）
+  - P5-S1：写清楚“何时允许删除回滚”的判定门槛
+  - P5-S2：补齐证据链缺口（失败谱系/故障注入/指标口径）并入账
+  - P5-S3：再次跑 sustained window（更贴近真实扰动/事件量）并入账
+  - P5-S4：决策复核：确认“elastic 不再是依赖的恢复段”后，才允许进入 deletion slice 2
 
 ## Execution Checklist（可执行清单 / checked）
 
@@ -105,10 +139,12 @@
 
 > 决策：**先保留 Search read rollback**（`SEARCH_MERGED_READ_ENABLED=0` + `SEARCH_STAGE1_PROVIDER=elastic`）直到证据链满足“可删回滚”的门槛。
 
-- [ ] `P5-C0`：写清楚“何时允许删除回滚”的判定门槛（见下方《P5：判定标准与覆盖检查》）。
-- [ ] `P5-C1`：补齐证据链缺口（失败谱系/故障注入/指标口径）；Evidence 入账。
-- [ ] `P5-C2`：再次跑 sustained window（在更贴近真实扰动/事件量的条件下）并入账。
-- [ ] `P5-C3`：决策复核：确认 “elastic 不再是依赖的恢复段” 后，才允许进入 deletion slice 2（移除回滚开关/elastic provider）。
+> 说明：这里的 4 项是 **Step（步骤）**；默认放在 `C1`。如果中途需要“修复/补证据后再跑一轮”，再新增 `P5-C2-*`。
+
+- [ ] `P5-C1-S1`：写清楚“何时允许删除回滚”的判定门槛（见下方《P5：判定标准与覆盖检查》）。
+- [ ] `P5-C1-S2`：补齐证据链缺口（失败谱系/故障注入/指标口径）；Evidence 入账。
+- [ ] `P5-C1-S3`：再次跑 sustained window（在更贴近真实扰动/事件量的条件下）并入账。
+- [ ] `P5-C1-S4`：决策复核：确认 “elastic 不再是依赖的恢复段” 后，才允许进入 deletion slice 2（移除回滚开关/elastic provider）。
 
 ## P3 Cleanup ledger（Search：old paths/flags；no deletion yet）
 
@@ -232,14 +268,14 @@
 Template A — Round i/N: fixed write-gate 6-pack (all green)
 
 - Date: `YYYY-MM-DD`
-  - Change: `S2B-5A/<STEP>: evidence window round i/N (fixed write-gate pack)`
+  - Change: `S2B-5A/P<phase>-C<cycle>-S<step>: evidence window round i/N (fixed write-gate pack)`
   - Evidence:
     - Round i/N: `scripts/p1_write_gate_regression.ps1` output pasted here
 
 Template B — High volume sustained window profile (synthetic peak/valley)
 
 - Date: `YYYY-MM-DD`
-  - Change: `S2B-5A/<STEP>: evidence window (synthetic peak/valley via sustained window)`
+  - Change: `S2B-5A/P<phase>-C<cycle>-S<step>: evidence window (synthetic peak/valley via sustained window)`
   - workflow: `drill-dual-run`
   - scenario_id: `dual_run/search/window_sustained`
   - window_*:
@@ -255,7 +291,7 @@ Template B — High volume sustained window profile (synthetic peak/valley)
 Template C — Rollback rehearsal (must do once)
 
 - Date: `YYYY-MM-DD`
-  - Change: `S2B-5A/<STEP>: rollback rehearsal (Search read switch)`
+  - Change: `S2B-5A/P<phase>-C<cycle>-S<step>: rollback rehearsal (Search read switch)`
   - workflow: `drill-verify`
   - scenario_id: `rehearsal_search_read_switch_smoke`
   - run URL: `<url>`
