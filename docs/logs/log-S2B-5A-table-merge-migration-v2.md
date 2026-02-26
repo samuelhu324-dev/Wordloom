@@ -151,9 +151,9 @@
 > Gate：本切片只能在 `P5-C1-S4` 完成签字后推进。
 
 - [x] `P6-C1-S1`：实现变更（移除 `SEARCH_MERGED_READ_ENABLED` / `SEARCH_STAGE1_PROVIDER` 的回滚 wiring；CI/tests/rehearsal/docs 不再依赖 `SEARCH_STAGE1_PROVIDER=elastic`）。
-- [ ] `P6-C1-S2`：pre 固定 write-gate 6-pack（至少 1 轮）+ Evidence 入账。
-- [ ] `P6-C1-S3`：post 固定 write-gate 6-pack（至少 3 轮，含 jitter）+ Evidence 入账。
-- [ ] `P6-C1-S4`：post sustained window（`dual_run/search/window_sustained`）+ Evidence 入账。
+- [x] `P6-C1-S2`：pre 固定 write-gate 6-pack（至少 1 轮）+ Evidence 入账。
+- [x] `P6-C1-S3`：post 固定 write-gate 6-pack（至少 3 轮，含 jitter）+ Evidence 入账。
+- [x] `P6-C1-S4`：post sustained window（`dual_run/search/window_sustained`）+ Evidence 入账。
 - [ ] `P6-C1-S5`：SoT 更新：本 log Evidence 区入账（run URLs + headSha）并合入 PR。
 
 ## P3 Cleanup ledger（Search：old paths/flags；no deletion yet）
@@ -606,5 +606,64 @@ Template C — Rollback rehearsal (must do once)
     - headSha: `a286ceced61fecfd43d20e679cbe235000e1b815`
   - Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22443218966
   - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P6-C1-S2: pre fixed write-gate regression pack (6/6)`
+  - Notes:
+    - headSha: `2b0ed104cb2d94589506c9217d385855e17938c6`
+    - PR (draft): https://github.com/samuelhu324-dev/wordloom-v3/pull/132
+  - Evidence:
+    - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449331548 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449333387 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_shared_keys | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449335071 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_dual_run_window | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449336917 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_canary_dual_write | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449338494 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_dual_write_sampling | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449340475 | status/conclusion: completed / success
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P6-C1-S3: post fixed write-gate regression pack (N=3, jitter 20–60s)`
+  - Notes:
+    - headSha: `2b0ed104cb2d94589506c9217d385855e17938c6`
+  - Evidence:
+    - Round 1/3:
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449482984 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449484798 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_shared_keys | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449486332 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_run_window | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449487900 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_canary_dual_write | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449489564 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_write_sampling | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449491190 | status/conclusion: completed / success
+    - Round 2/3:
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449613329 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449615175 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_shared_keys | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449616905 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_run_window | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449618483 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_canary_dual_write | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449620174 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_write_sampling | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449621839 | status/conclusion: completed / success
+    - Round 3/3:
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449748475 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449750006 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_shared_keys | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449751738 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_run_window | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449753374 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_canary_dual_write | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449755194 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_write_sampling | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449756759 | status/conclusion: completed / success
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P6-C1-S4: sustained window (dual_run/search/window_sustained)`
+  - Drill: `drill-dual-run`
+  - scenario_id: `dual_run/search/window_sustained`
+  - window_*:
+    - window_duration_seconds: `1200`
+    - window_interval_seconds: `1`
+    - window_enqueue_batch_size: `5`
+    - window_max_total_events: `6000`
+    - window_drain_timeout_seconds: `1800`
+    - window_worker_max_runtime_seconds: `2400`
+  - Notes:
+    - headSha: `2b0ed104cb2d94589506c9217d385855e17938c6`
+  - Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449912238
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Conclusion: `P6 evidence complete on headSha 2b0ed104: pre pack green (6/6), post pack green (N=3 jitter), sustained window passed. Pending: merge PR + finalize P6-C1-S5.`
 
 
