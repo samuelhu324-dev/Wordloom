@@ -228,6 +228,73 @@
 - ✅ 已有：更贴近真实扰动/事件量的 sustained window（P5-C1-S3；见本 log 的 P5 Evidence）。
 - ⚠️ 仍不足以删回滚：还缺 `P5-C1-S4` 的决策复核与团队承诺；同时 CI/tests 仍显式依赖 `SEARCH_STAGE1_PROVIDER=elastic`（删除会牵连 rehearsal/tests/workflows/docs）。
 
+### P5-C1-S4 决策复核（Sign-off checklist，可签字）
+
+> 目标：把“是否允许进入 deletion slice 2（移除 Search read rollback 与 elastic provider）”变成一次**可复盘、可签字**的决策。
+>
+> 约束：在本清单未签字前，**禁止**开始 deletion slice 2 的任何代码删除/重构（包括移除 env var、删除 provider 分支、改默认行为）。
+
+#### A) 决策声明（必须逐字确认）
+
+- [ ] 我们确认：**elastic 不再是依赖的恢复段**（删除后不会以“紧急恢复/救援通道”为理由要求恢复 elastic stage1 读路径）。
+- [ ] 我们确认：删除回滚开关后，Search read 侧的“可操作的救援通道”由以下方式替代（至少写 1 条）：
+  - 选项示例：回滚到旧读路径不再支持；仅支持修复后前滚；或以 feature-flag/灰度替代（需明确 owner 与落地时间）。
+
+#### B) 影响面（Impact）与依赖（Dependencies）确认
+
+- [ ] 影响面已列清：涉及哪些运行路径/环境变量/脚本/工作流/文档（至少包含）：
+  - `SEARCH_MERGED_READ_ENABLED`
+  - `SEARCH_STAGE1_PROVIDER`（含 `elastic` 取值）
+  - 相关 rehearsal/tests/workflows/docs（当前显式依赖 elastic 的地方必须点名）
+- [ ] CI 依赖确认：我们接受并有计划处理“CI/tests 仍依赖 `SEARCH_STAGE1_PROVIDER=elastic`”这一现状：
+  - [ ] 方案已选定（例如：调整 rehearsal/tests/workflows 使其不再要求 elastic；或将相关测试迁移为纯 merged-read 口径）。
+  - [ ] 负责人：`<name>`
+  - [ ] 目标完成日期：`YYYY-MM-DD`
+
+#### C) 风险与回滚（Risk / Rollback）确认
+
+- [ ] 我们接受：删除 `SEARCH_MERGED_READ_ENABLED=0` 的能力属于**不可逆能力移除**（至少在本 repo 口径下不可一键恢复）。
+- [ ] 若删除后出现线上问题，明确处理路径（至少勾选 1 条并补充）：
+  - [ ] 修复后前滚（hotfix）
+  - [ ] 临时降级策略（非 elastic stage1，例如限制查询/降载/隔离/缓存/熔断；需具体到 runbook 动作）
+  - [ ] 其他：`<text>`
+
+#### D) 证据复核（Evidence review）
+
+- [ ] 已复核本 log 的 P2/P4/P5 证据，确认与 `headSha` 对齐且可追溯：
+  - [ ] 固定 6-pack 多轮（N=5 + N=3）
+  - [ ] sustained window profile（P2）
+  - [ ] rollback rehearsal（P2）
+  - [ ] 故障注入/失败谱系（P5-C1-S2）
+  - [ ] sustained window（更贴近真实负载）（P5-C1-S3）
+- [ ] 证据结论：删除回滚不会破坏当前验收口径（或已明确新的验收口径/替代测试）。
+
+#### E) 交付物（Deliverables）确认（进入 deletion slice 2 前必须具备）
+
+- [ ] 将要执行的 deletion slice 2 以“独立切片”推进（必须包含）：
+  - pre：固定 write-gate 6-pack（至少 1 轮）
+  - change：移除 `SEARCH_MERGED_READ_ENABLED` wiring + 移除 `SEARCH_STAGE1_PROVIDER=elastic` 分支（或明确替代方案）
+  - post：固定 write-gate 6-pack（至少 3 轮，含 jitter）+ sustained window（`dual_run/search/window_sustained`）
+- [ ] runbook 更新承诺：在合入 deletion slice 2 之前，同步更新 runbook（回滚手册/排障手册/CI 口径）。
+
+#### F) 签字（Sign-off record）
+
+> 约定：最少 2 人签字（Owner + Reviewer）。如需更严格，可要求 Ops/SRE/QA 额外签字。
+
+- Decision date: `YYYY-MM-DD`
+- Decision: [ ] 允许进入 deletion slice 2  |  [ ] 暂不允许（原因：`<text>`）
+- Owner (Search/Projection): `________________`  Date: `__________`
+- Reviewer: `__________________________`  Date: `__________`
+- Optional (Ops/SRE): `___________________`  Date: `__________`
+
+#### G) 下一步（签字之后怎么做）
+
+1) 如果本清单签字为“允许进入 deletion slice 2”：
+   - 先创建一个最小 PR（仅实现 deletion slice 2 的代码变更），并在 PR body 里引用本节的签字结论。
+   - 按“Commit → Push → Evidence”的顺序跑 pre/post 回归与 sustained window，并把 run URLs 回填到本 log 的 Evidence 区。
+2) 如果签字为“暂不允许”：
+   - 把阻塞点落到可执行条目（例如：去除 CI 对 elastic 的依赖、补 runbook 替代救援通道），完成后再开 `P5-C2-S4` 复核一轮。
+
 ### P5-C1-S2 失败谱系矩阵（已执行 / evidence logged）
 
 > 目标：把“失败类型 → 触发方式 → 预期信号 → drill/run → evidence”一一对应，避免凭印象判断覆盖度。
