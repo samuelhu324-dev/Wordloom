@@ -84,7 +84,7 @@
 ### P2（Phase 2：Chronicle-first table merge migration closure）
 
 - [x] schema/index/backfill/rehearsal（SoT：`docs/logs/log-S2B-4A-table-merge-migration.md`，已完成 `P0–P4` 多轮回归证据）
-- [ ] 真实 cutover + deprecate window（SoT：`docs/logs/log-S2B-4A-table-merge-migration.md` 的 `P5`）
+- [x] 真实 cutover + deprecate window（SoT：`docs/logs/log-S2B-4A-table-merge-migration.md` 的 `P5`）
 
 ### P3（把 Chronicle 的“模板”复用给 Search：同入口/同证据链/同回滚口径）
 
