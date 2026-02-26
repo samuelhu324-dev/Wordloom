@@ -33,6 +33,14 @@
 - Shadow verify 场景：`shadow_verify_chronicle_entries`
 - Read switch 开关：`MERGED_READ_ENABLED=0/1`
 
+## 2.1) Current state（cutover + rollback；Chronicle）
+
+- 现状（Phase 2 / `S2B-4A`）：Chronicle **默认读路径已切到** `chronicle_entries`（cutover default）。
+- 一键回滚（止血优先）：设置 `MERGED_READ_ENABLED=0`，强制回到 legacy read（旧路径）。
+- Legacy read 路径（`chronicle_events`）进入 **deprecate window**：
+  - 不再作为默认或长期依赖路径
+  - 仅保留用于回滚与排障对比（不删除、不重命名）
+
 Search（v0 先做 shadow verify）：
 
 - SoT：`blocks` / `books` / `tags`

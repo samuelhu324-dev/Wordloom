@@ -164,9 +164,41 @@
 - [x] `P5-C1-S3`：真实 cutover（Chronicle-first：默认读切到 `chronicle_entries`；保留 `MERGED_READ_ENABLED=0` 一键回滚 + drills/单测语义同步）。
 - [x] `P5-C1-S4S5`：真实 cutover 后再跑固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
 
-- [ ] `P5-C2-S1S2`：deprecate window 观察计划（窗口长度/关键指标/告警阈值/回滚手册）；只写清单不删旧路径。
-- [ ] `P5-C2-S3`：将旧路径标注为 deprecated（runbook + 本 log；仍保留回滚入口）。
+- [x] `P5-C2-S1S2`：deprecate window 观察计划（窗口长度/关键指标/告警阈值/回滚手册）；只写清单不删旧路径。
+- [x] `P5-C2-S3`：将旧路径标注为 deprecated（runbook + 本 log；仍保留回滚入口）。
 - [ ] `P5-C2-S4S5`：窗口期结束后再跑固定 write-gate 回归包 + Evidence 入账。
+
+#### P5-C2（deprecate window：观察计划 + 回滚手册；doc-only）
+
+> 目标：在 **cutover default 已生效** 的前提下，把“可观察、可回滚、可审计”的窗口操作写成可执行清单。
+> 说明：本窗口不删除旧路径/旧表/旧 flag；旧路径仅作为回滚与对比排障的安全垫。
+
+**Window（建议口径；可按实际调整）**:
+
+- 窗口长度：至少 `48h`（建议覆盖 1 次工作日 + 1 次非工作日访问波动）。
+- 窗口开始条件：`P5-C1` post-cutover 固定 write-gate 6-pack 为绿（6/6 success）。
+- 窗口结束动作：执行 `P5-C2-S4S5`（再跑一轮固定 6-pack，并入账 Evidence + 更新 SoT）。
+
+**Key signals（只选“最小且能止血”的观测点）**:
+
+- `API 5xx/exception`：Chronicle 读相关接口在窗口内无新增异常峰值。
+- `DB pressure`：Postgres 慢查询/锁等待无明显回归（以现有监控/日志为准）。
+- `Drill health`：固定 write-gate 6 scenarios 在窗口末仍保持全绿（作为最小可审计证据）。
+
+**Rollback manual（止血优先；只做读侧回滚）**:
+
+- 触发条件（任一满足即可回滚）：
+  - Chronicle 读相关错误率明显上升且短时间无法解释
+  - 出现数据不一致/查询结果异常的告警或人工确认
+- 回滚动作：设置 `MERGED_READ_ENABLED=0`，强制回到 legacy read（旧路径）。
+- 回滚后必做：
+  - 记录回滚原因与时间点（本 log 的 Evidence 区追加一条备注）
+  - 重新跑固定 write-gate 6-pack（用于确认“止血后回归包仍可解释”）
+
+**Deprecated markers（宣告弃用，但不删除）**:
+
+- runbook：见 `docs/runbook/run-S2B-projection-table-merge.md` 的 “Current state（cutover + rollback；Chronicle）”。
+- 本 log：从本 cycle 起，legacy read 路径仅作为回滚/排障对比路径；任何新逻辑不得再把它当默认依赖。
 
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 
