@@ -81,11 +81,11 @@
 
 ### P1（real cutover：Search）
 
-- [ ] `P1-C1-S1`：cutover 前固定 write-gate 回归包 + Evidence 入账（pre）。
-- [ ] `P1-C1-S2`：真实 cutover（Search）：
+- [x] `P1-C1-S1`：cutover 前固定 write-gate 回归包 + Evidence 入账（pre）。
+- [x] `P1-C1-S2`：真实 cutover（Search）：
   - read 默认行为按 runbook 明确（`SEARCH_MERGED_READ_ENABLED` 仍可一键回滚）
   - write 侧按 runbook 明确（`SEARCH_OUTBOX_WORKER_ENABLED` 可止血）
-- [ ] `P1-C1-S3S4`：cutover 后固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
+- [x] `P1-C1-S3S4`：cutover 后固定 write-gate 回归包 + Evidence 入账（post；SoT 更新）。
 
 ### P2（deprecate window：Search；doc-only + evidence）
 
@@ -185,4 +185,34 @@ Template C — Rollback rehearsal (must do once)
 
 - Date: `2026-02-26`
   - Conclusion: `Phase 2 Search baseline established: fixed write-gate regression pack is green (6/6).`
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P1-C1-S1: pre-cutover fixed write-gate regression pack (6/6)`
+  - Evidence:
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_write_gate` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428602630 | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_paging_stability` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428603433 | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_shared_keys` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428604197 | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_run_window` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428605036 | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_canary_dual_write` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428605989 | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_write_sampling` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428606831 | status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P1-C1-S2: real cutover (Search read-switch default + rollback preserved)`
+  - Implementation:
+    - Default behavior: `SEARCH_MERGED_READ_ENABLED` defaults to `1` when unset (forces Stage1 provider `postgres`).
+    - Rollback: set `SEARCH_MERGED_READ_ENABLED=0` (provider follows `SEARCH_STAGE1_PROVIDER`, e.g. `elastic`).
+    - Rehearsal/test updated to explicitly probe `SEARCH_MERGED_READ_ENABLED=0/1`.
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P1-C1-S3S4: post-cutover fixed write-gate regression pack (6/6)`
+  - Evidence:
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_write_gate` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428754444 | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_paging_stability` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428755195 | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_shared_keys` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428755770 | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_run_window` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428756314 | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_canary_dual_write` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428756924 | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_write_sampling` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22428757589 | status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Conclusion: `P1-C1 complete: Search cutover default landed; fixed write-gate regression pack is green pre/post (6/6).`
 

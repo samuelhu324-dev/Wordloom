@@ -19,6 +19,13 @@ def _env_truthy(name: str) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "y", "on"}
 
 
+def _env_truthy_default(name: str, *, default: bool) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
 def get_stage1_candidate_provider(session: AsyncSession) -> CandidateProvider:
     """Factory for Stage1 candidate providers.
 
@@ -31,10 +38,14 @@ def get_stage1_candidate_provider(session: AsyncSession) -> CandidateProvider:
         When enabled, forces provider=postgres (projection-backed), regardless of
         SEARCH_STAGE1_PROVIDER, to support a safe, rollbackable read switch.
 
-    Default is postgres to preserve current behavior.
+        Cutover default:
+        - Default to merged-enabled (projection-backed postgres) when the env var is
+            unset.
+        - Rollback: set SEARCH_MERGED_READ_ENABLED=0, and optionally
+            SEARCH_STAGE1_PROVIDER=elastic.
     """
 
-    merged_enabled = _env_truthy("SEARCH_MERGED_READ_ENABLED")
+        merged_enabled = _env_truthy_default("SEARCH_MERGED_READ_ENABLED", default=True)
     provider = (
         "postgres"
         if merged_enabled
