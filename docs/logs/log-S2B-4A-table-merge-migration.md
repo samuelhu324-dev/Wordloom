@@ -166,7 +166,7 @@
 
 - [x] `P5-C2-S1S2`：deprecate window 观察计划（窗口长度/关键指标/告警阈值/回滚手册）；只写清单不删旧路径。
 - [x] `P5-C2-S3`：将旧路径标注为 deprecated（runbook + 本 log；仍保留回滚入口）。
-- [ ] `P5-C2-S4S5`：窗口期结束后再跑固定 write-gate 回归包 + Evidence 入账。
+- [x] `P5-C2-S4S5`：窗口期结束后再跑固定 write-gate 回归包 + Evidence 入账。
 
 #### P5-C2（deprecate window：观察计划 + 回滚手册；doc-only）
 
@@ -203,6 +203,56 @@
 
 - runbook：见 `docs/runbook/run-S2B-projection-table-merge.md` 的 “Current state（cutover + rollback；Chronicle）”。
 - 本 log：从本 cycle 起，legacy read 路径仅作为回滚/排障对比路径；任何新逻辑不得再把它当默认依赖。
+
+**Evidence templates（copy/paste；窗口期执行完就入账）**:
+
+> 目的：把“跑了什么、用的什么扰动参数、结果如何、run URL 在哪”用一致格式落账。
+> 说明：
+> - 固定 6-pack：建议用 `scripts/p1_write_gate_regression.ps1` 输出的 Evidence snippet 直接粘贴。
+> - window sustained profile：建议单独记录“用的 window_* 参数”，避免只看到 run URL 却不知道负载口径。
+> - 回滚演练：推荐 `rehearsal_chronicle_read_switch_smoke`（同一次 run 同时覆盖 `MERGED_READ_ENABLED=0/1` 两条路径）。
+
+Template A — Round i/N: fixed write-gate 6-pack (all green)
+
+- Date: `YYYY-MM-DD`
+  - Change: `S2B-4A/P5-C2-S4S5: evidence window round i/N (fixed write-gate pack)`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Command: `scripts/p1_write_gate_regression.ps1 -Rounds N -JitterSecondsMin <min> -JitterSecondsMax <max>`
+  - Notes: `jitter applied between rounds; cutover default active; rollback available via MERGED_READ_ENABLED=0`
+  - Evidence (paste from script output):
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_write_gate` | Run URL: `<url>` | status/conclusion: `<status>` / `<conclusion>`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_paging_stability` | Run URL: `<url>` | status/conclusion: `<status>` / `<conclusion>`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_shared_keys` | Run URL: `<url>` | status/conclusion: `<status>` / `<conclusion>`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_run_window` | Run URL: `<url>` | status/conclusion: `<status>` / `<conclusion>`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_canary_dual_write` | Run URL: `<url>` | status/conclusion: `<status>` / `<conclusion>`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_write_sampling` | Run URL: `<url>` | status/conclusion: `<status>` / `<conclusion>`
+
+Template B — High volume sustained window profile (synthetic peak/valley)
+
+- Date: `YYYY-MM-DD`
+  - Change: `S2B-4A/P5-C2-S4S5: evidence window (synthetic peak/valley via sustained window)`
+  - Drill: `drill-dual-run`
+  - scenario_id: `dual_run/search/window_sustained`
+  - Inputs (window_*):
+    - window_duration_seconds: `<seconds>`
+    - window_interval_seconds: `<seconds>`
+    - window_enqueue_batch_size: `<n>`
+    - window_max_total_events: `<n>`
+    - window_drain_timeout_seconds: `<seconds>`
+    - window_worker_max_runtime_seconds: `<seconds>`
+  - Run URL: `<url>`
+  - status/conclusion: `<status>` / `<conclusion>`
+  - Notes: `peak=raise batch/short interval; valley=lower batch/longer interval or pause between runs; interpret via artifacts/summary.json`
+
+Template C — Rollback rehearsal (must do once)
+
+- Date: `YYYY-MM-DD`
+  - Change: `S2B-4A/P5-C2-S4S5: rollback rehearsal (Chronicle read switch)`
+  - Drill: `drill-verify`
+  - scenario_id: `rehearsal_chronicle_read_switch_smoke`
+  - Expected: `ok=true; validates MERGED_READ_ENABLED=0 rollback path and MERGED_READ_ENABLED=1 cutover path`
+  - Run URL: `<url>`
+  - status/conclusion: `<status>` / `<conclusion>`
 
 ## P1-C1-S1（Schema/Index Proposal，draft；Chronicle-first）
 
@@ -394,6 +444,66 @@
 
 - Date: `2026-02-26`
   - Conclusion: `Post-cutover regression is green: fixed write-gate pack remains green (6/6) and SoT mapping updated.`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C2-S4S5: evidence window round 1/3 (fixed write-gate pack)`
+  - Command: `scripts/p1_write_gate_regression.ps1 -Rounds 3 -JitterSecondsMin 30 -JitterSecondsMax 120`
+  - Notes: `jitter applied between rounds; cutover default active; rollback available via MERGED_READ_ENABLED=0`
+  - Evidence:
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_write_gate` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426204387` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_paging_stability` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426205389` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_shared_keys` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426206283` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_run_window` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426207140` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_canary_dual_write` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426208014` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_write_sampling` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426208987` | status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C2-S4S5: evidence window round 2/3 (fixed write-gate pack)`
+  - Command: `scripts/p1_write_gate_regression.ps1 -Rounds 3 -JitterSecondsMin 30 -JitterSecondsMax 120`
+  - Notes: `jitter applied between rounds; cutover default active; rollback available via MERGED_READ_ENABLED=0`
+  - Evidence:
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_write_gate` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426275462` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_paging_stability` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426276092` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_shared_keys` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426277010` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_run_window` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426277871` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_canary_dual_write` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426278514` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_write_sampling` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426279148` | status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C2-S4S5: evidence window round 3/3 (fixed write-gate pack) + SoT update`
+  - SoT: `artifacts/write_gate_runs.latest.json`
+  - Command: `scripts/p1_write_gate_regression.ps1 -Rounds 3 -JitterSecondsMin 30 -JitterSecondsMax 120`
+  - Notes: `jitter applied between rounds; cutover default active; rollback available via MERGED_READ_ENABLED=0`
+  - Evidence:
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_write_gate` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426346945` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_search_index_paging_stability` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426347653` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_shared_keys` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426348404` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_run_window` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426349120` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_canary_dual_write` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426349884` | status/conclusion: `completed / success`
+    - Drill: `drill-write-gate` | scenario_id: `shadow_verify_dual_write_sampling` | Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426350657` | status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-4A/P5-C2-S4S5: evidence window (synthetic peak/valley via sustained window)`
+  - Drill: `drill-dual-run`
+  - scenario_id: `dual_run/search/window_sustained`
+  - Inputs (window_*):
+    - window_duration_seconds: `900`
+    - window_interval_seconds: `1`
+    - window_enqueue_batch_size: `20`
+    - window_max_total_events: `10000`
+    - window_drain_timeout_seconds: `1800`
+    - window_worker_max_runtime_seconds: `2400`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22426587311`
+  - status/conclusion: `completed / success`
+  - Notes: `runtime ~10m (03:29:47Z → 03:40:02Z); batch_size=20 to respect pg_candidates_total gate`
+
+- Date: `2026-02-24`
+  - Change: `S2B-4A/P5-C2-S4S5: rollback rehearsal (Chronicle read switch)`
+  - Drill: `drill-verify`
+  - scenario_id: `rehearsal_chronicle_read_switch_smoke`
+  - Run URL: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22346672508`
+  - status/conclusion: `completed / success`
+  - Notes: `single run covers MERGED_READ_ENABLED=0/1 paths; validates rollback entrypoint stays viable`
 
 - Date: `2026-02-24`
   - Change: `S2B-4A/P0-C1-S1S2: Phase 2 baseline (fixed write-gate regression pack)`
