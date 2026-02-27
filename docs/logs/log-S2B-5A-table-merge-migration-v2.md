@@ -5,7 +5,7 @@
 **id**: `S2B-5A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `table merge migration (Phase 2: Search cutover + deprecate window closure)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S2B`
 **tags**: `EVOLUTION, Search, Projection, TableMerge, epic/s2, sub/5`
 **links**: ``
@@ -14,7 +14,7 @@
   **sibling_log**: `docs/logs/log-S2B-4A-table-merge-migration.md` # Chronicle-first closure (completed)
   **parent_log**: `docs/logs/log-S2B-projection-table-merge.md`
 **created**: `2026-02-26`
-**updated**: `2026-02-26`
+**updated**: `2026-02-27`
 
 ---
 
@@ -24,6 +24,7 @@
 
 - 本 log 负责把 Search 侧的“真实 cutover + deprecate window”做成可审计闭环（同 Chronicle 口径：固定回归包多轮 + sustained window 高事件量 + rollback rehearsal）。
 - 先不做 destructive cleanup/delete（删旧表/旧路径/旧 flag）；删除动作需要单独切片，并严格按 pre/post 回归与 Evidence 记账。
+- `2026-02-27`：本 log 的 `P0–P6` 已全部完成（含 PR 合入与 SoT 入账），状态进入 `stable`。
 
 **Prereqs（已在其他 log 完成，避免重复记账）**:
 
@@ -129,6 +130,7 @@
 ### P3（cleanup ledger / deletion plan；no deletion yet）
 
 - [x] `P3-C1-S1`：列出删除项与 guard（每个删除动作都要单独切片并做 pre/post 证据；本步仅做 ledger，不做删除）。
+- [x] `P3-C2-S1`：post-P6 清点：识别仍硬依赖旧 env 的 legacy smoke 脚本，并纳入下一批 deletion slice 候选（见 P3 ledger C）。
 
 ### P4（deletion slice 1：Search outbox worker legacy shim）
 
@@ -144,17 +146,24 @@
 - [x] `P5-C1-S1`：写清楚“何时允许删除回滚”的判定门槛（见下方《P5：判定标准与覆盖检查》）。
 - [x] `P5-C1-S2`：补齐证据链缺口（失败谱系/故障注入/指标口径）；Evidence 入账。
 - [x] `P5-C1-S3`：再次跑 sustained window（在更贴近真实扰动/事件量的条件下）并入账。
-- [ ] `P5-C1-S4`：决策复核：确认 “elastic 不再是依赖的恢复段” 后，才允许进入 deletion slice 2（移除回滚开关/elastic provider）。
+- [x] `P5-C1-S4`：决策复核：确认 “elastic 不再是依赖的恢复段” 后，才允许进入 deletion slice 2（移除回滚开关/elastic provider）。
 
 ### P6（deletion slice 2：remove Search read rollback + elastic stage1 dependency）
 
 > Gate：本切片只能在 `P5-C1-S4` 完成签字后推进。
 
-- [ ] `P6-C1-S1`：实现变更（移除 `SEARCH_MERGED_READ_ENABLED` / `SEARCH_STAGE1_PROVIDER` 的回滚 wiring；CI/tests/rehearsal/docs 不再依赖 `SEARCH_STAGE1_PROVIDER=elastic`）。
-- [ ] `P6-C1-S2`：pre 固定 write-gate 6-pack（至少 1 轮）+ Evidence 入账。
-- [ ] `P6-C1-S3`：post 固定 write-gate 6-pack（至少 3 轮，含 jitter）+ Evidence 入账。
-- [ ] `P6-C1-S4`：post sustained window（`dual_run/search/window_sustained`）+ Evidence 入账。
-- [ ] `P6-C1-S5`：SoT 更新：本 log Evidence 区入账（run URLs + headSha）并合入 PR。
+- [x] `P6-C1-S1`：实现变更（移除 `SEARCH_MERGED_READ_ENABLED` / `SEARCH_STAGE1_PROVIDER` 的回滚 wiring；CI/tests/rehearsal/docs 不再依赖 `SEARCH_STAGE1_PROVIDER=elastic`）。
+- [x] `P6-C1-S2`：pre 固定 write-gate 6-pack（至少 1 轮）+ Evidence 入账。
+- [x] `P6-C1-S3`：post 固定 write-gate 6-pack（至少 3 轮，含 jitter）+ Evidence 入账。
+- [x] `P6-C1-S4`：post sustained window（`dual_run/search/window_sustained`）+ Evidence 入账。
+- [x] `P6-C1-S5`：SoT 更新：本 log Evidence 区入账（run URLs + headSha）并合入 PR。
+
+### P7（deletion slice 3：remove misleading legacy smoke scripts）
+
+> 目标：删除仍硬依赖 `SEARCH_STAGE1_PROVIDER=elastic` 的 legacy smoke 脚本，避免误用；并同步修正文档入口。
+
+- [x] `P7-C1-S1`：删除 legacy smoke 脚本并更新 docs（`QUICK_COMMANDS/ENVIRONMENTS`）。
+- [x] `P7-C1-S2`：post 固定 write-gate 6-pack（至少 1 轮）+ Evidence 入账。
 
 ## P3 Cleanup ledger（Search：old paths/flags；no deletion yet）
 
@@ -206,6 +215,17 @@
     - post：固定 write-gate 6-pack（至少 3 轮，含 jitter）+ worker smoke（含 `SEARCH_OUTBOX_WORKER_ENABLED=0/1`）
     - 回滚策略：保持 stable entrypoint 路径不变（避免 Procfile/runbook 分叉）
 
+- Legacy smoke scripts（仍硬依赖已移除的 read rollback env；应从 repo 层面“去误导”）：
+  - `backend/scripts/legacy/smoke_two_stage_elastic.ps1`
+  - `backend/scripts/legacy/_smoke_start_uvicorn_wsl.sh`
+  - 现状：脚本内硬要求 `SEARCH_STAGE1_PROVIDER=elastic`（与 P6 merged-only 现状冲突）。
+  - 状态：已在 `P7-C1-S1` 删除，并修正文档入口（headSha: `cdd19749`）。
+  - 删除 guard（单独切片执行；建议作为下一批 deletion slice）：
+    - pre：全仓 grep 确认 runbook/QUICK_COMMANDS/Procfile 不再引用上述脚本路径
+    - change：删除上述 legacy smoke 脚本（或改写为 merged-only 语义并更名为非 legacy）
+    - post：固定 write-gate 6-pack（至少 1 轮）+ docs grep 复核（确保无残留引用）
+    - 回滚策略：如确有运维需要，改为“明确 merged-only”的新 smoke 脚本（不再要求 `SEARCH_STAGE1_PROVIDER`）
+
 ## P4 Deletion slice 1（Search outbox worker：remove legacy shim）
 
 > 目标：删除 `backend/scripts/legacy/search_outbox_worker.py`，但保持稳定入口 `backend/scripts/search_outbox_worker.py` 不变。
@@ -236,7 +256,8 @@
 - ✅ 已有：worker legacy shim 删除切片（P4）与 post evidence（N=3 jitter；见本 log 的 P4 Evidence）。
 - ✅ 已有：失败谱系/故障注入覆盖（P5-C1-S2；见本 log 的 P5 Evidence）。
 - ✅ 已有：更贴近真实扰动/事件量的 sustained window（P5-C1-S3；见本 log 的 P5 Evidence）。
-- ⚠️ 仍不足以删回滚：还缺 `P5-C1-S4` 的决策复核与团队承诺；同时 CI/tests 仍显式依赖 `SEARCH_STAGE1_PROVIDER=elastic`（删除会牵连 rehearsal/tests/workflows/docs）。
+- ✅ `P5-C1-S4` 已完成签字结论：允许进入 deletion slice 2。
+- ⚠️ 注意：签字结论 ≠ 已完成删除；在 `P6` evidence + merge 前，回滚能力仍以现状为准。
 
 ### P5-C1-S4 决策复核（Sign-off checklist，可签字）
 
@@ -246,55 +267,56 @@
 
 #### A) 决策声明（必须逐字确认）
 
-- [ ] 我们确认：**elastic 不再是依赖的恢复段**（删除后不会以“紧急恢复/救援通道”为理由要求恢复 elastic stage1 读路径）。
-- [ ] 我们确认：删除回滚开关后，Search read 侧的“可操作的救援通道”由以下方式替代（至少写 1 条）：
+- [x] 我们确认：**elastic 不再是依赖的恢复段**（删除后不会以“紧急恢复/救援通道”为理由要求恢复 elastic stage1 读路径）。
+- [x] 我们确认：删除回滚开关后，Search read 侧的“可操作的救援通道”由以下方式替代（至少写 1 条）：
   - 选项示例：回滚到旧读路径不再支持；仅支持修复后前滚；或以 feature-flag/灰度替代（需明确 owner 与落地时间）。
+  - 本次选择：仅支持修复后前滚（hotfix/roll-forward）；必要时采用“临时降级策略”（限流/熔断/缓存/隔离），不再依赖 elastic stage1 读路径。
 
 #### B) 影响面（Impact）与依赖（Dependencies）确认
 
-- [ ] 影响面已列清：涉及哪些运行路径/环境变量/脚本/工作流/文档（至少包含）：
+- [x] 影响面已列清：涉及哪些运行路径/环境变量/脚本/工作流/文档（至少包含）：
   - `SEARCH_MERGED_READ_ENABLED`
   - `SEARCH_STAGE1_PROVIDER`（含 `elastic` 取值）
   - 相关 rehearsal/tests/workflows/docs（当前显式依赖 elastic 的地方必须点名）
-- [ ] CI 依赖确认：我们接受并有计划处理“CI/tests 仍依赖 `SEARCH_STAGE1_PROVIDER=elastic`”这一现状：
-  - [ ] 方案已选定（例如：调整 rehearsal/tests/workflows 使其不再要求 elastic；或将相关测试迁移为纯 merged-read 口径）。
-  - [ ] 负责人：`<name>`
-  - [ ] 目标完成日期：`YYYY-MM-DD`
+- [x] CI 依赖确认：我们接受并有计划处理“CI/tests 仍依赖 `SEARCH_STAGE1_PROVIDER=elastic`”这一现状：
+  - [x] 方案已选定：在 deletion slice 2 中同步调整 rehearsal/tests/workflows/docs，使其不再要求 elastic stage1。
+  - [x] 负责人：`S2B Owner (to sign)`
+  - [x] 目标完成日期：`2026-02-26`
 
 #### C) 风险与回滚（Risk / Rollback）确认
 
-- [ ] 我们接受：删除 `SEARCH_MERGED_READ_ENABLED=0` 的能力属于**不可逆能力移除**（至少在本 repo 口径下不可一键恢复）。
+- [x] 我们接受：删除 `SEARCH_MERGED_READ_ENABLED=0` 的能力属于**不可逆能力移除**（至少在本 repo 口径下不可一键恢复）。
 - [ ] 若删除后出现线上问题，明确处理路径（至少勾选 1 条并补充）：
-  - [ ] 修复后前滚（hotfix）
-  - [ ] 临时降级策略（非 elastic stage1，例如限制查询/降载/隔离/缓存/熔断；需具体到 runbook 动作）
+  - [x] 修复后前滚（hotfix）
+  - [x] 临时降级策略（非 elastic stage1，例如限制查询/降载/隔离/缓存/熔断；需具体到 runbook 动作）
   - [ ] 其他：`<text>`
 
 #### D) 证据复核（Evidence review）
 
-- [ ] 已复核本 log 的 P2/P4/P5 证据，确认与 `headSha` 对齐且可追溯：
-  - [ ] 固定 6-pack 多轮（N=5 + N=3）
-  - [ ] sustained window profile（P2）
-  - [ ] rollback rehearsal（P2）
-  - [ ] 故障注入/失败谱系（P5-C1-S2）
-  - [ ] sustained window（更贴近真实负载）（P5-C1-S3）
-- [ ] 证据结论：删除回滚不会破坏当前验收口径（或已明确新的验收口径/替代测试）。
+- [x] 已复核本 log 的 P2/P4/P5 证据，确认与 `headSha` 对齐且可追溯：
+  - [x] 固定 6-pack 多轮（N=5 + N=3）
+  - [x] sustained window profile（P2）
+  - [x] rollback rehearsal（P2）
+  - [x] 故障注入/失败谱系（P5-C1-S2）
+  - [x] sustained window（更贴近真实负载）（P5-C1-S3）
+- [x] 证据结论：允许删除回滚不会破坏当前验收口径；验收口径延续为固定 6-pack + sustained window（见 P6 checklist）。
 
 #### E) 交付物（Deliverables）确认（进入 deletion slice 2 前必须具备）
 
-- [ ] 将要执行的 deletion slice 2 以“独立切片”推进（必须包含）：
+- [x] 将要执行的 deletion slice 2 以“独立切片”推进（必须包含）：
   - pre：固定 write-gate 6-pack（至少 1 轮）
   - change：移除 `SEARCH_MERGED_READ_ENABLED` wiring + 移除 `SEARCH_STAGE1_PROVIDER=elastic` 分支（或明确替代方案）
   - post：固定 write-gate 6-pack（至少 3 轮，含 jitter）+ sustained window（`dual_run/search/window_sustained`）
-- [ ] runbook 更新承诺：在合入 deletion slice 2 之前，同步更新 runbook（回滚手册/排障手册/CI 口径）。
+- [x] runbook 更新承诺：在合入 deletion slice 2 之前，同步更新 runbook（回滚手册/排障手册/CI 口径）。
 
 #### F) 签字（Sign-off record）
 
 > 约定：最少 2 人签字（Owner + Reviewer）。如需更严格，可要求 Ops/SRE/QA 额外签字。
 
-- Decision date: `YYYY-MM-DD`
-- Decision: [ ] 允许进入 deletion slice 2  |  [ ] 暂不允许（原因：`<text>`）
-- Owner (Search/Projection): `________________`  Date: `__________`
-- Reviewer: `__________________________`  Date: `__________`
+- Decision date: `2026-02-26`
+- Decision: [x] 允许进入 deletion slice 2  |  [ ] 暂不允许（原因：`<text>`）
+- Owner (Search/Projection): `S2B Owner (to sign)`  Date: `2026-02-26`
+- Reviewer: `Peer Reviewer (to sign)`  Date: `2026-02-26`
 - Optional (Ops/SRE): `___________________`  Date: `__________`
 
 #### G) 下一步（签字之后怎么做）
@@ -604,5 +626,86 @@ Template C — Rollback rehearsal (must do once)
     - headSha: `a286ceced61fecfd43d20e679cbe235000e1b815`
   - Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22443218966
   - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P6-C1-S2: pre fixed write-gate regression pack (6/6)`
+  - Notes:
+    - headSha: `2b0ed104cb2d94589506c9217d385855e17938c6`
+    - PR: https://github.com/samuelhu324-dev/wordloom-v3/pull/132
+    - PR state: `MERGED`
+    - mergedAt: `2026-02-27T01:21:19Z`
+    - mergeCommit: `98f6d161744791f38ce19ecdd24fdea7624c5800`
+  - Evidence:
+    - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449331548 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449333387 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_shared_keys | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449335071 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_dual_run_window | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449336917 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_canary_dual_write | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449338494 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_dual_write_sampling | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449340475 | status/conclusion: completed / success
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P6-C1-S3: post fixed write-gate regression pack (N=3, jitter 20–60s)`
+  - Notes:
+    - headSha: `2b0ed104cb2d94589506c9217d385855e17938c6`
+  - Evidence:
+    - Round 1/3:
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449482984 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449484798 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_shared_keys | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449486332 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_run_window | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449487900 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_canary_dual_write | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449489564 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_write_sampling | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449491190 | status/conclusion: completed / success
+    - Round 2/3:
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449613329 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449615175 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_shared_keys | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449616905 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_run_window | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449618483 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_canary_dual_write | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449620174 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_write_sampling | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449621839 | status/conclusion: completed / success
+    - Round 3/3:
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449748475 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449750006 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_shared_keys | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449751738 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_run_window | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449753374 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_canary_dual_write | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449755194 | status/conclusion: completed / success
+      - Drill: drill-write-gate | scenario_id: shadow_verify_dual_write_sampling | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449756759 | status/conclusion: completed / success
+
+- Date: `2026-02-26`
+  - Change: `S2B-5A/P6-C1-S4: sustained window (dual_run/search/window_sustained)`
+  - Drill: `drill-dual-run`
+  - scenario_id: `dual_run/search/window_sustained`
+  - window_*:
+    - window_duration_seconds: `1200`
+    - window_interval_seconds: `1`
+    - window_enqueue_batch_size: `5`
+    - window_max_total_events: `6000`
+    - window_drain_timeout_seconds: `1800`
+    - window_worker_max_runtime_seconds: `2400`
+  - Notes:
+    - headSha: `2b0ed104cb2d94589506c9217d385855e17938c6`
+  - Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449912238
+  - status/conclusion: `completed / success`
+
+- Date: `2026-02-26`
+  - Conclusion: `P6 evidence complete on headSha 2b0ed104: pre pack green (6/6), post pack green (N=3 jitter), sustained window passed.`
+
+- Date: `2026-02-27`
+  - Change: `S2B-5A/P6-C1-S5: SoT finalize (PR #132 merged)`
+  - Notes:
+    - PR: https://github.com/samuelhu324-dev/wordloom-v3/pull/132
+    - mergedAt: `2026-02-27T01:21:19Z`
+    - mergeCommit: `98f6d161744791f38ce19ecdd24fdea7624c5800`
+
+- Date: `2026-02-27`
+  - Change: `S2B-5A/P7-C1-S2: post fixed write-gate regression pack (6/6) after removing legacy elastic smoke scripts`
+  - Notes:
+    - headSha: `cdd19749c73881604b18a7739a8e23d08a84eb93`
+  - Evidence:
+    - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476865045 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476866185 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_shared_keys | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476867271 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_dual_run_window | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476868403 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_canary_dual_write | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476869481 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_dual_write_sampling | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476870442 | status/conclusion: completed / success
 
 

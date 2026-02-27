@@ -100,8 +100,6 @@ jobs:
           OUTBOX_METRICS_PORT=9109
 
           DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test
-
-          SEARCH_STAGE1_PROVIDER=elastic
           ELASTIC_URL=http://localhost:19200
           ELASTIC_INDEX=wordloom-test-search-index
 
@@ -136,7 +134,7 @@ jobs:
             echo
             echo "### Key env (masked)"
             echo "\`\`\`"
-            (env | sort | grep -E '^(WORDLOOM_ENV|ENVIRONMENT|DEBUG|LOG_LEVEL|API_PORT|OUTBOX_METRICS_PORT|DATABASE_URL|SEARCH_STAGE1_PROVIDER|ELASTIC_URL|ELASTIC_INDEX|WORDLOOM_TRACING_ENABLED|OTEL_)=' \
+            (env | sort | grep -E '^(WORDLOOM_ENV|ENVIRONMENT|DEBUG|LOG_LEVEL|API_PORT|OUTBOX_METRICS_PORT|DATABASE_URL|ELASTIC_URL|ELASTIC_INDEX|WORDLOOM_TRACING_ENABLED|OTEL_)=' \
               | sed -E 's/(=).*/=***REDACTED***/') || true
             echo "\`\`\`"
             echo

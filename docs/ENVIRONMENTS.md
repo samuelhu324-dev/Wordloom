@@ -171,7 +171,7 @@
 
 - dev/test DB：只认 `docker-compose.devtest-db.yml`（host 5435）。
 - sandbox：只认 `docker-compose.yml`（host 5434）。
-- ES：先按现状用脚本起（`smoke_two_stage_elastic.ps1` 或手动 `docker run`），后续再纳入 compose。
+- ES：用 `docker-compose.infra.yml` 起（服务 `es`；或手动 `docker run`），不再使用依赖 `SEARCH_STAGE1_PROVIDER=elastic` 的 legacy smoke 脚本。
 
 ### Step 1（立刻见效）：强制区分 dev/test 的“启动端口 + metrics 端口”
 

@@ -47,7 +47,7 @@ Search（v0 先做 shadow verify）：
 - SoT：`blocks` / `books` / `tags`
 - 投影表：`search_index`
 - Shadow verify 场景：`shadow_verify_search_index`
-- Read switch（独立开关）：`SEARCH_MERGED_READ_ENABLED=0/1`（不复用 Chronicle 的 `MERGED_READ_ENABLED`）
+- Read path：Search read 已切为 merged-only（projection-backed Postgres）；不再提供 env 回滚开关。
 
 ## 3) Evidence Bundle（v0）
 
@@ -372,8 +372,7 @@ Local evidence（2026-02-19，devtest DB）:
 
 Search（独立切读开关）：
 
-- 默认（真实 cutover 后）：`SEARCH_MERGED_READ_ENABLED=1`（强制 stage1 provider 使用 `postgres`，覆盖 `SEARCH_STAGE1_PROVIDER`）
-- 回滚：`SEARCH_MERGED_READ_ENABLED=0`（stage1 provider 重新遵循 `SEARCH_STAGE1_PROVIDER`；可设为 `elastic`）
+- Search read：merged-only（projection-backed Postgres）；已移除 `SEARCH_MERGED_READ_ENABLED` / `SEARCH_STAGE1_PROVIDER` 回滚 wiring。
 
 建议顺序：
 1) shadow verify 通过（留证据）
@@ -401,7 +400,7 @@ Search（独立切读开关）：
 
 执行：
 
-1) Staging 先开启 `MERGED_READ_ENABLED=1` / `SEARCH_MERGED_READ_ENABLED=1` 做小窗口验证。
+1) Staging 先开启 `MERGED_READ_ENABLED=1` 做小窗口验证。
 2) 观察窗口内证据：`_result.json` + logs/traces 可互证（shared keys 可反查）。
 3) 无异常后再扩大范围。
 

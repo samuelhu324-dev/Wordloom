@@ -77,7 +77,6 @@ npx playwright test --project=chromium --grep \"LIB-OVW\"
 cd /mnt/d/Project/wordloom-v3/backend
 
 export DATABASE_URL="postgresql://wordloom:wordloom@localhost:5435/wordloom_dev"
-export SEARCH_STAGE1_PROVIDER=elastic
 export ELASTIC_URL=http://localhost:19200
 export ELASTIC_INDEX=wordloom-dev-search-index
 
@@ -319,9 +318,11 @@ curl -s http://localhost:9109/metrics | egrep '^outbox_es_bulk_'
 docker exec -it wordloom-devtest-db_devtest-1 psql -U wordloom -d wordloom_test -c "select count(*) as pending from search_outbox_events where processed_at is null;"
 ```
 
-# 一键自测：Elastic Stage1 + Postgres Stage2（会等待 health=200 再请求 two-stage）
-# PowerShell:
-#   .\backend\scripts\smoke_two_stage_elastic.ps1 -Port 30002 -Query "quantum" -RecreateIndex
+# 一键自测：Search merged-only（不依赖 ES；验证 legacy env 已被忽略）
+# WSL2 / bash:
+#   cd /mnt/d/Project/wordloom-v3/backend
+#   export DATABASE_URL='postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test'
+#   python3 scripts/cli.py scenario rehearsal_search_read_switch_smoke --scope-id S2B --run-id local
 ```
 
 ## 开发/测试数据库（DEVTEST-DB-5435，推荐）

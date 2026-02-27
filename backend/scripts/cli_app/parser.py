@@ -70,7 +70,7 @@ def build_parser(*, callbacks: dict[str, Callback]) -> argparse.ArgumentParser:
 
     p3c2_search = labs_sub.add_parser(
         "search-read-switch-smoke-rehearsal",
-        help="Labs-P3C2: rehearsal of Search read switch (SEARCH_MERGED_READ_ENABLED=0/1 provider selection smoke; writes _result.json)",
+        help="Labs-P3C2: rehearsal of Search read behavior (merged-only; legacy envs ignored; writes _result.json)",
     )
     p3c2_search.add_argument("--env-file", help="Optional .env file to load (repo-root relative by default)")
     p3c2_search.add_argument("--database-url", help="Override DATABASE_URL (do not persist DSN in snapshots)")
