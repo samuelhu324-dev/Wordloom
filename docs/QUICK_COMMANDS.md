@@ -77,7 +77,6 @@ npx playwright test --project=chromium --grep \"LIB-OVW\"
 cd /mnt/d/Project/wordloom-v3/backend
 
 export DATABASE_URL="postgresql://wordloom:wordloom@localhost:5435/wordloom_dev"
-export SEARCH_STAGE1_PROVIDER=elastic
 export ELASTIC_URL=http://localhost:19200
 export ELASTIC_INDEX=wordloom-dev-search-index
 

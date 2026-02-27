@@ -53,10 +53,7 @@ class Settings(BaseSettings):
     merged_read_enabled: bool = True
 
     # Search dual-run / merge migration flags (independent from Chronicle)
-    # Search read cutover default (S2B-5A/P1-C1): force Stage1 provider to use
-    # postgres (projection-backed) unless explicitly rolled back.
-    # Rollback: set SEARCH_MERGED_READ_ENABLED=0
-    search_merged_read_enabled: bool = True
+    # Search read is merged-only (S2B-5A deletion slice 2); no rollback flag.
 
     model_config = SettingsConfigDict(
         env_file=str(Path(__file__).parent.parent.parent / ".env"),
