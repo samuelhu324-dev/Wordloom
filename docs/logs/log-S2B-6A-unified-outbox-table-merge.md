@@ -36,7 +36,7 @@
 
 **Current status**:
 
-- `2026-02-27`：本 log 仅完成结构落位（`draft`）；Execution Checklist 尚未执行。
+- `2026-02-27`：P0 的代码落点已完成（payload contract + deterministic reasons + Chronicle claim isolation）；drills/evidence 尚未入账（Checklist 仍待勾选）。
 
 ## Numbering（编号约定）
 

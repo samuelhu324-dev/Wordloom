@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
+try:
+    from .payload_contract import PayloadContractViolation
+except Exception:  # pragma: no cover
+    PayloadContractViolation = None  # type: ignore
+
 
 def is_transient_reason(reason: str) -> bool:
     """Low-cardinality transient reason set.
@@ -64,6 +69,9 @@ def classify_exception_reason(exc: Exception) -> tuple[str, bool]:
         import httpx  # type: ignore
     except Exception:
         httpx = None  # type: ignore
+
+    if PayloadContractViolation is not None and isinstance(exc, PayloadContractViolation):
+        return exc.reason, False
 
     if httpx is not None and isinstance(exc, getattr(httpx, "HTTPStatusError")):
         response: Any = getattr(exc, "response", None)

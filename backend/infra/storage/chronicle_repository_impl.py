@@ -115,7 +115,8 @@ class SQLAlchemyChronicleRepository(ChronicleRepositoryPort):
                         await self._session.commit()
                         return event
 
-            payload = event.payload or {}
+            payload = dict(event.payload or {})
+            payload.setdefault("schema_version", 1)
             model = ChronicleEventModel(
                 id=event.id,
                 event_type=event.event_type.value,

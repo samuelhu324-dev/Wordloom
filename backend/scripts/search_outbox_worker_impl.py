@@ -89,6 +89,7 @@ from infra.outbox_core.reasons import (
     classify_httpx_exception_reason as outbox_classify_httpx_exception_reason,
 )
 from infra.outbox_core.retry import ExponentialBackoffSpec, compute_exponential_backoff_seconds
+from infra.outbox_core.payload_contract import BadPayload, require_schema_version
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
 
 from api.app.config.logging_config import setup_logging
@@ -340,6 +341,8 @@ async def _process_upsert(session: AsyncSession, client: httpx.AsyncClient, inde
         return
 
     doc = {
+        # Payload contract v1 (hard gate): always emit schema_version.
+        "schema_version": 1,
         "entity_type": row.entity_type,
         "library_id": (str(row.library_id) if getattr(row, "library_id", None) else None),
         "entity_id": str(row.entity_id),
@@ -348,6 +351,16 @@ async def _process_upsert(session: AsyncSession, client: httpx.AsyncClient, inde
         "rank_score": row.rank_score,
         "event_version": int(row.event_version),
     }
+
+    # Minimal DTO/schema validation before we talk to Elasticsearch.
+    # Contract violations must fail deterministically (no retry).
+    require_schema_version(doc, projection=PROJECTION_NAME, supported_versions={1}, allow_missing=False)
+    if not isinstance(doc.get("entity_type"), str) or not str(doc.get("entity_type") or "").strip():
+        raise BadPayload(projection=PROJECTION_NAME, reason="bad_payload", message="entity_type must be non-empty")
+    if not isinstance(doc.get("entity_id"), str) or not str(doc.get("entity_id") or "").strip():
+        raise BadPayload(projection=PROJECTION_NAME, reason="bad_payload", message="entity_id must be non-empty")
+    if not isinstance(doc.get("event_version"), int):
+        raise BadPayload(projection=PROJECTION_NAME, reason="bad_payload", message="event_version must be int")
 
     doc_id = _es_doc_id(row.entity_type, row.entity_id)
     resp = await client.put(f"/{index}/_doc/{doc_id}", json=doc)

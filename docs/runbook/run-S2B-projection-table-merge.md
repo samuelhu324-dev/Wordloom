@@ -49,6 +49,24 @@ Search（v0 先做 shadow verify）：
 - Shadow verify 场景：`shadow_verify_search_index`
 - Read path：Search read 已切为 merged-only（projection-backed Postgres）；不再提供 env 回滚开关。
 
+## 2.2) Payload Contract（P0 hard gate）
+
+### Required
+
+- `schema_version`：必须存在且为 `int`。
+  - Search：worker 写入 ES 的 doc 必须包含 `schema_version=1`。
+  - Chronicle：`chronicle_events.payload` 必须包含 `schema_version=1`（仓储写入时自动补齐）。
+
+### Deterministic failure（no retry）
+
+- 若 payload contract 不满足（缺字段/类型不对/不支持的 version）：outbox consumer 直接 `failed`。
+- `error_reason` 低基数枚举：`bad_payload` / `schema_mismatch`（用于聚合与审计）。
+
+## 2.3) Capacity / Isolation（P0 minimal）
+
+- Search：`SEARCH_OUTBOX_LIBRARY_ALLOWLIST`（限制 claim 到指定 libraries）。
+- Chronicle：`CHRONICLE_OUTBOX_BOOK_ALLOWLIST`（限制 claim 到指定 books；逗号分隔 UUID）。
+
 ## 3) Evidence Bundle（v0）
 
 ### 3.1 Output root
