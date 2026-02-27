@@ -158,6 +158,13 @@
 - [x] `P6-C1-S4`：post sustained window（`dual_run/search/window_sustained`）+ Evidence 入账。
 - [x] `P6-C1-S5`：SoT 更新：本 log Evidence 区入账（run URLs + headSha）并合入 PR。
 
+### P7（deletion slice 3：remove misleading legacy smoke scripts）
+
+> 目标：删除仍硬依赖 `SEARCH_STAGE1_PROVIDER=elastic` 的 legacy smoke 脚本，避免误用；并同步修正文档入口。
+
+- [x] `P7-C1-S1`：删除 legacy smoke 脚本并更新 docs（`QUICK_COMMANDS/ENVIRONMENTS`）。
+- [x] `P7-C1-S2`：post 固定 write-gate 6-pack（至少 1 轮）+ Evidence 入账。
+
 ## P3 Cleanup ledger（Search：old paths/flags；no deletion yet）
 
 > 目标：先从 **Search 原有路径/flags** 开始，把“未来可能删除的东西”列清楚，并把每一项的 guard 写死。
@@ -212,7 +219,7 @@
   - `backend/scripts/legacy/smoke_two_stage_elastic.ps1`
   - `backend/scripts/legacy/_smoke_start_uvicorn_wsl.sh`
   - 现状：脚本内硬要求 `SEARCH_STAGE1_PROVIDER=elastic`（与 P6 merged-only 现状冲突）。
-  - 是否删除候选：是（属于 legacy 操作手册/脚本残留；保留会造成误用）。
+  - 状态：已在 `P7-C1-S1` 删除，并修正文档入口（headSha: `cdd19749`）。
   - 删除 guard（单独切片执行；建议作为下一批 deletion slice）：
     - pre：全仓 grep 确认 runbook/QUICK_COMMANDS/Procfile 不再引用上述脚本路径
     - change：删除上述 legacy smoke 脚本（或改写为 merged-only 语义并更名为非 legacy）
@@ -688,5 +695,17 @@ Template C — Rollback rehearsal (must do once)
     - PR: https://github.com/samuelhu324-dev/wordloom-v3/pull/132
     - mergedAt: `2026-02-27T01:21:19Z`
     - mergeCommit: `98f6d161744791f38ce19ecdd24fdea7624c5800`
+
+- Date: `2026-02-27`
+  - Change: `S2B-5A/P7-C1-S2: post fixed write-gate regression pack (6/6) after removing legacy elastic smoke scripts`
+  - Notes:
+    - headSha: `cdd19749c73881604b18a7739a8e23d08a84eb93`
+  - Evidence:
+    - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476865045 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476866185 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_shared_keys | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476867271 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_dual_run_window | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476868403 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_canary_dual_write | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476869481 | status/conclusion: completed / success
+    - Drill: drill-write-gate | scenario_id: shadow_verify_dual_write_sampling | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22476870442 | status/conclusion: completed / success
 
 
