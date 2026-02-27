@@ -171,6 +171,81 @@
 - 禁止把包含敏感信息/大段 payload dump 的内容写入 `error`（只保留裁剪后的摘要；全文靠 artifacts/logs）。
 - 禁止在统一表引入“按 projection 分叉的重复列地狱”（除 `library_id/book_id` 这类 scope key 外，其他投影字段优先放 `payload` 并受 schema_version 约束）。
 
+#### P1-C1-S2 draft：迁移策略（new table → backfill → dual-write window → cutover → rollback）
+
+> 目标：把“统一 outbox 表”的落地拆成可执行、可回滚、可审计的步骤；每一步都有明确的 guard（pre/post drills + Evidence + 止血开关）。
+
+**基本原则（必须满足）**：
+
+- 不停机迁移：任何时刻都必须可回滚到“旧表读写路径”。
+- 读写解耦：写路径（enqueue）与读路径（worker claim）分别受控，避免一次改动影响过大。
+- 双写先于切读：先确保“新表数据齐全且可追平”，再切 worker 读源。
+- 一切以 projection 为单位：Search/Chronicle 两条队列可以分开切，但切换顺序必须可审计。
+
+**需要的最小开关（实现约束；P1-C1-S3 代码落地）**：
+
+- `OUTBOX_UNIFIED_WRITE_ENABLED`：enqueue 是否双写到新表（按 projection 维度；默认 false）。
+- `OUTBOX_UNIFIED_READ_ENABLED`：worker claim 是否从新表读（按 projection 维度；默认 false）。
+- `OUTBOX_UNIFIED_BACKFILL_ENABLED`：是否允许 backfill job 运行（默认 false；防误触）。
+
+> 注：命名可调整，但必须具备“三段式开关”的能力：`write` / `read` / `backfill`。
+
+**执行 checklist（最小版）**：
+
+1) **Create new table（只加不改，风险最低）**
+   - Action：Alembic 创建 `outbox_events` + indexes（按 `P1-C1-S1` 的 index policy）。
+   - Guard：
+     - 仅 DDL：不改任何生产读写路径。
+     - `OUTBOX_UNIFIED_*` 全部保持 `false`。
+
+2) **Backfill（旧表 → 新表；幂等）**
+   - Action：实现并运行 backfill job：
+     - 从 `search_outbox_events` 复制到新表（`projection='search_index_to_elastic'`；带 `library_id`）。
+     - 从 `chronicle_outbox_events` 复制到新表（`projection='chronicle_events_to_entries'`；`book_id` 若可从 SoT 获取则填充，否则先允许 NULL）。
+     - 必须幂等：用 `INSERT ... ON CONFLICT (id) DO NOTHING` / 或者等价 upsert 策略。
+   - Guard：
+     - Backfill 只写新表，不影响旧 worker。
+     - Backfill 只处理“未终态”优先（`processed_at IS NULL` 或 `status in ('pending','processing')`）；终态可按需补齐用于审计。
+     - Backfill 产物：输出计数（按 projection/status）+ 采样对账（row count / max(event_version)）。
+
+3) **Enable dual-write window（先双写，仍旧表读）**
+   - Action：打开 `OUTBOX_UNIFIED_WRITE_ENABLED=true`（先一条 projection，再另一条），让 enqueue 同时写旧表+新表。
+   - Guard：
+     - Worker 仍从旧表 claim（`OUTBOX_UNIFIED_READ_ENABLED=false`）。
+     - 观察窗口：至少覆盖一个 dual-run/sustained window（见下）。
+     - 止血：随时把 `OUTBOX_UNIFIED_WRITE_ENABLED=false` 关闭双写（回到旧行为）。
+
+4) **Cutover read（切 worker 读新表；写仍双写）**
+   - Action：打开 `OUTBOX_UNIFIED_READ_ENABLED=true`（按 projection 分批），worker 从新表 claim。
+   - Guard：
+     - 写保持双写：确保切读期间旧表仍在同步，方便回滚。
+     - Cutover 前必须满足：
+       - Backfill 已追平（新表 pending/processing 与旧表对齐到可接受误差）。
+       - 新表上的 stuck/reclaim/metrics 维度齐全（projection/op/status/reason）。
+     - Cutover 后观察：错误率、claim latency、stuck event 数量、attempts 分布。
+
+5) **Rollback（演练与真实回滚口径一致）**
+   - Action（回滚路径）：
+     - `OUTBOX_UNIFIED_READ_ENABLED=false`（worker 改回旧表读）。
+     - 保持 `OUTBOX_UNIFIED_WRITE_ENABLED=true` 一段窗口，避免切换期间丢事件；确认稳定后再决定是否关闭双写。
+   - Guard：
+     - 任何回滚必须记录：时间窗、开关状态、headSha、drill runs。
+
+**每个阶段的 pre/post drills（Evidence 口径）**：
+
+- 阶段 1（DDL）后：不强制跑完整 6-pack，但至少跑一次 `verify`（确保 worker 未受影响）。
+- 阶段 2（Backfill）后：
+  - `drill-write-gate` 固定 6-pack（更新 SoT：`artifacts/write_gate_runs.latest.json`）。
+  - 关键 verify：Search paging stability / shared_keys / Chronicle entries。
+- 阶段 3（dual-write window）期间：
+  - `drill-dual-run` sustained window（`dual_run/*/window_sustained`）
+  - 观察：错误率、积压（pending）趋势、claim/reclaim 指标。
+- 阶段 4（cutover）后：
+  - `drill-write-gate` 固定 6-pack（N≥3，含 jitter）
+  - `drill-failures`（确保 deterministic reasons 仍为低基数且不重试）。
+- 阶段 5（rollback rehearsal）：
+  - 按 runbook 走“切回旧表读”的完整流程，并入账 Evidence。
+
 ### P2（物理合表后的 cleanup）
 
 - P2-S1：制定 deletion ledger（旧表/旧路径/旧 flag）与每项 guard（pre/post drills + Evidence）。
@@ -187,7 +262,7 @@
 
 ### P1（物理合表：unified outbox table migration）
 
-- [ ] `P1-C1-S1`：最小 schema proposal + index policy + 禁止项（doc + ADR/notes 如需）。
+- [x] `P1-C1-S1`：最小 schema proposal + index policy + 禁止项（doc + ADR/notes 如需）。
 - [ ] `P1-C1-S2`：迁移方案（backfill/dual-write/cutover/rollback）落地为可执行 checklist。
 - [ ] `P1-C1-S3`：Alembic migration（新表 + 索引）+ backfill 工具（幂等）完成。
 - [ ] `P1-C1-S4`：pre 固定 write-gate 6-pack + Evidence 入账。
@@ -219,3 +294,8 @@
   - Drill: drill-write-gate | scenario_id: `shadow_verify_dual_run_window` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22483610634 | status/conclusion: completed / success
   - Drill: drill-write-gate | scenario_id: `shadow_verify_canary_dual_write` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22483611846 | status/conclusion: completed / success
   - Drill: drill-write-gate | scenario_id: `shadow_verify_dual_write_sampling` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22483613009 | status/conclusion: completed / success
+
+### P1-C1-S1（doc-only：schema/index policy/prohibitions draft）
+
+- headSha: `1209ca6994e504336fcb2aea348e045cf2cdfa1f`
+- Notes: doc-only（无 drills）。
