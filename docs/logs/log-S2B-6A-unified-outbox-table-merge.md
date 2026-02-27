@@ -265,7 +265,7 @@
 - [x] `P1-C1-S1`：最小 schema proposal + index policy + 禁止项（doc + ADR/notes 如需）。
 - [x] `P1-C1-S2`：迁移方案（backfill/dual-write/cutover/rollback）落地为可执行 checklist。
 - [x] `P1-C1-S3`：Alembic migration（新表 + 索引）+ backfill 工具（幂等）完成。
-- [ ] `P1-C1-S4`：pre 固定 write-gate 6-pack + Evidence 入账。
+- [x] `P1-C1-S4`：pre 固定 write-gate 6-pack + Evidence 入账。
 - [ ] `P1-C1-S5`：dual-write window + sustained window（`dual_run/*/window_sustained`）+ Evidence 入账。
 - [ ] `P1-C1-S6`：cutover + post 固定 write-gate 6-pack（N≥3，含 jitter）+ Evidence 入账。
 - [ ] `P1-C1-S7`：rollback rehearsal（按 runbook）+ Evidence 入账。
@@ -309,3 +309,14 @@
 
 - headSha: `825a20458c44afc146e341f72ac0a77d0b290d37`
 - Notes: code-only（drills 在 `P1-C1-S4` 执行）。
+
+### P1-C1-S4（pre：write-gate 固定 6-pack）
+
+- headSha: `52cf85a2e781fbdb2b49a4b65b6653c8a036b200`
+- suite（write-gate 固定 6-pack；SoT: `artifacts/write_gate_runs.latest.json`）：
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_search_index_write_gate` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22484696973 | status/conclusion: completed / success
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_search_index_paging_stability` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22484698130 | status/conclusion: completed / success
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_shared_keys` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22484699165 | status/conclusion: completed / success
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_dual_run_window` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22484700145 | status/conclusion: completed / success
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_canary_dual_write` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22484701213 | status/conclusion: completed / success
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_dual_write_sampling` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22484702323 | status/conclusion: completed / success
