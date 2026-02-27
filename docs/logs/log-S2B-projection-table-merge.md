@@ -14,7 +14,7 @@
   **adr**: `docs/adr/adr-S2B-projection-table-merge.md`
   **runbook**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-02-15`
-**updated**: `2026-02-26`
+**updated**: `2026-02-27`
 
 ---
 
@@ -90,21 +90,21 @@
 
 - [x] Search read switch rehearsal / sustained window（已在 `S2B-4A` 的 `P3-C2` 入账）
 - [x] Search scripts/entrypoints 收敛（已在 `S2B-4A` 的 `P4-C3/P4-C5/P4-C6` 入账）
-- [x] Search 侧的“cutover + deprecate window”完整闭环（与 Chronicle 对齐：同样的窗口、同样的证据包、同样的回滚顺序；SoT：`docs/logs/log-S2B-5A-table-merge-migration.md`）
+- [x] Search 侧的“cutover + deprecate window”完整闭环（与 Chronicle 对齐：同样的窗口、同样的证据包、同样的回滚顺序；SoT：`docs/logs/log-S2B-5A-table-merge-migration-v2.md`）
 
 ### P4（进入物理合表前的硬门槛：payload 治理 + 容量/隔离策略）
 
-- [ ] payload contract（`schema_version + DTO 校验 + deterministic failure 直接 failed`）在 Search+Chronicle 两端都落地且可审计
-- [ ] 容量/隔离方案明确（分区/分桶/优先级/限速），并写入 runbook（避免共享“心脏”扩大 blast radius）
+- [ ] payload contract（`schema_version + DTO 校验 + deterministic failure 直接 failed`）在 Search+Chronicle 两端都落地且可审计（SoT：`docs/logs/log-S2B-6A-unified-outbox-table-merge.md`）
+- [ ] 容量/隔离方案明确（分区/分桶/优先级/限速），并写入 runbook（避免共享“心脏”扩大 blast radius；SoT：`docs/logs/log-S2B-6A-unified-outbox-table-merge.md`）
 
 ### P5（物理合表：unified outbox table migration）
 
-- [ ] 最小 schema proposal + rollback/backfill/dual-write/cutover 方案（含索引策略与禁止项）
-- [ ] Alembic migration（新表 + 索引）+ 双写窗口 + backfill 演练 + cutover（保持 artifacts contract 不变）
+- [ ] 最小 schema proposal + rollback/backfill/dual-write/cutover 方案（含索引策略与禁止项；SoT：`docs/logs/log-S2B-6A-unified-outbox-table-merge.md`）
+- [ ] Alembic migration（新表 + 索引）+ 双写窗口 + backfill 演练 + cutover（保持 artifacts contract 不变；SoT：`docs/logs/log-S2B-6A-unified-outbox-table-merge.md`）
 
 ### P6（物理合表后的 cleanup）
 
-- [ ] deprecate → 删除旧表/旧路径/旧 flag（每步 pre/post 固定回归包 + Evidence + SoT 更新）
+- [ ] deprecate → 删除旧表/旧路径/旧 flag（每步 pre/post 固定回归包 + Evidence + SoT 更新；SoT：`docs/logs/log-S2B-6A-unified-outbox-table-merge.md`）
 
 ## Evidence（证据与 SoT 规则）
 

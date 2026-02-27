@@ -194,7 +194,7 @@ frontend/.env.*.local
 frontend/.env.test.local
 
 # Runtime logs / outputs
-logs/
+/logs/
 docs/labs/_snapshot/
 
 # __pycache__ / bytecode
