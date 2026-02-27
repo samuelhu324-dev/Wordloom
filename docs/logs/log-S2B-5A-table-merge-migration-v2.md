@@ -14,7 +14,7 @@
   **sibling_log**: `docs/logs/log-S2B-4A-table-merge-migration.md` # Chronicle-first closure (completed)
   **parent_log**: `docs/logs/log-S2B-projection-table-merge.md`
 **created**: `2026-02-26`
-**updated**: `2026-02-26`
+**updated**: `2026-02-27`
 
 ---
 
@@ -154,7 +154,7 @@
 - [x] `P6-C1-S2`：pre 固定 write-gate 6-pack（至少 1 轮）+ Evidence 入账。
 - [x] `P6-C1-S3`：post 固定 write-gate 6-pack（至少 3 轮，含 jitter）+ Evidence 入账。
 - [x] `P6-C1-S4`：post sustained window（`dual_run/search/window_sustained`）+ Evidence 入账。
-- [ ] `P6-C1-S5`：SoT 更新：本 log Evidence 区入账（run URLs + headSha）并合入 PR。
+- [x] `P6-C1-S5`：SoT 更新：本 log Evidence 区入账（run URLs + headSha）并合入 PR。
 
 ## P3 Cleanup ledger（Search：old paths/flags；no deletion yet）
 
@@ -611,7 +611,10 @@ Template C — Rollback rehearsal (must do once)
   - Change: `S2B-5A/P6-C1-S2: pre fixed write-gate regression pack (6/6)`
   - Notes:
     - headSha: `2b0ed104cb2d94589506c9217d385855e17938c6`
-    - PR (draft): https://github.com/samuelhu324-dev/wordloom-v3/pull/132
+    - PR: https://github.com/samuelhu324-dev/wordloom-v3/pull/132
+    - PR state: `MERGED`
+    - mergedAt: `2026-02-27T01:21:19Z`
+    - mergeCommit: `98f6d161744791f38ce19ecdd24fdea7624c5800`
   - Evidence:
     - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_write_gate | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449331548 | status/conclusion: completed / success
     - Drill: drill-write-gate | scenario_id: shadow_verify_search_index_paging_stability | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22449333387 | status/conclusion: completed / success
@@ -664,6 +667,13 @@ Template C — Rollback rehearsal (must do once)
   - status/conclusion: `completed / success`
 
 - Date: `2026-02-26`
-  - Conclusion: `P6 evidence complete on headSha 2b0ed104: pre pack green (6/6), post pack green (N=3 jitter), sustained window passed. Pending: merge PR + finalize P6-C1-S5.`
+  - Conclusion: `P6 evidence complete on headSha 2b0ed104: pre pack green (6/6), post pack green (N=3 jitter), sustained window passed.`
+
+- Date: `2026-02-27`
+  - Change: `S2B-5A/P6-C1-S5: SoT finalize (PR #132 merged)`
+  - Notes:
+    - PR: https://github.com/samuelhu324-dev/wordloom-v3/pull/132
+    - mergedAt: `2026-02-27T01:21:19Z`
+    - mergeCommit: `98f6d161744791f38ce19ecdd24fdea7624c5800`
 
 
