@@ -110,10 +110,10 @@
 
 ### P0（硬门槛：payload 治理 + 容量/隔离策略）
 
-- [ ] `P0-C1-S1`：payload contract（`schema_version`）与 DTO/schema 校验在 Search + Chronicle 两端落地。
-- [ ] `P0-C1-S2`：deterministic failure → 直接 failed + `reason`（低基数枚举）；transient → retry/backoff。
-- [ ] `P0-C1-S3`：容量/隔离策略落地（至少：projection 维度限速/claim scope），并可在 drills 验证。
-- [ ] `P0-C1-S4`：runbook 更新（治理规则 + 隔离策略 + 排障口径）并入账 Evidence。
+- [x] `P0-C1-S1`：payload contract（`schema_version`）与 DTO/schema 校验在 Search + Chronicle 两端落地。
+- [x] `P0-C1-S2`：deterministic failure → 直接 failed + `reason`（低基数枚举）；transient → retry/backoff。
+- [x] `P0-C1-S3`：容量/隔离策略落地（至少：projection 维度限速/claim scope），并可在 drills 验证。
+- [x] `P0-C1-S4`：runbook 更新（治理规则 + 隔离策略 + 排障口径）并入账 Evidence。
 
 ### P1（物理合表：unified outbox table migration）
 
@@ -135,3 +135,17 @@
 
 - 固定 write-gate 回归包 run↔scenario 映射 SoT：`artifacts/write_gate_runs.latest.json`
 - sustained window：优先复用 `drill-dual-run` 既有场景与产物结构。
+
+### P0-C1（payload contract + deterministic reasons + claim isolation）
+
+- headSha: `5ccdc94e8dfcef35436566325dd5911b1a0c3042`
+
+- Drill: drill-shadow-verify-entries | scenario_id: `verify/chronicle/entries` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22483614487 | status/conclusion: completed / success
+
+- suite（write-gate 固定 6-pack；SoT: `artifacts/write_gate_runs.latest.json`）：
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_search_index_write_gate` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22483606613 | status/conclusion: completed / success
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_search_index_paging_stability` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22483608122 | status/conclusion: completed / success
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_shared_keys` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22483609521 | status/conclusion: completed / success
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_dual_run_window` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22483610634 | status/conclusion: completed / success
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_canary_dual_write` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22483611846 | status/conclusion: completed / success
+  - Drill: drill-write-gate | scenario_id: `shadow_verify_dual_write_sampling` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22483613009 | status/conclusion: completed / success
