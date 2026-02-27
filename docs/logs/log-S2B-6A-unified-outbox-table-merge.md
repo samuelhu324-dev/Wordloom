@@ -36,7 +36,7 @@
 
 **Current status**:
 
-- `2026-02-27`：P0 的代码落点已完成（payload contract + deterministic reasons + Chronicle claim isolation）；drills/evidence 尚未入账（Checklist 仍待勾选）。
+- `2026-02-27`：`P0-C1` 已完成（含 drills/evidence），见 Evidence 区块（headSha + run URLs）。
 
 ## Numbering（编号约定）
 
@@ -100,6 +100,76 @@
 - P1-S2：迁移策略设计：backfill/dual-write/cutover/rollback（含窗口观察与止血开关）。
 - P1-S3：实现 Alembic migration（新表 + 索引）与 backfill 工具（幂等）。
 - P1-S4：定义并执行演练：pre/post 固定 write-gate 6-pack + sustained window + replay/rollback rehearsal。
+
+#### P1-C1-S1 draft：unified outbox table（最小 schema + index policy + 禁止项）
+
+> 目标：把 `search_outbox_events` + `chronicle_outbox_events` 合并为一张表时，不牺牲 P0 的 hard gates（payload contract / deterministic reasons / isolation），并保持 worker 侧 claim/retry/lease 语义不变。
+
+**Proposed table name**：`outbox_events`（或 `unified_outbox_events`；最终以 migration 命名为准）
+
+**Required columns（最小闭环；对齐 outbox_core 语义）**：
+
+- `id UUID PK`（默认 `uuid4()`）
+- `projection TEXT NOT NULL`：队列/投影标识（例如：`search_index_to_elastic` / `chronicle_events_to_entries`）
+- `entity_type VARCHAR(50) NOT NULL`
+- `entity_id UUID NOT NULL`
+- `op VARCHAR(20) NOT NULL`（例如：`upsert` / `delete`）
+- `event_version BIGINT NOT NULL DEFAULT 0`
+
+- `created_at TIMESTAMPTZ NOT NULL DEFAULT now()`
+- `updated_at TIMESTAMPTZ NOT NULL DEFAULT now()`
+- `processed_at TIMESTAMPTZ NULL`
+
+- `status VARCHAR(20) NOT NULL DEFAULT 'pending'`（建议 CHECK：`pending|processing|done|failed`）
+- `owner VARCHAR(120) NULL`
+- `lease_until TIMESTAMPTZ NULL`
+- `processing_started_at TIMESTAMPTZ NULL`
+
+- `attempts INT NOT NULL DEFAULT 0`
+- `next_retry_at TIMESTAMPTZ NULL`
+
+- `error_reason VARCHAR(80) NULL`（低基数枚举；用于聚合/审计）
+- `error TEXT NULL`（仅用于排障；由 sanitize 逻辑裁剪）
+
+- `traceparent VARCHAR(512) NULL`
+- `tracestate TEXT NULL`
+
+- `replay_count INT NOT NULL DEFAULT 0`
+- `last_replayed_at TIMESTAMPTZ NULL`
+- `last_replayed_by VARCHAR(120) NULL`
+- `last_replayed_reason TEXT NULL`
+
+**Payload / contract columns（用于 P0 hard gate 延伸到统一表）**：
+
+- `payload JSONB NULL`
+  - 约束（建议 CHECK / 运行时校验）：
+    - `payload IS NULL OR jsonb_typeof(payload) = 'object'`
+    - 若非 NULL：必须包含 `schema_version INT`（v1 先要求 `=1`）
+  - 语义：
+    - Chronicle：可存放 envelope 最小快照（`schema_version/provenance/source/actor_kind/correlation_id`）或其它 consumer 必需字段。
+    - Search：默认 `NULL`（不允许把 `text/snippet` 这类大字段塞进 outbox payload）。
+
+**Scope / isolation columns（最小可操作；避免 claim 阶段 join）**：
+
+- `library_id UUID NULL`（Search claim allowlist / canary；与现有 `search_outbox_events.library_id` 对齐）
+- `book_id UUID NULL`（Chronicle claim allowlist；替代当前 worker 用子查询做隔离）
+
+**Index policy（服务 claim/retry/reclaim/审计）**：
+
+- `idx_outbox_entity`：(`projection`, `entity_type`, `entity_id`)
+- `idx_outbox_processed`：(`projection`, `processed_at`)
+- `idx_outbox_claim`：(`projection`, `status`, `next_retry_at`, `lease_until`, `event_version`)
+- `idx_outbox_processing_started`：(`projection`, `status`, `processing_started_at`)
+- `idx_outbox_error_reason`：(`projection`, `status`, `error_reason`)
+- `idx_outbox_scope_library_claim`：(`projection`, `library_id`, `status`, `next_retry_at`, `lease_until`, `event_version`)（可选：如果 library_id 会常用）
+- `idx_outbox_scope_book_claim`：(`projection`, `book_id`, `status`, `next_retry_at`, `lease_until`, `event_version`)（可选：如果 book_id 会常用）
+
+**禁止项（hard no / 防止 unified outbox 变垃圾场）**：
+
+- 禁止把高基数/动态字符串写入 `error_reason`（必须是低基数枚举，例如：`es_429|es_5xx|bad_payload|schema_mismatch|unknown_exception`）。
+- 禁止把投影大字段塞进 `payload`（例如 Search 的 `text/snippet`，或任何可从 SoT 重建的大对象）。
+- 禁止把包含敏感信息/大段 payload dump 的内容写入 `error`（只保留裁剪后的摘要；全文靠 artifacts/logs）。
+- 禁止在统一表引入“按 projection 分叉的重复列地狱”（除 `library_id/book_id` 这类 scope key 外，其他投影字段优先放 `payload` 并受 schema_version 约束）。
 
 ### P2（物理合表后的 cleanup）
 
