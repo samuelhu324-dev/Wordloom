@@ -266,13 +266,13 @@
 - [x] `P1-C1-S2`：迁移方案（backfill/dual-write/cutover/rollback）落地为可执行 checklist。
 - [x] `P1-C1-S3`：Alembic migration（新表 + 索引）+ backfill 工具（幂等）完成。
 - [x] `P1-C1-S4`：pre 固定 write-gate 6-pack + Evidence 入账。
-- [ ] `P1-C1-S5`：dual-write window + sustained window（`dual_run/*/window_sustained`）+ Evidence 入账。
-- [ ] `P1-C1-S6`：cutover + post 固定 write-gate 6-pack（N≥3，含 jitter）+ Evidence 入账。
-- [ ] `P1-C1-S7`：rollback rehearsal（按 runbook）+ Evidence 入账。
+- [x] `P1-C1-S5`：dual-write window + sustained window（`dual_run/*/window_sustained`）+ Evidence 入账。
+- [x] `P1-C1-S6`：cutover + post 固定 write-gate 6-pack（N≥3，含 jitter）+ Evidence 入账。
+- [x] `P1-C1-S7`：rollback rehearsal（按 runbook）+ Evidence 入账。
 
 ### P2（物理合表后的 cleanup）
 
-- [ ] `P2-C1-S1`：deletion ledger（旧表/旧路径/旧 flag）完成（只列清单，不删除）。
+- [x] `P2-C1-S1`：deletion ledger（旧表/旧路径/旧 flag）完成（只列清单，不删除）。
 - [ ] `P2-C1-S2`：cleanup slice 1（最小风险项）pre/post 固定回归包 + Evidence。
 - [ ] `P2-C2-S*`：按 slice 继续推进（每 slice 独立证据）。
 
@@ -320,3 +320,76 @@
   - Drill: drill-write-gate | scenario_id: `shadow_verify_dual_run_window` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22484700145 | status/conclusion: completed / success
   - Drill: drill-write-gate | scenario_id: `shadow_verify_canary_dual_write` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22484701213 | status/conclusion: completed / success
   - Drill: drill-write-gate | scenario_id: `shadow_verify_dual_write_sampling` | Run URL: https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22484702323 | status/conclusion: completed / success
+
+### P1-C1-S5（dual-write window：本地证据）
+
+- headSha: `34c534e3de525cf2dcd59f87a24e2d5ee3dd27de`
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic`
+  - `OUTBOX_UNIFIED_READ_ENABLED=`（空，仍旧表读）
+
+- canary dual-write（默认 cleanup）：
+  - artifacts: `artifacts/_local_s2b6a/P1-C1-S5/shadow_verify_canary_dual_write/20260227-203341/_result.json`
+- sustained window（旧表读 + 双写开启）：
+  - artifacts: `artifacts/_local_s2b6a/P1-C1-S5/shadow_verify_dual_run_window/20260227-203409/_result.json`
+  - worker log: `artifacts/_local_s2b6a/P1-C1-S5/shadow_verify_dual_run_window/20260227-203409/worker.log`
+
+### P1-C1-S6（cutover + post write-gate 6-pack：本地 N=3 rounds）
+
+- headSha: `34c534e3de525cf2dcd59f87a24e2d5ee3dd27de`
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic`
+  - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic`（切到 unified 表读）
+
+- suite root（round1–round3，每轮 6 个 `_result.json`）：
+  - `artifacts/_local_s2b6a/P1-C1-S6/20260227-203711/round1/`
+  - `artifacts/_local_s2b6a/P1-C1-S6/20260227-203711/round2/`
+  - `artifacts/_local_s2b6a/P1-C1-S6/20260227-203711/round3/`
+
+### P1-C1-S7（rollback rehearsal：本地证据）
+
+回滚口径：worker 切回旧表读（`OUTBOX_UNIFIED_READ_ENABLED=`），写保持双写（`OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic`）。
+
+- headSha: `34c534e3de525cf2dcd59f87a24e2d5ee3dd27de`
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic`
+  - `OUTBOX_UNIFIED_READ_ENABLED=`（空，回滚到旧表读）
+
+- sustained window（回滚读旧表 + 双写开启）：
+  - artifacts: `artifacts/_local_s2b6a/P1-C1-S7/20260227-204657/window_sustained/_result.json`
+
+### P2-C1-S1（doc-only：deletion ledger（旧表/旧路径/旧 flag）；只列清单不删除）
+
+- headSha: `34c534e3de525cf2dcd59f87a24e2d5ee3dd27de`
+
+> 目标：把 cleanup 变成可切片推进的“删除账本”，每项都有明确的 **删除前条件**、**pre/post guards**、**回滚口径**；避免一次性大清理不可控。
+
+Ledger（按最小风险顺序建议；仅列清单）：
+
+| Item | 类别 | 删除对象 | 触发条件（删除前必须满足） | Guards（pre/post 固定回归包） | 回滚口径 |
+|---|---|---|---|---|---|
+| L1 | DB | `search_outbox_events`（旧表） + 相关 alembic revisions | Search projection 在生产已满足：`OUTBOX_UNIFIED_WRITE_ENABLED` 常开、`OUTBOX_UNIFIED_READ_ENABLED` 常开；旧表 backlog=0（pending/processing=0）；且观察窗内无回滚事件（例如 7d） | pre: write-gate 6-pack（N≥3）+ window sustained；post: 同上 + failures drill（reason 低基数） | 仍保留 unified 表；回滚不再依赖旧表（因此 drop 前必须确认无需再靠旧表回滚） |
+| L2 | DB | `chronicle_outbox_events`（旧表） + 相关 alembic revisions | Chronicle projection 同样满足：write/read 常开；旧表 backlog=0；观察窗内无回滚 | pre/post 同上（对 Chronicle 另需 entries 相关 verify） | 同 L1 |
+| L3 | ORM | `backend/infra/database/models/search_outbox_models.py`（SearchOutboxEventModel） | L1 完成且代码写路径不再写旧表、worker 不再读旧表 | pre/post write-gate 6-pack（含 window） | 若需要回滚，应通过 unified outbox 的开关/代码路径回滚（不再依赖旧表模型） |
+| L4 | ORM | `backend/infra/database/models/chronicle_outbox_models.py`（ChronicleOutboxEventModel）与 [backend/infra/database/models/__init__.py](backend/infra/database/models/__init__.py) 的 export | L2 完成且 Chronicle 写路径/worker 已完全不依赖旧表 | pre/post：Chronicle verify + window sustained | 同上 |
+| L5 | Write path | [backend/infra/search/search_outbox_repository.py](backend/infra/search/search_outbox_repository.py)：停止写旧表（仅写 unified） | L1 进入“待删”阶段（至少已切读 unified 并验证稳定） | pre/post write-gate 6-pack（N≥3） | 若发生异常，回滚通过开关或临时恢复双写（需要保留迁移 PR 的 revert 口径） |
+| L6 | Write path | [backend/infra/storage/chronicle_repository_impl.py](backend/infra/storage/chronicle_repository_impl.py)：停止写 `chronicle_outbox_events`（仅写 unified） | L2 进入“待删”阶段 | pre/post：Chronicle verify + write-gate | 同上 |
+| L7 | Worker runtime | [backend/scripts/search_outbox_worker_impl.py](backend/scripts/search_outbox_worker_impl.py)：移除 legacy/unified 的运行时分叉（固定读 unified + projection filter） | L1/L3/L5 完成后 | pre/post window sustained（严格 parity） | 临时回滚到旧 worker 需通过代码回滚（因此此项应在 drop table 之后再做） |
+| L8 | Worker runtime | [backend/scripts/chronicle_outbox_worker.py](backend/scripts/chronicle_outbox_worker.py) shim + [backend/scripts/legacy/chronicle_outbox_worker.py](backend/scripts/legacy/chronicle_outbox_worker.py)：移除 legacy 实现与 shim（以统一实现替代） | L2/L4/L6 完成后 | pre/post：Chronicle window + entries verify | 同上 |
+| L9 | Ops / replay | [backend/scripts/search_outbox_replay_failed.py](backend/scripts/search_outbox_replay_failed.py)、[backend/scripts/ops/search_outbox_replay_failed.py](backend/scripts/ops/search_outbox_replay_failed.py)、legacy 对应脚本：改为统一 outbox 重放（projection 过滤）或移除旧入口 | L1 完成且失败重放仅针对 unified outbox | pre/post：failures drill（replay/audit 字段） | 若回滚需要 replay，确保 unified replay 工具可用 |
+| L10 | Ops / replay | Chronicle replay 同上：`chronicle_outbox_replay_failed.py`（stable + legacy） | L2 完成 | pre/post：Chronicle failures drill | 同上 |
+| L11 | Drills / labs | `backend/scripts/legacy/*` 中直接写旧表的插入/排障脚本（如 labs_009_insert_*、ops_labs_005_*） | L1/L2 完成且 runbook 不再依赖旧表脚本 | pre/post：不强制（脚本仅用于历史/排障）；但需确保 runbook 入口仍可用 | 若仍需保留历史排障材料，可迁移为“读 unified + projection”版本 |
+| L12 | Docs / env | `backend/.env.test.example`、runbook 中旧表/旧脚本的描述与命令 | 对应 L* 项完成后逐步同步文档 | 无（文档变更） | N/A |
+
+Slice 建议（对应 Checklist 的 P2-C1-S2 / P2-C2-S*）：
+
+1) Slice A（最小风险）：先“停止写旧表”（L5/L6），但先不 drop 表；保留回滚余地。
+2) Slice B：worker 固定读 unified（L7/L8 的核心逻辑），并跑一轮 N≥3 回归包。
+3) Slice C：drop legacy tables（L1/L2）+ 删除 legacy ORM（L3/L4）。
+4) Slice D：收尾清理 legacy scripts/docs（L9–L12）。
