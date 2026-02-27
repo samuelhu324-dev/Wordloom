@@ -51,6 +51,8 @@ from infra.database.session import get_session_factory
 from infra.database.models.chronicle_models import ChronicleEventModel
 from infra.database.models.chronicle_entries_models import ChronicleEntryModel
 from infra.database.models.chronicle_outbox_models import ChronicleOutboxEventModel
+from infra.database.models.outbox_event_models import OutboxEventModel
+from infra.outbox_unified.toggles import is_unified_outbox_read_enabled
 from infra.observability.outbox_metrics import (
     outbox_failed_total,
     outbox_inflight_events,
@@ -78,6 +80,14 @@ from infra.observability.runtime_endpoints import RuntimeState, start_runtime_ht
 from infra.outbox_core.payload_contract import require_mapping, require_schema_version
 
 from api.app.config.logging_config import setup_logging
+
+
+CHRONICLE_OUTBOX_PROJECTION = "chronicle_events_to_entries"
+USE_UNIFIED_OUTBOX_READ = is_unified_outbox_read_enabled(CHRONICLE_OUTBOX_PROJECTION)
+OUTBOX_MODEL = OutboxEventModel if USE_UNIFIED_OUTBOX_READ else ChronicleOutboxEventModel
+OUTBOX_PROJECTION_PREDICATES = (
+    (OutboxEventModel.projection == CHRONICLE_OUTBOX_PROJECTION,) if USE_UNIFIED_OUTBOX_READ else ()
+)
 from infra.observability.tracing import extract_context, setup_tracing
 
 setup_logging()
@@ -262,10 +272,11 @@ async def _reclaim_stuck_processing(session, *, max_processing_seconds: int) -> 
     now = _utc_now()
     return await outbox_reclaim_stuck_processing(
         session,
-        ChronicleOutboxEventModel,
+        OUTBOX_MODEL,
         now=now,
         max_processing_seconds=max_processing_seconds,
         clear_next_retry_at=True,
+        scope_predicates=OUTBOX_PROJECTION_PREDICATES,
     )
 
 
@@ -281,13 +292,13 @@ async def _claim_batch(
 
     claimable = await outbox_claim_pending_batch(
         session,
-        ChronicleOutboxEventModel,
+        OUTBOX_MODEL,
         now=now,
         batch_size=int(batch_size),
         worker_id=worker_id,
         lease_seconds=float(lease_seconds),
         scope_predicates=tuple(scope_predicates or []),
-        order_by=(ChronicleOutboxEventModel.created_at.asc(), ChronicleOutboxEventModel.id.asc()),
+        order_by=(OUTBOX_MODEL.created_at.asc(), OUTBOX_MODEL.id.asc()),
     )
 
     if not claimable:
@@ -326,7 +337,7 @@ async def _mark_done(session, *, ev_id: Any, worker_id: str) -> None:
     now = _utc_now()
     await outbox_mark_done(
         session,
-        ChronicleOutboxEventModel,
+        OUTBOX_MODEL,
         ev_id=ev_id,
         worker_id=worker_id,
         now=now,
@@ -337,7 +348,7 @@ async def _mark_retry(session, *, ev_id: Any, reason: str, error: str, attempts:
     now = _utc_now()
     await outbox_mark_retry(
         session,
-        ChronicleOutboxEventModel,
+        OUTBOX_MODEL,
         ev_id=ev_id,
         reason=reason,
         error=error,
@@ -351,7 +362,7 @@ async def _mark_failed(session, *, ev_id: Any, reason: str, error: str, attempts
     now = _utc_now()
     await outbox_mark_failed(
         session,
-        ChronicleOutboxEventModel,
+        OUTBOX_MODEL,
         ev_id=ev_id,
         reason=reason,
         error=error,
@@ -424,27 +435,30 @@ async def _update_metrics(session) -> None:
     # Lag: pending + processing (unprocessed)
     pending_count = (
         await session.execute(
-            select(func.count()).select_from(ChronicleOutboxEventModel).where(
-                ChronicleOutboxEventModel.processed_at.is_(None),
-                ChronicleOutboxEventModel.status.in_(["pending", "processing", "failed"]),
+            select(func.count()).select_from(OUTBOX_MODEL).where(
+                OUTBOX_MODEL.processed_at.is_(None),
+                OUTBOX_MODEL.status.in_(["pending", "processing", "failed"]),
+                *list(OUTBOX_PROJECTION_PREDICATES),
             )
         )
     ).scalar_one()
 
     oldest_created = (
         await session.execute(
-            select(func.min(ChronicleOutboxEventModel.created_at)).where(
-                ChronicleOutboxEventModel.processed_at.is_(None),
-                ChronicleOutboxEventModel.status.in_(["pending", "processing", "failed"]),
+            select(func.min(OUTBOX_MODEL.created_at)).where(
+                OUTBOX_MODEL.processed_at.is_(None),
+                OUTBOX_MODEL.status.in_(["pending", "processing", "failed"]),
+                *list(OUTBOX_PROJECTION_PREDICATES),
             )
         )
     ).scalar_one()
 
     inflight = (
         await session.execute(
-            select(func.count()).select_from(ChronicleOutboxEventModel).where(
-                ChronicleOutboxEventModel.processed_at.is_(None),
-                ChronicleOutboxEventModel.status == "processing",
+            select(func.count()).select_from(OUTBOX_MODEL).where(
+                OUTBOX_MODEL.processed_at.is_(None),
+                OUTBOX_MODEL.status == "processing",
+                *list(OUTBOX_PROJECTION_PREDICATES),
             )
         )
     ).scalar_one()
@@ -460,13 +474,14 @@ async def _update_metrics(session) -> None:
 
     stuck = (
         await session.execute(
-            select(func.count()).select_from(ChronicleOutboxEventModel).where(
-                ChronicleOutboxEventModel.processed_at.is_(None),
+            select(func.count()).select_from(OUTBOX_MODEL).where(
+                OUTBOX_MODEL.processed_at.is_(None),
                 stuck_processing_predicate(
-                    ChronicleOutboxEventModel,
+                    OUTBOX_MODEL,
                     now=_utc_now(),
                     max_processing_seconds=_get_int_env("OUTBOX_MAX_PROCESSING_SECONDS", 600),
                 ),
+                *list(OUTBOX_PROJECTION_PREDICATES),
             )
         )
     ).scalar_one()
@@ -497,12 +512,12 @@ async def _release_processing_rows(
     now = _utc_now()
     async with session_factory() as session:
         result = await session.execute(
-            update(ChronicleOutboxEventModel)
+            update(OUTBOX_MODEL)
             .where(
-                ChronicleOutboxEventModel.id.in_(ids),
-                ChronicleOutboxEventModel.processed_at.is_(None),
-                ChronicleOutboxEventModel.status == "processing",
-                ChronicleOutboxEventModel.owner == worker_id,
+                OUTBOX_MODEL.id.in_(ids),
+                OUTBOX_MODEL.processed_at.is_(None),
+                OUTBOX_MODEL.status == "processing",
+                OUTBOX_MODEL.owner == worker_id,
             )
             .values(
                 status="pending",
@@ -549,11 +564,11 @@ async def main_async() -> int:
     # Default is unset (= process all books). When set, only outbox rows whose
     # entity_id refers to a chronicle_event in the allowlisted books will be claimed.
     book_allowlist = _get_uuid_allowlist_env("CHRONICLE_OUTBOX_BOOK_ALLOWLIST")
-    scope_predicates: list[Any] = []
+    scope_predicates: list[Any] = list(OUTBOX_PROJECTION_PREDICATES)
     if book_allowlist:
-        scope_predicates.append(ChronicleOutboxEventModel.entity_type == "chronicle_event")
+        scope_predicates.append(OUTBOX_MODEL.entity_type == "chronicle_event")
         scope_predicates.append(
-            ChronicleOutboxEventModel.entity_id.in_(
+            OUTBOX_MODEL.entity_id.in_(
                 select(ChronicleEventModel.id).where(ChronicleEventModel.book_id.in_(book_allowlist))
             )
         )
@@ -644,9 +659,10 @@ async def main_async() -> int:
                 async with session_factory() as session:
                     await outbox_sanitize_terminal_rows(
                         session,
-                        ChronicleOutboxEventModel,
+                        OUTBOX_MODEL,
                         now=_utc_now(),
                         clear_next_retry_at=True,
+                        scope_predicates=OUTBOX_PROJECTION_PREDICATES,
                     )
                     reclaimed = await _reclaim_stuck_processing(session, max_processing_seconds=max_processing_seconds)
                     if reclaimed:
@@ -768,7 +784,7 @@ async def main_async() -> int:
                             # Reload row to confirm ownership/lease before doing work.
                             db_ev = (
                                 await session.execute(
-                                    select(ChronicleOutboxEventModel).where(ChronicleOutboxEventModel.id == ev.id)
+                                    select(OUTBOX_MODEL).where(OUTBOX_MODEL.id == ev.id)
                                 )
                             ).scalar_one_or_none()
 
@@ -788,7 +804,7 @@ async def main_async() -> int:
 
                             renewed = await outbox_renew_lease(
                                 session,
-                                ChronicleOutboxEventModel,
+                                OUTBOX_MODEL,
                                 [ev.id],
                                 worker_id=worker_id,
                                 lease_seconds=float(lease_seconds),

@@ -5,8 +5,13 @@ from typing import Any
 
 from sqlalchemy import create_engine, text
 
+from infra.outbox_unified.toggles import is_unified_outbox_read_enabled
+
 from ..registry import register
 from ..types import DrillInputs, DrillResult
+
+
+SEARCH_OUTBOX_PROJECTION = "search_index_to_elastic"
 
 
 @register("shadow_verify_search_index")
@@ -374,19 +379,64 @@ def run(inputs: DrillInputs) -> DrillResult:
             or 0
         )
 
-        outbox_total = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events")).scalar() or 0)
-        outbox_pending = int(
-            conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'pending'")).scalar() or 0
-        )
-        outbox_processing = int(
-            conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'processing'")).scalar() or 0
-        )
-        outbox_done = int(
-            conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'done'")).scalar() or 0
-        )
-        outbox_failed = int(
-            conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'failed'")).scalar() or 0
-        )
+        use_unified = is_unified_outbox_read_enabled(SEARCH_OUTBOX_PROJECTION)
+        if use_unified:
+            outbox_total = int(
+                conn.execute(
+                    text("SELECT COUNT(*) FROM outbox_events WHERE projection = :projection"),
+                    {"projection": SEARCH_OUTBOX_PROJECTION},
+                ).scalar()
+                or 0
+            )
+            outbox_pending = int(
+                conn.execute(
+                    text(
+                        "SELECT COUNT(*) FROM outbox_events WHERE projection = :projection AND status = 'pending'"
+                    ),
+                    {"projection": SEARCH_OUTBOX_PROJECTION},
+                ).scalar()
+                or 0
+            )
+            outbox_processing = int(
+                conn.execute(
+                    text(
+                        "SELECT COUNT(*) FROM outbox_events WHERE projection = :projection AND status = 'processing'"
+                    ),
+                    {"projection": SEARCH_OUTBOX_PROJECTION},
+                ).scalar()
+                or 0
+            )
+            outbox_done = int(
+                conn.execute(
+                    text("SELECT COUNT(*) FROM outbox_events WHERE projection = :projection AND status = 'done'"),
+                    {"projection": SEARCH_OUTBOX_PROJECTION},
+                ).scalar()
+                or 0
+            )
+            outbox_failed = int(
+                conn.execute(
+                    text(
+                        "SELECT COUNT(*) FROM outbox_events WHERE projection = :projection AND status = 'failed'"
+                    ),
+                    {"projection": SEARCH_OUTBOX_PROJECTION},
+                ).scalar()
+                or 0
+            )
+        else:
+            outbox_total = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events")).scalar() or 0)
+            outbox_pending = int(
+                conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'pending'")).scalar()
+                or 0
+            )
+            outbox_processing = int(
+                conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'processing'")).scalar()
+                or 0
+            )
+            outbox_done = int(conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'done'")).scalar() or 0)
+            outbox_failed = int(
+                conn.execute(text("SELECT COUNT(*) FROM search_outbox_events WHERE status = 'failed'")).scalar()
+                or 0
+            )
 
     ok = (
         (blocks_missing == 0)
