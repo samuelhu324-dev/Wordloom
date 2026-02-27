@@ -5,7 +5,7 @@
 **id**: `S2B-5A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `table merge migration (Phase 2: Search cutover + deprecate window closure)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S2B`
 **tags**: `EVOLUTION, Search, Projection, TableMerge, epic/s2, sub/5`
 **links**: ``
@@ -24,6 +24,7 @@
 
 - 本 log 负责把 Search 侧的“真实 cutover + deprecate window”做成可审计闭环（同 Chronicle 口径：固定回归包多轮 + sustained window 高事件量 + rollback rehearsal）。
 - 先不做 destructive cleanup/delete（删旧表/旧路径/旧 flag）；删除动作需要单独切片，并严格按 pre/post 回归与 Evidence 记账。
+- `2026-02-27`：本 log 的 `P0–P6` 已全部完成（含 PR 合入与 SoT 入账），状态进入 `stable`。
 
 **Prereqs（已在其他 log 完成，避免重复记账）**:
 
@@ -129,6 +130,7 @@
 ### P3（cleanup ledger / deletion plan；no deletion yet）
 
 - [x] `P3-C1-S1`：列出删除项与 guard（每个删除动作都要单独切片并做 pre/post 证据；本步仅做 ledger，不做删除）。
+- [x] `P3-C2-S1`：post-P6 清点：识别仍硬依赖旧 env 的 legacy smoke 脚本，并纳入下一批 deletion slice 候选（见 P3 ledger C）。
 
 ### P4（deletion slice 1：Search outbox worker legacy shim）
 
@@ -205,6 +207,17 @@
     - change：把 legacy 实现迁移到非 legacy 路径（实现可延迟加载），并删除 legacy 脚本
     - post：固定 write-gate 6-pack（至少 3 轮，含 jitter）+ worker smoke（含 `SEARCH_OUTBOX_WORKER_ENABLED=0/1`）
     - 回滚策略：保持 stable entrypoint 路径不变（避免 Procfile/runbook 分叉）
+
+- Legacy smoke scripts（仍硬依赖已移除的 read rollback env；应从 repo 层面“去误导”）：
+  - `backend/scripts/legacy/smoke_two_stage_elastic.ps1`
+  - `backend/scripts/legacy/_smoke_start_uvicorn_wsl.sh`
+  - 现状：脚本内硬要求 `SEARCH_STAGE1_PROVIDER=elastic`（与 P6 merged-only 现状冲突）。
+  - 是否删除候选：是（属于 legacy 操作手册/脚本残留；保留会造成误用）。
+  - 删除 guard（单独切片执行；建议作为下一批 deletion slice）：
+    - pre：全仓 grep 确认 runbook/QUICK_COMMANDS/Procfile 不再引用上述脚本路径
+    - change：删除上述 legacy smoke 脚本（或改写为 merged-only 语义并更名为非 legacy）
+    - post：固定 write-gate 6-pack（至少 1 轮）+ docs grep 复核（确保无残留引用）
+    - 回滚策略：如确有运维需要，改为“明确 merged-only”的新 smoke 脚本（不再要求 `SEARCH_STAGE1_PROVIDER`）
 
 ## P4 Deletion slice 1（Search outbox worker：remove legacy shim）
 
