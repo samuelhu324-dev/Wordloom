@@ -264,7 +264,7 @@
 
 - [x] `P1-C1-S1`：最小 schema proposal + index policy + 禁止项（doc + ADR/notes 如需）。
 - [x] `P1-C1-S2`：迁移方案（backfill/dual-write/cutover/rollback）落地为可执行 checklist。
-- [ ] `P1-C1-S3`：Alembic migration（新表 + 索引）+ backfill 工具（幂等）完成。
+- [x] `P1-C1-S3`：Alembic migration（新表 + 索引）+ backfill 工具（幂等）完成。
 - [ ] `P1-C1-S4`：pre 固定 write-gate 6-pack + Evidence 入账。
 - [ ] `P1-C1-S5`：dual-write window + sustained window（`dual_run/*/window_sustained`）+ Evidence 入账。
 - [ ] `P1-C1-S6`：cutover + post 固定 write-gate 6-pack（N≥3，含 jitter）+ Evidence 入账。
@@ -304,3 +304,8 @@
 
 - headSha: `f6ea0cc0f2b89fccf7c44f3150b7ec038180136a`
 - Notes: doc-only（无 drills）。
+
+### P1-C1-S3（code landing：alembic migration + idempotent backfill tool）
+
+- headSha: `825a20458c44afc146e341f72ac0a77d0b290d37`
+- Notes: code-only（drills 在 `P1-C1-S4` 执行）。
