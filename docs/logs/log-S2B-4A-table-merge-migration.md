@@ -5,7 +5,7 @@
 **id**: `S2B-4A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `table merge migration (Phase 2: projection table merge)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S2B`
 **tags**: `EVOLUTION, Chronicle, Projection, TableMerge, epic/s2, sub/4`
 **links**: ``
@@ -16,7 +16,7 @@
   **phase1_log**: `docs/logs/log-S2B-3A-unified-consumer-framework.md`
   **parent_log**: `docs/logs/log-S2B-projection-table-merge.md`
 **created**: `2026-02-24`
-**updated**: `2026-02-26`
+**updated**: `2026-02-27`
 
 ---
 
@@ -26,6 +26,7 @@
 
 - 前置条件：`S2B-3A`（unified consumer framework / outbox_core）已收敛出“固定 write-gate 回归包（6 scenarios）”与可审计证据链，因此开始推进 Phase 2：table merge migration。
 - 本 log 只记录 Phase 2 的 schema/migration/backfill/rollback/cutover；Phase 1 的框架演进仍以 `S2B-3A` 为 SoT（仅引用，不沿用其内部 Phase 编号）。
+- `2026-02-27`：本 log 的 `P0–P5` checklist 已全部勾选并完成 Evidence 入账，状态进入 `stable`。
 
 **Numbering（编号约定）**:
 
