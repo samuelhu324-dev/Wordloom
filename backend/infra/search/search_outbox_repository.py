@@ -39,21 +39,6 @@ class SearchOutboxRepository:
         now = datetime.now(timezone.utc)
         outbox_id = uuid4()
         traceparent, tracestate = inject_trace_context()
-        await self._db.execute(
-            pg_insert(SearchOutboxEventModel).values(
-                id=outbox_id,
-                entity_type=entity_type,
-                entity_id=entity_id,
-                library_id=library_id,
-                op=op,
-                event_version=event_version,
-                traceparent=traceparent,
-                tracestate=tracestate,
-                created_at=now,
-                updated_at=now,
-            )
-        )
-
         if is_unified_outbox_write_enabled(SEARCH_PROJECTION):
             await self._db.execute(
                 pg_insert(OutboxEventModel).values(
@@ -73,6 +58,22 @@ class SearchOutboxRepository:
                     replay_count=0,
                 )
             )
+            return
+
+        await self._db.execute(
+            pg_insert(SearchOutboxEventModel).values(
+                id=outbox_id,
+                entity_type=entity_type,
+                entity_id=entity_id,
+                library_id=library_id,
+                op=op,
+                event_version=event_version,
+                traceparent=traceparent,
+                tracestate=tracestate,
+                created_at=now,
+                updated_at=now,
+            )
+        )
 
 
 __all__ = ["SearchOutboxRepository"]

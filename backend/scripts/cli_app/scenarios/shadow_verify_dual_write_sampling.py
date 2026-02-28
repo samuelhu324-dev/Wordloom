@@ -78,6 +78,8 @@ def run(inputs: DrillInputs) -> DrillResult:
     scope = "all" if library_id is None else f"library:{library_id}"
     engine = create_engine(database_url)
 
+    unified_write_enabled = is_unified_outbox_write_enabled(SEARCH_OUTBOX_PROJECTION)
+
     now = datetime.now(timezone.utc)
     stop_at = now.timestamp() + float(duration_seconds)
 
@@ -134,8 +136,7 @@ def run(inputs: DrillInputs) -> DrillResult:
             )
 
         use_unified_read = is_unified_outbox_read_enabled(SEARCH_OUTBOX_PROJECTION)
-        dual_write_enabled = is_unified_outbox_write_enabled(SEARCH_OUTBOX_PROJECTION)
-        primary_outbox_table = "outbox_events" if use_unified_read else "search_outbox_events"
+        primary_outbox_table = "outbox_events" if unified_write_enabled else "search_outbox_events"
 
         while True:
             loops += 1
@@ -187,20 +188,13 @@ def run(inputs: DrillInputs) -> DrillResult:
                 """
             )
 
-            if primary_outbox_table == "search_outbox_events":
-                conn.execute(legacy_insert_sql, outbox_rows)
-                if dual_write_enabled:
-                    conn.execute(
-                        unified_insert_sql,
-                        [{**r, "projection": SEARCH_OUTBOX_PROJECTION} for r in outbox_rows],
-                    )
-            else:
+            if primary_outbox_table == "outbox_events":
                 conn.execute(
                     unified_insert_sql,
                     [{**r, "projection": SEARCH_OUTBOX_PROJECTION} for r in outbox_rows],
                 )
-                if dual_write_enabled:
-                    conn.execute(legacy_insert_sql, outbox_rows)
+            else:
+                conn.execute(legacy_insert_sql, outbox_rows)
 
             conn.commit()
 
@@ -240,18 +234,11 @@ def run(inputs: DrillInputs) -> DrillResult:
 
                 if primary_outbox_table == "search_outbox_events":
                     conn.execute(legacy_fail_sql, {"now": now_fail, "ids": fail_ids})
-                    if dual_write_enabled:
-                        conn.execute(
-                            unified_fail_sql,
-                            {"now": now_fail, "projection": SEARCH_OUTBOX_PROJECTION, "ids": fail_ids},
-                        )
                 else:
                     conn.execute(
                         unified_fail_sql,
                         {"now": now_fail, "projection": SEARCH_OUTBOX_PROJECTION, "ids": fail_ids},
                     )
-                    if dual_write_enabled:
-                        conn.execute(legacy_fail_sql, {"now": now_fail, "ids": fail_ids})
                 conn.commit()
                 dlq_failed_total += len(fail_ids)
 
@@ -307,15 +294,8 @@ def run(inputs: DrillInputs) -> DrillResult:
                 params = {"now": replay_now, "by": replay_by, "reason": replay_reason, "ids": fail_ids}
                 if primary_outbox_table == "search_outbox_events":
                     conn.execute(legacy_replay_sql, params)
-                    if dual_write_enabled:
-                        conn.execute(
-                            unified_replay_sql,
-                            {**params, "projection": SEARCH_OUTBOX_PROJECTION},
-                        )
                 else:
                     conn.execute(unified_replay_sql, {**params, "projection": SEARCH_OUTBOX_PROJECTION})
-                    if dual_write_enabled:
-                        conn.execute(legacy_replay_sql, params)
                 conn.commit()
                 replayed_total += len(fail_ids)
 
@@ -363,6 +343,7 @@ def run(inputs: DrillInputs) -> DrillResult:
                     failed_count = int(cnt)
 
         remaining_outbox = None
+        remaining_legacy_outbox = None
         if cleanup and inserted_outbox_ids:
             legacy_delete_sql = text("DELETE FROM search_outbox_events WHERE id IN :ids").bindparams(
                 bindparam("ids", expanding=True)
@@ -373,18 +354,11 @@ def run(inputs: DrillInputs) -> DrillResult:
 
             if primary_outbox_table == "search_outbox_events":
                 conn.execute(legacy_delete_sql, {"ids": inserted_outbox_ids})
-                if dual_write_enabled:
-                    conn.execute(
-                        unified_delete_sql,
-                        {"projection": SEARCH_OUTBOX_PROJECTION, "ids": inserted_outbox_ids},
-                    )
             else:
                 conn.execute(
                     unified_delete_sql,
                     {"projection": SEARCH_OUTBOX_PROJECTION, "ids": inserted_outbox_ids},
                 )
-                if dual_write_enabled:
-                    conn.execute(legacy_delete_sql, {"ids": inserted_outbox_ids})
             conn.commit()
             if primary_outbox_table == "search_outbox_events":
                 remaining_outbox = int(
@@ -406,12 +380,23 @@ def run(inputs: DrillInputs) -> DrillResult:
                     ).scalar()
                     or 0
                 )
+                remaining_legacy_outbox = int(
+                    conn.execute(
+                        text(
+                            "SELECT COUNT(*) FROM search_outbox_events WHERE id IN :ids"
+                        ).bindparams(bindparam("ids", expanding=True)),
+                        {"ids": inserted_outbox_ids},
+                    ).scalar()
+                    or 0
+                )
 
     strict_failed = failed_count > 0
     ok = True
     if strategy == "strict" and strict_failed:
         ok = False
     if cleanup and inserted_outbox_ids and remaining_outbox not in (0, None):
+        ok = False
+    if cleanup and unified_write_enabled and inserted_outbox_ids and remaining_legacy_outbox not in (0, None):
         ok = False
 
     result: dict[str, object] = {
@@ -426,7 +411,8 @@ def run(inputs: DrillInputs) -> DrillResult:
             "projection_table": "search_index",
             "outbox_table": str(primary_outbox_table),
             "outbox_projection": (SEARCH_OUTBOX_PROJECTION if primary_outbox_table == "outbox_events" else None),
-            "dual_write_enabled": bool(dual_write_enabled),
+            "unified_outbox_write_enabled": bool(unified_write_enabled),
+            "use_unified_outbox_read": bool(use_unified_read),
             "enqueue_entrypoint": "backend/infra/search/search_outbox_repository.py::SearchOutboxRepository.enqueue",
             "producer_entrypoint": "backend/infra/search/search_indexer.py::PostgresSearchIndexer",
             "replay_tool_hint": "backend/scripts/ops/search_outbox_replay_failed.py (stable shim)",
@@ -456,6 +442,7 @@ def run(inputs: DrillInputs) -> DrillResult:
         "rollback": {
             "cleanup_enabled": bool(cleanup),
             "remaining_outbox_rows": remaining_outbox,
+            "remaining_legacy_outbox_rows": remaining_legacy_outbox,
         },
         "policy": {
             "strategy": strategy,

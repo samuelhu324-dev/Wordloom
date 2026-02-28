@@ -154,24 +154,11 @@ class SQLAlchemyChronicleRepository(ChronicleRepositoryPort):
                 traceparent, tracestate = None, None
 
             outbox_id = uuid4()
-            outbox_row = ChronicleOutboxEventModel(
-                id=outbox_id,
-                entity_type="chronicle_event",
-                entity_id=event.id,
-                op="upsert",
-                event_version=0,
-                status="pending",
-                attempts=0,
-                replay_count=0,
-                traceparent=traceparent,
-                tracestate=tracestate,
-            )
-            self._session.add(outbox_row)
-
-            if is_unified_outbox_write_enabled("chronicle_events_to_entries"):
+            projection = "chronicle_events_to_entries"
+            if is_unified_outbox_write_enabled(projection):
                 unified_row = OutboxEventModel(
                     id=outbox_id,
-                    projection="chronicle_events_to_entries",
+                    projection=projection,
                     entity_type="chronicle_event",
                     entity_id=event.id,
                     op="upsert",
@@ -184,6 +171,20 @@ class SQLAlchemyChronicleRepository(ChronicleRepositoryPort):
                     book_id=event.book_id,
                 )
                 self._session.add(unified_row)
+            else:
+                outbox_row = ChronicleOutboxEventModel(
+                    id=outbox_id,
+                    entity_type="chronicle_event",
+                    entity_id=event.id,
+                    op="upsert",
+                    event_version=0,
+                    status="pending",
+                    attempts=0,
+                    replay_count=0,
+                    traceparent=traceparent,
+                    tracestate=tracestate,
+                )
+                self._session.add(outbox_row)
 
             await self._session.commit()
             await self._session.refresh(model)
