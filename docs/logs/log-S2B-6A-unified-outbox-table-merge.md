@@ -277,8 +277,8 @@
 - [x] `P2-C2-S1`：Slice B-1（Search worker 固定读 unified outbox）pre/post 固定回归包（本地 N=3）+ Evidence。
 - [x] `P2-C2-S2`：Slice B-2（Chronicle worker 固定读 unified outbox）pre/post 固定回归包（本地 N=3）+ Evidence。
 
-- [ ] `P2-C3-S1`：Slice C-1：drop legacy table（`search_outbox_events`）+ alembic 清理（按 ledger L1）。
-- [ ] `P2-C3-S2`：Slice C-2：drop legacy table（`chronicle_outbox_events`）+ alembic 清理（按 ledger L2）。
+- [x] `P2-C3-S1`：Slice C-1：drop legacy table（`search_outbox_events`）+ alembic 清理（按 ledger L1）。
+- [x] `P2-C3-S2`：Slice C-2：drop legacy table（`chronicle_outbox_events`）+ alembic 清理（按 ledger L2）。
 
 - [ ] `P2-C4-S1`：Slice D-1：ORM 清理（移除 `SearchOutboxEventModel` 及相关 exports；按 ledger L3）。
 - [ ] `P2-C4-S2`：Slice D-2：ORM 清理（移除 `ChronicleOutboxEventModel` 及相关 exports；按 ledger L4）。
@@ -480,3 +480,25 @@ Slice 建议（对应 Checklist 的 P2-C1-S2 / P2-C2-S*）：
   - Slice B-2 口径：Chronicle worker 不再根据 `OUTBOX_UNIFIED_READ_ENABLED` 分叉；固定读 `outbox_events` 并加 projection predicate。
   - 回滚口径：revert 该 commit。
   - 本地 devtest DB 在该轮 `chronicle_entries` 验证里 `events_total=0` / `entries_total=0`（验证通过但样本量为 0；后续在有 Chronicle 数据的环境再补一次更有信息量的 verify）。
+
+### P2-C3（Slice C：drop legacy outbox tables；post write-gate 6-pack：本地 N=3 rounds）
+
+- headSha: `e86a2824ec8ea7e3bdea35a6c930dc80c2ef54d8`
+- Covered items:
+  - `P2-C3-S1`：drop `search_outbox_events`
+  - `P2-C3-S2`：drop `chronicle_outbox_events`
+
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `SEARCH_OUTBOX_WORKER_ENABLED=1`（suite 中包含 `shadow-verify-dual-run-window`）
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+  - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+
+- post suite root（round1–round3；每轮 6-pack）：
+  - `artifacts/_local_s2b6a/P2-C3-S2/20260228-120759/post/round1/`
+  - `artifacts/_local_s2b6a/P2-C3-S2/20260228-120759/post/round2/`
+  - `artifacts/_local_s2b6a/P2-C3-S2/20260228-120759/post/round3/`
+
+- Notes:
+  - `shadow-verify-canary-dual-write` 中 `verify_search_outbox_rows_found=0` 属于预期（legacy 表已 drop；验证路径会将 legacy 计数视为 0）。
