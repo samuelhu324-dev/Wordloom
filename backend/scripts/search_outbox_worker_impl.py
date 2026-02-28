@@ -1,7 +1,7 @@
 """Search Outbox → Elasticsearch worker.
 
-Continuously pulls unprocessed rows from search_outbox_events and
-applies them to the Elasticsearch index.
+Continuously pulls unprocessed rows from outbox_events (projection=search_index_to_elastic)
+and applies them to the Elasticsearch index.
 
 Intended usage (from repo root, Windows PowerShell):
 
@@ -55,10 +55,8 @@ if sys.platform.startswith("win"):
 
 from infra.database.session import get_session_factory
 from infra.database.models.search_index_models import SearchIndexModel
-from infra.database.models.search_outbox_models import SearchOutboxEventModel
 from infra.database.models.outbox_event_models import OutboxEventModel
 from infra.database.models.projection_status_models import ProjectionStatusModel
-from infra.outbox_unified.toggles import is_unified_outbox_read_enabled
 from infra.observability.outbox_metrics import (
     outbox_failed_total,
     outbox_idempotent_noop_total,
@@ -101,11 +99,8 @@ setup_logging()
 
 
 SEARCH_OUTBOX_PROJECTION = "search_index_to_elastic"
-USE_UNIFIED_OUTBOX_READ = is_unified_outbox_read_enabled(SEARCH_OUTBOX_PROJECTION)
-OUTBOX_MODEL = OutboxEventModel if USE_UNIFIED_OUTBOX_READ else SearchOutboxEventModel
-OUTBOX_PROJECTION_PREDICATES = (
-    (OutboxEventModel.projection == SEARCH_OUTBOX_PROJECTION,) if USE_UNIFIED_OUTBOX_READ else ()
-)
+OUTBOX_MODEL = OutboxEventModel
+OUTBOX_PROJECTION_PREDICATES = (OutboxEventModel.projection == SEARCH_OUTBOX_PROJECTION,)
 
 
 _tracing_enabled = False
