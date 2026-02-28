@@ -280,8 +280,8 @@
 - [x] `P2-C3-S1`：Slice C-1：drop legacy table（`search_outbox_events`）+ alembic 清理（按 ledger L1）。
 - [x] `P2-C3-S2`：Slice C-2：drop legacy table（`chronicle_outbox_events`）+ alembic 清理（按 ledger L2）。
 
-- [ ] `P2-C4-S1`：Slice D-1：ORM 清理（移除 `SearchOutboxEventModel` 及相关 exports；按 ledger L3）。
-- [ ] `P2-C4-S2`：Slice D-2：ORM 清理（移除 `ChronicleOutboxEventModel` 及相关 exports；按 ledger L4）。
+- [x] `P2-C4-S1`：Slice D-1：ORM 清理（移除 `SearchOutboxEventModel` 及相关 exports；按 ledger L3）。
+- [x] `P2-C4-S2`：Slice D-2：ORM 清理（移除 `ChronicleOutboxEventModel` 及相关 exports；按 ledger L4）。
 - [ ] `P2-C4-S3`：Slice D-3：Ops/replay 脚本清理（Search 侧统一 outbox；按 ledger L9）。
 - [ ] `P2-C4-S4`：Slice D-4：Ops/replay 脚本清理（Chronicle 侧统一 outbox；按 ledger L10）。
 
@@ -502,3 +502,35 @@ Slice 建议（对应 Checklist 的 P2-C1-S2 / P2-C2-S*）：
 
 - Notes:
   - `shadow-verify-canary-dual-write` 中 `verify_search_outbox_rows_found=0` 属于预期（legacy 表已 drop；验证路径会将 legacy 计数视为 0）。
+
+### P2-C4-S1（Slice D-1：ORM 清理（SearchOutboxEventModel）；post write-gate 6-pack：本地 N=3 rounds）
+
+- headSha: `9287e8f63bce12feb985f7dc2f54e39640430906`（`S2B-6A/P2-C4-S1: remove SearchOutboxEventModel`）
+
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `SEARCH_OUTBOX_WORKER_ENABLED=1`（suite 中包含 `shadow-verify-dual-run-window`）
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+  - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+
+- post suite root（round1–round3；每轮 6-pack）：
+  - `artifacts/_local_s2b6a/P2-C4-S1/20260228-151945/post/round1/`
+  - `artifacts/_local_s2b6a/P2-C4-S1/20260228-151945/post/round2/`
+  - `artifacts/_local_s2b6a/P2-C4-S1/20260228-151945/post/round3/`
+
+### P2-C4-S2（Slice D-2：ORM 清理（ChronicleOutboxEventModel）；post write-gate 6-pack：本地 N=3 rounds）
+
+- headSha: `acb46aff88dcec91b2d17dec06866a6a95bcf02b`（`S2B-6A/P2-C4-S2: remove ChronicleOutboxEventModel`）
+
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `SEARCH_OUTBOX_WORKER_ENABLED=1`（suite 中包含 `shadow-verify-dual-run-window`）
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+  - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+
+- post suite root（round1–round3；每轮 6-pack）：
+  - `artifacts/_local_s2b6a/P2-C4-S2/20260228-152914/post/round1/`
+  - `artifacts/_local_s2b6a/P2-C4-S2/20260228-152914/post/round2/`
+  - `artifacts/_local_s2b6a/P2-C4-S2/20260228-152914/post/round3/`
