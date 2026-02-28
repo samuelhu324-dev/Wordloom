@@ -100,7 +100,8 @@
 -     Impl: `backend/infra/projection_framework/spec.py` (`ProjectionSpec`)
 - [x] `P0-C1-S2`：实现 registry，并能列出投影
 -     Impl: `backend/infra/projection_framework/registry.py` (`register/get_spec/list_specs`)
-- [ ] `P0-C1-S3`：登记 Search/Chronicle 为条目（不改行为）
+- [x] `P0-C1-S3`：登记 Search/Chronicle 为条目（不改行为）
+-     Impl: `backend/infra/projection_framework/builtins.py` (`register_builtin_specs`)
 
 ### P1（Worker Harness）
 
@@ -125,3 +126,8 @@
 - Spec/Registry 建议落在：`backend/infra/projection_framework/`（或同级目录；以不打扰现有模块为优先）
 - harness 建议复用：`backend/infra/outbox_core/*`
 - Chronicle apply 逻辑来源：现有 `backend/scripts/legacy/chronicle_outbox_worker.py` 中的 upsert/insert-on-conflict 逻辑（抽成纯函数或类方法）
+
+**Trade-off（记账）**:
+
+- 当前阶段 `apply_entrypoint` 使用 stub（显式 `NotImplementedError("apply_entrypoint not wired yet")`）以最小化改动面、加速推进，并避免“静默 noop”掩盖 wiring 问题。
+- 等 harness/adapter 形态稳定、并且需要支持“已注册但暂时禁用”的 spec 时，再把 `apply_entrypoint` 演进为 optional（或引入 `enabled: bool` / `mode: enum` 这类更明确的状态机）。
