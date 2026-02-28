@@ -15,7 +15,7 @@
   **sibling_log2**: `docs/logs/log-S2B-5A-table-merge-migration-v2.md` # Search closure (completed)
   **parent_log**: `docs/logs/log-S2B-projection-table-merge.md`
 **created**: `2026-02-27`
-**updated**: `2026-02-27`
+**updated**: `2026-02-28`
 
 ---
 
@@ -276,6 +276,14 @@
 - [x] `P2-C1-S2`：cleanup slice 1（最小风险项）pre/post 固定回归包 + Evidence。
 - [x] `P2-C2-S1`：Slice B-1（Search worker 固定读 unified outbox）pre/post 固定回归包（本地 N=3）+ Evidence。
 - [x] `P2-C2-S2`：Slice B-2（Chronicle worker 固定读 unified outbox）pre/post 固定回归包（本地 N=3）+ Evidence。
+
+- [ ] `P2-C3-S1`：Slice C-1：drop legacy table（`search_outbox_events`）+ alembic 清理（按 ledger L1）。
+- [ ] `P2-C3-S2`：Slice C-2：drop legacy table（`chronicle_outbox_events`）+ alembic 清理（按 ledger L2）。
+
+- [ ] `P2-C4-S1`：Slice D-1：ORM 清理（移除 `SearchOutboxEventModel` 及相关 exports；按 ledger L3）。
+- [ ] `P2-C4-S2`：Slice D-2：ORM 清理（移除 `ChronicleOutboxEventModel` 及相关 exports；按 ledger L4）。
+- [ ] `P2-C4-S3`：Slice D-3：Ops/replay 脚本清理（Search 侧统一 outbox；按 ledger L9）。
+- [ ] `P2-C4-S4`：Slice D-4：Ops/replay 脚本清理（Chronicle 侧统一 outbox；按 ledger L10）。
 
 ## Evidence（证据与 SoT 规则）
 

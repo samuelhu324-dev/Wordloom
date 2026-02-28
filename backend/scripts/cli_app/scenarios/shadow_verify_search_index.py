@@ -7,6 +7,8 @@ from sqlalchemy import create_engine, text
 
 from infra.outbox_unified.toggles import is_unified_outbox_read_enabled
 
+from ._pg_introspection import table_exists
+
 from ..registry import register
 from ..types import DrillInputs, DrillResult
 
@@ -379,7 +381,8 @@ def run(inputs: DrillInputs) -> DrillResult:
             or 0
         )
 
-        use_unified = is_unified_outbox_read_enabled(SEARCH_OUTBOX_PROJECTION)
+        legacy_outbox_available = table_exists(conn, "search_outbox_events")
+        use_unified = is_unified_outbox_read_enabled(SEARCH_OUTBOX_PROJECTION) or (not legacy_outbox_available)
         if use_unified:
             outbox_total = int(
                 conn.execute(

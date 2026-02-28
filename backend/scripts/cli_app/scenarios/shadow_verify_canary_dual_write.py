@@ -8,6 +8,8 @@ from sqlalchemy import bindparam, create_engine, text
 
 from infra.outbox_unified.toggles import is_unified_outbox_write_enabled
 
+from ._pg_introspection import table_exists
+
 from ..registry import register
 from ..types import DrillInputs, DrillResult
 
@@ -94,6 +96,17 @@ def run(inputs: DrillInputs) -> DrillResult:
     dup_extra = 0
 
     with engine.connect() as conn:
+        legacy_outbox_available = table_exists(conn, "search_outbox_events")
+        if (not unified_write_enabled) and (not legacy_outbox_available):
+            return DrillResult(
+                ok=False,
+                errors=[
+                    "search_outbox_events table not found; enable unified outbox write (OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic)",
+                ],
+                meta={},
+                summary={},
+            )
+
         # 1) insert projection rows
         conn.execute(
             text(
@@ -154,20 +167,24 @@ def run(inputs: DrillInputs) -> DrillResult:
             ).scalar()
             or 0
         )
-        verify_outbox_count = int(
-            conn.execute(
-                text(
-                    """
-                    SELECT COUNT(*)
-                    FROM search_outbox_events
-                    WHERE entity_type = :entity_type
-                      AND entity_id IN :entity_ids
-                    """
-                ).bindparams(bindparam("entity_ids", expanding=True)),
-                {"entity_type": entity_type, "entity_ids": entity_ids},
-            ).scalar()
-            or 0
-        )
+        if legacy_outbox_available:
+            verify_outbox_count = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_outbox_events
+                        WHERE entity_type = :entity_type
+                          AND entity_id IN :entity_ids
+                        """
+                    ).bindparams(bindparam("entity_ids", expanding=True)),
+                    {"entity_type": entity_type, "entity_ids": entity_ids},
+                ).scalar()
+                or 0
+            )
+        else:
+            # Legacy table is dropped in Slice C; unified-write mode expects legacy=0 anyway.
+            verify_outbox_count = 0
 
         if unified_write_enabled:
             verify_unified_outbox_count = int(
@@ -264,18 +281,22 @@ def run(inputs: DrillInputs) -> DrillResult:
                 or 0
             )
             cleanup_remaining_outbox = int(
-                conn.execute(
-                    text(
-                        """
-                        SELECT COUNT(*)
-                        FROM search_outbox_events
-                        WHERE entity_type = :entity_type
-                          AND entity_id IN :entity_ids
-                        """
-                    ).bindparams(bindparam("entity_ids", expanding=True)),
-                    {"entity_type": entity_type, "entity_ids": entity_ids},
-                ).scalar()
-                or 0
+                0
+                if not legacy_outbox_available
+                else (
+                    conn.execute(
+                        text(
+                            """
+                            SELECT COUNT(*)
+                            FROM search_outbox_events
+                            WHERE entity_type = :entity_type
+                              AND entity_id IN :entity_ids
+                            """
+                        ).bindparams(bindparam("entity_ids", expanding=True)),
+                        {"entity_type": entity_type, "entity_ids": entity_ids},
+                    ).scalar()
+                    or 0
+                )
             )
 
             if unified_write_enabled:

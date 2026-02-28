@@ -16,6 +16,8 @@ from sqlalchemy import bindparam, create_engine, text
 
 from infra.outbox_unified.toggles import is_unified_outbox_read_enabled, is_unified_outbox_write_enabled
 
+from ._pg_introspection import table_exists
+
 from ..common import REPO_ROOT
 from ..registry import register
 from ..types import DrillInputs, DrillResult
@@ -284,6 +286,10 @@ def run(inputs: DrillInputs) -> DrillResult:
         use_unified_read = is_unified_outbox_read_enabled(SEARCH_OUTBOX_PROJECTION)
         dual_write_enabled = is_unified_outbox_write_enabled(SEARCH_OUTBOX_PROJECTION)
         primary_outbox_table = "outbox_events" if use_unified_read else "search_outbox_events"
+        if primary_outbox_table == "search_outbox_events" and (not table_exists(conn, "search_outbox_events")):
+            # Slice C drops legacy table; unified outbox is now the only valid source.
+            use_unified_read = True
+            primary_outbox_table = "outbox_events"
         primary_outbox_projection = SEARCH_OUTBOX_PROJECTION if primary_outbox_table == "outbox_events" else None
 
         outbox_cols = _table_columns(conn, primary_outbox_table)

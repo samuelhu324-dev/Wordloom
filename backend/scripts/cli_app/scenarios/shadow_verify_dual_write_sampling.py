@@ -8,6 +8,7 @@ from sqlalchemy import bindparam, create_engine, text
 
 from infra.outbox_unified.toggles import is_unified_outbox_read_enabled, is_unified_outbox_write_enabled
 
+from ._pg_introspection import table_exists
 from ._search_index_seed import ensure_search_index_min_rows
 from ..registry import register
 from ..types import DrillInputs, DrillResult
@@ -127,6 +128,17 @@ def run(inputs: DrillInputs) -> DrillResult:
         ]
 
     with engine.connect() as conn:
+        legacy_outbox_available = table_exists(conn, "search_outbox_events")
+        if (not unified_write_enabled) and (not legacy_outbox_available):
+            return DrillResult(
+                ok=False,
+                errors=[
+                    "search_outbox_events table not found; enable unified outbox write (OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic)",
+                ],
+                meta={},
+                summary={},
+            )
+
         if ensure_min_rows > 0:
             seed_rows_inserted = ensure_search_index_min_rows(
                 conn=conn,
@@ -194,6 +206,13 @@ def run(inputs: DrillInputs) -> DrillResult:
                     [{**r, "projection": SEARCH_OUTBOX_PROJECTION} for r in outbox_rows],
                 )
             else:
+                if not legacy_outbox_available:
+                    return DrillResult(
+                        ok=False,
+                        errors=["search_outbox_events table not found; cannot run legacy outbox sampling"],
+                        meta={},
+                        summary={},
+                    )
                 conn.execute(legacy_insert_sql, outbox_rows)
 
             conn.commit()
@@ -380,15 +399,18 @@ def run(inputs: DrillInputs) -> DrillResult:
                     ).scalar()
                     or 0
                 )
-                remaining_legacy_outbox = int(
-                    conn.execute(
-                        text(
-                            "SELECT COUNT(*) FROM search_outbox_events WHERE id IN :ids"
-                        ).bindparams(bindparam("ids", expanding=True)),
-                        {"ids": inserted_outbox_ids},
-                    ).scalar()
-                    or 0
-                )
+                if legacy_outbox_available:
+                    remaining_legacy_outbox = int(
+                        conn.execute(
+                            text(
+                                "SELECT COUNT(*) FROM search_outbox_events WHERE id IN :ids"
+                            ).bindparams(bindparam("ids", expanding=True)),
+                            {"ids": inserted_outbox_ids},
+                        ).scalar()
+                        or 0
+                    )
+                else:
+                    remaining_legacy_outbox = 0
 
     strict_failed = failed_count > 0
     ok = True
@@ -396,7 +418,13 @@ def run(inputs: DrillInputs) -> DrillResult:
         ok = False
     if cleanup and inserted_outbox_ids and remaining_outbox not in (0, None):
         ok = False
-    if cleanup and unified_write_enabled and inserted_outbox_ids and remaining_legacy_outbox not in (0, None):
+    if (
+        cleanup
+        and unified_write_enabled
+        and legacy_outbox_available
+        and inserted_outbox_ids
+        and remaining_legacy_outbox not in (0, None)
+    ):
         ok = False
 
     result: dict[str, object] = {
