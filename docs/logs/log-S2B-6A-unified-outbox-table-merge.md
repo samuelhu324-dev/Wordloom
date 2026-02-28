@@ -572,3 +572,25 @@ Slice 建议（对应 Checklist 的 P2-C1-S2 / P2-C2-S*）：
 
 - Notes:
   - 口径：保留 ops 肌肉记忆入口（`backend/scripts/ops/chronicle_outbox_replay_failed.py`）转发到 stable；stable 入口（`backend/scripts/chronicle_outbox_replay_failed.py`）直接实现 unified outbox replay（`projection=chronicle_events_to_entries`），不再依赖 `backend/scripts/legacy/`。
+
+### Local rehearsal（devtest-db-5435 / wordloom_test：unified outbox toggles on；write-gate 6-pack N=1）
+
+- headSha: `c566bb5f4be4da39cc12027471c5357352be7383`（`ops: fix devtest db migrate working directory`）
+
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `SEARCH_OUTBOX_WORKER_ENABLED=1`（suite 中包含 `shadow-verify-dual-run-window`）
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+  - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+
+- suite root（单轮；每个场景目录包含 `_result.json`）：
+  - `artifacts/_local_s2b6a/_test_env/wordloom_test/20260228-200342/`
+
+- suite contents（6-pack outdirs）：
+  - `artifacts/_local_s2b6a/_test_env/wordloom_test/20260228-200342/shadow_verify_search_index_write_gate/`
+  - `artifacts/_local_s2b6a/_test_env/wordloom_test/20260228-200342/shadow_verify_search_index_paging_stability/`
+  - `artifacts/_local_s2b6a/_test_env/wordloom_test/20260228-200342/shadow_verify_shared_keys/`
+  - `artifacts/_local_s2b6a/_test_env/wordloom_test/20260228-200342/shadow_verify_dual_run_window/`
+  - `artifacts/_local_s2b6a/_test_env/wordloom_test/20260228-200342/shadow_verify_canary_dual_write/`
+  - `artifacts/_local_s2b6a/_test_env/wordloom_test/20260228-200342/shadow_verify_dual_write_sampling/`
