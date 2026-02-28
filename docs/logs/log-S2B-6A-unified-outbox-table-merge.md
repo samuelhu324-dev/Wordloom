@@ -282,7 +282,7 @@
 
 - [x] `P2-C4-S1`：Slice D-1：ORM 清理（移除 `SearchOutboxEventModel` 及相关 exports；按 ledger L3）。
 - [x] `P2-C4-S2`：Slice D-2：ORM 清理（移除 `ChronicleOutboxEventModel` 及相关 exports；按 ledger L4）。
-- [ ] `P2-C4-S3`：Slice D-3：Ops/replay 脚本清理（Search 侧统一 outbox；按 ledger L9）。
+- [x] `P2-C4-S3`：Slice D-3：Ops/replay 脚本清理（Search 侧统一 outbox；按 ledger L9）。
 - [ ] `P2-C4-S4`：Slice D-4：Ops/replay 脚本清理（Chronicle 侧统一 outbox；按 ledger L10）。
 
 ## Evidence（证据与 SoT 规则）
@@ -534,3 +534,22 @@ Slice 建议（对应 Checklist 的 P2-C1-S2 / P2-C2-S*）：
   - `artifacts/_local_s2b6a/P2-C4-S2/20260228-152914/post/round1/`
   - `artifacts/_local_s2b6a/P2-C4-S2/20260228-152914/post/round2/`
   - `artifacts/_local_s2b6a/P2-C4-S2/20260228-152914/post/round3/`
+
+### P2-C4-S3（Slice D-3：Ops/replay 脚本清理（Search replay 统一入口）；post write-gate 6-pack：本地 N=3 rounds）
+
+- headSha: `f2841495374dcfb06c3d4e33cdec313af1a4247e`（`S2B-6A/P2-C4-S3: make search replay stable; drop legacy`）
+
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `SEARCH_OUTBOX_WORKER_ENABLED=1`（suite 中包含 `shadow-verify-dual-run-window`）
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+  - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+
+- post suite root（round1–round3；每轮 6-pack）：
+  - `artifacts/_local_s2b6a/P2-C4-S3/20260228-160644/post/round1/`
+  - `artifacts/_local_s2b6a/P2-C4-S3/20260228-160644/post/round2/`
+  - `artifacts/_local_s2b6a/P2-C4-S3/20260228-160644/post/round3/`
+
+- Notes:
+  - 口径：保留 ops 肌肉记忆入口（`backend/scripts/ops/search_outbox_replay_failed.py`）转发到 stable；stable 入口（`backend/scripts/search_outbox_replay_failed.py`）直接实现 unified outbox replay（`projection=search_index_to_elastic`），不再依赖 `backend/scripts/legacy/`。
