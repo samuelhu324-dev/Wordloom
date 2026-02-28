@@ -5,7 +5,7 @@
 **id**: `S2B-6A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `unified outbox table merge (Phase 2: hard gates + physical migration)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S2B`
 **tags**: `EVOLUTION, Chronicle, Search, Projection, TableMerge, epic/s2, sub/6`
 **links**: ``
