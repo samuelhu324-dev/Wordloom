@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Iterable
 
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,6 +16,7 @@ async def reclaim_stuck_processing(
     now: datetime,
     max_processing_seconds: int,
     clear_next_retry_at: bool = False,
+    scope_predicates: Iterable[Any] = (),
 ) -> int:
     """Best-effort stuck reclaim.
 
@@ -37,7 +38,10 @@ async def reclaim_stuck_processing(
 
     result = await session.execute(
         update(model)
-        .where(stuck_processing_predicate(model, now=now, max_processing_seconds=max_processing_seconds))
+        .where(
+            stuck_processing_predicate(model, now=now, max_processing_seconds=max_processing_seconds),
+            *list(scope_predicates),
+        )
         .values(**values)
     )
 

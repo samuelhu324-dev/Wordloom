@@ -12,7 +12,7 @@ SQLAlchemy Adapter 实现 ChronicleRepositoryPort。
 
 from dataclasses import replace
 from typing import Optional, Sequence, Tuple, List
-from uuid import UUID
+from uuid import UUID, uuid4
 from datetime import datetime
 import os
 
@@ -27,7 +27,8 @@ from api.app.modules.chronicle.domain import (
     ChronicleEventType,
 )
 from api.app.modules.chronicle.exceptions import ChronicleRepositoryError
-from infra.database.models import ChronicleEventModel, ChronicleOutboxEventModel, ChronicleEventDedupeStateModel
+from infra.database.models import ChronicleEventModel, ChronicleEventDedupeStateModel
+from infra.database.models.outbox_event_models import OutboxEventModel
 
 
 def _get_block_updated_dedupe_window_seconds() -> int:
@@ -115,7 +116,8 @@ class SQLAlchemyChronicleRepository(ChronicleRepositoryPort):
                         await self._session.commit()
                         return event
 
-            payload = event.payload or {}
+            payload = dict(event.payload or {})
+            payload.setdefault("schema_version", 1)
             model = ChronicleEventModel(
                 id=event.id,
                 event_type=event.event_type.value,
@@ -149,7 +151,12 @@ class SQLAlchemyChronicleRepository(ChronicleRepositoryPort):
                 traceparent, tracestate = inject_trace_context()
             except Exception:
                 traceparent, tracestate = None, None
-            outbox_row = ChronicleOutboxEventModel(
+
+            outbox_id = uuid4()
+            projection = "chronicle_events_to_entries"
+            unified_row = OutboxEventModel(
+                id=outbox_id,
+                projection=projection,
                 entity_type="chronicle_event",
                 entity_id=event.id,
                 op="upsert",
@@ -159,8 +166,9 @@ class SQLAlchemyChronicleRepository(ChronicleRepositoryPort):
                 replay_count=0,
                 traceparent=traceparent,
                 tracestate=tracestate,
+                book_id=event.book_id,
             )
-            self._session.add(outbox_row)
+            self._session.add(unified_row)
 
             await self._session.commit()
             await self._session.refresh(model)

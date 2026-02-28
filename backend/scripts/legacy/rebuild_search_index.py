@@ -45,12 +45,13 @@ if sys.platform.startswith("win"):
 from infra.database.session import get_session_factory
 from infra.database.models.book_models import BookModel
 from infra.database.models.block_models import BlockModel
+from infra.database.models.outbox_event_models import OutboxEventModel
 from infra.database.models.search_index_models import SearchIndexModel
-from infra.database.models.search_outbox_models import SearchOutboxEventModel
 from infra.database.models.projection_status_models import ProjectionStatusModel
 
 
 PROJECTION_NAME = "search_sot_to_search_index"
+SEARCH_OUTBOX_PROJECTION = "search_index_to_elastic"
 
 
 class _NoopMetric:
@@ -235,8 +236,10 @@ async def main_async() -> int:
 
                 if args.emit_outbox:
                     await session.execute(
-                        pg_insert(SearchOutboxEventModel).values(
+                        pg_insert(OutboxEventModel).values(
+                            projection=SEARCH_OUTBOX_PROJECTION,
                             entity_type="book",
+                            library_id=library_id,
                             entity_id=book_id,
                             op="upsert",
                             event_version=version,
@@ -304,8 +307,10 @@ async def main_async() -> int:
 
                 if args.emit_outbox:
                     await session.execute(
-                        pg_insert(SearchOutboxEventModel).values(
+                        pg_insert(OutboxEventModel).values(
+                            projection=SEARCH_OUTBOX_PROJECTION,
                             entity_type="block",
+                            library_id=library_id,
                             entity_id=block_id,
                             op="upsert",
                             event_version=version,

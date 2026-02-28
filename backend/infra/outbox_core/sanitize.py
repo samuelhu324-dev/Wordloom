@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Iterable
 
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,6 +26,7 @@ async def sanitize_terminal_rows(
     now: datetime,
     terminal_statuses: tuple[str, ...] = ("done", "failed"),
     clear_next_retry_at: bool = False,
+    scope_predicates: Iterable[Any] = (),
 ) -> int:
     """Clear owner/lease fields for terminal rows.
 
@@ -56,6 +57,7 @@ async def sanitize_terminal_rows(
         .where(
             processed_at.is_not(None) | status.in_(list(terminal_statuses)),
             dirty_fields,
+            *list(scope_predicates),
         )
         .values(**values)
     )

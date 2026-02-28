@@ -74,7 +74,7 @@ try {
 }
 
 # Run alembic from backend/ so alembic.ini is found and migration paths resolve.
-Push-Location (Join-Path $PSScriptRoot '..')
+Push-Location (Join-Path $PSScriptRoot '..\..')
 try {
   & $PythonExe -m alembic -c alembic.ini upgrade head
 } finally {

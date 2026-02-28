@@ -34,7 +34,7 @@ if str(_BACKEND_ROOT) not in sys.path:
 from infra.database.session import get_session_factory
 from infra.database.models.chronicle_models import ChronicleEventModel
 from infra.database.models.chronicle_entries_models import ChronicleEntryModel
-from infra.database.models.chronicle_outbox_models import ChronicleOutboxEventModel
+from infra.database.models.outbox_event_models import OutboxEventModel
 from infra.database.models.projection_status_models import ProjectionStatusModel
 
 
@@ -152,7 +152,7 @@ def _get_projection_version() -> int:
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Rebuild chronicle_entries from chronicle_events")
     p.add_argument("--truncate", action="store_true", help="Delete all rows in chronicle_entries first")
-    p.add_argument("--emit-outbox", action="store_true", help="Enqueue chronicle_outbox_events instead of writing entries")
+    p.add_argument("--emit-outbox", action="store_true", help="Enqueue outbox_events (projection=chronicle_events_to_entries) instead of writing entries")
     p.add_argument("--limit", type=int, default=0, help="Optional limit (0 means no limit)")
     p.add_argument(
         "--event-id",
@@ -220,7 +220,9 @@ async def main_async() -> int:
                 await session.execute(delete(ChronicleEntryModel))
 
             if args.truncate and args.emit_outbox:
-                await session.execute(delete(ChronicleOutboxEventModel))
+                await session.execute(
+                    delete(OutboxEventModel).where(OutboxEventModel.projection == PROJECTION_NAME)
+                )
 
             limit = int(args.limit or 0)
             stmt = select(ChronicleEventModel)
@@ -240,7 +242,9 @@ async def main_async() -> int:
                 # Enqueue pending outbox rows. Worker will materialize chronicle_entries.
                 for ev in events:
                     session.add(
-                        ChronicleOutboxEventModel(
+                        OutboxEventModel(
+                            id=uuid.uuid4(),
+                            projection=PROJECTION_NAME,
                             entity_type="chronicle_event",
                             entity_id=ev.id,
                             op="upsert",
@@ -250,6 +254,7 @@ async def main_async() -> int:
                             replay_count=0,
                             created_at=now,
                             updated_at=now,
+                            book_id=ev.book_id,
                         )
                     )
             else:

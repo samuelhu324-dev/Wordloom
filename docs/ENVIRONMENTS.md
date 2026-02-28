@@ -39,7 +39,7 @@
 ### 必开（当前链路：API → outbox → worker → Elasticsearch）
 
 - **PostgreSQL（devtest-db-5435）**
-	- 存储业务数据 + `search_index` + `search_outbox_events`。
+	- 存储业务数据 + `search_index` + 统一 outbox 表 `outbox_events`。
 	- dev/test 推荐使用它；sandbox 自带的 DB 端口不同（5434）。
 - **Elasticsearch（19200）**
 	- two-stage 的 stage1 recall 以及 outbox worker 的投影目标。
@@ -47,7 +47,7 @@
 	- 负责写入（创建 blocks/tags 等）并产生 outbox。
 	- 也暴露 `/metrics`（produced 侧指标）。
 - **Outbox worker**
-	- 轮询 `search_outbox_events` 并写入 ES。
+	- 轮询统一 outbox 表 `outbox_events`（按 `projection` 过滤）并写入 ES。
 	- 自带一个 Prometheus exporter（默认 `9108`，test 推荐 `9109`）。
 
 ### 可选（当前就能用的观测方式）
@@ -56,7 +56,17 @@
 	- API produced：`curl -s http://localhost:30001/metrics | egrep '^outbox_produced_total'`
 	- worker processed/failed/lag：`curl -s http://localhost:9108/metrics | egrep '^outbox_(processed_total|failed_total|lag_events)'`
 - **直接查 DB（最准确）**：
-	- `search_outbox_events where processed_at is null` 就是“积压”。
+	- 统一 outbox 的“积压”建议按 projection 看：
+	  - `outbox_events where projection='search_index_to_elastic' and status in ('pending','processing')`
+	  - `outbox_events where projection='chronicle_events_to_entries' and status in ('pending','processing')`
+
+> 注：unified outbox 的读写切换由开关控制（按 projection 粒度）：
+> - `OUTBOX_UNIFIED_WRITE_ENABLED`
+> - `OUTBOX_UNIFIED_READ_ENABLED`
+> - 示例（本地演练全开两条投影）：
+>   - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+>   - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+> 详见 `backend/infra/outbox_unified/toggles.py`。
 
 ### 未来（Prometheus / Grafana / Loki 等）
 
@@ -285,7 +295,7 @@ chmod +x scripts/*.sh backend/scripts/*.sh
 ## 5) 常见故障快速判断（节省时间）
 
 - ES `curl localhost:19200` 偶发 reset：通常是“容器已启动但还没 ready”，等到 `/_cluster/health` 有响应再继续。
-- worker 不动：先看 worker exporter 的 `outbox_lag_events`；再查 DB 的 `search_outbox_events processed_at is null`。
+- worker 不动：先看 worker exporter 的 `outbox_lag_events`；再查 DB 的 `outbox_events`（按 `projection`）是否有 pending/processing 积压。
 - loadgen 超时：调大 `REQUEST_TIMEOUT_S`，并确认 `API_BASE` 指向正确端口（dev 30001 / test 30011）。
 
 ### PowerShell 提醒：不要把 /metrics 当成脚本跑

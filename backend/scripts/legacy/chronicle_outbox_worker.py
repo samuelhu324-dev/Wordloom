@@ -1,7 +1,7 @@
 """Chronicle Outbox → chronicle_entries worker.
 
-Continuously pulls unprocessed rows from chronicle_outbox_events and
-materializes/updates chronicle_entries derived from chronicle_events.
+Continuously pulls unprocessed rows from outbox_events (projection=chronicle_events_to_entries)
+and materializes/updates chronicle_entries derived from chronicle_events.
 
 This is the Chronicle analogue to search_outbox_worker.py, reusing the same
 lease/retry/failed/replay/metrics semantics.
@@ -24,6 +24,7 @@ import socket
 import sys
 import signal
 import time
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -49,7 +50,7 @@ if sys.platform.startswith("win"):
 from infra.database.session import get_session_factory
 from infra.database.models.chronicle_models import ChronicleEventModel
 from infra.database.models.chronicle_entries_models import ChronicleEntryModel
-from infra.database.models.chronicle_outbox_models import ChronicleOutboxEventModel
+from infra.database.models.outbox_event_models import OutboxEventModel
 from infra.observability.outbox_metrics import (
     outbox_failed_total,
     outbox_inflight_events,
@@ -74,8 +75,14 @@ from infra.outbox_core.mark import (
 )
 from infra.outbox_core.retry import ExponentialBackoffSpec, compute_next_retry_at
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
+from infra.outbox_core.payload_contract import require_mapping, require_schema_version
 
 from api.app.config.logging_config import setup_logging
+
+
+CHRONICLE_OUTBOX_PROJECTION = "chronicle_events_to_entries"
+OUTBOX_MODEL = OutboxEventModel
+OUTBOX_PROJECTION_PREDICATES = (OutboxEventModel.projection == CHRONICLE_OUTBOX_PROJECTION,)
 from infra.observability.tracing import extract_context, setup_tracing
 
 setup_logging()
@@ -165,26 +172,20 @@ def _normalize_int(v: Any) -> Optional[int]:
 
 
 def _extract_envelope(event: ChronicleEventModel) -> tuple[int, str, str, str, Optional[str]]:
-    # Payload is the source of truth. Columns may be present but defaulted
-    # (e.g. schema_version=1, provenance/source/actor_kind='unknown') for older
-    # rows or direct SQL inserts.
-    payload = event.payload or {}
-    if not isinstance(payload, dict):
-        payload = {}
+    # Payload contract v1 (hard gate): schema_version is required.
+    payload = require_mapping(event.payload, projection=PROJECTION_NAME, field_name="payload")
+    schema_version = require_schema_version(payload, projection=PROJECTION_NAME, supported_versions={1})
 
-    payload_schema_version = _normalize_int(payload.get("schema_version"))
     payload_provenance = _normalize_str(payload.get("provenance"))
     payload_source = _normalize_str(payload.get("source"))
     payload_actor_kind = _normalize_str(payload.get("actor_kind"))
     payload_correlation_id = _normalize_str(payload.get("correlation_id"))
 
-    col_schema_version = _normalize_int(getattr(event, "schema_version", None))
     col_provenance = _normalize_str(getattr(event, "provenance", None))
     col_source = _normalize_str(getattr(event, "source", None))
     col_actor_kind = _normalize_str(getattr(event, "actor_kind", None))
     col_correlation_id = _normalize_str(getattr(event, "correlation_id", None))
 
-    schema_version = payload_schema_version or col_schema_version or 1
     provenance = payload_provenance or col_provenance or "unknown"
     source = payload_source or col_source or "unknown"
     actor_kind = payload_actor_kind or col_actor_kind or "unknown"
@@ -211,6 +212,29 @@ def _get_float_env(name: str, default: float) -> float:
         return float(raw)
     except ValueError as exc:
         raise RuntimeError(f"Invalid float env {name}={raw!r}") from exc
+
+
+def _get_uuid_allowlist_env(name: str) -> list[uuid.UUID] | None:
+    raw = (os.getenv(name) or "").strip()
+    if raw == "":
+        return None
+    parts = [p.strip() for p in raw.split(",") if p.strip()]
+    if not parts:
+        return None
+
+    out: list[uuid.UUID] = []
+    seen: set[str] = set()
+    for part in parts:
+        try:
+            u = uuid.UUID(part)
+        except ValueError as exc:
+            raise RuntimeError(f"Invalid UUID in {name}: {part!r}") from exc
+        key = str(u)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(u)
+    return out
 
 
 def _summarize(event: ChronicleEventModel) -> str:
@@ -243,24 +267,33 @@ async def _reclaim_stuck_processing(session, *, max_processing_seconds: int) -> 
     now = _utc_now()
     return await outbox_reclaim_stuck_processing(
         session,
-        ChronicleOutboxEventModel,
+        OUTBOX_MODEL,
         now=now,
         max_processing_seconds=max_processing_seconds,
         clear_next_retry_at=True,
+        scope_predicates=OUTBOX_PROJECTION_PREDICATES,
     )
 
 
-async def _claim_batch(session, *, worker_id: str, lease_seconds: int, batch_size: int) -> list[_OutboxEventRow]:
+async def _claim_batch(
+    session,
+    *,
+    worker_id: str,
+    lease_seconds: int,
+    batch_size: int,
+    scope_predicates: list[Any] | None = None,
+) -> list[_OutboxEventRow]:
     now = _utc_now()
 
     claimable = await outbox_claim_pending_batch(
         session,
-        ChronicleOutboxEventModel,
+        OUTBOX_MODEL,
         now=now,
         batch_size=int(batch_size),
         worker_id=worker_id,
         lease_seconds=float(lease_seconds),
-        order_by=(ChronicleOutboxEventModel.created_at.asc(), ChronicleOutboxEventModel.id.asc()),
+        scope_predicates=tuple(scope_predicates or []),
+        order_by=(OUTBOX_MODEL.created_at.asc(), OUTBOX_MODEL.id.asc()),
     )
 
     if not claimable:
@@ -299,7 +332,7 @@ async def _mark_done(session, *, ev_id: Any, worker_id: str) -> None:
     now = _utc_now()
     await outbox_mark_done(
         session,
-        ChronicleOutboxEventModel,
+        OUTBOX_MODEL,
         ev_id=ev_id,
         worker_id=worker_id,
         now=now,
@@ -310,7 +343,7 @@ async def _mark_retry(session, *, ev_id: Any, reason: str, error: str, attempts:
     now = _utc_now()
     await outbox_mark_retry(
         session,
-        ChronicleOutboxEventModel,
+        OUTBOX_MODEL,
         ev_id=ev_id,
         reason=reason,
         error=error,
@@ -324,7 +357,7 @@ async def _mark_failed(session, *, ev_id: Any, reason: str, error: str, attempts
     now = _utc_now()
     await outbox_mark_failed(
         session,
-        ChronicleOutboxEventModel,
+        OUTBOX_MODEL,
         ev_id=ev_id,
         reason=reason,
         error=error,
@@ -397,27 +430,30 @@ async def _update_metrics(session) -> None:
     # Lag: pending + processing (unprocessed)
     pending_count = (
         await session.execute(
-            select(func.count()).select_from(ChronicleOutboxEventModel).where(
-                ChronicleOutboxEventModel.processed_at.is_(None),
-                ChronicleOutboxEventModel.status.in_(["pending", "processing", "failed"]),
+            select(func.count()).select_from(OUTBOX_MODEL).where(
+                OUTBOX_MODEL.processed_at.is_(None),
+                OUTBOX_MODEL.status.in_(["pending", "processing", "failed"]),
+                *list(OUTBOX_PROJECTION_PREDICATES),
             )
         )
     ).scalar_one()
 
     oldest_created = (
         await session.execute(
-            select(func.min(ChronicleOutboxEventModel.created_at)).where(
-                ChronicleOutboxEventModel.processed_at.is_(None),
-                ChronicleOutboxEventModel.status.in_(["pending", "processing", "failed"]),
+            select(func.min(OUTBOX_MODEL.created_at)).where(
+                OUTBOX_MODEL.processed_at.is_(None),
+                OUTBOX_MODEL.status.in_(["pending", "processing", "failed"]),
+                *list(OUTBOX_PROJECTION_PREDICATES),
             )
         )
     ).scalar_one()
 
     inflight = (
         await session.execute(
-            select(func.count()).select_from(ChronicleOutboxEventModel).where(
-                ChronicleOutboxEventModel.processed_at.is_(None),
-                ChronicleOutboxEventModel.status == "processing",
+            select(func.count()).select_from(OUTBOX_MODEL).where(
+                OUTBOX_MODEL.processed_at.is_(None),
+                OUTBOX_MODEL.status == "processing",
+                *list(OUTBOX_PROJECTION_PREDICATES),
             )
         )
     ).scalar_one()
@@ -433,13 +469,14 @@ async def _update_metrics(session) -> None:
 
     stuck = (
         await session.execute(
-            select(func.count()).select_from(ChronicleOutboxEventModel).where(
-                ChronicleOutboxEventModel.processed_at.is_(None),
+            select(func.count()).select_from(OUTBOX_MODEL).where(
+                OUTBOX_MODEL.processed_at.is_(None),
                 stuck_processing_predicate(
-                    ChronicleOutboxEventModel,
+                    OUTBOX_MODEL,
                     now=_utc_now(),
                     max_processing_seconds=_get_int_env("OUTBOX_MAX_PROCESSING_SECONDS", 600),
                 ),
+                *list(OUTBOX_PROJECTION_PREDICATES),
             )
         )
     ).scalar_one()
@@ -470,12 +507,12 @@ async def _release_processing_rows(
     now = _utc_now()
     async with session_factory() as session:
         result = await session.execute(
-            update(ChronicleOutboxEventModel)
+            update(OUTBOX_MODEL)
             .where(
-                ChronicleOutboxEventModel.id.in_(ids),
-                ChronicleOutboxEventModel.processed_at.is_(None),
-                ChronicleOutboxEventModel.status == "processing",
-                ChronicleOutboxEventModel.owner == worker_id,
+                OUTBOX_MODEL.id.in_(ids),
+                OUTBOX_MODEL.processed_at.is_(None),
+                OUTBOX_MODEL.status == "processing",
+                OUTBOX_MODEL.owner == worker_id,
             )
             .values(
                 status="pending",
@@ -517,6 +554,19 @@ async def main_async() -> int:
     max_attempts = _get_int_env("OUTBOX_MAX_ATTEMPTS", 10)
     base_backoff = _get_float_env("OUTBOX_BASE_BACKOFF_SECONDS", 0.5)
     max_backoff = _get_float_env("OUTBOX_MAX_BACKOFF_SECONDS", 10.0)
+
+    # Scope/Isolation knobs: restrict claims to a subset of books.
+    # Default is unset (= process all books). When set, only outbox rows whose
+    # entity_id refers to a chronicle_event in the allowlisted books will be claimed.
+    book_allowlist = _get_uuid_allowlist_env("CHRONICLE_OUTBOX_BOOK_ALLOWLIST")
+    scope_predicates: list[Any] = list(OUTBOX_PROJECTION_PREDICATES)
+    if book_allowlist:
+        scope_predicates.append(OUTBOX_MODEL.entity_type == "chronicle_event")
+        scope_predicates.append(
+            OUTBOX_MODEL.entity_id.in_(
+                select(ChronicleEventModel.id).where(ChronicleEventModel.book_id.in_(book_allowlist))
+            )
+        )
 
     start_http_server(metrics_port)
     logger.info(f"[chronicle worker] metrics on :{metrics_port}")
@@ -604,9 +654,10 @@ async def main_async() -> int:
                 async with session_factory() as session:
                     await outbox_sanitize_terminal_rows(
                         session,
-                        ChronicleOutboxEventModel,
+                        OUTBOX_MODEL,
                         now=_utc_now(),
                         clear_next_retry_at=True,
+                        scope_predicates=OUTBOX_PROJECTION_PREDICATES,
                     )
                     reclaimed = await _reclaim_stuck_processing(session, max_processing_seconds=max_processing_seconds)
                     if reclaimed:
@@ -644,6 +695,7 @@ async def main_async() -> int:
                         worker_id=worker_id,
                         lease_seconds=lease_seconds,
                         batch_size=batch_size,
+                        scope_predicates=scope_predicates,
                     )
                 if claim_span is not None:
                     try:
@@ -727,7 +779,7 @@ async def main_async() -> int:
                             # Reload row to confirm ownership/lease before doing work.
                             db_ev = (
                                 await session.execute(
-                                    select(ChronicleOutboxEventModel).where(ChronicleOutboxEventModel.id == ev.id)
+                                    select(OUTBOX_MODEL).where(OUTBOX_MODEL.id == ev.id)
                                 )
                             ).scalar_one_or_none()
 
@@ -747,7 +799,7 @@ async def main_async() -> int:
 
                             renewed = await outbox_renew_lease(
                                 session,
-                                ChronicleOutboxEventModel,
+                                OUTBOX_MODEL,
                                 [ev.id],
                                 worker_id=worker_id,
                                 lease_seconds=float(lease_seconds),

@@ -1,27 +1,105 @@
-"""Stable entrypoint for chronicle outbox replay tool.
+"""Manual replay tool for Chronicle outbox events.
 
-The implementation currently lives under backend/scripts/legacy/.
-This shim keeps docs/runbooks using backend/scripts/chronicle_outbox_replay_failed.py working.
+Policy (v2):
+- Automatic worker treats `failed` as terminal (won't claim again).
+- Ops can explicitly replay failed rows back to pending, with audit fields.
+
+This tool targets the unified outbox table (`outbox_events`) and filters by
+projection (`chronicle_events_to_entries`).
+
+Usage (PowerShell):
+  $env:DATABASE_URL = "postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test"
+  python backend/scripts/chronicle_outbox_replay_failed.py --by alice --reason "fixed projector" --limit 100 --dry-run
+  python backend/scripts/chronicle_outbox_replay_failed.py --by alice --reason "fixed projector" --limit 100
 """
 
 from __future__ import annotations
 
-import runpy
+import argparse
+import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
+
+# Ensure backend root is on sys.path.
+_HERE = Path(__file__).resolve()
+_BACKEND_ROOT = _HERE.parents[1]
+if str(_BACKEND_ROOT) not in sys.path:
+    sys.path.insert(0, str(_BACKEND_ROOT))
+
+from infra.database.session import get_session_factory
+from infra.database.models.outbox_event_models import OutboxEventModel
+from infra.outbox_core.replay import replay_failed_rows
+
+
+CHRONICLE_OUTBOX_PROJECTION = "chronicle_events_to_entries"
+
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(description="Replay terminal failed outbox_events (chronicle projection) back to pending")
+    p.add_argument("--by", required=True, help="Operator identifier (for audit)")
+    p.add_argument("--reason", required=True, help="Why this replay is being done (for audit)")
+    p.add_argument("--limit", type=int, default=1000, help="Max rows to replay")
+    p.add_argument(
+        "--ids",
+        nargs="+",
+        default=None,
+        help="Optional list of outbox event IDs to replay (space-separated). If provided, only these rows are considered.",
+    )
+    p.add_argument("--entity-type", default=None, help="Filter by entity_type")
+    p.add_argument("--since-hours", type=float, default=None, help="Only replay rows updated within last N hours")
+    p.add_argument("--dry-run", action="store_true", help="Print count but do not modify")
+    return p.parse_args()
+
+
+async def main_async() -> int:
+    args = _parse_args()
+
+    db_url = os.getenv("DATABASE_URL")
+    if not db_url:
+        raise RuntimeError("DATABASE_URL must be set")
+
+    now = _utc_now()
+    session_factory = await get_session_factory()
+
+    async with session_factory() as session:
+        result = await replay_failed_rows(
+            session,
+            OutboxEventModel,
+            now=now,
+            projection=CHRONICLE_OUTBOX_PROJECTION,
+            by=args.by,
+            reason=str(args.reason),
+            limit=int(args.limit),
+            entity_type=(str(args.entity_type) if args.entity_type else None),
+            since_hours=(float(args.since_hours) if args.since_hours is not None else None),
+            ids=(list(args.ids) if args.ids else None),
+            dry_run=bool(args.dry_run),
+        )
+
+        print(
+            f"Matched failed rows: {int(result.total_matched)}; "
+            f"will replay: {int(result.will_replay)} (limit={args.limit})"
+        )
+        if not args.dry_run and result.will_replay > 0:
+            print(f"Replayed rows: {int(result.changed)}")
+
+    return 0
 
 
 def main() -> None:
-    scripts_dir = Path(__file__).resolve().parent
-    backend_root = scripts_dir.parent
-    if str(backend_root) not in sys.path:
-        sys.path.insert(0, str(backend_root))
+    import asyncio
 
-    legacy_script = scripts_dir / "legacy" / "chronicle_outbox_replay_failed.py"
-    if not legacy_script.exists():
-        raise SystemExit(f"legacy tool not found: {legacy_script}")
-    runpy.run_path(str(legacy_script), run_name="__main__")
+    if sys.platform == "win32":
+        # psycopg async is incompatible with ProactorEventLoop.
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+    raise SystemExit(asyncio.run(main_async()))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

@@ -14,9 +14,16 @@ from pathlib import Path
 
 from sqlalchemy import bindparam, create_engine, text
 
+from infra.outbox_unified.toggles import is_unified_outbox_read_enabled, is_unified_outbox_write_enabled
+
+from ._pg_introspection import table_exists
+
 from ..common import REPO_ROOT, write_json, write_text
 from ..registry import register
 from ..types import DrillInputs, DrillResult
+
+
+SEARCH_OUTBOX_PROJECTION = "search_index_to_elastic"
 
 
 def _http_json(
@@ -169,6 +176,11 @@ def run(inputs: DrillInputs) -> DrillResult:
     outbox_event_ids: list[str] = []
     pg_sql = ""
 
+    use_unified_read = False
+    dual_write_enabled = False
+    primary_outbox_table = "search_outbox_events"
+    primary_outbox_projection: str | None = None
+
     def _table_columns(conn, table_name: str) -> set[str]:
         rows = conn.execute(
             text(
@@ -234,21 +246,32 @@ def run(inputs: DrillInputs) -> DrillResult:
         pg_rows = conn.execute(text(pg_sql), pg_params).all()
         pg_candidates = [{"entity_id": str(r[0]), "event_version": int(r[1] or 0)} for r in pg_rows]
 
-        outbox_cols = _table_columns(conn, "search_outbox_events")
+        use_unified_read = is_unified_outbox_read_enabled(SEARCH_OUTBOX_PROJECTION)
+        dual_write_enabled = is_unified_outbox_write_enabled(SEARCH_OUTBOX_PROJECTION)
+        primary_outbox_table = "outbox_events" if use_unified_read else "search_outbox_events"
+        if primary_outbox_table == "search_outbox_events" and (not table_exists(conn, "search_outbox_events")):
+            use_unified_read = True
+            primary_outbox_table = "outbox_events"
+        primary_outbox_projection = SEARCH_OUTBOX_PROJECTION if primary_outbox_table == "outbox_events" else None
+
+        outbox_cols = _table_columns(conn, primary_outbox_table)
         if not outbox_cols:
-            return DrillResult(ok=False, errors=["table search_outbox_events not found"], meta={}, summary={})
+            return DrillResult(ok=False, errors=[f"table {primary_outbox_table} not found"], meta={}, summary={})
         required_cols = {"id", "entity_type", "entity_id", "op", "event_version", "status"}
+        if primary_outbox_table == "outbox_events":
+            required_cols.add("projection")
         missing_required = sorted([c for c in required_cols if c not in outbox_cols])
         if missing_required:
             return DrillResult(
                 ok=False,
-                errors=[f"search_outbox_events missing required columns: {missing_required}"],
+                errors=[f"{primary_outbox_table} missing required columns: {missing_required}"],
                 meta={},
                 summary={},
             )
 
         now = datetime.now(timezone.utc)
         base_event: dict[str, object] = {
+            "projection": primary_outbox_projection,
             "entity_type": seed_entity_type,
             "op": "upsert",
             "status": "pending",
@@ -263,6 +286,7 @@ def run(inputs: DrillInputs) -> DrillResult:
             c
             for c in (
                 "id",
+                "projection",
                 "entity_type",
                 "library_id",
                 "entity_id",
@@ -295,7 +319,7 @@ def run(inputs: DrillInputs) -> DrillResult:
 
         cols_sql = ", ".join(chosen_cols)
         placeholders = ", ".join([f":{c}" for c in chosen_cols])
-        outbox_insert_sql = text(f"INSERT INTO search_outbox_events ({cols_sql}) VALUES ({placeholders})")
+        outbox_insert_sql = text(f"INSERT INTO {primary_outbox_table} ({cols_sql}) VALUES ({placeholders})")
         conn.execute(outbox_insert_sql, rows)
         conn.commit()
 
@@ -311,6 +335,10 @@ def run(inputs: DrillInputs) -> DrillResult:
         "outbox_enqueued_total": len(outbox_event_ids),
         "es_url": es_url,
         "es_index": es_index,
+        "outbox_table": primary_outbox_table,
+        "outbox_projection": primary_outbox_projection,
+        "use_unified_outbox_read": bool(use_unified_read),
+        "unified_outbox_write_enabled": bool(dual_write_enabled),
     }
     print(json.dumps(probe, ensure_ascii=False, separators=(",", ":")))
 
@@ -487,19 +515,22 @@ def run(inputs: DrillInputs) -> DrillResult:
 
     outbox_status_counts: dict[str, int] = {}
     if outbox_event_ids:
-        outbox_sql = (
-            text(
-                """
-                SELECT status, COUNT(*) AS n
-                FROM search_outbox_events
-                WHERE id IN :ids
-                GROUP BY status
-                """
-            )
-            .bindparams(bindparam("ids", expanding=True))
-        )
+        where_parts = ["id IN :ids"]
+        params: dict[str, object] = {"ids": [uuid.UUID(x) for x in outbox_event_ids]}
+        if primary_outbox_projection is not None:
+            where_parts.append("projection = :projection")
+            params["projection"] = str(primary_outbox_projection)
+
+        outbox_sql = text(
+            f"""
+            SELECT status, COUNT(*) AS n
+            FROM {primary_outbox_table}
+            WHERE {' AND '.join(where_parts)}
+            GROUP BY status
+            """
+        ).bindparams(bindparam("ids", expanding=True))
         with engine.connect() as conn:
-            rows = conn.execute(outbox_sql, {"ids": [uuid.UUID(x) for x in outbox_event_ids]}).all()
+            rows = conn.execute(outbox_sql, params).all()
             for st, n in rows:
                 outbox_status_counts[str(st)] = int(n or 0)
 
@@ -641,6 +672,14 @@ def run(inputs: DrillInputs) -> DrillResult:
         "run_id": inputs.run_id,
         "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
         "scope": scope,
+        "targets": {
+            "projection_table": "search_index",
+            "outbox_table": str(primary_outbox_table),
+            "outbox_projection": primary_outbox_projection,
+            "use_unified_outbox_read": bool(use_unified_read),
+            "unified_outbox_write_enabled": bool(dual_write_enabled),
+            "worker_entrypoint": "backend/scripts/search_outbox_worker.py",
+        },
         "inputs": {
             "token": token,
             "ensure_min_rows": int(ensure_min_rows),

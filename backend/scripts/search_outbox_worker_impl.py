@@ -1,7 +1,7 @@
 """Search Outbox → Elasticsearch worker.
 
-Continuously pulls unprocessed rows from search_outbox_events and
-applies them to the Elasticsearch index.
+Continuously pulls unprocessed rows from outbox_events (projection=search_index_to_elastic)
+and applies them to the Elasticsearch index.
 
 Intended usage (from repo root, Windows PowerShell):
 
@@ -55,7 +55,7 @@ if sys.platform.startswith("win"):
 
 from infra.database.session import get_session_factory
 from infra.database.models.search_index_models import SearchIndexModel
-from infra.database.models.search_outbox_models import SearchOutboxEventModel
+from infra.database.models.outbox_event_models import OutboxEventModel
 from infra.database.models.projection_status_models import ProjectionStatusModel
 from infra.observability.outbox_metrics import (
     outbox_failed_total,
@@ -89,12 +89,18 @@ from infra.outbox_core.reasons import (
     classify_httpx_exception_reason as outbox_classify_httpx_exception_reason,
 )
 from infra.outbox_core.retry import ExponentialBackoffSpec, compute_exponential_backoff_seconds
+from infra.outbox_core.payload_contract import BadPayload, require_schema_version
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
 
 from api.app.config.logging_config import setup_logging
 from infra.observability.tracing import extract_context, instrument_httpx, setup_tracing
 
 setup_logging()
+
+
+SEARCH_OUTBOX_PROJECTION = "search_index_to_elastic"
+OUTBOX_MODEL = OutboxEventModel
+OUTBOX_PROJECTION_PREDICATES = (OutboxEventModel.projection == SEARCH_OUTBOX_PROJECTION,)
 
 
 _tracing_enabled = False
@@ -340,6 +346,8 @@ async def _process_upsert(session: AsyncSession, client: httpx.AsyncClient, inde
         return
 
     doc = {
+        # Payload contract v1 (hard gate): always emit schema_version.
+        "schema_version": 1,
         "entity_type": row.entity_type,
         "library_id": (str(row.library_id) if getattr(row, "library_id", None) else None),
         "entity_id": str(row.entity_id),
@@ -348,6 +356,16 @@ async def _process_upsert(session: AsyncSession, client: httpx.AsyncClient, inde
         "rank_score": row.rank_score,
         "event_version": int(row.event_version),
     }
+
+    # Minimal DTO/schema validation before we talk to Elasticsearch.
+    # Contract violations must fail deterministically (no retry).
+    require_schema_version(doc, projection=PROJECTION_NAME, supported_versions={1}, allow_missing=False)
+    if not isinstance(doc.get("entity_type"), str) or not str(doc.get("entity_type") or "").strip():
+        raise BadPayload(projection=PROJECTION_NAME, reason="bad_payload", message="entity_type must be non-empty")
+    if not isinstance(doc.get("entity_id"), str) or not str(doc.get("entity_id") or "").strip():
+        raise BadPayload(projection=PROJECTION_NAME, reason="bad_payload", message="entity_id must be non-empty")
+    if not isinstance(doc.get("event_version"), int):
+        raise BadPayload(projection=PROJECTION_NAME, reason="bad_payload", message="event_version must be int")
 
     doc_id = _es_doc_id(row.entity_type, row.entity_id)
     resp = await client.put(f"/{index}/_doc/{doc_id}", json=doc)
@@ -685,12 +703,12 @@ async def _worker_loop() -> None:
         now = _utc_now()
         async with session_factory() as session:
             result = await session.execute(
-                update(SearchOutboxEventModel)
+                update(OUTBOX_MODEL)
                 .where(
-                    SearchOutboxEventModel.id.in_(ids),
-                    SearchOutboxEventModel.processed_at.is_(None),
-                    SearchOutboxEventModel.status == "processing",
-                    SearchOutboxEventModel.owner == worker_id,
+                    OUTBOX_MODEL.id.in_(ids),
+                    OUTBOX_MODEL.processed_at.is_(None),
+                    OUTBOX_MODEL.status == "processing",
+                    OUTBOX_MODEL.owner == worker_id,
                 )
                 .values(
                     status="pending",
@@ -724,7 +742,12 @@ async def _worker_loop() -> None:
 
         now = _utc_now()
         async with session_factory() as session:
-            fixed = await outbox_sanitize_terminal_rows(session, SearchOutboxEventModel, now=now)
+            fixed = await outbox_sanitize_terminal_rows(
+                session,
+                OUTBOX_MODEL,
+                now=now,
+                scope_predicates=OUTBOX_PROJECTION_PREDICATES,
+            )
             await session.commit()
         if fixed:
             logger.warning("Sanitized %s terminal outbox rows with stray owner/lease", fixed)
@@ -737,9 +760,10 @@ async def _worker_loop() -> None:
             session = session
             reclaimed = await outbox_reclaim_stuck_processing(
                 session,
-                SearchOutboxEventModel,
+                OUTBOX_MODEL,
                 now=now,
                 max_processing_seconds=max_processing_seconds,
+                scope_predicates=OUTBOX_PROJECTION_PREDICATES,
             )
             await session.commit()
         if reclaimed:
@@ -754,7 +778,7 @@ async def _worker_loop() -> None:
         now = _utc_now()
         await outbox_renew_lease(
             session,
-            SearchOutboxEventModel,
+            OUTBOX_MODEL,
             ids,
             worker_id=worker_id,
             lease_seconds=lease_seconds,
@@ -830,7 +854,7 @@ async def _worker_loop() -> None:
                                 # Reload row to confirm ownership/lease before doing work.
                                 db_ev = (
                                     await session.execute(
-                                        select(SearchOutboxEventModel).where(SearchOutboxEventModel.id == ev.id)
+                                        select(OUTBOX_MODEL).where(OUTBOX_MODEL.id == ev.id)
                                     )
                                 ).scalar_one_or_none()
 
@@ -903,12 +927,12 @@ async def _worker_loop() -> None:
                                     raise ValueError(f"Unknown outbox op: {db_ev.op!r}")
 
                                 await session.execute(
-                                    update(SearchOutboxEventModel)
+                                    update(OUTBOX_MODEL)
                                     .where(
-                                        SearchOutboxEventModel.id == db_ev.id,
-                                        SearchOutboxEventModel.owner == worker_id,
-                                        SearchOutboxEventModel.status == "processing",
-                                        SearchOutboxEventModel.lease_until > now,
+                                        OUTBOX_MODEL.id == db_ev.id,
+                                        OUTBOX_MODEL.owner == worker_id,
+                                        OUTBOX_MODEL.status == "processing",
+                                        OUTBOX_MODEL.lease_until > now,
                                     )
                                     .values(
                                         status="done",
@@ -979,12 +1003,12 @@ async def _worker_loop() -> None:
                                 }
 
                             await session.execute(
-                                    update(SearchOutboxEventModel)
+                                    update(OUTBOX_MODEL)
                                     .where(
-                                        SearchOutboxEventModel.id == ev.id,
-                                        SearchOutboxEventModel.owner == worker_id,
-                                        SearchOutboxEventModel.status == "processing",
-                                        SearchOutboxEventModel.lease_until > now,
+                                        OUTBOX_MODEL.id == ev.id,
+                                        OUTBOX_MODEL.owner == worker_id,
+                                        OUTBOX_MODEL.status == "processing",
+                                        OUTBOX_MODEL.lease_until > now,
                                     )
                                     .values(**values)
                                 )
@@ -1093,25 +1117,25 @@ async def _worker_loop() -> None:
                 now = _utc_now()
                 claim_batch_id = str(uuid.uuid4())
 
-                scope_predicates = []
+                scope_predicates = list(OUTBOX_PROJECTION_PREDICATES)
                 if library_allowlist is not None:
-                    scope_predicates.append(SearchOutboxEventModel.library_id.in_(library_allowlist))
+                    scope_predicates.append(OUTBOX_MODEL.library_id.in_(library_allowlist))
 
                 # Low-cardinality projection freshness gauges.
                 pending_count = (
                     await session.execute(
-                        select(func.count()).select_from(SearchOutboxEventModel).where(
-                            SearchOutboxEventModel.processed_at.is_(None),
-                            SearchOutboxEventModel.status.in_(["pending", "processing", "failed"]),
+                        select(func.count()).select_from(OUTBOX_MODEL).where(
+                            OUTBOX_MODEL.processed_at.is_(None),
+                            OUTBOX_MODEL.status.in_(["pending", "processing", "failed"]),
                             *scope_predicates,
                         )
                     )
                 ).scalar_one()
                 inflight_count = (
                     await session.execute(
-                        select(func.count()).select_from(SearchOutboxEventModel).where(
-                            SearchOutboxEventModel.processed_at.is_(None),
-                            SearchOutboxEventModel.status == "processing",
+                        select(func.count()).select_from(OUTBOX_MODEL).where(
+                            OUTBOX_MODEL.processed_at.is_(None),
+                            OUTBOX_MODEL.status == "processing",
                             *scope_predicates,
                         )
                     )
@@ -1119,9 +1143,9 @@ async def _worker_loop() -> None:
 
                 stuck_processing_count = (
                     await session.execute(
-                        select(func.count()).select_from(SearchOutboxEventModel).where(
+                        select(func.count()).select_from(OUTBOX_MODEL).where(
                             stuck_processing_predicate(
-                                SearchOutboxEventModel,
+                                OUTBOX_MODEL,
                                 now=now,
                                 max_processing_seconds=max_processing_seconds,
                             ),
@@ -1131,9 +1155,9 @@ async def _worker_loop() -> None:
                 ).scalar_one()
                 oldest_created_at = (
                     await session.execute(
-                        select(func.min(SearchOutboxEventModel.created_at)).where(
-                            SearchOutboxEventModel.processed_at.is_(None),
-                            SearchOutboxEventModel.status.in_(["pending", "processing", "failed"]),
+                        select(func.min(OUTBOX_MODEL.created_at)).where(
+                            OUTBOX_MODEL.processed_at.is_(None),
+                            OUTBOX_MODEL.status.in_(["pending", "processing", "failed"]),
                             *scope_predicates,
                         )
                     )
@@ -1184,13 +1208,13 @@ async def _worker_loop() -> None:
                 ) as claim_span:
                     claimable = await outbox_claim_pending_batch(
                         session,
-                        SearchOutboxEventModel,
+                        OUTBOX_MODEL,
                         now=now,
                         batch_size=int(batch_size),
                         worker_id=worker_id,
                         lease_seconds=float(lease_seconds),
                         scope_predicates=scope_predicates,
-                        order_by=(SearchOutboxEventModel.event_version.asc(),),
+                        order_by=(OUTBOX_MODEL.event_version.asc(),),
                         break_claim_atomicity=bool(break_claim_atomicity),
                         break_claim_sleep_seconds=float(break_claim_sleep_seconds or 0.0),
                     )
@@ -1486,12 +1510,12 @@ async def _worker_loop() -> None:
 
                 if processed_immediately_ids:
                     await session.execute(
-                        update(SearchOutboxEventModel)
+                        update(OUTBOX_MODEL)
                         .where(
-                            SearchOutboxEventModel.id.in_(processed_immediately_ids),
-                            SearchOutboxEventModel.owner == worker_id,
-                            SearchOutboxEventModel.status == "processing",
-                            SearchOutboxEventModel.lease_until > now,
+                            OUTBOX_MODEL.id.in_(processed_immediately_ids),
+                            OUTBOX_MODEL.owner == worker_id,
+                            OUTBOX_MODEL.status == "processing",
+                            OUTBOX_MODEL.lease_until > now,
                         )
                         .values(
                             status="done",
@@ -1510,12 +1534,12 @@ async def _worker_loop() -> None:
 
                 for ev_id, op, reason in failed_immediately:
                     await session.execute(
-                        update(SearchOutboxEventModel)
+                        update(OUTBOX_MODEL)
                         .where(
-                            SearchOutboxEventModel.id == ev_id,
-                            SearchOutboxEventModel.owner == worker_id,
-                            SearchOutboxEventModel.status == "processing",
-                            SearchOutboxEventModel.lease_until > now,
+                            OUTBOX_MODEL.id == ev_id,
+                            OUTBOX_MODEL.owner == worker_id,
+                            OUTBOX_MODEL.status == "processing",
+                            OUTBOX_MODEL.lease_until > now,
                         )
                         .values(
                             status="failed",
@@ -1633,12 +1657,12 @@ async def _worker_loop() -> None:
                             is_terminal = not should_retry
 
                             await session.execute(
-                                update(SearchOutboxEventModel)
+                                update(OUTBOX_MODEL)
                                 .where(
-                                    SearchOutboxEventModel.id == ev_id,
-                                    SearchOutboxEventModel.owner == worker_id,
-                                    SearchOutboxEventModel.status == "processing",
-                                    SearchOutboxEventModel.lease_until > now,
+                                    OUTBOX_MODEL.id == ev_id,
+                                    OUTBOX_MODEL.owner == worker_id,
+                                    OUTBOX_MODEL.status == "processing",
+                                    OUTBOX_MODEL.lease_until > now,
                                 )
                                 .values(
                                     status="pending" if should_retry else "failed",
@@ -1849,12 +1873,12 @@ async def _worker_loop() -> None:
 
                 if success_ids:
                     await session.execute(
-                        update(SearchOutboxEventModel)
+                        update(OUTBOX_MODEL)
                         .where(
-                            SearchOutboxEventModel.id.in_(success_ids),
-                            SearchOutboxEventModel.owner == worker_id,
-                            SearchOutboxEventModel.status == "processing",
-                            SearchOutboxEventModel.lease_until > now,
+                            OUTBOX_MODEL.id.in_(success_ids),
+                            OUTBOX_MODEL.owner == worker_id,
+                            OUTBOX_MODEL.status == "processing",
+                            OUTBOX_MODEL.lease_until > now,
                         )
                         .values(
                             status="done",
@@ -1906,12 +1930,12 @@ async def _worker_loop() -> None:
                             new_status = "pending"
 
                         await session.execute(
-                            update(SearchOutboxEventModel)
+                            update(OUTBOX_MODEL)
                             .where(
-                                SearchOutboxEventModel.id == ev_id,
-                                SearchOutboxEventModel.owner == worker_id,
-                                SearchOutboxEventModel.status == "processing",
-                                SearchOutboxEventModel.lease_until > now,
+                                OUTBOX_MODEL.id == ev_id,
+                                OUTBOX_MODEL.owner == worker_id,
+                                OUTBOX_MODEL.status == "processing",
+                                OUTBOX_MODEL.lease_until > now,
                             )
                             .values(
                                 status=new_status,

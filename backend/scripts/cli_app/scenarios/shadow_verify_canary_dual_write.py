@@ -6,8 +6,15 @@ from datetime import datetime, timezone
 
 from sqlalchemy import bindparam, create_engine, text
 
+from infra.outbox_unified.toggles import is_unified_outbox_write_enabled
+
+from ._pg_introspection import table_exists
+
 from ..registry import register
 from ..types import DrillInputs, DrillResult
+
+
+SEARCH_OUTBOX_PROJECTION = "search_index_to_elastic"
 
 
 @register("shadow_verify_canary_dual_write")
@@ -73,17 +80,33 @@ def run(inputs: DrillInputs) -> DrillResult:
         )
 
     engine = create_engine(database_url)
+    unified_write_enabled = is_unified_outbox_write_enabled(SEARCH_OUTBOX_PROJECTION)
     inserted_search = 0
     inserted_outbox = 0
+    inserted_unified_outbox = 0
     verify_search_count = 0
     verify_outbox_count = 0
+    verify_unified_outbox_count = 0
     cleanup_deleted_search = 0
     cleanup_deleted_outbox = 0
+    cleanup_deleted_unified_outbox = 0
     cleanup_remaining_search: int | None = None
     cleanup_remaining_outbox: int | None = None
+    cleanup_remaining_unified_outbox: int | None = None
     dup_extra = 0
 
     with engine.connect() as conn:
+        legacy_outbox_available = table_exists(conn, "search_outbox_events")
+        if (not unified_write_enabled) and (not legacy_outbox_available):
+            return DrillResult(
+                ok=False,
+                errors=[
+                    "search_outbox_events table not found; enable unified outbox write (OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic)",
+                ],
+                meta={},
+                summary={},
+            )
+
         # 1) insert projection rows
         conn.execute(
             text(
@@ -99,18 +122,33 @@ def run(inputs: DrillInputs) -> DrillResult:
         inserted_search = max_writes
 
         # 2) enqueue outbox rows
-        conn.execute(
-            text(
-                """
-                INSERT INTO search_outbox_events
-                                    (id, entity_type, library_id, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
-                VALUES
-                                    (:id, :entity_type, :library_id, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
-                """
-            ),
-            outbox_rows,
-        )
-        inserted_outbox = max_writes
+        if unified_write_enabled:
+            unified_rows = [{**r, "projection": SEARCH_OUTBOX_PROJECTION} for r in outbox_rows]
+            conn.execute(
+                text(
+                    """
+                    INSERT INTO outbox_events
+                      (id, projection, entity_type, library_id, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
+                    VALUES
+                      (:id, :projection, :entity_type, :library_id, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
+                    """
+                ),
+                unified_rows,
+            )
+            inserted_unified_outbox = max_writes
+        else:
+            conn.execute(
+                text(
+                    """
+                    INSERT INTO search_outbox_events
+                      (id, entity_type, library_id, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
+                    VALUES
+                      (:id, :entity_type, :library_id, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
+                    """
+                ),
+                outbox_rows,
+            )
+            inserted_outbox = max_writes
 
         conn.commit()
 
@@ -129,20 +167,45 @@ def run(inputs: DrillInputs) -> DrillResult:
             ).scalar()
             or 0
         )
-        verify_outbox_count = int(
-            conn.execute(
-                text(
-                    """
-                    SELECT COUNT(*)
-                    FROM search_outbox_events
-                    WHERE entity_type = :entity_type
-                      AND entity_id IN :entity_ids
-                    """
-                ).bindparams(bindparam("entity_ids", expanding=True)),
-                {"entity_type": entity_type, "entity_ids": entity_ids},
-            ).scalar()
-            or 0
-        )
+        if legacy_outbox_available:
+            verify_outbox_count = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM search_outbox_events
+                        WHERE entity_type = :entity_type
+                          AND entity_id IN :entity_ids
+                        """
+                    ).bindparams(bindparam("entity_ids", expanding=True)),
+                    {"entity_type": entity_type, "entity_ids": entity_ids},
+                ).scalar()
+                or 0
+            )
+        else:
+            # Legacy table is dropped in Slice C; unified-write mode expects legacy=0 anyway.
+            verify_outbox_count = 0
+
+        if unified_write_enabled:
+            verify_unified_outbox_count = int(
+                conn.execute(
+                    text(
+                        """
+                        SELECT COUNT(*)
+                        FROM outbox_events
+                        WHERE projection = :projection
+                          AND entity_type = :entity_type
+                          AND entity_id IN :entity_ids
+                        """
+                    ).bindparams(bindparam("entity_ids", expanding=True)),
+                    {
+                        "projection": SEARCH_OUTBOX_PROJECTION,
+                        "entity_type": entity_type,
+                        "entity_ids": entity_ids,
+                    },
+                ).scalar()
+                or 0
+            )
 
         # 4) verify write-gate uniqueness still holds
         dup_extra = int(
@@ -164,16 +227,33 @@ def run(inputs: DrillInputs) -> DrillResult:
 
         # 5) cleanup (rollback evidence)
         if cleanup:
-            conn.execute(
-                text(
-                    """
-                    DELETE FROM search_outbox_events
-                    WHERE entity_type = :entity_type
-                      AND entity_id IN :entity_ids
-                    """
-                ).bindparams(bindparam("entity_ids", expanding=True)),
-                {"entity_type": entity_type, "entity_ids": entity_ids},
-            )
+            if unified_write_enabled:
+                conn.execute(
+                    text(
+                        """
+                        DELETE FROM outbox_events
+                        WHERE projection = :projection
+                          AND entity_type = :entity_type
+                          AND entity_id IN :entity_ids
+                        """
+                    ).bindparams(bindparam("entity_ids", expanding=True)),
+                    {
+                        "projection": SEARCH_OUTBOX_PROJECTION,
+                        "entity_type": entity_type,
+                        "entity_ids": entity_ids,
+                    },
+                )
+            else:
+                conn.execute(
+                    text(
+                        """
+                        DELETE FROM search_outbox_events
+                        WHERE entity_type = :entity_type
+                          AND entity_id IN :entity_ids
+                        """
+                    ).bindparams(bindparam("entity_ids", expanding=True)),
+                    {"entity_type": entity_type, "entity_ids": entity_ids},
+                )
             conn.execute(
                 text(
                     """
@@ -201,30 +281,73 @@ def run(inputs: DrillInputs) -> DrillResult:
                 or 0
             )
             cleanup_remaining_outbox = int(
-                conn.execute(
-                    text(
-                        """
-                        SELECT COUNT(*)
-                        FROM search_outbox_events
-                        WHERE entity_type = :entity_type
-                          AND entity_id IN :entity_ids
-                        """
-                    ).bindparams(bindparam("entity_ids", expanding=True)),
-                    {"entity_type": entity_type, "entity_ids": entity_ids},
-                ).scalar()
-                or 0
+                0
+                if not legacy_outbox_available
+                else (
+                    conn.execute(
+                        text(
+                            """
+                            SELECT COUNT(*)
+                            FROM search_outbox_events
+                            WHERE entity_type = :entity_type
+                              AND entity_id IN :entity_ids
+                            """
+                        ).bindparams(bindparam("entity_ids", expanding=True)),
+                        {"entity_type": entity_type, "entity_ids": entity_ids},
+                    ).scalar()
+                    or 0
+                )
             )
+
+            if unified_write_enabled:
+                cleanup_remaining_unified_outbox = int(
+                    conn.execute(
+                        text(
+                            """
+                            SELECT COUNT(*)
+                            FROM outbox_events
+                            WHERE projection = :projection
+                              AND entity_type = :entity_type
+                              AND entity_id IN :entity_ids
+                            """
+                        ).bindparams(bindparam("entity_ids", expanding=True)),
+                        {
+                            "projection": SEARCH_OUTBOX_PROJECTION,
+                            "entity_type": entity_type,
+                            "entity_ids": entity_ids,
+                        },
+                    ).scalar()
+                    or 0
+                )
 
             cleanup_deleted_search = verify_search_count - cleanup_remaining_search
             cleanup_deleted_outbox = verify_outbox_count - cleanup_remaining_outbox
+            if unified_write_enabled:
+                cleanup_deleted_unified_outbox = verify_unified_outbox_count - (cleanup_remaining_unified_outbox or 0)
 
     ok = (
         inserted_search == max_writes
-        and inserted_outbox == max_writes
+        and (
+            (unified_write_enabled and inserted_outbox == 0 and inserted_unified_outbox == max_writes)
+            or ((not unified_write_enabled) and inserted_outbox == max_writes and inserted_unified_outbox == 0)
+        )
         and verify_search_count == max_writes
-        and verify_outbox_count == max_writes
+        and (
+            (unified_write_enabled and verify_outbox_count == 0 and verify_unified_outbox_count == max_writes)
+            or ((not unified_write_enabled) and verify_outbox_count == max_writes and verify_unified_outbox_count == 0)
+        )
         and dup_extra == 0
-        and ((not cleanup) or (cleanup_remaining_search == 0 and cleanup_remaining_outbox == 0))
+        and (
+            (not cleanup)
+            or (
+                cleanup_remaining_search == 0
+                and cleanup_remaining_outbox == 0
+                and (
+                    (not unified_write_enabled)
+                    or (cleanup_remaining_unified_outbox == 0)
+                )
+            )
+        )
     )
 
     result: dict[str, object] = {
@@ -236,8 +359,9 @@ def run(inputs: DrillInputs) -> DrillResult:
         "dry_run": False,
         "targets": {
             "projection_table": "search_index",
-            "outbox_table": "search_outbox_events",
-            "entrypoint_hint": "backend/infra/search/search_indexer.py::PostgresSearchIndexer (writes search_index + enqueues search_outbox_events)",
+            "outbox_table": ("outbox_events" if unified_write_enabled else "search_outbox_events"),
+            "unified_outbox_table": ("outbox_events" if unified_write_enabled else None),
+            "entrypoint_hint": "backend/infra/search/search_indexer.py::PostgresSearchIndexer (writes search_index + enqueues unified outbox when enabled)",
         },
         "canary": {
             "entity_type": entity_type,
@@ -249,14 +373,21 @@ def run(inputs: DrillInputs) -> DrillResult:
         "verify": {
             "search_index_rows_found": int(verify_search_count),
             "search_outbox_rows_found": int(verify_outbox_count),
+            "unified_outbox_rows_found": (
+                int(verify_unified_outbox_count) if unified_write_enabled else None
+            ),
             "duplicates_extra_rows_total": int(dup_extra),
         },
         "rollback": {
             "cleanup_enabled": bool(cleanup),
             "deleted_search_index": int(cleanup_deleted_search),
             "deleted_search_outbox_events": int(cleanup_deleted_outbox),
+            "deleted_unified_outbox_events": (
+                int(cleanup_deleted_unified_outbox) if unified_write_enabled else None
+            ),
             "remaining_search_index": cleanup_remaining_search,
             "remaining_search_outbox_events": cleanup_remaining_outbox,
+            "remaining_unified_outbox_events": cleanup_remaining_unified_outbox,
             "note": "Cleanup is executed by default to keep CI/devtest DB clean.",
         },
         "ok": bool(ok),
@@ -270,6 +401,9 @@ def run(inputs: DrillInputs) -> DrillResult:
             "max_writes": int(max_writes),
             "verify_search_index_rows_found": int(verify_search_count),
             "verify_search_outbox_rows_found": int(verify_outbox_count),
+            "verify_unified_outbox_rows_found": (
+                int(verify_unified_outbox_count) if unified_write_enabled else None
+            ),
             "duplicates_extra_rows_total": int(dup_extra),
             "cleanup_enabled": bool(cleanup),
         },
