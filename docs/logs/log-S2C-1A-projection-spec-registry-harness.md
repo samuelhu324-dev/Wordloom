@@ -98,7 +98,8 @@
 
 - [x] `P0-C1-S1`：定义 `ProjectionSpec` + 最小字段
 -     Impl: `backend/infra/projection_framework/spec.py` (`ProjectionSpec`)
-- [ ] `P0-C1-S2`：实现 registry，并能列出投影
+- [x] `P0-C1-S2`：实现 registry，并能列出投影
+-     Impl: `backend/infra/projection_framework/registry.py` (`register/get_spec/list_specs`)
 - [ ] `P0-C1-S3`：登记 Search/Chronicle 为条目（不改行为）
 
 ### P1（Worker Harness）
