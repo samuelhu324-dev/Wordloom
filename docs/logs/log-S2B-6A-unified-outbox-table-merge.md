@@ -273,7 +273,7 @@
 ### P2（物理合表后的 cleanup）
 
 - [x] `P2-C1-S1`：deletion ledger（旧表/旧路径/旧 flag）完成（只列清单，不删除）。
-- [ ] `P2-C1-S2`：cleanup slice 1（最小风险项）pre/post 固定回归包 + Evidence。
+- [x] `P2-C1-S2`：cleanup slice 1（最小风险项）pre/post 固定回归包 + Evidence。
 - [ ] `P2-C2-S*`：按 slice 继续推进（每 slice 独立证据）。
 
 ## Evidence（证据与 SoT 规则）
@@ -393,3 +393,28 @@ Slice 建议（对应 Checklist 的 P2-C1-S2 / P2-C2-S*）：
 2) Slice B：worker 固定读 unified（L7/L8 的核心逻辑），并跑一轮 N≥3 回归包。
 3) Slice C：drop legacy tables（L1/L2）+ 删除 legacy ORM（L3/L4）。
 4) Slice D：收尾清理 legacy scripts/docs（L9–L12）。
+
+### P2-C1-S2（Slice A：unified-write => unified-only enqueue；pre/post 本地 N=3 rounds）
+
+- pre headSha: `ba8f282b7b4d8bb7544ff9a4b595007b0ad6f343`
+- post headSha: `18afcfa2`（`S2B-6A/P2-C1-S2: slice A unified-write => unified-only enqueue`）
+
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+  - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+
+- pre suite root（round1–round3，每轮 6 个 `_result.json`）：
+  - `artifacts/_local_s2b6a/P2-C1-S2/20260227-213405/pre/round1/`
+  - `artifacts/_local_s2b6a/P2-C1-S2/20260227-213405/pre/round2/`
+  - `artifacts/_local_s2b6a/P2-C1-S2/20260227-213405/pre/round3/`
+
+- post suite root（round1–round3，每轮 6 个 `_result.json`）：
+  - `artifacts/_local_s2b6a/P2-C1-S2/20260228-105240/post/round1/`
+  - `artifacts/_local_s2b6a/P2-C1-S2/20260228-105240/post/round2/`
+  - `artifacts/_local_s2b6a/P2-C1-S2/20260228-105240/post/round3/`
+
+- Notes:
+  - Slice A 口径：当 unified write enabled 时，写路径仅写 `outbox_events`，不再写 legacy outbox tables。
+  - post：补跑 `round3/sampling_cleanup` 以补齐缺失 `_result.json`（`remaining_legacy_outbox_rows: 0` / `ok: true`）。
