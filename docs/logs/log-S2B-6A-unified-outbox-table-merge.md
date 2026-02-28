@@ -275,7 +275,7 @@
 - [x] `P2-C1-S1`：deletion ledger（旧表/旧路径/旧 flag）完成（只列清单，不删除）。
 - [x] `P2-C1-S2`：cleanup slice 1（最小风险项）pre/post 固定回归包 + Evidence。
 - [x] `P2-C2-S1`：Slice B-1（Search worker 固定读 unified outbox）pre/post 固定回归包（本地 N=3）+ Evidence。
-- [ ] `P2-C2-S2`：Slice B-2（Chronicle worker 固定读 unified outbox）pre/post 固定回归包（本地 N=3）+ Evidence。
+- [x] `P2-C2-S2`：Slice B-2（Chronicle worker 固定读 unified outbox）pre/post 固定回归包（本地 N=3）+ Evidence。
 
 ## Evidence（证据与 SoT 规则）
 
@@ -445,3 +445,30 @@ Slice 建议（对应 Checklist 的 P2-C1-S2 / P2-C2-S*）：
 - Notes:
   - Slice B-1 口径：Search worker 不再根据 `OUTBOX_UNIFIED_READ_ENABLED` 分叉；固定读 `outbox_events` 并加 projection predicate。
   - 回滚口径：revert 该 commit（不再是“清空 read flag 即回滚”）。
+
+### P2-C2-S2（Slice B-2：Chronicle worker 固定读 unified outbox；pre/post 本地 N=3 rounds）
+
+- pre headSha: `149cab75108032663b2483d5a7abbe3ce818b98b`
+- post headSha: `8c5c3b2c`（`S2B-6A/P2-C2-S2: chronicle worker fixed unified outbox read`）
+
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `SEARCH_OUTBOX_WORKER_ENABLED=1`（suite 中包含 `shadow-verify-dual-run-window`）
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+  - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+
+- pre suite root（round1–round3；每轮 6-pack + `chronicle_entries`）：
+  - `artifacts/_local_s2b6a/P2-C2-S2/20260228-113018/pre/round1/`
+  - `artifacts/_local_s2b6a/P2-C2-S2/20260228-113018/pre/round2/`
+  - `artifacts/_local_s2b6a/P2-C2-S2/20260228-113018/pre/round3/`
+
+- post suite root（round1–round3；每轮 6-pack + `chronicle_entries`）：
+  - `artifacts/_local_s2b6a/P2-C2-S2/20260228-113351/post/round1/`
+  - `artifacts/_local_s2b6a/P2-C2-S2/20260228-113351/post/round2/`
+  - `artifacts/_local_s2b6a/P2-C2-S2/20260228-113351/post/round3/`
+
+- Notes:
+  - Slice B-2 口径：Chronicle worker 不再根据 `OUTBOX_UNIFIED_READ_ENABLED` 分叉；固定读 `outbox_events` 并加 projection predicate。
+  - 回滚口径：revert 该 commit。
+  - 本地 devtest DB 在该轮 `chronicle_entries` 验证里 `events_total=0` / `entries_total=0`（验证通过但样本量为 0；后续在有 Chronicle 数据的环境再补一次更有信息量的 verify）。
