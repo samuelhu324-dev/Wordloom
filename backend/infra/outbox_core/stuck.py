@@ -21,7 +21,7 @@ def stuck_processing_predicate(
       - lease_until has expired, OR
       - processing_started_at is older than now - max_processing_seconds
 
-    The model is expected to look like SearchOutboxEventModel (attributes used).
+    The model is expected to look like OutboxEventModel (attributes used).
     """
 
     max_age_started_at = now - timedelta(seconds=max(1, int(max_processing_seconds)))

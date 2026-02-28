@@ -25,8 +25,11 @@ if str(_BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(_BACKEND_ROOT))
 
 from infra.database.session import get_session_factory
-from infra.database.models.search_outbox_models import SearchOutboxEventModel
+from infra.database.models.outbox_event_models import OutboxEventModel
 from infra.outbox_core.replay import replay_failed_rows
+
+
+SEARCH_OUTBOX_PROJECTION = "search_index_to_elastic"
 
 
 def _utc_now() -> datetime:
@@ -57,11 +60,12 @@ async def main_async() -> int:
     async with session_factory() as session:
         result = await replay_failed_rows(
             session,
-            SearchOutboxEventModel,
+            OutboxEventModel,
             now=now,
             by=args.by,
             reason=str(args.reason),
             limit=int(args.limit),
+            projection=SEARCH_OUTBOX_PROJECTION,
             entity_type=(str(args.entity_type) if args.entity_type else None),
             since_hours=(float(args.since_hours) if args.since_hours is not None else None),
             ids=None,

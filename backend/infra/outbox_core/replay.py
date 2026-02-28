@@ -25,6 +25,7 @@ async def replay_failed_rows(
     by: Any,
     reason: str,
     limit: int,
+    projection: str | None = None,
     entity_type: str | None = None,
     since_hours: float | None = None,
     ids: Iterable[Any] | None = None,
@@ -48,6 +49,10 @@ async def replay_failed_rows(
     updated_at = getattr(model, "updated_at")
 
     where = [status == "failed"]
+    if projection is not None:
+        if not hasattr(model, "projection"):
+            raise ValueError("projection filter requested but model has no 'projection' column")
+        where.append(getattr(model, "projection") == str(projection))
     if ids:
         where.append(getattr(model, "id").in_(list(ids)))
     if entity_type is not None:
