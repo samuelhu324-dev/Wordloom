@@ -1,7 +1,7 @@
 """Chronicle Outbox → chronicle_entries worker.
 
-Continuously pulls unprocessed rows from chronicle_outbox_events and
-materializes/updates chronicle_entries derived from chronicle_events.
+Continuously pulls unprocessed rows from outbox_events (projection=chronicle_events_to_entries)
+and materializes/updates chronicle_entries derived from chronicle_events.
 
 This is the Chronicle analogue to search_outbox_worker.py, reusing the same
 lease/retry/failed/replay/metrics semantics.
@@ -50,9 +50,7 @@ if sys.platform.startswith("win"):
 from infra.database.session import get_session_factory
 from infra.database.models.chronicle_models import ChronicleEventModel
 from infra.database.models.chronicle_entries_models import ChronicleEntryModel
-from infra.database.models.chronicle_outbox_models import ChronicleOutboxEventModel
 from infra.database.models.outbox_event_models import OutboxEventModel
-from infra.outbox_unified.toggles import is_unified_outbox_read_enabled
 from infra.observability.outbox_metrics import (
     outbox_failed_total,
     outbox_inflight_events,
@@ -83,11 +81,8 @@ from api.app.config.logging_config import setup_logging
 
 
 CHRONICLE_OUTBOX_PROJECTION = "chronicle_events_to_entries"
-USE_UNIFIED_OUTBOX_READ = is_unified_outbox_read_enabled(CHRONICLE_OUTBOX_PROJECTION)
-OUTBOX_MODEL = OutboxEventModel if USE_UNIFIED_OUTBOX_READ else ChronicleOutboxEventModel
-OUTBOX_PROJECTION_PREDICATES = (
-    (OutboxEventModel.projection == CHRONICLE_OUTBOX_PROJECTION,) if USE_UNIFIED_OUTBOX_READ else ()
-)
+OUTBOX_MODEL = OutboxEventModel
+OUTBOX_PROJECTION_PREDICATES = (OutboxEventModel.projection == CHRONICLE_OUTBOX_PROJECTION,)
 from infra.observability.tracing import extract_context, setup_tracing
 
 setup_logging()
