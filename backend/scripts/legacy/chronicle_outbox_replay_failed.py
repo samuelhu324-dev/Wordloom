@@ -25,7 +25,7 @@ if str(_BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(_BACKEND_ROOT))
 
 from infra.database.session import get_session_factory
-from infra.database.models.chronicle_outbox_models import ChronicleOutboxEventModel
+from infra.database.models.outbox_event_models import OutboxEventModel
 from infra.outbox_core.replay import replay_failed_rows
 
 
@@ -58,13 +58,15 @@ async def main_async() -> int:
         raise RuntimeError("DATABASE_URL must be set")
 
     now = _utc_now()
+    projection = "chronicle_events_to_entries"
     session_factory = await get_session_factory()
 
     async with session_factory() as session:
         result = await replay_failed_rows(
             session,
-            ChronicleOutboxEventModel,
+            OutboxEventModel,
             now=now,
+            projection=projection,
             by=args.by,
             reason=str(args.reason),
             limit=int(args.limit),

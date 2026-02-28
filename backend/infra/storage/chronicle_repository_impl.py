@@ -27,9 +27,8 @@ from api.app.modules.chronicle.domain import (
     ChronicleEventType,
 )
 from api.app.modules.chronicle.exceptions import ChronicleRepositoryError
-from infra.database.models import ChronicleEventModel, ChronicleOutboxEventModel, ChronicleEventDedupeStateModel
+from infra.database.models import ChronicleEventModel, ChronicleEventDedupeStateModel
 from infra.database.models.outbox_event_models import OutboxEventModel
-from infra.outbox_unified.toggles import is_unified_outbox_write_enabled
 
 
 def _get_block_updated_dedupe_window_seconds() -> int:
@@ -155,36 +154,21 @@ class SQLAlchemyChronicleRepository(ChronicleRepositoryPort):
 
             outbox_id = uuid4()
             projection = "chronicle_events_to_entries"
-            if is_unified_outbox_write_enabled(projection):
-                unified_row = OutboxEventModel(
-                    id=outbox_id,
-                    projection=projection,
-                    entity_type="chronicle_event",
-                    entity_id=event.id,
-                    op="upsert",
-                    event_version=0,
-                    status="pending",
-                    attempts=0,
-                    replay_count=0,
-                    traceparent=traceparent,
-                    tracestate=tracestate,
-                    book_id=event.book_id,
-                )
-                self._session.add(unified_row)
-            else:
-                outbox_row = ChronicleOutboxEventModel(
-                    id=outbox_id,
-                    entity_type="chronicle_event",
-                    entity_id=event.id,
-                    op="upsert",
-                    event_version=0,
-                    status="pending",
-                    attempts=0,
-                    replay_count=0,
-                    traceparent=traceparent,
-                    tracestate=tracestate,
-                )
-                self._session.add(outbox_row)
+            unified_row = OutboxEventModel(
+                id=outbox_id,
+                projection=projection,
+                entity_type="chronicle_event",
+                entity_id=event.id,
+                op="upsert",
+                event_version=0,
+                status="pending",
+                attempts=0,
+                replay_count=0,
+                traceparent=traceparent,
+                tracestate=tracestate,
+                book_id=event.book_id,
+            )
+            self._session.add(unified_row)
 
             await self._session.commit()
             await self._session.refresh(model)

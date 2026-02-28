@@ -29,7 +29,6 @@ from .media_models import (
 from .search_index_models import SearchIndexModel
 from .projection_status_models import ProjectionStatusModel
 from .chronicle_models import ChronicleEventModel
-from .chronicle_outbox_models import ChronicleOutboxEventModel
 from .chronicle_entries_models import ChronicleEntryModel
 from .chronicle_dedupe_models import ChronicleEventDedupeStateModel
 from .maturity_models import MaturitySnapshotModel
@@ -58,7 +57,6 @@ __all__ = [
     "ProjectionStatusModel",
     # Chronicle
     "ChronicleEventModel",
-    "ChronicleOutboxEventModel",
     "ChronicleEntryModel",
     "ChronicleEventDedupeStateModel",
     # Maturity
