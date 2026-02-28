@@ -274,7 +274,8 @@
 
 - [x] `P2-C1-S1`：deletion ledger（旧表/旧路径/旧 flag）完成（只列清单，不删除）。
 - [x] `P2-C1-S2`：cleanup slice 1（最小风险项）pre/post 固定回归包 + Evidence。
-- [ ] `P2-C2-S*`：按 slice 继续推进（每 slice 独立证据）。
+- [x] `P2-C2-S1`：Slice B-1（Search worker 固定读 unified outbox）pre/post 固定回归包（本地 N=3）+ Evidence。
+- [ ] `P2-C2-S2`：Slice B-2（Chronicle worker 固定读 unified outbox）pre/post 固定回归包（本地 N=3）+ Evidence。
 
 ## Evidence（证据与 SoT 规则）
 
@@ -418,3 +419,29 @@ Slice 建议（对应 Checklist 的 P2-C1-S2 / P2-C2-S*）：
 - Notes:
   - Slice A 口径：当 unified write enabled 时，写路径仅写 `outbox_events`，不再写 legacy outbox tables。
   - post：补跑 `round3/sampling_cleanup` 以补齐缺失 `_result.json`（`remaining_legacy_outbox_rows: 0` / `ok: true`）。
+
+### P2-C2-S1（Slice B-1：Search worker 固定读 unified outbox；pre/post 本地 N=3 rounds）
+
+- pre headSha: `dd85a959e7c443f31fd641bf715c9f1500137a81`
+- post headSha: `7e8ad31a`（`S2B-6A/P2-C2-S1: search worker fixed unified outbox read`）
+
+- Local env:
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev`
+  - `ELASTIC_URL=http://127.0.0.1:19200`
+  - `SEARCH_OUTBOX_WORKER_ENABLED=1`（`shadow-verify-dual-run-window` 会直接拉起 worker；该开关不能为 0）
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+  - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+
+- pre suite root（round1–round3，每轮 6 个 `_result.json`）：
+  - `artifacts/_local_s2b6a/P2-C2-S1/20260228-111938/pre/round1/`
+  - `artifacts/_local_s2b6a/P2-C2-S1/20260228-111938/pre/round2/`
+  - `artifacts/_local_s2b6a/P2-C2-S1/20260228-111938/pre/round3/`
+
+- post suite root（round1–round3，每轮 6 个 `_result.json`）：
+  - `artifacts/_local_s2b6a/P2-C2-S1/20260228-112457/post/round1/`
+  - `artifacts/_local_s2b6a/P2-C2-S1/20260228-112457/post/round2/`
+  - `artifacts/_local_s2b6a/P2-C2-S1/20260228-112457/post/round3/`
+
+- Notes:
+  - Slice B-1 口径：Search worker 不再根据 `OUTBOX_UNIFIED_READ_ENABLED` 分叉；固定读 `outbox_events` 并加 projection predicate。
+  - 回滚口径：revert 该 commit（不再是“清空 read flag 即回滚”）。
