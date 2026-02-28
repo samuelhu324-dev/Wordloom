@@ -466,6 +466,105 @@ Search（独立切读开关）：
 - Log：`docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md`
 - ADR：`docs/adr/adr-S2B-projection-table-merge.md`
 
+---
+
+## 12) Unified Outbox（S2B-6A）生产切换口径（Search + Chronicle）
+
+> 这段是“物理合表（`outbox_events`）+ 开关切读写 + 最小回滚 + 最小安全删除闭环”的操作口径。
+> 目标：让你在生产做切换时只需要盯住少量硬指标，并且每一步都有回滚动作。
+
+### 12.1 背景与开关
+
+- 统一表：`outbox_events`（多 projection 复用，靠 `projection` 字段区分）。
+- 开关（按 projection 粒度，逗号分隔）：
+  - `OUTBOX_UNIFIED_WRITE_ENABLED`：producer 写入 unified outbox（必要时也会保持 legacy 写入，用于双写窗口）。
+  - `OUTBOX_UNIFIED_READ_ENABLED`：worker 从 unified outbox 读取（按 projection claim）。
+- projection：
+  - Search：`search_index_to_elastic`
+  - Chronicle：`chronicle_events_to_entries`
+
+### 12.2 Preflight（切换前必须确认）
+
+1) DB schema 已到位：`outbox_events` 已存在（且相关 index/constraints 已创建）。
+2) 观测链路可用：
+   - API `/metrics` 可读（produced 侧至少能看到 `outbox_produced_total`）。
+   - worker `/metrics` 可读（至少能看到 `outbox_processed_total` / `outbox_failed_total` / `outbox_lag_events`）。
+3) replay 工具入口可用（用于极端情况下快速回收 failed）：
+   - Search replay（stable）：`backend/scripts/search_outbox_replay_failed.py`
+   - Chronicle replay（stable）：`backend/scripts/chronicle_outbox_replay_failed.py`
+   - ops shim（保留“肌肉记忆入口”，内部转发 stable）：`backend/scripts/ops/*_outbox_replay_failed.py`
+
+### 12.3 Step A：先开写（双写窗口；默认不影响线上读/worker）
+
+目的：先让 unified outbox 开始接收新事件，但 worker 仍按现状读 legacy（如果你还在 legacy 表读）。
+
+- 只开启写开关（以 Search 为例；Chronicle 同理）：
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic`
+  - `OUTBOX_UNIFIED_READ_ENABLED=`（空）
+
+窗口内要看两类事实源：
+
+- 指标（趋势正确即可）：
+  - API：`outbox_produced_total` 持续增长。
+  - worker：`outbox_failed_total` 不应陡增；`outbox_lag_events` 不应持续爬升。
+- DB（最准）：
+  - unified outbox backlog（按 projection）：
+    - `outbox_events where projection='search_index_to_elastic' and status in ('pending','processing')`
+    - `outbox_events where projection='chronicle_events_to_entries' and status in ('pending','processing')`
+  - 若你此时 worker 仍读 legacy：unified backlog 在短窗口内出现增长是预期的（它还没被 drain）。关键是：可控、可解释、可随时进入 Step B 切读。
+
+回滚（Step A）：
+
+- 关闭 `OUTBOX_UNIFIED_WRITE_ENABLED`（回到 legacy-only 写）。
+- 不需要动读开关（因为还没切读）。
+
+### 12.4 Step B：切读（worker 开始从 unified outbox claim）
+
+目的：把 worker 的 source 从 legacy outbox 切到 `outbox_events`，并验证 backlog 能被稳定 drain。
+
+- 开启读开关（通常同时保持写开关开启）：
+  - `OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+  - `OUTBOX_UNIFIED_READ_ENABLED=search_index_to_elastic,chronicle_events_to_entries`
+
+切读窗口内的硬验收（推荐按“窗口证据”，不强依赖固定时长）：
+
+- DB hard gate（按 projection）：
+  - `pending=0` 且 `processing=0` 能在窗口内反复回到 0（drain 有收敛）。
+  - `failed=0`（或 `failed` 仅在已知原因下可解释，且可被 replay 回收）。
+- worker 指标 hard gate：
+  - `outbox_lag_events` 不应持续单边上升；应围绕某个低水平波动或回落。
+  - `outbox_failed_total` 不应持续快速增长。
+
+回滚（Step B）：
+
+- 立即关闭 `OUTBOX_UNIFIED_READ_ENABLED`（worker 回到 legacy 读）。
+- 写开关可保持开启（继续双写），也可按止血需要关掉（回 legacy-only 写）。
+  - 若你保持双写：回滚后要接受 unified outbox 会继续积压，直到再次切读或做清理。
+
+### 12.5 Legacy 最小安全删除闭环（删除前条件 → 删除动作 → 回滚口径）
+
+> 核心原则：只有当“回滚已不再依赖 legacy outbox 表”时，才允许 drop legacy。
+
+删除前条件（建议全部满足）：
+
+1) `OUTBOX_UNIFIED_WRITE_ENABLED` 与 `OUTBOX_UNIFIED_READ_ENABLED` 在生产已稳定常开（对应 projection）。
+2) legacy outbox backlog=0（若 legacy 表仍在）：`pending/processing=0`，且观察窗内无回滚事件。
+3) unified outbox backlog=0（按 projection），并在窗口内多次 drain 收敛。
+4) 有可审计证据（固定 write-gate 6-pack + sustained window + 至少一次回滚演练）。
+
+删除动作（最小顺序）：
+
+1) 先删 DB legacy 表（Search / Chronicle 各自一项），再删 ORM，再删 legacy 脚本。
+2) 每一步都做 pre/post 固定回归包（write-gate 6-pack；必要时加 window sustained）。
+
+回滚口径（删除后）：
+
+- 回滚只能依赖 unified outbox（通过 `OUTBOX_UNIFIED_READ_ENABLED` 回切读路径，或 replay failed 回收），不能再依赖 legacy 表。
+
+Notes：
+
+- 具体“删除账本（ledger）与证据入账规则”以 S2B-6A 的 log 为准：`docs/logs/log-S2B-6A-unified-outbox-table-merge.md`。
+
 ## 11) References
 
 - Logs:
