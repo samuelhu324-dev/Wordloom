@@ -105,7 +105,8 @@
 
 ### P1（Worker Harness）
 
-- [ ] `P1-C1-S1`：实现通用 harness（可运行）
+- [x] `P1-C1-S1`：实现通用 harness（可运行）
+-     Impl: `backend/infra/projection_framework/harness.py` (`run_harness`)
 - [ ] `P1-C1-S2`：metrics/shared keys 对齐（projection/op/reason；run_id/worker_id）
 
 ### P2（Chronicle reference migration）
