@@ -53,6 +53,56 @@
 - 证据层面：
   - 若写路径影响 outbox 行为：按 S2B 口径跑最小回归包（N≥3 rounds，或等价的最小稳定性证明）。
 
+## P0（Writer contract｜v1）
+
+> 目标：把 Search / Chronicle 的“写 outbox”统一成同一套入参与字段映射；并约束 reason taxonomy / payload schema 的边界，避免低基数指标被污染。
+
+### Writer inputs → outbox_events（字段映射）
+
+- `projection` (str) → `OutboxEventModel.projection`
+  - 例：Search=`search_index_to_elastic`；Chronicle=`chronicle_events_to_entries`
+- `entity_type` (str) → `OutboxEventModel.entity_type`
+  - 例：Search/Index=`block|book|tag|...`（沿用现有 SearchIndexModel 口径）
+  - 例：Chronicle=`chronicle_event`
+- `entity_id` (UUID) → `OutboxEventModel.entity_id`
+  - Chronicle contract：`entity_id == chronicle_events.id`（consumer 以此回读 SoT）
+- `op` (str) → `OutboxEventModel.op`
+  - 允许集合（先按现状收敛）：`upsert|delete`
+  - Chronicle contract：仅 `upsert`
+- `event_version` (int) → `OutboxEventModel.event_version`
+  - 用于 claim 顺序稳定性（与 `created_at` 一起排序）
+  - Search：沿用 SearchIndexModel.event_version
+  - Chronicle：暂用 `0`（维持既有行为；后续如需严格排序再演进）
+
+### Scope keys（claim isolation）
+
+- `library_id` (UUID | None) → `OutboxEventModel.library_id`
+  - Search：若可得则写入（用于 allowlist / 隔离 claim）
+- `book_id` (UUID | None) → `OutboxEventModel.book_id`
+  - Chronicle：写入 `book_id`（用于 book-scoped claim / drills）
+
+### Trace propagation（分布式追踪）
+
+- Writer 必须尝试注入 trace context：
+  - `traceparent` → `OutboxEventModel.traceparent`
+  - `tracestate` → `OutboxEventModel.tracestate`
+
+### Payload（可选；边界明确）
+
+- `payload` (dict | None) → `OutboxEventModel.payload`
+- 约束：必须是 JSON object（表约束已硬 gate）；如使用必须包含 `schema_version: int`
+- 约束：payload 只承载“稳定 envelope/路由信息”，不复制大字段/全文/快照；业务 SoT 仍在主表中回读
+- 现状：Search/Chronicle 两条投影均允许 `payload=NULL`（保持现有 worker/adapter 语义不变）
+
+### Non-goals（writer 不负责写入）
+
+- 不写入：`processed_at/owner/lease_until/processing_started_at/attempts/next_retry_at/error_reason/error`（均由 worker/harness/outbox_core 生命周期负责）
+
+### Reason taxonomy boundary（避免指标基数爆炸）
+
+- Writer **不接受/不写入** `error_reason`（失败原因由 consumer 侧低基数分类产生，供 metrics 聚合）
+- 人工操作/审计原因（如 replay）仍允许写入 `last_replayed_reason`（free-text），但该字段不参与 metrics labels
+
 ## Numbering（编号约定）
 
 - `S<n>`：Step（步骤）。
@@ -87,8 +137,8 @@
 
 ### P0（Writer contract）
 
-- [ ] `P0-C1-S1`：定义 writer 输入与字段映射（projection/entity/op/scope/trace/payload）
-- [ ] `P0-C1-S2`：约束 reason taxonomy 与 payload schema（保持低基数可聚合）
+- [x] `P0-C1-S1`：定义 writer 输入与字段映射（projection/entity/op/scope/trace/payload）
+- [x] `P0-C1-S2`：约束 reason taxonomy 与 payload schema（保持低基数可聚合）
 
 ### P1（Writer template implementation）
 
