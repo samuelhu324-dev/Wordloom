@@ -5,7 +5,7 @@
 **id**: `S2C-4A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `projection drills template (minimal kit: verify/readiness/dual*/failures)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S2C`
 **tags**: `EVOLUTION, Projection, Platform, Framework, Drills, Catalog, Runner, epic/s2, sub/4`
 **links**: ``
@@ -63,10 +63,11 @@
   - `dual_run`：双跑一致性验证（如适用）
   - `failures`：故障注入/回放（如适用）
 
-- Catalog 约定（v1）：
-  - 每个 scenario 必须声明：`id/runner/requirements/outdir`（outdir 以 snapshot 约定为准）
-  - `requirements`（建议枚举）：`db`, `es`, `jaeger`
-  - 输出必须包含 `_result.json`（至少包含 `ok` 与关键计数/断言摘要）
+- Catalog 约定（v1，对齐现有 schema）：
+  - 每个 scenario 必须声明：`id/cli/requires/defaults/tags`（`aliases` 可选）
+  - `requires`（布尔映射，低基数）：`db/es/jaeger/worker`
+  - `tags`（最小三元组）：必须包含 `intent:*`、`pipeline:*`、`runtime:*`
+  - evidence 输出：必须产出 `_result.json` 或 snapshot bundle（artifacts 为 SoT）
 
 ## Plan（draft）
 
@@ -90,20 +91,28 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：定义 drills template v1（最小场景集合 + requirements + output 口径）
+- [x] `P0-C1-S1`：定义 drills template v1（最小场景集合 + requirements + output 口径）
 
 ### P1（Catalog template + guardrails）
 
-- [ ] `P1-C1-S1`：catalog 字段约定模板化 + guardrails 覆盖
+- [x] `P1-C1-S1`：catalog 字段约定模板化 + guardrails 覆盖
 
 ### P2（Runner auto-deps）
 
-- [ ] `P2-C1-S1`：reusable runner 按 requirements 自动起依赖
+- [x] `P2-C1-S1`：reusable runner 按 requirements 自动起依赖
 
 ### P3（Evidence）
 
-- [ ] `P3-C1-S1`：Actions run URL 级证据入账
+- [x] `P3-C1-S1`：Actions run URL 级证据入账
 
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + run URL + 关键参数。
+
+### P3-C1-S1（Actions｜drill-labs-scenario｜verify/chronicle/rebuild_entries_smoke）
+
+- headSha: `a877ceafaa21b004612bf4b7a2007c9662582927`
+- run_url: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22539384221`
+- workflow: `drill-labs-scenario` (workflow_dispatch)
+- scenario_id: `verify/chronicle/rebuild_entries_smoke` (db-only)
+- artifact: `labs-evidence-verify_chronicle_rebuild_entries_smoke-22539384221-1`

@@ -41,6 +41,10 @@ def _validate_catalog(catalog_path: Path) -> tuple[set[str], list[ValidationErro
     if not isinstance(catalog, dict):
         return set(), [ValidationError("catalog root must be a mapping")]
 
+    version = catalog.get("version")
+    if not isinstance(version, int) or version != 1:
+        errors.append(ValidationError("catalog.version must be integer 1"))
+
     scenarios = catalog.get("scenarios")
     if not isinstance(scenarios, list):
         return set(), [ValidationError("catalog must contain a 'scenarios' list")]
@@ -72,6 +76,45 @@ def _validate_catalog(catalog_path: Path) -> tuple[set[str], list[ValidationErro
         cli = item.get("cli")
         if not isinstance(cli, str) or not cli.strip():
             errors.append(ValidationError(f"scenario '{scenario_id}' must have non-empty 'cli'"))
+
+        requires = item.get("requires")
+        if not isinstance(requires, dict):
+            errors.append(ValidationError(f"scenario '{scenario_id}' must have a 'requires' mapping"))
+        else:
+            required_keys = {"db", "es", "jaeger", "worker"}
+            extra = set(requires.keys()) - required_keys
+            missing = required_keys - set(requires.keys())
+            if missing or extra:
+                errors.append(
+                    ValidationError(
+                        f"scenario '{scenario_id}' requires must contain exactly keys {sorted(required_keys)} (missing={sorted(missing)} extra={sorted(extra)})"
+                    )
+                )
+            for k in required_keys.intersection(requires.keys()):
+                v = requires.get(k)
+                if not isinstance(v, bool):
+                    errors.append(
+                        ValidationError(
+                            f"scenario '{scenario_id}' requires.{k} must be boolean, got: {type(v).__name__}"
+                        )
+                    )
+
+        defaults = item.get("defaults")
+        if not isinstance(defaults, dict):
+            errors.append(ValidationError(f"scenario '{scenario_id}' must have a 'defaults' mapping (can be empty)"))
+
+        tags = item.get("tags")
+        if not isinstance(tags, list) or not all(isinstance(t, str) and t.strip() for t in tags):
+            errors.append(ValidationError(f"scenario '{scenario_id}' tags must be a list of non-empty strings"))
+        else:
+            required_prefixes = ("intent:", "pipeline:", "runtime:")
+            for prefix in required_prefixes:
+                if not any(t.strip().startswith(prefix) for t in tags):
+                    errors.append(
+                        ValidationError(
+                            f"scenario '{scenario_id}' tags must include at least one '{prefix}*' tag"
+                        )
+                    )
 
         aliases = item.get("aliases")
         if aliases is None:

@@ -47,35 +47,137 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Start infra (DB/ES/Jaeger)
+      - name: Install YAML parser (PyYAML)
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install pyyaml
+
+      - name: Resolve scenario from catalog (cli + requires)
+        env:
+          SCENARIO_ID: ${{ inputs.scenario_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from __future__ import annotations
+
+          import os
+          from pathlib import Path
+          from typing import Any
+
+          import yaml
+
+          scenario_id = os.environ["SCENARIO_ID"]
+          github_env_path = os.environ.get("GITHUB_ENV")
+          if not github_env_path:
+            raise SystemExit("GITHUB_ENV not set")
+
+          catalog_path = Path("docs/labs/scenarios/catalog.yml")
+          if not catalog_path.exists():
+            raise SystemExit(f"catalog not found: {catalog_path}")
+
+          catalog = yaml.safe_load(catalog_path.read_text(encoding="utf-8"))
+          scenarios = catalog.get("scenarios")
+          if not isinstance(scenarios, list):
+            raise SystemExit("invalid catalog: missing scenarios list")
+
+          def matches(item: dict[str, Any]) -> bool:
+            if item.get("id") == scenario_id:
+              return True
+            aliases = item.get("aliases")
+            return isinstance(aliases, list) and scenario_id in aliases
+
+          entry = next((item for item in scenarios if isinstance(item, dict) and matches(item)), None)
+          if entry is None:
+            raise SystemExit(f"scenario not found in catalog: {scenario_id}")
+
+          cli = entry.get("cli")
+          if not isinstance(cli, str) or not cli.strip():
+            raise SystemExit(f"scenario has empty cli: {scenario_id}")
+
+          requires = entry.get("requires")
+          if not isinstance(requires, dict):
+            raise SystemExit(f"scenario has invalid requires (expected mapping): {scenario_id}")
+
+          def req_bool(key: str) -> bool:
+            v = requires.get(key)
+            if not isinstance(v, bool):
+              raise SystemExit(f"scenario requires.{key} must be boolean: {scenario_id}")
+            return v
+
+          req_db = req_bool("db")
+          req_es = req_bool("es")
+          req_jaeger = req_bool("jaeger")
+          req_worker = req_bool("worker")
+
+          tmp_dir = Path(".tmp")
+          tmp_dir.mkdir(parents=True, exist_ok=True)
+          script_path = tmp_dir / "scenario-cli.sh"
+          script_path.write_text(cli.strip() + "\n", encoding="utf-8", newline="\n")
+
+          def to_str(b: bool) -> str:
+            return "true" if b else "false"
+
+          env_lines = [
+            f"REQUIRES_DB={to_str(req_db)}",
+            f"REQUIRES_ES={to_str(req_es)}",
+            f"REQUIRES_JAEGER={to_str(req_jaeger)}",
+            f"REQUIRES_WORKER={to_str(req_worker)}",
+          ]
+          with open(github_env_path, "a", encoding="utf-8") as f:
+            for line in env_lines:
+              f.write(line + "\n")
+          print(f"Wrote {script_path}")
+          print("Exported: " + ", ".join(env_lines))
+          PY
+          chmod +x .tmp/scenario-cli.sh
+
+      - name: Start dependencies (auto; from requires)
         run: |
           set -euo pipefail
 
-          docker compose -f docker-compose.infra.yml up -d --wait
-          docker compose -f docker-compose.devtest-db.yml up -d --wait
+          echo "Requires: db=${REQUIRES_DB:-unset} es=${REQUIRES_ES:-unset} jaeger=${REQUIRES_JAEGER:-unset} worker=${REQUIRES_WORKER:-unset}"
 
-          echo "Waiting for Elasticsearch (http://localhost:19200)"
-          for i in $(seq 1 60); do
-            if curl -fsS http://localhost:19200 >/dev/null; then
-              echo "Elasticsearch is up"
-              break
+          if [ "${REQUIRES_DB:-false}" = "true" ]; then
+            docker compose -f docker-compose.devtest-db.yml up -d --wait
+
+            echo "Waiting for Postgres (wordloom_test)"
+            DB_CID="$(docker compose -f docker-compose.devtest-db.yml ps -q db_devtest)"
+            if [ -z "$DB_CID" ]; then
+              echo "db_devtest container not found" >&2
+              exit 2
             fi
-            sleep 2
-          done
-
-          echo "Waiting for Postgres (wordloom_test)"
-          DB_CID="$(docker compose -f docker-compose.devtest-db.yml ps -q db_devtest)"
-          if [ -z "$DB_CID" ]; then
-            echo "db_devtest container not found" >&2
-            exit 2
+            for i in $(seq 1 60); do
+              if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+                echo "Postgres is ready"
+                break
+              fi
+              sleep 2
+            done
           fi
-          for i in $(seq 1 60); do
-            if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
-              echo "Postgres is ready"
-              break
-            fi
-            sleep 2
-          done
+
+          infra_services=()
+          if [ "${REQUIRES_ES:-false}" = "true" ]; then
+            infra_services+=("es")
+          fi
+          if [ "${REQUIRES_JAEGER:-false}" = "true" ]; then
+            infra_services+=("jaeger")
+          fi
+
+          if [ "${#infra_services[@]}" -gt 0 ]; then
+            docker compose -f docker-compose.infra.yml up -d --wait "${infra_services[@]}"
+          fi
+
+          if [ "${REQUIRES_ES:-false}" = "true" ]; then
+            echo "Waiting for Elasticsearch (http://localhost:19200)"
+            for i in $(seq 1 60); do
+              if curl -fsS http://localhost:19200 >/dev/null; then
+                echo "Elasticsearch is up"
+                break
+              fi
+              sleep 2
+            done
+          fi
 
       - name: Install backend (+ YAML parser)
         run: |
@@ -90,7 +192,12 @@ jobs:
 
           # The runner executes Python on the host, while DB/ES/Jaeger run in docker
           # with localhost port-maps from docker-compose.*.yml.
-          cat > .env.test << 'EOF'
+          tracing_enabled=0
+          if [ "${REQUIRES_JAEGER:-false}" = "true" ]; then
+            tracing_enabled=1
+          fi
+
+          cat > .env.test << EOF
           WORDLOOM_ENV=test
           ENVIRONMENT=ci-test
           DEBUG=False
@@ -103,11 +210,16 @@ jobs:
           ELASTIC_URL=http://localhost:19200
           ELASTIC_INDEX=wordloom-test-search-index
 
-          WORDLOOM_TRACING_ENABLED=1
+          WORDLOOM_TRACING_ENABLED=${tracing_enabled}
+          EOF
+
+          if [ "$tracing_enabled" = "1" ]; then
+            cat >> .env.test << 'EOF'
           OTEL_TRACES_SAMPLER=always_on
           OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
           OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
           EOF
+          fi
 
       - name: Environment fingerprint (CI)
         run: |
@@ -170,55 +282,6 @@ jobs:
           source ../.env.test
           set +a
           python -m alembic -c alembic.ini upgrade head
-
-      - name: Resolve scenario CLI from catalog
-        env:
-          SCENARIO_ID: ${{ inputs.scenario_id }}
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from __future__ import annotations
-
-          import os
-          from pathlib import Path
-
-          import yaml
-
-          scenario_id = os.environ["SCENARIO_ID"]
-          catalog_path = Path("docs/labs/scenarios/catalog.yml")
-
-          if not catalog_path.exists():
-            raise SystemExit(f"catalog not found: {catalog_path}")
-
-          catalog = yaml.safe_load(catalog_path.read_text(encoding="utf-8"))
-          scenarios = catalog.get("scenarios")
-          if not isinstance(scenarios, list):
-            raise SystemExit("invalid catalog: missing scenarios list")
-
-          def matches(item: dict) -> bool:
-            if item.get("id") == scenario_id:
-              return True
-            aliases = item.get("aliases")
-            if isinstance(aliases, list) and scenario_id in aliases:
-              return True
-            return False
-
-          entry = next((item for item in scenarios if isinstance(item, dict) and matches(item)), None)
-          if entry is None:
-            raise SystemExit(f"scenario not found in catalog: {scenario_id}")
-
-          cli = entry.get("cli")
-          if not isinstance(cli, str) or not cli.strip():
-            raise SystemExit(f"scenario has empty cli: {scenario_id}")
-
-          tmp_dir = Path(".tmp")
-          tmp_dir.mkdir(parents=True, exist_ok=True)
-          script_path = tmp_dir / "scenario-cli.sh"
-
-          script_path.write_text(cli.strip() + "\n", encoding="utf-8", newline="\n")
-          print(f"Wrote {script_path}")
-          PY
-          chmod +x .tmp/scenario-cli.sh
 
       - name: Run scenario (catalog-driven)
         env:
