@@ -1,0 +1,110 @@
+# log-S2C-2A-projection-writer-template（Writer Template：统一 enqueue / trace / scope keys）
+
+---
+
+**id**: `S2C-2A`
+**kind**: `log`               # log | lab | runbook | adr | note
+**title**: `projection writer template (unified enqueue for Search+Chronicle)`
+**status**: `draft`           # draft | stable | archived
+**scope**: `S2C`
+**tags**: `EVOLUTION, Projection, Platform, Framework, Outbox, Writer, Search, Chronicle, epic/s2, sub/2`
+**links**: ``
+  **issue**: ``
+  **pr**: ``
+  **adr**: ``
+  **runbook**: ``
+  **parent_log**: `docs/logs/log-S2C-projection-framework-platformization.md`
+  **reference_log**: `docs/logs/log-S2B-3A-unified-consumer-framework.md` # outbox_core baseline
+  **previous_log**: `docs/logs/log-S2C-1A-projection-spec-registry-harness.md`
+**created**: `2026-03-01`
+**updated**: `2026-03-01`
+
+---
+
+## Decision / Outcome（结论区）
+
+**Decision**:
+
+- 本切片交付 Phase 3（Writer Template）：把 “写 outbox（enqueue）” 的共性抽成可复用的模板能力，避免每个 projection 手写 enqueue、scope keys、reason taxonomy 与 trace 注入，从而降低新增/迁移投影的工程成本与语义漂移风险。
+
+**What this unlocks**:
+
+- Search / Chronicle 的写路径统一后，后续的 harness cutover、rebuild/backfill、drills template 会更容易标准化（且改动面可控）。
+
+## Constraints（约束）
+
+- 不改变 artifacts contract：drills 证据结构不变。
+- 不引入新的对外入口：现有 stable scripts/workflows 不随意改名；如需迁移，优先 shim。
+- 本切片不做 Search harness migration（DB→ES）：只做 writer 侧模板化与写路径切换。
+
+## Scope（本 log 范围）
+
+- `P0`：Writer contract（定义“平台承诺的 enqueue 语义”）
+- `P1`：Writer template（实现通用 enqueue repo / helper）
+- `P2`：Migrations（把 Search/Chronicle 写路径切到 writer template，事务语义不变）
+- `P3`：Evidence（按 S2B 口径补齐最小证据）
+
+## Success Criteria（DoD）
+
+- 代码层面：
+  - Search/Chronicle 写 outbox 不再各自拼装 payload / reason / scope keys；统一走同一套 writer API。
+  - 事务边界与幂等语义不回退（仍由既有 outbox_core + DB 约束兜底）。
+
+- 证据层面：
+  - 若写路径影响 outbox 行为：按 S2B 口径跑最小回归包（N≥3 rounds，或等价的最小稳定性证明）。
+
+## Numbering（编号约定）
+
+- `S<n>`：Step（步骤）。
+- `C<n>`：Cycle（循环轮次）。同一切片需要“修复后重跑一轮”时才递增。
+
+**Commit / PR 命名**:
+
+- `S2C-2A/P<phase>-C<cycle>-S<step>: <summary>`
+
+## Plan（draft）
+
+### P0（Writer contract）
+
+- P0-S1：明确 writer 输入（projection/entity/op/scope/trace/payload）与 outbox 侧字段映射
+- P0-S2：明确 reason taxonomy 与 payload schema 边界（不扩大基数）
+
+### P1（Writer template implementation）
+
+- P1-S1：落一个通用 writer repo（enqueue API + 结构化日志）
+- P1-S2：对齐 shared keys（run_id/worker_id/projection）与 outbox_metrics labels
+
+### P2（Migrations）
+
+- P2-S1：Chronicle 写路径切到 writer template（保持事务语义不变）
+- P2-S2：Search 写路径切到 writer template（保持事务语义不变）
+
+### P3（Evidence）
+
+- P3-S1：跑最小证据包并入账（根据改动影响决定 N≥3）
+
+## Execution Checklist（unchecked）
+
+### P0（Writer contract）
+
+- [ ] `P0-C1-S1`：定义 writer 输入与字段映射（projection/entity/op/scope/trace/payload）
+- [ ] `P0-C1-S2`：约束 reason taxonomy 与 payload schema（保持低基数可聚合）
+
+### P1（Writer template implementation）
+
+- [ ] `P1-C1-S1`：实现 writer template（enqueue API + structured logs）
+- [ ] `P1-C1-S2`：对齐 metrics/shared keys（projection/op/reason；run_id/worker_id）
+
+### P2（Migrations）
+
+- [ ] `P2-C1-S1`：Chronicle 写 outbox 切换到 writer template（事务语义不变）
+- [ ] `P2-C1-S2`：Search 写 outbox 切换到 writer template（事务语义不变）
+
+### P3（Evidence）
+
+- [ ] `P3-C1-S1`：跑 drills 并入账 evidence（按 S2B 口径补齐最小回归包）
+
+## Evidence（预留）
+
+- Evidence 以 artifacts 为事实源；本 log 记录：headSha + run URL + 关键参数。
+- 本切片完成后，将在此追加至少一条与 writer 变更相关的 drills 证据记录。
