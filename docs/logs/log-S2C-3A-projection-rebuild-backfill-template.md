@@ -5,7 +5,7 @@
 **id**: `S2C-3A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `projection rebuild/backfill template + catalog-driven drills automation`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S2C`
 **tags**: `EVOLUTION, Projection, Platform, Framework, Outbox, Rebuild, Backfill, Drills, Catalog, epic/s2, sub/3`
 **links**: ``
