@@ -112,7 +112,9 @@
 
 ### P2（Chronicle reference migration）
 
-- [ ] `P2-C1-S1`：Chronicle adapter（events→entries apply）
+- [x] `P2-C1-S1`：Chronicle adapter（events→entries apply）
+-     Impl: `backend/infra/projection_framework/adapters/chronicle_events_to_entries.py` (`apply`)
+-     Wiring: `backend/infra/projection_framework/builtins.py` (chronicle spec apply_entrypoint)
 - [ ] `P2-C1-S2`：Chronicle worker 改为 harness 驱动（stable entrypoint 不变）
 - [ ] `P2-C1-S3`：drills 证据入账（至少 1 轮；必要时 N≥3）
 

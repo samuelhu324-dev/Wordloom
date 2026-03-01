@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import FrozenSet, Tuple
 
+from .adapters.chronicle_events_to_entries import apply as chronicle_events_to_entries_apply
 from .registry import get_spec, register
 from .spec import ProjectionSpec
 
@@ -29,7 +30,7 @@ def register_builtin_specs() -> None:
             scope_keys=("book_id",),
             requires=frozenset({"db"}),
             payload_schema_version=1,
-            apply_entrypoint=_stub_apply_factory(projection_name="chronicle_events_to_entries"),
+            apply_entrypoint=chronicle_events_to_entries_apply,
         ),
     )
 
