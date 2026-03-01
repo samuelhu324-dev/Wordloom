@@ -90,9 +90,10 @@
 ### Payload（可选；边界明确）
 
 - `payload` (dict | None) → `OutboxEventModel.payload`
-- 约束：必须是 JSON object（表约束已硬 gate）；如使用必须包含 `schema_version: int`
+- 约束：必须是 JSON object（表约束已硬 gate）
+- 约束：若调用方传入非空 payload，则必须包含 `schema_version: int`
 - 约束：payload 只承载“稳定 envelope/路由信息”，不复制大字段/全文/快照；业务 SoT 仍在主表中回读
-- 现状：Search/Chronicle 两条投影均允许 `payload=NULL`（保持现有 worker/adapter 语义不变）
+- Writer 模板行为：当调用方未传 payload 时，writer 会写入 `{}`（避免 `NULL` 触发 DB check constraint）
 
 ### Non-goals（writer 不负责写入）
 
@@ -160,9 +161,44 @@
 
 ### P3（Evidence）
 
-- [ ] `P3-C1-S1`：跑 drills 并入账 evidence（按 S2B 口径补齐最小回归包）
+- [x] `P3-C1-S1`：跑 drills 并入账 evidence（按 S2B 口径补齐最小回归包）
+
+#### Evidence approach & trade-offs（记账）
+
+- 选择：按 “harness 路线” 跑 N≥3 rounds，但对两个投影采用不同证据闭环：
+  - `chronicle_events_to_entries`：harness 实际消费（claim/apply/mark）+ DB verify，N≥3 rounds
+  - `search_index_to_elastic`：仅验证 writer enqueue（outbox 行写入）+ DB verify，N≥3 rounds
+    - 原因：本切片明确 deferred Search harness migration（DB→ES），且 builtin apply 仍为 stub；不把 ES/worker 作为 P3 前置依赖
+
+- Why harness（优点）：
+  - 直接覆盖 outbox lifecycle（claim → apply → mark_done/mark_retry/mark_failed → reclaim/sanitize），最贴近本切片的风险面（writer 模板化后 consumer/harness 语义不回退）。
+  - 依赖更少：通常只需要 DB（不强依赖 ES / API 服务全量启动），成本/波动更可控。
+  - 产物稳定：复用既有 artifacts contract，便于与 S2B 证据节奏对齐。
+
+- Not chosen（为何不做/不作为本切片主证据）：
+  - “写路径触发回归”（先制造 SoT 变更再消费）：更接近端到端，但依赖更多组件（API/seed 脚本/可能 ES），容易把本切片范围拉大；如需补强，可作为附加 1 次性验证而非 N≥3 主包。
+  - dual-write/sampling/shadow-verify：更偏迁移对账阶段；本切片明确 deferred Search harness migration（DB→ES），不把该类证据纳入 P3 主闭环。
 
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + run URL + 关键参数。
-- 本切片完成后，将在此追加至少一条与 writer 变更相关的 drills 证据记录。
+
+### P3-C1-S1（N=3 rounds；harness-based + artifacts SoT）
+
+- headSha: `678dec9d507c0fb87da7a6b84a024118eca9bc6f`
+- DB: `postgresql://wordloom:wordloom@localhost:5435/wordloom_dev`（devtest-db 5435）
+- Runner: `backend/scripts/labs/s2c2a_writer_template_harness_evidence.py`
+- Rounds (artifacts):
+  - `artifacts/_tmp_s2c2a_p3_round1/_result.json`
+  - `artifacts/_tmp_s2c2a_p3_round2/_result.json`
+  - `artifacts/_tmp_s2c2a_p3_round3/_result.json`
+
+**What this evidence covers**:
+
+- Chronicle：`SQLAlchemyChronicleRepository.save()` → `OutboxWriter.enqueue()` → harness 消费 `chronicle_events_to_entries` → 生成 `chronicle_entries`（DB verify）
+- Search：`SearchOutboxRepository.enqueue()` → `OutboxWriter.enqueue()` → 写入 `outbox_events` pending 行（DB verify；不跑 ES/harness apply）
+
+**Fix discovered during evidence**:
+
+- `outbox_events.payload` 有 `ck_outbox_events_payload_object` 约束要求 payload 为 JSON object；
+  证据跑中发现 writer 在 payload 省略时写入 `NULL` 会违反约束；已修复为默认写 `{}`。

@@ -87,7 +87,7 @@ class OutboxWriter:
                 entity_id=entity_id,
                 op=str(op),
                 event_version=int(event_version),
-                payload=(dict(payload) if payload is not None else None),
+                payload=(dict(payload) if payload is not None else {}),
                 library_id=library_id,
                 book_id=book_id,
                 traceparent=traceparent,
