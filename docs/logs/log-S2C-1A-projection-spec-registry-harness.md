@@ -16,7 +16,7 @@
   **parent_log**: `docs/logs/log-S2C-projection-framework-platformization.md`
   **reference_log**: `docs/logs/log-S2B-3A-unified-consumer-framework.md` # outbox_core baseline
 **created**: `2026-02-28`
-**updated**: `2026-02-28`
+**updated**: `2026-03-01`
 
 ---
 
@@ -107,7 +107,8 @@
 
 - [x] `P1-C1-S1`：实现通用 harness（可运行）
 -     Impl: `backend/infra/projection_framework/harness.py` (`run_harness`)
-- [ ] `P1-C1-S2`：metrics/shared keys 对齐（projection/op/reason；run_id/worker_id）
+- [x] `P1-C1-S2`：metrics/shared keys 对齐（projection/op/reason；run_id/worker_id）
+-     Impl: `backend/infra/projection_framework/harness.py` (outbox_* counters + structured logs)
 
 ### P2（Chronicle reference migration）
 

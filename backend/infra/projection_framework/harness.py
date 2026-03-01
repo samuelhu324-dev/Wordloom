@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import logging
 import os
 import socket
+import sys
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
@@ -11,6 +14,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from infra.database.models.outbox_event_models import OutboxEventModel
 from infra.database.session import get_session_factory
+from infra.observability.outbox_metrics import (
+    outbox_failed_total,
+    outbox_last_success_timestamp_seconds,
+    outbox_processed_total,
+    outbox_retry_scheduled_total,
+    outbox_terminal_failed_total,
+)
 from infra.outbox_core.claim import claim_pending_batch
 from infra.outbox_core.lease import renew_lease
 from infra.outbox_core.mark import mark_done, mark_failed, mark_retry
@@ -20,6 +30,9 @@ from infra.outbox_core.retry import ExponentialBackoffSpec, compute_next_retry_a
 from infra.outbox_core.sanitize import sanitize_terminal_rows
 from infra.projection_framework.builtins import register_builtin_specs
 from infra.projection_framework.registry import get_spec
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -63,6 +76,19 @@ def _default_worker_id() -> str:
     return f"{socket.gethostname()}:{os.getpid()}"
 
 
+def _default_run_id() -> str:
+    # Shared key used across labs & scripts.
+    run_id = (os.getenv("RUN_ID") or "").strip()
+    return run_id or "local"
+
+
+@dataclass(frozen=True)
+class ProcessOutcome:
+    outcome: str  # done | retry | terminal_failed
+    op: str
+    reason: str
+
+
 async def _process_one(
     session: AsyncSession,
     *,
@@ -71,9 +97,10 @@ async def _process_one(
     ev: OutboxEventModel,
     max_attempts: int,
     backoff: ExponentialBackoffSpec,
-) -> None:
+) -> ProcessOutcome:
     now = datetime.now(timezone.utc)
     attempts = int(getattr(ev, "attempts", 0) or 0) + 1
+    op = str(getattr(ev, "op", "unknown"))
 
     try:
         spec = get_spec(spec_name)
@@ -82,17 +109,32 @@ async def _process_one(
         if asyncio.iscoroutine(maybe_awaitable):
             await maybe_awaitable
     except NotImplementedError as exc:
+        reason = "apply_not_wired"
         await mark_failed(
             session,
             OutboxEventModel,
             ev_id=ev.id,
-            reason="apply_not_wired",
+            reason=reason,
             error=str(exc),
             attempts=attempts,
             now=now,
         )
         await session.commit()
-        return
+        outbox_terminal_failed_total.labels(projection=spec_name, op=op, reason=reason).inc()
+        outbox_failed_total.labels(projection=spec_name, op=op, reason=reason).inc()
+        logger.warning(
+            {
+                "event": "projection.process_one",
+                "layer": "worker",
+                "projection": spec_name,
+                "worker_id": worker_id,
+                "outbox_id": str(ev.id),
+                "op": op,
+                "result": "terminal_failed",
+                "reason": reason,
+            }
+        )
+        return ProcessOutcome(outcome="terminal_failed", op=op, reason=reason)
     except Exception as exc:
         reason, retryable = classify_exception_reason(exc)
         if retryable and attempts < int(max_attempts):
@@ -108,7 +150,22 @@ async def _process_one(
                 now=now,
             )
             await session.commit()
-            return
+            outbox_retry_scheduled_total.labels(projection=spec_name, op=op, reason=reason).inc()
+            outbox_failed_total.labels(projection=spec_name, op=op, reason=reason).inc()
+            logger.warning(
+                {
+                    "event": "projection.process_one",
+                    "layer": "worker",
+                    "projection": spec_name,
+                    "worker_id": worker_id,
+                    "outbox_id": str(ev.id),
+                    "op": op,
+                    "result": "retry_scheduled",
+                    "reason": reason,
+                    "attempts": int(attempts),
+                }
+            )
+            return ProcessOutcome(outcome="retry", op=op, reason=reason)
 
         await mark_failed(
             session,
@@ -120,10 +177,28 @@ async def _process_one(
             now=now,
         )
         await session.commit()
-        return
+        outbox_terminal_failed_total.labels(projection=spec_name, op=op, reason=reason).inc()
+        outbox_failed_total.labels(projection=spec_name, op=op, reason=reason).inc()
+        logger.warning(
+            {
+                "event": "projection.process_one",
+                "layer": "worker",
+                "projection": spec_name,
+                "worker_id": worker_id,
+                "outbox_id": str(ev.id),
+                "op": op,
+                "result": "terminal_failed",
+                "reason": reason,
+                "attempts": int(attempts),
+            }
+        )
+        return ProcessOutcome(outcome="terminal_failed", op=op, reason=reason)
 
     await mark_done(session, OutboxEventModel, ev_id=ev.id, worker_id=worker_id, now=now)
     await session.commit()
+    outbox_processed_total.labels(projection=spec_name, op=op).inc()
+    outbox_last_success_timestamp_seconds.labels(projection=spec_name).set(now.timestamp())
+    return ProcessOutcome(outcome="done", op=op, reason="")
 
 
 async def run_harness(*, projection_name: str, config: HarnessConfig) -> int:
@@ -133,6 +208,7 @@ async def run_harness(*, projection_name: str, config: HarnessConfig) -> int:
         raise ValueError("batch_size must be > 0")
 
     worker_id = _default_worker_id()
+    run_id = _default_run_id()
 
     register_builtin_specs()
     get_spec(projection_name)  # validate registered
@@ -143,6 +219,20 @@ async def run_harness(*, projection_name: str, config: HarnessConfig) -> int:
     )
 
     session_factory = await get_session_factory()
+
+    logger.info(
+        {
+            "event": "projection.harness.start",
+            "layer": "worker",
+            "projection": projection_name,
+            "worker_id": worker_id,
+            "run_id": run_id,
+            "pid": int(os.getpid()),
+            "batch_size": int(config.batch_size),
+            "lease_seconds": float(config.lease_seconds),
+            "max_attempts": int(config.max_attempts),
+        }
+    )
 
     last_reclaim = 0.0
     loop = asyncio.get_running_loop()
@@ -200,8 +290,12 @@ async def run_harness(*, projection_name: str, config: HarnessConfig) -> int:
             )
             await session.commit()
 
+            batch_started = time.monotonic()
+            done_n = 0
+            retry_n = 0
+            terminal_failed_n = 0
             for ev in claimed:
-                await _process_one(
+                outcome = await _process_one(
                     session,
                     worker_id=worker_id,
                     spec_name=projection_name,
@@ -209,6 +303,27 @@ async def run_harness(*, projection_name: str, config: HarnessConfig) -> int:
                     max_attempts=int(config.max_attempts),
                     backoff=backoff,
                 )
+                if outcome.outcome == "done":
+                    done_n += 1
+                elif outcome.outcome == "retry":
+                    retry_n += 1
+                else:
+                    terminal_failed_n += 1
+
+            logger.info(
+                {
+                    "event": "projection.process_batch",
+                    "layer": "worker",
+                    "projection": projection_name,
+                    "worker_id": worker_id,
+                    "run_id": run_id,
+                    "claimed": int(len(claimed)),
+                    "done": int(done_n),
+                    "retry_scheduled": int(retry_n),
+                    "terminal_failed": int(terminal_failed_n),
+                    "duration_ms": int((time.monotonic() - batch_started) * 1000.0),
+                }
+            )
 
 
 def _parse_args() -> tuple[str, HarnessConfig]:
@@ -235,6 +350,32 @@ def _parse_args() -> tuple[str, HarnessConfig]:
 
 
 def main() -> None:
+    # psycopg async cannot run on ProactorEventLoop. Force Selector policy on Windows.
+    if sys.platform.startswith("win"):
+        try:
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        except Exception:
+            pass
+
+    # Match logging format with existing workers.
+    try:
+        from api.app.config.logging_config import setup_logging
+
+        setup_logging()
+    except Exception:
+        logging.basicConfig(level=logging.INFO)
+
+    # Expose Prometheus metrics for this worker process (optional).
+    metrics_port_raw = (os.getenv("OUTBOX_METRICS_PORT") or "").strip()
+    if metrics_port_raw:
+        try:
+            from prometheus_client import start_http_server
+
+            start_http_server(int(metrics_port_raw))
+            logger.info({"event": "projection.metrics.start", "port": int(metrics_port_raw)})
+        except Exception:
+            logger.exception("Failed to start Prometheus metrics server")
+
     projection_name, config = _parse_args()
     asyncio.run(run_harness(projection_name=projection_name, config=config))
 
