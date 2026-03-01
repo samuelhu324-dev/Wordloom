@@ -117,14 +117,14 @@
 
 ### P1（Rebuild template implementation）
 
-- [ ] `P1-C1-S1`：实现通用 rebuild runner（DB-only 可跑）
-- [ ] `P1-C1-S2`：Chronicle rebuild 迁移到 template（入口稳定；必要时 shim）
+- [x] `P1-C1-S1`：实现通用 rebuild runner（DB-only 可跑）
+- [x] `P1-C1-S2`：Chronicle rebuild 迁移到 template（入口稳定；必要时 shim）
 
 ### P2（Drills/Catalog automation）
 
-- [ ] `P2-C1-S1`：writer template evidence 纳入 catalog（Actions runner 可复用）
+- [x] `P2-C1-S1`：writer template evidence 纳入 catalog（Actions runner 可复用）
 - [ ] `P2-C1-S2`：rebuild smoke 场景纳入 catalog
-- [ ] `P2-C1-S3`：CI workflow（可选）
+- [x] `P2-C1-S3`：CI workflow（可选）
 
 ### P3（Evidence）
 
@@ -134,3 +134,12 @@
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + run URL + 关键参数。
 - 本切片完成后，在此追加至少一条 rebuild/backfill 或 catalog-automation 相关的证据记录。
+
+## Execution Notes（变更记账）
+
+- `P2-C1-S1`（catalog 接入）已在 commit `81e09f93` 完成：新增 writer evidence scenario 并通过 guardrails。
+- `P1-C1-S1/S2`（rebuild runner template + Chronicle 收敛）在 commit `652339cc` 完成：
+  - 新增：`backend/infra/projection_framework/rebuild_template.py`
+  - 迁移：`backend/scripts/legacy/rebuild_chronicle_entries.py` 统一使用 runner（status + metrics），保持现有 flags/行为
+  - stable 入口保持：`backend/scripts/ops/rebuild_chronicle_entries.py` 仍作为 shim
+- `P2-C1-S3`（workflow 入口）：新增一个 workflow_dispatch 入口复用 `reusable-labs-scenario-runner.yml`（见 `.github/workflows/drill-labs-scenario.yml`）

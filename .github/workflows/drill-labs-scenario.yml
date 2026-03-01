@@ -1,0 +1,40 @@
+name: drill-labs-scenario
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario_id:
+        description: "Labs scenario id (catalog-driven)"
+        required: true
+        type: string
+        default: verify/outbox/writer_template_harness_evidence
+      env_file:
+        description: "Env file path"
+        required: true
+        default: ".env.test"
+        type: string
+      duration:
+        description: "Run duration (seconds)"
+        required: true
+        default: "25"
+        type: string
+      lookback:
+        description: "Jaeger lookback (e.g. 10m, 1h)"
+        required: true
+        default: "30m"
+        type: string
+      keep_last:
+        description: "How many snapshots to keep"
+        required: true
+        default: "20"
+        type: string
+
+jobs:
+  drill:
+    uses: ./.github/workflows/reusable-labs-scenario-runner.yml
+    with:
+      scenario_id: ${{ inputs.scenario_id }}
+      env_file: ${{ inputs.env_file }}
+      duration: ${{ inputs.duration }}
+      lookback: ${{ inputs.lookback }}
+      keep_last: ${{ inputs.keep_last }}
