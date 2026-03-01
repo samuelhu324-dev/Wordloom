@@ -1,0 +1,22 @@
+{
+  "lab_id": "S2C-2A",
+  "scenario": "s2c2a_writer_template_harness_evidence",
+  "run_id": "s2c2a-p3-round2",
+  "created_at": "2026-03-01 14:57:00",
+  "ok": true,
+  "database_url": "postgresql://wordloom:wordloom@localhost:5435/wordloom_dev",
+  "chronicle": {
+    "book_id": "9b326735-1785-4a7b-878d-7aa90f25bcca",
+    "library_id": "7137e6a8-0c43-4cb8-a29d-a69ee9ec0f9e",
+    "chronicle_event_id": "3c15891a-daa9-494f-8c98-502c1c7c3216",
+    "entries_for_event": 1,
+    "outbox_rows_for_event": 1,
+    "harness_exit_code": 0
+  },
+  "search_outbox": {
+    "entity_type": "book",
+    "entity_id": "df32f252-89dd-4c6e-837e-92cbf3670138",
+    "outbox_id": "25856055-af5a-455c-8668-46279e1a24c7",
+    "status": "pending"
+  }
+}

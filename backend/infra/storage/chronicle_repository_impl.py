@@ -11,10 +11,10 @@ SQLAlchemy Adapter 实现 ChronicleRepositoryPort。
 """
 
 from dataclasses import replace
-from typing import Optional, Sequence, Tuple, List
-from uuid import UUID, uuid4
 from datetime import datetime
 import os
+from typing import List, Optional, Sequence, Tuple
+from uuid import UUID
 
 import sqlalchemy as sa
 from sqlalchemy import select, func, desc, asc, and_, cast
@@ -28,7 +28,7 @@ from api.app.modules.chronicle.domain import (
 )
 from api.app.modules.chronicle.exceptions import ChronicleRepositoryError
 from infra.database.models import ChronicleEventModel, ChronicleEventDedupeStateModel
-from infra.database.models.outbox_event_models import OutboxEventModel
+from infra.outbox_unified.writer import OutboxWriter
 
 
 def _get_block_updated_dedupe_window_seconds() -> int:
@@ -143,32 +143,14 @@ class SQLAlchemyChronicleRepository(ChronicleRepositoryPort):
 
             # In the same transaction: enqueue outbox event for async projection.
             # Idempotency: entity_id is chronicle_event_id; worker upserts chronicle_entries.
-            traceparent = None
-            tracestate = None
-            try:
-                from infra.observability.tracing import inject_trace_context
-
-                traceparent, tracestate = inject_trace_context()
-            except Exception:
-                traceparent, tracestate = None, None
-
-            outbox_id = uuid4()
-            projection = "chronicle_events_to_entries"
-            unified_row = OutboxEventModel(
-                id=outbox_id,
-                projection=projection,
+            await OutboxWriter(self._session).enqueue(
+                projection="chronicle_events_to_entries",
                 entity_type="chronicle_event",
                 entity_id=event.id,
                 op="upsert",
                 event_version=0,
-                status="pending",
-                attempts=0,
-                replay_count=0,
-                traceparent=traceparent,
-                tracestate=tracestate,
                 book_id=event.book_id,
             )
-            self._session.add(unified_row)
 
             await self._session.commit()
             await self._session.refresh(model)

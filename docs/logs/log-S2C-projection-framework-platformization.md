@@ -16,8 +16,9 @@
   **roadmap**: `docs/ROADMAP.md`
   **sibling_log**: `docs/logs/log-S2B-projection-table-merge.md` # Route B outcome that unlocks Route A
   **child_log_1**: `docs/logs/log-S2C-1A-projection-spec-registry-harness.md`
+  **child_log_2**: `docs/logs/log-S2C-2A-projection-writer-template.md`
 **created**: `2026-02-28`
-**updated**: `2026-02-28`
+**updated**: `2026-03-01`
 
 ---
 
@@ -47,6 +48,7 @@
   - Phase 3：Writer Template（统一 enqueue / trace 注入 / scope keys）
   - Phase 4：Rebuild/Backfill Template（统一 rebuild bookkeeping + metrics + runbook 口径）
   - Phase 5：Drills Template（新增投影时的最小 drills 套餐与 catalog 规则）
+  - Phase 6（deferred）：Search harness migration（DB→ES；后续切片单独交付）
 
 **Constraints（硬约束）**:
 
@@ -68,18 +70,18 @@
 
 ### P0（基线与边界：明确平台化的“最小接口”）
 
-- [ ] 明确 `ProjectionSpec` 最小字段：projection_name/scope_keys/requires/payload_schema/apply
-- [ ] 明确“平台负责什么/不负责什么”（Non-goals）：不强行统一业务数据结构；只统一 outbox 语义与运维契约
+- [x] 明确 `ProjectionSpec` 最小字段：projection_name/scope_keys/requires/payload_schema/apply
+- [x] 明确“平台负责什么/不负责什么”（Non-goals）：不强行统一业务数据结构；只统一 outbox 语义与运维契约
 
 ### P1（Phase 1：Spec/Registry）
 
-- [ ] 定义 `ProjectionSpec` 数据结构与注册表入口（能枚举所有投影）
-- [ ] 把现有两条投影（Search/Chronicle）登记进 registry（先不改行为）
+- [x] 定义 `ProjectionSpec` 数据结构与注册表入口（能枚举所有投影）
+- [x] 把现有两条投影（Search/Chronicle）登记进 registry（先不改行为）
 
 ### P2（Phase 2：Worker Harness）
 
-- [ ] 实现通用 worker 主循环：claim → apply → mark_done/mark_retry/mark_failed → reclaim/sanitize/metrics
-- [ ] 选 Chronicle 作为 reference：将其 worker 迁移为 harness + adapter（保留 stable entrypoint）
+- [x] 实现通用 worker 主循环：claim → apply → mark_done/mark_retry/mark_failed → reclaim/sanitize/metrics
+- [x] 选 Chronicle 作为 reference：将其 worker 迁移为 harness + adapter（保留 stable entrypoint）
 
 ### P3（Phase 3：Writer Template）
 
@@ -95,6 +97,10 @@
 
 - [ ] 为“新增投影”定义最小 drills 套餐（verify/readiness/dual_write/dual_run/failures）
 - [ ] 在 catalog 增加模板化 tags/requirements，runner 自动起依赖（db/es/jaeger）
+
+### P6（Phase 6：Search harness migration｜deferred）
+
+- [ ] 将 Search（DB→ES）以独立切片迁移到 harness（不与 writer/rebuild/drills 混交付）
 
 ## Evidence（证据与 SoT 规则）
 
