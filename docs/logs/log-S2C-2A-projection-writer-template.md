@@ -142,7 +142,10 @@
 
 ### P1（Writer template implementation）
 
-- [ ] `P1-C1-S1`：实现 writer template（enqueue API + structured logs）
+- [x] `P1-C1-S1`：实现 writer template（enqueue API + structured logs）
+-     Impl: `backend/infra/outbox_unified/writer.py` (`OutboxWriter.enqueue`)
+-     Migrate: `backend/infra/search/search_outbox_repository.py` (delegate -> OutboxWriter)
+-     Migrate: `backend/infra/storage/chronicle_repository_impl.py` (delegate -> OutboxWriter)
 - [ ] `P1-C1-S2`：对齐 metrics/shared keys（projection/op/reason；run_id/worker_id）
 
 ### P2（Migrations）
