@@ -152,8 +152,11 @@
 
 ### P2（Migrations）
 
-- [ ] `P2-C1-S1`：Chronicle 写 outbox 切换到 writer template（事务语义不变）
-- [ ] `P2-C1-S2`：Search 写 outbox 切换到 writer template（事务语义不变）
+- [x] `P2-C1-S1`：Chronicle 写 outbox 切换到 writer template（事务语义不变）
+  Confirm: `SQLAlchemyChronicleRepository.save` -> `OutboxWriter.enqueue` (same `AsyncSession`; writer does not commit)
+- [x] `P2-C1-S2`：Search 写 outbox 切换到 writer template（事务语义不变）
+  Confirm: `PostgresSearchIndexer` -> `SearchOutboxRepository.enqueue` -> `OutboxWriter.enqueue` (same `AsyncSession`; writer does not commit)
+  Verify: `py_compile` OK for migration-related modules; static scan confirms production write paths delegate to writer (legacy `backend/scripts/legacy/*` direct inserts are out of scope)
 
 ### P3（Evidence）
 
