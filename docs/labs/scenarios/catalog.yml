@@ -91,6 +91,26 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_only
 
+  - id: verify/outbox/writer_template_harness_evidence
+    aliases:
+      - s2c2a_writer_template_harness_evidence
+    cli: >-
+      python backend/scripts/labs/s2c2a_writer_template_harness_evidence.py
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "docs/labs/_snapshot/auto/s2c2a_writer_template_harness_evidence/${RUN_ID}"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - intent:verify
+      - pipeline:outbox
+      - runtime:db_only
+      - s2c:s2c2a
+
   - id: rehearsal/chronicle/envelope_backfill_small_window
     aliases:
       - rehearsal_chronicle_entries_envelope_backfill

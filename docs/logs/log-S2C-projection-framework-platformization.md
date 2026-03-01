@@ -17,6 +17,7 @@
   **sibling_log**: `docs/logs/log-S2B-projection-table-merge.md` # Route B outcome that unlocks Route A
   **child_log_1**: `docs/logs/log-S2C-1A-projection-spec-registry-harness.md`
   **child_log_2**: `docs/logs/log-S2C-2A-projection-writer-template.md`
+  **child_log_3**: `docs/logs/log-S2C-3A-projection-rebuild-backfill-template.md`
 **created**: `2026-02-28`
 **updated**: `2026-03-01`
 
@@ -85,8 +86,8 @@
 
 ### P3（Phase 3：Writer Template）
 
-- [ ] 统一 outbox enqueue（投影/实体/op/scope/trace 注入）为通用 repo
-- [ ] 把 Search/Chronicle 写路径切到通用 repo（事务语义不变）
+- [x] 统一 outbox enqueue（投影/实体/op/scope/trace 注入）为通用 repo
+- [x] 把 Search/Chronicle 写路径切到通用 repo（事务语义不变）
 
 ### P4（Phase 4：Rebuild/Backfill Template）
 
