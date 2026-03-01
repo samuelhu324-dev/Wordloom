@@ -1,12 +1,11 @@
 """Stable entrypoint for the chronicle outbox worker.
 
-The implementation currently lives under backend/scripts/legacy/.
+The implementation now lives in the Route A projection harness.
 This shim keeps docs/runbooks using backend/scripts/chronicle_outbox_worker.py working.
 """
 
 from __future__ import annotations
 
-import runpy
 import sys
 from pathlib import Path
 
@@ -17,10 +16,14 @@ def main() -> None:
     if str(backend_root) not in sys.path:
         sys.path.insert(0, str(backend_root))
 
-    legacy_script = scripts_dir / "legacy" / "chronicle_outbox_worker.py"
-    if not legacy_script.exists():
-        raise SystemExit(f"legacy worker not found: {legacy_script}")
-    runpy.run_path(str(legacy_script), run_name="__main__")
+    # Stable behavior: running this script should start the Chronicle worker
+    # without requiring CLI flags.
+    from infra.projection_framework.harness import main as harness_main
+
+    args = list(sys.argv[1:])
+    if not args:
+        sys.argv = [sys.argv[0], "--projection", "chronicle_events_to_entries"]
+    harness_main()
 
 
 if __name__ == "__main__":
