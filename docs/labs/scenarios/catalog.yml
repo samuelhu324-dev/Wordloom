@@ -111,6 +111,26 @@ scenarios:
       - runtime:db_only
       - s2c:s2c2a
 
+  - id: verify/chronicle/rebuild_entries_smoke
+    aliases:
+      - s2c3a_rebuild_chronicle_entries_smoke
+    cli: >-
+      python backend/scripts/labs/s2c3a_rebuild_chronicle_entries_smoke.py
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "docs/labs/_snapshot/auto/s2c3a_rebuild_chronicle_entries_smoke/${RUN_ID}"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - intent:verify
+      - pipeline:chronicle
+      - runtime:db_only
+      - s2c:s2c3a
+
   - id: rehearsal/chronicle/envelope_backfill_small_window
     aliases:
       - rehearsal_chronicle_entries_envelope_backfill

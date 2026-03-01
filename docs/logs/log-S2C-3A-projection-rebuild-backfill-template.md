@@ -144,7 +144,7 @@
 ### P2（Drills/Catalog automation）
 
 - [x] `P2-C1-S1`：writer template evidence 纳入 catalog（Actions runner 可复用）
-- [ ] `P2-C1-S2`：rebuild smoke 场景纳入 catalog
+- [x] `P2-C1-S2`：rebuild smoke 场景纳入 catalog
 - [x] `P2-C1-S3`：CI workflow（可选）
 
 ### P3（Evidence）
@@ -164,3 +164,4 @@
   - 迁移：`backend/scripts/legacy/rebuild_chronicle_entries.py` 统一使用 runner（status + metrics），保持现有 flags/行为
   - stable 入口保持：`backend/scripts/ops/rebuild_chronicle_entries.py` 仍作为 shim
 - `P2-C1-S3`（workflow 入口）：新增一个 workflow_dispatch 入口复用 `reusable-labs-scenario-runner.yml`（见 `.github/workflows/drill-labs-scenario.yml`）
+- `P2-C1-S2`（rebuild smoke）：新增 Chronicle rebuild smoke 场景 `verify/chronicle/rebuild_entries_smoke`，runner 为 `backend/scripts/labs/s2c3a_rebuild_chronicle_entries_smoke.py`（DB-only；产物 `_result.json` 为 SoT）
