@@ -19,7 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import runpy
+import subprocess
 import sys
 import time
 from dataclasses import asdict, dataclass
@@ -213,27 +213,29 @@ async def _create_event(*, database_url: str) -> dict[str, str]:
 
 
 def _invoke_rebuild(*, event_id: str, run_id: str) -> int:
-    # Propagate RUN_ID to the rebuild template for structured logs.
-    os.environ["RUN_ID"] = run_id
-
+    # Run rebuild in a separate process to avoid nested asyncio.run() errors.
     script = Path("backend/scripts/ops/rebuild_chronicle_entries.py")
     if not script.exists():
         raise SystemExit(f"rebuild shim not found: {script}")
 
-    prev_argv = list(sys.argv)
-    try:
-        sys.argv = [str(script), "--event-id", str(event_id)]
-        runpy.run_path(str(script), run_name="__main__")
-        return 0
-    except SystemExit as exc:
-        code = exc.code
-        if code is None:
-            return 0
-        if isinstance(code, int):
-            return int(code)
-        return 1
-    finally:
-        sys.argv = prev_argv
+    env = dict(os.environ)
+    env["RUN_ID"] = run_id
+
+    completed = subprocess.run(
+        [sys.executable, str(script), "--event-id", str(event_id)],
+        env=env,
+        cwd=str(Path.cwd()),
+        capture_output=True,
+        text=True,
+    )
+
+    if completed.stdout:
+        print(completed.stdout.rstrip())
+    if completed.stderr:
+        # Keep stderr for visibility but avoid failing the parent run by printing.
+        print(completed.stderr.rstrip(), file=sys.stderr)
+
+    return int(completed.returncode)
 
 
 def _verify(*, database_url: str, event_id: str) -> dict[str, Any]:
