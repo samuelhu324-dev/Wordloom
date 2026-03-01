@@ -18,8 +18,7 @@ import argparse
 import os
 import sys
 import uuid
-from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
@@ -35,46 +34,15 @@ from infra.database.session import get_session_factory
 from infra.database.models.chronicle_models import ChronicleEventModel
 from infra.database.models.chronicle_entries_models import ChronicleEntryModel
 from infra.database.models.outbox_event_models import OutboxEventModel
-from infra.database.models.projection_status_models import ProjectionStatusModel
+from infra.projection_framework.rebuild_template import run_rebuild, utc_now
 
 
 PROJECTION_NAME = "chronicle_events_to_entries"
 
 
-class _NoopMetric:
-    def labels(self, **_kwargs):  # noqa: ANN003
-        return self
-
-    def set(self, *_args, **_kwargs):  # noqa: ANN003
-        return None
-
-
-def _get_rebuild_metrics():
-    """Best-effort metrics.
-
-    Allow running rebuild tools in minimal environments where prometheus_client
-    isn't installed (e.g., ad-hoc local interpreters). Metrics become no-ops.
-    """
-
-    try:
-        from infra.observability.outbox_metrics import (
-            projection_rebuild_duration_seconds,
-            projection_rebuild_last_finished_timestamp_seconds,
-            projection_rebuild_last_success,
-        )
-
-        return (
-            projection_rebuild_duration_seconds,
-            projection_rebuild_last_finished_timestamp_seconds,
-            projection_rebuild_last_success,
-        )
-    except Exception:
-        noop = _NoopMetric()
-        return (noop, noop, noop)
-
-
 def _utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    # Preserve legacy naming for minimal diffs.
+    return utc_now()
 
 
 def _normalize_str(v: Any) -> Optional[str]:
@@ -163,32 +131,6 @@ def _parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
-async def _set_projection_status(session, *, success: bool, error: Optional[str], started_at: datetime, finished_at: datetime) -> None:
-    duration = (finished_at - started_at).total_seconds()
-
-    stmt = insert(ProjectionStatusModel).values(
-        projection_name=PROJECTION_NAME,
-        last_rebuild_started_at=started_at,
-        last_rebuild_finished_at=finished_at,
-        last_rebuild_duration_seconds=duration,
-        last_rebuild_success=bool(success),
-        last_rebuild_error=error,
-        updated_at=finished_at,
-    )
-    stmt = stmt.on_conflict_do_update(
-        index_elements=[ProjectionStatusModel.projection_name],
-        set_={
-            "last_rebuild_started_at": started_at,
-            "last_rebuild_finished_at": finished_at,
-            "last_rebuild_duration_seconds": duration,
-            "last_rebuild_success": bool(success),
-            "last_rebuild_error": error,
-            "updated_at": finished_at,
-        },
-    )
-    await session.execute(stmt)
-
-
 async def main_async() -> int:
     args = _parse_args()
 
@@ -199,135 +141,106 @@ async def main_async() -> int:
         except Exception as exc:  # noqa: BLE001
             raise SystemExit(f"Invalid --event-id: {args.event_id!r}") from exc
 
-    (
-        projection_rebuild_duration_seconds,
-        projection_rebuild_last_finished_timestamp_seconds,
-        projection_rebuild_last_success,
-    ) = _get_rebuild_metrics()
-
     if not os.getenv("DATABASE_URL"):
         raise RuntimeError("DATABASE_URL must be set")
 
     session_factory = await get_session_factory()
 
-    started_at = _utc_now()
-    success = False
-    error: Optional[str] = None
+    async def _work(session) -> int:
+        if args.truncate and not args.emit_outbox:
+            await session.execute(delete(ChronicleEntryModel))
 
-    try:
-        async with session_factory() as session:
-            if args.truncate and not args.emit_outbox:
-                await session.execute(delete(ChronicleEntryModel))
+        if args.truncate and args.emit_outbox:
+            await session.execute(delete(OutboxEventModel).where(OutboxEventModel.projection == PROJECTION_NAME))
 
-            if args.truncate and args.emit_outbox:
-                await session.execute(
-                    delete(OutboxEventModel).where(OutboxEventModel.projection == PROJECTION_NAME)
-                )
+        limit = int(args.limit or 0)
+        stmt = select(ChronicleEventModel)
+        if event_id is not None:
+            stmt = stmt.where(ChronicleEventModel.id == event_id)
+        stmt = stmt.order_by(ChronicleEventModel.occurred_at.asc(), ChronicleEventModel.id.asc())
+        if limit > 0:
+            stmt = stmt.limit(limit)
 
-            limit = int(args.limit or 0)
-            stmt = select(ChronicleEventModel)
-            if event_id is not None:
-                stmt = stmt.where(ChronicleEventModel.id == event_id)
-            stmt = stmt.order_by(ChronicleEventModel.occurred_at.asc(), ChronicleEventModel.id.asc())
-            if limit > 0:
-                stmt = stmt.limit(limit)
+        result = await session.execute(stmt)
+        events = list(result.scalars().all())
 
-            result = await session.execute(stmt)
-            events = list(result.scalars().all())
+        now = _utc_now()
+        projection_version = _get_projection_version()
 
-            now = _utc_now()
-            projection_version = _get_projection_version()
-
-            if args.emit_outbox:
-                # Enqueue pending outbox rows. Worker will materialize chronicle_entries.
-                for ev in events:
-                    session.add(
-                        OutboxEventModel(
-                            id=uuid.uuid4(),
-                            projection=PROJECTION_NAME,
-                            entity_type="chronicle_event",
-                            entity_id=ev.id,
-                            op="upsert",
-                            event_version=0,
-                            status="pending",
-                            attempts=0,
-                            replay_count=0,
-                            created_at=now,
-                            updated_at=now,
-                            book_id=ev.book_id,
-                        )
-                    )
-            else:
-                for ev in events:
-                    (schema_version, provenance, source, actor_kind, correlation_id) = _extract_envelope(ev)
-                    stmt2 = insert(ChronicleEntryModel).values(
-                        id=ev.id,
-                        event_type=ev.event_type,
-                        book_id=ev.book_id,
-                        block_id=ev.block_id,
-                        actor_id=ev.actor_id,
-                        occurred_at=ev.occurred_at,
-                        created_at=ev.created_at,
-                        payload=ev.payload or {},
-                        schema_version=schema_version,
-                        provenance=provenance,
-                        source=source,
-                        actor_kind=actor_kind,
-                        correlation_id=correlation_id,
-                        summary=_summarize(ev),
-                        projection_version=projection_version,
+        if args.emit_outbox:
+            # Enqueue pending outbox rows. Worker will materialize chronicle_entries.
+            for ev in events:
+                session.add(
+                    OutboxEventModel(
+                        id=uuid.uuid4(),
+                        projection=PROJECTION_NAME,
+                        entity_type="chronicle_event",
+                        entity_id=ev.id,
+                        op="upsert",
+                        event_version=0,
+                        status="pending",
+                        attempts=0,
+                        replay_count=0,
+                        created_at=now,
                         updated_at=now,
+                        book_id=ev.book_id,
                     )
-                    stmt2 = stmt2.on_conflict_do_update(
-                        index_elements=[ChronicleEntryModel.id],
-                        set_={
-                            "event_type": ev.event_type,
-                            "book_id": ev.book_id,
-                            "block_id": ev.block_id,
-                            "actor_id": ev.actor_id,
-                            "occurred_at": ev.occurred_at,
-                            "created_at": ev.created_at,
-                            "payload": ev.payload or {},
-                            "schema_version": schema_version,
-                            "provenance": provenance,
-                            "source": source,
-                            "actor_kind": actor_kind,
-                            "correlation_id": correlation_id,
-                            "summary": _summarize(ev),
-                            "projection_version": projection_version,
-                            "updated_at": now,
-                        },
-                    )
-                    await session.execute(stmt2)
+                )
+        else:
+            for ev in events:
+                (schema_version, provenance, source, actor_kind, correlation_id) = _extract_envelope(ev)
+                stmt2 = insert(ChronicleEntryModel).values(
+                    id=ev.id,
+                    event_type=ev.event_type,
+                    book_id=ev.book_id,
+                    block_id=ev.block_id,
+                    actor_id=ev.actor_id,
+                    occurred_at=ev.occurred_at,
+                    created_at=ev.created_at,
+                    payload=ev.payload or {},
+                    schema_version=schema_version,
+                    provenance=provenance,
+                    source=source,
+                    actor_kind=actor_kind,
+                    correlation_id=correlation_id,
+                    summary=_summarize(ev),
+                    projection_version=projection_version,
+                    updated_at=now,
+                )
+                stmt2 = stmt2.on_conflict_do_update(
+                    index_elements=[ChronicleEntryModel.id],
+                    set_={
+                        "event_type": ev.event_type,
+                        "book_id": ev.book_id,
+                        "block_id": ev.block_id,
+                        "actor_id": ev.actor_id,
+                        "occurred_at": ev.occurred_at,
+                        "created_at": ev.created_at,
+                        "payload": ev.payload or {},
+                        "schema_version": schema_version,
+                        "provenance": provenance,
+                        "source": source,
+                        "actor_kind": actor_kind,
+                        "correlation_id": correlation_id,
+                        "summary": _summarize(ev),
+                        "projection_version": projection_version,
+                        "updated_at": now,
+                    },
+                )
+                await session.execute(stmt2)
 
-            finished_at = _utc_now()
-            await _set_projection_status(session, success=True, error=None, started_at=started_at, finished_at=finished_at)
-            await session.commit()
-            success = True
+        return len(events)
 
-            projection_rebuild_duration_seconds.labels(projection=PROJECTION_NAME).set((finished_at - started_at).total_seconds())
-            projection_rebuild_last_finished_timestamp_seconds.labels(projection=PROJECTION_NAME).set(finished_at.timestamp())
-            projection_rebuild_last_success.labels(projection=PROJECTION_NAME).set(1)
+    events_count = await run_rebuild(
+        projection_name=PROJECTION_NAME,
+        session_factory=session_factory,
+        work=_work,
+    )
 
-            print(
-                f"Rebuild OK: events={len(events)} truncate={bool(args.truncate)} emit_outbox={bool(args.emit_outbox)}"
-            )
-
-        return 0
-    except Exception as exc:
-        error = str(exc)
-        finished_at = _utc_now()
-        try:
-            async with session_factory() as session:
-                await _set_projection_status(session, success=False, error=error, started_at=started_at, finished_at=finished_at)
-                await session.commit()
-        except Exception:
-            pass
-
-        projection_rebuild_last_finished_timestamp_seconds.labels(projection=PROJECTION_NAME).set(finished_at.timestamp())
-        projection_rebuild_last_success.labels(projection=PROJECTION_NAME).set(0)
-
-        raise
+    print(
+        f"Rebuild OK: events={events_count} truncate={bool(args.truncate)} emit_outbox={bool(args.emit_outbox)}"
+    )
+    return 0
 
 
 def main() -> None:
