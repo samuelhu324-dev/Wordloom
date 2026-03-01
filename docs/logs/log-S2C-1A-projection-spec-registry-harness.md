@@ -117,7 +117,7 @@
 -     Wiring: `backend/infra/projection_framework/builtins.py` (chronicle spec apply_entrypoint)
 - [x] `P2-C1-S2`：Chronicle worker 改为 harness 驱动（stable entrypoint 不变）
 -     Wiring: `backend/scripts/chronicle_outbox_worker.py` (shim -> harness --projection chronicle_events_to_entries)
-- [ ] `P2-C1-S3`：drills 证据入账（至少 1 轮；必要时 N≥3）
+- [x] `P2-C1-S3`：drills 证据入账（至少 1 轮；必要时 N≥3）
 
 ## Evidence（证据与 SoT 规则）
 
@@ -125,6 +125,15 @@
 - 建议复用 suite：
   - `drill-shadow-verify-entries` | scenario_id: `verify/chronicle/entries`
   - 若 harness 涉及 outbox 行为：补齐 `drill-write-gate` 的最小 6-pack（与 S2B 对齐）
+
+**Evidence entries（本切片）**:
+
+- `P2-C1-S3` / Labs-010 `shadow-verify-chronicle-entries`
+  - headSha: `89633fe1ba35b791dd3a6330ea86d63087bf74ba`
+  - db: `docker-compose.devtest-db.yml` (`localhost:5435`, `wordloom_test`)
+  - run_id: `S2C-P2-C1-S3-20260301-1201`
+  - outputs: `artifacts/_tmp_s2c_p2c1s3_shadow_verify_chronicle_entries/_result.json`
+  - result: `ok=true` (`missing_entries=0`, `extra_entries=0`, `mismatched_book_id=0`, totals: `events=0`, `entries=0`)
 
 ## Notes（实现落点建议，供开工时对齐）
 
