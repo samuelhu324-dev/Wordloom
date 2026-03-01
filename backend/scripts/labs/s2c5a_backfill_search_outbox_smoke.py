@@ -28,6 +28,12 @@ from pathlib import Path
 from typing import Any
 from uuid import UUID
 
+# Ensure `import infra.*` works when executed as a plain script.
+# CI runners typically invoke `python backend/scripts/...` without PYTHONPATH.
+_backend_dir = Path(__file__).resolve().parents[2]
+if str(_backend_dir) not in sys.path:
+    sys.path.insert(0, str(_backend_dir))
+
 import psycopg
 from sqlalchemy import select
 
@@ -281,13 +287,6 @@ async def _run(*, database_url: str, run_id: str, outdir: Path) -> EvidenceResul
 
 
 def main() -> None:
-    # psycopg async does not support ProactorEventLoop on Windows.
-    if sys.platform.startswith("win"):
-        try:
-            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        except Exception:
-            pass
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--database-url", required=True)
     parser.add_argument("--run-id", required=True)
@@ -299,7 +298,25 @@ def main() -> None:
     run_id = str(args.run_id).strip()
     outdir = Path(str(args.outdir).strip())
 
-    result = asyncio.run(_run(database_url=database_url, run_id=run_id, outdir=outdir))
+    # psycopg async does not support ProactorEventLoop on Windows.
+    if sys.platform.startswith("win"):
+        try:
+            import selectors
+
+            loop_factory = lambda: asyncio.SelectorEventLoop(selectors.SelectSelector())
+            result = asyncio.run(
+                _run(database_url=database_url, run_id=run_id, outdir=outdir),
+                loop_factory=loop_factory,
+            )
+        except TypeError:
+            # Compatibility fallback for older Python versions.
+            try:
+                asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+            except Exception:
+                pass
+            result = asyncio.run(_run(database_url=database_url, run_id=run_id, outdir=outdir))
+    else:
+        result = asyncio.run(_run(database_url=database_url, run_id=run_id, outdir=outdir))
 
     if not result.ok:
         raise SystemExit(2)

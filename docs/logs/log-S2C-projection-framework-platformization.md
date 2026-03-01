@@ -12,7 +12,7 @@
   **issue**: ``
   **pr**: ``
   **adr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S2C-projection-framework-platformization.md`
   **roadmap**: `docs/ROADMAP.md`
   **sibling_log**: `docs/logs/log-S2B-projection-table-merge.md` # Route B outcome that unlocks Route A
   **child_log_1**: `docs/logs/log-S2C-1A-projection-spec-registry-harness.md`

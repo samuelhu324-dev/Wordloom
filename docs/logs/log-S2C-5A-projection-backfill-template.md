@@ -12,7 +12,7 @@
   **issue**: ``
   **pr**: ``
   **adr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S2C-projection-framework-platformization.md`
   **parent_log**: `docs/logs/log-S2C-projection-framework-platformization.md`
   **reference_log_1**: `docs/logs/log-S2B-3A-unified-consumer-framework.md` # outbox_core baseline
   **reference_log_2**: `docs/logs/log-S2C-3A-projection-rebuild-backfill-template.md` # rebuild template + drills wiring
@@ -59,6 +59,11 @@
   - 若需要 ES bulk backfill/worker 行为迁移，按 `S2C Phase 6` 用 `S2C-6A` 独立切片交付（避免把 ES 依赖与行为迁移混入模板切片）。
 
 ## Scope（本 log 范围）
+
+## Phase mapping（对应 S2C 大阶段）
+
+- 本 log 对应 `S2C Phase 4` 的 backfill runner 部分（rebuild runner 已在 `S2C-3A` 交付）。
+- `S2C Phase 6`（Search harness migration, DB→ES）不在本 log 范围内，已单独拆到 `S2C-6A`。
 
 - `P0`：Backfill contract（定义 backfill 的最小输入/输出/幂等/失败语义/风险边界）
 - `P1`：Backfill template（通用 runner：参数解析 + 分批扫描 + 幂等 enqueue + 证据输出）
