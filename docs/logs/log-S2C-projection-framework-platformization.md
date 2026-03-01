@@ -97,8 +97,8 @@
 
 ### P5（Phase 5：Drills Template）
 
-- [ ] 为“新增投影”定义最小 drills 套餐（verify/readiness/dual_write/dual_run/failures）
-- [ ] 在 catalog 增加模板化 tags/requirements，runner 自动起依赖（db/es/jaeger）
+- [x] 为“新增投影”定义最小 drills 套餐（verify/readiness/dual_write/dual_run/failures）
+- [x] 在 catalog 增加模板化 tags/requirements，runner 自动起依赖（db/es/jaeger）
 
 ### P6（Phase 6：Search harness migration｜deferred）
 

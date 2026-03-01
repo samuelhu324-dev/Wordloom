@@ -5,7 +5,7 @@
 **id**: `S2C-4A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `projection drills template (minimal kit: verify/readiness/dual*/failures)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S2C`
 **tags**: `EVOLUTION, Projection, Platform, Framework, Drills, Catalog, Runner, epic/s2, sub/4`
 **links**: ``
@@ -99,12 +99,20 @@
 
 ### P2（Runner auto-deps）
 
-- [ ] `P2-C1-S1`：reusable runner 按 requirements 自动起依赖
+- [x] `P2-C1-S1`：reusable runner 按 requirements 自动起依赖
 
 ### P3（Evidence）
 
-- [ ] `P3-C1-S1`：Actions run URL 级证据入账
+- [x] `P3-C1-S1`：Actions run URL 级证据入账
 
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + run URL + 关键参数。
+
+### P3-C1-S1（Actions｜drill-labs-scenario｜verify/chronicle/rebuild_entries_smoke）
+
+- headSha: `a877ceafaa21b004612bf4b7a2007c9662582927`
+- run_url: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22539384221`
+- workflow: `drill-labs-scenario` (workflow_dispatch)
+- scenario_id: `verify/chronicle/rebuild_entries_smoke` (db-only)
+- artifact: `labs-evidence-verify_chronicle_rebuild_entries_smoke-22539384221-1`
