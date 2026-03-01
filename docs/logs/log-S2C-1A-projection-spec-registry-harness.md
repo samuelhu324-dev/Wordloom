@@ -135,6 +135,14 @@
   - outputs: `artifacts/_tmp_s2c_p2c1s3_shadow_verify_chronicle_entries/_result.json`
   - result: `ok=true` (`missing_entries=0`, `extra_entries=0`, `mismatched_book_id=0`, totals: `events=0`, `entries=0`)
 
+- `P2-C1-S3` / Labs-010 `shadow-verify-chronicle-entries` (seeded 1 row; book-scoped)
+  - headSha: `3e1f22531610813faf71634c513c14b883f96f4e`
+  - db: `docker-compose.devtest-db.yml` (`localhost:5435`, `wordloom_test`)
+  - book_id: `d4eb58bc-e187-4f50-93c8-a9ec67feb726`
+  - run_id: `S2C-P2-C1-S3-20260301-1215-book`
+  - outputs: `artifacts/_tmp_s2c_p2c1s3_shadow_verify_chronicle_entries_book/_result.json`
+  - result: `ok=true` (`missing_entries=0`, `extra_entries=0`, `mismatched_book_id=0`, totals: `events=1`, `entries=1`)
+
 ## Notes（实现落点建议，供开工时对齐）
 
 - Spec/Registry 建议落在：`backend/infra/projection_framework/`（或同级目录；以不打扰现有模块为优先）
