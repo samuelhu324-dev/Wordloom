@@ -10,6 +10,9 @@ Individual rebuild scripts should provide the projection-specific "work" functio
 """
 
 from datetime import datetime, timezone
+import os
+import socket
+import uuid
 from typing import Any, Awaitable, Callable, Optional, TypeVar
 
 from sqlalchemy.dialects.postgresql import insert as pg_insert
@@ -95,6 +98,8 @@ async def run_rebuild(
     projection_name: str,
     session_factory: Any,
     work: Callable[[AsyncSession], Awaitable[T]],
+    run_id: str | None = None,
+    worker_id: str | None = None,
 ) -> T:
     """Run rebuild work with standardized bookkeeping + metrics.
 
@@ -110,6 +115,12 @@ async def run_rebuild(
     ) = get_rebuild_metrics()
 
     started_at = utc_now()
+    if run_id is None:
+        run_id = str(os.getenv("RUN_ID") or "").strip() or f"manual-{uuid.uuid4()}"
+    if worker_id is None:
+        worker_id = str(os.getenv("WORKER_ID") or "").strip() or socket.gethostname()
+
+    print(f"[rebuild] start projection={projection_name} run_id={run_id} worker_id={worker_id}")
 
     try:
         async with session_factory() as session:
@@ -133,6 +144,11 @@ async def run_rebuild(
             finished_at.timestamp()
         )
         projection_rebuild_last_success.labels(projection=projection_name).set(1)
+
+        print(
+            "[rebuild] ok projection=%s run_id=%s worker_id=%s duration_s=%.3f"
+            % (projection_name, run_id, worker_id, (finished_at - started_at).total_seconds())
+        )
 
         return result
 
@@ -158,5 +174,10 @@ async def run_rebuild(
             finished_at.timestamp()
         )
         projection_rebuild_last_success.labels(projection=projection_name).set(0)
+
+        print(
+            "[rebuild] fail projection=%s run_id=%s worker_id=%s duration_s=%.3f error=%s"
+            % (projection_name, run_id, worker_id, (finished_at - started_at).total_seconds(), error)
+        )
 
         raise

@@ -63,19 +63,40 @@
 
 ### Rebuild（读侧表重建）
 
-- 输入：
+- 输入（v1 最小集合）：
   - `projection`（必填）：例如 `chronicle_events_to_entries`
-  - `--truncate`（可选）：是否清空读侧表再重建
-  - `--dry-run`（可选）：只计算计划与计数，不写入（或只写 bookkeeping）
-  - `--limit/--since`（可选）：用于小窗演练与风险隔离
+  - `--truncate`（可选）：是否清空读侧表再重建（注意与 `--emit-outbox` 组合时应清 outbox backlog，而非清读侧表）
+  - `--emit-outbox`（可选）：将 rebuild 写入 outbox，由 harness 投影路径完成 materialize（用于验证 worker path）
+  - `--limit / --since / --event-id`（可选）：用于小窗演练与风险隔离（不同投影可实现不同子集，但必须显式）
 
-- 输出（bookkeeping + evidence）：
-  - 必须记录：`run_id`、`projection`、开始/结束时间、处理数量、失败数量、耗时
-  - 失败必须可归因（低基数 reason taxonomy；细节入日志/产物）
+- 输出（bookkeeping + observability + evidence）：
+  - **bookkeeping（DB 低基数）**：必须 upsert `projection_status`（1 行/投影），记录开始/结束、耗时、success/error。
+  - **structured logs（可带 run_id/worker_id）**：必须输出 `run_id`、`worker_id`、`projection`、处理计数、关键 flags（truncate/emit_outbox/limit）。
+  - **metrics（低基数）**：只允许以 `projection` 作为 label（避免 run_id/worker_id 进入 metrics）；至少输出：
+    - `projection_rebuild_duration_seconds{projection}`
+    - `projection_rebuild_last_finished_timestamp_seconds{projection}`
+    - `projection_rebuild_last_success{projection}`
+  - **evidence（artifacts / snapshot bundle）**：若用于 drills/CI，必须把关键 run 参数与结果写入 `_result.json` 或 snapshot bundle（以 artifacts 为 SoT）。
+
+- 失败语义（v1）：
+  - rebuild 失败必须可归因（低基数 reason taxonomy），建议：
+    - `bad_payload` / `schema_mismatch`（payload contract）
+    - `missing_entity`（SoT/outbox 指向缺失）
+    - `db_constraint`（DB 约束）
+    - `unexpected`（未分类异常）
+  - 细节（stacktrace / offending ids）进入日志或 artifacts；`projection_status.last_rebuild_error` 只存短字符串摘要。
 
 ### Backfill（回填 outbox / 数据修复）
 
 - 非目标（v1）：不在本切片强制实现所有 backfill 类型；但要把模板接口定下来，避免后续脚本散落。
+
+### Non-goals / Risk Boundaries（平台不负责/风险边界）
+
+- 不在 v1 强制统一所有 rebuild 的“数据源扫描策略”（全表扫描 vs 增量窗口），但要求每个 rebuild 脚本显式声明其扫描边界。
+- 不把 `run_id/worker_id` 写入 metrics label；避免高基数污染监控。
+- 不保证 rebuild 过程对线上业务无影响：
+  - 需要运维层面通过 `--limit/--since`、低峰运行、限速/分批 commit 等方式控制风险。
+- 不在本切片重写 Search 消费迁移（DB→ES）；Search 的 worker/harness 迁移仍在 Phase 6。
 
 ## Numbering（编号约定）
 
@@ -112,8 +133,8 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：定义 rebuild/backfill 最小接口与 bookkeeping/metrics 口径
-- [ ] `P0-C1-S2`：明确 Non-goals 与风险边界（避免 scope 膨胀）
+- [x] `P0-C1-S1`：定义 rebuild/backfill 最小接口与 bookkeeping/metrics 口径
+- [x] `P0-C1-S2`：明确 Non-goals 与风险边界（避免 scope 膨胀）
 
 ### P1（Rebuild template implementation）
 
