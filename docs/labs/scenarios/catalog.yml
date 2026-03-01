@@ -69,6 +69,26 @@ scenarios:
       - pipeline:search
       - runtime:db_only
 
+  - id: verify/search/backfill_outbox_smoke
+    aliases:
+      - s2c5a_backfill_search_outbox_smoke
+    cli: >-
+      python backend/scripts/labs/s2c5a_backfill_search_outbox_smoke.py
+      --database-url "$DATABASE_URL"
+      --run-id "$RUN_ID"
+      --outdir "docs/labs/_snapshot/auto/s2c5a_backfill_search_outbox_smoke/${RUN_ID}"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - intent:verify
+      - pipeline:search
+      - runtime:db_only
+      - s2c:s2c5a
+
   - id: verify/obs_infra/shared_keys_bundle
     aliases:
       - shadow_verify_shared_keys

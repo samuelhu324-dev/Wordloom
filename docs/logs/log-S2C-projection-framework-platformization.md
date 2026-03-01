@@ -12,13 +12,15 @@
   **issue**: ``
   **pr**: ``
   **adr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S2C-projection-framework-platformization.md`
   **roadmap**: `docs/ROADMAP.md`
   **sibling_log**: `docs/logs/log-S2B-projection-table-merge.md` # Route B outcome that unlocks Route A
   **child_log_1**: `docs/logs/log-S2C-1A-projection-spec-registry-harness.md`
   **child_log_2**: `docs/logs/log-S2C-2A-projection-writer-template.md`
   **child_log_3**: `docs/logs/log-S2C-3A-projection-rebuild-backfill-template.md`
   **child_log_4**: `docs/logs/log-S2C-4A-projection-drills-template.md`
+  **child_log_5**: `docs/logs/log-S2C-5A-projection-backfill-template.md`
+  **child_log_6**: `docs/logs/log-S2C-6A-search-harness-migration.md`
 **created**: `2026-02-28`
 **updated**: `2026-03-01`
 
@@ -93,7 +95,7 @@
 ### P4（Phase 4：Rebuild/Backfill Template）
 
 - [x] 提供通用 rebuild runner：投影选择 + ProjectionStatusModel 记账 + metrics
-- [ ] 提供通用 backfill runner（如需要）：从 SoT 重建/回填 outbox
+- [x] 提供通用 backfill runner（如需要）：从 SoT 重建/回填 outbox
 
 ### P5（Phase 5：Drills Template）
 
