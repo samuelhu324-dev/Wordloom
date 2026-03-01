@@ -23,6 +23,13 @@ outbox_produced_total = Counter(
     ["event_type", "entity_type"],
 )
 
+# New (writer template): align with worker label scheme (projection/op).
+outbox_enqueued_total = Counter(
+    "outbox_enqueued_total",
+    "Total number of outbox rows successfully enqueued (projection/op).",
+    ["projection", "op"],
+)
+
 # ---------------------------------------------------------------------------
 # Worker-side metrics (projection)
 # ---------------------------------------------------------------------------
@@ -142,6 +149,7 @@ outbox_es_bulk_request_duration_seconds = Histogram(
 
 __all__ = [
     "outbox_produced_total",
+    "outbox_enqueued_total",
     "outbox_processed_total",
     "outbox_idempotent_noop_total",
     "outbox_failed_total",

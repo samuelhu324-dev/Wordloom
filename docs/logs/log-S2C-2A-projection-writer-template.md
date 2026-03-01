@@ -146,7 +146,9 @@
 -     Impl: `backend/infra/outbox_unified/writer.py` (`OutboxWriter.enqueue`)
 -     Migrate: `backend/infra/search/search_outbox_repository.py` (delegate -> OutboxWriter)
 -     Migrate: `backend/infra/storage/chronicle_repository_impl.py` (delegate -> OutboxWriter)
-- [ ] `P1-C1-S2`：对齐 metrics/shared keys（projection/op/reason；run_id/worker_id）
+- [x] `P1-C1-S2`：对齐 metrics/shared keys（projection/op/reason；run_id/worker_id）
+-     Impl: `backend/infra/outbox_unified/writer.py` (structured logs: event=outbox.enqueue; run_id/worker_id)
+-     Impl: `backend/infra/observability/outbox_metrics.py` (`outbox_enqueued_total{projection,op}`)
 
 ### P2（Migrations）
 
