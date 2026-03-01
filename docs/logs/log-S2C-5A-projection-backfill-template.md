@@ -181,6 +181,7 @@
 ### Local evidence（DB-only, N=3 rounds）
 
 - Scenario: `verify/search/backfill_outbox_smoke`
+- headSha: `4017d56a`
 - DB: `postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test`
 - Rounds:
   - `local_s2c5a_r2` → `docs/labs/_snapshot/auto/s2c5a_backfill_search_outbox_smoke/local_s2c5a_r2/_result.json`
