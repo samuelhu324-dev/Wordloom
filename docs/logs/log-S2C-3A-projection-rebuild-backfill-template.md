@@ -149,12 +149,20 @@
 
 ### P3（Evidence）
 
-- [ ] `P3-C1-S1`：跑最小证据包并入账（N≥3 或等价稳定性证明）
+- [x] `P3-C1-S1`：跑最小证据包并入账（N≥3 或等价稳定性证明）
 
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + run URL + 关键参数。
 - 本切片完成后，在此追加至少一条 rebuild/backfill 或 catalog-automation 相关的证据记录。
+
+### P3-C1-S1（Chronicle rebuild smoke｜local run）
+
+- headSha: `76ac9c55df5ef5cd76b8184bfd3bb8a14e70ceaf`
+- scenario_id: `verify/chronicle/rebuild_entries_smoke`
+- run_id: `local-20260301-154909-s2c3a-rebuild-smoke`
+- artifacts (SoT): `docs/labs/_snapshot/auto/s2c3a_rebuild_chronicle_entries_smoke/local-20260301-154909-s2c3a-rebuild-smoke/_result.json`
+- result: `ok=true`, `entries_for_event=1`, `projection_status.last_rebuild_success=true`
 
 ## Execution Notes（变更记账）
 
