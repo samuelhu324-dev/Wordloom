@@ -164,7 +164,7 @@
 ### P2（Tenant + Policy）
 
 - [x] `P2-C1-S1`：tenant filter 强制落地（关键链路）
-- [ ] `P2-C1-S2`：policy 层收口（最少 1 条动作）
+- [x] `P2-C1-S2`：policy 层收口（最少 1 条动作）
 
 ### P3（Audit + Drills）
 

@@ -151,9 +151,17 @@ class MockBookshelfRepository(IBookshelfRepository):
         self._bookshelves[bookshelf.id] = bookshelf
         self._library_names[key] = bookshelf.id
 
-    async def get_by_id(self, bookshelf_id) -> Optional[Bookshelf]:
-        """Retrieve bookshelf by ID"""
-        return self._bookshelves.get(bookshelf_id)
+    async def get_by_id(self, bookshelf_id, library_id: Optional = None) -> Optional[Bookshelf]:
+        """Retrieve bookshelf by ID.
+
+        When library_id is provided, lookup is tenant-scoped.
+        """
+        bs = self._bookshelves.get(bookshelf_id)
+        if not bs:
+            return None
+        if library_id is not None and bs.library_id != library_id:
+            return None
+        return bs
 
     async def get_by_library_id(self, library_id) -> List[Bookshelf]:
         """Get all active bookshelves in a library (RULE-005)"""
