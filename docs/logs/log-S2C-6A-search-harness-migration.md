@@ -5,7 +5,7 @@
 **id**: `S2C-6A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `search harness migration (DB→ES; migrate search worker into projection harness)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S2C`
 **tags**: `EVOLUTION, Projection, Platform, Framework, Outbox, Worker, Search, ES, epic/s2, sub/6`
 **links**: ``
