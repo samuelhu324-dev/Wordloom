@@ -6,3 +6,4 @@
 - S2: Projection
 - S3: Observability
 - S4: Ops Runtime
+- S5: Security & Governance
