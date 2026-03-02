@@ -13,7 +13,7 @@
   **pr**: ``
   **adr**: ``
   **runbook**: ``
-  **parent_log**: `docs/logs/log-S5A-security-governance-skeleton.md`
+  **parent_log**: `docs/logs/log-S5A-security-governance-epic.md`
   **previous_log**: `docs/logs/log-S5A-1A-authcontext-policy-audit.md`
 **created**: `2026-03-02`
 **updated**: `2026-03-02`
