@@ -168,7 +168,7 @@
 
 ### P3（Audit + Drills）
 
-- [ ] `P3-C1-S1`：audit_log append-only 最小闭环
+- [x] `P3-C1-S1`：audit_log append-only 最小闭环
 - [ ] `P3-C1-S2`：drills/evidence（至少 3 个 scenario + artifacts）
 
 ## Evidence（预留）
