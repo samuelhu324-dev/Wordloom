@@ -124,8 +124,8 @@
 
 ### P2（Policy）
 
-- [ ] `P2-C1-S1`：admin 动作落地（policy + handler）
-- [ ] `P2-C1-S2`：关键写链路补齐角色拒绝路径（403 + reason）
+- [x] `P2-C1-S1`：admin 动作落地（policy + handler）
+- [x] `P2-C1-S2`：关键写链路补齐角色拒绝路径（403 + reason）
 
 ### P3（Audit + Drills）
 
@@ -140,3 +140,7 @@
   - ORM：`backend/infra/database/models/library_membership_models.py`
   - repo：`backend/infra/storage/library_membership_repository_impl.py`
   - roles 注入：`backend/api/app/config/security.py:get_auth_context`
+
+- 代码落地点（P2）：
+  - policy：admin-only create：`backend/api/app/policy/bookshelf_policy.py:assert_actor_can_create_bookshelf`
+  - handler：`backend/api/app/modules/bookshelf/routers/bookshelf_router.py:create_bookshelf`（member → 403 + reason=`not_admin`）

@@ -62,22 +62,30 @@ router = APIRouter(prefix="", tags=["bookshelves"])
 )
 async def create_bookshelf(
     request: CreateBookshelfRequest,
-    actor: Actor = Depends(get_current_actor),
+    ctx: AuthContext = Depends(get_auth_context),
     di: DIContainer = Depends(get_di_container)
 ):
     """创建新书架"""
     start_time = time.time()
     logger.info(f"[CREATE_BOOKSHELF] START - library_id={request.library_id}, name={request.name}")
     try:
-        enforce_owner_check = not _settings.allow_dev_library_owner_override
-        request = request.model_copy(
+        from api.app.policy.bookshelf_policy import assert_actor_can_create_bookshelf
+
+        requested_library_id = request.library_id
+        assert_actor_can_create_bookshelf(ctx=ctx, requested_library_id=requested_library_id)
+
+        # Authorization is handled by policy (roles). Disable legacy owner check in usecase.
+        enforce_owner_check = False
+        usecase_request = request.model_copy(
             update={
-                "actor_user_id": actor.user_id,
+                # Tenant selected by header (AuthContext). Ignore body library_id for safety.
+                "library_id": ctx.tenant_id,
+                "actor_user_id": ctx.user_id,
                 "enforce_owner_check": enforce_owner_check,
             }
         )
         use_case = di.get_create_bookshelf_use_case()
-        result = await use_case.execute(request)
+        result = await use_case.execute(usecase_request)
 
         # Audit (best-effort): successful write
         try:
@@ -90,7 +98,7 @@ async def create_bookshelf(
             audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
             await audit_repo.append(
                 tenant_id=result.library_id,
-                actor_user_id=actor.user_id,
+                actor_user_id=ctx.user_id,
                 request_id=request_id,
                 action="bookshelf.create",
                 resource_type="bookshelf",
@@ -98,6 +106,7 @@ async def create_bookshelf(
                 result="success",
                 meta_json={
                     "library_id": str(result.library_id),
+                    "requested_library_id": str(requested_library_id),
                     "name": result.name,
                 },
             )
@@ -142,16 +151,17 @@ async def create_bookshelf(
 
             audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
             await audit_repo.append(
-                tenant_id=request.library_id,
-                actor_user_id=actor.user_id,
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
                 request_id=request_id,
                 action="bookshelf.create",
                 resource_type="library",
-                resource_id=request.library_id,
+                resource_id=ctx.tenant_id,
                 result="denied",
                 reason=getattr(e, "details", {}).get("reason"),
                 meta_json={
-                    "library_id": str(request.library_id),
+                    "library_id": str(ctx.tenant_id),
+                    "requested_library_id": str(requested_library_id),
                     "name": request.name,
                 },
             )
