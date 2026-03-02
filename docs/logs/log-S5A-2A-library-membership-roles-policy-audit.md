@@ -114,6 +114,11 @@
 - P3-C2-S1：读路径统一 membership 语义：non-member → 404（避免存在性泄露），并写入审计（result=not_found + reason）
 - P3-C2-S2：新增 drills/evidence：tenant_mismatch（403）与 membership revoke 后一致性（revoke → read 404）
 
+### P3（Audit + Drills）｜Cycle 3（P3-C3 draft）
+
+- P3-C3-S1：把同样的“读路径 non-member → 404 + audit not_found（reason）”语义扩展到 Bookshelf 其它读接口（dashboard / basement），并修复 `/basement` 路由被 `/{bookshelf_id}` 吞掉导致 422 的问题（确保 contract 可被实际命中）
+- P3-C3-S2：新增 drills/evidence：覆盖 `bookshelf.list` 的 404 行为（non-member + tenant_mismatch），并验证 dashboard/basement 的 non-member 404（事实源：artifacts JSON）
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -142,7 +147,12 @@
 - [x] `P3-C2-S1`：读路径 membership 语义收口（non-member → 404 + audit not_found + reason）
 - [x] `P3-C2-S2`：drills/evidence：tenant_mismatch + revoke 后一致性（至少 2 个 scenario + artifacts）
 
-## Evidence（预留）
+### P3（Audit + Drills）｜Cycle 3
+
+- [x] `P3-C3-S1`：扩展读路径 contract 到 dashboard/basement（non-member/tenant_mismatch → 404 + audit not_found）并修复 basement 路由吞噬（422）
+- [x] `P3-C3-S2`：drills/evidence：bookshelf.list 的 non-member + tenant_mismatch（404）+ dashboard/basement non-member（404）+ artifacts
+
+## Evidence（预留） 
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径。
 - 代码落地点（P1）：
@@ -175,6 +185,16 @@
     - read contract：`backend/api/app/modules/bookshelf/routers/bookshelf_router.py:list_bookshelves/get_bookshelf`
     - drills：`scripts/drills/s5a2a_p3c2s2_drills.py`
     - fix（psycopg connect args）：`backend/api/app/config/database.py`
+  - env（示例）：
+    - `WORDLOOM_API_BASE_URL=http://localhost:31001`
+    - `DATABASE_URL=postgresql://wordloom:wordloom@localhost:5435/wordloom_dev`
+
+- 2026-03-02｜P3-C3 drills：
+  - headSha：`068b9119bbd64c28c86c597d37e41f0427387315`
+  - artifacts：`artifacts/_tmp_s5a2a_p3c3s2/drills_1772461616.json`
+  - code：
+    - read contract：`backend/api/app/modules/bookshelf/routers/bookshelf_router.py:get_bookshelf_dashboard/get_basement`（包含 `/basement` 路由顺序修复）
+    - drills：`scripts/drills/s5a2a_p3c3s2_drills.py`
   - env（示例）：
     - `WORDLOOM_API_BASE_URL=http://localhost:31001`
     - `DATABASE_URL=postgresql://wordloom:wordloom@localhost:5435/wordloom_dev`
