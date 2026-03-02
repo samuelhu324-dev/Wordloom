@@ -67,7 +67,10 @@ class GetBookshelfUseCase(IGetBookshelfUseCase):
         """
 
         # Step 1: Query repository by ID
-        bookshelf = await self.repository.get_by_id(request.bookshelf_id)
+        bookshelf = await self.repository.get_by_id(
+            request.bookshelf_id,
+            library_id=request.tenant_id,
+        )
 
         # Step 2: Validate existence
         if not bookshelf:

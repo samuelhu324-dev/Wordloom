@@ -46,12 +46,18 @@ class IBookshelfRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_by_id(self, bookshelf_id: UUID) -> Optional[Bookshelf]:
+    async def get_by_id(
+        self,
+        bookshelf_id: UUID,
+        library_id: Optional[UUID] = None,
+    ) -> Optional[Bookshelf]:
         """
         Retrieve a Bookshelf by its ID
 
         Args:
             bookshelf_id: UUID of the bookshelf
+            library_id: Optional tenant/library scope. When provided, lookup must be scoped
+                to the given library_id.
 
         Returns:
             Bookshelf domain object if found, None otherwise

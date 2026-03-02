@@ -31,8 +31,8 @@ from api.app.modules.bookshelf.exceptions import (
 )
 from api.app.modules.bookshelf.schemas import BookshelfDashboardResponse
 
-from api.app.config.security import get_current_actor
-from api.app.shared.actor import Actor
+from api.app.config.security import get_auth_context
+from api.app.shared.auth_context import AuthContext
 from api.app.config.setting import get_settings
 
 
@@ -313,7 +313,7 @@ async def list_bookshelves(
 )
 async def get_bookshelf(
     bookshelf_id: UUID,
-    actor: Actor = Depends(get_current_actor),
+    ctx: AuthContext = Depends(get_auth_context),
     di: DIContainer = Depends(get_di_container)
 ):
     """获取书架详情"""
@@ -323,7 +323,8 @@ async def get_bookshelf(
         enforce_owner_check = not _settings.allow_dev_library_owner_override
         request = GetBookshelfRequest(
             bookshelf_id=bookshelf_id,
-            actor_user_id=actor.user_id,
+            tenant_id=ctx.tenant_id,
+            actor_user_id=ctx.user_id,
             enforce_owner_check=enforce_owner_check,
         )
         use_case = di.get_get_bookshelf_use_case()
