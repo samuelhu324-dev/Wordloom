@@ -48,7 +48,7 @@
 ## Success Criteria（DoD）
 
 - 代码层面：
-  - 能从请求中解析 JWT 并生成 `AuthContext`；缺失或非法时一致返回 401。
+  - 能从请求中解析 JWT 并生成 `AuthContext`；非法 token 一致返回 401（dev 环境允许缺失 token 时用 `DEV_USER_ID` 回退）。
   - 所有资源 load 默认带 tenant filter；越权读不得泄露存在性（默认 404）。
   - 授权规则从 handler/service 中移除为 policy 层集中表达（最少 1 条关键链路落地）。
   - audit_log 为 append-only SoT：deny/allow 与关键写入成功会写入审计，并携带 `request_id`。
@@ -81,10 +81,12 @@
 #### 1) `AuthContext` contract（统一请求上下文）
 
 - 字段：
+- 字段：
   - `user_id: UUID`
   - `tenant_id: UUID`（v1 等同 `library_id`）
-  - `roles: set[str]`（v1 最小化）
-  - `request_id: str`（每个请求必须存在）
+  - `roles: tuple[str, ...]`（v1 最小化，允许为空）
+  - `request_id: str`（每个请求必须存在，回传在响应头 `X-Request-Id`）
+- tenant 选择：v1 使用请求头 `X-Library-Id`（兼容 `X-Tenant-Id`）作为 `tenant_id`。
 
 #### 2) Tenant boundary contract（强制 tenant 边界）
 
@@ -153,11 +155,11 @@
 ### P0（Contract）
 
 - [x] `P0-C1-S1`：默认值（JWT + library_id tenant）
-- [ ] `P0-C1-S2`：最小 contract（接口/错误语义/审计口径）
+- [x] `P0-C1-S2`：最小 contract（接口/错误语义/审计口径）
 
 ### P1（AuthContext）
 
-- [ ] `P1-C1-S1`：实现 AuthContext 注入（JWT + request_id）
+- [x] `P1-C1-S1`：实现 AuthContext 注入（JWT + request_id）
 - [ ] `P1-C1-S2`：调用点统一改造（service/handler 入口收口）
 
 ### P2（Tenant + Policy）

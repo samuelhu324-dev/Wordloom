@@ -66,8 +66,8 @@
 
 ## Execution Checklist（unchecked）
 
-- [ ] P0：contract（JWT + library tenant + request_id + error semantics）
-- [ ] P1：AuthContext（统一注入 + 贯穿 request_id）
+- [x] P0：contract（JWT + library tenant + request_id + error semantics）
+- [x] P1：AuthContext（统一注入 + 贯穿 request_id）
 - [ ] P2：tenant boundary + policy layer（收口授权规则）
 - [ ] P3：audit append-only + drills/evidence（固化）
 

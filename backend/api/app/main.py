@@ -37,6 +37,7 @@ from api.app.config.logging_config import setup_logging
 setup_logging()
 
 from api.app.middlewares.payload_metrics import PayloadMetricsMiddleware
+from api.app.middlewares.request_context_middleware import RequestContextMiddleware
 
 logger = logging.getLogger(__name__)
 
@@ -250,6 +251,7 @@ except Exception as _instr_exc:  # noqa: BLE001
 # =========================================================================
 
 app.add_middleware(PayloadMetricsMiddleware)
+app.add_middleware(RequestContextMiddleware)
 
 
 @app.on_event("startup")
