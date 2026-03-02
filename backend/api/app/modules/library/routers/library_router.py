@@ -7,6 +7,7 @@ from typing import Optional, List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, HTTPException, Path as FastAPIPath, Query, Request, UploadFile, status
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import ProgrammingError
 
@@ -80,9 +81,12 @@ from api.app.modules.media.exceptions import (
 )
 
 # Security
-from api.app.config.security import get_current_actor, get_current_user_id
+from api.app.config.security import get_auth_context, get_current_actor, get_current_user_id
 from api.app.shared.actor import Actor
+from api.app.shared.auth_context import AuthContext
 from api.app.config.setting import get_settings
+
+from api.app.shared.deps import get_db
 
 # Storage
 from infra.storage.storage_manager import LocalStorageStrategy, StorageManager
@@ -98,6 +102,11 @@ router = APIRouter(
         422: {"description": "Validation error", "model": ErrorDetail},
     },
 )
+
+
+class GrantMembershipRequest(BaseModel):
+    user_id: UUID
+    role: str
 
 _BACKEND_ROOT = FilePath(__file__).resolve().parents[5]
 _STORAGE_ROOT = FilePath(os.getenv("WORDLOOM_STORAGE_ROOT", _BACKEND_ROOT / "storage"))
@@ -794,6 +803,146 @@ async def delete_library(
 @router.get("/health", tags=["health"])
 async def health_check() -> dict:
     return {"status": "ok", "service": "library"}
+
+
+# =========================================================================
+# Membership Management (RBAC-lite v1)
+# =========================================================================
+
+
+@router.post(
+    "/{library_id}/memberships",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Grant or update a library membership",
+)
+async def grant_membership(
+    body: GrantMembershipRequest,
+    library_id: UUID = FastAPIPath(...),
+    ctx: AuthContext = Depends(get_auth_context),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    from api.app.policy.library_membership_policy import assert_actor_can_manage_memberships
+    from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+    from infra.storage.library_membership_repository_impl import SQLAlchemyLibraryMembershipRepository
+
+    try:
+        assert_actor_can_manage_memberships(ctx=ctx, requested_library_id=library_id)
+        membership_repo = SQLAlchemyLibraryMembershipRepository(db)
+        membership_id = await membership_repo.grant_role(library_id=library_id, user_id=body.user_id, role=body.role)
+
+        # Audit (best-effort): membership grant/update
+        try:
+            audit_repo = SQLAlchemyAuditLogRepository(db)
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="membership.grant",
+                resource_type="library_membership",
+                resource_id=membership_id,
+                result="success",
+                meta_json={
+                    "library_id": str(library_id),
+                    "member_user_id": str(body.user_id),
+                    "role": str(body.role).strip().lower(),
+                },
+            )
+        except Exception as audit_exc:  # noqa: BLE001
+            logger.warning("[MEMBERSHIP_GRANT] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
+
+        return None
+    except HTTPException as exc:
+        # Audit (best-effort): denied
+        if exc.status_code == status.HTTP_403_FORBIDDEN:
+            try:
+                audit_repo = SQLAlchemyAuditLogRepository(db)
+                reason = None
+                if isinstance(exc.detail, dict):
+                    reason = exc.detail.get("reason")
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="membership.grant",
+                    resource_type="library",
+                    resource_id=ctx.tenant_id,
+                    result="denied",
+                    reason=reason,
+                    meta_json={
+                        "library_id": str(library_id),
+                        "member_user_id": str(body.user_id),
+                        "role": str(body.role).strip().lower(),
+                    },
+                )
+            except Exception as audit_exc:  # noqa: BLE001
+                logger.warning("[MEMBERSHIP_GRANT] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
+        raise
+
+
+@router.delete(
+    "/{library_id}/memberships/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Revoke a library membership",
+)
+async def revoke_membership(
+    library_id: UUID = FastAPIPath(...),
+    user_id: UUID = FastAPIPath(...),
+    ctx: AuthContext = Depends(get_auth_context),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    from api.app.policy.library_membership_policy import assert_actor_can_manage_memberships
+    from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+    from infra.storage.library_membership_repository_impl import SQLAlchemyLibraryMembershipRepository
+
+    try:
+        assert_actor_can_manage_memberships(ctx=ctx, requested_library_id=library_id)
+        membership_repo = SQLAlchemyLibraryMembershipRepository(db)
+        deleted = await membership_repo.revoke(library_id=library_id, user_id=user_id)
+
+        # Audit (best-effort): membership revoke
+        try:
+            audit_repo = SQLAlchemyAuditLogRepository(db)
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="membership.revoke",
+                resource_type="library",
+                resource_id=ctx.tenant_id,
+                result="success",
+                meta_json={
+                    "library_id": str(library_id),
+                    "member_user_id": str(user_id),
+                    "deleted": bool(deleted),
+                },
+            )
+        except Exception as audit_exc:  # noqa: BLE001
+            logger.warning("[MEMBERSHIP_REVOKE] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
+        return None
+    except HTTPException as exc:
+        if exc.status_code == status.HTTP_403_FORBIDDEN:
+            try:
+                audit_repo = SQLAlchemyAuditLogRepository(db)
+                reason = None
+                if isinstance(exc.detail, dict):
+                    reason = exc.detail.get("reason")
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="membership.revoke",
+                    resource_type="library",
+                    resource_id=ctx.tenant_id,
+                    result="denied",
+                    reason=reason,
+                    meta_json={
+                        "library_id": str(library_id),
+                        "member_user_id": str(user_id),
+                    },
+                )
+            except Exception as audit_exc:  # noqa: BLE001
+                logger.warning("[MEMBERSHIP_REVOKE] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
+        raise
 
 @router.get("/debug/meta", tags=["libraries"], summary="Diagnostic library metadata")
 async def libraries_meta(
