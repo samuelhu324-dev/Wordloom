@@ -81,7 +81,6 @@
 #### 1) `AuthContext` contract（统一请求上下文）
 
 - 字段：
-- 字段：
   - `user_id: UUID`
   - `tenant_id: UUID`（v1 等同 `library_id`）
   - `roles: tuple[str, ...]`（v1 最小化，允许为空）
@@ -160,7 +159,7 @@
 ### P1（AuthContext）
 
 - [x] `P1-C1-S1`：实现 AuthContext 注入（JWT + request_id）
-- [ ] `P1-C1-S2`：调用点统一改造（service/handler 入口收口）
+- [x] `P1-C1-S2`：调用点统一改造（service/handler 入口收口；先迁移 1 条链路作为样板）
 
 ### P2（Tenant + Policy）
 
