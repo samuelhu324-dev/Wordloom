@@ -22,7 +22,7 @@
   **child_log_5**: `docs/logs/log-S2C-5A-projection-backfill-template.md`
   **child_log_6**: `docs/logs/log-S2C-6A-search-harness-migration.md`
 **created**: `2026-02-28`
-**updated**: `2026-03-01`
+**updated**: `2026-03-02`
 
 ---
 
@@ -104,7 +104,8 @@
 
 ### P6（Phase 6：Search harness migration｜deferred）
 
-- [ ] 将 Search（DB→ES）以独立切片迁移到 harness（不与 writer/rebuild/drills 混交付）
+- [x] 将 Search（DB→ES）以独立切片迁移到 harness（不与 writer/rebuild/drills 混交付）
+  Delivered: `docs/logs/log-S2C-6A-search-harness-migration.md`
 
 ## Evidence（证据与 SoT 规则）
 

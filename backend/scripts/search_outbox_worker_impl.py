@@ -92,6 +92,14 @@ from infra.outbox_core.retry import ExponentialBackoffSpec, compute_exponential_
 from infra.outbox_core.payload_contract import BadPayload, require_schema_version
 from infra.observability.runtime_endpoints import RuntimeState, start_runtime_http_server
 
+from infra.projection_framework.adapters.search_index_to_elastic import (
+    ElasticTarget,
+    apply_delete as search_apply_delete,
+    apply_upsert as search_apply_upsert,
+    build_es_doc_from_search_row as search_build_es_doc_from_search_row,
+    es_doc_id as search_es_doc_id,
+)
+
 from api.app.config.logging_config import setup_logging
 from infra.observability.tracing import extract_context, instrument_httpx, setup_tracing
 
@@ -202,7 +210,8 @@ def _get_float_env(name: str, default: float) -> float:
 
 
 def _es_doc_id(entity_type: str, entity_id: Any) -> str:
-    return f"{entity_type}:{entity_id}"
+    # Backwards-compatible wrapper.
+    return search_es_doc_id(entity_type, entity_id)
 
 
 def _get_bool_env(name: str, default: bool) -> bool:
@@ -331,57 +340,27 @@ def _compute_backoff_seconds(*, attempt: int, base: float, max_backoff: float) -
 
 
 async def _process_upsert(session: AsyncSession, client: httpx.AsyncClient, index: str, event: _OutboxEventRow) -> None:
-    row = (
-        await session.execute(
-            select(SearchIndexModel).where(
-                SearchIndexModel.entity_type == event.entity_type,
-                SearchIndexModel.entity_id == event.entity_id,
-            )
-        )
-    ).scalar_one_or_none()
-
-    if row is None:
-        # Nothing to upsert anymore (deleted or never existed); treat as success.
+    did_write = await search_apply_upsert(
+        session,
+        client=client,
+        target=ElasticTarget(base_url="", index=index),
+        entity_type=event.entity_type,
+        entity_id=event.entity_id,
+    )
+    if not did_write:
         logger.info("Outbox upsert: no search_index row for %s %s, skipping", event.entity_type, event.entity_id)
         return
-
-    doc = {
-        # Payload contract v1 (hard gate): always emit schema_version.
-        "schema_version": 1,
-        "entity_type": row.entity_type,
-        "library_id": (str(row.library_id) if getattr(row, "library_id", None) else None),
-        "entity_id": str(row.entity_id),
-        "text": row.text,
-        "snippet": row.snippet,
-        "rank_score": row.rank_score,
-        "event_version": int(row.event_version),
-    }
-
-    # Minimal DTO/schema validation before we talk to Elasticsearch.
-    # Contract violations must fail deterministically (no retry).
-    require_schema_version(doc, projection=PROJECTION_NAME, supported_versions={1}, allow_missing=False)
-    if not isinstance(doc.get("entity_type"), str) or not str(doc.get("entity_type") or "").strip():
-        raise BadPayload(projection=PROJECTION_NAME, reason="bad_payload", message="entity_type must be non-empty")
-    if not isinstance(doc.get("entity_id"), str) or not str(doc.get("entity_id") or "").strip():
-        raise BadPayload(projection=PROJECTION_NAME, reason="bad_payload", message="entity_id must be non-empty")
-    if not isinstance(doc.get("event_version"), int):
-        raise BadPayload(projection=PROJECTION_NAME, reason="bad_payload", message="event_version must be int")
-
-    doc_id = _es_doc_id(row.entity_type, row.entity_id)
-    resp = await client.put(f"/{index}/_doc/{doc_id}", json=doc)
-    resp.raise_for_status()
-    logger.info(
-        "Outbox upsert: indexed %s %s (version=%s) into ES", row.entity_type, row.entity_id, row.event_version
-    )
+    logger.info("Outbox upsert: indexed %s %s into ES", event.entity_type, event.entity_id)
 
 
 async def _process_delete(client: httpx.AsyncClient, index: str, event: _OutboxEventRow) -> None:
-    doc_id = _es_doc_id(event.entity_type, event.entity_id)
-    resp = await client.delete(f"/{index}/_doc/{doc_id}")
-    # 404 is fine (already deleted).
-    if resp.status_code not in (200, 404):
-        resp.raise_for_status()
-    if resp.status_code == 404:
+    deleted = await search_apply_delete(
+        client=client,
+        target=ElasticTarget(base_url="", index=index),
+        entity_type=event.entity_type,
+        entity_id=event.entity_id,
+    )
+    if not deleted:
         outbox_idempotent_noop_total.labels(projection=PROJECTION_NAME, op="delete", reason="es_404").inc()
         try:
             from opentelemetry import trace as _otel_trace
@@ -392,9 +371,9 @@ async def _process_delete(client: httpx.AsyncClient, index: str, event: _OutboxE
                 span.set_attribute("wordloom.idempotent_noop_reason", "es_404")
         except Exception:
             pass
-        logger.info("Outbox delete: doc %s not found in ES (noop)", doc_id)
+        logger.info("Outbox delete: doc %s not found in ES (noop)", _es_doc_id(event.entity_type, event.entity_id))
     else:
-        logger.info("Outbox delete: deleted %s from ES", doc_id)
+        logger.info("Outbox delete: deleted %s from ES", _es_doc_id(event.entity_type, event.entity_id))
 
 
 async def _worker_loop() -> None:
@@ -1483,15 +1462,7 @@ async def _worker_loop() -> None:
                             processed_immediately_ids.append(ev.id)
                             continue
 
-                        doc = {
-                            "entity_type": row.entity_type,
-                            "library_id": (str(row.library_id) if getattr(row, "library_id", None) else None),
-                            "entity_id": str(row.entity_id),
-                            "text": row.text,
-                            "snippet": row.snippet,
-                            "rank_score": row.rank_score,
-                            "event_version": int(row.event_version),
-                        }
+                        doc = search_build_es_doc_from_search_row(row)
                         doc_id = _es_doc_id(row.entity_type, row.entity_id)
                         bulk_ops.append(("index", doc_id, doc))
                         bulk_event_ids.append(ev.id)

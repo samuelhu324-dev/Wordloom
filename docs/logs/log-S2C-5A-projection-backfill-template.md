@@ -5,7 +5,7 @@
 **id**: `S2C-5A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `projection backfill template (emit outbox from source-of-truth)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S2C`
 **tags**: `EVOLUTION, Projection, Platform, Framework, Outbox, Backfill, Template, epic/s2, sub/5`
 **links**: ``
