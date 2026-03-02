@@ -109,6 +109,11 @@
 - P3-S1：为 membership 变更与 admin 动作补齐审计写入点（success/denied）
 - P3-S2：新增 drills 脚本（至少 3 scenario）并输出 artifacts 到 `artifacts/_tmp_s5a1a_p3c2sX/`（命名以执行时确定）
 
+### P3（Audit + Drills）｜Cycle 2（P3-C2 draft）
+
+- P3-C2-S1：读路径统一 membership 语义：non-member → 404（避免存在性泄露），并写入审计（result=not_found + reason）
+- P3-C2-S2：新增 drills/evidence：tenant_mismatch（403）与 membership revoke 后一致性（revoke → read 404）
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -132,6 +137,11 @@
 - [x] `P3-C1-S1`：membership/admin 动作的 audit 记录点
 - [x] `P3-C1-S2`：drills/evidence（至少 3 个 scenario + artifacts）
 
+### P3（Audit + Drills）｜Cycle 2
+
+- [x] `P3-C2-S1`：读路径 membership 语义收口（non-member → 404 + audit not_found + reason）
+- [x] `P3-C2-S2`：drills/evidence：tenant_mismatch + revoke 后一致性（至少 2 个 scenario + artifacts）
+
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径。
@@ -154,6 +164,17 @@
 - 2026-03-02｜P3 drills v2：
   - headSha：`01a6ff510653a87c3a64f73807a6dfc615989c05`
   - artifacts：`artifacts/_tmp_s5a2a_p3c1s2/drills_1772457102.json`
+  - env（示例）：
+    - `WORDLOOM_API_BASE_URL=http://localhost:31001`
+    - `DATABASE_URL=postgresql://wordloom:wordloom@localhost:5435/wordloom_dev`
+
+- 2026-03-02｜P3-C2 drills：
+  - headSha：`8c7e6fde16bc1024ce376b76caae173de41b04d3`
+  - artifacts：`artifacts/_tmp_s5a2a_p3c2s2/drills_1772459830.json`
+  - code：
+    - read contract：`backend/api/app/modules/bookshelf/routers/bookshelf_router.py:list_bookshelves/get_bookshelf`
+    - drills：`scripts/drills/s5a2a_p3c2s2_drills.py`
+    - fix（psycopg connect args）：`backend/api/app/config/database.py`
   - env（示例）：
     - `WORDLOOM_API_BASE_URL=http://localhost:31001`
     - `DATABASE_URL=postgresql://wordloom:wordloom@localhost:5435/wordloom_dev`
