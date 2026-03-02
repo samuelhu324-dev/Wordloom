@@ -129,8 +129,8 @@
 
 ### P3（Audit + Drills）
 
-- [ ] `P3-C1-S1`：membership/admin 动作的 audit 记录点
-- [ ] `P3-C1-S2`：drills/evidence（至少 3 个 scenario + artifacts）
+- [x] `P3-C1-S1`：membership/admin 动作的 audit 记录点
+- [x] `P3-C1-S2`：drills/evidence（至少 3 个 scenario + artifacts）
 
 ## Evidence（预留）
 
@@ -144,3 +144,16 @@
 - 代码落地点（P2）：
   - policy：admin-only create：`backend/api/app/policy/bookshelf_policy.py:assert_actor_can_create_bookshelf`
   - handler：`backend/api/app/modules/bookshelf/routers/bookshelf_router.py:create_bookshelf`（member → 403 + reason=`not_admin`）
+
+- 代码落地点（P3）：
+  - membership policy：`backend/api/app/policy/library_membership_policy.py:assert_actor_can_manage_memberships`
+  - membership handler：`backend/api/app/modules/library/routers/library_router.py:grant_membership` / `revoke_membership`
+  - membership repo：`backend/infra/storage/library_membership_repository_impl.py:grant_role` / `revoke`
+  - drills：`scripts/drills/s5a2a_p3c1s2_drills.py`
+
+- 2026-03-02｜P3 drills v2：
+  - headSha：`01a6ff510653a87c3a64f73807a6dfc615989c05`
+  - artifacts：`artifacts/_tmp_s5a2a_p3c1s2/drills_1772457102.json`
+  - env（示例）：
+    - `WORDLOOM_API_BASE_URL=http://localhost:31001`
+    - `DATABASE_URL=postgresql://wordloom:wordloom@localhost:5435/wordloom_dev`
