@@ -26,6 +26,17 @@ def _enabled() -> bool:
     return raw in {"1", "true", "yes", "y", "on"}
 
 
+def _runner() -> str:
+    raw = (os.getenv("SEARCH_OUTBOX_RUNNER") or "").strip().lower()
+    if raw == "":
+        return "legacy"
+    if raw in {"legacy", "harness"}:
+        return raw
+    raise SystemExit(
+        "[search_outbox_worker] invalid SEARCH_OUTBOX_RUNNER; expected legacy|harness"
+    )
+
+
 def main() -> None:
     if not _enabled():
         print("[search_outbox_worker] disabled: SEARCH_OUTBOX_WORKER_ENABLED=0")
@@ -38,6 +49,16 @@ def main() -> None:
     for p in (str(backend_root), str(repo_root)):
         if p and p not in sys.path:
             sys.path.insert(0, p)
+
+    runner = _runner()
+    if runner == "harness":
+        from infra.projection_framework.harness import main as harness_main
+
+        args = list(sys.argv[1:])
+        if not args:
+            sys.argv = [sys.argv[0], "--projection", "search_index_to_elastic"]
+        harness_main()
+        return
 
     impl_script = backend_root / "scripts" / "search_outbox_worker_impl.py"
     if not impl_script.exists():
