@@ -71,6 +71,10 @@ class CreateBookshelfRequest(BaseModel):
 class GetBookshelfRequest(BaseModel):
     """Request to retrieve a Bookshelf by ID"""
     bookshelf_id: UUID = Field(..., description="UUID of the bookshelf")
+    tenant_id: Optional[UUID] = Field(
+        None,
+        description="Tenant/library scope (v1: tenant_id == library_id)",
+    )
     actor_user_id: Optional[UUID] = Field(
         None,
         description="Actor user id (authorization context)",

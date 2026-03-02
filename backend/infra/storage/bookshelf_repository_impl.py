@@ -106,12 +106,20 @@ class SQLAlchemyBookshelfRepository(IBookshelfRepository):
             await self.session.rollback()
             raise
 
-    async def get_by_id(self, bookshelf_id: UUID) -> Optional[Bookshelf]:
-        """Retrieve Bookshelf by ID"""
+    async def get_by_id(
+        self,
+        bookshelf_id: UUID,
+        library_id: Optional[UUID] = None,
+    ) -> Optional[Bookshelf]:
+        """Retrieve Bookshelf by ID.
+
+        When library_id is provided, the lookup is tenant-scoped.
+        """
         try:
-            query = select(BookshelfModel).where(
-                BookshelfModel.id == bookshelf_id
-            )
+            clauses = [BookshelfModel.id == bookshelf_id]
+            if library_id is not None:
+                clauses.append(BookshelfModel.library_id == library_id)
+            query = select(BookshelfModel).where(and_(*clauses))
             result = await self.session.execute(query)
             model = result.scalar_one_or_none()
             if not model:

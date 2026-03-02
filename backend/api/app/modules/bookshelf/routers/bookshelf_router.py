@@ -9,6 +9,7 @@ from typing import List, Optional
 from uuid import UUID
 import logging
 import time
+import uuid
 
 from api.app.dependencies import DIContainer, get_di_container
 from api.app.modules.bookshelf.application.ports.input import (
@@ -25,13 +26,15 @@ from api.app.modules.bookshelf.application.ports.input import (
 )
 from api.app.modules.bookshelf.exceptions import (
     BookshelfNotFoundError,
+    BookshelfForbiddenError,
     BookshelfAlreadyExistsError,
     BookshelfPersistenceError,
     DomainException,
 )
 from api.app.modules.bookshelf.schemas import BookshelfDashboardResponse
 
-from api.app.config.security import get_current_actor
+from api.app.config.security import get_auth_context, get_current_actor
+from api.app.shared.auth_context import AuthContext
 from api.app.shared.actor import Actor
 from api.app.config.setting import get_settings
 
@@ -75,6 +78,32 @@ async def create_bookshelf(
         )
         use_case = di.get_create_bookshelf_use_case()
         result = await use_case.execute(request)
+
+        # Audit (best-effort): successful write
+        try:
+            from api.app.shared.request_context import get_request_context
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            req_ctx = get_request_context()
+            request_id = (req_ctx.correlation_id if req_ctx else None) or str(uuid.uuid4())
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=result.library_id,
+                actor_user_id=actor.user_id,
+                request_id=request_id,
+                action="bookshelf.create",
+                resource_type="bookshelf",
+                resource_id=result.id,
+                result="success",
+                meta_json={
+                    "library_id": str(result.library_id),
+                    "name": result.name,
+                },
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[CREATE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
         elapsed = time.time() - start_time
         logger.info(f"[CREATE_BOOKSHELF] SUCCESS - id={result.id}, elapsed={elapsed:.3f}s")
         return {
@@ -98,6 +127,40 @@ async def create_bookshelf(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=str(e)
+        )
+    except BookshelfForbiddenError as e:
+        elapsed = time.time() - start_time
+        logger.warning(f"[CREATE_BOOKSHELF] FORBIDDEN - {str(e)}, elapsed={elapsed:.3f}s")
+
+        # Audit (best-effort): authorization denial
+        try:
+            from api.app.shared.request_context import get_request_context
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            req_ctx = get_request_context()
+            request_id = (req_ctx.correlation_id if req_ctx else None) or str(uuid.uuid4())
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=request.library_id,
+                actor_user_id=actor.user_id,
+                request_id=request_id,
+                action="bookshelf.create",
+                resource_type="library",
+                resource_id=request.library_id,
+                result="denied",
+                reason=getattr(e, "details", {}).get("reason"),
+                meta_json={
+                    "library_id": str(request.library_id),
+                    "name": request.name,
+                },
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[CREATE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=getattr(e, "to_dict", lambda: str(e))(),
         )
     except DomainException as e:
         elapsed = time.time() - start_time
@@ -313,7 +376,7 @@ async def list_bookshelves(
 )
 async def get_bookshelf(
     bookshelf_id: UUID,
-    actor: Actor = Depends(get_current_actor),
+    ctx: AuthContext = Depends(get_auth_context),
     di: DIContainer = Depends(get_di_container)
 ):
     """获取书架详情"""
@@ -323,11 +386,30 @@ async def get_bookshelf(
         enforce_owner_check = not _settings.allow_dev_library_owner_override
         request = GetBookshelfRequest(
             bookshelf_id=bookshelf_id,
-            actor_user_id=actor.user_id,
+            tenant_id=ctx.tenant_id,
+            actor_user_id=ctx.user_id,
             enforce_owner_check=enforce_owner_check,
         )
         use_case = di.get_get_bookshelf_use_case()
         response = await use_case.execute(request)  # Returns GetBookshelfResponse DTO
+
+        # Audit (best-effort): successful read
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.get",
+                resource_type="bookshelf",
+                resource_id=bookshelf_id,
+                result="success",
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[GET_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
         elapsed = time.time() - start_time
         logger.info(f"[GET_BOOKSHELF] SUCCESS - id={response.id}, elapsed={elapsed:.3f}s")
         # Adapt to unified JSON shape used by other endpoints
@@ -346,9 +428,53 @@ async def get_bookshelf(
     except BookshelfNotFoundError as e:
         elapsed = time.time() - start_time
         logger.warning(f"[GET_BOOKSHELF] NOT_FOUND - {str(e)}, elapsed={elapsed:.3f}s")
+
+        # Audit (best-effort): not found (includes cross-tenant scoped 404)
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.get",
+                resource_type="bookshelf",
+                resource_id=bookshelf_id,
+                result="not_found",
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[GET_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e)
+        )
+    except BookshelfForbiddenError as e:
+        elapsed = time.time() - start_time
+        logger.warning(f"[GET_BOOKSHELF] FORBIDDEN - {str(e)}, elapsed={elapsed:.3f}s")
+
+        # Audit (best-effort): authorization denial
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.get",
+                resource_type="bookshelf",
+                resource_id=bookshelf_id,
+                result="denied",
+                reason=getattr(e, "details", {}).get("reason"),
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[GET_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=getattr(e, "to_dict", lambda: str(e))(),
         )
     except DomainException as e:
         elapsed = time.time() - start_time

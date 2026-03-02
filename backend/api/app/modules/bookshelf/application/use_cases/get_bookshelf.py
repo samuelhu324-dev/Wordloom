@@ -25,6 +25,7 @@ from api.app.modules.bookshelf.exceptions import (
     BookshelfOperationError,
 )
 from api.app.modules.library.application.ports.output import ILibraryRepository
+from api.app.policy.bookshelf_policy import assert_actor_owns_library_for_bookshelf
 
 
 class GetBookshelfUseCase(IGetBookshelfUseCase):
@@ -67,7 +68,10 @@ class GetBookshelfUseCase(IGetBookshelfUseCase):
         """
 
         # Step 1: Query repository by ID
-        bookshelf = await self.repository.get_by_id(request.bookshelf_id)
+        bookshelf = await self.repository.get_by_id(
+            request.bookshelf_id,
+            library_id=request.tenant_id,
+        )
 
         # Step 2: Validate existence
         if not bookshelf:
@@ -95,10 +99,11 @@ class GetBookshelfUseCase(IGetBookshelfUseCase):
                 library_id=str(library_id),
                 reason="Library not found",
             )
-        if getattr(library, "user_id", None) != request.actor_user_id:
-            raise BookshelfForbiddenError(
-                bookshelf_id=str(request.bookshelf_id),
-                library_id=str(library_id),
-                actor_user_id=str(request.actor_user_id),
-                reason="Actor does not own this library",
-            )
+
+        assert_actor_owns_library_for_bookshelf(
+            actor_user_id=request.actor_user_id,
+            enforce_owner_check=request.enforce_owner_check,
+            library_id=library_id,
+            library_owner_user_id=getattr(library, "user_id", None),
+            bookshelf_id=request.bookshelf_id,
+        )

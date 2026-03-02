@@ -32,10 +32,11 @@ def _loop_factory() -> asyncio.AbstractEventLoop:
 
 
 async def _serve() -> None:
+    port = int(os.getenv("PORT", "30001"))
     config = uvicorn.Config(
         "api.app.main:app",
         host="0.0.0.0",
-        port=8000,
+        port=port,
         reload=False,
         access_log=False,
     )
@@ -45,7 +46,7 @@ async def _serve() -> None:
 
 def main() -> None:
     here = Path(__file__).resolve()
-    backend_root = here.parents[1]
+    backend_root = here.parents[2]
 
     # Make `api.*` importable when launching from repo root.
     os.chdir(backend_root)
