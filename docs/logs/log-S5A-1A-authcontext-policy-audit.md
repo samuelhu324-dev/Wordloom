@@ -169,9 +169,27 @@
 ### P3（Audit + Drills）
 
 - [x] `P3-C1-S1`：audit_log append-only 最小闭环
-- [ ] `P3-C1-S2`：drills/evidence（至少 3 个 scenario + artifacts）
+- [x] `P3-C1-S2`：drills/evidence（至少 3 个 scenario + artifacts）
 
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + run URL（如有）+ 关键参数。
 - 本切片完成后，在此追加 drills/evidence 记录。
+
+### P3-C1-S2（drills/evidence｜2026-03-02）
+
+- artifacts：`artifacts/_tmp_s5a1a_p3c1s2/drills_1772432493.json`
+- 环境：Windows（本机），API `http://localhost:30001`，DB `postgresql://wordloom:wordloom@localhost:5435/wordloom_dev`
+- 启动方式（Windows psycopg async 约束）：使用 `backend/scripts/legacy/run_api_win.py`（SelectorEventLoop）启动 API，避免 ProactorEventLoop 导致 DB 请求 500。
+
+- Scenario 1（审计完整性：成功写必须审计）：
+  - `POST /api/v1/bookshelves` → 201
+  - `audit_log`：`action=bookshelf.create` + `result=success`（含 `request_id` 与 `resource_id`）
+
+- Scenario 2（tenant 越权读：不泄露存在性）：
+  - `GET /api/v1/bookshelves/{id}`（错误 `X-Library-Id`）→ 404
+  - `audit_log`：`action=bookshelf.get` + `result=not_found`
+
+- Scenario 3（非 owner 同租户读：403）：
+  - `GET /api/v1/bookshelves/{id}`（同 tenant + 非 owner JWT）→ 403
+  - `audit_log`：`action=bookshelf.get` + `result=denied` + `reason=not_owner`
