@@ -17,6 +17,7 @@
   **reference_log_1**: `docs/logs/log-S2B-3A-unified-consumer-framework.md` # low-cardinality reasons + evidence habits baseline
   **reference_log_2**: `docs/logs/log-S2C-projection-framework-platformization.md` # platformization + drills/evidence baseline
   **child_log_1**: `docs/logs/log-S5A-1A-authcontext-policy-audit.md`
+  **child_log_2**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
 **created**: `2026-03-02`
 **updated**: `2026-03-02`
 
@@ -68,8 +69,8 @@
 
 - [x] P0：contract（JWT + library tenant + request_id + error semantics）
 - [x] P1：AuthContext（统一注入 + 贯穿 request_id）
-- [ ] P2：tenant boundary + policy layer（收口授权规则）
-- [ ] P3：audit append-only + drills/evidence（固化）
+- [x] P2：tenant boundary + policy layer（收口授权规则）
+- [x] P3：audit append-only + drills/evidence（固化）
 
 ## Notes（落地原则）
 
