@@ -13,7 +13,7 @@
   **pr**: ``
   **adr**: ``
   **runbook**: ``
-  **parent_log**: `docs/logs/log-S5A-security-governance-epic.md`
+  **parent_log**: `docs/logs/log-S5A-security-governance.md`
   **reference_log_1**: `docs/logs/log-S2B-3A-unified-consumer-framework.md` # low-cardinality reasons + evidence discipline
   **reference_log_2**: `docs/logs/log-S2C-projection-framework-platformization.md` # platformization + drills/evidence
 **created**: `2026-03-02`

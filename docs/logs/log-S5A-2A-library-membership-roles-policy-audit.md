@@ -13,7 +13,7 @@
   **pr**: ``
   **adr**: ``
   **runbook**: ``
-  **parent_log**: `docs/logs/log-S5A-security-governance-epic.md`
+  **parent_log**: `docs/logs/log-S5A-security-governance.md`
   **previous_log**: `docs/logs/log-S5A-1A-authcontext-policy-audit.md`
 **created**: `2026-03-02`
 **updated**: `2026-03-02`
@@ -113,14 +113,14 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：roles 模型与来源（membership SoT + 约束）
-- [ ] `P0-C1-S2`：错误语义 v2（非 member、非 admin）
-- [ ] `P0-C1-S3`：审计口径 v2（action/result/reason taxonomy）
+- [x] `P0-C1-S1`：roles 模型与来源（membership SoT + 约束）
+- [x] `P0-C1-S2`：错误语义 v2（非 member、非 admin）
+- [x] `P0-C1-S3`：审计口径 v2（action/result/reason taxonomy）
 
 ### P1（Membership + Roles）
 
-- [ ] `P1-C1-S1`：membership 表/ORM/repo
-- [ ] `P1-C1-S2`：AuthContext.roles 从 membership 注入（fallback 可控）
+- [x] `P1-C1-S1`：membership 表/ORM/repo
+- [x] `P1-C1-S2`：AuthContext.roles 从 membership 注入（fallback 可控）
 
 ### P2（Policy）
 
@@ -135,3 +135,8 @@
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径。
+- 代码落地点（P1）：
+  - migration：`backend/infra/database/migrations/versions/9f2c7d1a4b63_add_library_memberships.py`
+  - ORM：`backend/infra/database/models/library_membership_models.py`
+  - repo：`backend/infra/storage/library_membership_repository_impl.py`
+  - roles 注入：`backend/api/app/config/security.py:get_auth_context`

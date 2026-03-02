@@ -1,10 +1,10 @@
-# log-S5A-security-governance-epic（S5A：安全与治理 Epic 路线）
+# log-S5A-security-governance（S5A：安全与治理 Epic 路线）
 
 ---
 
-**id**: `S5A-security-governance-epic`
+**id**: `S5A-security-governance`
 **kind**: `log`               # log | lab | runbook | adr | note
-**title**: `security & governance epic (AuthContext, tenant boundary, policy, audit, drills, membership/roles)`
+**title**: `security & governance (AuthContext, tenant boundary, policy, audit, drills, membership/roles)`
 **status**: `draft`           # draft | stable | archived
 **scope**: `S5`
 **tags**: `EVOLUTION, Security, Governance, MultiTenant, Auth, Authorization, Policy, Audit, Drills, epic/s5, epic/s5a`

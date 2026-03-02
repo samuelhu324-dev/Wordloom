@@ -13,11 +13,19 @@ from uuid import UUID, uuid4
 import jwt
 from .setting import get_settings
 
-from fastapi import HTTPException, Request, status
+from fastapi import Depends, HTTPException, Request, status
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.app.shared.actor import Actor
 from api.app.shared.auth_context import AuthContext
+from api.app.shared.deps import get_db
 from api.app.shared.request_context import with_actor_id
+
+from infra.database.models.library_models import LibraryModel
+from infra.storage.library_membership_repository_impl import (
+    SQLAlchemyLibraryMembershipRepository,
+)
 
 
 class SecurityConfig:
@@ -124,7 +132,10 @@ def _parse_tenant_id(request: Request) -> UUID:
         ) from exc
 
 
-async def get_auth_context(request: Request) -> AuthContext:
+async def get_auth_context(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> AuthContext:
     """Route C baseline dependency: returns unified AuthContext.
 
     - Auth: JWT Bearer token (Authorization: Bearer <token>)
@@ -154,12 +165,46 @@ async def get_auth_context(request: Request) -> AuthContext:
                 detail="Invalid token payload",
                 headers={"WWW-Authenticate": "Bearer"},
             ) from exc
-        roles = _parse_roles(payload)
+        token_roles = _parse_roles(payload)
     else:
         user_id = await get_current_user_id()
-        roles = tuple()
+        token_roles = tuple()
 
     tenant_id = _parse_tenant_id(request)
+
+    # Roles (S5A-2A): membership SoT for the selected tenant.
+    # Transitional fallback: treat `libraries.user_id` as implicit owner when
+    # membership rows are not present yet.
+    roles: Tuple[str, ...] = tuple()
+    try:
+        membership_repo = SQLAlchemyLibraryMembershipRepository(db)
+        role = await membership_repo.get_role(library_id=tenant_id, user_id=user_id)
+        if not role:
+            owner_id_result = await db.execute(
+                select(LibraryModel.user_id).where(
+                    LibraryModel.id == tenant_id,
+                    LibraryModel.soft_deleted_at.is_(None),
+                )
+            )
+            owner_id = owner_id_result.scalar_one_or_none()
+            if owner_id == user_id:
+                role = "owner"
+
+        if role:
+            normalized = str(role).strip().lower()
+            if normalized == "owner":
+                roles = ("owner", "admin", "member")
+            elif normalized == "admin":
+                roles = ("admin", "member")
+            elif normalized == "member":
+                roles = ("member",)
+            else:
+                roles = tuple()
+        else:
+            roles = token_roles
+    except Exception:
+        # Best-effort: keep requests working during local dev if DB is down.
+        roles = token_roles
 
     with_actor_id(user_id)
     ctx = AuthContext(user_id=user_id, tenant_id=tenant_id, roles=roles, request_id=request_id)

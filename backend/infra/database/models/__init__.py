@@ -18,6 +18,7 @@ from .base import Base
 
 # Import all models
 from .library_models import LibraryModel
+from .library_membership_models import LibraryMembershipModel
 from .bookshelf_models import BookshelfModel
 from .book_models import BookModel
 from .block_models import BlockModel
@@ -38,6 +39,7 @@ __all__ = [
     "Base",
     # Library models
     "LibraryModel",
+    "LibraryMembershipModel",
     "BookshelfModel",
     "BookModel",
     "BlockModel",
