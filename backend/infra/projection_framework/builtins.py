@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import FrozenSet, Tuple
 
 from .adapters.chronicle_events_to_entries import apply as chronicle_events_to_entries_apply
+from .adapters.search_index_to_elastic import apply as search_index_to_elastic_apply
 from .registry import get_spec, register
 from .spec import ProjectionSpec
 
@@ -23,7 +24,7 @@ def register_builtin_specs() -> None:
             scope_keys=("library_id",),
             requires=frozenset({"db", "es"}),
             payload_schema_version=1,
-            apply_entrypoint=_stub_apply_factory(projection_name="search_index_to_elastic"),
+            apply_entrypoint=search_index_to_elastic_apply,
         ),
         ProjectionSpec(
             projection_name="chronicle_events_to_entries",
