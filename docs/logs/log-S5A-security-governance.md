@@ -19,7 +19,7 @@
   **phase_log_1**: `docs/logs/log-S5A-1A-authcontext-policy-audit.md`
   **phase_log_2**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
 **created**: `2026-03-02`
-**updated**: `2026-03-02`
+**updated**: `2026-03-03`
 
 ---
 
@@ -67,6 +67,11 @@
 - [x] `P1`：AuthContext（统一注入 + 贯穿 request_id）
 - [x] `P2`：tenant boundary + policy layer（收口授权规则）
 - [x] `P3`：audit append-only + drills/evidence（固化）
+
+## Current Status（进展摘要）
+
+- `S5A-1A` 与 `S5A-2A` 已形成可运行的安全/多租户/审计统一骨架，并以 drills + artifacts 固化证据链。
+- `S5A-2A` 已推进到 `P3-C4`：将读路径“non-member/tenant_mismatch → 404 + audit not_found(reason)”扩展到 Book 关键读接口（`book.list` / `book.get`），并产出 artifacts 证据（详见 phase log）。
 
 ## Notes（落地原则）
 
