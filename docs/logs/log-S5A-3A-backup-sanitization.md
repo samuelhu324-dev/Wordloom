@@ -138,7 +138,7 @@
 
 ### P2（Restore drill）
 
-- [ ] `P2-C1-S1`：实现 restore 脚本（恢复到新库）
+- [x] `P2-C1-S1`：实现 restore 脚本（恢复到新库）
 - [ ] `P2-C1-S2`：restore 验证 + artifacts
 
 ### P3（Sanitization）
