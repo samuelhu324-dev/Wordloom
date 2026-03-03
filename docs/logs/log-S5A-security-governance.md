@@ -19,6 +19,7 @@
   **phase_log_1**: `docs/logs/log-S5A-1A-authcontext-policy-audit.md`
   **phase_log_2**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
   **phase_log_3**: `docs/logs/log-S5A-3A-backup-sanitization.md`
+  **phase_log_4**: `docs/logs/log-S5A-3B-object-storage-backup.md`
 **created**: `2026-03-02`
 **updated**: `2026-03-03`
 
@@ -63,6 +64,8 @@
   - 详见：`docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
 - `S5A-3A`（Phase 3）：dev/test 可恢复备份 + 恢复演练 + 脱敏（sanitization）v1
   - 详见：`docs/logs/log-S5A-3A-backup-sanitization.md`
+- `S5A-3B`（Phase 4）：对象存储化备份（MinIO/S3）+ 生命周期 + drills/evidence v1
+  - 详见：`docs/logs/log-S5A-3B-object-storage-backup.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
