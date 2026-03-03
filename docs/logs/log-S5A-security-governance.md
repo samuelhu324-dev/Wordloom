@@ -18,8 +18,9 @@
   **reference_log_2**: `docs/logs/log-S2C-projection-framework-platformization.md` # platformization + drills/evidence baseline
   **phase_log_1**: `docs/logs/log-S5A-1A-authcontext-policy-audit.md`
   **phase_log_2**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
+  **phase_log_3**: `docs/logs/log-S5A-3A-backup-sanitization.md`
 **created**: `2026-03-02`
-**updated**: `2026-03-02`
+**updated**: `2026-03-03`
 
 ---
 
@@ -60,6 +61,8 @@
   - 详见：`docs/logs/log-S5A-1A-authcontext-policy-audit.md`
 - `S5A-2A`（Phase 2）：Library membership + roles（RBAC-lite）+ policy 扩展 + audit v2 + drills/evidence
   - 详见：`docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
+- `S5A-3A`（Phase 3）：dev/test 可恢复备份 + 恢复演练 + 脱敏（sanitization）v1
+  - 详见：`docs/logs/log-S5A-3A-backup-sanitization.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -67,6 +70,11 @@
 - [x] `P1`：AuthContext（统一注入 + 贯穿 request_id）
 - [x] `P2`：tenant boundary + policy layer（收口授权规则）
 - [x] `P3`：audit append-only + drills/evidence（固化）
+
+## Current Status（进展摘要）
+
+- `S5A-1A` 与 `S5A-2A` 已形成可运行的安全/多租户/审计统一骨架，并以 drills + artifacts 固化证据链。
+- `S5A-2A` 已推进到 `P3-C4`：将读路径“non-member/tenant_mismatch → 404 + audit not_found(reason)”扩展到 Book 关键读接口（`book.list` / `book.get`），并产出 artifacts 证据（详见 phase log）。
 
 ## Notes（落地原则）
 
