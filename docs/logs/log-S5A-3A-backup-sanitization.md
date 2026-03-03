@@ -143,8 +143,8 @@
 
 ### P3（Sanitization）
 
-- [ ] `P3-C1-S1`：实现脱敏 SQL 脚本（恢复库上跑）
-- [ ] `P3-C1-S2`：sanitize 验证 + artifacts
+- [x] `P3-C1-S1`：实现脱敏 SQL 脚本（恢复库上跑）
+- [x] `P3-C1-S2`：sanitize 验证 + artifacts
 
 ## Evidence（预留）
 
@@ -167,3 +167,11 @@
 - restore target db：`wordloom_restore_dev`
 - env（示例）：
   - service：`db_devtest` / source dump：`artifacts/_tmp_s5a3a_p1c1s2/wordloom_wordloom_dev_<ts>.dump`
+
+### P3-C1-S2（restore+sanitize+verify drill｜2026-03-03）
+
+- headSha：`__HEAD_SHA_AFTER_COMMIT__`
+- artifacts（evidence JSON）：`artifacts/_tmp_s5a3a_p3c1s2/drills_1772531253.json`
+- restore target db：`wordloom_restore_dev`
+- sanitize SQL：`scripts/backup/s5a3a_p3c1s1_sanitize_restore_db.sql`
+- verify SQL：`scripts/backup/s5a3a_p3c1s2_verify_sanitization.sql`
