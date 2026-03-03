@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "run_id": "973f3e09-f6cb-40e0-9769-4c628f075204",
+    "started_at": "2026-03-03T09:00:19.174432+00:00",
+    "finished_at": "2026-03-03T09:00:24.401284+00:00",
+    "config": {
+      "compose_file": "docker-compose.devtest-db.yml",
+      "service": "db_devtest",
+      "user": "wordloom",
+      "target_db": "wordloom_restore_dev",
+      "dump_file": "artifacts/_tmp_s5a3a_p1c1s2/wordloom_wordloom_dev_1772527633.dump",
+      "rpo": "24h",
+      "rto": "1h"
+    }
+  },
+  "drills": {
+    "restore_pg_restore": {
+      "status": "ok",
+      "container_id": "a39cf92170e114d5004288140a4fae265873a7f18f89d9a99256140cedf0c055",
+      "stdout": "OK\nCONTAINER_ID=a39cf92170e114d5004288140a4fae265873a7f18f89d9a99256140cedf0c055\nTARGET_DB=wordloom_restore_dev\nDUMP_FILE=D:\\Project\\wordloom-v3\\artifacts\\_tmp_s5a3a_p1c1s2\\wordloom_wordloom_dev_1772527633.dump",
+      "stderr": "NOTICE:  database \"wordloom_restore_dev\" does not exist, skipping"
+    },
+    "verify": {
+      "db_exists_count": "1",
+      "select_1": "1",
+      "user_table_count": "20",
+      "sample_tables": [
+        "public.alembic_version",
+        "public.audit_log",
+        "public.basement_entries",
+        "public.blocks",
+        "public.books",
+        "public.bookshelves",
+        "public.chronicle_entries",
+        "public.chronicle_event_dedupe_state",
+        "public.chronicle_events",
+        "public.environment_sentinel",
+        "public.libraries",
+        "public.library_memberships",
+        "public.maturity_snapshots",
+        "public.media",
+        "public.media_associations",
+        "public.outbox_events",
+        "public.projection_status",
+        "public.search_index",
+        "public.tag_associations",
+        "public.tags"
+      ]
+    }
+  },
+  "notes": {
+    "dump_file_committed": false,
+    "reason": "Restore drill uses a local dump file; evidence JSON is safe to commit but dump may contain sensitive data."
+  }
+}

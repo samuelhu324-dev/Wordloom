@@ -139,7 +139,7 @@
 ### P2（Restore drill）
 
 - [x] `P2-C1-S1`：实现 restore 脚本（恢复到新库）
-- [ ] `P2-C1-S2`：restore 验证 + artifacts
+- [x] `P2-C1-S2`：restore 验证 + artifacts
 
 ### P3（Sanitization）
 
@@ -159,3 +159,11 @@
 - env（示例）：
   - `docker compose -f docker-compose.devtest-db.yml up -d`
   - service：`db_devtest` / db：`wordloom_dev`
+
+### P2-C1-S2（restore+verify drill｜2026-03-03）
+
+- headSha：`__HEAD_SHA_AFTER_COMMIT__`
+- artifacts（evidence JSON）：`artifacts/_tmp_s5a3a_p2c1s2/drills_1772528419.json`
+- restore target db：`wordloom_restore_dev`
+- env（示例）：
+  - service：`db_devtest` / source dump：`artifacts/_tmp_s5a3a_p1c1s2/wordloom_wordloom_dev_<ts>.dump`
