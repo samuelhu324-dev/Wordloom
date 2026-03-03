@@ -16,7 +16,7 @@
   **parent_log**: `docs/logs/log-S5A-security-governance.md`
   **previous_log**: `docs/logs/log-S5A-1A-authcontext-policy-audit.md`
 **created**: `2026-03-02`
-**updated**: `2026-03-02`
+**updated**: `2026-03-03`
 
 ---
 
@@ -119,6 +119,11 @@
 - P3-C3-S1：把同样的“读路径 non-member → 404 + audit not_found（reason）”语义扩展到 Bookshelf 其它读接口（dashboard / basement），并修复 `/basement` 路由被 `/{bookshelf_id}` 吞掉导致 422 的问题（确保 contract 可被实际命中）
 - P3-C3-S2：新增 drills/evidence：覆盖 `bookshelf.list` 的 404 行为（non-member + tenant_mismatch），并验证 dashboard/basement 的 non-member 404（事实源：artifacts JSON）
 
+### P3（Audit + Drills）｜Cycle 4（P3-C4 draft）
+
+- P3-C4-S1：把同样的“读路径 non-member/tenant_mismatch → 404 + audit not_found（reason）”语义扩展到 **非 Bookshelf** 的关键读接口（最小增量：Book 模块 list/get）
+- P3-C4-S2：新增 drills/evidence：覆盖 `book.list` / `book.get` 的 non-member + tenant_mismatch（404）并输出 artifacts（含 audit_rows）
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -151,6 +156,11 @@
 
 - [x] `P3-C3-S1`：扩展读路径 contract 到 dashboard/basement（non-member/tenant_mismatch → 404 + audit not_found）并修复 basement 路由吞噬（422）
 - [x] `P3-C3-S2`：drills/evidence：bookshelf.list 的 non-member + tenant_mismatch（404）+ dashboard/basement non-member（404）+ artifacts
+
+### P3（Audit + Drills）｜Cycle 4
+
+- [x] `P3-C4-S1`：扩展读路径 contract 到 Book（`book.list` / `book.get`：non-member/tenant_mismatch → 404 + audit not_found + reason）
+- [x] `P3-C4-S2`：drills/evidence：Book 的 non-member + tenant_mismatch（404）+ audit_rows + artifacts
 
 ## Evidence（预留） 
 
@@ -195,6 +205,16 @@
   - code：
     - read contract：`backend/api/app/modules/bookshelf/routers/bookshelf_router.py:get_bookshelf_dashboard/get_basement`（包含 `/basement` 路由顺序修复）
     - drills：`scripts/drills/s5a2a_p3c3s2_drills.py`
+  - env（示例）：
+    - `WORDLOOM_API_BASE_URL=http://localhost:31001`
+    - `DATABASE_URL=postgresql://wordloom:wordloom@localhost:5435/wordloom_dev`
+
+- 2026-03-03｜P3-C4 drills：
+  - headSha：`__HEAD_SHA_AFTER_COMMIT__`
+  - artifacts：`artifacts/_tmp_s5a2a_p3c4s2/drills_1772521899.json`
+  - code：
+    - read contract：`backend/api/app/modules/book/routers/book_router.py:list_books/get_book`
+    - drills：`scripts/drills/s5a2a_p3c4s2_drills.py`
   - env（示例）：
     - `WORDLOOM_API_BASE_URL=http://localhost:31001`
     - `DATABASE_URL=postgresql://wordloom:wordloom@localhost:5435/wordloom_dev`
