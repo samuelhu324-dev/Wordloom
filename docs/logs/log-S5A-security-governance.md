@@ -78,6 +78,7 @@
 
 - `S5A-1A` 与 `S5A-2A` 已形成可运行的安全/多租户/审计统一骨架，并以 drills + artifacts 固化证据链。
 - `S5A-2A` 已推进到 `P3-C4`：将读路径“non-member/tenant_mismatch → 404 + audit not_found(reason)”扩展到 Book 关键读接口（`book.list` / `book.get`），并产出 artifacts 证据（详见 phase log）。
+- `S5A-3B` 已补齐单命令 pipeline drill（backup → upload → restore+verify → sanitize+verify），形成可重复的端到端证据链。
 
 ## Notes（落地原则）
 
