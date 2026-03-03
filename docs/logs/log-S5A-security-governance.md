@@ -18,6 +18,7 @@
   **reference_log_2**: `docs/logs/log-S2C-projection-framework-platformization.md` # platformization + drills/evidence baseline
   **phase_log_1**: `docs/logs/log-S5A-1A-authcontext-policy-audit.md`
   **phase_log_2**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
+  **phase_log_3**: `docs/logs/log-S5A-3A-backup-sanitization.md`
 **created**: `2026-03-02`
 **updated**: `2026-03-03`
 
@@ -60,6 +61,8 @@
   - 详见：`docs/logs/log-S5A-1A-authcontext-policy-audit.md`
 - `S5A-2A`（Phase 2）：Library membership + roles（RBAC-lite）+ policy 扩展 + audit v2 + drills/evidence
   - 详见：`docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
+- `S5A-3A`（Phase 3）：dev/test 可恢复备份 + 恢复演练 + 脱敏（sanitization）v1
+  - 详见：`docs/logs/log-S5A-3A-backup-sanitization.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
