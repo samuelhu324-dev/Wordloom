@@ -1,0 +1,164 @@
+{
+  "meta": {
+    "run_id": "76aa0b73-ef70-45b6-9b8e-6aeeab559b9f",
+    "started_at": "2026-03-03T11:29:48.893934+00:00",
+    "finished_at": "2026-03-03T11:30:19.756912+00:00",
+    "config": {
+      "backup_evidence": "artifacts/_tmp_s5a3a_p1c1s2/drills_1772537389.json",
+      "upload_evidence": "artifacts/_tmp_s5a3b_p1c1s3/drills_1772537391.json",
+      "p2_evidence": "artifacts/_tmp_s5a3b_p2c1s2/drills_1772537401.json",
+      "p3_evidence": "artifacts/_tmp_s5a3b_p3c1s2/drills_1772537409.json"
+    }
+  },
+  "summary": {
+    "bucket": "wordloom-backups-devtest",
+    "object_key": "s5a3a/2026-03-03/wordloom_dev/1772566193.dump",
+    "sha256": "63889aea60ffebeec3c52ba37ca4a0a242defa59cd0c45db6782ddc0964623bb",
+    "size_bytes": 436584,
+    "p3_verify": {
+      "kind": "s5a3a_sanitization_verify",
+      "stats": [
+        {
+          "table_name": "basement_entries",
+          "column_name": "summary_snapshot",
+          "non_null_count": 0,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "basement_entries",
+          "column_name": "title_snapshot",
+          "non_null_count": 0,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "blocks",
+          "column_name": "content",
+          "non_null_count": 0,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "blocks",
+          "column_name": "meta",
+          "non_null_count": 0,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "books",
+          "column_name": "manual_maturity_reason",
+          "non_null_count": 0,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "books",
+          "column_name": "summary",
+          "non_null_count": 1,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "books",
+          "column_name": "title",
+          "non_null_count": 2,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "bookshelves",
+          "column_name": "description",
+          "non_null_count": 9,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "bookshelves",
+          "column_name": "name",
+          "non_null_count": 24,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "chronicle_entries",
+          "column_name": "summary",
+          "non_null_count": 0,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "libraries",
+          "column_name": "description",
+          "non_null_count": 14,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "libraries",
+          "column_name": "name",
+          "non_null_count": 15,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "media",
+          "column_name": "filename",
+          "non_null_count": 0,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "media",
+          "column_name": "storage_key",
+          "non_null_count": 0,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "search_index",
+          "column_name": "snippet",
+          "non_null_count": 1,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "search_index",
+          "column_name": "text",
+          "non_null_count": 1146,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "tags",
+          "column_name": "description",
+          "non_null_count": 0,
+          "non_redacted_count": 0
+        },
+        {
+          "table_name": "tags",
+          "column_name": "name",
+          "non_null_count": 0,
+          "non_redacted_count": 0
+        }
+      ],
+      "failures": [],
+      "occurred_at": "2026-03-03T11:30:19.556885+00:00"
+    }
+  },
+  "drills": {
+    "s5a3a_backup": {
+      "status": "ok",
+      "evidence": "artifacts/_tmp_s5a3a_p1c1s2/drills_1772537389.json",
+      "stdout": "artifacts/_tmp_s5a3a_p1c1s2/drills_1772537389.json",
+      "stderr": ""
+    },
+    "s5a3b_upload": {
+      "status": "ok",
+      "evidence": "artifacts/_tmp_s5a3b_p1c1s3/drills_1772537391.json",
+      "stdout": "artifacts/_tmp_s5a3b_p1c1s3/drills_1772537391.json",
+      "stderr": ""
+    },
+    "s5a3b_restore_verify": {
+      "status": "ok",
+      "evidence": "artifacts/_tmp_s5a3b_p2c1s2/drills_1772537401.json",
+      "stdout": "artifacts/_tmp_s5a3b_p2c1s2/drills_1772537401.json",
+      "stderr": ""
+    },
+    "s5a3b_restore_sanitize_verify": {
+      "status": "ok",
+      "evidence": "artifacts/_tmp_s5a3b_p3c1s2/drills_1772537409.json",
+      "stdout": "artifacts/_tmp_s5a3b_p3c1s2/drills_1772537409.json",
+      "stderr": ""
+    }
+  },
+  "notes": {
+    "dump_file_committed": false,
+    "reason": "DB dumps may contain sensitive data; store dump in object storage and commit only evidence JSON."
+  }
+}

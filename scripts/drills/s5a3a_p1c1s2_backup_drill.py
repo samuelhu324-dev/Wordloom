@@ -29,6 +29,8 @@ def run(cmd: list[str], cwd: Path) -> subprocess.CompletedProcess:
         cmd,
         cwd=str(cwd),
         text=True,
+        encoding="utf-8",
+        errors="replace",
         capture_output=True,
         check=False,
     )
