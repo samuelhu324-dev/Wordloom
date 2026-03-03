@@ -110,15 +110,15 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：对象存储 contract（bucket/key/manifest）
-- [ ] `P0-C1-S2`：生命周期 contract（dump/manifest 过期）
-- [ ] `P0-C1-S3`：证据口径 contract（evidence 字段）
+- [x] `P0-C1-S1`：对象存储 contract（bucket/key/manifest）
+- [x] `P0-C1-S2`：生命周期 contract（dump/manifest 过期）
+- [x] `P0-C1-S3`：证据口径 contract（evidence 字段）
 
 ### P1（MinIO + upload）
 
-- [ ] `P1-C1-S1`：MinIO dev/test infra（compose）
-- [ ] `P1-C1-S2`：upload 脚本（dump → bucket/key + manifest）
-- [ ] `P1-C1-S3`：upload drill + artifacts
+- [x] `P1-C1-S1`：MinIO dev/test infra（compose）
+- [x] `P1-C1-S2`：upload 脚本（dump → bucket/key + manifest）
+- [x] `P1-C1-S3`：upload drill + artifacts
 
 ### P2（Restore drill from object storage）
 
@@ -129,11 +129,11 @@
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径。
 
-### P1-C1-S3（upload drill｜YYYY-MM-DD）
+### P1-C1-S3（upload drill｜2026-03-03）
 
-- headSha：`__HEAD_SHA_AFTER_COMMIT__`
-- artifacts：`artifacts/_tmp_s5a3a_pXcXsX/drills_<ts>.json`
-- bucket/key：`s5a3a/<YYYY-MM-DD>/<db_name>/<timestamp>.dump`
+- headSha：`c1865ac74a8014574de77a5af40b623fb365fdde`
+- artifacts：`artifacts/_tmp_s5a3b_p1c1s3/drills_1772532620.json`
+- bucket/key：`s5a3a/2026-03-03/wordloom_dev/1772561421.dump`
 
 ### P2-C1-S2（download+restore+verify drill｜YYYY-MM-DD）
 
