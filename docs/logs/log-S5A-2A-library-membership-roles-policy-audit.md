@@ -210,7 +210,7 @@
     - `DATABASE_URL=postgresql://wordloom:wordloom@localhost:5435/wordloom_dev`
 
 - 2026-03-03｜P3-C4 drills：
-  - headSha：`__HEAD_SHA_AFTER_COMMIT__`
+  - headSha：`1768567c78c9d1f31b7f09acd6f44d7a4fa5ad72`
   - artifacts：`artifacts/_tmp_s5a2a_p3c4s2/drills_1772521899.json`
   - code：
     - read contract：`backend/api/app/modules/book/routers/book_router.py:list_books/get_book`
