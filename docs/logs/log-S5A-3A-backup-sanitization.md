@@ -162,7 +162,7 @@
 
 ### P2-C1-S2（restore+verify drill｜2026-03-03）
 
-- headSha：`__HEAD_SHA_AFTER_COMMIT__`
+- headSha：`bed34296cc70e554caa17e62b48ee77291825dae`
 - artifacts（evidence JSON）：`artifacts/_tmp_s5a3a_p2c1s2/drills_1772528419.json`
 - restore target db：`wordloom_restore_dev`
 - env（示例）：
