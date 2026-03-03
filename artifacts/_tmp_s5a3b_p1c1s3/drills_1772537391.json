@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "run_id": "fa0a194e-6f0d-49fb-aa86-32706595a477",
+    "started_at": "2026-03-03T11:29:51.573805+00:00",
+    "finished_at": "2026-03-03T11:30:01.289699+00:00",
+    "config": {
+      "infra_compose_file": "docker-compose.infra.yml",
+      "bucket": "wordloom-backups-devtest",
+      "prefix": "s5a3a",
+      "db_name": "wordloom_dev",
+      "dump_file": "artifacts/_tmp_s5a3a_p1c1s2/wordloom_wordloom_dev_1772537389.dump",
+      "manifest_file": "artifacts/_tmp_s5a3b_p1c1s2/manifest_1772537391.json",
+      "lifecycle_expiry_days": 7
+    }
+  },
+  "drills": {
+    "upload": {
+      "status": "ok",
+      "stdout": "{\n    \"ok\":  true,\n    \"bucket\":  \"wordloom-backups-devtest\",\n    \"dump_object_key\":  \"s5a3a/2026-03-03/wordloom_dev/1772566193.dump\",\n    \"manifest_object_key\":  \"s5a3a/2026-03-03/wordloom_dev/1772566193.manifest.json\",\n    \"sha256\":  \"63889aea60ffebeec3c52ba37ca4a0a242defa59cd0c45db6782ddc0964623bb\",\n    \"size_bytes\":  436584,\n    \"manifest_file\":  \"artifacts/_tmp_s5a3b_p1c1s2/manifest_1772537391.json\",\n    \"mc\":  {\n               \"alias_stdout\":  \"Added `s5a3b` successfully.\",\n               \"put_dump_stdout\":  \"`/workspace/artifacts/_tmp_s5a3a_p1c1s2/wordloom_wordloom_dev_1772537389.dump` -\\u003e `s5a3b/wordloom-backups-devtest/s5a3a/2026-03-03/wordloom_dev/1772566193.dump`\\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\ufffd?Total      \ufffd?Transferred \ufffd?Duration \ufffd?Speed       \ufffd?\ufffd?426.35 KiB \ufffd?426.35 KiB  \ufffd?00m00s   \ufffd?16.34 MiB/s \ufffd?\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\",\n               \"put_manifest_stdout\":  \"`/workspace/artifacts/_tmp_s5a3b_p1c1s2/manifest_1772537391.json` -\\u003e `s5a3b/wordloom-backups-devtest/s5a3a/2026-03-03/wordloom_dev/1772566193.manifest.json`\\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\ufffd?Total \ufffd?Transferred \ufffd?Duration \ufffd?Speed       \ufffd?\ufffd?513 B \ufffd?513 B       \ufffd?00m00s   \ufffd?31.44 KiB/s \ufffd?\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\",\n               \"stat_dump_json\":  \"{\\\"status\\\":\\\"success\\\",\\\"name\\\":\\\"1772566193.dump\\\",\\\"lastModified\\\":\\\"2026-03-03T11:29:57Z\\\",\\\"size\\\":436584,\\\"etag\\\":\\\"55924e5c2eb51f4abc7365c2716a9ec1\\\",\\\"type\\\":\\\"file\\\",\\\"expiration\\\":\\\"2026-03-11T00:00:00Z\\\",\\\"expirationRuleID\\\":\\\"d6jccd7t6oks73b49d9g\\\",\\\"metadata\\\":{\\\"Content-Type\\\":\\\"application/octet-stream\\\"}}\"\n           }\n}",
+      "stderr": "",
+      "result": {
+        "ok": true,
+        "bucket": "wordloom-backups-devtest",
+        "dump_object_key": "s5a3a/2026-03-03/wordloom_dev/1772566193.dump",
+        "manifest_object_key": "s5a3a/2026-03-03/wordloom_dev/1772566193.manifest.json",
+        "sha256": "63889aea60ffebeec3c52ba37ca4a0a242defa59cd0c45db6782ddc0964623bb",
+        "size_bytes": 436584,
+        "manifest_file": "artifacts/_tmp_s5a3b_p1c1s2/manifest_1772537391.json",
+        "mc": {
+          "alias_stdout": "Added `s5a3b` successfully.",
+          "put_dump_stdout": "`/workspace/artifacts/_tmp_s5a3a_p1c1s2/wordloom_wordloom_dev_1772537389.dump` -> `s5a3b/wordloom-backups-devtest/s5a3a/2026-03-03/wordloom_dev/1772566193.dump`\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\ufffd?Total      \ufffd?Transferred \ufffd?Duration \ufffd?Speed       \ufffd?\ufffd?426.35 KiB \ufffd?426.35 KiB  \ufffd?00m00s   \ufffd?16.34 MiB/s \ufffd?\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?",
+          "put_manifest_stdout": "`/workspace/artifacts/_tmp_s5a3b_p1c1s2/manifest_1772537391.json` -> `s5a3b/wordloom-backups-devtest/s5a3a/2026-03-03/wordloom_dev/1772566193.manifest.json`\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\ufffd?Total \ufffd?Transferred \ufffd?Duration \ufffd?Speed       \ufffd?\ufffd?513 B \ufffd?513 B       \ufffd?00m00s   \ufffd?31.44 KiB/s \ufffd?\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?",
+          "stat_dump_json": "{\"status\":\"success\",\"name\":\"1772566193.dump\",\"lastModified\":\"2026-03-03T11:29:57Z\",\"size\":436584,\"etag\":\"55924e5c2eb51f4abc7365c2716a9ec1\",\"type\":\"file\",\"expiration\":\"2026-03-11T00:00:00Z\",\"expirationRuleID\":\"d6jccd7t6oks73b49d9g\",\"metadata\":{\"Content-Type\":\"application/octet-stream\"}}"
+        }
+      }
+    }
+  },
+  "notes": {
+    "dump_file_committed": false,
+    "reason": "Dump files may contain sensitive data; store in object storage and commit only evidence JSON."
+  }
+}

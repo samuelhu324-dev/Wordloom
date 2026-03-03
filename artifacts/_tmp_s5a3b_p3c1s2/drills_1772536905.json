@@ -1,0 +1,373 @@
+{
+  "meta": {
+    "run_id": "b2079e0c-4ef5-41b6-8707-9f1cbdf4771e",
+    "started_at": "2026-03-03T11:21:45.035498+00:00",
+    "finished_at": "2026-03-03T11:21:53.896498+00:00",
+    "config": {
+      "infra_compose_file": "docker-compose.infra.yml",
+      "devtest_compose_file": "docker-compose.devtest-db.yml",
+      "db_service": "db_devtest",
+      "db_user": "wordloom",
+      "target_db": "wordloom_restore_sanitized_dev",
+      "bucket": "wordloom-backups-devtest",
+      "object_key": "s5a3a/2026-03-03/wordloom_dev/1772561421.dump",
+      "expected_sha256": "4b8d0263fa26f03b3caa3e53aa058da39873b23d4e06bd2234c3960be7a37b69",
+      "expected_size_bytes": 436584,
+      "downloaded_dump_file": "artifacts/_tmp_s5a3b_p3c1s1/download_1772536905.dump",
+      "upload_evidence": "artifacts/_tmp_s5a3b_p1c1s3/drills_1772532620.json",
+      "sanitize_sql": "scripts/backup/s5a3a_p3c1s1_sanitize_restore_db.sql",
+      "verify_sql": "scripts/backup/s5a3a_p3c1s2_verify_sanitization.sql",
+      "rpo": "24h",
+      "rto": "1h"
+    }
+  },
+  "drills": {
+    "download": {
+      "status": "ok",
+      "stdout": "{\n    \"ok\":  true,\n    \"bucket\":  \"wordloom-backups-devtest\",\n    \"object_key\":  \"s5a3a/2026-03-03/wordloom_dev/1772561421.dump\",\n    \"output_file\":  \"artifacts/_tmp_s5a3b_p3c1s1/download_1772536905.dump\",\n    \"sha256\":  \"4b8d0263fa26f03b3caa3e53aa058da39873b23d4e06bd2234c3960be7a37b69\",\n    \"size_bytes\":  436584,\n    \"verification\":  {\n                         \"sha256_ok\":  true,\n                         \"size_ok\":  true\n                     },\n    \"mc\":  {\n               \"alias_stdout\":  \"Added `s5a3b` successfully.\",\n               \"cp_stdout\":  \"`s5a3b/wordloom-backups-devtest/s5a3a/2026-03-03/wordloom_dev/1772561421.dump` -\\u003e `/workspace/artifacts/_tmp_s5a3b_p3c1s1/download_1772536905.dump`\\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\ufffd?Total      \ufffd?Transferred \ufffd?Duration \ufffd?Speed       \ufffd?\ufffd?426.35 KiB \ufffd?426.35 KiB  \ufffd?00m00s   \ufffd?20.70 MiB/s \ufffd?\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\"\n           }\n}",
+      "stderr": "",
+      "result": {
+        "ok": true,
+        "bucket": "wordloom-backups-devtest",
+        "object_key": "s5a3a/2026-03-03/wordloom_dev/1772561421.dump",
+        "output_file": "artifacts/_tmp_s5a3b_p3c1s1/download_1772536905.dump",
+        "sha256": "4b8d0263fa26f03b3caa3e53aa058da39873b23d4e06bd2234c3960be7a37b69",
+        "size_bytes": 436584,
+        "verification": {
+          "sha256_ok": true,
+          "size_ok": true
+        },
+        "mc": {
+          "alias_stdout": "Added `s5a3b` successfully.",
+          "cp_stdout": "`s5a3b/wordloom-backups-devtest/s5a3a/2026-03-03/wordloom_dev/1772561421.dump` -> `/workspace/artifacts/_tmp_s5a3b_p3c1s1/download_1772536905.dump`\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\ufffd?Total      \ufffd?Transferred \ufffd?Duration \ufffd?Speed       \ufffd?\ufffd?426.35 KiB \ufffd?426.35 KiB  \ufffd?00m00s   \ufffd?20.70 MiB/s \ufffd?\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?"
+        }
+      }
+    },
+    "restore_pg_restore": {
+      "status": "ok",
+      "container_id": "a39cf92170e114d5004288140a4fae265873a7f18f89d9a99256140cedf0c055",
+      "stdout": "OK\nCONTAINER_ID=a39cf92170e114d5004288140a4fae265873a7f18f89d9a99256140cedf0c055\nTARGET_DB=wordloom_restore_sanitized_dev\nDUMP_FILE=D:\\Project\\wordloom-v3\\artifacts\\_tmp_s5a3b_p3c1s1\\download_1772536905.dump",
+      "stderr": "NOTICE:  database \"wordloom_restore_sanitized_dev\" does not exist, skipping"
+    },
+    "sanitize": {
+      "status": "ok",
+      "stdout": "{\"kind\": \"s5a3a_sanitization_summary\", \"stats\": [{\"note\": \"RESTART IDENTITY CASCADE\", \"action\": \"truncate\", \"table_name\": \"audit_log\", \"column_name\": \"*\", \"affected_rows\": 0}, {\"note\": \"RESTART IDENTITY CASCADE\", \"action\": \"truncate\", \"table_name\": \"chronicle_entries\", \"column_name\": \"*\", \"affected_rows\": 0}, {\"note\": \"RESTART IDENTITY CASCADE\", \"action\": \"truncate\", \"table_name\": \"chronicle_event_dedupe_state\", \"column_name\": \"*\", \"affected_rows\": 0}, {\"note\": \"RESTART IDENTITY CASCADE\", \"action\": \"truncate\", \"table_name\": \"chronicle_events\", \"column_name\": \"*\", \"affected_rows\": 0}, {\"note\": \"RESTART IDENTITY CASCADE\", \"action\": \"truncate\", \"table_name\": \"outbox_events\", \"column_name\": \"*\", \"affected_rows\": 0}, {\"note\": \"RESTART IDENTITY CASCADE\", \"action\": \"truncate\", \"table_name\": \"projection_status\", \"column_name\": \"*\", \"affected_rows\": 0}, {\"note\": \"'{}'::jsonb\", \"action\": \"update_jsonb\", \"table_name\": \"audit_log\", \"column_name\": \"meta_json\", \"affected_rows\": 0}, {\"note\": \"'[]'::jsonb\", \"action\": \"update_jsonb\", \"table_name\": \"maturity_snapshots\", \"column_name\": \"components\", \"affected_rows\": 0}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"basement_entries\", \"column_name\": \"summary_snapshot\", \"affected_rows\": 0}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"basement_entries\", \"column_name\": \"title_snapshot\", \"affected_rows\": 0}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"blocks\", \"column_name\": \"content\", \"affected_rows\": 0}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"blocks\", \"column_name\": \"meta\", \"affected_rows\": 0}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"books\", \"column_name\": \"manual_maturity_reason\", \"affected_rows\": 0}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"books\", \"column_name\": \"summary\", \"affected_rows\": 1}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"books\", \"column_name\": \"title\", \"affected_rows\": 2}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"bookshelves\", \"column_name\": \"description\", \"affected_rows\": 9}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"bookshelves\", \"column_name\": \"name\", \"affected_rows\": 24}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"chronicle_entries\", \"column_name\": \"summary\", \"affected_rows\": 0}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"libraries\", \"column_name\": \"description\", \"affected_rows\": 14}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"libraries\", \"column_name\": \"name\", \"affected_rows\": 15}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"media\", \"column_name\": \"filename\", \"affected_rows\": 0}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"media\", \"column_name\": \"storage_key\", \"affected_rows\": 0}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"search_index\", \"column_name\": \"snippet\", \"affected_rows\": 1}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"search_index\", \"column_name\": \"text\", \"affected_rows\": 1146}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"tags\", \"column_name\": \"description\", \"affected_rows\": 0}, {\"note\": \"id::text\", \"action\": \"update_text\", \"table_name\": \"tags\", \"column_name\": \"name\", \"affected_rows\": 0}], \"occurred_at\": \"2026-03-03T11:21:53.540225+00:00\"}",
+      "stderr": "",
+      "summary_json": {
+        "kind": "s5a3a_sanitization_summary",
+        "stats": [
+          {
+            "note": "RESTART IDENTITY CASCADE",
+            "action": "truncate",
+            "table_name": "audit_log",
+            "column_name": "*",
+            "affected_rows": 0
+          },
+          {
+            "note": "RESTART IDENTITY CASCADE",
+            "action": "truncate",
+            "table_name": "chronicle_entries",
+            "column_name": "*",
+            "affected_rows": 0
+          },
+          {
+            "note": "RESTART IDENTITY CASCADE",
+            "action": "truncate",
+            "table_name": "chronicle_event_dedupe_state",
+            "column_name": "*",
+            "affected_rows": 0
+          },
+          {
+            "note": "RESTART IDENTITY CASCADE",
+            "action": "truncate",
+            "table_name": "chronicle_events",
+            "column_name": "*",
+            "affected_rows": 0
+          },
+          {
+            "note": "RESTART IDENTITY CASCADE",
+            "action": "truncate",
+            "table_name": "outbox_events",
+            "column_name": "*",
+            "affected_rows": 0
+          },
+          {
+            "note": "RESTART IDENTITY CASCADE",
+            "action": "truncate",
+            "table_name": "projection_status",
+            "column_name": "*",
+            "affected_rows": 0
+          },
+          {
+            "note": "'{}'::jsonb",
+            "action": "update_jsonb",
+            "table_name": "audit_log",
+            "column_name": "meta_json",
+            "affected_rows": 0
+          },
+          {
+            "note": "'[]'::jsonb",
+            "action": "update_jsonb",
+            "table_name": "maturity_snapshots",
+            "column_name": "components",
+            "affected_rows": 0
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "basement_entries",
+            "column_name": "summary_snapshot",
+            "affected_rows": 0
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "basement_entries",
+            "column_name": "title_snapshot",
+            "affected_rows": 0
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "blocks",
+            "column_name": "content",
+            "affected_rows": 0
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "blocks",
+            "column_name": "meta",
+            "affected_rows": 0
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "books",
+            "column_name": "manual_maturity_reason",
+            "affected_rows": 0
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "books",
+            "column_name": "summary",
+            "affected_rows": 1
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "books",
+            "column_name": "title",
+            "affected_rows": 2
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "bookshelves",
+            "column_name": "description",
+            "affected_rows": 9
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "bookshelves",
+            "column_name": "name",
+            "affected_rows": 24
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "chronicle_entries",
+            "column_name": "summary",
+            "affected_rows": 0
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "libraries",
+            "column_name": "description",
+            "affected_rows": 14
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "libraries",
+            "column_name": "name",
+            "affected_rows": 15
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "media",
+            "column_name": "filename",
+            "affected_rows": 0
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "media",
+            "column_name": "storage_key",
+            "affected_rows": 0
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "search_index",
+            "column_name": "snippet",
+            "affected_rows": 1
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "search_index",
+            "column_name": "text",
+            "affected_rows": 1146
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "tags",
+            "column_name": "description",
+            "affected_rows": 0
+          },
+          {
+            "note": "id::text",
+            "action": "update_text",
+            "table_name": "tags",
+            "column_name": "name",
+            "affected_rows": 0
+          }
+        ],
+        "occurred_at": "2026-03-03T11:21:53.540225+00:00"
+      }
+    },
+    "verify": {
+      "status": "ok",
+      "stdout": "{\"kind\": \"s5a3a_sanitization_verify\", \"stats\": [{\"table_name\": \"basement_entries\", \"column_name\": \"summary_snapshot\", \"non_null_count\": 0, \"non_redacted_count\": 0}, {\"table_name\": \"basement_entries\", \"column_name\": \"title_snapshot\", \"non_null_count\": 0, \"non_redacted_count\": 0}, {\"table_name\": \"blocks\", \"column_name\": \"content\", \"non_null_count\": 0, \"non_redacted_count\": 0}, {\"table_name\": \"blocks\", \"column_name\": \"meta\", \"non_null_count\": 0, \"non_redacted_count\": 0}, {\"table_name\": \"books\", \"column_name\": \"manual_maturity_reason\", \"non_null_count\": 0, \"non_redacted_count\": 0}, {\"table_name\": \"books\", \"column_name\": \"summary\", \"non_null_count\": 1, \"non_redacted_count\": 0}, {\"table_name\": \"books\", \"column_name\": \"title\", \"non_null_count\": 2, \"non_redacted_count\": 0}, {\"table_name\": \"bookshelves\", \"column_name\": \"description\", \"non_null_count\": 9, \"non_redacted_count\": 0}, {\"table_name\": \"bookshelves\", \"column_name\": \"name\", \"non_null_count\": 24, \"non_redacted_count\": 0}, {\"table_name\": \"chronicle_entries\", \"column_name\": \"summary\", \"non_null_count\": 0, \"non_redacted_count\": 0}, {\"table_name\": \"libraries\", \"column_name\": \"description\", \"non_null_count\": 14, \"non_redacted_count\": 0}, {\"table_name\": \"libraries\", \"column_name\": \"name\", \"non_null_count\": 15, \"non_redacted_count\": 0}, {\"table_name\": \"media\", \"column_name\": \"filename\", \"non_null_count\": 0, \"non_redacted_count\": 0}, {\"table_name\": \"media\", \"column_name\": \"storage_key\", \"non_null_count\": 0, \"non_redacted_count\": 0}, {\"table_name\": \"search_index\", \"column_name\": \"snippet\", \"non_null_count\": 1, \"non_redacted_count\": 0}, {\"table_name\": \"search_index\", \"column_name\": \"text\", \"non_null_count\": 1146, \"non_redacted_count\": 0}, {\"table_name\": \"tags\", \"column_name\": \"description\", \"non_null_count\": 0, \"non_redacted_count\": 0}, {\"table_name\": \"tags\", \"column_name\": \"name\", \"non_null_count\": 0, \"non_redacted_count\": 0}], \"failures\": [], \"occurred_at\": \"2026-03-03T11:21:53.716056+00:00\"}",
+      "stderr": "",
+      "verify_json": {
+        "kind": "s5a3a_sanitization_verify",
+        "stats": [
+          {
+            "table_name": "basement_entries",
+            "column_name": "summary_snapshot",
+            "non_null_count": 0,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "basement_entries",
+            "column_name": "title_snapshot",
+            "non_null_count": 0,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "blocks",
+            "column_name": "content",
+            "non_null_count": 0,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "blocks",
+            "column_name": "meta",
+            "non_null_count": 0,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "books",
+            "column_name": "manual_maturity_reason",
+            "non_null_count": 0,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "books",
+            "column_name": "summary",
+            "non_null_count": 1,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "books",
+            "column_name": "title",
+            "non_null_count": 2,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "bookshelves",
+            "column_name": "description",
+            "non_null_count": 9,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "bookshelves",
+            "column_name": "name",
+            "non_null_count": 24,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "chronicle_entries",
+            "column_name": "summary",
+            "non_null_count": 0,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "libraries",
+            "column_name": "description",
+            "non_null_count": 14,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "libraries",
+            "column_name": "name",
+            "non_null_count": 15,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "media",
+            "column_name": "filename",
+            "non_null_count": 0,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "media",
+            "column_name": "storage_key",
+            "non_null_count": 0,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "search_index",
+            "column_name": "snippet",
+            "non_null_count": 1,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "search_index",
+            "column_name": "text",
+            "non_null_count": 1146,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "tags",
+            "column_name": "description",
+            "non_null_count": 0,
+            "non_redacted_count": 0
+          },
+          {
+            "table_name": "tags",
+            "column_name": "name",
+            "non_null_count": 0,
+            "non_redacted_count": 0
+          }
+        ],
+        "failures": [],
+        "occurred_at": "2026-03-03T11:21:53.716056+00:00"
+      }
+    },
+    "postcheck": {
+      "db_exists_count": "1"
+    }
+  },
+  "notes": {
+    "dump_file_committed": false,
+    "reason": "Downloaded dump may contain sensitive data; keep dump local and commit only evidence JSON."
+  }
+}
