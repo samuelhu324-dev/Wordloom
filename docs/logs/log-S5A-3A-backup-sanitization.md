@@ -170,7 +170,7 @@
 
 ### P3-C1-S2（restore+sanitize+verify drill｜2026-03-03）
 
-- headSha：`__HEAD_SHA_AFTER_COMMIT__`
+- headSha：`65f8a77d1f2a218b1a3b2312650d46a7a0dda5d8`
 - artifacts（evidence JSON）：`artifacts/_tmp_s5a3a_p3c1s2/drills_1772531253.json`
 - restore target db：`wordloom_restore_dev`
 - sanitize SQL：`scripts/backup/s5a3a_p3c1s1_sanitize_restore_db.sql`
