@@ -56,6 +56,7 @@
 - `P0`：contract（bucket/key 命名、生命周期、证据口径）
 - `P1`：infra（MinIO dev/test）+ 上传脚本（dump → object storage）
 - `P2`：restore drill（从 object storage 拉取 dump → restore 到新库 → verify）
+- `P3`：sanitize drill（从 object storage 拉取 dump → restore 到新库 → sanitize → verify）
 
 ## Success Criteria（DoD）
 
@@ -106,6 +107,11 @@
 - P2-C1-S1：实现 download 脚本：bucket/key → 本地临时文件
 - P2-C1-S2：restore + verify drill（复用 `S5A-3A` restore 逻辑）+ artifacts
 
+### P3（Restore + sanitize + verify from object storage）
+
+- P3-C1-S1：复用 `S5A-3A` 脱敏 SQL（restore db sanitize）
+- P3-C1-S2：download + restore + sanitize + verify drill + artifacts
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -125,6 +131,11 @@
 - [x] `P2-C1-S1`：download 脚本（bucket/key → 本地）
 - [x] `P2-C1-S2`：restore+verify drill + artifacts
 
+### P3（Restore + sanitize + verify from object storage）
+
+- [x] `P3-C1-S1`：sanitize SQL（复用 S5A-3A）
+- [x] `P3-C1-S2`：download+restore+sanitize+verify drill + artifacts
+
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径。
@@ -141,3 +152,10 @@
 - artifacts：`artifacts/_tmp_s5a3b_p2c1s2/drills_1772535676.json`
 - bucket/key：`s5a3a/2026-03-03/wordloom_dev/1772561421.dump`
 - restore target db：`wordloom_restore_dev`
+
+### P3-C1-S2（download+restore+sanitize+verify drill｜2026-03-03）
+
+- headSha：`404e12b691ee376b2a9714f8e0da5f50dc6037de`
+- artifacts：`artifacts/_tmp_s5a3b_p3c1s2/drills_1772536905.json`
+- bucket/key：`s5a3a/2026-03-03/wordloom_dev/1772561421.dump`
+- restore target db：`wordloom_restore_sanitized_dev`
