@@ -122,8 +122,8 @@
 
 ### P2（Restore drill from object storage）
 
-- [ ] `P2-C1-S1`：download 脚本（bucket/key → 本地）
-- [ ] `P2-C1-S2`：restore+verify drill + artifacts
+- [x] `P2-C1-S1`：download 脚本（bucket/key → 本地）
+- [x] `P2-C1-S2`：restore+verify drill + artifacts
 
 ## Evidence（预留）
 
@@ -135,8 +135,9 @@
 - artifacts：`artifacts/_tmp_s5a3b_p1c1s3/drills_1772532620.json`
 - bucket/key：`s5a3a/2026-03-03/wordloom_dev/1772561421.dump`
 
-### P2-C1-S2（download+restore+verify drill｜YYYY-MM-DD）
+### P2-C1-S2（download+restore+verify drill｜2026-03-03）
 
-- headSha：`__HEAD_SHA_AFTER_COMMIT__`
-- artifacts：`artifacts/_tmp_s5a3a_pXcXsX/drills_<ts>.json`
+- headSha：`ea7c3b355a54e21ff6ed14aad30584214060a437`
+- artifacts：`artifacts/_tmp_s5a3b_p2c1s2/drills_1772535676.json`
+- bucket/key：`s5a3a/2026-03-03/wordloom_dev/1772561421.dump`
 - restore target db：`wordloom_restore_dev`
