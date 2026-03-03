@@ -93,6 +93,7 @@ services:
     entrypoint: ["mc"]
     volumes:
       - ./:/workspace:ro
+      - ./artifacts:/workspace/artifacts
       - minio_mc_config:/root/.mc
 
 volumes:

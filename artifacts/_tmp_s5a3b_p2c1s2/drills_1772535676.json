@@ -1,0 +1,60 @@
+{
+  "meta": {
+    "run_id": "936e0e27-f038-463b-8b6a-71e971a443a7",
+    "started_at": "2026-03-03T11:01:16.629708+00:00",
+    "finished_at": "2026-03-03T11:01:27.112633+00:00",
+    "config": {
+      "infra_compose_file": "docker-compose.infra.yml",
+      "devtest_compose_file": "docker-compose.devtest-db.yml",
+      "db_service": "db_devtest",
+      "db_user": "wordloom",
+      "target_db": "wordloom_restore_dev",
+      "bucket": "wordloom-backups-devtest",
+      "object_key": "s5a3a/2026-03-03/wordloom_dev/1772561421.dump",
+      "expected_sha256": "4b8d0263fa26f03b3caa3e53aa058da39873b23d4e06bd2234c3960be7a37b69",
+      "expected_size_bytes": 436584,
+      "downloaded_dump_file": "artifacts/_tmp_s5a3b_p2c1s1/download_1772535676.dump",
+      "upload_evidence": "artifacts/_tmp_s5a3b_p1c1s3/drills_1772532620.json",
+      "rpo": "24h",
+      "rto": "1h"
+    }
+  },
+  "drills": {
+    "download": {
+      "status": "ok",
+      "stdout": "{\n    \"ok\":  true,\n    \"bucket\":  \"wordloom-backups-devtest\",\n    \"object_key\":  \"s5a3a/2026-03-03/wordloom_dev/1772561421.dump\",\n    \"output_file\":  \"artifacts/_tmp_s5a3b_p2c1s1/download_1772535676.dump\",\n    \"sha256\":  \"4b8d0263fa26f03b3caa3e53aa058da39873b23d4e06bd2234c3960be7a37b69\",\n    \"size_bytes\":  436584,\n    \"verification\":  {\n                         \"sha256_ok\":  true,\n                         \"size_ok\":  true\n                     },\n    \"mc\":  {\n               \"alias_stdout\":  \"Added `s5a3b` successfully.\",\n               \"cp_stdout\":  \"`s5a3b/wordloom-backups-devtest/s5a3a/2026-03-03/wordloom_dev/1772561421.dump` -\\u003e `/workspace/artifacts/_tmp_s5a3b_p2c1s1/download_1772535676.dump`\\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\ufffd?Total      \ufffd?Transferred \ufffd?Duration \ufffd?Speed       \ufffd?\ufffd?426.35 KiB \ufffd?426.35 KiB  \ufffd?00m00s   \ufffd?17.31 MiB/s \ufffd?\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\"\n           }\n}",
+      "stderr": "",
+      "result": {
+        "ok": true,
+        "bucket": "wordloom-backups-devtest",
+        "object_key": "s5a3a/2026-03-03/wordloom_dev/1772561421.dump",
+        "output_file": "artifacts/_tmp_s5a3b_p2c1s1/download_1772535676.dump",
+        "sha256": "4b8d0263fa26f03b3caa3e53aa058da39873b23d4e06bd2234c3960be7a37b69",
+        "size_bytes": 436584,
+        "verification": {
+          "sha256_ok": true,
+          "size_ok": true
+        },
+        "mc": {
+          "alias_stdout": "Added `s5a3b` successfully.",
+          "cp_stdout": "`s5a3b/wordloom-backups-devtest/s5a3a/2026-03-03/wordloom_dev/1772561421.dump` -> `/workspace/artifacts/_tmp_s5a3b_p2c1s1/download_1772535676.dump`\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?\ufffd?Total      \ufffd?Transferred \ufffd?Duration \ufffd?Speed       \ufffd?\ufffd?426.35 KiB \ufffd?426.35 KiB  \ufffd?00m00s   \ufffd?17.31 MiB/s \ufffd?\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ufffd?"
+        }
+      }
+    },
+    "restore_pg_restore": {
+      "status": "ok",
+      "container_id": "a39cf92170e114d5004288140a4fae265873a7f18f89d9a99256140cedf0c055",
+      "stdout": "OK\nCONTAINER_ID=a39cf92170e114d5004288140a4fae265873a7f18f89d9a99256140cedf0c055\nTARGET_DB=wordloom_restore_dev\nDUMP_FILE=D:\\Project\\wordloom-v3\\artifacts\\_tmp_s5a3b_p2c1s1\\download_1772535676.dump",
+      "stderr": ""
+    },
+    "verify": {
+      "db_exists_count": "1",
+      "select_1": "1",
+      "user_table_count": "20"
+    }
+  },
+  "notes": {
+    "dump_file_committed": false,
+    "reason": "Downloaded dump may contain sensitive data; keep dump local and commit only evidence JSON."
+  }
+}
