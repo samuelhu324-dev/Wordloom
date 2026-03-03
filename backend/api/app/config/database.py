@@ -52,9 +52,12 @@ def _create_async_engine():
         max_overflow=20,           # Additional connections beyond pool_size
         pool_pre_ping=True,        # Verify connections before use
         pool_recycle=3600,         # Recycle connections after 1 hour
+        # psycopg3 connection options differ from asyncpg.
+        # - connect_timeout: connection establishment timeout (seconds)
+        # - statement_timeout: set via Postgres 'options' (milliseconds)
         connect_args={
-            "timeout": 10,         # Connection timeout
-            "command_timeout": 60, # Query timeout
+            "connect_timeout": 10,
+            "options": "-c statement_timeout=60000",
         },
     )
 

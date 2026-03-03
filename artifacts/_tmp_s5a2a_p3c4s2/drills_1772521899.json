@@ -1,0 +1,292 @@
+{
+  "meta": {
+    "run_id": "75bf626e-5051-4288-8b6c-9e8c629a2355",
+    "started_at": "2026-03-03T07:11:38.409975+00:00",
+    "finished_at": "2026-03-03T07:11:39.799006+00:00",
+    "config": {
+      "api_base_url": "http://localhost:31001",
+      "database_url": "postgresql://wordloom:wordloom@localhost:5435/wordloom_dev",
+      "jwt_secret_key": "dev-secret-key-change-in-production",
+      "jwt_algorithm": "HS256"
+    }
+  },
+  "setup": {
+    "library_a": {
+      "name": "drill-lib-a-s5a2a-p3c4-75bf626e",
+      "id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+      "status": 201,
+      "response": {
+        "id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+        "user_id": "550e8400-e29b-41d4-a716-446655440000",
+        "name": "drill-lib-a-s5a2a-p3c4-75bf626e",
+        "description": "drill",
+        "cover_media_id": null,
+        "theme_color": "#2e5e92",
+        "pinned": false,
+        "pinned_order": null,
+        "archived_at": null,
+        "last_activity_at": "2026-03-03T07:11:39.157758Z",
+        "views_count": 0,
+        "last_viewed_at": null,
+        "tags": [],
+        "tag_total_count": 0,
+        "basement_bookshelf_id": "d6e52a5c-c4f6-426b-9bf4-42a7d9d582d4",
+        "created_at": "2026-03-03T07:11:39.157758Z",
+        "updated_at": "2026-03-03T07:11:39.157758Z"
+      }
+    },
+    "library_b": {
+      "name": "drill-lib-b-s5a2a-p3c4-75bf626e",
+      "id": "ef218352-241c-44c0-9be4-e5f5c6f7a0f8",
+      "status": 201,
+      "response": {
+        "id": "ef218352-241c-44c0-9be4-e5f5c6f7a0f8",
+        "user_id": "550e8400-e29b-41d4-a716-446655440000",
+        "name": "drill-lib-b-s5a2a-p3c4-75bf626e",
+        "description": "drill",
+        "cover_media_id": null,
+        "theme_color": "#2e5e92",
+        "pinned": false,
+        "pinned_order": null,
+        "archived_at": null,
+        "last_activity_at": "2026-03-03T07:11:39.240492Z",
+        "views_count": 0,
+        "last_viewed_at": null,
+        "tags": [],
+        "tag_total_count": 0,
+        "basement_bookshelf_id": "5bb6d664-8291-4eb5-90cf-89deee28c0bf",
+        "created_at": "2026-03-03T07:11:39.240492Z",
+        "updated_at": "2026-03-03T07:11:39.240492Z"
+      }
+    },
+    "users": {
+      "member": "d6c45a28-eea4-40a9-96d5-c3191d4c1fde",
+      "non_member": "2cc845f6-18df-47a7-9bfa-3381e70a120d"
+    },
+    "grant_member_a": {
+      "status": 204,
+      "request_id": "c4801ffd-2ce7-45c5-9679-20c4f1562f3b",
+      "response": null
+    },
+    "grant_member_b": {
+      "status": 204,
+      "request_id": "80ca63e2-1bf3-4c26-8ffb-61caa9b02afd",
+      "response": null
+    },
+    "bookshelf_create": {
+      "status": 201,
+      "request_id": "284be0f2-88e2-4993-a944-045c62289d35",
+      "response": {
+        "id": "bd05fe74-cba5-4536-8dee-ded363f534ed",
+        "library_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+        "name": "drill-shelf-a-75bf626e",
+        "description": "drill",
+        "is_pinned": false,
+        "is_favorite": false,
+        "is_basement": false,
+        "status": "active",
+        "created_at": "2026-03-03T07:11:39.435827+00:00",
+        "updated_at": "2026-03-03T07:11:39.435827+00:00",
+        "tags_summary": [],
+        "tags": [],
+        "tag_ids": []
+      }
+    },
+    "book_create": {
+      "status": 201,
+      "request_id": "720041fc-71af-4244-816f-7b6cc5ab016c",
+      "response": {
+        "id": "1c027602-d082-49d6-8a47-c4221d1a2d5a",
+        "library_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+        "bookshelf_id": "bd05fe74-cba5-4536-8dee-ded363f534ed",
+        "title": "drill-book-a-75bf626e",
+        "summary": "drill",
+        "cover_icon": null,
+        "cover_media_id": null,
+        "book_type": "normal",
+        "status": "draft",
+        "maturity": "seed",
+        "maturity_score": 0,
+        "legacy_flag": false,
+        "manual_maturity_override": false,
+        "manual_maturity_reason": null,
+        "is_pinned": false,
+        "priority": null,
+        "urgency": null,
+        "due_at": null,
+        "block_count": 0,
+        "last_visited_at": null,
+        "visit_count_90d": 0,
+        "soft_deleted_at": null,
+        "created_at": "2026-03-03T07:11:39.491217+00:00",
+        "updated_at": "2026-03-03T07:11:39.491217+00:00",
+        "tags_summary": [],
+        "library_theme_color": "#2e5e92"
+      }
+    }
+  },
+  "drills": {
+    "book_list_non_member": {
+      "status": 404,
+      "request_id": "79b80e3f-abce-4eb0-82ba-b70a0e6d6e48",
+      "response": {
+        "detail": "Not found"
+      }
+    },
+    "book_list_tenant_mismatch_query": {
+      "status": 404,
+      "request_id": "5e764f19-37c2-41dc-b34e-9de010e34aeb",
+      "response": {
+        "detail": "Not found"
+      }
+    },
+    "book_list_tenant_mismatch_bookshelf": {
+      "status": 404,
+      "request_id": "0ca535e4-4c90-4c69-8df3-ff7ef6f01e3c",
+      "response": {
+        "detail": "Not found"
+      }
+    },
+    "book_get_non_member": {
+      "status": 404,
+      "request_id": "1d7bdc52-6d18-4e10-80dd-2a5311ac9cfc",
+      "response": {
+        "detail": "Not found"
+      }
+    },
+    "book_get_tenant_mismatch": {
+      "status": 404,
+      "request_id": "fdcb31e0-07ff-4d53-b21a-8a7021fafce0",
+      "response": {
+        "detail": "Not found"
+      }
+    }
+  },
+  "audit": {
+    "grant_member_a": [
+      {
+        "occurred_at": "2026-03-03T07:11:39.321195+00:00",
+        "tenant_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+        "actor_user_id": "550e8400-e29b-41d4-a716-446655440000",
+        "request_id": "c4801ffd-2ce7-45c5-9679-20c4f1562f3b",
+        "action": "membership.grant",
+        "resource_type": "library_membership",
+        "resource_id": "2a55c6cd-d84c-455f-a106-891fb33408d4",
+        "result": "success",
+        "reason": null,
+        "meta_json": {
+          "role": "member",
+          "library_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+          "member_user_id": "d6c45a28-eea4-40a9-96d5-c3191d4c1fde"
+        }
+      }
+    ],
+    "grant_member_b": [
+      {
+        "occurred_at": "2026-03-03T07:11:39.376858+00:00",
+        "tenant_id": "ef218352-241c-44c0-9be4-e5f5c6f7a0f8",
+        "actor_user_id": "550e8400-e29b-41d4-a716-446655440000",
+        "request_id": "80ca63e2-1bf3-4c26-8ffb-61caa9b02afd",
+        "action": "membership.grant",
+        "resource_type": "library_membership",
+        "resource_id": "4114aff9-c023-4ae9-b6de-060d55e3d3bc",
+        "result": "success",
+        "reason": null,
+        "meta_json": {
+          "role": "member",
+          "library_id": "ef218352-241c-44c0-9be4-e5f5c6f7a0f8",
+          "member_user_id": "d6c45a28-eea4-40a9-96d5-c3191d4c1fde"
+        }
+      }
+    ],
+    "book_list_non_member": [
+      {
+        "occurred_at": "2026-03-03T07:11:39.612441+00:00",
+        "tenant_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+        "actor_user_id": "2cc845f6-18df-47a7-9bfa-3381e70a120d",
+        "request_id": "79b80e3f-abce-4eb0-82ba-b70a0e6d6e48",
+        "action": "book.list",
+        "resource_type": "library",
+        "resource_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+        "result": "not_found",
+        "reason": null,
+        "meta_json": {
+          "reason": "not_member",
+          "library_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+          "bookshelf_id": null,
+          "requested_library_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f"
+        }
+      }
+    ],
+    "book_list_tenant_mismatch_query": [
+      {
+        "occurred_at": "2026-03-03T07:11:39.626605+00:00",
+        "tenant_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+        "actor_user_id": "d6c45a28-eea4-40a9-96d5-c3191d4c1fde",
+        "request_id": "5e764f19-37c2-41dc-b34e-9de010e34aeb",
+        "action": "book.list",
+        "resource_type": "library",
+        "resource_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+        "result": "not_found",
+        "reason": null,
+        "meta_json": {
+          "reason": "tenant_mismatch",
+          "library_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+          "requested_library_id": "ef218352-241c-44c0-9be4-e5f5c6f7a0f8"
+        }
+      }
+    ],
+    "book_list_tenant_mismatch_bookshelf": [
+      {
+        "occurred_at": "2026-03-03T07:11:39.642609+00:00",
+        "tenant_id": "ef218352-241c-44c0-9be4-e5f5c6f7a0f8",
+        "actor_user_id": "d6c45a28-eea4-40a9-96d5-c3191d4c1fde",
+        "request_id": "0ca535e4-4c90-4c69-8df3-ff7ef6f01e3c",
+        "action": "book.list",
+        "resource_type": "bookshelf",
+        "resource_id": "bd05fe74-cba5-4536-8dee-ded363f534ed",
+        "result": "not_found",
+        "reason": null,
+        "meta_json": {
+          "reason": "tenant_mismatch",
+          "library_id": "ef218352-241c-44c0-9be4-e5f5c6f7a0f8",
+          "bookshelf_id": "bd05fe74-cba5-4536-8dee-ded363f534ed"
+        }
+      }
+    ],
+    "book_get_non_member": [
+      {
+        "occurred_at": "2026-03-03T07:11:39.661912+00:00",
+        "tenant_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f",
+        "actor_user_id": "2cc845f6-18df-47a7-9bfa-3381e70a120d",
+        "request_id": "1d7bdc52-6d18-4e10-80dd-2a5311ac9cfc",
+        "action": "book.get",
+        "resource_type": "book",
+        "resource_id": "1c027602-d082-49d6-8a47-c4221d1a2d5a",
+        "result": "not_found",
+        "reason": null,
+        "meta_json": {
+          "reason": "not_member",
+          "library_id": "9316aeed-8b2b-46bc-bf30-09dc740afc5f"
+        }
+      }
+    ],
+    "book_get_tenant_mismatch": [
+      {
+        "occurred_at": "2026-03-03T07:11:39.677532+00:00",
+        "tenant_id": "ef218352-241c-44c0-9be4-e5f5c6f7a0f8",
+        "actor_user_id": "d6c45a28-eea4-40a9-96d5-c3191d4c1fde",
+        "request_id": "fdcb31e0-07ff-4d53-b21a-8a7021fafce0",
+        "action": "book.get",
+        "resource_type": "book",
+        "resource_id": "1c027602-d082-49d6-8a47-c4221d1a2d5a",
+        "result": "not_found",
+        "reason": null,
+        "meta_json": {
+          "reason": "tenant_mismatch",
+          "library_id": "ef218352-241c-44c0-9be4-e5f5c6f7a0f8"
+        }
+      }
+    ]
+  }
+}

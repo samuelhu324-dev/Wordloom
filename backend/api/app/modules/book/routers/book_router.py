@@ -74,7 +74,8 @@ from api.app.modules.media.exceptions import (
 from infra.storage.storage_manager import LocalStorageStrategy, StorageManager
 from infra.database.models.library_models import LibraryModel
 
-from api.app.config.security import get_current_actor
+from api.app.config.security import get_auth_context, get_current_actor
+from api.app.shared.auth_context import AuthContext
 from api.app.shared.actor import Actor
 from api.app.config.setting import get_settings
 
@@ -358,7 +359,7 @@ async def list_books(
     include_deleted: bool = Query(False, description="Include soft-deleted books (RULE-012)"),
     skip: int = Query(0, ge=0, description="Pagination skip"),
     limit: int = Query(50, ge=1, le=100, description="Pagination limit"),
-    actor: Actor = Depends(get_current_actor),
+    ctx: AuthContext = Depends(get_auth_context),
     di: DIContainer = Depends(get_di_container)
 ):
     """列出书籍 (RULE-012: 默认排除软删除的书籍)
@@ -379,19 +380,104 @@ async def list_books(
     """
     try:
         logger.debug(f"Listing books: bookshelf_id={bookshelf_id}, include_deleted={include_deleted}")
+
+        # Read-path existence protection (S5A-2A P3-C4): non-member -> 404 + audit not_found.
+        if not getattr(ctx, "roles", None):
+            try:
+                from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="book.list",
+                    resource_type="library",
+                    resource_id=ctx.tenant_id,
+                    result="not_found",
+                    meta_json={
+                        "reason": "not_member",
+                        "library_id": str(ctx.tenant_id),
+                        "requested_library_id": str(library_id) if library_id else None,
+                        "bookshelf_id": str(bookshelf_id) if bookshelf_id else None,
+                    },
+                )
+            except Exception:
+                logger.warning("[LIST_BOOKS] AUDIT_APPEND_FAILED", exc_info=True)
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+        # Tenant mismatch protection: library_id query must match selected tenant.
+        if library_id is not None and library_id != ctx.tenant_id:
+            try:
+                from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="book.list",
+                    resource_type="library",
+                    resource_id=ctx.tenant_id,
+                    result="not_found",
+                    meta_json={
+                        "reason": "tenant_mismatch",
+                        "library_id": str(ctx.tenant_id),
+                        "requested_library_id": str(library_id),
+                    },
+                )
+            except Exception:
+                logger.warning("[LIST_BOOKS] AUDIT_APPEND_FAILED", exc_info=True)
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+        # When listing by bookshelf_id, ensure the shelf belongs to the selected tenant.
+        if bookshelf_id is not None:
+            try:
+                shelf = await di.bookshelf_repo.get_by_id(bookshelf_id)
+            except Exception:
+                shelf = None
+
+            shelf_library_id = getattr(shelf, "library_id", None) if shelf else None
+            if shelf_library_id != ctx.tenant_id:
+                try:
+                    from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                    audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                    await audit_repo.append(
+                        tenant_id=ctx.tenant_id,
+                        actor_user_id=ctx.user_id,
+                        request_id=ctx.request_id,
+                        action="book.list",
+                        resource_type="bookshelf",
+                        resource_id=bookshelf_id,
+                        result="not_found",
+                        meta_json={
+                            "reason": "tenant_mismatch",
+                            "library_id": str(ctx.tenant_id),
+                            "bookshelf_id": str(bookshelf_id),
+                        },
+                    )
+                except Exception:
+                    logger.warning("[LIST_BOOKS] AUDIT_APPEND_FAILED", exc_info=True)
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+        # Tenant selected by header (AuthContext). Ignore/override query library_id for safety.
+        effective_library_id = ctx.tenant_id
         request = ListBooksRequest(
             bookshelf_id=bookshelf_id,
-            library_id=library_id,
+            library_id=effective_library_id,
             skip=skip,
             limit=limit,
             include_deleted=include_deleted,
-            actor_user_id=actor.user_id,
-            enforce_owner_check=not _settings.allow_dev_library_owner_override,
+            actor_user_id=ctx.user_id,
+            enforce_owner_check=False,
         )
         use_case = di.get_list_books_use_case()
         response = await use_case.execute(request)
         logger.debug("Listed books response built successfully")
         return _serialize_response(response)
+    except HTTPException:
+        raise
     except DomainException as error:
         logger.warning("List books failed: %s", error)
         raise HTTPException(
@@ -418,7 +504,7 @@ async def list_books(
 )
 async def get_book(
     book_id: UUID,
-    actor: Actor = Depends(get_current_actor),
+    ctx: AuthContext = Depends(get_auth_context),
     di: DIContainer = Depends(get_di_container)
 ):
     """获取书籍详情
@@ -435,20 +521,68 @@ async def get_book(
     """
     try:
         logger.debug(f"Getting book: book_id={book_id}")
+
+        # Read-path existence protection (S5A-2A P3-C4): non-member -> 404 + audit not_found.
+        if not getattr(ctx, "roles", None):
+            try:
+                from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="book.get",
+                    resource_type="book",
+                    resource_id=book_id,
+                    result="not_found",
+                    meta_json={
+                        "reason": "not_member",
+                        "library_id": str(ctx.tenant_id),
+                    },
+                )
+            except Exception:
+                logger.warning("[GET_BOOK] AUDIT_APPEND_FAILED", exc_info=True)
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
         request = GetBookRequest(
             book_id=book_id,
-            actor_user_id=actor.user_id,
-            enforce_owner_check=not _settings.allow_dev_library_owner_override,
+            actor_user_id=ctx.user_id,
+            enforce_owner_check=False,
         )
         use_case = di.get_get_book_use_case()
         book = await use_case.execute(request)
+
+        # Tenant mismatch protection: fetched aggregate must belong to selected tenant.
+        book_library_id = getattr(book, "library_id", None)
+        if book_library_id != ctx.tenant_id:
+            try:
+                from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="book.get",
+                    resource_type="book",
+                    resource_id=book_id,
+                    result="not_found",
+                    meta_json={
+                        "reason": "tenant_mismatch",
+                        "library_id": str(ctx.tenant_id),
+                    },
+                )
+            except Exception:
+                logger.warning("[GET_BOOK] AUDIT_APPEND_FAILED", exc_info=True)
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
 
         # Chronicle: record a view on successful read.
         try:
             chronicle = di.get_chronicle_recorder_service()
             await chronicle.record_book_viewed(
                 book_id=book_id,
-                actor_id=actor.user_id,
+                actor_id=ctx.user_id,
                 source="api.book.get",
             )
         except Exception:
@@ -462,6 +596,8 @@ async def get_book(
             status_code=_http_status(error, status.HTTP_404_NOT_FOUND),
             detail=_domain_error_payload(error, "BOOK_NOT_FOUND"),
         )
+    except HTTPException:
+        raise
     except DomainException as error:
         logger.warning("Get book failed: %s", error)
         raise HTTPException(

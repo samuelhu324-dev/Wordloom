@@ -62,42 +62,47 @@ router = APIRouter(prefix="", tags=["bookshelves"])
 )
 async def create_bookshelf(
     request: CreateBookshelfRequest,
-    actor: Actor = Depends(get_current_actor),
+    ctx: AuthContext = Depends(get_auth_context),
     di: DIContainer = Depends(get_di_container)
 ):
     """创建新书架"""
     start_time = time.time()
     logger.info(f"[CREATE_BOOKSHELF] START - library_id={request.library_id}, name={request.name}")
     try:
-        enforce_owner_check = not _settings.allow_dev_library_owner_override
-        request = request.model_copy(
+        from api.app.policy.bookshelf_policy import assert_actor_can_create_bookshelf
+
+        requested_library_id = request.library_id
+        assert_actor_can_create_bookshelf(ctx=ctx, requested_library_id=requested_library_id)
+
+        # Authorization is handled by policy (roles). Disable legacy owner check in usecase.
+        enforce_owner_check = False
+        usecase_request = request.model_copy(
             update={
-                "actor_user_id": actor.user_id,
+                # Tenant selected by header (AuthContext). Ignore body library_id for safety.
+                "library_id": ctx.tenant_id,
+                "actor_user_id": ctx.user_id,
                 "enforce_owner_check": enforce_owner_check,
             }
         )
         use_case = di.get_create_bookshelf_use_case()
-        result = await use_case.execute(request)
+        result = await use_case.execute(usecase_request)
 
         # Audit (best-effort): successful write
         try:
-            from api.app.shared.request_context import get_request_context
             from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
-
-            req_ctx = get_request_context()
-            request_id = (req_ctx.correlation_id if req_ctx else None) or str(uuid.uuid4())
 
             audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
             await audit_repo.append(
                 tenant_id=result.library_id,
-                actor_user_id=actor.user_id,
-                request_id=request_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
                 action="bookshelf.create",
                 resource_type="bookshelf",
                 resource_id=result.id,
                 result="success",
                 meta_json={
                     "library_id": str(result.library_id),
+                    "requested_library_id": str(requested_library_id),
                     "name": result.name,
                 },
             )
@@ -134,24 +139,21 @@ async def create_bookshelf(
 
         # Audit (best-effort): authorization denial
         try:
-            from api.app.shared.request_context import get_request_context
             from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
-
-            req_ctx = get_request_context()
-            request_id = (req_ctx.correlation_id if req_ctx else None) or str(uuid.uuid4())
 
             audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
             await audit_repo.append(
-                tenant_id=request.library_id,
-                actor_user_id=actor.user_id,
-                request_id=request_id,
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
                 action="bookshelf.create",
                 resource_type="library",
-                resource_id=request.library_id,
+                resource_id=ctx.tenant_id,
                 result="denied",
                 reason=getattr(e, "details", {}).get("reason"),
                 meta_json={
-                    "library_id": str(request.library_id),
+                    "library_id": str(ctx.tenant_id),
+                    "requested_library_id": str(requested_library_id),
                     "name": request.name,
                 },
             )
@@ -202,15 +204,67 @@ async def get_bookshelf_dashboard(
     size: int = Query(20, ge=1, le=100),
     sort: BookshelfDashboardSort = Query(BookshelfDashboardSort.RECENT_ACTIVITY),
     status_filter: BookshelfDashboardFilter = Query(BookshelfDashboardFilter.ACTIVE),
-    actor: Actor = Depends(get_current_actor),
+    ctx: AuthContext = Depends(get_auth_context),
     di: DIContainer = Depends(get_di_container),
 ):
     """获取书架运营面板数据"""
 
-    enforce_owner_check = not _settings.allow_dev_library_owner_override
+    from api.app.policy.library_membership_policy import (
+        REASON_NOT_MEMBER,
+        REASON_TENANT_MISMATCH,
+    )
+
+    requested_library_id = library_id
+    # Read-path contract (S5A-2A/P3-C2): tenant mismatch is a 404 to avoid existence leaks.
+    if requested_library_id != ctx.tenant_id:
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.dashboard",
+                resource_type="library",
+                resource_id=ctx.tenant_id,
+                result="not_found",
+                reason=REASON_TENANT_MISMATCH,
+                meta_json={"requested_library_id": str(requested_library_id)},
+            )
+        except Exception as audit_exc:
+            logger.warning(
+                f"[GET_BOOKSHELF_DASHBOARD] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}"
+            )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+    # Read-path contract: non-member is a 404.
+    if not ctx.roles:
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.dashboard",
+                resource_type="library",
+                resource_id=ctx.tenant_id,
+                result="not_found",
+                reason=REASON_NOT_MEMBER,
+            )
+        except Exception as audit_exc:
+            logger.warning(
+                f"[GET_BOOKSHELF_DASHBOARD] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}"
+            )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+    # Authorization is handled by membership roles. Disable legacy owner check.
+    enforce_owner_check = False
     request = BookshelfDashboardRequest(
-        library_id=library_id,
-        actor_user_id=actor.user_id,
+        library_id=ctx.tenant_id,
+        actor_user_id=ctx.user_id,
         enforce_owner_check=enforce_owner_check,
         page=page,
         size=size,
@@ -299,17 +353,65 @@ async def list_bookshelves(
     library_id: UUID = Query(..., description="Library ID"),
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
-    actor: Actor = Depends(get_current_actor),
+    ctx: AuthContext = Depends(get_auth_context),
     di: DIContainer = Depends(get_di_container)
 ):
     """列出所有书架"""
     start_time = time.time()
     logger.info(f"[LIST_BOOKSHELVES] START - library_id={library_id}, skip={skip}, limit={limit}")
     try:
-        enforce_owner_check = not _settings.allow_dev_library_owner_override
+        from api.app.policy.library_membership_policy import (
+            REASON_NOT_MEMBER,
+            REASON_TENANT_MISMATCH,
+        )
+
+        requested_library_id = library_id
+        # Read-path contract (S5A-2A/P3-C2): tenant mismatch is a 404 to avoid existence leaks.
+        if requested_library_id != ctx.tenant_id:
+            try:
+                from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="bookshelf.list",
+                    resource_type="library",
+                    resource_id=ctx.tenant_id,
+                    result="not_found",
+                    reason=REASON_TENANT_MISMATCH,
+                    meta_json={"requested_library_id": str(requested_library_id)},
+                )
+            except Exception as audit_exc:
+                logger.warning(f"[LIST_BOOKSHELVES] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+        # Read-path contract: non-member is a 404.
+        if not ctx.roles:
+            try:
+                from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="bookshelf.list",
+                    resource_type="library",
+                    resource_id=ctx.tenant_id,
+                    result="not_found",
+                    reason=REASON_NOT_MEMBER,
+                )
+            except Exception as audit_exc:
+                logger.warning(f"[LIST_BOOKSHELVES] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+        # Authorization is handled by membership roles. Disable legacy owner check.
+        enforce_owner_check = False
         request = ListBookshelvesRequest(
-            library_id=library_id,
-            actor_user_id=actor.user_id,
+            library_id=ctx.tenant_id,
+            actor_user_id=ctx.user_id,
             enforce_owner_check=enforce_owner_check,
             skip=skip,
             limit=limit
@@ -335,6 +437,8 @@ async def list_bookshelves(
                 for r in bookshelves
             ]
         }
+    except HTTPException:
+        raise
     except BookshelfPersistenceError as e:
         elapsed = time.time() - start_time
         logger.error(f"[LIST_BOOKSHELVES] PERSISTENCE_ERROR - {str(e)}, elapsed={elapsed:.3f}s")
@@ -366,6 +470,118 @@ async def list_bookshelves(
 
 
 # ============================================================================
+# Get Basement (Special Bookshelf)
+# ============================================================================
+
+@router.get(
+    "/basement",
+    response_model=None,
+    summary="Get the Basement bookshelf",
+)
+async def get_basement(
+    library_id: UUID = Query(..., description="Library ID"),
+    ctx: AuthContext = Depends(get_auth_context),
+    di: DIContainer = Depends(get_di_container)
+):
+    """获取 Basement（特殊书架）"""
+    start_time = time.time()
+    logger.info(f"[GET_BASEMENT] START - library_id={library_id}")
+    try:
+        from api.app.policy.library_membership_policy import (
+            REASON_NOT_MEMBER,
+            REASON_TENANT_MISMATCH,
+        )
+
+        requested_library_id = library_id
+        # Read-path contract (S5A-2A/P3-C2): tenant mismatch is a 404 to avoid existence leaks.
+        if requested_library_id != ctx.tenant_id:
+            try:
+                from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="bookshelf.basement.get",
+                    resource_type="library",
+                    resource_id=ctx.tenant_id,
+                    result="not_found",
+                    reason=REASON_TENANT_MISMATCH,
+                    meta_json={"requested_library_id": str(requested_library_id)},
+                )
+            except Exception as audit_exc:
+                logger.warning(f"[GET_BASEMENT] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+        # Read-path contract: non-member is a 404.
+        if not ctx.roles:
+            try:
+                from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="bookshelf.basement.get",
+                    resource_type="library",
+                    resource_id=ctx.tenant_id,
+                    result="not_found",
+                    reason=REASON_NOT_MEMBER,
+                )
+            except Exception as audit_exc:
+                logger.warning(f"[GET_BASEMENT] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+        # Authorization is handled by membership roles. Disable legacy owner check.
+        enforce_owner_check = False
+        request = GetBasementRequest(
+            library_id=ctx.tenant_id,
+            actor_user_id=ctx.user_id,
+            enforce_owner_check=enforce_owner_check,
+        )
+        use_case = di.get_get_basement_use_case()
+        bookshelf = await use_case.execute(request)
+        elapsed = time.time() - start_time
+        logger.info(f"[GET_BASEMENT] SUCCESS - id={bookshelf.id}, elapsed={elapsed:.3f}s")
+        return {
+            "id": str(bookshelf.id),
+            "library_id": str(bookshelf.library_id),
+            "name": str(bookshelf.name),  # Safe: convert to str
+            "description": str(bookshelf.description) if bookshelf.description else None,
+            "is_pinned": bookshelf.is_pinned,
+            "is_favorite": bookshelf.is_favorite,
+            "is_basement": bookshelf.type.value == "basement",
+            "status": bookshelf.status.value,
+            "created_at": bookshelf.created_at.isoformat() if bookshelf.created_at else None,
+        }
+    except HTTPException:
+        raise
+    except BookshelfNotFoundError as e:
+        elapsed = time.time() - start_time
+        logger.warning(f"[GET_BASEMENT] NOT_FOUND - {str(e)}, elapsed={elapsed:.3f}s")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+    except DomainException as e:
+        elapsed = time.time() - start_time
+        logger.warning(f"[GET_BASEMENT] DOMAIN_ERROR - {str(e)}, elapsed={elapsed:.3f}s")
+        raise HTTPException(
+            status_code=getattr(e, "http_status_code", getattr(e, "http_status", status.HTTP_400_BAD_REQUEST)),
+            detail=getattr(e, "to_dict", lambda: str(e))(),
+        )
+    except Exception as e:
+        elapsed = time.time() - start_time
+        logger.error(f"[GET_BASEMENT] ERROR - {type(e).__name__}: {str(e)}, elapsed={elapsed:.3f}s", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+
+# ============================================================================
 # Get Bookshelf
 # ============================================================================
 
@@ -383,7 +599,30 @@ async def get_bookshelf(
     start_time = time.time()
     logger.info(f"[GET_BOOKSHELF] START - bookshelf_id={bookshelf_id}")
     try:
-        enforce_owner_check = not _settings.allow_dev_library_owner_override
+        from api.app.policy.library_membership_policy import REASON_NOT_MEMBER
+
+        # Read-path contract (S5A-2A/P3-C2): non-member is a 404.
+        if not ctx.roles:
+            try:
+                from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="bookshelf.get",
+                    resource_type="bookshelf",
+                    resource_id=bookshelf_id,
+                    result="not_found",
+                    reason=REASON_NOT_MEMBER,
+                )
+            except Exception as audit_exc:
+                logger.warning(f"[GET_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+        # Authorization is handled by membership roles. Disable legacy owner check.
+        enforce_owner_check = False
         request = GetBookshelfRequest(
             bookshelf_id=bookshelf_id,
             tenant_id=ctx.tenant_id,
@@ -425,6 +664,8 @@ async def get_bookshelf(
             "created_at": response.created_at or None,
             "updated_at": response.updated_at or None,
         }
+    except HTTPException:
+        raise
     except BookshelfNotFoundError as e:
         elapsed = time.time() - start_time
         logger.warning(f"[GET_BOOKSHELF] NOT_FOUND - {str(e)}, elapsed={elapsed:.3f}s")
@@ -606,68 +847,6 @@ async def delete_bookshelf(
     except Exception as e:
         elapsed = time.time() - start_time
         logger.error(f"[DELETE_BOOKSHELF] ERROR - {type(e).__name__}: {str(e)}, elapsed={elapsed:.3f}s", exc_info=True)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
-        )
-
-
-# ============================================================================
-# Get Basement (Special Bookshelf)
-# ============================================================================
-
-@router.get(
-    "/basement",
-    response_model=None,
-    summary="Get the Basement bookshelf",
-)
-async def get_basement(
-    library_id: UUID = Query(..., description="Library ID"),
-    actor: Actor = Depends(get_current_actor),
-    di: DIContainer = Depends(get_di_container)
-):
-    """获取 Basement（特殊书架）"""
-    start_time = time.time()
-    logger.info(f"[GET_BASEMENT] START - library_id={library_id}")
-    try:
-        enforce_owner_check = not _settings.allow_dev_library_owner_override
-        request = GetBasementRequest(
-            library_id=library_id,
-            actor_user_id=actor.user_id,
-            enforce_owner_check=enforce_owner_check,
-        )
-        use_case = di.get_get_basement_use_case()
-        bookshelf = await use_case.execute(request)
-        elapsed = time.time() - start_time
-        logger.info(f"[GET_BASEMENT] SUCCESS - id={bookshelf.id}, elapsed={elapsed:.3f}s")
-        return {
-            "id": str(bookshelf.id),
-            "library_id": str(bookshelf.library_id),
-            "name": str(bookshelf.name),  # Safe: convert to str
-            "description": str(bookshelf.description) if bookshelf.description else None,
-            "is_pinned": bookshelf.is_pinned,
-            "is_favorite": bookshelf.is_favorite,
-            "is_basement": bookshelf.type.value == "basement",
-            "status": bookshelf.status.value,
-            "created_at": bookshelf.created_at.isoformat() if bookshelf.created_at else None,
-        }
-    except BookshelfNotFoundError as e:
-        elapsed = time.time() - start_time
-        logger.warning(f"[GET_BASEMENT] NOT_FOUND - {str(e)}, elapsed={elapsed:.3f}s")
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(e)
-        )
-    except DomainException as e:
-        elapsed = time.time() - start_time
-        logger.warning(f"[GET_BASEMENT] DOMAIN_ERROR - {str(e)}, elapsed={elapsed:.3f}s")
-        raise HTTPException(
-            status_code=getattr(e, "http_status_code", getattr(e, "http_status", status.HTTP_400_BAD_REQUEST)),
-            detail=getattr(e, "to_dict", lambda: str(e))(),
-        )
-    except Exception as e:
-        elapsed = time.time() - start_time
-        logger.error(f"[GET_BASEMENT] ERROR - {type(e).__name__}: {str(e)}, elapsed={elapsed:.3f}s", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"

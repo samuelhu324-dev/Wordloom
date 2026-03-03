@@ -1,0 +1,226 @@
+{
+  "meta": {
+    "run_id": "f58b1979-4cb3-43b9-a92c-0ec309bb59d0",
+    "started_at": "2026-03-02T14:26:54.853526+00:00",
+    "finished_at": "2026-03-02T14:26:56.340881+00:00",
+    "config": {
+      "api_base_url": "http://localhost:31001",
+      "database_url": "postgresql://wordloom:wordloom@localhost:5435/wordloom_dev",
+      "jwt_secret_key": "dev-secret-key-change-in-production",
+      "jwt_algorithm": "HS256"
+    }
+  },
+  "setup": {
+    "library": {
+      "name": "drill-lib-s5a2a-p3c3-f58b1979",
+      "id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+      "status": 201
+    },
+    "users": {
+      "admin": "72014b80-75ea-4e31-a03d-09c18e037988",
+      "member": "3158c417-6367-4038-98f3-4adad2bce542",
+      "non_member": "80765d3a-2c5c-4963-8523-60d753351d23"
+    },
+    "bookshelf_create": {
+      "status": 201,
+      "request_id": "449125b6-e74b-4d4b-a26e-0e64099d7621",
+      "response": {
+        "id": "742b2938-9880-44e9-92a4-beb3221db4df",
+        "library_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+        "name": "drill-shelf-a-f58b1979",
+        "description": "drill",
+        "is_pinned": false,
+        "is_favorite": false,
+        "is_basement": false,
+        "status": "active",
+        "created_at": "2026-03-02T14:26:55.958606+00:00",
+        "updated_at": "2026-03-02T14:26:55.958606+00:00",
+        "tags_summary": [],
+        "tags": [],
+        "tag_ids": []
+      },
+      "audit_rows": [
+        {
+          "occurred_at": "2026-03-02T14:26:55.969420+00:00",
+          "tenant_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "actor_user_id": "72014b80-75ea-4e31-a03d-09c18e037988",
+          "request_id": "449125b6-e74b-4d4b-a26e-0e64099d7621",
+          "action": "bookshelf.create",
+          "resource_type": "bookshelf",
+          "resource_id": "742b2938-9880-44e9-92a4-beb3221db4df",
+          "result": "success",
+          "reason": null,
+          "meta_json": {
+            "name": "drill-shelf-a-f58b1979",
+            "library_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+            "requested_library_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da"
+          }
+        }
+      ]
+    }
+  },
+  "drills": {
+    "membership_grant_admin": {
+      "request_id": "28d977ff-2ac8-486d-bd06-b18d22243e8d",
+      "http_status": 204,
+      "audit_rows": [
+        {
+          "occurred_at": "2026-03-02T14:26:55.860817+00:00",
+          "tenant_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "actor_user_id": "550e8400-e29b-41d4-a716-446655440000",
+          "request_id": "28d977ff-2ac8-486d-bd06-b18d22243e8d",
+          "action": "membership.grant",
+          "resource_type": "library_membership",
+          "resource_id": "30915cd8-fd1f-40bf-acf9-501c1e4a80f4",
+          "result": "success",
+          "reason": null,
+          "meta_json": {
+            "role": "admin",
+            "library_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+            "member_user_id": "72014b80-75ea-4e31-a03d-09c18e037988"
+          }
+        }
+      ],
+      "expected": {
+        "action": "membership.grant",
+        "result": "success"
+      }
+    },
+    "membership_grant_member": {
+      "request_id": "db61e958-8d2d-4afd-9bc5-16fd00049ed2",
+      "http_status": 204,
+      "audit_rows": [
+        {
+          "occurred_at": "2026-03-02T14:26:55.885665+00:00",
+          "tenant_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "actor_user_id": "550e8400-e29b-41d4-a716-446655440000",
+          "request_id": "db61e958-8d2d-4afd-9bc5-16fd00049ed2",
+          "action": "membership.grant",
+          "resource_type": "library_membership",
+          "resource_id": "a046f251-e861-4862-9dab-672d338a6f16",
+          "result": "success",
+          "reason": null,
+          "meta_json": {
+            "role": "member",
+            "library_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+            "member_user_id": "3158c417-6367-4038-98f3-4adad2bce542"
+          }
+        }
+      ],
+      "expected": {
+        "action": "membership.grant",
+        "result": "success"
+      }
+    },
+    "bookshelf_list_non_member_not_found": {
+      "request_id": "04626c3a-ef90-4630-8706-21224fcd0b91",
+      "http_status": 404,
+      "response": {
+        "detail": "Not found"
+      },
+      "audit_rows": [
+        {
+          "occurred_at": "2026-03-02T14:26:56.031560+00:00",
+          "tenant_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "actor_user_id": "80765d3a-2c5c-4963-8523-60d753351d23",
+          "request_id": "04626c3a-ef90-4630-8706-21224fcd0b91",
+          "action": "bookshelf.list",
+          "resource_type": "library",
+          "resource_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "result": "not_found",
+          "reason": "not_member",
+          "meta_json": null
+        }
+      ],
+      "expected": {
+        "action": "bookshelf.list",
+        "result": "not_found",
+        "reason": "not_member",
+        "http_status": 404
+      }
+    },
+    "bookshelf_list_tenant_mismatch_not_found": {
+      "request_id": "ad2b6d4a-e109-4755-b38b-a2d49407f3e0",
+      "http_status": 404,
+      "response": {
+        "detail": "Not found"
+      },
+      "audit_rows": [
+        {
+          "occurred_at": "2026-03-02T14:26:56.088413+00:00",
+          "tenant_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "actor_user_id": "3158c417-6367-4038-98f3-4adad2bce542",
+          "request_id": "ad2b6d4a-e109-4755-b38b-a2d49407f3e0",
+          "action": "bookshelf.list",
+          "resource_type": "library",
+          "resource_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "result": "not_found",
+          "reason": "tenant_mismatch",
+          "meta_json": {
+            "requested_library_id": "4270e575-9c09-4186-9049-9d36fb5f174d"
+          }
+        }
+      ],
+      "expected": {
+        "action": "bookshelf.list",
+        "result": "not_found",
+        "reason": "tenant_mismatch",
+        "http_status": 404
+      }
+    },
+    "bookshelf_dashboard_non_member_not_found": {
+      "request_id": "0b68e21f-4505-4e51-b9f2-50b38a24effa",
+      "http_status": 404,
+      "response": {
+        "detail": "Not found"
+      },
+      "audit_rows": [
+        {
+          "occurred_at": "2026-03-02T14:26:56.146592+00:00",
+          "tenant_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "actor_user_id": "80765d3a-2c5c-4963-8523-60d753351d23",
+          "request_id": "0b68e21f-4505-4e51-b9f2-50b38a24effa",
+          "action": "bookshelf.dashboard",
+          "resource_type": "library",
+          "resource_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "result": "not_found",
+          "reason": "not_member",
+          "meta_json": null
+        }
+      ],
+      "expected": {
+        "action": "bookshelf.dashboard",
+        "result": "not_found",
+        "reason": "not_member",
+        "http_status": 404
+      }
+    },
+    "bookshelf_basement_get_non_member_not_found": {
+      "request_id": "6b19bca8-81ff-419a-9e33-3bbc6a87df22",
+      "http_status": 404,
+      "response": {
+        "detail": "Not found"
+      },
+      "audit_rows": [
+        {
+          "occurred_at": "2026-03-02T14:26:56.210330+00:00",
+          "tenant_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "actor_user_id": "80765d3a-2c5c-4963-8523-60d753351d23",
+          "request_id": "6b19bca8-81ff-419a-9e33-3bbc6a87df22",
+          "action": "bookshelf.basement.get",
+          "resource_type": "library",
+          "resource_id": "f3c3f531-39aa-41b2-a83e-66c62b9931da",
+          "result": "not_found",
+          "reason": "not_member",
+          "meta_json": null
+        }
+      ],
+      "expected": {
+        "action": "bookshelf.basement.get",
+        "result": "not_found",
+        "reason": "not_member",
+        "http_status": 404
+      }
+    }
+  }
+}
