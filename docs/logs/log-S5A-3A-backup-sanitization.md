@@ -127,14 +127,14 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：备份 contract（类型/产物/命名）
-- [ ] `P0-C1-S2`：恢复演练 contract（新库 + 验证）
-- [ ] `P0-C1-S3`：脱敏策略 contract（不可逆 + 覆盖优先级）
+- [x] `P0-C1-S1`：备份 contract（类型/产物/命名）
+- [x] `P0-C1-S2`：恢复演练 contract（新库 + 验证）
+- [x] `P0-C1-S3`：脱敏策略 contract（不可逆 + 覆盖优先级）
 
 ### P1（Backup）
 
-- [ ] `P1-C1-S1`：实现备份脚本（pg_dump）
-- [ ] `P1-C1-S2`：backup drill + artifacts
+- [x] `P1-C1-S1`：实现备份脚本（pg_dump）
+- [x] `P1-C1-S2`：backup drill + artifacts
 
 ### P2（Restore drill）
 
@@ -150,3 +150,12 @@
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径。
 - 本 phase 完成后，在此追加每次 drill 的记录（含 `DATABASE_URL`/目标库名/产物路径）。
+
+### P1-C1-S2（backup drill｜2026-03-03）
+
+- headSha：`__HEAD_SHA_AFTER_COMMIT__`
+- artifacts（evidence JSON）：`artifacts/_tmp_s5a3a_p1c1s2/drills_1772527633.json`
+- dump（本地文件，不入 git）：`artifacts/_tmp_s5a3a_p1c1s2/wordloom_wordloom_dev_<ts>.dump`
+- env（示例）：
+  - `docker compose -f docker-compose.devtest-db.yml up -d`
+  - service：`db_devtest` / db：`wordloom_dev`

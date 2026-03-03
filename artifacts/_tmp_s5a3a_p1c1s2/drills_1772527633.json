@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "run_id": "7d57d4a6-1cbe-4fbd-90fd-d18f0a7ae9fb",
+    "started_at": "2026-03-03T08:47:12.598967+00:00",
+    "finished_at": "2026-03-03T08:47:15.731609+00:00",
+    "config": {
+      "compose_file": "docker-compose.devtest-db.yml",
+      "service": "db_devtest",
+      "database": "wordloom_dev",
+      "user": "wordloom",
+      "rpo": "24h",
+      "rto": "1h"
+    }
+  },
+  "drills": {
+    "backup_pg_dump": {
+      "status": "ok",
+      "container_id": "a39cf92170e114d5004288140a4fae265873a7f18f89d9a99256140cedf0c055",
+      "dump_file": "artifacts\\_tmp_s5a3a_p1c1s2\\wordloom_wordloom_dev_1772527633.dump",
+      "sha256": "4b8d0263fa26f03b3caa3e53aa058da39873b23d4e06bd2234c3960be7a37b69",
+      "size_bytes": 436584,
+      "stdout": "OK\nCONTAINER_ID=a39cf92170e114d5004288140a4fae265873a7f18f89d9a99256140cedf0c055\nOUT_FILE=D:\\Project\\wordloom-v3\\artifacts\\_tmp_s5a3a_p1c1s2\\wordloom_wordloom_dev_1772527633.dump",
+      "stderr": ""
+    }
+  },
+  "notes": {
+    "dump_file_committed": false,
+    "reason": "DB dumps may contain sensitive data; evidence records path+hash but does not commit dump contents."
+  }
+}
