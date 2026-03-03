@@ -153,7 +153,7 @@
 
 ### P1-C1-S2（backup drill｜2026-03-03）
 
-- headSha：`__HEAD_SHA_AFTER_COMMIT__`
+- headSha：`8e471442fd81ef3622c86d27a99c4b5077e869cb`
 - artifacts（evidence JSON）：`artifacts/_tmp_s5a3a_p1c1s2/drills_1772527633.json`
 - dump（本地文件，不入 git）：`artifacts/_tmp_s5a3a_p1c1s2/wordloom_wordloom_dev_<ts>.dump`
 - env（示例）：
