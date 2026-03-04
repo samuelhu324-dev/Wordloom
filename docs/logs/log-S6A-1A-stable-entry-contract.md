@@ -140,7 +140,7 @@
 
 ### P1-C1-S3（sample scenario migrated｜2026-03-04）
 
-- headSha：`TBD`（本次证据生成发生在未提交变更上；commit 后在此补齐最终 headSha）
+- headSha：`3766bd7b`（S6A-1A/P1-C1-S1: centralize worker spawn helper）
 - scenario：`es_429_inject`
 - run_dir：`docs/labs/_snapshot/auto/S3A-2A-3A/es_429_inject/20260304T195127/`
 - result：`docs/labs/_snapshot/auto/S3A-2A-3A/es_429_inject/20260304T195127/_result.json`
