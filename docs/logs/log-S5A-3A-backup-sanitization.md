@@ -5,7 +5,7 @@
 **id**: `S5A-3A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `dev/test recoverable backup + restore drill + sanitization (masking) v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S5`
 **tags**: `EVOLUTION, Security, Governance, MultiTenant, Backup, Restore, Sanitization, Masking, Postgres, Drills, Evidence, epic/s5, sub/3a`
 **links**: ``
@@ -16,7 +16,7 @@
   **parent_log**: `docs/logs/log-S5A-security-governance.md`
   **previous_log**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
 **created**: `2026-03-03`
-**updated**: `2026-03-03`
+**updated**: `2026-03-04`
 
 ---
 
@@ -75,6 +75,14 @@
   - 至少 2 个 drills，产出 artifacts（JSON）：
     - backup+restore drill
     - restore+sanitize drill
+
+## Stability（stable 口径）
+
+- 本 log 标记为 `stable` 表示：P0-P3 的脚本与 drills 已跑通，并在 Evidence 区记录了 headSha + artifacts 路径。
+- drills 入口：
+  - backup：`python scripts/drills/s5a3a_p1c1s2_backup_drill.py`
+  - restore+verify：`python scripts/drills/s5a3a_p2c1s2_restore_verify_drill.py`
+  - restore+sanitize+verify：`python scripts/drills/s5a3a_p3c1s2_sanitize_verify_drill.py`
 
 ## P0（Contract｜v1）
 

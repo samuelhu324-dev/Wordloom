@@ -5,7 +5,7 @@
 **id**: `S5A-3B`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `dev/test backup artifacts to object storage (minio/S3) + lifecycle + drill evidence v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S5`
 **tags**: `EVOLUTION, Security, Governance, Backup, ObjectStorage, S3, MinIO, Lifecycle, Drills, Evidence, epic/s5, sub/3b`
 **links**: ``
@@ -16,7 +16,7 @@
   **parent_log**: `docs/logs/log-S5A-security-governance.md`
   **previous_log**: `docs/logs/log-S5A-3A-backup-sanitization.md`
 **created**: `2026-03-03`
-**updated**: `2026-03-03`
+**updated**: `2026-03-04`
 
 ---
 
@@ -65,6 +65,13 @@
 - 能把 dump 上传到对象存储，并记录 sha256/size/object_key。
 - 能从对象存储下载 dump 并完成 restore+verify drill。
 - 能为上述 drill 产出 evidence JSON，并在本 log 记录 headSha + artifacts 路径。
+
+## Stability（stable 口径）
+
+- 本 log 标记为 `stable` 表示：P0-P4 的 contract + 脚本 + drills 已跑通，并且 Evidence 区有可追溯的 headSha + artifacts 路径。
+- 最小入口（单命令端到端演练）：
+  - `python scripts/drills/s5a3b_p4c1s1_pipeline_drill.py`
+  - 期望输出：打印 1 行 evidence 路径（`artifacts/_tmp_s5a3b_p4c1s1/drills_<ts>.json`）
 
 ## P0（Contract｜v1）
 
