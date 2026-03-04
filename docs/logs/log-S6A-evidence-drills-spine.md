@@ -119,6 +119,8 @@
 - Stable Entry contract：所有场景启动 worker 必须走“稳定入口脚本”，禁止硬编码 legacy 路径。
 - Centralize worker spawn + env wiring：把 worker command/环境变量拼装集中到一个 helper，被所有场景复用。
 
+- 子 log（P1 落地）：`docs/logs/log-S6A-1A-stable-entry-contract.md`
+
 ### P2（Draft）：Unify supply creation（只走 unified outbox）
 
 目标：fault scenarios 不再往旧表插入导致“触发与消费不一致”。
