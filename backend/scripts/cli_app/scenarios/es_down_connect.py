@@ -87,7 +87,7 @@ def run_es_down_connect(inputs: DrillInputs) -> DrillResult:
         print(f"[labs run {SCENARIO_ES_DOWN_CONNECT}] failed to stop es: rc={stop_proc.returncode}")
         return DrillResult(ok=False, meta={"exit_code": 2}, summary={}, errors=[])
 
-    worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
+    worker = REPO_ROOT / "backend" / "scripts" / "search_outbox_worker.py"
     log_path = logs_dir / f"worker-{run_id}.log"
     cmd = [python_exe(), "-u", str(worker)]
 

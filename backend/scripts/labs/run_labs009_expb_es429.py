@@ -99,7 +99,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.metrics_port is not None:
         env["OUTBOX_METRICS_PORT"] = str(args.metrics_port)
 
-    worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
+    worker = REPO_ROOT / "backend" / "scripts" / "search_outbox_worker.py"
     log_path = dirs["logs"] / f"worker-{run_id}.log"
 
     cmd = [sys.executable, "-u", str(worker)]

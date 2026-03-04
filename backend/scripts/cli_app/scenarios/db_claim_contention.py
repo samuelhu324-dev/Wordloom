@@ -112,7 +112,7 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     }
     write_json(outdir / "_recipe.json", recipe)
 
-    worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
+    worker = REPO_ROOT / "backend" / "scripts" / "search_outbox_worker.py"
     cmd = [python_exe(), "-u", str(worker)]
 
     env1 = base_env.copy()

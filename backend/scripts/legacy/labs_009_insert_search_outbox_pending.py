@@ -1,4 +1,7 @@
-"""Insert a deterministic pending row into `search_outbox_events`.
+"""Insert a deterministic pending row into a Search outbox table.
+
+Prefers the unified table `outbox_events` when present (projection=search_index_to_elastic),
+and falls back to legacy `search_outbox_events` for older schemas.
 
 This helper exists to avoid shell quoting issues when triggering Labs-009 experiments.
 
@@ -22,8 +25,11 @@ from __future__ import annotations
 import datetime as dt
 import os
 import uuid
+import json
 
 import psycopg
+SEARCH_PROJECTION = "search_index_to_elastic"
+
 
 
 def _database_url_psycopg(database_url: str) -> str:
@@ -58,18 +64,22 @@ def _table_column_types(conn: psycopg.Connection, table_name: str) -> dict[str, 
         return {row[0]: row[1] for row in cur.fetchall()}
 
 
-def _insert_pending(conn: psycopg.Connection, values: dict[str, object]) -> None:
-    cols = _table_columns(conn, "search_outbox_events")
+def _table_exists(conn: psycopg.Connection, table_name: str) -> bool:
+    return bool(_table_columns(conn, table_name))
+
+
+def _insert_pending(conn: psycopg.Connection, table_name: str, values: dict[str, object]) -> None:
+    cols = _table_columns(conn, table_name)
     filtered = {k: v for k, v in values.items() if k in cols}
     if "id" not in filtered:
-        raise RuntimeError("search_outbox_events.id column not found")
+        raise RuntimeError(f"{table_name}.id column not found")
     if "status" not in filtered:
-        raise RuntimeError("search_outbox_events.status column not found")
+        raise RuntimeError(f"{table_name}.status column not found")
 
     columns = list(filtered.keys())
     placeholders = ",".join(["%s"] * len(columns))
     columns_sql = ", ".join(columns)
-    sql = f"insert into search_outbox_events ({columns_sql}) values ({placeholders})"
+    sql = f"insert into {table_name} ({columns_sql}) values ({placeholders})"
 
     with conn.cursor() as cur:
         cur.execute(sql, tuple(filtered[c] for c in columns))
@@ -150,7 +160,8 @@ def main() -> None:
 
     cs = _database_url_psycopg(database_url)
     with psycopg.connect(cs) as conn:
-        col_types = _table_column_types(conn, "search_outbox_events")
+        table_name = "outbox_events" if _table_exists(conn, "outbox_events") else "search_outbox_events"
+        col_types = _table_column_types(conn, table_name)
 
         raw_event_version = (os.environ.get("OUTBOX_EVENT_VERSION") or "").strip()
         ids: list[str] = []
@@ -178,8 +189,15 @@ def main() -> None:
                 else:
                     entity_id_value = f"{entity_id_prefix}-entity-{outbox_event_id[:8]}"
 
+            # Parse payload once per insert to support json/jsonb columns.
+            try:
+                payload_obj: object = json.loads(payload_json)
+            except Exception:
+                payload_obj = {}
+
             values: dict[str, object] = {
                 "id": outbox_event_id,
+                "projection": SEARCH_PROJECTION,
                 "entity_type": entity_type,
                 "entity_id": entity_id_value,
                 "op": op,
@@ -190,13 +208,17 @@ def main() -> None:
                 "created_at": now,
                 "updated_at": now,
                 # Some schemas include payload-like columns; we only insert if present.
-                "payload": payload_json,
+                "payload": payload_obj,
                 "payload_json": payload_json,
                 "data": payload_json,
                 # Trace context (optional).
                 "traceparent": traceparent,
                 "tracestate": tracestate,
             }
+
+            # If inserting into unified outbox, ensure required projection is present.
+            if table_name != "outbox_events":
+                values.pop("projection", None)
 
             if create_search_index_row:
                 lib_id_val = None
@@ -220,7 +242,7 @@ def main() -> None:
                 }
                 _upsert_search_index(conn, search_values)
 
-            _insert_pending(conn, values)
+            _insert_pending(conn, table_name, values)
             ids.append(outbox_event_id)
 
         conn.commit()

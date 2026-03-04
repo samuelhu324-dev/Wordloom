@@ -219,7 +219,7 @@ def run_collector_down(inputs: DrillInputs) -> DrillResult:
         print(f"[labs run {SCENARIO_COLLECTOR_DOWN}] failed to stop jaeger: rc={stop_proc.returncode}")
         return DrillResult(ok=False, meta={"exit_code": 2}, summary={}, errors=[])
 
-    worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
+    worker = REPO_ROOT / "backend" / "scripts" / "search_outbox_worker.py"
     log_path = logs_dir / f"worker-{run_id}.log"
     cmd = [_python_exe(), "-u", str(worker)]
 
@@ -363,16 +363,43 @@ def verify_collector_down(inputs: DrillInputs) -> DrillResult:
         if database_url and outbox_event_id:
             engine = create_engine(database_url, pool_pre_ping=True)
             with engine.connect() as conn:
-                row = conn.execute(
-                    text(
-                        """
-                        SELECT status, processed_at, attempts, error_reason
-                        FROM search_outbox_events
-                        WHERE id = CAST(:id AS uuid)
-                        """
-                    ),
-                    {"id": outbox_event_id},
-                ).mappings().fetchone()
+                # Support both legacy search_outbox_events and unified outbox_events.
+                exists = lambda name: bool(
+                    conn.execute(
+                        text(
+                            """
+                            SELECT 1
+                            FROM information_schema.tables
+                            WHERE table_schema = 'public' AND table_name = :name
+                            LIMIT 1
+                            """
+                        ),
+                        {"name": name},
+                    ).fetchone()
+                )
+
+                if exists("outbox_events"):
+                    row = conn.execute(
+                        text(
+                            """
+                            SELECT status, processed_at, attempts, error_reason
+                            FROM outbox_events
+                            WHERE id = CAST(:id AS uuid)
+                            """
+                        ),
+                        {"id": outbox_event_id},
+                    ).mappings().fetchone()
+                else:
+                    row = conn.execute(
+                        text(
+                            """
+                            SELECT status, processed_at, attempts, error_reason
+                            FROM search_outbox_events
+                            WHERE id = CAST(:id AS uuid)
+                            """
+                        ),
+                        {"id": outbox_event_id},
+                    ).mappings().fetchone()
 
             if row is None:
                 db_observed = {"found": False}

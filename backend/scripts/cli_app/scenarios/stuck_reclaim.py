@@ -118,7 +118,7 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
     }
     write_json(outdir / "_recipe.json", recipe)
 
-    worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
+    worker = REPO_ROOT / "backend" / "scripts" / "search_outbox_worker.py"
     cmd = [python_exe(), "-u", str(worker)]
 
     inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"

@@ -93,7 +93,7 @@ def run_duplicate_delivery(inputs: DrillInputs) -> DrillResult:
     }
     write_json(outdir / "_recipe.json", recipe)
 
-    worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
+    worker = REPO_ROOT / "backend" / "scripts" / "search_outbox_worker.py"
     log_path = logs_dir / f"worker-{run_id}.log"
     cmd = [python_exe(), "-u", str(worker)]
 
