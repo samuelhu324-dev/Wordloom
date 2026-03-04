@@ -26,6 +26,32 @@
   - drills 按钮化与误差/故障复盘 → `S3A`
   - 备份/脱敏/恢复等证据流水线 → `S5A`
 
+## Constraints（约束）
+
+- 不搬运旧内容：旧 log 仍是单点事实源（SoT）；S6A 只做索引与“跨域 contract 的收口”。
+- 不新增第二套入口：对外稳定入口优先是既有的 runbook/CLI/workflows；S6A 不创造“第三条路”。
+- reason 必须低基数：禁止把高基数信息写进 metrics labels / reason 字段；reason 是契约而不是日志。
+- 证据优先机器可判定：尽量避免“靠截图/靠肉眼判断”；PASS/FAIL 以 `_result.json`/evidence JSON 为准。
+
+## Scope（本 log 范围）
+
+- 本 log 负责：
+  - S6 主题的索引（哪些 log/哪些入口/哪些 contracts 是 S6 的骨架）
+  - P1+ 的执行清单（把后续要做的深化点拆成可以逐步打勾的 checklist）
+- 本 log 不负责：
+  - 取代任何既有 log 的细节内容
+  - 记录每一次具体 drill run 的证据（证据应进入对应领域 log 或 artifacts）
+
+## Success Criteria（DoD）
+
+- 结构层面：
+  - INDEX 能一眼找到 S6 相关旧 SoT，并能导航到稳定入口（CLI/workflow/runbook）。
+  - S6A 能持续增长而不变成“第二份 SoT”（以链接与 checklist 为主）。
+- 工程层面（可演进）：
+  - worker/refactor/表迁移不再轻易打断 drills（入口漂移零容忍）。
+  - fault drills 能形成 hard gate：CI 可判定 PASS/FAIL，失败 artifacts 自解释。
+  - reason taxonomy（DB `error_reason` + metrics `reason`）能被 verify 断言，且保持低基数。
+
 ## Background
 
 历史上很多 evidence/drills 都是“寄生型演进”：在合表/迁移/事故复盘时顺手做出来。
@@ -36,7 +62,9 @@
 1) 把既有 SoT 全部索引化（P0）
 2) 把下一阶段要深化的点变成可执行 checklist（P1+）
 
-## P0（Indexing / Mapping）：旧 SoT → 当前 S6A 的关系
+## Phases（切片 / 里程碑）
+
+### P0（Indexing / Mapping）：旧 SoT → 当前 S6A 的关系
 
 > 规则：P0 只做“链接 + 关系说明 + 未来切片入口”，不重写旧内容。
 
@@ -84,31 +112,53 @@
   - 关系：S5 的早期 drills/evidence 形态（tenant boundary/policy/audit）与“共享键/证据 JSON”习惯的起点之一。
   - S6A 复用：用它做“领域类 drills（policy/audit）”与“平台类 drills（outbox/fault）”的对照样本。
 
-## P1（Draft）：把“入口漂移”做成零容忍
+### P1（Draft）：把“入口漂移”做成零容忍
 
 目标：未来 worker refactor / 表迁移 / CLI 调整，不能再把 drills 打断。
 
 - Stable Entry contract：所有场景启动 worker 必须走“稳定入口脚本”，禁止硬编码 legacy 路径。
 - Centralize worker spawn + env wiring：把 worker command/环境变量拼装集中到一个 helper，被所有场景复用。
 
-## P2（Draft）：Unify supply creation（只走 unified outbox）
+### P2（Draft）：Unify supply creation（只走 unified outbox）
 
 目标：fault scenarios 不再往旧表插入导致“触发与消费不一致”。
 
 - 场景供给（seed/insert）优先插入 `outbox_events`（带 projection），旧表仅作为迁移窗口 fallback。
 - verify 在 DB 侧也要双兼容，直到 legacy 下线。
 
-## P3（Draft）：Failure taxonomy hard interface（reason = contract）
+### P3（Draft）：Failure taxonomy hard interface（reason = contract）
 
 目标：reason 不是“日志字符串”，而是：低基数、可聚合、可被 verify 断言的稳定接口。
 
 - 将 `error_reason`（DB）与 Prometheus `reason` label 视为同一 contract。
 - verify 既要看 metrics delta，也要看 DB 终态（terminal vs retry_scheduled）与 reason family。
 
-## P4（Draft）：Hard-gate + evidence JSON（让 CI 失败自解释）
+### P4（Draft）：Hard-gate + evidence JSON（让 CI 失败自解释）
 
 - 每个 `fault/obs_infra/*` 场景导出一个小的 evidence JSON：expected vs observed（retry/failed/reclaimed/replayed）。
 - CI 失败时 artifacts 中必须包含：evidence JSON + 最小 logs/metrics dumps（避免“只能看图/看日志猜”）。
+
+## Execution Checklist（当前骨架里程碑汇总）
+
+- [x] `P0`：S6 旧 SoT 索引化（INDEX 清单 + S6A mapping）
+- [ ] `P1`：Stable Entry contract（入口漂移零容忍 + helper 复用）
+- [ ] `P2`：Supply creation 统一到 `outbox_events`（legacy 退场计划）
+- [ ] `P3`：reason taxonomy contract（metrics + DB + verify 对齐）
+- [ ] `P4`：fault suite hard-gate（evidence JSON + 自解释 artifacts）
+
+## Current Status（进展摘要）
+
+- P0：已完成索引化骨架（S6A spine log + INDEX 的 old logs 清单）。
+- Route B/fault drills：已修复一次“入口漂移/表不一致”风险（见 Recent changes）。
+- P1–P4：已形成 draft checklist，待按切片推进并补 evidence。
+
+## Stability（stable 口径）
+
+- 本 log 仍为 `draft`：表示“索引骨架已建立，但 P1–P4 的 hard gate/契约仍在演进”。
+- 达到 `stable` 的最低门槛（建议）：
+  - P1 的入口漂移防护落地（至少 1 个共享 helper 被 fault scenarios 全量复用）
+  - P3 的 reason contract 至少在 1 个 fault scenario 上形成可被 verify 断言的闭环
+  - P4 至少 1 个场景具备 evidence JSON 且 CI 失败 artifacts 自解释
 
 ## Recent changes (for traceability)
 
