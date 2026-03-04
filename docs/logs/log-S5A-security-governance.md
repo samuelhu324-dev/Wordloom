@@ -5,7 +5,7 @@
 **id**: `S5A-security-governance`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `security & governance (AuthContext, tenant boundary, policy, audit, drills, membership/roles)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S5`
 **tags**: `EVOLUTION, Security, Governance, MultiTenant, Auth, Authorization, Policy, Audit, Drills, epic/s5, epic/s5a`
 **links**: ``
@@ -21,7 +21,7 @@
   **phase_log_3**: `docs/logs/log-S5A-3A-backup-sanitization.md`
   **phase_log_4**: `docs/logs/log-S5A-3B-object-storage-backup.md`
 **created**: `2026-03-02`
-**updated**: `2026-03-03`
+**updated**: `2026-03-04`
 
 ---
 
@@ -84,3 +84,10 @@
 
 - 默认 404 优先于 403（用于越权读场景，减少信息泄露）；但需要统一口径并产出审计。
 - audit 记录点优先：policy deny / allow + 关键写操作成功（最小闭环）。
+
+## Stability（stable 口径）
+
+- 本 log 标记为 `stable` 表示：S5A epic 的 phase 拆分、默认 contract 与证据口径已稳定；具体实现与 evidence 以各 phase log 为准。
+- 端到端入口（备份/恢复/脱敏 + 对象存储化）：
+  - 见 phase log：`docs/logs/log-S5A-3B-object-storage-backup.md`
+  - 单命令 drill：`python scripts/drills/s5a3b_p4c1s1_pipeline_drill.py`
