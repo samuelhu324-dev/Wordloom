@@ -286,19 +286,40 @@ def verify_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
         + prom_parse_counter_sum(after, "outbox_es_bulk_items_total", labels={"op": "delete", "result": "failed"})
     )
 
-    failed_4xx_before = (
-        prom_parse_counter_sum(before, "outbox_es_bulk_item_failures_total", labels={"op": "index", "failure_class": "4xx"})
-        + prom_parse_counter_sum(before, "outbox_es_bulk_item_failures_total", labels={"op": "delete", "failure_class": "4xx"})
+    # Determine injected status (for flexible verify + reason contract expectations).
+    inject_status = None
+    try:
+        recipe = read_json_file(run_dir / "_recipe.json") or {}
+        if isinstance(recipe, dict):
+            inject = recipe.get("inject")
+            if isinstance(inject, dict):
+                inject_status = inject.get("status")
+    except Exception:
+        inject_status = None
+
+    status_code = int(inject_status) if inject_status is not None else 400
+    if status_code == 429:
+        failure_class = "429"
+    elif 400 <= status_code < 500:
+        failure_class = "4xx"
+    elif 500 <= status_code < 600:
+        failure_class = "5xx"
+    else:
+        failure_class = "unknown"
+
+    failed_class_before = (
+        prom_parse_counter_sum(before, "outbox_es_bulk_item_failures_total", labels={"op": "index", "failure_class": failure_class})
+        + prom_parse_counter_sum(before, "outbox_es_bulk_item_failures_total", labels={"op": "delete", "failure_class": failure_class})
     )
-    failed_4xx_after = (
-        prom_parse_counter_sum(after, "outbox_es_bulk_item_failures_total", labels={"op": "index", "failure_class": "4xx"})
-        + prom_parse_counter_sum(after, "outbox_es_bulk_item_failures_total", labels={"op": "delete", "failure_class": "4xx"})
+    failed_class_after = (
+        prom_parse_counter_sum(after, "outbox_es_bulk_item_failures_total", labels={"op": "index", "failure_class": failure_class})
+        + prom_parse_counter_sum(after, "outbox_es_bulk_item_failures_total", labels={"op": "delete", "failure_class": failure_class})
     )
 
     delta_partial = partial_after - partial_before
     delta_success_items = success_items_after - success_items_before
     delta_failed_items = failed_items_after - failed_items_before
-    delta_failed_4xx = failed_4xx_after - failed_4xx_before
+    delta_failed_class = failed_class_after - failed_class_before
 
     min_partial_delta = float(payload.get("min_partial_delta") or 0)
     min_success_items_delta = float(payload.get("min_success_items_delta") or 0)
@@ -309,7 +330,7 @@ def verify_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
         (delta_partial >= min_partial_delta)
         and (delta_success_items >= min_success_items_delta)
         and (delta_failed_items >= min_failed_items_delta)
-        and (delta_failed_4xx >= min_failed_4xx_delta)
+        and (delta_failed_class >= min_failed_4xx_delta)
     )
 
     supply = read_json_file(run_dir / "_supply.json")
@@ -318,8 +339,21 @@ def verify_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
     db_reason_values: list[str] = []
     db_reason_families: list[str] = []
 
-    expected_db_reasons: list[str] | None = None
-    expected_reason_families: list[str] = ["client"]
+    expected_db_reasons: list[str] | None
+    expected_reason_families: list[str]
+
+    if status_code == 429:
+        expected_db_reasons = ["es_429"]
+        expected_reason_families = ["rate_limit"]
+    elif 400 <= status_code < 500:
+        expected_db_reasons = ["es_4xx"]
+        expected_reason_families = ["client"]
+    elif 500 <= status_code < 600:
+        expected_db_reasons = ["es_5xx"]
+        expected_reason_families = ["upstream"]
+    else:
+        expected_db_reasons = None
+        expected_reason_families = ["unknown"]
 
     if supply is not None:
         env = load_env_from_run_recipe_v1(run_dir=run_dir)
@@ -328,32 +362,6 @@ def verify_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
             supply_db_check = verify_supply_rows_v1(database_url=db_url, supply=supply)
             if not bool(supply_db_check.get("skipped")):
                 ok = bool(ok) and bool(supply_db_check.get("ok"))
-
-        # Reason contract v1 (DB-side): infer expected reason from injected status code.
-        inject_status = None
-        try:
-            recipe = read_json_file(run_dir / "_recipe.json") or {}
-            if isinstance(recipe, dict):
-                inject = recipe.get("inject")
-                if isinstance(inject, dict):
-                    inject_status = inject.get("status")
-        except Exception:
-            inject_status = None
-
-        status_code = int(inject_status) if inject_status is not None else 400
-
-        if status_code == 429:
-            expected_db_reasons = ["es_429"]
-            expected_reason_families = ["rate_limit"]
-        elif 400 <= status_code < 500:
-            expected_db_reasons = ["es_4xx"]
-            expected_reason_families = ["client"]
-        elif 500 <= status_code < 600:
-            expected_db_reasons = ["es_5xx"]
-            expected_reason_families = ["upstream"]
-        else:
-            expected_db_reasons = None
-            expected_reason_families = ["unknown"]
 
         contract_ok, db_reason_check, db_reason_values, db_reason_families = eval_db_reason_contract_v1(
             database_url=db_url if db_url else None,
@@ -390,12 +398,13 @@ def verify_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
             "success_items_delta_ge": float(min_success_items_delta),
             "failed_items_delta_ge": float(min_failed_items_delta),
             "failed_4xx_delta_ge": float(min_failed_4xx_delta),
+            "failed_class": str(failure_class),
         },
         "observed": {
             "outbox_es_bulk_requests_total_result_partial": {"before": partial_before, "after": partial_after, "delta": delta_partial},
             "outbox_es_bulk_items_total_success_sum": {"before": success_items_before, "after": success_items_after, "delta": delta_success_items},
             "outbox_es_bulk_items_total_failed_sum": {"before": failed_items_before, "after": failed_items_after, "delta": delta_failed_items},
-            "outbox_es_bulk_item_failures_total_failure_class_4xx_sum": {"before": failed_4xx_before, "after": failed_4xx_after, "delta": delta_failed_4xx},
+            f"outbox_es_bulk_item_failures_total_failure_class_{failure_class}_sum": {"before": failed_class_before, "after": failed_class_after, "delta": delta_failed_class},
         },
         "ok": bool(ok),
     }

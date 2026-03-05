@@ -137,6 +137,12 @@
 - P3-C3-S2：为该场景接入共享 helper（DB-side reason_contract）
 - P3-C3-S3：跑 1 次 run+verify，输出第 4 份可追溯 evidence（headSha + artifacts）
 
+### P3（hardening：扩展覆盖面｜C4）
+
+- P3-C4-S1：选择下一个 reason family 做增量覆盖（目标：`upstream`）
+- P3-C4-S2：为该覆盖补齐 verify 断言（仍沿用共享 helper；必要时按注入参数选择 expected family）
+- P3-C4-S3：跑 1 次 run+verify，输出第 5 份可追溯 evidence（headSha + artifacts）
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -169,6 +175,10 @@
 - [x] `P3-C3-S1`：选择下一个场景扩展 coverage（es_bulk_partial）
 - [x] `P3-C3-S2`：接入共享 helper（reason_contract｜DB-side）
 - [x] `P3-C3-S3`：产出第 4 份可追溯 evidence（headSha + artifacts）
+
+- [ ] `P3-C4-S1`：选择下一个 reason family 增量覆盖（upstream）
+- [ ] `P3-C4-S2`：补齐 verify 断言（按注入参数选择 expected family）
+- [ ] `P3-C4-S3`：产出第 5 份可追溯 evidence（headSha + artifacts）
 
 ## Evidence（预留）
 
