@@ -19,6 +19,8 @@ from ._failure_drill_shared import (
     resolve_run_dir,
     run_cmd,
     scrape_metrics_text,
+    scrape_metrics_text_readiness_v1,
+    readiness_sleep_v1,
     with_backend_pythonpath,
 )
 from ._failure_drill_shared import LEGACY_SCRIPTS_DIR, LABS_SNAPSHOT_ROOT, REPO_ROOT
@@ -134,12 +136,11 @@ def run_es_429_inject(inputs: DrillInputs) -> DrillResult:
     )
     write_json(outdir / "_worker_start.json", worker_handle.evidence_summary())
     try:
-            time.sleep(max(0.5, float(scrape_delay)))
-            try:
-                metrics_before = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
-                metrics_before_path.write_text(metrics_before, encoding="utf-8")
-            except Exception as exc:  # noqa: BLE001
-                metrics_before_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+            readiness_sleep_v1(scrape_delay)
+            metrics_before_path.write_text(
+                scrape_metrics_text_readiness_v1(port=int(metrics_port), timeout_s=4.0),
+                encoding="utf-8",
+            )
 
             trigger_env = env.copy()
             trigger_env["OUTBOX_OP"] = str(op)

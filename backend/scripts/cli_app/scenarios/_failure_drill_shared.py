@@ -135,6 +135,42 @@ def scrape_metrics_text(*, port: int, timeout_s: float = 2.0) -> str:
         return resp.read().decode("utf-8", errors="replace")
 
 
+def readiness_sleep_v1(scrape_delay_s: float) -> float:
+    """Default readiness wait for fault drills.
+
+    We keep this as a small, stable contract: scenarios should not each invent
+    their own ad-hoc sleeps.
+    """
+
+    sleep_s = max(0.5, float(scrape_delay_s or 0.0))
+    time.sleep(sleep_s)
+    return float(sleep_s)
+
+
+def scrape_metrics_text_readiness_v1(
+    *,
+    port: int,
+    timeout_s: float = 4.0,
+    readiness_timeout_s: float = 8.0,
+    interval_s: float = 0.25,
+) -> str:
+    """Scrape Prometheus text with a small readiness retry window.
+
+    Returns either the raw metrics text, or a single-line "scrape_failed: ...".
+    """
+
+    deadline = time.time() + float(readiness_timeout_s)
+    last_exc: Exception | None = None
+    while True:
+        try:
+            return scrape_metrics_text(port=int(port), timeout_s=float(timeout_s))
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+            if time.time() >= deadline:
+                return f"scrape_failed: {type(last_exc).__name__}: {last_exc}\n"
+            time.sleep(max(0.05, float(interval_s)))
+
+
 def prom_parse_counter_sum(text: str, metric: str, *, labels: dict[str, str] | None = None) -> float:
     want = labels or {}
     total = 0.0
@@ -313,6 +349,8 @@ def spawn_search_outbox_worker(
     log_name: str | None = None,
     extra_args: list[str] | None = None,
     evidence_env_keys: list[str] | None = None,
+    log_mode: str = "w",
+    log_header: str | None = None,
 ) -> SpawnedWorker:
     """Spawn the Search outbox worker using the stable repo entry.
 
@@ -329,13 +367,81 @@ def spawn_search_outbox_worker(
     cmd = [python_exe(), "-u", str(worker_script)] + (list(extra_args) if extra_args else [])
     log_path = logs_dir / (log_name or f"worker-{run_id}.log")
 
-    log_file = open(log_path, "w", encoding="utf-8")
+    mode = str(log_mode or "w")
+    if mode not in {"w", "a"}:
+        raise ValueError(f"unsupported log_mode={mode!r}; expected 'w' or 'a'")
+
+    log_file = open(log_path, mode, encoding="utf-8")
+    if log_header:
+        try:
+            log_file.write(str(log_header))
+            log_file.flush()
+        except Exception:
+            pass
     started_at = time.time()
     proc = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=env, stdout=log_file, stderr=subprocess.STDOUT)
 
     keys = sorted(set(evidence_env_keys or []))
     return SpawnedWorker(
         entry_id="search_outbox_worker@v1",
+        cmd=cmd,
+        cwd=REPO_ROOT,
+        env_keys=keys,
+        log_path=log_path,
+        proc=proc,
+        started_at_s=started_at,
+        _log_file=log_file,
+    )
+
+
+def spawn_chronicle_outbox_worker(
+    *,
+    env: dict[str, str],
+    logs_dir: Path,
+    run_id: str,
+    log_name: str | None = None,
+    extra_args: list[str] | None = None,
+    evidence_env_keys: list[str] | None = None,
+    log_mode: str = "w",
+    log_header: str | None = None,
+) -> SpawnedWorker:
+    """Spawn the Chronicle outbox worker using the stable repo entry.
+
+    This exists to keep fault drills from hardcoding script paths or duplicating
+    subprocess boilerplate.
+    """
+
+    ensure_dir(logs_dir)
+
+    worker_script = REPO_ROOT / "backend" / "scripts" / "chronicle_outbox_worker.py"
+    if not worker_script.exists():
+        legacy_script = LEGACY_SCRIPTS_DIR / "chronicle_outbox_worker.py"
+        if legacy_script.exists():
+            worker_script = legacy_script
+        else:
+            raise FileNotFoundError(str(worker_script))
+
+    cmd = [python_exe(), "-u", str(worker_script)] + (list(extra_args) if extra_args else [])
+    log_path = logs_dir / (log_name or f"chronicle-worker-{run_id}.log")
+
+    mode = str(log_mode or "w")
+    if mode not in {"w", "a"}:
+        raise ValueError(f"unsupported log_mode={mode!r}; expected 'w' or 'a'")
+
+    log_file = open(log_path, mode, encoding="utf-8")
+    if log_header:
+        try:
+            log_file.write(str(log_header))
+            log_file.flush()
+        except Exception:
+            pass
+
+    started_at = time.time()
+    proc = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=env, stdout=log_file, stderr=subprocess.STDOUT)
+
+    keys = sorted(set(evidence_env_keys or []))
+    return SpawnedWorker(
+        entry_id="chronicle_outbox_worker@v1",
         cmd=cmd,
         cwd=REPO_ROOT,
         env_keys=keys,

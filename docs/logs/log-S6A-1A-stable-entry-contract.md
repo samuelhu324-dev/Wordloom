@@ -5,7 +5,7 @@
 **id**: `S6A-1A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `stable entry contract for fault drills (centralize worker spawn + env wiring) v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S6`
 **tags**: `EVOLUTION, Evidence, Drills, FailureContract, Scenarios, Worker, CLI, epic/s6, sub/1a`
 **links**: ``
@@ -114,6 +114,7 @@
 
 - P2-C1-S1：`fault/obs_infra/*` 场景全量替换为 helper 调用
 - P2-C1-S2：统一 readiness 等待策略（最小可用即可）
+- P2-C2-S1：同类场景（例如 `shadow_verify_*` 中的 worker spawn）逐步收口到同一 helper（避免入口漂移回流）
 
 ## Execution Checklist（unchecked）
 
@@ -131,8 +132,9 @@
 
 ### P2（全量迁移）
 
-- [ ] `P2-C1-S1`：`fault/obs_infra/*` 全量迁移
-- [ ] `P2-C1-S2`：readiness 策略统一
+- [x] `P2-C1-S1`：`fault/obs_infra/*` 全量迁移
+- [x] `P2-C1-S2`：readiness 策略统一
+- [x] `P2-C2-S1`：同类场景（例如 `shadow_verify_*`）收口到 helper（逐步）
 
 ## Evidence（预留）
 
@@ -152,6 +154,18 @@
   - inserter 超时：`_trigger_insert_outbox.timeout.txt`
   - verify 结果：`ok=false`（metrics delta 为 0）
 
+### P2-C2-S1（shadow_verify_* 收口｜2026-03-04）
+
+- headSha：`75c0c4d4`
+- scenario：`shadow_verify_dual_run_stage2`
+- run_id：`s6a1a-c2-20260304-2220`
+- outdir：`artifacts/_tmp_s6a1a-c2-20260304-2220_shadow_verify_dual_run_stage2/`
+- worker entry：`search_outbox_worker@v1`（见 `_worker_start.json` / `_result.json.targets.worker_entrypoint`）
+- evidence files：`_worker_start.json`、`worker.log`、`_result.json`、`traces.json`
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-04：在 P0 修复中已将若干场景的 worker 入口统一到稳定脚本；本切片把该修复制度化为 helper + contract。
+- 2026-03-04：完成 `fault/obs_infra/all` 矩阵（9 项）场景的 worker spawn 收口（稳定入口 + evidence 口径一致）。
+- 2026-03-05：统一 readiness 策略：将各场景分散的 `sleep + metrics scrape` 收口到 shared helper（`readiness_sleep_v1` / `scrape_metrics_text_readiness_v1`）。
+- 2026-03-04：将 `shadow_verify_dual_run_stage2` / `shadow_verify_dual_run_window` 的 worker spawn 收口到同一 helper，并产出一份可复用 evidence（见 P2-C2-S1）。
