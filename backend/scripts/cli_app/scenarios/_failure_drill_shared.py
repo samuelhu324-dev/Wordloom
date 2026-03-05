@@ -11,6 +11,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any
+from uuid import UUID
 
 from ..common import REPO_ROOT
 
@@ -21,6 +22,9 @@ LEGACY_SCRIPTS_DIR = REPO_ROOT / "backend" / "scripts" / "legacy"
 
 # Keep in sync with backend/scripts/search_outbox_worker_impl.py
 SEARCH_OUTBOX_OBS_SCHEMA_VERSION = "labs-009-v2"
+
+
+SUPPLY_EVIDENCE_PREFIX = "SUPPLY_EVIDENCE_JSON:"
 
 
 def ensure_dir(path: Path) -> None:
@@ -279,6 +283,203 @@ def python_exe() -> str:
 def run_cmd(cmd: list[str], *, cwd: Path | None = None, env: dict[str, str] | None = None) -> int:
     print("[scripts] run:", " ".join(cmd))
     return subprocess.call(cmd, cwd=str(cwd) if cwd else None, env=env)
+
+
+@dataclass
+class SearchOutboxSupplyInsertResult:
+    outbox_event_ids: list[str]
+    evidence: dict[str, object] | None
+    returncode: int | None
+    stdout_path: Path
+    stderr_path: Path
+    timeout_path: Path
+
+
+def _parse_supply_evidence(stdout_text: str) -> tuple[dict[str, object] | None, list[str]]:
+    """Parse optional supply evidence header and return (evidence, id_lines)."""
+
+    if not stdout_text:
+        return (None, [])
+
+    lines = [ln.strip() for ln in stdout_text.splitlines() if ln.strip()]
+    if not lines:
+        return (None, [])
+
+    evidence: dict[str, object] | None = None
+    if lines and lines[0].startswith(SUPPLY_EVIDENCE_PREFIX):
+        raw = lines[0][len(SUPPLY_EVIDENCE_PREFIX) :].strip()
+        try:
+            obj = json.loads(raw)
+            if isinstance(obj, dict):
+                evidence = obj
+        except Exception:
+            evidence = None
+        lines = lines[1:]
+
+    return (evidence, lines)
+
+
+def run_search_outbox_supply_inserter_v1(
+    *,
+    outdir: Path,
+    env: dict[str, str],
+    op: str,
+    insert_count: int = 1,
+    create_search_index_row: bool = True,
+    event_version: str | int | None = 0,
+    timeout_s: float = 30.0,
+    file_prefix: str = "_trigger_insert_outbox",
+) -> SearchOutboxSupplyInsertResult:
+    """Insert unified outbox_events supply via the stable Labs-009 inserter.
+
+    S6A-2A contract: default to unified `outbox_events` (projection-scoped) and
+    only fall back to legacy when unified table is missing.
+    """
+
+    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
+    if not inserter.exists():
+        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
+
+    stdout_path = outdir / f"{file_prefix}.stdout.txt"
+    stderr_path = outdir / f"{file_prefix}.stderr.txt"
+    timeout_path = outdir / f"{file_prefix}.timeout.txt"
+
+    trigger_env = dict(env)
+    trigger_env["OUTBOX_OP"] = str(op)
+    trigger_env["OUTBOX_INSERT_COUNT"] = str(int(insert_count))
+    trigger_env["OUTBOX_CREATE_SEARCH_INDEX_ROW"] = "1" if create_search_index_row else "0"
+    if event_version is not None:
+        trigger_env.setdefault("OUTBOX_EVENT_VERSION", str(event_version))
+    trigger_env["OUTBOX_SUPPLY_EVIDENCE_JSON"] = "1"
+
+    cmd = [python_exe(), str(inserter)]
+    try:
+        proc = subprocess.run(
+            cmd,
+            cwd=str(REPO_ROOT),
+            env=trigger_env,
+            capture_output=True,
+            text=True,
+            timeout=float(timeout_s),
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        stdout_path.write_text((exc.stdout or "") if isinstance(exc.stdout, str) else "", encoding="utf-8")
+        stderr_path.write_text((exc.stderr or "") if isinstance(exc.stderr, str) else "", encoding="utf-8")
+        timeout_path.write_text(
+            f"timeout_s={timeout_s}\ncmd={cmd!r}\n",
+            encoding="utf-8",
+        )
+        return SearchOutboxSupplyInsertResult(
+            outbox_event_ids=[],
+            evidence=None,
+            returncode=None,
+            stdout_path=stdout_path,
+            stderr_path=stderr_path,
+            timeout_path=timeout_path,
+        )
+
+    stdout_text = proc.stdout or ""
+    stderr_text = proc.stderr or ""
+    stdout_path.write_text(stdout_text, encoding="utf-8")
+    stderr_path.write_text(stderr_text, encoding="utf-8")
+
+    evidence, ids = _parse_supply_evidence(stdout_text)
+    return SearchOutboxSupplyInsertResult(
+        outbox_event_ids=ids,
+        evidence=evidence,
+        returncode=int(proc.returncode),
+        stdout_path=stdout_path,
+        stderr_path=stderr_path,
+        timeout_path=timeout_path,
+    )
+
+
+def load_env_from_run_recipe_v1(*, run_dir: Path) -> dict[str, str]:
+    recipe = read_json_file(run_dir / "_recipe.json") or {}
+    env_file = recipe.get("env_file")
+    env = with_backend_pythonpath(load_env(env_file=str(env_file) if env_file else None))
+    return env
+
+
+def _coerce_uuids(ids: list[str]) -> list[UUID]:
+    out: list[UUID] = []
+    for raw in ids:
+        try:
+            out.append(UUID(str(raw)))
+        except Exception:
+            continue
+    return out
+
+
+def verify_supply_rows_v1(*, database_url: str, supply: dict[str, object]) -> dict[str, object]:
+    """DB-side verification that supplied outbox ids are present.
+
+    Returns a small evidence object; does not raise on DB failures.
+    """
+
+    try:
+        from sqlalchemy import bindparam, create_engine, text
+    except Exception as exc:  # pragma: no cover
+        return {"ok": False, "error": f"sqlalchemy_import_failed: {type(exc).__name__}: {exc}"}
+
+    target_table = str(supply.get("target_table") or "").strip() or None
+    projection = str(supply.get("projection") or "").strip() or None
+    ids_raw = supply.get("outbox_event_ids")
+    if isinstance(ids_raw, list):
+        ids = [str(x).strip() for x in ids_raw if str(x).strip()]
+    else:
+        one = str(supply.get("outbox_event_id") or "").strip()
+        ids = [one] if one else []
+
+    if not database_url:
+        return {"ok": False, "skipped": True, "reason": "missing_database_url"}
+    if not target_table:
+        return {"ok": False, "skipped": True, "reason": "missing_target_table"}
+    if not ids:
+        return {"ok": False, "skipped": True, "reason": "missing_outbox_event_ids"}
+
+    allowed_tables = {"outbox_events", "search_outbox_events"}
+    if target_table not in allowed_tables:
+        return {"ok": False, "skipped": True, "reason": f"unsupported_target_table:{target_table}"}
+
+    engine = create_engine(str(database_url))
+    try:
+        with engine.connect() as conn:
+            if target_table == "outbox_events":
+                if not projection:
+                    return {"ok": False, "skipped": True, "reason": "missing_projection_for_outbox_events"}
+                stmt = text(
+                    "SELECT id::text AS id, status "
+                    "FROM outbox_events "
+                    "WHERE projection = :projection AND id::text IN :ids"
+                ).bindparams(bindparam("ids", expanding=True))
+                rows = list(conn.execute(stmt, {"projection": projection, "ids": list(ids)}).fetchall())
+            else:
+                stmt = text(
+                    "SELECT id::text AS id, status "
+                    "FROM search_outbox_events "
+                    "WHERE id::text IN :ids"
+                ).bindparams(bindparam("ids", expanding=True))
+                rows = list(conn.execute(stmt, {"ids": list(ids)}).fetchall())
+
+        found = {str(r[0]) for r in rows}
+        missing = [x for x in ids if x not in found]
+        return {
+            "ok": bool(len(missing) == 0),
+            "target_table": target_table,
+            "projection": projection,
+            "expected": int(len(ids)),
+            "found": int(len(found)),
+            "missing": missing,
+        }
+    except Exception as exc:
+        return {"ok": False, "error": f"db_check_failed: {type(exc).__name__}: {exc}", "target_table": target_table}
+    finally:
+        try:
+            engine.dispose()
+        except Exception:
+            pass
 
 
 def docker_compose(*, args: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
