@@ -66,7 +66,7 @@
 ## Evidence（预留）
 
 - 以 artifacts 为事实源；记录 headSha + 参数 + artifacts 路径（或 CI run URL）。
-- code head: （见后续提交；本段会在合并后补齐）
+- code head: `07847af0`
 - note: 运行态 evidence 已入账（见下方 P2-C1-S1）。
 
 ### P2-C1-S1（shadow_verify_* 供给收口｜已补）
@@ -87,6 +87,19 @@
   - supply：`target_table=outbox_events`、`projection=search_index_to_elastic`、`insert_count=20`、`fallback.used=false`
   - supply_db_check：`ok=true`（expected=20 found=20）
   - evidence files：`_result.json`、`_supply.json`、`_worker_start.json`、`worker.log`、`traces.json`
+
+#### P2-C1-S1（本地 evidence｜C2：shadow_verify_dual_run_window｜2026-03-05）
+
+- command：`python backend/scripts/cli.py labs shadow-verify-dual-run-window --database-url postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev --es-url http://127.0.0.1:19200 --run-id s6a2a-p2c1s1-c2-20260305-133359 --outdir artifacts/_tmp_s6a2a-p2c1s1-c2-20260305-133359_shadow_verify_dual_run_window`
+- artifacts：`artifacts/_tmp_s6a2a-p2c1s1-c2-20260305-133359_shadow_verify_dual_run_window/`
+- observed：
+  - result：`ok=true`（strategy=`strict`）
+  - supply：`target_table=outbox_events`、`projection=search_index_to_elastic`、`insert_count=200`、`fallback.used=false`
+  - outbox：`enqueued_total=200`、`status_counts.done=200`
+  - worker：`ok=true`（exit_code=1 runtime_s≈11.02）
+  - parity：`compare.parity_ok=true`（PG vs ES ids）
+  - supply_db_check：`ok=true`（expected=200 found=200）
+  - evidence files：`_result.json`、`_supply.json`、`_worker_start.json`、`worker.log`
 
 ### P1-C2-S1（本地 evidence：跑 1 次 run+verify｜已补）
 
