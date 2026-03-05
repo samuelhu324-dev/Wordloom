@@ -143,6 +143,13 @@
 - P3-C4-S2：为该覆盖补齐 verify 断言（仍沿用共享 helper；必要时按注入参数选择 expected family）
 - P3-C4-S3：跑 1 次 run+verify，输出第 5 份可追溯 evidence（headSha + artifacts）
 
+### P3（hardening：扩展覆盖面｜C5）
+
+- P3-C5-S1：选择下一个 reason family 做增量覆盖（目标：`timeout`）
+- P3-C5-S2：新增/接入场景（`es_timeout`）并使用 reason_contract（DB + metrics + verify）
+- P3-C5-S3：稳定化（避免噪声 pending rows 造成 evidence 漂移；必要时用 allowlist 做 scope）
+- P3-C5-S4：跑 1 次 run+verify，输出第 6 份可追溯 evidence（headSha + artifacts）
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -179,6 +186,11 @@
 - [x] `P3-C4-S1`：选择下一个 reason family 增量覆盖（upstream）
 - [x] `P3-C4-S2`：补齐 verify 断言（按注入参数选择 expected family）
 - [x] `P3-C4-S3`：产出第 5 份可追溯 evidence（headSha + artifacts）
+
+- [x] `P3-C5-S1`：选择下一个 reason family 增量覆盖（timeout）
+- [x] `P3-C5-S2`：新增场景（es_timeout）+ reason_contract（DB-side）
+- [x] `P3-C5-S3`：稳定化（scope allowlist / backoff）
+- [x] `P3-C5-S4`：产出第 6 份可追溯 evidence（headSha + artifacts）
 
 
 ## Evidence（预留）
@@ -292,3 +304,27 @@
     - 5xx failed items: `+1`
   - DB error_reason（outbox_events）：
     - `es_5xx`（family=`upstream`）
+
+### P3-C5-S4（fault/obs_infra/es_timeout｜timeout｜2026-03-05）
+
+- headSha：`1d8d7882`（S6A-3A/P3-C5-S4: scope es_timeout via library allowlist）
+- run_id：`s6a3a-p3c5s4-20260305-211200`
+- artifacts：`docs/labs/_snapshot/auto/S3A-2A-3A/es_timeout/s6a3a-p3c5s4-20260305-211200/`
+- key knobs:
+  - inject: local blackhole HTTP server（ELASTIC_URL 指向 127.0.0.1:<port>，触发 read timeout）
+  - scope: `SEARCH_OUTBOX_LIBRARY_ALLOWLIST=<uuid>`（避免历史 pending rows 噪声）
+  - backoff: `OUTBOX_BASE_BACKOFF_SECONDS=30`, `OUTBOX_MAX_BACKOFF_SECONDS=30`
+- expected：
+  - metrics reasons ⊆ {`es_timeout`}
+  - reason family ⊆ {`timeout`}
+  - metrics delta（reason=es_timeout）：
+    - retry_scheduled: `>= +1`
+    - failed: `>= +1`
+    - terminal_failed: `<= +0`
+- observed：
+  - metrics delta（reason=es_timeout）：
+    - retry_scheduled: `+1`
+    - failed: `+1`
+    - terminal_failed: `+0`
+  - DB error_reason（outbox_events）：
+    - `es_timeout`（family=`timeout`）
