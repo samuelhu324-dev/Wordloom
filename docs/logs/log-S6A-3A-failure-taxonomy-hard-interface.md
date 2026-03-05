@@ -129,6 +129,13 @@
 
 - P3-C1-S1：将 reason_contract 的 DB 校验抽成共享 verify helper（不改 UX，只减少重复）
 - P3-C1-S2：将已覆盖的 3 个样板场景迁移到共享 helper
+- P3-C1-S3：回归验证：在任一已覆盖场景上跑 1 次 run+verify，确认迁移后 reason_contract 输出仍稳定
+
+### P3（hardening：扩展覆盖面）
+
+- P3-C3-S1：选择下一个 `fault/obs_infra/*` 场景扩展 reason_contract coverage：`es_bulk_partial`
+- P3-C3-S2：为该场景接入共享 helper（DB-side reason_contract）
+- P3-C3-S3：跑 1 次 run+verify，输出第 4 份可追溯 evidence（headSha + artifacts）
 
 ## Execution Checklist（unchecked）
 
@@ -157,6 +164,11 @@
 
 - [x] `P3-C1-S1`：抽出共享 verify helper（reason_contract｜DB-side）
 - [x] `P3-C1-S2`：迁移样板场景到共享 helper（es_down_connect / es_429_inject / es_write_block_4xx）
+- [x] `P3-C1-S3`：回归验证：跑 1 次 run+verify（确认 reason_contract 输出稳定）
+
+- [x] `P3-C3-S1`：选择下一个场景扩展 coverage（es_bulk_partial）
+- [x] `P3-C3-S2`：接入共享 helper（reason_contract｜DB-side）
+- [ ] `P3-C3-S3`：产出第 4 份可追溯 evidence（headSha + artifacts）
 
 ## Evidence（预留）
 
@@ -208,3 +220,19 @@
     - retry_scheduled: `+0`
   - DB error_reason（outbox_events）：
     - `es_4xx`（family=`client`）
+
+### P3-C1-S3（regression｜fault/obs_infra/es_429_inject｜2026-03-05）
+
+- headSha：`373ad62e`（S6A-3A/P3-C1-S1: extract shared reason_contract verify helper）
+- run_id：`s6a3a-p3c1s3-20260305-163800`
+- artifacts：`docs/labs/_snapshot/auto/S3A-2A-3A/es_429_inject/s6a3a-p3c1s3-20260305-163800/`
+- expected：
+  - metrics reasons ⊆ {`es_429`}
+  - reason family ⊆ {`rate_limit`}
+- observed：
+  - metrics delta（reason=es_429）：
+    - retry_scheduled: `+5`
+    - failed: `+5`
+    - terminal_failed: `+0`
+  - DB error_reason（outbox_events）：
+    - `es_429`（family=`rate_limit`）

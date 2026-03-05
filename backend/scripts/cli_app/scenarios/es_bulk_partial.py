@@ -13,6 +13,7 @@ from ._failure_drill_shared import (
     SEARCH_OUTBOX_OBS_SCHEMA_VERSION,
     default_labs_auto_run_dir,
     ensure_dir,
+    eval_db_reason_contract_v1,
     extract_last_claim_batch_id,
     load_env,
     load_env_from_run_recipe_v1,
@@ -313,6 +314,13 @@ def verify_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
 
     supply = read_json_file(run_dir / "_supply.json")
     supply_db_check = None
+    reason_contract_db_reason_check = None
+    db_reason_values: list[str] = []
+    db_reason_families: list[str] = []
+
+    expected_db_reasons: list[str] | None = None
+    expected_reason_families: list[str] = ["client"]
+
     if supply is not None:
         env = load_env_from_run_recipe_v1(run_dir=run_dir)
         db_url = str(env.get("DATABASE_URL") or "").strip()
@@ -321,12 +329,62 @@ def verify_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
             if not bool(supply_db_check.get("skipped")):
                 ok = bool(ok) and bool(supply_db_check.get("ok"))
 
+        # Reason contract v1 (DB-side): infer expected reason from injected status code.
+        inject_status = None
+        try:
+            recipe = read_json_file(run_dir / "_recipe.json") or {}
+            if isinstance(recipe, dict):
+                inject = recipe.get("inject")
+                if isinstance(inject, dict):
+                    inject_status = inject.get("status")
+        except Exception:
+            inject_status = None
+
+        status_code = int(inject_status) if inject_status is not None else 400
+
+        if status_code == 429:
+            expected_db_reasons = ["es_429"]
+            expected_reason_families = ["rate_limit"]
+        elif 400 <= status_code < 500:
+            expected_db_reasons = ["es_4xx"]
+            expected_reason_families = ["client"]
+        elif 500 <= status_code < 600:
+            expected_db_reasons = ["es_5xx"]
+            expected_reason_families = ["upstream"]
+        else:
+            expected_db_reasons = None
+            expected_reason_families = ["unknown"]
+
+        contract_ok, db_reason_check, db_reason_values, db_reason_families = eval_db_reason_contract_v1(
+            database_url=db_url if db_url else None,
+            supply=supply,
+            expected_reason_families=expected_reason_families,
+            expected_db_reasons=expected_db_reasons,
+            require_db_reasons=True,
+        )
+
+        reason_contract_db_reason_check = db_reason_check
+
+        if contract_ok is not None:
+            ok = bool(ok) and bool(contract_ok)
+
     result = {
         "scenario": SCENARIO_ES_BULK_PARTIAL,
         "run_dir": str(run_dir),
         "worker": worker_start,
         "supply": supply,
         "supply_db_check": supply_db_check,
+        "reason_contract": {
+            "expected": {
+                "metrics_reasons": list(expected_db_reasons or []),
+                "reason_families": list(expected_reason_families),
+            },
+            "observed": {
+                "db_reasons": list(db_reason_values),
+                "db_reason_families": list(db_reason_families),
+            },
+            "db_reason_check": reason_contract_db_reason_check,
+        },
         "checks": {
             "partial_delta_ge": float(min_partial_delta),
             "success_items_delta_ge": float(min_success_items_delta),
