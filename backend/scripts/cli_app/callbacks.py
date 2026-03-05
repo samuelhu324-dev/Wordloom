@@ -80,6 +80,7 @@ SCENARIO_ES_WRITE_BLOCK_4XX = "es_write_block_4xx"
 SCENARIO_ES_429_INJECT = "es_429_inject"
 SCENARIO_ES_DOWN_CONNECT = "es_down_connect"
 SCENARIO_ES_BULK_PARTIAL = "es_bulk_partial"
+SCENARIO_ES_TIMEOUT = "es_timeout"
 SCENARIO_DB_CLAIM_CONTENTION = "db_claim_contention"
 SCENARIO_STUCK_RECLAIM = "stuck_reclaim"
 SCENARIO_DUPLICATE_DELIVERY = "duplicate_delivery"
@@ -241,6 +242,23 @@ def build_callbacks() -> dict[str, Callback]:
             _cmd_labs_clean_impl,
             scope_id=LAB_ID_S3A_2A_3A,
             handler_base="es_down_connect",
+        ),
+        "_cmd_labs_run_es_timeout": partial(
+            _cmd_labs_run_impl,
+            scope_id=LAB_ID_S3A_2A_3A,
+            scenario=SCENARIO_ES_TIMEOUT,
+            handler_base="es_timeout",
+        ),
+        "_cmd_labs_verify_es_timeout": partial(
+            _cmd_labs_verify_impl,
+            scope_id=LAB_ID_S3A_2A_3A,
+            scenario=SCENARIO_ES_TIMEOUT,
+            handler_base="es_timeout",
+        ),
+        "_cmd_labs_clean_es_timeout": partial(
+            _cmd_labs_clean_impl,
+            scope_id=LAB_ID_S3A_2A_3A,
+            handler_base="es_timeout",
         ),
         "_cmd_labs_run_es_bulk_partial": partial(
             _cmd_labs_run_impl,
