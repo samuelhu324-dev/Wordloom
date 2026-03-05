@@ -7,3 +7,42 @@
 - S3: Observability
 - S4: Ops Runtime
 - S5: Security & Governance
+- S6: Evidence & Drills
+
+## S6-related, old logs
+- S6A spine (new SoT index)
+	- docs/logs/log-S6A-evidence-drills-spine.md
+
+- Artifacts / Evidence contract
+	- docs/logs/log-S0C-3A-2A-artifacts-contract-packing.md
+
+- Git discipline for evidence (descriptions / traceability)
+	- docs/logs/log-S0C-5A-Git-commit+push-descriptions.md
+
+- Scenarios taxonomy / catalog-driven suites
+	- docs/logs/log-S0C-4A-scenarios-taxonomy.md
+	- docs/logs/log-S0C-4A-1A-catalog-driven-suites-&-guardrails.md
+
+- Failure Contract (S2B)
+	- docs/logs/log-S2B-1A-failure-contract-v1.md
+	- docs/logs/log-S2B-2A-failure-contract-v2.md
+	- docs/logs/log-S2B-2A-1A-shadow-verify-write-gate.md
+	- docs/logs/log-S2B-2A-2A-dual-run-cutover-closure.md
+
+- Unified consumer framework / reasons taxonomy (S2B)
+	- docs/logs/log-S2B-3A-unified-consumer-framework.md
+
+- Automated failure drills (buttons: run/verify/export/clean)
+	- docs/logs/log-S3A-2A-3B-automated-failure-drills.md
+	- docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md
+
+- Projection drills templates (platformization)
+	- docs/logs/log-S2C-4A-projection-drills-template.md
+	- docs/logs/log-S2C-projection-framework-platformization.md
+
+- Backup drills as evidence pipelines (S5A)
+	- docs/logs/log-S5A-security-governance.md
+	- docs/logs/log-S5A-1A-authcontext-policy-audit.md
+	- docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md
+	- docs/logs/log-S5A-3A-backup-sanitization.md
+	- docs/logs/log-S5A-3B-object-storage-backup.md

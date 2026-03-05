@@ -5,7 +5,7 @@
 **id**: `S5A-2A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `library membership & roles v1 (RBAC-lite), policy expansion, audit coverage, drills`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S5`
 **tags**: `EVOLUTION, Security, Governance, MultiTenant, Auth, Authorization, Policy, Audit, RBAC, Membership, Drills, epic/s5, sub/2a`
 **links**: ``

@@ -69,7 +69,7 @@ def cmd_labs_expb_es429(
             encoding="utf-8",
         )
 
-    worker = legacy_scripts_dir / "search_outbox_worker.py"
+    worker = repo_root / "backend" / "scripts" / "search_outbox_worker.py"
     log_path = logs_dir / f"worker-{run_id}.log"
 
     cmd = [python_exe(), "-u", str(worker)]

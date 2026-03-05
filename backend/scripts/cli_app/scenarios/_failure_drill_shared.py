@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 import json
 import os
 import re
@@ -134,6 +135,42 @@ def scrape_metrics_text(*, port: int, timeout_s: float = 2.0) -> str:
         return resp.read().decode("utf-8", errors="replace")
 
 
+def readiness_sleep_v1(scrape_delay_s: float) -> float:
+    """Default readiness wait for fault drills.
+
+    We keep this as a small, stable contract: scenarios should not each invent
+    their own ad-hoc sleeps.
+    """
+
+    sleep_s = max(0.5, float(scrape_delay_s or 0.0))
+    time.sleep(sleep_s)
+    return float(sleep_s)
+
+
+def scrape_metrics_text_readiness_v1(
+    *,
+    port: int,
+    timeout_s: float = 4.0,
+    readiness_timeout_s: float = 8.0,
+    interval_s: float = 0.25,
+) -> str:
+    """Scrape Prometheus text with a small readiness retry window.
+
+    Returns either the raw metrics text, or a single-line "scrape_failed: ...".
+    """
+
+    deadline = time.time() + float(readiness_timeout_s)
+    last_exc: Exception | None = None
+    while True:
+        try:
+            return scrape_metrics_text(port=int(port), timeout_s=float(timeout_s))
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+            if time.time() >= deadline:
+                return f"scrape_failed: {type(last_exc).__name__}: {last_exc}\n"
+            time.sleep(max(0.05, float(interval_s)))
+
+
 def prom_parse_counter_sum(text: str, metric: str, *, labels: dict[str, str] | None = None) -> float:
     want = labels or {}
     total = 0.0
@@ -248,3 +285,168 @@ def docker_compose(*, args: list[str], cwd: Path) -> subprocess.CompletedProcess
     cmd = ["docker", "compose"] + args
     print("[scripts] run:", " ".join(cmd))
     return subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True, check=False)
+
+
+@dataclass
+class SpawnedWorker:
+    entry_id: str
+    cmd: list[str]
+    cwd: Path
+    env_keys: list[str]
+    log_path: Path
+    proc: subprocess.Popen[object]
+    started_at_s: float
+    _log_file: object
+
+    def evidence_summary(self) -> dict[str, object]:
+        return {
+            "entry_id": self.entry_id,
+            "cmd": list(self.cmd),
+            "cwd": str(self.cwd),
+            "pid": int(self.proc.pid) if getattr(self.proc, "pid", None) else None,
+            "log_path": str(self.log_path),
+            "env_keys": list(self.env_keys),
+            "started_at_s": float(self.started_at_s),
+        }
+
+    def terminate_and_wait(self, *, timeout_s: float = 30.0) -> None:
+        try:
+            try:
+                self.proc.terminate()
+            except Exception:
+                return
+            try:
+                self.proc.wait(timeout=float(timeout_s))
+            except subprocess.TimeoutExpired:
+                try:
+                    self.proc.kill()
+                except Exception:
+                    pass
+                self.proc.wait(timeout=5)
+        finally:
+            try:
+                if self._log_file is not None:
+                    self._log_file.close()
+            except Exception:
+                pass
+
+    def wait(self, *, timeout_s: float = 30.0) -> None:
+        try:
+            self.proc.wait(timeout=float(timeout_s))
+        finally:
+            try:
+                if self._log_file is not None:
+                    self._log_file.close()
+            except Exception:
+                pass
+
+
+def spawn_search_outbox_worker(
+    *,
+    env: dict[str, str],
+    logs_dir: Path,
+    run_id: str,
+    log_name: str | None = None,
+    extra_args: list[str] | None = None,
+    evidence_env_keys: list[str] | None = None,
+    log_mode: str = "w",
+    log_header: str | None = None,
+) -> SpawnedWorker:
+    """Spawn the Search outbox worker using the stable repo entry.
+
+    This function is part of the Stable Entry contract for fault drills.
+    Scenarios should not hardcode script paths or subprocess boilerplate.
+    """
+
+    ensure_dir(logs_dir)
+
+    worker_script = REPO_ROOT / "backend" / "scripts" / "search_outbox_worker.py"
+    if not worker_script.exists():
+        raise FileNotFoundError(str(worker_script))
+
+    cmd = [python_exe(), "-u", str(worker_script)] + (list(extra_args) if extra_args else [])
+    log_path = logs_dir / (log_name or f"worker-{run_id}.log")
+
+    mode = str(log_mode or "w")
+    if mode not in {"w", "a"}:
+        raise ValueError(f"unsupported log_mode={mode!r}; expected 'w' or 'a'")
+
+    log_file = open(log_path, mode, encoding="utf-8")
+    if log_header:
+        try:
+            log_file.write(str(log_header))
+            log_file.flush()
+        except Exception:
+            pass
+    started_at = time.time()
+    proc = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=env, stdout=log_file, stderr=subprocess.STDOUT)
+
+    keys = sorted(set(evidence_env_keys or []))
+    return SpawnedWorker(
+        entry_id="search_outbox_worker@v1",
+        cmd=cmd,
+        cwd=REPO_ROOT,
+        env_keys=keys,
+        log_path=log_path,
+        proc=proc,
+        started_at_s=started_at,
+        _log_file=log_file,
+    )
+
+
+def spawn_chronicle_outbox_worker(
+    *,
+    env: dict[str, str],
+    logs_dir: Path,
+    run_id: str,
+    log_name: str | None = None,
+    extra_args: list[str] | None = None,
+    evidence_env_keys: list[str] | None = None,
+    log_mode: str = "w",
+    log_header: str | None = None,
+) -> SpawnedWorker:
+    """Spawn the Chronicle outbox worker using the stable repo entry.
+
+    This exists to keep fault drills from hardcoding script paths or duplicating
+    subprocess boilerplate.
+    """
+
+    ensure_dir(logs_dir)
+
+    worker_script = REPO_ROOT / "backend" / "scripts" / "chronicle_outbox_worker.py"
+    if not worker_script.exists():
+        legacy_script = LEGACY_SCRIPTS_DIR / "chronicle_outbox_worker.py"
+        if legacy_script.exists():
+            worker_script = legacy_script
+        else:
+            raise FileNotFoundError(str(worker_script))
+
+    cmd = [python_exe(), "-u", str(worker_script)] + (list(extra_args) if extra_args else [])
+    log_path = logs_dir / (log_name or f"chronicle-worker-{run_id}.log")
+
+    mode = str(log_mode or "w")
+    if mode not in {"w", "a"}:
+        raise ValueError(f"unsupported log_mode={mode!r}; expected 'w' or 'a'")
+
+    log_file = open(log_path, mode, encoding="utf-8")
+    if log_header:
+        try:
+            log_file.write(str(log_header))
+            log_file.flush()
+        except Exception:
+            pass
+
+    started_at = time.time()
+    proc = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=env, stdout=log_file, stderr=subprocess.STDOUT)
+
+    keys = sorted(set(evidence_env_keys or []))
+    return SpawnedWorker(
+        entry_id="chronicle_outbox_worker@v1",
+        cmd=cmd,
+        cwd=REPO_ROOT,
+        env_keys=keys,
+        log_path=log_path,
+        proc=proc,
+        started_at_s=started_at,
+        _log_file=log_file,
+    )

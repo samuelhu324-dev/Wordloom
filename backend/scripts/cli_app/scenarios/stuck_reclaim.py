@@ -13,15 +13,19 @@ from ..types import DrillInputs, DrillResult
 from ._failure_drill_shared import (
     LAB_ID_S3A_2A_3A,
     SEARCH_OUTBOX_OBS_SCHEMA_VERSION,
+    SpawnedWorker,
     default_labs_auto_run_dir,
     ensure_dir,
     extract_last_claim_batch_id,
     load_env,
     prom_parse_counter_sum,
+    spawn_search_outbox_worker,
     python_exe,
     resolve_run_dir,
     run_cmd,
     scrape_metrics_text,
+    scrape_metrics_text_readiness_v1,
+    readiness_sleep_v1,
     with_backend_pythonpath,
 )
 from ._failure_drill_shared import LEGACY_SCRIPTS_DIR, LABS_SNAPSHOT_ROOT, REPO_ROOT
@@ -118,9 +122,6 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
     }
     write_json(outdir / "_recipe.json", recipe)
 
-    worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
-    cmd = [python_exe(), "-u", str(worker)]
-
     inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
     if not inserter.exists():
         inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
@@ -159,7 +160,7 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
         log_path: Path,
         max_attempts: int = 4,
         extra_env: dict[str, str] | None = None,
-    ) -> tuple[subprocess.Popen, dict[str, str], int, int]:
+    ) -> tuple[SpawnedWorker, dict[str, str], int, int]:
         candidate_ports: list[int] = []
         for i in range(max_attempts):
             p = int(preferred_metrics_port) + (i * 10_000)
@@ -186,32 +187,78 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
                 f"\n\n# controller: spawn attempt {attempt}/{len(candidate_ports)} "
                 f"metrics_port={metrics_port} http_port={http_port}\n"
             )
-            log_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(log_path, "a", encoding="utf-8") as log_file:
-                log_file.write(header)
-                log_file.flush()
-                proc = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=env, stdout=log_file, stderr=subprocess.STDOUT)
+            worker_handle = spawn_search_outbox_worker(
+                env=env,
+                logs_dir=log_path.parent,
+                run_id=run_id,
+                log_name=log_path.name,
+                evidence_env_keys=[
+                    k
+                    for k in (
+                        "OUTBOX_WORKER_ID",
+                        "OUTBOX_METRICS_PORT",
+                        "OUTBOX_HTTP_PORT",
+                        "OUTBOX_LEASE_SECONDS",
+                        "OUTBOX_RECLAIM_INTERVAL_SECONDS",
+                        "OUTBOX_MAX_PROCESSING_SECONDS",
+                        "OUTBOX_POLL_INTERVAL_SECONDS",
+                        "OUTBOX_BULK_SIZE",
+                        "OUTBOX_CONCURRENCY",
+                        "OUTBOX_EXPERIMENT_PROCESS_SLEEP_SECONDS",
+                    )
+                    if k in env
+                ],
+                log_mode="a",
+                log_header=header,
+            )
 
-                time.sleep(0.75)
+            time.sleep(0.75)
 
-                if proc.poll() is None:
-                    return proc, env, int(metrics_port), int(http_port)
+            if worker_handle.proc.poll() is None:
+                return worker_handle, env, int(metrics_port), int(http_port)
+
+            worker_handle.wait(timeout_s=5)
 
             try:
                 tail = log_path.read_text(encoding="utf-8", errors="replace")[-4000:]
             except Exception:
                 tail = ""
             if "WinError 10013" in tail or "PermissionError" in tail:
-                last_proc = proc
+                last_proc = worker_handle.proc
                 last_env = env
                 last_metrics_port = int(metrics_port)
                 last_http_port = int(http_port)
                 continue
-            return proc, env, int(metrics_port), int(http_port)
+            return worker_handle, env, int(metrics_port), int(http_port)
 
         assert last_proc is not None
         assert last_env is not None
-        return last_proc, last_env, int(last_metrics_port), int(last_http_port)
+
+        worker_handle = spawn_search_outbox_worker(
+            env=last_env,
+            logs_dir=log_path.parent,
+            run_id=run_id,
+            log_name=log_path.name,
+            evidence_env_keys=[
+                k
+                for k in (
+                    "OUTBOX_WORKER_ID",
+                    "OUTBOX_METRICS_PORT",
+                    "OUTBOX_HTTP_PORT",
+                    "OUTBOX_LEASE_SECONDS",
+                    "OUTBOX_RECLAIM_INTERVAL_SECONDS",
+                    "OUTBOX_MAX_PROCESSING_SECONDS",
+                    "OUTBOX_POLL_INTERVAL_SECONDS",
+                    "OUTBOX_BULK_SIZE",
+                    "OUTBOX_CONCURRENCY",
+                    "OUTBOX_EXPERIMENT_PROCESS_SLEEP_SECONDS",
+                )
+                if k in last_env
+            ],
+            log_mode="a",
+            log_header=f"\n\n# controller: spawn fallback metrics_port={last_metrics_port} http_port={last_http_port}\n",
+        )
+        return worker_handle, last_env, int(last_metrics_port), int(last_http_port)
 
     log_path_1 = logs_dir / f"worker1-{run_id}.log"
     log_path_2 = logs_dir / f"worker2-{run_id}.log"
@@ -237,22 +284,23 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
 
     worker1_sleep_after_claim_s = max(3.0, float(int(lease_seconds)) + 1.0)
 
-    proc1, env1, actual_metrics_port_1, actual_http_port_1 = _spawn_worker_with_retry(
+    worker1, env1, actual_metrics_port_1, actual_http_port_1 = _spawn_worker_with_retry(
         worker_id=str(worker_id_1),
         preferred_metrics_port=int(metrics_port_1),
         log_path=log_path_1,
         extra_env={"OUTBOX_EXPERIMENT_PROCESS_SLEEP_SECONDS": str(worker1_sleep_after_claim_s)},
     )
+    write_json(outdir / "_worker_start.json", {"worker1": worker1.evidence_summary()})
     try:
-        time.sleep(max(0.5, float(scrape_delay)))
-        try:
-            before_1_path.write_text(scrape_metrics_text(port=int(actual_metrics_port_1), timeout_s=2.0), encoding="utf-8")
-        except Exception as exc:  # noqa: BLE001
-            before_1_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+        readiness_sleep_v1(scrape_delay)
+        before_1_path.write_text(
+            scrape_metrics_text_readiness_v1(port=int(actual_metrics_port_1), timeout_s=2.0),
+            encoding="utf-8",
+        )
 
         claim_deadline = time.time() + float(claim_timeout)
         while time.time() < claim_deadline:
-            if proc1.poll() is not None:
+            if worker1.proc.poll() is not None:
                 break
             try:
                 text = log_path_1.read_text(encoding="utf-8", errors="replace")
@@ -263,18 +311,18 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
                 break
             time.sleep(0.1)
 
-        if proc1.poll() is None:
+        if worker1.proc.poll() is None:
             killed_worker1 = True
-            proc1.kill()
+            worker1.proc.kill()
     except KeyboardInterrupt:
         killed_worker1 = True
         try:
-            proc1.kill()
+            worker1.proc.kill()
         except Exception:
             pass
     finally:
         try:
-            proc1.wait(timeout=30)
+            worker1.wait(timeout_s=30)
         except Exception:
             pass
 
@@ -284,24 +332,28 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
         encoding="utf-8",
     )
 
-    proc2, env2, actual_metrics_port_2, actual_http_port_2 = _spawn_worker_with_retry(
+    worker2, env2, actual_metrics_port_2, actual_http_port_2 = _spawn_worker_with_retry(
         worker_id=str(worker_id_2),
         preferred_metrics_port=int(metrics_port_2),
         log_path=log_path_2,
         extra_env={"OUTBOX_EXPERIMENT_PROCESS_SLEEP_SECONDS": "0"},
     )
+    write_json(
+        outdir / "_worker_start.json",
+        {"worker1": worker1.evidence_summary(), "worker2": worker2.evidence_summary()},
+    )
     try:
-        time.sleep(max(0.5, float(scrape_delay)))
-        try:
-            before_2_path.write_text(scrape_metrics_text(port=int(actual_metrics_port_2), timeout_s=2.0), encoding="utf-8")
-        except Exception as exc:  # noqa: BLE001
-            before_2_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+        readiness_sleep_v1(scrape_delay)
+        before_2_path.write_text(
+            scrape_metrics_text_readiness_v1(port=int(actual_metrics_port_2), timeout_s=2.0),
+            encoding="utf-8",
+        )
 
         start2 = time.time()
         while True:
             if duration > 0 and (time.time() - start2) >= duration:
                 break
-            if proc2.poll() is not None:
+            if worker2.proc.poll() is not None:
                 worker2_exited_early = True
                 break
             time.sleep(0.25)
@@ -311,28 +363,28 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
         except Exception as exc:  # noqa: BLE001
             after_2_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
 
-        if proc2.poll() is None:
+        if worker2.proc.poll() is None:
             worker2_terminated_by_controller = True
-            proc2.terminate()
+            worker2.proc.terminate()
     except KeyboardInterrupt:
         try:
-            proc2.terminate()
+            worker2.proc.terminate()
         except Exception:
             pass
     finally:
         try:
-            proc2.wait(timeout=30)
+            worker2.wait(timeout_s=30)
         except Exception:
             pass
 
     exit_info = {
         "worker1": {
-            "returncode": int(proc1.returncode) if proc1.returncode is not None else None,
+            "returncode": int(worker1.proc.returncode) if worker1.proc.returncode is not None else None,
             "killed_by_controller": bool(killed_worker1),
             "observed_claim": bool(observed_claim),
         },
         "worker2": {
-            "returncode": int(proc2.returncode) if proc2.returncode is not None else None,
+            "returncode": int(worker2.proc.returncode) if worker2.proc.returncode is not None else None,
             "exited_early": bool(worker2_exited_early),
             "terminated_by_controller": bool(worker2_terminated_by_controller),
         },
@@ -363,8 +415,8 @@ def run_stuck_reclaim(inputs: DrillInputs) -> DrillResult:
     if claim_batch_ids:
         (outdir / "_claim_batch_ids.txt").write_text("\n".join(claim_batch_ids) + "\n", encoding="utf-8")
 
-    if worker2_exited_early and (proc2.returncode not in (None, 0)):
-        print(f"[labs run {SCENARIO_STUCK_RECLAIM}] worker2 exited early: rc={proc2.returncode}")
+    if worker2_exited_early and (worker2.proc.returncode not in (None, 0)):
+        print(f"[labs run {SCENARIO_STUCK_RECLAIM}] worker2 exited early: rc={worker2.proc.returncode}")
         print(f"[labs run {SCENARIO_STUCK_RECLAIM}] see logs: {log_path_2}")
         return DrillResult(ok=False, meta={"exit_code": 4}, summary={}, errors=[])
 

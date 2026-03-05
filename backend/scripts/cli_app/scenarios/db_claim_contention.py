@@ -16,10 +16,13 @@ from ._failure_drill_shared import (
     extract_last_claim_batch_id,
     load_env,
     prom_parse_counter_sum,
+    spawn_search_outbox_worker,
     python_exe,
     resolve_run_dir,
     run_cmd,
     scrape_metrics_text,
+    scrape_metrics_text_readiness_v1,
+    readiness_sleep_v1,
     with_backend_pythonpath,
 )
 from ._failure_drill_shared import LEGACY_SCRIPTS_DIR, LABS_SNAPSHOT_ROOT, REPO_ROOT
@@ -112,9 +115,6 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     }
     write_json(outdir / "_recipe.json", recipe)
 
-    worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
-    cmd = [python_exe(), "-u", str(worker)]
-
     env1 = base_env.copy()
     env1["OUTBOX_WORKER_ID"] = str(worker_id_1)
     env1["OUTBOX_METRICS_PORT"] = str(int(metrics_port_1))
@@ -145,19 +145,60 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     stopped_by_controller = False
     outbox_event_ids: list[str] = []
 
-    with open(log_path_1, "w", encoding="utf-8") as log_file_1, open(log_path_2, "w", encoding="utf-8") as log_file_2:
-        proc1 = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=env1, stdout=log_file_1, stderr=subprocess.STDOUT)
-        proc2 = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=env2, stdout=log_file_2, stderr=subprocess.STDOUT)
-        try:
-            time.sleep(max(0.5, float(scrape_delay)))
-            try:
-                before_1_path.write_text(scrape_metrics_text(port=int(metrics_port_1), timeout_s=4.0), encoding="utf-8")
-            except Exception as exc:  # noqa: BLE001
-                before_1_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-            try:
-                before_2_path.write_text(scrape_metrics_text(port=int(metrics_port_2), timeout_s=4.0), encoding="utf-8")
-            except Exception as exc:  # noqa: BLE001
-                before_2_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+    worker_env_keys = [
+        "WORDLOOM_TRACING_ENABLED",
+        "OTEL_SERVICE_NAME",
+        "OTEL_EXPORTER_OTLP_PROTOCOL",
+        "OTEL_EXPORTER_OTLP_ENDPOINT",
+        "OTEL_TRACES_SAMPLER",
+        "ELASTIC_URL",
+        "ELASTIC_INDEX",
+        "LOG_LEVEL",
+        "OUTBOX_EXPERIMENT_ES_429_RATIO",
+        "OUTBOX_USE_ES_BULK",
+        "OUTBOX_EXPERIMENT_BREAK_CLAIM",
+        "OUTBOX_EXPERIMENT_BREAK_CLAIM_SLEEP_SECONDS",
+        "OUTBOX_EXPERIMENT_PROCESS_SLEEP_SECONDS",
+        "OUTBOX_POLL_INTERVAL_SECONDS",
+        "OUTBOX_BULK_SIZE",
+        "OUTBOX_CONCURRENCY",
+        "OUTBOX_WORKER_ID",
+        "OUTBOX_METRICS_PORT",
+        "OUTBOX_HTTP_PORT",
+    ]
+
+    worker1_handle = spawn_search_outbox_worker(
+        env=env1,
+        logs_dir=logs_dir,
+        run_id=run_id,
+        log_name=log_path_1.name,
+        evidence_env_keys=[k for k in worker_env_keys if k in env1],
+    )
+    worker2_handle = spawn_search_outbox_worker(
+        env=env2,
+        logs_dir=logs_dir,
+        run_id=run_id,
+        log_name=log_path_2.name,
+        evidence_env_keys=[k for k in worker_env_keys if k in env2],
+    )
+    write_json(
+        outdir / "_worker_start.json",
+        {
+            "worker1": worker1_handle.evidence_summary(),
+            "worker2": worker2_handle.evidence_summary(),
+        },
+    )
+
+    try:
+            readiness_sleep_v1(scrape_delay)
+            before_1_path.write_text(
+                scrape_metrics_text_readiness_v1(port=int(metrics_port_1), timeout_s=4.0),
+                encoding="utf-8",
+            )
+            before_2_path.write_text(
+                scrape_metrics_text_readiness_v1(port=int(metrics_port_2), timeout_s=4.0),
+                encoding="utf-8",
+            )
 
             for i in range(int(trigger_count)):
                 trigger_env = base_env.copy()
@@ -165,23 +206,52 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
                 trigger_env.setdefault("OUTBOX_CREATE_SEARCH_INDEX_ROW", "1")
                 trigger_env.setdefault("OUTBOX_EVENT_VERSION", "0")
 
-                proc = subprocess.run(
-                    [python_exe(), str(inserter)],
-                    cwd=str(REPO_ROOT),
-                    env=trigger_env,
-                    capture_output=True,
-                    text=True,
-                    timeout=30,
-                    check=False,
-                )
+                try:
+                    proc = subprocess.run(
+                        [python_exe(), str(inserter)],
+                        cwd=str(REPO_ROOT),
+                        env=trigger_env,
+                        capture_output=True,
+                        text=True,
+                        timeout=30,
+                        check=False,
+                    )
+                except subprocess.TimeoutExpired as exc:
+                    (outdir / f"_trigger_insert_outbox_{i+1}.stdout.txt").write_text(
+                        (exc.stdout or "") if isinstance(exc.stdout, str) else "",
+                        encoding="utf-8",
+                    )
+                    (outdir / f"_trigger_insert_outbox_{i+1}.stderr.txt").write_text(
+                        (exc.stderr or "") if isinstance(exc.stderr, str) else "",
+                        encoding="utf-8",
+                    )
+                    (outdir / f"_trigger_insert_outbox_{i+1}.timeout.txt").write_text(
+                        f"timeout_s=30\ncmd={[python_exe(), str(inserter)]}\n",
+                        encoding="utf-8",
+                    )
+                    print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] inserter timed out (n={i+1})")
+                    worker1_handle.terminate_and_wait(timeout_s=30)
+                    worker2_handle.terminate_and_wait(timeout_s=30)
+                    exit_info = {
+                        "worker1": {
+                            "returncode": int(worker1_handle.proc.returncode)
+                            if worker1_handle.proc.returncode is not None
+                            else None
+                        },
+                        "worker2": {
+                            "returncode": int(worker2_handle.proc.returncode)
+                            if worker2_handle.proc.returncode is not None
+                            else None
+                        },
+                    }
+                    write_json(outdir / "_worker_exit.json", exit_info)
+                    return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
                 (outdir / f"_trigger_insert_outbox_{i+1}.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
                 (outdir / f"_trigger_insert_outbox_{i+1}.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
                 if proc.returncode != 0:
                     print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] failed to insert outbox event #{i+1}: rc={proc.returncode}")
-                    proc1.terminate()
-                    proc2.terminate()
-                    proc1.wait(timeout=30)
-                    proc2.wait(timeout=30)
+                    worker1_handle.terminate_and_wait(timeout_s=30)
+                    worker2_handle.terminate_and_wait(timeout_s=30)
                     return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
                 outbox_event_id = (proc.stdout or "").strip().splitlines()[-1].strip()
                 outbox_event_ids.append(outbox_event_id)
@@ -200,12 +270,12 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
                     except Exception as exc:  # noqa: BLE001
                         after_2_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
                     stopped_by_controller = True
-                    proc1.terminate()
-                    proc2.terminate()
+                    worker1_handle.terminate_and_wait(timeout_s=30)
+                    worker2_handle.terminate_and_wait(timeout_s=30)
                     break
 
-                ret1 = proc1.poll()
-                ret2 = proc2.poll()
+                ret1 = worker1_handle.proc.poll()
+                ret2 = worker2_handle.proc.poll()
                 if ret1 is not None or ret2 is not None:
                     try:
                         after_1_path.write_text(scrape_metrics_text(port=int(metrics_port_1), timeout_s=4.0), encoding="utf-8")
@@ -217,17 +287,28 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
                         after_2_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
                     break
                 time.sleep(0.25)
-        except KeyboardInterrupt:
-            stopped_by_controller = True
-            proc1.terminate()
-            proc2.terminate()
+    except KeyboardInterrupt:
+        stopped_by_controller = True
+        worker1_handle.terminate_and_wait(timeout_s=30)
+        worker2_handle.terminate_and_wait(timeout_s=30)
+    finally:
+        if worker1_handle.proc.poll() is None:
+            worker1_handle.terminate_and_wait(timeout_s=30)
+        else:
+            worker1_handle.wait(timeout_s=30)
 
-        proc1.wait(timeout=30)
-        proc2.wait(timeout=30)
+        if worker2_handle.proc.poll() is None:
+            worker2_handle.terminate_and_wait(timeout_s=30)
+        else:
+            worker2_handle.wait(timeout_s=30)
 
     exit_info = {
-        "worker1": {"returncode": int(proc1.returncode) if proc1.returncode is not None else None},
-        "worker2": {"returncode": int(proc2.returncode) if proc2.returncode is not None else None},
+        "worker1": {
+            "returncode": int(worker1_handle.proc.returncode) if worker1_handle.proc.returncode is not None else None
+        },
+        "worker2": {
+            "returncode": int(worker2_handle.proc.returncode) if worker2_handle.proc.returncode is not None else None
+        },
     }
     write_json(outdir / "_worker_exit.json", exit_info)
 
@@ -247,9 +328,11 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     if claim_batch_ids:
         (outdir / "_claim_batch_ids.txt").write_text("\n".join(claim_batch_ids) + "\n", encoding="utf-8")
 
-    if (not stopped_by_controller) and (proc1.returncode not in (None, 0) or proc2.returncode not in (None, 0)):
+    if (not stopped_by_controller) and (
+        worker1_handle.proc.returncode not in (None, 0) or worker2_handle.proc.returncode not in (None, 0)
+    ):
         print(
-            f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] a worker exited early: rc1={proc1.returncode} rc2={proc2.returncode}"
+            f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] a worker exited early: rc1={worker1_handle.proc.returncode} rc2={worker2_handle.proc.returncode}"
         )
         print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] see logs: {log_path_1} {log_path_2}")
         return DrillResult(ok=False, meta={"exit_code": 4}, summary={}, errors=[])
@@ -274,6 +357,14 @@ def verify_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     before2 = (metrics_dir / "metrics-before-2.txt").read_text(encoding="utf-8") if (metrics_dir / "metrics-before-2.txt").exists() else ""
     after1 = (metrics_dir / "metrics-after-1.txt").read_text(encoding="utf-8") if (metrics_dir / "metrics-after-1.txt").exists() else ""
     after2 = (metrics_dir / "metrics-after-2.txt").read_text(encoding="utf-8") if (metrics_dir / "metrics-after-2.txt").exists() else ""
+
+    worker_start_path = run_dir / "_worker_start.json"
+    worker_start = None
+    if worker_start_path.exists():
+        try:
+            worker_start = json.loads(worker_start_path.read_text(encoding="utf-8", errors="replace"))
+        except Exception:
+            worker_start = None
 
     metric_owner_mismatch = "outbox_owner_mismatch_skips_total"
     metric_processed = "outbox_processed_total"
@@ -301,6 +392,7 @@ def verify_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     result = {
         "scenario": SCENARIO_DB_CLAIM_CONTENTION,
         "run_dir": str(run_dir),
+        "workers": worker_start,
         "checks": {
             "owner_mismatch_delta_ge": float(min_owner_mismatch_delta),
             "processed_delta_ge": float(min_processed_delta),

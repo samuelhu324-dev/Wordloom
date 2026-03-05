@@ -17,10 +17,13 @@ from ._failure_drill_shared import (
     extract_last_claim_batch_id,
     load_env,
     prom_parse_counter_sum,
+    spawn_search_outbox_worker,
     python_exe,
     resolve_run_dir,
     run_cmd,
     scrape_metrics_text,
+    scrape_metrics_text_readiness_v1,
+    readiness_sleep_v1,
     with_backend_pythonpath,
 )
 from ._failure_drill_shared import LEGACY_SCRIPTS_DIR, LABS_SNAPSHOT_ROOT, REPO_ROOT
@@ -100,9 +103,7 @@ def run_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
     }
     write_json(outdir / "_recipe.json", recipe)
 
-    worker = LEGACY_SCRIPTS_DIR / "search_outbox_worker.py"
     log_path = logs_dir / f"worker-{run_id}.log"
-    cmd = [python_exe(), "-u", str(worker)]
 
     print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] outdir: {outdir}")
     print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] worker log: {log_path}")
@@ -118,22 +119,46 @@ def run_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
     stopped_by_controller = False
     outbox_event_ids: list[str] = []
 
-    with open(log_path, "w", encoding="utf-8") as log_file:
-        worker_proc = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=env, stdout=log_file, stderr=subprocess.STDOUT)
+    worker_env_keys = [
+        "WORDLOOM_TRACING_ENABLED",
+        "OTEL_SERVICE_NAME",
+        "OTEL_EXPORTER_OTLP_PROTOCOL",
+        "OTEL_EXPORTER_OTLP_ENDPOINT",
+        "OTEL_TRACES_SAMPLER",
+        "OUTBOX_USE_ES_BULK",
+        "OUTBOX_BULK_SIZE",
+        "OUTBOX_EXPERIMENT_ES_BULK_PARTIAL",
+        "OUTBOX_EXPERIMENT_ES_BULK_PARTIAL_STATUS",
+        "OUTBOX_POLL_INTERVAL_SECONDS",
+        "ELASTIC_URL",
+        "ELASTIC_INDEX",
+        "OUTBOX_EXPERIMENT_ES_429_RATIO",
+        "OUTBOX_METRICS_PORT",
+    ]
+
+    worker_handle = spawn_search_outbox_worker(
+        env=env,
+        logs_dir=logs_dir,
+        run_id=run_id,
+        log_name=log_path.name,
+        evidence_env_keys=[k for k in worker_env_keys if k in env],
+    )
+    write_json(outdir / "_worker_start.json", worker_handle.evidence_summary())
+    try:
+
+        readiness_sleep_v1(scrape_delay)
+        metrics_before_path.write_text(
+            scrape_metrics_text_readiness_v1(port=int(metrics_port), timeout_s=4.0),
+            encoding="utf-8",
+        )
+
+        trigger_env = env.copy()
+        trigger_env["OUTBOX_OP"] = str(op)
+        trigger_env.setdefault("OUTBOX_CREATE_SEARCH_INDEX_ROW", "1")
+        trigger_env.setdefault("OUTBOX_EVENT_VERSION", "0")
+        trigger_env["OUTBOX_INSERT_COUNT"] = str(int(trigger_count))
+
         try:
-            time.sleep(max(0.5, float(scrape_delay)))
-            try:
-                metrics_before = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
-                metrics_before_path.write_text(metrics_before, encoding="utf-8")
-            except Exception as exc:  # noqa: BLE001
-                metrics_before_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-
-            trigger_env = env.copy()
-            trigger_env["OUTBOX_OP"] = str(op)
-            trigger_env.setdefault("OUTBOX_CREATE_SEARCH_INDEX_ROW", "1")
-            trigger_env.setdefault("OUTBOX_EVENT_VERSION", "0")
-            trigger_env["OUTBOX_INSERT_COUNT"] = str(int(trigger_count))
-
             proc = subprocess.run(
                 [python_exe(), str(inserter)],
                 cwd=str(REPO_ROOT),
@@ -143,45 +168,74 @@ def run_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
                 timeout=60,
                 check=False,
             )
-            (outdir / "_trigger_insert_outbox.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
-            (outdir / "_trigger_insert_outbox.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
-            if proc.returncode != 0:
-                print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] failed to insert outbox events: rc={proc.returncode}")
-                return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
+        except subprocess.TimeoutExpired as exc:
+            (outdir / "_trigger_insert_outbox.stdout.txt").write_text(
+                (exc.stdout or "") if isinstance(exc.stdout, str) else "",
+                encoding="utf-8",
+            )
+            (outdir / "_trigger_insert_outbox.stderr.txt").write_text(
+                (exc.stderr or "") if isinstance(exc.stderr, str) else "",
+                encoding="utf-8",
+            )
+            (outdir / "_trigger_insert_outbox.timeout.txt").write_text(
+                f"timeout_s=60\ncmd={[python_exe(), str(inserter)]}\n",
+                encoding="utf-8",
+            )
+            print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] inserter timed out")
+            worker_handle.terminate_and_wait(timeout_s=30)
+            exit_info = {
+                "returncode": int(worker_handle.proc.returncode)
+                if worker_handle.proc.returncode is not None
+                else None
+            }
+            write_json(outdir / "_worker_exit.json", exit_info)
+            return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
 
-            outbox_event_ids = [ln.strip() for ln in (proc.stdout or "").splitlines() if ln.strip()]
-            (outdir / "_outbox_event_ids.txt").write_text("\n".join(outbox_event_ids) + "\n", encoding="utf-8")
-            print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] outbox_event_ids: {', '.join(outbox_event_ids)}")
+        (outdir / "_trigger_insert_outbox.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
+        (outdir / "_trigger_insert_outbox.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
+        if proc.returncode != 0:
+            print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] failed to insert outbox events: rc={proc.returncode}")
+            worker_handle.terminate_and_wait(timeout_s=30)
+            return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
 
-            while True:
-                if duration > 0 and (time.time() - start) >= duration:
-                    try:
-                        metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
-                        metrics_after_path.write_text(metrics_after, encoding="utf-8")
-                        (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
-                    except Exception as exc:  # noqa: BLE001
-                        metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-                    stopped_by_controller = True
-                    worker_proc.terminate()
-                    break
+        outbox_event_ids = [ln.strip() for ln in (proc.stdout or "").splitlines() if ln.strip()]
+        (outdir / "_outbox_event_ids.txt").write_text("\n".join(outbox_event_ids) + "\n", encoding="utf-8")
+        print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] outbox_event_ids: {', '.join(outbox_event_ids)}")
 
-                ret = worker_proc.poll()
-                if ret is not None:
-                    try:
-                        metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
-                        metrics_after_path.write_text(metrics_after, encoding="utf-8")
-                        (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
-                    except Exception as exc:  # noqa: BLE001
-                        metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-                    break
-                time.sleep(0.25)
-        except KeyboardInterrupt:
-            stopped_by_controller = True
-            worker_proc.terminate()
+        while True:
+            if duration > 0 and (time.time() - start) >= duration:
+                try:
+                    metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
+                    metrics_after_path.write_text(metrics_after, encoding="utf-8")
+                    (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
+                except Exception as exc:  # noqa: BLE001
+                    metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+                stopped_by_controller = True
+                worker_handle.terminate_and_wait(timeout_s=30)
+                break
 
-        worker_proc.wait(timeout=30)
+            ret = worker_handle.proc.poll()
+            if ret is not None:
+                try:
+                    metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
+                    metrics_after_path.write_text(metrics_after, encoding="utf-8")
+                    (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
+                except Exception as exc:  # noqa: BLE001
+                    metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+                break
+            time.sleep(0.25)
+    except KeyboardInterrupt:
+        stopped_by_controller = True
+        worker_handle.terminate_and_wait(timeout_s=30)
+    finally:
+        if worker_handle.proc.poll() is None:
+            worker_handle.terminate_and_wait(timeout_s=30)
+        else:
+            worker_handle.wait(timeout_s=30)
 
-    exit_info = {"returncode": int(worker_proc.returncode) if worker_proc.returncode is not None else None}
+    exit_info = {
+        "returncode": int(worker_handle.proc.returncode) if worker_handle.proc.returncode is not None else None
+    }
     write_json(outdir / "_worker_exit.json", exit_info)
 
     if not metrics_after_path.exists():
@@ -191,8 +245,8 @@ def run_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
     if claim_batch_id:
         (outdir / "_claim_batch_id.txt").write_text(claim_batch_id + "\n", encoding="utf-8")
 
-    if (not stopped_by_controller) and (worker_proc.returncode not in (None, 0)):
-        print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] worker exited early: rc={worker_proc.returncode}")
+    if (not stopped_by_controller) and (worker_handle.proc.returncode not in (None, 0)):
+        print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] worker exited early: rc={worker_handle.proc.returncode}")
         print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] see logs: {log_path}")
         return DrillResult(ok=False, meta={"exit_code": 4}, summary={}, errors=[])
 
@@ -216,6 +270,14 @@ def verify_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
 
     before = before_path.read_text(encoding="utf-8") if before_path.exists() else ""
     after = after_path.read_text(encoding="utf-8") if after_path.exists() else ""
+
+    worker_start_path = run_dir / "_worker_start.json"
+    worker_start = None
+    if worker_start_path.exists():
+        try:
+            worker_start = json.loads(worker_start_path.read_text(encoding="utf-8", errors="replace"))
+        except Exception:
+            worker_start = None
 
     partial_before = prom_parse_counter_sum(before, "outbox_es_bulk_requests_total", labels={"result": "partial"})
     partial_after = prom_parse_counter_sum(after, "outbox_es_bulk_requests_total", labels={"result": "partial"})
@@ -267,6 +329,7 @@ def verify_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
     result = {
         "scenario": SCENARIO_ES_BULK_PARTIAL,
         "run_dir": str(run_dir),
+        "worker": worker_start,
         "checks": {
             "partial_delta_ge": float(min_partial_delta),
             "success_items_delta_ge": float(min_success_items_delta),
