@@ -60,13 +60,28 @@
 - [x] `P0-C1-S2`：Evidence 字段最小集（supply target + 兼容/fallback 说明）
 - [x] `P1-C1-S1`：迁移 `fault/obs_infra/*` 的 trigger/seed 逻辑到 unified outbox
 - [x] `P1-C1-S2`：verify 对齐（DB 侧校验 supply 与消费一致）
+- [ ] `P1-C2-S1`：补 1 份可追溯运行态 evidence（本地 run+verify 一次 + artifacts 路径入账）
 - [ ] `P2-C1-S1`：同类场景（shadow_verify_*）的 seed/supply 统一
 
 ## Evidence（预留）
 
 - 以 artifacts 为事实源；记录 headSha + 参数 + artifacts 路径（或 CI run URL）。
-- code head: `c62c545692bb9540209c1a6645057630ce56023e`
-- note: 目前仅完成“供给 contract + 场景迁移 + verify DB presence check”的代码收口；运行态 artifacts 需在具备可用 `env_file`（含真实 `DATABASE_URL`）的环境下补一次 run+verify。
+- code head: `d4b4a172036ca102471ab6124cc292bb54620f08`
+- note: 目前已完成“供给 contract + 场景迁移 + verify DB presence check”的代码收口；运行态 artifacts 需要在具备可用 `env_file`（含真实 `DATABASE_URL`）的环境下跑一次 run+verify。
+
+### P1-C2-S1（本地 evidence：跑 1 次 run+verify｜待补）
+
+前置：准备一个可用的 env 文件（建议从 `backend/.env.test.example` 复制为 `.env.test`，并填入真实 `DATABASE_URL`；同时保证 ES/DB/OTLP infra 可用）。
+
+最小命令（任选一个已迁移场景即可，例如 `es_down_connect`）：
+
+- run：`python backend/scripts/cli.py labs run es_down_connect --env-file .env.test --run-id S6A-2A-P1-C2-S1`
+- verify：`python backend/scripts/cli.py labs verify es_down_connect --run-id S6A-2A-P1-C2-S1`
+
+入账：
+
+- artifacts 路径：`<fill me>`
+- observed：`_supply.json`（含 target_table/projection/insert_count/fallback）+ verify 侧 `supply_db_check`
 
 ## Notes（实施提示）
 
