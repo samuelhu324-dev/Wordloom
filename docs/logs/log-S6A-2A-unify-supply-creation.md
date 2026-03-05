@@ -5,7 +5,7 @@
 **id**: `S6A-2A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `unify scenario supply creation to outbox_events (projection-scoped) v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S6`
 **tags**: `EVOLUTION, Evidence, Drills, FailureContract, Scenarios, Outbox, Supply, epic/s6, sub/2a`
 **links**: ``
@@ -54,6 +54,49 @@
 - verify 能在 DB 侧确认：事件确实进入 worker 读取的表（至少抽样校验 id/status）。
 - 至少 1 份可追溯 evidence：headSha + 1 次 artifacts 路径（或 CI run URL）。
 
+## Stability（stable 口径）
+
+- 本 log 标记为 `stable` 表示：
+  - 已形成“供给写入 contract v1”（unified-first：`outbox_events` + `projection`；缺表才 fallback legacy）
+  - 已将同类场景（`shadow_verify_*`）供给写入收口到 shared helper（不再在场景里直写 INSERT SQL）
+  - Evidence 区有可追溯的 headSha + artifacts 路径（本地 stage2 + window）
+
+## P0（Contract｜v1）
+
+### P0-C1-S1（Supply target contract｜v1）
+
+- 默认写入 unified outbox：`outbox_events`
+- 必须带 `projection`（例如：`search_index_to_elastic`）
+- 仅当 unified 表缺失/不可用时允许 fallback legacy outbox（并在 evidence 中显式记录）
+
+### P0-C1-S2（Evidence fields｜v1）
+
+- `target_table`：实际写入的 outbox 表名
+- `projection`：供给事件的 projection
+- `insert_count`：本次插入事件数
+- `fallback.used` / `fallback.reason`：是否 fallback + 原因
+- `outbox_event_ids`：插入的事件 id（用于 verify 抽样或全量校验）
+
+### P0-C1-S3（Supply DB check｜v1）
+
+- verify 侧应能在 DB 中确认：对应 `outbox_event_ids` 确实存在于 worker 读取的 outbox 表
+- 最小口径：`expected` vs `found`（例如 expected=200 found=200）并给出 `ok=true/false`
+
+## Numbering（编号约定）
+
+- `S<n>`：Step（步骤）。
+- `C<n>`：Cycle（循环轮次）。
+
+**Commit / PR 命名**:
+
+- `S6A-2A/P<phase>-C<cycle>-S<step>: <summary>`
+
+## Plan（completed）
+
+- `P0`：Supply contract（默认写 outbox_events + projection）与 evidence 字段（已完成）
+- `P1`：`fault/obs_infra/*` 触发脚本与 verify 口径对齐到 unified outbox（已完成）
+- `P2`：同类场景（`shadow_verify_*`）供给写入统一收口到 shared helper（已完成）
+
 ## Execution Checklist（unchecked）
 
 - [x] `P0-C1-S1`：Supply contract（默认写 outbox_events + projection）
@@ -66,7 +109,7 @@
 ## Evidence（预留）
 
 - 以 artifacts 为事实源；记录 headSha + 参数 + artifacts 路径（或 CI run URL）。
-- code head: `07847af0`
+- code head: `bb462457`（commit messages 规范化后已重写 history；此为当前 head）
 - note: 运行态 evidence 已入账（见下方 P2-C1-S1）。
 
 ### P2-C1-S1（shadow_verify_* 供给收口｜已补）
