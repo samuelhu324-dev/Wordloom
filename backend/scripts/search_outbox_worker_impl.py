@@ -787,6 +787,17 @@ async def _worker_loop() -> None:
         # Policy: treat most 4xx as non-retryable (e.g., mapping/parsing).
         return failure_class in {"4xx", "other"}
 
+    def _classify_status_code(status_code: int | None) -> str:
+        if status_code is None:
+            return "unknown"
+        if status_code == 429:
+            return "429"
+        if 500 <= status_code < 600:
+            return "5xx"
+        if 400 <= status_code < 500:
+            return "4xx"
+        return "other"
+
     def _classify_exception(exc: Exception) -> tuple[str, int | None]:
         if isinstance(exc, httpx.HTTPStatusError):
             status_code = exc.response.status_code
