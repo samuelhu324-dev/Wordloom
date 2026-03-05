@@ -13,9 +13,11 @@ from ._failure_drill_shared import (
     ensure_dir,
     es_create_index_if_missing,
     es_set_index_write_block,
+    fetch_supply_error_reasons_v1,
     load_env,
     load_env_from_run_recipe_v1,
     prom_parse_counter_sum,
+    reason_family_v1,
     spawn_search_outbox_worker,
     resolve_run_dir,
     run_cmd,
@@ -266,6 +268,9 @@ def verify_es_write_block_4xx(inputs: DrillInputs) -> DrillResult:
 
     supply = read_json_file(run_dir / "_supply.json")
     supply_db_check = None
+    db_reason_check = None
+    db_reason_values: list[str] = []
+    db_reason_families: list[str] = []
     if supply is not None:
         env = load_env_from_run_recipe_v1(run_dir=run_dir)
         db_url = str(env.get("DATABASE_URL") or "").strip()
@@ -274,12 +279,47 @@ def verify_es_write_block_4xx(inputs: DrillInputs) -> DrillResult:
             if not bool(supply_db_check.get("skipped")):
                 ok = bool(ok) and bool(supply_db_check.get("ok"))
 
+            db_reason_check = fetch_supply_error_reasons_v1(database_url=db_url, supply=supply)
+            if not bool(db_reason_check.get("skipped")):
+                ok = bool(ok) and bool(db_reason_check.get("ok"))
+
+                rows = db_reason_check.get("rows")
+                if isinstance(rows, list):
+                    for row in rows:
+                        if not isinstance(row, dict):
+                            continue
+                        raw = row.get("error_reason")
+                        if raw:
+                            val = str(raw).strip()
+                            if val:
+                                db_reason_values.append(val)
+
+                db_reason_values = sorted(set(db_reason_values))
+                fams = [reason_family_v1(r) for r in db_reason_values]
+                db_reason_families = sorted({f for f in fams if f})
+
+                # Hard contract: DB reasons must be present and in expected families.
+                ok = bool(ok) and bool(db_reason_values)
+                ok = bool(ok) and all((r == "es_4xx") for r in db_reason_values)
+                ok = bool(ok) and all((f == "client") for f in db_reason_families)
+
     result = {
         "scenario": SCENARIO_ES_WRITE_BLOCK_4XX,
         "run_dir": str(run_dir),
         "worker": worker_start,
         "supply": supply,
         "supply_db_check": supply_db_check,
+        "reason_contract": {
+            "expected": {
+                "metrics_reasons": ["es_4xx"],
+                "reason_families": ["client"],
+            },
+            "observed": {
+                "db_reasons": db_reason_values,
+                "db_reason_families": db_reason_families,
+            },
+            "db_reason_check": db_reason_check,
+        },
         "checks": {
             "failed_delta_ge": float(min_failed_delta),
             "retry_delta_le": float(max_retry_delta),
