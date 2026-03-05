@@ -60,7 +60,7 @@
 - [x] `P0-C1-S2`：Evidence 字段最小集（supply target + 兼容/fallback 说明）
 - [x] `P1-C1-S1`：迁移 `fault/obs_infra/*` 的 trigger/seed 逻辑到 unified outbox
 - [x] `P1-C1-S2`：verify 对齐（DB 侧校验 supply 与消费一致）
-- [ ] `P1-C2-S1`：补 1 份可追溯运行态 evidence（本地 run+verify 一次 + artifacts 路径入账）
+- [x] `P1-C2-S1`：补 1 份可追溯运行态 evidence（本地 run+verify 一次 + artifacts 路径入账）
 - [ ] `P2-C1-S1`：同类场景（shadow_verify_*）的 seed/supply 统一
 
 ## Evidence（预留）
@@ -69,7 +69,7 @@
 - code head: `d4b4a172036ca102471ab6124cc292bb54620f08`
 - note: 目前已完成“供给 contract + 场景迁移 + verify DB presence check”的代码收口；运行态 artifacts 需要在具备可用 `env_file`（含真实 `DATABASE_URL`）的环境下跑一次 run+verify。
 
-### P1-C2-S1（本地 evidence：跑 1 次 run+verify｜待补）
+### P1-C2-S1（本地 evidence：跑 1 次 run+verify｜已补）
 
 前置：准备一个可用的 env 文件（建议从 `backend/.env.test.example` 复制为 `.env.test`，并填入真实 `DATABASE_URL`；同时保证 ES/DB/OTLP infra 可用）。
 
@@ -80,8 +80,12 @@
 
 入账：
 
-- artifacts 路径：`<fill me>`
-- observed：`_supply.json`（含 target_table/projection/insert_count/fallback）+ verify 侧 `supply_db_check`
+- artifacts 路径：`docs/labs/_snapshot/auto/S3A-2A-3A/es_down_connect/S6A-2A-P1-C2-S1/`
+- observed：
+  - outbox_event_id：`9b20638b-546d-4e60-b44f-3b1d6aadb6be`
+  - supply：`target_table=outbox_events`、`projection=search_index_to_elastic`、`insert_count=1`、`fallback.used=false`
+  - verify：`supply_db_check.ok=true`（expected=1 found=1）
+  - metrics delta：`retry_scheduled=+8`、`failed=+8`、`terminal_failed=+0`
 
 ## Notes（实施提示）
 
