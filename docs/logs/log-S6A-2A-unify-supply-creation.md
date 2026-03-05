@@ -123,3 +123,4 @@
 
 - 建议在 shared helper 或 `backend/scripts/labs/*` 中提供稳定供给入口，场景只调用它。
 - 若遇到 schema 差异（列名/必填字段不同），应在供给层做兼容映射，而不是回流到每个 scenario。
+- 本次本地 infra（用于 P2-C1-S1/C2）：`docker compose -f docker-compose.infra.yml up -d es`（ES: `http://127.0.0.1:19200`）
