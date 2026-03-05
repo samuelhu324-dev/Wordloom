@@ -56,15 +56,17 @@
 
 ## Execution Checklist（unchecked）
 
-- [ ] `P0-C1-S1`：Supply contract（默认写 outbox_events + projection）
-- [ ] `P0-C1-S2`：Evidence 字段最小集（supply target + 兼容/fallback 说明）
-- [ ] `P1-C1-S1`：迁移 `fault/obs_infra/*` 的 trigger/seed 逻辑到 unified outbox
-- [ ] `P1-C1-S2`：verify 对齐（DB 侧校验 supply 与消费一致）
+- [x] `P0-C1-S1`：Supply contract（默认写 outbox_events + projection）
+- [x] `P0-C1-S2`：Evidence 字段最小集（supply target + 兼容/fallback 说明）
+- [x] `P1-C1-S1`：迁移 `fault/obs_infra/*` 的 trigger/seed 逻辑到 unified outbox
+- [x] `P1-C1-S2`：verify 对齐（DB 侧校验 supply 与消费一致）
 - [ ] `P2-C1-S1`：同类场景（shadow_verify_*）的 seed/supply 统一
 
 ## Evidence（预留）
 
 - 以 artifacts 为事实源；记录 headSha + 参数 + artifacts 路径（或 CI run URL）。
+- code head: `c62c545692bb9540209c1a6645057630ce56023e`
+- note: 目前仅完成“供给 contract + 场景迁移 + verify DB presence check”的代码收口；运行态 artifacts 需在具备可用 `env_file`（含真实 `DATABASE_URL`）的环境下补一次 run+verify。
 
 ## Notes（实施提示）
 

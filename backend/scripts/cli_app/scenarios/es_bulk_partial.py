@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import shutil
-import subprocess
 import time
 from pathlib import Path
 
@@ -16,15 +15,19 @@ from ._failure_drill_shared import (
     ensure_dir,
     extract_last_claim_batch_id,
     load_env,
+    load_env_from_run_recipe_v1,
     prom_parse_counter_sum,
     spawn_search_outbox_worker,
-    python_exe,
     resolve_run_dir,
     run_cmd,
+    run_search_outbox_supply_inserter_v1,
     scrape_metrics_text,
     scrape_metrics_text_readiness_v1,
     readiness_sleep_v1,
+    read_json_file,
+    python_exe,
     with_backend_pythonpath,
+    verify_supply_rows_v1,
 )
 from ._failure_drill_shared import LEGACY_SCRIPTS_DIR, LABS_SNAPSHOT_ROOT, REPO_ROOT
 
@@ -111,10 +114,6 @@ def run_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
-    if not inserter.exists():
-        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
-
     start = time.time()
     stopped_by_controller = False
     outbox_event_ids: list[str] = []
@@ -152,35 +151,17 @@ def run_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
             encoding="utf-8",
         )
 
-        trigger_env = env.copy()
-        trigger_env["OUTBOX_OP"] = str(op)
-        trigger_env.setdefault("OUTBOX_CREATE_SEARCH_INDEX_ROW", "1")
-        trigger_env.setdefault("OUTBOX_EVENT_VERSION", "0")
-        trigger_env["OUTBOX_INSERT_COUNT"] = str(int(trigger_count))
-
-        try:
-            proc = subprocess.run(
-                [python_exe(), str(inserter)],
-                cwd=str(REPO_ROOT),
-                env=trigger_env,
-                capture_output=True,
-                text=True,
-                timeout=60,
-                check=False,
-            )
-        except subprocess.TimeoutExpired as exc:
-            (outdir / "_trigger_insert_outbox.stdout.txt").write_text(
-                (exc.stdout or "") if isinstance(exc.stdout, str) else "",
-                encoding="utf-8",
-            )
-            (outdir / "_trigger_insert_outbox.stderr.txt").write_text(
-                (exc.stderr or "") if isinstance(exc.stderr, str) else "",
-                encoding="utf-8",
-            )
-            (outdir / "_trigger_insert_outbox.timeout.txt").write_text(
-                f"timeout_s=60\ncmd={[python_exe(), str(inserter)]}\n",
-                encoding="utf-8",
-            )
+        supply_res = run_search_outbox_supply_inserter_v1(
+            outdir=outdir,
+            env=env,
+            op=str(op),
+            insert_count=int(trigger_count),
+            create_search_index_row=True,
+            event_version=0,
+            timeout_s=60.0,
+            file_prefix="_trigger_insert_outbox",
+        )
+        if supply_res.returncode is None:
             print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] inserter timed out")
             worker_handle.terminate_and_wait(timeout_s=30)
             exit_info = {
@@ -190,17 +171,21 @@ def run_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
             }
             write_json(outdir / "_worker_exit.json", exit_info)
             return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
-
-        (outdir / "_trigger_insert_outbox.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
-        (outdir / "_trigger_insert_outbox.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
-        if proc.returncode != 0:
-            print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] failed to insert outbox events: rc={proc.returncode}")
+        if supply_res.returncode != 0:
+            print(
+                f"[labs run {SCENARIO_ES_BULK_PARTIAL}] failed to insert outbox events: rc={supply_res.returncode}"
+            )
             worker_handle.terminate_and_wait(timeout_s=30)
             return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
 
-        outbox_event_ids = [ln.strip() for ln in (proc.stdout or "").splitlines() if ln.strip()]
+        outbox_event_ids = list(supply_res.outbox_event_ids)
         (outdir / "_outbox_event_ids.txt").write_text("\n".join(outbox_event_ids) + "\n", encoding="utf-8")
         print(f"[labs run {SCENARIO_ES_BULK_PARTIAL}] outbox_event_ids: {', '.join(outbox_event_ids)}")
+
+        supply_evidence = dict(supply_res.evidence or {})
+        supply_evidence["outbox_event_ids"] = list(outbox_event_ids)
+        supply_evidence["insert_count"] = int(supply_evidence.get("insert_count") or len(outbox_event_ids))
+        write_json(outdir / "_supply.json", supply_evidence)
 
         while True:
             if duration > 0 and (time.time() - start) >= duration:
@@ -326,10 +311,22 @@ def verify_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
         and (delta_failed_4xx >= min_failed_4xx_delta)
     )
 
+    supply = read_json_file(run_dir / "_supply.json")
+    supply_db_check = None
+    if supply is not None:
+        env = load_env_from_run_recipe_v1(run_dir=run_dir)
+        db_url = str(env.get("DATABASE_URL") or "").strip()
+        if db_url:
+            supply_db_check = verify_supply_rows_v1(database_url=db_url, supply=supply)
+            if not bool(supply_db_check.get("skipped")):
+                ok = bool(ok) and bool(supply_db_check.get("ok"))
+
     result = {
         "scenario": SCENARIO_ES_BULK_PARTIAL,
         "run_dir": str(run_dir),
         "worker": worker_start,
+        "supply": supply,
+        "supply_db_check": supply_db_check,
         "checks": {
             "partial_delta_ge": float(min_partial_delta),
             "success_items_delta_ge": float(min_success_items_delta),

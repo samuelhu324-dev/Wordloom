@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import subprocess
 import time
 from pathlib import Path
 
@@ -13,15 +12,19 @@ from ._failure_drill_shared import (
     default_labs_auto_run_dir,
     ensure_dir,
     load_env,
+    load_env_from_run_recipe_v1,
     prom_parse_counter_sum,
     spawn_search_outbox_worker,
-    python_exe,
     resolve_run_dir,
     run_cmd,
+    run_search_outbox_supply_inserter_v1,
     scrape_metrics_text,
     scrape_metrics_text_readiness_v1,
     readiness_sleep_v1,
+    read_json_file,
+    python_exe,
     with_backend_pythonpath,
+    verify_supply_rows_v1,
 )
 from ._failure_drill_shared import LEGACY_SCRIPTS_DIR, LABS_SNAPSHOT_ROOT, REPO_ROOT
 
@@ -108,10 +111,6 @@ def run_es_429_inject(inputs: DrillInputs) -> DrillResult:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
-    if not inserter.exists():
-        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
-
     start = time.time()
     stopped_by_controller = False
     worker_env_keys = [
@@ -142,34 +141,17 @@ def run_es_429_inject(inputs: DrillInputs) -> DrillResult:
                 encoding="utf-8",
             )
 
-            trigger_env = env.copy()
-            trigger_env["OUTBOX_OP"] = str(op)
-            trigger_env.setdefault("OUTBOX_CREATE_SEARCH_INDEX_ROW", "1")
-            trigger_env.setdefault("OUTBOX_EVENT_VERSION", "0")
-
-            try:
-                proc = subprocess.run(
-                    [python_exe(), str(inserter)],
-                    cwd=str(REPO_ROOT),
-                    env=trigger_env,
-                    capture_output=True,
-                    text=True,
-                    timeout=30,
-                    check=False,
-                )
-            except subprocess.TimeoutExpired as exc:
-                (outdir / "_trigger_insert_outbox.stdout.txt").write_text(
-                    (exc.stdout or "") if isinstance(exc.stdout, str) else "",
-                    encoding="utf-8",
-                )
-                (outdir / "_trigger_insert_outbox.stderr.txt").write_text(
-                    (exc.stderr or "") if isinstance(exc.stderr, str) else "",
-                    encoding="utf-8",
-                )
-                (outdir / "_trigger_insert_outbox.timeout.txt").write_text(
-                    f"timeout_s=30\ncmd={[python_exe(), str(inserter)]}\n",
-                    encoding="utf-8",
-                )
+            supply_res = run_search_outbox_supply_inserter_v1(
+                outdir=outdir,
+                env=env,
+                op=str(op),
+                insert_count=1,
+                create_search_index_row=True,
+                event_version=0,
+                timeout_s=30.0,
+                file_prefix="_trigger_insert_outbox",
+            )
+            if supply_res.returncode is None:
                 print(f"[labs run {SCENARIO_ES_429_INJECT}] inserter timed out")
                 worker_handle.terminate_and_wait(timeout_s=30)
                 exit_info = {
@@ -179,16 +161,22 @@ def run_es_429_inject(inputs: DrillInputs) -> DrillResult:
                 }
                 write_json(outdir / "_worker_exit.json", exit_info)
                 return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
-            (outdir / "_trigger_insert_outbox.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
-            (outdir / "_trigger_insert_outbox.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
-            if proc.returncode != 0:
-                print(f"[labs run {SCENARIO_ES_429_INJECT}] failed to insert outbox event: rc={proc.returncode}")
+            if supply_res.returncode != 0:
+                print(
+                    f"[labs run {SCENARIO_ES_429_INJECT}] failed to insert outbox event: rc={supply_res.returncode}"
+                )
                 worker_handle.terminate_and_wait(timeout_s=30)
                 return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
 
-            outbox_event_id = (proc.stdout or "").strip().splitlines()[-1].strip()
+            outbox_event_id = supply_res.outbox_event_ids[-1].strip() if supply_res.outbox_event_ids else ""
             (outdir / "_outbox_event_id.txt").write_text(outbox_event_id + "\n", encoding="utf-8")
             print(f"[labs run {SCENARIO_ES_429_INJECT}] outbox_event_id: {outbox_event_id}")
+
+            supply_evidence = dict(supply_res.evidence or {})
+            supply_evidence["outbox_event_id"] = outbox_event_id
+            supply_evidence["outbox_event_ids"] = list(supply_res.outbox_event_ids)
+            supply_evidence["insert_count"] = int(supply_evidence.get("insert_count") or 1)
+            write_json(outdir / "_supply.json", supply_evidence)
 
             while True:
                 if duration > 0 and (time.time() - start) >= duration:
@@ -280,10 +268,22 @@ def verify_es_429_inject(inputs: DrillInputs) -> DrillResult:
 
     ok = (delta_retry >= min_retry_delta) and (delta_failed >= min_failed_delta) and (delta_terminal <= max_terminal_delta)
 
+    supply = read_json_file(run_dir / "_supply.json")
+    supply_db_check = None
+    if supply is not None:
+        env = load_env_from_run_recipe_v1(run_dir=run_dir)
+        db_url = str(env.get("DATABASE_URL") or "").strip()
+        if db_url:
+            supply_db_check = verify_supply_rows_v1(database_url=db_url, supply=supply)
+            if not bool(supply_db_check.get("skipped")):
+                ok = bool(ok) and bool(supply_db_check.get("ok"))
+
     result = {
         "scenario": SCENARIO_ES_429_INJECT,
         "run_dir": str(run_dir),
         "worker": worker_start,
+        "supply": supply,
+        "supply_db_check": supply_db_check,
         "checks": {
             "retry_delta_ge": float(min_retry_delta),
             "failed_delta_ge": float(min_failed_delta),
