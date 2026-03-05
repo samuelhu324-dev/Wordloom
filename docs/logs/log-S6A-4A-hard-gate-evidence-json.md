@@ -141,9 +141,9 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：Hard-gate semantics（PASS/FAIL/不可判定）
-- [ ] `P0-C1-S2`：Evidence JSON schema（最小字段）
-- [ ] `P0-C1-S3`：Artifacts contract（最小自解释集）
+- [x] `P0-C1-S1`：Hard-gate semantics（PASS/FAIL/不可判定）
+- [x] `P0-C1-S2`：Evidence JSON schema（最小字段）
+- [x] `P0-C1-S3`：Artifacts contract（最小自解释集）
 
 ### P1（输出统一）
 
@@ -152,8 +152,8 @@
 
 ### P2（CI hard-gate）
 
-- [ ] `P2-C1-S1`：workflow：run + verify + upload artifacts
-- [ ] `P2-C1-S2`：workflow gate：verify 失败直接失败（阻断）
+- [x] `P2-C1-S1`：workflow：run + verify + upload artifacts
+- [x] `P2-C1-S2`：workflow gate：verify 失败直接失败（阻断）
 
 ### P3（Guardrails）
 
@@ -173,6 +173,15 @@
   - `_result.json.ok=true`
 - 观测（observed）：
   - `_result.json.ok=<...>`
+
+### P2-C1-S2（CI hard-gate｜fault/obs_infra/es_timeout｜2026-03-05）
+
+- workflow：`.github/workflows/hard-gate-fault-es-timeout.yml`
+- scenario_id：`fault/obs_infra/es_timeout`（catalog-driven）
+- artifacts：GitHub Actions 上传 `docs/labs/_snapshot/auto/`（包含 `_result.json` 等）
+- 期望（expected）：
+  - `labs verify es_timeout` exit code = `0`
+  - `_result.json.ok=true`
 
 ## Recent changes（for traceability，可选）
 

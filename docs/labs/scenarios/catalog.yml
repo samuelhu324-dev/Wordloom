@@ -580,6 +580,29 @@ scenarios:
       - pipeline:obs_infra
       - runtime:db_es_jaeger
 
+  - id: fault/obs_infra/es_timeout
+    aliases:
+      - es_timeout
+    cli: |-
+      python backend/scripts/cli.py labs run es_timeout --env-file "$ENV_FILE" --duration "$DURATION" --metrics-port 9109 --scrape-delay 0.5 --service wordloom-labs-es-timeout --op upsert --run-id "$RUN_ID"
+      python backend/scripts/cli.py labs verify es_timeout --run-id "$RUN_ID" --min-retry-delta 1 --min-failed-delta 1 --max-terminal-delta 0
+      python backend/scripts/cli.py labs clean es_timeout --env-file "$ENV_FILE" --keep-last "$KEEP_LAST"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: true
+    defaults:
+      env_file: .env.test
+      duration_seconds: 12
+      lookback: 30m
+      keep_last: 10
+    tags:
+      - workflow:hard-gate
+      - intent:fault
+      - pipeline:obs_infra
+      - runtime:db_only
+
   - id: fault/obs_infra/collector_down
     aliases:
       - collector_down
