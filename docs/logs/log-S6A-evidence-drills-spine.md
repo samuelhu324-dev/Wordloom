@@ -143,7 +143,7 @@
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：S6 旧 SoT 索引化（INDEX 清单 + S6A mapping）
-- [ ] `P1`：Stable Entry contract（入口漂移零容忍 + helper 复用）
+- [x] `P1`：Stable Entry contract（入口漂移零容忍 + helper 复用）
 - [ ] `P2`：Supply creation 统一到 `outbox_events`（legacy 退场计划）
 - [ ] `P3`：reason taxonomy contract（metrics + DB + verify 对齐）
 - [ ] `P4`：fault suite hard-gate（evidence JSON + 自解释 artifacts）
@@ -152,7 +152,8 @@
 
 - P0：已完成索引化骨架（S6A spine log + INDEX 的 old logs 清单）。
 - Route B/fault drills：已修复一次“入口漂移/表不一致”风险（见 Recent changes）。
-- P1–P4：已形成 draft checklist，待按切片推进并补 evidence。
+- P1：Stable Entry contract 已落地（见子 log：`docs/logs/log-S6A-1A-stable-entry-contract.md`，含 shadow_verify 证据）。
+- P2–P4：已形成 draft checklist，待按切片推进并补 evidence。
 
 ## Stability（stable 口径）
 
@@ -166,3 +167,4 @@
 
 - 2026-03-04：修复 fault scenarios 依赖的 Search worker 入口漂移；并让插入脚本优先写 unified outbox（存在时）。
   - 代码变更落在对应脚本与 scenarios 中（由 git commit 追溯）。
+- 2026-03-04：完成 Stable Entry contract（helper 复用 + evidence 口径），并产出一份 shadow_verify 证据（见 `docs/logs/log-S6A-1A-stable-entry-contract.md`）。

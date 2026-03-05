@@ -3,8 +3,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import subprocess
-import sys
 import time
 import uuid
 import urllib.error
@@ -17,8 +15,9 @@ from sqlalchemy import bindparam, create_engine, text
 from infra.outbox_unified.toggles import is_unified_outbox_read_enabled, is_unified_outbox_write_enabled
 
 from ._pg_introspection import table_exists
+from ._failure_drill_shared import spawn_search_outbox_worker, with_backend_pythonpath
 
-from ..common import REPO_ROOT, write_json, write_text
+from ..common import REPO_ROOT, write_json
 from ..registry import register
 from ..types import DrillInputs, DrillResult
 
@@ -371,8 +370,6 @@ def run(inputs: DrillInputs) -> DrillResult:
     )
     es_index_ok = bool(es_index_status in {200, 201} or es_index_status == 400)
 
-    worker_script = REPO_ROOT / "backend" / "scripts" / "search_outbox_worker.py"
-
     worker_env = env.copy()
     worker_env["DATABASE_URL"] = database_url
     worker_env["ELASTIC_URL"] = es_url
@@ -386,13 +383,7 @@ def run(inputs: DrillInputs) -> DrillResult:
     else:
         worker_env.pop("SEARCH_OUTBOX_LIBRARY_ALLOWLIST", None)
 
-    backend_path = str(REPO_ROOT / "backend")
-    existing_pythonpath = str(worker_env.get("PYTHONPATH") or "").strip()
-    if existing_pythonpath:
-        if backend_path not in existing_pythonpath.split(os.pathsep):
-            worker_env["PYTHONPATH"] = backend_path + os.pathsep + existing_pythonpath
-    else:
-        worker_env["PYTHONPATH"] = backend_path
+    worker_env = with_backend_pythonpath(worker_env)
 
     # WORDLOOM_ENV inference for the legacy worker guard.
     try:
@@ -425,29 +416,51 @@ def run(inputs: DrillInputs) -> DrillResult:
     worker_env["OUTBOX_REQUIRE_ES_READY"] = "1"
     worker_env["OUTBOX_SHUTDOWN_GRACE_SECONDS"] = "5"
 
+    worker_log_path = outdir / "worker.log"
     t0 = time.time()
-    worker_proc = subprocess.run(
-        [sys.executable, str(worker_script)],
-        cwd=str(REPO_ROOT),
+    worker_handle = spawn_search_outbox_worker(
         env=worker_env,
-        capture_output=True,
-        text=True,
-        check=False,
-        timeout=float(worker_max_runtime_seconds) + 10.0,
+        logs_dir=outdir,
+        run_id=inputs.run_id,
+        log_name="worker.log",
+        evidence_env_keys=[
+            "DATABASE_URL",
+            "ELASTIC_URL",
+            "ELASTIC_INDEX",
+            "WORDLOOM_ENV",
+            "SEARCH_OUTBOX_LIBRARY_ALLOWLIST",
+            "OUTBOX_EXIT_WHEN_IDLE",
+            "OUTBOX_IDLE_POLLS_BEFORE_EXIT",
+            "OUTBOX_MAX_RUNTIME_SECONDS",
+            "OUTBOX_POLL_INTERVAL_SECONDS",
+            "OUTBOX_BULK_SIZE",
+            "OUTBOX_CONCURRENCY",
+            "OUTBOX_REQUIRE_ES_READY",
+            "OUTBOX_SHUTDOWN_GRACE_SECONDS",
+        ],
     )
+    write_json(outdir / "_worker_start.json", worker_handle.evidence_summary())
+
+    try:
+        worker_handle.wait(timeout_s=float(worker_max_runtime_seconds) + 10.0)
+    except Exception:
+        try:
+            worker_handle.terminate_and_wait(timeout_s=5.0)
+        except Exception:
+            pass
+
     worker_runtime_s = float(time.time() - t0)
-    worker_exit_code = int(worker_proc.returncode)
+    worker_exit_code = int(worker_handle.proc.returncode) if worker_handle.proc.returncode is not None else None
     worker_ok = bool(worker_exit_code == 0)
 
-    worker_log_path = outdir / "worker.log"
-    write_text(
-        worker_log_path,
-        (worker_proc.stdout or "") + "\n--- stderr ---\n" + (worker_proc.stderr or "") + "\n",
-    )
     last_claim_batch_id = _extract_last_claim_batch_id(worker_log_path)
 
-    worker_stdout_tail = _tail(worker_proc.stdout or "")
-    worker_stderr_tail = _tail(worker_proc.stderr or "")
+    try:
+        _worker_log_text = worker_log_path.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        _worker_log_text = ""
+    worker_stdout_tail = _tail(_worker_log_text)
+    worker_stderr_tail = ""
 
     es_refresh_status, _es_refresh_payload = _http_json(
         "POST",
@@ -678,7 +691,7 @@ def run(inputs: DrillInputs) -> DrillResult:
             "outbox_projection": primary_outbox_projection,
             "use_unified_outbox_read": bool(use_unified_read),
             "unified_outbox_write_enabled": bool(dual_write_enabled),
-            "worker_entrypoint": "backend/scripts/search_outbox_worker.py",
+            "worker_entrypoint": worker_handle.entry_id,
         },
         "inputs": {
             "token": token,
@@ -721,8 +734,8 @@ def run(inputs: DrillInputs) -> DrillResult:
             "count": {"status": int(es_count_status), "count": es_count, "payload": es_count_obj},
         },
         "worker": {
-            "script": _rel_repo(worker_script),
-            "exit_code": int(worker_exit_code),
+            "entry_id": worker_handle.entry_id,
+            "exit_code": int(worker_exit_code) if worker_exit_code is not None else None,
             "ok": bool(worker_ok),
             "runtime_seconds": float(worker_runtime_s),
             "log_path": _rel_repo(worker_log_path),

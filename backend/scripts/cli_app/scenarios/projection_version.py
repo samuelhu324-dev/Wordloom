@@ -14,11 +14,13 @@ from ._failure_drill_shared import (
     ensure_dir,
     load_env,
     parse_last_json_line,
+    SpawnedWorker,
     python_exe,
     read_json_file,
     resolve_run_dir,
     run_cmd,
     scrape_metrics_text,
+    spawn_chronicle_outbox_worker,
     with_backend_pythonpath,
 )
 from ._failure_drill_shared import LEGACY_SCRIPTS_DIR, LABS_SNAPSHOT_ROOT, REPO_ROOT
@@ -91,9 +93,6 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
     }
     write_json(outdir / "_recipe.json", recipe)
 
-    worker = LEGACY_SCRIPTS_DIR / "chronicle_outbox_worker.py"
-    cmd = [python_exe(), "-u", str(worker)]
-
     inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_chronicle_outbox_pending.py"
     if not inserter.exists():
         inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_chronicle_outbox_pending.py"
@@ -108,7 +107,7 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
         log_path: Path,
         extra_env: dict[str, str] | None = None,
         max_attempts: int = 4,
-    ) -> tuple[subprocess.Popen, dict[str, str], int, int]:
+    ) -> tuple[SpawnedWorker, dict[str, str], int, int]:
         candidate_ports: list[int] = []
         for i in range(max_attempts):
             p = int(preferred_metrics_port) + (i * 10_000)
@@ -117,7 +116,7 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
         if not candidate_ports:
             candidate_ports = [19110, 29110, 39110, 49110]
 
-        last_proc: subprocess.Popen | None = None
+        last_worker: SpawnedWorker | None = None
         last_env: dict[str, str] | None = None
         last_metrics_port = int(preferred_metrics_port)
         last_http_port = int(preferred_metrics_port) + 2
@@ -134,31 +133,55 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
                 f"\n\n# controller: spawn attempt {attempt}/{len(candidate_ports)} "
                 f"metrics_port={metrics_port_candidate} http_port={http_port}\n"
             )
-            log_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(log_path, "a", encoding="utf-8") as log_file:
-                log_file.write(header)
-                log_file.flush()
-                proc = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=run_env, stdout=log_file, stderr=subprocess.STDOUT)
-                time.sleep(0.75)
-                if proc.poll() is None:
-                    return proc, run_env, int(metrics_port_candidate), int(http_port)
+            worker_handle = spawn_chronicle_outbox_worker(
+                env=run_env,
+                logs_dir=log_path.parent,
+                run_id=run_id,
+                log_name=log_path.name,
+                evidence_env_keys=[
+                    k
+                    for k in (
+                        "OUTBOX_METRICS_PORT",
+                        "OUTBOX_HTTP_PORT",
+                        "OUTBOX_RUN_SECONDS",
+                        "OUTBOX_POLL_INTERVAL_SECONDS",
+                        "OUTBOX_BATCH_SIZE",
+                        "OUTBOX_LEASE_SECONDS",
+                        "OUTBOX_RECLAIM_INTERVAL_SECONDS",
+                        "OUTBOX_MAX_PROCESSING_SECONDS",
+                        "CHRONICLE_PROJECTION_VERSION",
+                    )
+                    if k in run_env
+                ],
+                log_mode="a",
+                log_header=header,
+            )
+
+            time.sleep(0.75)
+            if worker_handle.proc.poll() is None:
+                return worker_handle, run_env, int(metrics_port_candidate), int(http_port)
+
+            try:
+                worker_handle.wait(timeout_s=1.0)
+            except Exception:
+                pass
 
             try:
                 tail = log_path.read_text(encoding="utf-8", errors="replace")[-4000:]
             except Exception:
                 tail = ""
             if "WinError 10013" in tail or "PermissionError" in tail:
-                last_proc = proc
+                last_worker = worker_handle
                 last_env = run_env
                 last_metrics_port = int(metrics_port_candidate)
                 last_http_port = int(http_port)
                 continue
 
-            return proc, run_env, int(metrics_port_candidate), int(http_port)
+            return worker_handle, run_env, int(metrics_port_candidate), int(http_port)
 
-        assert last_proc is not None
+        assert last_worker is not None
         assert last_env is not None
-        return last_proc, last_env, int(last_metrics_port), int(last_http_port)
+        return last_worker, last_env, int(last_metrics_port), int(last_http_port)
 
     def _run_probe(*, chronicle_event_id: str, out_path: Path) -> None:
         probe_env = env.copy()
@@ -179,15 +202,25 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
     print(f"[labs run {SCENARIO_PROJECTION_VERSION}] outdir: {outdir}")
 
     insert_env = env.copy()
-    insert_proc_1 = subprocess.run(
-        [python_exe(), str(inserter)],
-        cwd=str(REPO_ROOT),
-        env=insert_env,
-        capture_output=True,
-        text=True,
-        timeout=60,
-        check=False,
-    )
+    insert_cmd_1 = [python_exe(), str(inserter)]
+    try:
+        insert_proc_1 = subprocess.run(
+            insert_cmd_1,
+            cwd=str(REPO_ROOT),
+            env=insert_env,
+            capture_output=True,
+            text=True,
+            timeout=60,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        (outdir / "_trigger_insert_v1.stdout.txt").write_text("", encoding="utf-8")
+        (outdir / "_trigger_insert_v1.stderr.txt").write_text("", encoding="utf-8")
+        (outdir / "_trigger_insert_v1.timeout.txt").write_text(
+            f"timeout_s=60\ncmd={' '.join(insert_cmd_1)}\n",
+            encoding="utf-8",
+        )
+        return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
     (outdir / "_trigger_insert_v1.stdout.txt").write_text(insert_proc_1.stdout or "", encoding="utf-8")
     (outdir / "_trigger_insert_v1.stderr.txt").write_text(insert_proc_1.stderr or "", encoding="utf-8")
     if insert_proc_1.returncode != 0:
@@ -209,11 +242,12 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
     before_v1 = metrics_dir / "metrics-before-v1.txt"
     after_v1 = metrics_dir / "metrics-after-v1.txt"
 
-    proc1, _env1, actual_metrics_port_1, _http1 = _spawn_worker_with_retry(
+    worker1, _env1, actual_metrics_port_1, _http1 = _spawn_worker_with_retry(
         preferred_metrics_port=int(metrics_port),
         log_path=log_v1,
         extra_env={"CHRONICLE_PROJECTION_VERSION": str(int(projection_version_1))},
     )
+    write_json(outdir / "_worker_start.json", {"v1": worker1.evidence_summary()})
     try:
         time.sleep(max(0.5, float(scrape_delay)))
         try:
@@ -221,14 +255,10 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
         except Exception as exc:  # noqa: BLE001
             before_v1.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
 
-        proc1.wait(timeout=max(10, int(duration) + 20))
+        worker1.wait(timeout_s=max(10, int(duration) + 20))
     except Exception:
         try:
-            proc1.terminate()
-        except Exception:
-            pass
-        try:
-            proc1.wait(timeout=30)
+            worker1.terminate_and_wait(timeout_s=30)
         except Exception:
             pass
     finally:
@@ -241,15 +271,25 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
 
     insert_env_2 = env.copy()
     insert_env_2["OUTBOX_CHRONICLE_EVENT_ID"] = chronicle_event_id
-    insert_proc_2 = subprocess.run(
-        [python_exe(), str(inserter)],
-        cwd=str(REPO_ROOT),
-        env=insert_env_2,
-        capture_output=True,
-        text=True,
-        timeout=60,
-        check=False,
-    )
+    insert_cmd_2 = [python_exe(), str(inserter)]
+    try:
+        insert_proc_2 = subprocess.run(
+            insert_cmd_2,
+            cwd=str(REPO_ROOT),
+            env=insert_env_2,
+            capture_output=True,
+            text=True,
+            timeout=60,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        (outdir / "_trigger_insert_v2.stdout.txt").write_text("", encoding="utf-8")
+        (outdir / "_trigger_insert_v2.stderr.txt").write_text("", encoding="utf-8")
+        (outdir / "_trigger_insert_v2.timeout.txt").write_text(
+            f"timeout_s=60\ncmd={' '.join(insert_cmd_2)}\n",
+            encoding="utf-8",
+        )
+        return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
     (outdir / "_trigger_insert_v2.stdout.txt").write_text(insert_proc_2.stdout or "", encoding="utf-8")
     (outdir / "_trigger_insert_v2.stderr.txt").write_text(insert_proc_2.stderr or "", encoding="utf-8")
     if insert_proc_2.returncode != 0:
@@ -268,11 +308,12 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
     before_v2 = metrics_dir / "metrics-before-v2.txt"
     after_v2 = metrics_dir / "metrics-after-v2.txt"
 
-    proc2, _env2, actual_metrics_port_2, _http2 = _spawn_worker_with_retry(
+    worker2, _env2, actual_metrics_port_2, _http2 = _spawn_worker_with_retry(
         preferred_metrics_port=int(metrics_port) + 1,
         log_path=log_v2,
         extra_env={"CHRONICLE_PROJECTION_VERSION": str(int(projection_version_2))},
     )
+    write_json(outdir / "_worker_start.json", {"v1": worker1.evidence_summary(), "v2": worker2.evidence_summary()})
     try:
         time.sleep(max(0.5, float(scrape_delay)))
         try:
@@ -280,14 +321,10 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
         except Exception as exc:  # noqa: BLE001
             before_v2.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
 
-        proc2.wait(timeout=max(10, int(duration) + 20))
+        worker2.wait(timeout_s=max(10, int(duration) + 20))
     except Exception:
         try:
-            proc2.terminate()
-        except Exception:
-            pass
-        try:
-            proc2.wait(timeout=30)
+            worker2.terminate_and_wait(timeout_s=30)
         except Exception:
             pass
     finally:
@@ -303,6 +340,7 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
         "run_id": run_id,
         "chronicle_event_id": chronicle_event_id,
         "outbox_event_ids": {"v1": outbox_event_id_1, "v2": outbox_event_id_2},
+        "worker": read_json_file(outdir / "_worker_start.json"),
         "worker_logs": {
             "v1": str(log_v1.relative_to(REPO_ROOT)),
             "v2": str(log_v2.relative_to(REPO_ROOT)),
@@ -374,7 +412,7 @@ def verify_projection_version(inputs: DrillInputs) -> DrillResult:
         "why": why,
         "checks": checks,
         "expected": {"v1": want1, "v2": want2},
-        "observed": {"v1": got1, "v2": got2},
+        "observed": {"v1": got1, "v2": got2, "worker": read_json_file(run_dir / "_worker_start.json")},
         "errors": errors,
     }
 
