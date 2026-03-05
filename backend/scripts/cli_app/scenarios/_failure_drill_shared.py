@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import datetime as dt
 import json
 import os
 import re
@@ -9,6 +10,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+import uuid
 from pathlib import Path
 from typing import Any
 from uuid import UUID
@@ -29,6 +31,14 @@ SUPPLY_EVIDENCE_PREFIX = "SUPPLY_EVIDENCE_JSON:"
 
 def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
+
+
+@dataclass
+class SearchOutboxSupplySqlTargetV1:
+    table_name: str
+    projection: str | None
+    chosen_cols: list[str]
+    col_types: dict[str, str]
 
 
 def read_env_file(path: Path) -> dict[str, str]:
@@ -112,10 +122,235 @@ def http_json(
     try:
         with urllib.request.urlopen(req, timeout=timeout_s) as resp:  # noqa: S310
             payload = resp.read().decode("utf-8", errors="replace")
-            return int(resp.status), payload
+            return int(getattr(resp, "status", 0) or 0), payload
     except urllib.error.HTTPError as exc:
         payload = exc.read().decode("utf-8", errors="replace") if getattr(exc, "fp", None) else str(exc)
         return int(getattr(exc, "code", 0) or 0), payload
+    except Exception as exc:
+        return 0, f"{type(exc).__name__}: {exc}"
+
+
+def resolve_search_outbox_supply_sql_target_v1(*, conn, projection: str) -> SearchOutboxSupplySqlTargetV1:
+    """Resolve unified-vs-legacy supply target for Search outbox.
+
+    S6A-2A supply contract: default to unified `outbox_events` (projection-scoped)
+    when present; fall back to legacy `search_outbox_events` otherwise.
+    """
+
+    try:
+        from sqlalchemy import text
+    except Exception as exc:  # pragma: no cover
+        raise RuntimeError(f"sqlalchemy_import_failed: {type(exc).__name__}: {exc}") from exc
+
+    def _table_columns(table_name: str) -> set[str]:
+        rows = conn.execute(
+            text(
+                """
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = :t
+                """
+            ),
+            {"t": table_name},
+        ).all()
+        return {str(r[0]) for r in rows if r and r[0]}
+
+    def _table_column_types(table_name: str) -> dict[str, str]:
+        rows = conn.execute(
+            text(
+                """
+                SELECT column_name, udt_name
+                FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = :t
+                """
+            ),
+            {"t": table_name},
+        ).all()
+        return {str(r[0]): str(r[1]) for r in rows if r and r[0] and r[1]}
+
+    outbox_cols = _table_columns("outbox_events")
+    if outbox_cols:
+        table_name = "outbox_events"
+        proj_val: str | None = str(projection)
+        fallback_used = False
+    else:
+        legacy_cols = _table_columns("search_outbox_events")
+        if not legacy_cols:
+            raise RuntimeError("Neither outbox_events nor search_outbox_events table found")
+        table_name = "search_outbox_events"
+        proj_val = None
+        fallback_used = True
+
+    col_types = _table_column_types(table_name)
+    cols = _table_columns(table_name)
+
+    required_cols = {"id", "entity_type", "entity_id", "op", "event_version", "status"}
+    if table_name == "outbox_events":
+        required_cols.add("projection")
+    missing_required = sorted([c for c in required_cols if c not in cols])
+    if missing_required:
+        raise RuntimeError(f"{table_name} missing required columns: {missing_required}")
+
+    chosen_cols = [
+        c
+        for c in (
+            "id",
+            "projection",
+            "entity_type",
+            "library_id",
+            "entity_id",
+            "op",
+            "event_version",
+            "status",
+            "attempts",
+            "replay_count",
+            "created_at",
+            "updated_at",
+            "traceparent",
+            "tracestate",
+        )
+        if c in cols
+    ]
+
+    # Make the fallback decision observable to callers without needing extra queries.
+    _ = fallback_used  # kept for readability; evidence uses table_name comparison.
+
+    return SearchOutboxSupplySqlTargetV1(
+        table_name=table_name,
+        projection=proj_val,
+        chosen_cols=chosen_cols,
+        col_types=col_types,
+    )
+
+
+def insert_search_outbox_supply_rows_sql_v1(
+    *,
+    conn,
+    target: SearchOutboxSupplySqlTargetV1,
+    projection: str,
+    candidates: list[dict[str, object]],
+    entity_type: str,
+    op: str,
+    status: str,
+) -> dict[str, object]:
+    """Insert pending Search outbox rows via SQLAlchemy.
+
+    This is used by shadow_verify_* scenarios where we already have projection
+    candidates (entity_id + event_version) and want to enqueue deterministic
+    outbox events that follow the S6A-2A supply contract.
+    """
+
+    try:
+        from sqlalchemy import text
+    except Exception as exc:  # pragma: no cover
+        raise RuntimeError(f"sqlalchemy_import_failed: {type(exc).__name__}: {exc}") from exc
+
+    now = dt.datetime.now(dt.timezone.utc)
+    outbox_event_ids: list[str] = []
+
+    if not candidates:
+        return {
+            "target_table": target.table_name,
+            "projection": (target.projection if target.table_name == "outbox_events" else None),
+            "insert_count": 0,
+            "entity_type": str(entity_type),
+            "op": str(op),
+            "create_search_index_row": False,
+            "outbox_event_ids": [],
+            "fallback": {
+                "used": bool(target.table_name != "outbox_events"),
+                "reason": ("outbox_events_table_missing" if target.table_name != "outbox_events" else None),
+            },
+        }
+
+    chosen_cols = list(target.chosen_cols)
+    if not chosen_cols:
+        raise RuntimeError("target has no chosen_cols")
+
+    proj_val = target.projection if target.table_name == "outbox_events" else None
+    if target.table_name == "outbox_events" and proj_val is None:
+        proj_val = str(projection)
+
+    rows: list[dict[str, object]] = []
+    for c in candidates:
+        ev_uuid = uuid.uuid4()
+        outbox_event_ids.append(str(ev_uuid))
+
+        entity_id_raw = c.get("entity_id")
+        if entity_id_raw is None:
+            raise RuntimeError("candidate missing entity_id")
+        try:
+            entity_uuid = UUID(str(entity_id_raw))
+        except Exception as exc:
+            raise RuntimeError(f"invalid candidate.entity_id={entity_id_raw!r}: {type(exc).__name__}: {exc}") from exc
+
+        library_id_raw = c.get("library_id")
+        library_uuid: UUID | None = None
+        if library_id_raw:
+            try:
+                library_uuid = UUID(str(library_id_raw))
+            except Exception as exc:
+                raise RuntimeError(
+                    f"invalid candidate.library_id={library_id_raw!r}: {type(exc).__name__}: {exc}"
+                ) from exc
+
+        try:
+            ev_version = int(c.get("event_version") or 0)
+        except Exception:
+            ev_version = 0
+
+        row: dict[str, object] = {}
+        for col in chosen_cols:
+            if col == "id":
+                row[col] = ev_uuid
+            elif col == "projection":
+                row[col] = proj_val
+            elif col == "entity_type":
+                row[col] = str(entity_type)
+            elif col == "library_id":
+                row[col] = library_uuid
+            elif col == "entity_id":
+                row[col] = entity_uuid
+            elif col == "op":
+                row[col] = str(op)
+            elif col == "event_version":
+                row[col] = int(ev_version)
+            elif col == "status":
+                row[col] = str(status)
+            elif col == "attempts":
+                row[col] = 0
+            elif col == "replay_count":
+                row[col] = 0
+            elif col == "created_at":
+                row[col] = now
+            elif col == "updated_at":
+                row[col] = now
+            elif col == "traceparent":
+                row[col] = None
+            elif col == "tracestate":
+                row[col] = None
+
+        rows.append(row)
+
+    cols_sql = ", ".join(chosen_cols)
+    placeholders = ", ".join([f":{c}" for c in chosen_cols])
+    stmt = text(f"INSERT INTO {target.table_name} ({cols_sql}) VALUES ({placeholders})")
+    conn.execute(stmt, rows)
+    conn.commit()
+
+    return {
+        "target_table": target.table_name,
+        "projection": (proj_val if target.table_name == "outbox_events" else None),
+        "insert_count": int(len(rows)),
+        "entity_type": str(entity_type),
+        "op": str(op),
+        "create_search_index_row": False,
+        "outbox_event_ids": list(outbox_event_ids),
+        "fallback": {
+            "used": bool(target.table_name != "outbox_events"),
+            "reason": ("outbox_events_table_missing" if target.table_name != "outbox_events" else None),
+        },
+    }
 
 
 def es_set_index_write_block(*, es_url: str, index: str, enabled: bool) -> tuple[int, str]:

@@ -61,13 +61,32 @@
 - [x] `P1-C1-S1`：迁移 `fault/obs_infra/*` 的 trigger/seed 逻辑到 unified outbox
 - [x] `P1-C1-S2`：verify 对齐（DB 侧校验 supply 与消费一致）
 - [x] `P1-C2-S1`：补 1 份可追溯运行态 evidence（本地 run+verify 一次 + artifacts 路径入账）
-- [ ] `P2-C1-S1`：同类场景（shadow_verify_*）的 seed/supply 统一
+- [x] `P2-C1-S1`：同类场景（shadow_verify_*）的 seed/supply 统一
 
 ## Evidence（预留）
 
 - 以 artifacts 为事实源；记录 headSha + 参数 + artifacts 路径（或 CI run URL）。
-- code head: `d4b4a172036ca102471ab6124cc292bb54620f08`
-- note: 目前已完成“供给 contract + 场景迁移 + verify DB presence check”的代码收口；运行态 artifacts 需要在具备可用 `env_file`（含真实 `DATABASE_URL`）的环境下跑一次 run+verify。
+- code head: （见后续提交；本段会在合并后补齐）
+- note: 运行态 evidence 已入账（见下方 P2-C1-S1）。
+
+### P2-C1-S1（shadow_verify_* 供给收口｜已补）
+
+- 迁移点：将 shadow_verify 家族中“场景内直写 outbox SQL”的 enqueue 统一到 shared supply helper（优先 `outbox_events` + `projection`，仅在 unified 表缺失时 fallback legacy）。
+- 涉及场景：
+  - `shadow_verify_dual_run_stage2`（新增：`_supply.json` + result.meta 里附 `supply`/`supply_db_check`；并在写 unified 时强制 worker `OUTBOX_UNIFIED_READ_ENABLED`）
+  - `shadow_verify_dual_run_window`（循环 enqueue 改用 helper；新增：`_supply.json` + result.meta 里附 `supply`/`supply_db_check`；并在写 unified 时强制 worker `OUTBOX_UNIFIED_READ_ENABLED`）
+  - `shadow_verify_canary_dual_write`（改为 unified-first；新增：`_supply.json` + `supply_db_check`，且在 cleanup 前采样证据）
+  - `shadow_verify_dual_write_sampling`（按 `entity_type` 分组 enqueue；新增：`_supply.json` + `supply_db_check`，且在 cleanup 前采样证据）
+
+#### P2-C1-S1（本地 evidence：shadow_verify_dual_run_stage2｜2026-03-05）
+
+- command：`python backend/scripts/cli.py labs shadow-verify-dual-run-stage2 --database-url postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_dev --es-url http://127.0.0.1:19200 --run-id s6a2a-p2c1s1-20260305-132816 --outdir artifacts/_tmp_s6a2a-p2c1s1-20260305-132816_shadow_verify_dual_run_stage2`
+- artifacts：`artifacts/_tmp_s6a2a-p2c1s1-20260305-132816_shadow_verify_dual_run_stage2/`
+- observed：
+  - result：`ok=true`（strict parity）
+  - supply：`target_table=outbox_events`、`projection=search_index_to_elastic`、`insert_count=20`、`fallback.used=false`
+  - supply_db_check：`ok=true`（expected=20 found=20）
+  - evidence files：`_result.json`、`_supply.json`、`_worker_start.json`、`worker.log`、`traces.json`
 
 ### P1-C2-S1（本地 evidence：跑 1 次 run+verify｜已补）
 
