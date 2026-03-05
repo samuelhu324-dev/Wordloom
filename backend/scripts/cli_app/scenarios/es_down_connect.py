@@ -11,12 +11,11 @@ from ._failure_drill_shared import (
     LAB_ID_S3A_2A_3A,
     default_labs_auto_run_dir,
     docker_compose,
+    eval_db_reason_contract_v1,
     ensure_dir,
     load_env,
     load_env_from_run_recipe_v1,
-    fetch_supply_error_reasons_v1,
     prom_sum_reasons,
-    reason_family_v1,
     spawn_search_outbox_worker,
     resolve_run_dir,
     run_cmd,
@@ -273,28 +272,15 @@ def verify_es_down_connect(inputs: DrillInputs) -> DrillResult:
             if not bool(supply_db_check.get("skipped")):
                 ok = bool(ok) and bool(supply_db_check.get("ok"))
 
-            db_reason_check = fetch_supply_error_reasons_v1(database_url=db_url, supply=supply)
-            if not bool(db_reason_check.get("skipped")):
-                ok = bool(ok) and bool(db_reason_check.get("ok"))
-
-                rows = db_reason_check.get("rows")
-                if isinstance(rows, list):
-                    for row in rows:
-                        if not isinstance(row, dict):
-                            continue
-                        raw = row.get("error_reason")
-                        if raw:
-                            val = str(raw).strip()
-                            if val:
-                                db_reason_values.append(val)
-
-                db_reason_values = sorted(set(db_reason_values))
-                fams = [reason_family_v1(r) for r in db_reason_values]
-                db_reason_families = sorted({f for f in fams if f})
-
-                # Hard contract: DB reasons must be present and in expected families.
-                ok = bool(ok) and bool(db_reason_values)
-                ok = bool(ok) and all((f in expected_reason_families) for f in db_reason_families)
+                contract_ok, db_reason_check, db_reason_values, db_reason_families = eval_db_reason_contract_v1(
+                    database_url=db_url,
+                    supply=supply,
+                    expected_reason_families=expected_reason_families,
+                    expected_db_reasons=None,
+                    require_db_reasons=True,
+                )
+                if contract_ok is not None:
+                    ok = bool(ok) and bool(contract_ok)
 
     result = {
         "scenario": SCENARIO_ES_DOWN_CONNECT,

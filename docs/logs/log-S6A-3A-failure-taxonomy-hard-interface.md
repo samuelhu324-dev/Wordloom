@@ -125,6 +125,11 @@
 - P2-C3-S1：扩展到第 3 个 `fault/obs_infra/*` 场景（`es_write_block_4xx`），覆盖 `client` family
 - P2-C3-S2：跑 1 次 run+verify，输出第 3 份可追溯 evidence（headSha + artifacts）
 
+### P3（hardening：复用 + 兼容窗口）
+
+- P3-C1-S1：将 reason_contract 的 DB 校验抽成共享 verify helper（不改 UX，只减少重复）
+- P3-C1-S2：将已覆盖的 3 个样板场景迁移到共享 helper
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -147,6 +152,11 @@
 - [x] `P2-C2-S3`：产出第 2 份可追溯 evidence（headSha + artifacts）
 - [x] `P2-C3-S1`：扩展第三个样板场景（es_write_block_4xx）+ expected reason family
 - [x] `P2-C3-S2`：产出第 3 份可追溯 evidence（headSha + artifacts）
+
+### P3（hardening）
+
+- [x] `P3-C1-S1`：抽出共享 verify helper（reason_contract｜DB-side）
+- [x] `P3-C1-S2`：迁移样板场景到共享 helper（es_down_connect / es_429_inject / es_write_block_4xx）
 
 ## Evidence（预留）
 

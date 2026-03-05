@@ -826,6 +826,60 @@ def reason_family_v1(reason: str | None) -> str | None:
     return "unknown"
 
 
+def eval_db_reason_contract_v1(
+    *,
+    database_url: str | None,
+    supply: dict[str, object] | None,
+    expected_reason_families: list[str],
+    expected_db_reasons: list[str] | None = None,
+    require_db_reasons: bool = True,
+) -> tuple[bool | None, dict[str, object] | None, list[str], list[str]]:
+    """Evaluate DB-side reason contract for a supplied outbox event.
+
+    Returns:
+      - contract_ok: True/False when evaluated, None when skipped
+      - db_reason_check: evidence from fetch_supply_error_reasons_v1 (or None)
+      - db_reason_values: unique sorted DB reasons
+      - db_reason_families: unique sorted mapped families
+    """
+
+    if supply is None:
+        return None, None, [], []
+
+    db_url = str(database_url or "").strip()
+    if not db_url:
+        return None, None, [], []
+
+    db_reason_check = fetch_supply_error_reasons_v1(database_url=db_url, supply=supply)
+    if bool(db_reason_check.get("skipped")):
+        return None, db_reason_check, [], []
+
+    rows = db_reason_check.get("rows")
+    values: list[str] = []
+    if isinstance(rows, list):
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            raw = row.get("error_reason")
+            if raw:
+                val = str(raw).strip()
+                if val:
+                    values.append(val)
+
+    db_reason_values = sorted(set(values))
+    fams = [reason_family_v1(r) for r in db_reason_values]
+    db_reason_families = sorted({f for f in fams if f})
+
+    contract_ok = bool(db_reason_check.get("ok"))
+    if require_db_reasons:
+        contract_ok = bool(contract_ok) and bool(db_reason_values)
+    if expected_db_reasons is not None:
+        contract_ok = bool(contract_ok) and all((r in expected_db_reasons) for r in db_reason_values)
+    contract_ok = bool(contract_ok) and all((f in expected_reason_families) for f in db_reason_families)
+
+    return bool(contract_ok), db_reason_check, db_reason_values, db_reason_families
+
+
 def docker_compose(*, args: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
     cmd = ["docker", "compose"] + args
     print("[scripts] run:", " ".join(cmd))
