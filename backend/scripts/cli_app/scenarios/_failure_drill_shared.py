@@ -561,6 +561,14 @@ def spawn_search_outbox_worker(
 
     ensure_dir(logs_dir)
 
+    # Labs env files often disable the worker by default to keep test runs quiet.
+    # Fault drills must explicitly enable the worker so metrics and retry/failure
+    # paths can be observed.
+    env2 = dict(env)
+    raw_enabled = (env2.get("SEARCH_OUTBOX_WORKER_ENABLED") or "").strip().lower()
+    if raw_enabled in {"0", "false", "no", "n", "off"}:
+        env2["SEARCH_OUTBOX_WORKER_ENABLED"] = "1"
+
     worker_script = REPO_ROOT / "backend" / "scripts" / "search_outbox_worker.py"
     if not worker_script.exists():
         raise FileNotFoundError(str(worker_script))
@@ -580,9 +588,11 @@ def spawn_search_outbox_worker(
         except Exception:
             pass
     started_at = time.time()
-    proc = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=env, stdout=log_file, stderr=subprocess.STDOUT)
+    proc = subprocess.Popen(cmd, cwd=str(REPO_ROOT), env=env2, stdout=log_file, stderr=subprocess.STDOUT)
 
     keys = sorted(set(evidence_env_keys or []))
+    if "SEARCH_OUTBOX_WORKER_ENABLED" in env2:
+        keys = sorted(set([*keys, "SEARCH_OUTBOX_WORKER_ENABLED"]))
     return SpawnedWorker(
         entry_id="search_outbox_worker@v1",
         cmd=cmd,

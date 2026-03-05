@@ -39,6 +39,22 @@ def _truthy(raw: str | None) -> bool:
     return v in {"1", "true", "yes", "y", "on"}
 
 
+def _adapt_param(value: object) -> object:
+    """Adapt Python objects to types psycopg can send.
+
+    psycopg3 doesn't automatically adapt `dict`/`list` to JSON.
+    """
+
+    if isinstance(value, (dict, list)):
+        try:
+            from psycopg.types.json import Json  # type: ignore
+
+            return Json(value)
+        except Exception:
+            return json.dumps(value)
+    return value
+
+
 
 def _database_url_psycopg(database_url: str) -> str:
     # Allow reuse of SQLAlchemy-style URL.
@@ -90,7 +106,7 @@ def _insert_pending(conn: psycopg.Connection, table_name: str, values: dict[str,
     sql = f"insert into {table_name} ({columns_sql}) values ({placeholders})"
 
     with conn.cursor() as cur:
-        cur.execute(sql, tuple(filtered[c] for c in columns))
+        cur.execute(sql, tuple(_adapt_param(filtered[c]) for c in columns))
 
 
 def _upsert_search_index(conn: psycopg.Connection, values: dict[str, object]) -> None:
@@ -133,7 +149,7 @@ def _upsert_search_index(conn: psycopg.Connection, values: dict[str, object]) ->
         )
 
     with conn.cursor() as cur:
-        cur.execute(sql, tuple(filtered[c] for c in columns))
+        cur.execute(sql, tuple(_adapt_param(filtered[c]) for c in columns))
 
 
 def main() -> None:
