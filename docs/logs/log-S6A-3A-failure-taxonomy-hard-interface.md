@@ -113,6 +113,9 @@
 
 - P2-C1-S1：选择 1 个 `fault/obs_infra/*` 场景，定义 expected reasons（family）
 - P2-C1-S2：跑 1 次 run+verify，输出 evidence JSON 并能 PASS/FAIL
+- P2-C2-S1：扩展到第 2 个 `fault/obs_infra/*` 场景（`es_429_inject`），补齐 expected reason family
+- P2-C2-S2：修复注入 429 时的异常分类崩溃，保证场景可稳定跑通
+- P2-C2-S3：跑 1 次 run+verify，输出第 2 份可追溯 evidence（headSha + artifacts）
 
 ## Execution Checklist（unchecked）
 
@@ -131,6 +134,9 @@
 
 - [x] `P2-C1-S1`：选定样板场景 + expected reason family
 - [x] `P2-C1-S2`：产出 1 份可追溯 evidence（headSha + artifacts）
+- [x] `P2-C2-S1`：扩展第二个样板场景（es_429_inject）+ expected reason family
+- [x] `P2-C2-S2`：修复 es_429 注入路径崩溃（exception classification）
+- [x] `P2-C2-S3`：产出第 2 份可追溯 evidence（headSha + artifacts）
 
 ## Evidence（预留）
 
@@ -151,3 +157,19 @@
     - terminal_failed: `+0`
   - DB error_reason（outbox_events）：
     - `es_connect`（family=`transport`）
+
+### P2-C2-S3（fault/obs_infra/es_429_inject｜2026-03-05）
+
+- headSha：`ea407543`（S6A-3A/P2-C2: es_429 reason contract evidence v1）
+- run_id：`s6a3a-p2c2s3-20260305-143920`
+- artifacts：`docs/labs/_snapshot/auto/S3A-2A-3A/es_429_inject/s6a3a-p2c2s3-20260305-143920/`
+- expected：
+  - metrics reasons ⊆ {`es_429`}
+  - reason family ⊆ {`rate_limit`}
+- observed：
+  - metrics delta（reason=es_429）：
+    - retry_scheduled: `+9`
+    - failed: `+9`
+    - terminal_failed: `+0`
+  - DB error_reason（outbox_events）：
+    - `es_429`（family=`rate_limit`）
