@@ -31,6 +31,30 @@ import psycopg
 SEARCH_PROJECTION = "search_index_to_elastic"
 
 
+SUPPLY_EVIDENCE_PREFIX = "SUPPLY_EVIDENCE_JSON:"
+
+
+def _truthy(raw: str | None) -> bool:
+    v = (raw or "").strip().lower()
+    return v in {"1", "true", "yes", "y", "on"}
+
+
+def _adapt_param(value: object) -> object:
+    """Adapt Python objects to types psycopg can send.
+
+    psycopg3 doesn't automatically adapt `dict`/`list` to JSON.
+    """
+
+    if isinstance(value, (dict, list)):
+        try:
+            from psycopg.types.json import Json  # type: ignore
+
+            return Json(value)
+        except Exception:
+            return json.dumps(value)
+    return value
+
+
 
 def _database_url_psycopg(database_url: str) -> str:
     # Allow reuse of SQLAlchemy-style URL.
@@ -82,7 +106,7 @@ def _insert_pending(conn: psycopg.Connection, table_name: str, values: dict[str,
     sql = f"insert into {table_name} ({columns_sql}) values ({placeholders})"
 
     with conn.cursor() as cur:
-        cur.execute(sql, tuple(filtered[c] for c in columns))
+        cur.execute(sql, tuple(_adapt_param(filtered[c]) for c in columns))
 
 
 def _upsert_search_index(conn: psycopg.Connection, values: dict[str, object]) -> None:
@@ -125,7 +149,7 @@ def _upsert_search_index(conn: psycopg.Connection, values: dict[str, object]) ->
         )
 
     with conn.cursor() as cur:
-        cur.execute(sql, tuple(filtered[c] for c in columns))
+        cur.execute(sql, tuple(_adapt_param(filtered[c]) for c in columns))
 
 
 def main() -> None:
@@ -157,11 +181,27 @@ def main() -> None:
     library_id_raw = os.environ.get("OUTBOX_LIBRARY_ID")
     traceparent = os.environ.get("OUTBOX_TRACEPARENT")
     tracestate = os.environ.get("OUTBOX_TRACESTATE")
+    emit_supply_evidence = _truthy(os.environ.get("OUTBOX_SUPPLY_EVIDENCE_JSON"))
 
     cs = _database_url_psycopg(database_url)
     with psycopg.connect(cs) as conn:
         table_name = "outbox_events" if _table_exists(conn, "outbox_events") else "search_outbox_events"
         col_types = _table_column_types(conn, table_name)
+
+        if emit_supply_evidence:
+            evidence_obj = {
+                "target_table": table_name,
+                "projection": (SEARCH_PROJECTION if table_name == "outbox_events" else None),
+                "insert_count": int(insert_count),
+                "entity_type": str(entity_type),
+                "op": str(op),
+                "create_search_index_row": bool(create_search_index_row),
+                "fallback": {
+                    "used": bool(table_name != "outbox_events"),
+                    "reason": ("outbox_events_table_missing" if table_name != "outbox_events" else None),
+                },
+            }
+            print(SUPPLY_EVIDENCE_PREFIX + json.dumps(evidence_obj, ensure_ascii=False, sort_keys=True))
 
         raw_event_version = (os.environ.get("OUTBOX_EVENT_VERSION") or "").strip()
         ids: list[str] = []

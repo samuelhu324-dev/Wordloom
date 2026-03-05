@@ -14,8 +14,13 @@ from sqlalchemy import bindparam, create_engine, text
 
 from infra.outbox_unified.toggles import is_unified_outbox_read_enabled, is_unified_outbox_write_enabled
 
-from ._pg_introspection import table_exists
-from ._failure_drill_shared import spawn_search_outbox_worker, with_backend_pythonpath
+from ._failure_drill_shared import (
+    insert_search_outbox_supply_rows_sql_v1,
+    resolve_search_outbox_supply_sql_target_v1,
+    spawn_search_outbox_worker,
+    verify_supply_rows_v1,
+    with_backend_pythonpath,
+)
 
 from ..common import REPO_ROOT, write_json
 from ..registry import register
@@ -200,26 +205,14 @@ def run(inputs: DrillInputs) -> DrillResult:
     engine = create_engine(database_url)
     inserted_rows = 0
     pg_candidates: list[dict[str, object]] = []
+    supply_target = None
+    supply: dict[str, object] | None = None
+    supply_db_check: dict[str, object] | None = None
 
     use_unified_read = False
     dual_write_enabled = False
     primary_outbox_table = "search_outbox_events"
     primary_outbox_projection: str | None = None
-
-    def _table_columns(conn, table_name: str) -> set[str]:
-        rows = conn.execute(
-            text(
-                """
-                SELECT column_name
-                FROM information_schema.columns
-                WHERE table_schema = 'public' AND table_name = :t
-                """
-            ),
-            {"t": table_name},
-        ).all()
-        return {str(r[0]) for r in rows if r and r[0]}
-
-    outbox_cols: set[str] = set()
     with engine.connect() as conn:
         existing_for_token = int(
             conn.execute(text(f"SELECT COUNT(*) FROM search_index WHERE {where_sql}"), base_params).scalar() or 0
@@ -284,28 +277,22 @@ def run(inputs: DrillInputs) -> DrillResult:
 
         use_unified_read = is_unified_outbox_read_enabled(SEARCH_OUTBOX_PROJECTION)
         dual_write_enabled = is_unified_outbox_write_enabled(SEARCH_OUTBOX_PROJECTION)
-        primary_outbox_table = "outbox_events" if use_unified_read else "search_outbox_events"
-        if primary_outbox_table == "search_outbox_events" and (not table_exists(conn, "search_outbox_events")):
-            # Slice C drops legacy table; unified outbox is now the only valid source.
-            use_unified_read = True
-            primary_outbox_table = "outbox_events"
-        primary_outbox_projection = SEARCH_OUTBOX_PROJECTION if primary_outbox_table == "outbox_events" else None
 
-        outbox_cols = _table_columns(conn, primary_outbox_table)
-        if not outbox_cols:
-            return DrillResult(ok=False, errors=[f"table {primary_outbox_table} not found"], meta={}, summary={})
-
-        required_cols = {"id", "entity_type", "entity_id", "op", "event_version", "status"}
-        if primary_outbox_table == "outbox_events":
-            required_cols.add("projection")
-        missing_required = sorted([c for c in required_cols if c not in outbox_cols])
-        if missing_required:
+        try:
+            supply_target = resolve_search_outbox_supply_sql_target_v1(
+                conn=conn,
+                projection=SEARCH_OUTBOX_PROJECTION,
+            )
+        except Exception as exc:
             return DrillResult(
                 ok=False,
-                errors=[f"{primary_outbox_table} missing required columns: {missing_required}"],
+                errors=[f"supply_target_resolve_failed: {type(exc).__name__}: {exc}"],
                 meta={},
                 summary={},
             )
+
+        primary_outbox_table = str(getattr(supply_target, "table_name", "") or "search_outbox_events")
+        primary_outbox_projection = getattr(supply_target, "projection", None)
 
     if enqueue_batch_size > len(pg_candidates):
         return DrillResult(
@@ -382,6 +369,10 @@ def run(inputs: DrillInputs) -> DrillResult:
 
     worker_env = with_backend_pythonpath(worker_env)
 
+    # Ensure the worker reads from unified outbox when supply wrote unified rows.
+    if primary_outbox_table == "outbox_events":
+        worker_env["OUTBOX_UNIFIED_READ_ENABLED"] = SEARCH_OUTBOX_PROJECTION
+
     worker_env["OUTBOX_EXIT_WHEN_IDLE"] = "0"
     worker_env["OUTBOX_MAX_RUNTIME_SECONDS"] = str(float(worker_max_runtime_seconds))
     worker_env["OUTBOX_POLL_INTERVAL_SECONDS"] = str(float(worker_poll_interval_seconds))
@@ -447,42 +438,8 @@ def run(inputs: DrillInputs) -> DrillResult:
                 counts[str(st)] = int(n or 0)
         return counts
 
-    now = datetime.now(timezone.utc)
-    base_event: dict[str, object] = {
-        "projection": primary_outbox_projection,
-        "entity_type": seed_entity_type,
-        "op": "upsert",
-        "status": "pending",
-        "attempts": 0,
-        "replay_count": 0,
-        "created_at": now,
-        "updated_at": now,
-        "traceparent": None,
-        "tracestate": None,
-    }
-    chosen_cols = [
-        c
-        for c in (
-            "id",
-            "projection",
-            "entity_type",
-            "library_id",
-            "entity_id",
-            "op",
-            "event_version",
-            "status",
-            "attempts",
-            "replay_count",
-            "created_at",
-            "updated_at",
-            "traceparent",
-            "tracestate",
-        )
-        if c in outbox_cols
-    ]
-    cols_sql = ", ".join(chosen_cols)
-    placeholders = ", ".join([f":{c}" for c in chosen_cols])
-    outbox_insert_sql = text(f"INSERT INTO {primary_outbox_table} ({cols_sql}) VALUES ({placeholders})")
+    if supply_target is None:
+        return DrillResult(ok=False, errors=["supply_target not resolved"], meta={}, summary={})
 
     enqueue_finished_at = None
     final_status_counts: dict[str, int] = {}
@@ -499,30 +456,50 @@ def run(inputs: DrillInputs) -> DrillResult:
         if worker_handle.proc.poll() is not None:
             break
 
-        batch: list[dict[str, object]] = []
+        batch_candidates: list[dict[str, object]] = []
         for _ in range(enqueue_batch_size):
             if len(outbox_event_ids) >= int(max_total_events):
                 break
             c = pg_candidates[cursor]
             cursor = (cursor + 1) % len(pg_candidates)
-            ev_uuid = uuid.uuid4()
-            outbox_event_ids.append(str(ev_uuid))
             enqueued_entity_ids.append(str(c["entity_id"]))
-            row = {
-                **{k: v for k, v in base_event.items() if k in chosen_cols},
-                "id": ev_uuid,
-                "entity_id": uuid.UUID(str(c["entity_id"])),
-                "event_version": int(c["event_version"] or 0),
-            }
-            if "library_id" in chosen_cols:
-                lib = c.get("library_id") or library_id
-                row["library_id"] = (uuid.UUID(str(lib)) if lib else None)
-            batch.append(row)
 
-        if batch:
+            lib = c.get("library_id") or library_id
+            batch_candidates.append(
+                {
+                    "entity_id": c.get("entity_id"),
+                    "event_version": c.get("event_version"),
+                    "library_id": lib,
+                }
+            )
+
+        if batch_candidates:
             with engine.connect() as conn:
-                conn.execute(outbox_insert_sql, batch)
-                conn.commit()
+                batch_supply = insert_search_outbox_supply_rows_sql_v1(
+                    conn=conn,
+                    target=supply_target,
+                    projection=SEARCH_OUTBOX_PROJECTION,
+                    candidates=batch_candidates,
+                    entity_type=seed_entity_type,
+                    op="upsert",
+                    status="pending",
+                )
+
+            batch_ids = [
+                str(x).strip() for x in (batch_supply.get("outbox_event_ids") or []) if str(x).strip()
+            ]
+            outbox_event_ids.extend(batch_ids)
+
+            if supply is None:
+                supply = dict(batch_supply)
+            else:
+                prev_count = int(supply.get("insert_count") or 0)
+                supply["insert_count"] = int(prev_count + int(batch_supply.get("insert_count") or 0))
+
+                prev_ids = supply.get("outbox_event_ids")
+                if not isinstance(prev_ids, list):
+                    prev_ids = []
+                supply["outbox_event_ids"] = list(prev_ids) + list(batch_ids)
 
         counts = _outbox_status_counts_for_ids(outbox_event_ids)
         window_samples.append(
@@ -659,6 +636,16 @@ def run(inputs: DrillInputs) -> DrillResult:
     if isinstance(es_count_obj, dict) and isinstance(es_count_obj.get("count"), int):
         es_count = int(es_count_obj["count"])
 
+    if supply is not None:
+        try:
+            write_json(outdir / "_supply.json", supply)
+        except Exception:
+            pass
+        try:
+            supply_db_check = verify_supply_rows_v1(database_url=database_url, supply=supply)
+        except Exception:
+            supply_db_check = None
+
     outbox_status_counts = _outbox_status_counts_for_ids(outbox_event_ids)
     outbox_done = int(outbox_status_counts.get("done", 0))
     outbox_pending = int(outbox_status_counts.get("pending", 0))
@@ -688,6 +675,8 @@ def run(inputs: DrillInputs) -> DrillResult:
         and ((not require_outbox_done_eq_enqueued) or (outbox_done == len(outbox_event_ids)))
         and parity_ok
     )
+    if supply_db_check is not None and (not bool(supply_db_check.get("skipped"))):
+        ok = bool(ok) and bool(supply_db_check.get("ok"))
 
     def _rel_repo(path: Path) -> str:
         try:
@@ -745,6 +734,8 @@ def run(inputs: DrillInputs) -> DrillResult:
             "event_ids": outbox_event_ids,
             "status_counts": outbox_status_counts,
         },
+        "supply": supply,
+        "supply_db_check": supply_db_check,
         "elasticsearch": {
             "health": {"status": int(es_health_status), "ok": bool(es_health_ok), "payload": es_health_payload},
             "index": {"status": int(es_index_status), "ok": bool(es_index_ok), "payload": es_index_payload},

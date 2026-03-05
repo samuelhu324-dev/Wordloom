@@ -12,7 +12,7 @@
   **roadmap_v2**: `docs/ROADMAP v2.md`
   **runbook_s2b**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-03-04`
-**updated**: `2026-03-04`
+**updated**: `2026-03-05`
 
 ---
 
@@ -128,12 +128,16 @@
 - 场景供给（seed/insert）优先插入 `outbox_events`（带 projection），旧表仅作为迁移窗口 fallback。
 - verify 在 DB 侧也要双兼容，直到 legacy 下线。
 
+- 子 log（P2 落地）：`docs/logs/log-S6A-2A-unify-supply-creation.md`（stable）
+
 ### P3（Draft）：Failure taxonomy hard interface（reason = contract）
 
 目标：reason 不是“日志字符串”，而是：低基数、可聚合、可被 verify 断言的稳定接口。
 
 - 将 `error_reason`（DB）与 Prometheus `reason` label 视为同一 contract。
 - verify 既要看 metrics delta，也要看 DB 终态（terminal vs retry_scheduled）与 reason family。
+
+- 子 log（P3 落地）：`docs/logs/log-S6A-3A-failure-taxonomy-hard-interface.md`（draft）
 
 ### P4（Draft）：Hard-gate + evidence JSON（让 CI 失败自解释）
 
@@ -144,7 +148,7 @@
 
 - [x] `P0`：S6 旧 SoT 索引化（INDEX 清单 + S6A mapping）
 - [x] `P1`：Stable Entry contract（入口漂移零容忍 + helper 复用）
-- [ ] `P2`：Supply creation 统一到 `outbox_events`（legacy 退场计划）
+- [x] `P2`：Supply creation 统一到 `outbox_events`（legacy 退场计划）
 - [ ] `P3`：reason taxonomy contract（metrics + DB + verify 对齐）
 - [ ] `P4`：fault suite hard-gate（evidence JSON + 自解释 artifacts）
 
@@ -153,7 +157,8 @@
 - P0：已完成索引化骨架（S6A spine log + INDEX 的 old logs 清单）。
 - Route B/fault drills：已修复一次“入口漂移/表不一致”风险（见 Recent changes）。
 - P1：Stable Entry contract 已落地（见子 log：`docs/logs/log-S6A-1A-stable-entry-contract.md`，含 shadow_verify 证据）。
-- P2–P4：已形成 draft checklist，待按切片推进并补 evidence。
+- P2：Supply creation contract 已落地并标记 stable（见子 log：`docs/logs/log-S6A-2A-unify-supply-creation.md`）。
+- P3–P4：已形成 draft checklist，待按切片推进并补 evidence。
 
 ## Stability（stable 口径）
 

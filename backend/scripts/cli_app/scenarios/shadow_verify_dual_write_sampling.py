@@ -3,13 +3,19 @@ from __future__ import annotations
 import time
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 
 from sqlalchemy import bindparam, create_engine, text
 
 from infra.outbox_unified.toggles import is_unified_outbox_read_enabled, is_unified_outbox_write_enabled
 
-from ._pg_introspection import table_exists
+from ._failure_drill_shared import (
+    insert_search_outbox_supply_rows_sql_v1,
+    resolve_search_outbox_supply_sql_target_v1,
+    verify_supply_rows_v1,
+)
 from ._search_index_seed import ensure_search_index_min_rows
+from ..common import write_json
 from ..registry import register
 from ..types import DrillInputs, DrillResult
 
@@ -32,6 +38,11 @@ def run(inputs: DrillInputs) -> DrillResult:
     database_url = str(payload.get("database_url") or "").strip()
     if not database_url:
         return DrillResult(ok=False, errors=["DATABASE_URL is required"], meta={}, summary={})
+
+    outdir_raw = payload.get("outdir")
+    outdir = Path(str(outdir_raw)) if outdir_raw else None
+    if outdir is None:
+        return DrillResult(ok=False, errors=["outdir is required"], meta={}, summary={})
 
     library_id = (str(payload.get("library_id") or "").strip() or None)
     if library_id is not None:
@@ -90,6 +101,10 @@ def run(inputs: DrillInputs) -> DrillResult:
     replayed_total = 0
     seed_rows_inserted = 0
     loops = 0
+    primary_outbox_table = "search_outbox_events"
+    primary_outbox_projection: str | None = None
+    supply: dict[str, object] | None = None
+    supply_db_check: dict[str, object] | None = None
 
     def _select_candidates(conn, limit: int) -> list[tuple[str, str, int, str | None]]:
         where_parts: list[str] = []
@@ -128,16 +143,9 @@ def run(inputs: DrillInputs) -> DrillResult:
         ]
 
     with engine.connect() as conn:
-        legacy_outbox_available = table_exists(conn, "search_outbox_events")
-        if (not unified_write_enabled) and (not legacy_outbox_available):
-            return DrillResult(
-                ok=False,
-                errors=[
-                    "search_outbox_events table not found; enable unified outbox write (OUTBOX_UNIFIED_WRITE_ENABLED=search_index_to_elastic)",
-                ],
-                meta={},
-                summary={},
-            )
+        supply_target = resolve_search_outbox_supply_sql_target_v1(conn=conn, projection=SEARCH_OUTBOX_PROJECTION)
+        primary_outbox_table = str(supply_target.table_name)
+        primary_outbox_projection = supply_target.projection
 
         if ensure_min_rows > 0:
             seed_rows_inserted = ensure_search_index_min_rows(
@@ -148,7 +156,6 @@ def run(inputs: DrillInputs) -> DrillResult:
             )
 
         use_unified_read = is_unified_outbox_read_enabled(SEARCH_OUTBOX_PROJECTION)
-        primary_outbox_table = "outbox_events" if unified_write_enabled else "search_outbox_events"
 
         while True:
             loops += 1
@@ -162,58 +169,46 @@ def run(inputs: DrillInputs) -> DrillResult:
                 break
 
             batch_now = datetime.now(timezone.utc)
-            outbox_rows: list[dict[str, object]] = []
-            batch_ids: list[str] = []
-            for (entity_type, entity_id, event_version, candidate_library_id) in candidates:
-                outbox_id = str(uuid.uuid4())
-                batch_ids.append(outbox_id)
-                outbox_rows.append(
+            by_entity_type: dict[str, list[dict[str, object]]] = {}
+            for (et, entity_id, event_version, candidate_library_id) in candidates:
+                by_entity_type.setdefault(str(et), []).append(
                     {
-                        "id": outbox_id,
-                        "entity_type": entity_type,
-                        "library_id": candidate_library_id,
                         "entity_id": entity_id,
-                        "op": "upsert",
                         "event_version": int(event_version),
-                        "created_at": batch_now,
-                        "status": "pending",
-                        "attempts": 0,
-                        "updated_at": batch_now,
-                        "replay_count": 0,
+                        "library_id": candidate_library_id,
                     }
                 )
 
-            legacy_insert_sql = text(
-                """
-                INSERT INTO search_outbox_events
-                                        (id, entity_type, library_id, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
-                VALUES
-                                        (:id, :entity_type, :library_id, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
-                """
-            )
-            unified_insert_sql = text(
-                """
-                INSERT INTO outbox_events
-                                (id, projection, entity_type, library_id, entity_id, op, event_version, created_at, status, attempts, updated_at, replay_count)
-                VALUES
-                                (:id, :projection, :entity_type, :library_id, :entity_id, :op, :event_version, :created_at, :status, :attempts, :updated_at, :replay_count)
-                """
-            )
-
-            if primary_outbox_table == "outbox_events":
-                conn.execute(
-                    unified_insert_sql,
-                    [{**r, "projection": SEARCH_OUTBOX_PROJECTION} for r in outbox_rows],
+            batch_ids: list[str] = []
+            batch_entity_types = list(by_entity_type.keys())
+            for et, batch_candidates in by_entity_type.items():
+                batch_supply = insert_search_outbox_supply_rows_sql_v1(
+                    conn=conn,
+                    target=supply_target,
+                    projection=SEARCH_OUTBOX_PROJECTION,
+                    candidates=batch_candidates,
+                    entity_type=str(et),
+                    op="upsert",
+                    status="pending",
                 )
-            else:
-                if not legacy_outbox_available:
-                    return DrillResult(
-                        ok=False,
-                        errors=["search_outbox_events table not found; cannot run legacy outbox sampling"],
-                        meta={},
-                        summary={},
+                ids = [str(x).strip() for x in (batch_supply.get("outbox_event_ids") or []) if str(x).strip()]
+                batch_ids.extend(ids)
+
+                if supply is None:
+                    supply = dict(batch_supply)
+                    supply["entity_type"] = "mixed" if len(batch_entity_types) > 1 else str(et)
+                    supply["entity_types"] = list(batch_entity_types)
+                else:
+                    prev_count = int(supply.get("insert_count") or 0)
+                    supply["insert_count"] = int(prev_count + int(batch_supply.get("insert_count") or 0))
+                    prev_ids = supply.get("outbox_event_ids")
+                    if not isinstance(prev_ids, list):
+                        prev_ids = []
+                    supply["outbox_event_ids"] = list(prev_ids) + list(ids)
+                    supply["entity_type"] = "mixed"
+                    supply["entity_types"] = sorted(
+                        {str(x) for x in (supply.get("entity_types") or []) if str(x).strip()} | set(batch_entity_types)
                     )
-                conn.execute(legacy_insert_sql, outbox_rows)
 
             conn.commit()
 
@@ -363,6 +358,16 @@ def run(inputs: DrillInputs) -> DrillResult:
 
         remaining_outbox = None
         remaining_legacy_outbox = None
+
+        if supply is not None:
+            try:
+                write_json(outdir / "_supply.json", supply)
+            except Exception:
+                pass
+            try:
+                supply_db_check = verify_supply_rows_v1(database_url=database_url, supply=supply)
+            except Exception:
+                supply_db_check = None
         if cleanup and inserted_outbox_ids:
             legacy_delete_sql = text("DELETE FROM search_outbox_events WHERE id IN :ids").bindparams(
                 bindparam("ids", expanding=True)
@@ -399,18 +404,7 @@ def run(inputs: DrillInputs) -> DrillResult:
                     ).scalar()
                     or 0
                 )
-                if legacy_outbox_available:
-                    remaining_legacy_outbox = int(
-                        conn.execute(
-                            text(
-                                "SELECT COUNT(*) FROM search_outbox_events WHERE id IN :ids"
-                            ).bindparams(bindparam("ids", expanding=True)),
-                            {"ids": inserted_outbox_ids},
-                        ).scalar()
-                        or 0
-                    )
-                else:
-                    remaining_legacy_outbox = 0
+                remaining_legacy_outbox = None
 
     strict_failed = failed_count > 0
     ok = True
@@ -418,14 +412,9 @@ def run(inputs: DrillInputs) -> DrillResult:
         ok = False
     if cleanup and inserted_outbox_ids and remaining_outbox not in (0, None):
         ok = False
-    if (
-        cleanup
-        and unified_write_enabled
-        and legacy_outbox_available
-        and inserted_outbox_ids
-        and remaining_legacy_outbox not in (0, None)
-    ):
-        ok = False
+    # supply_db_check is best-effort evidence; do not hard-fail ok when skipped.
+    if supply_db_check is not None and (not bool(supply_db_check.get("skipped"))):
+        ok = bool(ok) and bool(supply_db_check.get("ok"))
 
     result: dict[str, object] = {
         "lab_id": inputs.scope_id,
@@ -438,7 +427,7 @@ def run(inputs: DrillInputs) -> DrillResult:
         "targets": {
             "projection_table": "search_index",
             "outbox_table": str(primary_outbox_table),
-            "outbox_projection": (SEARCH_OUTBOX_PROJECTION if primary_outbox_table == "outbox_events" else None),
+            "outbox_projection": primary_outbox_projection,
             "unified_outbox_write_enabled": bool(unified_write_enabled),
             "use_unified_outbox_read": bool(use_unified_read),
             "enqueue_entrypoint": "backend/infra/search/search_outbox_repository.py::SearchOutboxRepository.enqueue",
@@ -472,6 +461,8 @@ def run(inputs: DrillInputs) -> DrillResult:
             "remaining_outbox_rows": remaining_outbox,
             "remaining_legacy_outbox_rows": remaining_legacy_outbox,
         },
+        "supply": supply,
+        "supply_db_check": supply_db_check,
         "policy": {
             "strategy": strategy,
             "strict_fails_on_failed": True,

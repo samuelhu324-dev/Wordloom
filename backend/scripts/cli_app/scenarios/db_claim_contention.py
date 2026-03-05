@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import subprocess
 import time
 from pathlib import Path
 
@@ -15,15 +14,18 @@ from ._failure_drill_shared import (
     ensure_dir,
     extract_last_claim_batch_id,
     load_env,
+    load_env_from_run_recipe_v1,
     prom_parse_counter_sum,
     spawn_search_outbox_worker,
-    python_exe,
     resolve_run_dir,
     run_cmd,
+    run_search_outbox_supply_inserter_v1,
     scrape_metrics_text,
     scrape_metrics_text_readiness_v1,
     readiness_sleep_v1,
+    read_json_file,
     with_backend_pythonpath,
+    verify_supply_rows_v1,
 )
 from ._failure_drill_shared import LEGACY_SCRIPTS_DIR, LABS_SNAPSHOT_ROOT, REPO_ROOT
 
@@ -137,10 +139,6 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     after_1_path = metrics_dir / "metrics-after-1.txt"
     after_2_path = metrics_dir / "metrics-after-2.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
-    if not inserter.exists():
-        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
-
     start = time.time()
     stopped_by_controller = False
     outbox_event_ids: list[str] = []
@@ -200,64 +198,53 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
                 encoding="utf-8",
             )
 
-            for i in range(int(trigger_count)):
-                trigger_env = base_env.copy()
-                trigger_env["OUTBOX_OP"] = str(op)
-                trigger_env.setdefault("OUTBOX_CREATE_SEARCH_INDEX_ROW", "1")
-                trigger_env.setdefault("OUTBOX_EVENT_VERSION", "0")
+            supply_res = run_search_outbox_supply_inserter_v1(
+                outdir=outdir,
+                env=base_env,
+                op=str(op),
+                insert_count=int(trigger_count),
+                create_search_index_row=True,
+                event_version=0,
+                timeout_s=30.0,
+                file_prefix="_trigger_insert_outbox",
+            )
+            if supply_res.returncode is None:
+                print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] inserter timed out")
+                worker1_handle.terminate_and_wait(timeout_s=30)
+                worker2_handle.terminate_and_wait(timeout_s=30)
+                exit_info = {
+                    "worker1": {
+                        "returncode": int(worker1_handle.proc.returncode)
+                        if worker1_handle.proc.returncode is not None
+                        else None
+                    },
+                    "worker2": {
+                        "returncode": int(worker2_handle.proc.returncode)
+                        if worker2_handle.proc.returncode is not None
+                        else None
+                    },
+                }
+                write_json(outdir / "_worker_exit.json", exit_info)
+                return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
 
-                try:
-                    proc = subprocess.run(
-                        [python_exe(), str(inserter)],
-                        cwd=str(REPO_ROOT),
-                        env=trigger_env,
-                        capture_output=True,
-                        text=True,
-                        timeout=30,
-                        check=False,
-                    )
-                except subprocess.TimeoutExpired as exc:
-                    (outdir / f"_trigger_insert_outbox_{i+1}.stdout.txt").write_text(
-                        (exc.stdout or "") if isinstance(exc.stdout, str) else "",
-                        encoding="utf-8",
-                    )
-                    (outdir / f"_trigger_insert_outbox_{i+1}.stderr.txt").write_text(
-                        (exc.stderr or "") if isinstance(exc.stderr, str) else "",
-                        encoding="utf-8",
-                    )
-                    (outdir / f"_trigger_insert_outbox_{i+1}.timeout.txt").write_text(
-                        f"timeout_s=30\ncmd={[python_exe(), str(inserter)]}\n",
-                        encoding="utf-8",
-                    )
-                    print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] inserter timed out (n={i+1})")
-                    worker1_handle.terminate_and_wait(timeout_s=30)
-                    worker2_handle.terminate_and_wait(timeout_s=30)
-                    exit_info = {
-                        "worker1": {
-                            "returncode": int(worker1_handle.proc.returncode)
-                            if worker1_handle.proc.returncode is not None
-                            else None
-                        },
-                        "worker2": {
-                            "returncode": int(worker2_handle.proc.returncode)
-                            if worker2_handle.proc.returncode is not None
-                            else None
-                        },
-                    }
-                    write_json(outdir / "_worker_exit.json", exit_info)
-                    return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
-                (outdir / f"_trigger_insert_outbox_{i+1}.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
-                (outdir / f"_trigger_insert_outbox_{i+1}.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
-                if proc.returncode != 0:
-                    print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] failed to insert outbox event #{i+1}: rc={proc.returncode}")
-                    worker1_handle.terminate_and_wait(timeout_s=30)
-                    worker2_handle.terminate_and_wait(timeout_s=30)
-                    return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
-                outbox_event_id = (proc.stdout or "").strip().splitlines()[-1].strip()
-                outbox_event_ids.append(outbox_event_id)
+            if supply_res.returncode != 0:
+                print(
+                    f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] failed to insert outbox events: rc={supply_res.returncode}"
+                )
+                worker1_handle.terminate_and_wait(timeout_s=30)
+                worker2_handle.terminate_and_wait(timeout_s=30)
+                return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
 
+            outbox_event_ids = list(supply_res.outbox_event_ids)
             (outdir / "_outbox_event_ids.txt").write_text("\n".join(outbox_event_ids) + "\n", encoding="utf-8")
             print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] outbox_event_ids: {', '.join(outbox_event_ids)}")
+
+            supply_evidence = dict(supply_res.evidence or {})
+            supply_evidence["outbox_event_ids"] = list(outbox_event_ids)
+            supply_evidence["insert_count"] = int(
+                supply_evidence.get("insert_count") or len(outbox_event_ids) or int(trigger_count)
+            )
+            write_json(outdir / "_supply.json", supply_evidence)
 
             while True:
                 if duration > 0 and (time.time() - start) >= duration:
@@ -387,7 +374,31 @@ def verify_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     min_processed_delta = float(payload.get("min_processed_delta") or 0)
     max_failed_delta = float(payload.get("max_failed_delta") or 0)
 
-    ok = (delta_mismatch >= min_owner_mismatch_delta) and (delta_processed >= min_processed_delta) and (delta_failed <= max_failed_delta)
+    supply = read_json_file(run_dir / "_supply.json")
+    supply_db_check: dict[str, object] = {"skipped": True, "reason": "missing_supply"}
+    supply_db_ok = True
+    try:
+        if isinstance(supply, dict) and supply.get("outbox_event_ids"):
+            env = load_env_from_run_recipe_v1(run_dir)
+            database_url = (env.get("DATABASE_URL") or "").strip()
+            if database_url:
+                supply_db_check = verify_supply_rows_v1(database_url=database_url, supply=supply)
+                if "ok" in supply_db_check:
+                    supply_db_ok = bool(supply_db_check.get("ok"))
+            else:
+                supply_db_check = {"skipped": True, "reason": "missing_database_url"}
+        else:
+            supply_db_check = {"skipped": True, "reason": "missing_outbox_event_ids"}
+    except Exception as exc:  # noqa: BLE001
+        supply_db_check = {"error": f"{type(exc).__name__}: {exc}"}
+        supply_db_ok = False
+
+    ok = (
+        (delta_mismatch >= min_owner_mismatch_delta)
+        and (delta_processed >= min_processed_delta)
+        and (delta_failed <= max_failed_delta)
+        and bool(supply_db_ok)
+    )
 
     result = {
         "scenario": SCENARIO_DB_CLAIM_CONTENTION,
@@ -402,6 +413,8 @@ def verify_db_claim_contention(inputs: DrillInputs) -> DrillResult:
             metric_owner_mismatch: {"before": mismatch_before, "after": mismatch_after, "delta": delta_mismatch},
             metric_processed: {"before": processed_before, "after": processed_after, "delta": delta_processed},
             metric_failed: {"before": failed_before, "after": failed_after, "delta": delta_failed},
+            "supply": supply,
+            "supply_db_check": supply_db_check,
         },
         "ok": bool(ok),
     }

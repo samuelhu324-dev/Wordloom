@@ -20,15 +20,18 @@ from ._failure_drill_shared import (
     docker_compose,
     ensure_dir,
     load_env,
+    load_env_from_run_recipe_v1,
     prom_parse_counter_sum,
     python_exe,
     read_json_file,
     resolve_run_dir,
+    run_search_outbox_supply_inserter_v1,
     scrape_metrics_text,
     scrape_metrics_text_readiness_v1,
     readiness_sleep_v1,
     spawn_search_outbox_worker,
     with_backend_pythonpath,
+    verify_supply_rows_v1,
 )
 
 SCENARIO_COLLECTOR_DOWN = "collector_down"
@@ -127,10 +130,6 @@ def run_collector_down(inputs: DrillInputs) -> DrillResult:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
-    inserter = REPO_ROOT / "backend" / "scripts" / "labs" / "labs_009_insert_search_outbox_pending.py"
-    if not inserter.exists():
-        inserter = LEGACY_SCRIPTS_DIR / "labs_009_insert_search_outbox_pending.py"
-
     start = time.time()
     stopped_by_controller = False
     try:
@@ -142,37 +141,35 @@ def run_collector_down(inputs: DrillInputs) -> DrillResult:
 
         trigger_env = env.copy()
         trigger_env["OUTBOX_OP"] = str(op)
-        trigger_env.setdefault("OUTBOX_CREATE_SEARCH_INDEX_ROW", "1")
-        trigger_env.setdefault("OUTBOX_EVENT_VERSION", "0")
 
-        insert_cmd = [python_exe(), str(inserter)]
-        try:
-            proc = subprocess.run(
-                insert_cmd,
-                cwd=str(REPO_ROOT),
-                env=trigger_env,
-                capture_output=True,
-                text=True,
-                timeout=30,
-                check=False,
-            )
-        except subprocess.TimeoutExpired:
-            (outdir / "_trigger_insert_outbox.stdout.txt").write_text("", encoding="utf-8")
-            (outdir / "_trigger_insert_outbox.stderr.txt").write_text("", encoding="utf-8")
-            _write_timeout_evidence(outdir=outdir, stem="_trigger_insert_outbox", cmd=insert_cmd, timeout_s=30)
+        supply_res = run_search_outbox_supply_inserter_v1(
+            outdir=outdir,
+            env=trigger_env,
+            op=str(op),
+            insert_count=1,
+            create_search_index_row=True,
+            event_version=0,
+            timeout_s=30.0,
+            file_prefix="_trigger_insert_outbox",
+        )
+        if supply_res.returncode is None:
+            print(f"[labs run {SCENARIO_COLLECTOR_DOWN}] inserter timed out")
             worker_handle.terminate_and_wait(timeout_s=30)
             return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
-
-        (outdir / "_trigger_insert_outbox.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
-        (outdir / "_trigger_insert_outbox.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
-        if proc.returncode != 0:
-            print(f"[labs run {SCENARIO_COLLECTOR_DOWN}] failed to insert outbox event: rc={proc.returncode}")
+        if supply_res.returncode != 0:
+            print(f"[labs run {SCENARIO_COLLECTOR_DOWN}] failed to insert outbox event: rc={supply_res.returncode}")
             worker_handle.terminate_and_wait(timeout_s=30)
             return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
 
-        outbox_event_id = (proc.stdout or "").strip().splitlines()[-1].strip()
+        outbox_event_id = supply_res.outbox_event_ids[-1].strip() if supply_res.outbox_event_ids else ""
         (outdir / "_outbox_event_id.txt").write_text(outbox_event_id + "\n", encoding="utf-8")
         print(f"[labs run {SCENARIO_COLLECTOR_DOWN}] outbox_event_id: {outbox_event_id}")
+
+        supply_evidence = dict(supply_res.evidence or {})
+        supply_evidence["outbox_event_id"] = outbox_event_id
+        supply_evidence["outbox_event_ids"] = list(supply_res.outbox_event_ids)
+        supply_evidence["insert_count"] = int(supply_evidence.get("insert_count") or 1)
+        write_json(outdir / "_supply.json", supply_evidence)
 
         while True:
             if duration > 0 and (time.time() - start) >= duration:
@@ -252,6 +249,25 @@ def verify_collector_down(inputs: DrillInputs) -> DrillResult:
 
     outbox_event_id_path = run_dir / "_outbox_event_id.txt"
     outbox_event_id = outbox_event_id_path.read_text(encoding="utf-8").strip() if outbox_event_id_path.exists() else None
+
+    supply = read_json_file(run_dir / "_supply.json")
+    supply_db_check: dict[str, object] = {"skipped": True, "reason": "missing_supply"}
+    supply_db_ok = True
+    try:
+        if isinstance(supply, dict) and supply.get("outbox_event_ids"):
+            env = load_env_from_run_recipe_v1(run_dir)
+            database_url = (env.get("DATABASE_URL") or "").strip()
+            if database_url:
+                supply_db_check = verify_supply_rows_v1(database_url=database_url, supply=supply)
+                if "ok" in supply_db_check:
+                    supply_db_ok = bool(supply_db_check.get("ok"))
+            else:
+                supply_db_check = {"skipped": True, "reason": "missing_database_url"}
+        else:
+            supply_db_check = {"skipped": True, "reason": "missing_outbox_event_ids"}
+    except Exception as exc:  # noqa: BLE001
+        supply_db_check = {"error": f"{type(exc).__name__}: {exc}"}
+        supply_db_ok = False
 
     db_observed: dict[str, object] = {}
     db_ok = False
@@ -336,7 +352,7 @@ def verify_collector_down(inputs: DrillInputs) -> DrillResult:
         and (delta_failed <= float(max_failed_delta))
     )
 
-    ok = (inject_exitcode == 0) and (metrics_ok or db_ok)
+    ok = (inject_exitcode == 0) and (metrics_ok or db_ok) and bool(supply_db_ok)
 
     result = {
         "scenario": SCENARIO_COLLECTOR_DOWN,
@@ -356,6 +372,8 @@ def verify_collector_down(inputs: DrillInputs) -> DrillResult:
             "outbox_processed_total": {"before": processed_before, "after": processed_after, "delta": delta_processed},
             "outbox_failed_total": {"before": failed_before, "after": failed_after, "delta": delta_failed},
             "db_outbox_event": db_observed,
+            "supply": supply,
+            "supply_db_check": supply_db_check,
             "worker": read_json_file(run_dir / "_worker_start.json"),
         },
         "ok": bool(ok),
