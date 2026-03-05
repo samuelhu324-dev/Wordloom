@@ -4,6 +4,7 @@ import json
 import socket
 import threading
 import time
+import uuid
 from pathlib import Path
 
 from ..common import build_evidence_paths_for_dir, pack_artifacts, write_json
@@ -141,6 +142,12 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
     env.setdefault("OUTBOX_BASE_BACKOFF_SECONDS", "30")
     env.setdefault("OUTBOX_MAX_BACKOFF_SECONDS", "30")
 
+    # Scope worker claims to a single deterministic library_id so this run can't
+    # accidentally process unrelated historical pending rows.
+    scoped_library_id = str(uuid.uuid4())
+    env["OUTBOX_LIBRARY_ID"] = scoped_library_id
+    env["SEARCH_OUTBOX_LIBRARY_ALLOWLIST"] = scoped_library_id
+
     blackhole = _BlackholeServer()
     blackhole.start()
     assert blackhole.port is not None
@@ -156,6 +163,7 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
         "inject": {"kind": "es_blackhole", "elastic_url": env["ELASTIC_URL"]},
         "worker": {"duration_s": int(duration), "metrics_port": int(metrics_port)},
         "trigger": {"op": str(op)},
+        "scope": {"library_id": scoped_library_id},
     }
     write_json(outdir / "_recipe.json", recipe)
 
@@ -174,11 +182,13 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
         "OTEL_EXPORTER_OTLP_PROTOCOL",
         "OTEL_EXPORTER_OTLP_ENDPOINT",
         "OTEL_TRACES_SAMPLER",
+        "SEARCH_OUTBOX_LIBRARY_ALLOWLIST",
         "OUTBOX_METRICS_PORT",
         "OUTBOX_REQUIRE_ES_READY",
         "OUTBOX_BASE_BACKOFF_SECONDS",
         "OUTBOX_MAX_BACKOFF_SECONDS",
         "ELASTIC_URL",
+        "OUTBOX_LIBRARY_ID",
     ]
 
     worker_handle = spawn_search_outbox_worker(
