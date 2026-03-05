@@ -129,18 +129,25 @@
 
 ### P2（drills）
 
-- [ ] `P2-C1-S1`：选定样板场景 + expected reason family
-- [ ] `P2-C1-S2`：产出 1 份可追溯 evidence（headSha + artifacts）
+- [x] `P2-C1-S1`：选定样板场景 + expected reason family
+- [x] `P2-C1-S2`：产出 1 份可追溯 evidence（headSha + artifacts）
 
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
 
-### P2-C1-S2（<sample fault scenario>｜YYYY-MM-DD）
+### P2-C1-S2（fault/obs_infra/es_down_connect｜2026-03-05）
 
-- headSha：`<git sha>`
-- artifacts：`artifacts/_tmp_<...>/...`
+- headSha：`d208c767`（S6A-3A/P2: reason contract evidence v1）
+- run_id：`s6a3a-p2c1s1-20260305-142816`
+- artifacts：`docs/labs/_snapshot/auto/S3A-2A-3A/es_down_connect/s6a3a-p2c1s1-20260305-142816/`
 - expected：
-  - ...
+  - metrics reasons ⊆ {`es_connect`, `es_unreachable`}
+  - reason family ⊆ {`transport`}
 - observed：
-  - ...
+  - metrics delta（reason=es_connect|es_unreachable）：
+    - retry_scheduled: `+9`
+    - failed: `+9`
+    - terminal_failed: `+0`
+  - DB error_reason（outbox_events）：
+    - `es_connect`（family=`transport`）
