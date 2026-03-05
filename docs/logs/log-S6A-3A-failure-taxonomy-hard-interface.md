@@ -5,7 +5,7 @@
 **id**: `S6A-3A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `failure taxonomy hard interface (reason = contract across DB + metrics + verify) v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S6`
 **tags**: `EVOLUTION, Evidence, Drills, FailureContract, ReasonTaxonomy, Metrics, Verification, epic/s6, sub/3a`
 **links**: ``
@@ -109,6 +109,12 @@
 - P1-C1-S1：梳理现有 reason 产出点（DB/metrics），收口到同源 mapping
 - P1-C1-S2：verify 读取 reason 并输出结构化统计（family 优先）
 
+**P1 implementation notes（落实点 / v1）**:
+
+- 同源产出：worker 在同一个异常上生成 `reason`（用于 metrics label）并写入 DB `error_reason`（用于聚合与 verify）。
+- family 断言：drills/verify 通过 `reason_family_v1()` 将 reason 映射到稳定 family，再做 expected vs observed 的机器断言。
+- evidence 口径：每个场景的 `_result.json` 输出 `reason_contract.expected` 与 `reason_contract.observed`（family 优先）。
+
 ### P2（drills：闭环样板）
 
 - P2-C1-S1：选择 1 个 `fault/obs_infra/*` 场景，定义 expected reasons（family）
@@ -123,14 +129,14 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：Reason taxonomy（family 优先）
-- [ ] `P0-C1-S2`：Low-cardinality rules（禁止项）
-- [ ] `P0-C1-S3`：Evidence contract（expected vs observed）
+- [x] `P0-C1-S1`：Reason taxonomy（family 优先）
+- [x] `P0-C1-S2`：Low-cardinality rules（禁止项）
+- [x] `P0-C1-S3`：Evidence contract（expected vs observed）
 
 ### P1（实现）
 
-- [ ] `P1-C1-S1`：reason 同源 mapping
-- [ ] `P1-C1-S2`：verify 输出 reason 统计（family）
+- [x] `P1-C1-S1`：reason 同源 mapping
+- [x] `P1-C1-S2`：verify 输出 reason 统计（family）
 
 ### P2（drills）
 
