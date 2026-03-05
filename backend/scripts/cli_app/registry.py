@@ -54,6 +54,7 @@ def load_builtin_scenarios() -> None:
     from .scenarios import es_429_inject  # noqa: F401
     from .scenarios import es_bulk_partial  # noqa: F401
     from .scenarios import es_down_connect  # noqa: F401
+    from .scenarios import es_timeout  # noqa: F401
     from .scenarios import es_write_block_4xx  # noqa: F401
     from .scenarios import db_claim_contention  # noqa: F401
     from .scenarios import stuck_reclaim  # noqa: F401
