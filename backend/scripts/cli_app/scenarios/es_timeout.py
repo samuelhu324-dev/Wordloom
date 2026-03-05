@@ -137,6 +137,9 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
     env.setdefault("OTEL_TRACES_SAMPLER", "always_on")
     env["OUTBOX_METRICS_PORT"] = str(int(metrics_port))
     env["OUTBOX_REQUIRE_ES_READY"] = "0"
+    # Keep evidence stable: avoid immediate re-claim after a timeout retry is scheduled.
+    env.setdefault("OUTBOX_BASE_BACKOFF_SECONDS", "30")
+    env.setdefault("OUTBOX_MAX_BACKOFF_SECONDS", "30")
 
     blackhole = _BlackholeServer()
     blackhole.start()
@@ -173,6 +176,8 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
         "OTEL_TRACES_SAMPLER",
         "OUTBOX_METRICS_PORT",
         "OUTBOX_REQUIRE_ES_READY",
+        "OUTBOX_BASE_BACKOFF_SECONDS",
+        "OUTBOX_MAX_BACKOFF_SECONDS",
         "ELASTIC_URL",
     ]
 
