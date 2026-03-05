@@ -168,7 +168,7 @@
 
 - [x] `P3-C3-S1`：选择下一个场景扩展 coverage（es_bulk_partial）
 - [x] `P3-C3-S2`：接入共享 helper（reason_contract｜DB-side）
-- [ ] `P3-C3-S3`：产出第 4 份可追溯 evidence（headSha + artifacts）
+- [x] `P3-C3-S3`：产出第 4 份可追溯 evidence（headSha + artifacts）
 
 ## Evidence（预留）
 
@@ -236,3 +236,24 @@
     - terminal_failed: `+0`
   - DB error_reason（outbox_events）：
     - `es_429`（family=`rate_limit`）
+
+### P3-C3-S3（fault/obs_infra/es_bulk_partial｜2026-03-05）
+
+- headSha：`e8852b9c`（S6A-3A/P3-C3-S2: add reason_contract to es_bulk_partial verify）
+- run_id：`s6a3a-p3c3s3-20260305-164610`
+- artifacts：`docs/labs/_snapshot/auto/S3A-2A-3A/es_bulk_partial/s6a3a-p3c3s3-20260305-164610/`
+- expected：
+  - reason family ⊆ {`client`}
+  - metrics:
+    - outbox_es_bulk_requests_total{result="partial"} delta ≥ `1`
+    - outbox_es_bulk_items_total{result="success"} delta ≥ `1`
+    - outbox_es_bulk_items_total{result="failed"} delta ≥ `1`
+    - outbox_es_bulk_item_failures_total{failure_class="4xx"} delta ≥ `1`
+- observed：
+  - metrics delta:
+    - partial requests: `+1`
+    - success items: `+1`
+    - failed items: `+1`
+    - 4xx failed items: `+1`
+  - DB error_reason（outbox_events）：
+    - `es_4xx`（family=`client`）
