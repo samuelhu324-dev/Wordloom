@@ -176,9 +176,10 @@
 - [x] `P3-C3-S2`：接入共享 helper（reason_contract｜DB-side）
 - [x] `P3-C3-S3`：产出第 4 份可追溯 evidence（headSha + artifacts）
 
-- [ ] `P3-C4-S1`：选择下一个 reason family 增量覆盖（upstream）
-- [ ] `P3-C4-S2`：补齐 verify 断言（按注入参数选择 expected family）
-- [ ] `P3-C4-S3`：产出第 5 份可追溯 evidence（headSha + artifacts）
+- [x] `P3-C4-S1`：选择下一个 reason family 增量覆盖（upstream）
+- [x] `P3-C4-S2`：补齐 verify 断言（按注入参数选择 expected family）
+- [x] `P3-C4-S3`：产出第 5 份可追溯 evidence（headSha + artifacts）
+
 
 ## Evidence（预留）
 
@@ -267,3 +268,27 @@
     - 4xx failed items: `+1`
   - DB error_reason（outbox_events）：
     - `es_4xx`（family=`client`）
+
+### P3-C4-S3（fault/obs_infra/es_bulk_partial｜upstream｜2026-03-05）
+
+- headSha：`3cd67e57`（S6A-3A/P3-C4-S2: support upstream class in es_bulk_partial verify）
+- run_id：`s6a3a-p3c4s3-20260305-194144`
+- artifacts：`docs/labs/_snapshot/auto/S3A-2A-3A/es_bulk_partial/s6a3a-p3c4s3-20260305-194144/`
+- key knobs:
+  - inject partial_status: `503`
+  - duration_s: `6`（确保留下 pending + error_reason 证据）
+- expected：
+  - reason family ⊆ {`upstream`}
+  - metrics:
+    - outbox_es_bulk_requests_total{result="partial"} delta ≥ `1`
+    - outbox_es_bulk_items_total{result="success"} delta ≥ `1`
+    - outbox_es_bulk_items_total{result="failed"} delta ≥ `1`
+    - outbox_es_bulk_item_failures_total{failure_class="5xx"} delta ≥ `1`
+- observed：
+  - metrics delta:
+    - partial requests: `+1`
+    - success items: `+1`
+    - failed items: `+1`
+    - 5xx failed items: `+1`
+  - DB error_reason（outbox_events）：
+    - `es_5xx`（family=`upstream`）
