@@ -13,6 +13,7 @@ from ._failure_drill_shared import (
     ensure_dir,
     es_create_index_if_missing,
     es_set_index_write_block,
+    eval_db_reason_contract_v1,
     load_env,
     load_env_from_run_recipe_v1,
     prom_parse_counter_sum,
@@ -266,6 +267,9 @@ def verify_es_write_block_4xx(inputs: DrillInputs) -> DrillResult:
 
     supply = read_json_file(run_dir / "_supply.json")
     supply_db_check = None
+    db_reason_check = None
+    db_reason_values: list[str] = []
+    db_reason_families: list[str] = []
     if supply is not None:
         env = load_env_from_run_recipe_v1(run_dir=run_dir)
         db_url = str(env.get("DATABASE_URL") or "").strip()
@@ -274,12 +278,33 @@ def verify_es_write_block_4xx(inputs: DrillInputs) -> DrillResult:
             if not bool(supply_db_check.get("skipped")):
                 ok = bool(ok) and bool(supply_db_check.get("ok"))
 
+            contract_ok, db_reason_check, db_reason_values, db_reason_families = eval_db_reason_contract_v1(
+                database_url=db_url,
+                supply=supply,
+                expected_reason_families=["client"],
+                expected_db_reasons=["es_4xx"],
+                require_db_reasons=True,
+            )
+            if contract_ok is not None:
+                ok = bool(ok) and bool(contract_ok)
+
     result = {
         "scenario": SCENARIO_ES_WRITE_BLOCK_4XX,
         "run_dir": str(run_dir),
         "worker": worker_start,
         "supply": supply,
         "supply_db_check": supply_db_check,
+        "reason_contract": {
+            "expected": {
+                "metrics_reasons": ["es_4xx"],
+                "reason_families": ["client"],
+            },
+            "observed": {
+                "db_reasons": db_reason_values,
+                "db_reason_families": db_reason_families,
+            },
+            "db_reason_check": db_reason_check,
+        },
         "checks": {
             "failed_delta_ge": float(min_failed_delta),
             "retry_delta_le": float(max_retry_delta),

@@ -17,7 +17,7 @@ Optional env vars:
   OUTBOX_PAYLOAD_JSON (default: {})
     OUTBOX_CREATE_SEARCH_INDEX_ROW (default: 0)  # if 1, upsert a matching row into `search_index`
     OUTBOX_SEARCH_INDEX_TEXT (default: labs-009 <outbox_event_id>)
-    OUTBOX_LIBRARY_ID (optional UUID)
+        OUTBOX_LIBRARY_ID (optional UUID)  # if unified outbox has library_id column, also set it there
 """
 
 from __future__ import annotations
@@ -206,6 +206,13 @@ def main() -> None:
         raw_event_version = (os.environ.get("OUTBOX_EVENT_VERSION") or "").strip()
         ids: list[str] = []
 
+        lib_id_val = None
+        if library_id_raw:
+            try:
+                lib_id_val = uuid.UUID(library_id_raw)
+            except Exception as exc:  # noqa: BLE001
+                raise SystemExit(f"Invalid OUTBOX_LIBRARY_ID={library_id_raw!r}") from exc
+
         for _i in range(insert_count):
             outbox_event_uuid = uuid.uuid4()
             outbox_event_id = str(outbox_event_uuid)
@@ -256,18 +263,14 @@ def main() -> None:
                 "tracestate": tracestate,
             }
 
+            if lib_id_val is not None and "library_id" in col_types:
+                values["library_id"] = lib_id_val if col_types["library_id"] == "uuid" else str(lib_id_val)
+
             # If inserting into unified outbox, ensure required projection is present.
             if table_name != "outbox_events":
                 values.pop("projection", None)
 
             if create_search_index_row:
-                lib_id_val = None
-                if library_id_raw:
-                    try:
-                        lib_id_val = uuid.UUID(library_id_raw)
-                    except Exception as exc:  # noqa: BLE001
-                        raise SystemExit(f"Invalid OUTBOX_LIBRARY_ID={library_id_raw!r}") from exc
-
                 text_val = search_index_text or f"labs-009 {outbox_event_id}"
                 search_values: dict[str, object] = {
                     "entity_type": entity_type,

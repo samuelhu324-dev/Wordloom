@@ -380,6 +380,17 @@ def build_parser(*, callbacks: dict[str, Callback]) -> argparse.ArgumentParser:
     a_run.add_argument("--op", default="delete", choices=["upsert", "delete"], help="Outbox op to trigger")
     a_run.set_defaults(func=cb("_cmd_labs_run_es_down_connect"))
 
+    t_run = run_sub.add_parser("es_timeout", help="ExpT: ES blackhole -> HTTPX timeout -> retry/backoff")
+    t_run.add_argument("--env-file", default=".env.test", help="Env file to load (repo-root relative by default)")
+    t_run.add_argument("--service", default="wordloom-search-outbox-worker")
+    t_run.add_argument("--duration", type=int, default=14)
+    t_run.add_argument("--metrics-port", type=int, default=9109)
+    t_run.add_argument("--scrape-delay", type=float, default=2.0)
+    t_run.add_argument("--run-id")
+    t_run.add_argument("--outdir")
+    t_run.add_argument("--op", default="upsert", choices=["upsert", "delete"], help="Outbox op to trigger")
+    t_run.set_defaults(func=cb("_cmd_labs_run_es_timeout"))
+
     cd_run = run_sub.add_parser("collector_down", help="P1: stop Jaeger collector/query while worker runs")
     cd_run.add_argument("--env-file", default=".env.test", help="Env file to load (repo-root relative by default)")
     cd_run.add_argument("--service", default="wordloom-search-outbox-worker")
@@ -499,6 +510,14 @@ def build_parser(*, callbacks: dict[str, Callback]) -> argparse.ArgumentParser:
     a_verify.add_argument("--min-failed-delta", type=float, default=1.0)
     a_verify.add_argument("--max-terminal-delta", type=float, default=0.0)
     a_verify.set_defaults(func=cb("_cmd_labs_verify_es_down_connect"))
+
+    t_verify = verify_sub.add_parser("es_timeout", help="Verify ExpT run")
+    t_verify.add_argument("--run-id")
+    t_verify.add_argument("--outdir")
+    t_verify.add_argument("--min-retry-delta", type=float, default=1.0)
+    t_verify.add_argument("--min-failed-delta", type=float, default=1.0)
+    t_verify.add_argument("--max-terminal-delta", type=float, default=0.0)
+    t_verify.set_defaults(func=cb("_cmd_labs_verify_es_timeout"))
 
     cd_verify = verify_sub.add_parser("collector_down", help="Verify P1 collector_down run")
     cd_verify.add_argument("--run-id")
@@ -659,6 +678,15 @@ def build_parser(*, callbacks: dict[str, Callback]) -> argparse.ArgumentParser:
     a_clean.add_argument("--outdir")
     a_clean.add_argument("--keep-last", type=int, default=None)
     a_clean.set_defaults(func=cb("_cmd_labs_clean_es_down_connect"))
+
+    t_clean = clean_sub.add_parser(
+        "es_timeout",
+        help="Noop cleanup + optional snapshot pruning",
+        parents=[clean_common],
+    )
+    t_clean.add_argument("--outdir")
+    t_clean.add_argument("--keep-last", type=int, default=None)
+    t_clean.set_defaults(func=cb("_cmd_labs_clean_es_timeout"))
 
     cd_clean = clean_sub.add_parser(
         "collector_down",

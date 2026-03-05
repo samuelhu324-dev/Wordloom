@@ -717,6 +717,169 @@ def verify_supply_rows_v1(*, database_url: str, supply: dict[str, object]) -> di
             pass
 
 
+def fetch_supply_error_reasons_v1(*, database_url: str, supply: dict[str, object]) -> dict[str, object]:
+    """Fetch DB-side status/attempts/error_reason for supplied outbox ids.
+
+    Returns a small evidence object; does not raise on DB failures.
+    """
+
+    try:
+        from sqlalchemy import bindparam, create_engine, text
+    except Exception as exc:  # pragma: no cover
+        return {"ok": False, "error": f"sqlalchemy_import_failed: {type(exc).__name__}: {exc}"}
+
+    target_table = str(supply.get("target_table") or "").strip() or None
+    projection = str(supply.get("projection") or "").strip() or None
+    ids_raw = supply.get("outbox_event_ids")
+    if isinstance(ids_raw, list):
+        ids = [str(x).strip() for x in ids_raw if str(x).strip()]
+    else:
+        one = str(supply.get("outbox_event_id") or "").strip()
+        ids = [one] if one else []
+
+    if not database_url:
+        return {"ok": False, "skipped": True, "reason": "missing_database_url"}
+    if not target_table:
+        return {"ok": False, "skipped": True, "reason": "missing_target_table"}
+    if not ids:
+        return {"ok": False, "skipped": True, "reason": "missing_outbox_event_ids"}
+
+    allowed_tables = {"outbox_events", "search_outbox_events"}
+    if target_table not in allowed_tables:
+        return {"ok": False, "skipped": True, "reason": f"unsupported_target_table:{target_table}"}
+
+    engine = create_engine(str(database_url))
+    try:
+        with engine.connect() as conn:
+            if target_table == "outbox_events":
+                if not projection:
+                    return {"ok": False, "skipped": True, "reason": "missing_projection_for_outbox_events"}
+                stmt = text(
+                    "SELECT id::text AS id, status, attempts, error_reason "
+                    "FROM outbox_events "
+                    "WHERE projection = :projection AND id::text IN :ids"
+                ).bindparams(bindparam("ids", expanding=True))
+                rows = list(conn.execute(stmt, {"projection": projection, "ids": list(ids)}).mappings().fetchall())
+            else:
+                stmt = text(
+                    "SELECT id::text AS id, status, attempts, error_reason "
+                    "FROM search_outbox_events "
+                    "WHERE id::text IN :ids"
+                ).bindparams(bindparam("ids", expanding=True))
+                rows = list(conn.execute(stmt, {"ids": list(ids)}).mappings().fetchall())
+
+        found = {str(r.get("id")) for r in rows if r.get("id")}
+        missing = [x for x in ids if x not in found]
+        items = [
+            {
+                "id": str(r.get("id")),
+                "status": str(r.get("status")) if r.get("status") is not None else None,
+                "attempts": int(r.get("attempts")) if r.get("attempts") is not None else None,
+                "error_reason": str(r.get("error_reason")) if r.get("error_reason") else None,
+            }
+            for r in rows
+        ]
+        return {
+            "ok": bool(len(missing) == 0),
+            "target_table": target_table,
+            "projection": projection,
+            "expected": int(len(ids)),
+            "found": int(len(found)),
+            "missing": missing,
+            "rows": items,
+        }
+    except Exception as exc:
+        return {"ok": False, "error": f"db_fetch_failed: {type(exc).__name__}: {exc}", "target_table": target_table}
+    finally:
+        try:
+            engine.dispose()
+        except Exception:
+            pass
+
+
+def reason_family_v1(reason: str | None) -> str | None:
+    """Map low-cardinality reasons to stable families for verify assertions."""
+
+    if not reason:
+        return None
+
+    r = str(reason).strip()
+    if not r:
+        return None
+
+    if r == "es_429":
+        return "rate_limit"
+    if r in {"es_timeout"}:
+        return "timeout"
+    if r in {"es_connect", "es_unreachable", "es_request_error"}:
+        return "transport"
+    if r in {"es_5xx", "es_unknown", "es_other"}:
+        return "upstream"
+    if r in {"es_4xx"}:
+        return "client"
+    if r in {"deterministic_exception"}:
+        return "deterministic"
+    if r in {"unknown_exception"}:
+        return "unknown"
+
+    # Default: keep unknown bucket stable.
+    return "unknown"
+
+
+def eval_db_reason_contract_v1(
+    *,
+    database_url: str | None,
+    supply: dict[str, object] | None,
+    expected_reason_families: list[str],
+    expected_db_reasons: list[str] | None = None,
+    require_db_reasons: bool = True,
+) -> tuple[bool | None, dict[str, object] | None, list[str], list[str]]:
+    """Evaluate DB-side reason contract for a supplied outbox event.
+
+    Returns:
+      - contract_ok: True/False when evaluated, None when skipped
+      - db_reason_check: evidence from fetch_supply_error_reasons_v1 (or None)
+      - db_reason_values: unique sorted DB reasons
+      - db_reason_families: unique sorted mapped families
+    """
+
+    if supply is None:
+        return None, None, [], []
+
+    db_url = str(database_url or "").strip()
+    if not db_url:
+        return None, None, [], []
+
+    db_reason_check = fetch_supply_error_reasons_v1(database_url=db_url, supply=supply)
+    if bool(db_reason_check.get("skipped")):
+        return None, db_reason_check, [], []
+
+    rows = db_reason_check.get("rows")
+    values: list[str] = []
+    if isinstance(rows, list):
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            raw = row.get("error_reason")
+            if raw:
+                val = str(raw).strip()
+                if val:
+                    values.append(val)
+
+    db_reason_values = sorted(set(values))
+    fams = [reason_family_v1(r) for r in db_reason_values]
+    db_reason_families = sorted({f for f in fams if f})
+
+    contract_ok = bool(db_reason_check.get("ok"))
+    if require_db_reasons:
+        contract_ok = bool(contract_ok) and bool(db_reason_values)
+    if expected_db_reasons is not None:
+        contract_ok = bool(contract_ok) and all((r in expected_db_reasons) for r in db_reason_values)
+    contract_ok = bool(contract_ok) and all((f in expected_reason_families) for f in db_reason_families)
+
+    return bool(contract_ok), db_reason_check, db_reason_values, db_reason_families
+
+
 def docker_compose(*, args: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
     cmd = ["docker", "compose"] + args
     print("[scripts] run:", " ".join(cmd))
