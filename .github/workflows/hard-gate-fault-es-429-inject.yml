@@ -1,0 +1,40 @@
+name: hard-gate-fault-es-429-inject
+
+on:
+  pull_request:
+    paths:
+      - backend/**
+      - docs/labs/scenarios/catalog.yml
+      - .github/workflows/*.yml
+      - docker-compose*.yml
+      - docker/**
+  push:
+    branches:
+      - main
+    paths:
+      - backend/**
+      - docs/labs/scenarios/catalog.yml
+      - .github/workflows/*.yml
+      - docker-compose*.yml
+      - docker/**
+  workflow_dispatch: {}
+
+concurrency:
+  group: hard-gate-fault-es-429-inject-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    strategy:
+      fail-fast: false
+      matrix:
+        repeat: ["r1", "r2", "r3"]
+    uses: ./.github/workflows/reusable-labs-scenario-runner.yml
+    with:
+      scenario_id: fault/obs_infra/es_429_inject
+      run_id_suffix: ${{ matrix.repeat }}
+      require_min_artifacts: true
+      env_file: .env.test
+      duration: "25"
+      lookback: "30m"
+      keep_last: "10"
