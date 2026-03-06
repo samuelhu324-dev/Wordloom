@@ -212,17 +212,17 @@
 ### P1-C1-S2（最小自解释 artifacts contract｜fault/obs_infra/es_timeout｜2026-03-06）
 
 - PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/170`
-- headSha：`371dcb48679f54bf9d3cdd4dcd5faeb84e322bcf`
-- CI run（hard-gate-fault-es-timeout）：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22746962170`
+- headSha：`811fbb9f72ecdef49457d2c526d2a164769c36b6`
+- CI run（hard-gate-fault-es-timeout）：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22747070965`
 - workflow contract：
   - runner 新增可选 gate：`require_min_artifacts=true` 时要求：
     - `snapshot_dir/_recipe.json` 存在且非空
     - `snapshot_dir/_logs/*` 至少 1 个非空文件
     - `snapshot_dir/_metrics/*` 至少 1 个非空文件
 - artifacts：
-  - `labs-evidence-fault_obs_infra_es_timeout-22746962170-1-fault_obs_infra_es_timeout-r1`
-  - `labs-evidence-fault_obs_infra_es_timeout-22746962170-1-fault_obs_infra_es_timeout-r2`
-  - `labs-evidence-fault_obs_infra_es_timeout-22746962170-1-fault_obs_infra_es_timeout-r3`
+  - `labs-evidence-fault_obs_infra_es_timeout-22747070965-1-fault_obs_infra_es_timeout-r1`
+  - `labs-evidence-fault_obs_infra_es_timeout-22747070965-1-fault_obs_infra_es_timeout-r2`
+  - `labs-evidence-fault_obs_infra_es_timeout-22747070965-1-fault_obs_infra_es_timeout-r3`
 - 抽样核对（r1）：
   - `_recipe.json` 非空（length=493）
   - `_logs/` 下 `run-*.log` 与 `worker-*.log` 均非空
