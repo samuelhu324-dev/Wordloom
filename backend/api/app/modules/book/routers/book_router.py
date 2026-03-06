@@ -536,8 +536,8 @@ async def get_book(
                     resource_type="book",
                     resource_id=book_id,
                     result="not_found",
+                    reason="not_member",
                     meta_json={
-                        "reason": "not_member",
                         "library_id": str(ctx.tenant_id),
                     },
                 )
@@ -568,8 +568,8 @@ async def get_book(
                     resource_type="book",
                     resource_id=book_id,
                     result="not_found",
+                    reason="tenant_mismatch",
                     meta_json={
-                        "reason": "tenant_mismatch",
                         "library_id": str(ctx.tenant_id),
                     },
                 )
