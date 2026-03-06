@@ -166,7 +166,7 @@
 - [x] `P2-C2-S1`：最小矩阵：同一场景连续跑 3 次（r1/r2/r3）且全部 PASS
 - [x] `P2-C3-S1`：新增第二个 hard-gate 场景（`fault/obs_infra/es_down_connect`）并完成矩阵证据
 - [x] `P2-C4-S1`：新增第三个 hard-gate 场景（`fault/obs_infra/es_429_inject`）并完成矩阵证据
-- [ ] `P2-C5-S1`：新增第四个 hard-gate 场景（`fault/obs_infra/db_claim_contention`）并完成矩阵证据
+- [x] `P2-C5-S1`：新增第四个 hard-gate 场景（`fault/obs_infra/db_claim_contention`）并完成矩阵证据
 
 ### P3（Guardrails）
 
@@ -285,6 +285,32 @@
     - `_metrics/metrics-before.txt` 非空（length=12483）
     - `_metrics/metrics-after.txt` 非空（length=12892）
 
+### P2-C5-S1（CI hard-gate matrix｜fault/obs_infra/db_claim_contention｜2026-03-06）
+
+- workflow：`.github/workflows/hard-gate-fault-db-claim-contention.yml`
+- scenario_id：`fault/obs_infra/db_claim_contention`（catalog-driven）
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/170`
+- headSha：`4ca6c70577128299c681f13cd5042d45ba5cdfb3`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22749626872`
+- artifacts：
+  - `labs-evidence-fault_obs_infra_db_claim_contention-22749626872-1-fault_obs_infra_db_claim_contention-r1`
+  - `labs-evidence-fault_obs_infra_db_claim_contention-22749626872-1-fault_obs_infra_db_claim_contention-r2`
+  - `labs-evidence-fault_obs_infra_db_claim_contention-22749626872-1-fault_obs_infra_db_claim_contention-r3`
+- 期望（expected）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - `require_min_artifacts=true` 下 `_recipe/_logs/_metrics` 均满足“存在且非空”
+
+- 观测（observed）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - 抽样核对（r2）：
+    - `_result.json` 非空（length=3846）
+    - `_recipe.json` 非空（length=552）
+    - `_logs/run-*.log` 非空（length=269）
+    - `_logs/worker1-*.log` 非空（length=181688）
+    - `_logs/worker2-*.log` 非空（length=181919）
+    - `_metrics/metrics-before-1.txt` 非空（length=12469）
+    - `_metrics/metrics-after-1.txt` 非空（length=12830）
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-05：创建本 log，开始将 drills 推进为 CI hard-gate（evidence JSON + 自解释 artifacts）。
@@ -292,3 +318,4 @@
 - 2026-03-06：完成 `P1-C1-S2`：runner 增加可选最小 artifacts contract（`_recipe.json + _logs + _metrics`），并在 `hard-gate-fault-es-timeout` 开启（`require_min_artifacts=true`）；`es_timeout.run` 也补齐异常路径占位输出，确保失败时仍可自解释。
 - 2026-03-06：新增第二个 hard-gate：`fault/obs_infra/es_down_connect`（r1/r2/r3 矩阵 + `require_min_artifacts=true`），并补齐 `es_down_connect.run` 的最小落盘占位输出。
 - 2026-03-06：新增第三个 hard-gate：`fault/obs_infra/es_429_inject`（r1/r2/r3 矩阵 + `require_min_artifacts=true`），并补齐 `es_429_inject.run` 的最小落盘占位输出。
+- 2026-03-06：新增第四个 hard-gate：`fault/obs_infra/db_claim_contention`（r1/r2/r3 矩阵 + `require_min_artifacts=true`），并修复 verify 中的 keyword-only 参数调用，确保 `_result.json.ok=true` 可被 CI 判定。
