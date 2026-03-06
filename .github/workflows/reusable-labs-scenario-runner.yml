@@ -302,8 +302,11 @@ jobs:
           set +a
 
           scenario="${{ inputs.scenario_id }}"
-          run_id="${{ github.run_id }}-${{ github.run_attempt }}-${scenario}"
+          safe_scenario="${scenario//\//_}"
+          run_id="${{ github.run_id }}-${{ github.run_attempt }}-${safe_scenario}"
           echo "=== scenario=${scenario} run_id=${run_id} ==="
+
+          echo "RUN_ID=$run_id" >> "$GITHUB_ENV"
 
           export ENV_FILE="$env_file"
           export DURATION="${{ inputs.duration }}"
@@ -312,6 +315,61 @@ jobs:
           export RUN_ID="$run_id"
 
           bash ./.tmp/scenario-cli.sh
+
+      - name: Contract check (_result.json)
+        if: always()
+        run: |
+          set -euo pipefail
+
+          run_id="${RUN_ID:-}"
+          if [ -z "$run_id" ]; then
+            echo "RUN_ID not set; cannot locate _result.json" >&2
+            exit 2
+          fi
+
+          mapfile -t matches < <(find docs/labs/_snapshot/auto -type f -path "*/${run_id}/_result.json" | sort)
+          if [ "${#matches[@]}" -eq 0 ]; then
+            echo "missing _result.json for run_id=${run_id}" >&2
+            exit 2
+          fi
+          if [ "${#matches[@]}" -ne 1 ]; then
+            echo "ambiguous _result.json matches for run_id=${run_id}:" >&2
+            printf ' - %s\n' "${matches[@]}" >&2
+            exit 2
+          fi
+
+          result_path="${matches[0]}"
+          echo "Found _result.json: ${result_path}"
+
+          python - <<'PY' "$result_path"
+          from __future__ import annotations
+
+          import json
+          import sys
+          from pathlib import Path
+
+          path = Path(sys.argv[1])
+          try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+          except Exception as exc:  # noqa: BLE001
+            print(f"failed to parse _result.json: {path} ({exc})", file=sys.stderr)
+            raise SystemExit(2)
+
+          ok = data.get("ok")
+          scenario = data.get("scenario")
+          run_dir = data.get("run_dir")
+          print(f"scenario={scenario} ok={ok} run_dir={run_dir}")
+
+          if ok is not True:
+            checks = data.get("checks")
+            observed = data.get("observed")
+            reason_contract = data.get("reason_contract")
+            print("_result.json.ok is not true; failing CI", file=sys.stderr)
+            print(f"checks={checks}", file=sys.stderr)
+            print(f"observed={observed}", file=sys.stderr)
+            print(f"reason_contract={reason_contract}", file=sys.stderr)
+            raise SystemExit(1)
+          PY
 
       - name: Force failure (manual test)
         if: ${{ inputs.force_failure }}

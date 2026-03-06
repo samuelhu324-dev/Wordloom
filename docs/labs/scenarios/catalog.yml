@@ -594,7 +594,7 @@ scenarios:
       worker: true
     defaults:
       env_file: .env.test
-      duration_seconds: 12
+      duration_seconds: 25
       lookback: 30m
       keep_last: 10
     tags:

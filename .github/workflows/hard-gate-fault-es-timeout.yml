@@ -29,6 +29,6 @@ jobs:
     with:
       scenario_id: fault/obs_infra/es_timeout
       env_file: .env.test
-      duration: "12"
+      duration: "25"
       lookback: "30m"
       keep_last: "10"

@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Evidence, Drills, Artifacts, CI, HardGate, FailureContract, epic/s6, sub/4a`
 **links**: ``
   **issue**: ``
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/169`
   **adr**: ``
   **runbook**: ``
   **parent_log**: `docs/logs/log-S6A-evidence-drills-spine.md`
@@ -19,7 +19,7 @@
   **reference_log_2**: `docs/logs/log-S0C-4A-1A-catalog-driven-suites-&-guardrails.md`
   **reference_log_3**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
 **created**: `2026-03-05`
-**updated**: `2026-03-05`
+**updated**: `2026-03-06`
 
 ---
 
@@ -126,6 +126,7 @@
 
 - P2-C1-S1：新增/调整 workflow：run → verify → upload artifacts（按 scenario 组织目录）
 - P2-C1-S2：将 `_result.json.ok=false` 或 verify 非零退出码视为 workflow failure
+- P2-C1-S3：首次 CI run 记账：补齐 `headSha + CI run URL + artifacts` 到本 log 的 Evidence
 - P2-C2-S1：为 gate 的场景建立最小运行矩阵（避免 flake，确保 determinism）
 
 ### P3（Guardrails）
@@ -154,6 +155,7 @@
 
 - [x] `P2-C1-S1`：workflow：run + verify + upload artifacts
 - [x] `P2-C1-S2`：workflow gate：verify 失败直接失败（阻断）
+- [ ] `P2-C1-S3`：首次 CI run 记账：补齐 `headSha + CI run URL + artifacts` 到 Evidence
 
 ### P3（Guardrails）
 
@@ -178,10 +180,13 @@
 
 - workflow：`.github/workflows/hard-gate-fault-es-timeout.yml`
 - scenario_id：`fault/obs_infra/es_timeout`（catalog-driven）
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/169`
 - artifacts：GitHub Actions 上传 `docs/labs/_snapshot/auto/`（包含 `_result.json` 等）
 - 期望（expected）：
   - `labs verify es_timeout` exit code = `0`
   - `_result.json.ok=true`
+
+> 注：当前 workflow 还未合入 `main`，因此尚无法在 GitHub Actions 侧拿到该 workflow 的 CI run URL / artifacts；合入后补齐此 Evidence，并勾选 `P2-C1-S3`。
 
 ## Recent changes（for traceability，可选）
 
