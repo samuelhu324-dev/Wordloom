@@ -86,15 +86,24 @@
 
 ### P0-C1-S1（Authorization contract：deny semantics + reason taxonomy）
 
-- 未认证：401。
-- tenant 越界：
-  - 默认对读操作返回 404（避免泄露存在性）；但必须：
-    - audit 记录 `result=not_found` 或 `denied`（二选一，全局一致）
-    - reason=`tenant_mismatch`（低基数）
-- role 不足（member 执行 admin 动作）：403，reason=`not_admin`。
-- 无 membership：
-  - 对读操作默认 404（或 403，但必须全局一致）；
-  - 对写/admin 默认 403，reason=`not_member`。
+- 未认证：401（不写 audit，除非未来需要专门的 authn audit）。
+
+**Deny semantics（v1 固定选择）**
+
+- 跨 tenant（`auth.tenant_id != request.library_id` 或等价判定）：
+  - read：404（避免泄露存在性），audit：`result=not_found`，reason=`tenant_mismatch`
+  - write/admin：403，audit：`result=denied`，reason=`tenant_mismatch`
+
+- 同 tenant 但无 membership：
+  - read：404，audit：`result=not_found`，reason=`not_member`
+  - write/admin：403，audit：`result=denied`，reason=`not_member`
+
+- 同 tenant 且为 member 但非 admin（admin 动作）：403，audit：`result=denied`，reason=`not_admin`
+
+**Drills guardrail（避免 404 歧义）**
+
+- drills 中所有验证 404 的用例必须确保资源真实存在；否则“资源不存在”与“授权拒绝”不可区分。
+- v1 drills 里：404 只用于验证 **授权拒绝的 404**（tenant/membership），不覆盖“自然缺失资源”的 404。
 
 ### P0-C1-S2（Audit contract：action/result/reason 字段口径）
 
@@ -152,7 +161,7 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：deny semantics + reason taxonomy 固化
+- [x] `P0-C1-S1`：deny semantics + reason taxonomy 固化
 - [ ] `P0-C1-S2`：audit action/result/reason 口径固化
 - [ ] `P0-C1-S3`：evidence JSON schema 固化
 
