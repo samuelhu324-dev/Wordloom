@@ -261,7 +261,7 @@
 
 ### P1（实现）
 
-- [ ] `P1-C1-S1`：drills runner 产出 `_result.json` + logs/metrics
+- [x] `P1-C1-S1`：drills runner 产出 `_result.json` + logs/metrics
 - [ ] `P1-C1-S2`：artifacts contract 检查（非空 + PASS/FAIL）
 
 ### P2（drill/verify）
@@ -276,6 +276,9 @@
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
+
+- 代码落地点（P1）：
+  - drills runner：`scripts/drills/s5b1a_p1c1s1_drills_runner.py`
 
 ### P2-C1-S1（tenant escape read drill｜YYYY-MM-DD）
 
