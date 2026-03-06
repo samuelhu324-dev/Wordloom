@@ -155,12 +155,12 @@
 
 - [x] `P2-C1-S1`：workflow：run + verify + upload artifacts
 - [x] `P2-C1-S2`：workflow gate：verify 失败直接失败（阻断）
-- [ ] `P2-C1-S3`：首次 CI run 记账：补齐 `headSha + CI run URL + artifacts` 到 Evidence
+- [x] `P2-C1-S3`：首次 CI run 记账：补齐 `headSha + CI run URL + artifacts` 到 Evidence
 
 ### P3（Guardrails）
 
-- [ ] `P3-C1-S1`：contract check：缺 `_result.json` 直接 FAIL
-- [ ] `P3-C1-S2`：可追溯性：headSha + run_id + artifacts path 落 log
+- [x] `P3-C1-S1`：contract check：缺 `_result.json` 或 `_result.json.ok!=true` 直接 FAIL
+- [x] `P3-C1-S2`：可追溯性：headSha + run_id + artifacts path 落 log
 
 ## Evidence（预留）
 
@@ -181,12 +181,18 @@
 - workflow：`.github/workflows/hard-gate-fault-es-timeout.yml`
 - scenario_id：`fault/obs_infra/es_timeout`（catalog-driven）
 - PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/169`
-- artifacts：GitHub Actions 上传 `docs/labs/_snapshot/auto/`（包含 `_result.json` 等）
+- headSha：`df56af5ac10ce9b64c01086f6b08178e7f2fdc1a`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22743038743`
+- artifacts：`labs-evidence-fault_obs_infra_es_timeout-22743038743-1`（包含 `docs/labs/_snapshot/auto/` 下的 `_result.json` 等）
 - 期望（expected）：
   - `labs verify es_timeout` exit code = `0`
   - `_result.json.ok=true`
 
-> 注：当前 workflow 还未合入 `main`，因此尚无法在 GitHub Actions 侧拿到该 workflow 的 CI run URL / artifacts；合入后补齐此 Evidence，并勾选 `P2-C1-S3`。
+- 观测（observed）：
+  - `_result.json.ok=true`
+  - `outbox_retry_scheduled_total{reason="es_timeout"}` delta = `1`
+  - `outbox_failed_total{reason="es_timeout"}` delta = `1`
+  - DB `outbox_events.error_reason=es_timeout` 且 family=`timeout`
 
 ## Recent changes（for traceability，可选）
 
