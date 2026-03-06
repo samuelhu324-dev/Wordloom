@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Evidence, Drills, Artifacts, CI, HardGate, FailureContract, epic/s6, sub/4a`
 **links**: ``
   **issue**: ``
-  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/169`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/170`
   **adr**: ``
   **runbook**: ``
   **parent_log**: `docs/logs/log-S6A-evidence-drills-spine.md`
@@ -156,6 +156,7 @@
 - [x] `P2-C1-S1`：workflow：run + verify + upload artifacts
 - [x] `P2-C1-S2`：workflow gate：verify 失败直接失败（阻断）
 - [x] `P2-C1-S3`：首次 CI run 记账：补齐 `headSha + CI run URL + artifacts` 到 Evidence
+- [x] `P2-C2-S1`：最小矩阵：同一场景连续跑 3 次（r1/r2/r3）且全部 PASS
 
 ### P3（Guardrails）
 
@@ -193,6 +194,20 @@
   - `outbox_retry_scheduled_total{reason="es_timeout"}` delta = `1`
   - `outbox_failed_total{reason="es_timeout"}` delta = `1`
   - DB `outbox_events.error_reason=es_timeout` 且 family=`timeout`
+
+### P2-C2-S1（CI hard-gate matrix｜fault/obs_infra/es_timeout｜2026-03-06）
+
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/170`
+- headSha：`69baa94a7b51ffc867c6abf04bbd0ff14b544c06`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22746408022`
+- artifacts：
+  - `labs-evidence-fault_obs_infra_es_timeout-22746408022-1-fault_obs_infra_es_timeout-r1`
+  - `labs-evidence-fault_obs_infra_es_timeout-22746408022-1-fault_obs_infra_es_timeout-r2`
+  - `labs-evidence-fault_obs_infra_es_timeout-22746408022-1-fault_obs_infra_es_timeout-r3`
+- 期望（expected）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+- 观测（observed）：
+  - r1/r2/r3 的 `_result.json.ok=true`
 
 ## Recent changes（for traceability，可选）
 
