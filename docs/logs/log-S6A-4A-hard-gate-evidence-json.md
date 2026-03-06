@@ -148,7 +148,7 @@
 
 ### P1（输出统一）
 
-- [ ] `P1-C1-S1`：覆盖检查：所有 gate 场景都产出 `_result.json`
+- [x] `P1-C1-S1`：覆盖检查：所有 `fault/obs_infra/*` 真实场景 verify 都产出 `_result.json`
 - [ ] `P1-C1-S2`：失败自解释：最小 logs/metrics/recipe 落盘
 
 ### P2（CI hard-gate）
@@ -212,3 +212,4 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-03-05：创建本 log，开始将 drills 推进为 CI hard-gate（evidence JSON + 自解释 artifacts）。
+- 2026-03-06：`P1-C1-S1` 审计完成：除 `fault/obs_infra/all`（meta:matrix_all，无 CLI）外，其余场景（`collector_down / db_claim_contention / duplicate_delivery / es_429_inject / es_bulk_partial / es_down_connect / es_timeout / es_write_block_4xx / projection_version / stuck_reclaim`）的 `*.verify` 均会落盘 `snapshot_dir/_result.json`。
