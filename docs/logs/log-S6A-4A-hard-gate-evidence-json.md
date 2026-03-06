@@ -5,12 +5,12 @@
 **id**: `S6A-4A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `fault suite hard-gate + evidence JSON (CI self-explaining artifacts) v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S6`
 **tags**: `EVOLUTION, Evidence, Drills, Artifacts, CI, HardGate, FailureContract, epic/s6, sub/4a`
 **links**: ``
   **issue**: ``
-  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/170`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/171`
   **adr**: ``
   **runbook**: ``
   **parent_log**: `docs/logs/log-S6A-evidence-drills-spine.md`
@@ -188,6 +188,12 @@
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
+
+### P4-C1-S1（P4 closure｜PR checks green｜2026-03-06）
+
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/171`
+- headSha（PR head）：`d3f295e1019718dc1911b77ec4fc37a82a053dc3`
+- checks：`31 successful, 0 failing, 0 pending`
 
 ### P2-C1-S2（CI hard-gate｜<scenario>｜YYYY-MM-DD）
 
