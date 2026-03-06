@@ -33,6 +33,7 @@ jobs:
     with:
       scenario_id: fault/obs_infra/es_timeout
       run_id_suffix: ${{ matrix.repeat }}
+      require_min_artifacts: true
       env_file: .env.test
       duration: "25"
       lookback: "30m"

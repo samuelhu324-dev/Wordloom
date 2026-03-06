@@ -17,6 +17,11 @@ on:
         required: false
         type: boolean
         default: false
+      require_min_artifacts:
+        description: "When true, enforce minimal self-explaining artifacts: _recipe.json + non-empty _logs/* + non-empty _metrics/*"
+        required: false
+        type: boolean
+        default: false
       env_file:
         description: "Env file path"
         required: true
@@ -350,6 +355,37 @@ jobs:
 
           result_path="${matches[0]}"
           echo "Found _result.json: ${result_path}"
+
+          run_dir="$(dirname "$result_path")"
+          echo "Run dir: ${run_dir}"
+
+          if [ "${{ inputs.require_min_artifacts }}" = "true" ]; then
+            recipe_path="${run_dir}/_recipe.json"
+            if [ ! -s "$recipe_path" ]; then
+              echo "missing/empty _recipe.json: $recipe_path" >&2
+              exit 2
+            fi
+
+            logs_dir="${run_dir}/_logs"
+            if [ ! -d "$logs_dir" ]; then
+              echo "missing _logs dir: $logs_dir" >&2
+              exit 2
+            fi
+            if ! find "$logs_dir" -type f -size +0c | head -n 1 | grep -q .; then
+              echo "no non-empty log files under: $logs_dir" >&2
+              exit 2
+            fi
+
+            metrics_dir="${run_dir}/_metrics"
+            if [ ! -d "$metrics_dir" ]; then
+              echo "missing _metrics dir: $metrics_dir" >&2
+              exit 2
+            fi
+            if ! find "$metrics_dir" -type f -size +0c | head -n 1 | grep -q .; then
+              echo "no non-empty metrics files under: $metrics_dir" >&2
+              exit 2
+            fi
+          fi
 
           python - <<'PY' "$result_path"
           from __future__ import annotations
