@@ -269,7 +269,7 @@
 ### P2（drill/verify）
 
 - [x] `P2-C1-S1`：tenant escape read drill
-- [ ] `P2-C1-S2`：tenant escape write drill
+- [x] `P2-C1-S2`：tenant escape write drill
 
 ### P3（drill/verify）
 
@@ -307,6 +307,16 @@
   - cross-tenant book.get → 404 + audit `not_found` + reason=`tenant_mismatch`
 - 观测（observed）：
   - 两个 case 都命中 404；并能通过 request_id 在 `audit_log` 找到对应 deny 记录（reason 低基数且可机械判定）。
+
+### P2-C1-S2（tenant escape write drill｜2026-03-06｜green）
+
+- headSha：`18b1406050afa62f93a66d6ee14cd5933c4ec84e`
+- artifacts：`docs/labs/_snapshot/auto/S5B-1A/tenant_escape_write/d93e1710-9e31-4ee4-a425-d28df7cff7fe/`
+- 结果：PASS（`ok=true`；case=`tenant_cross_write_403`）
+- 期望（expected）：
+  - cross-tenant bookshelf.create → 403 + audit `denied` + reason=`tenant_mismatch`
+- 观测（observed）：
+  - 命中 403；并能通过 request_id 在 `audit_log` 找到对应 denied 记录（reason 低基数且可机械判定）。
 
 ## Recent changes（for traceability，可选）
 
