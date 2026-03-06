@@ -290,6 +290,13 @@
 - 结果：FAIL（`ok=false`；case=`tenant_cross_read_404`；`failure_reason=unexpected_error`）
 - 观测：`_logs/run.log` 记录 `error_type=ConnectError`（依赖不可达；优先检查 API `WORDLOOM_API_BASE_URL` 与 DB `DATABASE_URL`）。
 
+### P1-C2-S1（smoke run｜2026-03-06｜green）
+
+- headSha：`9bdd2dd50c160be2abaea74a27fe00f997c07acd`
+- artifacts：`docs/labs/_snapshot/auto/S5B-1A/tenant_escape_read/bea96ea4-448c-4ee8-a385-490f766ef593/`
+- 结果：PASS（`ok=true`；case=`tenant_cross_read_404`）
+- 环境要点：API `WORDLOOM_API_BASE_URL=http://localhost:31001`；DB `DATABASE_URL=...:5435/wordloom_dev`；actor 默认 `S5B_1A_ACTOR_USER_ID=550e8400-e29b-41d4-a716-446655440000`
+
 ### P2-C1-S1（tenant escape read drill｜YYYY-MM-DD）
 
 - headSha：`<git sha>`

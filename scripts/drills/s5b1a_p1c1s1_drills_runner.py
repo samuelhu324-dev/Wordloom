@@ -148,6 +148,34 @@ def _write_text(path: str, text: str) -> None:
         f.write(text)
 
 
+def _try_json(r: httpx.Response) -> Any:
+    try:
+        if (r.headers.get("content-type") or "").startswith("application/json"):
+            return r.json()
+    except Exception:
+        return None
+    return None
+
+
+def _require_status(r: httpx.Response, *, ok_statuses: set[int], label: str, log_lines: list[str]) -> None:
+    if r.status_code in ok_statuses:
+        return
+    body = _try_json(r)
+    if body is None:
+        body = (r.text or "").strip()
+    log_lines.append(f"http_error:{label}:status={r.status_code}")
+    log_lines.append(f"http_error:{label}:body={body}")
+    raise RuntimeError(f"http_error:{label}:{r.status_code}")
+
+
+def _require_id(obj: Any, *, label: str, log_lines: list[str]) -> str:
+    if isinstance(obj, dict) and isinstance(obj.get("id"), str) and obj.get("id"):
+        return obj["id"]
+    log_lines.append(f"schema_error:{label}:missing_id")
+    log_lines.append(f"schema_error:{label}:body={obj}")
+    raise RuntimeError(f"schema_error:{label}:missing_id")
+
+
 def _pick_failure_reason(*, expected: dict[str, Any], observed: dict[str, Any]) -> str:
     if expected.get("http_status") != observed.get("http_status"):
         return "http_status_mismatch"
@@ -273,7 +301,9 @@ async def run() -> tuple[str, dict[str, Any]]:
     case_results: list[dict[str, Any]] = []
 
     try:
-        user_id = uuid.uuid4()
+        # NOTE: Current backend dev mode uses a fixed user id in some flows.
+        # Keep actor stable and configurable so drills are repeatable.
+        user_id = uuid.UUID(os.getenv("S5B_1A_ACTOR_USER_ID", "550e8400-e29b-41d4-a716-446655440000"))
         token = _make_token(user_id=user_id, secret_key=cfg.jwt_secret_key, algorithm=cfg.jwt_algorithm)
 
         async with httpx.AsyncClient(base_url=cfg.api_base_url, timeout=30.0) as client:
@@ -286,20 +316,27 @@ async def run() -> tuple[str, dict[str, Any]]:
             r_lib_a = await client.post("/api/v1/libraries", json={"name": lib_a_name, "description": "drill"}, headers=auth_headers)
             r_lib_b = await client.post("/api/v1/libraries", json={"name": lib_b_name, "description": "drill"}, headers=auth_headers)
 
-            lib_a = (r_lib_a.json() if r_lib_a.headers.get("content-type", "").startswith("application/json") else None) or {}
-            lib_b = (r_lib_b.json() if r_lib_b.headers.get("content-type", "").startswith("application/json") else None) or {}
+            _require_status(r_lib_a, ok_statuses={200, 201}, label="create_library_a", log_lines=log_lines)
+            _require_status(r_lib_b, ok_statuses={200, 201}, label="create_library_b", log_lines=log_lines)
 
-            lib_a_id = lib_a.get("id")
-            lib_b_id = lib_b.get("id")
+            lib_a = _try_json(r_lib_a) or {}
+            lib_b = _try_json(r_lib_b) or {}
+
+            lib_a_id = _require_id(lib_a, label="create_library_a", log_lines=log_lines)
+            lib_b_id = _require_id(lib_b, label="create_library_b", log_lines=log_lines)
 
             shelf_name = f"s5b1a-shelf-{run_id[:8]}"
             r_create = await client.post(
                 "/api/v1/bookshelves",
                 json={"library_id": lib_a_id, "name": shelf_name, "description": "drill"},
-                headers=auth_headers,
+                headers={
+                    **auth_headers,
+                    "X-Library-Id": str(lib_a_id),
+                },
             )
-            shelf = (r_create.json() if r_create.headers.get("content-type", "").startswith("application/json") else None) or {}
-            shelf_id = shelf.get("id")
+            _require_status(r_create, ok_statuses={200, 201}, label="create_bookshelf", log_lines=log_lines)
+            shelf = _try_json(r_create) or {}
+            shelf_id = _require_id(shelf, label="create_bookshelf", log_lines=log_lines)
 
             # Case: cross-tenant read
             path = f"/api/v1/bookshelves/{shelf_id}"
