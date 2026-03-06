@@ -256,6 +256,14 @@ async def run() -> tuple[str, dict[str, Any]]:
     git_sha = _get_git_sha()
     run_id = str(uuid.uuid4())
 
+    suite_lower = (cfg.suite_id or "").lower()
+    run_read_cases = "read" in suite_lower
+    run_write_cases = "write" in suite_lower
+    if not run_read_cases and not run_write_cases:
+        # Default: run everything.
+        run_read_cases = True
+        run_write_cases = True
+
     run_dir = _artifact_run_dir(suite_id=cfg.suite_id, run_id=run_id)
     logs_dir = os.path.join(run_dir, "_logs")
     metrics_dir = os.path.join(run_dir, "_metrics")
@@ -274,6 +282,31 @@ async def run() -> tuple[str, dict[str, Any]]:
     if git_sha:
         log_lines.append(f"git_sha={git_sha}")
 
+    recipe_cases: list[dict[str, Any]] = []
+    if run_read_cases:
+        recipe_cases.extend(
+            [
+                {
+                    "case_id": "tenant_cross_read_404",
+                    "title": "cross-tenant read is rejected (404 + audit not_found + reason=tenant_mismatch)",
+                    "endpoint": {"method": "GET", "path_template": "/api/v1/bookshelves/{bookshelf_id}"},
+                },
+                {
+                    "case_id": "tenant_cross_book_read_404",
+                    "title": "cross-tenant book read is rejected (404 + audit not_found + reason=tenant_mismatch)",
+                    "endpoint": {"method": "GET", "path_template": "/api/v1/books/{book_id}"},
+                },
+            ]
+        )
+    if run_write_cases:
+        recipe_cases.append(
+            {
+                "case_id": "tenant_cross_write_403",
+                "title": "cross-tenant write is rejected (403 + audit denied + reason=tenant_mismatch)",
+                "endpoint": {"method": "POST", "path_template": "/api/v1/bookshelves"},
+            }
+        )
+
     recipe = {
         "schema_version": "s5b-1a.recipe.v1",
         "meta": {
@@ -287,18 +320,7 @@ async def run() -> tuple[str, dict[str, Any]]:
             "database_url_redacted": _redact_url_password(cfg.database_url),
             "jwt_algorithm": cfg.jwt_algorithm,
         },
-        "cases": [
-            {
-                "case_id": "tenant_cross_read_404",
-                "title": "cross-tenant read is rejected (404 + audit not_found + reason=tenant_mismatch)",
-                "endpoint": {"method": "GET", "path_template": "/api/v1/bookshelves/{bookshelf_id}"},
-            },
-            {
-                "case_id": "tenant_cross_book_read_404",
-                "title": "cross-tenant book read is rejected (404 + audit not_found + reason=tenant_mismatch)",
-                "endpoint": {"method": "GET", "path_template": "/api/v1/books/{book_id}"},
-            }
-        ],
+        "cases": recipe_cases,
     }
 
     engine = create_async_engine(_convert_to_psycopg(cfg.database_url), echo=False)
@@ -343,124 +365,181 @@ async def run() -> tuple[str, dict[str, Any]]:
             lib_a_id = _require_id(lib_a, label="create_library_a", log_lines=log_lines)
             lib_b_id = _require_id(lib_b, label="create_library_b", log_lines=log_lines)
 
-            shelf_name = f"s5b1a-shelf-{run_id[:8]}"
-            r_shelf = await client.post(
-                "/api/v1/bookshelves",
-                json={"library_id": lib_a_id, "name": shelf_name, "description": "drill"},
-                headers={
-                    **auth_headers,
-                    "X-Library-Id": str(lib_a_id),
-                },
-            )
-            _require_status(r_shelf, ok_statuses={200, 201}, label="create_bookshelf", log_lines=log_lines)
-            shelf = _try_json(r_shelf) or {}
-            shelf_id = _require_id(shelf, label="create_bookshelf", log_lines=log_lines)
-
-            book_title = f"s5b1a-book-{run_id[:8]}"
-            r_book = await client.post(
-                "/api/v1/books",
-                json={
-                    "bookshelf_id": shelf_id,
-                    "library_id": lib_a_id,
-                    "title": book_title,
-                    "summary": "drill",
-                },
-                headers={
-                    **auth_headers,
-                    "X-Library-Id": str(lib_a_id),
-                },
-            )
-            _require_status(r_book, ok_statuses={200, 201}, label="create_book", log_lines=log_lines)
-            book = _try_json(r_book) or {}
-            book_id = _require_id(book, label="create_book", log_lines=log_lines)
-
-            # Case 1: cross-tenant bookshelf read
-            shelf_path = f"/api/v1/bookshelves/{shelf_id}"
-            r_cross_shelf = await client.get(
-                shelf_path,
-                headers={
-                    **auth_headers,
-                    "X-Library-Id": str(lib_b_id),
-                },
-            )
-            shelf_request_id = r_cross_shelf.headers.get("X-Request-Id")
-
-            shelf_audit_rows = (
-                await _fetch_audit_rows(engine=engine, request_id=shelf_request_id)
-                if shelf_request_id
-                else []
-            )
-
-            case_results.append(
-                _build_case_result(
-                    case_id="tenant_cross_read_404",
-                    title="cross-tenant read is rejected",
-                    inputs={
-                        "request_id": shelf_request_id,
-                        "tenant_id": str(lib_b_id) if lib_b_id else None,
-                        "actor_user_id": str(user_id),
-                        "roles": ["member"],
-                        "http": {
-                            "method": "GET",
-                            "path": shelf_path,
-                            "path_template": "/api/v1/bookshelves/{bookshelf_id}",
-                        },
-                    },
-                    expected={
-                        "http_status": 404,
-                        "audit_expected": True,
-                        "audit": {"action": "bookshelf.get", "result": "not_found", "reason": "tenant_mismatch"},
-                    },
-                    observed={
-                        "http_status": int(r_cross_shelf.status_code),
-                        "audit_rows": {"count": len(shelf_audit_rows), "rows": shelf_audit_rows[:10]},
+            if run_read_cases:
+                shelf_name = f"s5b1a-shelf-{run_id[:8]}"
+                r_shelf = await client.post(
+                    "/api/v1/bookshelves",
+                    json={"library_id": lib_a_id, "name": shelf_name, "description": "drill"},
+                    headers={
+                        **auth_headers,
+                        "X-Library-Id": str(lib_a_id),
                     },
                 )
-            )
+                _require_status(r_shelf, ok_statuses={200, 201}, label="create_bookshelf", log_lines=log_lines)
+                shelf = _try_json(r_shelf) or {}
+                shelf_id = _require_id(shelf, label="create_bookshelf", log_lines=log_lines)
 
-            # Case 2: cross-tenant book read
-            book_path = f"/api/v1/books/{book_id}"
-            r_cross_book = await client.get(
-                book_path,
-                headers={
-                    **auth_headers,
-                    "X-Library-Id": str(lib_b_id),
-                },
-            )
-            book_request_id = r_cross_book.headers.get("X-Request-Id")
-
-            book_audit_rows = (
-                await _fetch_audit_rows(engine=engine, request_id=book_request_id)
-                if book_request_id
-                else []
-            )
-
-            case_results.append(
-                _build_case_result(
-                    case_id="tenant_cross_book_read_404",
-                    title="cross-tenant book read is rejected",
-                    inputs={
-                        "request_id": book_request_id,
-                        "tenant_id": str(lib_b_id) if lib_b_id else None,
-                        "actor_user_id": str(user_id),
-                        "roles": ["member"],
-                        "http": {
-                            "method": "GET",
-                            "path": book_path,
-                            "path_template": "/api/v1/books/{book_id}",
-                        },
+                book_title = f"s5b1a-book-{run_id[:8]}"
+                r_book = await client.post(
+                    "/api/v1/books",
+                    json={
+                        "bookshelf_id": shelf_id,
+                        "library_id": lib_a_id,
+                        "title": book_title,
+                        "summary": "drill",
                     },
-                    expected={
-                        "http_status": 404,
-                        "audit_expected": True,
-                        "audit": {"action": "book.get", "result": "not_found", "reason": "tenant_mismatch"},
-                    },
-                    observed={
-                        "http_status": int(r_cross_book.status_code),
-                        "audit_rows": {"count": len(book_audit_rows), "rows": book_audit_rows[:10]},
+                    headers={
+                        **auth_headers,
+                        "X-Library-Id": str(lib_a_id),
                     },
                 )
-            )
+                _require_status(r_book, ok_statuses={200, 201}, label="create_book", log_lines=log_lines)
+                book = _try_json(r_book) or {}
+                book_id = _require_id(book, label="create_book", log_lines=log_lines)
+
+                # Case 1: cross-tenant bookshelf read
+                shelf_path = f"/api/v1/bookshelves/{shelf_id}"
+                r_cross_shelf = await client.get(
+                    shelf_path,
+                    headers={
+                        **auth_headers,
+                        "X-Library-Id": str(lib_b_id),
+                    },
+                )
+                shelf_request_id = r_cross_shelf.headers.get("X-Request-Id")
+
+                shelf_audit_rows = (
+                    await _fetch_audit_rows(engine=engine, request_id=shelf_request_id)
+                    if shelf_request_id
+                    else []
+                )
+
+                case_results.append(
+                    _build_case_result(
+                        case_id="tenant_cross_read_404",
+                        title="cross-tenant read is rejected",
+                        inputs={
+                            "request_id": shelf_request_id,
+                            "tenant_id": str(lib_b_id) if lib_b_id else None,
+                            "actor_user_id": str(user_id),
+                            "roles": ["member"],
+                            "http": {
+                                "method": "GET",
+                                "path": shelf_path,
+                                "path_template": "/api/v1/bookshelves/{bookshelf_id}",
+                            },
+                        },
+                        expected={
+                            "http_status": 404,
+                            "audit_expected": True,
+                            "audit": {"action": "bookshelf.get", "result": "not_found", "reason": "tenant_mismatch"},
+                        },
+                        observed={
+                            "http_status": int(r_cross_shelf.status_code),
+                            "audit_rows": {"count": len(shelf_audit_rows), "rows": shelf_audit_rows[:10]},
+                        },
+                    )
+                )
+
+                # Case 2: cross-tenant book read
+                book_path = f"/api/v1/books/{book_id}"
+                r_cross_book = await client.get(
+                    book_path,
+                    headers={
+                        **auth_headers,
+                        "X-Library-Id": str(lib_b_id),
+                    },
+                )
+                book_request_id = r_cross_book.headers.get("X-Request-Id")
+
+                book_audit_rows = (
+                    await _fetch_audit_rows(engine=engine, request_id=book_request_id)
+                    if book_request_id
+                    else []
+                )
+
+                case_results.append(
+                    _build_case_result(
+                        case_id="tenant_cross_book_read_404",
+                        title="cross-tenant book read is rejected",
+                        inputs={
+                            "request_id": book_request_id,
+                            "tenant_id": str(lib_b_id) if lib_b_id else None,
+                            "actor_user_id": str(user_id),
+                            "roles": ["member"],
+                            "http": {
+                                "method": "GET",
+                                "path": book_path,
+                                "path_template": "/api/v1/books/{book_id}",
+                            },
+                        },
+                        expected={
+                            "http_status": 404,
+                            "audit_expected": True,
+                            "audit": {"action": "book.get", "result": "not_found", "reason": "tenant_mismatch"},
+                        },
+                        observed={
+                            "http_status": int(r_cross_book.status_code),
+                            "audit_rows": {"count": len(book_audit_rows), "rows": book_audit_rows[:10]},
+                        },
+                    )
+                )
+
+            if run_write_cases:
+                # Case 3: cross-tenant bookshelf create (write)
+                write_shelf_name = f"s5b1a-cross-write-{run_id[:8]}"
+                r_cross_write = await client.post(
+                    "/api/v1/bookshelves",
+                    json={
+                        # requested_library_id (body) intentionally differs from selected tenant (header)
+                        "library_id": lib_a_id,
+                        "name": write_shelf_name,
+                        "description": "drill",
+                    },
+                    headers={
+                        **auth_headers,
+                        "X-Library-Id": str(lib_b_id),
+                    },
+                )
+                write_request_id = r_cross_write.headers.get("X-Request-Id")
+
+                write_audit_rows = (
+                    await _fetch_audit_rows(engine=engine, request_id=write_request_id)
+                    if write_request_id
+                    else []
+                )
+
+                case_results.append(
+                    _build_case_result(
+                        case_id="tenant_cross_write_403",
+                        title="cross-tenant write is rejected",
+                        inputs={
+                            "request_id": write_request_id,
+                            "tenant_id": str(lib_b_id) if lib_b_id else None,
+                            "actor_user_id": str(user_id),
+                            "roles": ["member"],
+                            "http": {
+                                "method": "POST",
+                                "path": "/api/v1/bookshelves",
+                                "path_template": "/api/v1/bookshelves",
+                            },
+                            "payload": {
+                                "requested_library_id": lib_a_id,
+                                "selected_tenant_id": lib_b_id,
+                                "name": write_shelf_name,
+                            },
+                        },
+                        expected={
+                            "http_status": 403,
+                            "audit_expected": True,
+                            "audit": {"action": "bookshelf.create", "result": "denied", "reason": "tenant_mismatch"},
+                        },
+                        observed={
+                            "http_status": int(r_cross_write.status_code),
+                            "audit_rows": {"count": len(write_audit_rows), "rows": write_audit_rows[:10]},
+                        },
+                    )
+                )
 
     except Exception as e:
         # Keep _result.json low-cardinality; put details in logs.
@@ -470,7 +549,7 @@ async def run() -> tuple[str, dict[str, Any]]:
         log_lines.append(f"setup_state:shelf_id={shelf_id}")
         log_lines.append(f"setup_state:book_id={book_id}")
 
-        if not any(r.get("case_id") == "tenant_cross_read_404" for r in case_results):
+        if run_read_cases and not any(r.get("case_id") == "tenant_cross_read_404" for r in case_results):
             case_results.append(
                 {
                     "case_id": "tenant_cross_read_404",
@@ -481,11 +560,22 @@ async def run() -> tuple[str, dict[str, Any]]:
                     "verdict": {"ok": False, "failure_reason": "unexpected_error"},
                 }
             )
-        if not any(r.get("case_id") == "tenant_cross_book_read_404" for r in case_results):
+        if run_read_cases and not any(r.get("case_id") == "tenant_cross_book_read_404" for r in case_results):
             case_results.append(
                 {
                     "case_id": "tenant_cross_book_read_404",
                     "title": "cross-tenant book read is rejected",
+                    "inputs": {},
+                    "expected": {},
+                    "observed": {},
+                    "verdict": {"ok": False, "failure_reason": "unexpected_error"},
+                }
+            )
+        if run_write_cases and not any(r.get("case_id") == "tenant_cross_write_403" for r in case_results):
+            case_results.append(
+                {
+                    "case_id": "tenant_cross_write_403",
+                    "title": "cross-tenant write is rejected",
                     "inputs": {},
                     "expected": {},
                     "observed": {},
