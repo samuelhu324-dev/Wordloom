@@ -149,7 +149,7 @@
 ### P1（输出统一）
 
 - [x] `P1-C1-S1`：覆盖检查：所有 `fault/obs_infra/*` 真实场景 verify 都产出 `_result.json`
-- [ ] `P1-C1-S2`：失败自解释：最小 logs/metrics/recipe 落盘
+- [x] `P1-C1-S2`：失败自解释：最小 logs/metrics/recipe 落盘
 
 ### P2（CI hard-gate）
 
@@ -209,7 +209,27 @@
 - 观测（observed）：
   - r1/r2/r3 的 `_result.json.ok=true`
 
+### P1-C1-S2（最小自解释 artifacts contract｜fault/obs_infra/es_timeout｜2026-03-06）
+
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/170`
+- headSha：`371dcb48679f54bf9d3cdd4dcd5faeb84e322bcf`
+- CI run（hard-gate-fault-es-timeout）：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22746962170`
+- workflow contract：
+  - runner 新增可选 gate：`require_min_artifacts=true` 时要求：
+    - `snapshot_dir/_recipe.json` 存在且非空
+    - `snapshot_dir/_logs/*` 至少 1 个非空文件
+    - `snapshot_dir/_metrics/*` 至少 1 个非空文件
+- artifacts：
+  - `labs-evidence-fault_obs_infra_es_timeout-22746962170-1-fault_obs_infra_es_timeout-r1`
+  - `labs-evidence-fault_obs_infra_es_timeout-22746962170-1-fault_obs_infra_es_timeout-r2`
+  - `labs-evidence-fault_obs_infra_es_timeout-22746962170-1-fault_obs_infra_es_timeout-r3`
+- 抽样核对（r1）：
+  - `_recipe.json` 非空（length=493）
+  - `_logs/` 下 `run-*.log` 与 `worker-*.log` 均非空
+  - `_metrics/metrics-before.txt` 与 `metrics-after.txt` 均非空
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-05：创建本 log，开始将 drills 推进为 CI hard-gate（evidence JSON + 自解释 artifacts）。
 - 2026-03-06：`P1-C1-S1` 审计完成：除 `fault/obs_infra/all`（meta:matrix_all，无 CLI）外，其余场景（`collector_down / db_claim_contention / duplicate_delivery / es_429_inject / es_bulk_partial / es_down_connect / es_timeout / es_write_block_4xx / projection_version / stuck_reclaim`）的 `*.verify` 均会落盘 `snapshot_dir/_result.json`。
+- 2026-03-06：完成 `P1-C1-S2`：runner 增加可选最小 artifacts contract（`_recipe.json + _logs + _metrics`），并在 `hard-gate-fault-es-timeout` 开启（`require_min_artifacts=true`）；`es_timeout.run` 也补齐异常路径占位输出，确保失败时仍可自解释。
