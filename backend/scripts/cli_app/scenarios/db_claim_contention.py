@@ -139,6 +139,23 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     after_1_path = metrics_dir / "metrics-after-1.txt"
     after_2_path = metrics_dir / "metrics-after-2.txt"
 
+    run_label = run_id or outdir.name
+    run_log_path = logs_dir / f"run-{run_label}.log"
+    run_log_path.write_text(
+        f"scenario={SCENARIO_DB_CLAIM_CONTENTION}\n"
+        f"run_id={run_id}\n"
+        f"outdir={outdir}\n"
+        f"at={time.strftime('%Y-%m-%d %H:%M:%S')}\n",
+        encoding="utf-8",
+    )
+
+    for p in (before_1_path, before_2_path, after_1_path, after_2_path):
+        try:
+            if not p.exists():
+                p.write_text("pending\n", encoding="utf-8")
+        except Exception:
+            pass
+
     start = time.time()
     stopped_by_controller = False
     outbox_event_ids: list[str] = []
@@ -165,136 +182,173 @@ def run_db_claim_contention(inputs: DrillInputs) -> DrillResult:
         "OUTBOX_HTTP_PORT",
     ]
 
-    worker1_handle = spawn_search_outbox_worker(
-        env=env1,
-        logs_dir=logs_dir,
-        run_id=run_id,
-        log_name=log_path_1.name,
-        evidence_env_keys=[k for k in worker_env_keys if k in env1],
-    )
-    worker2_handle = spawn_search_outbox_worker(
-        env=env2,
-        logs_dir=logs_dir,
-        run_id=run_id,
-        log_name=log_path_2.name,
-        evidence_env_keys=[k for k in worker_env_keys if k in env2],
-    )
-    write_json(
-        outdir / "_worker_start.json",
-        {
-            "worker1": worker1_handle.evidence_summary(),
-            "worker2": worker2_handle.evidence_summary(),
-        },
-    )
+    worker1_handle = None
+    worker2_handle = None
 
     try:
-            readiness_sleep_v1(scrape_delay)
-            before_1_path.write_text(
-                scrape_metrics_text_readiness_v1(port=int(metrics_port_1), timeout_s=4.0),
-                encoding="utf-8",
-            )
-            before_2_path.write_text(
-                scrape_metrics_text_readiness_v1(port=int(metrics_port_2), timeout_s=4.0),
-                encoding="utf-8",
-            )
+        worker1_handle = spawn_search_outbox_worker(
+            env=env1,
+            logs_dir=logs_dir,
+            run_id=run_id,
+            log_name=log_path_1.name,
+            evidence_env_keys=[k for k in worker_env_keys if k in env1],
+        )
+        worker2_handle = spawn_search_outbox_worker(
+            env=env2,
+            logs_dir=logs_dir,
+            run_id=run_id,
+            log_name=log_path_2.name,
+            evidence_env_keys=[k for k in worker_env_keys if k in env2],
+        )
+        write_json(
+            outdir / "_worker_start.json",
+            {
+                "worker1": worker1_handle.evidence_summary(),
+                "worker2": worker2_handle.evidence_summary(),
+            },
+        )
 
-            supply_res = run_search_outbox_supply_inserter_v1(
-                outdir=outdir,
-                env=base_env,
-                op=str(op),
-                insert_count=int(trigger_count),
-                create_search_index_row=True,
-                event_version=0,
-                timeout_s=30.0,
-                file_prefix="_trigger_insert_outbox",
-            )
-            if supply_res.returncode is None:
-                print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] inserter timed out")
+        readiness_sleep_v1(scrape_delay)
+        before_1_path.write_text(
+            scrape_metrics_text_readiness_v1(port=int(metrics_port_1), timeout_s=4.0),
+            encoding="utf-8",
+        )
+        before_2_path.write_text(
+            scrape_metrics_text_readiness_v1(port=int(metrics_port_2), timeout_s=4.0),
+            encoding="utf-8",
+        )
+
+        supply_res = run_search_outbox_supply_inserter_v1(
+            outdir=outdir,
+            env=base_env,
+            op=str(op),
+            insert_count=int(trigger_count),
+            create_search_index_row=True,
+            event_version=0,
+            timeout_s=30.0,
+            file_prefix="_trigger_insert_outbox",
+        )
+        if supply_res.returncode is None:
+            print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] inserter timed out")
+            if worker1_handle is not None:
                 worker1_handle.terminate_and_wait(timeout_s=30)
+            if worker2_handle is not None:
                 worker2_handle.terminate_and_wait(timeout_s=30)
-                exit_info = {
-                    "worker1": {
-                        "returncode": int(worker1_handle.proc.returncode)
-                        if worker1_handle.proc.returncode is not None
-                        else None
-                    },
-                    "worker2": {
-                        "returncode": int(worker2_handle.proc.returncode)
-                        if worker2_handle.proc.returncode is not None
-                        else None
-                    },
-                }
-                write_json(outdir / "_worker_exit.json", exit_info)
-                return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
+            return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
 
-            if supply_res.returncode != 0:
-                print(
-                    f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] failed to insert outbox events: rc={supply_res.returncode}"
-                )
+        if supply_res.returncode != 0:
+            print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] failed to insert outbox events: rc={supply_res.returncode}")
+            if worker1_handle is not None:
                 worker1_handle.terminate_and_wait(timeout_s=30)
+            if worker2_handle is not None:
                 worker2_handle.terminate_and_wait(timeout_s=30)
-                return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
+            return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
 
-            outbox_event_ids = list(supply_res.outbox_event_ids)
-            (outdir / "_outbox_event_ids.txt").write_text("\n".join(outbox_event_ids) + "\n", encoding="utf-8")
-            print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] outbox_event_ids: {', '.join(outbox_event_ids)}")
+        outbox_event_ids = list(supply_res.outbox_event_ids)
+        (outdir / "_outbox_event_ids.txt").write_text("\n".join(outbox_event_ids) + "\n", encoding="utf-8")
+        print(f"[labs run {SCENARIO_DB_CLAIM_CONTENTION}] outbox_event_ids: {', '.join(outbox_event_ids)}")
 
-            supply_evidence = dict(supply_res.evidence or {})
-            supply_evidence["outbox_event_ids"] = list(outbox_event_ids)
-            supply_evidence["insert_count"] = int(
-                supply_evidence.get("insert_count") or len(outbox_event_ids) or int(trigger_count)
-            )
-            write_json(outdir / "_supply.json", supply_evidence)
+        supply_evidence = dict(supply_res.evidence or {})
+        supply_evidence["outbox_event_ids"] = list(outbox_event_ids)
+        supply_evidence["insert_count"] = int(
+            supply_evidence.get("insert_count") or len(outbox_event_ids) or int(trigger_count)
+        )
+        write_json(outdir / "_supply.json", supply_evidence)
 
-            while True:
-                if duration > 0 and (time.time() - start) >= duration:
-                    try:
-                        after_1_path.write_text(scrape_metrics_text(port=int(metrics_port_1), timeout_s=4.0), encoding="utf-8")
-                    except Exception as exc:  # noqa: BLE001
-                        after_1_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-                    try:
-                        after_2_path.write_text(scrape_metrics_text(port=int(metrics_port_2), timeout_s=4.0), encoding="utf-8")
-                    except Exception as exc:  # noqa: BLE001
-                        after_2_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-                    stopped_by_controller = True
+        while True:
+            if duration > 0 and (time.time() - start) >= duration:
+                try:
+                    after_1_path.write_text(
+                        scrape_metrics_text(port=int(metrics_port_1), timeout_s=4.0),
+                        encoding="utf-8",
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    after_1_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+                try:
+                    after_2_path.write_text(
+                        scrape_metrics_text(port=int(metrics_port_2), timeout_s=4.0),
+                        encoding="utf-8",
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    after_2_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+                stopped_by_controller = True
+                if worker1_handle is not None:
                     worker1_handle.terminate_and_wait(timeout_s=30)
+                if worker2_handle is not None:
                     worker2_handle.terminate_and_wait(timeout_s=30)
-                    break
+                break
 
-                ret1 = worker1_handle.proc.poll()
-                ret2 = worker2_handle.proc.poll()
-                if ret1 is not None or ret2 is not None:
-                    try:
-                        after_1_path.write_text(scrape_metrics_text(port=int(metrics_port_1), timeout_s=4.0), encoding="utf-8")
-                    except Exception as exc:  # noqa: BLE001
-                        after_1_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-                    try:
-                        after_2_path.write_text(scrape_metrics_text(port=int(metrics_port_2), timeout_s=4.0), encoding="utf-8")
-                    except Exception as exc:  # noqa: BLE001
-                        after_2_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-                    break
-                time.sleep(0.25)
+            ret1 = worker1_handle.proc.poll() if worker1_handle is not None else 0
+            ret2 = worker2_handle.proc.poll() if worker2_handle is not None else 0
+            if ret1 is not None or ret2 is not None:
+                try:
+                    after_1_path.write_text(
+                        scrape_metrics_text(port=int(metrics_port_1), timeout_s=4.0),
+                        encoding="utf-8",
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    after_1_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+                try:
+                    after_2_path.write_text(
+                        scrape_metrics_text(port=int(metrics_port_2), timeout_s=4.0),
+                        encoding="utf-8",
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    after_2_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+                break
+            time.sleep(0.25)
     except KeyboardInterrupt:
         stopped_by_controller = True
-        worker1_handle.terminate_and_wait(timeout_s=30)
-        worker2_handle.terminate_and_wait(timeout_s=30)
-    finally:
-        if worker1_handle.proc.poll() is None:
+        try:
+            run_log_path.write_text(
+                run_log_path.read_text(encoding="utf-8", errors="replace")
+                + "keyboard_interrupt\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
+        if worker1_handle is not None:
             worker1_handle.terminate_and_wait(timeout_s=30)
-        else:
-            worker1_handle.wait(timeout_s=30)
-
-        if worker2_handle.proc.poll() is None:
+        if worker2_handle is not None:
             worker2_handle.terminate_and_wait(timeout_s=30)
-        else:
-            worker2_handle.wait(timeout_s=30)
+    except Exception as exc:  # noqa: BLE001
+        try:
+            run_log_path.write_text(
+                run_log_path.read_text(encoding="utf-8", errors="replace")
+                + f"exception: {type(exc).__name__}: {exc}\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
+        if worker1_handle is not None:
+            worker1_handle.terminate_and_wait(timeout_s=30)
+        if worker2_handle is not None:
+            worker2_handle.terminate_and_wait(timeout_s=30)
+        write_json(outdir / "_worker_exit.json", {"error": f"{type(exc).__name__}: {exc}"})
+        return DrillResult(ok=False, meta={"exit_code": 6}, summary={}, errors=[])
+    finally:
+        if worker1_handle is not None:
+            if worker1_handle.proc.poll() is None:
+                worker1_handle.terminate_and_wait(timeout_s=30)
+            else:
+                worker1_handle.wait(timeout_s=30)
+
+        if worker2_handle is not None:
+            if worker2_handle.proc.poll() is None:
+                worker2_handle.terminate_and_wait(timeout_s=30)
+            else:
+                worker2_handle.wait(timeout_s=30)
 
     exit_info = {
         "worker1": {
-            "returncode": int(worker1_handle.proc.returncode) if worker1_handle.proc.returncode is not None else None
+            "returncode": int(worker1_handle.proc.returncode)
+            if (worker1_handle is not None and worker1_handle.proc.returncode is not None)
+            else None
         },
         "worker2": {
-            "returncode": int(worker2_handle.proc.returncode) if worker2_handle.proc.returncode is not None else None
+            "returncode": int(worker2_handle.proc.returncode)
+            if (worker2_handle is not None and worker2_handle.proc.returncode is not None)
+            else None
         },
     }
     write_json(outdir / "_worker_exit.json", exit_info)
@@ -379,7 +433,7 @@ def verify_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     supply_db_ok = True
     try:
         if isinstance(supply, dict) and supply.get("outbox_event_ids"):
-            env = load_env_from_run_recipe_v1(run_dir)
+            env = load_env_from_run_recipe_v1(run_dir=run_dir)
             database_url = (env.get("DATABASE_URL") or "").strip()
             if database_url:
                 supply_db_check = verify_supply_rows_v1(database_url=database_url, supply=supply)

@@ -130,6 +130,15 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
     ensure_dir(logs_dir)
     ensure_dir(metrics_dir)
 
+    run_log_path = logs_dir / f"run-{run_id}.log"
+    try:
+        run_log_path.write_text(
+            f"[labs run {SCENARIO_ES_TIMEOUT}] start at {time.strftime('%Y-%m-%d %H:%M:%S')}\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
     env = with_backend_pythonpath(load_env(env_file=str(env_file) if env_file else None))
     env.setdefault("WORDLOOM_TRACING_ENABLED", "1")
     env.setdefault("OTEL_SERVICE_NAME", service)
@@ -148,11 +157,7 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
     env["OUTBOX_LIBRARY_ID"] = scoped_library_id
     env["SEARCH_OUTBOX_LIBRARY_ALLOWLIST"] = scoped_library_id
 
-    blackhole = _BlackholeServer()
-    blackhole.start()
-    assert blackhole.port is not None
-    env["ELASTIC_URL"] = f"http://127.0.0.1:{blackhole.port}"
-
+    recipe_path = outdir / "_recipe.json"
     recipe = {
         "lab_id": LAB_ID_S3A_2A_3A,
         "scenario": SCENARIO_ES_TIMEOUT,
@@ -160,12 +165,12 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
         "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
         "env_file": env_file,
         "service": service,
-        "inject": {"kind": "es_blackhole", "elastic_url": env["ELASTIC_URL"]},
+        "inject": {"kind": "es_blackhole", "elastic_url": None},
         "worker": {"duration_s": int(duration), "metrics_port": int(metrics_port)},
         "trigger": {"op": str(op)},
         "scope": {"library_id": scoped_library_id},
     }
-    write_json(outdir / "_recipe.json", recipe)
+    write_json(recipe_path, recipe)
 
     log_path = logs_dir / f"worker-{run_id}.log"
     print(f"[labs run {SCENARIO_ES_TIMEOUT}] outdir: {outdir}")
@@ -174,6 +179,13 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
 
+    if not metrics_before_path.exists():
+        metrics_before_path.write_text("not_scraped_yet\n", encoding="utf-8")
+    if not metrics_after_path.exists():
+        metrics_after_path.write_text("not_scraped_yet\n", encoding="utf-8")
+
+    blackhole: _BlackholeServer | None = None
+    worker_handle = None
     start = time.time()
     stopped_by_controller = False
     worker_env_keys = [
@@ -191,16 +203,23 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
         "OUTBOX_LIBRARY_ID",
     ]
 
-    worker_handle = spawn_search_outbox_worker(
-        env=env,
-        logs_dir=logs_dir,
-        run_id=run_id,
-        log_name=f"worker-{run_id}.log",
-        evidence_env_keys=[k for k in worker_env_keys if k in env],
-    )
-    write_json(outdir / "_worker_start.json", worker_handle.evidence_summary())
-
     try:
+        blackhole = _BlackholeServer()
+        blackhole.start()
+        assert blackhole.port is not None
+        env["ELASTIC_URL"] = f"http://127.0.0.1:{blackhole.port}"
+        recipe["inject"] = {"kind": "es_blackhole", "elastic_url": env["ELASTIC_URL"]}
+        write_json(recipe_path, recipe)
+
+        worker_handle = spawn_search_outbox_worker(
+            env=env,
+            logs_dir=logs_dir,
+            run_id=run_id,
+            log_name=f"worker-{run_id}.log",
+            evidence_env_keys=[k for k in worker_env_keys if k in env],
+        )
+        write_json(outdir / "_worker_start.json", worker_handle.evidence_summary())
+
         readiness_sleep_v1(scrape_delay)
         metrics_before_path.write_text(
             scrape_metrics_text_readiness_v1(port=int(metrics_port), timeout_s=4.0),
@@ -220,12 +239,14 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
         if supply_res.returncode is None:
             print(f"[labs run {SCENARIO_ES_TIMEOUT}] inserter timed out")
             stopped_by_controller = True
-            worker_handle.terminate_and_wait(timeout_s=30)
+            if worker_handle is not None:
+                worker_handle.terminate_and_wait(timeout_s=30)
             return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
         if supply_res.returncode != 0:
             print(f"[labs run {SCENARIO_ES_TIMEOUT}] failed to insert outbox event: rc={supply_res.returncode}")
             stopped_by_controller = True
-            worker_handle.terminate_and_wait(timeout_s=30)
+            if worker_handle is not None:
+                worker_handle.terminate_and_wait(timeout_s=30)
             return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
 
         outbox_event_id = supply_res.outbox_event_ids[-1].strip() if supply_res.outbox_event_ids else ""
@@ -268,13 +289,40 @@ def run_es_timeout(inputs: DrillInputs) -> DrillResult:
             time.sleep(0.25)
     except KeyboardInterrupt:
         stopped_by_controller = True
-        worker_handle.terminate_and_wait(timeout_s=30)
-    finally:
-        blackhole.stop()
-        if worker_handle.proc.poll() is None:
+        if worker_handle is not None:
             worker_handle.terminate_and_wait(timeout_s=30)
-        else:
-            worker_handle.wait(timeout_s=30)
+    except Exception as exc:  # noqa: BLE001
+        try:
+            with run_log_path.open("a", encoding="utf-8") as f:
+                f.write(f"exception: {type(exc).__name__}: {exc}\n")
+        except Exception:
+            pass
+
+        if not metrics_before_path.exists():
+            try:
+                metrics_before_path.write_text(
+                    f"scrape_failed: {type(exc).__name__}: {exc}\n",
+                    encoding="utf-8",
+                )
+            except Exception:
+                pass
+        if not metrics_after_path.exists():
+            try:
+                metrics_after_path.write_text(
+                    f"scrape_failed: {type(exc).__name__}: {exc}\n",
+                    encoding="utf-8",
+                )
+            except Exception:
+                pass
+        return DrillResult(ok=False, meta={"exit_code": 6, "error": type(exc).__name__}, summary={}, errors=[])
+    finally:
+        if blackhole is not None:
+            blackhole.stop()
+        if worker_handle is not None:
+            if worker_handle.proc.poll() is None:
+                worker_handle.terminate_and_wait(timeout_s=30)
+            else:
+                worker_handle.wait(timeout_s=30)
 
     exit_info = {
         "returncode": int(worker_handle.proc.returncode) if worker_handle.proc.returncode is not None else None

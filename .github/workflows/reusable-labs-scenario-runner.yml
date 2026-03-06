@@ -7,8 +7,18 @@ on:
         description: "Scenario id (legacy) as used by workflows"
         required: true
         type: string
+      run_id_suffix:
+        description: "Optional suffix to make RUN_ID unique across matrix runs (e.g. r1, r2)"
+        required: false
+        type: string
+        default: ""
       force_failure:
         description: "Force a failure after scenario run to exercise CI failure evidence path"
+        required: false
+        type: boolean
+        default: false
+      require_min_artifacts:
+        description: "When true, enforce minimal self-explaining artifacts: _recipe.json + non-empty _logs/* + non-empty _metrics/*"
         required: false
         type: boolean
         default: false
@@ -303,7 +313,12 @@ jobs:
 
           scenario="${{ inputs.scenario_id }}"
           safe_scenario="${scenario//\//_}"
-          run_id="${{ github.run_id }}-${{ github.run_attempt }}-${safe_scenario}"
+          suffix="${{ inputs.run_id_suffix }}"
+          if [ -n "$suffix" ]; then
+            run_id="${{ github.run_id }}-${{ github.run_attempt }}-${safe_scenario}-${suffix}"
+          else
+            run_id="${{ github.run_id }}-${{ github.run_attempt }}-${safe_scenario}"
+          fi
           echo "=== scenario=${scenario} run_id=${run_id} ==="
 
           echo "RUN_ID=$run_id" >> "$GITHUB_ENV"
@@ -340,6 +355,37 @@ jobs:
 
           result_path="${matches[0]}"
           echo "Found _result.json: ${result_path}"
+
+          run_dir="$(dirname "$result_path")"
+          echo "Run dir: ${run_dir}"
+
+          if [ "${{ inputs.require_min_artifacts }}" = "true" ]; then
+            recipe_path="${run_dir}/_recipe.json"
+            if [ ! -s "$recipe_path" ]; then
+              echo "missing/empty _recipe.json: $recipe_path" >&2
+              exit 2
+            fi
+
+            logs_dir="${run_dir}/_logs"
+            if [ ! -d "$logs_dir" ]; then
+              echo "missing _logs dir: $logs_dir" >&2
+              exit 2
+            fi
+            if ! find "$logs_dir" -type f -size +0c | head -n 1 | grep -q .; then
+              echo "no non-empty log files under: $logs_dir" >&2
+              exit 2
+            fi
+
+            metrics_dir="${run_dir}/_metrics"
+            if [ ! -d "$metrics_dir" ]; then
+              echo "missing _metrics dir: $metrics_dir" >&2
+              exit 2
+            fi
+            if ! find "$metrics_dir" -type f -size +0c | head -n 1 | grep -q .; then
+              echo "no non-empty metrics files under: $metrics_dir" >&2
+              exit 2
+            fi
+          fi
 
           python - <<'PY' "$result_path"
           from __future__ import annotations
@@ -390,5 +436,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: labs-evidence-${{ env.SAFE_SCENARIO_ID }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: labs-evidence-${{ env.SAFE_SCENARIO_ID }}-${{ env.RUN_ID }}
           path: docs/labs/_snapshot/auto/
