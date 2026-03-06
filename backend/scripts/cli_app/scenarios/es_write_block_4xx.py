@@ -56,6 +56,24 @@ def run_es_write_block_4xx(inputs: DrillInputs) -> DrillResult:
     ensure_dir(metrics_dir)
     ensure_dir(exports_dir)
 
+    run_log_path = logs_dir / f"run-{run_id}.log"
+    try:
+        run_log_path.write_text(
+            f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] start at {time.strftime('%Y-%m-%d %H:%M:%S')}\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
+    metrics_note_path = metrics_dir / "metrics-note.txt"
+    try:
+        metrics_note_path.write_text(
+            f"note: metrics files may be added later (scenario={SCENARIO_ES_WRITE_BLOCK_4XX} run_id={run_id})\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
     env = with_backend_pythonpath(load_env(env_file=str(env_file) if env_file else None))
 
     es_url = (env.get("ELASTIC_URL") or "http://localhost:19200").strip().rstrip("/")
@@ -116,92 +134,96 @@ def run_es_write_block_4xx(inputs: DrillInputs) -> DrillResult:
     )
     write_json(outdir / "_worker_start.json", worker_handle.evidence_summary())
     try:
-            readiness_sleep_v1(scrape_delay)
-            metrics_before_path.write_text(
-                scrape_metrics_text_readiness_v1(port=int(metrics_port), timeout_s=4.0),
-                encoding="utf-8",
+
+        readiness_sleep_v1(scrape_delay)
+        metrics_before_path.write_text(
+            scrape_metrics_text_readiness_v1(port=int(metrics_port), timeout_s=4.0),
+            encoding="utf-8",
+        )
+
+
+        status, response_payload = es_set_index_write_block(es_url=es_url, index=es_index, enabled=True)
+        if status == 404:
+            c_status, c_payload = es_create_index_if_missing(es_url=es_url, index=es_index)
+            (outdir / "_inject_es_create_index.response.txt").write_text(
+                f"status={c_status}\n\n{c_payload}\n", encoding="utf-8"
             )
-
-            status, response_payload = es_set_index_write_block(es_url=es_url, index=es_index, enabled=True)
-            if status == 404:
-                c_status, c_payload = es_create_index_if_missing(es_url=es_url, index=es_index)
-                (outdir / "_inject_es_create_index.response.txt").write_text(
-                    f"status={c_status}\n\n{c_payload}\n", encoding="utf-8"
-                )
-                if c_status not in (200, 201, 400):
-                    print(f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] failed to create index: http {c_status}")
-                    worker_handle.terminate_and_wait(timeout_s=30)
-                    return DrillResult(ok=False, meta={"exit_code": 2}, summary={}, errors=[])
-
-                status, response_payload = es_set_index_write_block(es_url=es_url, index=es_index, enabled=True)
-
-            (outdir / "_inject_es_write_block.response.txt").write_text(
-                f"status={status}\n\n{response_payload}\n", encoding="utf-8"
-            )
-            if status < 200 or status >= 300:
-                print(f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] failed to enable write block: http {status}")
+            if c_status not in (200, 201, 400):
+                print(f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] failed to create index: http {c_status}")
                 worker_handle.terminate_and_wait(timeout_s=30)
                 return DrillResult(ok=False, meta={"exit_code": 2}, summary={}, errors=[])
 
-            supply_res = run_search_outbox_supply_inserter_v1(
-                outdir=outdir,
-                env=env,
-                op=str(env.get("OUTBOX_OP") or "upsert"),
-                insert_count=1,
-                create_search_index_row=True,
-                event_version=0,
-                timeout_s=30.0,
-                file_prefix="_trigger_insert_outbox",
+            status, response_payload = es_set_index_write_block(es_url=es_url, index=es_index, enabled=True)
+
+
+        (outdir / "_inject_es_write_block.response.txt").write_text(
+            f"status={status}\n\n{response_payload}\n", encoding="utf-8"
+        )
+        if status < 200 or status >= 300:
+            print(f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] failed to enable write block: http {status}")
+            worker_handle.terminate_and_wait(timeout_s=30)
+            return DrillResult(ok=False, meta={"exit_code": 2}, summary={}, errors=[])
+
+
+        supply_res = run_search_outbox_supply_inserter_v1(
+            outdir=outdir,
+            env=env,
+            op=str(env.get("OUTBOX_OP") or "upsert"),
+            insert_count=1,
+            create_search_index_row=True,
+            event_version=0,
+            timeout_s=30.0,
+            file_prefix="_trigger_insert_outbox",
+        )
+        if supply_res.returncode is None:
+            print(f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] inserter timed out")
+            worker_handle.terminate_and_wait(timeout_s=30)
+            exit_info = {
+                "returncode": int(worker_handle.proc.returncode)
+                if worker_handle.proc.returncode is not None
+                else None
+            }
+            write_json(outdir / "_worker_exit.json", exit_info)
+            return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
+        if supply_res.returncode != 0:
+            print(
+                f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] failed to insert outbox event: rc={supply_res.returncode}"
             )
-            if supply_res.returncode is None:
-                print(f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] inserter timed out")
+            worker_handle.terminate_and_wait(timeout_s=30)
+            return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
+
+        outbox_event_id = supply_res.outbox_event_ids[-1].strip() if supply_res.outbox_event_ids else ""
+        (outdir / "_outbox_event_id.txt").write_text(outbox_event_id + "\n", encoding="utf-8")
+        print(f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] outbox_event_id: {outbox_event_id}")
+
+        supply_evidence = dict(supply_res.evidence or {})
+        supply_evidence["outbox_event_id"] = outbox_event_id
+        supply_evidence["outbox_event_ids"] = list(supply_res.outbox_event_ids)
+        supply_evidence["insert_count"] = int(supply_evidence.get("insert_count") or 1)
+        write_json(outdir / "_supply.json", supply_evidence)
+
+        while True:
+            if duration > 0 and (time.time() - start) >= duration:
+                try:
+                    metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
+                    metrics_after_path.write_text(metrics_after, encoding="utf-8")
+                    (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
+                except Exception as exc:  # noqa: BLE001
+                    metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+                stopped_by_controller = True
                 worker_handle.terminate_and_wait(timeout_s=30)
-                exit_info = {
-                    "returncode": int(worker_handle.proc.returncode)
-                    if worker_handle.proc.returncode is not None
-                    else None
-                }
-                write_json(outdir / "_worker_exit.json", exit_info)
-                return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
-            if supply_res.returncode != 0:
-                print(
-                    f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] failed to insert outbox event: rc={supply_res.returncode}"
-                )
-                worker_handle.terminate_and_wait(timeout_s=30)
-                return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
+                break
 
-            outbox_event_id = supply_res.outbox_event_ids[-1].strip() if supply_res.outbox_event_ids else ""
-            (outdir / "_outbox_event_id.txt").write_text(outbox_event_id + "\n", encoding="utf-8")
-            print(f"[labs run {SCENARIO_ES_WRITE_BLOCK_4XX}] outbox_event_id: {outbox_event_id}")
-
-            supply_evidence = dict(supply_res.evidence or {})
-            supply_evidence["outbox_event_id"] = outbox_event_id
-            supply_evidence["outbox_event_ids"] = list(supply_res.outbox_event_ids)
-            supply_evidence["insert_count"] = int(supply_evidence.get("insert_count") or 1)
-            write_json(outdir / "_supply.json", supply_evidence)
-
-            while True:
-                if duration > 0 and (time.time() - start) >= duration:
-                    try:
-                        metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
-                        metrics_after_path.write_text(metrics_after, encoding="utf-8")
-                        (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
-                    except Exception as exc:  # noqa: BLE001
-                        metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-                    stopped_by_controller = True
-                    worker_handle.terminate_and_wait(timeout_s=30)
-                    break
-
-                ret = worker_handle.proc.poll()
-                if ret is not None:
-                    try:
-                        metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
-                        metrics_after_path.write_text(metrics_after, encoding="utf-8")
-                        (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
-                    except Exception as exc:  # noqa: BLE001
-                        metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-                    break
-                time.sleep(0.25)
+            ret = worker_handle.proc.poll()
+            if ret is not None:
+                try:
+                    metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
+                    metrics_after_path.write_text(metrics_after, encoding="utf-8")
+                    (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
+                except Exception as exc:  # noqa: BLE001
+                    metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+                break
+            time.sleep(0.25)
     except KeyboardInterrupt:
         stopped_by_controller = True
         worker_handle.terminate_and_wait(timeout_s=30)

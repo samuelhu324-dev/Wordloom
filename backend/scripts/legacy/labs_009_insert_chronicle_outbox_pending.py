@@ -1,21 +1,24 @@
 """Insert deterministic rows for Chronicle outbox experiments.
 
 Creates a minimal chain:
-  libraries -> bookshelves -> books -> chronicle_events -> chronicle_outbox_events (pending)
+    libraries -> bookshelves -> books -> chronicle_events -> outbox row (pending)
+
+Prefers the unified table `outbox_events` (projection=chronicle_events_to_entries)
+when present, and falls back to legacy `chronicle_outbox_events` for older schemas.
 
 This helper exists to avoid shell quoting issues when triggering labs scenarios.
 
 Usage:
-  # DATABASE_URL must be set
-    python backend/scripts/labs/labs_009_insert_chronicle_outbox_pending.py
+    # DATABASE_URL must be set
+        python backend/scripts/labs/labs_009_insert_chronicle_outbox_pending.py
 
 Optional env vars:
-  OUTBOX_CHRONICLE_EVENT_ID           (UUID)  If set, do NOT create library/books/book/event; only enqueue outbox row.
-  OUTBOX_EVENT_TYPE                   (default: labs-009.projection_version)
-  OUTBOX_OP                           (default: upsert)
-  OUTBOX_EVENT_VERSION                (default: microsecond timestamp)
-  OUTBOX_PAYLOAD_JSON                 (default: {})
-  OUTBOX_TRACEPARENT / OUTBOX_TRACESTATE (optional)
+    OUTBOX_CHRONICLE_EVENT_ID           (UUID)  If set, do NOT create library/books/book/event; only enqueue outbox row.
+    OUTBOX_EVENT_TYPE                   (default: labs-009.projection_version)
+    OUTBOX_OP                           (default: upsert)
+    OUTBOX_EVENT_VERSION                (default: microsecond timestamp)
+    OUTBOX_PAYLOAD_JSON                 (default: {})
+    OUTBOX_TRACEPARENT / OUTBOX_TRACESTATE (optional)
 
 Output (stdout): single JSON object with ids.
 """
@@ -29,6 +32,9 @@ import uuid
 
 import psycopg
 from psycopg.types.json import Json
+
+
+CHRONICLE_PROJECTION = "chronicle_events_to_entries"
 
 
 def _database_url_psycopg(database_url: str) -> str:
@@ -58,6 +64,21 @@ def _table_column_types(conn: psycopg.Connection, table_name: str) -> dict[str, 
         return {row[0]: row[1] for row in cur.fetchall()}
 
 
+def _table_exists(conn: psycopg.Connection, table_name: str) -> bool:
+    return bool(_table_columns(conn, table_name))
+
+
+def _adapt_param(value: object) -> object:
+    """Adapt Python objects to types psycopg can send."""
+
+    if isinstance(value, (dict, list)):
+        try:
+            return Json(value)
+        except Exception:
+            return json.dumps(value)
+    return value
+
+
 def _insert_row(conn: psycopg.Connection, *, table: str, values: dict[str, object]) -> None:
     cols = _table_columns(conn, table)
     if not cols:
@@ -73,7 +94,7 @@ def _insert_row(conn: psycopg.Connection, *, table: str, values: dict[str, objec
     sql = f"insert into {table} ({columns_sql}) values ({placeholders})"
 
     with conn.cursor() as cur:
-        cur.execute(sql, tuple(filtered[c] for c in columns))
+        cur.execute(sql, tuple(_adapt_param(filtered[c]) for c in columns))
 
 
 def main() -> None:
@@ -99,7 +120,8 @@ def main() -> None:
 
     cs = _database_url_psycopg(database_url)
     with psycopg.connect(cs) as conn:
-        outbox_types = _table_column_types(conn, "chronicle_outbox_events")
+        outbox_table = "outbox_events" if _table_exists(conn, "outbox_events") else "chronicle_outbox_events"
+        outbox_types = _table_column_types(conn, outbox_table)
         events_types = _table_column_types(conn, "chronicle_events")
 
         library_id = uuid.uuid4()
@@ -168,10 +190,19 @@ def main() -> None:
             try:
                 payload_obj = json.loads(payload_json)
             except Exception:
-                payload_obj = payload_json
+                payload_obj = {}
 
-            if isinstance(payload_obj, (dict, list)):
-                payload_obj = Json(payload_obj)
+            # Worker payload contract: chronicle_events.payload must be a mapping
+            # that includes schema_version=1.
+            if not isinstance(payload_obj, dict):
+                payload_obj = {"schema_version": 1, "data": payload_obj}
+            payload_obj.setdefault("schema_version", 1)
+            payload_obj.setdefault("provenance", "labs-009")
+            payload_obj.setdefault("source", "labs-009")
+            payload_obj.setdefault("actor_kind", "unknown")
+            payload_obj.setdefault("correlation_id", f"labs-009-{chronicle_event_id}")
+
+            payload_db: object = Json(payload_obj)
 
             # Handle UUID columns that might be text in older schemas.
             def _uuid_or_text(col: str, value: uuid.UUID) -> object:
@@ -185,7 +216,7 @@ def main() -> None:
                 "book_id": _uuid_or_text("book_id", book_id),
                 "block_id": None,
                 "actor_id": None,
-                "payload": payload_obj,
+                "payload": payload_db,
                 "occurred_at": now,
                 "created_at": now,
                 # optional columns (will be filtered if missing)
@@ -213,6 +244,7 @@ def main() -> None:
 
         outbox_values: dict[str, object] = {
             "id": outbox_event_id,
+            "projection": CHRONICLE_PROJECTION,
             "entity_type": "chronicle_event",
             "entity_id": entity_id_val,
             "op": op,
@@ -224,8 +256,11 @@ def main() -> None:
             "updated_at": now,
             "traceparent": traceparent,
             "tracestate": tracestate,
+            "payload": None,
+            "library_id": library_id,
+            "book_id": book_id,
         }
-        _insert_row(conn, table="chronicle_outbox_events", values=outbox_values)
+        _insert_row(conn, table=outbox_table, values=outbox_values)
         conn.commit()
 
     result = {
@@ -234,6 +269,8 @@ def main() -> None:
         "library_id": str(library_id) if library_id is not None else None,
         "bookshelf_id": str(bookshelf_id) if bookshelf_id is not None else None,
         "book_id": str(book_id) if book_id is not None else None,
+        "outbox_table": str(outbox_table),
+        "outbox_projection": (CHRONICLE_PROJECTION if outbox_table == "outbox_events" else None),
         "event_type": str(event_type),
         "op": str(op),
         "event_version": int(event_version),

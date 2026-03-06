@@ -133,6 +133,12 @@
 - P2-C3-S1：新增第二个 hard-gate 场景（从 `fault/obs_infra/es_down_connect` 开始）并沿用最小矩阵（r1/r2/r3）
 - P2-C4-S1：新增第三个 hard-gate 场景（`fault/obs_infra/es_429_inject`）并沿用最小矩阵（r1/r2/r3）
 - P2-C5-S1：新增第四个 hard-gate 场景（`fault/obs_infra/db_claim_contention`）并沿用最小矩阵（r1/r2/r3）
+- P2-C6-S1：新增第五个 hard-gate 场景（`fault/obs_infra/collector_down`）并沿用最小矩阵（r1/r2/r3）
+- P2-C7-S1：新增第六个 hard-gate 场景（`fault/obs_infra/duplicate_delivery`）并沿用最小矩阵（r1/r2/r3）
+- P2-C8-S1：新增第七个 hard-gate 场景（`fault/obs_infra/es_bulk_partial`）并沿用最小矩阵（r1/r2/r3）
+- P2-C9-S1：新增第八个 hard-gate 场景（`fault/obs_infra/es_write_block_4xx`）并沿用最小矩阵（r1/r2/r3）
+- P2-C10-S1：新增第九个 hard-gate 场景（`fault/obs_infra/projection_version`）并沿用最小矩阵（r1/r2/r3）
+- P2-C11-S1：新增第十个 hard-gate 场景（`fault/obs_infra/stuck_reclaim`）并沿用最小矩阵（r1/r2/r3）
 
 ### P3（Guardrails）
 
@@ -167,6 +173,12 @@
 - [x] `P2-C3-S1`：新增第二个 hard-gate 场景（`fault/obs_infra/es_down_connect`）并完成矩阵证据
 - [x] `P2-C4-S1`：新增第三个 hard-gate 场景（`fault/obs_infra/es_429_inject`）并完成矩阵证据
 - [x] `P2-C5-S1`：新增第四个 hard-gate 场景（`fault/obs_infra/db_claim_contention`）并完成矩阵证据
+- [x] `P2-C6-S1`：新增第五个 hard-gate 场景（`fault/obs_infra/collector_down`）并完成矩阵证据
+- [x] `P2-C7-S1`：新增第六个 hard-gate 场景（`fault/obs_infra/duplicate_delivery`）并完成矩阵证据
+- [x] `P2-C8-S1`：新增第七个 hard-gate 场景（`fault/obs_infra/es_bulk_partial`）并完成矩阵证据
+- [x] `P2-C9-S1`：新增第八个 hard-gate 场景（`fault/obs_infra/es_write_block_4xx`）并完成矩阵证据
+- [x] `P2-C10-S1`：新增第九个 hard-gate 场景（`fault/obs_infra/projection_version`）并完成矩阵证据
+- [x] `P2-C11-S1`：新增第十个 hard-gate 场景（`fault/obs_infra/stuck_reclaim`）并完成矩阵证据
 
 ### P3（Guardrails）
 
@@ -311,6 +323,138 @@
     - `_metrics/metrics-before-1.txt` 非空（length=12469）
     - `_metrics/metrics-after-1.txt` 非空（length=12830）
 
+### P2-C6-S1（CI hard-gate matrix｜fault/obs_infra/collector_down｜2026-03-06）
+
+- workflow：`.github/workflows/hard-gate-fault-collector-down.yml`
+- scenario_id：`fault/obs_infra/collector_down`
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/171`
+- headSha：`a25466da26f734991897e95fcd2d060701476687`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22750336327`
+- artifacts：
+  - `labs-evidence-fault_obs_infra_collector_down-22750336327-1-fault_obs_infra_collector_down-r1`
+  - `labs-evidence-fault_obs_infra_collector_down-22750336327-1-fault_obs_infra_collector_down-r2`
+  - `labs-evidence-fault_obs_infra_collector_down-22750336327-1-fault_obs_infra_collector_down-r3`
+- 期望（expected）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - `require_min_artifacts=true` 下 `_recipe/_logs/_metrics` 均满足“存在且非空”
+
+- 观测（observed）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - 抽样核对（r1）：
+    - `_recipe.json` 非空（length=546）
+    - `_logs/run-*.log` 非空（length=55）
+    - `_metrics/metrics-after.txt` 非空（length=12497）
+
+### P2-C7-S1（CI hard-gate matrix｜fault/obs_infra/duplicate_delivery｜2026-03-06）
+
+- workflow：`.github/workflows/hard-gate-fault-duplicate-delivery.yml`
+- scenario_id：`fault/obs_infra/duplicate_delivery`
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/171`
+- headSha：`a25466da26f734991897e95fcd2d060701476687`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22750336329`
+- artifacts：
+  - `labs-evidence-fault_obs_infra_duplicate_delivery-22750336329-1-fault_obs_infra_duplicate_delivery-r1`
+  - `labs-evidence-fault_obs_infra_duplicate_delivery-22750336329-1-fault_obs_infra_duplicate_delivery-r2`
+  - `labs-evidence-fault_obs_infra_duplicate_delivery-22750336329-1-fault_obs_infra_duplicate_delivery-r3`
+- 期望（expected）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - `require_min_artifacts=true` 下 `_recipe/_logs/_metrics` 均满足“存在且非空”
+
+- 观测（observed）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - 抽样核对（r1）：
+    - `_recipe.json` 非空（length=575）
+    - `_logs/run-*.log` 非空（length=59）
+    - `_metrics/metrics-after.txt` 非空（length=12492）
+
+### P2-C8-S1（CI hard-gate matrix｜fault/obs_infra/es_bulk_partial｜2026-03-06）
+
+- workflow：`.github/workflows/hard-gate-fault-es-bulk-partial.yml`
+- scenario_id：`fault/obs_infra/es_bulk_partial`
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/171`
+- headSha：`a25466da26f734991897e95fcd2d060701476687`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22750336326`
+- artifacts：
+  - `labs-evidence-fault_obs_infra_es_bulk_partial-22750336326-1-fault_obs_infra_es_bulk_partial-r1`
+  - `labs-evidence-fault_obs_infra_es_bulk_partial-22750336326-1-fault_obs_infra_es_bulk_partial-r2`
+  - `labs-evidence-fault_obs_infra_es_bulk_partial-22750336326-1-fault_obs_infra_es_bulk_partial-r3`
+- 期望（expected）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - `require_min_artifacts=true` 下 `_recipe/_logs/_metrics` 均满足“存在且非空”
+
+- 观测（observed）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - 抽样核对（r1）：
+    - `_recipe.json` 非空（length=493）
+    - `_logs/run-*.log` 非空（length=56）
+    - `_metrics/metrics-after.txt` 非空（length=14445）
+
+### P2-C9-S1（CI hard-gate matrix｜fault/obs_infra/es_write_block_4xx｜2026-03-06）
+
+- workflow：`.github/workflows/hard-gate-fault-es-write-block-4xx.yml`
+- scenario_id：`fault/obs_infra/es_write_block_4xx`
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/171`
+- headSha：`a25466da26f734991897e95fcd2d060701476687`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22750336300`
+- artifacts：
+  - `labs-evidence-fault_obs_infra_es_write_block_4xx-22750336300-1-fault_obs_infra_es_write_block_4xx-r1`
+  - `labs-evidence-fault_obs_infra_es_write_block_4xx-22750336300-1-fault_obs_infra_es_write_block_4xx-r2`
+  - `labs-evidence-fault_obs_infra_es_write_block_4xx-22750336300-1-fault_obs_infra_es_write_block_4xx-r3`
+- 期望（expected）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - `require_min_artifacts=true` 下 `_recipe/_logs/_metrics` 均满足“存在且非空”
+
+- 观测（observed）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - 抽样核对（r1）：
+    - `_recipe.json` 非空（length=459）
+    - `_logs/run-*.log` 非空（length=59）
+    - `_metrics/metrics-after.txt` 非空（length=12891）
+
+### P2-C10-S1（CI hard-gate matrix｜fault/obs_infra/projection_version｜2026-03-06）
+
+- workflow：`.github/workflows/hard-gate-fault-projection-version.yml`
+- scenario_id：`fault/obs_infra/projection_version`
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/171`
+- headSha：`9ad4707d4dffb8d8590eafb4987966715e200b5b`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22750779473`
+- artifacts：
+  - `labs-evidence-fault_obs_infra_projection_version-22750779473-1-fault_obs_infra_projection_version-r1`
+  - `labs-evidence-fault_obs_infra_projection_version-22750779473-1-fault_obs_infra_projection_version-r2`
+  - `labs-evidence-fault_obs_infra_projection_version-22750779473-1-fault_obs_infra_projection_version-r3`
+- 期望（expected）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - `require_min_artifacts=true` 下 `_recipe/_logs/_metrics` 均满足“存在且非空”
+
+- 观测（observed）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - 抽样核对（r1）：
+    - `_recipe.json` 非空（length=518）
+    - `_logs/run-*.log` 非空（length=59）
+    - `_metrics/metrics-after-v1.txt` 非空（length=72）
+
+### P2-C11-S1（CI hard-gate matrix｜fault/obs_infra/stuck_reclaim｜2026-03-06）
+
+- workflow：`.github/workflows/hard-gate-fault-stuck-reclaim.yml`
+- scenario_id：`fault/obs_infra/stuck_reclaim`
+- PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/171`
+- headSha：`a25466da26f734991897e95fcd2d060701476687`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22750336317`
+- artifacts：
+  - `labs-evidence-fault_obs_infra_stuck_reclaim-22750336317-1-fault_obs_infra_stuck_reclaim-r1`
+  - `labs-evidence-fault_obs_infra_stuck_reclaim-22750336317-1-fault_obs_infra_stuck_reclaim-r2`
+  - `labs-evidence-fault_obs_infra_stuck_reclaim-22750336317-1-fault_obs_infra_stuck_reclaim-r3`
+- 期望（expected）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - `require_min_artifacts=true` 下 `_recipe/_logs/_metrics` 均满足“存在且非空”
+
+- 观测（observed）：
+  - r1/r2/r3 的 `_result.json.ok=true`
+  - 抽样核对（r1）：
+    - `_recipe.json` 非空（length=632）
+    - `_logs/run-*.log` 非空（length=54）
+    - `_metrics/metrics-after-1.txt` 非空（length=66）
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-05：创建本 log，开始将 drills 推进为 CI hard-gate（evidence JSON + 自解释 artifacts）。
@@ -319,3 +463,4 @@
 - 2026-03-06：新增第二个 hard-gate：`fault/obs_infra/es_down_connect`（r1/r2/r3 矩阵 + `require_min_artifacts=true`），并补齐 `es_down_connect.run` 的最小落盘占位输出。
 - 2026-03-06：新增第三个 hard-gate：`fault/obs_infra/es_429_inject`（r1/r2/r3 矩阵 + `require_min_artifacts=true`），并补齐 `es_429_inject.run` 的最小落盘占位输出。
 - 2026-03-06：新增第四个 hard-gate：`fault/obs_infra/db_claim_contention`（r1/r2/r3 矩阵 + `require_min_artifacts=true`），并修复 verify 中的 keyword-only 参数调用，确保 `_result.json.ok=true` 可被 CI 判定。
+- 2026-03-06：补齐剩余 fault 场景的 hard-gate workflows（collector_down / duplicate_delivery / es_bulk_partial / es_write_block_4xx / projection_version / stuck_reclaim），并在对应 `*.run` 中确保异常路径也会产生最小 `_logs/_metrics`（通过 controller run log + metrics-note 占位）。
