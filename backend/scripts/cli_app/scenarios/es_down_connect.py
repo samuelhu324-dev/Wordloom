@@ -56,6 +56,15 @@ def run_es_down_connect(inputs: DrillInputs) -> DrillResult:
     ensure_dir(metrics_dir)
     ensure_dir(exports_dir)
 
+    run_log_path = logs_dir / f"run-{run_id}.log"
+    try:
+        run_log_path.write_text(
+            f"[labs run {SCENARIO_ES_DOWN_CONNECT}] start at {time.strftime('%Y-%m-%d %H:%M:%S')}\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
     env = with_backend_pythonpath(load_env(env_file=str(env_file) if env_file else None))
 
     service_name = service
@@ -71,6 +80,7 @@ def run_es_down_connect(inputs: DrillInputs) -> DrillResult:
     env["OUTBOX_METRICS_PORT"] = str(int(metrics_port))
 
     compose_file = str((REPO_ROOT / "docker-compose.infra.yml").resolve())
+    recipe_path = outdir / "_recipe.json"
     recipe = {
         "lab_id": LAB_ID_S3A_2A_3A,
         "scenario": SCENARIO_ES_DOWN_CONNECT,
@@ -82,17 +92,9 @@ def run_es_down_connect(inputs: DrillInputs) -> DrillResult:
         "worker": {"duration_s": int(duration), "metrics_port": int(metrics_port)},
         "trigger": {"op": str(op)},
     }
-    write_json(outdir / "_recipe.json", recipe)
+    write_json(recipe_path, recipe)
 
     print(f"[labs run {SCENARIO_ES_DOWN_CONNECT}] outdir: {outdir}")
-
-    stop_proc = docker_compose(args=["-f", compose_file, "stop", "es"], cwd=REPO_ROOT)
-    (outdir / "_inject_es_stop.stdout.txt").write_text(stop_proc.stdout or "", encoding="utf-8")
-    (outdir / "_inject_es_stop.stderr.txt").write_text(stop_proc.stderr or "", encoding="utf-8")
-    (outdir / "_inject_es_stop.exitcode.txt").write_text(str(int(stop_proc.returncode)) + "\n", encoding="utf-8")
-    if stop_proc.returncode != 0:
-        print(f"[labs run {SCENARIO_ES_DOWN_CONNECT}] failed to stop es: rc={stop_proc.returncode}")
-        return DrillResult(ok=False, meta={"exit_code": 2}, summary={}, errors=[])
 
     log_path = logs_dir / f"worker-{run_id}.log"
 
@@ -100,6 +102,11 @@ def run_es_down_connect(inputs: DrillInputs) -> DrillResult:
 
     metrics_before_path = metrics_dir / "metrics-before.txt"
     metrics_after_path = metrics_dir / "metrics-after.txt"
+
+    if not metrics_before_path.exists():
+        metrics_before_path.write_text("not_scraped_yet\n", encoding="utf-8")
+    if not metrics_after_path.exists():
+        metrics_after_path.write_text("not_scraped_yet\n", encoding="utf-8")
 
     start = time.time()
     stopped_by_controller = False
@@ -113,15 +120,29 @@ def run_es_down_connect(inputs: DrillInputs) -> DrillResult:
         "OUTBOX_EXPERIMENT_ES_429_RATIO",
         "OUTBOX_METRICS_PORT",
     ]
-    worker_handle = spawn_search_outbox_worker(
-        env=env,
-        logs_dir=logs_dir,
-        run_id=run_id,
-        log_name=log_path.name,
-        evidence_env_keys=[k for k in worker_env_keys if k in env],
-    )
-    write_json(outdir / "_worker_start.json", worker_handle.evidence_summary())
+    worker_handle = None
     try:
+        stop_proc = docker_compose(args=["-f", compose_file, "stop", "es"], cwd=REPO_ROOT)
+        (outdir / "_inject_es_stop.stdout.txt").write_text(stop_proc.stdout or "", encoding="utf-8")
+        (outdir / "_inject_es_stop.stderr.txt").write_text(stop_proc.stderr or "", encoding="utf-8")
+        (outdir / "_inject_es_stop.exitcode.txt").write_text(str(int(stop_proc.returncode)) + "\n", encoding="utf-8")
+        if stop_proc.returncode != 0:
+            print(f"[labs run {SCENARIO_ES_DOWN_CONNECT}] failed to stop es: rc={stop_proc.returncode}")
+            try:
+                with run_log_path.open("a", encoding="utf-8") as f:
+                    f.write(f"inject_es_stop_failed: rc={int(stop_proc.returncode)}\n")
+            except Exception:
+                pass
+            return DrillResult(ok=False, meta={"exit_code": 2}, summary={}, errors=[])
+
+        worker_handle = spawn_search_outbox_worker(
+            env=env,
+            logs_dir=logs_dir,
+            run_id=run_id,
+            log_name=log_path.name,
+            evidence_env_keys=[k for k in worker_env_keys if k in env],
+        )
+        write_json(outdir / "_worker_start.json", worker_handle.evidence_summary())
 
         readiness_sleep_v1(scrape_delay)
         metrics_before_path.write_text(
@@ -141,11 +162,10 @@ def run_es_down_connect(inputs: DrillInputs) -> DrillResult:
         )
         if supply_res.returncode is None:
             print(f"[labs run {SCENARIO_ES_DOWN_CONNECT}] inserter timed out")
-            worker_handle.terminate_and_wait(timeout_s=30)
+            if worker_handle is not None:
+                worker_handle.terminate_and_wait(timeout_s=30)
             exit_info = {
-                "returncode": int(worker_handle.proc.returncode)
-                if worker_handle.proc.returncode is not None
-                else None
+                "returncode": int(worker_handle.proc.returncode) if (worker_handle and worker_handle.proc.returncode is not None) else None
             }
             write_json(outdir / "_worker_exit.json", exit_info)
             return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
@@ -153,7 +173,8 @@ def run_es_down_connect(inputs: DrillInputs) -> DrillResult:
             print(
                 f"[labs run {SCENARIO_ES_DOWN_CONNECT}] failed to insert outbox event: rc={supply_res.returncode}"
             )
-            worker_handle.terminate_and_wait(timeout_s=30)
+            if worker_handle is not None:
+                worker_handle.terminate_and_wait(timeout_s=30)
             return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
 
         outbox_event_id = supply_res.outbox_event_ids[-1].strip() if supply_res.outbox_event_ids else ""
@@ -190,17 +211,38 @@ def run_es_down_connect(inputs: DrillInputs) -> DrillResult:
             time.sleep(0.25)
     except KeyboardInterrupt:
         stopped_by_controller = True
-        worker_handle.terminate_and_wait(timeout_s=30)
-    finally:
-        if worker_handle.proc.poll() is None:
+        if worker_handle is not None:
             worker_handle.terminate_and_wait(timeout_s=30)
-        else:
-            worker_handle.wait(timeout_s=30)
+    except Exception as exc:  # noqa: BLE001
+        try:
+            with run_log_path.open("a", encoding="utf-8") as f:
+                f.write(f"exception: {type(exc).__name__}: {exc}\n")
+        except Exception:
+            pass
 
-    exit_info = {
-        "returncode": int(worker_handle.proc.returncode) if worker_handle.proc.returncode is not None else None
-    }
-    write_json(outdir / "_worker_exit.json", exit_info)
+        if not metrics_before_path.exists():
+            try:
+                metrics_before_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+            except Exception:
+                pass
+        if not metrics_after_path.exists():
+            try:
+                metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
+            except Exception:
+                pass
+        return DrillResult(ok=False, meta={"exit_code": 6, "error": type(exc).__name__}, summary={}, errors=[])
+    finally:
+        if worker_handle is not None:
+            if worker_handle.proc.poll() is None:
+                worker_handle.terminate_and_wait(timeout_s=30)
+            else:
+                worker_handle.wait(timeout_s=30)
+
+    if worker_handle is not None:
+        exit_info = {
+            "returncode": int(worker_handle.proc.returncode) if worker_handle.proc.returncode is not None else None
+        }
+        write_json(outdir / "_worker_exit.json", exit_info)
 
     if not metrics_after_path.exists():
         metrics_after_path.write_text("scrape_failed: missing_metrics_after\n", encoding="utf-8")
