@@ -7,6 +7,11 @@ on:
         description: "Scenario id (legacy) as used by workflows"
         required: true
         type: string
+      run_id_suffix:
+        description: "Optional suffix to make RUN_ID unique across matrix runs (e.g. r1, r2)"
+        required: false
+        type: string
+        default: ""
       force_failure:
         description: "Force a failure after scenario run to exercise CI failure evidence path"
         required: false
@@ -303,7 +308,12 @@ jobs:
 
           scenario="${{ inputs.scenario_id }}"
           safe_scenario="${scenario//\//_}"
-          run_id="${{ github.run_id }}-${{ github.run_attempt }}-${safe_scenario}"
+          suffix="${{ inputs.run_id_suffix }}"
+          if [ -n "$suffix" ]; then
+            run_id="${{ github.run_id }}-${{ github.run_attempt }}-${safe_scenario}-${suffix}"
+          else
+            run_id="${{ github.run_id }}-${{ github.run_attempt }}-${safe_scenario}"
+          fi
           echo "=== scenario=${scenario} run_id=${run_id} ==="
 
           echo "RUN_ID=$run_id" >> "$GITHUB_ENV"
@@ -390,5 +400,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: labs-evidence-${{ env.SAFE_SCENARIO_ID }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: labs-evidence-${{ env.SAFE_SCENARIO_ID }}-${{ env.RUN_ID }}
           path: docs/labs/_snapshot/auto/
