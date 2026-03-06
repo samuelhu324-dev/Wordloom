@@ -236,12 +236,12 @@
 - workflow：`.github/workflows/hard-gate-fault-es-down-connect.yml`
 - scenario_id：`fault/obs_infra/es_down_connect`（catalog-driven）
 - PR：`https://github.com/samuelhu324-dev/wordloom-v3/pull/170`
-- headSha：`21066ff50b6f99dd1de59d0933c31b042b4164f8`
-- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22747480998`
+- headSha：`bd40e6bd28ce41ab7eed2b793344a13603311a12`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22747551516`
 - artifacts：
-  - `labs-evidence-fault_obs_infra_es_down_connect-22747480998-1-fault_obs_infra_es_down_connect-r1`
-  - `labs-evidence-fault_obs_infra_es_down_connect-22747480998-1-fault_obs_infra_es_down_connect-r2`
-  - `labs-evidence-fault_obs_infra_es_down_connect-22747480998-1-fault_obs_infra_es_down_connect-r3`
+  - `labs-evidence-fault_obs_infra_es_down_connect-22747551516-1-fault_obs_infra_es_down_connect-r1`
+  - `labs-evidence-fault_obs_infra_es_down_connect-22747551516-1-fault_obs_infra_es_down_connect-r2`
+  - `labs-evidence-fault_obs_infra_es_down_connect-22747551516-1-fault_obs_infra_es_down_connect-r3`
 - 期望（expected）：
   - r1/r2/r3 的 `_result.json.ok=true`
   - `require_min_artifacts=true` 下 `_recipe/_logs/_metrics` 均满足“存在且非空”
