@@ -433,7 +433,7 @@ def verify_db_claim_contention(inputs: DrillInputs) -> DrillResult:
     supply_db_ok = True
     try:
         if isinstance(supply, dict) and supply.get("outbox_event_ids"):
-            env = load_env_from_run_recipe_v1(run_dir)
+            env = load_env_from_run_recipe_v1(run_dir=run_dir)
             database_url = (env.get("DATABASE_URL") or "").strip()
             if database_url:
                 supply_db_check = verify_supply_rows_v1(database_url=database_url, supply=supply)
