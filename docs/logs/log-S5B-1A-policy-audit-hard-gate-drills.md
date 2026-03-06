@@ -241,6 +241,7 @@
 
 - P1-C1-S1：新增最小 drills runner（建议 Python），支持：设置请求头（tenant/request_id）、发起 API 请求、查询 audit_log、输出 `_result.json`。
 - P1-C1-S2：固化 artifacts contract（目录结构 + 非空检查 + PASS/FAIL 判定）。
+- P1-C1-S3：跑 1 次 smoke run 并入账 Evidence（记录 headSha + artifacts 路径 + ok/failed 摘要）。
 
 ### P2（Drills：tenant escape）
 
@@ -263,6 +264,7 @@
 
 - [x] `P1-C1-S1`：drills runner 产出 `_result.json` + logs/metrics
 - [ ] `P1-C1-S2`：artifacts contract 检查（非空 + PASS/FAIL）
+- [x] `P1-C1-S3`：smoke run + Evidence 入账（首条可追溯 artifacts）
 
 ### P2（drill/verify）
 
@@ -280,10 +282,17 @@
 - 代码落地点（P1）：
   - drills runner：`scripts/drills/s5b1a_p1c1s1_drills_runner.py`
 
+### P1-C1-S3（smoke run｜2026-03-06）
+
+- headSha：`80de87140c9e4df136cfe8c5cd029e03f1df0d90`
+- artifacts：`docs/labs/_snapshot/auto/S5B-1A/tenant_escape_read/d3d9073c-4c26-4218-94fe-83eaa4257243/`
+- 结果：FAIL（`ok=false`；case=`tenant_cross_read_404`；`failure_reason=unexpected_error`）
+- 观测：`_logs/run.log` 记录 `error_type=ConnectError`（依赖不可达；优先检查 API `WORDLOOM_API_BASE_URL` 与 DB `DATABASE_URL`）。
+
 ### P2-C1-S1（tenant escape read drill｜YYYY-MM-DD）
 
 - headSha：`<git sha>`
-- artifacts：`docs/labs/_snapshot/auto/s5b1a_tenant_escape_read/<run_id>/_result.json`
+- artifacts：`docs/labs/_snapshot/auto/S5B-1A/tenant_escape_read/<run_id>/_result.json`
 - 期望（expected）：
   - unauthorized read is rejected (404/403 per contract)
   - audit row exists with low-cardinality reason
