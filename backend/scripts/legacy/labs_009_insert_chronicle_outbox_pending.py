@@ -256,7 +256,7 @@ def main() -> None:
             "updated_at": now,
             "traceparent": traceparent,
             "tracestate": tracestate,
-            "payload": payload_obj if isinstance(payload_obj, dict) else None,
+            "payload": None,
             "library_id": library_id,
             "book_id": book_id,
         }
