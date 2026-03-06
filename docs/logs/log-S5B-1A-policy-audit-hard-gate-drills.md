@@ -263,7 +263,7 @@
 ### P1（实现）
 
 - [x] `P1-C1-S1`：drills runner 产出 `_result.json` + logs/metrics
-- [ ] `P1-C1-S2`：artifacts contract 检查（非空 + PASS/FAIL）
+- [x] `P1-C1-S2`：artifacts contract 检查（非空 + PASS/FAIL）
 - [x] `P1-C1-S3`：smoke run + Evidence 入账（首条可追溯 artifacts）
 
 ### P2（drill/verify）
@@ -281,6 +281,7 @@
 
 - 代码落地点（P1）：
   - drills runner：`scripts/drills/s5b1a_p1c1s1_drills_runner.py`
+  - artifacts verifier：`scripts/drills/s5b1a_verify_artifacts.py`
 
 ### P1-C1-S3（smoke run｜2026-03-06）
 
