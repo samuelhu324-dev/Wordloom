@@ -107,10 +107,48 @@
 
 ### P0-C1-S2（Audit contract：action/result/reason 字段口径）
 
-- action 命名：`<domain>.<verb>` 或 `<domain>.<noun>.<verb>`（示例：`book.create`、`bookshelf.create`、`membership.grant`）。
-- result 枚举（建议 v1）：`success | denied | not_found | error`。
-- reason 白名单（v1）：`tenant_mismatch | not_member | not_admin | not_owner | bad_request`。
-- audit 必填字段：`tenant_id/actor_user_id/request_id/action/result`；可选 `resource_type/resource_id/meta_json`。
+**Schema alignment（与 DB 表一致）**
+
+- `audit_log` 字段上限：
+  - `request_id`：<= 64 chars
+  - `action`：<= 80 chars
+  - `result`：<= 32 chars
+  - `reason`：<= 80 chars
+
+**Action 命名（v1 固定选择）**
+
+- 格式：`<resource>.<verb>`（优先）或 `<domain>.<resource>.<verb>`（需要分域时再用）。
+- 允许字符：`a-z0-9_` 与 `.`；必须全小写；禁止空格与 `-`。
+- 建议 verbs 白名单（v1）：`get | list | create | update | delete | grant | revoke`。
+- 示例（与现有模块对齐）：
+  - `bookshelf.get` / `bookshelf.list` / `bookshelf.create`
+  - `book.get` / `book.list`
+  - `membership.grant` / `membership.revoke`
+
+**Result 枚举（v1 固定选择）**
+
+- `success | denied | not_found | error`
+- HTTP 映射（drills 用于机械判定）：
+  - `success` → 2xx
+  - `denied` → 403
+  - `not_found` → 404（仅用于“授权拒绝的 404”，见 `P0-C1-S1` guardrail）
+  - `error` → 4xx/5xx（drills 里一律视为失败，除非显式声明期望）
+
+**Reason taxonomy（低基数白名单）**
+
+- v1 白名单：`tenant_mismatch | not_member | not_admin | not_owner | bad_request | internal_error | dependency_error`
+- 必填规则：
+  - `result in {denied, not_found}` → `reason` 必填且必须来自白名单
+  - `result == success` → `reason` 必须为空
+  - `result == error` → `reason` 可选；若填写必须来自白名单（优先 `bad_request/internal_error/dependency_error`）
+
+**Required / Optional fields（v1）**
+
+- 必填：`tenant_id`, `actor_user_id`, `request_id`, `action`, `result`
+- 推荐：`resource_type`, `resource_id`（当 action 针对某个资源实例时）
+- `meta_json`（可选）：
+  - 允许的稳定键（v1）：`http_method`, `path_template`, `status_code`, `policy_rule`, `decision_point`
+  - 禁止写入：token/密码/原始 header、以及会造成高基数聚合爆炸的自由文本（如 exception message）
 
 ### P0-C1-S3（证据口径 contract｜v1）
 
@@ -162,7 +200,7 @@
 ### P0（Contract）
 
 - [x] `P0-C1-S1`：deny semantics + reason taxonomy 固化
-- [ ] `P0-C1-S2`：audit action/result/reason 口径固化
+- [x] `P0-C1-S2`：audit action/result/reason 口径固化
 - [ ] `P0-C1-S3`：evidence JSON schema 固化
 
 ### P1（实现）
