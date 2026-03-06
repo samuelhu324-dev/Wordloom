@@ -152,23 +152,79 @@
 
 ### P0-C1-S3（证据口径 contract｜v1）
 
-- evidence `_result.json` 必须包含：
-  - 输入（inputs）：
-    - `request_id`（或生成策略说明）
-    - `tenant_id`、`user_id`、`roles`（若 roles 由 membership 决定，记录来源）
-    - `endpoint/method` 与关键参数（resource ids）
-  - 期望（expected）：
-    - `http_status`
-    - `audit_expected`（是否应写审计；预期 action/result/reason）
-  - 观测（observed）：
-    - `http_status`
-    - `audit_rows_found`（按 request_id 查询到的行数）
-    - `audit_action/result/reason`（若存在）
-  - 判定（verdict）：
-    - `ok: true|false`
-    - `failure_reason`（低基数，便于聚合）
-  - 产物（artifacts）：
-    - `artifacts_dir`、关键文件列表（至少 logs/metrics/result.json）
+目标：evidence 必须 **可机械判定 PASS/FAIL**，并且能把“期望/观测/差异”结构化落盘。
+
+**Artifacts directory layout（v1 固定）**
+
+- 每次 run 输出到一个唯一目录：
+  - `docs/labs/_snapshot/auto/S5B-1A/<suite_id>/<run_id>/`
+- 目录内至少包含（全部非空）：
+  - `_recipe.json`（运行参数与输入；必须是合法 JSON）
+  - `_result.json`（判定结果与 evidence；必须是合法 JSON）
+  - `_logs/`（至少 1 个非空文件，如 `run.log`）
+  - `_metrics/`（至少 1 个非空文件，如 `summary.json` 或 `metrics.prom`）
+
+**_result.json schema（v1）**
+
+- 顶层字段（必填）：
+  - `schema_version`: `"s5b-1a.result.v1"`
+  - `ok`: boolean（整次 run 是否通过；hard gate 直接用它）
+  - `meta`:
+    - `run_id`: string（UUID recommended）
+    - `suite_id`: string（例如 `tenant_escape_read`）
+    - `started_at`: string（ISO-8601, UTC）
+    - `finished_at`: string（ISO-8601, UTC）
+    - `git_sha`: string（可选，但 CI 必填）
+  - `summary`:
+    - `total`: int
+    - `passed`: int
+    - `failed`: int
+  - `cases`: array（至少 1 个 case）
+
+- `cases[*]` 字段（必填）：
+  - `case_id`: string（低基数、稳定；例如 `tenant_cross_read_404`）
+  - `title`: string
+  - `inputs`（最小集合；必填）：
+    - `request_id`: string（若由服务生成，则记录获取方式）
+    - `tenant_id`: string
+    - `actor_user_id`: string
+    - `roles`: array[string]
+    - `http`:
+      - `method`: string
+      - `path`: string
+      - `path_template`: string（推荐；便于聚合）
+  - `expected`（必填）：
+    - `http_status`: int
+    - `audit_expected`: boolean
+    - `audit`（当 `audit_expected=true` 时必填）：
+      - `action`: string
+      - `result`: string（来自 `P0-C1-S2` result 枚举）
+      - `reason`: string | null（按 `P0-C1-S2` 必填规则）
+  - `observed`（必填）：
+    - `http_status`: int
+    - `audit_rows`:
+      - `count`: int
+      - `rows`: array[object]（建议包含 `action/result/reason/occurred_at`；允许截断，但必须保证能机械判定）
+  - `verdict`（必填）：
+    - `ok`: boolean
+    - `failure_reason`: string | null（若 `ok=false` 必填；必须低基数，见下）
+
+**failure_reason taxonomy（v1 白名单）**
+
+- `http_status_mismatch`
+- `audit_missing`
+- `audit_count_mismatch`
+- `audit_action_mismatch`
+- `audit_result_mismatch`
+- `audit_reason_mismatch`
+- `schema_violation`
+- `unexpected_error`
+- `dependency_unreachable`
+
+**Notes（机械判定约束）**
+
+- `ok` 必须等价于：所有 `cases[*].verdict.ok == true`。
+- `audit_rows.rows` 里禁止包含敏感信息（token/密码/原始 headers）。
 
 ## Numbering（编号约定）
 
@@ -201,7 +257,7 @@
 
 - [x] `P0-C1-S1`：deny semantics + reason taxonomy 固化
 - [x] `P0-C1-S2`：audit action/result/reason 口径固化
-- [ ] `P0-C1-S3`：evidence JSON schema 固化
+- [x] `P0-C1-S3`：evidence JSON schema 固化
 
 ### P1（实现）
 
