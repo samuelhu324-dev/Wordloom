@@ -60,6 +60,24 @@ def run_duplicate_delivery(inputs: DrillInputs) -> DrillResult:
     ensure_dir(metrics_dir)
     ensure_dir(exports_dir)
 
+    run_log_path = logs_dir / f"run-{run_id}.log"
+    try:
+        run_log_path.write_text(
+            f"[labs run {SCENARIO_DUPLICATE_DELIVERY}] start at {time.strftime('%Y-%m-%d %H:%M:%S')}\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
+    metrics_note_path = metrics_dir / "metrics-note.txt"
+    try:
+        metrics_note_path.write_text(
+            f"note: metrics files may be added later (scenario={SCENARIO_DUPLICATE_DELIVERY} run_id={run_id})\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
     env = with_backend_pythonpath(load_env(env_file=str(env_file) if env_file else None))
 
     service_name = service
@@ -135,114 +153,125 @@ def run_duplicate_delivery(inputs: DrillInputs) -> DrillResult:
     )
     write_json(outdir / "_worker_start.json", worker_handle.evidence_summary())
     try:
-            readiness_sleep_v1(scrape_delay)
-            metrics_before_path.write_text(
-                scrape_metrics_text_readiness_v1(port=int(metrics_port), timeout_s=4.0),
-                encoding="utf-8",
+
+        readiness_sleep_v1(scrape_delay)
+        metrics_before_path.write_text(
+            scrape_metrics_text_readiness_v1(port=int(metrics_port), timeout_s=4.0),
+            encoding="utf-8",
+        )
+
+        upsert_env = env.copy()
+        upsert_env["OUTBOX_ENTITY_TYPE"] = str(entity_type)
+        upsert_env["OUTBOX_ENTITY_ID"] = entity_id
+
+        upsert_supply_res = run_search_outbox_supply_inserter_v1(
+            outdir=outdir,
+            env=upsert_env,
+            op="upsert",
+            insert_count=1,
+            create_search_index_row=True,
+            event_version=0,
+            timeout_s=30.0,
+            file_prefix="_trigger_upsert",
+        )
+        if upsert_supply_res.returncode is None:
+            print(f"[labs run {SCENARIO_DUPLICATE_DELIVERY}] upsert inserter timed out")
+            worker_handle.terminate_and_wait(timeout_s=30)
+            exit_info = {
+                "returncode": int(worker_handle.proc.returncode)
+                if worker_handle.proc.returncode is not None
+                else None
+            }
+            write_json(outdir / "_worker_exit.json", exit_info)
+            return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
+        if upsert_supply_res.returncode != 0:
+            print(
+                f"[labs run {SCENARIO_DUPLICATE_DELIVERY}] failed to insert upsert outbox event: rc={upsert_supply_res.returncode}"
             )
+            worker_handle.terminate_and_wait(timeout_s=30)
+            return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
 
-            upsert_env = env.copy()
-            upsert_env["OUTBOX_ENTITY_TYPE"] = str(entity_type)
-            upsert_env["OUTBOX_ENTITY_ID"] = entity_id
+        outbox_event_ids.extend(list(upsert_supply_res.outbox_event_ids))
+        time.sleep(1.5)
 
-            upsert_supply_res = run_search_outbox_supply_inserter_v1(
-                outdir=outdir,
-                env=upsert_env,
-                op="upsert",
-                insert_count=1,
-                create_search_index_row=True,
-                event_version=0,
-                timeout_s=30.0,
-                file_prefix="_trigger_upsert",
+        delete_env = env.copy()
+        delete_env["OUTBOX_ENTITY_TYPE"] = str(entity_type)
+        delete_env["OUTBOX_ENTITY_ID"] = entity_id
+
+        delete_supply_res = run_search_outbox_supply_inserter_v1(
+            outdir=outdir,
+            env=delete_env,
+            op="delete",
+            insert_count=max(1, int(delete_count)),
+            create_search_index_row=False,
+            event_version=0,
+            timeout_s=30.0,
+            file_prefix="_trigger_delete",
+        )
+        if delete_supply_res.returncode is None:
+            print(f"[labs run {SCENARIO_DUPLICATE_DELIVERY}] delete inserter timed out")
+            worker_handle.terminate_and_wait(timeout_s=30)
+            exit_info = {
+                "returncode": int(worker_handle.proc.returncode)
+                if worker_handle.proc.returncode is not None
+                else None
+            }
+            write_json(outdir / "_worker_exit.json", exit_info)
+            return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
+        if delete_supply_res.returncode != 0:
+            print(
+                f"[labs run {SCENARIO_DUPLICATE_DELIVERY}] failed to insert delete outbox events: rc={delete_supply_res.returncode}"
             )
-            if upsert_supply_res.returncode is None:
-                print(f"[labs run {SCENARIO_DUPLICATE_DELIVERY}] upsert inserter timed out")
+            worker_handle.terminate_and_wait(timeout_s=30)
+            return DrillResult(ok=False, meta={"exit_code": 4}, summary={}, errors=[])
+
+        outbox_event_ids.extend(list(delete_supply_res.outbox_event_ids))
+
+        (outdir / "_outbox_event_ids.txt").write_text("\n".join(outbox_event_ids) + "\n", encoding="utf-8")
+
+        upsert_supply = dict(upsert_supply_res.evidence or {})
+        upsert_supply["outbox_event_ids"] = list(upsert_supply_res.outbox_event_ids)
+        upsert_supply["insert_count"] = int(upsert_supply.get("insert_count") or 1)
+        delete_supply = dict(delete_supply_res.evidence or {})
+        delete_supply["outbox_event_ids"] = list(delete_supply_res.outbox_event_ids)
+        delete_supply["insert_count"] = int(
+            delete_supply.get("insert_count")
+            or len(delete_supply_res.outbox_event_ids)
+            or max(1, int(delete_count))
+        )
+        write_json(
+            outdir / "_supply.json",
+            {"supplies": [upsert_supply, delete_supply], "outbox_event_ids": list(outbox_event_ids)},
+        )
+
+        while True:
+            if duration > 0 and (time.time() - start) >= duration:
+                try:
+                    metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
+                    metrics_after_path.write_text(metrics_after, encoding="utf-8")
+                    (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
+                except Exception as exc:  # noqa: BLE001
+                    metrics_after_path.write_text(
+                        f"scrape_failed: {type(exc).__name__}: {exc}\n",
+                        encoding="utf-8",
+                    )
+                stopped_by_controller = True
                 worker_handle.terminate_and_wait(timeout_s=30)
-                exit_info = {
-                    "returncode": int(worker_handle.proc.returncode)
-                    if worker_handle.proc.returncode is not None
-                    else None
-                }
-                write_json(outdir / "_worker_exit.json", exit_info)
-                return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
-            if upsert_supply_res.returncode != 0:
-                print(
-                    f"[labs run {SCENARIO_DUPLICATE_DELIVERY}] failed to insert upsert outbox event: rc={upsert_supply_res.returncode}"
-                )
-                worker_handle.terminate_and_wait(timeout_s=30)
-                return DrillResult(ok=False, meta={"exit_code": 3}, summary={}, errors=[])
+                break
 
-            outbox_event_ids.extend(list(upsert_supply_res.outbox_event_ids))
-            time.sleep(1.5)
-
-            delete_env = env.copy()
-            delete_env["OUTBOX_ENTITY_TYPE"] = str(entity_type)
-            delete_env["OUTBOX_ENTITY_ID"] = entity_id
-
-            delete_supply_res = run_search_outbox_supply_inserter_v1(
-                outdir=outdir,
-                env=delete_env,
-                op="delete",
-                insert_count=max(1, int(delete_count)),
-                create_search_index_row=False,
-                event_version=0,
-                timeout_s=30.0,
-                file_prefix="_trigger_delete",
-            )
-            if delete_supply_res.returncode is None:
-                print(f"[labs run {SCENARIO_DUPLICATE_DELIVERY}] delete inserter timed out")
-                worker_handle.terminate_and_wait(timeout_s=30)
-                exit_info = {
-                    "returncode": int(worker_handle.proc.returncode)
-                    if worker_handle.proc.returncode is not None
-                    else None
-                }
-                write_json(outdir / "_worker_exit.json", exit_info)
-                return DrillResult(ok=False, meta={"exit_code": 5}, summary={}, errors=[])
-            if delete_supply_res.returncode != 0:
-                print(
-                    f"[labs run {SCENARIO_DUPLICATE_DELIVERY}] failed to insert delete outbox events: rc={delete_supply_res.returncode}"
-                )
-                worker_handle.terminate_and_wait(timeout_s=30)
-                return DrillResult(ok=False, meta={"exit_code": 4}, summary={}, errors=[])
-
-            outbox_event_ids.extend(list(delete_supply_res.outbox_event_ids))
-
-            (outdir / "_outbox_event_ids.txt").write_text("\n".join(outbox_event_ids) + "\n", encoding="utf-8")
-
-            upsert_supply = dict(upsert_supply_res.evidence or {})
-            upsert_supply["outbox_event_ids"] = list(upsert_supply_res.outbox_event_ids)
-            upsert_supply["insert_count"] = int(upsert_supply.get("insert_count") or 1)
-            delete_supply = dict(delete_supply_res.evidence or {})
-            delete_supply["outbox_event_ids"] = list(delete_supply_res.outbox_event_ids)
-            delete_supply["insert_count"] = int(delete_supply.get("insert_count") or len(delete_supply_res.outbox_event_ids) or max(1, int(delete_count)))
-            write_json(
-                outdir / "_supply.json",
-                {"supplies": [upsert_supply, delete_supply], "outbox_event_ids": list(outbox_event_ids)},
-            )
-
-            while True:
-                if duration > 0 and (time.time() - start) >= duration:
-                    try:
-                        metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
-                        metrics_after_path.write_text(metrics_after, encoding="utf-8")
-                        (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
-                    except Exception as exc:  # noqa: BLE001
-                        metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-                    stopped_by_controller = True
-                    worker_handle.terminate_and_wait(timeout_s=30)
-                    break
-
-                ret = worker_handle.proc.poll()
-                if ret is not None:
-                    try:
-                        metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
-                        metrics_after_path.write_text(metrics_after, encoding="utf-8")
-                        (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
-                    except Exception as exc:  # noqa: BLE001
-                        metrics_after_path.write_text(f"scrape_failed: {type(exc).__name__}: {exc}\n", encoding="utf-8")
-                    break
-                time.sleep(0.25)
+            ret = worker_handle.proc.poll()
+            if ret is not None:
+                try:
+                    metrics_after = scrape_metrics_text(port=int(metrics_port), timeout_s=4.0)
+                    metrics_after_path.write_text(metrics_after, encoding="utf-8")
+                    (outdir / "_metrics.txt").write_text(metrics_after, encoding="utf-8")
+                except Exception as exc:  # noqa: BLE001
+                    metrics_after_path.write_text(
+                        f"scrape_failed: {type(exc).__name__}: {exc}\n",
+                        encoding="utf-8",
+                    )
+                break
+            time.sleep(0.25)
     except KeyboardInterrupt:
         stopped_by_controller = True
         worker_handle.terminate_and_wait(timeout_s=30)
@@ -342,7 +371,7 @@ def verify_duplicate_delivery(inputs: DrillInputs) -> DrillResult:
             supply_for_check = supply
 
         if supply_for_check and supply_for_check.get("outbox_event_ids"):
-            env = load_env_from_run_recipe_v1(run_dir)
+            env = load_env_from_run_recipe_v1(run_dir=run_dir)
             database_url = (env.get("DATABASE_URL") or "").strip()
             if database_url:
                 supply_db_check = verify_supply_rows_v1(database_url=database_url, supply=supply_for_check)

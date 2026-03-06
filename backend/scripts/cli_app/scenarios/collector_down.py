@@ -70,6 +70,24 @@ def run_collector_down(inputs: DrillInputs) -> DrillResult:
     ensure_dir(metrics_dir)
     ensure_dir(exports_dir)
 
+    run_log_path = logs_dir / f"run-{run_id}.log"
+    try:
+        run_log_path.write_text(
+            f"[labs run {SCENARIO_COLLECTOR_DOWN}] start at {time.strftime('%Y-%m-%d %H:%M:%S')}\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
+    metrics_note_path = metrics_dir / "metrics-note.txt"
+    try:
+        metrics_note_path.write_text(
+            f"note: metrics files may be added later (scenario={SCENARIO_COLLECTOR_DOWN} run_id={run_id})\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
     env = with_backend_pythonpath(load_env(env_file=str(env_file) if env_file else None))
 
     service_name = service
@@ -255,7 +273,7 @@ def verify_collector_down(inputs: DrillInputs) -> DrillResult:
     supply_db_ok = True
     try:
         if isinstance(supply, dict) and supply.get("outbox_event_ids"):
-            env = load_env_from_run_recipe_v1(run_dir)
+            env = load_env_from_run_recipe_v1(run_dir=run_dir)
             database_url = (env.get("DATABASE_URL") or "").strip()
             if database_url:
                 supply_db_check = verify_supply_rows_v1(database_url=database_url, supply=supply)

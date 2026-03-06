@@ -58,6 +58,24 @@ def run_projection_version(inputs: DrillInputs) -> DrillResult:
     ensure_dir(logs_dir)
     ensure_dir(metrics_dir)
 
+    run_log_path = logs_dir / f"run-{run_id}.log"
+    try:
+        run_log_path.write_text(
+            f"[labs run {SCENARIO_PROJECTION_VERSION}] start at {time.strftime('%Y-%m-%d %H:%M:%S')}\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
+    metrics_note_path = metrics_dir / "metrics-note.txt"
+    try:
+        metrics_note_path.write_text(
+            f"note: metrics files may be added later (scenario={SCENARIO_PROJECTION_VERSION} run_id={run_id})\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
     env = with_backend_pythonpath(load_env(env_file=str(env_file) if env_file else None))
 
     env["OUTBOX_RUN_SECONDS"] = str(int(duration))

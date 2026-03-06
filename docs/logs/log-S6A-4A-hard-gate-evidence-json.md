@@ -133,6 +133,12 @@
 - P2-C3-S1：新增第二个 hard-gate 场景（从 `fault/obs_infra/es_down_connect` 开始）并沿用最小矩阵（r1/r2/r3）
 - P2-C4-S1：新增第三个 hard-gate 场景（`fault/obs_infra/es_429_inject`）并沿用最小矩阵（r1/r2/r3）
 - P2-C5-S1：新增第四个 hard-gate 场景（`fault/obs_infra/db_claim_contention`）并沿用最小矩阵（r1/r2/r3）
+- P2-C6-S1：新增第五个 hard-gate 场景（`fault/obs_infra/collector_down`）并沿用最小矩阵（r1/r2/r3）
+- P2-C7-S1：新增第六个 hard-gate 场景（`fault/obs_infra/duplicate_delivery`）并沿用最小矩阵（r1/r2/r3）
+- P2-C8-S1：新增第七个 hard-gate 场景（`fault/obs_infra/es_bulk_partial`）并沿用最小矩阵（r1/r2/r3）
+- P2-C9-S1：新增第八个 hard-gate 场景（`fault/obs_infra/es_write_block_4xx`）并沿用最小矩阵（r1/r2/r3）
+- P2-C10-S1：新增第九个 hard-gate 场景（`fault/obs_infra/projection_version`）并沿用最小矩阵（r1/r2/r3）
+- P2-C11-S1：新增第十个 hard-gate 场景（`fault/obs_infra/stuck_reclaim`）并沿用最小矩阵（r1/r2/r3）
 
 ### P3（Guardrails）
 
@@ -167,6 +173,12 @@
 - [x] `P2-C3-S1`：新增第二个 hard-gate 场景（`fault/obs_infra/es_down_connect`）并完成矩阵证据
 - [x] `P2-C4-S1`：新增第三个 hard-gate 场景（`fault/obs_infra/es_429_inject`）并完成矩阵证据
 - [x] `P2-C5-S1`：新增第四个 hard-gate 场景（`fault/obs_infra/db_claim_contention`）并完成矩阵证据
+- [ ] `P2-C6-S1`：新增第五个 hard-gate 场景（`fault/obs_infra/collector_down`）并完成矩阵证据
+- [ ] `P2-C7-S1`：新增第六个 hard-gate 场景（`fault/obs_infra/duplicate_delivery`）并完成矩阵证据
+- [ ] `P2-C8-S1`：新增第七个 hard-gate 场景（`fault/obs_infra/es_bulk_partial`）并完成矩阵证据
+- [ ] `P2-C9-S1`：新增第八个 hard-gate 场景（`fault/obs_infra/es_write_block_4xx`）并完成矩阵证据
+- [ ] `P2-C10-S1`：新增第九个 hard-gate 场景（`fault/obs_infra/projection_version`）并完成矩阵证据
+- [ ] `P2-C11-S1`：新增第十个 hard-gate 场景（`fault/obs_infra/stuck_reclaim`）并完成矩阵证据
 
 ### P3（Guardrails）
 
@@ -311,6 +323,54 @@
     - `_metrics/metrics-before-1.txt` 非空（length=12469）
     - `_metrics/metrics-after-1.txt` 非空（length=12830）
 
+### P2-C6-S1（CI hard-gate matrix｜fault/obs_infra/collector_down｜TBD）
+
+- workflow：`.github/workflows/hard-gate-fault-collector-down.yml`
+- scenario_id：`fault/obs_infra/collector_down`
+- headSha：`<TBD>`
+- CI run：`<TBD>`
+- artifacts：`<TBD>`
+
+### P2-C7-S1（CI hard-gate matrix｜fault/obs_infra/duplicate_delivery｜TBD）
+
+- workflow：`.github/workflows/hard-gate-fault-duplicate-delivery.yml`
+- scenario_id：`fault/obs_infra/duplicate_delivery`
+- headSha：`<TBD>`
+- CI run：`<TBD>`
+- artifacts：`<TBD>`
+
+### P2-C8-S1（CI hard-gate matrix｜fault/obs_infra/es_bulk_partial｜TBD）
+
+- workflow：`.github/workflows/hard-gate-fault-es-bulk-partial.yml`
+- scenario_id：`fault/obs_infra/es_bulk_partial`
+- headSha：`<TBD>`
+- CI run：`<TBD>`
+- artifacts：`<TBD>`
+
+### P2-C9-S1（CI hard-gate matrix｜fault/obs_infra/es_write_block_4xx｜TBD）
+
+- workflow：`.github/workflows/hard-gate-fault-es-write-block-4xx.yml`
+- scenario_id：`fault/obs_infra/es_write_block_4xx`
+- headSha：`<TBD>`
+- CI run：`<TBD>`
+- artifacts：`<TBD>`
+
+### P2-C10-S1（CI hard-gate matrix｜fault/obs_infra/projection_version｜TBD）
+
+- workflow：`.github/workflows/hard-gate-fault-projection-version.yml`
+- scenario_id：`fault/obs_infra/projection_version`
+- headSha：`<TBD>`
+- CI run：`<TBD>`
+- artifacts：`<TBD>`
+
+### P2-C11-S1（CI hard-gate matrix｜fault/obs_infra/stuck_reclaim｜TBD）
+
+- workflow：`.github/workflows/hard-gate-fault-stuck-reclaim.yml`
+- scenario_id：`fault/obs_infra/stuck_reclaim`
+- headSha：`<TBD>`
+- CI run：`<TBD>`
+- artifacts：`<TBD>`
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-05：创建本 log，开始将 drills 推进为 CI hard-gate（evidence JSON + 自解释 artifacts）。
@@ -319,3 +379,4 @@
 - 2026-03-06：新增第二个 hard-gate：`fault/obs_infra/es_down_connect`（r1/r2/r3 矩阵 + `require_min_artifacts=true`），并补齐 `es_down_connect.run` 的最小落盘占位输出。
 - 2026-03-06：新增第三个 hard-gate：`fault/obs_infra/es_429_inject`（r1/r2/r3 矩阵 + `require_min_artifacts=true`），并补齐 `es_429_inject.run` 的最小落盘占位输出。
 - 2026-03-06：新增第四个 hard-gate：`fault/obs_infra/db_claim_contention`（r1/r2/r3 矩阵 + `require_min_artifacts=true`），并修复 verify 中的 keyword-only 参数调用，确保 `_result.json.ok=true` 可被 CI 判定。
+- 2026-03-06：补齐剩余 fault 场景的 hard-gate workflows（collector_down / duplicate_delivery / es_bulk_partial / es_write_block_4xx / projection_version / stuck_reclaim），并在对应 `*.run` 中确保异常路径也会产生最小 `_logs/_metrics`（通过 controller run log + metrics-note 占位）。

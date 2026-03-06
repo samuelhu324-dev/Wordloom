@@ -61,6 +61,24 @@ def run_es_bulk_partial(inputs: DrillInputs) -> DrillResult:
     ensure_dir(metrics_dir)
     ensure_dir(exports_dir)
 
+    run_log_path = logs_dir / f"run-{run_id}.log"
+    try:
+        run_log_path.write_text(
+            f"[labs run {SCENARIO_ES_BULK_PARTIAL}] start at {time.strftime('%Y-%m-%d %H:%M:%S')}\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
+    metrics_note_path = metrics_dir / "metrics-note.txt"
+    try:
+        metrics_note_path.write_text(
+            f"note: metrics files may be added later (scenario={SCENARIO_ES_BULK_PARTIAL} run_id={run_id})\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+
     env = with_backend_pythonpath(load_env(env_file=str(env_file) if env_file else None))
 
     service_name = service
