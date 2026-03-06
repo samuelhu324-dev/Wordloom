@@ -137,19 +137,21 @@
 - 将 `error_reason`（DB）与 Prometheus `reason` label 视为同一 contract。
 - verify 既要看 metrics delta，也要看 DB 终态（terminal vs retry_scheduled）与 reason family。
 
-- 子 log（P3 落地）：`docs/logs/log-S6A-3A-failure-taxonomy-hard-interface.md`（draft）
+- 子 log（P3 落地）：`docs/logs/log-S6A-3A-failure-taxonomy-hard-interface.md`（stable）
 
 ### P4（Draft）：Hard-gate + evidence JSON（让 CI 失败自解释）
 
 - 每个 `fault/obs_infra/*` 场景导出一个小的 evidence JSON：expected vs observed（retry/failed/reclaimed/replayed）。
 - CI 失败时 artifacts 中必须包含：evidence JSON + 最小 logs/metrics dumps（避免“只能看图/看日志猜”）。
 
+- 子 log（P4 落地）：`docs/logs/log-S6A-4A-hard-gate-evidence-json.md`（draft）
+
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：S6 旧 SoT 索引化（INDEX 清单 + S6A mapping）
 - [x] `P1`：Stable Entry contract（入口漂移零容忍 + helper 复用）
 - [x] `P2`：Supply creation 统一到 `outbox_events`（legacy 退场计划）
-- [ ] `P3`：reason taxonomy contract（metrics + DB + verify 对齐）
+- [x] `P3`：reason taxonomy contract（metrics + DB + verify 对齐）
 - [ ] `P4`：fault suite hard-gate（evidence JSON + 自解释 artifacts）
 
 ## Current Status（进展摘要）
@@ -158,7 +160,8 @@
 - Route B/fault drills：已修复一次“入口漂移/表不一致”风险（见 Recent changes）。
 - P1：Stable Entry contract 已落地（见子 log：`docs/logs/log-S6A-1A-stable-entry-contract.md`，含 shadow_verify 证据）。
 - P2：Supply creation contract 已落地并标记 stable（见子 log：`docs/logs/log-S6A-2A-unify-supply-creation.md`）。
-- P3–P4：已形成 draft checklist，待按切片推进并补 evidence。
+- P3：reason taxonomy contract 已闭环（DB + metrics + verify）并产出多份 evidence（见子 log：`docs/logs/log-S6A-3A-failure-taxonomy-hard-interface.md`）。
+- P4：已创建 hard-gate log，下一步推进 workflow hard-gate（见子 log：`docs/logs/log-S6A-4A-hard-gate-evidence-json.md`）。
 
 ## Stability（stable 口径）
 

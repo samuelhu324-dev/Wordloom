@@ -1,0 +1,34 @@
+name: hard-gate-fault-es-timeout
+
+on:
+  pull_request:
+    paths:
+      - backend/**
+      - docs/labs/scenarios/catalog.yml
+      - .github/workflows/*.yml
+      - docker-compose*.yml
+      - docker/**
+  push:
+    branches:
+      - main
+    paths:
+      - backend/**
+      - docs/labs/scenarios/catalog.yml
+      - .github/workflows/*.yml
+      - docker-compose*.yml
+      - docker/**
+  workflow_dispatch: {}
+
+concurrency:
+  group: hard-gate-fault-es-timeout-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    uses: ./.github/workflows/reusable-labs-scenario-runner.yml
+    with:
+      scenario_id: fault/obs_infra/es_timeout
+      env_file: .env.test
+      duration: "25"
+      lookback: "30m"
+      keep_last: "10"
