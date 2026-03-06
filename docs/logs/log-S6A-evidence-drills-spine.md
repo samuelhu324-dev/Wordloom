@@ -5,14 +5,14 @@
 **id**: `S6A-evidence-drills-spine`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `evidence & drills spine (indexing + contracts + hard-gates)`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S6`
 **tags**: `EVOLUTION, Evidence, Drills, Artifacts, FailureContract, Scenarios, epic/s6, sub/6a`
 **links**: ``
   **roadmap_v2**: `docs/ROADMAP v2.md`
   **runbook_s2b**: `docs/runbook/run-S2B-projection-table-merge.md`
 **created**: `2026-03-04`
-**updated**: `2026-03-05`
+**updated**: `2026-03-06`
 
 ---
 
@@ -152,7 +152,7 @@
 - [x] `P1`：Stable Entry contract（入口漂移零容忍 + helper 复用）
 - [x] `P2`：Supply creation 统一到 `outbox_events`（legacy 退场计划）
 - [x] `P3`：reason taxonomy contract（metrics + DB + verify 对齐）
-- [ ] `P4`：fault suite hard-gate（evidence JSON + 自解释 artifacts）
+- [x] `P4`：fault suite hard-gate（evidence JSON + 自解释 artifacts）
 
 ## Current Status（进展摘要）
 
@@ -161,15 +161,15 @@
 - P1：Stable Entry contract 已落地（见子 log：`docs/logs/log-S6A-1A-stable-entry-contract.md`，含 shadow_verify 证据）。
 - P2：Supply creation contract 已落地并标记 stable（见子 log：`docs/logs/log-S6A-2A-unify-supply-creation.md`）。
 - P3：reason taxonomy contract 已闭环（DB + metrics + verify）并产出多份 evidence（见子 log：`docs/logs/log-S6A-3A-failure-taxonomy-hard-interface.md`）。
-- P4：已创建 hard-gate log，下一步推进 workflow hard-gate（见子 log：`docs/logs/log-S6A-4A-hard-gate-evidence-json.md`）。
+- P4：已完成 fault suite hard-gate（CI 可判定 PASS/FAIL + 自解释 artifacts），记账见子 log：`docs/logs/log-S6A-4A-hard-gate-evidence-json.md`。
 
 ## Stability（stable 口径）
 
-- 本 log 仍为 `draft`：表示“索引骨架已建立，但 P1–P4 的 hard gate/契约仍在演进”。
-- 达到 `stable` 的最低门槛（建议）：
-  - P1 的入口漂移防护落地（至少 1 个共享 helper 被 fault scenarios 全量复用）
-  - P3 的 reason contract 至少在 1 个 fault scenario 上形成可被 verify 断言的闭环
-  - P4 至少 1 个场景具备 evidence JSON 且 CI 失败 artifacts 自解释
+- 本 log 标记为 `stable`：表示 P0–P4 的骨架里程碑已闭环（索引 + contract + hard-gate）。
+- 进入 `stable` 的最低门槛已满足：
+  - P1：入口漂移防护落地（共享 helper 复用）
+  - P3：reason contract 闭环（metrics + DB + verify 对齐）
+  - P4：fault drills 已形成 hard-gate，且 artifacts 最小集可自解释
 
 ## Recent changes (for traceability)
 
