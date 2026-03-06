@@ -1,0 +1,189 @@
+# log-S5B-1A-policy-audit-hard-gate-drills（Phase 1：Policy/Audit hard-gate drills v1）
+
+---
+
+**id**: `S5B-1A`
+**kind**: `log`               # log | lab | runbook | adr | note
+**title**: `policy/audit hard-gate drills (tenant boundary + deny reasons + request_id traceability) v1`
+**status**: `draft`           # draft | stable | archived
+**scope**: `S5`
+**tags**: `EVOLUTION, Security, Governance, MultiTenant, Authorization, Policy, Audit, Drills, Evidence, HardGate, epic/s5, sub/1a`
+**links**: ``
+  **issue**: ``
+  **pr**: ``
+  **adr**: ``
+  **runbook**: ``
+  **parent_log**: `docs/logs/log-S5B-security-governance-hard-gates.md`
+  **previous_log**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
+  **reference_log_1**: `docs/logs/log-S5A-1A-authcontext-policy-audit.md`
+  **reference_log_2**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
+**created**: `2026-03-06`
+**updated**: `2026-03-06`
+
+---
+
+## Decision / Outcome（结论区）
+
+**Decision**:
+
+- 把路线 C 的“安全骨架正确性”做成 **hard-gate drills**：每次变更 policy/audit/auth context 都能用一组最小场景回归验证，并产出 machine-verifiable evidence。
+- v1 先交付最小闭环：
+  - tenant boundary（跨 tenant 访问被拒）
+  - role deny reasons（not_member/not_admin/tenant_mismatch）
+  - audit traceability（request_id 能串起 deny/allow 的审计记录）
+
+**Default choices（本 phase 默认决策 / v1）**:
+
+- 演练环境优先 dev/test（DB-only + API）；不引入生产级 IdP。
+- evidence 以 artifacts JSON 为事实源（PASS/FAIL 可机械判定），log 只记 headSha + 路径/Run URL。
+- 拒绝语义：默认 404（防存在性泄露），但 deny 的审计必须记录低基数 reason（详见 P0）。
+
+## Definitions（概念定义，可选）
+
+- **AuthContext**：统一请求安全上下文（`user_id/tenant_id/roles/request_id`）。
+- **Policy**：集中授权规则表达层；handler/service 只负责加载资源（含 tenant filter）并调用 policy。
+- **Audit**：append-only 操作日志（deny/allow/关键写成功），以 `request_id` 关联。
+- **Hard gate drill**：可重复执行的最小场景集合，输出 artifacts 并给出 PASS/FAIL。
+
+## Constraints（约束）
+
+- reason taxonomy 必须低基数白名单（禁止把 exception message、ids 直接当 reason）。
+- drills 必须能在 CI 或本地重复跑通；产物结构稳定。
+- 不扩展到复杂 RBAC/ACL；只验证 RBAC-lite + tenant boundary 的最小集合。
+
+## Scope（本 log 范围）
+
+- `P0`：contract（deny 语义、audit 口径、reason 白名单、evidence schema）
+- `P1`：实现最小 drills runner（脚本/场景）
+- `P2`：drills: tenant escape（越权读/写）
+- `P3`：drills: audit completeness（request_id/actor/tenant/action/result/reason）
+- `P4`：hard gate（可选）：CI workflow 或单命令 pipeline
+
+## Success Criteria（DoD）
+
+- contract 层面：
+  - 统一 deny 语义（404 vs 403）与审计 result/reason 口径，写入 P0。
+  - reason 白名单明确：`tenant_mismatch/not_member/not_admin/not_owner`（可扩展但需显式）。
+
+- drills 层面：
+  - 至少 3 个 drills scenario（每个都能独立 PASS/FAIL）：
+    - tenant 越权读（预期 404 或 403；按 contract）
+    - role 不足写（预期 403 + reason=not_admin 或等价）
+    - audit 完整性（预期写入 1 条 audit_log，且 request_id 能关联）
+  - 每个 scenario 输出 artifacts：
+    - `_result.json`（含 pass/fail + observed/expected）
+    - `_logs/`（至少 1 个非空日志文件）
+    - `_metrics/`（至少 1 个非空指标文件，或明确声明不适用并给出替代证据）
+
+## Stability（stable 口径）
+
+- 本 log 标记为 `stable` 表示：
+  - P0 contract 稳定；
+  - 至少 3 个 drills scenario 可复跑且 PASS/FAIL 机械可判定；
+  - Evidence 区有可追溯 headSha + artifacts 路径（或 CI run URL）。
+
+## P0（Contract｜v1）
+
+### P0-C1-S1（Authorization contract：deny semantics + reason taxonomy）
+
+- 未认证：401。
+- tenant 越界：
+  - 默认对读操作返回 404（避免泄露存在性）；但必须：
+    - audit 记录 `result=not_found` 或 `denied`（二选一，全局一致）
+    - reason=`tenant_mismatch`（低基数）
+- role 不足（member 执行 admin 动作）：403，reason=`not_admin`。
+- 无 membership：
+  - 对读操作默认 404（或 403，但必须全局一致）；
+  - 对写/admin 默认 403，reason=`not_member`。
+
+### P0-C1-S2（Audit contract：action/result/reason 字段口径）
+
+- action 命名：`<domain>.<verb>` 或 `<domain>.<noun>.<verb>`（示例：`book.create`、`bookshelf.create`、`membership.grant`）。
+- result 枚举（建议 v1）：`success | denied | not_found | error`。
+- reason 白名单（v1）：`tenant_mismatch | not_member | not_admin | not_owner | bad_request`。
+- audit 必填字段：`tenant_id/actor_user_id/request_id/action/result`；可选 `resource_type/resource_id/meta_json`。
+
+### P0-C1-S3（证据口径 contract｜v1）
+
+- evidence `_result.json` 必须包含：
+  - 输入（inputs）：
+    - `request_id`（或生成策略说明）
+    - `tenant_id`、`user_id`、`roles`（若 roles 由 membership 决定，记录来源）
+    - `endpoint/method` 与关键参数（resource ids）
+  - 期望（expected）：
+    - `http_status`
+    - `audit_expected`（是否应写审计；预期 action/result/reason）
+  - 观测（observed）：
+    - `http_status`
+    - `audit_rows_found`（按 request_id 查询到的行数）
+    - `audit_action/result/reason`（若存在）
+  - 判定（verdict）：
+    - `ok: true|false`
+    - `failure_reason`（低基数，便于聚合）
+  - 产物（artifacts）：
+    - `artifacts_dir`、关键文件列表（至少 logs/metrics/result.json）
+
+## Numbering（编号约定）
+
+- `S<n>`：Step（步骤）。
+- `C<n>`：Cycle（循环轮次）。
+
+**Commit / PR 命名**:
+
+- `S5B-1A/P<phase>-C<cycle>-S<step>: <summary>`
+
+## Plan（draft）
+
+### P1（实现 drills runner）
+
+- P1-C1-S1：新增最小 drills runner（建议 Python），支持：设置请求头（tenant/request_id）、发起 API 请求、查询 audit_log、输出 `_result.json`。
+- P1-C1-S2：固化 artifacts contract（目录结构 + 非空检查 + PASS/FAIL 判定）。
+
+### P2（Drills：tenant escape）
+
+- P2-C1-S1：tenant 越权读（跨 library_id 读 book/bookshelf）
+- P2-C1-S2：tenant 越权写（跨 library_id 写 book/bookshelf/block）
+
+### P3（Drills：audit completeness）
+
+- P3-C1-S1：deny 的 audit 记录完整性（action/result/reason/request_id）
+
+## Execution Checklist（unchecked）
+
+### P0（Contract）
+
+- [ ] `P0-C1-S1`：deny semantics + reason taxonomy 固化
+- [ ] `P0-C1-S2`：audit action/result/reason 口径固化
+- [ ] `P0-C1-S3`：evidence JSON schema 固化
+
+### P1（实现）
+
+- [ ] `P1-C1-S1`：drills runner 产出 `_result.json` + logs/metrics
+- [ ] `P1-C1-S2`：artifacts contract 检查（非空 + PASS/FAIL）
+
+### P2（drill/verify）
+
+- [ ] `P2-C1-S1`：tenant escape read drill
+- [ ] `P2-C1-S2`：tenant escape write drill
+
+### P3（drill/verify）
+
+- [ ] `P3-C1-S1`：audit completeness drill
+
+## Evidence（预留）
+
+- Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
+
+### P2-C1-S1（tenant escape read drill｜YYYY-MM-DD）
+
+- headSha：`<git sha>`
+- artifacts：`docs/labs/_snapshot/auto/s5b1a_tenant_escape_read/<run_id>/_result.json`
+- 期望（expected）：
+  - unauthorized read is rejected (404/403 per contract)
+  - audit row exists with low-cardinality reason
+- 观测（observed）：
+  - ...
+
+## Recent changes（for traceability，可选）
+
+- 2026-03-06：scaffold Phase 1 log skeleton.
