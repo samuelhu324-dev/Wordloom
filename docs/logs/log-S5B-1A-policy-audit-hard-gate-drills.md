@@ -268,7 +268,7 @@
 
 ### P2（drill/verify）
 
-- [ ] `P2-C1-S1`：tenant escape read drill
+- [x] `P2-C1-S1`：tenant escape read drill
 - [ ] `P2-C1-S2`：tenant escape write drill
 
 ### P3（drill/verify）
@@ -297,15 +297,16 @@
 - 结果：PASS（`ok=true`；case=`tenant_cross_read_404`）
 - 环境要点：API `WORDLOOM_API_BASE_URL=http://localhost:31001`；DB `DATABASE_URL=...:5435/wordloom_dev`；actor 默认 `S5B_1A_ACTOR_USER_ID=550e8400-e29b-41d4-a716-446655440000`
 
-### P2-C1-S1（tenant escape read drill｜YYYY-MM-DD）
+### P2-C1-S1（tenant escape read drill｜2026-03-06｜green）
 
-- headSha：`<git sha>`
-- artifacts：`docs/labs/_snapshot/auto/S5B-1A/tenant_escape_read/<run_id>/_result.json`
+- headSha：`d9bbd4593802beefccf339e19a25277e8ffc5bfb`
+- artifacts：`docs/labs/_snapshot/auto/S5B-1A/tenant_escape_read/a9b12489-490a-42f8-9c7a-5f0c8ae11e2c/`
+- 结果：PASS（`ok=true`；cases=`tenant_cross_read_404` + `tenant_cross_book_read_404`）
 - 期望（expected）：
-  - unauthorized read is rejected (404/403 per contract)
-  - audit row exists with low-cardinality reason
+  - cross-tenant bookshelf.get → 404 + audit `not_found` + reason=`tenant_mismatch`
+  - cross-tenant book.get → 404 + audit `not_found` + reason=`tenant_mismatch`
 - 观测（observed）：
-  - ...
+  - 两个 case 都命中 404；并能通过 request_id 在 `audit_log` 找到对应 deny 记录（reason 低基数且可机械判定）。
 
 ## Recent changes（for traceability，可选）
 
