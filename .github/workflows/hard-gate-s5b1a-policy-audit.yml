@@ -81,6 +81,7 @@ jobs:
           python -m alembic -c alembic.ini upgrade head
 
       - name: Start backend (uvicorn)
+        working-directory: backend
         env:
           DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
           WORDLOOM_JWT_SECRET_KEY: dev-secret-key-change-in-production
@@ -89,8 +90,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          nohup python -m uvicorn api.app.main:app --host 127.0.0.1 --port 31001 > backend-uvicorn.log 2>&1 &
-          echo $! > backend-uvicorn.pid
+          nohup python -m uvicorn api.app.main:app --host 127.0.0.1 --port 31001 > ../backend-uvicorn.log 2>&1 &
+          echo $! > ../backend-uvicorn.pid
 
           for i in $(seq 1 60); do
             code="$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:31001/docs || true)"
