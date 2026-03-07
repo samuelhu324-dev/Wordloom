@@ -97,6 +97,14 @@
   - <默认基线/phase 拆分/证据口径稳定>
   - <稳定入口（单命令/工作流/CLI）明确>
 
+## Numbering & Commit Naming（编号与提交命名）
+
+- 编号约定：`P<n>` 表示 Phase，`C<n>` 表示 Cycle，`S<n>` 表示 Step。
+- Commit / PR 命名：
+  - 基础形式：`<ID>/P<phase>-C<cycle>-S<steps>: <summary>`；
+  - `<steps>` 可以是单个 step（`1`，即 `...-S1`），也可以是在同一 phase / cycle 下连续的多个 step 合并（如 `1S2`，即 `...-S1S2`）。
+  - Multi-step 规则：只允许在 **同一 Phase + 同一 Cycle** 下合并多个 step；一旦跨 Phase 或跨 Cycle，必须拆成多次 commit。
+
 ## Recent changes（for traceability，可选）
 
 - YYYY-MM-DD：<发生了什么变更，为什么要记录，如何追溯（commit/PR/run URL）>

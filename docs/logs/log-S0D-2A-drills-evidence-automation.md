@@ -119,10 +119,17 @@
 ### P0-C1-S3（Commit / PR 命名 & 解析约定）
 
 - Commit/PR message 固定格式：
-  - `<LOG_ID>/P<phase>-C<cycle>-S<step>: <summary>`
-  - 例如：`S5B-3A/P2-C1-S2: membership audit coverage green evidence`。
+  - 基础形式：`<LOG_ID>/P<phase>-C<cycle>-S<steps>: <summary>`；
+  - `<steps>` 可以是单个 step（如 `1`，即 `...-S1: ...`），也可以是同一 phase / 同一 cycle 下连续的多个 step 合并（如 `1S2`，即 `...-S1S2: ...`）。
+  - 例如：
+    - 单步提交：`S5B-3A/P2-C1-S2: membership audit coverage green evidence`；
+    - 多步合并：`S0D-2A/P1-C1-S1S2: shared artifacts helper and S5B hard gates`（同时完成 P1-C1 下的 S1 和 S2）。
+- Multi-step 规则：
+  - 只允许在 **同一 Phase（P<phase>）+ 同一 Cycle（C<cycle>）** 下，将多个 step 一起完成时写成 `S1S2S3` 这种合并形式；
+  - 一旦涉及新的 Phase（例如同时做 P1 和 P2）或不同 Cycle，必须拆成多次 commit，分别记录，例如本次将 P1-C1-S1S2 与 P2-C1-S1 拆成两条提交。
 - 自动化工具可用正则解析：
-  - `(?P<log_id>S\w+-\w+)/P(?P<phase>\d+)-C(?P<cycle>\d+)-S(?P<step>\d+):`；
+  - `(?P<log_id>S\w+-\w+)/P(?P<phase>\d+)-C(?P<cycle>\d+)-S(?P<steps>\d+(?:S\d+)*):`；
+  - 其中 `steps` 捕获形如 `"1"` 或 `"1S2S3"` 的字符串，可按 `"S"` 切分得到 step 列表；
   - 将解析结果与 `artifacts/<log_id>-runs.json` 条目对齐，形成完整证据链：`commit → headSha → run_dir → _result.json/_logs → write_gate 汇总`。
 
 ## Numbering（编号约定）

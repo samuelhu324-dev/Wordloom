@@ -82,7 +82,7 @@
 
 **Commit / PR 命名**:
 
-- `<ID>/P<phase>-C<cycle>-S<step>: <summary>`
+- `<ID>/P<phase>-C<cycle>-S<steps>: <summary>`，其中 `<steps>` 可以是单个 step（`1`，即 `...-S1`），也可以是在同一 phase / cycle 下连续的多个 step 合并（如 `1S2`，即 `...-S1S2`）。
 
 ## Plan（draft）
 
