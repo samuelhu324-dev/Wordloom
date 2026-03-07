@@ -905,6 +905,8 @@ async def delete_bookshelf(
 
         elapsed = time.time() - start_time
         logger.info(f"[DELETE_BOOKSHELF] SUCCESS - elapsed={elapsed:.3f}s")
+    except HTTPException:
+        raise
     except BookshelfForbiddenError as e:
         elapsed = time.time() - start_time
         logger.warning(f"[DELETE_BOOKSHELF] FORBIDDEN - {str(e)}, elapsed={elapsed:.3f}s")
