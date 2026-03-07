@@ -111,7 +111,40 @@
 
 ### P0-C1-S3（Evidence & artifacts contract）
 
-- 复用 `S5B-1A` 的 artifacts 目录与 `_result.json` schema；新增 case 需遵守 failure_reason taxonomy。
+**Suite（v1）**:
+
+- suite_id：`bookshelf_delete_entrypoint`
+- runner：`python scripts/drills/s5b2a_p2c1s1_drills_runner.py`
+
+**Run dir layout（must）**:
+
+- `docs/labs/_snapshot/auto/S5B-2A/<suite_id>/<run_id>/`
+  - `_recipe.json`
+  - `_result.json`
+  - `_logs/run.log`
+  - `_metrics/summary.json`
+
+**Schema（v1，复用 S5B-1A verifier）**:
+
+- `_recipe.json.schema_version` = `s5b-1a.recipe.v1`
+- `_result.json.schema_version` = `s5b-1a.result.v1`
+- `_metrics/summary.json.schema_version` = `s5b-1a.metrics.v1`
+
+**Verification（hard gate signal）**:
+
+- `python scripts/drills/s5b1a_verify_artifacts.py --run-dir <run_dir>`
+- PASS 条件：verifier exit code=0 且 `_result.json.ok == true`
+
+**Failure taxonomy（low-cardinality）**:
+
+- `_result.json.cases[*].verdict.failure_reason` 仅允许：
+  - `http_status_mismatch`
+  - `audit_missing`
+  - `audit_action_mismatch`
+  - `audit_result_mismatch`
+  - `audit_reason_mismatch`
+  - `schema_violation`
+  - `unexpected_error`
 
 ## Numbering（编号约定）
 
@@ -147,7 +180,7 @@
 
 - [x] `P0-C1-S1`：选定目标链路 + action 命名
 - [x] `P0-C1-S2`：owner/tenant deny 语义 + audit reason 落点固化
-- [ ] `P0-C1-S3`：evidence schema/contract 明确（复用 S5B-1A）
+- [x] `P0-C1-S3`：evidence schema/contract 明确（复用 S5B-1A）
 
 ### P1（实现）
 
