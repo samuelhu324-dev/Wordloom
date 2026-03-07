@@ -163,6 +163,45 @@
 - P1-C1-S2：引入/完善 policy entrypoint（返回 decision + reason），并改造目标链路只调用 entrypoint。
 - P1-C1-S3：确保 audit reason 落在 `audit_log.reason`，并保持 action/result 口径稳定。
 
+### P1-C1-S1（现状定位：bookshelf.delete checks 分散点清单）
+
+**Call chain（today）**:
+
+- HTTP entry：DELETE /bookshelves/{bookshelf_id} → [backend/api/app/modules/bookshelf/routers/bookshelf_router.py](backend/api/app/modules/bookshelf/routers/bookshelf_router.py)
+- UseCase：DeleteBookshelfUseCase.execute → [backend/api/app/modules/bookshelf/application/use_cases/delete_bookshelf.py](backend/api/app/modules/bookshelf/application/use_cases/delete_bookshelf.py)
+- Repo：SQLAlchemyBookshelfRepository.get_by_id（支持 tenant-scoped lookup）→ [backend/infra/storage/bookshelf_repository_impl.py](backend/infra/storage/bookshelf_repository_impl.py)
+
+**Tenant filter / tenant boundary（分散点）**:
+
+- **Tenant-scoped load**：UseCase 使用 `repository.get_by_id(bookshelf_id, library_id=request.tenant_id)`；tenant mismatch 会表现为 `None → BookshelfNotFoundError`。
+- **Tenant mismatch 分类（best-effort）**：Router 在捕获 `BookshelfNotFoundError` 后，额外用 SQL `SELECT library_id FROM bookshelves WHERE id=:bookshelf_id` 探测“是否存在但属于其他 tenant”，若是则把结果改判为 `403/denied reason=tenant_mismatch`；否则维持 `404/not_found reason=null`。
+  - 结论：tenant boundary 目前被拆成两段（repo 的 tenant filter + router 的二次探测），且 router 使用 raw SQL（未通过 repo/port）。
+
+**Role / owner authorization（分散点）**:
+
+- **Role gate（router 内 if-else）**：Router 直接基于 `ctx.roles` 判定 allow/deny（allow=owner/admin；deny member→not_admin；deny 无 roles→not_member），并在 deny 时写 audit 后抛 `HTTPException(403)`。
+  - reason 常量来源：`api.app.policy.library_membership_policy`。
+- **Legacy owner check（usecase 内可选）**：UseCase 的 `_enforce_library_owner(...)` 在 `enforce_owner_check=True 且 actor_user_id!=None` 时生效：通过 `library_repository.get_by_id(library_id)` 取 library.owner，再比对 `actor_user_id`，不匹配则抛 `BookshelfForbiddenError(reason=not_owner)`。
+  - reason 常量来源：`api.app.policy.bookshelf_policy.REASON_NOT_OWNER`。
+  - 当前 delete 路由显式 `enforce_owner_check=False`，但 application layer tests 仍覆盖该分支，因此“owner check 口径”实际存在两套（roles 与 legacy owner）。
+
+**Audit write（分散点）**:
+
+- audit append 全部发生在 router（best-effort，多处 try/except）：
+  - role gate deny：`result=denied reason=not_admin|not_member`
+  - usecase success：`result=success`
+  - BookshelfForbiddenError：`result=denied reason=<e.details.reason>`（可能为 not_owner）
+  - BookshelfNotFoundError：`result=not_found reason=null` 或（tenant mismatch 探测成功）`result=denied reason=tenant_mismatch`
+- audit repo：`SQLAlchemyAuditLogRepository.append(...)` → [backend/infra/storage/audit_log_repository_impl.py](backend/infra/storage/audit_log_repository_impl.py)
+
+**Implication（P1-C1-S2 输入）**:
+
+- 目前“授权判定 + not_found/tenant_mismatch 分类”被拆在 router + usecase + repo（且 usecase 仍保留 legacy owner path），是 drift 的主要来源。
+- policy entrypoint 的最小收口点应覆盖：
+  - role gate（owner/admin/member/none）→ decision + deny reason
+  - tenant mismatch vs not_found 的统一分类（避免 router raw SQL）
+  - 对 usecase 的 `enforce_owner_check` 做明确处置：要么迁移到 entrypoint，要么明确废弃并更新调用方/测试。
+
 ### P2（drills/evidence）
 
 - P2-C1-S1：新增或扩展 1 个 scenario：
@@ -184,9 +223,15 @@
 
 ### P1（实现）
 
-- [ ] `P1-C1-S1`：定位分散的 owner/tenant checks
-- [ ] `P1-C1-S2`：收口到 policy entrypoint（最小改动）
+- [x] `P1-C1-S1`：定位分散的 owner/tenant checks
+- [x] `P1-C1-S2`：收口到 policy entrypoint（最小改动）
 - [ ] `P1-C1-S3`：审计 action/result/reason 对齐 contract
+
+**P1-C1-S2（实现摘要｜2026-03-07）**
+
+- 新增 policy entrypoint：`api.app.policy.bookshelf_delete_policy.authorize_bookshelf_delete(...)`，统一输出 decision（allow/deny/not_found）+ deny reason（低基数）。
+- delete router 改为只调用 entrypoint：移除 handler 内部的 roles if-else 与 tenant mismatch raw SQL 探测；tenant mismatch/not_found 分类在 entrypoint 内完成。
+- usecase 仍保留 tenant-scoped load（defense-in-depth），router 继续 best-effort 写 audit，但 audit 的 result/reason 来自 entrypoint 的 decision。
 
 ### P2（drill/verify）
 
@@ -213,6 +258,12 @@
 - 观测（observed）：
   - `_result.json.ok=true`，2/2 cases passed
   - verifier：`scripts/drills/s5b1a_verify_artifacts.py` exit code=0
+
+**bookshelf.delete entrypoint（post P1-C1-S2 refactor re-verify）｜2026-03-07**
+
+- headSha：`4c903cb750c084741eb0e442d26699425c1ffca8`
+- artifacts：`docs/labs/_snapshot/auto/S5B-2A/bookshelf_delete_entrypoint/2a3c6410-ae79-46b0-9abc-e36c0c940847/`
+- 观测（observed）：runner 输出 `[OK] Wrote artifacts ...`；verifier exit code=0
 
 ## Recent changes（for traceability，可选）
 

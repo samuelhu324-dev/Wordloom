@@ -838,25 +838,15 @@ async def delete_bookshelf(
     start_time = time.time()
     logger.info(f"[DELETE_BOOKSHELF] START - bookshelf_id={bookshelf_id}")
     try:
-        from api.app.policy.library_membership_policy import (
-            REASON_NOT_ADMIN,
-            REASON_NOT_MEMBER,
+        from api.app.policy.bookshelf_delete_policy import authorize_bookshelf_delete
+
+        decision = await authorize_bookshelf_delete(
+            ctx=ctx,
+            bookshelf_id=bookshelf_id,
+            session=di.get_session(),
         )
 
-        # P0-C1-S2 contract: delete is an admin action.
-        # allow: owner/admin
-        # deny: member -> not_admin
-        # deny: no membership -> not_member
-        if not ctx.roles:
-            deny_reason = REASON_NOT_MEMBER
-        elif "owner" in ctx.roles or "admin" in ctx.roles:
-            deny_reason = None
-        elif "member" in ctx.roles:
-            deny_reason = REASON_NOT_ADMIN
-        else:
-            deny_reason = REASON_NOT_MEMBER
-
-        if deny_reason is not None:
+        if not decision.allowed:
             try:
                 from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
 
@@ -868,11 +858,16 @@ async def delete_bookshelf(
                     action="bookshelf.delete",
                     resource_type="bookshelf",
                     resource_id=bookshelf_id,
-                    result="denied",
-                    reason=deny_reason,
+                    result=decision.audit_result,
+                    reason=decision.reason,
                 )
             except Exception as audit_exc:
-                logger.warning(f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+                logger.warning(
+                    f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}"
+                )
+
+            if decision.http_status == status.HTTP_404_NOT_FOUND:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
 
         # Authorization is handled by membership roles/policy; disable legacy owner check.
@@ -937,24 +932,10 @@ async def delete_bookshelf(
         elapsed = time.time() - start_time
         logger.warning(f"[DELETE_BOOKSHELF] NOT_FOUND - {str(e)}, elapsed={elapsed:.3f}s")
 
-        # Tenant mismatch detection (best-effort): cross-tenant delete is a 403.
+        # Not found: do not attempt tenant mismatch probing here.
+        # Tenant mismatch classification is handled by policy entrypoint.
         try:
-            from api.app.policy.library_membership_policy import REASON_TENANT_MISMATCH
             from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
-            from sqlalchemy import text
-
-            mismatch = False
-            try:
-                q = text("SELECT library_id FROM bookshelves WHERE id = :bookshelf_id")
-                row = (await di.get_session().execute(q, {"bookshelf_id": str(bookshelf_id)})).first()
-                if row and row[0] is not None:
-                    actual_library_id = str(row[0])
-                    if actual_library_id != str(ctx.tenant_id):
-                        mismatch = True
-            except Exception as reason_exc:
-                logger.warning(
-                    f"[DELETE_BOOKSHELF] AUDIT_REASON_CHECK_FAILED - {type(reason_exc).__name__}: {reason_exc}"
-                )
 
             audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
             await audit_repo.append(
@@ -964,14 +945,9 @@ async def delete_bookshelf(
                 action="bookshelf.delete",
                 resource_type="bookshelf",
                 resource_id=bookshelf_id,
-                result="denied" if mismatch else "not_found",
-                reason=REASON_TENANT_MISMATCH if mismatch else None,
+                result="not_found",
+                reason=None,
             )
-
-            if mismatch:
-                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
-        except HTTPException:
-            raise
         except Exception as audit_exc:
             logger.warning(f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
 
