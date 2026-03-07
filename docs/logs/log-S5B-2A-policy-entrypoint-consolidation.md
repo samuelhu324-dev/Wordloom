@@ -5,7 +5,7 @@
 **id**: `S5B-2A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `policy entrypoint consolidation (owner checks → policy + tenant filter) v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S5`
 **tags**: `EVOLUTION, Security, Governance, MultiTenant, Authorization, Policy, Audit, Drills, Evidence, HardGate, epic/s5, epic/s5b, sub/2a`
 **links**: ``
@@ -288,6 +288,7 @@
 - verifier：`python scripts/drills/s5b1a_verify_artifacts.py --run-dir <run_dir>`
 - CI workflow：[.github/workflows/hard-gate-s5b2a-policy-entrypoint.yml](.github/workflows/hard-gate-s5b2a-policy-entrypoint.yml)
 - CI artifacts upload：`docs/labs/_snapshot/auto/S5B-2A`
+- CI run URL：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22794731869`
 
 ## Recent changes（for traceability，可选）
 
