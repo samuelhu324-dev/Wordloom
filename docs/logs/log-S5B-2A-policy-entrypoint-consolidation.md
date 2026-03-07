@@ -235,14 +235,6 @@
 
 - [x] `P3-C1-S1`：CI hard gate 接入（或记录不接入原因）
 
-**P3-C1-S1（CI hard gate wiring｜2026-03-07）**
-
-- hard gate entrypoint：`python scripts/drills/s5b2a_p3_hard_gate.py`
-- runner：`python scripts/drills/s5b2a_p2c1s1_drills_runner.py`
-- verifier：`python scripts/drills/s5b1a_verify_artifacts.py --run-dir <run_dir>`
-- CI workflow：[.github/workflows/hard-gate-s5b2a-policy-entrypoint.yml](.github/workflows/hard-gate-s5b2a-policy-entrypoint.yml)
-- CI artifacts upload：`docs/labs/_snapshot/auto/S5B-2A`
-
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
@@ -263,7 +255,7 @@
   - DomainException → `result=error reason=domain_error`
   - unexpected 500 → `result=error reason=unexpected_error`
 
-### P2-C1-S1（<scenario>｜YYYY-MM-DD）
+### P2-C1-S1（bookshelf.delete entrypoint drills｜2026-03-07）
 
 **bookshelf.delete entrypoint（not_admin + tenant_mismatch）｜2026-03-07**
 
@@ -288,6 +280,14 @@
 - headSha：`ba9ebaf4613e09b0ab8ebcd13c39373525a8a282`
 - artifacts：`docs/labs/_snapshot/auto/S5B-2A/bookshelf_delete_entrypoint/2353b25f-6764-4566-b3a4-7d154ce5d4eb/`
 - 观测（observed）：verifier exit code=0
+
+**P3-C1-S1（CI hard gate wiring｜2026-03-07）**
+
+- hard gate entrypoint：`python scripts/drills/s5b2a_p3_hard_gate.py`
+- runner：`python scripts/drills/s5b2a_p2c1s1_drills_runner.py`
+- verifier：`python scripts/drills/s5b1a_verify_artifacts.py --run-dir <run_dir>`
+- CI workflow：[.github/workflows/hard-gate-s5b2a-policy-entrypoint.yml](.github/workflows/hard-gate-s5b2a-policy-entrypoint.yml)
+- CI artifacts upload：`docs/labs/_snapshot/auto/S5B-2A`
 
 ## Recent changes（for traceability，可选）
 
