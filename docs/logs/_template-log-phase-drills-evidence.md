@@ -82,7 +82,14 @@
 
 **Commit / PR 命名**:
 
-- `<ID>/P<phase>-C<cycle>-S<step>: <summary>`
+- `<ID>/P<phase>-C<cycle>-S<steps>: <summary>`，其中 `<steps>` 可以是单个 step（`1`，即 `...-S1`），也可以是在同一 phase / cycle 下连续的多个 step 合并（如 `1S2`，即 `...-S1S2`）。
+
+**Branch 约定（可选，但推荐遵守）**:
+
+- 对应 scope/index 的 log（例如 `S5B-3A` 隶属于 `S5B`，`S0D-2A` 隶属于 `S0D`）优先在同名前缀的工作分支上推进 P* 的代码与文档变更：
+  - 例如：`S5B-3A` 相关改动优先落在 `S5B-...` 系列分支（如 `S5B-security-governance-hard-gates`）；
+  - `S0D-2A` 这类 meta/docs/automation 改动优先落在 `S0D-...` 系列分支（如 `S0D-docs-management-v4`）。
+- 如果一次 PR 同时涉及多个 scope/index（例如同时修改 `S5B-3A` 和 `S0D-2A`），建议拆成多条 PR：每条 PR 聚焦一个 scope/index 与对应分支，便于后续自动化按 scope 做聚合与回溯。
 
 ## Plan（draft）
 

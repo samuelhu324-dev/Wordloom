@@ -24,7 +24,6 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Iterable
 
 
@@ -61,7 +60,9 @@ def _runner_env_for_suite(base_env: dict[str, str], suite_id: str) -> dict[str, 
     return env
 
 
-_RUN_DIR_RE = re.compile(r"Wrote artifacts:\s*(?P<dir>.+)\s*$")
+from pathlib import Path
+
+from _shared_artifacts import extract_run_dir_from_output
 
 
 def _run_runner(*, suite_id: str, env: dict[str, str]) -> tuple[int, str, str]:
@@ -73,24 +74,8 @@ def _run_runner(*, suite_id: str, env: dict[str, str]) -> tuple[int, str, str]:
 
     combined = (p.stdout or "") + ("\n" if p.stdout and p.stderr else "") + (p.stderr or "")
 
-    run_dir = ""
-    for line in (p.stdout or "").splitlines():
-        m = _RUN_DIR_RE.search(line.strip())
-        if m:
-            run_dir = m.group("dir").strip()
-            break
-
-    if not run_dir:
-        # Fallback: pick most recently modified run dir under the suite folder.
-        suite_root = Path("docs/labs/_snapshot/auto/S5B-1A") / suite_id
-        if suite_root.is_dir():
-            candidates = [p for p in suite_root.iterdir() if p.is_dir()]
-            candidates.sort(key=lambda x: x.stat().st_mtime, reverse=True)
-            if candidates:
-                run_dir = str(candidates[0])
-
-    if not run_dir:
-        raise RuntimeError(f"runner_did_not_emit_run_dir:suite={suite_id}")
+    suite_root = Path("docs/labs/_snapshot/auto/S5B-1A") / suite_id
+    run_dir = extract_run_dir_from_output(stdout=p.stdout or "", suite_root=suite_root, suite_id=suite_id)
 
     return p.returncode, run_dir, combined
 

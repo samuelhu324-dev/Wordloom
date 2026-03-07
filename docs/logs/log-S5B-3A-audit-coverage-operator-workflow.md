@@ -184,10 +184,24 @@
   - `revoke_not_found`：第二次 revoke 同一 membership → `membership.revoke` `not_found`。
   - `grant_not_admin_403`：member 尝试管理 membership → `membership.grant` `denied` reason=`not_admin`。
   - `revoke_domain_error`：故意构造异常场景（tenant header mismatch 等）→ `membership.revoke` `error`（reason 归一到低基数）。
-- 本地首次运行结果（dev env, DB 未就绪）：
-  - headSha=`b56cd9c63bd9d20fbc9e922cbb29a5428f32b00d`。
-  - run_dir=`backend/docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/96f9f002-28e5-4835-9efb-cdc5092c0e42/`。
-  - 所有 cases 因 `OperationalError`（数据库未连通）被标记为 `unexpected_error`，暂不视为 P2 完成的 green evidence；待 CI/dev DB 可用时再重跑并更新此区块。
+- 本地运行记录：
+  - Run #1（dev env, DB 未就绪）：
+    - headSha=`b56cd9c63bd9d20fbc9e922cbb29a5428f32b00d`。
+    - run_dir=`backend/docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/96f9f002-28e5-4835-9efb-cdc5092c0e42/`。
+    - 所有 cases 因 `OperationalError`（数据库未连通）被标记为 `unexpected_error`，仅作为早期 scaffold 记录，不视为 P2 green evidence。
+  - Run #2（指向 wordloom_test 测试库）：
+    - headSha=`7995b73482a1dbfd30b79af4c927c71d72ff5a61`。
+    - run_dir=`backend/docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/6eed8594-9a55-462f-8ed2-c92e8e8f7b7b/`。
+    - runner 使用 `DATABASE_URL=postgresql://wordloom:wordloom@127.0.0.1:5435/wordloom_test`，API base=`http://127.0.0.1:31001`。
+    - `_logs/run.log`：`error_type=ProgrammingError`，说明数据库已连通，但在访问 audit 相关表或 SQL 时出现编程级错误（例如 schema 不一致 / SQL 兼容性问题）。
+    - `_result.json.summary`：`total=5, passed=0, failed=5`，每个 case 的 `failure_reason=unexpected_error`（属于 runner 顶层异常兜底）。
+    - verifier：`python scripts/drills/s5b1a_verify_artifacts.py --run-dir <run_dir>` 输出 `[contract_ok] Artifacts contract OK`，但 exit code=1（因为 `_result.json.ok=false`），说明 artifacts 结构/字段满足 S5B-1A contract，但业务语义尚未通过。
+  - Run #3（通过 S0D-2A hard gate 入口 `scripts/drills/s5b3a_p4_hard_gate.py`｜指向 wordloom_test 测试库）：
+    - headSha=`7995b73482a1dbfd30b79af4c927c71d72ff5a61`。
+    - run_dir=`docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/9d3cdfc1-2fb0-43c8-8364-a00b5db4e87e/`。
+    - hard gate 入口在 repo 根执行：`python scripts/drills/s5b3a_p4_hard_gate.py`，内部复用同一 runner + verifier，并将结果写入 `artifacts/s5b3a-runs.json`。
+    - 本次 run drills 本身仍然 `ok=false`（5 个 case red，verifier rc=1），但通过 S0D-2A 的入口产生了一条结构化记录：`log_id=S5B-3A, phase=P2, cycle=C1, step=S1, ok=false, contract_ok=true, result_ok=false`，为后续 green evidence 奠定自动化管道。
+- 结论：目前 P2 drills 已可在测试库环境下完整跑通并产出符合 contract 的 artifacts，且已通过 S0D-2A hard gate 入口接入 write_gate 汇总，但受限于底层 DB schema/SQL 的 `ProgrammingError` 与当前业务 case 仍为 red，暂时仍视作 red evidence；待后续修复 DB / migration 并拿到 `_result.json.ok=true` 的 run 后，再更新 Run #4+ 并勾选 P2 checklist。
 
 ## P0（Contract｜v1）
 

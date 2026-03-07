@@ -97,6 +97,21 @@
   - <默认基线/phase 拆分/证据口径稳定>
   - <稳定入口（单命令/工作流/CLI）明确>
 
+## Numbering & Commit Naming（编号与提交命名）
+
+- 编号约定：`P<n>` 表示 Phase，`C<n>` 表示 Cycle，`S<n>` 表示 Step。
+- Commit / PR 命名：
+  - 基础形式：`<ID>/P<phase>-C<cycle>-S<steps>: <summary>`；
+  - `<steps>` 可以是单个 step（`1`，即 `...-S1`），也可以是在同一 phase / cycle 下连续的多个 step 合并（如 `1S2`，即 `...-S1S2`）。
+  - Multi-step 规则：只允许在 **同一 Phase + 同一 Cycle** 下合并多个 step；一旦跨 Phase 或跨 Cycle，必须拆成多次 commit。
+
+**Branch 约定（建议）**:
+
+- parent/spine log 负责一个 scope/index（例如 `S5B`、`S0D`），对应的实现/phase logs（如 `S5B-3A`、`S0D-2A`）在默认情况下应当：
+  - 在与该 scope/index 同名前缀的分支上推进 P* 相关改动（例如：`S5B-*`、`S0D-*`）；
+  - S5 系列安全治理工作优先落在 `S5B-...` 系列分支，S0 系列 docs/automation 工作优先落在 `S0D-...` 系列分支。
+- 若一次演进同时涉及多个 scope/index，推荐拆分为多条分支/PR：每条分支聚焦一个 scope/index，便于回溯 `scope → branch → commits → artifacts` 的证据链。
+
 ## Recent changes（for traceability，可选）
 
 - YYYY-MM-DD：<发生了什么变更，为什么要记录，如何追溯（commit/PR/run URL）>

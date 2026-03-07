@@ -716,7 +716,8 @@ def main() -> None:
 
     run_dir, result = asyncio.run(run())
     ok = bool(result.get("ok"))
-    print(f"[{'OK' if ok else 'FAIL'}] Wrote artifacts: {run_dir}")
+    # S0D-2A contract: stdout 必须包含一行 "[OK] Wrote artifacts to <run_dir>"
+    print(f"[{'OK' if ok else 'FAIL'}] Wrote artifacts to {run_dir}")
 
 
 if __name__ == "__main__":
