@@ -30,6 +30,11 @@
 - 选 1 条关键链路，把分散在 router/usecase/service 中的 owner check / tenant 过滤 / deny reason 统一收口到 policy entrypoint（并保证审计口径不漂移）。
 - Phase 2 的交付以“可复跑的 drills/evidence + 统一入口函数”为核心，而不是大范围重构。
 
+**Target chain（v1）**:
+
+- 选择：`bookshelf.delete`
+- Canonical audit action：`bookshelf.delete`
+
 **Default choices（本 phase 默认决策 / v1）**:
 
 - 继续沿用 `S5B-1A` 的 contract（deny 语义、audit action/result/reason、evidence artifacts contract）。
@@ -78,10 +83,31 @@
   - `library.get/delete`
 - 原则：优先选已有测试覆盖且能稳定复现 owner/tenant deny 的链路。
 
+**Selected（v1）**:
+
+- Chain：`bookshelf.delete`
+- Action：`bookshelf.delete`
+
+**Why this chain**:
+
+- 当前 `DELETE /bookshelves/{bookshelf_id}` 缺少 `AuthContext`（tenant / roles / request_id），且没有审计写入，属于“高风险且口径易漂移”的链路。
+- `DeleteBookshelfUseCase` 目前对资源加载不做 tenant filter（`get_by_id(bookshelf_id)`），是典型“load 后再判定”的形态，适合作为 Phase 2 的收口样例。
+- 该链路天然需要 owner deny（`not_owner`）与 tenant boundary deny（`tenant_mismatch`）两个关键维度，且现有 policy/reason 常量已存在，改造成本可控。
+
 ### P0-C1-S2（Authorization & audit：owner/tenant deny 口径）
 
-- owner deny：403（或按既有 contract）+ audit `result=denied` + `reason=not_owner`
-- tenant mismatch：read→404/audit not_found；write→403/audit denied；`reason=tenant_mismatch`
+**bookshelf.delete（v1）**:
+
+- allow：`owner` / `admin`
+- deny（not_admin）：`member` → 403 + audit `result=denied` + `reason=not_admin`
+- deny（not_member）：无 membership/roles → 403 + audit `result=denied` + `reason=not_member`
+- tenant mismatch（write-path）：跨 tenant 访问资源 → 403 + audit `result=denied` + `reason=tenant_mismatch`
+- not found：资源自然不存在 → 404 + audit `result=not_found` + `reason=null`
+
+**Audit 约束（沿用 S5B-1A contract）**:
+
+- action：固定为 `bookshelf.delete`
+- 当 `result in {denied, not_found}`：reason 必须来自低基数白名单，且写入 `audit_log.reason`（不得只写 meta_json）
 
 ### P0-C1-S3（Evidence & artifacts contract）
 
@@ -119,8 +145,8 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：选定目标链路 + action 命名
-- [ ] `P0-C1-S2`：owner/tenant deny 语义 + audit reason 落点固化
+- [x] `P0-C1-S1`：选定目标链路 + action 命名
+- [x] `P0-C1-S2`：owner/tenant deny 语义 + audit reason 落点固化
 - [ ] `P0-C1-S3`：evidence schema/contract 明确（复用 S5B-1A）
 
 ### P1（实现）
@@ -153,3 +179,4 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-03-07：scaffold Phase 2 log skeleton.
+- 2026-03-07：P0-C1-S1 选定 `bookshelf.delete`；启动 P1：delete 引入 tenant scope + audit action/result/reason 基线。
