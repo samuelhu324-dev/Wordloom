@@ -227,6 +227,26 @@
 - [x] `P1-C1-S2`：收口到 policy entrypoint（最小改动）
 - [x] `P1-C1-S3`：审计 action/result/reason 对齐 contract
 
+### P2（drill/verify）
+
+- [x] `P2-C1-S1`：新增/扩展 drills scenario 并产出 green evidence
+
+### P3（hard gate）
+
+- [x] `P3-C1-S1`：CI hard gate 接入（或记录不接入原因）
+
+**P3-C1-S1（CI hard gate wiring｜2026-03-07）**
+
+- hard gate entrypoint：`python scripts/drills/s5b2a_p3_hard_gate.py`
+- runner：`python scripts/drills/s5b2a_p2c1s1_drills_runner.py`
+- verifier：`python scripts/drills/s5b1a_verify_artifacts.py --run-dir <run_dir>`
+- CI workflow：[.github/workflows/hard-gate-s5b2a-policy-entrypoint.yml](.github/workflows/hard-gate-s5b2a-policy-entrypoint.yml)
+- CI artifacts upload：`docs/labs/_snapshot/auto/S5B-2A`
+
+## Evidence（预留）
+
+- Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
+
 **P1-C1-S2（实现摘要｜2026-03-07）**
 
 - 新增 policy entrypoint：`api.app.policy.bookshelf_delete_policy.authorize_bookshelf_delete(...)`，统一输出 decision（allow/deny/not_found）+ deny reason（低基数）。
@@ -242,18 +262,6 @@
 - `error`：补齐 DomainException / 500 的 best-effort audit：
   - DomainException → `result=error reason=domain_error`
   - unexpected 500 → `result=error reason=unexpected_error`
-
-### P2（drill/verify）
-
-- [x] `P2-C1-S1`：新增/扩展 drills scenario 并产出 green evidence
-
-### P3（hard gate）
-
-- [ ] `P3-C1-S1`：CI hard gate 接入（或记录不接入原因）
-
-## Evidence（预留）
-
-- Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
 
 ### P2-C1-S1（<scenario>｜YYYY-MM-DD）
 
