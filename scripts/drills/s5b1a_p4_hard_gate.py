@@ -1,0 +1,153 @@
+"""S5B-1A P4 hard gate entrypoint.
+
+Purpose:
+- Run the S5B-1A drills suites (read/write/audit) in sequence.
+- For each run, locate the artifacts directory and verify it with the strict verifier.
+- Exit non-zero if any suite fails (hard-gate friendly).
+
+Usage:
+  python scripts/drills/s5b1a_p4_hard_gate.py
+
+Optional:
+  S5B_1A_SUITES=tenant_escape_read,tenant_escape_write,audit_completeness
+
+Exit codes:
+- 0: all suites pass and artifacts contract OK
+- 1: contract OK but at least one suite produced ok=false
+- 2: contract violation (missing/empty/invalid artifacts)
+"""
+
+from __future__ import annotations
+
+import os
+import re
+import subprocess
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Iterable
+
+
+DEFAULT_SUITES = [
+    "tenant_escape_read",
+    "tenant_escape_write",
+    "audit_completeness",
+]
+
+
+@dataclass(frozen=True)
+class SuiteRun:
+    suite_id: str
+    run_dir: str
+    runner_rc: int
+    verify_rc: int
+
+
+def _parse_suites_env(val: str) -> list[str]:
+    parts = [p.strip() for p in val.split(",")]
+    return [p for p in parts if p]
+
+
+def _pick_suites() -> list[str]:
+    env = os.getenv("S5B_1A_SUITES", "").strip()
+    if env:
+        return _parse_suites_env(env)
+    return list(DEFAULT_SUITES)
+
+
+def _runner_env_for_suite(base_env: dict[str, str], suite_id: str) -> dict[str, str]:
+    env = dict(base_env)
+    env["S5B_1A_SUITE_ID"] = suite_id
+    return env
+
+
+_RUN_DIR_RE = re.compile(r"Wrote artifacts:\s*(?P<dir>.+)\s*$")
+
+
+def _run_runner(*, suite_id: str, env: dict[str, str]) -> tuple[int, str, str]:
+    cmd = [
+        sys.executable,
+        "scripts/drills/s5b1a_p1c1s1_drills_runner.py",
+    ]
+    p = subprocess.run(cmd, env=env, text=True, capture_output=True)
+
+    combined = (p.stdout or "") + ("\n" if p.stdout and p.stderr else "") + (p.stderr or "")
+
+    run_dir = ""
+    for line in (p.stdout or "").splitlines():
+        m = _RUN_DIR_RE.search(line.strip())
+        if m:
+            run_dir = m.group("dir").strip()
+            break
+
+    if not run_dir:
+        # Fallback: pick most recently modified run dir under the suite folder.
+        suite_root = Path("docs/labs/_snapshot/auto/S5B-1A") / suite_id
+        if suite_root.is_dir():
+            candidates = [p for p in suite_root.iterdir() if p.is_dir()]
+            candidates.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+            if candidates:
+                run_dir = str(candidates[0])
+
+    if not run_dir:
+        raise RuntimeError(f"runner_did_not_emit_run_dir:suite={suite_id}")
+
+    return p.returncode, run_dir, combined
+
+
+def _run_verifier(*, run_dir: str, env: dict[str, str]) -> tuple[int, str]:
+    cmd = [
+        sys.executable,
+        "scripts/drills/s5b1a_verify_artifacts.py",
+        "--run-dir",
+        run_dir,
+    ]
+    p = subprocess.run(cmd, env=env, text=True, capture_output=True)
+    combined = (p.stdout or "") + ("\n" if p.stdout and p.stderr else "") + (p.stderr or "")
+    return p.returncode, combined
+
+
+def _print_block(lines: Iterable[str]) -> None:
+    for line in lines:
+        print(line)
+
+
+def main() -> int:
+    suites = _pick_suites()
+
+    print("[S5B-1A] hard gate")
+    print(f"suites={','.join(suites)}")
+
+    base_env = os.environ.copy()
+
+    worst_rc = 0
+    runs: list[SuiteRun] = []
+
+    for suite_id in suites:
+        print()
+        print(f"--- suite: {suite_id} ---")
+
+        runner_env = _runner_env_for_suite(base_env, suite_id)
+        runner_rc, run_dir, runner_out = _run_runner(suite_id=suite_id, env=runner_env)
+        print(f"runner_rc={runner_rc}")
+        print(f"run_dir={run_dir}")
+        _print_block(["[runner_output]", runner_out.rstrip(), ""])
+
+        verify_rc, verify_out = _run_verifier(run_dir=run_dir, env=base_env)
+        print(f"verify_rc={verify_rc}")
+        _print_block(["[verifier_output]", verify_out.rstrip(), ""])
+
+        runs.append(SuiteRun(suite_id=suite_id, run_dir=run_dir, runner_rc=runner_rc, verify_rc=verify_rc))
+
+        # The verifier rc already encodes the desired hard-gate semantics.
+        worst_rc = max(worst_rc, verify_rc)
+
+    print("\n--- summary ---")
+    for r in runs:
+        print(f"suite={r.suite_id} verify_rc={r.verify_rc} run_dir={r.run_dir}")
+
+    return worst_rc
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
