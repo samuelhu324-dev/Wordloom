@@ -75,8 +75,11 @@ class DeleteBookshelfUseCase(IDeleteBookshelfUseCase):
             Exception: On unexpected repository errors
         """
 
-        # Step 1: Load bookshelf from repository
-        bookshelf = await self.repository.get_by_id(request.bookshelf_id)
+        # Step 1: Load bookshelf from repository (tenant-scoped when provided)
+        bookshelf = await self.repository.get_by_id(
+            request.bookshelf_id,
+            library_id=getattr(request, "tenant_id", None),
+        )
 
         # Step 2: Validate existence
         if not bookshelf:
@@ -124,9 +127,10 @@ class DeleteBookshelfUseCase(IDeleteBookshelfUseCase):
                 reason="Library not found",
             )
         if getattr(library, "user_id", None) != request.actor_user_id:
+            from api.app.policy.bookshelf_policy import REASON_NOT_OWNER
             raise BookshelfForbiddenError(
                 bookshelf_id=str(request.bookshelf_id),
                 library_id=str(library_id),
                 actor_user_id=str(request.actor_user_id),
-                reason="Actor does not own this library",
+                reason=REASON_NOT_OWNER,
             )

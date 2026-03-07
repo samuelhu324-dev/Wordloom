@@ -5,7 +5,7 @@
 **id**: `S5B-security-governance-hard-gates`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `security & governance hard gates (policy/audit drills, contract enforcement) v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S5`
 **tags**: `EVOLUTION, Security, Governance, MultiTenant, Auth, Authorization, Policy, Audit, Drills, Evidence, HardGate, epic/s5, epic/s5b`
 **links**: ``
@@ -18,10 +18,10 @@
   **reference_log_2**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
   **reference_log_3**: `docs/logs/log-S6A-4A-hard-gate-evidence-json.md` # hard-gate/evidence discipline baseline
   **phase_log_1**: `docs/logs/log-S5B-1A-policy-audit-hard-gate-drills.md`
-  **phase_log_2**: ``
-  **phase_log_3**: ``
+  **phase_log_2**: `docs/logs/log-S5B-2A-policy-entrypoint-consolidation.md`
+  **phase_log_3**: `docs/logs/log-S5B-3A-audit-coverage-operator-workflow.md`
 **created**: `2026-03-06`
-**updated**: `2026-03-06`
+**updated**: `2026-03-07`
 
 ---
 
@@ -89,22 +89,35 @@
   - 详见：`docs/logs/log-S5B-1A-policy-audit-hard-gate-drills.md`
 
 - `S5B-2A`（Phase 2）：Policy entrypoint consolidation（选 1 条关键链路，把散落 owner check 收口到 policy + tenant filter）
-  - 详见：`docs/logs/log-S5B-2A-<TBD>.md`
+  - 详见：`docs/logs/log-S5B-2A-policy-entrypoint-consolidation.md`
 
 - `S5B-3A`（Phase 3）：Audit coverage expansion + operator workflow（把 deny/allow 的审计覆盖扩展到关键写入，并固化 replay/forensics 流程）
-  - 详见：`docs/logs/log-S5B-3A-<TBD>.md`
+  - 详见：`docs/logs/log-S5B-3A-audit-coverage-operator-workflow.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
-- [ ] `P0`：contract/indexing（action/result/reason 口径；evidence schema；links/index）
-- [ ] `P1`：Phase 1（drills/evidence hard gate v1）
-- [ ] `P2`：Phase 2（关键链路 policy 收口）
+- [x] `P0`：contract/indexing（action/result/reason 口径；evidence schema；links/index）
+- [x] `P1`：Phase 1（drills/evidence hard gate v1）
+- [x] `P2`：Phase 2（关键链路 policy 收口）
 - [ ] `P3`：Phase 3（audit 扩展 + 运维可操作）
 
 ## Current Status（进展摘要）
 
-- `S5B` 已创建 spine + Phase 1 log（draft）。
-- 下一步：在 `S5B-1A` 里先固化 contract（deny 语义与审计口径），再实现最小 drills runner 并产出第一条 evidence。
+- `S5B-1A` 已完成并标记为 stable：P0-P4 drills + verifier + CI hard gate workflow 已闭环。
+- `S5B-2A` 已完成：关键链路 `bookshelf.delete` 完成 policy entrypoint 收口 + drills/evidence + CI hard gate 接入。
+- 下一步：启动 `S5B-3A`，扩展关键写入链路 audit 覆盖与 operator workflow，并用 drills/evidence + hard gate 固化。
+
+## Evidence（S5B 记账）
+
+- `S5B-1A`（Policy/Audit hard-gate drills v1）：
+  - headSha：`de39d90e11c7a1479f22352b6b78c72109082695`
+  - phase log：`docs/logs/log-S5B-1A-policy-audit-hard-gate-drills.md`
+  - CI hard gate workflow：`.github/workflows/hard-gate-s5b1a-policy-audit.yml`
+
+- `S5B-2A`（Policy entrypoint consolidation v1）：
+  - headSha：`fa89acdd8896959dfa9ec7da4b81b3c5f2855bb1`
+  - phase log：`docs/logs/log-S5B-2A-policy-entrypoint-consolidation.md`
+  - CI hard gate workflow：`.github/workflows/hard-gate-s5b2a-policy-entrypoint.yml`
 
 ## Notes（落地原则）
 
@@ -120,3 +133,4 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-03-06：scaffold S5B spine log + Phase 1 log skeleton.
+- 2026-03-07：index Phase 2 evidence + scaffold Phase 3 log.

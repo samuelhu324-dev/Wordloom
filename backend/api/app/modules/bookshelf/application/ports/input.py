@@ -117,6 +117,10 @@ class GetBasementRequest(BaseModel):
 class DeleteBookshelfRequest(BaseModel):
     """Request to delete (soft delete) a Bookshelf"""
     bookshelf_id: UUID = Field(..., description="UUID of the bookshelf")
+    tenant_id: Optional[UUID] = Field(
+        None,
+        description="Optional tenant/library scope. When provided, resource load must be scoped to this tenant.",
+    )
     actor_user_id: Optional[UUID] = Field(
         None,
         description="Actor user id (authorization context)",

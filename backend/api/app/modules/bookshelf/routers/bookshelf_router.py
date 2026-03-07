@@ -831,26 +831,126 @@ async def update_bookshelf(
 )
 async def delete_bookshelf(
     bookshelf_id: UUID,
-    actor: Actor = Depends(get_current_actor),
+    ctx: AuthContext = Depends(get_auth_context),
     di: DIContainer = Depends(get_di_container)
 ):
     """删除书架"""
     start_time = time.time()
     logger.info(f"[DELETE_BOOKSHELF] START - bookshelf_id={bookshelf_id}")
     try:
-        enforce_owner_check = not _settings.allow_dev_library_owner_override
+        from api.app.policy.bookshelf_delete_policy import authorize_bookshelf_delete
+
+        decision = await authorize_bookshelf_delete(
+            ctx=ctx,
+            bookshelf_id=bookshelf_id,
+            session=di.get_session(),
+        )
+
+        if not decision.allowed:
+            try:
+                from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+                audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="bookshelf.delete",
+                    resource_type="bookshelf",
+                    resource_id=bookshelf_id,
+                    result=decision.audit_result,
+                    reason=decision.reason,
+                )
+            except Exception as audit_exc:
+                logger.warning(
+                    f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}"
+                )
+
+            if decision.http_status == status.HTTP_404_NOT_FOUND:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+
+        # Authorization is handled by membership roles/policy; disable legacy owner check.
+        enforce_owner_check = False
         request = DeleteBookshelfRequest(
             bookshelf_id=bookshelf_id,
-            actor_user_id=actor.user_id,
+            tenant_id=ctx.tenant_id,
+            actor_user_id=ctx.user_id,
             enforce_owner_check=enforce_owner_check,
         )
         use_case = di.get_delete_bookshelf_use_case()
         await use_case.execute(request)
+
+        # Audit (best-effort): successful write
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.delete",
+                resource_type="bookshelf",
+                resource_id=bookshelf_id,
+                result="success",
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
         elapsed = time.time() - start_time
         logger.info(f"[DELETE_BOOKSHELF] SUCCESS - elapsed={elapsed:.3f}s")
+    except HTTPException:
+        raise
+    except BookshelfForbiddenError as e:
+        elapsed = time.time() - start_time
+        logger.warning(f"[DELETE_BOOKSHELF] FORBIDDEN - {str(e)}, elapsed={elapsed:.3f}s")
+
+        # Audit (best-effort): authorization denial
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.delete",
+                resource_type="bookshelf",
+                resource_id=bookshelf_id,
+                result="denied",
+                reason=getattr(e, "details", {}).get("reason"),
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=getattr(e, "to_dict", lambda: str(e))(),
+        )
     except BookshelfNotFoundError as e:
         elapsed = time.time() - start_time
         logger.warning(f"[DELETE_BOOKSHELF] NOT_FOUND - {str(e)}, elapsed={elapsed:.3f}s")
+
+        # Not found: do not attempt tenant mismatch probing here.
+        # Tenant mismatch classification is handled by policy entrypoint.
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.delete",
+                resource_type="bookshelf",
+                resource_id=bookshelf_id,
+                result="not_found",
+                reason=None,
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e)
@@ -858,6 +958,28 @@ async def delete_bookshelf(
     except DomainException as e:
         elapsed = time.time() - start_time
         logger.warning(f"[DELETE_BOOKSHELF] DOMAIN_ERROR - {str(e)}, elapsed={elapsed:.3f}s")
+
+        # Audit (best-effort): domain/business error
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.delete",
+                resource_type="bookshelf",
+                resource_id=bookshelf_id,
+                result="error",
+                reason="domain_error",
+                meta_json={
+                    "error_type": type(e).__name__,
+                },
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
         raise HTTPException(
             status_code=getattr(e, "http_status_code", getattr(e, "http_status", status.HTTP_400_BAD_REQUEST)),
             detail=getattr(e, "to_dict", lambda: str(e))(),
@@ -865,6 +987,28 @@ async def delete_bookshelf(
     except Exception as e:
         elapsed = time.time() - start_time
         logger.error(f"[DELETE_BOOKSHELF] ERROR - {type(e).__name__}: {str(e)}, elapsed={elapsed:.3f}s", exc_info=True)
+
+        # Audit (best-effort): unexpected error
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.delete",
+                resource_type="bookshelf",
+                resource_id=bookshelf_id,
+                result="error",
+                reason="unexpected_error",
+                meta_json={
+                    "error_type": type(e).__name__,
+                },
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
