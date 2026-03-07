@@ -173,7 +173,7 @@
 
 ### P2（drill/verify：S5B-3A 流水线接入）
 
-- [ ] `P2-C1-S1`：s5b3a hard gate 入口脚本
+- [x] `P2-C1-S1`：s5b3a hard gate 入口脚本
 - [ ] `P2-C1-S2`：首条通过 S0D-2A 的 Evidence 入账
 
 ### P3（hard gate：CI 集成）
@@ -183,6 +183,22 @@
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
+
+### P2-C1-S1（S5B-3A hard gate 接入 scaffold｜2026-03-07）
+
+- headSha：`7995b73482a1dbfd30b79af4c927c71d72ff5a61`
+- artifacts：`artifacts/s5b3a-runs.json` 中对应条目 + `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/9d3cdfc1-2fb0-43c8-8364-a00b5db4e87e/`
+- env：
+  - `WORDLOOM_API_BASE_URL=http://127.0.0.1:31001`
+  - `DATABASE_URL=postgresql://wordloom:wordloom@127.0.0.1:5435/wordloom_test`
+- 期望（expected）：
+  - hard gate 入口 exit code=0；
+  - verifier `contract_ok=true` 且 `_result.json.ok=true`。
+- 观测（observed）：
+  - 首次 hard gate 运行：
+    - `runner_rc=0`，drills runner 能完整产出 artifacts；
+    - `verify_rc=1`，`contract_ok=true` 但 `_result.json.ok=false`（5 个 case 均为红），写入 `artifacts/s5b3a-runs.json` 时记录为 `ok=false / result_ok=false`；
+    - 由于底层 membership_audit_coverage 仍为 red evidence，本条仅视为 S0D-2A 接入 scaffold，不作为 green evidence，`P2-C1-S2` 仍待后续 S5B-3A drills 变绿后补充。
 
 ## Recent changes（for traceability，可选）
 
