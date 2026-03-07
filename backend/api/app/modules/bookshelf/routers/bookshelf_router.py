@@ -672,7 +672,24 @@ async def get_bookshelf(
 
         # Audit (best-effort): not found (includes cross-tenant scoped 404)
         try:
+            from api.app.policy.library_membership_policy import REASON_TENANT_MISMATCH
             from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+            from sqlalchemy import text
+
+            # Try to distinguish cross-tenant scoped 404 (tenant_mismatch) from a natural missing resource.
+            # We still return 404 either way; this is only for low-cardinality audit reason.
+            reason = None
+            try:
+                q = text("SELECT library_id FROM bookshelves WHERE id = :bookshelf_id")
+                row = (await di.get_session().execute(q, {"bookshelf_id": str(bookshelf_id)})).first()
+                if row and row[0] is not None:
+                    actual_library_id = str(row[0])
+                    if actual_library_id != str(ctx.tenant_id):
+                        reason = REASON_TENANT_MISMATCH
+            except Exception as reason_exc:
+                logger.warning(
+                    f"[GET_BOOKSHELF] AUDIT_REASON_CHECK_FAILED - {type(reason_exc).__name__}: {reason_exc}"
+                )
 
             audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
             await audit_repo.append(
@@ -683,6 +700,7 @@ async def get_bookshelf(
                 resource_type="bookshelf",
                 resource_id=bookshelf_id,
                 result="not_found",
+                reason=reason,
             )
         except Exception as audit_exc:
             logger.warning(f"[GET_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")

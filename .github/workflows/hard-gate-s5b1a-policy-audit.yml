@@ -1,0 +1,135 @@
+name: hard-gate-s5b1a-policy-audit
+
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+      - "scripts/drills/s5b1a_*.py"
+      - "docs/logs/log-S5B-1A-policy-audit-hard-gate-drills.md"
+      - "docker-compose.devtest-db.yml"
+      - ".github/workflows/hard-gate-s5b1a-policy-audit.yml"
+  workflow_dispatch: {}
+
+jobs:
+  hard_gate:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Start DB (devtest)
+        run: |
+          set -euo pipefail
+
+          docker compose -f docker-compose.devtest-db.yml up -d --wait
+
+          echo "Waiting for Postgres (wordloom_test)"
+          DB_CID="$(docker compose -f docker-compose.devtest-db.yml ps -q db_devtest)"
+          if [ -z "$DB_CID" ]; then
+            echo "db_devtest container not found" >&2
+            exit 2
+          fi
+
+          for i in $(seq 1 60); do
+            if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+              echo "Postgres is ready"
+              break
+            fi
+            sleep 2
+          done
+
+          if ! docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+            echo "wordloom_test is not ready; ensuring it exists"
+            docker exec "$DB_CID" psql -U wordloom -d wordloom_dev -v ON_ERROR_STOP=1 -c "SELECT 'CREATE DATABASE wordloom_test' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'wordloom_test')\\gexec"
+          fi
+
+          echo "Waiting for Postgres (wordloom_test) to be ready"
+          for i in $(seq 1 60); do
+            if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
+              echo "wordloom_test is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Timed out waiting for wordloom_test" >&2
+          docker exec "$DB_CID" psql -U wordloom -d wordloom_dev -c "\\l" || true
+          exit 2
+
+      - name: Install backend deps
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r backend/requirements.txt
+
+      - name: Migrate DB (alembic)
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
+        run: |
+          set -euo pipefail
+          python -m alembic -c alembic.ini upgrade head
+
+      - name: Start backend (uvicorn)
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
+          WORDLOOM_JWT_SECRET_KEY: dev-secret-key-change-in-production
+          WORDLOOM_JWT_ALG: HS256
+          LOG_LEVEL: INFO
+        run: |
+          set -euo pipefail
+
+          nohup python -m uvicorn api.app.main:app --host 127.0.0.1 --port 31001 > ../backend-uvicorn.log 2>&1 &
+          echo $! > ../backend-uvicorn.pid
+
+          for i in $(seq 1 60); do
+            code="$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:31001/docs || true)"
+            if [ "$code" = "200" ]; then
+              echo "[ok] backend is up"
+              exit 0
+            fi
+            sleep 1
+          done
+
+          echo "[error] backend failed to start" >&2
+          tail -n 200 backend-uvicorn.log || true
+          exit 2
+
+      - name: Run S5B-1A hard gate (3 suites)
+        env:
+          WORDLOOM_API_BASE_URL: http://127.0.0.1:31001
+          DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
+          WORDLOOM_JWT_SECRET_KEY: dev-secret-key-change-in-production
+          WORDLOOM_JWT_ALG: HS256
+          S5B_1A_ACTOR_USER_ID: 550e8400-e29b-41d4-a716-446655440000
+        run: |
+          set -euo pipefail
+          python scripts/drills/s5b1a_p4_hard_gate.py
+
+      - name: Upload S5B-1A artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s5b1a-artifacts-${{ github.run_id }}-${{ github.run_attempt }}
+          path: docs/labs/_snapshot/auto/S5B-1A
+          if-no-files-found: warn
+
+      - name: Stop backend
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ -f backend-uvicorn.pid ]; then
+            kill "$(cat backend-uvicorn.pid)" || true
+          fi
+          tail -n 200 backend-uvicorn.log || true
