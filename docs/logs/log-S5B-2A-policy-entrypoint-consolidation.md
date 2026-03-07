@@ -190,7 +190,7 @@
 
 ### P2（drill/verify）
 
-- [ ] `P2-C1-S1`：新增/扩展 drills scenario 并产出 green evidence
+- [x] `P2-C1-S1`：新增/扩展 drills scenario 并产出 green evidence
 
 ### P3（hard gate）
 
@@ -202,14 +202,20 @@
 
 ### P2-C1-S1（<scenario>｜YYYY-MM-DD）
 
-- headSha：`<git sha>`
-- artifacts：`docs/labs/_snapshot/auto/S5B-2A/<suite>/<run_id>/`
+**bookshelf.delete entrypoint（not_admin + tenant_mismatch）｜2026-03-07**
+
+- headSha：`1c662dca7a2c0892d46e559c235e860966b837f1`
+- artifacts：`docs/labs/_snapshot/auto/S5B-2A/bookshelf_delete_entrypoint/80734291-c948-4e9f-b316-4a3fd45fdd43/`
 - 期望（expected）：
-  - ...
+  - member delete → 403 + audit `bookshelf.delete` `denied` reason=`not_admin`
+  - cross-tenant delete → 403 + audit `bookshelf.delete` `denied` reason=`tenant_mismatch`
+  - audit 行具备 `tenant_id/actor_user_id/request_id/action/result/reason`
 - 观测（observed）：
-  - ...
+  - `_result.json.ok=true`，2/2 cases passed
+  - verifier：`scripts/drills/s5b1a_verify_artifacts.py` exit code=0
 
 ## Recent changes（for traceability，可选）
 
 - 2026-03-07：scaffold Phase 2 log skeleton.
 - 2026-03-07：P0-C1-S1 选定 `bookshelf.delete`；启动 P1：delete 引入 tenant scope + audit action/result/reason 基线。
+- 2026-03-07：完成 P0-C1-S3（evidence contract）并完成 P2-C1-S1 drills green evidence（bookshelf.delete）。
