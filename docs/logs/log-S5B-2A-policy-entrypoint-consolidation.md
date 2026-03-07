@@ -225,13 +225,23 @@
 
 - [x] `P1-C1-S1`：定位分散的 owner/tenant checks
 - [x] `P1-C1-S2`：收口到 policy entrypoint（最小改动）
-- [ ] `P1-C1-S3`：审计 action/result/reason 对齐 contract
+- [x] `P1-C1-S3`：审计 action/result/reason 对齐 contract
 
 **P1-C1-S2（实现摘要｜2026-03-07）**
 
 - 新增 policy entrypoint：`api.app.policy.bookshelf_delete_policy.authorize_bookshelf_delete(...)`，统一输出 decision（allow/deny/not_found）+ deny reason（低基数）。
 - delete router 改为只调用 entrypoint：移除 handler 内部的 roles if-else 与 tenant mismatch raw SQL 探测；tenant mismatch/not_found 分类在 entrypoint 内完成。
 - usecase 仍保留 tenant-scoped load（defense-in-depth），router 继续 best-effort 写 audit，但 audit 的 result/reason 来自 entrypoint 的 decision。
+
+**P1-C1-S3（审计口径对齐｜2026-03-07）**
+
+- action：统一为 `bookshelf.delete`（router 入口唯一写入点）。
+- `denied`：reason 必须低基数，来源于 policy decision（`not_member|not_admin|tenant_mismatch`）或明确的 domain forbid（如 legacy `not_owner`）。
+- `not_found`：reason 固定为 `null`（不做高基数 reason）。
+- `success`：reason 固定为 `null`。
+- `error`：补齐 DomainException / 500 的 best-effort audit：
+  - DomainException → `result=error reason=domain_error`
+  - unexpected 500 → `result=error reason=unexpected_error`
 
 ### P2（drill/verify）
 

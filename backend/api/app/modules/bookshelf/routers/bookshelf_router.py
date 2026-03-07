@@ -958,6 +958,28 @@ async def delete_bookshelf(
     except DomainException as e:
         elapsed = time.time() - start_time
         logger.warning(f"[DELETE_BOOKSHELF] DOMAIN_ERROR - {str(e)}, elapsed={elapsed:.3f}s")
+
+        # Audit (best-effort): domain/business error
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.delete",
+                resource_type="bookshelf",
+                resource_id=bookshelf_id,
+                result="error",
+                reason="domain_error",
+                meta_json={
+                    "error_type": type(e).__name__,
+                },
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
         raise HTTPException(
             status_code=getattr(e, "http_status_code", getattr(e, "http_status", status.HTTP_400_BAD_REQUEST)),
             detail=getattr(e, "to_dict", lambda: str(e))(),
@@ -965,6 +987,28 @@ async def delete_bookshelf(
     except Exception as e:
         elapsed = time.time() - start_time
         logger.error(f"[DELETE_BOOKSHELF] ERROR - {type(e).__name__}: {str(e)}, elapsed={elapsed:.3f}s", exc_info=True)
+
+        # Audit (best-effort): unexpected error
+        try:
+            from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
+
+            audit_repo = SQLAlchemyAuditLogRepository(di.get_session())
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="bookshelf.delete",
+                resource_type="bookshelf",
+                resource_id=bookshelf_id,
+                result="error",
+                reason="unexpected_error",
+                meta_json={
+                    "error_type": type(e).__name__,
+                },
+            )
+        except Exception as audit_exc:
+            logger.warning(f"[DELETE_BOOKSHELF] AUDIT_APPEND_FAILED - {type(audit_exc).__name__}: {audit_exc}")
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
