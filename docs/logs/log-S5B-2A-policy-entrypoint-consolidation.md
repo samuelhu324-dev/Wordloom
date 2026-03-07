@@ -275,6 +275,12 @@
 - artifacts：`docs/labs/_snapshot/auto/S5B-2A/bookshelf_delete_entrypoint/2a3c6410-ae79-46b0-9abc-e36c0c940847/`
 - 观测（observed）：runner 输出 `[OK] Wrote artifacts ...`；verifier exit code=0
 
+**bookshelf.delete entrypoint（post P1-C1-S3 audit alignment re-verify）｜2026-03-07**
+
+- headSha：`ba9ebaf4613e09b0ab8ebcd13c39373525a8a282`
+- artifacts：`docs/labs/_snapshot/auto/S5B-2A/bookshelf_delete_entrypoint/2353b25f-6764-4566-b3a4-7d154ce5d4eb/`
+- 观测（observed）：verifier exit code=0
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-07：scaffold Phase 2 log skeleton.
