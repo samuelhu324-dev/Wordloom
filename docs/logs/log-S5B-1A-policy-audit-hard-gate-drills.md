@@ -340,7 +340,7 @@
 
 ### P4-C1-S1（CI hard gate workflow｜2026-03-07）
 
-- headSha：`ebc44952d4d69190ae43d3963c42c0f7d8c6d8b4`
+- headSha：`17574430ff0b4284881e18fa829b2d9fda9b7ce1`
 - workflow：`.github/workflows/hard-gate-s5b1a-policy-audit.yml`
 - hard gate 入口：`scripts/drills/s5b1a_p4_hard_gate.py`
 - 说明：该 workflow 会在 PR 上自动启动 devtest DB（5435）+ uvicorn（31001），依次跑 3 个 suite，并上传 `docs/labs/_snapshot/auto/S5B-1A` 作为 CI artifacts。
