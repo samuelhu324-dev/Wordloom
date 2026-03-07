@@ -199,6 +199,12 @@ def _pick_failure_reason(*, expected: dict[str, Any], observed: dict[str, Any]) 
         if exp_audit.get("reason") is not None and row.get("reason") != exp_audit.get("reason"):
             return "audit_reason_mismatch"
 
+        required_fields = expected.get("audit_required_fields") or []
+        if required_fields:
+            missing = [k for k in required_fields if not row.get(k)]
+            if missing:
+                return "schema_violation"
+
     return "unexpected_error"
 
 
@@ -225,6 +231,13 @@ def _build_case_result(*, case_id: str, title: str, inputs: dict[str, Any], expe
                 exp_reason = exp_audit.get("reason")
                 if exp_reason is not None and matched.get("reason") != exp_reason:
                     ok = False
+
+                required_fields = expected.get("audit_required_fields") or []
+                if required_fields:
+                    for k in required_fields:
+                        if not matched.get(k):
+                            ok = False
+                            break
 
     failure_reason: Optional[str] = None
     if not ok:
@@ -259,10 +272,13 @@ async def run() -> tuple[str, dict[str, Any]]:
     suite_lower = (cfg.suite_id or "").lower()
     run_read_cases = "read" in suite_lower
     run_write_cases = "write" in suite_lower
-    if not run_read_cases and not run_write_cases:
+    run_audit_cases = "audit" in suite_lower
+
+    if not (run_read_cases or run_write_cases or run_audit_cases):
         # Default: run everything.
         run_read_cases = True
         run_write_cases = True
+        run_audit_cases = True
 
     run_dir = _artifact_run_dir(suite_id=cfg.suite_id, run_id=run_id)
     logs_dir = os.path.join(run_dir, "_logs")
@@ -303,6 +319,14 @@ async def run() -> tuple[str, dict[str, Any]]:
             {
                 "case_id": "tenant_cross_write_403",
                 "title": "cross-tenant write is rejected (403 + audit denied + reason=tenant_mismatch)",
+                "endpoint": {"method": "POST", "path_template": "/api/v1/bookshelves"},
+            }
+        )
+    if run_audit_cases:
+        recipe_cases.append(
+            {
+                "case_id": "audit_deny_row_complete",
+                "title": "deny audit row is complete (request_id/action/result/reason/actor/tenant)",
                 "endpoint": {"method": "POST", "path_template": "/api/v1/bookshelves"},
             }
         )
@@ -485,13 +509,12 @@ async def run() -> tuple[str, dict[str, Any]]:
                     )
                 )
 
-            if run_write_cases:
-                # Case 3: cross-tenant bookshelf create (write)
+            if run_write_cases or run_audit_cases:
+                # Cross-tenant write probe: body requested_library_id intentionally differs from selected tenant (header).
                 write_shelf_name = f"s5b1a-cross-write-{run_id[:8]}"
                 r_cross_write = await client.post(
                     "/api/v1/bookshelves",
                     json={
-                        # requested_library_id (body) intentionally differs from selected tenant (header)
                         "library_id": lib_a_id,
                         "name": write_shelf_name,
                         "description": "drill",
@@ -509,37 +532,78 @@ async def run() -> tuple[str, dict[str, Any]]:
                     else []
                 )
 
-                case_results.append(
-                    _build_case_result(
-                        case_id="tenant_cross_write_403",
-                        title="cross-tenant write is rejected",
-                        inputs={
-                            "request_id": write_request_id,
-                            "tenant_id": str(lib_b_id) if lib_b_id else None,
-                            "actor_user_id": str(user_id),
-                            "roles": ["member"],
-                            "http": {
-                                "method": "POST",
-                                "path": "/api/v1/bookshelves",
-                                "path_template": "/api/v1/bookshelves",
+                if run_write_cases:
+                    case_results.append(
+                        _build_case_result(
+                            case_id="tenant_cross_write_403",
+                            title="cross-tenant write is rejected",
+                            inputs={
+                                "request_id": write_request_id,
+                                "tenant_id": str(lib_b_id) if lib_b_id else None,
+                                "actor_user_id": str(user_id),
+                                "roles": ["member"],
+                                "http": {
+                                    "method": "POST",
+                                    "path": "/api/v1/bookshelves",
+                                    "path_template": "/api/v1/bookshelves",
+                                },
+                                "payload": {
+                                    "requested_library_id": lib_a_id,
+                                    "selected_tenant_id": lib_b_id,
+                                    "name": write_shelf_name,
+                                },
                             },
-                            "payload": {
-                                "requested_library_id": lib_a_id,
-                                "selected_tenant_id": lib_b_id,
-                                "name": write_shelf_name,
+                            expected={
+                                "http_status": 403,
+                                "audit_expected": True,
+                                "audit": {"action": "bookshelf.create", "result": "denied", "reason": "tenant_mismatch"},
                             },
-                        },
-                        expected={
-                            "http_status": 403,
-                            "audit_expected": True,
-                            "audit": {"action": "bookshelf.create", "result": "denied", "reason": "tenant_mismatch"},
-                        },
-                        observed={
-                            "http_status": int(r_cross_write.status_code),
-                            "audit_rows": {"count": len(write_audit_rows), "rows": write_audit_rows[:10]},
-                        },
+                            observed={
+                                "http_status": int(r_cross_write.status_code),
+                                "audit_rows": {"count": len(write_audit_rows), "rows": write_audit_rows[:10]},
+                            },
+                        )
                     )
-                )
+
+                if run_audit_cases:
+                    case_results.append(
+                        _build_case_result(
+                            case_id="audit_deny_row_complete",
+                            title="deny audit row is complete",
+                            inputs={
+                                "request_id": write_request_id,
+                                "tenant_id": str(lib_b_id) if lib_b_id else None,
+                                "actor_user_id": str(user_id),
+                                "roles": ["member"],
+                                "http": {
+                                    "method": "POST",
+                                    "path": "/api/v1/bookshelves",
+                                    "path_template": "/api/v1/bookshelves",
+                                },
+                                "probe": {
+                                    "action": "bookshelf.create",
+                                    "expect_result": "denied",
+                                },
+                            },
+                            expected={
+                                "http_status": 403,
+                                "audit_expected": True,
+                                "audit": {"action": "bookshelf.create", "result": "denied", "reason": "tenant_mismatch"},
+                                "audit_required_fields": [
+                                    "tenant_id",
+                                    "actor_user_id",
+                                    "request_id",
+                                    "action",
+                                    "result",
+                                    "reason",
+                                ],
+                            },
+                            observed={
+                                "http_status": int(r_cross_write.status_code),
+                                "audit_rows": {"count": len(write_audit_rows), "rows": write_audit_rows[:10]},
+                            },
+                        )
+                    )
 
     except Exception as e:
         # Keep _result.json low-cardinality; put details in logs.
@@ -576,6 +640,17 @@ async def run() -> tuple[str, dict[str, Any]]:
                 {
                     "case_id": "tenant_cross_write_403",
                     "title": "cross-tenant write is rejected",
+                    "inputs": {},
+                    "expected": {},
+                    "observed": {},
+                    "verdict": {"ok": False, "failure_reason": "unexpected_error"},
+                }
+            )
+        if run_audit_cases and not any(r.get("case_id") == "audit_deny_row_complete" for r in case_results):
+            case_results.append(
+                {
+                    "case_id": "audit_deny_row_complete",
+                    "title": "deny audit row is complete",
                     "inputs": {},
                     "expected": {},
                     "observed": {},
