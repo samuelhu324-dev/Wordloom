@@ -822,6 +822,8 @@ async def grant_membership(
     db: AsyncSession = Depends(get_db),
 ) -> None:
     from api.app.policy.library_membership_policy import assert_actor_can_manage_memberships
+    from api.app.modules.library.exceptions import DomainException as LibraryDomainException
+    from api.app.shared.exceptions import DomainException as SharedDomainException
     from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
     from infra.storage.library_membership_repository_impl import SQLAlchemyLibraryMembershipRepository
 
@@ -852,30 +854,83 @@ async def grant_membership(
 
         return None
     except HTTPException as exc:
-        # Audit (best-effort): denied
-        if exc.status_code == status.HTTP_403_FORBIDDEN:
-            try:
-                audit_repo = SQLAlchemyAuditLogRepository(db)
-                reason = None
-                if isinstance(exc.detail, dict):
-                    reason = exc.detail.get("reason")
-                await audit_repo.append(
-                    tenant_id=ctx.tenant_id,
-                    actor_user_id=ctx.user_id,
-                    request_id=ctx.request_id,
-                    action="membership.grant",
-                    resource_type="library",
-                    resource_id=ctx.tenant_id,
-                    result="denied",
-                    reason=reason,
-                    meta_json={
-                        "library_id": str(library_id),
-                        "member_user_id": str(body.user_id),
-                        "role": str(body.role).strip().lower(),
-                    },
-                )
-            except Exception as audit_exc:  # noqa: BLE001
-                logger.warning("[MEMBERSHIP_GRANT] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
+        # Audit (best-effort): policy deny vs. other HTTP errors
+        try:
+            audit_repo = SQLAlchemyAuditLogRepository(db)
+            reason = None
+            if isinstance(exc.detail, dict):
+                reason = exc.detail.get("reason")
+
+            if exc.status_code == status.HTTP_403_FORBIDDEN:
+                result = "denied"
+            else:
+                result = "error"
+                if reason is None:
+                    reason = "domain_error"
+
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="membership.grant",
+                resource_type="library",
+                resource_id=ctx.tenant_id,
+                result=result,
+                reason=reason,
+                meta_json={
+                    "library_id": str(library_id),
+                    "member_user_id": str(body.user_id),
+                    "role": str(body.role).strip().lower(),
+                },
+            )
+        except Exception as audit_exc:  # noqa: BLE001
+            logger.warning("[MEMBERSHIP_GRANT] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
+        raise
+    except (LibraryDomainException, SharedDomainException) as exc:
+        # Domain/business error (non-HTTPException)
+        try:
+            audit_repo = SQLAlchemyAuditLogRepository(db)
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="membership.grant",
+                resource_type="library",
+                resource_id=ctx.tenant_id,
+                result="error",
+                reason="domain_error",
+                meta_json={
+                    "library_id": str(library_id),
+                    "member_user_id": str(body.user_id),
+                    "role": str(body.role).strip().lower(),
+                    "error_type": type(exc).__name__,
+                },
+            )
+        except Exception as audit_exc:  # noqa: BLE001
+            logger.warning("[MEMBERSHIP_GRANT] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
+        raise
+    except Exception as exc:  # noqa: BLE001
+        # Unexpected 5xx path
+        try:
+            audit_repo = SQLAlchemyAuditLogRepository(db)
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="membership.grant",
+                resource_type="library",
+                resource_id=ctx.tenant_id,
+                result="error",
+                reason="unexpected_error",
+                meta_json={
+                    "library_id": str(library_id),
+                    "member_user_id": str(body.user_id),
+                    "role": str(body.role).strip().lower(),
+                    "error_type": type(exc).__name__,
+                },
+            )
+        except Exception as audit_exc:  # noqa: BLE001
+            logger.warning("[MEMBERSHIP_GRANT] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
         raise
 
 
@@ -891,6 +946,8 @@ async def revoke_membership(
     db: AsyncSession = Depends(get_db),
 ) -> None:
     from api.app.policy.library_membership_policy import assert_actor_can_manage_memberships
+    from api.app.modules.library.exceptions import DomainException as LibraryDomainException
+    from api.app.shared.exceptions import DomainException as SharedDomainException
     from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
     from infra.storage.library_membership_repository_impl import SQLAlchemyLibraryMembershipRepository
 
@@ -902,6 +959,13 @@ async def revoke_membership(
         # Audit (best-effort): membership revoke
         try:
             audit_repo = SQLAlchemyAuditLogRepository(db)
+            if deleted:
+                result = "success"
+                reason = None
+            else:
+                result = "not_found"
+                reason = None
+
             await audit_repo.append(
                 tenant_id=ctx.tenant_id,
                 actor_user_id=ctx.user_id,
@@ -909,7 +973,8 @@ async def revoke_membership(
                 action="membership.revoke",
                 resource_type="library",
                 resource_id=ctx.tenant_id,
-                result="success",
+                result=result,
+                reason=reason,
                 meta_json={
                     "library_id": str(library_id),
                     "member_user_id": str(user_id),
@@ -920,28 +985,81 @@ async def revoke_membership(
             logger.warning("[MEMBERSHIP_REVOKE] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
         return None
     except HTTPException as exc:
-        if exc.status_code == status.HTTP_403_FORBIDDEN:
-            try:
-                audit_repo = SQLAlchemyAuditLogRepository(db)
-                reason = None
-                if isinstance(exc.detail, dict):
-                    reason = exc.detail.get("reason")
-                await audit_repo.append(
-                    tenant_id=ctx.tenant_id,
-                    actor_user_id=ctx.user_id,
-                    request_id=ctx.request_id,
-                    action="membership.revoke",
-                    resource_type="library",
-                    resource_id=ctx.tenant_id,
-                    result="denied",
-                    reason=reason,
-                    meta_json={
-                        "library_id": str(library_id),
-                        "member_user_id": str(user_id),
-                    },
-                )
-            except Exception as audit_exc:  # noqa: BLE001
-                logger.warning("[MEMBERSHIP_REVOKE] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
+        try:
+            audit_repo = SQLAlchemyAuditLogRepository(db)
+            reason = None
+            if isinstance(exc.detail, dict):
+                reason = exc.detail.get("reason")
+
+            if exc.status_code == status.HTTP_403_FORBIDDEN:
+                result = "denied"
+            elif exc.status_code == status.HTTP_404_NOT_FOUND:
+                result = "not_found"
+            else:
+                result = "error"
+                if reason is None:
+                    reason = "domain_error"
+
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="membership.revoke",
+                resource_type="library",
+                resource_id=ctx.tenant_id,
+                result=result,
+                reason=reason,
+                meta_json={
+                    "library_id": str(library_id),
+                    "member_user_id": str(user_id),
+                },
+            )
+        except Exception as audit_exc:  # noqa: BLE001
+            logger.warning("[MEMBERSHIP_REVOKE] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
+        raise
+    except (LibraryDomainException, SharedDomainException) as exc:
+        # Domain/business error (non-HTTPException)
+        try:
+            audit_repo = SQLAlchemyAuditLogRepository(db)
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="membership.revoke",
+                resource_type="library",
+                resource_id=ctx.tenant_id,
+                result="error",
+                reason="domain_error",
+                meta_json={
+                    "library_id": str(library_id),
+                    "member_user_id": str(user_id),
+                    "error_type": type(exc).__name__,
+                },
+            )
+        except Exception as audit_exc:  # noqa: BLE001
+            logger.warning("[MEMBERSHIP_REVOKE] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
+        raise
+    except Exception as exc:  # noqa: BLE001
+        # Unexpected 5xx path
+        try:
+            audit_repo = SQLAlchemyAuditLogRepository(db)
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="membership.revoke",
+                resource_type="library",
+                resource_id=ctx.tenant_id,
+                result="error",
+                reason="unexpected_error",
+                meta_json={
+                    "library_id": str(library_id),
+                    "member_user_id": str(user_id),
+                    "error_type": type(exc).__name__,
+                },
+            )
+        except Exception as audit_exc:  # noqa: BLE001
+            logger.warning("[MEMBERSHIP_REVOKE] AUDIT_APPEND_FAILED - %s: %s", type(audit_exc).__name__, audit_exc)
         raise
 
 @router.get("/debug/meta", tags=["libraries"], summary="Diagnostic library metadata")
