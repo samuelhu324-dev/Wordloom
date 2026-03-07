@@ -5,7 +5,7 @@
 **id**: `S5B-1A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `policy/audit hard-gate drills (tenant boundary + deny reasons + request_id traceability) v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S5`
 **tags**: `EVOLUTION, Security, Governance, MultiTenant, Authorization, Policy, Audit, Drills, Evidence, HardGate, epic/s5, sub/1a`
 **links**: ``
@@ -18,7 +18,7 @@
   **reference_log_1**: `docs/logs/log-S5A-1A-authcontext-policy-audit.md`
   **reference_log_2**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`
 **created**: `2026-03-06`
-**updated**: `2026-03-06`
+**updated**: `2026-03-07`
 
 ---
 
@@ -252,6 +252,10 @@
 
 - P3-C1-S1：deny 的 audit 记录完整性（action/result/reason/request_id）
 
+### P4（hard gate，可选）
+
+- P4-C1-S1：CI hard gate（workflow）：固定跑 `tenant_escape_read`、`tenant_escape_write`、`audit_completeness` 三套，并用 verifier 退出码 gate PR。
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -274,6 +278,10 @@
 ### P3（drill/verify）
 
 - [x] `P3-C1-S1`：audit completeness drill
+
+### P4（hard gate）
+
+- [x] `P4-C1-S1`：CI workflow hard gate（固定跑 3 个 suite + verifier；产物上传为 artifacts）
 
 ## Evidence（预留）
 
@@ -329,6 +337,13 @@
   - 匹配行必填字段非空：`tenant_id/actor_user_id/request_id/action/result/reason`
 - 观测（observed）：
   - 匹配行存在，且必填字段均非空（reason 低基数，可机械判定）。
+
+### P4-C1-S1（CI hard gate workflow｜2026-03-07）
+
+- headSha：`ebc44952d4d69190ae43d3963c42c0f7d8c6d8b4`
+- workflow：`.github/workflows/hard-gate-s5b1a-policy-audit.yml`
+- hard gate 入口：`scripts/drills/s5b1a_p4_hard_gate.py`
+- 说明：该 workflow 会在 PR 上自动启动 devtest DB（5435）+ uvicorn（31001），依次跑 3 个 suite，并上传 `docs/labs/_snapshot/auto/S5B-1A` 作为 CI artifacts。
 
 ## Recent changes（for traceability，可选）
 
