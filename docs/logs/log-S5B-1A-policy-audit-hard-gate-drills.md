@@ -273,7 +273,7 @@
 
 ### P3（drill/verify）
 
-- [ ] `P3-C1-S1`：audit completeness drill
+- [x] `P3-C1-S1`：audit completeness drill
 
 ## Evidence（预留）
 
@@ -317,6 +317,18 @@
   - cross-tenant bookshelf.create → 403 + audit `denied` + reason=`tenant_mismatch`
 - 观测（observed）：
   - 命中 403；并能通过 request_id 在 `audit_log` 找到对应 denied 记录（reason 低基数且可机械判定）。
+
+### P3-C1-S1（audit completeness drill｜2026-03-07｜green）
+
+- headSha：`15c0c859c4b2feccb5e0048dcd615d92f5f81e4c`
+- artifacts：`docs/labs/_snapshot/auto/S5B-1A/audit_completeness/0ead214f-1813-4461-b020-11eeef0fa313/`
+- 结果：PASS（`ok=true`；case=`audit_deny_row_complete`）
+- 期望（expected）：
+  - 通过一个稳定 deny probe（cross-tenant `bookshelf.create` → 403）拿到 request_id
+  - audit_log 至少 1 条匹配 action=`bookshelf.create` 且 result=`denied`
+  - 匹配行必填字段非空：`tenant_id/actor_user_id/request_id/action/result/reason`
+- 观测（observed）：
+  - 匹配行存在，且必填字段均非空（reason 低基数，可机械判定）。
 
 ## Recent changes（for traceability，可选）
 
