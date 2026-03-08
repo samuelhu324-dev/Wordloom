@@ -39,6 +39,7 @@
 - **Projection onboarding contract**：新增或迁移 projection 时必须满足的最小工程约束集合，包括 spec 字段、writer 路径、harness 注册、rebuild/backfill smoke 与 drills 覆盖等。
 - **Sample projection**：本 phase 选定的一条代表性投影，用于验证 S2D onboarding contract 的可执行性；后续投影应尽量复用其结构与脚本。
 - **Smoke drills**：只验证“能跑通”和“不会破坏稳定面”的最小场景，例如单条事件的投影正确性、最小 rebuild 成功与回滚路径。
+- **Chronicle daily stats projection（示范投影）**：以 Chronicle outbox 事件为输入，为每个 tenant/日期/事件类型聚合计数与最近发生时间的 DB→DB 统计投影，目标是一张便于运营/报表查询的日级明细表。
 
 ## Constraints（约束）
 
@@ -76,9 +77,14 @@
 ### P0-C1-S1（Onboarding contract：最小字段与工件）
 
 - 新增 projection 至少要提供：
-  - `ProjectionSpec`：projection_name、scope_keys、requires、payload_schema_version、apply 入口；
-  - writer 端入口：统一的 outbox enqueue 函数（带 projection/op/scope/trace）；
-  - harness 注册：在 projection registry 中注册 spec 与 adapter。
+  - `ProjectionSpec`：
+    - `projection_name`：唯一标识投影，例如本 phase 的示范投影使用 `chronicle_daily_stats`；
+    - `scope_keys`：用于限定重建/回填范围的主维度，示范投影为 `tenant_id` + `date`；
+    - `requires`：依赖的 SoT / outbox 事件源（例如 `chronicle_events`）；
+    - `payload_schema_version`：与 outbox payload_contract 对齐的 schema 版本；
+    - `apply`：处理单条事件或一个 batch 的函数入口，负责把 Chronicle 事件投影/聚合到目标表；
+  - writer 端入口：统一的 outbox enqueue 函数（带 projection/op/scope/trace），禁止手写裸 SQL/INSERT；
+  - harness 注册：在 projection registry 中注册 spec 与 adapter，确保可以由通用 harness 枚举和驱动。
 
 ### P0-C1-S2（Onboarding contract：rebuild/backfill & drills）
 
@@ -90,8 +96,8 @@
 ### P0-C1-S3（证据口径 contract｜v1）
 
 - evidence JSON 必须包含：
-  - 投影标识：projection_name / spec id；
-  - 输入参数：租户/时间范围/事件 id 范围等；
+  - 投影标识：projection_name / spec id（例如 `chronicle_daily_stats`）；
+  - 输入参数：租户/时间范围/事件 id 范围等（示范投影至少包含 tenant_id 与 date 范围）；
   - 输出产物路径：rebuild/backfill/drills 的 `run_dir` 或 artifacts 根目录；
   - PASS/FAIL 字段：`_result.json.ok` 与 failure taxonomy，兼容 S6A-4A/S2C 的 schema_version。
 
@@ -109,7 +115,7 @@
 ### P1（实现：框架收口 + sample projection 接入）
 
 - P1-C1-S1：在 S2C harness/adapter 中补充 runtime 校验：`ProjectionSpec.scope_keys/payload_schema_version/requires` 与 payload/schema 对齐，不满足时 FAIL。
-- P1-C1-S2：选定 sample projection，并补齐其 `ProjectionSpec`、adapter.apply 与 writer 路径，确保可通过统一 harness 跑通。
+- P1-C1-S2：以 `chronicle_daily_stats` 作为 sample projection，补齐其 `ProjectionSpec`、adapter.apply 与 writer 路径，确保可通过统一 harness 跑通。
 
 ### P2（drill/verify：rebuild/backfill + correctness）
 
@@ -125,9 +131,9 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：定义 onboarding 最小字段与工件 contract
-- [ ] `P0-C1-S2`：定义 rebuild/backfill & drills 要求
-- [ ] `P0-C1-S3`：定义 evidence JSON 口径
+- [x] `P0-C1-S1`：定义 onboarding 最小字段与工件 contract
+- [x] `P0-C1-S2`：定义 rebuild/backfill & drills 要求
+- [x] `P0-C1-S3`：定义 evidence JSON 口径
 
 ### P1（实现）
 
