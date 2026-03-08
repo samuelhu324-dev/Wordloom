@@ -188,7 +188,7 @@
 ### P2（drill/verify：S5B-3A 流水线接入）
 
 - [x] `P2-C1-S1`：s5b3a hard gate 入口脚本
-- [ ] `P2-C1-S2`：首条通过 S0D-2A 的 Evidence 入账
+- [x] `P2-C1-S2`：首条通过 S0D-2A 的 Evidence 入账
 
 ### P3（hard gate：CI 集成）
 
@@ -214,17 +214,25 @@
     - `verify_rc=1`，`contract_ok=true` 但 `_result.json.ok=false`（5 个 case 均为红），写入 `artifacts/s5b3a-runs.json` 时记录为 `ok=false / result_ok=false`；
     - 由于底层 membership_audit_coverage 仍为 red evidence，本条仅视为 S0D-2A 接入 scaffold，不作为 green evidence；`P2-C1-S2` 将在首次 green hard gate run（ok=true）之后单独入账。
 
-### P2-C1-S2（S5B-3A hard gate 首次 green run｜TBD）
+### P2-C1-S2（S5B-3A hard gate 首次 green run｜2026-03-08）
 
-- 预期执行路径：
-  - 由 CI workflow（hard-gate-s5b3a-membership-audit.yml）在 devtest DB + 本地 uvicorn backend 环境下调用 `python scripts/drills/s5b3a_p4_hard_gate.py`；
-  - hard gate 入口 exit code=0，`artifacts/s5b3a-runs.json` 追加一条 `ok=true / contract_ok=true / result_ok=true` 记录；
-  - `_result.json.ok=true` 且 5 个 membership_audit_coverage cases 全部通过。
-- 当前本地多次试跑仍受环境约束（API 端口/网络连通性问题）导致 red evidence：
-  - 最近一次运行 headSha=`2d2468f191ed2e4effabf2b9e8d07e99dd6e3966`；
-  - run_dir=`docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/15590d54-9b20-4a8c-b164-06f0ea474bbb/`；
-  - `_result.json.summary={"total":5,"passed":0,"failed":5}`，`ok=false`，failure_reason=`unexpected_error`（ConnectError）；
-  - 该条记录已写入 `artifacts/s5b3a-runs.json`，用于证明 S0D-2A wiring 生效，但仍不视为 P2-C1-S2 的 green evidence。
+- headSha：`a5fa15bff07369430516bae55af876fdda188822`
+- run_dir：`docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/16b34278-d370-4be4-9e8f-29a455e25111/`
+- ci_url：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22810323199`
+- env：
+  - `WORDLOOM_API_BASE_URL=http://127.0.0.1:31001`
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test`
+- 期望（expected）：
+  - hard gate 入口 exit code=0；
+  - verifier `contract_ok=true` 且 `_result.json.ok=true`；
+  - `artifacts/s5b3a-runs.json` 追加一条 `ok=true / contract_ok=true / result_ok=true` 记录。
+- 观测（observed）：
+  - CI run `hard-gate-s5b3a-membership-audit`（见上方 ci_url）中，`Run S5B-3A hard gate` 步骤输出：
+    - `runner_rc=0`，drills runner 正常完成；
+    - `verify_rc=0`，`[contract_ok] Artifacts contract OK`；
+    - `--- summary --- log_id=S5B-3A phase=P2 cycle=C1 step=S1 ok=True contract_ok=True result_ok=True run_dir=docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/16b34278-d370-4be4-9e8f-29a455e25111`；
+  - CI artifacts 中包含 `docs/labs/_snapshot/auto/S5B-3A/...` 与 `artifacts/s5b3a-runs*.json`，满足 P2-C1-S2 对 “首条通过 S0D-2A 入口的 green evidence” 的要求；
+  - 早期本地/CI 的 red evidence（ConnectError、脚本缺失等）仅保留在上文说明中作为接入过程记录，不再阻塞本条 checklist 的勾选。
 
 ### P3-C1-S1（CI hard gate wiring｜2026-03-08）
 
