@@ -116,16 +116,16 @@
 
 ### P2（drill/verify）
 
-- [ ] `P2-C1-S1`：新增 drills scenario
-- [ ] `P2-C1-S2`：verifier 通过并记录 evidence
+- [x] `P2-C1-S1`：新增 drills scenario
+- [x] `P2-C1-S2`：verifier 通过并记录 evidence
 
 ### P3（operator workflow）
 
-- [ ] `P3-C1-S1`：最小查询/回放流程固化
+- [x] `P3-C1-S1`：最小查询/回放流程固化
 
 ### P4（hard gate）
 
-- [ ] `P4-C1-S1`：CI hard gate 接入（或记录不接入原因）
+- [x] `P4-C1-S1`：CI hard gate 接入（或记录不接入原因）
 
 ## Evidence（预留）
 
@@ -201,7 +201,59 @@
     - run_dir=`docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/9d3cdfc1-2fb0-43c8-8364-a00b5db4e87e/`。
     - hard gate 入口在 repo 根执行：`python scripts/drills/s5b3a_p4_hard_gate.py`，内部复用同一 runner + verifier，并将结果写入 `artifacts/s5b3a-runs.json`。
     - 本次 run drills 本身仍然 `ok=false`（5 个 case red，verifier rc=1），但通过 S0D-2A 的入口产生了一条结构化记录：`log_id=S5B-3A, phase=P2, cycle=C1, step=S1, ok=false, contract_ok=true, result_ok=false`，为后续 green evidence 奠定自动化管道。
-- 结论：目前 P2 drills 已可在测试库环境下完整跑通并产出符合 contract 的 artifacts，且已通过 S0D-2A hard gate 入口接入 write_gate 汇总，但受限于底层 DB schema/SQL 的 `ProgrammingError` 与当前业务 case 仍为 red，暂时仍视作 red evidence；待后续修复 DB / migration 并拿到 `_result.json.ok=true` 的 run 后，再更新 Run #4+ 并勾选 P2 checklist。
+- 结论：目前 P2 drills 已可在测试库环境下完整跑通并产出符合 contract 的 artifacts，且已通过 S5B-3A hard gate / S0D-2A pipeline 接入 write_gate 汇总；上面的 Run #1-3 主要记录早期 red evidence，正式满足 P2 DoD 的 green run 见下方 `P2-C1-S2`。
+
+**P2-C1-S2（membership_audit_coverage 首次 green run｜2026-03-08）**
+
+- headSha：`a5fa15bff07369430516bae55af876fdda188822`
+- run_dir：`docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/16b34278-d370-4be4-9e8f-29a455e25111/`
+- ci_url：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22810323199`
+- env：
+  - `WORDLOOM_API_BASE_URL=http://127.0.0.1:31001`
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test`
+- 期望（expected）：
+  - hard gate 入口 exit code=0；
+  - verifier `contract_ok=true` 且 `_result.json.ok=true`；
+  - `artifacts/s5b3a-runs.json` 追加一条 `ok=true / contract_ok=true / result_ok=true` 记录。
+- 观测（observed）：
+  - 通过 CI workflow `hard-gate-s5b3a-membership-audit`（见上方 ci_url）触发 S5B-3A hard gate 入口；
+  - `Run S5B-3A hard gate` 步骤输出：
+    - `runner_rc=0`，drills runner 正常完成；
+    - `verify_rc=0`，`[contract_ok] Artifacts contract OK`；
+    - `--- summary --- log_id=S5B-3A phase=P2 cycle=C1 step=S1 ok=True contract_ok=True result_ok=True run_dir=docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/16b34278-d370-4be4-9e8f-29a455e25111`；
+  - CI artifacts 中包含对应的 `docs/labs/_snapshot/auto/S5B-3A/...` 与 `artifacts/s5b3a-runs*.json`，可在 `artifacts/s5b3a-runs.json` 中找到对应的 `HardGateRunRecord` 条目；
+  - 至此，S5B-3A 侧 P2 drills + verifier 已有首条通过 CI / hard gate 入口的 green evidence，可勾选本 log 的 P2-C1-S1 / P2-C1-S2 checklist。
+
+**P3-C1-S1（membership audit operator workflow｜2026-03-08）**
+
+- 目标：给 membership grant/revoke 相关的排障/取证提供一套最小“查询→定位→复现”流程，并与本 log 的 drills/hard gate 证据对齐；
+- 查询阶段：
+  - 通过 `request_id` / `actor_user_id` / `tenant_id` 在 `audit_log` 中定位相关行，关注 `action=result=reason` 组合是否落在本 log 约定的低基数空间内；
+  - 将观测到的组合映射到 `membership_audit_coverage` 的 cases（如 `grant_success` / `revoke_not_found` / `grant_not_admin_403` / `revoke_domain_error`），判断属于哪一类出口；
+- 复现阶段（test / staging 环境）：
+  - 在设置好 `WORDLOOM_API_BASE_URL` 与 `DATABASE_URL` 后，运行 `python scripts/drills/s5b3a_p2c1s1_drills_runner.py` 或直接调用 hard gate 入口 `python scripts/drills/s5b3a_p4_hard_gate.py`；
+  - 通过 stdout 中的 run_dir 或 `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/...` 路径找到对应 `_recipe.json/_result.json/_logs/_metrics`，对比 case 结果与真实 incident；
+- 对齐阶段：
+  - 若 drills 结果为 green（如上 `P2-C1-S2` 所示），但线上 incident 暗示行为不一致，则以 drills 为“期望行为”，以 `audit_log` 行为“实际行为”，推动进一步的 schema/代码修复；
+  - 若 drills 本身为 red，则先以 S5B-3A/S0D-2A 的 pipeline 为主线修复，实现新的 green run 再回到 operator 视角复盘。
+
+**P4-C1-S1（CI hard gate wiring｜2026-03-08）**
+
+- hard gate 入口脚本：`scripts/drills/s5b3a_p4_hard_gate.py`：
+  - 运行 `membership_audit_coverage` drills runner；
+  - 通过 `_shared_artifacts.extract_run_dir_from_output` 发现最新 run_dir；
+  - 调用 `scripts/drills/s5b1a_verify_artifacts.py` 对 run_dir 做 contract + result 校验；
+  - 将 `log_id=S5B-3A, phase=P2, cycle=C1, step=S1, head_sha, suite_id, run_dir, ok, contract_ok, result_ok, ci_url, created_at` 等字段写入 `artifacts/s5b3a-runs.json`；
+  - 以 verifier 的 exit code 作为 hard gate 进程的返回码。
+- CI workflow：`.github/workflows/hard-gate-s5b3a-membership-audit.yml`：
+  - 触发条件：对 backend membership/audit 相关代码、S5B-3A log、S0D-2A log 或本 workflow 自身的 PR 变更，或手动 `workflow_dispatch`；
+  - job 步骤摘要：
+    - 使用 `docker-compose.devtest-db.yml` 启动 devtest Postgres，并准备好 `wordloom_test` 数据库；
+    - 安装 backend 依赖并对 `wordloom_test` 运行 Alembic 迁移；
+    - 以 `uvicorn api.app.main:app --host 127.0.0.1 --port 31001` 启动 API；
+    - 设置 `WORDLOOM_API_BASE_URL` 与 `DATABASE_URL`，执行 `python scripts/drills/s5b3a_p4_hard_gate.py`；
+    - 将 `docs/labs/_snapshot/auto/S5B-3A/**` 与 `artifacts/s5b3a-runs*.json` 作为 CI artifacts 上传，便于后续审计与取证；
+  - hard gate 语义：CI 直接以 hard gate 脚本的 exit code 作为 job 成功/失败依据；结合 `artifacts/s5b3a-runs.json` 与 `_result.json.ok`，确保只有 `ok=true / contract_ok=true / result_ok=true` 的 run 才被视为通过。
 
 ## P0（Contract｜v1）
 
