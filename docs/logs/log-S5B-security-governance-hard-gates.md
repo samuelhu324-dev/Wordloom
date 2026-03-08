@@ -94,18 +94,21 @@
 - `S5B-3A`（Phase 3）：Audit coverage expansion + operator workflow（把 deny/allow 的审计覆盖扩展到关键写入，并固化 replay/forensics 流程）
   - 详见：`docs/logs/log-S5B-3A-audit-coverage-operator-workflow.md`
 
+- `S5B-4A`（Phase 4）：Search query authorization & tenant isolation（为搜索链路固化 AuthContext/tenant/policy/audit contract + drills/hard gate）
+  - 详见：`docs/logs/log-S5B-4A-search-query-authorization-drills.md`
+
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：contract/indexing（action/result/reason 口径；evidence schema；links/index）
 - [x] `P1`：Phase 1（drills/evidence hard gate v1）
 - [x] `P2`：Phase 2（关键链路 policy 收口）
-- [ ] `P3`：Phase 3（audit 扩展 + 运维可操作）
+- [x] `P3`：Phase 3（audit 扩展 + 运维可操作）
 
 ## Current Status（进展摘要）
 
 - `S5B-1A` 已完成并标记为 stable：P0-P4 drills + verifier + CI hard gate workflow 已闭环。
 - `S5B-2A` 已完成：关键链路 `bookshelf.delete` 完成 policy entrypoint 收口 + drills/evidence + CI hard gate 接入。
-- 下一步：启动 `S5B-3A`，扩展关键写入链路 audit 覆盖与 operator workflow，并用 drills/evidence + hard gate 固化。
+- `S5B-3A` 已完成并标记为 stable：membership audit coverage 的 contract/实现/drills/operator workflow/CI hard gate 全部跑通，最新 green run 通过 S0D-2A/S5B-3A hard gate 入口记账到 `artifacts/s5b3a-runs.json`。
 
 ## Evidence（S5B 记账）
 
@@ -118,6 +121,11 @@
   - headSha：`fa89acdd8896959dfa9ec7da4b81b3c5f2855bb1`
   - phase log：`docs/logs/log-S5B-2A-policy-entrypoint-consolidation.md`
   - CI hard gate workflow：`.github/workflows/hard-gate-s5b2a-policy-entrypoint.yml`
+
+- `S5B-3A`（Audit coverage + operator workflow v1）：
+  - headSha：`a5fa15bff07369430516bae55af876fdda188822`
+  - phase log：`docs/logs/log-S5B-3A-audit-coverage-operator-workflow.md`
+  - CI hard gate workflow：`.github/workflows/hard-gate-s5b3a-membership-audit.yml`
 
 ## Notes（落地原则）
 
