@@ -21,7 +21,7 @@
   **phase_log_2**: `docs/logs/log-S5B-2A-policy-entrypoint-consolidation.md`
   **phase_log_3**: `docs/logs/log-S5B-3A-audit-coverage-operator-workflow.md`
 **created**: `2026-03-06`
-**updated**: `2026-03-07`
+**updated**: `2026-03-08`
 
 ---
 
@@ -103,12 +103,14 @@
 - [x] `P1`：Phase 1（drills/evidence hard gate v1）
 - [x] `P2`：Phase 2（关键链路 policy 收口）
 - [x] `P3`：Phase 3（audit 扩展 + 运维可操作）
+ - [x] `P4`：Phase 4（search query authorization & tenant isolation）
 
 ## Current Status（进展摘要）
 
 - `S5B-1A` 已完成并标记为 stable：P0-P4 drills + verifier + CI hard gate workflow 已闭环。
 - `S5B-2A` 已完成：关键链路 `bookshelf.delete` 完成 policy entrypoint 收口 + drills/evidence + CI hard gate 接入。
 - `S5B-3A` 已完成并标记为 stable：membership audit coverage 的 contract/实现/drills/operator workflow/CI hard gate 全部跑通，最新 green run 通过 S0D-2A/S5B-3A hard gate 入口记账到 `artifacts/s5b3a-runs.json`。
+ - `S5B-4A` 已完成并标记为 stable：search query 授权 + tenant isolation 的 contract/实现/drills/hard gate + CI workflow 全部跑通，最新 green run 通过 S5B-4A hard gate 入口记账到 `artifacts/s5b4a-runs.json` 与 `docs/labs/_snapshot/auto/S5B-4A/...`。
 
 ## Evidence（S5B 记账）
 
@@ -127,6 +129,11 @@
   - phase log：`docs/logs/log-S5B-3A-audit-coverage-operator-workflow.md`
   - CI hard gate workflow：`.github/workflows/hard-gate-s5b3a-membership-audit.yml`
 
+- `S5B-4A`（Search query authorization & tenant isolation v1）：
+  - headSha：`dbc7c07dcc224c7886bffb97c0f27655863f2781`
+  - phase log：`docs/logs/log-S5B-4A-search-query-authorization-drills.md`
+  - CI hard gate workflow：`.github/workflows/hard-gate-s5b4a-search-query-authorization.yml`
+
 ## Notes（落地原则）
 
 - 优先让 drills/evidence “可复跑 + 可机械判定”，再扩大覆盖面。
@@ -136,9 +143,10 @@
 
 - 本 log 标记为 `stable` 表示：
   - `S5B` 的默认基线、phase 拆分与证据口径稳定。
-  - 至少 `S5B-1A` 已具备可复跑的 hard-gate drills 入口，并且 Evidence 有可追溯记录。
+  - 至少 `S5B-1A` 已具备可复跑的 hard-gate drills 入口，并且 Evidence 有可追溯记录；后续 phase（含 `S5B-4A`）在各自 phase log 中补充硬门控与 evidence 记账。
 
 ## Recent changes（for traceability，可选）
 
 - 2026-03-06：scaffold S5B spine log + Phase 1 log skeleton.
 - 2026-03-07：index Phase 2 evidence + scaffold Phase 3 log.
+- 2026-03-08：index Phase 4（S5B-4A search query authorization & tenant isolation）evidence + CI hard gate。
