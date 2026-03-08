@@ -221,6 +221,9 @@
   - 角色不足的搜索（例如 member 不应看到 admin-only 结果）。
 - P2-C1-S2：使用 S5B-1A verifier 验证 artifacts contract，首次跑出可用的 red/green evidence，并在 Evidence 区记录 headSha + run_dir。
 
+- P2-C2-S1：在同一 suite 中新增针对 `GET /search` 的 global search drills case（例如 same-tenant/global、cross-tenant library_id、non-member/global），并扩展 `s5b4a_p2c1s1_drills_runner.py` 以一并产出 artifacts。
+- P2-C2-S2：复用 S5B-1A verifier（`s5b1a_verify_artifacts.py`）验证包含 global search case 在内的 artifacts contract，并在 Evidence 区新增对应 headSha + run_dir 记录。
+
 ### P3（hard gate & wiring）
 
 - P3-C1-S1：新增 hard gate 入口脚本（例如 `scripts/drills/s5b4a_p3c1s1_hard_gate.py` 或复用 S0D-2A shared hard gate），调用 search drills runner + verifier，并把 run 结果写入 `artifacts/s5b4a-runs.json`。
@@ -251,7 +254,10 @@
 ### P2（drill/verify）
 
 - [x] `P2-C1-S1`：实现 search drills runner 并覆盖关键场景
-- [ ] `P2-C1-S2`：通过 verifier 并记录首条 evidence（headSha + run_dir）
+- [x] `P2-C1-S2`：通过 verifier 并记录首条 evidence（headSha + run_dir）
+
+- [ ] `P2-C2-S1`：设计并实现 global search drills（复用现有 runner）
+- [ ] `P2-C2-S2`：通过 verifier 跑通 global search drills 并记录 evidence
 
 ### P3（hard gate & wiring）
 
@@ -261,6 +267,15 @@
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
+
+### P2-C1-S2（blocks two-stage search drills + verifier｜2026-03-08）
+
+- headSha：`6ed7ad608a99793923e1744624e14f3dab6224be`
+- run_dir：`docs/labs/_snapshot/auto/S5B-4A/search_query_authorization/ad0ba4d2-e456-4011-a0b9-bcbd388a0327`
+- suite：`search_query_authorization`，schema_version：`s5b-1a.result.v1`
+- summary：`total=4, passed=4, failed=0, ok=true`
+- verifier：`python scripts/drills/s5b1a_verify_artifacts.py --run-dir docs/labs/_snapshot/auto/S5B-4A/search_query_authorization/ad0ba4d2-e456-4011-a0b9-bcbd388a0327`
+
 
 **P1-C1-S1（现状定位：blocks two-stage search 授权与 tenant 行为｜2026-03-08）**
 

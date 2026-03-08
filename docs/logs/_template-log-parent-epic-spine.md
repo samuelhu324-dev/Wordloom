@@ -112,6 +112,13 @@
   - S5 系列安全治理工作优先落在 `S5B-...` 系列分支，S0 系列 docs/automation 工作优先落在 `S0D-...` 系列分支。
 - 若一次演进同时涉及多个 scope/index，推荐拆分为多条分支/PR：每条分支聚焦一个 scope/index，便于回溯 `scope → branch → commits → artifacts` 的证据链。
 
+**Commit 纪律（建议）**:
+
+- 对于归属于某个 scope/index 的 phase log（例如 `S5B-4A` 隶属于 `S5B`）：
+  - 完成每个 `P*-C*-S*` 的关键内容后，应在该 scope 的顶层工作分支（如 `S5B-security-governance-hard-gates`）上及时 `commit/push`；
+  - 仅当某个 phase 体量较大、需要多人协同时，才在顶层分支之下再建短生命周期子分支，避免碎片化。
+- 推荐节奏：按 `P*-C*-S*` 粒度在 scope 分支上积累小而清晰的 commit → 由 parent/spine 的维护人定期从这些 scope 分支向 `main` 发起 PR，并通过 Review/合并把证据链收口到主干。
+
 ## Recent changes（for traceability，可选）
 
 - YYYY-MM-DD：<发生了什么变更，为什么要记录，如何追溯（commit/PR/run URL）>
