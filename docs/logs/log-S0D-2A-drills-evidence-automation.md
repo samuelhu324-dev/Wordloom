@@ -139,7 +139,14 @@
 
 **Commit / PR 命名**:
 
-- `S0D-2A/P<phase>-C<cycle>-S<step>: <summary>`
+- `<ID>/P<phase>-C<cycle>-S<steps>: <summary>`，其中 `<steps>` 可以是单个 step（`1`，即 `...-S1`），也可以是在同一 phase / cycle 下连续的多个 step 合并（如 `1S2`，即 `...-S1S2`）。
+
+**Branch 约定（可选，但推荐遵守）**:
+
+- 对应 scope/index 的 log（例如 `S5B-3A` 隶属于 `S5B`，`S0D-2A` 隶属于 `S0D`）优先在同名前缀的工作分支上推进 P* 的代码与文档变更：
+  - 例如：`S5B-3A` 相关改动优先落在 `S5B-...` 系列分支（如 `S5B-security-governance-hard-gates`）；
+  - `S0D-2A` 这类 meta/docs/automation 改动优先落在 `S0D-...` 系列分支（如 `S0D-docs-management-v4`）。
+- 如果一次 PR 同时涉及多个 scope/index（例如同时修改 `S5B-3A` 和 `S0D-2A`），建议拆成多条 PR：每条 PR 聚焦一个 scope/index 与对应分支，便于后续自动化按 scope 做聚合与回溯。
 
 ## Plan（draft）
 
@@ -181,11 +188,11 @@
 ### P2（drill/verify：S5B-3A 流水线接入）
 
 - [x] `P2-C1-S1`：s5b3a hard gate 入口脚本
-- [ ] `P2-C1-S2`：首条通过 S0D-2A 的 Evidence 入账
+- [x] `P2-C1-S2`：首条通过 S0D-2A 的 Evidence 入账
 
 ### P3（hard gate：CI 集成）
 
-- [ ] `P3-C1-S1`：CI workflow 接入（或记录不接入原因）
+- [x] `P3-C1-S1`：CI workflow 接入（或记录不接入原因）
 
 ## Evidence（预留）
 
@@ -205,7 +212,39 @@
   - 首次 hard gate 运行：
     - `runner_rc=0`，drills runner 能完整产出 artifacts；
     - `verify_rc=1`，`contract_ok=true` 但 `_result.json.ok=false`（5 个 case 均为红），写入 `artifacts/s5b3a-runs.json` 时记录为 `ok=false / result_ok=false`；
-    - 由于底层 membership_audit_coverage 仍为 red evidence，本条仅视为 S0D-2A 接入 scaffold，不作为 green evidence，`P2-C1-S2` 仍待后续 S5B-3A drills 变绿后补充。
+    - 由于底层 membership_audit_coverage 仍为 red evidence，本条仅视为 S0D-2A 接入 scaffold，不作为 green evidence；`P2-C1-S2` 将在首次 green hard gate run（ok=true）之后单独入账。
+
+### P2-C1-S2（S5B-3A hard gate 首次 green run｜2026-03-08）
+
+- headSha：`a5fa15bff07369430516bae55af876fdda188822`
+- run_dir：`docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/16b34278-d370-4be4-9e8f-29a455e25111/`
+- ci_url：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22810323199`
+- env：
+  - `WORDLOOM_API_BASE_URL=http://127.0.0.1:31001`
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test`
+- 期望（expected）：
+  - hard gate 入口 exit code=0；
+  - verifier `contract_ok=true` 且 `_result.json.ok=true`；
+  - `artifacts/s5b3a-runs.json` 追加一条 `ok=true / contract_ok=true / result_ok=true` 记录。
+- 观测（observed）：
+  - CI run `hard-gate-s5b3a-membership-audit`（见上方 ci_url）中，`Run S5B-3A hard gate` 步骤输出：
+    - `runner_rc=0`，drills runner 正常完成；
+    - `verify_rc=0`，`[contract_ok] Artifacts contract OK`；
+    - `--- summary --- log_id=S5B-3A phase=P2 cycle=C1 step=S1 ok=True contract_ok=True result_ok=True run_dir=docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/16b34278-d370-4be4-9e8f-29a455e25111`；
+  - CI artifacts 中包含 `docs/labs/_snapshot/auto/S5B-3A/...` 与 `artifacts/s5b3a-runs*.json`，满足 P2-C1-S2 对 “首条通过 S0D-2A 入口的 green evidence” 的要求；
+  - 早期本地/CI 的 red evidence（ConnectError、脚本缺失等）仅保留在上文说明中作为接入过程记录，不再阻塞本条 checklist 的勾选。
+
+### P3-C1-S1（CI hard gate wiring｜2026-03-08）
+
+- 新增 reusable workflow：`.github/workflows/hard-gate-s5b3a-membership-audit.yml`：
+  - 触发：对 backend、S5B-3A drills、S0D-2A log 等相关文件的 PR 变更，或 `workflow_dispatch` 手动触发；
+  - 步骤：
+    - 使用 `docker-compose.devtest-db.yml` 启动 devtest Postgres，并确保存在 `wordloom_test` 库；
+    - 安装 backend 依赖并通过 Alembic 将 `wordloom_test` 迁移到最新；
+    - 以 `uvicorn api.app.main:app --host 127.0.0.1 --port 31001` 启动 backend；
+    - 在同一 job 中设置 `WORDLOOM_API_BASE_URL` 和 `DATABASE_URL`，调用 `python scripts/drills/s5b3a_p4_hard_gate.py`；
+    - 上传 `docs/labs/_snapshot/auto/S5B-3A/**` 与 `artifacts/s5b3a-runs*.json` 作为 CI artifacts，便于后续审计与取证；
+  - hard gate 语义：job 直接以 S5B-3A hard gate 脚本 exit code 作为通过/失败标准（0=通过，非 0=fail）。
 
 ## Recent changes（for traceability，可选）
 

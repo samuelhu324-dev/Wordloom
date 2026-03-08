@@ -331,7 +331,7 @@ async def run() -> tuple[str, dict[str, Any]]:
             },
             {
                 "case_id": "revoke_domain_error",
-                "title": "revoke membership domain/unexpected error → audit error",
+                "title": "revoke membership tenant_mismatch deny → audit denied/tenant_mismatch",
                 "endpoint": {"method": "DELETE", "path_template": "/api/v1/libraries/{library_id}/memberships/{user_id}"},
             },
         ],
@@ -576,12 +576,11 @@ async def run() -> tuple[str, dict[str, Any]]:
                 )
             )
 
-            # Case 5: revoke error (simulate domain/unexpected error via invalid header tenant)
+            # Case 5: revoke deny (simulate tenant_mismatch via invalid header tenant)
             r_revoke_error = await client.delete(
                 revoke_path,
                 headers={
-                    # deliberately mismatched tenant header to trigger 403 tenant_mismatch or similar,
-                    # but we only assert that audit.result=error (reason low-cardinality)
+                    # deliberately mismatched tenant header to trigger 403 tenant_mismatch
                     "X-Library-Id": str(uuid.uuid4()),
                     "Authorization": f"Bearer {token_admin}",
                 },
@@ -609,13 +608,18 @@ async def run() -> tuple[str, dict[str, Any]]:
                     expected={
                         "http_status": int(r_revoke_error.status_code),
                         "audit_expected": True,
-                        "audit": {"action": "membership.revoke", "result": "error", "reason": None},
+                        "audit": {
+                            "action": "membership.revoke",
+                            "result": "denied",
+                            "reason": "tenant_mismatch",
+                        },
                         "audit_required_fields": [
                             "tenant_id",
                             "actor_user_id",
                             "request_id",
                             "action",
                             "result",
+                            "reason",
                         ],
                     },
                     observed={
