@@ -94,6 +94,9 @@
 - `S5B-3A`（Phase 3）：Audit coverage expansion + operator workflow（把 deny/allow 的审计覆盖扩展到关键写入，并固化 replay/forensics 流程）
   - 详见：`docs/logs/log-S5B-3A-audit-coverage-operator-workflow.md`
 
+- `S5B-4A`（Phase 4）：Search query authorization & tenant isolation（为搜索链路固化 AuthContext/tenant/policy/audit contract + drills/hard gate）
+  - 详见：`docs/logs/log-S5B-4A-search-query-authorization-drills.md`
+
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：contract/indexing（action/result/reason 口径；evidence schema；links/index）

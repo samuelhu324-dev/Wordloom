@@ -32,9 +32,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.app.config.setting import Settings, get_settings
+from api.app.config.security import get_auth_context
 from api.app.modules.search.domain import SearchQuery, SearchResult
 from api.app.modules.search.schemas import BlockSearchHitSchema, BlockTwoStageSearchResponse
+from api.app.policy.search_policy import authorize_search_blocks_two_stage
+from api.app.shared.auth_context import AuthContext
 from infra.database.session import get_db_session
+from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
 from infra.storage.search_repository_impl import PostgresSearchAdapter
 
 logger = logging.getLogger(__name__)
@@ -218,6 +222,7 @@ async def search_blocks_two_stage(
     candidate_limit: int = Query(200, ge=1, le=5000, description="Stage1 candidate limit"),
     session: Optional[AsyncSession] = Depends(get_search_db_session),
     settings: Settings = Depends(get_settings),
+    ctx: AuthContext = Depends(get_auth_context),
 ):
     """Search blocks via two-stage SQL, returning tags."""
     try:
@@ -232,10 +237,49 @@ async def search_blocks_two_stage(
                 "book_id": str(book_id) if book_id else None,
                 "limit": limit,
                 "candidate_limit": candidate_limit,
+                "tenant_id": str(ctx.tenant_id),
+                "actor_user_id": str(ctx.user_id),
+                "request_id": ctx.request_id,
             }
         )
         if session is None:
             return BlockTwoStageSearchResponse(total=0, hits=[])
+        # Authorization and tenant scoping (S5B-4A).
+        decision = await authorize_search_blocks_two_stage(
+            ctx=ctx,
+            requested_library_id=library_id,
+        )
+
+        if not decision.allowed:
+            audit_repo = SQLAlchemyAuditLogRepository(session)
+            try:
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="search.blocks.two_stage",
+                    result=decision.audit_result,
+                    reason=decision.reason,
+                    meta_json={
+                        "q_preview": (q[:80] + "…") if len(q) > 80 else q,
+                        "requested_library_id": str(library_id) if library_id else None,
+                        "book_id": str(book_id) if book_id else None,
+                        "limit": limit,
+                        "candidate_limit": candidate_limit,
+                    },
+                )
+            except Exception:
+                logger.exception("Failed to write audit log for denied two-stage search")
+
+            raise HTTPException(
+                status_code=decision.http_status,
+                detail={
+                    "result": decision.audit_result,
+                    "reason": decision.reason,
+                },
+            )
+
+        effective_library_id = ctx.tenant_id
 
         repo = PostgresSearchAdapter(session)
         hits = await repo.search_block_hits_two_stage(
@@ -243,6 +287,7 @@ async def search_blocks_two_stage(
             book_id=book_id,
             limit=limit,
             candidate_limit=candidate_limit,
+            library_id=effective_library_id,
         )
         logger.info(
             {
@@ -250,6 +295,28 @@ async def search_blocks_two_stage(
                 "count": len(hits),
             }
         )
+
+        audit_repo = SQLAlchemyAuditLogRepository(session)
+        try:
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="search.blocks.two_stage",
+                result="success",
+                reason=None,
+                meta_json={
+                    "q_preview": (q[:80] + "…") if len(q) > 80 else q,
+                    "library_id": str(effective_library_id) if effective_library_id else None,
+                    "book_id": str(book_id) if book_id else None,
+                    "limit": limit,
+                    "candidate_limit": candidate_limit,
+                    "hit_count": len(hits),
+                },
+            )
+        except Exception:
+            logger.exception("Failed to write audit log for successful two-stage search")
+
         return BlockTwoStageSearchResponse(
             total=len(hits),
             hits=[
@@ -264,12 +331,47 @@ async def search_blocks_two_stage(
         )
     except ValueError as e:
         logger.warning(f"Invalid search query: {e}")
+        # Invalid query: classify as error for audit, with specific reason.
+        if session is not None:
+            try:
+                audit_repo = SQLAlchemyAuditLogRepository(session)
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="search.blocks.two_stage",
+                    result="error",
+                    reason="invalid_query",
+                    meta_json={
+                        "detail": str(e),
+                    },
+                )
+            except Exception:
+                logger.exception("Failed to write audit log for invalid two-stage search query")
+
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"Invalid search query: {e}",
         )
     except Exception as e:
         logger.error(f"Two-stage search error: {e}")
+        if session is not None:
+            try:
+                audit_repo = SQLAlchemyAuditLogRepository(session)
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="search.blocks.two_stage",
+                    result="error",
+                    reason="internal_error",
+                    meta_json={
+                        "detail": str(e),
+                    },
+                )
+            except Exception:
+                logger.exception("Failed to write audit log for two-stage search error")
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Two-stage search failed",
