@@ -215,7 +215,7 @@ async def search_blocks(
     """,
 )
 async def search_blocks_two_stage(
-    q: str = Query(..., min_length=1, max_length=4000, description="Search keyword"),
+    q: str = Query(..., min_length=1, max_length=500, description="Search keyword"),
     library_id: Optional[UUID] = Query(None, description="Scope key: library_id"),
     book_id: Optional[UUID] = Query(None, description="Optional: limit to specific book"),
     limit: int = Query(20, ge=1, le=1000, description="Results per page"),
@@ -228,13 +228,6 @@ async def search_blocks_two_stage(
     try:
         if not settings.enable_search_projection:
             return BlockTwoStageSearchResponse(total=0, hits=[])
-
-        # Guard against excessively long queries at application level so we can
-        # emit a structured audit entry instead of a framework-level 422.
-        # This threshold intentionally differs from the Pydantic max_length
-        # above, so invalid-query semantics are owned here.
-        if len(q) > 1000:
-            raise ValueError("Search query too long; max length is 1000 characters")
 
         logger.info(
             {
@@ -294,6 +287,7 @@ async def search_blocks_two_stage(
             book_id=book_id,
             limit=limit,
             candidate_limit=candidate_limit,
+            library_id=effective_library_id,
         )
         logger.info(
             {
@@ -359,10 +353,6 @@ async def search_blocks_two_stage(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"Invalid search query: {e}",
         )
-    except HTTPException:
-        # HTTPException already encodes the intended status/result; don't wrap
-        # it as an internal error.
-        raise
     except Exception as e:
         logger.error(f"Two-stage search error: {e}")
         if session is not None:
