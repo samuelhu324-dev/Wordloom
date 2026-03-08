@@ -5,7 +5,7 @@
 **id**: `S5B-4A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `search query authorization + tenant isolation (drills/evidence) v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S5`
 **tags**: `EVOLUTION, Security, Governance, MultiTenant, Authorization, Policy, Audit, Drills, Evidence, HardGate, Search, Query, epic/s5, epic/s5b, sub/4a`
 **links**: ``
@@ -291,6 +291,7 @@
 - suite：`search_query_authorization`，schema_version：`s5b-1a.result.v1`
 - summary：`total=8, passed=8, failed=0, ok=true`
 - 说明：在引入 strict 版 AuthContext（缺少或非法 Authorization bearer token 一律 401，不再 fallback 到 dev user）后，覆盖 blocks two-stage + global search 的 8 个 case（含 missing-token）在 strict-auth API 实例上全部通过；其中 `unauthorized_missing_token` case 观察到 HTTP 401 且无 search 审计（`audit_expected=false`，`audit_rows.count=0`），标记为 P2-C2-S2 的 full green evidence，用于后续 P3 hard gate。
+ - ci_url：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22819700606/job/66190416303`
 
 
 **P1-C1-S1（现状定位：blocks two-stage search 授权与 tenant 行为｜2026-03-08）**
