@@ -182,23 +182,16 @@
 ### P2（drill/verify）
 
 - [x] `P2-C1-S1`：实现 search drills runner 并覆盖关键场景
-- [x] `P2-C1-S2`：通过 verifier 并记录首条 evidence（headSha + run_dir）
+- [ ] `P2-C1-S2`：通过 verifier 并记录首条 evidence（headSha + run_dir）
 
 ### P3（hard gate & wiring）
 
-- [x] `P3-C1-S1`：实现 search hard gate 入口脚本 + artifacts 记账
+- [ ] `P3-C1-S1`：实现 search hard gate 入口脚本 + artifacts 记账
 - [ ] `P3-C1-S2`：接入 CI workflow 或记录不接入原因
 
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
-
-- 2026-03-08（devtest，本地 docker backend + devtest DB）：
-  - headSha: `6ed7ad608a99793923e1744624e14f3dab6224be`
-  - suite_id: `search_query_authorization`
-  - run_dir: `docs/labs/_snapshot/auto/S5B-4A/search_query_authorization/ad0ba4d2-e456-4011-a0b9-bcbd388a0327`
-  - verifier: `python scripts/drills/s5b1a_verify_artifacts.py --run-dir <run_dir>`
-  - summary: `total=4, passed=4, failed=0, contract_ok=true`
 
 **P1-C1-S1（现状定位：blocks two-stage search 授权与 tenant 行为｜2026-03-08）**
 
