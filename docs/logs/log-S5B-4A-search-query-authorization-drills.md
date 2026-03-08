@@ -262,7 +262,7 @@
 ### P3（hard gate & wiring）
 
 - [x] `P3-C1-S1`：实现 search hard gate 入口脚本 + artifacts 记账
-- [ ] `P3-C1-S2`：接入 CI workflow 或记录不接入原因
+- [x] `P3-C1-S2`：接入 CI workflow 或记录不接入原因
 
 ## Evidence（预留）
 
