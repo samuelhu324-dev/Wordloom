@@ -5,7 +5,7 @@
 **id**: `S5B-3A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `audit coverage expansion + operator workflow (drills/evidence) v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S5`
 **tags**: `EVOLUTION, Security, Governance, MultiTenant, Authorization, Policy, Audit, Drills, Evidence, HardGate, Ops, epic/s5, epic/s5b, sub/3a`
 **links**: ``
