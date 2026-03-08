@@ -246,7 +246,7 @@
 - [x] `P1-C1-S1`：梳理现有 search call chain 与授权/tenant 过滤位置
 - [x] `P1-C1-S2`：实现 search policy entrypoint 并改造调用方
 - [x] `P1-C1-S3`：对齐 search audit 写入点的 action/result/reason 口径
-
+  
 - [ ] `P1-C2-S1`：梳理 global search call chain 与授权/tenant 过滤位置
 - [ ] `P1-C2-S2`：为 GET /search 接入统一 search policy entrypoint
 - [ ] `P1-C2-S3`：补齐 global search 的 audit 写入点（action/result/reason 对齐）

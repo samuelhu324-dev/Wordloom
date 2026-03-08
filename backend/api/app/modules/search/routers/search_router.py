@@ -32,10 +32,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.app.config.setting import Settings, get_settings
-from api.app.config.security import get_auth_context
+from api.app.config.security import get_auth_context_strict
 from api.app.modules.search.domain import SearchQuery, SearchResult
 from api.app.modules.search.schemas import BlockSearchHitSchema, BlockTwoStageSearchResponse
-from api.app.policy.search_policy import authorize_search_blocks_two_stage
+from api.app.policy.search_policy import authorize_search_blocks_two_stage, authorize_search_global
 from api.app.shared.auth_context import AuthContext
 from infra.database.session import get_db_session
 from infra.storage.audit_log_repository_impl import SQLAlchemyAuditLogRepository
@@ -114,6 +114,7 @@ async def search_global(
     offset: int = Query(0, ge=0, description="Pagination offset"),
     session: Optional[AsyncSession] = Depends(get_search_db_session),
     settings: Settings = Depends(get_settings),
+    ctx: AuthContext = Depends(get_auth_context_strict),
 ):
     """Execute global search across all entity types"""
     try:
@@ -122,11 +123,47 @@ async def search_global(
 
         if session is None:
             return _empty_search_response(limit=limit, offset=offset)
+        # Authorization and tenant scoping (S5B-4A, global search).
+        decision = await authorize_search_global(
+            ctx=ctx,
+            requested_library_id=library_id,
+        )
+
+        if not decision.allowed:
+            audit_repo = SQLAlchemyAuditLogRepository(session)
+            try:
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="search.global",
+                    result=decision.audit_result,
+                    reason=decision.reason,
+                    meta_json={
+                        "q_preview": (q[:80] + "…") if len(q) > 80 else q,
+                        "requested_library_id": str(library_id) if library_id else None,
+                        "book_id": str(book_id) if book_id else None,
+                        "limit": limit,
+                        "offset": offset,
+                    },
+                )
+            except Exception:
+                logger.exception("Failed to write audit log for denied global search")
+
+            raise HTTPException(
+                status_code=decision.http_status,
+                detail={
+                    "result": decision.audit_result,
+                    "reason": decision.reason,
+                },
+            )
+
+        effective_library_id = ctx.tenant_id
 
         repo = PostgresSearchAdapter(session)
         query = SearchQuery(
             text=q,
-            library_id=library_id,
+            library_id=effective_library_id,
             book_id=book_id,
             limit=limit,
             offset=offset,
@@ -140,12 +177,57 @@ async def search_global(
         all_hits.sort(key=lambda h: h.score, reverse=True)
         paginated_hits = all_hits[offset : offset + limit]
         combined = SearchResult(total=len(all_hits), hits=paginated_hits, query=query)
+
+        entity_types = sorted({h.entity_type.value for h in all_hits}) if all_hits else []
+
+        audit_repo = SQLAlchemyAuditLogRepository(session)
+        try:
+            await audit_repo.append(
+                tenant_id=ctx.tenant_id,
+                actor_user_id=ctx.user_id,
+                request_id=ctx.request_id,
+                action="search.global",
+                result="success",
+                reason=None,
+                meta_json={
+                    "q_preview": (q[:80] + "…") if len(q) > 80 else q,
+                    "library_id": str(effective_library_id) if effective_library_id else None,
+                    "book_id": str(book_id) if book_id else None,
+                    "limit": limit,
+                    "offset": offset,
+                    "entity_types": entity_types,
+                    "hit_count_total": len(all_hits),
+                },
+            )
+        except Exception:
+            logger.exception("Failed to write audit log for successful global search")
+
         return _result_to_dict(combined)
+    except HTTPException as exc:
+        # Let explicit HTTPExceptions (e.g. denies) bubble up unchanged.
+        raise exc
     except Exception as e:
         logger.error(f"Search error: {e}")
+        if session is not None:
+            try:
+                audit_repo = SQLAlchemyAuditLogRepository(session)
+                await audit_repo.append(
+                    tenant_id=ctx.tenant_id,
+                    actor_user_id=ctx.user_id,
+                    request_id=ctx.request_id,
+                    action="search.global",
+                    result="error",
+                    reason="internal_error",
+                    meta_json={
+                        "detail": str(e),
+                    },
+                )
+            except Exception:
+                logger.exception("Failed to write audit log for global search error")
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Search failed"
+            detail="Search failed",
         )
 
 
@@ -215,19 +297,24 @@ async def search_blocks(
     """,
 )
 async def search_blocks_two_stage(
-    q: str = Query(..., min_length=1, max_length=500, description="Search keyword"),
+    q: str = Query(..., min_length=1, description="Search keyword"),
     library_id: Optional[UUID] = Query(None, description="Scope key: library_id"),
     book_id: Optional[UUID] = Query(None, description="Optional: limit to specific book"),
     limit: int = Query(20, ge=1, le=1000, description="Results per page"),
     candidate_limit: int = Query(200, ge=1, le=5000, description="Stage1 candidate limit"),
     session: Optional[AsyncSession] = Depends(get_search_db_session),
     settings: Settings = Depends(get_settings),
-    ctx: AuthContext = Depends(get_auth_context),
+    ctx: AuthContext = Depends(get_auth_context_strict),
 ):
     """Search blocks via two-stage SQL, returning tags."""
     try:
         if not settings.enable_search_projection:
             return BlockTwoStageSearchResponse(total=0, hits=[])
+
+        # Domain-level guard for obviously invalid queries so we can
+        # classify and audit them explicitly (S5B-4A invalid_query).
+        if len(q) >= 2000:
+            raise ValueError("Search query too long")
 
         logger.info(
             {
@@ -242,8 +329,10 @@ async def search_blocks_two_stage(
                 "request_id": ctx.request_id,
             }
         )
+
         if session is None:
             return BlockTwoStageSearchResponse(total=0, hits=[])
+
         # Authorization and tenant scoping (S5B-4A).
         decision = await authorize_search_blocks_two_stage(
             ctx=ctx,
@@ -287,7 +376,6 @@ async def search_blocks_two_stage(
             book_id=book_id,
             limit=limit,
             candidate_limit=candidate_limit,
-            library_id=effective_library_id,
         )
         logger.info(
             {
@@ -353,6 +441,10 @@ async def search_blocks_two_stage(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"Invalid search query: {e}",
         )
+    except HTTPException as exc:
+        # Propagate HTTPExceptions (e.g. explicit denies) without wrapping
+        # them as 500/internal_error or writing duplicate audits.
+        raise exc
     except Exception as e:
         logger.error(f"Two-stage search error: {e}")
         if session is not None:

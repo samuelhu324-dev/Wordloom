@@ -7,6 +7,7 @@ routers do not have to duplicate role/tenant logic.
 
 Current focus (v1):
 - `GET /search/blocks/two-stage` → `search.blocks.two_stage`
+- `GET /search` (global)         → `search.global`
 """
 
 from __future__ import annotations
@@ -29,6 +30,20 @@ class SearchBlocksTwoStageDecision:
     """Decision for `search.blocks.two_stage`.
 
     Fields are aligned with S5B-1A/S5B-4A contracts so that routers can map
+    directly to HTTP + audit_log.
+    """
+
+    allowed: bool
+    http_status: int
+    audit_result: str
+    reason: Optional[str]
+
+
+@dataclass(frozen=True)
+class SearchGlobalDecision:
+    """Decision for `search.global`.
+
+    Mirrors the S5B-1A/S5B-4A contract so that routers can map
     directly to HTTP + audit_log.
     """
 
@@ -82,7 +97,52 @@ async def authorize_search_blocks_two_stage(
     )
 
 
+async def authorize_search_global(
+    *,
+    ctx: AuthContext,
+    requested_library_id: Optional[UUID],
+) -> SearchGlobalDecision:
+    """Authorize global search (`GET /search`).
+
+    Contract (S5B-4A/P0-C2-S2):
+    - Tenant boundary:
+      - If client passes a library_id that does not match ctx.tenant_id → deny
+        with `result=denied, reason=tenant_mismatch` (HTTP 403).
+      - If no library_id is provided, use ctx.tenant_id as effective scope.
+    - Membership:
+      - If actor has no roles for the selected tenant (roles empty) → deny with
+        `result=denied, reason=not_member` (HTTP 403).
+      - Otherwise (owner/admin/member) → allow.
+    """
+
+    if requested_library_id is not None and str(requested_library_id) != str(ctx.tenant_id):
+        return SearchGlobalDecision(
+            allowed=False,
+            http_status=status.HTTP_403_FORBIDDEN,
+            audit_result="denied",
+            reason=REASON_TENANT_MISMATCH,
+        )
+
+    roles = tuple(ctx.roles or ())
+    if not roles:
+        return SearchGlobalDecision(
+            allowed=False,
+            http_status=status.HTTP_403_FORBIDDEN,
+            audit_result="denied",
+            reason=REASON_NOT_MEMBER,
+        )
+
+    return SearchGlobalDecision(
+        allowed=True,
+        http_status=status.HTTP_200_OK,
+        audit_result="success",
+        reason=None,
+    )
+
+
 __all__ = [
     "SearchBlocksTwoStageDecision",
+    "SearchGlobalDecision",
     "authorize_search_blocks_two_stage",
+    "authorize_search_global",
 ]
