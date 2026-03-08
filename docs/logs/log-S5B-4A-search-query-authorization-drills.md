@@ -268,6 +268,14 @@
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
 
+### P2-C1-S1（blocks two-stage search drills 扩展矩阵：含未授权搜索 case｜2026-03-08）
+
+- headSha：`03d81e68f2ad48ef4a09b3abb8a39f2e3f53c942`
+- run_dir：`docs/labs/_snapshot/auto/S5B-4A/search_query_authorization/2fa7f2b4-5b18-42cf-a193-16be77cd7c09`
+- suite：`search_query_authorization`，schema_version：`s5b-1a.result.v1`
+- summary：`total=5, passed=4, failed=1, ok=false`
+- 说明：在原有 4 个 green case 基础上新增 `unauthorized_missing_token`（缺少 Authorization header，仅携带 X-Library-Id）后，当前实现行为为 HTTP 200 + `search.blocks.two_stage` success 审计，与「匿名/缺 token 搜索不得绕过 AuthContext/tenant/membership 约束」的合同存在偏差；该 run 作为 P2-C1-S1 的扩展矩阵 red evidence 保留，用于后续 P1/P2/P3 收敛。
+
 ### P2-C1-S2（blocks two-stage search drills + verifier｜2026-03-08）
 
 - headSha：`6ed7ad608a99793923e1744624e14f3dab6224be`

@@ -227,6 +227,11 @@ async def run() -> tuple[str, dict[str, Any]]:
                 "title": "invalid query → error/invalid_query",
                 "endpoint": {"method": "GET", "path_template": "/api/v1/search/blocks/two-stage"},
             },
+                {
+                    "case_id": "unauthorized_missing_token",
+                    "title": "missing Authorization token ",
+                    "endpoint": {"method": "GET", "path_template": "/api/v1/search/blocks/two-stage"},
+                },
         ],
     }
 
@@ -466,6 +471,44 @@ async def run() -> tuple[str, dict[str, Any]]:
                     "observed": {
                         "http_status": int(r4.status_code),
                         "audit_rows": {"count": len(audit_rows4), "rows": audit_rows4[:10]},
+                    },
+                    "verdict": {"ok": None, "failure_reason": None},
+                }
+            )
+
+            # Case 5: missing Authorization token (unauthenticated request)
+            params5 = {"q": "test", "limit": 5}
+            q_string5 = urlencode(params5)
+            path5 = f"/api/v1/search/blocks/two-stage?{q_string5}"
+            r5 = await client.get(
+                path5,
+                headers={
+                    "X-Library-Id": str(lib_id),
+                },
+            )
+            req_id5 = r5.headers.get("X-Request-Id")
+            audit_rows5 = await _fetch_audit_rows(engine=engine, request_id=req_id5) if req_id5 else []
+            case_results.append(
+                {
+                    "case_id": "unauthorized_missing_token",
+                    "title": "missing Authorization token ",
+                    "inputs": {
+                        "request_id": req_id5,
+                        "tenant_id": str(lib_id) if lib_id else None,
+                        "actor_user_id": None,
+                        "http": {
+                            "method": "GET",
+                            "path": path5,
+                            "path_template": "/api/v1/search/blocks/two-stage",
+                        },
+                    },
+                    "expected": {
+                        "http_status": 401,
+                        "audit_expected": False,
+                    },
+                    "observed": {
+                        "http_status": int(r5.status_code),
+                        "audit_rows": {"count": len(audit_rows5), "rows": audit_rows5[:10]},
                     },
                     "verdict": {"ok": None, "failure_reason": None},
                 }
