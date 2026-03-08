@@ -91,6 +91,13 @@
   - `S0D-2A` 这类 meta/docs/automation 改动优先落在 `S0D-...` 系列分支（如 `S0D-docs-management-v4`）。
 - 如果一次 PR 同时涉及多个 scope/index（例如同时修改 `S5B-3A` 和 `S0D-2A`），建议拆成多条 PR：每条 PR 聚焦一个 scope/index 与对应分支，便于后续自动化按 scope 做聚合与回溯。
 
+**Commit 纪律（建议）**:
+
+- 每完成一个 `P*-C*-S*` 的实质内容（无论是合同、实现，还是 drills/evidence），应尽量在对应 scope 的工作分支上及时 `commit/push`：
+  - 例如：`S5B-4A` 相关改动默认落在 `S5B-security-governance-hard-gates` 这类 `S5B-*` 顶层分支上；
+  - 若某个 phase 体量特别大或多人协作，可在 `S5B-*` 之下再开短生命周期子分支，但默认不必为每个 log 单独起分支。
+- 正常节奏是：在对应 scope 分支上按 `P*-C*-S*` 粒度累积 commit → 定期从该分支向 `main` 提交 PR，由人工 Review/合并。
+
 ## Plan（draft）
 
 ### P1（<实现>）

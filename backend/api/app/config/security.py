@@ -212,6 +212,84 @@ async def get_auth_context(
     return ctx
 
 
+async def get_auth_context_strict(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> AuthContext:
+    """Strict AuthContext dependency for security-sensitive surfaces (e.g. search).
+
+    Differences from get_auth_context:
+    - Requires a valid JWT bearer token; missing token → 401 (no dev fallback).
+    - Keeps the same tenant and role resolution semantics.
+    """
+
+    request_id = getattr(request.state, "correlation_id", None) or (
+        (request.headers.get("X-Request-Id") or "").strip() or str(uuid4())
+    )
+
+    token = _extract_bearer_token(request)
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    payload = SecurityConfig.verify_token(token)
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    try:
+        user_id = _parse_user_id(payload)
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token payload",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from exc
+    token_roles = _parse_roles(payload)
+
+    tenant_id = _parse_tenant_id(request)
+
+    roles: Tuple[str, ...] = tuple()
+    try:
+        membership_repo = SQLAlchemyLibraryMembershipRepository(db)
+        role = await membership_repo.get_role(library_id=tenant_id, user_id=user_id)
+        if not role:
+            owner_id_result = await db.execute(
+                select(LibraryModel.user_id).where(
+                    LibraryModel.id == tenant_id,
+                    LibraryModel.soft_deleted_at.is_(None),
+                )
+            )
+            owner_id = owner_id_result.scalar_one_or_none()
+            if owner_id == user_id:
+                role = "owner"
+
+        if role:
+            normalized = str(role).strip().lower()
+            if normalized == "owner":
+                roles = ("owner", "admin", "member")
+            elif normalized == "admin":
+                roles = ("admin", "member")
+            elif normalized == "member":
+                roles = ("member",)
+            else:
+                roles = tuple()
+        else:
+            roles = token_roles
+    except Exception:
+        roles = token_roles
+
+    with_actor_id(user_id)
+    ctx = AuthContext(user_id=user_id, tenant_id=tenant_id, roles=roles, request_id=request_id)
+    request.state.auth_context = ctx
+    return ctx
+
+
 async def get_current_user_id() -> UUID:
     """开发环境当前用户 ID 依赖。
 

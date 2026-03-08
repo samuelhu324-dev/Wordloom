@@ -227,6 +227,26 @@ async def run() -> tuple[str, dict[str, Any]]:
                 "title": "invalid query → error/invalid_query",
                 "endpoint": {"method": "GET", "path_template": "/api/v1/search/blocks/two-stage"},
             },
+                {
+                    "case_id": "unauthorized_missing_token",
+                    "title": "missing Authorization token ",
+                    "endpoint": {"method": "GET", "path_template": "/api/v1/search/blocks/two-stage"},
+                },
+                {
+                    "case_id": "global_same_tenant_success",
+                    "title": "global same-tenant search → success/audit success",
+                    "endpoint": {"method": "GET", "path_template": "/api/v1/search"},
+                },
+                {
+                    "case_id": "global_cross_tenant_query_param_denied",
+                    "title": "global cross-tenant library_id (query) → denied/tenant_mismatch",
+                    "endpoint": {"method": "GET", "path_template": "/api/v1/search"},
+                },
+                {
+                    "case_id": "global_non_member_denied",
+                    "title": "global non-member search → denied/not_member",
+                    "endpoint": {"method": "GET", "path_template": "/api/v1/search"},
+                },
         ],
     }
 
@@ -466,6 +486,197 @@ async def run() -> tuple[str, dict[str, Any]]:
                     "observed": {
                         "http_status": int(r4.status_code),
                         "audit_rows": {"count": len(audit_rows4), "rows": audit_rows4[:10]},
+                    },
+                    "verdict": {"ok": None, "failure_reason": None},
+                }
+            )
+
+            # Case 5: missing Authorization token (unauthenticated request)
+            params5 = {"q": "test", "limit": 5}
+            q_string5 = urlencode(params5)
+            path5 = f"/api/v1/search/blocks/two-stage?{q_string5}"
+            r5 = await client.get(
+                path5,
+                headers={
+                    "X-Library-Id": str(lib_id),
+                },
+            )
+            req_id5 = r5.headers.get("X-Request-Id")
+            audit_rows5 = await _fetch_audit_rows(engine=engine, request_id=req_id5) if req_id5 else []
+            case_results.append(
+                {
+                    "case_id": "unauthorized_missing_token",
+                    "title": "missing Authorization token ",
+                    "inputs": {
+                        "request_id": req_id5,
+                        "tenant_id": str(lib_id) if lib_id else None,
+                        "actor_user_id": None,
+                        "http": {
+                            "method": "GET",
+                            "path": path5,
+                            "path_template": "/api/v1/search/blocks/two-stage",
+                        },
+                    },
+                    "expected": {
+                        "http_status": 401,
+                        "audit_expected": False,
+                    },
+                    "observed": {
+                        "http_status": int(r5.status_code),
+                        "audit_rows": {"count": len(audit_rows5), "rows": audit_rows5[:10]},
+                    },
+                    "verdict": {"ok": None, "failure_reason": None},
+                }
+            )
+
+            # Global search cases (C2)
+
+            # Case 6: global same-tenant success
+            params_g1 = {"q": "test", "limit": 5}
+            q_string_g1 = urlencode(params_g1)
+            path_g1 = f"/api/v1/search?{q_string_g1}"
+            r_g1 = await client.get(
+                path_g1,
+                headers={
+                    "X-Library-Id": str(lib_id),
+                    "Authorization": f"Bearer {token_member}",
+                },
+            )
+            req_id_g1 = r_g1.headers.get("X-Request-Id")
+            audit_rows_g1 = await _fetch_audit_rows(engine=engine, request_id=req_id_g1) if req_id_g1 else []
+            case_results.append(
+                {
+                    "case_id": "global_same_tenant_success",
+                    "title": "global same-tenant search → success/audit success",
+                    "inputs": {
+                        "request_id": req_id_g1,
+                        "tenant_id": str(lib_id) if lib_id else None,
+                        "actor_user_id": str(user_member),
+                        "http": {
+                            "method": "GET",
+                            "path": path_g1,
+                            "path_template": "/api/v1/search",
+                        },
+                    },
+                    "expected": {
+                        "http_status": 200,
+                        "audit_expected": True,
+                        "audit": {"action": "search.global", "result": "success", "reason": None},
+                        "audit_required_fields": [
+                            "tenant_id",
+                            "actor_user_id",
+                            "request_id",
+                            "action",
+                            "result",
+                        ],
+                    },
+                    "observed": {
+                        "http_status": int(r_g1.status_code),
+                        "audit_rows": {"count": len(audit_rows_g1), "rows": audit_rows_g1[:10]},
+                    },
+                    "verdict": {"ok": None, "failure_reason": None},
+                }
+            )
+
+            # Case 7: global cross-tenant query param denied (library_id != ctx.tenant_id)
+            params_g2 = {"q": "test", "limit": 5, "library_id": other_lib_id}
+            q_string_g2 = urlencode(params_g2)
+            path_g2 = f"/api/v1/search?{q_string_g2}"
+            r_g2 = await client.get(
+                path_g2,
+                headers={
+                    "X-Library-Id": str(lib_id),
+                    "Authorization": f"Bearer {token_member}",
+                },
+            )
+            req_id_g2 = r_g2.headers.get("X-Request-Id")
+            audit_rows_g2 = await _fetch_audit_rows(engine=engine, request_id=req_id_g2) if req_id_g2 else []
+            case_results.append(
+                {
+                    "case_id": "global_cross_tenant_query_param_denied",
+                    "title": "global cross-tenant library_id (query) → denied/tenant_mismatch",
+                    "inputs": {
+                        "request_id": req_id_g2,
+                        "tenant_id": str(lib_id) if lib_id else None,
+                        "actor_user_id": str(user_member),
+                        "http": {
+                            "method": "GET",
+                            "path": path_g2,
+                            "path_template": "/api/v1/search",
+                        },
+                    },
+                    "expected": {
+                        "http_status": 403,
+                        "audit_expected": True,
+                        "audit": {
+                            "action": "search.global",
+                            "result": "denied",
+                            "reason": "tenant_mismatch",
+                        },
+                        "audit_required_fields": [
+                            "tenant_id",
+                            "actor_user_id",
+                            "request_id",
+                            "action",
+                            "result",
+                            "reason",
+                        ],
+                    },
+                    "observed": {
+                        "http_status": int(r_g2.status_code),
+                        "audit_rows": {"count": len(audit_rows_g2), "rows": audit_rows_g2[:10]},
+                    },
+                    "verdict": {"ok": None, "failure_reason": None},
+                }
+            )
+
+            # Case 8: global non-member denied (no membership for user_other)
+            params_g3 = {"q": "test", "limit": 5}
+            q_string_g3 = urlencode(params_g3)
+            path_g3 = f"/api/v1/search?{q_string_g3}"
+            r_g3 = await client.get(
+                path_g3,
+                headers={
+                    "X-Library-Id": str(lib_id),
+                    "Authorization": f"Bearer {token_other}",
+                },
+            )
+            req_id_g3 = r_g3.headers.get("X-Request-Id")
+            audit_rows_g3 = await _fetch_audit_rows(engine=engine, request_id=req_id_g3) if req_id_g3 else []
+            case_results.append(
+                {
+                    "case_id": "global_non_member_denied",
+                    "title": "global non-member search → denied/not_member",
+                    "inputs": {
+                        "request_id": req_id_g3,
+                        "tenant_id": str(lib_id) if lib_id else None,
+                        "actor_user_id": str(user_other),
+                        "http": {
+                            "method": "GET",
+                            "path": path_g3,
+                            "path_template": "/api/v1/search",
+                        },
+                    },
+                    "expected": {
+                        "http_status": 403,
+                        "audit_expected": True,
+                        "audit": {
+                            "action": "search.global",
+                            "result": "denied",
+                            "reason": "not_member",
+                        },
+                        "audit_required_fields": [
+                            "tenant_id",
+                            "actor_user_id",
+                            "request_id",
+                            "action",
+                            "result",
+                            "reason",
+                        ],
+                    },
+                    "observed": {
+                        "http_status": int(r_g3.status_code),
+                        "audit_rows": {"count": len(audit_rows_g3), "rows": audit_rows_g3[:10]},
                     },
                     "verdict": {"ok": None, "failure_reason": None},
                 }

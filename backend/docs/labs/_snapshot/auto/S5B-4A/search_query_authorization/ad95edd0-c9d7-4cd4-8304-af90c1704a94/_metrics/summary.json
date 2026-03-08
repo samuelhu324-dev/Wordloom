@@ -1,0 +1,10 @@
+{
+  "schema_version": "s5b-1a.metrics.v1",
+  "run_id": "ad95edd0-c9d7-4cd4-8304-af90c1704a94",
+  "suite_id": "search_query_authorization",
+  "ok": false,
+  "duration_s": 2.1520094871520996,
+  "cases_total": 8,
+  "cases_passed": 7,
+  "cases_failed": 1
+}

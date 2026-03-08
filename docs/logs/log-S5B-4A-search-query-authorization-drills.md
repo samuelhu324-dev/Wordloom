@@ -128,6 +128,63 @@
   - 复用 `python scripts/drills/s5b1a_verify_artifacts.py --run-dir <run_dir>`；
   - hard gate 以 verifier exit code 与 `_result.json.ok` 作为 PASS/FAIL 判定。
 
+### P0-C2-S1（Global search chain & action 命名｜draft）
+
+- C2 目标 search 链路：
+  - HTTP：`GET /search`
+  - Router：`backend/api/app/modules/search/routers/search_router.py::search_global`
+  - 描述：global search（聚合 blocks/books 等实体的结果，按 score 排序）。
+- 与 C1 的关系：
+  - C1 锁定 `GET /search/blocks/two-stage` 作为「高风险 blocks 内容搜索」主链路；
+  - C2 把同一套 AuthContext/tenant/audit 语义延展到 global search 聚合层，避免「全局搜索」成为新的 tenant escape 通道。
+- 为 global search 定义 canonical audit action：
+  - 主 action：`search.global`
+  - 允许在 meta_json 中记录实体类型分布（如 `entity_types={blocks,books,...}`），但 audit.action 本身维持低基数，不按实体类型拆分。
+
+### P0-C2-S2（Global search authorization & audit contract｜draft）
+
+- AuthContext 要求：
+  - `search_global` 必须在 handler 层拿到 `AuthContext`（含 `tenant_id/request_id/actor_user_id/roles`），不得以匿名方式跨 tenant 搜索；
+  - `library_id` 参数语义与 C1 保持一致：
+    - 未显式传入时，默认 `library_id = ctx.tenant_id`；
+    - 若显式传入且 `library_id != ctx.tenant_id`，按 tenant 越权处理（deny + 403），不可默默改为本 tenant；
+    - 缺失 membership 或角色不足时，按 401/403 处理，不允许「降级为匿名 global search」。
+- Deny/过滤语义沿用 S5B-1A 的 contract：
+  - `result ∈ {success, denied, not_found, error}`；
+  - 因 tenant/role/membership 限制导致拒绝执行（或显式拒绝返回结果）时：
+    - `result=denied`，`reason ∈ {tenant_mismatch, not_member, not_admin}`；
+  - 自然无结果（合法 tenant/角色下确无匹配项）：
+    - HTTP 200；`result=success`，`reason=null`；结果集合允许为空；
+  - 内部错误（下游 DB/search_index 异常、聚合逻辑异常等）：
+    - `result=error`，`reason ∈ {dependency_error, internal_error}`，具体映射在 P1-C2 实现阶段细化。
+- Audit 约束（global search）：
+  - 至少覆盖两类请求：
+    - drills 涵盖的所有 global search tenant escape / 权限不足场景；
+    - 具备 admin/高敏感度视图的 global search 调用（例如运维/后台工具入口）。
+  - 审计字段遵循 S5B-1A contract：
+    - `action = search.global`；
+    - `result ∈ {success, denied, error}`；
+    - `reason` 来自低基数白名单或为 null（仅在 `result=success` 时允许）；
+    - 必须携带 `tenant_id/actor_user_id/request_id`，推荐在 `meta_json` 中补充：
+      - `q_preview`、`library_id`、`limit/offset`；
+      - `entity_types`（命中特定实体类型集合）与 `hit_count_total`，便于后续分析。
+
+### P0-C2-S3（Global search evidence & artifacts contract｜draft）
+
+- suite 复用原则：
+  - 继续使用 `suite_id = search_query_authorization`，在同一套 drills 中新增 global search 相关 case；
+  - 通过 scenario 名称 / case_id 区分 blocks two-stage 与 global search 场景。
+- artifacts layout：
+  - 仍然落在 `docs/labs/_snapshot/auto/S5B-4A/<suite_id>/<run_id>/` 之下；
+  - `_recipe.json` 中新增/调整 scenario 列表以覆盖 global search；
+  - `_result.json` 中按 case 维度标记 global search 的 pass/fail。
+- schema_version：
+  - 继续使用 `s5b-1a.*.v1` 系列，不单独 fork 版本；
+  - 若未来 global search 引入额外维度（例如 per-entity-type metrics），优先通过 `_metrics/*.json` 扩展字段而非变更 schema_version。
+- verifier：
+  - 仍由 `scripts/drills/s5b1a_verify_artifacts.py` 负责校验 artifacts 合同；
+  - 要求 verifier 可以识别并报告 global search case 的结果（例如通过 case_id 前缀 `global_`）。
+
 ## Numbering（编号约定）
 
 - `S<n>`：Step（步骤）。
@@ -152,6 +209,10 @@
 - P1-C1-S2：设计/实现统一的 search policy entrypoint（负责 tenant 边界 + 角色过滤），并改造 handler/usecase 只通过该入口做授权决策。
 - P1-C1-S3：补齐/统一 search 相关 audit 写入点，确保 action/result/reason 落在 contract 中。
 
+- P1-C2-S1：梳理 `GET /search` global search 的 call chain（router → SearchService/SearchPort → 各实体 search_*）、现有 tenant/role 过滤与错误处理路径。
+- P1-C2-S2：为 global search 接入统一的 search policy entrypoint（可复用/扩展 `search_policy`），统一 `library_id` 与 `AuthContext.tenant_id` 的关系，并在聚合前就做 deny 判定。
+- P1-C2-S3：在 global search 的 success/deny/error 出口补齐 audit 写入点（`action=search.global`），确保与 C1 同步满足 S5B-1A 的 action/result/reason 合同。
+
 ### P2（drill/verify：search tenant escape & coverage）
 
 - P2-C1-S1：设计并实现 search drills runner `s5b4a_p2c1s1_drills_runner.py`，覆盖：
@@ -159,6 +220,9 @@
   - 跨 tenant 搜索（预期 denied 或空结果，不能看到其他 tenant 资源）；
   - 角色不足的搜索（例如 member 不应看到 admin-only 结果）。
 - P2-C1-S2：使用 S5B-1A verifier 验证 artifacts contract，首次跑出可用的 red/green evidence，并在 Evidence 区记录 headSha + run_dir。
+
+- P2-C2-S1：在同一 suite 中新增针对 `GET /search` 的 global search drills case（例如 same-tenant/global、cross-tenant library_id、non-member/global），并扩展 `s5b4a_p2c1s1_drills_runner.py` 以一并产出 artifacts。
+- P2-C2-S2：复用 S5B-1A verifier（`s5b1a_verify_artifacts.py`）验证包含 global search case 在内的 artifacts contract，并在 Evidence 区新增对应 headSha + run_dir 记录。
 
 ### P3（hard gate & wiring）
 
@@ -173,25 +237,61 @@
 - [x] `P0-C1-S2`：search 授权 + audit contract 固化
 - [x] `P0-C1-S3`：evidence/artifacts contract 明确（复用 S5B-1A/S5B-3A）
 
+- [x] `P0-C2-S1`：锁定 global search 链路（GET /search）+ action 命名
+- [x] `P0-C2-S2`：global search 授权 + audit contract 固化
+- [x] `P0-C2-S3`：global search evidence/artifacts contract 明确（复用 S5B-1A/S5B-3A）
+
 ### P1（实现：search 授权收口）
 
 - [x] `P1-C1-S1`：梳理现有 search call chain 与授权/tenant 过滤位置
 - [x] `P1-C1-S2`：实现 search policy entrypoint 并改造调用方
 - [x] `P1-C1-S3`：对齐 search audit 写入点的 action/result/reason 口径
+  
+- [x] `P1-C2-S1`：梳理 global search call chain 与授权/tenant 过滤位置
+- [x] `P1-C2-S2`：为 GET /search 接入统一 search policy entrypoint
+- [x] `P1-C2-S3`：补齐 global search 的 audit 写入点（action/result/reason 对齐）
 
 ### P2（drill/verify）
 
 - [x] `P2-C1-S1`：实现 search drills runner 并覆盖关键场景
-- [ ] `P2-C1-S2`：通过 verifier 并记录首条 evidence（headSha + run_dir）
+- [x] `P2-C1-S2`：通过 verifier 并记录首条 evidence（headSha + run_dir）
+
+- [x] `P2-C2-S1`：设计并实现 global search drills（复用现有 runner）
+- [x] `P2-C2-S2`：通过 verifier 跑通 global search drills 并记录 evidence
 
 ### P3（hard gate & wiring）
 
-- [ ] `P3-C1-S1`：实现 search hard gate 入口脚本 + artifacts 记账
-- [ ] `P3-C1-S2`：接入 CI workflow 或记录不接入原因
+- [x] `P3-C1-S1`：实现 search hard gate 入口脚本 + artifacts 记账
+- [x] `P3-C1-S2`：接入 CI workflow 或记录不接入原因
 
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
+
+### P2-C1-S1（blocks two-stage search drills 扩展矩阵：含未授权搜索 case｜2026-03-08）
+
+- headSha：`03d81e68f2ad48ef4a09b3abb8a39f2e3f53c942`
+- run_dir：`docs/labs/_snapshot/auto/S5B-4A/search_query_authorization/2fa7f2b4-5b18-42cf-a193-16be77cd7c09`
+- suite：`search_query_authorization`，schema_version：`s5b-1a.result.v1`
+- summary：`total=5, passed=4, failed=1, ok=false`
+- 说明：在原有 4 个 green case 基础上新增 `unauthorized_missing_token`（缺少 Authorization header，仅携带 X-Library-Id）后，当前实现行为为 HTTP 200 + `search.blocks.two_stage` success 审计，与「匿名/缺 token 搜索不得绕过 AuthContext/tenant/membership 约束」的合同存在偏差；该 run 作为 P2-C1-S1 的扩展矩阵 red evidence 保留，用于后续 P1/P2/P3 收敛。
+
+### P2-C1-S2（blocks two-stage search drills + verifier｜2026-03-08）
+
+- headSha：`6ed7ad608a99793923e1744624e14f3dab6224be`
+- run_dir：`docs/labs/_snapshot/auto/S5B-4A/search_query_authorization/ad0ba4d2-e456-4011-a0b9-bcbd388a0327`
+- suite：`search_query_authorization`，schema_version：`s5b-1a.result.v1`
+- summary：`total=4, passed=4, failed=0, ok=true`
+- verifier：`python scripts/drills/s5b1a_verify_artifacts.py --run-dir docs/labs/_snapshot/auto/S5B-4A/search_query_authorization/ad0ba4d2-e456-4011-a0b9-bcbd388a0327`
+
+### P2-C2-S2（blocks two-stage + global search drills（strict-auth）｜2026-03-08）
+
+- headSha：`4ed956b90c09e18be882eac4cbe3888923444331`
+- run_dir：`docs/labs/_snapshot/auto/S5B-4A/search_query_authorization/bf3e4f7e-2b17-43b7-be2c-80dd6e58b8ce`
+- suite：`search_query_authorization`，schema_version：`s5b-1a.result.v1`
+- summary：`total=8, passed=8, failed=0, ok=true`
+- 说明：在引入 strict 版 AuthContext（缺少或非法 Authorization bearer token 一律 401，不再 fallback 到 dev user）后，覆盖 blocks two-stage + global search 的 8 个 case（含 missing-token）在 strict-auth API 实例上全部通过；其中 `unauthorized_missing_token` case 观察到 HTTP 401 且无 search 审计（`audit_expected=false`，`audit_rows.count=0`），标记为 P2-C2-S2 的 full green evidence，用于后续 P3 hard gate。
+
 
 **P1-C1-S1（现状定位：blocks two-stage search 授权与 tenant 行为｜2026-03-08）**
 
@@ -226,3 +326,4 @@
 
 - 2026-03-08：scaffold S5B-4A phase log（search query authorization + tenant isolation），尚未落地具体 search 链路与 drills。
  - 2026-03-08：补齐 P0 合同并完成 P1-C1-S1 现状梳理，锁定 `GET /search/blocks/two-stage` 作为本 phase 主链路。
+ - 2026-03-08：完成 global search 合同与实现（P0-C2/P1-C2），并通过 strict-auth 环境下的 search_query_authorization drills 获得 8/8 绿的 P2-C2-S2 evidence。
