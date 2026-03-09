@@ -18,9 +18,9 @@
   **reference_log_2**: `docs/logs/log-S6A-4A-hard-gate-evidence-json.md`
   **phase_log_1**: `docs/logs/log-S2D-1A-projection-onboarding-contract-and-sample.md`
   **phase_log_2**: ``
-  **phase_log_3**: ``
+  **phase_log_3**: `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`
 **created**: `2026-03-08`
-**updated**: `2026-03-08`
+**updated**: `2026-03-09`
 
 ---
 
@@ -77,21 +77,36 @@
   - 详见：`docs/logs/log-S2D-1A-projection-onboarding-contract-and-sample.md`
 - `S2D-2A`（Phase 2，预留）：Onboarding coverage metrics & catalog rules（统计多少 projection 已按 S2D 落地，并在 catalog 中收紧规则）
   - 详见：`docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md`（预留）
-- `S2D-3A`（Phase 3，预留）：S2D hard gate entrypoint & CI wiring（把 S2D onboarding 检查挂到统一 hard gate 和 CI workflow）
-  - 详见：`docs/logs/log-S2D-3A-projection-onboarding-hard-gate.md`（预留）
+- `S2D-3A`（Phase 3）：S2D hard gate entrypoint & CI wiring（把 S2D onboarding 检查挂到统一 hard gate 和 CI workflow）
+  - 详见：`docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：S2D contract/indexing（目标边界 + 默认基线 + links/index）
-- [ ] `P1`：Phase 1（projection onboarding contract + first sample projection 落地）
+- [x] `P1`：Phase 1（projection onboarding contract + first sample projection 落地）
 - [ ] `P2`：Phase 2（onboarding coverage & catalog 规则；区分 legacy vs platformized）
 - [ ] `P3`：Phase 3（S2D hard gate 入口脚本 + CI workflow）
+
+## Evidence（示范 Phase 记录）
+
+- `2026-03-09` / Phase 1（S2D-1A sample projection onboarding package 首次 run）
+  - headSha：`6513ebf4997e488385ce3074c93aadd284fa17af`
+  - log_id/phase/cycle/step：`S2D-1A / P3 / C1 / S1`
+  - run_id：`20260309-160839`
+  - artifacts：
+    - `docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke/20260309-160839`
+    - `docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill/20260309-160839`
+    - 汇总记录：`artifacts/s2d-runs.json`（首条记录，`ok=false`，两个 scenario 均失败）
+  - 说明：
+    - 本次为 S2D-1A onboarding 套餐脚本的首次集成运行，成功写入 Evidence JSON；
+    - 运行结果为 red（`ok=false`），失败原因为 harness drill 在导入 `api.app.shared.deps`/`api.app.config.security` 时触发 circular import（`ImportError: cannot import name 'get_db' ...`）。
 
 ## Current Status（进展摘要）
 
 - S2C 已经提供 spec/registry/harness/writer/rebuild/backfill/drills 模板以及 Search harness migration，具备 Route A 的平台化前置条件，但缺少“新增 projection 必须按模板 & 有 CI gate”的约束层。
-- S2D 已完成 spine 层的 contract/indexing：本 log 与 `S2D-1A` 一起确定了 onboarding contract 的基本字段、示范 sample projection 以及后续 Phase 结构，但尚未有正式 Evidence 记录。
-- 下一步将通过 `S2D-1A` 在 Chronicle 相关的 sample projection 上完整走完 onboarding 流程，并在 Evidence 区记录首条 run。
+- S2D-1A 已在代码与文档层面完成 P0-P3：定义 onboarding contract、接入 sample projection（`chronicle_daily_stats`）、补齐 drills/labs，并提供单命令 onboarding 套餐脚本与 runbook。
+- 2026-03-09 已通过 `scripts/projections/s2d_1a_p3c1s1_sample_onboarding.py` 在 devtest DB 上完成首次 Phase 1 onboarding 套餐运行，并将结果写入 `artifacts/s2d-runs.json`；本次 run 为 red（`ok=false`），失败原因为 harness drill 触发 `api.app.shared.deps`/`api.app.config.security` 之间的 circular import（`ImportError: cannot import name 'get_db'`）。
+- 后续 S2D-1A/S2D-3A 需要在修复该 circular import 并获得首个 green run 后，进一步把 S2D onboarding 套餐挂载到统一 hard gate / CI workflow 上。
 
 ## Notes（落地原则）
 
