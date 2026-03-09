@@ -143,8 +143,8 @@
 
 ### P2（CI wiring：GitHub Actions）
 
-- [ ] `P2-C1-S1`：新增 S2D hard gate GitHub Actions workflow
-- [ ] `P2-C1-S2`：为 workflow 补充 artifact 上传与超时/重试策略
+- [x] `P2-C1-S1`：新增 S2D hard gate GitHub Actions workflow
+- [x] `P2-C1-S2`：为 workflow 补充 artifact 上传与超时/重试策略
 
 ### P3（Adoption & guardrails）
 
@@ -179,6 +179,7 @@
   - `artifacts/s2d-runs.json` 中对应记录
   - 上传到 CI artifacts 的 `_result.json` 快照
 - 期望（expected）：
+  - `.github/workflows/s2d-hard-gate.yml` 在 CI 中启动 devtest DB、运行 `python scripts/s2d_hard_gate.py --database-url $DATABASE_URL`；
   - 当 S2D-1A onboarding suite `ok=false` 时，workflow 失败并标记 PR；当 `ok=true` 时，workflow 成功通过。
 - 观测（observed）：
   - 待首轮 CI wiring 完成后补充。
