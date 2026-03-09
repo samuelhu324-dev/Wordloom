@@ -138,7 +138,7 @@
 ### P1（实现）
 
 - [x] `P1-C1-S1`：在 Projection harness 中补充 runtime 校验
-- [ ] `P1-C1-S2`：实现 sample projection 的 spec/adapter/writer
+- [x] `P1-C1-S2`：实现 sample projection 的 spec/adapter/writer
 
 ### P2（drill/verify）
 
