@@ -114,7 +114,7 @@
 
 ### P1（实现：框架收口 + sample projection 接入）
 
-- P1-C1-S1：在 S2C harness/adapter 中补充 runtime 校验：`ProjectionSpec.scope_keys/payload_schema_version/requires` 与 payload/schema 对齐，不满足时 FAIL。
+- P1-C1-S1：在 Projection harness 中补充 `ProjectionSpec` 的 runtime sanity check（scope_keys/payload_schema_version/requires 非空且格式合理），避免注册非法 spec 仍然可运行。
 - P1-C1-S2：以 `chronicle_daily_stats` 作为 sample projection，补齐其 `ProjectionSpec`、adapter.apply 与 writer 路径，确保可通过统一 harness 跑通。
 
 ### P2（drill/verify：rebuild/backfill + correctness）
@@ -137,7 +137,7 @@
 
 ### P1（实现）
 
-- [ ] `P1-C1-S1`：在 S2C harness/adapter 中补充 runtime 校验
+- [x] `P1-C1-S1`：在 Projection harness 中补充 runtime 校验
 - [ ] `P1-C1-S2`：实现 sample projection 的 spec/adapter/writer
 
 ### P2（drill/verify）
