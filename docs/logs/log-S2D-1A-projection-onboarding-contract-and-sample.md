@@ -17,7 +17,7 @@
   **previous_log**: `docs/logs/log-S2C-projection-framework-platformization.md`
   **reference_log_1**: `docs/logs/log-S2C-1A-projection-spec-registry-harness.md`
 **created**: `2026-03-08`
-**updated**: `2026-03-08`
+**updated**: `2026-03-09`
 
 ---
 
@@ -150,32 +150,58 @@
 - [x] `P3-C1-S1`：实现单命令 onboarding 套餐脚本 + artifacts 记账
 - [x] `P3-C1-S2`：在 runbook 中记录使用方式
 
-## Evidence（预留）
+## Evidence（首批 runs）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
 
-### P2-C1-S1（sample projection rebuild/backfill smoke｜YYYY-MM-DD）
+### P2-C1-S1（sample projection rebuild/backfill smoke｜2026-03-09）
 
-- headSha：`<git sha at first green run>`
-- artifacts：`backend/scripts/labs/s2d1a_chronicle_daily_stats_backfill_smoke.py` → `<run_dir>`
-- env（示例，可选）：
-  - `OUTBOX_BACKFILL_ENABLED=true`
-  - `DATABASE_URL=...`
+- headSha：`6513ebf4997e488385ce3074c93aadd284fa17af`
+- artifacts：
+  - 脚本：`backend/scripts/labs/s2d1a_chronicle_daily_stats_backfill_smoke.py`
+  - C1 run_dir（首跑，red）：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke/20260309-160839`
+  - C2 run_dir（first green run）：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke/20260309-162146`
+- env（示例）：
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test`
 - 期望（expected）：
   - 使用 backfill 模板对 `chronicle_daily_stats` 发出 1 条 outbox row；
   - 第 1 次 backfill 插入 1 条，重复执行不新增行（idempotent）。
 - 观测（observed）：
-  - `pass1.inserted == 1 && pass2.inserted == 0 && after2 == 1`（见 `_result.json`）。
+  - C1：lab 通过 runner 被调用，但以 `exit_code=1` 结束，`_result.json.ok=false`；
+  - C2：在修复 config/security import cycle 并保证 devtest DB 在线后重跑，`exit_code=0` 且 `_result.json.ok=true`，完成首个 green run。
 
-### P2-C1-S2（sample projection correctness drills｜YYYY-MM-DD）
+### P2-C1-S2（sample projection correctness drills｜2026-03-09）
 
-- headSha：`<git sha>`
-- artifacts：`<run_dir>`
+- headSha：`6513ebf4997e488385ce3074c93aadd284fa17af`
+- artifacts：
+  - 脚本：`backend/scripts/labs/s2d1a_chronicle_daily_stats_harness_drill.py`
+  - C1 run_dir（首跑，red）：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill/20260309-160839`
+  - C2 run_dir（first green run）：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill/20260309-162146`
 - 期望（expected）：
-  - outbox 事件被正确投影到目标表/索引。
+  - outbox 事件被正确投影到目标表/索引；
+  - 至少 1 条 `chronicle_daily_stats` 相关 outbox row 从 `pending` 变为 `done`，`failed=0`。
 - 观测（observed）：
-  - ...
-  - 参见：`backend/scripts/labs/s2d1a_chronicle_daily_stats_harness_drill.py` 的 `_result.json`。
+  - C1：在导入 `api.app.shared.deps`/`api.app.config.security` 过程中触发 circular import，报错 `ImportError: cannot import name 'get_db' ...`，lab 以 `exit_code=1` 结束，`_result.json.ok=false`；
+  - C2：通过移除 `api.app.config.__init__` 对 `get_current_user_id` 的 re-export 消除循环依赖后重跑，`exit_code=0` 且 `_result.json.ok=true`，完成首个 green run。
+
+### P3-C1-S1（sample onboarding package runs｜2026-03-09）
+
+- headSha：`6513ebf4997e488385ce3074c93aadd284fa17af`
+- log_id/phase/cycle/step：`S2D-1A / P3 / C1 / S1`
+- runner：`scripts/projections/s2d_1a_p3c1s1_sample_onboarding.py`
+- runs：
+  - C1（首跑，red）：
+    - run_id：`20260309-160839`
+    - scenarios：
+      - backfill smoke：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke/20260309-160839`
+      - harness drill：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill/20260309-160839`
+    - summary：`artifacts/s2d-runs.json`（第 1 条记录，`ok=false`，两个 scenario 均失败）
+  - C2（first green run）：
+    - run_id：`20260309-162146`
+    - scenarios：
+      - backfill smoke：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke/20260309-162146`
+      - harness drill：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill/20260309-162146`
+    - summary：`artifacts/s2d-runs.json`（第 2 条记录，`ok=true`，两个 scenario 均 `exit_code=0 && ok=true`）
 
 ## Recent changes（for traceability，可选）
 
