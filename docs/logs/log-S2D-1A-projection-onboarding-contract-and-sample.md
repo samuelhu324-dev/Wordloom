@@ -142,8 +142,8 @@
 
 ### P2（drill/verify）
 
-- [ ] `P2-C1-S1`：跑通 sample projection 的 rebuild/backfill smoke
-- [ ] `P2-C1-S2`：跑通 sample projection 的 drills 并产出 artifacts
+- [x] `P2-C1-S1`：跑通 sample projection 的 rebuild/backfill smoke
+- [x] `P2-C1-S2`：跑通 sample projection 的 drills 并产出 artifacts
 
 ### P3（单命令 onboarding 套餐）
 
@@ -156,14 +156,16 @@
 
 ### P2-C1-S1（sample projection rebuild/backfill smoke｜YYYY-MM-DD）
 
-- headSha：`<git sha>`
-- artifacts：`<run_dir>`
+- headSha：`<git sha at first green run>`
+- artifacts：`backend/scripts/labs/s2d1a_chronicle_daily_stats_backfill_smoke.py` → `<run_dir>`
 - env（示例，可选）：
-  - `<ENV>=<...>`
+  - `OUTBOX_BACKFILL_ENABLED=true`
+  - `DATABASE_URL=...`
 - 期望（expected）：
-  - rebuild/backfill 成功，无数据丢失或重复。
+  - 使用 backfill 模板对 `chronicle_daily_stats` 发出 1 条 outbox row；
+  - 第 1 次 backfill 插入 1 条，重复执行不新增行（idempotent）。
 - 观测（observed）：
-  - ...
+  - `pass1.inserted == 1 && pass2.inserted == 0 && after2 == 1`（见 `_result.json`）。
 
 ### P2-C1-S2（sample projection correctness drills｜YYYY-MM-DD）
 
@@ -173,6 +175,7 @@
   - outbox 事件被正确投影到目标表/索引。
 - 观测（observed）：
   - ...
+  - 参见：`backend/scripts/labs/s2d1a_chronicle_daily_stats_harness_drill.py` 的 `_result.json`。
 
 ## Recent changes（for traceability，可选）
 
