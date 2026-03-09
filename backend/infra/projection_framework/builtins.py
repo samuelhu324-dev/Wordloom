@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import FrozenSet, Tuple
 
+from .adapters.chronicle_daily_stats import apply as chronicle_daily_stats_apply
 from .adapters.chronicle_events_to_entries import apply as chronicle_events_to_entries_apply
 from .adapters.search_index_to_elastic import apply as search_index_to_elastic_apply
 from .registry import get_spec, register
@@ -32,6 +33,13 @@ def register_builtin_specs() -> None:
             requires=frozenset({"db"}),
             payload_schema_version=1,
             apply_entrypoint=chronicle_events_to_entries_apply,
+        ),
+        ProjectionSpec(
+            projection_name="chronicle_daily_stats",
+            scope_keys=("tenant_id", "date"),
+            requires=frozenset({"db"}),
+            payload_schema_version=1,
+            apply_entrypoint=chronicle_daily_stats_apply,
         ),
     )
 

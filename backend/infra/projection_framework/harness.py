@@ -30,6 +30,7 @@ from infra.outbox_core.retry import ExponentialBackoffSpec, compute_next_retry_a
 from infra.outbox_core.sanitize import sanitize_terminal_rows
 from infra.projection_framework.builtins import register_builtin_specs
 from infra.projection_framework.registry import get_spec
+from infra.projection_framework.spec import ProjectionSpec
 
 
 logger = logging.getLogger(__name__)
@@ -87,6 +88,33 @@ class ProcessOutcome:
     outcome: str  # done | retry | terminal_failed
     op: str
     reason: str
+
+
+def _validate_projection_spec_runtime(spec: ProjectionSpec) -> None:
+    """Lightweight runtime sanity checks for ProjectionSpec.
+
+    This is intentionally conservative to avoid surprising existing projections:
+    - projection_name: non-empty (already enforced by registry, kept for clarity)
+    - scope_keys: non-empty, all non-blank strings
+    - payload_schema_version: positive int
+    - requires: non-empty set of non-blank strings
+    """
+
+    name = (spec.projection_name or "").strip()
+    if not name:
+        raise ValueError("projection_name must be non-empty")
+
+    if not spec.scope_keys:
+        raise ValueError(f"projection {name} must declare at least one scope_key")
+    for key in spec.scope_keys:
+        if not str(key).strip():
+            raise ValueError(f"projection {name} has blank scope_key entry")
+
+    if int(spec.payload_schema_version) <= 0:
+        raise ValueError(f"projection {name} must have positive payload_schema_version")
+
+    if not spec.requires:
+        raise ValueError(f"projection {name} must declare at least one requirement in 'requires'")
 
 
 async def _process_one(
@@ -211,7 +239,9 @@ async def run_harness(*, projection_name: str, config: HarnessConfig) -> int:
     run_id = _default_run_id()
 
     register_builtin_specs()
-    get_spec(projection_name)  # validate registered
+    # Validate that the projection is registered and its spec is well-formed.
+    spec = get_spec(projection_name)
+    _validate_projection_spec_runtime(spec)
 
     backoff = ExponentialBackoffSpec(
         base_seconds=float(config.base_backoff_seconds),

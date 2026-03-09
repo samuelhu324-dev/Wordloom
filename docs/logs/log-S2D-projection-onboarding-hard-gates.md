@@ -82,7 +82,7 @@
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
-- [ ] `P0`：S2D contract/indexing（目标边界 + 默认基线 + links/index）
+- [x] `P0`：S2D contract/indexing（目标边界 + 默认基线 + links/index）
 - [ ] `P1`：Phase 1（projection onboarding contract + first sample projection 落地）
 - [ ] `P2`：Phase 2（onboarding coverage & catalog 规则；区分 legacy vs platformized）
 - [ ] `P3`：Phase 3（S2D hard gate 入口脚本 + CI workflow）
@@ -90,8 +90,8 @@
 ## Current Status（进展摘要）
 
 - S2C 已经提供 spec/registry/harness/writer/rebuild/backfill/drills 模板以及 Search harness migration，具备 Route A 的平台化前置条件，但缺少“新增 projection 必须按模板 & 有 CI gate”的约束层。
-- S2D 刚刚创建，处于 `draft` 状态：本 log 仅定义了目标、基线和 Phase 切分，还没有正式的 Evidence 记录。
-- 下一步将通过 `S2D-1A` 选择一条新 projection，完整走完 onboarding 流程，并在 Evidence 区记录首条 run。
+- S2D 已完成 spine 层的 contract/indexing：本 log 与 `S2D-1A` 一起确定了 onboarding contract 的基本字段、示范 sample projection 以及后续 Phase 结构，但尚未有正式 Evidence 记录。
+- 下一步将通过 `S2D-1A` 在 Chronicle 相关的 sample projection 上完整走完 onboarding 流程，并在 Evidence 区记录首条 run。
 
 ## Notes（落地原则）
 

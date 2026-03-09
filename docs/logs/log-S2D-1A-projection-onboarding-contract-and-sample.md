@@ -17,7 +17,7 @@
   **previous_log**: `docs/logs/log-S2C-projection-framework-platformization.md`
   **reference_log_1**: `docs/logs/log-S2C-1A-projection-spec-registry-harness.md`
 **created**: `2026-03-08`
-**updated**: `2026-03-08`
+**updated**: `2026-03-09`
 
 ---
 
@@ -39,6 +39,7 @@
 - **Projection onboarding contract**：新增或迁移 projection 时必须满足的最小工程约束集合，包括 spec 字段、writer 路径、harness 注册、rebuild/backfill smoke 与 drills 覆盖等。
 - **Sample projection**：本 phase 选定的一条代表性投影，用于验证 S2D onboarding contract 的可执行性；后续投影应尽量复用其结构与脚本。
 - **Smoke drills**：只验证“能跑通”和“不会破坏稳定面”的最小场景，例如单条事件的投影正确性、最小 rebuild 成功与回滚路径。
+- **Chronicle daily stats projection（示范投影）**：以 Chronicle outbox 事件为输入，为每个 tenant/日期/事件类型聚合计数与最近发生时间的 DB→DB 统计投影，目标是一张便于运营/报表查询的日级明细表。
 
 ## Constraints（约束）
 
@@ -76,9 +77,14 @@
 ### P0-C1-S1（Onboarding contract：最小字段与工件）
 
 - 新增 projection 至少要提供：
-  - `ProjectionSpec`：projection_name、scope_keys、requires、payload_schema_version、apply 入口；
-  - writer 端入口：统一的 outbox enqueue 函数（带 projection/op/scope/trace）；
-  - harness 注册：在 projection registry 中注册 spec 与 adapter。
+  - `ProjectionSpec`：
+    - `projection_name`：唯一标识投影，例如本 phase 的示范投影使用 `chronicle_daily_stats`；
+    - `scope_keys`：用于限定重建/回填范围的主维度，示范投影为 `tenant_id` + `date`；
+    - `requires`：依赖的 SoT / outbox 事件源（例如 `chronicle_events`）；
+    - `payload_schema_version`：与 outbox payload_contract 对齐的 schema 版本；
+    - `apply`：处理单条事件或一个 batch 的函数入口，负责把 Chronicle 事件投影/聚合到目标表；
+  - writer 端入口：统一的 outbox enqueue 函数（带 projection/op/scope/trace），禁止手写裸 SQL/INSERT；
+  - harness 注册：在 projection registry 中注册 spec 与 adapter，确保可以由通用 harness 枚举和驱动。
 
 ### P0-C1-S2（Onboarding contract：rebuild/backfill & drills）
 
@@ -90,8 +96,8 @@
 ### P0-C1-S3（证据口径 contract｜v1）
 
 - evidence JSON 必须包含：
-  - 投影标识：projection_name / spec id；
-  - 输入参数：租户/时间范围/事件 id 范围等；
+  - 投影标识：projection_name / spec id（例如 `chronicle_daily_stats`）；
+  - 输入参数：租户/时间范围/事件 id 范围等（示范投影至少包含 tenant_id 与 date 范围）；
   - 输出产物路径：rebuild/backfill/drills 的 `run_dir` 或 artifacts 根目录；
   - PASS/FAIL 字段：`_result.json.ok` 与 failure taxonomy，兼容 S6A-4A/S2C 的 schema_version。
 
@@ -108,8 +114,8 @@
 
 ### P1（实现：框架收口 + sample projection 接入）
 
-- P1-C1-S1：在 S2C harness/adapter 中补充 runtime 校验：`ProjectionSpec.scope_keys/payload_schema_version/requires` 与 payload/schema 对齐，不满足时 FAIL。
-- P1-C1-S2：选定 sample projection，并补齐其 `ProjectionSpec`、adapter.apply 与 writer 路径，确保可通过统一 harness 跑通。
+- P1-C1-S1：在 Projection harness 中补充 `ProjectionSpec` 的 runtime sanity check（scope_keys/payload_schema_version/requires 非空且格式合理），避免注册非法 spec 仍然可运行。
+- P1-C1-S2：以 `chronicle_daily_stats` 作为 sample projection，补齐其 `ProjectionSpec`、adapter.apply 与 writer 路径，确保可通过统一 harness 跑通。
 
 ### P2（drill/verify：rebuild/backfill + correctness）
 
@@ -125,48 +131,77 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：定义 onboarding 最小字段与工件 contract
-- [ ] `P0-C1-S2`：定义 rebuild/backfill & drills 要求
-- [ ] `P0-C1-S3`：定义 evidence JSON 口径
+- [x] `P0-C1-S1`：定义 onboarding 最小字段与工件 contract
+- [x] `P0-C1-S2`：定义 rebuild/backfill & drills 要求
+- [x] `P0-C1-S3`：定义 evidence JSON 口径
 
 ### P1（实现）
 
-- [ ] `P1-C1-S1`：在 S2C harness/adapter 中补充 runtime 校验
-- [ ] `P1-C1-S2`：实现 sample projection 的 spec/adapter/writer
+- [x] `P1-C1-S1`：在 Projection harness 中补充 runtime 校验
+- [x] `P1-C1-S2`：实现 sample projection 的 spec/adapter/writer
 
 ### P2（drill/verify）
 
-- [ ] `P2-C1-S1`：跑通 sample projection 的 rebuild/backfill smoke
-- [ ] `P2-C1-S2`：跑通 sample projection 的 drills 并产出 artifacts
+- [x] `P2-C1-S1`：跑通 sample projection 的 rebuild/backfill smoke
+- [x] `P2-C1-S2`：跑通 sample projection 的 drills 并产出 artifacts
 
 ### P3（单命令 onboarding 套餐）
 
-- [ ] `P3-C1-S1`：实现单命令 onboarding 套餐脚本 + artifacts 记账
-- [ ] `P3-C1-S2`：在 runbook 中记录使用方式
+- [x] `P3-C1-S1`：实现单命令 onboarding 套餐脚本 + artifacts 记账
+- [x] `P3-C1-S2`：在 runbook 中记录使用方式
 
-## Evidence（预留）
+## Evidence（首批 runs）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
 
-### P2-C1-S1（sample projection rebuild/backfill smoke｜YYYY-MM-DD）
+### P2-C1-S1（sample projection rebuild/backfill smoke｜2026-03-09）
 
-- headSha：`<git sha>`
-- artifacts：`<run_dir>`
-- env（示例，可选）：
-  - `<ENV>=<...>`
+- headSha：`6513ebf4997e488385ce3074c93aadd284fa17af`
+- artifacts：
+  - 脚本：`backend/scripts/labs/s2d1a_chronicle_daily_stats_backfill_smoke.py`
+  - C1 run_dir（首跑，red）：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke/20260309-160839`
+  - C2 run_dir（first green run）：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke/20260309-162146`
+- env（示例）：
+  - `DATABASE_URL=postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test`
 - 期望（expected）：
-  - rebuild/backfill 成功，无数据丢失或重复。
+  - 使用 backfill 模板对 `chronicle_daily_stats` 发出 1 条 outbox row；
+  - 第 1 次 backfill 插入 1 条，重复执行不新增行（idempotent）。
 - 观测（observed）：
-  - ...
+  - C1：lab 通过 runner 被调用，但以 `exit_code=1` 结束，`_result.json.ok=false`；
+  - C2：在修复 config/security import cycle 并保证 devtest DB 在线后重跑，`exit_code=0` 且 `_result.json.ok=true`，完成首个 green run。
 
-### P2-C1-S2（sample projection correctness drills｜YYYY-MM-DD）
+### P2-C1-S2（sample projection correctness drills｜2026-03-09）
 
-- headSha：`<git sha>`
-- artifacts：`<run_dir>`
+- headSha：`6513ebf4997e488385ce3074c93aadd284fa17af`
+- artifacts：
+  - 脚本：`backend/scripts/labs/s2d1a_chronicle_daily_stats_harness_drill.py`
+  - C1 run_dir（首跑，red）：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill/20260309-160839`
+  - C2 run_dir（first green run）：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill/20260309-162146`
 - 期望（expected）：
-  - outbox 事件被正确投影到目标表/索引。
+  - outbox 事件被正确投影到目标表/索引；
+  - 至少 1 条 `chronicle_daily_stats` 相关 outbox row 从 `pending` 变为 `done`，`failed=0`。
 - 观测（observed）：
-  - ...
+  - C1：在导入 `api.app.shared.deps`/`api.app.config.security` 过程中触发 circular import，报错 `ImportError: cannot import name 'get_db' ...`，lab 以 `exit_code=1` 结束，`_result.json.ok=false`；
+  - C2：通过移除 `api.app.config.__init__` 对 `get_current_user_id` 的 re-export 消除循环依赖后重跑，`exit_code=0` 且 `_result.json.ok=true`，完成首个 green run。
+
+### P3-C1-S1（sample onboarding package runs｜2026-03-09）
+
+- headSha：`6513ebf4997e488385ce3074c93aadd284fa17af`
+- log_id/phase/cycle/step：`S2D-1A / P3 / C1 / S1`
+- runner：`scripts/projections/s2d_1a_p3c1s1_sample_onboarding.py`
+- runs：
+  - C1（首跑，red）：
+    - run_id：`20260309-160839`
+    - scenarios：
+      - backfill smoke：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke/20260309-160839`
+      - harness drill：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill/20260309-160839`
+    - summary：`artifacts/s2d-runs.json`（第 1 条记录，`ok=false`，两个 scenario 均失败）
+  - C2（first green run）：
+    - run_id：`20260309-162146`
+    - scenarios：
+      - backfill smoke：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke/20260309-162146`
+      - harness drill：`docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill/20260309-162146`
+    - summary：`artifacts/s2d-runs.json`（第 2 条记录，`ok=true`，两个 scenario 均 `exit_code=0 && ok=true`）
 
 ## Recent changes（for traceability，可选）
 

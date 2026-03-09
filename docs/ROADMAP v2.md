@@ -22,6 +22,14 @@ P3（像路线 B 一样做 drills/evidence）：做 3 个最小 drills（tenant 
 所有拒绝都来自 policy（不是散落 if-else），并且 reason 可聚合。
 audit 能用 request_id 把一次请求的授权、资源、结果串起来。
 
+就按现在这几份 log / ROADMAP 的口径看：路线 C 的“最小可闭环版”已经达标了——membership 写链路（S5B‑1A/3A）、bookshelf.delete（S5B‑2A）和 search query（S5B‑4A）这三条都已经走完了 P0–P3 + hard gate。
+从威胁面角度（截图 1 那段“谁最公开/最容易越权”）来看，search 是风险最高那条，现在已经有 AuthContext + policy + audit + drills + CI hard gate，它补上之后，整体安全侧的边界已经不像之前那么“心虚”了。
+bookshelf 这一类链路在 S5B‑2A 里已经有一条代表性写链路做了 policy entrypoint + drills/hard gate，再去扩更多 bookshelf 子操作，属于“加覆盖面”，不是“缺这一步整个路线 C 不成立”。
+所以如果你是按 ROADMAP 上那句“先把路线 C 从设想变成可 hard‑gate 的工程资产”来验收的话：现在的状态已经可以算路线 C v1 完成，可以安心切到路线 A 或别的议题。
+什么时候再扩到 bookshelf / 其他模块更划算？建议只在两种情况下再开：
+有明确要公开的新操作（例如某个 bookshelf/书写入 API 要暴露给第三方）；
+或者你打算把“所有写链路”都纳入统一 hard gate，当成一次专门的 S5B‑5* phase。
+
 路线 A：推荐怎么深化（把“框架存在”变成“新增投影不手搓”）
 你现在已经具备平台化的三件套：consumer 内核、projection harness、rebuild/backfill 模板。深化重点是“把 spec 真正用起来 + 把新增投影流程固化”。
 
