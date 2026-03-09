@@ -147,8 +147,8 @@
 
 ### P3（单命令 onboarding 套餐）
 
-- [ ] `P3-C1-S1`：实现单命令 onboarding 套餐脚本 + artifacts 记账
-- [ ] `P3-C1-S2`：在 runbook 中记录使用方式
+- [x] `P3-C1-S1`：实现单命令 onboarding 套餐脚本 + artifacts 记账
+- [x] `P3-C1-S2`：在 runbook 中记录使用方式
 
 ## Evidence（预留）
 

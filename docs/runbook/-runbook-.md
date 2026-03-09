@@ -1,19 +1,8 @@
-﻿# 
+﻿# Runbook index（v1）
 
----
-
-**id**: `S4B-3A`
-**kind**: `runbook`               # log | lab | runbook | adr | note
-**title**: ``
-**status**: `draft`          # draft | stable | archived
-**scope**: `S4A`               # 顶层
-**decision_date**: `Docs, EVOLUTION, sub/1`
-**context_issue**: ``
-**decision**: `""`
-  **positive**: `"DB不会被刷爆", "可控写入"`
-  **negative**: `"需要维护dedupe state", "需要定期清理策略"`
-**supersedes**: `null`
-**superseded_by**: `null`
-
----
+- `run/S0C-docs-management-v3`：scenario catalog & suite 入口
+- `run/S2B-projection-table-merge`：projection table merge（Chronicle + Search）
+- `run/S2C-projection-framework-platformization`：projection 框架 & drills 入口
+- `run/S3A-observability-v2`：observability v2 runbook
+- `run/S2D-projection-onboarding-hard-gates`：projection onboarding 套餐（S2D-1A 示例链路）
 
