@@ -173,16 +173,17 @@
 
 ### P2-C1-S1（CI hard gate workflow run｜YYYY-MM-DD）
 
-- headSha：`<git sha>`
-- CI run：`<GitHub Actions run URL>`
+- headSha：`5ccf5bb96fd6669282ddc46079414b3e942d8c88`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22852965555`
 - artifacts：
-  - `artifacts/s2d-runs.json` 中对应记录
-  - 上传到 CI artifacts 的 `_result.json` 快照
+  - 预期：`artifacts/s2d-runs.json` 中追加一条 `log_id="S2D-1A"` 的记录，并在 `_snapshot/auto` 下生成对应 backfill/harness 目录；
+  - 实际：本次 run 结束时，Actions 报告 `No files were found with the provided path ... artifacts/s2d-runs.json`，说明 S2D onboarding 套餐在 CI 环境中尚未成功产出预期 artifacts。
 - 期望（expected）：
   - `.github/workflows/s2d-hard-gate.yml` 在 CI 中启动 devtest DB、运行 `python scripts/s2d_hard_gate.py --database-url $DATABASE_URL`；
   - 当 S2D-1A onboarding suite `ok=false` 时，workflow 失败并标记 PR；当 `ok=true` 时，workflow 成功通过。
 - 观测（observed）：
-  - 待首轮 CI wiring 完成后补充。
+  - 2026-03-09，由 PR `#196 (S2D-projection-onboarding-hard-gates)` 触发的首轮 `s2d-hard-gate` workflow 运行（Run 1）以 `hard_gate` job `exit_code=2` 结束，整体状态为 Failure；
+  - 上传 artifacts 步骤未找到任何匹配路径（包括 `_snapshot/auto/...` 和 `artifacts/s2d-runs.json`），这次 run 作为 S2D-3A 的首个 red CI 例子，后续需要在本地复现并修复，使下一轮 run 成为 green baseline。
 
 ## Recent changes（for traceability，可选）
 
