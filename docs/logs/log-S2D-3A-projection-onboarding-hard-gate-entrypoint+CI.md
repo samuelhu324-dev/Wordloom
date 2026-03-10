@@ -153,7 +153,7 @@
 - [x] `P3-C1-S1`：在文档中记录 required/optional suites 与升级路径（v1：通过本 log + S2D spine 描述 `SUITE_CATALOG` 中 required/optional 语义，当前仅 S2D-1A sample 为 required）
 - [x] `P3-C1-S2`：实现并记录 skip/waiver 机制（v1：在 `scripts/s2d_hard_gate.py` 中落地 `S2D_HARD_GATE_SKIP_SUITES`/`S2D_HARD_GATE_WAIVE_SUITES` 行为）
  - [x] `P3-C1-S3`：在 CI/workflow 中接入 S2D-2A 的 coverage → SUITE_CATALOG diff 校验 helper（只读，不直接 gate），用于提醒 required 集是否与 coverage 视角一致
- - [ ] `P3-C2-S1`：根据 S2D-2A 的 diff/gate contract，为 CI 定义并记录 warning vs hard fail 的触发条件（例如当 `missing_in_hard_gate` 出现关键 projection 时将来视为 hard gate 失败），并在后续 cycle 逐步启用
+ - [ ] `P3-C2-S1`：根据 S2D-2A 的 diff/gate contract，为 CI 定义并记录 warning vs hard fail 的触发条件；v1 重点先实现 soft gate：当 diff JSON 中存在 `missing_in_hard_gate` 或 `mismatched_entries` 时，在 CI 日志中打印结构化 warning（例如 `[S2D-2A][warning] missing_in_hard_gate=...`），但保持 `exit_code=0`，作为未来 hard gate 的前置提醒；后续 cycle 再选择性将关键 projection 的 diff 升级为 hard fail。
 
 ## Evidence（预留）
 

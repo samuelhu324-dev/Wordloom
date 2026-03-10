@@ -138,7 +138,10 @@
   - `missing_in_hard_gate`：视为 **warning 级别（未来的 hard fail 候选）** —— coverage 认为某些 platformized projection 应当有对应 suite，但当前 `SUITE_CATALOG` 尚未配置；默认行为：在 CI 中打印明确的 warning 列表，提示“这些 projection 需要考虑纳入 required/新增 suite”；后续可以基于白名单/关键 projection 清单，将其中一部分升级为 hard fail；
   - `mismatched_entries`：视为 **高优先级 warning / fail-candidate** —— hard gate 中已有 suite，但 `log_id` 或 `required` 标记与 coverage 建议不一致；默认行为：在 CI 中高亮打印（带有 `suggested/current` 对比），仍保持 soft gate；后续可对关键 projection 的 mismatch 直接视为 hard fail；
   - 所有 diff 类型的最终 hard fail 策略，统一在 S2D-3A 的 P3-C2 中声明由 S2D spine 决策，不在本 log 中直接要求立即启用，以便为多投影扩展保留迭代空间。
-- P3-C2-S2：在 CI/workflow 侧补充基于 diff 结果的策略 hook（例如读取 diff JSON 中的 `has_diff/missing_in_hard_gate/extra_in_hard_gate/mismatched_entries` 字段），先以 warning/soft gate 形式提示（例如将 `missing_in_hard_gate`/`mismatched_entries` 打印到 job 日志中），再在后续 cycle 中根据 S2D spine 决策选择性升级为 hard gate。
+- P3-C2-S2：在 CI/workflow 侧补充基于 diff 结果的策略 hook（例如在 `.github/workflows/s2d-hard-gate.yml` 中解析 diff JSON 的 `has_diff/missing_in_hard_gate/extra_in_hard_gate/mismatched_entries` 字段），v1 仅实现 soft gate：
+  - 当 `missing_in_hard_gate` 或 `mismatched_entries` 非空时，在 CI 日志中打印带前缀的 warning（例如 `[S2D-2A][warning] missing_in_hard_gate=...`）；
+  - 保持 diff helper 本身 `exit_code=0`，不改变 `hard_gate` job 的整体退出码，只作为 guardrail 提示；
+  - 后续 cycle 再按 S2D-3A/P3-C2-S1 中的规则选择性将特定 diff 类型升级为 hard fail。
 
 ## Execution Checklist（unchecked）
 
