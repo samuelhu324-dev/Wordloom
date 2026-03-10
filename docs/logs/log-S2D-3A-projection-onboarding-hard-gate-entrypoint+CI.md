@@ -228,6 +228,21 @@
     - 新增 `Emit S2D coverage diff soft gate warnings (non-blocking)` 步骤，通过内联 Python 解析 diff JSON 并按 `missing_in_hard_gate/mismatched_entries` 打印 `[S2D-2A][warning] ...` 或 `[S2D-2A][info] ...`；
   - 在当前仅包含 S2D-1A 示例 suite 的配置下，首次运行 soft gate 时 diff JSON 中无缺失或 mismatch，CI 日志中出现 `[S2D-2A][info] no missing_in_hard_gate or mismatched_entries; soft gate clean`，同时 `hard_gate` job 仍然以 Success 结束，验证了“soft gate 不改退出码”的 v1 行为。
 
+### P3-C2-Exp1（soft gate mismatched_entries experiment｜2026-03-10）
+
+- headSha：`41898a4a3a630e8f6b5f9e2fb6e2d2b5a9e6d3c1`  # S2D-3A/P3-C2-Exp1 commit（示意）
+- workflow：`.github/workflows/s2d-hard-gate.yml`
+- CI run：`s2d-hard-gate`（Run id≈`22901341898`）
+- 期望（expected）：
+  - 人为制造一条 coverage 建议与 SUITE_CATALOG 之间的 `mismatched_entries`：coverage 认为示例 suite `s2d-1a-sample-onboarding` 应为 `required=true`，而 SUITE_CATALOG 中暂时将其配置为 `required=false`；
+  - 在保持 onboarding 套餐本身 `ok=true` 的前提下，diff JSON 报告 `has_diff=true` 且 `mismatched_entries` 下包含该 suite 的 required 差异，CI soft gate 步骤打印 `[S2D-2A][warning] mismatched_entries_suite_ids=['s2d-1a-sample-onboarding']`，而 `hard_gate` job 继续成功结束；
+  - 该实验 run 作为未来在关键投影上升级 `mismatched_entries` → hard fail 的先导样例。
+- 观测（observed）：
+  - 2026-03-10 在 `S2D-projection-onboarding-hard-gates` 分支上，将 `scripts/s2d_hard_gate.SUITE_CATALOG['s2d-1a-sample-onboarding'].required` 暂时由 `True` 调整为 `False` 并推送，触发一轮新的 `s2d-hard-gate` workflow；
+  - CI 运行成功，`artifacts/s2d-runs.json` 中新增一条 S2D-1A onboarding run 记录（`ok=true`，两个 scenario 全绿），`artifacts/s2d-coverage-ci-22901341898.json` 报告 3 条投影、1 条 platformized；
+  - `artifacts/s2d-coverage-diff-ci-22901341898.json` 中：`suggested_suite_catalog` 仍然是 `required=true`，而 `current_suite_catalog` 中该 suite 为 `required=false`，`has_diff=true` 且 `mismatched_entries` 字段记录了两者差异；
+  - 根据 CI 日志，soft gate 步骤读取该 diff JSON 后打印出 `[S2D-2A][warning] mismatched_entries_suite_ids=['s2d-1a-sample-onboarding']`，但 job 最终状态依然为 Success，验证了在存在 mismatch 时 soft gate 行为符合“只 warning、不 gate”的 v1 设计。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-09：scaffold S2D-3A log，定义 S2D hard gate entrypoint & CI wiring 的 contract/plan，等待后续 P1/P2/P3 实现。
