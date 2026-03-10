@@ -189,7 +189,7 @@
 
 ### P3-C1-S2（coverage vs SUITE_CATALOG diff helper｜2026-03-10）
 
-- headSha：`TODO_FILL_AFTER_COMMIT`
+- headSha：`e89a031df79e52ffbf977c7dc227e56142758c7a`
 - scripts：`backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py`
 - 输入 artifacts：`artifacts/s2d-coverage-20260310-001.json`
 - 期望（expected）：
