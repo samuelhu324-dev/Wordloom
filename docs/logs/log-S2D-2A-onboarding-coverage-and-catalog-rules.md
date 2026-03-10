@@ -117,8 +117,8 @@
 
 ### P1（Implementation：catalog 字段与查询脚本）
 
-- P1-C1-S1：在 projection catalog/registry 中增加 `onboarding_status/onboarding_phase/owner_team` 字段或标签，并为现有 sample projection（chronicle_daily_stats）写入 `platformized` 标记。
-- P1-C1-S2：新增 1~2 条 SQL/JSON 查询脚本，用于导出 coverage metrics 与逐 projection 摘要。
+- P1-C1-S1：在 projection catalog/registry 中增加 `onboarding_status/onboarding_phase/owner_team` 字段或标签，并为现有 sample projection（chronicle_daily_stats）写入 `platformized` 标记；v1 通过 `backend/infra/projection_framework/catalog.py` 中的 `ProjectionCatalogEntry` 与 `build_catalog_entries()` 落地，默认将 `chronicle_daily_stats` 标记为 `onboarding_status=platformized, onboarding_phase=S2D-1A`，其余注册投影默认为 `legacy/none`。
+- P1-C1-S2：新增 1~2 条 SQL/JSON 查询脚本，用于导出 coverage metrics 与逐 projection 摘要；v1 通过 `backend/scripts/labs/s2d_2a_p1c1s2_dump_coverage.py` 实现，调用 `compute_coverage_snapshot()` 输出符合本 log contract 的 JSON（可输出到 stdout，亦可通过 `--output` 写入文件）。
 
 ### P2（Drills：定期 coverage 统计）
 
@@ -140,8 +140,8 @@
 
 ### P1（Implementation：catalog & queries）
 
-- [ ] `P1-C1-S1`：在 catalog/registry 中增加字段/标签并填充示例数据
-- [ ] `P1-C1-S2`：实现导出 coverage metrics 的查询脚本
+- [x] `P1-C1-S1`：在 catalog/registry 中增加字段/标签并填充示例数据（v1：`backend/infra/projection_framework/catalog.py` 中落地 `ProjectionCatalogEntry` + `build_catalog_entries()`，为 `chronicle_daily_stats` 写入 `platformized/S2D-1A` 示例，其余投影默认为 `legacy/none`）
+- [x] `P1-C1-S2`：实现导出 coverage metrics 的查询脚本（v1：`backend/scripts/labs/s2d_2a_p1c1s2_dump_coverage.py` 调用 `compute_coverage_snapshot()` 输出 JSON）
 
 ### P2（Drills）
 
