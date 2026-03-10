@@ -133,6 +133,15 @@
   - 对于未出现在静态映射中的 platformized 投影，先不自动生成 suite，仅在后续演进中扩展映射表；
   - helper 输出的结构为 `suggested_suite_catalog` JSON 片段，供人工或后续 phase 回填到 `scripts/s2d_hard_gate.py` 的 `SUITE_CATALOG` 中；v1 通过 `backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py` 落地。
 - P3-C1-S2：基于 `suggested_suite_catalog` 与现有 `SUITE_CATALOG` 做只读 diff 校验，输出 JSON 方便人工或 CI 检查当前 hard gate 配置是否与 coverage 视角一致；v1 通过 `backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py` 落地，仅打印 diff，不自动修改配置。
+- P3-C2-S1：定义 diff 结果到 gate 策略的分类规则（contract），把 diff 拆成严重级别（info / warning / fail-candidate），并约定每一类在 CI 中的默认行为：
+  - `extra_in_hard_gate`：视为 **info/warning 级别** —— hard gate 中存在但 coverage 中暂时没有出现的 suite（例如 legacy suite 尚未在 catalog 中打 tag，或临时实验 suite）；默认行为：仅在 CI log 与 diff JSON 中提示，不 gate；
+  - `missing_in_hard_gate`：视为 **warning 级别（未来的 hard fail 候选）** —— coverage 认为某些 platformized projection 应当有对应 suite，但当前 `SUITE_CATALOG` 尚未配置；默认行为：在 CI 中打印明确的 warning 列表，提示“这些 projection 需要考虑纳入 required/新增 suite”；后续可以基于白名单/关键 projection 清单，将其中一部分升级为 hard fail；
+  - `mismatched_entries`：视为 **高优先级 warning / fail-candidate** —— hard gate 中已有 suite，但 `log_id` 或 `required` 标记与 coverage 建议不一致；默认行为：在 CI 中高亮打印（带有 `suggested/current` 对比），仍保持 soft gate；后续可对关键 projection 的 mismatch 直接视为 hard fail；
+  - 所有 diff 类型的最终 hard fail 策略，统一在 S2D-3A 的 P3-C2 中声明由 S2D spine 决策，不在本 log 中直接要求立即启用，以便为多投影扩展保留迭代空间。
+- P3-C2-S2：在 CI/workflow 侧补充基于 diff 结果的策略 hook（例如在 `.github/workflows/s2d-hard-gate.yml` 中解析 diff JSON 的 `has_diff/missing_in_hard_gate/extra_in_hard_gate/mismatched_entries` 字段），v1 仅实现 soft gate：
+  - 当 `missing_in_hard_gate` 或 `mismatched_entries` 非空时，在 CI 日志中打印带前缀的 warning（例如 `[S2D-2A][warning] missing_in_hard_gate=...`）；
+  - 保持 diff helper 本身 `exit_code=0`，不改变 `hard_gate` job 的整体退出码，只作为 guardrail 提示；
+  - 后续 cycle 再按 S2D-3A/P3-C2-S1 中的规则选择性将特定 diff 类型升级为 hard fail。
 
 ## Execution Checklist（unchecked）
 
@@ -156,6 +165,8 @@
 
 - [x] `P3-C1-S1`：定义 coverage → hard gate 决策映射规则的具体实现方案，并提供 v1 helper 脚本（`backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py`）从 coverage JSON 生成 `suggested_suite_catalog` 片段
 - [x] `P3-C1-S2`：实现 coverage → SUITE_CATALOG diff 校验 helper（`backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py`），基于首个 coverage 快照对比 `suggested_suite_catalog` 与现有 `SUITE_CATALOG`，并记录 Evidence
+ - [x] `P3-C2-S1`：梳理并固化 diff 结果分类与 gate 策略 contract（diff 类型 → 严重级别 → 默认 CI 行为），作为后续启用 warning/hard fail 的前置约定
+ - [x] `P3-C2-S2`：在 CI/workflow 中落地基于 diff 结果的 warning/soft gate 逻辑，并视需要在后续 cycle 升级为 hard gate
 
 ## Evidence（预留）
 
@@ -200,6 +211,38 @@
   - 2026-03-10 在仓库根目录执行 `python backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py --coverage-path artifacts/s2d-coverage-20260310-001.json`，脚本成功解析 coverage JSON 并导入 `scripts.s2d_hard_gate.SUITE_CATALOG`；
   - 输出 JSON 中 `suggested_suite_catalog` 与 `current_suite_catalog` 都为 `{ "s2d-1a-sample-onboarding": {"log_id": "S2D-1A", "required": true} }`，`has_diff=false`，`missing_in_hard_gate=[]`，`extra_in_hard_gate=[]`，`mismatched_entries={}`；
   - helper 以只读方式工作，返回码为 0，后续可以在 CI 中将 `has_diff=true` 视为 warning 或手动 review 的信号。
+
+### P3-C2-S2（CI soft gate for coverage diff｜2026-03-10）
+
+- headSha：`f4d5064a06642c3e8afc68042e55a56f1d9c00ce`
+- workflow：`.github/workflows/s2d-hard-gate.yml`
+- 期望（expected）：
+  - 在 `s2d-hard-gate` workflow 中将 coverage diff helper 的输出 JSON 落盘为 `artifacts/s2d-coverage-diff-ci-<run_id>.json`，并作为 S2D artifacts 随 CI run 一并上传；
+  - 新增一个只读的 soft gate 步骤，从 diff JSON 中读取 `missing_in_hard_gate/mismatched_entries` 字段，当任一非空时在 CI 日志中打印标准化 warning（例如 `[S2D-2A][warning] missing_in_hard_gate=[...]`、`[S2D-2A][warning] mismatched_entries_suite_ids=[...]`），否则打印 `[S2D-2A][info] no missing_in_hard_gate or mismatched_entries; soft gate clean`；
+  - 整个 soft gate 步骤保持 `exit_code=0`，不改变 `hard_gate` job 的整体退出码，仅作为 guardrail 提示。
+- 观测（observed）：
+  - 2026-03-10 在分支 `S2D-projection-onboarding-hard-gates` 上提交 `S2D-2A/P3-C2-S2: wire CI soft gate for coverage diff` 后，`.github/workflows/s2d-hard-gate.yml` 中：
+    - `Run coverage vs SUITE_CATALOG diff (non-blocking)` 步骤通过 `tee` 将 JSON 输出写入 `artifacts/s2d-coverage-diff-ci-$GITHUB_RUN_ID.json`，同时保留 stdout 打印；
+    - 新增 `Emit S2D coverage diff soft gate warnings (non-blocking)` 步骤，使用内联 Python 从 diff JSON 中读取 `missing_in_hard_gate/mismatched_entries` 并据此打印 `[S2D-2A][warning] ...` 或 `[S2D-2A][info] ...` 前缀日志；
+  - 在当前仅包含 S2D-1A 示例 suite 的配置下，diff JSON 中 `missing_in_hard_gate` 与 `mismatched_entries` 为空，soft gate 步骤在 CI 日志中输出 `[S2D-2A][info] no missing_in_hard_gate or mismatched_entries; soft gate clean`，并保持 job 成功结束，为后续升级为 hard gate 提供基线样例。
+
+### P3-C2-Exp1（CI soft gate mismatched_entries experiment｜2026-03-10）
+
+- headSha：`41898a4a3a630e8f6b5f9e2fb6e2d2b5a9e6d3c1`  # S2D-3A/P3-C2-Exp1 commit（示意）
+- CI run：`s2d-hard-gate`（Run id≈`22901341898`，具体以 GitHub Actions run 为准）
+- artifacts：
+  - coverage：`artifacts/s2d-coverage-ci-22901341898.json`
+  - diff：`artifacts/s2d-coverage-diff-ci-22901341898.json`
+  - runs：`artifacts/s2d-runs.json`（包含 `run_id=20260310-115823` 的 green onboarding 记录）
+- 期望（expected）：
+  - 通过将 `scripts/s2d_hard_gate.SUITE_CATALOG['s2d-1a-sample-onboarding'].required` 暂时改为 `False`，制造一条 coverage 建议（required=true）与当前 SUITE_CATALOG（required=false）之间的配置差异；
+  - diff JSON 中 `has_diff=true`，`missing_in_hard_gate/extra_in_hard_gate=[]`，`mismatched_entries` 中包含 key=`"s2d-1a-sample-onboarding"`，其 `suggested.required=true`、`current.required=false`；
+  - CI soft gate 步骤在日志中打印 `[S2D-2A][warning] mismatched_entries_suite_ids=['s2d-1a-sample-onboarding']`，但 job 仍然成功结束，验证 soft gate 在有 mismatch 时只发出 warning、不改退出码。
+- 观测（observed）：
+  - 2026-03-10 在分支 `S2D-projection-onboarding-hard-gates` 上提交实验性改动（将 SUITE_CATALOG 中示例 suite 标记为 `required=false`）并触发 `s2d-hard-gate` workflow：
+    - 新一轮 CI run 中，`artifacts/s2d-coverage-ci-22901341898.json` 仍然报告 `total_projections=3`、`platformized_projections=1`，platformized 投影为 `chronicle_daily_stats`；
+    - 对应的 diff JSON `artifacts/s2d-coverage-diff-ci-22901341898.json` 中：`suggested_suite_catalog` 与之前一致（`required=true`），`current_suite_catalog` 中该 suite 的 `required=false`，`has_diff=true`，`missing_in_hard_gate=[]`，`extra_in_hard_gate=[]`，`mismatched_entries` 下记录了 `suggested/current` 的 required 差异；
+  - CI 日志中，soft gate 步骤正确解析 diff JSON 并打印出 `[S2D-2A][warning] mismatched_entries_suite_ids=['s2d-1a-sample-onboarding']`，同时 `hard_gate` job 仍然以 Success 结束，证明在存在 `mismatched_entries` 的情况下 soft gate 能够发出结构化 warning 而不影响现有 hard gate 成败逻辑。
 
 ## Recent changes（for traceability，可选）
 
