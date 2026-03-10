@@ -36,6 +36,16 @@ S2D_RUNS_PATH = Path("artifacts/s2d-runs.json")
 S2D_1A_LOG_ID = "S2D-1A"
 S2D_1A_SUITE_ID = "s2d-1a-sample-onboarding"
 
+HARD_GATE_SKIP_ENV = "S2D_HARD_GATE_SKIP_SUITES"
+HARD_GATE_WAIVE_ENV = "S2D_HARD_GATE_WAIVE_SUITES"
+
+SUITE_CATALOG: dict[str, dict[str, Any]] = {
+    S2D_1A_SUITE_ID: {
+        "log_id": S2D_1A_LOG_ID,
+        "required": True,
+    },
+}
+
 
 def _utc_now_str() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
@@ -56,6 +66,8 @@ class SuiteResult:
     exit_code: int
     reason: str
     record: dict[str, Any] | None
+    required: bool
+    waived: bool
 
 
 @dataclass(frozen=True)
@@ -68,6 +80,18 @@ class HardGateSummary:
     database_url: str
     overall_ok: bool
     suites: list[SuiteResult]
+
+
+def _parse_suite_list_env(raw: str | None) -> set[str]:
+    values: set[str] = set()
+    if not raw:
+        return values
+
+    for part in raw.split(","):
+        suite = part.strip()
+        if suite:
+            values.add(suite)
+    return values
 
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -115,7 +139,13 @@ def _find_record(records: list[dict[str, Any]], *, log_id: str, run_id: str) -> 
     return None
 
 
-def _run_s2d_1a_suite(*, database_url: str, artifacts_path: Path) -> SuiteResult:
+def _run_s2d_1a_suite(
+    *,
+    database_url: str,
+    artifacts_path: Path,
+    required: bool,
+    waive_failure: bool,
+) -> SuiteResult:
     run_id = _default_run_id()
 
     cmd = [
@@ -141,6 +171,11 @@ def _run_s2d_1a_suite(*, database_url: str, artifacts_path: Path) -> SuiteResult
         ok = bool(record.get("ok")) and rc == 0
         reason = "ok" if ok else "suite reported failure (ok=false or non-zero exit code)"
 
+    waived = False
+    if not ok and waive_failure:
+        waived = True
+        reason = f"suite failed but waived via {HARD_GATE_WAIVE_ENV}"
+
     print(
         f"[S2D-3A] suite {S2D_1A_SUITE_ID} finished: rc={rc} ok={ok} "
         f"record_found={record is not None} run_id={run_id}"
@@ -154,6 +189,8 @@ def _run_s2d_1a_suite(*, database_url: str, artifacts_path: Path) -> SuiteResult
         exit_code=rc,
         reason=reason,
         record=record,
+        required=required,
+        waived=waived,
     )
 
 
@@ -173,17 +210,51 @@ def main(argv: list[str] | None = None) -> int:
     else:
         suites = [S2D_1A_SUITE_ID]
 
+    skip_suites = _parse_suite_list_env(os.environ.get(HARD_GATE_SKIP_ENV))
+    waive_suites = _parse_suite_list_env(os.environ.get(HARD_GATE_WAIVE_ENV))
+
     results: list[SuiteResult] = []
 
     for suite_id in suites:
-        if suite_id != S2D_1A_SUITE_ID:
+        if suite_id not in SUITE_CATALOG:
             print(f"[S2D-3A] error: unknown suite id: {suite_id}", file=sys.stderr)
             return 2
 
-        result = _run_s2d_1a_suite(database_url=database_url, artifacts_path=artifacts_path)
+        suite_cfg = SUITE_CATALOG[suite_id]
+        required = bool(suite_cfg.get("required", True))
+
+        if suite_id in skip_suites:
+            print(
+                f"[S2D-3A] skipping suite {suite_id} via {HARD_GATE_SKIP_ENV} (adoption/legacy waiver)",
+                file=sys.stderr,
+            )
+            result = SuiteResult(
+                suite_id=suite_id,
+                log_id=str(suite_cfg.get("log_id", "")),
+                run_id="skipped",
+                ok=True,
+                exit_code=0,
+                reason=f"skipped via {HARD_GATE_SKIP_ENV}",
+                record=None,
+                required=required,
+                waived=True,
+            )
+        else:
+            waive_failure = suite_id in waive_suites
+            result = _run_s2d_1a_suite(
+                database_url=database_url,
+                artifacts_path=artifacts_path,
+                required=required,
+                waive_failure=waive_failure,
+            )
+
         results.append(result)
 
-    overall_ok = all(r.ok for r in results)
+    overall_ok = True
+    for r in results:
+        if r.required and not r.waived and not r.ok:
+            overall_ok = False
+            break
 
     summary = HardGateSummary(
         log_id="S2D-3A",
