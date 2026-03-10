@@ -18,7 +18,7 @@
   **reference_log_1**: `docs/logs/log-S2C-projection-framework-platformization.md`
   **reference_log_2**: `docs/logs/log-S6A-4A-hard-gate-evidence-json.md`
 **created**: `2026-03-09`
-**updated**: `2026-03-09`
+**updated**: `2026-03-10`
 
 ---
 
@@ -127,6 +127,7 @@
 
 - P3-C1-S1：在 docs/logs 与 runbook 中记录哪些 projection/onboarding suites 已纳入 S2D hard gate required 集，哪些仍处于 optional/experimental 状态；v1 中通过 `scripts/s2d_hard_gate.py` 内部的 `SUITE_CATALOG` 标记 `required=true/false`，目前仅 S2D-1A sample onboarding 标记为 required，其它后续新增 suites 默认从 optional/experimental 起步，再按 S2D spine 升级为 required。
 - P3-C1-S2：为 legacy projection 设计合理的 skip/waiver 机制（例如基于标签或配置），并约定升级路径；v1 中通过环境变量 `S2D_HARD_GATE_SKIP_SUITES`（跳过指定 suite）与 `S2D_HARD_GATE_WAIVE_SUITES`（对指定 suite 的失败做 waiver，不阻塞 CI）实现，可按 suite id（如 `s2d-1a-sample-onboarding`）以逗号分隔配置。
+ - P3-C1-S3：对接 S2D-2A 的 coverage 结果与 SUITE_CATALOG diff helper，在 CI 或本地 runbook 中提供只读校验入口：从 coverage JSON 生成 `suggested_suite_catalog`，与当前 `SUITE_CATALOG` 做 diff，提示“哪些 suite 还未纳入 hard gate 或配置不一致”，作为收紧 required 集的前置 guardrail（实现细节见 `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md` 中 P3-C1-S1/S2 约定）。
 
 ## Execution Checklist（unchecked）
 
@@ -150,6 +151,7 @@
 
 - [x] `P3-C1-S1`：在文档中记录 required/optional suites 与升级路径（v1：通过本 log + S2D spine 描述 `SUITE_CATALOG` 中 required/optional 语义，当前仅 S2D-1A sample 为 required）
 - [x] `P3-C1-S2`：实现并记录 skip/waiver 机制（v1：在 `scripts/s2d_hard_gate.py` 中落地 `S2D_HARD_GATE_SKIP_SUITES`/`S2D_HARD_GATE_WAIVE_SUITES` 行为）
+ - [ ] `P3-C1-S3`：在 CI/workflow 或本地 runbook 中接入 S2D-2A 的 coverage → SUITE_CATALOG diff 校验 helper（只读，不直接 gate），用于提醒 required 集是否与 coverage 视角一致
 
 ## Evidence（预留）
 
@@ -199,3 +201,4 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-03-09：scaffold S2D-3A log，定义 S2D hard gate entrypoint & CI wiring 的 contract/plan，等待后续 P1/P2/P3 实现。
+- 2026-03-10：在 P3-C1-S3 中补充与 S2D-2A coverage/diff helper 的集成计划，为后续在 CI 中收紧 SUITE_CATALOG required 集提供 guardrail 入口。
