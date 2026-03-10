@@ -20,7 +20,7 @@
   **phase_log_2**: `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md`
   **phase_log_3**: `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`
 **created**: `2026-03-08`
-**updated**: `2026-03-09`
+**updated**: `2026-03-10`
 
 ---
 
@@ -84,7 +84,7 @@
 
 - [x] `P0`：S2D contract/indexing（目标边界 + 默认基线 + links/index）
 - [x] `P1`：Phase 1（projection onboarding contract + first sample projection 落地）
-- [ ] `P2`：Phase 2（onboarding coverage & catalog 规则；区分 legacy vs platformized）
+- [x] `P2`：Phase 2（onboarding coverage & catalog 规则；区分 legacy vs platformized，首次 coverage drill 已在 devtest 环境跑通，详见 `log-S2D-2A-onboarding-coverage-and-catalog-rules.md`）
 - [x] `P3`：Phase 3（S2D hard gate 入口脚本 + CI workflow + 基本 adoption/skip/waiver 规则）
 
 ## Evidence（示范 Phase 记录）
@@ -126,12 +126,19 @@
     - artifacts：`s2d-hard-gate-22853943302-1`（包含本次 hard gate 运行生成的 `_snapshot/auto/...` 与 `artifacts/s2d-runs.json` 片段）
     - 说明：修复 DB wait loop 语法后，`s2d-hard-gate` workflow 在 CI 中成功跑通，完成首个 green CI hard gate run，并作为后续扩展多投影时的基线样板；具体细节见 `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md` 的 Evidence 区。
 
+- `2026-03-10` / Phase 2（S2D-2A onboarding coverage drill 首次快照）
+  - headSha：`7784e72b2f46bcefa7886ecea8644bb599172e26`
+  - log_id/phase/cycle/step：`S2D-2A / P2 / C1 / S1`
+  - runner：`backend/scripts/labs/s2d_2a_p1c1s2_dump_coverage.py`
+  - artifacts：`artifacts/s2d-coverage-20260310-001.json`
+  - 说明：在 devtest 环境运行 coverage drill，基于 `compute_coverage_snapshot()` 生成首个 onboarding coverage JSON 快照，枚举出 1 条 platformized projection（`chronicle_daily_stats`）与 2 条 legacy 投影，详细 Evidence 见 `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md`。
+
 ## Current Status（进展摘要）
 
 - S2C 已经提供 spec/registry/harness/writer/rebuild/backfill/drills 模板以及 Search harness migration，具备 Route A 的平台化前置条件，但缺少“新增 projection 必须按模板 & 有 CI gate”的约束层。
 - S2D-1A 已在代码与文档层面完成 P0-P3：定义 onboarding contract、接入 sample projection（`chronicle_daily_stats`）、补齐 drills/labs，并提供单命令 onboarding 套餐脚本与 runbook；其 rebuild/backfill/drills 与 onboarding package 已在 devtest DB 中完成 red → green 的首轮演练，Evidence 记录在 `docs/logs/log-S2D-1A-projection-onboarding-contract-and-sample.md`。
 - S2D-3A 已完成 P0-P3 v1：实现本地 hard gate runner（`scripts/s2d_hard_gate.py`）、`s2d-hard-gate` CI workflow 以及基于 `SUITE_CATALOG` 的 required/optional 标记；同时提供 `S2D_HARD_GATE_SKIP_SUITES`/`S2D_HARD_GATE_WAIVE_SUITES` 环境变量，用于 legacy projection 的 skip/waiver 升级路径，首个 CI hard gate 已在 PR `#197` 上获得 green run。
-- Phase 2（S2D-2A）尚处于 contract/scaffolding 阶段：需在 catalog 层面标记哪些 projection 已按 S2D onboarding 落地，并在后续阶段逐步收紧 required 集、减少 skip/waiver 依赖。
+- Phase 2（S2D-2A）已完成 P0-P2 v1：在 catalog/registry 层面补齐 `onboarding_status/onboarding_phase/owner_team` 标记，提供可复跑的 coverage drill 脚本并在 devtest 环境生成首个 onboarding coverage JSON 快照（区分 platformized 与 legacy 投影），详细 contract 与 Evidence 记录在 `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md`；后续 P3 将负责把 coverage 结果回填到 S2D-3A 的 required/optional 决策中，逐步减少对 skip/waiver 的依赖。
 
 ## Notes（落地原则）
 
