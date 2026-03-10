@@ -127,8 +127,12 @@
 
 ### P3（Integration：回填 hard gate 决策）
 
-- P3-C1-S1：定义从 coverage JSON 映射到 S2D-3A `SUITE_CATALOG` 的规则，例如：哪些 projection 需要新增 suite，哪些可以继续作为 optional/legacy。
-- P3-C1-S2：在后续 phase（或 S2D-3A 的演进）中，将 coverage 结果实际接入 hard gate 配置（本 log 仅定义 contract 与计划）。
+- P3-C1-S1：定义从 coverage JSON 映射到 S2D-3A `SUITE_CATALOG` 的规则，并提供一个小 helper/脚本用于生成建议集；v1 规则为：
+  - 仅考虑 coverage JSON 中 `onboarding_status=platformized` 的 projection；
+  - 使用静态映射 `projection_name → suite_id/log_id`，目前只支持 S2D-1A 的示例投影 `chronicle_daily_stats → {suite_id="s2d-1a-sample-onboarding", log_id="S2D-1A"}`；
+  - 对于未出现在静态映射中的 platformized 投影，先不自动生成 suite，仅在后续演进中扩展映射表；
+  - helper 输出的结构为 `suggested_suite_catalog` JSON 片段，供人工或后续 phase 回填到 `scripts/s2d_hard_gate.py` 的 `SUITE_CATALOG` 中；v1 通过 `backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py` 落地。
+- P3-C1-S2：基于 `suggested_suite_catalog` 与现有 `SUITE_CATALOG` 做只读 diff 校验，输出 JSON 方便人工或 CI 检查当前 hard gate 配置是否与 coverage 视角一致；v1 通过 `backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py` 落地，仅打印 diff，不自动修改配置。
 
 ## Execution Checklist（unchecked）
 
@@ -145,27 +149,60 @@
 
 ### P2（Drills）
 
-- [ ] `P2-C1-S1`：实现并跑通首个 coverage drill，产出 JSON 快照
-- [ ] `P2-C1-S2`：在本 log 的 Evidence 区记录 coverage drill 首次 run
+- [x] `P2-C1-S1`：实现并跑通首个 coverage drill，产出 JSON 快照（v1：通过 `s2d_2a_p1c1s2_dump_coverage.py` 在 devtest 环境生成 `artifacts/s2d-coverage-20260310-001.json`）
+- [x] `P2-C1-S2`：在本 log 的 Evidence 区记录 coverage drill 首次 run（见下方 `P2-C1-S1` Evidence 条目）
 
 ### P3（Integration）
 
-- [ ] `P3-C1-S1`：定义 coverage → hard gate 决策映射规则的具体实现方案
-- [ ] `P3-C1-S2`：在后续 phase 中将 coverage 结果写回 S2D-3A 的 SUITE_CATALOG/配置
+- [x] `P3-C1-S1`：定义 coverage → hard gate 决策映射规则的具体实现方案，并提供 v1 helper 脚本（`backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py`）从 coverage JSON 生成 `suggested_suite_catalog` 片段
+- [x] `P3-C1-S2`：实现 coverage → SUITE_CATALOG diff 校验 helper（`backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py`），基于首个 coverage 快照对比 `suggested_suite_catalog` 与现有 `SUITE_CATALOG`，并记录 Evidence
 
 ## Evidence（预留）
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
 
-### P2-C1-S1（onboarding coverage drill snapshot｜YYYY-MM-DD）
+### P2-C1-S1（onboarding coverage drill snapshot｜2026-03-10）
 
-- headSha：`<git sha>`
-- artifacts：`artifacts/s2d-coverage-YYYYMMDD-HHMMSS.json`
+- headSha：`7784e72b2f46bcefa7886ecea8644bb599172e26`
+- artifacts：`artifacts/s2d-coverage-20260310-001.json`
 - 期望（expected）：
--  - 至少包含 1 条 platformized projection（例如 S2D-1A 的 sample projection），其余 projection 标记为 legacy/unknown；
+  - coverage snapshot JSON 至少包含 1 条 platformized projection（例如 S2D-1A 的 sample projection `chronicle_daily_stats`），其余 projection 标记为 legacy/unknown；
+  - 输出中包含 `total_projections/platformized_projections/legacy_projections/by_team/projections` 等字段，满足本 log P0 约定的 schema。
 - 观测（observed）：
--  - （首轮 run 完成后补充）。
+  - 2026-03-10 在 devtest 环境执行 `python backend/scripts/labs/s2d_2a_p1c1s2_dump_coverage.py --output artifacts/s2d-coverage-20260310-001.json`，脚本内部调用 `compute_coverage_snapshot()` 并成功连接 devtest 数据库；
+  - JSON 输出显示 `total_projections=3`，其中 `platformized_projections=1`、`legacy_projections=2`，by_team 维度下 `data-platform` 拥有 1 条 platformized 投影，其余 2 条投影归类为 `legacy/unknown`；
+  - projections 列表中明确包含 `chronicle_daily_stats` （`onboarding_status=platformized, onboarding_phase=S2D-1A`）以及 `chronicle_events_to_entries`、`search_index_to_elastic` 两条 legacy 投影，符合 P2 的预期。
+
+### P3-C1-S1（coverage → SUITE_CATALOG 建议 helper｜2026-03-10）
+
+- headSha：`c68ab2288a10bbafa945e588dbb99ab01abf597b`
+- scripts：`backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py`
+- 输入 artifacts：`artifacts/s2d-coverage-20260310-001.json`
+- 期望（expected）：
+  - helper 仅基于 coverage JSON 中 `onboarding_status=platformized` 的 projection 给出 suite 建议；
+  - 对于 S2D-1A 示例投影 `chronicle_daily_stats`，能生成与现有 hard gate 一致的 SUITE_CATALOG 片段：`{"s2d-1a-sample-onboarding": {"log_id": "S2D-1A", "required": true}}`；
+  - 输出结果以 JSON 形式给出 `platformized_projections` 与 `suggested_suite_catalog`，便于后续与 `scripts/s2d_hard_gate.py` 的配置做 diff。
+- 观测（observed）：
+  - 2026-03-10 在仓库根目录执行 `python backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py --coverage-path artifacts/s2d-coverage-20260310-001.json`，脚本成功读取首个 coverage 快照并识别出 1 条 platformized 投影 `chronicle_daily_stats`；
+  - 输出 JSON 中 `platformized_projections=["chronicle_daily_stats"]`，`suggested_suite_catalog` 为 `{ "s2d-1a-sample-onboarding": {"log_id": "S2D-1A", "required": true} }`，与现有 `scripts/s2d_hard_gate.py` 中的 SUITE_CATALOG 配置保持一致；
+  - `suggestions` 列表给出按 projection 维度的说明字段（projection_name/suite_id/log_id/reason），作为后续扩展更多投影映射规则的基础。
+
+### P3-C1-S2（coverage vs SUITE_CATALOG diff helper｜2026-03-10）
+
+- headSha：`e89a031df79e52ffbf977c7dc227e56142758c7a`
+- scripts：`backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py`
+- 输入 artifacts：`artifacts/s2d-coverage-20260310-001.json`
+- 期望（expected）：
+  - helper 读取 coverage JSON 并基于与 P3-C1-S1 相同的规则重建 `suggested_suite_catalog`；
+  - 能从 `scripts/s2d_hard_gate.py` 中导入当前 `SUITE_CATALOG`，并计算出缺失、新增或配置不一致的 suite 列表；
+  - 首次运行时，由于目前只有一条示例 suite，预期 `has_diff=false`，`missing_in_hard_gate/extra_in_hard_gate/mismatched_entries` 均为空。
+- 观测（observed）：
+  - 2026-03-10 在仓库根目录执行 `python backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py --coverage-path artifacts/s2d-coverage-20260310-001.json`，脚本成功解析 coverage JSON 并导入 `scripts.s2d_hard_gate.SUITE_CATALOG`；
+  - 输出 JSON 中 `suggested_suite_catalog` 与 `current_suite_catalog` 都为 `{ "s2d-1a-sample-onboarding": {"log_id": "S2D-1A", "required": true} }`，`has_diff=false`，`missing_in_hard_gate=[]`，`extra_in_hard_gate=[]`，`mismatched_entries={}`；
+  - helper 以只读方式工作，返回码为 0，后续可以在 CI 中将 `has_diff=true` 视为 warning 或手动 review 的信号。
 
 ## Recent changes（for traceability，可选）
 
 - 2026-03-10：scaffold S2D-2A log，定义 onboarding coverage metrics & catalog rules 的 contract 与计划，等待后续 P1/P2/P3 实现。
+- 2026-03-10：完成 P1/P2 实现与 Evidence 记账，并在 P3-C1-S1 中引入基于 coverage JSON 的 SUITE_CATALOG 建议 helper（`backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py`）。
+- 2026-03-10：完成 P3-C1-S2 diff helper 实现与首轮运行，校验 coverage 视角与现有 SUITE_CATALOG 一致，并将结果记录在本 log 的 Evidence 区。

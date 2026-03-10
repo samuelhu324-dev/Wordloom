@@ -18,7 +18,7 @@
   **reference_log_1**: `docs/logs/log-S2C-projection-framework-platformization.md`
   **reference_log_2**: `docs/logs/log-S6A-4A-hard-gate-evidence-json.md`
 **created**: `2026-03-09`
-**updated**: `2026-03-09`
+**updated**: `2026-03-10`
 
 ---
 
@@ -127,6 +127,7 @@
 
 - P3-C1-S1：在 docs/logs 与 runbook 中记录哪些 projection/onboarding suites 已纳入 S2D hard gate required 集，哪些仍处于 optional/experimental 状态；v1 中通过 `scripts/s2d_hard_gate.py` 内部的 `SUITE_CATALOG` 标记 `required=true/false`，目前仅 S2D-1A sample onboarding 标记为 required，其它后续新增 suites 默认从 optional/experimental 起步，再按 S2D spine 升级为 required。
 - P3-C1-S2：为 legacy projection 设计合理的 skip/waiver 机制（例如基于标签或配置），并约定升级路径；v1 中通过环境变量 `S2D_HARD_GATE_SKIP_SUITES`（跳过指定 suite）与 `S2D_HARD_GATE_WAIVE_SUITES`（对指定 suite 的失败做 waiver，不阻塞 CI）实现，可按 suite id（如 `s2d-1a-sample-onboarding`）以逗号分隔配置。
+ - P3-C1-S3：对接 S2D-2A 的 coverage 结果与 SUITE_CATALOG diff helper，在 CI 或本地 runbook 中提供只读校验入口：从 coverage JSON 生成 `suggested_suite_catalog`，与当前 `SUITE_CATALOG` 做 diff，提示“哪些 suite 还未纳入 hard gate 或配置不一致”，作为收紧 required 集的前置 guardrail（实现细节见 `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md` 中 P3-C1-S1/S2 约定）。
 
 ## Execution Checklist（unchecked）
 
@@ -150,6 +151,7 @@
 
 - [x] `P3-C1-S1`：在文档中记录 required/optional suites 与升级路径（v1：通过本 log + S2D spine 描述 `SUITE_CATALOG` 中 required/optional 语义，当前仅 S2D-1A sample 为 required）
 - [x] `P3-C1-S2`：实现并记录 skip/waiver 机制（v1：在 `scripts/s2d_hard_gate.py` 中落地 `S2D_HARD_GATE_SKIP_SUITES`/`S2D_HARD_GATE_WAIVE_SUITES` 行为）
+ - [x] `P3-C1-S3`：在 CI/workflow 中接入 S2D-2A 的 coverage → SUITE_CATALOG diff 校验 helper（只读，不直接 gate），用于提醒 required 集是否与 coverage 视角一致
 
 ## Evidence（预留）
 
@@ -196,6 +198,22 @@
     - 2026-03-10，由 PR `#197 (S2D-projection-onboarding-hard-gates)` 触发的 `s2d-hard-gate` workflow（Run 3）以 Success 结束，`hard_gate` job 用时约 36s；
     - CI 成功产出名为 `s2d-hard-gate-22853943302-1` 的 artifacts 包，标记为本 phase 的首个 green CI hard gate run。
 
+### P3-C1-S3（CI coverage diff guardrail wiring｜2026-03-10）
+
+- headSha：`0f950f46cd1c08336e40d7d3cec9e41ea90a4b54`
+- workflow：`.github/workflows/s2d-hard-gate.yml`
+- 期望（expected）：
+  - 在现有 `hard_gate` job 内新增两个非阻塞步骤：先生成一次 onboarding coverage JSON 快照，再运行 coverage vs `SUITE_CATALOG` 的 diff helper；
+  - 每次 CI run 都会产出一份 `artifacts/s2d-coverage-ci-<run_id>.json` 并将其随 S2D artifacts 一起上传，便于后续审计；
+  - diff helper 通过 stdout 打印 JSON，包括 `has_diff/missing_in_hard_gate/extra_in_hard_gate/mismatched_entries` 字段，但保持 `exit_code=0`，仅作为 guardrail 提示而不直接 gate PR。
+- 观测（observed）：
+  - 2026-03-10 在分支 `S2D-projection-onboarding-hard-gates` 上提交 `S2D-3A/P3-C1-S3: wire coverage diff helper into CI` 后，`s2d-hard-gate` workflow 获取到更新的 steps：
+    - `Generate S2D coverage snapshot for diff check`：调用 `backend/scripts/labs/s2d_2a_p1c1s2_dump_coverage.py --output artifacts/s2d-coverage-ci-$GITHUB_RUN_ID.json`；
+    - `Run coverage vs SUITE_CATALOG diff (non-blocking)`：调用 `backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py --coverage-path artifacts/s2d-coverage-ci-$GITHUB_RUN_ID.json`；
+  - Upload artifacts 步骤现包含 `artifacts/s2d-coverage-ci-${{ github.run_id }}.json`，后续每次 CI run 都会将 coverage 快照一并打包；
+  - diff helper 的退出码保持 0，如需将 `has_diff=true` 视为 warning 或软 gate，可在后续 cycle 中继续演进。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-09：scaffold S2D-3A log，定义 S2D hard gate entrypoint & CI wiring 的 contract/plan，等待后续 P1/P2/P3 实现。
+- 2026-03-10：在 P3-C1-S3 中补充与 S2D-2A coverage/diff helper 的集成计划，为后续在 CI 中收紧 SUITE_CATALOG required 集提供 guardrail 入口。
