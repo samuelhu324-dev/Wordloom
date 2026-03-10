@@ -175,7 +175,7 @@
 
 ### P3-C1-S1（coverage → SUITE_CATALOG 建议 helper｜2026-03-10）
 
-- headSha：`3d57f1845a60c19e3a070ac0c73b3c1cc1ad40a7`
+- headSha：`c68ab2288a10bbafa945e588dbb99ab01abf597b`
 - scripts：`backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py`
 - 输入 artifacts：`artifacts/s2d-coverage-20260310-001.json`
 - 期望（expected）：
