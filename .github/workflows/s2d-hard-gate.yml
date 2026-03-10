@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "backend/**"
+      - "backend/scripts/labs/s2d_2a_*.py"
       - "scripts/s2d_hard_gate.py"
       - "scripts/projections/s2d_1a_*.py"
       - "docs/logs/log-S2D-*.md"
@@ -89,6 +90,16 @@ jobs:
           set -euo pipefail
           python scripts/s2d_hard_gate.py --database-url "$DATABASE_URL"
 
+      - name: Generate S2D coverage snapshot for diff check
+        run: |
+          set -euo pipefail
+          python backend/scripts/labs/s2d_2a_p1c1s2_dump_coverage.py --output "artifacts/s2d-coverage-ci-${GITHUB_RUN_ID}.json"
+
+      - name: Run coverage vs SUITE_CATALOG diff (non-blocking)
+        run: |
+          set -euo pipefail
+          python backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py --coverage-path "artifacts/s2d-coverage-ci-${GITHUB_RUN_ID}.json"
+
       - name: Upload S2D artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -98,4 +109,5 @@ jobs:
             docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke
             docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill
             artifacts/s2d-runs.json
+            artifacts/s2d-coverage-ci-${{ github.run_id }}.json
           if-no-files-found: warn
