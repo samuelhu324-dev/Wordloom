@@ -98,7 +98,46 @@ jobs:
       - name: Run coverage vs SUITE_CATALOG diff (non-blocking)
         run: |
           set -euo pipefail
-          python backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py --coverage-path "artifacts/s2d-coverage-ci-${GITHUB_RUN_ID}.json"
+          mkdir -p artifacts
+          python backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py --coverage-path "artifacts/s2d-coverage-ci-${GITHUB_RUN_ID}.json" | tee "artifacts/s2d-coverage-diff-ci-${GITHUB_RUN_ID}.json"
+
+      - name: Emit S2D coverage diff soft gate warnings (non-blocking)
+        run: |
+          set -euo pipefail
+
+          DIFF_PATH="artifacts/s2d-coverage-diff-ci-${GITHUB_RUN_ID}.json"
+          if [ ! -f "${DIFF_PATH}" ]; then
+            echo "[S2D-2A][info] coverage diff JSON not found at ${DIFF_PATH}; skipping soft gate"
+            exit 0
+          fi
+
+          python - "${DIFF_PATH}" << 'EOF'
+          import json
+          import sys
+          from pathlib import Path
+
+          path = Path(sys.argv[1])
+          try:
+              data = json.loads(path.read_text(encoding="utf-8"))
+          except Exception as exc:  # pragma: no cover - defensive in CI
+              print(f"[S2D-2A][warning] failed to read coverage diff JSON at {path}: {exc}")
+              sys.exit(0)
+
+          missing = data.get("missing_in_hard_gate") or []
+          mismatched = data.get("mismatched_entries") or {}
+
+          has_warn = False
+          if missing:
+              print(f"[S2D-2A][warning] missing_in_hard_gate={missing}")
+              has_warn = True
+          if mismatched:
+              suite_ids = sorted(mismatched.keys())
+              print(f"[S2D-2A][warning] mismatched_entries_suite_ids={suite_ids}")
+              has_warn = True
+
+          if not has_warn:
+              print("[S2D-2A][info] no missing_in_hard_gate or mismatched_entries; soft gate clean")
+          EOF
 
       - name: Upload S2D artifacts
         if: always()
@@ -110,4 +149,5 @@ jobs:
             docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill
             artifacts/s2d-runs.json
             artifacts/s2d-coverage-ci-${{ github.run_id }}.json
+            artifacts/s2d-coverage-diff-ci-${{ github.run_id }}.json
           if-no-files-found: warn
