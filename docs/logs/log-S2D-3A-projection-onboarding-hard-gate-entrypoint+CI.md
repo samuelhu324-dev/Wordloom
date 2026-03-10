@@ -151,7 +151,7 @@
 
 - [x] `P3-C1-S1`：在文档中记录 required/optional suites 与升级路径（v1：通过本 log + S2D spine 描述 `SUITE_CATALOG` 中 required/optional 语义，当前仅 S2D-1A sample 为 required）
 - [x] `P3-C1-S2`：实现并记录 skip/waiver 机制（v1：在 `scripts/s2d_hard_gate.py` 中落地 `S2D_HARD_GATE_SKIP_SUITES`/`S2D_HARD_GATE_WAIVE_SUITES` 行为）
- - [ ] `P3-C1-S3`：在 CI/workflow 或本地 runbook 中接入 S2D-2A 的 coverage → SUITE_CATALOG diff 校验 helper（只读，不直接 gate），用于提醒 required 集是否与 coverage 视角一致
+ - [x] `P3-C1-S3`：在 CI/workflow 中接入 S2D-2A 的 coverage → SUITE_CATALOG diff 校验 helper（只读，不直接 gate），用于提醒 required 集是否与 coverage 视角一致
 
 ## Evidence（预留）
 
@@ -197,6 +197,21 @@
   - 观测（observed）：
     - 2026-03-10，由 PR `#197 (S2D-projection-onboarding-hard-gates)` 触发的 `s2d-hard-gate` workflow（Run 3）以 Success 结束，`hard_gate` job 用时约 36s；
     - CI 成功产出名为 `s2d-hard-gate-22853943302-1` 的 artifacts 包，标记为本 phase 的首个 green CI hard gate run。
+
+### P3-C1-S3（CI coverage diff guardrail wiring｜2026-03-10）
+
+- headSha：`0f950f46cd1c08336e40d7d3cec9e41ea90a4b54`
+- workflow：`.github/workflows/s2d-hard-gate.yml`
+- 期望（expected）：
+  - 在现有 `hard_gate` job 内新增两个非阻塞步骤：先生成一次 onboarding coverage JSON 快照，再运行 coverage vs `SUITE_CATALOG` 的 diff helper；
+  - 每次 CI run 都会产出一份 `artifacts/s2d-coverage-ci-<run_id>.json` 并将其随 S2D artifacts 一起上传，便于后续审计；
+  - diff helper 通过 stdout 打印 JSON，包括 `has_diff/missing_in_hard_gate/extra_in_hard_gate/mismatched_entries` 字段，但保持 `exit_code=0`，仅作为 guardrail 提示而不直接 gate PR。
+- 观测（observed）：
+  - 2026-03-10 在分支 `S2D-projection-onboarding-hard-gates` 上提交 `S2D-3A/P3-C1-S3: wire coverage diff helper into CI` 后，`s2d-hard-gate` workflow 获取到更新的 steps：
+    - `Generate S2D coverage snapshot for diff check`：调用 `backend/scripts/labs/s2d_2a_p1c1s2_dump_coverage.py --output artifacts/s2d-coverage-ci-$GITHUB_RUN_ID.json`；
+    - `Run coverage vs SUITE_CATALOG diff (non-blocking)`：调用 `backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py --coverage-path artifacts/s2d-coverage-ci-$GITHUB_RUN_ID.json`；
+  - Upload artifacts 步骤现包含 `artifacts/s2d-coverage-ci-${{ github.run_id }}.json`，后续每次 CI run 都会将 coverage 快照一并打包；
+  - diff helper 的退出码保持 0，如需将 `has_diff=true` 视为 warning 或软 gate，可在后续 cycle 中继续演进。
 
 ## Recent changes（for traceability，可选）
 
