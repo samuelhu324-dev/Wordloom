@@ -132,7 +132,7 @@
   - 使用静态映射 `projection_name → suite_id/log_id`，目前只支持 S2D-1A 的示例投影 `chronicle_daily_stats → {suite_id="s2d-1a-sample-onboarding", log_id="S2D-1A"}`；
   - 对于未出现在静态映射中的 platformized 投影，先不自动生成 suite，仅在后续演进中扩展映射表；
   - helper 输出的结构为 `suggested_suite_catalog` JSON 片段，供人工或后续 phase 回填到 `scripts/s2d_hard_gate.py` 的 `SUITE_CATALOG` 中；v1 通过 `backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py` 落地。
-- P3-C1-S2：在后续 phase（或 S2D-3A 的演进）中，将 coverage 结果实际接入 hard gate 配置（例如：对照 `suggested_suite_catalog` 与现有 `SUITE_CATALOG` 做 diff，自动/半自动地收紧 required 集），本 log 仅定义 contract 与计划。
+- P3-C1-S2：基于 `suggested_suite_catalog` 与现有 `SUITE_CATALOG` 做只读 diff 校验，输出 JSON 方便人工或 CI 检查当前 hard gate 配置是否与 coverage 视角一致；v1 通过 `backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py` 落地，仅打印 diff，不自动修改配置。
 
 ## Execution Checklist（unchecked）
 
@@ -155,7 +155,7 @@
 ### P3（Integration）
 
 - [x] `P3-C1-S1`：定义 coverage → hard gate 决策映射规则的具体实现方案，并提供 v1 helper 脚本（`backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py`）从 coverage JSON 生成 `suggested_suite_catalog` 片段
-- [ ] `P3-C1-S2`：在后续 phase 中将 coverage 结果写回 S2D-3A 的 SUITE_CATALOG/配置
+- [x] `P3-C1-S2`：实现 coverage → SUITE_CATALOG diff 校验 helper（`backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py`），基于首个 coverage 快照对比 `suggested_suite_catalog` 与现有 `SUITE_CATALOG`，并记录 Evidence
 
 ## Evidence（预留）
 
@@ -187,7 +187,22 @@
   - 输出 JSON 中 `platformized_projections=["chronicle_daily_stats"]`，`suggested_suite_catalog` 为 `{ "s2d-1a-sample-onboarding": {"log_id": "S2D-1A", "required": true} }`，与现有 `scripts/s2d_hard_gate.py` 中的 SUITE_CATALOG 配置保持一致；
   - `suggestions` 列表给出按 projection 维度的说明字段（projection_name/suite_id/log_id/reason），作为后续扩展更多投影映射规则的基础。
 
+### P3-C1-S2（coverage vs SUITE_CATALOG diff helper｜2026-03-10）
+
+- headSha：`TODO_FILL_AFTER_COMMIT`
+- scripts：`backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py`
+- 输入 artifacts：`artifacts/s2d-coverage-20260310-001.json`
+- 期望（expected）：
+  - helper 读取 coverage JSON 并基于与 P3-C1-S1 相同的规则重建 `suggested_suite_catalog`；
+  - 能从 `scripts/s2d_hard_gate.py` 中导入当前 `SUITE_CATALOG`，并计算出缺失、新增或配置不一致的 suite 列表；
+  - 首次运行时，由于目前只有一条示例 suite，预期 `has_diff=false`，`missing_in_hard_gate/extra_in_hard_gate/mismatched_entries` 均为空。
+- 观测（observed）：
+  - 2026-03-10 在仓库根目录执行 `python backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py --coverage-path artifacts/s2d-coverage-20260310-001.json`，脚本成功解析 coverage JSON 并导入 `scripts.s2d_hard_gate.SUITE_CATALOG`；
+  - 输出 JSON 中 `suggested_suite_catalog` 与 `current_suite_catalog` 都为 `{ "s2d-1a-sample-onboarding": {"log_id": "S2D-1A", "required": true} }`，`has_diff=false`，`missing_in_hard_gate=[]`，`extra_in_hard_gate=[]`，`mismatched_entries={}`；
+  - helper 以只读方式工作，返回码为 0，后续可以在 CI 中将 `has_diff=true` 视为 warning 或手动 review 的信号。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-10：scaffold S2D-2A log，定义 onboarding coverage metrics & catalog rules 的 contract 与计划，等待后续 P1/P2/P3 实现。
 - 2026-03-10：完成 P1/P2 实现与 Evidence 记账，并在 P3-C1-S1 中引入基于 coverage JSON 的 SUITE_CATALOG 建议 helper（`backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py`）。
+- 2026-03-10：完成 P3-C1-S2 diff helper 实现与首轮运行，校验 coverage 视角与现有 SUITE_CATALOG 一致，并将结果记录在本 log 的 Evidence 区。
