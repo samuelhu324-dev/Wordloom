@@ -128,6 +128,7 @@
 - P3-C1-S1：在 docs/logs 与 runbook 中记录哪些 projection/onboarding suites 已纳入 S2D hard gate required 集，哪些仍处于 optional/experimental 状态；v1 中通过 `scripts/s2d_hard_gate.py` 内部的 `SUITE_CATALOG` 标记 `required=true/false`，目前仅 S2D-1A sample onboarding 标记为 required，其它后续新增 suites 默认从 optional/experimental 起步，再按 S2D spine 升级为 required。
 - P3-C1-S2：为 legacy projection 设计合理的 skip/waiver 机制（例如基于标签或配置），并约定升级路径；v1 中通过环境变量 `S2D_HARD_GATE_SKIP_SUITES`（跳过指定 suite）与 `S2D_HARD_GATE_WAIVE_SUITES`（对指定 suite 的失败做 waiver，不阻塞 CI）实现，可按 suite id（如 `s2d-1a-sample-onboarding`）以逗号分隔配置。
  - P3-C1-S3：对接 S2D-2A 的 coverage 结果与 SUITE_CATALOG diff helper，在 CI 或本地 runbook 中提供只读校验入口：从 coverage JSON 生成 `suggested_suite_catalog`，与当前 `SUITE_CATALOG` 做 diff，提示“哪些 suite 还未纳入 hard gate 或配置不一致”，作为收紧 required 集的前置 guardrail（实现细节见 `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md` 中 P3-C1-S1/S2 约定）。
+ - P3-C2-S1：在现有 diff guardrail 基础上，按 S2D-2A 中的 contract 明确哪些 diff 类型在 CI 中仅作为 warning（例如单纯的 `extra_in_hard_gate`），哪些在后续 cycle 中会被提升为 hard fail（例如关键 projection 出现在 `missing_in_hard_gate` 或 `mismatched_entries` 中），并在本 log 中记录对应的升级条件与例外策略。
 
 ## Execution Checklist（unchecked）
 
@@ -152,6 +153,7 @@
 - [x] `P3-C1-S1`：在文档中记录 required/optional suites 与升级路径（v1：通过本 log + S2D spine 描述 `SUITE_CATALOG` 中 required/optional 语义，当前仅 S2D-1A sample 为 required）
 - [x] `P3-C1-S2`：实现并记录 skip/waiver 机制（v1：在 `scripts/s2d_hard_gate.py` 中落地 `S2D_HARD_GATE_SKIP_SUITES`/`S2D_HARD_GATE_WAIVE_SUITES` 行为）
  - [x] `P3-C1-S3`：在 CI/workflow 中接入 S2D-2A 的 coverage → SUITE_CATALOG diff 校验 helper（只读，不直接 gate），用于提醒 required 集是否与 coverage 视角一致
+ - [ ] `P3-C2-S1`：根据 S2D-2A 的 diff/gate contract，为 CI 定义并记录 warning vs hard fail 的触发条件（例如当 `missing_in_hard_gate` 出现关键 projection 时将来视为 hard gate 失败），并在后续 cycle 逐步启用
 
 ## Evidence（预留）
 

@@ -133,6 +133,8 @@
   - 对于未出现在静态映射中的 platformized 投影，先不自动生成 suite，仅在后续演进中扩展映射表；
   - helper 输出的结构为 `suggested_suite_catalog` JSON 片段，供人工或后续 phase 回填到 `scripts/s2d_hard_gate.py` 的 `SUITE_CATALOG` 中；v1 通过 `backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py` 落地。
 - P3-C1-S2：基于 `suggested_suite_catalog` 与现有 `SUITE_CATALOG` 做只读 diff 校验，输出 JSON 方便人工或 CI 检查当前 hard gate 配置是否与 coverage 视角一致；v1 通过 `backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py` 落地，仅打印 diff，不自动修改配置。
+ - P3-C2-S1：定义 diff 结果到 gate 策略的分类规则（contract），例如：`missing_in_hard_gate` 优先视为“应该纳入 required 集但尚未配置”的候选，`extra_in_hard_gate` 视为“配置中存在但 coverage 中不存在的新/legacy suite”，`mismatched_entries` 视为“log_id/required 标记不一致”；约定哪些类型在 CI 中只给 warning，哪些最终会升级为 hard fail。
+ - P3-C2-S2：在 CI/workflow 侧补充基于 diff 结果的策略 hook（例如读取 diff JSON 中的 `has_diff/missing_in_hard_gate/extra_in_hard_gate/mismatched_entries` 字段），先以 warning/soft gate 形式提示，再在后续 cycle 中根据 S2D spine 决策选择性升级为 hard gate。
 
 ## Execution Checklist（unchecked）
 
@@ -156,6 +158,8 @@
 
 - [x] `P3-C1-S1`：定义 coverage → hard gate 决策映射规则的具体实现方案，并提供 v1 helper 脚本（`backend/scripts/labs/s2d_2a_p3c1s1_suggest_suite_catalog.py`）从 coverage JSON 生成 `suggested_suite_catalog` 片段
 - [x] `P3-C1-S2`：实现 coverage → SUITE_CATALOG diff 校验 helper（`backend/scripts/labs/s2d_2a_p3c1s2_diff_suite_catalog.py`），基于首个 coverage 快照对比 `suggested_suite_catalog` 与现有 `SUITE_CATALOG`，并记录 Evidence
+ - [ ] `P3-C2-S1`：梳理并固化 diff 结果分类与 gate 策略 contract（哪些 diff 类型对应 warning，哪些在后续 cycle 中升级为 hard fail）
+ - [ ] `P3-C2-S2`：在 CI/workflow 中落地基于 diff 结果的 warning/soft gate 逻辑，并视需要在后续 cycle 升级为 hard gate
 
 ## Evidence（预留）
 
