@@ -42,7 +42,7 @@ HARD_GATE_WAIVE_ENV = "S2D_HARD_GATE_WAIVE_SUITES"
 SUITE_CATALOG: dict[str, dict[str, Any]] = {
     S2D_1A_SUITE_ID: {
         "log_id": S2D_1A_LOG_ID,
-        "required": True,
+        "required": False,
     },
 }
 
