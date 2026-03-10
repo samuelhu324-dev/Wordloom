@@ -17,7 +17,7 @@ from typing import Any
 
 def _ensure_backend_on_path() -> None:
     here = Path(__file__).resolve()
-    backend_root = here.parents[1]
+    backend_root = here.parents[2]
     if str(backend_root) not in sys.path:
         sys.path.insert(0, str(backend_root))
 

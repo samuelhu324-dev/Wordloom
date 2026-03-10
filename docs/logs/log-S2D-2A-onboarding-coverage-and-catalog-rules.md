@@ -145,8 +145,8 @@
 
 ### P2（Drills）
 
-- [ ] `P2-C1-S1`：实现并跑通首个 coverage drill，产出 JSON 快照
-- [ ] `P2-C1-S2`：在本 log 的 Evidence 区记录 coverage drill 首次 run
+- [x] `P2-C1-S1`：实现并跑通首个 coverage drill，产出 JSON 快照（v1：通过 `s2d_2a_p1c1s2_dump_coverage.py` 在 devtest 环境生成 `artifacts/s2d-coverage-20260310-001.json`）
+- [x] `P2-C1-S2`：在本 log 的 Evidence 区记录 coverage drill 首次 run（见下方 `P2-C1-S1` Evidence 条目）
 
 ### P3（Integration）
 
@@ -157,14 +157,17 @@
 
 - Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
 
-### P2-C1-S1（onboarding coverage drill snapshot｜YYYY-MM-DD）
+### P2-C1-S1（onboarding coverage drill snapshot｜2026-03-10）
 
-- headSha：`<git sha>`
-- artifacts：`artifacts/s2d-coverage-YYYYMMDD-HHMMSS.json`
+- headSha：`7784e72b2f46bcefa7886ecea8644bb599172e26`
+- artifacts：`artifacts/s2d-coverage-20260310-001.json`
 - 期望（expected）：
--  - 至少包含 1 条 platformized projection（例如 S2D-1A 的 sample projection），其余 projection 标记为 legacy/unknown；
+  - coverage snapshot JSON 至少包含 1 条 platformized projection（例如 S2D-1A 的 sample projection `chronicle_daily_stats`），其余 projection 标记为 legacy/unknown；
+  - 输出中包含 `total_projections/platformized_projections/legacy_projections/by_team/projections` 等字段，满足本 log P0 约定的 schema。
 - 观测（observed）：
--  - （首轮 run 完成后补充）。
+  - 2026-03-10 在 devtest 环境执行 `python backend/scripts/labs/s2d_2a_p1c1s2_dump_coverage.py --output artifacts/s2d-coverage-20260310-001.json`，脚本内部调用 `compute_coverage_snapshot()` 并成功连接 devtest 数据库；
+  - JSON 输出显示 `total_projections=3`，其中 `platformized_projections=1`、`legacy_projections=2`，by_team 维度下 `data-platform` 拥有 1 条 platformized 投影，其余 2 条投影归类为 `legacy/unknown`；
+  - projections 列表中明确包含 `chronicle_daily_stats` （`onboarding_status=platformized, onboarding_phase=S2D-1A`）以及 `chronicle_events_to_entries`、`search_index_to_elastic` 两条 legacy 投影，符合 P2 的预期。
 
 ## Recent changes（for traceability，可选）
 
