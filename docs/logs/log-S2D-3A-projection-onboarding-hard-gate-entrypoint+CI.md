@@ -125,8 +125,8 @@
 
 ### P3（Adoption：catalog & guardrails）
 
-- P3-C1-S1：在 docs/logs 与 runbook 中记录哪些 projection/onboarding suites 已纳入 S2D hard gate required 集，哪些仍处于 optional/experimental 状态。
-- P3-C1-S2：为 legacy projection 设计合理的 skip/waiver 机制（例如基于标签或配置），并约定升级路径。
+- P3-C1-S1：在 docs/logs 与 runbook 中记录哪些 projection/onboarding suites 已纳入 S2D hard gate required 集，哪些仍处于 optional/experimental 状态；v1 中通过 `scripts/s2d_hard_gate.py` 内部的 `SUITE_CATALOG` 标记 `required=true/false`，目前仅 S2D-1A sample onboarding 标记为 required，其它后续新增 suites 默认从 optional/experimental 起步，再按 S2D spine 升级为 required。
+- P3-C1-S2：为 legacy projection 设计合理的 skip/waiver 机制（例如基于标签或配置），并约定升级路径；v1 中通过环境变量 `S2D_HARD_GATE_SKIP_SUITES`（跳过指定 suite）与 `S2D_HARD_GATE_WAIVE_SUITES`（对指定 suite 的失败做 waiver，不阻塞 CI）实现，可按 suite id（如 `s2d-1a-sample-onboarding`）以逗号分隔配置。
 
 ## Execution Checklist（unchecked）
 
@@ -148,8 +148,8 @@
 
 ### P3（Adoption & guardrails）
 
-- [ ] `P3-C1-S1`：在文档中记录 required/optional suites 与升级路径
-- [ ] `P3-C1-S2`：实现并记录 skip/waiver 机制
+- [x] `P3-C1-S1`：在文档中记录 required/optional suites 与升级路径（v1：通过本 log + S2D spine 描述 `SUITE_CATALOG` 中 required/optional 语义，当前仅 S2D-1A sample 为 required）
+- [x] `P3-C1-S2`：实现并记录 skip/waiver 机制（v1：在 `scripts/s2d_hard_gate.py` 中落地 `S2D_HARD_GATE_SKIP_SUITES`/`S2D_HARD_GATE_WAIVE_SUITES` 行为）
 
 ## Evidence（预留）
 
