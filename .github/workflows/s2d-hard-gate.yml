@@ -56,7 +56,7 @@ jobs:
           fi
 
           echo "Waiting for Postgres (wordloom_test) to be ready"
-          for i in $(seq 1 60); i++ ; do
+          for i in $(seq 1 60); do
             if docker exec "$DB_CID" pg_isready -U wordloom -d wordloom_test >/dev/null 2>&1; then
               echo "wordloom_test is ready"
               exit 0
