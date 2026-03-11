@@ -1,29 +1,232 @@
-"""S2D-1B/P1-C1-S2: chronicle_events_to_entries harness drill skeleton (local, DB-only).
+"""S2D-1B/P2-C2-S1: chronicle_events_to_entries harness drill (local, DB-only).
 
-This lab is a **skeleton** for the legacy projection `chronicle_events_to_entries`.
-For v1 it does not invoke the real projection harness; it only writes a
-placeholder `_result.json` with `ok=false` so that Evidence JSON and
-artifacts layout match the S2D-1A pattern.
+This lab exercises the projection framework harness for the legacy
+projection ``chronicle_events_to_entries`` by:
 
-Later cycles can replace the body of `_run()` with a real harness drill
-that exercises the projection framework for this projection.
+- Creating (or reusing) a minimal Library/Bookshelf/Book FK chain
+- Writing one Chronicle event via ``SQLAlchemyChronicleRepository.save()``
+  which enqueues a unified ``outbox_events`` row for this projection
+- Running the projection framework harness until idle for this
+  projection
+- Verifying that the corresponding ``chronicle_entries`` row exists
+
+Outputs:
+- Writes ``<outdir>/_result.json`` as the evidence SoT for the round.
 """
 
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
+import os
 import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from uuid import UUID
+
+import psycopg
+
+# Ensure `import api.*` / `infra.*` works when executed as a plain script.
+_BACKEND_ROOT = Path(__file__).resolve().parents[2]
+if str(_BACKEND_ROOT) not in sys.path:
+    sys.path.insert(0, str(_BACKEND_ROOT))
+
+from api.app.modules.chronicle.domain import ChronicleEvent, ChronicleEventType
+from infra.database.session import get_session_factory
+from infra.projection_framework.harness import HarnessConfig, run_harness
+from infra.storage.chronicle_repository_impl import SQLAlchemyChronicleRepository
+
 
 PROJECTION_NAME = "chronicle_events_to_entries"
+
+LAB_LIBRARY_NAME = "LAB_S2D1B_C2_ENTRIES_LIBRARY"
+LAB_BOOKSHELF_NAME = "LAB_S2D1B_C2_ENTRIES_SHELF"
+LAB_BOOK_TITLE = "LAB_S2D1B_C2_ENTRIES_BOOK"
 
 
 def _utc_now_str() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def _database_url_psycopg(database_url: str) -> str:
+    return database_url.replace("postgresql+psycopg://", "postgresql://")
+
+
+def _now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _get_or_create_scaffold(conn: psycopg.Connection) -> dict[str, str]:
+    """Create (or reuse) a minimal Library/Bookshelf/Book FK chain."""
+
+    now = _now()
+
+    with conn.cursor() as cur:
+        # Library
+        cur.execute(
+            "SELECT id FROM libraries WHERE name = %s ORDER BY created_at DESC LIMIT 1",
+            (LAB_LIBRARY_NAME,),
+        )
+        row = cur.fetchone()
+        if row is None:
+            from uuid import uuid4
+
+            library_id = str(uuid4())
+            user_id = str(uuid4())
+            cur.execute(
+                """
+                INSERT INTO libraries (
+                    id, user_id, basement_bookshelf_id, name, description, cover_media_id,
+                    theme_color, pinned, pinned_order, archived_at, last_activity_at,
+                    views_count, last_viewed_at, created_at, updated_at, soft_deleted_at
+                )
+                VALUES (
+                    %s, %s, NULL, %s, NULL, NULL,
+                    NULL, FALSE, NULL, NULL, %s,
+                    0, NULL, %s, %s, NULL
+                )
+                """,
+                (library_id, user_id, LAB_LIBRARY_NAME, now, now, now),
+            )
+        else:
+            (library_id,) = row
+            library_id = str(library_id)
+
+        # Bookshelf
+        cur.execute(
+            """
+            SELECT id FROM bookshelves
+            WHERE library_id = %s AND name = %s
+            ORDER BY created_at DESC
+            LIMIT 1
+            """,
+            (library_id, LAB_BOOKSHELF_NAME),
+        )
+        row = cur.fetchone()
+        if row is None:
+            from uuid import uuid4
+
+            bookshelf_id = str(uuid4())
+            cur.execute(
+                """
+                INSERT INTO bookshelves (
+                    id, library_id, name, description,
+                    is_basement, is_pinned, pinned_at, is_favorite,
+                    status, book_count, created_at, updated_at
+                )
+                VALUES (
+                    %s, %s, %s, NULL,
+                    FALSE, FALSE, NULL, FALSE,
+                    'active', 0, %s, %s
+                )
+                """,
+                (bookshelf_id, library_id, LAB_BOOKSHELF_NAME, now, now),
+            )
+        else:
+            (bookshelf_id,) = row
+            bookshelf_id = str(bookshelf_id)
+
+        # Book
+        cur.execute(
+            """
+            SELECT id FROM books
+            WHERE library_id = %s AND bookshelf_id = %s AND title = %s
+            ORDER BY created_at DESC
+            LIMIT 1
+            """,
+            (library_id, bookshelf_id, LAB_BOOK_TITLE),
+        )
+        row = cur.fetchone()
+        if row is None:
+            from uuid import uuid4
+
+            book_id = str(uuid4())
+            cur.execute(
+                """
+                INSERT INTO books (
+                    id, bookshelf_id, library_id,
+                    title, summary, cover_icon, cover_media_id,
+                    is_pinned, due_at, status, maturity,
+                    block_count, maturity_score, legacy_flag,
+                    manual_maturity_override, manual_maturity_reason,
+                    last_visited_at, visit_count_90d,
+                    previous_bookshelf_id, moved_to_basement_at, soft_deleted_at,
+                    created_at, updated_at
+                )
+                VALUES (
+                    %s, %s, %s,
+                    %s, NULL, NULL, NULL,
+                    FALSE, NULL, 'draft', 'seed',
+                    0, 0, FALSE,
+                    FALSE, NULL,
+                    NULL, 0,
+                    NULL, NULL, NULL,
+                    %s, %s
+                )
+                """,
+                (book_id, bookshelf_id, library_id, LAB_BOOK_TITLE, now, now),
+            )
+        else:
+            (book_id,) = row
+            book_id = str(book_id)
+
+    return {"library_id": library_id, "bookshelf_id": bookshelf_id, "book_id": book_id}
+
+
+async def _create_chronicle_event(*, database_url: str) -> dict[str, str]:
+    """Create one Chronicle event as harness/backfill source."""
+
+    os.environ["DATABASE_URL"] = database_url
+
+    cs = _database_url_psycopg(database_url)
+    with psycopg.connect(cs) as conn:
+        conn.execute("SET TIME ZONE 'UTC'")
+        scaffold = _get_or_create_scaffold(conn)
+        conn.commit()
+
+    book_id = UUID(scaffold["book_id"])
+
+    session_factory = await get_session_factory()
+    async with session_factory() as session:
+        repo = SQLAlchemyChronicleRepository(session)
+        ev = ChronicleEvent.create(
+            event_type=ChronicleEventType.BOOK_UPDATED,
+            book_id=book_id,
+            payload={"schema_version": 1, "provenance": "s2d1b_c2_harness_drill"},
+        )
+        saved = await repo.save(ev)
+        chronicle_event_id = saved.id
+
+    return {
+        "library_id": scaffold["library_id"],
+        "book_id": str(book_id),
+        "chronicle_event_id": str(chronicle_event_id),
+    }
+
+
+def _verify_projection(*, database_url: str, chronicle_event_id: str, book_id: str) -> dict[str, Any]:
+    cs = _database_url_psycopg(database_url)
+    with psycopg.connect(cs) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "select count(*) from chronicle_entries where id = %s and book_id = %s",
+                (str(chronicle_event_id), str(book_id)),
+            )
+            entries_for_event = int(cur.fetchone()[0] or 0)
+
+            cur.execute(
+                "select count(*) from outbox_events where projection = %s and entity_id = %s",
+                (PROJECTION_NAME, str(chronicle_event_id)),
+            )
+            outbox_rows_for_event = int(cur.fetchone()[0] or 0)
+
+    return {
+        "entries_for_event": int(entries_for_event),
+        "outbox_rows_for_event": int(outbox_rows_for_event),
+    }
 
 
 @dataclass(frozen=True)
@@ -35,24 +238,49 @@ class EvidenceResult:
     ok: bool
     database_url: str
     projection_name: str
-    notes: dict[str, Any]
+    chronicle: dict[str, Any]
+    projection_state: dict[str, Any]
+    harness_exit_code: int
 
 
-def _run(*, database_url: str, run_id: str, outdir: Path) -> EvidenceResult:
+async def _run_async(*, database_url: str, run_id: str, outdir: Path) -> EvidenceResult:
     outdir.mkdir(parents=True, exist_ok=True)
+
+    chronicle = await _create_chronicle_event(database_url=database_url)
+
+    cfg = HarnessConfig(
+        batch_size=50,
+        lease_seconds=15.0,
+        max_processing_seconds=300,
+        max_attempts=3,
+        base_backoff_seconds=0.2,
+        max_backoff_seconds=2.0,
+        poll_interval_seconds=0.2,
+        reclaim_interval_seconds=1.0,
+        exit_when_idle=True,
+    )
+    harness_exit_code = await run_harness(projection_name=PROJECTION_NAME, config=cfg)
+
+    projection_state = _verify_projection(
+        database_url=database_url,
+        chronicle_event_id=chronicle["chronicle_event_id"],
+        book_id=chronicle["book_id"],
+    )
+
+    entries_for_event = int(projection_state.get("entries_for_event") or 0)
+    ok = harness_exit_code == 0 and entries_for_event == 1
 
     result = EvidenceResult(
         lab_id="s2d1b_chronicle_events_to_entries_harness_drill",
-        scenario="skeleton/chronicle_events_to_entries/harness_drill",
+        scenario="verify/chronicle_events_to_entries/harness_drill",
         run_id=run_id,
         created_at=_utc_now_str(),
-        ok=False,
+        ok=bool(ok),
         database_url=database_url,
         projection_name=PROJECTION_NAME,
-        notes={
-            "reason": "skeleton_not_implemented_yet",
-            "details": "This lab currently only writes placeholder Evidence; replace _run() with a real harness drill in later cycles.",
-        },
+        chronicle=chronicle,
+        projection_state=projection_state,
+        harness_exit_code=int(harness_exit_code),
     )
 
     (outdir / "_result.json").write_text(
@@ -65,7 +293,7 @@ def _run(*, database_url: str, run_id: str, outdir: Path) -> EvidenceResult:
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="S2D-1B chronicle_events_to_entries harness drill skeleton",
+        description="S2D-1B chronicle_events_to_entries harness drill (C2)",
     )
     p.add_argument("--database-url", required=True)
     p.add_argument("--run-id", required=True)
@@ -80,9 +308,15 @@ def main(argv: list[str] | None = None) -> int:
     run_id = str(args.run_id).strip()
     outdir = Path(str(args.outdir).strip())
 
-    result = _run(database_url=database_url, run_id=run_id, outdir=outdir)
+    # psycopg async is incompatible with ProactorEventLoop on Windows.
+    if sys.platform.startswith("win"):
+        try:
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        except Exception:
+            pass
 
-    # Skeleton is intentionally red until a real implementation is added.
+    result = asyncio.run(_run_async(database_url=database_url, run_id=run_id, outdir=outdir))
+
     return 0 if result.ok else 2
 
 

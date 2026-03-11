@@ -159,8 +159,8 @@
 
 ### P2（drill/verify：C2 实装 & 演练）
 
-- [ ] `P2-C2-S1`：为 `chronicle_events_to_entries` 补齐最小可用 backfill smoke / correctness drill 逻辑（至少一条 happy path 在 devtest 环境下 `ok=true`）
-- [ ] `P2-C2-S2`：在 devtest 环境运行 C2 版本的 labs/runner，并将新的 run_id 与 Evidence 记账到 `_snapshot/auto` 与 `artifacts/s2d-runs.json` 以及本 log 的 Evidence 区
+- [x] `P2-C2-S1`：为 `chronicle_events_to_entries` 补齐最小可用 backfill smoke / correctness drill 逻辑（至少一条 happy path 在 devtest 环境下 `ok=true`）
+- [x] `P2-C2-S2`：在 devtest 环境运行 C2 版本的 labs/runner，并将新的 run_id 与 Evidence 记账到 `_snapshot/auto` 与 `artifacts/s2d-runs.json` 以及本 log 的 Evidence 区
 
 ### P3（可选：hard gate 挂载）
 
@@ -206,6 +206,24 @@
       - correctness drill：`docs/labs/_snapshot/auto/s2d1b_chronicle_events_to_entries_harness_drill/20260311-1`
     - summary：`artifacts/s2d-runs.json` 中新增一条记录（`log_id="S2D-1B"`，`phase="P2"`，`cycle="C1"`，`step="S2"`，`run_id="20260311-1"`，`ok=false`，两个 scenario 均 `exit_code=2 && ok=false`）
 
+### P2-C2-S1/S2（second projection minimal real onboarding drills｜2026-03-11）
+
+- headSha：`6eed5e54caedd001f35201d16b29827544ae5e7b`
+- log_id/phase/cycle/step：`S2D-1B / P2 / C2 / S2`
+- runner：`scripts/projections/s2d_1b_p2c1s2_second_onboarding_skeleton.py`
+- runs（devtest DB｜`postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test`）：
+  - C2（minimal real onboarding｜首轮）：
+    - run_id：`20260311-125958`
+    - backfill smoke：
+      - 脚本：`backend/scripts/labs/s2d1b_chronicle_events_to_entries_backfill_smoke.py`
+      - run_dir：`docs/labs/_snapshot/auto/s2d1b_chronicle_events_to_entries_backfill_smoke/20260311-125958`
+      - `_result.json`：`ok=true`，`outbox.rows_for_event=1`；chronicle_event 通过 `SQLAlchemyChronicleRepository.save()` 写入，并成功在 unified `outbox_events` 中产生一条 `projection="chronicle_events_to_entries"` 的行。
+    - harness drill：
+      - 脚本：`backend/scripts/labs/s2d1b_chronicle_events_to_entries_harness_drill.py`
+      - run_dir：`docs/labs/_snapshot/auto/s2d1b_chronicle_events_to_entries_harness_drill/20260311-125958`
+      - `_result.json`：`ok=true`，`projection_state.entries_for_event=1 && outbox_rows_for_event=1`，`harness_exit_code=0`；projection framework harness 在该 projection 上跑到 idle，生成并验证对应的 `chronicle_entries` 行。
+    - summary：`artifacts/s2d-runs.json` 中追加一条新的记录（`log_id="S2D-1B"`，`phase="P2"`，`cycle="C2"`，`step="S2"`，`run_id="20260311-125958"`，`ok=true`，两个 scenario 均 `exit_code=0 && ok=true`），标记本投影在 devtest 环境下完成了首轮“最小真实 onboarding”演练。
+
 ### P3-C1-S1（second projection skeleton wired into hard gate｜2026-03-11）
 
 - headSha：`c51f51573e9388539575a700041bb66dc6c8eedb`
@@ -245,3 +263,4 @@
 - 2026-03-10：scaffold S2D-1B log，定义 second projection onboarding skeleton 的 contract 与执行计划（基于 S2D-1A 的 sample projection 模板）。
 - 2026-03-11：完成首轮 S2D-1B skeleton drills 与 onboarding package run（run_id=20260311-1，known red），并将 Evidence 记账到本 log 与 `artifacts/s2d-runs.json`。
 - 2026-03-11：在 `scripts/s2d_hard_gate.py` 中将 `s2d-1b-second-onboarding-skeleton` 作为 optional suite 纳入 `SUITE_CATALOG`，并更新 CI workflow `s2d-hard-gate.yml` 使其在 `Run S2D hard gate` 步骤中同时拉起 S2D-1A sample 与 S2D-1B skeleton 套餐；同日首个包含该改动的 CI run（Run id=`22936588614`，headSha=`c51f5157...`）成功通过，证据已在本 log 的 `P3-C1-S1/S2` 与 S2D-3A log 中补齐。
+- 2026-03-11：在 WSL + devtest DB（5435）环境下完成 C2 版 labs/runner 的首轮实装演练（run_id=20260311-125958），backfill smoke 与 harness drill 均 `ok=true`，并在 `artifacts/s2d-runs.json` 中新增 `phase="P2"/cycle="C2"/step="S2"` 记录，标记本投影已具备最小可复跑的 real onboarding 能力。
