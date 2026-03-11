@@ -137,6 +137,11 @@
 
 - P2-C1-S1：在 devtest 环境下执行 S2D-1C backfill smoke & correctness drill，占位实现可以 `ok=false`，但需保证 `_result.json` 与 run_dir 结构正确；
 - P2-C1-S2：执行 S2D-1C onboarding runner，写入第一条 `S2D-1C` 记录到 `artifacts/s2d-runs.json`，并在本 log 的 Evidence 区登记 headSha/run_id/run_dir。
+  
+（C2：minimal real drills｜已完成）
+
+- P2-C2-S1：在 devtest 环境实现并执行 `search_index_to_elastic` 的最小真实 backfill smoke（DB-only backfill → unified outbox），保证首轮插入 1 条 outbox、第二轮幂等；
+- P2-C2-S2：在 devtest 环境实现并执行最小真实 harness drill（SearchOutboxRepository enqueue → unified outbox pending row），并通过 S2D-1C onboarding runner 记录一条 `cycle="C2"` 的绿灯 Evidence。
 
 ### P3（可选：hard gate 挂载）
 
@@ -160,6 +165,8 @@
 
 - [x] `P2-C1-S1`：在 devtest 环境执行 S2D-1C skeleton labs 并产出 `_result.json`（v1：known red，`ok=false`）
 - [x] `P2-C1-S2`：在 devtest 环境执行 S2D-1C onboarding runner 并在本 log 记录 Evidence（v1：首条 skeleton 记录）
+- [x] `P2-C2-S1`：在 devtest 环境实现并执行 S2D-1C C2 最小真实 backfill smoke（DB-only backfill → unified outbox），确保 outbox 插入/幂等行为符合预期（ok=true）
+- [x] `P2-C2-S2`：在 devtest 环境实现并执行 S2D-1C C2 最小真实 harness drill + onboarding runner（cycle="C2"），记录一条 `ok=true` 的 S2D-1C Evidence
 
 ### P3（可选：hard gate 挂载）
 
@@ -203,7 +210,22 @@
       - correctness drill：`docs/labs/_snapshot/auto/s2d1c_search_index_to_elastic_harness_drill/20260311-151831`
     - summary：`artifacts/s2d-runs.json` 中新增一条记录（`log_id="S2D-1C"`，`phase="P2"`，`cycle="C1"`，`step="S2"`，`run_id="20260311-151831"`，`ok=false`，两个 scenario 均 `exit_code=2 && ok=false`，reason 为 `"skeleton_not_implemented_yet"`）。
 
+### P2-C2-S1/S2（third projection minimal real drills｜2026-03-11）
+
+- 日期：`2026-03-11`
+- headSha：`8faa57e433f4e7025721c807ab6e4d003db39adc`
+- log_id/phase/cycle/step：`S2D-1C / P2 / C2 / S2`
+- runner：`scripts/projections/s2d_1c_p2c1s2_third_onboarding_skeleton.py`
+- runs：
+  - C2（C2 最小真实 drills，期望 green）：
+    - run_id：`20260311-193445`
+    - scenarios：
+      - backfill smoke（minimal real）：`docs/labs/_snapshot/auto/s2d1c_search_index_to_elastic_backfill_smoke/20260311-193445`
+      - harness drill（minimal real）：`docs/labs/_snapshot/auto/s2d1c_search_index_to_elastic_harness_drill/20260311-193445`
+    - summary：`artifacts/s2d-runs.json` 中新增一条记录（`log_id="S2D-1C"`，`phase="P2"`，`cycle="C2"`，`step="S2"`，`run_id="20260311-193445"`，`ok=true`，两个 scenario 均 `exit_code=0 && ok=true`）。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-11：scaffold S2D-1C log，基于 S2D-1A/S2D-1B 的经验，为第三条 legacy projection onboarding skeleton 定义最小 contract/Plan，等待在 P0 阶段确认具体目标投影与 labs/runner 命名。
 - 2026-03-11：完成 `search_index_to_elastic` 的 S2D-1C skeleton labs/runner 首次 devtest 演练（known red），在本 log 与 `artifacts/s2d-runs.json` 中记录 P2-C1-S1/S2 Evidence。
+- 2026-03-11：为 `search_index_to_elastic` 补齐 S2D-1C C2 最小真实实现（DB-only backfill smoke + unified outbox harness drill），在 devtest 环境获得首条 `cycle="C2"` 绿灯 Evidence（backfill/harness 双场景 `ok=true`），并在本 log 记录 P2-C2-S1/S2 Evidence。
