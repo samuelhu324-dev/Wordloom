@@ -49,7 +49,7 @@ SUITE_CATALOG: dict[str, dict[str, Any]] = {
     },
     S2D_1B_SUITE_ID: {
         "log_id": S2D_1B_LOG_ID,
-        "required": False,
+        "required": True,
     },
 }
 
