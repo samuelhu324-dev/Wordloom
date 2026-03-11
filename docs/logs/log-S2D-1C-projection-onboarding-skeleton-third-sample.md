@@ -153,13 +153,13 @@
 
 ### P1（实现：skeleton 落地）
 
-- [ ] `P1-C1-S1`：在 labs 目录中复制/裁剪 S2D-1B labs，生成 `s2d1c_*` skeleton 脚本
-- [ ] `P1-C1-S2`：新增 S2D-1C onboarding runner 并成功写入 `artifacts/s2d-runs.json`
+- [x] `P1-C1-S1`：在 labs 目录中复制/裁剪 S2D-1B labs，生成 `s2d1c_*` skeleton 脚本（v1：backfill/harness skeleton，known red）
+- [x] `P1-C1-S2`：新增 S2D-1C onboarding runner 并成功写入 `artifacts/s2d-runs.json`（v1：记录 skeleton 套餐，ok=false）
 
 ### P2（drill/verify：首轮 skeleton runs）
 
-- [ ] `P2-C1-S1`：在 devtest 环境执行 S2D-1C skeleton labs 并产出 `_result.json`
-- [ ] `P2-C1-S2`：在 devtest 环境执行 S2D-1C onboarding runner 并在本 log 记录 Evidence
+- [x] `P2-C1-S1`：在 devtest 环境执行 S2D-1C skeleton labs 并产出 `_result.json`（v1：known red，`ok=false`）
+- [x] `P2-C1-S2`：在 devtest 环境执行 S2D-1C onboarding runner 并在本 log 记录 Evidence（v1：首条 skeleton 记录）
 
 ### P3（可选：hard gate 挂载）
 
@@ -172,31 +172,38 @@
 
 ### P2-C1-S1（third projection skeleton drills｜YYYY-MM-DD）
 
-- headSha：`<git sha>`
+- 日期：`2026-03-11`
+- headSha：`469501f4beb81c291a62cbfcad8de88944650bbc`
 - artifacts：
-  - 脚本：`backend/scripts/labs/s2d1c_<projection>_backfill_smoke.py`
-  - run_dir：`docs/labs/_snapshot/auto/s2d1c_<projection>_backfill_smoke/<run_id>`
-  - 脚本：`backend/scripts/labs/s2d1c_<projection>_harness_drill.py`
-  - run_dir：`docs/labs/_snapshot/auto/s2d1c_<projection>_harness_drill/<run_id>`
+  - backfill skeleton：
+    - 脚本：`backend/scripts/labs/s2d1c_search_index_to_elastic_backfill_smoke.py`
+    - run_dir：`docs/labs/_snapshot/auto/s2d1c_search_index_to_elastic_backfill_smoke/20260311-151831`
+  - harness skeleton：
+    - 脚本：`backend/scripts/labs/s2d1c_search_index_to_elastic_harness_drill.py`
+    - run_dir：`docs/labs/_snapshot/auto/s2d1c_search_index_to_elastic_harness_drill/20260311-151831`
 - 期望（expected）：
-  - skeleton drills 至少能够跑出 `_result.json.ok=false` + 合理的 failure reason；
+  - skeleton drills 至少能够跑出 `_result.json.ok=false` + 低基数 failure reason；
   - artifacts 结构与 S2D-1A/S2D-1B 保持一致。
 - 观测（observed）：
-  - （待补充）
+  - 在 devtest DB（`postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test`）下执行两条 skeleton labs：
+    - 均成功在对应 run_dir 下生成 `_result.json`，字段包含 `ok=false`、`reason="skeleton_not_implemented_yet"` 与数据库 URL 等元信息；
+    - run_exit_code 均为 2，符合 "known red skeleton" 预期。
 
 ### P2-C1-S2（third projection skeleton onboarding package｜YYYY-MM-DD）
 
-- headSha：`<git sha>`
+- 日期：`2026-03-11`
+- headSha：`469501f4beb81c291a62cbfcad8de88944650bbc`
 - log_id/phase/cycle/step：`S2D-1C / P2 / C1 / S2`
 - runner：`scripts/projections/s2d_1c_p2c1s2_third_onboarding_skeleton.py`
 - runs：
-  - C1（首跑）：
-    - run_id：`<run_id>`
+  - C1（首跑，skeleton known red）：
+    - run_id：`20260311-151831`
     - scenarios：
-      - backfill smoke：`docs/labs/_snapshot/auto/s2d1c_<projection>_backfill_smoke/<run_id>`
-      - correctness drill：`docs/labs/_snapshot/auto/s2d1c_<projection>_harness_drill/<run_id>`
-    - summary：`artifacts/s2d-runs.json` 中新增一条记录（`log_id="S2D-1C"`，`phase="P2"`，`cycle="C1"`，`step="S2"`，`run_id=<run_id>`，`ok` 初期允许为 `false`）。
+      - backfill smoke：`docs/labs/_snapshot/auto/s2d1c_search_index_to_elastic_backfill_smoke/20260311-151831`
+      - correctness drill：`docs/labs/_snapshot/auto/s2d1c_search_index_to_elastic_harness_drill/20260311-151831`
+    - summary：`artifacts/s2d-runs.json` 中新增一条记录（`log_id="S2D-1C"`，`phase="P2"`，`cycle="C1"`，`step="S2"`，`run_id="20260311-151831"`，`ok=false`，两个 scenario 均 `exit_code=2 && ok=false`，reason 为 `"skeleton_not_implemented_yet"`）。
 
 ## Recent changes（for traceability，可选）
 
 - 2026-03-11：scaffold S2D-1C log，基于 S2D-1A/S2D-1B 的经验，为第三条 legacy projection onboarding skeleton 定义最小 contract/Plan，等待在 P0 阶段确认具体目标投影与 labs/runner 命名。
+- 2026-03-11：完成 `search_index_to_elastic` 的 S2D-1C skeleton labs/runner 首次 devtest 演练（known red），在本 log 与 `artifacts/s2d-runs.json` 中记录 P2-C1-S1/S2 Evidence。
