@@ -145,7 +145,7 @@
 
 ### P3（可选：hard gate 挂载）
 
-- P3-C1-S1：视实际需要，在 `scripts/s2d_hard_gate.SUITE_CATALOG` 中为 S2D-1C 目标投影新增 optional/experimental suite，suite_id 命名与 S2D-1B 对齐；
+- P3-C1-S1：视实际需要，在 `scripts/s2d_hard_gate.SUITE_CATALOG` 中为 S2D-1C 目标投影新增 optional/experimental suite，suite_id 命名与 S2D-1B 对齐；（v1 已落地为 `s2d-1c-third-onboarding-minimal-real`，`required=false`）
 - P3-C1-S2：在 CI 的 `s2d-hard-gate` workflow 中观察该 suite 的行为，视稳定性与业务优先级决定是否在后续 cycle 推进 C2/required 升级。
 
 ## Execution Checklist（unchecked）
@@ -170,7 +170,7 @@
 
 ### P3（可选：hard gate 挂载）
 
-- [ ] `P3-C1-S1`：如有需要，将 S2D-1C 套餐以 optional suite 形式挂到 S2D hard gate
+- [x] `P3-C1-S1`：如有需要，将 S2D-1C 套餐以 optional suite 形式挂到 S2D hard gate（v1：suite_id=`s2d-1c-third-onboarding-minimal-real`，`required=false`）
 - [ ] `P3-C1-S2`：在 CI 中观测该 optional suite 的行为并在本 log 中补充 Evidence
 
 ## Evidence（预留）
