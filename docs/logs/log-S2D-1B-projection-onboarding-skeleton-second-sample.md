@@ -121,10 +121,23 @@
 - P2-C1-S1：在 devtest 环境中执行 skeleton backfill smoke 与 correctness drill，允许 run 以 `ok=false` 或 known red 结束，但需保证 Evidence JSON 与 artifacts 结构正确。
 - P2-C1-S2：新增 1 条 onboarding package skeleton run，写入 `artifacts/s2d-runs.json`，并在本 log 的 Evidence 区记录 headSha、suite_id、run_dir。
 
+### P2-C2（drill/verify：skeleton → minimal real onboarding）
+
+- P2-C2-S1：为 `chronicle_events_to_entries` 补齐最小可用的 backfill smoke / correctness drill 逻辑（可以先限定单租户/小时间窗），让 `s2d1b_*` labs 至少有一条 happy path 可以在 devtest 环境下得到 `ok=true`；
+- P2-C2-S2：在 devtest 环境执行 C2 版本的 backfill/harness drills，记录新的 run_id 与 Evidence，并在本 log 的 Evidence 区增补对应记录（包括 `headSha/run_id/run_dir/ok` 等关键信息）。
+
 ### P3（可选：挂载到 hard gate 套餐）
 
 - P3-C1-S1：在 `scripts/s2d_hard_gate.py` 的 `SUITE_CATALOG` 中新增 1 条 optional/experimental suite，对应第二条投影的 onboarding skeleton（例如 `suite_id=s2d-1b-second-onboarding`），默认 `required=false`；
 - P3-C1-S2：在 CI 的 `s2d-hard-gate` workflow 中观察该 suite 的 run 行为，并在 S2D-2A coverage diff 中确认该 projection 仍标记为 legacy，仅作为试验项存在。
+
+### P3-C2（adoption：C2 行为在 CI 上的长期观测）
+
+- P3-C2-S1：在 `s2d-hard-gate` workflow 上持续观测 S2D-1B suite 的 C2 行为（仍标记为 optional），确保在典型变更路径上 S2D-1B labs/runner 能稳定保持 `ok=true` 或给出可解释的 `ok=false`；按需在本 log 与 S2D-3A log 中补充 CI Evidence 与告警约定。
+
+### P3-C3（upgrade：从 legacy skeleton 升级为 platformized + required）
+
+- P3-C3-S1：当 `chronicle_events_to_entries` 在 C2 之后表现足够稳定时，将其在 catalog/coverage 中从 `legacy` 升级为 `platformized`，并将 `s2d-1b-*` 套餐从 optional skeleton 升级为正式 required suite（必要时调整 suite_id 命名），同步更新 S2D spine / S2D-2A / S2D-3A 中的文档与 Evidence 记录。
 
 ## Execution Checklist（unchecked）
 
@@ -144,10 +157,20 @@
 - [x] `P2-C1-S1`：在 devtest 环境执行 skeleton backfill smoke & correctness drill，并记录 Evidence（v1：run_id=20260311-1，known red）
 - [x] `P2-C1-S2`：执行 skeleton onboarding package run，写入 `artifacts/s2d-runs.json` 并在本 log 中登记（v1：run_id=20260311-1，ok=false）
 
+### P2（drill/verify：C2 实装 & 演练）
+
+- [ ] `P2-C2-S1`：为 `chronicle_events_to_entries` 补齐最小可用 backfill smoke / correctness drill 逻辑（至少一条 happy path 在 devtest 环境下 `ok=true`）
+- [ ] `P2-C2-S2`：在 devtest 环境运行 C2 版本的 labs/runner，并将新的 run_id 与 Evidence 记账到 `_snapshot/auto` 与 `artifacts/s2d-runs.json` 以及本 log 的 Evidence 区
+
 ### P3（可选：hard gate 挂载）
 
 - [x] `P3-C1-S1`：在 `SUITE_CATALOG` 中新增 optional/experimental suite 对应第二条投影 skeleton
-- [ ] `P3-C1-S2`：在 CI 中观测该 suite 的行为，并按需在 S2D-2A/3A 中记录相关 Evidence
+- [x] `P3-C1-S2`：在 CI 中观测该 suite 的行为，并按需在 S2D-2A/3A 中记录相关 Evidence
+
+### P3（adoption & upgrade：C2/C3）
+
+- [ ] `P3-C2-S1`：在 CI 的 `s2d-hard-gate` workflow 中持续观测 S2D-1B suite 的 C2 行为（仍 optional），并在本 log / S2D-3A 中补充长期 Evidence 与必要的 warning/info 约定
+- [ ] `P3-C3-S1`：在 `chronicle_events_to_entries` 表现稳定后，将其从 legacy 升级为 platformized，并将本 suite 升级为 required（含 suite_id / SUITE_CATALOG / coverage diff 预期的更新），完成从“legacy skeleton”到“正式 platformized projection onboarding”的闭环
 
 ## Evidence（预留）
 
@@ -185,7 +208,7 @@
 
 ### P3-C1-S1（second projection skeleton wired into hard gate｜2026-03-11）
 
-- headSha：`TBD（待首个包含该改动的 CI commit 推送后补充）`
+- headSha：`c51f51573e9388539575a700041bb66dc6c8eedb`
 - suite_id：`s2d-1b-second-onboarding-skeleton`
 - suite_catalog：
   - `scripts/s2d_hard_gate.py.SUITE_CATALOG["s2d-1b-second-onboarding-skeleton"] = {log_id="S2D-1B", required=False}`
@@ -197,10 +220,28 @@
   - 2026-03-11 在本地使用 `scripts/s2d_hard_gate.py --database-url <devtest> --suite s2d-1a-sample-onboarding --suite s2d-1b-second-onboarding-skeleton` 进行试跑：
     - S2D-1A 套餐保持 green；
     - S2D-1B skeleton 套餐以 `ok=false` 结束，但由于其在 SUITE_CATALOG 中 `required=False`，整体 `overall_ok` 仍由 S2D-1A 的结果决定；
-  - CI workflow `.github/workflows/s2d-hard-gate.yml` 已更新为在 `Run S2D hard gate` 步骤中同时传入 `--suite s2d-1a-sample-onboarding --suite s2d-1b-second-onboarding-skeleton`，首轮实际 CI run 的 headSha / run_id 待后续补充到本 log 与 S2D-3A log 中。
+  - CI workflow `.github/workflows/s2d-hard-gate.yml` 已更新为在 `Run S2D hard gate` 步骤中同时传入 `--suite s2d-1a-sample-onboarding --suite s2d-1b-second-onboarding-skeleton`，具体 CI 行为见下方 `P3-C1-S2` 记录。
+
+### P3-C1-S2（second projection skeleton suite on CI hard gate｜2026-03-11）
+
+- headSha：`c51f51573e9388539575a700041bb66dc6c8eedb`
+- workflow：`.github/workflows/s2d-hard-gate.yml`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22936588614`
+- suites：
+  - required：`s2d-1a-sample-onboarding`（S2D-1A sample projection onboarding 套餐）
+  - optional：`s2d-1b-second-onboarding-skeleton`（本 log 对应的 legacy projection skeleton 套餐）
+- 期望（expected）：
+  - CI 中的 `s2d-hard-gate` workflow 在 devtest DB 上同时拉起 S2D-1A sample 与 S2D-1B skeleton 两个 suite；
+  - 当 S2D-1A `ok=true` 且所有 required suites 通过时，即便 S2D-1B skeleton 仍为 `ok=false`，整体 `hard_gate` job 依然以 Success 结束；
+  - 本次 run 结束后，`artifacts/s2d-runs.json` 中存在一条新的 `log_id="S2D-1B"` 记录，对应 CI 环境下的 skeleton onboarding 套餐 run，用于长期观测该 legacy projection 的 platformization 进度。
+- 观测（observed）：
+  - 2026-03-11 由分支 `S2D-projection-onboarding-hard-gates` 推送 commit `c51f5157...` 触发的 `s2d-hard-gate` workflow（Run id=`22936588614`）以 Success 结束：
+    - workflow 日志显示 `Run S2D hard gate (S2D-1A sample + S2D-1B skeleton)` 步骤成功执行，`hard_gate` job 退出码为 0；
+    - `artifacts/s2d-runs.json` 中追加了新的 `S2D-1B` 记录，`ok=false` 且 scenarios 来自 CI 环境下的 skeleton backfill/harness labs，符合“optional/known red skeleton 不 gate CI”的 v1 约定；
+    - coverage diff / soft gate 步骤继续作为只读 guardrail 存在，不改变本次 run 的退出码。
 
 ## Recent changes（for traceability，可选）
 
 - 2026-03-10：scaffold S2D-1B log，定义 second projection onboarding skeleton 的 contract 与执行计划（基于 S2D-1A 的 sample projection 模板）。
 - 2026-03-11：完成首轮 S2D-1B skeleton drills 与 onboarding package run（run_id=20260311-1，known red），并将 Evidence 记账到本 log 与 `artifacts/s2d-runs.json`。
-- 2026-03-11：在 `scripts/s2d_hard_gate.py` 中将 `s2d-1b-second-onboarding-skeleton` 作为 optional suite 纳入 `SUITE_CATALOG`，并更新 CI workflow `s2d-hard-gate.yml` 使其在 `Run S2D hard gate` 步骤中同时拉起 S2D-1A sample 与 S2D-1B skeleton 套餐（首个包含该改动的 CI run 待观测并在后续补充 headSha / run 记录）。
+- 2026-03-11：在 `scripts/s2d_hard_gate.py` 中将 `s2d-1b-second-onboarding-skeleton` 作为 optional suite 纳入 `SUITE_CATALOG`，并更新 CI workflow `s2d-hard-gate.yml` 使其在 `Run S2D hard gate` 步骤中同时拉起 S2D-1A sample 与 S2D-1B skeleton 套餐；同日首个包含该改动的 CI run（Run id=`22936588614`，headSha=`c51f5157...`）成功通过，证据已在本 log 的 `P3-C1-S1/S2` 与 S2D-3A log 中补齐。

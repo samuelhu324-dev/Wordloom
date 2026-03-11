@@ -243,8 +243,25 @@
   - `artifacts/s2d-coverage-diff-ci-22901341898.json` 中：`suggested_suite_catalog` 仍然是 `required=true`，而 `current_suite_catalog` 中该 suite 为 `required=false`，`has_diff=true` 且 `mismatched_entries` 字段记录了两者差异；
   - 根据 CI 日志，soft gate 步骤读取该 diff JSON 后打印出 `[S2D-2A][warning] mismatched_entries_suite_ids=['s2d-1a-sample-onboarding']`，但 job 最终状态依然为 Success，验证了在存在 mismatch 时 soft gate 行为符合“只 warning、不 gate”的 v1 设计。
 
+### P3-C1-S4（CI run with optional S2D-1B skeleton suite｜2026-03-11）
+
+- headSha：`c51f51573e9388539575a700041bb66dc6c8eedb`
+- workflow：`.github/workflows/s2d-hard-gate.yml`
+- CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22936588614`
+- suites：
+  - required：`s2d-1a-sample-onboarding`（S2D-1A sample projection onboarding 套餐）
+  - optional：`s2d-1b-second-onboarding-skeleton`（S2D-1B legacy projection skeleton 套餐）
+- 期望（expected）：
+  - 在 CI 中验证：当 only required suites（当前仅 S2D-1A）全部 `ok=true` 时，即便 optional skeleton suite `ok=false`，`hard_gate` job 仍然以 Success 结束；
+  - `artifacts/s2d-runs.json` 中能够看到由 CI 环境生成的 `log_id="S2D-1B"` 记录，为后续升级该 legacy projection 的 skeleton → real onboarding 提供长期观测样本。
+- 观测（observed）：
+  - 2026-03-11 由分支 `S2D-projection-onboarding-hard-gates` 推送 commit `c51f5157...` 触发的 `s2d-hard-gate` workflow（Run id=`22936588614`）成功完成：
+    - `Run S2D hard gate (S2D-1A sample + S2D-1B skeleton)` 步骤退出码为 0，CI run 整体为 Success；
+    - diff / soft gate 步骤照常执行并输出结构化 info/warning 日志，但不改变退出码；
+    - 下载 `s2d-hard-gate-22936588614-*` CI artifacts 可见新的 `S2D-1B` run 记录以及对应 `_snapshot/auto` 目录，证明 optional skeleton suite 已在 CI 中按预期运行且不会 gate PR。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-09：scaffold S2D-3A log，定义 S2D hard gate entrypoint & CI wiring 的 contract/plan，等待后续 P1/P2/P3 实现。
 - 2026-03-10：在 P3-C1-S3 中补充与 S2D-2A coverage/diff helper 的集成计划，为后续在 CI 中收紧 SUITE_CATALOG required 集提供 guardrail 入口。
-- 2026-03-11：在 `scripts/s2d_hard_gate.py` 中新增 `s2d-1b-second-onboarding-skeleton` optional suite，并更新 CI workflow `s2d-hard-gate.yml` 的 `Run S2D hard gate` 步骤以同时拉起 S2D-1A sample onboarding 与 S2D-1B skeleton onboarding（首个包含该改动的 CI run 尚未记录，待后续在本 log 与 S2D-1B log 中补充 headSha / run Evidence）。
+- 2026-03-11：在 `scripts/s2d_hard_gate.py` 中新增 `s2d-1b-second-onboarding-skeleton` optional suite，并更新 CI workflow `s2d-hard-gate.yml` 的 `Run S2D hard gate` 步骤以同时拉起 S2D-1A sample onboarding 与 S2D-1B skeleton onboarding；同日首个包含该改动的 CI run（Run id=`22936588614`，headSha=`c51f5157...`）已记录在本 log 的 `P3-C1-S4` 与 S2D-1B log 中。
