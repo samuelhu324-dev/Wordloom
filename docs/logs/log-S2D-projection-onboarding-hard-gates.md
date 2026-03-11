@@ -22,7 +22,7 @@
   **phase_log_4**: `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`
   **phase_log_5**: `docs/logs/log-S2D-1C-projection-onboarding-skeleton-third-sample.md`
 **created**: `2026-03-08`
-**updated**: `2026-03-10`
+**updated**: `2026-03-11`
 
 ---
 
@@ -139,6 +139,19 @@
   - artifacts：`artifacts/s2d-coverage-20260310-001.json`
   - 说明：在 devtest 环境运行 coverage drill，基于 `compute_coverage_snapshot()` 生成首个 onboarding coverage JSON 快照，枚举出 1 条 platformized projection（`chronicle_daily_stats`）与 2 条 legacy 投影，详细 Evidence 见 `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md`。
 
+- `2026-03-11` / Phase 1C（S2D-1C optional suite：devtest → CI）
+  - headSha：`f34585ce1a8a9dfeb40bbca9c18b3b5fb2a0d5c2`
+  - log_id/phase/cycle/step：`S2D-1C / P3 / C1 / S2`
+  - suite_id：`s2d-1c-third-onboarding-minimal-real`（`required=false`）
+  - devtest hard gate run：
+    - runner：`scripts/s2d_hard_gate.py`
+    - 参数：`--database-url postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test --suite s2d-1c-third-onboarding-minimal-real`
+    - 概要：在 devtest DB 下通过 hard gate 调用 S2D-1C onboarding runner，backfill/harness 两个 minimal real drills 均 `ok=true && exit_code=0`，`artifacts/s2d-runs.json` 中追加一条 `log_id="S2D-1C"` 的 green 记录，`suite.required=false`，`overall_ok=true`；详细 Evidence 见 `docs/logs/log-S2D-1C-projection-onboarding-skeleton-third-sample.md`。
+  - CI hard gate run（optional suite observer）：
+    - CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22955152198`
+    - job（s2d-hard-gate）：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22955152198/job/66629768993`
+    - 说明：在 `s2d-hard-gate` workflow 中将 S2D-1C 以 optional suite（`required=false`）形式挂入 `SUITE_CATALOG` 后，CI 首次完整运行包含 S2D-1C 的 hard gate，S2D-1A/S2D-1B required 套餐与 S2D-1C optional 套餐全部 `ok=true`，overall hard gate 仍以 required suites 为准但从本次开始持续记录 S2D-1C 的 Evidence。
+
 ## Current Status（进展摘要）
 
 - S2C 已经提供 spec/registry/harness/writer/rebuild/backfill/drills 模板以及 Search harness migration，具备 Route A 的平台化前置条件，但缺少“新增 projection 必须按模板 & 有 CI gate”的约束层。
@@ -149,6 +162,7 @@
    - skeleton 阶段在 devtest 环境完成 known-red drills 和 onboarding package run，并以 optional suite 形式接入 S2D hard gate/CI（CI run `22936588614`）；
    - C2 阶段补齐 `chronicle_events_to_entries` 的最小真实 backfill/harness labs 与 runner，完成 devtest green run（run_id=`20260311-125958`）以及启用 C2 逻辑后的多次 CI green hard gate run（例如 CI run `22937728894`、`22938862615`），在一段时间内以 optional/observer 身份稳定随 S2D-1A 一起运行；
    - P3-C3 阶段按 S2D-1B/S2D-3A log 中的设计路径，将该 projection 从“legacy skeleton + C2 optional”升级为“platformized + required”：`scripts/s2d_hard_gate.SUITE_CATALOG['s2d-1b-second-onboarding-skeleton'].required` 由 `False` 调整为 `True`，在 devtest 本地 hard gate（multi-required suites 全绿）与 CI `s2d-hard-gate` workflow 的首轮 required 语义 run（CI run `22940030372`，PR `#208`）中均获得 green，完成从 legacy skeleton → C2 → required 的闭环；更多细节与 Evidence 见 `docs/logs/log-S2D-1B-projection-onboarding-skeleton-second-sample.md` / `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`。
+ - Phase 1C（S2D-1C）目前已完成 P0-P3-C1 v1：在 `search_index_to_elastic` 这条 legacy projection 上完成 skeleton → C2 minimal real drills（DB-only backfill smoke + unified outbox harness drill）并在 devtest 环境获得多轮 green Evidence（包括 runner 级别的 `ok=true` 记录），随后通过 `scripts/s2d_hard_gate.SUITE_CATALOG` 将该套餐以 optional suite（`suite_id='s2d-1c-third-onboarding-minimal-real'，required=false`）形式挂载到 S2D hard gate，本地 hard gate 与 `s2d-hard-gate` CI workflow 已开始在每次运行中一起观测该 optional suite 的行为而不改变 overall 退出码；后续是否将其升级为 required 将视 projection 完全 platformized 的进度与业务优先级再在 S2D-1C/S2D-3A log 中决策。
 
 ## Notes（落地原则）
 
