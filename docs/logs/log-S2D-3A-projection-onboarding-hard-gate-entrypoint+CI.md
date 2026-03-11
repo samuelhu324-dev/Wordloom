@@ -129,6 +129,11 @@
 - P3-C1-S2：为 legacy projection 设计合理的 skip/waiver 机制（例如基于标签或配置），并约定升级路径；v1 中通过环境变量 `S2D_HARD_GATE_SKIP_SUITES`（跳过指定 suite）与 `S2D_HARD_GATE_WAIVE_SUITES`（对指定 suite 的失败做 waiver，不阻塞 CI）实现，可按 suite id（如 `s2d-1a-sample-onboarding`）以逗号分隔配置。
  - P3-C1-S3：对接 S2D-2A 的 coverage 结果与 SUITE_CATALOG diff helper，在 CI 或本地 runbook 中提供只读校验入口：从 coverage JSON 生成 `suggested_suite_catalog`，与当前 `SUITE_CATALOG` 做 diff，提示“哪些 suite 还未纳入 hard gate 或配置不一致”，作为收紧 required 集的前置 guardrail（实现细节见 `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md` 中 P3-C1-S1/S2 约定）。
  - P3-C2-S1：在现有 diff guardrail 基础上，按 S2D-2A 中的 contract 明确哪些 diff 类型在 CI 中仅作为 warning（例如单纯的 `extra_in_hard_gate`），哪些在后续 cycle 中会被提升为 hard fail（例如关键 projection 出现在 `missing_in_hard_gate` 或 `mismatched_entries` 中），并在本 log 中记录对应的升级条件与例外策略。
+ - P3-C3-S1（second projection upgrade：从 optional skeleton → platformized + required）：当 S2D-1B C2 行为在 devtest/CI 环境中表现足够稳定时，按以下路径将 `chronicle_events_to_entries` 对应的 onboarding suite 升级为 required：
+   - 与 S2D-2A coverage log 协调，将该 projection 在 coverage JSON 中标记为 `platformized`，并在 `suggested_suite_catalog` 中设置其 suite 为 `required=true`；
+   - 在 `scripts/s2d_hard_gate.SUITE_CATALOG` 中将 `s2d-1b-second-onboarding-skeleton`（或后续调整后的正式 suite id）从 `required=False` 升级为 `required=True`，并在 S2D-1B log 中记录对应 commit/headSha；
+   - 通过一轮本地 + CI hard gate run 验证 required 语义（仅 S2D-1B 失败时整个 job fail），同时确认 coverage diff/soft gate 在该升级后不再报告关于该 suite 的 `missing_in_hard_gate` 或 `mismatched_entries`；
+   - 为 S2D-1B 约定有限的 waiver/exception 机制（复用 `S2D_HARD_GATE_WAIVE_SUITES`），并在 S2D spine 中记录何种场景可以临时豁免该 required suite 的失败、以及恢复正常 required 行为的步骤。
 
 ## Execution Checklist（unchecked）
 
@@ -259,6 +264,26 @@
     - `Run S2D hard gate (S2D-1A sample + S2D-1B skeleton)` 步骤退出码为 0，CI run 整体为 Success；
     - diff / soft gate 步骤照常执行并输出结构化 info/warning 日志，但不改变退出码；
     - 下载 `s2d-hard-gate-22936588614-*` CI artifacts 可见新的 `S2D-1B` run 记录以及对应 `_snapshot/auto` 目录，证明 optional skeleton suite 已在 CI 中按预期运行且不会 gate PR。
+
+### P3-C2-Run1（CI hard gate run with C2 S2D-1B optional suite｜2026-03-11）
+
+- 背景：
+  - 在 S2D-1B P2-C2 中，我们已将 `chronicle_events_to_entries` 的 labs/runner 从 skeleton 升级为“最小真实 onboarding”，并在本地 devtest DB 环境中完成 green run（`run_id=20260311-125958`）；
+  - 本阶段 P3-C2 希望在 CI 的 `s2d-hard-gate` workflow 中长期观测这套 C2 逻辑的行为，同时保持 S2D-1B suite 仍为 optional、不 gate CI。
+- 本次 CI run：
+  - headSha：`03ac1b355db8cff074a249fb4a3ee06ffd433225`
+  - workflow：`.github/workflows/s2d-hard-gate.yml`
+  - CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22937728894`
+  - suites（按 SUITE_CATALOG 角色）：
+    - required：`s2d-1a-sample-onboarding`（S2D-1A sample projection onboarding 套餐）
+    - optional：`s2d-1b-second-onboarding-skeleton`（S2D-1B C2 版 second projection onboarding 套餐，仍保留 optional 标记）
+- 观测点：
+  - 本次 CI run 中，`hard_gate` job 正常完成（Success），说明在启用 C2 逻辑后的 CI 环境下：
+    - required 的 S2D-1A suite 按预期保持 green，继续决定 `final_exit_code=0`；
+    - optional 的 S2D-1B C2 suite 以“non-gating observer”的身份被拉起，不会破坏 hard gate 的整体成功语义；
+  - `s2d-hard-gate-22937728894-1` artifact 中包含了与本地相同结构的 `artifacts/s2d-runs.json` 与 coverage 快照，可作为后续 P3-C2/后续 cycles 分析 S2D-1B 运行状态与覆盖率行为的起点；
+  - 对应的 per-log 记账已在 S2D-1B 的 `P3-C2-S1` Evidence 中补齐，本节则从 S2D-3A 视角记录：
+    - “C2 逻辑上架 CI hard gate，且在 required/optional 语义下整体 job 仍为 Success”的首个样本。
 
 ## Recent changes（for traceability，可选）
 
