@@ -36,6 +36,9 @@ S2D_RUNS_PATH = Path("artifacts/s2d-runs.json")
 S2D_1A_LOG_ID = "S2D-1A"
 S2D_1A_SUITE_ID = "s2d-1a-sample-onboarding"
 
+S2D_1B_LOG_ID = "S2D-1B"
+S2D_1B_SUITE_ID = "s2d-1b-second-onboarding-skeleton"
+
 HARD_GATE_SKIP_ENV = "S2D_HARD_GATE_SKIP_SUITES"
 HARD_GATE_WAIVE_ENV = "S2D_HARD_GATE_WAIVE_SUITES"
 
@@ -43,6 +46,10 @@ SUITE_CATALOG: dict[str, dict[str, Any]] = {
     S2D_1A_SUITE_ID: {
         "log_id": S2D_1A_LOG_ID,
         "required": True,
+    },
+    S2D_1B_SUITE_ID: {
+        "log_id": S2D_1B_LOG_ID,
+        "required": False,
     },
 }
 
@@ -194,6 +201,61 @@ def _run_s2d_1a_suite(
     )
 
 
+def _run_s2d_1b_suite(
+    *,
+    database_url: str,
+    artifacts_path: Path,
+    required: bool,
+    waive_failure: bool,
+) -> SuiteResult:
+    run_id = _default_run_id()
+
+    cmd = [
+        sys.executable,
+        "scripts/projections/s2d_1b_p2c1s2_second_onboarding_skeleton.py",
+        "--database-url",
+        database_url,
+        "--run-id",
+        run_id,
+    ]
+
+    print(f"[S2D-3A] running suite {S2D_1B_SUITE_ID}: script=scripts/projections/s2d_1b_p2c1s2_second_onboarding_skeleton.py run_id={run_id}")
+    completed = subprocess.run(cmd, text=True)
+    rc = int(completed.returncode)
+
+    records = _load_records(artifacts_path)
+    record = _find_record(records, log_id=S2D_1B_LOG_ID, run_id=run_id)
+
+    if record is None:
+        ok = False
+        reason = "no matching S2D-1B record found in artifacts/s2d-runs.json"
+    else:
+        ok = bool(record.get("ok")) and rc == 0
+        reason = "ok" if ok else "suite reported failure (ok=false or non-zero exit code)"
+
+    waived = False
+    if not ok and waive_failure:
+        waived = True
+        reason = f"suite failed but waived via {HARD_GATE_WAIVE_ENV}"
+
+    print(
+        f"[S2D-3A] suite {S2D_1B_SUITE_ID} finished: rc={rc} ok={ok} "
+        f"record_found={record is not None} run_id={run_id}"
+    )
+
+    return SuiteResult(
+        suite_id=S2D_1B_SUITE_ID,
+        log_id=S2D_1B_LOG_ID,
+        run_id=run_id,
+        ok=ok,
+        exit_code=rc,
+        reason=reason,
+        record=record,
+        required=required,
+        waived=waived,
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
 
@@ -241,12 +303,28 @@ def main(argv: list[str] | None = None) -> int:
             )
         else:
             waive_failure = suite_id in waive_suites
-            result = _run_s2d_1a_suite(
-                database_url=database_url,
-                artifacts_path=artifacts_path,
-                required=required,
-                waive_failure=waive_failure,
-            )
+
+            if suite_id == S2D_1A_SUITE_ID:
+                result = _run_s2d_1a_suite(
+                    database_url=database_url,
+                    artifacts_path=artifacts_path,
+                    required=required,
+                    waive_failure=waive_failure,
+                )
+            elif suite_id == S2D_1B_SUITE_ID:
+                result = _run_s2d_1b_suite(
+                    database_url=database_url,
+                    artifacts_path=artifacts_path,
+                    required=required,
+                    waive_failure=waive_failure,
+                )
+            else:
+                # Defensive: unknown-but-catalogued suite id without a bound runner.
+                print(
+                    f"[S2D-3A] error: no runner bound for suite id: {suite_id}",
+                    file=sys.stderr,
+                )
+                return 2
 
         results.append(result)
 

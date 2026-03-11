@@ -247,3 +247,4 @@
 
 - 2026-03-09：scaffold S2D-3A log，定义 S2D hard gate entrypoint & CI wiring 的 contract/plan，等待后续 P1/P2/P3 实现。
 - 2026-03-10：在 P3-C1-S3 中补充与 S2D-2A coverage/diff helper 的集成计划，为后续在 CI 中收紧 SUITE_CATALOG required 集提供 guardrail 入口。
+- 2026-03-11：在 `scripts/s2d_hard_gate.py` 中新增 `s2d-1b-second-onboarding-skeleton` optional suite，并更新 CI workflow `s2d-hard-gate.yml` 的 `Run S2D hard gate` 步骤以同时拉起 S2D-1A sample onboarding 与 S2D-1B skeleton onboarding（首个包含该改动的 CI run 尚未记录，待后续在本 log 与 S2D-1B log 中补充 headSha / run Evidence）。

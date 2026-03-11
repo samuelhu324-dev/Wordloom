@@ -83,12 +83,15 @@ jobs:
           set -euo pipefail
           python -m alembic -c alembic.ini upgrade head
 
-      - name: Run S2D hard gate (S2D-1A sample onboarding)
+      - name: Run S2D hard gate (S2D-1A sample + S2D-1B skeleton)
         env:
           DATABASE_URL: postgresql+psycopg://wordloom:wordloom@127.0.0.1:5435/wordloom_test
         run: |
           set -euo pipefail
-          python scripts/s2d_hard_gate.py --database-url "$DATABASE_URL"
+          python scripts/s2d_hard_gate.py \
+            --database-url "$DATABASE_URL" \
+            --suite s2d-1a-sample-onboarding \
+            --suite s2d-1b-second-onboarding-skeleton
 
       - name: Generate S2D coverage snapshot for diff check
         run: |
@@ -147,6 +150,8 @@ jobs:
           path: |
             docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_backfill_smoke
             docs/labs/_snapshot/auto/s2d1a_chronicle_daily_stats_harness_drill
+            docs/labs/_snapshot/auto/s2d1b_chronicle_events_to_entries_backfill_smoke
+            docs/labs/_snapshot/auto/s2d1b_chronicle_events_to_entries_harness_drill
             artifacts/s2d-runs.json
             artifacts/s2d-coverage-ci-${{ github.run_id }}.json
             artifacts/s2d-coverage-diff-ci-${{ github.run_id }}.json
