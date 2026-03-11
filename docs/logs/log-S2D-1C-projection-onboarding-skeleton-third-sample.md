@@ -146,7 +146,7 @@
 ### P3（可选：hard gate 挂载）
 
 - P3-C1-S1：视实际需要，在 `scripts/s2d_hard_gate.SUITE_CATALOG` 中为 S2D-1C 目标投影新增 optional/experimental suite，suite_id 命名与 S2D-1B 对齐；（v1 已落地为 `s2d-1c-third-onboarding-minimal-real`，`required=false`）
-- P3-C1-S2：在 CI 的 `s2d-hard-gate` workflow 中观察该 suite 的行为，视稳定性与业务优先级决定是否在后续 cycle 推进 C2/required 升级。
+- P3-C1-S2：在 CI 的 `s2d-hard-gate` workflow 中观察该 suite 的行为，视稳定性与业务优先级决定是否在后续 cycle 推进 C2/required 升级。（v1 已在 CI run `22955152198` / job `66629768993` 上完成首轮 green 观测，仅作为 optional observer，不改变 overall 退出码）
 
 ## Execution Checklist（unchecked）
 
@@ -171,7 +171,7 @@
 ### P3（可选：hard gate 挂载）
 
 - [x] `P3-C1-S1`：如有需要，将 S2D-1C 套餐以 optional suite 形式挂到 S2D hard gate（v1：suite_id=`s2d-1c-third-onboarding-minimal-real`，`required=false`）
-- [ ] `P3-C1-S2`：在 CI 中观测该 optional suite 的行为并在本 log 中补充 Evidence
+- [x] `P3-C1-S2`：在 CI 中观测该 optional suite 的行为并在本 log 中补充 Evidence（v1：CI run=`22955152198`，job=`66629768993`，S2D-1A/1B required 与 S2D-1C optional 全部 `ok=true`，overall_ok 仍仅按 required suites 计算）
 
 ## Evidence（预留）
 
@@ -223,6 +223,19 @@
       - backfill smoke（minimal real）：`docs/labs/_snapshot/auto/s2d1c_search_index_to_elastic_backfill_smoke/20260311-193445`
       - harness drill（minimal real）：`docs/labs/_snapshot/auto/s2d1c_search_index_to_elastic_harness_drill/20260311-193445`
     - summary：`artifacts/s2d-runs.json` 中新增一条记录（`log_id="S2D-1C"`，`phase="P2"`，`cycle="C2"`，`step="S2"`，`run_id="20260311-193445"`，`ok=true`，两个 scenario 均 `exit_code=0 && ok=true`）。
+
+### P3-C1-S2（optional suite CI observer｜2026-03-11）
+
+- 日期：`2026-03-11`
+- headSha：`0f6fbcad0d2b3c9f5c7f3a0b0b0e7f4d7d16b3a2`
+- log_id/phase/cycle/step：`S2D-1C / P3 / C1 / S2`
+- suite_id：`s2d-1c-third-onboarding-minimal-real`（`required=false`）
+- CI：
+  - workflow run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22955152198`
+  - job（s2d-hard-gate）：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22955152198/job/66629768993`
+- 观测（observed）：
+  - 在 `s2d-hard-gate` workflow 中，S2D-1A/S2D-1B 作为 required suites，S2D-1C 作为 optional suite 一起运行；
+  - 本次 run 中三个 suites 均 `ok=true`，`overall_ok=true` 仍仅由 required suites 决定，S2D-1C 处于“observer”状态，为后续是否升级为 required 提供稳定性样本。
 
 ## Recent changes（for traceability，可选）
 
