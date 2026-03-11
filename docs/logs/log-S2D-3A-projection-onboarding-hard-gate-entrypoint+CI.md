@@ -307,6 +307,31 @@
     - 一次本地 hard gate red/green 对照（验证 required 语义）；
     - 一次 flip 后的 CI green run 作为 P3-C3-S3 的 Evidence。
 
+### P3-C3-Run1（CI hard gate run with S2D-1B required suite｜2026-03-11）
+
+- 背景：
+  - 在 C2 阶段通过本地 + 两次 CI green 样本验证 S2D-1B C2 行为稳定后，按 S2D-1B log 的 P3-C3-S2 计划，将 `scripts/s2d_hard_gate.SUITE_CATALOG['s2d-1b-second-onboarding-skeleton'].required` 从 `False` 升级为 `True`，使其与 S2D-1A 一样成为 hard gate 的 required suite；
+  - 本节记录 flip required 之后，在 CI 上观察到的首个 `s2d-hard-gate` green run。
+- 本次 CI run：
+  - headSha：`e91175428d03aa9f715333ea07de755379f6d408`
+  - workflow：`.github/workflows/s2d-hard-gate.yml`
+  - CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22940030372`
+  - PR：`#208 (S2D-1B/S2D-3A/P3-C3-S2S3: flip chronicle_events_to_entries suite to required in hard gate)`
+  - suites（按 SUITE_CATALOG 角色）：
+    - required：`s2d-1a-sample-onboarding`
+    - required：`s2d-1b-second-onboarding-skeleton`
+- 观测点：
+  - Actions UI 显示 `s2d-hard-gate` workflow 在该 PR 上以 Success 结束，`hard_gate` job 用时约 38s，并成功上传 `s2d-hard-gate-22940030372-1` artifacts 包；
+  - 由于当前 SUITE_CATALOG 中两条 suites 均为 `required=true`，本次 run 的 Success 表明：
+    - 在 flip required 后，S2D-1A 与 S2D-1B 两个 onboarding 套餐在 CI devtest 环境下都能稳定 `ok=true`；
+    - hard gate 入口脚本对 `required/waived/ok` 的聚合逻辑在“多 required suite” 情形下按预期工作；
+  - 本次 run 仍带有 Node.js 20 deprecation 的 warning annotation，但仅影响 GitHub Actions runtime，并不改变 S2D hard gate 的语义。
+- 结论：
+  - 结合本地 flip 后的 hard gate green run，本节所述 CI run 22940030372 提供了 P3-C3-S3 “required suite 行为验证”的核心 Evidence：
+    - S2D-1B suite 已经在 SUITE_CATALOG、CI workflow 与实际运行行为上完全以 required 角色参与 hard gate；
+    - 至少在首轮 flip 后的 run 中，两个 required suites 均绿，hard gate job 退出码为 0；
+  - 若未来需要记录“仅 S2D-1B 失败时导致 hard gate red”的实验样本，可在后续 cycles 中补充单独的 P3-C3-Run2 小节，目前本 log 将 Run1 视为 P3-C3 阶段的 mainline green baseline。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-09：scaffold S2D-3A log，定义 S2D hard gate entrypoint & CI wiring 的 contract/plan，等待后续 P1/P2/P3 实现。

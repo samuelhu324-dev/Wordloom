@@ -75,16 +75,35 @@
 
 ### P0-C1-S1（Candidate selection & basic contract）
 
-- 基于最新的 S2D-2A onboarding coverage JSON 与业务优先级，在 `legacy` 投影列表中选出 1 条作为 S2D-1C 目标投影；
-- 在本 log 中记录该投影的：projection_name、owner/team、主要依赖 SoT/上游事件源，以及与 S2D-1A/S2D-1B 在 scope_keys/数据量/风险级别上的差异；
-- 约定本投影在完全 platformize 之前的最小 skeleton 套餐（backfill smoke + correctness drill + onboarding package）的命名与字段口径。
+- 基于 S2D-2A onboarding coverage 首次快照 `artifacts/s2d-coverage-20260310-001.json`，当前 catalog 中共有 3 条投影，其中：
+  - `chronicle_daily_stats`：`onboarding_status=platformized, onboarding_phase=S2D-1A`；
+  - `chronicle_events_to_entries`：`onboarding_status=legacy`（已在 S2D-1B 中作为第二条 legacy projection 处理）；
+  - `search_index_to_elastic`：`onboarding_status=legacy, onboarding_phase=none`；
+- 为避免与 S2D-1B 重复，本 phase 选择 `search_index_to_elastic` 作为 S2D-1C 的目标 legacy projection：
+  - 该 projection 负责将 search index 相关事件从统一 outbox 写入 Elastic（详见 S2B runbook 与现有 outbox 指标，如 `projection="search_index_to_elastic"` 的 processed/lag 系列）；
+  - 目前运行路径仍然停留在 legacy worker + table merge 模式，尚未按 S2D onboarding contract 建立统一的 labs/runner 套餐；
+- 在本 log 中将目标投影记为：
+  - `projection_name=search_index_to_elastic`；
+  - `onboarding_status=legacy`（来自 S2D-2A coverage）；
+  - `owner_team` 暂记为 `TBD`（待与 search/infra 责任人确认后再在 catalog 中补齐），本 log 先聚焦技术侧 skeleton；
+- 约定本投影在完全 platformize 之前的最小 skeleton 套餐为：
+  - 一条 backfill smoke lab（最小范围写入/重建有限数量的 index 文档）；
+  - 一条 correctness/harness drill（验证 outbox → Elastic 的端到端路径，初期可以只检查 events 计数/基础字段）；
+  - 一条 onboarding package runner，将上述 labs 汇总为 `log_id="S2D-1C"` 的单条 suite，写入 `artifacts/s2d-runs.json` 供 S2D-2A/3A/6A 消费。
 
 ### P0-C1-S2（Skeleton fields & scripts contract）
 
-- 为 S2D-1C 目标投影约定：
-  - labs 入口脚本路径与命名（`backend/scripts/labs/s2d1c_<projection>_backfill_smoke.py` 等），确保与现有 `s2d1a_*`/`s2d1b_*` 一致；
-  - onboarding runner 路径与命名（`scripts/projections/s2d_1c_p2c1s2_third_onboarding_skeleton.py` 等），输出一条 `log_id="S2D-1C"` 的 `artifacts/s2d-runs.json` 记录；
-  - Evidence JSON schema：至少包含 `log_id/phase/cycle/step/head_sha/run_id/database_url/ok/scenarios[]` 等字段，与 S2D-1A/S2D-1B 兼容。
+- 为 `search_index_to_elastic` 这一目标投影约定 S2D-1C skeleton 的命名与脚本入口：
+  - labs：
+    - `backend/scripts/labs/s2d1c_search_index_to_elastic_backfill_smoke.py`
+    - `backend/scripts/labs/s2d1c_search_index_to_elastic_harness_drill.py`
+    - 两个脚本均接受 `--database-url/--run-id/--outdir` 参数，输出 `_result.json`，并在 devtest 环境下仅操作测试数据或受控时间窗；
+  - onboarding runner：
+    - `scripts/projections/s2d_1c_p2c1s2_third_onboarding_skeleton.py`
+    - 负责按固定顺序调用上述两个 labs，并向 `artifacts/s2d-runs.json` 追加一条 `log_id="S2D-1C"` 的 summary 记录（`phase="P2"/cycle="C1"/step="S2"/run_id=<ts>`）；
+  - Evidence JSON schema：
+    - 复用 S2D-1A/S2D-1B 的结构：`log_id/phase/cycle/step/head_sha/run_id/database_url/ok/scenarios[]`，scenarios 中包含 `scenario_id/script/run_dir/ok/exit_code` 等字段；
+    - scenario_id 建议固定为：`s2d1c_search_index_to_elastic_backfill_smoke` 与 `s2d1c_search_index_to_elastic_harness_drill`，便于后续在 S6A-4A 侧聚合。
 
 ### P0-C1-S3（证据口径 contract｜v1）
 
@@ -128,9 +147,9 @@
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：基于 coverage/owner 选择 S2D-1C 目标 legacy projection 并在本 log 中记录基本信息与最小 skeleton 套餐 contract
-- [ ] `P0-C1-S2`：约定 labs/runner 命名与 Evidence JSON 字段口径
-- [ ] `P0-C1-S3`：补齐 evidence JSON 输入/输出/PASS-FAIL 字段 contract
+- [x] `P0-C1-S1`：基于 coverage/owner 选择 S2D-1C 目标 legacy projection 并在本 log 中记录基本信息与最小 skeleton 套餐 contract
+- [x] `P0-C1-S2`：约定 labs/runner 命名与 Evidence JSON 字段口径
+- [x] `P0-C1-S3`：补齐 evidence JSON 输入/输出/PASS-FAIL 字段 contract
 
 ### P1（实现：skeleton 落地）
 
