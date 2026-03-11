@@ -187,7 +187,7 @@
 ### P3（adoption & upgrade：C2/C3）
 
 - [x] `P3-C2-S1`：在 CI 的 `s2d-hard-gate` workflow 中持续观测 S2D-1B suite 的 C2 行为（仍 optional），并在本 log / S2D-3A 中补充长期 Evidence 与必要的 warning/info 约定（v1：记录 CI run=`22937728894` 的行为）
-- [ ] `P3-C3-S1`：在 `chronicle_events_to_entries` 表现稳定后，将其从 legacy 升级为 platformized，并将本 suite 升级为 required（含 suite_id / SUITE_CATALOG / coverage diff 预期的更新），完成从“legacy skeleton”到“正式 platformized projection onboarding”的闭环
+ - [x] `P3-C3-S1`：在 `chronicle_events_to_entries` 表现稳定后，将其从 legacy 升级为 platformized，并将本 suite 升级为 required（含 suite_id / SUITE_CATALOG / coverage diff 预期的更新），完成从“legacy skeleton”到“正式 platformized projection onboarding”的闭环
 
 ## Evidence（预留）
 
@@ -292,6 +292,32 @@
   - 从 workflow 配置与本地同日 hard gate dry run 可知，本次 CI 仍然通过 `--suite s2d-1a-sample-onboarding --suite s2d-1b-second-onboarding-skeleton` 调用了同一入口脚本，并在 devtest DB 上完成 required+optional 两个 suites 的执行；
   - 结合本地 devtest C2 run（`run_id=20260311-125958`，两个 S2D-1B labs `ok=true`）与本次 CI run 的整体 Success，可将其视为“C2 逻辑在 CI 上首轮 green 行为”的确认样本，后续 P3-C2 可继续追加更多 CI Evidence 作为长期观测；
   - 2026-03-11，后续由 PR `#207 (S2D-projection-onboarding-hard-gates)` 触发的 `s2d-hard-gate` workflow（Run id=`22938862615`）同样以 Success 结束，`hard_gate` job 用时约 51s，使用相同的 required+optional suite 配置并成功产出 `s2d-hard-gate-22938862615-1` artifacts，可视为 C2 行为在 CI 上的第二个稳定样本，为未来 P3-C3 升级 required 提供了额外信心。
+
+### P3-C3-S2/S3（flip suite to required + local/CI verification｜2026-03-11）
+
+- headSha：`e91175428d03aa9f715333ea07de755379f6d408`
+- SUITE_CATALOG 变更：
+  - `scripts/s2d_hard_gate.py.SUITE_CATALOG['s2d-1b-second-onboarding-skeleton'].required` 由 `False` 调整为 `True`，使 `chronicle_events_to_entries` onboarding 套餐与 S2D-1A 一样成为 hard gate 的 required suite；
+- 本地 hard gate 验证（required 语义 green 样本）：
+  - 在 devtest DB（`postgresql+psycopg://wordloom:wordloom@localhost:5435/wordloom_test`）下执行：
+    - `python scripts/s2d_hard_gat e.py --suite s2d-1a-sample-onboarding --suite s2d-1b-second-onboarding-skeleton`
+  - 观测：
+    - S2D-1A 与 S2D-1B 两个 required suites 各自拉起 labs/runner，`artifacts/s2d-runs.json` 中新增一条 `S2D-1A P3/C1/S1` 与一条 `S2D-1B P2/C1/S2` 记录，两个 `ok=true`；
+    - hard gate summary JSON 中 `overall_ok=true`，`suites` 下两条记录均显示 `required=true && ok=true && waived=false`，进程退出码为 0，验证了“当两个 required suites 均绿时 hard gate 仍以 Success 结束”的语义；
+- CI hard gate 验证（required 化后的首个 CI green 样本）：
+  - workflow：`.github/workflows/s2d-hard-gate.yml`
+  - CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22940030372`
+  - suites（按 SUITE_CATALOG 角色）：
+    - required：`s2d-1a-sample-onboarding`
+    - required：`s2d-1b-second-onboarding-skeleton`（本次 run 起已为 required）
+  - 观测：
+    - GitHub Actions UI 显示 `s2d-hard-gate` workflow 在 PR `#208 (S2D-1B/S2D-3A/P3-C3-S2S3: flip chronicle_events_to_entries suite to required in hard gate)` 上运行，`hard_gate` job 约 38s 完成并标记为 Success；
+    - artifacts 中包含 `s2d-hard-gate-22940030372-1` 包，可用于后续审计该次 run 的 S2D-1B 记录与 coverage 行为；
+  - 结论：
+    - 结合 C2 阶段的本地 + 两次 CI green 样本，本次 flip required 后的本地 hard gate green + CI green run 共同完成了 P3-C3-S2/S3 的验证闭环：
+      - SUITE_CATALOG 中 S2D-1B suite 已正式标记为 required；
+      - local/CI hard gate 在 “S2D-1A + S2D-1B 全绿” 的情况下仍稳定 Success，满足 platformized + required 的期望行为；
+    - 后续若需要“仅 S2D-1B fail 时 hard gate red”的样本，可再追加一笔短期实验（例如暂时让 S2D-1B 某个 lab 刻意返回 `ok=false`），当前本 log 暂以 green 语义闭环作为 P3-C3 的主验收标准。
 
 ## Recent changes（for traceability，可选）
 
