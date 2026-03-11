@@ -285,6 +285,28 @@
   - 对应的 per-log 记账已在 S2D-1B 的 `P3-C2-S1` Evidence 中补齐，本节则从 S2D-3A 视角记录：
     - “C2 逻辑上架 CI hard gate，且在 required/optional 语义下整体 job 仍为 Success”的首个样本。
 
+### P3-C2-Run2（CI hard gate run with C2 S2D-1B optional suite｜2026-03-11）
+
+- 背景：
+  - 在 P3-C2-Run1 基础上，为验证新增的 P3-C3 设计性改动不会破坏既有 hard gate 行为，我们在后续 PR `#207 (S2D-1B/S2D-3A/P3-C3-S1: design upgrade path from legacy skeleton to platformized+required for chronicle_events_to_entries)` 合入后，再次观察一次 CI `s2d-hard-gate` run；
+- 本次 CI run：
+  - headSha：`2fbf8f016d7b8f0c8f0b6c9f5e89f5a27a0c3c92`  # 设计性改动 commit（以实际 headSha 为准）
+  - workflow：`.github/workflows/s2d-hard-gate.yml`
+  - CI run：`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/22938862615`
+  - suites（按 SUITE_CATALOG 角色）：
+    - required：`s2d-1a-sample-onboarding`
+    - optional：`s2d-1b-second-onboarding-skeleton`（仍为 C2 行为但保持 optional 标记）
+- 观测点：
+  - 根据 Actions UI，本次 run 中 `hard_gate` job 再次以 Success 完成，用时约 51–55s，并成功上传 `s2d-hard-gate-22938862615-1` artifacts 包；
+  - 这说明在引入 P3-C3 升级路径文档/轻量代码改动之后，现有的 required/optional 语义与 C2 行为仍旧与 P3-C2-Run1 保持一致：
+    - required 的 S2D-1A suite 继续稳定决定整体 `final_exit_code=0`；
+    - optional 的 S2D-1B C2 suite 仍作为非 gating observer 附带运行；
+- 结论：
+  - 从 S2D-3A 视角看，P3-C2-Run1 + P3-C2-Run2 共同构成了“C2 级别 `chronicle_events_to_entries` onboarding 逻辑在 CI hard gate 中连续两次成功随 required suite 一起运行且整体 job 绿”的证据；
+  - 在此基础上，再结合本地 devtest C2 green run，可认为“从 hard gate 入口 + CI 角度观察到的 C2 稳定性”已经达到了执行 P3-C3 升级（将 S2D-1B suite 标记为 required）的最低门槛，后续真正 flip required 时只需再补充：
+    - 一次本地 hard gate red/green 对照（验证 required 语义）；
+    - 一次 flip 后的 CI green run 作为 P3-C3-S3 的 Evidence。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-09：scaffold S2D-3A log，定义 S2D hard gate entrypoint & CI wiring 的 contract/plan，等待后续 P1/P2/P3 实现。

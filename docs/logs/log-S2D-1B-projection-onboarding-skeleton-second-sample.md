@@ -290,7 +290,8 @@
 - 观测（observed）：
   - 2026-03-11，由 PR `#206 (S2D-projection-onboarding-hard-gates)` 触发的 `s2d-hard-gate` workflow（Run id=`22937728894`）以 Success 结束，`hard_gate` job 用时约 42s；
   - 从 workflow 配置与本地同日 hard gate dry run 可知，本次 CI 仍然通过 `--suite s2d-1a-sample-onboarding --suite s2d-1b-second-onboarding-skeleton` 调用了同一入口脚本，并在 devtest DB 上完成 required+optional 两个 suites 的执行；
-  - 结合本地 devtest C2 run（`run_id=20260311-125958`，两个 S2D-1B labs `ok=true`）与本次 CI run 的整体 Success，可将其视为“C2 逻辑在 CI 上首轮 green 行为”的确认样本，后续 P3-C2 可继续追加更多 CI Evidence 作为长期观测。
+  - 结合本地 devtest C2 run（`run_id=20260311-125958`，两个 S2D-1B labs `ok=true`）与本次 CI run 的整体 Success，可将其视为“C2 逻辑在 CI 上首轮 green 行为”的确认样本，后续 P3-C2 可继续追加更多 CI Evidence 作为长期观测；
+  - 2026-03-11，后续由 PR `#207 (S2D-projection-onboarding-hard-gates)` 触发的 `s2d-hard-gate` workflow（Run id=`22938862615`）同样以 Success 结束，`hard_gate` job 用时约 51s，使用相同的 required+optional suite 配置并成功产出 `s2d-hard-gate-22938862615-1` artifacts，可视为 C2 行为在 CI 上的第二个稳定样本，为未来 P3-C3 升级 required 提供了额外信心。
 
 ## Recent changes（for traceability，可选）
 
