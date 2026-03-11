@@ -20,6 +20,7 @@
   **phase_log_2**: `docs/logs/log-S2D-1B-projection-onboarding-skeleton-second-sample.md`
   **phase_log_3**: `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md`
   **phase_log_4**: `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`
+  **phase_log_5**: `docs/logs/log-S2D-1C-projection-onboarding-skeleton-third-sample.md`
 **created**: `2026-03-08`
 **updated**: `2026-03-10`
 
@@ -78,6 +79,8 @@
   - 详见：`docs/logs/log-S2D-1A-projection-onboarding-contract-and-sample.md`
 - `S2D-1B`（Phase 1B）：Second projection onboarding skeleton for legacy → platformized（为一条 legacy 投影搭建与 S2D-1A 同结构的 onboarding skeleton，占位即可）
   - 详见：`docs/logs/log-S2D-1B-projection-onboarding-skeleton-second-sample.md`
+ - `S2D-1C`（Phase 1C）：Third projection onboarding skeleton for legacy → platformized（为第三条 legacy projection 搭建与 S2D-1A/S2D-1B 同结构的 onboarding skeleton，并为后续批量迁移提供可复制模板）
+   - 详见：`docs/logs/log-S2D-1C-projection-onboarding-skeleton-third-sample.md`
 - `S2D-2A`（Phase 2）：Onboarding coverage metrics & catalog rules（统计多少 projection 已按 S2D 落地，并在 catalog 中收紧规则）
   - 详见：`docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md`
 - `S2D-3A`（Phase 3）：S2D hard gate entrypoint & CI wiring（把 S2D onboarding 检查挂到统一 hard gate 和 CI workflow）
@@ -142,10 +145,10 @@
 - S2D-1A 已在代码与文档层面完成 P0-P3：定义 onboarding contract、接入 sample projection（`chronicle_daily_stats`）、补齐 drills/labs，并提供单命令 onboarding 套餐脚本与 runbook；其 rebuild/backfill/drills 与 onboarding package 已在 devtest DB 中完成 red → green 的首轮演练，Evidence 记录在 `docs/logs/log-S2D-1A-projection-onboarding-contract-and-sample.md`。
 - S2D-3A 已完成 P0-P3 v1：实现本地 hard gate runner（`scripts/s2d_hard_gate.py`）、`s2d-hard-gate` CI workflow 以及基于 `SUITE_CATALOG` 的 required/optional 标记；同时提供 `S2D_HARD_GATE_SKIP_SUITES`/`S2D_HARD_GATE_WAIVE_SUITES` 环境变量，用于 legacy projection 的 skip/waiver 升级路径，首个 CI hard gate 已在 PR `#197` 上获得 green run。
 - Phase 2（S2D-2A）已完成 P0-P3 v1：在 catalog/registry 层面补齐 `onboarding_status/onboarding_phase/owner_team` 标记，提供可复跑的 coverage drill 脚本并在 devtest 环境与 CI 中生成 onboarding coverage JSON 快照（区分 platformized 与 legacy 投影），并通过 `suggest_suite_catalog` + `diff_suite_catalog` helper 建立从 coverage → `SUITE_CATALOG` 的只读 guardrail；P3-C2 已在 `.github/workflows/s2d-hard-gate.yml` 中落地 coverage diff soft gate（包括“clean baseline”和人工制造 `mismatched_entries` 的实验 run），在 CI 日志中以 `[S2D-2A][info] ... soft gate clean` 或 `[S2D-2A][warning] mismatched_entries_suite_ids=[...]` 的形式提示配置与 coverage 视角的偏差，详细 contract 与 Evidence 记录在 `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md` / `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`；hard gate 仍以 `SUITE_CATALOG` 的 required/optional 为准，soft gate 只做告警、不改变退出码，为后续多投影收紧提供基线样例。
- - Phase 1B（S2D-1B）目前已走完 skeleton → C2 minimal real onboarding → P3-C2 首轮 CI 观测：
+ - Phase 1B（S2D-1B）目前已走完 skeleton → C2 minimal real onboarding → P3-C2 CI 观测 → P3-C3 required 化落地：
    - skeleton 阶段在 devtest 环境完成 known-red drills 和 onboarding package run，并以 optional suite 形式接入 S2D hard gate/CI（CI run `22936588614`）；
-   - C2 阶段补齐 `chronicle_events_to_entries` 的最小真实 backfill/harness labs 与 runner，完成 devtest green run（run_id=`20260311-125958`）以及启用 C2 逻辑后的首轮 CI green hard gate run（CI run `22937728894`），但 suite 仍标记为 optional，不 gate CI；
-   - P3-C3 已在 S2D-1B/S2D-3A log 中设计出“legacy skeleton → platformized + required”的升级路径：当该 projection 在 devtest/CI 路径上连续多次保持 C2 green，且 coverage 视角/`SUITE_CATALOG` diff 干净时，将在 S2D-2A 覆盖 JSON 中把 `chronicle_events_to_entries` 标记为 `platformized`，并把对应 suite 从 optional 提升为 required（必要时重命名 suite id），同时约定有限的 waiver 策略；具体细节与 Evidence 见 `docs/logs/log-S2D-1B-projection-onboarding-skeleton-second-sample.md` / `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`。
+   - C2 阶段补齐 `chronicle_events_to_entries` 的最小真实 backfill/harness labs 与 runner，完成 devtest green run（run_id=`20260311-125958`）以及启用 C2 逻辑后的多次 CI green hard gate run（例如 CI run `22937728894`、`22938862615`），在一段时间内以 optional/observer 身份稳定随 S2D-1A 一起运行；
+   - P3-C3 阶段按 S2D-1B/S2D-3A log 中的设计路径，将该 projection 从“legacy skeleton + C2 optional”升级为“platformized + required”：`scripts/s2d_hard_gate.SUITE_CATALOG['s2d-1b-second-onboarding-skeleton'].required` 由 `False` 调整为 `True`，在 devtest 本地 hard gate（multi-required suites 全绿）与 CI `s2d-hard-gate` workflow 的首轮 required 语义 run（CI run `22940030372`，PR `#208`）中均获得 green，完成从 legacy skeleton → C2 → required 的闭环；更多细节与 Evidence 见 `docs/logs/log-S2D-1B-projection-onboarding-skeleton-second-sample.md` / `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`。
 
 ## Notes（落地原则）
 
