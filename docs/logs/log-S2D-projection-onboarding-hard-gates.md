@@ -17,8 +17,9 @@
   **reference_log_1**: `docs/logs/log-S2C-projection-framework-platformization.md`
   **reference_log_2**: `docs/logs/log-S6A-4A-hard-gate-evidence-json.md`
   **phase_log_1**: `docs/logs/log-S2D-1A-projection-onboarding-contract-and-sample.md`
-  **phase_log_2**: `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md`
-  **phase_log_3**: `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`
+  **phase_log_2**: `docs/logs/log-S2D-1B-projection-onboarding-skeleton-second-sample.md`
+  **phase_log_3**: `docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md`
+  **phase_log_4**: `docs/logs/log-S2D-3A-projection-onboarding-hard-gate-entrypoint+CI.md`
 **created**: `2026-03-08`
 **updated**: `2026-03-10`
 
@@ -75,6 +76,8 @@
 
 - `S2D-1A`（Phase 1）：Projection onboarding contract + first sample projection（用一条新投影跑通 S2D onboarding 全链路）
   - 详见：`docs/logs/log-S2D-1A-projection-onboarding-contract-and-sample.md`
+- `S2D-1B`（Phase 1B）：Second projection onboarding skeleton for legacy → platformized（为一条 legacy 投影搭建与 S2D-1A 同结构的 onboarding skeleton，占位即可）
+  - 详见：`docs/logs/log-S2D-1B-projection-onboarding-skeleton-second-sample.md`
 - `S2D-2A`（Phase 2）：Onboarding coverage metrics & catalog rules（统计多少 projection 已按 S2D 落地，并在 catalog 中收紧规则）
   - 详见：`docs/logs/log-S2D-2A-onboarding-coverage-and-catalog-rules.md`
 - `S2D-3A`（Phase 3）：S2D hard gate entrypoint & CI wiring（把 S2D onboarding 检查挂到统一 hard gate 和 CI workflow）
