@@ -83,7 +83,7 @@ export interface FetchBookshelfDashboardOptions {
 }
 
 /** Validate UUID format */
-const isValidUUID = (uuid: string): boolean => {
+export const isValidUUID = (uuid: string): boolean => {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return uuidRegex.test(uuid);
 };
@@ -93,14 +93,18 @@ export const listBookshelves = async (options: ListBookshelvesOptions = {}): Pro
   const { libraryId, page = 1, pageSize = DEFAULT_PAGE_SIZE } = options;
   const start = performance.now();
 
+  if (!libraryId) {
+    throw new Error('libraryId is required for listBookshelves');
+  }
+
   // Validate libraryId if provided
-  if (libraryId && !isValidUUID(libraryId)) {
+  if (!isValidUUID(libraryId)) {
     console.error(`[listBookshelves] Invalid UUID format: ${libraryId}`);
     throw new Error(`Invalid library_id format: ${libraryId}`);
   }
 
   const params: string[] = [];
-  if (libraryId) params.push(`library_id=${libraryId}`);
+  params.push(`library_id=${libraryId}`);
   const skip = Math.max(0, (page - 1) * pageSize);
   params.push(`skip=${skip}`);
   params.push(`limit=${pageSize}`);
@@ -179,8 +183,10 @@ export const listBookshelves = async (options: ListBookshelvesOptions = {}): Pro
 };
 
 /** Get single bookshelf by ID */
-export const getBookshelf = async (bookshelfId: string): Promise<BookshelfDto> => {
-  const response = await apiClient.get<BackendBookshelf>(`/bookshelves/${bookshelfId}`);
+export const getBookshelf = async (bookshelfId: string, libraryId?: string): Promise<BookshelfDto> => {
+  const response = await apiClient.get<BackendBookshelf>(`/bookshelves/${bookshelfId}`, {
+    params: libraryId ? { library_id: libraryId } : undefined,
+  });
   return toBookshelfDto(response.data as BackendBookshelf);
 };
 

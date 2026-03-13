@@ -141,13 +141,13 @@
 - P3-C1-S1：视实际需要，在 `scripts/s2d_hard_gate.SUITE_CATALOG` 中为 S2D-1D 目标投影新增 optional/experimental suite，suite_id 命名与 S2D-1B/S2D-1C 对齐（例如 `s2d-1d-<projection_name>-onboarding-skeleton`）；
 - P3-C1-S2：在 CI 的 `s2d-hard-gate` workflow 中观察该 suite 的行为，视稳定性与业务优先级决定是否在后续 cycle 推进 C2/required 升级。
 
-## Execution Checklist（unchecked）
+## Execution Checklist（部分已完成）
 
 ### P0（Contract）
 
-- [ ] `P0-C1-S1`：基于 S2D-2A coverage/owner 选择 S2D-1D 目标 legacy projection 并在本 log 中记录基本信息与最小 skeleton 套餐 contract
-- [ ] `P0-C1-S2`：约定 labs/runner 命名与 Evidence JSON 字段口径
-- [ ] `P0-C1-S3`：补齐 evidence JSON 输入/输出/PASS-FAIL 字段 contract
+- [x] `P0-C1-S1`：基于 S2D-2A coverage/owner 选择 S2D-1D 目标 legacy projection 并在本 log 中记录基本信息与最小 skeleton 套餐 contract（当前以“预留模板”形式完成，等待新的 legacy projection 出现时实例化）
+- [x] `P0-C1-S2`：约定 labs/runner 命名与 Evidence JSON 字段口径
+- [x] `P0-C1-S3`：补齐 evidence JSON 输入/输出/PASS-FAIL 字段 contract
 
 ### P1（实现：skeleton 落地）
 
@@ -229,3 +229,4 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-03-11：scaffold S2D-1D log，基于 S2D-1A/1B/1C 的经验，为第四条 legacy projection onboarding skeleton 定义最小 contract/Plan，占位待选具体目标投影与 labs/runner 命名。
+- 2026-03-11：完成 P0 区 contract 收口：基于 `artifacts/s2d-coverage-20260310-001.json` 明确当前仅有三条投影，S2D-1D 作为预留模板锁定 skeleton 套餐与 Evidence 口径，等待后续 coverage 引入新的 legacy projection 时再在本 log 中实例化具体 projection。

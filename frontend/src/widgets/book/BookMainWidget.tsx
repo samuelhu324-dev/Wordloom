@@ -110,7 +110,7 @@ export const BookMainWidget = React.forwardRef<HTMLDivElement, BookMainWidgetPro
 
     const debouncedSearch = useDebouncedValue(filterState.searchText.trim(), 300);
     const sectionOrder = getOrderForPreset(filterState.orderPreset);
-    const { data: booksData, isLoading, error } = useBooks(bookshelfId);
+    const { data: booksData, isLoading, error } = useBooks(bookshelfId, libraryId);
     const books = booksData?.items ?? [];
     const togglePinMutation = useToggleBookPin();
     const moveBookToBasementMutation = useMoveBookToBasement();

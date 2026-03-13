@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Breadcrumb } from '@/shared/ui';
 import { BookMainWidget, type BookViewMode } from '@/widgets/book/BookMainWidget';
 import { useBookshelf } from '@/features/bookshelf';
@@ -22,15 +22,53 @@ import styles from './page.module.css';
 export default function BookshelfDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const bookshelfId = (params.bookshelfId as string) || '';
+  const libraryId = searchParams.get('library_id') || '';
   const { t } = useI18n();
+  const [resolvedLibraryId, setResolvedLibraryId] = useState(libraryId);
+
+  useEffect(() => {
+    if (libraryId) {
+      setResolvedLibraryId(libraryId);
+      try {
+        localStorage.setItem('wl_active_library_id', libraryId);
+      } catch {}
+      return;
+    }
+
+    try {
+      const activeLibraryId = localStorage.getItem('wl_active_library_id') || '';
+      if (activeLibraryId) {
+        setResolvedLibraryId(activeLibraryId);
+        router.replace(`/admin/bookshelves/${bookshelfId}?library_id=${activeLibraryId}`);
+        return;
+      }
+
+      for (let index = 0; index < localStorage.length; index += 1) {
+        const key = localStorage.key(index);
+        if (!key || !key.startsWith('wl_bookshelves_cache_')) continue;
+        const raw = localStorage.getItem(key);
+        if (!raw) continue;
+        const parsed = JSON.parse(raw);
+        const items = Array.isArray(parsed?.items) ? parsed.items : [];
+        const match = items.find((item: any) => item?.id === bookshelfId && item?.library_id);
+        if (match?.library_id) {
+          setResolvedLibraryId(match.library_id);
+          localStorage.setItem('wl_active_library_id', match.library_id);
+          router.replace(`/admin/bookshelves/${bookshelfId}?library_id=${match.library_id}`);
+          return;
+        }
+      }
+    } catch {}
+  }, [bookshelfId, libraryId, router]);
 
   // Fetch bookshelf
   const {
     data: bookshelf,
     isLoading: isBookshelfLoading,
     error: bookshelfError,
-  } = useBookshelf(bookshelfId);
+  } = useBookshelf(bookshelfId, resolvedLibraryId);
 
   // Fetch library (through bookshelf)
   const {
@@ -74,7 +112,8 @@ export default function BookshelfDetailPage() {
   }
 
   const handleSelectBook = (bookId: string) => {
-    router.push(`/admin/books/${bookId}`);
+    const suffix = resolvedLibraryId ? `?library_id=${resolvedLibraryId}` : '';
+    router.push(`/admin/books/${bookId}${suffix}`);
   };
 
   return (

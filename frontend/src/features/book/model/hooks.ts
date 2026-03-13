@@ -165,34 +165,36 @@ const mergeDisplayFields = (updated: BookDto, fallback?: BookDto): BookDto => {
 };
 
 /** Fetch all books, optionally filtered by bookshelf_id */
-export const useBooks = (bookshelfId?: string) => {
+export const useBooks = (bookshelfId?: string, libraryId?: string) => {
   return useQuery({
-    queryKey: QUERY_KEY.list({ bookshelfId }),
-    queryFn: () => listBooks(bookshelfId),
+    queryKey: QUERY_KEY.list({ bookshelfId, libraryId }),
+    queryFn: () => listBooks(bookshelfId, 1, 20, libraryId),
+    enabled: !bookshelfId || Boolean(libraryId),
     staleTime: 1000 * 60 * 5,
   });
 };
 
 /** Infinite books list for incremental loading */
-export const useInfiniteBooks = (bookshelfId?: string, pageSize: number = 20) => {
+export const useInfiniteBooks = (bookshelfId?: string, libraryId?: string, pageSize: number = 20) => {
   return useInfiniteQuery<BookListPage>({
-    queryKey: QUERY_KEY.infinite({ bookshelfId, pageSize }),
+    queryKey: QUERY_KEY.infinite({ bookshelfId, libraryId, pageSize }),
     queryFn: ({ pageParam }) => {
       const page = typeof pageParam === 'number' ? pageParam : 1;
-      return listBooks(bookshelfId, page, pageSize);
+      return listBooks(bookshelfId, page, pageSize, libraryId);
     },
     getNextPageParam: (lastPage) => (lastPage.has_more ? lastPage.page + 1 : undefined),
     initialPageParam: 1,
+    enabled: !bookshelfId || Boolean(libraryId),
     staleTime: 1000 * 60 * 5,
     placeholderData: (previous) => previous,
   });
 };
 
 /** Fetch single book by ID */
-export const useBook = (bookId: string) => {
+export const useBook = (bookId: string, libraryId?: string) => {
   return useQuery({
-    queryKey: QUERY_KEY.detail(bookId),
-    queryFn: () => getBook(bookId),
+    queryKey: [...QUERY_KEY.detail(bookId), libraryId ?? 'unknown'],
+    queryFn: () => getBook(bookId, libraryId),
     staleTime: 1000 * 60 * 5,
     enabled: !!bookId,
   });

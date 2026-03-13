@@ -20,10 +20,15 @@ if [[ ! -f "$ENV_FILE" ]]; then
   exit 1
 fi
 
-set -a
-# shellcheck disable=SC1090
-source "$ENV_FILE"
-set +a
+source_env_file() {
+  local env_file="$1"
+  set -a
+  # shellcheck disable=SC1090
+  source <(sed 's/\r$//' "$env_file")
+  set +a
+}
+
+source_env_file "$ENV_FILE"
 
 RUN_PREFIX=()
 if [[ -n "${VIRTUAL_ENV:-}" ]]; then

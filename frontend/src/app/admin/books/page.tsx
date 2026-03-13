@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Breadcrumb } from '@/shared/ui';
@@ -36,13 +36,28 @@ export default function BooksPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const bookshelfId = searchParams.get('bookshelf_id') || undefined;
+  const libraryId = searchParams.get('library_id') || undefined;
   const { t } = useI18n();
+
+  const {
+    data: bookshelf,
+  } = useBookshelf(bookshelfId || '', libraryId);
+
+  useEffect(() => {
+    const resolvedLibraryId = libraryId || bookshelf?.library_id;
+    if (!resolvedLibraryId) return;
+    try {
+      localStorage.setItem('wl_active_library_id', resolvedLibraryId);
+    } catch {}
+  }, [bookshelf?.library_id, libraryId]);
+
+  const { data: library } = useLibrary(bookshelf?.library_id || undefined);
 
   const {
     data: bookList,
     isLoading,
     error,
-  } = useBooks(bookshelfId);
+  } = useBooks(bookshelfId, bookshelf?.library_id);
 
   const normalizedBooks = useMemo(() => {
     const items = (bookList as any)?.items;
@@ -54,12 +69,6 @@ export default function BooksPage() {
   const snapshot = useMemo(() => (
     buildBookMaturitySnapshot(normalizedBooks, totalBooks)
   ), [normalizedBooks, totalBooks]);
-
-  const {
-    data: bookshelf,
-  } = useBookshelf(bookshelfId || '');
-
-  const { data: library } = useLibrary(bookshelf?.library_id || undefined);
 
   const inlineTagDescriptions = useMemo(
     () => buildTagDescriptionsMap(library?.tags, { libraryId: library?.id ?? null }),
@@ -101,7 +110,7 @@ export default function BooksPage() {
 
   const { data: fetchedLibraryTags } = useQuery({
     queryKey: ['library-tag-catalog', targetLibraryId],
-    queryFn: () => getLibraryTags(targetLibraryId!, 200),
+    queryFn: () => getLibraryTags(targetLibraryId!, 25),
     enabled: shouldFetchTagCatalog,
     staleTime: 5 * 60 * 1000,
   });
@@ -120,7 +129,7 @@ export default function BooksPage() {
     queryFn: async () => {
       const responses = await Promise.all(taggedLibraryIds.map(async (libraryId) => {
         try {
-          const payload = await getLibraryTags(libraryId, 200);
+          const payload = await getLibraryTags(libraryId, 25);
           return { libraryId, tags: payload?.tags ?? [] };
         } catch (err) {
           console.warn('[books-page] Failed to load tag catalog for library', libraryId, err);
@@ -152,7 +161,9 @@ export default function BooksPage() {
   );
 
   const handleSelectBook = (bookId: string) => {
-    router.push(`/admin/books/${bookId}`);
+    const resolvedLibraryId = library?.id || bookshelf?.library_id || libraryId;
+    const suffix = resolvedLibraryId ? `?library_id=${resolvedLibraryId}` : '';
+    router.push(`/admin/books/${bookId}${suffix}`);
   };
 
   if (isLoading) {
@@ -180,7 +191,7 @@ export default function BooksPage() {
         <Breadcrumb
           items={[
             { label: t('bookshelves.library.breadcrumb.list'), href: '/admin/libraries' },
-            bookshelfId && bookshelf ? { label: bookshelf.name, href: `/admin/bookshelves/${bookshelf.id}` } : null,
+            bookshelfId && bookshelf ? { label: bookshelf.name, href: `/admin/bookshelves/${bookshelf.id}?library_id=${bookshelf.library_id}` } : null,
             { label: '书籍概览', active: true },
           ].filter(Boolean) as any}
         />

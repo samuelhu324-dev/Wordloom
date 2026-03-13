@@ -250,8 +250,8 @@ export default function LibraryDetailPage() {
   const isCreateDialogLoading = isCreateDialogSaving || isCreatePending
 
   const handleOpenBookshelf = useCallback((item: BookshelfDashboardItemDto) => {
-    router.push(`/admin/bookshelves/${item.id}`)
-  }, [router])
+    router.push(`/admin/bookshelves/${item.id}?library_id=${libraryId}`)
+  }, [libraryId, router])
 
   const handleCreateBookshelf = useCallback(() => {
     if (!libraryId) return

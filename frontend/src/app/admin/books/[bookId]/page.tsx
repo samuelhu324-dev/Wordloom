@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { Breadcrumb, Button } from '@/shared/ui';
 import { useBook } from '@/features/book';
@@ -86,7 +86,9 @@ const formatSnapshotTimestamp = (value?: string | null, locale: string = 'zh-CN'
 export default function BookDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const bookId = (params.bookId as string) || '';
+  const libraryId = searchParams.get('library_id') || undefined;
   const queryClient = useQueryClient();
   const { t, lang } = useI18n();
 
@@ -94,7 +96,7 @@ export default function BookDetailPage() {
     data: book,
     isLoading: isBookLoading,
     error: bookError,
-  } = useBook(bookId);
+  } = useBook(bookId, libraryId);
   const {
     data: maturitySnapshot,
     isLoading: isMaturitySnapshotLoading,
@@ -110,11 +112,19 @@ export default function BookDetailPage() {
 
   const {
     data: bookshelf,
-  } = useBookshelf(book?.bookshelf_id || '');
+  } = useBookshelf(book?.bookshelf_id || '', book?.library_id || '');
 
   const {
     data: library,
   } = useLibrary(bookshelf?.library_id || '');
+
+  React.useEffect(() => {
+    const resolvedLibraryId = libraryId || book?.library_id || bookshelf?.library_id;
+    if (!resolvedLibraryId) return;
+    try {
+      localStorage.setItem('wl_active_library_id', resolvedLibraryId);
+    } catch {}
+  }, [book?.library_id, bookshelf?.library_id, libraryId]);
 
   const tabDefs = React.useMemo(
     () => TAB_KEYS.map((key) => ({ key, label: t(`books.blocks.tabs.${key}` as MessageKey) })),
@@ -412,7 +422,7 @@ export default function BookDetailPage() {
             items={[
               { label: t('books.blocks.nav.libraries'), href: '/admin/libraries' },
               library ? { label: library.name, href: `/admin/libraries/${library.id}` } : null,
-              bookshelf ? { label: bookshelf.name, href: `/admin/bookshelves/${bookshelf.id}` } : null,
+              bookshelf ? { label: bookshelf.name, href: `/admin/bookshelves/${bookshelf.id}?library_id=${bookshelf.library_id}` } : null,
               { label: book.title, active: true },
             ].filter(Boolean) as any}
           />
@@ -636,6 +646,7 @@ export default function BookDetailPage() {
                   bookId={book.id}
                   title={t('books.blocks.timeline.title')}
                   subtitle={t('books.blocks.timeline.subtitle')}
+                  defaultShowVisits
                 />
               </div>
             )}

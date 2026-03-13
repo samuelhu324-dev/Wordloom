@@ -188,3 +188,4 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-03-08：scaffold S2D spine log，定义 Projection onboarding hard gates 的目标/基线/Phase 切分。
+- 2026-03-09：完成 S2D-1A sample projection 的 P1/P2（spec/adapter/writer + rebuild/backfill/drills）与 P3 单命令 onboarding 套餐首轮 red→green 演练，在 devtest DB 与本地 hard gate/首个 CI `s2d-hard-gate` run 中产出 Evidence，并在本 log 与 [docs/logs/log-S2D-1A-projection-onboarding-contract-and-sample.md](docs/logs/log-S2D-1A-projection-onboarding-contract-and-sample.md) 入账。

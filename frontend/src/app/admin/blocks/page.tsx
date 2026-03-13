@@ -71,10 +71,11 @@ const BlocksWorkspacePage: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const bookId = searchParams.get('book_id') || '';
+  const libraryId = searchParams.get('library_id') || undefined;
   const { t } = useI18n();
 
-  const { data: book, isLoading: isBookLoading, error: bookError } = useBook(bookId);
-  const { data: bookshelf } = useBookshelf(book?.bookshelf_id || '');
+  const { data: book, isLoading: isBookLoading, error: bookError } = useBook(bookId, libraryId);
+  const { data: bookshelf } = useBookshelf(book?.bookshelf_id || '', book?.library_id || '');
   const { data: library } = useLibrary(bookshelf?.library_id || '');
 
   const { data: blockList, isLoading: isBlocksLoading } = useBlocks(bookId);
@@ -196,8 +197,8 @@ const BlocksWorkspacePage: React.FC = () => {
           items={[
             { label: t('bookshelves.library.breadcrumb.list'), href: '/admin/libraries' },
             library ? { label: library.name, href: `/admin/libraries/${library.id}` } : null,
-            bookshelf ? { label: bookshelf.name, href: `/admin/bookshelves/${bookshelf.id}` } : null,
-            book ? { label: book.title, href: `/admin/books/${book.id}` } : null,
+            bookshelf ? { label: bookshelf.name, href: `/admin/bookshelves/${bookshelf.id}?library_id=${bookshelf.library_id}` } : null,
+            book ? { label: book.title, href: `/admin/books/${book.id}?library_id=${book.library_id}` } : null,
             { label: '块工作台', active: true },
           ].filter(Boolean) as any}
         />
@@ -219,7 +220,7 @@ const BlocksWorkspacePage: React.FC = () => {
               <span className={styles.lifecyclePill} data-tone={lifecycleTone}>
                 {lifecycleTone === 'active' ? 'Active' : 'Archived'}
               </span>
-              <Button variant="secondary" size="sm" onClick={() => router.push(`/admin/books/${book.id}`)}>
+              <Button variant="secondary" size="sm" onClick={() => router.push(`/admin/books/${book.id}?library_id=${book.library_id}`)}>
                 返回 Book 页面
               </Button>
             </div>

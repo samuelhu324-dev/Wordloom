@@ -30,10 +30,12 @@ export interface BookListPage {
 export const listBooks = async (
   bookshelfId?: string,
   page: number = 1,
-  pageSize: number = 20
+  pageSize: number = 20,
+  libraryId?: string,
 ): Promise<BookListPage> => {
   const params: string[] = [];
   if (bookshelfId) params.push(`bookshelf_id=${bookshelfId}`);
+  if (libraryId) params.push(`library_id=${libraryId}`);
   // pagination → skip/limit for backend compatibility
   const skip = (page - 1) * pageSize;
   params.push(`skip=${skip}`);
@@ -65,10 +67,13 @@ export const listBooks = async (
 };
 
 /** Get single book by ID */
-export const getBook = async (bookId: string): Promise<BookDto> => {
+export const getBook = async (bookId: string, libraryId?: string): Promise<BookDto> => {
   try {
     const response = await apiClient.get<BackendBook>(
-      `/books/${bookId}`
+      `/books/${bookId}`,
+      {
+        params: libraryId ? { library_id: libraryId } : undefined,
+      }
     );
     return toBookDto(response.data as BackendBook);
   } catch (err) {

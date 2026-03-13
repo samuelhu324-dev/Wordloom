@@ -127,9 +127,10 @@ export default function BookshelvesPage() {
 
   const handleOpenBookshelf = useCallback(
     (item: BookshelfDashboardItemDto) => {
-      router.push(`/admin/bookshelves/${item.id}`);
+      const suffix = libraryId ? `?library_id=${libraryId}` : '';
+      router.push(`/admin/bookshelves/${item.id}${suffix}`);
     },
-    [router],
+    [libraryId, router],
   );
 
   const handleCreateBookshelf = useCallback(() => {

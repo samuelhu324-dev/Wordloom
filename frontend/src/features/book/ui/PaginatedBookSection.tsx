@@ -13,8 +13,12 @@ interface PaginatedBookSectionProps {
 
 export const PaginatedBookSection: React.FC<PaginatedBookSectionProps> = ({ bookshelfId, pageSize = 20 }) => {
   const [layout, setLayout] = React.useState<'horizontal' | 'grid'>('horizontal');
-  const { books, isLoading, fetchNextPage, hasMore, isFetchingNextPage } = usePaginatedBooks({ bookshelfId, pageSize });
   const { data: bookshelf } = useBookshelf(bookshelfId || '');
+  const { books, isLoading, fetchNextPage, hasMore, isFetchingNextPage } = usePaginatedBooks({
+    bookshelfId,
+    libraryId: bookshelf?.library_id,
+    pageSize,
+  });
 
   // Books fetched without a bookshelf filter can still belong to a single library; reuse that id when possible.
   const inferredLibraryId = React.useMemo(() => {

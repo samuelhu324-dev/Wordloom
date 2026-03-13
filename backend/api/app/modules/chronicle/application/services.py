@@ -693,8 +693,13 @@ class ChronicleRecorderService:
 class ChronicleQueryService:
     """查询事件的应用服务 (读侧简单分页)"""
 
-    def __init__(self, repo: ChronicleRepositoryPort):
+    def __init__(
+        self,
+        repo: ChronicleRepositoryPort,
+        fallback_repo: ChronicleRepositoryPort | None = None,
+    ):
         self._repo = repo
+        self._fallback_repo = fallback_repo
 
     async def list_book_events(
         self,
@@ -703,21 +708,37 @@ class ChronicleQueryService:
         limit: int = 50,
         offset: int = 0,
     ) -> Tuple[List[ChronicleEvent], int]:
-        return await self._repo.list_by_book(
+        items, total = await self._repo.list_by_book(
             book_id=book_id,
             event_types=event_types,
             limit=limit,
             offset=offset,
         )
+        if total == 0 and self._fallback_repo is not None:
+            return await self._fallback_repo.list_by_book(
+                book_id=book_id,
+                event_types=event_types,
+                limit=limit,
+                offset=offset,
+            )
+        return items, total
 
     async def list_recent_book_events(
         self,
         book_id: UUID,
         limit: int = 5,
     ) -> Tuple[List[ChronicleEvent], int]:
-        return await self._repo.list_by_book(
+        items, total = await self._repo.list_by_book(
             book_id=book_id,
             event_types=RECENT_EVENT_TYPES,
             limit=limit,
             offset=0,
         )
+        if total == 0 and self._fallback_repo is not None:
+            return await self._fallback_repo.list_by_book(
+                book_id=book_id,
+                event_types=RECENT_EVENT_TYPES,
+                limit=limit,
+                offset=0,
+            )
+        return items, total
