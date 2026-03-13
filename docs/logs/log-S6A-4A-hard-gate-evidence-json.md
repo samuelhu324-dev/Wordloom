@@ -12,7 +12,7 @@
   **issue**: ``
   **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/171`
   **adr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S6A-evidence-drills-spine.md`
   **parent_log**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **previous_log**: `docs/logs/log-S6A-3A-failure-taxonomy-hard-interface.md`
   **reference_log_1**: `docs/logs/log-S0C-3A-2A-artifacts-contract-packing.md`
