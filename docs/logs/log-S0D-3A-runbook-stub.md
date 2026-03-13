@@ -218,6 +218,29 @@
   - 例如 `log-S6A-evidence-drills-spine.md` 对应 `run-S6A-evidence-drills-spine.md`；
   - 旧 runbook 若使用了历史性 summary（如 `docs-management-v3`、`observability-v2`），应逐步迁到与当前主 log 对齐的新名字，并在必要时把旧文件视为 superseded。
 
+### P3-C3-S1（runbook 排障有效性验证 contract｜2026-03-13）
+
+- runbook 是否“有用”，不以段落是否齐全判断，而以它能否把 operator 从问题带到明确下一步判断。
+- 每条候选主 runbook 在从 `draft` 走向可依赖状态前，至少要完成以下 3 类验证中的 2 类，且必须包含 `known failure`：
+  - `happy path`：操作者能从 runbook 找到正确入口、拿到真实 evidence，并确认一条成功样例；
+  - `known failure`：操作者能用 runbook 把已知失败快速归类，而不是直接掉进源码排查；
+  - `ambiguity / stale evidence`：操作者遇到“文档提到的 run 不在本地”或“现象跨 phase 边界”时，runbook 能给出正确的分流目标。
+- 固定验证记录字段如下：
+  - `entry found`：是否能从 runbook 直接找到正确 suite / workflow / 本地命令；
+  - `evidence found`：是否能定位到 run directory、ledger、或明确说明“此 phase 无 ledger”；
+  - `failure classified`：是否能在 `_result.json` / verifier / ledger 层面先完成归类；
+  - `next action clear`：是否给出下一步该查哪个 phase、哪个文件、哪类 evidence；
+  - `wrong-turn count`：是否在进入源码前就完成上述判断，目标是低 wrong-turn。
+- 若 runbook 只能告诉操作者“去看代码”而不能先完成 evidence 定位与失败归类，则该 runbook 仍然是装饰性文档，不算通过验证。
+
+### P3-C3-S2（S5B 样例验证基线｜2026-03-13）
+
+- `run-S5B-security-governance-hard-gates` 作为首个 validation sample，采用以下三路样例：
+  - `happy path`：`S5B-2A` 绿色样例 `docs/labs/_snapshot/auto/S5B-2A/bookshelf_delete_entrypoint/7e464272-8352-41b6-b655-b5077597edfe`
+  - `known failure`：`S5B-3A` 红色样例 `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/9d3cdfc1-2fb0-43c8-8364-a00b5db4e87e`
+  - `ambiguity / stale evidence`：历史上提到但当前工作区缺失的 `S5B-3A` run dir `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/16b34278-d370-4be4-9e8f-29a455e25111`
+- 该样例的目的不是证明所有 `S5B` phase 都永远为绿，而是证明这份 runbook 能在 `green / red / missing evidence` 三种常见操作面下给出不同且正确的第一判断。
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -247,6 +270,8 @@
 - [x] `P3-C2-S1`：runbook suffix 与对应顶层 log suffix 的命名一致性规则落地
 - [x] `P3-C2-S2`：legacy runbook（`S0C / S3A`）按当前主 log 名称收敛
 - [x] `P3-C2-S3`：`S5B / S6A` 顶层 runbook stub 落地
+- [x] `P3-C3-S1`：runbook 排障有效性验证 contract 固化
+- [x] `P3-C3-S2`：`run-S5B` 样例验证路径固化
 
 ## Evidence（预留）
 
@@ -307,6 +332,24 @@
   - `S5B / S6A` 顶层 runbook 已按顶层 log 名称落地；
   - `S0D-3A` 已明确：本轮记为 `P3-C2`，不新开 phase。
 
+### P3-C3-S1S2（runbook 排障验证 contract + S5B 样例｜2026-03-13）
+
+- artifacts：
+  - `docs/logs/log-S0D-3A-runbook-stub.md`
+  - `docs/runbook/run-S5B-security-governance-hard-gates.md`
+  - `docs/labs/_snapshot/auto/S5B-2A/bookshelf_delete_entrypoint/7e464272-8352-41b6-b655-b5077597edfe/_result.json`
+  - `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/332361bc-3bb1-4d99-862c-a40d586190db/_result.json`
+  - `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/9d3cdfc1-2fb0-43c8-8364-a00b5db4e87e/_result.json`
+  - `artifacts/s5b3a-runs.json`
+- 期望（expected）：
+  - 把“runbook 是否有排障价值”从主观看法改成固定验证合同；
+  - 用 `run-S5B` 证明 operator 能区分绿色成功、contract-ok 但红、以及 stale evidence path。
+- 观测（observed）：
+  - `S5B-2A` 绿色样例可从 runbook 直接定位到 suite 与 run dir，且 verifier 返回 `[contract_ok]`；
+  - `S5B-3A` 绿色样例 `332361bc-3bb1-4d99-862c-a40d586190db` 的 `_result.json.ok=true`，证明 `happy path` 在本地可复查；
+  - `S5B-3A` 红色样例 `9d3cdfc1-2fb0-43c8-8364-a00b5db4e87e` 同时满足 `contract_ok=true` 与 `result_ok=false`，说明 runbook 的第一步应是先看 `failure_reason`，而不是先怀疑 artifact contract；
+  - 缺失目录 `16b34278-d370-4be4-9e8f-29a455e25111` 会被 verifier 归类为 `missing_run_dir`，证明 stale evidence path 需要单独分流，而不是与测试失败混为一谈。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-13：基于对现有 `S2B / S2C / S2D` runbook 样本的梳理，正式把“runbook 只在顶层 scope 形成 operator workflow 时建立”的规则固化为 `S0D-3A`。
@@ -314,3 +357,4 @@
 - 2026-03-13：补充现有 runbook 共同骨架总结，并新增 `docs/runbook/_template-runbook.md` 作为薄 runbook 模板。
 - 2026-03-13：补充 `S5B / S6A` runbook 候选梳理，明确“顶层 runbook 应补，子 phase runbook 暂不补”。
 - 2026-03-13：把“runbook suffix 必须与对应顶层 log suffix 一致”的规则写入 adoption cycle，并将 `S0C / S3A` 旧 runbook 与 `S5B / S6A` 新 runbook 一并收敛到该规则。
+- 2026-03-13：新增 runbook 排障有效性验证 contract，并用 `run-S5B` 固化 `happy path / known failure / stale evidence` 三路样例。

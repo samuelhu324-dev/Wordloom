@@ -145,6 +145,23 @@
 - search authorization failures:
   - inspect `S5B-4A` `_result.json` and confirm `library_id` / tenant expectations before reviewing backend code
 
+### 6.1 Validated Decision Paths
+
+- happy path, existing green artifact:
+  - `S5B-2A` sample run dir `docs/labs/_snapshot/auto/S5B-2A/bookshelf_delete_entrypoint/7e464272-8352-41b6-b655-b5077597edfe`
+  - expected first check: verify the artifact contract, then confirm `_result.json.ok=true`
+- happy path, ledger-backed green artifact:
+  - `S5B-3A` sample run dir `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/332361bc-3bb1-4d99-862c-a40d586190db`
+  - expected first check: inspect `_result.json.summary` and confirm all five membership audit cases passed
+- known failure, contract-ok red artifact:
+  - `S5B-3A` sample run dir `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/9d3cdfc1-2fb0-43c8-8364-a00b5db4e87e`
+  - expected first check: verifier may still return contract OK, so classify by case-level `failure_reason` before suspecting missing evidence
+- ambiguity, stale evidence path:
+  - historical run dir `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/16b34278-d370-4be4-9e8f-29a455e25111`
+  - expected first check: if verifier reports `missing_run_dir`, treat it as stale or unavailable evidence and reroute to a current local run dir or CI artifact instead of treating it as suite failure
+- cross-phase routing example:
+  - when the symptom is unexpected `bookshelf.delete` classification, go to `S5B-2A` first even if it surfaced during broader policy triage, because that boundary is intentionally concentrated there
+
 ## 7) Notes and Boundaries
 
 - This runbook is intentionally thin and top-level; implementation consolidation and phase closure stay in the S5B logs.
