@@ -48,6 +48,14 @@ if [[ ! -f "$ENV_FILE" ]]; then
   exit 1
 fi
 
+source_env_file() {
+  local env_file="$1"
+  set -a
+  # shellcheck disable=SC1090
+  source <(sed 's/\r$//' "$env_file")
+  set +a
+}
+
 if [[ ! -f "$PROCFILE" ]]; then
   echo "[app_up] Procfile not found: $PROCFILE" >&2
   exit 1
@@ -73,13 +81,47 @@ EOF
 fi
 
 # Export env vars to all Procfile processes.
-set -a
-# shellcheck disable=SC1090
-source "$ENV_FILE"
-set +a
+source_env_file "$ENV_FILE"
+
+worker_enabled_raw="${SEARCH_OUTBOX_WORKER_ENABLED:-}"
+worker_enabled_normalized="$(printf '%s' "$worker_enabled_raw" | tr '[:upper:]' '[:lower:]')"
+if [[ "$NO_WORKER" != "1" ]]; then
+  case "$worker_enabled_normalized" in
+    ""|1|true|yes|y|on)
+      ;;
+    0|false|no|n|off)
+      echo "[app_up] SEARCH_OUTBOX_WORKER_ENABLED=$worker_enabled_raw -> starting only api + ui"
+      NO_WORKER=1
+      ;;
+    *)
+      echo "[app_up] invalid SEARCH_OUTBOX_WORKER_ENABLED='$worker_enabled_raw' in $ENV_FILE" >&2
+      exit 2
+      ;;
+  esac
+fi
 
 cd "$REPO_ROOT"
 echo "[app_up] Starting app processes ($ENV_NAME) via $(basename "$PROCFILE")"
+
+FRONTEND_DIR="$REPO_ROOT/frontend"
+if [[ ! -d "$FRONTEND_DIR" ]]; then
+  echo "[app_up] frontend directory not found: $FRONTEND_DIR" >&2
+  exit 1
+fi
+
+if [[ ! -x "$FRONTEND_DIR/node_modules/.bin/cross-env" ]]; then
+  echo "[app_up] frontend dependencies missing -> installing in frontend/"
+  if ! command -v npm >/dev/null 2>&1; then
+    echo "[app_up] npm not found; please install Node.js/npm in WSL" >&2
+    exit 1
+  fi
+
+  if [[ -f "$FRONTEND_DIR/package-lock.json" ]]; then
+    (cd "$FRONTEND_DIR" && npm ci)
+  else
+    (cd "$FRONTEND_DIR" && npm install)
+  fi
+fi
 
 if [[ "$NO_WORKER" == "1" ]]; then
   echo "[app_up] --no-worker: starting only api + ui"

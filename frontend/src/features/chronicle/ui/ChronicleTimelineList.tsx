@@ -518,6 +518,7 @@ interface ChronicleTimelineListProps {
   variant?: 'standalone' | 'embedded';
   pageSize?: number;
   maxListHeight?: number;
+  defaultShowVisits?: boolean;
 }
 
 export const ChronicleTimelineList: React.FC<ChronicleTimelineListProps> = ({
@@ -527,10 +528,11 @@ export const ChronicleTimelineList: React.FC<ChronicleTimelineListProps> = ({
   variant = 'standalone',
   pageSize = 15,
   maxListHeight,
+  defaultShowVisits = false,
 }) => {
   const { t, lang } = useI18n();
   const locale = lang || 'en-US';
-  const [showVisits, setShowVisits] = React.useState(false);
+  const [showVisits, setShowVisits] = React.useState(defaultShowVisits);
   const eventTypes = React.useMemo(
     () => (showVisits ? undefined : CHRONICLE_DEFAULT_EVENT_TYPES),
     [showVisits]

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from 'react';
-import { listBookshelves } from '@/features/bookshelf/model/api';
+import { isValidUUID, listBookshelves } from '@/features/bookshelf/model/api';
 import { listBooks } from '@/features/book/model/api';
 import type { LibraryDto } from '@/entities/library';
 
@@ -21,6 +21,15 @@ export function useLibraryMetrics(libraries: LibraryDto[] | undefined) : UseLibr
     let cancelled = false;
 
     const fetchMetrics = async (libraryId: string) => {
+      if (!libraryId || !isValidUUID(libraryId)) {
+        const entry = { bookshelves: null, books: null };
+        metricsCache[libraryId] = entry;
+        if (!cancelled) {
+          setMetrics(prev => ({ ...prev, [libraryId]: entry }));
+        }
+        return;
+      }
+
       // Already cached
       if (metricsCache[libraryId]) {
         setMetrics(prev => ({ ...prev, [libraryId]: metricsCache[libraryId] }));
@@ -32,7 +41,7 @@ export function useLibraryMetrics(libraries: LibraryDto[] | undefined) : UseLibr
         const shelves = shelvesPage.items;
         // Parallel fetch minimal book counts (only first page meta per shelf)
         const bookTotals = await Promise.allSettled(
-          shelves.map(shelf => listBooks(shelf.id, 1, 1))
+          shelves.map(shelf => listBooks(shelf.id, 1, 1, libraryId))
         );
         let totalBooks = 0;
         for (const r of bookTotals) {

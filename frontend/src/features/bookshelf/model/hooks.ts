@@ -38,17 +38,18 @@ export const useBookshelves = (params?: UseBookshelvesParams) => {
   return useQuery({
     queryKey: QUERY_KEY.list({ libraryId, page, pageSize }),
     queryFn: () => listBookshelves({ libraryId, page, pageSize }),
+    enabled: Boolean(libraryId),
     staleTime: 1000 * 60 * 5,
   });
 };
 
 /** Fetch single bookshelf by ID */
-export const useBookshelf = (bookshelfId: string) => {
+export const useBookshelf = (bookshelfId: string, libraryId?: string) => {
   return useQuery({
-    queryKey: QUERY_KEY.detail(bookshelfId),
-    queryFn: () => getBookshelf(bookshelfId),
+    queryKey: [...QUERY_KEY.detail(bookshelfId), libraryId ?? 'unknown'],
+    queryFn: () => getBookshelf(bookshelfId, libraryId),
     staleTime: 1000 * 60 * 5,
-    enabled: !!bookshelfId,
+    enabled: !!bookshelfId && !!libraryId,
   });
 };
 

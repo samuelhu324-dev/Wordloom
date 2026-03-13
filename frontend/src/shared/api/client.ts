@@ -15,11 +15,77 @@ type AxiosRequestMeta = {
   correlationId?: string;
 };
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const ACTIVE_LIBRARY_STORAGE_KEY = 'wl_active_library_id';
+
 const normalizeBaseOrigin = (input?: string | null): string => {
   if (!input) {
     return '';
   }
   return input.replace(/\/+$/, '');
+};
+
+const isUuidLike = (value: unknown): value is string =>
+  typeof value === 'string' && UUID_PATTERN.test(value.trim());
+
+const readLibraryIdFromValue = (value: unknown): string | null => {
+  if (isUuidLike(value)) {
+    return value.trim();
+  }
+  return null;
+};
+
+const extractLibraryIdFromUrl = (url?: string): string | null => {
+  if (!url) {
+    return null;
+  }
+
+  try {
+    const parsed = new URL(url, 'http://wordloom.local');
+    const fromQuery = readLibraryIdFromValue(
+      parsed.searchParams.get('library_id') ?? parsed.searchParams.get('libraryId')
+    );
+    if (fromQuery) {
+      return fromQuery;
+    }
+
+    const libraryPathMatch = parsed.pathname.match(/\/libraries\/([0-9a-f-]{36})(?=\/|$)/i);
+    if (libraryPathMatch?.[1] && isUuidLike(libraryPathMatch[1])) {
+      return libraryPathMatch[1];
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+};
+
+const extractLibraryIdFromConfig = (config: InternalAxiosRequestConfig): string | null => {
+  const params = config.params as Record<string, unknown> | undefined;
+  const fromParams = readLibraryIdFromValue(params?.library_id ?? params?.libraryId);
+  if (fromParams) {
+    return fromParams;
+  }
+
+  const data = config.data as Record<string, unknown> | undefined;
+  const fromData = readLibraryIdFromValue(data?.library_id ?? data?.libraryId);
+  if (fromData) {
+    return fromData;
+  }
+
+  return extractLibraryIdFromUrl(config.url);
+};
+
+const readActiveLibraryId = (): string | null => {
+  if (!isBrowser) {
+    return null;
+  }
+  try {
+    const stored = localStorage.getItem(ACTIVE_LIBRARY_STORAGE_KEY);
+    return readLibraryIdFromValue(stored);
+  } catch {
+    return null;
+  }
 };
 
 const isBrowser = typeof window !== 'undefined';
@@ -73,6 +139,14 @@ apiClient.interceptors.request.use(
     const token = typeof window !== 'undefined' ? localStorage.getItem('wl_token') : null;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    const existingTenantHeader = headers['X-Library-Id'] || headers['x-library-id'] || headers['X-Tenant-Id'] || headers['x-tenant-id'];
+    if (!existingTenantHeader) {
+      const derivedLibraryId = extractLibraryIdFromConfig(config) ?? readActiveLibraryId();
+      if (derivedLibraryId) {
+        headers['X-Library-Id'] = derivedLibraryId;
+      }
     }
 
     // 开发期前缀 & URL 使用规范守卫 (RULE_API_PREFIX_001)

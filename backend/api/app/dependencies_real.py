@@ -479,5 +479,8 @@ class DIContainerReal:
     def get_chronicle_query_service(self) -> ChronicleQueryService:
         settings = get_settings()
         if settings.merged_read_enabled:
-            return ChronicleQueryService(self.chronicle_entries_repo)
+            return ChronicleQueryService(
+                self.chronicle_entries_repo,
+                fallback_repo=self.chronicle_repo,
+            )
         return ChronicleQueryService(self.chronicle_repo)

@@ -102,6 +102,14 @@ PY
   }
 }
 
+_source_env_file() {
+  local env_file="$1"
+  set -a
+  # shellcheck disable=SC1090
+  source <(sed 's/\r$//' "$env_file")
+  set +a
+}
+
 if [[ -z "${WSL_DISTRO_NAME:-}" ]] && ! grep -qi microsoft /proc/version 2>/dev/null; then
   _err "This runner is designed for WSL2."
   _err "If you're on Windows PowerShell, run inside WSL: wsl -e bash"
@@ -150,10 +158,7 @@ fi
 
 # Load ports from env file and fail fast on conflicts.
 (
-  set -a
-  # shellcheck disable=SC1090
-  source "$REPO_ROOT/.env.$ENV_NAME"
-  set +a
+  _source_env_file "$REPO_ROOT/.env.$ENV_NAME"
 
   : "${API_PORT:?Missing API_PORT in .env.$ENV_NAME}"
   : "${OUTBOX_METRICS_PORT:?Missing OUTBOX_METRICS_PORT in .env.$ENV_NAME}"
