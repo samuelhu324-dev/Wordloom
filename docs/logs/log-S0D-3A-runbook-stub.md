@@ -268,6 +268,46 @@
   - 已证明 `S6A` 不依赖独立 ledger，也能把 operator 正确带到 local snapshot、phase contract、或 CI bundle；
   - evidence 事实源与 hard-gate workflow 的关系已经明确到可直接操作。
 
+### P3-C4-S3（historical commit reclassification｜2026-03-14）
+
+- 当一串 commit 发生在 `S0D-3A` 建立之后，且它们本质上是在落实 runbook strategy / adoption / validation 时，commit 前缀应优先统一到 `S0D-3A`，而不是继续沿用被改动对象自己的 log id。
+- 对昨日那批历史提交，推荐重分类如下：
+  - `S0D-3A/P1-C1-S1S2`：定义 runbook stub strategy by top scope（原 `e125b720`，已符合）
+  - `S0D-3A/P3-C2-S2`：align S0C legacy runbook name with parent log（原 `08310142`）
+  - `S0D-3A/P3-C2-S3`：align S3A legacy runbook name with parent log（原 `71b71e01`）
+  - `S0D-3A/P3-C2-S4`：add S5B top-level runbook stub（原 `c70c7517`）
+  - `S0D-3A/P3-C2-S5`：add S6A top-level runbook stub（原 `65952176`）
+  - `S0D-3A/P3-C2-S1S2S3S4S5`：codify naming alignment and runbook adoption（原 `d3d97d37`，已符合大方向，但 steps 需与本表对齐）
+  - `S0D-3A/P3-C2-S6`：expand S5B operator runbook entry（原 `a49df8a8`）
+  - `S0D-3A/P3-C3-S1S2`：add runbook troubleshooting validation contract（原 `68d777c8`，已符合）
+  - `S0D-3A/P3-C3-S3`：validate S6A runbook with CI-only evidence（原 `fa38b637`，当前 message 里多余的 `/S6A` 可去掉）
+  - `S0D-3A/P3-C4-S1S2`：promote validated runbooks to stable（原 `1429ca18`，已符合）
+- 重分类原则：
+  - 被改动对象是 `S0C/S3A/S5B/S6A`，不等于 commit 应以这些 id 开头；
+  - 只要工作目标是“落实 `S0D-3A` 的策略、命名、adoption 或 validation”，commit 应归到 `S0D-3A` 的 phase/cycle/step。
+
+### P3-C4-S4（run-S0C / run-S3A validation audit｜2026-03-14）
+
+- `run-S0C-scenarios-taxonomy`：**暂不建议升为 stable**。
+  - 已有稳定 operator 入口：catalog、lookup helper、suite trigger helper 都清楚；
+  - 也有真实 evidence：`S0C-4A-1A` 记录了 catalog guardrails 与 string `scenario_id` suite 回归的 Actions runs；
+  - 但仍缺少按 `S0D-3A` contract 明确写出的 `known failure` 与 `ambiguity` 样例，目前更像“可用入口”而不是“已验证的排障入口”。
+- `run-S3A-failure-drills-&-gitactions-&-dashboard`：**可以继续保持 stable**。
+  - 已有稳定本地与 CI 入口：`run -> verify -> export -> clean` + `drill-failures` workflow；
+  - 顶层 log 与子 log 已沉淀真实 malfunction 与 CI/local parity 修复证据；
+  - 虽然还没有像 `S5B/S6A` 那样单列 `Validated Decision Paths`，但其 operator workflow 与失败分流证据已足够稳定，不需要为满足整齐而倒退成 phase 镜像文档。
+
+### P3-C4-S5（runbook 是否镜像 phase｜2026-03-14）
+
+- 默认**不建议**让 runbook 比照顶层 log 机械创建 `P1/P2/P3/...` 段落。
+- 原因：
+  - runbook 的组织单位应是 operator decision path，而不是演进 phase；
+  - validation 往往天然跨 phase 混合取证，例如 `S6A` 同时要看 local snapshot、phase contract 与 CI bundle，强行拆成 phase 段会增加错路；
+  - `S5B` 的 cross-phase ambiguity 也证明“先分流到哪个 phase”本身就是验证结果，不应在结构上预设答案。
+- 什么时候可以加 phase 对照：
+  - 仅当某个 phase 本身就是稳定 operator 入口，且操作者确实会按 phase 进入时；
+  - 更推荐的做法是保留薄的 `Phase anchors` / `Primary source materials` 映射，而不是把 runbook 主体改写成 phase 镜像。
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -302,6 +342,9 @@
 - [x] `P3-C3-S3`：`run-S6A` 样例验证路径固化
 - [x] `P3-C4-S1`：stable promotion 判定规则固化
 - [x] `P3-C4-S2`：`run-S5B / run-S6A` 升级为 stable
+- [x] `P3-C4-S3`：historical commit 统一归类到 `S0D-3A`
+- [x] `P3-C4-S4`：`run-S0C / run-S3A` validation audit 完成
+- [x] `P3-C4-S5`：runbook 是否镜像 phase 的规则固化
 
 ## Evidence（预留）
 
@@ -417,6 +460,26 @@
   - `run-S6A` 已具备 local green、local red、CI-only green 三类样例，且不再误导操作者去寻找不存在的独立 ledger；
   - 两条 runbook 都已满足“先看 evidence、再分流、最后才看实现”的 stable operator 要求，因此可从 `draft` 升级为 `stable`。
 
+### P3-C4-S3S4S5（commit 重分类 + runbook audit + phase-mirroring rule｜2026-03-14）
+
+- artifacts：
+  - `docs/logs/log-S0D-3A-runbook-stub.md`
+  - `docs/runbook/run-S0C-scenarios-taxonomy.md`
+  - `docs/runbook/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  - `docs/logs/log-S0C-4A-scenarios-taxonomy.md`
+  - `docs/logs/log-S0C-4A-1A-catalog-driven-suites-&-guardrails.md`
+  - `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
+  - `docs/logs/log-S3A-2A-4B-1A-git-actions.md`
+- 期望（expected）：
+  - 把 `S0D-3A` 建立之后的一串 runbook adoption commit 全部归类回 `S0D-3A` 的 phase/cycle/step；
+  - 审核 `run-S0C / run-S3A` 是否真的具备 validation 样例，而不是只靠命名整齐；
+  - 给出 runbook 是否应镜像顶层 log phase 的规则。
+- 观测（observed）：
+  - `S0C/S3A/S5B/S6A` 这些 commit 的主题都属于 `S0D-3A` adoption/validation，因此前缀统一回 `S0D-3A` 更准确；
+  - `run-S0C` 有 operator 入口与回归 evidence，但缺 `known failure + ambiguity` 的显式 validation 样例，因此维持 `draft` 更合理；
+  - `run-S3A` 已有稳定入口、malfunction 复盘与 CI/local parity 证据，保留 `stable` 合理；
+  - phase 镜像结构会掩盖跨 phase usage/validation，默认不应作为 runbook 主骨架。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-13：基于对现有 `S2B / S2C / S2D` runbook 样本的梳理，正式把“runbook 只在顶层 scope 形成 operator workflow 时建立”的规则固化为 `S0D-3A`。
@@ -427,3 +490,4 @@
 - 2026-03-13：新增 runbook 排障有效性验证 contract，并用 `run-S5B` 固化 `happy path / known failure / stale evidence` 三路样例。
 - 2026-03-14：把 `CI-only evidence` 纳入第三类验证分支，并用 `run-S6A` 固化 `local green / local red / CI-only green` 三路样例。
 - 2026-03-14：补充 `S5B` 的 cross-phase ambiguity 样例，并基于既有样例把 `run-S5B / run-S6A` 从 `draft` 升级为 `stable`。
+- 2026-03-14：补充历史 commit 的 `S0D-3A` 重分类表，完成 `run-S0C / run-S3A` audit，并明确 runbook 默认不镜像顶层 log phase。
