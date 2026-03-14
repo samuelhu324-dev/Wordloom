@@ -224,7 +224,7 @@
 - 每条候选主 runbook 在从 `draft` 走向可依赖状态前，至少要完成以下 3 类验证中的 2 类，且必须包含 `known failure`：
   - `happy path`：操作者能从 runbook 找到正确入口、拿到真实 evidence，并确认一条成功样例；
   - `known failure`：操作者能用 runbook 把已知失败快速归类，而不是直接掉进源码排查；
-  - `ambiguity / stale evidence`：操作者遇到“文档提到的 run 不在本地”或“现象跨 phase 边界”时，runbook 能给出正确的分流目标。
+  - `ambiguity / stale evidence / CI-only evidence`：操作者遇到“文档提到的 run 不在本地”、“证据只在 CI artifact bundle 内”或“现象跨 phase 边界”时，runbook 能给出正确的分流目标。
 - 固定验证记录字段如下：
   - `entry found`：是否能从 runbook 直接找到正确 suite / workflow / 本地命令；
   - `evidence found`：是否能定位到 run directory、ledger、或明确说明“此 phase 无 ledger”；
@@ -240,6 +240,14 @@
   - `known failure`：`S5B-3A` 红色样例 `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/9d3cdfc1-2fb0-43c8-8364-a00b5db4e87e`
   - `ambiguity / stale evidence`：历史上提到但当前工作区缺失的 `S5B-3A` run dir `docs/labs/_snapshot/auto/S5B-3A/membership_audit_coverage/16b34278-d370-4be4-9e8f-29a455e25111`
 - 该样例的目的不是证明所有 `S5B` phase 都永远为绿，而是证明这份 runbook 能在 `green / red / missing evidence` 三种常见操作面下给出不同且正确的第一判断。
+
+### P3-C3-S3（S6A 样例验证基线｜2026-03-14）
+
+- `run-S6A-evidence-drills-spine` 作为第二个 validation sample，采用以下三路样例：
+  - `happy path`：`S6A-2A` 绿色样例 `docs/labs/_snapshot/auto/S3A-2A-3A/es_down_connect/S6A-2A-P1-C2-S1`
+  - `known failure`：`S6A-1A` 红色样例 `docs/labs/_snapshot/auto/S3A-2A-3A/es_429_inject/20260304T195127`
+  - `ambiguity / CI-only evidence`：本地缺失但已在 CI artifact bundle 中存在的 `es_timeout` run `artifacts/_tmp_ci_run_22746408022/labs-evidence-fault_obs_infra_es_timeout-22746408022-1-fault_obs_infra_es_timeout-r1/S3A-2A-3A/es_timeout/22746408022-1-fault_obs_infra_es_timeout-r1`
+- 该样例的目的不是证明 `S6A` 每个 fault scenario 都要在本地保留完整快照，而是证明 runbook 能区分“本地 green / 本地 red / 仅存在于 CI bundle 的 green evidence”三种操作面。
 
 ## Execution Checklist（unchecked）
 
@@ -272,6 +280,7 @@
 - [x] `P3-C2-S3`：`S5B / S6A` 顶层 runbook stub 落地
 - [x] `P3-C3-S1`：runbook 排障有效性验证 contract 固化
 - [x] `P3-C3-S2`：`run-S5B` 样例验证路径固化
+- [x] `P3-C3-S3`：`run-S6A` 样例验证路径固化
 
 ## Evidence（预留）
 
@@ -350,6 +359,24 @@
   - `S5B-3A` 红色样例 `9d3cdfc1-2fb0-43c8-8364-a00b5db4e87e` 同时满足 `contract_ok=true` 与 `result_ok=false`，说明 runbook 的第一步应是先看 `failure_reason`，而不是先怀疑 artifact contract；
   - 缺失目录 `16b34278-d370-4be4-9e8f-29a455e25111` 会被 verifier 归类为 `missing_run_dir`，证明 stale evidence path 需要单独分流，而不是与测试失败混为一谈。
 
+### P3-C3-S3（runbook 排障验证样例 + S6A｜2026-03-14）
+
+- artifacts：
+  - `docs/logs/log-S0D-3A-runbook-stub.md`
+  - `docs/runbook/run-S6A-evidence-drills-spine.md`
+  - `docs/labs/_snapshot/auto/S3A-2A-3A/es_down_connect/S6A-2A-P1-C2-S1/_result.json`
+  - `docs/labs/_snapshot/auto/S3A-2A-3A/es_timeout/s6a3a-p3c5s4-20260305-211200/_result.json`
+  - `docs/labs/_snapshot/auto/S3A-2A-3A/es_429_inject/20260304T195127/_result.json`
+  - `artifacts/_tmp_ci_run_22746408022/labs-evidence-fault_obs_infra_es_timeout-22746408022-1-fault_obs_infra_es_timeout-r1/S3A-2A-3A/es_timeout/22746408022-1-fault_obs_infra_es_timeout-r1/_result.json`
+- 期望（expected）：
+  - 证明 `run-S6A` 不依赖独立 ledger，也能把 operator 正确带到 local snapshot、phase contract、或 CI bundle；
+  - 证明 `S6A` 的第三类分支应归类为 `CI-only evidence`，而不是一概按 stale failure 处理。
+- 观测（observed）：
+  - `S6A-2A` 绿色样例 `S6A-2A-P1-C2-S1` 的 `_result.json` 同时给出 `supply_db_check.ok=true` 与 `ok=true`，说明 runbook 可先在 supply 层完成 happy-path 确认；
+  - `S6A-3A` 绿色样例 `s6a3a-p3c5s4-20260305-211200` 的 `_result.json` 给出 `db_reasons=[es_timeout]`、family=`timeout` 且 `ok=true`，说明 runbook 可先在 reason contract 层完成 happy-path 确认；
+  - `S6A-1A` 红色样例 `20260304T195127` 的 `_result.json.ok=false` 且 metrics delta 全为 `0`，说明 runbook 应先分流到 stable-entry / trigger-path，而不是直接怀疑 reason taxonomy；
+  - 本地不存在 `docs/labs/_snapshot/auto/S3A-2A-3A/es_timeout/22746408022-1-fault_obs_infra_es_timeout-r1`，但 CI bundle 中存在对应 `_result.json.ok=true`，说明 `CI-only evidence` 是独立且常见的 operator 分支。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-13：基于对现有 `S2B / S2C / S2D` runbook 样本的梳理，正式把“runbook 只在顶层 scope 形成 operator workflow 时建立”的规则固化为 `S0D-3A`。
@@ -358,3 +385,4 @@
 - 2026-03-13：补充 `S5B / S6A` runbook 候选梳理，明确“顶层 runbook 应补，子 phase runbook 暂不补”。
 - 2026-03-13：把“runbook suffix 必须与对应顶层 log suffix 一致”的规则写入 adoption cycle，并将 `S0C / S3A` 旧 runbook 与 `S5B / S6A` 新 runbook 一并收敛到该规则。
 - 2026-03-13：新增 runbook 排障有效性验证 contract，并用 `run-S5B` 固化 `happy path / known failure / stale evidence` 三路样例。
+- 2026-03-14：把 `CI-only evidence` 纳入第三类验证分支，并用 `run-S6A` 固化 `local green / local red / CI-only green` 三路样例。

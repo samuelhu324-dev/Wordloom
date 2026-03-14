@@ -31,6 +31,7 @@
   - unified supply creation expectations
   - reason-contract verification expectations
   - hard-gate evidence JSON and CI artifact expectations
+  - `fault/obs_infra/*` suite operation across local runs and CI hard gates
 - Out of scope:
   - full history of all prior drill systems
   - non-S6A domain logic owned by S2B, S3A, or S0C
@@ -46,8 +47,9 @@
 ### 3.1 Output roots
 
 - Snapshot roots:
-  - `docs/labs/_snapshot/auto/`
-  - `artifacts/`
+  - local snapshot: `docs/labs/_snapshot/auto/S3A-2A-3A/<scenario>/<run_id>/`
+  - CI artifact bundle: `artifacts/_tmp_ci_run_<run>/labs-evidence-*/S3A-2A-3A/<scenario>/<run_id>/`
+  - auxiliary artifacts: `artifacts/_tmp_s6a*/`
 - Minimum evidence contract:
   - `_result.json`
   - `_recipe.json`
@@ -58,8 +60,8 @@
 ### 3.2 Summary or ledger
 
 - `_result.json` is the primary fact source for run success or failure.
-- When a phase-specific ledger exists, use that ledger plus the run directory together.
-- When no ledger exists, the phase log and the uploaded CI artifact are the authoritative operator trail.
+- `S6A` currently has no dedicated runs ledger under `artifacts/`; do not waste time searching for `s6a-runs.json`.
+- Use the phase log, run directory, and CI artifact name or run URL together as the authoritative operator trail.
 
 ## 4) One-click Automation
 
@@ -71,9 +73,20 @@
 
 ### 4.2 Operator instructions
 
-- Use the suite workflows documented by the selected scenario family, starting from the S6A-4A hard-gate guidance.
+- Primary CI workflows:
+  - `.github/workflows/hard-gate-fault-es-timeout.yml`
+  - `.github/workflows/hard-gate-fault-es-down-connect.yml`
+  - `.github/workflows/hard-gate-fault-es-429-inject.yml`
+  - `.github/workflows/hard-gate-fault-es-bulk-partial.yml`
+  - `.github/workflows/hard-gate-fault-es-write-block-4xx.yml`
+  - `.github/workflows/hard-gate-fault-db-claim-contention.yml`
+  - `.github/workflows/hard-gate-fault-collector-down.yml`
+  - `.github/workflows/hard-gate-fault-duplicate-delivery.yml`
+  - `.github/workflows/hard-gate-fault-projection-version.yml`
+  - `.github/workflows/hard-gate-fault-stuck-reclaim.yml`
 - For fault drills, the stable operator path remains the `labs run -> verify -> export -> clean` flow already used by S3A and extended by S6A.
 - When a hard gate fails, inspect `_result.json` first, then logs or metrics, then the phase-specific contract details.
+- `require_min_artifacts=true` is part of the CI contract; a green verify without `_recipe/_logs/_metrics` is not a valid S6A hard-gate result.
 
 ## 5) Local Operation
 
@@ -93,6 +106,11 @@
   - `python backend/scripts/cli.py labs export <scenario> --run-id <run_id> --lookback 30m`
 - Clean:
   - `python backend/scripts/cli.py labs clean <scenario> --env-file .env.test --keep-last 20`
+- Common scenario mapping:
+  - `es_down_connect`: supply path + transport-family reason checks
+  - `es_timeout`: timeout-family reason checks
+  - `es_429_inject`: rate-limit path and early stable-entry regressions
+  - `es_bulk_partial`: partial-success/partial-failure mixed evidence
 
 ## 6) Troubleshooting
 
@@ -104,6 +122,30 @@
   - check the S6A-2A supply fields and DB-side supply check first
 - reason distribution does not match expected family:
   - inspect the S6A-3A reason contract output before reviewing raw metrics dumps
+- `_result.json.ok=false` and all observed deltas stay `0`:
+  - treat that as an entry or trigger-path problem first; the `es_429_inject/20260304T195127` sample shows this shape
+- `supply_db_check.ok=false`:
+  - stop at S6A-2A and fix supply visibility before reviewing worker behavior
+- `reason_contract.db_reason_check.ok=false` or reason family drifts:
+  - stop at S6A-3A and compare DB `error_reason` with metrics `reason` before reading raw logs
+- local snapshot path is missing but a CI run URL or artifact name exists:
+  - treat that as `CI-only evidence`, then inspect `artifacts/_tmp_ci_run_<run>/labs-evidence-*/S3A-2A-3A/<scenario>/<run_id>/` instead of classifying it as suite failure
+
+### 6.1 Validated Decision Paths
+
+- happy path, local green supply + verify sample:
+  - `docs/labs/_snapshot/auto/S3A-2A-3A/es_down_connect/S6A-2A-P1-C2-S1`
+  - expected first check: confirm `supply_db_check.ok=true`, then confirm `_result.json.ok=true`
+- happy path, local green reason-contract sample:
+  - `docs/labs/_snapshot/auto/S3A-2A-3A/es_timeout/s6a3a-p3c5s4-20260305-211200`
+  - expected first check: confirm `reason_contract.observed.db_reasons=["es_timeout"]` and `_result.json.ok=true`
+- known failure, stable-entry or trigger-path regression:
+  - `docs/labs/_snapshot/auto/S3A-2A-3A/es_429_inject/20260304T195127`
+  - expected first check: classify the run by `ok=false` plus zero metric deltas before suspecting reason-contract drift
+- ambiguity, CI-only evidence bundle:
+  - local path `docs/labs/_snapshot/auto/S3A-2A-3A/es_timeout/22746408022-1-fault_obs_infra_es_timeout-r1` does not exist in this workspace
+  - CI artifact bundle exists at `artifacts/_tmp_ci_run_22746408022/labs-evidence-fault_obs_infra_es_timeout-22746408022-1-fault_obs_infra_es_timeout-r1/S3A-2A-3A/es_timeout/22746408022-1-fault_obs_infra_es_timeout-r1`
+  - expected first check: reroute to the CI bundle and inspect `_result.json.ok` there rather than treating the missing local snapshot as a failed run
 
 ## 7) Notes and Boundaries
 
