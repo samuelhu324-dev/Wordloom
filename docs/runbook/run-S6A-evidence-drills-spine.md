@@ -5,7 +5,7 @@
 **id**: `S6A-evidence-drills-spine`
 **kind**: `runbook`               # log | lab | runbook | adr | note
 **title**: `run/S6A-evidence-drills-spine`
-**status**: `draft`          # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S6A`
 **decision_date**: `2026-03-13`
 **context_issue**:

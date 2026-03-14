@@ -5,7 +5,7 @@
 **id**: `S5B-security-governance-hard-gates`
 **kind**: `runbook`               # log | lab | runbook | adr | note
 **title**: `run/S5B-security-governance-hard-gates`
-**status**: `draft`          # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S5B`
 **decision_date**: `2026-03-13`
 **context_issue**:
@@ -161,6 +161,11 @@
   - expected first check: if verifier reports `missing_run_dir`, treat it as stale or unavailable evidence and reroute to a current local run dir or CI artifact instead of treating it as suite failure
 - cross-phase routing example:
   - when the symptom is unexpected `bookshelf.delete` classification, go to `S5B-2A` first even if it surfaced during broader policy triage, because that boundary is intentionally concentrated there
+- ambiguity, cross-phase classification drift sample:
+  - red run dir `docs/labs/_snapshot/auto/S5B-2A/bookshelf_delete_entrypoint/17063138-2d67-4f4c-9309-f0ce55c55449`
+  - green run dir `docs/labs/_snapshot/auto/S5B-2A/bookshelf_delete_entrypoint/7e464272-8352-41b6-b655-b5077597edfe`
+  - expected first check: compare `delete_not_admin_403` and `delete_tenant_mismatch_403` inside the same `bookshelf_delete_entrypoint` suite before escalating to general deny-reason drift
+  - expected routing: if `tenant_mismatch` is still correct but `not_admin` regresses to `500`, classify it as `S5B-2A` entrypoint regression rather than an `S5B-1A` contract failure
 
 ## 7) Notes and Boundaries
 
