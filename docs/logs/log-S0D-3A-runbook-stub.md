@@ -21,7 +21,7 @@
   **reference_log_4**: `docs/logs/log-S0D-4A-UI-layered-fix-notes.md`
   **reference_log_5**: `docs/runbook/_template-runbook.md`
 **created**: `2026-03-13`
-**updated**: `2026-03-13`
+**updated**: `2026-03-14`
 
 ---
 
@@ -318,6 +318,15 @@
   - stable promotion contract 已经被真实样例跑通，而不是停留在纸面规则。
 - 因此 `S0D-3A` 当前可视为**完成态 stable governance log**；后续若还有 runbook 新增或复审，属于沿用本 contract 的增量 adoption，不再是 `S0D-3A` 本体未完成。
 
+### P3-C4-S7（S5A 顶层 runbook 判断｜2026-03-14）
+
+- `S5A`：**当前不建议补顶层 runbook**。
+  - `log-S5A-security-governance` 目前承担的是 epic spine 角色：负责默认 contract、phase 拆分、范围边界与演进导航，而不是单一稳定 operator workflow；
+  - 其 phase 同时覆盖 `AuthContext / tenant boundary / RBAC-lite / audit / backup / sanitization / object storage backup`，操作面过宽，若直接汇总成一个顶层 runbook，容易退化成第二份 spine log；
+  - `run-S5B-security-governance-hard-gates` 只覆盖 hard-gate / drills / verifier / triage 这条更窄的 operator 入口，并未覆盖或取代 `S5A` 的上游 epic 语义；
+  - 结论：`S5A` 应继续保留为上游治理与演进主 log，而不是因为后置出现 `S5B` 就被 runbook 覆盖。
+- 若后续 `S5A-3A / S5A-3B` 形成独立、长期、稳定的恢复/脱敏 operator workflow，可再按更窄 summary 单独评估是否升格 runbook；但这不等于今天要补一个总括型 `run-S5A-*`。
+
 ## Execution Checklist（unchecked）
 
 ### P0（Contract）
@@ -490,6 +499,21 @@
   - `run-S3A` 已有稳定入口、malfunction 复盘与 CI/local parity 证据，保留 `stable` 合理；
   - phase 镜像结构会掩盖跨 phase usage/validation，默认不应作为 runbook 主骨架。
 
+### P3-C4-S7（S5A 不补顶层 runbook｜2026-03-14）
+
+- artifacts：
+  - `docs/logs/log-S0D-3A-runbook-stub.md`
+  - `docs/logs/log-S5A-security-governance.md`
+  - `docs/logs/log-S5B-security-governance-hard-gates.md`
+  - `docs/runbook/run-S5B-security-governance-hard-gates.md`
+- 期望（expected）：
+  - 明确回答 `S5A` 是否因为 `S5B` 的出现而需要或不再需要顶层 runbook；
+  - 把 `S5A` 与 `S5B` 的职责边界写成可复用判断，而不是只停留在口头说明。
+- 观测（observed）：
+  - `S5A` 仍是上游 epic spine，覆盖 contract、phase 拆分与多条不同操作面，不是单一 operator entry；
+  - `S5B` runbook 只收敛 hard-gate/operator 路径，且其正文已把 broader `S5A` design history 排除在 scope 外；
+  - 因此当前“不补 `run-S5A-*`”的原因是 `S5A` 还不适合作为单一顶层 operator runbook，而不是它已被 `S5B` 覆盖。
+
 ## Recent changes（for traceability，可选）
 
 - 2026-03-13：基于对现有 `S2B / S2C / S2D` runbook 样本的梳理，正式把“runbook 只在顶层 scope 形成 operator workflow 时建立”的规则固化为 `S0D-3A`。
@@ -501,3 +525,4 @@
 - 2026-03-14：把 `CI-only evidence` 纳入第三类验证分支，并用 `run-S6A` 固化 `local green / local red / CI-only green` 三路样例。
 - 2026-03-14：补充 `S5B` 的 cross-phase ambiguity 样例，并基于既有样例把 `run-S5B / run-S6A` 从 `draft` 升级为 `stable`。
 - 2026-03-14：补充历史 commit 的 `S0D-3A` 重分类表，完成 `run-S0C / run-S3A` audit，并明确 runbook 默认不镜像顶层 log phase。
+- 2026-03-14：明确记账 `S5A` 当前不补顶层 runbook；原因是它仍是 epic spine，而不是被 `S5B` runbook 覆盖。
