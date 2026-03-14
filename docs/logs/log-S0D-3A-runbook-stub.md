@@ -288,10 +288,11 @@
 
 ### P3-C4-S4（run-S0C / run-S3A validation audit｜2026-03-14）
 
-- `run-S0C-scenarios-taxonomy`：**暂不建议升为 stable**。
-  - 已有稳定 operator 入口：catalog、lookup helper、suite trigger helper 都清楚；
-  - 也有真实 evidence：`S0C-4A-1A` 记录了 catalog guardrails 与 string `scenario_id` suite 回归的 Actions runs；
-  - 但仍缺少按 `S0D-3A` contract 明确写出的 `known failure` 与 `ambiguity` 样例，目前更像“可用入口”而不是“已验证的排障入口”。
+- `run-S0C-scenarios-taxonomy`：**现可升为 stable**。
+  - happy path 已用真实 repo 入口验证：`list_scenarios.py --intent verify` 能稳定列出 canonical ids 与 aliases，`validate_scenario_catalog.py` 在当前仓库上返回 `[ok] scenario catalog + workflow references validated`；
+  - known failure 已用真实 validator 逻辑做确定性复现：对 catalog 临时副本注入重复 alias `shadow_verify_search_index_write_gate` 后，`_validate_catalog(...)` 明确返回 `duplicate aliases across catalog: ['shadow_verify_search_index_write_gate']`；
+  - ambiguity 已用 legacy alias lookup 验证：`list_scenarios.py --grep shadow_verify_search_index_write_gate` 能把操作者带回 canonical `verify/search/write_gate_idempotency`；
+  - 结论：`entry found / evidence found / failure classified / next action clear` 四项已齐，且不需要先翻实现代码。
 - `run-S3A-failure-drills-&-gitactions-&-dashboard`：**可以继续保持 stable**。
   - 已有稳定本地与 CI 入口：`run -> verify -> export -> clean` + `drill-failures` workflow；
   - 顶层 log 与子 log 已沉淀真实 malfunction 与 CI/local parity 修复证据；
@@ -307,6 +308,15 @@
 - 什么时候可以加 phase 对照：
   - 仅当某个 phase 本身就是稳定 operator 入口，且操作者确实会按 phase 进入时；
   - 更推荐的做法是保留薄的 `Phase anchors` / `Primary source materials` 映射，而不是把 runbook 主体改写成 phase 镜像。
+
+### P3-C4-S6（S0D-3A completion status｜2026-03-14）
+
+- 以本轮 `run-S0C` 三路验证完成为界，`S0D-3A` 的主目标已经闭环：
+  - 顶层 scope 优先的 runbook strategy 已定义；
+  - 命名一致性与 legacy runbook 收敛已完成；
+  - `S5B / S6A / S0C / S3A` 四条当前核心 runbook 线都已有明确治理结论；
+  - stable promotion contract 已经被真实样例跑通，而不是停留在纸面规则。
+- 因此 `S0D-3A` 当前可视为**完成态 stable governance log**；后续若还有 runbook 新增或复审，属于沿用本 contract 的增量 adoption，不再是 `S0D-3A` 本体未完成。
 
 ## Execution Checklist（unchecked）
 

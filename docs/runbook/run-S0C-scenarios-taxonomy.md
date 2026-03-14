@@ -5,7 +5,7 @@
 **id**: `S0C-scenarios-taxonomy`
 **kind**: `runbook`               # log | lab | runbook | adr | note
 **title**: `run/S0C-scenarios-taxonomy`
-**status**: `draft`          # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S0C`
 **decision_date**: `2026-02-23`
 **context_issue**:
@@ -91,7 +91,38 @@
   - `rg "^\s*id:\s*verify/" docs/labs/scenarios/catalog.yml`
   - `rg "shadow_verify_search_index" docs/labs/scenarios/catalog.yml`
 
-## 6) Troubleshooting
+## 6) Validated Decision Paths
+
+### 6.1 Happy path
+
+- Catalog lookup succeeds with a real operator query:
+  - `python backend/scripts/ci/list_scenarios.py --intent verify`
+- Guardrail baseline succeeds on the current repo catalog:
+  - `python backend/scripts/ci/validate_scenario_catalog.py`
+- Validated outcome:
+  - `entry found`: verify scenarios and their aliases are listed directly from the catalog
+  - `evidence found`: the catalog plus helper output are enough to pick the canonical `scenario_id`
+  - `next action clear`: proceed with the canonical id or trigger the suite helper
+
+### 6.2 Known failure
+
+- Deterministic failure reproduction was validated against the real validator logic by cloning the catalog to a temporary file and reusing an existing alias `shadow_verify_search_index_write_gate` under a second scenario.
+- The validator returns:
+  - `duplicate aliases across catalog: ['shadow_verify_search_index_write_gate']`
+- Validated outcome:
+  - `failure classified`: this is a catalog uniqueness failure, not a workflow runtime failure
+  - `next action clear`: fix the conflicting alias in `docs/labs/scenarios/catalog.yml`, then rerun `python backend/scripts/ci/validate_scenario_catalog.py` before touching workflow YAML
+
+### 6.3 Ambiguity / legacy alias lookup
+
+- Legacy or fuzzy lookup was validated with:
+  - `python backend/scripts/ci/list_scenarios.py --grep shadow_verify_search_index_write_gate`
+- The helper resolves that legacy alias back to canonical `verify/search/write_gate_idempotency`.
+- Validated outcome:
+  - `entry found`: operators can start from an old alias and still land on the current catalog entry
+  - `next action clear`: use the canonical `scenario_id` in workflow dispatch or docs updates, and keep aliases only as migration bridges
+
+## 7) Troubleshooting
 
 - `PyYAML` missing:
   - install it first, or use the `rg` fallback directly on `docs/labs/scenarios/catalog.yml`
@@ -100,7 +131,7 @@
 - suite trigger script cannot talk to GitHub:
   - verify `gh auth status` and confirm the target branch/ref is correct
 
-## 7) Notes and Boundaries
+## 8) Notes and Boundaries
 
 - This runbook is a thin operator entry, not the full taxonomy history.
 - Workflow decomposition, guardrails, and migration notes remain in the S0C logs.
