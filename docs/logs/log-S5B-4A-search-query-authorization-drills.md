@@ -12,7 +12,7 @@
   **issue**: ``
   **pr**: ``
   **adr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S5B-security-governance-hard-gates.md`
   **parent_log**: `docs/logs/log-S5B-security-governance-hard-gates.md`
   **previous_log**: `docs/logs/log-S5B-3A-audit-coverage-operator-workflow.md`
   **reference_log_1**: `docs/logs/log-S5B-1A-policy-audit-hard-gate-drills.md`

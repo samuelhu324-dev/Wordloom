@@ -1,6 +1,6 @@
 # Labs Registry
 
-快速入口：如何查找/填写 GitHub Actions suite 的 `scenario_id` → `../runbook/run-S0C-docs-management-v3.md`
+快速入口：如何查找/填写 GitHub Actions suite 的 `scenario_id` → `../runbook/run-S0C-scenarios-taxonomy.md`
 
 目标：提供一个很轻量的“实验登记表”，解决“我到底有没有跑过 lab/test？”的焦虑。
 

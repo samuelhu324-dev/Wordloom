@@ -12,7 +12,7 @@
   **issue**: ``
   **pr**: ``
   **adr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S6A-evidence-drills-spine.md`
   **parent_log**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_1**: `docs/logs/log-S6A-1A-stable-entry-contract.md`
   **reference_log_2**: `docs/logs/log-S2B-3A-unified-consumer-framework.md`

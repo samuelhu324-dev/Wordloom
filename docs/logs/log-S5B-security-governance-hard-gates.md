@@ -12,7 +12,7 @@
   **issue**: ``
   **pr**: ``
   **adr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S5B-security-governance-hard-gates.md`
   **roadmap**: `docs/ROADMAP.md`
   **reference_log_1**: `docs/logs/log-S5A-security-governance.md`
   **reference_log_2**: `docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md`

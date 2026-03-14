@@ -12,7 +12,7 @@
   **issue**: `#66, #83, #107, #114`
   **pr**: `#108`
   **adr**: ``
-  **runbook**: `docs/runbook/run-S0C-docs-management-v3.md`
+  **runbook**: `docs/runbook/run-S0C-scenarios-taxonomy.md`
 **created**: `2026-02-22`
 **updated**: `2026-02-23`
 

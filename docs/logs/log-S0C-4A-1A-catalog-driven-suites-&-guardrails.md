@@ -31,7 +31,7 @@
 - ✅ 新增场景查询脚本：`backend/scripts/ci/list_scenarios.py`
   - 从 `docs/labs/scenarios/catalog.yml` 读取
   - 支持：`--intent <verify|readiness|dual_run|dual_write|fault>`、`--grep <keyword>`
-- ✅ 新增用法 runbook：`docs/runbook/run-S0C-docs-management-v3.md`
+- ✅ 新增用法 runbook：`docs/runbook/run-S0C-scenarios-taxonomy.md`
   - 记录：如何查找 `scenario_id`、以及 suite 的操作建议
 
 ## Background
@@ -178,7 +178,7 @@ S0C-4A 已完成：
 
 - 基线 log：`docs/logs/log-S0C-4A-workflow-&-scenarios-taxonomy.md`
 - Scenario catalog：`docs/labs/scenarios/catalog.yml`
-- Operator runbook：`docs/runbook/run-S0C-docs-management-v3.md`
+- Operator runbook：`docs/runbook/run-S0C-scenarios-taxonomy.md`
 - Workflows：
   - `.github/workflows/drill-verify.yml`
   - `.github/workflows/drill-write-gate.yml`

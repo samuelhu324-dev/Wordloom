@@ -11,6 +11,7 @@
 **links**: ``
   **roadmap_v2**: `docs/ROADMAP v2.md`
   **runbook_s2b**: `docs/runbook/run-S2B-projection-table-merge.md`
+  **runbook**: `docs/runbook/run-S6A-evidence-drills-spine.md`
 **created**: `2026-03-04`
 **updated**: `2026-03-06`
 

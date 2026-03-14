@@ -12,7 +12,7 @@
   **issue**: `#49`
   **pr**: ``
   **adr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
 **created**: `2026-02-14`
 **updated**: `2026-02-15`
 
