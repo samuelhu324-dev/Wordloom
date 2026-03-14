@@ -54,7 +54,7 @@
 
 ### 3.2 Summary or ledger
 
-- GitHub Actions uploads artifacts from `docs/labs/_snapshot/auto/`.
+- For reusable labs workflows, GitHub Actions now defaults single-scenario success to a minimal artifact (`summary.json` only) and keeps the larger run-scoped evidence bundle for failure triage or explicit broad/full-mode runs.
 - `_result.json` remains the primary fact source for pass/fail and supporting checks.
 
 ## 4) One-click Automation
@@ -63,7 +63,7 @@
 
 - Starts required infra for the selected drill suite.
 - Runs `labs run`, `labs verify`, `labs export`, and `labs clean`.
-- Uploads the resulting evidence bundle as an artifact.
+- Uploads either a minimal success summary or a run-scoped evidence bundle, depending on outcome and workflow mode.
 
 ### 4.2 Operator instructions
 

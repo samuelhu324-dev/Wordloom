@@ -209,7 +209,7 @@
 ### CI Evidence — GitHub Actions（2026-02-22）
 
 - workflow: `failure-drills.yml`
-- artifact: `labs-evidence-<scenario>-<GITHUB_RUN_ID>-<GITHUB_RUN_ATTEMPT>`（来自 `docs/labs/_snapshot/auto/`）
+- artifact: `labs-evidence-<scenario>-<GITHUB_RUN_ID>-<GITHUB_RUN_ATTEMPT>`（当时的历史基线来自 `docs/labs/_snapshot/auto/`；后续 reusable labs contract 已将单场景成功默认收敛为 `summary.json` only）
 - scenario: `failure-drills`（matrix=9 scenarios）
 - success run（截图2）：
   - run_id: `22270016158-1`

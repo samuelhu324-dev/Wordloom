@@ -146,7 +146,7 @@
 
 ### P3 (Cleanup / Convergence)
 
-- [ ] `P3-C1-S1`: older docs/examples audited against the new packing contract
+- [x] `P3-C1-S1`: older docs/examples audited against the new packing contract
 
 ## Evidence (reserved)
 
@@ -154,7 +154,12 @@
 
 ### P1-C1-S1S2 / P2-C1-S1S2 (Reusable labs packing convergence | 2026-03-14)
 
-- headSha: `<landing sha>`
+- headSha: `ce6b99498de4b66daf14bb053deeec6de01cdd9d` (validated on `main`; contract originally landed via `ffcb622086debc38c111e435f94f2baea8d3b515`)
+- ci_run_url: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23088974971`
+- dispatch:
+  - workflow: `drill-failures`
+  - scenario_id: `fault/obs_infra/es_429_inject`
+  - job: `drills (fault/obs_infra/es_429_inject)`
 - artifacts:
   - `.github/workflows/reusable-labs-scenario-runner.yml`
   - `.github/workflows/drill-failures.yml`
@@ -165,8 +170,25 @@
   - failures still upload one large evidence bundle
   - `fault/obs_infra/all` remains the explicit broad-evidence path
 - observed:
-  - pending validation in CI after landing
+  - GitHub Actions page reports `Status=Success`, `1 job completed`, `Artifacts=1`, total duration `5m 28s`
+  - the only produced artifact is `labs-evidence-fault_obs_infra_es_429_inject-23088974971-1-fault_obs_infra_es_429_inject` with size `1.04 KB`
+  - the tiny single artifact size is consistent with the minimal success contract (`summary.json` only), not a bundled multi-directory snapshot upload
+
+### P3-C1-S1 (Legacy docs/examples audit | 2026-03-14)
+
+- headSha: `ffcb622086debc38c111e435f94f2baea8d3b515`
+- artifacts:
+  - `docs/runbook/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  - `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
+  - `docs/logs/log-S0C-3A-2A-artifacts-contract-packing.md`
+- expected:
+  - operator-facing docs stop implying that single-scenario success always uploads the whole `docs/labs/_snapshot/auto/` root
+  - historical logs preserve the original fact pattern but label it as a legacy full-bundle baseline
+- observed:
+  - the operator runbook now documents minimal-success / failure-bundle behavior as the default reusable labs contract
+  - older historical references that mentioned root-level uploads are retained only as explicit historical baseline notes
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-14: scaffolded `S0D-5A` to unify and optimize drills evidence packing, with `drill-failures` included in the same `P*-C*-S*` contract.
+- 2026-03-14: recorded first successful single-scenario CI validation for the minimal packing contract and completed the initial legacy-doc wording audit.
