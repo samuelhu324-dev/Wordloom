@@ -22,6 +22,11 @@ on:
         required: false
         type: boolean
         default: false
+      evidence_upload_mode:
+        description: "Evidence upload mode: minimal uploads summary on success and a zip on failure; full uploads the full run evidence"
+        required: false
+        type: string
+        default: "minimal"
       env_file:
         description: "Env file path"
         required: true
@@ -332,6 +337,7 @@ jobs:
           bash ./.tmp/scenario-cli.sh
 
       - name: Contract check (_result.json)
+        id: contract_check
         if: always()
         run: |
           set -euo pipefail
@@ -341,6 +347,7 @@ jobs:
             echo "RUN_ID not set; cannot locate _result.json" >&2
             exit 2
           fi
+          echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
 
           mapfile -t matches < <(find docs/labs/_snapshot/auto -type f -path "*/${run_id}/_result.json" | sort)
           if [ "${#matches[@]}" -eq 0 ]; then
@@ -355,9 +362,13 @@ jobs:
 
           result_path="${matches[0]}"
           echo "Found _result.json: ${result_path}"
+          echo "RESULT_PATH=${result_path}" >> "$GITHUB_ENV"
+          echo "result_path=${result_path}" >> "$GITHUB_OUTPUT"
 
           run_dir="$(dirname "$result_path")"
           echo "Run dir: ${run_dir}"
+          echo "RUN_DIR=${run_dir}" >> "$GITHUB_ENV"
+          echo "run_dir=${run_dir}" >> "$GITHUB_OUTPUT"
 
           if [ "${{ inputs.require_min_artifacts }}" = "true" ]; then
             recipe_path="${run_dir}/_recipe.json"
@@ -424,6 +435,7 @@ jobs:
           exit 1
 
       - name: Compute artifact-safe scenario id
+        id: safe_scenario
         if: always()
         env:
           SCENARIO_ID: ${{ inputs.scenario_id }}
@@ -431,10 +443,58 @@ jobs:
           set -euo pipefail
           safe="${SCENARIO_ID//\//_}"
           echo "SAFE_SCENARIO_ID=$safe" >> "$GITHUB_ENV"
+          echo "safe_scenario=$safe" >> "$GITHUB_OUTPUT"
 
-      - name: Upload evidence bundle
-        if: always()
+      - name: Build summary artifact (minimal mode)
+        if: always() && inputs.evidence_upload_mode == 'minimal' && steps.contract_check.outputs.result_path != ''
+        run: |
+          set -euo pipefail
+          rm -rf artifacts
+          mkdir -p artifacts
+          python backend/scripts/ci/workflow_artifacts.py result-summary \
+            --scenario "${{ inputs.scenario_id }}" \
+            --run-id "${RUN_ID}" \
+            --result-path "${RESULT_PATH}" \
+            --artifacts-dir artifacts
+
+      - name: Upload summary (minimal mode, success only)
+        if: success() && inputs.evidence_upload_mode == 'minimal'
         uses: actions/upload-artifact@v4
         with:
-          name: labs-evidence-${{ env.SAFE_SCENARIO_ID }}-${{ env.RUN_ID }}
-          path: docs/labs/_snapshot/auto/
+          name: labs-evidence-${{ steps.safe_scenario.outputs.safe_scenario }}-${{ steps.contract_check.outputs.run_id }}
+          path: artifacts/summary.json
+
+      - name: Build full evidence zip (minimal mode, failure only)
+        if: failure() && inputs.evidence_upload_mode == 'minimal'
+        run: |
+          set -euo pipefail
+          rm -rf failure_artifacts artifacts.zip
+          mkdir -p failure_artifacts
+
+          bundle_name="${SAFE_SCENARIO_ID}-${RUN_ID}"
+          if [ -n "${RUN_DIR:-}" ] && [ -d "${RUN_DIR}" ]; then
+            cp -R "${RUN_DIR}" "failure_artifacts/${bundle_name}"
+          else
+            mkdir -p "failure_artifacts/${bundle_name}"
+            if [ -d docs/labs/_snapshot/auto ]; then
+              cp -R docs/labs/_snapshot/auto "failure_artifacts/${bundle_name}/auto"
+            fi
+          fi
+
+          python backend/scripts/ci/workflow_artifacts.py zip \
+            --artifacts-dir failure_artifacts \
+            --zip-path artifacts.zip
+
+      - name: Upload full evidence zip (minimal mode, failure only)
+        if: failure() && inputs.evidence_upload_mode == 'minimal'
+        uses: actions/upload-artifact@v4
+        with:
+          name: labs-evidence-${{ steps.safe_scenario.outputs.safe_scenario }}-${{ steps.contract_check.outputs.run_id }}
+          path: artifacts.zip
+
+      - name: Upload evidence bundle (full mode)
+        if: always() && inputs.evidence_upload_mode != 'minimal'
+        uses: actions/upload-artifact@v4
+        with:
+          name: labs-evidence-${{ steps.safe_scenario.outputs.safe_scenario }}-${{ steps.contract_check.outputs.run_id }}
+          path: ${{ steps.contract_check.outputs.run_dir != '' && steps.contract_check.outputs.run_dir || 'docs/labs/_snapshot/auto/' }}

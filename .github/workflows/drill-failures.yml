@@ -50,6 +50,7 @@ jobs:
 
     with:
       scenario_id: ${{ matrix.scenario }}
+      evidence_upload_mode: ${{ inputs.scenario_id == 'fault/obs_infra/all' && 'full' || 'minimal' }}
       force_failure: ${{ inputs.force_failure }}
       env_file: ${{ inputs.env_file }}
       duration: ${{ inputs.duration }}

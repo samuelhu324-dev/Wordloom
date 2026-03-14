@@ -79,6 +79,33 @@ def action_zip(*, artifacts_dir: Path, zip_path: Path) -> int:
     return 0
 
 
+def action_result_summary(
+    *,
+    scenario: str,
+    run_id: str | None,
+    result_path: Path,
+    artifacts_dir: Path,
+) -> int:
+    common = _import_common()
+
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    summary_path = artifacts_dir / "summary.json"
+
+    if result_path.exists() and result_path.is_file():
+        _copy_if_exists(result_path, summary_path)
+        return 0
+
+    payload = {
+        "scenario": scenario,
+        "run_id": run_id,
+        "ok": False,
+        "error": "missing _result.json",
+        "result_path": str(result_path),
+    }
+    common.write_json(summary_path, payload)
+    return 0
+
+
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="workflow_artifacts", add_help=True)
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -97,6 +124,12 @@ def _build_parser() -> argparse.ArgumentParser:
     p_zip = sub.add_parser("zip")
     p_zip.add_argument("--artifacts-dir", default="artifacts")
     p_zip.add_argument("--zip-path", default="artifacts.zip")
+
+    p_result_summary = sub.add_parser("result-summary")
+    p_result_summary.add_argument("--scenario", required=True)
+    p_result_summary.add_argument("--run-id", default=None)
+    p_result_summary.add_argument("--result-path", required=True)
+    p_result_summary.add_argument("--artifacts-dir", default="artifacts")
 
     return p
 
@@ -126,6 +159,19 @@ def main() -> int:
 
     if cmd == "zip":
         return int(action_zip(artifacts_dir=Path(str(args.artifacts_dir)), zip_path=Path(str(args.zip_path))))
+
+    if cmd == "result-summary":
+        run_id = args.run_id
+        if run_id is not None:
+            run_id = str(run_id)
+        return int(
+            action_result_summary(
+                scenario=str(args.scenario),
+                run_id=run_id,
+                result_path=Path(str(args.result_path)),
+                artifacts_dir=Path(str(args.artifacts_dir)),
+            )
+        )
 
     raise SystemExit(f"unknown command: {cmd}")
 
