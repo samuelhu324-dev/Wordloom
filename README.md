@@ -48,17 +48,15 @@ Core engineering surface:
 
 ## Demo and walkthrough
 
-Product surface:
+**Product surface**:
 
 ![Wordloom main content model demo](docs/demo/DEMO-main-content-model.png)
 
-Main content model: Library -> Bookshelf -> Book -> Block.
+**Main content model: Library -> Bookshelf -> Book -> Block**.
 
 ![Wordloom product flow demo](docs/demo/DEMO-gif-1-2x.gif)
 
-Product flow demo: a 2x-speed walkthrough of navigation and editing across the main content model.
-
-Engineering surface:
+**Engineering surface**:
 
 ```mermaid
 flowchart LR
@@ -84,11 +82,9 @@ flowchart LR
     OBS -. CI / drills / artifacts .-> EVIDENCE[Evidence Bundles / Hard Gates<br/>_result.json / snapshots / CI workflows]
 ```
 
-Engineering architecture: PostgreSQL is the system of record, outbox events define the async boundary, unified workers drive projections and search updates, and observability plus evidence bundles keep the runtime auditable and safe to evolve.
+**Engineering architecture: PostgreSQL is the system of record, outbox events define the async boundary, unified workers drive projections and search updates, and observability plus evidence bundles keep the runtime auditable and safe to evolve.**
 
 ![Wordloom observability and hard gate demo](docs/demo/DEMO-gif-2-2x.gif)
-
-Engineering evidence demo: a 2x-speed walkthrough of observability, timeline, and hard-gate style evidence surfaces.
 
 ## Architecture overview
 
