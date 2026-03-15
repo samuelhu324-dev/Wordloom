@@ -18,7 +18,7 @@
   **reference_log_2**: `docs/logs/log-S6A-4A-hard-gate-evidence-json.md`
   **reference_log_3**: `docs/logs/log-S0C-5A-Git-commit+push-descriptions.md`
 **created**: `2026-03-06`
-**updated**: `2026-03-06`
+**updated**: `2026-03-15`
 
 ---
 
@@ -81,6 +81,16 @@
   - spine：`docs/logs/log-S6A-evidence-drills-spine.md`
   - phase logs：`docs/logs/log-S6A-1A-stable-entry-contract.md`、`docs/logs/log-S6A-2A-unify-supply-creation.md`、`docs/logs/log-S6A-3A-failure-taxonomy-hard-interface.md`、`docs/logs/log-S6A-4A-hard-gate-evidence-json.md`
 - 说明：S6A spine log 通过 P0–P4 的 checklist + 子 log evidence 的记账条目形成可追索闭环，并最终可提升为 `stable`。
+
+### P1-C1-S4 (Closure sample | S0D-5A stable bookkeeping verified | 2026-03-15)
+
+- Real closure sample:
+  - parent/index log: `docs/logs/log-S0D-1A-log-entries-orchestration.md`
+  - phase log: `docs/logs/log-S0D-5A-drills-evidence-packing-unification.md`
+  - child-log template: `docs/logs/_template-log-phase-drills-evidence.md`
+- Notes:
+  - `S0D-5A` now demonstrates the full child-log lifecycle on top of the template structure: contract definition, implementation landing, drill validation, legacy-doc audit, evidence bookkeeping, and stable promotion.
+  - The child-log template is now normalized to pure English wording so future phase logs do not drift into mixed-language structure while still preserving repo-specific naming conventions.
 
 ## Notes（可选）
 
