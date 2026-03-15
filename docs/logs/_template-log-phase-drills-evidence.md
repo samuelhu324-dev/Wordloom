@@ -1,10 +1,10 @@
-# log-<ID>（Phase <n>：<切片标题>）
+# log-<ID> (Phase <n>: <Slice Title>)
 
 ---
 
 **id**: `<ID>`
 **kind**: `log`               # log | lab | runbook | adr | note
-**title**: `<一句话标题：交付物 + drills/evidence + v1>`
+**title**: `<One-line title: deliverable + drills/evidence + v1>`
 **status**: `draft`           # draft | stable | archived
 **scope**: `<Sx>`
 **tags**: `EVOLUTION, <domain>, Drills, Evidence, epic/<sx>, sub/<phase>`
@@ -21,123 +21,123 @@
 
 ---
 
-## Decision / Outcome（结论区）
+## Decision / Outcome
 
 **Decision**:
 
-- <本 phase 的核心交付是什么>
-- <默认做法/默认语义>
+- <What this phase delivers>
+- <Default behavior / default semantics>
 
-**Default choices（本 phase 默认决策 / v1）**（可选，但建议写）:
+**Default choices (phase defaults / v1)** (optional, but recommended):
 
-- <例如：dev/test 先；不引入生产级复杂度；不入 git 的产物；证据 JSON 字段>
+- <For example: dev/test first; avoid production-grade complexity; do not commit generated artifacts; required evidence JSON fields>
 
-## Definitions（概念定义，可选）
+## Definitions (optional)
 
-- <关键术语 3~10 条，避免读者猜>
+- <3-10 key terms so readers do not need to infer meaning>
 
-## Constraints（约束）
+## Constraints
 
-- <例如：dump 不入 git；最小权限；reason 低基数；证据机器可判定>
+- <For example: dumps are not committed to git; least privilege; low-cardinality reasons; machine-verifiable evidence>
 
-## Scope（本 log 范围）
+## Scope
 
-- `P0`：contract（默认决策、命名/字段、证据口径）
-- `P1`：<实现/infra/脚本>
-- `P2`：<drill/verify>
-- `P3`：<drill/verify>
-- （可选）`P4`：<单命令 pipeline / hard gate>
+- `P0`: contract (default decisions, naming/fields, evidence contract)
+- `P1`: <implementation / infra / scripts>
+- `P2`: <drill / verify>
+- `P3`: <drill / verify>
+- (optional) `P4`: <single-command pipeline / hard gate>
 
-## Success Criteria（DoD）
+## Success Criteria (DoD)
 
-- <列 4~10 条可验收标准，尽量能靠 evidence JSON / SQL / metrics 判定>
+- <List 4-10 acceptance checks, ideally verifiable from evidence JSON / SQL / metrics>
 
-## Stability（stable 口径）
+## Stability (what stable means)
 
-- 本 log 标记为 `stable` 表示：
-  - <P0-Pn 的 contract + 入口脚本 + drills 已跑通>
-  - Evidence 区有可追溯的 `headSha` + artifacts 路径（或 CI run URL）
+- This log can be marked `stable` when:
+  - <The P0-Pn contract, entry scripts, and drills have all been exercised successfully>
+  - The Evidence section includes traceable `headSha` values plus artifact paths (or CI run URLs)
 
-## P0（Contract｜v1）
+## P0 (Contract | v1)
 
-### P0-C1-S1（<contract 子项 1>）
+### P0-C1-S1 (<Contract item 1>)
 
-- <命名/字段/语义/约束>
+- <Naming / fields / semantics / constraints>
 
-### P0-C1-S2（<contract 子项 2>）
+### P0-C1-S2 (<Contract item 2>)
 
-- <命名/字段/语义/约束>
+- <Naming / fields / semantics / constraints>
 
-### P0-C1-S3（证据口径 contract｜v1）
+### P0-C1-S3 (Evidence contract | v1)
 
-- evidence JSON 必须包含：
-  - <输入参数>
-  - <输出产物路径>
-  - <PASS/FAIL 可判定字段>
+- Evidence JSON must include:
+  - <Input parameters>
+  - <Output artifact paths>
+  - <PASS/FAIL decision fields>
 
-## Numbering（编号约定）
+## Numbering
 
-- `S<n>`：Step（步骤）。
-- `C<n>`：Cycle（循环轮次）。
+- `S<n>`: Step.
+- `C<n>`: Cycle.
 
-**Commit / PR 命名**:
+**Commit / PR naming**:
 
-- `<ID>/P<phase>-C<cycle>-S<steps>: <summary>`，其中 `<steps>` 可以是单个 step（`1`，即 `...-S1`），也可以是在同一 phase / cycle 下连续的多个 step 合并（如 `1S2`，即 `...-S1S2`）。
+- `<ID>/P<phase>-C<cycle>-S<steps>: <summary>`, where `<steps>` can be a single step (`1`, meaning `...-S1`) or multiple consecutive steps grouped within the same phase / cycle (for example `1S2`, meaning `...-S1S2`).
 
-**Branch 约定**:
+**Branch convention**:
 
-- 对应 scope/index 的 log（例如 `S5B-3A` 隶属于 `S5B`，`S0D-2A` 隶属于 `S0D`）优先在同名前缀的工作分支上推进 P* 的代码与文档变更：
-  - 例如：`S5B-3A` 相关改动优先落在 `S5B-...` 系列分支（如 `S5B-security-governance-hard-gates`）；
-  - `S0D-2A` 这类 meta/docs/automation 改动优先落在 `S0D-...` 系列分支（如 `S0D-docs-management-v4`）。
-- 如果一次 PR 同时涉及多个 scope/index（例如同时修改 `S5B-3A` 和 `S0D-2A`），建议拆成多条 PR：每条 PR 聚焦一个 scope/index 与对应分支，便于后续自动化按 scope 做聚合与回溯。
+- For logs tied to a specific scope/index (for example, `S5B-3A` belongs to `S5B`, and `S0D-2A` belongs to `S0D`), prefer making P* code and documentation changes on a working branch with the same prefix:
+  - For example, `S5B-3A` changes should usually land on an `S5B-*` branch such as `S5B-security-governance-hard-gates`.
+  - `S0D-2A` style meta/docs/automation changes should usually land on an `S0D-*` branch such as `S0D-docs-management-v4`.
+- If a single PR touches multiple scopes/indexes (for example both `S5B-3A` and `S0D-2A`), prefer splitting it into multiple PRs so each PR stays focused on one scope/index and its corresponding branch for easier aggregation and traceability.
 
-**Commit 纪律（建议）**:
+**Commit discipline (recommended)**:
 
-- 每完成一个 `P*-C*-S*` 的实质内容（无论是合同、实现，还是 drills/evidence），应尽量在对应 scope 的工作分支上及时 `commit/push`：
-  - 例如：`S5B-4A` 相关改动默认落在 `S5B-security-governance-hard-gates` 这类 `S5B-*` 顶层分支上；
-  - 若某个 phase 体量特别大或多人协作，可在 `S5B-*` 之下再开短生命周期子分支，但默认不必为每个 log 单独起分支。
-- 正常节奏是：在对应 scope 分支上按 `P*-C*-S*` 粒度累积 commit → 定期从该分支向 `main` 提交 PR，由人工 Review/合并。
+- After each meaningful `P*-C*-S*` unit is complete, whether it is contract work, implementation, or drills/evidence, try to `commit/push` promptly on the matching scope branch:
+  - For example, `S5B-4A` changes should normally land on an `S5B-*` top-level branch such as `S5B-security-governance-hard-gates`.
+  - If a phase is unusually large or involves multiple contributors, you may open a short-lived child branch under the `S5B-*` branch, but the default is still not to create a separate branch for every log.
+- The normal rhythm is: accumulate commits on the matching scope branch at `P*-C*-S*` granularity, then periodically open a PR from that branch into `main` for human review and merge.
 
-## Plan（draft）
+## Plan (draft)
 
-### P1（<实现>）
+### P1 (<Implementation>)
 
-- P1-C1-S1：...
-- P1-C1-S2：...
+- P1-C1-S1: ...
+- P1-C1-S2: ...
 
-### P2（<drill/verify>）
+### P2 (<Drill / Verify>)
 
-- P2-C1-S1：...
-- P2-C1-S2：...
+- P2-C1-S1: ...
+- P2-C1-S2: ...
 
-## Execution Checklist（unchecked）
+## Execution Checklist (unchecked)
 
-### P0（Contract）
+### P0 (Contract)
 
-- [ ] `P0-C1-S1`：...
-- [ ] `P0-C1-S2`：...
-- [ ] `P0-C1-S3`：...
+- [ ] `P0-C1-S1`: ...
+- [ ] `P0-C1-S2`: ...
+- [ ] `P0-C1-S3`: ...
 
-### P1（...）
+### P1 (...)
 
-- [ ] `P1-C1-S1`：...
-- [ ] `P1-C1-S2`：...
+- [ ] `P1-C1-S1`: ...
+- [ ] `P1-C1-S2`: ...
 
-## Evidence（预留）
+## Evidence (reserved)
 
-- Evidence 以 artifacts 为事实源；本 log 记录：headSha + 关键参数 + artifacts 路径（或 CI run URL）。
+- Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
 
-### <Pn-Cx-Sy>（<drill 名称>｜YYYY-MM-DD）
+### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
-- headSha：`<git sha>`
-- artifacts：`artifacts/_tmp_<...>/drills_<ts>.json`
-- env（示例，可选）：
+- headSha: `<git sha>`
+- artifacts: `artifacts/_tmp_<...>/drills_<ts>.json`
+- env (example, optional):
   - `<ENV>=<...>`
-- 期望（expected）：
+- expected:
   - ...
-- 观测（observed）：
+- observed:
   - ...
 
-## Recent changes（for traceability，可选）
+## Recent changes (for traceability, optional)
 
-- YYYY-MM-DD：<发生了什么变更，为什么要记录，如何追溯>
+- YYYY-MM-DD: <What changed, why it is recorded, and how to trace it>

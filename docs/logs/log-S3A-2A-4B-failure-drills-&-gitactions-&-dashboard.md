@@ -367,7 +367,7 @@ clean 的最小职责：
   - `workflow_dispatch` 输入：`scenario/env_file/duration/lookback/keep_last`
   - CI 启动 infra：`docker compose -f docker-compose.infra.yml up -d` + `docker compose -f docker-compose.devtest-db.yml up -d`
   - 执行顺序固定：`run → verify → export → clean`
-  - 证据包上传：上传 `docs/labs/_snapshot/auto/` 作为 artifact
+  - 证据包上传：当时的基线实现是上传 `docs/labs/_snapshot/auto/` 作为 artifact；后续 reusable labs contract 已把单场景成功默认收敛为 `summary.json` only，并把大证据包保留给失败取证或显式 full mode
 - 已支持 `scenario=all`：在单次 workflow run 中循环执行 A–H 全场景，且全部 PASS，并可生成/上传证据包 artifact（用于回放与审计）。
 - 环境对齐已落地：workflow 内生成并 `source` `.env.test`、等待 ES/PG ready、执行 alembic migrate，并提供 `Environment fingerprint (CI)` 写入 `GITHUB_STEP_SUMMARY`（脱敏）以快速定位环境分叉。
 - Job Summary 的 `_result.json → GITHUB_STEP_SUMMARY` 解析仍保留在 draft（当前优先保证 artifact 可回放）。

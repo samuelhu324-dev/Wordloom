@@ -5,7 +5,7 @@
 **id**: `S0D-5A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `drills evidence packing unification and optimization v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S0`
 **tags**: `EVOLUTION, Tooling, Drills, Evidence, Automation, Artifacts, Packing, epic/s0, sub/5a`
 **links**: ``
@@ -21,7 +21,7 @@
   **reference_log_4**: `.github/workflows/reusable-labs-scenario-runner.yml`
   **reference_log_5**: `.github/workflows/drill-failures.yml`
 **created**: `2026-03-14`
-**updated**: `2026-03-14`
+**updated**: `2026-03-15`
 
 ---
 
@@ -70,6 +70,7 @@
 ## Stability (what stable means)
 
 - This log can move to `stable` when the reusable packing contract is implemented, adopted by the main reusable labs runner, and validated on at least one single-scenario drill plus one matrix-style drill path.
+- This threshold is now met by the recorded single-scenario success/failure validations and the `fault/obs_infra/all` matrix success/failure validations below.
 
 ## P0 (Contract | v1)
 
@@ -146,7 +147,7 @@
 
 ### P3 (Cleanup / Convergence)
 
-- [ ] `P3-C1-S1`: older docs/examples audited against the new packing contract
+- [x] `P3-C1-S1`: older docs/examples audited against the new packing contract
 
 ## Evidence (reserved)
 
@@ -154,7 +155,12 @@
 
 ### P1-C1-S1S2 / P2-C1-S1S2 (Reusable labs packing convergence | 2026-03-14)
 
-- headSha: `<landing sha>`
+- headSha: `ce6b99498de4b66daf14bb053deeec6de01cdd9d` (validated on `main`; contract originally landed via `ffcb622086debc38c111e435f94f2baea8d3b515`)
+- ci_run_url: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23088974971`
+- dispatch:
+  - workflow: `drill-failures`
+  - scenario_id: `fault/obs_infra/es_429_inject`
+  - job: `drills (fault/obs_infra/es_429_inject)`
 - artifacts:
   - `.github/workflows/reusable-labs-scenario-runner.yml`
   - `.github/workflows/drill-failures.yml`
@@ -165,8 +171,60 @@
   - failures still upload one large evidence bundle
   - `fault/obs_infra/all` remains the explicit broad-evidence path
 - observed:
-  - pending validation in CI after landing
+  - GitHub Actions page reports `Status=Success`, `1 job completed`, `Artifacts=1`, total duration `5m 28s`
+  - the only produced artifact is `labs-evidence-fault_obs_infra_es_429_inject-23088974971-1-fault_obs_infra_es_429_inject` with size `1.04 KB`
+  - the tiny single artifact size is consistent with the minimal success contract (`summary.json` only), not a bundled multi-directory snapshot upload
+
+### P3-C1-S1 (Legacy docs/examples audit | 2026-03-14)
+
+- headSha: `ffcb622086debc38c111e435f94f2baea8d3b515`
+- artifacts:
+  - `docs/runbook/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  - `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
+  - `docs/logs/log-S0C-3A-2A-artifacts-contract-packing.md`
+- expected:
+  - operator-facing docs stop implying that single-scenario success always uploads the whole `docs/labs/_snapshot/auto/` root
+  - historical logs preserve the original fact pattern but label it as a legacy full-bundle baseline
+- observed:
+  - the operator runbook now documents minimal-success / failure-bundle behavior as the default reusable labs contract
+  - older historical references that mentioned root-level uploads are retained only as explicit historical baseline notes
+
+### P2-C2-S1 (Minimal mode failure validation | 2026-03-15)
+
+- headSha: `ce6b99498de4b66daf14bb053deeec6de01cdd9d`
+- ci_run_url: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23101314070`
+- dispatch:
+  - workflow: `drill-failures`
+  - scenario_id: `fault/obs_infra/es_429_inject`
+  - job: `drills (fault/obs_infra/es_429_inject)`
+- expected:
+  - a non-`all` single-scenario failure still uploads one downloadable evidence artifact for triage
+  - the failure artifact should be materially larger than the minimal success-only summary artifact recorded above
+- observed:
+  - GitHub Actions page reports `Status=Failure`, `1 job completed`, `Artifacts=1`, total duration `1m 45s`
+  - the produced artifact is `labs-evidence-fault_obs_infra_es_429_inject-23101314070-1-fault_obs_infra_es_429_inject` with size `10.9 KB`
+  - compared with the earlier single-scenario success artifact size `1.04 KB`, this failed run preserved a larger downloadable evidence bundle instead of collapsing to the minimal success summary
+
+### P2-C2-S2 (Matrix-all full-mode validation | 2026-03-15)
+
+- headSha: `ce6b99498de4b66daf14bb053deeec6de01cdd9d`
+- ci_run_url_success: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23101358593`
+- ci_run_url_failure: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23101363403`
+- dispatch:
+  - workflow: `drill-failures`
+  - scenario_id: `fault/obs_infra/all`
+  - matrix jobs: `collector_down`, `db_claim_contention`, `duplicate_delivery`, `es_429_inject`, `es_bulk_partial`, `es_down_connect`, `es_write_block_4xx`, `projection_version`, `stuck_reclaim`
+- expected:
+  - `fault/obs_infra/all` remains the explicit broad/full-mode path
+  - matrix dispatches produce per-scenario evidence artifacts rather than the single-scenario minimal-success artifact shape
+- observed:
+  - success run `#15` reports `Status=Success`, `9 jobs completed`, `Artifacts=9`, total duration `3m 1s`
+  - failure run `#16` reports `Status=Failure`, `9 jobs completed`, `Artifacts=9`, total duration `3m 0s`
+  - both runs publish one artifact per scenario job, with representative sizes such as `11.8 KB` (`collector_down`), `14.4 KB` (`es_429_inject` / `es_bulk_partial`), `16.9 KB` (`es_down_connect`), `30.9 KB` (`stuck_reclaim`), and `60.1/60.3 KB` (`db_claim_contention`)
+  - the matrix path therefore remains the explicit broad-evidence route, distinct from the single-scenario minimal-success contract
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-14: scaffolded `S0D-5A` to unify and optimize drills evidence packing, with `drill-failures` included in the same `P*-C*-S*` contract.
+- 2026-03-14: recorded first successful single-scenario CI validation for the minimal packing contract and completed the initial legacy-doc wording audit.
+- 2026-03-15: recorded minimal-mode failure validation plus `fault/obs_infra/all` matrix success/failure validation, and promoted `S0D-5A` to `stable`.
