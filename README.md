@@ -50,23 +50,45 @@ Core engineering surface:
 
 Product surface:
 
-![Wordloom product screenshot placeholder](docs/demo/assets/product-overview-placeholder.png)
+![Wordloom main content model demo](docs/demo/DEMO-main-content-model.png)
 
-Caption placeholder: replace this image with a Library / Bookshelf / Book / Block screenshot that shows the main knowledge workflow in one frame.
+Main content model: Library -> Bookshelf -> Book -> Block.
 
-![Wordloom product flow GIF placeholder](docs/demo/assets/product-flow-placeholder.gif)
+![Wordloom product flow demo](docs/demo/DEMO-gif-1-2x.gif)
 
-Caption placeholder: replace this GIF with a short screen capture showing either search, editing, or navigation across the main content model.
+Product flow demo: a 2x-speed walkthrough of navigation and editing across the main content model.
 
 Engineering surface:
 
-![Wordloom architecture diagram placeholder](docs/demo/assets/architecture-overview-placeholder.png)
+```mermaid
+flowchart LR
+    UI[Web UI<br/>Library / Bookshelf / Book / Block] --> API[FastAPI<br/>Routers / Application Services]
 
-Caption placeholder: replace this with a simple architecture diagram based on `docs/demo/README-architecture-outline.md`.
+    API --> DOMAIN[Domain Logic<br/>Policies / Use Cases / Resource Rules]
+    DOMAIN --> PG[(PostgreSQL<br/>System of Record)]
+    DOMAIN --> OUTBOX[(Outbox Events<br/>Transactional async boundary)]
 
-![Wordloom observability and hard gate placeholder](docs/demo/assets/engineering-evidence-placeholder.png)
+    OUTBOX --> WORKERS[Unified Workers / Projection Harness<br/>claim / retry / reclaim / replay]
+    WORKERS --> RM[(Read Models<br/>DB projections)]
+    WORKERS --> ES[(Elasticsearch<br/>Search index)]
 
-Caption placeholder: replace this image with metrics, tracing, CI hard gate artifacts, or evidence bundle screenshots.
+    API --> SEARCH[Search Query Layer<br/>two-stage search / filtering]
+    SEARCH --> ES
+    SEARCH --> RM
+
+    API -. auth context .-> AUTH[AuthContext / Policy EntryPoints]
+    AUTH -. audit trail .-> AUDIT[(Audit Log)]
+
+    WORKERS -. logs / metrics / traces .-> OBS[Observability<br/>Structured Logs / Metrics / Traces]
+    API -. request_id / evidence .-> OBS
+    OBS -. CI / drills / artifacts .-> EVIDENCE[Evidence Bundles / Hard Gates<br/>_result.json / snapshots / CI workflows]
+```
+
+Engineering architecture: PostgreSQL is the system of record, outbox events define the async boundary, unified workers drive projections and search updates, and observability plus evidence bundles keep the runtime auditable and safe to evolve.
+
+![Wordloom observability and hard gate demo](docs/demo/DEMO-gif-2-2x.gif)
+
+Engineering evidence demo: a 2x-speed walkthrough of observability, timeline, and hard-gate style evidence surfaces.
 
 ## Architecture overview
 
