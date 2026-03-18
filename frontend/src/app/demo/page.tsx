@@ -6,6 +6,34 @@ import styles from './page.module.css';
 export const metadata: Metadata = {
   title: 'Wordloom Demo',
   description: 'A recruiter-friendly overview of Wordloom, focused on search, async workflows, observability, and safe system evolution.',
+  alternates: {
+    canonical: '/demo',
+  },
+  openGraph: {
+    title: 'Wordloom Demo',
+    description: 'A recruiter-friendly overview of Wordloom, focused on search, async workflows, observability, and safe system evolution.',
+    url: '/demo',
+    siteName: 'Wordloom',
+    type: 'website',
+    images: [
+      {
+        url: '/demo/DEMO-main-content-model.png',
+        width: 1600,
+        height: 900,
+        alt: 'Wordloom main content model',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Wordloom Demo',
+    description: 'A backend-heavy knowledge platform focused on search, async workflows, observability, and safe system evolution.',
+    images: ['/demo/DEMO-main-content-model.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const highlightCards = [
@@ -161,6 +189,7 @@ export default function DemoPage() {
               width={1600}
               height={900}
               className={styles.visualImage}
+              unoptimized
               priority
             />
             <p className={styles.visualCaption}>Main content model: Library to Bookshelf to Book to Block.</p>
@@ -268,6 +297,7 @@ export default function DemoPage() {
                 width={card.width}
                 height={card.height}
                 className={styles.screenshotImage}
+                unoptimized
               />
               <figcaption>
                 <strong>{card.title}</strong>
