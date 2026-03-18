@@ -1,20 +1,22 @@
-import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
+import { withBasePath } from '@/shared/lib/site';
 import styles from './page.module.css';
 
 const assetVersion = '20260318b';
-const asset = (path: string) => `${path}?v=${assetVersion}`;
+const asset = (path: string) => `${withBasePath(path)}?v=${assetVersion}`;
+const demoPagePath = withBasePath('/demo');
 
 export const metadata: Metadata = {
   title: 'Wordloom Demo',
   description: 'A recruiter-friendly overview of Wordloom, focused on search, async workflows, observability, and safe system evolution.',
   alternates: {
-    canonical: '/demo',
+    canonical: demoPagePath,
   },
   openGraph: {
     title: 'Wordloom Demo',
     description: 'A recruiter-friendly overview of Wordloom, focused on search, async workflows, observability, and safe system evolution.',
-    url: '/demo',
+    url: demoPagePath,
     siteName: 'Wordloom',
     type: 'website',
     images: [
@@ -137,10 +139,12 @@ const footerLinks = [
   {
     label: 'GitHub',
     href: 'https://github.com/samuelhu324-dev/Wordloom',
+    external: true,
   },
   {
     label: 'LinkedIn',
     href: 'https://www.linkedin.com/in/samuel-hu-08b4143a0/',
+    external: true,
   },
   {
     label: 'Demo Video',
@@ -149,6 +153,7 @@ const footerLinks = [
   {
     label: 'README',
     href: 'https://github.com/samuelhu324-dev/Wordloom#readme',
+    external: true,
   },
 ];
 
@@ -185,14 +190,14 @@ export default function DemoPage() {
         </div>
         <div className={styles.heroVisual}>
           <div className={styles.visualCard}>
-            <img
+            <Image
               src={asset('/demo/DEMO-main-content-model.png')}
               alt="Wordloom main content model"
               width={1600}
               height={900}
               className={styles.visualImage}
-              loading="eager"
-              decoding="sync"
+              unoptimized
+              priority
             />
             <p className={styles.visualCaption}>Main content model: Library to Bookshelf to Book to Block.</p>
           </div>
@@ -260,24 +265,10 @@ export default function DemoPage() {
         </div>
         <div className={styles.previewGrid}>
           <div className={styles.previewMedia}>
-            <video className={styles.video} controls preload="metadata" playsInline poster={asset('/demo/DEMO-main-content-model.png')}>
+            <video className={styles.video} controls preload="metadata" poster={asset('/demo/DEMO-main-content-model.png')}>
               <source src={asset('/demo/DEMO_VIDEO_1.mp4')} type="video/mp4" />
               Your browser does not support embedded video playback.
             </video>
-            <div className={styles.mediaFallback}>
-              <img
-                src={asset('/demo/DEMO-gif-1-2x.gif')}
-                alt="Animated text editor workflow preview"
-                width={1200}
-                height={675}
-                className={styles.fallbackImage}
-                loading="lazy"
-                decoding="async"
-              />
-              <p className={styles.mediaHint}>
-                If the embedded MP4 does not render on your browser or phone, use the direct file link below or view this GIF preview instead.
-              </p>
-            </div>
           </div>
           <div className={styles.previewCopy}>
             <h3>Short product walkthrough</h3>
@@ -290,9 +281,6 @@ export default function DemoPage() {
             <div className={styles.previewActions}>
               <a className={styles.primaryAction} href={asset('/demo/DEMO_VIDEO_1.mp4')} target="_blank" rel="noreferrer">
                 Watch Demo
-              </a>
-              <a className={styles.secondaryAction} href={asset('/demo/DEMO-gif-1-2x.gif')} target="_blank" rel="noreferrer">
-                Open GIF Preview
               </a>
               <a className={styles.secondaryAction} href="https://github.com/samuelhu324-dev/Wordloom#readme" target="_blank" rel="noreferrer">
                 Read README
@@ -310,14 +298,13 @@ export default function DemoPage() {
         <div className={styles.screenshotGrid}>
           {screenshotCards.map((card) => (
             <figure key={card.title} className={styles.screenshotCard}>
-              <img
+              <Image
                 src={card.src}
                 alt={card.title}
                 width={card.width}
                 height={card.height}
                 className={styles.screenshotImage}
-                loading="lazy"
-                decoding="async"
+                unoptimized
               />
               <figcaption>
                 <strong>{card.title}</strong>
@@ -352,15 +339,15 @@ export default function DemoPage() {
         </div>
         <div className={styles.footerLinks}>
           {footerLinks.map((item) => (
-            <Link
+            <a
               key={item.label}
               href={item.href}
               className={styles.footerLink}
-              target={item.href.startsWith('http') ? '_blank' : undefined}
-              rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noreferrer' : undefined}
             >
               {item.label}
-            </Link>
+            </a>
           ))}
         </div>
       </footer>

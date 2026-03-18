@@ -280,38 +280,16 @@
 .previewMedia {
   border-radius: 28px;
   padding: 1rem;
-  display: grid;
-  gap: 1rem;
 }
 
 .video {
   width: 100%;
-  height: auto;
+  height: 100%;
   min-height: 340px;
   display: block;
   border: 0;
   border-radius: 18px;
   background: #0f1720;
-}
-
-.mediaFallback {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.fallbackImage {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 18px;
-  border: 1px solid rgba(19, 33, 51, 0.08);
-}
-
-.mediaHint {
-  margin: 0;
-  color: var(--color-text-secondary);
-  line-height: 1.7;
-  font-size: 0.95rem;
 }
 
 .screenshotCard {

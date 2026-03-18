@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
 import { Providers } from './providers';
 import { defaultLanguage } from '@/i18n/config';
+import { buildSiteUrl, normalizeOrigin } from '@/shared/lib/site';
 import '@/shared/styles/globals.css';
-
-const normalizeOrigin = (value: string): string => value.replace(/\/+$/, '');
-const withHttps = (value: string): string => (value.startsWith('http://') || value.startsWith('https://') ? value : `https://${value}`);
 
 const rawSiteOrigin =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -12,12 +10,12 @@ const rawSiteOrigin =
   process.env.VERCEL_URL ||
   'https://wordloom-v3.vercel.app';
 
-const siteOrigin = normalizeOrigin(withHttps(rawSiteOrigin));
+const siteUrl = buildSiteUrl(rawSiteOrigin);
 
 export const metadata: Metadata = {
   title: 'Wordloom',
   description: 'Knowledge Management System',
-  metadataBase: new URL(siteOrigin),
+  metadataBase: new URL(siteUrl),
 };
 
 const rawApiOrigin = process.env.API_PROXY_TARGET || process.env.NEXT_PUBLIC_API_BASE || '';
