@@ -1,8 +1,22 @@
 /** @type {import('next').NextConfig} */
 const path = require('path');
 
+const normalizeBasePath = (value = '') => {
+  const trimmed = value.trim();
+
+  if (!trimmed || trimmed === '/') {
+    return '';
+  }
+
+  const withLeadingSlash = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  return withLeadingSlash.replace(/\/+$/, '');
+};
+
+const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH || '');
+
 const nextConfig = {
   reactStrictMode: true,
+  basePath: basePath || undefined,
   distDir: process.env.NEXT_DIST_DIR || '.next',
   eslint: {
     // The repo currently carries unrelated legacy lint debt; do not block the public demo deployment on it.
