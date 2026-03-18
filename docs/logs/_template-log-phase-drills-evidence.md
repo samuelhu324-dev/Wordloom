@@ -11,7 +11,6 @@
 **links**: ``
   **issue**: ``
   **pr**: ``
-  **adr**: ``
   **runbook**: ``
   **parent_log**: `docs/logs/log-<PARENT>.md`
   **previous_log**: ``

@@ -9,15 +9,15 @@ export const metadata: Metadata = {
 };
 
 const normalizeOrigin = (value: string): string => value.replace(/\/+$/, '');
-const apiOrigin = normalizeOrigin(
-  process.env.API_PROXY_TARGET || process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:30001'
-);
+const rawApiOrigin = process.env.API_PROXY_TARGET || process.env.NEXT_PUBLIC_API_BASE || '';
+const apiOrigin = rawApiOrigin ? normalizeOrigin(rawApiOrigin) : null;
+const shouldPreconnect = apiOrigin != null && !/localhost|127\.0\.0\.1/i.test(apiOrigin);
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang={defaultLanguage} data-theme="silk-blue">
       <head>
-        <link rel="preconnect" href={apiOrigin} />
+        {shouldPreconnect ? <link rel="preconnect" href={apiOrigin} /> : null}
       </head>
       <body>
         <Providers>{children}</Providers>
