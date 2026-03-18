@@ -1,0 +1,384 @@
+.page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(93, 132, 184, 0.22), transparent 28%),
+    radial-gradient(circle at top right, rgba(230, 238, 245, 0.85), transparent 30%),
+    linear-gradient(180deg, #f5f7f8 0%, #ffffff 26%, #f8fbfd 100%);
+  color: var(--color-text-primary);
+  padding: var(--spacing-xl);
+}
+
+.hero {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+  padding: clamp(2rem, 4vw, 4rem) 0 clamp(2.5rem, 6vw, 5rem);
+}
+
+.heroCopy {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.kicker,
+.sectionEyebrow,
+.stackLabel {
+  margin: 0;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.heroTitle,
+.sectionIntro h2,
+.previewCopy h3,
+.overviewCard h3,
+.highlightCard h3,
+.stackCard h3,
+.footerTitle {
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+}
+
+.heroTitle {
+  margin: 0;
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: 0.95;
+  color: #132133;
+}
+
+.heroSubtitle {
+  margin: 0;
+  max-width: 42rem;
+  font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+  line-height: 1.35;
+  color: #233548;
+}
+
+.heroBody,
+.overviewCard p,
+.highlightCard p,
+.previewCopy p,
+.stackItems,
+.footerText,
+.footerMuted,
+.visualCaption,
+.screenshotCard figcaption span {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+}
+
+.heroActions,
+.previewActions,
+.footerLinks,
+.heroTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.primaryAction,
+.secondaryAction,
+.footerLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.8rem 1.25rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base),
+    background-color var(--transition-base);
+}
+
+.primaryAction {
+  background: #132133;
+  color: #fdfdfb;
+  box-shadow: 0 12px 28px -14px rgba(19, 33, 51, 0.7);
+}
+
+.secondaryAction,
+.footerLink {
+  background: rgba(255, 255, 255, 0.8);
+  color: #132133;
+  border: 1px solid rgba(19, 33, 51, 0.14);
+}
+
+.primaryAction:hover,
+.secondaryAction:hover,
+.footerLink:hover {
+  transform: translateY(-1px);
+}
+
+.heroTags span {
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(46, 94, 146, 0.14);
+  color: #294562;
+  font-size: 0.92rem;
+}
+
+.heroVisual {
+  position: relative;
+}
+
+.visualCard,
+.overviewCard,
+.highlightCard,
+.stackCard,
+.screenshotCard,
+.previewMedia,
+.previewCopy {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(19, 33, 51, 0.08);
+  box-shadow: 0 18px 40px -30px rgba(19, 33, 51, 0.55);
+}
+
+.visualCard {
+  padding: 1rem;
+  border-radius: 28px;
+}
+
+.visualImage,
+.screenshotImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 18px;
+}
+
+.visualCaption {
+  padding: 0.95rem 0.4rem 0.2rem;
+  font-size: 0.95rem;
+}
+
+.section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 3vw, 2rem) 0 clamp(2.2rem, 5vw, 3.75rem);
+}
+
+.factSection {
+  padding-top: 0;
+}
+
+.factGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.factCard {
+  padding: 1.25rem;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 251, 253, 0.88) 100%);
+  border: 1px solid rgba(19, 33, 51, 0.08);
+  box-shadow: 0 18px 40px -30px rgba(19, 33, 51, 0.4);
+  display: grid;
+  gap: 0.55rem;
+}
+
+.factLabel {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4d6987;
+}
+
+.factValue {
+  margin: 0;
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  line-height: 1;
+  color: #132133;
+}
+
+.factCard p:last-child {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.sectionIntro {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 56rem;
+  margin-bottom: 1.5rem;
+}
+
+.sectionIntro h2,
+.previewCopy h3 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1.08;
+  color: #132133;
+}
+
+.overviewGrid,
+.highlightGrid,
+.stackGrid,
+.screenshotGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.overviewGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.highlightGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stackGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.screenshotGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.overviewCard,
+.highlightCard,
+.stackCard,
+.screenshotCard,
+.previewCopy {
+  border-radius: 24px;
+  padding: 1.35rem;
+}
+
+.overviewCard h3,
+.highlightCard h3 {
+  margin: 0 0 0.55rem;
+  font-size: 1.35rem;
+  color: #132133;
+}
+
+.previewSection {
+  padding-top: 0.5rem;
+}
+
+.previewGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.previewMedia {
+  border-radius: 28px;
+  padding: 1rem;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
+  display: block;
+  border: 0;
+  border-radius: 18px;
+  background: #0f1720;
+}
+
+.screenshotCard {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.screenshotCard figcaption {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.screenshotCard figcaption strong {
+  color: #132133;
+  font-size: 1rem;
+}
+
+.stackCard {
+  display: grid;
+  gap: 0.75rem;
+  min-height: 160px;
+}
+
+.stackItems {
+  font-size: 1.02rem;
+}
+
+.footer {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 0 3rem;
+  border-top: 1px solid rgba(19, 33, 51, 0.08);
+  display: flex;
+  justify-content: space-between;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.footerTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.7rem;
+  color: #132133;
+}
+
+.footerText {
+  max-width: 34rem;
+}
+
+.footerMuted {
+  font-size: 0.95rem;
+}
+
+@media (max-width: 1100px) {
+  .hero,
+  .previewGrid,
+  .factGrid,
+  .overviewGrid,
+  .highlightGrid,
+  .stackGrid,
+  .screenshotGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: 1rem;
+  }
+
+  .hero {
+    padding-top: 1rem;
+  }
+
+  .visualCard,
+  .overviewCard,
+  .highlightCard,
+  .stackCard,
+  .screenshotCard,
+  .previewMedia,
+  .previewCopy {
+    border-radius: 20px;
+    padding: 1rem;
+  }
+
+  .video {
+    min-height: 220px;
+  }
+}
