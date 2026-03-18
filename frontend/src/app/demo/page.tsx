@@ -3,6 +3,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import styles from './page.module.css';
 
+const assetVersion = '20260318b';
+const asset = (path: string) => `${path}?v=${assetVersion}`;
+
 export const metadata: Metadata = {
   title: 'Wordloom Demo',
   description: 'A recruiter-friendly overview of Wordloom, focused on search, async workflows, observability, and safe system evolution.',
@@ -17,7 +20,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/demo/DEMO-main-content-model.png',
+        url: asset('/demo/DEMO-main-content-model.png'),
         width: 1600,
         height: 900,
         alt: 'Wordloom main content model',
@@ -28,7 +31,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Wordloom Demo',
     description: 'A backend-heavy knowledge platform focused on search, async workflows, observability, and safe system evolution.',
-    images: ['/demo/DEMO-main-content-model.png'],
+    images: [asset('/demo/DEMO-main-content-model.png')],
   },
   robots: {
     index: true,
@@ -104,28 +107,28 @@ const screenshotCards = [
   {
     title: 'Product surfaces',
     description: 'The reading and authoring surface is designed around structured content instead of one-off documents.',
-    src: '/demo/DEMO-1.png',
+    src: asset('/demo/DEMO-1.png'),
     width: 1600,
     height: 900,
   },
   {
     title: 'Search and structure',
     description: 'Search, hierarchy, and read views are tied back to projection-backed models and async processing.',
-    src: '/demo/DEMO-2.png',
+    src: asset('/demo/DEMO-2.png'),
     width: 1600,
     height: 900,
   },
   {
     title: 'Text editor workflow',
     description: 'Editing is shown as a live content workflow rather than a static form, which better reflects the product feel of the system.',
-    src: '/demo/DEMO-gif-1-2x.gif',
+    src: asset('/demo/DEMO-gif-1-2x.gif'),
     width: 1200,
     height: 675,
   },
   {
     title: 'Engineering evidence',
     description: 'Operational verification is shown through drill outputs, evidence views, and system-facing diagnostics.',
-    src: '/demo/DEMO-gif-2-2x.gif',
+    src: asset('/demo/DEMO-gif-2-2x.gif'),
     width: 1200,
     height: 675,
   },
@@ -184,7 +187,7 @@ export default function DemoPage() {
         <div className={styles.heroVisual}>
           <div className={styles.visualCard}>
             <Image
-              src="/demo/DEMO-main-content-model.png"
+              src={asset('/demo/DEMO-main-content-model.png')}
               alt="Wordloom main content model"
               width={1600}
               height={900}
@@ -258,8 +261,8 @@ export default function DemoPage() {
         </div>
         <div className={styles.previewGrid}>
           <div className={styles.previewMedia}>
-            <video className={styles.video} controls preload="metadata" poster="/demo/DEMO-main-content-model.png">
-              <source src="/demo/DEMO_VIDEO_1.mp4" type="video/mp4" />
+            <video className={styles.video} controls preload="metadata" poster={asset('/demo/DEMO-main-content-model.png')}>
+              <source src={asset('/demo/DEMO_VIDEO_1.mp4')} type="video/mp4" />
               Your browser does not support embedded video playback.
             </video>
           </div>
@@ -272,7 +275,7 @@ export default function DemoPage() {
               That makes the page safe to share as a recruiter or hiring-manager first look while keeping the deeper product and engineering material one click away.
             </p>
             <div className={styles.previewActions}>
-              <a className={styles.primaryAction} href="/demo/DEMO_VIDEO_1.mp4" target="_blank" rel="noreferrer">
+              <a className={styles.primaryAction} href={asset('/demo/DEMO_VIDEO_1.mp4')} target="_blank" rel="noreferrer">
                 Watch Demo
               </a>
               <a className={styles.secondaryAction} href="https://github.com/samuelhu324-dev/Wordloom#readme" target="_blank" rel="noreferrer">
