@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import styles from './page.module.css';
@@ -145,7 +144,7 @@ const footerLinks = [
   },
   {
     label: 'Demo Video',
-    href: '/demo/DEMO_VIDEO_1.mp4',
+    href: asset('/demo/DEMO_VIDEO_1.mp4'),
   },
   {
     label: 'README',
@@ -186,14 +185,14 @@ export default function DemoPage() {
         </div>
         <div className={styles.heroVisual}>
           <div className={styles.visualCard}>
-            <Image
+            <img
               src={asset('/demo/DEMO-main-content-model.png')}
               alt="Wordloom main content model"
               width={1600}
               height={900}
               className={styles.visualImage}
-              unoptimized
-              priority
+              loading="eager"
+              decoding="sync"
             />
             <p className={styles.visualCaption}>Main content model: Library to Bookshelf to Book to Block.</p>
           </div>
@@ -261,10 +260,24 @@ export default function DemoPage() {
         </div>
         <div className={styles.previewGrid}>
           <div className={styles.previewMedia}>
-            <video className={styles.video} controls preload="metadata" poster={asset('/demo/DEMO-main-content-model.png')}>
+            <video className={styles.video} controls preload="metadata" playsInline poster={asset('/demo/DEMO-main-content-model.png')}>
               <source src={asset('/demo/DEMO_VIDEO_1.mp4')} type="video/mp4" />
               Your browser does not support embedded video playback.
             </video>
+            <div className={styles.mediaFallback}>
+              <img
+                src={asset('/demo/DEMO-gif-1-2x.gif')}
+                alt="Animated text editor workflow preview"
+                width={1200}
+                height={675}
+                className={styles.fallbackImage}
+                loading="lazy"
+                decoding="async"
+              />
+              <p className={styles.mediaHint}>
+                If the embedded MP4 does not render on your browser or phone, use the direct file link below or view this GIF preview instead.
+              </p>
+            </div>
           </div>
           <div className={styles.previewCopy}>
             <h3>Short product walkthrough</h3>
@@ -277,6 +290,9 @@ export default function DemoPage() {
             <div className={styles.previewActions}>
               <a className={styles.primaryAction} href={asset('/demo/DEMO_VIDEO_1.mp4')} target="_blank" rel="noreferrer">
                 Watch Demo
+              </a>
+              <a className={styles.secondaryAction} href={asset('/demo/DEMO-gif-1-2x.gif')} target="_blank" rel="noreferrer">
+                Open GIF Preview
               </a>
               <a className={styles.secondaryAction} href="https://github.com/samuelhu324-dev/Wordloom#readme" target="_blank" rel="noreferrer">
                 Read README
@@ -294,13 +310,14 @@ export default function DemoPage() {
         <div className={styles.screenshotGrid}>
           {screenshotCards.map((card) => (
             <figure key={card.title} className={styles.screenshotCard}>
-              <Image
+              <img
                 src={card.src}
                 alt={card.title}
                 width={card.width}
                 height={card.height}
                 className={styles.screenshotImage}
-                unoptimized
+                loading="lazy"
+                decoding="async"
               />
               <figcaption>
                 <strong>{card.title}</strong>
