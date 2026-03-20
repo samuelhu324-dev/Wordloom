@@ -166,6 +166,33 @@
 - P2-C1-S1: 至少验证 1 条启动/状态或健康检查链路可复跑
 - P2-C1-S2: 记录最小 evidence（headSha + output / path / observed summary）
 
+### P2-C1-S1 (Replayable startup/status path | implemented 2026-03-20)
+
+- 已验证可复跑链路：`env_prep -> start infra es -> start db -> status`
+- 执行环境：WSL (`Ubuntu`) + Docker Desktop
+- 实际结果：
+  - `scripts/ops/env_prep.sh dev` -> PASS
+  - `scripts/ops/start.sh dev infra es` -> PASS
+  - `scripts/ops/start.sh dev db` -> PASS
+  - `scripts/ops/status.sh dev` -> PASS（可稳定输出当前 runtime 摘要）
+- 关键 observed summary：
+  - `db_container=healthy`
+  - `infra_es=healthy`
+  - `es_http=200`
+  - `api_health=000`
+  - `ui_http=000`
+- 补充观察：`scripts/ops/start.sh dev all --no-worker` 在本机 WSL 环境下未形成完整成功链路；失败点不在 db/migrate，而在 UI 启动阶段，命中 `cross-env` 未被解析。
+
+### P2-C1-S2 (Evidence | implemented 2026-03-20)
+
+- 证据形式：terminal proof
+- 关键命令：
+  - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/env_prep.sh dev"`
+  - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/start.sh dev infra es && ./scripts/ops/start.sh dev db && ./scripts/ops/status.sh dev"`
+- blocker proof：
+  - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/start.sh dev all --no-worker"`
+  - observed blocker: WSL 中 `npm` 解析到 `/mnt/c/Program Files/nodejs//npm`，UI 启动阶段报 `'cross-env' ... 不是内部或外部命令`，导致 honcho 终止整条 app 链路。
+
 ### P3 (Operator wording)
 
 - P3-C1-S1: 把脚本入口说明改写成 systems/platform operations 语言
@@ -186,8 +213,8 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: 验证至少 1 条关键脚本路径
-- [ ] `P2-C1-S2`: 记录最小 evidence
+- [x] `P2-C1-S1`: 验证至少 1 条关键脚本路径
+- [x] `P2-C1-S2`: 记录最小 evidence
 
 ### P3 (Operator wording)
 
@@ -199,15 +226,21 @@
 
 ### P2-C1-S1 (reserved | 2026-03-20)
 
-- headSha: ``
-- artifacts: ``
+- headSha: `9f208dd7a05c1e7aa057706ca3cc2581475d9649`
+- artifacts: `terminal proof (WSL env_prep + infra/db/status replay); no dedicated artifact file produced in this first pass`
 - expected:
   - 至少 1 条最小脚本路径可复跑
   - 能输出清晰、低基数的成功/失败判断
 - observed:
-  - 待补
+  - `env_prep -> infra es -> db -> status` 可复跑
+  - `db_container=healthy`
+  - `infra_es=healthy`
+  - `es_http=200`
+  - `api_health=000` / `ui_http=000`（本次未把 app 作为成功链路的一部分）
+  - `start.sh dev all --no-worker` 暴露额外 blocker：WSL 下命中 Windows `npm`, UI 阶段 `cross-env` 未解析，需在后续 step 处理
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-20: scaffolded `S4A-1A` as the first `S4A` phase, prioritizing ops scripting baseline over broader cloud/runtime topics to match the government-role timeline and wording.
 - 2026-03-20: implemented `P1-C1-S1/S2` by inventorying runtime entrypoints and adding a first `scripts/ops/` wrapper set for `env_prep/start/stop/status/health/logs`.
+- 2026-03-20: completed first `P2` pass with a replayable `env_prep + infra + db + status` chain and recorded the WSL `npm/cross-env` blocker on the full `all --no-worker` app path.
