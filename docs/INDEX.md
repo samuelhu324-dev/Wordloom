@@ -9,6 +9,13 @@
 - S5: Security & Governance
 - S6: Evidence & Drills
 
+## S4-related, current logs
+- S4A spine (systems/platform operations runtime foundation)
+	- docs/logs/log-S4A-systems-platform-operations-runtime-foundation.md
+
+- Ops scripting baseline
+	- docs/logs/log-S4A-1A-ops-scripting-baseline.md
+
 ## S6-related, old logs
 - S6A spine (new SoT index)
 	- docs/logs/log-S6A-evidence-drills-spine.md
