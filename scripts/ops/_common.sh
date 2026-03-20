@@ -63,9 +63,37 @@ require_cmd() {
   fi
 }
 
+http_code_windows_fallback() {
+  local url="$1"
+
+  if [[ -z "${WSL_DISTRO_NAME:-}" && -z "${WSL_INTEROP:-}" ]]; then
+    return 1
+  fi
+
+  if ! command -v powershell.exe >/dev/null 2>&1; then
+    return 1
+  fi
+
+  powershell.exe -NoProfile -Command "try { \$response = Invoke-WebRequest -Uri '$url' -Method Head -TimeoutSec 8; [Console]::WriteLine(\$response.StatusCode) } catch { if (\$_.Exception.Response -and \$_.Exception.Response.StatusCode.value__) { [Console]::WriteLine(\$_.Exception.Response.StatusCode.value__) } else { [Console]::WriteLine('000') } }" 2>/dev/null | tr -d '\r' | tail -n 1
+}
+
 http_code() {
   local url="$1"
-  curl -s -o /dev/null -w '%{http_code}' "$url" 2>/dev/null
+  local code
+
+  code="$(curl -s -o /dev/null -w '%{http_code}' "$url" 2>/dev/null || true)"
+  if [[ -n "$code" && "$code" != "000" ]]; then
+    printf '%s\n' "$code"
+    return 0
+  fi
+
+  code="$(http_code_windows_fallback "$url" || true)"
+  if [[ -n "$code" ]]; then
+    printf '%s\n' "$code"
+    return 0
+  fi
+
+  printf '000\n'
 }
 
 check_http_ok() {

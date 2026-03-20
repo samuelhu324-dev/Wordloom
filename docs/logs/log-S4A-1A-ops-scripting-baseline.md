@@ -156,6 +156,7 @@
   - `scripts/ops/status.sh`
   - `scripts/ops/health.sh`
   - `scripts/ops/logs.sh`
+  - `scripts/ui_up.sh`（supporting wrapper for WSL -> Windows npm frontend startup）
 - 设计约束：
   - 不重写已有启动链，而是薄封装现有 `preflight/up/app_up/db_up/infra_up`。
   - `status` 偏摘要输出，`health` 偏 PASS/FAIL 判定，避免把两个语义混在一起。
@@ -192,6 +193,41 @@
 - blocker proof：
   - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/start.sh dev all --no-worker"`
   - observed blocker: WSL 中 `npm` 解析到 `/mnt/c/Program Files/nodejs//npm`，UI 启动阶段报 `'cross-env' ... 不是内部或外部命令`，导致 honcho 终止整条 app 链路。
+
+### P2-C2-S1 (Repaired app path | implemented 2026-03-20)
+
+- 已验证补强链路：`start app --no-worker -> status -> health`
+- 修复内容：
+  - 新增 `scripts/ui_up.sh`
+  - `Procfile.dev/test` 的 UI 入口改由 `scripts/ui_up.sh` 承接
+  - WSL 下优先走 Windows npm fallback 启动前端
+  - `status/health` 的 HTTP probe 增加 Windows-aware fallback，使其能正确观测由 Windows 侧拉起的 `30002`
+- 实际结果：
+  - `scripts/ops/start.sh dev app --no-worker` -> PASS
+  - `scripts/ops/status.sh dev` -> PASS
+  - `scripts/ops/health.sh dev` -> PASS
+- 关键 observed summary：
+  - `db_container=healthy`
+  - `infra_es=healthy`
+  - `api_health=200`
+  - `ui_http=200`
+  - `es_http=200`
+  - `worker_healthz=000` / `worker_readyz=000`（本次仍是 `--no-worker` 路径）
+- 补充观察：重复执行 `start.sh dev all --no-worker` 时，当前 `preflight` 仍会把已占用的 `5435` 视为硬失败；因此当前更适合把 `all` 视为冷启动入口，把 `app` 视为已起 infra/db 后的重入入口。
+
+### P2-C2-S2 (Evidence | implemented 2026-03-20)
+
+- 证据形式：terminal proof
+- 关键命令：
+  - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/start.sh dev app --no-worker"`
+  - `bash scripts/ops/status.sh dev`
+  - `bash scripts/ops/health.sh dev`
+  - `curl.exe -I http://127.0.0.1:30002/`
+- observed summary:
+  - API `/api/v1/health` -> `200`
+  - UI `http://127.0.0.1:30002/` -> `200`
+  - ES `http://127.0.0.1:19200` -> `200`
+  - DB container health -> `healthy`
 
 ### P3 (Operator wording)
 
@@ -239,8 +275,24 @@
   - `api_health=000` / `ui_http=000`（本次未把 app 作为成功链路的一部分）
   - `start.sh dev all --no-worker` 暴露额外 blocker：WSL 下命中 Windows `npm`, UI 阶段 `cross-env` 未解析，需在后续 step 处理
 
+### P2-C2-S1 (reserved | 2026-03-20)
+
+- headSha: `8f1ee6a10c073a55c395537e3abd3fb2dfee5aca`
+- artifacts: `terminal proof (WSL app --no-worker + status/health + curl.exe UI 200)`
+- expected:
+  - `app --no-worker` 路径可拉起 API + UI
+  - `status/health` 能正确反映由 Windows 侧启动的 UI
+- observed:
+  - `api_health=200`
+  - `ui_http=200`
+  - `es_http=200`
+  - `db_container=healthy`
+  - `worker_healthz=000` / `worker_readyz=000`（worker disabled by path selection）
+  - 当前 `all` 冷启动入口仍非幂等，已起 db 时会被 `preflight` 的 `5435` 占用检查拦住
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-20: scaffolded `S4A-1A` as the first `S4A` phase, prioritizing ops scripting baseline over broader cloud/runtime topics to match the government-role timeline and wording.
 - 2026-03-20: implemented `P1-C1-S1/S2` by inventorying runtime entrypoints and adding a first `scripts/ops/` wrapper set for `env_prep/start/stop/status/health/logs`.
 - 2026-03-20: completed first `P2` pass with a replayable `env_prep + infra + db + status` chain and recorded the WSL `npm/cross-env` blocker on the full `all --no-worker` app path.
+- 2026-03-20: repaired the WSL frontend startup path via `scripts/ui_up.sh`, added Windows-aware HTTP probes, and completed a second `P2` pass where `app --no-worker + status + health` reached API/UI/DB/ES green.

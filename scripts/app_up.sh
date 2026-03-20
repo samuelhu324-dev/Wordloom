@@ -12,10 +12,15 @@ ENV_NAME="${1:-dev}"
 shift || true
 
 NO_WORKER=0
+NO_UI=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --no-worker)
       NO_WORKER=1
+      shift
+      ;;
+    --no-ui)
+      NO_UI=1
       shift
       ;;
     *)
@@ -109,18 +114,49 @@ if [[ ! -d "$FRONTEND_DIR" ]]; then
   exit 1
 fi
 
-if [[ ! -x "$FRONTEND_DIR/node_modules/.bin/cross-env" ]]; then
-  echo "[app_up] frontend dependencies missing -> installing in frontend/"
+install_frontend_deps_posix() {
   if ! command -v npm >/dev/null 2>&1; then
     echo "[app_up] npm not found; please install Node.js/npm in WSL" >&2
     exit 1
   fi
 
+  echo "[app_up] frontend dependencies missing for POSIX runtime -> installing in frontend/"
   if [[ -f "$FRONTEND_DIR/package-lock.json" ]]; then
     (cd "$FRONTEND_DIR" && npm ci)
   else
     (cd "$FRONTEND_DIR" && npm install)
   fi
+}
+
+install_frontend_deps_windows() {
+  if ! command -v powershell.exe >/dev/null 2>&1; then
+    echo "[app_up] powershell.exe not found; cannot prepare Windows-side frontend dependencies from WSL" >&2
+    exit 1
+  fi
+
+  local frontend_dir_win
+  frontend_dir_win="$(wslpath -w "$FRONTEND_DIR")"
+  echo "[app_up] frontend dependencies missing for Windows npm fallback -> installing in frontend/"
+  powershell.exe -NoProfile -Command "\$ErrorActionPreference='Stop'; Set-Location '$frontend_dir_win'; if (Test-Path package-lock.json) { npm.cmd ci } else { npm.cmd install }"
+}
+
+if [[ "$NO_UI" != "1" ]]; then
+  if [[ -n "${WSL_DISTRO_NAME:-}" || -n "${WSL_INTEROP:-}" ]]; then
+    if [[ ! -f "$FRONTEND_DIR/node_modules/.bin/cross-env.cmd" || ! -f "$FRONTEND_DIR/node_modules/.bin/next.cmd" ]]; then
+      install_frontend_deps_windows
+    fi
+  elif [[ ! -x "$FRONTEND_DIR/node_modules/.bin/cross-env" || ! -x "$FRONTEND_DIR/node_modules/.bin/next" ]]; then
+    install_frontend_deps_posix
+  fi
+fi
+
+if [[ "$NO_UI" == "1" ]]; then
+  echo "[app_up] --no-ui: starting only api$( [[ "$NO_WORKER" != "1" ]] && printf ' + worker' )"
+  if [[ "$NO_WORKER" == "1" ]]; then
+    exec "${HONCHO[@]}" start -f "$PROCFILE" api
+  fi
+
+  exec "${HONCHO[@]}" start -f "$PROCFILE" api worker_search
 fi
 
 if [[ "$NO_WORKER" == "1" ]]; then
