@@ -186,8 +186,15 @@
 
 ### P2-C1-S2 (Evidence | implemented 2026-03-20)
 
-- 证据形式：terminal proof
-- 关键命令：
+### P2-C3-S1 (Idempotent cold-start path | implemented 2026-03-21)
+
+- 目标：让 `scripts/ops/start.sh dev all --no-worker` 在 dev/test DB 已经通过 docker-compose 启动并占用 `5435` 时，可以重入而不是被 preflight 硬拦截。
+- 改动：
+  - `scripts/preflight.sh` 中新增 `_check_devtest_db_port_ok`，在检测到 `docker-compose.devtest-db.yml` 下的 `db_devtest` 容器已存在且 `healthy|starting|running` 时，将 `5435` 视为“预期占用”，输出复用提示并返回成功。
+  - 仅当未发现对应容器或容器非健康/运行态时，才回退到原有 `_check_port_free 5435` 的硬失败语义。
+- 结果：
+  - dev/test DB 已由 `db_up` 或其他路径成功拉起并健康运行时，`preflight` 不再因 `5435` 占用直接失败，使 `start all` 冷启动入口在常见“先起 DB 再修 app”场景下具备可重入能力。
+  - 其它端口（API/metrics/UI）仍保持“端口被占用即失败”的保护语义，避免在 API/UI 仍运行时误触发第二个 Procfile 进程树。
   - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/env_prep.sh dev"`
   - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/start.sh dev infra es && ./scripts/ops/start.sh dev db && ./scripts/ops/status.sh dev"`
 - blocker proof：
@@ -318,3 +325,4 @@
 - 2026-03-20: completed first `P2` pass with a replayable `env_prep + infra + db + status` chain and recorded the WSL `npm/cross-env` blocker on the full `all --no-worker` app path.
 - 2026-03-20: repaired the WSL frontend startup path via `scripts/ui_up.sh`, added Windows-aware HTTP probes, and completed a second `P2` pass where `app --no-worker + status + health` reached API/UI/DB/ES green.
 - 2026-03-21: completed `P3` by publishing a thin runbook and translating the script set into operator-facing systems/platform operations wording.
+ - 2026-03-21: softened preflight's dev/test DB port check so that a healthy docker-compose-managed `db_devtest` on `5435` is treated as an expected occupant, making the `start all` cold-start path reentrant after a successful DB bring-up.
