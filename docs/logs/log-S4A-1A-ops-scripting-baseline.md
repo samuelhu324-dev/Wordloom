@@ -11,7 +11,7 @@
 **links**: ``
   **issue**: ``
   **pr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S4A-1A-ops-scripting-baseline.md`
   **parent_log**: `docs/logs/log-S4A-systems-platform-operations-runtime-foundation.md`
   **previous_log**: ``
   **reference_log_1**: `docs/logs/log-S6A-evidence-drills-spine.md`
@@ -234,6 +234,26 @@
 - P3-C1-S1: 把脚本入口说明改写成 systems/platform operations 语言
 - P3-C1-S2: 对齐 roadmap 和后续申请材料用语
 
+### P3-C1-S1 (Operator wording | implemented 2026-03-21)
+
+- 已完成 operator-facing wording 收口：
+  - `env_prep` -> `environment readiness check`
+  - `start all` -> `cold-start runtime path`
+  - `start app` -> `warm-start application recovery path`
+  - `status` -> `runtime summary / first-line operational visibility`
+  - `health` -> `post-start verification gate`
+  - `logs` -> `first-line incident triage entry`
+  - `stop` -> `controlled docker-managed runtime shutdown`
+- 这些说法已从“脚本功能描述”提升为“operator action + runtime outcome”语言，更适合写进申请材料、runbook、值班说明和运行支持文档。
+
+### P3-C1-S2 (Runbook alignment | implemented 2026-03-21)
+
+- 已新增 runbook：`docs/runbook/run-S4A-1A-ops-scripting-baseline.md`
+- 对齐结果：
+  - phase log 继续保存 contract、evidence、P/C/S 历史
+  - runbook 只保留 operator 需要的薄入口：purpose、scope、evidence roots、canonical commands、troubleshooting、boundaries
+  - wording 已和 `docs/ROADMAP v5.md` 中的 `systems/platform operations / operational support / monitoring / maintenance / recoverability` 主轴对齐
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -254,7 +274,8 @@
 
 ### P3 (Operator wording)
 
-- [ ] `P3-C1-S1`: 形成 systems/platform operations 语言说明
+- [x] `P3-C1-S1`: 形成 systems/platform operations 语言说明
+- [x] `P3-C1-S2`: 对齐 roadmap 和后续申请材料用语
 
 ## Evidence (reserved)
 
@@ -296,3 +317,4 @@
 - 2026-03-20: implemented `P1-C1-S1/S2` by inventorying runtime entrypoints and adding a first `scripts/ops/` wrapper set for `env_prep/start/stop/status/health/logs`.
 - 2026-03-20: completed first `P2` pass with a replayable `env_prep + infra + db + status` chain and recorded the WSL `npm/cross-env` blocker on the full `all --no-worker` app path.
 - 2026-03-20: repaired the WSL frontend startup path via `scripts/ui_up.sh`, added Windows-aware HTTP probes, and completed a second `P2` pass where `app --no-worker + status + health` reached API/UI/DB/ES green.
+- 2026-03-21: completed `P3` by publishing a thin runbook and translating the script set into operator-facing systems/platform operations wording.
