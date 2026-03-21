@@ -98,8 +98,8 @@
 
 - [x] `P0`：contract/indexing（定义 `S4A` 主轴、phase 拆分、与现有 logs 的对齐关系）
 - [x] `P1`：Phase 1 seed（ops scripting baseline phase log scaffolded）
-- [ ] `P2`：Phase 2 seed（deploy / verify / rollback runtime path）
-- [ ] `P3`：Phase 3 seed（backup / recovery operator path）
+- [x] `P2`：Phase 2 seed（deploy / verify / rollback runtime path）
+- [x] `P3`：Phase 3 seed（backup / recovery operator path）
 - [ ] `P4`：Phase 4 seed（hybrid runtime awareness）
 
 ## Current Status（进展摘要）

@@ -178,8 +178,43 @@
 
 ### P3 (Docs / Operator wording)
 
-- P3-C1-S1: 把 backup/recovery operator path 翻译成 systems/platform operations 语言，并与 `S4A-1A` / `S4A-2A` 的 wording 对齐（例如 `backup drill`, `restore drill`, `disaster readiness sample`）。
-- P3-C1-S2: 起草 `docs/runbook/run-S4A-3A-backup-recovery-operator-path.md`，为值班/运行支持提供薄 runbook。
+- P3-C1-S1 (Operator-facing wording | v1):
+  - 我们在 `S4A-1A` / `S4A-2A` 已经把本地 dev/test 的运行支持路径拆成两条：
+    - `ops scripting baseline`：start / stop / status / health / logs / env_prep；
+    - `deploy / verify / rollback runtime path`：以 `deploy_app_verify` 作为 post-deploy gate，配合最小 rollback 样本；
+  - `S4A-3A` 在此基础上，给 operator 增加第三条常用路径：
+    - `backup / recovery / disaster readiness operator path`：
+      - 当 operator 关心“最近一次备份在哪里、能不能恢复、怎么证明演练过”时，有一条可复跑的样本链路；
+      - 这条链路默认使用 `S5A-3A` / `S5A-3B` 的 backup+object-storage drills 与 `S6A` 的 evidence 语义，不重新发明一套工具；
+  - 用人话总结当前能力边界：
+    - 我们能：
+      - 在 dev/test 上，对 `wordloom_dev` 做一次备份，并把 dump 放到 MinIO 对象存储；
+      - 从这个对象存储里的 dump 恢复到单独的 `wordloom_restore_dev` / `wordloom_restore_sanitized_dev` 数据库；
+      - 用最小 SQL + 脱敏校验证明这些恢复过的库是可连通、结构完整，且敏感字段已经被清空或替换；
+      - 用 drills/evidence JSON 记录整条链路的 bucket/key/sha256/size 与 verify 结果；
+    - 我们暂时还不能：
+      - 直接覆盖生产库、跨 region 或多租户场景；
+      - 自动决定“哪一次备份”是 RPO / RTO 上最优的，只是提供样本与 evidence；
+  - 在 operator-facing 语言中，推荐的关键词是：
+    - `backup drill`：指 `s5a3a_p1c1s2_backup_drill.py` 这一类生成 dump + evidence 的脚本；
+    - `upload drill`：指把 dump 上传到对象存储并记录 manifest/evidence 的步骤；
+    - `restore drill` / `restore+verify drill`：指从对象存储 dump 恢复到目标数据库并做 SQL 检查；
+    - `sanitize+verify drill`：指在恢复后做脱敏，确保关键字段全部处于“已脱敏”状态；
+    - `disaster readiness sample`：指用 `backup_pipeline_drill` 这条一键链路证明“假如当前 DB 损坏，我们至少有一条可演练的恢复样本”。
+- P3-C1-S2 (Runbook path | v1):
+  - 本 phase 的 runbook 落在：`docs/runbook/run-S4A-3A-backup-recovery-operator-path.md`；
+  - runbook 的角色是：
+    - 对值班/运行支持来说，给出一条“如何确认最近备份 + 如何演练恢复路径”的最小入口；
+    - 用 1~2 条命令样例和 3~6 条 troubleshooting 提示，把 `S5A-3A` / `S5A-3B` 的细节藏在后面，只暴露必要开关；
+  - 典型 operator journey：
+    - Step 1：确认自己只在 dev/test 环境操作，了解当前 runbook 不涉及生产库；
+    - Step 2：根据 runbook 提示，运行 `backup_pipeline_drill` 或拆分命令，完成一次备份+恢复+脱敏演练；
+    - Step 3：根据 runbook 给出的 evidence 路径和字段说明，检查 drills/evidence JSON；
+    - Step 4：如遇失败，按 runbook 的 troubleshooting 提示查看 docker compose / MinIO / Postgres 容器与日志；
+  - `S4A-3A` 不把 runbook 写成“万能恢复宝典”，而是明确声明边界：
+    - 仅覆盖本仓库 dev/test 场景；
+    - 仅示范从对象存储备份恢复到新的 dev/test 库；
+    - 任何涉及生产级 RPO/RTO、跨环境复制的需求，都应回到 roadmap 与后续 phase。 
 
 ## Execution Checklist (unchecked)
 
@@ -201,8 +236,8 @@
 
 ### P3 (Docs / Operator wording)
 
-- [ ] `P3-C1-S1`: operator-facing wording 收口
-- [ ] `P3-C1-S2`: runbook 草稿
+- [x] `P3-C1-S1`: operator-facing wording 收口
+- [x] `P3-C1-S2`: runbook 草稿
 
 ## Evidence (reserved)
 
