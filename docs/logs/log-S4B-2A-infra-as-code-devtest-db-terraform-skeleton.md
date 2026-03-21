@@ -95,7 +95,25 @@
 - P3-C1-S1: 用岗位语言回答：
   - 为什么要为 dev/test DB 提供一份 IaC skeleton；
   - 这份 skeleton 如何帮助实现 `minimal reproducible environment` 与配置一致性；
-- P3-C1-S2: 视需要在 S4B 顶层或 S4B-2A 下准备一小段说明，作为面试时讲 Terraform/IaC 的入口。
+- P3-C1-S2: 在 S4B-2A 下准备一小段说明，作为面试时讲 Terraform/IaC 的入口。
+
+#### P3-C1-S1 (Operator-facing wording | v1)
+
+- 为什么要有 dev/test DB Terraform skeleton：
+  - 在 dev/test 场景下，DB 目前是通过 docker-compose + `.env.dev` 启动的，但缺少一个“可以被阅读和版本控制的 infra state 定义”；
+  - 通过 `infra/terraform/devtest-db` 这个 skeleton module，把 `env/db_name/db_port` 这些关键字段固定在 Terraform 里，可以更清楚地表达 dev/test DB 的期望 state/outputs；
+  - 未来如果需要把 dev/test DB 挂到云端（如 RDS/Azure PG），只要替换 `null_resource` 为真实 provider 资源即可，variables/outputs 口径保持不变。
+- 对 minimal reproducible environment 和配置一致性的帮助：
+  - skeleton module 把 dev/test DB 的端口（5435）、数据库名（`wordloom_dev`）和 endpoint（`localhost`）写在变量/输出里，与 `.env.dev` 和 compose 对齐；
+  - 这让“dev/test 环境长什么样”不再只存在于脚本和口头知识里，而是有一份 IaC 文件可以直接 diff/审查；
+  - 即使现在不跑 `terraform apply`，也可以通过 `terraform validate/plan` 快速检查配置是否自洽。
+
+#### P3-C1-S2 (Interview/story entrypoint | v1)
+
+- 在面试中谈 Terraform/IaC 时，可以用 `S4B-2A` 做入口：
+  - 我不是一开始就上云，而是先在现有 dev/test 环境上，为 DB 起了一份 Terraform skeleton，把 `env/db_name/db_port` 这些 state/outputs 口径固定下来；
+  - 我用 `null_resource` + `outputs` 的方式，先完成“可以复述的 IaC 样本”，然后通过一次 `terraform init/validate/plan` drill 证明配置是可执行、可验证的；
+  - 这样既能讲 `infrastructure scripting and automation`，又不会把重点从 systems/platform operations 和 reproducible env 上移开。
 
 ## Execution Checklist (unchecked)
 
@@ -110,22 +128,22 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: Terraform validate/plan drill defined & executed
-- [ ] `P2-C1-S2`: evidence recorded
+- [x] `P2-C1-S1`: Terraform validate/plan drill defined & executed
+- [x] `P2-C1-S2`: evidence recorded
 
 ### P3 (Docs / Operator wording)
 
-- [ ] `P3-C1-S1`: operator-facing wording
-- [ ] `P3-C1-S2`: interview/story entrypoint (if needed)
+- [x] `P3-C1-S1`: operator-facing wording
+- [x] `P3-C1-S2`: interview/story entrypoint (if needed)
 
-## Evidence (reserved)
+## Evidence
 
-- 预留：在首次执行 `terraform validate/plan` 时，记录：
-  - headSha；
-  - env；
-  - 执行命令；
-  - result（PASS/FAIL）与关键摘要；
-  - artifacts 文件路径。
+- 2026-03-21（v1 drill，devtest DB Terraform skeleton validate/plan，结果 PASS）：
+  - headSha: `780a665ed5e6c3f110bcc2a33b3ecb97ed25c85b`
+  - env: `dev`
+  - commands: `terraform init`, `terraform validate`, `terraform plan -no-color`
+  - artifacts: `artifacts/_tmp_s4b2a_devtest_db_terraform_plan.txt`
+  - result: `PASS`（配置通过 validate，plan 生成 1 个 `null_resource.devtest_db` 以及预期的 `db_endpoint/db_name/db_port` outputs，未执行 apply）
 
 ## Recent changes (for traceability, optional)
 
