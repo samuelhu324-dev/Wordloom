@@ -155,6 +155,19 @@
   - 不改变 `scripts/up.sh` / `scripts/app_up.sh` 已有的“前台长跑 + Ctrl+C 退出”行为；新脚本更像“在现有运行面的上方增加 deploy/verify/rollback 语义层”。
   - deploy_*_verify 脚本优先实现“检查 + 摘要 + 退出码”，evidence JSON 的实际落地可以放在 P2 drill / verify 阶段。
 
+### P1-C1-S3 (First script sample | implemented 2026-03-21)
+
+- 首批实现脚本：`scripts/ops/deploy_app_verify.sh`
+  - 入口：`./scripts/ops/deploy_app_verify.sh [dev|test]`
+  - 行为：
+    - 通过 `_common.sh` 解析 env（`resolve_env_name`）并定位 `REPO_ROOT`；
+    - 读取当前 `HEAD_SHA=git rev-parse HEAD`，以 `phase=S4A-2A env=<env> target_head_sha=<sha>` 形式打印摘要；
+    - 依次调用 `scripts/ops/status.sh <env>` 与 `scripts/ops/health.sh <env>`，捕获各自退出码但不中断执行；
+    - 若两者均退出码为 0，则输出 `POST_DEPLOY_RESULT=PASS` 并以 0 退出；否则输出 `POST_DEPLOY_RESULT=FAIL` 及 `status_rc` / `health_rc`，并以非 0 退出。
+  - 设计意图：
+    - 把 `S4A-1A` 已有的 `status` / `health` 组合提升为一条可复跑的 post-deploy verification gate，而不改变 `start/app_up` 的前台运行语义；
+    - 为后续 P2 evidence JSON 奠定字段口径（`phase_id` / `target_head_sha` / `post_deploy_result` 等），当前以人类可读摘要先行。
+
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: 设计并执行至少 1 条正常的 deploy+verify 演练，记录 expected/observed 摘要。
@@ -177,7 +190,7 @@
 
 - [x] `P1-C1-S1`: 盘点现有 deploy/verify/rollback 相关入口
 - [x] `P1-C1-S2`: 设计最小脚本集合
-- [ ] `P1-C1-S3`: 实现首批脚本样本
+- [x] `P1-C1-S3`: 实现首批脚本样本
 
 ### P2 (Drill / Verify)
 
