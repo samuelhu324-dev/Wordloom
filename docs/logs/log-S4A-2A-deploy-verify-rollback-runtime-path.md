@@ -219,6 +219,32 @@
 - P3-C1-S1: 把 deploy/verify/rollback 入口改写成 systems/platform operations 语言，并与 `S4A-1A` 的 operator wording 对齐（例如 `post-deploy verification gate`、`runtime rollback path`）。
 - P3-C1-S2: 起草 `docs/runbook/run-S4A-2A-deploy-verify-rollback-runtime-path.md`，为值班 / 运行支持提供薄 runbook。
 
+### P3-C1-S1 (Operator-facing wording | implemented 2026-03-21)
+
+- Operator 视角下的主语义：
+  - `deploy_app_verify`: post-deploy verification gate（发布后验证闸门），用于在 dev/test 环境中给出低基数的 `POST_DEPLOY_RESULT=PASS|FAIL`；
+  - `POST_DEPLOY_RESULT`: deployment outcome（发布结果），可作为 CI / 值班决策的直接信号；
+  - `rollback path`: runtime rollback path（运行时回滚路径），当前以 env/Git 层的最小可重复模式为主，而非数据级别回滚；
+  - 整体 Phase 语言：`deployment safety / change verification / rollback readiness for local dev/test`。
+- 与 `S4A-1A` 对齐的 wording 映射：
+  - `start` / `env_prep` 仍然归 S4A-1A：分别是 environment readiness check 和 cold/warm-start runtime path；
+  - `status` / `health` 在 S4A-2A 中被提升为 deploy 后的 runtime summary 与 post-deploy verification gate 组成部分；
+  - `deploy_app_verify` 则是“站在 operator 视角，把 status+health 组合成一条 post-deploy gate 的专用入口”。
+- 对外材料（roadmap / 申请材料）中可使用的简写：
+  - "local dev/test deploy safety + post-deploy verification gate + rollback readiness"；
+  - "one thin post-deploy gate script (deploy_app_verify) with env/Git-based rollback pattern"。
+
+### P3-C1-S2 (Runbook draft | implemented 2026-03-21)
+
+- Runbook 位置：`docs/runbook/run-S4A-2A-deploy-verify-rollback-runtime-path.md`。
+- Runbook 主体：
+  - section 1/2：明确本 runbook 只覆盖本地 dev/test 环境的 deploy/verify/rollback，强调是建立在 `S4A-1A` ops scripting baseline 之上的“薄层”；
+  - section 3：把 Evidence bundle 收口到 phase log 与 `deploy_app_verify` 的 `POST_DEPLOY_RESULT`、status/health 摘要上；
+  - section 4：用 operator 语言描述 `deploy_app_verify` 的行为与使用方法（包含成功/失败标准，以及可调的 env 输入）；
+  - section 5：给出本地操作样例，包括“deploy+verify”与“config-level / Git-level rollback” 两类模式；
+  - section 6：列出若干高价值故障模式（status_rc!=0 / health_rc!=0 / api_health DOWN 等），并指向首选排查命令或 log 入口；
+  - section 7：说明边界（仅 dev/test、无数据级回滚、不替代 S6A/S3A 的 CI hard-gate），以及未来可能扩展点（`deploy_db_migrations`、JSON evidence、CI workflow 调用等）。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -240,8 +266,8 @@
 
 ### P3 (Docs / Operator wording)
 
-- [ ] `P3-C1-S1`: operator-facing wording 收口
-- [ ] `P3-C1-S2`: runbook 草稿
+- [x] `P3-C1-S1`: operator-facing wording 收口
+- [x] `P3-C1-S2`: runbook 草稿
 
 ## Evidence (reserved)
 
