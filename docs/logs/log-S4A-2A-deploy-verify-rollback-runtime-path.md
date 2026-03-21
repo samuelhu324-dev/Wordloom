@@ -5,7 +5,7 @@
 **id**: `S4A-2A`
 **kind**: `log`
 **title**: `deploy / verify / rollback runtime path + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, Operations, Runtime, Deploy, Verification, Rollback, Drills, Evidence, epic/s4, epic/s4a, sub/2a`
 **links**: ``
