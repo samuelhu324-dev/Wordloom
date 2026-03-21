@@ -108,7 +108,7 @@
 
 #### P1-C1-S3 (Terraform entrypoints & boundaries | v1)
 
-- 在本 phase 中，仅确定未来 Terraform/IaC 的入口和边界，不直接实现：
+- 在本 phase 中，仅确定未来 Terraform/IaC 的入口和边界，不直接在此处实现完整 module：
   - 候选资源：
     - devtest DB 容器所映射的持久化卷与网络（例如用于本地/云端一体化时的数据库实例）；
     - MinIO 或等价对象存储（与 S5A-3B 备份故事对齐）；
@@ -117,7 +117,8 @@
     - `object_storage_endpoint` / `bucket_name`；
   - 边界约束：
     - IaC v1 只为 dev/test 提供样本和 state 描述，不负责生产环境资源；
-    - 与现有 docker-compose 定义保持一致（端口、卷路径等），避免出现两套不一致的真相来源。
+    - 与现有 docker-compose 定义保持一致（端口、卷路径等），避免出现两套不一致的真相来源；
+  - 具体的 Terraform skeleton 实现从 `S4B-2A` phase 开始落地，首个样本为 `infra/terraform/devtest-db` 中的 devtest DB module。
 
 ### P2 (Drill / Verify)
 

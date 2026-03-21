@@ -18,6 +18,7 @@
   **reference_log_2**: `docs/logs/log-S5A-security-governance.md`
   **reference_log_3**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
   **phase_log_1**: `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+  **phase_log_2**: `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
 **created**: `2026-03-21`
 **updated**: `2026-03-21`
 
@@ -83,8 +84,10 @@
 
 ## Phases（切片）
 
-- `S4B-1A`（Phase 1A）：Infra as code & runtime packaging baseline（dev/test）
+- `S4B-1A`（Phase 1A）：Infra as code & runtime packaging baseline（dev/test runtime & from-zero path）
   - 详见：`docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `S4B-2A`（Phase 2A）：Dev/test DB Terraform skeleton（IaC sample for minimal reproducible env）
+  - 详见：`docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
 
 ## P0 (Contract | v1)
 
@@ -114,9 +117,9 @@
 
 ### P1 (Implementation / scaffolding)
 
-- P1-C1-S1: 盘点现有与 infra/runtime 相关的资产（docker-compose 文件、Dockerfile、env 示例、任何已有 Terraform 片段）；
-- P1-C1-S2: 选定 1~2 个最小的 Terraform 目标（例如 dev/test DB / MinIO），起草 Terraform skeleton；
-- P1-C1-S3: 梳理 Docker/compose runtime 的启动路径，确保有统一入口和健康检查钩子。
+- P1-C1-S1: 盘点现有与 infra/runtime 相关的资产（docker-compose 文件、Dockerfile、env 示例等），并在 `S4B-1A` 中完成 dev/test runtime baseline（from-zero-to-dev/test 路径与 health）；
+- P1-C1-S2: 选定 1~2 个最小的 Terraform 目标（例如 dev/test DB / MinIO），并将其 IaC skeleton 拆分到 `S4B-2A` 等后续 phase 中实现；
+- P1-C1-S3: 梳理 Docker/compose runtime 的启动路径，确保有统一入口和健康检查钩子（主要由 `S4B-1A` 交付）。
 
 ### P2 (Drill / Verify)
 
@@ -139,14 +142,14 @@
 
 ### P1 (Implementation / scaffolding)
 
-- [ ] `P1-C1-S1`: inventory infra/runtime assets
-- [ ] `P1-C1-S2`: minimal Terraform targets selected
-- [ ] `P1-C1-S3`: runtime packaging entrypoints clarified
+- [ ] `P1-C1-S1`: `S4B-1A` runtime baseline (from-zero path + health) aligned
+- [ ] `P1-C1-S2`: minimal Terraform targets selected and mapped to `S4B-2A`+ phases
+- [ ] `P1-C1-S3`: runtime packaging entrypoints clarified（compose + scripts/ops）
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: end-to-end infra + runtime drill
-- [ ] `P2-C1-S2`: evidence recorded
+- [ ] `P2-C1-S1`: end-to-end infra + runtime drill（跨 S4B-1A / S4B-2A）
+- [ ] `P2-C1-S2`: evidence recorded（from-zero runtime + IaC skeleton plan）
 
 ### P3 (Docs / Operator wording)
 
@@ -155,8 +158,8 @@
 
 ## Current Status（进展摘要）
 
-- 当前状态：`S4B` 已定义顶层 contract / scope，`S4B-1A` 作为首个 phase 已 scaffold，并完成了 dev/test infra/runtime 资产 inventory 与 from-zero-to-dev/test 高层步骤梳理；
-- 风险：Terraform/IaC 部分仍停留在规划层，尚未有实际 apply/plan 级别的 evidence；
+- 当前状态：`S4B` 已定义顶层 contract / scope，`S4B-1A` 作为首个 phase 已完成 dev/test runtime baseline（from-zero-to-dev/test 路径与 FAIL→PASS drills），`S4B-2A` 则 scaffold 了 devtest DB 的 Terraform skeleton；
+- 风险：Terraform/IaC 部分仍主要停留在 skeleton 与 plan 层，尚未有实际 `terraform plan/apply` 级别的 evidence；
 
 ## Stability（stable 口径）
 
