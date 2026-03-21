@@ -39,6 +39,24 @@
 - IaC 不追求覆盖所有资源类型，而是选 1~2 个最贴当前 repo 的资源（例如 DB / object storage）；
 - 继续沿用 `S6A` style 的 evidence 语义：用 drills 或轻量 JSON 记录从 "空环境" 到 "可用 runtime" 的关键步骤与结果。
 
+**Non-goals（不做什么）**：
+
+- 不在 v1 内构建完整 multi-cloud 或生产级 IaC 管理体系；
+- 不重写所有现有 dev/test 启动脚本，而是在其之上补充 IaC 与 packaging 视角；
+- 不承担安全/IAM 策略的详细设计（交给 S5A/S5B），仅在必要时引用最小权限约束。
+
+## Background（背景）
+
+- `wordloom-v3` 当前的 dev/test 运行主要依赖：
+  - 一组 docker-compose 文件（devtest DB、infra ES、默认 compose）；
+  - 一套 ops 脚本（`env_prep.sh`、`start.sh`、`status.sh`、`health.sh`）；
+  - 以及在 S4A-1A / S4A-2A / S3A 中已经形成的 drills 与 evidence。
+- 这些资产保证了 "本机从能跑到稳定跑"，但在 IaC 与 packaging 角度仍较分散：
+  - 没有清晰描述哪些资源应该被 Terraform 管；
+  - from-zero-to-dev/test 的步骤多依赖口头/个人经验；
+  - runtime packaging 的故事主要出现在脚本层，而不是 infra as code 层。
+- `S4B` 的目标是在不打断现有开发体验的前提下，为 dev/test 增加一层 IaC & packaging 叙事，为后续云端/生产环境演进做准备。
+
 ## Constraints
 
 - 不在本 phase 内引入完整的多云或生产级 IaC 管理，只做 dev/test 级别的 sample；
@@ -51,6 +69,22 @@
 - `P1`: implementation / scaffolding（选定最小 Terraform + Docker 样本，梳理 runtime packaging 资产）；
 - `P2`: drill / verify（跑通从空环境到可用 runtime 的至少 1 条脚本化路径，并留下 evidence）；
 - `P3`: docs / operator wording（用 systems/platform operations 语言包装：installation / configuration / maintenance / lifecycle）。
+
+## Success Criteria (DoD)
+
+- 工程层面：
+  - 至少有一份稳定的 "from zero to dev/test" 高层步骤文档（由 S4B-1A 提供）；
+  - 确定了第一批 Terraform/IaC 目标资源及其期望 state/outputs 口径；
+  - 能基于现有 compose + 脚本跑通一条从空环境到可用 dev/test runtime 的样本路径；
+- 证据层面：
+  - 至少 1 条 from-zero-to-dev/test drill 的 evidence，包含 headSha、env、关键命令与 PASS/FAIL 结果；
+- 叙事层面：
+  - 面试/文档中可以用清晰语言回答：dev/test infra 是如何被定义、打包与拉起来的。
+
+## Phases（切片）
+
+- `S4B-1A`（Phase 1A）：Infra as code & runtime packaging baseline（dev/test）
+  - 详见：`docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
 
 ## P0 (Contract | v1)
 
@@ -118,6 +152,18 @@
 
 - [ ] `P3-C1-S1`: operator-facing wording
 - [ ] `P3-C1-S2`: runbook (if needed)
+
+## Current Status（进展摘要）
+
+- 当前状态：`S4B` 已定义顶层 contract / scope，`S4B-1A` 作为首个 phase 已 scaffold，并完成了 dev/test infra/runtime 资产 inventory 与 from-zero-to-dev/test 高层步骤梳理；
+- 风险：Terraform/IaC 部分仍停留在规划层，尚未有实际 apply/plan 级别的 evidence；
+
+## Stability（stable 口径）
+
+- 本 log 可以在以下条件下标记为 `stable`：
+  - 至少一个 phase（优先 `S4B-1A`）完成 P0–P2 的 contract、实现与 drills，并有可追溯 evidence；
+  - 从零到 dev/test 的脚本化路径经过至少一次完整演练并记录 headSha + artifacts；
+  - Terraform/IaC 目标与 compose/runtime packaging 的边界关系在文档中稳定，不再频繁漂移。
 
 ## Evidence (reserved)
 
