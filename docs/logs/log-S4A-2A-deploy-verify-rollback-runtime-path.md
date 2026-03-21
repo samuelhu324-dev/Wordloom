@@ -194,7 +194,7 @@
 - 记录方式：
   - 在 Evidence 区新增一条 `P2-C1-S1` 记录，填写 headSha、使用的命令、expected/observed 摘要，并可在后续迭代中补充 JSON artifact 路径。
 
-### P2-C1-S2 (Rollback drill | plan)
+### P2-C1-S2 (Rollback drill | implemented 2026-03-21)
 
 - 目标：设计一条可控的 "post-deploy verify 失败 -> 触发 rollback -> 恢复到已知良好版本" 演练，验证 rollback 语义和 evidence 口径。
 - 推荐场景（配置级回滚样本）：
@@ -236,7 +236,7 @@
 ### P2 (Drill / Verify)
 
 - [x] `P2-C1-S1`: 正常 deploy+verify 演练
-- [ ] `P2-C1-S2`: 带 rollback 的演练
+- [x] `P2-C1-S2`: 带 rollback 的演练
 
 ### P3 (Docs / Operator wording)
 
@@ -265,12 +265,36 @@
 
 ### P2-C1-S2 (reserved | 2026-03-21)
 
-- headSha: ``
-- artifacts: ``
+- headSha: `279a66861dfd44ef034f3b3261bc8f294960546f`
+- artifacts: `terminal proof (WSL bash scripts/ops/deploy_app_verify.sh dev; .env.dev 中 API_PORT 从 30001 -> 39999 -> 30001 的一次往返)`
 - expected:
-  - 待定：至少 1 条需要 rollback 的演练链路。
+  - 在 dev 环境基线为 PASS（`deploy_app_verify` 正常）的前提下，临时把 `.env.dev` 中的 `API_PORT` 改为一个没有进程监听的端口（39999），会导致：
+    - `scripts/ops/health.sh dev` 中的 `api_health` 检查失败（HTTP 000 / DOWN）；
+    - `scripts/ops/deploy_app_verify.sh dev` 汇总结果为 `POST_DEPLOY_RESULT=FAIL`，退出码为非 0；
+  - 将 `.env.dev` 中的 `API_PORT` 恢复为 30001 后，再次运行 `health.sh` / `deploy_app_verify.sh`，预期恢复为 PASS。
 - observed:
-  - （本 phase scaffold 时留空，后续补充实测结果。）
+  - 基线确认：
+    - 命令：`bash scripts/ops/deploy_app_verify.sh dev`
+    - 关键输出：
+      - `phase=S4A-2A env=dev target_head_sha=279a66861dfd44ef034f3b3261bc8f294960546f`
+      - `POST_DEPLOY_RESULT=PASS`（status/health 各子检查均 OK）。
+  - 注入配置错误（API_PORT 39999）：
+    - 修改 `.env.dev`：`API_PORT=30001 -> API_PORT=39999`；
+    - `bash scripts/ops/health.sh dev`：
+      - `[ops] db_devtest OK (healthy)`；
+      - `[ops] api_health DOWN (http://127.0.0.1:39999/api/v1/health)`；
+      - 脚本退出码为非 0；
+    - `bash scripts/ops/deploy_app_verify.sh dev`（在修正脚本逻辑后）：
+      - status 摘要中 `api_health 000`；
+      - health 阶段同样输出 `api_health DOWN (http://127.0.0.1:39999/api/v1/health)`；
+      - 最终输出 `POST_DEPLOY_RESULT=FAIL status_rc=0 health_rc=1`，脚本退出码为非 0。
+  - 回滚配置并验证恢复：
+    - 回滚入口：手动将 `.env.dev` 中 `API_PORT` 恢复为 30001（本仓库不对 `.env.dev` 入库，因此本例使用“手动恢复 env 配置”为最小 rollback path；若未来引入 `.env.dev.example` 并入库，则可改为 Git 层的 `git restore`/`git checkout`）。
+    - `bash scripts/ops/health.sh dev`：
+      - `db_devtest OK (healthy)`；`api_health OK (200)`；`ui_http OK (200)`；`es_http OK (200)`；
+    - `bash scripts/ops/deploy_app_verify.sh dev`：
+      - 再次输出 `POST_DEPLOY_RESULT=PASS`，退出码为 0。
+  - 结论：在当前 headSha 下，故意将 `.env.dev` 中 `API_PORT` 配坏可以稳定触发 `deploy_app_verify` 的 FAIL，并通过恢复该配置回到 PASS，形成一条可复现的“配置级 rollback” 样本。
 
 ## Recent changes (for traceability, optional)
 

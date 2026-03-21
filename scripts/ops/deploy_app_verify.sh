@@ -16,15 +16,11 @@ echo "[deploy_app_verify] phase=S4A-2A env=$ENV_NAME target_head_sha=$HEAD_SHA"
 
 echo "[deploy_app_verify] running status.sh ($ENV_NAME)"
 status_rc=0
-if ! "$SCRIPT_DIR/status.sh" "$ENV_NAME"; then
-  status_rc=$?
-fi
+"$SCRIPT_DIR/status.sh" "$ENV_NAME" || status_rc=$?
 
 echo "[deploy_app_verify] running health.sh ($ENV_NAME)"
 health_rc=0
-if ! "$SCRIPT_DIR/health.sh" "$ENV_NAME"; then
-  health_rc=$?
-fi
+"$SCRIPT_DIR/health.sh" "$ENV_NAME" || health_rc=$?
 
 if [[ "$status_rc" -eq 0 && "$health_rc" -eq 0 ]]; then
   echo "[deploy_app_verify] POST_DEPLOY_RESULT=PASS"
