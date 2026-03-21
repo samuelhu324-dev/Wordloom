@@ -5,7 +5,7 @@
 **id**: `S4A-1A`
 **kind**: `log`
 **title**: `ops scripting baseline (start/stop/status/health/logs/env prep) + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, Operations, Runtime, Bash, Automation, Drills, Evidence, epic/s4, sub/1a`
 **links**: ``
@@ -18,7 +18,7 @@
   **reference_log_2**: `docs/logs/log-S5A-3B-object-storage-backup.md`
   **reference_log_3**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
 **created**: `2026-03-20`
-**updated**: `2026-03-20`
+**updated**: `2026-03-21`
 
 ---
 
@@ -325,4 +325,4 @@
 - 2026-03-20: completed first `P2` pass with a replayable `env_prep + infra + db + status` chain and recorded the WSL `npm/cross-env` blocker on the full `all --no-worker` app path.
 - 2026-03-20: repaired the WSL frontend startup path via `scripts/ui_up.sh`, added Windows-aware HTTP probes, and completed a second `P2` pass where `app --no-worker + status + health` reached API/UI/DB/ES green.
 - 2026-03-21: completed `P3` by publishing a thin runbook and translating the script set into operator-facing systems/platform operations wording.
- - 2026-03-21: softened preflight's dev/test DB port check so that a healthy docker-compose-managed `db_devtest` on `5435` is treated as an expected occupant, making the `start all` cold-start path reentrant after a successful DB bring-up.
+- 2026-03-21: softened preflight's dev/test DB port check so that a healthy docker-compose-managed `db_devtest` on `5435` is treated as an expected occupant, making the `start all` cold-start path reentrant after a successful DB bring-up.
