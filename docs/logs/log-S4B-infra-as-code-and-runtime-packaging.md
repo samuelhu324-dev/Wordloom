@@ -167,7 +167,9 @@
 
 ## Evidence (reserved)
 
-- 预留：后续 P2 阶段再补充具体样本与路径。
+- 预留：后续 P2 阶段再补充具体样本与路径；
+- 当前可参考：
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` 中的 Evidence 小节（包含 from-zero-to-dev/test 路径的 FAIL→PASS drills 与 artifacts）。
 
 ## Recent changes (for traceability, optional)
 

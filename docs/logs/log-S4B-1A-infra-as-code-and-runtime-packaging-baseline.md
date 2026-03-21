@@ -11,7 +11,7 @@
 **links**: ``
   **issue**: ``
   **pr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S4B-1A-from-zero-to-devtest-runtime.md`
   **parent_log**: `docs/logs/log-S4B-infra-as-code-and-runtime-packaging.md`
   **reference_log_1**: `docs/logs/log-S4A-1A-ops-scripting-baseline.md`
   **reference_log_2**: `docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
@@ -121,23 +121,94 @@
 
 ### P2 (Drill / Verify)
 
-- P2-C1-S1: 设计一条 "从空环境到可用 dev/test runtime" 的脚本化路径（即使暂时不完全由 Terraform 驱动）；
-- P2-C1-S2: 为该路径记录一份 evidence（命令输出 / 简单 JSON / 文字步骤），对齐 `S6A` 的低基数 PASS/FAIL 习惯。
+#### P2-C1-S1 (From-zero-to-dev/test scripted path | v1)
+
+- 目标：在不强制引入 Terraform 的前提下，先固定一条可复述、可脚本化的 from-zero-to-dev/test 路径，为后续 IaC 化提供对照基线。
+- 路径形态（dev/test、本地 WSL2 语境）：
+  1. 机器前置：Windows + Docker Desktop（开启 WSL2 integration）+ WSL2 Ubuntu；
+  2. 在 WSL 中 clone 仓库并进入 `wordloom-v3` 根目录；
+  3. 准备环境：
+     - 确认存在 `.env.dev`，或由模板创建，并填入最低必要字段（DB URL、API/ES 端口等）；
+  4. 运行 infra & runtime 脚本：
+     - `./scripts/ops/env_prep.sh dev`
+     - `./scripts/ops/start.sh dev infra es`
+     - `./scripts/ops/start.sh dev db`
+     - `./scripts/ops/start.sh dev app --no-worker`
+  5. 验证 runtime：
+     - `bash scripts/ops/status.sh dev`
+     - `bash scripts/ops/health.sh dev`
+- v1 不强制要求将上述步骤封装为单一脚本，但要求：
+  - 以固定顺序 & 命令集呈现；
+  - 后续可以直接复制这些命令到 from-zero-to-dev/test drill 中执行并产生 evidence。
+
+#### P2-C1-S2 (Evidence for from-zero-to-dev/test path | v1)
+
+- 目标：为上述路径设计一份轻量 evidence 结构，使其满足 S6A 风格的低基数 PASS/FAIL 和可追溯要求。
+- 建议 evidence 载体：
+  - 例如 `artifacts/_tmp_s4b1a_from_zero_to_devtest.json`（文件名可在后续真实演练时敲定）；
+- 推荐字段：
+  - `phase_id`: `S4B-1A`；
+  - `path_kind`: `from_zero_to_devtest`；
+  - `headSha`: `<git sha>`；
+  - `env`: `dev`；
+  - `steps`: 命令数组（例如 `['./scripts/ops/env_prep.sh dev', './scripts/ops/start.sh dev infra es', ...]`）；
+  - `status_summary`: 来自 `status.sh` 关键字段的摘要（例如 db_container/api_health/ui_http/es_http）；
+  - `health_result`: `PASS|FAIL`，由 `health.sh` exit code 映射；
+  - `result`: `PASS|FAIL`（整体 from-zero-to-dev/test 路径是否成功）；
+  - `notes`: 可选文字说明（例如异常时的简短 root cause）。
+- 后续在实际跑第一次 drill 时，只需要：
+  - 记录当前 `headSha`；
+  - 复用 P2-C1-S1 中的命令顺序执行；
+  - 按上述字段填写一个 JSON 或 Markdown 片段，并将路径登记到 Evidence 小节。
 
 ### P3 (Docs / Operator wording)
 
 - P3-C1-S1: 用岗位语言回答：
   - dev/test 环境在基础设施和 runtime packaging 层面是如何定义的；
   - operator 在新机器上要做哪些步骤才算 "把系统拉起来"；
-- P3-C1-S2: 视需要起一份 runbook，作为 "新环境站起来" 的操作手册草稿。
+  - 这些步骤在 S4B-1A P2 drill 中是如何被验证并留下 evidence 的（包括 FAIL→PASS 的演进）。
+- P3-C1-S2: 起一份 runbook，作为 "新环境站起来" 的操作手册草稿，并在 links.runbook 中挂上路径。
+
+#### P3-C1-S1 (Operator-facing wording | v1)
+
+- 基础设施层面（dev/test infra）：
+  - dev/test 依赖的基础设施主要由 docker-compose 管理，包括 devtest DB 容器、ES 容器等；
+  - 这些资源通过 `scripts/ops/start.sh dev infra es` 与 `scripts/ops/start.sh dev db` 启动，并通过 `scripts/ops/status.sh dev` / `scripts/ops/health.sh dev` 进行状态与健康检查；
+  - future IaC（例如 Terraform）会以 devtest DB / MinIO 等为切入点，将当前 compose 描述逐步抽象为可重复、可审计的 infra module。
+- runtime packaging 层面：
+  - 应用 runtime（api + ui）通过 Dockerfile + docker-compose + `Procfile.dev` 打包，并由 `scripts/ops/start.sh dev app --no-worker` 拉起；
+  - `scripts/ops/env_prep.sh dev` 负责准备本地 env 与依赖，保证 compose 与应用进程有一致的配置入口；
+  - runtime 的健康度由 `scripts/ops/health.sh dev` 汇总多个探针（db/api/ui/es）给出 PASS/FAIL 结论。
+- operator 的工作视角（新机器 bring-up）：
+  - 准备阶段：安装 Docker Desktop + WSL2，在 WSL 中 clone 仓库，并配置 `.env.dev`；
+  - bring-up 阶段：按固定顺序执行 env_prep → infra es → db → app → status/health；
+  - 验证阶段：以 `status.sh dev` 和 `health.sh dev` 输出为主，确认 devtest DB/ES 容器 healthy，api/ui HTTP 探针 200，整体 health PASS；
+  - 故障处理：若任一步骤 FAIL（例如端口占用、DB 容器起不来），operator 可以参考 Evidence 中的 FAIL drill 与 runbook 中的 troubleshooting 小节进行排查。
+- drill 与 evidence：
+  - 本 phase 已经完成两次 from-zero-to-dev/test drill：
+    - 第一次 FAIL（端口占用导致 DB 容器与 app up 失败），对应 `artifacts/_tmp_s4b1a_from_zero_to_devtest.json`；
+    - 第二次 PASS（DB/ES/health 全绿，api 端口有预警但整体健康 OK），对应 `artifacts/_tmp_s4b1a_from_zero_to_devtest_v2.json`；
+  - 通过 FAIL→PASS 的演进，operator 可以在文档中讲清：
+    - from-zero 路径不仅存在，而且经过实战演练；
+    - 关键故障模式（端口占用等）有 evidence 和 runbook 可追溯。
+
+#### P3-C1-S2 (Runbook reference | v1)
+
+- 本 phase 对应的新环境 bring-up runbook：
+  - `docs/runbook/run-S4B-1A-from-zero-to-devtest-runtime.md`
+- runbook 中包含：
+  - 适用场景与前置条件；
+  - 从零到 dev/test runtime 的操作步骤（env_prep → infra → db → app → status/health）；
+  - 如何在演练完成后记录 evidence（headSha、env、path_kind、status/health 摘要与 PASS/FAIL 结论）；
+  - 常见故障（端口占用、容器不健康、health FAIL）的排查建议。
 
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: dev/test infra as code baseline contract
-- [ ] `P0-C1-S2`: dev/test runtime packaging baseline contract
-- [ ] `P0-C1-S3`: evidence contract
+- [x] `P0-C1-S1`: dev/test infra as code baseline contract
+- [x] `P0-C1-S2`: dev/test runtime packaging baseline contract
+- [x] `P0-C1-S3`: evidence contract
 
 ### P1 (Implementation / scaffolding)
 
@@ -147,17 +218,28 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: from-zero-to-dev/test scripted path
-- [ ] `P2-C1-S2`: evidence recorded
+- [x] `P2-C1-S1`: from-zero-to-dev/test scripted path
+- [x] `P2-C1-S2`: evidence recorded (first run: FAIL, see Evidence)
 
 ### P3 (Docs / Operator wording)
 
-- [ ] `P3-C1-S1`: operator-facing wording
-- [ ] `P3-C1-S2`: runbook (if needed)
+- [x] `P3-C1-S1`: operator-facing wording
+- [x] `P3-C1-S2`: runbook (if needed)
 
-## Evidence (reserved)
+## Evidence
 
-- 预留：后续在本 phase 定义第一条 from-zero-to-dev/test 路径时，再补充具体样本与 evidence。
+- 2026-03-21（v1 drill，从零到 dev/test 路径，结果 FAIL）：
+  - headSha: `f66aad9167757de2bb8dd6340a4aae984016832b`
+  - env: `dev`
+  - path_kind: `from_zero_to_devtest`
+  - artifacts: `artifacts/_tmp_s4b1a_from_zero_to_devtest.json`
+  - result: `FAIL`（devtest DB 5435 端口已被占用，`start.sh dev db` 无法绑定；API 端口已被占用导致 app up 失败；`health.sh dev` 报告 `db_devtest` 容器不存在，但 UI 与 ES HTTP 探针为 200）
+- 2026-03-21（v2 drill，从零到 dev/test 路径，结果 PASS）：
+  - headSha: `f66aad9167757de2bb8dd6340a4aae984016832b`
+  - env: `dev`
+  - path_kind: `from_zero_to_devtest`
+  - artifacts: `artifacts/_tmp_s4b1a_from_zero_to_devtest_v2.json`
+  - result: `PASS`（devtest DB 容器与 ES 均为 healthy，`status.sh dev` 显示 db_container/infra_es/ui_http/es_http 均正常，`health.sh dev` 报告 db/api/ui/es 全部 OK；`env_prep.sh` 仍有 api 端口占用提示，但不影响整体健康）
 
 ## Recent changes (for traceability, optional)
 
