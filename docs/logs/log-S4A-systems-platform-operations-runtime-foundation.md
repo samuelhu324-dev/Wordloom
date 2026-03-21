@@ -4,7 +4,7 @@
 
 **id**: `S4A-systems-platform-operations-runtime-foundation`
 **kind**: `log`
-**title**: `systems/platform operations runtime foundation (ops scripting, deploy safety, recoverability, hybrid runtime awareness) v1`
+**title**: `systems/platform operations runtime foundation (ops scripting, deploy safety, recoverability, hybrid runtime awareness, operational visibility) v1`
 **status**: `draft`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, Operations, Platform, Runtime, Automation, Recoverability, Deploy, epic/s4, epic/s4a`
@@ -22,6 +22,7 @@
   **phase_log_2**: `docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
   **phase_log_3**: `docs/logs/log-S4A-3A-backup-recovery-operator-path.md`
   **phase_log_4**: `docs/logs/log-S4A-4A-hybrid-runtime-awareness.md`
+  **phase_log_5**: `docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
 **created**: `2026-03-20`
 **updated**: `2026-03-20`
 
@@ -80,6 +81,7 @@
   - `S4A-2A` 能定义 deploy / verify / rollback 的 runtime 路径。
   - `S4A-3A` 能把现有 backup/recovery 资产翻译成 operator path。
   - `S4A-4A` 能定义 hybrid runtime awareness 的最小补强范围。
+  - `S4A-5A` 能把 health / logs / deploy gate / failure drills 收口成一条 operational visibility & post-change verification 路径。
 - 证据层面：
   - 每个 phase 后续至少预留 1 条可追溯 evidence 入口（headSha + artifacts / CI run URL）。
 
@@ -93,6 +95,8 @@
   - 详见：`docs/logs/log-S4A-3A-backup-recovery-operator-path.md`
 - `S4A-4A`（Phase 4）：Hybrid runtime awareness（cloud fundamentals, config/secrets/logging, on-prem + cloud bridging）
   - 详见：`docs/logs/log-S4A-4A-hybrid-runtime-awareness.md`
+- `S4A-5A`（Phase 5）：Operational visibility & post-change verification（health, logs, drills, dashboards）
+  - 详见：`docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -101,6 +105,7 @@
 - [x] `P2`：Phase 2 seed（deploy / verify / rollback runtime path）
 - [x] `P3`：Phase 3 seed（backup / recovery operator path）
 - [x] `P4`：Phase 4 seed（hybrid runtime awareness）
+- [x] `P5`：Phase 5 seed（operational visibility & post-change verification）
 
 ## Current Status（进展摘要）
 
