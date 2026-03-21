@@ -173,6 +173,47 @@
 - P2-C1-S1: 设计并执行至少 1 条正常的 deploy+verify 演练，记录 expected/observed 摘要。
 - P2-C1-S2: 设计并执行至少 1 条需要 rollback 的演练（例如故意注入错误配置），并记录 rollback 行为和结果。
 
+### P2-C1-S1 (Happy-path deploy+verify drill | plan)
+
+- 目标：定义一条标准的 "deploy -> post-deploy verify" happy-path 演练，验证 `deploy_app_verify` gate 在 app 正常运行时稳定给出 PASS 结果，并可复跑。
+- 推荐路径：
+  - 步骤 1（环境准备）：
+    - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/env_prep.sh dev"`
+  - 步骤 2（冷启动 runtime）：
+    - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/start.sh dev infra es"`
+    - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/start.sh dev db"`
+  - 步骤 3（app warm-start）：
+    - 在 WSL 终端前台执行：`./scripts/ops/start.sh dev app --no-worker`
+      - 保持该终端前台运行（honcho 进程树在其中），只在需要关闭时 Ctrl+C。
+  - 步骤 4（post-deploy verification gate）：
+    - 在 Windows 侧 PowerShell 或另一 WSL 终端中执行：
+      - `bash scripts/ops/deploy_app_verify.sh dev`
+- 预期：
+  - `deploy_app_verify.sh dev` 能稳定完成一轮 `status + health` 检查，并输出 `POST_DEPLOY_RESULT=PASS`，退出码为 0。
+  - 输出中至少包含 `phase=S4A-2A env=dev target_head_sha=<sha>` 与关键组件状态摘要（来自 status/health）。
+- 记录方式：
+  - 在 Evidence 区新增一条 `P2-C1-S1` 记录，填写 headSha、使用的命令、expected/observed 摘要，并可在后续迭代中补充 JSON artifact 路径。
+
+### P2-C1-S2 (Rollback drill | plan)
+
+- 目标：设计一条可控的 "post-deploy verify 失败 -> 触发 rollback -> 恢复到已知良好版本" 演练，验证 rollback 语义和 evidence 口径。
+- 推荐场景（配置级回滚样本）：
+  - 步骤 1（基线状态）：按 `P2-C1-S1` 的步骤 1~4，先确保当前 HEAD 在 dev 环境下能够通过 `deploy_app_verify`（PASS）。
+  - 步骤 2（注入可逆配置错误）：
+    - 修改 `.env.dev` 中与 API 或 UI 可用性相关的一个配置（例如把 API_PORT 改成与已有端口冲突的值，或错误的后端 URL），并 `git commit` 或至少 `git diff` 记录该变更点。
+  - 步骤 3（观察失败）：
+    - 重新执行 `env_prep`（如有必要）和 `start.sh dev app --no-worker`，然后在独立终端再次运行 `bash scripts/ops/deploy_app_verify.sh dev`，预期得到 `POST_DEPLOY_RESULT=FAIL`，并在 status/health 输出中看到明确的失败信号（例如 API health 000 / 5xx）。
+  - 步骤 4（执行 rollback）：
+    - 在 Git 层执行 rollback，例如：`git restore .env.dev` 或 `git revert` 对应的错误 commit，使工作区回到上一个已知良好配置版本；
+    - 如有需要，重新跑一遍 `env_prep` 和 `start`，然后第三次执行 `bash scripts/ops/deploy_app_verify.sh dev`，预期恢复为 `POST_DEPLOY_RESULT=PASS`。
+- 预期：
+  - Evidence 能清楚体现：
+    - 失败前后的 `headSha` / `target_head_sha`；
+    - 出错配置的简要说明（低基数字段，例如 `rollback_reason=config_error_api_port`）；
+    - rollback 使用的入口（例如 `git restore .env.dev`）和最终恢复后的 `POST_DEPLOY_RESULT=PASS` 摘要。
+- 记录方式：
+  - 在 Evidence 区新增 `P2-C1-S2` 记录，包含三次关键命令（baseline PASS / injected FAIL / rollback 后 PASS）、对应 headSha，以及简要 expected/observed。
+
 ### P3 (Docs / Operator wording)
 
 - P3-C1-S1: 把 deploy/verify/rollback 入口改写成 systems/platform operations 语言，并与 `S4A-1A` 的 operator wording 对齐（例如 `post-deploy verification gate`、`runtime rollback path`）。
