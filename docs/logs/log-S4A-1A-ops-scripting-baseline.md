@@ -1,0 +1,328 @@
+# log-S4A-1A (Phase 1: Ops Scripting Baseline)
+
+---
+
+**id**: `S4A-1A`
+**kind**: `log`
+**title**: `ops scripting baseline (start/stop/status/health/logs/env prep) + drills/evidence v1`
+**status**: `draft`
+**scope**: `S4`
+**tags**: `EVOLUTION, OpsRuntime, Operations, Runtime, Bash, Automation, Drills, Evidence, epic/s4, sub/1a`
+**links**: ``
+  **issue**: ``
+  **pr**: ``
+  **runbook**: `docs/runbook/run-S4A-1A-ops-scripting-baseline.md`
+  **parent_log**: `docs/logs/log-S4A-systems-platform-operations-runtime-foundation.md`
+  **previous_log**: ``
+  **reference_log_1**: `docs/logs/log-S6A-evidence-drills-spine.md`
+  **reference_log_2**: `docs/logs/log-S5A-3B-object-storage-backup.md`
+  **reference_log_3**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
+**created**: `2026-03-20`
+**updated**: `2026-03-20`
+
+---
+
+## Decision / Outcome
+
+**Decision**:
+
+- `S4A-1A` 作为 `S4A` 的首个 phase，优先补 `ops scripting baseline`，而不是先补 Terraform 或 Kubernetes。原因是它最贴近岗位明示的 `PowerShell / Bash`、`operational support`、`monitoring`、`maintenance` 语言，并且最容易在 6 天窗口内形成可讲样本。
+- 本 phase 的默认交付范围收敛为一套最小运行脚本与口径：`start / stop / status / health / logs / env prep`，后续 phase 再接 deploy/rollback、backup/recovery、hybrid runtime awareness。
+
+**Default choices (phase defaults / v1)**:
+
+- 脚本优先语言：`Bash`。
+- 脚本目标环境：优先覆盖本地 dev/test 和最小 runtime support 语境，不追求生产级 orchestration。
+- 输出目标：优先形成“能说得出口的运维/运行支持样本”，其次才是抽象化复用。
+- 证据基线：脚本后续若进入正式执行，应尽量产出 machine-verifiable 的检查结果（JSON / logs / exit codes），以便与既有 evidence 体系接轨。
+
+## Definitions (optional)
+
+- **Ops scripting baseline**：用于支撑最小运行支持语境的一组稳定脚本入口，包括启动、停止、状态检查、健康检查、日志查看和环境准备。
+- **Runtime support**：聚焦服务是否可启动、可检查、可排障、可恢复，而非完整云平台编排。
+- **Health check**：能快速判断关键服务、依赖或入口是否处于可继续操作状态的检查脚本或命令。
+- **Env prep**：把运行所需的本地依赖、目录、配置和前置检查收敛成可重复执行的脚本步骤。
+
+## Constraints
+
+- 先补最小可用脚本，不追求跨平台大而全支持。
+- 先用 Bash 补最直接命中的能力，PowerShell awareness 可在后续补充，不在本 phase 作为主交付物。
+- 脚本应优先围绕现有 `wordloom-v3` 运行面组织，避免脱离仓库实际情况写空泛样板。
+- 若后续接入 evidence，结果字段必须尽量低基数、可机械判定。
+
+## Scope
+
+- `P0`: contract（脚本分类、命名、退出语义、最小 evidence 口径）
+- `P1`: implementation / scripts（start / stop / status / health / logs / env prep）
+- `P2`: drill / verify（至少验证 1~2 条关键脚本路径可复跑）
+- `P3`: docs / operator wording（把脚本入口翻译成 systems/platform operations 语言）
+
+## Success Criteria (DoD)
+
+- 明确一组最小脚本分类：`start`、`stop`、`status`、`health`、`logs`、`env_prep`。
+- 至少定义每类脚本的预期目标、输入和成功/失败语义。
+- 至少挑选 1 条关键服务路径，后续可通过脚本完成启动或检查。
+- 至少挑选 1 条健康或日志检查路径，后续可作为 operational support sample。
+- 脚本命名和入口说明应能被直接翻译到申请材料中的 `operational support / maintenance / monitoring` 语言。
+
+## Stability (what stable means)
+
+- This log can be marked `stable` when:
+  - `P0-P3` 的脚本 contract、最小脚本集合与 operator wording 已稳定。
+  - Evidence 区至少记录 1~2 条成功演练或验证样本（headSha + artifact path / terminal proof / CI run URL）。
+
+## P0 (Contract | v1)
+
+### P0-C1-S1 (Script categories | v1)
+
+- `start`: 启动本地或最小 runtime 所需服务。
+- `stop`: 停止对应服务并尽量保持状态可清理。
+- `status`: 返回关键服务当前状态与必要摘要。
+- `health`: 执行最小健康检查，给出可继续操作的判断。
+- `logs`: 提供关键日志查看入口。
+- `env_prep`: 运行前置环境检查或准备动作。
+
+### P0-C1-S2 (Exit semantics | v1)
+
+- 成功：退出码 `0`。
+- 预期失败但可识别：非 `0`，并尽量输出简洁、低基数原因。
+- 脚本应避免把高基数原始错误直接当成结构化状态字段。
+
+### P0-C1-S3 (Evidence contract | v1)
+
+- Evidence JSON 后续至少应包含：
+  - 脚本类别与脚本名
+  - 关键输入参数（若有）
+  - PASS / FAIL 决策
+  - 关键输出路径或检查摘要
+
+## Numbering
+
+- `S<n>`: Step.
+- `C<n>`: Cycle.
+
+**Commit / PR naming**:
+
+- `S4A-1A/P<phase>-C<cycle>-S<steps>: <summary>`，其中 `<steps>` 可以是单个 step（`1`）或同一 phase / cycle 下连续 steps 的组合（如 `1S2`）。
+
+**Branch convention**:
+
+- `S4A-1A` 相关实现与文档优先落在 `S4A-systems-platform-operations-runtime-foundation` 分支。
+- `S0D` 相关 docs/automation 仍沿用 `S0D-docs-management-v4`，不与 `S4A` phase 改动混线。
+
+**Commit discipline (recommended)**:
+
+- 每完成一个有明确边界的 `P*-C*-S*` 单元，应尽量及时 `commit/push` 到 `S4A-systems-platform-operations-runtime-foundation`。
+
+## Plan (draft)
+
+### P1 (Implementation / scripts)
+
+- P1-C1-S1: 盘点 `wordloom-v3` 当前最适合抽成 ops scripting baseline 的入口（start/stop/status/health/logs/env prep）
+- P1-C1-S2: 选择一批最小脚本样本并固化命名与目录约定
+
+### P1-C1-S1 (Inventory | implemented 2026-03-20)
+
+- `env_prep`
+  - 现有真实入口：`scripts/preflight.sh`
+  - 收口入口：`scripts/ops/env_prep.sh`
+  - 语义：检查 WSL / docker / PowerShell / honcho / env file / Procfile / 关键端口与 tracing 依赖。
+- `start`
+  - 现有真实入口：`scripts/up.sh`、`scripts/infra_up.sh`、`scripts/db_up.sh`、`scripts/app_up.sh`
+  - 收口入口：`scripts/ops/start.sh`
+  - 语义：按 `all | infra | db | app | env_prep` 目标启动最小 runtime。
+- `status`
+  - 新增入口：`scripts/ops/status.sh`
+  - 语义：输出 dev/test env file、db 容器健康态、infra ES 容器态、API/UI/worker/ES 的 HTTP 状态码摘要。
+- `health`
+  - 现有真实入口：API `/api/v1/health`、worker `/healthz` / `/readyz`
+  - 新增入口：`scripts/ops/health.sh`
+  - 语义：对 db、API、UI、ES 做可机械判定检查；若 worker 在 env 中启用，则额外检查 `/healthz` 和 `/readyz`。
+- `logs`
+  - 新增入口：`scripts/ops/logs.sh`
+  - 语义：统一 tail docker-managed db/infra/es/minio 等日志；app logs 明确回到 honcho 前台终端。
+- `stop`
+  - 新增入口：`scripts/ops/stop.sh`
+  - 语义：停止 docker-managed `db | infra | all`；对 Procfile app 进程显式保留“前台终端 Ctrl+C”语义，避免粗暴 kill 误伤。
+
+### P1-C1-S2 (Minimal script set | implemented 2026-03-20)
+
+- 目录约定：`scripts/ops/`
+- 首批样本：
+  - `scripts/ops/_common.sh`
+  - `scripts/ops/env_prep.sh`
+  - `scripts/ops/start.sh`
+  - `scripts/ops/stop.sh`
+  - `scripts/ops/status.sh`
+  - `scripts/ops/health.sh`
+  - `scripts/ops/logs.sh`
+  - `scripts/ui_up.sh`（supporting wrapper for WSL -> Windows npm frontend startup）
+- 设计约束：
+  - 不重写已有启动链，而是薄封装现有 `preflight/up/app_up/db_up/infra_up`。
+  - `status` 偏摘要输出，`health` 偏 PASS/FAIL 判定，避免把两个语义混在一起。
+  - `stop` 只处理 docker-managed runtime，避免对前台 app 进程使用高风险进程匹配杀进程策略。
+
+### P2 (Drill / Verify)
+
+- P2-C1-S1: 至少验证 1 条启动/状态或健康检查链路可复跑
+- P2-C1-S2: 记录最小 evidence（headSha + output / path / observed summary）
+
+### P2-C1-S1 (Replayable startup/status path | implemented 2026-03-20)
+
+- 已验证可复跑链路：`env_prep -> start infra es -> start db -> status`
+- 执行环境：WSL (`Ubuntu`) + Docker Desktop
+- 实际结果：
+  - `scripts/ops/env_prep.sh dev` -> PASS
+  - `scripts/ops/start.sh dev infra es` -> PASS
+  - `scripts/ops/start.sh dev db` -> PASS
+  - `scripts/ops/status.sh dev` -> PASS（可稳定输出当前 runtime 摘要）
+- 关键 observed summary：
+  - `db_container=healthy`
+  - `infra_es=healthy`
+  - `es_http=200`
+  - `api_health=000`
+  - `ui_http=000`
+- 补充观察：`scripts/ops/start.sh dev all --no-worker` 在本机 WSL 环境下未形成完整成功链路；失败点不在 db/migrate，而在 UI 启动阶段，命中 `cross-env` 未被解析。
+
+### P2-C1-S2 (Evidence | implemented 2026-03-20)
+
+### P2-C3-S1 (Idempotent cold-start path | implemented 2026-03-21)
+
+- 目标：让 `scripts/ops/start.sh dev all --no-worker` 在 dev/test DB 已经通过 docker-compose 启动并占用 `5435` 时，可以重入而不是被 preflight 硬拦截。
+- 改动：
+  - `scripts/preflight.sh` 中新增 `_check_devtest_db_port_ok`，在检测到 `docker-compose.devtest-db.yml` 下的 `db_devtest` 容器已存在且 `healthy|starting|running` 时，将 `5435` 视为“预期占用”，输出复用提示并返回成功。
+  - 仅当未发现对应容器或容器非健康/运行态时，才回退到原有 `_check_port_free 5435` 的硬失败语义。
+- 结果：
+  - dev/test DB 已由 `db_up` 或其他路径成功拉起并健康运行时，`preflight` 不再因 `5435` 占用直接失败，使 `start all` 冷启动入口在常见“先起 DB 再修 app”场景下具备可重入能力。
+  - 其它端口（API/metrics/UI）仍保持“端口被占用即失败”的保护语义，避免在 API/UI 仍运行时误触发第二个 Procfile 进程树。
+  - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/env_prep.sh dev"`
+  - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/start.sh dev infra es && ./scripts/ops/start.sh dev db && ./scripts/ops/status.sh dev"`
+- blocker proof：
+  - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/start.sh dev all --no-worker"`
+  - observed blocker: WSL 中 `npm` 解析到 `/mnt/c/Program Files/nodejs//npm`，UI 启动阶段报 `'cross-env' ... 不是内部或外部命令`，导致 honcho 终止整条 app 链路。
+
+### P2-C2-S1 (Repaired app path | implemented 2026-03-20)
+
+- 已验证补强链路：`start app --no-worker -> status -> health`
+- 修复内容：
+  - 新增 `scripts/ui_up.sh`
+  - `Procfile.dev/test` 的 UI 入口改由 `scripts/ui_up.sh` 承接
+  - WSL 下优先走 Windows npm fallback 启动前端
+  - `status/health` 的 HTTP probe 增加 Windows-aware fallback，使其能正确观测由 Windows 侧拉起的 `30002`
+- 实际结果：
+  - `scripts/ops/start.sh dev app --no-worker` -> PASS
+  - `scripts/ops/status.sh dev` -> PASS
+  - `scripts/ops/health.sh dev` -> PASS
+- 关键 observed summary：
+  - `db_container=healthy`
+  - `infra_es=healthy`
+  - `api_health=200`
+  - `ui_http=200`
+  - `es_http=200`
+  - `worker_healthz=000` / `worker_readyz=000`（本次仍是 `--no-worker` 路径）
+- 补充观察：重复执行 `start.sh dev all --no-worker` 时，当前 `preflight` 仍会把已占用的 `5435` 视为硬失败；因此当前更适合把 `all` 视为冷启动入口，把 `app` 视为已起 infra/db 后的重入入口。
+
+### P2-C2-S2 (Evidence | implemented 2026-03-20)
+
+- 证据形式：terminal proof
+- 关键命令：
+  - `wsl.exe -e bash -lc "cd /mnt/d/Project/wordloom-v3 && ./scripts/ops/start.sh dev app --no-worker"`
+  - `bash scripts/ops/status.sh dev`
+  - `bash scripts/ops/health.sh dev`
+  - `curl.exe -I http://127.0.0.1:30002/`
+- observed summary:
+  - API `/api/v1/health` -> `200`
+  - UI `http://127.0.0.1:30002/` -> `200`
+  - ES `http://127.0.0.1:19200` -> `200`
+  - DB container health -> `healthy`
+
+### P3 (Operator wording)
+
+- P3-C1-S1: 把脚本入口说明改写成 systems/platform operations 语言
+- P3-C1-S2: 对齐 roadmap 和后续申请材料用语
+
+### P3-C1-S1 (Operator wording | implemented 2026-03-21)
+
+- 已完成 operator-facing wording 收口：
+  - `env_prep` -> `environment readiness check`
+  - `start all` -> `cold-start runtime path`
+  - `start app` -> `warm-start application recovery path`
+  - `status` -> `runtime summary / first-line operational visibility`
+  - `health` -> `post-start verification gate`
+  - `logs` -> `first-line incident triage entry`
+  - `stop` -> `controlled docker-managed runtime shutdown`
+- 这些说法已从“脚本功能描述”提升为“operator action + runtime outcome”语言，更适合写进申请材料、runbook、值班说明和运行支持文档。
+
+### P3-C1-S2 (Runbook alignment | implemented 2026-03-21)
+
+- 已新增 runbook：`docs/runbook/run-S4A-1A-ops-scripting-baseline.md`
+- 对齐结果：
+  - phase log 继续保存 contract、evidence、P/C/S 历史
+  - runbook 只保留 operator 需要的薄入口：purpose、scope、evidence roots、canonical commands、troubleshooting、boundaries
+  - wording 已和 `docs/ROADMAP v5.md` 中的 `systems/platform operations / operational support / monitoring / maintenance / recoverability` 主轴对齐
+
+## Execution Checklist (unchecked)
+
+### P0 (Contract)
+
+- [x] `P0-C1-S1`: 脚本分类 contract（start / stop / status / health / logs / env_prep）
+- [x] `P0-C1-S2`: 退出语义 contract
+- [x] `P0-C1-S3`: 最小 evidence 口径
+
+### P1 (Implementation / scripts)
+
+- [x] `P1-C1-S1`: 盘点当前仓库最适合抽成 ops scripts 的入口
+- [x] `P1-C1-S2`: 形成首批最小脚本样本
+
+### P2 (Drill / Verify)
+
+- [x] `P2-C1-S1`: 验证至少 1 条关键脚本路径
+- [x] `P2-C1-S2`: 记录最小 evidence
+
+### P3 (Operator wording)
+
+- [x] `P3-C1-S1`: 形成 systems/platform operations 语言说明
+- [x] `P3-C1-S2`: 对齐 roadmap 和后续申请材料用语
+
+## Evidence (reserved)
+
+- Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
+
+### P2-C1-S1 (reserved | 2026-03-20)
+
+- headSha: `9f208dd7a05c1e7aa057706ca3cc2581475d9649`
+- artifacts: `terminal proof (WSL env_prep + infra/db/status replay); no dedicated artifact file produced in this first pass`
+- expected:
+  - 至少 1 条最小脚本路径可复跑
+  - 能输出清晰、低基数的成功/失败判断
+- observed:
+  - `env_prep -> infra es -> db -> status` 可复跑
+  - `db_container=healthy`
+  - `infra_es=healthy`
+  - `es_http=200`
+  - `api_health=000` / `ui_http=000`（本次未把 app 作为成功链路的一部分）
+  - `start.sh dev all --no-worker` 暴露额外 blocker：WSL 下命中 Windows `npm`, UI 阶段 `cross-env` 未解析，需在后续 step 处理
+
+### P2-C2-S1 (reserved | 2026-03-20)
+
+- headSha: `8f1ee6a10c073a55c395537e3abd3fb2dfee5aca`
+- artifacts: `terminal proof (WSL app --no-worker + status/health + curl.exe UI 200)`
+- expected:
+  - `app --no-worker` 路径可拉起 API + UI
+  - `status/health` 能正确反映由 Windows 侧启动的 UI
+- observed:
+  - `api_health=200`
+  - `ui_http=200`
+  - `es_http=200`
+  - `db_container=healthy`
+  - `worker_healthz=000` / `worker_readyz=000`（worker disabled by path selection）
+  - 当前 `all` 冷启动入口仍非幂等，已起 db 时会被 `preflight` 的 `5435` 占用检查拦住
+
+## Recent changes (for traceability, optional)
+
+- 2026-03-20: scaffolded `S4A-1A` as the first `S4A` phase, prioritizing ops scripting baseline over broader cloud/runtime topics to match the government-role timeline and wording.
+- 2026-03-20: implemented `P1-C1-S1/S2` by inventorying runtime entrypoints and adding a first `scripts/ops/` wrapper set for `env_prep/start/stop/status/health/logs`.
+- 2026-03-20: completed first `P2` pass with a replayable `env_prep + infra + db + status` chain and recorded the WSL `npm/cross-env` blocker on the full `all --no-worker` app path.
+- 2026-03-20: repaired the WSL frontend startup path via `scripts/ui_up.sh`, added Windows-aware HTTP probes, and completed a second `P2` pass where `app --no-worker + status + health` reached API/UI/DB/ES green.
+- 2026-03-21: completed `P3` by publishing a thin runbook and translating the script set into operator-facing systems/platform operations wording.
+ - 2026-03-21: softened preflight's dev/test DB port check so that a healthy docker-compose-managed `db_devtest` on `5435` is treated as an expected occupant, making the `start all` cold-start path reentrant after a successful DB bring-up.

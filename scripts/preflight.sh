@@ -55,6 +55,40 @@ _check_port_free() {
   fi
 }
 
+_check_devtest_db_port_ok() {
+  local port="5435"
+  local label="devtest db"
+
+  # If the dev/test DB container managed by docker-compose is already
+  # running, treat the port as "expected in-use" and allow re-entry
+  # on the cold-start path instead of hard-failing preflight.
+  local docker_bin=""
+  if command -v docker >/dev/null 2>&1; then
+    docker_bin="docker"
+  elif command -v docker.exe >/dev/null 2>&1; then
+    docker_bin="docker.exe"
+  fi
+
+  if [[ -n "$docker_bin" ]]; then
+    local cid
+    cid="$($docker_bin compose -f "$REPO_ROOT/docker-compose.devtest-db.yml" -p wordloom-devtest ps -q db_devtest 2>/dev/null | tr -d '\r' | head -n 1)"
+    if [[ -n "${cid:-}" ]]; then
+      local status
+      status="$($docker_bin inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$cid" 2>/dev/null | tr -d '\r' || true)"
+      case "$status" in
+        healthy|starting|running)
+          echo "[preflight] devtest db container already running on localhost:${port} (status=$status); reusing" >&2
+          return 0
+          ;;
+      esac
+      # If the container exists but isn't healthy/running, fall through to the
+      # generic port-free check so the caller gets a clear conflict signal.
+    fi
+  fi
+
+  _check_port_free "$port" "$label"
+}
+
 _require_python_imports() {
   local backend_dir="$1"
   shift
@@ -164,7 +198,7 @@ fi
   : "${OUTBOX_METRICS_PORT:?Missing OUTBOX_METRICS_PORT in .env.$ENV_NAME}"
 
   # Dev/test Postgres runs on Windows host port 5435.
-  _check_port_free "5435" "devtest db" || exit 1
+  _check_devtest_db_port_ok || exit 1
 
   _check_port_free "$API_PORT" "api" || exit 1
   _check_port_free "$OUTBOX_METRICS_PORT" "outbox metrics" || exit 1

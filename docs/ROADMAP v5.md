@@ -1,105 +1,576 @@
-结论先说：按你这个仓库当前的分层，Kafka 的第一步不应该直接立成 S4A，而应该先作为 S2 里的一个新 phase 来做。依据很直接，INDEX.md 把 S2 定义为 Projection、S4 定义为 Ops Runtime，而 log-S2B-projection-table-merge.md 已经明确写了两件事：一是 Kafka/SQS/Redis Stream 属于可选替代方案，不适合作为当前这轮前置；二是这类主题目前仍归 S2，只有当 outbox_core 上升成通用后台任务平台时，才考虑往更偏 ops runtime 的范围迁移。仓库里我也没找到现成的 S4A 系列 log 文件，所以现在硬挂 S4A，反而会和你已有 SoT 冲突。
+# ROADMAP v5
 
-如果你想做一个“优先可导入”的 Kafka 最小闭环，最稳的做法不是替换现有 DB outbox，而是保留 DB outbox 作为事实源，在旁边加一条 Kafka relay 链路。也就是：业务写库时仍然照旧写 outbox；新增一个 relay，只负责把指定 projection 的 outbox 事件发布到 Kafka topic；再新增一个单一 Kafka consumer，只消费这一个 topic，并驱动一个现有 projection。这样你引入的是传输层，不是一次性重写失败语义、回放、证据链和 runbook。这个仓库最适合拿来做首个闭环的目标是 Search 这条链，而不是 Chronicle。原因是 Search 已经是纯异步 projection，边界更清晰，而且当前 worker 明确围绕 search_index_to_elastic 在跑，见 search_outbox_worker_impl.py:109 和 search_outbox_worker.py:59。相比之下，Chronicle 现在还有读侧 fallback 语义，先拿它做 Kafka 首次切入，会把“引入消息总线”和“读路径切换”两件事搅在一起。
+## 这份 v5 的定位
 
-我建议你的最小闭环切成 4 步。第一步，只做 outbox 到 Kafka 的 relay，topic 只服务一个 projection，比如 search_index_to_elastic。第二步，保留现有 DB worker 不动，新加一个 shadow Kafka consumer，把同一批消息消费后写到影子目标，先做对账，不 cutover。第三步，沿用现在 S2B 已有的 failure contract、metrics、drill 口径，把 Kafka consumer 也做成同样的 processed、retry、failed、lag、oldest_age 语义，避免出现“换了传输层，证据链断掉”的情况。第四步，等 shadow 验证稳定后，再决定是让 Kafka consumer 成为该 projection 的正式入口，还是继续保持 DB outbox 为主、Kafka 只做 fan-out。这个顺序和 log-S2B-3A-unified-consumer-framework.md 里“先统一消费语义、外部入口不变”的策略是对齐的。
+这版 roadmap 是 `政府岗适配版`。
 
-如果你要给这件事立 log，我会建议这样记账，而不是直接开 S4A：
+它不是推翻你原来的平台路线，而是把重心临时切到更贴近这类岗位的语言和优先级：
 
-先开一个 S2B 的子 log，主题是 projection transport evolution 或 Kafka relay for projection。
-范围只限定一条 projection，优先 Search，不碰 Chronicle fallback，不碰全局 worker 平台抽象。
-等你真的把 Kafka producer、consumer、health、ready、draining、容量隔离、通用调度这些收口成跨 projection 的平台能力，再开 S4 的 log，把“Kafka 作为 runtime substrate”单独上升。
-如果你愿意，我下一步可以直接帮你把这个最小闭环再压成一版更具体的实施清单：包含建议 topic 命名、消息 key、幂等键、shadow 验证方式，以及按你现有 P-C-S 体系怎么拆。
+- systems / platform operations
+- operational support
+- backup / recovery / disaster readiness
+- documented sustainable architecture
+- automation / scripting / reproducible environment
 
-////////////////////////////
+结论先说：
 
-我已经把仓库里和“云端接入”最相关的现有落点对上了：你不是从零开始，S5A 多租户/审计骨架和 S5A-3B 的对象存储演练，本质上已经在练“云服务接入的控制面”和“外部服务最小闭环”。下面我直接给你一版贴着当前仓库结构的中文计划。有关系，而且关系不小。你之前搭的多租户骨架，不只是“业务权限”那一层，它其实已经训练了你接云服务时最容易出问题的几件事：身份上下文、租户边界、审计、低基数 reason、可回放证据。公司以后用了云，不会因为上了 AWS/Azure/GCP，这些问题就消失，反而会更重要，因为一旦接入对象存储、消息队列、托管数据库、搜索服务，系统边界变多，谁在什么租户下访问了什么资源、失败是否可审计、切换是否可回滚，这些都会立刻变成工程问题。
+- 你的原路线没有错。
+- 但如果要对准这类政府岗位，叙事重点不能再是“平台愿景”优先。
+- 更合适的主轴应该是：`systems/platform reliability + automation + operational support + recoverability + documented runtime`。
 
-从你这个仓库来看，你已经有两个很好的“云端相邻”起点。第一是 S5A 的安全治理骨架，见 log-S5A-security-governance.md 和 log-S5B-security-governance-hard-gates.md，它们已经把 AuthContext、tenant boundary、policy、audit、hard gate 这些稳定面定下来了。第二是对象存储闭环，见 log-S5A-3B-object-storage-backup.md，这里你已经实际做了 MinIO/S3 兼容对象存储、upload/download、restore、sanitize、evidence 这整套流程。这个 phase 本质上就是“先用本地兼容实现，把未来接云对象存储的接缝打出来”，所以它和你以后接云服务是直接相关的，不是旁枝。
+一句话版本：
 
-如果你问“我现在这种情况，应该怎么去接云端服务，最小闭环怎么做”，我的建议很明确：不要一上来就学云平台本身，不要一上来就追求全家桶，也不要先做平台化大改。你应该采用“本地兼容物 + 一个业务闭环 + 明确 contract + 可验证证据”这个方法。也就是先选一种云服务类型，只接一个最有代表性的最小路径，把接口、失败语义、审计、验证跑通，再考虑扩展。
+> 这份 roadmap 的目标，不是把你包装成云平台专家，而是把 `wordloom-v3` 里已经存在的系统工程骨架，翻译成更贴近 systems/platform support 岗位的能力故事。
 
-按你当前仓库和经验积累，最合适的优先级是这样的。
+---
 
-第一优先：对象存储
-这条最适合你现在继续往前走，因为你已经有 S5A-3B 基础，而且对象存储是几乎所有云环境都会用到的能力。你现在用的是 MinIO/S3 兼容，下一步就可以把“本地 S3 兼容”理解为“未来云上 S3/Azure Blob/GCS 的适配层练习”。最小闭环不是“把所有文件都搬上云”，而是只挑一条有价值的链路，例如备份产物、封面上传、导出文件。闭环定义应该是：
-业务产生文件 → 通过统一 storage adapter 上传 → 保存 object key/etag/sha256 等元数据 → 能下载/校验 → 有审计记录 → 有失败 reason → 有 drill/evidence。
-你仓库里这套思路已经被 S5A-3B 证明过了，所以这是最稳的第一条。
+## 一、先校准：按政府岗语言，你已经有什么
 
-第二优先：托管数据库/托管搜索
-这类服务和你现在的系统结构也很贴近，因为当前核心已经明显依赖 Postgres、outbox、projection，以及一部分 Elasticsearch 路径。这里的最小闭环不是“迁移整套数据库到云”，而是先把“连接、配置、健康检查、失败回退、只读验证”这些边界独立出来。比如：
-本地代码不改业务逻辑，只把 DATABASE_URL、搜索端点、连接池、重试、健康检查抽成明确配置层；
-先接一个 dev/staging 的托管实例；
-只跑一条 read path 或一条 projection worker；
-再用现有 drills/evidence 机制做验证。
-这类工作会更偏 S2/S4 交界，但第一轮仍然应以“不改 contract，只换依赖实现”为原则。
+原版 v5 的一个偏差是：容易把你写成“还没开始补平台运行面的人”。
 
-第三优先：消息队列
-消息队列适合做，但不适合做你的第一朵“云端云”。原因是它会同时碰到 async delivery、幂等、重试、顺序、DLQ、观测、回放。你前面问 Kafka 我给的判断也是一样：它适合做下一步，但不适合做最先入门。等你先把对象存储或托管依赖跑通后，再用你现有 outbox/projection 体系去接 Kafka，这样成功率会高很多。
+这不准确。
 
-如果把它整理成一版适合你现在执行的中文计划，我会这样拆。
+按这个岗位的语境，你已经有几块非常值钱的资产。
 
-方法论
-先接“一个云服务类型 + 一条业务链路 + 一套证据”，不要同时做多服务、多场景、多环境。
-目标不是“接上云”，而是“接上后行为仍然可解释、可验证、可审计、可回滚”。
+### 1. 你已经有结构化的运行与验证思维
 
-Phase 1：对象存储最小闭环
-选择一个文件类场景：
-优先备份产物，其次封面上传，再其次导出文件。
-做法：
-定义统一 storage port，区分业务元数据和 object key。
-本地继续用 MinIO 跑通。
-保留 evidence JSON，记录 bucket/container、key、sha256、size、request_id、tenant_id、result。
-把租户隔离接进去：
-object key 命名里带 tenant/library 维度，但不要泄露敏感信息。
-把审计接进去：
-上传、下载、删除、失败都能按 request_id 和 tenant 追踪。
-验收标准：
-同一套代码，切换 endpoint/config 后能跑本地兼容对象存储；
-失败能给出稳定 reason；
-drill 可以复跑，artifact 可追溯。
+`wordloom-v3` 里最强的不是某个单点工具，而是这条骨架：
 
-Phase 2：云配置与 secret 管理最小闭环
-不要先上复杂 IaC，先把配置边界做干净。
-做法：
-把 endpoint、region、bucket、credential source、timeout、retry 收口到单独配置层。
-区分 dev/test/staging 的配置注入方式。
-明确哪些 secret 只存在环境变量，哪些可以进本地 compose。
-验收标准：
-本地、CI、未来云环境三套配置方式不改业务代码；
-错误配置时能快速失败，日志可读，不泄露 secret。
+- drills
+- evidence
+- hard gates
+- verifier
+- runbook / operator workflow
 
-Phase 3：托管依赖接入最小闭环
-选择一个最稳的外部依赖先接：
-对象存储后，建议是托管 Postgres 或托管搜索，不建议立刻消息队列。
-做法：
-只切一条 read 或 backup/restore 路径，不切全量写流量。
-先 shadow 验证，再正式切换。
-沿用你现在的 hard-gate/evidence 机制验证外部依赖切换。
-验收标准：
-连接可健康检查；
-失败可观测；
-切换有回滚点；
-证据链不断。
+这套东西可以直接翻译成政府岗会吃的语言：
 
-Phase 4：消息队列/事件流最小闭环
-等前面稳定后再做。
-做法：
-保留 DB outbox 为事实源；
-加一个 relay，把单一 projection 发到 Kafka；
-再加一个单一 consumer 做 shadow；
-最后再决定是否 cutover。
-这样不会一次性把一致性、幂等、回放、重试全改掉。
+- operational support discipline
+- post-change verification
+- documented runtime behavior
+- repeatable checks
+- recoverability evidence
 
-你如果从“职业准备”角度问，这对以后服务云端公司的价值在哪里，答案也很清楚。云端公司真正看重的，不是“你会点哪个云厂商控制台”，而是你能不能把外部依赖接入成一个稳定系统。你现在已经有几个很强的底子：
-你会先定 contract，再换实现。
-你会把租户边界和审计当成系统骨架，而不是补丁。
-你会用 drill/evidence 证明变更，而不是只靠口头说“应该可以”。
-这三点比“我用过某个具体云服务”更难得，也更能迁移。
+也就是说，你不是只会“写代码”，你已经有一套“系统怎么验证、怎么复跑、怎么排障”的习惯。
 
-如果你想把这件事继续落到更细，我建议下一步只做一个方向，不要三头并进：
+### 2. 你已经有 backup / recovery / object storage 的最小闭环
 
-我帮你把“对象存储接云”的最小闭环，整理成一版按 P-C-S 记账的实施计划。
-我帮你把“云服务接入通用模板”整理出来，包含 config、secret、audit、tenant、evidence 五个检查项。
-我帮你把“以后面试怎么把多租户骨架讲成云平台能力”整理成一版中文话术。
+`S5A-3B` 其实非常贴这个岗位，因为它天然能讲：
 
+- backup
+- upload
+- restore
+- sanitize
+- verify
+- evidence JSON
+
+对这类岗位来说，这比你多会一个云服务名更值钱。
+
+它已经可以翻译成：
+
+- backup and recovery narrative
+- disaster readiness basics
+- recoverability verification
+- operational evidence discipline
+
+### 3. 你已经有 documented sustainable architecture 的雏形
+
+虽然你现在的系统工程主线很多是 `projection / outbox / hard gate / tenant / audit`，但换成岗位语言，其实可以讲成：
+
+- documented architecture evolution
+- stable contracts
+- sustainable operations
+- low-cardinality reason taxonomy
+- change safety and rollback awareness
+
+这和岗位描述里的 `stable, scalable, optimised, resilient, documented and sustainable ICT architecture` 是对得上的，只是你原来表述得更偏 backend/platform。
+
+### 4. 你已经有 automation mindset，但还缺更直接的 systems 话术
+
+仓库里已经有：
+
+- GitHub workflows
+- reusable drills runners
+- hard-gate workflows
+- scripts / verification entrypoints
+
+这意味着你并不缺“自动化思维”，你缺的是把它重新包装成：
+
+- automation of routine operations
+- deployment reliability
+- configuration consistency
+- operational support tooling
+
+---
+
+## 二、真正要修正的不是方向，而是重心
+
+原来的主线更像：
+
+1. Terraform / IaC
+2. AWS 单云运行面
+3. Docker + deploy chain
+4. observability externalization
+5. Kubernetes 第二层表达能力
+
+如果对准这类政府岗，更合适的临时主线应该改成：
+
+1. Linux / Windows / system administration 语言补齐
+2. IaC / scripting / automation
+3. cloud fundamentals -> hybrid environment awareness
+4. observability -> operational reliability
+
+注意，这里不是说你要变成 Windows admin，而是你必须把申请材料和补强顺序调整到对方听得懂的方向。
+
+---
+
+## 三、修正后的优先级
+
+### 第一优先级：systems administration / operational support 语言补齐
+
+这不是让你去转向重运维，而是让你申请时能自然讲出下面这些词，并且能拿 `wordloom-v3` 的实际资产支撑它们：
+
+- installation
+- configuration
+- maintenance
+- monitoring
+- backup / recovery
+- operational support
+- lifecycle management
+- documented sustainable architecture
+
+你现在最需要补的，不是大量新概念，而是这套表达和对应的小样本。
+
+#### 这部分具体要补什么
+
+##### A. Bash 优先级提高
+
+这个岗位明确点了 `PowerShell / Bash`。
+
+PowerShell 先不用深挖，但 Bash 应该尽快补到能说得出口。
+
+最小边界：
+
+- 启动 / 停止 / 检查脚本
+- 环境准备脚本
+- 简单部署脚本
+- log / health / backup 相关脚本
+
+##### B. Linux / Windows 语言要补齐，但先不做深水区
+
+你不用把 roadmap 写成“我要成为 Windows 平台管理员”，但应该明确补这些表述：
+
+- system installation and configuration awareness
+- service maintenance and lifecycle thinking
+- patch / config / backup / recovery language
+- on-prem and off-prem operational support awareness
+
+也就是说：补的是 `systems/platform operations` 语言，而不是转成纯基础设施岗。
+
+### 第二优先级：IaC / scripting / automation
+
+这部分原版 v5 是对的，但要改讲法。
+
+保留：
+
+- Terraform
+- Bash
+- GitHub workflows
+- 基础自动化思维
+
+但叙事上不要先讲“大平台愿景”，而要讲：
+
+- reproducible environment
+- automation of routine operations
+- configuration consistency
+- deployment reliability
+
+#### Terraform 在这类岗位里为什么仍然是高优先级
+
+因为它可以直接对应：
+
+- infrastructure scripting and automation
+- environment definition
+- consistency across deployments
+- documented repeatable setup
+
+你最合适的产出仍然是：
+
+`Wordloom Platform Infra Sample`
+
+但这里不要写成“未来平台化样本”，而要写成：
+
+- minimal reproducible runtime environment
+- documented infrastructure setup
+- configuration consistency and repeatability
+
+### 第三优先级：cloud fundamentals 改写成 hybrid environment awareness
+
+原版写的是 AWS 单云运行面。
+
+如果对准这个政府岗，建议不要删掉这条线，而是改成更稳的表述：
+
+- cloud fundamentals
+- hybrid environment awareness
+- secrets / config / logging / deploy pipeline basics
+- on-prem + cloud bridging mindset
+
+#### 这意味着什么
+
+- 学习主线仍然可以先打 AWS
+- 但申请材料不要写成“我在主攻云原生平台”
+- 更合适的说法是：`I am building cloud and hybrid runtime awareness on top of a systems/platform operations foundation.`
+
+#### AWS 这一段应该怎么保留
+
+继续保留：
+
+- IAM basics
+- VPC basics
+- RDS / S3
+- CloudWatch
+- secrets / config
+- deploy / logging / recovery basics
+
+但叙事重心改成：
+
+- hybrid-compatible runtime thinking
+- cloud-backed operational support
+- recoverability and deployment discipline
+
+### 第四优先级：observability 继续保留，但改成 operational reliability 语言
+
+原版如果只讲 `traces / metrics / dashboards`，会显得太偏平台工具。
+
+对这个岗位，更好的说法是：
+
+- monitoring
+- service health
+- incident signals
+- recoverability
+- post-change verification
+- operational visibility
+
+这部分你其实已经有不少底子，因为你的 drills / evidence / hard-gate 体系天然能支撑：
+
+- post-change verification
+- recoverability checks
+- operator-facing evidence
+- structured incident clues
+
+所以这部分不是从零学，而是把现有优势翻译成更贴岗位的话术。
+
+---
+
+## 四、如果只按“申请这个岗位最有帮助”来排序
+
+如果不按长期理想，而只按“短期最有助于对准这个政府岗”，优先级我建议这样排。
+
+### 1. Bash + 基础自动化脚本
+
+这是最应该前提的。
+
+理由：
+
+- 岗位明确点了 `PowerShell / Bash`
+- 这比你现在去追更深的 K8s 或 Datadog 更直接命中
+- 也最容易和 `wordloom-v3` 的现有资产结合
+
+你至少要做出这几个能讲的东西：
+
+- 启动 / 停止 / 检查脚本
+- 环境准备脚本
+- 简单部署脚本
+- log / health / backup 脚本
+
+### 2. Terraform / IaC 最小样本
+
+这部分原版本来就是头号优先级，现在仍然成立。
+
+而且对这个岗位非常现实，因为它直接能对应：
+
+- infrastructure scripting and automation
+- IaC practices
+- reproducible environment
+
+唯一要变的是表达方式，不是学习顺序。
+
+### 3. Docker + deployable runtime
+
+岗位不一定会直接把 Docker 放在最前，但这块非常有助于证明：
+
+- 你理解 runtime consistency
+- 你不是只会本地开发
+- 你有 deploy mindset
+- 你能支撑系统运行而不是只写功能
+
+### 4. monitoring / recovery / backup-recovery narrative
+
+这类岗位很吃：
+
+- recoverability
+- disaster readiness
+- monitoring
+- sustainable operations
+
+而你的 `S5A-3B` 恰好已经是一块非常像样的资产。
+
+这部分建议故意放大，不要低估它：
+
+- backup
+- upload
+- restore
+- verify
+- evidence bookkeeping
+
+它比你现在硬补一个 AzureCLI 小词条更有说服力。
+
+### 5. GitHub / pipeline / deploy-verify-rollback
+
+这块原版 v5 也是对的，而且对这个岗位有实际价值。
+
+应该继续保留：
+
+- build artifact
+- package image
+- deploy
+- smoke verify
+- rollback / fallback
+
+这会让你看起来像“能支撑平台运行的人”，而不是只会跑测试的人。
+
+---
+
+## 五、暂时不适合为了这个岗位硬补什么
+
+### 1. 不要把 Kubernetes 提到前面
+
+你原版关于 K8s 的判断其实是对的：
+
+- 它是第二层表达能力
+- 不是当前第一层补强项
+
+对这个政府岗来说，它也不是最直接的命中点。
+
+### 2. 不要为了 AzureCLI 去硬装 Azure 工程师
+
+岗位提到 AzureCLI，不等于它要的是成熟 Azure platform admin。
+
+它更像在表达：
+
+- cloud fundamentals
+- pipeline
+- automation
+- operational support
+
+所以更合理的做法是：
+
+- 承认你在补 cloud tooling
+- 但不要把自己包装成成熟 Azure 平台管理员
+
+### 3. 不要把重点放在 IDP / org-level DevEx
+
+原版你已经把这两个方向降级了，这对这个岗位更应该继续坚持。
+
+这类岗位通常不会优先吃：
+
+- internal developer platform 愿景叙事
+- org-level developer experience ownership
+
+它更吃的是：
+
+- systems support
+- operational reliability
+- runtime maintenance
+- documented sustainable operations
+
+---
+
+## 六、申请这个岗位时，话术主轴要怎么切
+
+如果真要投这类岗位，你的叙事不能继续以：
+
+- complex backend
+- async system evolution
+- projection / outbox sophistication
+
+作为第一主轴。
+
+这些不是不能讲，而是应该退到“底层能力证明”。
+
+更合适的主轴应该改成：
+
+> systems/platform reliability + automation + operational support + documented sustainable runtime
+
+申请时应该强调的点：
+
+- 我关注系统运行的稳定性、恢复性和可维护性
+- 我有结构化文档、evidence、runbook、hard gate 的习惯
+- 我在 Wordloom 中已经形成了可验证、可恢复、可审计的工程实践
+- 我正在把这套骨架外扩到 IaC、deploy、runtime packaging、observability 这些运行层
+
+也就是说，你要把原来更偏 backend/platform 的资产，翻译成 `operations / support / recoverability / lifecycle / sustainable architecture` 语言。
+
+---
+
+## 七、基于这个岗位改写后的三条路线
+
+### 路线 A：把 Wordloom 现有资产翻译成 systems/platform operations 语言
+
+这条路线不一定要求大量新代码，但很关键。
+
+应该明确写入 roadmap 的既有资产：
+
+- `S0D / S3A / S6A`：drills / evidence / hard gate / runbook
+- `S5A / S5B`：policy / audit / authorization / documented governance
+- `S5A-3B`：backup / restore / sanitize / verify
+- `S2B / S2C / S2D`：稳定 contract、change safety、operator workflow discipline
+
+但对外表达时，优先用这些词：
+
+- operational support
+- recoverability
+- documented runtime
+- post-change verification
+- sustainable architecture
+
+### 路线 B：补 systems/platform runtime 底座
+
+这是当前主线。
+
+按顺序：
+
+1. Bash / automation scripts
+2. Terraform / IaC sample
+3. Docker / runtime packaging
+4. deploy / verify / rollback
+5. cloud fundamentals with hybrid awareness
+
+### 路线 C：补 operational visibility 和第二层表达能力
+
+在路线 B 有落地样本之后再推进：
+
+- monitoring / service health / operational visibility
+- CloudWatch / Datadog basics
+- Kubernetes basics
+- incident / RCA / SLO basics
+
+这条路线不是当前主线，而是增强层。
+
+---
+
+## 八、推荐的 8 周适配顺序
+
+### Week 1-2：重写表达层 + 补 Bash / operational scripts
+
+目标：先把你已有资产换成更贴岗位的语言，并补最直接命中的 automation 样本。
+
+输出物：
+
+- 一页 `Wordloom systems/platform operations map`
+- Bash 脚本样本：启动 / 停止 / health / backup / logs
+- 一页“已有资产如何映射岗位要求”表
+
+### Week 3-4：Terraform 最小环境样本
+
+目标：交付一份可重复的基础设施定义样本。
+
+输出物：
+
+- Terraform skeleton
+- minimal runtime env definition
+- README / runbook
+- reproducible environment narrative
+
+### Week 5：Docker + deployable runtime
+
+目标：把系统运行面标准化。
+
+输出物：
+
+- 稳定 Dockerfile
+- compose / env / health check
+- documented runtime packaging
+
+### Week 6：deploy / verify / rollback 闭环
+
+目标：让你现有的 verification 能力真正贴到运行支持语境。
+
+输出物：
+
+- build artifact
+- deploy to test env
+- smoke verify
+- rollback note
+
+### Week 7：monitoring / recovery / operational visibility
+
+目标：把现有 evidence / drills 习惯翻译成岗位可识别语言。
+
+输出物：
+
+- service health checks
+- logs / metrics 基本面
+- recovery / post-change verification note
+- minimal incident / RCA template
+
+### Week 8：cloud fundamentals with hybrid framing
+
+目标：保留云平台学习主线，但用更贴政府岗的语言来表达。
+
+输出物：
+
+- AWS basics notes mapped to hybrid runtime thinking
+- config / secret / logging / deploy bridging note
+- on-prem + cloud awareness summary
+
+---
+
+## 九、精简版优先级总结
+
+### 现在就做
+
+- Bash / automation scripts
+- Terraform / IaC 最小样本
+- Docker / runtime packaging
+- deploy / verify / rollback
+- backup / recovery / operational support narrative
+
+### 紧接着做
+
+- monitoring / service health / operational visibility
+- cloud fundamentals with hybrid awareness
+- incident / RCA / post-change verification
+
+### 先不急
+
+- Kubernetes 提前上位
+- AzureCLI 深挖
+- Datadog 工具化扩面
+- internal developer platform from scratch
+- org-level DevEx ownership
+- 多云深水区
+
+---
+
+## 十、最现实的一句话判断
+
+如果目标是：
+
+`长期往 systems / platform / DevOps engineer 靠拢`
+
+这份 roadmap 仍然非常可行。
+
+如果目标是：
+
+`短期专门对准这个政府岗`
+
+那这份 roadmap 的正确改法不是重做，而是：
+
+- 保留 Terraform / IaC / Docker / deploy / observability
+- 提高 Bash / automation / backup-recovery / operational support 的权重
+- 降低 K8s / Datadog / IDP / 多云扩面的优先级
+- 在申请材料里使用 systems/platform operations 语言，而不是产品平台语言
+
+最后一句话：
+
+> 对准这个岗位，你的核心优势不是“我会很多云平台工具”，而是“我已经在 Wordloom 中形成了可验证、可恢复、可文档化、可支持运行的系统工程习惯，现在正把这套骨架外扩到 IaC、deploy、runtime、monitoring 这一层。”
