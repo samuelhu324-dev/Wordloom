@@ -125,8 +125,35 @@
 ### P1 (Implementation / scripts)
 
 - P1-C1-S1: 盘点当前仓库中已有的 deploy / verify / rollback 相关入口（例如 GitHub Actions、`scripts/db_migrate.sh`、`scripts/ops/health.sh` 等），并整理到本 log。
-- P1-C1-S2: 设计并命名最小 deploy/verify/rollback 脚本集合（优先 `scripts/ops/` 目录下的新入口）。
-- P1-C1-S3: 实现首批脚本样本，并确保能在本地 dev/test 环境完整跑通至少 1 条 `deploy -> verify` 路径。
+- P1-C1-S2: 在盘点结果的基础上，设计并命名最小 deploy/verify/rollback 脚本集合（优先 `scripts/ops/` 目录下的新入口）。
+- P1-C1-S3: 在不破坏现有 `start/app_up` 前台运行语义的前提下，选择至少 1 条适合收口成 `deploy -> verify` 的路径，并为其实现首批脚本样本（可以是“启动与验证分离”的两步式）。
+
+### P1-C1-S1 (Existing deploy/verify/rollback entrypoints | inventory)
+
+- 本地脚本层：
+  - 启动链：`scripts/ops/start.sh`（封装 `env_prep / infra_up / db_up / up / app_up`）、`scripts/up.sh`、`scripts/app_up.sh`、`scripts/db_up.sh`、`scripts/infra_up.sh`、`scripts/preflight.sh`。
+  - 迁移与 DB：`scripts/db_migrate.sh`（按 env 运行 Alembic/db migration）、`docker-compose.devtest-db.yml` 下的 `db_devtest` 服务（通过 `scripts/db_up.sh` 管理）。
+  - 验证链：`scripts/ops/status.sh`（runtime 摘要）、`scripts/ops/health.sh`（post-start verification gate，聚合 API/DB/UI/ES/worker 状态）。
+  - 关闭链：`scripts/ops/stop.sh`（受控关闭 docker-managed runtime）、`scripts/ops/logs.sh`（incident triage 日志入口）。
+- Git / CI 层：
+  - Git：当前所有 deploy 相关操作默认以 `git` HEAD 为单位（本 phase 将在脚本中显式记录 `target_head_sha` / `deployed_head_sha`）。
+  - GitHub Actions：`.github/workflows/` 下已有 `drill-*` / `hard-gate-*` / `reusable-*` 等 workflows，主要负责 drills / evidence / hard gate 执行；S4A-2A 不在 v1 内重写这些 CI，而是复用其 evidence 语义，在需要时新增 "deploy + post-deploy verify" 风格的 workflow。
+- 回滚相关：
+  - 当前实际 rollback 动作主要依赖 Git 操作（revert / reset）与手工重新运行 `start`/drills；本 phase 将在 contract 层把这一模式显式命名为最小 rollback path，并预留 future-work 钩子去接 DB/配置级别的细粒度回滚。
+
+### P1-C1-S2 (Minimal script set | design)
+
+- 首轮脚本集合（设计层）：
+  - `scripts/ops/deploy_app_verify.sh`：
+    - 语义：在 app 已通过 `scripts/ops/start.sh dev app [--no-worker]` 启动的前提下，执行一轮标准化的 post-deploy verification gate（基于 `status` + `health`），并按 P0 定义输出低基数的 PASS/FAIL 摘要；未来可扩展为生成 evidence JSON。
+    - 理由：不改变现有 `app_up` 前台阻塞语义，把 deploy 拆成“启动由 start 负责 + verify 由 deploy_*_verify 负责”的两步式，更符合当前 WSL + honcho 使用方式。
+  - `scripts/ops/deploy_db_migrations.sh`（占位）：
+    - 语义：封装一条对 dev/test 运行 `scripts/db_migrate.sh` 的路径，附带最小前置检查和结果摘要；首轮可以先只在 log 中定义，不必须立即实现脚本。
+  - `scripts/ops/deploy_runtime_bundle.sh`（占位）：
+    - 语义：预留给后续 "打包 + 分发 + 启动" 的一键式 runtime 安装/更新路径（例如 Windows 侧同事只需跑一条命令即可完成 env_prep + infra/db/app）。
+- 设计约束：
+  - 不改变 `scripts/up.sh` / `scripts/app_up.sh` 已有的“前台长跑 + Ctrl+C 退出”行为；新脚本更像“在现有运行面的上方增加 deploy/verify/rollback 语义层”。
+  - deploy_*_verify 脚本优先实现“检查 + 摘要 + 退出码”，evidence JSON 的实际落地可以放在 P2 drill / verify 阶段。
 
 ### P2 (Drill / Verify)
 
@@ -148,8 +175,8 @@
 
 ### P1 (Implementation / scripts)
 
-- [ ] `P1-C1-S1`: 盘点现有 deploy/verify/rollback 相关入口
-- [ ] `P1-C1-S2`: 设计最小脚本集合
+- [x] `P1-C1-S1`: 盘点现有 deploy/verify/rollback 相关入口
+- [x] `P1-C1-S2`: 设计最小脚本集合
 - [ ] `P1-C1-S3`: 实现首批脚本样本
 
 ### P2 (Drill / Verify)
