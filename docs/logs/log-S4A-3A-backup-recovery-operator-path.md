@@ -5,7 +5,7 @@
 **id**: `S4A-3A`
 **kind**: `log`
 **title**: `backup / recovery / disaster readiness operator path + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, Operations, Backup, Recovery, DisasterReadiness, Drills, Evidence, epic/s4, epic/s4a, sub/3a`
 **links**: ``
