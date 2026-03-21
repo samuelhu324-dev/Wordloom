@@ -109,9 +109,67 @@
 
 ### P1 (Implementation / scripts)
 
-- P1-C1-S1: 盘点当前仓库中已有的 backup/restore 相关入口（例如 `S5A-3B` pipeline drills、dump 生成脚本、restore SQL 等），并在本 log 中用 operator 语言整理。
-- P1-C1-S2: 设计并命名最小 backup/recovery operator 入口集合（例如 `backup_db_verify`, `restore_db_verify`），优先封装现有脚本，而不是另起一套全新实现。
-- P1-C1-S3: 选择至少 1 条适合收口成 `backup -> restore -> verify` 的路径，为其定义首批 operator-facing 命令样本（可直接调用 `S5A-3B` drills）。
+### P1-C1-S1 (Existing backup/restore entrypoints | inventory)
+
+- 本地脚本与 drills 层：
+  - `scripts/drills/s5a3a_p1c1s2_backup_drill.py`：生成 dev/test 数据库 dump，并在 `artifacts/_tmp_s5a3a_*` 下写入 backup evidence JSON，记录 dump 文件路径等元数据；
+  - `scripts/backup/s5a3b_p1c1s2_upload_dump_to_minio.ps1`：将本地 dump 上传至 MinIO（S3 兼容），生成 manifest JSON（bucket/key/sha256/size 等）；
+  - `scripts/drills/s5a3b_p1c1s3_upload_drill.py`：Python 层 upload drill，封装 PowerShell upload 脚本并产出上传 evidence JSON；
+  - `scripts/backup/s5a3b_p2c1s1_download_dump_from_minio.ps1`：从 MinIO 下载指定 dump 到本地临时路径；
+  - `scripts/drills/s5a3b_p2c1s2_restore_verify_from_minio_drill.py`：下载 → restore 到 `wordloom_restore_dev` → verify 的 drill；
+  - `scripts/drills/s5a3b_p3c1s2_restore_sanitize_verify_from_minio_drill.py`：下载 → restore 到 `wordloom_restore_sanitized_dev` → sanitize + verify 的扩展 drill；
+  - `scripts/drills/s5a3b_p4c1s1_pipeline_drill.py`：一键 pipeline drill，串联 backup → upload → restore+verify → restore+sanitize+verify，并在 `artifacts/_tmp_s5a3b_p4c1s1` 下生成汇总 evidence JSON（包含 bucket/object_key/sha256/size 与 verify 结果）。
+- Evidence 与 artifacts：
+  - 所有上述 drills 的 evidence JSON 均存放于 `artifacts/_tmp_s5a3a_*` / `artifacts/_tmp_s5a3b_*` 目录下，详细结构见 `log-S5A-3B` Evidence 区；
+  - dump 文件本身不会入 git，而是存储在本地磁盘与 MinIO 对象存储中，由 manifest/evidence JSON 提供可追溯性。
+
+### P1-C1-S2 (Minimal operator entry set | design)
+
+- 为 systems/platform operations operator 定义最小入口集合：
+  - `backup_db_local`（样例）：
+    - 语义：对当前 dev 数据库执行一次 backup drill，生成本地 dump 与 backup evidence JSON；
+    - 入口：`python scripts/drills/s5a3a_p1c1s2_backup_drill.py`；
+    - 输出：终端最后一行打印 backup evidence JSON 相对路径（`artifacts/_tmp_s5a3a_*/drills_<ts>.json`）。
+  - `backup_db_to_object_storage`：
+    - 语义：在已有本地 dump 的前提下，将其上传至 MinIO，并产出 upload manifest/evidence JSON；
+    - 入口：`python scripts/drills/s5a3b_p1c1s3_upload_drill.py`；
+    - 输出：终端最后一行打印 upload evidence JSON 相对路径（`artifacts/_tmp_s5a3b_p1c1s3/drills_<ts>.json`）。
+  - `restore_db_verify_from_backup`：
+    - 语义：从最近一次（或指定） upload evidence 出发，下载 dump → restore 至 `wordloom_restore_dev` → 运行 verify SQL；
+    - 入口：`python scripts/drills/s5a3b_p2c1s2_restore_verify_from_minio_drill.py`（通过环境变量 `WORDLOOM_S5A3B_UPLOAD_EVIDENCE` 接收 upload evidence 路径）；
+    - 输出：终端最后一行打印 restore+verify evidence JSON 相对路径（`artifacts/_tmp_s5a3b_p2c1s2/drills_<ts>.json`）。
+  - `restore_db_sanitize_verify_from_backup`（可选增强）：
+    - 语义：在单纯 restore+verify 之外，执行 sanitize SQL 并再次 verify，适合更接近安全/合规叙事；
+    - 入口：`python scripts/drills/s5a3b_p3c1s2_restore_sanitize_verify_from_minio_drill.py`；
+  - `backup_pipeline_drill`（推荐单命令样例）：
+    - 语义：一条命令完成 backup → upload → restore+verify → sanitize+verify，全程产出汇总 evidence JSON；
+    - 入口：`python scripts/drills/s5a3b_p4c1s1_pipeline_drill.py`；
+    - 输出：终端最后一行打印 pipeline evidence JSON 路径（`artifacts/_tmp_s5a3b_p4c1s1/drills_<ts>.json`）。
+- 设计原则：
+  - 不改动现有 S5A-3B 脚本实现，只在 S4A-3A log/runbook 层为 operator 取一套易懂的名字与用途说明；
+  - operator 只需掌握 1~2 条主路径（例如 `backup_pipeline_drill`），其他入口可作为细粒度补充。
+
+### P1-C1-S3 (First operator-facing command samples | v1)
+
+- Canonical pipeline 样例（推荐主路径）：
+  - 入口：在仓库根目录执行：
+    - `python scripts/drills/s5a3b_p4c1s1_pipeline_drill.py`
+  - 期望行为：
+    - 自动调用 backup drill 生成本地 dump；
+    - 自动上传到 MinIO，并记录 bucket/object_key/sha256/size；
+    - 自动完成一次 restore+verify drill 和一次 restore+sanitize+verify drill；
+    - 在 `artifacts/_tmp_s5a3b_p4c1s1/` 下生成汇总 evidence JSON，并在终端最后一行打印 JSON 相对路径。
+- 拆分样例（当 operator 需要分步操作时）：
+  - 备份到本地：
+    - `python scripts/drills/s5a3a_p1c1s2_backup_drill.py`
+  - 从本地 dump 上传到对象存储：
+    - `python scripts/drills/s5a3b_p1c1s3_upload_drill.py`（需要通过环境变量或配置指向目标 dump 文件）；
+  - 从对象存储恢复并验证：
+    - 设置 `WORDLOOM_S5A3B_UPLOAD_EVIDENCE=<upload evidence 相对路径>`；
+    - 运行：`python scripts/drills/s5a3b_p2c1s2_restore_verify_from_minio_drill.py`；
+  - 如需带 sanitize 的 restore：
+    - 同样设置 `WORDLOOM_S5A3B_UPLOAD_EVIDENCE`；
+    - 运行：`python scripts/drills/s5a3b_p3c1s2_restore_sanitize_verify_from_minio_drill.py`。
 
 ### P2 (Drill / Verify)
 
@@ -132,9 +190,9 @@
 
 ### P1 (Implementation / scripts)
 
-- [ ] `P1-C1-S1`: 盘点现有 backup/restore 相关入口
-- [ ] `P1-C1-S2`: 设计最小 operator 入口集合
-- [ ] `P1-C1-S3`: 定义首批 operator-facing 命令样本
+- [x] `P1-C1-S1`: 盘点现有 backup/restore 相关入口
+- [x] `P1-C1-S2`: 设计最小 operator 入口集合
+- [x] `P1-C1-S3`: 定义首批 operator-facing 命令样本
 
 ### P2 (Drill / Verify)
 
