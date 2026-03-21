@@ -235,7 +235,7 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: 正常 deploy+verify 演练
+- [x] `P2-C1-S1`: 正常 deploy+verify 演练
 - [ ] `P2-C1-S2`: 带 rollback 的演练
 
 ### P3 (Docs / Operator wording)
@@ -249,12 +249,19 @@
 
 ### P2-C1-S1 (reserved | 2026-03-21)
 
-- headSha: ``
-- artifacts: ``
+- headSha: `1555803fd9a82f3f6805d25891b25846076c604b`
+- artifacts: `terminal proof (PowerShell -> WSL deploy_app_verify.sh dev; env_prep/start app 已在此前多次验证，本次重点验证 post-deploy gate 行为)`
 - expected:
-  - 待定：至少 1 条正常 deploy+verify 链路。
+  - 在 dev 环境下，已按 `S4A-1A` 路径成功拉起 db/infra/app 时，`bash scripts/ops/deploy_app_verify.sh dev` 能顺利完成 `status + health` 检查，并给出 `POST_DEPLOY_RESULT=PASS`，退出码为 0；
+  - 输出中包含 `phase=S4A-2A env=dev target_head_sha=<sha>` 以及 runtime 摘要（API/DB/UI/ES 皆为绿色，worker 关闭）。
 - observed:
-  - （本 phase scaffold 时留空，后续补充实测结果。）
+  - 实际命令：`bash scripts/ops/deploy_app_verify.sh dev`
+  - 关键输出：
+    - `phase=S4A-2A env=dev target_head_sha=1555803fd9a82f3f6805d25891b25846076c604b`
+    - `api_health 200`、`ui_http 200`、`es_http 200`、`db_container healthy`；
+    - `worker runtime is disabled by env (SEARCH_OUTBOX_WORKER_ENABLED=0)`；
+    - `POST_DEPLOY_RESULT=PASS`，脚本退出码为 0。
+  - 结论：在当前 headSha 下，`deploy_app_verify` 能作为 post-deploy verification gate 稳定给出 PASS，符合预期。
 
 ### P2-C1-S2 (reserved | 2026-03-21)
 
