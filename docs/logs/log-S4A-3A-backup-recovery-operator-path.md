@@ -196,7 +196,7 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: 至少 1 条 backup+restore+verify 演练
+- [x] `P2-C1-S1`: 至少 1 条 backup+restore+verify 演练
 - [ ] `P2-C1-S2`: 扩展演练（可选）
 
 ### P3 (Docs / Operator wording)
@@ -208,14 +208,28 @@
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
 
-### P2-C1-S1 (reserved | 2026-03-21)
+### P2-C1-S1 (backup+restore+verify pipeline drill | 2026-03-21)
 
-- headSha: ``
-- artifacts: ``
+- headSha: `87e150308b6bab5b8c567c62294846edeb90698f`
+- artifacts: `artifacts/_tmp_s5a3b_p4c1s1/drills_1774063161.json`
 - expected:
-  - 待定：至少 1 条 backup+restore+verify 演练链路。
+  - 一条通过 `backup_pipeline_drill` 完成 `backup -> upload -> restore+verify -> sanitize+verify` 的演练链路；
+  - 对象存储中存在一份最近的 `wordloom_dev` 数据库 dump（带 bucket/key/sha256/size 元数据）；
+  - 至少 1 条 restore+verify drill 成功，将 dump 恢复到 `wordloom_restore_dev` 并完成最小 SQL 检查；
+  - 至少 1 条 restore+sanitize+verify drill 成功，将 dump 恢复到 `wordloom_restore_sanitized_dev`，并在核心文本/summary/snippet 字段上看到“全部已脱敏”（non_redacted_count == 0）。
 - observed:
-  - （本 phase scaffold 时留空，后续补充实测结果。）
+  - 使用命令：`python scripts/drills/s5a3b_p4c1s1_pipeline_drill.py`；
+  - pipeline drill 顺利完成，终端最后一行输出 evidence JSON 路径：`artifacts/_tmp_s5a3b_p4c1s1/drills_1774063161.json`；
+  - evidence.summary：
+    - bucket: `wordloom-backups-devtest`；
+    - object_key: `s5a3a/2026-03-21/wordloom_dev/1774091966.dump`；
+    - sha256: `4d58ab20dc4ed92475f3dafa772ec616cb1b421f78bae69dd58cd852c1872dfc`；
+    - size_bytes: `482081`；
+  - drills.s5a3a_backup.status: `ok`，对应 backup evidence：`artifacts/_tmp_s5a3a_p1c1s2/drills_1774063162.json`；
+  - drills.s5a3b_upload.status: `ok`，对应 upload evidence：`artifacts/_tmp_s5a3b_p1c1s3/drills_1774063164.json`；
+  - drills.s5a3b_restore_verify.status: `ok`，对应 restore+verify evidence：`artifacts/_tmp_s5a3b_p2c1s2/drills_1774063179.json`；
+  - drills.s5a3b_restore_sanitize_verify.status: `ok`，对应 restore+sanitize+verify evidence：`artifacts/_tmp_s5a3b_p3c1s2/drills_1774063189.json`；
+  - summary.p3_verify.kind: `s5a3a_sanitization_verify`，stats 中所有受控字段的 `non_redacted_count` 均为 0，`failures` 为空数组，符合“脱敏后仍可通过最小索引/检索验证”的预期。
 
 ## Recent changes (for traceability, optional)
 
