@@ -5,7 +5,7 @@
 **id**: `S4C-1A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `Cloud dev/test Terraform bootstrap（account + CLI + layout） v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S4`
 **tags**: `EVOLUTION, Cloud, Terraform, Drills, Evidence, epic/s4, sub/1a`
 **links**: ``
@@ -152,7 +152,7 @@
 
 ### P3（Drill / Wording）
 
-- [ ] `P3-C1-S1`：interview-style narrative 写入 docs
+- [x] `P3-C1-S1`：interview-style narrative 写入 docs
 
 ## Evidence (reserved)
 
@@ -200,6 +200,22 @@
     - 针对 `aws_s3_bucket.bootstrap` 生成执行计划；
     - 末尾摘要：`Plan: 1 to add, 0 to change, 0 to destroy.`；
     - **未执行 `terraform apply`**，此次 drill 仅到 plan 阶段。
+
+### P3-C1-S1（Docker / Cloud services / Terraform narrative｜2026-03-22）
+
+- 本地 Docker / 脚本：
+  - 主要用于在个人开发机上把基础设施类依赖（DB、ES、observability 等）隔离出来，用 compose / 脚本统一起停，减少「手工点服务 + 本地环境污染」的问题；
+  - 对单人或少量开发者来说，可以快速复现一套近似的依赖组合，但它本身仍然是「跑在你这台机器上的临时环境」。
+- 云服务（AWS RDS / S3 等）：
+  - 把这些基础设施搬到云账号里，由云厂商托管运行和高可用，你不需要在各种混合环境里手工建库、配磁盘；
+  - 对团队协作来说，好处是：环境是统一的、配置可以复用，权限/网络边界清晰，不容易因为「每个人本地都不一样」而失真。
+- Terraform / IaC：
+  - 站在本地应用和云服务之间，作为「描述云资源的合同层」，用代码来定义 VPC、DB、S3 等，而不是登录控制台到处点；
+  - 所有改动都通过 commit + plan/apply 流程进入云环境，可以避免「console 上手动改了一堆结果没人记得」这种 configuration drift；
+  - 这次 S3 bucket 示例就是一个最小的 contract：`main.tf` 里写清楚 bucket 名称和 tags，`plan` 告诉你「如果 apply 会新增 1 个 bucket」。
+- 关于 drill 和 S3 bucket 的关系：
+  - 对我来说，本 phase 的 drill 概念是「一小段可重复的链路练习 + 最小证据」：你从 `terraform init` 开始到 `plan` 结束，证明 toolchain、凭证、目录、state 约定都能正常工作；
+  - observability 里的 drill 更多是运行时生成日志/指标，这里的 S3 bucket drill 更像是「控制平面」层面的练习：不一定真的 apply，但已经验证了声明式合同（Terraform 配置）和云 API 之间是打通的。
 
 ## Recent changes (for traceability, optional)
 
