@@ -134,15 +134,15 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`：目录与模块命名约定固定
-- [ ] `P0-C1-S2`：成本与安全边界约定固定
-- [ ] `P0-C1-S3`：Evidence contract 固化
+- [x] `P0-C1-S1`：目录与模块命名约定固定
+- [x] `P0-C1-S2`：成本与安全边界约定固定
+- [x] `P0-C1-S3`：Evidence contract 固化
 
 ### P1（Implementation）
 
-- [ ] `P1-C1-S1`：network 模块骨架创建
+- [x] `P1-C1-S1`：network 模块骨架创建
 - [ ] `P1-C1-S2`：devtest-db 模块骨架创建
-- [ ] `P1-C1-S3`：network/devtest-db README 就绪
+- [x] `P1-C1-S3`：network/devtest-db README 就绪
 
 ### P2（Drill / Verify）
 
