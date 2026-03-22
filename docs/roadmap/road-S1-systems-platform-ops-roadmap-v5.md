@@ -88,6 +88,7 @@
 - `P1` Implementation: 在 `infra/terraform/` 下逐步丰富模块（DB、对象存储、网络等），始终保持简单、可解释。
 - `P2` Drill: 定期执行 `init/validate/plan`（必要时加 apply 到本地/轻量云环境），并记录 evidence。
 - `P3` Drill: 建立一套 IaC 能力的话术：从「最小样本」到「将来如何扩展到 multi-cloud / enterprise infra」。
+- `P3` Extension note: 在 cloud connectivity 话题上，先掌握最小可解释路径（public endpoint + SG/IP allowlist），后续再补 bastion host / SSM port forwarding / 私网 RDS 访问模型。
 
 ### M4: Runtime packaging, deploy / verify / rollback & observability basics
 
@@ -114,6 +115,7 @@
 - `P1` Implementation: 写 mapping note，把现有 S5A/S5B/S2D 资产翻译成 governance / disaster readiness / recoverability narrative。
 - `P2` Drill: 在现有 backup/recovery drill 基础上，加一层 cloud/hybrid 视角的解释（可以只是设计级别）。
 - `P3` Drill: 为不同岗位族（政府岗、云工程、平台工程）准备 1–2 段稳定话术，说明如何从 dev/test → hybrid/cloud。
+- `P3` Extension note: 在这一层逐步引入更安全的访问路径与边界控制，例如 bastion / EC2 jump host / SSM Session Manager / port forwarding，而不是长期依赖临时公网暴露。
 
 ## 与子路线的关系
 

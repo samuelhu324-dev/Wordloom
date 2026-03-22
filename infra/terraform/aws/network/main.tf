@@ -31,6 +31,12 @@ variable "public_subnet_cidr" {
   default     = "10.42.0.0/24"
 }
 
+variable "public_subnet_b_cidr" {
+  description = "CIDR block for the public subnet in ap-southeast-2b"
+  type        = string
+  default     = "10.42.1.0/24"
+}
+
 variable "db_subnet_a_cidr" {
   description = "CIDR block for the DB subnet in ap-southeast-2a"
   type        = string
@@ -73,6 +79,55 @@ resource "aws_subnet" "public_a" {
     Environment = "cloud-dev"
     Tier        = "public"
   }
+}
+
+resource "aws_subnet" "public_b" {
+  vpc_id                  = aws_vpc.cloud_dev.id
+  cidr_block              = var.public_subnet_b_cidr
+  availability_zone       = "ap-southeast-2b"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name        = "wlv3-cloud-dev-public-b"
+    Project     = "wordloom-v3"
+    Environment = "cloud-dev"
+    Tier        = "public"
+  }
+}
+
+resource "aws_internet_gateway" "cloud_dev" {
+  vpc_id = aws_vpc.cloud_dev.id
+
+  tags = {
+    Name        = "wlv3-cloud-dev-igw"
+    Project     = "wordloom-v3"
+    Environment = "cloud-dev"
+  }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.cloud_dev.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.cloud_dev.id
+  }
+
+  tags = {
+    Name        = "wlv3-cloud-dev-public-rt"
+    Project     = "wordloom-v3"
+    Environment = "cloud-dev"
+  }
+}
+
+resource "aws_route_table_association" "public_a" {
+  subnet_id      = aws_subnet.public_a.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public_b" {
+  subnet_id      = aws_subnet.public_b.id
+  route_table_id = aws_route_table.public.id
 }
 
 resource "aws_subnet" "db_a" {
@@ -169,6 +224,11 @@ output "vpc_id" {
 output "public_subnet_id" {
   description = "ID of the public subnet in ap-southeast-2a"
   value       = aws_subnet.public_a.id
+}
+
+output "public_subnet_ids" {
+  description = "IDs of the public subnets across two AZs"
+  value       = [aws_subnet.public_a.id, aws_subnet.public_b.id]
 }
 
 output "basic_sg_id" {

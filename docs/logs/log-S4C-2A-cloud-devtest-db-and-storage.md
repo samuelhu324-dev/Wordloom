@@ -35,6 +35,7 @@
 - 优先使用 AWS 提供的免费或低成本选项（例如小规格 RDS、低频访问存储等），并在需要长期保留资源前先跑通最小 drill；
 - 所有 Terraform 更改通过 `plan` + 明确的 Evidence 记录后再 `apply`，避免控制台手工改配置。
 - 对于本机连通性 drill，优先采用“临时公网访问 + 白名单公网 IPv4/32 + drill 完成后立即 destroy/收口”的最小方案；bastion/SSM 作为后续更安全但更复杂的演进方向。
+- 这意味着 v1 会接受一个明确 trade-off：为了先理解 endpoint / SG / subnet / public accessibility 的关系，允许短时把 RDS 放到“可公网访问 + 白名单 IP”的教学模式；但长期目标仍是私网 RDS + 跳板/SSM 接入。
 
 ## Definitions (optional)
 
@@ -276,6 +277,21 @@
 - intent:
   - 用最小改动把“本机直连 RDS”的路径打通，优先帮助理解 endpoint / SG / subnet / public accessibility 的关系；
   - 后续如果要升级安全性，再演进到 bastion / EC2 / SSM 跳板方案。
+
+### P2-C1-S2（First temporary public-access attempt failed at VPC internet edge｜2026-03-22）
+
+- headSha: `3842c39b`
+- module_path: `infra/terraform/aws/devtest-db`
+- observed:
+  - network 模块已输出 `allowed_postgres_cidrs = ["49.196.216.90/32"]` 与新的 `db_sg_id`；
+  - 但在 `db_publicly_accessible = true` 的情况下执行 `terraform apply`，AWS 返回：
+    - `InvalidVPCNetworkStateFault: Cannot create a publicly accessible DBInstance. The specified VPC has no internet gateway attached.`
+- root_cause:
+  - 当前 VPC 虽然已有 public subnet 概念，但没有实际的 Internet Gateway 与 public route table，因此不满足“publicly accessible RDS”对 VPC internet edge 的最低要求；
+  - 同时，做本机直连 drill 时，`db_subnet_ids` 也应临时切换为 network 的 `public_subnet_ids`，而不是继续使用 private-style DB 子网。
+- trade_off:
+  - 这次决定继续走“临时公网访问 + 白名单 IP”路线，而不是立即切换到 bastion/SSM；
+  - 原因是当前阶段的学习重点仍然是把 VPC/IGW/public route/SG/RDS endpoint 这条直连路径讲清楚，先把最小网络原语吃透，再升级到更安全但更复杂的跳板方案。
 
 ## Recent changes (for traceability, optional)
 
