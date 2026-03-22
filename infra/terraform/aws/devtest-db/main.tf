@@ -13,6 +13,10 @@ provider "aws" {
   region = var.aws_region
 }
 
+locals {
+  effective_db_security_group_id = coalesce(var.db_security_group_id, var.db_sg_id)
+}
+
 variable "aws_region" {
   description = "AWS region for this dev/test database"
   type        = string
@@ -32,6 +36,15 @@ variable "db_subnet_ids" {
 variable "db_security_group_id" {
   description = "Security group ID that controls network access to the RDS instance."
   type        = string
+  default     = null
+  nullable    = true
+}
+
+variable "db_sg_id" {
+  description = "Legacy alias for db_security_group_id. Prefer db_security_group_id going forward."
+  type        = string
+  default     = null
+  nullable    = true
 }
 
 variable "db_name" {
@@ -57,6 +70,13 @@ variable "db_instance_class" {
   default     = "db.t4g.micro"
 }
 
+variable "db_engine_version" {
+  description = "Optional Postgres engine version. Leave null to let AWS choose a supported default for this region/instance class."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
 resource "aws_db_subnet_group" "devtest" {
   name       = "wlv3-cloud-dev-db-subnets"
   subnet_ids = var.db_subnet_ids
@@ -71,18 +91,25 @@ resource "aws_db_subnet_group" "devtest" {
 resource "aws_db_instance" "devtest" {
   identifier              = "wlv3-cloud-dev-postgres"
   engine                  = "postgres"
-  engine_version          = "16.3"
+  engine_version          = var.db_engine_version
   instance_class          = var.db_instance_class
   allocated_storage       = 20
   db_name                 = var.db_name
   username                = var.db_username
   password                = var.db_password
   db_subnet_group_name    = aws_db_subnet_group.devtest.name
-  vpc_security_group_ids  = [var.db_security_group_id]
+  vpc_security_group_ids  = [local.effective_db_security_group_id]
   publicly_accessible     = false
   skip_final_snapshot     = true
   deletion_protection     = false
   backup_retention_period = 0
+
+  lifecycle {
+    precondition {
+      condition     = local.effective_db_security_group_id != null
+      error_message = "Provide db_security_group_id (preferred) or legacy db_sg_id for the RDS instance security group."
+    }
+  }
 
   tags = {
     Name        = "wlv3-cloud-dev-postgres"

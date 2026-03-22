@@ -216,6 +216,20 @@
   - 这是 RDS 常见前置条件：DB subnet group 需要至少覆盖 2 个 AZ；
   - 先把 network 拆清楚，可以让 `devtest-db` 模块保持 decoupled，并降低后续 apply/destroy 的误操作范围。
 
+### P2-C1-S1（First devtest-db plan/apply attempt blocked by provider constraints｜2026-03-22）
+
+- headSha: `<TBD-after-devtest-db-fix-commit>`
+- module_path: `infra/terraform/aws/devtest-db`
+- observed:
+  - `terraform validate` 成功；
+  - `terraform plan` 成功生成了 `aws_db_subnet_group.devtest` 与 `aws_db_instance.devtest` 的创建计划，摘要为 `Plan: 2 to add, 0 to change, 0 to destroy.`；
+  - 首次 `terraform apply` 中，`aws_db_subnet_group.devtest` 成功创建，但 `aws_db_instance.devtest` 创建失败，AWS 返回：`InvalidParameterCombination: Cannot find version 16.3 for postgres`；
+  - 同时暴露出本地 `terraform.tfvars` 中存在旧字段 `db_sg_id` 的 warning，说明变量命名需要向前兼容或清理。
+- fix:
+  - 将 `db_engine_version` 改为可配置且默认 `null`，让 AWS 自动选择当前 region / instance class 支持的 Postgres 版本；
+  - 为 `db_security_group_id` 增加向前兼容别名 `db_sg_id`，并在模板中继续推荐使用 `db_security_group_id`；
+  - 保持 `db_subnet_ids` 至少两个子网的约束不变。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-22：创建 `S4C-2A` phase skeleton，用于承接 S4C epic 中关于 cloud dev/test network + DB + storage 的最小实现与 drills。
