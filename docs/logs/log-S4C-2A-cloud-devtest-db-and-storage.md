@@ -266,7 +266,7 @@
 
 ### P2-C1-S2（Temporary public-access connectivity path prepared｜2026-03-22）
 
-- headSha: `<TBD-after-p2-c1-s2-prep-commit>`
+- headSha: `3842c39b`
 - module_paths:
   - `infra/terraform/aws/network`
   - `infra/terraform/aws/devtest-db`
@@ -277,6 +277,30 @@
 - intent:
   - 用最小改动把“本机直连 RDS”的路径打通，优先帮助理解 endpoint / SG / subnet / public accessibility 的关系；
   - 后续如果要升级安全性，再演进到 bastion / EC2 / SSM 跳板方案。
+
+### P2-C1-S2（Public-route fix applied and temporary public RDS created｜2026-03-22）
+
+- headSha: `9ec6cc4a`
+- module_paths:
+  - `infra/terraform/aws/network`
+  - `infra/terraform/aws/devtest-db`
+- network outputs observed:
+  - `allowed_postgres_cidrs = ["49.196.216.90/32"]`
+  - `basic_sg_id = "sg-027e05455509e0730"`
+  - `db_sg_id = "sg-0873e947b9947639d"`
+  - `db_subnet_ids = ["subnet-02790f5622898b167", "subnet-07a0d8c0f611818f3"]`
+  - `public_subnet_ids = ["subnet-0c8ebcc6aba8df53b", "subnet-0185a5c6f519203cf"]`
+- interpretation:
+  - `basic_sg_id` 没变化是正常现象，它是最早创建的基础 SG，并没有被本轮替换；
+  - 本机直连 drill 真正要使用的是 `db_sg_id`，它是单独的 DB 专用 SG，并且已经附带了公网 IPv4/32 白名单能力；
+  - 做临时公网 drill 时，`devtest-db` 应接 `public_subnet_ids + db_sg_id`，而不是继续接 `basic_sg_id` 或只看 `public_subnet_id` 单个值。
+- devtest-db outputs observed:
+  - `db_endpoint = "wlv3-cloud-dev-postgres.cbemuq6ky2pw.ap-southeast-2.rds.amazonaws.com:5432"`
+  - `db_identifier = "db-CH6HVCKHIVFX4ERBUZYU3CYXIU"`
+  - `db_port = 5432`
+- status:
+  - 说明“带公网访问能力的临时 RDS”已经成功创建；
+  - 但 `P2-C1-S2` 还不能算完成，因为还缺最后一跳：从你的本机实际发起一次 PostgreSQL 连接，并验证认证成功。
 
 ### P2-C1-S2（First temporary public-access attempt failed at VPC internet edge｜2026-03-22）
 
