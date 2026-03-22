@@ -124,7 +124,7 @@
 ### P2（Drill / Verify）
 
 - P2-C1-S1：先把 network 模块扩展为可承载 RDS 的最小结构（至少 2 个不同 AZ 的 DB 子网 + DB 专用 SG），再使用 Terraform 创建一套最小 dev/test 网络 + Postgres 实例，并记录 `plan/apply` Evidence。
-- P2-C1-S2：验证从本机使用 psql 或 wordloom-v3 的某个简单脚本能够连接到该 Postgres，并在 Evidence 中记录连接方法（不包含密码明文）。
+- P2-C1-S2：验证从本机使用 psql 或 wordloom-v3 的某个简单脚本能够连接到该 Postgres，并在 Evidence 中记录连接方法（不包含密码明文）。当前优先采用“临时公网访问 + 白名单 IP + 练习后立即收口/销毁”的最小 drill，而不是直接引入 bastion/SSM。
 
 ### P3（Drill / Wording）
 
@@ -146,7 +146,7 @@
 
 ### P2（Drill / Verify）
 
-- [ ] `P2-C1-S1`：首次 `plan/apply/destroy` drill 入账
+- [x] `P2-C1-S1`：首次 `plan/apply/destroy` drill 入账
 - [ ] `P2-C1-S2`：本机连通性 drill 入账
 
 ### P3（Drill / Wording）
@@ -249,6 +249,18 @@
   - 这一步说明最小 RDS Postgres 资源已经在 AWS playground 账号中成功创建；
   - 但当前 `publicly_accessible = false`，且 DB SG 只允许来自 `cloud_dev_basic` SG 的 5432 流量，因此你的本机还不能直接连上这台 DB；
   - 因此 `P2-C1-S1` 的 apply 部分已经完成，但 `P2-C1-S2`（本机连通性 drill）还需要额外的访问路径设计（例如临时开放白名单公网访问，或增加 bastion / SSM 跳板方案）。
+
+### P2-C1-S1（Full plan/apply/destroy drill completed｜2026-03-22）
+
+- headSha: `c7c084f5`
+- module_path: `infra/terraform/aws/devtest-db`
+- summary:
+  - `plan` 已验证最小 Postgres 资源会被创建；
+  - `apply` 已成功创建 `aws_db_instance.devtest`，并产出 `db_endpoint` / `db_port` / `db_identifier`；
+  - `destroy` 已成功执行，终端摘要：`Destroy complete! Resources: 2 destroyed.`，说明 `aws_db_instance.devtest` 与 `aws_db_subnet_group.devtest` 均已清理。
+- outcome:
+  - 这次 drill 证明 S4C-2A 已经具备完整的最小 cloud-dev DB 生命周期能力：`plan -> apply -> output -> destroy`；
+  - 因此 `P2-C1-S1` 可以标记为完成，后续重点转入 `P2-C1-S2` 的“本机如何安全地连到这台 DB”。
 
 ## Recent changes (for traceability, optional)
 
