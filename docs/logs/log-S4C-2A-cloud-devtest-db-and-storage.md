@@ -5,7 +5,7 @@
 **id**: `S4C-2A`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `Cloud dev/test network + DB + storage（Terraform modules + drills） v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`          # draft | stable | archived
 **scope**: `S4`
 **tags**: `EVOLUTION, Cloud, Terraform, Infra, Drills, Evidence, epic/s4, sub/2a`
 **links**: ``
@@ -153,7 +153,7 @@
 
 ### P3（Drill / Wording）
 
-- [ ] `P3-C1-S1`：interview-style narrative 写入 docs
+- [x] `P3-C1-S1`：interview-style narrative 写入 docs
 
 ## Evidence (reserved)
 
@@ -319,6 +319,31 @@
   - 说明从本机公网 IP -> 白名单 SG -> 临时公网 RDS endpoint 的最小连通路径已经打通；
   - 因此 `P2-C1-S2` 可以标记为完成；
   - 后续应优先执行 destroy / 收口，避免持续暴露公网访问和产生额外 RDS 成本。
+
+### P2-C1-S2（Temporary public RDS destroyed after connectivity drill｜2026-03-22）
+
+- headSha: `35562e5d`
+- module_path: `infra/terraform/aws/devtest-db`
+- commands & outcomes:
+  - `terraform destroy`
+    - 终端摘要：`Destroy complete! Resources: 2 destroyed.`；
+    - 本轮临时公网 drill 中创建的 `aws_db_instance.devtest` 与 `aws_db_subnet_group.devtest` 已清理完成。
+- outcome:
+  - 这一步把“临时公网 + 白名单 IP”练习重新收口到低暴露、低成本状态；
+  - 说明 S4C-2A 已完成从 network 设计、RDS 生命周期、到本机连通性验证再到销毁清理的完整闭环。
+
+### P3-C1-S1（S4C-2A narrative for cloud-dev DB path｜2026-03-22）
+
+- 对我来说，S4C-2A 解决的是一个非常具体的问题：不是抽象地“学云”，而是用 Terraform 在 AWS 上搭一套最小可解释的 cloud-dev 网络和 Postgres，并证明它既能被创建，也能被连上，还能被安全清理。
+- 这条路径可以分成三层：
+  - network 层：先定义 VPC、public/db subnets、SG、IGW、route table，明确“云上的网络边界”和访问入口；
+  - database 层：再通过 `devtest-db` 模块把 RDS Postgres 接到这套网络上，用 subnet group、SG、endpoint 把 DB 放进可控的云环境；
+  - connectivity drill 层：最后再决定是走私网 + 跳板，还是临时公网 + 白名单 IP。当前 v1 先用后者打通最小认知闭环，后续再升级到 bastion / SSM。
+- 对 wordloom-v3 来说，这意味着我已经不仅能在本机 Docker/脚本里起依赖，还能解释：
+  - 云上的 DB 为什么需要自己的 subnet / SG；
+  - 为什么 `plan/apply/destroy` 是一套可追踪的 infra 生命周期，而不是“上控制台手点”；
+  - 为什么本机连上云上 DB 不是只看 endpoint，还要看 public accessibility、route、IGW、白名单 IP 与 SG 规则。
+- 下一阶段（S4C-3A）就不是继续堆基础设施原语，而是把这些原语真正接回 wordloom-v3 runtime：例如 `.env.cloud.dev`、连接串管理、应用侧 smoke test，以及“从本机 runtime 访问云上 DB/存储”的稳定 drill。
 
 ### P2-C1-S2（First temporary public-access attempt failed at VPC internet edge｜2026-03-22）
 

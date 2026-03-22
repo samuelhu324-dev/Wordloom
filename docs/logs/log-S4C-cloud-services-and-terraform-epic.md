@@ -18,7 +18,7 @@
   **reference_log_2**: ``
   **phase_log_1**: `docs/logs/log-S4C-1A-cloud-devtest-terraform-bootstrap.md`
   **phase_log_2**: `docs/logs/log-S4C-2A-cloud-devtest-db-and-storage.md`
-  **phase_log_3**: ``
+  **phase_log_3**: `docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`
 **created**: `2026-03-22`
 **updated**: `2026-03-22`
 
@@ -90,14 +90,14 @@
 
 - [x] `P0`: S4C contract/indexing 完成（epic + S4C-1A P0/P1/P2/P3）
 - [x] `P1`: S4C-1A 完成账号/CLI/目录结构最小落地 + 首次 plan drill
-- [ ] `P2`: S4C-2A 最小网络 + DB + 存储模块可 `plan/apply/destroy`
+- [x] `P2`: S4C-2A 最小网络 + DB + 存储模块可 `plan/apply/destroy`，并完成一次本机临时公网连接验证后再销毁
 - [ ] `P3`: S4C-3A 完成一次从本机 API 连接云上 DB 的 drill，并写入 Evidence。
 
 ## Current Status（进展摘要）
 
-- 当前：S4C-1A 已标记为 `stable`，AWS playground 账号、Terraform toolchain 与最小 S3 示例模块均可正常 `plan`；
-- S4C-2A 已创建 phase skeleton 与 `infra/terraform/aws/{network,devtest-db}` 目录，但尚未有真正的网络/DB 资源定义或 `apply`；
-- 关键风险：后续 RDS/网络资源需要持续关注成本与清理策略，避免遗留 dev/test 资源长期运行。
+- 当前：S4C-1A 已标记为 `stable`；S4C-2A 也已完成最小 network + RDS 的 `plan/apply/destroy` 及一次本机 `psql` 连通性 drill，具备收口到 `stable` 的条件；
+- S4C-3A skeleton 已创建，下一步重点从 infra 原语切换到应用侧：把 wordloom-v3 runtime 通过单独 env/config 接回 cloud-dev DB/存储；
+- 关键风险：在 cloud-dev 连接 drill 中仍需持续控制成本和公网暴露时间，优先保持“练习即销毁/收口”的节奏。
 
 ## Notes（落地原则，可选）
 
