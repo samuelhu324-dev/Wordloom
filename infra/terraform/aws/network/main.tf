@@ -43,6 +43,12 @@ variable "db_subnet_b_cidr" {
   default     = "10.42.11.0/24"
 }
 
+variable "allowed_postgres_cidrs" {
+  description = "Temporary IPv4 CIDR allowlist for direct Postgres access during drills. Keep empty by default."
+  type        = list(string)
+  default     = []
+}
+
 resource "aws_vpc" "cloud_dev" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -130,6 +136,17 @@ resource "aws_security_group" "db" {
     security_groups = [aws_security_group.cloud_dev_basic.id]
   }
 
+  dynamic "ingress" {
+    for_each = var.allowed_postgres_cidrs
+
+    content {
+      from_port   = 5432
+      to_port     = 5432
+      protocol    = "tcp"
+      cidr_blocks = [ingress.value]
+    }
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -167,4 +184,9 @@ output "db_subnet_ids" {
 output "db_sg_id" {
   description = "ID of the DB security group"
   value       = aws_security_group.db.id
+}
+
+output "allowed_postgres_cidrs" {
+  description = "Temporary IPv4 CIDR allowlist configured for direct Postgres access"
+  value       = var.allowed_postgres_cidrs
 }

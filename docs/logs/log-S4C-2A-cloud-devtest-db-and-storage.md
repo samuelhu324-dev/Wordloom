@@ -34,6 +34,7 @@
 - 不在云上存放生产数据，仅使用演示/测试数据；
 - 优先使用 AWS 提供的免费或低成本选项（例如小规格 RDS、低频访问存储等），并在需要长期保留资源前先跑通最小 drill；
 - 所有 Terraform 更改通过 `plan` + 明确的 Evidence 记录后再 `apply`，避免控制台手工改配置。
+- 对于本机连通性 drill，优先采用“临时公网访问 + 白名单公网 IPv4/32 + drill 完成后立即 destroy/收口”的最小方案；bastion/SSM 作为后续更安全但更复杂的演进方向。
 
 ## Definitions (optional)
 
@@ -261,6 +262,20 @@
 - outcome:
   - 这次 drill 证明 S4C-2A 已经具备完整的最小 cloud-dev DB 生命周期能力：`plan -> apply -> output -> destroy`；
   - 因此 `P2-C1-S1` 可以标记为完成，后续重点转入 `P2-C1-S2` 的“本机如何安全地连到这台 DB”。
+
+### P2-C1-S2（Temporary public-access connectivity path prepared｜2026-03-22）
+
+- headSha: `<TBD-after-p2-c1-s2-prep-commit>`
+- module_paths:
+  - `infra/terraform/aws/network`
+  - `infra/terraform/aws/devtest-db`
+- prepared changes:
+  - `network` 模块新增 `allowed_postgres_cidrs`，允许在 DB SG 上临时对白名单公网 IPv4/32 放开 5432；
+  - `devtest-db` 模块新增 `db_publicly_accessible`，默认 `false`，做本机直连 drill 时临时切换到 `true`；
+  - `terraform.tfvars.example` 已更新为这条 drill 路线：先加白名单 IP，再临时开启公网访问，练习后立即收口。
+- intent:
+  - 用最小改动把“本机直连 RDS”的路径打通，优先帮助理解 endpoint / SG / subnet / public accessibility 的关系；
+  - 后续如果要升级安全性，再演进到 bastion / EC2 / SSM 跳板方案。
 
 ## Recent changes (for traceability, optional)
 

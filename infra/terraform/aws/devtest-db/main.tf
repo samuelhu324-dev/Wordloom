@@ -77,6 +77,12 @@ variable "db_engine_version" {
   nullable    = true
 }
 
+variable "db_publicly_accessible" {
+  description = "Whether the RDS instance is temporarily exposed with a public endpoint for connectivity drills. Keep false by default."
+  type        = bool
+  default     = false
+}
+
 resource "aws_db_subnet_group" "devtest" {
   name       = "wlv3-cloud-dev-db-subnets"
   subnet_ids = var.db_subnet_ids
@@ -99,7 +105,7 @@ resource "aws_db_instance" "devtest" {
   password                = var.db_password
   db_subnet_group_name    = aws_db_subnet_group.devtest.name
   vpc_security_group_ids  = [local.effective_db_security_group_id]
-  publicly_accessible     = false
+  publicly_accessible     = var.db_publicly_accessible
   skip_final_snapshot     = true
   deletion_protection     = false
   backup_retention_period = 0

@@ -4,6 +4,7 @@
 
 # 从 network 模块 apply 后得到的 db_subnet_ids / db_sg_id 填到这里。
 # 不再使用 public_subnet_id / basic_sg_id 作为 RDS 的目标网络。
+# 如果要做本机直连 drill，请确保 network 模块里额外给 db SG 配好你的公网 IPv4/32 白名单。
 
 db_subnet_ids = [
   "REPLACE_WITH_DB_SUBNET_ID_A",
@@ -11,6 +12,9 @@ db_subnet_ids = [
 ]
 
 db_security_group_id = "REPLACE_WITH_DB_SG_ID"
+
+# 仅在本机连通性 drill 时临时改成 true，完成后应恢复为 false 或直接 destroy。
+db_publicly_accessible = true
 
 db_username = "wlv3_dev"
 
