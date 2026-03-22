@@ -118,7 +118,7 @@
 ### P1（Implementation）
 
 - P1-C1-S1：在 `infra/terraform/aws/network/` 下创建最小 VPC + 子网 + 安全组模块骨架（暂不 apply）。
-- P1-C1-S2：在 `infra/terraform/aws/devtest-db/` 下创建托管 Postgres 模块骨架（参数、变量、outputs），并预留与 network 模块的集成点。
+- P1-C1-S2：在 `infra/terraform/aws/devtest-db/` 下创建托管 Postgres 模块骨架（参数、变量、outputs），并预留与 network 模块的集成点（通过 `db_subnet_ids`、`db_security_group_id` 等变量接收 network 模块的输出）。
 - P1-C1-S3：为上述目录添加 `README.md`，说明资源范围、成本预期和后续 drill 入口。
 
 ### P2（Drill / Verify）
@@ -141,7 +141,7 @@
 ### P1（Implementation）
 
 - [x] `P1-C1-S1`：network 模块骨架创建
-- [ ] `P1-C1-S2`：devtest-db 模块骨架创建
+- [x] `P1-C1-S2`：devtest-db 模块骨架创建
 - [x] `P1-C1-S3`：network/devtest-db README 就绪
 
 ### P2（Drill / Verify）
