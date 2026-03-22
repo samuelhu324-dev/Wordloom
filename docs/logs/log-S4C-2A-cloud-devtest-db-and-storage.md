@@ -149,7 +149,7 @@
 ### P2（Drill / Verify）
 
 - [x] `P2-C1-S1`：首次 `plan/apply/destroy` drill 入账
-- [ ] `P2-C1-S2`：本机连通性 drill 入账
+- [x] `P2-C1-S2`：本机连通性 drill 入账
 
 ### P3（Drill / Wording）
 
@@ -301,6 +301,24 @@
 - status:
   - 说明“带公网访问能力的临时 RDS”已经成功创建；
   - 但 `P2-C1-S2` 还不能算完成，因为还缺最后一跳：从你的本机实际发起一次 PostgreSQL 连接，并验证认证成功。
+
+### P2-C1-S2（Local psql connectivity drill succeeded｜2026-03-22）
+
+- headSha: `cc36946f`
+- module_path: `infra/terraform/aws/devtest-db`
+- commands & outcomes（Windows PowerShell，本机直连）：
+  - `psql --version`
+    - 输出：`psql (PostgreSQL) 16.10`
+  - `psql "host=wlv3-cloud-dev-postgres.cbemuq6ky2pw.ap-southeast-2.rds.amazonaws.com port=5432 dbname=wlv3_cloud_dev user=wlv3_dev sslmode=require"`
+    - 成功通过密码认证进入 PostgreSQL 交互式提示符；
+    - 终端显示 `SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: off)`，说明客户端到 RDS 的 TLS 连接已建立；
+    - 出现两条 warning：
+      - `psql major version 16, server major version 17`：客户端与服务端主版本不一致，但不阻塞本次基础连接 drill；
+      - Windows code page 936 warning：与 PowerShell 控制台编码相关，不影响这次基本连通性验证。
+- outcome:
+  - 说明从本机公网 IP -> 白名单 SG -> 临时公网 RDS endpoint 的最小连通路径已经打通；
+  - 因此 `P2-C1-S2` 可以标记为完成；
+  - 后续应优先执行 destroy / 收口，避免持续暴露公网访问和产生额外 RDS 成本。
 
 ### P2-C1-S2（First temporary public-access attempt failed at VPC internet edge｜2026-03-22）
 
