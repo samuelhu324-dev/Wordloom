@@ -1,0 +1,22 @@
+# Local example vars for the devtest-db module.
+# Copy this file to "terraform.tfvars" on your own machine and fill in
+# real values. Do NOT commit the real terraform.tfvars file to git.
+
+# 默认场景下，这里接 network 模块输出的 `db_subnet_ids` / `db_sg_id`。
+# 如果要做“本机直连 drill”，则临时改成接 `public_subnet_ids` + `db_sg_id`，
+# 同时确保 network 模块里已经通过 `allowed_postgres_cidrs` 给你的公网 IPv4/32 做了白名单。
+
+db_subnet_ids = [
+  "REPLACE_WITH_SUBNET_ID_A",
+  "REPLACE_WITH_SUBNET_ID_B"
+]
+
+db_security_group_id = "REPLACE_WITH_DB_SG_ID"
+
+# 仅在本机连通性 drill 时临时改成 true，完成后应恢复为 false 或直接 destroy。
+db_publicly_accessible = true
+
+db_username = "wlv3_dev"
+
+# 使用你自己记得的强密码；不要把真实密码写进仓库或聊天。
+db_password = "REPLACE_WITH_STRONG_PASSWORD"

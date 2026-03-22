@@ -17,8 +17,8 @@
   **reference_log_1**: `docs/logs/_template-log-phase-drills-evidence.md`
   **reference_log_2**: ``
   **phase_log_1**: `docs/logs/log-S4C-1A-cloud-devtest-terraform-bootstrap.md`
-  **phase_log_2**: ``
-  **phase_log_3**: ``
+  **phase_log_2**: `docs/logs/log-S4C-2A-cloud-devtest-db-and-storage.md`
+  **phase_log_3**: `docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`
 **created**: `2026-03-22`
 **updated**: `2026-03-22`
 
@@ -88,15 +88,16 @@
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
-- [ ] `P0`: S4C contract/indexing 完成（epic + S4C-1A P0）
-- [ ] `P1`: S4C-1A 完成账号/CLI/目录结构最小落地
-- [ ] `P2`: S4C-2A 最小网络 + DB + 存储模块可 `plan/apply/destroy`
+- [x] `P0`: S4C contract/indexing 完成（epic + S4C-1A P0/P1/P2/P3）
+- [x] `P1`: S4C-1A 完成账号/CLI/目录结构最小落地 + 首次 plan drill
+- [x] `P2`: S4C-2A 最小网络 + DB + 存储模块可 `plan/apply/destroy`，并完成一次本机临时公网连接验证后再销毁
 - [ ] `P3`: S4C-3A 完成一次从本机 API 连接云上 DB 的 drill，并写入 Evidence。
 
 ## Current Status（进展摘要）
 
-- 当前：仅创建了 S4C epic skeleton，还没有任何 Terraform 模块或实际云资源。
-- 关键风险：云成本控制与账号隔离需要在 P0 就约定好，否则练习可能意外产生费用。
+- 当前：S4C-1A 已标记为 `stable`；S4C-2A 也已完成最小 network + RDS 的 `plan/apply/destroy` 及一次本机 `psql` 连通性 drill，具备收口到 `stable` 的条件；
+- S4C-3A skeleton 已创建，下一步重点从 infra 原语切换到应用侧：把 wordloom-v3 runtime 通过单独 env/config 接回 cloud-dev DB/存储；
+- 关键风险：在 cloud-dev 连接 drill 中仍需持续控制成本和公网暴露时间，优先保持“练习即销毁/收口”的节奏。
 
 ## Notes（落地原则，可选）
 
