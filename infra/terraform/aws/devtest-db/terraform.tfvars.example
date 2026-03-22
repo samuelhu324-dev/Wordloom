@@ -1,0 +1,17 @@
+# Local example vars for the devtest-db module.
+# Copy this file to "terraform.tfvars" on your own machine and fill in
+# real values. Do NOT commit the real terraform.tfvars file to git.
+
+# 从 network 模块 apply 后得到的 public_subnet_id / basic_sg_id 填到这里。
+# 现在可以先留占位，等 network apply 完成再替换。
+
+db_subnet_ids = [
+  "REPLACE_WITH_SUBNET_ID"
+]
+
+db_security_group_id = "REPLACE_WITH_SG_ID"
+
+db_username = "wlv3_dev"
+
+# 使用你自己记得的强密码；不要把真实密码写进仓库或聊天。
+db_password = "REPLACE_WITH_STRONG_PASSWORD"

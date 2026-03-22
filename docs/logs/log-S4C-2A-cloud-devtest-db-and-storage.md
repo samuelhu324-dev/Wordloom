@@ -182,6 +182,22 @@
     - 末尾摘要：`Plan: 3 to add, 0 to change, 0 to destroy.`；
     - **未执行 `terraform apply`**，此次 drill 仅到 plan 阶段，用于验证 network 模块 wiring 与 provider 配置。
 
+### P2-C1-S1（Network apply completed and outputs captured｜2026-03-22）
+
+- headSha: `<TBD-after-S4C-2A-network-apply-commit>`
+- module_path: `infra/terraform/aws/network`
+- commands & outcomes（PowerShell，Windows，本地 state）：
+  - `terraform apply`
+    - 根据既有 plan 成功创建了 3 个资源：VPC、public subnet、basic security group；
+    - apply 后通过 `terraform output` 拿到了后续 devtest-db 需要的接线信息（`vpc_id`、`public_subnet_id`、`basic_sg_id`）。
+  - `terraform validate`
+    - apply 后再次验证，配置仍然有效。
+  - `terraform plan`
+    - 输出 `No changes. Your infrastructure matches the configuration.`，说明 state 与当前配置一致，没有 drift。
+- note:
+  - 这一步完成了 P2-C1-S1 的 network 侧前半段，为 devtest-db 模块的 plan/apply 做好了基础网络与输入变量准备；
+  - 整个 P2-C1-S1 仍未完成，因为 Postgres 实例的 plan/apply/destroy 还没有执行。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-22：创建 `S4C-2A` phase skeleton，用于承接 S4C epic 中关于 cloud dev/test network + DB + storage 的最小实现与 drills。
