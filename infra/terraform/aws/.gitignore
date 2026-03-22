@@ -1,0 +1,4 @@
+# Terraform state for AWS playground (local-only)
+*.tfstate
+*.tfstate.backup
+.terraform/

@@ -74,16 +74,16 @@
 
 ### P0-C1-S1（云平台与 playground 账号约定）
 
-- 选定首选云平台（暂以 `<cloud-provider>` 占位，后续在实际选择 AWS/Azure 时填充）；
-- 为练习创建专用 playground 账号/订阅，并：
+- 选定首选云平台为 **AWS**，后续所有 Terraform 练习默认以 AWS 为 provider；
+- 为练习创建专用 AWS playground 账号/子账号，并：
   - 启用基本的计费告警或预算限制；
   - 不在其中存放生产数据或高敏感数据。
 
 ### P0-C1-S2（Terraform 目录与 state/evidence 约定）
 
 - 目录约定：
-  - Terraform 代码集中放在 `infra/terraform/<cloud-provider>/` 下；
-  - 常见子目录示例：`network/`、`devtest-db/`、`storage/` 等。
+  - AWS 相关 Terraform 代码集中放在 `infra/terraform/aws/` 下；
+  - 常见子目录示例：`network/`、`devtest-db/`、`storage/` 等，后续 phase 按需新增。
 - state 与 `.gitignore`：
   - 默认使用本地 state 文件 `terraform.tfstate`，位于各模块目录或上层 env 目录；
   - 在仓库根或 `infra/terraform` 下的 `.gitignore` 中忽略 `*.tfstate` 及其备份；
@@ -97,6 +97,7 @@
   - `module_path=<relative path>`；
   - `summary=<one-line outcome>`（例如 `plan: 1 to add, 0 to change, 0 to destroy`）。
 - Evidence 可以记录在本 log 的 Evidence 区，或在后续 S4C-2A/3A 中引用。
+ - Evidence 可以记录在本 log 的 Evidence 区，或在后续 S4C-2A/3A 中引用。
 
 ## Numbering
 
@@ -121,8 +122,8 @@
 
 ### P1（Implementation）
 
-- P1-C1-S1：选定云平台（AWS/Azure 其一），创建 playground 账号/订阅，并在 docs 中记录账号边界与计费告警设置。
-- P1-C1-S2：安装 Terraform + 云 CLI，在本机完成登录配置，并在 `infra/terraform/<cloud-provider>/` 下创建最小目录骨架（含 `.gitignore`）。
+- P1-C1-S1：选定云平台（AWS），创建并启用个人 playground 账号，在 docs 中记录：账号类型（个人练习）、默认 region（如 `ap-southeast-2`）、以及当前成本边界（例如免费额度/预算上限）。
+- P1-C1-S2：安装 Terraform + AWS CLI，在本机完成登录配置，并在 `infra/terraform/aws/` 下创建最小目录骨架（含 `.gitignore`）。
 
 ### P2（Drill / Verify）
 
@@ -136,14 +137,14 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`：云平台与 playground 账号约定固定
-- [ ] `P0-C1-S2`：Terraform 目录与 state/evidence 约定固定
-- [ ] `P0-C1-S3`：Evidence contract 固化
+- [x] `P0-C1-S1`：云平台与 playground 账号约定固定（选定 AWS）
+- [x] `P0-C1-S2`：Terraform 目录与 state/evidence 约定固定（`infra/terraform/aws`）
+- [x] `P0-C1-S3`：Evidence contract 固化
 
 ### P1（Implementation）
 
-- [ ] `P1-C1-S1`：playground 账号创建并记录
-- [ ] `P1-C1-S2`：本机 CLI + Terraform 安装 & 目录骨架就绪
+- [x] `P1-C1-S1`：playground 账号创建并记录（个人 AWS 账号 + `ap-southeast-2` + 免费额度边界）
+- [x] `P1-C1-S2`：本机 CLI + Terraform 安装 & 目录骨架就绪（`infra/terraform/aws`）
 
 ### P2（Drill / Verify）
 
@@ -167,6 +168,23 @@
   - 明确 cloud dev/test Terraform bootstrap 的合同与目录约定，为后续 S4C phases 提供稳定骨架。
 - observed:
   - 本 log 已经写明上述 contract，并在 Execution Checklist 中预留对应项，后续提交会补充 headSha。
+
+### P1-C1-S1（AWS playground 账号与 region 确认｜2026-03-22）
+
+- headSha: `<TBD-after-first-terraform-drill>`
+- summary（non-sensitive）:
+  - 账号类型：个人 AWS playground 账号，用于 cloud/devtest 练习；
+  - 当前 region：`ap-southeast-2`（Asia Pacific, Sydney）；
+  - 成本边界：采用 AWS 免费计划 / 赠送额度（约 US$100，约 185 天有效期），作为 early-phase 练习的主要费用上限，后续如需额外预算再补充 Billing Alarm/预算规则。
+
+### P1-C1-S2（AWS CLI + Terraform 安装与本机登录配置｜2026-03-22）
+
+- headSha: `<TBD-after-first-terraform-drill>`
+- env: Windows 10/11 + PowerShell
+- commands:
+  - `aws --version` → `aws-cli/2.34.14 Python/3.14.3 Windows/10 exe/AMD64`（摘要）；
+  - `terraform version` → `Terraform v1.14.7 on windows_amd64`；
+  - `aws configure` → 默认 profile，region=`ap-southeast-2`，output=`json`，访问密钥仅保存在本机，不出现在仓库或日志中。
 
 ## Recent changes (for traceability, optional)
 
