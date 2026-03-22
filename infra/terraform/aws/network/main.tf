@@ -31,6 +31,18 @@ variable "public_subnet_cidr" {
   default     = "10.42.0.0/24"
 }
 
+variable "db_subnet_a_cidr" {
+  description = "CIDR block for the DB subnet in ap-southeast-2a"
+  type        = string
+  default     = "10.42.10.0/24"
+}
+
+variable "db_subnet_b_cidr" {
+  description = "CIDR block for the DB subnet in ap-southeast-2b"
+  type        = string
+  default     = "10.42.11.0/24"
+}
+
 resource "aws_vpc" "cloud_dev" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -57,6 +69,34 @@ resource "aws_subnet" "public_a" {
   }
 }
 
+resource "aws_subnet" "db_a" {
+  vpc_id                  = aws_vpc.cloud_dev.id
+  cidr_block              = var.db_subnet_a_cidr
+  availability_zone       = "ap-southeast-2a"
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name        = "wlv3-cloud-dev-db-a"
+    Project     = "wordloom-v3"
+    Environment = "cloud-dev"
+    Tier        = "db"
+  }
+}
+
+resource "aws_subnet" "db_b" {
+  vpc_id                  = aws_vpc.cloud_dev.id
+  cidr_block              = var.db_subnet_b_cidr
+  availability_zone       = "ap-southeast-2b"
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name        = "wlv3-cloud-dev-db-b"
+    Project     = "wordloom-v3"
+    Environment = "cloud-dev"
+    Tier        = "db"
+  }
+}
+
 resource "aws_security_group" "cloud_dev_basic" {
   name        = "wlv3-cloud-dev-sg-basic"
   description = "Basic security group for wordloom-v3 dev/test"
@@ -77,6 +117,33 @@ resource "aws_security_group" "cloud_dev_basic" {
   }
 }
 
+resource "aws_security_group" "db" {
+  name        = "wlv3-cloud-dev-sg-db"
+  description = "DB security group for wordloom-v3 dev/test"
+  vpc_id      = aws_vpc.cloud_dev.id
+
+  # 先只允许来自基础 dev/test SG 的 Postgres 流量。
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.cloud_dev_basic.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "wlv3-cloud-dev-sg-db"
+    Project     = "wordloom-v3"
+    Environment = "cloud-dev"
+  }
+}
+
 output "vpc_id" {
   description = "ID of the dev/test VPC"
   value       = aws_vpc.cloud_dev.id
@@ -90,4 +157,14 @@ output "public_subnet_id" {
 output "basic_sg_id" {
   description = "ID of the basic dev/test security group"
   value       = aws_security_group.cloud_dev_basic.id
+}
+
+output "db_subnet_ids" {
+  description = "IDs of the DB subnets for the dev/test RDS subnet group"
+  value       = [aws_subnet.db_a.id, aws_subnet.db_b.id]
+}
+
+output "db_sg_id" {
+  description = "ID of the DB security group"
+  value       = aws_security_group.db.id
 }

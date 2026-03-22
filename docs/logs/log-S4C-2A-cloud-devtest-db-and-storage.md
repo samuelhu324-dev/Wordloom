@@ -123,7 +123,7 @@
 
 ### P2（Drill / Verify）
 
-- P2-C1-S1：使用 Terraform 在 playground 账号中创建一套最小 dev/test 网络 + Postgres 实例，并记录 `plan/apply` Evidence。
+- P2-C1-S1：先把 network 模块扩展为可承载 RDS 的最小结构（至少 2 个不同 AZ 的 DB 子网 + DB 专用 SG），再使用 Terraform 创建一套最小 dev/test 网络 + Postgres 实例，并记录 `plan/apply` Evidence。
 - P2-C1-S2：验证从本机使用 psql 或 wordloom-v3 的某个简单脚本能够连接到该 Postgres，并在 Evidence 中记录连接方法（不包含密码明文）。
 
 ### P3（Drill / Wording）
@@ -197,6 +197,18 @@
 - note:
   - 这一步完成了 P2-C1-S1 的 network 侧前半段，为 devtest-db 模块的 plan/apply 做好了基础网络与输入变量准备；
   - 整个 P2-C1-S1 仍未完成，因为 Postgres 实例的 plan/apply/destroy 还没有执行。
+
+### P2-C1-S1（Network expanded for RDS prerequisites｜2026-03-22）
+
+- headSha: `<TBD-after-S4C-2A-rds-prereq-commit>`
+- module_path: `infra/terraform/aws/network`
+- changes prepared:
+  - 新增 2 个 DB 专用子网：`db_a`（`ap-southeast-2a`）与 `db_b`（`ap-southeast-2b`）；
+  - 新增 1 个 DB 专用 SG：仅允许来自 `cloud_dev_basic` SG 的 5432/TCP 流量；
+  - 新增输出：`db_subnet_ids`、`db_sg_id`，供 `devtest-db` 模块接线。
+- reason:
+  - 这是 RDS 常见前置条件：DB subnet group 需要至少覆盖 2 个 AZ；
+  - 先把 network 拆清楚，可以让 `devtest-db` 模块保持 decoupled，并降低后续 apply/destroy 的误操作范围。
 
 ## Recent changes (for traceability, optional)
 
