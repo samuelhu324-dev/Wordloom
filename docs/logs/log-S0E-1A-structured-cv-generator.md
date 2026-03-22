@@ -25,8 +25,9 @@
 
 **Decision**:
 
-- Build a small, reusable Python-based CV generator that treats CV content as structured markdown + metadata and applies a stable template to produce rendered CV outputs (Markdown/HTML, with optional docx/pdf via pandoc).
+- Build a small, reusable Python-based CV generator that treats CV content as structured markdown + metadata and applies a stable template to produce rendered CV outputs（以 markdown 为主）。
 - Make `docs/demo/demo-001/_cv` the first structured container, and ensure the generator can target different CV variants (for example, generic backend vs. government-role systems/platform engineer) by swapping metadata files rather than copy-pasting text.
+- 明确 trade-off：保留“从现有精美 docx 模板中抽取出来的 markdown CV 文本”作为长期模板与生成源，不再在 v1 阶段追求自动生成具有复杂文本框版式的 docx，仅在需要时从 markdown 手工导出/排版 docx。
 
 **Default choices (phase defaults / v1)**:
 
@@ -34,6 +35,7 @@
 - Template layer is explicit and versioned (e.g. `docs/demo/templates/cv-template-en.md`), so wording and layout can be evolved without rewriting scripts.
 - Python is the primary implementation language, using a light templating library (e.g. Jinja2) and plain CLI entrypoints under `scripts/cv/`.
 - demo containers follow the `demo-001` contract from S0D-6A; future demos can reuse the same generator with different inputs.
+- 对于高阶排版（多文本框+固定间距等），仍以手工维护的 docx 模板为主；本 phase 只保证 markdown 版本可读、结构化，docx 自动化属于可选后续实验（见 S0E-1B），不作为 v1 的必需能力。
 
 ## Definitions
 
@@ -47,6 +49,7 @@
 - Generated artifacts must not be committed to the repository; only source markdown, metadata and templates are versioned.
 - The generator should not depend on heavy external services; optional pandoc integration must degrade gracefully if pandoc is not installed.
 - The first phase focuses on a single-language CV (English) and a single demo (`demo-001`); multi-language and multi-demo support can be added later.
+- 不尝试在脚本中重建或操作复杂的 Word 文本框版式；针对 docx 的更精细排版工作默认在 Word 模板里人工完成，S0E-1A 只负责生成结构化文本（markdown）供人工或其他工具再利用。
 
 ## Scope
 
@@ -173,3 +176,4 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-03-22：初始化 `S0E-1A`，定义 structured CV generator 的合同、命名与 evidence 规则，作为 docs-management v5 下的新子 phase。
+- 2026-03-22：记录 trade-off：仅保留从手工 docx 模板中抽取的 markdown CV 作为长期模板与生成源，暂不推进“复杂版式 docx 自动生成”，相关 PoC 见 `log-S0E-1B-md-to-docx-minimal-sample.md`。
