@@ -148,7 +148,7 @@
 
 ### P2（Drill / Verify）
 
-- [ ] `P2-C1-S1`：首次 `terraform plan` drill 入账
+- [x] `P2-C1-S1`：首次 `terraform plan` drill 入账
 
 ### P3（Drill / Wording）
 
@@ -185,6 +185,21 @@
   - `aws --version` → `aws-cli/2.34.14 Python/3.14.3 Windows/10 exe/AMD64`（摘要）；
   - `terraform version` → `Terraform v1.14.7 on windows_amd64`；
   - `aws configure` → 默认 profile，region=`ap-southeast-2`，output=`json`，访问密钥仅保存在本机，不出现在仓库或日志中。
+
+### P2-C1-S1（First terraform init/validate/plan drill｜2026-03-22）
+
+- headSha: `<TBD-after-next-S4C-1A-commit>`
+- module_path: `infra/terraform/aws/examples/bootstrap`
+- commands & outcomes（PowerShell，Windows，本地 state）：
+  - `terraform init`
+    - provider `hashicorp/aws` (~> 5.0) 成功下载并写入 `terraform.lock.hcl`；
+    - 终端输出 `Terraform has been successfully initialized!`。
+  - `terraform validate`
+    - 输出 `Success! The configuration is valid.`。
+  - `terraform plan`
+    - 针对 `aws_s3_bucket.bootstrap` 生成执行计划；
+    - 末尾摘要：`Plan: 1 to add, 0 to change, 0 to destroy.`；
+    - **未执行 `terraform apply`**，此次 drill 仅到 plan 阶段。
 
 ## Recent changes (for traceability, optional)
 
