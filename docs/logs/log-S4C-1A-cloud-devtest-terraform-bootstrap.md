@@ -127,7 +127,7 @@
 
 ### P2（Drill / Verify）
 
-- P2-C1-S1：在某个示例模块目录（例如 `examples/bootstrap/`）执行一次 `terraform init/validate/plan`，并记录命令与关键输出。
+- P2-C1-S1：在 `infra/terraform/aws/examples/bootstrap/` 目录执行一次 `terraform init` / `terraform validate` / `terraform plan`，并在本 log 的 Evidence 中记录 headSha + 关键输出摘要（不粘贴敏感信息）。
 
 ### P3（Drill / Wording）
 
