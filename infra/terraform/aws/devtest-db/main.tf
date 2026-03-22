@@ -22,6 +22,11 @@ variable "aws_region" {
 variable "db_subnet_ids" {
   description = "Subnet IDs where the RDS instance will run (normally private subnets inside the dev/test VPC)."
   type        = list(string)
+
+  validation {
+    condition     = length(var.db_subnet_ids) >= 2
+    error_message = "db_subnet_ids must include at least two subnet IDs, ideally across two AZs, for the RDS subnet group."
+  }
 }
 
 variable "db_security_group_id" {

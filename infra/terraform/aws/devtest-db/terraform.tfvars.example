@@ -2,14 +2,15 @@
 # Copy this file to "terraform.tfvars" on your own machine and fill in
 # real values. Do NOT commit the real terraform.tfvars file to git.
 
-# 从 network 模块 apply 后得到的 public_subnet_id / basic_sg_id 填到这里。
-# 现在可以先留占位，等 network apply 完成再替换。
+# 从 network 模块 apply 后得到的 db_subnet_ids / db_sg_id 填到这里。
+# 不再使用 public_subnet_id / basic_sg_id 作为 RDS 的目标网络。
 
 db_subnet_ids = [
-  "REPLACE_WITH_SUBNET_ID"
+  "REPLACE_WITH_DB_SUBNET_ID_A",
+  "REPLACE_WITH_DB_SUBNET_ID_B"
 ]
 
-db_security_group_id = "REPLACE_WITH_SG_ID"
+db_security_group_id = "REPLACE_WITH_DB_SG_ID"
 
 db_username = "wlv3_dev"
 

@@ -169,7 +169,7 @@
 
 ### P1-C1-S1（Network module first terraform plan drill｜2026-03-22）
 
-- headSha: `<TBD-after-S4C-2A-network-plan-commit>`
+- headSha: `bd68d34f`
 - module_path: `infra/terraform/aws/network`
 - commands & outcomes（PowerShell，Windows，本地 state）：
   - `terraform init`
@@ -184,7 +184,7 @@
 
 ### P2-C1-S1（Network apply completed and outputs captured｜2026-03-22）
 
-- headSha: `<TBD-after-S4C-2A-network-apply-commit>`
+- headSha: `fc02054d`
 - module_path: `infra/terraform/aws/network`
 - commands & outcomes（PowerShell，Windows，本地 state）：
   - `terraform apply`
@@ -200,8 +200,14 @@
 
 ### P2-C1-S1（Network expanded for RDS prerequisites｜2026-03-22）
 
-- headSha: `<TBD-after-S4C-2A-rds-prereq-commit>`
+- headSha: `df649235`
 - module_path: `infra/terraform/aws/network`
+- commands & outcomes（PowerShell，Windows，本地 state）：
+  - `terraform plan`
+    - 计划新增 3 个资源：`aws_security_group.db`、`aws_subnet.db_a`、`aws_subnet.db_b`；
+    - 计划新增 2 个 outputs：`db_sg_id`、`db_subnet_ids`；
+    - 末尾摘要：`Plan: 3 to add, 0 to change, 0 to destroy.`；
+    - 说明这次 network 扩展会在保留既有 `vpc/public_subnet/basic_sg` 的前提下，补齐 RDS 需要的最小双 AZ DB 子网与 DB 专用安全组。
 - changes prepared:
   - 新增 2 个 DB 专用子网：`db_a`（`ap-southeast-2a`）与 `db_b`（`ap-southeast-2b`）；
   - 新增 1 个 DB 专用 SG：仅允许来自 `cloud_dev_basic` SG 的 5432/TCP 流量；
