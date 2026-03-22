@@ -167,6 +167,21 @@
 - observed:
   - 本 log 已包含上述内容，等待后续 commit 补充 headSha。
 
+### P1-C1-S1（Network module first terraform plan drill｜2026-03-22）
+
+- headSha: `<TBD-after-S4C-2A-network-plan-commit>`
+- module_path: `infra/terraform/aws/network`
+- commands & outcomes（PowerShell，Windows，本地 state）：
+  - `terraform init`
+    - provider `hashicorp/aws` (~> 5.0) 成功下载并写入 `terraform.lock.hcl`；
+    - 终端输出 `Terraform has been successfully initialized!`。
+  - `terraform validate`
+    - 输出 `Success! The configuration is valid.`。
+  - `terraform plan`
+    - 生成 `aws_security_group.cloud_dev_basic`、`aws_subnet.public_a`、`aws_vpc.cloud_dev` 三个资源的执行计划；
+    - 末尾摘要：`Plan: 3 to add, 0 to change, 0 to destroy.`；
+    - **未执行 `terraform apply`**，此次 drill 仅到 plan 阶段，用于验证 network 模块 wiring 与 provider 配置。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-22：创建 `S4C-2A` phase skeleton，用于承接 S4C epic 中关于 cloud dev/test network + DB + storage 的最小实现与 drills。
