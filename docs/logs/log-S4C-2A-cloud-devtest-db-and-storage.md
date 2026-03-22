@@ -230,6 +230,26 @@
   - 为 `db_security_group_id` 增加向前兼容别名 `db_sg_id`，并在模板中继续推荐使用 `db_security_group_id`；
   - 保持 `db_subnet_ids` 至少两个子网的约束不变。
 
+### P2-C1-S1（devtest-db apply succeeded after engine-version fix｜2026-03-22）
+
+- headSha: `c7cc4a27`
+- module_path: `infra/terraform/aws/devtest-db`
+- commands & outcomes（PowerShell，Windows，本地 state）：
+  - `terraform plan`
+    - 末尾摘要：`Plan: 1 to add, 0 to change, 0 to destroy.`；
+    - 这里只有 1 个 add 是符合预期的，因为更早那次失败的 apply 已经成功创建并保存了 `aws_db_subnet_group.devtest`，这次修复后只剩 `aws_db_instance.devtest` 需要创建。
+  - `terraform apply`
+    - `aws_db_instance.devtest` 创建成功；
+    - 终端输出摘要：`Apply complete! Resources: 1 added, 0 changed, 0 destroyed.`。
+  - `terraform output`
+    - `db_endpoint = wlv3-cloud-dev-postgres.cbemuq6kv2pw.ap-southeast-2.rds.amazonaws.com:5432`
+    - `db_identifier = db-AUYH7A2MQBAXS3GP3YRDXWJHCY`
+    - `db_port = 5432`
+- note:
+  - 这一步说明最小 RDS Postgres 资源已经在 AWS playground 账号中成功创建；
+  - 但当前 `publicly_accessible = false`，且 DB SG 只允许来自 `cloud_dev_basic` SG 的 5432 流量，因此你的本机还不能直接连上这台 DB；
+  - 因此 `P2-C1-S1` 的 apply 部分已经完成，但 `P2-C1-S2`（本机连通性 drill）还需要额外的访问路径设计（例如临时开放白名单公网访问，或增加 bastion / SSM 跳板方案）。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-22：创建 `S4C-2A` phase skeleton，用于承接 S4C epic 中关于 cloud dev/test network + DB + storage 的最小实现与 drills。
