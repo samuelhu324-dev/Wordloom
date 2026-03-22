@@ -144,8 +144,8 @@
 
 ### P1（Implementation）
 
-- [ ] `P1-C1-S1`：Python CLI 初版落地
-- [ ] `P1-C1-S2`：demo-001 首个 metadata + 模板配置完成
+- [x] `P1-C1-S1`：Python CLI 初版落地
+- [x] `P1-C1-S2`：demo-001 首个 metadata + 模板配置完成
 
 ### P2（Drill / Verify）
 
