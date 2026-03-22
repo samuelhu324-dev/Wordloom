@@ -1,0 +1,8 @@
+# Local example vars for the network module.
+# Copy this file to "terraform.tfvars" on your own machine and fill in
+# your current public IPv4 in CIDR /32 form for the connectivity drill.
+# Do NOT commit the real terraform.tfvars file to git.
+
+allowed_postgres_cidrs = [
+  "REPLACE_WITH_YOUR_PUBLIC_IPv4_SLASH_32"
+]
