@@ -102,6 +102,7 @@
 - `S4D-1A` 已完成第一步：v1 deploy target 固定为“单 Linux 主机 + backend API container + external cloud-dev RDS”；
 - `S4D-1A` 已继续完成 env/release contract 与 verify checklist 固定；
 - `S4D-1A` 已补上 target-host verify gate（`scripts/ops/cloud_release_verify.sh`），因此当前最自然的下一步不再是写 gate，而是拿一台真实 Linux VM 跑第一轮 deploy -> verify 样本；
+- `S4D-1A` 也已补上 target-host deploy command path（`scripts/ops/cloud_release_run_container.sh`），因此第一轮样本现在只差真实主机执行与 evidence 入账；
 - 当前风险：如果 `S4D` 不尽快落下一个真实 deploy target，它会停留在“知道缺口是什么”但没有样本的文档层。
 
 ## Notes（落地原则）

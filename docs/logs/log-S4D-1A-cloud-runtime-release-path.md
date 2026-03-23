@@ -206,7 +206,7 @@
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: 首轮 deploy -> verify drill contract 与 target-host verify gate 就绪
-- P2-C1-S2: 首轮 deploy -> verify 样本入账
+- P2-C1-S2: 首轮 deploy command path prepared for a real Linux VM sample
 - P2-C2-S1: 首轮 rollback 样本入账
 
 ### P2-C1-S1 (deploy->verify drill contract and target-host gate prepared | implemented 2026-03-23)
@@ -224,6 +224,34 @@
   - 因此在真正拿到目标主机前，先把 target-host verify gate 固定下来，可以避免后续 deploy 样本变成一次性手工操作而没有稳定闸门；
   - 这一步完成后，`P2-C1-S2` 就只剩“在真实 Linux VM 上跑一遍”这一个变量。
 
+### P2-C1-S2 (deploy command path prepared for the first Linux VM sample | implemented 2026-03-23)
+
+- recommended VM choice for v1:
+  - `Ubuntu Server 22.04 LTS` 或 `Ubuntu Server 24.04 LTS`
+- explicitly not recommended for v1:
+  - `Kali Linux`
+- why Ubuntu wins:
+  - 它更接近通用云端运维与服务器语境；
+  - Docker、Git、基础网络与系统包安装路径最常见、资料最多；
+  - `S4D-1A` 的目标是 release sample，不是安全测试发行版操作样本。
+- operator order on the real VM:
+  - 1. 准备主机：安装 `git` 与 `docker`；
+  - 2. 拉代码：`git clone <repo>` 或把当前分支代码同步到主机；
+  - 3. 准备 env：把 `.env.cloud.dev` 类似内容放到主机本地文件，例如 `/etc/wordloom/.env.cloud.dev`；
+  - 4. 运行 deploy：执行 `bash scripts/ops/cloud_release_run_container.sh --env-file /etc/wordloom/.env.cloud.dev --image-tag wordloom-backend:cloud-dev --container-name wordloom-api-cloud-dev --host-port 30021`；
+  - 5. 运行 verify：执行 `bash scripts/ops/cloud_release_verify.sh --container-name wordloom-api-cloud-dev --api-port 30021`；
+  - 6. 记录 evidence：保存 commit SHA、deploy 命令摘要、verify 结果、关键日志摘要。
+- operator script prepared:
+  - `scripts/ops/cloud_release_run_container.sh`
+- minimum VM prerequisites:
+  - 出网可用；
+  - 能访问当前 `cloud-dev` RDS；
+  - Docker daemon 正常；
+  - 主机防火墙允许你访问映射后的 `30021`（至少对你的操作源开放）。
+- important boundary:
+  - 这一步仍然不是“你必须自己去 Google 到处拼装整套平台”；
+  - 对 v1 来说，你只需要准备一台标准 Ubuntu Server VM，然后按这条固定顺序装 `git` + `docker`，再运行仓库内脚本即可。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -240,7 +268,7 @@
 ### P2 (Drill / Verify)
 
 - [x] `P2-C1-S1`: deploy -> verify drill contract and target-host gate prepared
-- [ ] `P2-C1-S2`: first deploy -> verify sample recorded
+- [x] `P2-C1-S2`: deploy command path prepared for a real Linux VM sample
 - [ ] `P2-C2-S1`: first rollback sample recorded
 
 ### P3 (Docs / operator wording)
@@ -305,9 +333,24 @@
   - 其低基数输出为 `CLOUD_RELEASE_VERIFY_RESULT=PASS|FAIL ...`，与本地 `deploy_app_verify` 思路一致，但作用对象切换为云端 API 容器；
   - 当前尚未记录真实 VM 样本，因此 `P2-C1-S2` 仍保持未完成，等待第一次真实 deploy。
 
+### P2-C1-S2 (deploy command path prepared | 2026-03-23)
+
+- headSha: `<pending-current-worktree-commit>`
+- artifacts:
+  - `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
+  - `scripts/ops/cloud_release_run_container.sh`
+  - `scripts/ops/cloud_release_verify.sh`
+- expected:
+  - 为第一轮真实 Linux VM deploy 样本准备一条最小、稳定、无需临时拼命令的 operator command path。
+- observed:
+  - 已新增 `scripts/ops/cloud_release_run_container.sh`，负责在目标主机上 build backend image、替换旧容器并以 cloud-dev env 启动新容器；
+  - 已把推荐 VM 固定为 Ubuntu Server LTS，并明确排除 Kali 作为 v1 release sample 目标；
+  - 当前拿到一台标准 Ubuntu VM 后，操作者只需按“准备主机 -> 拉代码 -> 放 env -> run container -> verify”顺序执行即可。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-23: scaffolded `S4D-1A` as the first phase of the cloud runtime deploy/verify/rollback spine.
 - 2026-03-23: fixed the v1 deploy target as a single Linux VM running the backend API container against the existing cloud-dev RDS.
 - 2026-03-23: fixed the v1 env/release contract and verify checklist for the cloud runtime release path.
 - 2026-03-23: prepared the target-host cloud release verify gate for the first real deploy sample.
+- 2026-03-23: prepared the Linux VM deploy command path and added a target-host container run helper script.
