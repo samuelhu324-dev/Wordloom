@@ -97,9 +97,20 @@
 
 - 当前：S4C-1A / S4C-2A / S4C-3A 均已完成并标记为 `stable`；
 - 已形成一条可重复 operator path：repo-root `.env.cloud.dev` + Terraform allowlist + Alembic migration + Windows API launcher + DB/API/app-level read smoke；
+- 当前环境边界已经明确：本地 dev/test 仍然是单容器双数据库（`wordloom_dev` + `wordloom_test`），而 S4C 在云上只先落一套 `cloud-dev` RDS，用于真实云连接、迁移与最小 smoke；
 - 关键后续不再是“能否连上”，而是两类收口项：
   - 安全与运维：RDS password rotation、临时公网访问回收、未来切换到更安全访问路径；
   - 业务增强：最小业务写入 smoke，把 cloud-dev runtime 从读路径推进到读写闭环。
+
+## Environment Boundary（本地 vs 云上）
+
+- 本地运行面：
+  - `wordloom_dev` 用于日常开发与手动验证；
+  - `wordloom_test` 用于 pytest、loadgen、破坏性 drills，默认应保持“可随时销毁、可随时重建”。
+- 云上运行面（S4C v1）：
+  - 当前只要求并只验证一套 `cloud-dev` 路径；
+  - 它的职责是证明 Terraform-managed infra、真实云 DB 连通、应用迁移和最小 smoke 可以形成闭环，而不是复制本地的完整 dev/test 双库拓扑。
+- 因此，`cloud-test` 在现阶段不是必须项；只有当出现云上 CI、共享测试环境、或更接近 staging 的演练需求时，才值得把 test 侧单独引入云上。
 
 ## Notes（落地原则，可选）
 

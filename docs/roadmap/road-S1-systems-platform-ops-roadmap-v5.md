@@ -36,6 +36,12 @@
 - **Time horizon**: 1–3 年的长期演进，可按 Milestone M* 分阶段前进。
 - **Code base**: 以 `wordloom-v3` 为主，必要时可以扩展到 demo/sample 仓库，但总路线优先利用现有 S* spine 资产。
 
+## Environment strategy snapshot
+
+- 本地 dev/test：继续保留单容器双数据库模式，`wordloom_dev` 面向日常开发，`wordloom_test` 面向 pytest、loadgen 和可销毁 drills。
+- 云上样本：M3/S4C 当前先聚焦 `cloud-dev` 单库路径，用来证明 IaC、云上连通、迁移与最小 runtime smoke；不要求同步复制本地 test 环境。
+- `cloud-test` 只有在需要云上 CI、共享测试环境或 staging-like drills 时才进入优先级；在此之前，应优先保持本地 test 的低成本与高可重建性。
+
 ## Milestone overview (M1–M5)
 
 - **M1. Systems / platform operations language & narrative**
@@ -81,6 +87,7 @@
 **Goal**
 
 - 从 dev/test Terraform skeleton（devtest-db）出发，建立「基础设施定义 + 云基础能力」的长期主线，但不过早假装已是 production 级别。
+- 在环境策略上，优先把 cloud sample 收敛为 `cloud-dev` 单库路径，而把破坏性 test/drill 主要留在本地 `wordloom_test`，避免过早引入双云库长期运营负担。
 
 **Plan (P0–P3)**
 
@@ -90,11 +97,17 @@
 - `P3` Drill: 建立一套 IaC 能力的话术：从「最小样本」到「将来如何扩展到 multi-cloud / enterprise infra」。
 - `P3` Extension note: 在 cloud connectivity 话题上，先掌握最小可解释路径（public endpoint + SG/IP allowlist），后续再补 bastion host / SSM port forwarding / 私网 RDS 访问模型。
 
+**Current environment boundary note**
+
+- 对 wordloom-v3 当前最合适的解释是：本地保留 dev/test 双库，云上先只做 `cloud-dev`；
+- 这样既能展示真实云基础能力，也不会把 test 数据、破坏性 drills 和临时样本提前绑到长期保留的云资源上。
+
 ### M4: Runtime packaging, deploy / verify / rollback & observability basics
 
 **Goal**
 
 - 让 wordloom-v3 的运行面不仅能在 dev/test 本机跑起来，还能用 Docker/compose/env/health 标准化打包，并且有 deploy → verify → rollback + 基本监控/日志的意识。
+- 这条主线在后续由 `S4D` 承接到 cloud/staging deployable runtime，避免 `M4` 长期停留在本地运行基线。
 
 **Plan (P0–P3)**
 
@@ -102,6 +115,10 @@
 - `P1` Implementation: 梳理 Dockerfile/compose/env 模板与 health/log 入口，确保与 S4B-1A 脚本协同。
 - `P2` Drill: 至少完成一套「build → deploy to dev/test → smoke verify」的完整 drill，记录 artifacts 和问题复盘。
 - `P3` Drill: 写出 rollback/fallback 的套路与示例，并在 S3A/S6A 等 log 中链接。
+
+**Next spine note**
+
+- `M4` 的下一步主承接物是 `S4D`：把 `S4B` 的本地 packaging 基线与 `S4C` 的 cloud infra 连成一条 cloud/staging runtime 的 deploy -> verify -> rollback operator path。
 
 ### M5: Backup / recovery, governance & hybrid/cloud + second-layer capabilities
 
