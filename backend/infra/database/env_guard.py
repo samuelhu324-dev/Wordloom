@@ -55,6 +55,9 @@ async def _read_sentinel_env(session: AsyncSession) -> Optional[ExpectedEnv]:
         ).scalar_one_or_none()
     except Exception:
         # Most commonly: UndefinedTable. We intentionally treat this as "missing sentinel".
+        # The failed statement leaves the transaction aborted on PostgreSQL,
+        # so we must rollback before reusing the same session.
+        await session.rollback()
         return None
 
     if row is None:

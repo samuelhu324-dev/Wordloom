@@ -5,14 +5,14 @@
 **id**: `S4C`
 **kind**: `log`               # log | lab | runbook | adr | note
 **title**: `S4C: Cloud dev/test infra & Terraform backbone v1`
-**status**: `draft`           # draft | stable | archived
+**status**: `stable`           # draft | stable | archived
 **scope**: `S4`
 **tags**: `EVOLUTION, Cloud, Terraform, Infra, epic/s4, sub/1a`
 **links**: ``
   **issue**: ``
   **pr**: ``
   **adr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S4C-cloud-devtest-runtime-path.md`
   **roadmap**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
   **reference_log_1**: `docs/logs/_template-log-phase-drills-evidence.md`
   **reference_log_2**: ``
@@ -20,7 +20,7 @@
   **phase_log_2**: `docs/logs/log-S4C-2A-cloud-devtest-db-and-storage.md`
   **phase_log_3**: `docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`
 **created**: `2026-03-22`
-**updated**: `2026-03-22`
+**updated**: `2026-03-23`
 
 ---
 
@@ -82,22 +82,24 @@
 - `S4C-1A`（Phase 1）：Cloud dev/test bootstrap（账号 + CLI + 最小目录结构 + 词汇表）
   - 详见：`docs/logs/log-S4C-1A-cloud-devtest-terraform-bootstrap.md`
 - `S4C-2A`（Phase 2）：Network + managed Postgres + storage modules（dev/test only）
-  - 详见：`docs/logs/log-S4C-2A-cloud-devtest-db-and-storage.md`（未来创建）
+  - 详见：`docs/logs/log-S4C-2A-cloud-devtest-db-and-storage.md`
 - `S4C-3A`（Phase 3）：Connect wordloom-v3 runtimes to cloud infra（env + drills）
-  - 详见：`docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`（未来创建）
+  - 详见：`docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`: S4C contract/indexing 完成（epic + S4C-1A P0/P1/P2/P3）
 - [x] `P1`: S4C-1A 完成账号/CLI/目录结构最小落地 + 首次 plan drill
 - [x] `P2`: S4C-2A 最小网络 + DB + 存储模块可 `plan/apply/destroy`，并完成一次本机临时公网连接验证后再销毁
-- [ ] `P3`: S4C-3A 完成一次从本机 API 连接云上 DB 的 drill，并写入 Evidence。
+- [x] `P3`: S4C-3A 完成一次从本机 API 连接云上 DB 的 drill，并写入 Evidence。
 
 ## Current Status（进展摘要）
 
-- 当前：S4C-1A 已标记为 `stable`；S4C-2A 也已完成最小 network + RDS 的 `plan/apply/destroy` 及一次本机 `psql` 连通性 drill，具备收口到 `stable` 的条件；
-- S4C-3A skeleton 已创建，下一步重点从 infra 原语切换到应用侧：把 wordloom-v3 runtime 通过单独 env/config 接回 cloud-dev DB/存储；
-- 关键风险：在 cloud-dev 连接 drill 中仍需持续控制成本和公网暴露时间，优先保持“练习即销毁/收口”的节奏。
+- 当前：S4C-1A / S4C-2A / S4C-3A 均已完成并标记为 `stable`；
+- 已形成一条可重复 operator path：repo-root `.env.cloud.dev` + Terraform allowlist + Alembic migration + Windows API launcher + DB/API/app-level read smoke；
+- 关键后续不再是“能否连上”，而是两类收口项：
+  - 安全与运维：RDS password rotation、临时公网访问回收、未来切换到更安全访问路径；
+  - 业务增强：最小业务写入 smoke，把 cloud-dev runtime 从读路径推进到读写闭环。
 
 ## Notes（落地原则，可选）
 
@@ -133,3 +135,4 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-03-22：创建 `S4C` epic skeleton，用于承接原 `road-S1-2` 中的 cloud + Terraform 最小路径内容，将详细实践下放到 phase logs 与 Terraform 模块中。
+- 2026-03-23：S4C-3A 完成 cloud-dev runtime integration drill，新增 `run-S4C-cloud-devtest-runtime-path.md`，并将 epic 收口为 `stable`。
