@@ -99,7 +99,8 @@
 ## Current Status（进展摘要）
 
 - `S4D` 刚完成顶层 spine 定义；
-- 当前最自然的下一步不是继续补 cloud infra，而是确定一个最小 deploy target，并把 `.env.cloud.dev` 一类运行契约推进到云端 runtime；
+- `S4D-1A` 已完成第一步：v1 deploy target 固定为“单 Linux 主机 + backend API container + external cloud-dev RDS”；
+- 当前最自然的下一步不再是争论目标类型，而是把 `.env.cloud.dev` 一类运行契约推进到这个云端 runtime，并固定 release checklist；
 - 当前风险：如果 `S4D` 不尽快落下一个真实 deploy target，它会停留在“知道缺口是什么”但没有样本的文档层。
 
 ## Notes（落地原则）

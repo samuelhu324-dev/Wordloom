@@ -33,6 +33,7 @@
 
 - 优先复用已经存在的 runtime contract：应用配置继续以 repo-root env 文件和既有启动入口为基础，不引入第三套配置模型；
 - deploy target 先追求“最小可解释、可验证、可回退”，不追求 production-grade HA；
+- v1 target 默认先收敛为“单 Linux 主机 + backend API container + 外部 cloud-dev RDS”，不把 UI、worker、复杂编排和多服务同机编排同时拉进第一轮；
 - verify 先固定为 health + 关键 read smoke + 日志摘要，写路径和复杂回放放到后续 phase；
 - rollback 先固定为“回到上一个已知可用版本/配置”的简单策略。
 
@@ -79,6 +80,11 @@
   - 可清楚解释配置注入和启动路径；
   - 支持最小 smoke 与回退验证；
   - 不需要生产级编排前置条件。
+- v1 选择优先级：
+  - 第一优先：已有 Dockerfile/entrypoint、现成 runtime contract、最少新增平台概念；
+  - 第二优先：能直接复用 `S4C` 已打通的 cloud-dev RDS；
+  - 第三优先：rollback 可以通过单机容器版本或 known-good Git/env 组合完成；
+  - 明确排除：在第一轮就同时引入 ECS/App Runner/多容器 UI+worker 编排、镜像仓库流水线、复杂 LB/域名/TLS 收口。
 
 ### P0-C1-S2 (Release path contract | v1)
 
@@ -123,6 +129,32 @@
 - P1-C1-S1: 选定 v1 deploy target
 - P1-C1-S2: 固定 env/release contract 与 verify checklist
 
+### P1-C1-S1 (v1 deploy target selected | implemented 2026-03-23)
+
+- chosen target:
+  - `AWS single Linux VM + backend API Docker container + external cloud-dev RDS`
+- in-scope for v1:
+  - 单台 Linux 主机（staging-like target）;
+  - 只部署 backend API runtime；
+  - 数据库继续复用 `S4C` 已打通的 `cloud-dev` RDS；
+  - 应用通过 env 文件或等价环境变量注入 `DATABASE_URL` / `WORDLOOM_ENV` / `API_PORT`；
+  - verify 以 `GET /api/v1/health` + `GET /api/v1/libraries` + 容器日志摘要为主；
+  - rollback 以“回到上一个 known-good image/tag 或 known-good Git/env bundle”为主。
+- explicitly out-of-scope for v1:
+  - 前端 UI 云端部署；
+  - worker 云端常驻运行；
+  - App Runner / ECS / Kubernetes 等更复杂目标；
+  - 负载均衡、TLS、域名、自动镜像流水线。
+- why this target wins:
+  - `backend/Dockerfile` 与 `backend/entrypoint.sh` 已存在，且 entrypoint 已封装 `alembic upgrade head`，说明 backend container 是当前最成熟的 deployable unit；
+  - `S4C` 已证明 cloud-dev RDS 与 `.env.cloud.dev` 路径可用，因此 v1 最低风险的增量不是再建新 infra，而是把 API runtime 从本机推进到单机云主机；
+  - 单主机容器目标最容易解释日志、健康检查、env 注入和回退，不会在第一轮被镜像仓库、服务发现、复杂编排分散注意力；
+  - 业务最小 read smoke（`/health`、`/libraries`）已经在 `S4C-3A` 验证过，适合作为第一轮 release verify baseline。
+- rejected alternatives:
+  - `UI + API + worker` 同时上云：当前变更面过大，verify 和 rollback 面都变宽，不适合作为第一轮样本；
+  - `ECS/App Runner`：虽然长期更像云端正道，但当前 repo 尚未形成稳定的 image build/push/release bundle，第一轮会把重点从 release path 转移到平台接线；
+  - 继续只做“本机 runtime -> 云 DB”：这已经由 `S4C` 覆盖，不再回答 `S4D` 的核心问题。
+
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: 首轮 deploy -> verify 样本入账
@@ -132,13 +164,13 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: deploy target selection contract
+- [x] `P0-C1-S1`: deploy target selection contract
 - [ ] `P0-C1-S2`: release path contract
 - [ ] `P0-C1-S3`: evidence contract
 
 ### P1 (Implementation / target definition)
 
-- [ ] `P1-C1-S1`: v1 deploy target selected
+- [x] `P1-C1-S1`: v1 deploy target selected
 - [ ] `P1-C1-S2`: env/release contract and verify checklist fixed
 
 ### P2 (Drill / Verify)
@@ -164,6 +196,22 @@
 - observed:
   - phase skeleton 已创建，等待后续 target 选择与首轮 deploy/rollback drills。
 
+### P1-C1-S1 (v1 deploy target fixed | 2026-03-23)
+
+- headSha: `<pending-current-worktree-commit>`
+- artifacts:
+  - `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
+  - `backend/Dockerfile`
+  - `backend/entrypoint.sh`
+  - `docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`
+- expected:
+  - 选出一个足够小、足够真实、能承接后续 release path contract 的 v1 deploy target。
+- observed:
+  - 已将 v1 target 固定为“单 Linux 主机 + backend API Docker container + external cloud-dev RDS”；
+  - 该选择直接复用已有 backend Dockerfile、entrypoint migration path 和 `S4C` 的 cloud-dev RDS，能够把第一轮复杂度压到最低；
+  - 因此 `S4D-1A` 的下一步不再是争论部署目标，而是固定 `env/release contract` 与 `verify checklist`。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-23: scaffolded `S4D-1A` as the first phase of the cloud runtime deploy/verify/rollback spine.
+- 2026-03-23: fixed the v1 deploy target as a single Linux VM running the backend API container against the existing cloud-dev RDS.
