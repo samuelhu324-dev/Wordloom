@@ -213,6 +213,7 @@ htmlcov/
 # Local env files (keep example)
 .env.*
 !.env.test.example
+!.env.cloud.dev.example
 
 # Local drill/evidence dumps (repo root scratch dirs)
 .drill_snapshot*/
