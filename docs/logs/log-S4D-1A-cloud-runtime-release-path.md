@@ -34,6 +34,7 @@
 - 优先复用已经存在的 runtime contract：应用配置继续以 repo-root env 文件和既有启动入口为基础，不引入第三套配置模型；
 - deploy target 先追求“最小可解释、可验证、可回退”，不追求 production-grade HA；
 - v1 target 默认先收敛为“单 Linux 主机 + backend API container + 外部 cloud-dev RDS”，不把 UI、worker、复杂编排和多服务同机编排同时拉进第一轮；
+- release contract 默认收敛为“单个 backend image + 单份 cloud-dev env + 单条 post-deploy verify checklist”，避免在第一轮把 build/deploy/verify 分裂成多套入口；
 - verify 先固定为 health + 关键 read smoke + 日志摘要，写路径和复杂回放放到后续 phase；
 - rollback 先固定为“回到上一个已知可用版本/配置”的简单策略。
 
@@ -93,6 +94,12 @@
   - env/config 如何注入；
   - deploy 成功后的 verify 检查项；
   - rollback 如何回到 known-good version。
+- v1 release contract 进一步固定为：
+  - deployable unit = `backend` Docker image；
+  - runtime dependency = 外部 `cloud-dev` RDS（由 `S4C` 负责生命周期）；
+  - env source = 单份 cloud-dev env 文件或同名环境变量集合；
+  - post-deploy gate = `health` + `libraries` + 容器日志摘要；
+  - rollback unit = 上一个 known-good image/tag 或 known-good Git/env bundle。
 
 ### P0-C1-S3 (Evidence contract | v1)
 
@@ -155,6 +162,47 @@
   - `ECS/App Runner`：虽然长期更像云端正道，但当前 repo 尚未形成稳定的 image build/push/release bundle，第一轮会把重点从 release path 转移到平台接线；
   - 继续只做“本机 runtime -> 云 DB”：这已经由 `S4C` 覆盖，不再回答 `S4D` 的核心问题。
 
+### P1-C1-S2 (env/release contract and verify checklist fixed | implemented 2026-03-23)
+
+- deployable unit:
+  - `backend` image built from `backend/Dockerfile`;
+  - container entrypoint uses `backend/entrypoint.sh`, which runs `alembic upgrade head` before starting the API process.
+- runtime topology for v1:
+  - one Linux VM hosts one backend API container;
+  - database stays external and points to the existing `cloud-dev` RDS;
+  - frontend UI and worker remain out of scope for the first release-path sample.
+- env/config contract:
+  - required envs:
+    - `DATABASE_URL`
+    - `WORDLOOM_ENV=dev`
+    - `ENVIRONMENT=cloud-dev`
+  - strongly recommended envs:
+    - `LOG_LEVEL=INFO`
+    - `DEBUG=False`
+    - `WORDLOOM_TRACING_ENABLED=0`
+    - `OTEL_SDK_DISABLED=1`
+  - search/storage envs:
+    - keep `ELASTIC_URL` / `ELASTIC_INDEX` explicit if search routes are expected to work;
+    - for the first API release-path sample, `verify` does not depend on search-specific endpoints.
+  - port contract:
+    - container listens on internal port `8000` (Dockerfile default);
+    - operator-facing external port remains `30021` via host mapping `30021:8000`, so the existing cloud-dev smoke URL stays stable.
+- release-path contract:
+  - build artifact = one backend image for the current `headSha`;
+  - deploy action = run the backend container with the cloud-dev env injected;
+  - success baseline = container starts, migrations finish, API serves health/read probes on the external port;
+  - rollback baseline = stop current container and restart the previous known-good image/tag or the previous known-good Git/env bundle.
+- verify checklist for v1:
+  - `container_running`: target container is up after deploy;
+  - `migration_ok`: logs contain successful migration/startup lines from `entrypoint.sh` and no immediate crash loop;
+  - `health_ok`: `GET /api/v1/health` returns `200`;
+  - `read_smoke_ok`: `GET /api/v1/libraries` returns `200` and a JSON list payload;
+  - `env_guard_ok`: startup does not fail due to database-environment mismatch.
+- why this checklist is different from earlier local gates:
+  - `S4A-2A` 的 `deploy_app_verify` 是本地 dev/test runtime gate，检查的是一整套本机 DB/API/UI/ES 是否仍然健康；
+  - `S4D-1A` 的 verify 是“云端 API 容器 release gate”，它更聚焦：容器是否起来、migration 是否通过、外部 RDS 是否可用、最小 API 路径是否仍然工作；
+  - 两者都属于 post-change verification，但作用对象不同：一个验证本地 runtime，另一个验证云端 deploy target。
+
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: 首轮 deploy -> verify 样本入账
@@ -165,13 +213,13 @@
 ### P0 (Contract)
 
 - [x] `P0-C1-S1`: deploy target selection contract
-- [ ] `P0-C1-S2`: release path contract
+- [x] `P0-C1-S2`: release path contract
 - [ ] `P0-C1-S3`: evidence contract
 
 ### P1 (Implementation / target definition)
 
 - [x] `P1-C1-S1`: v1 deploy target selected
-- [ ] `P1-C1-S2`: env/release contract and verify checklist fixed
+- [x] `P1-C1-S2`: env/release contract and verify checklist fixed
 
 ### P2 (Drill / Verify)
 
@@ -211,7 +259,24 @@
   - 该选择直接复用已有 backend Dockerfile、entrypoint migration path 和 `S4C` 的 cloud-dev RDS，能够把第一轮复杂度压到最低；
   - 因此 `S4D-1A` 的下一步不再是争论部署目标，而是固定 `env/release contract` 与 `verify checklist`。
 
+### P1-C1-S2 (env/release contract fixed | 2026-03-23)
+
+- headSha: `<pending-current-worktree-commit>`
+- artifacts:
+  - `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
+  - `.env.cloud.dev.example`
+  - `backend/Dockerfile`
+  - `backend/entrypoint.sh`
+  - `scripts/ops/deploy_app_verify.sh`
+- expected:
+  - 为 v1 deploy target 固定一组足够小、足够清晰、可直接进入下一轮 deploy drill 的 env/release contract 与 verify checklist。
+- observed:
+  - 已固定 deployable unit、required envs、port contract、rollback unit 和 v1 verify checklist；
+  - verify 的核心收敛为：`container_running`、`migration_ok`、`health_ok`、`read_smoke_ok`、`env_guard_ok`；
+  - 因此 `S4D-1A` 下一步已经可以进入 `P2`：做第一轮真实 deploy -> verify -> rollback 样本，而不是继续停留在合同层。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-23: scaffolded `S4D-1A` as the first phase of the cloud runtime deploy/verify/rollback spine.
 - 2026-03-23: fixed the v1 deploy target as a single Linux VM running the backend API container against the existing cloud-dev RDS.
+- 2026-03-23: fixed the v1 env/release contract and verify checklist for the cloud runtime release path.
