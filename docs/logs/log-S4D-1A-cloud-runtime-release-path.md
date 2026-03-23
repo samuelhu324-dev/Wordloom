@@ -205,8 +205,24 @@
 
 ### P2 (Drill / Verify)
 
-- P2-C1-S1: 首轮 deploy -> verify 样本入账
-- P2-C1-S2: 首轮 rollback 样本入账
+- P2-C1-S1: 首轮 deploy -> verify drill contract 与 target-host verify gate 就绪
+- P2-C1-S2: 首轮 deploy -> verify 样本入账
+- P2-C2-S1: 首轮 rollback 样本入账
+
+### P2-C1-S1 (deploy->verify drill contract and target-host gate prepared | implemented 2026-03-23)
+
+- drill contract for the first real sample:
+  - target host = 一台已装 Docker 的 Linux VM；
+  - operator action = 在该主机上拉取或构建 backend image，并用 cloud-dev env 启动单个 API 容器；
+  - verify action = 在目标主机上执行 `scripts/ops/cloud_release_verify.sh`，检查容器运行、migration marker、`/health`、`/libraries` 与 env-guard 相关错误；
+  - PASS semantics = `CLOUD_RELEASE_VERIFY_RESULT=PASS` 且 exit code = `0`；
+  - FAIL semantics = `CLOUD_RELEASE_VERIFY_RESULT=FAIL ...` 且 exit code != `0`。
+- operator script prepared:
+  - `scripts/ops/cloud_release_verify.sh`
+- why this still matters before the first real VM run:
+  - 当前仓库没有现成 EC2/VM provision 资产，也没有现成远端 deploy wrapper；
+  - 因此在真正拿到目标主机前，先把 target-host verify gate 固定下来，可以避免后续 deploy 样本变成一次性手工操作而没有稳定闸门；
+  - 这一步完成后，`P2-C1-S2` 就只剩“在真实 Linux VM 上跑一遍”这一个变量。
 
 ## Execution Checklist (unchecked)
 
@@ -223,8 +239,9 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: first deploy -> verify sample recorded
-- [ ] `P2-C1-S2`: first rollback sample recorded
+- [x] `P2-C1-S1`: deploy -> verify drill contract and target-host gate prepared
+- [ ] `P2-C1-S2`: first deploy -> verify sample recorded
+- [ ] `P2-C2-S1`: first rollback sample recorded
 
 ### P3 (Docs / operator wording)
 
@@ -275,8 +292,22 @@
   - verify 的核心收敛为：`container_running`、`migration_ok`、`health_ok`、`read_smoke_ok`、`env_guard_ok`；
   - 因此 `S4D-1A` 下一步已经可以进入 `P2`：做第一轮真实 deploy -> verify -> rollback 样本，而不是继续停留在合同层。
 
+### P2-C1-S1 (target-host verify gate prepared | 2026-03-23)
+
+- headSha: `<pending-current-worktree-commit>`
+- artifacts:
+  - `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
+  - `scripts/ops/cloud_release_verify.sh`
+- expected:
+  - 为第一轮云端 release 样本准备一条稳定、可重复、可机械判定 PASS/FAIL 的 target-host verify gate。
+- observed:
+  - 已新增 `scripts/ops/cloud_release_verify.sh`，负责在目标 Linux VM 上检查容器运行、entrypoint migration/start marker、`/health`、`/libraries` 和 env-guard 相关错误；
+  - 其低基数输出为 `CLOUD_RELEASE_VERIFY_RESULT=PASS|FAIL ...`，与本地 `deploy_app_verify` 思路一致，但作用对象切换为云端 API 容器；
+  - 当前尚未记录真实 VM 样本，因此 `P2-C1-S2` 仍保持未完成，等待第一次真实 deploy。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-23: scaffolded `S4D-1A` as the first phase of the cloud runtime deploy/verify/rollback spine.
 - 2026-03-23: fixed the v1 deploy target as a single Linux VM running the backend API container against the existing cloud-dev RDS.
 - 2026-03-23: fixed the v1 env/release contract and verify checklist for the cloud runtime release path.
+- 2026-03-23: prepared the target-host cloud release verify gate for the first real deploy sample.

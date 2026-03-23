@@ -93,7 +93,7 @@
 
 - [x] `P0`：contract/indexing（定义 `S4D` 主轴、边界与 phase 拆分）
 - [x] `P1`：Phase 1 seed（cloud runtime release path phase log scaffolded）
-- [ ] `P2`：最小 deploy target 与 env contract 固定
+- [x] `P2`：最小 deploy target、env contract 与 target-host verify gate 固定
 - [ ] `P3`：首轮 deploy / verify / rollback drill 入账
 
 ## Current Status（进展摘要）
@@ -101,7 +101,7 @@
 - `S4D` 刚完成顶层 spine 定义；
 - `S4D-1A` 已完成第一步：v1 deploy target 固定为“单 Linux 主机 + backend API container + external cloud-dev RDS”；
 - `S4D-1A` 已继续完成 env/release contract 与 verify checklist 固定；
-- 当前最自然的下一步不再是合同设计，而是进入 `P2`：做第一轮真实 deploy -> verify -> rollback drill；
+- `S4D-1A` 已补上 target-host verify gate（`scripts/ops/cloud_release_verify.sh`），因此当前最自然的下一步不再是写 gate，而是拿一台真实 Linux VM 跑第一轮 deploy -> verify 样本；
 - 当前风险：如果 `S4D` 不尽快落下一个真实 deploy target，它会停留在“知道缺口是什么”但没有样本的文档层。
 
 ## Notes（落地原则）
