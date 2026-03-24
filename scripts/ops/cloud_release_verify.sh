@@ -61,7 +61,7 @@ docker_cmd="$(docker_bin)"
 HEAD_SHA="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
 API_BASE_URL="http://${VERIFY_API_HOST}:${VERIFY_API_PORT}/api/v1"
 
-echo "[cloud_release_verify] phase=S4D-1A target_head_sha=$HEAD_SHA container_name=$CONTAINER_NAME api_base_url=$API_BASE_URL"
+echo "[cloud_release_verify] phase=S4D-2A target_head_sha=$HEAD_SHA container_name=$CONTAINER_NAME api_base_url=$API_BASE_URL"
 
 container_rc=0
 if ! "$docker_cmd" inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
