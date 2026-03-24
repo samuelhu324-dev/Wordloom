@@ -123,7 +123,8 @@
 
 - 编号约定：`P<n>` 表示 Phase，`C<n>` 表示 Cycle，`S<n>` 表示 Step。
 - Commit / PR 命名：
-  - 基础形式：`S4D-cloud-runtime-deploy-verify-rollback/P<phase>-C<cycle>-S<steps>: <summary>`；
+  - 顶层 spine 自身的变更使用：`S4D-cloud-runtime-deploy-verify-rollback/P<phase>-C<cycle>-S<steps>: <summary>`；
+  - phase-specific 变更使用对应 phase log 的前缀，例如：`S4D-1A/...`、`S4D-2A/...`；
   - `<steps>` 可以是单个 step（`1`，即 `...-S1`），也可以是在同一 phase / cycle 下连续的多个 step 合并（如 `1S2`，即 `...-S1S2`）。
 
 **Branch 约定（建议）**:
@@ -142,3 +143,4 @@
 - 2026-03-24：第一次真实 deploy 尝试发现 `cloud_release_run_container.sh` 的 `docker run` 参数拼接缺陷；当前已转入修复 wrapper 并重跑 deploy/verify。
 - 2026-03-24：deploy wrapper 修复后，真实样本已推进到“容器启动成功”，当前新发现 verify 端口变量碰撞问题，需再修复一次 verify gate 才能完成首个 PASS 样本。
 - 2026-03-24：新增 `S4D-2A`，把真实 Ubuntu VM post-change verification / operational checks 与对应提交命名从顶层 `S4D` 前缀收敛到 phase 前缀 `S4D-2A`。
+- 2026-03-24：重新核对历史命名后，已把原先误挂在顶层 `S4D` 前缀下的 P1/P2 phase-specific 提交分别改写到 `S4D-1A` 与 `S4D-2A`。

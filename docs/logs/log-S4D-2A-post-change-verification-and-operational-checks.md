@@ -148,7 +148,7 @@
 
 ### P2-C1-S1 (Ubuntu VM repo sync baseline | 2026-03-24)
 
-- headSha: `34104a44`
+- headSha: `234cb498`
 - target_host_kind: `Ubuntu Server VM in VirtualBox (SSH via 127.0.0.1:2222)`
 - env_file_path: `/etc/wordloom/.env.cloud.dev` (planned target path)
 - expected:
@@ -160,7 +160,7 @@
 
 ### P2-C1-S2 (First real deploy FAIL -> wrapper fix | 2026-03-24)
 
-- headSha: `08bca01b`
+- headSha: `562a712b`
 - deploy_command_summary: `bash scripts/ops/cloud_release_run_container.sh --env-file /etc/wordloom/.env.cloud.dev`
 - verify_command_summary: `bash scripts/ops/cloud_release_verify.sh --env-file /etc/wordloom/.env.cloud.dev`
 - verify_check_results:
@@ -172,13 +172,13 @@
 - root_cause:
   - `cloud_release_run_container.sh` 把 Docker 参数拼成了 `docker -d run ...`，导致容器根本未创建。
 - fix_commit:
-  - `08bca01b`
+  - `562a712b`
 - result:
   - `FAIL -> fixed in same cycle`
 
 ### P2-C1-S3 (Verify port collision -> verify gate fix | 2026-03-24)
 
-- headSha: `4ffb4fd3`
+- headSha: `164f58f2`
 - deploy_command_summary: `bash scripts/ops/cloud_release_run_container.sh --env-file /etc/wordloom/.env.cloud.dev`
 - verify_command_summary: `bash scripts/ops/cloud_release_verify.sh --env-file /etc/wordloom/.env.cloud.dev`
 - verify_check_results:
@@ -190,7 +190,7 @@
 - root_cause:
   - verify 脚本把 env file 中的 `API_PORT=8000` 当成宿主机探测端口，错误探测了 `127.0.0.1:8000` 而不是 host port `30021`。
 - fix_commit:
-  - `4ffb4fd3`
+  - `164f58f2`
 - result:
   - `FAIL -> fixed in same cycle; PASS rerun pending`
 
@@ -198,3 +198,4 @@
 
 - 2026-03-24: 创建 `S4D-2A`，把真实 Ubuntu VM post-change verification 与 operational checks 从 `S4D-1A` 的 release-path contract 中拆分出来。
 - 2026-03-24: 明确从本 phase 开始，真实 deploy/verify drill 与由 drill 暴露出的修复提交统一采用 `S4D-2A/P*-C*-S*` 命名。
+- 2026-03-24: 重新核对历史后，已把早先误挂在顶层 `S4D` 前缀下的 phase-specific 提交重新归位到 `S4D-1A` 与 `S4D-2A`，并刷新相关 SHA 引用。
