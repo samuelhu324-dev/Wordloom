@@ -104,8 +104,8 @@
 - `S4D-1A` 已继续完成 env/release contract 与 verify checklist 固定；
 - `S4D-1A` 已补上 target-host verify gate（`scripts/ops/cloud_release_verify.sh`）与 target-host deploy command path（`scripts/ops/cloud_release_run_container.sh`），因此 release-path contract 已具备进入真实样本的条件；
 - 2026-03-24 起，真实 Ubuntu VM 上的 deploy -> verify 样本、operator checks、failure evidence 与由 drill 暴露出的脚本修复，统一转入 `S4D-2A` 记账；
-- `S4D-2A` 当前已推进到“容器可启动、verify host/container 端口边界已修复、等待首个 PASS 样本重跑确认”的状态；
-- 当前风险：如果 `S4D-2A` 不尽快完成第一次 PASS verify，它仍会停留在“真实样本已接近闭环但尚未收口”的阶段。
+- `S4D-2A` 已拿到第一轮真实 Ubuntu VM verify PASS：`container_running OK`、`migration_ok OK`、`health_ok OK (200)`、`read_smoke_ok OK (200 list payload)`、`env_guard_ok OK`；
+- 当前下一步已不再是 verify 修复，而是进入首个 rollback 样本与 rollback evidence 收口。
 
 ## Notes（落地原则）
 
@@ -144,3 +144,4 @@
 - 2026-03-24：deploy wrapper 修复后，真实样本已推进到“容器启动成功”，当前新发现 verify 端口变量碰撞问题，需再修复一次 verify gate 才能完成首个 PASS 样本。
 - 2026-03-24：新增 `S4D-2A`，把真实 Ubuntu VM post-change verification / operational checks 与对应提交命名从顶层 `S4D` 前缀收敛到 phase 前缀 `S4D-2A`。
 - 2026-03-24：重新核对历史命名后，已把原先误挂在顶层 `S4D` 前缀下的 P1/P2 phase-specific 提交分别改写到 `S4D-1A` 与 `S4D-2A`。
+- 2026-03-24：第一轮真实 Ubuntu VM verify 已通过，`S4D-2A` 的工作重点已从 verify 修复切换到 rollback 样本。

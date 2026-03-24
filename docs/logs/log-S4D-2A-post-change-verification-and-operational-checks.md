@@ -140,7 +140,7 @@
 - [x] `P2-C1-S1`: first Ubuntu VM host prep and repo sync baseline recorded
 - [x] `P2-C1-S2`: first deploy FAIL recorded and wrapper fix landed
 - [x] `P2-C1-S3`: verify port collision recorded and verify fix landed
-- [ ] `P2-C1-S4`: first real verify PASS recorded
+- [x] `P2-C1-S4`: first real verify PASS recorded
 
 ## Evidence (reserved)
 
@@ -194,8 +194,29 @@
 - result:
   - `FAIL -> fixed in same cycle; PASS rerun pending`
 
+### P2-C1-S4 (First real verify PASS on Ubuntu VM | 2026-03-24)
+
+- headSha: `937d202a`
+- target_host_kind: `Ubuntu Server VM in VirtualBox (SSH via 127.0.0.1:2222)`
+- env_file_path: `/etc/wordloom/.env.cloud.dev`
+- deploy_command_summary:
+  - host already aligned to `origin/S4D-cloud-runtime-deploy-verify-rollback` at `HEAD=937d202a40706158db3b3415d86af9c85edaba51`
+- verify_command_summary: `bash scripts/ops/cloud_release_verify.sh --env-file /etc/wordloom/.env.cloud.dev`
+- verify_check_results:
+  - `container_running=OK`
+  - `migration_ok=OK`
+  - `health_ok=OK (200)`
+  - `read_smoke_ok=OK (200 list payload)`
+  - `env_guard_ok=OK`
+- observed:
+  - verify 输出包含 `CLOUD_RELEASE_VERIFY_RESULT=PASS`；
+  - 这说明第一轮真实 Ubuntu VM post-change verification 已闭环，cloud runtime 的最小 release gate 已可在真实目标主机上通过。
+- result:
+  - `PASS`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-24: 创建 `S4D-2A`，把真实 Ubuntu VM post-change verification 与 operational checks 从 `S4D-1A` 的 release-path contract 中拆分出来。
 - 2026-03-24: 明确从本 phase 开始，真实 deploy/verify drill 与由 drill 暴露出的修复提交统一采用 `S4D-2A/P*-C*-S*` 命名。
 - 2026-03-24: 重新核对历史后，已把早先误挂在顶层 `S4D` 前缀下的 phase-specific 提交重新归位到 `S4D-1A` 与 `S4D-2A`，并刷新相关 SHA 引用。
+- 2026-03-24: 第一轮真实 Ubuntu VM verify 已拿到 `CLOUD_RELEASE_VERIFY_RESULT=PASS`，因此 `S4D-2A` 当前下一步从 verify 收口切换为 rollback 样本。
