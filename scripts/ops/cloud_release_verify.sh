@@ -7,8 +7,8 @@ source "$SCRIPT_DIR/_common.sh"
 
 ENV_FILE="${ENV_FILE:-}"
 CONTAINER_NAME="${CONTAINER_NAME:-wordloom-api-cloud-dev}"
-API_HOST="${API_HOST:-127.0.0.1}"
-API_PORT="${API_PORT:-30021}"
+VERIFY_API_HOST="${VERIFY_API_HOST:-127.0.0.1}"
+VERIFY_API_PORT="${VERIFY_API_PORT:-30021}"
 
 usage() {
   cat <<'EOF'
@@ -32,11 +32,11 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --api-host)
-      API_HOST="$2"
+      VERIFY_API_HOST="$2"
       shift 2
       ;;
     --api-port)
-      API_PORT="$2"
+      VERIFY_API_PORT="$2"
       shift 2
       ;;
     -h|--help)
@@ -59,7 +59,7 @@ require_cmd curl
 docker_cmd="$(docker_bin)"
 
 HEAD_SHA="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
-API_BASE_URL="http://${API_HOST}:${API_PORT}/api/v1"
+API_BASE_URL="http://${VERIFY_API_HOST}:${VERIFY_API_PORT}/api/v1"
 
 echo "[cloud_release_verify] phase=S4D-1A target_head_sha=$HEAD_SHA container_name=$CONTAINER_NAME api_base_url=$API_BASE_URL"
 

@@ -252,6 +252,25 @@
   - 这一步仍然不是“你必须自己去 Google 到处拼装整套平台”；
   - 对 v1 来说，你只需要准备一台标准 Ubuntu Server VM，然后按这条固定顺序装 `git` + `docker`，再运行仓库内脚本即可。
 
+### P2-C1-S2 (first real deploy now reaches running container; verify port collision found | updated 2026-03-24)
+
+- observed result on the Ubuntu VM after commit `08bca01b`:
+  - `cloud_release_run_container.sh` 已成功 build image 并启动 `wordloom-api-cloud-dev` 容器；
+  - verify 输出显示：
+    - `container_running OK`
+    - `migration_ok OK`
+    - `health_ok FAIL (000)`
+    - `read_smoke_ok FAIL (code=000)`
+    - `env_guard_ok OK`
+- root cause of the remaining verify failure:
+  - `cloud_release_verify.sh` 在读取 `/etc/wordloom/.env.cloud.dev` 后，把 env file 中的 `API_PORT=8000` 当成了宿主机探活端口；
+  - 因此 verify 实际请求了 `http://127.0.0.1:8000/api/v1/...`，而不是预期的 host-mapped `http://127.0.0.1:30021/api/v1/...`；
+  - 这说明当前失败点已经不是 deploy wrapper 或应用启动失败，而是 verify 脚本的 host/container port 边界未隔离。
+- conclusion:
+  - 这是第一轮真实样本里的第二个 script-level defect；
+  - deploy path 本身已进入“容器成功启动 + migration/start marker 正常”的状态；
+  - 下一步应修复 verify 端口变量隔离，然后在同一台 Ubuntu VM 上重跑 verify，争取拿到第一次 `CLOUD_RELEASE_VERIFY_RESULT=PASS` 样本。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
