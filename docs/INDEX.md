@@ -16,6 +16,16 @@
 - Ops scripting baseline
 	- docs/logs/log-S4A-1A-ops-scripting-baseline.md
 
+- S4B spine (infra as code and runtime packaging)
+	- docs/logs/log-S4B-infra-as-code-and-runtime-packaging.md
+
+- S4C spine (cloud services and terraform backbone)
+	- docs/logs/log-S4C-cloud-services-and-terraform-epic.md
+
+- S4D spine (cloud runtime deploy / verify / rollback)
+	- docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md
+	- docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md
+
 ## S6-related, old logs
 - S6A spine (new SoT index)
 	- docs/logs/log-S6A-evidence-drills-spine.md
