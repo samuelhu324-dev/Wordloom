@@ -104,7 +104,8 @@
 - `S4D-1A` 已补上 target-host verify gate（`scripts/ops/cloud_release_verify.sh`），因此当前最自然的下一步不再是写 gate，而是拿一台真实 Linux VM 跑第一轮 deploy -> verify 样本；
 - `S4D-1A` 也已补上 target-host deploy command path（`scripts/ops/cloud_release_run_container.sh`），因此第一轮样本现在只差真实主机执行与 evidence 入账；
 - 2026-03-24 已确认第一台 Ubuntu VM 完成 host prep 与 repo sync：SSH、Docker、`git clone`、branch checkout、HEAD 校验均已完成，因此下一步已收敛为 env placement 与第一次真实 deploy/verify；
-- 当前风险：如果 `S4D` 不尽快完成第一次真实 deploy/verify，它仍会停留在“主机和代码都到位，但还没有 release evidence”的阶段。
+- 2026-03-24 的第一次真实 deploy 尝试暴露了 deploy wrapper 缺陷：容器未启动，verify 因 `container not found` 连锁失败，当前下一步已收敛为修复脚本并在同一 VM 上重跑 deploy/verify；
+- 当前风险：如果 `S4D` 不尽快修复并重跑第一次真实 deploy/verify，它仍会停留在“主机和代码都到位，但 release wrapper 尚未闭环”的阶段。
 
 ## Notes（落地原则）
 
@@ -138,3 +139,4 @@
 
 - 2026-03-23：首次创建 `S4D`，作为 `S4` 主线中承接 cloud runtime deploy/verify/rollback 的新顶层 spine。
 - 2026-03-24：确认第一台 Ubuntu VM 已完成 host prep 与 repo sync，当前仅剩 env placement 与第一次真实 deploy/verify 样本。
+- 2026-03-24：第一次真实 deploy 尝试发现 `cloud_release_run_container.sh` 的 `docker run` 参数拼接缺陷；当前已转入修复 wrapper 并重跑 deploy/verify。

@@ -84,10 +84,11 @@ if "$docker_cmd" inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
   "$docker_cmd" rm -f "$CONTAINER_NAME" >/dev/null
 fi
 
-run_args=(run --name "$CONTAINER_NAME" --env-file "$ENV_FILE" -p "${HOST_PORT}:${CONTAINER_PORT}")
+run_args=(run)
 if [[ "$DETACH" == "1" ]]; then
-  run_args=(-d "${run_args[@]}")
+  run_args+=( -d )
 fi
+run_args+=( --name "$CONTAINER_NAME" --env-file "$ENV_FILE" -p "${HOST_PORT}:${CONTAINER_PORT}" )
 
 echo "[cloud_release_run_container] starting container"
 "$docker_cmd" "${run_args[@]}" "$IMAGE_TAG"
