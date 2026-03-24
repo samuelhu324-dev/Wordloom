@@ -18,7 +18,7 @@
   **reference_log_2**: `docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`
   **reference_log_3**: `docs/logs/_template-log-phase-drills-evidence.md`
 **created**: `2026-03-23`
-**updated**: `2026-03-23`
+**updated**: `2026-03-24`
 
 ---
 
@@ -335,7 +335,7 @@
 
 ### P2-C1-S2 (deploy command path prepared | 2026-03-23)
 
-- headSha: `<pending-current-worktree-commit>`
+- headSha: `da8225547ce63620f3b052a45032c99ccc528f67`
 - artifacts:
   - `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
   - `scripts/ops/cloud_release_run_container.sh`
@@ -345,7 +345,10 @@
 - observed:
   - 已新增 `scripts/ops/cloud_release_run_container.sh`，负责在目标主机上 build backend image、替换旧容器并以 cloud-dev env 启动新容器；
   - 已把推荐 VM 固定为 Ubuntu Server LTS，并明确排除 Kali 作为 v1 release sample 目标；
-  - 当前拿到一台标准 Ubuntu VM 后，操作者只需按“准备主机 -> 拉代码 -> 放 env -> run container -> verify”顺序执行即可。
+  - 2026-03-24 已完成第一台本地 Ubuntu Server VM 的 host-prep 样本：SSH 通过 `127.0.0.1:2222` 打通，`docker --version` 返回 `28.2.2`，`docker ps` 可无报错执行；
+  - 同日已完成 repo sync 样本：在 VM 上通过 `git clone https://github.com/samuelhu324-dev/wordloom-v3.git wordloom-v3` 拉取代码，并成功 `git checkout S4D-cloud-runtime-deploy-verify-rollback`；
+  - VM 上已确认 `git branch --show-current` 为 `S4D-cloud-runtime-deploy-verify-rollback`，`git rev-parse HEAD` 为 `da8225547ce63620f3b052a45032c99ccc528f67`，说明 deploy 脚本与当前 phase 所需代码已经真实落到目标主机；
+  - 这说明 `P2-C1-S2` 已从“只有命令路径”推进到“真实主机已就绪且代码已同步”的状态，当前剩余变量进一步收敛为：准备 `/etc/wordloom/.env.cloud.dev`、执行 deploy/verify。
 
 ## Recent changes (for traceability, optional)
 
@@ -354,3 +357,5 @@
 - 2026-03-23: fixed the v1 env/release contract and verify checklist for the cloud runtime release path.
 - 2026-03-23: prepared the target-host cloud release verify gate for the first real deploy sample.
 - 2026-03-23: prepared the Linux VM deploy command path and added a target-host container run helper script.
+- 2026-03-24: confirmed the first Ubuntu VM host-prep sample with SSH access and a working Docker daemon, so the next step is code sync plus env placement before the first real deploy sample.
+- 2026-03-24: confirmed repo sync on the Ubuntu VM by cloning the repository, checking out `S4D-cloud-runtime-deploy-verify-rollback`, and verifying `HEAD=da8225547ce63620f3b052a45032c99ccc528f67` before env placement and the first real deploy sample.
