@@ -27,7 +27,8 @@
 **Decision**:
 
 - `S4D-1A` 作为 `S4D` 的首个 phase，先固定一条最小 cloud runtime release path，而不是同时讨论多个部署目标；
-- 本 phase 的交付重点是：部署目标选择、env/config contract、verify/rollback baseline，以及最小 evidence contract。
+- 本 phase 的交付重点是：部署目标选择、env/config contract、verify/rollback baseline，以及最小 evidence contract；
+- 从 2026-03-24 起，真实 Ubuntu VM 上的 post-change verification、operator checks 与 drill evidence 改由 `S4D-2A` 承接，本 log 保留 release-path contract 与进入真实样本前的固定动作。
 
 **Default choices (phase defaults / v1)**:
 
@@ -56,7 +57,7 @@
 
 - `P0`: contract（deploy target 选择原则、env/release contract、evidence contract）
 - `P1`: implementation / target definition（固定最小 deploy target 与 release path）
-- `P2`: drill / verify（首轮 deploy -> verify -> rollback 样本）
+- `P2`: drill / verify（进入真实样本前的 deploy/verify/rollback baseline；真实 Ubuntu VM drill evidence 见 `S4D-2A`）
 - `P3`: docs / operator wording（把 release path 变成 operator-facing 说明）
 
 ## Success Criteria (DoD)

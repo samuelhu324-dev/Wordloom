@@ -24,6 +24,7 @@
 
 - S4D spine (cloud runtime deploy / verify / rollback)
 	- docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md
+	- docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md
 
 ## S6-related, old logs
 - S6A spine (new SoT index)

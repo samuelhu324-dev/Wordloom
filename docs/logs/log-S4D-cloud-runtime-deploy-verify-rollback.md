@@ -19,6 +19,7 @@
   **reference_log_3**: `docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
   **reference_log_4**: `docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
   **phase_log_1**: `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
+  **phase_log_2**: `docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md`
 **created**: `2026-03-23`
 **updated**: `2026-03-24`
 
@@ -85,7 +86,7 @@
 - `S4D-1A`（Phase 1）：Cloud runtime release path（deploy target, env contract, verify/rollback baseline）
   - 详见：`docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
 - `S4D-2A`（Phase 2）：Post-change verification & operational checks（health, logs, smoke, release checklist）
-  - 详见：`<future>`
+  - 详见：`docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md`
 - `S4D-3A`（Phase 3）：Release drill evidence（repeatable deploy/rollback drills with artifacts）
   - 详见：`<future>`
 
@@ -101,12 +102,10 @@
 - `S4D` 刚完成顶层 spine 定义；
 - `S4D-1A` 已完成第一步：v1 deploy target 固定为“单 Linux 主机 + backend API container + external cloud-dev RDS”；
 - `S4D-1A` 已继续完成 env/release contract 与 verify checklist 固定；
-- `S4D-1A` 已补上 target-host verify gate（`scripts/ops/cloud_release_verify.sh`），因此当前最自然的下一步不再是写 gate，而是拿一台真实 Linux VM 跑第一轮 deploy -> verify 样本；
-- `S4D-1A` 也已补上 target-host deploy command path（`scripts/ops/cloud_release_run_container.sh`），因此第一轮样本现在只差真实主机执行与 evidence 入账；
-- 2026-03-24 已确认第一台 Ubuntu VM 完成 host prep 与 repo sync：SSH、Docker、`git clone`、branch checkout、HEAD 校验均已完成，因此下一步已收敛为 env placement 与第一次真实 deploy/verify；
-- 2026-03-24 的第一次真实 deploy 尝试暴露了 deploy wrapper 缺陷：容器未启动，verify 因 `container not found` 连锁失败，当前下一步已收敛为修复脚本并在同一 VM 上重跑 deploy/verify；
-- 2026-03-24 在修复 deploy wrapper 后，容器已可成功启动，当前剩余问题收敛为 verify 脚本误把 env file 中的 `API_PORT=8000` 当作宿主机探活端口；
-- 当前风险：如果 `S4D` 不尽快修复 verify 端口边界并重跑，它会停留在“deploy 已成功、但 post-deploy verify 仍被脚本变量碰撞阻断”的阶段。
+- `S4D-1A` 已补上 target-host verify gate（`scripts/ops/cloud_release_verify.sh`）与 target-host deploy command path（`scripts/ops/cloud_release_run_container.sh`），因此 release-path contract 已具备进入真实样本的条件；
+- 2026-03-24 起，真实 Ubuntu VM 上的 deploy -> verify 样本、operator checks、failure evidence 与由 drill 暴露出的脚本修复，统一转入 `S4D-2A` 记账；
+- `S4D-2A` 当前已推进到“容器可启动、verify host/container 端口边界已修复、等待首个 PASS 样本重跑确认”的状态；
+- 当前风险：如果 `S4D-2A` 不尽快完成第一次 PASS verify，它仍会停留在“真实样本已接近闭环但尚未收口”的阶段。
 
 ## Notes（落地原则）
 
@@ -142,3 +141,4 @@
 - 2026-03-24：确认第一台 Ubuntu VM 已完成 host prep 与 repo sync，当前仅剩 env placement 与第一次真实 deploy/verify 样本。
 - 2026-03-24：第一次真实 deploy 尝试发现 `cloud_release_run_container.sh` 的 `docker run` 参数拼接缺陷；当前已转入修复 wrapper 并重跑 deploy/verify。
 - 2026-03-24：deploy wrapper 修复后，真实样本已推进到“容器启动成功”，当前新发现 verify 端口变量碰撞问题，需再修复一次 verify gate 才能完成首个 PASS 样本。
+- 2026-03-24：新增 `S4D-2A`，把真实 Ubuntu VM post-change verification / operational checks 与对应提交命名从顶层 `S4D` 前缀收敛到 phase 前缀 `S4D-2A`。
