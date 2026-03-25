@@ -218,8 +218,26 @@
 - result:
   - `FAIL -> fix workflow result accounting before rerun`
 
+### P2-C1-S2 (First truthful local-triggered FAIL sample | 2026-03-25)
+
+- headSha: `9ca59e21`
+- artifacts:
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T090254Z/summary.json`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T090254Z/preflight.log`
+- expected:
+  - 在修复 workflow result accounting 之后，重新从 Windows/WSL 本地工作机触发 Ubuntu VM 远端 preflight / deploy / verify，并得到一条与 artifact 一致的 PASS/FAIL 结果。
+- observed:
+  - 本轮 `summary.json` 与 `preflight.log` 已经一致：`preflightResult=FAIL`、`failureClass=ssh_connectivity`、`result=FAIL`；
+  - `deployResult` / `verifyResult` 均保持 `NOT_RUN`，说明 workflow 已在 preflight 阶段如实停止，没有再错误地把失败样本推进成 PASS；
+  - 当前暴露出的真实问题不再是 workflow 自身结果记账，而是“从当前 WSL 工作机访问 `127.0.0.1:22022` 时 SSH 不通”，也就是本地 operator host 到 Ubuntu VM 的连接路径仍未闭环。
+- failure_class:
+  - `ssh_connectivity`
+- result:
+  - `FAIL -> diagnose WSL-to-VM SSH path before rerun`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-25: 创建 `S4D-4A`，把 `S4D` 的下一步工作重点明确收敛到“半自动 release workflow + failure taxonomy + evidence capture”，而不是继续停留在人工 SSH 操作层。
 - 2026-03-25: 已新增 `scripts/ops/cloud_release_workflow.sh`，把远端 preflight / deploy / verify / optional rollback 收口为单入口 workflow，并固定输出 evidence bundle 与 failure class 摘要。
 - 2026-03-25: 第一次本地触发 workflow 样本暴露出结果记账 bug：`ssh` 失败时 `run_remote_step()` 仍返回成功，导致 `summary.json` 错写 PASS；当前已转入修复并准备重跑。
+- 2026-03-25: 修复 workflow result accounting 后，第一轮真实本地触发样本已如实记录为 `FAIL (ssh_connectivity)`；当前下一步不再是修脚本，而是诊断 WSL 工作机到 Ubuntu VM 的 SSH 路径。

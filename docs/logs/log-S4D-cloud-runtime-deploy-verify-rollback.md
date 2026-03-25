@@ -117,6 +117,7 @@
 - `S4D-4A` 现已创建，下一步工作重心切换为“减少手工 SSH 操作、收口 single-entry workflow、固定 failure taxonomy 与 evidence capture”，以把当前 operator path 推进到半自动阶段。
 - `S4D-4A/P1` 已完成第一步：单入口 `cloud_release_workflow.sh` 已落地，本地工作机现在可以直接触发远端 preflight / deploy / verify，并在本地留下 evidence bundle 与 failure class 摘要。
 - `S4D-4A/P2` 已开始第一轮本地触发样本，但当前先暴露出 workflow 自身的结果记账 bug：`ssh` 失败会被误写成 PASS；下一步应先修正 workflow result accounting，再重跑真实样本。
+- `S4D-4A/P2` 现已拿到第一轮真实本地触发 FAIL 样本：workflow 在 preflight 阶段如实停在 `ssh_connectivity`，说明当前剩余问题已收敛为“WSL/operator host 到 Ubuntu VM 的 SSH 路径”而不是 workflow 结果判定。
 
 ## Notes（落地原则）
 
@@ -163,3 +164,4 @@
 - 2026-03-25：新增 `S4D-4A`，把下一步工作显式转入半自动 cloud release workflow、failure taxonomy 与 evidence capture。
 - 2026-03-25：`S4D-4A/P1` 已落地 single-entry `cloud_release_workflow.sh`，当前下一步可直接执行第一次真实半自动 deploy -> verify drill。
 - 2026-03-25：第一轮本地触发 `S4D-4A/P2` 样本先暴露出 workflow result-accounting bug；当前已转入修复该脚本并准备重跑。
+- 2026-03-25：修复 workflow result accounting 后，第一轮真实本地触发 `S4D-4A/P2` 样本已如实记录为 `FAIL (ssh_connectivity)`；当前应转入诊断本地 WSL 到 Ubuntu VM 的 SSH 访问路径。
