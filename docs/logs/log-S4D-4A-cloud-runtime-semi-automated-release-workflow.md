@@ -11,7 +11,7 @@
 **links**: ``
   **issue**: ``
   **pr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
   **parent_log**: `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
   **previous_log**: `docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
   **reference_log_1**: `docs/logs/log-S5B-security-governance-hard-gates.md`
@@ -768,6 +768,7 @@ bash scripts/ops/cloud_release_workflow.sh \
 
 ## Recent changes (for traceability, optional)
 
+- 2026-03-25: 已为 `S4D` 生成 top-level runbook：`docs/runbook/run-S4D-cloud-runtime-release-operations.md`；`S4D-4A` 现作为该 runbook 的稳定执行来源，而不再只依赖 phase log 阅读来理解 operator path。
 - 2026-03-25: `P3-C8-S3` 已完成 rollback-branch evidence 样本；workflow 现已证明即使真实 `verify FAIL -> rollback PASS` 已恢复 known-good，只要 evidence bundle 故意缺失 `operator_guidance.txt`，最终仍会稳定收口到 `failureClass=evidence_capture_failure`、`terminalGate=evidence_capture`，同时保留 `postChangeVerifyGate=FAIL` 与 `rollbackReadinessGate=PASS`。
 - 2026-03-25: `P3-C8-S2` 已完成第一条 `evidence_capture_failure` targeted FAIL 样本；workflow 现已证明即使真实 `preflight/deploy/verify` 全部 PASS，只要 evidence bundle 故意缺失 `operator_guidance.txt`，最终也会稳定收口到 `failureClass=evidence_capture_failure`、`terminalGate=evidence_capture`、`evidenceComplete=false`。
 - 2026-03-25: 为保证 `P3-C8-S2` 的控制台证据与 `summary.json` 一致，已修正 workflow 成功分支的终端摘要输出；evidence promotion 后不再继续打印过期的 `result=PASS` / `result=PASS_AFTER_ROLLBACK`。
