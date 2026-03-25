@@ -21,6 +21,7 @@
   **phase_log_1**: `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
   **phase_log_2**: `docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md`
   **phase_log_3**: `docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
+  **phase_log_4**: `docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
 **created**: `2026-03-23`
 **updated**: `2026-03-25`
 
@@ -90,6 +91,8 @@
   - 详见：`docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md`
 - `S4D-3A`（Phase 3）：Release drill evidence（repeatable deploy/rollback drills with artifacts）
   - 详见：`docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
+- `S4D-4A`（Phase 4）：Semi-automated release workflow（single-entry operator command, evidence capture, failure-oriented gates）
+  - 详见：`docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -111,6 +114,7 @@
 - 在补齐 verify readiness wait、恢复 VM 到 RDS `5432` 连通后，第一轮真实 rollback sample 已通过：candidate verify PASS，rollback verify PASS，`CLOUD_RELEASE_ROLLBACK_RESULT=PASS`；
 - `S4D` 的最小目标已经完成：真实 Ubuntu VM 上的 deploy -> verify -> rollback operator path 已具备可追溯 evidence，因此本顶层 spine 现可标记为 `stable`；
 - 更强的 failure-oriented rollback drills 不是当前 v1 stable 的前置条件；如果后续要系统化推进“坏 candidate / 明确 trigger / 更细 recovery evidence”，应新增 `S4D-4A`，而不是继续扩大 `S4D-3A` 的定义。
+- `S4D-4A` 现已创建，下一步工作重心切换为“减少手工 SSH 操作、收口 single-entry workflow、固定 failure taxonomy 与 evidence capture”，以把当前 operator path 推进到半自动阶段。
 
 ## Notes（落地原则）
 
@@ -154,3 +158,4 @@
 - 2026-03-25：第一轮 rollback drill 已证明 known-good tag 和 rollback helper 路径可执行，但也暴露 verify readiness wait 缺口，当前已转入修复该 gate 并重跑 rollback 样本。
 - 2026-03-25：在 verify wait 修复和 RDS 连通恢复后，第一轮真实 rollback sample 已 PASS 收口，`S4D` 已具备 deploy -> verify -> rollback 的最小 operator path 样本。
 - 2026-03-25：完成稳定性评估后，`S4D` 已按 v1 口径标记为 `stable`；更强失败样本被明确归为潜在后续 phase `S4D-4A`，不再作为当前收口前置条件。
+- 2026-03-25：新增 `S4D-4A`，把下一步工作显式转入半自动 cloud release workflow、failure taxonomy 与 evidence capture。
