@@ -83,6 +83,7 @@ env_guard_rc=0
 health_code="000"
 libraries_code="000"
 container_logs=""
+container_exit_code="unknown"
 readiness_waited=0
 libraries_tmp="$(mktemp)"
 trap 'rm -f "$libraries_tmp"' EXIT
@@ -92,8 +93,10 @@ while true; do
     container_rc=1
     running_state="missing"
     container_logs=""
+    container_exit_code="unknown"
   else
     running_state="$($docker_cmd inspect -f '{{.State.Running}}' "$CONTAINER_NAME" 2>/dev/null | tr -d '\r')"
+    container_exit_code="$($docker_cmd inspect -f '{{.State.ExitCode}}' "$CONTAINER_NAME" 2>/dev/null | tr -d '\r')"
     if [[ "$running_state" == "true" ]]; then
       container_rc=0
     else
@@ -155,7 +158,7 @@ else
   if [[ "$running_state" == "missing" ]]; then
     echo "[cloud_release_verify] container not found: $CONTAINER_NAME" >&2
   else
-    echo "[cloud_release_verify] container_running FAIL (running=$running_state)" >&2
+    echo "[cloud_release_verify] container_running FAIL (running=$running_state exit_code=$container_exit_code)" >&2
   fi
 fi
 
@@ -183,6 +186,14 @@ if [[ "$env_guard_rc" -eq 0 ]]; then
   echo "[cloud_release_verify] env_guard_ok OK"
 else
   echo "[cloud_release_verify] env_guard_ok FAIL (startup log contains env-guard-related error)" >&2
+fi
+
+if [[ "$container_rc" -ne 0 || "$migration_rc" -ne 0 || "$health_rc" -ne 0 || "$read_rc" -ne 0 || "$env_guard_rc" -ne 0 ]]; then
+  if [[ -n "$container_logs" ]]; then
+    echo "[cloud_release_verify] recent_log_tail_begin" >&2
+    printf '%s\n' "$container_logs" >&2
+    echo "[cloud_release_verify] recent_log_tail_end" >&2
+  fi
 fi
 
 if [[ "$container_rc" -eq 0 && "$migration_rc" -eq 0 && "$health_rc" -eq 0 && "$read_rc" -eq 0 && "$env_guard_rc" -eq 0 ]]; then
