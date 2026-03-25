@@ -123,6 +123,7 @@
 - `S4D-4A/P3` 现已完成 workflow-level 收口：rollback trigger 已固定为明确合同，失败后 `summary.json` 与 `operator_guidance.txt` 会给出 stop / retry / rollback / manual recovery 的 operator 下一步；如需更强证据，后续可再补一轮定向 bad-candidate rollback drill。
 - `S4D-4A/P3-C2` 现已准备一条最小定向 rollback drill recipe：优先通过 verify probe port mismatch 触发 `verify FAIL -> PASS_AFTER_ROLLBACK`，先验证 workflow branch 与 operator guidance，再决定是否继续补真实坏 candidate 样本。
 - `S4D-4A/P3-C2` 已拿到第一条真实 `PASS_AFTER_ROLLBACK` 样本：candidate verify 因定向 probe port mismatch FAIL，但 workflow 已自动切回 known-good 并以 rollback verify PASS 收口，说明 `rollback_recovery` 与 `candidate_reverted_to_known_good` 两条 workflow contract 已被真实验证。
+- `S4D-4A` 现已满足 v1 stable 条件：single-entry release workflow、固定 failure taxonomy、真实本地 deploy/verify PASS 样本，以及真实 `PASS_AFTER_ROLLBACK` 样本都已到位，因此 phase 可正式标记为 `stable`。
 
 ## Notes（落地原则）
 
@@ -175,3 +176,4 @@
 - 2026-03-25：`S4D-4A/P3` 已完成 rollback trigger 与 operator wording 的 workflow 收口；当前若继续推进，应执行一轮刻意制造 verify FAIL 的定向 rollback drill，验证 `PASS_AFTER_ROLLBACK` / `manual_recovery_required` 两条分支中的至少一条。
 - 2026-03-25：已把下一步收口到 `S4D-4A/P3-C2`：先执行一轮以错误 verify probe port 触发的定向 rollback drill，优先验证 `PASS_AFTER_ROLLBACK` 分支与 `operator_guidance.txt` 输出，再决定是否继续补更强的 `manual_recovery_required` 样本。
 - 2026-03-25：`S4D-4A/P3-C2` 已完成第一轮真实 `PASS_AFTER_ROLLBACK` drill：本地 workflow 成功把定向 verify FAIL 的 candidate 自动回退到 known-good，并以 rollback verify PASS + operator guidance 收口。
+- 2026-03-25：稳定性评估完成；`S4D-4A` 已具备 real local-triggered PASS 与 real `PASS_AFTER_ROLLBACK` evidence，因此当前 phase 已按 v1 口径标记为 `stable`。

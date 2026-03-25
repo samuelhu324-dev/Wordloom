@@ -5,7 +5,7 @@
 **id**: `S4D-4A`
 **kind**: `log`
 **title**: `cloud runtime semi-automated release workflow (single-entry operator command, evidence capture, failure-oriented gates) + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, ReleaseOperations, Automation, Verification, Rollback, FailureTaxonomy, Evidence, epic/s4, sub/4a`
 **links**: ``
@@ -359,3 +359,4 @@ bash scripts/ops/cloud_release_workflow.sh \
 - 2026-03-25: `S4D-4A/P3` 已把 rollback trigger 与 operator wording 收口进 workflow：`summary.json` 现可固定记录 `rollbackTrigger/operatorAction/terminalStage`，并新增 `operator_guidance.txt` 作为失败后的下一步动作说明。
 - 2026-03-25: `P3-C2` 已准备最小定向 rollback drill recipe：优先用 verify probe port mismatch 触发 `verify FAIL -> PASS_AFTER_ROLLBACK`，先验证 branch 语义与 operator guidance，再决定是否继续补真实坏 candidate 样本。
 - 2026-03-25: `P3-C2` 已拿到第一条真实 `PASS_AFTER_ROLLBACK` 样本：candidate verify 被定向打成 FAIL，但 workflow 已自动切回 known-good 并通过 rollback verify，`operator_guidance.txt` 也已按 `candidate_reverted_to_known_good` 收口。
+- 2026-03-25: 稳定性评估完成；由于 `P0-P3` 的 contract、single-entry workflow、failure taxonomy、operator wording、真实本地 PASS 样本与真实 `PASS_AFTER_ROLLBACK` 样本均已到位，`S4D-4A` 现可按 v1 口径标记为 `stable`。
