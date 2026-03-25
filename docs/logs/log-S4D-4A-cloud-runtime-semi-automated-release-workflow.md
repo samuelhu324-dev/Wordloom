@@ -162,8 +162,8 @@
 bash scripts/ops/cloud_release_workflow.sh \
   --ssh-host 127.0.0.1 \
   --ssh-port 22022 \
-  --ssh-user ubuntu \
-  --ssh-identity-file /c/Users/H/.ssh/wordloom_cloud_dev \
+  --ssh-user wordloom \
+  --ssh-identity-file /c/Users/H/.ssh/id_ed25519 \
   --remote-repo-dir /home/wordloom/work/wordloom-v3 \
   --env-file /etc/wordloom/.env.cloud.dev \
   --image-tag wordloom-backend:cloud-dev \
