@@ -16,7 +16,7 @@
   **reference_log_3**: `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
   **reference_log_4**: `docs/logs/log-S5A-3B-backup-restore-sanitize-verify.md`
 **created**: `2026-03-21`
-**updated**: `2026-03-21`
+**updated**: `2026-03-25`
 
 ---
 
@@ -60,6 +60,7 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 **Current evidence base (v1)**
 
 - `S4B`：作为最小闭环的主资产来源，提供 from-zero runtime、ops scripts、Terraform skeleton、deployable dev/test baseline；
+- `S4B` 顶层 spine 已在 2026-03-25 正式标记为 `stable`，因此这里引用的不再只是分散样本，而是一个已经完成 parent/child 对齐记账的最小 runtime/IaC 闭环；
 - `S4A`：提供 systems/platform wording、hard-gate、post-change verification 与 fallback 叙事的方法来源；
 - `S5A-3B`：提供 backup / recovery / sanitise / verify 的恢复闭环样本；
 - `S4C/S4D`：保留在 `road-S1` 主线中，作为“如果继续往 cloud/runtime 主心骨延伸，会如何增长”的上层方向，而不是本子路线当前的主完成面。
@@ -253,3 +254,4 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 
 - 2026-03-21: 从早期的 `road-001` 重构为 `road-S1-1`，明确其作为 road-S1 子路线的定位，保留原有 M1–M5 结构，并强调这是“政府岗最小闭环”的子集，而不是覆盖 ROADMAP v5 的全部内容。
 - 2026-03-25: 明确当前记账边界：`road-S1-1` 以 `S4B` 为最小闭环主完成面，吸收 `S4A` 的方法论与 `S5A-3B` 的 recovery sample；`S4C/S4D` 继续归入 `road-S1` 主线承接。
+- 2026-03-25: 同步 `S4B` 最新闭环状态：`S4B`、`S4B-1A`、`S4B-2A` 均已标记为 `stable`，因此 `road-S1-1` 当前引用的最小 runtime + Terraform baseline evidence 已形成稳定父子链路。

@@ -41,6 +41,47 @@
 - **M4. Backup / recovery / operational support narrative**
 - **M5. Cloud fundamentals with hybrid awareness**
 
+## Future capabilities & trigger conditions
+
+> 与 M1-M5 平级。用于显式记录“未来可能需要的能力是什么、为什么会出现、什么条件下才应触发”，避免把未触发的技术域过早塞进当前 roadmap 主线。
+
+Suggested categories:
+
+- **F1. Productionization automation**
+  - What it is: <CI/CD, GitOps, deploy/verify/rollback automation, evidence capture>
+  - Trigger conditions: <manual operator steps are repeated often enough to become a cost/risk/audit problem>
+  - Current status: <not triggered | partially triggered | triggered>
+  - Next natural move: <single-entry scripts, pipeline gate, rollout evidence>
+
+- **F2. Cloud service primitives**
+  - What it is: <managed DB, object storage, IAM, network boundary, TLS, load balancer>
+  - Trigger conditions: <shared environments, real network boundary, managed dependencies, access separation>
+  - Current status: <...>
+  - Learning strategy: <start from currently-triggered services only>
+
+- **F3. Security / governance / failure taxonomy**
+  - What it is: <policy, audit, reason taxonomy, hard gates, forensics, rollback triggers>
+  - Trigger conditions: <multi-tenant boundary, auditability, production verification and recovery paths>
+  - Current status: <...>
+  - Relation to roadmap: <how this shapes verify gates and operator workflows>
+
+- **F4. Kubernetes / orchestration**
+  - What it is: <multi-node container orchestration>
+  - Trigger conditions: <multi-service, multi-node, HA, service discovery, rolling updates, scheduler pain>
+  - Current status: <...>
+  - Defer rule: <do not prioritize before runtime/deploy/verify/rollback basics are stable>
+
+- **F5. Kafka / event streaming**
+  - What it is: <asynchronous event backbone, multiple consumers, replay/order/backlog handling>
+  - Trigger conditions: <async workload, throughput bottleneck, decoupled consumers, replay/ordering needs>
+  - Current status: <...>
+  - Defer rule: <do not prioritize before current queue/outbox/worker model becomes insufficient>
+
+- **F6. Environment choice policy**
+  - Default strategy: <local-first, cloud-selective>
+  - Keep local-first when: <fast drill iteration, destructive testing, app/runtime contract still changing>
+  - Raise cloud priority when: <shared env, real IAM/network/TLS/LB, operator auditability>
+
 ## Milestones (M1–M5)
 
 For each milestone, keep结构和 phase-log 类似：有 Contract（P0）、Implementation（P1）、Drills/Verification（P2–P3）。
