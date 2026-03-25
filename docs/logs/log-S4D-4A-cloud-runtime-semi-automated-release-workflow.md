@@ -202,9 +202,9 @@ bash scripts/ops/cloud_release_workflow.sh \
 
 - [x] `P3-C1-S1`: rollback trigger and rollback-after-fail path closed inside workflow
 - [x] `P3-C1-S2`: operator wording for retry / stop / rollback fixed
-- [ ] `P3-C2-S1`: targeted rollback drill recipe fixed for a safe `verify FAIL -> PASS_AFTER_ROLLBACK` branch
-- [ ] `P3-C2-S2`: first targeted `PASS_AFTER_ROLLBACK` workflow sample recorded
-- [ ] `P3-C2-S3`: targeted drill evidence recorded with `summary.json` and `operator_guidance.txt`
+- [x] `P3-C2-S1`: targeted rollback drill recipe fixed for a safe `verify FAIL -> PASS_AFTER_ROLLBACK` branch
+- [x] `P3-C2-S2`: first targeted `PASS_AFTER_ROLLBACK` workflow sample recorded
+- [x] `P3-C2-S3`: targeted drill evidence recorded with `summary.json` and `operator_guidance.txt`
 
 ## Evidence (reserved)
 
@@ -328,6 +328,26 @@ bash scripts/ops/cloud_release_workflow.sh \
 - result:
   - `PASS`
 
+### P3-C2-S1S2S3 (First targeted PASS_AFTER_ROLLBACK workflow sample | 2026-03-25)
+
+- headSha: `db761caa`
+- artifacts:
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T110448Z/summary.json`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T110448Z/preflight.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T110448Z/deploy.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T110448Z/verify.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T110448Z/rollback.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T110448Z/operator_guidance.txt`
+- expected:
+  - 按 `P3-C2` 的最小 recipe，从本地工作机经 SSH 触发 Ubuntu VM 上的 deploy / verify / auto rollback，故意通过错误 verify probe port 触发 candidate verify FAIL，但保持 known-good rollback path 可恢复，从而验证 `PASS_AFTER_ROLLBACK` 分支、`rollback_recovery` 分类与 `operator_guidance.txt` 收口语义。
+- observed:
+  - 本轮 `preflightResult=PASS`、`deployResult=PASS`、`verifyResult=FAIL`、`rollbackResult=PASS`、`result=PASS_AFTER_ROLLBACK`，且 `failureClass=rollback_recovery`、`operatorAction=candidate_reverted_to_known_good`、`terminalStage=rollback`，与 `P3-C2` 目标完全一致；
+  - `verify.log` 显示 candidate 容器本身已正常启动并完成 migration，`container_running OK`、`migration_ok OK`、`env_guard_ok OK`，但由于 probe 被故意打到 `http://127.0.0.1:39999/api/v1`，所以 `health_ok FAIL (000)`、`read_smoke_ok FAIL (code=000)`，证明这轮 FAIL 是 workflow 设计内的定向 verify FAIL，而不是 candidate runtime 自身崩溃；
+  - `rollback.log` 显示 workflow 已自动切回 `wordloom-backend:cloud-dev-known-good-20260325-pass`，并在 rollback 后再次通过 verify：`container_running OK`、`migration_ok OK`、`health_ok OK (200)`、`read_smoke_ok OK (200 list payload)`、`env_guard_ok OK`、`CLOUD_RELEASE_ROLLBACK_RESULT=PASS`；
+  - `operator_guidance.txt` 给出的下一步是保留 service 在 known-good 上、调查 candidate logs 后再做下一轮 deploy；这说明 `S4D-4A/P3` 需要的 trigger / summary / guidance contract 已不止停留在文案层，而是已拿到一轮真实 `PASS_AFTER_ROLLBACK` evidence。
+- result:
+  - `PASS_AFTER_ROLLBACK`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-25: 创建 `S4D-4A`，把 `S4D` 的下一步工作重点明确收敛到“半自动 release workflow + failure taxonomy + evidence capture”，而不是继续停留在人工 SSH 操作层。
@@ -338,3 +358,4 @@ bash scripts/ops/cloud_release_workflow.sh \
 - 2026-03-25: 在为当前公网 IP 补齐 RDS inbound allow rule 后，第一轮 local-triggered semi-automated workflow 已取得 PASS；`S4D-4A/P2` 现已具备真实本地触发 deploy/verify evidence。
 - 2026-03-25: `S4D-4A/P3` 已把 rollback trigger 与 operator wording 收口进 workflow：`summary.json` 现可固定记录 `rollbackTrigger/operatorAction/terminalStage`，并新增 `operator_guidance.txt` 作为失败后的下一步动作说明。
 - 2026-03-25: `P3-C2` 已准备最小定向 rollback drill recipe：优先用 verify probe port mismatch 触发 `verify FAIL -> PASS_AFTER_ROLLBACK`，先验证 branch 语义与 operator guidance，再决定是否继续补真实坏 candidate 样本。
+- 2026-03-25: `P3-C2` 已拿到第一条真实 `PASS_AFTER_ROLLBACK` 样本：candidate verify 被定向打成 FAIL，但 workflow 已自动切回 known-good 并通过 rollback verify，`operator_guidance.txt` 也已按 `candidate_reverted_to_known_good` 收口。
