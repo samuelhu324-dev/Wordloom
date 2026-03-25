@@ -30,6 +30,7 @@
   - automation / scripting / reproducible environment
   - backup / recovery / disaster readiness
   - documented sustainable runtime
+- 在当前仓库记账边界上，`road-S1-1` 不负责承接 `S4C/S4D` 这类继续向 cloud/runtime 主心骨演进的主线；它更准确的职责，是把 `S4B` 的本地最小 runtime / scripting / Terraform baseline，连同 `S5A-3B` 的 recovery sample 和 `S4A` 的方法论语言，收口成“现在就能讲”的政府岗最小闭环。
 
 **One-sentence goal**
 
@@ -41,6 +42,13 @@
 - **Relation to road-S1**: 从 road-S1 的完整路线中抽取必需的最小闭环，优先完成可以“现在就讲”的部分。
 - **Time horizon**: 约 4–8 周，可滚动拉长，但 v1 聚焦最小闭环，而不是所有增强项。
 
+## Current ownership boundary
+
+- `road-S1-1` 的主完成面当前应以 `S4B` 为核心：也就是 from-zero runtime、ops scripts、Terraform skeleton 与 deployable dev/test baseline；
+- `S4A` 在这条子路线里主要提供 hard-gate / post-change verification / operator wording 的方法来源，而不是作为当前主完成面的整棵树全量纳入；
+- `S5A-3B` 继续作为 backup / recovery / sanitise / verify 的最小 recovery sample；
+- `S4C` 与 `S4D` 则应明确算在 `road-S1` 主线里，因为它们承接的是 cloud services / cloud runtime deploy-verify-rollback 的持续演进，而不是政府岗最小闭环的主记账面。
+
 ## Milestone overview (picked from ROADMAP v5)
 
 - **M2. IaC / scripting / automation**（Bash + Terraform + 现有 GitHub workflows）
@@ -48,6 +56,13 @@
 - **M4. Backup / recovery / operational support narrative**（S5A-3B 为核心样本）
 
 Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只要求能讲“基本概念 + 如何往上长”，不要求马上交付完整云侧样本。
+
+**Current evidence base (v1)**
+
+- `S4B`：作为最小闭环的主资产来源，提供 from-zero runtime、ops scripts、Terraform skeleton、deployable dev/test baseline；
+- `S4A`：提供 systems/platform wording、hard-gate、post-change verification 与 fallback 叙事的方法来源；
+- `S5A-3B`：提供 backup / recovery / sanitise / verify 的恢复闭环样本；
+- `S4C/S4D`：保留在 `road-S1` 主线中，作为“如果继续往 cloud/runtime 主心骨延伸，会如何增长”的上层方向，而不是本子路线当前的主完成面。
 
 ## Milestones (M1–M5) and current status
 
@@ -237,3 +252,4 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 ## Recent Changes
 
 - 2026-03-21: 从早期的 `road-001` 重构为 `road-S1-1`，明确其作为 road-S1 子路线的定位，保留原有 M1–M5 结构，并强调这是“政府岗最小闭环”的子集，而不是覆盖 ROADMAP v5 的全部内容。
+- 2026-03-25: 明确当前记账边界：`road-S1-1` 以 `S4B` 为最小闭环主完成面，吸收 `S4A` 的方法论与 `S5A-3B` 的 recovery sample；`S4C/S4D` 继续归入 `road-S1` 主线承接。

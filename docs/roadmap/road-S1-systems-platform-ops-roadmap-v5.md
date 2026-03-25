@@ -12,7 +12,7 @@
   **source**: `legacy/from_structured_docs/from-roadmap/ROADMAP v5.md`
   **child_road_1**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
 **created**: `2026-03-21`
-**updated**: `2026-03-21`
+**updated**: `2026-03-25`
 
 ---
 
@@ -25,6 +25,7 @@
 - `road-S1` 是围绕 wordloom-v3 的长期 systems/platform + SaaS 级产品能力主线。
 - 它不只针对某一个岗位，而是覆盖：systems/platform ops、DevOps、平台工程、云工程、后端偏运行面的多种角色族。
 - 所有 `road-S1-*`（例如 `road-S1-1` 政府岗最小闭环）都被视为从这条总路线中「抽出一段并做适配」。
+- 在当前仓库资产的记账边界上，`road-S1` 应优先承接持续向前演进的 cloud/runtime 主心骨，也就是 `S4C`（cloud services / Terraform / cloud-dev infra）与 `S4D`（cloud runtime deploy / verify / rollback / semi-automated workflow）这两条主线。
 
 **One-sentence goal**
 
@@ -35,6 +36,7 @@
 - **Primary audience**: 你自己（个人职业路线），以及未来需要了解你平台/运维能力的用人方；不限定在政府岗。
 - **Time horizon**: 1–3 年的长期演进，可按 Milestone M* 分阶段前进。
 - **Code base**: 以 `wordloom-v3` 为主，必要时可以扩展到 demo/sample 仓库，但总路线优先利用现有 S* spine 资产。
+- **Current ownership boundary**: `road-S1` 主体记账应优先覆盖 `S4C + S4D` 这类继续向 SaaS-grade / cloud-runtime 主心骨延伸的资产；像 `S4B` 的本地最小闭环与 `S5A-3B` 的 recovery sample，则更适合作为 `road-S1-1` 这类 role-focused 子路线的主完成面。
 
 ## Environment strategy snapshot
 
@@ -51,6 +53,76 @@
 - **M5. Backup / recovery, governance & hybrid/cloud framing + second-layer capabilities（K8s / multi-cloud 等）**
 
 > 说明：这里的 M1–M5 同时充当「轴线」和「里程碑」：可以横向当作主题，也可以纵向当作阶段。子路线（S1-1 等）通常会从这里挑出 2–3 个 Milestone，做更细的 P0–P3 设计。
+
+## Future capabilities & trigger conditions
+
+> 说明：这一节与 M1-M5 平级，不表示“现在立刻都要做”；它的作用是说明哪些能力属于未来可能自然出现的扩展面，以及什么条件下才值得把它们拉进当前路线。默认策略仍是 `local-first, cloud-selective`，先把本地可重复、可验证、可审计的 operator path 跑稳，再把高价值样本放到云上。
+
+### F1: Productionization automation（避免手工点操作的能力）
+
+- **它是什么**：把 build、artifact tagging、deploy、post-change verify、rollback、evidence capture 从“人工 SSH + 手动命令”收口为脚本、CI/CD 或 GitOps 路径。
+- **为什么会自然出现**：当同一条 deploy/verify/rollback 路径重复执行，且手工步骤已经开始成为时间成本、误操作风险和审计缺口时。
+- **当前是否已触发**：`已触发`。`S4D` 已证明最小 cloud runtime operator path 可跑通，但也暴露出手工 SSH、镜像操作、verify rerun、结果抄录的效率问题。
+- **下一步自然深化**：
+  - 把当前 `S4D` 的 deploy / verify / rollback helper 继续收敛成单入口；
+  - 为每次运行固定记录 `headSha`、image tag、env target、verify result、rollback result；
+  - 后续优先补 CI/CD 或受控 operator workflow，而不是继续依赖纯手工 Ubuntu 操作。
+
+### F2: Cloud service primitives（RDS / object storage / network boundary / IAM / TLS / LB）
+
+- **它们是什么**：
+  - `RDS`：托管数据库，减少自建数据库运维；
+  - `object storage`：对象存储，如 S3/MinIO，用于备份、静态文件、归档；
+  - `network ACL / security group`：网络访问边界控制；
+  - `IAM`：身份与权限控制，定义谁能访问什么资源；
+  - `TLS certificate`：HTTPS/加密通信所需证书；
+  - `load balancer`：把流量分发到一个或多个后端实例，并承担健康检查、TLS 终止等职责。
+- **为什么会自然出现**：当系统不再只是本地单机实验，而需要共享环境、真实网络边界、托管依赖、权限分层或更接近生产的访问路径时。
+- **当前是否已触发**：`部分触发`。`S4C` / `S4D` 已真实触碰到 RDS、主机网络连通、安全组/IP allowlist；对象存储在 `S5A-3B` 已出现；IAM / TLS / LB 目前还未成为当前主线的阻塞条件。
+- **学习策略**：先围绕当前已触发对象补最小闭环认知，再扩展到更完整的云治理模型，而不是一次性补全整套云平台。
+
+### F3: Security / governance / failure taxonomy expansion
+
+- **它是什么**：把“系统怎么坏、谁能做什么、失败后怎么判定和追溯”收敛成低基数 taxonomy、policy、audit、hard gate 与 operator evidence discipline。
+- **为什么会自然出现**：当系统开始涉及多租户边界、权限差异、审计要求、真实发布/恢复路径时，failure taxonomy 就不再只是测试技巧，而会变成 verify gate、rollback trigger 和 forensics 的基础。
+- **当前是否已触发**：`已触发`。`S5A` / `S5B` 已经把 AuthContext、tenant boundary、policy、audit、hard gate 做成稳定骨架；`S4D` 则把 deploy/verify/rollback failure surface 暴露到真实运行面。
+- **当前关系判断**：你之前做的多租户、安全与审计工作，和现在问的 production verify / rollback / traceability 是直接相连的；两边的共同语言就是 contract、reason taxonomy、evidence 和 operator workflow。
+
+### F4: Kubernetes / cluster orchestration
+
+- **它是什么**：用于在多台机器上调度、更新、扩缩容和自愈大量容器化服务的控制平面。
+- **什么时候才触发**：
+  - 不再是单机或少量容器；
+  - 需要多实例高可用；
+  - 需要滚动发布、自愈、服务发现、统一调度；
+  - `docker compose + 单机脚本` 已经明显吃力。
+- **当前是否已触发**：`未触发`。wordloom-v3 当前更自然的重点仍是单机/小规模 runtime、IaC、verify/rollback、governance 与 evidence discipline。
+- **当前策略**：Kubernetes 属于 M5 之后或 M5 内的 second-layer capability，不应早于 deploy/verify/rollback automation、failure taxonomy、cloud access boundary 基线。
+
+### F5: Kafka / event streaming / asynchronous platform
+
+- **它是什么**：面向高吞吐、异步解耦、重试、顺序、多个消费者协同的消息/事件流平台能力。
+- **什么时候才触发**：
+  - 系统有明显异步链路；
+  - 单纯 DB/outbox/队列已经成为吞吐或解耦瓶颈；
+  - 需要多个消费者独立订阅同类事件；
+  - 需要处理重放、顺序、积压和消费组运维。
+- **当前是否已触发**：`未触发`。现阶段更优先的是把现有 worker / outbox / evidence / hard-gate 思路继续打稳，而不是提前把 Kafka 作为主线能力。
+
+### F6: Environment choice policy（local-first vs cloud-selective）
+
+- **默认策略**：
+  - 本地优先承担开发、破坏性 drill、快速故障注入与大部分验证；
+  - 云上只承接本地无法真实模拟的高价值样本，如托管 RDS、网络边界、真实主机 deploy、共享环境、受控权限模型。
+- **何时继续本地优先**：
+  - 需要快速迭代脚本和 verify gate；
+  - 需要低成本做 FAIL -> PASS drills；
+  - 问题主要还在应用/runtime contract，而不是云边界。
+- **何时提升云上优先级**：
+  - 需要共享环境；
+  - 需要验证真实网络/IAM/TLS/LB 行为；
+  - 需要验证受控 deploy/rollback/operator workflow；
+  - 需要更强审计和权限分层。
 
 ## Milestones (M1–M5)
 
@@ -101,6 +173,7 @@
 
 - 对 wordloom-v3 当前最合适的解释是：本地保留 dev/test 双库，云上先只做 `cloud-dev`；
 - 这样既能展示真实云基础能力，也不会把 test 数据、破坏性 drills 和临时样本提前绑到长期保留的云资源上。
+- 在主线归属上，这一部分的真实样本与后续扩展应继续记在 `S4C`，因为它承接的是 cloud services / Terraform / cloud-dev infra 的长期能力，而不是政府岗最小闭环本身。
 
 ### M4: Runtime packaging, deploy / verify / rollback & observability basics
 
@@ -119,6 +192,7 @@
 **Next spine note**
 
 - `M4` 的下一步主承接物是 `S4D`：把 `S4B` 的本地 packaging 基线与 `S4C` 的 cloud infra 连成一条 cloud/staging runtime 的 deploy -> verify -> rollback operator path。
+- 因此在 roadmap 记账边界上，`S4D` 应算作 `road-S1` 主心骨的一部分，而不是 `road-S1-1` 的完成面；`road-S1-1` 可以引用它来说明“将来怎么往上长”，但不应把 `S4D` 的 cloud-runtime 主线吞回最小闭环子路线。
 
 ### M5: Backup / recovery, governance & hybrid/cloud + second-layer capabilities
 
@@ -137,4 +211,10 @@
 ## 与子路线的关系
 
 - `road-S1-1-gov-role-minimal-ops-loop`：主要选取 M1–M5 中「对政府岗最直接命中」的一圈，做成 4–8 周的最小闭环。
+- 当前更准确的边界是：`road-S1` 主体继续承接 `S4C + S4D` 这类 cloud/runtime 主线，而 `road-S1-1` 主要承接 `S4B` 的最小 runtime / scripting / Terraform baseline，并吸收 `S4A` 的方法论语言与 `S5A-3B` 的 backup/recovery 样本。
 - 未来可以新增：`road-S1-2`（例如偏云工程 / 多云）、`road-S1-3`（偏平台工程 / IDP）等，均从本文件的 M1–M5 中选子集并加细节。
+
+## Recent Changes
+
+- 2026-03-25: 新增 “Future capabilities & trigger conditions” 条目，明确 productionization automation、云服务基础、failure taxonomy、安全治理、Kubernetes、Kafka 与 local-first/cloud-selective 的触发条件，避免把未触发能力过早塞进当前主线。
+- 2026-03-25: 明确 roadmap 记账边界：`road-S1` 主体优先承接 `S4C + S4D` 的 cloud/runtime 主线，而 `road-S1-1` 承接政府岗最小闭环中的 `S4B + S5A-3B` 与 `S4A` 方法论引用。
