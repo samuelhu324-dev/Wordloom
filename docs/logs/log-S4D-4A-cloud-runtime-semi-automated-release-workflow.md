@@ -235,9 +235,31 @@
 - result:
   - `FAIL -> diagnose WSL-to-VM SSH path before rerun`
 
+### P2-C1-S3 (First authenticated local-triggered FAIL sample reached runtime dependency layer | 2026-03-25)
+
+- headSha: `b088e4c5`
+- artifacts:
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T092531Z/summary.json`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T092531Z/preflight.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T092531Z/deploy.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T092531Z/verify.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T092531Z/rollback.log`
+- expected:
+  - 在补齐非交互 SSH 认证后，从 Windows PowerShell 本地工作机触发 Ubuntu VM 远端 preflight / deploy / verify / optional rollback，并尽量把失败面推进到真实运行时层。
+- observed:
+  - 本轮 `preflightResult=PASS`、`deployResult=PASS`，说明本地 PowerShell -> Ubuntu VM 的 SSH 路径与非交互认证已经闭环；
+  - `verifyResult=FAIL`、`rollbackResult=FAIL`，且 `verify.log` / `rollback.log` 均显示容器在 migration 阶段因 `psycopg.OperationalError` 退出，错误为 `connection to server at "13.211.43.32", port 5432 failed: server closed the connection unexpectedly`；
+  - 这说明当前 workflow 已经能把失败面推进到真实运行时依赖层，剩余阻塞不再是 operator workflow，而是 Ubuntu VM 到 cloud-dev RDS 的数据库连通性/可用性问题；
+  - 与 `S4D-3A` 期间曾出现过的 RDS 连通波动一致，本轮失败样本也证明 rollback 在依赖层失败时不会制造假 PASS，而会如实收口为 FAIL。
+- failure_class:
+  - `dependency_connectivity`
+- result:
+  - `FAIL -> validate VM-to-RDS 5432 connectivity and rerun`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-25: 创建 `S4D-4A`，把 `S4D` 的下一步工作重点明确收敛到“半自动 release workflow + failure taxonomy + evidence capture”，而不是继续停留在人工 SSH 操作层。
 - 2026-03-25: 已新增 `scripts/ops/cloud_release_workflow.sh`，把远端 preflight / deploy / verify / optional rollback 收口为单入口 workflow，并固定输出 evidence bundle 与 failure class 摘要。
 - 2026-03-25: 第一次本地触发 workflow 样本暴露出结果记账 bug：`ssh` 失败时 `run_remote_step()` 仍返回成功，导致 `summary.json` 错写 PASS；当前已转入修复并准备重跑。
 - 2026-03-25: 修复 workflow result accounting 后，第一轮真实本地触发样本已如实记录为 `FAIL (ssh_connectivity)`；当前下一步不再是修脚本，而是诊断 WSL 工作机到 Ubuntu VM 的 SSH 路径。
+- 2026-03-25: 在补齐 PowerShell 非交互 SSH 认证后，第一轮 authenticated local-triggered 样本已把失败面推进到 `dependency_connectivity`：当前阻塞位于 Ubuntu VM 到 RDS `5432` 的真实数据库连通层。
