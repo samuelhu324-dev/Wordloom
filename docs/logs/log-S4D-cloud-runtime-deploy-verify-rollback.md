@@ -5,7 +5,7 @@
 **id**: `S4D`
 **kind**: `log`
 **title**: `cloud runtime deploy / verify / rollback (staging-like target, release operations, post-change verification) v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, Deploy, Rollback, ReleaseOperations, Verification, epic/s4, epic/s4d`
 **links**: ``
@@ -20,8 +20,9 @@
   **reference_log_4**: `docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
   **phase_log_1**: `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
   **phase_log_2**: `docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md`
+  **phase_log_3**: `docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
 **created**: `2026-03-23`
-**updated**: `2026-03-24`
+**updated**: `2026-03-25`
 
 ---
 
@@ -88,14 +89,14 @@
 - `S4D-2A`（Phase 2）：Post-change verification & operational checks（health, logs, smoke, release checklist）
   - 详见：`docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md`
 - `S4D-3A`（Phase 3）：Release drill evidence（repeatable deploy/rollback drills with artifacts）
-  - 详见：`<future>`
+  - 详见：`docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：contract/indexing（定义 `S4D` 主轴、边界与 phase 拆分）
 - [x] `P1`：Phase 1 seed（cloud runtime release path phase log scaffolded）
 - [x] `P2`：最小 deploy target、env contract 与 target-host verify gate 固定
-- [ ] `P3`：首轮 deploy / verify / rollback drill 入账
+- [x] `P3`：首轮 deploy / verify / rollback drill 入账
 
 ## Current Status（进展摘要）
 
@@ -105,7 +106,11 @@
 - `S4D-1A` 已补上 target-host verify gate（`scripts/ops/cloud_release_verify.sh`）与 target-host deploy command path（`scripts/ops/cloud_release_run_container.sh`），因此 release-path contract 已具备进入真实样本的条件；
 - 2026-03-24 起，真实 Ubuntu VM 上的 deploy -> verify 样本、operator checks、failure evidence 与由 drill 暴露出的脚本修复，统一转入 `S4D-2A` 记账；
 - `S4D-2A` 已拿到第一轮真实 Ubuntu VM verify PASS：`container_running OK`、`migration_ok OK`、`health_ok OK (200)`、`read_smoke_ok OK (200 list payload)`、`env_guard_ok OK`；
-- 当前下一步已不再是 verify 修复，而是进入首个 rollback 样本与 rollback evidence 收口。
+- `S4D-3A` 已进入脚本与文档准备阶段：当前已开始为 known-good image/tag rollback 样本补齐 existing-image deploy path 与 rollback helper；
+- 2026-03-25 已完成第一份 known-good image tag 留存，并跑了第一轮 rollback drill 尝试；
+- 在补齐 verify readiness wait、恢复 VM 到 RDS `5432` 连通后，第一轮真实 rollback sample 已通过：candidate verify PASS，rollback verify PASS，`CLOUD_RELEASE_ROLLBACK_RESULT=PASS`；
+- `S4D` 的最小目标已经完成：真实 Ubuntu VM 上的 deploy -> verify -> rollback operator path 已具备可追溯 evidence，因此本顶层 spine 现可标记为 `stable`；
+- 更强的 failure-oriented rollback drills 不是当前 v1 stable 的前置条件；如果后续要系统化推进“坏 candidate / 明确 trigger / 更细 recovery evidence”，应新增 `S4D-4A`，而不是继续扩大 `S4D-3A` 的定义。
 
 ## Notes（落地原则）
 
@@ -145,3 +150,7 @@
 - 2026-03-24：新增 `S4D-2A`，把真实 Ubuntu VM post-change verification / operational checks 与对应提交命名从顶层 `S4D` 前缀收敛到 phase 前缀 `S4D-2A`。
 - 2026-03-24：重新核对历史命名后，已把原先误挂在顶层 `S4D` 前缀下的 P1/P2 phase-specific 提交分别改写到 `S4D-1A` 与 `S4D-2A`。
 - 2026-03-24：第一轮真实 Ubuntu VM verify 已通过，`S4D-2A` 的工作重点已从 verify 修复切换到 rollback 样本。
+- 2026-03-24：新增 `S4D-3A`，并为 image-level rollback 样本准备 `--skip-build` 路径与 `cloud_release_rollback.sh` helper。
+- 2026-03-25：第一轮 rollback drill 已证明 known-good tag 和 rollback helper 路径可执行，但也暴露 verify readiness wait 缺口，当前已转入修复该 gate 并重跑 rollback 样本。
+- 2026-03-25：在 verify wait 修复和 RDS 连通恢复后，第一轮真实 rollback sample 已 PASS 收口，`S4D` 已具备 deploy -> verify -> rollback 的最小 operator path 样本。
+- 2026-03-25：完成稳定性评估后，`S4D` 已按 v1 口径标记为 `stable`；更强失败样本被明确归为潜在后续 phase `S4D-4A`，不再作为当前收口前置条件。
