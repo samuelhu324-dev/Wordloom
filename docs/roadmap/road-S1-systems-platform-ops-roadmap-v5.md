@@ -181,6 +181,7 @@
 
 - 让 wordloom-v3 的运行面不仅能在 dev/test 本机跑起来，还能用 Docker/compose/env/health 标准化打包，并且有 deploy → verify → rollback + 基本监控/日志的意识。
 - 这条主线在后续由 `S4D` 承接到 cloud/staging deployable runtime，避免 `M4` 长期停留在本地运行基线。
+- 当前 `M4` 的实际收口重点，已经不只是“能部署”，而是把 release workflow 中反复出现的 operator 失败面固定为 machine-verifiable gates、low-cardinality failure taxonomy 与结构化 evidence contract；像 `ssh user/key mismatch`、target reachability、dependency connectivity、release input contract、post-change verify、rollback readiness 这类问题，应优先在 `M4/S4D` 内被工程化消化，而不是继续停留在人肉 SSH 排障层面。
 
 **Plan (P0–P3)**
 
@@ -189,16 +190,30 @@
 - `P2` Drill: 至少完成一套「build → deploy to dev/test → smoke verify」的完整 drill，记录 artifacts 和问题复盘。
 - `P3` Drill: 写出 rollback/fallback 的套路与示例，并在 S3A/S6A 等 log 中链接。
 
+**Current completion focus**
+
+- 对当前主线而言，`M4` 应直接把以下 release gates 视为完成面的一部分，而不是未来扩展项：
+  - `operator identity / auth gate`：用户名、私钥、非交互 SSH 身份与 host trust 是否满足合同；
+  - `target reachability gate`：target host、SSH 端口、远端 shell/docker/runtime prerequisites 是否可达；
+  - `dependency connectivity gate`：Ubuntu VM 到 RDS / registry / object storage 等依赖面是否连通；
+  - `release contract gate`：image tag、env file、required variables、known-good rollback inputs 是否齐全；
+  - `post-change verify gate`：container running、migration、health、read smoke（必要时 write smoke）是否 PASS；
+  - `rollback readiness gate`：known-good image/tag、rollback helper 与 rollback verify 入口是否存在。
+- 上述 gates 的失败，不应只记为自由文本；它们应被压缩为低基数 failure classes，例如：`identity_auth_failure`、`target_reachability_failure`、`dependency_connectivity_failure`、`contract_validation_failure`、`deploy_execution_failure`、`verify_failure`、`rollback_failure`、`evidence_capture_failure`。
+- `M4` 的 evidence 也应从“看日志/看截图”升级为结构化结果：至少固定 `headSha`、target、image tag、gate results、failure class、deploy/verify/rollback result 与 operator guidance。
+
 **Next spine note**
 
 - `M4` 的下一步主承接物是 `S4D`：把 `S4B` 的本地 packaging 基线与 `S4C` 的 cloud infra 连成一条 cloud/staging runtime 的 deploy -> verify -> rollback operator path。
 - 因此在 roadmap 记账边界上，`S4D` 应算作 `road-S1` 主心骨的一部分，而不是 `road-S1-1` 的完成面；`road-S1-1` 可以引用它来说明“将来怎么往上长”，但不应把 `S4D` 的 cloud-runtime 主线吞回最小闭环子路线。
+- `F1` 中提到的 productionization automation 与 `F3` 中提到的 failure taxonomy / evidence discipline，在当前阶段不应只作为“触发条件说明”存在；只要它们直接服务于 `S4D` 的 deploy / verify / rollback operator path，就应优先记在 `M4` 当前完成面之内。
 
 ### M5: Backup / recovery, governance & hybrid/cloud + second-layer capabilities
 
 **Goal**
 
 - 以 S5A-3B backup/restore/sanitize/verify 为核心，向外扩成一条「可治理、可恢复、具备 cloud/hybrid 认知」的长期线，包含但不急于完成 Kubernetes、多云等第二层能力。
+- `M5` 的重点是把 release/runtime 基线继续外扩到更完整的 access boundary、governance、auditability、hybrid/cloud framing 与 second-layer platform capabilities；它不是当前 release workflow failure taxonomy 的第一归属地。
 
 **Plan (P0–P3)**
 
@@ -216,5 +231,6 @@
 
 ## Recent Changes
 
+- 2026-03-25: 把当前 `S4D` 暴露出的 release gates / failure taxonomy / evidence discipline 明确下沉到 `M4` 完成面；`F1` 与 `F3` 继续保留为触发条件说明，但不再把这些内容误判为主要属于未来 `M5` 的话题。
 - 2026-03-25: 新增 “Future capabilities & trigger conditions” 条目，明确 productionization automation、云服务基础、failure taxonomy、安全治理、Kubernetes、Kafka 与 local-first/cloud-selective 的触发条件，避免把未触发能力过早塞进当前主线。
 - 2026-03-25: 明确 roadmap 记账边界：`road-S1` 主体优先承接 `S4C + S4D` 的 cloud/runtime 主线，而 `road-S1-1` 承接政府岗最小闭环中的 `S4B + S5A-3B` 与 `S4A` 方法论引用。
