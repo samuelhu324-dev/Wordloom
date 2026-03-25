@@ -22,6 +22,7 @@
   **phase_log_2**: `docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md`
   **phase_log_3**: `docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
   **phase_log_4**: `docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
+  **phase_log_5**: `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
 **created**: `2026-03-23`
 **updated**: `2026-03-25`
 
@@ -115,6 +116,7 @@
 - `S4D` 的最小目标已经完成：真实 Ubuntu VM 上的 deploy -> verify -> rollback operator path 已具备可追溯 evidence，因此本顶层 spine 现可标记为 `stable`；
 - 更强的 failure-oriented rollback drills 不是当前 v1 stable 的前置条件；如果后续要系统化推进“坏 candidate / 明确 trigger / 更细 recovery evidence”，应新增 `S4D-4A`，而不是继续扩大 `S4D-3A` 的定义。
 - `S4D-4A` 现已创建，下一步工作重心切换为“减少手工 SSH 操作、收口 single-entry workflow、固定 failure taxonomy 与 evidence capture”，以把当前 operator path 推进到半自动阶段。
+- `S4D-4B` 现已创建并完成第一版 P0/P1：当前仓库已具备 GitHub Actions `workflow_dispatch` 入口、artifact upload / run summary contract，并进一步收紧到 self-hosted runner v1；下一步不再是补本地 operator path，而是执行第一轮真实 self-hosted dispatch evidence。
 - `S4D-4A/P1` 已完成第一步：单入口 `cloud_release_workflow.sh` 已落地，本地工作机现在可以直接触发远端 preflight / deploy / verify，并在本地留下 evidence bundle 与 failure class 摘要。
 - `S4D-4A/P2` 已开始第一轮本地触发样本，但当前先暴露出 workflow 自身的结果记账 bug：`ssh` 失败会被误写成 PASS；下一步应先修正 workflow result accounting，再重跑真实样本。
 - `S4D-4A/P2` 现已拿到第一轮真实本地触发 FAIL 样本：workflow 在 preflight 阶段如实停在 `ssh_connectivity`，说明当前剩余问题已收敛为“WSL/operator host 到 Ubuntu VM 的 SSH 路径”而不是 workflow 结果判定。
@@ -177,3 +179,4 @@
 - 2026-03-25：已把下一步收口到 `S4D-4A/P3-C2`：先执行一轮以错误 verify probe port 触发的定向 rollback drill，优先验证 `PASS_AFTER_ROLLBACK` 分支与 `operator_guidance.txt` 输出，再决定是否继续补更强的 `manual_recovery_required` 样本。
 - 2026-03-25：`S4D-4A/P3-C2` 已完成第一轮真实 `PASS_AFTER_ROLLBACK` drill：本地 workflow 成功把定向 verify FAIL 的 candidate 自动回退到 known-good，并以 rollback verify PASS + operator guidance 收口。
 - 2026-03-25：稳定性评估完成；`S4D-4A` 已具备 real local-triggered PASS 与 real `PASS_AFTER_ROLLBACK` evidence，因此当前 phase 已按 v1 口径标记为 `stable`。
+- 2026-03-26：新增 `S4D-4B` 作为 `S4D-4A` 之后的下一 phase，并完成第一版 GitHub Actions dispatch workflow 落地；当前已补齐 workflow_dispatch、artifact upload 和 run summary contract，并进一步把 runner 边界收紧为 self-hosted runner v1。
