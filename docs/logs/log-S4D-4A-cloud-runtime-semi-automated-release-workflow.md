@@ -198,7 +198,28 @@
   - workflow 会在 `artifacts/_tmp_s4d4a_cloud_release_workflow/<timestamp>/` 下输出 `preflight.log`、`deploy.log`、`verify.log`、`rollback.log`、`summary.json`，固定记录 `headSha`、target host、image tag、阶段结果与 `failureClass`；
   - 当前 operator 已不再需要手动 SSH 后逐条执行散落命令，`S4D-4A/P1-C1-S1S2` 已具备进入真实半自动 drill 的条件。
 
+### P2-C1-S1 (First local-triggered workflow attempt exposed result-accounting bug | 2026-03-25)
+
+- headSha: `b3002d07`
+- artifacts:
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T085728Z/summary.json`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T085728Z/preflight.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T085728Z/deploy.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T085728Z/verify.log`
+- expected:
+  - 从 Windows/WSL 本地工作机通过 `cloud_release_workflow.sh` 远程触发 Ubuntu VM 上的 preflight / deploy / verify，并以 PASS/FAIL 与 `failureClass` 如实收口。
+- observed:
+  - 本轮样本的 artifact 真实落在本地仓库，说明“本地工作机触发 workflow 并生成 evidence bundle”这一层是成立的；
+  - 但同一轮 artifact 出现了自相矛盾：`summary.json` 记录 `result=PASS`、`preflightResult=PASS`、`deployResult=PASS`、`verifyResult=PASS`，而对应 `preflight.log` / `deploy.log` / `verify.log` 均为 `ssh: connect to host 127.0.0.1 port 22022: Connection refused`；
+  - 根因不是 operator 操作顺序，而是 `cloud_release_workflow.sh` 的 `run_remote_step()` 使用了没有 `else` 的 `if ssh ...; then ... fi; return $?`，导致 `ssh` 失败时函数仍返回成功，错误地把 FAIL 样本写成 PASS。
+- failure_class:
+  - `ssh_connectivity`（artifact surface）
+  - `workflow_result_accounting_bug`（actual root cause）
+- result:
+  - `FAIL -> fix workflow result accounting before rerun`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-25: 创建 `S4D-4A`，把 `S4D` 的下一步工作重点明确收敛到“半自动 release workflow + failure taxonomy + evidence capture”，而不是继续停留在人工 SSH 操作层。
 - 2026-03-25: 已新增 `scripts/ops/cloud_release_workflow.sh`，把远端 preflight / deploy / verify / optional rollback 收口为单入口 workflow，并固定输出 evidence bundle 与 failure class 摘要。
+- 2026-03-25: 第一次本地触发 workflow 样本暴露出结果记账 bug：`ssh` 失败时 `run_remote_step()` 仍返回成功，导致 `summary.json` 错写 PASS；当前已转入修复并准备重跑。

@@ -211,9 +211,10 @@ run_remote_step() {
   printf -v remote_command 'cd %q && %s' "$REMOTE_REPO_DIR" "$remote_script"
   if ssh "${ssh_args[@]}" "$ssh_target" "bash -lc $(printf '%q' "$remote_command")" >"$log_file" 2>&1; then
     return 0
+  else
+    local ssh_status=$?
+    return "$ssh_status"
   fi
-
-  return $?
 }
 
 classify_failure() {
