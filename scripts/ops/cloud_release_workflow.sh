@@ -22,6 +22,7 @@ VERIFY_MAX_WAIT_SECONDS="45"
 VERIFY_POLL_INTERVAL_SECONDS="3"
 ROLLBACK_ON_VERIFY_FAIL="0"
 ARTIFACT_DIR=""
+ROLLBACK_TRIGGER="manual_only"
 
 usage() {
   cat <<'EOF'
@@ -148,6 +149,16 @@ if [[ -z "$SSH_HOST" || -z "$SSH_USER" || -z "$REMOTE_REPO_DIR" || -z "$ENV_FILE
   exit 2
 fi
 
+if [[ "$ROLLBACK_ON_VERIFY_FAIL" == "1" && -z "$KNOWN_GOOD_IMAGE_TAG" ]]; then
+  echo "[cloud_release_workflow] --known-good-image-tag is required when --rollback-on-verify-fail is set" >&2
+  usage >&2
+  exit 2
+fi
+
+if [[ "$ROLLBACK_ON_VERIFY_FAIL" == "1" ]]; then
+  ROLLBACK_TRIGGER="verify_fail_auto"
+fi
+
 require_cmd ssh
 require_cmd git
 
@@ -165,16 +176,21 @@ DEPLOY_LOG="$ARTIFACT_DIR/deploy.log"
 VERIFY_LOG="$ARTIFACT_DIR/verify.log"
 ROLLBACK_LOG="$ARTIFACT_DIR/rollback.log"
 SUMMARY_JSON="$ARTIFACT_DIR/summary.json"
+OPERATOR_GUIDANCE_TXT="$ARTIFACT_DIR/operator_guidance.txt"
 
 TARGET_HOST_KIND="Ubuntu Server VM via SSH (${SSH_USER}@${SSH_HOST}:${SSH_PORT})"
-WORKFLOW_COMMAND_SUMMARY="bash scripts/ops/cloud_release_workflow.sh --ssh-host ${SSH_HOST} --ssh-port ${SSH_PORT} --ssh-user ${SSH_USER} --remote-repo-dir ${REMOTE_REPO_DIR} --env-file ${ENV_FILE} --image-tag ${IMAGE_TAG} --container-name ${CONTAINER_NAME} --host-port ${HOST_PORT}"
+WORKFLOW_COMMAND_BASE="bash scripts/ops/cloud_release_workflow.sh --ssh-host ${SSH_HOST} --ssh-port ${SSH_PORT} --ssh-user ${SSH_USER} --remote-repo-dir ${REMOTE_REPO_DIR} --env-file ${ENV_FILE} --image-tag ${IMAGE_TAG} --container-name ${CONTAINER_NAME} --host-port ${HOST_PORT}"
+WORKFLOW_COMMAND_SUMMARY="$WORKFLOW_COMMAND_BASE"
+ROLLBACK_WORKFLOW_COMMAND="$WORKFLOW_COMMAND_BASE"
 
 if [[ -n "$KNOWN_GOOD_IMAGE_TAG" ]]; then
   WORKFLOW_COMMAND_SUMMARY+=" --known-good-image-tag ${KNOWN_GOOD_IMAGE_TAG}"
+  ROLLBACK_WORKFLOW_COMMAND+=" --known-good-image-tag ${KNOWN_GOOD_IMAGE_TAG}"
 fi
 if [[ "$ROLLBACK_ON_VERIFY_FAIL" == "1" ]]; then
   WORKFLOW_COMMAND_SUMMARY+=" --rollback-on-verify-fail"
 fi
+ROLLBACK_WORKFLOW_COMMAND+=" --rollback-on-verify-fail"
 
 json_escape() {
   local raw="${1-}"
@@ -266,6 +282,8 @@ write_summary_json() {
   local rollback_result="$5"
   local failure_class="$6"
   local result="$7"
+  local operator_action="$8"
+  local terminal_stage="$9"
 
   cat >"$SUMMARY_JSON" <<EOF
 {
@@ -280,17 +298,97 @@ write_summary_json() {
   "verifyResult": "$(json_escape "$verify_result")",
   "rollbackResult": "$(json_escape "$rollback_result")",
   "preflightResult": "$(json_escape "$preflight_result")",
+  "rollbackTrigger": "$(json_escape "$ROLLBACK_TRIGGER")",
+  "operatorAction": "$(json_escape "$operator_action")",
+  "terminalStage": "$(json_escape "$terminal_stage")",
   "failureClass": "$(json_escape "$failure_class")",
   "artifacts": {
     "preflightLog": "$(json_escape "$(artifact_relpath "$PREFLIGHT_LOG")")",
     "deployLog": "$(json_escape "$(artifact_relpath "$DEPLOY_LOG")")",
     "verifyLog": "$(json_escape "$(artifact_relpath "$VERIFY_LOG")")",
     "rollbackLog": "$(json_escape "$(artifact_relpath "$ROLLBACK_LOG")")",
+    "operatorGuidance": "$(json_escape "$(artifact_relpath "$OPERATOR_GUIDANCE_TXT")")",
     "summaryJson": "$(json_escape "$(artifact_relpath "$SUMMARY_JSON")")"
   },
   "result": "$(json_escape "$result")"
 }
 EOF
+}
+
+write_operator_guidance() {
+  local operator_action="$1"
+  local terminal_stage="$2"
+  local failure_class="$3"
+  local result="$4"
+
+  cat >"$OPERATOR_GUIDANCE_TXT" <<EOF
+[cloud_release_workflow] result=$result terminal_stage=$terminal_stage failure_class=$failure_class rollback_trigger=$ROLLBACK_TRIGGER operator_action=$operator_action
+
+summary_json=$(artifact_relpath "$SUMMARY_JSON")
+preflight_log=$(artifact_relpath "$PREFLIGHT_LOG")
+deploy_log=$(artifact_relpath "$DEPLOY_LOG")
+verify_log=$(artifact_relpath "$VERIFY_LOG")
+rollback_log=$(artifact_relpath "$ROLLBACK_LOG")
+
+rerun_workflow_command=$WORKFLOW_COMMAND_SUMMARY
+rollback_workflow_command=$ROLLBACK_WORKFLOW_COMMAND
+EOF
+
+  case "$operator_action" in
+    release_complete)
+      cat >>"$OPERATOR_GUIDANCE_TXT" <<EOF
+
+next_action=Release verified. Keep the candidate running and retain this artifact bundle as evidence.
+EOF
+      ;;
+    stop_and_fix_preflight)
+      cat >>"$OPERATOR_GUIDANCE_TXT" <<EOF
+
+next_action=Stop here. Fix SSH or remote contract issues first, then rerun the same workflow command.
+EOF
+      ;;
+    stop_and_fix_deploy)
+      cat >>"$OPERATOR_GUIDANCE_TXT" <<EOF
+
+next_action=Stop here. Inspect deploy.log for image/build/container startup issues, fix them, then rerun the same workflow command.
+EOF
+      ;;
+    decide_manual_rollback_or_fix_forward)
+      if [[ -n "$KNOWN_GOOD_IMAGE_TAG" ]]; then
+        cat >>"$OPERATOR_GUIDANCE_TXT" <<EOF
+
+next_action=Candidate failed verify and automatic rollback was not armed. Do not retry blindly.
+guidance_1=Inspect verify.log and determine whether the candidate is safe to keep for debugging.
+guidance_2=If the candidate should be removed, rerun with rollback armed using: $ROLLBACK_WORKFLOW_COMMAND
+EOF
+      else
+        cat >>"$OPERATOR_GUIDANCE_TXT" <<EOF
+
+next_action=Candidate failed verify and automatic rollback was not armed. Do not retry blindly.
+guidance_1=Inspect verify.log and determine whether the candidate is safe to keep for debugging.
+guidance_2=Before using workflow-driven rollback, provide a known-good image tag and rerun with --known-good-image-tag <tag> --rollback-on-verify-fail.
+EOF
+      fi
+      ;;
+    candidate_reverted_to_known_good)
+      cat >>"$OPERATOR_GUIDANCE_TXT" <<EOF
+
+next_action=Verify failed for the candidate, but rollback recovered the known-good image. Keep service on known-good and investigate candidate logs before the next deploy.
+EOF
+      ;;
+    manual_recovery_required)
+      cat >>"$OPERATOR_GUIDANCE_TXT" <<EOF
+
+next_action=Verify failed and rollback did not recover service. Stop rollout and use rollback.log to restore a known-good image before any further deploy attempt.
+EOF
+      ;;
+    *)
+      cat >>"$OPERATOR_GUIDANCE_TXT" <<EOF
+
+next_action=Inspect the artifact bundle and proceed with manual investigation.
+EOF
+      ;;
+  esac
 }
 
 REMOTE_HEAD_SHA="unknown"
@@ -300,6 +398,8 @@ VERIFY_RESULT="NOT_RUN"
 ROLLBACK_RESULT="SKIPPED"
 FAILURE_CLASS="none"
 FINAL_RESULT="FAIL"
+TERMINAL_STAGE="init"
+OPERATOR_ACTION="inspect_artifacts"
 
 echo "[cloud_release_workflow] phase=S4D-4A target_head_sha=$LOCAL_HEAD_SHA ssh_target=${SSH_USER}@${SSH_HOST}:${SSH_PORT} artifact_dir=$(artifact_relpath "$ARTIFACT_DIR")"
 
@@ -308,8 +408,11 @@ if run_remote_step "$PREFLIGHT_LOG" "printf '[preflight] remote_repo_dir=%s\\n' 
   REMOTE_HEAD_SHA="$(sed -n 's/^\[preflight\] remote_head_sha=//p' "$PREFLIGHT_LOG" | tail -n 1)"
 else
   PREFLIGHT_RESULT="FAIL"
+  TERMINAL_STAGE="preflight"
+  OPERATOR_ACTION="stop_and_fix_preflight"
   FAILURE_CLASS="$(classify_failure preflight "$PREFLIGHT_LOG")"
-  write_summary_json "$REMOTE_HEAD_SHA" "$PREFLIGHT_RESULT" "$DEPLOY_RESULT" "$VERIFY_RESULT" "$ROLLBACK_RESULT" "$FAILURE_CLASS" "$FINAL_RESULT"
+  write_summary_json "$REMOTE_HEAD_SHA" "$PREFLIGHT_RESULT" "$DEPLOY_RESULT" "$VERIFY_RESULT" "$ROLLBACK_RESULT" "$FAILURE_CLASS" "$FINAL_RESULT" "$OPERATOR_ACTION" "$TERMINAL_STAGE"
+  write_operator_guidance "$OPERATOR_ACTION" "$TERMINAL_STAGE" "$FAILURE_CLASS" "$FINAL_RESULT"
   echo "[cloud_release_workflow] preflight_result=FAIL failure_class=$FAILURE_CLASS summary=$(artifact_relpath "$SUMMARY_JSON")" >&2
   exit 1
 fi
@@ -318,8 +421,11 @@ if run_remote_step "$DEPLOY_LOG" "bash scripts/ops/cloud_release_run_container.s
   DEPLOY_RESULT="PASS"
 else
   DEPLOY_RESULT="FAIL"
+  TERMINAL_STAGE="deploy"
+  OPERATOR_ACTION="stop_and_fix_deploy"
   FAILURE_CLASS="$(classify_failure deploy "$DEPLOY_LOG")"
-  write_summary_json "$REMOTE_HEAD_SHA" "$PREFLIGHT_RESULT" "$DEPLOY_RESULT" "$VERIFY_RESULT" "$ROLLBACK_RESULT" "$FAILURE_CLASS" "$FINAL_RESULT"
+  write_summary_json "$REMOTE_HEAD_SHA" "$PREFLIGHT_RESULT" "$DEPLOY_RESULT" "$VERIFY_RESULT" "$ROLLBACK_RESULT" "$FAILURE_CLASS" "$FINAL_RESULT" "$OPERATOR_ACTION" "$TERMINAL_STAGE"
+  write_operator_guidance "$OPERATOR_ACTION" "$TERMINAL_STAGE" "$FAILURE_CLASS" "$FINAL_RESULT"
   echo "[cloud_release_workflow] deploy_result=FAIL failure_class=$FAILURE_CLASS summary=$(artifact_relpath "$SUMMARY_JSON")" >&2
   exit 1
 fi
@@ -327,28 +433,39 @@ fi
 if run_remote_step "$VERIFY_LOG" "bash scripts/ops/cloud_release_verify.sh --env-file \"$ENV_FILE\" --container-name \"$CONTAINER_NAME\" --api-host \"$VERIFY_API_HOST\" --api-port \"$VERIFY_API_PORT\" --max-wait-seconds \"$VERIFY_MAX_WAIT_SECONDS\" --poll-interval-seconds \"$VERIFY_POLL_INTERVAL_SECONDS\""; then
   VERIFY_RESULT="PASS"
   FINAL_RESULT="PASS"
-  write_summary_json "$REMOTE_HEAD_SHA" "$PREFLIGHT_RESULT" "$DEPLOY_RESULT" "$VERIFY_RESULT" "$ROLLBACK_RESULT" "$FAILURE_CLASS" "$FINAL_RESULT"
+  TERMINAL_STAGE="verify"
+  OPERATOR_ACTION="release_complete"
+  write_summary_json "$REMOTE_HEAD_SHA" "$PREFLIGHT_RESULT" "$DEPLOY_RESULT" "$VERIFY_RESULT" "$ROLLBACK_RESULT" "$FAILURE_CLASS" "$FINAL_RESULT" "$OPERATOR_ACTION" "$TERMINAL_STAGE"
+  write_operator_guidance "$OPERATOR_ACTION" "$TERMINAL_STAGE" "$FAILURE_CLASS" "$FINAL_RESULT"
   echo "[cloud_release_workflow] result=PASS summary=$(artifact_relpath "$SUMMARY_JSON")"
   exit 0
 fi
 
 VERIFY_RESULT="FAIL"
+TERMINAL_STAGE="verify"
 FAILURE_CLASS="$(classify_failure verify "$VERIFY_LOG")"
+OPERATOR_ACTION="decide_manual_rollback_or_fix_forward"
 
 if [[ "$ROLLBACK_ON_VERIFY_FAIL" == "1" && -n "$KNOWN_GOOD_IMAGE_TAG" ]]; then
   if run_remote_step "$ROLLBACK_LOG" "bash scripts/ops/cloud_release_rollback.sh --env-file \"$ENV_FILE\" --rollback-image-tag \"$KNOWN_GOOD_IMAGE_TAG\" --container-name \"$CONTAINER_NAME\" --host-port \"$HOST_PORT\" --verify-max-wait-seconds \"$VERIFY_MAX_WAIT_SECONDS\" --verify-poll-interval-seconds \"$VERIFY_POLL_INTERVAL_SECONDS\""; then
     ROLLBACK_RESULT="PASS"
     FINAL_RESULT="PASS_AFTER_ROLLBACK"
+    TERMINAL_STAGE="rollback"
+    OPERATOR_ACTION="candidate_reverted_to_known_good"
     FAILURE_CLASS="rollback_recovery"
-    write_summary_json "$REMOTE_HEAD_SHA" "$PREFLIGHT_RESULT" "$DEPLOY_RESULT" "$VERIFY_RESULT" "$ROLLBACK_RESULT" "$FAILURE_CLASS" "$FINAL_RESULT"
+    write_summary_json "$REMOTE_HEAD_SHA" "$PREFLIGHT_RESULT" "$DEPLOY_RESULT" "$VERIFY_RESULT" "$ROLLBACK_RESULT" "$FAILURE_CLASS" "$FINAL_RESULT" "$OPERATOR_ACTION" "$TERMINAL_STAGE"
+    write_operator_guidance "$OPERATOR_ACTION" "$TERMINAL_STAGE" "$FAILURE_CLASS" "$FINAL_RESULT"
     echo "[cloud_release_workflow] result=PASS_AFTER_ROLLBACK failure_class=$FAILURE_CLASS summary=$(artifact_relpath "$SUMMARY_JSON")"
     exit 0
   fi
 
   ROLLBACK_RESULT="FAIL"
+  TERMINAL_STAGE="rollback"
+  OPERATOR_ACTION="manual_recovery_required"
   FAILURE_CLASS="$(classify_failure rollback "$ROLLBACK_LOG")"
 fi
 
-write_summary_json "$REMOTE_HEAD_SHA" "$PREFLIGHT_RESULT" "$DEPLOY_RESULT" "$VERIFY_RESULT" "$ROLLBACK_RESULT" "$FAILURE_CLASS" "$FINAL_RESULT"
+write_summary_json "$REMOTE_HEAD_SHA" "$PREFLIGHT_RESULT" "$DEPLOY_RESULT" "$VERIFY_RESULT" "$ROLLBACK_RESULT" "$FAILURE_CLASS" "$FINAL_RESULT" "$OPERATOR_ACTION" "$TERMINAL_STAGE"
+write_operator_guidance "$OPERATOR_ACTION" "$TERMINAL_STAGE" "$FAILURE_CLASS" "$FINAL_RESULT"
 echo "[cloud_release_workflow] result=FAIL failure_class=$FAILURE_CLASS summary=$(artifact_relpath "$SUMMARY_JSON")" >&2
 exit 1

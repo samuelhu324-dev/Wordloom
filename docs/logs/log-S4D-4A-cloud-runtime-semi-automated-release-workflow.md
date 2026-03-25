@@ -167,8 +167,8 @@
 
 ### P3 (Rollback / operator wording)
 
-- [ ] `P3-C1-S1`: rollback trigger and rollback-after-fail path closed inside workflow
-- [ ] `P3-C1-S2`: operator wording for retry / stop / rollback fixed
+- [x] `P3-C1-S1`: rollback trigger and rollback-after-fail path closed inside workflow
+- [x] `P3-C1-S2`: operator wording for retry / stop / rollback fixed
 
 ## Evidence (reserved)
 
@@ -276,6 +276,22 @@
 - result:
   - `PASS`
 
+### P3-C1-S1S2 (Rollback trigger and operator wording fixed inside workflow | 2026-03-25)
+
+- headSha: `96188b45`
+- artifacts:
+  - `scripts/ops/cloud_release_workflow.sh`
+  - `docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
+- expected:
+  - 把 `S4D-4A/P3` 从“verify 失败时可以可选回滚”推进到“workflow 内明确何时允许自动 rollback、何时必须停住、operator 下一步应该看哪份 artifact、应该执行什么动作”。
+- observed:
+  - `cloud_release_workflow.sh` 现在把 rollback trigger 固定为可追溯合同：默认 `manual_only`，只有在同时提供 `--rollback-on-verify-fail` 与 `--known-good-image-tag` 时才进入 `verify_fail_auto`；缺少 known-good tag 时会直接拒绝启动，而不是在 verify FAIL 后给出模糊行为；
+  - workflow 现在会额外生成 `operator_guidance.txt`，并在 `summary.json` 中固定记录 `rollbackTrigger`、`operatorAction`、`terminalStage` 与 guidance artifact path，使 operator 能区分 `stop_and_fix_preflight`、`stop_and_fix_deploy`、`decide_manual_rollback_or_fix_forward`、`candidate_reverted_to_known_good`、`manual_recovery_required` 等后续动作；
+  - verify FAIL 但未 arm rollback 时，workflow 会明确要求先停住、读 `verify.log`、再决定 fix-forward 还是带 known-good tag 重跑；verify FAIL 且 rollback PASS 时会以 `PASS_AFTER_ROLLBACK` + `rollback_recovery` 收口；rollback FAIL 时会明确收口到 `manual_recovery_required`，不再留下“到底该重试还是人工恢复”的空白地带；
+  - 本次 `P3` 收口的是 workflow 语义与 operator wording，不是新增一轮远端 bad-candidate drill；如果后续要补更强证据，应专门执行一次“verify FAIL -> rollback trigger -> PASS_AFTER_ROLLBACK/FAIL”定向样本。
+- result:
+  - `PASS`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-25: 创建 `S4D-4A`，把 `S4D` 的下一步工作重点明确收敛到“半自动 release workflow + failure taxonomy + evidence capture”，而不是继续停留在人工 SSH 操作层。
@@ -284,3 +300,4 @@
 - 2026-03-25: 修复 workflow result accounting 后，第一轮真实本地触发样本已如实记录为 `FAIL (ssh_connectivity)`；当前下一步不再是修脚本，而是诊断 WSL 工作机到 Ubuntu VM 的 SSH 路径。
 - 2026-03-25: 在补齐 PowerShell 非交互 SSH 认证后，第一轮 authenticated local-triggered 样本已把失败面推进到 `dependency_connectivity`：当前阻塞位于 Ubuntu VM 到 RDS `5432` 的真实数据库连通层。
 - 2026-03-25: 在为当前公网 IP 补齐 RDS inbound allow rule 后，第一轮 local-triggered semi-automated workflow 已取得 PASS；`S4D-4A/P2` 现已具备真实本地触发 deploy/verify evidence。
+- 2026-03-25: `S4D-4A/P3` 已把 rollback trigger 与 operator wording 收口进 workflow：`summary.json` 现可固定记录 `rollbackTrigger/operatorAction/terminalStage`，并新增 `operator_guidance.txt` 作为失败后的下一步动作说明。
