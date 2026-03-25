@@ -11,11 +11,13 @@ HOST_PORT="30021"
 VERIFY_AFTER_ROLLBACK="1"
 VERIFY_API_HOST="127.0.0.1"
 VERIFY_API_PORT="30021"
+VERIFY_MAX_WAIT_SECONDS="45"
+VERIFY_POLL_INTERVAL_SECONDS="3"
 
 usage() {
   cat <<'EOF'
 Usage:
-  bash scripts/ops/cloud_release_rollback.sh --env-file <path> --rollback-image-tag <tag> [--container-name <name>] [--host-port <port>] [--skip-verify] [--api-host <host>] [--api-port <port>]
+  bash scripts/ops/cloud_release_rollback.sh --env-file <path> --rollback-image-tag <tag> [--container-name <name>] [--host-port <port>] [--skip-verify] [--api-host <host>] [--api-port <port>] [--verify-max-wait-seconds <n>] [--verify-poll-interval-seconds <n>]
 
 Examples:
   bash scripts/ops/cloud_release_rollback.sh --env-file /etc/wordloom/.env.cloud.dev --rollback-image-tag wordloom-backend:cloud-dev-known-good-20260324
@@ -48,6 +50,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     --api-port)
       VERIFY_API_PORT="$2"
+      shift 2
+      ;;
+    --verify-max-wait-seconds)
+      VERIFY_MAX_WAIT_SECONDS="$2"
+      shift 2
+      ;;
+    --verify-poll-interval-seconds)
+      VERIFY_POLL_INTERVAL_SECONDS="$2"
       shift 2
       ;;
     --skip-verify)
@@ -92,7 +102,9 @@ if bash "$SCRIPT_DIR/cloud_release_verify.sh" \
   --env-file "$ENV_FILE" \
   --container-name "$CONTAINER_NAME" \
   --api-host "$VERIFY_API_HOST" \
-  --api-port "$VERIFY_API_PORT"; then
+  --api-port "$VERIFY_API_PORT" \
+  --max-wait-seconds "$VERIFY_MAX_WAIT_SECONDS" \
+  --poll-interval-seconds "$VERIFY_POLL_INTERVAL_SECONDS"; then
   echo "[cloud_release_rollback] CLOUD_RELEASE_ROLLBACK_RESULT=PASS"
   exit 0
 fi

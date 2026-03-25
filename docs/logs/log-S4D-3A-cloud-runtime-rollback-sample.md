@@ -133,7 +133,7 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: known-good image tag captured on Ubuntu VM
+- [x] `P2-C1-S1`: known-good image tag captured on Ubuntu VM
 - [ ] `P2-C1-S2`: first real rollback sample recorded
 
 ## Evidence (reserved)
@@ -142,7 +142,7 @@
 
 ### P1-C1-S1 (Existing-image deploy path prepared | 2026-03-24)
 
-- headSha: `<pending-current-worktree-commit>`
+- headSha: `d433104c`
 - artifacts:
   - `scripts/ops/cloud_release_run_container.sh`
 - expected:
@@ -152,7 +152,7 @@
 
 ### P1-C1-S2 (Rollback helper prepared | 2026-03-24)
 
-- headSha: `<pending-current-worktree-commit>`
+- headSha: `d433104c`
 - artifacts:
   - `scripts/ops/cloud_release_rollback.sh`
   - `scripts/ops/cloud_release_run_container.sh`
@@ -162,7 +162,48 @@
 - observed:
   - 已新增 `cloud_release_rollback.sh`，默认复用相同 env/container/host-port，并在 rollback 后调用 verify gate 输出 `CLOUD_RELEASE_ROLLBACK_RESULT=PASS|FAIL`。
 
+### P2-C1-S1 (Known-good image tag captured on Ubuntu VM | 2026-03-25)
+
+- headSha: `d433104c`
+- known_good_image_tag: `wordloom-backend:cloud-dev-known-good-20260325-pass`
+- rollback_target_image_tag: `wordloom-backend:cloud-dev-known-good-20260325-pass`
+- rollback_command_summary:
+  - `docker tag wordloom-backend:cloud-dev wordloom-backend:cloud-dev-known-good-20260325-pass`
+- verify_command_summary:
+  - `docker image inspect wordloom-backend:cloud-dev-known-good-20260325-pass --format '{{.Id}}'`
+- verify_check_results:
+  - `image_id=sha256:8ba22bd836b7ee175da0cea4b9d651b69b1747cda95c3c18c4a48be9597c1404`
+  - `image_ls_contains=cloud-dev, cloud-dev-known-good-20260325-pass`
+- rollback_reason:
+  - `prepare_known_good_baseline`
+- result:
+  - `PASS`
+
+### P2-C1-S2 (First rollback drill attempt exposed verify timing gap | 2026-03-25)
+
+- headSha: `d433104c`
+- known_good_image_tag: `wordloom-backend:cloud-dev-known-good-20260325-pass`
+- rollback_target_image_tag: `wordloom-backend:cloud-dev-candidate-20260325-r1 -> wordloom-backend:cloud-dev-known-good-20260325-pass`
+- rollback_command_summary:
+  - candidate start: `bash scripts/ops/cloud_release_run_container.sh --env-file /etc/wordloom/.env.cloud.dev --image-tag wordloom-backend:cloud-dev-candidate-20260325-r1 --container-name wordloom-api-cloud-dev --host-port 30021 --skip-build`
+  - rollback attempt: `bash scripts/ops/cloud_release_rollback.sh --env-file /etc/wordloom/.env.cloud.dev --rollback-image-tag wordloom-backend:cloud-dev-known-good-20260325-pass --container-name wordloom-api-cloud-dev --host-port 30021`
+- verify_command_summary:
+  - candidate verify: `bash scripts/ops/cloud_release_verify.sh --env-file /etc/wordloom/.env.cloud.dev`
+  - rollback verify: helper-internal verify
+- verify_check_results:
+  - candidate: `container_running=OK`, `migration_ok=FAIL`, `health_ok=FAIL (000)`, `read_smoke_ok=FAIL (code=000)`, `env_guard_ok=OK`
+  - rollback attempt: `container_running=OK`, `migration_ok=FAIL`, `health_ok=FAIL (000)`, `read_smoke_ok=FAIL (code=000)`, `env_guard_ok=OK`
+- rollback_reason:
+  - `verify_ran_before_container_finished_startup`
+- observed:
+  - known-good 和 candidate 实际引用的是同一镜像内容，这一轮样本的目的不是制造坏镜像，而是先证明 rollback helper 的 operator path；
+  - 两次 FAIL 都发生在容器刚启动后立即 verify，日志中尚未出现 entrypoint start marker，HTTP health/read 也还未就绪；
+  - 这说明当前暴露出的不是镜像回退语义错误，而是 verify gate 缺少 startup wait/retry。
+- result:
+  - `FAIL -> fix verify readiness wait before rerun`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-24: 创建 `S4D-3A`，把 `S4D-2A` 完成 verify PASS 之后的工作重点切换到 rollback 样本与 recovery evidence。
 - 2026-03-24: 为 rollback 样本准备 existing-image deploy path 与 `cloud_release_rollback.sh` helper，避免回退时误重新 build 当前 HEAD。
+- 2026-03-25: 已在 Ubuntu VM 上保存第一份 known-good image tag，并完成第一轮 rollback drill 尝试；本轮暴露出 verify readiness wait 缺口，下一步需补等待/重试后重跑。

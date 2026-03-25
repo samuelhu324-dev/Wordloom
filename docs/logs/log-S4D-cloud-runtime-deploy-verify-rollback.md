@@ -107,7 +107,8 @@
 - 2026-03-24 起，真实 Ubuntu VM 上的 deploy -> verify 样本、operator checks、failure evidence 与由 drill 暴露出的脚本修复，统一转入 `S4D-2A` 记账；
 - `S4D-2A` 已拿到第一轮真实 Ubuntu VM verify PASS：`container_running OK`、`migration_ok OK`、`health_ok OK (200)`、`read_smoke_ok OK (200 list payload)`、`env_guard_ok OK`；
 - `S4D-3A` 已进入脚本与文档准备阶段：当前已开始为 known-good image/tag rollback 样本补齐 existing-image deploy path 与 rollback helper；
-- 当前下一步已收敛为：在 Ubuntu VM 上先保留当前 PASS 镜像为 known-good tag，再执行第一轮 rollback 样本并复跑 verify。
+- 2026-03-25 已完成第一份 known-good image tag 留存，并跑了第一轮 rollback drill 尝试；
+- 当前阻塞点不是 rollback unit 本身，而是 verify gate 在容器刚启动时缺少 startup wait/retry，导致 rollback 尝试被过早判成 FAIL。
 
 ## Notes（落地原则）
 
@@ -148,3 +149,4 @@
 - 2026-03-24：重新核对历史命名后，已把原先误挂在顶层 `S4D` 前缀下的 P1/P2 phase-specific 提交分别改写到 `S4D-1A` 与 `S4D-2A`。
 - 2026-03-24：第一轮真实 Ubuntu VM verify 已通过，`S4D-2A` 的工作重点已从 verify 修复切换到 rollback 样本。
 - 2026-03-24：新增 `S4D-3A`，并为 image-level rollback 样本准备 `--skip-build` 路径与 `cloud_release_rollback.sh` helper。
+- 2026-03-25：第一轮 rollback drill 已证明 known-good tag 和 rollback helper 路径可执行，但也暴露 verify readiness wait 缺口，当前已转入修复该 gate 并重跑 rollback 样本。
