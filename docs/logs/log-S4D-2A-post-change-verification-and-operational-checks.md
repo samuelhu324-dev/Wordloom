@@ -5,7 +5,7 @@
 **id**: `S4D-2A`
 **kind**: `log`
 **title**: `post-change verification & operational checks (health, logs, smoke, release checklist) + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, Verification, ReleaseOperations, Drills, Evidence, epic/s4, sub/2a`
 **links**: ``
@@ -18,7 +18,7 @@
   **reference_log_2**: `docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`
   **reference_log_3**: `docs/logs/_template-log-phase-drills-evidence.md`
 **created**: `2026-03-24`
-**updated**: `2026-03-24`
+**updated**: `2026-03-25`
 
 ---
 
@@ -220,3 +220,4 @@
 - 2026-03-24: 明确从本 phase 开始，真实 deploy/verify drill 与由 drill 暴露出的修复提交统一采用 `S4D-2A/P*-C*-S*` 命名。
 - 2026-03-24: 重新核对历史后，已把早先误挂在顶层 `S4D` 前缀下的 phase-specific 提交重新归位到 `S4D-1A` 与 `S4D-2A`，并刷新相关 SHA 引用。
 - 2026-03-24: 第一轮真实 Ubuntu VM verify 已拿到 `CLOUD_RELEASE_VERIFY_RESULT=PASS`，因此 `S4D-2A` 当前下一步从 verify 收口切换为 rollback 样本。
+- 2026-03-25: 稳定性评估完成；由于 phase 边界、失败修复链路与首个真实 verify PASS 均已固定，`S4D-2A` 现可标记为 `stable`，后续 rollback 深化工作转交 `S4D-3A` / 潜在 `S4D-4A`。

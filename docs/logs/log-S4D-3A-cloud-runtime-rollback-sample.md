@@ -5,7 +5,7 @@
 **id**: `S4D-3A`
 **kind**: `log`
 **title**: `cloud runtime rollback sample (known-good image/tag, rollback helper, repeatable VM recovery evidence) + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, Rollback, Recovery, ReleaseOperations, Drills, Evidence, epic/s4, sub/3a`
 **links**: ``
@@ -18,7 +18,7 @@
   **reference_log_2**: `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
   **reference_log_3**: `docs/logs/_template-log-phase-drills-evidence.md`
 **created**: `2026-03-24`
-**updated**: `2026-03-24`
+**updated**: `2026-03-25`
 
 ---
 
@@ -119,6 +119,10 @@
 - P2-C1-S1: 在 Ubuntu VM 上给当前 PASS 镜像打 known-good tag
 - P2-C1-S2: 故意向前推进一个新候选版本或候选镜像后，执行第一次 rollback 样本并复跑 verify
 
+### P3 (Repeatable recovery wording)
+
+- P3-C1-S1: 收口 v1 rollback operator wording，并明确更强失败样本不属于当前 phase 的 stable 前置条件
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -135,6 +139,10 @@
 
 - [x] `P2-C1-S1`: known-good image tag captured on Ubuntu VM
 - [x] `P2-C1-S2`: first real rollback sample recorded
+
+### P3 (Repeatable recovery wording)
+
+- [x] `P3-C1-S1`: v1 rollback operator wording closed; stronger failure drills deferred out of current phase
 
 ## Evidence (reserved)
 
@@ -231,3 +239,4 @@
 - 2026-03-24: 为 rollback 样本准备 existing-image deploy path 与 `cloud_release_rollback.sh` helper，避免回退时误重新 build 当前 HEAD。
 - 2026-03-25: 已在 Ubuntu VM 上保存第一份 known-good image tag，并完成第一轮 rollback drill 尝试；本轮暴露出 verify readiness wait 缺口，下一步需补等待/重试后重跑。
 - 2026-03-25: 在补齐 verify readiness wait、恢复 RDS 连通后，第一轮真实 rollback sample 已成功通过，`S4D-3A/P2-C1-S2` 达到 PASS 收口。
+- 2026-03-25: 稳定性评估完成；由于 known-good contract、rollback helper、真实 PASS 样本与 operator wording 已收口，`S4D-3A` 现可标记为 `stable`。更强 failure-oriented drills 若要系统化推进，应另开 `S4D-4A`。
