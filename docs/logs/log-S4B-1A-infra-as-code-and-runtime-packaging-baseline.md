@@ -5,7 +5,7 @@
 **id**: `S4B-1A`
 **kind**: `log`
 **title**: `infra as code & runtime packaging baseline (dev/test) v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4B`
 **tags**: `EVOLUTION, OpsRuntime, Operations, InfraAsCode, Terraform, Docker, Runtime, epic/s4, epic/s4b, sub/1a`
 **links**: ``
@@ -17,7 +17,7 @@
   **reference_log_2**: `docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
   **reference_log_3**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
 **created**: `2026-03-21`
-**updated**: `2026-03-21`
+**updated**: `2026-03-25`
 
 ---
 
@@ -245,3 +245,4 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-03-21: scaffolded `S4B-1A` as the first `S4B` phase, focusing on a dev/test infra-as-code and runtime-packaging baseline before deeper IaC work.
+- 2026-03-25: marked `S4B-1A` as `stable` after the FAIL→PASS from-zero-to-dev/test drills, operator wording, and runbook all converged on a stable v1 baseline.
