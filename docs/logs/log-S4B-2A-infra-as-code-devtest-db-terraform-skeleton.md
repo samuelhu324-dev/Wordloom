@@ -5,7 +5,7 @@
 **id**: `S4B-2A`
 **kind**: `log`
 **title**: `dev/test db terraform skeleton (infra as code sample) v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4B`
 **tags**: `EVOLUTION, OpsRuntime, Operations, InfraAsCode, Terraform, Docker, Runtime, epic/s4, epic/s4b, sub/2a`
 **links**: ``
@@ -16,7 +16,7 @@
   **reference_log_1**: `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
   **reference_log_2**: `docs/ROADMAP v5.md`
 **created**: `2026-03-21`
-**updated**: `2026-03-21`
+**updated**: `2026-03-25`
 
 ---
 
@@ -148,3 +148,4 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-03-21: scaffolded `S4B-2A` as a dev/test DB Terraform skeleton phase, aligned with ROADMAP v5 的 IaC / scripting / automation 与 minimal reproducible environment 目标。
+- 2026-03-25: marked `S4B-2A` as `stable` after the Terraform skeleton contract, implementation, validate/plan drill, and operator wording all closed with PASS evidence.

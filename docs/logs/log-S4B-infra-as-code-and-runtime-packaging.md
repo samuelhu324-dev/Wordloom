@@ -5,7 +5,7 @@
 **id**: `S4B`
 **kind**: `log`
 **title**: `infra as code & runtime packaging (Terraform, Docker, reproducible env) v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, Operations, InfraAsCode, Terraform, Docker, Runtime, epic/s4, epic/s4b`
 **links**: ``
@@ -20,7 +20,7 @@
   **phase_log_1**: `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
   **phase_log_2**: `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
 **created**: `2026-03-21`
-**updated**: `2026-03-21`
+**updated**: `2026-03-25`
 
 ---
 
@@ -137,29 +137,30 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: infra as code contract
-- [ ] `P0-C1-S2`: runtime packaging contract
+- [x] `P0-C1-S1`: infra as code contract
+- [x] `P0-C1-S2`: runtime packaging contract
 
 ### P1 (Implementation / scaffolding)
 
-- [ ] `P1-C1-S1`: `S4B-1A` runtime baseline (from-zero path + health) aligned
-- [ ] `P1-C1-S2`: minimal Terraform targets selected and mapped to `S4B-2A`+ phases
-- [ ] `P1-C1-S3`: runtime packaging entrypoints clarified（compose + scripts/ops）
+- [x] `P1-C1-S1`: `S4B-1A` runtime baseline (from-zero path + health) aligned
+- [x] `P1-C1-S2`: minimal Terraform targets selected and mapped to `S4B-2A`+ phases
+- [x] `P1-C1-S3`: runtime packaging entrypoints clarified（compose + scripts/ops）
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: end-to-end infra + runtime drill（跨 S4B-1A / S4B-2A）
-- [ ] `P2-C1-S2`: evidence recorded（from-zero runtime + IaC skeleton plan）
+- [x] `P2-C1-S1`: end-to-end infra + runtime drill（跨 S4B-1A / S4B-2A）
+- [x] `P2-C1-S2`: evidence recorded（from-zero runtime + IaC skeleton plan）
 
 ### P3 (Docs / Operator wording)
 
-- [ ] `P3-C1-S1`: operator-facing wording
-- [ ] `P3-C1-S2`: runbook (if needed)
+- [x] `P3-C1-S1`: operator-facing wording
+- [x] `P3-C1-S2`: runbook (if needed)
 
 ## Current Status（进展摘要）
 
-- 当前状态：`S4B` 已定义顶层 contract / scope，`S4B-1A` 作为首个 phase 已完成 dev/test runtime baseline（from-zero-to-dev/test 路径与 FAIL→PASS drills），`S4B-2A` 则 scaffold 了 devtest DB 的 Terraform skeleton；
-- 风险：Terraform/IaC 部分仍主要停留在 skeleton 与 plan 层，尚未有实际 `terraform plan/apply` 级别的 evidence；
+- 当前状态：`S4B-1A` 已完成 dev/test runtime baseline、FAIL→PASS from-zero drills、operator wording 与 runbook，`S4B-2A` 已完成 devtest DB Terraform skeleton 与 `terraform init/validate/plan` PASS evidence；
+- 结论：`S4B` 顶层稳定口径已满足，可标记为 `stable`，并作为 `road-S1-1` 最小 ops loop 中的 IaC / runtime-packaging 主 completion surface；
+- 风险：Terraform/IaC 部分在 v1 仍停留于 skeleton 与 plan 级别，后续若进入更深云端资源管理，可在新 phase 中补 `apply`/provider 级证据，而不影响当前 v1 stable 判定；
 
 ## Stability（stable 口径）
 
@@ -167,13 +168,15 @@
   - 至少一个 phase（优先 `S4B-1A`）完成 P0–P2 的 contract、实现与 drills，并有可追溯 evidence；
   - 从零到 dev/test 的脚本化路径经过至少一次完整演练并记录 headSha + artifacts；
   - Terraform/IaC 目标与 compose/runtime packaging 的边界关系在文档中稳定，不再频繁漂移。
+- 2026-03-25 结论：上述条件已满足，依据为 `S4B-1A` 的 FAIL→PASS from-zero drills、`S4B-2A` 的 Terraform skeleton validate/plan PASS、以及二者已稳定形成 `compose/runtime packaging` 与 `Terraform skeleton` 的边界关系。
 
 ## Evidence (reserved)
 
-- 预留：后续 P2 阶段再补充具体样本与路径；
-- 当前可参考：
-  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` 中的 Evidence 小节（包含 from-zero-to-dev/test 路径的 FAIL→PASS drills 与 artifacts）。
+- 顶层 evidence 参考：
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` 中的 Evidence 小节（包含 from-zero-to-dev/test 路径的 FAIL→PASS drills 与 artifacts）；
+  - `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md` 中的 Evidence 小节（包含 `terraform init/validate/plan -no-color` PASS artifact）。
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-21: scaffolded `S4B` as an infra-as-code and runtime-packaging spine building on top of `S4A`.
+- 2026-03-25: marked `S4B` as `stable` after `S4B-1A` and `S4B-2A` both closed their v1 evidence and wording criteria.
