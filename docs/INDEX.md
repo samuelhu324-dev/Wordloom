@@ -27,6 +27,7 @@
 	- docs/logs/log-S4D-1A-cloud-runtime-release-path.md
 	- docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md
 	- docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md
+	- docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md
 
 ## S6-related, old logs
 - S6A spine (new SoT index)

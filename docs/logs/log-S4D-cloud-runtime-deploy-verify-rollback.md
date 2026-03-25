@@ -21,6 +21,7 @@
   **phase_log_1**: `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
   **phase_log_2**: `docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md`
   **phase_log_3**: `docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
+  **phase_log_4**: `docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
 **created**: `2026-03-23`
 **updated**: `2026-03-25`
 
@@ -90,6 +91,8 @@
   - 详见：`docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md`
 - `S4D-3A`（Phase 3）：Release drill evidence（repeatable deploy/rollback drills with artifacts）
   - 详见：`docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
+- `S4D-4A`（Phase 4）：Semi-automated release workflow（single-entry operator command, evidence capture, failure-oriented gates）
+  - 详见：`docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -111,6 +114,16 @@
 - 在补齐 verify readiness wait、恢复 VM 到 RDS `5432` 连通后，第一轮真实 rollback sample 已通过：candidate verify PASS，rollback verify PASS，`CLOUD_RELEASE_ROLLBACK_RESULT=PASS`；
 - `S4D` 的最小目标已经完成：真实 Ubuntu VM 上的 deploy -> verify -> rollback operator path 已具备可追溯 evidence，因此本顶层 spine 现可标记为 `stable`；
 - 更强的 failure-oriented rollback drills 不是当前 v1 stable 的前置条件；如果后续要系统化推进“坏 candidate / 明确 trigger / 更细 recovery evidence”，应新增 `S4D-4A`，而不是继续扩大 `S4D-3A` 的定义。
+- `S4D-4A` 现已创建，下一步工作重心切换为“减少手工 SSH 操作、收口 single-entry workflow、固定 failure taxonomy 与 evidence capture”，以把当前 operator path 推进到半自动阶段。
+- `S4D-4A/P1` 已完成第一步：单入口 `cloud_release_workflow.sh` 已落地，本地工作机现在可以直接触发远端 preflight / deploy / verify，并在本地留下 evidence bundle 与 failure class 摘要。
+- `S4D-4A/P2` 已开始第一轮本地触发样本，但当前先暴露出 workflow 自身的结果记账 bug：`ssh` 失败会被误写成 PASS；下一步应先修正 workflow result accounting，再重跑真实样本。
+- `S4D-4A/P2` 现已拿到第一轮真实本地触发 FAIL 样本：workflow 在 preflight 阶段如实停在 `ssh_connectivity`，说明当前剩余问题已收敛为“WSL/operator host 到 Ubuntu VM 的 SSH 路径”而不是 workflow 结果判定。
+- `S4D-4A/P2` 已进一步拿到第一轮 authenticated local-triggered FAIL 样本：SSH/认证闭环后，失败面已推进到 `dependency_connectivity`，也就是 Ubuntu VM 到 cloud-dev RDS 的运行时依赖层。
+- 在为当前公网 IP 补齐 RDS inbound allow rule 后，`S4D-4A/P2` 已拿到第一轮 local-triggered semi-automated PASS 样本：本地 PowerShell 可通过 SSH 触发 Ubuntu VM 完成 preflight / deploy / verify，并以 artifact 一致地收口为 PASS。
+- `S4D-4A/P3` 现已完成 workflow-level 收口：rollback trigger 已固定为明确合同，失败后 `summary.json` 与 `operator_guidance.txt` 会给出 stop / retry / rollback / manual recovery 的 operator 下一步；如需更强证据，后续可再补一轮定向 bad-candidate rollback drill。
+- `S4D-4A/P3-C2` 现已准备一条最小定向 rollback drill recipe：优先通过 verify probe port mismatch 触发 `verify FAIL -> PASS_AFTER_ROLLBACK`，先验证 workflow branch 与 operator guidance，再决定是否继续补真实坏 candidate 样本。
+- `S4D-4A/P3-C2` 已拿到第一条真实 `PASS_AFTER_ROLLBACK` 样本：candidate verify 因定向 probe port mismatch FAIL，但 workflow 已自动切回 known-good 并以 rollback verify PASS 收口，说明 `rollback_recovery` 与 `candidate_reverted_to_known_good` 两条 workflow contract 已被真实验证。
+- `S4D-4A` 现已满足 v1 stable 条件：single-entry release workflow、固定 failure taxonomy、真实本地 deploy/verify PASS 样本，以及真实 `PASS_AFTER_ROLLBACK` 样本都已到位，因此 phase 可正式标记为 `stable`。
 
 ## Notes（落地原则）
 
@@ -154,3 +167,13 @@
 - 2026-03-25：第一轮 rollback drill 已证明 known-good tag 和 rollback helper 路径可执行，但也暴露 verify readiness wait 缺口，当前已转入修复该 gate 并重跑 rollback 样本。
 - 2026-03-25：在 verify wait 修复和 RDS 连通恢复后，第一轮真实 rollback sample 已 PASS 收口，`S4D` 已具备 deploy -> verify -> rollback 的最小 operator path 样本。
 - 2026-03-25：完成稳定性评估后，`S4D` 已按 v1 口径标记为 `stable`；更强失败样本被明确归为潜在后续 phase `S4D-4A`，不再作为当前收口前置条件。
+- 2026-03-25：新增 `S4D-4A`，把下一步工作显式转入半自动 cloud release workflow、failure taxonomy 与 evidence capture。
+- 2026-03-25：`S4D-4A/P1` 已落地 single-entry `cloud_release_workflow.sh`，当前下一步可直接执行第一次真实半自动 deploy -> verify drill。
+- 2026-03-25：第一轮本地触发 `S4D-4A/P2` 样本先暴露出 workflow result-accounting bug；当前已转入修复该脚本并准备重跑。
+- 2026-03-25：修复 workflow result accounting 后，第一轮真实本地触发 `S4D-4A/P2` 样本已如实记录为 `FAIL (ssh_connectivity)`；当前应转入诊断本地 WSL 到 Ubuntu VM 的 SSH 访问路径。
+- 2026-03-25：在补齐 PowerShell 非交互 SSH 认证后，`S4D-4A/P2` 已进一步拿到 `FAIL (dependency_connectivity)` 样本；当前应转入验证 Ubuntu VM 到 RDS `5432` 的真实连通性与数据库可用性。
+- 2026-03-25：在补齐当前公网 IP 对应的 RDS inbound allow rule 后，`S4D-4A/P2` 已取得第一条真实 local-triggered semi-automated PASS 样本；当前下一步可转入 `P3` 的 rollback trigger 与 operator wording 收口。
+- 2026-03-25：`S4D-4A/P3` 已完成 rollback trigger 与 operator wording 的 workflow 收口；当前若继续推进，应执行一轮刻意制造 verify FAIL 的定向 rollback drill，验证 `PASS_AFTER_ROLLBACK` / `manual_recovery_required` 两条分支中的至少一条。
+- 2026-03-25：已把下一步收口到 `S4D-4A/P3-C2`：先执行一轮以错误 verify probe port 触发的定向 rollback drill，优先验证 `PASS_AFTER_ROLLBACK` 分支与 `operator_guidance.txt` 输出，再决定是否继续补更强的 `manual_recovery_required` 样本。
+- 2026-03-25：`S4D-4A/P3-C2` 已完成第一轮真实 `PASS_AFTER_ROLLBACK` drill：本地 workflow 成功把定向 verify FAIL 的 candidate 自动回退到 known-good，并以 rollback verify PASS + operator guidance 收口。
+- 2026-03-25：稳定性评估完成；`S4D-4A` 已具备 real local-triggered PASS 与 real `PASS_AFTER_ROLLBACK` evidence，因此当前 phase 已按 v1 口径标记为 `stable`。
