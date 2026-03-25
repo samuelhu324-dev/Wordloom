@@ -115,6 +115,7 @@
 - `S4D` 的最小目标已经完成：真实 Ubuntu VM 上的 deploy -> verify -> rollback operator path 已具备可追溯 evidence，因此本顶层 spine 现可标记为 `stable`；
 - 更强的 failure-oriented rollback drills 不是当前 v1 stable 的前置条件；如果后续要系统化推进“坏 candidate / 明确 trigger / 更细 recovery evidence”，应新增 `S4D-4A`，而不是继续扩大 `S4D-3A` 的定义。
 - `S4D-4A` 现已创建，下一步工作重心切换为“减少手工 SSH 操作、收口 single-entry workflow、固定 failure taxonomy 与 evidence capture”，以把当前 operator path 推进到半自动阶段。
+- `S4D-4A/P1` 已完成第一步：单入口 `cloud_release_workflow.sh` 已落地，本地工作机现在可以直接触发远端 preflight / deploy / verify，并在本地留下 evidence bundle 与 failure class 摘要。
 
 ## Notes（落地原则）
 
@@ -159,3 +160,4 @@
 - 2026-03-25：在 verify wait 修复和 RDS 连通恢复后，第一轮真实 rollback sample 已 PASS 收口，`S4D` 已具备 deploy -> verify -> rollback 的最小 operator path 样本。
 - 2026-03-25：完成稳定性评估后，`S4D` 已按 v1 口径标记为 `stable`；更强失败样本被明确归为潜在后续 phase `S4D-4A`，不再作为当前收口前置条件。
 - 2026-03-25：新增 `S4D-4A`，把下一步工作显式转入半自动 cloud release workflow、failure taxonomy 与 evidence capture。
+- 2026-03-25：`S4D-4A/P1` 已落地 single-entry `cloud_release_workflow.sh`，当前下一步可直接执行第一次真实半自动 deploy -> verify drill。

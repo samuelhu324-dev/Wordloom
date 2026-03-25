@@ -88,6 +88,7 @@
 ### P0-C1-S2 (Failure taxonomy and gate contract | v1)
 
 - 本 phase 默认 failure class 至少包括：
+  - `preflight_contract`
   - `ssh_connectivity`
   - `image_build_or_lookup`
   - `container_startup`
@@ -156,8 +157,8 @@
 
 ### P1 (Implementation / workflow)
 
-- [ ] `P1-C1-S1`: single-entry cloud release workflow prepared
-- [ ] `P1-C1-S2`: workflow evidence output and failure summary prepared
+- [x] `P1-C1-S1`: single-entry cloud release workflow prepared
+- [x] `P1-C1-S2`: workflow evidence output and failure summary prepared
 
 ### P2 (Drill / Verify)
 
@@ -183,6 +184,21 @@
 - observed:
   - `S4D-4A` 已按 template 收口为独立 phase；当前下一步可直接落到 single-entry workflow implementation，而不必再重新讨论为什么要减少手工 SSH 操作。
 
+### P1-C1-S1S2 (Single-entry workflow and evidence output prepared | 2026-03-25)
+
+- headSha: `501fd981`
+- artifacts:
+  - `scripts/ops/cloud_release_workflow.sh`
+  - `docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
+- expected:
+  - 新增一条从本地工作机触发的单入口 workflow，自动完成远端 preflight、deploy、verify，并在需要时为 rollback 留出同一入口；
+  - workflow 在本地生成固定 evidence bundle，收口关键结果字段与 low-cardinality failure class。
+- observed:
+  - 已新增 `cloud_release_workflow.sh`，支持通过 SSH 从本地工作机触发远端 `cloud_release_run_container.sh`、`cloud_release_verify.sh`，并可选在 verify FAIL 后继续调用 `cloud_release_rollback.sh`；
+  - workflow 会在 `artifacts/_tmp_s4d4a_cloud_release_workflow/<timestamp>/` 下输出 `preflight.log`、`deploy.log`、`verify.log`、`rollback.log`、`summary.json`，固定记录 `headSha`、target host、image tag、阶段结果与 `failureClass`；
+  - 当前 operator 已不再需要手动 SSH 后逐条执行散落命令，`S4D-4A/P1-C1-S1S2` 已具备进入真实半自动 drill 的条件。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-25: 创建 `S4D-4A`，把 `S4D` 的下一步工作重点明确收敛到“半自动 release workflow + failure taxonomy + evidence capture”，而不是继续停留在人工 SSH 操作层。
+- 2026-03-25: 已新增 `scripts/ops/cloud_release_workflow.sh`，把远端 preflight / deploy / verify / optional rollback 收口为单入口 workflow，并固定输出 evidence bundle 与 failure class 摘要。
