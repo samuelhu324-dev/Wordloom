@@ -55,6 +55,62 @@ docker_bin() {
   return 1
 }
 
+ssh_bin() {
+  if [[ -n "${WSL_INTEROP:-}" || -n "${WSL_DISTRO_NAME:-}" || "${OSTYPE:-}" == msys* || "${OSTYPE:-}" == cygwin* || "${MSYSTEM:-}" != "" ]]; then
+    if command -v ssh.exe >/dev/null 2>&1; then
+      printf 'ssh.exe\n'
+      return 0
+    fi
+  fi
+
+  if command -v ssh >/dev/null 2>&1; then
+    printf 'ssh\n'
+    return 0
+  fi
+
+  if command -v ssh.exe >/dev/null 2>&1; then
+    printf 'ssh.exe\n'
+    return 0
+  fi
+
+  echo "[ops] ssh not found" >&2
+  return 1
+}
+
+normalize_ssh_identity_path() {
+  local ssh_command="${1:-}"
+  local identity_path="${2:-}"
+
+  if [[ -z "$identity_path" ]]; then
+    printf '%s\n' "$identity_path"
+    return 0
+  fi
+
+  if [[ "${ssh_command##*/}" != "ssh.exe" ]]; then
+    printf '%s\n' "$identity_path"
+    return 0
+  fi
+
+  if [[ "$identity_path" =~ ^/([a-zA-Z])/(.*)$ ]]; then
+    local drive rest
+    drive="${BASH_REMATCH[1]}"
+    rest="${BASH_REMATCH[2]//\//\\}"
+    printf '%s\n' "${drive^^}:\\$rest"
+    return 0
+  fi
+
+  if command -v wslpath >/dev/null 2>&1; then
+    local converted
+    converted="$(wslpath -w "$identity_path" 2>/dev/null | tr -d '\r' || true)"
+    if [[ -n "$converted" ]]; then
+      printf '%s\n' "$converted"
+      return 0
+    fi
+  fi
+
+  printf '%s\n' "$identity_path"
+}
+
 require_cmd() {
   local cmd="$1"
   if ! command -v "$cmd" >/dev/null 2>&1; then
