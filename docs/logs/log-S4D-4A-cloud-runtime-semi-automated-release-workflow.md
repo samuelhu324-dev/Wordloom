@@ -162,8 +162,8 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: first semi-automated Ubuntu VM deploy -> verify sample recorded
-- [ ] `P2-C1-S2`: first semi-automated FAIL / PASS cycle recorded with failure class
+- [x] `P2-C1-S1`: first semi-automated Ubuntu VM deploy -> verify sample recorded
+- [x] `P2-C1-S2`: first semi-automated FAIL / PASS cycle recorded with failure class
 
 ### P3 (Rollback / operator wording)
 
@@ -256,6 +256,26 @@
 - result:
   - `FAIL -> validate VM-to-RDS 5432 connectivity and rerun`
 
+### P2-C1-S4 (First local-triggered semi-automated PASS sample | 2026-03-25)
+
+- headSha: `8caafc4f`
+- artifacts:
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T093943Z/summary.json`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T093943Z/preflight.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T093943Z/deploy.log`
+  - `artifacts/_tmp_s4d4a_cloud_release_workflow/20260325T093943Z/verify.log`
+- expected:
+  - 在补齐 PowerShell 非交互 SSH 认证并修正 RDS inbound rule 后，从 Windows PowerShell 本地工作机触发 Ubuntu VM 远端 preflight / deploy / verify / optional rollback，并取得第一条与 artifact 一致的 PASS 样本。
+- observed:
+  - 本轮 `preflightResult=PASS`、`deployResult=PASS`、`verifyResult=PASS`、`rollbackResult=SKIPPED`、`result=PASS`，且 `failureClass=none`；
+  - `verify.log` 显示五项 gate 全部通过：`container_running OK`、`migration_ok OK`、`health_ok OK (200)`、`read_smoke_ok OK (200 list payload)`、`env_guard_ok OK`；
+  - 与上一轮 `dependency_connectivity` 样本对照可知，本轮 PASS 的直接恢复动作是补入当前公网 IP 对应的 RDS inbound allow rule；这说明 workflow 已经能把问题如实暴露、修复后再验证 PASS；
+  - 至此 `S4D-4A/P2` 已完成首个真实“本地工作机 -> SSH -> Ubuntu VM -> deploy/verify”半自动 PASS 样本，当前下一步可转入 `P3` 的 rollback trigger / operator wording 收口。
+- failure_class:
+  - `none`
+- result:
+  - `PASS`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-25: 创建 `S4D-4A`，把 `S4D` 的下一步工作重点明确收敛到“半自动 release workflow + failure taxonomy + evidence capture”，而不是继续停留在人工 SSH 操作层。
@@ -263,3 +283,4 @@
 - 2026-03-25: 第一次本地触发 workflow 样本暴露出结果记账 bug：`ssh` 失败时 `run_remote_step()` 仍返回成功，导致 `summary.json` 错写 PASS；当前已转入修复并准备重跑。
 - 2026-03-25: 修复 workflow result accounting 后，第一轮真实本地触发样本已如实记录为 `FAIL (ssh_connectivity)`；当前下一步不再是修脚本，而是诊断 WSL 工作机到 Ubuntu VM 的 SSH 路径。
 - 2026-03-25: 在补齐 PowerShell 非交互 SSH 认证后，第一轮 authenticated local-triggered 样本已把失败面推进到 `dependency_connectivity`：当前阻塞位于 Ubuntu VM 到 RDS `5432` 的真实数据库连通层。
+- 2026-03-25: 在为当前公网 IP 补齐 RDS inbound allow rule 后，第一轮 local-triggered semi-automated workflow 已取得 PASS；`S4D-4A/P2` 现已具备真实本地触发 deploy/verify evidence。

@@ -119,6 +119,7 @@
 - `S4D-4A/P2` 已开始第一轮本地触发样本，但当前先暴露出 workflow 自身的结果记账 bug：`ssh` 失败会被误写成 PASS；下一步应先修正 workflow result accounting，再重跑真实样本。
 - `S4D-4A/P2` 现已拿到第一轮真实本地触发 FAIL 样本：workflow 在 preflight 阶段如实停在 `ssh_connectivity`，说明当前剩余问题已收敛为“WSL/operator host 到 Ubuntu VM 的 SSH 路径”而不是 workflow 结果判定。
 - `S4D-4A/P2` 已进一步拿到第一轮 authenticated local-triggered FAIL 样本：SSH/认证闭环后，失败面已推进到 `dependency_connectivity`，也就是 Ubuntu VM 到 cloud-dev RDS 的运行时依赖层。
+- 在为当前公网 IP 补齐 RDS inbound allow rule 后，`S4D-4A/P2` 已拿到第一轮 local-triggered semi-automated PASS 样本：本地 PowerShell 可通过 SSH 触发 Ubuntu VM 完成 preflight / deploy / verify，并以 artifact 一致地收口为 PASS。
 
 ## Notes（落地原则）
 
@@ -167,3 +168,4 @@
 - 2026-03-25：第一轮本地触发 `S4D-4A/P2` 样本先暴露出 workflow result-accounting bug；当前已转入修复该脚本并准备重跑。
 - 2026-03-25：修复 workflow result accounting 后，第一轮真实本地触发 `S4D-4A/P2` 样本已如实记录为 `FAIL (ssh_connectivity)`；当前应转入诊断本地 WSL 到 Ubuntu VM 的 SSH 访问路径。
 - 2026-03-25：在补齐 PowerShell 非交互 SSH 认证后，`S4D-4A/P2` 已进一步拿到 `FAIL (dependency_connectivity)` 样本；当前应转入验证 Ubuntu VM 到 RDS `5432` 的真实连通性与数据库可用性。
+- 2026-03-25：在补齐当前公网 IP 对应的 RDS inbound allow rule 后，`S4D-4A/P2` 已取得第一条真实 local-triggered semi-automated PASS 样本；当前下一步可转入 `P3` 的 rollback trigger 与 operator wording 收口。
