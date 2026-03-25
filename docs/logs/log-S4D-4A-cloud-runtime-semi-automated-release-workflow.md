@@ -146,6 +146,39 @@
 
 - P3-C1-S1: 在 workflow 内收口 rollback trigger 与 rollback-after-fail path
 - P3-C1-S2: 固化 operator-facing 说明，明确何时重试、何时停止、何时回滚
+- P3-C2-S1: 设计一轮最小定向 rollback drill，故意触发 candidate verify FAIL，但不破坏 known-good rollback 路径
+- P3-C2-S2: 带 `--known-good-image-tag` 与 `--rollback-on-verify-fail` 执行 workflow，验证 `PASS_AFTER_ROLLBACK`
+- P3-C2-S3: 记录定向 rollback drill 的 artifact、`operator_guidance.txt` 与最终分支结果；`manual_recovery_required` 另作为后续更强 failure drill
+
+### P3-C2 (Targeted rollback drill recipe | prepared)
+
+- 目标：先验证 `verify FAIL -> auto rollback -> PASS_AFTER_ROLLBACK` 这条 workflow 分支，且不要求先制造一个会把 rollback 一起打坏的真实坏镜像；
+- 最小做法：保持 candidate image 与 host port 都正常，只在 workflow verify 阶段故意传入错误的 `--api-port`，例如 `39999`；这样 candidate verify 会因 probe 命中错误端口而 FAIL，而 rollback helper 在当前实现里仍会按 `--host-port 30021` 回到 known-good 并执行 rollback verify；
+- 这条 drill 验证的是 `S4D-4A/P3` 刚收口的 trigger/operator wording/summary branch，而不是应用本身的真实坏版本；如果要补“真实坏 candidate”证据，应另起后续 cycle。
+
+建议执行命令（Windows PowerShell，本地工作机触发）：
+
+```powershell
+bash scripts/ops/cloud_release_workflow.sh \
+  --ssh-host 127.0.0.1 \
+  --ssh-port 22022 \
+  --ssh-user ubuntu \
+  --ssh-identity-file /c/Users/H/.ssh/wordloom_cloud_dev \
+  --remote-repo-dir /home/wordloom/work/wordloom-v3 \
+  --env-file /etc/wordloom/.env.cloud.dev \
+  --image-tag wordloom-backend:cloud-dev \
+  --known-good-image-tag wordloom-backend:cloud-dev-known-good-20260325-pass \
+  --container-name wordloom-api-cloud-dev \
+  --host-port 30021 \
+  --api-port 39999 \
+  --rollback-on-verify-fail
+```
+
+预期：
+
+- `summary.json` 预期记录 `verifyResult=FAIL`、`rollbackResult=PASS`、`result=PASS_AFTER_ROLLBACK`、`failureClass=rollback_recovery`；
+- `operator_guidance.txt` 预期记录 `operatorAction=candidate_reverted_to_known_good`；
+- artifact 目录预期新增 `preflight.log`、`deploy.log`、`verify.log`、`rollback.log`、`summary.json`、`operator_guidance.txt`。
 
 ## Execution Checklist (unchecked)
 
@@ -169,6 +202,9 @@
 
 - [x] `P3-C1-S1`: rollback trigger and rollback-after-fail path closed inside workflow
 - [x] `P3-C1-S2`: operator wording for retry / stop / rollback fixed
+- [ ] `P3-C2-S1`: targeted rollback drill recipe fixed for a safe `verify FAIL -> PASS_AFTER_ROLLBACK` branch
+- [ ] `P3-C2-S2`: first targeted `PASS_AFTER_ROLLBACK` workflow sample recorded
+- [ ] `P3-C2-S3`: targeted drill evidence recorded with `summary.json` and `operator_guidance.txt`
 
 ## Evidence (reserved)
 
@@ -301,3 +337,4 @@
 - 2026-03-25: 在补齐 PowerShell 非交互 SSH 认证后，第一轮 authenticated local-triggered 样本已把失败面推进到 `dependency_connectivity`：当前阻塞位于 Ubuntu VM 到 RDS `5432` 的真实数据库连通层。
 - 2026-03-25: 在为当前公网 IP 补齐 RDS inbound allow rule 后，第一轮 local-triggered semi-automated workflow 已取得 PASS；`S4D-4A/P2` 现已具备真实本地触发 deploy/verify evidence。
 - 2026-03-25: `S4D-4A/P3` 已把 rollback trigger 与 operator wording 收口进 workflow：`summary.json` 现可固定记录 `rollbackTrigger/operatorAction/terminalStage`，并新增 `operator_guidance.txt` 作为失败后的下一步动作说明。
+- 2026-03-25: `P3-C2` 已准备最小定向 rollback drill recipe：优先用 verify probe port mismatch 触发 `verify FAIL -> PASS_AFTER_ROLLBACK`，先验证 branch 语义与 operator guidance，再决定是否继续补真实坏 candidate 样本。
