@@ -134,7 +134,7 @@
 ### P2 (Drill / Verify)
 
 - [x] `P2-C1-S1`: known-good image tag captured on Ubuntu VM
-- [ ] `P2-C1-S2`: first real rollback sample recorded
+- [x] `P2-C1-S2`: first real rollback sample recorded
 
 ## Evidence (reserved)
 
@@ -202,8 +202,32 @@
 - result:
   - `FAIL -> fix verify readiness wait before rerun`
 
+### P2-C1-S2 (First real rollback sample PASS | 2026-03-25)
+
+- headSha: `cb329e14`
+- known_good_image_tag: `wordloom-backend:cloud-dev-known-good-20260325-pass`
+- rollback_target_image_tag: `wordloom-backend:cloud-dev-candidate-20260325-r1 -> wordloom-backend:cloud-dev-known-good-20260325-pass`
+- rollback_command_summary:
+  - candidate start: `bash scripts/ops/cloud_release_run_container.sh --env-file /etc/wordloom/.env.cloud.dev --image-tag wordloom-backend:cloud-dev-candidate-20260325-r1 --container-name wordloom-api-cloud-dev --host-port 30021 --skip-build`
+  - rollback: `bash scripts/ops/cloud_release_rollback.sh --env-file /etc/wordloom/.env.cloud.dev --rollback-image-tag wordloom-backend:cloud-dev-known-good-20260325-pass --container-name wordloom-api-cloud-dev --host-port 30021`
+- verify_command_summary:
+  - candidate verify: `bash scripts/ops/cloud_release_verify.sh --env-file /etc/wordloom/.env.cloud.dev`
+  - rollback verify: helper-internal verify with readiness wait
+- verify_check_results:
+  - candidate: `container_running=OK`, `migration_ok=OK`, `health_ok=OK (200)`, `read_smoke_ok=OK (200 list payload)`, `env_guard_ok=OK`, `CLOUD_RELEASE_VERIFY_RESULT=PASS`
+  - rollback: `container_running=OK`, `migration_ok=OK`, `health_ok=OK (200)`, `read_smoke_ok=OK (200 list payload)`, `env_guard_ok=OK`, `CLOUD_RELEASE_VERIFY_RESULT=PASS`, `CLOUD_RELEASE_ROLLBACK_RESULT=PASS`
+- rollback_reason:
+  - `validate_known_good_image_level_recovery_path`
+- observed:
+  - 在 AWS 侧恢复 RDS `5432` 连通后，candidate 启动与 verify 已可稳定通过；
+  - 同一轮样本中，rollback helper 成功把容器切回 known-good image tag，并在 rollback 后再次通过 verify；
+  - 这说明 `S4D` 的第一条真实 image-level rollback operator path 已在 Ubuntu VM 上闭环。
+- result:
+  - `PASS`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-24: 创建 `S4D-3A`，把 `S4D-2A` 完成 verify PASS 之后的工作重点切换到 rollback 样本与 recovery evidence。
 - 2026-03-24: 为 rollback 样本准备 existing-image deploy path 与 `cloud_release_rollback.sh` helper，避免回退时误重新 build 当前 HEAD。
 - 2026-03-25: 已在 Ubuntu VM 上保存第一份 known-good image tag，并完成第一轮 rollback drill 尝试；本轮暴露出 verify readiness wait 缺口，下一步需补等待/重试后重跑。
+- 2026-03-25: 在补齐 verify readiness wait、恢复 RDS 连通后，第一轮真实 rollback sample 已成功通过，`S4D-3A/P2-C1-S2` 达到 PASS 收口。
