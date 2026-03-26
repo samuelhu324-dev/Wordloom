@@ -133,6 +133,8 @@
 - P1-C1-S1: 新增 GitHub Actions `workflow_dispatch` 入口，映射 `S4D-4A` release workflow 的最小输入
 - P1-C1-S2: 上传 `summary.json` 与阶段日志，并把关键字段写入 GitHub Actions run summary
 - P1-C1-S3: 把 runner contract 从泛化的 hosted/self-hosted 二选一收紧为 self-hosted runner v1，并与当前 SSH target/network 前提对齐
+- P1-C2-S1: 在 dispatch 前把 target repo 同步到 workflow branch/head，消除 `remoteHeadSha` 漂移
+- P1-C2-S2: 用真实 Actions PASS 样本验证 `headSha == expectedHeadSha == remoteHeadSha`
 
 **Current status (S4D-4B)**
 
@@ -146,6 +148,7 @@
 - `P2-C1-S2` 已完成：当前 workflow 已拿到第一条真实 Actions-triggered `PASS_AFTER_ROLLBACK` 样本，证明在 candidate verify 失败时，GitHub Actions path 能稳定完成自动 rollback、产出完整 evidence，并以成功 workflow 收口。
 - `P3-C1-S1` 已完成：`cloud-dev` environment approval boundary 现已被真实 run 多次命中，manual `workflow_dispatch` run 会先进入 `waiting`，且只有在 reviewer approval 后才继续执行发布 job。
 - `P3-C1-S2` 已完成：当前 workflow run summary 与 `operator_guidance.txt` 已稳定给出 `result`、`failureClass`、`terminalGate`、artifact 路径与下一步 operator action，handoff wording 已有真实 rollback 样本验证。
+- `P1-C2-S1/S2` 已完成：当前 workflow 已把 `github.ref_name` 与 `github.sha` 作为显式 contract 传入 release script，并在 preflight 阶段完成 target repo 的 clean-check、`git fetch`、branch 对齐与 exact-head reset；最新 PASS 样本已证明 `headSha == expectedHeadSha == remoteHeadSha`。
 
 ### P2 (Drill / Verify)
 
@@ -161,7 +164,7 @@
 
 - `P0-P3` 当前已全部完成；
 - GitHub Actions 入口现已固定到可访问 `127.0.0.1:22022` target bridge 的 Windows self-hosted runner，并在 workflow 内补齐 Git Bash bootstrap 与 checked-out repo working-directory contract；
-- 最新 rollback drill `23599857316` 已以 `result=PASS_AFTER_ROLLBACK`、`failureClass=rollback_recovery`、`terminalGate=rollback_readiness_gate` 成功收口，说明 `S4D-4B` 的 dispatch / approval / artifact / handoff path 已满足 phase DoD。
+- 最新 head-sync validation run `23600877818` 已以 `result=PASS` 收口，且 `summary.json` 明确记录 `headSha == expectedHeadSha == remoteHeadSha == fdd3e812...`；连同此前 `23599857316` 的 rollback evidence，说明 `S4D-4B` 的 dispatch / approval / artifact / handoff / target-head alignment path 已满足 phase DoD。
 
 ## Execution Checklist (unchecked)
 
@@ -269,8 +272,29 @@
   - `verify.log` 明确显示本轮 candidate container 已成功启动并通过 migration / env guard，但由于 verify URL 被故意指向 `http://127.0.0.1:39999/api/v1`，`health_ok` 与 `read_smoke_ok` 以 `(000)` 失败，从而触发了预期中的自动 rollback；
   - `operator_guidance.txt` 已固定输出 rerun / rollback command、artifact 路径以及“keep service on known-good and investigate candidate logs before the next deploy”这类最小 handoff wording，证明 `P3-C1-S2` 已有真实 rollback 样本支撑。
 
+### P1-C2-S1S2 (target repo synced to workflow head before release, remoteHeadSha drift removed | 2026-03-26)
+
+- headSha: `fdd3e812`
+- run_url: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23600877818`
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23600877818/s4d-cloud-release-23600877818-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23600877818/s4d-cloud-release-23600877818-1/preflight.log`
+  - `artifacts/_tmp_s4d4b_run_23600877818/s4d-cloud-release-23600877818-1/deploy.log`
+  - `artifacts/_tmp_s4d4b_run_23600877818/s4d-cloud-release-23600877818-1/verify.log`
+  - `artifacts/_tmp_s4d4b_run_23600877818/s4d-cloud-release-23600877818-1/operator_guidance.txt`
+- expected:
+  - dispatch workflow 应把 workflow branch/head 作为显式输入传给 release script，而不是只在 `summary.json` 中被动记录漂移后的 `remoteHeadSha`；
+  - preflight 应在远端 repo clean 的前提下完成 `git fetch origin <branch>`、branch 对齐与 exact-head sync，使 target 上的 release repo 与 workflow `headSha` 保持一致；
+  - 完成 sync 后的真实 PASS 样本应明确证明 `headSha == expectedHeadSha == remoteHeadSha`。
+- observed:
+  - `.github/workflows/s4d-cloud-release-dispatch.yml` 现已把 `${{ github.ref_name }}` 与 `${{ github.sha }}` 传给 `cloud_release_workflow.sh`，而 `cloud_release_workflow.sh` 在 preflight 中新增了 remote clean-check、`git fetch --quiet origin <branch>`、branch checkout/create 与 `git reset --hard <expected-head-sha>`；
+  - validation run `23600877818` 在通过 `cloud-dev` approval gate 后完整走通 `Run cloud release workflow -> Locate summary.json -> Write run summary -> Upload workflow artifacts -> Enforce workflow result`，workflow 结论为 `success`；
+  - `summary.json` 明确记录 `headSha=fdd3e812...`、`expectedHeadSha=fdd3e812...`、`remoteHeadSha=fdd3e812...`、`remoteBranch=S4D-cloud-runtime-deploy-verify-rollback`，从而消除了此前 evidence 中长期存在的 target-head drift；
+  - `preflight.log` 进一步记录了 `expected_head_sha=fdd3e812...`、`HEAD is now at fdd3e812 ...` 与最终 `remote_head_sha=fdd3e812...`，说明 target repo 已在 release 前被精确同步到 workflow head，而不是延续旧的 `247ded5c...` 状态。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-26: 已新增 `S4D-4B/P1-C2` 以收口 target repo head drift；workflow 与 release script 现已显式传递 `github.ref_name` / `github.sha` 并在 preflight 阶段完成远端 repo sync，对应提交为 `7bea1d52` 与修正提交 `fdd3e812`；随后真实 PASS 样本 `23600877818` 已证明 `headSha == expectedHeadSha == remoteHeadSha`。
 - 2026-03-26: 已为 `.github/workflows/s4d-cloud-release-dispatch.yml` 连续补齐五项实质性 contract 修复：Git Bash shell bootstrap、Windows self-hosted runner pin、bootstrap shell 改为 Windows PowerShell、过严 bash path 校验移除、checked-out repo working-directory / artifact upload path 修正；这些改动分别落在 `18d285c2`、`55f6c06e`、`0d4f260d`、`120032ef`、`7f3c417d`。
 - 2026-03-26: 已完成 `S4D-4B/P2-C1-S2` 的第一条真实 `PASS_AFTER_ROLLBACK` 样本 `23599857316`，同时重新证明 `cloud-dev` approval boundary 与 operator handoff artifact contract 可用，因此 `S4D-4B` 现可标记为 `stable`。
 - 2026-03-26: 已为 target host 当前出口公网 IP `125.253.50.4/32` 临时补入 cloud-dev RDS inbound allow rule，并据此完成 `S4D-4B/P2-C1-S1` 的第一条真实 GitHub Actions PASS 样本 `23578016775`。
