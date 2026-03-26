@@ -135,6 +135,8 @@
 - P1-C1-S3: 把 runner contract 从泛化的 hosted/self-hosted 二选一收紧为 self-hosted runner v1，并与当前 SSH target/network 前提对齐
 - P1-C2-S1: 在 dispatch 前把 target repo 同步到 workflow branch/head，消除 `remoteHeadSha` 漂移
 - P1-C2-S2: 用真实 Actions PASS 样本验证 `headSha == expectedHeadSha == remoteHeadSha`
+- P1-C3-S1: 拆分 `push` 与 `workflow_dispatch` 的 concurrency group，避免 push waiting run 阻塞 manual drill materialization
+- P1-C3-S2: 用真实 Actions 控制面样本验证 push/manual 可并存进入 waiting，而不再需要先取消旧 run
 
 **Current status (S4D-4B)**
 
@@ -149,6 +151,7 @@
 - `P3-C1-S1` 已完成：`cloud-dev` environment approval boundary 现已被真实 run 多次命中，manual `workflow_dispatch` run 会先进入 `waiting`，且只有在 reviewer approval 后才继续执行发布 job。
 - `P3-C1-S2` 已完成：当前 workflow run summary 与 `operator_guidance.txt` 已稳定给出 `result`、`failureClass`、`terminalGate`、artifact 路径与下一步 operator action，handoff wording 已有真实 rollback 样本验证。
 - `P1-C2-S1/S2` 已完成：当前 workflow 已把 `github.ref_name` 与 `github.sha` 作为显式 contract 传入 release script，并在 preflight 阶段完成 target repo 的 clean-check、`git fetch`、branch 对齐与 exact-head reset；最新 PASS 样本已证明 `headSha == expectedHeadSha == remoteHeadSha`。
+- `P1-C3-S1/S2` 进行中：当前改动把 concurrency group 从“仅按 environment 串行”调整为“按 trigger surface + environment 串行”，目标是保留 auto-dispatch 同环境保护，同时不再让 push waiting run 卡住 manual `workflow_dispatch` drill 的 job materialization。
 
 ### P2 (Drill / Verify)
 
@@ -179,6 +182,10 @@
 - [x] `P1-C1-S1`: workflow_dispatch entry prepared
 - [x] `P1-C1-S2`: artifact upload and run summary prepared
 - [x] `P1-C1-S3`: self-hosted runner v1 contract aligned with current SSH target
+- [x] `P1-C2-S1`: target repo sync before release prepared
+- [x] `P1-C2-S2`: remote head alignment evidence recorded
+- [ ] `P1-C3-S1`: push/manual concurrency groups split
+- [ ] `P1-C3-S2`: push/manual coexistence evidence recorded
 
 ### P2 (Drill / Verify)
 

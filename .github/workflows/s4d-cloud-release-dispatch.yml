@@ -93,7 +93,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: s4d-cloud-release-${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || 'cloud-dev' }}
+  group: s4d-cloud-release-${{ github.event_name }}-${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || 'cloud-dev' }}
   cancel-in-progress: false
 
 jobs:
