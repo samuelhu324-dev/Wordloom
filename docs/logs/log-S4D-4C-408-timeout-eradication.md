@@ -5,7 +5,7 @@
 **id**: `S4D-4C`
 **kind**: `log`
 **title**: `408 timeout eradication (timeout taxonomy, stable runner network path, controlled auto-dispatch, large-entrypoint reduction) + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, ReleaseOperations, Automation, Timeout, Evidence, epic/s4, sub/4c`
 **links**: ``
@@ -159,6 +159,12 @@
 - P3-C1-S1: 识别并继续治理高频大入口文件 / 高扇出检索入口
 - P3-C1-S2: 为后续 drill/workflow/cli 文档与入口建立更窄的索引面，减少 Agent/Copilot 上下文装载压力
 
+**Current status (S4D-4C / P3)**
+
+- `P3-C1-S1` 已完成第一轮高压入口识别与排序；当前优先收口对象固定为 5 个 surface：`scripts/ops/cloud_release_workflow.sh`、`docs/logs/log-S4D-4C-408-timeout-eradication.md` / `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md` 聚合面、`backend/scripts/cli_app/scenarios/_failure_drill_shared.py`、`backend/scripts/cli_app/scenarios/shadow_verify_dual_run_window.py` / `shadow_verify_dual_run_stage2.py`、以及 `backend/scripts/cli_app/registry.py` 的 scenario discovery 扇出面；
+- `P3-C1-S2` 已完成第一轮窄索引收口：当前仓库已新增 `docs/runbook/run-S4D-4C-agent-context-navigation.md`，把 S4D timeout、release gate、drill scenario 的默认首读路径压缩为一条更窄的导航面；
+- `backend/scripts/cli.py` 现已维持 dispatch-only 薄入口，不再作为默认第一检索对象；当前 agent/context pressure 的主风险已从“超大单入口 CLI”转移到“聚合日志 + orchestrator + 大 scenario 模块 + discovery 扇出面”。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -184,8 +190,8 @@
 
 ### P3 (Agent/context pressure reduction)
 
-- [ ] `P3-C1-S1`: high-pressure entrypoints identified and sequenced
-- [ ] `P3-C1-S2`: reduced-context guidance / indexing fixed
+- [x] `P3-C1-S1`: high-pressure entrypoints identified and sequenced
+- [x] `P3-C1-S2`: reduced-context guidance / indexing fixed
 
 ## Evidence (reserved)
 
@@ -416,6 +422,27 @@
   - GitHub repo runner inventory 已显示 `wordloom-s4d-temp-win` 从 `offline` 恢复为 `online`；
   - 因此 `P2` 之前暴露的 runner availability blocker 已被关闭，后续 auto-dispatch run 不再缺少 Windows 落点。
 
+### P3-C1-S1S2 (high-pressure entrypoints ranked and reduced-context quick index landed | 2026-03-26)
+
+- headSha: `pending-next-commit`
+- timeoutFamily: `agent_context_timeout`
+- triggerSurface: `S4D timeout triage`, `release gate investigation`, `drill scenario discovery`
+- artifacts:
+  - `docs/runbook/run-S4D-4C-agent-context-navigation.md`
+  - `docs/INDEX.md`
+  - `backend/scripts/cli_app/registry.py`
+  - `backend/scripts/cli_app/scenarios/_failure_drill_shared.py`
+  - `backend/scripts/cli_app/scenarios/shadow_verify_dual_run_window.py`
+  - `backend/scripts/cli_app/scenarios/shadow_verify_dual_run_stage2.py`
+- expected:
+  - 先把当前最容易把 Copilot/Agent 拉爆上下文的入口面缩到 `3-5` 个真实对象，而不是继续基于旧的 `cli.py 仍然超大` 假设做泛化判断；
+  - 为后续 S4D / workflow / drill 排障提供一条更窄的默认导航面，使调查能先按 gate、phase、scenario 缩小范围，再打开具体文件；
+  - 让 `agent_context_timeout` family 也拥有正式 evidence，而不是只停留在口头经验。
+- observed:
+  - 结合当前行数与扇出角色，第一轮高压入口已固定为 `cloud_release_workflow.sh`、`S4D-4C + S4D spine` 聚合面、`_failure_drill_shared.py`、`shadow_verify_dual_run_window.py` / `shadow_verify_dual_run_stage2.py`、以及 `registry.py` discovery surface；
+  - `backend/scripts/cli.py` 当前仅约 `81` 行，已不再是 P3 的主风险对象；说明当前 context pressure 的根因已从“单一超大 CLI 入口”迁移为“聚合日志 + orchestrator + 大 scenario 模块 + 检索扇出面”；
+  - 新增 `docs/runbook/run-S4D-4C-agent-context-navigation.md` 后，S4D timeout、release gate 与 drill scenario 已拥有一条默认首读路径；操作者与 Agent 现在可以先按 symptom / gate / scenario 缩小到单个对象，而不必先读取整条 S4D 历史链路或整包 scenario 家族。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-26: 已完成 `S4D-4C/P1-C1-S1S2` 的 repo-side 交付：新增 stable runner host Terraform module、bootstrap/probe 脚本、stable-runner workflow 与 cutover runbook，使“迁移 self-hosted runner 到稳定网络位置”从建议变成可执行路径。
@@ -429,4 +456,5 @@
 - 2026-03-26: `s4d-cloud-release-dispatch-stable-runner.yml` 已进入 GitHub 默认分支 registry，并已取得第一条 reverse-tunnel-backed stable-runner dispatch evidence `23592172058`；当前新的真实 blocker 已收口为 target runtime 的 `dependency_connectivity_failure`，而非 workflow registry / reverse tunnel。
 - 2026-03-26: 已从 target VM 本身完成最小 RDS 依赖诊断，确认当前出口 IP 为 `49.196.51.46`，并据此把该 `/32` 补入 cloud-dev RDS security group `sg-0873e947b9947639d`；同时已把 target repo HEAD 快进到 `0035394235c3fdfe905ac780c322987cf988eced`。
 - 2026-03-26: 已完成 reverse-tunnel-backed stable-runner PASS 复跑 `23595354059`，当前 `dependencyConnectivityGate=PASS`、`postChangeVerifyGate=PASS`，且 trigger SHA 与 remote HEAD 已一致。
+- 2026-03-26: 已完成 `S4D-4C/P3-C1-S1S2` 的第一轮收口：高压入口已固定排序，并新增 `docs/runbook/run-S4D-4C-agent-context-navigation.md` 作为窄索引面；当前 `agent_context_timeout` family 已具备结构性 mitigation evidence。
 - 2026-03-26: 新增 `S4D-4C`，把最近频发的 408/timeout 问题正式从 `S4D-4B` 之后拆成独立治理 phase，并固定优先顺序为“稳定 runner 网络位置 -> 自动触发到 cloud-dev -> 大入口文件减压”。
