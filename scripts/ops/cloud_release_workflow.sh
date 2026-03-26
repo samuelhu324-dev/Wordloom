@@ -281,8 +281,8 @@ if ! git merge-base --is-ancestor "$EXPECTED_HEAD_SHA" "origin/$REMOTE_BRANCH"; 
   printf '[preflight] expected_head_not_on_origin_branch=%s\n' "$EXPECTED_HEAD_SHA"
   exit 1
 fi
-current_branch="$(git symbolic-ref --short -q HEAD || true)"
-if [[ "$current_branch" != "$REMOTE_BRANCH" ]]; then
+current_branch="\$(git symbolic-ref --short -q HEAD || true)"
+if [[ "\$current_branch" != "$REMOTE_BRANCH" ]]; then
   if git show-ref --verify --quiet "refs/heads/$REMOTE_BRANCH"; then
     git checkout "$REMOTE_BRANCH"
   else
@@ -290,7 +290,7 @@ if [[ "$current_branch" != "$REMOTE_BRANCH" ]]; then
   fi
 fi
 git reset --hard "$EXPECTED_HEAD_SHA"
-printf '[preflight] remote_head_sha=%s\n' "$(git rev-parse HEAD)"
+printf '[preflight] remote_head_sha=%s\n' "\$(git rev-parse HEAD)"
 EOF
 )
 
