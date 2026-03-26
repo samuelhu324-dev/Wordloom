@@ -5,7 +5,7 @@
 **id**: `S4D-4B`
 **kind**: `log`
 **title**: `cloud runtime release workflow via GitHub Actions dispatch (approval-ready runner entry, evidence upload, operator handoff) + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, ReleaseOperations, Automation, GitHubActions, Evidence, epic/s4, sub/4b`
 **links**: ``
@@ -143,6 +143,9 @@
 - `P1-C1-S3` 已完成：当前 workflow 已收紧为 `runs-on: self-hosted`，并显式验证 self-hosted runner 的 bash/git/ssh contract，不再维持对 GitHub-hosted runner 的模糊兼容假设。
 - `P2-C1-S1` 已完成：当前 self-hosted runner 已拿到第一条真实 Actions-triggered PASS 样本，说明 GitHub Actions dispatch path 现在可以稳定完成 checkout、SSH identity 注入、`cloud_release_workflow.sh` 执行、`summary.json` 生成、artifact upload、run summary 输出与最终 PASS 判定。
 - 本轮 PASS 的直接恢复动作是为 target host 当前出口公网 IP `125.253.50.4/32` 临时补入 cloud-dev RDS `5432` inbound allow rule；这说明前一轮 blocker 不是 Actions workflow，而是 target host 到 cloud DB 的环境依赖白名单漂移。
+- `P2-C1-S2` 已完成：当前 workflow 已拿到第一条真实 Actions-triggered `PASS_AFTER_ROLLBACK` 样本，证明在 candidate verify 失败时，GitHub Actions path 能稳定完成自动 rollback、产出完整 evidence，并以成功 workflow 收口。
+- `P3-C1-S1` 已完成：`cloud-dev` environment approval boundary 现已被真实 run 多次命中，manual `workflow_dispatch` run 会先进入 `waiting`，且只有在 reviewer approval 后才继续执行发布 job。
+- `P3-C1-S2` 已完成：当前 workflow run summary 与 `operator_guidance.txt` 已稳定给出 `result`、`failureClass`、`terminalGate`、artifact 路径与下一步 operator action，handoff wording 已有真实 rollback 样本验证。
 
 ### P2 (Drill / Verify)
 
@@ -153,6 +156,12 @@
 
 - P3-C1-S1: 固定 environment approval / manual confirmation 的最小边界
 - P3-C1-S2: 固定 run summary 到 operator handoff 的最小 wording 与 artifact path
+
+**Current status (S4D-4B)**
+
+- `P0-P3` 当前已全部完成；
+- GitHub Actions 入口现已固定到可访问 `127.0.0.1:22022` target bridge 的 Windows self-hosted runner，并在 workflow 内补齐 Git Bash bootstrap 与 checked-out repo working-directory contract；
+- 最新 rollback drill `23599857316` 已以 `result=PASS_AFTER_ROLLBACK`、`failureClass=rollback_recovery`、`terminalGate=rollback_readiness_gate` 成功收口，说明 `S4D-4B` 的 dispatch / approval / artifact / handoff path 已满足 phase DoD。
 
 ## Execution Checklist (unchecked)
 
@@ -171,12 +180,12 @@
 ### P2 (Drill / Verify)
 
 - [x] `P2-C1-S1`: first Actions-triggered PASS sample recorded
-- [ ] `P2-C1-S2`: first Actions-triggered PASS_AFTER_ROLLBACK sample recorded
+- [x] `P2-C1-S2`: first Actions-triggered PASS_AFTER_ROLLBACK sample recorded
 
 ### P3 (Approvals / Handoff)
 
-- [ ] `P3-C1-S1`: environment approval boundary fixed
-- [ ] `P3-C1-S2`: operator handoff summary fixed
+- [x] `P3-C1-S1`: environment approval boundary fixed
+- [x] `P3-C1-S2`: operator handoff summary fixed
 
 ## Evidence (reserved)
 
@@ -238,8 +247,32 @@
   - artifact 中的 `summary.json` 已明确记录 `result=PASS`、`deployResult=PASS`、`verifyResult=PASS`、`failureClass=none`、`terminalGate=none`、`evidenceComplete=true`；对应 `verify.log` 也已记录 `container_running OK`、`migration_ok OK`、`health_ok OK (200)`、`read_smoke_ok OK (200 list payload)`、`env_guard_ok OK`；
   - 当前 `S4D-4B/P2-C1-S1` 已按 phase 定义完成第一条真实 Actions-triggered PASS 样本，但 evidence 同时暴露一个残余差异：本次 `summary.json` 里的 `remoteHeadSha` 仍为 target host 当前 repo HEAD `b3002d071d08f748ea438883914c876238af440f`，尚未显式收口为“dispatch branch head 必须先同步到 target host”这一更强合同。
 
+### P2-C1-S2 / P3-C1-S1S2 (first real Actions-triggered PASS_AFTER_ROLLBACK sample recorded, approval boundary re-proven, operator handoff fixed | 2026-03-26)
+
+- headSha: `7f3c417d`
+- run_url: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23599857316`
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/preflight.log`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/deploy.log`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/verify.log`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/rollback.log`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/operator_guidance.txt`
+- expected:
+  - manual `workflow_dispatch` run 应先命中 `cloud-dev` environment approval gate，再在 approval 后执行发布 job；
+  - 受控 verify failure 输入（`api_port=39999`）应触发 candidate verify FAIL，但在 supplied known-good image + `rollback_on_verify_fail=true` 条件下，以 `PASS_AFTER_ROLLBACK` 收口；
+  - workflow artifacts 与 run summary 应完整保留 rollback 场景所需的 triage / handoff 信息，而不是仅以 job success 文本结束。
+- observed:
+  - run `23599857316` 在 approval 前进入 `waiting`，且 `pending_deployments` 明确显示 `environment=cloud-dev`、`current_user_can_approve=true`、reviewer=`samuelhu324-dev`；approval 提交后 job 才继续执行，这直接证明了 `P3-C1-S1` 的 manual confirmation boundary；
+  - 本轮已完整走通 `Checkout -> Bootstrap Git Bash on Windows runners -> Validate self-hosted runner contract -> Record trigger contract -> Validate secret contract -> Prepare SSH identity -> Run cloud release workflow -> Locate summary.json -> Write run summary -> Upload workflow artifacts -> Enforce workflow result`，workflow 结论为 `success`；
+  - artifact 中的 `summary.json` 明确记录 `deployResult=PASS`、`verifyResult=FAIL`、`rollbackResult=PASS`、`rollbackTrigger=verify_fail_auto`、`operatorAction=candidate_reverted_to_known_good`、`failureClass=rollback_recovery`、`terminalGate=rollback_readiness_gate`、`result=PASS_AFTER_ROLLBACK`、`evidenceComplete=true`；
+  - `verify.log` 明确显示本轮 candidate container 已成功启动并通过 migration / env guard，但由于 verify URL 被故意指向 `http://127.0.0.1:39999/api/v1`，`health_ok` 与 `read_smoke_ok` 以 `(000)` 失败，从而触发了预期中的自动 rollback；
+  - `operator_guidance.txt` 已固定输出 rerun / rollback command、artifact 路径以及“keep service on known-good and investigate candidate logs before the next deploy”这类最小 handoff wording，证明 `P3-C1-S2` 已有真实 rollback 样本支撑。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-26: 已为 `.github/workflows/s4d-cloud-release-dispatch.yml` 连续补齐五项实质性 contract 修复：Git Bash shell bootstrap、Windows self-hosted runner pin、bootstrap shell 改为 Windows PowerShell、过严 bash path 校验移除、checked-out repo working-directory / artifact upload path 修正；这些改动分别落在 `18d285c2`、`55f6c06e`、`0d4f260d`、`120032ef`、`7f3c417d`。
+- 2026-03-26: 已完成 `S4D-4B/P2-C1-S2` 的第一条真实 `PASS_AFTER_ROLLBACK` 样本 `23599857316`，同时重新证明 `cloud-dev` approval boundary 与 operator handoff artifact contract 可用，因此 `S4D-4B` 现可标记为 `stable`。
 - 2026-03-26: 已为 target host 当前出口公网 IP `125.253.50.4/32` 临时补入 cloud-dev RDS inbound allow rule，并据此完成 `S4D-4B/P2-C1-S1` 的第一条真实 GitHub Actions PASS 样本 `23578016775`。
 - 2026-03-26: 已完成第一轮真实 GitHub Actions self-hosted dispatch 样本取证；当前 workflow path 已真实走通到 artifact upload，但 PASS 样本仍被 target host -> cloud DB dependency failure 阻塞。
 - 2026-03-26: 为使 Windows self-hosted runner 能稳定执行该 workflow，已补齐三项运行时修正：runner 改为稳定 self-hosted 会话、Git `core.longpaths=true`、workflow 默认 shell 改为 Git Bash 短路径 `C:\PROGRA~1\Git\bin\bash.exe`，从而依次清除了 runner 会话冲突、checkout 文件名过长与 shell 解析错误。
