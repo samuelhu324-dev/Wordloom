@@ -186,6 +186,8 @@ jobs:
             echo
             echo "- trigger_surface: $S4D_TRIGGER_SURFACE"
             echo "- target_environment: $S4D_TARGET_ENVIRONMENT"
+            echo "- github_ref_name: ${{ github.ref_name }}"
+            echo "- github_sha: ${{ github.sha }}"
             echo "- ssh_target: ${S4D_SSH_USER}@${S4D_SSH_HOST}:${S4D_SSH_PORT}"
             echo "- remote_repo_dir: $S4D_REMOTE_REPO_DIR"
             echo "- env_file: $S4D_ENV_FILE"
@@ -245,6 +247,8 @@ jobs:
             --ssh-user "$S4D_SSH_USER"
             --ssh-identity-file "$S4D_SSH_IDENTITY_FILE"
             --remote-repo-dir "$S4D_REMOTE_REPO_DIR"
+            --remote-branch "${{ github.ref_name }}"
+            --expected-head-sha "${{ github.sha }}"
             --env-file "$S4D_ENV_FILE"
             --image-tag "$S4D_IMAGE_TAG"
             --container-name "$S4D_CONTAINER_NAME"
