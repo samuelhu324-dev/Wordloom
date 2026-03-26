@@ -101,6 +101,8 @@ jobs:
     name: cloud-runtime-release
     runs-on:
       - self-hosted
+      - Windows
+      - s4d-cloud-dev
     environment: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || 'cloud-dev' }}
     env:
       S4D_TRIGGER_SURFACE: ${{ github.event_name == 'workflow_dispatch' && 'workflow_dispatch' || 'auto-dispatch' }}
