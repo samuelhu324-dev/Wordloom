@@ -135,7 +135,7 @@
 - 这意味着 `S4D-4C` 的第一个问题不再停留在“建议迁移 runner”，而是已经有可执行的 provision -> bootstrap -> probe -> dispatch 路径；
 - `P1-C2-S1` 已完成默认等待窗口收口：release workflow / verify / rollback 的 verify wait 已统一提高到 `180s`，SSH `ConnectTimeout` 已提高到 `30s`，用于降低冷启动误判；
 - `P1-C2-S2` 已不再阻塞于 operator ingress：当前 operator host 已恢复到 stable runner `3.27.164.166:22` 的 SSH 连通，Linux stable runner `wordloom-cloud-dev-runner` 已注册并在线，probe 已证明 GitHub / RDS reachability 为 `PASS`；
-- 当前 `P1-C2-S2` 的剩余项只剩 direct target SSH host 尚未在 probe 中显式入账，因此最后一段 evidence 仍待补齐，但“runner host 本身不可达”这一 blocker 已关闭。
+- 当前 `P1-C2-S2` 的剩余项已进一步收敛：当前 release target 仍是 operator 本机通过 `127.0.0.1:22022` 暴露的 VirtualBox NAT Ubuntu VM，而不是 stable runner 可直接到达的云端 SSH endpoint；因此最后一段 blocker 已从“未知 direct target host”收窄为“target 仍未脱离本地 NAT / 本地转发前提”。
 
 ### P2 (Automation trigger hardening)
 
@@ -288,6 +288,21 @@
   - `cloud_stable_runner_bootstrap.sh` 已在远端把 `wordloom-cloud-dev-runner` 注册为 Linux self-hosted runner，并以 systemd service 方式运行；
   - `probe.json` 已记录 `githubReachability=PASS`、`runnerListener=PASS`、`dependencyTcpReachability=PASS`；当前 `targetSshReachability=SKIPPED`，说明 residual gap 已从“runner host 不可达”收窄为“direct target SSH host 尚未显式纳入 probe 参数”。
 
+### P1-C2-S2 (target path remains local VirtualBox NAT, so stable-runner target SSH still FAIL | 2026-03-26)
+
+- headSha: `ad8475b7`
+- timeoutFamily: `runtime_dependency_timeout`
+- triggerSurface: `stable-runner probe`, `target SSH reachability`, `local NAT forwarding`
+- artifacts:
+  - `artifacts/_tmp_s4d4c_cloud_runner_probe/20260326T110703Z/probe.json`
+- expected:
+  - 当 stable runner network path 已恢复后，若当前 release target 已具备 direct SSH entry，则从 stable runner 对 target SSH 的 TCP reachability 应为 `PASS`；
+  - 若 target 仍只是 operator 本地转发入口，则该 probe 应显式暴露为 `FAIL`，而不是继续把问题记成“runner host 自身超时”。
+- observed:
+  - 当前 operator host 的 `127.0.0.1:22022` listener 由 `VirtualBoxVM.exe` 持有；通过该入口登录后，目标主机 hostname 为 `wordloom-ubuntu`，网卡地址为 `10.0.2.15/24`，属于典型 VirtualBox NAT guest；
+  - 同一主机已确认存在 `/home/wordloom/work/wordloom-v3`、`/etc/wordloom/.env.cloud.dev` 与 Docker runtime，说明这就是当前实际 release target，而不是一台额外的云端 Ubuntu VM；
+  - 从 stable runner 对当前 operator 公网 IP `49.196.51.46:22022` 的 probe 已返回 `targetSshReachability=FAIL`；因此当前 residual blocker 已被明确固定为：release target 仍依赖 operator 本机的本地 NAT / 端口转发入口，而 stable runner 只能稳定替代“runner 位置”和“RDS allowlist 漂移”问题，无法自动穿透这一类本地 VirtualBox NAT 前提。
+
 ### P2-C1-S1S2 (auto-dispatch and approval-only boundary proven | 2026-03-26)
 
 - headSha: `f62165d7f93243dd8001aee80d3836f9d80ddd40`
@@ -328,4 +343,5 @@
 - 2026-03-26: 已尝试执行 `S4D-4C/P1-C2-S2` 的 stable-runner evidence capture；当前 blocker 已收敛为 operator host 到 stable runner `3.27.164.166:22` 的 SSH ingress timeout，因此 runner-side probe / dispatch evidence 仍待后续补齐。
 - 2026-03-26: 已恢复 repo Windows self-hosted runner `wordloom-s4d-temp-win` 在线状态，并关闭 auto-dispatch 的 runner availability blocker。
 - 2026-03-26: 已补入当前 operator `/32` 到 stable runner SSH ingress，完成 `wordloom-cloud-dev-runner` 的 Linux service bootstrap，并拿到 GitHub / RDS / runner listener 的 probe PASS；当前 residual gap 只剩 direct target SSH host 尚未显式纳入 probe 参数。
+- 2026-03-26: 已进一步确认当前 release target 并非 stable runner 可直接访问的云端 SSH endpoint，而是当前 operator Windows 主机上由 `VirtualBoxVM.exe` 持有 `127.0.0.1:22022` 转发的本地 NAT Ubuntu VM；从 stable runner 对当前 operator 公网 IP `49.196.51.46:22022` 的 probe 已显式返回 `FAIL`。
 - 2026-03-26: 新增 `S4D-4C`，把最近频发的 408/timeout 问题正式从 `S4D-4B` 之后拆成独立治理 phase，并固定优先顺序为“稳定 runner 网络位置 -> 自动触发到 cloud-dev -> 大入口文件减压”。
