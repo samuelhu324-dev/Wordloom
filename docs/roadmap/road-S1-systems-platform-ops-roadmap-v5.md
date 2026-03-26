@@ -12,7 +12,7 @@
   **source**: `legacy/from_structured_docs/from-roadmap/ROADMAP v5.md`
   **child_road_1**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
 **created**: `2026-03-21`
-**updated**: `2026-03-25`
+**updated**: `2026-03-26`
 
 ---
 
@@ -124,6 +124,29 @@
   - 需要验证受控 deploy/rollback/operator workflow；
   - 需要更强审计和权限分层。
 
+  ### F7: Runtime access path evolution（target access boundary from local-only to stable cloud path）
+
+  - **它是什么**：把当前 release target 的访问路径从“依赖 operator 本机 local-only / NAT 转发”逐步演进到更稳定、更可自动化、边界更清晰的 runtime access model。
+  - **为什么会自然出现**：当 `S4D` 的 stable runner 已经解决了 runner 位置、RDS reachability 与 GitHub Actions shell contract，但 release target 仍依赖本地 VirtualBox / NAT / 临时端口转发时，最后一跳 target access path 就会成为新的主 blocker。
+  - **当前可选的三种方式**：
+    - 方式 1：把 target 也迁到 cloud / VPC 内，用私网 IP 或 SG-to-SG 通信。
+      - 定位：根因级长期方案。
+      - 优点：最稳定、最适合自动化、最接近正式 SaaS / cloud runtime 边界。
+      - 代价：迁移和环境改造成本最高。
+    - 方式 2：给 target 一个 stable overlay network 地址，例如 Tailscale / WireGuard / ZeroTier。
+      - 定位：介于本地与全云之间的长期折中方案。
+      - 优点：不要求 target 立刻迁入 cloud/VPC，也能摆脱动态公网 IP allowlist 漂移。
+      - 代价：要额外引入 overlay network 控制面与运维复杂度。
+    - 方式 3：从 local-only target 反向连到 stable runner，建立 reverse tunnel bridge，再让 workflow 打 runner 上暴露出的 tunnel 入口。
+      - 定位：最小改动、最快见效的 bridge 方案。
+      - 优点：不要求立刻迁移 target；适合先补齐 stable-runner probe / dispatch evidence。
+      - 代价：仍依赖 operator/local host 在线与 tunnel 存活，因此更像过渡桥，而不是终局架构。
+  - **当前是否已触发**：`已触发`。
+  - **当前完成状态**：
+    - 方式 3 已完成最小 bridge 样本：`S4D-4C/P1-C3-S1S2` 已通过 reverse tunnel 把 local-only target 的 `127.0.0.1:22022` bridge 到 stable runner host，并把 stable-runner target SSH probe 从 `FAIL` 推到 `PASS`；
+    - 方式 1 与方式 2 暂保留为未来演进项，等当前 `S4D` 的 reverse-tunnel-backed dispatch evidence 与 control-plane 收口稳定后，再决定是否继续上升到更长期的 access model。
+  - **当前策略**：先把方式 3 作为当前 phase 的可验证 bridge，避免 `S4D` 被本地 NAT target 长期卡住；后续若这条 path 变成长期保留能力，再优先评估方式 1，其次方式 2。
+
 ## Milestones (M1–M5)
 
 > 每个 Milestone 内部沿用 phase-log 的 P0–P3 结构：P0 = contract，P1 = implementation，P2–P3 = drills / verification / wording。这里只给出「总路线」级别的框架，具体落地可以在子路线或 logs 中展开。
@@ -231,6 +254,7 @@
 
 ## Recent Changes
 
+- 2026-03-26: 新增 `F7 Runtime access path evolution`，明确把 target access boundary 分成三种路径：全云/VPC、overlay network、reverse tunnel bridge；并记录当前已完成的是第 3 种桥接方案，第 1/2 种保留后续演进。
 - 2026-03-25: 把当前 `S4D` 暴露出的 release gates / failure taxonomy / evidence discipline 明确下沉到 `M4` 完成面；`F1` 与 `F3` 继续保留为触发条件说明，但不再把这些内容误判为主要属于未来 `M5` 的话题。
 - 2026-03-25: 新增 “Future capabilities & trigger conditions” 条目，明确 productionization automation、云服务基础、failure taxonomy、安全治理、Kubernetes、Kafka 与 local-first/cloud-selective 的触发条件，避免把未触发能力过早塞进当前主线。
 - 2026-03-25: 明确 roadmap 记账边界：`road-S1` 主体优先承接 `S4C + S4D` 的 cloud/runtime 主线，而 `road-S1-1` 承接政府岗最小闭环中的 `S4B + S5A-3B` 与 `S4A` 方法论引用。
