@@ -129,7 +129,7 @@ jobs:
           path: repo
 
       - name: Bootstrap Git Bash on Windows runners
-        shell: pwsh
+        shell: powershell
         run: |
           $gitBash = Join-Path $env:ProgramFiles 'Git\bin\bash.exe'
           $gitCmd = Join-Path $env:ProgramFiles 'Git\cmd'
