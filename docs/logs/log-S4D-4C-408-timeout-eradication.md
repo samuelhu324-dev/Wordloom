@@ -5,7 +5,7 @@
 **id**: `S4D-4C`
 **kind**: `log`
 **title**: `408 timeout eradication (timeout taxonomy, stable runner network path, controlled auto-dispatch, large-entrypoint reduction) + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, ReleaseOperations, Automation, Timeout, Evidence, epic/s4, sub/4c`
 **links**: ``
@@ -140,7 +140,7 @@
 - `P1-C2-S2` 已不再阻塞于 operator ingress：当前 operator host 已恢复到 stable runner `3.27.164.166:22` 的 SSH 连通，Linux stable runner `wordloom-cloud-dev-runner` 已注册并在线，probe 已证明 GitHub / RDS reachability 为 `PASS`；
 - 当前 `P1-C2-S2` 的剩余项已进一步收敛：当前 release target 仍是 operator 本机通过 `127.0.0.1:22022` 暴露的 VirtualBox NAT Ubuntu VM，而不是 stable runner 可直接到达的云端 SSH endpoint；因此最后一段 blocker 已从“未知 direct target host”收窄为“target 仍未脱离本地 NAT / 本地转发前提”。
 - `P1-C3-S1S2` 已完成：当前 operator host 已通过 reverse tunnel 把本地 `127.0.0.1:22022` bridge 到 stable runner host 的 `127.0.0.1:22022`，并已把 stable-runner target SSH probe 从 `FAIL` 推进到 `PASS`；
-- `P1-C3-S3` 仍待完成：当前 stable-runner dispatch workflow 文件尚未进入 GitHub 默认分支 `main` 的 workflow registry，因此 control-plane 侧还不能直接 `workflow_dispatch` 这一条 stable-runner Actions 入口。
+- `P1-C3-S3` 已完成第一条 reverse-tunnel-backed stable-runner dispatch evidence，并已进一步完成一次根因修复后的 PASS 复跑：当前 P1 的 runner path / bridge / dispatch / dependency recovery 样本都已具备真实证据。
 
 ### P2 (Automation trigger hardening)
 
@@ -159,6 +159,14 @@
 - P3-C1-S1: 识别并继续治理高频大入口文件 / 高扇出检索入口
 - P3-C1-S2: 为后续 drill/workflow/cli 文档与入口建立更窄的索引面，减少 Agent/Copilot 上下文装载压力
 
+**Current status (S4D-4C / P3)**
+
+- `P3-C1-S1` 已完成第一轮高压入口识别与排序；当前优先收口对象固定为 5 个 surface：`scripts/ops/cloud_release_workflow.sh`、`docs/logs/log-S4D-4C-408-timeout-eradication.md` / `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md` 聚合面、`backend/scripts/cli_app/scenarios/_failure_drill_shared.py`、`backend/scripts/cli_app/scenarios/shadow_verify_dual_run_window.py` / `shadow_verify_dual_run_stage2.py`、以及 `backend/scripts/cli_app/registry.py` 的 scenario discovery 扇出面；
+- `P3-C1-S2` 已完成第一轮窄索引收口：当前仓库已新增 `docs/runbook/run-S4D-4C-agent-context-navigation.md`，把 S4D timeout、release gate、drill scenario 的默认首读路径压缩为一条更窄的导航面；
+- `P3-C2-S1` 已完成第一轮 orchestrator helper 抽离：`cloud_release_workflow.sh` 当前已把 failure classification、gate promotion、summary/operator guidance 写盘与 SSH remote-step helper 下沉到 `scripts/ops/cloud_release_workflow_helpers.sh`，从而让主文件更接近“参数/状态 + gate 编排”壳；
+- `P3-C2-S2` 已完成第一轮 release gate map：当前仓库已新增 `docs/runbook/run-S4D-cloud-release-gate-map.md`，把 `summary.json` 的 `terminalGate` / `failureClass` 与首读日志/脚本做成窄导航；
+- `backend/scripts/cli.py` 现已维持 dispatch-only 薄入口，不再作为默认第一检索对象；当前 agent/context pressure 的主风险已从“超大单入口 CLI”转移到“聚合日志 + orchestrator + 大 scenario 模块 + discovery 扇出面”。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -172,10 +180,10 @@
 - [x] `P1-C1-S1`: stable runner network path fixed
 - [x] `P1-C1-S2`: stable runner repo-side cutover assets fixed
 - [x] `P1-C2-S1`: runtime readiness / SSH wait baseline fixed
-- [ ] `P1-C2-S2`: stable-runner runtime timeout evidence baseline fixed
+- [x] `P1-C2-S2`: stable-runner runtime timeout evidence baseline fixed
 - [x] `P1-C3-S1`: reverse tunnel bridge for local-only target fixed
 - [x] `P1-C3-S2`: reverse-tunnel-backed stable-runner target probe fixed
-- [ ] `P1-C3-S3`: reverse-tunnel-backed stable-runner dispatch evidence fixed
+- [x] `P1-C3-S3`: reverse-tunnel-backed stable-runner dispatch evidence fixed
 
 ### P2 (Automation trigger hardening)
 
@@ -184,8 +192,8 @@
 
 ### P3 (Agent/context pressure reduction)
 
-- [ ] `P3-C1-S1`: high-pressure entrypoints identified and sequenced
-- [ ] `P3-C1-S2`: reduced-context guidance / indexing fixed
+- [x] `P3-C1-S1`: high-pressure entrypoints identified and sequenced
+- [x] `P3-C1-S2`: reduced-context guidance / indexing fixed
 
 ## Evidence (reserved)
 
@@ -344,6 +352,46 @@
   - `gh workflow run s4d-cloud-release-dispatch-stable-runner.yml` 返回 `HTTP 404: workflow ... not found on the default branch`；
   - 因此当前 blocker 已不再是 reverse tunnel 或 target reachability，而是 control-plane registry 仍以默认分支 `main` 为准，当前 stable-runner workflow 文件尚未进入该 registry。
 
+### P1-C3-S3 (first reverse-tunnel-backed stable-runner dispatch evidence captured | 2026-03-26)
+
+- headSha: `562974d6`
+- timeoutFamily: `runtime_dependency_timeout`
+- triggerSurface: `workflow_dispatch`, `stable-runner dispatch`, `reverse tunnel bridge`
+- runUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23592172058`
+- artifacts:
+  - `artifacts/_tmp_s4d4c_stable_runner_run_23592172058/s4d-cloud-release-stable-runner-23592172058-1/summary.json`
+  - `artifacts/_tmp_s4d4c_stable_runner_run_23592172058/s4d-cloud-release-stable-runner-23592172058-1/verify.log`
+  - `artifacts/_tmp_s4d4c_stable_runner_run_23592172058/s4d-cloud-release-stable-runner-23592172058-1/operator_guidance.txt`
+- expected:
+  - stable-runner workflow 进入默认分支 registry 后，应能以 `ssh_host=127.0.0.1`、`ssh_port=22022`、`ssh_user=wordloom` 成功触发第一条 reverse-tunnel-backed dispatch；
+  - 当前样本至少应证明 control-plane、stable runner contract、target reachability 与 deploy execution 已真实走通，不再停留在“workflow 404”或“target SSH 不通”。
+- observed:
+  - `s4d-cloud-release-dispatch-stable-runner` 现已进入 GitHub 默认分支 registry，并成功以 `workflow_dispatch` 方式启动 run `23592172058`；
+  - 该 run 已通过 environment approval，并在 stable runner 上真实执行；`preflightResult=PASS`、`deployResult=PASS`、`targetReachabilityGate=PASS`；
+  - 终态为 `verifyResult=FAIL`、`terminalGate=dependency_connectivity_gate`、`failureClass=dependency_connectivity_failure`，说明当前新的真实 blocker 已收口为 target runtime 在数据库迁移阶段连接 cloud-dev RDS 失败，而不是 runner / reverse tunnel / workflow registry；
+  - `verify.log` 已记录容器启动后在 Alembic migration 阶段抛出 `psycopg.OperationalError`，签名为 `connection to server at "13.211.43.32", port 5432 failed: server closed the connection unexpectedly`；
+  - `summary.json` 同时保留一个残余差异：当前 `remoteHeadSha=b3002d071d08f748ea438883914c876238af440f`，仍未与本次触发所用的 `headSha=b63cb3d0451bc8e06b30e95a2ceec7038b79a3c7` 收口到同一版本。
+
+### P1-C3-S3 (dependency connectivity and head drift fixed; stable-runner dispatch PASS | 2026-03-26)
+
+- headSha: `00353942`
+- timeoutFamily: `runtime_dependency_timeout`
+- triggerSurface: `workflow_dispatch`, `stable-runner dispatch`, `dependency recovery rerun`
+- runUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23595354059`
+- artifacts:
+  - `artifacts/_tmp_s4d4c_stable_runner_run_23595354059/s4d-cloud-release-stable-runner-23595354059-1/summary.json`
+  - `artifacts/_tmp_s4d4c_stable_runner_run_23595354059/s4d-cloud-release-stable-runner-23595354059-1/preflight.log`
+  - `artifacts/_tmp_s4d4c_stable_runner_run_23595354059/s4d-cloud-release-stable-runner-23595354059-1/verify.log`
+- expected:
+  - 在第一次 reverse-tunnel-backed dispatch 样本暴露 `dependency_connectivity_failure` 和 `remoteHeadSha` 漂移后，应能先从 target VM 上完成最小诊断，再修复 RDS allowlist 与 target repo HEAD，随后复跑 stable-runner dispatch 并把结果推进到 `PASS`；
+  - PASS 样本应同时证明：dependency gate 恢复、post-change verify 恢复，以及 target host 实际运行版本与触发版本一致。
+- observed:
+  - 当前 target VM 上已确认实际公网出口 IP 为 `49.196.51.46`，而 cloud-dev RDS security group `sg-0873e947b9947639d` 在第一次 FAIL 样本前并未包含该 `/32`；这说明第一次 FAIL 的主根因是 target egress IP 漂移后未被 allowlist 覆盖；
+  - 已为 `sg-0873e947b9947639d` 补入 `49.196.51.46/32` 的 `5432/TCP` allow rule，并把 target VM 上的 `/home/wordloom/work/wordloom-v3` 快进到 `origin/S4D-cloud-runtime-deploy-verify-rollback`；
+  - 复跑 run `23595354059` 后，`summary.json` 已记录 `result=PASS`、`failureClass=none`、`dependencyConnectivityGate=PASS`、`postChangeVerifyGate=PASS`；
+  - `preflight.log` 与 `summary.json` 已同时确认 `remoteHeadSha=0035394235c3fdfe905ac780c322987cf988eced`，说明这次 trigger SHA 与 target runtime HEAD 已收口一致；
+  - `verify.log` 已记录 `container_running OK`、`migration_ok OK`、`health_ok OK (200)`、`read_smoke_ok OK (200 list payload)`，因此当前 stable-runner reverse-tunnel path 已取得第一条真实 PASS 样本。
+
 ### P2-C1-S1S2 (auto-dispatch and approval-only boundary proven | 2026-03-26)
 
 - headSha: `f62165d7f93243dd8001aee80d3836f9d80ddd40`
@@ -376,6 +424,46 @@
   - GitHub repo runner inventory 已显示 `wordloom-s4d-temp-win` 从 `offline` 恢复为 `online`；
   - 因此 `P2` 之前暴露的 runner availability blocker 已被关闭，后续 auto-dispatch run 不再缺少 Windows 落点。
 
+### P3-C1-S1S2 (high-pressure entrypoints ranked and reduced-context quick index landed | 2026-03-26)
+
+- headSha: `pending-next-commit`
+- timeoutFamily: `agent_context_timeout`
+- triggerSurface: `S4D timeout triage`, `release gate investigation`, `drill scenario discovery`
+- artifacts:
+  - `docs/runbook/run-S4D-4C-agent-context-navigation.md`
+  - `docs/INDEX.md`
+  - `backend/scripts/cli_app/registry.py`
+  - `backend/scripts/cli_app/scenarios/_failure_drill_shared.py`
+  - `backend/scripts/cli_app/scenarios/shadow_verify_dual_run_window.py`
+  - `backend/scripts/cli_app/scenarios/shadow_verify_dual_run_stage2.py`
+- expected:
+  - 先把当前最容易把 Copilot/Agent 拉爆上下文的入口面缩到 `3-5` 个真实对象，而不是继续基于旧的 `cli.py 仍然超大` 假设做泛化判断；
+  - 为后续 S4D / workflow / drill 排障提供一条更窄的默认导航面，使调查能先按 gate、phase、scenario 缩小范围，再打开具体文件；
+  - 让 `agent_context_timeout` family 也拥有正式 evidence，而不是只停留在口头经验。
+- observed:
+  - 结合当前行数与扇出角色，第一轮高压入口已固定为 `cloud_release_workflow.sh`、`S4D-4C + S4D spine` 聚合面、`_failure_drill_shared.py`、`shadow_verify_dual_run_window.py` / `shadow_verify_dual_run_stage2.py`、以及 `registry.py` discovery surface；
+  - `backend/scripts/cli.py` 当前仅约 `81` 行，已不再是 P3 的主风险对象；说明当前 context pressure 的根因已从“单一超大 CLI 入口”迁移为“聚合日志 + orchestrator + 大 scenario 模块 + 检索扇出面”；
+  - 新增 `docs/runbook/run-S4D-4C-agent-context-navigation.md` 后，S4D timeout、release gate 与 drill scenario 已拥有一条默认首读路径；操作者与 Agent 现在可以先按 symptom / gate / scenario 缩小到单个对象，而不必先读取整条 S4D 历史链路或整包 scenario 家族。
+
+### P3-C2-S1S2 (cloud release orchestrator helper split and gate map landed | 2026-03-26)
+
+- headSha: `pending-next-commit`
+- timeoutFamily: `agent_context_timeout`
+- triggerSurface: `cloud release gate triage`, `summary.json investigation`, `workflow orchestrator retrieval`
+- artifacts:
+  - `scripts/ops/cloud_release_workflow.sh`
+  - `scripts/ops/cloud_release_workflow_helpers.sh`
+  - `docs/runbook/run-S4D-cloud-release-gate-map.md`
+  - `docs/runbook/run-S4D-4C-agent-context-navigation.md`
+- expected:
+  - 把当前最重的 release orchestrator 从“单文件承载参数、分类、summary、guidance、remote-step 执行与 gate 编排”收口成更窄的主入口；
+  - 让后续定位 `terminalGate` / `failureClass` 时，默认先读小型 gate map，而不是整段读取 `cloud_release_workflow.sh`；
+  - 保持 `S4D-4A` / `S4D-4B` 既有 release 语义不变，不引入新的 deploy path。
+- observed:
+  - `cloud_release_workflow.sh` 已把 JSON/summary/guidance/SSH-step/failure-classification 等 helper 下沉到 `scripts/ops/cloud_release_workflow_helpers.sh`，主文件剩余责任更集中在参数解析、状态初始化和 gate 编排；
+  - 当前仓库已新增 `docs/runbook/run-S4D-cloud-release-gate-map.md`，可以直接把 `summary.json` 中的 `terminalGate` / `failureClass` 映射到 `preflight.log`、`deploy.log`、`verify.log`、`rollback.log` 与对应 helper/runbook，而不必默认打开整个 orchestrator；
+  - `docs/runbook/run-S4D-4C-agent-context-navigation.md` 已同步指向 gate map，因此 P3 现已从“高压入口识别”推进到“高压 orchestrator 的结构性减压 + 窄路由落地”。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-26: 已完成 `S4D-4C/P1-C1-S1S2` 的 repo-side 交付：新增 stable runner host Terraform module、bootstrap/probe 脚本、stable-runner workflow 与 cutover runbook，使“迁移 self-hosted runner 到稳定网络位置”从建议变成可执行路径。
@@ -386,5 +474,9 @@
 - 2026-03-26: 已补入当前 operator `/32` 到 stable runner SSH ingress，完成 `wordloom-cloud-dev-runner` 的 Linux service bootstrap，并拿到 GitHub / RDS / runner listener 的 probe PASS；当前 residual gap 只剩 direct target SSH host 尚未显式纳入 probe 参数。
 - 2026-03-26: 已进一步确认当前 release target 并非 stable runner 可直接访问的云端 SSH endpoint，而是当前 operator Windows 主机上由 `VirtualBoxVM.exe` 持有 `127.0.0.1:22022` 转发的本地 NAT Ubuntu VM；从 stable runner 对当前 operator 公网 IP `49.196.51.46:22022` 的 probe 已显式返回 `FAIL`。
 - 2026-03-26: 已新增 reverse tunnel bridge 脚本 `scripts/ops/cloud_target_reverse_tunnel.ps1`，并把当前 local-only target 的 `127.0.0.1:22022` 反向桥接到 stable runner host；随后 stable-runner probe 已把 `targetSshReachability` 从 `FAIL` 推进到 `PASS`。
-- 2026-03-26: 已确认当前 reverse-tunnel-backed dispatch 的剩余 blocker 不再是网络路径，而是 `s4d-cloud-release-dispatch-stable-runner.yml` 尚未进入 GitHub 默认分支 `main` 的 workflow registry，因此 `workflow_dispatch` 仍返回 404。
+- 2026-03-26: `s4d-cloud-release-dispatch-stable-runner.yml` 已进入 GitHub 默认分支 registry，并已取得第一条 reverse-tunnel-backed stable-runner dispatch evidence `23592172058`；当前新的真实 blocker 已收口为 target runtime 的 `dependency_connectivity_failure`，而非 workflow registry / reverse tunnel。
+- 2026-03-26: 已从 target VM 本身完成最小 RDS 依赖诊断，确认当前出口 IP 为 `49.196.51.46`，并据此把该 `/32` 补入 cloud-dev RDS security group `sg-0873e947b9947639d`；同时已把 target repo HEAD 快进到 `0035394235c3fdfe905ac780c322987cf988eced`。
+- 2026-03-26: 已完成 reverse-tunnel-backed stable-runner PASS 复跑 `23595354059`，当前 `dependencyConnectivityGate=PASS`、`postChangeVerifyGate=PASS`，且 trigger SHA 与 remote HEAD 已一致。
+- 2026-03-26: 已完成 `S4D-4C/P3-C1-S1S2` 的第一轮收口：高压入口已固定排序，并新增 `docs/runbook/run-S4D-4C-agent-context-navigation.md` 作为窄索引面；当前 `agent_context_timeout` family 已具备结构性 mitigation evidence。
+- 2026-03-26: 已完成 `S4D-4C/P3-C2-S1S2` 的第二轮减压：`cloud_release_workflow.sh` 已把 helper 下沉到独立文件，并新增 `docs/runbook/run-S4D-cloud-release-gate-map.md` 作为 gate-level 首读导航。
 - 2026-03-26: 新增 `S4D-4C`，把最近频发的 408/timeout 问题正式从 `S4D-4B` 之后拆成独立治理 phase，并固定优先顺序为“稳定 runner 网络位置 -> 自动触发到 cloud-dev -> 大入口文件减压”。
