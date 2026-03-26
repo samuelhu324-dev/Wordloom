@@ -141,7 +141,8 @@
 - `P0-C1-S3` 已完成第一版 evidence/run-summary contract：当前 workflow 会上传整个 artifact 目录，并把 `result`、`failureClass`、`terminalGate`、`terminalStage`、`operatorAction`、`evidenceComplete` 与 gate results 写入 `GITHUB_STEP_SUMMARY`。
 - `P1-C1-S1` 与 `P1-C1-S2` 已完成第一版落地：仓库现已新增 `.github/workflows/s4d-cloud-release-dispatch.yml`，直接复用 `cloud_release_workflow.sh` 作为 runner entry。
 - `P1-C1-S3` 已完成：当前 workflow 已收紧为 `runs-on: self-hosted`，并显式验证 self-hosted runner 的 bash/git/ssh contract，不再维持对 GitHub-hosted runner 的模糊兼容假设。
-- `P2-C1-S1` 当前转入执行中；第一轮真实 dispatch evidence 将直接围绕“本机 self-hosted runner -> 127.0.0.1:22022 target -> PASS artifact bundle”来取证。
+- `P2-C1-S1` 已完成：当前 self-hosted runner 已拿到第一条真实 Actions-triggered PASS 样本，说明 GitHub Actions dispatch path 现在可以稳定完成 checkout、SSH identity 注入、`cloud_release_workflow.sh` 执行、`summary.json` 生成、artifact upload、run summary 输出与最终 PASS 判定。
+- 本轮 PASS 的直接恢复动作是为 target host 当前出口公网 IP `125.253.50.4/32` 临时补入 cloud-dev RDS `5432` inbound allow rule；这说明前一轮 blocker 不是 Actions workflow，而是 target host 到 cloud DB 的环境依赖白名单漂移。
 
 ### P2 (Drill / Verify)
 
@@ -169,7 +170,7 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: first Actions-triggered PASS sample recorded
+- [x] `P2-C1-S1`: first Actions-triggered PASS sample recorded
 - [ ] `P2-C1-S2`: first Actions-triggered PASS_AFTER_ROLLBACK sample recorded
 
 ### P3 (Approvals / Handoff)
@@ -199,8 +200,49 @@
   - workflow 现已固定 evidence contract：无论成功或失败，都会上传本次 artifact 目录，并把 `summary.json` 中的 `result`、`failureClass`、`terminalGate`、`terminalStage`、`operatorAction`、`evidenceComplete` 与 gate results 写入 `GITHUB_STEP_SUMMARY`；
   - 当前 `S4D-4B` 已完成 P0/P1 的 contract 和 implementation，但 P2 尚未执行，因为第一轮真实 dispatch 样本仍取决于 runner 是否具备到 target host 的真实 SSH reachability。
 
+### P2-C1-S1 (first real Actions-triggered dispatch executed, workflow path proven, PASS sample still blocked by real dependency failure | 2026-03-26)
+
+- headSha: `0f354032`
+- run_url: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23575789110`
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23575789110/s4d-cloud-release-23575789110-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23575789110/s4d-cloud-release-23575789110-1/preflight.log`
+  - `artifacts/_tmp_s4d4b_run_23575789110/s4d-cloud-release-23575789110-1/deploy.log`
+  - `artifacts/_tmp_s4d4b_run_23575789110/s4d-cloud-release-23575789110-1/verify.log`
+  - `artifacts/_tmp_s4d4b_run_23575789110/s4d-cloud-release-23575789110-1/operator_guidance.txt`
+- expected:
+  - 第一轮 GitHub Actions self-hosted dispatch 至少应完整走通 checkout、secret injection、remote preflight/deploy/verify、artifact upload 与 run summary；
+  - 若 underlying release path 正常，则 `P2-C1-S1` 应以 PASS 样本收口，并把 Actions run URL 与 artifact bundle 记入本 log。
+- observed:
+  - 第四轮真实 dispatch run `23575789110` 已完整走通 `Checkout -> Validate self-hosted runner contract -> Validate secret contract -> Prepare SSH identity -> Run cloud release workflow -> Locate summary.json -> Write run summary -> Upload workflow artifacts`，说明 `S4D-4B` 的 Actions 执行链路已被真实打通；
+  - 本轮 workflow failure 只发生在最终 `Enforce workflow result`，原因不是 Actions glue code 崩溃，而是 `summary.json` 明确记为 `result=FAIL`、`failureClass=dependency_connectivity_failure`、`terminalGate=dependency_connectivity_gate`；
+  - artifact 中的 `verify.log` 显示 deploy 已成功启动 candidate container，但 migration 阶段连接云端 PostgreSQL 失败，容器以 exit code `1` 退出，因此 verify 收口为真实 dependency failure；
+  - 对 target host 的非破坏性诊断进一步确认：当前 `/home/wordloom/work/wordloom-v3` 处于 clean state，但 HEAD 仍为 `b3002d071d08f748ea438883914c876238af440f`；同时从 target host 到 `wlv3-cloud-dev-postgres...:5432` 的原始 TCP 探测超时，因此当前 `P2-C1-S1` 的 blocker 是环境依赖可用性，而不是 runner / workflow contract。
+
+### P2-C1-S1 (first real Actions-triggered PASS sample recorded after restoring target-host-to-RDS allowlist | 2026-03-26)
+
+- headSha: `0f354032`
+- run_url: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23578016775`
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23578016775/s4d-cloud-release-23578016775-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23578016775/s4d-cloud-release-23578016775-1/preflight.log`
+  - `artifacts/_tmp_s4d4b_run_23578016775/s4d-cloud-release-23578016775-1/deploy.log`
+  - `artifacts/_tmp_s4d4b_run_23578016775/s4d-cloud-release-23578016775-1/verify.log`
+  - `artifacts/_tmp_s4d4b_run_23578016775/s4d-cloud-release-23578016775-1/operator_guidance.txt`
+- expected:
+  - 在修复 target host -> cloud-dev RDS 的 dependency connectivity 后，下一轮 GitHub Actions self-hosted dispatch 应以真实 PASS 收口；
+  - PASS run 至少应完整走通 `Run cloud release workflow`、artifact upload 与 `Enforce workflow result`，并在 `summary.json` 中收口为 `result=PASS`。
+- observed:
+  - 在为 target host 当前出口公网 IP `125.253.50.4/32` 临时补入 RDS security group 的 `5432/TCP` allow rule 后，从 target host 到 `wlv3-cloud-dev-postgres...:5432` 的原始 TCP 探测已恢复为 `PASS`；
+  - 第五轮真实 dispatch run `23578016775` 已完整走通 `Checkout -> Validate self-hosted runner contract -> Validate secret contract -> Prepare SSH identity -> Run cloud release workflow -> Locate summary.json -> Write run summary -> Upload workflow artifacts -> Enforce workflow result`，且 job 最终为 `success`；
+  - artifact 中的 `summary.json` 已明确记录 `result=PASS`、`deployResult=PASS`、`verifyResult=PASS`、`failureClass=none`、`terminalGate=none`、`evidenceComplete=true`；对应 `verify.log` 也已记录 `container_running OK`、`migration_ok OK`、`health_ok OK (200)`、`read_smoke_ok OK (200 list payload)`、`env_guard_ok OK`；
+  - 当前 `S4D-4B/P2-C1-S1` 已按 phase 定义完成第一条真实 Actions-triggered PASS 样本，但 evidence 同时暴露一个残余差异：本次 `summary.json` 里的 `remoteHeadSha` 仍为 target host 当前 repo HEAD `b3002d071d08f748ea438883914c876238af440f`，尚未显式收口为“dispatch branch head 必须先同步到 target host”这一更强合同。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-26: 已为 target host 当前出口公网 IP `125.253.50.4/32` 临时补入 cloud-dev RDS inbound allow rule，并据此完成 `S4D-4B/P2-C1-S1` 的第一条真实 GitHub Actions PASS 样本 `23578016775`。
+- 2026-03-26: 已完成第一轮真实 GitHub Actions self-hosted dispatch 样本取证；当前 workflow path 已真实走通到 artifact upload，但 PASS 样本仍被 target host -> cloud DB dependency failure 阻塞。
+- 2026-03-26: 为使 Windows self-hosted runner 能稳定执行该 workflow，已补齐三项运行时修正：runner 改为稳定 self-hosted 会话、Git `core.longpaths=true`、workflow 默认 shell 改为 Git Bash 短路径 `C:\PROGRA~1\Git\bin\bash.exe`，从而依次清除了 runner 会话冲突、checkout 文件名过长与 shell 解析错误。
 - 2026-03-26: 已新增 `.github/workflows/s4d-cloud-release-dispatch.yml`，把 `S4D-4A` 的单入口 release workflow 接入 GitHub Actions `workflow_dispatch`，并补齐 artifact upload 与 run summary contract。
 - 2026-03-26: 已把 `S4D-4B` 的 v1 runner boundary 从泛化 hosted/self-hosted 收紧为 self-hosted runner contract；这一步应记为 `P1-C1-S3`，因为它不仅修正文字合同，也改变了实际 workflow 的 `runs-on` 与 runner validation 逻辑。
 - 2026-03-25: 创建 `S4D-4B` draft，明确下一阶段不是重写 deploy/rollback 语义，而是把 `S4D-4A` 已稳定的单入口 workflow 接入 GitHub Actions 的 dispatch / approval / artifact upload path。
