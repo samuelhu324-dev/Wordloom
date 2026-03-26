@@ -140,7 +140,7 @@
 - `P1-C2-S2` 已不再阻塞于 operator ingress：当前 operator host 已恢复到 stable runner `3.27.164.166:22` 的 SSH 连通，Linux stable runner `wordloom-cloud-dev-runner` 已注册并在线，probe 已证明 GitHub / RDS reachability 为 `PASS`；
 - 当前 `P1-C2-S2` 的剩余项已进一步收敛：当前 release target 仍是 operator 本机通过 `127.0.0.1:22022` 暴露的 VirtualBox NAT Ubuntu VM，而不是 stable runner 可直接到达的云端 SSH endpoint；因此最后一段 blocker 已从“未知 direct target host”收窄为“target 仍未脱离本地 NAT / 本地转发前提”。
 - `P1-C3-S1S2` 已完成：当前 operator host 已通过 reverse tunnel 把本地 `127.0.0.1:22022` bridge 到 stable runner host 的 `127.0.0.1:22022`，并已把 stable-runner target SSH probe 从 `FAIL` 推进到 `PASS`；
-- `P1-C3-S3` 已完成第一条 reverse-tunnel-backed stable-runner dispatch evidence：workflow 现已进入默认分支 registry，run `23592172058` 已真实执行到 release/verify 阶段；当前暴露出的新 blocker 已不再是 control-plane / target path，而是 target runtime 自身的 `dependency_connectivity_failure`。
+- `P1-C3-S3` 已完成第一条 reverse-tunnel-backed stable-runner dispatch evidence，并已进一步完成一次根因修复后的 PASS 复跑：当前 P1 的 runner path / bridge / dispatch / dependency recovery 样本都已具备真实证据。
 
 ### P2 (Automation trigger hardening)
 
@@ -364,6 +364,26 @@
   - `verify.log` 已记录容器启动后在 Alembic migration 阶段抛出 `psycopg.OperationalError`，签名为 `connection to server at "13.211.43.32", port 5432 failed: server closed the connection unexpectedly`；
   - `summary.json` 同时保留一个残余差异：当前 `remoteHeadSha=b3002d071d08f748ea438883914c876238af440f`，仍未与本次触发所用的 `headSha=b63cb3d0451bc8e06b30e95a2ceec7038b79a3c7` 收口到同一版本。
 
+### P1-C3-S3 (dependency connectivity and head drift fixed; stable-runner dispatch PASS | 2026-03-26)
+
+- headSha: `00353942`
+- timeoutFamily: `runtime_dependency_timeout`
+- triggerSurface: `workflow_dispatch`, `stable-runner dispatch`, `dependency recovery rerun`
+- runUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23595354059`
+- artifacts:
+  - `artifacts/_tmp_s4d4c_stable_runner_run_23595354059/s4d-cloud-release-stable-runner-23595354059-1/summary.json`
+  - `artifacts/_tmp_s4d4c_stable_runner_run_23595354059/s4d-cloud-release-stable-runner-23595354059-1/preflight.log`
+  - `artifacts/_tmp_s4d4c_stable_runner_run_23595354059/s4d-cloud-release-stable-runner-23595354059-1/verify.log`
+- expected:
+  - 在第一次 reverse-tunnel-backed dispatch 样本暴露 `dependency_connectivity_failure` 和 `remoteHeadSha` 漂移后，应能先从 target VM 上完成最小诊断，再修复 RDS allowlist 与 target repo HEAD，随后复跑 stable-runner dispatch 并把结果推进到 `PASS`；
+  - PASS 样本应同时证明：dependency gate 恢复、post-change verify 恢复，以及 target host 实际运行版本与触发版本一致。
+- observed:
+  - 当前 target VM 上已确认实际公网出口 IP 为 `49.196.51.46`，而 cloud-dev RDS security group `sg-0873e947b9947639d` 在第一次 FAIL 样本前并未包含该 `/32`；这说明第一次 FAIL 的主根因是 target egress IP 漂移后未被 allowlist 覆盖；
+  - 已为 `sg-0873e947b9947639d` 补入 `49.196.51.46/32` 的 `5432/TCP` allow rule，并把 target VM 上的 `/home/wordloom/work/wordloom-v3` 快进到 `origin/S4D-cloud-runtime-deploy-verify-rollback`；
+  - 复跑 run `23595354059` 后，`summary.json` 已记录 `result=PASS`、`failureClass=none`、`dependencyConnectivityGate=PASS`、`postChangeVerifyGate=PASS`；
+  - `preflight.log` 与 `summary.json` 已同时确认 `remoteHeadSha=0035394235c3fdfe905ac780c322987cf988eced`，说明这次 trigger SHA 与 target runtime HEAD 已收口一致；
+  - `verify.log` 已记录 `container_running OK`、`migration_ok OK`、`health_ok OK (200)`、`read_smoke_ok OK (200 list payload)`，因此当前 stable-runner reverse-tunnel path 已取得第一条真实 PASS 样本。
+
 ### P2-C1-S1S2 (auto-dispatch and approval-only boundary proven | 2026-03-26)
 
 - headSha: `f62165d7f93243dd8001aee80d3836f9d80ddd40`
@@ -407,4 +427,6 @@
 - 2026-03-26: 已进一步确认当前 release target 并非 stable runner 可直接访问的云端 SSH endpoint，而是当前 operator Windows 主机上由 `VirtualBoxVM.exe` 持有 `127.0.0.1:22022` 转发的本地 NAT Ubuntu VM；从 stable runner 对当前 operator 公网 IP `49.196.51.46:22022` 的 probe 已显式返回 `FAIL`。
 - 2026-03-26: 已新增 reverse tunnel bridge 脚本 `scripts/ops/cloud_target_reverse_tunnel.ps1`，并把当前 local-only target 的 `127.0.0.1:22022` 反向桥接到 stable runner host；随后 stable-runner probe 已把 `targetSshReachability` 从 `FAIL` 推进到 `PASS`。
 - 2026-03-26: `s4d-cloud-release-dispatch-stable-runner.yml` 已进入 GitHub 默认分支 registry，并已取得第一条 reverse-tunnel-backed stable-runner dispatch evidence `23592172058`；当前新的真实 blocker 已收口为 target runtime 的 `dependency_connectivity_failure`，而非 workflow registry / reverse tunnel。
+- 2026-03-26: 已从 target VM 本身完成最小 RDS 依赖诊断，确认当前出口 IP 为 `49.196.51.46`，并据此把该 `/32` 补入 cloud-dev RDS security group `sg-0873e947b9947639d`；同时已把 target repo HEAD 快进到 `0035394235c3fdfe905ac780c322987cf988eced`。
+- 2026-03-26: 已完成 reverse-tunnel-backed stable-runner PASS 复跑 `23595354059`，当前 `dependencyConnectivityGate=PASS`、`postChangeVerifyGate=PASS`，且 trigger SHA 与 remote HEAD 已一致。
 - 2026-03-26: 新增 `S4D-4C`，把最近频发的 408/timeout 问题正式从 `S4D-4B` 之后拆成独立治理 phase，并固定优先顺序为“稳定 runner 网络位置 -> 自动触发到 cloud-dev -> 大入口文件减压”。
