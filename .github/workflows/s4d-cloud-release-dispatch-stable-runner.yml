@@ -1,14 +1,6 @@
-name: s4d-cloud-release-dispatch
+name: s4d-cloud-release-dispatch-stable-runner
 
 on:
-  push:
-    branches:
-      - S4D-cloud-runtime-deploy-verify-rollback
-    paths:
-      - .github/workflows/s4d-cloud-release-dispatch.yml
-      - backend/**
-      - docker/**
-      - scripts/ops/**
   workflow_dispatch:
     inputs:
       target_environment:
@@ -19,7 +11,7 @@ on:
         options:
           - cloud-dev
       ssh_host:
-        description: "SSH host reachable from the runner. Do not use localhost on GitHub-hosted runners."
+        description: "Direct SSH host reachable from the stable cloud runner."
         required: true
         type: string
         default: ""
@@ -93,92 +85,48 @@ permissions:
   contents: read
 
 concurrency:
-  group: s4d-cloud-release-${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || 'cloud-dev' }}
+  group: s4d-cloud-release-stable-runner-${{ inputs.target_environment }}
   cancel-in-progress: false
 
 jobs:
   release:
-    name: cloud-runtime-release
+    name: cloud-runtime-release-stable-runner
     runs-on:
       - self-hosted
-    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || 'cloud-dev' }}
-    env:
-      S4D_TRIGGER_SURFACE: ${{ github.event_name == 'workflow_dispatch' && 'workflow_dispatch' || 'auto-dispatch' }}
-      S4D_TARGET_ENVIRONMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || 'cloud-dev' }}
-      S4D_SSH_HOST: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh_host || '127.0.0.1' }}
-      S4D_SSH_PORT: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh_port || '22022' }}
-      S4D_SSH_USER: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh_user || 'wordloom' }}
-      S4D_REMOTE_REPO_DIR: ${{ github.event_name == 'workflow_dispatch' && inputs.remote_repo_dir || '/home/wordloom/work/wordloom-v3' }}
-      S4D_ENV_FILE: ${{ github.event_name == 'workflow_dispatch' && inputs.env_file || '/etc/wordloom/.env.cloud.dev' }}
-      S4D_IMAGE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.image_tag || 'wordloom-backend:cloud-dev' }}
-      S4D_KNOWN_GOOD_IMAGE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.known_good_image_tag || '' }}
-      S4D_CONTAINER_NAME: ${{ github.event_name == 'workflow_dispatch' && inputs.container_name || 'wordloom-api-cloud-dev' }}
-      S4D_HOST_PORT: ${{ github.event_name == 'workflow_dispatch' && inputs.host_port || '30021' }}
-      S4D_API_HOST: ${{ github.event_name == 'workflow_dispatch' && inputs.api_host || '127.0.0.1' }}
-      S4D_API_PORT: ${{ github.event_name == 'workflow_dispatch' && inputs.api_port || '30021' }}
-      S4D_VERIFY_MAX_WAIT_SECONDS: ${{ github.event_name == 'workflow_dispatch' && inputs.verify_max_wait_seconds || '180' }}
-      S4D_VERIFY_POLL_INTERVAL_SECONDS: ${{ github.event_name == 'workflow_dispatch' && inputs.verify_poll_interval_seconds || '3' }}
-      S4D_ROLLBACK_ON_VERIFY_FAIL: ${{ github.event_name == 'workflow_dispatch' && inputs.rollback_on_verify_fail || 'false' }}
+      - linux
+      - x64
+      - s4d-cloud
+    environment: ${{ inputs.target_environment }}
     defaults:
       run:
-        shell: C:\PROGRA~1\Git\bin\bash.exe --noprofile --norc -eo pipefail {0}
+        shell: bash
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          path: repo
 
-      - name: Validate self-hosted runner contract
+      - name: Validate stable runner contract
         run: |
           set -euo pipefail
 
-          if ! command -v bash >/dev/null 2>&1; then
-            echo "bash not found on self-hosted runner" >&2
-            exit 2
-          fi
-
-          if ! command -v git >/dev/null 2>&1; then
-            echo "git not found on self-hosted runner" >&2
-            exit 2
-          fi
-
-          if ! command -v ssh >/dev/null 2>&1 && ! command -v ssh.exe >/dev/null 2>&1; then
-            echo "ssh client not found on self-hosted runner" >&2
-            exit 2
-          fi
-
-          case "$S4D_SSH_HOST" in
-            "")
-              echo "ssh_host is required" >&2
+          for cmd in bash git ssh python; do
+            if ! command -v "$cmd" >/dev/null 2>&1; then
+              echo "$cmd not found on stable runner" >&2
               exit 2
-              ;;
-          esac
+            fi
+          done
 
-      - name: Record trigger contract
-        run: |
-          set -euo pipefail
-
-          {
-            echo "### Trigger Contract"
-            echo
-            echo "- trigger_surface: $S4D_TRIGGER_SURFACE"
-            echo "- target_environment: $S4D_TARGET_ENVIRONMENT"
-            echo "- ssh_target: ${S4D_SSH_USER}@${S4D_SSH_HOST}:${S4D_SSH_PORT}"
-            echo "- remote_repo_dir: $S4D_REMOTE_REPO_DIR"
-            echo "- env_file: $S4D_ENV_FILE"
-            echo "- image_tag: $S4D_IMAGE_TAG"
-            echo "- container_name: $S4D_CONTAINER_NAME"
-            echo "- host_port: $S4D_HOST_PORT"
-            echo "- verify_max_wait_seconds: $S4D_VERIFY_MAX_WAIT_SECONDS"
-          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -z "${{ inputs.ssh_host }}" ]; then
+            echo "ssh_host is required" >&2
+            exit 2
+          fi
 
       - name: Validate secret contract
         env:
           S4D_SSH_PRIVATE_KEY: ${{ secrets.S4D_SSH_PRIVATE_KEY }}
         run: |
           set -euo pipefail
-          if [ -z "${S4D_SSH_PRIVATE_KEY}" ]; then
+          if [ -z "$S4D_SSH_PRIVATE_KEY" ]; then
             echo "Missing required secret: S4D_SSH_PRIVATE_KEY" >&2
             exit 2
           fi
@@ -198,7 +146,7 @@ jobs:
           chmod 600 "$identity_file"
           echo "S4D_SSH_IDENTITY_FILE=$identity_file" >> "$GITHUB_ENV"
 
-          if [ -n "${S4D_SSH_KNOWN_HOSTS}" ]; then
+          if [ -n "$S4D_SSH_KNOWN_HOSTS" ]; then
             printf '%s\n' "$S4D_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
             chmod 600 "$HOME/.ssh/known_hosts"
           fi
@@ -209,33 +157,33 @@ jobs:
         run: |
           set -euo pipefail
 
-          artifact_dir="artifacts/_tmp_s4d4b_cloud_release_dispatch/${{ github.run_id }}-${{ github.run_attempt }}"
+          artifact_dir="artifacts/_tmp_s4d4c_stable_runner_dispatch/${{ github.run_id }}-${{ github.run_attempt }}"
           echo "ARTIFACT_DIR=$artifact_dir" >> "$GITHUB_ENV"
           echo "artifact_dir=$artifact_dir" >> "$GITHUB_OUTPUT"
 
           cmd=(
             bash scripts/ops/cloud_release_workflow.sh
-            --ssh-host "$S4D_SSH_HOST"
-            --ssh-port "$S4D_SSH_PORT"
-            --ssh-user "$S4D_SSH_USER"
+            --ssh-host "${{ inputs.ssh_host }}"
+            --ssh-port "${{ inputs.ssh_port }}"
+            --ssh-user "${{ inputs.ssh_user }}"
             --ssh-identity-file "$S4D_SSH_IDENTITY_FILE"
-            --remote-repo-dir "$S4D_REMOTE_REPO_DIR"
-            --env-file "$S4D_ENV_FILE"
-            --image-tag "$S4D_IMAGE_TAG"
-            --container-name "$S4D_CONTAINER_NAME"
-            --host-port "$S4D_HOST_PORT"
-            --api-host "$S4D_API_HOST"
-            --api-port "$S4D_API_PORT"
-            --verify-max-wait-seconds "$S4D_VERIFY_MAX_WAIT_SECONDS"
-            --verify-poll-interval-seconds "$S4D_VERIFY_POLL_INTERVAL_SECONDS"
+            --remote-repo-dir "${{ inputs.remote_repo_dir }}"
+            --env-file "${{ inputs.env_file }}"
+            --image-tag "${{ inputs.image_tag }}"
+            --container-name "${{ inputs.container_name }}"
+            --host-port "${{ inputs.host_port }}"
+            --api-host "${{ inputs.api_host }}"
+            --api-port "${{ inputs.api_port }}"
+            --verify-max-wait-seconds "${{ inputs.verify_max_wait_seconds }}"
+            --verify-poll-interval-seconds "${{ inputs.verify_poll_interval_seconds }}"
             --artifact-dir "$artifact_dir"
           )
 
-          if [ -n "$S4D_KNOWN_GOOD_IMAGE_TAG" ]; then
-            cmd+=(--known-good-image-tag "$S4D_KNOWN_GOOD_IMAGE_TAG")
+          if [ -n "${{ inputs.known_good_image_tag }}" ]; then
+            cmd+=(--known-good-image-tag "${{ inputs.known_good_image_tag }}")
           fi
 
-          if [ "$S4D_ROLLBACK_ON_VERIFY_FAIL" = "true" ]; then
+          if [ "${{ inputs.rollback_on_verify_fail }}" = "true" ]; then
             cmd+=(--rollback-on-verify-fail)
           fi
 
@@ -344,7 +292,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: s4d-cloud-release-${{ github.run_id }}-${{ github.run_attempt }}
+          name: s4d-cloud-release-stable-runner-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.release.outputs.artifact_dir }}
           if-no-files-found: warn
 
@@ -367,7 +315,6 @@ jobs:
 
           import json
           import os
-          import sys
           from pathlib import Path
 
           summary = json.loads(Path(os.environ["SUMMARY_JSON"]).read_text(encoding="utf-8"))

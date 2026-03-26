@@ -9,7 +9,7 @@ ENV_FILE="${ENV_FILE:-}"
 CONTAINER_NAME="${CONTAINER_NAME:-wordloom-api-cloud-dev}"
 VERIFY_API_HOST="${VERIFY_API_HOST:-127.0.0.1}"
 VERIFY_API_PORT="${VERIFY_API_PORT:-30021}"
-MAX_WAIT_SECONDS="${MAX_WAIT_SECONDS:-45}"
+MAX_WAIT_SECONDS="${MAX_WAIT_SECONDS:-180}"
 POLL_INTERVAL_SECONDS="${POLL_INTERVAL_SECONDS:-3}"
 
 usage() {
@@ -20,7 +20,7 @@ Usage:
 Examples:
   bash scripts/ops/cloud_release_verify.sh --env-file .env.cloud.dev
   bash scripts/ops/cloud_release_verify.sh --container-name wordloom-api-cloud-dev --api-port 30021
-  bash scripts/ops/cloud_release_verify.sh --env-file /etc/wordloom/.env.cloud.dev --max-wait-seconds 60
+  bash scripts/ops/cloud_release_verify.sh --env-file /etc/wordloom/.env.cloud.dev --max-wait-seconds 180
 EOF
 }
 

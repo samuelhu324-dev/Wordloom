@@ -18,7 +18,7 @@ CONTAINER_NAME="wordloom-api-cloud-dev"
 HOST_PORT="30021"
 VERIFY_API_HOST="127.0.0.1"
 VERIFY_API_PORT="30021"
-VERIFY_MAX_WAIT_SECONDS="45"
+VERIFY_MAX_WAIT_SECONDS="180"
 VERIFY_POLL_INTERVAL_SECONDS="3"
 ROLLBACK_ON_VERIFY_FAIL="0"
 ARTIFACT_DIR=""
@@ -229,7 +229,7 @@ artifact_relpath() {
 }
 
 ssh_base_args() {
-  local args=( -p "$SSH_PORT" -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new )
+  local args=( -p "$SSH_PORT" -o BatchMode=yes -o ConnectTimeout=30 -o StrictHostKeyChecking=accept-new )
   if [[ -n "$SSH_IDENTITY_FILE" ]]; then
     args+=( -i "$(normalize_ssh_identity_path "$ssh_cmd" "$SSH_IDENTITY_FILE")" )
   fi

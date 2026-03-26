@@ -23,8 +23,9 @@
   **phase_log_3**: `docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
   **phase_log_4**: `docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
   **phase_log_5**: `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
+  **phase_log_6**: `docs/logs/log-S4D-4C-408-timeout-eradication.md`
 **created**: `2026-03-23`
-**updated**: `2026-03-25`
+**updated**: `2026-03-26`
 
 ---
 
@@ -94,6 +95,10 @@
   - 详见：`docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
 - `S4D-4A`（Phase 4）：Semi-automated release workflow（single-entry operator command, evidence capture, failure-oriented gates）
   - 详见：`docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
+- `S4D-4B`（Phase 4B）：GitHub Actions release dispatch（self-hosted runner dispatch, artifact upload, approval-ready handoff）
+  - 详见：`docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
+- `S4D-4C`（Phase 4C）：408 timeout eradication（timeout taxonomy, stable runner network path, auto-dispatch, large-entrypoint reduction）
+  - 详见：`docs/logs/log-S4D-4C-408-timeout-eradication.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -117,6 +122,8 @@
 - 更强的 failure-oriented rollback drills 不是当前 v1 stable 的前置条件；如果后续要系统化推进“坏 candidate / 明确 trigger / 更细 recovery evidence”，应新增 `S4D-4A`，而不是继续扩大 `S4D-3A` 的定义。
 - `S4D-4A` 现已创建，下一步工作重心切换为“减少手工 SSH 操作、收口 single-entry workflow、固定 failure taxonomy 与 evidence capture”，以把当前 operator path 推进到半自动阶段。
 - `S4D-4B` 现已完成第一条真实 GitHub Actions self-hosted PASS 样本：在为 target host 当前公网出口 IP 补齐 cloud-dev RDS `5432` allow rule 后，Actions workflow 已能稳定走通 checkout、secret injection、`cloud_release_workflow.sh` 执行、artifact upload、run summary 与最终 PASS 判定。
+- `S4D-4C` 现已创建并被提升为当前优先 phase：因为最近反复出现的问题已经证明，下一步最该做的不是继续手点 dispatch，而是先根治两类 timeout 源头，即运行时网络路径不稳定和 Agent/Copilot 上下文膨胀。
+- `S4D-4C` 的当前优先路线已固定为三件事：把 self-hosted runner 移到稳定网络位置、把 `cloud-dev` 发布入口升级为自动触发但保留 approval、继续治理大入口文件与高扇出入口以降低 Agent/Copilot 408 频率。
 - `S4D-4A/P1` 已完成第一步：单入口 `cloud_release_workflow.sh` 已落地，本地工作机现在可以直接触发远端 preflight / deploy / verify，并在本地留下 evidence bundle 与 failure class 摘要。
 - `S4D-4A/P2` 已开始第一轮本地触发样本，但当前先暴露出 workflow 自身的结果记账 bug：`ssh` 失败会被误写成 PASS；下一步应先修正 workflow result accounting，再重跑真实样本。
 - `S4D-4A/P2` 现已拿到第一轮真实本地触发 FAIL 样本：workflow 在 preflight 阶段如实停在 `ssh_connectivity`，说明当前剩余问题已收敛为“WSL/operator host 到 Ubuntu VM 的 SSH 路径”而不是 workflow 结果判定。
@@ -181,3 +188,4 @@
 - 2026-03-25：稳定性评估完成；`S4D-4A` 已具备 real local-triggered PASS 与 real `PASS_AFTER_ROLLBACK` evidence，因此当前 phase 已按 v1 口径标记为 `stable`。
 - 2026-03-26：新增 `S4D-4B` 作为 `S4D-4A` 之后的下一 phase，并完成第一版 GitHub Actions dispatch workflow 落地；当前已补齐 workflow_dispatch、artifact upload 和 run summary contract，并进一步把 runner 边界收紧为 self-hosted runner v1。
 - 2026-03-26：`S4D-4B` 已先拿到一轮真实 self-hosted dispatch FAIL 证据，明确把 blocker 收敛到 target host -> cloud-dev RDS 的 dependency connectivity；随后在补入当前 target host 出口 IP `125.253.50.4/32` 对应的 RDS inbound allow rule 后，run `23578016775` 已取得第一条真实 GitHub Actions PASS 样本。
+- 2026-03-26：新增 `S4D-4C`，把“最近大量 408 / timeout”正式拆成独立治理 phase，并固定优先顺序为“稳定 runner 网络位置 -> 自动触发到 cloud-dev -> 大入口文件减压”，避免继续把不同来源的超时混在一起处理。
