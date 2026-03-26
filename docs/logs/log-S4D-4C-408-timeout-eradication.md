@@ -141,6 +141,12 @@
 - P2-C1-S1: 把 `cloud-dev` 发布入口从纯 `workflow_dispatch` 升级为自动触发
 - P2-C1-S2: 保留 GitHub environment approval，但移除“人工手点启动”作为常态前提
 
+**Current status (S4D-4C / P2)**
+
+- `P2-C1-S1S2` 已完成 control-plane 收口：当前 `.github/workflows/s4d-cloud-release-dispatch.yml` 同时支持 `push` 自动触发与 `workflow_dispatch` 手动触发；
+- `cloud-dev` environment 已新增 required reviewer protection，因此 auto-dispatch run 会先停在 approval，而不是要求操作者先手点启动 workflow；
+- 第一条真实 push-triggered run `23589344188` 已证明自动触发与 approval-only manual boundary 生效；该 run 在 approval 后继续停在 `queued`，当前剩余 blocker 是 repo 内唯一 self-hosted runner `wordloom-s4d-temp-win` 处于 `offline`，而不是 trigger contract 本身。
+
 ### P3 (Agent/context pressure reduction)
 
 - P3-C1-S1: 识别并继续治理高频大入口文件 / 高扇出检索入口
@@ -163,8 +169,8 @@
 
 ### P2 (Automation trigger hardening)
 
-- [ ] `P2-C1-S1`: auto-dispatch to cloud-dev prepared
-- [ ] `P2-C1-S2`: approval-only manual boundary fixed
+- [x] `P2-C1-S1`: auto-dispatch to cloud-dev prepared
+- [x] `P2-C1-S2`: approval-only manual boundary fixed
 
 ### P3 (Agent/context pressure reduction)
 
@@ -245,8 +251,43 @@
   - SSH preflight 的连接超时已从 `10s` 提高到 `30s`；
   - 当前这一步解决的是 baseline hardening，不等于已拿到真实 stable-runner PASS evidence。
 
+### P1-C2-S2 (stable-runner evidence attempt blocked at operator ingress | 2026-03-26)
+
+- headSha: `f62165d7`
+- timeoutFamily: `runtime_dependency_timeout`
+- triggerSurface: `stable-runner probe`, `operator -> runner SSH ingress`
+- artifacts:
+  - `infra/terraform/aws/runner-host/terraform.tfstate`
+  - `docs/runbook/run-S4D-cloud-stable-runner-cutover.md`
+- expected:
+  - 从当前 operator host 连到 stable runner `3.27.164.166`，随后执行 probe / dispatch，拿到真实 stable-runner evidence；
+  - 用 probe 结果证明 runner host 对 GitHub、RDS、target SSH 的 reachability 已进入可验证状态。
+- observed:
+  - 本地 state 已确认 stable runner host outputs：`runner_public_ip=3.27.164.166`、`runner_private_ip=10.42.0.141`；
+  - 当前 operator host 以本机默认 SSH key 对 `ubuntu@3.27.164.166:22` 的只读连通测试返回 `connection timed out`；
+  - 因此 `P1-C2-S2` 当前 blocker 已收敛为“operator -> stable runner ingress 尚未打通”，还未进入 runner-side probe / dispatch 阶段。
+
+### P2-C1-S1S2 (auto-dispatch and approval-only boundary proven | 2026-03-26)
+
+- headSha: `f62165d7f93243dd8001aee80d3836f9d80ddd40`
+- timeoutFamily: `runtime_dependency_timeout`
+- triggerSurface: `auto-dispatch`, `push`, `cloud-dev environment approval`
+- runUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23589344188`
+- artifacts:
+  - `.github/workflows/s4d-cloud-release-dispatch.yml`
+  - `cloud-dev` GitHub Actions environment configuration
+- expected:
+  - 向 `S4D-cloud-runtime-deploy-verify-rollback` 分支推送 release-related 变更后，`cloud-dev` release workflow 不再要求人工先手点 `workflow_dispatch`；
+  - 人工只保留 `cloud-dev` environment approval 这一条手动边界。
+- observed:
+  - push `f62165d7` 后，workflow `s4d-cloud-release-dispatch` 自动生成 run `23589344188`，事件类型为 `push`；
+  - 在未审批前，该 run 状态为 `waiting`，说明当前手动边界已从“手点 workflow_dispatch”收口为 environment approval；
+  - 审批 `cloud-dev` deployment 后，该 run 继续进入 `queued`，当前剩余 blocker 是 repo 内唯一 self-hosted runner `wordloom-s4d-temp-win` 处于 `offline`，而不是 auto-dispatch / approval contract 本身。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-26: 已完成 `S4D-4C/P1-C1-S1S2` 的 repo-side 交付：新增 stable runner host Terraform module、bootstrap/probe 脚本、stable-runner workflow 与 cutover runbook，使“迁移 self-hosted runner 到稳定网络位置”从建议变成可执行路径。
 - 2026-03-26: 已完成 `S4D-4C/P1-C2-S1` 的默认等待窗口收口：`cloud_release_workflow.sh`、`cloud_release_verify.sh`、`cloud_release_rollback.sh` 与 stable-runner workflow 已统一提高 verify wait baseline，并把 SSH preflight timeout 提高到更适合云端冷启动的范围。
+- 2026-03-26: 已完成 `S4D-4C/P2-C1-S1S2` 的 control-plane 收口：`s4d-cloud-release-dispatch.yml` 已支持 push 自动触发，`cloud-dev` environment 已新增 required reviewer protection；第一条真实 push-triggered run `23589344188` 已证明 auto-dispatch 与 approval-only manual boundary 生效。
+- 2026-03-26: 已尝试执行 `S4D-4C/P1-C2-S2` 的 stable-runner evidence capture；当前 blocker 已收敛为 operator host 到 stable runner `3.27.164.166:22` 的 SSH ingress timeout，因此 runner-side probe / dispatch evidence 仍待后续补齐。
 - 2026-03-26: 新增 `S4D-4C`，把最近频发的 408/timeout 问题正式从 `S4D-4B` 之后拆成独立治理 phase，并固定优先顺序为“稳定 runner 网络位置 -> 自动触发到 cloud-dev -> 大入口文件减压”。
