@@ -96,11 +96,13 @@ jobs:
     environment: ${{ inputs.target_environment }}
     defaults:
       run:
-        shell: bash
+        shell: '"C:\Program Files\Git\bin\bash.exe" --noprofile --norc -eo pipefail {0}'
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          path: repo
 
       - name: Validate self-hosted runner contract
         run: |
