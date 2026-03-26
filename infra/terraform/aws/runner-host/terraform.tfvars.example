@@ -1,0 +1,15 @@
+# Local example vars for the stable self-hosted runner host.
+# Copy this file to "terraform.tfvars" on your own machine and fill in
+# the real values. Do NOT commit the real terraform.tfvars file to git.
+
+subnet_id = "subnet-REPLACE_ME"
+
+security_group_ids = [
+  "sg-REPLACE_WITH_CLOUD_DEV_BASIC_SG"
+]
+
+ssh_ingress_cidrs = [
+  "REPLACE_WITH_OPERATOR_PUBLIC_IPv4_SLASH_32"
+]
+
+key_name = "REPLACE_WITH_EXISTING_EC2_KEYPAIR_NAME"

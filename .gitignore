@@ -219,3 +219,10 @@ htmlcov/
 .drill_snapshot*/
 
 artifacts/
+
+# Terraform local state for the S4D stable runner host
+infra/terraform/aws/runner-host/.terraform/
+infra/terraform/aws/runner-host/terraform.tfstate
+infra/terraform/aws/runner-host/terraform.tfstate.*
+infra/terraform/aws/runner-host/terraform.tfvars
+infra/terraform/aws/runner-host/tfplan
