@@ -151,7 +151,7 @@
 - `P3-C1-S1` 已完成：`cloud-dev` environment approval boundary 现已被真实 run 多次命中，manual `workflow_dispatch` run 会先进入 `waiting`，且只有在 reviewer approval 后才继续执行发布 job。
 - `P3-C1-S2` 已完成：当前 workflow run summary 与 `operator_guidance.txt` 已稳定给出 `result`、`failureClass`、`terminalGate`、artifact 路径与下一步 operator action，handoff wording 已有真实 rollback 样本验证。
 - `P1-C2-S1/S2` 已完成：当前 workflow 已把 `github.ref_name` 与 `github.sha` 作为显式 contract 传入 release script，并在 preflight 阶段完成 target repo 的 clean-check、`git fetch`、branch 对齐与 exact-head reset；最新 PASS 样本已证明 `headSha == expectedHeadSha == remoteHeadSha`。
-- `P1-C3-S1/S2` 进行中：当前改动把 concurrency group 从“仅按 environment 串行”调整为“按 trigger surface + environment 串行”，目标是保留 auto-dispatch 同环境保护，同时不再让 push waiting run 卡住 manual `workflow_dispatch` drill 的 job materialization。
+- `P1-C3-S1/S2` 已完成：当前 workflow 已把 concurrency group 从“仅按 environment 串行”调整为“按 trigger surface + environment 串行”；真实控制面样本已证明同一 `headSha` 下的 `push` run 与 manual `workflow_dispatch` run 可以各自 materialize 出独立 job，并同时停在 `cloud-dev` approval gate，不再需要先取消 push waiting run。
 
 ### P2 (Drill / Verify)
 
@@ -184,8 +184,8 @@
 - [x] `P1-C1-S3`: self-hosted runner v1 contract aligned with current SSH target
 - [x] `P1-C2-S1`: target repo sync before release prepared
 - [x] `P1-C2-S2`: remote head alignment evidence recorded
-- [ ] `P1-C3-S1`: push/manual concurrency groups split
-- [ ] `P1-C3-S2`: push/manual coexistence evidence recorded
+- [x] `P1-C3-S1`: push/manual concurrency groups split
+- [x] `P1-C3-S2`: push/manual coexistence evidence recorded
 
 ### P2 (Drill / Verify)
 
@@ -299,8 +299,27 @@
   - `summary.json` 明确记录 `headSha=fdd3e812...`、`expectedHeadSha=fdd3e812...`、`remoteHeadSha=fdd3e812...`、`remoteBranch=S4D-cloud-runtime-deploy-verify-rollback`，从而消除了此前 evidence 中长期存在的 target-head drift；
   - `preflight.log` 进一步记录了 `expected_head_sha=fdd3e812...`、`HEAD is now at fdd3e812 ...` 与最终 `remote_head_sha=fdd3e812...`，说明 target repo 已在 release 前被精确同步到 workflow head，而不是延续旧的 `247ded5c...` 状态。
 
+### P1-C3-S1S2 (push/manual concurrency groups split, both trigger surfaces can coexist at approval gate | 2026-03-26)
+
+- headSha: `f9f5e485`
+- run_url_push: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23601482418`
+- run_url_manual: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23601495526`
+- artifacts:
+  - `.github/workflows/s4d-cloud-release-dispatch.yml`
+  - `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
+- expected:
+  - 在保留同一 trigger surface + environment 串行保护的前提下，`push` 与 manual `workflow_dispatch` 不应再共享同一个 concurrency group；
+  - 当已有 `push` run 因 `cloud-dev` approval 停在 `waiting` 时，新发起的 manual `workflow_dispatch` run 仍应正常 materialize 出 `cloud-runtime-release` job，而不是继续被旧的 waiting run 阻塞在 job 创建之前；
+  - 两类 run 最终应各自进入相同的 environment approval gate，从而证明本次修正影响的是控制面排队模型，而不是 deploy/approval 语义本身。
+- observed:
+  - `.github/workflows/s4d-cloud-release-dispatch.yml` 的 `concurrency.group` 已从仅按 target environment 分组，调整为 `s4d-cloud-release-${{ github.event_name }}-${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || 'cloud-dev' }}`，从而把 `push` 与 `workflow_dispatch` 分离到不同并发槽位；
+  - push run `23601482418` 与 manual run `23601495526` 均基于同一 `headSha=f9f5e485...`，且二者都已 materialize 出名为 `cloud-runtime-release` 的独立 job，job `status` 同为 `waiting`，直接证明 manual run 不再因既有 push waiting run 而失去 job materialization；
+  - 对 manual run `23601495526` 的 `pending_deployments` 查询明确返回 `environment=cloud-dev`、`current_user_can_approve=true` 与 reviewer=`samuelhu324-dev`，说明 manual run 已正常进入审批门，而不是卡在 concurrency controller 之前；
+  - 本轮验证故意没有先取消 push run，因此 `P1-C3-S2` 的结论可直接用于替代此前“先取消 push waiting run，再发 manual drill”这一临时操作规程。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-26: 已完成 `S4D-4B/P1-C3-S1S2`；workflow concurrency group 现按 `event_name + target_environment` 分槽，真实控制面样本 `23601482418`（push）与 `23601495526`（workflow_dispatch）已证明两类 run 可以并存 materialize 并同时停在 `cloud-dev` approval gate，对应实现提交为 `f9f5e485`。
 - 2026-03-26: 已新增 `S4D-4B/P1-C2` 以收口 target repo head drift；workflow 与 release script 现已显式传递 `github.ref_name` / `github.sha` 并在 preflight 阶段完成远端 repo sync，对应提交为 `7bea1d52` 与修正提交 `fdd3e812`；随后真实 PASS 样本 `23600877818` 已证明 `headSha == expectedHeadSha == remoteHeadSha`。
 - 2026-03-26: 已为 `.github/workflows/s4d-cloud-release-dispatch.yml` 连续补齐五项实质性 contract 修复：Git Bash shell bootstrap、Windows self-hosted runner pin、bootstrap shell 改为 Windows PowerShell、过严 bash path 校验移除、checked-out repo working-directory / artifact upload path 修正；这些改动分别落在 `18d285c2`、`55f6c06e`、`0d4f260d`、`120032ef`、`7f3c417d`。
 - 2026-03-26: 已完成 `S4D-4B/P2-C1-S2` 的第一条真实 `PASS_AFTER_ROLLBACK` 样本 `23599857316`，同时重新证明 `cloud-dev` approval boundary 与 operator handoff artifact contract 可用，因此 `S4D-4B` 现可标记为 `stable`。
