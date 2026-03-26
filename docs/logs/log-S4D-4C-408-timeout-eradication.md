@@ -128,6 +128,9 @@
 - P1-C1-S2: 为 stable-runner 路径补齐 repo-side cutover assets（Terraform module、bootstrap/probe 脚本、stable-runner workflow、runbook）
 - P1-C2-S1: 为 runtime timeout family 固定 release readiness / SSH wait baseline，避免把冷启动、镜像拉取、迁移等待误判成 workflow timeout
 - P1-C2-S2: 采集真实 stable-runner probe / dispatch evidence，证明新 runner host 已替代临时公网 IP allowlist 路径
+- P1-C3-S1: 当当前 target 仍是 operator 本机 local-only 入口时，用 reverse tunnel 把该 target bridge 到 stable runner host
+- P1-C3-S2: 用 reverse tunnel bridge 把 stable-runner target SSH probe 从 `FAIL` 推进到 `PASS`
+- P1-C3-S3: 通过已注册的 stable-runner Actions workflow 采集第一条 reverse-tunnel-backed dispatch evidence
 
 **Current status (S4D-4C / P1)**
 
@@ -136,6 +139,8 @@
 - `P1-C2-S1` 已完成默认等待窗口收口：release workflow / verify / rollback 的 verify wait 已统一提高到 `180s`，SSH `ConnectTimeout` 已提高到 `30s`，用于降低冷启动误判；
 - `P1-C2-S2` 已不再阻塞于 operator ingress：当前 operator host 已恢复到 stable runner `3.27.164.166:22` 的 SSH 连通，Linux stable runner `wordloom-cloud-dev-runner` 已注册并在线，probe 已证明 GitHub / RDS reachability 为 `PASS`；
 - 当前 `P1-C2-S2` 的剩余项已进一步收敛：当前 release target 仍是 operator 本机通过 `127.0.0.1:22022` 暴露的 VirtualBox NAT Ubuntu VM，而不是 stable runner 可直接到达的云端 SSH endpoint；因此最后一段 blocker 已从“未知 direct target host”收窄为“target 仍未脱离本地 NAT / 本地转发前提”。
+- `P1-C3-S1S2` 已完成：当前 operator host 已通过 reverse tunnel 把本地 `127.0.0.1:22022` bridge 到 stable runner host 的 `127.0.0.1:22022`，并已把 stable-runner target SSH probe 从 `FAIL` 推进到 `PASS`；
+- `P1-C3-S3` 仍待完成：当前 stable-runner dispatch workflow 文件尚未进入 GitHub 默认分支 `main` 的 workflow registry，因此 control-plane 侧还不能直接 `workflow_dispatch` 这一条 stable-runner Actions 入口。
 
 ### P2 (Automation trigger hardening)
 
@@ -168,6 +173,9 @@
 - [x] `P1-C1-S2`: stable runner repo-side cutover assets fixed
 - [x] `P1-C2-S1`: runtime readiness / SSH wait baseline fixed
 - [ ] `P1-C2-S2`: stable-runner runtime timeout evidence baseline fixed
+- [x] `P1-C3-S1`: reverse tunnel bridge for local-only target fixed
+- [x] `P1-C3-S2`: reverse-tunnel-backed stable-runner target probe fixed
+- [ ] `P1-C3-S3`: reverse-tunnel-backed stable-runner dispatch evidence fixed
 
 ### P2 (Automation trigger hardening)
 
@@ -303,6 +311,39 @@
   - 同一主机已确认存在 `/home/wordloom/work/wordloom-v3`、`/etc/wordloom/.env.cloud.dev` 与 Docker runtime，说明这就是当前实际 release target，而不是一台额外的云端 Ubuntu VM；
   - 从 stable runner 对当前 operator 公网 IP `49.196.51.46:22022` 的 probe 已返回 `targetSshReachability=FAIL`；因此当前 residual blocker 已被明确固定为：release target 仍依赖 operator 本机的本地 NAT / 端口转发入口，而 stable runner 只能稳定替代“runner 位置”和“RDS allowlist 漂移”问题，无法自动穿透这一类本地 VirtualBox NAT 前提。
 
+### P1-C3-S1S2 (reverse tunnel bridge established and stable-runner target probe restored | 2026-03-26)
+
+- headSha: `273952be`
+- timeoutFamily: `runtime_dependency_timeout`
+- triggerSurface: `reverse tunnel bridge`, `stable-runner probe`, `local NAT target bridge`
+- artifacts:
+  - `scripts/ops/cloud_target_reverse_tunnel.ps1`
+  - `artifacts/_tmp_s4d4c_cloud_runner_probe/20260326T111822Z/probe.json`
+  - `docs/runbook/run-S4D-cloud-stable-runner-cutover.md`
+- expected:
+  - 当当前 release target 仍只有 operator 本机上的 `127.0.0.1:22022` local forward 时，operator 应能把这条入口反向桥接到 stable runner host；
+  - stable runner host 上的本机端口应出现可用的 target SSH 入口，并让 probe 的 `targetSshReachability` 从 `FAIL` 恢复为 `PASS`。
+- observed:
+  - 已新增 `scripts/ops/cloud_target_reverse_tunnel.ps1`，用于从 operator Windows host 直接建立 `ssh -R 127.0.0.1:22022:127.0.0.1:22022 ubuntu@3.27.164.166` 风格的 reverse tunnel bridge；
+  - runner host `sshd -T` 已确认 `allowtcpforwarding yes`、`permitopen any`，因此可接受这一类 reverse port forward；
+  - 在 reverse tunnel 存活期间，从 stable runner 对 `127.0.0.1:22022` 的 probe 已返回 `targetSshReachability=PASS`，并且 runner host 上的 `127.0.0.1:22022` 原始 TCP 检测同样为 `PASS`；
+  - 因此当前 residual gap 已从“stable runner 打不到 target”收窄为“stable-runner Actions workflow 尚未在默认分支 registry 中注册”。
+
+### P1-C3-S3 (stable-runner dispatch still blocked by workflow registration gap | 2026-03-26)
+
+- headSha: `273952be`
+- timeoutFamily: `runtime_dependency_timeout`
+- triggerSurface: `workflow_dispatch`, `stable-runner control plane`
+- artifacts:
+  - `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml`
+- expected:
+  - reverse tunnel bridge 打通后，应能直接通过 `workflow_dispatch` 触发 `s4d-cloud-release-dispatch-stable-runner`，并把 `ssh_host=127.0.0.1`、`ssh_port=22022` 作为 stable-runner 本机 target 入口；
+  - 由此采集第一条 reverse-tunnel-backed stable-runner dispatch evidence。
+- observed:
+  - 当前 GitHub repo 的 registered workflow 列表中尚未出现 `s4d-cloud-release-dispatch-stable-runner`；
+  - `gh workflow run s4d-cloud-release-dispatch-stable-runner.yml` 返回 `HTTP 404: workflow ... not found on the default branch`；
+  - 因此当前 blocker 已不再是 reverse tunnel 或 target reachability，而是 control-plane registry 仍以默认分支 `main` 为准，当前 stable-runner workflow 文件尚未进入该 registry。
+
 ### P2-C1-S1S2 (auto-dispatch and approval-only boundary proven | 2026-03-26)
 
 - headSha: `f62165d7f93243dd8001aee80d3836f9d80ddd40`
@@ -344,4 +385,6 @@
 - 2026-03-26: 已恢复 repo Windows self-hosted runner `wordloom-s4d-temp-win` 在线状态，并关闭 auto-dispatch 的 runner availability blocker。
 - 2026-03-26: 已补入当前 operator `/32` 到 stable runner SSH ingress，完成 `wordloom-cloud-dev-runner` 的 Linux service bootstrap，并拿到 GitHub / RDS / runner listener 的 probe PASS；当前 residual gap 只剩 direct target SSH host 尚未显式纳入 probe 参数。
 - 2026-03-26: 已进一步确认当前 release target 并非 stable runner 可直接访问的云端 SSH endpoint，而是当前 operator Windows 主机上由 `VirtualBoxVM.exe` 持有 `127.0.0.1:22022` 转发的本地 NAT Ubuntu VM；从 stable runner 对当前 operator 公网 IP `49.196.51.46:22022` 的 probe 已显式返回 `FAIL`。
+- 2026-03-26: 已新增 reverse tunnel bridge 脚本 `scripts/ops/cloud_target_reverse_tunnel.ps1`，并把当前 local-only target 的 `127.0.0.1:22022` 反向桥接到 stable runner host；随后 stable-runner probe 已把 `targetSshReachability` 从 `FAIL` 推进到 `PASS`。
+- 2026-03-26: 已确认当前 reverse-tunnel-backed dispatch 的剩余 blocker 不再是网络路径，而是 `s4d-cloud-release-dispatch-stable-runner.yml` 尚未进入 GitHub 默认分支 `main` 的 workflow registry，因此 `workflow_dispatch` 仍返回 404。
 - 2026-03-26: 新增 `S4D-4C`，把最近频发的 408/timeout 问题正式从 `S4D-4B` 之后拆成独立治理 phase，并固定优先顺序为“稳定 runner 网络位置 -> 自动触发到 cloud-dev -> 大入口文件减压”。
