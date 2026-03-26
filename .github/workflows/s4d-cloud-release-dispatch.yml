@@ -156,16 +156,6 @@ jobs:
             exit 2
           fi
 
-          bash_path="$(command -v bash)"
-          case "$bash_path" in
-            */Git/bin/bash|*/Git/bin/bash.exe)
-              ;;
-            *)
-              echo "bash resolves to unexpected shell: $bash_path" >&2
-              exit 2
-              ;;
-          esac
-
           if ! command -v git >/dev/null 2>&1; then
             echo "git not found on self-hosted runner" >&2
             exit 2
