@@ -121,6 +121,9 @@ jobs:
       S4D_VERIFY_MAX_WAIT_SECONDS: ${{ github.event_name == 'workflow_dispatch' && inputs.verify_max_wait_seconds || '180' }}
       S4D_VERIFY_POLL_INTERVAL_SECONDS: ${{ github.event_name == 'workflow_dispatch' && inputs.verify_poll_interval_seconds || '3' }}
       S4D_ROLLBACK_ON_VERIFY_FAIL: ${{ github.event_name == 'workflow_dispatch' && inputs.rollback_on_verify_fail || 'false' }}
+    defaults:
+      run:
+        working-directory: repo
 
     steps:
       - name: Checkout
@@ -369,7 +372,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: s4d-cloud-release-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ steps.release.outputs.artifact_dir }}
+          path: repo/${{ steps.release.outputs.artifact_dir }}
           if-no-files-found: warn
 
       - name: Enforce workflow result
