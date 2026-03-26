@@ -30,6 +30,7 @@
 	- docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md
 	- docs/logs/log-S4D-4B-github-actions-release-dispatch.md
 	- docs/logs/log-S4D-4C-408-timeout-eradication.md
+	- docs/runbook/run-S4D-cloud-release-gate-map.md
 	- docs/runbook/run-S4D-4C-agent-context-navigation.md
 
 ## S6-related, old logs

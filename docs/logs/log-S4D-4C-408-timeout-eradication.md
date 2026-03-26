@@ -163,6 +163,8 @@
 
 - `P3-C1-S1` 已完成第一轮高压入口识别与排序；当前优先收口对象固定为 5 个 surface：`scripts/ops/cloud_release_workflow.sh`、`docs/logs/log-S4D-4C-408-timeout-eradication.md` / `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md` 聚合面、`backend/scripts/cli_app/scenarios/_failure_drill_shared.py`、`backend/scripts/cli_app/scenarios/shadow_verify_dual_run_window.py` / `shadow_verify_dual_run_stage2.py`、以及 `backend/scripts/cli_app/registry.py` 的 scenario discovery 扇出面；
 - `P3-C1-S2` 已完成第一轮窄索引收口：当前仓库已新增 `docs/runbook/run-S4D-4C-agent-context-navigation.md`，把 S4D timeout、release gate、drill scenario 的默认首读路径压缩为一条更窄的导航面；
+- `P3-C2-S1` 已完成第一轮 orchestrator helper 抽离：`cloud_release_workflow.sh` 当前已把 failure classification、gate promotion、summary/operator guidance 写盘与 SSH remote-step helper 下沉到 `scripts/ops/cloud_release_workflow_helpers.sh`，从而让主文件更接近“参数/状态 + gate 编排”壳；
+- `P3-C2-S2` 已完成第一轮 release gate map：当前仓库已新增 `docs/runbook/run-S4D-cloud-release-gate-map.md`，把 `summary.json` 的 `terminalGate` / `failureClass` 与首读日志/脚本做成窄导航；
 - `backend/scripts/cli.py` 现已维持 dispatch-only 薄入口，不再作为默认第一检索对象；当前 agent/context pressure 的主风险已从“超大单入口 CLI”转移到“聚合日志 + orchestrator + 大 scenario 模块 + discovery 扇出面”。
 
 ## Execution Checklist (unchecked)
@@ -443,6 +445,25 @@
   - `backend/scripts/cli.py` 当前仅约 `81` 行，已不再是 P3 的主风险对象；说明当前 context pressure 的根因已从“单一超大 CLI 入口”迁移为“聚合日志 + orchestrator + 大 scenario 模块 + 检索扇出面”；
   - 新增 `docs/runbook/run-S4D-4C-agent-context-navigation.md` 后，S4D timeout、release gate 与 drill scenario 已拥有一条默认首读路径；操作者与 Agent 现在可以先按 symptom / gate / scenario 缩小到单个对象，而不必先读取整条 S4D 历史链路或整包 scenario 家族。
 
+### P3-C2-S1S2 (cloud release orchestrator helper split and gate map landed | 2026-03-26)
+
+- headSha: `pending-next-commit`
+- timeoutFamily: `agent_context_timeout`
+- triggerSurface: `cloud release gate triage`, `summary.json investigation`, `workflow orchestrator retrieval`
+- artifacts:
+  - `scripts/ops/cloud_release_workflow.sh`
+  - `scripts/ops/cloud_release_workflow_helpers.sh`
+  - `docs/runbook/run-S4D-cloud-release-gate-map.md`
+  - `docs/runbook/run-S4D-4C-agent-context-navigation.md`
+- expected:
+  - 把当前最重的 release orchestrator 从“单文件承载参数、分类、summary、guidance、remote-step 执行与 gate 编排”收口成更窄的主入口；
+  - 让后续定位 `terminalGate` / `failureClass` 时，默认先读小型 gate map，而不是整段读取 `cloud_release_workflow.sh`；
+  - 保持 `S4D-4A` / `S4D-4B` 既有 release 语义不变，不引入新的 deploy path。
+- observed:
+  - `cloud_release_workflow.sh` 已把 JSON/summary/guidance/SSH-step/failure-classification 等 helper 下沉到 `scripts/ops/cloud_release_workflow_helpers.sh`，主文件剩余责任更集中在参数解析、状态初始化和 gate 编排；
+  - 当前仓库已新增 `docs/runbook/run-S4D-cloud-release-gate-map.md`，可以直接把 `summary.json` 中的 `terminalGate` / `failureClass` 映射到 `preflight.log`、`deploy.log`、`verify.log`、`rollback.log` 与对应 helper/runbook，而不必默认打开整个 orchestrator；
+  - `docs/runbook/run-S4D-4C-agent-context-navigation.md` 已同步指向 gate map，因此 P3 现已从“高压入口识别”推进到“高压 orchestrator 的结构性减压 + 窄路由落地”。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-26: 已完成 `S4D-4C/P1-C1-S1S2` 的 repo-side 交付：新增 stable runner host Terraform module、bootstrap/probe 脚本、stable-runner workflow 与 cutover runbook，使“迁移 self-hosted runner 到稳定网络位置”从建议变成可执行路径。
@@ -457,4 +478,5 @@
 - 2026-03-26: 已从 target VM 本身完成最小 RDS 依赖诊断，确认当前出口 IP 为 `49.196.51.46`，并据此把该 `/32` 补入 cloud-dev RDS security group `sg-0873e947b9947639d`；同时已把 target repo HEAD 快进到 `0035394235c3fdfe905ac780c322987cf988eced`。
 - 2026-03-26: 已完成 reverse-tunnel-backed stable-runner PASS 复跑 `23595354059`，当前 `dependencyConnectivityGate=PASS`、`postChangeVerifyGate=PASS`，且 trigger SHA 与 remote HEAD 已一致。
 - 2026-03-26: 已完成 `S4D-4C/P3-C1-S1S2` 的第一轮收口：高压入口已固定排序，并新增 `docs/runbook/run-S4D-4C-agent-context-navigation.md` 作为窄索引面；当前 `agent_context_timeout` family 已具备结构性 mitigation evidence。
+- 2026-03-26: 已完成 `S4D-4C/P3-C2-S1S2` 的第二轮减压：`cloud_release_workflow.sh` 已把 helper 下沉到独立文件，并新增 `docs/runbook/run-S4D-cloud-release-gate-map.md` 作为 gate-level 首读导航。
 - 2026-03-26: 新增 `S4D-4C`，把最近频发的 408/timeout 问题正式从 `S4D-4B` 之后拆成独立治理 phase，并固定优先顺序为“稳定 runner 网络位置 -> 自动触发到 cloud-dev -> 大入口文件减压”。

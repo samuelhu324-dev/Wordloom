@@ -77,6 +77,7 @@
 ### 3.1 Cloud runtime release / stable-runner / approval
 
 - 先看：`summary.json`、`preflight.log`、`verify.log`
+- 再看：`docs/runbook/run-S4D-cloud-release-gate-map.md`
 - 再看：`docs/runbook/run-S4D-cloud-runtime-release-operations.md`
 - 最后才看：`scripts/ops/cloud_release_workflow.sh`
 
@@ -113,6 +114,7 @@
 
 - `docs/logs/log-S4D-4C-408-timeout-eradication.md`
 - `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
+- `docs/runbook/run-S4D-cloud-release-gate-map.md`
 - `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
 - `docs/logs/log-S0C-3A-cli-breakdown.md`
 - `backend/scripts/cli_app/registry.py`
