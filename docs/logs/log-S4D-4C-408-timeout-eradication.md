@@ -134,7 +134,8 @@
 - `P1-C1-S1S2` 已完成 repo-side cutover assets：当前仓库已补齐 stable runner host Terraform module、Linux runner bootstrap 脚本、reachability probe 脚本，以及 stable-runner 专用 GitHub Actions workflow；
 - 这意味着 `S4D-4C` 的第一个问题不再停留在“建议迁移 runner”，而是已经有可执行的 provision -> bootstrap -> probe -> dispatch 路径；
 - `P1-C2-S1` 已完成默认等待窗口收口：release workflow / verify / rollback 的 verify wait 已统一提高到 `180s`，SSH `ConnectTimeout` 已提高到 `30s`，用于降低冷启动误判；
-- `P1-C2-S2` 仍待完成真实 probe/evidence 入账，用于证明新 runner host 已真实替代临时公网 IP allowlist 路径。
+- `P1-C2-S2` 已不再阻塞于 operator ingress：当前 operator host 已恢复到 stable runner `3.27.164.166:22` 的 SSH 连通，Linux stable runner `wordloom-cloud-dev-runner` 已注册并在线，probe 已证明 GitHub / RDS reachability 为 `PASS`；
+- 当前 `P1-C2-S2` 的剩余项只剩 direct target SSH host 尚未在 probe 中显式入账，因此最后一段 evidence 仍待补齐，但“runner host 本身不可达”这一 blocker 已关闭。
 
 ### P2 (Automation trigger hardening)
 
@@ -145,7 +146,8 @@
 
 - `P2-C1-S1S2` 已完成 control-plane 收口：当前 `.github/workflows/s4d-cloud-release-dispatch.yml` 同时支持 `push` 自动触发与 `workflow_dispatch` 手动触发；
 - `cloud-dev` environment 已新增 required reviewer protection，因此 auto-dispatch run 会先停在 approval，而不是要求操作者先手点启动 workflow；
-- 第一条真实 push-triggered run `23589344188` 已证明自动触发与 approval-only manual boundary 生效；该 run 在 approval 后继续停在 `queued`，当前剩余 blocker 是 repo 内唯一 self-hosted runner `wordloom-s4d-temp-win` 处于 `offline`，而不是 trigger contract 本身。
+- 第一条真实 push-triggered run `23589344188` 已证明自动触发与 approval-only manual boundary 生效；其此前在 approval 后停在 `queued`，根因是 repo 内唯一 Windows self-hosted runner `wordloom-s4d-temp-win` 一度 `offline`；
+- 截至本轮恢复动作完成后，`wordloom-s4d-temp-win` 已在当前 Windows operator host 上重新注册并恢复 `online`，因此 auto-dispatch 的 runner availability blocker 也已被收口。
 
 ### P3 (Agent/context pressure reduction)
 
@@ -267,6 +269,25 @@
   - 当前 operator host 以本机默认 SSH key 对 `ubuntu@3.27.164.166:22` 的只读连通测试返回 `connection timed out`；
   - 因此 `P1-C2-S2` 当前 blocker 已收敛为“operator -> stable runner ingress 尚未打通”，还未进入 runner-side probe / dispatch 阶段。
 
+### P1-C2-S2 (operator ingress restored and stable-runner bootstrap/probe PASS | 2026-03-26)
+
+- headSha: `e0eb581a`
+- timeoutFamily: `runtime_dependency_timeout`
+- triggerSurface: `operator -> runner SSH ingress`, `stable-runner bootstrap`, `stable-runner probe`
+- artifacts:
+  - `artifacts/_tmp_s4d4c_cloud_runner_bootstrap/20260326T105721Z/bootstrap.json`
+  - `artifacts/_tmp_s4d4c_cloud_runner_bootstrap/20260326T105721Z/remote-bootstrap.log`
+  - `artifacts/_tmp_s4d4c_cloud_runner_probe/20260326T105909Z/probe.json`
+- expected:
+  - 当前 operator host 到 stable runner `3.27.164.166:22` 的 SSH ingress 已恢复，不再停留在 `connection timed out`；
+  - stable runner host 上的 Linux GitHub Actions runner 已注册为 service 并进入 `online`；
+  - probe 至少证明 runner host 对 GitHub、RDS 和本地 listener 健康检查可达。
+- observed:
+  - 当前 operator 公网 IP 已确认为 `49.196.51.46`，而 runner SSH security group `sg-07929a5f53aec6029` 先前仅允许旧 `/32` `49.196.236.62/32`；补入当前 `/32` 后，对 `3.27.164.166:22` 的 TCP 探测恢复为 `PASS`；
+  - 当前 operator host 使用本机 `id_ed25519` 已可执行 `ssh ubuntu@3.27.164.166 hostname`，返回 `ip-10-42-0-141`，说明 operator -> runner ingress 已真实打通；
+  - `cloud_stable_runner_bootstrap.sh` 已在远端把 `wordloom-cloud-dev-runner` 注册为 Linux self-hosted runner，并以 systemd service 方式运行；
+  - `probe.json` 已记录 `githubReachability=PASS`、`runnerListener=PASS`、`dependencyTcpReachability=PASS`；当前 `targetSshReachability=SKIPPED`，说明 residual gap 已从“runner host 不可达”收窄为“direct target SSH host 尚未显式纳入 probe 参数”。
+
 ### P2-C1-S1S2 (auto-dispatch and approval-only boundary proven | 2026-03-26)
 
 - headSha: `f62165d7f93243dd8001aee80d3836f9d80ddd40`
@@ -284,10 +305,27 @@
   - 在未审批前，该 run 状态为 `waiting`，说明当前手动边界已从“手点 workflow_dispatch”收口为 environment approval；
   - 审批 `cloud-dev` deployment 后，该 run 继续进入 `queued`，当前剩余 blocker 是 repo 内唯一 self-hosted runner `wordloom-s4d-temp-win` 处于 `offline`，而不是 auto-dispatch / approval contract 本身。
 
+### P2-C1-S1S2 (windows self-hosted runner availability restored | 2026-03-26)
+
+- headSha: `e0eb581a`
+- timeoutFamily: `runtime_dependency_timeout`
+- triggerSurface: `auto-dispatch runner scheduling`, `self-hosted runner recovery`
+- artifacts:
+  - `D:/actions-runner/wordloom-s4d-temp-win/.runner`
+- expected:
+  - 先前卡在 `queued` 的 Windows self-hosted dispatch path 不再因 repo 内无可用 runner 而挂起；
+  - `wordloom-s4d-temp-win` 应恢复为 `online`，继续承担旧 Windows dispatch workflow 的 fallback 入口。
+- observed:
+  - 当前 Windows operator host 已完成 `wordloom-s4d-temp-win` 的同名替换注册，并重新启动 `run.cmd` listener；
+  - GitHub repo runner inventory 已显示 `wordloom-s4d-temp-win` 从 `offline` 恢复为 `online`；
+  - 因此 `P2` 之前暴露的 runner availability blocker 已被关闭，后续 auto-dispatch run 不再缺少 Windows 落点。
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-26: 已完成 `S4D-4C/P1-C1-S1S2` 的 repo-side 交付：新增 stable runner host Terraform module、bootstrap/probe 脚本、stable-runner workflow 与 cutover runbook，使“迁移 self-hosted runner 到稳定网络位置”从建议变成可执行路径。
 - 2026-03-26: 已完成 `S4D-4C/P1-C2-S1` 的默认等待窗口收口：`cloud_release_workflow.sh`、`cloud_release_verify.sh`、`cloud_release_rollback.sh` 与 stable-runner workflow 已统一提高 verify wait baseline，并把 SSH preflight timeout 提高到更适合云端冷启动的范围。
 - 2026-03-26: 已完成 `S4D-4C/P2-C1-S1S2` 的 control-plane 收口：`s4d-cloud-release-dispatch.yml` 已支持 push 自动触发，`cloud-dev` environment 已新增 required reviewer protection；第一条真实 push-triggered run `23589344188` 已证明 auto-dispatch 与 approval-only manual boundary 生效。
 - 2026-03-26: 已尝试执行 `S4D-4C/P1-C2-S2` 的 stable-runner evidence capture；当前 blocker 已收敛为 operator host 到 stable runner `3.27.164.166:22` 的 SSH ingress timeout，因此 runner-side probe / dispatch evidence 仍待后续补齐。
+- 2026-03-26: 已恢复 repo Windows self-hosted runner `wordloom-s4d-temp-win` 在线状态，并关闭 auto-dispatch 的 runner availability blocker。
+- 2026-03-26: 已补入当前 operator `/32` 到 stable runner SSH ingress，完成 `wordloom-cloud-dev-runner` 的 Linux service bootstrap，并拿到 GitHub / RDS / runner listener 的 probe PASS；当前 residual gap 只剩 direct target SSH host 尚未显式纳入 probe 参数。
 - 2026-03-26: 新增 `S4D-4C`，把最近频发的 408/timeout 问题正式从 `S4D-4B` 之后拆成独立治理 phase，并固定优先顺序为“稳定 runner 网络位置 -> 自动触发到 cloud-dev -> 大入口文件减压”。
