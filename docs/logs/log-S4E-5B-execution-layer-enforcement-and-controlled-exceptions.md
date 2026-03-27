@@ -147,6 +147,33 @@
 - P1-C1-S1: 固定 approval independence gate wording
 - P1-C1-S2: 固定 audit-incomplete hard-stop 与 break-glass execution wording
 
+**Current status (S4E-5B / P0-P1)**
+
+- `P1-C1-S1` 已完成第一版 approval independence gate wording：当前 policy 已明确 approval independence 不再只是 higher-environment 的记录层 contract，而是 execution gate；一旦 `requestedBy == actedBy` 或 approver 与 override/rollback authority 的独立性无法证明满足最低要求，执行层应在 approval 前阻断。
+- `P1-C1-S2` 已完成第一版 `audit_incomplete` hard-stop / break-glass execution wording：当前 policy 已明确 `audit_incomplete` 在 higher-environment promotion、manual override、manual rollback 与 approval replay 中应直接触发 hard stop；同时 break-glass 只能以显式 exception path 进入，并附带额外 evidence 与事后可审计性。
+
+### P1-C1-S1 (Approval independence gate wording | v1)
+
+- approval independence gate 的最小 wording 固定为：
+  - higher-environment approval 进入执行前，系统或 operator-visible gate 必须能确认 `requestedBy != actedBy` when `authorityRole=approval_authority`；
+  - 若 approver 同时也是同一 decision window 内的 override actor 或 manual rollback authority，且没有显式 break-glass allowance，则 approval gate 应返回 `blocked_before_approval`；
+  - approval independence gate 的失败不应只写进事后审计，而应在 execution path 中表现为“不能继续执行”的 stop-go 结果。
+- v1 的最小执行口径固定为：
+  - approval independence 的判定优先来自 structured governance record、environment approval metadata 或 future approval backend output；
+  - 若这些来源无法证明 independence 满足，则默认结论应是 block，而不是“先继续，后补判断”；
+  - future automation 可以把判定做得更强，但失败语义仍应统一落回 `blocking_prerequisite_failed` / `blocked_before_approval` 这类既有结果骨架。
+
+### P1-C1-S2 (`audit_incomplete` hard-stop and break-glass execution wording | v1)
+
+- `audit_incomplete` hard-stop 的最小 wording 固定为：
+  - 在 higher-environment promotion、manual override、manual rollback、approval replay 场景中，只要 `headSha`、`sourceRecordRef`、`authorityRole`、`actedBy`、`decisionReason`、`runUrl` 或 artifact reference 任一关键字段无法稳定回指，执行层就应返回 `blocking_prerequisite_failed`；
+  - `audit_incomplete` 的处理不应退化为 operator note；它应表现为不能进入目标动作的硬阻断，而不是运行后再补 evidence；
+  - 只有当 action type、authority role 与 evidence source 都满足 `audit_complete`，execution gate 才允许继续。
+- break-glass execution 的最小 wording 固定为：
+  - break-glass 只能在正常 blocking rule 已触发、但存在显式更高优先级风险接受时进入；
+  - break-glass 进入执行前，必须已经记录 exception reason、exception authority source、对应 run/reference 与受控 evidence，否则 exception gate 本身也应阻断；
+  - break-glass 的成功语义应是“例外被受控允许并留下额外 evidence”，而不是“绕过所有治理要求”；换言之，break-glass 可以绕过部分默认 independence / readiness rule，但不能绕过最低 auditability requirement。
+
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: 用受控样本验证 execution gate/evidence 表达能力
@@ -166,8 +193,8 @@
 
 ### P1 (Policy mapping)
 
-- [ ] `P1-C1-S1`: approval independence gate wording fixed
-- [ ] `P1-C1-S2`: audit-incomplete / break-glass wording fixed
+- [x] `P1-C1-S1`: approval independence gate wording fixed
+- [x] `P1-C1-S2`: audit-incomplete / break-glass wording fixed
 
 ### P2 (Drill / Verify)
 
@@ -184,5 +211,6 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-5B/P1-C1-S1S2` 的第一轮 policy wording 收口，当前已固定 approval independence gate，以及 `audit_incomplete` hard-stop / break-glass execution 的最小执行层 wording。
 - 2026-03-27: 已完成 `S4E-5B/P0-C1-S1S2S3` 的第一轮 contract 收口，当前已固定 execution-layer enforcement boundary、decision/evidence source contract，以及 break-glass / controlled exception 的最小 baseline。
 - 2026-03-27: 首次创建 `S4E-5B` draft，用于承接 execution-layer enforcement / controlled exception follow-up；当前入口重点是 approval independence 的自动判定、`audit_incomplete` 的执行层硬阻断，以及 `break_glass_exception` 的受控落账和执行门。
