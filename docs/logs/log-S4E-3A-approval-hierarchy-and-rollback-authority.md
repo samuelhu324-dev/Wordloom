@@ -174,6 +174,11 @@
 
 - P3-C1-S1: 为 future enforcement / auditability / environment-specific approver policy 定义入口
 
+**Current status (S4E-3A / P3)**
+
+- `P3-C1-S1` 已完成第一版 runway 定义：当前 `S4E-3A` 不再继续扩写 enforcement / auditability / environment-specific approver policy 本身，而是把这些问题显式转交给 `S4E-4A`，由下一 phase 专门处理 hard-gate vs soft-policy boundary、auditability contract 与不同环境的 approver tightening path。
+  - 对应下一 phase 入口现已固定为 `docs/logs/log-S4E-4A-enforcement-auditability-and-environment-approver-policy.md`。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -194,7 +199,7 @@
 
 ### P3 (Runway)
 
-- [ ] `P3-C1-S1`: enforcement/auditability runway defined
+- [x] `P3-C1-S1`: enforcement/auditability runway defined
 
 ## Evidence (reserved)
 
@@ -252,8 +257,25 @@
   - `operator_guidance.txt` 进一步固定了 rollback command、artifact 路径以及 “Keep service on known-good and investigate candidate logs before the next deploy” 的 handoff wording，说明 rollback 动作不仅发生了，而且留下了可回指的治理证据；
   - 因此，`S4E-3A/P2-C1-S2` 已验证 rollback authority evidence 也可以落入与 approval 相同的统一 governance action record 骨架。
 
+### P3-C1-S1 (enforcement / auditability follow-up handed to S4E-4A | 2026-03-27)
+
+- headSha: `1280a32d`
+- artifacts:
+  - `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
+  - `docs/logs/log-S4E-4A-enforcement-auditability-and-environment-approver-policy.md`
+  - `docs/logs/log-S4E-release-operating-model-and-governance.md`
+- expected:
+  - `S4E-3A` 的 runway 应明确说明 authority taxonomy / governance action record 到哪里结束，以及 enforcement / auditability / environment-specific approver policy 从哪里开始；
+  - 这条入口不应只停留在“以后再做”的口头说明，而应落实为一个可继续推进的独立 phase 草稿；
+  - 新 phase 至少要固定 future hard-gate、auditability 与 approver-policy tightening 的合同入口，而不是重复 `S4E-3A` 已完成的 authority taxonomy。
+- observed:
+  - `S4E-3A` 当前已把剩余问题明确收口为 `S4E-4A`：后续重点不再是 requester / approver / rollback authority 的最小分类，而是哪些约束需要升级为执行层 gate、哪些字段若缺失应视为 audit-incomplete，以及不同环境将来如何收紧 approver policy；
+  - `docs/logs/log-S4E-4A-enforcement-auditability-and-environment-approver-policy.md` 已作为下一 phase 草稿建立，包含 `P0-P3` 结构、hard-gate vs soft-policy boundary、auditability contract 与 environment-specific approver policy 入口；
+  - 因此，`S4E-3A/P3-C1-S1` 已完成第一版 runway handoff，后续 enforcement / auditability 议题不再滞留在 `S4E-3A` 中继续混写。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-3A/P3-C1-S1` 的第一轮 runway 交接；当前已把 enforcement / auditability / environment-specific approver policy 的后续问题显式转交给 `S4E-4A`，并固定下一 phase 入口。
 - 2026-03-27: 已完成 `S4E-3A/P2-C1-S1S2` 的第一轮 drill/evidence 回填；当前已用 `23599857316` 同时固定 approval action record 与 rollback authority record 的最小 evidence 入口。
 - 2026-03-27: 已完成 `S4E-3A/P1-C1-S1S2` 的第一轮 policy wording 收口，固定了 hierarchy / separation-of-duties 的最小表述，并把 approval / rollback / override 压到统一 governance action record 骨架上。
 - 2026-03-27: 已完成 `S4E-3A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 role/authority boundary、统一 governance action record 字段，以及 hierarchy evidence contract。
