@@ -12,7 +12,7 @@
   **source**: `legacy/from_structured_docs/from-roadmap/ROADMAP v5.md`
   **child_road_1**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
 **created**: `2026-03-21`
-**updated**: `2026-03-26`
+**updated**: `2026-03-27`
 
 ---
 
@@ -262,6 +262,7 @@
 
 ## Recent Changes
 
+- 2026-03-27: 已正式打开 `S4E` / `S4E-1A`，把更高一层的 release operating model、trigger policy 与 governance boundary 从 `S4D-4B/4C` 的后续讨论中提升为独立主线；当前在 `road-S1` 中仍以 `M4` 为第一归属。
 - 2026-03-27: 明确补充 `S4E` 候选边界：若后续开启新 phase 承接更高一层的 release operating model，它在 `road-S1` 中通常先归 `M4`，只有上升到更完整的 release governance / cross-environment promotion / release records 制度时才开始同时触碰 `M5`；`F1/F3` 继续保留为触发条件说明，而不是主归属。
 - 2026-03-26: 新增 `F7 Runtime access path evolution`，明确把 target access boundary 分成三种路径：全云/VPC、overlay network、reverse tunnel bridge；并记录当前已完成的是第 3 种桥接方案，第 1/2 种保留后续演进。
 - 2026-03-25: 把当前 `S4D` 暴露出的 release gates / failure taxonomy / evidence discipline 明确下沉到 `M4` 完成面；`F1` 与 `F3` 继续保留为触发条件说明，但不再把这些内容误判为主要属于未来 `M5` 的话题。

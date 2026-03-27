@@ -25,7 +25,7 @@
   **phase_log_5**: `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
   **phase_log_6**: `docs/logs/log-S4D-4C-408-timeout-eradication.md`
 **created**: `2026-03-23`
-**updated**: `2026-03-26`
+**updated**: `2026-03-27`
 
 ---
 
@@ -165,6 +165,7 @@
 
 ## Recent changes（for traceability，可选）
 
+- 2026-03-27：`S4D-4B` 已完成最终封口文字统一；与更高一层 release operating model / trigger policy / governance boundary 相关的继续演进，现已正式转入新的顶层 spine `S4E` 与其首个 phase `S4E-1A`。
 - 2026-03-23：首次创建 `S4D`，作为 `S4` 主线中承接 cloud runtime deploy/verify/rollback 的新顶层 spine。
 - 2026-03-24：确认第一台 Ubuntu VM 已完成 host prep 与 repo sync，当前仅剩 env placement 与第一次真实 deploy/verify 样本。
 - 2026-03-24：第一次真实 deploy 尝试发现 `cloud_release_run_container.sh` 的 `docker run` 参数拼接缺陷；当前已转入修复 wrapper 并重跑 deploy/verify。
