@@ -113,6 +113,7 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 ## Current Status（进展摘要）
 
 - `S4E` parent v1 已完成首轮阶段收口，当前可视为 `stable`；
+- `S4E-1A` 到 `S4E-5B` 当前都已完成首轮可追溯 contract / policy / evidence 闭环，因此 `S4E` v1 已不再处于“继续补 phase”的状态；后续若继续推进，应新开 follow-up slice 承接 execution decision step、break-glass input contract、external approval integration 等仓库实现，而不是回头改写 parent 边界；
 - 当前已进入实质推进的 phases 是 `S4E-1A`、`S4E-2A`、`S4E-3A` 与 `S4E-4A`：前三者分别完成了 trigger policy、promotion continuity、authority taxonomy 的首轮闭环；当前 `S4E-4A` 已开始收口 enforcement、auditability 与 environment-specific approver policy 的第一轮 contract/policy 基线；
 - `S4E-2A` 已完成第一轮 `P0-P3`：当前 promotion semantics、release identity continuity、最小 ledger 扩展字段、lower-environment source record continuity，以及通向 hierarchy / rollback authority 的 runway handoff 都已经固定；
 - `S4E-3A` 已完成第一轮 `P0-P3`：当前 role/authority boundary、统一 governance action record 字段、hierarchy / separation-of-duties wording、approval/rollback evidence，以及通向 enforcement / auditability / approver-policy tightening 的 runway handoff 都已经固定；
@@ -134,6 +135,12 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
   - `S4E-1A` 到 `S4E-5B` 已完成首轮可追溯 contract/policy/evidence 基线；
   - 后续更高环境治理升级将继续以 follow-up slice 推进，而不是回头打乱 v1 spine 的边界。
 
+## Closeout Note（当前收口口径）
+
+- `S4E` 当前的正式收口口径是：release control-plane、approval/governance boundary、promotion / release records、approval hierarchy、enforcement / auditability、higher-environment blocking upgrade，以及 execution-layer enforcement / controlled exception 的 v1 contract 已经闭环；
+- 因此 parent 不再追加新的 v1 phase 编号来继续“补定义”；下一阶段若要继续推进，应转入 implementation-oriented follow-up，例如 workflow 内 execution decision step、break-glass input capture、external approval decision write-back 或 release ledger backend integration；
+- 换言之，`S4E` 已完成的是 governance / operating-model v1，本 log 后续主要承担稳定索引与 handoff，而不是继续充当未完成草稿。
+
 ## Numbering & Commit Naming（编号与提交命名）
 
 - 编号约定：`P<n>` 表示 Phase，`C<n>` 表示 Cycle，`S<n>` 表示 Step。
@@ -154,6 +161,7 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 
 ## Recent changes（for traceability，可选）
 
+- 2026-03-27：`S4E` parent 已按 `S4E-1A` 到 `S4E-5B` 的首轮闭环完成正式收口；后续若继续推进，将以 implementation-oriented follow-up slice 承接，而不是回头改写 v1 parent spine。
 - 2026-03-27：`S4E-5B` 已推进到首轮 `P3` 基线，并完成第一轮 phase 收口；当前已固定 execution gate 的仓库内最小落点、exception gate 的自动/半自动入口，以及 external approval backend 的 write-back contract。
 - 2026-03-27：`S4E-5B` 已推进到首轮 `P2` 基线；当前已验证现有 governance record / evidence skeleton 足以表达 execution-layer 的 `blocked_before_approval`、`blocking_prerequisite_failed`、正常放行与 `break_glass_exception` 的受控落账入口。
 - 2026-03-27：`S4E-5B` 已推进到首轮 `P1` 基线；当前已固定 approval independence gate，以及 `audit_incomplete` hard-stop / break-glass execution 的最小执行层 wording。
