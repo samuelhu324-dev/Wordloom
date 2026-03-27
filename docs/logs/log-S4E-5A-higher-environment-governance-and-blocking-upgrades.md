@@ -144,6 +144,33 @@
 - P1-C1-S1: 固定 higher-environment approval / override restriction wording
 - P1-C1-S2: 固定 higher-environment rollback authority / evidence completeness wording
 
+**Current status (S4E-5A / P0-P1)**
+
+- `P1-C1-S1` 已完成第一版 higher-environment approval / override restriction wording：当前 policy 已明确 higher-environment approval 不能沿用 `cloud-dev` 的单 actor 现实，approval、override 与 break-glass 都必须在既有 governance record skeleton 上分别记账，并在不满足 independence 或 evidence completeness 时阻断。
+- `P1-C1-S2` 已完成第一版 higher-environment rollback authority / evidence completeness wording：当前 policy 已明确 manual rollback 不再只是 runtime recovery 动作，而是 higher-environment governance action；若 rollback authority、decision reason 或 evidence bundle 不完整，则应在执行前阻断，而不是事后补写。
+
+### P1-C1-S1 (Higher-environment approval and override restriction wording | v1)
+
+- higher-environment approval 的最小 wording 固定为：
+  - promotion requester 只能提出 candidate 或 promotion intent，不能因为发起了 run 就默认获得 approval authority；
+  - approval authority 必须在 `requestedBy`、`actedBy`、`authorityRole=approval_authority` 与 `decisionReason` 可稳定回指的前提下放行，否则应阻断为 `blocking_prerequisite_failed`；
+  - 若当前 target environment 要求 requester / approver separation 或 approver independence，而 record 无法证明已满足，则 approval 不应继续进入执行阶段。
+- higher-environment manual override 的最小 wording 固定为：
+  - override 不是“补充说明”，而是独立 governance action，必须单独记录 `authorityRole`、`actedBy`、`decisionReason`、`result` 与对应 run/artifact reference；
+  - override actor 不应与同一次 approval actor 视为同一默认主体；若两者必须重合，则只能通过显式 `break_glass_exception` 进入，并留下额外 evidence；
+  - 任何缺少 justification completeness、authority independence 或 controlled evidence 的 override，都应在动作执行前阻断，而不是允许先执行后补写记录。
+
+### P1-C1-S2 (Higher-environment rollback authority and evidence completeness wording | v1)
+
+- higher-environment rollback authority 的最小 wording 固定为：
+  - rollback authority 必须被表达为独立 governance role，而不是被 approval actor、generic operator 或 workflow 成功/失败文本隐式代替；
+  - 若 rollback 属于 manual rollback，则必须在执行前确认 `authorityRole=rollback_authority`、`actedBy`、`decisionReason`、rollback evidence bundle 与 source record continuity 全部可回指；
+  - 若无法证明 rollback authority 满足当前 target environment 的 independence contract，则应阻断 rollback entry，并要求进入更受控的 higher-environment recovery path。
+- higher-environment evidence completeness 的最小 wording 固定为：
+  - approval、override、manual rollback 三类动作都必须在执行前满足 `audit_complete`，不能接受“先动作、后补证据”的 higher-environment 运行方式；
+  - evidence completeness 不只包含 artifact 文件存在，还包括 action type、authority role、decision reason、runUrl/sourceRecordRef 能被稳定映射回同一 governance record skeleton；
+  - 若 evidence 只能通过自由文本或人工记忆推断，则应视为 `audit_incomplete`，并按 `blocking_prerequisite_failed` 处理，而不是当作可接受的 higher-environment 特例。
+
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: 用现有 governance records 验证 blocking-upgrade evidence 入口
@@ -163,8 +190,8 @@
 
 ### P1 (Policy mapping)
 
-- [ ] `P1-C1-S1`: higher-environment approval/override wording fixed
-- [ ] `P1-C1-S2`: higher-environment rollback/evidence wording fixed
+- [x] `P1-C1-S1`: higher-environment approval/override wording fixed
+- [x] `P1-C1-S2`: higher-environment rollback/evidence wording fixed
 
 ### P2 (Drill / Verify)
 
@@ -181,5 +208,6 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-5A/P1-C1-S1S2` 的第一轮 policy wording 收口，当前已固定 higher-environment approval / override restriction，以及 rollback authority / evidence completeness 的最小 blocking wording。
 - 2026-03-27: 已完成 `S4E-5A/P0-C1-S1S2S3` 的第一轮 contract 收口，当前已固定 higher-environment blocking-upgrade matrix、`audit_incomplete -> blocking prerequisite` 边界，以及 approver independence / requester separation 的最小 enforced baseline。
 - 2026-03-27: 首次创建 `S4E-5A` draft，用于承接 higher-environment governance / blocking-upgrade follow-up；当前入口重点是 `audit_incomplete -> blocking`、approver independence，以及 manual override / rollback restriction 的更高环境收紧。
