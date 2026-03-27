@@ -156,6 +156,11 @@
 - P2-C1-S1: 用现有 governance action record 验证 auditability contract 是否足够表达
 - P2-C1-S2: 用现有 approval/rollback 样本验证 hard-gate vs soft-policy 边界是否可落账
 
+**Current status (S4E-4A / P2)**
+
+- `P2-C1-S1` 已完成第一轮 auditability evidence 回填：现有 `23599857316` approval/rollback 样本已经证明，`headSha`、`sourceRecordRef`、`authorityRole`、`actedBy`、`decisionReason`、`runUrl` 与 artifact bundle 可以被稳定回指，因此当前 auditability contract 已足以表达现有 `cloud-dev` governance action。
+- `P2-C1-S2` 已完成第一轮 hard-gate vs soft-policy evidence 回填：同一组样本已经证明 `cloud-dev` environment approval 是真实执行阻断点，属于 hard gate；而 requester/approver 分离、更多 approver independence 与更细 approver roster 仍只被记录为 tightening direction，当前仍属于 soft policy。
+
 ### P3 (Runway)
 
 - P3-C1-S1: 为 future multi-environment governance / stronger approval systems 定义入口
@@ -175,8 +180,8 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: auditability evidence referenced
-- [ ] `P2-C1-S2`: hard-gate/soft-policy evidence referenced
+- [x] `P2-C1-S1`: auditability evidence referenced
+- [x] `P2-C1-S2`: hard-gate/soft-policy evidence referenced
 
 ### P3 (Runway)
 
@@ -186,8 +191,81 @@
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
 
+### P2-C1-S1 (auditability contract verified against real approval and rollback governance records | 2026-03-27)
+
+- headSha: `7f3c417d`
+- sourceRecordRef: `run:23599857316`
+- targetEnvironment: `cloud-dev`
+- policyMode: `soft_policy`
+- authorityRoles:
+  - `approval_authority`
+  - `rollback_authority`
+- actedBy:
+  - `samuelhu324-dev`（approval）
+  - `workflow_auto_rollback`（rollback）
+- decisionReasons:
+  - `cloud-dev environment gate released for manual release run`
+  - `verify_fail_auto`
+- result:
+  - `approval_granted`
+  - `candidate_reverted_to_known_good`
+- runUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23599857316`
+- auditStatus: `audit_complete`
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/operator_guidance.txt`
+  - `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
+  - `docs/logs/log-S4E-1A-release-trigger-policy-and-governance-boundary.md`
+- expected:
+  - auditability contract 应能把 approval 与 rollback 两类 governance action 都回接到同一组最小字段，而不是要求每种动作各自发明新的 evidence 结构；
+  - 只要能够稳定回指 `headSha`、`sourceRecordRef`、`authorityRole`、`actedBy`、`decisionReason`、`runUrl` 与 artifact bundle，就应判定为 `audit_complete`；
+  - 若必须依赖模糊自由文本推断 actor、authority 或 action type，则该 contract 仍然不足。
+- observed:
+  - approval 样本已在 `S4E-1A`/`S4E-3A` 中固定为 `run:23599857316` 的 `pending_deployments` + run evidence：它能明确回指出 `headSha=7f3c417d...`、`targetEnvironment=cloud-dev`、`actedBy=samuelhu324-dev`、`authorityRole=approval_authority`、`decisionReason=cloud-dev environment gate released for manual release run` 以及对应 run URL；
+  - rollback 样本则由同一 run 的 `summary.json` 与 `operator_guidance.txt` 固定为 `authorityRole=rollback_authority`、`actedBy=workflow_auto_rollback`、`decisionReason=verify_fail_auto`、`result=candidate_reverted_to_known_good`，并能继续回指 rollback evidence bundle；
+  - 虽然 approval actor 与 rollback actor 不是来自同一个 artifact 文件，但它们都能稳定落回同一 source record、同一 run URL 和同一 artifact bundle 体系，因此当前 `S4E-4A` 的 auditability contract 已足够表达现有 `cloud-dev` governance action，结论可记为 `audit_complete`；
+  - 同时，这组样本也暴露了 v1 边界：approval metadata 仍部分来自 GitHub environment/pending deployment surface，而不是单个仓库内 JSON 记录，因此 future stronger governance 仍可把这些字段进一步压实为更强 enforcement。
+
+### P2-C1-S2 (hard-gate vs soft-policy boundary verified against real approval and rollback samples | 2026-03-27)
+
+- headSha: `7f3c417d`
+- sourceRecordRef: `run:23599857316`
+- targetEnvironment: `cloud-dev`
+- policyMode:
+  - `hard_gate`（environment approval / execution stop-go boundary）
+  - `soft_policy`（requester-approver separation tightening / higher-environment approver independence）
+- authorityRoles:
+  - `approval_authority`
+  - `rollback_authority`
+- actedBy:
+  - `samuelhu324-dev`（approval）
+  - `workflow_auto_rollback`（rollback）
+- decisionReasons:
+  - `cloud-dev environment gate released for manual release run`
+  - `verify_fail_auto`
+- result:
+  - `approval_granted`
+  - `PASS_AFTER_ROLLBACK`
+- runUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23599857316`
+- auditStatus: `audit_complete`
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/operator_guidance.txt`
+  - `docs/logs/log-S4E-1A-release-trigger-policy-and-governance-boundary.md`
+  - `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
+- expected:
+  - 真正属于 hard gate 的约束应表现为“不满足则 workflow 无法继续执行”或“执行路径必须进入阻断/回退控制点”；
+  - 仍处于 soft policy 的约束应表现为“当前已被记录、可追溯、可作为 future tightening 方向，但系统此刻不会仅因它不满足就拒绝 `cloud-dev` run”；
+  - 同一条真实样本最好同时证明这两类约束边界，而不是只在文字上区分。
+- observed:
+  - manual run `23599857316` 在 approval 前先进入 `waiting`，只有 `cloud-dev` environment reviewer 放行后 job 才继续执行；这说明 target environment approval 在当前系统里已经是实打实的 execution stop-go boundary，因此应记为 `hard_gate`；
+  - 同一 run 在 verify fail 后自动进入 rollback，并以 `rollbackTrigger=verify_fail_auto`、`terminalGate=rollback_readiness_gate`、`result=PASS_AFTER_ROLLBACK` 收口，说明 rollback readiness 也是现有执行层真实 gate，而不是纯记录性说明；
+  - 相比之下，这一条样本中 `requestedBy == actedBy == samuelhu324-dev` 并没有导致 run 被系统拒绝，说明 requester/approver separation、更多 approver independence 以及更细粒度 reviewer roster 目前仍是 future tightening path，只能记为 `soft_policy`；
+  - 因此，`S4E-4A/P2` 已验证当前边界可以稳定落账：environment approval 与 rollback readiness 属于 hard gate，而 environment-specific approver tightening 仍停留在 soft policy，直到 future multi-environment governance 再把它们升级为 enforced rule。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-4A/P2-C1-S1S2` 的第一轮 evidence 回填，当前已用真实 approval/rollback 样本验证 auditability contract 足够表达，并把 hard-gate 与 soft-policy 的现有边界正式落账。
 - 2026-03-27: 已完成 `S4E-4A/P1-C1-S1S2` 的第一轮 policy wording 收口，固定了 enforcement points、最低 auditability 要求，以及 environment-specific approver policy 的最小收紧路径。
 - 2026-03-27: 已完成 `S4E-4A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 hard-gate vs soft-policy 边界、auditability contract，以及 enforcement evidence 的最小字段。
 - 2026-03-27: 首次创建 `S4E-4A` draft，用于承接 enforcement、auditability 与 environment-specific approver policy；当前作为 `S4E-3A/P3` 的明确 runway 入口。
