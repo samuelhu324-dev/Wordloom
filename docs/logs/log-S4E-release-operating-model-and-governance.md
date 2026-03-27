@@ -113,12 +113,13 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 ## Current Status（进展摘要）
 
 - `S4E` parent v1 已完成首轮阶段收口，当前可视为 `stable`；
+- `S4E-1A` 到 `S4E-5B` 当前都已完成首轮可追溯 contract / policy / evidence 闭环，因此 `S4E` v1 已不再处于“继续补 phase”的状态；后续若继续推进，应新开 follow-up slice 承接 execution decision step、break-glass input contract、external approval integration 等仓库实现，而不是回头改写 parent 边界；
 - 当前已进入实质推进的 phases 是 `S4E-1A`、`S4E-2A`、`S4E-3A` 与 `S4E-4A`：前三者分别完成了 trigger policy、promotion continuity、authority taxonomy 的首轮闭环；当前 `S4E-4A` 已开始收口 enforcement、auditability 与 environment-specific approver policy 的第一轮 contract/policy 基线；
 - `S4E-2A` 已完成第一轮 `P0-P3`：当前 promotion semantics、release identity continuity、最小 ledger 扩展字段、lower-environment source record continuity，以及通向 hierarchy / rollback authority 的 runway handoff 都已经固定；
 - `S4E-3A` 已完成第一轮 `P0-P3`：当前 role/authority boundary、统一 governance action record 字段、hierarchy / separation-of-duties wording、approval/rollback evidence，以及通向 enforcement / auditability / approver-policy tightening 的 runway handoff 都已经固定；
 - `S4E-4A` 已完成第一轮 `P0-P3`：当前 hard-gate vs soft-policy boundary、auditability contract、最低 enforcement points，以及 environment-specific approver tightening path 已经固定；并且已经用 `23599857316` 的 approval/rollback 样本验证 auditability contract 与 hard-gate vs soft-policy 边界可以被真实证据表达，同时也已为 future multi-environment governance / stronger approval systems 固定不改 schema 的升级入口；
 - `S4E-5A` 已完成第一轮 `P0-P3`：当前已固定 higher-environment blocking-upgrade matrix、`audit_incomplete` 何时升级为 blocking prerequisite，以及 approver independence / requester separation 的最小 enforced baseline；并已把这些 contract 压成更明确的 approval/override restriction 与 rollback authority / evidence completeness policy wording，同时已验证现有 governance record / evidence skeleton 足以承载 blocking-upgrade evidence、`break_glass_exception`、approval independence 与 manual rollback blocking，并为 future external approval systems / multi-environment governance 固定了不分叉 schema 的接入 runway；
-- `S4E` 的下一阶段不再继续扩写 `S4E-5A` 本身，而是转入 `S4E-5B`：专门处理 execution-layer implementation path，包括 higher-environment approval independence 的自动判定、`audit_incomplete` 的执行层硬阻断，以及 `break_glass_exception` 的受控落账和执行门；
+- `S4E-5B` 已完成第一轮 `P0-P3`：当前已固定 execution-layer enforcement boundary、decision/evidence source contract，以及 break-glass / controlled exception 的最小 baseline；并已把这些 contract 压成 approval independence gate、`audit_incomplete` hard-stop 与 break-glass execution wording，同时已验证现有 governance record / evidence skeleton 足以表达 execution-layer 的 `blocked_before_approval`、`blocking_prerequisite_failed`、正常放行与 `break_glass_exception` 的受控落账入口，并进一步固定了 execution gate 的仓库内最小落点、exception gate 的自动/半自动入口，以及 external approval backend 的 write-back contract；
 - 当前不把 `S4D-4B/4C` 已完成的 dispatch、runner、timeout 治理重做一遍，而是把它们当作 `S4E` 的既有输入面。
 
 ## Notes（落地原则，可选）
@@ -131,8 +132,14 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 
 - 本 log 标记为 `stable` 表示：
   - `S4E` 的边界、phase 拆分与 parent/phase 责任分层已稳定；
-  - `S4E-1A` 到 `S4E-5A` 已完成首轮可追溯 contract/policy/evidence 基线；
+  - `S4E-1A` 到 `S4E-5B` 已完成首轮可追溯 contract/policy/evidence 基线；
   - 后续更高环境治理升级将继续以 follow-up slice 推进，而不是回头打乱 v1 spine 的边界。
+
+## Closeout Note（当前收口口径）
+
+- `S4E` 当前的正式收口口径是：release control-plane、approval/governance boundary、promotion / release records、approval hierarchy、enforcement / auditability、higher-environment blocking upgrade，以及 execution-layer enforcement / controlled exception 的 v1 contract 已经闭环；
+- 因此 parent 不再追加新的 v1 phase 编号来继续“补定义”；下一阶段若要继续推进，应转入 implementation-oriented follow-up，例如 workflow 内 execution decision step、break-glass input capture、external approval decision write-back 或 release ledger backend integration；
+- 换言之，`S4E` 已完成的是 governance / operating-model v1，本 log 后续主要承担稳定索引与 handoff，而不是继续充当未完成草稿。
 
 ## Numbering & Commit Naming（编号与提交命名）
 
@@ -154,6 +161,11 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 
 ## Recent changes（for traceability，可选）
 
+- 2026-03-27：`S4E` parent 已按 `S4E-1A` 到 `S4E-5B` 的首轮闭环完成正式收口；后续若继续推进，将以 implementation-oriented follow-up slice 承接，而不是回头改写 v1 parent spine。
+- 2026-03-27：`S4E-5B` 已推进到首轮 `P3` 基线，并完成第一轮 phase 收口；当前已固定 execution gate 的仓库内最小落点、exception gate 的自动/半自动入口，以及 external approval backend 的 write-back contract。
+- 2026-03-27：`S4E-5B` 已推进到首轮 `P2` 基线；当前已验证现有 governance record / evidence skeleton 足以表达 execution-layer 的 `blocked_before_approval`、`blocking_prerequisite_failed`、正常放行与 `break_glass_exception` 的受控落账入口。
+- 2026-03-27：`S4E-5B` 已推进到首轮 `P1` 基线；当前已固定 approval independence gate，以及 `audit_incomplete` hard-stop / break-glass execution 的最小执行层 wording。
+- 2026-03-27：`S4E-5B` 已推进到首轮 `P0` 基线；当前已固定 execution-layer enforcement boundary、decision/evidence source contract，以及 break-glass / controlled exception 的最小 baseline。
 - 2026-03-27：`S4E-5A` 已作为 stable follow-up 闭环收口进 parent，当前已新开 `S4E-5B` draft，用于承接 execution-layer enforcement、`audit_incomplete` 硬阻断与 `break_glass_exception` 的受控执行门。
 - 2026-03-27：`S4E-5A` 已推进到首轮 `P3` 基线；当前已固定 future external approval system / multi-environment governance 的接入原则，明确后续应继续沿用现有 governance action record / evidence skeleton，只增强执行 gate 与判定来源。
 - 2026-03-27：`S4E-5A` 已推进到首轮 `P2` 基线；当前已验证现有 governance record / evidence skeleton 足以承载 blocking-upgrade evidence，以及 `break_glass_exception`、approval independence、manual rollback blocking 的受控样本表达。

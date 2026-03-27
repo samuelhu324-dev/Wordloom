@@ -36,7 +36,7 @@
 - **Primary audience**: 你自己（个人职业路线），以及未来需要了解你平台/运维能力的用人方；不限定在政府岗。
 - **Time horizon**: 1–3 年的长期演进，可按 Milestone M* 分阶段前进。
 - **Code base**: 以 `wordloom-v3` 为主，必要时可以扩展到 demo/sample 仓库，但总路线优先利用现有 S* spine 资产。
-- **Current ownership boundary**: `road-S1` 主体记账应优先覆盖 `S4C + S4D` 这类继续向 SaaS-grade / cloud-runtime 主心骨延伸的资产；像 `S4B` 的本地最小闭环与 `S5A-3B` 的 recovery sample，则更适合作为 `road-S1-1` 这类 role-focused 子路线的主完成面。
+- **Current ownership boundary**: `road-S1` 主体记账应优先覆盖 `S4C + S4D + S4E` 这类继续向 SaaS-grade / cloud-runtime / release-governance 主心骨延伸的资产；像 `S4B` 的本地最小闭环与 `S5A-3B` 的 recovery sample，则更适合作为 `road-S1-1` 这类 role-focused 子路线的主完成面。
 
 ## Environment strategy snapshot
 
@@ -147,6 +147,16 @@
     - 方式 1 与方式 2 暂保留为未来演进项，等当前 `S4D` 的 reverse-tunnel-backed dispatch evidence 与 control-plane 收口稳定后，再决定是否继续上升到更长期的 access model。
   - **当前策略**：先把方式 3 作为当前 phase 的可验证 bridge，避免 `S4D` 被本地 NAT target 长期卡住；后续若这条 path 变成长期保留能力，再优先评估方式 1，其次方式 2。
 
+### F8: Release governance implementation follow-through（把已定义的 release governance contract 继续压成仓库实现）
+
+- **它是什么**：把 `S4E` 已完成的 release operating model / governance v1，继续落成仓库内可执行入口，例如 execution decision step、break-glass input contract、external approval decision write-back，以及必要时的 release ledger backend integration。
+- **为什么会自然出现**：当 `S4E` 已经把 trigger policy、approval hierarchy、auditability、higher-environment blocking 和 execution-layer contract 固定下来之后，下一阶段最自然的问题不再是“怎么定义”，而是“这些定义如何进入 workflow/script/operator path”。
+- **当前是否已触发**：`已触发`。`S4E` 已完成到 `S4E-5B` 并形成稳定 governance spine；当前剩余的是 implementation-oriented follow-up，而不是继续扩写 parent contract。
+- **下一步自然深化**：
+  - 在现有 release workflow 中增加 operator-visible execution decision step；
+  - 在 workflow dispatch / runbook entry 中增加 break-glass input capture；
+  - 若后续接入 external approval backend，只允许它增强 decision source，并要求最终 decision 继续回写到现有 governance action / evidence skeleton。
+
 ## Milestones (M1–M5)
 
 > 每个 Milestone 内部沿用 phase-log 的 P0–P3 结构：P0 = contract，P1 = implementation，P2–P3 = drills / verification / wording。这里只给出「总路线」级别的框架，具体落地可以在子路线或 logs 中展开。
@@ -228,10 +238,10 @@
 **Next spine note**
 
 - `M4` 的下一步主承接物是 `S4D`：把 `S4B` 的本地 packaging 基线与 `S4C` 的 cloud infra 连成一条 cloud/staging runtime 的 deploy -> verify -> rollback operator path。
-- 因此在 roadmap 记账边界上，`S4D` 应算作 `road-S1` 主心骨的一部分，而不是 `road-S1-1` 的完成面；`road-S1-1` 可以引用它来说明“将来怎么往上长”，但不应把 `S4D` 的 cloud-runtime 主线吞回最小闭环子路线。
+- 因此在 roadmap 记账边界上，`S4D` 与其后续 control-plane / governance spine `S4E` 都应算作 `road-S1` 主心骨的一部分，而不是 `road-S1-1` 的完成面；`road-S1-1` 可以引用它们来说明“将来怎么往上长”，但不应把 `S4D/S4E` 的 cloud-runtime / release-governance 主线吞回最小闭环子路线。
 - `F1` 中提到的 productionization automation 与 `F3` 中提到的 failure taxonomy / evidence discipline，在当前阶段不应只作为“触发条件说明”存在；只要它们直接服务于 `S4D` 的 deploy / verify / rollback operator path，就应优先记在 `M4` 当前完成面之内。
-- 若后续新增 `S4E`，更合理的边界不是重复承接 `S4D-4B/4C` 已完成的 dispatch、approval、runner 或 timeout 收口，而是承接更高一层的 release operating model 升级，例如：trigger surface policy、environment promotion、release governance、artifact/release records 制度化、跨环境 approval / rollback framing。
-- 因此，像“什么时候才值得把当前 Actions / control-plane 议题单独升成一个新 phase”这类内容，在 `road-S1` 里应优先视为 `M4` 向更强 release operations / release governance 延伸时的候选扩展面；只有当它们尚未进入当前主线执行面时，才保持在 `F1` / `F3` 的 future-capability 描述层。
+- `S4E` 现在已经完成了这一层 release operating model 升级：trigger surface policy、environment promotion、release governance、artifact/release records、approval hierarchy、higher-environment blocking 与 execution-layer enforcement 都已形成 v1 spine；因此 `M4` 当前不再把它视为候选扩展，而是视为已完成的 control-plane 闭环。
+- 在此基础上，接下来仍属于 `road-S1` future-capability 的，是把 `S4E/P3` 固定的 execution decision step、break-glass input capture 与 external approval write-back 继续压成仓库实现；这部分优先记在 `F8`，而不是重新回到 parent 定义阶段。
 
 ### M5: Backup / recovery, governance & hybrid/cloud + second-layer capabilities
 
@@ -240,11 +250,11 @@
 - 以 S5A-3B backup/restore/sanitize/verify 为核心，向外扩成一条「可治理、可恢复、具备 cloud/hybrid 认知」的长期线，包含但不急于完成 Kubernetes、多云等第二层能力。
 - `M5` 的重点是把 release/runtime 基线继续外扩到更完整的 access boundary、governance、auditability、hybrid/cloud framing 与 second-layer platform capabilities；它不是当前 release workflow failure taxonomy 的第一归属地。
 
-**Boundary note for potential `S4E`**
+**Boundary note for completed `S4E`**
 
-- 如果未来 `S4E` 的主题是“在 `S4D-4B/4C` 之后，进一步定义 release operating model”，那么它在 `road-S1` 里的第一归属通常仍应是 `M4`，因为它延续的是 deploy / verify / rollback / release-control-plane 这条 runtime operations 主线；
-- 只有当 `S4E` 的内容明显上升为更完整的 release governance / approval hierarchy / release records / cross-environment promotion 制度时，才应开始同时触碰 `M5`；
-- 在这之前，`F1` 与 `F3` 仍可作为“为什么这条演进会自然出现”的触发条件说明，但不应替代它在 `M4` 主线中的实际归属。
+- `S4E` 当前已经完成 release operating model / governance v1，因此它在 `road-S1` 里的第一归属仍应视为 `M4`，因为它延续的是 deploy / verify / rollback / release-control-plane 这条 runtime operations 主线；
+- `S4E` 中较强的 release governance / approval hierarchy / release records / cross-environment promotion 语义，说明它已经开始触碰 `M5` 的治理边界，但当前第一归属仍不是 `M5`；
+- 因此现阶段更准确的写法不是把 `S4E` 继续当 future candidate，而是把它视为 `M4` 已完成的一段治理扩展，并把后续仓库实现压到 `F8` 这类 future capability 中。
 
 **Plan (P0–P3)**
 
@@ -257,11 +267,12 @@
 ## 与子路线的关系
 
 - `road-S1-1-gov-role-minimal-ops-loop`：主要选取 M1–M5 中「对政府岗最直接命中」的一圈，做成 4–8 周的最小闭环。
-- 当前更准确的边界是：`road-S1` 主体继续承接 `S4C + S4D` 这类 cloud/runtime 主线，而 `road-S1-1` 主要承接 `S4B` 的最小 runtime / scripting / Terraform baseline，并吸收 `S4A` 的方法论语言与 `S5A-3B` 的 backup/recovery 样本。
+- 当前更准确的边界是：`road-S1` 主体继续承接 `S4C + S4D + S4E` 这类 cloud/runtime/release-governance 主线，而 `road-S1-1` 主要承接 `S4B` 的最小 runtime / scripting / Terraform baseline，并吸收 `S4A` 的方法论语言与 `S5A-3B` 的 backup/recovery 样本。
 - 未来可以新增：`road-S1-2`（例如偏云工程 / 多云）、`road-S1-3`（偏平台工程 / IDP）等，均从本文件的 M1–M5 中选子集并加细节。
 
 ## Recent Changes
 
+- 2026-03-27: `S4E` 已完成到 `S4E-5B` 并形成稳定的 release governance / execution-layer spine；当前已把它从 `road-S1` 中的“候选边界”改写为已完成主线，并新增 `F8 release governance implementation follow-through`，专门承接 execution decision step、break-glass input capture 与 external approval write-back 的后续实现。
 - 2026-03-27: 已正式打开 `S4E` / `S4E-1A`，把更高一层的 release operating model、trigger policy 与 governance boundary 从 `S4D-4B/4C` 的后续讨论中提升为独立主线；当前在 `road-S1` 中仍以 `M4` 为第一归属。
 - 2026-03-27: 明确补充 `S4E` 候选边界：若后续开启新 phase 承接更高一层的 release operating model，它在 `road-S1` 中通常先归 `M4`，只有上升到更完整的 release governance / cross-environment promotion / release records 制度时才开始同时触碰 `M5`；`F1/F3` 继续保留为触发条件说明，而不是主归属。
 - 2026-03-26: 新增 `F7 Runtime access path evolution`，明确把 target access boundary 分成三种路径：全云/VPC、overlay network、reverse tunnel bridge；并记录当前已完成的是第 3 种桥接方案，第 1/2 种保留后续演进。
