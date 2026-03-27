@@ -5,7 +5,7 @@
 **id**: `S4E-5B`
 **kind**: `log`
 **title**: `execution-layer enforcement and controlled exceptions + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, ReleaseOperations, Governance, Enforcement, Approval, Auditability, BreakGlass, Runtime, Evidence, epic/s4, sub/4e5b`
 **links**: ``
@@ -188,6 +188,27 @@
 
 - P3-C1-S1: 为 future automation / external approval integration 提供实现入口
 
+**Current status (S4E-5B / P0-P3)**
+
+- `P3-C1-S1` 已完成第一轮 implementation runway 定义：当前已明确 execution-layer automation 不应从外部另起一套 gate/exception 账本，而应优先落在现有 GitHub Actions workflow、`cloud_release_workflow.sh`、runbook entry 与 artifact bundle 的交汇点上，把 gate 结果继续回写到同一 governance action / evidence skeleton。
+- 本 phase 已完成最小闭环：`P0` 固定 contract、`P1` 固定 policy wording、`P2` 验证 evidence 表达能力、`P3` 给出 implementation runway；因此 `S4E-5B` 当前可以按本 log 的 stable 口径视为第一轮收口完成。
+
+### P3-C1-S1 (future automation and external approval integration must land on existing workflow entry points and write back to the same governance skeleton | v1)
+
+- future automation / external approval integration 的最小实现入口固定为：
+  - **execution gate 的仓库内最小落点**：优先落在现有 GitHub Actions release workflow 与 `scripts/ops/cloud_release_workflow.sh` 之间的 pre-execution decision step，而不是引入平行 orchestrator；该 step 的职责是读取已存在的 governance action record、environment approval metadata、workflow inputs 与 artifact lineage，给出 `approval_granted`、`blocked_before_approval`、`blocking_prerequisite_failed` 或 `override_allowed_under_break_glass` 等结果，并把结论继续落回现有 run/artifact evidence；
+  - **exception gate 的自动/半自动入口**：优先落在 operator-visible workflow dispatch / runbook entry 上；半自动模式下，operator 必须先显式提交 exception reason、authority source、source record reference，再由 workflow 生成受控 exception action；自动模式下，可由 future approval backend 直接下发 exception allowance，但仍必须在仓库侧生成同一 skeleton 的 exception record 与 artifact reference；
+  - **external approval backend 的 write-back contract**：外部系统只负责提供更强 decision source，不拥有独立账本主权；其批准/拒绝/例外结论必须被归一化回 `headSha`、`sourceRecordRef`、`authorityRole`、`actedBy`、`decisionReason`、`result`、`runUrl` 与 artifact reference，保证外部审批增强的是 gate 强度，而不是替换当前审计骨架。
+- v1 的最小实施原则固定为：
+  - 先把 gate 作为 workflow 内可见、可追踪的 stop-go step 落下，再考虑更重的 approval service 或 ledger backend；
+  - exception gate 必须先生成受控 governance action，再允许 override / rollback 继续，而不是先执行后补 exception 记录；
+  - external approval backend 若不可用，仓库侧仍应能根据现有 governance record / evidence source 给出 conservative block，而不是因 backend 缺席退化为 implicit allow；
+  - future stronger automation 可以增强 actor identity、dual approval、time-bound exception 或 policy evaluation，但输出必须继续使用同一 result vocabulary 与 evidence lineage。
+- v1 的最小落地顺序固定为：
+  - 第一步：在现有 release workflow 中增加 operator-visible execution decision step，显式产出 gate result 与 blocking reason；
+  - 第二步：在 workflow dispatch / runbook entry 中增加 break-glass input contract，使 exception reason、authority source 与 source record reference 先于执行被采集；
+  - 第三步：若后续引入 external approval backend，只允许它作为 decision source provider，并要求仓库侧把最终 decision 回写到同一 governance skeleton。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -208,7 +229,7 @@
 
 ### P3 (Runway)
 
-- [ ] `P3-C1-S1`: automation / external integration runway defined
+- [x] `P3-C1-S1`: automation / external integration runway defined
 
 ## Evidence (reserved)
 
@@ -314,8 +335,48 @@
   - 这也说明 execution-layer 的 controlled exception 入口本质上是“在已有 governance lineage 上增加一条显式 action 并收紧 gate prerequisites”，而不是“绕过现有记录系统”；
   - 因此，`S4E-5B/P2-C1-S2` 已验证 controlled exception entry 可以直接承接现有 governance record lineage，后续需要实现的是 exception gate 的自动/半自动入口，而不是另起账本。
 
+### P3-C1-S1 (future automation and external approval integration should strengthen the existing workflow entry, not replace the evidence model | 2026-03-27)
+
+- headSha: `71526edb`
+- sourceRecordRef: `phase:S4E-5B/P2`
+- targetEnvironment: `future higher-environment execution gate rollout`
+- policyMode: `runway_defined`
+- authorityRoles:
+  - `release_execution_gate`
+  - `exception_authority`
+  - `approval_authority`
+- actedBy:
+  - `documentation_phase_update`
+  - `future_workflow_gate`
+  - `future_external_approval_backend`
+- decisionReasons:
+  - `execution_gate_must_land_inside_existing_release_workflow`
+  - `exception_entry_must_be_recorded_before_execution`
+  - `external_approval_backend_must_write_back_to_existing_governance_skeleton`
+- result:
+  - `runway_defined`
+  - `workflow_gate_entry_defined`
+  - `external_decision_source_writeback_defined`
+- runUrl: `n/a (documentation phase handoff)`
+- auditStatus: `audit_complete`
+- artifacts:
+  - `docs/logs/log-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.md`
+  - `docs/logs/log-S4E-5A-higher-environment-governance-and-blocking-upgrades.md`
+  - `docs/logs/log-S4E-release-operating-model-and-governance.md`
+  - `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
+- expected:
+  - future automation 应该优先增强现有 workflow entry，而不是在仓库外另起一个无法回指本地 artifacts 的 gate 平台；
+  - break-glass exception 入口必须能在执行前显式收集 exception reason、authority source 与 source record reference；
+  - 外部 approval backend 若接入，也必须把 decision 归一化回现有 governance action / evidence skeleton，从而保持 run-level audit continuity。
+- observed:
+  - 现有 release workflow、`cloud_release_workflow.sh`、runbook entry 与 artifact bundle 已经形成仓库内最小执行主线，因此 future execution gate 的最小落点应是该主线中的 pre-execution decision step，而不是平行 orchestration stack；
+  - controlled exception 在 `P2` 已证明可以独立记账，因此 `P3` 的合理入口是先在 workflow dispatch / runbook entry 收集 exception inputs，再由 workflow 产出显式 exception action；
+  - `S4E-5A/P3` 已经固定 external approval system 只能增强 decision source，不得分叉 schema；因此 `S4E-5B/P3` 进一步把这一约束压实为 write-back contract：外部审批结果最终必须落回同一字段骨架与 result vocabulary；
+  - 因此，`S4E-5B/P3` 已完成本 phase 的 runway 目标：未来 automation、exception gate 与 external approval integration 都有明确入口，但都不允许破坏当前 governance evidence continuity。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-5B/P3-C1-S1` 的第一轮 runway 收口，当前已固定 execution gate 的仓库内最小落点、exception gate 的自动/半自动入口，以及 external approval backend 的 write-back contract；`S4E-5B` 现按本 log 口径标记为 `stable`。
 - 2026-03-27: 已完成 `S4E-5B/P2-C1-S1S2` 的第一轮 drill / verify 回填，当前已验证现有 governance record / evidence skeleton 足以表达 execution-layer 的 `blocked_before_approval`、`blocking_prerequisite_failed`、正常放行与 `break_glass_exception` 的受控落账入口。
 - 2026-03-27: 已完成 `S4E-5B/P1-C1-S1S2` 的第一轮 policy wording 收口，当前已固定 approval independence gate，以及 `audit_incomplete` hard-stop / break-glass execution 的最小执行层 wording。
 - 2026-03-27: 已完成 `S4E-5B/P0-C1-S1S2S3` 的第一轮 contract 收口，当前已固定 execution-layer enforcement boundary、decision/evidence source contract，以及 break-glass / controlled exception 的最小 baseline。
