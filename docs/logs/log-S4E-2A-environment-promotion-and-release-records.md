@@ -150,6 +150,11 @@
 - P2-C1-S1: 用现有 `cloud-dev` run 样本验证 lower-environment release identity 是否可被统一引用
 - P2-C1-S2: 为未来 higher-environment promotion 定义最小 evidence 入口与 source/target 映射
 
+**Current status (S4E-2A / P2)**
+
+- `P2-C1-S1` 已完成第一版 lower-environment source-record continuity 验证：现有 `cloud-dev` PASS run `23600877818` 已证明一条可晋级候选可以同时被 `headSha`、`candidateImage`、run URL、summary artifact 与 operator guidance 统一引用，而不需要为 promotion 重新生成另一套无关 identity。
+- `P2-C1-S2` 已完成第一版 promotion evidence entry 映射：当前 `S4E-2A` 已固定“source-side 字段必须来自已存在的 lower-environment record，而 target-side 字段只在未来 higher-environment run 真正执行后追加回填”的最小入口，因此现阶段可以先把 promotion entry 写成 `source-fixed / target-pending`，而不是伪造不存在的 staging/prod 执行事实。
+
 ### P3 (Runway)
 
 - P3-C1-S1: 把 approval hierarchy / rollback authority 的后续问题显式转交 `S4E-3A`
@@ -169,8 +174,8 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: lower-environment source record evidence referenced
-- [ ] `P2-C1-S2`: promotion evidence entry fixed
+- [x] `P2-C1-S1`: lower-environment source record evidence referenced
+- [x] `P2-C1-S2`: promotion evidence entry fixed
 
 ### P3 (Runway)
 
@@ -180,8 +185,50 @@
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
 
+### P2-C1-S1 (lower-environment PASS sample can be unified into a promotion source record | 2026-03-27)
+
+- headSha: `fdd3e812`
+- sourceRecordRef: `run:23600877818`
+- sourceEnvironment: `cloud-dev`
+- targetEnvironment: `future-higher-environment`
+- sourceRunUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23600877818`
+- sourceArtifactPath: `artifacts/_tmp_s4d4b_run_23600877818/s4d-cloud-release-23600877818-1/summary.json`
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23600877818/s4d-cloud-release-23600877818-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23600877818/s4d-cloud-release-23600877818-1/operator_guidance.txt`
+  - `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
+- expected:
+  - 至少一条 `cloud-dev` 的真实 PASS record 应能被压缩成 promotion source record，而不是只能在原 phase log 里以自由文本存在；
+  - 这条 source record 必须同时保留 `headSha`、candidate image、run URL 与 artifact bundle 引用，确保未来 higher-environment promotion 可以直接回指同一候选身份；
+  - source record 不应依赖“重新 build 一次”或“再做一条不同 identity 的 manual run”才能被未来 promotion 使用。
+- observed:
+  - run `23600877818` 的 `summary.json` 已明确记录 `headSha=fdd3e812...`、`expectedHeadSha=fdd3e812...`、`remoteHeadSha=fdd3e812...`、`imageTag=wordloom-backend:cloud-dev`、`result=PASS` 与 `evidenceComplete=true`，说明该样本已具备可被 promotion 继续引用的最小 identity/ledger 基线；
+  - 同一 artifact bundle 还保留了 `operator_guidance.txt`，其中 `next_action=Release verified. Keep the candidate running and retain this artifact bundle as evidence.`，这使 source record 不只是 run URL，而是同时具备可回指的 evidence bundle；
+  - 因此，`sourceRecordRef=run:23600877818`、`sourceRunUrl` 与 `sourceArtifactPath` 现在已经能共同组成一条可被未来更高环境直接引用的 lower-environment source record。
+
+### P2-C1-S2 (future promotion evidence entry fixed as source-fixed and target-pending mapping | 2026-03-27)
+
+- headSha: `fdd3e812`
+- sourceRecordRef: `run:23600877818`
+- sourceEnvironment: `cloud-dev`
+- targetEnvironment: `future-higher-environment`
+- sourceRunUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23600877818`
+- sourceArtifactPath: `artifacts/_tmp_s4d4b_run_23600877818/s4d-cloud-release-23600877818-1/summary.json`
+- promotionIntent: `promote verified cloud-dev candidate to a higher environment without rebuilding or replacing candidate identity`
+- approvalState: `pending_target_environment_approval`
+- result: `pending_execution`
+- expected:
+  - 在当前仓库尚无 staging/prod 真实 promotion 样本的前提下，`S4E-2A` 仍应给出一条可落账的最小 promotion evidence entry；
+  - 该 entry 必须把 source-side 字段固定下来，同时明确 target-side run/result/approval 只在未来真正执行后追加；
+  - 这样 future higher-environment promotion 才能被记为“沿用既有 candidate identity 的晋级”，而不是重新起一条语义不连贯的发布记录。
+- observed:
+  - 当前 `S4E-2A` 已固定 future promotion entry 的最小写法：`sourceRecordRef`、`sourceEnvironment`、`sourceRunUrl`、`sourceArtifactPath` 与 `promotionIntent` 在 source-side 先被写实；`targetEnvironment` 可以先写成计划中的 higher environment，而 `approvalState` / `result` 则在 target-side 执行前保持 `pending_*`；
+  - 该 mapping 明确要求未来 higher-environment run 只能补充 target-side run URL、artifact 路径、approval actor 与最终 result，不能覆盖 `headSha`、candidate image 或 source record 引用；
+  - 因此，`S4E-2A/P2` 已把 promotion evidence 入口固定为 `source-fixed / target-pending` 结构，满足当前无真实 higher-environment 样本时的最小可追溯口径。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-2A/P2-C1-S1S2` 的第一轮 drill/evidence 回填；当前已用 `cloud-dev` PASS run `23600877818` 固定 lower-environment source record continuity，并把 future promotion evidence 入口收口为 `source-fixed / target-pending` 映射。
 - 2026-03-27: 已完成 `S4E-2A/P1-C1-S1S2` 的第一轮 policy/ledger mapping 收口，固定了 promotion 与 rerun/override 的边界，以及最小 release ledger 扩展字段。
 - 2026-03-27: 已完成 `S4E-2A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 promotion semantics、release identity continuity 与 promotion evidence contract。
 - 2026-03-27: 首次创建 `S4E-2A` draft，用于承接 environment promotion semantics 与 release record continuity；当前尚未进入正式 contract/evidence 收口。
