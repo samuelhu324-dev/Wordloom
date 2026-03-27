@@ -159,6 +159,11 @@
 
 - P3-C1-S1: 把 approval hierarchy / rollback authority 的后续问题显式转交 `S4E-3A`
 
+**Current status (S4E-2A / P3)**
+
+- `P3-C1-S1` 已完成第一版 runway 定义：当前 `S4E-2A` 不再继续扩写 approval hierarchy / rollback authority 本身，而是把后续问题明确转交给 `S4E-3A`，由新 phase 专门处理 requester / approver / rollback authority / override actor 的 role matrix，以及 governance action record contract。
+  - 对应下一 phase 入口现已固定为 `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -179,7 +184,7 @@
 
 ### P3 (Runway)
 
-- [ ] `P3-C1-S1`: hierarchy follow-up handed to S4E-3A
+- [x] `P3-C1-S1`: hierarchy follow-up handed to S4E-3A
 
 ## Evidence (reserved)
 
@@ -226,8 +231,25 @@
   - 该 mapping 明确要求未来 higher-environment run 只能补充 target-side run URL、artifact 路径、approval actor 与最终 result，不能覆盖 `headSha`、candidate image 或 source record 引用；
   - 因此，`S4E-2A/P2` 已把 promotion evidence 入口固定为 `source-fixed / target-pending` 结构，满足当前无真实 higher-environment 样本时的最小可追溯口径。
 
+### P3-C1-S1 (approval hierarchy and rollback authority follow-up handed to S4E-3A | 2026-03-27)
+
+- headSha: `c8aae6fe`
+- artifacts:
+  - `docs/logs/log-S4E-2A-environment-promotion-and-release-records.md`
+  - `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
+  - `docs/logs/log-S4E-release-operating-model-and-governance.md`
+- expected:
+  - `S4E-2A` 的 runway 应明确说明 promotion semantics / source-record continuity 到哪里结束，以及 approval hierarchy / rollback authority 从哪里开始；
+  - handoff 结果不应只是 parent log 里的口头说明，而应有一个可继续推进的独立 phase 入口；
+  - 新 phase 至少要固定后续将处理的角色边界、治理动作记录与 evidence contract，而不是重复 `S4E-2A` 已经完成的 promotion identity 问题。
+- observed:
+  - `S4E-2A` 当前已把剩余问题明确收口为 `S4E-3A`：后续重点不再是 candidate identity continuity，而是 requester / approver / rollback authority / override actor 的 hierarchy framing 与 governance action record；
+  - `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md` 已作为下一 phase 草稿建立，包含 `P0-P3` 结构、最小 role matrix、governance action record 与 drill/evidence 入口；
+  - 因此，`S4E-2A/P3-C1-S1` 已完成第一版 runway handoff，后续 `approval hierarchy / rollback authority` 议题不再滞留在 `S4E-2A` 中继续混写。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-2A/P3-C1-S1` 的第一轮 runway 交接；当前已把 approval hierarchy / rollback authority 的后续问题显式转交给 `S4E-3A`，并固定下一 phase 入口。
 - 2026-03-27: 已完成 `S4E-2A/P2-C1-S1S2` 的第一轮 drill/evidence 回填；当前已用 `cloud-dev` PASS run `23600877818` 固定 lower-environment source record continuity，并把 future promotion evidence 入口收口为 `source-fixed / target-pending` 映射。
 - 2026-03-27: 已完成 `S4E-2A/P1-C1-S1S2` 的第一轮 policy/ledger mapping 收口，固定了 promotion 与 rerun/override 的边界，以及最小 release ledger 扩展字段。
 - 2026-03-27: 已完成 `S4E-2A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 promotion semantics、release identity continuity 与 promotion evidence contract。

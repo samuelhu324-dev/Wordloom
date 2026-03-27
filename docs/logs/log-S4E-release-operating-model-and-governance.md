@@ -19,7 +19,7 @@
   **reference_log_3**: `docs/logs/log-S4D-4C-408-timeout-eradication.md`
   **phase_log_1**: `docs/logs/log-S4E-1A-release-trigger-policy-and-governance-boundary.md`
   **phase_log_2**: `docs/logs/log-S4E-2A-environment-promotion-and-release-records.md`
-  **phase_log_3**: ``
+  **phase_log_3**: `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
 **created**: `2026-03-27`
 **updated**: `2026-03-27`
 
@@ -89,21 +89,21 @@
 - `S4E-2A`（Phase 2）：Environment promotion and release records（promotion semantics, release ledger, promotion intent discipline）
   - 详见：`docs/logs/log-S4E-2A-environment-promotion-and-release-records.md`
 - `S4E-3A`（Phase 3）：Approval hierarchy and rollback authority（who may approve, who may rollback, how actions are recorded）
-  - 详见：``
+  - 详见：`docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：contract/indexing（定义 `S4E` 的边界、默认基线与 roadmap 归属）
 - [x] `P1`：`S4E-1A` 已建立并推进到首轮稳定 policy/evidence 基线
-- [x] `P2`：`S4E-2A` 已进入首轮 contract/policy 基线，`P2/P3` 的 drill/evidence/runway 仍待继续推进
+- [x] `P2`：`S4E-2A` 已完成首轮 `P0-P3` 基线，并把 hierarchy / rollback authority runway 显式交接到 `S4E-3A`
 - [ ] `P3`：`S4E-3A` 仍处于 planned / not-started
 
 ## Current Status（进展摘要）
 
 - `S4E` 刚创建，当前仍是 `draft`；
 - 当前已进入实质推进的 phases 是 `S4E-1A` 与 `S4E-2A`：前者已完成 `cloud-dev` trigger surface、approval boundary、release record 最小合同与对应 evidence 的第一轮收口；后者已完成 promotion semantics、release identity continuity 与最小 ledger 扩展字段的第一轮合同/政策收口；
-- `S4E-2A` 已完成第一轮 `P0-P2`：当前 promotion semantics、release identity continuity、最小 ledger 扩展字段，以及 lower-environment source record continuity 的第一条 evidence 入口都已经固定；后续剩余工作主要进入 `P3`，用于把 hierarchy / rollback authority follow-up 明确转交给 `S4E-3A`；
-- `S4E-3A` 仍是 planned slice，后续再承接 approval hierarchy / override / rollback authority；
+- `S4E-2A` 已完成第一轮 `P0-P3`：当前 promotion semantics、release identity continuity、最小 ledger 扩展字段、lower-environment source record continuity，以及通向 hierarchy / rollback authority 的 runway handoff 都已经固定；
+- `S4E-3A` 已作为下一阶段 draft slice 开出，用于承接 approval hierarchy / override / rollback authority 与 governance action record；当前尚未进入实质 evidence/drill 阶段；
 - 当前不把 `S4D-4B/4C` 已完成的 dispatch、runner、timeout 治理重做一遍，而是把它们当作 `S4E` 的既有输入面。
 
 ## Notes（落地原则，可选）
@@ -138,7 +138,8 @@
 
 ## Recent changes（for traceability，可选）
 
-- 2026-03-27：`S4E-2A` 已推进到首轮 `P0-P2` 基线；当前已固定 promotion semantics、release identity continuity、最小 ledger 扩展字段，以及 `source-fixed / target-pending` 的 promotion evidence 入口，下一步转入 `P3`。
+- 2026-03-27：已完成 `S4E-2A/P3-C1-S1`，并正式开出 `S4E-3A` draft；当前 hierarchy / rollback authority follow-up 已从 `S4E-2A` 显式交接到下一 phase。
+- 2026-03-27：`S4E-2A` 已推进到首轮 `P0-P2` 基线；当前已固定 promotion semantics、release identity continuity、最小 ledger 扩展字段，以及 `source-fixed / target-pending` 的 promotion evidence 入口。
 - 2026-03-27：已重整 `S4E` parent log 的完成态表达；当前 parent log 只确认 `S4E-1A` 已推进完成，而 `S4E-2A` / `S4E-3A` 均回到 planned / not-started 语义，避免把整体 spine 误读为“已全部完成”。
 - 2026-03-27：`S4E-2A` 已作为下一阶段 draft slice 正式挂入 `S4E`，用于承接 environment promotion semantics 与 release ledger / release record 扩展字段。
 - 2026-03-27：首次创建 `S4E`，把 release operating model / trigger policy / governance boundary 从 `S4D-4B/4C` 的后续讨论中正式提升为新的 `S4` 顶层 spine；当前第一阶段固定为 `S4E-1A`。
