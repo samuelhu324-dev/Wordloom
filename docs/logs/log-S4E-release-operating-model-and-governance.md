@@ -118,7 +118,7 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 - `S4E-3A` 已完成第一轮 `P0-P3`：当前 role/authority boundary、统一 governance action record 字段、hierarchy / separation-of-duties wording、approval/rollback evidence，以及通向 enforcement / auditability / approver-policy tightening 的 runway handoff 都已经固定；
 - `S4E-4A` 已完成第一轮 `P0-P3`：当前 hard-gate vs soft-policy boundary、auditability contract、最低 enforcement points，以及 environment-specific approver tightening path 已经固定；并且已经用 `23599857316` 的 approval/rollback 样本验证 auditability contract 与 hard-gate vs soft-policy 边界可以被真实证据表达，同时也已为 future multi-environment governance / stronger approval systems 固定不改 schema 的升级入口；
 - `S4E-5A` 已完成第一轮 `P0-P3`：当前已固定 higher-environment blocking-upgrade matrix、`audit_incomplete` 何时升级为 blocking prerequisite，以及 approver independence / requester separation 的最小 enforced baseline；并已把这些 contract 压成更明确的 approval/override restriction 与 rollback authority / evidence completeness policy wording，同时已验证现有 governance record / evidence skeleton 足以承载 blocking-upgrade evidence、`break_glass_exception`、approval independence 与 manual rollback blocking，并为 future external approval systems / multi-environment governance 固定了不分叉 schema 的接入 runway；
-- `S4E` 的下一阶段不再继续扩写 `S4E-5A` 本身，而是转入 `S4E-5B`：专门处理 execution-layer implementation path，包括 higher-environment approval independence 的自动判定、`audit_incomplete` 的执行层硬阻断，以及 `break_glass_exception` 的受控落账和执行门；
+- `S4E-5B` 已进入第一轮 `P0`：当前已固定 execution-layer enforcement boundary、decision/evidence source contract，以及 break-glass / controlled exception 的最小 baseline；下一步进入 `P1`，把这些 contract 压成 approval independence gate、`audit_incomplete` hard-stop 与 break-glass execution wording；
 - 当前不把 `S4D-4B/4C` 已完成的 dispatch、runner、timeout 治理重做一遍，而是把它们当作 `S4E` 的既有输入面。
 
 ## Notes（落地原则，可选）
@@ -154,6 +154,7 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 
 ## Recent changes（for traceability，可选）
 
+- 2026-03-27：`S4E-5B` 已推进到首轮 `P0` 基线；当前已固定 execution-layer enforcement boundary、decision/evidence source contract，以及 break-glass / controlled exception 的最小 baseline。
 - 2026-03-27：`S4E-5A` 已作为 stable follow-up 闭环收口进 parent，当前已新开 `S4E-5B` draft，用于承接 execution-layer enforcement、`audit_incomplete` 硬阻断与 `break_glass_exception` 的受控执行门。
 - 2026-03-27：`S4E-5A` 已推进到首轮 `P3` 基线；当前已固定 future external approval system / multi-environment governance 的接入原则，明确后续应继续沿用现有 governance action record / evidence skeleton，只增强执行 gate 与判定来源。
 - 2026-03-27：`S4E-5A` 已推进到首轮 `P2` 基线；当前已验证现有 governance record / evidence skeleton 足以承载 blocking-upgrade evidence，以及 `break_glass_exception`、approval independence、manual rollback blocking 的受控样本表达。
