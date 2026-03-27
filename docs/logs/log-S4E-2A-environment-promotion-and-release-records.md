@@ -42,6 +42,7 @@
 - **Lower-environment release record**：例如 `cloud-dev` 已形成的 run URL、artifact bundle、summary/result、approval 信息与候选 identity。
 - **Release identity**：至少包括 `headSha`、candidate image/tag、source run URL、artifact bundle 引用等，用于跨环境保持同一候选身份。
 - **Promotion intent**：说明本次 promotion 为什么发生、从哪个环境来、准备去哪个环境、希望保留哪些 release identity/records 的说明。
+- **Source record reference**：能够唯一回指 lower-environment release record 的最小引用，例如 source run URL、artifact bundle 路径或后续 ledger record id。
 
 ## Constraints
 
@@ -79,23 +80,31 @@
 - promotion 与 rerun/override 的区别必须被写清：
   - rerun/override 仍在同一环境 control-plane 内；
   - promotion 则代表候选身份跨到更高环境或更高风险边界。
+- promotion v1 必须同时满足以下条件：
+  - 已存在可回指的 lower-environment source record；
+  - `headSha` 与 candidate image/tag 仍指向同一候选身份；
+  - target environment 明确高于 source environment，而不是同环境内重新执行；
+- 如果目标动作会重新 build、重新挑选不同 artifact，或把 candidate identity 改写成另一组 `headSha` / image tag，则该动作应被视为新的 candidate qualification，而不是 promotion。
 
 ### P0-C1-S2 (Release identity and ledger continuity contract | v1)
 
 - promotion 时至少应延续以下字段：
   - `headSha`
   - `candidateImage` / image tag
+  - `sourceRecordRef`
   - `sourceEnvironment`
   - `sourceRunUrl`
   - `sourceArtifactPath` 或 artifact bundle 引用
   - `promotionTargetEnvironment`
   - `promotionIntent`
+- target environment 可以补充自己的 run URL、artifact 路径与 approval 结果，但不得覆盖或丢失 source side 的 identity 字段；
 - 若未来 higher environment 无法复用这些字段，则必须明确说明为什么需要生成新 identity，而不是默认丢失 continuity。
 
 ### P0-C1-S3 (Evidence contract | v1)
 
 - Evidence JSON must include:
   - `headSha`
+  - `sourceRecordRef`
   - `sourceEnvironment`
   - `targetEnvironment`
   - `sourceRunUrl`
@@ -141,9 +150,9 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: promotion semantics fixed
-- [ ] `P0-C1-S2`: release identity and ledger continuity fixed
-- [ ] `P0-C1-S3`: promotion evidence contract fixed
+- [x] `P0-C1-S1`: promotion semantics fixed
+- [x] `P0-C1-S2`: release identity and ledger continuity fixed
+- [x] `P0-C1-S3`: promotion evidence contract fixed
 
 ### P1 (Policy / ledger mapping)
 
@@ -165,4 +174,5 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-2A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 promotion semantics、release identity continuity 与 promotion evidence contract。
 - 2026-03-27: 首次创建 `S4E-2A` draft，用于承接 environment promotion semantics 与 release record continuity；当前尚未进入正式 contract/evidence 收口。
