@@ -83,6 +83,12 @@
   - override actor；
 - 同一人可以暂时兼任多个角色，但记录层必须把动作类型拆开，而不是用单个 `operator` 字段覆盖所有治理动作；
 - 任何 higher-environment promotion 都必须说明：谁请求、谁批准、谁有权在失败时回滚或保持 known-good。
+- v1 的最小 role/action matrix 固定为：
+  - requester 负责提出 promotion intent 或 override intent；
+  - approver 负责批准或拒绝 target environment 的执行门；
+  - rollback authority 负责在 verify failure、risk escalation 或 manual abort 后决定 rollback / keep-known-good；
+  - override actor 负责执行受控 manual rerun、manual rollback 或其他显式例外动作；
+- approval authority 不应默认继承为 rollback authority；rollback authority 也不应因为“拥有 SSH / workflow 权限”就被等同于 approver。
 
 ### P0-C1-S2 (Governance action record contract | v1)
 
@@ -91,13 +97,21 @@
   - `sourceRecordRef`
   - `targetEnvironment`
   - `governanceActionType`
+  - `authorityRole`
   - `requestedBy`
   - `actedBy`
   - `approvalState`
+  - `decisionReason`
   - `result`
   - `runUrl` 或 artifact/run URL reference
 - `approval`、`reject`、`rollback`、`override` 必须作为可枚举动作类型出现，而不是埋在自由文本里；
 - 若同一 release 发生多次治理动作，后续记录应追加而不是覆盖此前 action record。
+- v1 的统一最小记录口径如下：
+  - `approval`：记录 approver 对 target environment 执行门的放行；
+  - `reject`：记录 approver 对 promotion/override 的拒绝或保持阻断；
+  - `rollback`：记录 rollback authority 对 candidate 回退到 known-good 或停止 candidate 的决定；
+  - `override`：记录 override actor 对默认 path 的显式例外操作；
+- 无论动作类型是什么，记录结构都应保持同一骨架，避免 approval / rollback / override 各自生成不同字段模型。
 
 ### P0-C1-S3 (Evidence contract | v1)
 
@@ -106,9 +120,11 @@
   - `sourceRecordRef`
   - `targetEnvironment`
   - `governanceActionType`
+  - `authorityRole`
   - `requestedBy`
   - `actedBy`
   - `approvalState`
+  - `decisionReason`
   - `result`
   - `runUrl` or artifact bundle reference
 
@@ -136,6 +152,12 @@
 - P1-C1-S1: 固定 requester / approver / rollback authority / override actor 的最小 hierarchy wording
 - P1-C1-S2: 固定 governance action record 与 separation-of-duties 的最小约束
 
+**Current status (S4E-3A / P0)**
+
+- `P0-C1-S1` 已完成第一版 role/authority boundary contract：当前 `S4E-3A` 已明确区分 requester、approver、rollback authority 与 override actor 四类治理动作主体；即使同一 operator 在 `cloud-dev` 现实里暂时兼任多项动作，记录层也必须把这些 authority 分开记账。
+- `P0-C1-S2` 已完成第一版 governance action record contract：当前最小记录字段已固定为 `headSha`、`sourceRecordRef`、`targetEnvironment`、`governanceActionType`、`authorityRole`、`requestedBy`、`actedBy`、`approvalState`、`decisionReason`、`result` 与 `runUrl`/artifact reference，从而把 approval / reject / rollback / override 压成统一骨架。
+- `P0-C1-S3` 已完成第一版 evidence contract：后续 `P2` 的 approval/rollback 样本回填现在已经有统一 evidence 入口，不再需要为不同治理动作临时发明不同字段模型。
+
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: 用现有 `cloud-dev` approval sample 验证 approval action record 的最小入口
@@ -149,9 +171,9 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: role and authority boundary fixed
-- [ ] `P0-C1-S2`: governance action record fixed
-- [ ] `P0-C1-S3`: hierarchy evidence contract fixed
+- [x] `P0-C1-S1`: role and authority boundary fixed
+- [x] `P0-C1-S2`: governance action record fixed
+- [x] `P0-C1-S3`: hierarchy evidence contract fixed
 
 ### P1 (Policy mapping)
 
@@ -173,4 +195,5 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-3A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 role/authority boundary、统一 governance action record 字段，以及 hierarchy evidence contract。
 - 2026-03-27: 首次创建 `S4E-3A` draft，用于承接 approval hierarchy、rollback authority 与 governance action record；当前作为 `S4E-2A/P3` 的明确 handoff 入口。
