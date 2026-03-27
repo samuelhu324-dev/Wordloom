@@ -155,6 +155,7 @@
 **Current status (S4E-1A / P3)**
 
 - `P3-C1-S1` 已完成第一版 runway 定义：下一阶段不再继续纠缠 `cloud-dev` 的 trigger surface 基线，而是进入 `S4E-2A` 候选范围，优先处理 environment promotion semantics、release ledger / release record 扩展字段，以及谁有权在更高环境执行 approve / rollback / override 的 hierarchy framing。
+  - 对应下一 phase 入口现已固定为 `docs/logs/log-S4E-2A-environment-promotion-and-release-records.md`。
 
 ## Execution Checklist (unchecked)
 

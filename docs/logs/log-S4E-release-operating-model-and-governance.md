@@ -4,7 +4,7 @@
 
 **id**: `S4E`
 **kind**: `log`
-**title**: `release operating model, trigger policy, and governance boundary v1`
+**title**: `release control-plane operating model, trigger policy, and governance boundary v1`
 **status**: `draft`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, ReleaseOperations, Governance, Automation, epic/s4, epic/s4e`
@@ -18,7 +18,7 @@
   **reference_log_2**: `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
   **reference_log_3**: `docs/logs/log-S4D-4C-408-timeout-eradication.md`
   **phase_log_1**: `docs/logs/log-S4E-1A-release-trigger-policy-and-governance-boundary.md`
-  **phase_log_2**: ``
+  **phase_log_2**: `docs/logs/log-S4E-2A-environment-promotion-and-release-records.md`
   **phase_log_3**: ``
 **created**: `2026-03-27`
 **updated**: `2026-03-27`
@@ -94,15 +94,16 @@
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：contract/indexing（定义 `S4E` 的边界、默认基线与 roadmap 归属）
-- [x] `P1`：Phase 1 seed（`S4E-1A` phase log scaffolded）
-- [x] `P2`：cloud-dev release trigger / governance boundary fixed
-- [x] `P3`：promotion / approval hierarchy runway defined
+- [x] `P1`：`S4E-1A` 已建立并推进到首轮稳定 policy/evidence 基线
+- [ ] `P2`：`S4E-2A` 已规划但尚未进入正式实施/证据阶段
+- [ ] `P3`：`S4E-3A` 仍处于 planned / not-started
 
 ## Current Status（进展摘要）
 
 - `S4E` 刚创建，当前仍是 `draft`；
-- 第一阶段 `S4E-1A` 已完成 `P0-P1`：当前已固定 `cloud-dev` 的 trigger surface policy、approval boundary 与最小 release record contract；
-- `S4E-1A` 现已继续完成 `P2-P3`：trigger-surface evidence、approval-boundary evidence 与下一阶段 promotion/governance runway 已回填；
+- 当前唯一已进入实质推进的 phase 是 `S4E-1A`：其 `cloud-dev` trigger surface、approval boundary、release record 最小合同与对应 evidence 已完成第一轮收口；
+- `S4E-2A` 现在应被视为下一阶段 draft / planned slice，用来承接 environment promotion semantics 与 release ledger / release record 扩展字段，而不是视为已完成阶段；
+- `S4E-3A` 仍是 planned slice，后续再承接 approval hierarchy / override / rollback authority；
 - 当前不把 `S4D-4B/4C` 已完成的 dispatch、runner、timeout 治理重做一遍，而是把它们当作 `S4E` 的既有输入面。
 
 ## Notes（落地原则，可选）
@@ -114,8 +115,8 @@
 ## Stability（stable 口径）
 
 - 本 log 标记为 `stable` 表示：
-  - `S4E` 的边界、phase 拆分与最小 release policy / governance contract 已稳定；
-  - 至少有一条 phase evidence 把 trigger surface、approval、release record 与 artifact/run URL 明确串起来。
+  - `S4E` 的边界、phase 拆分与 parent/phase 责任分层已稳定；
+  - 至少 `S4E-1A` 已完成一轮可追溯 evidence，而后续 phase（如 `S4E-2A` / `S4E-3A`）也已有明确入口与非混淆边界。
 
 ## Numbering & Commit Naming（编号与提交命名）
 
@@ -137,6 +138,6 @@
 
 ## Recent changes（for traceability，可选）
 
-- 2026-03-27：`S4E-1A` 已完成第一轮 `P0-P1` 收口；当前 `cloud-dev` 的 trigger surface、approval boundary 与最小 release record contract 已固定，下一步转入 `P2` evidence backfill。
-- 2026-03-27：`S4E-1A` 已继续完成 `P2-P3`：真实 auto/manual 样本与 approval boundary evidence 已回填，同时已定义下一阶段 environment promotion / release governance runway。
+- 2026-03-27：已重整 `S4E` parent log 的完成态表达；当前 parent log 只确认 `S4E-1A` 已推进完成，而 `S4E-2A` / `S4E-3A` 均回到 planned / not-started 语义，避免把整体 spine 误读为“已全部完成”。
+- 2026-03-27：`S4E-2A` 已作为下一阶段 draft slice 正式挂入 `S4E`，用于承接 environment promotion semantics 与 release ledger / release record 扩展字段。
 - 2026-03-27：首次创建 `S4E`，把 release operating model / trigger policy / governance boundary 从 `S4D-4B/4C` 的后续讨论中正式提升为新的 `S4` 顶层 spine；当前第一阶段固定为 `S4E-1A`。
