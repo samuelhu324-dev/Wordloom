@@ -143,6 +143,14 @@
 - P1-C1-S1: 固定 enforcement points 与最低 auditability 要求
 - P1-C1-S2: 固定 environment-specific approver policy 的收紧路径
 
+**Current status (S4E-4A / P0-P1)**
+
+- `P0-C1-S1` 已完成第一版 hard-gate vs soft-policy boundary contract：当前 `S4E-4A` 已明确“决定是否允许继续执行”的条件优先归入 hard gate，而记录不完整但暂时无法自动阻断的条件先归入 soft policy。
+- `P0-C1-S2` 已完成第一版 auditability contract：当前 governance action record 已至少要求回指 `headSha`、`sourceRecordRef`、`authorityRole`、`actedBy`、`decisionReason`、`runUrl` 与 artifact bundle；若这些字段无法回指，则必须被判为 `audit_incomplete`。
+- `P0-C1-S3` 已完成第一版 enforcement evidence contract：当前 evidence 已固定必须记录 `policyMode` 与 `auditStatus`，从而让后续 `P2` 样本能够区分“真正 hard gate”与“当前只停留在 soft policy 的约束”。
+- `P1-C1-S1` 已完成第一版 enforcement/auditability wording：当前 policy 已明确现有 GitHub Actions environment gate、最低 approver policy 与关键 evidence 字段完整性，是最优先的 enforcement points；而 actor/authority/run-artifact linkage 的完整可追溯性则构成 auditability 的最低要求。
+- `P1-C1-S2` 已完成第一版 environment-specific approver policy wording：当前 `cloud-dev` 仍可接受单 reviewer / 单 actor 现实，但更高环境的 tightening path 已固定为“先要求 requester/approver 分离，再视风险增加 approver 数量或 authority independence”，而不是继续把所有环境写成同一 reviewer 模式。
+
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: 用现有 governance action record 验证 auditability contract 是否足够表达
@@ -162,8 +170,8 @@
 
 ### P1 (Policy mapping)
 
-- [ ] `P1-C1-S1`: enforcement/auditability wording fixed
-- [ ] `P1-C1-S2`: environment-specific approver policy wording fixed
+- [x] `P1-C1-S1`: enforcement/auditability wording fixed
+- [x] `P1-C1-S2`: environment-specific approver policy wording fixed
 
 ### P2 (Drill / Verify)
 
@@ -180,5 +188,6 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-4A/P1-C1-S1S2` 的第一轮 policy wording 收口，固定了 enforcement points、最低 auditability 要求，以及 environment-specific approver policy 的最小收紧路径。
 - 2026-03-27: 已完成 `S4E-4A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 hard-gate vs soft-policy 边界、auditability contract，以及 enforcement evidence 的最小字段。
 - 2026-03-27: 首次创建 `S4E-4A` draft，用于承接 enforcement、auditability 与 environment-specific approver policy；当前作为 `S4E-3A/P3` 的明确 runway 入口。
