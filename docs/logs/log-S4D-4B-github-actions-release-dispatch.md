@@ -18,7 +18,7 @@
   **reference_log_2**: `docs/runbook/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
   **reference_log_3**: `docs/logs/_template-log-phase-drills-evidence.md`
 **created**: `2026-03-25`
-**updated**: `2026-03-26`
+**updated**: `2026-03-27`
 
 ---
 
@@ -32,7 +32,7 @@
 **Default choices (phase defaults / v1)**:
 
 - 优先复用 `scripts/ops/cloud_release_workflow.sh` 作为执行核心，不为 GitHub Actions 再造平行 deploy path；
-- Actions v1 默认采用 `workflow_dispatch` 手动触发，而不是先做 merge-to-deploy 或 push-to-deploy 自动发布；
+- `S4D-4B` 的稳定入口基线固定为 `workflow_dispatch` + environment approval；后续是否升级为 auto-dispatch 属于 `S4D-4C` 的 control-plane follow-up，而不是 `4B` 本 phase 的完成条件；
 - approval、environment secrets、artifact upload、run summary 优先收口到 GitHub Actions 原生能力，而不是同时引入外部 deploy orchestrator；
 - v1 仍以单 Ubuntu VM + backend container + cloud-dev env 为默认目标，不同时扩到多 host / 多 environment 并发矩阵；
 - v1 runner contract 现已进一步收紧为 `self-hosted runner`，优先复用当前本地可达的 SSH target，而不是继续维持“GitHub-hosted 也许可用”的模糊前提；
@@ -40,7 +40,7 @@
 
 ## Definitions (optional)
 
-- **Dispatch workflow**：通过 GitHub Actions `workflow_dispatch` 手动触发的发布入口。
+- **Dispatch workflow**：通过 GitHub Actions 进入 release workflow 的 repo-controlled 入口；在 `S4D-4B` 中，其稳定基线是 `workflow_dispatch`。
 - **Runner entry**：在 GitHub-hosted 或 self-hosted runner 上执行的稳定命令入口。
 - **Environment approval**：在 GitHub Actions environment 中要求人工确认后才能继续的受控门。
 - **Uploaded evidence**：将本地 artifact 目录作为 workflow artifacts 上传，便于审计和回放。
@@ -61,7 +61,7 @@
 
 ## Success Criteria (DoD)
 
-- 仓库内存在一条 Actions `workflow_dispatch` 入口，可稳定触发当前 `S4D-4A` release workflow；
+- 仓库内存在一条稳定的 repo-controlled Actions dispatch 入口；在 `S4D-4B` 的完成口径中，这条入口以 `workflow_dispatch` 为基线；
 - Actions run 至少能上传 `summary.json` 与阶段日志作为 workflow artifacts；
 - run summary 至少能固定展示 `result`、`failureClass`、`terminalGate` 与 artifact 链接；
 - 至少一轮 GitHub Actions dispatch 样本被记账，证明 repo-controlled runner 能替代本地 operator 机器触发；
@@ -77,7 +77,7 @@
 
 ### P0-C1-S1 (Actions trigger contract | v1)
 
-- v1 触发方式固定为 `workflow_dispatch`；
+- `S4D-4B` v1 触发基线固定为 `workflow_dispatch`；若后续进入 auto-dispatch，应在 `S4D-4C` 或后续 phase 继续记账，而不是回写为 `4B` 未完成；
 - 至少允许以下输入：
   - target host inputs（host/user/port）
   - release inputs（env file、image tag）
@@ -142,7 +142,7 @@
 
 **Current status (S4D-4B)**
 
-- `P0-C1-S1` 已完成第一版 Actions trigger contract：当前已固定 `workflow_dispatch` 输入集合，覆盖 SSH target、release inputs、runtime inputs、rollback toggle 与 verify tuning。
+- `P0-C1-S1` 已完成第一版 Actions trigger contract：`S4D-4B` 已固定 `workflow_dispatch` 作为稳定 dispatch baseline，并补齐 SSH target、release inputs、runtime inputs、rollback toggle 与 verify tuning；auto-dispatch follow-up 已显式交给 `S4D-4C`。
 - `P0-C1-S2` 已完成第一版 runner/secret contract：当前使用 `S4D_SSH_PRIVATE_KEY` 作为 required secret，`S4D_SSH_KNOWN_HOSTS` 作为 optional secret，并已确认 repo 可创建 `cloud-dev` environment 与 self-hosted runner registration token。
 - `P0-C1-S3` 已完成第一版 evidence/run-summary contract：当前 workflow 会上传整个 artifact 目录，并把 `result`、`failureClass`、`terminalGate`、`terminalStage`、`operatorAction`、`evidenceComplete` 与 gate results 写入 `GITHUB_STEP_SUMMARY`。
 - `P1-C1-S1` 与 `P1-C1-S2` 已完成第一版落地：仓库现已新增 `.github/workflows/s4d-cloud-release-dispatch.yml`，直接复用 `cloud_release_workflow.sh` 作为 runner entry。
@@ -341,6 +341,7 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-03-27: 已完成 `S4D-4B/P1-C4-S1S2`；主 runbook 现已更新为“GitHub Actions `s4d-cloud-release-dispatch` 是 preferred trigger，本地 shell 为 fallback/debug”，并显式固定 `4B` 与 `4C` 的 phase 边界，避免把 auto-dispatch / control-plane policy 再误挂回 `4B`。
+- 2026-03-27: 已完成 `S4D-4B` 封口文字统一；当前 `4B` 的稳定完成口径已明确收敛为“`workflow_dispatch` 基线 + approval/artifact/handoff/runbook 对齐”，而 auto-dispatch 明确继续留在 `S4D-4C` 或后续更高层 release-policy phase。
 - 2026-03-26: 已完成 `S4D-4B/P1-C3-S1S2`；workflow concurrency group 现按 `event_name + target_environment` 分槽，真实控制面样本 `23601482418`（push）与 `23601495526`（workflow_dispatch）已证明两类 run 可以并存 materialize 并同时停在 `cloud-dev` approval gate，对应实现提交为 `f9f5e485`。
 - 2026-03-26: 已新增 `S4D-4B/P1-C2` 以收口 target repo head drift；workflow 与 release script 现已显式传递 `github.ref_name` / `github.sha` 并在 preflight 阶段完成远端 repo sync，对应提交为 `7bea1d52` 与修正提交 `fdd3e812`；随后真实 PASS 样本 `23600877818` 已证明 `headSha == expectedHeadSha == remoteHeadSha`。
 - 2026-03-26: 已为 `.github/workflows/s4d-cloud-release-dispatch.yml` 连续补齐五项实质性 contract 修复：Git Bash shell bootstrap、Windows self-hosted runner pin、bootstrap shell 改为 Windows PowerShell、过严 bash path 校验移除、checked-out repo working-directory / artifact upload path 修正；这些改动分别落在 `18d285c2`、`55f6c06e`、`0d4f260d`、`120032ef`、`7f3c417d`。
