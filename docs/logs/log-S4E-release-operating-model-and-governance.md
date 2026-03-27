@@ -95,13 +95,13 @@
 
 - [x] `P0`：contract/indexing（定义 `S4E` 的边界、默认基线与 roadmap 归属）
 - [x] `P1`：Phase 1 seed（`S4E-1A` phase log scaffolded）
-- [ ] `P2`：cloud-dev release trigger / governance boundary fixed
+- [x] `P2`：cloud-dev release trigger / governance boundary fixed
 - [ ] `P3`：promotion / approval hierarchy runway defined
 
 ## Current Status（进展摘要）
 
 - `S4E` 刚创建，当前仍是 `draft`；
-- 第一阶段 `S4E-1A` 将先收口 `cloud-dev` 的 trigger surface policy、approval boundary 与最小 release record contract；
+- 第一阶段 `S4E-1A` 已完成 `P0-P1`：当前已固定 `cloud-dev` 的 trigger surface policy、approval boundary 与最小 release record contract；
 - 当前不把 `S4D-4B/4C` 已完成的 dispatch、runner、timeout 治理重做一遍，而是把它们当作 `S4E` 的既有输入面。
 
 ## Notes（落地原则，可选）
@@ -136,4 +136,5 @@
 
 ## Recent changes（for traceability，可选）
 
+- 2026-03-27：`S4E-1A` 已完成第一轮 `P0-P1` 收口；当前 `cloud-dev` 的 trigger surface、approval boundary 与最小 release record contract 已固定，下一步转入 `P2` evidence backfill。
 - 2026-03-27：首次创建 `S4E`，把 release operating model / trigger policy / governance boundary 从 `S4D-4B/4C` 的后续讨论中正式提升为新的 `S4` 顶层 spine；当前第一阶段固定为 `S4E-1A`。

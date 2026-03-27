@@ -127,6 +127,14 @@
 - P1-C1-S1: 固定 auto-dispatch、manual dispatch、rerun 在 `cloud-dev` 的用途和默认边界
 - P1-C1-S2: 固定 approval boundary 与 override / rerun 的最小治理 wording
 
+**Current status (S4E-1A / P0-P1)**
+
+- `P0-C1-S1` 已完成第一版 trigger surface contract：当前 `cloud-dev` 已明确区分 routine auto-dispatch、manual `workflow_dispatch` 与 rerun 三种 surface；其中 auto-dispatch 面向常规 candidate path，manual `workflow_dispatch` 面向 drill / override / controlled rerun，而 rerun 只应被视为既有 run 的受控再执行，而不是新的独立发布策略。
+- `P0-C1-S2` 已完成第一版 approval/governance boundary：当前 policy 已固定“启动 run”与“批准进入高风险步骤”是两个不同权限面；manual 与 auto 都可以先进入 run，但 approval actor 仍单独负责是否允许进入 `cloud-dev` 受控门后步骤。
+- `P0-C1-S3` 已完成第一版 release record contract：当前 `S4E-1A` 已固定最小记录字段为 `headSha`、`triggerSurface`、`targetEnvironment`、`runUrl`、`approvalState`、`approvalActor`、`result` 与 `artifactPath`/artifact bundle 引用，后续 evidence 必须按此口径回填。
+- `P1-C1-S1` 已完成第一版 wording 映射：`S4D-4B` 中 `workflow_dispatch` 基线与 `S4D-4C` 中 auto-dispatch follow-up 现在已经被压缩为统一 policy 表述，而不再混写成单个 workflow 的实现细节。
+- `P1-C1-S2` 已完成第一版 governance wording：当前 policy 已明确 override / rerun 只能作为受控 operator 动作存在，不能替代 approval boundary，也不能把“成功启动 run”误写成“已批准发布”。
+
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: 回填至少一组 auto/manual 并存样本，证明 trigger surface policy 有真实对应面
@@ -140,14 +148,14 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: trigger surface policy fixed
-- [ ] `P0-C1-S2`: approval and governance boundary fixed
-- [ ] `P0-C1-S3`: release record evidence contract fixed
+- [x] `P0-C1-S1`: trigger surface policy fixed
+- [x] `P0-C1-S2`: approval and governance boundary fixed
+- [x] `P0-C1-S3`: release record evidence contract fixed
 
 ### P1 (Policy mapping / wording)
 
-- [ ] `P1-C1-S1`: auto/manual/rerun wording fixed
-- [ ] `P1-C1-S2`: approval boundary wording fixed
+- [x] `P1-C1-S1`: auto/manual/rerun wording fixed
+- [x] `P1-C1-S2`: approval boundary wording fixed
 
 ### P2 (Drill / Verify)
 
@@ -162,6 +170,25 @@
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
 
+### P0-C1-S1S2S3 / P1-C1-S1S2 (trigger policy, approval boundary, and wording fixed for cloud-dev | 2026-03-27)
+
+- headSha: `90afbd66`
+- artifacts:
+  - `docs/logs/log-S4E-release-operating-model-and-governance.md`
+  - `docs/logs/log-S4E-1A-release-trigger-policy-and-governance-boundary.md`
+  - `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
+  - `docs/logs/log-S4D-4C-408-timeout-eradication.md`
+- expected:
+  - `cloud-dev` 的 release control-plane 至少要明确区分 auto-dispatch、manual `workflow_dispatch` 与 rerun 三类 surface；
+  - approval boundary 必须被明确定义为独立于 trigger surface 的治理门，而不是继续混写成“谁点了 workflow”；
+  - `S4E-1A` 应把 `S4D-4B/4C` 中已经存在的事实行为收口为稳定 wording，而不是再去引入新的 workflow 实现。
+- observed:
+  - `S4E-1A` 当前已正式固定三类 trigger surface：routine auto-dispatch、manual `workflow_dispatch`、rerun，并明确各自用途与默认边界；
+  - approval/governance wording 已明确写成独立权限面：run 的启动、approval 的放行、rerun/override 的使用场景必须分开记账；
+  - 最小 release record 字段集已固定，可直接用于后续 `P2` evidence 回填；
+  - `S4D-4B` 与 `S4D-4C` 的既有事实面已被吸收到统一 policy 文本中，因此 `S4E-1A/P0-P1` 现已具备进入 evidence backfill 的前提。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-1A/P0-C1-S1S2S3` 与 `P1-C1-S1S2` 的第一轮合同/wording 收口；当前下一步转入 `P2`，用现有 auto/manual/approval 样本回填正式 evidence。
 - 2026-03-27: 首次创建 `S4E-1A`，把 `cloud-dev` 的 release trigger policy、approval boundary 与最小 release record contract 单独提升为 phase v1；当前尚未回填正式 evidence。
