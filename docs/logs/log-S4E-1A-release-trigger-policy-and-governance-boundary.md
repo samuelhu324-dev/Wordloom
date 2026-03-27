@@ -114,7 +114,7 @@
 
 **Branch convention**:
 
-- `S4E-1A` 相关变更默认继续落在 `S4D-cloud-runtime-deploy-verify-rollback` 分支，直到 `S4E` 独立出更明确的工作分支需求。
+- `S4E-1A` 相关变更当前继续落在 `S4E-release-operating-model-and-governance` 分支，除非后续 `S4E` 再拆更细的 phase 子分支。
 
 **Commit discipline (recommended)**:
 
