@@ -152,11 +152,13 @@
 - P1-C1-S1: 固定 requester / approver / rollback authority / override actor 的最小 hierarchy wording
 - P1-C1-S2: 固定 governance action record 与 separation-of-duties 的最小约束
 
-**Current status (S4E-3A / P0)**
+**Current status (S4E-3A / P0-P1)**
 
 - `P0-C1-S1` 已完成第一版 role/authority boundary contract：当前 `S4E-3A` 已明确区分 requester、approver、rollback authority 与 override actor 四类治理动作主体；即使同一 operator 在 `cloud-dev` 现实里暂时兼任多项动作，记录层也必须把这些 authority 分开记账。
 - `P0-C1-S2` 已完成第一版 governance action record contract：当前最小记录字段已固定为 `headSha`、`sourceRecordRef`、`targetEnvironment`、`governanceActionType`、`authorityRole`、`requestedBy`、`actedBy`、`approvalState`、`decisionReason`、`result` 与 `runUrl`/artifact reference，从而把 approval / reject / rollback / override 压成统一骨架。
 - `P0-C1-S3` 已完成第一版 evidence contract：后续 `P2` 的 approval/rollback 样本回填现在已经有统一 evidence 入口，不再需要为不同治理动作临时发明不同字段模型。
+- `P1-C1-S1` 已完成第一版 hierarchy wording：当前 policy 已明确 trigger actor 不等于 approver，approver 也不自动等于 rollback authority；higher-environment promotion 至少要能回答“谁请求、谁批准、谁能回滚/保持 known-good、谁执行 override”。
+- `P1-C1-S2` 已完成第一版 separation-of-duties wording：`cloud-dev` v1 可以接受同一人兼任多个治理角色，但记录面必须把 action type 与 authority role 拆开；未来更高环境若要求 requester 与 approver 分离，也应在同一 action-record 骨架上加严，而不是另起制度模型。
 
 ### P2 (Drill / Verify)
 
@@ -177,8 +179,8 @@
 
 ### P1 (Policy mapping)
 
-- [ ] `P1-C1-S1`: hierarchy wording fixed
-- [ ] `P1-C1-S2`: governance action/separation-of-duties wording fixed
+- [x] `P1-C1-S1`: hierarchy wording fixed
+- [x] `P1-C1-S2`: governance action/separation-of-duties wording fixed
 
 ### P2 (Drill / Verify)
 
@@ -195,5 +197,6 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-3A/P1-C1-S1S2` 的第一轮 policy wording 收口，固定了 hierarchy / separation-of-duties 的最小表述，并把 approval / rollback / override 压到统一 governance action record 骨架上。
 - 2026-03-27: 已完成 `S4E-3A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 role/authority boundary、统一 governance action record 字段，以及 hierarchy evidence contract。
 - 2026-03-27: 首次创建 `S4E-3A` draft，用于承接 approval hierarchy、rollback authority 与 governance action record；当前作为 `S4E-2A/P3` 的明确 handoff 入口。
