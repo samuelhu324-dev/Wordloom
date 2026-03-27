@@ -223,7 +223,9 @@ write_summary_json() {
   cat >"$SUMMARY_JSON" <<EOF
 {
   "headSha": "$(json_escape "$LOCAL_HEAD_SHA")",
+  "expectedHeadSha": "$(json_escape "$EXPECTED_HEAD_SHA")",
   "remoteHeadSha": "$(json_escape "$remote_head_sha")",
+  "remoteBranch": "$(json_escape "$REMOTE_BRANCH")",
   "workflowCommandSummary": "$(json_escape "$WORKFLOW_COMMAND_SUMMARY")",
   "targetHostKind": "$(json_escape "$TARGET_HOST_KIND")",
   "envFilePath": "$(json_escape "$ENV_FILE")",

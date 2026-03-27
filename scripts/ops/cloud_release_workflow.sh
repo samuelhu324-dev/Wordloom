@@ -13,6 +13,8 @@ SSH_PORT="22"
 SSH_USER=""
 SSH_IDENTITY_FILE=""
 REMOTE_REPO_DIR=""
+REMOTE_BRANCH=""
+EXPECTED_HEAD_SHA=""
 ENV_FILE=""
 IMAGE_TAG="wordloom-backend:cloud-dev"
 KNOWN_GOOD_IMAGE_TAG=""
@@ -42,6 +44,8 @@ Usage:
     --ssh-host <host> \
     --ssh-user <user> \
     --remote-repo-dir <path> \
+    --remote-branch <branch> \
+    --expected-head-sha <sha> \
     --env-file <path> \
     [--ssh-port <port>] \
     [--ssh-identity-file <path>] \
@@ -63,6 +67,8 @@ Examples:
     --ssh-port 22022 \
     --ssh-user ubuntu \
     --remote-repo-dir /home/ubuntu/wordloom-v3 \
+    --remote-branch main \
+    --expected-head-sha <sha> \
     --env-file /etc/wordloom/.env.cloud.dev
 
   bash scripts/ops/cloud_release_workflow.sh \
@@ -70,6 +76,8 @@ Examples:
     --ssh-port 22022 \
     --ssh-user ubuntu \
     --remote-repo-dir /home/ubuntu/wordloom-v3 \
+    --remote-branch main \
+    --expected-head-sha <sha> \
     --env-file /etc/wordloom/.env.cloud.dev \
     --known-good-image-tag wordloom-backend:cloud-dev-known-good-20260325-pass \
     --rollback-on-verify-fail
@@ -96,6 +104,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     --remote-repo-dir)
       REMOTE_REPO_DIR="$2"
+      shift 2
+      ;;
+    --remote-branch)
+      REMOTE_BRANCH="$2"
+      shift 2
+      ;;
+    --expected-head-sha)
+      EXPECTED_HEAD_SHA="$2"
       shift 2
       ;;
     --env-file)
@@ -185,7 +201,20 @@ require_cmd git
 ssh_cmd="$(ssh_bin)"
 
 LOCAL_HEAD_SHA="$(git -C "$REPO_ROOT" rev-parse HEAD 2>/dev/null || echo unknown)"
+LOCAL_BRANCH_NAME="$(git -C "$REPO_ROOT" rev-parse --abbrev-ref HEAD 2>/dev/null || echo HEAD)"
 TIMESTAMP_UTC="$(date -u +%Y%m%dT%H%M%SZ)"
+
+if [[ -z "$REMOTE_BRANCH" ]]; then
+  if [[ "$LOCAL_BRANCH_NAME" == "HEAD" || "$LOCAL_BRANCH_NAME" == "unknown" ]]; then
+    echo "[cloud_release_workflow] --remote-branch is required when the local repo is detached" >&2
+    exit 2
+  fi
+  REMOTE_BRANCH="$LOCAL_BRANCH_NAME"
+fi
+
+if [[ -z "$EXPECTED_HEAD_SHA" || "$EXPECTED_HEAD_SHA" == "unknown" ]]; then
+  EXPECTED_HEAD_SHA="$LOCAL_HEAD_SHA"
+fi
 
 if [[ -z "$ARTIFACT_DIR" ]]; then
   ARTIFACT_DIR="$REPO_ROOT/artifacts/_tmp_s4d4a_cloud_release_workflow/$TIMESTAMP_UTC"
@@ -201,7 +230,7 @@ SUMMARY_JSON="$ARTIFACT_DIR/summary.json"
 OPERATOR_GUIDANCE_TXT="$ARTIFACT_DIR/operator_guidance.txt"
 
 TARGET_HOST_KIND="Ubuntu Server VM via SSH (${SSH_USER}@${SSH_HOST}:${SSH_PORT})"
-WORKFLOW_COMMAND_BASE="bash scripts/ops/cloud_release_workflow.sh --ssh-host ${SSH_HOST} --ssh-port ${SSH_PORT} --ssh-user ${SSH_USER} --remote-repo-dir ${REMOTE_REPO_DIR} --env-file ${ENV_FILE} --image-tag ${IMAGE_TAG} --container-name ${CONTAINER_NAME} --host-port ${HOST_PORT}"
+WORKFLOW_COMMAND_BASE="bash scripts/ops/cloud_release_workflow.sh --ssh-host ${SSH_HOST} --ssh-port ${SSH_PORT} --ssh-user ${SSH_USER} --remote-repo-dir ${REMOTE_REPO_DIR} --remote-branch ${REMOTE_BRANCH} --expected-head-sha ${EXPECTED_HEAD_SHA} --env-file ${ENV_FILE} --image-tag ${IMAGE_TAG} --container-name ${CONTAINER_NAME} --host-port ${HOST_PORT}"
 WORKFLOW_COMMAND_SUMMARY="$WORKFLOW_COMMAND_BASE"
 ROLLBACK_WORKFLOW_COMMAND="$WORKFLOW_COMMAND_BASE"
 
@@ -224,9 +253,48 @@ FINAL_RESULT="FAIL"
 TERMINAL_STAGE="init"
 OPERATOR_ACTION="inspect_artifacts"
 
-echo "[cloud_release_workflow] phase=S4D-4A target_head_sha=$LOCAL_HEAD_SHA ssh_target=${SSH_USER}@${SSH_HOST}:${SSH_PORT} artifact_dir=$(artifact_relpath "$ARTIFACT_DIR")"
+echo "[cloud_release_workflow] phase=S4D-4A target_head_sha=$LOCAL_HEAD_SHA remote_branch=$REMOTE_BRANCH expected_head_sha=$EXPECTED_HEAD_SHA ssh_target=${SSH_USER}@${SSH_HOST}:${SSH_PORT} artifact_dir=$(artifact_relpath "$ARTIFACT_DIR")"
 
-if run_remote_step "$PREFLIGHT_LOG" "printf '[preflight] remote_repo_dir=%s\\n' \"$REMOTE_REPO_DIR\"; if ! test -d \"$REMOTE_REPO_DIR\"; then printf '[preflight] remote_repo_dir_missing=%s\\n' \"$REMOTE_REPO_DIR\"; exit 1; fi; if ! test -f \"$ENV_FILE\"; then printf '[preflight] env_file_missing=%s\\n' \"$ENV_FILE\"; exit 1; fi; printf '[preflight] env_file_ok=%s\\n' \"$ENV_FILE\"; printf '[preflight] remote_head_sha=%s\\n' \"\$(git rev-parse HEAD)\""; then
+PREFLIGHT_REMOTE_SCRIPT=$(cat <<EOF
+printf '[preflight] remote_repo_dir=%s\n' "$REMOTE_REPO_DIR"
+if ! test -d "$REMOTE_REPO_DIR"; then
+  printf '[preflight] remote_repo_dir_missing=%s\n' "$REMOTE_REPO_DIR"
+  exit 1
+fi
+if ! test -f "$ENV_FILE"; then
+  printf '[preflight] env_file_missing=%s\n' "$ENV_FILE"
+  exit 1
+fi
+printf '[preflight] env_file_ok=%s\n' "$ENV_FILE"
+if ! git diff --quiet --ignore-submodules -- || ! git diff --cached --quiet --ignore-submodules --; then
+  printf '[preflight] remote_repo_dirty=1\n'
+  exit 1
+fi
+printf '[preflight] remote_branch=%s\n' "$REMOTE_BRANCH"
+printf '[preflight] expected_head_sha=%s\n' "$EXPECTED_HEAD_SHA"
+git fetch --quiet origin "$REMOTE_BRANCH"
+if ! git rev-parse --verify "$EXPECTED_HEAD_SHA^{commit}" >/dev/null 2>&1; then
+  printf '[preflight] expected_head_missing=%s\n' "$EXPECTED_HEAD_SHA"
+  exit 1
+fi
+if ! git merge-base --is-ancestor "$EXPECTED_HEAD_SHA" "origin/$REMOTE_BRANCH"; then
+  printf '[preflight] expected_head_not_on_origin_branch=%s\n' "$EXPECTED_HEAD_SHA"
+  exit 1
+fi
+current_branch="\$(git symbolic-ref --short -q HEAD || true)"
+if [[ "\$current_branch" != "$REMOTE_BRANCH" ]]; then
+  if git show-ref --verify --quiet "refs/heads/$REMOTE_BRANCH"; then
+    git checkout "$REMOTE_BRANCH"
+  else
+    git checkout -b "$REMOTE_BRANCH" "origin/$REMOTE_BRANCH"
+  fi
+fi
+git reset --hard "$EXPECTED_HEAD_SHA"
+printf '[preflight] remote_head_sha=%s\n' "\$(git rev-parse HEAD)"
+EOF
+)
+
+if run_remote_step "$PREFLIGHT_LOG" "$PREFLIGHT_REMOTE_SCRIPT"; then
   PREFLIGHT_RESULT="PASS"
   IDENTITY_AUTH_GATE="PASS"
   TARGET_REACHABILITY_GATE="PASS"

@@ -93,7 +93,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: s4d-cloud-release-${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || 'cloud-dev' }}
+  group: s4d-cloud-release-${{ github.event_name }}-${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || 'cloud-dev' }}
   cancel-in-progress: false
 
 jobs:
@@ -101,6 +101,8 @@ jobs:
     name: cloud-runtime-release
     runs-on:
       - self-hosted
+      - Windows
+      - s4d-cloud-dev
     environment: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment || 'cloud-dev' }}
     env:
       S4D_TRIGGER_SURFACE: ${{ github.event_name == 'workflow_dispatch' && 'workflow_dispatch' || 'auto-dispatch' }}
@@ -121,7 +123,7 @@ jobs:
       S4D_ROLLBACK_ON_VERIFY_FAIL: ${{ github.event_name == 'workflow_dispatch' && inputs.rollback_on_verify_fail || 'false' }}
     defaults:
       run:
-        shell: C:\PROGRA~1\Git\bin\bash.exe --noprofile --norc -eo pipefail {0}
+        working-directory: repo
 
     steps:
       - name: Checkout
@@ -129,7 +131,26 @@ jobs:
         with:
           path: repo
 
+      - name: Bootstrap Git Bash on Windows runners
+        shell: powershell
+        run: |
+          $gitBash = Join-Path $env:ProgramFiles 'Git\bin\bash.exe'
+          $gitCmd = Join-Path $env:ProgramFiles 'Git\cmd'
+
+          if (-not (Test-Path $gitBash)) {
+            Write-Error "Git Bash not found at $gitBash"
+            exit 2
+          }
+
+          Add-Content -Path $env:GITHUB_PATH -Value (Split-Path $gitBash -Parent)
+          if (Test-Path $gitCmd) {
+            Add-Content -Path $env:GITHUB_PATH -Value $gitCmd
+          }
+
+          "S4D_GIT_BASH=$gitBash" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Validate self-hosted runner contract
+        shell: bash
         run: |
           set -euo pipefail
 
@@ -156,6 +177,7 @@ jobs:
           esac
 
       - name: Record trigger contract
+        shell: bash
         run: |
           set -euo pipefail
 
@@ -164,6 +186,8 @@ jobs:
             echo
             echo "- trigger_surface: $S4D_TRIGGER_SURFACE"
             echo "- target_environment: $S4D_TARGET_ENVIRONMENT"
+            echo "- github_ref_name: ${{ github.ref_name }}"
+            echo "- github_sha: ${{ github.sha }}"
             echo "- ssh_target: ${S4D_SSH_USER}@${S4D_SSH_HOST}:${S4D_SSH_PORT}"
             echo "- remote_repo_dir: $S4D_REMOTE_REPO_DIR"
             echo "- env_file: $S4D_ENV_FILE"
@@ -176,6 +200,7 @@ jobs:
       - name: Validate secret contract
         env:
           S4D_SSH_PRIVATE_KEY: ${{ secrets.S4D_SSH_PRIVATE_KEY }}
+        shell: bash
         run: |
           set -euo pipefail
           if [ -z "${S4D_SSH_PRIVATE_KEY}" ]; then
@@ -187,6 +212,7 @@ jobs:
         env:
           S4D_SSH_PRIVATE_KEY: ${{ secrets.S4D_SSH_PRIVATE_KEY }}
           S4D_SSH_KNOWN_HOSTS: ${{ secrets.S4D_SSH_KNOWN_HOSTS }}
+        shell: bash
         run: |
           set -euo pipefail
 
@@ -206,6 +232,7 @@ jobs:
       - name: Run cloud release workflow
         id: release
         continue-on-error: true
+        shell: bash
         run: |
           set -euo pipefail
 
@@ -220,6 +247,8 @@ jobs:
             --ssh-user "$S4D_SSH_USER"
             --ssh-identity-file "$S4D_SSH_IDENTITY_FILE"
             --remote-repo-dir "$S4D_REMOTE_REPO_DIR"
+            --remote-branch "${{ github.ref_name }}"
+            --expected-head-sha "${{ github.sha }}"
             --env-file "$S4D_ENV_FILE"
             --image-tag "$S4D_IMAGE_TAG"
             --container-name "$S4D_CONTAINER_NAME"
@@ -253,6 +282,7 @@ jobs:
       - name: Locate summary.json
         id: summary
         if: always()
+        shell: bash
         run: |
           set -euo pipefail
 
@@ -273,6 +303,7 @@ jobs:
           SUMMARY_EXISTS: ${{ steps.summary.outputs.summary_exists }}
           RELEASE_EXIT_CODE: ${{ steps.release.outputs.release_exit_code }}
           ARTIFACT_DIR: ${{ steps.release.outputs.artifact_dir }}
+        shell: bash
         run: |
           set -euo pipefail
 
@@ -345,7 +376,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: s4d-cloud-release-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ steps.release.outputs.artifact_dir }}
+          path: repo/${{ steps.release.outputs.artifact_dir }}
           if-no-files-found: warn
 
       - name: Enforce workflow result
@@ -354,6 +385,7 @@ jobs:
           SUMMARY_JSON: ${{ steps.summary.outputs.summary_json }}
           SUMMARY_EXISTS: ${{ steps.summary.outputs.summary_exists }}
           RELEASE_EXIT_CODE: ${{ steps.release.outputs.release_exit_code }}
+        shell: bash
         run: |
           set -euo pipefail
 
