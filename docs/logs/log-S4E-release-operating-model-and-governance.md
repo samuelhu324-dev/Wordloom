@@ -100,7 +100,7 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 - [x] `P1`：`S4E-1A` 已建立并推进到首轮稳定 policy/evidence 基线
 - [x] `P2`：`S4E-2A` 已完成首轮 `P0-P3` 基线，并把 hierarchy / rollback authority runway 显式交接到 `S4E-3A`
 - [x] `P3`：`S4E-3A` 已完成首轮 `P0-P3` 基线，并把 enforcement / auditability / approver-policy runway 显式交接到 `S4E-4A`
-- [x] `P4`：`S4E-4A` 已进入首轮 `P0-P2` 基线，hard-gate/soft-policy、auditability、environment-specific approver policy 已完成第一轮 contract/policy 收口，并已有真实 approval/rollback 样本验证
+- [x] `P4`：`S4E-4A` 已完成首轮 `P0-P3` 基线，hard-gate/soft-policy、auditability、environment-specific approver policy 与 future stronger-governance runway 已完成第一轮 contract/policy/evidence 收口
 
 ## Current Status（进展摘要）
 
@@ -108,7 +108,7 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 - 当前已进入实质推进的 phases 是 `S4E-1A`、`S4E-2A`、`S4E-3A` 与 `S4E-4A`：前三者分别完成了 trigger policy、promotion continuity、authority taxonomy 的首轮闭环；当前 `S4E-4A` 已开始收口 enforcement、auditability 与 environment-specific approver policy 的第一轮 contract/policy 基线；
 - `S4E-2A` 已完成第一轮 `P0-P3`：当前 promotion semantics、release identity continuity、最小 ledger 扩展字段、lower-environment source record continuity，以及通向 hierarchy / rollback authority 的 runway handoff 都已经固定；
 - `S4E-3A` 已完成第一轮 `P0-P3`：当前 role/authority boundary、统一 governance action record 字段、hierarchy / separation-of-duties wording、approval/rollback evidence，以及通向 enforcement / auditability / approver-policy tightening 的 runway handoff 都已经固定；
-- `S4E-4A` 已进入第一轮 `P0-P2`：当前 hard-gate vs soft-policy boundary、auditability contract、最低 enforcement points，以及 environment-specific approver tightening path 已经固定；并且已经用 `23599857316` 的 approval/rollback 样本验证 auditability contract 与 hard-gate vs soft-policy 边界可以被真实证据表达；
+- `S4E-4A` 已完成第一轮 `P0-P3`：当前 hard-gate vs soft-policy boundary、auditability contract、最低 enforcement points，以及 environment-specific approver tightening path 已经固定；并且已经用 `23599857316` 的 approval/rollback 样本验证 auditability contract 与 hard-gate vs soft-policy 边界可以被真实证据表达，同时也已为 future multi-environment governance / stronger approval systems 固定不改 schema 的升级入口；
 - 当前不把 `S4D-4B/4C` 已完成的 dispatch、runner、timeout 治理重做一遍，而是把它们当作 `S4E` 的既有输入面。
 
 ## Notes（落地原则，可选）
@@ -143,6 +143,7 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 
 ## Recent changes（for traceability，可选）
 
+- 2026-03-27：`S4E-4A` 已推进到首轮 `P3` 基线；当前已固定 future stronger governance 的 runway，明确 higher-environment governance 应继续沿用既有 governance action record / evidence skeleton，并逐步把 approver tightening 与 audit-incomplete 升级为更强 enforcement。
 - 2026-03-27：`S4E-4A` 已推进到首轮 `P2` 基线；当前已用真实 approval/rollback 样本验证 auditability contract 足够表达，并正式把 environment approval / rollback readiness 记为 hard gate、把 future approver tightening 记为 soft policy。
 - 2026-03-27：`S4E-4A` 已推进到首轮 `P0-P1` 基线；当前已固定 hard-gate vs soft-policy 边界、auditability contract、最低 enforcement points，以及 environment-specific approver policy 的最小收紧路径，下一步进入 `P2`。
 - 2026-03-27：已完成 `S4E-3A/P3-C1-S1`，并正式开出 `S4E-4A` draft；当前 enforcement / auditability / approver-policy follow-up 已从 `S4E-3A` 显式交接到下一 phase。

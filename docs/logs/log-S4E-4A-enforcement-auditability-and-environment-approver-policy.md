@@ -165,6 +165,14 @@
 
 - P3-C1-S1: 为 future multi-environment governance / stronger approval systems 定义入口
 
+**Current status (S4E-4A / P3)**
+
+- `P3-C1-S1` 已完成第一版 runway 定义：当前 `S4E-4A` 已明确 future stronger governance 不应另起一套 approval/audit schema，而应继续沿用 `S4E-3A`/`S4E-4A` 已固定的 governance action record 与 evidence contract，仅把 enforcement strength、approver independence 与 audit-completeness 从 `cloud-dev` 的 soft-policy / partial-hard-gate 基线逐步升级到更高环境。
+- 该 runway 已固定三条升级路径：
+  - environment-specific approver policy 可从 `cloud-dev` 的单 reviewer 现实，升级到 higher-environment 的 requester/approver separation、双人 approval 或 authority independence，但不改动 `headSha`、`sourceRecordRef`、`authorityRole`、`actedBy`、`decisionReason`、`runUrl` 与 artifact bundle 这些最小字段；
+  - `audit_incomplete` 当前可作为记录层告警保留在 v1，但未来只要进入 higher-environment promotion、override 或 manual rollback，就应升级为 blocking condition，从而把 auditability contract 从 soft-policy support 升级为 hard gate prerequisite；
+  - future stronger approval system 无论是 GitHub environment reviewers 扩展、外部 approval service，还是更严格的 release ledger，都应输出回同一 governance action record skeleton，而不是绕开既有 evidence model 单独记账。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -185,7 +193,7 @@
 
 ### P3 (Runway)
 
-- [ ] `P3-C1-S1`: stronger governance runway defined
+- [x] `P3-C1-S1`: stronger governance runway defined
 
 ## Evidence (reserved)
 
@@ -263,8 +271,35 @@
   - 相比之下，这一条样本中 `requestedBy == actedBy == samuelhu324-dev` 并没有导致 run 被系统拒绝，说明 requester/approver separation、更多 approver independence 以及更细粒度 reviewer roster 目前仍是 future tightening path，只能记为 `soft_policy`；
   - 因此，`S4E-4A/P2` 已验证当前边界可以稳定落账：environment approval 与 rollback readiness 属于 hard gate，而 environment-specific approver tightening 仍停留在 soft policy，直到 future multi-environment governance 再把它们升级为 enforced rule。
 
+### P3-C1-S1 (runway fixed for future multi-environment governance without changing the record schema | 2026-03-27)
+
+- headSha: `c089d515`
+- sourceRecordRef: `phase:S4E-4A/P2`
+- targetEnvironment: `cloud-dev -> future higher environments`
+- policyMode: `soft_policy_to_hard_gate_upgrade_path`
+- authorityRole: `governance_model_owner`
+- actedBy: `documentation_phase_update`
+- decisionReason: `future stronger approval and audit enforcement must reuse existing governance record skeleton`
+- result: `runway_defined`
+- runUrl: `n/a (documentation phase handoff)`
+- auditStatus: `audit_complete`
+- artifacts:
+  - `docs/logs/log-S4E-4A-enforcement-auditability-and-environment-approver-policy.md`
+  - `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
+  - `docs/logs/log-S4E-release-operating-model-and-governance.md`
+- expected:
+  - future multi-environment governance 不应在进入 stronger approval system 时丢掉已经固定的 `S4E-3A` governance action record 与 `S4E-4A` evidence contract；
+  - `cloud-dev` v1 里仍是 soft policy 的部分，应有清楚的升级入口，说明未来何时变成 hard gate，而不是永远停留在“以后再说”；
+  - `audit_incomplete` 也应有明确升级边界，避免 higher-environment 仍接受字段不全却继续执行。
+- observed:
+  - 当前 runway 已明确 future stronger governance 的升级不以“换一套记录模型”为前提，而是以“在同一 action/evidence skeleton 上加严 enforcement”为前提；
+  - environment-specific approver policy 的 tightening path 已被固定为：先实现 requester/approver separation，再根据 target environment 风险级别增加 approver cardinality 或 authority independence，而不是另起全新 approval schema；
+  - `audit_incomplete` 已被明确收口为 future higher-environment promotion、override、manual rollback 的 blocking candidate，这为后续把 auditability 从 soft-policy support 升级到 hard gate prerequisite 留出了清晰入口；
+  - 因此，`S4E-4A/P3` 已完成本 phase 的 runway 目标：future stronger approval systems、multi-environment governance 与更严格 audit enforcement 都可以在不打破现有 record schema 的前提下继续推进。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-4A/P3-C1-S1` 的第一轮 runway 收口，当前已固定 future stronger governance 的升级路径：更高环境继续沿用现有 governance action record/evidence skeleton，只把 approver policy、audit-incomplete blocking 与 enforcement strength 逐步加严。
 - 2026-03-27: 已完成 `S4E-4A/P2-C1-S1S2` 的第一轮 evidence 回填，当前已用真实 approval/rollback 样本验证 auditability contract 足够表达，并把 hard-gate 与 soft-policy 的现有边界正式落账。
 - 2026-03-27: 已完成 `S4E-4A/P1-C1-S1S2` 的第一轮 policy wording 收口，固定了 enforcement points、最低 auditability 要求，以及 environment-specific approver policy 的最小收紧路径。
 - 2026-03-27: 已完成 `S4E-4A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 hard-gate vs soft-policy 边界、auditability contract，以及 enforcement evidence 的最小字段。
