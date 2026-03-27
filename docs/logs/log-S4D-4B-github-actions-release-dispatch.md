@@ -137,6 +137,8 @@
 - P1-C2-S2: 用真实 Actions PASS 样本验证 `headSha == expectedHeadSha == remoteHeadSha`
 - P1-C3-S1: 拆分 `push` 与 `workflow_dispatch` 的 concurrency group，避免 push waiting run 阻塞 manual drill materialization
 - P1-C3-S2: 用真实 Actions 控制面样本验证 push/manual 可并存进入 waiting，而不再需要先取消旧 run
+- P1-C4-S1: 把 release operations runbook 更新到 Actions 为 preferred trigger、本地 shell 为 fallback/debug 的当前边界
+- P1-C4-S2: 固定 `S4D-4B` 与 `S4D-4C` 的边界，避免把 auto-dispatch / control-plane policy 再回写成 `4B` 的未决事项
 
 **Current status (S4D-4B)**
 
@@ -152,6 +154,7 @@
 - `P3-C1-S2` 已完成：当前 workflow run summary 与 `operator_guidance.txt` 已稳定给出 `result`、`failureClass`、`terminalGate`、artifact 路径与下一步 operator action，handoff wording 已有真实 rollback 样本验证。
 - `P1-C2-S1/S2` 已完成：当前 workflow 已把 `github.ref_name` 与 `github.sha` 作为显式 contract 传入 release script，并在 preflight 阶段完成 target repo 的 clean-check、`git fetch`、branch 对齐与 exact-head reset；最新 PASS 样本已证明 `headSha == expectedHeadSha == remoteHeadSha`。
 - `P1-C3-S1/S2` 已完成：当前 workflow 已把 concurrency group 从“仅按 environment 串行”调整为“按 trigger surface + environment 串行”；真实控制面样本已证明同一 `headSha` 下的 `push` run 与 manual `workflow_dispatch` run 可以各自 materialize 出独立 job，并同时停在 `cloud-dev` approval gate，不再需要先取消 push waiting run。
+- `P1-C4-S1/S2` 已完成：`run-S4D-cloud-runtime-release-operations` 现已显式把 GitHub Actions `s4d-cloud-release-dispatch` 记为 preferred repo-controlled trigger，把本地 `cloud_release_workflow.sh` 保留为 fallback/debug path；同时已把 `4B` 的完成边界收口为 dispatch / approval / artifact / handoff / runbook 对齐，而把后续 auto-dispatch 与更高层 control-plane policy 明确归入 `S4D-4C`。
 
 ### P2 (Drill / Verify)
 
@@ -186,6 +189,8 @@
 - [x] `P1-C2-S2`: remote head alignment evidence recorded
 - [x] `P1-C3-S1`: push/manual concurrency groups split
 - [x] `P1-C3-S2`: push/manual coexistence evidence recorded
+- [x] `P1-C4-S1`: runbook aligned to preferred Actions trigger
+- [x] `P1-C4-S2`: 4B/4C boundary for control-plane follow-up fixed
 
 ### P2 (Drill / Verify)
 
@@ -317,8 +322,25 @@
   - 对 manual run `23601495526` 的 `pending_deployments` 查询明确返回 `environment=cloud-dev`、`current_user_can_approve=true` 与 reviewer=`samuelhu324-dev`，说明 manual run 已正常进入审批门，而不是卡在 concurrency controller 之前；
   - 本轮验证故意没有先取消 push run，因此 `P1-C3-S2` 的结论可直接用于替代此前“先取消 push waiting run，再发 manual drill”这一临时操作规程。
 
+### P1-C4-S1S2 (runbook aligned to preferred Actions trigger, 4B/4C boundary clarified | 2026-03-27)
+
+- headSha: `pending_commit`
+- artifacts:
+  - `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
+  - `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
+  - `docs/logs/log-S4D-4C-408-timeout-eradication.md`
+- expected:
+  - 当 `S4D-4B` 的 dispatch / approval / artifact / handoff 已稳定后，主 runbook 不应继续把 GitHub Actions 记成“未来扩展点”；
+  - runbook 应直接反映当前推荐操作面：GitHub Actions `workflow_dispatch` 是 preferred repo-controlled trigger，本地 `cloud_release_workflow.sh` 只保留为 fallback/debug path；
+  - 与 auto-dispatch、stable-runner access path、更高层 control-plane policy 相关的继续演进，应明确归属到 `S4D-4C`，避免 `4B` 与 `4C` 的 phase 边界再次混淆。
+- observed:
+  - `docs/runbook/run-S4D-cloud-runtime-release-operations.md` 已把 decision 从“operator-driven local trigger”更新为“`cloud_release_workflow.sh` 定义 release semantics，GitHub Actions `workflow_dispatch` 作为 preferred repo-controlled trigger”，同时把本地 shell 入口降为 fallback/debug path；
+  - runbook 的 scope 已从排除所有 GitHub Actions 内容，调整为仅排除 repo-side administration 细节，从而与 `S4D-4B` 的已完成完成面对齐，而不再把已稳定的 dispatch/approval path 错写成 out-of-scope；
+  - `S4D-4B` 本 log 已显式把自身完成边界收口为 dispatch / approval / artifact / handoff / runbook 对齐，而把 auto-dispatch 与更高层 control-plane follow-up 明确留给 `S4D-4C`，因此当前无需再为这些内容回开新的 `4B` cycle。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4D-4B/P1-C4-S1S2`；主 runbook 现已更新为“GitHub Actions `s4d-cloud-release-dispatch` 是 preferred trigger，本地 shell 为 fallback/debug”，并显式固定 `4B` 与 `4C` 的 phase 边界，避免把 auto-dispatch / control-plane policy 再误挂回 `4B`。
 - 2026-03-26: 已完成 `S4D-4B/P1-C3-S1S2`；workflow concurrency group 现按 `event_name + target_environment` 分槽，真实控制面样本 `23601482418`（push）与 `23601495526`（workflow_dispatch）已证明两类 run 可以并存 materialize 并同时停在 `cloud-dev` approval gate，对应实现提交为 `f9f5e485`。
 - 2026-03-26: 已新增 `S4D-4B/P1-C2` 以收口 target repo head drift；workflow 与 release script 现已显式传递 `github.ref_name` / `github.sha` 并在 preflight 阶段完成远端 repo sync，对应提交为 `7bea1d52` 与修正提交 `fdd3e812`；随后真实 PASS 样本 `23600877818` 已证明 `headSha == expectedHeadSha == remoteHeadSha`。
 - 2026-03-26: 已为 `.github/workflows/s4d-cloud-release-dispatch.yml` 连续补齐五项实质性 contract 修复：Git Bash shell bootstrap、Windows self-hosted runner pin、bootstrap shell 改为 Windows PowerShell、过严 bash path 校验移除、checked-out repo working-directory / artifact upload path 修正；这些改动分别落在 `18d285c2`、`55f6c06e`、`0d4f260d`、`120032ef`、`7f3c417d`。

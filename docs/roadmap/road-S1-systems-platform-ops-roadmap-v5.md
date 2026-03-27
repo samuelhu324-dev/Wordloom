@@ -230,6 +230,8 @@
 - `M4` 的下一步主承接物是 `S4D`：把 `S4B` 的本地 packaging 基线与 `S4C` 的 cloud infra 连成一条 cloud/staging runtime 的 deploy -> verify -> rollback operator path。
 - 因此在 roadmap 记账边界上，`S4D` 应算作 `road-S1` 主心骨的一部分，而不是 `road-S1-1` 的完成面；`road-S1-1` 可以引用它来说明“将来怎么往上长”，但不应把 `S4D` 的 cloud-runtime 主线吞回最小闭环子路线。
 - `F1` 中提到的 productionization automation 与 `F3` 中提到的 failure taxonomy / evidence discipline，在当前阶段不应只作为“触发条件说明”存在；只要它们直接服务于 `S4D` 的 deploy / verify / rollback operator path，就应优先记在 `M4` 当前完成面之内。
+- 若后续新增 `S4E`，更合理的边界不是重复承接 `S4D-4B/4C` 已完成的 dispatch、approval、runner 或 timeout 收口，而是承接更高一层的 release operating model 升级，例如：trigger surface policy、environment promotion、release governance、artifact/release records 制度化、跨环境 approval / rollback framing。
+- 因此，像“什么时候才值得把当前 Actions / control-plane 议题单独升成一个新 phase”这类内容，在 `road-S1` 里应优先视为 `M4` 向更强 release operations / release governance 延伸时的候选扩展面；只有当它们尚未进入当前主线执行面时，才保持在 `F1` / `F3` 的 future-capability 描述层。
 
 ### M5: Backup / recovery, governance & hybrid/cloud + second-layer capabilities
 
@@ -237,6 +239,12 @@
 
 - 以 S5A-3B backup/restore/sanitize/verify 为核心，向外扩成一条「可治理、可恢复、具备 cloud/hybrid 认知」的长期线，包含但不急于完成 Kubernetes、多云等第二层能力。
 - `M5` 的重点是把 release/runtime 基线继续外扩到更完整的 access boundary、governance、auditability、hybrid/cloud framing 与 second-layer platform capabilities；它不是当前 release workflow failure taxonomy 的第一归属地。
+
+**Boundary note for potential `S4E`**
+
+- 如果未来 `S4E` 的主题是“在 `S4D-4B/4C` 之后，进一步定义 release operating model”，那么它在 `road-S1` 里的第一归属通常仍应是 `M4`，因为它延续的是 deploy / verify / rollback / release-control-plane 这条 runtime operations 主线；
+- 只有当 `S4E` 的内容明显上升为更完整的 release governance / approval hierarchy / release records / cross-environment promotion 制度时，才应开始同时触碰 `M5`；
+- 在这之前，`F1` 与 `F3` 仍可作为“为什么这条演进会自然出现”的触发条件说明，但不应替代它在 `M4` 主线中的实际归属。
 
 **Plan (P0–P3)**
 
@@ -254,6 +262,7 @@
 
 ## Recent Changes
 
+- 2026-03-27: 明确补充 `S4E` 候选边界：若后续开启新 phase 承接更高一层的 release operating model，它在 `road-S1` 中通常先归 `M4`，只有上升到更完整的 release governance / cross-environment promotion / release records 制度时才开始同时触碰 `M5`；`F1/F3` 继续保留为触发条件说明，而不是主归属。
 - 2026-03-26: 新增 `F7 Runtime access path evolution`，明确把 target access boundary 分成三种路径：全云/VPC、overlay network、reverse tunnel bridge；并记录当前已完成的是第 3 种桥接方案，第 1/2 种保留后续演进。
 - 2026-03-25: 把当前 `S4D` 暴露出的 release gates / failure taxonomy / evidence discipline 明确下沉到 `M4` 完成面；`F1` 与 `F3` 继续保留为触发条件说明，但不再把这些内容误判为主要属于未来 `M5` 的话题。
 - 2026-03-25: 新增 “Future capabilities & trigger conditions” 条目，明确 productionization automation、云服务基础、failure taxonomy、安全治理、Kubernetes、Kafka 与 local-first/cloud-selective 的触发条件，避免把未触发能力过早塞进当前主线。
