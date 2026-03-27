@@ -176,6 +176,11 @@
 - P2-C1-S1: 用现有 governance records 验证 blocking-upgrade evidence 入口
 - P2-C1-S2: 用受控样本验证 higher-environment restriction wording 是否可落账
 
+**Current status (S4E-5A / P2)**
+
+- `P2-C1-S1` 已完成第一轮 blocking-upgrade evidence 回填：现有 `23599857316` approval/rollback governance records 已证明，当前 schema 不需要新增字段就能把 same-actor approval、rollback authority、decision reason、evidence completeness 重新解释为 higher-environment blocking candidate。
+- `P2-C1-S2` 已完成第一轮 controlled-sample verification：当前已用受控 higher-environment policy sample 证明 `break_glass_exception`、approval independence failure 与 manual rollback blocking 都能继续落在同一 governance action record / evidence skeleton 上，而不需要另起一套 higher-environment 专用模型。
+
 ### P3 (Runway)
 
 - P3-C1-S1: 为 future external approval system / multi-environment release governance 提供入口
@@ -195,8 +200,8 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: blocking-upgrade evidence referenced
-- [ ] `P2-C1-S2`: higher-environment restriction evidence referenced
+- [x] `P2-C1-S1`: blocking-upgrade evidence referenced
+- [x] `P2-C1-S2`: higher-environment restriction evidence referenced
 
 ### P3 (Runway)
 
@@ -206,8 +211,84 @@
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
 
+### P2-C1-S1 (existing governance records prove the blocking-upgrade entry can be expressed without changing schema | 2026-03-27)
+
+- headSha: `7f3c417d`
+- sourceRecordRef: `run:23599857316`
+- targetEnvironment: `cloud-dev (reclassified as higher-environment blocking candidate for verification)`
+- policyMode:
+  - `recorded_soft_policy` in current `cloud-dev`
+  - `blocking_candidate` in future higher-environment governance
+- authorityRoles:
+  - `approval_authority`
+  - `rollback_authority`
+- actedBy:
+  - `samuelhu324-dev`（approval）
+  - `workflow_auto_rollback`（rollback）
+- decisionReasons:
+  - `cloud-dev environment gate released for manual release run`
+  - `verify_fail_auto`
+- result:
+  - `approval_granted`
+  - `candidate_reverted_to_known_good`
+- runUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23599857316`
+- auditStatus: `audit_complete`
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/operator_guidance.txt`
+  - `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
+  - `docs/logs/log-S4E-4A-enforcement-auditability-and-environment-approver-policy.md`
+- expected:
+  - 现有 governance record 应足以支撑 higher-environment blocking-upgrade 的落账入口，而不是一进入更高环境就需要追加一套新字段；
+  - same-actor approval、rollback authority、decision reason 与 evidence completeness 应能直接从已有字段中被重新解释为“满足”或“不满足” higher-environment contract；
+  - 若 current schema 无法区分 actor overlap、authority role 或 rollback evidence completeness，则 `S4E-5A` 的 blocking-upgrade 路线就还不成立。
+- observed:
+  - approval record 已有 `requestedBy=samuelhu324-dev`、`actedBy=samuelhu324-dev`、`authorityRole=approval_authority` 与对应 run URL，因此即使当前 `cloud-dev` 将其接受为现实，future higher-environment 也能在不改 schema 的前提下把这条记录重解释为 `approval_independence_not_satisfied` 的 blocking candidate；
+  - rollback record 已有 `authorityRole=rollback_authority`、`actedBy=workflow_auto_rollback`、`decisionReason=verify_fail_auto`、`result=candidate_reverted_to_known_good` 与 rollback evidence bundle，因此 future higher-environment 也能在同一骨架上表达“manual rollback 是否满足 evidence completeness / authority independence”；
+  - `summary.json` 与 `operator_guidance.txt` 已证明 rollback evidence 不只是一句自由文本，而是能稳定回指到 source record、decision reason 与 artifact path；这说明当前 record/evidence skeleton 已足以作为 `S4E-5A/P2-C1-S1` 的 blocking-upgrade entry point。
+
+### P2-C1-S2 (controlled higher-environment sample proves break-glass, approval independence, and manual rollback blocking are all recordable on the same skeleton | 2026-03-27)
+
+- headSha: `7f3c417d`
+- sourceRecordRef: `policy-simulation:23599857316-higher-environment-restrictions`
+- targetEnvironment: `simulated-higher-environment`
+- policyMode: `hard_gate`
+- authorityRoles:
+  - `approval_authority`
+  - `override_actor`
+  - `rollback_authority`
+- actedBy:
+  - `samuelhu324-dev`（simulated same-actor approval/override）
+  - `pending_independent_actor`（required by policy but absent in the failing sample）
+- decisionReasons:
+  - `approval_independence_not_satisfied`
+  - `break_glass_exception`
+  - `manual_rollback_evidence_incomplete`
+- result:
+  - `blocked_before_approval`
+  - `override_allowed_under_break_glass`
+  - `blocked_before_override_or_rollback`
+- runUrl: `n/a (controlled policy sample)`
+- auditStatus:
+  - `audit_complete` for the break-glass example once exception marker and evidence are present
+  - `audit_incomplete` for the manual rollback blocking example when evidence bundle is absent
+- artifacts:
+  - `docs/logs/log-S4E-5A-higher-environment-governance-and-blocking-upgrades.md`
+  - `docs/logs/log-S4E-4A-enforcement-auditability-and-environment-approver-policy.md`
+  - `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
+- expected:
+  - controlled higher-environment samples 应能在不新增 schema 的前提下，同时表达 approval independence failure、break-glass exception 与 manual rollback blocking；
+  - evidence model 至少要能说明谁试图执行动作、为什么被阻断或被放行为例外、以及 evidence completeness 是否满足；
+  - 若这些 higher-environment 情况必须依赖新字段或新的 record family，当前 `S4E-5A` 的“沿用 skeleton 加严规则”前提就不成立。
+- observed:
+  - approval independence failure 可以直接落为现有骨架中的 `authorityRole=approval_authority`、`actedBy=samuelhu324-dev`、`decisionReason=approval_independence_not_satisfied` 与 `result=blocked_before_approval`，不需要新增字段；
+  - `break_glass_exception` 也可以继续用同一骨架表达：只需把 exception 原因压到 `decisionReason`，并把执行结论压到 `result=override_allowed_under_break_glass`，再用现有 `runUrl`/artifact reference 或受控文档 evidence 承接；
+  - manual rollback blocking 同样可以用 `authorityRole=rollback_authority`、`decisionReason=manual_rollback_evidence_incomplete`、`auditStatus=audit_incomplete` 与 `result=blocked_before_override_or_rollback` 表达，说明 evidence model 已足够描述 “因为证据不全而被阻断”；
+  - 因此，`S4E-5A/P2-C1-S2` 已验证 current evidence model 足以表达 `break_glass_exception`、approval independence 与 manual rollback blocking，后续需要加严的是 policy 与 execution gate，而不是 record schema 本身。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-5A/P2-C1-S1S2` 的第一轮 evidence 回填，当前已证明现有 governance record / evidence skeleton 足以承载 blocking-upgrade entry，以及 `break_glass_exception`、approval independence、manual rollback blocking 的受控 higher-environment 样本。
 - 2026-03-27: 已完成 `S4E-5A/P1-C1-S1S2` 的第一轮 policy wording 收口，当前已固定 higher-environment approval / override restriction，以及 rollback authority / evidence completeness 的最小 blocking wording。
 - 2026-03-27: 已完成 `S4E-5A/P0-C1-S1S2S3` 的第一轮 contract 收口，当前已固定 higher-environment blocking-upgrade matrix、`audit_incomplete -> blocking prerequisite` 边界，以及 approver independence / requester separation 的最小 enforced baseline。
 - 2026-03-27: 首次创建 `S4E-5A` draft，用于承接 higher-environment governance / blocking-upgrade follow-up；当前入口重点是 `audit_incomplete -> blocking`、approver independence，以及 manual override / rollback restriction 的更高环境收紧。
