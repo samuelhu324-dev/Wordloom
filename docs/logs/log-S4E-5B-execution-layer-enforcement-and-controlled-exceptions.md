@@ -179,6 +179,11 @@
 - P2-C1-S1: 用受控样本验证 execution gate/evidence 表达能力
 - P2-C1-S2: 用现有 governance record 验证 controlled exception 落账入口
 
+**Current status (S4E-5B / P0-P2)**
+
+- `P2-C1-S1` 已完成第一轮 execution gate / evidence verification：当前已用真实 release run 与受控 execution sample 验证，现有 governance record / artifact bundle 已足以表达 execution-layer 的放行、`blocked_before_approval` 与 `blocking_prerequisite_failed`，而不需要为 gate result 另起 schema。
+- `P2-C1-S2` 已完成第一轮 controlled exception entry verification：当前已确认 `break_glass_exception` 可以作为单独 governance action 继续落在同一 `headSha` / `sourceRecordRef` / `authorityRole` / `actedBy` / `decisionReason` / `result` / `runUrl` / artifact reference 骨架上；execution-layer 只是在已有骨架上加强 gate 语义，而不是新增 exception 专用账本。
+
 ### P3 (Runway)
 
 - P3-C1-S1: 为 future automation / external approval integration 提供实现入口
@@ -198,8 +203,8 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: execution gate evidence referenced
-- [ ] `P2-C1-S2`: controlled exception evidence referenced
+- [x] `P2-C1-S1`: execution gate evidence referenced
+- [x] `P2-C1-S2`: controlled exception evidence referenced
 
 ### P3 (Runway)
 
@@ -209,8 +214,109 @@
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
 
+### P2-C1-S1 (real run plus controlled execution samples prove current evidence can express execution gate outcomes without changing schema | 2026-03-27)
+
+- headSha: `7f3c417d`
+- sourceRecordRef:
+  - `run:23599857316`
+  - `policy-simulation:execution-gate-outcomes-v1`
+- targetEnvironment:
+  - `cloud-dev`
+  - `simulated-higher-environment`
+- policyMode:
+  - `recorded_runtime_gate`
+  - `hard_gate`
+- authorityRoles:
+  - `approval_authority`
+  - `release_execution_gate`
+  - `rollback_authority`
+- actedBy:
+  - `samuelhu324-dev`
+  - `workflow_runtime_gate`
+  - `workflow_auto_rollback`
+- decisionReasons:
+  - `cloud-dev environment gate released for manual release run`
+  - `approval_independence_not_satisfied`
+  - `audit_incomplete`
+  - `verify_fail_auto`
+- result:
+  - `approval_granted`
+  - `blocked_before_approval`
+  - `blocking_prerequisite_failed`
+  - `candidate_reverted_to_known_good`
+  - `PASS_AFTER_ROLLBACK`
+- runUrl:
+  - `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23599857316`
+  - `n/a (controlled execution-gate sample)`
+- auditStatus:
+  - `audit_complete` for the real release / rollback run
+  - `audit_complete` for the controlled approval-independence block sample once actor overlap and decision source are explicitly recorded
+  - `audit_incomplete` for the controlled prerequisite-failure sample when required references are intentionally absent
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/operator_guidance.txt`
+  - `docs/logs/log-S4E-5A-higher-environment-governance-and-blocking-upgrades.md`
+  - `docs/logs/log-S4E-4A-enforcement-auditability-and-environment-approver-policy.md`
+- expected:
+  - execution-layer evidence 至少要能在同一骨架里表达三类结果：允许继续执行、因 approval independence 失败而 `blocked_before_approval`、以及因 `audit_incomplete` 而 `blocking_prerequisite_failed`；
+  - gate result 必须能回指 decision source 与 evidence source，而不是只留下 policy 文本；
+  - 若 execution-layer outcome 需要新的字段家族，`S4E-5B` 的“不分叉 schema 进入执行层”前提就不成立。
+- observed:
+  - `23599857316` 的真实 run 已证明 execution-layer 正常放行与自动 rollback 结果能够通过 `summary.json`、`operator_guidance.txt`、run URL、gateResults、`rollbackTrigger=verify_fail_auto` 与 `result=PASS_AFTER_ROLLBACK` 稳定表达；这说明“允许执行并留下 gate evidence”已经在现有骨架上成立；
+  - 同一骨架可以把 approval independence 失败压成 `authorityRole=approval_authority`、`decisionReason=approval_independence_not_satisfied` 与 `result=blocked_before_approval`；受控样本只是在已有 actor/authority 字段上改变解释强度，不需要新增 execution-only 字段；
+  - 同一骨架也可以把 prerequisite 缺失压成 `authorityRole=release_execution_gate`、`decisionReason=audit_incomplete` 与 `result=blocking_prerequisite_failed`；缺的是 evidence completeness，而不是表达能力；
+  - 因此，`S4E-5B/P2-C1-S1` 已验证 current evidence model 足以承接 execution-layer 的 stop-go 结果词汇，后续要增强的是自动判定与入口实现，而不是改写 record schema。
+
+### P2-C1-S2 (existing governance lineage proves controlled exceptions can be booked as separate actions on the same skeleton | 2026-03-27)
+
+- headSha: `7f3c417d`
+- sourceRecordRef:
+  - `run:23599857316`
+  - `policy-simulation:break-glass-entry-v1`
+- targetEnvironment:
+  - `cloud-dev lineage reused for exception booking verification`
+  - `simulated-higher-environment`
+- policyMode:
+  - `controlled_exception`
+  - `hard_gate_with_exception_path`
+- authorityRoles:
+  - `approval_authority`
+  - `exception_authority`
+  - `override_actor`
+- actedBy:
+  - `samuelhu324-dev`（source approval lineage）
+  - `independent_exception_approver`（controlled sample）
+  - `release_operator_under_exception`（controlled sample）
+- decisionReasons:
+  - `break_glass_exception`
+  - `higher_environment_recovery_required`
+  - `approval_independence_not_satisfied_but_exception_authorized`
+- result:
+  - `override_allowed_under_break_glass`
+  - `exception_recorded`
+- runUrl:
+  - `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23599857316`
+  - `n/a (controlled exception sample)`
+- auditStatus:
+  - `audit_complete` when exception reason, authority source, actor, timepoint, source record, and artifact reference are all present
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/operator_guidance.txt`
+  - `docs/logs/log-S4E-5A-higher-environment-governance-and-blocking-upgrades.md`
+  - `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
+- expected:
+  - controlled exception 不应成为脱离既有 lineage 的旁路记录，而应作为可回指 source action 的独立 governance action 落账；
+  - exception entry 至少要能记录 exception reason、authority source、执行 actor、对应 run/reference 与 evidence bundle；
+  - 若 break-glass 必须另起 exception-only ledger，`S4E-5B` 的 controlled exception 路线就会破坏既有审计连续性。
+- observed:
+  - `23599857316` 已经提供可复用的 `headSha`、`sourceRecordRef`、run URL 与 artifact lineage，因此 controlled exception 不需要新身份模型；它只需要在同一 lineage 上追加一条 `authorityRole=exception_authority` 的受控 action；
+  - 受控样本表明 `break_glass_exception` 可以直接写入 `decisionReason`，并把执行层结论压成 `result=override_allowed_under_break_glass`；只要 exception authority、actor、reason 与 artifact reference 可回指，该 action 就满足同一 skeleton 的 auditability 要求；
+  - 这也说明 execution-layer 的 controlled exception 入口本质上是“在已有 governance lineage 上增加一条显式 action 并收紧 gate prerequisites”，而不是“绕过现有记录系统”；
+  - 因此，`S4E-5B/P2-C1-S2` 已验证 controlled exception entry 可以直接承接现有 governance record lineage，后续需要实现的是 exception gate 的自动/半自动入口，而不是另起账本。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-5B/P2-C1-S1S2` 的第一轮 drill / verify 回填，当前已验证现有 governance record / evidence skeleton 足以表达 execution-layer 的 `blocked_before_approval`、`blocking_prerequisite_failed`、正常放行与 `break_glass_exception` 的受控落账入口。
 - 2026-03-27: 已完成 `S4E-5B/P1-C1-S1S2` 的第一轮 policy wording 收口，当前已固定 approval independence gate，以及 `audit_incomplete` hard-stop / break-glass execution 的最小执行层 wording。
 - 2026-03-27: 已完成 `S4E-5B/P0-C1-S1S2S3` 的第一轮 contract 收口，当前已固定 execution-layer enforcement boundary、decision/evidence source contract，以及 break-glass / controlled exception 的最小 baseline。
 - 2026-03-27: 首次创建 `S4E-5B` draft，用于承接 execution-layer enforcement / controlled exception follow-up；当前入口重点是 approval independence 的自动判定、`audit_incomplete` 的执行层硬阻断，以及 `break_glass_exception` 的受控落账和执行门。
