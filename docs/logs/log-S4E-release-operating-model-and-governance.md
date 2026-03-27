@@ -87,7 +87,7 @@
 - `S4E-1A`（Phase 1）：Release trigger policy and governance boundary（cloud-dev control-plane contract, manual/auto boundary, minimal release record）
   - 详见：`docs/logs/log-S4E-1A-release-trigger-policy-and-governance-boundary.md`
 - `S4E-2A`（Phase 2）：Environment promotion and release records（promotion semantics, release ledger, promotion intent discipline）
-  - 详见：``
+  - 详见：`docs/logs/log-S4E-2A-environment-promotion-and-release-records.md`
 - `S4E-3A`（Phase 3）：Approval hierarchy and rollback authority（who may approve, who may rollback, how actions are recorded）
   - 详见：``
 
@@ -128,8 +128,8 @@
 
 **Branch 约定（建议）**:
 
-- `S4E` 相关实现与文档优先落在 `S4D-cloud-runtime-deploy-verify-rollback` 分支，直到这条 control-plane / governance 主线需要独立分支为止；
-- 若后续 `S4E` 体量明显扩大，可再拆出 `S4E-*` 子分支，但默认不为每个 phase 单独切分支。
+- `S4E` 相关实现与文档当前优先落在 `S4E-release-operating-model-and-governance` 分支；若后续 `S4E` 体量继续扩大，再按需要拆出更细的 phase 子分支；
+- 默认仍不为每个 `S4E` phase 单独切分支，除非某个 phase 已明显脱离当前 parent spine 的连续交付节奏。
 
 **Commit 纪律（建议）**:
 
