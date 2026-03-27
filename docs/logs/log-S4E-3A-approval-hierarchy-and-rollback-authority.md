@@ -165,6 +165,11 @@
 - P2-C1-S1: 用现有 `cloud-dev` approval sample 验证 approval action record 的最小入口
 - P2-C1-S2: 用现有 rollback sample 验证 rollback authority record 的最小入口
 
+**Current status (S4E-3A / P2)**
+
+- `P2-C1-S1` 已完成第一版 approval action evidence 回填：现有 manual run `23599857316` 已证明 approval action record 可以独立于 trigger actor 表达，至少能记录 `requestedBy`、`actedBy`、`authorityRole=approval_authority`、`approvalState=approved` 与对应 run/artifact 引用。
+- `P2-C1-S2` 已完成第一版 rollback authority evidence 回填：同一条 run 的 `PASS_AFTER_ROLLBACK` summary 与 operator guidance 已证明 rollback action 也能落在同一 governance action record 骨架上，至少能记录 `governanceActionType=rollback`、`authorityRole=rollback_authority`、`decisionReason=verify_fail_auto`、`result=candidate_reverted_to_known_good` 以及 rollback evidence bundle。
+
 ### P3 (Runway)
 
 - P3-C1-S1: 为 future enforcement / auditability / environment-specific approver policy 定义入口
@@ -184,8 +189,8 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: approval action evidence referenced
-- [ ] `P2-C1-S2`: rollback authority evidence referenced
+- [x] `P2-C1-S1`: approval action evidence referenced
+- [x] `P2-C1-S2`: rollback authority evidence referenced
 
 ### P3 (Runway)
 
@@ -195,8 +200,61 @@
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
 
+### P2-C1-S1 (approval action record backfilled from real manual release gate sample | 2026-03-27)
+
+- headSha: `7f3c417d`
+- sourceRecordRef: `run:23599857316`
+- targetEnvironment: `cloud-dev`
+- governanceActionType: `approval`
+- authorityRole: `approval_authority`
+- requestedBy: `samuelhu324-dev`
+- actedBy: `samuelhu324-dev`
+- approvalState: `approved`
+- decisionReason: `cloud-dev environment gate released for manual release run`
+- result: `approval_granted`
+- runUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23599857316`
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/operator_guidance.txt`
+  - `docs/logs/log-S4E-1A-release-trigger-policy-and-governance-boundary.md`
+- expected:
+  - approval evidence 应能被表达为独立 governance action record，而不是只在 trigger policy 文本里以“先 waiting 再继续执行”存在；
+  - 该记录至少要说明谁请求了 run、谁实际放行了 target environment gate、以及 approval 动作与 run/artifact 的对应关系；
+  - approval actor 不应再被混写为 trigger actor 或 generic operator。
+- observed:
+  - manual run `23599857316` 在 approval 前进入 `waiting`，`pending_deployments` 明确显示 `environment=cloud-dev`、`current_user_can_approve=true`、reviewer=`samuelhu324-dev`，足以把该动作写成独立的 `approval` governance record；
+  - 该 run 的 trigger/request 也是由 `samuelhu324-dev` 发起，因此在当前 `cloud-dev` v1 现实里可以接受 `requestedBy == actedBy`，但 authority role 仍必须单独记为 `approval_authority`，而不是混成单一 operator；
+  - 因此，`S4E-3A/P2-C1-S1` 已验证 approval action evidence 可以落到统一 governance action record 骨架上。
+
+### P2-C1-S2 (rollback authority record backfilled from PASS_AFTER_ROLLBACK sample | 2026-03-27)
+
+- headSha: `7f3c417d`
+- sourceRecordRef: `run:23599857316`
+- targetEnvironment: `cloud-dev`
+- governanceActionType: `rollback`
+- authorityRole: `rollback_authority`
+- requestedBy: `samuelhu324-dev`
+- actedBy: `workflow_auto_rollback`
+- approvalState: `approved`
+- decisionReason: `verify_fail_auto`
+- result: `candidate_reverted_to_known_good`
+- runUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23599857316`
+- artifacts:
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/summary.json`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/rollback.log`
+  - `artifacts/_tmp_s4d4b_run_23599857316/s4d-cloud-release-23599857316-1/operator_guidance.txt`
+- expected:
+  - rollback authority evidence 应能在与 approval 相同的记录骨架中表达，而不是退回自由文本的 operator handoff；
+  - 即使 rollback 是由 workflow 在 verify fail 后自动执行，记录也应能说明 rollback 动作类型、触发原因、结果以及证据 bundle；
+  - 这样 future higher-environment governance 才能在不改字段模型的前提下把 manual rollback 与 automatic rollback 放进同一 action-record 体系。
+- observed:
+  - run `23599857316` 的 `summary.json` 已明确记录 `rollbackTrigger=verify_fail_auto`、`rollbackResult=PASS`、`operatorAction=candidate_reverted_to_known_good`、`terminalGate=rollback_readiness_gate` 与 `result=PASS_AFTER_ROLLBACK`，足以写成独立的 `rollback` governance record；
+  - `operator_guidance.txt` 进一步固定了 rollback command、artifact 路径以及 “Keep service on known-good and investigate candidate logs before the next deploy” 的 handoff wording，说明 rollback 动作不仅发生了，而且留下了可回指的治理证据；
+  - 因此，`S4E-3A/P2-C1-S2` 已验证 rollback authority evidence 也可以落入与 approval 相同的统一 governance action record 骨架。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-3A/P2-C1-S1S2` 的第一轮 drill/evidence 回填；当前已用 `23599857316` 同时固定 approval action record 与 rollback authority record 的最小 evidence 入口。
 - 2026-03-27: 已完成 `S4E-3A/P1-C1-S1S2` 的第一轮 policy wording 收口，固定了 hierarchy / separation-of-duties 的最小表述，并把 approval / rollback / override 压到统一 governance action record 骨架上。
 - 2026-03-27: 已完成 `S4E-3A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 role/authority boundary、统一 governance action record 字段，以及 hierarchy evidence contract。
 - 2026-03-27: 首次创建 `S4E-3A` draft，用于承接 approval hierarchy、rollback authority 与 governance action record；当前作为 `S4E-2A/P3` 的明确 handoff 入口。
