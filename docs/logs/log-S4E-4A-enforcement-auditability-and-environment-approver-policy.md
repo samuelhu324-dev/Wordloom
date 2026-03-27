@@ -83,6 +83,10 @@
 - 先停留在 soft policy 的约束可以包括：
   - environment-specific approver roster 的更细粒度组织规则；
   - 更复杂的 multi-party approval choreography。
+- v1 的最小边界固定为：
+  - 任何会决定“是否允许继续执行”的条件优先归入 hard gate；
+  - 任何只是“要求记录清楚、方便追溯、但当前系统还不具备自动阻断能力”的条件先归入 soft policy；
+  - 同一条约束未来可以从 soft policy 升级为 hard gate，但升级前应先能被当前 evidence contract 稳定表达。
 
 ### P0-C1-S2 (Auditability contract | v1)
 
@@ -95,6 +99,11 @@
   - `runUrl`
   - artifact bundle reference
 - 若任何一个关键字段无法回指，记录应被视为 audit-incomplete，而不是默默接受为“已完成治理动作”。
+- `audit-incomplete` v1 至少覆盖以下情况：
+  - actor 或 authority role 无法确认；
+  - run URL 存在但缺少对应 artifact bundle；
+  - decision reason 只能从自由文本猜测而不能稳定枚举；
+  - governance action 已发生，但无法从记录层判断它属于 approval、rollback、override 中的哪一类。
 
 ### P0-C1-S3 (Evidence contract | v1)
 
@@ -108,6 +117,7 @@
   - `decisionReason`
   - `result`
   - `runUrl` or artifact bundle reference
+  - `auditStatus` (`audit_complete` or `audit_incomplete`)
 
 ## Numbering
 
@@ -146,9 +156,9 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: hard-gate vs soft-policy boundary fixed
-- [ ] `P0-C1-S2`: auditability contract fixed
-- [ ] `P0-C1-S3`: enforcement evidence contract fixed
+- [x] `P0-C1-S1`: hard-gate vs soft-policy boundary fixed
+- [x] `P0-C1-S2`: auditability contract fixed
+- [x] `P0-C1-S3`: enforcement evidence contract fixed
 
 ### P1 (Policy mapping)
 
@@ -170,4 +180,5 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-4A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 hard-gate vs soft-policy 边界、auditability contract，以及 enforcement evidence 的最小字段。
 - 2026-03-27: 首次创建 `S4E-4A` draft，用于承接 enforcement、auditability 与 environment-specific approver policy；当前作为 `S4E-3A/P3` 的明确 runway 入口。
