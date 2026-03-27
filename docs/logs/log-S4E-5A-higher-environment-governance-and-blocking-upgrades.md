@@ -5,7 +5,7 @@
 **id**: `S4E-5A`
 **kind**: `log`
 **title**: `higher-environment governance and blocking upgrades + drills/evidence v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, ReleaseOperations, Governance, Approval, Auditability, Enforcement, HigherEnvironment, Blocking, Evidence, epic/s4, sub/4e5a`
 **links**: ``
@@ -185,6 +185,14 @@
 
 - P3-C1-S1: 为 future external approval system / multi-environment release governance 提供入口
 
+**Current status (S4E-5A / P3)**
+
+- `P3-C1-S1` 已完成第一版 runway 定义：当前 `S4E-5A` 已明确 future GitHub environment reviewers 扩展、外部 approval service 与 release ledger backend 都不应引入新的 governance record family，而应继续把 approval、override、rollback、break-glass 与 blocking prerequisite 的结论回写到同一 action/evidence skeleton。
+- 该 runway 已固定三条接入原则：
+  - approval control-plane 可以升级，但 governance record schema 不应分叉；
+  - environment-specific enforcement 可以升级，但 `headSha`、`sourceRecordRef`、`authorityRole`、`actedBy`、`decisionReason`、`result`、`runUrl` 与 artifact reference 仍是最低公共字段；
+  - break-glass、blocking prerequisite 与 approval independence 未来可以由更强执行层自动判断，但最终仍应以统一 evidence model 输出审计结果，而不是各系统各记一套账。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -205,7 +213,7 @@
 
 ### P3 (Runway)
 
-- [ ] `P3-C1-S1`: external-approval / multi-environment runway defined
+- [x] `P3-C1-S1`: external-approval / multi-environment runway defined
 
 ## Evidence (reserved)
 
@@ -286,8 +294,35 @@
   - manual rollback blocking 同样可以用 `authorityRole=rollback_authority`、`decisionReason=manual_rollback_evidence_incomplete`、`auditStatus=audit_incomplete` 与 `result=blocked_before_override_or_rollback` 表达，说明 evidence model 已足够描述 “因为证据不全而被阻断”；
   - 因此，`S4E-5A/P2-C1-S2` 已验证 current evidence model 足以表达 `break_glass_exception`、approval independence 与 manual rollback blocking，后续需要加严的是 policy 与 execution gate，而不是 record schema 本身。
 
+### P3-C1-S1 (future external approval systems and multi-environment governance must extend enforcement, not fork the schema | 2026-03-27)
+
+- headSha: `fc5fd56c`
+- sourceRecordRef: `phase:S4E-5A/P2`
+- targetEnvironment: `future multi-environment governance`
+- policyMode: `runway_defined`
+- authorityRole: `governance_model_owner`
+- actedBy: `documentation_phase_update`
+- decisionReason: `future approval systems and release governance must reuse the existing action/evidence skeleton`
+- result: `runway_defined`
+- runUrl: `n/a (documentation phase handoff)`
+- auditStatus: `audit_complete`
+- artifacts:
+  - `docs/logs/log-S4E-5A-higher-environment-governance-and-blocking-upgrades.md`
+  - `docs/logs/log-S4E-release-operating-model-and-governance.md`
+  - `docs/logs/log-S4E-4A-enforcement-auditability-and-environment-approver-policy.md`
+- expected:
+  - future GitHub environment reviewer expansion、external approval service 或 release ledger backend 应该增强 approval enforcement，而不是生成与现有 governance action record 平行的新账本；
+  - multi-environment governance 应能沿用当前 `headSha`、`sourceRecordRef`、`authorityRole`、`actedBy`、`decisionReason`、`result`、`runUrl` 与 artifact reference 作为最低公共字段；
+  - break-glass、blocking prerequisite、approval independence 等 future stronger enforcement 也应落在同一 evidence model 中，从而保持跨环境审计可比性。
+- observed:
+  - 当前 runway 已明确 future control-plane 的升级方向是“提升判定来源与执行 gate 的强度”，而不是替换 record schema；GitHub environment reviewers 扩展仍可回写为 `approval_authority` action record，外部 approval service 也应把最终批准/拒绝结果压回相同字段骨架；
+  - release ledger backend 若后续出现，其职责应是存储、查询和交叉验证已有 governance action record，而不是把 `approval`、`override`、`rollback`、`break_glass_exception` 改写成另一套字段模型；
+  - future multi-environment release governance 因此可以在不破坏现有 evidence continuity 的前提下继续提升 enforcement：例如自动判定 approver independence、自动拒绝 `audit_incomplete`、自动要求 dual approval，但这些都应输出回同一 skeleton；
+  - 因此，`S4E-5A/P3` 已完成本 phase 的 runway 目标：未来外部审批系统、多环境治理与更强执行层都可以继续沿当前 schema 演进，而不是重开一条不兼容的治理主线。
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-5A/P3-C1-S1` 的第一轮 runway 收口，当前已固定 future external approval system / multi-environment governance 的接入原则：继续沿用现有 governance action record / evidence skeleton，只增强执行 gate 与判定来源，不分叉 schema。
 - 2026-03-27: 已完成 `S4E-5A/P2-C1-S1S2` 的第一轮 evidence 回填，当前已证明现有 governance record / evidence skeleton 足以承载 blocking-upgrade entry，以及 `break_glass_exception`、approval independence、manual rollback blocking 的受控 higher-environment 样本。
 - 2026-03-27: 已完成 `S4E-5A/P1-C1-S1S2` 的第一轮 policy wording 收口，当前已固定 higher-environment approval / override restriction，以及 rollback authority / evidence completeness 的最小 blocking wording。
 - 2026-03-27: 已完成 `S4E-5A/P0-C1-S1S2S3` 的第一轮 contract 收口，当前已固定 higher-environment blocking-upgrade matrix、`audit_incomplete -> blocking prerequisite` 边界，以及 approver independence / requester separation 的最小 enforced baseline。
