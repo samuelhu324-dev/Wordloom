@@ -95,6 +95,50 @@
 - P0-C1-S2: 固定 `audit_incomplete` -> blocking prerequisite 的边界
 - P0-C1-S3: 固定 approver independence / requester separation baseline
 
+**Current status (S4E-5A / P0)**
+
+- `P0-C1-S1` 已完成第一版 higher-environment blocking-upgrade matrix：当前已明确 `S4E-4A` 中仅停留在 soft policy 的几类约束，在 higher environment 应分别升级为 `must_block_before_execution`、`must_block_before_approval` 或 `must_block_before_override_or_rollback`，而不是继续停留在“记录即可”。
+- `P0-C1-S2` 已完成第一版 `audit_incomplete` -> blocking prerequisite 边界：当前已明确 higher-environment promotion、manual override、manual rollback、approval replay 等高风险治理动作，一旦关键 evidence 字段无法回指，就必须阻断，而不能仅记为告警。
+- `P0-C1-S3` 已完成第一版 approver independence / requester separation baseline：当前已明确 higher environment 至少要求 requester 与 approver 分离，并把 approver 与 override actor / manual rollback actor 的独立性作为默认更强基线；但 v1 仍不把暂不存在的具体 reviewer roster 写成既成事实。
+
+### P0-C1-S1 (Higher-environment blocking-upgrade matrix | v1)
+
+- 在 `cloud-dev` v1 中仍可作为 soft policy 记录的约束，进入 higher environment 后应按以下矩阵升级：
+  - requester / approver separation：从 `recorded_soft_policy` 升级为 `must_block_before_approval`；
+  - approver independence（approver 不得同时充当 override actor 或同次 manual rollback authority）：从 `recorded_soft_policy` 升级为 `must_block_before_execution`；
+  - `audit_incomplete`：从 `recorded_soft_policy` 升级为 `must_block_before_execution`；
+  - manual override justification completeness：从 `recorded_soft_policy` 升级为 `must_block_before_override_or_rollback`；
+  - manual rollback evidence completeness：从 `recorded_soft_policy` 升级为 `must_block_before_override_or_rollback`；
+  - higher-environment approver cardinality / independence rule：从 `future_tightening_direction` 升级为 `must_block_before_approval`。
+- v1 的最小升级口径固定为：
+  - 任何会影响 higher-environment stop-go 决策可信度的约束，至少应在 approval 前阻断；
+  - 任何会影响 override / rollback 事后可审计性的约束，至少应在对应治理动作执行前阻断；
+  - 若当前系统还未具备自动判定能力，也必须先在记录模型中有清楚枚举，避免 future enforcement 时再次改 schema。
+
+### P0-C1-S2 (`audit_incomplete` to blocking prerequisite boundary | v1)
+
+- `audit_incomplete` 在 higher environment 至少覆盖以下 blocking 条件：
+  - `headSha`、`sourceRecordRef`、`authorityRole`、`actedBy`、`decisionReason`、`runUrl`、artifact bundle reference 任一关键字段无法稳定回指；
+  - governance action type 无法区分是 `approval`、`reject`、`rollback` 还是 `override`；
+  - manual override / manual rollback 已发生，但缺少能回指该决定的受控 evidence；
+  - approver 身份与 authority independence 无法证明满足当前 target environment 的最小 contract。
+- v1 的最小边界固定为：
+  - 在 `cloud-dev`，`audit_incomplete` 仍可作为 evidence warning 记录，但不自动推翻既有 v1 baseline；
+  - 在任何 higher-environment promotion、manual override、manual rollback、approval replay 场景中，`audit_incomplete` 必须被视为 `blocking_prerequisite_failed`；
+  - 只有当关键 evidence 字段全部可回指，且 action type / authority role 可稳定枚举时，higher-environment 治理动作才可继续。
+
+### P0-C1-S3 (Approver independence and requester separation baseline | v1)
+
+- higher-environment v1 至少要求：
+  - `requestedBy != actedBy` when `authorityRole=approval_authority`；
+  - approver 不应同时作为同一次 higher-environment manual override 的执行者；
+  - approver 不应在同一 release decision window 内同时担任 manual rollback authority，除非进入受控 break-glass path 并留下额外 evidence；
+  - 若因组织规模限制暂无法实现完全不同的人，也至少要在 record 层明确标记该例外为 `break_glass_exception`，而不是默默沿用 `cloud-dev` 单 actor 现实。
+- v1 的最小 baseline 固定为：
+  - requester / approver separation 是 higher-environment 的默认 blocking rule，而不是可选优化；
+  - approver independence 的默认解释是“不能由同一 actor 同时完成 request, approve, override, rollback 的整条高风险链路”；
+  - future stronger governance 可以继续加严 approver 数量、组织归属或 reviewer roster，但不需要改动既有 action/evidence skeleton。
+
 ### P1 (Policy mapping)
 
 - P1-C1-S1: 固定 higher-environment approval / override restriction wording
@@ -113,9 +157,9 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: blocking-upgrade matrix fixed
-- [ ] `P0-C1-S2`: audit prerequisite boundary fixed
-- [ ] `P0-C1-S3`: approver independence baseline fixed
+- [x] `P0-C1-S1`: blocking-upgrade matrix fixed
+- [x] `P0-C1-S2`: audit prerequisite boundary fixed
+- [x] `P0-C1-S3`: approver independence baseline fixed
 
 ### P1 (Policy mapping)
 
@@ -137,4 +181,5 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-5A/P0-C1-S1S2S3` 的第一轮 contract 收口，当前已固定 higher-environment blocking-upgrade matrix、`audit_incomplete -> blocking prerequisite` 边界，以及 approver independence / requester separation 的最小 enforced baseline。
 - 2026-03-27: 首次创建 `S4E-5A` draft，用于承接 higher-environment governance / blocking-upgrade follow-up；当前入口重点是 `audit_incomplete -> blocking`、approver independence，以及 manual override / rollback restriction 的更高环境收紧。
