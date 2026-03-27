@@ -137,6 +137,14 @@
 - P1-C1-S1: 固定 promotion 与 rerun/override 的边界定义
 - P1-C1-S2: 固定 release identity continuity 与最小 ledger 扩展字段
 
+**Current status (S4E-2A / P0-P1)**
+
+- `P0-C1-S1` 已完成第一版 promotion semantics contract：当前 `S4E-2A` 已固定“promotion 只能从既有 lower-environment source record 出发，并延续同一 candidate identity 进入更高环境”；凡是会改写 `headSha`、candidate image/tag 或重新挑选 artifact 的动作，不再被记作 promotion，而应先回到新的 candidate qualification / lower-environment record。
+- `P0-C1-S2` 已完成第一版 release identity continuity contract：当前 promotion v1 至少要求连续保留 `headSha`、`candidateImage`、`sourceRecordRef`、`sourceEnvironment`、`sourceRunUrl`、`sourceArtifactPath`、`promotionTargetEnvironment` 与 `promotionIntent`；未来 higher-environment run 只能补充 target-side evidence，不能吞掉 source-side identity。
+- `P0-C1-S3` 已完成第一版 evidence contract：当前 promotion evidence 已固定必须能同时回指 source record、source artifact/run URL、target environment、approval state 与最终 result，因此后续 `P2` drill 不再只是“找一条 run”，而是要验证 lower-environment record continuity 能否被稳定表达。
+- `P1-C1-S1` 已完成第一版 policy boundary：当前 policy 已明确 promotion 与 rerun/override 的边界不以 GitHub Actions 按钮形式区分，而以“是否跨环境且是否延续同一候选身份”区分；同环境 rerun、manual override 或重新挑选 candidate 仍属于 control-plane override，不自动升级为 promotion。
+- `P1-C1-S2` 已完成第一版 ledger mapping：当前最小 release ledger / record 扩展字段已固定为 `recordKind`、`headSha`、`candidateImage`、`sourceRecordRef`、`sourceEnvironment`、`targetEnvironment`、`sourceRunUrl`、`sourceArtifactPath`、`promotionIntent`、`requestedBy`、`approvalState`、`approvedBy` 与 `result`；后续更高环境只允许在此基础上追加 target-side run/evidence 字段，而不是另起一套无关记录。
+
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: 用现有 `cloud-dev` run 样本验证 lower-environment release identity 是否可被统一引用
@@ -156,8 +164,8 @@
 
 ### P1 (Policy / ledger mapping)
 
-- [ ] `P1-C1-S1`: promotion vs rerun/override boundary fixed
-- [ ] `P1-C1-S2`: ledger extension fields fixed
+- [x] `P1-C1-S1`: promotion vs rerun/override boundary fixed
+- [x] `P1-C1-S2`: ledger extension fields fixed
 
 ### P2 (Drill / Verify)
 
@@ -174,5 +182,6 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-03-27: 已完成 `S4E-2A/P1-C1-S1S2` 的第一轮 policy/ledger mapping 收口，固定了 promotion 与 rerun/override 的边界，以及最小 release ledger 扩展字段。
 - 2026-03-27: 已完成 `S4E-2A/P0-C1-S1S2S3` 的第一轮 contract 收口，固定了 promotion semantics、release identity continuity 与 promotion evidence contract。
 - 2026-03-27: 首次创建 `S4E-2A` draft，用于承接 environment promotion semantics 与 release record continuity；当前尚未进入正式 contract/evidence 收口。
