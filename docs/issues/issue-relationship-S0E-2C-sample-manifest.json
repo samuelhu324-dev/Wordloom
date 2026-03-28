@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": []
+}

@@ -102,7 +102,23 @@
   - updated JSON sidecar with `issue_number`, `issue_url`, `created_at`, and `mode=create-issue`
   - no automatic write-back to the source log
 
-### 5.4 Manual issue-creation procedure
+### 5.4 Batch dry-run planning command
+
+- `S0E-2C` adds a batch planning entry that stays in dry-run mode by default.
+- Canonical local entry:
+  - `python scripts/issues/plan_issue_batch.py <manifest_path>`
+- Example:
+  - `python scripts/issues/plan_issue_batch.py docs/issues/issue-batch-S0E-2C-sample-manifest.json`
+- Outputs:
+  - per-log markdown drafts and JSON sidecars for selected logs
+  - one batch plan artifact under `docs/issues/issue-batch-<manifest-stem>-plan.json`
+  - stdout JSON summary with `planned_items`, `warnings`, and per-item `planned_action`
+- Safety rules:
+  - batch planning does not call GitHub create APIs
+  - if a source log already has `links.issue`, the planner must mark it as `skip-existing-issue`
+  - parent-child linking, milestone apply, and write-back remain later explicit phases, not part of `P1`
+
+### 5.5 Manual issue-creation procedure
 
 - Step 1: choose the source log and, when possible, start from the nearest validated sample issue artifact.
 - Step 2: confirm the issue title uses `SxY-ZA: <fixed-keyword>/<specific subject>`.
@@ -156,6 +172,55 @@
 - If module impact is not explicit, output an empty module-label array and continue.
 - Real GitHub issue creation must remain a separate opt-in mode, not the default behavior of the draft-generation mode.
 
+### 6.4 Batch manifest and plan contract
+
+- `S0E-2C/P0` fixes one conservative batch manifest shape:
+  - `version`: manifest schema version
+  - `selection_filters`: optional filter block for `include_globs`, `exclude_globs`, and future skip/apply toggles
+  - `defaults`: shared defaults such as `strict_label_check`, `parent_issue`, or `milestone_override`
+  - `items`: explicit per-log entries; each item must include `log_path` and may override defaults
+- Minimal planner item fields:
+  - `log_path`
+  - optional `output_path`
+  - optional `result_path`
+  - optional `parent_issue`
+  - optional `milestone_override`
+  - optional `module_label_overrides`
+- Batch plan output contract:
+  - top-level fields: `mode`, `manifest_path`, `selection_input`, `operation`, `total_items`, `planned_items`, `warnings`, `result`
+  - per-item fields: `source_log`, `draft_path`, `result_path`, `issue_number`, `issue_url`, `planned_action`, `applied_action`, `status`, `title`, `warnings`
+- `planned_action` is conservative:
+  - `create-issue` when the source log does not yet have `links.issue`
+  - `skip-existing-issue` when the source log already has `links.issue`
+- Batch planning may generate fresh draft artifacts, but it must not create issues, attach parent-child relationships, apply milestones, or write back into source logs.
+
+### 6.5 Relationship input contract
+
+- `S0E-2C/P2-C1-S1` fixes one conservative relationship manifest shape:
+  - `version`: manifest schema version
+  - `mode`: default `relationship-dry-run`
+  - `defaults`: optional shared defaults such as `relationship_type`
+  - `items`: explicit relationship items only
+- Each relationship item must identify both sides explicitly. Accepted issue references are:
+  - `parent_issue_number` or `parent_issue_url`
+  - `child_issue_number` or `child_issue_url`
+- Optional traceability-only fields may be included, but they do not replace explicit issue references:
+  - `parent_log_path`
+  - `child_log_path`
+  - `reason`
+- Accepted relationship types for v1 should stay narrow:
+  - `child-of`
+  - `parent-of`
+- Forbidden inference rules:
+  - no title-based matching
+  - no body-text similarity matching
+  - no automatic resolution from `log_path` alone when an explicit issue reference is absent
+- Conflict handling:
+  - if either side is missing an explicit issue reference, the item must remain in dry-run/error state
+  - if a provided issue reference conflicts with the traceability fields, the tool must stop at reconciliation rather than overwrite GitHub state
+- Sample contract file:
+  - `docs/issues/issue-relationship-S0E-2C-sample-manifest.json`
+
 ## 7) Troubleshooting
 
 - Keyword feels ambiguous:
@@ -172,3 +237,4 @@
 - This runbook is intentionally thin; the log remains the source of truth for naming policy and evidence.
 - `S0E-2A` fixes the contract and manual creation path.
 - If real GitHub issue creation is pursued, the recommended follow-up slice is `S0E-2B`, not a late expansion of `S0E-2A`.
+- If batch issue planning, parent-child linking, or milestone/backfill tooling is pursued, the next follow-up slice is `S0E-2C`.
