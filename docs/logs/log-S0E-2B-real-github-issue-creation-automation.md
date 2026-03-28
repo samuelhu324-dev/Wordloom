@@ -183,8 +183,8 @@
 
 ### P1 (Local draft-generation implementation)
 
-- [ ] `P1-C1-S1`: local draft-generation path implemented
-- [ ] `P1-C1-S2`: structured draft result emitted
+- [x] `P1-C1-S1`: local draft-generation path implemented
+- [x] `P1-C1-S2`: structured draft result emitted
 
 ### P2 (Real GitHub create issue entry)
 
@@ -214,6 +214,23 @@
   - `S0E-2B` opened as the dedicated follow-up slice for true GitHub issue creation automation
   - `P0` fixed mode boundary, script IO contract, and creation-side evidence/write-back discipline
 
+### P1-C1-S1S2 (local draft-generation path implemented and emitted structured result | 2026-03-28)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `scripts/issues/gen_issue_draft.py`
+  - `docs/issues/issue-S0E-2B-real-github-issue-creation-automation.md`
+  - `docs/issues/issue-S0E-2B-real-github-issue-creation-automation.json`
+- expected:
+  - local script can generate a draft markdown file from `log_path`
+  - local script emits a structured JSON result for `draft-generation` mode
+  - `S0E-2B` self-sample keeps milestone and module labels blank without guessing
+- observed:
+  - `scripts/issues/gen_issue_draft.py` now generates markdown drafts under `docs/issues/`
+  - the same run emits a JSON sidecar with `mode`, labels, warnings, and body markdown
+  - the `S0E-2B` self-sample kept milestone, parent issue, and module labels blank while preserving `automation` as the fixed keyword
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-28: `S0E-2B` opened as the dedicated follow-up slice for real GitHub issue creation automation after `S0E-2A` closed contract, samples, and manual procedure.
+- 2026-03-28: `P1` added a local `log_path -> docs/issues/*.md` draft-generation script and JSON sidecar output for `draft-generation` mode.

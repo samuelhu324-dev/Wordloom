@@ -75,8 +75,20 @@
 - At least one validated sample issue artifact exists for the same pattern or neighboring pattern.
 - Required GitHub labels already exist in the repository.
 - The operator knows whether a parent issue already exists.
+- Python is available for the local `draft-generation` script path.
 
-### 5.2 Manual issue-creation procedure
+### 5.2 Draft-generation command
+
+- Canonical local entry:
+  - `python scripts/issues/gen_issue_draft.py <log_path>`
+- Example:
+  - `python scripts/issues/gen_issue_draft.py docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+- Outputs:
+  - markdown draft under `docs/issues/issue-<log-slug>.md`
+  - structured JSON sidecar under `docs/issues/issue-<log-slug>.json`
+  - stdout JSON summary for quick inspection
+
+### 5.3 Manual issue-creation procedure
 
 - Step 1: choose the source log and, when possible, start from the nearest validated sample issue artifact.
 - Step 2: confirm the issue title uses `SxY-ZA: <fixed-keyword>/<specific subject>`.
