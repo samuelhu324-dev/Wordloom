@@ -214,6 +214,15 @@
 
 - P2-C1-S1: generate the first self-sample `log -> issue scaffold` artifact from `S0E-2A`
 - P2-C1-S2: validate title, labels, and milestone fallback against the `S0E-2A` sample output
+- P2-C2-S1: generate a cross-log sample from `S4E-5B` and validate `enforcement` vs. `governance` keyword choice
+- P2-C2-S2: validate `drills` suggestion and blank milestone/module-label fallback on the `S4E-5B` sample
+- P2-C3-S1: generate a second cross-log sample from `S6A-4A`
+- P2-C3-S2: validate `evidence` keyword and drills/evidence label boundary on the `S6A-4A` sample
+
+### P3 (Issue Creation Path)
+
+- P3-C1-S1: define the minimum manual issue-creation procedure from a validated sample artifact
+- P3-C1-S2: define the future script entry contract after `P2-C1-C3` sample validation is complete
 
 ## Execution Checklist (unchecked)
 
@@ -232,6 +241,15 @@
 
 - [x] `P2-C1-S1`: first self-sample issue scaffold artifact generated from `S0E-2A`
 - [x] `P2-C1-S2`: title, labels, and milestone fallback validated against the `S0E-2A` sample
+- [x] `P2-C2-S1`: first cross-log issue scaffold artifact generated from `S4E-5B`
+- [x] `P2-C2-S2`: `enforcement` keyword and `drills` label suggestion validated against the `S4E-5B` sample
+- [ ] `P2-C3-S1`: second cross-log issue scaffold artifact generated from `S6A-4A`
+- [ ] `P2-C3-S2`: `evidence` keyword and drills/evidence boundary validated against the `S6A-4A` sample
+
+### P3 (Issue Creation Path)
+
+- [ ] `P3-C1-S1`: minimum manual issue-creation procedure defined from validated sample artifacts
+- [ ] `P3-C1-S2`: future script entry contract defined after cross-log validation closes
 
 ## Evidence (reserved)
 
@@ -275,8 +293,25 @@
   - title keyword, top-level label, and scope/sub labels matched the frontmatter-driven contract
   - blank module-label and milestone fields correctly stayed blank instead of being guessed
 
+### P2-C2-S1S2 (first cross-log sample from `S4E-5B` validated | 2026-03-28)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `docs/issues/issue-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.md`
+- expected:
+  - title should be `S4E-5B: enforcement/execution-layer enforcement and controlled exceptions`
+  - labels should include `EVOLUTION`, `s4/ops`, and `sub/1`
+  - `drills` should be suggested because the source log title and tags explicitly carry drills/evidence semantics
+  - milestone and module labels should remain blank because the source log does not explicitly provide stable issue fields for them
+- observed:
+  - `enforcement` was a better fixed keyword than `governance` because the log is a child execution-gate slice rather than a parent governance spine
+  - top-level and scope/sub labels mapped cleanly from log scope and issue hierarchy
+  - `drills` could be suggested without overreaching because the source title and tags explicitly mention drills/evidence
+  - milestone and module labels correctly stayed blank instead of being guessed from adjacent governance context
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-28: first scaffold of `S0E-2A` created from the docs-management-v5 issue automation plan and normalized into a reusable phase-log contract.
 - 2026-03-28: parent/phase log templates gained issue-aware frontmatter fields and explicit blank-field fallback guidance.
 - 2026-03-28: first `S0E-2A -> issue scaffold` sample artifact was generated and validated under `P2`.
+- 2026-03-28: first cross-log sample (`S4E-5B`) was generated and validated under `P2-C2`.

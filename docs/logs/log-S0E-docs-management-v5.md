@@ -100,7 +100,7 @@
 
 - `S0E` 现阶段仍是 `draft`，重点是把 contract 先讲清楚，而不是抢先实现；
 - `S0E-2A` 已完成 title keyword、labels taxonomy、body scaffold 与 milestone mapping 的第一轮收口，并把 issue-aware template fields 落到 parent/phase templates；
-- `S0E-2A` 已完成第一条自举式 `log -> issue scaffold` sample，下一步应转向现有代表性 logs（如 `S4E-5B` / `S6A-4A`）做 cross-log validation；
+- `S0E-2A` 已完成第一条自举式 `log -> issue scaffold` sample，并已用 `S4E-5B` 完成第一条 cross-log validation；下一步应继续用 `S6A-4A` 校验 `evidence` / `drills` 边界，再进入真实 issue creation path；
 - 当前最大风险不是“不会写脚本”，而是如果在 contract 未稳定时过早自动化，会把现有命名漂移固化下来。
 
 ## Notes（落地原则，可选）
