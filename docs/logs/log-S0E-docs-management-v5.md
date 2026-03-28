@@ -19,7 +19,7 @@
   **reference_log_3**: `docs/logs/log-S4E-release-operating-model-and-governance.md`
   **phase_log_1**: ``
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
-  **phase_log_3**: ``
+  **phase_log_3**: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
 **created**: `2026-03-28`
 **updated**: `2026-03-28`
 
@@ -84,8 +84,8 @@
 
 - `S0E-2A`（Phase 2）：Semi-automated Git issue creation contract（title keywords, labels, body scaffold, milestone mapping）
   - 详见：`docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
-- `S0E-2B`（Recommended follow-up）：real GitHub issue creation automation / scripting path
-  - 详见：`pending follow-up slice after S0E-2A P3`
+- `S0E-2B`（Phase 2B）：real GitHub issue creation automation / scripting path
+  - 详见：`docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -93,13 +93,20 @@
 - [x] `P1`：`S0E-2A` scaffolded as the first issue-automation contract phase
 - [x] `P2`：issue-aware fields added to log templates
 - [x] `P3`：representative scaffold generation path validated and manual creation / future script contract fixed
+- [x] `P4`：`S0E-2B` 已建立并完成 `P0`（mode boundary / script IO / creation evidence contract）
+- [x] `P5`：`S0E-2B` 已完成 `P1`（local draft-generation implementation + structured result output）
+- [x] `P6`：`S0E-2B` 已完成 `P2`（explicit create mode + first real GitHub issue creation）
+- [x] `P7`：`S0E-2B` 已完成 `P3`（real-run verification + write-back discipline），并通过同一路径创建了 `S0E-2A` 的真实 issue
 
 ## Current Status（进展摘要）
 
 - `S0E` 现阶段仍是 `draft`，重点是把 contract 先讲清楚，而不是抢先实现；
 - `S0E-2A` 已完成 title keyword、labels taxonomy、body scaffold 与 milestone mapping 的第一轮收口，并把 issue-aware template fields 落到 parent/phase templates；
 - `S0E-2A` 已完成第一条自举式 sample、`S4E-5B` / `S6A-4A` 两条 cross-log validation，以及 `P3` 的最小人工创建流程和 future script entry contract；
-- 若继续推进真正的 GitHub issue 自动创建，最推荐的新 follow-up slice 是 `S0E-2B`，而不是继续扩写 `S0E-2A`；
+- `S0E-2B` 已建立并完成 `P0`，明确真正的 GitHub issue 自动创建必须以 `draft-generation` 为默认模式、以 `--create` 为显式 opt-in，并继承 fail-closed contract；
+- `S0E-2B` 已完成 `P1`：本地 `log_path -> docs/issues/*.md` draft-generation 脚本和 JSON sidecar 已跑通，下一步应进入 `P2` 的真实 GitHub create issue 入口；
+- `S0E-2B` 已完成 `P2`：脚本已通过 `gh` prerequisite checks 成功创建真实 issue `#288`，下一步应进入 `P3` 去验证 write-back discipline，并决定是否继续用同一路径创建 `S0E-2A` 的真实 issue；
+- `S0E-2B` 已完成 `P3`：真实 create path 与 write-back discipline 都已验证，`S0E-2A` 的真实 issue `#289` 也已通过同一路径创建并回写到 source log；
 - 当前最大风险不是“不会写脚本”，而是如果在 contract 未稳定时过早自动化，会把现有命名漂移固化下来。
 
 ## Notes（落地原则，可选）

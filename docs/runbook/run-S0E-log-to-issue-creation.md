@@ -64,8 +64,8 @@
 
 ## 4) One-click Automation
 
-- No one-click creation entry exists yet.
-- That work is intentionally deferred to a follow-up slice, recommended as `S0E-2B`, after the `S0E-2A` contract and manual procedure are stable.
+- Real create-side automation now lives in `S0E-2B`, but it is still explicit opt-in rather than one-click-by-default.
+- The stable safety rule remains: draft generation is the default path, and real GitHub issue creation only happens under explicit `--create`.
 
 ## 5) Local Operation
 
@@ -75,8 +75,34 @@
 - At least one validated sample issue artifact exists for the same pattern or neighboring pattern.
 - Required GitHub labels already exist in the repository.
 - The operator knows whether a parent issue already exists.
+- Python is available for the local `draft-generation` script path.
 
-### 5.2 Manual issue-creation procedure
+### 5.2 Draft-generation command
+
+- Canonical local entry:
+  - `python scripts/issues/gen_issue_draft.py <log_path>`
+- Example:
+  - `python scripts/issues/gen_issue_draft.py docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+- Outputs:
+  - markdown draft under `docs/issues/issue-<log-slug>.md`
+  - structured JSON sidecar under `docs/issues/issue-<log-slug>.json`
+  - stdout JSON summary for quick inspection
+
+### 5.3 Create-issue command
+
+- Explicit create entry:
+  - `python scripts/issues/gen_issue_draft.py <log_path> --create --repo <owner/repo>`
+- Current prerequisites:
+  - `gh` CLI installed
+  - `gh auth status` succeeds
+  - all derived labels already exist in the target repo
+  - if a milestone is provided, it already exists in the target repo
+  - no existing issue already uses the same title
+- Create-side outputs:
+  - updated JSON sidecar with `issue_number`, `issue_url`, `created_at`, and `mode=create-issue`
+  - no automatic write-back to the source log
+
+### 5.4 Manual issue-creation procedure
 
 - Step 1: choose the source log and, when possible, start from the nearest validated sample issue artifact.
 - Step 2: confirm the issue title uses `SxY-ZA: <fixed-keyword>/<specific subject>`.
