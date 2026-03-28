@@ -361,3 +361,4 @@
 - 2026-03-28: first cross-log sample (`S4E-5B`) was generated and validated under `P2-C2`.
 - 2026-03-28: second cross-log sample (`S6A-4A`) was generated and validated under `P2-C3`.
 - 2026-03-28: `P3` fixed the minimum manual issue-creation procedure and future script entry contract, and recommended `S0E-2B` as the true automation follow-up slice.
+- 2026-03-28: `S0E-2B` was opened as the dedicated follow-up slice for real GitHub issue creation automation, so `S0E-2A` remains the contract/sample/procedure boundary.
