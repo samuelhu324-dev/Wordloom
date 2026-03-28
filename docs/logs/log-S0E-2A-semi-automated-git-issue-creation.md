@@ -243,8 +243,8 @@
 - [x] `P2-C1-S2`: title, labels, and milestone fallback validated against the `S0E-2A` sample
 - [x] `P2-C2-S1`: first cross-log issue scaffold artifact generated from `S4E-5B`
 - [x] `P2-C2-S2`: `enforcement` keyword and `drills` label suggestion validated against the `S4E-5B` sample
-- [ ] `P2-C3-S1`: second cross-log issue scaffold artifact generated from `S6A-4A`
-- [ ] `P2-C3-S2`: `evidence` keyword and drills/evidence boundary validated against the `S6A-4A` sample
+- [x] `P2-C3-S1`: second cross-log issue scaffold artifact generated from `S6A-4A`
+- [x] `P2-C3-S2`: `evidence` keyword and drills/evidence boundary validated against the `S6A-4A` sample
 
 ### P3 (Issue Creation Path)
 
@@ -309,9 +309,26 @@
   - `drills` could be suggested without overreaching because the source title and tags explicitly mention drills/evidence
   - milestone and module labels correctly stayed blank instead of being guessed from adjacent governance context
 
+### P2-C3-S1S2 (second cross-log sample from `S6A-4A` validated | 2026-03-28)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `docs/issues/issue-S6A-4A-hard-gate-evidence-json.md`
+- expected:
+  - title should be `S6A-4A: evidence/fault suite hard-gate and evidence JSON`
+  - labels should include `EVOLUTION`, `s6/evidence & drills`, and `sub/1`
+  - `drills` should be suggested because the source log and parent spine both explicitly frame this work as drills/evidence
+  - milestone and module labels should remain blank because the source log does not explicitly provide stable issue fields for them
+- observed:
+  - `evidence` was a better fixed keyword than `hard-gate`, `artifacts`, or `drills` because the log's stable contract centers on machine-decidable evidence and self-explaining artifacts
+  - `s6/evidence & drills` worked as the scope label while `drills` remained a separate functional suggestion, so scope labeling and function labeling did not collapse into one field
+  - top-level and scope/sub labels mapped cleanly from log scope and issue hierarchy
+  - milestone and module labels correctly stayed blank instead of being inferred from CI or artifact context
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-28: first scaffold of `S0E-2A` created from the docs-management-v5 issue automation plan and normalized into a reusable phase-log contract.
 - 2026-03-28: parent/phase log templates gained issue-aware frontmatter fields and explicit blank-field fallback guidance.
 - 2026-03-28: first `S0E-2A -> issue scaffold` sample artifact was generated and validated under `P2`.
 - 2026-03-28: first cross-log sample (`S4E-5B`) was generated and validated under `P2-C2`.
+- 2026-03-28: second cross-log sample (`S6A-4A`) was generated and validated under `P2-C3`.
