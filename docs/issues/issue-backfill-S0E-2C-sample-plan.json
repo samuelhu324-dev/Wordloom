@@ -1,0 +1,82 @@
+{
+  "mode": "backfill-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-backfill-S0E-2C-sample-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-backfill",
+  "total_items": 4,
+  "planned_items": 1,
+  "warnings": [
+    "item 2: skipped",
+    "item 3: error",
+    "item 4: reconciliation"
+  ],
+  "items": [
+    {
+      "issue_number": 289,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "desired_milestone": "road-S1: systems platform ops roadmap",
+      "current_milestone": null,
+      "write_back_issue_url": false,
+      "planned_action": "apply-milestone",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "write-back not requested for this item"
+      ],
+      "reason": "Representative planned milestone backfill because the issue currently has no milestone"
+    },
+    {
+      "issue_number": 288,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "desired_milestone": null,
+      "current_milestone": null,
+      "write_back_issue_url": true,
+      "planned_action": "skip-no-change",
+      "applied_action": null,
+      "status": "skipped",
+      "warnings": [
+        "desired milestone left blank; milestone remains unmanaged",
+        "source log issue URL already matches explicit issue URL"
+      ],
+      "reason": "Representative skipped item because source log issue URL already matches and no milestone is requested"
+    },
+    {
+      "issue_number": null,
+      "issue_url": null,
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "desired_milestone": null,
+      "current_milestone": null,
+      "write_back_issue_url": true,
+      "planned_action": "error-missing-issue-reference",
+      "applied_action": null,
+      "status": "error",
+      "warnings": [
+        "explicit issue reference is required for milestone/write-back reconciliation"
+      ],
+      "reason": "Representative error case with missing explicit issue reference"
+    },
+    {
+      "issue_number": 289,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "desired_milestone": null,
+      "current_milestone": null,
+      "write_back_issue_url": true,
+      "planned_action": "reconcile-milestone-or-writeback",
+      "applied_action": null,
+      "status": "reconciliation",
+      "warnings": [
+        "desired milestone left blank; milestone remains unmanaged",
+        "source log issue URL conflicts with explicit issue URL"
+      ],
+      "reason": "Representative reconciliation case with conflicting source log issue URL"
+    }
+  ]
+}

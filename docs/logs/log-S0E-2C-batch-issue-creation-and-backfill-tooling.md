@@ -157,7 +157,7 @@
 ### P3 (Milestone / backfill / reconciliation)
 
 - P3-C1-S1: define milestone and write-back reconciliation rules
-- P3-C1-S2: implement and verify controlled backfill/apply flow
+- P3-C1-S2: implement milestone/write-back dry-run planning and verify `planned`, `skipped`, `error`, and `reconciliation` semantics
 
 ### P4 (Optional bulk pipeline)
 
@@ -183,8 +183,8 @@
 
 ### P3 (Milestone / backfill / reconciliation)
 
-- [ ] `P3-C1-S1`: milestone and write-back reconciliation rules fixed
-- [ ] `P3-C1-S2`: controlled backfill/apply flow verified
+- [x] `P3-C1-S1`: milestone and write-back reconciliation rules fixed
+- [x] `P3-C1-S2`: controlled backfill/apply flow verified
 
 ## Evidence (reserved)
 
@@ -259,9 +259,29 @@
   - the resulting plan artifact recorded `planned_items=1` with top-level warnings for the skipped, error, and reconciliation rows
   - `planned_action`, `status`, and `warnings` are now explicit enough to gate a future apply-mode discussion
 
+### P3-C1-S1S2 (milestone/write-back reconciliation contract fixed and dry-run verified | 2026-03-28)
+
+- headSha: `b6655b9b516da560d345deadb92ae72f4ebd138f`
+- artifacts:
+  - `scripts/issues/plan_issue_backfill.py`
+  - `docs/issues/issue-backfill-S0E-2C-sample-manifest.json`
+  - `docs/issues/issue-backfill-S0E-2C-sample-plan.json`
+  - `docs/runbook/run-S0E-log-to-issue-creation.md`
+  - `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
+- expected:
+  - milestone and write-back planning stays in dry-run mode and never mutates GitHub or source logs
+  - one sample manifest exercises `planned`, `skipped`, `error`, and `reconciliation` outcomes for milestone/write-back cases
+  - actual issue milestone state and source-log `links.issue` state are compared against explicit desired inputs, not guessed
+- observed:
+  - `scripts/issues/plan_issue_backfill.py` reads explicit issue references, inspects current issue milestone via `gh issue view`, and compares source-log `links.issue` without writing anything
+  - the sample manifest includes one planned milestone backfill, one skipped item, one missing-issue error, and one write-back reconciliation case
+  - the resulting plan artifact recorded `planned_items=1` with top-level warnings for the skipped, error, and reconciliation rows
+  - `planned_action`, `status`, `current_milestone`, and `source_log_issue_url` are now explicit enough to discuss a future apply-mode safely
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-28: created `S0E-2C` as the post-`S0E-2B` follow-up slice for batch issue creation, parent-child linking, and milestone/backfill tooling.
 - 2026-03-28: completed `P0` and `P1` by fixing the batch manifest/evidence contract and adding a dry-run batch planning script plus sample manifest.
 - 2026-03-28: completed `P2-C1-S1` by fixing a narrow relationship manifest contract that only accepts explicit parent/child issue references.
 - 2026-03-28: completed `P2-C1-S2` by implementing relationship dry-run planning and validating planned/skipped/error/reconciliation semantics against a sample manifest.
+- 2026-03-28: completed `P3` by fixing milestone/write-back reconciliation rules and validating milestone/backfill dry-run semantics against a sample manifest.
