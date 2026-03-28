@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, epic/s0, sub/0e2b`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/288`
   **pr**: ``
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -193,8 +193,8 @@
 
 ### P3 (Verify / Rollout)
 
-- [ ] `P3-C1-S1`: one draft-generation run and one create-issue run validated
-- [ ] `P3-C1-S2`: write-back discipline recorded after successful creation
+- [x] `P3-C1-S1`: one draft-generation run and one create-issue run validated
+- [x] `P3-C1-S2`: write-back discipline recorded after successful creation
 
 ## Evidence (reserved)
 
@@ -249,8 +249,26 @@
   - one real `S0E-2B` issue was created through the script as `#288` and recorded as creation-side evidence in the JSON sidecar
   - source-log write-back remained deferred, preserving the `P3` boundary
 
+### P3-C1-S1S2 (real runs verified and write-back discipline recorded | 2026-03-28)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `docs/issues/issue-S0E-2B-real-github-issue-creation-automation.json`
+  - `docs/issues/issue-S0E-2A-semi-automated-git-issue-creation.json`
+  - `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+  - `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
+- expected:
+  - one real `draft-generation` path and one real `create-issue` path are both validated under the same automation contract
+  - successful issue creation is followed by explicit source-log write-back instead of implicit mutation during script execution
+  - the same `S0E-2B` automation path can create the neighboring `S0E-2A` contract issue without changing the source contract boundary
+- observed:
+  - `S0E-2B` real issue `#288` and `S0E-2A` real issue `#289` were both created through the `S0E-2B` automation path
+  - write-back discipline was applied as a separate tracked docs change by updating each source log `links.issue`
+  - `S0E-2A` remained the source contract log, while `S0E-2B` remained the implementation/verification slice for the automation path itself
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-28: `S0E-2B` opened as the dedicated follow-up slice for real GitHub issue creation automation after `S0E-2A` closed contract, samples, and manual procedure.
 - 2026-03-28: `P1` added a local `log_path -> docs/issues/*.md` draft-generation script and JSON sidecar output for `draft-generation` mode.
 - 2026-03-28: `P2` added explicit `--create` mode, GitHub prerequisite checks, and the first real issue-creation path.
+- 2026-03-28: `P3` validated the real create path, created `#289` for `S0E-2A`, and recorded write-back discipline by updating source logs in a separate tracked change.

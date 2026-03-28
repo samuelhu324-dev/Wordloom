@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, epic/s0, sub/0e2a`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/289`
   **pr**: ``
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -362,3 +362,4 @@
 - 2026-03-28: second cross-log sample (`S6A-4A`) was generated and validated under `P2-C3`.
 - 2026-03-28: `P3` fixed the minimum manual issue-creation procedure and future script entry contract, and recommended `S0E-2B` as the true automation follow-up slice.
 - 2026-03-28: `S0E-2B` was opened as the dedicated follow-up slice for real GitHub issue creation automation, so `S0E-2A` remains the contract/sample/procedure boundary.
+- 2026-03-28: real GitHub issue `#289` was created through the `S0E-2B` automation path and then written back to `links.issue` in a separate tracked update.
