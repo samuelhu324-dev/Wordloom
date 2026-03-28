@@ -212,8 +212,8 @@
 
 ### P2 (Scaffold Generation Path)
 
-- P2-C1-S1: define sample `log -> issue scaffold` input/output shape
-- P2-C1-S2: validate title and labels generation against representative logs
+- P2-C1-S1: generate the first self-sample `log -> issue scaffold` artifact from `S0E-2A`
+- P2-C1-S2: validate title, labels, and milestone fallback against the `S0E-2A` sample output
 
 ## Execution Checklist (unchecked)
 
@@ -227,6 +227,11 @@
 
 - [x] `P1-C1-S1`: issue-aware fields added to log templates
 - [x] `P1-C1-S2`: fallback behavior documented in templates or runbook notes
+
+### P2 (Scaffold Generation Path)
+
+- [x] `P2-C1-S1`: first self-sample issue scaffold artifact generated from `S0E-2A`
+- [x] `P2-C1-S2`: title, labels, and milestone fallback validated against the `S0E-2A` sample
 
 ## Evidence (reserved)
 
@@ -255,7 +260,23 @@
 - observed:
   - templates now document `issue_keyword`, labels, milestone, and parent issue fallback behavior
 
+### P2-C1-S1S2 (first self-sample issue scaffold validated | 2026-03-28)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `docs/issues/issue-S0E-2A-semi-automated-git-issue-creation.md`
+- expected:
+  - title should be `S0E-2A: contract/semi-automated Git issue creation contract`
+  - labels should include `EVOLUTION`, `s0/knowledge system`, and `sub/1`
+  - module labels should remain blank because `issue_module_labels` is blank
+  - milestone should remain blank because `issue_milestone` is blank
+- observed:
+  - first concrete `log -> issue scaffold` sample was generated from `S0E-2A`
+  - title keyword, top-level label, and scope/sub labels matched the frontmatter-driven contract
+  - blank module-label and milestone fields correctly stayed blank instead of being guessed
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-28: first scaffold of `S0E-2A` created from the docs-management-v5 issue automation plan and normalized into a reusable phase-log contract.
 - 2026-03-28: parent/phase log templates gained issue-aware frontmatter fields and explicit blank-field fallback guidance.
+- 2026-03-28: first `S0E-2A -> issue scaffold` sample artifact was generated and validated under `P2`.
