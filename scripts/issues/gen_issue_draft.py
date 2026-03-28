@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import json
 import re
+import shutil
+import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -81,6 +84,14 @@ def _repo_rel(path: Path) -> str:
 
 def _load_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def _run_command(command: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(command, text=True, capture_output=True, encoding="utf-8")
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _parse_fields(text: str) -> dict[str, str]:
@@ -294,10 +305,114 @@ def _validate_labels(labels: list[str], strict: bool) -> None:
             raise SystemExit("strict label check failed: blank label found")
 
 
-def generate_issue_draft(args: argparse.Namespace) -> IssueDraftResult:
-    if args.create_issue:
-        raise SystemExit("create-issue mode is reserved for S0E-2B/P2 and is not implemented in P1")
+def _require_gh_cli() -> None:
+    if shutil.which("gh") is None:
+        raise SystemExit("gh CLI is required for create-issue mode but was not found in PATH")
 
+
+def _derive_repo_slug(explicit_repo: str | None) -> str:
+    if explicit_repo:
+        return explicit_repo
+
+    remote_cmd = _run_command(["git", "-C", str(_repo_root()), "config", "--get", "remote.origin.url"])
+    remote = remote_cmd.stdout.strip()
+    if remote_cmd.returncode != 0 or not remote:
+        raise SystemExit("Could not determine repository slug from remote.origin.url; use --repo")
+
+    match = re.search(r"github\.com[:/](?P<owner>[^/]+)/(?P<repo>[^/.]+)(?:\.git)?$", remote)
+    if not match:
+        raise SystemExit("Could not parse GitHub repository slug from remote.origin.url; use --repo")
+    return f"{match.group('owner')}/{match.group('repo')}"
+
+
+def _require_gh_auth() -> None:
+    auth = _run_command(["gh", "auth", "status"])
+    if auth.returncode != 0:
+        raise SystemExit("gh auth status failed; authenticate GitHub CLI before using --create")
+
+
+def _fetch_existing_labels(repo: str) -> set[str]:
+    cmd = _run_command(["gh", "label", "list", "--repo", repo, "--limit", "200", "--json", "name"])
+    if cmd.returncode != 0:
+        raise SystemExit(f"Failed to list labels for {repo}: {cmd.stderr.strip()}")
+    try:
+        data = json.loads(cmd.stdout)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Failed to parse label list JSON: {exc}") from exc
+    return {item.get('name', '').strip() for item in data if isinstance(item, dict)}
+
+
+def _fetch_existing_milestones(repo: str) -> set[str]:
+    cmd = _run_command(["gh", "api", f"repos/{repo}/milestones", "--paginate"])
+    if cmd.returncode != 0:
+        raise SystemExit(f"Failed to list milestones for {repo}: {cmd.stderr.strip()}")
+    try:
+        data = json.loads(cmd.stdout)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Failed to parse milestone JSON: {exc}") from exc
+    return {item.get('title', '').strip() for item in data if isinstance(item, dict)}
+
+
+def _ensure_title_not_already_used(repo: str, title: str) -> None:
+    cmd = _run_command([
+        "gh",
+        "issue",
+        "list",
+        "--repo",
+        repo,
+        "--search",
+        f'{title} in:title',
+        "--limit",
+        "20",
+        "--json",
+        "title,number,url",
+    ])
+    if cmd.returncode != 0:
+        raise SystemExit(f"Failed to search existing issues for duplicate title: {cmd.stderr.strip()}")
+    try:
+        data = json.loads(cmd.stdout)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Failed to parse issue search JSON: {exc}") from exc
+    for item in data:
+        if isinstance(item, dict) and item.get("title") == title:
+            raise SystemExit(f"Issue with title already exists: #{item.get('number')} {item.get('url')}")
+
+
+def _create_issue(
+    *,
+    repo: str,
+    title: str,
+    body_path: Path,
+    labels: list[str],
+    milestone: str | None,
+) -> tuple[int, str]:
+    command = [
+        "gh",
+        "issue",
+        "create",
+        "--repo",
+        repo,
+        "--title",
+        title,
+        "--body-file",
+        str(body_path),
+    ]
+    for label in labels:
+        command.extend(["--label", label])
+    if milestone:
+        command.extend(["--milestone", milestone])
+
+    result = _run_command(command)
+    if result.returncode != 0:
+        raise SystemExit(f"gh issue create failed: {result.stderr.strip()}")
+    issue_url = result.stdout.strip().splitlines()[-1].strip()
+    match = re.search(r"/(\d+)$", issue_url)
+    if not match:
+        raise SystemExit(f"Could not parse issue number from URL: {issue_url}")
+    return int(match.group(1)), issue_url
+
+
+def generate_issue_draft(args: argparse.Namespace) -> IssueDraftResult:
     repo_root = _repo_root()
     log_path = (repo_root / args.log_path).resolve() if not Path(args.log_path).is_absolute() else Path(args.log_path)
     if not log_path.is_file():
@@ -371,7 +486,7 @@ def generate_issue_draft(args: argparse.Namespace) -> IssueDraftResult:
     output_path.write_text(markdown, encoding="utf-8")
 
     result = IssueDraftResult(
-        mode="draft-generation",
+        mode="create-issue" if args.create_issue else "draft-generation",
         result="ok",
         log_path=rel_log_path,
         draft_path=_repo_rel(output_path),
@@ -385,6 +500,34 @@ def generate_issue_draft(args: argparse.Namespace) -> IssueDraftResult:
         body_markdown=markdown,
         warnings=warnings,
     )
+
+    if args.create_issue:
+        _require_gh_cli()
+        _require_gh_auth()
+        repo = _derive_repo_slug(args.repo)
+        existing_labels = _fetch_existing_labels(repo)
+        missing_labels = [label for label in all_labels if label not in existing_labels]
+        if missing_labels:
+            raise SystemExit(f"Missing pre-created labels in {repo}: {', '.join(missing_labels)}")
+
+        if milestone:
+            milestones = _fetch_existing_milestones(repo)
+            if milestone not in milestones:
+                raise SystemExit(f"Milestone does not exist in {repo}: {milestone}")
+
+        _ensure_title_not_already_used(repo, issue_title)
+        issue_number, issue_url = _create_issue(
+            repo=repo,
+            title=issue_title,
+            body_path=output_path,
+            labels=all_labels,
+            milestone=milestone,
+        )
+        result.issue_number = issue_number
+        result.issue_url = issue_url
+        result.created_at = _utc_now()
+        warnings.append("source log write-back not performed; update links.issue in a later tracked docs change")
+
     result_path.write_text(json.dumps(asdict(result), indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
     print(json.dumps(asdict(result), indent=2, ensure_ascii=True))
     return result

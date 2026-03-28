@@ -188,8 +188,8 @@
 
 ### P2 (Real GitHub create issue entry)
 
-- [ ] `P2-C1-S1`: explicit create mode and prerequisite checks implemented
-- [ ] `P2-C1-S2`: real GitHub issue creation path implemented
+- [x] `P2-C1-S1`: explicit create mode and prerequisite checks implemented
+- [x] `P2-C1-S2`: real GitHub issue creation path implemented
 
 ### P3 (Verify / Rollout)
 
@@ -230,7 +230,27 @@
   - the same run emits a JSON sidecar with `mode`, labels, warnings, and body markdown
   - the `S0E-2B` self-sample kept milestone, parent issue, and module labels blank while preserving `automation` as the fixed keyword
 
+### P2-C1-S1S2 (explicit create mode implemented and one real GitHub issue created | 2026-03-28)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `scripts/issues/gen_issue_draft.py`
+  - `docs/issues/issue-S0E-2B-real-github-issue-creation-automation.md`
+  - `docs/issues/issue-S0E-2B-real-github-issue-creation-automation.json`
+- repo: `samuelhu324-dev/wordloom-v3`
+- issue_url: `https://github.com/samuelhu324-dev/wordloom-v3/issues/288`
+- issue_number: `288`
+- expected:
+  - `--create` is explicit opt-in only
+  - repo, auth, label, milestone, and duplicate-title prerequisites are checked before creation
+  - one real GitHub issue can be created and recorded in the JSON sidecar without implicit write-back
+- observed:
+  - create mode now validates `gh` availability, GitHub auth, repo context, label existence, milestone existence, and duplicate titles before calling GitHub
+  - one real `S0E-2B` issue was created through the script as `#288` and recorded as creation-side evidence in the JSON sidecar
+  - source-log write-back remained deferred, preserving the `P3` boundary
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-28: `S0E-2B` opened as the dedicated follow-up slice for real GitHub issue creation automation after `S0E-2A` closed contract, samples, and manual procedure.
 - 2026-03-28: `P1` added a local `log_path -> docs/issues/*.md` draft-generation script and JSON sidecar output for `draft-generation` mode.
+- 2026-03-28: `P2` added explicit `--create` mode, GitHub prerequisite checks, and the first real issue-creation path.

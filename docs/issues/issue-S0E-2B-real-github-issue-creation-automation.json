@@ -1,5 +1,5 @@
 {
-  "mode": "draft-generation",
+  "mode": "create-issue",
   "result": "ok",
   "log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
   "draft_path": "docs/issues/issue-S0E-2B-real-github-issue-creation-automation.md",
@@ -19,9 +19,10 @@
   "warnings": [
     "module labels left blank",
     "issue_milestone missing",
-    "issue_parent missing"
+    "issue_parent missing",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
   ],
-  "issue_number": null,
-  "issue_url": null,
-  "created_at": null
+  "issue_number": 288,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+  "created_at": "2026-03-28T12:38:46.952224+00:00"
 }
