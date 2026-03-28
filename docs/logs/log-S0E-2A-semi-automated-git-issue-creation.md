@@ -1,13 +1,13 @@
-# log-S0E-1A (Phase 1: Semi-Automated Git Issue Creation Contract)
+# log-S0E-2A (Phase 2: Semi-Automated Git Issue Creation Contract)
 
 ---
 
-**id**: `S0E-1A`
+**id**: `S0E-2A`
 **kind**: `log`
 **title**: `semi-automated Git issue creation contract (title keywords, labels taxonomy, body scaffold, milestone mapping) v1`
 **status**: `draft`
 **scope**: `S0`
-**tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, epic/s0, sub/0e1a`
+**tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, epic/s0, sub/0e2a`
 **links**: ``
   **issue**: ``
   **pr**: ``
@@ -17,6 +17,12 @@
   **reference_log_1**: `docs/logs/log-S4E-release-operating-model-and-governance.md`
   **reference_log_2**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_3**: `docs/roadmap/draft.md`
+**issue_keyword**: `contract`
+**issue_top_labels**: `EVOLUTION`
+**issue_scope_labels**: `s0/knowledge system, sub/1`
+**issue_module_labels**: ``
+**issue_milestone**: ``
+**issue_parent**: ``
 **created**: `2026-03-28`
 **updated**: `2026-03-28`
 
@@ -26,8 +32,9 @@
 
 **Decision**:
 
-- `S0E-1A` 收口一版面向 structured logs 的半自动化 Git issue 创建合同，明确哪些字段可以 full-automation、哪些字段必须 semi-automation、哪些字段继续手工维护。
+- `S0E-2A` 收口一版面向 structured logs 的半自动化 Git issue 创建合同，明确哪些字段可以 full-automation、哪些字段必须 semi-automation、哪些字段继续手工维护。
 - v1 的目标不是直接生成高质量 issue 总结，而是优先稳定 title keyword vocabulary、labels taxonomy、body scaffold、milestone mapping 与 log frontmatter 的映射关系。
+- 同步把 parent/phase log templates 增加 issue-aware frontmatter 字段，并明确“字段缺失时必须保守留空”的 fallback 规则。
 
 **Default choices (phase defaults / v1)**:
 
@@ -184,11 +191,11 @@
 
 **Commit / PR naming**:
 
-- `S0E-1A/P<phase>-C<cycle>-S<steps>: <summary>`, where `<steps>` can be a single step (`1`, meaning `...-S1`) or multiple consecutive steps grouped within the same phase / cycle (for example `1S2`, meaning `...-S1S2`).
+- `S0E-2A/P<phase>-C<cycle>-S<steps>: <summary>`, where `<steps>` can be a single step (`1`, meaning `...-S1`) or multiple consecutive steps grouped within the same phase / cycle (for example `1S2`, meaning `...-S1S2`).
 
 **Branch convention**:
 
-- `S0E-1A` belongs to `S0E`, so related documentation and implementation changes should usually land on an `S0E-*` branch such as `S0E-docs-management-v5`.
+- `S0E-2A` belongs to `S0E`, so related documentation and implementation changes should usually land on an `S0E-*` branch such as `S0E-docs-management-v5`.
 - If template rollout and scaffold-generation implementation later need to be separated, prefer short-lived child branches under the `S0E-*` branch rather than creating unrelated top-level branches.
 
 **Commit discipline (recommended)**:
@@ -218,8 +225,8 @@
 
 ### P1 (Template / Frontmatter Rollout)
 
-- [ ] `P1-C1-S1`: issue-aware fields added to log templates
-- [ ] `P1-C1-S2`: fallback behavior documented in templates or runbook notes
+- [x] `P1-C1-S1`: issue-aware fields added to log templates
+- [x] `P1-C1-S2`: fallback behavior documented in templates or runbook notes
 
 ## Evidence (reserved)
 
@@ -236,6 +243,19 @@
 - observed:
   - first contract draft recorded in this phase log
 
+### P1-C1-S1S2 (issue-aware template fields added | 2026-03-28)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `docs/logs/_template-log-parent-epic-spine.md`
+  - `docs/logs/_template-log-phase-drills-evidence.md`
+- expected:
+  - parent/phase templates expose issue-aware frontmatter fields
+  - blank fields explicitly mean "leave empty and request human confirmation"
+- observed:
+  - templates now document `issue_keyword`, labels, milestone, and parent issue fallback behavior
+
 ## Recent changes (for traceability, optional)
 
-- 2026-03-28: first scaffold of `S0E-1A` created from the docs-management-v5 issue automation plan and normalized into a reusable phase-log contract.
+- 2026-03-28: first scaffold of `S0E-2A` created from the docs-management-v5 issue automation plan and normalized into a reusable phase-log contract.
+- 2026-03-28: parent/phase log templates gained issue-aware frontmatter fields and explicit blank-field fallback guidance.

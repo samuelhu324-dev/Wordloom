@@ -17,8 +17,8 @@
   **reference_log_1**: `docs/logs/log-S0D-6A-docs-management-v4.md`
   **reference_log_2**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_3**: `docs/logs/log-S4E-release-operating-model-and-governance.md`
-  **phase_log_1**: `docs/logs/log-S0E-1A-semi-automated-git-issue-creation.md`
-  **phase_log_2**: ``
+  **phase_log_1**: ``
+  **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
   **phase_log_3**: ``
 **created**: `2026-03-28`
 **updated**: `2026-03-28`
@@ -72,7 +72,7 @@
 
 - 结构层面：
   - 读者能在 30 秒内理解 `S0E` 解决什么问题、哪些字段可自动、哪些字段必须人工确认；
-  - `S0E-1A` 能作为 title/labels/body/milestone contract 的稳定入口。
+  - `S0E-2A` 能作为 title/labels/body/milestone contract 的稳定入口。
 - 工程层面：
   - 至少固定一版 title keyword controlled vocabulary；
   - 至少固定一版 labels taxonomy 与 automation-level matrix；
@@ -82,24 +82,25 @@
 
 ## Phases（切片）
 
-- `S0E-1A`（Phase 1）：Semi-automated Git issue creation contract（title keywords, labels, body scaffold, milestone mapping）
-  - 详见：`docs/logs/log-S0E-1A-semi-automated-git-issue-creation.md`
-- `S0E-2A`（Phase 2）：Log template/frontmatter rollout for issue-aware fields
+- `S0E-2A`（Phase 2）：Semi-automated Git issue creation contract（title keywords, labels, body scaffold, milestone mapping）
+  - 详见：`docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
+- `S0E-3A`（Phase 3）：Log template/frontmatter rollout for issue-aware fields
   - 详见：``
-- `S0E-3A`（Phase 3）：Issue scaffold generation path and sample validation
+- `S0E-4A`（Phase 4）：Issue scaffold generation path and sample validation
   - 详见：``
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：parent spine created and scope boundary fixed
-- [x] `P1`：`S0E-1A` scaffolded as the first contract phase
-- [ ] `P2`：issue-aware fields added to log templates
+- [x] `P1`：`S0E-2A` scaffolded as the first issue-automation contract phase
+- [x] `P2`：issue-aware fields added to log templates
 - [ ] `P3`：representative scaffold generation path validated
 
 ## Current Status（进展摘要）
 
 - `S0E` 现阶段仍是 `draft`，重点是把 contract 先讲清楚，而不是抢先实现；
-- `S0E-1A` 将承接 title keyword、labels taxonomy、body scaffold 与 milestone mapping 的第一轮收口；
+- `S0E-2A` 已完成 title keyword、labels taxonomy、body scaffold 与 milestone mapping 的第一轮收口，并把 issue-aware template fields 落到 parent/phase templates；
+- 下一个明确入口是拿一条代表性 log 做 `log -> issue scaffold` sample validation；
 - 当前最大风险不是“不会写脚本”，而是如果在 contract 未稳定时过早自动化，会把现有命名漂移固化下来。
 
 ## Notes（落地原则，可选）

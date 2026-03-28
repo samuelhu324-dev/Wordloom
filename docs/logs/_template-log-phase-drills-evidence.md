@@ -15,6 +15,12 @@
   **parent_log**: `docs/logs/log-<PARENT>.md`
   **previous_log**: ``
   **reference_log_1**: ``
+**issue_keyword**: ``        # controlled fixed keyword; leave blank if title keyword should stay manual
+**issue_top_labels**: ``     # comma-separated existing labels only
+**issue_scope_labels**: ``   # comma-separated labels usually derived from scope / hierarchy
+**issue_module_labels**: ``  # comma-separated module labels; leave blank when impact is not explicit
+**issue_milestone**: ``      # exact GitHub milestone name; if blank, automation must leave milestone empty
+**issue_parent**: ``         # parent issue reference if already known; otherwise leave blank
 **created**: `YYYY-MM-DD`
 **updated**: `YYYY-MM-DD`
 
@@ -30,6 +36,7 @@
 **Default choices (phase defaults / v1)** (optional, but recommended):
 
 - <For example: dev/test first; avoid production-grade complexity; do not commit generated artifacts; required evidence JSON fields>
+- If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 
 ## Definitions (optional)
 

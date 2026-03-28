@@ -19,6 +19,12 @@
   **phase_log_1**: ``
   **phase_log_2**: ``
   **phase_log_3**: ``
+**issue_keyword**: ``        # controlled fixed keyword; leave blank if title keyword should stay manual
+**issue_top_labels**: ``     # comma-separated existing labels only
+**issue_scope_labels**: ``   # comma-separated labels usually derived from scope / hierarchy
+**issue_module_labels**: ``  # comma-separated module labels; leave blank when impact is not explicit
+**issue_milestone**: ``      # exact GitHub milestone name; if blank, automation must leave milestone empty
+**issue_parent**: ``         # parent issue reference if already known; otherwise leave blank
 **created**: `YYYY-MM-DD`
 **updated**: `YYYY-MM-DD`
 
@@ -34,6 +40,7 @@
 **Default choices（默认基线 / v1）**（可选，但推荐在 parent/spine 明确）:
 
 - <默认认证/默认存储/默认入口/默认环境/默认语义……>
+- 若 `issue_*` 字段为空，automation 必须保守留空并要求人工确认，而不是猜测 title keyword、labels 或 milestone。
 
 **Non-goals（不做什么）**（可选，但建议写）:
 
