@@ -1,0 +1,28 @@
+{
+  "mode": "batch-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-batch-S0E-2C-sample-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-batch-issues",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "source_log": "docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md",
+      "draft_path": "docs/issues/issue-S0E-2C-batch-issue-creation-and-backfill-tooling.md",
+      "result_path": "docs/issues/issue-S0E-2C-batch-issue-creation-and-backfill-tooling.json",
+      "issue_number": null,
+      "issue_url": null,
+      "planned_action": "create-issue",
+      "applied_action": null,
+      "status": "planned",
+      "title": "S0E-2C: automation/batch issue creation and issue relationship backfill tooling",
+      "warnings": [
+        "module labels left blank",
+        "issue_milestone missing",
+        "issue_parent missing"
+      ]
+    }
+  ]
+}

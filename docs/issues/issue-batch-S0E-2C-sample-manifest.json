@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "selection_filters": {
+    "include_globs": [
+      "docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md"
+    ],
+    "exclude_globs": [],
+    "skip_has_issue": true
+  },
+  "defaults": {
+    "strict_label_check": true
+  },
+  "items": []
+}
