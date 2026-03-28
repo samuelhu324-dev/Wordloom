@@ -118,7 +118,23 @@
   - if a source log already has `links.issue`, the planner must mark it as `skip-existing-issue`
   - parent-child linking, milestone apply, and write-back remain later explicit phases, not part of `P1`
 
-### 5.5 Manual issue-creation procedure
+### 5.5 Relationship dry-run planning command
+
+- `S0E-2C/P2-C1-S2` adds a relationship planner that reads only an explicit relationship manifest and never writes GitHub state.
+- Canonical local entry:
+  - `python scripts/issues/plan_issue_relationships.py <manifest_path>`
+- Example:
+  - `python scripts/issues/plan_issue_relationships.py docs/issues/issue-relationship-S0E-2C-sample-manifest.json`
+- Outputs:
+  - one relationship plan artifact under `docs/issues/issue-relationship-<manifest-stem>-plan.json`
+  - stdout JSON summary with `planned_items`, top-level `warnings`, and per-item `planned_action`, `status`, and `warnings`
+- Dry-run semantics:
+  - `planned` means both sides are explicitly identified and any optional traceability fields agree with them
+  - `skipped` means the item was explicitly marked skip in the manifest
+  - `error` means one side is missing or invalid as an explicit issue reference
+  - `reconciliation` means explicit issue references conflict with optional traceability fields and must be resolved manually before apply mode exists
+
+### 5.6 Manual issue-creation procedure
 
 - Step 1: choose the source log and, when possible, start from the nearest validated sample issue artifact.
 - Step 2: confirm the issue title uses `SxY-ZA: <fixed-keyword>/<specific subject>`.
@@ -220,6 +236,16 @@
   - if a provided issue reference conflicts with the traceability fields, the tool must stop at reconciliation rather than overwrite GitHub state
 - Sample contract file:
   - `docs/issues/issue-relationship-S0E-2C-sample-manifest.json`
+- Relationship dry-run output contract:
+  - top-level fields: `mode`, `manifest_path`, `selection_input`, `operation`, `total_items`, `planned_items`, `warnings`, `result`
+  - per-item fields: `relationship_type`, `parent_issue_number`, `parent_issue_url`, `child_issue_number`, `child_issue_url`, `parent_log_path`, `child_log_path`, `planned_action`, `applied_action`, `status`, `warnings`, `reason`
+- Current planned-action vocabulary:
+  - `link-child-to-parent`
+  - `link-parent-to-child`
+  - `skip-relationship`
+  - `error-missing-reference`
+  - `error-self-reference`
+  - `reconcile-relationship-input`
 
 ## 7) Troubleshooting
 

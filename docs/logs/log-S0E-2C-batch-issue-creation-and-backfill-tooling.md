@@ -152,7 +152,7 @@
 ### P2 (Parent-child linking)
 
 - P2-C1-S1: define explicit relationship input contract and sample relationship manifest
-- P2-C1-S2: implement and verify controlled parent-child linking/backfill flow
+- P2-C1-S2: implement relationship dry-run planning and verify `planned`, `skipped`, `error`, and `reconciliation` semantics
 
 ### P3 (Milestone / backfill / reconciliation)
 
@@ -179,7 +179,7 @@
 ### P2 (Parent-child linking)
 
 - [x] `P2-C1-S1`: explicit relationship input contract fixed
-- [ ] `P2-C1-S2`: controlled parent-child linking/backfill flow verified
+- [x] `P2-C1-S2`: controlled parent-child linking/backfill flow verified
 
 ### P3 (Milestone / backfill / reconciliation)
 
@@ -192,7 +192,7 @@
 
 ### P0-C1-S1S2S3 (batch manifest, safety boundary, and evidence contract fixed | 2026-03-28)
 
-- headSha: `a696f181715df1121d83d0b67969ebb66ff834b0`
+- headSha: `be0140d9ddfe076feced7f22a986ff0f1657d0ec`
 - artifacts:
   - `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
   - `docs/runbook/run-S0E-log-to-issue-creation.md`
@@ -208,7 +208,7 @@
 
 ### P1-C1-S1S2 (batch planning script implemented and one dry-run plan artifact emitted | 2026-03-28)
 
-- headSha: `a696f181715df1121d83d0b67969ebb66ff834b0`
+- headSha: `be0140d9ddfe076feced7f22a986ff0f1657d0ec`
 - artifacts:
   - `scripts/issues/plan_issue_batch.py`
   - `docs/issues/issue-batch-S0E-2C-sample-manifest.json`
@@ -226,7 +226,7 @@
 
 ### P2-C1-S1 (explicit relationship input contract fixed | 2026-03-28)
 
-- headSha: `<git sha>`
+- headSha: `be0140d9ddfe076feced7f22a986ff0f1657d0ec`
 - artifacts:
   - `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
   - `docs/runbook/run-S0E-log-to-issue-creation.md`
@@ -240,8 +240,28 @@
   - accepted relationship types were constrained to `child-of` and `parent-of`
   - a sample relationship manifest was added so the next implementation step can target a stable input shape
 
+### P2-C1-S2 (relationship dry-run planner implemented and semantics verified | 2026-03-28)
+
+- headSha: `be0140d9ddfe076feced7f22a986ff0f1657d0ec`
+- artifacts:
+  - `scripts/issues/plan_issue_relationships.py`
+  - `docs/issues/issue-relationship-S0E-2C-sample-manifest.json`
+  - `docs/issues/issue-relationship-S0E-2C-sample-plan.json`
+  - `docs/runbook/run-S0E-log-to-issue-creation.md`
+  - `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
+- expected:
+  - relationship dry-run does not call GitHub or mutate source logs
+  - one sample manifest exercises `planned`, `skipped`, `error`, and `reconciliation` outcomes
+  - optional `*_log_path` fields are used only for traceability validation, not relationship inference
+- observed:
+  - `scripts/issues/plan_issue_relationships.py` reads an explicit relationship manifest and emits a per-item JSON plan without any write action
+  - the sample manifest exercised one planned relationship, one skipped item, one missing-reference error, and one reconciliation case
+  - the resulting plan artifact recorded `planned_items=1` with top-level warnings for the skipped, error, and reconciliation rows
+  - `planned_action`, `status`, and `warnings` are now explicit enough to gate a future apply-mode discussion
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-28: created `S0E-2C` as the post-`S0E-2B` follow-up slice for batch issue creation, parent-child linking, and milestone/backfill tooling.
 - 2026-03-28: completed `P0` and `P1` by fixing the batch manifest/evidence contract and adding a dry-run batch planning script plus sample manifest.
 - 2026-03-28: completed `P2-C1-S1` by fixing a narrow relationship manifest contract that only accepts explicit parent/child issue references.
+- 2026-03-28: completed `P2-C1-S2` by implementing relationship dry-run planning and validating planned/skipped/error/reconciliation semantics against a sample manifest.
