@@ -11,7 +11,7 @@
 **links**: ``
   **issue**: ``
   **pr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0D-6A-docs-management-v4.md`
   **reference_log_1**: `docs/logs/log-S4E-release-operating-model-and-governance.md`
@@ -224,6 +224,20 @@
 - P3-C1-S1: define the minimum manual issue-creation procedure from a validated sample artifact
 - P3-C1-S2: define the future script entry contract after `P2-C1-C3` sample validation is complete
 
+### P3-C1-S1 (Minimum manual issue-creation procedure | v1)
+
+- 手工创建真实 issue 的最小流程固定为：选定 source log -> 选定最近邻 validated sample -> 审核 title keyword -> 审核 labels -> 保守处理 blank milestone/module labels -> 审核 `Context` 与 `Definition of Done (DoD)` -> 通过正常 GitHub UI 创建 issue -> 后续把 issue URL 回写到 source log；
+- `S0E-2A` 的职责是把这条手工路径压成稳定 operator procedure，而不是把“真正创建 GitHub issue”本身偷偷塞进当前 contract phase；
+- 若样本中某字段为空，默认行为仍然是保守留空并记录 warning，而不是在创建前猜测补齐。
+
+### P3-C1-S2 (Future script entry contract | v1)
+
+- 未来脚本的默认模式应是 `draft-generation`，不是 `create-issue`；
+- 最小输入应至少包括：`log_path`，以及可选的 `output_path`、`parent_issue`、`milestone_override`、`module_labels_override`、`strict_label_check`；
+- 最小输出应至少包括：`title`、`top_labels`、`scope_labels`、`function_labels`、`module_labels`、`milestone`、`parent_issue`、`body_markdown`、`warnings`；
+- failure contract 固定为 fail-closed：keyword 不明确就停、label 不存在就 warning 或失败、milestone 缺失就输出 `null`、module impact 不明确就输出空数组；
+- 真正的 GitHub issue creation mode 应作为后续 opt-in follow-up slice 进入，推荐单独开为 `S0E-2B`，而不是继续扩写 `S0E-2A`。
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -248,8 +262,8 @@
 
 ### P3 (Issue Creation Path)
 
-- [ ] `P3-C1-S1`: minimum manual issue-creation procedure defined from validated sample artifacts
-- [ ] `P3-C1-S2`: future script entry contract defined after cross-log validation closes
+- [x] `P3-C1-S1`: minimum manual issue-creation procedure defined from validated sample artifacts
+- [x] `P3-C1-S2`: future script entry contract defined after cross-log validation closes
 
 ## Evidence (reserved)
 
@@ -325,6 +339,20 @@
   - top-level and scope/sub labels mapped cleanly from log scope and issue hierarchy
   - milestone and module labels correctly stayed blank instead of being inferred from CI or artifact context
 
+### P3-C1-S1S2 (manual creation procedure and future script entry contract fixed | 2026-03-28)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `docs/runbook/run-S0E-log-to-issue-creation.md`
+- expected:
+  - operators can create a real issue from a validated sample without inventing a new workflow
+  - future scripting has one stable input/output contract before any GitHub API automation is attempted
+  - real issue creation remains a follow-up slice rather than being mixed into the contract phase
+- observed:
+  - a thin runbook now defines the minimum manual issue-creation procedure from validated samples
+  - the future script contract now fixes required inputs, outputs, and fail-closed fallback behavior
+  - the recommended next slice for true GitHub issue creation is `S0E-2B`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-28: first scaffold of `S0E-2A` created from the docs-management-v5 issue automation plan and normalized into a reusable phase-log contract.
@@ -332,3 +360,4 @@
 - 2026-03-28: first `S0E-2A -> issue scaffold` sample artifact was generated and validated under `P2`.
 - 2026-03-28: first cross-log sample (`S4E-5B`) was generated and validated under `P2-C2`.
 - 2026-03-28: second cross-log sample (`S6A-4A`) was generated and validated under `P2-C3`.
+- 2026-03-28: `P3` fixed the minimum manual issue-creation procedure and future script entry contract, and recommended `S0E-2B` as the true automation follow-up slice.

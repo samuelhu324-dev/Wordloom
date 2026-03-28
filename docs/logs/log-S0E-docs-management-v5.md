@@ -84,23 +84,22 @@
 
 - `S0E-2A`（Phase 2）：Semi-automated Git issue creation contract（title keywords, labels, body scaffold, milestone mapping）
   - 详见：`docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
-- `S0E-3A`（Phase 3）：Log template/frontmatter rollout for issue-aware fields
-  - 详见：``
-- `S0E-4A`（Phase 4）：Issue scaffold generation path and sample validation
-  - 详见：``
+- `S0E-2B`（Recommended follow-up）：real GitHub issue creation automation / scripting path
+  - 详见：`pending follow-up slice after S0E-2A P3`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：parent spine created and scope boundary fixed
 - [x] `P1`：`S0E-2A` scaffolded as the first issue-automation contract phase
 - [x] `P2`：issue-aware fields added to log templates
-- [ ] `P3`：representative scaffold generation path validated
+- [x] `P3`：representative scaffold generation path validated and manual creation / future script contract fixed
 
 ## Current Status（进展摘要）
 
 - `S0E` 现阶段仍是 `draft`，重点是把 contract 先讲清楚，而不是抢先实现；
 - `S0E-2A` 已完成 title keyword、labels taxonomy、body scaffold 与 milestone mapping 的第一轮收口，并把 issue-aware template fields 落到 parent/phase templates；
-- `S0E-2A` 已完成第一条自举式 sample，以及 `S4E-5B` / `S6A-4A` 两条 cross-log validation；下一步应进入 `P3`，把真实 issue creation procedure 和 future script entry contract 写清楚；
+- `S0E-2A` 已完成第一条自举式 sample、`S4E-5B` / `S6A-4A` 两条 cross-log validation，以及 `P3` 的最小人工创建流程和 future script entry contract；
+- 若继续推进真正的 GitHub issue 自动创建，最推荐的新 follow-up slice 是 `S0E-2B`，而不是继续扩写 `S0E-2A`；
 - 当前最大风险不是“不会写脚本”，而是如果在 contract 未稳定时过早自动化，会把现有命名漂移固化下来。
 
 ## Notes（落地原则，可选）
