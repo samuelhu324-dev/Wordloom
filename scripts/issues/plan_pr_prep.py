@@ -200,7 +200,15 @@ def _compress_phase_numbers(values: list[int]) -> str:
     return "+".join(parts)
 
 
-def _build_pr_title(requested_id: str, log_title: str, selected_commits: list[CommitSelection]) -> str:
+def _build_pr_title(
+    requested_id: str,
+    log_title: str,
+    selected_commits: list[CommitSelection],
+    checklist_phase_numbers: list[int],
+) -> str:
+    if len(checklist_phase_numbers) > 1:
+        return f"{requested_id}/{_compress_phase_numbers(checklist_phase_numbers)}: {log_title}"
+
     parsed = [_parse_commit_subject(item.subject) for item in selected_commits]
     parsed_infos = [item for item in parsed if item is not None]
 
@@ -262,6 +270,18 @@ def _extract_checked_items(section_lines: list[str]) -> list[str]:
         if match:
             items.append(f"`{match.group(1)}`: {match.group(2).strip()}")
     return items
+
+
+def _extract_checked_phase_numbers(section_lines: list[str]) -> list[int]:
+    phases: list[int] = []
+    for raw in section_lines:
+        match = CHECKED_ITEM_RE.match(raw.strip())
+        if not match:
+            continue
+        phase_match = re.match(r"P(?P<phase>\d+)", match.group(1).strip())
+        if phase_match:
+            phases.append(int(phase_match.group("phase")))
+    return sorted(set(phases))
 
 
 def _build_default_link_lines(fields: dict[str, str], source_log_path: str) -> list[str]:
@@ -423,14 +443,22 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
     requested_slug = _normalize_branch_name(requested_id)
     candidate_pr_branch = (item.get("candidate_pr_branch") or defaults.get("candidate_pr_branch") or f"pr-prep/{requested_slug}").strip()
 
-    pr_title = _build_pr_title(requested_id, fields.get("title", "").strip() or requested_id, selected_commits)
     summary_bullets, explicit_link_lines = _parse_pr_summary_inputs(_find_section_lines(sections, "PR Summary Inputs"))
     if not summary_bullets:
         warnings.append("source log is missing PR summary bullets; preview uses placeholders")
 
-    checklist_items = _extract_checked_items(_find_section_lines(sections, "Execution Checklist"))
+    checklist_section_lines = _find_section_lines(sections, "Execution Checklist")
+    checklist_items = _extract_checked_items(checklist_section_lines)
+    checklist_phase_numbers = _extract_checked_phase_numbers(checklist_section_lines)
     if not checklist_items:
         warnings.append("source log has no checked execution checklist items for PR preview")
+
+    pr_title = _build_pr_title(
+        requested_id,
+        fields.get("title", "").strip() or requested_id,
+        selected_commits,
+        checklist_phase_numbers,
+    )
 
     link_lines = explicit_link_lines or _build_default_link_lines(fields, source_log_rel)
     preview_body = _render_body_preview(

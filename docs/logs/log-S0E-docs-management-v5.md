@@ -126,6 +126,7 @@
 - [x] `P23`：`S0E-4B/P0-P2` 已完成第一轮 follow-up 修正与 sample 验证，PR 标题压缩、结构化 labels 继承和 body footer/link 格式已回写到脚本、模板和 sample artifact
 - [x] `P24`：`S0E-4B/P3-C1` 已完成 drills 规则、issue-only project 默认语义、live PR `#294` 回写校正，以及 issue project path 的本地接线；剩余阻塞仅在 GitHub-side project auth / lookup 验证
 - [x] `P25`：`S0E-4B/P3-C1-S5` 已完成正文顶部 title 去重，并已把 issue project 阻塞精确收口到缺失 `project` write scope，而不是泛化为 read/project 可见性问题
+- [x] `P26`：`S0E-4B/P3-C1-S7S8S9` 已完成 stacked PR review 语义、标题 phase-span 优先级，以及 mixed working branch / parent-log 落点规则的收口
 
 ## Current Status（进展摘要）
 
@@ -154,6 +155,9 @@
 - `S0E-4B/P3-C1-S3` 已完成：线上 PR `#294` 现已对齐到 `P0-P3` 标题、`EVOLUTION + s0/knowledge system + sub/1 + drills` labels 与新的 body 结构，并且不再携带默认 project 噪音；
 - `S0E-4B/P3-C1-S4` 已完成本地接线：issue create 路径已支持默认 `wordloom Board`，剩余仅是 GitHub-side project auth / lookup 验证；
 - `S0E-4B/P3-C1-S5` 已完成：生成的 issue / PR body 都不再重复顶层 title，而是直接从 `Metadata` 开始；
+- `S0E-4B/P3-C1-S7` 已完成：stacked PR 的 review 口径现已明确收口到 compare base 和 `Files changed`，GitHub timeline 里重复出现的上游 commits 只作为 ancestry traceability 读取；
+- `S0E-4B/P3-C1-S8` 已完成：aggregate PR title 现在优先按 source log 的完成 checklist 覆盖范围生成，因此像 `S0E-4B` 这种“创建时已完成 `P0-P2`、实现阶段完成 `P3`”的 log 不会再被错误显示成只做了 `P3`；
+- `S0E-4B/P3-C1-S9` 已完成：`S0E-docs-management-v5` 继续作为 mixed authoring branch 和 parent-log ledger 落点，而 `pr-prep/*` 被明确限定为单次评审用的短生命周期分支；
 - `S0E-4B` 当前唯一外部阻塞已被精确定位为 GitHub token 缺少 `project` write scope，因此真实 issue project 落项仍未通过；
 - 既然 `S0E-3A` 的 bridge contract 已经从模板、真实 roadmap、child logs 到 extraction sample 全部闭环，下一条优先结构线应切到 `S0E-4A`，而不是先回到 `S0E-2D`。
 
@@ -180,12 +184,16 @@
 **Branch 约定（建议）**:
 
 - `S0E` 相关改动默认落在 `S0E-*` 顶层工作分支，例如 `S0E-docs-management-v5`；
+- `S0E-*` 顶层工作分支的职责是承接 mixed authoring：parent/spine log 记账、多个 child logs 的并行推进，以及尚未切成独立 review slice 的 contract 更新；
+- `pr-prep/*` 分支是从某个明确 base 派生出来的 review-only 分支，只承载某一条 PR 要送审的选中提交，不替代顶层工作分支；
+- 如果是 parent/spine log 自身的持续记账内容，默认先落在 `S0E-*` 顶层工作分支，而不是为 parent log 再额外常驻一条新的总分支；
 - 若后续实现拆成 template rollout 与 generator validation 两条并行路径，可在 `S0E-*` 之下临时开短生命周期分支，但默认不为每个子 log 再开常驻顶层分支。
 
 **Commit 纪律（建议）**:
 
 - 完成每个 `P*-C*-S*` 的关键内容后，应在 `S0E-*` 分支上及时 `commit/push`；
 - 推荐节奏：先把 contract、template、validation 按 step 粒度切成小 commit，再从 `S0E-*` 分支向 `main` 发起 PR。
+- 当某个 child log 需要独立评审时，再由 `S0E-*` 顶层工作分支通过 PR-prep 规则切出 `pr-prep/*`；如果只是 parent/spine 的滚动 ledger 更新，则继续留在 `S0E-*` 顶层工作分支即可。
 
 ## Recent changes（for traceability，可选）
 
@@ -207,3 +215,4 @@
 - 2026-03-29：新增 `S0E-4B`，专门收口第一条真实 PR 暴露出来的 follow-up：标题 phase-range 命名、PR 结构化 labels 继承，以及 `Evidence Footer` / `Development Link` 的 body 版式。
 - 2026-03-29：`S0E-4B/P3-C1` 已把 live PR `#294` 回写到新规则，并把 `wordloom Board` 默认语义收口到 issue create；下一步只需在具备 project 权限的环境里完成一次真实 issue project 验证。
 - 2026-03-29：进一步确认 `S0E-4B` 的真实 issue create 阻塞并不是 project 不可见，而是 token 仍缺少 `project` write scope；同时去掉了生成 body 顶部重复 title。
+- 2026-03-29：补充了 stacked PR review 语义、aggregate PR title 的 phase-span 优先级，以及 mixed working branch / parent-log 落点规则，避免把 GitHub ancestry-heavy commit 视图误读成真实增量范围。
