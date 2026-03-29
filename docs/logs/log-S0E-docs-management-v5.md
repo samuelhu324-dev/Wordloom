@@ -115,6 +115,7 @@
 - [x] `P14`：`S0E-3A` 已完成 `P0-P1`，roadmap bridge contract 和 template rollout 已正式收口
 - [x] `P15`：`S0E-3A/P1` 已继续细化为主线/支线 roadmap 双模板，便于后续支线回流主线时保持清晰记账
 - [x] `P16`：`S0E-3A/P2` 已完成首条真实迁移样例，`road-S1` 与 `road-S1-1` 已显式记住 parent/branch bridge ledger
+- [x] `P17`：`S0E-3A/P3` 已完成 mechanical extraction dry-run，roadmap bridge 现在可以在不扫 prose 的前提下输出结构化计划结果
 
 ## Current Status（进展摘要）
 
@@ -133,6 +134,8 @@
 - `S0E-3A` 已完成 `P0-P1`：phase log 已固定 bridge ownership / field contract / fail-closed semantics，template rollout 也已落到 parent/phase/roadmap 三类模板；
 - `S0E-3A/P1` 已进一步拆分 roadmap authoring 为 mainline / branch 两种模板，以对应 `road-S1` 和 `road-S1-1` 这类非线性关系；
 - `S0E-3A/P2` 已完成第一条真实迁移：`road-S1` 和 `road-S1-1` 现在都用 child-log-first bridge ledger 记账，并且支线产出能显式回流主线；
+- `S0E-3A/P3` 已完成：现在可以从 roadmap bridge ledger 机械抽取 `M*-P* -> child log` 结构化结果，并且 parent/branch alignment 也能做 dry-run 验证；
+- 当前剩余的不是 roadmap extraction contract，而是历史 child logs 尚未补齐 `roadmap_*` frontmatter，因此 sample plan 会给出 warning，但不会回退到 prose scanning；
 - `S0E-4A` 草案已把 PR automation 拆成独立对象模型，重点放在 ID-scoped commit selection、PR metadata 和 Development linkage；
 - 当前最大风险不是“不会写脚本”，而是如果在 contract 未稳定时过早自动化，会把现有命名漂移固化下来。
 
@@ -177,3 +180,4 @@
 - 2026-03-29：`S0E-3A/P0-P1` 已完成，下一步应进入真实 roadmap path migration，避免新 bridge 只停留在模板层。
 - 2026-03-29：`S0E-3A/P1` 已进一步拆成 mainline / branch roadmap 双模板，并保留兼容 chooser，下一步可以直接迁移 `road-S1` / `road-S1-1`。
 - 2026-03-29：`S0E-3A/P2` 已完成：`road-S1` / `road-S1-1` 都已迁移到显式 bridge ledger，下一步进入 `P3` 做 mechanical extraction 验证。
+- 2026-03-29：`S0E-3A/P3` 已完成：manifest-driven roadmap bridge dry-run 已落地，并通过 sample plan 验证了 mainline/branch extraction 与 parent alignment；下一步可以把这套输出接到 issue/milestone automation v2。

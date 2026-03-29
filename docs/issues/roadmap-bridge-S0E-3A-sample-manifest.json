@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "mode": "roadmap-bridge-dry-run",
+  "defaults": {
+    "verify_log_fields": true,
+    "verify_parent_alignment": true
+  },
+  "items": [
+    {
+      "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
+      "roadmap_kind": "mainline"
+    },
+    {
+      "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "roadmap_kind": "branch"
+    }
+  ]
+}
