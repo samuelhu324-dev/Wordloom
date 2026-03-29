@@ -11,12 +11,13 @@
 **links**: ``
   **parent_road**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
   **source**: `legacy/from_structured_docs/from-roadmap/ROADMAP v5.md`
+  **reference_template**: `docs/roadmap/road-template-branch-roadmap.md`
   **reference_log_1**: `docs/logs/log-S4B-infra-as-code-and-runtime-packaging.md`
   **reference_log_2**: `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
   **reference_log_3**: `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
   **reference_log_4**: `docs/logs/log-S5A-3B-backup-restore-sanitize-verify.md`
 **created**: `2026-03-21`
-**updated**: `2026-03-25`
+**updated**: `2026-03-29`
 
 ---
 
@@ -41,6 +42,32 @@
 - **Primary audience**: 招聘 JD 中的 systems / platform operations / DevOps-support 岗位（含政府 / 公共部门）。
 - **Relation to road-S1**: 从 road-S1 的完整路线中抽取必需的最小闭环，优先完成可以“现在就讲”的部分。
 - **Time horizon**: 约 4–8 周，可滚动拉长，但 v1 聚焦最小闭环，而不是所有增强项。
+
+## Parent / Branch Rules
+
+- `road-S1-1` 是 `road-S1` 之下的支线 road，不是第二条独立主线。
+- 它存在的原因，是把一段 focused minimal loop 集中解决掉，而不污染 `road-S1` 的长线 narrative。
+- 但它完成的 child logs 仍然属于 `road-S1` 的一部分，因此 branch ledger 和 parent ledger 都需要显式记账同一批 child logs。
+- 如果某个 slot 暂时没有合适的 child log，就必须写 `unmapped`，不能继续藏在 prose 中。
+
+## Roadmap / Log Bridge Contract
+
+- This branch road owns focused selection and parent alignment.
+- Child logs remain the canonical implementation rows.
+- Any output that counts back to `road-S1` must be stated explicitly in both the branch ledger and the parent road ledger.
+
+## Parent Contribution Ledger
+
+- `road-S1 M1-P0 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
+- `road-S1 M1-P1 <- docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
+- `road-S1 M2-P0 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-S1 M2-P1 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-S1 M2-P2 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-S1 M2-P3 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
+- `road-S1 M3-P0 <- docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
+- `road-S1 M4-P0 <- docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
+- `road-S1 M5-P0 <- docs/logs/log-S4A-4A-hybrid-runtime-awareness.md`
+- `road-S1 M5-P1 <- docs/logs/log-S5A-3B-object-storage-backup.md`
 
 ## Current ownership boundary
 
@@ -75,6 +102,22 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 
 - 能够用 systems/platform operations 语言，自然描述 wordloom-v3 的运行面：installation、configuration、maintenance、monitoring、backup/recovery、operational support、lifecycle management。
 
+**Bridge Ledger (child logs only)**
+
+- `M1-P0`:
+  - `docs/logs/log-S4A-1A-ops-scripting-baseline.md`
+- `M1-P1`:
+  - `docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
+- `M1-P2`:
+  - `unmapped`
+- `M1-P3`:
+  - `unmapped`
+
+**Parent alignment**
+
+- `road-S1 M1-P0 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
+- `road-S1 M1-P1 <- docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
+
 **Plan (P0–P3)**
 
 - `P0` Contract: 梳理最小 vocabulary、典型句子，并把现有资产（S4A/S5A/S6A）映射到这些词。
@@ -98,6 +141,24 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 **Goal**
 
 - 保持一套小而实在的 Bash 脚本（start/stop/health/backup/logs），对齐 ROADMAP v5 的“automation / scripting / reproducible environment” 优先级，并且有从-zero-to-dev/test 的演练和 evidence。
+
+**Bridge Ledger (child logs only)**
+
+- `M2-P0`:
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `M2-P1`:
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `M2-P2`:
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `M2-P3`:
+  - `docs/logs/log-S4A-1A-ops-scripting-baseline.md`
+
+**Parent alignment**
+
+- `road-S1 M2-P0 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-S1 M2-P1 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-S1 M2-P2 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-S1 M2-P3 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
 
 **Plan (P0–P3)**
 
@@ -123,6 +184,21 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 
 - 交付一份可运行的 Terraform/IaC 最小样本，用来定义 dev/test 基础设施（目前是 devtest DB），强调 repeatable environment，而不是复杂云平台能力。
 
+**Bridge Ledger (child logs only)**
+
+- `M3-P0`:
+  - `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
+- `M3-P1`:
+  - `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
+- `M3-P2`:
+  - `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
+- `M3-P3`:
+  - `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
+
+**Parent alignment**
+
+- `road-S1 M3-P0 <- docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
+
 **Plan (P0–P3)**
 
 - `P0` Contract: 明确 scope 只覆盖 dev/test；资源边界和 evidence contract；避免假装 production 级别。
@@ -146,6 +222,21 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 **Goal**
 
 - 展示一套可部署、可验证、可回滚意识的 runtime：包括 Dockerfile/compose/env/health，以及 deploy → verify → fallback 的闭环。
+
+**Bridge Ledger (child logs only)**
+
+- `M4-P0`:
+  - `docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
+- `M4-P1`:
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `M4-P2`:
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `M4-P3`:
+  - `docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
+
+**Parent alignment**
+
+- `road-S1 M4-P0 <- docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
 
 **Plan (P0–P3)**
 
@@ -195,6 +286,22 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 **Goal**
 
 - 巩固 backup/recovery 叙事（以 S5A-3B 为核心），并在此基础上加一层 cloud/hybrid 基础认知，用于面试和岗位对话；不要求立刻交付完整云侧样本。
+
+**Bridge Ledger (child logs only)**
+
+- `M5-P0`:
+  - `docs/logs/log-S4A-4A-hybrid-runtime-awareness.md`
+- `M5-P1`:
+  - `docs/logs/log-S5A-3B-object-storage-backup.md`
+- `M5-P2`:
+  - `docs/logs/log-S5A-3B-object-storage-backup.md`
+- `M5-P3`:
+  - `docs/logs/log-S4A-4A-hybrid-runtime-awareness.md`
+
+**Parent alignment**
+
+- `road-S1 M5-P0 <- docs/logs/log-S4A-4A-hybrid-runtime-awareness.md`
+- `road-S1 M5-P1 <- docs/logs/log-S5A-3B-object-storage-backup.md`
 
 **Plan (P0–P3)**
 
@@ -252,6 +359,7 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 
 ## Recent Changes
 
+- 2026-03-29: migrated `road-S1-1` to the branch-road bridge-ledger format and wrote explicit parent alignment back to `road-S1` instead of leaving those links inside prose-only descriptions.
 - 2026-03-21: 从早期的 `road-001` 重构为 `road-S1-1`，明确其作为 road-S1 子路线的定位，保留原有 M1–M5 结构，并强调这是“政府岗最小闭环”的子集，而不是覆盖 ROADMAP v5 的全部内容。
 - 2026-03-25: 明确当前记账边界：`road-S1-1` 以 `S4B` 为最小闭环主完成面，吸收 `S4A` 的方法论与 `S5A-3B` 的 recovery sample；`S4C/S4D` 继续归入 `road-S1` 主线承接。
 - 2026-03-25: 同步 `S4B` 最新闭环状态：`S4B`、`S4B-1A`、`S4B-2A` 均已标记为 `stable`，因此 `road-S1-1` 当前引用的最小 runtime + Terraform baseline evidence 已形成稳定父子链路。

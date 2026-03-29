@@ -11,12 +11,13 @@
 **links**: ``
   **source**: `legacy/from_structured_docs/from-roadmap/ROADMAP v5.md`
   **child_road_1**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
+  **reference_log_1**: `docs/roadmap/road-template-main-roadmap.md`
 **created**: `2026-03-21`
-**updated**: `2026-03-27`
+**updated**: `2026-03-29`
 
 ---
 
-> 说明：这一份 road-S1 作为「总路线」模板，可以被以后其他 `road-Sx` 复用。它用统一的 Milestone（M*）+ Phase（P0–P3）结构来描述长期能力路线；具体针对某个岗位或场景的子路线（例如 `road-S1-1`）则继续沿用 `road-template-structured-roadmap.md` 的子路模板，在这条总路线之下选取和裁剪。
+> 说明：这一份 `road-S1` 现在明确作为主线 roadmap 使用，承载长期 backbone；像 `road-S1-1` 这样的 focused branch road 可以突然出现、集中解决一段内容，但它完成的 child logs 仍然可以显式回流记入 `road-S1` 的主线 ledger，而不要求主线正文吸收全部 branch narrative。
 
 ## Positioning
 
@@ -37,6 +38,27 @@
 - **Time horizon**: 1–3 年的长期演进，可按 Milestone M* 分阶段前进。
 - **Code base**: 以 `wordloom-v3` 为主，必要时可以扩展到 demo/sample 仓库，但总路线优先利用现有 S* spine 资产。
 - **Current ownership boundary**: `road-S1` 主体记账应优先覆盖 `S4C + S4D + S4E` 这类继续向 SaaS-grade / cloud-runtime / release-governance 主心骨延伸的资产；像 `S4B` 的本地最小闭环与 `S5A-3B` 的 recovery sample，则更适合作为 `road-S1-1` 这类 role-focused 子路线的主完成面。
+
+## Mainline / Branch Rules
+
+- `road-S1` 是主线 road，负责保留长期 backbone 的 milestone 语言与完成面索引。
+- `road-S1-1` 这类支线 road 可以在某个时间点突然出现，用来集中解决一个 focused detour，而不是改写主线的全部 narrative。
+- 如果某个 child log 在支线里完成，但本质上也属于 `road-S1` 的一部分，那么 `road-S1` 的 bridge ledger 仍然要显式记住该 child log，并标注 `via road-S1-1`。
+- 主线 ledger 的 canonical rows 仍然只能指向 child logs，而不是直接把 branch-road 文件当成完成项。
+
+## Roadmap / Log Bridge Contract
+
+- `road-S1` owns the long-running `M* / M*-P*` language.
+- Child logs own implementation and evidence.
+- Branch-road outputs may count back to the mainline, but only through explicit child-log mappings.
+- `Evidence Pointers` remain supporting pointers only; they do not replace the bridge ledger.
+
+## Branch Road Register
+
+- `road-S1-1`: government-role minimal systems/platform ops loop
+  - Why it exists: keep a short, interview-oriented minimal loop from flooding the mainline body.
+  - Mainline slots it helps satisfy: `M1`, `M2`, parts of `M3`, parts of `M4`, and the minimal recovery/hybrid framing in `M5`.
+  - Concentrated child logs: `S4A-*`, `S4B-*`, and `S5A-3B`.
 
 ## Environment strategy snapshot
 
@@ -167,6 +189,17 @@
 
 - 从 backend/platform 叙事升级到 systems/platform operations 叙事，能用 installation / configuration / maintenance / monitoring / backup / recovery / operational support / lifecycle management 等语言讲清楚 wordloom-v3。
 
+**Bridge Ledger (child logs only)**
+
+- `M1-P0`:
+  - `docs/logs/log-S4A-1A-ops-scripting-baseline.md` via `road-S1-1`
+- `M1-P1`:
+  - `docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md` via `road-S1-1`
+- `M1-P2`:
+  - `unmapped`
+- `M1-P3`:
+  - `unmapped`
+
 **Plan (P0–P3)**
 
 - `P0` Contract: 提炼一份 vocabulary + mapping note，把现有 S4A/S4B/S5A/S6A 资产映射到 systems/platform ops 语言。
@@ -179,6 +212,17 @@
 **Goal**
 
 - 以 S4B-1A 为基座，维持一套可从零拉起 dev/test runtime 的脚本与 runbook（env_prep/start/status/health/backup 等），形成可重复、可验证的 automation 最小闭环。
+
+**Bridge Ledger (child logs only)**
+
+- `M2-P0`:
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` via `road-S1-1`
+- `M2-P1`:
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` via `road-S1-1`
+- `M2-P2`:
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` via `road-S1-1`
+- `M2-P3`:
+  - `docs/logs/log-S4A-1A-ops-scripting-baseline.md` via `road-S1-1`
 
 **Plan (P0–P3)**
 
@@ -193,6 +237,17 @@
 
 - 从 dev/test Terraform skeleton（devtest-db）出发，建立「基础设施定义 + 云基础能力」的长期主线，但不过早假装已是 production 级别。
 - 在环境策略上，优先把 cloud sample 收敛为 `cloud-dev` 单库路径，而把破坏性 test/drill 主要留在本地 `wordloom_test`，避免过早引入双云库长期运营负担。
+
+**Bridge Ledger (child logs only)**
+
+- `M3-P0`:
+  - `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md` via `road-S1-1`
+- `M3-P1`:
+  - `docs/logs/log-S4C-2A-cloud-devtest-db-and-storage.md`
+- `M3-P2`:
+  - `docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`
+- `M3-P3`:
+  - `docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`
 
 **Plan (P0–P3)**
 
@@ -215,6 +270,17 @@
 - 让 wordloom-v3 的运行面不仅能在 dev/test 本机跑起来，还能用 Docker/compose/env/health 标准化打包，并且有 deploy → verify → rollback + 基本监控/日志的意识。
 - 这条主线在后续由 `S4D` 承接到 cloud/staging deployable runtime，避免 `M4` 长期停留在本地运行基线。
 - 当前 `M4` 的实际收口重点，已经不只是“能部署”，而是把 release workflow 中反复出现的 operator 失败面固定为 machine-verifiable gates、low-cardinality failure taxonomy 与结构化 evidence contract；像 `ssh user/key mismatch`、target reachability、dependency connectivity、release input contract、post-change verify、rollback readiness 这类问题，应优先在 `M4/S4D` 内被工程化消化，而不是继续停留在人肉 SSH 排障层面。
+
+**Bridge Ledger (child logs only)**
+
+- `M4-P0`:
+  - `docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md` via `road-S1-1`
+- `M4-P1`:
+  - `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
+- `M4-P2`:
+  - `docs/logs/log-S4D-2A-post-change-verification-and-operational-checks.md`
+- `M4-P3`:
+  - `docs/logs/log-S4D-3A-cloud-runtime-rollback-sample.md`
 
 **Plan (P0–P3)**
 
@@ -250,6 +316,17 @@
 - 以 S5A-3B backup/restore/sanitize/verify 为核心，向外扩成一条「可治理、可恢复、具备 cloud/hybrid 认知」的长期线，包含但不急于完成 Kubernetes、多云等第二层能力。
 - `M5` 的重点是把 release/runtime 基线继续外扩到更完整的 access boundary、governance、auditability、hybrid/cloud framing 与 second-layer platform capabilities；它不是当前 release workflow failure taxonomy 的第一归属地。
 
+**Bridge Ledger (child logs only)**
+
+- `M5-P0`:
+  - `docs/logs/log-S4A-4A-hybrid-runtime-awareness.md` via `road-S1-1`
+- `M5-P1`:
+  - `docs/logs/log-S5A-3B-object-storage-backup.md` via `road-S1-1`
+- `M5-P2`:
+  - `docs/logs/log-S4E-4A-enforcement-auditability-and-environment-approver-policy.md`
+- `M5-P3`:
+  - `docs/logs/log-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.md`
+
 **Boundary note for completed `S4E`**
 
 - `S4E` 当前已经完成 release operating model / governance v1，因此它在 `road-S1` 里的第一归属仍应视为 `M4`，因为它延续的是 deploy / verify / rollback / release-control-plane 这条 runtime operations 主线；
@@ -272,6 +349,7 @@
 
 ## Recent Changes
 
+- 2026-03-29: migrated `road-S1` to the mainline-road bridge-ledger format; branch-road outputs now count back through explicit child-log mappings marked `via road-S1-1` instead of prose-only references.
 - 2026-03-27: `S4E` 已完成到 `S4E-5B` 并形成稳定的 release governance / execution-layer spine；当前已把它从 `road-S1` 中的“候选边界”改写为已完成主线，并新增 `F8 release governance implementation follow-through`，专门承接 execution decision step、break-glass input capture 与 external approval write-back 的后续实现。
 - 2026-03-27: 已正式打开 `S4E` / `S4E-1A`，把更高一层的 release operating model、trigger policy 与 governance boundary 从 `S4D-4B/4C` 的后续讨论中提升为独立主线；当前在 `road-S1` 中仍以 `M4` 为第一归属。
 - 2026-03-27: 明确补充 `S4E` 候选边界：若后续开启新 phase 承接更高一层的 release operating model，它在 `road-S1` 中通常先归 `M4`，只有上升到更完整的 release governance / cross-environment promotion / release records 制度时才开始同时触碰 `M5`；`F1/F3` 继续保留为触发条件说明，而不是主归属。
