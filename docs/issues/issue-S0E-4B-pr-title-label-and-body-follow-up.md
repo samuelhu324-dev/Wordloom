@@ -12,6 +12,7 @@
 - `S0E-4B` exists as the narrow follow-up to `S0E-4A`, focused only on PR title naming, PR label inheritance, and PR body section formatting.
 - Structural PR labels should no longer rely only on `pr_labels`; they should inherit explicit issue-side structural labels from the same log.
 - PR body generation should match the newer log template shape, especially flat execution checklist parsing plus separate `Evidence Footer` and `Development Link` sections.
+- Stacked PRs should be interpreted by their compare base and `Files changed` delta, not by GitHub's full head-branch commit ancestry list.
 
 ## Definition of Done (DoD)
 
@@ -20,8 +21,11 @@
 - Body generation can parse `Execution Checklist` sections even when the heading variant changes.
 - `Evidence Footer` and `Development Link` remain separate sections in the generated PR body.
 - Issue creation for logs under `docs/logs/` defaults to project `wordloom Board` unless an explicit project override is supplied.
+- Live issue creation and project assignment are validated by issue `#295` on `wordloom Board`.
 - PR creation stays project-empty by default unless `pr_projects` is explicitly populated.
 - Logs with substantive evidence/drill execution derive the `drills` label.
+- Stacked PR review guidance makes clear that `Files changed` and compare-base semantics are authoritative, while full commit ancestry is only traceability context.
+- Parent/spine logs and child phase logs have a clear branch-lifecycle policy instead of creating ad hoc permanent top-level branches for every PR.
 
 ## Links
 

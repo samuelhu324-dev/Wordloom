@@ -1,11 +1,11 @@
 ## Metadata
 
 - Requested ID: `S0E-4B`
-- Base branch: `pr-prep/s0e-4a`
+- Base branch: `main`
 - Candidate PR-prep branch: `pr-prep/s0e-4b`
 - Source log: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
 - Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
-- Development issue: ``
+- Development issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/295`
 
 ## Summary
 
@@ -31,15 +31,22 @@
 - [x] `P3-C1-S7`: stacked PR review semantics documented against GitHub's ancestry-heavy commit views
 - [x] `P3-C1-S8`: title phase-span derivation switched to prefer completed checklist coverage
 - [x] `P3-C1-S9`: mixed working branch and parent-log landing policy clarified
+- [x] `P3-C1-S10`: real issue `#295` created and verified on `wordloom Board`
+- [x] `P3-C1-S11`: live PR `#296` retargeted from the temporary stacked base back to `main`
 
 ## Links
 
 - Log: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
-- Issue: ``
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/295`
 - Runbook: ``
-- Evidence artifact: `docs/issues/pr-prep-S0E-4A-sample-plan.json`
+- Evidence artifact: `docs/issues/pr-prep-S0E-4B-sample-plan.json`
 
 ## Evidence Footer
 
 - `898a82c9` / `S0E-4B` / `P3-C1-S1S2S3S4S5`: refine body format and issue-project validation
 - `43210aec` / `S0E-4B` / `P3-C1-S6`: stack validation on S0E-4A prep branch
+- `a882e548` / `S0E-4B` / `P3-C1-S7S8S9`: clarify stacked PR semantics and title span precedence
+
+## Development Link
+
+- Closes #295

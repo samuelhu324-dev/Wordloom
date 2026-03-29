@@ -7,12 +7,13 @@
   "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
   "repository": "samuelhu324-dev/wordloom-v3",
   "prepared_branch": "pr-prep/s0e-4b",
-  "base_branch": "pr-prep/s0e-4a",
-  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
-  "selected_commit_count": 2,
+  "base_branch": "main",
+  "merge_base": "4ffb71f697ae080fabd087e081eef5f504331764",
+  "selected_commit_count": 3,
   "selected_commits": [
     "898a82c990390f9bd7eb2e3ddeb65bf94ea19bed",
-    "43210aecc60b92d75bee4c266191dd4e52421e18"
+    "43210aecc60b92d75bee4c266191dd4e52421e18",
+    "a882e5481ed0ae07c479647263f4c7276331e20c"
   ],
   "pr_title": "S0E-4B/P0-P3: PR title compression, structural label inheritance, and body footer follow-up v1",
   "draft": true,
@@ -27,10 +28,9 @@
   ],
   "projects_applied": [],
   "milestone_applied": null,
-  "development_issue": null,
+  "development_issue": "https://github.com/samuelhu324-dev/wordloom-v3/issues/295",
   "warnings": [
     "pr_projects left blank; PR project assignment intentionally skipped",
-    "pr_milestone left blank; PR milestone assignment intentionally skipped",
-    "pr_development_issue left blank; PR body omits Development link keyword"
+    "pr_milestone left blank; PR milestone assignment intentionally skipped"
   ]
 }
