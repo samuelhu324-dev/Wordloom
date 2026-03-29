@@ -264,19 +264,75 @@ def _derive_issue_projects(fields: dict[str, str], log_rel_path: str) -> list[st
     return []
 
 
+def _derive_milestone(fields: dict[str, str], milestone_override: str | None) -> tuple[str | None, list[str]]:
+    warnings: list[str] = []
+    if milestone_override:
+        return milestone_override, warnings
+
+    explicit = fields.get("issue_milestone", "").strip()
+    if explicit:
+        return explicit, warnings
+
+    roadmap_path = fields.get("roadmap_path", "").strip()
+    roadmap_milestone = fields.get("roadmap_milestone", "").strip()
+    roadmap_phase = fields.get("roadmap_phase", "").strip()
+    if roadmap_path and roadmap_milestone and roadmap_phase:
+        warnings.append("issue_milestone derived from exact roadmap bridge metadata")
+        return roadmap_milestone, warnings
+
+    if roadmap_path or roadmap_milestone or roadmap_phase:
+        warnings.append("roadmap bridge metadata incomplete; issue_milestone left blank")
+    return None, warnings
+
+
+def _normalize_issue_reference(value: str | None) -> str | None:
+    if not value:
+        return None
+    text = value.strip()
+    if not text:
+        return None
+    match = re.search(r"(?:/issues/|^#?)(\d+)$", text)
+    if match:
+        return f"#{match.group(1)}"
+    return text
+
+
+def _resolve_parent_issue(repo_root: Path, fields: dict[str, str], override: str | None) -> tuple[str | None, bool, list[str]]:
+    warnings: list[str] = []
+    explicit_parent = (override or fields.get("issue_parent") or "").strip()
+    parent_log_path = fields.get("parent_log", "").strip()
+    show_parent_issue = bool(explicit_parent or parent_log_path)
+
+    if explicit_parent:
+        return _normalize_issue_reference(explicit_parent), show_parent_issue, warnings
+
+    if not parent_log_path:
+        return None, False, warnings
+
+    parent_log = repo_root / Path(parent_log_path)
+    if not parent_log.is_file():
+        warnings.append("parent_log path missing; issue_parent left blank")
+        return None, True, warnings
+
+    parent_fields = _parse_fields(_load_text(parent_log))
+    parent_issue = _normalize_issue_reference(parent_fields.get("issue", ""))
+    if parent_issue:
+        warnings.append("issue_parent derived from parent log issue link")
+        return parent_issue, True, warnings
+
+    warnings.append("parent_log issue link missing; issue_parent left blank")
+    return None, True, warnings
+
+
 def _build_links(fields: dict[str, str], log_rel_path: str) -> list[str]:
     lines = [f"- Log: `{log_rel_path}`"]
-    for key in [
-        "runbook",
-        "parent_log",
-        "previous_log",
-        "reference_log_1",
-        "reference_log_2",
-        "reference_log_3",
+    for key, label in [
+        ("runbook", "Runbook"),
+        ("roadmap", "Roadmap"),
+        ("parent_log", "Parent log"),
     ]:
         value = fields.get(key, "").strip()
         if value:
-            label = key.replace("_", " ").title()
             lines.append(f"- {label}: `{value}`")
     return lines
 
@@ -289,35 +345,30 @@ def _render_issue_markdown(
     milestone: str | None,
     source_log: str,
     parent_issue: str | None,
-    context_bullets: list[str],
-    dod_bullets: list[str],
+    show_parent_issue: bool,
     link_lines: list[str],
 ) -> str:
-    context_lines = [f"- {item}" for item in context_bullets] or ["- <placeholder>"]
-    dod_lines = [f"- {item}" for item in dod_bullets] or ["- <placeholder>"]
     lines = [
         "## Metadata",
         "",
-        f"- Title: `{title}`",
         f"- Labels: {', '.join(f'`{label}`' for label in labels) if labels else '``'}",
         f"- Projects: `{', '.join(issue_projects)}`",
         f"- Milestone: `{milestone or ''}`",
         f"- Source log: `{source_log}`",
-        f"- Parent issue: `{parent_issue or ''}`",
+    ]
+    if show_parent_issue:
+        lines.append(f"- Parent issue: {parent_issue or ''}")
+    lines.extend([
         "",
         "## Context",
         "",
-        *context_lines,
-        "",
         "## Definition of Done (DoD)",
-        "",
-        *dod_lines,
         "",
         "## Links",
         "",
         *link_lines,
         "",
-    ]
+    ])
     return "\n".join(lines)
 
 
@@ -468,25 +519,21 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     all_labels = _dedupe(top_labels + scope_labels + function_labels + module_labels)
     _validate_labels(all_labels, args.strict_label_check)
 
-    milestone = args.milestone_override or fields.get("issue_milestone") or None
-    parent_issue = args.parent_issue or fields.get("issue_parent") or None
-
-    context_bullets = _extract_decision_bullets(sections.get("Decision / Outcome", []))
-    dod_bullets = _extract_bullets(sections.get("Success Criteria (DoD)", []))
+    milestone, milestone_warnings = _derive_milestone(fields, args.milestone_override)
+    parent_issue, show_parent_issue, parent_warnings = _resolve_parent_issue(repo_root, fields, args.parent_issue)
 
     warnings: list[str] = []
+    warnings.extend(milestone_warnings)
+    warnings.extend(parent_warnings)
     if not fields.get("issue_keyword"):
         warnings.append("issue_keyword inferred from source log content")
     if not module_labels:
         warnings.append("module labels left blank")
     if not milestone:
         warnings.append("issue_milestone missing")
-    if not parent_issue:
+    if show_parent_issue and not parent_issue:
         warnings.append("issue_parent missing")
-    if not context_bullets:
-        warnings.append("context bullets fell back to placeholder")
-    if not dod_bullets:
-        warnings.append("DoD bullets fell back to placeholder")
+    warnings.append("Context and Definition of Done (DoD) left intentionally blank pending operator input")
 
     rel_log_path = _repo_rel(log_path)
     link_lines = _build_links(fields, rel_log_path)
@@ -510,8 +557,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         milestone=milestone,
         source_log=rel_log_path,
         parent_issue=parent_issue,
-        context_bullets=context_bullets,
-        dod_bullets=dod_bullets,
+        show_parent_issue=show_parent_issue,
         link_lines=link_lines,
     )
     output_path.write_text(markdown, encoding="utf-8")

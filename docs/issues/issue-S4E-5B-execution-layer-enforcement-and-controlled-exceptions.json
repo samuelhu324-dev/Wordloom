@@ -1,0 +1,34 @@
+{
+  "mode": "draft-generation",
+  "result": "ok",
+  "log_path": "docs/logs/log-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.md",
+  "draft_path": "docs/issues/issue-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.md",
+  "title": "S4E-5B: evidence/execution-layer enforcement and controlled exceptions",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s4/ops",
+    "sub/1"
+  ],
+  "function_labels": [
+    "drills"
+  ],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": "M5",
+  "parent_issue": null,
+  "body_markdown": "## Metadata\n\n- Title: `S4E-5B: evidence/execution-layer enforcement and controlled exceptions`\n- Labels: `EVOLUTION`, `s4/ops`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: `M5`\n- Source log: `docs/logs/log-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.md`\n- Parent issue: ``\n\n## Context\n\n## Definition of Done (DoD)\n\n## Links\n\n- Log: `docs/logs/log-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.md`\n- Runbook: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`\n- Parent log: `docs/logs/log-S4E-release-operating-model-and-governance.md`\n",
+  "warnings": [
+    "issue_milestone derived from exact roadmap bridge metadata",
+    "issue_keyword inferred from source log content",
+    "module labels left blank",
+    "issue_parent missing",
+    "Context and Definition of Done (DoD) left intentionally blank pending operator input"
+  ],
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
+}

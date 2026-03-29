@@ -13,13 +13,17 @@
   ],
   "function_labels": [],
   "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
   "milestone": null,
-  "parent_issue": null,
-  "body_markdown": "# S0E-2B: automation/real GitHub issue creation automation\n\n## Metadata\n\n- Title: `S0E-2B: automation/real GitHub issue creation automation`\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Milestone: ``\n- Source log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`\n- Parent issue: ``\n\n## Context\n\n- `S0E-2B` \u4f5c\u4e3a `S0E-2A` \u7684 follow-up slice\uff0c\u53ea\u5904\u7406\u771f\u6b63\u7684 issue creation automation\uff1a\u4ece\u7a33\u5b9a\u7684 draft-generation \u5165\u53e3\u63a8\u8fdb\u5230\u663e\u5f0f opt-in \u7684 `create-issue` \u6a21\u5f0f\u3002\n- v1 \u5148\u56fa\u5b9a\u6a21\u5f0f\u8fb9\u754c\u3001\u811a\u672c\u8f93\u5165\u8f93\u51fa contract \u4e0e creation-side evidence contract\uff0c\u518d\u8fdb\u5165\u672c\u5730 draft \u751f\u6210\u5b9e\u73b0\u4e0e GitHub create issue \u771f\u6b63\u8c03\u7528\u3002\n- `S0E-2B` \u4e0d\u56de\u5934\u6539\u5199 `S0E-2A` \u7684 contract\uff1b`S0E-2A` \u7ee7\u7eed\u4f5c\u4e3a\u547d\u540d\u3001labels\u3001body scaffold \u4e0e sample validation \u7684\u4e8b\u5b9e\u6e90\u3002\n\n## Definition of Done (DoD)\n\n- \u81f3\u5c11\u56fa\u5b9a\u4e00\u7248 `draft-generation` vs `create-issue` mode boundary\uff1b\n- \u81f3\u5c11\u56fa\u5b9a\u4e00\u7248\u811a\u672c\u6700\u5c0f\u8f93\u5165/\u8f93\u51fa contract\uff0c\u5e76\u8bf4\u660e\u54ea\u4e9b\u5b57\u6bb5\u5141\u8bb8 override\uff1b\n- \u81f3\u5c11\u56fa\u5b9a\u4e00\u7248 creation-side evidence contract\uff0c\u660e\u786e draft mode \u4e0e create mode \u5404\u81ea\u5fc5\u987b\u7559\u4e0b\u4ec0\u4e48\uff1b\n- \u81f3\u5c11\u660e\u786e\u58f0\u660e\uff1a\u771f\u6b63\u521b\u5efa GitHub issue \u7684\u5b9e\u73b0\u9636\u6bb5\u5c5e\u4e8e `S0E-2B`\uff0c\u4e0d\u518d\u56de\u5934\u6324\u8fdb `S0E-2A`\uff1b\n- \u540e\u7eed `P1/P2` \u5b9e\u73b0\u4e0d\u9700\u8981\u518d\u56de\u5934\u4e89\u8bba\u9ed8\u8ba4\u6a21\u5f0f\u548c\u5931\u8d25\u8bed\u4e49\u3002\n\n## Links\n\n- Log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent Log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous Log: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`\n- Reference Log 1: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`\n- Reference Log 2: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Reference Log 3: `docs/roadmap/draft.md`\n",
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Source log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`\n- Parent issue: #248\n\n## Context\n\n## Definition of Done (DoD)\n\n## Links\n\n- Log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n",
   "warnings": [
+    "issue_parent derived from parent log issue link",
     "module labels left blank",
     "issue_milestone missing",
-    "issue_parent missing",
+    "Context and Definition of Done (DoD) left intentionally blank pending operator input",
     "source log write-back not performed; update links.issue in a later tracked docs change"
   ],
   "issue_number": 288,

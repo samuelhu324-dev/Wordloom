@@ -161,10 +161,15 @@
   - sub label, for example `sub/1`
   - function label such as `drills` only when the source log explicitly supports it
   - module labels only when the source log explicitly proves them
-- Step 5: if milestone or module labels are blank in the sample, keep them blank unless a human can justify them from the source log.
-- Step 6: review `Context` and `Definition of Done (DoD)` for human readability; preserve the contract structure but improve wording only when it does not change scope.
-- Step 7: create the real GitHub issue through the normal repository UI path.
-- Step 8: after creation, record the issue URL back into the source log in a later tracked docs update.
+- Step 5: resolve milestone in this order: explicit `issue_milestone` first, then exact `roadmap_path + roadmap_milestone + roadmap_phase` bridge metadata, else leave it blank.
+- Step 6: resolve parent issue in this order: explicit `issue_parent`, then the parent log's `links.issue` when the source log declares `parent_log`; if neither exists, leave the child issue blank and warn instead of guessing.
+- Step 7: if the source log is a top-level spine with no `parent_log`, omit the `Parent issue` row entirely.
+- Step 8: when `Parent issue` is present, render it as plain text short GitHub issue reference such as `#248`, not a full URL and not a code span.
+- Step 9: confirm `issue_projects`; if they are blank, keep them blank or use the existing `docs/logs/* -> wordloom Board` default rather than guessing from prose.
+- Step 10: keep the generated issue body English-only, start directly from `## Metadata`, and do not repeat the issue title inside the body.
+- Step 11: leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text.
+- Step 12: create the real GitHub issue through the normal repository UI path.
+- Step 13: after creation, record the issue URL back into the source log in a later tracked docs update.
 
 ## 6) Future Script Entry Contract
 
@@ -189,7 +194,8 @@
   - `module_labels`: array of confirmed module labels
   - `milestone`: string or `null`
   - `parent_issue`: string or `null`
-  - `body_markdown`: markdown body with `Context`, `Definition of Done (DoD)`, and `Links`
+  - `issue_projects`: array of explicit or default project names
+  - `body_markdown`: markdown body that starts at `Metadata`, keeps `Context` and `Definition of Done (DoD)` structurally present but blank by default, and includes deterministic `Links`
   - `warnings`: array of conservative fallback warnings, for example `issue_milestone missing`, `module labels left blank`
 - Optional output files:
   - markdown issue draft under `docs/issues/`
@@ -201,6 +207,10 @@
 - If the fixed keyword cannot be chosen conservatively from the contract, the script should stop and emit a warning instead of guessing.
 - If a label is not pre-created, the script should emit a warning or fail under `strict_label_check`; it must not create labels.
 - If milestone is absent, output `null` and continue.
+- If roadmap bridge metadata is complete and `issue_milestone` is blank, milestone may be derived from that exact bridge and reported explicitly in warnings.
+- If `parent_log` exists and its `links.issue` is populated, child issue drafts may derive `issue_parent` from that exact link and report the derivation explicitly in warnings.
+- If the source log has no `parent_log`, the issue is treated as a top-level issue for creation-body purposes and must omit the `Parent issue` row entirely.
+- If a parent issue is rendered, it must appear only in `Metadata` and use a plain-text short GitHub reference such as `#248`.
 - If module impact is not explicit, output an empty module-label array and continue.
 - Real GitHub issue creation must remain a separate opt-in mode, not the default behavior of the draft-generation mode.
 
