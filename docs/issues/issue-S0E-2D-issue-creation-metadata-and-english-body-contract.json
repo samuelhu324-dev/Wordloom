@@ -1,0 +1,31 @@
+{
+  "mode": "draft-generation",
+  "result": "ok",
+  "log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+  "draft_path": "docs/issues/issue-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+  "title": "S0E-2D: contract/issue creation metadata enrichment and English body contract",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": null,
+  "body_markdown": "## Metadata\n\n- Title: `S0E-2D: contract/issue creation metadata enrichment and English body contract`\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Source log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`\n- Parent issue: ``\n\n## Context\n\n## Definition of Done (DoD)\n\n## Links\n\n- Log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n",
+  "warnings": [
+    "module labels left blank",
+    "issue_milestone missing",
+    "issue_parent missing",
+    "Context and Definition of Done (DoD) left intentionally blank pending operator input"
+  ],
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
+}

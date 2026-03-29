@@ -161,8 +161,9 @@
   - sub label, for example `sub/1`
   - function label such as `drills` only when the source log explicitly supports it
   - module labels only when the source log explicitly proves them
-- Step 5: if milestone or module labels are blank in the sample, keep them blank unless a human can justify them from the source log.
-- Step 6: review `Context` and `Definition of Done (DoD)` for human readability; preserve the contract structure but improve wording only when it does not change scope.
+- Step 5: resolve milestone in this order: explicit `issue_milestone` first, then exact `roadmap_path + roadmap_milestone + roadmap_phase` bridge metadata, else leave it blank.
+- Step 6: confirm `issue_parent` and `issue_projects`; if they are blank, keep them blank or use the existing `docs/logs/* -> wordloom Board` default rather than guessing from prose.
+- Step 7: keep the generated issue body English-only and leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text.
 - Step 7: create the real GitHub issue through the normal repository UI path.
 - Step 8: after creation, record the issue URL back into the source log in a later tracked docs update.
 
@@ -189,6 +190,7 @@
   - `module_labels`: array of confirmed module labels
   - `milestone`: string or `null`
   - `parent_issue`: string or `null`
+  - `issue_projects`: array of explicit or default project names
   - `body_markdown`: markdown body with `Context`, `Definition of Done (DoD)`, and `Links`
   - `warnings`: array of conservative fallback warnings, for example `issue_milestone missing`, `module labels left blank`
 - Optional output files:
@@ -201,6 +203,7 @@
 - If the fixed keyword cannot be chosen conservatively from the contract, the script should stop and emit a warning instead of guessing.
 - If a label is not pre-created, the script should emit a warning or fail under `strict_label_check`; it must not create labels.
 - If milestone is absent, output `null` and continue.
+- If roadmap bridge metadata is complete and `issue_milestone` is blank, milestone may be derived from that exact bridge and reported explicitly in warnings.
 - If module impact is not explicit, output an empty module-label array and continue.
 - Real GitHub issue creation must remain a separate opt-in mode, not the default behavior of the draft-generation mode.
 
