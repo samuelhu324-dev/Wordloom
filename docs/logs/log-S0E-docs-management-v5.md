@@ -150,7 +150,7 @@
 - `S0E-2C` 已完成 `P2-C1-S1`：parent-child linking 现在只接受显式 issue number / URL 作为关系输入，`log_path` 仅保留为 traceability 字段；
 - `S0E-2C` 已完成 `P2-C1-S2`：relationship dry-run 现在可以只读 manifest 并输出 `planned / skipped / error / reconciliation` 四类结果，未引入任何 apply 行为；
 - `S0E-2C` 已完成 `P3`：milestone/write-back reconciliation 现在也有明确 contract 和 dry-run 规划器，仍然没有引入 apply 行为；
-- `S0E-2D` 已完成 `P1`：issue-create 生成器现在会优先解析 milestone/roadmap bridge、显式 relationship、pre-set projects，并输出 English-only 的空 `Context` / `Definition of Done (DoD)` scaffold；
+- `S0E-2D` 已完成 `P2`：真实样本 `S4E-5B` 与 `S4A-1A` 已验证 roadmap-derived milestone、deterministic links，以及缺失 `issue_parent` 时的 fail-closed blank fallback；
 - `S0E-2E` 已建档：后续会把 issue 的最终 Conclusion 从“人脑记忆”改成独立 contract，要求 merge 后回填 Development PR 与 final DoD PR refs；
 - `S0E-3A` 草案已把 roadmap/log bridge 的核心问题收口为 child-log-first contract，并把 roadmap/log templates 增加了统一 bridge 字段；
 - `S0E-3A` 已完成 `P0-P1`：phase log 已固定 bridge ownership / field contract / fail-closed semantics，template rollout 也已落到 parent/phase/roadmap 三类模板；
@@ -232,3 +232,4 @@
 - 2026-03-29：`S0E-4B` 的真实 issue `#295` 已确认挂到 `wordloom Board`，并且 live PR `#296` 已在上游合并后重新对齐到 `main`，因此这条 follow-up 已基本完成收口。
 - 2026-03-29：新增 `S0E-2D` 与 `S0E-2E` 两条 follow-up logs，把 enriched issue creation 和 post-merge issue conclusion 明确拆成两个独立 contract，而不再只停留在口头记忆里的“2D/2E”。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
+- 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
