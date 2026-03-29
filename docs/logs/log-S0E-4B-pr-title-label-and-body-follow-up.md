@@ -31,7 +31,7 @@
 **pr_labels**: ``
 **pr_projects**: ``
 **pr_milestone**: ``
-**pr_base**: `main`
+**pr_base**: `pr-prep/s0e-4a`
 **pr_development_issue**: ``
 **created**: `2026-03-29`
 **updated**: `2026-03-29`
@@ -148,6 +148,11 @@
 - Generated issue and PR bodies should not repeat the platform-level title as an extra top-level `# ...` heading.
 - Mechanical readability should rely on the platform title plus the structured `Metadata` section, not a duplicated body title line.
 
+### P3-C1-S6 (Stacked validation PR base | v1)
+
+- The real `S0E-4B` validation PR currently has to base on `pr-prep/s0e-4a`, not `main`, because `main` does not yet contain the unmerged `S0E-4A` file baseline required for a conflict-free cherry-pick.
+- Once `S0E-4A` lands on `main`, `S0E-4B` can later be rebased or re-planned against `main` as the long-term base.
+
 ## Plan (draft)
 
 ### P1 (Implementation)
@@ -167,6 +172,7 @@
 - P3-C1-S3: audit live PR `#294` and reconcile title/body/labels
 - P3-C1-S4: wire issue-create project assignment and record the remaining GitHub-side auth blocker
 - P3-C1-S5: remove duplicated top-of-body title from generated issue and PR bodies
+- P3-C1-S6: base the real validation PR on `pr-prep/s0e-4a` while `S0E-4A` remains unmerged
 
 ## Execution Checklist (unchecked)
 
@@ -182,6 +188,7 @@
 - [x] `P3-C1-S3`: live PR `#294` reconciled against the new rules
 - [x] `P3-C1-S4`: issue-create project path wired locally and GitHub-side blocker recorded
 - [x] `P3-C1-S5`: duplicated top-of-body title removed from generated issue and PR bodies
+- [x] `P3-C1-S6`: stacked validation PR base fixed to `pr-prep/s0e-4a`
 
 ## Evidence
 
@@ -195,6 +202,7 @@
 - `P3-C1-S3`: generated `Execution Checklist` lines now preserve backticks around the `P*-C*-S*` identifier segment so the rendered PR body matches the log-side checklist style.
 - `P3-C1-S4`: issue-create now has a real project-assignment path, but GitHub-side project resolution remains blocked in the current environment by project lookup/auth limitations.
 - `P3-C1-S5`: generated issue and PR bodies now start directly at `## Metadata`, removing the redundant top-level title heading while keeping machine-readable structure intact.
+- `P3-C1-S6`: a first attempt to create the real `S0E-4B` PR from `main` failed on cherry-pick because the selected commit depends on unmerged `S0E-4A` file changes; the validation PR base is therefore temporarily stacked on `pr-prep/s0e-4a`.
 - `P3-C1-S4`: a real `S0E-4B` issue-create attempt now fails specifically on `addProjectV2ItemById`, proving that `read:project` alone is insufficient and the active token still needs the `project` write scope.
 
 ## Recent changes (for traceability, optional)
@@ -205,3 +213,4 @@
 - 2026-03-29: aligned generated PR checklist formatting so checklist IDs render as `` `P*-C*-S*` `` instead of plain text.
 - 2026-03-29: removed duplicated top-of-body title headings from generated issue and PR bodies so body structure starts at `Metadata`.
 - 2026-03-29: attempted a real `S0E-4B` issue create after enabling project reads; GitHub now exposes the exact remaining blocker: the token still lacks the `project` write scope needed to add the issue to `wordloom Board`.
+- 2026-03-29: attempted a real `S0E-4B` PR from `main`, observed a cherry-pick conflict against the unmerged `S0E-4A` baseline, and switched the validation base to `pr-prep/s0e-4a`.
