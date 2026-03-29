@@ -19,12 +19,24 @@
   **phase_log_1**: ``
   **phase_log_2**: ``
   **phase_log_3**: ``
+  **phase_log_4**: ``
+  **phase_log_5**: ``
+  **phase_log_6**: ``
 **issue_keyword**: ``        # controlled fixed keyword; leave blank if title keyword should stay manual
 **issue_top_labels**: ``     # comma-separated existing labels only
 **issue_scope_labels**: ``   # comma-separated labels usually derived from scope / hierarchy
 **issue_module_labels**: ``  # comma-separated module labels; leave blank when impact is not explicit
 **issue_milestone**: ``      # exact GitHub milestone name; if blank, automation must leave milestone empty
 **issue_parent**: ``         # parent issue reference if already known; otherwise leave blank
+**issue_projects**: ``       # comma-separated exact GitHub Project names for the issue; leave blank when issue project assignment stays manual
+**roadmap_path**: ``         # exact roadmap file that owns this spine's bridge, if any
+**roadmap_milestone**: ``    # exact roadmap milestone, e.g. M3; leave blank when the spine spans multiple milestones
+**roadmap_phase**: ``        # exact roadmap phase, e.g. M3-P2; leave blank when only child logs are ledgered in the roadmap
+**pr_labels**: ``            # comma-separated existing labels only for the PR; leave blank when PR labels stay manual
+**pr_projects**: ``          # comma-separated exact GitHub Project names for the PR
+**pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave milestone empty
+**pr_base**: ``              # exact PR base branch, e.g. main
+**pr_development_issue**: `` # exact issue number/url the PR should link in Development
 **created**: `YYYY-MM-DD`
 **updated**: `YYYY-MM-DD`
 
@@ -41,6 +53,7 @@
 
 - <默认认证/默认存储/默认入口/默认环境/默认语义……>
 - 若 `issue_*` 字段为空，automation 必须保守留空并要求人工确认，而不是猜测 title keyword、labels 或 milestone。
+- roadmap 与 logs 的机械桥接必须通过 `roadmap_path + roadmap_milestone + roadmap_phase` 明确声明；roadmap 内的正式 bridge ledger 默认只计入 child logs，而不是 parent/spine prose。
 
 **Non-goals（不做什么）**（可选，但建议写）:
 
