@@ -5,12 +5,12 @@
 **id**: `S0E-4A`
 **kind**: `log`
 **title**: `GitHub pull request automation contract v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, PR, Automation, epic/s0, sub/0e4a`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/293`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/294`
   **runbook**: ``
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -79,8 +79,9 @@
 - `P0` is complete: the stable PR-prep strategy, metadata precedence, description boundary, and development-link boundary are now fixed in this log.
 - `P1` is complete: the parent and phase log templates now expose final `pr_*` field guidance plus explicit PR summary/checklist/evidence scaffold inputs.
 - `P2` is complete: a manifest-driven dry-run PR-prep planner now selects exact ID-scoped commits from the mixed working branch and emits both a structured plan and a body preview artifact.
-- The next gap is no longer PR-prep planning; it is whether the same boundary can survive a real PR creation path with metadata assignment and Development linkage.
-- `S0E-4A` remains `draft` because the contract has not yet been exercised by a real PR create run.
+- `P3` is complete: the real run created issue `#293`, draft PR `#294`, clean head branch `pr-prep/s0e-4a`, and verified GitHub-side label plus Development linkage behavior.
+- The remaining work is no longer contract stability; it is optional follow-up automation around richer PR metadata such as projects/milestones when those fields are explicitly populated.
+- `S0E-4A` is now `stable` because the contract has been exercised through both dry-run PR prep and a real PR create path.
 
 ## Success Criteria (DoD)
 
@@ -166,6 +167,20 @@
 - Validation succeeds when the selected commits form a coherent ID-scoped set without mutating any branch or creating any remote PR.
 - Missing optional PR metadata such as `pr_milestone` or `pr_development_issue` should remain blank in the dry-run output rather than being guessed.
 
+## P3 (Real PR automation | v1)
+
+### P3-C1-S1 (Real PR create path | v1)
+
+- Real PR creation must consume the structured dry-run output instead of rescanning the mixed working branch ad hoc.
+- The create path must prepare the clean head branch from the base branch, cherry-pick the exact selected commits, push that branch, and then open the PR from the prepared branch.
+- The first real run should remain a draft PR so review and merge stay visibly outside automation scope.
+
+### P3-C1-S2 (Metadata assignment and linkage | v1)
+
+- PR labels should be applied from `pr_labels` when present; missing labels must fail before PR creation rather than being silently dropped.
+- `pr_development_issue` should be materialized in the PR body using an explicit closing/linkage line so GitHub can attach the PR to the intended issue.
+- Missing optional metadata such as `pr_projects` and `pr_milestone` should be reported as intentionally skipped when blank, not guessed or backfilled from unrelated fields.
+
 ## PR Summary Inputs
 
 **PR summary bullets**:
@@ -240,6 +255,11 @@
 - [x] `P2-C1-S1`: ID-scoped commit selection implemented
 - [x] `P2-C1-S2`: clean PR-prep branch generation validated
 
+### P3 (Real PR automation)
+
+- [x] `P3-C1-S1`: create one real PR with labels, milestone, project, and development linkage
+- [x] `P3-C1-S2`: verify that human review and merge remain outside automation scope
+
 ## Evidence
 
 - `P0-C1-S1`: this log now fixes the clean PR-prep branch strategy as the only stable selection path for ID-scoped PRs from a mixed working branch.
@@ -252,8 +272,13 @@
 - `P1-C1-S2`: both templates now expose `PR Summary Inputs` blocks that define summary bullets, checklist source rules, and links/evidence footer placeholders for future PR body generation.
 - `P2-C1-S1`: `scripts/issues/plan_pr_prep.py` now provides a manifest-driven PR-prep dry-run planner that reports `selected` and `skipped` branch-exclusive commits by exact ID prefix.
 - `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-manifest.json` defines the sample dry-run input boundary for `S0E-4A`.
-- `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-plan.json` confirms that the dry-run selected `2` `S0E-4A` commits from the mixed working branch, used merge-base `4ffb71f697ae080fabd087e081eef5f504331764`, and planned candidate branch `pr-prep/s0e-4a` with no warnings.
+- `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-plan.json` now confirms that the refreshed dry-run selects `4` `S0E-4A` commits from the mixed working branch, uses merge-base `4ffb71f697ae080fabd087e081eef5f504331764`, and plans candidate branch `pr-prep/s0e-4a` with no warnings.
 - `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-body.md` now previews the generated PR body using the log's summary bullets, checked execution checklist items, and evidence footer.
+- `P3-C1-S1`: `docs/issues/issue-S0E-4A-github-pr-automation-contract.json` records the real issue creation result for `#293`, which now serves as the explicit Development-link source.
+- `P3-C1-S1`: `scripts/issues/create_pr_from_plan.py` now consumes the dry-run plan, prepares the clean branch from `main`, cherry-picks the selected SHAs, pushes `pr-prep/s0e-4a`, and opens the real PR.
+- `P3-C1-S1`: `docs/issues/pr-prep-S0E-4A-sample-create-result.json` records the real PR creation result for draft PR `#294` at `https://github.com/samuelhu324-dev/wordloom-v3/pull/294`.
+- `P3-C1-S2`: GitHub now shows draft PR `#294` on head branch `pr-prep/s0e-4a` with label `EVOLUTION` and closing issue reference `#293`; blank `pr_projects` and `pr_milestone` were intentionally skipped under fail-closed rules.
+- `P3-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-create-body.md` shows the final body shape used for the real PR, including the explicit `Closes #293` development-link line.
 
 ## Recent changes (for traceability, optional)
 
@@ -261,3 +286,4 @@
 - 2026-03-29: completed `P0` by fixing commit-selection semantics, `pr_*` metadata precedence, PR description boundaries, Development linkage ownership, and the default dry-run-first operating mode.
 - 2026-03-29: completed `P1` by writing final `pr_*` metadata rules and PR description scaffold inputs back into the parent and phase log templates.
 - 2026-03-29: completed `P2` by adding a manifest-driven PR-prep dry-run planner, generating a sample commit-selection plan, and previewing the resulting PR body without mutating any branch.
+- 2026-03-29: completed `P3` by creating source issue `#293`, opening draft PR `#294` from clean branch `pr-prep/s0e-4a`, and verifying GitHub-side label plus Development linkage behavior.
