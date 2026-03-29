@@ -18,6 +18,8 @@
   **reference_log_2**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_3**: `docs/logs/log-S4E-release-operating-model-and-governance.md`
   **phase_log_1**: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
+  **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
+  **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
   **phase_log_3**: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
   **phase_log_4**: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
@@ -91,6 +93,10 @@
   - 详见：`docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
 - `S0E-2C`（Phase 2C）：batch issue creation, parent-child linking, and milestone/backfill tooling
   - 详见：`docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
+- `S0E-2D`（Phase 2D）：issue creation metadata enrichment and English body contract
+  - 详见：`docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
+- `S0E-2E`（Phase 2E）：issue conclusion and development linkage contract
+  - 详见：`docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
 - `S0E-3A`（Phase 3A）：roadmap milestone and child-log bridge contract
   - 详见：`docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
 - `S0E-4A`（Phase 4A）：GitHub pull request automation contract
@@ -128,6 +134,8 @@
 - [x] `P25`：`S0E-4B/P3-C1-S5` 已完成正文顶部 title 去重，并已把 issue project 阻塞精确收口到缺失 `project` write scope，而不是泛化为 read/project 可见性问题
 - [x] `P26`：`S0E-4B/P3-C1-S7S8S9` 已完成 stacked PR review 语义、标题 phase-span 优先级，以及 mixed working branch / parent-log 落点规则的收口
 - [x] `P27`：`S0E-4B/P3-C1-S10S11` 已完成真实 issue/project 验证与 PR base 对齐回 `main`，因此 `S0E-4B` 现已进入 `stable`
+- [x] `P28`：`S0E-2D` 已建档，用于把 milestone、relationship、projects 与 English issue body contract 收口到 enriched issue creation
+- [x] `P29`：`S0E-2E` 已建档，用于把 post-merge issue conclusion、Development linkage 与 final DoD PR refs 收口为独立 contract
 
 ## Current Status（进展摘要）
 
@@ -142,6 +150,8 @@
 - `S0E-2C` 已完成 `P2-C1-S1`：parent-child linking 现在只接受显式 issue number / URL 作为关系输入，`log_path` 仅保留为 traceability 字段；
 - `S0E-2C` 已完成 `P2-C1-S2`：relationship dry-run 现在可以只读 manifest 并输出 `planned / skipped / error / reconciliation` 四类结果，未引入任何 apply 行为；
 - `S0E-2C` 已完成 `P3`：milestone/write-back reconciliation 现在也有明确 contract 和 dry-run 规划器，仍然没有引入 apply 行为；
+- `S0E-2D` 已完成 `P1`：issue-create 生成器现在会优先解析 milestone/roadmap bridge、显式 relationship、pre-set projects，并输出 English-only 的空 `Context` / `Definition of Done (DoD)` scaffold；
+- `S0E-2E` 已建档：后续会把 issue 的最终 Conclusion 从“人脑记忆”改成独立 contract，要求 merge 后回填 Development PR 与 final DoD PR refs；
 - `S0E-3A` 草案已把 roadmap/log bridge 的核心问题收口为 child-log-first contract，并把 roadmap/log templates 增加了统一 bridge 字段；
 - `S0E-3A` 已完成 `P0-P1`：phase log 已固定 bridge ownership / field contract / fail-closed semantics，template rollout 也已落到 parent/phase/roadmap 三类模板；
 - `S0E-3A/P1` 已进一步拆分 roadmap authoring 为 mainline / branch 两种模板，以对应 `road-S1` 和 `road-S1-1` 这类非线性关系；
@@ -162,7 +172,7 @@
 - `S0E-4B/P3-C1-S10` 已完成：真实 issue `#295` 现已确认落在 `wordloom Board`，此前的 project write-scope 阻塞已被实际消除；
 - `S0E-4B/P3-C1-S11` 已完成：在上游 `#294` 合并后，live PR `#296` 已从临时 stacked base 对齐回 `main`；
 - `S0E-4B` 现在可视为 `stable`，因为 issue project、PR title、body 结构、以及 post-merge base realignment 都已完成验证；
-- 既然 `S0E-3A` 的 bridge contract 已经从模板、真实 roadmap、child logs 到 extraction sample 全部闭环，下一条优先结构线应切到 `S0E-4A`，而不是先回到 `S0E-2D`。
+- 既然 `S0E-4B` 的 PR follow-up 已收口，当前最自然的回流路径就是继续推进 `S0E-2D` 与 `S0E-2E`，把 issue create 和 issue conclusion 两端重新接回已经稳定的 roadmap/PR contracts。
 
 ## Notes（落地原则，可选）
 
@@ -220,3 +230,5 @@
 - 2026-03-29：进一步确认 `S0E-4B` 的真实 issue create 阻塞并不是 project 不可见，而是 token 仍缺少 `project` write scope；同时去掉了生成 body 顶部重复 title。
 - 2026-03-29：补充了 stacked PR review 语义、aggregate PR title 的 phase-span 优先级，以及 mixed working branch / parent-log 落点规则，避免把 GitHub ancestry-heavy commit 视图误读成真实增量范围。
 - 2026-03-29：`S0E-4B` 的真实 issue `#295` 已确认挂到 `wordloom Board`，并且 live PR `#296` 已在上游合并后重新对齐到 `main`，因此这条 follow-up 已基本完成收口。
+- 2026-03-29：新增 `S0E-2D` 与 `S0E-2E` 两条 follow-up logs，把 enriched issue creation 和 post-merge issue conclusion 明确拆成两个独立 contract，而不再只停留在口头记忆里的“2D/2E”。
+- 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
