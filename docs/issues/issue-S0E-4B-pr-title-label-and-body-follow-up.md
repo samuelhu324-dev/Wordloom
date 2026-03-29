@@ -4,7 +4,7 @@
 - Projects: `wordloom Board`
 - Milestone: ``
 - Source log: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
-- Parent issue: `#248`
+- Parent issue: #248
 
 ## Context
 

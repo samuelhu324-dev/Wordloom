@@ -52,7 +52,7 @@
 - `issue_milestone` remains the first-class explicit source; if it is blank, automation may only derive a milestone from exact `roadmap_path + roadmap_milestone + roadmap_phase` bridge data fixed by `S0E-3A`.
 - Relationship ownership must come from explicit metadata such as `issue_parent` or a controlled issue/log mapping; title similarity and prose similarity remain out of scope.
 - For child logs that already declare `parent_log`, issue creation may derive `issue_parent` from the parent log's exact `links.issue`; top-level issues with no `parent_log` omit the `Parent issue` field entirely.
-- When rendered, `Parent issue` belongs only in `Metadata` and should use the short GitHub issue reference form such as `#248`.
+- When rendered, `Parent issue` belongs only in `Metadata` and should use plain-text short GitHub issue reference form such as `#248`.
 - `issue_projects` is authoritative when explicitly populated; otherwise the existing `docs/logs/* -> wordloom Board` default still applies.
 - Generated issue bodies must be English-only even when the source log is bilingual.
 - The generated issue body should keep the section structure `Metadata -> Context -> Definition of Done (DoD) -> Links`, but automation should only fill metadata and deterministic links by default.
@@ -109,7 +109,7 @@
 - `issue_parent` is the primary explicit relationship field for issue-create v1.
 - If `issue_parent` is blank but the source log declares `parent_log`, issue creation may derive the parent issue from that parent log's exact `links.issue`.
 - Top-level logs with no `parent_log` do not render a `Parent issue` row in the issue body.
-- If rendered, `Parent issue` appears only in `Metadata`, not in `Links`, and uses short GitHub issue reference form.
+- If rendered, `Parent issue` appears only in `Metadata`, not in `Links`, and uses plain-text short GitHub issue reference form.
 - `issue_projects` is authoritative when present; otherwise the existing workspace default project rule remains the only allowed fallback.
 - Missing relationship or project metadata must remain blank or skipped rather than guessed.
 
@@ -125,7 +125,7 @@
 - Projects: `...`
 - Milestone: `...`
 - Source log: `...`
-- Parent issue: `...`
+- Parent issue: #248
 
 ## Context
 
@@ -168,6 +168,7 @@
 - P1-C2-S1: derive child `issue_parent` from explicit metadata first and then from the parent log's exact `links.issue`
 - P1-C2-S2: omit `Parent issue` from top-level issue bodies that have no `parent_log`
 - P1-C2-S3: render `Parent issue` only in `Metadata` and normalize it to short GitHub issue reference form
+- P1-C2-S4: render `Parent issue` as plain text instead of code-formatted text
 
 ### P2 (Dry-run validation)
 
@@ -181,6 +182,7 @@
 - P3-C2-S2: write back the resulting issue URL and record which milestone/project/relationship fields were applied versus skipped
 - P3-C3-S1: validate child parent-issue derivation against the real `S0E` issue and confirm top-level issue bodies omit `Parent issue`
 - P3-C3-S2: audit existing sibling `S0E` child issues and align metadata-only parent-issue formatting plus structural labels where the current contract requires them
+- P3-C3-S3: update live child issues so `Parent issue` renders as plain text instead of a code span
 
 ## Execution Checklist (unchecked)
 
@@ -197,6 +199,7 @@
 - [x] `P1-C2-S1`: child parent-issue derivation fixed
 - [x] `P1-C2-S2`: top-level parent-issue suppression fixed
 - [x] `P1-C2-S3`: parent-issue rendering placement and format fixed
+- [x] `P1-C2-S4`: parent-issue plain-text rendering fixed
 
 ### P2 (Dry-run validation)
 
@@ -210,6 +213,7 @@
 - [x] `P3-C2-S2`: write-back and applied/skipped metadata accounting recorded
 - [x] `P3-C3-S1`: child parent-issue derivation and top-level omission verified
 - [x] `P3-C3-S2`: sibling `S0E` child-issue audit and remediation completed
+- [x] `P3-C3-S3`: live child-issue plain-text parent rendering completed
 
 ## Evidence (reserved)
 
@@ -222,6 +226,8 @@
 - `P1-C2-S1` / `P1-C2-S2`: `docs/runbook/run-S0E-log-to-issue-creation.md` now records the same parent-issue precedence and top-level omission rules for operators.
 - `P1-C2-S3`: `scripts/issues/gen_issue_draft.py` now renders `Parent issue` only in `Metadata` and normalizes GitHub issue URLs or raw numbers to short references such as `#248`.
 - `P1-C2-S3`: `docs/runbook/run-S0E-log-to-issue-creation.md` now records the same metadata-only placement and short-reference formatting rule.
+- `P1-C2-S4`: `scripts/issues/gen_issue_draft.py` now renders `Parent issue` as plain text `#248` instead of wrapping it in code formatting.
+- `P1-C2-S4`: `docs/runbook/run-S0E-log-to-issue-creation.md` and this log now record the same plain-text rendering rule.
 - `P2-C1-S1`: `docs/issues/issue-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.md` and [docs/issues/issue-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.json](docs/issues/issue-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.json) now validate a mainline-roadmap sample where milestone `M5` is derived from exact bridge metadata and deterministic links remain limited to log, runbook, and parent log.
 - `P2-C1-S1`: `docs/issues/issue-S4A-1A-ops-scripting-baseline.md` and [docs/issues/issue-S4A-1A-ops-scripting-baseline.json](docs/issues/issue-S4A-1A-ops-scripting-baseline.json) now validate a branch-roadmap sample where milestone `M1` is derived from exact bridge metadata and the English-only empty-body scaffold remains stable.
 - `P2-C1-S2`: both representative runs kept `issue_parent` blank and emitted explicit warnings instead of guessing a parent relationship, proving the current fail-closed baseline for missing relationship metadata.
@@ -230,6 +236,7 @@
 - `P3-C2-S2`: `links.issue` now points to `#297`, and the applied-vs-skipped metadata outcome is explicit: applied labels `EVOLUTION`, `s0/knowledge system`, `sub/1` plus project `wordloom Board`; skipped milestone and parent relationship remained blank by contract.
 - `P3-C3-S1`: `docs/logs/log-S0E-docs-management-v5.md` now records the real top-level issue `#248`; regenerated child artifacts for `S0E-2B` and `S0E-2D` now derive `Parent issue` from that exact link, while `artifacts/_tmp_issue-S0E-docs-management-v5.json` confirms top-level `S0E` issue bodies omit the `Parent issue` row entirely.
 - `P3-C3-S2`: sibling live issues `#289`, `#293`, and `#295` were audited and remediated to the same creation-body contract: no duplicated title, no prefilled `Context/DoD`, metadata-only `Parent issue: #248`, and no repeated parent issue inside `Links`; issue `#293` also received the `drills` label to match current structural-label derivation.
+- `P3-C3-S3`: live child issues `#288`, `#289`, `#293`, `#295`, and `#297` were updated so `Parent issue` stays metadata-only and renders as plain text `#248` rather than a code span.
 
 ## Recent changes (for traceability, optional)
 
@@ -237,7 +244,9 @@
 - 2026-03-29: completed `P1` by updating the draft generator and runbook so issue creation now uses enriched metadata precedence and an English-only empty-body scaffold.
 - 2026-03-29: completed `P1-C2` by teaching issue creation to derive child parent issues from parent-log `links.issue` and to omit `Parent issue` entirely for top-level issues.
 - 2026-03-29: completed `P1-C2-S3` by moving `Parent issue` to `Metadata` only and normalizing it to short GitHub issue references such as `#248`.
+- 2026-03-29: completed `P1-C2-S4` by rendering `Parent issue` as plain text `#248` instead of code-formatted text.
 - 2026-03-29: completed `P2` by validating enriched draft output against `S4E-5B` and `S4A-1A`, confirming roadmap-derived milestones, deterministic links, and blank relationship fallback.
 - 2026-03-29: completed `P3` by auditing legacy issue `#288` against the current creation-body contract and creating the current `S0E-2D` real sample as issue `#297` with write-back recorded.
 - 2026-03-29: completed follow-up `P1-C2` / `P3-C3` validation by wiring child issues to the real top-level `S0E` issue `#248` through `parent_log.links.issue` and confirming top-level issue bodies omit `Parent issue`.
 - 2026-03-29: completed sibling issue audit for `#289`, `#293`, and `#295`, aligning them to metadata-only short parent-issue formatting and updating `#293` labels to match current `drills` derivation.
+- 2026-03-29: updated live child issues `#288`, `#289`, `#293`, `#295`, and `#297` so `Parent issue` now renders as plain text `#248`.

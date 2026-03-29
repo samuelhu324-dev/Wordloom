@@ -15,7 +15,7 @@
   "module_labels": [],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Source log: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`\n- Parent issue: `#248`\n\n## Context\n\n## Definition of Done (DoD)\n\n## Links\n\n- Log: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Source log: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`\n- Parent issue: #248\n\n## Context\n\n## Definition of Done (DoD)\n\n## Links\n\n- Log: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
