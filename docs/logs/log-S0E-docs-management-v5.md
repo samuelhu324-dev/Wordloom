@@ -17,7 +17,7 @@
   **reference_log_1**: `docs/logs/log-S0D-6A-docs-management-v4.md`
   **reference_log_2**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_3**: `docs/logs/log-S4E-release-operating-model-and-governance.md`
-  **phase_log_1**: ``
+  **phase_log_1**: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
   **phase_log_3**: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
   **phase_log_4**: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
@@ -95,6 +95,8 @@
   - 详见：`docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
 - `S0E-4A`（Phase 4A）：GitHub pull request automation contract
   - 详见：`docs/logs/log-S0E-4A-github-pr-automation-contract.md`
+- `S0E-4B`（Phase 4B）：PR title / label / body follow-up
+  - 详见：`docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -121,6 +123,9 @@
 - [x] `P20`：`S0E-4A/P1` 已完成 template rollout，`pr_*` 字段说明和 PR description scaffold 已写回 parent/phase templates
 - [x] `P21`：`S0E-4A/P2` 已完成 dry-run PR-prep 验证，mixed working branch 上的 `S0E-4A` 提交已能被结构化选出并生成 PR body preview
 - [x] `P22`：`S0E-4A/P3` 已完成真实 PR create 验证，issue `#293` 与 draft PR `#294` 已通过 clean PR-prep branch 成功链接
+- [x] `P23`：`S0E-4B/P0-P2` 已完成第一轮 follow-up 修正与 sample 验证，PR 标题压缩、结构化 labels 继承和 body footer/link 格式已回写到脚本、模板和 sample artifact
+- [x] `P24`：`S0E-4B/P3-C1` 已完成 drills 规则、issue-only project 默认语义、live PR `#294` 回写校正，以及 issue project path 的本地接线；剩余阻塞仅在 GitHub-side project auth / lookup 验证
+- [x] `P25`：`S0E-4B/P3-C1-S5` 已完成正文顶部 title 去重，并已把 issue project 阻塞精确收口到缺失 `project` write scope，而不是泛化为 read/project 可见性问题
 
 ## Current Status（进展摘要）
 
@@ -145,6 +150,11 @@
 - `S0E-4A/P1` 已完成：parent/phase templates 现在已经带有统一的 `pr_*` fail-closed 说明，以及 PR summary/checklist/evidence scaffold 输入区；
 - `S0E-4A/P2` 已完成：manifest-driven planner 现在可以从 `S0E-docs-management-v5` 这条 mixed branch 中只选出 `S0E-4A` 的 `4` 条提交，并输出 clean PR-prep branch 计划与 body preview；
 - `S0E-4A/P3` 已完成：真实 issue `#293`、draft PR `#294`、clean head branch `pr-prep/s0e-4a` 与 GitHub-side Development linkage 已全部验证，因此 `S0E-4A` 现在可以视为 `stable`；
+- `S0E-4B` 已启动：第一轮 follow-up 已把 PR 标题范围压缩、PR 结构化 labels 继承，以及 `Evidence Footer` / `Development Link` 的 body 结构修正写回脚本和模板；
+- `S0E-4B/P3-C1-S3` 已完成：线上 PR `#294` 现已对齐到 `P0-P3` 标题、`EVOLUTION + s0/knowledge system + sub/1 + drills` labels 与新的 body 结构，并且不再携带默认 project 噪音；
+- `S0E-4B/P3-C1-S4` 已完成本地接线：issue create 路径已支持默认 `wordloom Board`，剩余仅是 GitHub-side project auth / lookup 验证；
+- `S0E-4B/P3-C1-S5` 已完成：生成的 issue / PR body 都不再重复顶层 title，而是直接从 `Metadata` 开始；
+- `S0E-4B` 当前唯一外部阻塞已被精确定位为 GitHub token 缺少 `project` write scope，因此真实 issue project 落项仍未通过；
 - 既然 `S0E-3A` 的 bridge contract 已经从模板、真实 roadmap、child logs 到 extraction sample 全部闭环，下一条优先结构线应切到 `S0E-4A`，而不是先回到 `S0E-2D`。
 
 ## Notes（落地原则，可选）
@@ -194,3 +204,6 @@
 - 2026-03-29：`S0E-4A/P1` 已完成：模板层已具备 PR metadata 和 PR body scaffold 的稳定输入面，下一步应进入 `P2` 做 mixed working branch -> clean PR-prep branch 的 dry-run 验证。
 - 2026-03-29：`S0E-4A/P2` 已完成：PR-prep dry-run planner 已用真实 `S0E-4A` commits 验证通过，下一步应进入 `P3` 评估真实 PR creation 和 metadata assignment 路径。
 - 2026-03-29：`S0E-4A/P3` 已完成：真实 PR create 路径已经跑通，`S0E-4A` 这条线从 contract、template、dry-run 到 real-run 现已闭环；下一步应评估是否为 `S0E` 收口或另开新的 PR/issue automation follow-up。
+- 2026-03-29：新增 `S0E-4B`，专门收口第一条真实 PR 暴露出来的 follow-up：标题 phase-range 命名、PR 结构化 labels 继承，以及 `Evidence Footer` / `Development Link` 的 body 版式。
+- 2026-03-29：`S0E-4B/P3-C1` 已把 live PR `#294` 回写到新规则，并把 `wordloom Board` 默认语义收口到 issue create；下一步只需在具备 project 权限的环境里完成一次真实 issue project 验证。
+- 2026-03-29：进一步确认 `S0E-4B` 的真实 issue create 阻塞并不是 project 不可见，而是 token 仍缺少 `project` write scope；同时去掉了生成 body 顶部重复 title。

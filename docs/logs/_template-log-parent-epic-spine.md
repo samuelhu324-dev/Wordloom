@@ -28,13 +28,13 @@
 **issue_module_labels**: ``  # comma-separated module labels; leave blank when impact is not explicit
 **issue_milestone**: ``      # exact GitHub milestone name; if blank, automation must leave milestone empty
 **issue_parent**: ``         # parent issue reference if already known; otherwise leave blank
-**issue_projects**: ``       # comma-separated exact GitHub Project names for the issue; leave blank when issue project assignment stays manual
+**issue_projects**: ``       # defaults to `wordloom Board` for logs under docs/logs in this workspace unless a different explicit project list is provided
 **roadmap_path**: ``         # exact roadmap file that owns this spine's bridge, if any
 **roadmap_milestone**: ``    # exact roadmap milestone, e.g. M3; leave blank when the spine spans multiple milestones
 **roadmap_phase**: ``        # exact roadmap phase, e.g. M3-P2; leave blank when only child logs are ledgered in the roadmap
 **roadmap_bridge_refs**: ``  # optional exact-slot refs when one spine/log needs to point at multiple roadmap slots; child-log extraction uses this as the exact multi-slot source
-**pr_labels**: ``            # comma-separated existing labels only for the PR; if blank, automation must leave PR labels empty
-**pr_projects**: ``          # comma-separated exact GitHub Project names for the PR; if blank, automation must leave PR project assignment empty
+**pr_labels**: ``            # extra PR labels beyond inherited issue_top_labels / issue_scope_labels / issue_module_labels; add `drills` whenever the log contains substantive evidence/drill execution; all labels must already exist in GitHub
+**pr_projects**: ``          # exact GitHub Project names for the PR; if blank, PR automation leaves project assignment empty by default
 **pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave the PR milestone empty
 **pr_base**: ``              # exact PR base branch, e.g. main; if blank, dry-run may report it missing but must not guess another base
 **pr_development_issue**: `` # exact issue number/url the PR should link in Development; if blank, automation must leave Development linkage empty
@@ -76,6 +76,9 @@
 - Child log source(s): ``
 - Issue: ``
 - Evidence artifact: ``
+
+- Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
+- `Evidence Footer` lines should prefer: `sha / ID / P*-C*-S* : summary`.
 
 **Non-goals（不做什么）**（可选，但建议写）:
 
@@ -146,6 +149,11 @@
   - 基础形式：`<ID>/P<phase>-C<cycle>-S<steps>: <summary>`；
   - `<steps>` 可以是单个 step（`1`，即 `...-S1`），也可以是在同一 phase / cycle 下连续的多个 step 合并（如 `1S2`，即 `...-S1S2`）。
   - Multi-step 规则：只允许在 **同一 Phase + 同一 Cycle** 下合并多个 step；一旦跨 Phase 或跨 Cycle，必须拆成多次 commit。
+  - 若一个 PR 一次性汇总多个完整 phase，应优先压缩成 phase 范围标题：
+    - 连续 phase：`<ID>/P0-P3: <log title>`
+    - 离散 phase：`<ID>/P0+P3: <log title>`
+    - 离散 + 连续混合：`<ID>/P0+P3-P4: <log title>`
+  - 若是后续补充型 PR，而不是一次性 phase 汇总，则直接使用精确 unit：`<ID>/P*-C*-S*: <一句话 summary>`。
 
 **Branch 约定（建议）**:
 

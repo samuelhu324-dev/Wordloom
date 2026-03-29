@@ -23,6 +23,7 @@ SCOPE_LABELS = {
 
 FIELD_RE = re.compile(r"^\s*\*\*([^*]+)\*\*:\s*`(.*)`\s*$")
 VERSION_SUFFIX_RE = re.compile(r"\s+v\d+\s*$", re.IGNORECASE)
+DEFAULT_WORKSPACE_PROJECT = "wordloom Board"
 
 
 @dataclass
@@ -36,6 +37,7 @@ class IssueDraftResult:
     scope_labels: list[str]
     function_labels: list[str]
     module_labels: list[str]
+    issue_projects: list[str]
     milestone: str | None
     parent_issue: str | None
     body_markdown: str
@@ -189,6 +191,19 @@ def _extract_bullets(lines: list[str]) -> list[str]:
     return bullets
 
 
+def _section_has_substantive_evidence(section_lines: list[str]) -> bool:
+    for raw in section_lines:
+        stripped = raw.strip()
+        if not stripped:
+            continue
+        lowered = stripped.lower()
+        if "<placeholder>" in lowered:
+            continue
+        if stripped.startswith("- ") or stripped.startswith("### ") or stripped.startswith("headSha:") or stripped.startswith("artifacts:"):
+            return True
+    return False
+
+
 def _derive_top_labels(fields: dict[str, str], tags: list[str]) -> list[str]:
     explicit = _split_csv(fields.get("issue_top_labels"))
     if explicit:
@@ -208,10 +223,12 @@ def _derive_scope_labels(fields: dict[str, str], log_id: str, scope: str) -> lis
     return labels
 
 
-def _derive_function_labels(title: str, tags: list[str]) -> list[str]:
+def _derive_function_labels(title: str, tags: list[str], sections: dict[str, list[str]]) -> list[str]:
     haystack = " ".join([title, " ".join(tags)]).lower()
     labels: list[str] = []
     if "drills" in haystack or "drill" in haystack or "evidence" in haystack:
+        labels.append("drills")
+    elif _section_has_substantive_evidence(sections.get("Evidence", [])):
         labels.append("drills")
     return labels
 
@@ -238,6 +255,15 @@ def _normalize_override_list(raw_values: list[str] | None) -> list[str]:
     return values
 
 
+def _derive_issue_projects(fields: dict[str, str], log_rel_path: str) -> list[str]:
+    explicit = _split_csv(fields.get("issue_projects"))
+    if explicit:
+        return explicit
+    if log_rel_path.startswith("docs/logs/"):
+        return [DEFAULT_WORKSPACE_PROJECT]
+    return []
+
+
 def _build_links(fields: dict[str, str], log_rel_path: str) -> list[str]:
     lines = [f"- Log: `{log_rel_path}`"]
     for key in [
@@ -259,6 +285,7 @@ def _render_issue_markdown(
     *,
     title: str,
     labels: list[str],
+    issue_projects: list[str],
     milestone: str | None,
     source_log: str,
     parent_issue: str | None,
@@ -269,12 +296,11 @@ def _render_issue_markdown(
     context_lines = [f"- {item}" for item in context_bullets] or ["- <placeholder>"]
     dod_lines = [f"- {item}" for item in dod_bullets] or ["- <placeholder>"]
     lines = [
-        f"# {title}",
-        "",
         "## Metadata",
         "",
         f"- Title: `{title}`",
         f"- Labels: {', '.join(f'`{label}`' for label in labels) if labels else '``'}",
+        f"- Projects: `{', '.join(issue_projects)}`",
         f"- Milestone: `{milestone or ''}`",
         f"- Source log: `{source_log}`",
         f"- Parent issue: `{parent_issue or ''}`",
@@ -384,6 +410,7 @@ def _create_issue(
     title: str,
     body_path: Path,
     labels: list[str],
+    projects: list[str],
     milestone: str | None,
 ) -> tuple[int, str]:
     command = [
@@ -399,6 +426,8 @@ def _create_issue(
     ]
     for label in labels:
         command.extend(["--label", label])
+    for project in projects:
+        command.extend(["--project", project])
     if milestone:
         command.extend(["--milestone", milestone])
 
@@ -434,7 +463,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
 
     top_labels = _derive_top_labels(fields, tags)
     scope_labels = _derive_scope_labels(fields, log_id, scope)
-    function_labels = _derive_function_labels(log_title, tags)
+    function_labels = _derive_function_labels(log_title, tags, sections)
     module_labels = _derive_module_labels(fields, _normalize_override_list(args.module_label_overrides))
     all_labels = _dedupe(top_labels + scope_labels + function_labels + module_labels)
     _validate_labels(all_labels, args.strict_label_check)
@@ -461,6 +490,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
 
     rel_log_path = _repo_rel(log_path)
     link_lines = _build_links(fields, rel_log_path)
+    issue_projects = _derive_issue_projects(fields, rel_log_path)
 
     default_output = repo_root / "docs" / "issues" / f"issue-{log_path.stem.removeprefix('log-')}.md"
     output_path = Path(args.output_path) if args.output_path else default_output
@@ -476,6 +506,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     markdown = _render_issue_markdown(
         title=issue_title,
         labels=all_labels,
+        issue_projects=issue_projects,
         milestone=milestone,
         source_log=rel_log_path,
         parent_issue=parent_issue,
@@ -495,6 +526,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         scope_labels=scope_labels,
         function_labels=function_labels,
         module_labels=module_labels,
+        issue_projects=issue_projects,
         milestone=milestone,
         parent_issue=parent_issue,
         body_markdown=markdown,
@@ -521,6 +553,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
             title=issue_title,
             body_path=output_path,
             labels=all_labels,
+            projects=issue_projects,
             milestone=milestone,
         )
         result.issue_number = issue_number

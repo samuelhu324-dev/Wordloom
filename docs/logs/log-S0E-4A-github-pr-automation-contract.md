@@ -80,7 +80,7 @@
 - `P1` is complete: the parent and phase log templates now expose final `pr_*` field guidance plus explicit PR summary/checklist/evidence scaffold inputs.
 - `P2` is complete: a manifest-driven dry-run PR-prep planner now selects exact ID-scoped commits from the mixed working branch and emits both a structured plan and a body preview artifact.
 - `P3` is complete: the real run created issue `#293`, draft PR `#294`, clean head branch `pr-prep/s0e-4a`, and verified GitHub-side label plus Development linkage behavior.
-- The remaining work is no longer contract stability; it is optional follow-up automation around richer PR metadata such as projects/milestones when those fields are explicitly populated.
+- The remaining work is no longer contract stability; it is follow-up hygiene around title compression, structural PR labels, body formatting, and richer metadata such as projects/milestones when those fields are explicitly populated.
 - `S0E-4A` is now `stable` because the contract has been exercised through both dry-run PR prep and a real PR create path.
 
 ## Success Criteria (DoD)
@@ -232,7 +232,7 @@
 
 ### P3 (Real PR automation)
 
-- P3-C1-S1: create one real PR with labels, milestone, project, and development linkage
+- P3-C1-S1: create one real PR with labels, optional metadata fields, and development linkage
 - P3-C1-S2: verify that human review and merge remain outside automation scope
 
 ## Execution Checklist (unchecked)
@@ -257,7 +257,7 @@
 
 ### P3 (Real PR automation)
 
-- [x] `P3-C1-S1`: create one real PR with labels, milestone, project, and development linkage
+- [x] `P3-C1-S1`: create one real PR with labels, optional metadata fields, and development linkage
 - [x] `P3-C1-S2`: verify that human review and merge remain outside automation scope
 
 ## Evidence
@@ -287,3 +287,4 @@
 - 2026-03-29: completed `P1` by writing final `pr_*` metadata rules and PR description scaffold inputs back into the parent and phase log templates.
 - 2026-03-29: completed `P2` by adding a manifest-driven PR-prep dry-run planner, generating a sample commit-selection plan, and previewing the resulting PR body without mutating any branch.
 - 2026-03-29: completed `P3` by creating source issue `#293`, opening draft PR `#294` from clean branch `pr-prep/s0e-4a`, and verifying GitHub-side label plus Development linkage behavior.
+- 2026-03-29: opened `S0E-4B` as the post-first-PR follow-up for title compression, structural label inheritance, and body footer/link formatting.
