@@ -1,0 +1,14 @@
+{
+  "mode": "pr-prep-dry-run",
+  "operation": "plan-pr-prep",
+  "defaults": {
+    "base_branch": "main",
+    "head_ref": "HEAD"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md"
+    }
+  ]
+}
