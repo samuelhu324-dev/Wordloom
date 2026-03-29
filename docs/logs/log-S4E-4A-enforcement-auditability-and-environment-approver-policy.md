@@ -17,6 +17,10 @@
   **reference_log_1**: `docs/logs/log-S4E-3A-approval-hierarchy-and-rollback-authority.md`
   **reference_log_2**: `docs/logs/log-S4E-2A-environment-promotion-and-release-records.md`
   **reference_log_3**: `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
+**roadmap_path**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+**roadmap_milestone**: `M5`
+**roadmap_phase**: `M5-P2`
+**roadmap_bridge_refs**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M5-P2`
 **created**: `2026-03-27`
 **updated**: `2026-03-27`
 

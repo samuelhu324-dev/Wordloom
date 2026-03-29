@@ -17,6 +17,10 @@
   **reference_log_1**: `docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
   **reference_log_2**: `docs/logs/log-S4C-3A-cloud-devtest-wordloom-integration.md`
   **reference_log_3**: `docs/logs/_template-log-phase-drills-evidence.md`
+**roadmap_path**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+**roadmap_milestone**: `M4`
+**roadmap_phase**: `M4-P2`
+**roadmap_bridge_refs**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M4-P2`
 **created**: `2026-03-24`
 **updated**: `2026-03-25`
 

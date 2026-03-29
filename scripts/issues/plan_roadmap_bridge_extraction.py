@@ -31,6 +31,7 @@ class RoadmapBridgePlanItem:
     actual_log_roadmap_path: str | None
     actual_log_roadmap_milestone: str | None
     actual_log_roadmap_phase: str | None
+    actual_log_roadmap_bridge_refs: list[str]
     planned_action: str
     status: str
     warnings: list[str]
@@ -145,6 +146,12 @@ def _parse_parent_contribution_content(content: str) -> tuple[str, str, str] | N
     return parent_roadmap_id, parent_phase, child_log_path.strip()
 
 
+def _parse_bridge_refs(value: str | None) -> list[str]:
+    if not value:
+        return []
+    return [part.strip() for part in value.split(",") if part.strip()]
+
+
 def _extract_roadmap_document(path: Path, roadmap_kind_override: str | None) -> RoadmapDocument:
     text = _load_text(path)
     fields = _parse_fields(text)
@@ -233,27 +240,35 @@ def _verify_log_fields(
     expected_milestone: str | None,
     expected_phase: str | None,
     verify_log_fields: bool,
-) -> tuple[str, str, list[str], str | None, str | None, str | None]:
+) -> tuple[str, str, list[str], str | None, str | None, str | None, list[str]]:
     warnings: list[str] = []
     if child_log_path is None:
-        return "skip-unmapped-slot", "unmapped", warnings, None, None, None
+        return "skip-unmapped-slot", "unmapped", warnings, None, None, None, []
 
     resolved_log = _coerce_path(child_log_path, repo_root)
     if not resolved_log.is_file():
         warnings.append("child log path does not exist")
-        return "reconcile-missing-child-log", "reconciliation", warnings, None, None, None
+        return "reconcile-missing-child-log", "reconciliation", warnings, None, None, None, []
 
     fields = _parse_fields(_load_text(resolved_log))
     actual_path = fields.get("roadmap_path", "").strip() or None
     actual_milestone = fields.get("roadmap_milestone", "").strip() or None
     actual_phase = fields.get("roadmap_phase", "").strip() or None
+    actual_bridge_refs = _parse_bridge_refs(fields.get("roadmap_bridge_refs", "").strip() or None)
 
     if not verify_log_fields:
-        return "extract-roadmap-bridge", "aligned", warnings, actual_path, actual_milestone, actual_phase
+        return "extract-roadmap-bridge", "aligned", warnings, actual_path, actual_milestone, actual_phase, actual_bridge_refs
 
-    if not actual_path and not actual_milestone and not actual_phase:
+    if not actual_path and not actual_milestone and not actual_phase and not actual_bridge_refs:
         warnings.append("child log is missing roadmap bridge fields; roadmap ledger remains the canonical source")
-        return "extract-roadmap-bridge", "warning", warnings, actual_path, actual_milestone, actual_phase
+        return "extract-roadmap-bridge", "warning", warnings, actual_path, actual_milestone, actual_phase, actual_bridge_refs
+
+    expected_bridge_ref = None
+    if expected_roadmap_path and expected_phase:
+        expected_bridge_ref = f"{expected_roadmap_path}#{expected_phase}"
+
+    if expected_bridge_ref and expected_bridge_ref in actual_bridge_refs:
+        return "extract-roadmap-bridge", "aligned", warnings, actual_path, actual_milestone, actual_phase, actual_bridge_refs
 
     mismatches: list[str] = []
     if actual_path != expected_roadmap_path:
@@ -264,9 +279,9 @@ def _verify_log_fields(
         mismatches.append("roadmap_phase mismatch")
     if mismatches:
         warnings.extend(mismatches)
-        return "reconcile-log-bridge-fields", "reconciliation", warnings, actual_path, actual_milestone, actual_phase
+        return "reconcile-log-bridge-fields", "reconciliation", warnings, actual_path, actual_milestone, actual_phase, actual_bridge_refs
 
-    return "extract-roadmap-bridge", "aligned", warnings, actual_path, actual_milestone, actual_phase
+    return "extract-roadmap-bridge", "aligned", warnings, actual_path, actual_milestone, actual_phase, actual_bridge_refs
 
 
 def plan_roadmap_bridge_extraction(args: argparse.Namespace) -> RoadmapBridgePlanResult:
@@ -297,7 +312,7 @@ def plan_roadmap_bridge_extraction(args: argparse.Namespace) -> RoadmapBridgePla
             if via_road_id and via_road_id in road_by_id:
                 expected_roadmap_path = road_by_id[via_road_id].roadmap_path
 
-            planned_action, status, warnings, actual_path, actual_milestone, actual_phase = _verify_log_fields(
+            planned_action, status, warnings, actual_path, actual_milestone, actual_phase, actual_bridge_refs = _verify_log_fields(
                 repo_root=repo_root,
                 child_log_path=child_log_path,
                 expected_roadmap_path=expected_roadmap_path if child_log_path else None,
@@ -322,6 +337,7 @@ def plan_roadmap_bridge_extraction(args: argparse.Namespace) -> RoadmapBridgePla
                     actual_log_roadmap_path=actual_path,
                     actual_log_roadmap_milestone=actual_milestone,
                     actual_log_roadmap_phase=actual_phase,
+                    actual_log_roadmap_bridge_refs=actual_bridge_refs,
                     planned_action=planned_action,
                     status=status,
                     warnings=warnings,

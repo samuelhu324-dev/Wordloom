@@ -26,6 +26,7 @@
 **roadmap_path**: ``         # exact roadmap file that owns this log's bridge, e.g. docs/roadmap/road-S1-...md
 **roadmap_milestone**: ``    # exact roadmap milestone, e.g. M3
 **roadmap_phase**: ``        # exact roadmap phase, e.g. M3-P2; parent/spine-only logs may leave this blank
+**roadmap_bridge_refs**: ``  # optional exact-slot refs when one child log maps to multiple slots, e.g. docs/roadmap/road-S1-...md#M3-P2, docs/roadmap/road-S1-...md#M3-P3
 **pr_labels**: ``            # comma-separated existing labels only for the PR; leave blank when PR labels stay manual
 **pr_projects**: ``          # comma-separated exact GitHub Project names for the PR
 **pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave milestone empty

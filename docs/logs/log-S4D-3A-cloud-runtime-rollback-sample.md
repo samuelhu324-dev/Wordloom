@@ -17,6 +17,10 @@
   **reference_log_1**: `docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
   **reference_log_2**: `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
   **reference_log_3**: `docs/logs/_template-log-phase-drills-evidence.md`
+**roadmap_path**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+**roadmap_milestone**: `M4`
+**roadmap_phase**: `M4-P3`
+**roadmap_bridge_refs**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M4-P3`
 **created**: `2026-03-24`
 **updated**: `2026-03-25`
 

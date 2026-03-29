@@ -32,6 +32,7 @@
 **roadmap_path**: ``         # exact roadmap file that owns this spine's bridge, if any
 **roadmap_milestone**: ``    # exact roadmap milestone, e.g. M3; leave blank when the spine spans multiple milestones
 **roadmap_phase**: ``        # exact roadmap phase, e.g. M3-P2; leave blank when only child logs are ledgered in the roadmap
+**roadmap_bridge_refs**: ``  # optional exact-slot refs when one spine/log needs to point at multiple roadmap slots; child-log extraction uses this as the exact multi-slot source
 **pr_labels**: ``            # comma-separated existing labels only for the PR; leave blank when PR labels stay manual
 **pr_projects**: ``          # comma-separated exact GitHub Project names for the PR
 **pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave milestone empty

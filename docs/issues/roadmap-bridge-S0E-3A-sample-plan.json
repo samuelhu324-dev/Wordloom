@@ -5,48 +5,11 @@
   "selection_input": "manifest",
   "operation": "extract-roadmap-bridge",
   "total_bridge_items": 40,
-  "aligned_items": 0,
-  "warning_items": 36,
+  "aligned_items": 36,
+  "warning_items": 0,
   "reconciliation_items": 0,
   "unmapped_items": 4,
-  "warnings": [
-    "road-S1 M1-P0: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M1-P1: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M2-P0: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M2-P1: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M2-P2: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M2-P3: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M3-P0: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M3-P1: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M3-P2: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M3-P3: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M4-P0: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M4-P1: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M4-P2: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M4-P3: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M5-P0: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M5-P1: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M5-P2: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1 M5-P3: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M1-P0: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M1-P1: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M2-P0: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M2-P1: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M2-P2: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M2-P3: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M3-P0: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M3-P1: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M3-P2: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M3-P3: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M4-P0: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M4-P1: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M4-P2: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M4-P3: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M5-P0: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M5-P1: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M5-P2: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source",
-    "road-S1-1 M5-P3: child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-  ],
+  "warnings": [],
   "items": [
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -59,14 +22,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M1",
       "expected_log_roadmap_phase": "M1-P0",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M1",
+      "actual_log_roadmap_phase": "M1-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M1-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -79,14 +44,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M1",
       "expected_log_roadmap_phase": "M1-P1",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M1",
+      "actual_log_roadmap_phase": "M1-P1",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M1-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -102,6 +69,7 @@
       "actual_log_roadmap_path": null,
       "actual_log_roadmap_milestone": null,
       "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_bridge_refs": [],
       "planned_action": "skip-unmapped-slot",
       "status": "unmapped",
       "warnings": []
@@ -120,6 +88,7 @@
       "actual_log_roadmap_path": null,
       "actual_log_roadmap_milestone": null,
       "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_bridge_refs": [],
       "planned_action": "skip-unmapped-slot",
       "status": "unmapped",
       "warnings": []
@@ -135,14 +104,19 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M2",
       "expected_log_roadmap_phase": "M2-P0",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M2",
+      "actual_log_roadmap_phase": "M2-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -155,14 +129,19 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M2",
       "expected_log_roadmap_phase": "M2-P1",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M2",
+      "actual_log_roadmap_phase": "M2-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -175,14 +154,19 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M2",
       "expected_log_roadmap_phase": "M2-P2",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M2",
+      "actual_log_roadmap_phase": "M2-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -195,14 +179,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M2",
       "expected_log_roadmap_phase": "M2-P3",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M1",
+      "actual_log_roadmap_phase": "M1-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M1-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -215,14 +201,18 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M3",
       "expected_log_roadmap_phase": "M3-P0",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M3",
+      "actual_log_roadmap_phase": "M3-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -235,14 +225,15 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
       "expected_log_roadmap_milestone": "M3",
       "expected_log_roadmap_phase": "M3-P1",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
+      "actual_log_roadmap_milestone": "M3",
+      "actual_log_roadmap_phase": "M3-P1",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M3-P1"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -255,14 +246,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
       "expected_log_roadmap_milestone": "M3",
       "expected_log_roadmap_phase": "M3-P2",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
+      "actual_log_roadmap_milestone": "M3",
+      "actual_log_roadmap_phase": "M3-P2",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M3-P2",
+        "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M3-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -275,14 +268,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
       "expected_log_roadmap_milestone": "M3",
       "expected_log_roadmap_phase": "M3-P3",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
+      "actual_log_roadmap_milestone": "M3",
+      "actual_log_roadmap_phase": "M3-P2",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M3-P2",
+        "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M3-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -295,14 +290,15 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M4",
       "expected_log_roadmap_phase": "M4-P0",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M4",
+      "actual_log_roadmap_phase": "M4-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P0"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -315,14 +311,15 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
       "expected_log_roadmap_milestone": "M4",
       "expected_log_roadmap_phase": "M4-P1",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
+      "actual_log_roadmap_milestone": "M4",
+      "actual_log_roadmap_phase": "M4-P1",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M4-P1"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -335,14 +332,15 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
       "expected_log_roadmap_milestone": "M4",
       "expected_log_roadmap_phase": "M4-P2",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
+      "actual_log_roadmap_milestone": "M4",
+      "actual_log_roadmap_phase": "M4-P2",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M4-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -355,14 +353,15 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
       "expected_log_roadmap_milestone": "M4",
       "expected_log_roadmap_phase": "M4-P3",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
+      "actual_log_roadmap_milestone": "M4",
+      "actual_log_roadmap_phase": "M4-P3",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M4-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -375,14 +374,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M5",
       "expected_log_roadmap_phase": "M5-P0",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M5",
+      "actual_log_roadmap_phase": "M5-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -395,14 +396,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M5",
       "expected_log_roadmap_phase": "M5-P1",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M5",
+      "actual_log_roadmap_phase": "M5-P1",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -415,14 +418,15 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
       "expected_log_roadmap_milestone": "M5",
       "expected_log_roadmap_phase": "M5-P2",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
+      "actual_log_roadmap_milestone": "M5",
+      "actual_log_roadmap_phase": "M5-P2",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M5-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
@@ -435,14 +439,15 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
       "expected_log_roadmap_milestone": "M5",
       "expected_log_roadmap_phase": "M5-P3",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
+      "actual_log_roadmap_milestone": "M5",
+      "actual_log_roadmap_phase": "M5-P3",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M5-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -455,14 +460,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M1",
       "expected_log_roadmap_phase": "M1-P0",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M1",
+      "actual_log_roadmap_phase": "M1-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M1-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -475,14 +482,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M1",
       "expected_log_roadmap_phase": "M1-P1",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M1",
+      "actual_log_roadmap_phase": "M1-P1",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M1-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -498,6 +507,7 @@
       "actual_log_roadmap_path": null,
       "actual_log_roadmap_milestone": null,
       "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_bridge_refs": [],
       "planned_action": "skip-unmapped-slot",
       "status": "unmapped",
       "warnings": []
@@ -516,6 +526,7 @@
       "actual_log_roadmap_path": null,
       "actual_log_roadmap_milestone": null,
       "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_bridge_refs": [],
       "planned_action": "skip-unmapped-slot",
       "status": "unmapped",
       "warnings": []
@@ -531,14 +542,19 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M2",
       "expected_log_roadmap_phase": "M2-P0",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M2",
+      "actual_log_roadmap_phase": "M2-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -551,14 +567,19 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M2",
       "expected_log_roadmap_phase": "M2-P1",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M2",
+      "actual_log_roadmap_phase": "M2-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -571,14 +592,19 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M2",
       "expected_log_roadmap_phase": "M2-P2",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M2",
+      "actual_log_roadmap_phase": "M2-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -591,14 +617,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M2",
       "expected_log_roadmap_phase": "M2-P3",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M1",
+      "actual_log_roadmap_phase": "M1-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M1-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -611,14 +639,18 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M3",
       "expected_log_roadmap_phase": "M3-P0",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M3",
+      "actual_log_roadmap_phase": "M3-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -631,14 +663,18 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M3",
       "expected_log_roadmap_phase": "M3-P1",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M3",
+      "actual_log_roadmap_phase": "M3-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -651,14 +687,18 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M3",
       "expected_log_roadmap_phase": "M3-P2",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M3",
+      "actual_log_roadmap_phase": "M3-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -671,14 +711,18 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M3",
       "expected_log_roadmap_phase": "M3-P3",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M3",
+      "actual_log_roadmap_phase": "M3-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -691,14 +735,15 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M4",
       "expected_log_roadmap_phase": "M4-P0",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M4",
+      "actual_log_roadmap_phase": "M4-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P0"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -711,14 +756,19 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M4",
       "expected_log_roadmap_phase": "M4-P1",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M2",
+      "actual_log_roadmap_phase": "M2-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -731,14 +781,19 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M4",
       "expected_log_roadmap_phase": "M4-P2",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M2",
+      "actual_log_roadmap_phase": "M2-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P2",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -751,14 +806,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M4",
       "expected_log_roadmap_phase": "M4-P3",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M1",
+      "actual_log_roadmap_phase": "M1-P1",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M1-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -771,14 +828,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M5",
       "expected_log_roadmap_phase": "M5-P0",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M5",
+      "actual_log_roadmap_phase": "M5-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -791,14 +850,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M5",
       "expected_log_roadmap_phase": "M5-P1",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M5",
+      "actual_log_roadmap_phase": "M5-P1",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -811,14 +872,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M5",
       "expected_log_roadmap_phase": "M5-P2",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M5",
+      "actual_log_roadmap_phase": "M5-P1",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P1",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P2"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     },
     {
       "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
@@ -831,14 +894,16 @@
       "expected_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
       "expected_log_roadmap_milestone": "M5",
       "expected_log_roadmap_phase": "M5-P3",
-      "actual_log_roadmap_path": null,
-      "actual_log_roadmap_milestone": null,
-      "actual_log_roadmap_phase": null,
+      "actual_log_roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "actual_log_roadmap_milestone": "M5",
+      "actual_log_roadmap_phase": "M5-P0",
+      "actual_log_roadmap_bridge_refs": [
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P0",
+        "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P3"
+      ],
       "planned_action": "extract-roadmap-bridge",
-      "status": "warning",
-      "warnings": [
-        "child log is missing roadmap bridge fields; roadmap ledger remains the canonical source"
-      ]
+      "status": "aligned",
+      "warnings": []
     }
   ],
   "parent_alignment_checks": [
