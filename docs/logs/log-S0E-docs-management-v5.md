@@ -120,6 +120,7 @@
 - [x] `P19`：`S0E-4A/P0` 已完成 PR automation contract 收口，commit selection、PR metadata/description、development-link boundary 已固定
 - [x] `P20`：`S0E-4A/P1` 已完成 template rollout，`pr_*` 字段说明和 PR description scaffold 已写回 parent/phase templates
 - [x] `P21`：`S0E-4A/P2` 已完成 dry-run PR-prep 验证，mixed working branch 上的 `S0E-4A` 提交已能被结构化选出并生成 PR body preview
+- [x] `P22`：`S0E-4A/P3` 已完成真实 PR create 验证，issue `#293` 与 draft PR `#294` 已通过 clean PR-prep branch 成功链接
 
 ## Current Status（进展摘要）
 
@@ -142,7 +143,8 @@
 - `S0E-3A/P3-C2` 已完成：sample pair 涉及的历史 child logs 已补齐 primary `roadmap_*` anchors 和 exact-slot `roadmap_bridge_refs`，sample plan 现在保留 `4` 个显式 `unmapped` slots，但不再有 warning fallback；
 - `S0E-4A/P0` 已完成：PR automation 的 contract 已明确收口到 clean PR-prep branch strategy、`pr_*` frontmatter precedence、PR description boundary 和 Development linkage boundary；
 - `S0E-4A/P1` 已完成：parent/phase templates 现在已经带有统一的 `pr_*` fail-closed 说明，以及 PR summary/checklist/evidence scaffold 输入区；
-- `S0E-4A/P2` 已完成：manifest-driven planner 现在可以从 `S0E-docs-management-v5` 这条 mixed branch 中只选出 `S0E-4A` 的 `2` 条提交，并输出 clean PR-prep branch 计划与 body preview；
+- `S0E-4A/P2` 已完成：manifest-driven planner 现在可以从 `S0E-docs-management-v5` 这条 mixed branch 中只选出 `S0E-4A` 的 `4` 条提交，并输出 clean PR-prep branch 计划与 body preview；
+- `S0E-4A/P3` 已完成：真实 issue `#293`、draft PR `#294`、clean head branch `pr-prep/s0e-4a` 与 GitHub-side Development linkage 已全部验证，因此 `S0E-4A` 现在可以视为 `stable`；
 - 既然 `S0E-3A` 的 bridge contract 已经从模板、真实 roadmap、child logs 到 extraction sample 全部闭环，下一条优先结构线应切到 `S0E-4A`，而不是先回到 `S0E-2D`。
 
 ## Notes（落地原则，可选）
@@ -191,3 +193,4 @@
 - 2026-03-29：`S0E-4A/P0` 已完成：PR automation 的 contract 已固定，下一步应进入 `P1` 把 `pr_*` fields 和 PR description scaffold 正式写回模板。
 - 2026-03-29：`S0E-4A/P1` 已完成：模板层已具备 PR metadata 和 PR body scaffold 的稳定输入面，下一步应进入 `P2` 做 mixed working branch -> clean PR-prep branch 的 dry-run 验证。
 - 2026-03-29：`S0E-4A/P2` 已完成：PR-prep dry-run planner 已用真实 `S0E-4A` commits 验证通过，下一步应进入 `P3` 评估真实 PR creation 和 metadata assignment 路径。
+- 2026-03-29：`S0E-4A/P3` 已完成：真实 PR create 路径已经跑通，`S0E-4A` 这条线从 contract、template、dry-run 到 real-run 现已闭环；下一步应评估是否为 `S0E` 收口或另开新的 PR/issue automation follow-up。

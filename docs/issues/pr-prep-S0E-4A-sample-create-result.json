@@ -1,0 +1,34 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-4A-sample-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-4A",
+  "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-4a",
+  "base_branch": "main",
+  "merge_base": "4ffb71f697ae080fabd087e081eef5f504331764",
+  "selected_commit_count": 4,
+  "selected_commits": [
+    "8f99ca5d0bd035f19a5d05abfef838919e41b536",
+    "10f2bcfee5711c3bb99d7af8546e4a142afa75ed",
+    "6c94f4f7d74357c3a02f87c64a745ae07aaf2223",
+    "7855c1278be0f0aa9815e8c397967f83a6623f28"
+  ],
+  "pr_title": "S0E-4A: GitHub pull request automation contract v1",
+  "draft": true,
+  "pr_number": 294,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/294",
+  "body_path": "docs/issues/pr-prep-S0E-4A-sample-create-body.md",
+  "labels_applied": [
+    "EVOLUTION"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "https://github.com/samuelhu324-dev/wordloom-v3/issues/293",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped"
+  ]
+}
