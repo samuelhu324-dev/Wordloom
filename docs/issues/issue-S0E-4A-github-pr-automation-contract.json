@@ -1,0 +1,28 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+  "draft_path": "docs/issues/issue-S0E-4A-github-pr-automation-contract.md",
+  "title": "S0E-4A: contract/GitHub pull request automation contract",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "milestone": null,
+  "parent_issue": null,
+  "body_markdown": "# S0E-4A: contract/GitHub pull request automation contract\n\n## Metadata\n\n- Title: `S0E-4A: contract/GitHub pull request automation contract`\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Milestone: ``\n- Source log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`\n- Parent issue: ``\n\n## Context\n\n- `S0E-4A` defines PR automation as a separate contract instead of hiding it inside issue automation.\n- v1 treats PR creation as its own object model: commit selection, PR metadata, project assignment, milestone assignment, development linking, and human-readable PR description.\n- The stable workflow preserves day-to-day work on mixed branches while still allowing ID-scoped PRs to be created safely.\n\n## Definition of Done (DoD)\n\n- The contract explicitly defines a stable commit-selection strategy for ID-scoped PRs.\n- Log templates expose enough PR metadata for automation to extract labels, projects, milestone, base branch, and development issue.\n- PR descriptions have one simple, repeatable structure that can be generated from child-log execution checklists.\n- The contract explains how PR automation coexists with a constantly updated working branch without losing unrelated scope work.\n\n## Links\n\n- Log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`\n- Parent Log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous Log: `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`\n- Reference Log 1: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`\n- Reference Log 2: `docs/logs/_template-log-parent-epic-spine.md`\n- Reference Log 3: `docs/logs/_template-log-phase-drills-evidence.md`\n",
+  "warnings": [
+    "module labels left blank",
+    "issue_milestone missing",
+    "issue_parent missing",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "issue_number": 293,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/293",
+  "created_at": "2026-03-29T09:08:47.948217+00:00"
+}

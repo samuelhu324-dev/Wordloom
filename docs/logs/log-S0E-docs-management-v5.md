@@ -117,6 +117,9 @@
 - [x] `P16`：`S0E-3A/P2` 已完成首条真实迁移样例，`road-S1` 与 `road-S1-1` 已显式记住 parent/branch bridge ledger
 - [x] `P17`：`S0E-3A/P3` 已完成 mechanical extraction dry-run，roadmap bridge 现在可以在不扫 prose 的前提下输出结构化计划结果
 - [x] `P18`：`S0E-3A/P3-C2` 已完成 child-log bridge metadata backfill，sample pair 的 `36` 条 warning rows 已被压成 `aligned`
+- [x] `P19`：`S0E-4A/P0` 已完成 PR automation contract 收口，commit selection、PR metadata/description、development-link boundary 已固定
+- [x] `P20`：`S0E-4A/P1` 已完成 template rollout，`pr_*` 字段说明和 PR description scaffold 已写回 parent/phase templates
+- [x] `P21`：`S0E-4A/P2` 已完成 dry-run PR-prep 验证，mixed working branch 上的 `S0E-4A` 提交已能被结构化选出并生成 PR body preview
 
 ## Current Status（进展摘要）
 
@@ -137,7 +140,9 @@
 - `S0E-3A/P2` 已完成第一条真实迁移：`road-S1` 和 `road-S1-1` 现在都用 child-log-first bridge ledger 记账，并且支线产出能显式回流主线；
 - `S0E-3A/P3` 已完成：现在可以从 roadmap bridge ledger 机械抽取 `M*-P* -> child log` 结构化结果，并且 parent/branch alignment 也能做 dry-run 验证；
 - `S0E-3A/P3-C2` 已完成：sample pair 涉及的历史 child logs 已补齐 primary `roadmap_*` anchors 和 exact-slot `roadmap_bridge_refs`，sample plan 现在保留 `4` 个显式 `unmapped` slots，但不再有 warning fallback；
-- `S0E-4A` 草案已把 PR automation 拆成独立对象模型，重点放在 ID-scoped commit selection、PR metadata 和 Development linkage；
+- `S0E-4A/P0` 已完成：PR automation 的 contract 已明确收口到 clean PR-prep branch strategy、`pr_*` frontmatter precedence、PR description boundary 和 Development linkage boundary；
+- `S0E-4A/P1` 已完成：parent/phase templates 现在已经带有统一的 `pr_*` fail-closed 说明，以及 PR summary/checklist/evidence scaffold 输入区；
+- `S0E-4A/P2` 已完成：manifest-driven planner 现在可以从 `S0E-docs-management-v5` 这条 mixed branch 中只选出 `S0E-4A` 的 `2` 条提交，并输出 clean PR-prep branch 计划与 body preview；
 - 既然 `S0E-3A` 的 bridge contract 已经从模板、真实 roadmap、child logs 到 extraction sample 全部闭环，下一条优先结构线应切到 `S0E-4A`，而不是先回到 `S0E-2D`。
 
 ## Notes（落地原则，可选）
@@ -183,3 +188,6 @@
 - 2026-03-29：`S0E-3A/P2` 已完成：`road-S1` / `road-S1-1` 都已迁移到显式 bridge ledger，下一步进入 `P3` 做 mechanical extraction 验证。
 - 2026-03-29：`S0E-3A/P3` 已完成：manifest-driven roadmap bridge dry-run 已落地，并通过 sample plan 验证了 mainline/branch extraction 与 parent alignment；下一步可以把这套输出接到 issue/milestone automation v2。
 - 2026-03-29：`S0E-3A/P3-C2` 已完成：sample pair 涉及的历史 child logs 已回填 exact-slot roadmap metadata，roadmap bridge dry-run 的 mapped rows 现已全部对齐；下一步应切到 `S0E-4A` 收口 PR automation contract 与 dry-run PR-prep 路径。
+- 2026-03-29：`S0E-4A/P0` 已完成：PR automation 的 contract 已固定，下一步应进入 `P1` 把 `pr_*` fields 和 PR description scaffold 正式写回模板。
+- 2026-03-29：`S0E-4A/P1` 已完成：模板层已具备 PR metadata 和 PR body scaffold 的稳定输入面，下一步应进入 `P2` 做 mixed working branch -> clean PR-prep branch 的 dry-run 验证。
+- 2026-03-29：`S0E-4A/P2` 已完成：PR-prep dry-run planner 已用真实 `S0E-4A` commits 验证通过，下一步应进入 `P3` 评估真实 PR creation 和 metadata assignment 路径。

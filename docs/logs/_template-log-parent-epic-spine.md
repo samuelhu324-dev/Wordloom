@@ -33,11 +33,11 @@
 **roadmap_milestone**: ``    # exact roadmap milestone, e.g. M3; leave blank when the spine spans multiple milestones
 **roadmap_phase**: ``        # exact roadmap phase, e.g. M3-P2; leave blank when only child logs are ledgered in the roadmap
 **roadmap_bridge_refs**: ``  # optional exact-slot refs when one spine/log needs to point at multiple roadmap slots; child-log extraction uses this as the exact multi-slot source
-**pr_labels**: ``            # comma-separated existing labels only for the PR; leave blank when PR labels stay manual
-**pr_projects**: ``          # comma-separated exact GitHub Project names for the PR
-**pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave milestone empty
-**pr_base**: ``              # exact PR base branch, e.g. main
-**pr_development_issue**: `` # exact issue number/url the PR should link in Development
+**pr_labels**: ``            # comma-separated existing labels only for the PR; if blank, automation must leave PR labels empty
+**pr_projects**: ``          # comma-separated exact GitHub Project names for the PR; if blank, automation must leave PR project assignment empty
+**pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave the PR milestone empty
+**pr_base**: ``              # exact PR base branch, e.g. main; if blank, dry-run may report it missing but must not guess another base
+**pr_development_issue**: `` # exact issue number/url the PR should link in Development; if blank, automation must leave Development linkage empty
 **created**: `YYYY-MM-DD`
 **updated**: `YYYY-MM-DD`
 
@@ -54,7 +54,28 @@
 
 - <默认认证/默认存储/默认入口/默认环境/默认语义……>
 - 若 `issue_*` 字段为空，automation 必须保守留空并要求人工确认，而不是猜测 title keyword、labels 或 milestone。
+- 若 `pr_*` 字段为空，PR automation 必须保守留空并显式报告缺口，而不是复制 issue metadata 或猜测 base / milestone / development link。
 - roadmap 与 logs 的机械桥接必须通过 `roadmap_path + roadmap_milestone + roadmap_phase` 明确声明；roadmap 内的正式 bridge ledger 默认只计入 child logs，而不是 parent/spine prose。
+
+## PR Summary Inputs（可选）
+
+- 仅当 parent/spine log 本身会作为 PR contract source 时填写；多数情况下，真正的 PR 描述仍应来自 child phase log。
+
+**PR summary bullets**:
+
+- <1-3 条面向 reviewer 的简短说明>
+
+**PR checklist source**:
+
+- 默认应指向具体 child log 的 execution checklist，而不是 parent/spine 自己重新发明一套 checklist。
+- 若 parent/spine 只做聚合，应在这里写明“由哪些 child logs 组成该 PR”。
+
+**PR links / evidence footer**:
+
+- Parent log: `docs/logs/log-<ID>.md`
+- Child log source(s): ``
+- Issue: ``
+- Evidence artifact: ``
 
 **Non-goals（不做什么）**（可选，但建议写）:
 
