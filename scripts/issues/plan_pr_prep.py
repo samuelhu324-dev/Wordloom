@@ -12,6 +12,7 @@ from gen_issue_draft import _load_text, _parse_fields, _parse_sections, _repo_re
 
 ID_PREFIX_RE = re.compile(r"^(?P<id>[A-Z0-9-]+)(?:/|:)")
 CHECKED_ITEM_RE = re.compile(r"^- \[x\] `?([^`]+)`?:\s*(.+)$", re.IGNORECASE)
+COMMIT_SUBJECT_RE = re.compile(r"^(?P<id>[A-Z0-9-]+)/(?P<unit>[^:]+):\s*(?P<summary>.+)$")
 
 
 @dataclass
@@ -87,6 +88,16 @@ def _split_csv(raw: str | None) -> list[str]:
     return [part.strip() for part in raw.split(",") if part.strip()]
 
 
+def _dedupe(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in items:
+        if item and item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
+
+
 def _normalize_branch_name(raw: str) -> str:
     lowered = raw.lower()
     lowered = re.sub(r"[^a-z0-9._/-]+", "-", lowered)
@@ -99,6 +110,130 @@ def _git_stdout(*args: str) -> str:
     if cmd.returncode != 0:
         raise SystemExit(cmd.stderr.strip() or f"git command failed: {' '.join(args)}")
     return cmd.stdout.strip()
+
+
+def _find_section_lines(sections: dict[str, list[str]], prefix: str) -> list[str]:
+    lowered_prefix = prefix.lower()
+    for name, lines in sections.items():
+        if name.lower().startswith(lowered_prefix):
+            return lines
+    return []
+
+
+def _section_has_substantive_evidence(section_lines: list[str]) -> bool:
+    for raw in section_lines:
+        stripped = raw.strip()
+        if not stripped:
+            continue
+        lowered = stripped.lower()
+        if "<placeholder>" in lowered:
+            continue
+        if stripped.startswith("- ") or stripped.startswith("### ") or stripped.startswith("headSha:") or stripped.startswith("artifacts:"):
+            return True
+    return False
+
+
+def _should_add_drills_label(fields: dict[str, str], sections: dict[str, list[str]]) -> bool:
+    combined = " ".join(
+        [fields.get("title", ""), fields.get("tags", ""), fields.get("scope", "")]
+    ).lower()
+    if "drills" in combined or "evidence" in combined:
+        return True
+    return _section_has_substantive_evidence(_find_section_lines(sections, "Evidence"))
+
+
+def _build_pr_labels(fields: dict[str, str], sections: dict[str, list[str]]) -> list[str]:
+    inherited = (
+        _split_csv(fields.get("issue_top_labels"))
+        + _split_csv(fields.get("issue_scope_labels"))
+        + _split_csv(fields.get("issue_module_labels"))
+    )
+    explicit_pr = _split_csv(fields.get("pr_labels"))
+    derived = explicit_pr + inherited
+    if _should_add_drills_label(fields, sections):
+        derived.append("drills")
+    return _dedupe(derived)
+
+
+def _build_pr_projects(fields: dict[str, str], source_log_rel: str) -> list[str]:
+    explicit_pr = _split_csv(fields.get("pr_projects"))
+    if explicit_pr:
+        return explicit_pr
+    return []
+
+
+def _parse_commit_subject(subject: str) -> dict[str, str | int] | None:
+    match = COMMIT_SUBJECT_RE.match(subject.strip())
+    if not match:
+        return None
+    unit = match.group("unit").strip()
+    phase_match = re.match(r"P(?P<phase>\d+)", unit)
+    if not phase_match:
+        return None
+    return {
+        "id": match.group("id").strip(),
+        "unit": unit,
+        "summary": match.group("summary").strip(),
+        "phase": int(phase_match.group("phase")),
+    }
+
+
+def _compress_phase_numbers(values: list[int]) -> str:
+    if not values:
+        return ""
+
+    ordered_unique: list[int] = []
+    for value in sorted(set(values)):
+        ordered_unique.append(value)
+
+    parts: list[str] = []
+    start = ordered_unique[0]
+    end = ordered_unique[0]
+    for value in ordered_unique[1:]:
+        if value == end + 1:
+            end = value
+            continue
+        parts.append(f"P{start}" if start == end else f"P{start}-P{end}")
+        start = value
+        end = value
+    parts.append(f"P{start}" if start == end else f"P{start}-P{end}")
+    return "+".join(parts)
+
+
+def _build_pr_title(
+    requested_id: str,
+    log_title: str,
+    selected_commits: list[CommitSelection],
+    checklist_phase_numbers: list[int],
+) -> str:
+    if len(checklist_phase_numbers) > 1:
+        return f"{requested_id}/{_compress_phase_numbers(checklist_phase_numbers)}: {log_title}"
+
+    parsed = [_parse_commit_subject(item.subject) for item in selected_commits]
+    parsed_infos = [item for item in parsed if item is not None]
+
+    if len(parsed_infos) == len(selected_commits) and len(parsed_infos) > 1:
+        phases = [int(item["phase"]) for item in parsed_infos]
+        if len(set(phases)) > 1:
+            return f"{requested_id}/{_compress_phase_numbers(phases)}: {log_title}"
+
+    if len(parsed_infos) == 1 and len(selected_commits) == 1:
+        return selected_commits[0].subject
+
+    if parsed_infos:
+        units = "+".join(str(item["unit"]) for item in parsed_infos)
+        summaries = _dedupe([str(item["summary"]) for item in parsed_infos])
+        summary_text = "; ".join(summaries) if summaries else log_title
+        return f"{requested_id}/{units}: {summary_text}"
+
+    return f"{requested_id}: {log_title}"
+
+
+def _render_commit_footer_line(commit: CommitSelection) -> str:
+    parsed = _parse_commit_subject(commit.subject)
+    if not parsed:
+        return f"- `{commit.sha[:8]}` {commit.subject}"
+    return f"- `{commit.sha[:8]}` / `{parsed['id']}` / `{parsed['unit']}`: {parsed['summary']}"
 
 
 def _parse_pr_summary_inputs(section_lines: list[str]) -> tuple[list[str], list[str]]:
@@ -133,8 +268,20 @@ def _extract_checked_items(section_lines: list[str]) -> list[str]:
     for raw in section_lines:
         match = CHECKED_ITEM_RE.match(raw.strip())
         if match:
-            items.append(f"{match.group(1)}: {match.group(2).strip()}")
+            items.append(f"`{match.group(1)}`: {match.group(2).strip()}")
     return items
+
+
+def _extract_checked_phase_numbers(section_lines: list[str]) -> list[int]:
+    phases: list[int] = []
+    for raw in section_lines:
+        match = CHECKED_ITEM_RE.match(raw.strip())
+        if not match:
+            continue
+        phase_match = re.match(r"P(?P<phase>\d+)", match.group(1).strip())
+        if phase_match:
+            phases.append(int(phase_match.group("phase")))
+    return sorted(set(phases))
 
 
 def _build_default_link_lines(fields: dict[str, str], source_log_path: str) -> list[str]:
@@ -157,20 +304,21 @@ def _render_body_preview(
     checklist_items: list[str],
     link_lines: list[str],
     selected_commits: list[CommitSelection],
+    pr_labels: list[str],
+    pr_projects: list[str],
     pr_development_issue: str | None,
 ) -> str:
     summary_lines = [f"- {item}" for item in summary_bullets] or ["- <placeholder>"]
     checklist_lines = [f"- [x] {item}" for item in checklist_items] or ["- [ ] <placeholder>"]
-    selected_commit_lines = [f"- `{item.sha[:8]}` {item.subject}" for item in selected_commits] or ["- <none>"]
+    selected_commit_lines = [_render_commit_footer_line(item) for item in selected_commits] or ["- <none>"]
     lines = [
-        f"# {pr_title}",
-        "",
         "## Metadata",
         "",
         f"- Requested ID: `{requested_id}`",
         f"- Base branch: `{base_branch}`",
         f"- Candidate PR-prep branch: `{candidate_pr_branch}`",
         f"- Source log: `{source_log_path}`",
+        f"- Labels: `{', '.join(pr_labels)}`",
         f"- Development issue: `{pr_development_issue or ''}`",
         "",
         "## Summary",
@@ -188,8 +336,16 @@ def _render_body_preview(
         "## Evidence Footer",
         "",
         *selected_commit_lines,
-        "",
     ]
+    if pr_development_issue:
+        lines.extend(
+            [
+                "",
+                "## Development Link",
+                "",
+                f"- Closes #{pr_development_issue.rstrip('/').split('/')[-1]}",
+            ]
+        )
     return "\n".join(lines)
 
 
@@ -227,8 +383,9 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
     if not source_log_path.is_file():
         raise SystemExit(f"PR-prep source log not found: {source_log_path}")
 
-    fields = _parse_fields(_load_text(source_log_path))
-    sections = _parse_sections(_load_text(source_log_path))
+    full_text = _load_text(source_log_path)
+    fields = _parse_fields(full_text)
+    sections = _parse_sections(full_text)
     source_log_rel = _repo_rel(source_log_path)
 
     current_branch = _git_stdout("branch", "--show-current")
@@ -240,6 +397,11 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
         warnings.append("manifest base_branch differs from source log pr_base; source log pr_base remains canonical")
 
     base_branch = source_log_pr_base or manifest_base_branch
+    pr_labels = _build_pr_labels(fields, sections)
+    pr_projects = _build_pr_projects(fields, source_log_rel)
+    pr_milestone = fields.get("pr_milestone", "").strip() or None
+    pr_development_issue = fields.get("pr_development_issue", "").strip() or None
+
     if not base_branch:
         return PrPrepPlanItem(
             requested_id=requested_id,
@@ -251,10 +413,10 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
             candidate_pr_branch="",
             pr_title="",
             pr_base=source_log_pr_base,
-            pr_labels=_split_csv(fields.get("pr_labels")),
-            pr_projects=_split_csv(fields.get("pr_projects")),
-            pr_milestone=fields.get("pr_milestone", "").strip() or None,
-            pr_development_issue=fields.get("pr_development_issue", "").strip() or None,
+            pr_labels=pr_labels,
+            pr_projects=pr_projects,
+            pr_milestone=pr_milestone,
+            pr_development_issue=pr_development_issue,
             preview_body_path=_repo_rel(preview_path),
             selected_commit_count=0,
             selected_commits=[],
@@ -281,18 +443,24 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
     requested_slug = _normalize_branch_name(requested_id)
     candidate_pr_branch = (item.get("candidate_pr_branch") or defaults.get("candidate_pr_branch") or f"pr-prep/{requested_slug}").strip()
 
-    pr_title = f"{fields.get('id', requested_id).strip()}: {fields.get('title', requested_id).strip()}"
-    summary_bullets, explicit_link_lines = _parse_pr_summary_inputs(sections.get("PR Summary Inputs", []))
+    summary_bullets, explicit_link_lines = _parse_pr_summary_inputs(_find_section_lines(sections, "PR Summary Inputs"))
     if not summary_bullets:
         warnings.append("source log is missing PR summary bullets; preview uses placeholders")
-    checklist_items = _extract_checked_items(sections.get("Execution Checklist (unchecked)", []))
-    if not checklist_items:
-        checklist_items = _extract_checked_items(sections.get("Execution Checklist", []))
+
+    checklist_section_lines = _find_section_lines(sections, "Execution Checklist")
+    checklist_items = _extract_checked_items(checklist_section_lines)
+    checklist_phase_numbers = _extract_checked_phase_numbers(checklist_section_lines)
     if not checklist_items:
         warnings.append("source log has no checked execution checklist items for PR preview")
 
+    pr_title = _build_pr_title(
+        requested_id,
+        fields.get("title", "").strip() or requested_id,
+        selected_commits,
+        checklist_phase_numbers,
+    )
+
     link_lines = explicit_link_lines or _build_default_link_lines(fields, source_log_rel)
-    pr_development_issue = fields.get("pr_development_issue", "").strip() or None
     preview_body = _render_body_preview(
         requested_id=requested_id,
         pr_title=pr_title,
@@ -303,6 +471,8 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
         checklist_items=checklist_items,
         link_lines=link_lines,
         selected_commits=selected_commits,
+        pr_labels=pr_labels,
+        pr_projects=pr_projects,
         pr_development_issue=pr_development_issue,
     )
     preview_path.write_text(preview_body + "\n", encoding="utf-8")
@@ -319,9 +489,9 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
         candidate_pr_branch=candidate_pr_branch,
         pr_title=pr_title,
         pr_base=source_log_pr_base,
-        pr_labels=_split_csv(fields.get("pr_labels")),
-        pr_projects=_split_csv(fields.get("pr_projects")),
-        pr_milestone=fields.get("pr_milestone", "").strip() or None,
+        pr_labels=pr_labels,
+        pr_projects=pr_projects,
+        pr_milestone=pr_milestone,
         pr_development_issue=pr_development_issue,
         preview_body_path=_repo_rel(preview_path),
         selected_commit_count=len(selected_commits),

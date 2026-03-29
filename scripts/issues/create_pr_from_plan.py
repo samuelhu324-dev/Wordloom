@@ -122,7 +122,7 @@ def _append_development_link(body_text: str, development_issue: str | None) -> s
     link_line = f"Closes #{issue_number}"
     if link_line in body_text:
         return body_text
-    return body_text.rstrip() + "\n\n## Development Link\n\n" + link_line + "\n"
+    return body_text.rstrip() + "\n\n## Development Link\n\n- " + link_line + "\n"
 
 
 def _create_pr(

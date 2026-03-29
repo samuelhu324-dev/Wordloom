@@ -1,0 +1,36 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-4B-sample-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-4B",
+  "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-4b",
+  "base_branch": "main",
+  "merge_base": "4ffb71f697ae080fabd087e081eef5f504331764",
+  "selected_commit_count": 3,
+  "selected_commits": [
+    "898a82c990390f9bd7eb2e3ddeb65bf94ea19bed",
+    "43210aecc60b92d75bee4c266191dd4e52421e18",
+    "a882e5481ed0ae07c479647263f4c7276331e20c"
+  ],
+  "pr_title": "S0E-4B/P0-P3: PR title compression, structural label inheritance, and body footer follow-up v1",
+  "draft": true,
+  "pr_number": 296,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/296",
+  "body_path": "docs/issues/pr-prep-S0E-4B-sample-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "https://github.com/samuelhu324-dev/wordloom-v3/issues/295",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped"
+  ]
+}

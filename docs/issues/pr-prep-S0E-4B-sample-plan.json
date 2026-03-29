@@ -1,7 +1,7 @@
 {
   "mode": "pr-prep-dry-run",
   "result": "ok",
-  "manifest_path": "docs/issues/pr-prep-S0E-4A-sample-manifest.json",
+  "manifest_path": "docs/issues/pr-prep-S0E-4B-sample-manifest.json",
   "selection_input": "manifest",
   "operation": "plan-pr-prep",
   "total_items": 1,
@@ -9,14 +9,14 @@
   "warnings": [],
   "items": [
     {
-      "requested_id": "S0E-4A",
-      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "requested_id": "S0E-4B",
+      "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
       "current_branch": "S0E-docs-management-v5",
       "head_ref": "HEAD",
       "base_branch": "main",
       "merge_base": "4ffb71f697ae080fabd087e081eef5f504331764",
-      "candidate_pr_branch": "pr-prep/s0e-4a",
-      "pr_title": "S0E-4A/P0-P3: GitHub pull request automation contract v1",
+      "candidate_pr_branch": "pr-prep/s0e-4b",
+      "pr_title": "S0E-4B/P0-P3: PR title compression, structural label inheritance, and body footer follow-up v1",
       "pr_base": "main",
       "pr_labels": [
         "EVOLUTION",
@@ -26,42 +26,28 @@
       ],
       "pr_projects": [],
       "pr_milestone": null,
-      "pr_development_issue": "https://github.com/samuelhu324-dev/wordloom-v3/issues/293",
-      "preview_body_path": "docs/issues/pr-prep-S0E-4A-sample-body.md",
-      "selected_commit_count": 5,
+      "pr_development_issue": "https://github.com/samuelhu324-dev/wordloom-v3/issues/295",
+      "preview_body_path": "docs/issues/pr-prep-S0E-4B-sample-body.md",
+      "selected_commit_count": 3,
       "selected_commits": [
         {
-          "sha": "8f99ca5d0bd035f19a5d05abfef838919e41b536",
-          "subject": "S0E-4A/P0-C1-S1S2S3S4S5: fix PR automation contract",
-          "matched_id": "S0E-4A",
+          "sha": "898a82c990390f9bd7eb2e3ddeb65bf94ea19bed",
+          "subject": "S0E-4B/P3-C1-S1S2S3S4S5: refine body format and issue-project validation",
+          "matched_id": "S0E-4B",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
         },
         {
-          "sha": "10f2bcfee5711c3bb99d7af8546e4a142afa75ed",
-          "subject": "S0E-4A/P1-C1-S1S2: roll PR metadata and scaffold into templates",
-          "matched_id": "S0E-4A",
+          "sha": "43210aecc60b92d75bee4c266191dd4e52421e18",
+          "subject": "S0E-4B/P3-C1-S6: stack validation on S0E-4A prep branch",
+          "matched_id": "S0E-4B",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
         },
         {
-          "sha": "6c94f4f7d74357c3a02f87c64a745ae07aaf2223",
-          "subject": "S0E-4A/P2-C1-S1S2: validate dry-run PR prep flow",
-          "matched_id": "S0E-4A",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
-        },
-        {
-          "sha": "7855c1278be0f0aa9815e8c397967f83a6623f28",
-          "subject": "S0E-4A/P3-C1-S1: create source issue and real PR flow",
-          "matched_id": "S0E-4A",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
-        },
-        {
-          "sha": "83093f85618cabbf2da6de48f3b7ee028a5d119e",
-          "subject": "S0E-4A/P3-C1-S2: create real PR and write back evidence",
-          "matched_id": "S0E-4A",
+          "sha": "a882e5481ed0ae07c479647263f4c7276331e20c",
+          "subject": "S0E-4B/P3-C1-S7S8S9: clarify stacked PR semantics and title span precedence",
+          "matched_id": "S0E-4B",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
         }
@@ -988,34 +974,55 @@
           "sha": "8f99ca5d0bd035f19a5d05abfef838919e41b536",
           "subject": "S0E-4A/P0-C1-S1S2S3S4S5: fix PR automation contract",
           "matched_id": "S0E-4A",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
         },
         {
           "sha": "10f2bcfee5711c3bb99d7af8546e4a142afa75ed",
           "subject": "S0E-4A/P1-C1-S1S2: roll PR metadata and scaffold into templates",
           "matched_id": "S0E-4A",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
         },
         {
           "sha": "6c94f4f7d74357c3a02f87c64a745ae07aaf2223",
           "subject": "S0E-4A/P2-C1-S1S2: validate dry-run PR prep flow",
           "matched_id": "S0E-4A",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
         },
         {
           "sha": "7855c1278be0f0aa9815e8c397967f83a6623f28",
           "subject": "S0E-4A/P3-C1-S1: create source issue and real PR flow",
           "matched_id": "S0E-4A",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
         },
         {
           "sha": "83093f85618cabbf2da6de48f3b7ee028a5d119e",
           "subject": "S0E-4A/P3-C1-S2: create real PR and write back evidence",
           "matched_id": "S0E-4A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "898a82c990390f9bd7eb2e3ddeb65bf94ea19bed",
+          "subject": "S0E-4B/P3-C1-S1S2S3S4S5: refine body format and issue-project validation",
+          "matched_id": "S0E-4B",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "43210aecc60b92d75bee4c266191dd4e52421e18",
+          "subject": "S0E-4B/P3-C1-S6: stack validation on S0E-4A prep branch",
+          "matched_id": "S0E-4B",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "a882e5481ed0ae07c479647263f4c7276331e20c",
+          "subject": "S0E-4B/P3-C1-S7S8S9: clarify stacked PR semantics and title span precedence",
+          "matched_id": "S0E-4B",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
         }
