@@ -27,11 +27,11 @@
 **roadmap_milestone**: ``    # exact roadmap milestone, e.g. M3
 **roadmap_phase**: ``        # exact roadmap phase, e.g. M3-P2; parent/spine-only logs may leave this blank
 **roadmap_bridge_refs**: ``  # optional exact-slot refs when one child log maps to multiple slots, e.g. docs/roadmap/road-S1-...md#M3-P2, docs/roadmap/road-S1-...md#M3-P3
-**pr_labels**: ``            # comma-separated existing labels only for the PR; leave blank when PR labels stay manual
-**pr_projects**: ``          # comma-separated exact GitHub Project names for the PR
-**pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave milestone empty
-**pr_base**: ``              # exact PR base branch, e.g. main
-**pr_development_issue**: `` # exact issue number/url the PR should link in Development
+**pr_labels**: ``            # comma-separated existing labels only for the PR; if blank, automation must leave PR labels empty
+**pr_projects**: ``          # comma-separated exact GitHub Project names for the PR; if blank, automation must leave PR project assignment empty
+**pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave the PR milestone empty
+**pr_base**: ``              # exact PR base branch, e.g. main; if blank, dry-run may report it missing but must not guess another base
+**pr_development_issue**: `` # exact issue number/url the PR should link in Development; if blank, automation must leave Development linkage empty
 **created**: `YYYY-MM-DD`
 **updated**: `YYYY-MM-DD`
 
@@ -48,7 +48,29 @@
 
 - <For example: dev/test first; avoid production-grade complexity; do not commit generated artifacts; required evidence JSON fields>
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
+- If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
 - Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
+
+## PR Summary Inputs (optional)
+
+- Use this block when the log is expected to drive PR creation directly.
+- Keep the content human-facing and short; the PR body should summarise scope, not replay commit history.
+
+**PR summary bullets**:
+
+- <1-3 bullets that explain what changed and why>
+
+**PR checklist source**:
+
+- Default source: reuse the child log's execution checklist for the generated PR checklist block.
+- If a generated PR should omit or reorder checklist items, note that override explicitly here.
+
+**PR links / evidence footer**:
+
+- Log: `docs/logs/log-<ID>.md`
+- Issue: ``
+- Runbook: ``
+- Evidence artifact: ``
 
 ## Definitions (optional)
 

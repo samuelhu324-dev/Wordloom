@@ -77,7 +77,8 @@
 ## Current Status
 
 - `P0` is complete: the stable PR-prep strategy, metadata precedence, description boundary, and development-link boundary are now fixed in this log.
-- The next gap is no longer whether PR automation should exist; it is how to expose the contract through templates and a dry-run PR-prep planner.
+- `P1` is complete: the parent and phase log templates now expose final `pr_*` field guidance plus explicit PR summary/checklist/evidence scaffold inputs.
+- The next gap is no longer template shape; it is how to exercise the contract through a dry-run PR-prep planner and commit-selection evidence artifact.
 - `S0E-4A` remains `draft` because the contract has not yet been exercised by a generated PR-prep artifact or a real PR run.
 
 ## Success Criteria (DoD)
@@ -136,6 +137,20 @@
 - The default operator path is `inspect -> dry-run PR prep -> human confirm -> real PR create`; real creation should never be the silent default.
 - `P0` does not require any branch mutation or network write; it only fixes the decision contract that later dry-run and real-run tooling must follow.
 
+## P1 (Template and metadata updates | v1)
+
+### P1-C1-S1 (PR metadata template contract | v1)
+
+- Parent and phase log templates must expose `pr_labels`, `pr_projects`, `pr_milestone`, `pr_base`, and `pr_development_issue` with fail-closed comments that preserve blank-as-blank behavior.
+- `pr_base` is the only template-level source for base branch selection in v1; if blank, later dry-run tooling may report a missing base but must not infer another branch name.
+- Parent and phase templates should share the same `pr_*` semantics so a PR generator does not need different metadata precedence rules per log type.
+
+### P1-C1-S2 (PR description scaffold contract | v1)
+
+- Templates must expose one explicit input area for generated PR descriptions: short reviewer-facing summary bullets, checklist source guidance, and explicit links/evidence footer placeholders.
+- Child phase logs are the default source for generated PR checklist blocks; parent/spine logs may only override that when they intentionally aggregate multiple child logs into one PR.
+- The scaffold must stay concise enough that a generator can emit a predictable PR body without scraping arbitrary prose sections.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -182,8 +197,8 @@
 
 ### P1 (Template and metadata updates)
 
-- [ ] `P1-C1-S1`: PR metadata fields finalised in templates
-- [ ] `P1-C1-S2`: PR description structure fixed
+- [x] `P1-C1-S1`: PR metadata fields finalised in templates
+- [x] `P1-C1-S2`: PR description structure fixed
 
 ### P2 (Dry-run PR preparation)
 
@@ -197,8 +212,12 @@
 - `P0-C1-S2`: this log now fixes the expected PR body shape around summary, execution checklist, explicit links, and optional evidence footer.
 - `P0-C1-S3`: this log now fixes that Development linkage can only come from explicit `pr_development_issue`, while review and merge stay human-owned.
 - `P0-C1-S4` / `P0-C1-S5`: this log now fixes the proof boundary and the default `dry-run first` operating mode that later `P1-P3` tooling must preserve.
+- `P1-C1-S1`: `docs/logs/_template-log-phase-drills-evidence.md` now carries final fail-closed comments for every `pr_*` metadata field.
+- `P1-C1-S1`: `docs/logs/_template-log-parent-epic-spine.md` now mirrors the same `pr_*` semantics so parent/spine logs do not diverge from child phase logs.
+- `P1-C1-S2`: both templates now expose `PR Summary Inputs` blocks that define summary bullets, checklist source rules, and links/evidence footer placeholders for future PR body generation.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-29: opened `S0E-4A` to separate PR automation from issue automation and to define a stable ID-scoped PR workflow.
 - 2026-03-29: completed `P0` by fixing commit-selection semantics, `pr_*` metadata precedence, PR description boundaries, Development linkage ownership, and the default dry-run-first operating mode.
+- 2026-03-29: completed `P1` by writing final `pr_*` metadata rules and PR description scaffold inputs back into the parent and phase log templates.
