@@ -21,6 +21,7 @@ from gen_issue_draft import (
 
 ISSUE_URL_RE = re.compile(r"/issues/(\d+)$")
 PR_URL_RE = re.compile(r"/pull/(\d+)$")
+ISSUE_REF_RE = re.compile(r"(?:/issues/|^#?)(?P<number>\d+)$")
 
 
 @dataclass
@@ -103,6 +104,26 @@ def _extract_issue_number(issue_ref: str | None) -> int | None:
     return None
 
 
+def _extract_issue_refs(issue_ref: str | None) -> list[str]:
+    if not issue_ref:
+        return []
+    refs: list[str] = []
+    for part in issue_ref.split(","):
+        token = part.strip()
+        if not token:
+            continue
+        match = ISSUE_REF_RE.search(token)
+        if match:
+            refs.append(f"#{match.group('number')}")
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in refs:
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
+
+
 def _ensure_branch_absent(branch_name: str) -> None:
     local_code, _, _ = _git_allow_failure("rev-parse", "--verify", f"refs/heads/{branch_name}")
     if local_code == 0:
@@ -116,10 +137,10 @@ def _ensure_branch_absent(branch_name: str) -> None:
 
 
 def _append_development_link(body_text: str, development_issue: str | None) -> str:
-    issue_number = _extract_issue_number(development_issue)
-    if issue_number is None:
+    issue_refs = _extract_issue_refs(development_issue)
+    if not issue_refs:
         return body_text
-    link_line = f"Closes #{issue_number}"
+    link_line = f"Closes {', '.join(issue_refs)}"
     if link_line in body_text:
         return body_text
     return body_text.rstrip() + "\n\n## Development Link\n\n- " + link_line + "\n"
