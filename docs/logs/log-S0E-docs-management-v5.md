@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, epic/s0, sub/0e`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/248`
   **pr**: ``
   **adr**: ``
   **runbook**: ``
@@ -136,6 +136,7 @@
 - [x] `P27`：`S0E-4B/P3-C1-S10S11` 已完成真实 issue/project 验证与 PR base 对齐回 `main`，因此 `S0E-4B` 现已进入 `stable`
 - [x] `P28`：`S0E-2D` 已建档，用于把 milestone、relationship、projects 与 English issue body contract 收口到 enriched issue creation
 - [x] `P29`：`S0E-2E` 已建档，用于把 post-merge issue conclusion、Development linkage 与 final DoD PR refs 收口为独立 contract
+- [x] `P30`：`S0E-2D` 已完成 `P3`，旧 issue `#288` 已按当前 creation body contract 回收，当前 log 的真实 sample issue `#297` 也已创建并回写
 
 ## Current Status（进展摘要）
 
@@ -150,7 +151,9 @@
 - `S0E-2C` 已完成 `P2-C1-S1`：parent-child linking 现在只接受显式 issue number / URL 作为关系输入，`log_path` 仅保留为 traceability 字段；
 - `S0E-2C` 已完成 `P2-C1-S2`：relationship dry-run 现在可以只读 manifest 并输出 `planned / skipped / error / reconciliation` 四类结果，未引入任何 apply 行为；
 - `S0E-2C` 已完成 `P3`：milestone/write-back reconciliation 现在也有明确 contract 和 dry-run 规划器，仍然没有引入 apply 行为；
-- `S0E-2D` 已完成 `P2`：真实样本 `S4E-5B` 与 `S4A-1A` 已验证 roadmap-derived milestone、deterministic links，以及缺失 `issue_parent` 时的 fail-closed blank fallback；
+- `S0E-2D` 已完成 `P3`：旧样本 issue `#288` 已按新 creation body contract 去掉正文 title 并清空预写的 `Context/DoD`，当前 log 也已通过真实 issue `#297` 完成 enriched create sample 与 write-back；
+- `S0E-2D` 已补充 `P1-C2/P3-C3` follow-up：child issue 现在会从 `parent_log.links.issue` 继承顶层 `S0E` issue `#248`，而顶层 issue body 则不会再渲染空白的 `Parent issue`；
+- `S0E-2D` 已补充 `P1-C2-S3/P3-C3-S2` follow-up：`Parent issue` 现在只保留在 `Metadata`，并统一使用 `#248` 这类短 GitHub 引用，不再在 `Links` 重复出现；
 - `S0E-2E` 已建档：后续会把 issue 的最终 Conclusion 从“人脑记忆”改成独立 contract，要求 merge 后回填 Development PR 与 final DoD PR refs；
 - `S0E-3A` 草案已把 roadmap/log bridge 的核心问题收口为 child-log-first contract，并把 roadmap/log templates 增加了统一 bridge 字段；
 - `S0E-3A` 已完成 `P0-P1`：phase log 已固定 bridge ownership / field contract / fail-closed semantics，template rollout 也已落到 parent/phase/roadmap 三类模板；
@@ -233,3 +236,6 @@
 - 2026-03-29：新增 `S0E-2D` 与 `S0E-2E` 两条 follow-up logs，把 enriched issue creation 和 post-merge issue conclusion 明确拆成两个独立 contract，而不再只停留在口头记忆里的“2D/2E”。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
+- 2026-03-29：完成 `S0E-2D/P3`，历史真实 issue `#288` 已按当前 creation body contract 审核并回收，当前 `S0E-2D` 也已成功创建真实 sample issue `#297` 并完成 write-back。
+- 2026-03-29：完成 `S0E-2D` 的 parent-issue follow-up：`S0E` 顶层 issue `#248` 已写回 parent spine，child issue 现可通过 `parent_log.links.issue` 自动继承父级，而顶层 issue draft 已验证不会出现 `Parent issue` 行。
+- 2026-03-29：完成 `S0E-2D` 的 parent-issue format follow-up：`Parent issue` 现已收口为 `Metadata`-only 且使用 `#248` 这类短引用，`Links` 不再重复该字段。
