@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, PR, Automation, epic/s0, sub/0e4a`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/293`
   **pr**: ``
   **runbook**: ``
   **roadmap**: ``
@@ -28,11 +28,11 @@
 **roadmap_path**: ``
 **roadmap_milestone**: ``
 **roadmap_phase**: ``
-**pr_labels**: ``
+**pr_labels**: `EVOLUTION`
 **pr_projects**: ``
 **pr_milestone**: ``
 **pr_base**: `main`
-**pr_development_issue**: ``
+**pr_development_issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/293`
 **created**: `2026-03-29`
 **updated**: `2026-03-29`
 
@@ -182,7 +182,7 @@
 **PR links / evidence footer**:
 
 - Log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
-- Issue: ``
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/293`
 - Runbook: ``
 - Evidence artifact: `docs/issues/pr-prep-S0E-4A-sample-plan.json`
 
