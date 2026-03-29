@@ -127,6 +127,7 @@
 - [x] `P24`：`S0E-4B/P3-C1` 已完成 drills 规则、issue-only project 默认语义、live PR `#294` 回写校正，以及 issue project path 的本地接线；剩余阻塞仅在 GitHub-side project auth / lookup 验证
 - [x] `P25`：`S0E-4B/P3-C1-S5` 已完成正文顶部 title 去重，并已把 issue project 阻塞精确收口到缺失 `project` write scope，而不是泛化为 read/project 可见性问题
 - [x] `P26`：`S0E-4B/P3-C1-S7S8S9` 已完成 stacked PR review 语义、标题 phase-span 优先级，以及 mixed working branch / parent-log 落点规则的收口
+- [x] `P27`：`S0E-4B/P3-C1-S10S11` 已完成真实 issue/project 验证与 PR base 对齐回 `main`，因此 `S0E-4B` 现已进入 `stable`
 
 ## Current Status（进展摘要）
 
@@ -158,7 +159,9 @@
 - `S0E-4B/P3-C1-S7` 已完成：stacked PR 的 review 口径现已明确收口到 compare base 和 `Files changed`，GitHub timeline 里重复出现的上游 commits 只作为 ancestry traceability 读取；
 - `S0E-4B/P3-C1-S8` 已完成：aggregate PR title 现在优先按 source log 的完成 checklist 覆盖范围生成，因此像 `S0E-4B` 这种“创建时已完成 `P0-P2`、实现阶段完成 `P3`”的 log 不会再被错误显示成只做了 `P3`；
 - `S0E-4B/P3-C1-S9` 已完成：`S0E-docs-management-v5` 继续作为 mixed authoring branch 和 parent-log ledger 落点，而 `pr-prep/*` 被明确限定为单次评审用的短生命周期分支；
-- `S0E-4B` 当前唯一外部阻塞已被精确定位为 GitHub token 缺少 `project` write scope，因此真实 issue project 落项仍未通过；
+- `S0E-4B/P3-C1-S10` 已完成：真实 issue `#295` 现已确认落在 `wordloom Board`，此前的 project write-scope 阻塞已被实际消除；
+- `S0E-4B/P3-C1-S11` 已完成：在上游 `#294` 合并后，live PR `#296` 已从临时 stacked base 对齐回 `main`；
+- `S0E-4B` 现在可视为 `stable`，因为 issue project、PR title、body 结构、以及 post-merge base realignment 都已完成验证；
 - 既然 `S0E-3A` 的 bridge contract 已经从模板、真实 roadmap、child logs 到 extraction sample 全部闭环，下一条优先结构线应切到 `S0E-4A`，而不是先回到 `S0E-2D`。
 
 ## Notes（落地原则，可选）
@@ -216,3 +219,4 @@
 - 2026-03-29：`S0E-4B/P3-C1` 已把 live PR `#294` 回写到新规则，并把 `wordloom Board` 默认语义收口到 issue create；下一步只需在具备 project 权限的环境里完成一次真实 issue project 验证。
 - 2026-03-29：进一步确认 `S0E-4B` 的真实 issue create 阻塞并不是 project 不可见，而是 token 仍缺少 `project` write scope；同时去掉了生成 body 顶部重复 title。
 - 2026-03-29：补充了 stacked PR review 语义、aggregate PR title 的 phase-span 优先级，以及 mixed working branch / parent-log 落点规则，避免把 GitHub ancestry-heavy commit 视图误读成真实增量范围。
+- 2026-03-29：`S0E-4B` 的真实 issue `#295` 已确认挂到 `wordloom Board`，并且 live PR `#296` 已在上游合并后重新对齐到 `main`，因此这条 follow-up 已基本完成收口。

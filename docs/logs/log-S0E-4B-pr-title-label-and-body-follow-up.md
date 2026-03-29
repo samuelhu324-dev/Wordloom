@@ -5,11 +5,11 @@
 **id**: `S0E-4B`
 **kind**: `log`
 **title**: `PR title compression, structural label inheritance, and body footer follow-up v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, PR, Automation, epic/s0, sub/0e4b`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/295`
   **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/296`
   **runbook**: ``
   **roadmap**: ``
@@ -31,8 +31,8 @@
 **pr_labels**: ``
 **pr_projects**: ``
 **pr_milestone**: ``
-**pr_base**: `pr-prep/s0e-4a`
-**pr_development_issue**: ``
+**pr_base**: `main`
+**pr_development_issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/295`
 **created**: `2026-03-29`
 **updated**: `2026-03-29`
 
@@ -51,6 +51,7 @@
 
 - PR label derivation should inherit `issue_top_labels`, `issue_scope_labels`, and `issue_module_labels`, then append any extra `pr_labels`.
 - Issue creation under `docs/logs/` should default to project `wordloom Board` unless an explicit project override is present.
+- The real source issue for this slice is now `#295`, and project assignment to `wordloom Board` has been verified live.
 - PRs should not inherit the issue project by default; PR project assignment stays blank unless explicitly requested.
 - If one PR aggregates multiple whole phases, the PR title should compress them to a phase-range string such as `P0-P3` or `P0+P3-P4`.
 - Phase-range title derivation should prefer the source log's completed checklist coverage over the selected commit phase set; selected commits define branch content, not the user-facing completion span.
@@ -73,9 +74,9 @@
 **PR links / evidence footer**:
 
 - Log: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
-- Issue: ``
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/295`
 - Runbook: ``
-- Evidence artifact: `docs/issues/pr-prep-S0E-4A-sample-plan.json`
+- Evidence artifact: `docs/issues/pr-prep-S0E-4B-sample-plan.json`
 
 ## Constraints
 
@@ -98,6 +99,7 @@
 - Body generation can parse `Execution Checklist` sections even when the heading variant changes.
 - `Evidence Footer` and `Development Link` remain separate sections in the generated PR body.
 - Issue creation for logs under `docs/logs/` defaults to project `wordloom Board` unless an explicit project override is supplied.
+- Live issue creation and project assignment are validated by issue `#295` on `wordloom Board`.
 - PR creation stays project-empty by default unless `pr_projects` is explicitly populated.
 - Logs with substantive evidence/drill execution derive the `drills` label.
 - Stacked PR review guidance makes clear that `Files changed` and compare-base semantics are authoritative, while full commit ancestry is only traceability context.
@@ -108,6 +110,8 @@
 - This log can be marked `stable` when:
   - title compression, label inheritance, and body section formatting rules are fixed and validated through regenerated sample artifacts;
   - remaining ambiguity is limited to GitHub auth/project-scope capability rather than local rule definition.
+
+- `S0E-4B` is now `stable` because the real issue `#295` and the real PR `#296` have both been aligned to the final contract, including project assignment, title policy, and post-merge base realignment.
 
 ## P0 (Contract | v1)
 
@@ -177,6 +181,16 @@
 - `pr-prep/*` branches are short-lived review branches created from an explicit base for one PR; they should not replace the mixed working branch and should not be used as the general place to continue authoring the whole spine.
 - Parent/spine logs should default to landing on the mixed working branch first; if the parent itself needs a reviewable slice, create either an explicit child phase/follow-up log or an intentional aggregate PR from that working branch rather than inventing another permanent top-level branch.
 
+### P3-C1-S10 (Live issue/project validation | v1)
+
+- The real issue for this slice is `#295`, created under the final title/label contract and attached to `wordloom Board`.
+- This resolves the earlier environment blocker around GitHub Project write scope and proves that the issue-create project path now works end-to-end.
+
+### P3-C1-S11 (Post-merge PR realignment | v1)
+
+- After upstream PR `#294` merged, PR `#296` should no longer stay based on `pr-prep/s0e-4a`.
+- The live `S0E-4B` PR should be retargeted to `main`, and its body should be aligned so metadata and Development link reflect the final non-stacked state.
+
 ## Plan (draft)
 
 ### P1 (Implementation)
@@ -200,6 +214,8 @@
 - P3-C1-S7: record stacked PR review semantics so duplicate upstream commits are not misread as duplicated delivery
 - P3-C1-S8: make title phase-span derivation prefer completed checklist coverage over selected commit phases
 - P3-C1-S9: clarify the role of the mixed working branch versus short-lived `pr-prep/*` review branches
+- P3-C1-S10: verify real issue creation and `wordloom Board` assignment under the new token scopes
+- P3-C1-S11: retarget the live PR from the temporary stacked base back to `main` and align the final body metadata
 
 ## Execution Checklist (unchecked)
 
@@ -219,6 +235,8 @@
 - [x] `P3-C1-S7`: stacked PR review semantics documented against GitHub's ancestry-heavy commit views
 - [x] `P3-C1-S8`: title phase-span derivation switched to prefer completed checklist coverage
 - [x] `P3-C1-S9`: mixed working branch and parent-log landing policy clarified
+- [x] `P3-C1-S10`: real issue `#295` created and verified on `wordloom Board`
+- [x] `P3-C1-S11`: live PR `#296` retargeted from the temporary stacked base back to `main`
 
 ## Evidence
 
@@ -233,11 +251,12 @@
 - `P3-C1-S4`: issue-create now has a real project-assignment path, but GitHub-side project resolution remains blocked in the current environment by project lookup/auth limitations.
 - `P3-C1-S5`: generated issue and PR bodies now start directly at `## Metadata`, removing the redundant top-level title heading while keeping machine-readable structure intact.
 - `P3-C1-S6`: a first attempt to create the real `S0E-4B` PR from `main` failed on cherry-pick because the selected commit depends on unmerged `S0E-4A` file changes; the validation PR base is therefore temporarily stacked on `pr-prep/s0e-4a`.
-- `P3-C1-S4`: a real `S0E-4B` issue-create attempt now fails specifically on `addProjectV2ItemById`, proving that `read:project` alone is insufficient and the active token still needs the `project` write scope.
 - `P3-C1-S7`: the `S0E-4B` validation PR exposed that GitHub's stacked PR commit views can repeat already-reviewed upstream commits from the base PR branch ancestry; the review contract now treats compare-base semantics and `Files changed` as authoritative.
 - `P3-C1-S8`: `scripts/issues/plan_pr_prep.py` now prefers checked execution-checklist phase coverage when deriving aggregate PR titles, so logs that already completed `P0-P2` at creation time still render `P0-P3` after the implementation-phase commits land.
 - `P3-C1-S9`: the branch policy is now explicit: `S0E-docs-management-v5` remains the mixed authoring branch for the spine and parent-log ledger work, while `pr-prep/*` branches are short-lived review artifacts for one PR each.
 - `P3-C1-S8`: live PR `#296` has been retitled from the commit-only `P3-C1-...` form to the checklist-derived aggregate form `S0E-4B/P0-P3: PR title compression, structural label inheritance, and body footer follow-up v1`.
+- `P3-C1-S10`: GitHub now shows real issue `#295` with labels `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`, and project item `wordloom Board / Backlog`, proving the issue-create project path works with the updated token scopes.
+- `P3-C1-S11`: live PR `#296` is now retargeted to `main`, eliminating the temporary stacked-base review noise once upstream PR `#294` merged.
 
 ## Recent changes (for traceability, optional)
 
@@ -246,9 +265,10 @@
 - 2026-03-29: updated the project policy so `wordloom Board` defaults only on issue creation, not on PR creation, then reconciled live PR `#294` to remove default project noise.
 - 2026-03-29: aligned generated PR checklist formatting so checklist IDs render as `` `P*-C*-S*` `` instead of plain text.
 - 2026-03-29: removed duplicated top-of-body title headings from generated issue and PR bodies so body structure starts at `Metadata`.
-- 2026-03-29: attempted a real `S0E-4B` issue create after enabling project reads; GitHub now exposes the exact remaining blocker: the token still lacks the `project` write scope needed to add the issue to `wordloom Board`.
 - 2026-03-29: attempted a real `S0E-4B` PR from `main`, observed a cherry-pick conflict against the unmerged `S0E-4A` baseline, and switched the validation base to `pr-prep/s0e-4a`.
 - 2026-03-29: clarified that stacked PR commit timelines may repeat upstream commits from the base PR ancestry, so review scope should be read from the compare base and `Files changed` instead.
 - 2026-03-29: changed aggregate PR title derivation to prefer the source log's completed checklist phases, preventing already-completed earlier phases from disappearing from the title just because the latest push only added `P3` commits.
 - 2026-03-29: fixed the branch policy wording so the mixed `S0E-docs-management-v5` branch remains the authoring lane for spine/parent-log work, while `pr-prep/*` branches stay temporary review-only branches.
 - 2026-03-29: wrote back the live validation PR link `#296` and aligned its title to the new checklist-first phase-span rule.
+- 2026-03-29: verified that issue `#295` is real, open, and attached to `wordloom Board`, resolving the earlier project-scope blocker.
+- 2026-03-29: retargeted live PR `#296` from `pr-prep/s0e-4a` back to `main` after upstream PR `#294` merged, and aligned the remaining metadata to the final non-stacked state.
