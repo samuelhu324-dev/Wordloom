@@ -164,7 +164,7 @@
 - Step 5: resolve milestone in this order: explicit `issue_milestone` first, then exact `roadmap_path + roadmap_milestone + roadmap_phase` bridge metadata, else leave it blank.
 - Step 6: resolve parent issue in this order: explicit `issue_parent`, then the parent log's `links.issue` when the source log declares `parent_log`; if neither exists, leave the child issue blank and warn instead of guessing.
 - Step 7: if the source log is a top-level spine with no `parent_log`, omit the `Parent issue` row entirely.
-- Step 8: when `Parent issue` is present, render it as the GitHub short issue reference such as `#248`, not a full URL.
+- Step 8: when `Parent issue` is present, render it as plain text short GitHub issue reference such as `#248`, not a full URL and not a code span.
 - Step 9: confirm `issue_projects`; if they are blank, keep them blank or use the existing `docs/logs/* -> wordloom Board` default rather than guessing from prose.
 - Step 10: keep the generated issue body English-only, start directly from `## Metadata`, and do not repeat the issue title inside the body.
 - Step 11: leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text.
@@ -210,7 +210,7 @@
 - If roadmap bridge metadata is complete and `issue_milestone` is blank, milestone may be derived from that exact bridge and reported explicitly in warnings.
 - If `parent_log` exists and its `links.issue` is populated, child issue drafts may derive `issue_parent` from that exact link and report the derivation explicitly in warnings.
 - If the source log has no `parent_log`, the issue is treated as a top-level issue for creation-body purposes and must omit the `Parent issue` row entirely.
-- If a parent issue is rendered, it must appear only in `Metadata` and use a short GitHub reference such as `#248`.
+- If a parent issue is rendered, it must appear only in `Metadata` and use a plain-text short GitHub reference such as `#248`.
 - If module impact is not explicit, output an empty module-label array and continue.
 - Real GitHub issue creation must remain a separate opt-in mode, not the default behavior of the draft-generation mode.
 

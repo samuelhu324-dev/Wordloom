@@ -4,7 +4,7 @@
 - Projects: `wordloom Board`
 - Milestone: ``
 - Source log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
-- Parent issue: `#248`
+- Parent issue: #248
 
 ## Context
 

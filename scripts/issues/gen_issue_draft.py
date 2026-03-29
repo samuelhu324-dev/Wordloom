@@ -357,7 +357,7 @@ def _render_issue_markdown(
         f"- Source log: `{source_log}`",
     ]
     if show_parent_issue:
-        lines.append(f"- Parent issue: `{parent_issue or ''}`")
+        lines.append(f"- Parent issue: {parent_issue or ''}")
     lines.extend([
         "",
         "## Context",
