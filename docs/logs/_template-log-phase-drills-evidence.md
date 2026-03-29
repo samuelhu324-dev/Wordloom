@@ -22,13 +22,13 @@
 **issue_module_labels**: ``  # comma-separated module labels; leave blank when impact is not explicit
 **issue_milestone**: ``      # exact GitHub milestone name; if blank, automation must leave milestone empty
 **issue_parent**: ``         # parent issue reference if already known; otherwise leave blank
-**issue_projects**: ``       # comma-separated exact GitHub Project names for the issue; leave blank when issue project assignment stays manual
+**issue_projects**: ``       # defaults to `wordloom Board` for logs under docs/logs in this workspace unless a different explicit project list is provided
 **roadmap_path**: ``         # exact roadmap file that owns this log's bridge, e.g. docs/roadmap/road-S1-...md
 **roadmap_milestone**: ``    # exact roadmap milestone, e.g. M3
 **roadmap_phase**: ``        # exact roadmap phase, e.g. M3-P2; parent/spine-only logs may leave this blank
 **roadmap_bridge_refs**: ``  # optional exact-slot refs when one child log maps to multiple slots, e.g. docs/roadmap/road-S1-...md#M3-P2, docs/roadmap/road-S1-...md#M3-P3
-**pr_labels**: ``            # comma-separated existing labels only for the PR; if blank, automation must leave PR labels empty
-**pr_projects**: ``          # comma-separated exact GitHub Project names for the PR; if blank, automation must leave PR project assignment empty
+**pr_labels**: ``            # extra PR labels beyond inherited issue_top_labels / issue_scope_labels / issue_module_labels; add `drills` whenever the log contains substantive evidence/drill execution; all labels must already exist in GitHub
+**pr_projects**: ``          # exact GitHub Project names for the PR; if blank, PR automation leaves project assignment empty by default
 **pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave the PR milestone empty
 **pr_base**: ``              # exact PR base branch, e.g. main; if blank, dry-run may report it missing but must not guess another base
 **pr_development_issue**: `` # exact issue number/url the PR should link in Development; if blank, automation must leave Development linkage empty
@@ -71,6 +71,9 @@
 - Issue: ``
 - Runbook: ``
 - Evidence artifact: ``
+
+- Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
+- `Evidence Footer` lines should prefer: `sha / ID / P*-C*-S* : summary`.
 
 ## Definitions (optional)
 
@@ -123,6 +126,11 @@
 **Commit / PR naming**:
 
 - `<ID>/P<phase>-C<cycle>-S<steps>: <summary>`, where `<steps>` can be a single step (`1`, meaning `...-S1`) or multiple consecutive steps grouped within the same phase / cycle (for example `1S2`, meaning `...-S1S2`).
+- When one PR aggregates multiple whole phases, the PR title should compress the phase set instead of repeating every commit unit:
+  - consecutive phases: `<ID>/P0-P3: <log title>`
+  - discontinuous phases: `<ID>/P0+P3: <log title>`
+  - mixed discontinuous + consecutive phases: `<ID>/P0+P3-P4: <log title>`
+- When the PR is a non-one-shot follow-up that carries a specific incremental unit, prefer the exact commit-style unit in the title: `<ID>/P*-C*-S*: <one-sentence summary>`.
 
 **Branch convention**:
 
