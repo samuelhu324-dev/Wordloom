@@ -165,8 +165,8 @@
 
 ### P2 (Dry-run validation)
 
-- P2-C1-S1: validate enriched issue drafts against logs that already carry roadmap and relationship metadata
-- P2-C1-S2: verify deterministic `Links` output and fail-closed blank handling for missing milestone/project/relationship fields
+- P2-C1-S1: validate enriched issue drafts against representative logs that already carry exact roadmap bridge metadata
+- P2-C1-S2: verify deterministic `Links` output and fail-closed blank handling for missing milestone/project/relationship fields, including the current blank `issue_parent` baseline
 
 ### P3 (Real issue-create validation)
 
@@ -188,8 +188,8 @@
 
 ### P2 (Dry-run validation)
 
-- [ ] `P2-C1-S1`: enriched issue draft validation completed
-- [ ] `P2-C1-S2`: deterministic links and blank-field fallback verified
+- [x] `P2-C1-S1`: enriched issue draft validation completed
+- [x] `P2-C1-S2`: deterministic links and blank-field fallback verified
 
 ### P3 (Real issue-create validation)
 
@@ -203,8 +203,12 @@
 - `P1-C1-S1`: `scripts/issues/gen_issue_draft.py` now resolves milestone precedence as `milestone_override -> issue_milestone -> exact roadmap bridge -> blank`, keeps `issue_parent` explicit, and preserves `issue_projects` as explicit-or-default metadata.
 - `P1-C1-S2`: `scripts/issues/gen_issue_draft.py` now emits an English-only issue scaffold with intentionally blank `Context` and `Definition of Done (DoD)` sections instead of copying bilingual log prose.
 - `P1-C1-S1` / `P1-C1-S2`: `docs/runbook/run-S0E-log-to-issue-creation.md` now records the same milestone, relationship, project, and English-body rules for operators.
+- `P2-C1-S1`: `docs/issues/issue-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.md` and [docs/issues/issue-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.json](docs/issues/issue-S4E-5B-execution-layer-enforcement-and-controlled-exceptions.json) now validate a mainline-roadmap sample where milestone `M5` is derived from exact bridge metadata and deterministic links remain limited to log, runbook, and parent log.
+- `P2-C1-S1`: `docs/issues/issue-S4A-1A-ops-scripting-baseline.md` and [docs/issues/issue-S4A-1A-ops-scripting-baseline.json](docs/issues/issue-S4A-1A-ops-scripting-baseline.json) now validate a branch-roadmap sample where milestone `M1` is derived from exact bridge metadata and the English-only empty-body scaffold remains stable.
+- `P2-C1-S2`: both representative runs kept `issue_parent` blank and emitted explicit warnings instead of guessing a parent relationship, proving the current fail-closed baseline for missing relationship metadata.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-29: opened `S0E-2D` to bring milestone, relationship, project, and English issue-body rules into the issue-create contract after `S0E-2C` and `S0E-3A`.
 - 2026-03-29: completed `P1` by updating the draft generator and runbook so issue creation now uses enriched metadata precedence and an English-only empty-body scaffold.
+- 2026-03-29: completed `P2` by validating enriched draft output against `S4E-5B` and `S4A-1A`, confirming roadmap-derived milestones, deterministic links, and blank relationship fallback.

@@ -1,0 +1,34 @@
+{
+  "mode": "draft-generation",
+  "result": "ok",
+  "log_path": "docs/logs/log-S4A-1A-ops-scripting-baseline.md",
+  "draft_path": "docs/issues/issue-S4A-1A-ops-scripting-baseline.md",
+  "title": "S4A-1A: evidence/ops scripting baseline",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s4/ops",
+    "sub/1"
+  ],
+  "function_labels": [
+    "drills"
+  ],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": "M1",
+  "parent_issue": null,
+  "body_markdown": "## Metadata\n\n- Title: `S4A-1A: evidence/ops scripting baseline`\n- Labels: `EVOLUTION`, `s4/ops`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: `M1`\n- Source log: `docs/logs/log-S4A-1A-ops-scripting-baseline.md`\n- Parent issue: ``\n\n## Context\n\n## Definition of Done (DoD)\n\n## Links\n\n- Log: `docs/logs/log-S4A-1A-ops-scripting-baseline.md`\n- Runbook: `docs/runbook/run-S4A-1A-ops-scripting-baseline.md`\n- Parent log: `docs/logs/log-S4A-systems-platform-operations-runtime-foundation.md`\n",
+  "warnings": [
+    "issue_milestone derived from exact roadmap bridge metadata",
+    "issue_keyword inferred from source log content",
+    "module labels left blank",
+    "issue_parent missing",
+    "Context and Definition of Done (DoD) left intentionally blank pending operator input"
+  ],
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
+}
