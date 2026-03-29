@@ -78,8 +78,9 @@
 
 - `P0` is complete: the stable PR-prep strategy, metadata precedence, description boundary, and development-link boundary are now fixed in this log.
 - `P1` is complete: the parent and phase log templates now expose final `pr_*` field guidance plus explicit PR summary/checklist/evidence scaffold inputs.
-- The next gap is no longer template shape; it is how to exercise the contract through a dry-run PR-prep planner and commit-selection evidence artifact.
-- `S0E-4A` remains `draft` because the contract has not yet been exercised by a generated PR-prep artifact or a real PR run.
+- `P2` is complete: a manifest-driven dry-run PR-prep planner now selects exact ID-scoped commits from the mixed working branch and emits both a structured plan and a body preview artifact.
+- The next gap is no longer PR-prep planning; it is whether the same boundary can survive a real PR creation path with metadata assignment and Development linkage.
+- `S0E-4A` remains `draft` because the contract has not yet been exercised by a real PR create run.
 
 ## Success Criteria (DoD)
 
@@ -151,6 +152,40 @@
 - Child phase logs are the default source for generated PR checklist blocks; parent/spine logs may only override that when they intentionally aggregate multiple child logs into one PR.
 - The scaffold must stay concise enough that a generator can emit a predictable PR body without scraping arbitrary prose sections.
 
+## P2 (Dry-run PR preparation | v1)
+
+### P2-C1-S1 (ID-scoped selection planner | v1)
+
+- Dry-run PR prep should accept an explicit manifest item containing at least `requested_id`, `source_log_path`, and a base branch boundary.
+- The planner must inspect the branch-exclusive commit range and select only commits whose subjects start with the exact requested ID prefix.
+- Every branch-exclusive commit in the inspected range should be reported as either `selected` or `skipped` so the operator can audit why each SHA was or was not included.
+
+### P2-C1-S2 (Clean PR-prep branch validation | v1)
+
+- Dry-run output must include the candidate clean PR-prep branch name, merge-base SHA, selected commit list, and generated PR body preview path.
+- Validation succeeds when the selected commits form a coherent ID-scoped set without mutating any branch or creating any remote PR.
+- Missing optional PR metadata such as `pr_milestone` or `pr_development_issue` should remain blank in the dry-run output rather than being guessed.
+
+## PR Summary Inputs
+
+**PR summary bullets**:
+
+- Fix the PR automation contract around ID-scoped commit selection, metadata precedence, and development-link ownership.
+- Roll final `pr_*` fail-closed semantics and PR body scaffold inputs into the parent and phase log templates.
+- Validate that a future PR-prep generator can describe the `S0E-4A` scope without scraping arbitrary prose from the mixed working branch.
+
+**PR checklist source**:
+
+- Default source: reuse the checked items from this log's execution checklist so the PR body reflects the completed contract and template steps.
+- No parent/spine override is needed for this sample because the selected scope is one direct phase log.
+
+**PR links / evidence footer**:
+
+- Log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
+- Issue: ``
+- Runbook: ``
+- Evidence artifact: `docs/issues/pr-prep-S0E-4A-sample-plan.json`
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -202,8 +237,8 @@
 
 ### P2 (Dry-run PR preparation)
 
-- [ ] `P2-C1-S1`: ID-scoped commit selection implemented
-- [ ] `P2-C1-S2`: clean PR-prep branch generation validated
+- [x] `P2-C1-S1`: ID-scoped commit selection implemented
+- [x] `P2-C1-S2`: clean PR-prep branch generation validated
 
 ## Evidence
 
@@ -215,9 +250,14 @@
 - `P1-C1-S1`: `docs/logs/_template-log-phase-drills-evidence.md` now carries final fail-closed comments for every `pr_*` metadata field.
 - `P1-C1-S1`: `docs/logs/_template-log-parent-epic-spine.md` now mirrors the same `pr_*` semantics so parent/spine logs do not diverge from child phase logs.
 - `P1-C1-S2`: both templates now expose `PR Summary Inputs` blocks that define summary bullets, checklist source rules, and links/evidence footer placeholders for future PR body generation.
+- `P2-C1-S1`: `scripts/issues/plan_pr_prep.py` now provides a manifest-driven PR-prep dry-run planner that reports `selected` and `skipped` branch-exclusive commits by exact ID prefix.
+- `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-manifest.json` defines the sample dry-run input boundary for `S0E-4A`.
+- `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-plan.json` confirms that the dry-run selected `2` `S0E-4A` commits from the mixed working branch, used merge-base `4ffb71f697ae080fabd087e081eef5f504331764`, and planned candidate branch `pr-prep/s0e-4a` with no warnings.
+- `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-body.md` now previews the generated PR body using the log's summary bullets, checked execution checklist items, and evidence footer.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-29: opened `S0E-4A` to separate PR automation from issue automation and to define a stable ID-scoped PR workflow.
 - 2026-03-29: completed `P0` by fixing commit-selection semantics, `pr_*` metadata precedence, PR description boundaries, Development linkage ownership, and the default dry-run-first operating mode.
 - 2026-03-29: completed `P1` by writing final `pr_*` metadata rules and PR description scaffold inputs back into the parent and phase log templates.
+- 2026-03-29: completed `P2` by adding a manifest-driven PR-prep dry-run planner, generating a sample commit-selection plan, and previewing the resulting PR body without mutating any branch.
