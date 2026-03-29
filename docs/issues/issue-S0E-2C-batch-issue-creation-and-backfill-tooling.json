@@ -1,0 +1,27 @@
+{
+  "mode": "draft-generation",
+  "result": "ok",
+  "log_path": "docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md",
+  "draft_path": "docs/issues/issue-S0E-2C-batch-issue-creation-and-backfill-tooling.md",
+  "title": "S0E-2C: automation/batch issue creation and issue relationship backfill tooling",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "milestone": null,
+  "parent_issue": null,
+  "body_markdown": "# S0E-2C: automation/batch issue creation and issue relationship backfill tooling\n\n## Metadata\n\n- Title: `S0E-2C: automation/batch issue creation and issue relationship backfill tooling`\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Milestone: ``\n- Source log: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`\n- Parent issue: ``\n\n## Context\n\n- `S0E-2C` \u4f5c\u4e3a `S0E-2B` \u4e4b\u540e\u7684\u65b0 follow-up slice\uff0c\u5904\u7406\u5355\u6761 issue creation \u5df2\u7ecf\u8dd1\u901a\u4e4b\u540e\u7684\u6279\u91cf\u5316\u4e0e\u56de\u586b\u95ee\u9898\u3002\n- v1 \u5148\u628a batch selection\u3001parent-child linking\u3001milestone/backfill tooling \u7684 contract \u6536\u53e3\uff0c\u518d\u51b3\u5b9a\u662f\u5426\u8fdb\u5165\u5355\u547d\u4ee4 bulk pipeline\u3002\n- `S0E-2C` \u53ea\u6269\u5c55 operator tooling\uff0c\u4e0d\u56de\u5934\u4fee\u6539 `S0E-2A` \u7684\u547d\u540d\u5408\u540c\uff0c\u4e5f\u4e0d\u91cd\u505a `S0E-2B` \u7684\u5355\u6761 create path\u3002\n\n## Definition of Done (DoD)\n\n- \u81f3\u5c11\u56fa\u5b9a\u4e00\u7248 batch manifest \u548c dry-run contract\uff1b\n- \u81f3\u5c11\u56fa\u5b9a\u4e00\u7248\u9010\u9879\u7ed3\u679c\u8f93\u51fa contract\uff0c\u533a\u5206 create/link/backfill \u4e09\u7c7b\u64cd\u4f5c\uff1b\n- \u81f3\u5c11\u660e\u786e parent-child linking \u4e0d\u505a\u8bed\u4e49\u731c\u6d4b\uff0c\u53ea\u63a5\u53d7\u663e\u5f0f\u8f93\u5165\u6216\u53d7\u63a7\u6620\u5c04\uff1b\n- \u81f3\u5c11\u660e\u786e milestone/backfill tooling \u7684 apply boundary \u4e0e\u56de\u5199\u8fb9\u754c\uff1b\n- \u81f3\u5c11\u6709\u4e00\u8f6e representative dry-run evidence\uff0c\u8bc1\u660e\u6279\u91cf\u5de5\u5177\u4e0d\u4f1a\u7ed5\u8fc7 `S0E-2A/S0E-2B` \u7684 fail-closed \u8bed\u4e49\u3002\n\n## Links\n\n- Log: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent Log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous Log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`\n- Reference Log 1: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`\n- Reference Log 2: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`\n- Reference Log 3: `docs/runbook/run-S0E-log-to-issue-creation.md`\n",
+  "warnings": [
+    "module labels left blank",
+    "issue_milestone missing",
+    "issue_parent missing"
+  ],
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
+}

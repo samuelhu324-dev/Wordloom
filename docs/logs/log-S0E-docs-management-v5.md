@@ -20,6 +20,7 @@
   **phase_log_1**: ``
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
   **phase_log_3**: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+  **phase_log_4**: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
 **created**: `2026-03-28`
 **updated**: `2026-03-28`
 
@@ -86,6 +87,8 @@
   - 详见：`docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
 - `S0E-2B`（Phase 2B）：real GitHub issue creation automation / scripting path
   - 详见：`docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+- `S0E-2C`（Phase 2C）：batch issue creation, parent-child linking, and milestone/backfill tooling
+  - 详见：`docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -97,6 +100,10 @@
 - [x] `P5`：`S0E-2B` 已完成 `P1`（local draft-generation implementation + structured result output）
 - [x] `P6`：`S0E-2B` 已完成 `P2`（explicit create mode + first real GitHub issue creation）
 - [x] `P7`：`S0E-2B` 已完成 `P3`（real-run verification + write-back discipline），并通过同一路径创建了 `S0E-2A` 的真实 issue
+- [x] `P8`：`S0E-2C` 已建立，用于承接批量创建、关系补链和 milestone/backfill tooling 的 follow-up scope
+- [x] `P9`：`S0E-2C` 已完成 `P2-C1-S1`，把 parent-child linking 的显式输入 contract 收口为稳定 manifest 形状
+- [x] `P10`：`S0E-2C` 已完成 `P2-C1-S2`，relationship dry-run 已验证 planned / skipped / error / reconciliation 语义
+- [x] `P11`：`S0E-2C` 已完成 `P3`，milestone/write-back reconciliation contract 与 dry-run 都已验证
 
 ## Current Status（进展摘要）
 
@@ -107,6 +114,10 @@
 - `S0E-2B` 已完成 `P1`：本地 `log_path -> docs/issues/*.md` draft-generation 脚本和 JSON sidecar 已跑通，下一步应进入 `P2` 的真实 GitHub create issue 入口；
 - `S0E-2B` 已完成 `P2`：脚本已通过 `gh` prerequisite checks 成功创建真实 issue `#288`，下一步应进入 `P3` 去验证 write-back discipline，并决定是否继续用同一路径创建 `S0E-2A` 的真实 issue；
 - `S0E-2B` 已完成 `P3`：真实 create path 与 write-back discipline 都已验证，`S0E-2A` 的真实 issue `#289` 也已通过同一路径创建并回写到 source log；
+- `S0E-2C` 已建立为后续 slice，专门处理单条 issue creation 之后的批量化、关系补链与历史回填；
+- `S0E-2C` 已完成 `P2-C1-S1`：parent-child linking 现在只接受显式 issue number / URL 作为关系输入，`log_path` 仅保留为 traceability 字段；
+- `S0E-2C` 已完成 `P2-C1-S2`：relationship dry-run 现在可以只读 manifest 并输出 `planned / skipped / error / reconciliation` 四类结果，未引入任何 apply 行为；
+- `S0E-2C` 已完成 `P3`：milestone/write-back reconciliation 现在也有明确 contract 和 dry-run 规划器，仍然没有引入 apply 行为；
 - 当前最大风险不是“不会写脚本”，而是如果在 contract 未稳定时过早自动化，会把现有命名漂移固化下来。
 
 ## Notes（落地原则，可选）
@@ -142,3 +153,7 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-03-28：首次创建 `S0E` spine，用于承接 docs-management v5 中的 issue scaffold / taxonomy / structured mapping 主题。
+- 2026-03-28：新增 `S0E-2C`，把 batch issue creation / parent-child linking / milestone-backfill tooling 从 `S0E-2B` 中拆出为独立 follow-up slice。
+- 2026-03-28：`S0E-2C/P2-C1-S1` 已固定 relationship manifest contract，为下一步 linking/backfill dry-run implementation 提供稳定输入边界。
+- 2026-03-28：`S0E-2C/P2-C1-S2` 已完成 relationship dry-run validation，下一步可以进入 milestone/backfill reconciliation contract。
+- 2026-03-28：`S0E-2C/P3` 已完成 milestone/write-back reconciliation contract 和 dry-run validation，下一步可以评估是否进入 `P4` 或收口到稳定状态。

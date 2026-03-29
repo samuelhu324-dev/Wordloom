@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "mode": "backfill-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "write_back_issue_url": false
+  },
+  "items": [
+    {
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "desired_milestone": "road-S1: systems platform ops roadmap",
+      "reason": "Representative planned milestone backfill because the issue currently has no milestone"
+    },
+    {
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "write_back_issue_url": true,
+      "reason": "Representative skipped item because source log issue URL already matches and no milestone is requested"
+    },
+    {
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "write_back_issue_url": true,
+      "reason": "Representative error case with missing explicit issue reference"
+    },
+    {
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "write_back_issue_url": true,
+      "reason": "Representative reconciliation case with conflicting source log issue URL"
+    }
+  ]
+}

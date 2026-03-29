@@ -1,0 +1,78 @@
+{
+  "mode": "relationship-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-relationship-S0E-2C-sample-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-relationships",
+  "total_items": 4,
+  "planned_items": 1,
+  "warnings": [
+    "item 2: skipped",
+    "item 3: error",
+    "item 4: reconciliation"
+  ],
+  "items": [
+    {
+      "relationship_type": "child-of",
+      "parent_issue_number": 288,
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "child_issue_number": 289,
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "parent_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "child_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "planned_action": "link-child-to-parent",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [],
+      "reason": "Representative planned relationship between automation implementation and contract issue"
+    },
+    {
+      "relationship_type": "child-of",
+      "parent_issue_number": 288,
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "child_issue_number": 289,
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "parent_log_path": null,
+      "child_log_path": null,
+      "planned_action": "skip-relationship",
+      "applied_action": null,
+      "status": "skipped",
+      "warnings": [
+        "Reserved for later manual decision on whether to keep this relationship as documentation-only"
+      ],
+      "reason": "Representative skipped relationship item"
+    },
+    {
+      "relationship_type": "child-of",
+      "parent_issue_number": 288,
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "child_issue_number": null,
+      "child_issue_url": null,
+      "parent_log_path": null,
+      "child_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "planned_action": "error-missing-reference",
+      "applied_action": null,
+      "status": "error",
+      "warnings": [
+        "explicit parent and child issue references are both required"
+      ],
+      "reason": "Representative error case with missing explicit child issue reference"
+    },
+    {
+      "relationship_type": "child-of",
+      "parent_issue_number": 288,
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "child_issue_number": 289,
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "parent_log_path": null,
+      "child_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "planned_action": "reconcile-relationship-input",
+      "applied_action": null,
+      "status": "reconciliation",
+      "warnings": [
+        "child_log_path issue reference conflicts with explicit child issue reference"
+      ],
+      "reason": "Representative reconciliation case with conflicting child traceability"
+    }
+  ]
+}

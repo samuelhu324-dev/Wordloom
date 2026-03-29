@@ -412,7 +412,7 @@ def _create_issue(
     return int(match.group(1)), issue_url
 
 
-def generate_issue_draft(args: argparse.Namespace) -> IssueDraftResult:
+def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) -> IssueDraftResult:
     repo_root = _repo_root()
     log_path = (repo_root / args.log_path).resolve() if not Path(args.log_path).is_absolute() else Path(args.log_path)
     if not log_path.is_file():
@@ -529,7 +529,8 @@ def generate_issue_draft(args: argparse.Namespace) -> IssueDraftResult:
         warnings.append("source log write-back not performed; update links.issue in a later tracked docs change")
 
     result_path.write_text(json.dumps(asdict(result), indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
-    print(json.dumps(asdict(result), indent=2, ensure_ascii=True))
+    if emit_result:
+        print(json.dumps(asdict(result), indent=2, ensure_ascii=True))
     return result
 
 
