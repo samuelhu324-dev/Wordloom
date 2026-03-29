@@ -15,6 +15,10 @@
   **parent_log**: `docs/logs/log-S4C-cloud-services-and-terraform-epic.md`
   **previous_log**: `docs/logs/log-S4C-2A-cloud-devtest-db-and-storage.md`
   **reference_log_1**: `docs/logs/_template-log-phase-drills-evidence.md`
+**roadmap_path**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+**roadmap_milestone**: `M3`
+**roadmap_phase**: `M3-P2`
+**roadmap_bridge_refs**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M3-P2, docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M3-P3`
 **created**: `2026-03-22`
 **updated**: `2026-03-23`
 

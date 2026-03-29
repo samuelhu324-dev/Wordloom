@@ -12,6 +12,7 @@
   **issue**: ``
   **pr**: ``
   **runbook**: ``
+  **roadmap**: ``
   **parent_log**: `docs/logs/log-<PARENT>.md`
   **previous_log**: ``
   **reference_log_1**: ``
@@ -21,6 +22,16 @@
 **issue_module_labels**: ``  # comma-separated module labels; leave blank when impact is not explicit
 **issue_milestone**: ``      # exact GitHub milestone name; if blank, automation must leave milestone empty
 **issue_parent**: ``         # parent issue reference if already known; otherwise leave blank
+**issue_projects**: ``       # comma-separated exact GitHub Project names for the issue; leave blank when issue project assignment stays manual
+**roadmap_path**: ``         # exact roadmap file that owns this log's bridge, e.g. docs/roadmap/road-S1-...md
+**roadmap_milestone**: ``    # exact roadmap milestone, e.g. M3
+**roadmap_phase**: ``        # exact roadmap phase, e.g. M3-P2; parent/spine-only logs may leave this blank
+**roadmap_bridge_refs**: ``  # optional exact-slot refs when one child log maps to multiple slots, e.g. docs/roadmap/road-S1-...md#M3-P2, docs/roadmap/road-S1-...md#M3-P3
+**pr_labels**: ``            # comma-separated existing labels only for the PR; leave blank when PR labels stay manual
+**pr_projects**: ``          # comma-separated exact GitHub Project names for the PR
+**pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave milestone empty
+**pr_base**: ``              # exact PR base branch, e.g. main
+**pr_development_issue**: `` # exact issue number/url the PR should link in Development
 **created**: `YYYY-MM-DD`
 **updated**: `YYYY-MM-DD`
 
@@ -37,6 +48,7 @@
 
 - <For example: dev/test first; avoid production-grade complexity; do not commit generated artifacts; required evidence JSON fields>
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
+- Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
 
 ## Definitions (optional)
 
