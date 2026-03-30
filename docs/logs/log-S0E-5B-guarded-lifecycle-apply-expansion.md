@@ -79,7 +79,8 @@
 - `S0E-5A` has finished one full real lifecycle on itself: issue `#305`, merged PR `#306`, sidebar relationship attach, and final issue conclusion are all complete.
 - `P0` is now fixed: relationship attach is the first mutation family that may continue from a `stop-for-remediation` gate decision, but only when the remediation output contains planned `attach-parent-relationship` steps and nothing outside that family.
 - `P1` is now implemented and validated: live issue `#307` was created for `S0E-5B`, the guarded relationship path attached it to parent issue `#248`, and the same command shape stopped on a frozen mixed-remediation sample without applying anything.
-- The next remaining gap is now strictly `P2`: deciding which PR-side mutation family should be guarded next behind the same pre-gate.
+- `P2` is now completed with `PR body rewrite` as the next guarded mutation family: merged PR `#306` was rewritten in place behind an `allow-apply` gate, while the archived blocked fixture still stopped before any PR mutation.
+- The next remaining gap is now `P3`: using more than one guarded mutation family under the same real lifecycle sample instead of validating them in isolation.
 
 ## P0 (Expansion boundary | v1)
 
@@ -103,19 +104,35 @@
 - The guarded pass sample converges by attaching `#307` under parent issue `#248` and recording `applied-after-pre-gate` in the guarded result artifact.
 - The frozen stop sample reuses the archived `S0E-5A` fixture audit plan; because that remediation set mixes relationship repair with issue-conclusion refresh, the guarded relationship command stops before apply with `blocked-mixed-remediation`.
 
+## P2 (Guarded PR-body rewrite | v1)
+
+### P2-C1-S1 (PR-body rewrite selected as the next guarded family | v1)
+
+- `PR body rewrite` is the next guarded mutation family after relationship attach because it mutates a single live GitHub object in place and can reuse existing `pr-create` traceability artifacts without re-entering branch/materialization risk.
+- Unlike guarded relationship attach, the PR-body rewrite path does not introduce a targeted-remediation continuation exception; it continues only when the generic lifecycle pre-gate result is `allow-apply`.
+- The current `P2` contract therefore stays narrower than `PR create`: the guard protects a post-create PR body rewrite path, not branch preparation or initial PR publication.
+
+### P2-C1-S2 (Live pass and frozen stop validation | v1)
+
+- The live pass sample uses converged `S0E-5A` issue `#305` as the gate input and merged PR `#306` as the mutation target, so the gate returns `allow-apply` and the PR body rewrite can proceed without any targeted-remediation exception.
+- The guarded PR-body rewrite path fetches the live PR body, rewrites checklist/evidence sections from the current source-log scope, and writes the new body back through `gh pr edit`.
+- The same command shape stops before apply on the archived `S0E-5A` blocked fixture because the generic gate result remains `stop-for-remediation`; unlike relationship attach, no narrow continuation rule exists for PR-body mutation.
+
 ## Plan (draft)
 
 - `P0-C1-S1`: fix the exact mutation families that are in-scope for the first guarded apply expansion
 - `P1-C1-S1`: connect the lifecycle pre-gate to one relationship-attach apply path
 - `P1-C1-S2`: validate one live pass sample and one stop-before-apply sample for the guarded relationship path
 - `P2-C1-S1`: decide whether PR creation, PR body rewrite, or another mutation family is the next guarded target
+- `P2-C1-S2`: validate one live pass sample and one stop-before-apply sample for the chosen PR-side mutation family
 
 ## Execution Checklist (unchecked)
 
 - [x] `P0-C1-S1`: expansion boundary fixed
 - [x] `P1-C1-S1`: guarded relationship-attach path implemented
 - [x] `P1-C1-S2`: pass and stop validation recorded
-- [ ] `P2-C1-S1`: next guarded mutation family selected
+- [x] `P2-C1-S1`: next guarded mutation family selected
+- [x] `P2-C1-S2`: pass and stop validation recorded for the chosen PR-side mutation family
 
 ## Evidence (reserved)
 
@@ -160,9 +177,35 @@
   - live issue `#307` was created and then attached to parent issue `#248` through the guarded relationship path, with `guarded_eligibility = allowed-via-targeted-relationship-remediation`
   - the archived fixture sample stopped before apply with `guarded_eligibility = blocked-mixed-remediation` because the remediation output also contained `plan-issue-conclusion-refresh`
 
+### P2-C1-S1S2 (guarded PR-body rewrite exercised on live pass and frozen stop samples | 2026-03-30)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `scripts/issues/apply_pr_body_scope_with_pre_gate.py`
+  - `scripts/issues/rewrite_pr_body_scope_from_log.py`
+  - `docs/issues/lifecycle-audit-S0E-5B-p2-pass-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-5B-p2-pass-plan.json`
+  - `docs/issues/lifecycle-gate-S0E-5B-p2-pass-decision.json`
+  - `docs/issues/pr-prep-S0E-5A-real-live-body.md`
+  - `docs/issues/pr-prep-S0E-5A-real-rewritten-body.md`
+  - `docs/issues/pr-prep-S0E-5A-real-rewrite-apply-result.json`
+  - `docs/issues/pr-prep-S0E-5A-real-guarded-pr-body-rewrite-result.json`
+  - `docs/issues/lifecycle-gate-S0E-5B-p2-stop-decision.json`
+  - `docs/issues/lifecycle-remediation-S0E-5B-p2-stop-plan.json`
+  - `docs/issues/lifecycle-remediation-S0E-5B-p2-stop-relationship-manifest.json`
+  - `docs/issues/lifecycle-remediation-S0E-5B-p2-stop-issue-conclusion-manifest.json`
+  - `docs/issues/pr-prep-S0E-5A-real-stop-guarded-pr-body-rewrite-result.json`
+- expected:
+  - the chosen PR-side guarded family should only continue when the generic lifecycle pre-gate returns `allow-apply`
+  - the same guarded PR-body rewrite command should stop cleanly on a frozen blocked fixture without mutating any PR body
+- observed:
+  - merged PR `#306` was rewritten in place through the guarded path against converged `S0E-5A` issue state, and the apply result records `body_changed = true`
+  - the archived blocked fixture stopped before any PR edit with `mutation blocked by lifecycle pre-gate decision: stop-for-remediation`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: created `S0E-5B` as the follow-up slice for expanding guarded pre-gate enforcement beyond the issue-conclusion mutation path validated in `S0E-5A`.
 - 2026-03-30: created live issue `#307` for `S0E-5B` and wrote the exact GitHub issue link back to this source log.
 - 2026-03-30: completed `P0` by fixing the targeted-remediation continuation rule for guarded relationship attach instead of reusing the generic `allow-apply` rule unchanged.
 - 2026-03-30: completed `P1` by implementing `apply_issue_relationships_with_pre_gate.py`, attaching `#307` to parent issue `#248` through the guarded pass path, and validating a frozen mixed-remediation stop drill.
+- 2026-03-30: completed `P2` by selecting PR-body rewrite as the next guarded PR-side family, rewriting merged PR `#306` behind an `allow-apply` gate, and validating a frozen stop-before-edit drill on the archived blocked fixture.

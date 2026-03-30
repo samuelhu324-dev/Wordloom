@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "mode": "lifecycle-audit-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "expected_parent_issue_number": 248
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5A",
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "issue_number": 305,
+      "reason": "Guarded PR-body rewrite pass sample against the already-converged S0E-5A issue/PR pair."
+    }
+  ]
+}
