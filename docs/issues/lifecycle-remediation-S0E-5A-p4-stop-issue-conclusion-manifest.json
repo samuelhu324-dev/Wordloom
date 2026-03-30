@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-2B",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "issue_number": 288,
+      "merged_pr_overrides": [
+        "#290"
+      ],
+      "reason": "Historical pre-conclusion fixture before issue #288 was closed."
+    }
+  ]
+}

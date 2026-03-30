@@ -1,0 +1,34 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+  "draft_path": "docs/issues/issue-S0E-5A.md",
+  "title": "S0E-5A: workflow/lifecycle audit gate and dry-run planner",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [
+    "drills"
+  ],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Source log: `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`\n- Parent issue: #248\n\n## Context\n\n## Definition of Done (DoD)\n\n## Links\n\n- Log: `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "issue_milestone missing",
+    "Context and Definition of Done (DoD) left intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "issue_number": 305,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/305",
+  "created_at": "2026-03-30T12:49:25.452152+00:00"
+}

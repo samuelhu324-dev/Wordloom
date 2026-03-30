@@ -20,6 +20,7 @@
   **phase_log_1**: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
   **phase_log_9**: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
   **phase_log_10**: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
+  **phase_log_11**: `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -101,6 +102,8 @@
   - 详见：`docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
 - `S0E-4D`（Phase 4D）：review-hold / full-auto lifecycle orchestration follow-up
   - 详见：`docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
+- `S0E-5A`（Phase 5A）：lifecycle audit gate and dry-run planner
+  - 详见：`docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
 - `S0E-4C`（Phase 4C）：PR summary / development issue rendering / issue relationship attach follow-up
   - 详见：`docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
 - `S0E-3A`（Phase 3A）：roadmap milestone and child-log bridge contract
@@ -157,6 +160,13 @@
 - [x] `P42`：`S0E-4C` 已完成 `P7`，merged PR `#301/#302` 现可按最终 title scope 重放 checklist/evidence，历史 body drift 已完成回写
 - [x] `P43`：`S0E-4D` 已建档，用于把 `review-hold` / `full-auto` 与 default human-gated handoff 边界独立收口到 lifecycle orchestration 侧
 - [x] `P44`：`S0E-4D` 已完成 `P2`，staged review / resume-after-review / post-merge full-auto 三类命令口径与 fail-closed examples 已正式固定
+- [x] `P45`：`S0E-4D` 已完成 `P3`，live issue `#303`、draft-to-merged PR `#304`、parent relationship attach 与 final conclusion 已跑通一条真实 staged-to-closed-loop 样本
+- [x] `P46`：`S0E-4D` 已扩展历史验证轮次，`S0E-2A/#289`、`S0E-2B/#288` 与 `S0E-4A/#293` 均已按 Creation -> PR -> merge -> conclusion 路径完成 write-back 与 close
+- [x] `P47`：`S0E-4D` 已完成 representative issue audit 与 `P4`，补齐缺失的 sidebar relationships `#248 -> #289/#293/#297`，并正式记录 body-complete 不等于 relationship-complete 的审计边界
+- [x] `P48`：`S0E-5A` 已完成 `P0-P2`，现已定义 lifecycle audit gate contract，落地 dry-run planner，并以 `#289/#297/#293/#300/#303` 的 representative sample 证明 audit 输出可直接作为 mutation 前置 gate
+- [x] `P49`：`S0E-5A` 已完成 `P3`，历史 warning/blocked audit 结果现可被转换成 relationship / issue-conclusion 的 dry-run remediation manifests，作为后续真正前置 gate 的修复规划层
+- [x] `P50`：`S0E-5A` 已完成 `P4`，统一 pre-gate entrypoint 已把 audit / decision / remediation-planning 串起来，并固定 `warning` 为 stop-and-plan-remediation 的 gate 策略
+- [x] `P51`：`S0E-5A` 已完成 `P5`，pre-gate 已接到 issue-conclusion mutation 前面，并用一条真实 pass->apply 样本和一条 frozen stop drill 证明 gated apply 行为成立
 
 ## Current Status（进展摘要）
 
@@ -174,7 +184,13 @@
 - `S0E-2D` 已完成 `P3`：旧样本 issue `#288` 已按新 creation body contract 去掉正文 title 并清空预写的 `Context/DoD`，当前 log 也已通过真实 issue `#297` 完成 enriched create sample 与 write-back；
 - `S0E-2D` 已补充 `P1-C2/P3-C3` follow-up：child issue 现在会从 `parent_log.links.issue` 继承顶层 `S0E` issue `#248`，而顶层 issue body 则不会再渲染空白的 `Parent issue`；
 - `S0E-2D` 已补充 `P1-C2-S3/P3-C3-S2` follow-up：`Parent issue` 现在只保留在 `Metadata`，并统一使用 `#248` 这类短 GitHub 引用，不再在 `Links` 重复出现；
-- `S0E-4D` 已完成 `P2`：`review-hold`、resume-after-review，以及 post-merge `full-auto` 的命令口径与 fail-closed examples 已写回 log/runbook，且 `full-auto` 现已明确不覆盖 human-owned merge；
+- `S0E-4D` 已完成 `P3`：live issue `#303`、PR `#304`、`#248 -> #303` relationship attach，以及 final issue conclusion 已形成一条真实 staged-to-closed-loop 样本，因此该 slice 现可视为 `stable`；
+- `S0E-4D` 已补跑历史验证轮次：`S0E-2A` 的 PR `#287` 与 issue `#289`、`S0E-2B` 的 PR `#290` 与 issue `#288`、以及 `S0E-4A` 的 issue `#293` 均已完成最终 write-back / close；
+- `S0E-4D` 已完成 representative issue 审计：`#289`、`#293`、`#295`、`#297`、`#300`、`#303` 的最终 body 均已合规，而缺失的 sidebar relationships `#248 -> #289/#293/#297` 也已补齐；
+- `S0E-5A` 已完成 dry-run gate 起步版：planner 现在可对 live issue body、labels、exact-ID merged PR evidence 与 sidebar relationship 做 stage-aware 审计，且 representative sample 五条 child issues 均已 `pass-audit`；
+- `S0E-5A` 已完成 `P3`：新增 remediation planner，可把 archived historical findings 中的 `#288` warning 与 `#289/#293/#297` blocked findings 分别转换成 issue-conclusion / relationship dry-run manifests，而不必重新破坏 live GitHub 状态；
+- `S0E-5A` 已完成 `P4`：新增 unified pre-gate orchestrator，现可从单一 manifest 输出 `allow-apply` / `stop-for-remediation` / `hard-fail-input` 三类 gate decision，并已固定 warning 在 gate 层一律 stop 而非直接放行；
+- `S0E-5A` 已完成 `P5`：新增 guarded issue-conclusion apply 入口，现已证明 pre-gate 可直接位于 mutation command 前面，既能放行真实 `S0E-4D/#303` 的 live rewrite，也能在 frozen stop sample 上于 apply 前硬停；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -288,3 +304,10 @@
 - 2026-03-30：完成 `S0E-4C/P2`，已为 `S0E-2D` 重生成无 placeholder 的 PR-prep 样本，并为 `#248 -> #295` 产出正式 relationship plan/apply 样本。
 - 2026-03-30：新增 `S0E-4D`，把 `review-hold` / `full-auto`、默认 human-gated handoff，以及 staged review 与 full closed-loop 的命令口径独立收口到 lifecycle orchestration follow-up。
 - 2026-03-30：完成 `S0E-4D/P2`，明确 staged review、resume-after-review 与 post-merge full-auto 三类命令口径，并补齐 ambiguous / blocked request 的 fail-closed examples。
+- 2026-03-30：完成 `S0E-4D/P3`，创建 live issue `#303`、draft-to-merged PR `#304`、parent relationship attach 与 final issue conclusion，证明 staged review 和 resumed closed loop 已可落到同一真实样本。
+- 2026-03-30：扩展 `S0E-4D/P3` 历史验证轮次，已把 `S0E-2A/#289`、`S0E-2B/#288` 与 `S0E-4A/#293` 这三条仍未 conclusion 的旧 issue 按 exact-ID merged PR 证据完成回写并关闭。
+- 2026-03-30：完成 `S0E-4D/P3-C4` 与 `P4`，审计 representative child issues 的 live sidebar relationships，补齐 `#248 -> #289/#293/#297`，并正式记录 issue body 与 GitHub relationship 需分开核验的审计边界。
+- 2026-03-30：新增 `S0E-5A`，把 lifecycle audit gate 从 `review-hold / full-auto` 之外独立抽出来，并完成第一版 manifest-driven dry-run planner 与 representative sample 验证。
+- 2026-03-30：完成 `S0E-5A/P3`，新增 `plan_lifecycle_remediation.py`，把 archived historical lifecycle defects 转成可复用的 relationship / issue-conclusion dry-run manifests，作为下一步真正前置 gate 的修复规划层。
+- 2026-03-30：完成 `S0E-5A/P4`，新增 `plan_lifecycle_pre_gate.py`，把 audit / decision / remediation planning 串成统一 pre-gate 入口，并固定 warning 为 stop-and-plan-remediation 的 gate 决策。
+- 2026-03-30：完成 `S0E-5A/P5`，新增 `apply_issue_conclusion_with_pre_gate.py`，把 pre-gate 真正接到 issue-conclusion mutation 前面，并完成 live pass->apply 与 frozen stop-before-apply 两条验证路径。
