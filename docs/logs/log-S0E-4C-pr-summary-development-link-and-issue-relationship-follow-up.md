@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, PR, Issues, Automation, epic/s0, sub/0e4c`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/300`
-  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/301`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/302`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -244,7 +244,7 @@
 ### P5 (Create-path Hardening)
 
 - [x] `P5-C1-S1`: create-path cherry-pick conflict hardening implemented
-- [ ] `P5-C1-S2`: one additional real `S0E-4C` PR validated and issue `#300` updated
+- [x] `P5-C1-S2`: one additional real `S0E-4C` PR validated and issue `#300` updated
 
 ## Evidence (reserved)
 
@@ -268,6 +268,9 @@
 - `P4-C1-S1`: live PR `#301` was created from clean branch `pr-prep/s0e-4c`, merged at `2026-03-30T03:44:43Z`, and auto-closed issue `#300` through `Closes #300` while preserving short-ref `Development issue` metadata in the PR body.
 - `P4-C1-S2`: `docs/issues/issue-conclusion-S0E-4C-p4-plan.json`, `docs/issues/issue-conclusion-S0E-4C-p4-s0e-4c-body.md`, and `docs/issues/issue-conclusion-S0E-4C-p4-s0e-4c-apply-result.json` prove the final issue body now carries `DoD -> #301` plus deterministic `Issue` and `PR` links after the full closed loop.
 - `P4-C1-S2`: `scripts/issues/plan_pr_prep.py` now compares commit selection against `origin/<base>` when available, aligning PR-prep dry-run selection with the real create-path worktree base used by `scripts/issues/create_pr_from_plan.py`.
+- `P5-C1-S1`: `scripts/issues/create_pr_from_plan.py` now records the current `origin/<base>` merge-base at apply time and, on cherry-pick conflict, rebuilds the prep branch from the source-head snapshot of the selected path set instead of failing immediately.
+- `P5-C1-S2`: `docs/issues/pr-prep-S0E-4C-p5-create-result.json` confirms that real PR creation for `#302` triggered the new fallback at conflicting SHA `18fbfe40`, rebuilt the branch successfully, and still published a live PR with short-ref `Development issue: #300`.
+- `P5-C1-S2`: live PR `#302` merged at `2026-03-30T04:21:10Z` with merge commit `3c47e396`, and `docs/issues/issue-conclusion-S0E-4C-p5-plan.json` plus `docs/issues/issue-conclusion-S0E-4C-p5-s0e-4c-apply-result.json` prove issue `#300` now carries `DoD -> #301` and `#302`.
 
 ## Recent changes (for traceability, optional)
 
@@ -280,3 +283,4 @@
 - 2026-03-30: completed `P4` by creating live issue `#300`, attaching it to parent `#248`, opening and merging PR `#301`, writing the final conclusion body back to the already-closed issue, and verifying that creation / PR / relationship / conclusion all now align under one `S0E-4C` sample.
 - 2026-03-30: while running `P4`, fixed PR-prep base comparison so dry-run commit selection now prefers `origin/<base>` when available, preventing stale local base refs from diverging from the real create-path base.
 - 2026-03-30: opened `P5` as a focused follow-up to harden `create_pr_from_plan.py` against cherry-pick conflicts on the long-lived mixed `S0E` working branch, with one more real PR and one more issue `#300` write-back as the proof path.
+- 2026-03-30: completed `P5` by hardening `create_pr_from_plan.py` with a source-head snapshot fallback, creating and merging real PR `#302` through that path, and updating issue `#300` so its final DoD ledger now includes both `#301` and `#302`.
