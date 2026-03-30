@@ -1,0 +1,15 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-4C",
+      "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "issue_number": 300,
+      "reason": "Run the S0E-4C P4 full closed-loop issue conclusion after PR #301 merged"
+    }
+  ]
+}
