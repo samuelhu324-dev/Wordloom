@@ -325,6 +325,10 @@
 ### 6.7 Issue-conclusion planning contract
 
 - `S0E-2E/P0-P1` fixes one conservative post-merge conclusion boundary before any planner or write-back mode exists.
+- Canonical local entry:
+  - `c:/python314/python.exe scripts/issues/plan_issue_conclusion.py <manifest_path>`
+- Example:
+  - `c:/python314/python.exe scripts/issues/plan_issue_conclusion.py docs/issues/issue-conclusion-S0E-2E-sample-manifest.json`
 - Minimum future inputs:
   - `source_log_path`
   - `issue_number` or `issue_url`
@@ -337,6 +341,11 @@
   - ordered `merged_prs` entries with `number`, `title`, `url`, and `merged_at`
   - `body_markdown` that preserves `Metadata` and renders final `Development`, `Definition of Done (DoD)`, and `Links`
   - `warnings` describing any explicit override or fallback ordering path
+- Current dry-run artifacts:
+  - `docs/issues/issue-conclusion-S0E-2E-sample-plan.json`
+  - `docs/issues/issue-conclusion-S0E-2E-sample-s0e-4a-body.md`
+  - `docs/issues/issue-conclusion-S0E-2E-sample-s0e-4b-body.md`
+  - `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-body.md`
 - Failure contract:
   - if no merged PR can be proven for the exact requested ID, planning must stop instead of guessing
   - if candidate PRs are open or draft, planning must stop instead of treating them as final delivery evidence

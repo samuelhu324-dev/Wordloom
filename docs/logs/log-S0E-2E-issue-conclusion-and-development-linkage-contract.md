@@ -96,7 +96,8 @@
 
 - `P0` is complete: lifecycle order, the merge boundary, and the exact-ID merged-PR linkage boundary are now fixed.
 - `P1` is complete: the final English conclusion body shape and the exact-ID PR selection plus ordering rules are now fixed.
-- `P2` and `P3` remain open: a dry-run planner and one real issue-conclusion write-back still need to be exercised.
+- `P2` is complete: a manifest-driven dry-run planner now emits ordered merged-PR evidence plus final issue-conclusion body previews without writing GitHub state.
+- `P3` remains open: one real issue-conclusion write-back still needs to be exercised.
 - Real closed issues `#293`, `#295`, and `#297` currently still show the create-time empty scaffold, which confirms the contract gap that `S0E-2E` is closing.
 
 ## P0 (Contract | v1)
@@ -195,6 +196,23 @@
 - The same ordered PR list must be reused consistently in `Development`, `Definition of Done (DoD)`, and `Links`.
 - Current same-family merged samples prove the boundary is viable: `S0E-4A -> #294`, `S0E-4B -> #296`, and `S0E-2D -> #298`.
 
+## P2 (Dry-run conclusion planning | v1)
+
+### P2-C1-S1 (Merged-PR conclusion planner | v1)
+
+- Dry-run issue conclusion now uses an explicit manifest and never writes back to GitHub.
+- The planner requires `requested_id`, `source_log_path`, and an explicit issue reference.
+- Candidate PRs default to merged PRs whose titles start with the exact requested ID prefix followed by `/`, unless explicit merged-PR overrides are supplied.
+- The planner preserves the existing issue `Metadata`, omits blank `Context`, rewrites `Development` plus `Definition of Done (DoD)` from merged PR evidence, and appends deterministic `Issue` plus `PR` lines under `Links`.
+- The planner emits both a structured plan JSON and one body preview markdown file per requested ID.
+
+### P2-C1-S2 (Representative merged-sample validation | v1)
+
+- Representative dry-run validation now covers three real closed issues: `S0E-4A -> #293`, `S0E-4B -> #295`, and `S0E-2D -> #297`.
+- `S0E-4A` validates the multi-PR case because the exact-ID selector now returns merged PRs `#294` and `#299` in deterministic order.
+- `S0E-4B` and `S0E-2D` validate the single-PR case and confirm the same body shape still works when only one merged PR exists.
+- All three previews confirm that the existing blank create-time `Context` and `Definition of Done (DoD)` scaffold can be replaced by final merged-PR evidence without touching GitHub state.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -244,8 +262,8 @@
 
 ### P2 (Dry-run conclusion planning)
 
-- [ ] `P2-C1-S1`: dry-run conclusion planning completed
-- [ ] `P2-C1-S2`: Development and DoD formatting validated against merged PR samples
+- [x] `P2-C1-S1`: dry-run conclusion planning completed
+- [x] `P2-C1-S2`: Development and DoD formatting validated against merged PR samples
 
 ### P3 (Real issue-conclusion write-back)
 
@@ -259,9 +277,14 @@
 - `P0-C1-S2` / `P1-C1-S2`: merged PRs `#294`, `#296`, and `#298` each expose the exact-ID title prefix pattern `S0E-4A/`, `S0E-4B/`, and `S0E-2D/`, providing real selector samples for deterministic exact-ID PR matching.
 - `P0-C1-S3` / `P1-C1-S1`: this log now fixes the final conclusion body to preserve `Metadata` while turning `Development`, `Definition of Done (DoD)`, and `Links` into a merged-PR evidence ledger instead of leaving the create-time blank scaffold in place.
 - `P1-C1-S1` / `P1-C1-S2`: `docs/runbook/run-S0E-log-to-issue-creation.md` now records the same post-merge conclusion procedure, exact-ID PR selection rules, and deterministic link/body ordering for operators.
+- `P2-C1-S1`: `scripts/issues/plan_issue_conclusion.py` now provides a manifest-driven dry-run planner that reads explicit issue references, resolves exact-ID merged PR evidence from GitHub, and emits one structured plan JSON plus per-item body previews without writing GitHub state.
+- `P2-C1-S1`: `docs/issues/issue-conclusion-S0E-2E-sample-plan.json` records a successful three-item dry-run with `planned_items=3` and no reconciliation or error items.
+- `P2-C1-S2`: `docs/issues/issue-conclusion-S0E-2E-sample-s0e-4a-body.md` proves the multi-PR case by rendering merged PRs `#294` and `#299` for `S0E-4A` in both `Development` and `Definition of Done (DoD)`.
+- `P2-C1-S2`: `docs/issues/issue-conclusion-S0E-2E-sample-s0e-4b-body.md` and `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-body.md` prove the same final body shape for single-PR issues `#295` and `#297`.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-29: opened `S0E-2E` to define post-merge issue conclusion, Development linkage, and final English DoD rendering as a separate slice from issue creation and PR creation.
 - 2026-03-30: completed `P0` by fixing the lifecycle boundary, exact-ID merged-PR linkage rule, and the distinction between GitHub closed state versus final issue conclusion.
 - 2026-03-30: completed `P1` by defining the final English conclusion body shape, deterministic multi-PR ordering rules, and the shared operator procedure in the runbook.
+- 2026-03-30: completed `P2` by adding `scripts/issues/plan_issue_conclusion.py`, generating `S0E-2E` dry-run artifacts for `#293`, `#295`, and `#297`, and validating both single-PR and multi-PR conclusion-body rendering.
