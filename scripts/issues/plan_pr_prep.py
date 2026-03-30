@@ -40,6 +40,8 @@ class PrPrepPlanItem:
     pr_projects: list[str]
     pr_milestone: str | None
     pr_development_issue: str | None
+    pr_development_issue_refs: list[str]
+    summary_bullet_count: int
     preview_body_path: str
     selected_commit_count: int
     selected_commits: list[CommitSelection]
@@ -453,6 +455,8 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
             pr_projects=pr_projects,
             pr_milestone=pr_milestone,
             pr_development_issue=pr_development_issue,
+            pr_development_issue_refs=_parse_issue_refs(pr_development_issue)[0] if pr_development_issue else [],
+            summary_bullet_count=0,
             preview_body_path=_repo_rel(preview_path),
             selected_commit_count=0,
             selected_commits=[],
@@ -529,6 +533,8 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
         pr_projects=pr_projects,
         pr_milestone=pr_milestone,
         pr_development_issue=pr_development_issue,
+        pr_development_issue_refs=_parse_issue_refs(pr_development_issue)[0] if pr_development_issue else [],
+        summary_bullet_count=len(summary_bullets),
         preview_body_path=_repo_rel(preview_path),
         selected_commit_count=len(selected_commits),
         selected_commits=selected_commits,

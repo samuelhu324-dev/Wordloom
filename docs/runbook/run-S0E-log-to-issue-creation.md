@@ -134,7 +134,23 @@
   - `planned` means both sides are explicitly identified and any optional traceability fields agree with them
   - `skipped` means the item was explicitly marked skip in the manifest
   - `error` means one side is missing or invalid as an explicit issue reference
-  - `reconciliation` means explicit issue references conflict with optional traceability fields and must be resolved manually before apply mode exists
+  - `reconciliation` means explicit issue references conflict with optional traceability fields and must be resolved manually before relationship apply is allowed
+
+### 5.5A Relationship apply command
+
+- `S0E-4C/P1-C1-S3` adds a real relationship apply entry for exact child-parent attach after a planned item has been reviewed.
+- Canonical local entry:
+  - `python scripts/issues/apply_issue_relationships.py <plan_path> --item-index <n>`
+- Example:
+  - `python scripts/issues/apply_issue_relationships.py docs/issues/issue-relationship-S0E-2C-sample-plan.json --item-index 0`
+- Outputs:
+  - one apply-result artifact under `docs/issues/issue-relationship-<manifest-stem>-parent-<n>-child-<n>-apply-result.json`
+  - stdout JSON summary with `applied_action`, `previous_parent_issue_number`, `final_parent_issue_number`, and `warnings`
+- Apply semantics:
+  - only `planned` relationship items are eligible for apply
+  - if the child is already attached to the requested parent, the command returns success without mutating again
+  - if the child is already attached to a different parent, apply must fail closed instead of overwriting the existing relationship
+  - the current implementation uses GitHub GraphQL sub-issue attachment rather than issue-body edits, because sidebar `Relationships` is independent from markdown body content
 
 ### 5.6 Milestone/write-back dry-run planning command
 
@@ -228,6 +244,7 @@
 - If a parent issue is rendered, it must appear only in `Metadata` and use a plain-text short GitHub reference such as `#248`.
 - If module impact is not explicit, output an empty module-label array and continue.
 - Real GitHub issue creation must remain a separate opt-in mode, not the default behavior of the draft-generation mode.
+- Real GitHub PR creation from a PR-prep plan must also fail closed if the generated `Summary` section still contains `- <placeholder>` because explicit `PR Summary Inputs -> PR summary bullets` were missing.
 
 ### 6.4 Batch manifest and plan contract
 
@@ -387,3 +404,4 @@
 - If real GitHub issue creation is pursued, the recommended follow-up slice is `S0E-2B`, not a late expansion of `S0E-2A`.
 - If batch issue planning, parent-child linking, or milestone/backfill tooling is pursued, the next follow-up slice is `S0E-2C`.
 - If post-merge issue conclusion or merged-PR write-back is pursued, the next follow-up slice is `S0E-2E`.
+- If PR-prep creation is pursued, explicit `PR Summary Inputs -> PR summary bullets` are required before a live PR should be created.
