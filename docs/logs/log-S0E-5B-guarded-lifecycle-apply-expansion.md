@@ -5,7 +5,7 @@
 **id**: `S0E-5B`
 **kind**: `log`
 **title**: `guarded lifecycle apply expansion v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Issues, PR, Automation, Drills, Evidence, epic/s0, sub/0e5b`
 **links**: ``
@@ -93,6 +93,13 @@
 - At least one new mutation family beyond issue conclusion is wired behind the same pre-gate and validated on live GitHub state.
 - Evidence clearly shows where apply was allowed, where it stopped, and which remediation artifacts were emitted for blocked paths.
 
+## Stability (what stable means)
+
+- This log can be marked `stable` when:
+  - guarded relationship attach and guarded PR-body rewrite have both been validated on live GitHub state;
+  - at least one representative sample proves those guarded mutation families can coexist on the same issue/PR pair without breaking final closed-loop convergence;
+  - the remaining open question is no longer whether guarded apply works for in-place mutations, but whether guarded `PR create` deserves its own follow-up slice.
+
 ## Current Status
 
 - `S0E-5A` has finished one full real lifecycle on itself: issue `#305`, merged PR `#306`, sidebar relationship attach, and final issue conclusion are all complete.
@@ -101,6 +108,7 @@
 - `P2` is now completed with `PR body rewrite` as the next guarded mutation family: merged PR `#306` was rewritten in place behind an `allow-apply` gate, while the archived blocked fixture still stopped before any PR mutation.
 - `P3` is now completed on one real sample: issue `#307` was first attached through the guarded relationship path, then delivered by merged PR `#308`, and that same merged PR was rewritten through the guarded PR-body path before the issue was concluded in place.
 - `S0E-5B` now has one representative closed-loop sample that carries two distinct guarded mutation families on the same issue/PR pair instead of proving them only on separate drills.
+- `S0E-5B` is now `stable`: the guarded apply expansion for in-place lifecycle mutations has been validated end to end, and the remaining work has been intentionally split into a new `S0E-5C` follow-up for guarded `PR create` rather than being stretched into this slice.
 
 ## P0 (Expansion boundary | v1)
 
@@ -275,3 +283,4 @@
 - 2026-03-30: completed `P1` by implementing `apply_issue_relationships_with_pre_gate.py`, attaching `#307` to parent issue `#248` through the guarded pass path, and validating a frozen mixed-remediation stop drill.
 - 2026-03-30: completed `P2` by selecting PR-body rewrite as the next guarded PR-side family, rewriting merged PR `#306` behind an `allow-apply` gate, and validating a frozen stop-before-edit drill on the archived blocked fixture.
 - 2026-03-30: completed `P3` by using `#307` plus merged PR `#308` as one representative closed-loop sample, then rewriting that merged PR through the guarded PR-body path and concluding the issue in place.
+- 2026-03-30: marked `S0E-5B` as `stable` and split guarded `PR create` investigation into the new `S0E-5C` follow-up instead of continuing to overload this slice.
