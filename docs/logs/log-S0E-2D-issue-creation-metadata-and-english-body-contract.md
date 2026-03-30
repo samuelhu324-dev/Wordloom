@@ -4,8 +4,8 @@
 
 **id**: `S0E-2D`
 **kind**: `log`
-**title**: `issue creation metadata, English body, and operator-controlled lifecycle modes contract v2`
-**status**: `draft`
+**title**: `issue creation metadata enrichment and English body contract v1`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, epic/s0, sub/0e2d`
 **links**: ``
@@ -46,7 +46,6 @@
 - v1 promotes milestone, relationship, and project ownership into the issue-create contract before the real GitHub issue is created.
 - Generated GitHub issue content must be English-only, and the body should stay structurally present without auto-writing final `Context` or `Definition of Done (DoD)` prose.
 - The lifecycle order is fixed as: `Issue Creation -> Logs completed -> PR -> human merge -> Issue Conclusion`.
-- `P4` reopens the same line so operators can choose between `review-hold` and `full-auto` explicitly, instead of relying on implicit memory for whether merge and issue conclusion should continue.
 
 **Default choices (phase defaults / v1)**:
 
@@ -58,16 +57,14 @@
 - Generated issue bodies must be English-only even when the source log is bilingual.
 - The generated issue body should keep the section structure `Metadata -> Context -> Definition of Done (DoD) -> Links`, but automation should only fill metadata and deterministic links by default.
 - `Context` and `Definition of Done (DoD)` remain intentionally unexpanded during creation v1 unless an operator supplies explicit overrides.
-- If no lifecycle mode is supplied, merge and issue conclusion remain human-gated by default.
-- `review-hold` and `full-auto` are orchestration choices only; they do not change the ownership of PR metadata rules in `S0E-4A/4C` or issue-conclusion body rules in `S0E-2E`.
 
 ## PR Summary Inputs (optional)
 
 **PR summary bullets**:
 
-- Reopen `S0E-2D` so lifecycle orchestration can distinguish `review-hold` from `full-auto` without weakening the existing issue-create metadata contract.
+- Enrich issue creation so milestone, parent issue, project, and body-shape metadata are resolved deterministically before a real GitHub issue is created.
 - Keep generated issue bodies English-only and structurally complete while leaving `Context` and `Definition of Done (DoD)` intentionally blank at creation time.
-- Fix the operator handoff boundary between `issue creation -> PR creation` and `merge -> conclusion`, so staged review and full closed-loop automation both stay explicit.
+- Align child issue metadata with parent-log inheritance so `Parent issue` can be rendered as a stable short GitHub ref such as `#248`.
 
 **PR checklist source**:
 
@@ -86,8 +83,6 @@
 - **Relationship**: an explicit parent/child or tracking link between issues or between a source log and its known parent issue.
 - **English-only issue body**: the rule that generated GitHub issue markdown uses English headings and English machine-filled content even if the source log mixes Chinese and English.
 - **Deterministic links**: links that can be copied directly from stable metadata such as source log path, runbook path, roadmap path, parent issue URL, or parent log path.
-- **Review-hold mode**: an operator-selected lifecycle mode that may create or update issue/PR artifacts but stops before merge and final issue conclusion.
-- **Full-auto mode**: an operator-selected lifecycle mode that may continue through merge and issue conclusion only when the instruction explicitly asks for that closed loop.
 
 ## Constraints
 
@@ -96,7 +91,6 @@
 - Do not auto-write bilingual or Chinese issue body text.
 - Do not auto-summarise final `Context` or `Definition of Done (DoD)` prose during issue creation.
 - Do not treat project assignment as PR metadata; this slice remains issue-creation-only.
-- Do not auto-merge or auto-conclude from a generic request; lifecycle continuation must come from an explicit mode or an explicit follow-up command.
 
 ## Scope
 
@@ -104,7 +98,6 @@
 - `P1`: metadata resolution and English issue-body scaffold rules
 - `P2`: dry-run validation against representative logs that already carry roadmap and relationship metadata
 - `P3`: real issue-create validation plus explicit write-back of enriched issue metadata
-- `P4`: operator-controlled lifecycle modes and handoff rules between issue creation, PR review, merge, and conclusion
 
 ## Success Criteria (DoD)
 
@@ -115,14 +108,12 @@
 - `Links` contain only deterministic references such as source log, runbook, roadmap, parent log, and parent issue when those inputs are explicitly available.
 - `Links` contain only deterministic references such as source log, runbook, roadmap, and parent log when those inputs are explicitly available.
 - The contract explains how enriched issue creation still stays fail-closed when milestone, relationship, or project data is missing.
-- The operator can choose `review-hold` versus `full-auto` without ambiguity, and the default remains human-gated when no explicit mode is provided.
 
 ## Stability (what stable means)
 
 - This log can be marked `stable` when:
   - milestone, relationship, project, and English-body rules are fixed and exercised through at least one dry-run plus one real issue-create path;
   - issue creation no longer depends on ad hoc operator memory for milestone/project/relationship attachment.
-  - lifecycle-mode boundaries for `review-hold` versus `full-auto` are documented in both this log and the runbook with no ambiguity about when merge and conclusion may proceed automatically.
 
 ## P0 (Contract | v1)
 
@@ -212,12 +203,6 @@
 - P3-C3-S2: audit existing sibling `S0E` child issues and align metadata-only parent-issue formatting plus structural labels where the current contract requires them
 - P3-C3-S3: update live child issues so `Parent issue` renders as plain text instead of a code span
 
-### P4 (Lifecycle modes and handoff)
-
-- P4-C1-S1: define `review-hold` and `full-auto` as explicit operator modes for the end-to-end issue-to-conclusion lifecycle
-- P4-C1-S2: document the safe default when no lifecycle mode is supplied and keep merge/conclusion human-gated by default
-- P4-C1-S3: align the runbook wording so users can request either staged review or full closed-loop automation with short deterministic commands
-
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -249,12 +234,6 @@
 - [x] `P3-C3-S2`: sibling `S0E` child-issue audit and remediation completed
 - [x] `P3-C3-S3`: live child-issue plain-text parent rendering completed
 
-### P4 (Lifecycle modes and handoff)
-
-- [ ] `P4-C1-S1`: `review-hold` and `full-auto` lifecycle modes fixed in contract
-- [ ] `P4-C1-S2`: default human-gated handoff boundary fixed
-- [ ] `P4-C1-S3`: runbook wording aligned to the new lifecycle modes
-
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
@@ -277,7 +256,6 @@
 - `P3-C3-S1`: `docs/logs/log-S0E-docs-management-v5.md` now records the real top-level issue `#248`; regenerated child artifacts for `S0E-2B` and `S0E-2D` now derive `Parent issue` from that exact link, while `artifacts/_tmp_issue-S0E-docs-management-v5.json` confirms top-level `S0E` issue bodies omit the `Parent issue` row entirely.
 - `P3-C3-S2`: sibling live issues `#289`, `#293`, and `#295` were audited and remediated to the same creation-body contract: no duplicated title, no prefilled `Context/DoD`, metadata-only `Parent issue: #248`, and no repeated parent issue inside `Links`; issue `#293` also received the `drills` label to match current structural-label derivation.
 - `P3-C3-S3`: live child issues `#288`, `#289`, `#293`, `#295`, and `#297` were updated so `Parent issue` stays metadata-only and renders as plain text `#248` rather than a code span.
-- `P4-C1-S1`: this log now reopens the issue-automation line with explicit `review-hold` versus `full-auto` lifecycle modes, while keeping PR metadata internals owned by `S0E-4A/4C` and issue conclusion internals owned by `S0E-2E`.
 
 ## Recent changes (for traceability, optional)
 
@@ -292,4 +270,3 @@
 - 2026-03-29: completed sibling issue audit for `#289`, `#293`, and `#295`, aligning them to metadata-only short parent-issue formatting and updating `#293` labels to match current `drills` derivation.
 - 2026-03-29: updated live child issues `#288`, `#289`, `#293`, `#295`, and `#297` so `Parent issue` now renders as plain text `#248`.
 - 2026-03-30: added explicit `PR Summary Inputs` so regenerated `S0E-2D` PR-prep artifacts no longer depend on placeholder `Summary` content.
-- 2026-03-30: reopened `S0E-2D` with `P4` so the issue-creation line can explicitly distinguish `review-hold` from `full-auto` instead of leaving merge/conclusion continuation to implicit operator memory.
