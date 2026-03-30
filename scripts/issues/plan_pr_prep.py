@@ -13,6 +13,7 @@ from gen_issue_draft import _load_text, _parse_fields, _parse_sections, _repo_re
 ID_PREFIX_RE = re.compile(r"^(?P<id>[A-Z0-9-]+)(?:/|:)")
 CHECKED_ITEM_RE = re.compile(r"^- \[x\] `?([^`]+)`?:\s*(.+)$", re.IGNORECASE)
 COMMIT_SUBJECT_RE = re.compile(r"^(?P<id>[A-Z0-9-]+)/(?P<unit>[^:]+):\s*(?P<summary>.+)$")
+ISSUE_REF_RE = re.compile(r"(?:/issues/|^#?)(?P<number>\d+)$")
 
 
 @dataclass
@@ -293,6 +294,40 @@ def _build_default_link_lines(fields: dict[str, str], source_log_path: str) -> l
     return lines
 
 
+def _parse_issue_refs(raw: str | None) -> tuple[list[str], list[str]]:
+    refs: list[str] = []
+    warnings: list[str] = []
+    for part in _split_csv(raw):
+        token = part.strip()
+        if not token:
+            continue
+        match = ISSUE_REF_RE.search(token)
+        if not match:
+            warnings.append(f"unrecognized issue reference skipped: {token}")
+            continue
+        refs.append(f"#{match.group('number')}")
+    return _dedupe(refs), warnings
+
+
+def _derive_pr_development_issue(fields: dict[str, str]) -> tuple[str | None, list[str]]:
+    warnings: list[str] = []
+
+    explicit_value = fields.get("pr_development_issue", "").strip()
+    explicit_refs, explicit_warnings = _parse_issue_refs(explicit_value)
+    warnings.extend([f"pr_development_issue {item}" for item in explicit_warnings])
+    if explicit_refs:
+        return ", ".join(explicit_refs), warnings
+
+    source_issue_value = fields.get("issue", "").strip()
+    source_issue_refs, source_issue_warnings = _parse_issue_refs(source_issue_value)
+    warnings.extend([f"source log issue {item}" for item in source_issue_warnings])
+    if source_issue_refs:
+        warnings.append("pr_development_issue derived from source log issue link")
+        return ", ".join(source_issue_refs), warnings
+
+    return None, warnings
+
+
 def _render_body_preview(
     *,
     requested_id: str,
@@ -319,7 +354,7 @@ def _render_body_preview(
         f"- Candidate PR-prep branch: `{candidate_pr_branch}`",
         f"- Source log: `{source_log_path}`",
         f"- Labels: `{', '.join(pr_labels)}`",
-        f"- Development issue: `{pr_development_issue or ''}`",
+        f"- Development issue: {pr_development_issue or ''}",
         "",
         "## Summary",
         "",
@@ -343,7 +378,7 @@ def _render_body_preview(
                 "",
                 "## Development Link",
                 "",
-                f"- Closes #{pr_development_issue.rstrip('/').split('/')[-1]}",
+                f"- Closes {pr_development_issue}",
             ]
         )
     return "\n".join(lines)
@@ -400,7 +435,8 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
     pr_labels = _build_pr_labels(fields, sections)
     pr_projects = _build_pr_projects(fields, source_log_rel)
     pr_milestone = fields.get("pr_milestone", "").strip() or None
-    pr_development_issue = fields.get("pr_development_issue", "").strip() or None
+    pr_development_issue, development_warnings = _derive_pr_development_issue(fields)
+    warnings.extend(development_warnings)
 
     if not base_branch:
         return PrPrepPlanItem(

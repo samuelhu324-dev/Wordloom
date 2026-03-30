@@ -52,6 +52,7 @@
 - The most stable commit-selection strategy is `prepare a clean PR branch from the target base, then cherry-pick the ID-scoped commits`, not `open a PR directly from a mixed working branch`.
 - PR titles should reuse the same ID prefix as the underlying logs and issues.
 - PR descriptions should prioritise the child-log execution checklist in a clean human-readable block; the PR timeline remains the detailed mechanical history.
+- Development issue ownership should prefer explicit `pr_development_issue`, but when that field is blank the same-ID source log issue may be used as the fail-closed fallback.
 
 ## Definitions (optional)
 
@@ -121,7 +122,7 @@
 - PR automation may prepare the Development link metadata, but merge approval remains a human review step.
 - The PR should link back to its issue through explicit metadata and body references, not guesswork.
 - No automatic merge is part of v1.
-- `pr_development_issue` is the only approved source for Development linkage in v1; if it is blank or unresolved, automation should create a PR without the link rather than invent a relationship.
+- `pr_development_issue` is the approved explicit source for Development linkage in v1; if it is blank, automation may fall back only to the source log's exact `links.issue` instead of inventing a relationship from prose or title similarity.
 - Reviewers, approvals, and merge execution remain outside automation scope even after real PR creation exists; v1 only prepares or creates the PR object and its metadata.
 - PR automation must preserve traceability back to the originating log, selected commit SHAs, and target base branch so human reviewers can audit why this PR exists.
 
@@ -181,6 +182,16 @@
 - `pr_development_issue` should be materialized in the PR body using an explicit closing/linkage line so GitHub can attach the PR to the intended issue.
 - Missing optional metadata such as `pr_projects` and `pr_milestone` should be reported as intentionally skipped when blank, not guessed or backfilled from unrelated fields.
 
+### P3-C2-S1 (Development issue fallback | v1)
+
+- If `pr_development_issue` is blank, PR automation may derive the Development issue from the source log's exact `links.issue` when that log already points to the same ID-scoped issue.
+- Derived Development issues must be reported explicitly in warnings/evidence rather than silently invented.
+
+### P3-C2-S2 (Multiple Development issues | v1)
+
+- If multiple Development issues are explicitly supplied, they must be rendered as a comma-separated English list such as `#293, #297`.
+- The same comma-separated list must be used consistently in both PR metadata preview and the final `Development Link` section.
+
 ## PR Summary Inputs
 
 **PR summary bullets**:
@@ -234,6 +245,8 @@
 
 - P3-C1-S1: create one real PR with labels, optional metadata fields, and development linkage
 - P3-C1-S2: verify that human review and merge remain outside automation scope
+- P3-C2-S1: derive Development issue from source log issue when `pr_development_issue` is blank
+- P3-C2-S2: support comma-separated multiple Development issues in preview and final PR body
 
 ## Execution Checklist (unchecked)
 
@@ -259,6 +272,8 @@
 
 - [x] `P3-C1-S1`: create one real PR with labels, optional metadata fields, and development linkage
 - [x] `P3-C1-S2`: verify that human review and merge remain outside automation scope
+- [x] `P3-C2-S1`: Development issue fallback to source log issue fixed
+- [x] `P3-C2-S2`: multiple Development issues formatting fixed
 
 ## Evidence
 
@@ -279,6 +294,10 @@
 - `P3-C1-S1`: `docs/issues/pr-prep-S0E-4A-sample-create-result.json` records the real PR creation result for draft PR `#294` at `https://github.com/samuelhu324-dev/wordloom-v3/pull/294`.
 - `P3-C1-S2`: GitHub now shows draft PR `#294` on head branch `pr-prep/s0e-4a` with label `EVOLUTION` and closing issue reference `#293`; blank `pr_projects` and `pr_milestone` were intentionally skipped under fail-closed rules.
 - `P3-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-create-body.md` shows the final body shape used for the real PR, including the explicit `Closes #293` development-link line.
+- `P3-C2-S1`: `scripts/issues/plan_pr_prep.py` now falls back from blank `pr_development_issue` to the source log's exact `links.issue`, allowing same-ID PRs such as `S0E-2D` to inherit `#297` deterministically.
+- `P3-C2-S2`: `scripts/issues/plan_pr_prep.py` and `scripts/issues/create_pr_from_plan.py` now normalize multiple Development issues to one comma-separated list such as `#293, #297` and reuse that same list in both preview metadata and final `Development Link` output.
+- `P3-C2-S1`: local dry-run validation with `S0E-2D` now shows `pr_development_issue` derived as `#297` from the source log issue link when the field is blank.
+- `P3-C2-S2`: local dry-run validation with a multi-issue sample now renders `Development issue: #293, #297` in metadata and `Closes #293, #297` in the `Development Link` section.
 
 ## Recent changes (for traceability, optional)
 
@@ -288,3 +307,4 @@
 - 2026-03-29: completed `P2` by adding a manifest-driven PR-prep dry-run planner, generating a sample commit-selection plan, and previewing the resulting PR body without mutating any branch.
 - 2026-03-29: completed `P3` by creating source issue `#293`, opening draft PR `#294` from clean branch `pr-prep/s0e-4a`, and verifying GitHub-side label plus Development linkage behavior.
 - 2026-03-29: opened `S0E-4B` as the post-first-PR follow-up for title compression, structural label inheritance, and body footer/link formatting.
+- 2026-03-29: completed `P3-C2` follow-up by deriving Development issue from the source log issue when blank and by normalizing multiple Development issues to one comma-separated list.
