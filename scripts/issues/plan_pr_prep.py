@@ -14,6 +14,7 @@ ID_PREFIX_RE = re.compile(r"^(?P<id>[A-Z0-9-]+)(?:/|:)")
 CHECKED_ITEM_RE = re.compile(r"^- \[x\] `?([^`]+)`?:\s*(.+)$", re.IGNORECASE)
 COMMIT_SUBJECT_RE = re.compile(r"^(?P<id>[A-Z0-9-]+)/(?P<unit>[^:]+):\s*(?P<summary>.+)$")
 ISSUE_REF_RE = re.compile(r"(?:/issues/|^#?)(?P<number>\d+)$")
+SCOPE_REF_RE = re.compile(r"\bP\d+(?:-C\d+(?:-S\d+(?:S\d+)*)?)?\b")
 
 
 @dataclass
@@ -26,6 +27,12 @@ class CommitSelection:
 
 
 @dataclass
+class CheckedItem:
+    identifier: str
+    text: str
+
+
+@dataclass
 class PrPrepPlanItem:
     requested_id: str
     source_log_path: str
@@ -35,6 +42,8 @@ class PrPrepPlanItem:
     merge_base: str
     candidate_pr_branch: str
     pr_title: str
+    pr_scope_kind: str
+    pr_scope_refs: list[str]
     pr_base: str | None
     pr_labels: list[str]
     pr_projects: list[str]
@@ -220,9 +229,10 @@ def _build_pr_title(
     log_title: str,
     selected_commits: list[CommitSelection],
     checklist_phase_numbers: list[int],
-) -> str:
+) -> tuple[str, str, list[str]]:
     if len(checklist_phase_numbers) > 1:
-        return f"{requested_id}/{_compress_phase_numbers(checklist_phase_numbers)}: {log_title}"
+        phase_refs = [f"P{value}" for value in checklist_phase_numbers]
+        return f"{requested_id}/{_compress_phase_numbers(checklist_phase_numbers)}: {log_title}", "phases", phase_refs
 
     parsed = [_parse_commit_subject(item.subject) for item in selected_commits]
     parsed_infos = [item for item in parsed if item is not None]
@@ -230,18 +240,19 @@ def _build_pr_title(
     if len(parsed_infos) == len(selected_commits) and len(parsed_infos) > 1:
         phases = [int(item["phase"]) for item in parsed_infos]
         if len(set(phases)) > 1:
-            return f"{requested_id}/{_compress_phase_numbers(phases)}: {log_title}"
+            phase_refs = [f"P{value}" for value in sorted(set(phases))]
+            return f"{requested_id}/{_compress_phase_numbers(phases)}: {log_title}", "phases", phase_refs
 
     if len(parsed_infos) == 1 and len(selected_commits) == 1:
-        return selected_commits[0].subject
+        return selected_commits[0].subject, "units", [str(parsed_infos[0]["unit"])]
 
     if parsed_infos:
         units = "+".join(str(item["unit"]) for item in parsed_infos)
         summaries = _dedupe([str(item["summary"]) for item in parsed_infos])
         summary_text = "; ".join(summaries) if summaries else log_title
-        return f"{requested_id}/{units}: {summary_text}"
+        return f"{requested_id}/{units}: {summary_text}", "units", _dedupe([str(item["unit"]) for item in parsed_infos])
 
-    return f"{requested_id}: {log_title}"
+    return f"{requested_id}: {log_title}", "all", []
 
 
 def _render_commit_footer_line(commit: CommitSelection) -> str:
@@ -278,13 +289,78 @@ def _parse_pr_summary_inputs(section_lines: list[str]) -> tuple[list[str], list[
     return summary_bullets, link_lines
 
 
-def _extract_checked_items(section_lines: list[str]) -> list[str]:
+def _extract_checked_items(section_lines: list[str]) -> list[CheckedItem]:
     items: list[str] = []
     for raw in section_lines:
         match = CHECKED_ITEM_RE.match(raw.strip())
         if match:
-            items.append(f"`{match.group(1)}`: {match.group(2).strip()}")
+            items.append(
+                CheckedItem(
+                    identifier=match.group(1).strip(),
+                    text=match.group(2).strip(),
+                )
+            )
     return items
+
+
+def _extract_scope_refs(text: str) -> list[str]:
+    return _dedupe([match.group(0) for match in SCOPE_REF_RE.finditer(text)])
+
+
+def _phase_ref(value: str) -> str | None:
+    match = re.match(r"P\d+", value)
+    return match.group(0) if match else None
+
+
+def _matches_scope(value: str, scope_kind: str, scope_refs: list[str]) -> bool:
+    if scope_kind == "all" or not scope_refs:
+        return True
+
+    line_refs = _extract_scope_refs(value)
+    if not line_refs:
+        return False
+
+    if scope_kind == "phases":
+        phase_refs = set(scope_refs)
+        return any((_phase_ref(ref) or "") in phase_refs for ref in line_refs)
+
+    return any(ref in scope_refs for ref in line_refs)
+
+
+def _filter_checked_items(
+    items: list[CheckedItem],
+    scope_kind: str,
+    scope_refs: list[str],
+) -> list[CheckedItem]:
+    if scope_kind == "all" or not scope_refs:
+        return items
+
+    filtered: list[CheckedItem] = []
+    for item in items:
+        if scope_kind == "phases":
+            item_phase = _phase_ref(item.identifier)
+            if item_phase and item_phase in scope_refs:
+                filtered.append(item)
+            continue
+        if item.identifier in scope_refs:
+            filtered.append(item)
+    return filtered
+
+
+def _extract_scoped_evidence_lines(
+    section_lines: list[str],
+    scope_kind: str,
+    scope_refs: list[str],
+) -> list[str]:
+    evidence_lines: list[str] = []
+    for raw in section_lines:
+        stripped = raw.strip()
+        if not stripped.startswith("- "):
+            continue
+        value = stripped[2:].strip()
+        if _matches_scope(value, scope_kind, scope_refs):
+            evidence_lines.append(value)
+    return evidence_lines
 
 
 def _extract_checked_phase_numbers(section_lines: list[str]) -> list[int]:
@@ -350,16 +426,16 @@ def _render_body_preview(
     candidate_pr_branch: str,
     source_log_path: str,
     summary_bullets: list[str],
-    checklist_items: list[str],
+    checklist_items: list[CheckedItem],
     link_lines: list[str],
-    selected_commits: list[CommitSelection],
+    evidence_footer_lines: list[str],
     pr_labels: list[str],
     pr_projects: list[str],
     pr_development_issue: str | None,
 ) -> str:
     summary_lines = [f"- {item}" for item in summary_bullets] or ["- <placeholder>"]
-    checklist_lines = [f"- [x] {item}" for item in checklist_items] or ["- [ ] <placeholder>"]
-    selected_commit_lines = [_render_commit_footer_line(item) for item in selected_commits] or ["- <none>"]
+    checklist_lines = [f"- [x] `{item.identifier}`: {item.text}" for item in checklist_items] or ["- [ ] <placeholder>"]
+    rendered_evidence_lines = [f"- {item}" for item in evidence_footer_lines] or ["- <none>"]
     lines = [
         "## Metadata",
         "",
@@ -384,7 +460,7 @@ def _render_body_preview(
         "",
         "## Evidence Footer",
         "",
-        *selected_commit_lines,
+        *rendered_evidence_lines,
     ]
     if pr_development_issue:
         lines.extend(
@@ -463,6 +539,8 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
             merge_base="",
             candidate_pr_branch="",
             pr_title="",
+            pr_scope_kind="all",
+            pr_scope_refs=[],
             pr_base=source_log_pr_base,
             pr_labels=pr_labels,
             pr_projects=pr_projects,
@@ -506,12 +584,27 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
     if not checklist_items:
         warnings.append("source log has no checked execution checklist items for PR preview")
 
-    pr_title = _build_pr_title(
+    pr_title, pr_scope_kind, pr_scope_refs = _build_pr_title(
         requested_id,
         fields.get("title", "").strip() or requested_id,
         selected_commits,
         checklist_phase_numbers,
     )
+
+    scoped_checklist_items = _filter_checked_items(checklist_items, pr_scope_kind, pr_scope_refs)
+    if checklist_items and not scoped_checklist_items:
+        warnings.append("scope-aligned checklist selection found no matches; preview falls back to all checked items")
+        scoped_checklist_items = checklist_items
+
+    scoped_evidence_lines = _extract_scoped_evidence_lines(
+        _find_section_lines(sections, "Evidence"),
+        pr_scope_kind,
+        pr_scope_refs,
+    )
+    if not scoped_evidence_lines:
+        if pr_scope_kind != "all":
+            warnings.append("scope-aligned evidence selection found no matches; preview falls back to selected commits")
+        scoped_evidence_lines = [_render_commit_footer_line(item) for item in selected_commits]
 
     link_lines = explicit_link_lines or _build_default_link_lines(fields, source_log_rel)
     preview_body = _render_body_preview(
@@ -521,9 +614,9 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
         candidate_pr_branch=candidate_pr_branch,
         source_log_path=source_log_rel,
         summary_bullets=summary_bullets,
-        checklist_items=checklist_items,
+        checklist_items=scoped_checklist_items,
         link_lines=link_lines,
-        selected_commits=selected_commits,
+        evidence_footer_lines=scoped_evidence_lines,
         pr_labels=pr_labels,
         pr_projects=pr_projects,
         pr_development_issue=pr_development_issue,
@@ -541,6 +634,8 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
         merge_base=merge_base,
         candidate_pr_branch=candidate_pr_branch,
         pr_title=pr_title,
+        pr_scope_kind=pr_scope_kind,
+        pr_scope_refs=pr_scope_refs,
         pr_base=source_log_pr_base,
         pr_labels=pr_labels,
         pr_projects=pr_projects,

@@ -4,7 +4,7 @@
 
 **id**: `S0E-4B`
 **kind**: `log`
-**title**: `PR title compression, structural label inheritance, and body footer follow-up v1`
+**title**: `PR title compression, structural label inheritance, and body scope alignment follow-up v1`
 **status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, PR, Automation, epic/s0, sub/0e4b`
@@ -254,7 +254,7 @@
 - `P3-C1-S7`: the `S0E-4B` validation PR exposed that GitHub's stacked PR commit views can repeat already-reviewed upstream commits from the base PR branch ancestry; the review contract now treats compare-base semantics and `Files changed` as authoritative.
 - `P3-C1-S8`: `scripts/issues/plan_pr_prep.py` now prefers checked execution-checklist phase coverage when deriving aggregate PR titles, so logs that already completed `P0-P2` at creation time still render `P0-P3` after the implementation-phase commits land.
 - `P3-C1-S9`: the branch policy is now explicit: `S0E-docs-management-v5` remains the mixed authoring branch for the spine and parent-log ledger work, while `pr-prep/*` branches are short-lived review artifacts for one PR each.
-- `P3-C1-S8`: live PR `#296` has been retitled from the commit-only `P3-C1-...` form to the checklist-derived aggregate form `S0E-4B/P0-P3: PR title compression, structural label inheritance, and body footer follow-up v1`.
+- `P3-C1-S8`: live PR `#296` has been retitled from the commit-only `P3-C1-...` form to the checklist-derived aggregate form `S0E-4B/P0-P3: PR title compression, structural label inheritance, and body scope alignment follow-up v1`.
 - `P3-C1-S10`: GitHub now shows real issue `#295` with labels `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`, and project item `wordloom Board / Backlog`, proving the issue-create project path works with the updated token scopes.
 - `P3-C1-S11`: live PR `#296` is now retargeted to `main`, eliminating the temporary stacked-base review noise once upstream PR `#294` merged.
 
@@ -269,6 +269,6 @@
 - 2026-03-29: clarified that stacked PR commit timelines may repeat upstream commits from the base PR ancestry, so review scope should be read from the compare base and `Files changed` instead.
 - 2026-03-29: changed aggregate PR title derivation to prefer the source log's completed checklist phases, preventing already-completed earlier phases from disappearing from the title just because the latest push only added `P3` commits.
 - 2026-03-29: fixed the branch policy wording so the mixed `S0E-docs-management-v5` branch remains the authoring lane for spine/parent-log work, while `pr-prep/*` branches stay temporary review-only branches.
-- 2026-03-29: wrote back the live validation PR link `#296` and aligned its title to the new checklist-first phase-span rule.
+- 2026-03-29: wrote back the live validation PR link `#296` and aligned its title/body to the tightened checklist-first scope rule.
 - 2026-03-29: verified that issue `#295` is real, open, and attached to `wordloom Board`, resolving the earlier project-scope blocker.
 - 2026-03-29: retargeted live PR `#296` from `pr-prep/s0e-4a` back to `main` after upstream PR `#294` merged, and aligned the remaining metadata to the final non-stacked state.

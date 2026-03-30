@@ -43,10 +43,23 @@
 
 ## Evidence Footer
 
-- `898a82c9` / `S0E-4B` / `P3-C1-S1S2S3S4S5`: refine body format and issue-project validation
-- `43210aec` / `S0E-4B` / `P3-C1-S6`: stack validation on S0E-4A prep branch
-- `a882e548` / `S0E-4B` / `P3-C1-S7S8S9`: clarify stacked PR semantics and title span precedence
-- `039fc821` / `S0E-4B` / `P3-C1-S10S11`: align live issue project and PR base
+- `P0-C1-S1` / `P1-C1-S1`: `scripts/issues/plan_pr_prep.py` now derives aggregate PR titles from the selected commit phase set instead of always using `<ID>: <log title>`.
+- `P0-C1-S2` / `P1-C1-S1`: `scripts/issues/plan_pr_prep.py` now inherits PR labels from explicit issue-side structural labels and may reuse `issue_projects` when that field is explicitly populated.
+- `P0-C1-S3` / `P1-C1-S2`: `scripts/issues/plan_pr_prep.py` and `scripts/issues/create_pr_from_plan.py` now preserve separate `Evidence Footer` and `Development Link` sections and accept broader `Execution Checklist` heading variants.
+- `P2-C1-S1` / `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-plan.json` now renders `S0E-4A/P0-P3: GitHub pull request automation contract v1`, carries `EVOLUTION, s0/knowledge system, sub/1`, and the matching body preview now shows separate `Evidence Footer` and `Development Link` sections.
+- `P3-C1-S1`: `scripts/issues/plan_pr_prep.py` now adds `drills` when the source log contains substantive evidence/drill execution.
+- `P3-C1-S2`: `scripts/issues/gen_issue_draft.py` now defaults issue projects for `docs/logs/*` sources to `wordloom Board`, while `scripts/issues/plan_pr_prep.py` leaves PR projects empty unless `pr_projects` is explicitly populated.
+- `P3-C1-S3`: live PR `#294` now uses title `S0E-4A/P0-P3: GitHub pull request automation contract v1`, carries labels `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`, and has been updated to the regenerated body shape with separate `Execution Checklist`, `Evidence Footer`, and `Development Link` sections without default project noise.
+- `P3-C1-S3`: generated `Execution Checklist` lines now preserve backticks around the `P*-C*-S*` identifier segment so the rendered PR body matches the log-side checklist style.
+- `P3-C1-S4`: issue-create now has a real project-assignment path, but GitHub-side project resolution remains blocked in the current environment by project lookup/auth limitations.
+- `P3-C1-S5`: generated issue and PR bodies now start directly at `## Metadata`, removing the redundant top-level title heading while keeping machine-readable structure intact.
+- `P3-C1-S6`: a first attempt to create the real `S0E-4B` PR from `main` failed on cherry-pick because the selected commit depends on unmerged `S0E-4A` file changes; the validation PR base is therefore temporarily stacked on `pr-prep/s0e-4a`.
+- `P3-C1-S7`: the `S0E-4B` validation PR exposed that GitHub's stacked PR commit views can repeat already-reviewed upstream commits from the base PR branch ancestry; the review contract now treats compare-base semantics and `Files changed` as authoritative.
+- `P3-C1-S8`: `scripts/issues/plan_pr_prep.py` now prefers checked execution-checklist phase coverage when deriving aggregate PR titles, so logs that already completed `P0-P2` at creation time still render `P0-P3` after the implementation-phase commits land.
+- `P3-C1-S9`: the branch policy is now explicit: `S0E-docs-management-v5` remains the mixed authoring branch for the spine and parent-log ledger work, while `pr-prep/*` branches are short-lived review artifacts for one PR each.
+- `P3-C1-S8`: live PR `#296` has been retitled from the commit-only `P3-C1-...` form to the checklist-derived aggregate form `S0E-4B/P0-P3: PR title compression, structural label inheritance, and body scope alignment follow-up v1`.
+- `P3-C1-S10`: GitHub now shows real issue `#295` with labels `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`, and project item `wordloom Board / Backlog`, proving the issue-create project path works with the updated token scopes.
+- `P3-C1-S11`: live PR `#296` is now retargeted to `main`, eliminating the temporary stacked-base review noise once upstream PR `#294` merged.
 
 ## Development Link
 
