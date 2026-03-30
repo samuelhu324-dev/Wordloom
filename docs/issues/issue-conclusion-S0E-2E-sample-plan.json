@@ -10,9 +10,7 @@
     "S0E-4A: existing Context section is blank; preview omits optional Context block",
     "S0E-4A: existing issue DoD is still blank create-time scaffold",
     "S0E-4B: existing Context section is blank; preview omits optional Context block",
-    "S0E-4B: existing issue DoD is still blank create-time scaffold",
-    "S0E-2D: existing Context section is blank; preview omits optional Context block",
-    "S0E-2D: existing issue DoD is still blank create-time scaffold"
+    "S0E-2D: existing Context section is blank; preview omits optional Context block"
   ],
   "items": [
     {
@@ -68,8 +66,7 @@
       "applied_action": null,
       "status": "planned",
       "warnings": [
-        "existing Context section is blank; preview omits optional Context block",
-        "existing issue DoD is still blank create-time scaffold"
+        "existing Context section is blank; preview omits optional Context block"
       ],
       "reason": "Validate exact-ID merged PR selection and conclusion preview for the PR follow-up sample"
     },
@@ -94,8 +91,7 @@
       "applied_action": null,
       "status": "planned",
       "warnings": [
-        "existing Context section is blank; preview omits optional Context block",
-        "existing issue DoD is still blank create-time scaffold"
+        "existing Context section is blank; preview omits optional Context block"
       ],
       "reason": "Validate exact-ID merged PR selection and conclusion preview for the issue-creation enrichment sample"
     }

@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S0E-2E-sample-plan.json",
+  "item_index": 1,
+  "requested_id": "S0E-4B",
+  "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 295,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/295",
+  "issue_title": "S0E-4B: contract/PR title compression, structural label inheritance, and body footer follow-up",
+  "previous_issue_state": "OPEN",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S0E-2E-sample-s0e-4b-apply-body.md",
+  "close_reason": "completed",
+  "warnings": [
+    "issue was open before apply; body updated and issue closed with reason=completed"
+  ]
+}

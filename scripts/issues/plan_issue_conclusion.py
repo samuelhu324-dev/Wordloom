@@ -283,16 +283,11 @@ def _render_body_preview(
     merged_prs: list[MergedPrEvidence],
     link_lines: list[str],
 ) -> str:
-    development_lines = [f"- Merged PR: `{pr.title}` #{pr.number}" for pr in merged_prs]
-    dod_lines = [f"- `{pr.title}` #{pr.number}" for pr in merged_prs]
+    dod_lines = [f"- #{pr.number}" for pr in merged_prs]
     lines = ["## Metadata", "", *metadata_lines]
     if context_lines:
         lines.extend(["", "## Context", "", *context_lines])
     lines.extend([
-        "",
-        "## Development",
-        "",
-        *development_lines,
         "",
         "## Definition of Done (DoD)",
         "",

@@ -180,8 +180,8 @@
 - Step 3: collect candidate PRs by exact ID prefix from merged PR titles, for example `S0E-2D/` for issue `S0E-2D`; do not expand the set by prose similarity.
 - Step 4: if multiple merged PRs match, order them by parsed `P*` then `C*`/`S*` units when available; otherwise order them by `mergedAt` ascending and then PR number ascending.
 - Step 5: preserve the existing `Metadata` block from issue creation.
-- Step 6: write a final `Development` section that lists the merged PR evidence in the chosen order.
-- Step 7: write `Definition of Done (DoD)` as the same ordered merged-PR ledger, not as a replay of the original contract bullets.
+- Step 6: do not render a separate `Development` section in the final user-facing body.
+- Step 7: write `Definition of Done (DoD)` as the ordered short PR-ref ledger only, for example `- #296`.
 - Step 8: update `Links` so they include deterministic issue/log references plus one PR link line per merged PR in the same order.
 - Step 9: if the issue is already closed, edit it in place rather than treating the closed state as a blocker.
 - Step 10: if the issue is still open after merge, write the final body first and then close the issue with `reason=completed`.
@@ -340,7 +340,7 @@
   - `allow_closed_issue_edit`
 - Required future planner outputs:
   - ordered `merged_prs` entries with `number`, `title`, `url`, and `merged_at`
-  - `body_markdown` that preserves `Metadata` and renders final `Development`, `Definition of Done (DoD)`, and `Links`
+  - `body_markdown` that preserves `Metadata` and renders final `Definition of Done (DoD)` short refs plus `Links`
   - `warnings` describing any explicit override or fallback ordering path
 - Current dry-run artifacts:
   - `docs/issues/issue-conclusion-S0E-2E-sample-plan.json`

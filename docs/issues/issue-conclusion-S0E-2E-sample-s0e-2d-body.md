@@ -6,13 +6,9 @@
 - Source log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
 - Parent issue: #248
 
-## Development
-
-- Merged PR: `S0E-2D/P0-P3: issue creation metadata enrichment and English body contract v1` #298
-
 ## Definition of Done (DoD)
 
-- `S0E-2D/P0-P3: issue creation metadata enrichment and English body contract v1` #298
+- #298
 
 ## Links
 

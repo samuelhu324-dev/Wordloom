@@ -6,15 +6,10 @@
 - Source log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 - Parent issue: #248
 
-## Development
-
-- Merged PR: `S0E-4A/P0-P3: GitHub pull request automation contract v1` #294
-- Merged PR: `S0E-4A/P3-C2-S1S2: derive development issue fallback and multi-issue formatting` #299
-
 ## Definition of Done (DoD)
 
-- `S0E-4A/P0-P3: GitHub pull request automation contract v1` #294
-- `S0E-4A/P3-C2-S1S2: derive development issue fallback and multi-issue formatting` #299
+- #294
+- #299
 
 ## Links
 
