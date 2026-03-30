@@ -34,7 +34,7 @@
 **pr_base**: ``
 **pr_development_issue**: ``
 **created**: `2026-03-29`
-**updated**: `2026-03-29`
+**updated**: `2026-03-30`
 
 ---
 
@@ -50,6 +50,7 @@
 **Default choices (phase defaults / v1)**:
 
 - Issue conclusion happens only after merge; draft PRs or unmerged PRs are not sufficient to trigger final conclusion output.
+- GitHub auto-closing an issue via `Closes #...` is only the state transition; it does not by itself mean the final conclusion body has been written back.
 - The Development block must point to the merged PR set that shares the same exact ID prefix as the issue, unless an explicit override is recorded.
 - `Definition of Done (DoD)` in the conclusion should enumerate merged PR references and titles, not restate the original contract bullets.
 - Conclusion content must stay English-only.
@@ -91,6 +92,13 @@
   - post-merge issue conclusion rules, Development linkage rules, and English conclusion body structure are fixed and validated through at least one dry-run plus one real write-back;
   - issue closure no longer depends on operator memory to find and format the merged PR evidence.
 
+## Current Status
+
+- `P0` is complete: lifecycle order, the merge boundary, and the exact-ID merged-PR linkage boundary are now fixed.
+- `P1` is complete: the final English conclusion body shape and the exact-ID PR selection plus ordering rules are now fixed.
+- `P2` and `P3` remain open: a dry-run planner and one real issue-conclusion write-back still need to be exercised.
+- Real closed issues `#293`, `#295`, and `#297` currently still show the create-time empty scaffold, which confirms the contract gap that `S0E-2E` is closing.
+
 ## P0 (Contract | v1)
 
 ### P0-C1-S1 (Lifecycle order and merge boundary | v1)
@@ -103,20 +111,27 @@
   - merge completed by human review
   - issue conclusion written back
 - A PR being open, draft, or approved is not enough; merge completion is the minimum trigger.
+- An issue that GitHub already marked `closed` through PR keywords may still require a post-merge body update; closed state and concluded state are not treated as synonyms in v1.
 
 ### P0-C1-S2 (Development linkage and PR selection | v1)
 
-- The conclusion's Development block should list merged PRs whose titles or scope identifiers share the same exact issue/log prefix.
-- Exact ID prefix matching is the default selection rule; overrides must be explicit and traceable.
-- If multiple merged PRs belong to the same issue, they should be ordered by phase span or merge order, not by arbitrary search result order.
+- The conclusion's Development block should list merged PRs whose titles start with the same exact issue/log prefix, for example `S0E-4A/` for issue `S0E-4A`.
+- Exact ID prefix matching is the default selection rule; overrides may only come from explicit operator input or a later conclusion manifest and must stay traceable.
+- Candidate PRs must already be merged; open PRs, draft PRs, or keyword-linked PR references without merge evidence are not eligible.
+- If multiple merged PRs belong to the same issue, they must be ordered deterministically rather than by arbitrary search result order.
 - If no merged PR exists yet, the issue cannot enter final conclusion mode.
 
 ### P0-C1-S3 (English conclusion body and DoD rule | v1)
 
 - The final issue-conclusion body should use English-only headings and content.
-- The recommended structure is:
+- The final body must preserve the issue's create-time `Metadata` block and then append or replace the remaining body with conclusion-specific sections.
+- The recommended conclusion structure is:
 
 ```md
+## Metadata
+
+...
+
 ## Development
 
 - Merged PR: `S0E-2B/P0-P3: real GitHub issue creation automation (draft-generation -> create-issue) v1` #294
@@ -134,6 +149,51 @@
 
 - `Definition of Done (DoD)` in the conclusion is a merged-PR evidence block, not a replay of the original contract acceptance bullets.
 - If a short `Context` section is retained in the final conclusion body, it must stay English-only and reflect closure state rather than re-explaining the original contract.
+
+## P1 (Conclusion body and PR-selection rules | v1)
+
+### P1-C1-S1 (Final English issue-conclusion body shape | v1)
+
+- The create-time `Metadata` block should be preserved so labels, project, milestone, source log, and parent issue remain visible after closure.
+- `Context` becomes optional during conclusion v1; if retained, it should be one short English closure note rather than a replay of the original contract scope.
+- `Development` is mandatory in the final conclusion body and must enumerate the merged PR evidence in deterministic order.
+- `Definition of Done (DoD)` is mandatory in the final conclusion body and should restate the merged PR evidence as the final delivery ledger.
+- `Links` should preserve deterministic references such as log path, issue URL, parent log, and one PR URL line per merged PR in the same order used by `Development`.
+- The final body shape is:
+
+```md
+## Metadata
+
+- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`
+- Projects: `wordloom Board`
+- Milestone: ``
+- Source log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
+- Parent issue: #248
+
+## Development
+
+- Merged PR: `S0E-2D/P0-P3: issue creation metadata enrichment and English body contract v1` #298
+
+## Definition of Done (DoD)
+
+- `S0E-2D/P0-P3: issue creation metadata enrichment and English body contract v1` #298
+
+## Links
+
+- Log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/297`
+- PR: `https://github.com/samuelhu324-dev/wordloom-v3/pull/298`
+- Parent log: `docs/logs/log-S0E-docs-management-v5.md`
+```
+
+### P1-C1-S2 (Exact-ID PR selection and ordering rules | v1)
+
+- The default candidate set is the merged PRs whose titles start with the exact issue/log ID prefix followed by `/`, such as `S0E-4A/`.
+- If an explicit override is recorded later, it may narrow or expand the candidate set, but the override must be written explicitly and reported in evidence.
+- When candidate PR titles expose parseable `P*`, `C*`, and `S*` units, ordering should prefer the lowest phase number first and then the lower cycle/step tuple before merge time.
+- When phase or unit parsing is unavailable or mixed, ordering falls back to `mergedAt` ascending and then PR number ascending.
+- The same ordered PR list must be reused consistently in `Development`, `Definition of Done (DoD)`, and `Links`.
+- Current same-family merged samples prove the boundary is viable: `S0E-4A -> #294`, `S0E-4B -> #296`, and `S0E-2D -> #298`.
 
 ## Numbering
 
@@ -173,14 +233,14 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: lifecycle order and merge boundary fixed
-- [ ] `P0-C1-S2`: development linkage and PR selection rules fixed
-- [ ] `P0-C1-S3`: English conclusion body and DoD rule fixed
+- [x] `P0-C1-S1`: lifecycle order and merge boundary fixed
+- [x] `P0-C1-S2`: development linkage and PR selection rules fixed
+- [x] `P0-C1-S3`: English conclusion body and DoD rule fixed
 
 ### P1 (Conclusion body and PR-selection rules)
 
-- [ ] `P1-C1-S1`: final English issue-conclusion body shape defined
-- [ ] `P1-C1-S2`: exact-ID PR selection and ordering rules fixed
+- [x] `P1-C1-S1`: final English issue-conclusion body shape defined
+- [x] `P1-C1-S2`: exact-ID PR selection and ordering rules fixed
 
 ### P2 (Dry-run conclusion planning)
 
@@ -192,10 +252,16 @@
 - [ ] `P3-C1-S1`: one real issue-conclusion write-back completed after merge
 - [ ] `P3-C1-S2`: merged PR attachment accounting recorded
 
-## Evidence (reserved)
+## Evidence
 
-- Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
+- Artifacts remain the preferred source of truth for dry-run and write-back evidence; this log records the contract decisions and the live samples that fixed them.
+- `P0-C1-S1`: live issues `#293`, `#295`, and `#297` are already `CLOSED`, but their bodies still retain the create-time empty `Context` and `Definition of Done (DoD)` scaffold, proving that GitHub close state alone does not satisfy issue conclusion.
+- `P0-C1-S2` / `P1-C1-S2`: merged PRs `#294`, `#296`, and `#298` each expose the exact-ID title prefix pattern `S0E-4A/`, `S0E-4B/`, and `S0E-2D/`, providing real selector samples for deterministic exact-ID PR matching.
+- `P0-C1-S3` / `P1-C1-S1`: this log now fixes the final conclusion body to preserve `Metadata` while turning `Development`, `Definition of Done (DoD)`, and `Links` into a merged-PR evidence ledger instead of leaving the create-time blank scaffold in place.
+- `P1-C1-S1` / `P1-C1-S2`: `docs/runbook/run-S0E-log-to-issue-creation.md` now records the same post-merge conclusion procedure, exact-ID PR selection rules, and deterministic link/body ordering for operators.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-29: opened `S0E-2E` to define post-merge issue conclusion, Development linkage, and final English DoD rendering as a separate slice from issue creation and PR creation.
+- 2026-03-30: completed `P0` by fixing the lifecycle boundary, exact-ID merged-PR linkage rule, and the distinction between GitHub closed state versus final issue conclusion.
+- 2026-03-30: completed `P1` by defining the final English conclusion body shape, deterministic multi-PR ordering rules, and the shared operator procedure in the runbook.

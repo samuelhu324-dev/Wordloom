@@ -26,7 +26,7 @@
   **phase_log_5**: `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
   **phase_log_6**: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 **created**: `2026-03-28`
-**updated**: `2026-03-29`
+  **updated**: `2026-03-30`
 
 ---
 
@@ -137,6 +137,7 @@
 - [x] `P28`：`S0E-2D` 已建档，用于把 milestone、relationship、projects 与 English issue body contract 收口到 enriched issue creation
 - [x] `P29`：`S0E-2E` 已建档，用于把 post-merge issue conclusion、Development linkage 与 final DoD PR refs 收口为独立 contract
 - [x] `P30`：`S0E-2D` 已完成 `P3`，旧 issue `#288` 已按当前 creation body contract 回收，当前 log 的真实 sample issue `#297` 也已创建并回写
+- [x] `P31`：`S0E-2E` 已完成 `P0-P1`，GitHub auto-close 与 final conclusion 的边界、exact-ID merged PR 选择规则，以及 final English conclusion body shape 已固定
 
 ## Current Status（进展摘要）
 
@@ -154,7 +155,8 @@
 - `S0E-2D` 已完成 `P3`：旧样本 issue `#288` 已按新 creation body contract 去掉正文 title 并清空预写的 `Context/DoD`，当前 log 也已通过真实 issue `#297` 完成 enriched create sample 与 write-back；
 - `S0E-2D` 已补充 `P1-C2/P3-C3` follow-up：child issue 现在会从 `parent_log.links.issue` 继承顶层 `S0E` issue `#248`，而顶层 issue body 则不会再渲染空白的 `Parent issue`；
 - `S0E-2D` 已补充 `P1-C2-S3/P3-C3-S2` follow-up：`Parent issue` 现在只保留在 `Metadata`，并统一使用 `#248` 这类短 GitHub 引用，不再在 `Links` 重复出现；
-- `S0E-2E` 已建档：后续会把 issue 的最终 Conclusion 从“人脑记忆”改成独立 contract，要求 merge 后回填 Development PR 与 final DoD PR refs；
+- `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
+- `S0E-2E` 当前剩余 `P2-P3`：下一步只需把这些规则接成 dry-run planner，并在一条已关闭 issue 上完成真实 write-back；
 - `S0E-3A` 草案已把 roadmap/log bridge 的核心问题收口为 child-log-first contract，并把 roadmap/log templates 增加了统一 bridge 字段；
 - `S0E-3A` 已完成 `P0-P1`：phase log 已固定 bridge ownership / field contract / fail-closed semantics，template rollout 也已落到 parent/phase/roadmap 三类模板；
 - `S0E-3A/P1` 已进一步拆分 roadmap authoring 为 mainline / branch 两种模板，以对应 `road-S1` 和 `road-S1-1` 这类非线性关系；
@@ -239,3 +241,4 @@
 - 2026-03-29：完成 `S0E-2D/P3`，历史真实 issue `#288` 已按当前 creation body contract 审核并回收，当前 `S0E-2D` 也已成功创建真实 sample issue `#297` 并完成 write-back。
 - 2026-03-29：完成 `S0E-2D` 的 parent-issue follow-up：`S0E` 顶层 issue `#248` 已写回 parent spine，child issue 现可通过 `parent_log.links.issue` 自动继承父级，而顶层 issue draft 已验证不会出现 `Parent issue` 行。
 - 2026-03-29：完成 `S0E-2D` 的 parent-issue format follow-up：`Parent issue` 现已收口为 `Metadata`-only 且使用 `#248` 这类短引用，`Links` 不再重复该字段。
+- 2026-03-30：完成 `S0E-2E/P0-P1`，当前 contract 已固定 post-merge conclusion 的 lifecycle boundary、exact-ID merged PR selection，以及 final English issue-conclusion body shape；下一步进入 dry-run planning 和一次真实 closed-issue write-back 验证。

@@ -22,6 +22,7 @@
 ## 1) Purpose
 
 - Give operators one thin, repeatable path from validated `log -> issue scaffold` samples to real GitHub issues.
+- Extend that same path so a merged PR can later drive a final issue-conclusion write-back instead of leaving closed issues on the create-time empty scaffold.
 - Fix the exact boundary between what must be reviewed manually now and what a future script may generate later.
 - Prevent the contract phase from silently turning into creation-side automation before the input/output shape is stable.
 
@@ -30,6 +31,7 @@
 - Covered:
   - how to select a validated sample artifact
   - how to review title, labels, milestone, and body before creating the real issue
+  - how to conclude an already-closed or newly merged issue from exact-ID merged PR evidence
   - how to treat blank fields conservatively
   - the minimum future script input/output contract
 - Out of scope:
@@ -171,6 +173,18 @@
 - Step 12: create the real GitHub issue through the normal repository UI path.
 - Step 13: after creation, record the issue URL back into the source log in a later tracked docs update.
 
+### 5.8 Manual issue-conclusion procedure
+
+- Step 1: confirm the target issue already exists and the relevant delivery PR is actually merged; open, draft, or merely approved PRs are not enough.
+- Step 2: treat GitHub auto-close as state evidence only. A closed issue may still need a final body write-back if it still shows the create-time empty scaffold.
+- Step 3: collect candidate PRs by exact ID prefix from merged PR titles, for example `S0E-2D/` for issue `S0E-2D`; do not expand the set by prose similarity.
+- Step 4: if multiple merged PRs match, order them by parsed `P*` then `C*`/`S*` units when available; otherwise order them by `mergedAt` ascending and then PR number ascending.
+- Step 5: preserve the existing `Metadata` block from issue creation.
+- Step 6: write a final `Development` section that lists the merged PR evidence in the chosen order.
+- Step 7: write `Definition of Done (DoD)` as the same ordered merged-PR ledger, not as a replay of the original contract bullets.
+- Step 8: update `Links` so they include deterministic issue/log references plus one PR link line per merged PR in the same order.
+- Step 9: if the issue is already closed, edit it in place rather than treating the closed state as a blocker.
+
 ## 6) Future Script Entry Contract
 
 ### 6.1 Minimum inputs
@@ -308,6 +322,26 @@
 - Sample contract file:
   - `docs/issues/issue-backfill-S0E-2C-sample-manifest.json`
 
+### 6.7 Issue-conclusion planning contract
+
+- `S0E-2E/P0-P1` fixes one conservative post-merge conclusion boundary before any planner or write-back mode exists.
+- Minimum future inputs:
+  - `source_log_path`
+  - `issue_number` or `issue_url`
+  - `requested_id`
+- Optional future inputs:
+  - `merged_pr_overrides`
+  - `body_output_path`
+  - `allow_closed_issue_edit`
+- Required future planner outputs:
+  - ordered `merged_prs` entries with `number`, `title`, `url`, and `merged_at`
+  - `body_markdown` that preserves `Metadata` and renders final `Development`, `Definition of Done (DoD)`, and `Links`
+  - `warnings` describing any explicit override or fallback ordering path
+- Failure contract:
+  - if no merged PR can be proven for the exact requested ID, planning must stop instead of guessing
+  - if candidate PRs are open or draft, planning must stop instead of treating them as final delivery evidence
+  - if the issue is already closed but still has the create-time empty scaffold, planner output may still proceed because closed-state write-back is valid in v1
+
 ## 7) Troubleshooting
 
 - Keyword feels ambiguous:
@@ -318,6 +352,8 @@
   - leave it blank and record a warning rather than inferring from nearby logs.
 - Body sounds too vague:
   - refine `Context` and `DoD`, but do not rewrite the scope beyond what the source log proves.
+- Issue already closed but still blank inside:
+  - treat the close event as delivery evidence only and update the closed issue body in place with the final conclusion sections.
 
 ## 8) Notes and Boundaries
 
@@ -325,3 +361,4 @@
 - `S0E-2A` fixes the contract and manual creation path.
 - If real GitHub issue creation is pursued, the recommended follow-up slice is `S0E-2B`, not a late expansion of `S0E-2A`.
 - If batch issue planning, parent-child linking, or milestone/backfill tooling is pursued, the next follow-up slice is `S0E-2C`.
+- If post-merge issue conclusion or merged-PR write-back is pursued, the next follow-up slice is `S0E-2E`.
