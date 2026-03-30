@@ -62,9 +62,9 @@
 
 **PR summary bullets**:
 
-- Normalize PR `Development issue` rendering to short refs such as `#297` and keep `Development Link` consistent with the same normalized target.
-- Make PR summary bullets mandatory for real PR creation so live PRs no longer ship with `<placeholder>` in `Summary`.
-- Add a real issue-relationship attach path so child issue sidebar `Relationships` matches the existing `Metadata -> Parent issue` contract.
+- Harden `create_pr_from_plan.py` so a long-lived mixed working branch can still produce a clean PR-prep branch when raw cherry-picks conflict on selected commits.
+- Keep PR-prep planning and create-path execution aligned around the current remote-tracking base and the source-head final file state used for the prep branch.
+- Re-run one real `S0E-4C` follow-up PR and update issue `#300` so the extra merged PR is reflected in the final DoD ledger.
 
 **PR checklist source**:
 
@@ -75,7 +75,7 @@
 - Log: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
 - Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/300`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
-- Evidence artifact: `docs/issues/pr-prep-S0E-4C-p4-plan.json`
+- Evidence artifact: `docs/issues/pr-prep-S0E-4C-p5-plan.json`
 
 - Generated PR body should keep `Summary`, `Evidence Footer`, and `Development Link` as separate sections.
 - `Summary` must not degrade to `<placeholder>` on a live PR create path.
@@ -101,6 +101,7 @@
 - `P2`: dry-run regeneration and artifact validation against representative `S0E` samples
 - `P3`: real GitHub validation against one PR sample and one child-issue relationship sample
 - `P4`: one full end-to-end `issue creation -> PR -> issue conclusion` closed-loop drill under the `S0E-4C` rules
+- `P5`: follow-up hardening for create-path cherry-pick conflicts on the long-lived mixed `S0E` working branch
 
 ## Success Criteria (DoD)
 
@@ -204,6 +205,11 @@
 - P4-C1-S1: run one full `issue creation -> PR -> issue conclusion` cycle under the post-`S0E-4C` contracts
 - P4-C1-S2: verify that the same sample keeps short-ref metadata, non-placeholder PR summary, attached child relationship, and final issue conclusion consistency end to end
 
+### P5 (Create-path Hardening)
+
+- P5-C1-S1: harden `scripts/issues/create_pr_from_plan.py` so selected-commit cherry-pick conflicts can fall back to a source-head snapshot of the selected path set
+- P5-C1-S2: validate the hardened create-path by opening one additional real `S0E-4C` PR and updating issue `#300` after merge
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -234,6 +240,11 @@
 
 - [x] `P4-C1-S1`: one full `issue creation -> PR -> issue conclusion` cycle completed under `S0E-4C`
 - [x] `P4-C1-S2`: end-to-end artifacts reviewed for contract consistency
+
+### P5 (Create-path Hardening)
+
+- [ ] `P5-C1-S1`: create-path cherry-pick conflict hardening implemented
+- [ ] `P5-C1-S2`: one additional real `S0E-4C` PR validated and issue `#300` updated
 
 ## Evidence (reserved)
 
@@ -268,3 +279,4 @@
 - 2026-03-30: completed `P3-C1-S1` and `P3-C1-S3` by auditing historical merged PRs `#294/#296/#298/#299`, confirming that `#294` and `#299` were already compliant, rewriting live PR `#296` to use short-ref `Development issue: #295`, and rewriting live PR `#298` to use the regenerated non-placeholder Summary plus a separate `Development Link` section.
 - 2026-03-30: completed `P4` by creating live issue `#300`, attaching it to parent `#248`, opening and merging PR `#301`, writing the final conclusion body back to the already-closed issue, and verifying that creation / PR / relationship / conclusion all now align under one `S0E-4C` sample.
 - 2026-03-30: while running `P4`, fixed PR-prep base comparison so dry-run commit selection now prefers `origin/<base>` when available, preventing stale local base refs from diverging from the real create-path base.
+- 2026-03-30: opened `P5` as a focused follow-up to harden `create_pr_from_plan.py` against cherry-pick conflicts on the long-lived mixed `S0E` working branch, with one more real PR and one more issue `#300` write-back as the proof path.
