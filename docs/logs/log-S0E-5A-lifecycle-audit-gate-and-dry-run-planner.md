@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Issues, PR, Automation, Drills, Evidence, epic/s0, sub/0e5a`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/305`
   **pr**: ``
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
@@ -58,6 +58,25 @@
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
 - Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
 
+## PR Summary Inputs (optional)
+
+**PR summary bullets**:
+
+- Define one dedicated lifecycle pre-gate contract that checks live GitHub issue state before any downstream mutation is allowed to continue.
+- Add one remediation-planning layer and one unified pre-gate decision entrypoint so warning and blocked findings can stop apply with reusable artifact output instead of relying on operator memory.
+- Validate the same guarded pre-gate in front of one real issue-conclusion mutation path plus one frozen stop-before-apply drill, proving that gate decisions now control real mutation flow.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist after the audit, remediation, orchestration, and guarded mutation drill phases are reviewed.
+
+**PR links / evidence footer**:
+
+- Log: `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/305`
+- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
+- Evidence artifact: `docs/issues/issue-conclusion-S0E-5A-p5-pass-guarded-apply-result.json`
+
 ## Definitions (optional)
 
 - **Lifecycle audit**: a dry-run inspection that compares source-log metadata, live GitHub issue/PR state, and expected stage-specific completion rules.
@@ -105,6 +124,7 @@
 - `P3` now adds one remediation-planning layer on top of the audit output, so historical blocked findings can be converted into downstream relationship and issue-conclusion manifests without re-scraping prose or mutating live GitHub state.
 - `P4` now adds one unified pre-gate decision entrypoint: `pass` items allow apply, `warning/blocked` items stop and emit remediation planning, and `reconciliation/error` items hard-fail before mutation.
 - `P5` now proves that the same pre-gate can sit directly in front of a real mutation command: the pass path is allowed through to a live issue-conclusion rewrite, while the stop path halts before any apply.
+- Live issue `#305` now anchors this slice on GitHub, attached under parent issue `#248`, so the remaining lifecycle work is limited to PR creation, merge, and final issue close-out.
 
 ## P0 (Contract | v1)
 
@@ -363,3 +383,4 @@
 - 2026-03-30: added `P3` remediation planning so archived warning/blocked audit findings can be translated into reusable relationship and issue-conclusion dry-run manifests without touching live GitHub state.
 - 2026-03-30: added `P4` pre-gate orchestration so one entrypoint now chains audit, fixed warning handling, and optional remediation planning into explicit `allow-apply` or `stop-for-remediation` decisions.
 - 2026-03-30: added `P5` guarded issue-conclusion validation so the pre-gate now sits directly in front of one real mutation path and one frozen stop drill under the same entrypoint.
+- 2026-03-30: created live issue `#305` for `S0E-5A` and wrote the exact GitHub issue link back to this source log.
