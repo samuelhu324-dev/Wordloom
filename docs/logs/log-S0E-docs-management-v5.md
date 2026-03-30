@@ -19,6 +19,7 @@
   **reference_log_3**: `docs/logs/log-S4E-release-operating-model-and-governance.md`
   **phase_log_1**: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
   **phase_log_9**: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
+  **phase_log_10**: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -98,6 +99,8 @@
   - 详见：`docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
 - `S0E-2E`（Phase 2E）：issue conclusion and development linkage contract
   - 详见：`docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
+- `S0E-4D`（Phase 4D）：review-hold / full-auto lifecycle orchestration follow-up
+  - 详见：`docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
 - `S0E-4C`（Phase 4C）：PR summary / development issue rendering / issue relationship attach follow-up
   - 详见：`docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
 - `S0E-3A`（Phase 3A）：roadmap milestone and child-log bridge contract
@@ -149,6 +152,11 @@
 - [x] `P37`：`S0E-4C` 已完成 `P2`，`S0E-2D` 的 PR-prep 样本已重生成且 Summary 不再占位，`S0E` child relationship 的 plan/apply 样本也已补齐
 - [x] `P38`：`S0E-4C` 已完成 `P3-C1-S1/S3`，四条历史 `S0E` PR 已审查，live PR `#296` 与 `#298` 已按现行 body contract 回写，`#294` 与 `#299` 则确认无需修改
 - [x] `P39`：`S0E-4C` 已完成 `P3-C1-S2` 与 `P4`，真实 issue `#300`、PR `#301`、parent relationship attach 与 final issue conclusion 已跑完一条完整闭环，因此该 slice 现可视为 `stable`
+- [x] `P40`：`S0E-4C` 已完成 `P5`，`create_pr_from_plan.py` 现可在 long-lived mixed branch 的 cherry-pick 冲突后回退到 source-head snapshot，并已用真实 PR `#302` 与 issue `#300` 更新完成验证
+- [x] `P41`：`S0E-4C` 已完成 `P6`，PR title / checklist / evidence footer 现已按统一 scope 选择器收口，且历史 live PR `#296` 已按新规则回写
+- [x] `P42`：`S0E-4C` 已完成 `P7`，merged PR `#301/#302` 现可按最终 title scope 重放 checklist/evidence，历史 body drift 已完成回写
+- [x] `P43`：`S0E-4D` 已建档，用于把 `review-hold` / `full-auto` 与 default human-gated handoff 边界独立收口到 lifecycle orchestration 侧
+- [x] `P44`：`S0E-4D` 已完成 `P2`，staged review / resume-after-review / post-merge full-auto 三类命令口径与 fail-closed examples 已正式固定
 
 ## Current Status（进展摘要）
 
@@ -166,6 +174,7 @@
 - `S0E-2D` 已完成 `P3`：旧样本 issue `#288` 已按新 creation body contract 去掉正文 title 并清空预写的 `Context/DoD`，当前 log 也已通过真实 issue `#297` 完成 enriched create sample 与 write-back；
 - `S0E-2D` 已补充 `P1-C2/P3-C3` follow-up：child issue 现在会从 `parent_log.links.issue` 继承顶层 `S0E` issue `#248`，而顶层 issue body 则不会再渲染空白的 `Parent issue`；
 - `S0E-2D` 已补充 `P1-C2-S3/P3-C3-S2` follow-up：`Parent issue` 现在只保留在 `Metadata`，并统一使用 `#248` 这类短 GitHub 引用，不再在 `Links` 重复出现；
+- `S0E-4D` 已完成 `P2`：`review-hold`、resume-after-review，以及 post-merge `full-auto` 的命令口径与 fail-closed examples 已写回 log/runbook，且 `full-auto` 现已明确不覆盖 human-owned merge；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -176,6 +185,10 @@
 - `S0E-4C` 已完成 `P3-C1-S1/S3`：历史 merged PR `#294/#296/#298/#299` 已完成审查，其中 `#296` 已回写为短引用 `Development issue: #295`，`#298` 已回写为非占位 Summary + 独立 `Development Link`，而 `#294` 与 `#299` 已确认符合当前规范；
 - `S0E-4C` 已完成 `P3-C1-S2` 与 `P4`：真实 issue `#300` 已创建并挂到父 issue `#248`，PR `#301` 已从 clean `pr-prep/s0e-4c` 分支创建并合并，最终 conclusion 也已写回到 closed issue，因此 creation / PR / relationship / conclusion 四段现已在同一真实样本上完成闭环；
 - `S0E-4C` 在闭环 drill 中顺手修正了 PR-prep 的 base 选择：dry-run commit selection 现在会优先对齐 `origin/<base>`，避免 stale local base 和 real create-path 的 remote base 发生漂移；
+- `S0E-4C` 已完成 `P5`：`create_pr_from_plan.py` 在真实 `#302` 路径中已验证，当 long-lived mixed branch 的 raw cherry-pick 在 `18fbfe40` 处冲突时，会自动改走 source-head snapshot 构建 clean prep branch，而不是直接失败；
+- `S0E-4C` 的 closed issue `#300` 也已再次回写，当前 DoD 明确列出 `#301` 与 `#302` 两条 merged PR；
+- `S0E-4C` 已完成 `P6`：`plan_pr_prep.py` 现已把 title、`Execution Checklist`、`Evidence Footer` 的 scope 统一到同一选择器上，`S0E-4B` 样本与历史 merged PR `#296` 也已按新规则重写；
+- `S0E-4C` 已完成 `P7`：merged PR body 现在可以按最终 title scope 重放 `Execution Checklist` 与 `Evidence Footer`，因此 `#301` 与 `#302` 的历史 drift 也已被定向修复；
 - `S0E-2E` 现在可视为 `stable`：contract、dry-run planner、real write-back 与 attached PR accounting 都已完成闭环；
 - `S0E-3A` 草案已把 roadmap/log bridge 的核心问题收口为 child-log-first contract，并把 roadmap/log templates 增加了统一 bridge 字段；
 - `S0E-3A` 已完成 `P0-P1`：phase log 已固定 bridge ownership / field contract / fail-closed semantics，template rollout 也已落到 parent/phase/roadmap 三类模板；
@@ -265,8 +278,13 @@
 - 2026-03-30：完成 `S0E-2E/P2`，新增 manifest-driven issue-conclusion dry-run planner，并用 `#293/#295/#297` 验证了 single-PR 与 multi-PR conclusion body preview。
 - 2026-03-30：完成 `S0E-4C/P3-C1-S1S3`，已审查历史 merged PR `#294/#296/#298/#299`，并把仍有 body drift 的 `#296`、`#298` 回写到当前 PR contract；下一步进入 `P4` 做 creation -> PR -> conclusion 的闭环 drill。
 - 2026-03-30：完成 `S0E-4C/P3-C1-S2 + P4`，真实 issue `#300`、PR `#301`、relationship attach 与 issue conclusion 已形成一条完整闭环，`S0E-4C` 因而进入 `stable`；同时修正了 PR-prep planner 对 stale local base 的依赖，令 dry-run 与 real create-path 都以 remote-tracking base 为准。
+- 2026-03-30：完成 `S0E-4C/P5`，`create_pr_from_plan.py` 现已在真实 `#302` 路径上证明可从 cherry-pick conflict 自动回退到 source-head snapshot；issue `#300` 也已随之更新为包含 `#301/#302` 的最终 DoD ledger。
+- 2026-03-30：完成 `S0E-4C/P6`，PR body 现已按 title scope 同步收紧 `Execution Checklist` 与 `Evidence Footer`，并已把历史 merged PR `#296` 的 title/body metadata 回写到新规则。
+- 2026-03-30：完成 `S0E-4C/P7`，新增 merged-PR scope replay helper，并已把历史 merged PR `#301/#302` 的 checklist/evidence drift 回写到与最终 title 一致。
 - 2026-03-30：完成 `S0E-2E/P3`，新增 real apply 脚本并完成 `#297` 的线上 body write-back 与 explicit close，因此 issue conclusion 这条线已形成端到端闭环。
 - 2026-03-30：完成 `S0E-2E` 的新一轮 format revision：最终 body 去掉 `Development`、DoD 改为短 PR refs，并以 `#295` 作为第二条真实 closed sample 完成回写验证。
 - 2026-03-30：新增 `S0E-4C`，用于集中处理 PR `Summary` 占位符、`Development issue` 短引用，以及 issue sidebar `Relationships` 与 `Parent issue` 元数据未对齐的问题。
 - 2026-03-30：完成 `S0E-4C/P0-P1`，PR create 现已对 placeholder `Summary` fail-closed、Development issue 统一为短引用，且 child-parent sidebar relationship 已具备独立 apply 路径。
 - 2026-03-30：完成 `S0E-4C/P2`，已为 `S0E-2D` 重生成无 placeholder 的 PR-prep 样本，并为 `#248 -> #295` 产出正式 relationship plan/apply 样本。
+- 2026-03-30：新增 `S0E-4D`，把 `review-hold` / `full-auto`、默认 human-gated handoff，以及 staged review 与 full closed-loop 的命令口径独立收口到 lifecycle orchestration follow-up。
+- 2026-03-30：完成 `S0E-4D/P2`，明确 staged review、resume-after-review 与 post-merge full-auto 三类命令口径，并补齐 ambiguous / blocked request 的 fail-closed examples。
