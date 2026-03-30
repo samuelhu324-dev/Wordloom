@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_number": 248,
+      "child_issue_number": 300,
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "reason": "S0E-4C P4 closed-loop drill relationship attach"
+    }
+  ]
+}

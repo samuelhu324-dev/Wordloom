@@ -5,7 +5,7 @@
 - Candidate PR-prep branch: `pr-prep/s0e-4b`
 - Source log: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
 - Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
-- Development issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/295`
+- Development issue: #295
 
 ## Summary
 
@@ -46,6 +46,7 @@
 - `898a82c9` / `S0E-4B` / `P3-C1-S1S2S3S4S5`: refine body format and issue-project validation
 - `43210aec` / `S0E-4B` / `P3-C1-S6`: stack validation on S0E-4A prep branch
 - `a882e548` / `S0E-4B` / `P3-C1-S7S8S9`: clarify stacked PR semantics and title span precedence
+- `039fc821` / `S0E-4B` / `P3-C1-S10S11`: align live issue project and PR base
 
 ## Development Link
 

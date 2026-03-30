@@ -1,0 +1,14 @@
+{
+  "defaults": {
+    "requested_id": "S0E-2D",
+    "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+    "base_branch": "main",
+    "head_ref": "origin/pr-prep/s0e-2d",
+    "candidate_pr_branch": "pr-prep/s0e-2d"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-2D"
+    }
+  ]
+}

@@ -146,6 +146,37 @@ def _append_development_link(body_text: str, development_issue: str | None) -> s
     return body_text.rstrip() + "\n\n## Development Link\n\n- " + link_line + "\n"
 
 
+def _normalize_issue_ref_display(issue_ref: str | None) -> str | None:
+    issue_refs = _extract_issue_refs(issue_ref)
+    if not issue_refs:
+        return None
+    return ", ".join(issue_refs)
+
+
+def _rewrite_development_issue_metadata(body_text: str, development_issue: str | None) -> str:
+    display = _normalize_issue_ref_display(development_issue) or ""
+    lines = body_text.splitlines()
+    for index, line in enumerate(lines):
+        if line.startswith("- Development issue:"):
+            lines[index] = f"- Development issue: {display}"
+            return "\n".join(lines) + ("\n" if body_text.endswith("\n") else "")
+    return body_text
+
+
+def _has_placeholder_summary(body_text: str) -> bool:
+    in_summary = False
+    for raw in body_text.splitlines():
+        stripped = raw.strip()
+        if stripped == "## Summary":
+            in_summary = True
+            continue
+        if in_summary and stripped.startswith("## "):
+            return False
+        if in_summary and stripped == "- <placeholder>":
+            return True
+    return False
+
+
 def _create_pr(
     *,
     repo: str,
@@ -271,7 +302,15 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
                 raise SystemExit(f"Cherry-pick failed for {sha}: {stderr}")
         _git("push", "-u", "origin", prepared_branch, cwd=worktree_root)
 
-        create_body = _append_development_link(body_preview_path.read_text(encoding="utf-8"), development_issue)
+        preview_body = body_preview_path.read_text(encoding="utf-8")
+        if _has_placeholder_summary(preview_body) or int(item.get("summary_bullet_count") or 0) <= 0:
+            raise SystemExit(
+                "PR preview is missing PR Summary Inputs -> PR summary bullets; refusing to create a live PR with placeholder Summary"
+            )
+
+        normalized_development_issue = _normalize_issue_ref_display(development_issue)
+        create_body = _rewrite_development_issue_metadata(preview_body, normalized_development_issue)
+        create_body = _append_development_link(create_body, normalized_development_issue)
         create_body_path.write_text(create_body, encoding="utf-8")
         pr_number, pr_url = _create_pr(
             repo=repo,
@@ -310,7 +349,7 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
         labels_applied=labels,
         projects_applied=projects,
         milestone_applied=milestone,
-        development_issue=development_issue,
+        development_issue=_normalize_issue_ref_display(development_issue),
         warnings=warnings,
     )
     result_path.write_text(json.dumps(asdict(result), indent=2, ensure_ascii=True) + "\n", encoding="utf-8")

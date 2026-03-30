@@ -22,6 +22,7 @@
 ## 1) Purpose
 
 - Give operators one thin, repeatable path from validated `log -> issue scaffold` samples to real GitHub issues.
+- Extend that same path so a merged PR can later drive a final issue-conclusion write-back instead of leaving closed issues on the create-time empty scaffold.
 - Fix the exact boundary between what must be reviewed manually now and what a future script may generate later.
 - Prevent the contract phase from silently turning into creation-side automation before the input/output shape is stable.
 
@@ -30,6 +31,7 @@
 - Covered:
   - how to select a validated sample artifact
   - how to review title, labels, milestone, and body before creating the real issue
+  - how to conclude an already-closed or newly merged issue from exact-ID merged PR evidence
   - how to treat blank fields conservatively
   - the minimum future script input/output contract
 - Out of scope:
@@ -132,7 +134,23 @@
   - `planned` means both sides are explicitly identified and any optional traceability fields agree with them
   - `skipped` means the item was explicitly marked skip in the manifest
   - `error` means one side is missing or invalid as an explicit issue reference
-  - `reconciliation` means explicit issue references conflict with optional traceability fields and must be resolved manually before apply mode exists
+  - `reconciliation` means explicit issue references conflict with optional traceability fields and must be resolved manually before relationship apply is allowed
+
+### 5.5A Relationship apply command
+
+- `S0E-4C/P1-C1-S3` adds a real relationship apply entry for exact child-parent attach after a planned item has been reviewed.
+- Canonical local entry:
+  - `python scripts/issues/apply_issue_relationships.py <plan_path> --item-index <n>`
+- Example:
+  - `python scripts/issues/apply_issue_relationships.py docs/issues/issue-relationship-S0E-2C-sample-plan.json --item-index 0`
+- Outputs:
+  - one apply-result artifact under `docs/issues/issue-relationship-<manifest-stem>-parent-<n>-child-<n>-apply-result.json`
+  - stdout JSON summary with `applied_action`, `previous_parent_issue_number`, `final_parent_issue_number`, and `warnings`
+- Apply semantics:
+  - only `planned` relationship items are eligible for apply
+  - if the child is already attached to the requested parent, the command returns success without mutating again
+  - if the child is already attached to a different parent, apply must fail closed instead of overwriting the existing relationship
+  - the current implementation uses GitHub GraphQL sub-issue attachment rather than issue-body edits, because sidebar `Relationships` is independent from markdown body content
 
 ### 5.6 Milestone/write-back dry-run planning command
 
@@ -170,6 +188,19 @@
 - Step 11: leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text.
 - Step 12: create the real GitHub issue through the normal repository UI path.
 - Step 13: after creation, record the issue URL back into the source log in a later tracked docs update.
+
+### 5.8 Manual issue-conclusion procedure
+
+- Step 1: confirm the target issue already exists and the relevant delivery PR is actually merged; open, draft, or merely approved PRs are not enough.
+- Step 2: treat GitHub auto-close as state evidence only. A closed issue may still need a final body write-back if it still shows the create-time empty scaffold.
+- Step 3: collect candidate PRs by exact ID prefix from merged PR titles, for example `S0E-2D/` for issue `S0E-2D`; do not expand the set by prose similarity.
+- Step 4: if multiple merged PRs match, order them by parsed `P*` then `C*`/`S*` units when available; otherwise order them by `mergedAt` ascending and then PR number ascending.
+- Step 5: preserve the existing `Metadata` block from issue creation.
+- Step 6: do not render a separate `Development` section in the final user-facing body.
+- Step 7: write `Definition of Done (DoD)` as the ordered short PR-ref ledger only, for example `- #296`.
+- Step 8: update `Links` so they include deterministic issue/log references plus one PR link line per merged PR in the same order.
+- Step 9: if the issue is already closed, edit it in place rather than treating the closed state as a blocker.
+- Step 10: if the issue is still open after merge, write the final body first and then close the issue with `reason=completed`.
 
 ## 6) Future Script Entry Contract
 
@@ -213,6 +244,7 @@
 - If a parent issue is rendered, it must appear only in `Metadata` and use a plain-text short GitHub reference such as `#248`.
 - If module impact is not explicit, output an empty module-label array and continue.
 - Real GitHub issue creation must remain a separate opt-in mode, not the default behavior of the draft-generation mode.
+- Real GitHub PR creation from a PR-prep plan must also fail closed if the generated `Summary` section still contains `- <placeholder>` because explicit `PR Summary Inputs -> PR summary bullets` were missing.
 
 ### 6.4 Batch manifest and plan contract
 
@@ -308,6 +340,50 @@
 - Sample contract file:
   - `docs/issues/issue-backfill-S0E-2C-sample-manifest.json`
 
+### 6.7 Issue-conclusion planning contract
+
+- `S0E-2E/P0-P1` fixes one conservative post-merge conclusion boundary before any planner or write-back mode exists.
+- Canonical local entry:
+  - `c:/python314/python.exe scripts/issues/plan_issue_conclusion.py <manifest_path>`
+- Example:
+  - `c:/python314/python.exe scripts/issues/plan_issue_conclusion.py docs/issues/issue-conclusion-S0E-2E-sample-manifest.json`
+- Minimum future inputs:
+  - `source_log_path`
+  - `issue_number` or `issue_url`
+  - `requested_id`
+- Optional future inputs:
+  - `merged_pr_overrides`
+  - `body_output_path`
+  - `allow_closed_issue_edit`
+- Required future planner outputs:
+  - ordered `merged_prs` entries with `number`, `title`, `url`, and `merged_at`
+  - `body_markdown` that preserves `Metadata` and renders final `Definition of Done (DoD)` short refs plus `Links`
+  - `warnings` describing any explicit override or fallback ordering path
+- Current dry-run artifacts:
+  - `docs/issues/issue-conclusion-S0E-2E-sample-plan.json`
+  - `docs/issues/issue-conclusion-S0E-2E-sample-s0e-4a-body.md`
+  - `docs/issues/issue-conclusion-S0E-2E-sample-s0e-4b-body.md`
+  - `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-body.md`
+- Failure contract:
+  - if no merged PR can be proven for the exact requested ID, planning must stop instead of guessing
+  - if candidate PRs are open or draft, planning must stop instead of treating them as final delivery evidence
+  - if the issue is already closed but still has the create-time empty scaffold, planner output may still proceed because closed-state write-back is valid in v1
+
+### 6.8 Issue-conclusion apply contract
+
+- Canonical local entry:
+  - `c:/python314/python.exe scripts/issues/apply_issue_conclusion_from_plan.py <plan_path> --item-index <n>`
+- Example:
+  - `c:/python314/python.exe scripts/issues/apply_issue_conclusion_from_plan.py docs/issues/issue-conclusion-S0E-2E-sample-plan.json --item-index 2`
+- Current real-run artifacts:
+  - `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-apply-body.md`
+  - `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-apply-result.json`
+- Apply semantics:
+  - use the existing dry-run preview as the body source of truth
+  - update the live issue body first
+  - if the target issue is still open, close it with `reason=completed` after the body update
+  - if the target issue is already closed, leave it closed and only update the body in place
+
 ## 7) Troubleshooting
 
 - Keyword feels ambiguous:
@@ -318,6 +394,8 @@
   - leave it blank and record a warning rather than inferring from nearby logs.
 - Body sounds too vague:
   - refine `Context` and `DoD`, but do not rewrite the scope beyond what the source log proves.
+- Issue already closed but still blank inside:
+  - treat the close event as delivery evidence only and update the closed issue body in place with the final conclusion sections.
 
 ## 8) Notes and Boundaries
 
@@ -325,3 +403,5 @@
 - `S0E-2A` fixes the contract and manual creation path.
 - If real GitHub issue creation is pursued, the recommended follow-up slice is `S0E-2B`, not a late expansion of `S0E-2A`.
 - If batch issue planning, parent-child linking, or milestone/backfill tooling is pursued, the next follow-up slice is `S0E-2C`.
+- If post-merge issue conclusion or merged-PR write-back is pursued, the next follow-up slice is `S0E-2E`.
+- If PR-prep creation is pursued, explicit `PR Summary Inputs -> PR summary bullets` are required before a live PR should be created.

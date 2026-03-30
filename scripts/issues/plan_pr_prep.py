@@ -40,6 +40,8 @@ class PrPrepPlanItem:
     pr_projects: list[str]
     pr_milestone: str | None
     pr_development_issue: str | None
+    pr_development_issue_refs: list[str]
+    summary_bullet_count: int
     preview_body_path: str
     selected_commit_count: int
     selected_commits: list[CommitSelection]
@@ -111,6 +113,18 @@ def _git_stdout(*args: str) -> str:
     if cmd.returncode != 0:
         raise SystemExit(cmd.stderr.strip() or f"git command failed: {' '.join(args)}")
     return cmd.stdout.strip()
+
+
+def _git_ref_exists(ref_name: str) -> bool:
+    cmd = _run_command(["git", "-C", str(_repo_root()), "rev-parse", "--verify", ref_name])
+    return cmd.returncode == 0
+
+
+def _resolve_compare_base_ref(base_branch: str) -> str:
+    remote_ref = f"origin/{base_branch}"
+    if _git_ref_exists(remote_ref):
+        return remote_ref
+    return base_branch
 
 
 def _find_section_lines(sections: dict[str, list[str]], prefix: str) -> list[str]:
@@ -385,8 +399,9 @@ def _render_body_preview(
 
 
 def _collect_branch_commits(base_branch: str, head_ref: str) -> tuple[str, list[CommitSelection]]:
-    merge_base = _git_stdout("merge-base", base_branch, head_ref)
-    raw = _git_stdout("log", "--reverse", "--format=%H%x1f%s", f"{base_branch}..{head_ref}")
+    compare_base_ref = _resolve_compare_base_ref(base_branch)
+    merge_base = _git_stdout("merge-base", compare_base_ref, head_ref)
+    raw = _git_stdout("log", "--reverse", "--format=%H%x1f%s", f"{compare_base_ref}..{head_ref}")
     items: list[CommitSelection] = []
     if raw:
         for line in raw.splitlines():
@@ -453,6 +468,8 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
             pr_projects=pr_projects,
             pr_milestone=pr_milestone,
             pr_development_issue=pr_development_issue,
+            pr_development_issue_refs=_parse_issue_refs(pr_development_issue)[0] if pr_development_issue else [],
+            summary_bullet_count=0,
             preview_body_path=_repo_rel(preview_path),
             selected_commit_count=0,
             selected_commits=[],
@@ -529,6 +546,8 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
         pr_projects=pr_projects,
         pr_milestone=pr_milestone,
         pr_development_issue=pr_development_issue,
+        pr_development_issue_refs=_parse_issue_refs(pr_development_issue)[0] if pr_development_issue else [],
+        summary_bullet_count=len(summary_bullets),
         preview_body_path=_repo_rel(preview_path),
         selected_commit_count=len(selected_commits),
         selected_commits=selected_commits,
