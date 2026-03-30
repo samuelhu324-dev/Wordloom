@@ -1,0 +1,14 @@
+{
+  "defaults": {
+    "requested_id": "S0E-5A",
+    "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+    "base_branch": "main",
+    "head_ref": "HEAD",
+    "candidate_pr_branch": "pr-prep/s0e-5a"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5A"
+    }
+  ]
+}

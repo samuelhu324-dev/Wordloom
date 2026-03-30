@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Issues, PR, Automation, Drills, Evidence, epic/s0, sub/0e5a`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/305`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/306`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -34,7 +34,7 @@
 **pr_projects**: ``
 **pr_milestone**: ``
 **pr_base**: `main`
-**pr_development_issue**: ``
+**pr_development_issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/305`
 **created**: `2026-03-30`
 **updated**: `2026-03-30`
 
@@ -124,7 +124,7 @@
 - `P3` now adds one remediation-planning layer on top of the audit output, so historical blocked findings can be converted into downstream relationship and issue-conclusion manifests without re-scraping prose or mutating live GitHub state.
 - `P4` now adds one unified pre-gate decision entrypoint: `pass` items allow apply, `warning/blocked` items stop and emit remediation planning, and `reconciliation/error` items hard-fail before mutation.
 - `P5` now proves that the same pre-gate can sit directly in front of a real mutation command: the pass path is allowed through to a live issue-conclusion rewrite, while the stop path halts before any apply.
-- Live issue `#305` now anchors this slice on GitHub, attached under parent issue `#248`, so the remaining lifecycle work is limited to PR creation, merge, and final issue close-out.
+- Live issue `#305` now anchors this slice on GitHub, is attached under parent issue `#248`, has been delivered through merged PR `#306`, and has been concluded in place through the final issue-conclusion write-back.
 
 ## P0 (Contract | v1)
 
@@ -375,6 +375,31 @@
   - the pass sample now gates `S0E-4D/#303` successfully and rewrites the live concluded issue body in place through the guarded entrypoint
   - the frozen stop sample now halts before any issue-conclusion plan/apply step, while still emitting remediation artifacts for the underlying warning/blocked findings
 
+### Live lifecycle close-out (issue -> PR -> merge -> relationship -> conclusion | 2026-03-30)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `docs/issues/issue-S0E-5A.md`
+  - `docs/issues/issue-S0E-5A.create-result.json`
+  - `docs/issues/pr-prep-S0E-5A-real-manifest.json`
+  - `docs/issues/pr-prep-S0E-5A-real-plan.json`
+  - `docs/issues/pr-prep-S0E-5A-real-body.md`
+  - `docs/issues/pr-prep-S0E-5A-real-create-body.md`
+  - `docs/issues/pr-prep-S0E-5A-real-create-result.json`
+  - `docs/issues/issue-relationship-S0E-5A-live-manifest.json`
+  - `docs/issues/issue-relationship-S0E-5A-live-manifest-plan.json`
+  - `docs/issues/issue-relationship-S0E-5A-live-parent-248-child-305-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-5A-live-manifest.json`
+  - `docs/issues/issue-conclusion-S0E-5A-live-plan.json`
+  - `docs/issues/issue-conclusion-S0E-5A-live-s0e-5a-body.md`
+  - `docs/issues/issue-conclusion-S0E-5A-live-s0e-5a-apply-body.md`
+  - `docs/issues/issue-conclusion-S0E-5A-live-s0e-5a-apply-result.json`
+- expected:
+  - `S0E-5A` itself should complete one real end-to-end lifecycle under the same contracts it defines for later slices
+  - the final closed issue should carry merged PR evidence and the live sidebar relationship should converge on parent issue `#248`
+- observed:
+  - issue `#305` was created from this log, PR `#306` was opened and merged from the focused prep plan, the live parent relationship `#248 -> #305` was attached, and the final issue body was rewritten in place after auto-close
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: opened `S0E-5A` to define a dedicated lifecycle-audit gate that runs before future issue/PR/relationship/conclusion mutations.
@@ -384,3 +409,4 @@
 - 2026-03-30: added `P4` pre-gate orchestration so one entrypoint now chains audit, fixed warning handling, and optional remediation planning into explicit `allow-apply` or `stop-for-remediation` decisions.
 - 2026-03-30: added `P5` guarded issue-conclusion validation so the pre-gate now sits directly in front of one real mutation path and one frozen stop drill under the same entrypoint.
 - 2026-03-30: created live issue `#305` for `S0E-5A` and wrote the exact GitHub issue link back to this source log.
+- 2026-03-30: opened and merged live PR `#306`, attached sidebar parent relationship `#248 -> #305`, and rewrote the final closed issue body so `S0E-5A` itself now completes one real closed-loop sample.
