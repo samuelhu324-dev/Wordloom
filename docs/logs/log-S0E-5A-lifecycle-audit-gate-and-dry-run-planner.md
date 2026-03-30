@@ -79,6 +79,7 @@
 - `P0`: contract for audit scope, stage model, severity rules, and evidence shape
 - `P1`: implement a manifest-driven dry-run lifecycle audit planner
 - `P2`: validate the planner against representative closed `S0E` child issues after historical remediation and relationship repair
+- `P3`: convert blocked or warning audit output into dry-run remediation manifests without mutating GitHub
 
 ## Success Criteria (DoD)
 
@@ -99,6 +100,7 @@
 - `S0E-5A` now defines the first dedicated audit gate for lifecycle mutations instead of leaving that responsibility split across creation, PR, and conclusion slices.
 - v1 is intentionally limited to dry-run planning, but it already covers the structural defects that mattered in historical audits: stale write-back, missing labels, missing exact-ID merged PR evidence, and missing sidebar parent-child relationships.
 - The first representative sample now passes end to end: `#289`, `#297`, `#293`, `#300`, and `#303` all return `pass-audit` against one shared planner output.
+- `P3` now adds one remediation-planning layer on top of the audit output, so historical blocked findings can be converted into downstream relationship and issue-conclusion manifests without re-scraping prose or mutating live GitHub state.
 
 ## P0 (Contract | v1)
 
@@ -122,6 +124,19 @@
   - stage classification plus exact-ID merged PR evidence summary
   - per-check statuses for source-log write-back, required sections, labels, links, DoD refs, and live parent-child relationship
   - one overall audit status that a later gate/apply path can consume without rescanning free text
+
+## P3 (Remediation Planning | v1)
+
+### P3-C1-S1 (Audit-to-remediation mapping | v1)
+
+- `warning` and `blocked` audit items should be converted into the smallest dry-run remediation action set that can fix the audited defect.
+- Relationship defects should map to relationship manifests, conclusion/body-refresh defects should map to issue-conclusion manifests, and source-log write-back defects should map to issue-backfill manifests when the existing tooling already supports them.
+- Checks that still lack safe automated follow-up, such as label drift or certain body-metadata drift, should remain explicit manual remediation steps in the planner output rather than being silently dropped.
+
+### P3-C1-S2 (Historical fixture validation | v1)
+
+- The first remediation-planner validation may reuse archived historical audit findings instead of re-breaking live GitHub state.
+- A valid `P3` sample should prove at least one issue-conclusion remediation plan and one relationship remediation plan can be generated from known past defects.
 
 ## Numbering
 
@@ -157,6 +172,11 @@
 - P2-C1-S1: prepare a representative manifest over repaired `S0E` child issues
 - P2-C1-S2: run the dry-run planner and record the converged output as evidence
 
+### P3 (Remediation planning)
+
+- P3-C1-S1: map blocked or warning lifecycle-audit findings into downstream dry-run remediation manifests
+- P3-C1-S2: validate the remediation planner against archived historical defects without mutating live GitHub state
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -174,6 +194,11 @@
 
 - [x] `P2-C1-S1`: representative repaired `S0E` child-issue manifest prepared
 - [x] `P2-C1-S2`: dry-run audit output recorded for the representative sample
+
+### P3 (Remediation planning)
+
+- [x] `P3-C1-S1`: lifecycle-audit findings mapped into downstream dry-run remediation manifests
+- [x] `P3-C1-S2`: archived historical defect fixture validated without mutating live GitHub state
 
 ## Evidence (reserved)
 
@@ -216,8 +241,26 @@
   - `docs/issues/lifecycle-audit-S0E-5A-sample-plan.json` now records `pass-audit` for all five sampled child issues: `#289`, `#297`, `#293`, `#300`, and `#303`
   - the same planner output confirms parent issue `#248` in both metadata and live sidebar relationship state across the representative sample
 
+### P3-C1-S1S2 (archived historical findings converted into remediation manifests | 2026-03-30)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `scripts/issues/plan_lifecycle_remediation.py`
+  - `docs/issues/lifecycle-audit-S0E-5A-p3-fixture-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-5A-p3-fixture-plan.json`
+  - `docs/issues/lifecycle-remediation-S0E-5A-p3-sample-plan.json`
+  - `docs/issues/lifecycle-remediation-S0E-5A-p3-sample-relationship-manifest.json`
+  - `docs/issues/lifecycle-remediation-S0E-5A-p3-sample-issue-conclusion-manifest.json`
+- expected:
+  - blocked or warning lifecycle-audit findings should be converted into the smallest reusable dry-run manifests supported by existing tooling
+  - the archived historical sample should prove at least one relationship repair and one issue-conclusion refresh path without mutating live GitHub state
+- observed:
+  - `docs/issues/lifecycle-remediation-S0E-5A-p3-sample-plan.json` now maps the archived `#288` warning to an issue-conclusion manifest and the archived `#289/#293/#297` blocked findings to one shared relationship manifest
+  - the remediation planner keeps unsupported follow-up types as explicit manual steps instead of inventing unsafe apply behavior
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: opened `S0E-5A` to define a dedicated lifecycle-audit gate that runs before future issue/PR/relationship/conclusion mutations.
 - 2026-03-30: implemented a manifest-driven dry-run planner for stage-aware lifecycle auditing.
 - 2026-03-30: prepared and executed a representative repaired-child sample so the first gate artifact is grounded in real `S0E` issue history.
+- 2026-03-30: added `P3` remediation planning so archived warning/blocked audit findings can be translated into reusable relationship and issue-conclusion dry-run manifests without touching live GitHub state.

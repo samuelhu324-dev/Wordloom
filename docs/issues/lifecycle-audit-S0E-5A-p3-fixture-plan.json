@@ -1,0 +1,179 @@
+{
+  "mode": "lifecycle-audit-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-audit-S0E-5A-p3-fixture-manifest.json",
+  "selection_input": "fixture",
+  "operation": "plan-lifecycle-audit",
+  "total_items": 4,
+  "planned_items": 0,
+  "warnings": [
+    "S0E-2B: warning",
+    "S0E-2A: blocked",
+    "S0E-4A: blocked",
+    "S0E-2D: blocked"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-2B",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "issue_number": 288,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "issue_title": "S0E-2B: automation/real GitHub issue creation automation",
+      "issue_state": "OPEN",
+      "lifecycle_stage": "merged-open",
+      "expected_parent_issue_number": 248,
+      "actual_parent_issue_number": 248,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/290",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 290,
+          "title": "S0E-2B/P0-P3: real GitHub issue creation automation v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/290",
+          "merged_at": "2026-03-28T13:00:58Z"
+        }
+      ],
+      "planned_action": "review-audit-findings",
+      "applied_action": null,
+      "status": "warning",
+      "checks": [
+        {"name": "source-log-issue-writeback", "status": "pass", "details": "source log links.issue matches the live issue URL"},
+        {"name": "required-body-sections", "status": "pass", "details": "Metadata, Definition of Done (DoD), and Links sections are present"},
+        {"name": "expected-labels", "status": "pass", "details": "live issue labels cover the deterministic label set derived from the source log"},
+        {"name": "body-parent-metadata", "status": "pass", "details": "Metadata section records Parent issue: #248"},
+        {"name": "sidebar-parent-relationship", "status": "pass", "details": "live GitHub parent relationship points to #248"},
+        {"name": "exact-id-merged-pr-evidence", "status": "pass", "details": "found 1 exact-ID merged PR(s)"},
+        {"name": "final-dod-pr-refs", "status": "warning", "details": "merged PR evidence exists while the issue is still open; final DoD refs should be reviewed before conclusion"},
+        {"name": "links-coverage", "status": "pass", "details": "Links section covers the expected log, runbook, issue, and PR references for the current stage"},
+        {"name": "closed-body-shape", "status": "skipped", "details": "closed-body shape is not required while the issue remains open"},
+        {"name": "source-log-pr-link", "status": "pass", "details": "source log links.pr is represented in the exact-ID merged PR evidence set"}
+      ],
+      "warnings": [],
+      "reason": "Historical pre-conclusion fixture before issue #288 was closed."
+    },
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "issue_title": "S0E-2A: contract/semi-automated Git issue creation contract",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
+      "expected_parent_issue_number": 248,
+      "actual_parent_issue_number": null,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/287",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 287,
+          "title": "S0E-2A/P0-P3: semi-automated Git issue creation contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/287",
+          "merged_at": "2026-03-28T12:22:18Z"
+        }
+      ],
+      "planned_action": "block-mutation",
+      "applied_action": null,
+      "status": "blocked",
+      "checks": [
+        {"name": "source-log-issue-writeback", "status": "pass", "details": "source log links.issue matches the live issue URL"},
+        {"name": "required-body-sections", "status": "pass", "details": "Metadata, Definition of Done (DoD), and Links sections are present"},
+        {"name": "expected-labels", "status": "pass", "details": "live issue labels cover the deterministic label set derived from the source log"},
+        {"name": "body-parent-metadata", "status": "pass", "details": "Metadata section records Parent issue: #248"},
+        {"name": "sidebar-parent-relationship", "status": "fail", "details": "live GitHub parent relationship is null; expected #248"},
+        {"name": "exact-id-merged-pr-evidence", "status": "pass", "details": "found 1 exact-ID merged PR(s)"},
+        {"name": "final-dod-pr-refs", "status": "pass", "details": "DoD PR refs match the exact-ID merged PR evidence set"},
+        {"name": "links-coverage", "status": "pass", "details": "Links section covers the expected log, runbook, issue, and PR references for the current stage"},
+        {"name": "closed-body-shape", "status": "pass", "details": "concluded issue body omits the transient Context section"},
+        {"name": "source-log-pr-link", "status": "pass", "details": "source log links.pr is represented in the exact-ID merged PR evidence set"}
+      ],
+      "warnings": [],
+      "reason": "Historical pre-repair fixture before sidebar relationship #248 -> #289 was attached."
+    },
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "issue_number": 293,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/293",
+      "issue_title": "S0E-4A: contract/GitHub pull request automation contract",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
+      "expected_parent_issue_number": 248,
+      "actual_parent_issue_number": null,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/293",
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/294",
+      "merged_pr_count": 2,
+      "merged_prs": [
+        {
+          "number": 294,
+          "title": "S0E-4A/P0-P3: GitHub pull request automation contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/294",
+          "merged_at": "2026-03-29T10:22:55Z"
+        },
+        {
+          "number": 299,
+          "title": "S0E-4A/P3-C2-S1S2: derive development issue fallback and multi-issue formatting",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/299",
+          "merged_at": "2026-03-30T00:09:46Z"
+        }
+      ],
+      "planned_action": "block-mutation",
+      "applied_action": null,
+      "status": "blocked",
+      "checks": [
+        {"name": "source-log-issue-writeback", "status": "pass", "details": "source log links.issue matches the live issue URL"},
+        {"name": "required-body-sections", "status": "pass", "details": "Metadata, Definition of Done (DoD), and Links sections are present"},
+        {"name": "expected-labels", "status": "pass", "details": "live issue labels cover the deterministic label set derived from the source log"},
+        {"name": "body-parent-metadata", "status": "pass", "details": "Metadata section records Parent issue: #248"},
+        {"name": "sidebar-parent-relationship", "status": "fail", "details": "live GitHub parent relationship is null; expected #248"},
+        {"name": "exact-id-merged-pr-evidence", "status": "pass", "details": "found 2 exact-ID merged PR(s)"},
+        {"name": "final-dod-pr-refs", "status": "pass", "details": "DoD PR refs match the exact-ID merged PR evidence set"},
+        {"name": "links-coverage", "status": "pass", "details": "Links section covers the expected log, runbook, issue, and PR references for the current stage"},
+        {"name": "closed-body-shape", "status": "pass", "details": "concluded issue body omits the transient Context section"},
+        {"name": "source-log-pr-link", "status": "pass", "details": "source log links.pr is represented in the exact-ID merged PR evidence set"}
+      ],
+      "warnings": [],
+      "reason": "Historical pre-repair fixture before sidebar relationship #248 -> #293 was attached."
+    },
+    {
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "issue_number": 297,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/297",
+      "issue_title": "S0E-2D: contract/issue creation metadata enrichment and English body contract",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
+      "expected_parent_issue_number": 248,
+      "actual_parent_issue_number": null,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/297",
+      "source_log_pr_url": null,
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 298,
+          "title": "S0E-2D/P0-P3: issue creation metadata enrichment and English body contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/298",
+          "merged_at": "2026-03-29T14:43:52Z"
+        }
+      ],
+      "planned_action": "block-mutation",
+      "applied_action": null,
+      "status": "blocked",
+      "checks": [
+        {"name": "source-log-issue-writeback", "status": "pass", "details": "source log links.issue matches the live issue URL"},
+        {"name": "required-body-sections", "status": "pass", "details": "Metadata, Definition of Done (DoD), and Links sections are present"},
+        {"name": "expected-labels", "status": "pass", "details": "live issue labels cover the deterministic label set derived from the source log"},
+        {"name": "body-parent-metadata", "status": "pass", "details": "Metadata section records Parent issue: #248"},
+        {"name": "sidebar-parent-relationship", "status": "fail", "details": "live GitHub parent relationship is null; expected #248"},
+        {"name": "exact-id-merged-pr-evidence", "status": "pass", "details": "found 1 exact-ID merged PR(s)"},
+        {"name": "final-dod-pr-refs", "status": "pass", "details": "DoD PR refs match the exact-ID merged PR evidence set"},
+        {"name": "links-coverage", "status": "pass", "details": "Links section covers the expected log, runbook, issue, and PR references for the current stage"},
+        {"name": "closed-body-shape", "status": "pass", "details": "concluded issue body omits the transient Context section"},
+        {"name": "source-log-pr-link", "status": "skipped", "details": "source log links.pr is blank"}
+      ],
+      "warnings": [],
+      "reason": "Historical pre-repair fixture before sidebar relationship #248 -> #297 was attached."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "version": "1",
+  "mode": "lifecycle-audit-dry-run-fixture",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "expected_parent_issue_number": 248
+  },
+  "items": [
+    {
+      "requested_id": "S0E-2B",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "note": "Archived historical fixture representing the pre-conclusion state of issue #288 before S0E-4D remediation closed it."
+    },
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "note": "Archived historical fixture representing the pre-repair state before sidebar relationship #248 -> #289 was attached."
+    },
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "note": "Archived historical fixture representing the pre-repair state before sidebar relationship #248 -> #293 was attached."
+    },
+    {
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "note": "Archived historical fixture representing the pre-repair state before sidebar relationship #248 -> #297 was attached."
+    }
+  ]
+}
