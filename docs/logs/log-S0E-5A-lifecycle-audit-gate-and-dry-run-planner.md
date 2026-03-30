@@ -80,6 +80,7 @@
 - `P1`: implement a manifest-driven dry-run lifecycle audit planner
 - `P2`: validate the planner against representative closed `S0E` child issues after historical remediation and relationship repair
 - `P3`: convert blocked or warning audit output into dry-run remediation manifests without mutating GitHub
+- `P4`: connect audit and remediation into one pre-gate decision entrypoint with fixed warning handling
 
 ## Success Criteria (DoD)
 
@@ -101,6 +102,7 @@
 - v1 is intentionally limited to dry-run planning, but it already covers the structural defects that mattered in historical audits: stale write-back, missing labels, missing exact-ID merged PR evidence, and missing sidebar parent-child relationships.
 - The first representative sample now passes end to end: `#289`, `#297`, `#293`, `#300`, and `#303` all return `pass-audit` against one shared planner output.
 - `P3` now adds one remediation-planning layer on top of the audit output, so historical blocked findings can be converted into downstream relationship and issue-conclusion manifests without re-scraping prose or mutating live GitHub state.
+- `P4` now adds one unified pre-gate decision entrypoint: `pass` items allow apply, `warning/blocked` items stop and emit remediation planning, and `reconciliation/error` items hard-fail before mutation.
 
 ## P0 (Contract | v1)
 
@@ -137,6 +139,21 @@
 
 - The first remediation-planner validation may reuse archived historical audit findings instead of re-breaking live GitHub state.
 - A valid `P3` sample should prove at least one issue-conclusion remediation plan and one relationship remediation plan can be generated from known past defects.
+
+## P4 (Pre-gate Orchestration | v1)
+
+### P4-C1-S1 (Unified decision entrypoint | v1)
+
+- The pre-gate entrypoint should accept one lifecycle manifest and run the audit planner first instead of requiring operators to manually chain audit and remediation commands.
+- If every audited item is `pass`, the entrypoint should emit one explicit `allow-apply` decision artifact.
+- If any audited item is `warning` or `blocked`, the entrypoint should stop mutation and emit one remediation-planning artifact set rather than silently continuing.
+- For archived validation only, the same entrypoint may replay one frozen lifecycle-audit plan so stop-path evidence can be reproduced without re-breaking live GitHub state.
+
+### P4-C1-S2 (Fixed warning policy | v1)
+
+- v1 warning handling is fail-closed at the gate layer: `warning` does not auto-upgrade the audit status to `blocked`, but it does stop apply and require remediation planning or human review before any mutation continues.
+- `blocked` remains structurally non-applicable and follows the same stop-and-plan path.
+- `reconciliation` and `error` remain hard-fail states that stop before remediation planning because the audit input itself is not yet trustworthy.
 
 ## Numbering
 
@@ -177,6 +194,11 @@
 - P3-C1-S1: map blocked or warning lifecycle-audit findings into downstream dry-run remediation manifests
 - P3-C1-S2: validate the remediation planner against archived historical defects without mutating live GitHub state
 
+### P4 (Pre-gate orchestration)
+
+- P4-C1-S1: add one unified pre-gate entrypoint that chains lifecycle audit, gate decision, and optional remediation planning
+- P4-C1-S2: fix the v1 warning policy so `warning` stops apply and emits remediation planning instead of being silently allowed through
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -199,6 +221,11 @@
 
 - [x] `P3-C1-S1`: lifecycle-audit findings mapped into downstream dry-run remediation manifests
 - [x] `P3-C1-S2`: archived historical defect fixture validated without mutating live GitHub state
+
+### P4 (Pre-gate orchestration)
+
+- [x] `P4-C1-S1`: unified pre-gate entrypoint implemented and exercised on pass and stop samples
+- [x] `P4-C1-S2`: v1 warning policy fixed as stop-and-plan-remediation instead of silent pass-through
 
 ## Evidence (reserved)
 
@@ -258,9 +285,29 @@
   - `docs/issues/lifecycle-remediation-S0E-5A-p3-sample-plan.json` now maps the archived `#288` warning to an issue-conclusion manifest and the archived `#289/#293/#297` blocked findings to one shared relationship manifest
   - the remediation planner keeps unsupported follow-up types as explicit manual steps instead of inventing unsafe apply behavior
 
+### P4-C1-S1S2 (pre-gate decision entrypoint exercised on pass and stop samples | 2026-03-30)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `scripts/issues/plan_lifecycle_pre_gate.py`
+  - `docs/issues/lifecycle-audit-S0E-5A-p4-pass-plan.json`
+  - `docs/issues/lifecycle-gate-S0E-5A-p4-pass-decision.json`
+  - `docs/issues/lifecycle-audit-S0E-5A-p3-fixture-plan.json`
+  - `docs/issues/lifecycle-remediation-S0E-5A-p4-stop-plan.json`
+  - `docs/issues/lifecycle-remediation-S0E-5A-p4-stop-relationship-manifest.json`
+  - `docs/issues/lifecycle-remediation-S0E-5A-p4-stop-issue-conclusion-manifest.json`
+  - `docs/issues/lifecycle-gate-S0E-5A-p4-stop-decision.json`
+- expected:
+  - one unified pre-gate entrypoint should allow apply only when all audited items pass
+  - the fixed v1 warning policy should stop apply on both `warning` and `blocked` audit findings and emit remediation planning artifacts
+- observed:
+  - the pass sample now converges on one `allow-apply` decision without remediation output
+  - the archived fixture sample now converges on one `stop-for-remediation` decision, with `#288` routed to issue-conclusion remediation and `#289/#293/#297` routed to relationship remediation
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: opened `S0E-5A` to define a dedicated lifecycle-audit gate that runs before future issue/PR/relationship/conclusion mutations.
 - 2026-03-30: implemented a manifest-driven dry-run planner for stage-aware lifecycle auditing.
 - 2026-03-30: prepared and executed a representative repaired-child sample so the first gate artifact is grounded in real `S0E` issue history.
 - 2026-03-30: added `P3` remediation planning so archived warning/blocked audit findings can be translated into reusable relationship and issue-conclusion dry-run manifests without touching live GitHub state.
+- 2026-03-30: added `P4` pre-gate orchestration so one entrypoint now chains audit, fixed warning handling, and optional remediation planning into explicit `allow-apply` or `stop-for-remediation` decisions.
