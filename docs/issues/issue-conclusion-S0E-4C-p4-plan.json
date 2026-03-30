@@ -1,0 +1,41 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-4C-p4-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-4C: existing Context section is blank; preview omits optional Context block",
+    "S0E-4C: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-4C",
+      "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "issue_number": 300,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/300",
+      "issue_title": "S0E-4C: contract/PR summary, development-link rendering, and issue relationship follow-up",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-4C-p4-s0e-4c-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 301,
+          "title": "S0E-4C/P0-P4: PR summary, development-link rendering, and issue relationship follow-up v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/301",
+          "merged_at": "2026-03-30T03:44:43Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "existing Context section is blank; preview omits optional Context block",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Run the S0E-4C P4 full closed-loop issue conclusion after PR #301 merged"
+    }
+  ]
+}
