@@ -1,0 +1,91 @@
+{
+  "mode": "lifecycle-audit-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-audit-S0E-5A-p5-pass-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-lifecycle-audit",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0E-4D",
+      "source_log_path": "docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md",
+      "issue_number": 303,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/303",
+      "issue_title": "S0E-4D: workflow/review-hold, full-auto, and lifecycle orchestration follow-up",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
+      "expected_parent_issue_number": 248,
+      "actual_parent_issue_number": 248,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/303",
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/304",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 304,
+          "title": "S0E-4D/P0-P2: review-hold, full-auto, and lifecycle orchestration follow-up v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/304",
+          "merged_at": "2026-03-30T07:00:07Z"
+        }
+      ],
+      "planned_action": "pass-audit",
+      "applied_action": null,
+      "status": "pass",
+      "checks": [
+        {
+          "name": "source-log-issue-writeback",
+          "status": "pass",
+          "details": "source log links.issue matches the live issue URL"
+        },
+        {
+          "name": "required-body-sections",
+          "status": "pass",
+          "details": "Metadata, Definition of Done (DoD), and Links sections are present"
+        },
+        {
+          "name": "expected-labels",
+          "status": "pass",
+          "details": "live issue labels cover the deterministic label set derived from the source log"
+        },
+        {
+          "name": "body-parent-metadata",
+          "status": "pass",
+          "details": "Metadata section records Parent issue: #248"
+        },
+        {
+          "name": "sidebar-parent-relationship",
+          "status": "pass",
+          "details": "live GitHub parent relationship points to #248"
+        },
+        {
+          "name": "exact-id-merged-pr-evidence",
+          "status": "pass",
+          "details": "found 1 exact-ID merged PR(s)"
+        },
+        {
+          "name": "final-dod-pr-refs",
+          "status": "pass",
+          "details": "DoD PR refs match the exact-ID merged PR evidence set"
+        },
+        {
+          "name": "links-coverage",
+          "status": "pass",
+          "details": "Links section covers the expected log, runbook, issue, and PR references for the current stage"
+        },
+        {
+          "name": "closed-body-shape",
+          "status": "pass",
+          "details": "concluded issue body omits the transient Context section"
+        },
+        {
+          "name": "source-log-pr-link",
+          "status": "pass",
+          "details": "source log links.pr is represented in the exact-ID merged PR evidence set"
+        }
+      ],
+      "warnings": [],
+      "reason": "Guarded pass-to-apply sample for the converged S0E-4D issue-conclusion path."
+    }
+  ]
+}

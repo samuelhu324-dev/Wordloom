@@ -166,6 +166,7 @@
 - [x] `P48`：`S0E-5A` 已完成 `P0-P2`，现已定义 lifecycle audit gate contract，落地 dry-run planner，并以 `#289/#297/#293/#300/#303` 的 representative sample 证明 audit 输出可直接作为 mutation 前置 gate
 - [x] `P49`：`S0E-5A` 已完成 `P3`，历史 warning/blocked audit 结果现可被转换成 relationship / issue-conclusion 的 dry-run remediation manifests，作为后续真正前置 gate 的修复规划层
 - [x] `P50`：`S0E-5A` 已完成 `P4`，统一 pre-gate entrypoint 已把 audit / decision / remediation-planning 串起来，并固定 `warning` 为 stop-and-plan-remediation 的 gate 策略
+- [x] `P51`：`S0E-5A` 已完成 `P5`，pre-gate 已接到 issue-conclusion mutation 前面，并用一条真实 pass->apply 样本和一条 frozen stop drill 证明 gated apply 行为成立
 
 ## Current Status（进展摘要）
 
@@ -189,6 +190,7 @@
 - `S0E-5A` 已完成 dry-run gate 起步版：planner 现在可对 live issue body、labels、exact-ID merged PR evidence 与 sidebar relationship 做 stage-aware 审计，且 representative sample 五条 child issues 均已 `pass-audit`；
 - `S0E-5A` 已完成 `P3`：新增 remediation planner，可把 archived historical findings 中的 `#288` warning 与 `#289/#293/#297` blocked findings 分别转换成 issue-conclusion / relationship dry-run manifests，而不必重新破坏 live GitHub 状态；
 - `S0E-5A` 已完成 `P4`：新增 unified pre-gate orchestrator，现可从单一 manifest 输出 `allow-apply` / `stop-for-remediation` / `hard-fail-input` 三类 gate decision，并已固定 warning 在 gate 层一律 stop 而非直接放行；
+- `S0E-5A` 已完成 `P5`：新增 guarded issue-conclusion apply 入口，现已证明 pre-gate 可直接位于 mutation command 前面，既能放行真实 `S0E-4D/#303` 的 live rewrite，也能在 frozen stop sample 上于 apply 前硬停；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -308,3 +310,4 @@
 - 2026-03-30：新增 `S0E-5A`，把 lifecycle audit gate 从 `review-hold / full-auto` 之外独立抽出来，并完成第一版 manifest-driven dry-run planner 与 representative sample 验证。
 - 2026-03-30：完成 `S0E-5A/P3`，新增 `plan_lifecycle_remediation.py`，把 archived historical lifecycle defects 转成可复用的 relationship / issue-conclusion dry-run manifests，作为下一步真正前置 gate 的修复规划层。
 - 2026-03-30：完成 `S0E-5A/P4`，新增 `plan_lifecycle_pre_gate.py`，把 audit / decision / remediation planning 串成统一 pre-gate 入口，并固定 warning 为 stop-and-plan-remediation 的 gate 决策。
+- 2026-03-30：完成 `S0E-5A/P5`，新增 `apply_issue_conclusion_with_pre_gate.py`，把 pre-gate 真正接到 issue-conclusion mutation 前面，并完成 live pass->apply 与 frozen stop-before-apply 两条验证路径。

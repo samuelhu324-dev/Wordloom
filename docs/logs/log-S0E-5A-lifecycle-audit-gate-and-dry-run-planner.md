@@ -81,6 +81,7 @@
 - `P2`: validate the planner against representative closed `S0E` child issues after historical remediation and relationship repair
 - `P3`: convert blocked or warning audit output into dry-run remediation manifests without mutating GitHub
 - `P4`: connect audit and remediation into one pre-gate decision entrypoint with fixed warning handling
+- `P5`: validate one real pass-to-apply mutation and one stop-before-apply drill through the same guarded issue-conclusion entrypoint
 
 ## Success Criteria (DoD)
 
@@ -103,6 +104,7 @@
 - The first representative sample now passes end to end: `#289`, `#297`, `#293`, `#300`, and `#303` all return `pass-audit` against one shared planner output.
 - `P3` now adds one remediation-planning layer on top of the audit output, so historical blocked findings can be converted into downstream relationship and issue-conclusion manifests without re-scraping prose or mutating live GitHub state.
 - `P4` now adds one unified pre-gate decision entrypoint: `pass` items allow apply, `warning/blocked` items stop and emit remediation planning, and `reconciliation/error` items hard-fail before mutation.
+- `P5` now proves that the same pre-gate can sit directly in front of a real mutation command: the pass path is allowed through to a live issue-conclusion rewrite, while the stop path halts before any apply.
 
 ## P0 (Contract | v1)
 
@@ -155,6 +157,20 @@
 - `blocked` remains structurally non-applicable and follows the same stop-and-plan path.
 - `reconciliation` and `error` remain hard-fail states that stop before remediation planning because the audit input itself is not yet trustworthy.
 
+## P5 (Guarded Mutation Drill | v1)
+
+### P5-C1-S1 (Real pass-to-apply sample | v1)
+
+- The first guarded mutation sample may target an already-converged live issue-conclusion path, as long as the gate result is `allow-apply` and a real GitHub mutation is still performed.
+- The guarded entrypoint should call the pre-gate first, then continue to issue-conclusion plan/apply only when the gate decision allows it.
+- The resulting evidence should show one gate decision artifact plus one real apply result artifact from the same invocation chain.
+
+### P5-C1-S2 (Stop-before-apply sample | v1)
+
+- The same guarded entrypoint should also be able to consume one frozen blocked/warning audit sample and stop before any mutation command is executed.
+- The stop-path evidence must show that remediation planning was emitted while the guarded apply result remained `stopped-before-apply`.
+- No live GitHub mutation should occur in the stop drill.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -199,6 +215,11 @@
 - P4-C1-S1: add one unified pre-gate entrypoint that chains lifecycle audit, gate decision, and optional remediation planning
 - P4-C1-S2: fix the v1 warning policy so `warning` stops apply and emits remediation planning instead of being silently allowed through
 
+### P5 (Guarded mutation drill)
+
+- P5-C1-S1: connect the pre-gate to the issue-conclusion apply path and run one real pass-to-apply sample
+- P5-C1-S2: run one stop-before-apply drill through the same guarded entrypoint using frozen blocked or warning evidence
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -226,6 +247,11 @@
 
 - [x] `P4-C1-S1`: unified pre-gate entrypoint implemented and exercised on pass and stop samples
 - [x] `P4-C1-S2`: v1 warning policy fixed as stop-and-plan-remediation instead of silent pass-through
+
+### P5 (Guarded mutation drill)
+
+- [x] `P5-C1-S1`: pre-gate connected to one real issue-conclusion apply path and validated on a live pass sample
+- [x] `P5-C1-S2`: guarded issue-conclusion path halted before apply on one frozen stop sample
 
 ## Evidence (reserved)
 
@@ -304,6 +330,31 @@
   - the pass sample now converges on one `allow-apply` decision without remediation output
   - the archived fixture sample now converges on one `stop-for-remediation` decision, with `#288` routed to issue-conclusion remediation and `#289/#293/#297` routed to relationship remediation
 
+### P5-C1-S1S2 (guarded issue-conclusion path validated on live pass and frozen stop samples | 2026-03-30)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `scripts/issues/apply_issue_conclusion_with_pre_gate.py`
+  - `docs/issues/lifecycle-audit-S0E-5A-p5-pass-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-5A-p5-pass-plan.json`
+  - `docs/issues/lifecycle-gate-S0E-5A-p5-pass-decision.json`
+  - `docs/issues/issue-conclusion-S0E-5A-p5-pass-plan.json`
+  - `docs/issues/issue-conclusion-S0E-5A-p5-pass-s0e-4d-apply-body.md`
+  - `docs/issues/issue-conclusion-S0E-5A-p5-pass-s0e-4d-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-5A-p5-pass-guarded-apply-result.json`
+  - `docs/issues/lifecycle-audit-S0E-5A-p3-fixture-plan.json`
+  - `docs/issues/lifecycle-gate-S0E-5A-p5-stop-decision.json`
+  - `docs/issues/lifecycle-remediation-S0E-5A-p5-stop-plan.json`
+  - `docs/issues/lifecycle-remediation-S0E-5A-p5-stop-issue-conclusion-manifest.json`
+  - `docs/issues/lifecycle-remediation-S0E-5A-p5-stop-relationship-manifest.json`
+  - `docs/issues/issue-conclusion-S0E-5A-p5-stop-guarded-apply-result.json`
+- expected:
+  - the guarded issue-conclusion entrypoint should pass through to a real live apply only when the pre-gate decision is `allow-apply`
+  - the same guarded entrypoint should stop before apply when the gate decision is `stop-for-remediation`
+- observed:
+  - the pass sample now gates `S0E-4D/#303` successfully and rewrites the live concluded issue body in place through the guarded entrypoint
+  - the frozen stop sample now halts before any issue-conclusion plan/apply step, while still emitting remediation artifacts for the underlying warning/blocked findings
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: opened `S0E-5A` to define a dedicated lifecycle-audit gate that runs before future issue/PR/relationship/conclusion mutations.
@@ -311,3 +362,4 @@
 - 2026-03-30: prepared and executed a representative repaired-child sample so the first gate artifact is grounded in real `S0E` issue history.
 - 2026-03-30: added `P3` remediation planning so archived warning/blocked audit findings can be translated into reusable relationship and issue-conclusion dry-run manifests without touching live GitHub state.
 - 2026-03-30: added `P4` pre-gate orchestration so one entrypoint now chains audit, fixed warning handling, and optional remediation planning into explicit `allow-apply` or `stop-for-remediation` decisions.
+- 2026-03-30: added `P5` guarded issue-conclusion validation so the pre-gate now sits directly in front of one real mutation path and one frozen stop drill under the same entrypoint.
