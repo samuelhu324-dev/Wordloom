@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, epic/s0, sub/0e2b`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/288`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/290`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -24,7 +24,7 @@
 **issue_milestone**: ``
 **issue_parent**: ``
 **created**: `2026-03-28`
-**updated**: `2026-03-28`
+**updated**: `2026-03-30`
 
 ---
 
@@ -266,9 +266,31 @@
   - write-back discipline was applied as a separate tracked docs change by updating each source log `links.issue`
   - `S0E-2A` remained the source contract log, while `S0E-2B` remained the implementation/verification slice for the automation path itself
 
+## PR Summary Inputs
+
+**PR summary bullets**:
+
+- Backfill the finalized PR metadata for the `S0E-2B` automation slice after the original merged PR was created with an incomplete body.
+- Preserve the distinction between `draft-generation` and explicit `create-issue` while linking the log to the real issue and merged PR evidence.
+- Keep the historical write-back auditable so later issue conclusion can close `#288` against the exact merged automation PR.
+
+**PR checklist source**:
+
+- Default source: reuse the checked items from this log's execution checklist so the PR body reflects the completed contract, implementation, and verification steps.
+- No parent/spine override is needed because the merged PR scope is one direct phase log.
+
+**PR links / evidence footer**:
+
+- Log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/288`
+- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
+- Evidence artifact: `docs/issues/pr-prep-S0E-2B-remediation-plan.json`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-28: `S0E-2B` opened as the dedicated follow-up slice for real GitHub issue creation automation after `S0E-2A` closed contract, samples, and manual procedure.
 - 2026-03-28: `P1` added a local `log_path -> docs/issues/*.md` draft-generation script and JSON sidecar output for `draft-generation` mode.
 - 2026-03-28: `P2` added explicit `--create` mode, GitHub prerequisite checks, and the first real issue-creation path.
 - 2026-03-28: `P3` validated the real create path, created `#289` for `S0E-2A`, and recorded write-back discipline by updating source logs in a separate tracked change.
+- 2026-03-30: merged PR `#290` and PR summary inputs were written back so historical lifecycle remediation can conclude issue `#288` against exact-ID merged evidence.
+- 2026-03-30: issue `#288` was concluded and closed as `completed` through the historical write-back path, using remediated merged PR `#290` as the exact-ID completion reference.

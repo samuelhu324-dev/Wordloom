@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, epic/s0, sub/0e2a`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/289`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/287`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0D-6A-docs-management-v4.md`
@@ -24,7 +24,7 @@
 **issue_milestone**: ``
 **issue_parent**: ``
 **created**: `2026-03-28`
-**updated**: `2026-03-28`
+**updated**: `2026-03-30`
 
 ---
 
@@ -238,6 +238,26 @@
 - failure contract 固定为 fail-closed：keyword 不明确就停、label 不存在就 warning 或失败、milestone 缺失就输出 `null`、module impact 不明确就输出空数组；
 - 真正的 GitHub issue creation mode 应作为后续 opt-in follow-up slice 进入，推荐单独开为 `S0E-2B`，而不是继续扩写 `S0E-2A`。
 
+## PR Summary Inputs
+
+**PR summary bullets**:
+
+- Backfill the finalized PR metadata for the `S0E-2A` contract slice after the original merged PR was created with an incomplete body.
+- Preserve `S0E-2A` as the contract, sample, and manual-procedure boundary while linking it to the real issue and merged PR evidence.
+- Keep the write-back scope limited to auditable contract metadata so later issue conclusion can reference the exact merged PR cleanly.
+
+**PR checklist source**:
+
+- Default source: reuse the checked items from this log's execution checklist so the PR body reflects the completed contract and validation steps already recorded here.
+- No parent/spine override is needed because the merged PR scope is one direct phase log.
+
+**PR links / evidence footer**:
+
+- Log: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/289`
+- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
+- Evidence artifact: `docs/issues/pr-prep-S0E-2A-remediation-plan.json`
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -363,3 +383,5 @@
 - 2026-03-28: `P3` fixed the minimum manual issue-creation procedure and future script entry contract, and recommended `S0E-2B` as the true automation follow-up slice.
 - 2026-03-28: `S0E-2B` was opened as the dedicated follow-up slice for real GitHub issue creation automation, so `S0E-2A` remains the contract/sample/procedure boundary.
 - 2026-03-28: real GitHub issue `#289` was created through the `S0E-2B` automation path and then written back to `links.issue` in a separate tracked update.
+- 2026-03-30: merged PR `#287` and PR summary inputs were written back so historical lifecycle remediation can conclude issue `#289` against exact-ID merged evidence.
+- 2026-03-30: issue `#289` was concluded and closed as `completed` through the historical write-back path, using remediated merged PR `#287` as the exact-ID completion reference.

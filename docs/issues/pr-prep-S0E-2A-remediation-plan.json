@@ -1,0 +1,11 @@
+{
+  "mode": "historical-pr-remediation-plan",
+  "requested_id": "S0E-2A",
+  "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+  "target_pr_number": 287,
+  "target_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/287",
+  "target_pr_title": "S0E-2A/P0-P3: semi-automated Git issue creation contract v1",
+  "development_issue": "#289",
+  "body_path": "docs/issues/pr-prep-S0E-2A-remediation-body.md",
+  "reason": "Backfill the historical merged PR body/title so issue #289 can be concluded against exact-ID merged evidence."
+}

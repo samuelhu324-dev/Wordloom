@@ -114,6 +114,7 @@
 
 - `S0E-4D` now owns the lifecycle-orchestration boundary across `review-hold`, explicit resume-after-review, and post-merge `full-auto` continuation.
 - Live issue `#303` has been created, attached to parent issue `#248`, delivered through merged PR `#304`, and concluded in place through the final issue-conclusion write-back.
+- Historical validation cycles have also been replayed end to end: `S0E-2A` issue `#289` now concludes against remediated PR `#287`, `S0E-2B` issue `#288` now concludes against remediated PR `#290`, and `S0E-4A` issue `#293` now concludes against exact-ID merged PRs `#294` plus `#299`.
 - `S0E-4D` is now `stable` because both the staged review-hold path and the resumed closed-loop path have been exercised against the same real sample.
 
 ## P0 (Contract | v1)
@@ -219,6 +220,9 @@ Resume S0E-4D after review; PR #302 is merged, so run the post-merge issue concl
 
 - P3-C1-S1: validate one staged path that stops after issue/PR preparation under `review-hold`
 - P3-C1-S2: validate one closed-loop path that continues through merge follow-through and issue conclusion under explicit `full-auto`
+- P3-C2-S1: replay the historical `S0E-2A` lifecycle by remediating merged PR metadata and concluding the still-open issue
+- P3-C2-S2: replay the historical `S0E-2B` lifecycle by remediating merged PR metadata and concluding the still-open issue
+- P3-C3-S1: audit the historical `S0E-4A` merged PR set and conclude the still-open issue against exact-ID merged evidence
 
 ## Execution Checklist (unchecked)
 
@@ -242,6 +246,9 @@ Resume S0E-4D after review; PR #302 is merged, so run the post-merge issue concl
 
 - [x] `P3-C1-S1`: staged review path validated under `review-hold`
 - [x] `P3-C1-S2`: explicit closed-loop path validated under `full-auto`
+- [x] `P3-C2-S1`: historical `S0E-2A` lifecycle replayed through PR remediation and final issue conclusion
+- [x] `P3-C2-S2`: historical `S0E-2B` lifecycle replayed through PR remediation and final issue conclusion
+- [x] `P3-C3-S1`: historical `S0E-4A` lifecycle audited and concluded against both exact-ID merged PRs
 
 ## Evidence (reserved)
 
@@ -252,9 +259,13 @@ Resume S0E-4D after review; PR #302 is merged, so run the post-merge issue concl
 - `P2-C1-S2`: this log now includes fail-closed examples for ambiguous continuation requests, blocked closed-loop requests, and downstream-only resume commands.
 - `P3-C1-S1`: `docs/issues/issue-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.json` records the real create-issue run for live issue `#303`, `docs/issues/issue-relationship-S0E-4D-p3-manifest-plan.json` plans the `#248 -> #303` sidebar relation, `docs/issues/issue-relationship-S0E-4D-p3-manifest-parent-248-child-303-apply-result.json` confirms the live attach, and draft PR `#304` was opened from `docs/issues/pr-prep-S0E-4D-p3-plan.json` under the staged review-hold path.
 - `P3-C1-S2`: `docs/issues/pr-prep-S0E-4D-p3-create-result.json` records live PR `#304`, `docs/issues/issue-conclusion-S0E-4D-p3-plan.json` proves the merged-PR evidence set after merge, and `docs/issues/issue-conclusion-S0E-4D-p3-s0e-4d-apply-result.json` confirms issue `#303` was updated in place after auto-close with final `DoD -> #304`.
+- `P3-C2-S1`: `docs/issues/pr-prep-S0E-2A-remediation-plan.json` and `docs/issues/pr-prep-S0E-2A-remediation-result.json` capture the historical merged PR `#287` title/body remediation, while `docs/issues/issue-conclusion-S0E-2A-remediation-plan.json` and `docs/issues/issue-conclusion-S0E-2A-remediation-apply-result.json` confirm final closure of issue `#289`.
+- `P3-C2-S2`: `docs/issues/pr-prep-S0E-2B-remediation-plan.json` and `docs/issues/pr-prep-S0E-2B-remediation-result.json` capture the historical merged PR `#290` title/body remediation, while `docs/issues/issue-conclusion-S0E-2B-remediation-plan.json` and `docs/issues/issue-conclusion-S0E-2B-remediation-apply-result.json` confirm final closure of issue `#288`.
+- `P3-C3-S1`: `docs/issues/issue-conclusion-S0E-4A-remediation-plan.json` and `docs/issues/issue-conclusion-S0E-4A-remediation-apply-result.json` confirm that issue `#293` was concluded against exact-ID merged PR evidence from both `#294` and `#299` without needing further PR body remediation.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: opened `S0E-4D` so lifecycle orchestration modes (`review-hold` / `full-auto`) have a dedicated owner instead of drifting between issue-create and runbook wording.
 - 2026-03-30: completed `P2` by fixing deterministic command patterns for staged review, explicit resume, and post-merge full-auto continuation, plus fail-closed examples for ambiguous or blocked requests.
 - 2026-03-30: completed `P3` by creating live issue `#303`, attaching it to parent `#248`, opening draft PR `#304` as the staged review-hold sample, then resuming through merge and final issue conclusion to validate the post-merge closed loop.
+- 2026-03-30: extended `P3` with historical validation cycles by remediating merged PRs `#287` and `#290`, then concluding still-open issues `#289`, `#288`, and `#293` against their exact-ID merged PR evidence.

@@ -1,0 +1,45 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-2A-remediation-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-2A: issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+    "S0E-2A: merged PR set supplied by explicit override",
+    "S0E-2A: existing Context section is blank; preview omits optional Context block",
+    "S0E-2A: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "issue_title": "S0E-2A: contract/semi-automated Git issue creation contract",
+      "issue_state": "OPEN",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-2A-remediation-s0e-2a-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 287,
+          "title": "S0E-2A/P0-P3: semi-automated Git issue creation contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/287",
+          "merged_at": "2026-03-28T12:22:18Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+        "merged PR set supplied by explicit override",
+        "existing Context section is blank; preview omits optional Context block",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Conclude historical S0E-2A issue after PR #287 body/title remediation and exact-ID merged evidence audit."
+    }
+  ]
+}
