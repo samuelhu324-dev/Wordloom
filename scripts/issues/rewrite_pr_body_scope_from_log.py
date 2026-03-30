@@ -63,17 +63,17 @@ def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, re
     if checklist_items and not filtered_checklist_items:
         raise SystemExit("No checklist items matched the requested PR title scope")
 
-    evidence_lines = _extract_scoped_evidence_lines(
-        _find_section_lines(source_sections, "Evidence"),
+    evidence_section_lines = _find_section_lines(source_sections, "Evidence")
+    heading_evidence_lines = _extract_heading_evidence_lines(
+        evidence_section_lines,
         scope_kind,
         scope_refs,
     )
-    if not evidence_lines:
-        evidence_lines = _extract_heading_evidence_lines(
-            _find_section_lines(source_sections, "Evidence"),
-            scope_kind,
-            scope_refs,
-        )
+    evidence_lines = heading_evidence_lines or _extract_scoped_evidence_lines(
+        evidence_section_lines,
+        scope_kind,
+        scope_refs,
+    )
     if not evidence_lines:
         raise SystemExit("No evidence lines matched the requested PR title scope")
 

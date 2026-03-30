@@ -171,6 +171,7 @@
 - [x] `P52`：`S0E-5A` 已完成自身真实 lifecycle 闭环，issue `#305`、merged PR `#306`、sidebar relationship attach 与 final issue conclusion 已全部落地；同时已新建 `S0E-5B` 作为 guarded apply 扩展的后续 slice
 - [x] `P53`：`S0E-5B` 已完成 `P0-P1`，guarded relationship attach 现可在“仅有 relationship remediation”时从 `stop-for-remediation` 继续，并已用 live issue `#307` 的真实 attach 与一条 frozen mixed-remediation stop drill 完成验证
 - [x] `P54`：`S0E-5B` 已完成 `P2`，已选定 guarded `PR body rewrite` 作为下一条 PR-side family，并用 converged `S0E-5A/#305 -> PR #306` 的 live rewrite plus 一条 frozen stop drill 完成验证
+- [x] `P55`：`S0E-5B` 已完成 `P3`，`#307 -> PR #308` 现已形成一条真实 closed-loop sample，并在同一 issue/PR pair 上连续验证了 guarded relationship attach 与 guarded PR-body rewrite 两条 mutation family
 
 ## Current Status（进展摘要）
 
@@ -198,7 +199,8 @@
 - `S0E-5A` 已完成自身真实闭环：live issue `#305` 已经通过 merged PR `#306` 交付，sidebar relationship `#248 -> #305` 已补齐，最终 closed issue body 也已回写，因此该 slice 现已不再只停留在 gate drill；
 - `S0E-5B` 已完成 `P0-P1`：guarded relationship attach 现已作为第一条扩展 mutation family 落地，live issue `#307` 已通过这条路径挂到父 issue `#248`，而混合 remediation 的 frozen sample 仍会在 apply 前被硬停；
 - `S0E-5B` 已完成 `P2`：guarded `PR body rewrite` 现已接到同一 pre-gate 后面，merged PR `#306` 已通过一条真实 allow-apply 路径完成重写，而 blocked fixture 仍在 edit 前被硬停；
-- `S0E-5B` 的剩余工作现已收敛到 `P3`：把 relationship attach 与 PR-body rewrite 组合进同一真实 lifecycle sample，而不是继续各自分开验证；
+- `S0E-5B` 已完成 `P3`：issue `#307` 先通过 guarded relationship attach 接到父 issue `#248`，随后在同一样本上生成并合并 PR `#308`，再对这条 merged PR 跑 guarded body rewrite，最后把 issue 正式 conclusion 到 closed state；
+- `S0E-5B` 的下一步不再是证明单个 guarded family 能工作，而是决定是否把 `PR create` 本身也纳入 guarded apply，或者就此收口本条 follow-up；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -323,3 +325,4 @@
 - 2026-03-30：新增 `S0E-5B`，用于承接 guarded apply 从单一 issue-conclusion 路径向更多 lifecycle mutation families 的扩展。
 - 2026-03-30：完成 `S0E-5B/P0-P1`，新增 guarded relationship attach 入口，并已用 live issue `#307` 与 frozen mixed-remediation stop drill 验证 targeted-remediation continuation 规则。
 - 2026-03-30：完成 `S0E-5B/P2`，新增 guarded PR-body rewrite 入口，并已用 converged `S0E-5A/#305 -> #306` 的 live rewrite 与一条 frozen stop drill 验证 allow-apply-only 语义。
+- 2026-03-30：完成 `S0E-5B/P3`，`#307 -> #308` 现已作为代表性真实样本完成 relationship attach、PR merge、guarded PR body rewrite 与 final issue conclusion 的组合闭环。

@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "mode": "pr-prep-dry-run",
+  "defaults": {
+    "requested_id": "S0E-5B",
+    "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+    "base_branch": "main",
+    "head_ref": "HEAD",
+    "candidate_pr_branch": "pr-prep/s0e-5b"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "reason": "Create the representative real PR sample for the guarded multi-mutation lifecycle drill on S0E-5B itself."
+    }
+  ]
+}

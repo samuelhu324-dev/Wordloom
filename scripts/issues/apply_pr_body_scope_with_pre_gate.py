@@ -147,6 +147,7 @@ def apply_pr_body_scope(args: argparse.Namespace) -> PrBodyRewriteApplyResult:
     apply_result_path = _coerce_path(args.apply_result_path, repo_root) if args.apply_result_path else create_result_path.with_name(f"{base_slug}-rewrite-apply-result.json")
 
     before = _fetch_pr(repo, str(pr_number))
+    live_pr_title = str(before.get("title") or pr_title)
     live_body_text = str(before.get("body") or "")
     live_body_path.parent.mkdir(parents=True, exist_ok=True)
     live_body_path.write_text(live_body_text, encoding="utf-8")
@@ -155,7 +156,7 @@ def apply_pr_body_scope(args: argparse.Namespace) -> PrBodyRewriteApplyResult:
         source_log_path=source_log_path,
         existing_body_path=live_body_path,
         requested_id=requested_id,
-        pr_title=pr_title,
+        pr_title=live_pr_title,
         output_path=rewritten_body_path,
     )
 
@@ -174,7 +175,7 @@ def apply_pr_body_scope(args: argparse.Namespace) -> PrBodyRewriteApplyResult:
         repository=repo,
         pr_number=int(after["number"]),
         pr_url=str(after.get("url") or create_result.get("pr_url") or ""),
-        pr_title=str(after.get("title") or pr_title),
+        pr_title=str(after.get("title") or live_pr_title),
         pr_state=str(after.get("state") or ""),
         source_log_path=source_log_rel,
         requested_id=requested_id,

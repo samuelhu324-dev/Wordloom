@@ -1,0 +1,91 @@
+{
+  "mode": "lifecycle-audit-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-audit-S0E-5B-p3-pass-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-lifecycle-audit",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "issue_number": 307,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/307",
+      "issue_title": "S0E-5B: workflow/guarded lifecycle apply expansion",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
+      "expected_parent_issue_number": 248,
+      "actual_parent_issue_number": 248,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/307",
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/308",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 308,
+          "title": "S0E-5B/P0-P3: guarded lifecycle apply expansion v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/308",
+          "merged_at": "2026-03-30T14:15:19Z"
+        }
+      ],
+      "planned_action": "pass-audit",
+      "applied_action": null,
+      "status": "pass",
+      "checks": [
+        {
+          "name": "source-log-issue-writeback",
+          "status": "pass",
+          "details": "source log links.issue matches the live issue URL"
+        },
+        {
+          "name": "required-body-sections",
+          "status": "pass",
+          "details": "Metadata, Definition of Done (DoD), and Links sections are present"
+        },
+        {
+          "name": "expected-labels",
+          "status": "pass",
+          "details": "live issue labels cover the deterministic label set derived from the source log"
+        },
+        {
+          "name": "body-parent-metadata",
+          "status": "pass",
+          "details": "Metadata section records Parent issue: #248"
+        },
+        {
+          "name": "sidebar-parent-relationship",
+          "status": "pass",
+          "details": "live GitHub parent relationship points to #248"
+        },
+        {
+          "name": "exact-id-merged-pr-evidence",
+          "status": "pass",
+          "details": "found 1 exact-ID merged PR(s)"
+        },
+        {
+          "name": "final-dod-pr-refs",
+          "status": "pass",
+          "details": "DoD PR refs match the exact-ID merged PR evidence set"
+        },
+        {
+          "name": "links-coverage",
+          "status": "pass",
+          "details": "Links section covers the expected log, runbook, issue, and PR references for the current stage"
+        },
+        {
+          "name": "closed-body-shape",
+          "status": "pass",
+          "details": "concluded issue body omits the transient Context section"
+        },
+        {
+          "name": "source-log-pr-link",
+          "status": "pass",
+          "details": "source log links.pr is represented in the exact-ID merged PR evidence set"
+        }
+      ],
+      "warnings": [],
+      "reason": "Guarded PR-body rewrite pass sample on the same S0E-5B issue/PR pair used for the representative combined lifecycle drill."
+    }
+  ]
+}
