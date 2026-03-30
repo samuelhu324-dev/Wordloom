@@ -92,6 +92,59 @@ def _git_allow_failure(*args: str, cwd: Path | None = None) -> tuple[int, str, s
     return cmd.returncode, cmd.stdout.strip(), cmd.stderr.strip()
 
 
+def _collect_touched_paths(commit_shas: list[str]) -> list[str]:
+    if not commit_shas:
+        return []
+    raw = _git("show", "--pretty=format:", "--name-only", *commit_shas)
+    seen: set[str] = set()
+    paths: list[str] = []
+    for line in raw.splitlines():
+        path = line.strip()
+        if not path or path in seen:
+            continue
+        seen.add(path)
+        paths.append(path)
+    return paths
+
+
+def _ref_has_path(ref_name: str, repo_path: str) -> bool:
+    code, _, _ = _git_allow_failure("cat-file", "-e", f"{ref_name}:{repo_path}")
+    return code == 0
+
+
+def _materialize_snapshot_commit(
+    *,
+    source_head_sha: str,
+    selected_shas: list[str],
+    worktree_root: Path,
+    commit_message: str,
+) -> None:
+    touched_paths = _collect_touched_paths(selected_shas)
+    if not touched_paths:
+        raise SystemExit("Selected commits touched no paths; refusing snapshot fallback")
+
+    existing_paths: list[str] = []
+    removed_paths: list[str] = []
+    for repo_path in touched_paths:
+        if _ref_has_path(source_head_sha, repo_path):
+            existing_paths.append(repo_path)
+        else:
+            removed_paths.append(repo_path)
+
+    if existing_paths:
+        _git("checkout", source_head_sha, "--", *existing_paths, cwd=worktree_root)
+    if removed_paths:
+        code, _, stderr = _git_allow_failure("rm", "-f", "--ignore-unmatch", "--", *removed_paths, cwd=worktree_root)
+        if code != 0:
+            raise SystemExit(stderr or "Failed to remove paths during snapshot fallback")
+
+    _git("add", "-A", cwd=worktree_root)
+    status = _git("status", "--short", cwd=worktree_root)
+    if not status.strip():
+        raise SystemExit("Snapshot fallback produced no changes; refusing to create an empty PR branch")
+    _git("commit", "-m", commit_message, cwd=worktree_root)
+
+
 def _extract_issue_number(issue_ref: str | None) -> int | None:
     if not issue_ref:
         return None
@@ -292,6 +345,12 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
     if not development_issue:
         warnings.append("pr_development_issue left blank; PR body omits Development link keyword")
 
+    source_head_ref = str(item.get("head_ref") or "HEAD")
+    source_head_sha = _git("rev-parse", source_head_ref)
+    current_merge_base = _git("merge-base", f"origin/{base_branch}", source_head_sha)
+    if item.get("merge_base") and str(item["merge_base"]) != current_merge_base:
+        warnings.append("plan merge_base differed from current origin/base merge_base; create path used current repository state")
+
     try:
         _git("worktree", "add", "--detach", str(worktree_root), f"origin/{base_branch}")
         _git("switch", "-c", prepared_branch, cwd=worktree_root)
@@ -299,7 +358,19 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
             code, _, stderr = _git_allow_failure("cherry-pick", sha, cwd=worktree_root)
             if code != 0:
                 _git_allow_failure("cherry-pick", "--abort", cwd=worktree_root)
-                raise SystemExit(f"Cherry-pick failed for {sha}: {stderr}")
+                _git("reset", "--hard", f"origin/{base_branch}", cwd=worktree_root)
+                _materialize_snapshot_commit(
+                    source_head_sha=source_head_sha,
+                    selected_shas=selected_shas,
+                    worktree_root=worktree_root,
+                    commit_message=item["pr_title"],
+                )
+                warnings.append(
+                    f"cherry-pick fallback used after conflict at {sha[:8]}; prepared branch rebuilt from the source-head snapshot of selected paths"
+                )
+                if stderr:
+                    warnings.append(f"original cherry-pick error: {stderr.splitlines()[0]}")
+                break
         _git("push", "-u", "origin", prepared_branch, cwd=worktree_root)
 
         preview_body = body_preview_path.read_text(encoding="utf-8")
