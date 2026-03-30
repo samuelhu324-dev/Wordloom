@@ -312,6 +312,48 @@ def _phase_ref(value: str) -> str | None:
     return match.group(0) if match else None
 
 
+def _expand_phase_scope_token(token: str) -> list[str]:
+    stripped = token.strip()
+    if not stripped:
+        return []
+
+    range_match = re.fullmatch(r"P(?P<start>\d+)-P(?P<end>\d+)", stripped)
+    if range_match:
+        start = int(range_match.group("start"))
+        end = int(range_match.group("end"))
+        if start > end:
+            start, end = end, start
+        return [f"P{value}" for value in range(start, end + 1)]
+
+    single_match = re.fullmatch(r"P(?P<phase>\d+)", stripped)
+    if single_match:
+        return [f"P{single_match.group('phase')}"]
+
+    return []
+
+
+def _derive_scope_from_pr_title(pr_title: str, requested_id: str) -> tuple[str, list[str]]:
+    title_match = re.match(rf"^{re.escape(requested_id)}/(?P<scope>[^:]+):", pr_title.strip())
+    if not title_match:
+        return "all", []
+
+    scope_text = title_match.group("scope").strip()
+    if not scope_text:
+        return "all", []
+
+    scope_refs = _extract_scope_refs(scope_text)
+    if any("-C" in ref for ref in scope_refs):
+        return "units", scope_refs
+
+    expanded_phase_refs: list[str] = []
+    for token in scope_text.split("+"):
+        expanded_phase_refs.extend(_expand_phase_scope_token(token))
+    if expanded_phase_refs:
+        return "phases", _dedupe(expanded_phase_refs)
+
+    return "all", []
+
+
 def _matches_scope(value: str, scope_kind: str, scope_refs: list[str]) -> bool:
     if scope_kind == "all" or not scope_refs:
         return True
@@ -325,6 +367,11 @@ def _matches_scope(value: str, scope_kind: str, scope_refs: list[str]) -> bool:
         return any((_phase_ref(ref) or "") in phase_refs for ref in line_refs)
 
     return any(ref in scope_refs for ref in line_refs)
+
+
+def _extract_evidence_scope_refs(value: str) -> list[str]:
+    prefix = value.split(":", 1)[0]
+    return _extract_scope_refs(prefix)
 
 
 def _filter_checked_items(
@@ -358,7 +405,18 @@ def _extract_scoped_evidence_lines(
         if not stripped.startswith("- "):
             continue
         value = stripped[2:].strip()
-        if _matches_scope(value, scope_kind, scope_refs):
+        evidence_scope_refs = _extract_evidence_scope_refs(value)
+        if scope_kind == "all" or not scope_refs:
+            evidence_lines.append(value)
+            continue
+        if not evidence_scope_refs:
+            continue
+        if scope_kind == "phases":
+            phase_refs = set(scope_refs)
+            if any((_phase_ref(ref) or "") in phase_refs for ref in evidence_scope_refs):
+                evidence_lines.append(value)
+            continue
+        if any(ref in scope_refs for ref in evidence_scope_refs):
             evidence_lines.append(value)
     return evidence_lines
 
@@ -584,12 +642,17 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
     if not checklist_items:
         warnings.append("source log has no checked execution checklist items for PR preview")
 
-    pr_title, pr_scope_kind, pr_scope_refs = _build_pr_title(
+    pr_title, fallback_scope_kind, fallback_scope_refs = _build_pr_title(
         requested_id,
         fields.get("title", "").strip() or requested_id,
         selected_commits,
         checklist_phase_numbers,
     )
+
+    pr_scope_kind, pr_scope_refs = _derive_scope_from_pr_title(pr_title, requested_id)
+    if pr_scope_kind == "all" and not pr_scope_refs:
+        pr_scope_kind = fallback_scope_kind
+        pr_scope_refs = fallback_scope_refs
 
     scoped_checklist_items = _filter_checked_items(checklist_items, pr_scope_kind, pr_scope_refs)
     if checklist_items and not scoped_checklist_items:

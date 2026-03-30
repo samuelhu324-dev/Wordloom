@@ -103,6 +103,7 @@
 - `P4`: one full end-to-end `issue creation -> PR -> issue conclusion` closed-loop drill under the `S0E-4C` rules
 - `P5`: follow-up hardening for create-path cherry-pick conflicts on the long-lived mixed `S0E` working branch
 - `P6`: follow-up to align PR body scope selection across title, execution checklist, and evidence footer, plus one historical live PR rewrite under the tightened rule
+- `P7`: follow-up to replay merged PR body sections from the final title scope and reconcile the historical `#301` / `#302` drift
 
 ## Success Criteria (DoD)
 
@@ -114,6 +115,7 @@
 - Top-level issues still omit both `Parent issue` metadata and parent relationship attach.
 - The runbook distinguishes clearly between relationship planning and relationship apply, just as it already distinguishes dry-run from real apply in other slices.
 - Exact-unit PR titles such as `P5-C1-S1` should render only the matching checked checklist rows and matching evidence rows, while aggregate titles such as `P0-P3` should keep only the matching phase-range rows.
+- If a merged PR title is later refined, checklist/evidence replay must use the final title scope rather than the full source-log checklist or the raw selected-commit set.
 
 ## Stability (what stable means)
 
@@ -121,6 +123,7 @@
   - PR summary requiredness, short-ref development-link rendering, and issue-relationship attach rules are fixed in contract and implementation;
   - at least one real PR body and one real child issue relationship have been validated against the updated behavior.
   - any later PR body scope-alignment follow-up has also been proven against an aggregate sample and a historical live PR rewrite.
+  - merged PR metadata remains replayable after title edits, without reintroducing scope drift in `Execution Checklist` or `Evidence Footer`.
 
 ## P0 (Contract | v1)
 
@@ -218,6 +221,11 @@
 - P6-C1-S1: unify PR preview scope selection so title, `Execution Checklist`, and `Evidence Footer` all derive from the same phase/unit selector
 - P6-C1-S2: regenerate one aggregate sample body and rewrite historical merged PR `#296` title/body metadata under the tightened scope rule
 
+### P7 (Merged PR scope replay)
+
+- P7-C1-S1: add a replay path that rewrites an existing PR body's `Execution Checklist` and `Evidence Footer` from the final PR title scope while preserving the historical summary text
+- P7-C1-S2: reconcile merged PRs `#301` and `#302` so their live checklist/evidence sections match their final titles exactly
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -259,6 +267,11 @@
 - [x] `P6-C1-S1`: title, `Execution Checklist`, and `Evidence Footer` now share one scope selector in PR preview generation
 - [x] `P6-C1-S2`: aggregate sample `S0E-4B` output regenerated and live PR `#296` rewritten to the tightened scope rule
 
+### P7 (Merged PR scope replay)
+
+- [x] `P7-C1-S1`: merged PR body replay tool added so final title scope can rewrite `Execution Checklist` and `Evidence Footer`
+- [x] `P7-C1-S2`: merged PRs `#301` and `#302` reconciled so live title/body scope now matches exactly
+
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
@@ -286,6 +299,8 @@
 - `P5-C1-S2`: live PR `#302` merged at `2026-03-30T04:21:10Z` with merge commit `3c47e396`, and `docs/issues/issue-conclusion-S0E-4C-p5-plan.json` plus `docs/issues/issue-conclusion-S0E-4C-p5-s0e-4c-apply-result.json` prove issue `#300` now carries `DoD -> #301` and `#302`.
 - `P6-C1-S1`: `scripts/issues/plan_pr_prep.py` now derives a single PR body scope from the chosen title mode, then uses that same selector to filter checked execution rows and evidence rows instead of mixing checklist-wide and commit-only views.
 - `P6-C1-S2`: regenerated `docs/issues/pr-prep-S0E-4B-sample-plan.json` and `docs/issues/pr-prep-S0E-4B-sample-body.md` now keep `P0-P3` scope aligned across title, checklist, and evidence footer, and merged PR `#296` has been rewritten to the same tightened contract.
+- `P7-C1-S1`: `scripts/issues/rewrite_pr_body_scope_from_log.py` now rewrites only `Execution Checklist` and `Evidence Footer` from the source log using the final PR title scope, while `scripts/issues/plan_pr_prep.py` now matches evidence rows by their leading scope prefix instead of any later inline mention, preserving the historical metadata/summary/links of an existing PR body.
+- `P7-C1-S2`: `docs/issues/pr-rewrite-S0E-4C-p4-body.md` and `docs/issues/pr-rewrite-S0E-4C-p5-body.md` prove that merged PR `#301` now aligns to `P0-P4` and merged PR `#302` now aligns to exact unit `P5-C1-S1` without broad checklist leakage.
 
 ## Recent changes (for traceability, optional)
 
@@ -300,3 +315,4 @@
 - 2026-03-30: opened `P5` as a focused follow-up to harden `create_pr_from_plan.py` against cherry-pick conflicts on the long-lived mixed `S0E` working branch, with one more real PR and one more issue `#300` write-back as the proof path.
 - 2026-03-30: completed `P5` by hardening `create_pr_from_plan.py` with a source-head snapshot fallback, creating and merging real PR `#302` through that path, and updating issue `#300` so its final DoD ledger now includes both `#301` and `#302`.
 - 2026-03-30: completed `P6` by unifying PR body scope selection across title, `Execution Checklist`, and `Evidence Footer`, regenerating the aggregate `S0E-4B` sample output, and rewriting merged PR `#296` so the historical live body now matches the tightened scope rule.
+- 2026-03-30: completed `P7` by adding a merged-PR scope replay helper, then using it to reconcile historical merged PRs `#301` and `#302` so their live checklist/evidence sections now match their final titles exactly.
