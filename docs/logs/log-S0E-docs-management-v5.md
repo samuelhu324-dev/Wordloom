@@ -169,6 +169,7 @@
 - [x] `P50`：`S0E-5A` 已完成 `P4`，统一 pre-gate entrypoint 已把 audit / decision / remediation-planning 串起来，并固定 `warning` 为 stop-and-plan-remediation 的 gate 策略
 - [x] `P51`：`S0E-5A` 已完成 `P5`，pre-gate 已接到 issue-conclusion mutation 前面，并用一条真实 pass->apply 样本和一条 frozen stop drill 证明 gated apply 行为成立
 - [x] `P52`：`S0E-5A` 已完成自身真实 lifecycle 闭环，issue `#305`、merged PR `#306`、sidebar relationship attach 与 final issue conclusion 已全部落地；同时已新建 `S0E-5B` 作为 guarded apply 扩展的后续 slice
+- [x] `P53`：`S0E-5B` 已完成 `P0-P1`，guarded relationship attach 现可在“仅有 relationship remediation”时从 `stop-for-remediation` 继续，并已用 live issue `#307` 的真实 attach 与一条 frozen mixed-remediation stop drill 完成验证
 
 ## Current Status（进展摘要）
 
@@ -194,7 +195,8 @@
 - `S0E-5A` 已完成 `P4`：新增 unified pre-gate orchestrator，现可从单一 manifest 输出 `allow-apply` / `stop-for-remediation` / `hard-fail-input` 三类 gate decision，并已固定 warning 在 gate 层一律 stop 而非直接放行；
 - `S0E-5A` 已完成 `P5`：新增 guarded issue-conclusion apply 入口，现已证明 pre-gate 可直接位于 mutation command 前面，既能放行真实 `S0E-4D/#303` 的 live rewrite，也能在 frozen stop sample 上于 apply 前硬停；
 - `S0E-5A` 已完成自身真实闭环：live issue `#305` 已经通过 merged PR `#306` 交付，sidebar relationship `#248 -> #305` 已补齐，最终 closed issue body 也已回写，因此该 slice 现已不再只停留在 gate drill；
-- `S0E-5B` 已建档，下一步将把 `S0E-5A` 的 pre-gate 从 issue-conclusion mutation 扩展到更多真实 lifecycle apply families，而不是重新讨论 audit contract；
+- `S0E-5B` 已完成 `P0-P1`：guarded relationship attach 现已作为第一条扩展 mutation family 落地，live issue `#307` 已通过这条路径挂到父 issue `#248`，而混合 remediation 的 frozen sample 仍会在 apply 前被硬停；
+- `S0E-5B` 的剩余工作现已收敛到 `P2`：决定下一条要接入同一 pre-gate 的 PR-side mutation family，而不是继续重做 relationship contract；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -317,3 +319,4 @@
 - 2026-03-30：完成 `S0E-5A/P5`，新增 `apply_issue_conclusion_with_pre_gate.py`，把 pre-gate 真正接到 issue-conclusion mutation 前面，并完成 live pass->apply 与 frozen stop-before-apply 两条验证路径。
 - 2026-03-30：完成 `S0E-5A` 的真实 create-issue -> PR -> merge -> relationship -> conclusion 闭环，live issue `#305` 与 merged PR `#306` 已形成完整样本。
 - 2026-03-30：新增 `S0E-5B`，用于承接 guarded apply 从单一 issue-conclusion 路径向更多 lifecycle mutation families 的扩展。
+- 2026-03-30：完成 `S0E-5B/P0-P1`，新增 guarded relationship attach 入口，并已用 live issue `#307` 与 frozen mixed-remediation stop drill 验证 targeted-remediation continuation 规则。

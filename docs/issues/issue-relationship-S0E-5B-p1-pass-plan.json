@@ -1,0 +1,26 @@
+{
+  "mode": "relationship-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-remediation-S0E-5B-p1-pass-relationship-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-relationships",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "relationship_type": "child-of",
+      "parent_issue_number": 248,
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "child_issue_number": 307,
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/307",
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "planned_action": "link-child-to-parent",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [],
+      "reason": "Guarded pass-to-apply sample for the live S0E-5B relationship-attach path before any PR-side expansion begins."
+    }
+  ]
+}
