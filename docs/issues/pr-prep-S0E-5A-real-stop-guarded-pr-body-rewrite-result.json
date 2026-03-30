@@ -1,0 +1,15 @@
+{
+  "mode": "guarded-pr-body-rewrite-apply",
+  "result": "ok",
+  "gate_input_kind": "audit-plan",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0E-5A-p3-fixture-plan.json",
+  "gate_decision_path": "docs/issues/lifecycle-gate-S0E-5B-p2-stop-decision.json",
+  "gate_decision": "stop-for-remediation",
+  "apply_allowed": false,
+  "pr_create_result_path": "docs/issues/pr-prep-S0E-5A-real-create-result.json",
+  "guarded_action": "stopped-before-apply",
+  "apply_result_path": null,
+  "warnings": [
+    "mutation blocked by lifecycle pre-gate decision: stop-for-remediation"
+  ]
+}

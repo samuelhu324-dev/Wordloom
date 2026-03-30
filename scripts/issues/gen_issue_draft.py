@@ -24,6 +24,7 @@ SCOPE_LABELS = {
 FIELD_RE = re.compile(r"^\s*\*\*([^*]+)\*\*:\s*`(.*)`\s*$")
 VERSION_SUFFIX_RE = re.compile(r"\s+v\d+\s*$", re.IGNORECASE)
 DEFAULT_WORKSPACE_PROJECT = "wordloom Board"
+DEFAULT_COMMAND_TIMEOUT_SECONDS = 180
 
 
 @dataclass
@@ -88,8 +89,19 @@ def _load_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _run_command(command: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(command, text=True, capture_output=True, encoding="utf-8")
+def _run_command(command: list[str], *, timeout_seconds: int = DEFAULT_COMMAND_TIMEOUT_SECONDS) -> subprocess.CompletedProcess[str]:
+    try:
+        return subprocess.run(
+            command,
+            text=True,
+            capture_output=True,
+            encoding="utf-8",
+            stdin=subprocess.DEVNULL,
+            timeout=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired as exc:
+        rendered_command = " ".join(command)
+        raise SystemExit(f"Command timed out after {timeout_seconds}s: {rendered_command}") from exc
 
 
 def _utc_now() -> str:

@@ -1,0 +1,15 @@
+{
+  "mode": "pr-body-rewrite-apply",
+  "result": "ok",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "pr_number": 306,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/306",
+  "pr_title": "S0E-5A/P0-P5: lifecycle audit gate and dry-run planner v1",
+  "pr_state": "MERGED",
+  "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+  "requested_id": "S0E-5A",
+  "live_body_path": "docs/issues/pr-prep-S0E-5A-real-live-body.md",
+  "rewritten_body_path": "docs/issues/pr-prep-S0E-5A-real-rewritten-body.md",
+  "body_changed": true,
+  "warnings": []
+}
