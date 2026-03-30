@@ -146,6 +146,8 @@
 - [x] `P34`：`S0E-2E` 已完成 format revision cycle：最终 body 去掉 `Development`、DoD 改为短 PR refs，并用 `#295` 完成第二条真实 write-back 样本
 - [x] `P35`：`S0E-4C` 已建档，用于集中收口 PR Summary 占位符、Development issue 短引用，以及 child issue sidebar Relationships attach 这三类 follow-up
 - [x] `P36`：`S0E-4C` 已完成 `P0-P1`，PR create 现在会阻止 placeholder Summary 上线，Development issue 已统一到短引用，relationship apply 脚本也已补齐
+- [x] `P37`：`S0E-4C` 已完成 `P2`，`S0E-2D` 的 PR-prep 样本已重生成且 Summary 不再占位，`S0E` child relationship 的 plan/apply 样本也已补齐
+- [x] `P38`：`S0E-4C` 已完成 `P3-C1-S1/S3`，四条历史 `S0E` PR 已审查，live PR `#296` 与 `#298` 已按现行 body contract 回写，`#294` 与 `#299` 则确认无需修改
 
 ## Current Status（进展摘要）
 
@@ -169,6 +171,9 @@
 - `S0E-2E` 已完成新的 format revision cycle：最终 issue body 不再渲染 `Development`，而是让 `DoD` 只保留 `#298` / `#296` 这类短 PR refs；
 - `S0E-4C` 已建档：下一轮 follow-up 将集中处理 PR `Summary` 必填化、`Development issue` 短引用一致性，以及 child issue `Relationships` 的真实 attach 路径；
 - `S0E-4C` 已完成 `P0-P1`：PR preview/create 路径现已统一 `Development issue` 的短引用格式，live PR create 也会对 placeholder `Summary` fail-closed，而 child issue sidebar `Relationships` 已具备独立 apply 脚本；
+- `S0E-4C` 已完成 `P2`：`S0E-2D` 的 PR-prep 样本现已带真实 Summary bullets，`S0E` child issue `#295` 的 relationship plan/apply 样本也已验证幂等 attach 行为；
+- `S0E-4C` 已完成 `P3-C1-S1/S3`：历史 merged PR `#294/#296/#298/#299` 已完成审查，其中 `#296` 已回写为短引用 `Development issue: #295`，`#298` 已回写为非占位 Summary + 独立 `Development Link`，而 `#294` 与 `#299` 已确认符合当前规范；
+- `S0E-4C` 下一步进入 `P4`：做一条完整的 `issue creation -> PR -> issue conclusion` 闭环验证，检查 creation / PR / conclusion 三段在同一真实样本上是否完全一致；
 - `S0E-2E` 现在可视为 `stable`：contract、dry-run planner、real write-back 与 attached PR accounting 都已完成闭环；
 - `S0E-3A` 草案已把 roadmap/log bridge 的核心问题收口为 child-log-first contract，并把 roadmap/log templates 增加了统一 bridge 字段；
 - `S0E-3A` 已完成 `P0-P1`：phase log 已固定 bridge ownership / field contract / fail-closed semantics，template rollout 也已落到 parent/phase/roadmap 三类模板；
@@ -256,7 +261,9 @@
 - 2026-03-29：完成 `S0E-2D` 的 parent-issue format follow-up：`Parent issue` 现已收口为 `Metadata`-only 且使用 `#248` 这类短引用，`Links` 不再重复该字段。
 - 2026-03-30：完成 `S0E-2E/P0-P1`，当前 contract 已固定 post-merge conclusion 的 lifecycle boundary、exact-ID merged PR selection，以及 final English issue-conclusion body shape；下一步进入 dry-run planning 和一次真实 closed-issue write-back 验证。
 - 2026-03-30：完成 `S0E-2E/P2`，新增 manifest-driven issue-conclusion dry-run planner，并用 `#293/#295/#297` 验证了 single-PR 与 multi-PR conclusion body preview。
+- 2026-03-30：完成 `S0E-4C/P3-C1-S1S3`，已审查历史 merged PR `#294/#296/#298/#299`，并把仍有 body drift 的 `#296`、`#298` 回写到当前 PR contract；下一步进入 `P4` 做 creation -> PR -> conclusion 的闭环 drill。
 - 2026-03-30：完成 `S0E-2E/P3`，新增 real apply 脚本并完成 `#297` 的线上 body write-back 与 explicit close，因此 issue conclusion 这条线已形成端到端闭环。
 - 2026-03-30：完成 `S0E-2E` 的新一轮 format revision：最终 body 去掉 `Development`、DoD 改为短 PR refs，并以 `#295` 作为第二条真实 closed sample 完成回写验证。
 - 2026-03-30：新增 `S0E-4C`，用于集中处理 PR `Summary` 占位符、`Development issue` 短引用，以及 issue sidebar `Relationships` 与 `Parent issue` 元数据未对齐的问题。
 - 2026-03-30：完成 `S0E-4C/P0-P1`，PR create 现已对 placeholder `Summary` fail-closed、Development issue 统一为短引用，且 child-parent sidebar relationship 已具备独立 apply 路径。
+- 2026-03-30：完成 `S0E-4C/P2`，已为 `S0E-2D` 重生成无 placeholder 的 PR-prep 样本，并为 `#248 -> #295` 产出正式 relationship plan/apply 样本。

@@ -100,6 +100,7 @@
 - `P1`: planner/create-path implementation updates in PR and issue relationship tooling
 - `P2`: dry-run regeneration and artifact validation against representative `S0E` samples
 - `P3`: real GitHub validation against one PR sample and one child-issue relationship sample
+- `P4`: one full end-to-end `issue creation -> PR -> issue conclusion` closed-loop drill under the `S0E-4C` rules
 
 ## Success Criteria (DoD)
 
@@ -196,6 +197,12 @@
 
 - P3-C1-S1: validate one real PR body against normalized development issue and non-placeholder summary rules
 - P3-C1-S2: validate one real child issue so sidebar `Relationships` matches `Metadata -> Parent issue`
+- P3-C1-S3: audit the four historical `S0E` PRs shown in the merged list and remediate any body drift against the current PR contract
+
+### P4 (Closed-loop Drill)
+
+- P4-C1-S1: run one full `issue creation -> PR -> issue conclusion` cycle under the post-`S0E-4C` contracts
+- P4-C1-S2: verify that the same sample keeps short-ref metadata, non-placeholder PR summary, attached child relationship, and final issue conclusion consistency end to end
 
 ## Execution Checklist (unchecked)
 
@@ -214,13 +221,19 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: representative PR-prep artifacts regenerated and reviewed
-- [ ] `P2-C1-S2`: representative issue relationship artifacts regenerated and reviewed
+- [x] `P2-C1-S1`: representative PR-prep artifacts regenerated and reviewed
+- [x] `P2-C1-S2`: representative issue relationship artifacts regenerated and reviewed
 
 ### P3 (Drill / Verify)
 
-- [ ] `P3-C1-S1`: one real PR validated against the updated body contract
+- [x] `P3-C1-S1`: one real PR validated against the updated body contract
 - [ ] `P3-C1-S2`: one real child issue validated against the updated relationship attach path
+- [x] `P3-C1-S3`: historical `S0E` PR audit completed and outdated live bodies remediated
+
+### P4 (Closed-loop Drill)
+
+- [ ] `P4-C1-S1`: one full `issue creation -> PR -> issue conclusion` cycle completed under `S0E-4C`
+- [ ] `P4-C1-S2`: end-to-end artifacts reviewed for contract consistency
 
 ## Evidence (reserved)
 
@@ -233,6 +246,13 @@
 - `P1-C1-S2`: `scripts/issues/create_pr_from_plan.py` now blocks live PR creation when the preview `Summary` still contains `- <placeholder>` or when the planned item carries zero explicit summary bullets.
 - `P1-C1-S3`: `scripts/issues/apply_issue_relationships.py` now provides a real relationship apply path using GitHub GraphQL `addSubIssue`, including idempotent success when the requested parent-child link already exists and fail-closed behavior for conflicting parents.
 - `P1-C1-S3`: the GitHub GraphQL mutation shape was verified against live `S0E` issue IDs while wiring the apply path, confirming that sidebar `Relationships` must be attached through sub-issue mutation instead of issue-body edits.
+- `P2-C1-S1`: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md` now carries explicit `PR Summary Inputs`, and regenerated artifacts `docs/issues/pr-prep-S0E-2D-sample-plan.json` plus `docs/issues/pr-prep-S0E-2D-sample-body.md` confirm that `Summary` is now populated while `Development issue` remains the normalized short ref `#297`.
+- `P2-C1-S1`: the regenerated `pr-prep-S0E-2D` plan now records `pr_development_issue: #297`, `pr_development_issue_refs: ["#297"]`, and `summary_bullet_count: 3`, proving the create-path fail-closed gate now has explicit structured input to consume.
+- `P2-C1-S2`: `docs/issues/issue-relationship-S0E-4C-sample-plan.json` validates a representative `S0E` child relationship sample for `#248 -> #295` with clean traceability through `parent_log` and `child_log_path`.
+- `P2-C1-S2`: `docs/issues/issue-relationship-S0E-4C-sample-apply-result.json` confirms the representative child issue was already attached to the requested parent and that the new apply path returns idempotent success as `already-linked-child-to-parent` instead of mutating or failing.
+- `P3-C1-S1`: live PR `#296` was rewritten from the regenerated `docs/issues/pr-prep-S0E-4B-sample-body.md`, which now renders `Development issue: #295` as a plain short ref and keeps `Development Link` aligned as `Closes #295`.
+- `P3-C1-S1`: live PR `#298` was rewritten from `docs/issues/pr-prep-S0E-2D-sample-body.md`, replacing the old `- <placeholder>` summary with explicit bullets and restoring the separate `Development Link` section.
+- `P3-C1-S3`: the four historical merged PRs visible in the `S0E` list were audited as `#294`, `#296`, `#298`, and `#299`; only `#296` and `#298` required live body remediation, while `#294` and `#299` already matched the current contract.
 
 ## Recent changes (for traceability, optional)
 
@@ -240,3 +260,6 @@
 - 2026-03-30: recorded that live PR `#298` still carries a placeholder summary because the source log omitted `PR summary bullets`, which means the next fix belongs in PR create-path requiredness rather than in issue conclusion.
 - 2026-03-30: recorded that child issue body metadata already carries `Parent issue: #248`, but sidebar `Relationships` remains unattached because the repo currently has a relationship planner without a real apply path.
 - 2026-03-30: completed `P0-P1` by fixing the contract, normalizing PR development-issue rendering in preview/create code paths, adding a fail-closed guard for placeholder PR summaries, and introducing a real relationship apply script for GitHub sidebar parent-child attachment.
+- 2026-03-30: completed `P2` by regenerating `S0E-2D` PR-prep sample artifacts with explicit `PR Summary Inputs` and by producing canonical `S0E-4C` relationship plan/apply sample artifacts for existing child issue `#295` under parent `#248`.
+- 2026-03-30: completed `P3-C1-S1` and `P3-C1-S3` by auditing historical merged PRs `#294/#296/#298/#299`, confirming that `#294` and `#299` were already compliant, rewriting live PR `#296` to use short-ref `Development issue: #295`, and rewriting live PR `#298` to use the regenerated non-placeholder Summary plus a separate `Development Link` section.
+- 2026-03-30: queued `P4` as the next drill to run one full `issue creation -> PR -> issue conclusion` closed loop under the now-updated `S0E-4C` contract.
