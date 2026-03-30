@@ -69,6 +69,13 @@
 - Real create-side automation now lives in `S0E-2B`, but it is still explicit opt-in rather than one-click-by-default.
 - The stable safety rule remains: draft generation is the default path, and real GitHub issue creation only happens under explicit `--create`.
 
+### 4.1 Lifecycle modes
+
+- `review-hold`: the operator explicitly wants a staged path. Automation may create or refresh issue and PR artifacts, but it must stop before merge and final issue conclusion.
+- `full-auto`: the operator explicitly wants a closed loop. Automation may continue from validated issue/PR artifacts through merge and issue conclusion, but only when that intent is stated in the command itself.
+- Default rule: if the instruction does not say `full-auto`, treat the run as `review-hold` and keep merge plus issue conclusion human-gated.
+- Ownership boundary: lifecycle mode only decides whether the run stops or continues; PR body/title rules still follow `S0E-4A/4C`, and final issue-conclusion body rules still follow `S0E-2E`.
+
 ## 5) Local Operation
 
 ### 5.1 Prerequisites
@@ -170,6 +177,7 @@
 
 ### 5.7 Manual issue-creation procedure
 
+- Step 0: choose the lifecycle mode before touching GitHub state; if the instruction is ambiguous, default to `review-hold`.
 - Step 1: choose the source log and, when possible, start from the nearest validated sample issue artifact.
 - Step 2: confirm the issue title uses `SxY-ZA: <fixed-keyword>/<specific subject>`.
 - Step 3: confirm the fixed keyword is from the controlled vocabulary and is not being replaced by ad-hoc wording.
@@ -187,10 +195,12 @@
 - Step 10: keep the generated issue body English-only, start directly from `## Metadata`, and do not repeat the issue title inside the body.
 - Step 11: leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text.
 - Step 12: create the real GitHub issue through the normal repository UI path.
-- Step 13: after creation, record the issue URL back into the source log in a later tracked docs update.
+- Step 13: if the selected mode is `review-hold`, stop here for human review after recording the created issue and any draft PR artifacts.
+- Step 14: after creation, record the issue URL back into the source log in a later tracked docs update.
 
 ### 5.8 Manual issue-conclusion procedure
 
+- Step 0: only enter this procedure automatically when the selected lifecycle mode is explicitly `full-auto`; otherwise treat it as a separate human-approved follow-up.
 - Step 1: confirm the target issue already exists and the relevant delivery PR is actually merged; open, draft, or merely approved PRs are not enough.
 - Step 2: treat GitHub auto-close as state evidence only. A closed issue may still need a final body write-back if it still shows the create-time empty scaffold.
 - Step 3: collect candidate PRs by exact ID prefix from merged PR titles, for example `S0E-2D/` for issue `S0E-2D`; do not expand the set by prose similarity.
