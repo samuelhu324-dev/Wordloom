@@ -1,0 +1,97 @@
+{
+  "mode": "lifecycle-remediation-dry-run",
+  "result": "ok",
+  "audit_plan_path": "docs/issues/lifecycle-audit-S0E-5A-p3-fixture-plan.json",
+  "selection_input": "audit-plan",
+  "operation": "plan-lifecycle-remediation",
+  "total_items": 4,
+  "planned_items": 4,
+  "warnings": [
+    "S0E-2B: planned",
+    "S0E-2A: planned",
+    "S0E-4A: planned",
+    "S0E-2D: planned"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-2B",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "issue_number": 288,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "audit_status": "warning",
+      "remediation_status": "planned",
+      "planned_action": "plan-remediation",
+      "applied_action": null,
+      "steps": [
+        {
+          "action_kind": "plan-issue-conclusion-refresh",
+          "status": "planned",
+          "details": "Prepare an issue-conclusion plan so the final body and close state can be regenerated from exact-ID merged PR evidence.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-S0E-5A-p4-stop-issue-conclusion-manifest.json"
+        }
+      ],
+      "warnings": [],
+      "reason": "Historical pre-conclusion fixture before issue #288 was closed."
+    },
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "audit_status": "blocked",
+      "remediation_status": "planned",
+      "planned_action": "plan-remediation",
+      "applied_action": null,
+      "steps": [
+        {
+          "action_kind": "attach-parent-relationship",
+          "status": "planned",
+          "details": "Prepare a child-of relationship attach from the expected parent issue to the audited child issue.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-S0E-5A-p4-stop-relationship-manifest.json"
+        }
+      ],
+      "warnings": [],
+      "reason": "Historical pre-repair fixture before sidebar relationship #248 -> #289 was attached."
+    },
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "issue_number": 293,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/293",
+      "audit_status": "blocked",
+      "remediation_status": "planned",
+      "planned_action": "plan-remediation",
+      "applied_action": null,
+      "steps": [
+        {
+          "action_kind": "attach-parent-relationship",
+          "status": "planned",
+          "details": "Prepare a child-of relationship attach from the expected parent issue to the audited child issue.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-S0E-5A-p4-stop-relationship-manifest.json"
+        }
+      ],
+      "warnings": [],
+      "reason": "Historical pre-repair fixture before sidebar relationship #248 -> #293 was attached."
+    },
+    {
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "issue_number": 297,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/297",
+      "audit_status": "blocked",
+      "remediation_status": "planned",
+      "planned_action": "plan-remediation",
+      "applied_action": null,
+      "steps": [
+        {
+          "action_kind": "attach-parent-relationship",
+          "status": "planned",
+          "details": "Prepare a child-of relationship attach from the expected parent issue to the audited child issue.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-S0E-5A-p4-stop-relationship-manifest.json"
+        }
+      ],
+      "warnings": [],
+      "reason": "Historical pre-repair fixture before sidebar relationship #248 -> #297 was attached."
+    }
+  ]
+}
