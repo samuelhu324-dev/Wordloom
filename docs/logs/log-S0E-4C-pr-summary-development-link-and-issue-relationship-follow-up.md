@@ -73,9 +73,9 @@
 **PR links / evidence footer**:
 
 - Log: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
-- Issue: ``
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/300`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
-- Evidence artifact: ``
+- Evidence artifact: `docs/issues/pr-prep-S0E-4C-p4-plan.json`
 
 - Generated PR body should keep `Summary`, `Evidence Footer`, and `Development Link` as separate sections.
 - `Summary` must not degrade to `<placeholder>` on a live PR create path.
