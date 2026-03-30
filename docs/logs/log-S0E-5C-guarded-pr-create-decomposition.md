@@ -80,6 +80,7 @@
 - The remaining open question is no longer “does guarded apply work at all,” but “can the much broader `PR create` flow be decomposed into guardable stages without hiding orchestration risk.”
 - `S0E-5C` is now the dedicated container for answering that question.
 - `P0` is now completed: the current `PR create` path has been decomposed into seven concrete stages with explicit stop boundaries, and the main outcome is that remote branch publication and live PR publication cannot be treated as one undifferentiated guarded mutation.
+- `P1` is now completed: no stage can reuse the existing lifecycle pre-gate unchanged as one all-purpose `PR create` gate; only create-time preflight can reuse it as an issue-readiness layer, and even that stage still needs create-specific targeted checks before any local mutation begins.
 
 ## P0 (PR create stage map | v1)
 
@@ -93,15 +94,27 @@
 - `S7` is post-create cleanup and evidence finalization: worktree cleanup and local result serialization happen after publication, so failures here must be modeled as traceability defects after a real PR already exists, not as a no-op create path.
 - `P0` therefore fixes the core decomposition outcome for `S0E-5C`: guarded `PR create` cannot be responsibly designed as one atomic mutation family; it must at least separate preflight checks, local materialization, remote branch publication, live PR publication, and post-create evidence handling.
 
+## P1 (Reuse-vs-new-rule boundary | v1)
+
+### P1-C1-S1 (Stage classes mapped to gate ownership | v1)
+
+- The `P1` boundary map is now recorded in `docs/issues/pr-create-S0E-5C-p1-boundary-map.json`.
+- The strongest `P1` conclusion is negative: no `PR create` stage can reuse the existing lifecycle pre-gate unchanged as a single all-purpose publish gate.
+- `S1` and `S2` stay outside guarded apply because they are dry-run planning stages with no live mutation; they should remain prerequisite planning layers rather than be forced into mutation-gate semantics.
+- `S3` is the only stage that can reuse the existing lifecycle pre-gate, and even here the reuse is partial: the current gate can answer whether the source issue is structurally ready for create-time continuation, but it cannot replace create-specific checks for selected commits, prepared-branch collisions, label/milestone existence, or preview-body integrity.
+- `S4` and `S5` need new targeted rules instead of recycled lifecycle-gate semantics: local branch materialization and remote branch publication are git-state transitions that the current issue-lifecycle audit model does not observe.
+- `S6` remains operator-held in v1 even though it will eventually need its own targeted publish rule if guarded rollout continues. The current conclusion is that live PR publication cannot inherit authorization from an earlier preflight decision after local and remote state have already changed.
+- `S7` stays outside guarded apply because it is post-create traceability. A failure here means local evidence did not serialize after a real PR already exists; it is not part of the publish authorization boundary.
+- `P1` therefore fixes the first stable guard-boundary rule for `S0E-5C`: reuse the existing lifecycle pre-gate only as one prerequisite layer for create-time preflight, and do not pretend that this reuse automatically covers branch materialization, remote publish, or live PR publication.
+
 ## Plan (draft)
 
-- `P1-C1-S1`: map those stages against existing lifecycle pre-gate semantics and identify where extra targeted rules would be required
 - `P2-C1-S1`: run one representative sample through the decomposed path without yet claiming full guarded rollout
 
 ## Execution Checklist (unchecked)
 
 - [x] `P0-C1-S1`: guarded `PR create` stage map fixed
-- [ ] `P1-C1-S1`: reuse-vs-new-rule boundary fixed
+- [x] `P1-C1-S1`: reuse-vs-new-rule boundary fixed
 - [ ] `P2-C1-S1`: representative decomposition sample recorded
 
 ## Evidence (reserved)
@@ -124,7 +137,24 @@
   - the current path resolves into seven concrete stages, and the resulting stage map shows three materially different mutation boundaries: local branch materialization, remote branch publication, and live PR publication
   - the same map also shows that post-create local evidence write-back occurs after publication, so it cannot be merged into the publish decision without losing traceability
 
+### P1-C1-S1 (reuse-vs-new-rule boundary fixed | 2026-03-30)
+
+- artifacts:
+  - `docs/issues/pr-create-S0E-5C-p1-boundary-map.json`
+  - `docs/issues/pr-create-S0E-5C-p0-stage-map.json`
+  - `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
+  - `scripts/issues/plan_lifecycle_pre_gate.py`
+  - `scripts/issues/plan_pr_prep.py`
+  - `scripts/issues/create_pr_from_plan.py`
+- expected:
+  - the stage map should clearly state which `PR create` stages can reuse the existing lifecycle pre-gate, which require new targeted rules, and which should remain outside guarded apply in v1
+  - the result should prevent the current guarded work from over-claiming that one issue-lifecycle gate can safely authorize the whole create path
+- observed:
+  - no stage can reuse the existing lifecycle pre-gate unchanged as one all-purpose `PR create` gate
+  - only `S3` can reuse the existing pre-gate as an issue-readiness prerequisite, while `S4` and `S5` require new targeted rules and `S6` remains operator-held as the live PR publication boundary in v1
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: created `S0E-5C` as the dedicated follow-up for guarded `PR create` decomposition after `S0E-5B` reached stable state on in-place guarded mutation families.
 - 2026-03-30: completed `P0` by decomposing the current `PR create` path into seven explicit stages and fixing the failure boundaries between dry-run planning, local branch materialization, remote publish, live PR publication, and post-create evidence finalization.
+- 2026-03-30: completed `P1` by mapping those seven stages onto reuse-vs-new-rule ownership, concluding that only create-time preflight can partially reuse the existing lifecycle pre-gate while local materialization, remote publish, and live PR publication must remain separate boundaries.

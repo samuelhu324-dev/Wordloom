@@ -1,0 +1,104 @@
+{
+  "id": "S0E-5C/P1-C1-S1",
+  "phase": "S0E-5C",
+  "title": "guarded PR create boundary map",
+  "result": "ok",
+  "decision": "No PR-create stage can reuse the existing lifecycle pre-gate unchanged as one all-purpose publish gate. The current lifecycle pre-gate is reusable only as an issue-readiness layer ahead of create-time preflight, while local branch materialization, remote branch publication, and live PR publication require distinct boundaries.",
+  "source_artifacts": [
+    "docs/issues/pr-create-S0E-5C-p0-stage-map.json",
+    "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+    "scripts/issues/plan_lifecycle_pre_gate.py",
+    "scripts/issues/plan_pr_prep.py",
+    "scripts/issues/create_pr_from_plan.py"
+  ],
+  "existing_pre_gate_scope": {
+    "strengths": [
+      "fail-closed decision model with allow-apply / stop-for-remediation / hard-fail-input",
+      "structured audit artifacts and deterministic remediation planning",
+      "good fit for existing live issue readiness checks before a downstream mutation continues"
+    ],
+    "limits": [
+      "audits issue lifecycle state, not git worktree or branch-publication state",
+      "cannot reason about cherry-pick fallback, prepared branch collisions, or remote push side effects",
+      "cannot safely collapse remote git publication and live PR publication into one decision"
+    ]
+  },
+  "stages": [
+    {
+      "stage_id": "S1-plan-input-resolution",
+      "recommended_class": "outside-guarded-dry-run",
+      "reuse_existing_pre_gate": false,
+      "needs_targeted_rule": false,
+      "operator_owned": false,
+      "reason": "This is local dry-run manifest validation and source-log resolution. It should remain outside guarded apply because it performs no live mutation and already fails closed as planning input validation."
+    },
+    {
+      "stage_id": "S2-scope-selection-and-preview",
+      "recommended_class": "outside-guarded-dry-run",
+      "reuse_existing_pre_gate": false,
+      "needs_targeted_rule": false,
+      "operator_owned": false,
+      "reason": "This stage selects exact-ID commits and renders the preview body. It is still planning-only and should remain a prerequisite dry-run layer instead of being modeled as a guarded mutation boundary."
+    },
+    {
+      "stage_id": "S3-create-preflight-validation",
+      "recommended_class": "reuse-pre-gate-plus-targeted-create-rules",
+      "reuse_existing_pre_gate": true,
+      "needs_targeted_rule": true,
+      "operator_owned": false,
+      "reason": "This is the only stage that can reuse the existing lifecycle pre-gate as an issue-readiness prerequisite, but it still needs create-specific checks for planned item state, labels, milestones, prepared-branch collisions, selected commits, and preview-body integrity before any local mutation begins."
+    },
+    {
+      "stage_id": "S4-local-branch-materialization",
+      "recommended_class": "targeted-local-materialization-rule",
+      "reuse_existing_pre_gate": false,
+      "needs_targeted_rule": true,
+      "operator_owned": false,
+      "reason": "Worktree creation, branch switching, cherry-pick replay, and snapshot fallback are local git mutation concerns that the current lifecycle gate does not model. They need their own bounded local-materialization rule set and evidence."
+    },
+    {
+      "stage_id": "S5-remote-branch-publication",
+      "recommended_class": "targeted-remote-publish-rule",
+      "reuse_existing_pre_gate": false,
+      "needs_targeted_rule": true,
+      "operator_owned": false,
+      "reason": "Pushing the prepared branch to origin is the first irreversible remote git write. It must stay separate from both local materialization and live PR publication, and therefore needs an explicit remote-publish rule if it is ever guarded."
+    },
+    {
+      "stage_id": "S6-live-pr-publication",
+      "recommended_class": "operator-held-publish-boundary",
+      "reuse_existing_pre_gate": false,
+      "needs_targeted_rule": true,
+      "operator_owned": true,
+      "reason": "Live PR creation is the actual GitHub object publication boundary. In v1 it should remain operator-held even if earlier stages are increasingly guarded, because a stale preflight decision is not sufficient authorization for final PR publication after S4 and S5 have already mutated state."
+    },
+    {
+      "stage_id": "S7-post-create-cleanup-and-evidence",
+      "recommended_class": "post-create-traceability",
+      "reuse_existing_pre_gate": false,
+      "needs_targeted_rule": false,
+      "operator_owned": false,
+      "reason": "This stage happens after publication and should not be treated as part of the publish decision. Its failures are traceability defects after a real PR exists, not reasons to reinterpret the prior create path as a no-op."
+    }
+  ],
+  "phase_outcome": {
+    "direct_reuse_without_new_rules": [],
+    "reuse_with_targeted_create_rules": [
+      "S3-create-preflight-validation"
+    ],
+    "targeted_rules_required": [
+      "S4-local-branch-materialization",
+      "S5-remote-branch-publication",
+      "S6-live-pr-publication"
+    ],
+    "keep_outside_guarded_apply": [
+      "S1-plan-input-resolution",
+      "S2-scope-selection-and-preview",
+      "S7-post-create-cleanup-and-evidence"
+    ],
+    "operator_held_for_v1": [
+      "S6-live-pr-publication"
+    ]
+  },
+  "next_step_recommendation": "P2 should validate the bounded front half first: dry-run planning plus a create-preflight decision that combines the existing lifecycle pre-gate with explicit create-specific checks, without yet auto-publishing a live PR."
+}
