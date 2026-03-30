@@ -385,3 +385,4 @@
 - 2026-03-28: real GitHub issue `#289` was created through the `S0E-2B` automation path and then written back to `links.issue` in a separate tracked update.
 - 2026-03-30: merged PR `#287` and PR summary inputs were written back so historical lifecycle remediation can conclude issue `#289` against exact-ID merged evidence.
 - 2026-03-30: issue `#289` was concluded and closed as `completed` through the historical write-back path, using remediated merged PR `#287` as the exact-ID completion reference.
+- 2026-03-30: sidebar parent-child relationship `#248 -> #289` was attached during the `S0E-4D/P4` audit after the issue body had already been concluded correctly.

@@ -159,6 +159,7 @@
 - [x] `P44`：`S0E-4D` 已完成 `P2`，staged review / resume-after-review / post-merge full-auto 三类命令口径与 fail-closed examples 已正式固定
 - [x] `P45`：`S0E-4D` 已完成 `P3`，live issue `#303`、draft-to-merged PR `#304`、parent relationship attach 与 final conclusion 已跑通一条真实 staged-to-closed-loop 样本
 - [x] `P46`：`S0E-4D` 已扩展历史验证轮次，`S0E-2A/#289`、`S0E-2B/#288` 与 `S0E-4A/#293` 均已按 Creation -> PR -> merge -> conclusion 路径完成 write-back 与 close
+- [x] `P47`：`S0E-4D` 已完成 representative issue audit 与 `P4`，补齐缺失的 sidebar relationships `#248 -> #289/#293/#297`，并正式记录 body-complete 不等于 relationship-complete 的审计边界
 
 ## Current Status（进展摘要）
 
@@ -178,6 +179,7 @@
 - `S0E-2D` 已补充 `P1-C2-S3/P3-C3-S2` follow-up：`Parent issue` 现在只保留在 `Metadata`，并统一使用 `#248` 这类短 GitHub 引用，不再在 `Links` 重复出现；
 - `S0E-4D` 已完成 `P3`：live issue `#303`、PR `#304`、`#248 -> #303` relationship attach，以及 final issue conclusion 已形成一条真实 staged-to-closed-loop 样本，因此该 slice 现可视为 `stable`；
 - `S0E-4D` 已补跑历史验证轮次：`S0E-2A` 的 PR `#287` 与 issue `#289`、`S0E-2B` 的 PR `#290` 与 issue `#288`、以及 `S0E-4A` 的 issue `#293` 均已完成最终 write-back / close；
+- `S0E-4D` 已完成 representative issue 审计：`#289`、`#293`、`#295`、`#297`、`#300`、`#303` 的最终 body 均已合规，而缺失的 sidebar relationships `#248 -> #289/#293/#297` 也已补齐；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -293,3 +295,4 @@
 - 2026-03-30：完成 `S0E-4D/P2`，明确 staged review、resume-after-review 与 post-merge full-auto 三类命令口径，并补齐 ambiguous / blocked request 的 fail-closed examples。
 - 2026-03-30：完成 `S0E-4D/P3`，创建 live issue `#303`、draft-to-merged PR `#304`、parent relationship attach 与 final issue conclusion，证明 staged review 和 resumed closed loop 已可落到同一真实样本。
 - 2026-03-30：扩展 `S0E-4D/P3` 历史验证轮次，已把 `S0E-2A/#289`、`S0E-2B/#288` 与 `S0E-4A/#293` 这三条仍未 conclusion 的旧 issue 按 exact-ID merged PR 证据完成回写并关闭。
+- 2026-03-30：完成 `S0E-4D/P3-C4` 与 `P4`，审计 representative child issues 的 live sidebar relationships，补齐 `#248 -> #289/#293/#297`，并正式记录 issue body 与 GitHub relationship 需分开核验的审计边界。

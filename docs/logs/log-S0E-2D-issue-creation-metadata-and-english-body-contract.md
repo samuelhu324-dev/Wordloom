@@ -270,3 +270,4 @@
 - 2026-03-29: completed sibling issue audit for `#289`, `#293`, and `#295`, aligning them to metadata-only short parent-issue formatting and updating `#293` labels to match current `drills` derivation.
 - 2026-03-29: updated live child issues `#288`, `#289`, `#293`, `#295`, and `#297` so `Parent issue` now renders as plain text `#248`.
 - 2026-03-30: added explicit `PR Summary Inputs` so regenerated `S0E-2D` PR-prep artifacts no longer depend on placeholder `Summary` content.
+- 2026-03-30: sidebar parent-child relationship `#248 -> #297` was attached during the `S0E-4D/P4` audit, confirming that metadata-only `Parent issue: #248` in the body was not sufficient proof of a live GitHub sidebar relationship.

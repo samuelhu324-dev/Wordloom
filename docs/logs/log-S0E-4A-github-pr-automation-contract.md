@@ -309,3 +309,4 @@
 - 2026-03-29: opened `S0E-4B` as the post-first-PR follow-up for title compression, structural label inheritance, and body footer/link formatting.
 - 2026-03-29: completed `P3-C2` follow-up by deriving Development issue from the source log issue when blank and by normalizing multiple Development issues to one comma-separated list.
 - 2026-03-30: historical issue `#293` was concluded and closed as `completed` after auditing exact-ID merged PR evidence from both `#294` and `#299`.
+- 2026-03-30: sidebar parent-child relationship `#248 -> #293` was attached during the `S0E-4D/P4` audit after issue-body remediation and conclusion had already completed.
