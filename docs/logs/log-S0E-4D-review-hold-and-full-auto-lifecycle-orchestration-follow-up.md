@@ -52,7 +52,7 @@
 **Default choices (phase defaults / v1)**:
 
 - `review-hold` means the run may prepare or apply issue/PR artifacts up to the explicitly requested step, then stop for human review before merge and final issue conclusion.
-- `full-auto` means the operator explicitly authorizes a closed loop that may continue from validated issue/PR artifacts through merge follow-through and final issue conclusion when each prerequisite is already satisfied.
+- `full-auto` means the operator explicitly authorizes a closed loop across the automatable stages; merge approval and merge execution remain human-owned, but post-merge follow-through may continue without a separate prompt once merge completion is already confirmed.
 - If a command is ambiguous about continuation, treat it as `review-hold` rather than guessing a closed loop.
 - Closed-loop continuation must stay fail-closed: missing summary inputs, unresolved relationship state, unmerged PRs, or missing exact-ID evidence still block downstream steps even under `full-auto`.
 
@@ -133,8 +133,58 @@
 ### P0-C1-S3 (Explicit resume and closed-loop semantics | v1)
 
 - A staged run may later resume from a reviewed issue or PR artifact through an explicit follow-up command.
-- `full-auto` may chain multiple stages only when each prerequisite is already satisfied or explicitly included in the same run.
+- `full-auto` may chain multiple automatable stages only when each prerequisite is already satisfied or explicitly included in the same run.
+- Human review and merge execution remain outside automation ownership even under `full-auto`; the closed loop resumes only after merge completion is already present or explicitly confirmed by the operator.
 - If a downstream stage is blocked, the run must stop with a traceable reason instead of silently skipping the stage or pretending the closed loop completed.
+
+## P2 (Operator command patterns | v1)
+
+### P2-C1-S1 (Deterministic operator command patterns | v1)
+
+- Use one explicit mode phrase in the instruction itself so continuation is visible without relying on prior conversation memory.
+- Recommended staged-review pattern:
+
+```text
+Handle S0E-4D in review-hold mode: create or refresh the issue/PR artifacts, stop before merge, and wait for review.
+```
+
+- Recommended explicit resume-after-review pattern:
+
+```text
+Resume S0E-4D after review: the PR is already merged, continue the post-merge follow-through and complete the final issue conclusion.
+```
+
+- Recommended closed-loop pattern:
+
+```text
+Handle S0E-4D in full-auto mode: complete the requested issue/PR updates, and once merge completion is confirmed, continue through the final issue conclusion without another prompt.
+```
+
+- The deterministic verbs are `review-hold`, `resume after review`, and `full-auto`; avoid substituting loosely related phrases such as `finish everything` or `handle the rest`.
+
+### P2-C1-S2 (Fail-closed command examples | v1)
+
+- Ambiguous request example:
+
+```text
+Handle S0E-4D end to end.
+```
+
+- Resolution: treat it as `review-hold` because no explicit `full-auto` continuation was requested.
+- Blocked closed-loop example:
+
+```text
+Handle S0E-4D in full-auto mode and conclude the issue.
+```
+
+- Resolution: stop with a traceable blocker if the PR summary is still placeholder, the relationship attach is unresolved, or the PR is not actually merged yet.
+- Resume-after-review example:
+
+```text
+Resume S0E-4D after review; PR #302 is merged, so run the post-merge issue conclusion now.
+```
+
+- Resolution: continue only the downstream post-merge steps; do not recreate earlier issue/PR artifacts unless the instruction explicitly asks for refresh.
 
 ## Numbering
 
@@ -173,19 +223,19 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: lifecycle modes and default boundary fixed
-- [ ] `P0-C1-S2`: ownership boundary across `S0E-2D/2E/4A/4C/4D` fixed
-- [ ] `P0-C1-S3`: explicit resume and blocked closed-loop semantics fixed
+- [x] `P0-C1-S1`: lifecycle modes and default boundary fixed
+- [x] `P0-C1-S2`: ownership boundary across `S0E-2D/2E/4A/4C/4D` fixed
+- [x] `P0-C1-S3`: explicit resume and blocked closed-loop semantics fixed
 
 ### P1 (Wording alignment)
 
-- [ ] `P1-C1-S1`: parent spine wording aligned to `S0E-4D`
-- [ ] `P1-C1-S2`: runbook ownership wording aligned to `S0E-4D`
+- [x] `P1-C1-S1`: parent spine wording aligned to `S0E-4D`
+- [x] `P1-C1-S2`: runbook ownership wording aligned to `S0E-4D`
 
 ### P2 (Operator command patterns)
 
-- [ ] `P2-C1-S1`: deterministic operator command patterns documented
-- [ ] `P2-C1-S2`: fail-closed examples documented
+- [x] `P2-C1-S1`: deterministic operator command patterns documented
+- [x] `P2-C1-S2`: fail-closed examples documented
 
 ### P3 (Drill / Verify)
 
@@ -195,7 +245,12 @@
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, command shape, and artifact paths (or live issue/PR URLs) once validation begins.
+- `P0-C1-S1` / `P0-C1-S3`: this log now fixes `review-hold` as the default mode, narrows `full-auto` to automatable stages only, and makes post-merge continuation contingent on confirmed merge completion rather than implicit merge ownership.
+- `P0-C1-S2` / `P1-C1-S1`: `docs/logs/log-S0E-docs-management-v5.md` now records `S0E-4D` as the dedicated lifecycle-orchestration owner instead of leaving that boundary inside `S0E-2D`.
+- `P1-C1-S2` / `P2-C1-S1`: `docs/runbook/run-S0E-log-to-issue-creation.md` now carries one operator-facing command-pattern block for staged review, explicit resume, and post-merge full-auto continuation while keeping contract ownership in `S0E-4D`.
+- `P2-C1-S2`: this log now includes fail-closed examples for ambiguous continuation requests, blocked closed-loop requests, and downstream-only resume commands.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: opened `S0E-4D` so lifecycle orchestration modes (`review-hold` / `full-auto`) have a dedicated owner instead of drifting between issue-create and runbook wording.
+- 2026-03-30: completed `P2` by fixing deterministic command patterns for staged review, explicit resume, and post-merge full-auto continuation, plus fail-closed examples for ambiguous or blocked requests.

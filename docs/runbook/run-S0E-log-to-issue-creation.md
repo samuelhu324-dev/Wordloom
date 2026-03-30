@@ -70,6 +70,18 @@
 - The stable safety rule remains: draft generation is the default path, and real GitHub issue creation only happens under explicit `--create`.
 - Lifecycle continuation ownership now lives in `S0E-4D`; this runbook keeps the per-stage operator procedure, while `review-hold` versus `full-auto` semantics stay in the dedicated orchestration follow-up log.
 
+### 4.1 Operator command patterns
+
+- Recommended staged-review wording:
+  - `Handle S0E-4D in review-hold mode: create or refresh the issue/PR artifacts, stop before merge, and wait for review.`
+- Recommended explicit resume wording:
+  - `Resume S0E-4D after review: the PR is already merged, continue the post-merge follow-through and complete the final issue conclusion.`
+- Recommended post-merge full-auto wording:
+  - `Handle S0E-4D in full-auto mode: complete the requested issue/PR updates, and once merge completion is confirmed, continue through the final issue conclusion without another prompt.`
+- Fail-closed reminder:
+  - ambiguous requests such as `Handle S0E-4D end to end` should be treated as `review-hold`
+  - `full-auto` still stops when merge completion is missing or when upstream issue/PR prerequisites are not satisfied
+
 ## 5) Local Operation
 
 ### 5.1 Prerequisites
