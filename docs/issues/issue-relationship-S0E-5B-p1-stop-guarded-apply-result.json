@@ -1,0 +1,17 @@
+{
+  "mode": "issue-relationship-guarded-apply",
+  "result": "ok",
+  "gate_input_kind": "audit-plan",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0E-5A-p3-fixture-plan.json",
+  "gate_decision_path": "docs/issues/lifecycle-gate-S0E-5B-p1-stop-decision.json",
+  "gate_decision": "stop-for-remediation",
+  "gate_apply_allowed": false,
+  "guarded_eligibility": "blocked-mixed-remediation",
+  "relationship_manifest_path": null,
+  "relationship_plan_path": null,
+  "guarded_action": "stopped-before-apply",
+  "apply_result_path": null,
+  "warnings": [
+    "Lifecycle remediation includes non-relationship or non-planned follow-up actions: plan-issue-conclusion-refresh."
+  ]
+}
