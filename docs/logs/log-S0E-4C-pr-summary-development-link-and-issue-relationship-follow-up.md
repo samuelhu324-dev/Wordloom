@@ -243,7 +243,7 @@
 
 ### P5 (Create-path Hardening)
 
-- [ ] `P5-C1-S1`: create-path cherry-pick conflict hardening implemented
+- [x] `P5-C1-S1`: create-path cherry-pick conflict hardening implemented
 - [ ] `P5-C1-S2`: one additional real `S0E-4C` PR validated and issue `#300` updated
 
 ## Evidence (reserved)
