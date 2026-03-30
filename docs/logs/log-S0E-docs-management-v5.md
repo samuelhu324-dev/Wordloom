@@ -174,6 +174,7 @@
 - [x] `P54`：`S0E-5B` 已完成 `P2`，已选定 guarded `PR body rewrite` 作为下一条 PR-side family，并用 converged `S0E-5A/#305 -> PR #306` 的 live rewrite plus 一条 frozen stop drill 完成验证
 - [x] `P55`：`S0E-5B` 已完成 `P3`，`#307 -> PR #308` 现已形成一条真实 closed-loop sample，并在同一 issue/PR pair 上连续验证了 guarded relationship attach 与 guarded PR-body rewrite 两条 mutation family
 - [x] `P56`：`S0E-5B` 已正式收口为 `stable`，并已新建 `S0E-5C` 用于单独拆解 guarded `PR create` 的阶段边界，而不再继续扩张 `S0E-5B` 的 scope
+- [x] `P57`：`S0E-5C` 已完成 `P0`，当前 `PR create` path 已被拆成 dry-run 输入解析、scope selection、create preflight、local branch materialization、remote publish、live PR publish、post-create evidence finalize 七段，并已固定这些 failure boundaries 不能被压扁成一个 guarded yes/no mutation
 
 ## Current Status（进展摘要）
 
@@ -203,7 +204,8 @@
 - `S0E-5B` 已完成 `P2`：guarded `PR body rewrite` 现已接到同一 pre-gate 后面，merged PR `#306` 已通过一条真实 allow-apply 路径完成重写，而 blocked fixture 仍在 edit 前被硬停；
 - `S0E-5B` 已完成 `P3`：issue `#307` 先通过 guarded relationship attach 接到父 issue `#248`，随后在同一样本上生成并合并 PR `#308`，再对这条 merged PR 跑 guarded body rewrite，最后把 issue 正式 conclusion 到 closed state；
 - `S0E-5B` 现已可视为 `stable`：该 slice 已经完成 in-place guarded mutation families 的边界、单项验证和同样本组合闭环；
-- `S0E-5C` 已建档，下一步将把 guarded `PR create` 从“大一统 create path”拆成可讨论的阶段边界，再决定它是否应进入 guarded apply；
+- `S0E-5C` 已完成 `P0`：guarded `PR create` 现已被拆成 7 个明确阶段，且已确认 remote branch publish 与 live PR publish 是两个不同的 publish boundary，不能继续被当成一个原子 guarded mutation；
+- `S0E-5C` 的下一步将进入 `P1`：把这 7 个阶段分别映射到“可复用既有 lifecycle pre-gate / 需要新增 targeted rule / 应保留人工持有”三类边界；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -330,3 +332,4 @@
 - 2026-03-30：完成 `S0E-5B/P2`，新增 guarded PR-body rewrite 入口，并已用 converged `S0E-5A/#305 -> #306` 的 live rewrite 与一条 frozen stop drill 验证 allow-apply-only 语义。
 - 2026-03-30：完成 `S0E-5B/P3`，`#307 -> #308` 现已作为代表性真实样本完成 relationship attach、PR merge、guarded PR body rewrite 与 final issue conclusion 的组合闭环。
 - 2026-03-30：将 `S0E-5B` 正式标记为 `stable`，并新增 `S0E-5C` 用于单独处理 guarded `PR create` 的细分问题，而不把它直接压进既有 guarded in-place mutation slice。
+- 2026-03-30：完成 `S0E-5C/P0`，把当前 `PR create` path 拆成 7 个显式阶段，并固定 local branch materialization、remote branch publish、live PR publish、post-create evidence finalization 之间的 failure boundaries。
