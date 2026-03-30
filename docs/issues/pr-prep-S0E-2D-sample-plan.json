@@ -1,23 +1,25 @@
 {
   "mode": "pr-prep-dry-run",
   "result": "ok",
-  "manifest_path": "docs/issues/pr-prep-S0E-4B-sample-manifest.json",
+  "manifest_path": "docs/issues/pr-prep-S0E-2D-sample-manifest.json",
   "selection_input": "manifest",
   "operation": "plan-pr-prep",
   "total_items": 1,
   "planned_items": 1,
-  "warnings": [],
+  "warnings": [
+    "S0E-2D: pr_development_issue derived from source log issue link"
+  ],
   "items": [
     {
-      "requested_id": "S0E-4B",
-      "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
       "current_branch": "S0E-docs-management-v5",
-      "head_ref": "HEAD",
+      "head_ref": "origin/pr-prep/s0e-2d",
       "base_branch": "main",
       "merge_base": "4ffb71f697ae080fabd087e081eef5f504331764",
-      "candidate_pr_branch": "pr-prep/s0e-4b",
-      "pr_title": "S0E-4B/P0-P3: PR title compression, structural label inheritance, and body footer follow-up v1",
-      "pr_base": "main",
+      "candidate_pr_branch": "pr-prep/s0e-2d",
+      "pr_title": "S0E-2D/P0-P3: issue creation metadata enrichment and English body contract v1",
+      "pr_base": null,
       "pr_labels": [
         "EVOLUTION",
         "s0/knowledge system",
@@ -26,48 +28,83 @@
       ],
       "pr_projects": [],
       "pr_milestone": null,
-      "pr_development_issue": "#295",
+      "pr_development_issue": "#297",
       "pr_development_issue_refs": [
-        "#295"
+        "#297"
       ],
       "summary_bullet_count": 3,
-      "preview_body_path": "docs/issues/pr-prep-S0E-4B-sample-body.md",
+      "preview_body_path": "docs/issues/pr-prep-S0E-2D-sample-body.md",
       "selected_commit_count": 4,
       "selected_commits": [
         {
-          "sha": "898a82c990390f9bd7eb2e3ddeb65bf94ea19bed",
-          "subject": "S0E-4B/P3-C1-S1S2S3S4S5: refine body format and issue-project validation",
-          "matched_id": "S0E-4B",
+          "sha": "7434a944ae348ec52d7664bbb69716cc9e51bcbd",
+          "subject": "S0E-2D/P1-C1-S1S2: enrich issue draft metadata and body scaffold",
+          "matched_id": "S0E-2D",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
         },
         {
-          "sha": "43210aecc60b92d75bee4c266191dd4e52421e18",
-          "subject": "S0E-4B/P3-C1-S6: stack validation on S0E-4A prep branch",
-          "matched_id": "S0E-4B",
+          "sha": "8745b016bfabbaff89d64818e39c3568e9547fe0",
+          "subject": "S0E-2D/P2-C1-S1S2: validate enriched issue draft samples",
+          "matched_id": "S0E-2D",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
         },
         {
-          "sha": "a882e5481ed0ae07c479647263f4c7276331e20c",
-          "subject": "S0E-4B/P3-C1-S7S8S9: clarify stacked PR semantics and title span precedence",
-          "matched_id": "S0E-4B",
+          "sha": "4e0f61a9c8f2f198042e33b26da655bdf381f175",
+          "subject": "S0E-2D/P1-C2-S3+P3-C3-S2: normalize parent issue rendering and audit sibling issues",
+          "matched_id": "S0E-2D",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
         },
         {
-          "sha": "039fc82198e8e9e04ff7a79b308d5c78ba992bb6",
-          "subject": "S0E-4B/P3-C1-S10S11: align live issue project and PR base",
-          "matched_id": "S0E-4B",
+          "sha": "7cabb59ba52e713e29f4a1c53350c49a948b6ad9",
+          "subject": "S0E-2D/P1-C2-S4+P3-C3-S3: render plain parent issue references",
+          "matched_id": "S0E-2D",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
         }
       ],
       "branch_commits": [
         {
+          "sha": "82c05061c55f2e95ccdd5d121d3755f02c45c986",
+          "subject": "S4A-runtime/P0-C1-S1: revert S0D docs epic from S4A",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "49d8b1b9919e1bcb4a064237700ddf4dd5f1695a",
+          "subject": "S0E-1A/P0-C1-S1: structured CV generator contract v1",
+          "matched_id": "S0E-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "01f4bf01efc09a4331592440a215c3e00b7f51ad",
+          "subject": "S0E-1A/P1-C1-S1S2: structured CV generator P1 impl",
+          "matched_id": "S0E-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "1a621a5046a8aa31be6001807c4b52938ad91c90",
+          "subject": "S0E-1A/P2-C1-S1: record CV md-only trade-off",
+          "matched_id": "S0E-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "c166907ca11786539d09cfa8de1d8e8c70c6dcaf",
           "subject": "S4C-1A/P0-C1-S1: cloud devtest Terraform bootstrap contract",
           "matched_id": "S4C-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "9317e7ba1dbeda3f94c018ce611d07eb728ef864",
+          "subject": "Merge pull request #249 from samuelhu324-dev/S0E-docs-management-v5",
+          "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
@@ -96,6 +133,13 @@
           "sha": "1057651c7dcc89287993da531df34fc3a46bb2df",
           "subject": "S4C-1A/P3-C1-S1: add docker-cloud-terraform narrative",
           "matched_id": "S4C-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "0cdb2f5d60e872b44a8eb82e041d49b2b7fd0517",
+          "subject": "Merge pull request #252 from samuelhu324-dev/S4C-cloud-services-and-terraform-minimal-path",
+          "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
@@ -212,9 +256,23 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "b85cd67b9c9dccacbee3190472dc3a873484336d",
+          "subject": "Merge pull request #254 from samuelhu324-dev/S4C-cloud-services-and-terraform-minimal-path",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "9baf43926f5d65b9c98fecf75c838e7fe8014c0f",
           "subject": "S4C-3A/P3-C1-S1: stabilize cloud-dev runtime path",
           "matched_id": "S4C-3A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "a4251c9df59c6217314f16794ab5258f7c0d1867",
+          "subject": "Merge pull request #256 from samuelhu324-dev/S4C-cloud-services-and-terraform-minimal-path",
+          "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
@@ -296,6 +354,13 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "3abd84e9276df061d7b11d7932f2d1f7a926b020",
+          "subject": "Merge pull request #259 from samuelhu324-dev/S4D-cloud-runtime-deploy-verify-rollback",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "d433104c992353d7ca2be0b60258fbd7f904b3ce",
           "subject": "S4D-3A/P1-C1-S1S2: prepare rollback helper and phase log",
           "matched_id": "S4D-3A",
@@ -326,6 +391,13 @@
         {
           "sha": "89797cdfe71f086565dc440623e252cdb38aef5e",
           "subject": "S4D-cloud-runtime-deploy-verify-rollback/P3-C1-S1: mark v1 logs stable",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "deee929bf6ddb992b2c21aa53cf960cc21692594",
+          "subject": "Merge pull request #262 from samuelhu324-dev/S4D-cloud-runtime-deploy-verify-rollback",
           "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
@@ -408,6 +480,13 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "691bba1c0f808bca1398e60517d93d12c101774c",
+          "subject": "Merge pull request #264 from samuelhu324-dev/S4D-cloud-runtime-deploy-verify-rollback",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "be35c7bcd9102e4041bf1088e42e3e891323b4fc",
           "subject": "road-S1/P0-C1-S1: clarify roadmap ownership boundary",
           "matched_id": null,
@@ -429,6 +508,13 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "bf30762531bf730d74a087a77facf34f63ebe683",
+          "subject": "Merge pull request #265 from samuelhu324-dev/S4D-cloud-runtime-deploy-verify-rollback",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "a1a4d74c2afb70b36fbc762b190a96b522c70a77",
           "subject": "S4D-4A/P3-C8-S1S2S3: harden evidence-capture failure coverage",
           "matched_id": "S4D-4A",
@@ -443,9 +529,23 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "a17cc714671647b0f83a23d6a95086bb2c9bffba",
+          "subject": "Merge pull request #266 from samuelhu324-dev/S4D-cloud-runtime-deploy-verify-rollback",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "b0c2ecd74f516f7d2a5c83ff7f0009f6c6a34257",
           "subject": "S4D-4B/P1-C1-S3: tighten self-hosted dispatch contract",
           "matched_id": "S4D-4B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "55834a2b48e3653d35509c58d082dfec78dd1614",
+          "subject": "Merge pull request #268 from samuelhu324-dev/S4D-cloud-runtime-deploy-verify-rollback",
+          "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
@@ -467,6 +567,13 @@
           "sha": "38b3e4b5d9dbd7c1df8c0051a4869a2bdcb75e86",
           "subject": "S4D-4B/P2-C1-S1: record first actions-triggered PASS sample",
           "matched_id": "S4D-4B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "3528bbd399bc23c3a2a31ed4e18d2ec034567658",
+          "subject": "Merge pull request #269 from samuelhu324-dev/S4D-cloud-runtime-deploy-verify-rollback",
+          "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
@@ -513,6 +620,13 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "b63cb3d0451bc8e06b30e95a2ceec7038b79a3c7",
+          "subject": "Merge pull request #271 from samuelhu324-dev/S4D-cloud-runtime-deploy-verify-rollback",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "0035394235c3fdfe905ac780c322987cf988eced",
           "subject": "S4D-4C/P1-C3-S3: record stable dispatch evidence",
           "matched_id": "S4D-4C",
@@ -537,6 +651,13 @@
           "sha": "247ded5c799b823851a843dbdf042aab4c055f53",
           "subject": "S4D-4C/P3-C2-S1S2: thin release workflow gate map",
           "matched_id": "S4D-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "c0fb84884f2cfc9d32a5d9f28822baad6ca5e39f",
+          "subject": "Merge pull request #272 from samuelhu324-dev/S4D-cloud-runtime-deploy-verify-rollback",
+          "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
@@ -639,6 +760,13 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "8ae7802fca1ba110b2f98e181e8e4b86c5b6e58a",
+          "subject": "Merge pull request #273 from samuelhu324-dev/S4D-cloud-runtime-deploy-verify-rollback",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "c9b27ffdeebccd02e6b33955a43421304cdced42",
           "subject": "S4E-1A/P0-C1-S1S2S3: fix trigger policy baseline",
           "matched_id": "S4E-1A",
@@ -656,6 +784,13 @@
           "sha": "8f612a1b14c1b275436689b416e47b0da4498704",
           "subject": "S4E/P0-C1-S1: reorganize parent log and add 2A draft",
           "matched_id": "S4E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "dc235163912ab679c2636e8f1e4d2a64f8ff3858",
+          "subject": "Merge pull request #276 from samuelhu324-dev/S4E-release-operating-model-and-governance",
+          "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
@@ -695,6 +830,13 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "ed6d3c2620026626292388f54a409bd0634d5a11",
+          "subject": "Merge pull request #278 from samuelhu324-dev/S4E-release-operating-model-and-governance",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "4c0b329bae064f74a33dec50501067e71bd6d581",
           "subject": "S4E-3A/P0-C1-S1S2S3: fix hierarchy contract",
           "matched_id": "S4E-3A",
@@ -719,6 +861,13 @@
           "sha": "60ab044db7b6921b0d1eab96ea0e728205508cd0",
           "subject": "S4E-3A/P3-C1-S1: hand off enforcement runway to S4E-4A",
           "matched_id": "S4E-3A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "ef41cd8daa0b586f665a1d420bd0a7f83b5acc92",
+          "subject": "Merge pull request #280 from samuelhu324-dev/S4E-release-operating-model-and-governance",
+          "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
@@ -758,6 +907,13 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "1ac9d09ab5dffef6baccf5c9ebf63c17154a7606",
+          "subject": "Merge pull request #282 from samuelhu324-dev/S4E-release-operating-model-and-governance",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "f8c5d40a5f349ade0a06c7e1220c686b23997deb",
           "subject": "S4E-5A/P0-C1-S1S2S3: fix blocking upgrade contract",
           "matched_id": "S4E-5A",
@@ -793,6 +949,13 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "df38a33d5a55b24e16474946245069fcecc05d5a",
+          "subject": "Merge pull request #284 from samuelhu324-dev/S4E-release-operating-model-and-governance",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "1df027d05cf34017ffb038db797fab03f2bf3401",
           "subject": "S4E-5B/P0-C1-S1S2S3: fix execution gate contract",
           "matched_id": "S4E-5B",
@@ -824,6 +987,13 @@
           "sha": "508dbccd67515ca3c51e2c4139cd4805d9b61733",
           "subject": "S4E/P0-C1-S1S2: close parent and sync road-S1",
           "matched_id": "S4E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "160f06ff34593a0a55e2d93cf6fc577f075ddd6b",
+          "subject": "Merge pull request #286 from samuelhu324-dev/S4E-release-operating-model-and-governance",
+          "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
@@ -898,6 +1068,13 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "8e89610dc1dc084d167bc4e1f427dc3bba276ed9",
+          "subject": "Merge pull request #287 from samuelhu324-dev/S0E-docs-management-v5",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "4dcda40fac65738a7bcc0d9f3887e5fd38534b61",
           "subject": "S0E-2B/P0-C1-S1S2S3: define issue creation automation contract",
           "matched_id": "S0E-2B",
@@ -922,6 +1099,13 @@
           "sha": "a696f181715df1121d83d0b67969ebb66ff834b0",
           "subject": "S0E-2B/P3-C1-S1S2: verify runs and write back issues",
           "matched_id": "S0E-2B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "b626d053fbc9b5b82a60aaba14dcd3ed2545c4a6",
+          "subject": "Merge pull request #290 from samuelhu324-dev/S0E-docs-management-v5",
+          "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
@@ -954,6 +1138,13 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
+          "sha": "64ea71c559491f5921cbca670e664149376e1163",
+          "subject": "Merge pull request #291 from samuelhu324-dev/S0E-docs-management-v5",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
           "sha": "0cb5b02e669b2eb3eb781b293b9e39885280d69f",
           "subject": "S0E-3A/P1-C1-S1S2S3S4: split roadmap templates and bridge rules",
           "matched_id": "S0E-3A",
@@ -982,142 +1173,123 @@
           "reason": "commit subject does not match requested ID prefix"
         },
         {
-          "sha": "8f99ca5d0bd035f19a5d05abfef838919e41b536",
+          "sha": "86210139a111d68cb2e5ca0832e1395507c82d16",
+          "subject": "Merge pull request #292 from samuelhu324-dev/S0E-docs-management-v5",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "371eacf2124a09a93158e9d9abcb2f9f683336b9",
           "subject": "S0E-4A/P0-C1-S1S2S3S4S5: fix PR automation contract",
           "matched_id": "S0E-4A",
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
         {
-          "sha": "10f2bcfee5711c3bb99d7af8546e4a142afa75ed",
+          "sha": "07a468b254a01b76d09a8404459cf0993baafc60",
           "subject": "S0E-4A/P1-C1-S1S2: roll PR metadata and scaffold into templates",
           "matched_id": "S0E-4A",
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
         {
-          "sha": "6c94f4f7d74357c3a02f87c64a745ae07aaf2223",
+          "sha": "13a55f4928c9766cb4ba737e4c0de22afbfd0120",
           "subject": "S0E-4A/P2-C1-S1S2: validate dry-run PR prep flow",
           "matched_id": "S0E-4A",
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
         {
-          "sha": "7855c1278be0f0aa9815e8c397967f83a6623f28",
+          "sha": "f6e701456c058e06fc26de965376a7a8088fafce",
           "subject": "S0E-4A/P3-C1-S1: create source issue and real PR flow",
           "matched_id": "S0E-4A",
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
         {
-          "sha": "83093f85618cabbf2da6de48f3b7ee028a5d119e",
+          "sha": "25caba28def3e956ee89af1de8c0ab9e9767480f",
+          "subject": "Merge pull request #294 from samuelhu324-dev/pr-prep/s0e-4a",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "6e4f4f8ad3934644c7bce1c3510cf367bb3407a4",
           "subject": "S0E-4A/P3-C1-S2: create real PR and write back evidence",
           "matched_id": "S0E-4A",
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         },
         {
-          "sha": "898a82c990390f9bd7eb2e3ddeb65bf94ea19bed",
+          "sha": "c80de371371b050472e5999c5d3791b0590101d9",
           "subject": "S0E-4B/P3-C1-S1S2S3S4S5: refine body format and issue-project validation",
           "matched_id": "S0E-4B",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
         },
         {
-          "sha": "43210aecc60b92d75bee4c266191dd4e52421e18",
+          "sha": "5f82b56093e3aff5d6007fa922eb297e138bbae2",
           "subject": "S0E-4B/P3-C1-S6: stack validation on S0E-4A prep branch",
           "matched_id": "S0E-4B",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
         },
         {
-          "sha": "a882e5481ed0ae07c479647263f4c7276331e20c",
+          "sha": "9963b02f61aa12f252dcaf717b674c8d61ed32cf",
           "subject": "S0E-4B/P3-C1-S7S8S9: clarify stacked PR semantics and title span precedence",
           "matched_id": "S0E-4B",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
         },
         {
-          "sha": "039fc82198e8e9e04ff7a79b308d5c78ba992bb6",
+          "sha": "db63072308801b4fc53951692ae3d9e2dfa312b4",
           "subject": "S0E-4B/P3-C1-S10S11: align live issue project and PR base",
           "matched_id": "S0E-4B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "e390f163dad7e0cab8fcd4c29c0ae0af7ffd896b",
+          "subject": "Merge pull request #296 from samuelhu324-dev/pr-prep/s0e-4b",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "7434a944ae348ec52d7664bbb69716cc9e51bcbd",
+          "subject": "S0E-2D/P1-C1-S1S2: enrich issue draft metadata and body scaffold",
+          "matched_id": "S0E-2D",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
         },
         {
-          "sha": "0c8feaaea7c5b91c9a225ddb0d0c04c47427e857",
-          "subject": "S0E-2D/P1-C1-S1S2: enrich issue draft metadata and body scaffold",
-          "matched_id": "S0E-2D",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "6da79e5b58d3d966760f61c99d6ebc0f42ae3709",
+          "sha": "8745b016bfabbaff89d64818e39c3568e9547fe0",
           "subject": "S0E-2D/P2-C1-S1S2: validate enriched issue draft samples",
           "matched_id": "S0E-2D",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
         },
         {
-          "sha": "fd7d91caa313900bcd48df25b36ba04fae4fe5fb",
+          "sha": "4e0f61a9c8f2f198042e33b26da655bdf381f175",
           "subject": "S0E-2D/P1-C2-S3+P3-C3-S2: normalize parent issue rendering and audit sibling issues",
           "matched_id": "S0E-2D",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
         },
         {
-          "sha": "925b5f44c89bf6b0581f12a0c2785ab6c1e03dab",
+          "sha": "7cabb59ba52e713e29f4a1c53350c49a948b6ad9",
           "subject": "S0E-2D/P1-C2-S4+P3-C3-S3: render plain parent issue references",
           "matched_id": "S0E-2D",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "f092a46f4b7eed0061413bad93082d92925f31dc",
-          "subject": "S0E-4A/P3-C2-S1S2: derive development issue fallback and multi-issue formatting",
-          "matched_id": "S0E-4A",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "ab5c4023035aeab6cad32f563ac522f478a934b1",
-          "subject": "S0E-2E/P0-P1: fix conclusion boundary and body contract",
-          "matched_id": "S0E-2E",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "35cd843fbe4ca2a77b4f43f4d95d6eb894ca5947",
-          "subject": "S0E-2E/P2-C1-S1S2: plan dry-run issue conclusion output",
-          "matched_id": "S0E-2E",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "5ba5545ac4503d298b6ac7d0200af5609471cd22",
-          "subject": "S0E-2E/P3-C1-S1S2: apply real issue conclusion write-back",
-          "matched_id": "S0E-2E",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "38f46cd0d6fcc2805f73cb34e1521a705743c955",
-          "subject": "S0E-2E/P1-C2-P3-C2: revise conclusion format and apply #295",
-          "matched_id": "S0E-2E",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "18fbfe4036b1daf3a34460e0c64fbb0736798c21",
-          "subject": "S0E-4C/P0-P1: normalize PR summary gate and relationship apply",
-          "matched_id": "S0E-4C",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
         }
       ],
       "planned_action": "prepare-pr-prep-branch",
       "status": "planned",
-      "warnings": []
+      "warnings": [
+        "pr_development_issue derived from source log issue link"
+      ]
     }
   ]
 }

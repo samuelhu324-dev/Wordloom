@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/295",
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+      "reason": "Representative S0E child issue relationship sample for sidebar alignment with metadata-only parent issue"
+    }
+  ]
+}

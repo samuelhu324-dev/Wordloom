@@ -34,7 +34,7 @@
 **pr_base**: ``
 **pr_development_issue**: ``
 **created**: `2026-03-29`
-**updated**: `2026-03-29`
+**updated**: `2026-03-30`
 
 ---
 
@@ -57,6 +57,25 @@
 - Generated issue bodies must be English-only even when the source log is bilingual.
 - The generated issue body should keep the section structure `Metadata -> Context -> Definition of Done (DoD) -> Links`, but automation should only fill metadata and deterministic links by default.
 - `Context` and `Definition of Done (DoD)` remain intentionally unexpanded during creation v1 unless an operator supplies explicit overrides.
+
+## PR Summary Inputs (optional)
+
+**PR summary bullets**:
+
+- Enrich issue creation so milestone, parent issue, project, and body-shape metadata are resolved deterministically before a real GitHub issue is created.
+- Keep generated issue bodies English-only and structurally complete while leaving `Context` and `Definition of Done (DoD)` intentionally blank at creation time.
+- Align child issue metadata with parent-log inheritance so `Parent issue` can be rendered as a stable short GitHub ref such as `#248`.
+
+**PR checklist source**:
+
+- Default source: reuse this log's checked execution checklist items for the generated PR checklist block.
+
+**PR links / evidence footer**:
+
+- Log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/297`
+- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
+- Evidence artifact: `docs/issues/pr-prep-S0E-2D-sample-plan.json`
 
 ## Definitions (optional)
 
@@ -250,3 +269,4 @@
 - 2026-03-29: completed follow-up `P1-C2` / `P3-C3` validation by wiring child issues to the real top-level `S0E` issue `#248` through `parent_log.links.issue` and confirming top-level issue bodies omit `Parent issue`.
 - 2026-03-29: completed sibling issue audit for `#289`, `#293`, and `#295`, aligning them to metadata-only short parent-issue formatting and updating `#293` labels to match current `drills` derivation.
 - 2026-03-29: updated live child issues `#288`, `#289`, `#293`, `#295`, and `#297` so `Parent issue` now renders as plain text `#248`.
+- 2026-03-30: added explicit `PR Summary Inputs` so regenerated `S0E-2D` PR-prep artifacts no longer depend on placeholder `Summary` content.
