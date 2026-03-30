@@ -115,6 +115,18 @@ def _git_stdout(*args: str) -> str:
     return cmd.stdout.strip()
 
 
+def _git_ref_exists(ref_name: str) -> bool:
+    cmd = _run_command(["git", "-C", str(_repo_root()), "rev-parse", "--verify", ref_name])
+    return cmd.returncode == 0
+
+
+def _resolve_compare_base_ref(base_branch: str) -> str:
+    remote_ref = f"origin/{base_branch}"
+    if _git_ref_exists(remote_ref):
+        return remote_ref
+    return base_branch
+
+
 def _find_section_lines(sections: dict[str, list[str]], prefix: str) -> list[str]:
     lowered_prefix = prefix.lower()
     for name, lines in sections.items():
@@ -387,8 +399,9 @@ def _render_body_preview(
 
 
 def _collect_branch_commits(base_branch: str, head_ref: str) -> tuple[str, list[CommitSelection]]:
-    merge_base = _git_stdout("merge-base", base_branch, head_ref)
-    raw = _git_stdout("log", "--reverse", "--format=%H%x1f%s", f"{base_branch}..{head_ref}")
+    compare_base_ref = _resolve_compare_base_ref(base_branch)
+    merge_base = _git_stdout("merge-base", compare_base_ref, head_ref)
+    raw = _git_stdout("log", "--reverse", "--format=%H%x1f%s", f"{compare_base_ref}..{head_ref}")
     items: list[CommitSelection] = []
     if raw:
         for line in raw.splitlines():

@@ -41,6 +41,7 @@
 - `18fbfe40` / `S0E-4C` / `P0-P1`: normalize PR summary gate and relationship apply
 - `cc72eb91` / `S0E-4C` / `P2-P3`: regenerate artifacts and reconcile legacy PRs
 - `7468d552` / `S0E-4C` / `P4-C1-S1`: create live issue and attach parent
+- `db1f26e3` / `S0E-4C` / `P4-C1-S1`: add live PR prep artifacts
 
 ## Development Link
 
