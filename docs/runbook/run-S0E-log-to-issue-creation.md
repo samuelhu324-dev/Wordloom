@@ -184,6 +184,7 @@
 - Step 7: write `Definition of Done (DoD)` as the same ordered merged-PR ledger, not as a replay of the original contract bullets.
 - Step 8: update `Links` so they include deterministic issue/log references plus one PR link line per merged PR in the same order.
 - Step 9: if the issue is already closed, edit it in place rather than treating the closed state as a blocker.
+- Step 10: if the issue is still open after merge, write the final body first and then close the issue with `reason=completed`.
 
 ## 6) Future Script Entry Contract
 
@@ -350,6 +351,21 @@
   - if no merged PR can be proven for the exact requested ID, planning must stop instead of guessing
   - if candidate PRs are open or draft, planning must stop instead of treating them as final delivery evidence
   - if the issue is already closed but still has the create-time empty scaffold, planner output may still proceed because closed-state write-back is valid in v1
+
+### 6.8 Issue-conclusion apply contract
+
+- Canonical local entry:
+  - `c:/python314/python.exe scripts/issues/apply_issue_conclusion_from_plan.py <plan_path> --item-index <n>`
+- Example:
+  - `c:/python314/python.exe scripts/issues/apply_issue_conclusion_from_plan.py docs/issues/issue-conclusion-S0E-2E-sample-plan.json --item-index 2`
+- Current real-run artifacts:
+  - `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-apply-body.md`
+  - `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-apply-result.json`
+- Apply semantics:
+  - use the existing dry-run preview as the body source of truth
+  - update the live issue body first
+  - if the target issue is still open, close it with `reason=completed` after the body update
+  - if the target issue is already closed, leave it closed and only update the body in place
 
 ## 7) Troubleshooting
 

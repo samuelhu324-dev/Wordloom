@@ -139,6 +139,7 @@
 - [x] `P30`：`S0E-2D` 已完成 `P3`，旧 issue `#288` 已按当前 creation body contract 回收，当前 log 的真实 sample issue `#297` 也已创建并回写
 - [x] `P31`：`S0E-2E` 已完成 `P0-P1`，GitHub auto-close 与 final conclusion 的边界、exact-ID merged PR 选择规则，以及 final English conclusion body shape 已固定
 - [x] `P32`：`S0E-2E` 已完成 `P2`，manifest-driven issue-conclusion dry-run planner 与代表性 sample validation 已落地，且 `S0E-4A` 已验证多 merged PR 情况
+- [x] `P33`：`S0E-2E` 已完成 `P3`，真实 issue-conclusion write-back 已通过 `#297` 跑通，并验证了 open-after-merge issue 的 body update + explicit close 路径
 
 ## Current Status（进展摘要）
 
@@ -158,7 +159,8 @@
 - `S0E-2D` 已补充 `P1-C2-S3/P3-C3-S2` follow-up：`Parent issue` 现在只保留在 `Metadata`，并统一使用 `#248` 这类短 GitHub 引用，不再在 `Links` 重复出现；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
-- `S0E-2E` 当前剩余仅 `P3`：下一步是在一条已关闭 issue 上做真实 write-back，并记录最终 attached PR ledger；
+- `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
+- `S0E-2E` 现在可视为 `stable`：contract、dry-run planner、real write-back 与 attached PR accounting 都已完成闭环；
 - `S0E-3A` 草案已把 roadmap/log bridge 的核心问题收口为 child-log-first contract，并把 roadmap/log templates 增加了统一 bridge 字段；
 - `S0E-3A` 已完成 `P0-P1`：phase log 已固定 bridge ownership / field contract / fail-closed semantics，template rollout 也已落到 parent/phase/roadmap 三类模板；
 - `S0E-3A/P1` 已进一步拆分 roadmap authoring 为 mainline / branch 两种模板，以对应 `road-S1` 和 `road-S1-1` 这类非线性关系；
@@ -245,3 +247,4 @@
 - 2026-03-29：完成 `S0E-2D` 的 parent-issue format follow-up：`Parent issue` 现已收口为 `Metadata`-only 且使用 `#248` 这类短引用，`Links` 不再重复该字段。
 - 2026-03-30：完成 `S0E-2E/P0-P1`，当前 contract 已固定 post-merge conclusion 的 lifecycle boundary、exact-ID merged PR selection，以及 final English issue-conclusion body shape；下一步进入 dry-run planning 和一次真实 closed-issue write-back 验证。
 - 2026-03-30：完成 `S0E-2E/P2`，新增 manifest-driven issue-conclusion dry-run planner，并用 `#293/#295/#297` 验证了 single-PR 与 multi-PR conclusion body preview。
+- 2026-03-30：完成 `S0E-2E/P3`，新增 real apply 脚本并完成 `#297` 的线上 body write-back 与 explicit close，因此 issue conclusion 这条线已形成端到端闭环。

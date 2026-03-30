@@ -5,7 +5,7 @@
 **id**: `S0E-2E`
 **kind**: `log`
 **title**: `issue conclusion and development linkage contract v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, PR, Automation, epic/s0, sub/0e2e`
 **links**: ``
@@ -97,8 +97,9 @@
 - `P0` is complete: lifecycle order, the merge boundary, and the exact-ID merged-PR linkage boundary are now fixed.
 - `P1` is complete: the final English conclusion body shape and the exact-ID PR selection plus ordering rules are now fixed.
 - `P2` is complete: a manifest-driven dry-run planner now emits ordered merged-PR evidence plus final issue-conclusion body previews without writing GitHub state.
-- `P3` remains open: one real issue-conclusion write-back still needs to be exercised.
-- Real closed issues `#293`, `#295`, and `#297` currently still show the create-time empty scaffold, which confirms the contract gap that `S0E-2E` is closing.
+- `P3` is complete: the apply path now updates one real issue body from a dry-run plan and closes the issue when it was still open after merge.
+- Real issue `#297` now carries the final conclusion body and is closed with `reason=completed`, proving the dry-run output can be materialised on GitHub.
+- `S0E-2E` is now `stable` because lifecycle boundary, exact-ID selection, dry-run planning, and one real write-back have all been exercised end-to-end.
 
 ## P0 (Contract | v1)
 
@@ -213,6 +214,20 @@
 - `S0E-4B` and `S0E-2D` validate the single-PR case and confirm the same body shape still works when only one merged PR exists.
 - All three previews confirm that the existing blank create-time `Context` and `Definition of Done (DoD)` scaffold can be replaced by final merged-PR evidence without touching GitHub state.
 
+## P3 (Real issue-conclusion write-back | v1)
+
+### P3-C1-S1 (Real write-back apply path | v1)
+
+- Real issue-conclusion write-back now consumes a planned item from the dry-run plan rather than re-querying GitHub ad hoc.
+- The apply path copies the planned body preview into a dedicated apply artifact, writes that body back to the target GitHub issue, and then closes the issue with `reason=completed` when the issue is still open.
+- If the issue is already closed, the apply path must still allow an in-place body update so GitHub close state and final conclusion body remain decoupled.
+
+### P3-C1-S2 (First real attachment accounting | v1)
+
+- The first real write-back target is `S0E-2D -> issue #297`.
+- The attached merged PR set for this real run is one-item and exact-ID scoped: `#298` only.
+- The real run also proves that some post-merge issues may still be `OPEN` when no closing keyword was materialised earlier; conclusion write-back must therefore be able to close the issue after body update instead of assuming GitHub already did so.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -267,8 +282,8 @@
 
 ### P3 (Real issue-conclusion write-back)
 
-- [ ] `P3-C1-S1`: one real issue-conclusion write-back completed after merge
-- [ ] `P3-C1-S2`: merged PR attachment accounting recorded
+- [x] `P3-C1-S1`: one real issue-conclusion write-back completed after merge
+- [x] `P3-C1-S2`: merged PR attachment accounting recorded
 
 ## Evidence
 
@@ -281,6 +296,10 @@
 - `P2-C1-S1`: `docs/issues/issue-conclusion-S0E-2E-sample-plan.json` records a successful three-item dry-run with `planned_items=3` and no reconciliation or error items.
 - `P2-C1-S2`: `docs/issues/issue-conclusion-S0E-2E-sample-s0e-4a-body.md` proves the multi-PR case by rendering merged PRs `#294` and `#299` for `S0E-4A` in both `Development` and `Definition of Done (DoD)`.
 - `P2-C1-S2`: `docs/issues/issue-conclusion-S0E-2E-sample-s0e-4b-body.md` and `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-body.md` prove the same final body shape for single-PR issues `#295` and `#297`.
+- `P3-C1-S1`: `scripts/issues/apply_issue_conclusion_from_plan.py` now provides the real apply path that updates an issue body from a planned preview and closes the issue when it is still open.
+- `P3-C1-S1`: `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-apply-result.json` records a successful real write-back for issue `#297`, including the state transition `OPEN -> CLOSED` and `close_reason=completed`.
+- `P3-C1-S2`: `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-apply-body.md` is the exact body written back to live issue `#297`, showing attached merged PR `#298` in both `Development` and `Definition of Done (DoD)`.
+- `P3-C1-S2`: live issue `#297` now shows the final conclusion body and no longer retains the create-time blank `Context` / `Definition of Done (DoD)` scaffold.
 
 ## Recent changes (for traceability, optional)
 
@@ -288,3 +307,4 @@
 - 2026-03-30: completed `P0` by fixing the lifecycle boundary, exact-ID merged-PR linkage rule, and the distinction between GitHub closed state versus final issue conclusion.
 - 2026-03-30: completed `P1` by defining the final English conclusion body shape, deterministic multi-PR ordering rules, and the shared operator procedure in the runbook.
 - 2026-03-30: completed `P2` by adding `scripts/issues/plan_issue_conclusion.py`, generating `S0E-2E` dry-run artifacts for `#293`, `#295`, and `#297`, and validating both single-PR and multi-PR conclusion-body rendering.
+- 2026-03-30: completed `P3` by adding `scripts/issues/apply_issue_conclusion_from_plan.py`, writing the final conclusion body back to live issue `#297`, and closing that issue with `reason=completed`.
