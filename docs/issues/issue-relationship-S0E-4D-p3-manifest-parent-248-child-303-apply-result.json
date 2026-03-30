@@ -1,0 +1,18 @@
+{
+  "mode": "relationship-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-relationship-S0E-4D-p3-manifest-plan.json",
+  "item_index": 0,
+  "relationship_type": "child-of",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "parent_issue_number": 248,
+  "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+  "parent_issue_title": "S0E: evolution/docs management v5",
+  "child_issue_number": 303,
+  "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/303",
+  "child_issue_title": "S0E-4D: workflow/review-hold, full-auto, and lifecycle orchestration follow-up",
+  "previous_parent_issue_number": null,
+  "final_parent_issue_number": 248,
+  "applied_action": "link-child-to-parent",
+  "warnings": []
+}

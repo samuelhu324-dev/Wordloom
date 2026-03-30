@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Issues, PR, Automation, epic/s0, sub/0e4d`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/303`
   **pr**: ``
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
@@ -34,7 +34,7 @@
 **pr_projects**: ``
 **pr_milestone**: ``
 **pr_base**: `main`
-**pr_development_issue**: ``
+**pr_development_issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/303`
 **created**: `2026-03-30`
 **updated**: `2026-03-30`
 
@@ -71,7 +71,7 @@
 **PR links / evidence footer**:
 
 - Log: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
-- Issue: ``
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/303`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: ``
 
