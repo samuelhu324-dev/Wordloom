@@ -5,12 +5,12 @@
 **id**: `S0E-4D`
 **kind**: `log`
 **title**: `review-hold, full-auto, and lifecycle orchestration follow-up v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Issues, PR, Automation, epic/s0, sub/0e4d`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/303`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/304`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -73,7 +73,7 @@
 - Log: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
 - Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/303`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
-- Evidence artifact: ``
+- Evidence artifact: `docs/issues/issue-conclusion-S0E-4D-p3-plan.json`
 
 ## Definitions (optional)
 
@@ -112,8 +112,9 @@
 
 ## Current Status
 
-- `S0E-4D` is newly opened to take over lifecycle orchestration wording that no longer belongs inside the narrower `S0E-2D` issue-create contract.
-- The immediate goal is to keep `S0E-2D` focused on issue-create metadata, keep `S0E-2E` focused on post-merge conclusion, and give the cross-stage continuation rule its own stable owner.
+- `S0E-4D` now owns the lifecycle-orchestration boundary across `review-hold`, explicit resume-after-review, and post-merge `full-auto` continuation.
+- Live issue `#303` has been created, attached to parent issue `#248`, delivered through merged PR `#304`, and concluded in place through the final issue-conclusion write-back.
+- `S0E-4D` is now `stable` because both the staged review-hold path and the resumed closed-loop path have been exercised against the same real sample.
 
 ## P0 (Contract | v1)
 
@@ -239,8 +240,8 @@ Resume S0E-4D after review; PR #302 is merged, so run the post-merge issue concl
 
 ### P3 (Drill / Verify)
 
-- [ ] `P3-C1-S1`: staged review path validated under `review-hold`
-- [ ] `P3-C1-S2`: explicit closed-loop path validated under `full-auto`
+- [x] `P3-C1-S1`: staged review path validated under `review-hold`
+- [x] `P3-C1-S2`: explicit closed-loop path validated under `full-auto`
 
 ## Evidence (reserved)
 
@@ -249,8 +250,11 @@ Resume S0E-4D after review; PR #302 is merged, so run the post-merge issue concl
 - `P0-C1-S2` / `P1-C1-S1`: `docs/logs/log-S0E-docs-management-v5.md` now records `S0E-4D` as the dedicated lifecycle-orchestration owner instead of leaving that boundary inside `S0E-2D`.
 - `P1-C1-S2` / `P2-C1-S1`: `docs/runbook/run-S0E-log-to-issue-creation.md` now carries one operator-facing command-pattern block for staged review, explicit resume, and post-merge full-auto continuation while keeping contract ownership in `S0E-4D`.
 - `P2-C1-S2`: this log now includes fail-closed examples for ambiguous continuation requests, blocked closed-loop requests, and downstream-only resume commands.
+- `P3-C1-S1`: `docs/issues/issue-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.json` records the real create-issue run for live issue `#303`, `docs/issues/issue-relationship-S0E-4D-p3-manifest-plan.json` plans the `#248 -> #303` sidebar relation, `docs/issues/issue-relationship-S0E-4D-p3-manifest-parent-248-child-303-apply-result.json` confirms the live attach, and draft PR `#304` was opened from `docs/issues/pr-prep-S0E-4D-p3-plan.json` under the staged review-hold path.
+- `P3-C1-S2`: `docs/issues/pr-prep-S0E-4D-p3-create-result.json` records live PR `#304`, `docs/issues/issue-conclusion-S0E-4D-p3-plan.json` proves the merged-PR evidence set after merge, and `docs/issues/issue-conclusion-S0E-4D-p3-s0e-4d-apply-result.json` confirms issue `#303` was updated in place after auto-close with final `DoD -> #304`.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: opened `S0E-4D` so lifecycle orchestration modes (`review-hold` / `full-auto`) have a dedicated owner instead of drifting between issue-create and runbook wording.
 - 2026-03-30: completed `P2` by fixing deterministic command patterns for staged review, explicit resume, and post-merge full-auto continuation, plus fail-closed examples for ambiguous or blocked requests.
+- 2026-03-30: completed `P3` by creating live issue `#303`, attaching it to parent `#248`, opening draft PR `#304` as the staged review-hold sample, then resuming through merge and final issue conclusion to validate the post-merge closed loop.

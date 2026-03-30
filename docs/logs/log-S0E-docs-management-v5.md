@@ -157,6 +157,7 @@
 - [x] `P42`：`S0E-4C` 已完成 `P7`，merged PR `#301/#302` 现可按最终 title scope 重放 checklist/evidence，历史 body drift 已完成回写
 - [x] `P43`：`S0E-4D` 已建档，用于把 `review-hold` / `full-auto` 与 default human-gated handoff 边界独立收口到 lifecycle orchestration 侧
 - [x] `P44`：`S0E-4D` 已完成 `P2`，staged review / resume-after-review / post-merge full-auto 三类命令口径与 fail-closed examples 已正式固定
+- [x] `P45`：`S0E-4D` 已完成 `P3`，live issue `#303`、draft-to-merged PR `#304`、parent relationship attach 与 final conclusion 已跑通一条真实 staged-to-closed-loop 样本
 
 ## Current Status（进展摘要）
 
@@ -174,7 +175,7 @@
 - `S0E-2D` 已完成 `P3`：旧样本 issue `#288` 已按新 creation body contract 去掉正文 title 并清空预写的 `Context/DoD`，当前 log 也已通过真实 issue `#297` 完成 enriched create sample 与 write-back；
 - `S0E-2D` 已补充 `P1-C2/P3-C3` follow-up：child issue 现在会从 `parent_log.links.issue` 继承顶层 `S0E` issue `#248`，而顶层 issue body 则不会再渲染空白的 `Parent issue`；
 - `S0E-2D` 已补充 `P1-C2-S3/P3-C3-S2` follow-up：`Parent issue` 现在只保留在 `Metadata`，并统一使用 `#248` 这类短 GitHub 引用，不再在 `Links` 重复出现；
-- `S0E-4D` 已完成 `P2`：`review-hold`、resume-after-review，以及 post-merge `full-auto` 的命令口径与 fail-closed examples 已写回 log/runbook，且 `full-auto` 现已明确不覆盖 human-owned merge；
+- `S0E-4D` 已完成 `P3`：live issue `#303`、PR `#304`、`#248 -> #303` relationship attach，以及 final issue conclusion 已形成一条真实 staged-to-closed-loop 样本，因此该 slice 现可视为 `stable`；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -288,3 +289,4 @@
 - 2026-03-30：完成 `S0E-4C/P2`，已为 `S0E-2D` 重生成无 placeholder 的 PR-prep 样本，并为 `#248 -> #295` 产出正式 relationship plan/apply 样本。
 - 2026-03-30：新增 `S0E-4D`，把 `review-hold` / `full-auto`、默认 human-gated handoff，以及 staged review 与 full closed-loop 的命令口径独立收口到 lifecycle orchestration follow-up。
 - 2026-03-30：完成 `S0E-4D/P2`，明确 staged review、resume-after-review 与 post-merge full-auto 三类命令口径，并补齐 ambiguous / blocked request 的 fail-closed examples。
+- 2026-03-30：完成 `S0E-4D/P3`，创建 live issue `#303`、draft-to-merged PR `#304`、parent relationship attach 与 final issue conclusion，证明 staged review 和 resumed closed loop 已可落到同一真实样本。
