@@ -27,6 +27,7 @@
   **phase_log_15**: `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`
   **phase_log_16**: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`
   **phase_log_17**: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
+  **phase_log_18**: `docs/logs/log-S0E-7B-pr-event-source-log-attribution-contract.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -212,6 +213,8 @@
 - [x] `P86`：`S0E-7A/P2-C1-S2` 已固定 failure surfacing 的三层面：workflow summary、GitHub check annotations、以及 retained evidence manifest，且 failure classification 必须保持 secondary-enforcement 语义
 - [x] `P87`：`S0E-7A` 已完成 `P3-C1-S1`，现已固定第一轮 rollout boundary 继续保持 `workflow_dispatch` only，而不提前接入 `pull_request` 事件，因为当前还没有稳定的 `source_log_path` 自动归属规则
 - [x] `P88`：`S0E-7A/P3-C1-S2` 已固定 CI adoption success criteria：至少需要 representative pass/non-pass 两类 retained evidence，并且未来自动触发方案必须先解释 `source_log_path` 的确定性来源
+- [x] `P89`：已新建 `S0E-7B`，用于专门承接 `PR event -> source_log_path` 的自动归属问题，避免继续把 attribution dependency 挂在 `S0E-7A` 里悬空
+- [x] `P90`：`S0E-7B` 已完成 `P0`，现已固定 automatic PR-event mirroring 仍被 attribution contract 阻塞，直到 repo 能 fail-closed 地确定单一 contract-owning source log
 
 ## Current Status（进展摘要）
 
@@ -253,6 +256,7 @@
 - `S0E-7A` 已完成 `P1`：第一版 GitHub Actions mirror-verifier workflow 已以手动触发方式落地，并已固定输入合同、artifact 输出与 secondary-enforcement wording；下一步应继续收口 `P2` 的 retained artifacts 与 failure surfacing 细则，而不是过早扩大自动触发范围；
 - `S0E-7A` 已完成 `P2`：mirror-verifier 的 retained artifact set、artifact manifest 与 UI/check surfaces 已经固定，因此后续 `P3` 可以专注讨论触发边界与 adoption criteria，而不必再回头争论 run evidence 怎么保存；
 - `S0E-7A` 已完成 `P3`：第一轮 rollout 现明确继续保持 manual-only，后续是否扩大到自动 PR-event mirroring 现在有了清晰的 attribution 前提和 adoption criteria，因此该 slice 的 v1 决策链已闭合；
+- `S0E-7B` 已新建并完成 `P0`：`PR event -> source_log_path` attribution 现已被单独提升为 fail-closed prerequisite slice，后续自动 PR-event mirroring 不再是 `7A` 内的未归属尾项；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
@@ -408,3 +412,4 @@
 - 2026-03-31：完成 `S0E-7A/P1`，已新增第一版手动触发的 mirror-verifier workflow，并固定 secondary-enforcement summary wording 与 artifact-first fail path，为后续 `P2/P3` 留出 retained-evidence 与 rollout boundary 的独立决策空间。
 - 2026-03-31：完成 `S0E-7A/P2`，已为 mirror-verifier workflow 固定 retained artifact set、artifact manifest JSON，以及 workflow summary + check annotations + retained evidence 的三层 failure surfacing 结构。
 - 2026-03-31：完成 `S0E-7A/P3`，已明确第一轮 rollout 继续保持 manual-only，并把未来自动 PR-event mirroring 所需的 attribution 前提与 CI adoption success criteria 一并写成显式合同。
+- 2026-03-31：新增 `S0E-7B` 并完成 `P0`，已把 `PR event -> source_log_path` attribution 正式拆成独立 slice，后续自动触发扩大前必须先在这里收口 deterministic ownership contract。
