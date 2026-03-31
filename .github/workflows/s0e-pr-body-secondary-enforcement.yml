@@ -1,0 +1,159 @@
+name: s0e-pr-body-secondary-enforcement
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_log_path:
+        description: "Source log path that owns the PR contract."
+        required: true
+        type: string
+      pr_ref:
+        description: "PR number or URL to mirror-verify."
+        required: true
+        type: string
+      repo:
+        description: "Optional repository slug override (owner/repo). Blank uses the current repository."
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  mirror_verify:
+    name: mirror-live-pr-body-contract
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+      S0E_MIRROR_REPO: ${{ inputs.repo != '' && inputs.repo || github.repository }}
+      S0E_MIRROR_SOURCE_LOG: ${{ inputs.source_log_path }}
+      S0E_MIRROR_PR_REF: ${{ inputs.pr_ref }}
+      S0E_MIRROR_ARTIFACT_DIR: artifacts/github-actions/pr-body-secondary-enforcement/${{ github.run_id }}-${{ github.run_attempt }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Validate source log input
+        run: |
+          set -euo pipefail
+
+          if [ ! -f "$S0E_MIRROR_SOURCE_LOG" ]; then
+            echo "source_log_path not found: $S0E_MIRROR_SOURCE_LOG" >&2
+            exit 2
+          fi
+
+          mkdir -p "$S0E_MIRROR_ARTIFACT_DIR"
+
+      - name: Run live PR body mirror verifier
+        id: verify
+        run: |
+          set +e
+          set -o pipefail
+
+          python scripts/issues/verify_live_pr_body_contract.py \
+            "$S0E_MIRROR_SOURCE_LOG" \
+            "$S0E_MIRROR_PR_REF" \
+            --repo "$S0E_MIRROR_REPO" \
+            --live-body-path "$S0E_MIRROR_ARTIFACT_DIR/live-pr-body.md" \
+            --result-path "$S0E_MIRROR_ARTIFACT_DIR/verify-result.json" \
+            | tee "$S0E_MIRROR_ARTIFACT_DIR/verify-console.json"
+
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Write workflow summary
+        if: always()
+        env:
+          VERIFY_EXIT_CODE: ${{ steps.verify.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          artifact_dir = Path(os.environ["S0E_MIRROR_ARTIFACT_DIR"])
+          result_path = artifact_dir / "verify-result.json"
+          summary_path = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          exit_code = os.environ.get("VERIFY_EXIT_CODE", "")
+
+          lines = [
+              "## S0E PR Body Secondary Enforcement",
+              "",
+              "- Mode: `secondary enforcement`",
+              "- Source log: `{}`".format(os.environ["S0E_MIRROR_SOURCE_LOG"]),
+              "- PR ref: `{}`".format(os.environ["S0E_MIRROR_PR_REF"]),
+              "- Repository: `{}`".format(os.environ["S0E_MIRROR_REPO"]),
+          ]
+
+          if result_path.is_file():
+              data = json.loads(result_path.read_text(encoding="utf-8"))
+              lines.extend(
+                  [
+                      "- Result: `{}`".format(data.get("result", "unknown")),
+                      "- PR URL: `{}`".format(data.get("pr_url", "")),
+                      "- Live body artifact: `{}`".format(data.get("live_body_path", "")),
+                      "- Verify result artifact: `{}`".format(data.get("result_path", "")),
+                      "",
+                      "This workflow re-checks live state after publish. A failure means post-publish contract drift was detected; it does not mean GitHub Actions prevented the original PR creation.",
+                  ]
+              )
+          else:
+              lines.extend(
+                  [
+                      "- Result: `missing-result-artifact`",
+                      "- Verifier exit code: `{}`".format(exit_code or "unknown"),
+                      "",
+                      "The mirror verifier did not emit its result artifact, so the workflow cannot prove pass/fail semantics for this run.",
+                  ]
+              )
+
+          summary_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+
+      - name: Upload mirror-verifier artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s0e-pr-body-secondary-enforcement-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.S0E_MIRROR_ARTIFACT_DIR }}/live-pr-body.md
+            ${{ env.S0E_MIRROR_ARTIFACT_DIR }}/verify-result.json
+            ${{ env.S0E_MIRROR_ARTIFACT_DIR }}/verify-console.json
+          if-no-files-found: warn
+
+      - name: Fail on mirrored verification drift
+        if: always()
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          result_path = Path(os.environ["S0E_MIRROR_ARTIFACT_DIR"]) / "verify-result.json"
+          if not result_path.is_file():
+              print("mirror verifier result artifact missing; secondary enforcement cannot determine outcome", file=sys.stderr)
+              raise SystemExit(1)
+
+          data = json.loads(result_path.read_text(encoding="utf-8"))
+          if data.get("result") != "pass":
+              print("secondary enforcement detected live PR body contract drift after publish", file=sys.stderr)
+              raise SystemExit(1)
+          PY

@@ -204,6 +204,10 @@
 - [x] `P78`：`S0E-6B/P1` 已固定四类最小 failure taxonomy：`missing-required-block`、`invalid-structured-block`、`placeholder-left`、`stable-contradiction`
 - [x] `P79`：`S0E-6B` 已完成 `P2`，现已固定第一轮必须 hard-require pass gate 的入口只包括 `log -> issue draft/create` 与 `log -> PR prep/create`
 - [x] `P80`：`S0E-6B/P2` 已固定 advisory-only rollout boundary：普通 draft authoring、非 automation logs、以及 aggregator-only parent logs 先不做 hard block
+- [x] `P81`：`S0E-6B` 已完成 `P3`，现已固定 `stable` promotion 前必须执行更强的后验 checks：required surfaces 无 placeholder、contract blocks 仍有效、status/checklist/evidence 之间不得出现 material contradiction
+- [x] `P82`：`S0E-6B/P3` 已固定 `stable` gate 的执行归属为 local-first / CI-mirror-later：本地 gate 先作为 authoritative owner，GitHub Actions 只在后续 `S0E-7A` 中作为 secondary mirror enforcement
+- [x] `P83`：`S0E-7A` 已完成 `P1-C1-S1`，现已固定第一版 GitHub Actions mirror-verifier workflow 先以 `workflow_dispatch` 启动，并显式接收 `source_log_path`、`pr_ref`、`repo` 输入，产出 live body / result JSON / console JSON 三类 artifact
+- [x] `P84`：`S0E-7A/P1-C1-S2` 已固定 secondary-enforcement 的 failure surfacing：workflow summary 必须明确“post-publish drift detected”而非“prevented publish”，且必须在 artifact 上传后再 fail job
 
 ## Current Status（进展摘要）
 
@@ -240,7 +244,9 @@
 - `S0E-6B` 已建立并完成 `P0`：本地 AI-authored logs 现已明确需要窄面 contract gates，且 `stable` 也已明确需要更强的后验 gate；下一步应先定义最小 deterministic checks，而不是直接上全量 lint；
 - `S0E-6B` 已完成 `P1`：第一版 local log gate 的 deterministic checks 与最小 failure taxonomy 都已固定，下一步可以转入“哪些 automation entrypoints 必须要求 pass gate”这个更具体的问题，而不必继续停留在抽象原则层；
 - `S0E-6B` 已完成 `P2`：第一轮 automation entry-gate rollout boundary 已固定，issue/PR automation 入口现在被定义为 hard-require pass gate，而普通 authoring 与 aggregator-only 路径仍保持 advisory-only；
+- `S0E-6B` 已完成 `P3`：`stable` promotion 前的更强后验 checks 与 local-first / CI-mirror-later execution policy 现已固定，因此本地 log stability contract 已从“要不要 gate”推进到“何时可以信任 stable”这一层；
 - `S0E-7A` 已重构为纯 GitHub-side slice：当前只讨论 Actions mirror-verifier workflow、artifact publishing 与 failure surfacing，不再混入 log stability policy；
+- `S0E-7A` 已完成 `P1`：第一版 GitHub Actions mirror-verifier workflow 已以手动触发方式落地，并已固定输入合同、artifact 输出与 secondary-enforcement wording；下一步应继续收口 `P2` 的 retained artifacts 与 failure surfacing 细则，而不是过早扩大自动触发范围；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
@@ -391,4 +397,6 @@
 - 2026-03-31：新增 `S0E-6B` 并完成 `P0`，已先收口本地 AI-authored logs 的 gate 与 `stable` 后验 gate 策略，作为后续 local deterministic checks 的前置合同。
 - 2026-03-31：完成 `S0E-6B/P1`，已把第一版 local deterministic checks 与最小 failure taxonomy 正式收口，后续 `P2` 可直接转向 automation entrypoint gating。
 - 2026-03-31：完成 `S0E-6B/P2`，已把第一轮 hard-require gate entrypoints 与 advisory-only rollout boundary 固定下来，可继续进入 `stable` transition gate 设计。
+- 2026-03-31：完成 `S0E-6B/P3`，已把 `stable` promotion 需要的更强 contradiction/hygiene checks 与 local-first / CI-mirror-later execution policy 固定下来，因此本地 log stability policy 已能独立定义“何时可信地标记 stable”。
 - 2026-03-31：重构 `S0E-7A` 的职责边界，现仅保留 GitHub Actions secondary enforcement、artifact publishing 与 failure surfacing 相关内容。
+- 2026-03-31：完成 `S0E-7A/P1`，已新增第一版手动触发的 mirror-verifier workflow，并固定 secondary-enforcement summary wording 与 artifact-first fail path，为后续 `P2/P3` 留出 retained-evidence 与 rollout boundary 的独立决策空间。

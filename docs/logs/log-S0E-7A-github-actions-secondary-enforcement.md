@@ -81,6 +81,7 @@
 **Evidence Footer Source**:
 
 - `P0-C1-S1` | artifact: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
+- `P1-C1-S1S2` | artifact: `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
@@ -110,6 +111,7 @@
 - The repo has a written decision that GitHub Actions is secondary enforcement and not the primary publish owner for PR create.
 - The future Actions workflow shape reuses the same live PR verifier and produces explicit artifact paths instead of screenshot-only evidence.
 - The future Actions workflow has explicit failure surfacing and artifact retention semantics.
+- The first executable Actions scaffold now exists with explicit workflow inputs, mirror-verifier artifact outputs, and secondary-enforcement wording in the workflow summary.
 
 ## Stability (what stable means)
 
@@ -122,7 +124,8 @@
 
 - `S0E-7A` is now opened as the next narrow slice after `S0E-5C/P4`.
 - `P0` is now completed: GitHub Actions is explicitly scoped as secondary enforcement, not as the primary publish-time owner.
-- `P1-P3` remain open: workflow wiring, artifact publishing, failure surfacing, and rollout details are not yet executed.
+- `P1` is now completed: the first minimal mirror-verifier workflow shape is now fixed and scaffolded in GitHub Actions, with explicit manual inputs, explicit artifact outputs, and summary wording that preserves the secondary-enforcement boundary.
+- `P2-P3` remain open: richer artifact publishing policy, failure surfacing details, and rollout boundary are not yet completed.
 
 ## P0 (Boundary contract | v1)
 
@@ -156,8 +159,8 @@
 
 ### P1 (GitHub Actions mirror-verifier workflow)
 
-- `P1-C1-S1`: define event triggers, workflow inputs, and artifact outputs for mirrored live PR verification
-- `P1-C1-S2`: decide how Actions should surface failure state without pretending it prevented publish
+- [x] `P1-C1-S1`: define event triggers, workflow inputs, and artifact outputs for mirrored live PR verification
+- [x] `P1-C1-S2`: decide how Actions should surface failure state without pretending it prevented publish
 
 ### P2 (Failure surfacing and artifacts)
 
@@ -177,8 +180,8 @@
 
 ### P1 (GitHub Actions mirror-verifier workflow)
 
-- [ ] `P1-C1-S1`: define event triggers, workflow inputs, and artifact outputs
-- [ ] `P1-C1-S2`: decide failure surfacing and operator feedback shape
+- [x] `P1-C1-S1`: define event triggers, workflow inputs, and artifact outputs
+- [x] `P1-C1-S2`: decide failure surfacing and operator feedback shape
 
 ### P2 (Failure surfacing and artifacts)
 
@@ -209,7 +212,48 @@
 - observed:
   - `S0E-7A` now fixes that boundary: Actions remains secondary enforcement and is limited to post-publish enforcement plus visibility rather than primary publish-time ownership
 
+## P1 (First minimal GitHub Actions mirror-verifier workflow | v1)
+
+### P1-C1-S1 (Workflow trigger, input, and artifact contract fixed | v1)
+
+- The first executable GitHub Actions workflow for this slice should bootstrap with `workflow_dispatch` only.
+- The reason is sequencing: `S0E-7A/P1` should prove the reusable workflow shape and verifier wiring first, while `P3` should separately decide which PR events and branch scopes deserve automatic rollout.
+- The first workflow contract is now fixed as:
+  - workflow file: `.github/workflows/s0e-pr-body-secondary-enforcement.yml`;
+  - trigger surface: manual `workflow_dispatch`;
+  - required inputs: `source_log_path`, `pr_ref`;
+  - optional input: `repo` override, otherwise the workflow uses the current repository;
+  - execution surface: `ubuntu-latest` with `bash`, `actions/checkout`, `actions/setup-python`, and the existing `scripts/issues/verify_live_pr_body_contract.py` entrypoint.
+- The first artifact outputs are now fixed as:
+  - fetched live PR body markdown;
+  - structured verifier result JSON;
+  - console JSON emitted by the verifier run.
+
+### P1-C1-S2 (Secondary-enforcement failure surfacing shape fixed | v1)
+
+- The first workflow should fail visibly when mirrored verification detects drift, but its wording must not imply that CI blocked the original publish.
+- The failure surfacing shape is now fixed as:
+  - the workflow always writes a `GITHUB_STEP_SUMMARY` section that explicitly labels the run as `secondary enforcement`;
+  - the summary must state that a failure means post-publish drift was detected rather than prevented;
+  - artifacts must be uploaded even on verifier failure so operators can inspect the live body and result payload before acting;
+  - the job should fail only after summary + artifact publication steps have had a chance to run.
+- This keeps CI honest: it can become a strong mirror and alerting surface without rewriting the ownership boundary already fixed in `S0E-5C/P4`.
+
+### P1-C1-S1S2 (minimal mirror-verifier workflow shape fixed and scaffolded | 2026-03-31)
+
+- headSha: `09cf513a`
+- artifacts:
+  - `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
+  - `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+  - `scripts/issues/verify_live_pr_body_contract.py`
+  - `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`
+- expected:
+  - the repo should define the first minimal GitHub Actions workflow shape for mirrored live PR verification without prematurely expanding rollout scope or pretending CI is the primary publish owner
+- observed:
+  - `S0E-7A/P1` now fixes both the workflow contract and the first operator-facing failure shape: a manual mirror-verifier workflow exists, it reuses the local verifier entrypoint, emits explicit artifacts, and fails with secondary-enforcement wording only after summary + artifact publication
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-31: re-scoped `S0E-7A` to GitHub-side concerns only, leaving Actions as secondary enforcement and moving local log stability / gate policy to `S0E-6B`.
 - 2026-03-31: completed `P0` by fixing the GitHub Actions ownership boundary in one place: Actions is not the primary publish owner and should mirror the same verifier semantics already fixed in the local create path.
+- 2026-03-31: completed `P1` by fixing and scaffolding the first manual mirror-verifier workflow in GitHub Actions, including explicit inputs, explicit artifacts, and summary wording that preserves the secondary-enforcement boundary.
