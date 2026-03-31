@@ -5,7 +5,7 @@
 **id**: `S0E-5D`
 **kind**: `log`
 **title**: `body contract and gate shape normalization v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Issues, PR, Automation, Contract, Formatting, Evidence, epic/s0, sub/0e5d`
 **links**: ``
@@ -99,6 +99,8 @@
 - `P1` is now completed: Evidence Footer now has one fixed extraction source, one fixed rendered line shape, explicit omission semantics, and an explicit rule that both the stage token and artifact path must be wrapped in inline code.
 - `P2` is now completed: hard gate now checks canonical section order, metadata blank-gap discipline, allowed link categories, issue conclusion Context retention, and PR-side Evidence Footer presence/shape against one explicit source block; both PR prep preview and PR rewrite now consume `Evidence Footer Source` only.
 - `P3` is now completed: rewrite execution is fixed as a new `P4` under `S0E-5D`, while the later post-apply gate is explicitly deferred to `S0E-5C`; the minimal inspected rewrite set has been identified and the boundary between contract normalization and publish-time orchestration is now clearer.
+- `P4` is now completed: representative historical merged PRs `#299/#302/#306/#308` and representative closed issues `#293/#295/#297/#300/#303/#305/#307` have been rewritten in place under the canonical body contract, and the resulting live PR/issue objects now verify cleanly.
+- `S0E-5D` is now `stable`: this slice owns the contract fix, the hard gate, and the selective historical normalization batch; post-apply publish-time verification remains intentionally deferred to `S0E-5C`.
 
 ## P0 (Canonical body families | v1)
 
@@ -197,6 +199,29 @@
   - representative historical issue rewrites.
 - The later post-apply verification chain and GitHub Actions wiring are now intentionally deferred to `S0E-5C`.
 
+## P4 (Selective historical rewrite rollout | v1)
+
+### P4-C1-S1 (Representative historical PR rewrite batch executed | v1)
+
+- Historical merged PR rewrite now has a manifest-driven live apply entry in `scripts/issues/apply_pr_body_rewrite_batch.py` so `S0E-5D` no longer needs to fake `pr-create` result files just to normalize old PR bodies.
+- The rewrite path itself is now strengthened in two places before live apply:
+  - `plan_pr_prep.py` now expands combined title scopes such as `P3-C2-S1S2` into the exact unit refs needed by checklist replay;
+  - `rewrite_pr_body_scope_from_log.py` now rebuilds the full canonical PR body instead of only replacing checklist/footer fragments, and it filters stale prose rows out of source-log `PR links` before writing live `Links`.
+- The representative historical PR batch is now executed for:
+  - `#299` from `S0E-4A`;
+  - `#302` from `S0E-4C`;
+  - `#306` from `S0E-5A`;
+  - `#308` from `S0E-5B`.
+- Post-apply live verification now passes on all four rewritten PRs under the canonical PR body contract.
+
+### P4-C1-S2 (Representative historical closed-issue rewrite batch executed | v1)
+
+- The representative closed-issue rewrite batch is now planned from `docs/issues/issue-conclusion-S0E-5D-p4-manifest.json` and executed in place through `apply_issue_conclusion_from_plan.py`.
+- The historical closed issues rewritten under the canonical conclusion contract are now:
+  - `#293`, `#295`, `#297`, `#300`, `#303`, `#305`, `#307`.
+- Each issue remained `CLOSED` after body normalization, and the rewritten bodies now keep substantive `Context`, short-ref-only `Definition of Done (DoD)`, and canonical `Links` without `Issue:` or `PR:` rows.
+- Post-apply lifecycle audit now passes across the entire seven-issue representative set.
+
 ## Plan (draft)
 
 - `P4-C1-S1`: execute the first representative historical PR rewrite batch under the fixed contract
@@ -208,8 +233,8 @@
 - [x] `P1-C1-S1`: Evidence Footer contract fixed
 - [x] `P2-C1-S1`: hard-gate body-shape check scope fixed
 - [x] `P3-C1-S1`: repair order fixed
-- [ ] `P4-C1-S1`: representative historical PR rewrite batch executed
-- [ ] `P4-C1-S2`: representative historical closed-issue rewrite batch executed
+- [x] `P4-C1-S1`: representative historical PR rewrite batch executed
+- [x] `P4-C1-S2`: representative historical closed-issue rewrite batch executed
 
 ## Evidence (reserved)
 
@@ -290,6 +315,49 @@
   - representative live PR `#302` fails the post-apply verifier on invalid `Links` prose rows, ineligible footer presence, and non-canonical footer rows
   - the resulting ownership split is now fixed as `S0E-5D/P4 = historical rewrite execution` and `S0E-5C future phase = post-apply live verify / Actions wiring`
 
+### P4-C1-S1 (representative historical PR rewrite batch executed | 2026-03-31)
+
+- artifacts:
+  - `scripts/issues/apply_pr_body_rewrite_batch.py`
+  - `scripts/issues/plan_pr_prep.py`
+  - `scripts/issues/rewrite_pr_body_scope_from_log.py`
+  - `docs/issues/pr-body-rewrite-S0E-5D-p4-manifest.json`
+  - `docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-result.json`
+  - `docs/issues/pr-live-contract-check-299-result.json`
+  - `docs/issues/pr-live-contract-check-302-result.json`
+  - `docs/issues/pr-live-contract-check-306-result.json`
+  - `docs/issues/pr-live-contract-check-308-result.json`
+- expected:
+  - historical merged PR rewrite should no longer depend on guarded `pr-create` outputs that do not exist for older live PRs
+  - combined title scopes such as `P3-C2-S1S2` should replay the exact checked unit rows instead of failing as unmatched
+  - live rewritten PR bodies should converge on canonical metadata, links, footer, and development-link shape
+- observed:
+  - a new manifest-driven apply entry rewrote representative merged PRs `#299/#302/#306/#308` in place without synthesizing `pr-create` result files
+  - title-scope replay now expands combined step tokens and full-body rewrite now fixes metadata blank gaps plus stale `PR links` prose rows instead of only replacing checklist/footer fragments
+  - all four representative rewritten PRs now pass the post-apply live verifier under the canonical PR contract
+
+### P4-C1-S2 (representative historical closed-issue rewrite batch executed | 2026-03-31)
+
+- artifacts:
+  - `docs/issues/issue-conclusion-S0E-5D-p4-manifest.json`
+  - `docs/issues/issue-conclusion-S0E-5D-p4-plan.json`
+  - `docs/issues/issue-conclusion-S0E-5D-p4-s0e-4a-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-5D-p4-s0e-4b-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-5D-p4-s0e-2d-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-5D-p4-s0e-4c-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-5D-p4-s0e-4d-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-5D-p4-s0e-5a-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-5D-p4-s0e-5b-apply-result.json`
+  - `docs/issues/lifecycle-audit-S0E-5D-p4-plan.json`
+- expected:
+  - representative historical closed issues should be normalized in place to the canonical conclusion body contract without reopening or otherwise perturbing converged GitHub history
+  - canonical conclusion bodies should keep substantive `Context`, short PR refs in `Definition of Done (DoD)`, and canonical issue-only `Links`
+  - post-apply issue audit should pass across the rewritten representative set
+- observed:
+  - representative closed issues `#293/#295/#297/#300/#303/#305/#307` were all rewritten in place while remaining `CLOSED`
+  - each rewritten issue body now matches the canonical section order and link-category rules while preserving substantive conclusion-stage `Context`
+  - lifecycle audit now returns `pass` across the full seven-issue representative set after the rewrite batch
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-31: created `S0E-5D` as a dedicated follow-up for body contract normalization, Evidence Footer unification, and hard-gate shape checks after live object drift was confirmed across representative issues and PRs.
@@ -297,3 +365,4 @@
 - 2026-03-31: completed `P1` by fixing one explicit `Evidence Footer Source` block, one exact footer line shape, and the rule that both the stage token and artifact path must use inline code while all fallback footer styles remain forbidden.
 - 2026-03-31: completed `P2` by wiring one shared body-contract gate into PR preview/rewrite paths, aligning issue-side audit/rendering to the new contract, and recording pass/stop samples for canonical footer rows, unquoted footer rows, and wrong-source-block failure cases.
 - 2026-03-31: completed `P3` by fixing the rewrite rollout order, attaching historical rewrite execution to new `P4`, deferring post-apply gate ownership to `S0E-5C`, and identifying the minimal inspected historical rewrite set.
+- 2026-03-31: completed `P4` by rewriting representative merged PRs `#299/#302/#306/#308` and representative closed issues `#293/#295/#297/#300/#303/#305/#307` in place, then verifying the resulting live objects through PR contract checks and full lifecycle audit; `S0E-5D` is now `stable`.

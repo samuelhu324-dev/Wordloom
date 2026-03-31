@@ -9,9 +9,9 @@
 
 ## Summary
 
-- Harden `create_pr_from_plan.py` so a long-lived mixed working branch can still produce a clean PR-prep branch when raw cherry-picks conflict on selected commits.
-- Keep PR-prep planning and create-path execution aligned around the current remote-tracking base and the source-head final file state used for the prep branch.
-- Re-run one real `S0E-4C` follow-up PR and update issue `#300` so the extra merged PR is reflected in the final DoD ledger.
+- Align generated PR `title`, `Execution Checklist`, and `Evidence Footer` to one shared scope selector instead of letting each section derive scope independently.
+- Keep aggregate PRs scoped by completed phase coverage while narrowing exact follow-up PRs to the matching `P*-C*-S*` checklist and evidence lines only.
+- Regenerate the `S0E-4B` sample body under the new rule and rewrite merged PR `#296` title/body metadata so the historical live example matches the tightened scope contract.
 
 ## Execution Checklist
 
@@ -23,12 +23,6 @@
 - Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/300`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-prep-S0E-4C-p5-plan.json`
-- Generated PR body should keep `Summary`, `Evidence Footer`, and `Development Link` as separate sections.
-- `Summary` must not degrade to `<placeholder>` on a live PR create path.
-
-## Evidence Footer
-
-- `P5-C1-S1`: `scripts/issues/create_pr_from_plan.py` now records the current `origin/<base>` merge-base at apply time and, on cherry-pick conflict, rebuilds the prep branch from the source-head snapshot of the selected path set instead of failing immediately.
 
 ## Development Link
 

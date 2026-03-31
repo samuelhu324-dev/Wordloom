@@ -1,6 +1,6 @@
 {
   "mode": "live-pr-body-contract-check",
-  "result": "fail",
+  "result": "pass",
   "repository": "samuelhu324-dev/wordloom-v3",
   "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
   "pr_number": 302,
@@ -8,7 +8,7 @@
   "pr_title": "S0E-4C/P5-C1-S1: harden create-path cherry-pick fallback",
   "pr_state": "MERGED",
   "live_body_path": "docs/issues/pr-live-contract-check-302-body.md",
-  "status": "fail",
+  "status": "pass",
   "warnings": [],
   "expected_evidence_footer_lines": [],
   "checks": [
@@ -29,8 +29,8 @@
     },
     {
       "name": "pr-link-categories",
-      "status": "fail",
-      "details": "PR Links section contains invalid rows: ['- Generated PR body should keep `Summary`, `Evidence Footer`, and `Development Link` as separate sections.', '- `Summary` must not degrade to `<placeholder>` on a live PR create path.']"
+      "status": "pass",
+      "details": "PR Links section uses only allowed link categories"
     },
     {
       "name": "evidence-footer-source-shape",
@@ -39,18 +39,18 @@
     },
     {
       "name": "evidence-footer-eligibility",
-      "status": "fail",
-      "details": "Evidence Footer is rendered but the source log is not drills/evidence eligible"
+      "status": "pass",
+      "details": "Evidence Footer eligibility matches the source log tags/labels contract"
     },
     {
       "name": "evidence-footer-presence",
-      "status": "fail",
-      "details": "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"
+      "status": "pass",
+      "details": "Evidence Footer section is omitted when the source block is absent"
     },
     {
       "name": "evidence-footer-line-shape",
-      "status": "fail",
-      "details": "Evidence Footer rows do not match the canonical line shape: ['`P5-C1-S1`: `scripts/issues/create_pr_from_plan.py` now records the current `origin/<base>` merge-base at apply time and, on cherry-pick conflict, rebuilds the prep branch from the source-head snapshot of the selected path set instead of failing immediately.']"
+      "status": "pass",
+      "details": "no Evidence Footer rows were rendered"
     },
     {
       "name": "development-link-presence",

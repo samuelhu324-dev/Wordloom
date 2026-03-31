@@ -1,0 +1,33 @@
+{
+  "version": "1",
+  "mode": "pr-body-rewrite-apply",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "pr_number": 299,
+      "reason": "Normalize the historical merged PR body for the first exact-ID multi-PR sample"
+    },
+    {
+      "requested_id": "S0E-4C",
+      "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "pr_number": 302,
+      "reason": "Normalize the historical merged PR body after the fallback create-path sample"
+    },
+    {
+      "requested_id": "S0E-5A",
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "pr_number": 306,
+      "reason": "Normalize the historical merged PR body for the lifecycle gate sample"
+    },
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "pr_number": 308,
+      "reason": "Normalize the historical merged PR body for the guarded closed-loop sample"
+    }
+  ]
+}

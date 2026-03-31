@@ -7,7 +7,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from body_contract import extract_pr_summary_inputs
+from body_contract import PR_ALLOWED_LINK_LABELS, extract_pr_summary_inputs, link_labels_are_allowed
 from gen_issue_draft import _load_text, _parse_fields, _parse_sections, _repo_rel, _repo_root, _run_command
 
 
@@ -306,6 +306,18 @@ def _expand_phase_scope_token(token: str) -> list[str]:
     return []
 
 
+def _expand_unit_scope_ref(token: str) -> list[str]:
+    stripped = token.strip()
+    if not stripped or "-S" not in stripped:
+        return [stripped] if stripped else []
+
+    prefix, step_suffix = stripped.split("-S", 1)
+    step_numbers = [part for part in step_suffix.split("S") if part]
+    if len(step_numbers) <= 1 or any(not part.isdigit() for part in step_numbers):
+        return [stripped]
+    return [f"{prefix}-S{part}" for part in step_numbers]
+
+
 def _derive_scope_from_pr_title(pr_title: str, requested_id: str) -> tuple[str, list[str]]:
     title_match = re.match(rf"^{re.escape(requested_id)}/(?P<scope>[^:]+):", pr_title.strip())
     if not title_match:
@@ -316,8 +328,11 @@ def _derive_scope_from_pr_title(pr_title: str, requested_id: str) -> tuple[str, 
         return "all", []
 
     scope_refs = _extract_scope_refs(scope_text)
-    if any("-C" in ref for ref in scope_refs):
-        return "units", scope_refs
+    if any("-C" in ref or "-S" in ref for ref in scope_refs):
+        expanded_unit_refs: list[str] = []
+        for ref in scope_refs:
+            expanded_unit_refs.extend(_expand_unit_scope_ref(ref))
+        return "units", _dedupe(expanded_unit_refs)
 
     expanded_phase_refs: list[str] = []
     for token in scope_text.split("+"):
@@ -414,6 +429,15 @@ def _build_default_link_lines(fields: dict[str, str], source_log_path: str) -> l
     if fields.get("runbook", "").strip():
         lines.append(f"Runbook: `{fields['runbook'].strip()}`")
     return lines
+
+
+def _select_pr_link_lines(fields: dict[str, str], explicit_link_lines: list[str], source_log_path: str) -> list[str]:
+    sanitized: list[str] = []
+    for line in explicit_link_lines:
+        valid, _ = link_labels_are_allowed([f"- {line}"], PR_ALLOWED_LINK_LABELS)
+        if valid:
+            sanitized.append(line)
+    return sanitized or _build_default_link_lines(fields, source_log_path)
 
 
 def _parse_issue_refs(raw: str | None) -> tuple[list[str], list[str]]:
@@ -637,7 +661,7 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
 
     scoped_evidence_lines = evidence_footer_source_lines
 
-    link_lines = explicit_link_lines or _build_default_link_lines(fields, source_log_rel)
+    link_lines = _select_pr_link_lines(fields, explicit_link_lines, source_log_rel)
     preview_body = _render_body_preview(
         requested_id=requested_id,
         pr_title=pr_title,

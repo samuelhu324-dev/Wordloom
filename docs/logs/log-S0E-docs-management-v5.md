@@ -184,6 +184,7 @@
 - [x] `P63`：`S0E-5D` 已完成 `P2`，hard gate 现已补上 body-shape checks，PR prep/rewrite 只读 `Evidence Footer Source`，并已有一条 pass 样本与两条 stop 样本分别覆盖 canonical footer、未加反引号 footer 和错误来源块
 - [x] `P64`：`S0E-5D` 已完成 `P3`，rollout 顺序现已固定为 `gate-first + post-apply live verify + selective historical rewrite`，同时已新增 live PR verifier，并把“无 drills/evidence 资格却塞 Evidence Footer”固定为可驳回条件
 - [x] `P65`：已进一步收口 `S0E-5D/P3` 的边界：historical rewrite 执行现明确挂到 `S0E-5D/P4`，而后置 gate / post-apply verify / GitHub Actions ownership 则延后到 `S0E-5C/P3` 讨论，不再继续塞在 `S0E-5D`
+- [x] `P66`：`S0E-5D` 已完成 `P4`，代表性历史 merged PR `#299/#302/#306/#308` 与 closed issue `#293/#295/#297/#300/#303/#305/#307` 均已按 canonical body contract 回写并通过 live verifier / lifecycle audit，因此 `S0E-5D` 现已进入 `stable`
 
 ## Current Status（进展摘要）
 
@@ -221,6 +222,7 @@
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
 - `S0E-5D` 已完成 `P3` 的边界收口：historical rewrite 执行明确挂到新 `P4`，先做代表性历史 PR rewrite，再做历史 closed issue rewrite；
+- `S0E-5D` 已完成 `P4`：代表性历史 merged PR `#299/#302/#306/#308` 与 closed issue `#293/#295/#297/#300/#303/#305/#307` 都已在 live GitHub 上按 canonical contract 回写，并分别通过 PR contract verifier 与 lifecycle audit，因此该 slice 现已 `stable`；
 - `S0E-5C` 将在后续 `P3` 接手 post-apply verify / Actions ownership，原因是这部分更贴近 `S6/S7` live publish boundary，而不是 `S0E-5D` 的 contract normalization 本身；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
@@ -357,3 +359,4 @@
 - 2026-03-31：完成 `S0E-5D/P2`，实现 shared body-contract gate、切断 footer 推断回退路径，并用 pass/stop fixture 证明 canonical footer、未加反引号 footer 和错误来源块都能被机械区分。
 - 2026-03-31：完成 `S0E-5D/P3`，固定 rollout 策略为 `gate-first + post-apply live verify + selective historical rewrite`，并新增 live PR verifier 与 footer eligibility reject 规则，为后续 GitHub Actions 接线提供执行面。
 - 2026-03-31：进一步收口 `S0E-5D/P3` 边界，明确 `rewrite` 挂到新 `S0E-5D/P4`，而后置 gate / post-apply verify / GitHub Actions ownership 延后到 `S0E-5C/P3` 处理。
+- 2026-03-31：完成 `S0E-5D/P4`，已把代表性历史 merged PR `#299/#302/#306/#308` 与 closed issue `#293/#295/#297/#300/#303/#305/#307` 回写到 canonical contract，并通过 live PR verifier 与 lifecycle audit 证明 `S0E-5D` 的 selective historical rewrite 已收口。
