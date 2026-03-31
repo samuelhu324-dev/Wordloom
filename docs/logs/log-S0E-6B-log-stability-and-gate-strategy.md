@@ -87,6 +87,7 @@
 - `P0-C1-S1S2` | artifact: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`
 - `P1-C1-S1S2` | artifact: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`
 - `P2-C1-S1S2` | artifact: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`
+- `P3-C1-S1S2` | artifact: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
@@ -120,6 +121,8 @@
 - The local gate surface reuses `S0E-6A` and `S0E-5D` contract blocks instead of introducing one-off log rules.
 - The first gate revision has a bounded deterministic check list and a small failure taxonomy instead of an open-ended lint surface.
 - The first rollout policy clearly distinguishes `must-pass-before-automation` entrypoints from `advisory-only` authoring paths.
+- The `stable` gate policy now lists the stronger contradiction and hygiene checks required before `status = stable` is trusted.
+- The execution policy now fixes local validation as the primary owner of `stable` promotion, with CI reserved for later mirror enforcement under `S0E-7A`.
 
 ## Stability (what stable means)
 
@@ -134,7 +137,7 @@
 - `P0` is now completed: AI-authored logs are now explicitly treated as needing narrow contract gates once they become automation inputs, and `stable` is now explicitly treated as needing a stronger post-hoc gate than `draft`.
 - `P1` is now completed: the first deterministic local check surface and minimal failure taxonomy are now fixed, so later work can discuss entrypoint wiring and `stable` execution policy against a bounded contract instead of against vague lint ideas.
 - `P2` is now completed: the first rollout boundary is fixed, with issue/PR automation entrypoints requiring a passing log gate while ordinary authoring paths remain advisory-only in v1.
-- `P3` remains open: no stable-gate execution policy exists yet.
+- `P3` is now completed: stronger `stable`-promotion checks and a local-first / CI-mirror-later execution policy are now fixed.
 
 ## P0 (Boundary contract | v1)
 
@@ -283,8 +286,8 @@
 
 ### P3 (`stable` transition gate)
 
-- `P3-C1-S1`: define the stronger post-hoc checks required before `status = stable` is trusted
-- `P3-C1-S2`: decide whether that gate should run locally only, in CI only, or in both places
+- [x] `P3-C1-S1`: define the stronger post-hoc checks required before `status = stable` is trusted
+- [x] `P3-C1-S2`: define local-vs-CI execution policy for that gate
 
 ### P2-C1-S1S2 (automation entry-gate rollout boundary fixed | 2026-03-31)
 
@@ -298,9 +301,50 @@
 - observed:
   - `S0E-6B/P2` now fixes that split: issue/PR automation entrypoints are fail-closed on source-log contract validity, while ordinary authoring and aggregator-only paths remain advisory-only in v1
 
+## P3 (Stronger `stable` transition gate | v1)
+
+### P3-C1-S1 (Stronger post-hoc checks before `stable` fixed | v1)
+
+- The `stable` gate should remain bounded, but it must be stricter than the ordinary automation-entry gate because it is approving a long-lived contract-bearing log rather than only a one-time downstream write.
+- The stronger `stable` checks are now fixed as:
+  - `no-placeholder-in-required-surfaces`: no unresolved placeholders may remain in frontmatter, required contract sections, `PR Summary Inputs`, `Evidence Footer Source`, `Current Status`, `Execution Checklist`, or `Recent changes`;
+  - `required-contract-blocks-valid`: the same contract-bearing blocks from `P1` must still be present and structurally valid at promotion time;
+  - `status-checklist-alignment`: `status`, `Current Status`, and the execution checklist must agree on whether the slice is still open or already complete enough to trust;
+  - `status-evidence-alignment`: claims that a slice or phase is complete or stable must have corresponding human-ledger evidence rows with traceable artifacts and `headSha` values;
+  - `no-material-cross-section-contradiction`: `Current Status`, `Execution Checklist`, `Evidence`, and `Recent changes` must not materially disagree about what work is done, what remains open, or what artifacts support the claim.
+- This stronger gate still does not try to score writing quality or the strength of an argument. Its job is to reject logs that would be misleading as reusable contract records.
+- `stable-contradiction` now concretely means any material mismatch across those promotion-time surfaces, not a vague subjective concern.
+
+### P3-C1-S2 (Local-first / CI-mirror-later execution policy fixed | v1)
+
+- The first authoritative owner of the `stable` gate should be local execution before a log is promoted to `status = stable`.
+- The reasons are operational rather than ideological:
+  - local execution gives immediate fail-closed feedback at the moment the author is making the promotion decision;
+  - the repo already treats local log files as the source contract for downstream issue/PR automation;
+  - CI cannot be the first owner until its mirror semantics, artifact publishing, and failure surfacing are fully specified and proven equivalent.
+- The v1 execution policy is therefore fixed as:
+  - local `stable` gate pass is required before trusting a `stable` promotion on a contract-bearing log;
+  - CI may later rerun the same checks as secondary or mirror enforcement, but that is additive rather than authoritative in this slice;
+  - ownership of CI mirroring, artifact retention, and GitHub-side surfacing remains with `S0E-7A`, not with `S0E-6B`.
+- This keeps `S0E-6B` internally coherent: local policy defines what must be true before trust is granted, and `S0E-7A` can later decide how to mirror or surface that same policy remotely.
+
+### P3-C1-S1S2 (stronger stable-gate checks and local-first execution policy fixed | 2026-03-31)
+
+- headSha: `09cf513a`
+- artifacts:
+  - `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`
+  - `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`
+  - `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`
+  - `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
+- expected:
+  - the repo should define a bounded stronger gate for `stable` promotion and should clarify whether local execution or CI is the first authoritative owner of that gate
+- observed:
+  - `S0E-6B/P3` now fixes both points: promotion to `stable` requires contradiction and hygiene checks across the core contract-bearing surfaces, and local execution is the primary owner while CI remains a later mirror concern under `S0E-7A`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-31: created `S0E-6B` as the dedicated follow-up for local log stability policy after `S0E-6A` fixed the dual-track structure contract.
 - 2026-03-31: completed `P0` by fixing two boundaries in one place: local log gates should stay contract-first rather than prose-first, and `stable` should imply a stronger post-hoc validation pass for contract-bearing logs.
 - 2026-03-31: completed `P1` by fixing the first bounded deterministic check surface and a four-class failure taxonomy, so later wiring work can target explicit machine surfaces instead of an open-ended lint idea.
 - 2026-03-31: completed `P2` by fixing the first rollout boundary: issue/PR automation entrypoints must hard-require a passing local log gate, while ordinary draft authoring and aggregator-only paths remain advisory-only in v1.
+- 2026-03-31: completed `P3` by fixing the stronger `stable`-promotion checks and a local-first / CI-mirror-later execution policy, leaving GitHub-side mirror enforcement ownership with `S0E-7A`.
