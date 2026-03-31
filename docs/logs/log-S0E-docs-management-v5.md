@@ -219,6 +219,8 @@
 - [x] `P92`：`S0E-4E/P1-C1-S2` 已固定 attribution precedence：explicit provenance > PR-body `Log:` row > exact-ID branch fallback；而 prose/title 模糊匹配、labels/milestone/project、Development Link、Evidence Footer 都不得单独声明 ownership
 - [x] `P93`：`S0E-4E` 已完成 `P2-C1-S1`，现已固定 attribution ambiguity 的第一版 stop taxonomy：`missing-attribution`、`conflicting-attribution`、`multi-candidate-attribution`、`invalid-attribution-shape` 都必须 fail-closed
 - [x] `P94`：`S0E-4E/P2-C1-S2` 已固定代表性样本期望：后续 rollout widening 前至少需要一条 deterministic owner sample 和一条 ambiguity stop sample，而且 ambiguity case 不得在 guessed source log 上继续 verify
+- [x] `P95`：`S0E-4E` 已完成 `P3-C1-S1`，现已固定 `4E -> 7A` 的 attribution handoff payload：只有 `result=resolved`、`source_log_path` 精确存在且 `eligible_for_secondary_enforcement=true` 时，mirror verifier 才能继续执行
+- [x] `P96`：`S0E-4E/P3-C1-S2` 已固定 limited automatic-rollout unblocking criteria：至少需要一条 resolved handoff sample 和一条 attribution-stop sample，并且 stop case 必须在 verifier 之前停下并保留独立 attribution evidence
 
 ## Current Status（进展摘要）
 
@@ -260,7 +262,7 @@
 - `S0E-7A` 已完成 `P1`：第一版 GitHub Actions mirror-verifier workflow 已以手动触发方式落地，并已固定输入合同、artifact 输出与 secondary-enforcement wording；下一步应继续收口 `P2` 的 retained artifacts 与 failure surfacing 细则，而不是过早扩大自动触发范围；
 - `S0E-7A` 已完成 `P2`：mirror-verifier 的 retained artifact set、artifact manifest 与 UI/check surfaces 已经固定，因此后续 `P3` 可以专注讨论触发边界与 adoption criteria，而不必再回头争论 run evidence 怎么保存；
 - `S0E-7A` 已完成 `P3`：第一轮 rollout 现明确继续保持 manual-only，后续是否扩大到自动 PR-event mirroring 现在有了清晰的 attribution 前提和 adoption criteria，因此该 slice 的 v1 决策链已闭合；
-- `S0E-4E` 已完成 `P2`：`PR event -> source_log_path` attribution 现已具有明确的 ambiguity stop taxonomy 与 representative sample expectations，因此后续自动 PR-event mirroring 不仅知道“可看哪些 surface”，也知道“何时必须停下”；
+- `S0E-4E` 已完成 `P3`：`PR event -> source_log_path` attribution 现已具有明确的 consume-or-stop handoff contract，因此 `S0E-7A` 后续接入自动 PR-event mirroring 时不必再猜什么时候 verify、什么时候应在 attribution 阶段先停下；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
@@ -419,3 +421,4 @@
 - 2026-03-31：新增 `S0E-4E` 并完成 `P0`，已把 `PR event -> source_log_path` attribution 正式拆成独立 slice，并重新归类到 PR-family follow-up；后续自动触发扩大前必须先在这里收口 deterministic ownership contract。
 - 2026-03-31：完成 `S0E-4E/P1`，已把 attribution candidate surfaces 收口为 explicit provenance / canonical PR-body `Log:` row / exact-ID branch fallback 三类，并固定 precedence 为前者优先、后者仅作缺失时的受限补位。
 - 2026-03-31：完成 `S0E-4E/P2`，已把 attribution ambiguity 收口为 missing / conflicting / multi-candidate / invalid-shape 四类 fail-closed stop 条件，并固定至少一条 deterministic sample 与一条 ambiguity stop sample 的代表性期望。
+- 2026-03-31：完成 `S0E-4E/P3`，已把 `4E -> 7A` 的 attribution result payload 与 limited rollout unblocking criteria 固定下来，后续自动 PR-event mirroring 可以在 consume-or-stop 边界上接线，而无需重议 attribution ownership。

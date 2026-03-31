@@ -84,6 +84,7 @@
 - `P0-C1-S1` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
 - `P1-C1-S1S2` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
 - `P2-C1-S1S2` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
+- `P3-C1-S1S2` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
@@ -115,6 +116,7 @@
 - A later automatic PR-event proposal can point to one explicit attribution contract instead of re-arguing ownership in the workflow slice.
 - The repo has one explicit ordered list of attribution candidate surfaces and does not silently treat PR prose or fuzzy title matching as ownership evidence.
 - The repo has one explicit ambiguity policy that classifies missing, conflicting, and multi-candidate attribution as stop conditions rather than soft warnings.
+- The repo has one explicit handoff payload shape that tells `S0E-7A` whether it may continue to mirror verification or must stop before verification starts.
 
 ## Stability (what stable means)
 
@@ -129,7 +131,7 @@
 - `P0` is now completed: source-log attribution is now explicitly owned as its own slice, and automatic PR-event mirroring remains blocked until this attribution problem is solved deterministically.
 - `P1` is now completed: the first allowed attribution surfaces and their precedence are now fixed, so future automatic PR-event mirroring has a bounded candidate set instead of an open-ended search problem.
 - `P2` is now completed: the first ambiguity stop conditions and representative sample expectations are now fixed, so attribution defects are classified as explicit fail-closed outcomes instead of vague review notes.
-- `P3` remains open: handoff back to automatic CI rollout is not yet completed.
+- `P3` is now completed: the handoff payload shape and limited automatic-rollout unblocking criteria are now fixed, so `S0E-7A` has an explicit consume-or-stop contract instead of an informal dependency on attribution prose.
 
 ## P0 (Boundary contract | v1)
 
@@ -209,6 +211,41 @@
   - retained evidence is sufficient to explain why attribution stopped without consulting raw runner logs as the primary source of truth.
 - `P2` does not yet require a full automatic `pull_request` rollout sample. The representative goal is narrower: prove that attribution can distinguish one clean deterministic case from one fail-closed ambiguous case with traceable evidence.
 
+## P3 (Handoff back to automatic mirroring | v1)
+
+### P3-C1-S1 (Attribution output handoff contract fixed | v1)
+
+- `P3` now fixes the structured handoff payload that any future automatic attribution step must emit before `S0E-7A` may invoke the mirror verifier.
+- The first handoff shape is now fixed as one machine-readable result payload with these minimum fields:
+  - `mode`: fixed identifier for attribution-output payloads;
+  - `result`: one of `resolved`, `stop-missing-attribution`, `stop-conflicting-attribution`, `stop-multi-candidate-attribution`, or `stop-invalid-attribution-shape`;
+  - `repository`: repository slug used for PR-event inspection;
+  - `pr_ref`: the PR number or URL being evaluated;
+  - `pr_url`: canonical PR URL when it is available;
+  - `source_log_path`: exact repo-relative path only when `result = resolved`, otherwise blank;
+  - `winning_surface`: one of `explicit-provenance`, `pr-body-log-row`, `exact-id-branch-fallback`, or blank when attribution does not resolve;
+  - `consulted_surfaces`: ordered list of the allowed surfaces actually inspected;
+  - `stop_reason`: exact ambiguity class when the result is a stop outcome, otherwise blank;
+  - `eligible_for_secondary_enforcement`: boolean that is true only when attribution resolved to one exact owner and false for every stop outcome.
+- The handoff rule back to `S0E-7A` is now fixed as:
+  - `S0E-7A` may continue to mirror verification only when `eligible_for_secondary_enforcement = true`, `result = resolved`, and `source_log_path` is present in exact repo-relative form;
+  - otherwise `S0E-7A` must stop before contract verification begins and surface the attribution stop through its retained evidence and operator-facing status.
+- This keeps the boundary explicit: `4E` resolves ownership, while `7A` verifies the PR body only after ownership is already trustworthy enough to consume as an input.
+
+### P3-C1-S2 (Limited automatic-rollout unblocking criteria fixed | v1)
+
+- `P3` now fixes what must be true before the repo may widen from manual attribution replay into limited automatic PR-event mirroring.
+- The unblocking criteria are now fixed as:
+  - the attribution step can emit the `P3` handoff payload in both a resolved case and a stop case without falling back to prose-only explanations;
+  - at least one representative resolved sample shows that `S0E-7A` can consume the emitted `repository + pr_ref + source_log_path` tuple directly without any extra operator-supplied ownership hint;
+  - at least one representative stop sample shows that `S0E-7A` halts before verifier execution and preserves the attribution stop reason as retained evidence rather than converting it into a verifier failure;
+  - the resolved-vs-stop boundary is deterministically derived from the allowed attribution surfaces only, not from labels, title prose, or human triage after the run starts;
+  - retained evidence is sufficient to reconstruct whether the workflow stopped in attribution or failed later in mirror verification.
+- Even after these conditions are met, the first widening should still be intentionally limited:
+  - prefer one narrow PR-event surface first rather than all `pull_request` activity at once;
+  - keep attribution as the gating stage ahead of verification rather than collapsing both into one opaque workflow outcome.
+- `P3` therefore closes the current slice with one explicit consume-or-stop interface and one explicit bar for limited automatic rollout. A later implementation slice may wire that interface into GitHub Actions, but it should not need to re-argue attribution ownership semantics.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -241,8 +278,8 @@
 
 ### P3 (Handoff back to automatic mirroring)
 
-- `P3-C1-S1`: define what attribution output shape `S0E-7A` may consume for future automatic triggers
-- `P3-C1-S2`: define when the attribution contract is strong enough to unblock limited automatic PR-event mirroring
+- [x] `P3-C1-S1`: define what attribution output shape `S0E-7A` may consume for future automatic triggers
+- [x] `P3-C1-S2`: define when the attribution contract is strong enough to unblock limited automatic PR-event mirroring
 
 ## Execution Checklist (unchecked)
 
@@ -262,8 +299,8 @@
 
 ### P3 (Handoff back to automatic mirroring)
 
-- [ ] `P3-C1-S1`: define attribution output handoff contract
-- [ ] `P3-C1-S2`: define unblocking criteria for limited automatic rollout
+- [x] `P3-C1-S1`: define attribution output handoff contract
+- [x] `P3-C1-S2`: define unblocking criteria for limited automatic rollout
 
 ## Evidence (reserved)
 
@@ -313,8 +350,22 @@
 - observed:
   - `S0E-4E/P2` now fixes both the stop taxonomy and the first sample expectations: missing/conflicting/multi-candidate/invalid-shape attribution all stop before verification, and later rollout must be able to show one deterministic owner case plus one fail-closed ambiguity case with retained evidence
 
+### P3-C1-S1S2 (handoff payload shape and rollout unblocking criteria fixed | 2026-03-31)
+
+- headSha: `113fc2e4`
+- artifacts:
+  - `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
+  - `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
+  - `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+  - `scripts/issues/create_pr_from_plan.py`
+- expected:
+  - the repo should define one structured attribution result payload that `S0E-7A` can consume directly, and it should state what evidence boundary must be met before limited automatic PR-event mirroring is allowed to widen
+- observed:
+  - `S0E-4E/P3` now fixes both: future attribution must emit one consume-or-stop payload with explicit `result`, `source_log_path`, `winning_surface`, and `eligible_for_secondary_enforcement` semantics, and limited rollout widening now requires one resolved handoff sample plus one attribution-stop sample that halts before mirror verification
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-31: completed `P3` by fixing the attribution handoff payload shape and the limited automatic-rollout unblocking criteria for future PR-event mirroring.
 - 2026-03-31: completed `P2` by fixing ambiguity stop conditions and the first deterministic-versus-ambiguous sample expectations for future PR-event mirroring.
 - 2026-03-31: completed `P1` by fixing the first bounded attribution candidate set and precedence order for future PR-event mirroring.
 - 2026-03-31: re-homed this slice from `S0E-7B` to `S0E-4E`, because the unresolved problem is fundamentally PR-contract attribution rather than workflow-retention policy.
