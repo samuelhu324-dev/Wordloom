@@ -132,6 +132,8 @@ Canonical notes:
 - `Evidence Footer` is reserved for drills/evidence-carrying logs only.
 - If the log does not qualify for Evidence Footer, the whole section must be omitted.
 - Fallback to commit footer is not allowed.
+- `Evidence Footer` must be rendered only from the log-owned `Evidence Footer Source` block.
+- Each Evidence Footer row must keep the canonical source shape with inline-code-wrapped stage token and inline-code-wrapped artifact path.
 
 Canonical shape:
 
@@ -162,7 +164,8 @@ Canonical shape:
 
 ## Evidence Footer
 
-- <reserved for canonical low-cardinality footer line shape to be fixed in S0E-5D/P1>
+- `P1-C1-S1` | artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json`
+- `P2-C1-S1` | artifact: `docs/issues/pr-create-preflight-S0E-5C-p2-stop-branch-collision.json`
 
 ## Development Link
 
@@ -174,4 +177,18 @@ Canonical shape:
 - Evidence Footer applies only to drills/evidence class.
 - Evidence Footer must be omitted entirely when not applicable.
 - Commit-footer fallback is forbidden.
-- The remaining open question for `S0E-5D/P1` is one canonical low-cardinality line shape and one canonical extraction source from the log.
+
+## Evidence Footer Source Contract
+
+- The canonical source block name is `Evidence Footer Source`.
+- The source block must live under `PR Summary Inputs (optional)`.
+- Each source line must use this exact shape:
+
+```md
+- `P1-C1-S1` | artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json`
+```
+
+- The stage token must use inline code.
+- The artifact path must use inline code.
+- The rendered PR `Evidence Footer` section must preserve the same line shape and order.
+- Full details are recorded in `docs/issues/evidence-footer-S0E-5D-p1-canonical-spec.md`.

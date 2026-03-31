@@ -95,6 +95,7 @@
 - The current hard gate is still closer to a lifecycle structural gate than to a full body-shape gate; it catches missing sections and structural lifecycle defects, but it does not yet enforce canonical formatting shape.
 - `S0E-5D` is the dedicated place to fix that contract before any further GitHub Actions rollout is considered.
 - `P0` is now completed: one first-cut canonical body spec has been fixed for issue creation, issue conclusion, and PR body shape, including contiguous metadata rows, explicit section order, backtick rules, and the rule that Evidence Footer is drills/evidence-only with no commit-footer fallback.
+- `P1` is now completed: Evidence Footer now has one fixed extraction source, one fixed rendered line shape, explicit omission semantics, and an explicit rule that both the stage token and artifact path must be wrapped in inline code.
 
 ## P0 (Canonical body families | v1)
 
@@ -121,31 +122,40 @@
   - omitted entirely when not applicable;
   - no commit-footer fallback.
 
+## P1 (Evidence Footer contract | v1)
+
+### P1-C1-S1 (Evidence Footer source and rendered shape fixed | v1)
+
+- The canonical Evidence Footer spec is now recorded in `docs/issues/evidence-footer-S0E-5D-p1-canonical-spec.md`.
+- Evidence Footer now has one explicit log-owned extraction source:
+  - block name: `Evidence Footer Source`;
+  - location: under `PR Summary Inputs (optional)`.
+- The canonical source line shape is now fixed as:
+  - ``- `P1-C1-S1` | artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json```.
+- The stage token and artifact path must both use inline code.
+- The rendered PR `Evidence Footer` section must preserve the exact same line shape and source order.
+- If the source block is absent, the entire `Evidence Footer` section must be omitted.
+- Commit-footer fallback, phase-heading fallback, and mixed inferred footer styles are all forbidden.
+
 ## Carry-Forward Questions For P1/P2
 
-- `P1` still needs one canonical low-cardinality Evidence Footer line shape and one canonical extraction source from the log.
 - `P2` still needs the hard-gate body-shape check list derived from this canonical spec.
 
-## Suggested Direction For Evidence Footer Source (not fixed yet)
+## P1-Locked Inputs For P2
 
-- The cleanest next-step design is to extract Evidence Footer from one explicit log-owned source instead of inferring it from mixed evidence sections or commit subjects.
-- A practical direction is:
-  - keep one dedicated machine-facing subsection in the log, such as a reserved `Evidence Footer Source` block under `PR Summary Inputs` or under `Evidence`;
-  - make every source line already match the one canonical footer shape;
-  - let PR create and PR rewrite consume only that source block;
-  - if the source block is absent and the log is not drills/evidence class, omit the entire footer section.
-- This keeps cardinality low because the renderer no longer chooses between phase-heading-style and commit-style; it always consumes one source shape and either renders it or omits the footer entirely.
+- Hard gate can now validate the presence or omission of `Evidence Footer` using one explicit source contract instead of mixed inference rules.
+- Hard gate can now reject footer rows that do not match the exact canonical line shape.
+- Generator and rewriter repair work can now target one single footer source block instead of reconciling multiple fallback styles.
 
 ## Plan (draft)
 
-- `P1-C1-S1`: fix Evidence Footer presence/omission/fallback contract
 - `P2-C1-S1`: fix hard-gate body-shape checks beyond simple section presence
 - `P3-C1-S1`: decide repair order across generators, rewriters, and gate checks
 
 ## Execution Checklist (unchecked)
 
 - [x] `P0-C1-S1`: canonical issue-creation / issue-conclusion / PR body families drafted
-- [ ] `P1-C1-S1`: Evidence Footer contract fixed
+- [x] `P1-C1-S1`: Evidence Footer contract fixed
 - [ ] `P2-C1-S1`: hard-gate body-shape check scope fixed
 - [ ] `P3-C1-S1`: repair order fixed
 
@@ -166,7 +176,23 @@
   - the canonical spec now fixes contiguous metadata rows, creation/conclusion/PR body section order, inline-code rules, and the operator rule that Evidence Footer is drills/evidence-only with no commit-footer fallback
   - one carry-forward source-extraction direction is now documented for the next step so the footer can move toward one low-cardinality source instead of mixed inference rules
 
+### P1-C1-S1 (canonical evidence footer source and line shape fixed | 2026-03-31)
+
+- artifacts:
+  - `docs/issues/evidence-footer-S0E-5D-p1-canonical-spec.md`
+  - `docs/issues/body-contract-S0E-5D-p0-canonical-spec.md`
+  - `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`
+- expected:
+  - one explicit source block should become the only allowed Evidence Footer input for PR create and PR rewrite
+  - one exact line shape should remove ambiguity between stage token formatting and artifact-path formatting
+  - omitted footer and rendered footer should both become mechanically checkable by a later hard gate
+- observed:
+  - the contract now fixes `Evidence Footer Source` under `PR Summary Inputs (optional)` as the only extraction source
+  - the contract now fixes one exact line shape where both the stage token and artifact path are inline-code wrapped
+  - omission semantics are now explicit when the source block is absent, and all fallback styles are forbidden
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-31: created `S0E-5D` as a dedicated follow-up for body contract normalization, Evidence Footer unification, and hard-gate shape checks after live object drift was confirmed across representative issues and PRs.
 - 2026-03-31: completed `P0` by converting operator-supplied formatting rules into one canonical body spec for issue creation, issue conclusion, and PR body shape, and by pre-locking Evidence Footer to drills/evidence-only with no commit-footer fallback.
+- 2026-03-31: completed `P1` by fixing one explicit `Evidence Footer Source` block, one exact footer line shape, and the rule that both the stage token and artifact path must use inline code while all fallback footer styles remain forbidden.
