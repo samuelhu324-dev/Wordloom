@@ -83,6 +83,7 @@
 - `P0-C1-S1` | artifact: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
 - `P1-C1-S1S2` | artifact: `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
 - `P2-C1-S1S2` | artifact: `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+- `P3-C1-S1S2` | artifact: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
@@ -114,6 +115,7 @@
 - The future Actions workflow has explicit failure surfacing and artifact retention semantics.
 - The first executable Actions scaffold now exists with explicit workflow inputs, mirror-verifier artifact outputs, and secondary-enforcement wording in the workflow summary.
 - The retained artifact set is now explicit and machine-readable enough for later CI policy or audits to reason about a mirror-verifier run without reading screenshots or raw logs only.
+- The rollout boundary and adoption criteria are now explicit enough to justify why automatic `pull_request` rollout is deferred and what evidence would be required before widening that boundary.
 
 ## Stability (what stable means)
 
@@ -128,7 +130,7 @@
 - `P0` is now completed: GitHub Actions is explicitly scoped as secondary enforcement, not as the primary publish-time owner.
 - `P1` is now completed: the first minimal mirror-verifier workflow shape is now fixed and scaffolded in GitHub Actions, with explicit manual inputs, explicit artifact outputs, and summary wording that preserves the secondary-enforcement boundary.
 - `P2` is now completed: retained artifacts, artifact-manifest shape, and check-surface failure signaling are now fixed for the first mirror-verifier workflow.
-- `P3` remains open: rollout boundary and CI adoption criteria are not yet completed.
+- `P3` is now completed: the first rollout boundary remains intentionally manual-only, and the success criteria for later automatic CI adoption are now fixed.
 
 ## P0 (Boundary contract | v1)
 
@@ -172,8 +174,8 @@
 
 ### P3 (Rollout boundary)
 
-- `P3-C1-S1`: define which PR events and branches should run mirrored verification first
-- `P3-C1-S2`: define success criteria for adopting the mirrored workflow in CI
+- [x] `P3-C1-S1`: define which PR events and branches should run mirrored verification first
+- [x] `P3-C1-S2`: define success criteria for adopting the mirrored workflow in CI
 
 ## Execution Checklist (unchecked)
 
@@ -193,8 +195,8 @@
 
 ### P3 (Rollout boundary)
 
-- [ ] `P3-C1-S1`: define initial workflow trigger boundary
-- [ ] `P3-C1-S2`: define CI adoption success criteria
+- [x] `P3-C1-S1`: define initial workflow trigger boundary
+- [x] `P3-C1-S2`: define CI adoption success criteria
 
 ## Evidence (reserved)
 
@@ -293,9 +295,49 @@
 - observed:
   - `S0E-7A/P2` now fixes both: the workflow retains five explicit evidence files, emits a machine-readable artifact manifest, writes GitHub check annotations, and preserves secondary-enforcement wording across summary and retained artifacts
 
+## P3 (Rollout boundary and CI adoption criteria | v1)
+
+### P3-C1-S1 (Initial rollout boundary fixed | v1)
+
+- The first rollout boundary should remain intentionally narrow: the mirror-verifier workflow stays `workflow_dispatch`-only in v1 rather than auto-subscribing to `pull_request` events.
+- The reason is input determinism, not lack of confidence in GitHub Actions itself:
+  - the current verifier requires an explicit `source_log_path` plus `pr_ref`;
+  - the repository does not yet have a stable machine rule that can derive the correct source log from every PR event without risking false attribution or multi-log ambiguity;
+  - widening the trigger surface before that mapping is explicit would create noisy or misleading enforcement instead of trustworthy secondary enforcement.
+- The initial eligible run boundary is therefore fixed as:
+  - manually triggered runs only;
+  - operator supplies the exact source log path and PR ref;
+  - preferred first-class use is PRs created through the local `S0E-5C/P4` path, because that path already treats one source log as the contract owner for the live PR body.
+- `P3` therefore does not widen the trigger boundary yet. It explicitly chooses correctness of attribution over early automation breadth.
+
+### P3-C1-S2 (CI adoption success criteria fixed | v1)
+
+- Automatic CI rollout should be considered only after the manual mirror-verifier path proves that its attribution, evidence retention, and UI surfacing are stable enough to trust.
+- The first adoption criteria are now fixed as:
+  - at least one representative `pass` run exists with complete retained artifacts: live body, verify result JSON, console JSON, workflow summary markdown, and artifact manifest JSON;
+  - at least one representative `drift-detected` or non-pass run exists whose summary wording, check annotations, manifest classification, and terminal job result all agree on the same outcome;
+  - operators can determine the verdict from summary/check surfaces plus retained artifacts without needing raw runner logs as the primary evidence source;
+  - a future automatic trigger proposal must also explain how `source_log_path` will be derived or supplied deterministically for `pull_request` events.
+- Only after those conditions are met should a later slice widen the workflow from manual replay into automatic PR-event mirroring.
+- This keeps the rollout honest: CI adoption is gated on attribution and evidence quality, not merely on the existence of a runnable workflow.
+
+### P3-C1-S1S2 (manual-only rollout boundary and CI adoption criteria fixed | 2026-03-31)
+
+- headSha: `ecc21e6a`
+- artifacts:
+  - `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
+  - `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+  - `scripts/issues/verify_live_pr_body_contract.py`
+  - `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`
+- expected:
+  - the repo should decide whether the first rollout should auto-subscribe to PR events or remain manual, and it should state what evidence is required before widening that boundary
+- observed:
+  - `S0E-7A/P3` now fixes both points: the initial rollout remains manual-only because `source_log_path` is not yet deterministically derivable from PR events, and future automatic CI adoption now has explicit pass/fail evidence and attribution criteria
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-31: re-scoped `S0E-7A` to GitHub-side concerns only, leaving Actions as secondary enforcement and moving local log stability / gate policy to `S0E-6B`.
 - 2026-03-31: completed `P0` by fixing the GitHub Actions ownership boundary in one place: Actions is not the primary publish owner and should mirror the same verifier semantics already fixed in the local create path.
 - 2026-03-31: completed `P1` by fixing and scaffolding the first manual mirror-verifier workflow in GitHub Actions, including explicit inputs, explicit artifacts, and summary wording that preserves the secondary-enforcement boundary.
 - 2026-03-31: completed `P2` by fixing the retained artifact set, adding a machine-readable artifact manifest, and surfacing mirror-verifier results through workflow summary, GitHub check annotations, and artifact-first retained evidence.
+- 2026-03-31: completed `P3` by explicitly keeping the first rollout manual-only, deferring automatic PR-event mirroring until source-log attribution is deterministic, and fixing the first CI adoption success criteria.

@@ -210,6 +210,8 @@
 - [x] `P84`：`S0E-7A/P1-C1-S2` 已固定 secondary-enforcement 的 failure surfacing：workflow summary 必须明确“post-publish drift detected”而非“prevented publish”，且必须在 artifact 上传后再 fail job
 - [x] `P85`：`S0E-7A` 已完成 `P2-C1-S1`，现已固定 mirror-verifier 的 retained artifact set 为 live body、verify result JSON、console JSON、workflow summary markdown、artifact manifest JSON 五类证据
 - [x] `P86`：`S0E-7A/P2-C1-S2` 已固定 failure surfacing 的三层面：workflow summary、GitHub check annotations、以及 retained evidence manifest，且 failure classification 必须保持 secondary-enforcement 语义
+- [x] `P87`：`S0E-7A` 已完成 `P3-C1-S1`，现已固定第一轮 rollout boundary 继续保持 `workflow_dispatch` only，而不提前接入 `pull_request` 事件，因为当前还没有稳定的 `source_log_path` 自动归属规则
+- [x] `P88`：`S0E-7A/P3-C1-S2` 已固定 CI adoption success criteria：至少需要 representative pass/non-pass 两类 retained evidence，并且未来自动触发方案必须先解释 `source_log_path` 的确定性来源
 
 ## Current Status（进展摘要）
 
@@ -250,6 +252,7 @@
 - `S0E-7A` 已重构为纯 GitHub-side slice：当前只讨论 Actions mirror-verifier workflow、artifact publishing 与 failure surfacing，不再混入 log stability policy；
 - `S0E-7A` 已完成 `P1`：第一版 GitHub Actions mirror-verifier workflow 已以手动触发方式落地，并已固定输入合同、artifact 输出与 secondary-enforcement wording；下一步应继续收口 `P2` 的 retained artifacts 与 failure surfacing 细则，而不是过早扩大自动触发范围；
 - `S0E-7A` 已完成 `P2`：mirror-verifier 的 retained artifact set、artifact manifest 与 UI/check surfaces 已经固定，因此后续 `P3` 可以专注讨论触发边界与 adoption criteria，而不必再回头争论 run evidence 怎么保存；
+- `S0E-7A` 已完成 `P3`：第一轮 rollout 现明确继续保持 manual-only，后续是否扩大到自动 PR-event mirroring 现在有了清晰的 attribution 前提和 adoption criteria，因此该 slice 的 v1 决策链已闭合；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
@@ -404,3 +407,4 @@
 - 2026-03-31：重构 `S0E-7A` 的职责边界，现仅保留 GitHub Actions secondary enforcement、artifact publishing 与 failure surfacing 相关内容。
 - 2026-03-31：完成 `S0E-7A/P1`，已新增第一版手动触发的 mirror-verifier workflow，并固定 secondary-enforcement summary wording 与 artifact-first fail path，为后续 `P2/P3` 留出 retained-evidence 与 rollout boundary 的独立决策空间。
 - 2026-03-31：完成 `S0E-7A/P2`，已为 mirror-verifier workflow 固定 retained artifact set、artifact manifest JSON，以及 workflow summary + check annotations + retained evidence 的三层 failure surfacing 结构。
+- 2026-03-31：完成 `S0E-7A/P3`，已明确第一轮 rollout 继续保持 manual-only，并把未来自动 PR-event mirroring 所需的 attribution 前提与 CI adoption success criteria 一并写成显式合同。
