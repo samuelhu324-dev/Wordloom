@@ -28,6 +28,7 @@
   **phase_log_16**: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`
   **phase_log_17**: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
   **phase_log_18**: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
+  **phase_log_19**: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -221,6 +222,10 @@
 - [x] `P94`：`S0E-4E/P2-C1-S2` 已固定代表性样本期望：后续 rollout widening 前至少需要一条 deterministic owner sample 和一条 ambiguity stop sample，而且 ambiguity case 不得在 guessed source log 上继续 verify
 - [x] `P95`：`S0E-4E` 已完成 `P3-C1-S1`，现已固定 `4E -> 7A` 的 attribution handoff payload：只有 `result=resolved`、`source_log_path` 精确存在且 `eligible_for_secondary_enforcement=true` 时，mirror verifier 才能继续执行
 - [x] `P96`：`S0E-4E/P3-C1-S2` 已固定 limited automatic-rollout unblocking criteria：至少需要一条 resolved handoff sample 和一条 attribution-stop sample，并且 stop case 必须在 verifier 之前停下并保留独立 attribution evidence
+- [x] `P97`：已新建 `S0E-7B`，用于承接 attribution payload 的实现、`7A` consume-or-stop 接线，以及 resolved/stop 两类端到端样本验证，而不再继续挤压 `S0E-4E` 的 contract scope
+- [x] `P98`：`S0E-7B` 已完成 `P0`，现已固定 `S0E-4E` 只继续拥有 attribution contract，而 planner/result JSON 与 GitHub-side integration implementation 由 `S0E-7B` 独立承接
+- [x] `P99`：`S0E-7B` 已完成 `P1-C1-S1`，现已新增 attribution resolver entrypoint，可从 trusted explicit provenance、canonical PR-body `Log:` row 与 exact-ID branch fallback 产出 `4E -> 7A` consume-or-stop payload
+- [x] `P100`：`S0E-7B/P1-C1-S2` 已固定 retained attribution artifact path pair：normalized PR payload snapshot JSON 与 attribution result JSON 都使用稳定 repo-relative path reporting，便于后续 `7A` 直接接线
 
 ## Current Status（进展摘要）
 
@@ -263,6 +268,7 @@
 - `S0E-7A` 已完成 `P2`：mirror-verifier 的 retained artifact set、artifact manifest 与 UI/check surfaces 已经固定，因此后续 `P3` 可以专注讨论触发边界与 adoption criteria，而不必再回头争论 run evidence 怎么保存；
 - `S0E-7A` 已完成 `P3`：第一轮 rollout 现明确继续保持 manual-only，后续是否扩大到自动 PR-event mirroring 现在有了清晰的 attribution 前提和 adoption criteria，因此该 slice 的 v1 决策链已闭合；
 - `S0E-4E` 已完成 `P3`：`PR event -> source_log_path` attribution 现已具有明确的 consume-or-stop handoff contract，因此 `S0E-7A` 后续接入自动 PR-event mirroring 时不必再猜什么时候 verify、什么时候应在 attribution 阶段先停下；
+- `S0E-7B` 已完成 `P1`：当前已经有一条独立 attribution resolver entrypoint，可直接输出 `4E -> 7A` consume-or-stop payload 与 normalized PR payload snapshot；下一步只需把它接进 GitHub Actions 并补 resolved/stop 样本，而不必再重做 attribution contract；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
@@ -364,6 +370,7 @@
 - 2026-03-29：补充了 stacked PR review 语义、aggregate PR title 的 phase-span 优先级，以及 mixed working branch / parent-log 落点规则，避免把 GitHub ancestry-heavy commit 视图误读成真实增量范围。
 - 2026-03-29：`S0E-4B` 的真实 issue `#295` 已确认挂到 `wordloom Board`，并且 live PR `#296` 已在上游合并后重新对齐到 `main`，因此这条 follow-up 已基本完成收口。
 - 2026-03-29：新增 `S0E-2D` 与 `S0E-2E` 两条 follow-up logs，把 enriched issue creation 和 post-merge issue conclusion 明确拆成两个独立 contract，而不再只停留在口头记忆里的“2D/2E”。
+- 2026-04-01：`S0E-7B/P1` 已完成：新增 attribution resolver entrypoint，并固定 normalized PR payload snapshot + attribution result JSON 这对 retained artifact paths，为后续 `S0E-7A` consume-or-stop 接线提供直接输入。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
 - 2026-03-29：完成 `S0E-2D/P3`，历史真实 issue `#288` 已按当前 creation body contract 审核并回收，当前 `S0E-2D` 也已成功创建真实 sample issue `#297` 并完成 write-back。
@@ -422,3 +429,4 @@
 - 2026-03-31：完成 `S0E-4E/P1`，已把 attribution candidate surfaces 收口为 explicit provenance / canonical PR-body `Log:` row / exact-ID branch fallback 三类，并固定 precedence 为前者优先、后者仅作缺失时的受限补位。
 - 2026-03-31：完成 `S0E-4E/P2`，已把 attribution ambiguity 收口为 missing / conflicting / multi-candidate / invalid-shape 四类 fail-closed stop 条件，并固定至少一条 deterministic sample 与一条 ambiguity stop sample 的代表性期望。
 - 2026-03-31：完成 `S0E-4E/P3`，已把 `4E -> 7A` 的 attribution result payload 与 limited rollout unblocking criteria 固定下来，后续自动 PR-event mirroring 可以在 consume-or-stop 边界上接线，而无需重议 attribution ownership。
+- 2026-04-01：新增 `S0E-7B` 并完成 `P0`，已把 attribution payload implementation、`7A` consume-or-stop 接线，以及 resolved/stop 端到端样本验证独立成新的 GitHub-side follow-up。
