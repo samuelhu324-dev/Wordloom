@@ -25,6 +25,8 @@
   **phase_log_13**: `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`
   **phase_log_14**: `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`
   **phase_log_15**: `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`
+  **phase_log_16**: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`
+  **phase_log_17**: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -195,6 +197,13 @@
 - [x] `P71`：`S0E-5C` 现已进入 `stable`，因为 guarded `PR create` 的分解、front-half evidence、publish boundary ownership 与 post-apply verification placement 都已收口
 - [x] `P72`：`S0E-5C` 已完成 `P4`，`create_pr_from_plan.py` 现已把 post-apply live verifier 直接接到真实 `gh pr create` 后面，并把验证状态与 artifact 路径写回同一份 `pr-create result` JSON
 - [x] `P73`：`S0E-5C/P4` 已用历史样本 `S0E-5B/#308` 完成非破坏性验证，`docs/issues/pr-prep-S0E-5B-real-post-apply-live-body.md` 与 `...-verify-result.json` 已证明新执行顺序可产出稳定证据
+- [x] `P74`：已新建 `S0E-6B`，用于收口 AI-authored logs 的本地 gate / `stable` 后验 gate 策略，并把这部分从 GitHub Actions slice 中拆开
+- [x] `P75`：`S0E-6B` 已完成 `P0`，现已固定 local log gates 只应约束 automation-facing surfaces 与 `stable` 转换质量，而不应演化成 prose linter
+- [x] `P76`：`S0E-7A` 已重构回 GitHub-side slice，现仅负责 Actions secondary enforcement、artifact publishing 与 CI failure surfacing 边界
+- [x] `P77`：`S0E-6B` 已完成 `P1`，现已固定第一版 local log gate 只检查五类 deterministic surfaces：frontmatter、required sections、`PR Summary Inputs` 形状、`Evidence Footer Source` 行型、placeholder hygiene
+- [x] `P78`：`S0E-6B/P1` 已固定四类最小 failure taxonomy：`missing-required-block`、`invalid-structured-block`、`placeholder-left`、`stable-contradiction`
+- [x] `P79`：`S0E-6B` 已完成 `P2`，现已固定第一轮必须 hard-require pass gate 的入口只包括 `log -> issue draft/create` 与 `log -> PR prep/create`
+- [x] `P80`：`S0E-6B/P2` 已固定 advisory-only rollout boundary：普通 draft authoring、非 automation logs、以及 aggregator-only parent logs 先不做 hard block
 
 ## Current Status（进展摘要）
 
@@ -228,6 +237,10 @@
 - `S0E-5C` 已完成 `P1`：当前结论是不允许把现有 lifecycle pre-gate 原样抬升为整条 create path 的总闸门，只有 create preflight 能把它作为 issue-readiness 前置层，而 branch materialization、remote publish、live PR publish 必须继续拆开；
 - `S0E-5C` 已完成 `P2`：`#309` 现已作为 live representative sample 证明 bounded front half 可以同时产出 pass 和 stop 两类结果，而且两条路径都明确停在 `S4-local-branch-materialization` 之前；
 - `S0E-5C` 已完成 `P4` 并保持 `stable`：真实 `PR create` 路径现已按 `S6 -> live verify -> S7` 执行，并会把 post-apply verification status、live body artifact 与 verify result artifact 一并写回 `pr-create result`；若后续还要深化 guarded rollout，也仍只建议单独评估 `S4/S5` targeted rules 或补充 secondary GitHub Actions enforcement；
+- `S0E-6B` 已建立并完成 `P0`：本地 AI-authored logs 现已明确需要窄面 contract gates，且 `stable` 也已明确需要更强的后验 gate；下一步应先定义最小 deterministic checks，而不是直接上全量 lint；
+- `S0E-6B` 已完成 `P1`：第一版 local log gate 的 deterministic checks 与最小 failure taxonomy 都已固定，下一步可以转入“哪些 automation entrypoints 必须要求 pass gate”这个更具体的问题，而不必继续停留在抽象原则层；
+- `S0E-6B` 已完成 `P2`：第一轮 automation entry-gate rollout boundary 已固定，issue/PR automation 入口现在被定义为 hard-require pass gate，而普通 authoring 与 aggregator-only 路径仍保持 advisory-only；
+- `S0E-7A` 已重构为纯 GitHub-side slice：当前只讨论 Actions mirror-verifier workflow、artifact publishing 与 failure surfacing，不再混入 log stability policy；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
@@ -375,3 +388,7 @@
 - 2026-03-31：完成 `S0E-6A/P3-P4`，已把 parent/phase templates 回写为双轨证据 authoring 规则，迁移代表性旧样本 `S0E-5C` / `S0E-4C`，并生成 `S0E-6A` 的本地 issue draft sample，因此 `S0E-6A` 现已进入 `stable`。
 - 2026-03-31：完成 `S0E-5C/P3`，现已固定 `S6` live PR publish 继续为 operator-held boundary，post-apply live verify 位于 `S6` 之后、`S7` 之前，而 GitHub Actions verification 只作为后续 secondary enforcement；因此 `S0E-5C` 现已进入 `stable`。
 - 2026-03-31：完成 `S0E-5C/P4`，现已把 reusable live PR verifier 直接接入真实 `create_pr_from_plan.py` 执行链路，并用历史样本 `S0E-5B/#308` 非破坏性验证 `S6 -> live verify -> S7` 顺序与结果落盘行为。
+- 2026-03-31：新增 `S0E-6B` 并完成 `P0`，已先收口本地 AI-authored logs 的 gate 与 `stable` 后验 gate 策略，作为后续 local deterministic checks 的前置合同。
+- 2026-03-31：完成 `S0E-6B/P1`，已把第一版 local deterministic checks 与最小 failure taxonomy 正式收口，后续 `P2` 可直接转向 automation entrypoint gating。
+- 2026-03-31：完成 `S0E-6B/P2`，已把第一轮 hard-require gate entrypoints 与 advisory-only rollout boundary 固定下来，可继续进入 `stable` transition gate 设计。
+- 2026-03-31：重构 `S0E-7A` 的职责边界，现仅保留 GitHub Actions secondary enforcement、artifact publishing 与 failure surfacing 相关内容。
