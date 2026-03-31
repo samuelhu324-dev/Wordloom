@@ -208,6 +208,8 @@
 - [x] `P82`：`S0E-6B/P3` 已固定 `stable` gate 的执行归属为 local-first / CI-mirror-later：本地 gate 先作为 authoritative owner，GitHub Actions 只在后续 `S0E-7A` 中作为 secondary mirror enforcement
 - [x] `P83`：`S0E-7A` 已完成 `P1-C1-S1`，现已固定第一版 GitHub Actions mirror-verifier workflow 先以 `workflow_dispatch` 启动，并显式接收 `source_log_path`、`pr_ref`、`repo` 输入，产出 live body / result JSON / console JSON 三类 artifact
 - [x] `P84`：`S0E-7A/P1-C1-S2` 已固定 secondary-enforcement 的 failure surfacing：workflow summary 必须明确“post-publish drift detected”而非“prevented publish”，且必须在 artifact 上传后再 fail job
+- [x] `P85`：`S0E-7A` 已完成 `P2-C1-S1`，现已固定 mirror-verifier 的 retained artifact set 为 live body、verify result JSON、console JSON、workflow summary markdown、artifact manifest JSON 五类证据
+- [x] `P86`：`S0E-7A/P2-C1-S2` 已固定 failure surfacing 的三层面：workflow summary、GitHub check annotations、以及 retained evidence manifest，且 failure classification 必须保持 secondary-enforcement 语义
 
 ## Current Status（进展摘要）
 
@@ -247,6 +249,7 @@
 - `S0E-6B` 已完成 `P3`：`stable` promotion 前的更强后验 checks 与 local-first / CI-mirror-later execution policy 现已固定，因此本地 log stability contract 已从“要不要 gate”推进到“何时可以信任 stable”这一层；
 - `S0E-7A` 已重构为纯 GitHub-side slice：当前只讨论 Actions mirror-verifier workflow、artifact publishing 与 failure surfacing，不再混入 log stability policy；
 - `S0E-7A` 已完成 `P1`：第一版 GitHub Actions mirror-verifier workflow 已以手动触发方式落地，并已固定输入合同、artifact 输出与 secondary-enforcement wording；下一步应继续收口 `P2` 的 retained artifacts 与 failure surfacing 细则，而不是过早扩大自动触发范围；
+- `S0E-7A` 已完成 `P2`：mirror-verifier 的 retained artifact set、artifact manifest 与 UI/check surfaces 已经固定，因此后续 `P3` 可以专注讨论触发边界与 adoption criteria，而不必再回头争论 run evidence 怎么保存；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
@@ -400,3 +403,4 @@
 - 2026-03-31：完成 `S0E-6B/P3`，已把 `stable` promotion 需要的更强 contradiction/hygiene checks 与 local-first / CI-mirror-later execution policy 固定下来，因此本地 log stability policy 已能独立定义“何时可信地标记 stable”。
 - 2026-03-31：重构 `S0E-7A` 的职责边界，现仅保留 GitHub Actions secondary enforcement、artifact publishing 与 failure surfacing 相关内容。
 - 2026-03-31：完成 `S0E-7A/P1`，已新增第一版手动触发的 mirror-verifier workflow，并固定 secondary-enforcement summary wording 与 artifact-first fail path，为后续 `P2/P3` 留出 retained-evidence 与 rollout boundary 的独立决策空间。
+- 2026-03-31：完成 `S0E-7A/P2`，已为 mirror-verifier workflow 固定 retained artifact set、artifact manifest JSON，以及 workflow summary + check annotations + retained evidence 的三层 failure surfacing 结构。

@@ -82,6 +82,7 @@
 
 - `P0-C1-S1` | artifact: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
 - `P1-C1-S1S2` | artifact: `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+- `P2-C1-S1S2` | artifact: `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
@@ -112,6 +113,7 @@
 - The future Actions workflow shape reuses the same live PR verifier and produces explicit artifact paths instead of screenshot-only evidence.
 - The future Actions workflow has explicit failure surfacing and artifact retention semantics.
 - The first executable Actions scaffold now exists with explicit workflow inputs, mirror-verifier artifact outputs, and secondary-enforcement wording in the workflow summary.
+- The retained artifact set is now explicit and machine-readable enough for later CI policy or audits to reason about a mirror-verifier run without reading screenshots or raw logs only.
 
 ## Stability (what stable means)
 
@@ -125,7 +127,8 @@
 - `S0E-7A` is now opened as the next narrow slice after `S0E-5C/P4`.
 - `P0` is now completed: GitHub Actions is explicitly scoped as secondary enforcement, not as the primary publish-time owner.
 - `P1` is now completed: the first minimal mirror-verifier workflow shape is now fixed and scaffolded in GitHub Actions, with explicit manual inputs, explicit artifact outputs, and summary wording that preserves the secondary-enforcement boundary.
-- `P2-P3` remain open: richer artifact publishing policy, failure surfacing details, and rollout boundary are not yet completed.
+- `P2` is now completed: retained artifacts, artifact-manifest shape, and check-surface failure signaling are now fixed for the first mirror-verifier workflow.
+- `P3` remains open: rollout boundary and CI adoption criteria are not yet completed.
 
 ## P0 (Boundary contract | v1)
 
@@ -164,8 +167,8 @@
 
 ### P2 (Failure surfacing and artifacts)
 
-- `P2-C1-S1`: define artifact publishing shape for mirrored live verification
-- `P2-C1-S2`: define failure surfacing in workflow summary, checks, and retained artifacts
+- [x] `P2-C1-S1`: define artifact publishing shape for mirrored live verification
+- [x] `P2-C1-S2`: define failure surfacing in workflow summary, checks, and retained artifacts
 
 ### P3 (Rollout boundary)
 
@@ -185,8 +188,8 @@
 
 ### P2 (Failure surfacing and artifacts)
 
-- [ ] `P2-C1-S1`: define artifact publishing shape
-- [ ] `P2-C1-S2`: define failure surfacing and retained evidence
+- [x] `P2-C1-S1`: define artifact publishing shape
+- [x] `P2-C1-S2`: define failure surfacing and retained evidence
 
 ### P3 (Rollout boundary)
 
@@ -252,8 +255,47 @@
 - observed:
   - `S0E-7A/P1` now fixes both the workflow contract and the first operator-facing failure shape: a manual mirror-verifier workflow exists, it reuses the local verifier entrypoint, emits explicit artifacts, and fails with secondary-enforcement wording only after summary + artifact publication
 
+## P2 (Failure surfacing and retained artifact contract | v1)
+
+### P2-C1-S1 (Retained artifact publishing shape fixed | v1)
+
+- The mirror-verifier workflow should retain a bounded artifact set that is useful both to a human operator and to later machine-side policy checks.
+- The first retained artifact shape is now fixed as:
+  - `live-pr-body.md`: the fetched live PR body used as the verification subject;
+  - `verify-result.json`: the structured verifier result payload;
+  - `verify-console.json`: the console-emitted verifier output for direct replay/debugging;
+  - `workflow-summary.md`: a retained copy of the exact summary text written to `GITHUB_STEP_SUMMARY`;
+  - `artifact-manifest.json`: a machine-readable manifest that records run identity, result, retained artifact paths, and failure semantics.
+- This artifact set stays intentionally small. It captures the live subject, the contract verdict, the operator-facing explanation, and a single machine-readable index without turning the workflow into a generic log archive.
+
+### P2-C1-S2 (Failure surfacing across summary, checks, and retained evidence fixed | v1)
+
+- Failure surfacing should now exist on three distinct surfaces, each with a clear role:
+  - workflow summary: human-readable explanation with explicit `secondary enforcement` wording and non-deceptive phrasing about post-publish drift;
+  - check annotations: `::notice` on pass and `::error` on failure or missing retained evidence, so the GitHub run UI exposes the verdict without opening artifacts first;
+  - retained evidence: `workflow-summary.md` plus `artifact-manifest.json`, so later review or automation can reconstruct what the workflow concluded.
+- The first failure contract is now fixed as:
+  - the job still fails on non-pass result or missing result artifact;
+  - summary + retained artifacts + annotations must all be produced before the terminal failure step runs;
+  - retained evidence must explicitly classify the failure as `post-publish drift detected` rather than any language implying pre-publish prevention.
+- This gives `S0E-7A` a cleaner enforcement stack: operators get immediate UI feedback, artifacts remain inspectable after the run, and later policy slices can consume the manifest without scraping step text.
+
+### P2-C1-S1S2 (retained artifacts and failure surfacing contract fixed | 2026-03-31)
+
+- headSha: `84892992`
+- artifacts:
+  - `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
+  - `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+  - `scripts/issues/verify_live_pr_body_contract.py`
+  - `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`
+- expected:
+  - the repo should define a bounded retained-artifact contract and a multi-surface failure-signaling policy for the mirror-verifier workflow without broadening rollout scope yet
+- observed:
+  - `S0E-7A/P2` now fixes both: the workflow retains five explicit evidence files, emits a machine-readable artifact manifest, writes GitHub check annotations, and preserves secondary-enforcement wording across summary and retained artifacts
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-31: re-scoped `S0E-7A` to GitHub-side concerns only, leaving Actions as secondary enforcement and moving local log stability / gate policy to `S0E-6B`.
 - 2026-03-31: completed `P0` by fixing the GitHub Actions ownership boundary in one place: Actions is not the primary publish owner and should mirror the same verifier semantics already fixed in the local create path.
 - 2026-03-31: completed `P1` by fixing and scaffolding the first manual mirror-verifier workflow in GitHub Actions, including explicit inputs, explicit artifacts, and summary wording that preserves the secondary-enforcement boundary.
+- 2026-03-31: completed `P2` by fixing the retained artifact set, adding a machine-readable artifact manifest, and surfacing mirror-verifier results through workflow summary, GitHub check annotations, and artifact-first retained evidence.

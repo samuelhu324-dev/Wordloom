@@ -36,6 +36,8 @@ jobs:
       S0E_MIRROR_SOURCE_LOG: ${{ inputs.source_log_path }}
       S0E_MIRROR_PR_REF: ${{ inputs.pr_ref }}
       S0E_MIRROR_ARTIFACT_DIR: artifacts/github-actions/pr-body-secondary-enforcement/${{ github.run_id }}-${{ github.run_attempt }}
+      S0E_MIRROR_SUMMARY_MD: artifacts/github-actions/pr-body-secondary-enforcement/${{ github.run_id }}-${{ github.run_attempt }}/workflow-summary.md
+      S0E_MIRROR_MANIFEST_JSON: artifacts/github-actions/pr-body-secondary-enforcement/${{ github.run_id }}-${{ github.run_attempt }}/artifact-manifest.json
 
     steps:
       - name: Checkout
@@ -89,6 +91,7 @@ jobs:
           artifact_dir = Path(os.environ["S0E_MIRROR_ARTIFACT_DIR"])
           result_path = artifact_dir / "verify-result.json"
           summary_path = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          retained_summary_path = Path(os.environ["S0E_MIRROR_SUMMARY_MD"])
           exit_code = os.environ.get("VERIFY_EXIT_CODE", "")
 
           lines = [
@@ -122,7 +125,92 @@ jobs:
                   ]
               )
 
-          summary_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+          rendered = "\n".join(lines) + "\n"
+          summary_path.write_text(rendered, encoding="utf-8")
+          retained_summary_path.write_text(rendered, encoding="utf-8")
+          print(retained_summary_path.as_posix())
+          PY
+
+      - name: Write retained artifact manifest
+        if: always()
+        env:
+          VERIFY_EXIT_CODE: ${{ steps.verify.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          artifact_dir = Path(os.environ["S0E_MIRROR_ARTIFACT_DIR"])
+          result_path = artifact_dir / "verify-result.json"
+          live_body_path = artifact_dir / "live-pr-body.md"
+          console_path = artifact_dir / "verify-console.json"
+          summary_path = Path(os.environ["S0E_MIRROR_SUMMARY_MD"])
+          manifest_path = Path(os.environ["S0E_MIRROR_MANIFEST_JSON"])
+          exit_code = os.environ.get("VERIFY_EXIT_CODE", "")
+
+          result = "missing-result-artifact"
+          pr_url = ""
+          if result_path.is_file():
+              payload = json.loads(result_path.read_text(encoding="utf-8"))
+              result = str(payload.get("result") or "unknown")
+              pr_url = str(payload.get("pr_url") or "")
+
+          manifest = {
+              "mode": "github-actions-secondary-enforcement-artifact-manifest",
+              "result": result,
+              "repository": os.environ["S0E_MIRROR_REPO"],
+              "source_log_path": os.environ["S0E_MIRROR_SOURCE_LOG"],
+              "pr_ref": os.environ["S0E_MIRROR_PR_REF"],
+              "pr_url": pr_url,
+              "run_id": os.environ.get("GITHUB_RUN_ID", ""),
+              "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", ""),
+              "workflow": os.environ.get("GITHUB_WORKFLOW", ""),
+              "job": os.environ.get("GITHUB_JOB", ""),
+              "verify_exit_code": exit_code,
+              "retained_artifacts": {
+                  "live_body_path": live_body_path.as_posix() if live_body_path.exists() else "",
+                  "verify_result_path": result_path.as_posix() if result_path.exists() else "",
+                  "verify_console_path": console_path.as_posix() if console_path.exists() else "",
+                  "workflow_summary_path": summary_path.as_posix() if summary_path.exists() else "",
+              },
+              "failure_semantics": {
+                  "classification": "post-publish drift detected" if result != "pass" else "no drift detected",
+                  "primary_publish_owner": "local create path",
+                  "github_actions_role": "secondary enforcement",
+              },
+          }
+
+          manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+          PY
+
+      - name: Emit check annotations
+        if: always()
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          artifact_dir = Path(os.environ["S0E_MIRROR_ARTIFACT_DIR"])
+          result_path = artifact_dir / "verify-result.json"
+
+          if not result_path.is_file():
+              print("::error title=S0E secondary enforcement::mirror verifier result artifact missing; retained artifacts are incomplete")
+              raise SystemExit(0)
+
+          payload = json.loads(result_path.read_text(encoding="utf-8"))
+          result = str(payload.get("result") or "unknown")
+          pr_url = str(payload.get("pr_url") or "")
+
+          if result == "pass":
+              print(f"::notice title=S0E secondary enforcement::live PR body contract pass for {pr_url}")
+          else:
+              print(f"::error title=S0E secondary enforcement::post-publish drift detected for {pr_url}")
           PY
 
       - name: Upload mirror-verifier artifacts
@@ -134,6 +222,8 @@ jobs:
             ${{ env.S0E_MIRROR_ARTIFACT_DIR }}/live-pr-body.md
             ${{ env.S0E_MIRROR_ARTIFACT_DIR }}/verify-result.json
             ${{ env.S0E_MIRROR_ARTIFACT_DIR }}/verify-console.json
+            ${{ env.S0E_MIRROR_ARTIFACT_DIR }}/workflow-summary.md
+            ${{ env.S0E_MIRROR_ARTIFACT_DIR }}/artifact-manifest.json
           if-no-files-found: warn
 
       - name: Fail on mirrored verification drift
