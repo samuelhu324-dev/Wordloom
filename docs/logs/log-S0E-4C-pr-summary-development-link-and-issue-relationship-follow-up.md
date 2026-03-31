@@ -35,7 +35,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-03-30`
-**updated**: `2026-03-30`
+**updated**: `2026-03-31`
 
 ---
 
@@ -70,12 +70,16 @@
 
 - Default source: reuse this log's execution checklist once the contract, implementation, and real validation are complete.
 
-**PR links / evidence footer**:
+**PR links**:
 
 - Log: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
 - Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/300`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-prep-S0E-4C-p5-plan.json`
+
+**Evidence Footer Source**:
+
+- `P5-C1-S1` | artifact: `docs/issues/pr-prep-S0E-4C-p5-plan.json`
 
 - Generated PR body should keep `Summary`, `Evidence Footer`, and `Development Link` as separate sections.
 - `Summary` must not degrade to `<placeholder>` on a live PR create path.

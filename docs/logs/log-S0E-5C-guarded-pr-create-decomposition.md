@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/309`
 **created**: `2026-03-30`
-**updated**: `2026-03-30`
+**updated**: `2026-03-31`
 
 ---
 
@@ -67,12 +67,17 @@
 
 - Default source: reuse this log's execution checklist after `P0-P2` are reviewed.
 
-**PR links / evidence footer**:
+**PR links**:
 
 - Log: `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`
 - Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/309`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-create-S0E-5C-p1-boundary-map.json`
+
+**Evidence Footer Source**:
+
+- `P1-C1-S1` | artifact: `docs/issues/pr-create-S0E-5C-p1-boundary-map.json`
+- `P2-C1-S1` | artifact: `docs/issues/pr-create-S0E-5C-p2-pass-front-half-preflight-result.json`
 
 ## Constraints
 

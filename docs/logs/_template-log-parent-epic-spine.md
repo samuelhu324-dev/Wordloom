@@ -60,6 +60,8 @@
 ## PR Summary Inputs（可选）
 
 - 仅当 parent/spine log 本身会作为 PR contract source 时填写；多数情况下，真正的 PR 描述仍应来自 child phase log。
+- `PR Summary Inputs` 是 automation-facing contract；execution evidence 的人工账本仍应保留在 `Evidence` 或 child log 的证据段落中。
+- parent/spine log 默认不应从 prose 聚合里直接合成 `Evidence Footer Source`；若证据实际属于 child logs，应优先在这里引用 child sources，而不是重写 child evidence ledger。
 
 **PR summary bullets**:
 
@@ -81,6 +83,7 @@
 
 - `P1-C1-S1` | artifact: ``
 
+- Parent/spine 只有在自身确实拥有对应 phase/unit 证据时才应填写 footer rows；仅做聚合时，应让 child logs 继续作为 footer source 的实际持有者。
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
 - `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
 
@@ -135,6 +138,11 @@
 - <一句话：整体到哪了>
 - <哪些 phase stable/draft>
 - <最近 1~2 个关键风险/变更>
+
+## Evidence（可选，聚合型记账）
+
+- parent/spine log 通常不是 execution evidence 的主记账面；若保留本节，默认应记录聚合性的 traceability，而不是重复 child log 的完整 drill ledger。
+- 若 evidence 真正属于 child phase logs，应优先在本节引用 child log 或 child artifacts，而不是把 child 的 `expected/observed` 全量复制回 parent/spine。
 
 ## Notes（落地原则，可选）
 
