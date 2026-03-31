@@ -101,6 +101,7 @@
 - `P0` is now completed: the current `PR create` path has been decomposed into seven concrete stages with explicit stop boundaries, and the main outcome is that remote branch publication and live PR publication cannot be treated as one undifferentiated guarded mutation.
 - `P1` is now completed: no stage can reuse the existing lifecycle pre-gate unchanged as one all-purpose `PR create` gate; only create-time preflight can reuse it as an issue-readiness layer, and even that stage still needs create-specific targeted checks before any local mutation begins.
 - `P2` is now completed: live issue `#309` has been created and attached under parent issue `#248`, and one bounded front-half sample now proves that `S1-S3` can emit both pass and stop results without entering local branch materialization or live PR publication.
+- The deferred post-apply verification question from `S0E-5D` is now expected to land here rather than back inside `S0E-5D`, because post-publish body verification and GitHub Actions ownership sit closer to `S6` live PR publication than to body-contract normalization itself.
 
 ## P0 (PR create stage map | v1)
 
@@ -137,17 +138,31 @@
 - The stop path uses the same live issue-readiness gate input but swaps in `docs/issues/pr-prep-S0E-5C-p2-stop-manifest.json`, which deliberately reuses the occupied branch name `pr-prep/s0e-5b`. The result stops at `S3` with `preflight_decision = stop-before-local-materialization` even though the lifecycle pre-gate itself still allows continuation.
 - `P2` therefore proves the exact front-half shape fixed by `P1`: the lifecycle pre-gate is only one prerequisite layer, and create-specific preflight must still retain authority to stop the flow before `S4` when branch/publication preconditions are not safe.
 
-## Plan (draft)
+## P3 (Deferred publish-boundary decision | v1)
+
+### P3-C1-S1 (Planned ownership of post-apply verification | v1)
+
+- The body-contract slice `S0E-5D` now defers post-apply live verification and GitHub Actions ownership into `S0E-5C` instead of keeping that work inside the contract-normalization log.
+- The reason is boundary ownership:
+  - `S0E-5D` owns canonical shape and historical normalization;
+  - `S0E-5C` owns create-time preflight, live PR publication boundaries, and any future post-publish verification chain.
+- The future `S0E-5C/P3` decision therefore needs to answer whether post-apply verification should sit:
+  - immediately after `S6` live PR publish;
+  - after `S7` local evidence finalization;
+  - or as a separate GitHub Actions enforcement layer that runs on merged/live objects.
 
 ## Plan (draft)
 
 - `P3-C1-S1`: decide whether the bounded front-half result is strong enough to keep `S6` operator-held while exploring targeted rules only for `S4/S5`, or whether `S0E-5C` should stop without deeper guarded rollout
+- `P3-C1-S2`: decide whether deferred post-apply verification from `S0E-5D` should become part of the `S6/S7` publish boundary or remain an external GitHub Actions enforcement layer
 
 ## Execution Checklist (unchecked)
 
 - [x] `P0-C1-S1`: guarded `PR create` stage map fixed
 - [x] `P1-C1-S1`: reuse-vs-new-rule boundary fixed
 - [x] `P2-C1-S1`: representative decomposition sample recorded
+- [ ] `P3-C1-S1`: deferred publish-boundary decision fixed
+- [ ] `P3-C1-S2`: deferred post-apply verification ownership fixed
 
 ## Evidence (reserved)
 

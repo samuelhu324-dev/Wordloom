@@ -2,15 +2,18 @@
 
 ## Decision
 
-- Recommended rollout is `gate-first + post-apply live verify + selective historical rewrite`.
+- Recommended rewrite rollout inside `S0E-5D` is `gate-first + selective historical rewrite`.
+- Historical rewrite execution should be tracked as a new phase step `P4` under `S0E-5D`, not as a new `C` under `P3`.
+- Post-apply live verify should be deferred out of `S0E-5D` and handled later under `S0E-5C`, where live publish and post-publish ownership already belong.
 - Do not choose rewrite-first as the primary strategy.
-- Do not wire GitHub Actions directly to mutation apply before the post-apply verification link exists.
+- Do not wire GitHub Actions directly to mutation apply before the later `S0E-5C` post-apply verification link exists.
 
 ## Why This Order
 
 - `gate-first` stops new drift immediately.
-- `post-apply live verify` catches drift introduced by live write paths, GitHub-side body normalization, or commands that bypass preview artifacts.
 - `selective historical rewrite` should then repair only the smallest set needed to bring representative live history back under the same contract.
+- `S0E-5D` stays focused on contract and historical normalization instead of taking ownership of post-publish orchestration.
+- `S0E-5C` is the better home for post-apply verification because that slice already owns the open question around live PR publication boundaries.
 
 ## Minimal Historical Rewrite Set
 
@@ -44,22 +47,17 @@
   - `#306`
   - `#308`
 
-## Post-Apply Audit Chain
+## Deferred Post-Apply Audit Chain
 
-### Recommended chain
+### Deferred ownership
 
-1. Pre-apply gate:
-   - run create-time or rewrite-time contract checks on preview bodies before mutation
-   - fail closed on section-order, link-category, footer-shape, and footer-eligibility defects
-2. Apply:
-   - perform the live GitHub mutation only if the pre-apply gate passes
-3. Post-apply live verify:
-   - fetch the live PR body and validate it again against the same contract
-   - fetch the live issue body and validate it through lifecycle/body-shape audit
-4. Report:
-   - publish pass/fail JSON artifacts that GitHub Actions can treat as hard gates
+- `S0E-5D` now stops at pre-apply contract enforcement plus historical rewrite planning.
+- The later post-apply chain is intentionally deferred to `S0E-5C` because it sits closer to:
+  - live PR publication;
+  - post-publish evidence finalization;
+  - eventual GitHub Actions orchestration.
 
-### Why a post-apply chain is needed
+### Why the deferred chain is still needed later
 
 - Preview success alone is not enough once a command mutates live GitHub state.
 - Live bodies can still drift because of:
@@ -70,9 +68,9 @@
 ## GitHub Actions Fit
 
 - Yes, GitHub Actions can reject these problems.
-- The practical model is:
+- The practical model is still:
   - use preview/body-contract checks as pre-merge or pre-apply jobs;
-  - use live verification as a post-merge or post-apply job;
+  - later add live verification as a post-merge or post-apply job under `S0E-5C` ownership;
   - fail the workflow when the JSON result is `fail`.
 
 ## Footer Eligibility Rule
@@ -85,6 +83,7 @@
 
 ## Immediate Next Step After P3
 
-- Implement one operator-safe historical rewrite slice that repairs the representative PR set first: `#299`, `#302`, `#306`, `#308`.
+- Open `S0E-5D/P4` as the execution phase for one operator-safe historical rewrite slice.
+- Inside `P4`, repair the representative PR set first: `#299`, `#302`, `#306`, `#308`.
 - Then repair the inspected closed-issue set under the new issue-conclusion contract.
-- After that, wire the same check scripts into GitHub Actions.
+- Keep post-apply verification and GitHub Actions wiring deferred to the later `S0E-5C` follow-up.
