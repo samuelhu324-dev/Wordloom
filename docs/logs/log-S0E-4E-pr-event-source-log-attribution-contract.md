@@ -83,6 +83,7 @@
 
 - `P0-C1-S1` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
 - `P1-C1-S1S2` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
+- `P2-C1-S1S2` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
@@ -113,6 +114,7 @@
 - The repo has a fail-closed boundary for what happens when PR-event attribution is missing or ambiguous.
 - A later automatic PR-event proposal can point to one explicit attribution contract instead of re-arguing ownership in the workflow slice.
 - The repo has one explicit ordered list of attribution candidate surfaces and does not silently treat PR prose or fuzzy title matching as ownership evidence.
+- The repo has one explicit ambiguity policy that classifies missing, conflicting, and multi-candidate attribution as stop conditions rather than soft warnings.
 
 ## Stability (what stable means)
 
@@ -126,7 +128,8 @@
 - `S0E-4E` is now opened as the direct follow-up after `S0E-7A/P3`, but it is now grouped under the PR-oriented `4x` family because the unresolved problem is PR contract ownership.
 - `P0` is now completed: source-log attribution is now explicitly owned as its own slice, and automatic PR-event mirroring remains blocked until this attribution problem is solved deterministically.
 - `P1` is now completed: the first allowed attribution surfaces and their precedence are now fixed, so future automatic PR-event mirroring has a bounded candidate set instead of an open-ended search problem.
-- `P2-P3` remain open: ambiguity handling and handoff back to automatic CI rollout are not yet completed.
+- `P2` is now completed: the first ambiguity stop conditions and representative sample expectations are now fixed, so attribution defects are classified as explicit fail-closed outcomes instead of vague review notes.
+- `P3` remains open: handoff back to automatic CI rollout is not yet completed.
 
 ## P0 (Boundary contract | v1)
 
@@ -140,36 +143,71 @@
   - automatic rollout remains blocked until `S0E-4E` produces a trustworthy fail-closed attribution rule.
 - This prevents a common contract failure mode: trying to widen GitHub Actions triggers before the repo knows which log actually owns the PR contract being verified.
 
-  ## P1 (Attribution candidate surfaces | v1)
+## P1 (Attribution candidate surfaces | v1)
 
-  ### P1-C1-S1 (Allowed machine-readable attribution surfaces fixed | v1)
+### P1-C1-S1 (Allowed machine-readable attribution surfaces fixed | v1)
 
-  - `P1` now fixes a bounded candidate set for `PR event -> source_log_path` attribution. The workflow may only consider surfaces that already carry or can mechanically carry source-log ownership without prose interpretation.
-  - The allowed candidate surfaces are now fixed as:
-    - explicit provenance supplied by a trusted caller or trusted structured payload, where the value is already an exact repo-relative `source_log_path`;
-    - the canonical PR body `Links` row `Log: <repo-relative-path>`, because `S0E-4A` and `S0E-5D` already treat that row as the machine-readable PR-owned path back to the source log;
-    - exact-ID branch metadata from the PR head ref, such as `pr-prep/s0e-4e`, but only as a constrained fallback that may narrow to one log with the same exact ID.
-  - The following surfaces are now explicitly forbidden as ownership claims in `P1`:
-    - free-form PR summary prose;
-    - title wording beyond exact-ID extraction;
-    - labels, milestone, or project fields by themselves;
-    - Development Link / development issue refs by themselves;
-    - Evidence Footer rows, because they are artifact traceability lines rather than ownership declarations.
-  - This keeps attribution tied to structured ownership surfaces that already exist in the repo's PR automation path instead of widening into fuzzy reconstruction from whatever text happened to be rendered on the PR.
+- `P1` now fixes a bounded candidate set for `PR event -> source_log_path` attribution. The workflow may only consider surfaces that already carry or can mechanically carry source-log ownership without prose interpretation.
+- The allowed candidate surfaces are now fixed as:
+  - explicit provenance supplied by a trusted caller or trusted structured payload, where the value is already an exact repo-relative `source_log_path`;
+  - the canonical PR body `Links` row `Log: <repo-relative-path>`, because `S0E-4A` and `S0E-5D` already treat that row as the machine-readable PR-owned path back to the source log;
+  - exact-ID branch metadata from the PR head ref, such as `pr-prep/s0e-4e`, but only as a constrained fallback that may narrow to one log with the same exact ID.
+- The following surfaces are now explicitly forbidden as ownership claims in `P1`:
+  - free-form PR summary prose;
+  - title wording beyond exact-ID extraction;
+  - labels, milestone, or project fields by themselves;
+  - Development Link / development issue refs by themselves;
+  - Evidence Footer rows, because they are artifact traceability lines rather than ownership declarations.
+- This keeps attribution tied to structured ownership surfaces that already exist in the repo's PR automation path instead of widening into fuzzy reconstruction from whatever text happened to be rendered on the PR.
 
-  ### P1-C1-S2 (Attribution precedence between allowed surfaces fixed | v1)
+### P1-C1-S2 (Attribution precedence between allowed surfaces fixed | v1)
 
-  - The first precedence order is now fixed as:
-    - `1.` explicit provenance carrying an exact `source_log_path`;
-    - `2.` canonical PR-body `Log:` row carrying an exact repo-relative path;
-    - `3.` exact-ID branch metadata that can be resolved to one and only one candidate log.
-  - Lower-precedence surfaces may only be consulted when every higher-precedence surface is absent, not merely inconvenient.
-  - Lower-precedence surfaces may not silently override a higher-precedence ownership claim. If a higher surface exists and a lower surface points elsewhere, that disagreement remains a fail-closed attribution defect for later `P2` handling rather than an excuse to pick whichever one looks better.
-  - Exact-ID branch fallback is intentionally narrow:
-    - it may extract only one exact requested ID from the head branch naming contract;
-    - it must resolve to exactly one plausible source log for that ID;
-    - if zero or multiple logs match, branch metadata does not establish ownership.
-  - `P1` therefore fixes the core ordering rule for later CI rollout: explicit structured ownership beats PR-body metadata, PR-body metadata beats branch-derived exact-ID fallback, and everything else stays outside the allowed attribution surface set.
+- The first precedence order is now fixed as:
+  - `1.` explicit provenance carrying an exact `source_log_path`;
+  - `2.` canonical PR-body `Log:` row carrying an exact repo-relative path;
+  - `3.` exact-ID branch metadata that can be resolved to one and only one candidate log.
+- Lower-precedence surfaces may only be consulted when every higher-precedence surface is absent, not merely inconvenient.
+- Lower-precedence surfaces may not silently override a higher-precedence ownership claim. If a higher surface exists and a lower surface points elsewhere, that disagreement remains a fail-closed attribution defect for later `P2` handling rather than an excuse to pick whichever one looks better.
+- Exact-ID branch fallback is intentionally narrow:
+  - it may extract only one exact requested ID from the head branch naming contract;
+  - it must resolve to exactly one plausible source log for that ID;
+  - if zero or multiple logs match, branch metadata does not establish ownership.
+- `P1` therefore fixes the core ordering rule for later CI rollout: explicit structured ownership beats PR-body metadata, PR-body metadata beats branch-derived exact-ID fallback, and everything else stays outside the allowed attribution surface set.
+
+## P2 (Ambiguity and fail-closed policy | v1)
+
+### P2-C1-S1 (Ambiguity stop conditions fixed | v1)
+
+- `P2` now fixes the first fail-closed ambiguity taxonomy for `PR event -> source_log_path` attribution. Attribution defects are stop conditions, not advisory warnings.
+- The stop conditions are now fixed as:
+  - `missing-attribution`: no allowed attribution surface yields an exact repo-relative `source_log_path`;
+  - `conflicting-attribution`: two allowed surfaces yield different ownership claims, including higher-vs-lower precedence disagreement;
+  - `multi-candidate-attribution`: branch-derived exact-ID fallback narrows to more than one plausible source log;
+  - `invalid-attribution-shape`: an allowed surface exists but does not carry one exact repo-relative log path in canonical form.
+- The fail-closed policy is now fixed as:
+  - no ambiguity class may degrade to a soft pass or warning-only result;
+  - later CI mirroring must stop before contract verification if attribution is missing, conflicting, multi-candidate, or structurally invalid;
+  - the workflow may report all detected ambiguity classes, but it may not pick one source log optimistically once any stop condition exists.
+- Higher-precedence disagreement is intentionally strict:
+  - if explicit provenance and PR-body `Log:` row disagree, the result is `conflicting-attribution`;
+  - if PR-body `Log:` row and branch fallback disagree, the result is also `conflicting-attribution` rather than letting the lower surface silently lose without traceability.
+- This preserves the main boundary established by `S0E-7A/P3`: automatic PR-event mirroring should fail because ownership is unclear, not continue under a guessed source log.
+
+### P2-C1-S2 (Representative deterministic and ambiguity sample expectations fixed | v1)
+
+- `P2` now fixes the minimum sample expectations that later automation or CI rollout must satisfy before attribution can be considered stable enough for handoff.
+- The first representative sample set is now fixed as:
+  - one deterministic sample where exactly one contract owner is resolved and every consulted allowed surface agrees on the same `source_log_path`;
+  - one ambiguity sample where attribution stops before verification because ownership is missing, conflicting, multi-candidate, or invalid in shape.
+- The deterministic sample must prove all of the following:
+  - the resolved `source_log_path` is exact and repo-relative;
+  - the winning ownership surface is recorded explicitly;
+  - any consulted lower-precedence surfaces either agree or are absent.
+- The ambiguity sample must prove all of the following:
+  - the workflow reports which ambiguity class caused the stop;
+  - no PR contract verification proceeds under a guessed source log;
+  - retained evidence is sufficient to explain why attribution stopped without consulting raw runner logs as the primary source of truth.
+- `P2` does not yet require a full automatic `pull_request` rollout sample. The representative goal is narrower: prove that attribution can distinguish one clean deterministic case from one fail-closed ambiguous case with traceable evidence.
 
 ## Numbering
 
@@ -198,8 +236,8 @@
 
 ### P2 (Ambiguity and fail-closed policy)
 
-- `P2-C1-S1`: define stop conditions for missing, conflicting, or multi-log attribution
-- `P2-C1-S2`: define representative deterministic and ambiguous sample expectations
+- [x] `P2-C1-S1`: define stop conditions for missing, conflicting, or multi-log attribution
+- [x] `P2-C1-S2`: define representative deterministic and ambiguous sample expectations
 
 ### P3 (Handoff back to automatic mirroring)
 
@@ -219,8 +257,8 @@
 
 ### P2 (Ambiguity and fail-closed policy)
 
-- [ ] `P2-C1-S1`: define ambiguity stop conditions
-- [ ] `P2-C1-S2`: define representative sample expectations
+- [x] `P2-C1-S1`: define ambiguity stop conditions
+- [x] `P2-C1-S2`: define representative sample expectations
 
 ### P3 (Handoff back to automatic mirroring)
 
@@ -262,8 +300,22 @@
 - observed:
   - `S0E-4E/P1` now fixes three allowed surfaces and one explicit precedence chain: trusted explicit provenance first, canonical PR-body `Log:` row second, and exact-ID head-branch fallback last; prose-only and metadata-only hints are now excluded from ownership claims
 
+### P2-C1-S1S2 (ambiguity stop conditions and sample expectations fixed | 2026-03-31)
+
+- headSha: `3d4d4b1b`
+- artifacts:
+  - `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
+  - `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
+  - `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
+  - `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`
+- expected:
+  - the repo should classify missing, conflicting, and multi-candidate attribution as explicit stop conditions, and it should state the minimum deterministic vs ambiguity samples required before future rollout widening
+- observed:
+  - `S0E-4E/P2` now fixes both the stop taxonomy and the first sample expectations: missing/conflicting/multi-candidate/invalid-shape attribution all stop before verification, and later rollout must be able to show one deterministic owner case plus one fail-closed ambiguity case with retained evidence
+
 ## Recent changes (for traceability, optional)
 
+- 2026-03-31: completed `P2` by fixing ambiguity stop conditions and the first deterministic-versus-ambiguous sample expectations for future PR-event mirroring.
 - 2026-03-31: completed `P1` by fixing the first bounded attribution candidate set and precedence order for future PR-event mirroring.
 - 2026-03-31: re-homed this slice from `S0E-7B` to `S0E-4E`, because the unresolved problem is fundamentally PR-contract attribution rather than workflow-retention policy.
 - 2026-03-31: opened `S0E-4E` as the dedicated follow-up for deterministic `PR event -> source_log_path` attribution.
