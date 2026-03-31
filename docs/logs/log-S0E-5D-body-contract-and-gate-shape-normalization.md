@@ -97,6 +97,7 @@
 - `P0` is now completed: one first-cut canonical body spec has been fixed for issue creation, issue conclusion, and PR body shape, including contiguous metadata rows, explicit section order, backtick rules, and the rule that Evidence Footer is drills/evidence-only with no commit-footer fallback.
 - `P1` is now completed: Evidence Footer now has one fixed extraction source, one fixed rendered line shape, explicit omission semantics, and an explicit rule that both the stage token and artifact path must be wrapped in inline code.
 - `P2` is now completed: hard gate now checks canonical section order, metadata blank-gap discipline, allowed link categories, issue conclusion Context retention, and PR-side Evidence Footer presence/shape against one explicit source block; both PR prep preview and PR rewrite now consume `Evidence Footer Source` only.
+- `P3` is now completed: rollout order is fixed as `gate-first + post-apply live verify + selective historical rewrite`, the minimal inspected rewrite set has been identified, and a new live PR verifier plus footer-eligibility rule now define how GitHub Actions can reject post-apply drift.
 
 ## P0 (Canonical body families | v1)
 
@@ -164,26 +165,48 @@
   - omitting issue/PR rows from issue `Links`.
 - Standalone PR body contract checks are now available through `scripts/issues/check_pr_body_contract.py`.
 
-## Carry-Forward Questions For P3
+## P3 (Repair order and post-apply audit chain | v1)
 
-- `P3` still needs the repair-order decision across historical live bodies, generators, rewriters, and gate-first rollout.
+### P3-C1-S1 (Repair order and post-apply audit chain fixed | v1)
+
+- The rollout and post-audit decision is now recorded in `docs/issues/rollout-and-post-audit-S0E-5D-p3-decision.md`.
+- The chosen rollout order is now fixed as:
+  - `gate-first` to stop new drift;
+  - `post-apply live verify` to catch live-body drift after mutation;
+  - `selective historical rewrite` to repair only the minimal representative backlog.
+- The minimal inspected issue rewrite set is now fixed as:
+  - `#293`, `#295`, `#297`, `#300`, `#303`, `#305`, `#307`.
+- The minimal representative PR rewrite set is now fixed as:
+  - `#299`, `#302`, `#306`, `#308`.
+- A new post-apply PR verifier now exists in `scripts/issues/verify_live_pr_body_contract.py`.
+- `body_contract.py` now also rejects `Evidence Footer` when the source log is not drills/evidence eligible.
+- This gives GitHub Actions two enforceable layers:
+  - pre-apply preview/body-contract checks;
+  - post-apply live-body verification.
 
 ## P2-Locked Inputs For P3
 
 - The repo now has one machine-checkable PR body contract gate that can emit pass/fail results on local fixtures before live GitHub mutation.
 - The repo now has one canonical source-log path for Evidence Footer lines and one canonical rendered row shape.
-- The next remaining choice is rollout order: reconcile historical live bodies first, or apply generator/gate fixes first and repair drifted history selectively.
+
+## P3-Locked Outputs
+
+- The next remaining work is no longer contract definition.
+- The next work is operational rollout:
+  - representative historical PR rewrites;
+  - representative historical issue rewrites;
+  - GitHub Actions wiring of pre-apply and post-apply checks.
 
 ## Plan (draft)
 
-- `P3-C1-S1`: decide repair order across generators, rewriters, and gate checks
+- `P4-C1-S1`: execute the first selective historical rewrite batch under the fixed contract
 
 ## Execution Checklist (unchecked)
 
 - [x] `P0-C1-S1`: canonical issue-creation / issue-conclusion / PR body families drafted
 - [x] `P1-C1-S1`: Evidence Footer contract fixed
 - [x] `P2-C1-S1`: hard-gate body-shape check scope fixed
-- [ ] `P3-C1-S1`: repair order fixed
+- [x] `P3-C1-S1`: repair order fixed
 
 ## Evidence (reserved)
 
@@ -247,9 +270,27 @@
   - standalone contract checks now pass on canonical preview/rewrite bodies and fail on both unquoted footer rows and wrong-source-block fixtures
   - lifecycle audit and issue conclusion rendering are now aligned with the newer issue body contract instead of the older transient-context rule
 
+### P3-C1-S1 (rollout order and post-apply audit chain fixed | 2026-03-31)
+
+- artifacts:
+  - `docs/issues/rollout-and-post-audit-S0E-5D-p3-decision.md`
+  - `docs/issues/pr-live-contract-check-308-result.json`
+  - `docs/issues/pr-live-contract-check-302-result.json`
+  - `scripts/issues/verify_live_pr_body_contract.py`
+  - `scripts/issues/body_contract.py`
+- expected:
+  - rollout order should stop new drift first instead of starting with a broad historical rewrite
+  - one post-apply verification link should prove GitHub Actions can reject live-body drift after mutation
+  - footer content should become rejectable when the source log is not drills/evidence eligible
+- observed:
+  - representative live PR `#308` fails the new post-apply verifier on metadata blank-gap drift and old footer rows
+  - representative live PR `#302` fails the new post-apply verifier on invalid `Links` prose rows, ineligible footer presence, and non-canonical footer rows
+  - the resulting rollout choice is now fixed as `gate-first + post-apply live verify + selective historical rewrite`, with the minimal inspected rewrite set recorded for issue and PR history
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-31: created `S0E-5D` as a dedicated follow-up for body contract normalization, Evidence Footer unification, and hard-gate shape checks after live object drift was confirmed across representative issues and PRs.
 - 2026-03-31: completed `P0` by converting operator-supplied formatting rules into one canonical body spec for issue creation, issue conclusion, and PR body shape, and by pre-locking Evidence Footer to drills/evidence-only with no commit-footer fallback.
 - 2026-03-31: completed `P1` by fixing one explicit `Evidence Footer Source` block, one exact footer line shape, and the rule that both the stage token and artifact path must use inline code while all fallback footer styles remain forbidden.
 - 2026-03-31: completed `P2` by wiring one shared body-contract gate into PR preview/rewrite paths, aligning issue-side audit/rendering to the new contract, and recording pass/stop samples for canonical footer rows, unquoted footer rows, and wrong-source-block failure cases.
+- 2026-03-31: completed `P3` by fixing the rollout order, adding a live PR post-apply verifier, enforcing footer eligibility against source-log drills/evidence status, and identifying the minimal inspected historical rewrite set.

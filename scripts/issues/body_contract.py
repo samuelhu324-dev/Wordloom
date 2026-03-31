@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import asdict, dataclass
 
-from gen_issue_draft import _parse_sections
+from gen_issue_draft import _parse_fields, _parse_sections
 
 
 PR_REQUIRED_SECTIONS = ["Metadata", "Summary", "Execution Checklist", "Links"]
@@ -96,6 +96,14 @@ def extract_evidence_footer_source_lines(log_text: str) -> list[str]:
 
 def extract_pr_summary_inputs(log_text: str) -> tuple[list[str], list[str], list[str]]:
     return _parse_pr_summary_inputs(_find_pr_summary_input_lines(log_text))
+
+
+def pr_body_is_evidence_footer_eligible(source_log_text: str) -> bool:
+    fields = _parse_fields(source_log_text)
+    tags = str(fields.get("tags") or "").lower()
+    pr_labels = str(fields.get("pr_labels") or "").lower()
+    title = str(fields.get("title") or "").lower()
+    return any(token in tags or token in pr_labels or token in title for token in ["drills", "evidence"])
 
 
 def _validate_order(actual: list[str], expected_prefix: list[str], optional_tail: list[str]) -> tuple[str, str]:
@@ -200,6 +208,14 @@ def validate_pr_body_contract(*, body_markdown: str, source_log_text: str, pr_de
         checks.append(ContractCheck("evidence-footer-source-shape", "pass", "no Evidence Footer Source rows were provided"))
 
     rendered_footer_lines = [line.strip()[2:].strip() for line in sections.get("Evidence Footer", []) if line.strip().startswith("- ")]
+    evidence_footer_eligible = pr_body_is_evidence_footer_eligible(source_log_text)
+    if expected_evidence_lines and not evidence_footer_eligible:
+        checks.append(ContractCheck("evidence-footer-eligibility", "fail", "Evidence Footer Source is present but the source log is not drills/evidence eligible"))
+    elif rendered_footer_lines and not evidence_footer_eligible:
+        checks.append(ContractCheck("evidence-footer-eligibility", "fail", "Evidence Footer is rendered but the source log is not drills/evidence eligible"))
+    else:
+        checks.append(ContractCheck("evidence-footer-eligibility", "pass", "Evidence Footer eligibility matches the source log tags/labels contract"))
+
     if expected_evidence_lines:
         if "Evidence Footer" not in sections:
             checks.append(ContractCheck("evidence-footer-presence", "fail", "Evidence Footer Source exists but the rendered Evidence Footer section is missing"))
