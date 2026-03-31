@@ -94,69 +94,57 @@
 - Live GitHub objects now show the drift clearly: `#299`, `#302`, `#306`, `#308`, and closed issue `#293` are not uniformly shaped even though they all belong to the same automation family.
 - The current hard gate is still closer to a lifecycle structural gate than to a full body-shape gate; it catches missing sections and structural lifecycle defects, but it does not yet enforce canonical formatting shape.
 - `S0E-5D` is the dedicated place to fix that contract before any further GitHub Actions rollout is considered.
+- `P0` is now completed: one first-cut canonical body spec has been fixed for issue creation, issue conclusion, and PR body shape, including contiguous metadata rows, explicit section order, backtick rules, and the rule that Evidence Footer is drills/evidence-only with no commit-footer fallback.
 
-## Canonical Questions To Fix
+## P0 (Canonical body families | v1)
 
-- Issue Creation body:
-  - exact section set and order;
-  - whether empty `Context` / `Definition of Done (DoD)` should still render at creation time;
-  - how `Metadata` lines must be formatted.
-- Issue Conclusion body:
-  - whether `Context` must disappear entirely or may remain as an empty section;
-  - exact DoD line format for merged PR refs;
-  - exact `Links` line set allowed after closure.
-- PR body:
-  - exact section set and order;
-  - whether `Metadata` bullets may contain blank lines between items;
-  - whether rewrite paths must fully re-render or may only patch selected sections.
-- Evidence Footer:
-  - when it is mandatory;
-  - when it may be omitted;
-  - whether non-drill logs may fallback to commit-derived footer lines;
-  - whether the canonical line style is phase-heading-style or commit-style;
-  - how to keep the output low-cardinality so humans and machines do not infer accidental semantic differences.
-- Hard gate shape checks:
-  - section presence;
-  - section order;
-  - blank-line discipline;
-  - allowed footer style;
-  - allowed link categories and line shape.
+### P0-C1-S1 (Canonical body families drafted from operator rules | v1)
 
-## Operator Input Needed
+- The canonical spec is now recorded in `docs/issues/body-contract-S0E-5D-p0-canonical-spec.md`.
+- Issue Creation body is now fixed as:
+  - `Metadata -> Context -> Definition of Done (DoD) -> Links`;
+  - empty `Context` and empty `Definition of Done (DoD)` are both preserved at creation time.
+- Issue Conclusion body is now fixed as:
+  - `Metadata -> Context -> Definition of Done (DoD) -> Links`;
+  - `Context` remains present and must contain substantive conclusion-stage content;
+  - `Definition of Done (DoD)` contains short PR refs such as `#299` and `#300`;
+  - `Links` does not add issue or PR lines in the conclusion contract.
+- PR body is now fixed as:
+  - `Metadata -> Summary -> Execution Checklist -> Links -> Evidence Footer (when applicable) -> Development Link (only when an issue exists)`.
+- Metadata-like bullet rows across creation / conclusion / PR bodies must be contiguous with no blank paragraphs between adjacent bullets.
+- Inline code is now fixed as:
+  - metadata values use backticks by default;
+  - GitHub short refs such as parent issue or development issue refs remain plain refs without backticks;
+  - links path/url refs use backticks.
+- Evidence Footer applicability is now pre-locked for the next step:
+  - drills/evidence-only;
+  - omitted entirely when not applicable;
+  - no commit-footer fallback.
 
-- You do **not** need to hand-write a full final template before work can begin, but the contract does need decisions on a small set of style levers.
-- The highest-value operator decisions are:
-  - whether inline code markers such as backticks are mandatory, optional, or forbidden for each body family;
-  - whether empty sections should render explicitly or disappear until substantive content exists;
-  - whether Evidence Footer should be mandatory only for drill/evidence-carrying logs or for every PR body;
-  - if Evidence Footer fallback is allowed, whether fallback lines should keep the same canonical shape as primary footer lines instead of switching style.
-- If you want, you can provide these as rule bullets rather than full markdown mockups.
+## Carry-Forward Questions For P1/P2
 
-## Proposed First Cut (for review, not fixed yet)
+- `P1` still needs one canonical low-cardinality Evidence Footer line shape and one canonical extraction source from the log.
+- `P2` still needs the hard-gate body-shape check list derived from this canonical spec.
 
-- Issue Creation canonical body:
-  - `Metadata -> Context -> Definition of Done (DoD) -> Links`
-  - empty `Context` and `Definition of Done (DoD)` may remain visible at creation time if that is the chosen contract.
-- Issue Conclusion canonical body:
-  - `Metadata -> Definition of Done (DoD) -> Links`
-  - no `Context` section once concluded.
-- PR canonical body:
-  - `Metadata -> Summary -> Execution Checklist -> Links -> Evidence Footer -> Development Link`
-  - no blank lines between `Metadata` bullet items.
-- Evidence Footer canonical direction:
-  - one canonical line shape only;
-  - fallback, if allowed, must still render in that same shape rather than inventing a second style.
+## Suggested Direction For Evidence Footer Source (not fixed yet)
+
+- The cleanest next-step design is to extract Evidence Footer from one explicit log-owned source instead of inferring it from mixed evidence sections or commit subjects.
+- A practical direction is:
+  - keep one dedicated machine-facing subsection in the log, such as a reserved `Evidence Footer Source` block under `PR Summary Inputs` or under `Evidence`;
+  - make every source line already match the one canonical footer shape;
+  - let PR create and PR rewrite consume only that source block;
+  - if the source block is absent and the log is not drills/evidence class, omit the entire footer section.
+- This keeps cardinality low because the renderer no longer chooses between phase-heading-style and commit-style; it always consumes one source shape and either renders it or omits the footer entirely.
 
 ## Plan (draft)
 
-- `P0-C1-S1`: inventory current renderers and draft the three canonical body families
 - `P1-C1-S1`: fix Evidence Footer presence/omission/fallback contract
 - `P2-C1-S1`: fix hard-gate body-shape checks beyond simple section presence
 - `P3-C1-S1`: decide repair order across generators, rewriters, and gate checks
 
 ## Execution Checklist (unchecked)
 
-- [ ] `P0-C1-S1`: canonical issue-creation / issue-conclusion / PR body families drafted
+- [x] `P0-C1-S1`: canonical issue-creation / issue-conclusion / PR body families drafted
 - [ ] `P1-C1-S1`: Evidence Footer contract fixed
 - [ ] `P2-C1-S1`: hard-gate body-shape check scope fixed
 - [ ] `P3-C1-S1`: repair order fixed
@@ -165,6 +153,20 @@
 
 - This slice will compare current script renderers and representative live GitHub objects until the canonical body contract is fixed.
 
+### P0-C1-S1 (canonical body families drafted from operator rules | 2026-03-31)
+
+- artifacts:
+  - `docs/issues/body-contract-S0E-5D-p0-canonical-spec.md`
+  - `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`
+- expected:
+  - one explicit canonical spec should fix issue creation, issue conclusion, and PR body section order and row-shape rules
+  - metadata-like bullets should forbid blank paragraphs between adjacent rows
+  - Evidence Footer applicability should be constrained before formatter/gate implementation work continues
+- observed:
+  - the canonical spec now fixes contiguous metadata rows, creation/conclusion/PR body section order, inline-code rules, and the operator rule that Evidence Footer is drills/evidence-only with no commit-footer fallback
+  - one carry-forward source-extraction direction is now documented for the next step so the footer can move toward one low-cardinality source instead of mixed inference rules
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-31: created `S0E-5D` as a dedicated follow-up for body contract normalization, Evidence Footer unification, and hard-gate shape checks after live object drift was confirmed across representative issues and PRs.
+- 2026-03-31: completed `P0` by converting operator-supplied formatting rules into one canonical body spec for issue creation, issue conclusion, and PR body shape, and by pre-locking Evidence Footer to drills/evidence-only with no commit-footer fallback.
