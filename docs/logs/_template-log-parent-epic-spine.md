@@ -70,15 +70,19 @@
 - 默认应指向具体 child log 的 execution checklist，而不是 parent/spine 自己重新发明一套 checklist。
 - 若 parent/spine 只做聚合，应在这里写明“由哪些 child logs 组成该 PR”。
 
-**PR links / evidence footer**:
+**PR links**:
 
 - Parent log: `docs/logs/log-<ID>.md`
 - Child log source(s): ``
 - Issue: ``
 - Evidence artifact: ``
 
+**Evidence Footer Source**:
+
+- `P1-C1-S1` | artifact: ``
+
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
-- `Evidence Footer` lines should prefer: `sha / ID / P*-C*-S* : summary`.
+- `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
 
 **Non-goals（不做什么）**（可选，但建议写）:
 

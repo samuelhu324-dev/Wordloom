@@ -7,6 +7,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from body_contract import ISSUE_ALLOWED_LINK_LABELS, bullets_are_contiguous, extract_section_order, link_labels_are_allowed
 from gen_issue_draft import (
     _derive_function_labels,
     _derive_module_labels,
@@ -519,11 +520,24 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     else:
         checks.append(_build_check("source-log-issue-writeback", "fail", "source log links.issue is blank"))
 
-    missing_sections = [name for name in ["Metadata", "Definition of Done (DoD)", "Links"] if name not in body_sections]
+    missing_sections = [name for name in ["Metadata", "Context", "Definition of Done (DoD)", "Links"] if name not in body_sections]
     if missing_sections:
         checks.append(_build_check("required-body-sections", "fail", f"missing required sections: {', '.join(missing_sections)}"))
     else:
-        checks.append(_build_check("required-body-sections", "pass", "Metadata, Definition of Done (DoD), and Links sections are present"))
+        checks.append(_build_check("required-body-sections", "pass", "Metadata, Context, Definition of Done (DoD), and Links sections are present"))
+
+    issue_section_order = extract_section_order(issue_body)
+    expected_issue_section_order = ["Metadata", "Context", "Definition of Done (DoD)", "Links"]
+    filtered_issue_order = [name for name in issue_section_order if name in expected_issue_section_order]
+    if filtered_issue_order == expected_issue_section_order:
+        checks.append(_build_check("issue-section-order", "pass", "issue body section order matches the canonical contract"))
+    else:
+        checks.append(_build_check("issue-section-order", "fail", f"issue body section order is {filtered_issue_order}; expected {expected_issue_section_order}"))
+
+    if bullets_are_contiguous(_extract_section_lines(issue_body, "Metadata")):
+        checks.append(_build_check("metadata-row-shape", "pass", "Metadata bullet rows are contiguous"))
+    else:
+        checks.append(_build_check("metadata-row-shape", "fail", "Metadata bullet rows contain blank gaps or non-bullet content"))
 
     if expected_labels:
         missing_labels = [label for label in expected_labels if label not in live_labels]
@@ -572,26 +586,33 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     else:
         checks.append(_build_check("final-dod-pr-refs", "skipped", "no final DoD PR refs are required before merged PR evidence exists"))
 
+    links_allowed, invalid_link_rows = link_labels_are_allowed(link_lines, ISSUE_ALLOWED_LINK_LABELS)
+    if links_allowed:
+        checks.append(_build_check("link-categories", "pass", "Links section uses only allowed issue link categories"))
+    else:
+        checks.append(_build_check("link-categories", "fail", f"Links section contains invalid rows: {invalid_link_rows}"))
+
     expected_link_fragments = [f"Log: `{_repo_rel(source_log_path)}`"]
     runbook_value = fields.get("runbook", "").strip()
     if runbook_value:
         expected_link_fragments.append(f"Runbook: `{runbook_value}`")
-    if issue_state == "CLOSED" or ordered_prs:
-        expected_link_fragments.append(issue_url)
-        expected_link_fragments.extend(pr.url for pr in ordered_prs)
+    parent_log_value = fields.get("parent_log", "").strip()
+    if parent_log_value:
+        expected_link_fragments.append(f"Parent log: `{parent_log_value}`")
+    roadmap_value = fields.get("roadmap", "").strip()
+    if roadmap_value:
+        expected_link_fragments.append(f"Roadmap: `{roadmap_value}`")
     missing_link_fragments = [fragment for fragment in expected_link_fragments if not _contains_fragment(link_lines, fragment)]
     if missing_link_fragments:
-        checks.append(_build_check("links-coverage", "fail", f"Links section is missing expected fragments: {missing_link_fragments}"))
+        checks.append(_build_check("links-coverage", "fail", f"Links section is missing expected issue-link fragments: {missing_link_fragments}"))
     else:
-        checks.append(_build_check("links-coverage", "pass", "Links section covers the expected log, runbook, issue, and PR references for the current stage"))
+        checks.append(_build_check("links-coverage", "pass", "Links section covers the expected canonical issue-link fragments"))
 
     if issue_state == "CLOSED":
         if _has_substantive_text(context_lines):
-            checks.append(_build_check("closed-body-shape", "fail", "concluded issue still contains substantive Context content"))
-        elif "Context" in body_sections:
-            checks.append(_build_check("closed-body-shape", "warning", "concluded issue still carries an empty Context section"))
+            checks.append(_build_check("closed-body-shape", "pass", "concluded issue keeps substantive Context content as required by the canonical contract"))
         else:
-            checks.append(_build_check("closed-body-shape", "pass", "concluded issue body omits the transient Context section"))
+            checks.append(_build_check("closed-body-shape", "fail", "concluded issue is missing substantive Context content"))
     else:
         checks.append(_build_check("closed-body-shape", "skipped", "closed-body shape is not required while the issue remains open"))
 

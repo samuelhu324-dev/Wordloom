@@ -7,6 +7,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from body_contract import extract_pr_summary_inputs
 from gen_issue_draft import _load_text, _parse_fields, _parse_sections, _repo_rel, _repo_root, _run_command
 
 
@@ -262,33 +263,6 @@ def _render_commit_footer_line(commit: CommitSelection) -> str:
     return f"- `{commit.sha[:8]}` / `{parsed['id']}` / `{parsed['unit']}`: {parsed['summary']}"
 
 
-def _parse_pr_summary_inputs(section_lines: list[str]) -> tuple[list[str], list[str]]:
-    summary_bullets: list[str] = []
-    link_lines: list[str] = []
-    current: str | None = None
-
-    for raw in section_lines:
-        stripped = raw.strip()
-        if stripped == "**PR summary bullets**:":
-            current = "summary"
-            continue
-        if stripped == "**PR links / evidence footer**:":
-            current = "links"
-            continue
-        if stripped.startswith("**") and stripped.endswith(":"):
-            current = None
-            continue
-        if not stripped.startswith("- "):
-            continue
-        value = stripped[2:].strip()
-        if current == "summary":
-            summary_bullets.append(value)
-        elif current == "links":
-            link_lines.append(value)
-
-    return summary_bullets, link_lines
-
-
 def _extract_checked_items(section_lines: list[str]) -> list[CheckedItem]:
     items: list[str] = []
     for raw in section_lines:
@@ -493,7 +467,6 @@ def _render_body_preview(
 ) -> str:
     summary_lines = [f"- {item}" for item in summary_bullets] or ["- <placeholder>"]
     checklist_lines = [f"- [x] `{item.identifier}`: {item.text}" for item in checklist_items] or ["- [ ] <placeholder>"]
-    rendered_evidence_lines = [f"- {item}" for item in evidence_footer_lines] or ["- <none>"]
     lines = [
         "## Metadata",
         "",
@@ -515,11 +488,14 @@ def _render_body_preview(
         "## Links",
         "",
         *[f"- {item}" for item in link_lines],
-        "",
-        "## Evidence Footer",
-        "",
-        *rendered_evidence_lines,
     ]
+    if evidence_footer_lines:
+        lines.extend([
+            "",
+            "## Evidence Footer",
+            "",
+            *[f"- {item}" for item in evidence_footer_lines],
+        ])
     if pr_development_issue:
         lines.extend(
             [
@@ -632,7 +608,7 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
     requested_slug = _normalize_branch_name(requested_id)
     candidate_pr_branch = (item.get("candidate_pr_branch") or defaults.get("candidate_pr_branch") or f"pr-prep/{requested_slug}").strip()
 
-    summary_bullets, explicit_link_lines = _parse_pr_summary_inputs(_find_section_lines(sections, "PR Summary Inputs"))
+    summary_bullets, explicit_link_lines, evidence_footer_source_lines = extract_pr_summary_inputs(full_text)
     if not summary_bullets:
         warnings.append("source log is missing PR summary bullets; preview uses placeholders")
 
@@ -659,15 +635,7 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
         warnings.append("scope-aligned checklist selection found no matches; preview falls back to all checked items")
         scoped_checklist_items = checklist_items
 
-    scoped_evidence_lines = _extract_scoped_evidence_lines(
-        _find_section_lines(sections, "Evidence"),
-        pr_scope_kind,
-        pr_scope_refs,
-    )
-    if not scoped_evidence_lines:
-        if pr_scope_kind != "all":
-            warnings.append("scope-aligned evidence selection found no matches; preview falls back to selected commits")
-        scoped_evidence_lines = [_render_commit_footer_line(item) for item in selected_commits]
+    scoped_evidence_lines = evidence_footer_source_lines
 
     link_lines = explicit_link_lines or _build_default_link_lines(fields, source_log_rel)
     preview_body = _render_body_preview(

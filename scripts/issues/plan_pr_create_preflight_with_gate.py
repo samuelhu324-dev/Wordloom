@@ -8,6 +8,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from body_contract import validate_pr_body_contract
 from create_pr_from_plan import _ensure_branch_absent, _has_placeholder_summary
 from gen_issue_draft import (
     _derive_repo_slug,
@@ -133,6 +134,7 @@ def _evaluate_preflight_item(*, repo: str, item: dict, gate_allowed: bool, repo_
                 PreflightCheck("gh-prerequisites", "skipped", "create-specific preflight checks skipped because lifecycle pre-gate blocked the sample"),
                 PreflightCheck("branch-availability", "skipped", "create-specific preflight checks skipped because lifecycle pre-gate blocked the sample"),
                 PreflightCheck("preview-integrity", "skipped", "create-specific preflight checks skipped because lifecycle pre-gate blocked the sample"),
+                PreflightCheck("body-shape-contract", "skipped", "create-specific preflight checks skipped because lifecycle pre-gate blocked the sample"),
             ]
         )
         return "stop-before-local-materialization", False, checks, warnings
@@ -213,6 +215,22 @@ def _evaluate_preflight_item(*, repo: str, item: dict, gate_allowed: bool, repo_
                 checks.append(PreflightCheck("preview-integrity", "fail", "preview body still contains placeholder Summary content or zero summary bullets"))
             else:
                 checks.append(PreflightCheck("preview-integrity", "pass", f"preview body is create-ready with summary_bullet_count = {summary_bullet_count}"))
+
+            source_log_rel = str(item.get("source_log_path") or "")
+            if source_log_rel:
+                source_log_path = _coerce_path(source_log_rel, repo_root)
+                contract_result = validate_pr_body_contract(
+                    body_markdown=preview_body,
+                    source_log_text=source_log_path.read_text(encoding="utf-8"),
+                    pr_development_issue=str(item.get("pr_development_issue") or "").strip() or None,
+                )
+                failed = [check.details for check in contract_result.checks if check.status == "fail"]
+                if failed:
+                    checks.append(PreflightCheck("body-shape-contract", "fail", "; ".join(failed)))
+                else:
+                    checks.append(PreflightCheck("body-shape-contract", "pass", "preview body matches the canonical PR body contract"))
+            else:
+                checks.append(PreflightCheck("body-shape-contract", "fail", "source_log_path is blank so PR body contract cannot be validated"))
 
     failing = [check for check in checks if check.status == "fail"]
     if failing:

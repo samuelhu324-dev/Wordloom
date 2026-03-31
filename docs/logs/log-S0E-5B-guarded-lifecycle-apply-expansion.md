@@ -60,12 +60,17 @@
 
 - Default source: reuse this log's execution checklist after `P0-P3` are reviewed.
 
-**PR links / evidence footer**:
+**PR links**:
 
 - Log: `docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md`
 - Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/307`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json`
+
+**Evidence Footer Source**:
+
+- `P1-C1-S1` | artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json`
+- `P2-C1-S1` | artifact: `docs/issues/pr-create-preflight-S0E-5C-p2-stop-branch-collision.json`
 
 **Default choices (phase defaults / v1)**:
 
@@ -284,3 +289,4 @@
 - 2026-03-30: completed `P2` by selecting PR-body rewrite as the next guarded PR-side family, rewriting merged PR `#306` behind an `allow-apply` gate, and validating a frozen stop-before-edit drill on the archived blocked fixture.
 - 2026-03-30: completed `P3` by using `#307` plus merged PR `#308` as one representative closed-loop sample, then rewriting that merged PR through the guarded PR-body path and concluding the issue in place.
 - 2026-03-30: marked `S0E-5B` as `stable` and split guarded `PR create` investigation into the new `S0E-5C` follow-up instead of continuing to overload this slice.
+

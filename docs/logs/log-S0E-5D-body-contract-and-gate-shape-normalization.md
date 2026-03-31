@@ -96,6 +96,7 @@
 - `S0E-5D` is the dedicated place to fix that contract before any further GitHub Actions rollout is considered.
 - `P0` is now completed: one first-cut canonical body spec has been fixed for issue creation, issue conclusion, and PR body shape, including contiguous metadata rows, explicit section order, backtick rules, and the rule that Evidence Footer is drills/evidence-only with no commit-footer fallback.
 - `P1` is now completed: Evidence Footer now has one fixed extraction source, one fixed rendered line shape, explicit omission semantics, and an explicit rule that both the stage token and artifact path must be wrapped in inline code.
+- `P2` is now completed: hard gate now checks canonical section order, metadata blank-gap discipline, allowed link categories, issue conclusion Context retention, and PR-side Evidence Footer presence/shape against one explicit source block; both PR prep preview and PR rewrite now consume `Evidence Footer Source` only.
 
 ## P0 (Canonical body families | v1)
 
@@ -137,26 +138,51 @@
 - If the source block is absent, the entire `Evidence Footer` section must be omitted.
 - Commit-footer fallback, phase-heading fallback, and mixed inferred footer styles are all forbidden.
 
-## Carry-Forward Questions For P1/P2
+## P2 (Hard gate body-shape checks | v1)
 
-- `P2` still needs the hard-gate body-shape check list derived from this canonical spec.
+### P2-C1-S1 (Canonical hard-gate body-shape checks implemented | v1)
 
-## P1-Locked Inputs For P2
+- The hard-gate shape spec is now recorded in `docs/issues/hard-gate-shape-S0E-5D-p2-canonical-spec.md`.
+- Shared contract helpers now live in `scripts/issues/body_contract.py`.
+- PR preview/create rendering in `plan_pr_prep.py` now:
+  - reads `PR links` and `Evidence Footer Source` separately;
+  - omits `Evidence Footer` when no source rows exist;
+  - forbids commit-footer fallback.
+- PR rewrite in `rewrite_pr_body_scope_from_log.py` now:
+  - reads `Evidence Footer Source` only;
+  - removes stale `Evidence Footer` when the source block is absent;
+  - validates the rewritten body against the canonical PR contract before writing output.
+- Create-time hard gate in `plan_pr_create_preflight_with_gate.py` now validates preview bodies against the canonical PR body contract.
+- Lifecycle audit in `plan_lifecycle_audit.py` now additionally checks:
+  - issue section order;
+  - metadata bullet contiguity;
+  - allowed issue-link categories;
+  - closed-issue substantive `Context` retention.
+- Issue conclusion rendering in `plan_issue_conclusion.py` is now aligned to the canonical contract by:
+  - always keeping the `Context` section;
+  - using a canonical conclusion line when create-time `Context` remained blank;
+  - omitting issue/PR rows from issue `Links`.
+- Standalone PR body contract checks are now available through `scripts/issues/check_pr_body_contract.py`.
 
-- Hard gate can now validate the presence or omission of `Evidence Footer` using one explicit source contract instead of mixed inference rules.
-- Hard gate can now reject footer rows that do not match the exact canonical line shape.
-- Generator and rewriter repair work can now target one single footer source block instead of reconciling multiple fallback styles.
+## Carry-Forward Questions For P3
+
+- `P3` still needs the repair-order decision across historical live bodies, generators, rewriters, and gate-first rollout.
+
+## P2-Locked Inputs For P3
+
+- The repo now has one machine-checkable PR body contract gate that can emit pass/fail results on local fixtures before live GitHub mutation.
+- The repo now has one canonical source-log path for Evidence Footer lines and one canonical rendered row shape.
+- The next remaining choice is rollout order: reconcile historical live bodies first, or apply generator/gate fixes first and repair drifted history selectively.
 
 ## Plan (draft)
 
-- `P2-C1-S1`: fix hard-gate body-shape checks beyond simple section presence
 - `P3-C1-S1`: decide repair order across generators, rewriters, and gate checks
 
 ## Execution Checklist (unchecked)
 
 - [x] `P0-C1-S1`: canonical issue-creation / issue-conclusion / PR body families drafted
 - [x] `P1-C1-S1`: Evidence Footer contract fixed
-- [ ] `P2-C1-S1`: hard-gate body-shape check scope fixed
+- [x] `P2-C1-S1`: hard-gate body-shape check scope fixed
 - [ ] `P3-C1-S1`: repair order fixed
 
 ## Evidence (reserved)
@@ -191,8 +217,39 @@
   - the contract now fixes one exact line shape where both the stage token and artifact path are inline-code wrapped
   - omission semantics are now explicit when the source block is absent, and all fallback styles are forbidden
 
+### P2-C1-S1 (hard-gate body-shape checks implemented and sampled | 2026-03-31)
+
+- artifacts:
+  - `docs/issues/hard-gate-shape-S0E-5D-p2-canonical-spec.md`
+  - `scripts/issues/body_contract.py`
+  - `scripts/issues/check_pr_body_contract.py`
+  - `scripts/issues/plan_pr_prep.py`
+  - `scripts/issues/rewrite_pr_body_scope_from_log.py`
+  - `scripts/issues/plan_pr_create_preflight_with_gate.py`
+  - `scripts/issues/plan_issue_conclusion.py`
+  - `scripts/issues/plan_lifecycle_audit.py`
+  - `docs/issues/pr-prep-S0E-5D-p2-pass-manifest.json`
+  - `docs/issues/pr-prep-S0E-5D-p2-render-plan.json`
+  - `docs/issues/pr-body-contract-S0E-5D-p2-pass-body.md`
+  - `docs/issues/pr-body-contract-S0E-5D-p2-pass-check.json`
+  - `docs/issues/pr-body-contract-S0E-5D-p2-stop-unquoted-footer-body.md`
+  - `docs/issues/pr-body-contract-S0E-5D-p2-stop-unquoted-footer-check.json`
+  - `docs/issues/pr-body-contract-S0E-5D-p2-stop-wrong-source-log.md`
+  - `docs/issues/pr-body-contract-S0E-5D-p2-stop-wrong-source-check.json`
+  - `docs/issues/pr-body-contract-S0E-5D-p2-rewrite-body.md`
+  - `docs/issues/pr-body-contract-S0E-5D-p2-rewrite-check.json`
+- expected:
+  - hard gate should reject PR bodies with malformed footer rows or footer sections sourced from the wrong block
+  - PR prep preview and PR rewrite should stop inferring footer rows from commit or `Evidence` sections
+  - issue-side audit should move from section presence to canonical section order and link-category checks
+- observed:
+  - PR prep preview now renders from `Evidence Footer Source` only and produced a pass sample on `S0E-5B`
+  - standalone contract checks now pass on canonical preview/rewrite bodies and fail on both unquoted footer rows and wrong-source-block fixtures
+  - lifecycle audit and issue conclusion rendering are now aligned with the newer issue body contract instead of the older transient-context rule
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-31: created `S0E-5D` as a dedicated follow-up for body contract normalization, Evidence Footer unification, and hard-gate shape checks after live object drift was confirmed across representative issues and PRs.
 - 2026-03-31: completed `P0` by converting operator-supplied formatting rules into one canonical body spec for issue creation, issue conclusion, and PR body shape, and by pre-locking Evidence Footer to drills/evidence-only with no commit-footer fallback.
 - 2026-03-31: completed `P1` by fixing one explicit `Evidence Footer Source` block, one exact footer line shape, and the rule that both the stage token and artifact path must use inline code while all fallback footer styles remain forbidden.
+- 2026-03-31: completed `P2` by wiring one shared body-contract gate into PR preview/rewrite paths, aligning issue-side audit/rendering to the new contract, and recording pass/stop samples for canonical footer rows, unquoted footer rows, and wrong-source-block failure cases.

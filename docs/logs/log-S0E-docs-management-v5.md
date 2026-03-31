@@ -181,6 +181,7 @@
 - [x] `P60`：已新建 `S0E-5D`，专门收口 issue creation / issue conclusion / PR body / Evidence Footer 的 canonical contract，以及 hard gate 需要新增的 body-shape 检查范围，避免继续把格式合同问题混进 `S0E-5C`
 - [x] `P61`：`S0E-5D` 已完成 `P0`，issue creation / issue conclusion / PR body 的 canonical body families 现已按 operator 规则固定，metadata rows 不允许出现空段，Evidence Footer 也已先固定为 drills/evidence-only 且禁止 commit-footer fallback
 - [x] `P62`：`S0E-5D` 已完成 `P1`，Evidence Footer 现已固定为只从 `Evidence Footer Source` 读取，并采用唯一行型 ``- `P1-C1-S1` | artifact: `...```，其中阶段串与 artifact 路径串都必须带反引号
+- [x] `P63`：`S0E-5D` 已完成 `P2`，hard gate 现已补上 body-shape checks，PR prep/rewrite 只读 `Evidence Footer Source`，并已有一条 pass 样本与两条 stop 样本分别覆盖 canonical footer、未加反引号 footer 和错误来源块
 
 ## Current Status（进展摘要）
 
@@ -216,7 +217,8 @@
 - `S0E-5C` 的下一步将进入 `P3`：基于这个 bounded front-half 结果，决定是否只继续深化 `S4/S5` 的 targeted rules，同时把 `S6` 长期保留为 operator-held boundary；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
-- `S0E-5D` 的下一步将进入 `P2`：把 section order、blank-line discipline、allowed link categories、Evidence Footer presence/shape 纳入 hard gate 的 body-shape checks；
+- `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
+- `S0E-5D` 的下一步将进入 `P3`：决定 historical live bodies 的修复顺序，以及 generator-first / gate-first / selective-rewrite 的 rollout 策略；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -349,3 +351,4 @@
 - 2026-03-31：新增 `S0E-5D`，用于单独收口 body contract、Evidence Footer 低基数规则，以及 hard gate 应新增的 body-shape 审核项。
 - 2026-03-31：完成 `S0E-5D/P0`，把 operator 给出的格式规则写成 canonical body spec，并将 Evidence Footer 的适用范围先锁定为 drills/evidence-only 且禁止 commit-footer fallback。
 - 2026-03-31：完成 `S0E-5D/P1`，把 `Evidence Footer Source` 的唯一来源、唯一行型和 inline-code 规则正式固定，为后续 hard gate body-shape checks 提供可机器验证的输入合同。
+- 2026-03-31：完成 `S0E-5D/P2`，实现 shared body-contract gate、切断 footer 推断回退路径，并用 pass/stop fixture 证明 canonical footer、未加反引号 footer 和错误来源块都能被机械区分。

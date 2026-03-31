@@ -268,12 +268,9 @@ def _build_link_lines(existing_link_lines: list[str], issue_url: str, merged_prs
             result.append(line)
 
     for line in existing_link_lines:
-        if line.startswith("- PR:"):
+        if line.startswith("- PR:") or line.startswith("- Issue:"):
             continue
         add(line)
-    add(f"- Issue: `{issue_url}`")
-    for pr in merged_prs:
-        add(f"- PR: `{pr.url}`")
     return result
 
 
@@ -285,8 +282,7 @@ def _render_body_preview(
 ) -> str:
     dod_lines = [f"- #{pr.number}" for pr in merged_prs]
     lines = ["## Metadata", "", *metadata_lines]
-    if context_lines:
-        lines.extend(["", "## Context", "", *context_lines])
+    lines.extend(["", "## Context", "", *context_lines])
     lines.extend([
         "",
         "## Definition of Done (DoD)",
@@ -417,12 +413,12 @@ def _build_item(
     context_section_lines = _extract_section_lines(body, "Context")
     context_lines = [line.strip() for line in context_section_lines if line.strip()]
     if not _has_substantive_text(context_section_lines):
-        context_lines = []
+        context_lines = ["- Final lifecycle state has converged and the issue body now reflects the completed delivery set."]
     existing_link_lines = _extract_bullet_lines(_extract_section_lines(body, "Links"))
     link_lines = _build_link_lines(existing_link_lines, issue_url, ordered_prs)
 
-    if not context_lines:
-        warnings.append("existing Context section is blank; preview omits optional Context block")
+    if context_lines == ["- Final lifecycle state has converged and the issue body now reflects the completed delivery set."]:
+        warnings.append("existing Context section is blank; preview uses the canonical conclusion Context line")
     if not _has_substantive_text(_extract_section_lines(body, "Definition of Done (DoD)")):
         warnings.append("existing issue DoD is still blank create-time scaffold")
 

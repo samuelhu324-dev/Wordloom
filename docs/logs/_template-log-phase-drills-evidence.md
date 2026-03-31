@@ -65,15 +65,19 @@
 - Default source: reuse the child log's execution checklist for the generated PR checklist block.
 - If a generated PR should omit or reorder checklist items, note that override explicitly here.
 
-**PR links / evidence footer**:
+**PR links**:
 
 - Log: `docs/logs/log-<ID>.md`
 - Issue: ``
 - Runbook: ``
 - Evidence artifact: ``
 
+**Evidence Footer Source**:
+
+- `P1-C1-S1` | artifact: ``
+
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
-- `Evidence Footer` lines should prefer: `sha / ID / P*-C*-S* : summary`.
+- `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
 
 ## Definitions (optional)
 

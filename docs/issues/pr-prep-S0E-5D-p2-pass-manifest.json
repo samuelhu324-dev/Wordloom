@@ -1,0 +1,11 @@
+{
+  "defaults": {
+    "base_branch": "main"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md"
+    }
+  ]
+}

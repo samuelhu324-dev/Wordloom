@@ -3,14 +3,13 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from gen_issue_draft import _load_text, _parse_sections, _repo_rel, _repo_root
+from body_contract import validate_pr_body_contract
+from gen_issue_draft import _load_text, _parse_fields, _parse_sections, _repo_rel, _repo_root
 from plan_pr_prep import (
     _derive_scope_from_pr_title,
     _extract_checked_items,
-    _extract_scoped_evidence_lines,
     _filter_checked_items,
     _find_section_lines,
-    _matches_scope,
 )
 
 
@@ -40,20 +39,9 @@ def _render_section(name: str, lines: list[str]) -> list[str]:
     return [f"## {name}", "", *cleaned_lines, ""]
 
 
-def _extract_heading_evidence_lines(section_lines: list[str], scope_kind: str, scope_refs: list[str]) -> list[str]:
-    lines: list[str] = []
-    for raw in section_lines:
-        stripped = raw.strip()
-        if not stripped.startswith("### "):
-            continue
-        heading = stripped[4:].strip()
-        if _matches_scope(heading, scope_kind, scope_refs):
-            lines.append(heading)
-    return lines
-
-
 def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, requested_id: str, pr_title: str, output_path: Path) -> str:
-    source_sections = _parse_sections(_load_text(source_log_path))
+    source_log_text = _load_text(source_log_path)
+    source_sections = _parse_sections(source_log_text)
     body_sections = _parse_sections(_load_text(existing_body_path))
 
     scope_kind, scope_refs = _derive_scope_from_pr_title(pr_title, requested_id)
@@ -63,19 +51,9 @@ def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, re
     if checklist_items and not filtered_checklist_items:
         raise SystemExit("No checklist items matched the requested PR title scope")
 
-    evidence_section_lines = _find_section_lines(source_sections, "Evidence")
-    heading_evidence_lines = _extract_heading_evidence_lines(
-        evidence_section_lines,
-        scope_kind,
-        scope_refs,
-    )
-    evidence_lines = heading_evidence_lines or _extract_scoped_evidence_lines(
-        evidence_section_lines,
-        scope_kind,
-        scope_refs,
-    )
-    if not evidence_lines:
-        raise SystemExit("No evidence lines matched the requested PR title scope")
+    from body_contract import extract_evidence_footer_source_lines
+
+    evidence_lines = extract_evidence_footer_source_lines(source_log_text)
 
     ordered_sections = [
         "Metadata",
@@ -90,7 +68,10 @@ def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, re
     rewritten_sections["Execution Checklist"] = [
         f"- [x] `{item.identifier}`: {item.text}" for item in filtered_checklist_items
     ]
-    rewritten_sections["Evidence Footer"] = [f"- {line}" for line in evidence_lines]
+    if evidence_lines:
+        rewritten_sections["Evidence Footer"] = [f"- {line}" for line in evidence_lines]
+    elif "Evidence Footer" in rewritten_sections:
+        del rewritten_sections["Evidence Footer"]
 
     rendered: list[str] = []
     for section_name in ordered_sections:
@@ -98,8 +79,20 @@ def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, re
             continue
         rendered.extend(_render_section(section_name, rewritten_sections[section_name]))
 
+    body_text = "\n".join(rendered).rstrip() + "\n"
+    source_fields = _parse_fields(source_log_text)
+    expected_development_issue = source_fields.get("pr_development_issue", "").strip() or source_fields.get("issue", "").strip() or None
+    contract_result = validate_pr_body_contract(
+        body_markdown=body_text,
+        source_log_text=source_log_text,
+        pr_development_issue=expected_development_issue,
+    )
+    if contract_result.status != "pass":
+        failed = [f"{check.name}: {check.details}" for check in contract_result.checks if check.status == "fail"]
+        raise SystemExit("Rewritten PR body failed the canonical contract: " + "; ".join(failed))
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text("\n".join(rendered).rstrip() + "\n", encoding="utf-8")
+    output_path.write_text(body_text, encoding="utf-8")
     return _repo_rel(output_path)
 
 
