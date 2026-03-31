@@ -1,0 +1,7 @@
+{
+  "number": 779,
+  "url": "https://github.com/example/example/pull/779",
+  "title": "S0E-7B/P2-P3: attribution stop sample",
+  "body": "## Metadata\n\n- Requested ID: `S0E-7B`\n\n## Summary\n\n- Prove that attribution-stop halts before verifier execution.\n\n## Execution Checklist\n\n- [x] `P3-C1-S2`: validate attribution-stop sample\n\n## Links\n\n- Log: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`\n",
+  "headRefName": "pr-prep/s0e-7b"
+}

@@ -5,7 +5,7 @@
 **id**: `S0E-7B`
 **kind**: `log`
 **title**: `workflow/attribution handoff implementation and automatic mirroring integration v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Actions, Automation, Workflow, PR, epic/s0, sub/1`
 **links**: ``
@@ -82,6 +82,8 @@
 
 - `P0-C1-S1` | artifact: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
 - `P1-C1-S1S2` | artifact: `scripts/issues/resolve_pr_source_log_attribution.py`
+- `P2-C1-S1S2` | artifact: `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+- `P3-C1-S1S2` | artifact: `docs/issues/pr-source-log-attribution-S0E-7B-p3-sample-manifest.json`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
@@ -123,7 +125,8 @@
 - `S0E-7B` is now opened as the implementation follow-up after `S0E-4E` finished the attribution contract.
 - `P0` is now completed: implementation ownership is now explicitly separated from `S0E-4E` contract ownership.
 - `P1` is now completed: the repo now has one attribution resolver entrypoint that emits the `S0E-4E/P3` handoff payload and one normalized PR payload snapshot that future `S0E-7A` workflow wiring can consume directly.
-- `P2-P3` remain open: workflow consume-or-stop wiring and resolved/stop evidence samples are not yet implemented.
+- `P2` is now completed: the GitHub Actions mirror-verifier workflow now resolves attribution first, continues only when attribution is eligible, and stops before verifier execution with retained attribution evidence otherwise.
+- `P3` is now completed: the repo now has one resolved sample and one attribution-stop sample that preserve the `continue-to-verifier` vs `skipped-before-verifier` boundary as explicit retained evidence.
 
 ## P0 (Implementation boundary | v1)
 
@@ -164,6 +167,53 @@
   - future workflow runs may override both paths into workflow artifact directories while keeping the same payload fields and repo-relative path reporting.
 - This fixes the `P1` artifact boundary directly: later `S0E-7A` wiring can consume the emitted `source_log_path` when resolved, while attribution evidence remains independently inspectable when the resolver stops before verification.
 
+## P2 (Workflow consume-or-stop wiring | v1)
+
+### P2-C1-S1 (Resolved attribution now continues into mirror verification | v1)
+
+- `.github/workflows/s0e-pr-body-secondary-enforcement.yml` now runs `scripts/issues/resolve_pr_source_log_attribution.py` before any live PR body verification step.
+- `workflow_dispatch.inputs.source_log_path` is now an optional trusted override rather than a required operator-supplied contract owner. When present, it is passed as trusted explicit provenance; when blank, the workflow resolves attribution from the live PR event surfaces.
+- The workflow now extracts the attribution payload into step outputs and continues into `scripts/issues/verify_live_pr_body_contract.py` only when:
+  - `result = resolved`;
+  - `eligible_for_secondary_enforcement = true`;
+  - `source_log_path` is present in exact repo-relative form.
+- This implements the `4E -> 7A` consume rule directly: resolved attribution now feeds the verifier without inventing a second ownership handoff convention.
+
+### P2-C1-S2 (Attribution-stop now halts before verifier execution | v1)
+
+- The workflow now treats attribution stop outcomes as first-class terminal states before mirror verification begins.
+- The retained artifact and operator-facing surfaces now distinguish attribution stop from later verifier drift by design:
+  - workflow summary now records attribution result, winning surface, stop reason, source-log path, and attribution artifact paths before any verify details are considered;
+  - artifact manifest now records attribution artifacts alongside verify artifacts and classifies failures as either `attribution stop before verifier execution` or `post-publish drift detected`;
+  - check annotations now surface attribution-stop separately from later verifier drift;
+  - final workflow failure now stops immediately on non-resolved attribution rather than pretending the verifier ran.
+- This fixes the `P2` boundary directly: ambiguous ownership now remains an attribution-stage failure with independent retained evidence, not an implicit verifier error.
+
+## P3 (Representative end-to-end samples | v1)
+
+### P3-C1-S1 (Resolved handoff sample validated | v1)
+
+- The repo now has a local representative resolved sample built from:
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-resolved-pr-payload.json`;
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-resolved-normalized-pr-payload.json`;
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-resolved-result.json`.
+- The resolved sample proves all of the following:
+  - attribution resolves cleanly to `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`;
+  - the winning surface is `pr-body-log-row`;
+  - the workflow gate for that sample is `continue-to-verifier` rather than a stop outcome.
+
+### P3-C1-S2 (Attribution-stop sample validated | v1)
+
+- The repo now has a local representative attribution-stop sample built from:
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-pr-payload.json`;
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-normalized-pr-payload.json`;
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-result.json`.
+- The stop sample proves all of the following:
+  - attribution stops as `stop-conflicting-attribution` with `stop_reason = conflicting-attribution`;
+  - no `source_log_path` is emitted as a trusted verifier input;
+  - the workflow gate for that sample is `skipped-before-verifier`, which keeps attribution stop distinct from later verifier drift.
+- `docs/issues/pr-source-log-attribution-S0E-7B-p3-sample-manifest.json` now records both representative samples in one retained artifact so future workflow validation can point to one stable evidence surface rather than replaying ad hoc console output.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -191,13 +241,13 @@
 
 ### P2 (Workflow consume-or-stop wiring)
 
-- `P2-C1-S1`: wire the GitHub Actions path so resolved attribution continues into mirror verification
-- `P2-C1-S2`: wire stop outcomes so attribution halts before verifier execution and retains independent stop evidence
+- [x] `P2-C1-S1`: wire the GitHub Actions path so resolved attribution continues into mirror verification
+- [x] `P2-C1-S2`: wire stop outcomes so attribution halts before verifier execution and retains independent stop evidence
 
 ### P3 (Representative end-to-end samples)
 
-- `P3-C1-S1`: validate one resolved handoff sample
-- `P3-C1-S2`: validate one attribution-stop sample distinct from later verifier drift
+- [x] `P3-C1-S1`: validate one resolved handoff sample
+- [x] `P3-C1-S2`: validate one attribution-stop sample distinct from later verifier drift
 
 ## Execution Checklist (unchecked)
 
@@ -212,13 +262,13 @@
 
 ### P2 (Workflow consume-or-stop wiring)
 
-- [ ] `P2-C1-S1`: wire resolved attribution into mirror verification
-- [ ] `P2-C1-S2`: wire attribution-stop before verifier execution
+- [x] `P2-C1-S1`: wire resolved attribution into mirror verification
+- [x] `P2-C1-S2`: wire attribution-stop before verifier execution
 
 ### P3 (Representative end-to-end samples)
 
-- [ ] `P3-C1-S1`: validate resolved handoff sample
-- [ ] `P3-C1-S2`: validate attribution-stop sample
+- [x] `P3-C1-S1`: validate resolved handoff sample
+- [x] `P3-C1-S2`: validate attribution-stop sample
 
 ## Evidence (reserved)
 
@@ -251,8 +301,38 @@
 - observed:
   - the new resolver now emits `resolved` or fail-closed stop payloads from the allowed attribution surfaces only, writes a normalized PR payload snapshot beside the result JSON by default, and reports both artifact paths in repo-relative form
 
+### P2-C1-S1S2 (workflow consume-or-stop wiring fixed | 2026-04-01)
+
+- headSha: `f81a234b`
+- artifacts:
+  - `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+  - `scripts/issues/resolve_pr_source_log_attribution.py`
+  - `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
+- expected:
+  - the GitHub Actions mirror-verifier workflow should resolve attribution before verification, continue only when the handoff payload is eligible, and preserve attribution-stop as a separate retained-evidence outcome rather than collapsing it into verifier failure
+- observed:
+  - the workflow now runs attribution first, treats `source_log_path` input as an optional trusted override only, skips verifier execution on non-resolved attribution, and records attribution-stage status in summary, annotations, manifest, and final failure handling
+
+### P3-C1-S1S2 (resolved and attribution-stop samples validated | 2026-04-01)
+
+- headSha: `f81a234b`
+- artifacts:
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-resolved-pr-payload.json`
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-resolved-normalized-pr-payload.json`
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-resolved-result.json`
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-pr-payload.json`
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-normalized-pr-payload.json`
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-result.json`
+  - `docs/issues/pr-source-log-attribution-S0E-7B-p3-sample-manifest.json`
+- expected:
+  - the repo should retain one representative resolved sample and one representative attribution-stop sample that prove `continue-to-verifier` and `skipped-before-verifier` are distinct workflow outcomes with machine-readable evidence
+- observed:
+  - the resolved sample now emits `result = resolved` with `winning_surface = pr-body-log-row`, while the stop sample emits `result = stop-conflicting-attribution` with `stop_reason = conflicting-attribution`; the retained sample manifest records the verifier gate as `continue-to-verifier` vs `skipped-before-verifier` so attribution stop remains distinct from later verifier drift
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-01: opened `S0E-7B` as the implementation follow-up for attribution payload emission and automatic mirroring integration after `S0E-4E` completed the handoff contract.
 - 2026-04-01: completed `P0` by fixing the ownership split between attribution contract (`S0E-4E`) and attribution implementation / workflow wiring (`S0E-7B`).
 - 2026-04-01: completed `P1` by adding `scripts/issues/resolve_pr_source_log_attribution.py`, which emits the `4E -> 7A` handoff payload plus a normalized PR payload snapshot using stable repo-relative artifact paths.
+- 2026-04-01: completed `P2` by wiring `.github/workflows/s0e-pr-body-secondary-enforcement.yml` through attribution-first consume-or-stop behavior, with attribution-stop preserved as a pre-verifier failure surface.
+- 2026-04-01: completed `P3` by generating one resolved attribution sample and one conflicting-attribution stop sample, then recording both outcomes in `docs/issues/pr-source-log-attribution-S0E-7B-p3-sample-manifest.json`.
