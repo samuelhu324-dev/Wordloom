@@ -193,6 +193,8 @@
 - [x] `P69`：`S0E-6A` 已完成本地 issue draft scaffold sample，`docs/issues/issue-S0E-6A-*.md/.json` 已生成，因此该 slice 现已可视为 `stable`
 - [x] `P70`：`S0E-5C` 已完成 `P3`，现已固定 `S6` live PR publish 在 v1 继续由 operator 持有，而 post-apply live verify 应位于 `S6` 之后、`S7` 之前，GitHub Actions 仅作为后续 secondary enforcement
 - [x] `P71`：`S0E-5C` 现已进入 `stable`，因为 guarded `PR create` 的分解、front-half evidence、publish boundary ownership 与 post-apply verification placement 都已收口
+- [x] `P72`：`S0E-5C` 已完成 `P4`，`create_pr_from_plan.py` 现已把 post-apply live verifier 直接接到真实 `gh pr create` 后面，并把验证状态与 artifact 路径写回同一份 `pr-create result` JSON
+- [x] `P73`：`S0E-5C/P4` 已用历史样本 `S0E-5B/#308` 完成非破坏性验证，`docs/issues/pr-prep-S0E-5B-real-post-apply-live-body.md` 与 `...-verify-result.json` 已证明新执行顺序可产出稳定证据
 
 ## Current Status（进展摘要）
 
@@ -225,14 +227,14 @@
 - `S0E-5C` 已完成 `P0`：guarded `PR create` 现已被拆成 7 个明确阶段，且已确认 remote branch publish 与 live PR publish 是两个不同的 publish boundary，不能继续被当成一个原子 guarded mutation；
 - `S0E-5C` 已完成 `P1`：当前结论是不允许把现有 lifecycle pre-gate 原样抬升为整条 create path 的总闸门，只有 create preflight 能把它作为 issue-readiness 前置层，而 branch materialization、remote publish、live PR publish 必须继续拆开；
 - `S0E-5C` 已完成 `P2`：`#309` 现已作为 live representative sample 证明 bounded front half 可以同时产出 pass 和 stop 两类结果，而且两条路径都明确停在 `S4-local-branch-materialization` 之前；
-- `S0E-5C` 已完成 `P3` 并进入 `stable`：当前结论是 `S6` live PR publish 在 v1 继续保持 operator-held，而 post-apply live verify 应放在 `S6` 之后、`S7` 之前；若后续还要深化 guarded rollout，也只建议单独评估 `S4/S5` 的 targeted rules；
+- `S0E-5C` 已完成 `P4` 并保持 `stable`：真实 `PR create` 路径现已按 `S6 -> live verify -> S7` 执行，并会把 post-apply verification status、live body artifact 与 verify result artifact 一并写回 `pr-create result`；若后续还要深化 guarded rollout，也仍只建议单独评估 `S4/S5` targeted rules 或补充 secondary GitHub Actions enforcement；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
 - `S0E-5D` 已完成 `P3` 的边界收口：historical rewrite 执行明确挂到新 `P4`，先做代表性历史 PR rewrite，再做历史 closed issue rewrite；
 - `S0E-5D` 已完成 `P4`：代表性历史 merged PR `#299/#302/#306/#308` 与 closed issue `#293/#295/#297/#300/#303/#305/#307` 都已在 live GitHub 上按 canonical contract 回写，并分别通过 PR contract verifier 与 lifecycle audit，因此该 slice 现已 `stable`；
 - `S0E-6A` 已完成并进入 `stable`：双轨证据模型已固定，parent/phase templates 已回写 guidance，代表性混合块样本 `S0E-5C` / `S0E-4C` 已迁移，且本地 issue draft sample 也已生成；
-- `S0E-5C` 将在后续 `P3` 接手 post-apply verify / Actions ownership，原因是这部分更贴近 `S6/S7` live publish boundary，而不是 `S0E-5D` 的 contract normalization 本身；
+- `S0E-5C` 已接手并完成 create-path 内联 post-apply verify wiring，而 GitHub Actions ownership 现在只剩 secondary enforcement 的后续可选项，因为 primary publish-time verification 已落在本地 create path；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -372,3 +374,4 @@
 - 2026-03-31：新增 `S0E-6A`，用于把 logs 的结构问题从 body contract 本身拆出来，正式定义 `Evidence Footer Source` 和 `Evidence` 双轨并存的 contract，以及后续 parent/phase templates 的优化边界。
 - 2026-03-31：完成 `S0E-6A/P3-P4`，已把 parent/phase templates 回写为双轨证据 authoring 规则，迁移代表性旧样本 `S0E-5C` / `S0E-4C`，并生成 `S0E-6A` 的本地 issue draft sample，因此 `S0E-6A` 现已进入 `stable`。
 - 2026-03-31：完成 `S0E-5C/P3`，现已固定 `S6` live PR publish 继续为 operator-held boundary，post-apply live verify 位于 `S6` 之后、`S7` 之前，而 GitHub Actions verification 只作为后续 secondary enforcement；因此 `S0E-5C` 现已进入 `stable`。
+- 2026-03-31：完成 `S0E-5C/P4`，现已把 reusable live PR verifier 直接接入真实 `create_pr_from_plan.py` 执行链路，并用历史样本 `S0E-5B/#308` 非破坏性验证 `S6 -> live verify -> S7` 顺序与结果落盘行为。
