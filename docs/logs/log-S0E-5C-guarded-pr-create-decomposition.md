@@ -5,7 +5,7 @@
 **id**: `S0E-5C`
 **kind**: `log`
 **title**: `guarded PR create decomposition v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, PR, Automation, Drills, Evidence, epic/s0, sub/0e5c`
 **links**: ``
@@ -78,6 +78,7 @@
 
 - `P1-C1-S1` | artifact: `docs/issues/pr-create-S0E-5C-p1-boundary-map.json`
 - `P2-C1-S1` | artifact: `docs/issues/pr-create-S0E-5C-p2-pass-front-half-preflight-result.json`
+- `P3-C1-S1S2` | artifact: `docs/issues/pr-create-S0E-5C-p3-publish-and-post-apply-decision.md`
 
 ## Constraints
 
@@ -106,7 +107,8 @@
 - `P0` is now completed: the current `PR create` path has been decomposed into seven concrete stages with explicit stop boundaries, and the main outcome is that remote branch publication and live PR publication cannot be treated as one undifferentiated guarded mutation.
 - `P1` is now completed: no stage can reuse the existing lifecycle pre-gate unchanged as one all-purpose `PR create` gate; only create-time preflight can reuse it as an issue-readiness layer, and even that stage still needs create-specific targeted checks before any local mutation begins.
 - `P2` is now completed: live issue `#309` has been created and attached under parent issue `#248`, and one bounded front-half sample now proves that `S1-S3` can emit both pass and stop results without entering local branch materialization or live PR publication.
-- The deferred post-apply verification question from `S0E-5D` is now expected to land here rather than back inside `S0E-5D`, because post-publish body verification and GitHub Actions ownership sit closer to `S6` live PR publication than to body-contract normalization itself.
+- `P3` is now completed: `S6` remains operator-held in v1, while post-apply live verification is now fixed to run immediately after live PR publication and before `S7` local evidence finalization; later GitHub Actions enforcement may mirror that same verification, but it is no longer the primary publish-time owner.
+- `S0E-5C` is now `stable`: the slice has finished decomposition, ownership splitting, and publish-boundary decision work for guarded `PR create` without over-claiming that unattended live publish is safe in v1.
 
 ## P0 (PR create stage map | v1)
 
@@ -151,23 +153,31 @@
 - The reason is boundary ownership:
   - `S0E-5D` owns canonical shape and historical normalization;
   - `S0E-5C` owns create-time preflight, live PR publication boundaries, and any future post-publish verification chain.
-- The future `S0E-5C/P3` decision therefore needs to answer whether post-apply verification should sit:
-  - immediately after `S6` live PR publish;
-  - after `S7` local evidence finalization;
-  - or as a separate GitHub Actions enforcement layer that runs on merged/live objects.
+- `P3` now fixes the first decision directly:
+  - `S6` remains operator-held in v1;
+  - deeper guarded rollout, if any, should explore narrower targeted rules only for `S4` and `S5` rather than collapsing `S6` into unattended publish.
+
+### P3-C1-S2 (Post-apply verification placement fixed | v1)
+
+- The post-apply verification decision is now recorded in `docs/issues/pr-create-S0E-5C-p3-publish-and-post-apply-decision.md`.
+- The chosen execution order is now fixed as:
+  - `S6`: publish the live PR;
+  - `S6.5`: run live PR body verification against the created PR;
+  - `S7`: serialize both the create result and the verification result, then finalize local cleanup.
+- A later GitHub Actions job may run the same live verifier again as secondary enforcement, but it is no longer the primary publish-time verification owner.
 
 ## Plan (draft)
 
-- `P3-C1-S1`: decide whether the bounded front-half result is strong enough to keep `S6` operator-held while exploring targeted rules only for `S4/S5`, or whether `S0E-5C` should stop without deeper guarded rollout
-- `P3-C1-S2`: decide whether deferred post-apply verification from `S0E-5D` should become part of the `S6/S7` publish boundary or remain an external GitHub Actions enforcement layer
+- In-scope decomposition and publish-boundary decisions are now complete for `S0E-5C`.
+- Any later work should open a narrower follow-up slice for optional `S4/S5` targeted rules or for wiring the chosen post-apply verification order into the live create path.
 
 ## Execution Checklist (unchecked)
 
 - [x] `P0-C1-S1`: guarded `PR create` stage map fixed
 - [x] `P1-C1-S1`: reuse-vs-new-rule boundary fixed
 - [x] `P2-C1-S1`: representative decomposition sample recorded
-- [ ] `P3-C1-S1`: deferred publish-boundary decision fixed
-- [ ] `P3-C1-S2`: deferred post-apply verification ownership fixed
+- [x] `P3-C1-S1`: deferred publish-boundary decision fixed
+- [x] `P3-C1-S2`: deferred post-apply verification ownership fixed
 
 ## Evidence (reserved)
 
@@ -234,6 +244,21 @@
   - the pass sample on live issue `#309` returned `gate_decision = allow-apply` and `preflight_decision = allow-front-half-preflight`, with all create-specific checks passing and the result explicitly stopping before `S4-local-branch-materialization`
   - the stop sample reused the same live issue-readiness gate result but failed `branch-availability` on occupied branch `pr-prep/s0e-5b`, producing `preflight_decision = stop-before-local-materialization` while still avoiding any branch materialization or PR publication
 
+### P3-C1-S1S2 (publish boundary and post-apply verification ownership fixed | 2026-03-31)
+
+- artifacts:
+  - `docs/issues/pr-create-S0E-5C-p3-publish-and-post-apply-decision.md`
+  - `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`
+  - `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`
+  - `scripts/issues/verify_live_pr_body_contract.py`
+  - `scripts/issues/create_pr_from_plan.py`
+- expected:
+  - `P3` should decide whether `S6` live PR publication remains operator-held or becomes part of guarded unattended publish in v1
+  - `P3` should also fix where post-apply live verification belongs relative to `S6` publish, `S7` local evidence finalization, and any later GitHub Actions enforcement
+- observed:
+  - `S6` is now fixed as an operator-held boundary in v1, while any later guarded expansion is limited to narrower targeted-rule discussion for `S4` and `S5`
+  - post-apply live verification is now fixed to run immediately after `S6` and before `S7`, with later GitHub Actions verification retained only as secondary enforcement rather than as the primary publish-time owner
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: created `S0E-5C` as the dedicated follow-up for guarded `PR create` decomposition after `S0E-5B` reached stable state on in-place guarded mutation families.
@@ -241,3 +266,4 @@
 - 2026-03-30: completed `P1` by mapping those seven stages onto reuse-vs-new-rule ownership, concluding that only create-time preflight can partially reuse the existing lifecycle pre-gate while local materialization, remote publish, and live PR publication must remain separate boundaries.
 - 2026-03-30: created live issue `#309` for `S0E-5C`, attached it under parent issue `#248`, and wrote the issue link back to this source log as the representative live front-half sample anchor.
 - 2026-03-30: completed `P2` by adding a bounded front-half preflight entrypoint, then recording one live pass sample and one create-specific stop sample that both stop before `S4-local-branch-materialization`.
+- 2026-03-31: completed `P3` by fixing `S6` as an operator-held live publish boundary in v1, placing post-apply live verification immediately after publish and before `S7`, and keeping any later GitHub Actions verification as secondary enforcement; `S0E-5C` is now `stable`.
