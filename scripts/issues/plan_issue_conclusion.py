@@ -18,7 +18,7 @@ from gen_issue_draft import (
     _require_gh_cli,
     _run_command,
 )
-from body_contract import build_issue_conclusion_context_lines, issue_body_expected_context_line_count, validate_issue_context_lines
+from body_contract import build_issue_conclusion_context_lines, issue_body_context_line_bounds, validate_issue_context_lines
 
 
 ISSUE_URL_RE = re.compile(r"/issues/(?P<number>\d+)$")
@@ -413,14 +413,14 @@ def _build_item(
 
     source_log_text = _load_text(source_log_path)
     context_section_lines = _extract_section_lines(body, "Context")
-    expected_context_line_count = issue_body_expected_context_line_count(source_log_text)
-    context_ok, _, _ = validate_issue_context_lines(context_section_lines, expected_context_line_count, source_log_text)
+    context_line_bounds = issue_body_context_line_bounds(source_log_text)
+    context_ok, _, _ = validate_issue_context_lines(context_section_lines, context_line_bounds, source_log_text)
     context_lines = build_issue_conclusion_context_lines(source_log_text, [pr.number for pr in ordered_prs])
     existing_link_lines = _extract_bullet_lines(_extract_section_lines(body, "Links"))
     link_lines = _build_link_lines(existing_link_lines, issue_url, ordered_prs)
 
     if not context_ok:
-        warnings.append(f"existing Context section did not satisfy the canonical {expected_context_line_count}-sentence source-log-derived issue-body contract; preview uses the canonical conclusion Context block")
+        warnings.append(f"existing Context section did not satisfy the canonical natural-summary issue-body contract for line range {context_line_bounds}; preview uses the canonical conclusion Context block")
     if not _has_substantive_text(_extract_section_lines(body, "Definition of Done (DoD)")):
         warnings.append("existing issue DoD is still blank create-time scaffold")
 

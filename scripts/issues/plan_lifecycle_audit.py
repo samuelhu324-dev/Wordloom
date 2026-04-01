@@ -7,7 +7,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from body_contract import ISSUE_ALLOWED_LINK_LABELS, bullets_are_contiguous, extract_section_order, issue_body_expected_context_line_count, link_labels_are_allowed, validate_issue_context_lines
+from body_contract import ISSUE_ALLOWED_LINK_LABELS, bullets_are_contiguous, extract_section_order, issue_body_context_line_bounds, link_labels_are_allowed, validate_issue_context_lines
 from gen_issue_draft import (
     _derive_function_labels,
     _derive_module_labels,
@@ -608,8 +608,8 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     else:
         checks.append(_build_check("links-coverage", "pass", "Links section covers the expected canonical issue-link fragments"))
 
-    expected_context_line_count = issue_body_expected_context_line_count(_load_text(source_log_path))
-    context_valid, context_details, invalid_context_lines = validate_issue_context_lines(context_lines, expected_context_line_count, _load_text(source_log_path))
+    context_line_bounds = issue_body_context_line_bounds(_load_text(source_log_path))
+    context_valid, context_details, invalid_context_lines = validate_issue_context_lines(context_lines, context_line_bounds, _load_text(source_log_path))
     if context_valid:
         checks.append(_build_check("context-sentence-shape", "pass", context_details))
     else:
@@ -617,9 +617,9 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
 
     if issue_state == "CLOSED":
         if context_valid:
-            checks.append(_build_check("closed-body-shape", "pass", f"concluded issue keeps the canonical {expected_context_line_count}-sentence Context contract"))
+            checks.append(_build_check("closed-body-shape", "pass", f"concluded issue keeps the canonical natural-summary Context contract within line range {context_line_bounds}"))
         else:
-            checks.append(_build_check("closed-body-shape", "fail", f"concluded issue does not satisfy the canonical {expected_context_line_count}-sentence Context contract"))
+            checks.append(_build_check("closed-body-shape", "fail", f"concluded issue does not satisfy the canonical natural-summary Context contract within line range {context_line_bounds}"))
     else:
         checks.append(_build_check("closed-body-shape", "skipped", "closed-body shape is not required while the issue remains open"))
 

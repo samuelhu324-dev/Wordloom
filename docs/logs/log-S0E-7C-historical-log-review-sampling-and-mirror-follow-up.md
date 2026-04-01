@@ -214,9 +214,9 @@
 
 ### P4-C1-S5 (Source-log-derived Context contract revision and replay | v1)
 
-- The `S0E-6C` sentence-count rule was revised after the historical repair batch exposed a deeper defect: the renderers were still emitting one shared generic `Context` template, so many different issues ended up with almost identical wording.
-- The issue draft and issue conclusion renderers now derive `Context` from the current source log's ID, subject/title, follow-up position, and available source-log focus lines instead of reusing one repo-wide boilerplate block.
-- Lifecycle audit now treats missing source-log-specific anchors as contract drift, and the same closed `S0E` child-issue batch was replayed so all ten audited issues now keep both deterministic shape and issue-specific context.
+- The follow-up contract work now lives in `S0E-6D`: the historical repair batch exposed that `S0E-6C` still forced many different issues into one shared machine-shaped `Context` scaffold.
+- This replay batch is the live proof step for that follow-up: the same closed `S0E` child-issue set was rewritten again with natural-summary `Context` rows derived from source-log facts, title details, adjacent-slice position, and merged-PR evidence.
+- Lifecycle audit now checks the weaker `S0E-6D` gate instead of exact fixed sentence slots, so all ten replayed child issues keep bounded English bullet shape while no longer reading like the same boilerplate block.
 
 ## Numbering
 
@@ -286,7 +286,7 @@
 - [x] `P4-C1-S2`: first live mirror replay path enabled and evidenced
 - [x] `P4-C1-S3`: default-branch runtime closure removed and verified
 - [x] `P4-C1-S4`: closed child-issue Context repair batch applied and audited
-- [x] `P4-C1-S5`: source-log-derived Context contract revision and replay applied
+- [x] `P4-C1-S5`: natural-summary Context replay applied and re-audited under the `S0E-6D` weak gate
 
 ## Evidence (reserved)
 

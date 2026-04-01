@@ -548,7 +548,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         warnings.append("issue_milestone missing")
     if show_parent_issue and not parent_issue:
         warnings.append("issue_parent missing")
-    warnings.append("Context now uses the canonical fixed English sentence block for deterministic issue-body review")
+    warnings.append("Context now uses the canonical source-log-derived natural-summary block for issue-body review")
     warnings.append("Definition of Done (DoD) remains intentionally blank pending operator input")
 
     rel_log_path = _repo_rel(log_path)
