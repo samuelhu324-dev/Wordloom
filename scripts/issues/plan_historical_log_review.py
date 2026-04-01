@@ -6,7 +6,6 @@ import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from body_contract import validate_evidence_footer_source_lines
 from gen_issue_draft import (
     _derive_repo_slug,
     _load_text,
@@ -23,6 +22,7 @@ from gen_issue_draft import (
 ISSUE_URL_RE = re.compile(r"/issues/(\d+)$")
 PR_URL_RE = re.compile(r"(?:/pull/|#)(\d+)$")
 REQUIRED_FIELD_NAMES = ["id", "kind", "title", "status", "scope", "tags"]
+EVIDENCE_FOOTER_LINE_RE = re.compile(r"^`(?P<stage>[^`]+)` \| artifact: `(?P<artifact>[^`]+)`$")
 REQUIRED_SECTION_PREFIXES = [
     "Decision / Outcome",
     "Scope",
@@ -159,6 +159,11 @@ def _extract_footer_source_lines(section_lines: list[str]) -> list[str]:
     return rows
 
 
+def _validate_evidence_footer_source_lines(lines: list[str]) -> tuple[bool, list[str]]:
+    invalid = [line for line in lines if not EVIDENCE_FOOTER_LINE_RE.fullmatch(line)]
+    return not invalid, invalid
+
+
 def _validate_log_structure(log_text: str, fields: dict[str, str], sections: dict[str, list[str]]) -> tuple[str, list[ReviewCheck], list[str]]:
     checks: list[ReviewCheck] = []
     warnings: list[str] = []
@@ -183,7 +188,7 @@ def _validate_log_structure(log_text: str, fields: dict[str, str], sections: dic
 
     try:
         footer_source_lines = _extract_footer_source_lines(sections.get(pr_summary_name or "", [])) if pr_summary_name else []
-        source_ok, invalid_lines = validate_evidence_footer_source_lines(footer_source_lines)
+        source_ok, invalid_lines = _validate_evidence_footer_source_lines(footer_source_lines)
     except Exception as exc:
         footer_source_lines = []
         source_ok = False
