@@ -15,6 +15,41 @@ EVIDENCE_FOOTER_LINE_RE = re.compile(r"^`(?P<stage>[^`]+)` \| artifact: `(?P<art
 LINK_LINE_RE = re.compile(r"^- (?P<label>[^:]+):\s+`[^`]*`$")
 CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
 SENTENCE_TERMINATOR_RE = re.compile(r"[.!?]")
+VERSION_SUFFIX_RE = re.compile(r"\s+v\d+\s*$", re.IGNORECASE)
+INLINE_CODE_RE = re.compile(r"`([^`]*)`")
+SECTION_PHASE_PREFIX_RE = re.compile(r"^`?P\d+(?:-C\d+(?:-S\d+(?:S\d+)*)?)?`?:\s*")
+LOG_ID_FROM_PATH_RE = re.compile(r"log-(?P<id>[A-Z0-9]+(?:-[A-Z0-9]+)*)-")
+VERB_LEADERS = {
+    "add",
+    "align",
+    "attach",
+    "connect",
+    "convert",
+    "create",
+    "define",
+    "establish",
+    "fix",
+    "harden",
+    "implement",
+    "land",
+    "make",
+    "record",
+    "regenerate",
+    "remove",
+    "repair",
+    "replay",
+    "rerun",
+    "retain",
+    "rewrite",
+    "scope",
+    "split",
+    "stabilize",
+    "track",
+    "update",
+    "validate",
+    "verify",
+    "wire",
+}
 
 
 @dataclass
@@ -110,47 +145,193 @@ def _issue_context_scope_label(source_log_text: str) -> str:
     return "main" if issue_body_expected_context_line_count(source_log_text) == 5 else "child"
 
 
+def _strip_markdown(text: str) -> str:
+    plain = INLINE_CODE_RE.sub(r"\1", text)
+    plain = plain.replace("**", "")
+    plain = plain.replace("->", " to ")
+    plain = plain.replace("&", " and ")
+    plain = re.sub(r"<[^>]+>", "", plain)
+    plain = re.sub(r"\s+", " ", plain)
+    return plain.strip()
+
+
+def _normalize_title_subject(raw_title: str) -> str:
+    text = _strip_markdown(raw_title)
+    text = VERSION_SUFFIX_RE.sub("", text)
+    text = re.sub(r"\([^)]*\)", "", text)
+    text = re.sub(r"（[^）]*）", "", text)
+    text = re.sub(r"\s*\+\s*drills/evidence\s*$", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"\s*\+\s*evidence/drills\s*$", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"\s*\+\s*drills\s*$", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"\s+", " ", text).strip(" -")
+    return text or "the recorded delivery scope"
+
+
+def _single_sentence(text: str) -> str:
+    stripped = _strip_markdown(text)
+    stripped = re.sub(r"[.!?]+", "", stripped)
+    stripped = re.sub(r"\s+", " ", stripped).strip(" ,;:-")
+    return f"{stripped}." if stripped else "Context remains aligned with the source log."
+
+
+def _sentence_bullet(text: str) -> str:
+    return f"- {_single_sentence(text)}"
+
+
+def _lower_first(text: str) -> str:
+    if not text:
+        return text
+    if text[0].isalpha():
+        return text[0].lower() + text[1:]
+    return text
+
+
+def _extract_follow_up_id(path: str) -> str | None:
+    match = LOG_ID_FROM_PATH_RE.search(path or "")
+    if match:
+        return match.group("id")
+    return None
+
+
+def _sanitize_focus_phrase(raw: str) -> str:
+    phrase = _strip_markdown(raw)
+    phrase = SECTION_PHASE_PREFIX_RE.sub("", phrase)
+    phrase = re.sub(r"^[-*]\s*", "", phrase)
+    phrase = re.sub(r"\s+", " ", phrase).strip(" ,;:-")
+    return phrase
+
+
+def _english_focus_candidates(source_log_text: str) -> list[str]:
+    summary_bullets, _, _ = extract_pr_summary_inputs(source_log_text)
+    candidates: list[str] = []
+    for bullet in summary_bullets:
+        phrase = _sanitize_focus_phrase(bullet)
+        if phrase and not CJK_RE.search(phrase) and re.search(r"[A-Za-z]", phrase):
+            candidates.append(phrase)
+
+    sections = _parse_sections(source_log_text)
+    for section_name in ["Scope", "Success Criteria (DoD)", "Success Criteria", "Definitions (optional)", "Definitions"]:
+        for raw in sections.get(section_name, []):
+            stripped = raw.strip()
+            if not stripped.startswith("- "):
+                continue
+            phrase = _sanitize_focus_phrase(stripped[2:].strip())
+            if phrase and not CJK_RE.search(phrase) and re.search(r"[A-Za-z]", phrase):
+                candidates.append(phrase)
+
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        key = candidate.lower()
+        if key not in seen:
+            seen.add(key)
+            deduped.append(candidate)
+    return deduped
+
+
+def _focus_to_sentence(prefix_kind: str, phrase: str) -> str:
+    lowered = _lower_first(phrase)
+    first_word = lowered.split(" ", 1)[0].strip("`'\"").lower()
+    if prefix_kind == "primary":
+        if first_word in VERB_LEADERS:
+            return f"The source log opened this slice to {lowered}"
+        return f"The source log centers this slice on {lowered}"
+    if first_word in VERB_LEADERS:
+        return f"It also planned to {lowered}"
+    return f"It also kept the scope on {lowered}"
+
+
+def _format_pr_refs(merged_pr_numbers: list[int] | None) -> str:
+    refs = [f"#{number}" for number in merged_pr_numbers or []]
+    if not refs:
+        return "the merged PR evidence"
+    if len(refs) == 1:
+        return refs[0]
+    if len(refs) == 2:
+        return f"{refs[0]} and {refs[1]}"
+    return ", ".join(refs[:-1]) + f", and {refs[-1]}"
+
+
+def issue_body_expected_context_anchors(source_log_text: str) -> list[str]:
+    fields = _parse_fields(source_log_text)
+    requested_id = str(fields.get("id") or "").strip()
+    subject = _normalize_title_subject(str(fields.get("title") or requested_id))
+    anchors = [anchor for anchor in [requested_id, subject] if anchor]
+    previous_id = _extract_follow_up_id(str(fields.get("previous_log") or ""))
+    if previous_id and _issue_context_scope_label(source_log_text) == "child":
+        anchors.append(previous_id)
+    return anchors
+
+
 def build_issue_draft_context_lines(source_log_text: str) -> list[str]:
     fields = _parse_fields(source_log_text)
-    requested_id = str(fields.get("id") or "this log")
+    requested_id = str(fields.get("id") or "this log").strip() or "this log"
+    subject = _normalize_title_subject(str(fields.get("title") or requested_id))
+    previous_id = _extract_follow_up_id(str(fields.get("previous_log") or ""))
+    focus_phrases = _english_focus_candidates(source_log_text)
+
     if _issue_context_scope_label(source_log_text) == "main":
-        return [
-            f"- This issue tracks the main {requested_id} contract recorded in the source log.",
-            "- The scope covers the parent workflow and governance decisions defined for this spine.",
-            "- Child slices may deliver implementation details, but this issue keeps the parent context aligned.",
-            "- Operator review is required before downstream issue, PR, or conclusion automation is treated as complete.",
-            "- This Context block is intentionally fixed to one English sentence per line for deterministic issue-body review.",
+        lines = [
+            _sentence_bullet(f"This issue was opened to track the main {requested_id} contract for {subject}"),
+            _sentence_bullet("It acts as the parent S0E spine that keeps downstream child slices aligned to one shared delivery record"),
+            _sentence_bullet(_focus_to_sentence("primary", focus_phrases[0]) if focus_phrases else f"The source log centers this spine on {subject}"),
+            _sentence_bullet(_focus_to_sentence("secondary", focus_phrases[1]) if len(focus_phrases) > 1 else "Child slices inherit this parent context before they branch into narrower implementation work"),
+            _sentence_bullet(f"Completion for this parent issue depends on linked delivery evidence and the final DoD recorded for {requested_id}"),
         ]
-    return [
-        f"- This issue tracks the child {requested_id} slice recorded in the source log.",
-        "- The scope stays limited to the delivery boundary and artifacts defined for this child log.",
-        "- Operator review is required before the final delivery set and DoD are treated as complete.",
-        "- This Context block is intentionally fixed to one English sentence per line for deterministic issue-body review.",
+        return lines
+
+    follow_up_sentence = (
+        f"It follows {previous_id} under the parent S0E spine, so this child log carries a narrower delivery boundary"
+        if previous_id
+        else "It sits under the parent S0E spine as a child log with its own narrower delivery boundary"
+    )
+    lines = [
+        _sentence_bullet(f"This issue was opened to track the {requested_id} slice for {subject}"),
+        _sentence_bullet(follow_up_sentence),
+        _sentence_bullet(_focus_to_sentence("primary", focus_phrases[0]) if focus_phrases else f"The source log focuses this slice on {subject} work within the current S0E chain"),
+        _sentence_bullet(_focus_to_sentence("secondary", focus_phrases[1]) if len(focus_phrases) > 1 else f"Completion for this issue depends on the linked delivery evidence and the final DoD recorded for {requested_id}"),
     ]
+    return lines
 
 
-def build_issue_conclusion_context_lines(source_log_text: str) -> list[str]:
+def build_issue_conclusion_context_lines(source_log_text: str, merged_pr_numbers: list[int] | None = None) -> list[str]:
+    fields = _parse_fields(source_log_text)
+    requested_id = str(fields.get("id") or "this log").strip() or "this log"
+    subject = _normalize_title_subject(str(fields.get("title") or requested_id))
+    previous_id = _extract_follow_up_id(str(fields.get("previous_log") or ""))
+    focus_phrases = _english_focus_candidates(source_log_text)
+    merged_pr_refs = _format_pr_refs(merged_pr_numbers)
+
     if _issue_context_scope_label(source_log_text) == "main":
-        return [
-            "- The main delivery scope recorded by the source log has now completed its planned lifecycle.",
-            "- The parent issue body has been reconciled with the merged PR evidence retained for this contract.",
-            "- The final DoD below lists the merged PR references that closed the parent implementation path.",
-            "- This concluded issue now serves as the stable parent record for downstream child-log traceability.",
-            "- This Context block remains fixed to one English sentence per line for deterministic audit review.",
+        lines = [
+            _sentence_bullet(f"This issue was opened to track the main {requested_id} contract for {subject}"),
+            _sentence_bullet("It serves as the parent S0E spine that keeps downstream child slices attached to one shared delivery record"),
+            _sentence_bullet(_focus_to_sentence("primary", focus_phrases[0]) if focus_phrases else f"The source log centers this spine on {subject}"),
+            _sentence_bullet(f"The merged PR evidence now shows that {merged_pr_refs} completed the planned delivery recorded for this parent scope"),
+            _sentence_bullet(f"The closed issue now preserves the finished parent record for {subject} and downstream child-log traceability"),
         ]
-    return [
-        "- The child delivery scope recorded by the source log has now completed its planned lifecycle.",
-        "- The merged PR evidence for this issue has been reconciled with the exact-ID delivery set.",
-        "- The final DoD below lists the merged PR references that closed this child implementation path.",
-        "- This concluded issue now serves as the stable record for the child slice under the current S0E contract.",
+        return lines
+
+    follow_up_sentence = (
+        f"It follows {previous_id} under the parent S0E spine, so this child log carries a narrower delivery boundary"
+        if previous_id
+        else "It sits under the parent S0E spine as a child log with its own narrower delivery boundary"
+    )
+    outcome_sentence = f"The closed issue now records the finished {subject} path for downstream S0E follow-up"
+    lines = [
+        _sentence_bullet(f"This issue was opened to track the {requested_id} slice for {subject}"),
+        _sentence_bullet(follow_up_sentence),
+        _sentence_bullet(f"The merged PR evidence now shows that {merged_pr_refs} completed the planned delivery for this slice"),
+        _sentence_bullet(outcome_sentence),
     ]
+    return lines
 
 
 def extract_issue_context_bullet_lines(section_lines: list[str]) -> list[str]:
     return [line.strip() for line in section_lines if line.strip().startswith("- ")]
 
 
-def validate_issue_context_lines(section_lines: list[str], expected_line_count: int) -> tuple[bool, str, list[str]]:
+def validate_issue_context_lines(section_lines: list[str], expected_line_count: int, source_log_text: str | None = None) -> tuple[bool, str, list[str]]:
     trimmed = [line.strip() for line in section_lines if line.strip()]
     bullet_lines = [line for line in trimmed if line.startswith("- ")]
     invalid_lines: list[str] = []
@@ -176,7 +357,14 @@ def validate_issue_context_lines(section_lines: list[str], expected_line_count: 
 
     if invalid_lines:
         return False, "Context lines must each be one English sentence on one bullet row", invalid_lines
-    return True, f"Context contains exactly {expected_line_count} one-sentence English bullet rows", invalid_lines
+
+    if source_log_text:
+        joined = " ".join(bullet_lines).lower()
+        missing_anchors = [anchor for anchor in issue_body_expected_context_anchors(source_log_text) if anchor.lower() not in joined]
+        if missing_anchors:
+            return False, f"Context must mention source-log-specific anchors: {missing_anchors}", bullet_lines
+
+    return True, f"Context contains exactly {expected_line_count} one-sentence English bullet rows with source-log-specific anchors", invalid_lines
 
 
 def pr_body_is_evidence_footer_eligible(source_log_text: str) -> bool:

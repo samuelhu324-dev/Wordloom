@@ -609,7 +609,7 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
         checks.append(_build_check("links-coverage", "pass", "Links section covers the expected canonical issue-link fragments"))
 
     expected_context_line_count = issue_body_expected_context_line_count(_load_text(source_log_path))
-    context_valid, context_details, invalid_context_lines = validate_issue_context_lines(context_lines, expected_context_line_count)
+    context_valid, context_details, invalid_context_lines = validate_issue_context_lines(context_lines, expected_context_line_count, _load_text(source_log_path))
     if context_valid:
         checks.append(_build_check("context-sentence-shape", "pass", context_details))
     else:

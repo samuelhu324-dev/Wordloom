@@ -46,7 +46,8 @@
 **Decision**:
 
 - `S0E-6C` is the dedicated follow-up for issue-body `Context` shape after `S0E-2D`, `S0E-2E`, `S0E-5D`, and `S0E-6B` fixed the broader issue-body and gate contracts.
-- The new contract is now explicit and deterministic: parent/main-log issues must keep exactly five English `Context` sentences, child-log issues must keep exactly four English `Context` sentences, and each sentence must occupy its own bullet line.
+- The new contract is now explicit and deterministic in two dimensions: parent/main-log issues must keep exactly five English `Context` sentences, child-log issues must keep exactly four English `Context` sentences, and each sentence must occupy its own bullet line.
+- The sentence count remains fixed, but the sentence content must now be derived from the current source log instead of reusing one shared boilerplate block across unrelated issues.
 - This rule now applies both when issue bodies are first scaffolded and when concluded issue bodies are rewritten after merged PR evidence is available.
 
 **Default choices (phase defaults / v1)**:
@@ -54,6 +55,7 @@
 - The `Context` section should remain English-only and should use one sentence per bullet line.
 - The parent/main-log issue tier is now distinguished by source-log ownership: logs without `parent_log` use a 5-line `Context`, while child logs with `parent_log` use a 4-line `Context`.
 - The sentence-count contract should be reused by both renderers and gates instead of being reimplemented separately per script.
+- The rendered `Context` content must be source-log-derived: it should carry the current log ID, the current log subject/title, and the relevant follow-up position or delivery evidence instead of repeating a repo-wide generic paragraph.
 - Lifecycle audit should now treat insufficient or malformed issue `Context` content as a gate failure rather than as a cosmetic warning.
 
 ## PR Summary Inputs (optional)
@@ -66,6 +68,7 @@
 
 - Fix issue-body `Context` to a deterministic English sentence contract with `5` lines for main logs and `4` lines for child logs.
 - Reuse the same sentence contract in issue draft generation, issue conclusion rendering, and lifecycle audit gate checks.
+- Make the rendered `Context` sentences source-log-derived so different issues no longer receive the same generic wording.
 - Re-run the real `S0E-5C/#309` conclusion path and audit so the new `Context` gate is exercised on a live concluded issue.
 
 **PR checklist source**:
@@ -86,7 +89,7 @@
 
 ## Constraints
 
-- Do not turn the new sentence-count rule into open-ended NLP validation; this slice only fixes deterministic shape.
+- Do not turn the new sentence-count rule into open-ended NLP validation; this slice only fixes deterministic shape plus source-log-derived anchors.
 - Do not weaken the broader issue-body contract already fixed by `S0E-5D`.
 - Do not leave create-time and conclusion-time issue renderers with different `Context` rules once the new contract is fixed.
 - Do not keep the new `Context` review as advisory-only when lifecycle audit is already acting as a gate for concluded issue integrity.
@@ -102,6 +105,7 @@
 
 - The repo has one explicit issue-body `Context` contract with deterministic sentence counts for main and child logs.
 - New issue drafts and conclusion previews reuse the same canonical `Context` source instead of hand-writing separate bodies.
+- The rendered `Context` sentences carry source-log-specific anchors rather than one shared boilerplate block.
 - Lifecycle audit blocks concluded issues whose `Context` section does not satisfy the canonical sentence-count rule.
 - At least one real concluded issue has been rewritten and re-audited under the new contract.
 
@@ -116,8 +120,8 @@
 
 - `S0E-6C` is now opened as the dedicated follow-up for issue-body `Context` sentence shape.
 - `P0` is now completed: the issue-body `Context` contract is fixed at `5` English bullet sentences for main logs and `4` English bullet sentences for child logs, with one sentence per line.
-- `P1` is now completed: issue draft generation and issue conclusion planning now both reuse canonical `Context` blocks instead of leaving the section blank or reducing it to one fallback line.
-- `P2` is now completed: lifecycle audit now fails when issue `Context` content does not satisfy the canonical sentence-count and one-sentence-per-line rule.
+- `P1` is now completed: issue draft generation and issue conclusion planning now both reuse source-log-derived `Context` blocks instead of leaving the section blank, reducing it to one fallback line, or repeating one generic template.
+- `P2` is now completed: lifecycle audit now fails when issue `Context` content does not satisfy the canonical sentence-count, one-sentence-per-line, and source-log-anchor rule.
 - `P3` is now completed: live issue `#309` has been re-concluded under the new child-log `4`-sentence `Context` contract and then re-audited successfully.
 
 ## P0 (Context sentence contract | v1)
@@ -138,17 +142,23 @@
   - the content must be English-only at the sentence level;
   - the row must end with a single sentence terminator.
 
+### P0-C1-S3 (Source-log-derived content rule fixed | v1)
+
+- `Context` content must no longer be a repo-wide generic boilerplate block.
+- The rendered lines should carry source-log-specific anchors such as the current log ID, the current log subject, and the relevant follow-up position or delivery evidence.
+- This keeps deterministic shape while still making the issue body explain why that particular issue exists and what that particular slice completed.
+
 ## P1 (Renderer reuse | v1)
 
 ### P1-C1-S1 (Issue draft Context renderer fixed | v1)
 
 - `gen_issue_draft.py` no longer leaves `Context` blank.
-- The draft generator now emits a canonical fixed English `Context` block sized by main-log vs child-log tier.
+- The draft generator now emits a canonical source-log-derived English `Context` block sized by main-log vs child-log tier.
 
 ### P1-C1-S2 (Issue conclusion Context renderer fixed | v1)
 
 - `plan_issue_conclusion.py` no longer falls back to a single canonical conclusion line.
-- The conclusion planner now rewrites `Context` to the canonical fixed English block for the relevant issue tier whenever the live body does not already satisfy the sentence contract.
+- The conclusion planner now rewrites `Context` to the canonical source-log-derived English block for the relevant issue tier whenever the live body does not already satisfy the sentence contract.
 
 ## P2 (Lifecycle-audit gate | v1)
 
@@ -158,7 +168,8 @@
 - The new check fails when the `Context` section:
   - contains the wrong number of bullet sentences;
   - contains non-bullet drift;
-  - contains non-English or multi-sentence rows.
+  - contains non-English or multi-sentence rows;
+  - omits the source-log-specific anchors that make the content belong to the current issue rather than to a generic template.
 
 ### P2-C1-S2 (Closed-issue gate alignment fixed | v1)
 
@@ -228,4 +239,5 @@
 - 2026-04-01: created `S0E-6C` as the dedicated follow-up for issue-body `Context` sentence count and gate semantics.
 - 2026-04-01: fixed the deterministic `Context` sentence contract to `5` lines for main issues and `4` lines for child issues, with one English sentence per bullet row.
 - 2026-04-01: wired the same canonical `Context` block into issue draft generation, issue conclusion planning, and lifecycle audit.
+- 2026-04-01: revised the renderer and gate so `Context` content must be derived from the current source log instead of repeating one generic repo-wide template.
 - 2026-04-01: replayed the real `S0E-5C/#309` conclusion path and re-audited the issue under the new gate.

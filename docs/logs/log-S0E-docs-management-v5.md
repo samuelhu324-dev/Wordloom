@@ -241,6 +241,7 @@
 - [x] `P111`：`S0E-6C` 已完成 `P0-P3`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同，并已通过 `#309` 的真实 conclusion replay 与 lifecycle audit gate 验证
 - [x] `P112`：`S0E-7C` 已完成 `P4-C1-S3`，focused PR `#312` 已移除 historical review planner 在默认分支上的 runtime closure 缺口，`main` 上的 live dispatch `run 23827684652` 也已成功闭环
 - [x] `P113`：`S0E-7C` 已完成 `P4-C1-S4`，截图范围内全部已关闭 `S0E` 子 issues 都已重新检查并重跑 conclusion，`9/10` 条 `Context` 漂移已被批量修复，修复后 `10/10` lifecycle audit 全部通过
+- [x] `P114`：`S0E-7C` 已完成 `P4-C1-S5`，issue `Context` contract 已从“固定句数但共用模板”修订为“固定句数且内容必须来自当前 source log”，刚才审查过的 `10` 条已关闭 `S0E` 子 issues 也已按新规则重写并复审
 
 ## Current Status（进展摘要）
 
@@ -288,6 +289,7 @@
 - `S0E-7C/P4` 已完成第一轮 Actions 打通：`#311` 现已让历史 review mirror workflow 对默认分支可见，而 `run 23827100968` 也已证明同一 workflow 可以在 `S0E-docs-management-v5` 上成功重放 full-series `S0E` historical review；
 - `S0E-7C/P4` 已进一步完成默认分支 runtime closure：focused PR `#312` 移除了 planner 对 `body_contract.py` 的 `main` 运行时依赖，而 `run 23827684652` 已证明 historical review mirror workflow 现在可以直接在默认分支成功完成 full-series replay；
 - `S0E-7C/P4` 已进一步完成 closed child issue 修复闭环：截图范围内全部已关闭 `S0E` 子 issues 都已重新检查，`#288/#289/#293/#295/#297/#300/#303/#305/#307` 的 `Context` 漂移已通过批量 conclusion replay 回补，随后批量 lifecycle audit 对 `10` 条子 issue 全部给出 `pass`；
+- `S0E-7C/P4` 已进一步修订 issue `Context` contract 本身：当前规则不再允许不同 issue 复用同一段通用上下文，而是要求在固定句数之外，正文内容也必须显式反映当前 source log 的 ID、主题和 follow-up 位置；刚才审查过的 `10` 条 closed child issues 也已按新规则重写并再次通过 audit；
 - `S0E-6C` 已完成并进入 `stable`：issue `Context` 现已固定 main/child 两档英文句子合同，issue draft / issue conclusion / lifecycle audit 也已接到同一规则上，`#309` 已通过真实重写与 re-audit；
 - `S0E-5C` 的真实链路现已打通：issue `#309` 不再停留在 issue-only sample，PR `#310` 已创建并合并，inline post-apply verification 已通过，final issue conclusion 也已写回 closed issue；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
@@ -397,6 +399,7 @@
 - 2026-04-01：`S0E-7C/P4` 已完成第一轮 full-series backlog + live Actions enablement：`#311` 已把 mirror workflow 挂到默认分支，`run 23827006381` 证明了 dispatch visibility，而 `run 23827100968` 已在 `S0E-docs-management-v5` 上成功保留第一条 full-series replay evidence。
 - 2026-04-01：`S0E-7C/P4-C1-S3` 已完成：focused PR `#312` 已移除 planner 在 `main` 上的 runtime closure 缺口，随后 `run 23827684652` 已在默认分支成功完成 full-series historical review replay。
 - 2026-04-01：`S0E-7C/P4-C1-S4` 已完成：截图范围内全部已关闭 `S0E` 子 issues 都已重新检查并重跑 conclusion，`9/10` 条失效 `Context` 已批量修复，后续 lifecycle audit 也已对 `10/10` 子 issues 给出 `pass`。
+- 2026-04-01：`S0E-7C/P4-C1-S5` 已完成：issue `Context` contract 已从固定模板修订为 source-log-derived 内容合同，刚才审查过的 `10` 条 closed `S0E` 子 issues 也已按新规则重写并再次通过 lifecycle audit。
 - 2026-04-01：新增并完成 `S0E-6C`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同；`#309` 也已在真实 conclusion replay 后通过新的 lifecycle audit gate。
 - 2026-04-01：完成 `S0E-5C` 的真实 lifecycle follow-through，PR `#310` 已创建并合并，issue `#309` 已完成 final body write-back；当时的 GitHub Actions mirror dispatch 也据此暴露出“workflow 需先对默认分支可见”这一前置条件，并在后续 `S0E-7C/P4` 中被正面解决。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。

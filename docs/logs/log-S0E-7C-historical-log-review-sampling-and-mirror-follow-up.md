@@ -129,6 +129,7 @@
 - `P4-C1-S2` is now completed: focused PR `#311` landed the mirror workflow on `main`, the first dispatch on `main` proved workflow visibility, and the first successful live replay was retained on `S0E-docs-management-v5` as run `23827100968`.
 - `P4-C1-S3` is now completed: focused PR `#312` removed the planner's default-branch runtime closure gap, and the follow-up dispatch on `main` succeeded as run `23827684652`.
 - `P4-C1-S4` is now completed: all currently closed `S0E` child issues were rechecked, `9/10` were found to have missing or malformed `Context` blocks, and the batch conclusion replay restored the canonical 4-sentence child Context contract across the full set.
+- `P4-C1-S5` is now completed: the generic shared `Context` template was replaced with a source-log-derived renderer and gate, and the same closed `S0E` child-issue set was rewritten again so each issue now carries log-specific context instead of identical boilerplate.
 
 ## P0 (Boundary contract | v1)
 
@@ -211,6 +212,12 @@
 - The batch repair plan found that `S0E-2B/#288`, `S0E-2A/#289`, `S0E-4A/#293`, `S0E-4B/#295`, `S0E-2D/#297`, `S0E-4C/#300`, `S0E-4D/#303`, `S0E-5A/#305`, and `S0E-5B/#307` no longer satisfied the canonical 4-sentence child `Context` contract, while `S0E-5C/#309` was already compliant.
 - The corresponding batch conclusion replay then rewrote the live closed issues in place, and the follow-up lifecycle audit passed for all ten child issues with `context-sentence-shape: pass` and `closed-body-shape: pass`.
 
+### P4-C1-S5 (Source-log-derived Context contract revision and replay | v1)
+
+- The `S0E-6C` sentence-count rule was revised after the historical repair batch exposed a deeper defect: the renderers were still emitting one shared generic `Context` template, so many different issues ended up with almost identical wording.
+- The issue draft and issue conclusion renderers now derive `Context` from the current source log's ID, subject/title, follow-up position, and available source-log focus lines instead of reusing one repo-wide boilerplate block.
+- Lifecycle audit now treats missing source-log-specific anchors as contract drift, and the same closed `S0E` child-issue batch was replayed so all ten audited issues now keep both deterministic shape and issue-specific context.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -279,6 +286,7 @@
 - [x] `P4-C1-S2`: first live mirror replay path enabled and evidenced
 - [x] `P4-C1-S3`: default-branch runtime closure removed and verified
 - [x] `P4-C1-S4`: closed child-issue Context repair batch applied and audited
+- [x] `P4-C1-S5`: source-log-derived Context contract revision and replay applied
 
 ## Evidence (reserved)
 
@@ -356,6 +364,22 @@
 - observed:
   - the batch repair plan found `9/10` closed child issues with missing or malformed `Context` blocks, the live conclusion replay rewrote all ten closed issues in place, and the follow-up lifecycle audit returned `10/10 pass` with no warnings
 
+### P4-C1-S5 (source-log-derived Context contract revision and replay | 2026-04-01)
+
+- headSha: `artifact-driven replay`
+- artifacts:
+  - `scripts/issues/body_contract.py`
+  - `scripts/issues/plan_issue_conclusion.py`
+  - `scripts/issues/plan_lifecycle_audit.py`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-source-derived-refresh-manifest.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-source-derived-refresh-plan.json`
+  - `docs/issues/lifecycle-audit-S0E-7C-child-issues-context-source-derived-refresh-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-7C-child-issues-context-source-derived-refresh-manifest-plan.json`
+- expected:
+  - issue `Context` should remain deterministic in sentence count while becoming source-log-derived in content, so different issues no longer reuse the same generic boilerplate and the audited closed child-issue set can be rewritten to the revised contract
+- observed:
+  - the shared generic `Context` renderer was removed, the gate now requires source-log-specific anchors, and the full closed `S0E` child-issue set was re-rewritten under the new rule so each issue now carries log-specific context while still passing lifecycle audit
+
 ### P1-C1-S1S2 (historical log review planner implemented | 2026-04-01)
 
 - headSha: `e8a40025`
@@ -399,3 +423,4 @@
 - 2026-04-01: completed `P3` by adding `.github/workflows/s0e-historical-log-review-mirror.yml` as a manual mirror for the same planner.
 - 2026-04-01: completed `P4-C1-S3` by landing focused PR `#312` to remove the planner runtime-closure dependency on `main`, then verifying the repaired default-branch replay with successful run `23827684652`.
 - 2026-04-01: completed `P4-C1-S4` by batch-rechecking all currently closed `S0E` child issues, replaying the closed-issue conclusion body for the full set, and verifying the repaired `Context` blocks with a `10/10 pass` lifecycle audit.
+- 2026-04-01: completed `P4-C1-S5` by replacing the shared generic issue `Context` renderer with a source-log-derived contract, then replaying the same closed `S0E` child-issue batch so the audited issues no longer share identical boilerplate.
