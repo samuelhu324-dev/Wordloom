@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "selection_filters": {
+    "scope": "S0E structured-log family",
+    "goal": "review the full S0E series before targeted backfill or apply follow-up"
+  },
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "skip_live": false
+  },
+  "items": [
+    {
+      "log_path": "docs/logs/log-S0E-1A-structured-cv-generator.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-1B-md-to-docx-minimal-sample.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md"
+    }
+  ]
+}
