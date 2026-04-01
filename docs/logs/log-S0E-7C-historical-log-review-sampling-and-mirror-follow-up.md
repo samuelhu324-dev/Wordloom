@@ -127,6 +127,7 @@
 - `P3` is now completed: the repo now has a manual `workflow_dispatch` mirror workflow that reruns the same planner and uploads retained review artifacts.
 - `P4-C1-S1` is now completed: the repo now has one explicit full-series `S0E` manifest and retained review plan that measures the current historical backlog before live Actions replay is attempted.
 - `P4-C1-S2` is now completed: focused PR `#311` landed the mirror workflow on `main`, the first dispatch on `main` proved workflow visibility, and the first successful live replay was retained on `S0E-docs-management-v5` as run `23827100968`.
+- `P4-C1-S3` is now completed: focused PR `#312` removed the planner's default-branch runtime closure gap, and the follow-up dispatch on `main` succeeded as run `23827684652`.
 
 ## P0 (Boundary contract | v1)
 
@@ -197,6 +198,12 @@
 - The first dispatch on `main` (`run 23827006381`) proved visibility and artifact retention, while also exposing that `main` still lacks the imported `body_contract.py` runtime closure required by the planner.
 - After publishing `S0E-docs-management-v5`, the mirror workflow was dispatched again on that ref and completed successfully as `run 23827100968`, retaining the first live historical-review replay for the full-series `S0E` manifest.
 
+### P4-C1-S3 (Default-branch runtime closure removed and verified | v1)
+
+- `scripts/issues/plan_historical_log_review.py` no longer depends on `body_contract.py` at runtime for `Evidence Footer Source` row validation; the planner now carries its own minimal local footer-shape validator.
+- Focused PR `#312` landed that runtime-closure fix on `main` without widening the slice, keeping the historical-review workflow self-contained on the default branch.
+- The next dispatch on `main` then completed successfully as `run 23827684652`, which verified that the mirror workflow now has both visibility and runtime closure on the repository default branch.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -263,6 +270,7 @@
 
 - [x] `P4-C1-S1`: full-series `S0E` manifest and backlog plan retained
 - [x] `P4-C1-S2`: first live mirror replay path enabled and evidenced
+- [x] `P4-C1-S3`: default-branch runtime closure removed and verified
 
 ## Evidence (reserved)
 
@@ -305,6 +313,18 @@
 - observed:
   - `#311` made the workflow dispatchable from the default branch, `run 23827006381` exposed a runtime-closure gap on `main`, and `run 23827100968` then completed successfully on `S0E-docs-management-v5` with `review-required`, `22` total items, `5` pass items, `17` review-required items, and `13` planned follow-ups
 
+### P4-C1-S3 (default-branch runtime closure removed and verified | 2026-04-01)
+
+- headSha: `dd66158b`
+- artifacts:
+  - `scripts/issues/plan_historical_log_review.py`
+  - `https://github.com/samuelhu324-dev/wordloom-v3/pull/312`
+  - `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23827684652`
+- expected:
+  - the historical-review mirror workflow should remain dispatchable on `main` and complete successfully after the planner's default-branch runtime dependency is removed
+- observed:
+  - `#312` removed the planner import dependency on `body_contract.py`, and the next default-branch dispatch completed successfully as `run 23827684652` in `12s`, confirming that `main` now has both workflow visibility and runtime closure for the full-series historical review replay
+
 ### P1-C1-S1S2 (historical log review planner implemented | 2026-04-01)
 
 - headSha: `e8a40025`
@@ -346,3 +366,4 @@
 - 2026-04-01: completed `P1` by adding `scripts/issues/plan_historical_log_review.py`, which classifies lifecycle completeness and narrow structure drift from an explicit manifest.
 - 2026-04-01: completed `P2` by retaining a representative sample manifest and plan spanning closed-loop, issue-open-no-pr, and log-only historical logs.
 - 2026-04-01: completed `P3` by adding `.github/workflows/s0e-historical-log-review-mirror.yml` as a manual mirror for the same planner.
+- 2026-04-01: completed `P4-C1-S3` by landing focused PR `#312` to remove the planner runtime-closure dependency on `main`, then verifying the repaired default-branch replay with successful run `23827684652`.
