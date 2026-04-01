@@ -128,6 +128,7 @@
 - `P4-C1-S1` is now completed: the repo now has one explicit full-series `S0E` manifest and retained review plan that measures the current historical backlog before live Actions replay is attempted.
 - `P4-C1-S2` is now completed: focused PR `#311` landed the mirror workflow on `main`, the first dispatch on `main` proved workflow visibility, and the first successful live replay was retained on `S0E-docs-management-v5` as run `23827100968`.
 - `P4-C1-S3` is now completed: focused PR `#312` removed the planner's default-branch runtime closure gap, and the follow-up dispatch on `main` succeeded as run `23827684652`.
+- `P4-C1-S4` is now completed: all currently closed `S0E` child issues were rechecked, `9/10` were found to have missing or malformed `Context` blocks, and the batch conclusion replay restored the canonical 4-sentence child Context contract across the full set.
 
 ## P0 (Boundary contract | v1)
 
@@ -204,6 +205,12 @@
 - Focused PR `#312` landed that runtime-closure fix on `main` without widening the slice, keeping the historical-review workflow self-contained on the default branch.
 - The next dispatch on `main` then completed successfully as `run 23827684652`, which verified that the mirror workflow now has both visibility and runtime closure on the repository default branch.
 
+### P4-C1-S4 (Closed child-issue Context repair batch applied and audited | v1)
+
+- The full closed child-issue set currently under the `S0E` spine was rechecked through a batch issue-conclusion manifest instead of ad hoc one-off edits.
+- The batch repair plan found that `S0E-2B/#288`, `S0E-2A/#289`, `S0E-4A/#293`, `S0E-4B/#295`, `S0E-2D/#297`, `S0E-4C/#300`, `S0E-4D/#303`, `S0E-5A/#305`, and `S0E-5B/#307` no longer satisfied the canonical 4-sentence child `Context` contract, while `S0E-5C/#309` was already compliant.
+- The corresponding batch conclusion replay then rewrote the live closed issues in place, and the follow-up lifecycle audit passed for all ten child issues with `context-sentence-shape: pass` and `closed-body-shape: pass`.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -271,6 +278,7 @@
 - [x] `P4-C1-S1`: full-series `S0E` manifest and backlog plan retained
 - [x] `P4-C1-S2`: first live mirror replay path enabled and evidenced
 - [x] `P4-C1-S3`: default-branch runtime closure removed and verified
+- [x] `P4-C1-S4`: closed child-issue Context repair batch applied and audited
 
 ## Evidence (reserved)
 
@@ -325,6 +333,29 @@
 - observed:
   - `#312` removed the planner import dependency on `body_contract.py`, and the next default-branch dispatch completed successfully as `run 23827684652` in `12s`, confirming that `main` now has both workflow visibility and runtime closure for the full-series historical review replay
 
+### P4-C1-S4 (closed child-issue Context repair batch applied and audited | 2026-04-01)
+
+- headSha: `eed70f9c`
+- artifacts:
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-manifest.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-plan.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-2b-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-2a-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-4a-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-4b-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-2d-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-4c-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-4d-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-5a-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-5b-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-5c-apply-result.json`
+  - `docs/issues/lifecycle-audit-S0E-7C-child-issues-context-repair-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-7C-child-issues-context-repair-manifest-plan.json`
+- expected:
+  - the full closed `S0E` child-issue set should either already satisfy or be rewritten to satisfy the canonical 4-sentence child `Context` contract, and the repaired live issues should pass lifecycle audit without reopening the issues
+- observed:
+  - the batch repair plan found `9/10` closed child issues with missing or malformed `Context` blocks, the live conclusion replay rewrote all ten closed issues in place, and the follow-up lifecycle audit returned `10/10 pass` with no warnings
+
 ### P1-C1-S1S2 (historical log review planner implemented | 2026-04-01)
 
 - headSha: `e8a40025`
@@ -367,3 +398,4 @@
 - 2026-04-01: completed `P2` by retaining a representative sample manifest and plan spanning closed-loop, issue-open-no-pr, and log-only historical logs.
 - 2026-04-01: completed `P3` by adding `.github/workflows/s0e-historical-log-review-mirror.yml` as a manual mirror for the same planner.
 - 2026-04-01: completed `P4-C1-S3` by landing focused PR `#312` to remove the planner runtime-closure dependency on `main`, then verifying the repaired default-branch replay with successful run `23827684652`.
+- 2026-04-01: completed `P4-C1-S4` by batch-rechecking all currently closed `S0E` child issues, replaying the closed-issue conclusion body for the full set, and verifying the repaired `Context` blocks with a `10/10 pass` lifecycle audit.
