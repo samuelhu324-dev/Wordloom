@@ -67,6 +67,7 @@
 - Add one manifest-driven planner that reviews historical logs for both structure drift and lifecycle completeness.
 - Validate several representative samples so old logs can be split into closed-loop, issue-open-no-pr, and log-only follow-up buckets before any apply path starts.
 - Add one manual GitHub Actions mirror workflow that reruns the same review planner and retains structured audit artifacts without becoming the primary owner.
+- Add one first full-series `S0E` batch manifest and retained review plan so the historical backlog is measured before live Actions replay starts.
 
 **PR checklist source**:
 
@@ -77,7 +78,7 @@
 - Log: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
 - Issue: ``
 - Runbook: ``
-- Evidence artifact: `docs/issues/historical-log-review-S0E-7C-sample-plan.json`
+- Evidence artifact: `docs/issues/historical-log-review-S0E-series-plan.json`
 
 **Evidence Footer Source**:
 
@@ -85,6 +86,7 @@
 - `P1-C1-S1S2` | artifact: `scripts/issues/plan_historical_log_review.py`
 - `P2-C1-S1S2` | artifact: `docs/issues/historical-log-review-S0E-7C-sample-plan.json`
 - `P3-C1-S1S2` | artifact: `.github/workflows/s0e-historical-log-review-mirror.yml`
+- `P4-C1-S1` | artifact: `docs/issues/historical-log-review-S0E-series-plan.json`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
@@ -108,12 +110,14 @@
 - `P1`: implement a manifest-driven historical log review planner
 - `P2`: validate representative samples across several old-log lifecycle states
 - `P3`: add a manual GitHub Actions mirror workflow for the same review planner
+- `P4`: establish the first full-series `S0E` backlog baseline and then use it to enable one real mirror replay path
 
 ## Success Criteria (DoD)
 
 - The repo has one planner that reads an explicit manifest and emits per-log lifecycle classification plus structure-review findings.
 - At least one representative sample proves the planner can distinguish a fully concluded log, an issue-open-no-pr log, and a log with no issue/PR links yet.
 - The repo has one manual GitHub Actions mirror workflow that reruns the same planner and retains summary plus JSON artifacts.
+- The repo has one explicit full-series `S0E` manifest and retained plan artifact that quantifies the historical backlog before any live mirror replay is attempted.
 
 ## Stability (what stable means)
 
@@ -128,6 +132,7 @@
 - `P1` is now completed: the repo now has `scripts/issues/plan_historical_log_review.py`, which classifies historical logs by lifecycle completeness and narrow contract drift.
 - `P2` is now completed: the repo now has one representative sample manifest and retained plan covering a closed-loop log, an issue-open-no-pr log, and a log-only sample.
 - `P3` is now completed: the repo now has a manual `workflow_dispatch` mirror workflow that reruns the same planner and uploads retained review artifacts.
+- `P4-C1-S1` is now completed: the repo now has one explicit full-series `S0E` manifest and retained review plan that measures the current historical backlog before live Actions replay is attempted.
 
 ## P0 (Boundary contract | v1)
 
@@ -185,6 +190,13 @@
 - The workflow now retains the input manifest, planner console output, structured plan JSON, and one workflow summary markdown.
 - By default the workflow stays advisory and does not fail on `review-required` findings; operators may opt into failing on findings explicitly.
 
+## P4 (Full-series backlog baseline and live mirror enablement | v1)
+
+### P4-C1-S1 (Full-series `S0E` historical review baseline retained | v1)
+
+- `docs/issues/historical-log-review-S0E-series-manifest.json` now fixes one explicit full-series `S0E` batch review input spanning the current child logs under the spine.
+- `docs/issues/historical-log-review-S0E-series-plan.json` now retains the first full-series backlog reading so review-required items, pass-review items, and lifecycle-complete items are measured before any live mirror replay.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -220,6 +232,11 @@
 - [x] `P3-C1-S1`: add one manual dispatch mirror workflow for historical log review
 - [x] `P3-C1-S2`: retain summary and artifact output without making CI the primary owner
 
+### P4 (Full-series backlog baseline and live mirror enablement)
+
+- [x] `P4-C1-S1`: retain one explicit full-series `S0E` manifest and backlog plan artifact
+- [ ] `P4-C1-S2`: land the mirror workflow on the default branch and record the first live replay evidence
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Boundary contract)
@@ -242,6 +259,11 @@
 - [x] `P3-C1-S1`: manual dispatch mirror workflow added
 - [x] `P3-C1-S2`: retained artifact and advisory fail policy fixed
 
+### P4 (Full-series backlog baseline and live mirror enablement)
+
+- [x] `P4-C1-S1`: full-series `S0E` manifest and backlog plan retained
+- [ ] `P4-C1-S2`: first live mirror replay path enabled and evidenced
+
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
@@ -258,6 +280,15 @@
   - `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
 - expected:
   - the repo should separate historical review planning from later targeted apply families, while keeping any GitHub Actions replay as a secondary mirror only
+
+### P4-C1-S1 (full-series `S0E` backlog baseline retained | 2026-04-01)
+
+- headSha: `cc48a05c`
+- artifacts:
+  - `docs/issues/historical-log-review-S0E-series-manifest.json`
+  - `docs/issues/historical-log-review-S0E-series-plan.json`
+- expected:
+  - the repo should retain one explicit full-series `S0E` backlog measurement before any live historical-review mirror run is attempted
 - observed:
   - `S0E-7C` now fixes that split directly: v1 review is manifest-driven and non-mutating, while later backfill or guarded apply remains outside this slice
 
