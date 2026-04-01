@@ -1,0 +1,181 @@
+{
+  "mode": "historical-log-review-plan",
+  "result": "review-required",
+  "manifest_path": "docs/issues/historical-log-review-S0E-7C-sample-manifest.json",
+  "selection_input": "{\"goal\": \"review old logs before any targeted backfill or apply mutation\", \"scope\": \"S0E historical lifecycle follow-up samples\"}",
+  "operation": "historical-log-review",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "total_items": 3,
+  "planned_items": 2,
+  "pass_items": 1,
+  "review_required_items": 2,
+  "error_items": 0,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0E-5A",
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "log_status": "stable",
+      "issue_number": 305,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/305",
+      "issue_state": "CLOSED",
+      "pr_number": 306,
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/306",
+      "pr_state": "MERGED",
+      "pr_merged_at": "2026-03-30T12:52:01Z",
+      "lifecycle_stage": "concluded",
+      "structure_status": "pass",
+      "planned_action": "none",
+      "status": "pass-review",
+      "checks": [
+        {
+          "name": "frontmatter-required-fields",
+          "status": "pass",
+          "details": "required frontmatter fields are present"
+        },
+        {
+          "name": "required-section-presence",
+          "status": "pass",
+          "details": "required sections are present"
+        },
+        {
+          "name": "pr-summary-inputs-presence",
+          "status": "pass",
+          "details": "PR Summary Inputs block is present"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "no Evidence Footer Source rows were provided"
+        },
+        {
+          "name": "placeholder-hygiene",
+          "status": "pass",
+          "details": "no placeholder scaffolding detected"
+        },
+        {
+          "name": "stable-contradiction",
+          "status": "pass",
+          "details": "stable status does not contradict the execution checklist"
+        },
+        {
+          "name": "live-issue-read",
+          "status": "pass",
+          "details": "live issue state captured as CLOSED"
+        },
+        {
+          "name": "live-pr-read",
+          "status": "pass",
+          "details": "live PR state captured as MERGED"
+        }
+      ],
+      "warnings": [],
+      "reason": null
+    },
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "log_status": "stable",
+      "issue_number": 309,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/309",
+      "issue_state": "OPEN",
+      "pr_number": null,
+      "pr_url": null,
+      "pr_state": null,
+      "pr_merged_at": null,
+      "lifecycle_stage": "issue-open-no-pr",
+      "structure_status": "pass",
+      "planned_action": "complete-pr-create",
+      "status": "review-required",
+      "checks": [
+        {
+          "name": "frontmatter-required-fields",
+          "status": "pass",
+          "details": "required frontmatter fields are present"
+        },
+        {
+          "name": "required-section-presence",
+          "status": "pass",
+          "details": "required sections are present"
+        },
+        {
+          "name": "pr-summary-inputs-presence",
+          "status": "pass",
+          "details": "PR Summary Inputs block is present"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "Evidence Footer Source rows match canonical shape"
+        },
+        {
+          "name": "placeholder-hygiene",
+          "status": "pass",
+          "details": "no placeholder scaffolding detected"
+        },
+        {
+          "name": "stable-contradiction",
+          "status": "pass",
+          "details": "stable status does not contradict the execution checklist"
+        },
+        {
+          "name": "live-issue-read",
+          "status": "pass",
+          "details": "live issue state captured as OPEN"
+        }
+      ],
+      "warnings": [],
+      "reason": "issue exists but no PR is linked yet"
+    },
+    {
+      "requested_id": "S0E-7B",
+      "source_log_path": "docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md",
+      "log_status": "stable",
+      "issue_number": null,
+      "issue_url": null,
+      "issue_state": null,
+      "pr_number": null,
+      "pr_url": null,
+      "pr_state": null,
+      "pr_merged_at": null,
+      "lifecycle_stage": "log-only",
+      "structure_status": "pass",
+      "planned_action": "open-issue-flow",
+      "status": "review-required",
+      "checks": [
+        {
+          "name": "frontmatter-required-fields",
+          "status": "pass",
+          "details": "required frontmatter fields are present"
+        },
+        {
+          "name": "required-section-presence",
+          "status": "pass",
+          "details": "required sections are present"
+        },
+        {
+          "name": "pr-summary-inputs-presence",
+          "status": "pass",
+          "details": "PR Summary Inputs block is present"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "Evidence Footer Source rows match canonical shape"
+        },
+        {
+          "name": "placeholder-hygiene",
+          "status": "pass",
+          "details": "no placeholder scaffolding detected"
+        },
+        {
+          "name": "stable-contradiction",
+          "status": "pass",
+          "details": "stable status does not contradict the execution checklist"
+        }
+      ],
+      "warnings": [],
+      "reason": "log has no linked issue or PR evidence yet"
+    }
+  ]
+}
