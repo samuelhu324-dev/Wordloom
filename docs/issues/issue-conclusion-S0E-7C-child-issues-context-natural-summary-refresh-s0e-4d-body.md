@@ -8,10 +8,10 @@
 
 ## Context
 
-- S0E-4D records the workflow boundary for review-hold, full-auto, and lifecycle orchestration follow-up.
-- The scope here covers contract for review-hold, full-auto, default human-gated behavior, and slice ownership boundaries.
+- The live ledger now closes this slice through #304.
 - S0E-4D exists as the next follow-up after S0E-4C, focused on the operator-facing orchestration boundary across issue creation to PR creation to merge to issue conclusion.
-- After S0E-4C, the live ledger now closes this slice through #304.
+- The scoped detail here is contract for review-hold, full-auto, default human-gated behavior, and slice ownership boundaries.
+- It carries the work forward from S0E-4C while staying on the same parent S0E chain.
 
 ## Definition of Done (DoD)
 

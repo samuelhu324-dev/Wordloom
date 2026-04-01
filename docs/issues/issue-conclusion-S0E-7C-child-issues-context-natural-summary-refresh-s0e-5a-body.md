@@ -8,10 +8,10 @@
 
 ## Context
 
-- S0E-5A records the workflow boundary for lifecycle audit gate and dry-run planner.
-- The scope here covers contract for audit scope, stage model, severity rules, and evidence shape.
+- It carries the work forward from S0E-4D while staying on the same parent S0E chain.
 - S0E-5A exists to define one lifecycle-audit gate that runs before any mutation across the issue to PR to merge to relationship to conclusion chain.
-- After S0E-4D, the live ledger now closes this slice through #306.
+- The boundary being recorded here is contract for audit scope, stage model, severity rules, and evidence shape.
+- The live ledger now closes this slice through #306.
 
 ## Definition of Done (DoD)
 

@@ -8,10 +8,10 @@
 
 ## Context
 
-- S0E-5C records the workflow boundary for guarded PR create decomposition.
-- The scope here covers decompose PR create into guardable sub-stages with explicit failure boundaries.
+- The live ledger now closes this slice through #310.
 - S0E-5C exists as the follow-up after S0E-5B, focused specifically on whether guarded apply should expand from in-place mutation families to PR create itself.
-- After S0E-5B, the live ledger now closes this slice through #310.
+- The concrete scope here is decompose PR create into guardable sub-stages with explicit failure boundaries.
+- It carries the work forward from S0E-5B while staying on the same parent S0E chain.
 
 ## Definition of Done (DoD)
 

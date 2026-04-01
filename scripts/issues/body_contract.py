@@ -308,6 +308,238 @@ def _context_fact_sentences(source_log_text: str) -> list[str]:
     return deduped
 
 
+def _dedupe_preserve(items: list[str]) -> list[str]:
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for item in items:
+        normalized = _single_sentence(item).lower()
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        deduped.append(item)
+    return deduped
+
+
+def _context_seed(source_log_text: str, salt: str = "") -> int:
+    fields = _parse_fields(source_log_text)
+    key = f"{fields.get('id') or ''}:{salt}"
+    return sum(ord(char) for char in key)
+
+
+def _pick_variant(options: list[str], source_log_text: str, salt: str) -> str:
+    if not options:
+        return ""
+    return options[_context_seed(source_log_text, salt) % len(options)]
+
+
+def _fact_phrase_to_sentence(source_log_text: str, phrase: str, kind: str) -> str:
+    cleaned = _sanitize_focus_phrase(phrase)
+    lowered = _lower_first(cleaned)
+    first_word = lowered.split(" ", 1)[0].strip("`'\"").lower()
+    if kind == "purpose":
+        if first_word in VERB_LEADERS:
+            return _pick_variant(
+                [
+                    f"The slice was opened to {lowered}",
+                    f"This follow-up was created to {lowered}",
+                    f"The main task here was to {lowered}",
+                ],
+                source_log_text,
+                f"purpose:{cleaned}",
+            )
+        return _pick_variant(
+            [
+                f"The focus here was {lowered}",
+                f"This issue centers on {lowered}",
+                f"The slice keeps its attention on {lowered}",
+            ],
+            source_log_text,
+            f"purpose:{cleaned}",
+        )
+    if kind == "boundary":
+        if first_word in VERB_LEADERS:
+            return _pick_variant(
+                [
+                    f"The boundary here was to {lowered}",
+                    f"The scoped change here was to {lowered}",
+                ],
+                source_log_text,
+                f"boundary:{cleaned}",
+            )
+        return _pick_variant(
+            [
+                f"The concrete scope here is {lowered}",
+                f"The boundary being recorded here is {lowered}",
+                f"The scoped detail here is {lowered}",
+            ],
+            source_log_text,
+            f"boundary:{cleaned}",
+        )
+    return cleaned
+
+
+def _purpose_candidates(source_log_text: str, subject: str) -> list[str]:
+    fields = _parse_fields(source_log_text)
+    requested_id = str(fields.get("id") or "").strip()
+    issue_keyword = str(fields.get("issue_keyword") or "").strip().lower()
+    facts = _context_fact_sentences(source_log_text)
+    candidates: list[str] = []
+    for fact in facts[:6]:
+        lowered = fact.lower()
+        if issue_keyword and lowered.startswith(issue_keyword):
+            continue
+        if requested_id and lowered.startswith(requested_id.lower()):
+            candidates.append(fact)
+            continue
+        if subject.lower() in lowered or "scope" in lowered or "focused on" in lowered or "exists as" in lowered:
+            candidates.append(fact)
+            continue
+        candidates.append(_fact_phrase_to_sentence(source_log_text, fact, "purpose"))
+    if not candidates:
+        candidates.append(_opening_sentence(source_log_text, subject))
+    return _dedupe_preserve(candidates)
+
+
+def _boundary_candidates(source_log_text: str, subject: str) -> list[str]:
+    fields = _parse_fields(source_log_text)
+    sections = _parse_sections(source_log_text)
+    candidates: list[str] = []
+    title_details = _extract_title_details(str(fields.get("title") or ""))
+    issue_keyword = str(fields.get("issue_keyword") or "").strip().lower()
+    if title_details:
+        candidates.append(_fact_phrase_to_sentence(source_log_text, title_details, "boundary"))
+    for phrase in _extract_plain_section_bullets(sections.get("Scope", []))[:3]:
+        if title_details and issue_keyword and phrase.lower().startswith(issue_keyword):
+            continue
+        candidates.append(_fact_phrase_to_sentence(source_log_text, phrase, "boundary"))
+    if not candidates:
+        candidates.append(_scope_sentence(source_log_text, subject))
+    return _dedupe_preserve(candidates)
+
+
+def _relation_candidates(source_log_text: str) -> list[str]:
+    fields = _parse_fields(source_log_text)
+    previous_id = _extract_follow_up_id(str(fields.get("previous_log") or ""))
+    parent_log = str(fields.get("parent_log") or "").strip()
+    requested_id = str(fields.get("id") or "this log").strip() or "this log"
+    if previous_id:
+        return _dedupe_preserve(
+            [
+                f"It carries the work forward from {previous_id} while staying on the same parent S0E chain",
+                f"This follow-up comes after {previous_id} and keeps the same parent S0E record in view",
+                f"It continues the line opened by {previous_id} without stepping outside the parent S0E record",
+            ]
+        )
+    if parent_log:
+        return _dedupe_preserve(
+            [
+                "It stays attached to the parent S0E record while narrowing the work to one delivery boundary",
+                "It remains one child ledger entry under the same parent S0E record",
+            ]
+        )
+    return _dedupe_preserve(
+        [
+            f"It keeps the parent record aligned so downstream child slices can extend {requested_id} without reopening the spine contract",
+            f"It keeps the broader {requested_id} parent path aligned while later follow-ups keep moving",
+        ]
+    )
+
+
+def _outcome_candidates(source_log_text: str, subject: str, merged_pr_numbers: list[int] | None, phase: str) -> list[str]:
+    fields = _parse_fields(source_log_text)
+    requested_id = str(fields.get("id") or "this log").strip() or "this log"
+    merged_pr_refs = _format_pr_refs(merged_pr_numbers)
+    if phase == "draft":
+        return _dedupe_preserve(
+            [
+                f"This issue keeps the working ledger for the {subject} path while delivery is still being tracked",
+                f"Completion for {requested_id} remains tied to the linked delivery evidence and the final DoD for this slice",
+            ]
+        )
+    return _dedupe_preserve(
+        [
+            f"The live ledger now closes this slice through {merged_pr_refs}",
+            f"The completed path is now recorded through {merged_pr_refs}",
+            f"This issue now closes against {merged_pr_refs}",
+        ]
+    )
+
+
+def _ledger_candidates(source_log_text: str, subject: str, phase: str) -> list[str]:
+    if phase == "draft":
+        return _dedupe_preserve(
+            [
+                f"It stays as the issue-side ledger entry for the evolving {subject} path",
+                f"It remains the short issue-side summary for the {subject} path while the source log keeps the full record",
+            ]
+        )
+    return _dedupe_preserve(
+        [
+            f"It now remains as the issue-side ledger record for the finished {subject} path",
+            f"This concluded issue now serves as the short ledger entry for the finished {subject} path",
+        ]
+    )
+
+
+def _context_style_family(source_log_text: str, phase: str) -> str:
+    styles = ["ledger-first", "follow-up-first", "boundary-first", "outcome-first"]
+    return styles[_context_seed(source_log_text, f"style:{phase}") % len(styles)]
+
+
+def _context_style_order(style_family: str, phase: str) -> list[str]:
+    if style_family == "follow-up-first":
+        return ["relation", "purpose", "boundary", "outcome", "ledger"]
+    if style_family == "boundary-first":
+        return ["boundary", "purpose", "relation", "outcome", "ledger"]
+    if style_family == "outcome-first":
+        return ["outcome", "purpose", "boundary", "relation", "ledger"]
+    return ["purpose", "boundary", "relation", "outcome", "ledger"]
+
+
+def _render_context_from_fact_pool(source_log_text: str, merged_pr_numbers: list[int] | None, phase: str) -> list[str]:
+    fields = _parse_fields(source_log_text)
+    requested_id = str(fields.get("id") or "this log").strip() or "this log"
+    subject = _normalize_title_subject(str(fields.get("title") or requested_id))
+    min_count, max_count = issue_body_context_line_bounds(source_log_text)
+    fact_pool = {
+        "purpose": _purpose_candidates(source_log_text, subject),
+        "boundary": _boundary_candidates(source_log_text, subject),
+        "relation": _relation_candidates(source_log_text),
+        "outcome": _outcome_candidates(source_log_text, subject, merged_pr_numbers, phase),
+        "ledger": _ledger_candidates(source_log_text, subject, phase),
+    }
+    style_family = _context_style_family(source_log_text, phase)
+    style_order = _context_style_order(style_family, phase)
+    lines: list[str] = []
+    seen: set[str] = set()
+
+    for category in style_order:
+        for candidate in fact_pool.get(category, []):
+            normalized = _single_sentence(candidate)
+            key = normalized.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            lines.append(f"- {normalized}")
+            break
+        if len(lines) >= max_count:
+            return lines[:max_count]
+
+    fallback_categories = ["purpose", "boundary", "relation", "outcome", "ledger"]
+    for category in fallback_categories:
+        for candidate in fact_pool.get(category, []):
+            normalized = _single_sentence(candidate)
+            key = normalized.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            lines.append(f"- {normalized}")
+            if len(lines) >= max_count:
+                return lines
+
+    return lines[:max_count] if len(lines) >= min_count else lines
+
+
 def _scope_sentence(source_log_text: str, subject: str) -> str:
     fields = _parse_fields(source_log_text)
     title_details = _extract_title_details(str(fields.get("title") or ""))
@@ -400,54 +632,11 @@ def _format_pr_refs(merged_pr_numbers: list[int] | None) -> str:
 
 
 def build_issue_draft_context_lines(source_log_text: str) -> list[str]:
-    fields = _parse_fields(source_log_text)
-    requested_id = str(fields.get("id") or "this log").strip() or "this log"
-    subject = _normalize_title_subject(str(fields.get("title") or requested_id))
-    min_count, max_count = issue_body_context_line_bounds(source_log_text)
-    candidate_lines = [_opening_sentence(source_log_text, subject), _scope_sentence(source_log_text, subject)]
-    supporting_sentence = _supporting_sentence(source_log_text, subject)
-    if supporting_sentence:
-        candidate_lines.append(supporting_sentence)
-    candidate_lines.append(_relation_sentence(source_log_text))
-    candidate_lines.append(f"Completion for {requested_id} stays tied to the linked delivery evidence and the final DoD for this slice")
-    lines: list[str] = []
-    seen: set[str] = set()
-    for candidate in candidate_lines:
-        normalized = _single_sentence(candidate)
-        key = normalized.lower()
-        if key in seen:
-            continue
-        seen.add(key)
-        lines.append(f"- {normalized}")
-        if len(lines) >= max_count:
-            break
-    return lines[:max_count] if len(lines) >= min_count else lines
+    return _render_context_from_fact_pool(source_log_text, None, "draft")
 
 
 def build_issue_conclusion_context_lines(source_log_text: str, merged_pr_numbers: list[int] | None = None) -> list[str]:
-    fields = _parse_fields(source_log_text)
-    requested_id = str(fields.get("id") or "this log").strip() or "this log"
-    subject = _normalize_title_subject(str(fields.get("title") or requested_id))
-    min_count, max_count = issue_body_context_line_bounds(source_log_text)
-    candidate_lines = [_opening_sentence(source_log_text, subject), _scope_sentence(source_log_text, subject)]
-    supporting_sentence = _supporting_sentence(source_log_text, subject)
-    if supporting_sentence:
-        candidate_lines.append(supporting_sentence)
-    candidate_lines.append(_completion_sentence(source_log_text, merged_pr_numbers))
-    if min_count >= 4:
-        candidate_lines.append(f"This concluded issue now stays as the ledger record for the finished {subject} path under S0E")
-    lines: list[str] = []
-    seen: set[str] = set()
-    for candidate in candidate_lines:
-        normalized = _single_sentence(candidate)
-        key = normalized.lower()
-        if key in seen:
-            continue
-        seen.add(key)
-        lines.append(f"- {normalized}")
-        if len(lines) >= max_count:
-            break
-    return lines
+    return _render_context_from_fact_pool(source_log_text, merged_pr_numbers, "conclusion")
 
 
 def extract_issue_context_bullet_lines(section_lines: list[str]) -> list[str]:

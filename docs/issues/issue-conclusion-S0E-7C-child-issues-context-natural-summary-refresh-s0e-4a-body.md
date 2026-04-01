@@ -8,10 +8,10 @@
 
 ## Context
 
-- S0E-4A is where the repo fixed GitHub pull request automation contract.
-- The scope here covers contract for commit selection, PR metadata fields, and description structure.
 - S0E-4A defines PR automation as a separate contract instead of hiding it inside issue automation.
-- After S0E-3A, the live ledger now closes this slice through #294 and #299.
+- The boundary being recorded here is contract for commit selection, PR metadata fields, and description structure.
+- It carries the work forward from S0E-3A while staying on the same parent S0E chain.
+- The live ledger now closes this slice through #294 and #299.
 
 ## Definition of Done (DoD)
 

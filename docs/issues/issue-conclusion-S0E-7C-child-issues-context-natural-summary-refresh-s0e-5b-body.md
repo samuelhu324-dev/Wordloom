@@ -8,10 +8,10 @@
 
 ## Context
 
-- S0E-5B records the workflow boundary for guarded lifecycle apply expansion.
-- The scope here covers define the expansion boundary from guarded issue-conclusion apply to broader guarded lifecycle apply.
+- The boundary here was to define the expansion boundary from guarded issue-conclusion apply to broader guarded lifecycle apply.
 - S0E-5B exists as the follow-up after S0E-5A, focused on expanding guarded pre-gate behavior from one issue-conclusion mutation path to a broader set of real lifecycle apply operations.
-- After S0E-5A, the live ledger now closes this slice through #308.
+- It carries the work forward from S0E-5A while staying on the same parent S0E chain.
+- The live ledger now closes this slice through #308.
 
 ## Definition of Done (DoD)
 

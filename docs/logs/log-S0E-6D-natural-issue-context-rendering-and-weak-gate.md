@@ -112,7 +112,8 @@
 - `P2` is now completed: lifecycle audit now enforces a bounded natural-summary contract instead of an exact line-slot contract.
 - `P3` is now completed: the recently replayed closed `S0E` child-issue set has been rewritten again under the new rule and re-audited successfully.
 - `P4-C1-S1` is now completed: the `Context` gate has been narrowed to prose-first checks only, so lifecycle audit now enforces line count, readable English sentence rows, and placeholder hygiene without requiring hard prose anchors.
-- `P4-C1-S2` and `P4-C1-S3` remain open: the renderer still needs to move from weak sentence-slot assembly to fact-pool/style-family rendering, and the representative replay still needs to be refreshed under that new rule.
+- `P4-C1-S2` is now completed: the renderer now selects from a source-log fact pool and renders through deterministic style families instead of forcing one shared `opening -> relation -> scope -> completion` sentence order.
+- `P4-C1-S3` remains open: the representative closed child-issue replay still needs to be refreshed under the new fact-pool/style-family renderer.
 
 ## P0 (Natural-summary contract | v1)
 
@@ -188,7 +189,7 @@
 - [x] `P2-C1-S2`: anchor and placeholder gate fixed
 - [x] `P3-C1-S1`: representative live replay completed
 - [x] `P4-C1-S1`: prose-first weak gate narrowed
-- [ ] `P4-C1-S2`: fact-pool selection and style-family rendering introduced
+- [x] `P4-C1-S2`: fact-pool selection and style-family rendering introduced
 - [ ] `P4-C1-S3`: representative replay refreshed under the prose-first rule
 
 ### P4-C1-S1 (prose-first weak gate narrowed | 2026-04-01)
@@ -204,6 +205,21 @@
   - lifecycle audit should reduce `Context` validation to line count, readable English sentence rows, and placeholder hygiene instead of enforcing hard prose anchors inside the rendered text
 - observed:
   - the `Context` gate now accepts prose-first variation as long as the block stays within `3-5` rows, remains readable in English, and contains no placeholder scaffolding; the representative lifecycle audit replay still returns no blocked or fail findings under the narrowed gate
+
+### P4-C1-S2 (fact-pool selection and style-family rendering introduced | 2026-04-01)
+
+- headSha: `f554bb78`
+- artifacts:
+  - `scripts/issues/body_contract.py`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-natural-summary-refresh-plan.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-natural-summary-refresh-s0e-2a-body.md`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-natural-summary-refresh-s0e-4d-body.md`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-natural-summary-refresh-s0e-5c-body.md`
+  - `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`
+- expected:
+  - the renderer should stop assembling `Context` through one shared sentence-slot skeleton and instead build issue summaries from a source-log fact pool plus deterministic style-family variation
+- observed:
+  - regenerated preview bodies now vary in sentence ordering and lead sentence choice by issue, while still staying inside the same bounded prose-first gate and remaining traceable to source-log facts
 
 ## Evidence (reserved)
 
@@ -232,3 +248,4 @@
 - 2026-04-01: replayed the representative closed `S0E` child-issue batch and re-audited it under the new rule.
 - 2026-04-01: reopened `S0E-6D` with `P4` after operator review confirmed that the current renderer still reads too template-shaped for a human-facing `Context` block.
 - 2026-04-01: completed `P4-C1-S1` by narrowing the `Context` gate to prose-first checks only, removing hard prose-anchor validation from lifecycle audit.
+- 2026-04-01: completed `P4-C1-S2` by replacing sentence-slot assembly with a source-log fact pool and deterministic style-family rendering for issue Context previews.

@@ -8,10 +8,10 @@
 
 ## Context
 
-- S0E-2B carries the automation work for real GitHub issue creation automation.
-- The concrete scope here is draft-generation to create-issue.
-- contract（mode boundary、script I/O contract、creation evidence contract）.
-- After S0E-2A, the live ledger now closes this slice through #290.
+- The live ledger now closes this slice through #290.
+- This issue centers on contract（mode boundary、script I/O contract、creation evidence contract）.
+- The boundary being recorded here is draft-generation to create-issue.
+- It carries the work forward from S0E-2A while staying on the same parent S0E chain.
 
 ## Definition of Done (DoD)
 

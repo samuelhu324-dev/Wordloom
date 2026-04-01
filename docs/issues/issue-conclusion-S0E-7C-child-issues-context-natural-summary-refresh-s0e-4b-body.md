@@ -8,10 +8,10 @@
 
 ## Context
 
-- S0E-4B is where the repo fixed PR title compression, structural label inheritance, and body scope alignment follow-up.
-- The scope here covers contract corrections for PR title range compression, structural label inheritance, and body section boundaries.
+- It carries the work forward from S0E-4A while staying on the same parent S0E chain.
 - S0E-4B exists as the narrow follow-up to S0E-4A, focused only on PR title naming, PR label inheritance, and PR body section formatting.
-- After S0E-4A, the live ledger now closes this slice through #296.
+- The boundary being recorded here is contract corrections for PR title range compression, structural label inheritance, and body section boundaries.
+- The live ledger now closes this slice through #296.
 
 ## Definition of Done (DoD)
 

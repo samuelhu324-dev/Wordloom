@@ -8,10 +8,10 @@
 
 ## Context
 
-- S0E-4C is where the repo fixed PR summary, development-link rendering, and issue relationship follow-up.
-- The scope here covers contract for PR summary requiredness, development-issue rendering, and parent-relationship attach boundary.
+- The scoped detail here is contract for PR summary requiredness, development-issue rendering, and parent-relationship attach boundary.
 - S0E-4C exists as the next narrow follow-up after S0E-4B, focused on three specific GitHub-facing mismatches that are still visible in live output.
-- After S0E-4B, the live ledger now closes this slice through #301 and #302.
+- It carries the work forward from S0E-4B while staying on the same parent S0E chain.
+- The live ledger now closes this slice through #301 and #302.
 
 ## Definition of Done (DoD)
 
