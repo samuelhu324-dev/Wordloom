@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "mode": "pr-prep-dry-run",
+  "defaults": {
+    "requested_id": "S0E-7C",
+    "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+    "base_branch": "main",
+    "head_ref": "HEAD",
+    "candidate_pr_branch": "pr-prep/s0e-7c"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-7C",
+      "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+      "reason": "Land the historical review planner and GitHub Actions mirror workflow on the default branch so manual dispatch becomes available."
+    }
+  ]
+}

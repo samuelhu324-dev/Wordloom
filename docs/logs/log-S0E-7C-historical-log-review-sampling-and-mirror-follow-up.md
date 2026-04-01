@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Actions, Automation, Workflow, Audit, Review, epic/s0, sub/1`
 **links**: ``
   **issue**: ``
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/311`
   **runbook**: ``
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -126,6 +126,7 @@
 - `P2` is now completed: the repo now has one representative sample manifest and retained plan covering a closed-loop log, an issue-open-no-pr log, and a log-only sample.
 - `P3` is now completed: the repo now has a manual `workflow_dispatch` mirror workflow that reruns the same planner and uploads retained review artifacts.
 - `P4-C1-S1` is now completed: the repo now has one explicit full-series `S0E` manifest and retained review plan that measures the current historical backlog before live Actions replay is attempted.
+- `P4-C1-S2` is now completed: focused PR `#311` landed the mirror workflow on `main`, the first dispatch on `main` proved workflow visibility, and the first successful live replay was retained on `S0E-docs-management-v5` as run `23827100968`.
 
 ## P0 (Boundary contract | v1)
 
@@ -190,6 +191,12 @@
 - `docs/issues/historical-log-review-S0E-series-manifest.json` now fixes one explicit full-series `S0E` batch review input spanning the current child logs under the spine.
 - `docs/issues/historical-log-review-S0E-series-plan.json` now retains the first full-series backlog reading so review-required items, pass-review items, and lifecycle-complete items are measured before any live mirror replay.
 
+### P4-C1-S2 (Default-branch visibility and first live replay evidenced | v1)
+
+- PR `#311` landed `S0E-7C/P0-P4` on `main`, which made `s0e-historical-log-review-mirror.yml` visible to `workflow_dispatch` from the repository default branch.
+- The first dispatch on `main` (`run 23827006381`) proved visibility and artifact retention, while also exposing that `main` still lacks the imported `body_contract.py` runtime closure required by the planner.
+- After publishing `S0E-docs-management-v5`, the mirror workflow was dispatched again on that ref and completed successfully as `run 23827100968`, retaining the first live historical-review replay for the full-series `S0E` manifest.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -228,7 +235,7 @@
 ### P4 (Full-series backlog baseline and live mirror enablement)
 
 - [x] `P4-C1-S1`: retain one explicit full-series `S0E` manifest and backlog plan artifact
-- [ ] `P4-C1-S2`: land the mirror workflow on the default branch and record the first live replay evidence
+- [x] `P4-C1-S2`: land the mirror workflow on the default branch and record the first live replay evidence
 
 ## Execution Checklist (unchecked)
 
@@ -255,7 +262,7 @@
 ### P4 (Full-series backlog baseline and live mirror enablement)
 
 - [x] `P4-C1-S1`: full-series `S0E` manifest and backlog plan retained
-- [ ] `P4-C1-S2`: first live mirror replay path enabled and evidenced
+- [x] `P4-C1-S2`: first live mirror replay path enabled and evidenced
 
 ## Evidence (reserved)
 
@@ -284,6 +291,19 @@
   - the repo should retain one explicit full-series `S0E` backlog measurement before any live historical-review mirror run is attempted
 - observed:
   - `S0E-7C` now fixes that split directly: v1 review is manifest-driven and non-mutating, while later backfill or guarded apply remains outside this slice
+
+### P4-C1-S2 (default-branch visibility and first live replay evidenced | 2026-04-01)
+
+- headSha: `a9ee08a9`
+- artifacts:
+  - `https://github.com/samuelhu324-dev/wordloom-v3/pull/311`
+  - `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23827006381`
+  - `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23827100968`
+  - `artifacts/_tmp_s0e_7c_run_23827100968/s0e-historical-log-review-23827100968-1/artifacts/github-actions/historical-log-review/23827100968-1/workflow-summary.md`
+- expected:
+  - the mirror workflow should become dispatchable once it is visible on `main`, and the first successful full-series replay should retain summary and artifact evidence without becoming the primary owner
+- observed:
+  - `#311` made the workflow dispatchable from the default branch, `run 23827006381` exposed a runtime-closure gap on `main`, and `run 23827100968` then completed successfully on `S0E-docs-management-v5` with `review-required`, `22` total items, `5` pass items, `17` review-required items, and `13` planned follow-ups
 
 ### P1-C1-S1S2 (historical log review planner implemented | 2026-04-01)
 

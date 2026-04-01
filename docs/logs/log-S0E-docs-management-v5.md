@@ -235,6 +235,8 @@
 - [x] `P106`：`S0E-7C` 已完成 `P1-P2`，现已新增 manifest-driven historical log review planner，并保留一组覆盖 closed-loop / issue-open-no-pr / log-only 的 representative samples
 - [x] `P107`：`S0E-7C` 已完成 `P3`，现已新增 manual GitHub Actions mirror workflow，可通过 `workflow_dispatch` 重放同一 review planner 并保留 summary / plan artifacts
 - [x] `P108`：`S0E-5C` 已完成真实 lifecycle follow-through：PR `#310` 已创建并合并，issue `#309` 已完成 final issue-conclusion write-back，因此这条 slice 不再只是 issue-only sample
+- [x] `P109`：`S0E-7C` 已完成 `P4-C1-S1`，现已新增覆盖整个 `S0E` family 的 full-series historical review manifest/plan，历史 backlog 现在有了第一份结构化基线读数
+- [x] `P110`：`S0E-7C` 已完成 `P4-C1-S2`，focused PR `#311` 已把历史 review mirror workflow 挂到默认分支，且 `S0E-docs-management-v5` 上的 live dispatch `run 23827100968` 已成功保留首条 full-series replay evidence
 
 ## Current Status（进展摘要）
 
@@ -279,6 +281,7 @@
 - `S0E-4E` 已完成 `P3`：`PR event -> source_log_path` attribution 现已具有明确的 consume-or-stop handoff contract，因此 `S0E-7A` 后续接入自动 PR-event mirroring 时不必再猜什么时候 verify、什么时候应在 attribution 阶段先停下；
 - `S0E-7B` 已完成并进入 `stable`：attribution resolver、GitHub Actions consume-or-stop wiring，以及 resolved/stop representative samples 现已全部落地，因此 `4E -> 7A` 的 implementation follow-up 已从 contract follow-up 推进到可验证的执行层；
 - `S0E-7C` 已完成并进入 `stable`：历史 logs 的批量 review planner、representative sample manifest/plan，以及 manual dispatch mirror workflow 现已全部落地，因此后续 historical backfill 可以先从结构化 review 结果进入 targeted follow-up；
+- `S0E-7C/P4` 已完成第一轮 Actions 打通：`#311` 现已让历史 review mirror workflow 对默认分支可见，而 `run 23827100968` 也已证明同一 workflow 可以在 `S0E-docs-management-v5` 上成功重放 full-series `S0E` historical review；
 - `S0E-5C` 的真实链路现已打通：issue `#309` 不再停留在 issue-only sample，PR `#310` 已创建并合并，inline post-apply verification 已通过，final issue conclusion 也已写回 closed issue；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
@@ -384,7 +387,8 @@
 - 2026-04-01：`S0E-7B/P1` 已完成：新增 attribution resolver entrypoint，并固定 normalized PR payload snapshot + attribution result JSON 这对 retained artifact paths，为后续 `S0E-7A` consume-or-stop 接线提供直接输入。
 - 2026-04-01：`S0E-7B/P2-P3` 已完成：GitHub Actions workflow 现已先做 attribution 再分流到 continue-or-stop，同时 repo 也已补齐 resolved / stop 两类 representative samples 与 sample manifest，因此 `S0E-7B` 现可视为 `stable`。
 - 2026-04-01：新增 `S0E-7C`，并完成 historical log review planner、representative sample manifest/plan 与 manual mirror workflow，为旧 logs 的批量审查和后续 targeted backfill 提供 review-first 入口。
-- 2026-04-01：完成 `S0E-5C` 的真实 lifecycle follow-through，PR `#310` 已创建并合并，issue `#309` 已完成 final body write-back；与此同时，GitHub Actions mirror dispatch 仍受限于 workflow 尚未存在于默认分支。
+- 2026-04-01：`S0E-7C/P4` 已完成第一轮 full-series backlog + live Actions enablement：`#311` 已把 mirror workflow 挂到默认分支，`run 23827006381` 证明了 dispatch visibility，而 `run 23827100968` 已在 `S0E-docs-management-v5` 上成功保留第一条 full-series replay evidence。
+- 2026-04-01：完成 `S0E-5C` 的真实 lifecycle follow-through，PR `#310` 已创建并合并，issue `#309` 已完成 final body write-back；当时的 GitHub Actions mirror dispatch 也据此暴露出“workflow 需先对默认分支可见”这一前置条件，并在后续 `S0E-7C/P4` 中被正面解决。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
 - 2026-03-29：完成 `S0E-2D/P3`，历史真实 issue `#288` 已按当前 creation body contract 审核并回收，当前 `S0E-2D` 也已成功创建真实 sample issue `#297` 并完成 write-back。
