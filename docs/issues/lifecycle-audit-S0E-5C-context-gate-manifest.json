@@ -1,0 +1,14 @@
+{
+  "version": "1",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "issue_number": 309,
+      "reason": "Verify that the concluded live issue satisfies the S0E-6C Context sentence-count gate after the replayed conclusion write-back."
+    }
+  ]
+}

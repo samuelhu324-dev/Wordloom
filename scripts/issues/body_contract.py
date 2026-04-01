@@ -13,6 +13,8 @@ PR_ALLOWED_LINK_LABELS = {"Log", "Issue", "Runbook", "Evidence artifact", "Paren
 ISSUE_ALLOWED_LINK_LABELS = {"Log", "Runbook", "Parent log", "Roadmap"}
 EVIDENCE_FOOTER_LINE_RE = re.compile(r"^`(?P<stage>[^`]+)` \| artifact: `(?P<artifact>[^`]+)`$")
 LINK_LINE_RE = re.compile(r"^- (?P<label>[^:]+):\s+`[^`]*`$")
+CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
+SENTENCE_TERMINATOR_RE = re.compile(r"[.!?]")
 
 
 @dataclass
@@ -96,6 +98,85 @@ def extract_evidence_footer_source_lines(log_text: str) -> list[str]:
 
 def extract_pr_summary_inputs(log_text: str) -> tuple[list[str], list[str], list[str]]:
     return _parse_pr_summary_inputs(_find_pr_summary_input_lines(log_text))
+
+
+def issue_body_expected_context_line_count(source_log_text: str) -> int:
+    fields = _parse_fields(source_log_text)
+    parent_log = str(fields.get("parent_log") or "").strip()
+    return 5 if not parent_log else 4
+
+
+def _issue_context_scope_label(source_log_text: str) -> str:
+    return "main" if issue_body_expected_context_line_count(source_log_text) == 5 else "child"
+
+
+def build_issue_draft_context_lines(source_log_text: str) -> list[str]:
+    fields = _parse_fields(source_log_text)
+    requested_id = str(fields.get("id") or "this log")
+    if _issue_context_scope_label(source_log_text) == "main":
+        return [
+            f"- This issue tracks the main {requested_id} contract recorded in the source log.",
+            "- The scope covers the parent workflow and governance decisions defined for this spine.",
+            "- Child slices may deliver implementation details, but this issue keeps the parent context aligned.",
+            "- Operator review is required before downstream issue, PR, or conclusion automation is treated as complete.",
+            "- This Context block is intentionally fixed to one English sentence per line for deterministic issue-body review.",
+        ]
+    return [
+        f"- This issue tracks the child {requested_id} slice recorded in the source log.",
+        "- The scope stays limited to the delivery boundary and artifacts defined for this child log.",
+        "- Operator review is required before the final delivery set and DoD are treated as complete.",
+        "- This Context block is intentionally fixed to one English sentence per line for deterministic issue-body review.",
+    ]
+
+
+def build_issue_conclusion_context_lines(source_log_text: str) -> list[str]:
+    if _issue_context_scope_label(source_log_text) == "main":
+        return [
+            "- The main delivery scope recorded by the source log has now completed its planned lifecycle.",
+            "- The parent issue body has been reconciled with the merged PR evidence retained for this contract.",
+            "- The final DoD below lists the merged PR references that closed the parent implementation path.",
+            "- This concluded issue now serves as the stable parent record for downstream child-log traceability.",
+            "- This Context block remains fixed to one English sentence per line for deterministic audit review.",
+        ]
+    return [
+        "- The child delivery scope recorded by the source log has now completed its planned lifecycle.",
+        "- The merged PR evidence for this issue has been reconciled with the exact-ID delivery set.",
+        "- The final DoD below lists the merged PR references that closed this child implementation path.",
+        "- This concluded issue now serves as the stable record for the child slice under the current S0E contract.",
+    ]
+
+
+def extract_issue_context_bullet_lines(section_lines: list[str]) -> list[str]:
+    return [line.strip() for line in section_lines if line.strip().startswith("- ")]
+
+
+def validate_issue_context_lines(section_lines: list[str], expected_line_count: int) -> tuple[bool, str, list[str]]:
+    trimmed = [line.strip() for line in section_lines if line.strip()]
+    bullet_lines = [line for line in trimmed if line.startswith("- ")]
+    invalid_lines: list[str] = []
+
+    if len(trimmed) != len(bullet_lines):
+        return False, "Context contains non-bullet content or blank-gap drift", invalid_lines
+    if len(bullet_lines) != expected_line_count:
+        return False, f"Context must contain exactly {expected_line_count} English bullet sentences; found {len(bullet_lines)}", invalid_lines
+
+    for raw in bullet_lines:
+        sentence = raw[2:].strip()
+        if not sentence:
+            invalid_lines.append(raw)
+            continue
+        if CJK_RE.search(sentence) or not re.search(r"[A-Za-z]", sentence):
+            invalid_lines.append(raw)
+            continue
+        if not re.search(r"[.!?]$", sentence):
+            invalid_lines.append(raw)
+            continue
+        if len(SENTENCE_TERMINATOR_RE.findall(sentence)) != 1:
+            invalid_lines.append(raw)
+
+    if invalid_lines:
+        return False, "Context lines must each be one English sentence on one bullet row", invalid_lines
+    return True, f"Context contains exactly {expected_line_count} one-sentence English bullet rows", invalid_lines
 
 
 def pr_body_is_evidence_footer_eligible(source_log_text: str) -> bool:

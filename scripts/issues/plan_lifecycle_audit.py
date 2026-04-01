@@ -7,7 +7,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from body_contract import ISSUE_ALLOWED_LINK_LABELS, bullets_are_contiguous, extract_section_order, link_labels_are_allowed
+from body_contract import ISSUE_ALLOWED_LINK_LABELS, bullets_are_contiguous, extract_section_order, issue_body_expected_context_line_count, link_labels_are_allowed, validate_issue_context_lines
 from gen_issue_draft import (
     _derive_function_labels,
     _derive_module_labels,
@@ -608,11 +608,18 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     else:
         checks.append(_build_check("links-coverage", "pass", "Links section covers the expected canonical issue-link fragments"))
 
+    expected_context_line_count = issue_body_expected_context_line_count(_load_text(source_log_path))
+    context_valid, context_details, invalid_context_lines = validate_issue_context_lines(context_lines, expected_context_line_count)
+    if context_valid:
+        checks.append(_build_check("context-sentence-shape", "pass", context_details))
+    else:
+        checks.append(_build_check("context-sentence-shape", "fail", f"{context_details}: {invalid_context_lines or '[]'}"))
+
     if issue_state == "CLOSED":
-        if _has_substantive_text(context_lines):
-            checks.append(_build_check("closed-body-shape", "pass", "concluded issue keeps substantive Context content as required by the canonical contract"))
+        if context_valid:
+            checks.append(_build_check("closed-body-shape", "pass", f"concluded issue keeps the canonical {expected_context_line_count}-sentence Context contract"))
         else:
-            checks.append(_build_check("closed-body-shape", "fail", "concluded issue is missing substantive Context content"))
+            checks.append(_build_check("closed-body-shape", "fail", f"concluded issue does not satisfy the canonical {expected_context_line_count}-sentence Context contract"))
     else:
         checks.append(_build_check("closed-body-shape", "skipped", "closed-body shape is not required while the issue remains open"))
 

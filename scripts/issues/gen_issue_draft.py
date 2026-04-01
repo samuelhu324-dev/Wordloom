@@ -359,6 +359,7 @@ def _render_issue_markdown(
     parent_issue: str | None,
     show_parent_issue: bool,
     link_lines: list[str],
+    context_lines: list[str],
 ) -> str:
     lines = [
         "## Metadata",
@@ -373,6 +374,8 @@ def _render_issue_markdown(
     lines.extend([
         "",
         "## Context",
+        "",
+        *context_lines,
         "",
         "## Definition of Done (DoD)",
         "",
@@ -545,11 +548,13 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         warnings.append("issue_milestone missing")
     if show_parent_issue and not parent_issue:
         warnings.append("issue_parent missing")
-    warnings.append("Context and Definition of Done (DoD) left intentionally blank pending operator input")
+    warnings.append("Context now uses the canonical fixed English sentence block for deterministic issue-body review")
+    warnings.append("Definition of Done (DoD) remains intentionally blank pending operator input")
 
     rel_log_path = _repo_rel(log_path)
     link_lines = _build_links(fields, rel_log_path)
     issue_projects = _derive_issue_projects(fields, rel_log_path)
+    from body_contract import build_issue_draft_context_lines
 
     default_output = repo_root / "docs" / "issues" / f"issue-{log_path.stem.removeprefix('log-')}.md"
     output_path = Path(args.output_path) if args.output_path else default_output
@@ -571,6 +576,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         parent_issue=parent_issue,
         show_parent_issue=show_parent_issue,
         link_lines=link_lines,
+        context_lines=build_issue_draft_context_lines(text),
     )
     output_path.write_text(markdown, encoding="utf-8")
 
