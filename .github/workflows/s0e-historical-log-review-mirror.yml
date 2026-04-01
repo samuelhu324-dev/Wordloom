@@ -1,0 +1,176 @@
+name: s0e-historical-log-review-mirror
+
+on:
+  workflow_dispatch:
+    inputs:
+      manifest_path:
+        description: "Historical log review manifest path."
+        required: true
+        type: string
+        default: "docs/issues/historical-log-review-S0E-7C-sample-manifest.json"
+      repo:
+        description: "Optional repository slug override (owner/repo). Blank uses the current repository."
+        required: false
+        type: string
+        default: ""
+      fail_on_findings:
+        description: "Fail the workflow when review-required findings are present."
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  historical_review:
+    name: historical-log-review-mirror
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+      S0E_REVIEW_MANIFEST_PATH: ${{ inputs.manifest_path }}
+      S0E_REVIEW_REPO: ${{ inputs.repo != '' && inputs.repo || github.repository }}
+      S0E_REVIEW_FAIL_ON_FINDINGS: ${{ inputs.fail_on_findings && 'true' || 'false' }}
+      S0E_REVIEW_ARTIFACT_DIR: artifacts/github-actions/historical-log-review/${{ github.run_id }}-${{ github.run_attempt }}
+      S0E_REVIEW_PLAN_JSON: artifacts/github-actions/historical-log-review/${{ github.run_id }}-${{ github.run_attempt }}/historical-log-review-plan.json
+      S0E_REVIEW_CONSOLE_JSON: artifacts/github-actions/historical-log-review/${{ github.run_id }}-${{ github.run_attempt }}/historical-log-review-console.json
+      S0E_REVIEW_SUMMARY_MD: artifacts/github-actions/historical-log-review/${{ github.run_id }}-${{ github.run_attempt }}/workflow-summary.md
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Prepare artifact directory
+        run: |
+          set -euo pipefail
+          mkdir -p "$S0E_REVIEW_ARTIFACT_DIR"
+
+      - name: Run historical log review planner
+        id: review
+        run: |
+          set +e
+          set -o pipefail
+
+          python scripts/issues/plan_historical_log_review.py \
+            "$S0E_REVIEW_MANIFEST_PATH" \
+            --repo "$S0E_REVIEW_REPO" \
+            --plan-path "$S0E_REVIEW_PLAN_JSON" \
+            | tee "$S0E_REVIEW_CONSOLE_JSON"
+
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Write workflow summary
+        if: always()
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          plan_path = Path(os.environ["S0E_REVIEW_PLAN_JSON"])
+          summary_path = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          retained_summary_path = Path(os.environ["S0E_REVIEW_SUMMARY_MD"])
+          exit_code = os.environ.get("REVIEW_EXIT_CODE", "")
+
+          lines = [
+              "## S0E Historical Log Review Mirror",
+              "",
+              f"- Manifest: `{os.environ['S0E_REVIEW_MANIFEST_PATH']}`",
+              f"- Repository: `{os.environ['S0E_REVIEW_REPO']}`",
+          ]
+
+          if plan_path.is_file():
+              payload = json.loads(plan_path.read_text(encoding="utf-8"))
+              lines.extend(
+                  [
+                      f"- Result: `{payload.get('result', 'unknown')}`",
+                      f"- Total items: `{payload.get('total_items', 0)}`",
+                      f"- Pass items: `{payload.get('pass_items', 0)}`",
+                      f"- Review-required items: `{payload.get('review_required_items', 0)}`",
+                      f"- Error items: `{payload.get('error_items', 0)}`",
+                      f"- Planned follow-ups: `{payload.get('planned_items', 0)}`",
+                      "",
+                      "### Sample items",
+                      "",
+                  ]
+              )
+              for item in payload.get("items", [])[:10]:
+                  lines.append(
+                      "- `{}` -> status `{}` / stage `{}` / action `{}`".format(
+                          item.get("requested_id", "unknown"),
+                          item.get("status", "unknown"),
+                          item.get("lifecycle_stage", "unknown"),
+                          item.get("planned_action", "unknown"),
+                      )
+                  )
+              lines.extend(
+                  [
+                      "",
+                      "This workflow mirrors the local historical review planner. By default it is advisory and surfaces retained evidence rather than blocking as a primary owner.",
+                  ]
+              )
+          else:
+              lines.extend(
+                  [
+                      "- Result: `missing-plan-artifact`",
+                      f"- Planner exit code: `{exit_code or 'unknown'}`",
+                      "",
+                      "The review planner did not emit its plan artifact, so the workflow cannot summarize findings.",
+                  ]
+              )
+
+          rendered = "\n".join(lines) + "\n"
+          summary_path.write_text(rendered, encoding="utf-8")
+          retained_summary_path.write_text(rendered, encoding="utf-8")
+          PY
+        env:
+          REVIEW_EXIT_CODE: ${{ steps.review.outputs.exit_code }}
+
+      - name: Upload review artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s0e-historical-log-review-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.S0E_REVIEW_MANIFEST_PATH }}
+            ${{ env.S0E_REVIEW_PLAN_JSON }}
+            ${{ env.S0E_REVIEW_CONSOLE_JSON }}
+            ${{ env.S0E_REVIEW_SUMMARY_MD }}
+          if-no-files-found: warn
+
+      - name: Fail on requested findings policy
+        if: always()
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          plan_path = Path(os.environ["S0E_REVIEW_PLAN_JSON"])
+          if not plan_path.is_file():
+              print("historical log review plan artifact missing", file=sys.stderr)
+              raise SystemExit(1)
+
+          payload = json.loads(plan_path.read_text(encoding="utf-8"))
+          if os.environ.get("S0E_REVIEW_FAIL_ON_FINDINGS") == "true" and payload.get("result") != "pass":
+              print("historical log review mirror found review-required items and fail_on_findings=true", file=sys.stderr)
+              raise SystemExit(1)
+          PY
