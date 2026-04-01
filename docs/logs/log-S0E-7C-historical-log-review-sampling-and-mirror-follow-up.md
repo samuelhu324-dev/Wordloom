@@ -80,17 +80,10 @@
 - Runbook: ``
 - Evidence artifact: `docs/issues/historical-log-review-S0E-series-plan.json`
 
-**Evidence Footer Source**:
+**PR body notes**:
 
-- `P0-C1-S1S2` | artifact: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
-- `P1-C1-S1S2` | artifact: `scripts/issues/plan_historical_log_review.py`
-- `P2-C1-S1S2` | artifact: `docs/issues/historical-log-review-S0E-7C-sample-plan.json`
-- `P3-C1-S1S2` | artifact: `.github/workflows/s0e-historical-log-review-mirror.yml`
-- `P4-C1-S1` | artifact: `docs/issues/historical-log-review-S0E-series-plan.json`
-
-- Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
-- Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
-- `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
+- Keep artifact detail in the human-facing `Evidence` section of the source log instead of rendering an `Evidence Footer` block for this workflow-oriented slice.
+- Generated PR body should keep `Development Link` omitted unless a development issue is explicitly present.
 
 ## Definitions (optional)
 
