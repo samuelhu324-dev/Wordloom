@@ -130,6 +130,7 @@
 - `P4-C1-S3` is now completed: focused PR `#312` removed the planner's default-branch runtime closure gap, and the follow-up dispatch on `main` succeeded as run `23827684652`.
 - `P4-C1-S4` is now completed: all currently closed `S0E` child issues were rechecked, `9/10` were found to have missing or malformed `Context` blocks, and the batch conclusion replay restored the canonical 4-sentence child Context contract across the full set.
 - `P4-C1-S5` is now completed: the generic shared `Context` template was replaced with a source-log-derived renderer and gate, and the same closed `S0E` child-issue set was rewritten again so each issue now carries log-specific context instead of identical boilerplate.
+- `P4-C1-S6` is now completed: the same representative closed child-issue batch has now been replayed one more time under `S0E-6D`'s fact-pool/style-family renderer, and the live issues still pass lifecycle audit under the prose-first gate.
 
 ## P0 (Boundary contract | v1)
 
@@ -218,6 +219,12 @@
 - This replay batch is the live proof step for that follow-up: the same closed `S0E` child-issue set was rewritten again with natural-summary `Context` rows derived from source-log facts, title details, adjacent-slice position, and merged-PR evidence.
 - Lifecycle audit now checks the weaker `S0E-6D` gate instead of exact fixed sentence slots, so all ten replayed child issues keep bounded English bullet shape while no longer reading like the same boilerplate block.
 
+### P4-C1-S6 (Fact-pool/style-family Context replay refreshed and re-audited | v1)
+
+- The next follow-up in `S0E-6D/P4` replaced the remaining sentence-slot skeleton with `fact pool -> style family -> prose rendering`, so this replay records the live proof for that narrower human-facing contract.
+- The same ten closed `S0E` child issues were replayed again from a new fact-pool refresh manifest rather than mutating the prior retained artifacts in place.
+- The post-replay lifecycle audit still returned pass results for the full batch, which proves that the replay owner can keep refreshing historical live bodies while `S0E-6D` keeps narrowing the renderer and gate contract.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -287,6 +294,7 @@
 - [x] `P4-C1-S3`: default-branch runtime closure removed and verified
 - [x] `P4-C1-S4`: closed child-issue Context repair batch applied and audited
 - [x] `P4-C1-S5`: natural-summary Context replay applied and re-audited under the `S0E-6D` weak gate
+- [x] `P4-C1-S6`: fact-pool/style-family Context replay applied and re-audited under the prose-first gate
 
 ## Evidence (reserved)
 
@@ -380,6 +388,19 @@
 - observed:
   - the shared generic `Context` renderer was removed, the gate now requires source-log-specific anchors, and the full closed `S0E` child-issue set was re-rewritten under the new rule so each issue now carries log-specific context while still passing lifecycle audit
 
+### P4-C1-S6 (fact-pool/style-family Context replay refreshed and re-audited | 2026-04-01)
+
+- headSha: `5f2eca80`
+- artifacts:
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-manifest.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-plan.json`
+  - `docs/issues/lifecycle-audit-S0E-7C-child-issues-context-fact-pool-refresh-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-7C-child-issues-context-fact-pool-refresh-manifest-plan.json`
+- expected:
+  - the replay owner should be able to refresh the same representative closed child-issue batch again after `S0E-6D` moves from natural-summary prose toward fact-pool/style-family rendering, without losing audit closure on the live issues
+- observed:
+  - the ten closed child issues were rewritten in place from the new fact-pool refresh plan, the apply artifacts recorded `result: ok` across the whole set, and the follow-up lifecycle audit returned `pass` for all ten issues under the prose-first Context gate
+
 ### P1-C1-S1S2 (historical log review planner implemented | 2026-04-01)
 
 - headSha: `e8a40025`
@@ -424,3 +445,4 @@
 - 2026-04-01: completed `P4-C1-S3` by landing focused PR `#312` to remove the planner runtime-closure dependency on `main`, then verifying the repaired default-branch replay with successful run `23827684652`.
 - 2026-04-01: completed `P4-C1-S4` by batch-rechecking all currently closed `S0E` child issues, replaying the closed-issue conclusion body for the full set, and verifying the repaired `Context` blocks with a `10/10 pass` lifecycle audit.
 - 2026-04-01: completed `P4-C1-S5` by replacing the shared generic issue `Context` renderer with a source-log-derived contract, then replaying the same closed `S0E` child-issue batch so the audited issues no longer share identical boilerplate.
+- 2026-04-01: completed `P4-C1-S6` by replaying the same closed `S0E` child-issue batch from a new fact-pool/style-family manifest and verifying that the live issues still return `10/10 pass` under the prose-first Context gate.

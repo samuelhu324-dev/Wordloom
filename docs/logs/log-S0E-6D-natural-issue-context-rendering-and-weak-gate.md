@@ -5,7 +5,7 @@
 **id**: `S0E-6D`
 **kind**: `log`
 **title**: `natural issue Context rendering and weak gate v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Workflow, Automation, Contract, Formatting, epic/s0, sub/1`
 **links**: ``
@@ -113,7 +113,7 @@
 - `P3` is now completed: the recently replayed closed `S0E` child-issue set has been rewritten again under the new rule and re-audited successfully.
 - `P4-C1-S1` is now completed: the `Context` gate has been narrowed to prose-first checks only, so lifecycle audit now enforces line count, readable English sentence rows, and placeholder hygiene without requiring hard prose anchors.
 - `P4-C1-S2` is now completed: the renderer now selects from a source-log fact pool and renders through deterministic style families instead of forcing one shared `opening -> relation -> scope -> completion` sentence order.
-- `P4-C1-S3` remains open: the representative closed child-issue replay still needs to be refreshed under the new fact-pool/style-family renderer.
+- `P4-C1-S3` is now completed: the representative closed child-issue replay has been refreshed under the new fact-pool/style-family renderer, and the live replay still passes lifecycle audit under the prose-first gate.
 
 ## P0 (Natural-summary contract | v1)
 
@@ -190,7 +190,7 @@
 - [x] `P3-C1-S1`: representative live replay completed
 - [x] `P4-C1-S1`: prose-first weak gate narrowed
 - [x] `P4-C1-S2`: fact-pool selection and style-family rendering introduced
-- [ ] `P4-C1-S3`: representative replay refreshed under the prose-first rule
+- [x] `P4-C1-S3`: representative replay refreshed under the prose-first rule
 
 ### P4-C1-S1 (prose-first weak gate narrowed | 2026-04-01)
 
@@ -221,6 +221,29 @@
 - observed:
   - regenerated preview bodies now vary in sentence ordering and lead sentence choice by issue, while still staying inside the same bounded prose-first gate and remaining traceable to source-log facts
 
+### P4-C1-S3 (representative replay refreshed under the prose-first rule | 2026-04-01)
+
+- headSha: `5f2eca80`
+- artifacts:
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-manifest.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-plan.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-item0-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-item1-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-item2-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-item3-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-item4-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-item5-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-item6-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-item7-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-item8-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-7C-child-issues-context-fact-pool-refresh-item9-apply-result.json`
+  - `docs/issues/lifecycle-audit-S0E-7C-child-issues-context-fact-pool-refresh-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-7C-child-issues-context-fact-pool-refresh-manifest-plan.json`
+- expected:
+  - the fact-pool/style-family renderer should be proven on the same representative closed `S0E` child-issue batch in live GitHub, with the replay remaining inside the prose-first `3-4` child-line gate
+- observed:
+  - all ten closed child issues were rewritten in place under the fact-pool/style-family renderer, each apply returned `result: ok`, and the follow-up lifecycle audit returned `pass` across the full batch with the prose-first Context gate still satisfied
+
 ## Evidence (reserved)
 
 ### P0-P3 (natural-summary Context contract, renderer, weak gate, and replay | 2026-04-01)
@@ -249,3 +272,4 @@
 - 2026-04-01: reopened `S0E-6D` with `P4` after operator review confirmed that the current renderer still reads too template-shaped for a human-facing `Context` block.
 - 2026-04-01: completed `P4-C1-S1` by narrowing the `Context` gate to prose-first checks only, removing hard prose-anchor validation from lifecycle audit.
 - 2026-04-01: completed `P4-C1-S2` by replacing sentence-slot assembly with a source-log fact pool and deterministic style-family rendering for issue Context previews.
+- 2026-04-01: completed `P4-C1-S3` by replaying the representative closed `S0E` child-issue batch under the fact-pool/style-family renderer and re-auditing the live issues with `10/10 pass` under the prose-first gate.
