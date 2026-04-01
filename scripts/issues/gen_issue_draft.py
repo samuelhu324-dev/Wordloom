@@ -31,6 +31,7 @@ DEFAULT_COMMAND_TIMEOUT_SECONDS = 180
 class IssueDraftResult:
     mode: str
     result: str
+    context_mode: str
     log_path: str
     draft_path: str
     title: str
@@ -66,6 +67,13 @@ def _parse_args() -> argparse.Namespace:
         dest="strict_label_check",
         action="store_true",
         help="Fail if derived labels are empty or malformed",
+    )
+    parser.add_argument(
+        "--context-mode",
+        dest="context_mode",
+        choices=["scaffold", "single-generate"],
+        default="scaffold",
+        help="How to fill the Context section: scaffold leaves a placeholder, single-generate renders one log-specific draft",
     )
     parser.add_argument("--repo", dest="repo", help="Repository slug for future create mode")
     parser.add_argument(
@@ -387,6 +395,10 @@ def _render_issue_markdown(
     return "\n".join(lines)
 
 
+def _default_context_scaffold_lines() -> list[str]:
+    return ["- <placeholder>"]
+
+
 def _validate_labels(labels: list[str], strict: bool) -> None:
     if not strict:
         return
@@ -548,7 +560,11 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         warnings.append("issue_milestone missing")
     if show_parent_issue and not parent_issue:
         warnings.append("issue_parent missing")
-    warnings.append("Context now uses the canonical source-log-derived natural-summary block for issue-body review")
+    context_mode = str(getattr(args, "context_mode", "scaffold") or "scaffold")
+    if context_mode == "single-generate":
+        warnings.append("Context was single-generated from the source log; review it manually before create/apply")
+    else:
+        warnings.append("Context was left as scaffold; generate or author single-item Context text separately before lifecycle completion")
     warnings.append("Definition of Done (DoD) remains intentionally blank pending operator input")
 
     rel_log_path = _repo_rel(log_path)
@@ -567,6 +583,8 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         result_path = repo_root / result_path
     result_path.parent.mkdir(parents=True, exist_ok=True)
 
+    context_lines = build_issue_draft_context_lines(text) if context_mode == "single-generate" else _default_context_scaffold_lines()
+
     markdown = _render_issue_markdown(
         title=issue_title,
         labels=all_labels,
@@ -576,13 +594,14 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         parent_issue=parent_issue,
         show_parent_issue=show_parent_issue,
         link_lines=link_lines,
-        context_lines=build_issue_draft_context_lines(text),
+        context_lines=context_lines,
     )
     output_path.write_text(markdown, encoding="utf-8")
 
     result = IssueDraftResult(
         mode="create-issue" if args.create_issue else "draft-generation",
         result="ok",
+        context_mode=context_mode,
         log_path=rel_log_path,
         draft_path=_repo_rel(output_path),
         title=issue_title,

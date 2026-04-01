@@ -32,6 +32,7 @@
   **phase_log_20**: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
   **phase_log_21**: `docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md`
   **phase_log_22**: `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`
+  **phase_log_23**: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -247,6 +248,7 @@
 - [x] `P116`：`S0E-6D` 已完成 `P4-C1-S1`，`Context` gate 现已收缩为 prose-first 弱约束，只检查 `3-5` 条可读英文句子行、基本完整性和 placeholder hygiene，不再强制 prose anchors
 - [x] `P117`：`S0E-6D` 已完成 `P4-C1-S2`，issue `Context` renderer 现已改成 `fact pool + style family`，preview bodies 开始按 issue 变化句子顺序和入口，而不再共享同一条 sentence-slot 骨架
 - [x] `P118`：`S0E-6D` 已完成 `P4-C1-S3`，刚才那 `10` 条 closed `S0E` 子 issues 已按 fact-pool/style-family renderer 完成 live replay，并再次通过 `10/10` lifecycle audit
+- [x] `P119`：已新建并完成 `S0E-6E/P0-P3`，`Context` 现已改成“单条生成、批量保留”的 ownership model；issue draft 默认回到 scaffold，batch conclusion 默认只保留并告警，不再顺手代写正文
 
 ## Current Status（进展摘要）
 
@@ -300,6 +302,7 @@
 - `S0E-6D/P4-C1-S1` 已完成：lifecycle audit 不再强制 `Context` 在正文里显式携带 prose anchors，当前 gate 已收缩为 `3-5` 条可读英文句子行、基本完整性与 placeholder hygiene；
 - `S0E-6D/P4-C1-S2` 已完成：issue `Context` renderer 现已从 sentence-slot assembly 切到 `fact pool + style family`；
 - `S0E-6D/P4-C1-S3` 已完成：刚才审查过的 `10` 条 closed `S0E` child issues 已按 fact-pool/style-family renderer 完成新一轮 live replay，并再次通过 `10/10` lifecycle audit，因此这条 slice 现已重新回到 `stable`；
+- `S0E-6E` 已完成并进入 `stable`：`Context` 的 ownership 现已从“batch-capable rewrite surface”改成“single-item authoring surface”，新的单条生成脚本、scaffold-first issue draft 默认值，以及 batch-preserve conclusion planning 都已落地并留存样本；
 - `S0E-6C` 已完成并进入 `stable`：issue `Context` 现已固定 main/child 两档英文句子合同，issue draft / issue conclusion / lifecycle audit 也已接到同一规则上，`#309` 已通过真实重写与 re-audit；
 - `S0E-5C` 的真实链路现已打通：issue `#309` 不再停留在 issue-only sample，PR `#310` 已创建并合并，inline post-apply verification 已通过，final issue conclusion 也已写回 closed issue；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
@@ -415,6 +418,7 @@
 - 2026-04-01：`S0E-6D/P4-C1-S1` 已完成：`Context` gate 现已收缩为 prose-first 弱约束，只检查 `3-5` 条可读英文句子行、基本完整性和 placeholder hygiene，不再强制 prose anchors。
 - 2026-04-01：`S0E-6D/P4-C1-S2` 已完成：issue `Context` renderer 现已切到 `fact pool + style family`，preview bodies 已开始按不同 issue 变化句子顺序和 lead sentence，而不再共享同一条 sentence-slot 骨架。
 - 2026-04-01：`S0E-6D/P4-C1-S3` 已完成：刚才那 `10` 条 closed `S0E` 子 issues 已按 fact-pool/style-family renderer 完成 live replay，并再次通过 `10/10` lifecycle audit；`S0E-6D` 也因此重新回到 `stable`。
+- 2026-04-01：新增并完成 `S0E-6E`，`Context` 现在明确改成“单条生成、批量保留”的边界：新增单条 `Context` draft 脚本，issue draft 默认回到 scaffold，而 batch issue-conclusion 计划默认只保留 live `Context` 并报告 drift。
 - 2026-04-01：新增并完成 `S0E-6C`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同；`#309` 也已在真实 conclusion replay 后通过新的 lifecycle audit gate。
 - 2026-04-01：完成 `S0E-5C` 的真实 lifecycle follow-through，PR `#310` 已创建并合并，issue `#309` 已完成 final body write-back；当时的 GitHub Actions mirror dispatch 也据此暴露出“workflow 需先对默认分支可见”这一前置条件，并在后续 `S0E-7C/P4` 中被正面解决。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。

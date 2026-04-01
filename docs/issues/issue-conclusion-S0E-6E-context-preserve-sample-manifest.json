@@ -1,0 +1,15 @@
+{
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "context_mode": "preserve-existing"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "reason": "Verify that batch issue-conclusion planning now preserves the live Context block instead of auto-authoring replacement prose by default."
+    }
+  ]
+}

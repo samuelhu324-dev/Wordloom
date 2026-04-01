@@ -1,0 +1,33 @@
+{
+  "mode": "draft-generation",
+  "result": "ok",
+  "context_mode": "scaffold",
+  "log_path": "docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md",
+  "draft_path": "docs/issues/issue-S0E-6E-sample.md",
+  "title": "S0E-6E: contract/single-item Context authoring and batch-preserve boundary",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Source log: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`\n- Parent issue: #248\n\n## Context\n\n- <placeholder>\n\n## Definition of Done (DoD)\n\n## Links\n\n- Log: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "issue_milestone missing",
+    "Context was left as scaffold; generate or author single-item Context text separately before lifecycle completion",
+    "Definition of Done (DoD) remains intentionally blank pending operator input"
+  ],
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
+}

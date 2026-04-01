@@ -69,6 +69,13 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Plan issue conclusion output from merged PR evidence")
     parser.add_argument("manifest_path", help="Path to an issue-conclusion manifest JSON file")
     parser.add_argument("--plan-path", dest="plan_path", help="Override output plan JSON path")
+    parser.add_argument(
+        "--context-mode",
+        dest="context_mode",
+        choices=["preserve-existing", "single-generate"],
+        default="preserve-existing",
+        help="How to handle Context during conclusion planning: preserve-existing keeps the live block, single-generate rewrites it from the source log",
+    )
     return parser.parse_args()
 
 
@@ -304,6 +311,7 @@ def _build_item(
     repo_root: Path,
     repo: str,
     preview_path: Path,
+    cli_context_mode: str,
 ) -> IssueConclusionPlanItem:
     warnings: list[str] = []
     source_log_value = item.get("source_log_path") or defaults.get("source_log_path")
@@ -415,12 +423,28 @@ def _build_item(
     context_section_lines = _extract_section_lines(body, "Context")
     context_line_bounds = issue_body_context_line_bounds(source_log_text)
     context_ok, _, _ = validate_issue_context_lines(context_section_lines, context_line_bounds, source_log_text)
-    context_lines = build_issue_conclusion_context_lines(source_log_text, [pr.number for pr in ordered_prs])
+    context_mode = str(item.get("context_mode") or defaults.get("context_mode") or cli_context_mode or "preserve-existing")
+    if context_mode not in {"preserve-existing", "single-generate"}:
+        raise SystemExit(f"Unsupported issue-conclusion context_mode: {context_mode}")
+    if context_mode == "single-generate":
+        context_lines = build_issue_conclusion_context_lines(source_log_text, [pr.number for pr in ordered_prs])
+    else:
+        context_lines = context_section_lines
     existing_link_lines = _extract_bullet_lines(_extract_section_lines(body, "Links"))
     link_lines = _build_link_lines(existing_link_lines, issue_url, ordered_prs)
 
-    if not context_ok:
-        warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview uses the canonical conclusion Context block")
+    if context_mode == "single-generate":
+        warnings.append("preview uses a single-generated conclusion Context block; do not use this mode for batch authoring unless the rewrite is explicitly intended")
+        if not context_ok:
+            warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview uses the single-generated conclusion Context block")
+    else:
+        if context_section_lines:
+            if context_ok:
+                warnings.append("preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default")
+            else:
+                warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview preserves the live Context block and leaves one-item Context authoring to manual or single-item generation")
+        else:
+            warnings.append("Context section is blank in the live issue body; batch conclusion planning preserved that state instead of auto-authoring replacement prose")
     if not _has_substantive_text(_extract_section_lines(body, "Definition of Done (DoD)")):
         warnings.append("existing issue DoD is still blank create-time scaffold")
 
@@ -482,7 +506,7 @@ def plan_issue_conclusion(args: argparse.Namespace) -> IssueConclusionPlanResult
         else:
             preview_path = plan_path.with_name(f"issue-conclusion-{manifest_slug}-{requested_id.lower()}-body.md")
         preview_path.parent.mkdir(parents=True, exist_ok=True)
-        items.append(_build_item(raw_item, defaults, repo_root, repo, preview_path))
+        items.append(_build_item(raw_item, defaults, repo_root, repo, preview_path, args.context_mode))
 
     top_warnings = [
         f"item {index + 1}: {item.status}"
