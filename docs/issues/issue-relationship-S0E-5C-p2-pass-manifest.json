@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/309",
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "reason": "Prepare the live S0E-5C issue for the bounded PR-create front-half preflight sample by aligning the sidebar parent relationship before audit."
+    }
+  ]
+}

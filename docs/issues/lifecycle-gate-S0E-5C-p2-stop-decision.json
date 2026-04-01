@@ -1,0 +1,41 @@
+{
+  "mode": "lifecycle-pre-gate-dry-run",
+  "result": "ok",
+  "selection_input": "manifest",
+  "operation": "plan-lifecycle-pre-gate",
+  "manifest_path": "docs/issues/lifecycle-audit-S0E-5C-p2-pass-manifest.json",
+  "audit_plan_path": "docs/issues/lifecycle-audit-S0E-5C-p2-stop-plan.json",
+  "remediation_plan_path": null,
+  "decision": "allow-apply",
+  "apply_allowed": true,
+  "decision_reason": "All audited items passed, so the requested mutation is structurally allowed to continue.",
+  "policy": {
+    "warning_behavior": "stop-and-plan-remediation",
+    "blocked_behavior": "stop-and-plan-remediation",
+    "reconciliation_behavior": "hard-fail-before-mutation",
+    "error_behavior": "hard-fail-before-mutation"
+  },
+  "summary": {
+    "pass_count": 1,
+    "warning_count": 0,
+    "blocked_count": 0,
+    "reconciliation_count": 0,
+    "error_count": 0
+  },
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "issue_number": 309,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/309",
+      "audit_status": "pass",
+      "gate_status": "allow-apply",
+      "apply_allowed": true,
+      "remediation_status": null,
+      "remediation_step_count": 0,
+      "remediation_plan_path": null,
+      "reason": "Audit passed; no pre-gate remediation is required."
+    }
+  ]
+}

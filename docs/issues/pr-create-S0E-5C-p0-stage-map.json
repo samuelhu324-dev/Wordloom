@@ -1,0 +1,191 @@
+{
+  "id": "S0E-5C/P0-C1-S1",
+  "phase": "S0E-5C",
+  "title": "guarded PR create stage map",
+  "result": "ok",
+  "decision": "PR create must be treated as a multi-stage orchestration flow instead of one guarded mutation because local branch writes, remote branch publication, live PR publication, and post-create evidence finalization happen at different failure boundaries.",
+  "source_contracts": [
+    "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+    "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+    "scripts/issues/plan_pr_prep.py",
+    "scripts/issues/create_pr_from_plan.py"
+  ],
+  "sample_artifacts": [
+    "docs/issues/pr-prep-S0E-5B-real-manifest.json",
+    "docs/issues/pr-prep-S0E-5B-real-plan.json",
+    "docs/issues/pr-prep-S0E-5B-real-create-result.json"
+  ],
+  "stages": [
+    {
+      "stage_id": "S1-plan-input-resolution",
+      "owner": "scripts/issues/plan_pr_prep.py",
+      "purpose": "Resolve manifest defaults, requested ID, source log path, base branch, and preview output locations.",
+      "reads": [
+        "pr-prep manifest JSON",
+        "source log frontmatter and sections",
+        "current branch and head ref"
+      ],
+      "writes": [
+        "local plan JSON",
+        "local preview body markdown"
+      ],
+      "network_writes": false,
+      "git_writes": false,
+      "hard_stop_conditions": [
+        "manifest file missing",
+        "manifest has no items",
+        "requested_id missing",
+        "source_log_path missing or not found"
+      ],
+      "boundary": "Must stop before any branch mutation, push, or PR publication when the basic plan inputs are invalid."
+    },
+    {
+      "stage_id": "S2-scope-selection-and-preview",
+      "owner": "scripts/issues/plan_pr_prep.py",
+      "purpose": "Collect branch-exclusive commits, select exact-ID commits, derive PR title and scope, and render the preview body.",
+      "reads": [
+        "git branch-exclusive commit range",
+        "checked execution checklist items",
+        "PR Summary Inputs",
+        "scoped evidence lines"
+      ],
+      "writes": [
+        "selected and skipped commit rows in the plan",
+        "rendered preview body markdown"
+      ],
+      "network_writes": false,
+      "git_writes": false,
+      "hard_stop_conditions": [
+        "base branch missing"
+      ],
+      "warning_only_conditions": [
+        "no branch-exclusive commits matched the requested ID prefix",
+        "PR summary bullets missing",
+        "scope-aligned evidence selection missing"
+      ],
+      "boundary": "This stage may emit warnings or a non-planned item, but it must still stop before any local or remote branch mutation."
+    },
+    {
+      "stage_id": "S3-create-preflight-validation",
+      "owner": "scripts/issues/create_pr_from_plan.py",
+      "purpose": "Consume one planned item and verify create prerequisites before any branch is materialized.",
+      "reads": [
+        "planned item from plan JSON",
+        "gh auth state",
+        "existing labels and milestones",
+        "candidate branch availability",
+        "preview body file",
+        "selected commit list"
+      ],
+      "writes": [],
+      "network_writes": false,
+      "git_writes": false,
+      "network_reads": [
+        "GitHub labels",
+        "GitHub milestones"
+      ],
+      "hard_stop_conditions": [
+        "plan item not in planned state",
+        "gh CLI missing or unauthenticated",
+        "required label missing",
+        "requested milestone missing",
+        "local or remote prepared branch already exists",
+        "selected commit set empty",
+        "preview body file missing"
+      ],
+      "boundary": "All environment, metadata, and branch-name checks must fail before any worktree creation or branch mutation begins."
+    },
+    {
+      "stage_id": "S4-local-branch-materialization",
+      "owner": "scripts/issues/create_pr_from_plan.py",
+      "purpose": "Fetch the base branch, create an isolated worktree, switch the prepared branch, and materialize selected changes via cherry-pick or snapshot fallback.",
+      "reads": [
+        "origin/base branch",
+        "selected commit SHAs",
+        "source head snapshot when fallback is needed"
+      ],
+      "writes": [
+        "temporary detached worktree",
+        "local prepared branch",
+        "local cherry-picked commits or one snapshot commit"
+      ],
+      "network_writes": false,
+      "git_writes": true,
+      "hard_stop_conditions": [
+        "git fetch origin/base fails",
+        "worktree creation fails",
+        "branch switch fails",
+        "snapshot fallback produces no changes"
+      ],
+      "recoverable_conditions": [
+        "cherry-pick conflict triggers snapshot fallback with explicit warning"
+      ],
+      "boundary": "This is the first local mutation stage; failures here must not silently continue into remote publish or PR create."
+    },
+    {
+      "stage_id": "S5-remote-branch-publication",
+      "owner": "scripts/issues/create_pr_from_plan.py",
+      "purpose": "Push the prepared branch to origin so the later PR create call has a remote head reference.",
+      "reads": [
+        "prepared local branch"
+      ],
+      "writes": [
+        "remote branch on origin"
+      ],
+      "network_writes": true,
+      "git_writes": true,
+      "hard_stop_conditions": [
+        "git push -u origin prepared_branch fails"
+      ],
+      "boundary": "This is the first irreversible remote git write; guarded policy cannot treat it as equivalent to later PR object publication."
+    },
+    {
+      "stage_id": "S6-live-pr-publication",
+      "owner": "scripts/issues/create_pr_from_plan.py",
+      "purpose": "Rewrite the final create body, append the Development Link block, and call gh pr create with title, body, labels, milestone, project, and draft state.",
+      "reads": [
+        "preview body markdown",
+        "development issue metadata",
+        "prepared remote branch"
+      ],
+      "writes": [
+        "local create-body markdown",
+        "live GitHub pull request object"
+      ],
+      "network_writes": true,
+      "git_writes": false,
+      "hard_stop_conditions": [
+        "preview still contains placeholder Summary",
+        "summary_bullet_count is zero",
+        "gh pr create fails",
+        "created PR URL cannot be parsed"
+      ],
+      "boundary": "This is the first GitHub object publication stage; it must stay distinct from branch publication and from post-create evidence handling."
+    },
+    {
+      "stage_id": "S7-post-create-cleanup-and-evidence",
+      "owner": "scripts/issues/create_pr_from_plan.py",
+      "purpose": "Remove the temporary worktree, serialize the create result JSON, and print the final result payload.",
+      "reads": [
+        "live PR number and URL",
+        "warnings collected during create"
+      ],
+      "writes": [
+        "local create-result JSON"
+      ],
+      "network_writes": false,
+      "git_writes": false,
+      "hard_stop_conditions": [
+        "local result write fails"
+      ],
+      "boundary": "This stage happens after PR publication; a local evidence failure here cannot be mistaken for a no-op create path."
+    }
+  ],
+  "guard_boundary_summary": [
+    "Stages S1-S3 are pre-publication gates and are candidates for strict fail-closed guarded checks.",
+    "Stage S4 is a local mutation stage that may need a separate local-only guard boundary.",
+    "Stage S5 is remote git publication and should not be collapsed into the same gate as S6.",
+    "Stage S6 is the actual live PR object publication boundary.",
+    "Stage S7 is post-create evidence finalization and must be modeled as after-the-fact traceability, not as part of the publish decision."
+  ]
+}

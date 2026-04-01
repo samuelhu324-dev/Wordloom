@@ -8,6 +8,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from verify_live_pr_body_contract import run_live_pr_body_contract_check
 from gen_issue_draft import (
     _derive_repo_slug,
     _fetch_existing_labels,
@@ -47,6 +48,9 @@ class PrCreateResult:
     projects_applied: list[str]
     milestone_applied: str | None
     development_issue: str | None
+    post_apply_verify_status: str | None
+    post_apply_verify_result_path: str | None
+    post_apply_verify_live_body_path: str | None
     warnings: list[str]
 
 
@@ -276,6 +280,25 @@ def _create_pr(
     return int(match.group(1)), pr_url
 
 
+def _run_post_apply_verification(
+    *,
+    source_log_path: Path,
+    pr_number: int,
+    repo: str,
+    result_base_path: Path,
+) -> dict:
+    base_slug = result_base_path.stem.removesuffix("-create-result")
+    live_body_path = result_base_path.with_name(f"{base_slug}-post-apply-live-body.md")
+    verify_result_path = result_base_path.with_name(f"{base_slug}-post-apply-verify-result.json")
+    return run_live_pr_body_contract_check(
+        source_log_path=source_log_path,
+        pr_ref=str(pr_number),
+        repo=repo,
+        live_body_path=live_body_path,
+        result_path=verify_result_path,
+    )
+
+
 def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
     repo_root = _repo_root()
     plan_path = _coerce_path(args.plan_path, repo_root)
@@ -333,6 +356,9 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
     plan_slug = plan_path.stem.removesuffix("-plan")
     create_body_path = plan_path.with_name(f"{plan_slug}-create-body.md")
     result_path = _coerce_path(args.result_path, repo_root) if args.result_path else plan_path.with_name(f"{plan_slug}-create-result.json")
+    source_log_path = _coerce_path(str(item.get("source_log_path") or ""), repo_root)
+    if not source_log_path.is_file():
+        raise SystemExit(f"Source log file not found for PR create item: {source_log_path}")
 
     draft = not args.ready
     warnings: list[str] = []
@@ -350,6 +376,9 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
     current_merge_base = _git("merge-base", f"origin/{base_branch}", source_head_sha)
     if item.get("merge_base") and str(item["merge_base"]) != current_merge_base:
         warnings.append("plan merge_base differed from current origin/base merge_base; create path used current repository state")
+
+    verification_payload: dict | None = None
+    verification_error: str | None = None
 
     try:
         _git("worktree", "add", "--detach", str(worktree_root), f"origin/{base_branch}")
@@ -394,6 +423,28 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
             projects=projects,
             milestone=milestone,
         )
+        try:
+            verification_payload = _run_post_apply_verification(
+                source_log_path=source_log_path,
+                pr_number=pr_number,
+                repo=repo,
+                result_base_path=result_path,
+            )
+        except SystemExit as exc:
+            verification_error = str(exc)
+            warnings.append(f"post-apply live PR body verification errored after publish: {verification_error}")
+        else:
+            if verification_payload["result"] != "pass":
+                failed_checks = [
+                    check["details"]
+                    for check in verification_payload.get("checks", [])
+                    if isinstance(check, dict) and check.get("status") == "fail"
+                ]
+                warnings.append(
+                    "post-apply live PR body verification failed immediately after publish; see "
+                    + str(verification_payload.get("result_path") or "")
+                )
+                warnings.extend(f"post-apply verify failure: {detail}" for detail in failed_checks)
     finally:
         _git_allow_failure("worktree", "remove", "--force", str(worktree_root))
         if worktree_root.exists():
@@ -421,6 +472,9 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
         projects_applied=projects,
         milestone_applied=milestone,
         development_issue=_normalize_issue_ref_display(development_issue),
+        post_apply_verify_status=verification_payload["result"] if verification_payload else ("error" if verification_error else None),
+        post_apply_verify_result_path=str(verification_payload.get("result_path")) if verification_payload else None,
+        post_apply_verify_live_body_path=str(verification_payload.get("live_body_path")) if verification_payload else None,
         warnings=warnings,
     )
     result_path.write_text(json.dumps(asdict(result), indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
