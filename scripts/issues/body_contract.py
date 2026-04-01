@@ -448,7 +448,7 @@ def _relation_candidates(source_log_text: str) -> list[str]:
 def _outcome_candidates(source_log_text: str, subject: str, merged_pr_numbers: list[int] | None, phase: str) -> list[str]:
     fields = _parse_fields(source_log_text)
     requested_id = str(fields.get("id") or "this log").strip() or "this log"
-    merged_pr_refs = _format_pr_refs(merged_pr_numbers)
+    issue_keyword = str(fields.get("issue_keyword") or "").strip().lower()
     if phase == "draft":
         return _dedupe_preserve(
             [
@@ -456,11 +456,35 @@ def _outcome_candidates(source_log_text: str, subject: str, merged_pr_numbers: l
                 f"Completion for {requested_id} remains tied to the linked delivery evidence and the final DoD for this slice",
             ]
         )
+    if issue_keyword == "workflow":
+        return _dedupe_preserve(
+            [
+                f"It left the {subject} path in a reusable live form instead of relying on ad hoc operator memory",
+                f"It left a clearer operator-facing baseline for the finished {subject} path",
+                f"It left the finished {subject} path as a reusable workflow baseline for later follow-ups",
+            ]
+        )
+    if issue_keyword == "contract":
+        return _dedupe_preserve(
+            [
+                f"It left a stable contract baseline for later follow-ups on the {subject} path",
+                f"It left the finished {subject} path with a reusable contract baseline",
+                f"It left a stable issue-side record for the finished {subject} path",
+            ]
+        )
+    if issue_keyword == "automation":
+        return _dedupe_preserve(
+            [
+                f"It left the {subject} path in a reusable live form for later automation work",
+                f"It left a stable automation baseline for the finished {subject} path",
+                f"It left the issue-side record aligned for later automation follow-ups on the finished {subject} path",
+            ]
+        )
     return _dedupe_preserve(
         [
-            f"The live ledger now closes this slice through {merged_pr_refs}",
-            f"The completed path is now recorded through {merged_pr_refs}",
-            f"This issue now closes against {merged_pr_refs}",
+            f"It left the finished {subject} path with a stable reusable baseline",
+            f"This concluded issue now records the finished {subject} path as a reusable baseline",
+            f"It left the issue-side record aligned for later follow-ups on the finished {subject} path",
         ]
     )
 
@@ -614,10 +638,9 @@ def _relation_sentence(source_log_text: str) -> str:
 def _completion_sentence(source_log_text: str, merged_pr_numbers: list[int] | None = None) -> str:
     fields = _parse_fields(source_log_text)
     previous_id = _extract_follow_up_id(str(fields.get("previous_log") or ""))
-    merged_pr_refs = _format_pr_refs(merged_pr_numbers)
     if previous_id:
-        return f"After {previous_id}, the live ledger now closes this slice through {merged_pr_refs}"
-    return f"The live ledger now closes this slice through {merged_pr_refs}"
+        return f"After {previous_id}, the slice now leaves a stable reusable baseline for later follow-up"
+    return "This concluded issue now leaves a stable reusable baseline for later follow-up"
 
 
 def _format_pr_refs(merged_pr_numbers: list[int] | None) -> str:

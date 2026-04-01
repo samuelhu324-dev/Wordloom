@@ -54,6 +54,7 @@
 - Issue draft generation should default back to scaffold mode for `Context`, leaving authoring to a later one-item pass.
 - Issue conclusion planning should preserve the live `Context` block by default, even when it is weak or drifted, and should report that drift instead of auto-writing replacement prose.
 - Batch tooling may still be used to discover missing or malformed `Context` blocks, but it should not claim ownership of the prose itself.
+- When a concluded issue keeps both `Context` and `Definition of Done (DoD)`, the final `Context` sentence should describe the lasting result or reusable state left by the slice, while merged PR evidence stays only in `Definition of Done (DoD)`.
 - The gate remains minimal: `3-5` readable English bullet sentences, basic sentence completeness, and placeholder hygiene.
 
 ## PR Summary Inputs (optional)
@@ -109,9 +110,11 @@
 - `S0E-6E` is now opened as the ownership follow-up to `S0E-6D`.
 - `P0` is now completed: `Context` is split into single-item authoring versus batch-preserve discovery, rather than one shared automation-owned rewrite surface.
 - `P1` is now completed: the repo now has a dedicated single-item `Context` draft script, and `gen_issue_draft.py` now defaults back to scaffold-first `Context` output.
+- `P1-C1-S3` is now completed: single-generated conclusion `Context` lines now end on outcome wording instead of replaying merged-PR evidence already carried by `Definition of Done (DoD)`.
 - `P2` is now completed: `plan_issue_conclusion.py` now preserves live `Context` by default and only regenerates it on explicit `single-generate` opt-in.
 - `P3` is now completed: representative sample artifacts now prove both one-item generation and batch-preserve conclusion planning under the new boundary.
 - `P4-C1-S1` is now completed: `S0E-2B/#288` and `S0E-2A/#289` have now been refreshed through one-item `Context` authoring and then re-audited successfully.
+- `P4-C1-S2` is now completed: the remaining closed `S0E` child issues have now been aligned to the same outcome-ending rule and re-audited successfully.
 
 ## P0 (Ownership boundary | v1)
 
@@ -136,6 +139,11 @@
 
 - `scripts/issues/gen_issue_draft.py` now defaults `Context` back to scaffold mode with a placeholder row.
 - Operators may still opt into `--context-mode single-generate`, but authoring is no longer implicit in the main draft-generation path.
+
+### P1-C1-S3 (Single-generated conclusion wording aligned to the DoD boundary | v1)
+
+- The single-generated conclusion `Context` path now ends on outcome wording such as a stable baseline or reusable live form rather than repeating merged-PR evidence.
+- This keeps exact merged-PR references user-facing only in `Definition of Done (DoD)` and `Links`, even when an operator explicitly opts into one-item conclusion generation.
 
 ## P2 (Batch-preserve conclusion planning | v1)
 
@@ -167,6 +175,12 @@
 
 - After the new ownership boundary is fixed, the repo should still prove that live issue improvement remains possible through one-item authoring.
 - The representative proof set for v1 is `S0E-2B/#288` and `S0E-2A/#289`, refreshed one issue at a time instead of through batch replay.
+- The representative refresh also fixes one conclusion-writing convention: `Context` should end on outcome wording, while `Definition of Done (DoD)` remains the sole section that carries exact merged-PR evidence.
+
+### P4-C1-S2 (Remaining closed S0E child issues aligned to the same conclusion wording rule | v1)
+
+- After the representative pair proved the rule, the rest of the currently closed `S0E` child issues should also stop ending `Context` with duplicated merged-PR evidence.
+- This rollout aligns `S0E-4A/#293`, `S0E-4B/#295`, `S0E-2D/#297`, `S0E-4C/#300`, `S0E-4D/#303`, `S0E-5A/#305`, `S0E-5B/#307`, and `S0E-5C/#309` to the same outcome-ending convention and re-audits them as one batch.
 
 ## Execution Checklist (unchecked)
 
@@ -179,6 +193,7 @@
 
 - [x] `P1-C1-S1`: single-item `Context` draft entrypoint added
 - [x] `P1-C1-S2`: issue draft generation returned to scaffold-first default
+- [x] `P1-C1-S3`: single-generated conclusion wording aligned to the DoD boundary
 
 ### P2 (Batch-preserve conclusion planning)
 
@@ -193,6 +208,7 @@
 ### P4 (Representative one-item live refreshes)
 
 - [x] `P4-C1-S1`: `S0E-2B` and `S0E-2A` refreshed one item at a time and re-audited
+- [x] `P4-C1-S2`: remaining closed `S0E` child issues aligned to the same outcome-ending rule and re-audited
 
 ## Evidence (reserved)
 
@@ -235,6 +251,29 @@
 - observed:
   - `S0E-2B/#288` and `S0E-2A/#289` were rewritten one at a time with manually reviewed Context prose, the post-refresh live issue snapshots were retained, and the pair then re-audited successfully under the same prose-first gate
 
+### P1-C1-S3 / P4-C1-S2 (single-generated wording boundary aligned and remaining closed child issues refreshed | 2026-04-01)
+
+- artifacts:
+  - `scripts/issues/body_contract.py`
+  - `scripts/issues/plan_issue_conclusion.py`
+  - `docs/issues/issue-context-S0E-6E-outcome-ending-sample.md`
+  - `docs/issues/issue-context-S0E-6E-outcome-ending-sample.json`
+  - `docs/issues/issue-conclusion-S0E-6E-context-ending-refresh-s0e-4a-body.md`
+  - `docs/issues/issue-conclusion-S0E-6E-context-ending-refresh-s0e-4b-body.md`
+  - `docs/issues/issue-conclusion-S0E-6E-context-ending-refresh-s0e-2d-body.md`
+  - `docs/issues/issue-conclusion-S0E-6E-context-ending-refresh-s0e-4c-body.md`
+  - `docs/issues/issue-conclusion-S0E-6E-context-ending-refresh-s0e-4d-body.md`
+  - `docs/issues/issue-conclusion-S0E-6E-context-ending-refresh-s0e-5a-body.md`
+  - `docs/issues/issue-conclusion-S0E-6E-context-ending-refresh-s0e-5b-body.md`
+  - `docs/issues/issue-conclusion-S0E-6E-context-ending-refresh-s0e-5c-body.md`
+  - `docs/issues/lifecycle-audit-S0E-6E-context-ending-refresh-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-6E-context-ending-refresh-manifest-plan.json`
+  - `docs/issues/issue-conclusion-S0E-6E-context-ending-refresh-live-summary.json`
+- expected:
+  - one-item conclusion generation should stop emitting `closed through #...`-style endings, and the same outcome-ending rule should be visible across the remaining closed `S0E` child issues beyond the first `#288/#289` pair
+- observed:
+  - the single-generated conclusion path now ends on reusable-baseline wording, and the remaining closed child issues `#293/#295/#297/#300/#303/#305/#307/#309` were rewritten to the same rule and then re-audited successfully
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-01: created `S0E-6E` to separate single-item `Context` authoring from batch issue replay and conclusion planning.
@@ -242,3 +281,5 @@
 - 2026-04-01: changed `scripts/issues/gen_issue_draft.py` so `Context` returns to scaffold-first output by default unless `--context-mode single-generate` is explicitly requested.
 - 2026-04-01: changed `scripts/issues/plan_issue_conclusion.py` so batch conclusion planning now preserves live `Context` by default and reports drift through warnings instead of auto-writing replacement prose.
 - 2026-04-01: refreshed `S0E-2B/#288` and `S0E-2A/#289` one item at a time under the new boundary, proving that live improvement now happens through single-item authoring rather than batch Context replay.
+- 2026-04-01: fixed the conclusion-writing convention exposed by that live refresh pair: `Context` closing sentences now describe the lasting result of the slice, while exact PR evidence remains only in `Definition of Done (DoD)`.
+- 2026-04-01: aligned the single-generated conclusion renderer to the same wording rule and refreshed the remaining closed `S0E` child issues so their `Context` endings no longer repeat the PR evidence already carried by `Definition of Done (DoD)`.

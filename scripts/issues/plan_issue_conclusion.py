@@ -434,9 +434,9 @@ def _build_item(
     link_lines = _build_link_lines(existing_link_lines, issue_url, ordered_prs)
 
     if context_mode == "single-generate":
-        warnings.append("preview uses a single-generated conclusion Context block; do not use this mode for batch authoring unless the rewrite is explicitly intended")
+        warnings.append("preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended")
         if not context_ok:
-            warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview uses the single-generated conclusion Context block")
+            warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording")
     else:
         if context_section_lines:
             if context_ok:

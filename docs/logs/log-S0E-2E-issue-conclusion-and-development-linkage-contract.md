@@ -53,6 +53,7 @@
 - GitHub auto-closing an issue via `Closes #...` is only the state transition; it does not by itself mean the final conclusion body has been written back.
 - The final body no longer renders a separate `Development` section; merged PR linkage should instead surface as short PR references in `Definition of Done (DoD)` plus explicit PR URLs under `Links`.
 - `Definition of Done (DoD)` in the conclusion should enumerate only short merged PR references such as `#298`, not replay the original contract bullets or restate full PR titles.
+- If conclusion `Context` is retained, its closing sentence should describe the resulting closure state or stable handoff left by the slice, rather than repeat merged PR evidence that already belongs in `Definition of Done (DoD)`.
 - Conclusion content must stay English-only.
 - Merge approval remains a human review step outside automation scope even when conclusion generation exists.
 
@@ -97,6 +98,7 @@
 
 - `P0` is complete: lifecycle order, the merge boundary, and the exact-ID merged-PR linkage boundary are now fixed.
 - `P1` is complete: the final English conclusion body shape and the exact-ID PR selection plus ordering rules are now fixed.
+- `P1-C1-S3` is complete: retained conclusion `Context` blocks now end on outcome wording, while exact merged-PR evidence remains only in `Definition of Done (DoD)` and `Links`.
 - `P2` is complete: a manifest-driven dry-run planner now emits ordered merged-PR evidence plus final issue-conclusion body previews without writing GitHub state.
 - `P3` is complete: the apply path now updates one real issue body from a dry-run plan and closes the issue when it was still open after merge.
 - Real issue `#297` now carries the final conclusion body and is closed with `reason=completed`, proving the dry-run output can be materialised on GitHub.
@@ -148,6 +150,7 @@
 
 - `Definition of Done (DoD)` in the conclusion is a short merged-PR reference ledger, not a replay of the original contract acceptance bullets.
 - If a short `Context` section is retained in the final conclusion body, it must stay English-only and reflect closure state rather than re-explaining the original contract.
+- If a retained `Context` section ends with a closing sentence, that sentence should summarize the lasting result, reusable baseline, or handoff state left by the slice, and should not restate PR numbers, PR titles, or "closed through #..." wording that already appears in `Definition of Done (DoD)`.
 
 ### P1-C2-S1 (Remove Development section | v1)
 
@@ -165,6 +168,7 @@
 
 - The create-time `Metadata` block should be preserved so labels, project, milestone, source log, and parent issue remain visible after closure.
 - `Context` becomes optional during conclusion v1; if retained, it should be one short English closure note rather than a replay of the original contract scope.
+- When `Context` is retained, its final sentence should carry outcome wording such as "left a stable baseline" or "left the path in a reusable live form" instead of repeating PR evidence that belongs in `Definition of Done (DoD)`.
 - `Definition of Done (DoD)` is mandatory in the final conclusion body and should list the ordered short PR refs as the final delivery ledger.
 - `Links` should preserve deterministic references such as log path, issue URL, parent log, and one PR URL line per merged PR in the same order used by the selected merged-PR set.
 - The final body shape is:
@@ -198,6 +202,11 @@
 - When phase or unit parsing is unavailable or mixed, ordering falls back to `mergedAt` ascending and then PR number ascending.
 - The same ordered PR list must be reused consistently in `Definition of Done (DoD)` and `Links`.
 - Current same-family merged samples prove the boundary is viable: `S0E-4A -> #294`, `S0E-4B -> #296`, and `S0E-2D -> #298`.
+
+### P1-C1-S3 (Context ending stays out of the DoD evidence lane | v1)
+
+- If a final conclusion body retains `Context`, its last sentence should describe the lasting result, reusable baseline, or handoff state left by the slice.
+- Exact merged-PR evidence remains user-facing only in `Definition of Done (DoD)` short refs and `Links` PR URLs, rather than being repeated in the `Context` ending.
 
 ## P2 (Dry-run conclusion planning | v1)
 
@@ -268,6 +277,7 @@
 
 - P1-C1-S1: define the final English issue-conclusion body shape
 - P1-C1-S2: define exact-ID PR selection and multi-PR ordering rules
+- P1-C1-S3: keep retained conclusion Context endings on outcome wording rather than DoD evidence wording
 - P1-C2-S1: remove the final `Development` section from the user-facing issue body
 - P1-C2-S2: reduce final `Definition of Done (DoD)` entries to short PR refs only
 
@@ -296,6 +306,7 @@
 
 - [x] `P1-C1-S1`: final English issue-conclusion body shape defined
 - [x] `P1-C1-S2`: exact-ID PR selection and ordering rules fixed
+- [x] `P1-C1-S3`: retained conclusion Context endings kept out of the DoD evidence lane
 - [x] `P1-C2-S1`: final Development section removed from user-facing body
 - [x] `P1-C2-S2`: final DoD short-PR-reference rendering fixed
 
@@ -319,6 +330,7 @@
 - `P0-C1-S2` / `P1-C1-S2`: merged PRs `#294`, `#296`, and `#298` each expose the exact-ID title prefix pattern `S0E-4A/`, `S0E-4B/`, and `S0E-2D/`, providing real selector samples for deterministic exact-ID PR matching.
 - `P0-C1-S3` / `P1-C1-S1`: this log now fixes the final conclusion body to preserve `Metadata` while turning `Definition of Done (DoD)` and `Links` into the user-facing merged-PR ledger instead of leaving the create-time blank scaffold in place.
 - `P1-C1-S1` / `P1-C1-S2`: `docs/runbook/run-S0E-log-to-issue-creation.md` now records the same post-merge conclusion procedure, exact-ID PR selection rules, and deterministic link/body ordering for operators.
+- `P1-C1-S3`: live issues `#288` and `#289` now show the retained `Context` / `DoD` split in practice: `Context` ends on outcome wording, while exact merged-PR evidence stays in `Definition of Done (DoD)` only.
 - `P2-C1-S1`: `scripts/issues/plan_issue_conclusion.py` now provides a manifest-driven dry-run planner that reads explicit issue references, resolves exact-ID merged PR evidence from GitHub, and emits one structured plan JSON plus per-item body previews without writing GitHub state.
 - `P2-C1-S1`: `docs/issues/issue-conclusion-S0E-2E-sample-plan.json` records a successful three-item dry-run with `planned_items=3` and no reconciliation or error items.
 - `P2-C1-S2`: `docs/issues/issue-conclusion-S0E-2E-sample-s0e-4a-body.md` proves the multi-PR case by rendering short refs `#294` and `#299` in `Definition of Done (DoD)` while omitting `Development` entirely.
@@ -337,3 +349,4 @@
 - 2026-03-30: completed `P2` by adding `scripts/issues/plan_issue_conclusion.py`, generating `S0E-2E` dry-run artifacts for `#293`, `#295`, and `#297`, and validating both single-PR and multi-PR conclusion-body rendering.
 - 2026-03-30: completed `P3` by adding `scripts/issues/apply_issue_conclusion_from_plan.py`, writing the final conclusion body back to live issue `#297`, and closing that issue with `reason=completed`.
 - 2026-03-30: revised the final body format in `P1-C2` so `Development` is removed and `Definition of Done (DoD)` keeps only short PR refs; regenerated dry-run samples and completed a second real cycle on issue `#295`.
+- 2026-04-01: completed `P1-C1-S3` by fixing the retained conclusion `Context` ending rule so outcome wording stays in `Context` while exact PR evidence stays only in `Definition of Done (DoD)` and `Links`.

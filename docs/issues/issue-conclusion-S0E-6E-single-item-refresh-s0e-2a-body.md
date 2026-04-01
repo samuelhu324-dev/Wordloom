@@ -11,7 +11,7 @@
 - S0E-2A fixed the first semi-automated contract for turning structured logs into GitHub issue drafts without jumping straight to freeform issue summaries.
 - The slice narrowed the work to title keywords, label taxonomy, body scaffold, and milestone/frontmatter mapping for the issue-create path.
 - It carried the docs-management line forward from S0D-6A and became the contract base for the later real creation follow-up in S0E-2B.
-- The contract path was completed and closed through #287.
+- It left a stable contract baseline that later issue-creation automation could build on without redefining the draft shape.
 
 ## Definition of Done (DoD)
 

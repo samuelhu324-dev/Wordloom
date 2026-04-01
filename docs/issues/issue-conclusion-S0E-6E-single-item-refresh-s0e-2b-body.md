@@ -11,7 +11,7 @@
 - S0E-2B took the validated S0E-2A contract and moved it from local draft generation into a real GitHub issue creation path.
 - The slice fixed the boundary between safe draft-generation by default and explicit opt-in create-issue execution.
 - It kept the create path fail-closed around repo context, label existence, and other prerequisites instead of guessing missing metadata at runtime.
-- The first real creation path was completed and closed through #290.
+- It left the issue-create path in a reusable live form instead of keeping it as a local-only draft workflow.
 
 ## Definition of Done (DoD)
 
