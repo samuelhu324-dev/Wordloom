@@ -1,0 +1,43 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-5C-p2-pass-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-5C",
+  "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-5c",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 5,
+  "selected_commits": [
+    "167291fc1edb289f645416b18e6053dc63763e7a",
+    "6ca0da2897d4277eea0f34d1e6ff843de94dde2b",
+    "fff78289434960c374a7e0238fa028c1dce43df9",
+    "efe90edd62ab1e12445be50fd70dc649c465a045",
+    "9832ca0dd9a104e98b3176aaf975eed155bf96d3"
+  ],
+  "pr_title": "S0E-5C/P0-P4: guarded PR create decomposition v1",
+  "draft": false,
+  "pr_number": 310,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/310",
+  "body_path": "docs/issues/pr-prep-S0E-5C-p2-pass-create-body.md",
+  "labels_applied": [
+    "drills",
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#309",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0E-5C-p2-pass-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0E-5C-p2-pass-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 167291fc; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 167291fc... S0E-5C/P0: decompose guarded PR create stages"
+  ]
+}

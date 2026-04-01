@@ -6,9 +6,7 @@
   "operation": "plan-pr-prep",
   "total_items": 1,
   "planned_items": 1,
-  "warnings": [
-    "S0E-5C: scope-aligned evidence selection found no matches; preview falls back to selected commits"
-  ],
+  "warnings": [],
   "items": [
     {
       "requested_id": "S0E-5C",
@@ -18,11 +16,14 @@
       "base_branch": "main",
       "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
       "candidate_pr_branch": "pr-prep/s0e-5c",
-      "pr_title": "S0E-5C/P0-P1: guarded PR create decomposition v1",
+      "pr_title": "S0E-5C/P0-P4: guarded PR create decomposition v1",
       "pr_scope_kind": "phases",
       "pr_scope_refs": [
         "P0",
-        "P1"
+        "P1",
+        "P2",
+        "P3",
+        "P4"
       ],
       "pr_base": "main",
       "pr_labels": [
@@ -39,7 +40,7 @@
       ],
       "summary_bullet_count": 3,
       "preview_body_path": "docs/issues/pr-prep-S0E-5C-p2-pass-body.md",
-      "selected_commit_count": 2,
+      "selected_commit_count": 5,
       "selected_commits": [
         {
           "sha": "167291fc1edb289f645416b18e6053dc63763e7a",
@@ -51,6 +52,27 @@
         {
           "sha": "6ca0da2897d4277eea0f34d1e6ff843de94dde2b",
           "subject": "S0E-5C/P1: map guarded PR create boundaries",
+          "matched_id": "S0E-5C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "fff78289434960c374a7e0238fa028c1dce43df9",
+          "subject": "S0E-5C/P2: validate guarded PR create front half",
+          "matched_id": "S0E-5C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "efe90edd62ab1e12445be50fd70dc649c465a045",
+          "subject": "S0E-5C/P3-C1-S1S2: fix publish boundary ownership",
+          "matched_id": "S0E-5C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "9832ca0dd9a104e98b3176aaf975eed155bf96d3",
+          "subject": "S0E-5C/P4-C1-S1S2: wire post-apply verify into create path",
           "matched_id": "S0E-5C",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
@@ -392,13 +414,172 @@
           "matched_id": "S0E-5C",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "fff78289434960c374a7e0238fa028c1dce43df9",
+          "subject": "S0E-5C/P2: validate guarded PR create front half",
+          "matched_id": "S0E-5C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "477a71e0228ea8e7952a2f4a788dcf8e848c62b4",
+          "subject": "S0E-5D: add body contract normalization log",
+          "matched_id": "S0E-5D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "a06078347a9630e725f1f8894a67d16caf4a2414",
+          "subject": "S0E-5D: complete P0 body contract spec",
+          "matched_id": "S0E-5D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "fdeb2e35a7547298e7b5371a5bcacfbaecc913b0",
+          "subject": "S0E-5D: complete P1 evidence footer contract",
+          "matched_id": "S0E-5D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "46fca78cfe0133f95cf82f6d3aa3811daabba56a",
+          "subject": "S0E-5D: complete P2 body-shape gate",
+          "matched_id": "S0E-5D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "7be23e25e66b59b67e933905907fbb6c9015a485",
+          "subject": "S0E-5D: complete P3 rollout decision",
+          "matched_id": "S0E-5D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "e70e42e9e43d7b803c3b2cfa3a0d2274616818a2",
+          "subject": "S0E-5D: fix rewrite and post-gate ownership",
+          "matched_id": "S0E-5D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "dd7cac0c2358c78b2400ceab5e61f40e30387fd9",
+          "subject": "S0E-5D/P4: rewrite historical body samples",
+          "matched_id": "S0E-5D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "29ef62872f89d5c8a1df9b275f4b248af3f76ae0",
+          "subject": "S0E-6A/P0-P4: normalize log evidence structure",
+          "matched_id": "S0E-6A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "efe90edd62ab1e12445be50fd70dc649c465a045",
+          "subject": "S0E-5C/P3-C1-S1S2: fix publish boundary ownership",
+          "matched_id": "S0E-5C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "9832ca0dd9a104e98b3176aaf975eed155bf96d3",
+          "subject": "S0E-5C/P4-C1-S1S2: wire post-apply verify into create path",
+          "matched_id": "S0E-5C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "09cf513aca16543aaf3f25e38cde928e489d4573",
+          "subject": "S0E-6B/P2-C1-S1S2: fix automation entry-gate rollout",
+          "matched_id": "S0E-6B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "f4bad9e4acc073512d7c86bb2d216adaa0e9bccc",
+          "subject": "S0E-6B/P3-C1-S1S2: fix stable transition gate policy",
+          "matched_id": "S0E-6B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "848929922c52c4f9bbf3dd2e95ef5f48f390748c",
+          "subject": "S0E-7A/P1-C1-S1S2: scaffold mirror verifier workflow",
+          "matched_id": "S0E-7A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "ecc21e6a42e5479b65545de1804ef03ae1a7498f",
+          "subject": "S0E-7A/P2-C1-S1S2: fix retained artifact surfacing",
+          "matched_id": "S0E-7A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "11402aace1dbfe97c5ea0c72ac709ad511a3d850",
+          "subject": "S0E-7A/P3-C1-S1S2: fix rollout boundary and adoption criteria",
+          "matched_id": "S0E-7A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "5b5c17bf18daaeb3d0a970f56b94946c54527e2c",
+          "subject": "S0E-7B/P0-C1-S1: fix attribution ownership boundary",
+          "matched_id": "S0E-7B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "3d4d4b1b68f8f10a48ba56b655009e5212f97803",
+          "subject": "S0E-4E/P1-C1-S1S2: fix attribution surfaces and precedence",
+          "matched_id": "S0E-4E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "113fc2e4bdcb4eefcf44d00403ae2d6c2b0d0725",
+          "subject": "S0E-4E/P2-C1-S1S2: fix ambiguity stop policy",
+          "matched_id": "S0E-4E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "d31fd453f055a900fd10f1b1c17419def0786dc0",
+          "subject": "S0E-4E/P3-C1-S1S2: fix attribution handoff contract",
+          "matched_id": "S0E-4E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "f81a234b8ad350d52ed4ebf767ab1212f1b71697",
+          "subject": "S0E-7B/P1-C1-S1S2: implement attribution handoff entrypoint",
+          "matched_id": "S0E-7B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "e8a40025f89f3e6732c682e4329f821c58c5286b",
+          "subject": "S0E-7B/P2-P3: wire consume-or-stop workflow and samples",
+          "matched_id": "S0E-7B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "da238fd3a37948799a4731e8b55597c11144cc55",
+          "subject": "S0E-7C/P0-P3: add historical log review planner and mirror workflow",
+          "matched_id": "S0E-7C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
         }
       ],
       "planned_action": "prepare-pr-prep-branch",
       "status": "planned",
-      "warnings": [
-        "scope-aligned evidence selection found no matches; preview falls back to selected commits"
-      ]
+      "warnings": []
     }
   ]
 }
