@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "mode": "pr-prep-dry-run",
+  "defaults": {
+    "requested_id": "S0E-5C",
+    "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+    "base_branch": "main",
+    "head_ref": "HEAD",
+    "candidate_pr_branch": "pr-prep/s0e-5b"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "reason": "Stop sample for the bounded PR-create front-half drill by reusing an already occupied prepared-branch name and forcing a create-specific preflight stop before local branch materialization."
+    }
+  ]
+}

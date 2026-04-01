@@ -22,6 +22,14 @@
   **phase_log_10**: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
   **phase_log_11**: `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
   **phase_log_12**: `docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md`
+  **phase_log_13**: `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`
+  **phase_log_14**: `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`
+  **phase_log_15**: `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`
+  **phase_log_16**: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`
+  **phase_log_17**: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
+  **phase_log_18**: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
+  **phase_log_19**: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
+  **phase_log_20**: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -105,6 +113,8 @@
   - 详见：`docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
 - `S0E-5A`（Phase 5A）：lifecycle audit gate and dry-run planner
   - 详见：`docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
+- `S0E-6A`（Phase 6A）：log structure normalization and dual-track evidence contract
+  - 详见：`docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`
 - `S0E-4C`（Phase 4C）：PR summary / development issue rendering / issue relationship attach follow-up
   - 详见：`docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
 - `S0E-3A`（Phase 3A）：roadmap milestone and child-log bridge contract
@@ -171,6 +181,59 @@
 - [x] `P52`：`S0E-5A` 已完成自身真实 lifecycle 闭环，issue `#305`、merged PR `#306`、sidebar relationship attach 与 final issue conclusion 已全部落地；同时已新建 `S0E-5B` 作为 guarded apply 扩展的后续 slice
 - [x] `P53`：`S0E-5B` 已完成 `P0-P1`，guarded relationship attach 现可在“仅有 relationship remediation”时从 `stop-for-remediation` 继续，并已用 live issue `#307` 的真实 attach 与一条 frozen mixed-remediation stop drill 完成验证
 - [x] `P54`：`S0E-5B` 已完成 `P2`，已选定 guarded `PR body rewrite` 作为下一条 PR-side family，并用 converged `S0E-5A/#305 -> PR #306` 的 live rewrite plus 一条 frozen stop drill 完成验证
+- [x] `P55`：`S0E-5B` 已完成 `P3`，`#307 -> PR #308` 现已形成一条真实 closed-loop sample，并在同一 issue/PR pair 上连续验证了 guarded relationship attach 与 guarded PR-body rewrite 两条 mutation family
+- [x] `P56`：`S0E-5B` 已正式收口为 `stable`，并已新建 `S0E-5C` 用于单独拆解 guarded `PR create` 的阶段边界，而不再继续扩张 `S0E-5B` 的 scope
+- [x] `P57`：`S0E-5C` 已完成 `P0`，当前 `PR create` path 已被拆成 dry-run 输入解析、scope selection、create preflight、local branch materialization、remote publish、live PR publish、post-create evidence finalize 七段，并已固定这些 failure boundaries 不能被压扁成一个 guarded yes/no mutation
+- [x] `P58`：`S0E-5C` 已完成 `P1`，现已固定 reuse-vs-new-rule 边界：没有任何阶段可以原样复用现有 lifecycle pre-gate 作为整条 create path 的总闸门，只有 create preflight 可把它作为 issue-readiness 前置层，而 local materialization、remote publish、live PR publish 仍需独立边界
+- [x] `P59`：`S0E-5C` 已完成 `P2`，live issue `#309` 已作为 representative sample 建立并挂到父 issue `#248`，bounded front-half preflight 现已证明 `S1-S3` 可以在进入 `S4` 前输出清晰的 pass/stop 证据，其中 stop 样本来自 create-specific branch-collision 而非 lifecycle gate 本身
+- [x] `P60`：已新建 `S0E-5D`，专门收口 issue creation / issue conclusion / PR body / Evidence Footer 的 canonical contract，以及 hard gate 需要新增的 body-shape 检查范围，避免继续把格式合同问题混进 `S0E-5C`
+- [x] `P61`：`S0E-5D` 已完成 `P0`，issue creation / issue conclusion / PR body 的 canonical body families 现已按 operator 规则固定，metadata rows 不允许出现空段，Evidence Footer 也已先固定为 drills/evidence-only 且禁止 commit-footer fallback
+- [x] `P62`：`S0E-5D` 已完成 `P1`，Evidence Footer 现已固定为只从 `Evidence Footer Source` 读取，并采用唯一行型 ``- `P1-C1-S1` | artifact: `...```，其中阶段串与 artifact 路径串都必须带反引号
+- [x] `P63`：`S0E-5D` 已完成 `P2`，hard gate 现已补上 body-shape checks，PR prep/rewrite 只读 `Evidence Footer Source`，并已有一条 pass 样本与两条 stop 样本分别覆盖 canonical footer、未加反引号 footer 和错误来源块
+- [x] `P64`：`S0E-5D` 已完成 `P3`，rollout 顺序现已固定为 `gate-first + post-apply live verify + selective historical rewrite`，同时已新增 live PR verifier，并把“无 drills/evidence 资格却塞 Evidence Footer”固定为可驳回条件
+- [x] `P65`：已进一步收口 `S0E-5D/P3` 的边界：historical rewrite 执行现明确挂到 `S0E-5D/P4`，而后置 gate / post-apply verify / GitHub Actions ownership 则延后到 `S0E-5C/P3` 讨论，不再继续塞在 `S0E-5D`
+- [x] `P66`：`S0E-5D` 已完成 `P4`，代表性历史 merged PR `#299/#302/#306/#308` 与 closed issue `#293/#295/#297/#300/#303/#305/#307` 均已按 canonical body contract 回写并通过 live verifier / lifecycle audit，因此 `S0E-5D` 现已进入 `stable`
+- [x] `P67`：已新建 `S0E-6A`，用于收口 logs 的双轨证据模型、结构化输入块边界，以及 parent/phase templates 的后续优化方向，避免继续把 log 结构问题混进 `S0E-5C` 或 `S0E-5D`
+- [x] `P68`：`S0E-6A` 已完成 parent/phase templates 的双轨证据 guidance rollout，并已把代表性混合块样本 `S0E-5C` / `S0E-4C` 迁移到 split `PR links` + `Evidence Footer Source` 结构
+- [x] `P69`：`S0E-6A` 已完成本地 issue draft scaffold sample，`docs/issues/issue-S0E-6A-*.md/.json` 已生成，因此该 slice 现已可视为 `stable`
+- [x] `P70`：`S0E-5C` 已完成 `P3`，现已固定 `S6` live PR publish 在 v1 继续由 operator 持有，而 post-apply live verify 应位于 `S6` 之后、`S7` 之前，GitHub Actions 仅作为后续 secondary enforcement
+- [x] `P71`：`S0E-5C` 现已进入 `stable`，因为 guarded `PR create` 的分解、front-half evidence、publish boundary ownership 与 post-apply verification placement 都已收口
+- [x] `P72`：`S0E-5C` 已完成 `P4`，`create_pr_from_plan.py` 现已把 post-apply live verifier 直接接到真实 `gh pr create` 后面，并把验证状态与 artifact 路径写回同一份 `pr-create result` JSON
+- [x] `P73`：`S0E-5C/P4` 已用历史样本 `S0E-5B/#308` 完成非破坏性验证，`docs/issues/pr-prep-S0E-5B-real-post-apply-live-body.md` 与 `...-verify-result.json` 已证明新执行顺序可产出稳定证据
+- [x] `P74`：已新建 `S0E-6B`，用于收口 AI-authored logs 的本地 gate / `stable` 后验 gate 策略，并把这部分从 GitHub Actions slice 中拆开
+- [x] `P75`：`S0E-6B` 已完成 `P0`，现已固定 local log gates 只应约束 automation-facing surfaces 与 `stable` 转换质量，而不应演化成 prose linter
+- [x] `P76`：`S0E-7A` 已重构回 GitHub-side slice，现仅负责 Actions secondary enforcement、artifact publishing 与 CI failure surfacing 边界
+- [x] `P77`：`S0E-6B` 已完成 `P1`，现已固定第一版 local log gate 只检查五类 deterministic surfaces：frontmatter、required sections、`PR Summary Inputs` 形状、`Evidence Footer Source` 行型、placeholder hygiene
+- [x] `P78`：`S0E-6B/P1` 已固定四类最小 failure taxonomy：`missing-required-block`、`invalid-structured-block`、`placeholder-left`、`stable-contradiction`
+- [x] `P79`：`S0E-6B` 已完成 `P2`，现已固定第一轮必须 hard-require pass gate 的入口只包括 `log -> issue draft/create` 与 `log -> PR prep/create`
+- [x] `P80`：`S0E-6B/P2` 已固定 advisory-only rollout boundary：普通 draft authoring、非 automation logs、以及 aggregator-only parent logs 先不做 hard block
+- [x] `P81`：`S0E-6B` 已完成 `P3`，现已固定 `stable` promotion 前必须执行更强的后验 checks：required surfaces 无 placeholder、contract blocks 仍有效、status/checklist/evidence 之间不得出现 material contradiction
+- [x] `P82`：`S0E-6B/P3` 已固定 `stable` gate 的执行归属为 local-first / CI-mirror-later：本地 gate 先作为 authoritative owner，GitHub Actions 只在后续 `S0E-7A` 中作为 secondary mirror enforcement
+- [x] `P83`：`S0E-7A` 已完成 `P1-C1-S1`，现已固定第一版 GitHub Actions mirror-verifier workflow 先以 `workflow_dispatch` 启动，并显式接收 `source_log_path`、`pr_ref`、`repo` 输入，产出 live body / result JSON / console JSON 三类 artifact
+- [x] `P84`：`S0E-7A/P1-C1-S2` 已固定 secondary-enforcement 的 failure surfacing：workflow summary 必须明确“post-publish drift detected”而非“prevented publish”，且必须在 artifact 上传后再 fail job
+- [x] `P85`：`S0E-7A` 已完成 `P2-C1-S1`，现已固定 mirror-verifier 的 retained artifact set 为 live body、verify result JSON、console JSON、workflow summary markdown、artifact manifest JSON 五类证据
+- [x] `P86`：`S0E-7A/P2-C1-S2` 已固定 failure surfacing 的三层面：workflow summary、GitHub check annotations、以及 retained evidence manifest，且 failure classification 必须保持 secondary-enforcement 语义
+- [x] `P87`：`S0E-7A` 已完成 `P3-C1-S1`，现已固定第一轮 rollout boundary 继续保持 `workflow_dispatch` only，而不提前接入 `pull_request` 事件，因为当前还没有稳定的 `source_log_path` 自动归属规则
+- [x] `P88`：`S0E-7A/P3-C1-S2` 已固定 CI adoption success criteria：至少需要 representative pass/non-pass 两类 retained evidence，并且未来自动触发方案必须先解释 `source_log_path` 的确定性来源
+- [x] `P89`：已新建 `S0E-4E`，用于专门承接 `PR event -> source_log_path` 的自动归属问题，并把它重新归类到 PR-family follow-up，而不是继续放在 `7x` workflow family 下
+- [x] `P90`：`S0E-4E` 已完成 `P0`，现已固定 automatic PR-event mirroring 仍被 attribution contract 阻塞，直到 repo 能 fail-closed 地确定单一 contract-owning source log
+- [x] `P91`：`S0E-4E` 已完成 `P1-C1-S1`，现已固定允许参与 attribution 的 machine-readable ownership surfaces 只包括 trusted explicit provenance、canonical PR-body `Log:` row，以及 exact-ID head-branch fallback
+- [x] `P92`：`S0E-4E/P1-C1-S2` 已固定 attribution precedence：explicit provenance > PR-body `Log:` row > exact-ID branch fallback；而 prose/title 模糊匹配、labels/milestone/project、Development Link、Evidence Footer 都不得单独声明 ownership
+- [x] `P93`：`S0E-4E` 已完成 `P2-C1-S1`，现已固定 attribution ambiguity 的第一版 stop taxonomy：`missing-attribution`、`conflicting-attribution`、`multi-candidate-attribution`、`invalid-attribution-shape` 都必须 fail-closed
+- [x] `P94`：`S0E-4E/P2-C1-S2` 已固定代表性样本期望：后续 rollout widening 前至少需要一条 deterministic owner sample 和一条 ambiguity stop sample，而且 ambiguity case 不得在 guessed source log 上继续 verify
+- [x] `P95`：`S0E-4E` 已完成 `P3-C1-S1`，现已固定 `4E -> 7A` 的 attribution handoff payload：只有 `result=resolved`、`source_log_path` 精确存在且 `eligible_for_secondary_enforcement=true` 时，mirror verifier 才能继续执行
+- [x] `P96`：`S0E-4E/P3-C1-S2` 已固定 limited automatic-rollout unblocking criteria：至少需要一条 resolved handoff sample 和一条 attribution-stop sample，并且 stop case 必须在 verifier 之前停下并保留独立 attribution evidence
+- [x] `P97`：已新建 `S0E-7B`，用于承接 attribution payload 的实现、`7A` consume-or-stop 接线，以及 resolved/stop 两类端到端样本验证，而不再继续挤压 `S0E-4E` 的 contract scope
+- [x] `P98`：`S0E-7B` 已完成 `P0`，现已固定 `S0E-4E` 只继续拥有 attribution contract，而 planner/result JSON 与 GitHub-side integration implementation 由 `S0E-7B` 独立承接
+- [x] `P99`：`S0E-7B` 已完成 `P1-C1-S1`，现已新增 attribution resolver entrypoint，可从 trusted explicit provenance、canonical PR-body `Log:` row 与 exact-ID branch fallback 产出 `4E -> 7A` consume-or-stop payload
+- [x] `P100`：`S0E-7B/P1-C1-S2` 已固定 retained attribution artifact path pair：normalized PR payload snapshot JSON 与 attribution result JSON 都使用稳定 repo-relative path reporting，便于后续 `7A` 直接接线
+- [x] `P101`：`S0E-7B` 已完成 `P2-C1-S1`，现已把 GitHub Actions workflow 改成 attribution-first：只有 `result=resolved` 且 `eligible_for_secondary_enforcement=true` 时才继续 mirror verification
+- [x] `P102`：`S0E-7B/P2-C1-S2` 已把 attribution-stop 收口为 verifier 之前的独立 retained-evidence outcome，workflow summary / annotations / manifest / final failure 都不再把它伪装成 verifier drift
+- [x] `P103`：`S0E-7B` 已完成 `P3-C1-S1`，现已有一条 representative resolved sample，证明 handoff 会以 `pr-body-log-row` 作为 winning surface 并进入 `continue-to-verifier` gate
+- [x] `P104`：`S0E-7B/P3-C1-S2` 已完成 attribution-stop sample，现已有一条 `stop-conflicting-attribution` 代表性样本，并通过 sample manifest 明确记住 `skipped-before-verifier` 边界
+- [x] `P105`：已新建 `S0E-7C`，用于承接历史 logs 的批量 review / format 审查 / lifecycle completeness sampling，而不把这类 follow-up 混进 `S0E-7B` 或直接升级成 bulk apply
+- [x] `P106`：`S0E-7C` 已完成 `P1-P2`，现已新增 manifest-driven historical log review planner，并保留一组覆盖 closed-loop / issue-open-no-pr / log-only 的 representative samples
+- [x] `P107`：`S0E-7C` 已完成 `P3`，现已新增 manual GitHub Actions mirror workflow，可通过 `workflow_dispatch` 重放同一 review planner 并保留 summary / plan artifacts
 
 ## Current Status（进展摘要）
 
@@ -198,7 +261,30 @@
 - `S0E-5A` 已完成自身真实闭环：live issue `#305` 已经通过 merged PR `#306` 交付，sidebar relationship `#248 -> #305` 已补齐，最终 closed issue body 也已回写，因此该 slice 现已不再只停留在 gate drill；
 - `S0E-5B` 已完成 `P0-P1`：guarded relationship attach 现已作为第一条扩展 mutation family 落地，live issue `#307` 已通过这条路径挂到父 issue `#248`，而混合 remediation 的 frozen sample 仍会在 apply 前被硬停；
 - `S0E-5B` 已完成 `P2`：guarded `PR body rewrite` 现已接到同一 pre-gate 后面，merged PR `#306` 已通过一条真实 allow-apply 路径完成重写，而 blocked fixture 仍在 edit 前被硬停；
-- `S0E-5B` 的剩余工作现已收敛到 `P3`：把 relationship attach 与 PR-body rewrite 组合进同一真实 lifecycle sample，而不是继续各自分开验证；
+- `S0E-5B` 已完成 `P3`：issue `#307` 先通过 guarded relationship attach 接到父 issue `#248`，随后在同一样本上生成并合并 PR `#308`，再对这条 merged PR 跑 guarded body rewrite，最后把 issue 正式 conclusion 到 closed state；
+- `S0E-5B` 现已可视为 `stable`：该 slice 已经完成 in-place guarded mutation families 的边界、单项验证和同样本组合闭环；
+- `S0E-5C` 已完成 `P0`：guarded `PR create` 现已被拆成 7 个明确阶段，且已确认 remote branch publish 与 live PR publish 是两个不同的 publish boundary，不能继续被当成一个原子 guarded mutation；
+- `S0E-5C` 已完成 `P1`：当前结论是不允许把现有 lifecycle pre-gate 原样抬升为整条 create path 的总闸门，只有 create preflight 能把它作为 issue-readiness 前置层，而 branch materialization、remote publish、live PR publish 必须继续拆开；
+- `S0E-5C` 已完成 `P2`：`#309` 现已作为 live representative sample 证明 bounded front half 可以同时产出 pass 和 stop 两类结果，而且两条路径都明确停在 `S4-local-branch-materialization` 之前；
+- `S0E-5C` 已完成 `P4` 并保持 `stable`：真实 `PR create` 路径现已按 `S6 -> live verify -> S7` 执行，并会把 post-apply verification status、live body artifact 与 verify result artifact 一并写回 `pr-create result`；若后续还要深化 guarded rollout，也仍只建议单独评估 `S4/S5` targeted rules 或补充 secondary GitHub Actions enforcement；
+- `S0E-6B` 已建立并完成 `P0`：本地 AI-authored logs 现已明确需要窄面 contract gates，且 `stable` 也已明确需要更强的后验 gate；下一步应先定义最小 deterministic checks，而不是直接上全量 lint；
+- `S0E-6B` 已完成 `P1`：第一版 local log gate 的 deterministic checks 与最小 failure taxonomy 都已固定，下一步可以转入“哪些 automation entrypoints 必须要求 pass gate”这个更具体的问题，而不必继续停留在抽象原则层；
+- `S0E-6B` 已完成 `P2`：第一轮 automation entry-gate rollout boundary 已固定，issue/PR automation 入口现在被定义为 hard-require pass gate，而普通 authoring 与 aggregator-only 路径仍保持 advisory-only；
+- `S0E-6B` 已完成 `P3`：`stable` promotion 前的更强后验 checks 与 local-first / CI-mirror-later execution policy 现已固定，因此本地 log stability contract 已从“要不要 gate”推进到“何时可以信任 stable”这一层；
+- `S0E-7A` 已重构为纯 GitHub-side slice：当前只讨论 Actions mirror-verifier workflow、artifact publishing 与 failure surfacing，不再混入 log stability policy；
+- `S0E-7A` 已完成 `P1`：第一版 GitHub Actions mirror-verifier workflow 已以手动触发方式落地，并已固定输入合同、artifact 输出与 secondary-enforcement wording；下一步应继续收口 `P2` 的 retained artifacts 与 failure surfacing 细则，而不是过早扩大自动触发范围；
+- `S0E-7A` 已完成 `P2`：mirror-verifier 的 retained artifact set、artifact manifest 与 UI/check surfaces 已经固定，因此后续 `P3` 可以专注讨论触发边界与 adoption criteria，而不必再回头争论 run evidence 怎么保存；
+- `S0E-7A` 已完成 `P3`：第一轮 rollout 现明确继续保持 manual-only，后续是否扩大到自动 PR-event mirroring 现在有了清晰的 attribution 前提和 adoption criteria，因此该 slice 的 v1 决策链已闭合；
+- `S0E-4E` 已完成 `P3`：`PR event -> source_log_path` attribution 现已具有明确的 consume-or-stop handoff contract，因此 `S0E-7A` 后续接入自动 PR-event mirroring 时不必再猜什么时候 verify、什么时候应在 attribution 阶段先停下；
+- `S0E-7B` 已完成并进入 `stable`：attribution resolver、GitHub Actions consume-or-stop wiring，以及 resolved/stop representative samples 现已全部落地，因此 `4E -> 7A` 的 implementation follow-up 已从 contract follow-up 推进到可验证的执行层；
+- `S0E-7C` 已完成并进入 `stable`：历史 logs 的批量 review planner、representative sample manifest/plan，以及 manual dispatch mirror workflow 现已全部落地，因此后续 historical backfill 可以先从结构化 review 结果进入 targeted follow-up；
+- `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
+- `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
+- `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
+- `S0E-5D` 已完成 `P3` 的边界收口：historical rewrite 执行明确挂到新 `P4`，先做代表性历史 PR rewrite，再做历史 closed issue rewrite；
+- `S0E-5D` 已完成 `P4`：代表性历史 merged PR `#299/#302/#306/#308` 与 closed issue `#293/#295/#297/#300/#303/#305/#307` 都已在 live GitHub 上按 canonical contract 回写，并分别通过 PR contract verifier 与 lifecycle audit，因此该 slice 现已 `stable`；
+- `S0E-6A` 已完成并进入 `stable`：双轨证据模型已固定，parent/phase templates 已回写 guidance，代表性混合块样本 `S0E-5C` / `S0E-4C` 已迁移，且本地 issue draft sample 也已生成；
+- `S0E-5C` 已接手并完成 create-path 内联 post-apply verify wiring，而 GitHub Actions ownership 现在只剩 secondary enforcement 的后续可选项，因为 primary publish-time verification 已落在本地 create path；
 - `S0E-2E` 已完成 `P0-P1`：issue conclusion 现已明确区分 GitHub auto-close 与 final body write-back，exact-ID merged PR 选择和多 PR 排序规则也已固定；
 - `S0E-2E` 已完成 `P2`：issue conclusion dry-run planner 现已能从 manifest 读取显式 issue refs，查询 exact-ID merged PR evidence，并生成 final body preview；
 - `S0E-2E` 已完成 `P3`：真实 apply 路径现已把 `#297` 的 final conclusion body 写回到 GitHub，并在该 issue 仍为 open 时显式关闭为 `completed`；
@@ -293,6 +379,9 @@
 - 2026-03-29：补充了 stacked PR review 语义、aggregate PR title 的 phase-span 优先级，以及 mixed working branch / parent-log 落点规则，避免把 GitHub ancestry-heavy commit 视图误读成真实增量范围。
 - 2026-03-29：`S0E-4B` 的真实 issue `#295` 已确认挂到 `wordloom Board`，并且 live PR `#296` 已在上游合并后重新对齐到 `main`，因此这条 follow-up 已基本完成收口。
 - 2026-03-29：新增 `S0E-2D` 与 `S0E-2E` 两条 follow-up logs，把 enriched issue creation 和 post-merge issue conclusion 明确拆成两个独立 contract，而不再只停留在口头记忆里的“2D/2E”。
+- 2026-04-01：`S0E-7B/P1` 已完成：新增 attribution resolver entrypoint，并固定 normalized PR payload snapshot + attribution result JSON 这对 retained artifact paths，为后续 `S0E-7A` consume-or-stop 接线提供直接输入。
+- 2026-04-01：`S0E-7B/P2-P3` 已完成：GitHub Actions workflow 现已先做 attribution 再分流到 continue-or-stop，同时 repo 也已补齐 resolved / stop 两类 representative samples 与 sample manifest，因此 `S0E-7B` 现可视为 `stable`。
+- 2026-04-01：新增 `S0E-7C`，并完成 historical log review planner、representative sample manifest/plan 与 manual mirror workflow，为旧 logs 的批量审查和后续 targeted backfill 提供 review-first 入口。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
 - 2026-03-29：完成 `S0E-2D/P3`，历史真实 issue `#288` 已按当前 creation body contract 审核并回收，当前 `S0E-2D` 也已成功创建真实 sample issue `#297` 并完成 write-back。
@@ -323,3 +412,32 @@
 - 2026-03-30：新增 `S0E-5B`，用于承接 guarded apply 从单一 issue-conclusion 路径向更多 lifecycle mutation families 的扩展。
 - 2026-03-30：完成 `S0E-5B/P0-P1`，新增 guarded relationship attach 入口，并已用 live issue `#307` 与 frozen mixed-remediation stop drill 验证 targeted-remediation continuation 规则。
 - 2026-03-30：完成 `S0E-5B/P2`，新增 guarded PR-body rewrite 入口，并已用 converged `S0E-5A/#305 -> #306` 的 live rewrite 与一条 frozen stop drill 验证 allow-apply-only 语义。
+- 2026-03-30：完成 `S0E-5B/P3`，`#307 -> #308` 现已作为代表性真实样本完成 relationship attach、PR merge、guarded PR body rewrite 与 final issue conclusion 的组合闭环。
+- 2026-03-30：将 `S0E-5B` 正式标记为 `stable`，并新增 `S0E-5C` 用于单独处理 guarded `PR create` 的细分问题，而不把它直接压进既有 guarded in-place mutation slice。
+- 2026-03-30：完成 `S0E-5C/P0`，把当前 `PR create` path 拆成 7 个显式阶段，并固定 local branch materialization、remote branch publish、live PR publish、post-create evidence finalization 之间的 failure boundaries。
+- 2026-03-30：完成 `S0E-5C/P1`，把 7 个阶段固定到 reuse-vs-new-rule 边界图中，结论是只有 create preflight 可部分复用现有 lifecycle pre-gate，而 local materialization、remote publish、live PR publish 仍需独立边界或人工持有。
+- 2026-03-30：完成 `S0E-5C/P2`，新增 bounded front-half preflight 入口并用 live issue `#309` 记录一条 pass sample 和一条 create-specific branch-collision stop sample，两条路径都止步于 `S4` 之前。
+- 2026-03-31：新增 `S0E-5D`，用于单独收口 body contract、Evidence Footer 低基数规则，以及 hard gate 应新增的 body-shape 审核项。
+- 2026-03-31：完成 `S0E-5D/P0`，把 operator 给出的格式规则写成 canonical body spec，并将 Evidence Footer 的适用范围先锁定为 drills/evidence-only 且禁止 commit-footer fallback。
+- 2026-03-31：完成 `S0E-5D/P1`，把 `Evidence Footer Source` 的唯一来源、唯一行型和 inline-code 规则正式固定，为后续 hard gate body-shape checks 提供可机器验证的输入合同。
+- 2026-03-31：完成 `S0E-5D/P2`，实现 shared body-contract gate、切断 footer 推断回退路径，并用 pass/stop fixture 证明 canonical footer、未加反引号 footer 和错误来源块都能被机械区分。
+- 2026-03-31：完成 `S0E-5D/P3`，固定 rollout 策略为 `gate-first + post-apply live verify + selective historical rewrite`，并新增 live PR verifier 与 footer eligibility reject 规则，为后续 GitHub Actions 接线提供执行面。
+- 2026-03-31：进一步收口 `S0E-5D/P3` 边界，明确 `rewrite` 挂到新 `S0E-5D/P4`，而后置 gate / post-apply verify / GitHub Actions ownership 延后到 `S0E-5C/P3` 处理。
+- 2026-03-31：完成 `S0E-5D/P4`，已把代表性历史 merged PR `#299/#302/#306/#308` 与 closed issue `#293/#295/#297/#300/#303/#305/#307` 回写到 canonical contract，并通过 live PR verifier 与 lifecycle audit 证明 `S0E-5D` 的 selective historical rewrite 已收口。
+- 2026-03-31：新增 `S0E-6A`，用于把 logs 的结构问题从 body contract 本身拆出来，正式定义 `Evidence Footer Source` 和 `Evidence` 双轨并存的 contract，以及后续 parent/phase templates 的优化边界。
+- 2026-03-31：完成 `S0E-6A/P3-P4`，已把 parent/phase templates 回写为双轨证据 authoring 规则，迁移代表性旧样本 `S0E-5C` / `S0E-4C`，并生成 `S0E-6A` 的本地 issue draft sample，因此 `S0E-6A` 现已进入 `stable`。
+- 2026-03-31：完成 `S0E-5C/P3`，现已固定 `S6` live PR publish 继续为 operator-held boundary，post-apply live verify 位于 `S6` 之后、`S7` 之前，而 GitHub Actions verification 只作为后续 secondary enforcement；因此 `S0E-5C` 现已进入 `stable`。
+- 2026-03-31：完成 `S0E-5C/P4`，现已把 reusable live PR verifier 直接接入真实 `create_pr_from_plan.py` 执行链路，并用历史样本 `S0E-5B/#308` 非破坏性验证 `S6 -> live verify -> S7` 顺序与结果落盘行为。
+- 2026-03-31：新增 `S0E-6B` 并完成 `P0`，已先收口本地 AI-authored logs 的 gate 与 `stable` 后验 gate 策略，作为后续 local deterministic checks 的前置合同。
+- 2026-03-31：完成 `S0E-6B/P1`，已把第一版 local deterministic checks 与最小 failure taxonomy 正式收口，后续 `P2` 可直接转向 automation entrypoint gating。
+- 2026-03-31：完成 `S0E-6B/P2`，已把第一轮 hard-require gate entrypoints 与 advisory-only rollout boundary 固定下来，可继续进入 `stable` transition gate 设计。
+- 2026-03-31：完成 `S0E-6B/P3`，已把 `stable` promotion 需要的更强 contradiction/hygiene checks 与 local-first / CI-mirror-later execution policy 固定下来，因此本地 log stability policy 已能独立定义“何时可信地标记 stable”。
+- 2026-03-31：重构 `S0E-7A` 的职责边界，现仅保留 GitHub Actions secondary enforcement、artifact publishing 与 failure surfacing 相关内容。
+- 2026-03-31：完成 `S0E-7A/P1`，已新增第一版手动触发的 mirror-verifier workflow，并固定 secondary-enforcement summary wording 与 artifact-first fail path，为后续 `P2/P3` 留出 retained-evidence 与 rollout boundary 的独立决策空间。
+- 2026-03-31：完成 `S0E-7A/P2`，已为 mirror-verifier workflow 固定 retained artifact set、artifact manifest JSON，以及 workflow summary + check annotations + retained evidence 的三层 failure surfacing 结构。
+- 2026-03-31：完成 `S0E-7A/P3`，已明确第一轮 rollout 继续保持 manual-only，并把未来自动 PR-event mirroring 所需的 attribution 前提与 CI adoption success criteria 一并写成显式合同。
+- 2026-03-31：新增 `S0E-4E` 并完成 `P0`，已把 `PR event -> source_log_path` attribution 正式拆成独立 slice，并重新归类到 PR-family follow-up；后续自动触发扩大前必须先在这里收口 deterministic ownership contract。
+- 2026-03-31：完成 `S0E-4E/P1`，已把 attribution candidate surfaces 收口为 explicit provenance / canonical PR-body `Log:` row / exact-ID branch fallback 三类，并固定 precedence 为前者优先、后者仅作缺失时的受限补位。
+- 2026-03-31：完成 `S0E-4E/P2`，已把 attribution ambiguity 收口为 missing / conflicting / multi-candidate / invalid-shape 四类 fail-closed stop 条件，并固定至少一条 deterministic sample 与一条 ambiguity stop sample 的代表性期望。
+- 2026-03-31：完成 `S0E-4E/P3`，已把 `4E -> 7A` 的 attribution result payload 与 limited rollout unblocking criteria 固定下来，后续自动 PR-event mirroring 可以在 consume-or-stop 边界上接线，而无需重议 attribution ownership。
+- 2026-04-01：新增 `S0E-7B` 并完成 `P0`，已把 attribution payload implementation、`7A` consume-or-stop 接线，以及 resolved/stop 端到端样本验证独立成新的 GitHub-side follow-up。
