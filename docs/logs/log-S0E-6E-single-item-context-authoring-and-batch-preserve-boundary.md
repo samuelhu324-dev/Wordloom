@@ -87,6 +87,7 @@
 - `P1`: add a single-item `Context` draft entrypoint and restore scaffold-first issue draft defaults
 - `P2`: change batch issue-conclusion planning to preserve live `Context` by default and only single-generate on explicit opt-in
 - `P3`: retain representative one-item and batch-preserve sample artifacts that prove the new boundary works in practice
+- `P4`: apply one-item live Context refreshes to representative closed issues and re-audit them under the same weak gate
 
 ## Success Criteria (DoD)
 
@@ -95,12 +96,13 @@
 - Issue draft generation returns to scaffold-first behavior unless an operator explicitly requests single-item generation.
 - Batch issue-conclusion planning preserves the current live `Context` block by default and warns when the block is missing or malformed.
 - Representative retained artifacts show both sides of the new rule: one single-item Context draft and one batch-preserve conclusion plan.
+- At least one pair of real closed issues proves that the new one-item path can improve live `Context` prose without reopening batch rewrite ownership.
 
 ## Stability (what stable means)
 
 - This log can be marked `stable` when:
-  - `P0-P3` have fixed the ownership boundary, single-item generator, scaffold-first draft behavior, and batch-preserve conclusion planning;
-  - the Evidence section records one single-item draft artifact and one batch-preserve plan artifact.
+  - `P0-P4` have fixed the ownership boundary, single-item generator, scaffold-first draft behavior, batch-preserve conclusion planning, and representative one-item live refreshes;
+  - the Evidence section records one single-item draft artifact, one batch-preserve plan artifact, and one re-audited live refresh pair.
 
 ## Current Status
 
@@ -109,6 +111,7 @@
 - `P1` is now completed: the repo now has a dedicated single-item `Context` draft script, and `gen_issue_draft.py` now defaults back to scaffold-first `Context` output.
 - `P2` is now completed: `plan_issue_conclusion.py` now preserves live `Context` by default and only regenerates it on explicit `single-generate` opt-in.
 - `P3` is now completed: representative sample artifacts now prove both one-item generation and batch-preserve conclusion planning under the new boundary.
+- `P4-C1-S1` is now completed: `S0E-2B/#288` and `S0E-2A/#289` have now been refreshed through one-item `Context` authoring and then re-audited successfully.
 
 ## P0 (Ownership boundary | v1)
 
@@ -158,6 +161,13 @@
 - One retained artifact should show a conclusion plan produced under `preserve-existing` mode.
 - The sample should prove that batch tooling now preserves the live `Context` block and reports drift or blank state through warnings.
 
+## P4 (Representative one-item live refreshes | v1)
+
+### P4-C1-S1 (Two representative closed issues refreshed and re-audited | v1)
+
+- After the new ownership boundary is fixed, the repo should still prove that live issue improvement remains possible through one-item authoring.
+- The representative proof set for v1 is `S0E-2B/#288` and `S0E-2A/#289`, refreshed one issue at a time instead of through batch replay.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Ownership boundary)
@@ -179,6 +189,10 @@
 
 - [x] `P3-C1-S1`: single-item draft sample retained
 - [x] `P3-C1-S2`: batch-preserve conclusion sample retained
+
+### P4 (Representative one-item live refreshes)
+
+- [x] `P4-C1-S1`: `S0E-2B` and `S0E-2A` refreshed one item at a time and re-audited
 
 ## Evidence (reserved)
 
@@ -203,9 +217,28 @@
 - observed:
   - issue draft generation now defaults to scaffold-first `Context`, a new one-item `Context` generator retains dedicated draft artifacts, and batch issue-conclusion planning now preserves live `Context` by default while warning about drift instead of auto-rewriting it
 
+### P4-C1-S1 (representative one-item live refresh pair applied and re-audited | 2026-04-01)
+
+- artifacts:
+  - `docs/issues/issue-context-S0E-2A-6E-refresh.md`
+  - `docs/issues/issue-context-S0E-2A-6E-refresh.json`
+  - `docs/issues/issue-context-S0E-2B-6E-refresh.md`
+  - `docs/issues/issue-context-S0E-2B-6E-refresh.json`
+  - `docs/issues/issue-conclusion-S0E-6E-single-item-refresh-s0e-2a-body.md`
+  - `docs/issues/issue-conclusion-S0E-6E-single-item-refresh-s0e-2a-live.json`
+  - `docs/issues/issue-conclusion-S0E-6E-single-item-refresh-s0e-2b-body.md`
+  - `docs/issues/issue-conclusion-S0E-6E-single-item-refresh-s0e-2b-live.json`
+  - `docs/issues/lifecycle-audit-S0E-6E-single-item-refresh-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-6E-single-item-refresh-manifest-plan.json`
+- expected:
+  - the new `6E` boundary should still allow real live issue improvement, but only through one-item authoring and re-audit rather than through another batch rewrite family
+- observed:
+  - `S0E-2B/#288` and `S0E-2A/#289` were rewritten one at a time with manually reviewed Context prose, the post-refresh live issue snapshots were retained, and the pair then re-audited successfully under the same prose-first gate
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-01: created `S0E-6E` to separate single-item `Context` authoring from batch issue replay and conclusion planning.
 - 2026-04-01: added `scripts/issues/generate_issue_context_draft.py` as the dedicated one-log-at-a-time `Context` generation entrypoint.
 - 2026-04-01: changed `scripts/issues/gen_issue_draft.py` so `Context` returns to scaffold-first output by default unless `--context-mode single-generate` is explicitly requested.
 - 2026-04-01: changed `scripts/issues/plan_issue_conclusion.py` so batch conclusion planning now preserves live `Context` by default and reports drift through warnings instead of auto-writing replacement prose.
+- 2026-04-01: refreshed `S0E-2B/#288` and `S0E-2A/#289` one item at a time under the new boundary, proving that live improvement now happens through single-item authoring rather than batch Context replay.

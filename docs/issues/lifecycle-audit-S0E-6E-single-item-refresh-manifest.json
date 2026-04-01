@@ -1,0 +1,21 @@
+{
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-2B",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "issue_number": 288,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "reason": "Verify that the one-item Context refresh for S0E-2B still passes lifecycle audit under the prose-first gate."
+    },
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "reason": "Verify that the one-item Context refresh for S0E-2A still passes lifecycle audit under the prose-first gate."
+    }
+  ]
+}
