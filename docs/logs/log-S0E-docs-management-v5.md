@@ -244,6 +244,7 @@
 - [x] `P113`：`S0E-7C` 已完成 `P4-C1-S4`，截图范围内全部已关闭 `S0E` 子 issues 都已重新检查并重跑 conclusion，`9/10` 条 `Context` 漂移已被批量修复，修复后 `10/10` lifecycle audit 全部通过
 - [x] `P114`：已新建并完成 `S0E-6D/P0-P3`，issue `Context` contract 已从 rigid sentence-slot template 升级为 natural-summary + weak gate，draft/conclusion renderer 与 lifecycle audit 现已统一到同一规则
 - [x] `P115`：`S0E-7C` 已完成 `P4-C1-S5`，刚才审查过的 `10` 条已关闭 `S0E` 子 issues 已按 `S0E-6D` 的 natural-summary `Context` 规则重写，并再次通过 `10/10` lifecycle audit
+- [x] `P116`：`S0E-6D` 已完成 `P4-C1-S1`，`Context` gate 现已收缩为 prose-first 弱约束，只检查 `3-5` 条可读英文句子行、基本完整性和 placeholder hygiene，不再强制 prose anchors
 
 ## Current Status（进展摘要）
 
@@ -293,6 +294,8 @@
 - `S0E-7C/P4` 已进一步完成 closed child issue 修复闭环：截图范围内全部已关闭 `S0E` 子 issues 都已重新检查，`#288/#289/#293/#295/#297/#300/#303/#305/#307` 的 `Context` 漂移已通过批量 conclusion replay 回补，随后批量 lifecycle audit 对 `10` 条子 issue 全部给出 `pass`；
 - `S0E-6D` 已完成并进入 `stable`：issue `Context` 已从 rigid sentence slots 升级为 source-log-derived natural-summary renderer + weak deterministic gate，draft / conclusion / lifecycle audit 三条路径现已统一；
 - `S0E-7C/P4` 已进一步完成 `S0E-6D` 的 live replay：刚才审查过的 `10` 条 closed `S0E` child issues 已按 natural-summary `Context` 规则重写，并再次通过 `10/10` lifecycle audit；
+- `S0E-6D` 已重新打开 `P4`：下一步不再继续加弱模板，而是要把 `Context` 收口成 prose-first weak gate + fact-pool/style-family renderer，让 issue `Context` 真正回到“给人读”的摘要入口；
+- `S0E-6D/P4-C1-S1` 已完成：lifecycle audit 不再强制 `Context` 在正文里显式携带 prose anchors，当前 gate 已收缩为 `3-5` 条可读英文句子行、基本完整性与 placeholder hygiene；
 - `S0E-6C` 已完成并进入 `stable`：issue `Context` 现已固定 main/child 两档英文句子合同，issue draft / issue conclusion / lifecycle audit 也已接到同一规则上，`#309` 已通过真实重写与 re-audit；
 - `S0E-5C` 的真实链路现已打通：issue `#309` 不再停留在 issue-only sample，PR `#310` 已创建并合并，inline post-apply verification 已通过，final issue conclusion 也已写回 closed issue；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
@@ -404,6 +407,8 @@
 - 2026-04-01：`S0E-7C/P4-C1-S4` 已完成：截图范围内全部已关闭 `S0E` 子 issues 都已重新检查并重跑 conclusion，`9/10` 条失效 `Context` 已批量修复，后续 lifecycle audit 也已对 `10/10` 子 issues 给出 `pass`。
 - 2026-04-01：新增并完成 `S0E-6D`，issue `Context` contract 已从 rigid sentence-slot template 升级为 natural-summary renderer + weak deterministic gate，并把 draft / conclusion / lifecycle audit 三条路径统一到同一规则。
 - 2026-04-01：`S0E-7C/P4-C1-S5` 已完成：刚才审查过的 `10` 条 closed `S0E` 子 issues 已按 `S0E-6D` 的 natural-summary `Context` 规则重写，并再次通过 `10/10` lifecycle audit。
+- 2026-04-01：根据 operator review，`S0E-6D` 已新增 `P4`，后续将继续把 `Context` gate 收缩为 prose-first 弱约束，并把 renderer 改成 fact-pool + style-family，而不再停留在 template-shaped natural-summary。
+- 2026-04-01：`S0E-6D/P4-C1-S1` 已完成：`Context` gate 现已收缩为 prose-first 弱约束，只检查 `3-5` 条可读英文句子行、基本完整性和 placeholder hygiene，不再强制 prose anchors。
 - 2026-04-01：新增并完成 `S0E-6C`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同；`#309` 也已在真实 conclusion replay 后通过新的 lifecycle audit gate。
 - 2026-04-01：完成 `S0E-5C` 的真实 lifecycle follow-through，PR `#310` 已创建并合并，issue `#309` 已完成 final body write-back；当时的 GitHub Actions mirror dispatch 也据此暴露出“workflow 需先对默认分支可见”这一前置条件，并在后续 `S0E-7C/P4` 中被正面解决。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。

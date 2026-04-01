@@ -91,12 +91,12 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "Context contains between 3 and 4 one-sentence English bullet rows with source-log-specific anchors"
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
           "status": "pass",
-          "details": "concluded issue keeps the canonical natural-summary Context contract within line range (3, 4)"
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",
@@ -190,12 +190,12 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "Context contains between 3 and 4 one-sentence English bullet rows with source-log-specific anchors"
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
           "status": "pass",
-          "details": "concluded issue keeps the canonical natural-summary Context contract within line range (3, 4)"
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",
@@ -295,12 +295,12 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "Context contains between 3 and 4 one-sentence English bullet rows with source-log-specific anchors"
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
           "status": "pass",
-          "details": "concluded issue keeps the canonical natural-summary Context contract within line range (3, 4)"
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",
@@ -394,12 +394,12 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "Context contains between 3 and 4 one-sentence English bullet rows with source-log-specific anchors"
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
           "status": "pass",
-          "details": "concluded issue keeps the canonical natural-summary Context contract within line range (3, 4)"
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",
@@ -493,12 +493,12 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "Context contains between 3 and 4 one-sentence English bullet rows with source-log-specific anchors"
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
           "status": "pass",
-          "details": "concluded issue keeps the canonical natural-summary Context contract within line range (3, 4)"
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",
@@ -598,12 +598,12 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "Context contains between 3 and 4 one-sentence English bullet rows with source-log-specific anchors"
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
           "status": "pass",
-          "details": "concluded issue keeps the canonical natural-summary Context contract within line range (3, 4)"
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",
@@ -697,12 +697,12 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "Context contains between 3 and 4 one-sentence English bullet rows with source-log-specific anchors"
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
           "status": "pass",
-          "details": "concluded issue keeps the canonical natural-summary Context contract within line range (3, 4)"
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",
@@ -796,12 +796,12 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "Context contains between 3 and 4 one-sentence English bullet rows with source-log-specific anchors"
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
           "status": "pass",
-          "details": "concluded issue keeps the canonical natural-summary Context contract within line range (3, 4)"
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",
@@ -895,12 +895,12 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "Context contains between 3 and 4 one-sentence English bullet rows with source-log-specific anchors"
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
           "status": "pass",
-          "details": "concluded issue keeps the canonical natural-summary Context contract within line range (3, 4)"
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",
@@ -994,12 +994,12 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "Context contains between 3 and 4 one-sentence English bullet rows with source-log-specific anchors"
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
           "status": "pass",
-          "details": "concluded issue keeps the canonical natural-summary Context contract within line range (3, 4)"
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",

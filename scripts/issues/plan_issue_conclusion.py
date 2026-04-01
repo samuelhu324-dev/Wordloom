@@ -420,7 +420,7 @@ def _build_item(
     link_lines = _build_link_lines(existing_link_lines, issue_url, ordered_prs)
 
     if not context_ok:
-        warnings.append(f"existing Context section did not satisfy the canonical natural-summary issue-body contract for line range {context_line_bounds}; preview uses the canonical conclusion Context block")
+        warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview uses the canonical conclusion Context block")
     if not _has_substantive_text(_extract_section_lines(body, "Definition of Done (DoD)")):
         warnings.append("existing issue DoD is still blank create-time scaffold")
 

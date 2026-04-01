@@ -5,7 +5,7 @@
 **id**: `S0E-6D`
 **kind**: `log`
 **title**: `natural issue Context rendering and weak gate v1`
-**status**: `stable`
+**status**: `draft`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Workflow, Automation, Contract, Formatting, epic/s0, sub/1`
 **links**: ``
@@ -52,8 +52,10 @@
 
 - `Context` should remain English-only and bullet-based, but it no longer needs one fixed sentence template per line.
 - Draft rendering and conclusion rendering should both be built from source-log facts, then rendered as natural summary prose rather than as exact sentence-slot templates.
-- The gate should stay weak and deterministic: it should require non-placeholder English bullet sentences, a bounded line-count range, and source-log-specific anchors, but it should not require every issue to use the same rhetorical structure.
+- The gate should stay weak and deterministic: it should require non-placeholder English bullet sentences, a bounded line-count range, and basic sentence completeness, but it should not require fixed rhetorical anchors or one shared prose structure.
 - Concluded issue rewrites may still replace the full `Context` block when necessary, but the generated text should read like a concise human ledger summary rather than like a repeated system banner.
+- The next revision should narrow the gate even further: prose remains for humans, while provenance and structured verification should stay on the source log, planner artifacts, and apply results rather than on the `Context` prose itself.
+- The next renderer revision should move from weak sentence-slot assembly to `fact pool -> style family -> prose rendering`, so similar issues can still stay accurate without sounding like the same template.
 
 ## PR Summary Inputs (optional)
 
@@ -86,6 +88,7 @@
 - `P1`: implement natural-summary draft and conclusion renderers
 - `P2`: replace the exact-count gate with a bounded weak gate for natural summary
 - `P3`: replay representative live concluded issues under the new rule and re-audit them
+- `P4`: replace template-shaped natural-summary rendering with fact-pool selection, style-family variation, and prose-first weak gate narrowing
 
 ## Success Criteria (DoD)
 
@@ -93,11 +96,12 @@
 - Draft and conclusion renderers both derive their material from the current source log and adjacent-slice references.
 - Lifecycle audit still enforces a bounded deterministic contract, but it no longer requires rigid per-line sentence slots.
 - A representative live replay proves the recently audited `S0E` child issues can be rewritten to the new natural-summary style and still pass audit.
+- The next renderer revision no longer relies on fixed opening / relation / scope / completion sentence slots, and similar issues may vary lightly in ordering and tone while still staying faithful to the source log.
 
 ## Stability (what stable means)
 
 - This log can be marked `stable` when:
-  - `P0-P3` have fixed the natural-summary contract, renderer, weak gate, and representative replay;
+  - `P0-P4` have fixed the natural-summary contract, renderer, weak gate, prose-first gate narrowing, and representative replay;
   - the Evidence section records the replay and re-audit artifacts for the representative live issue set.
 
 ## Current Status
@@ -107,6 +111,8 @@
 - `P1` is now completed: draft and conclusion renderers now build `Context` from source-log facts, adjacent-slice relation, scope summary, and completion evidence.
 - `P2` is now completed: lifecycle audit now enforces a bounded natural-summary contract instead of an exact line-slot contract.
 - `P3` is now completed: the recently replayed closed `S0E` child-issue set has been rewritten again under the new rule and re-audited successfully.
+- `P4-C1-S1` is now completed: the `Context` gate has been narrowed to prose-first checks only, so lifecycle audit now enforces line count, readable English sentence rows, and placeholder hygiene without requiring hard prose anchors.
+- `P4-C1-S2` and `P4-C1-S3` remain open: the renderer still needs to move from weak sentence-slot assembly to fact-pool/style-family rendering, and the representative replay still needs to be refreshed under that new rule.
 
 ## P0 (Natural-summary contract | v1)
 
@@ -120,7 +126,7 @@
 
 - The gate still requires English bullet sentences with no placeholders.
 - Main issues may use a bounded `4-5` line range, while child issues may use a bounded `3-4` line range.
-- The gate requires source-log-specific anchors such as the current log ID and title subject, but it does not require a fixed sentence template.
+- The gate requires only readable English bullet sentences, placeholder hygiene, and bounded line count; provenance remains on the source log and retained artifacts rather than in hard-coded prose anchors.
 
 ## P1 (Renderer implementation | v1)
 
@@ -143,8 +149,8 @@
 
 ### P2-C1-S2 (Anchor and placeholder gate fixed | v1)
 
-- Lifecycle audit still rejects non-English rows, multi-sentence rows, placeholder drift, and missing source-log anchors.
-- The gate now focuses on integrity and issue specificity rather than on rigid prose choreography.
+- Lifecycle audit still rejects non-English rows, multi-sentence rows, and placeholder drift.
+- The gate now focuses on prose integrity and readability rather than on hard-coded rhetorical anchors inside the rendered `Context` text.
 
 ## P3 (Representative live replay | v1)
 
@@ -152,6 +158,25 @@
 
 - The recently audited closed `S0E` child issues were replayed under the new natural-summary renderer.
 - The re-audit confirmed that the new Context style remains issue-specific and still passes the bounded gate.
+
+## P4 (Prose-first gate narrowing and fact-pool renderer | v1)
+
+### P4-C1-S1 (Prose-first weak gate narrowed | v1)
+
+- `Context` gate should only require `3-5` readable English bullet sentences, placeholder hygiene, and basic sentence completeness.
+- Provenance and machine-readable verification should stay on the source log, planner outputs, and apply/audit artifacts rather than being forced back into the `Context` prose.
+- Lifecycle audit should stop checking for fixed rhetorical slots or hard prose anchors inside the rendered `Context` text.
+
+### P4-C1-S2 (Fact-pool selection and style-family rendering introduced | v1)
+
+- The renderer should first extract a fact pool from source-log sections such as `Decision / Outcome`, `Scope`, `Current Status`, `Success Criteria`, `previous_log`, and merged-PR evidence.
+- The renderer should then select `3-5` facts under minimal coverage rules instead of forcing one fixed `opening -> relation -> scope -> completion` sentence order.
+- The final prose should be rendered through a small style family such as `ledger-first`, `follow-up-first`, `boundary-first`, or `outcome-first`, with deterministic per-issue variation so similar issues do not all read the same.
+
+### P4-C1-S3 (Representative replay refreshed under the prose-first rule | v1)
+
+- After the renderer and gate are revised, the representative closed `S0E` child-issue batch should be replayed again.
+- The follow-up audit should prove that the new prose-first contract still passes mechanically while reading closer to manual ledger notes than to template output.
 
 ## Execution Checklist (unchecked)
 
@@ -162,6 +187,23 @@
 - [x] `P2-C1-S1`: line-range gate fixed
 - [x] `P2-C1-S2`: anchor and placeholder gate fixed
 - [x] `P3-C1-S1`: representative live replay completed
+- [x] `P4-C1-S1`: prose-first weak gate narrowed
+- [ ] `P4-C1-S2`: fact-pool selection and style-family rendering introduced
+- [ ] `P4-C1-S3`: representative replay refreshed under the prose-first rule
+
+### P4-C1-S1 (prose-first weak gate narrowed | 2026-04-01)
+
+- headSha: `5a4ff04d`
+- artifacts:
+  - `scripts/issues/body_contract.py`
+  - `scripts/issues/plan_issue_conclusion.py`
+  - `scripts/issues/plan_lifecycle_audit.py`
+  - `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`
+  - `docs/issues/lifecycle-audit-S0E-7C-child-issues-context-natural-summary-refresh-manifest-plan.json`
+- expected:
+  - lifecycle audit should reduce `Context` validation to line count, readable English sentence rows, and placeholder hygiene instead of enforcing hard prose anchors inside the rendered text
+- observed:
+  - the `Context` gate now accepts prose-first variation as long as the block stays within `3-5` rows, remains readable in English, and contains no placeholder scaffolding; the representative lifecycle audit replay still returns no blocked or fail findings under the narrowed gate
 
 ## Evidence (reserved)
 
@@ -188,3 +230,5 @@
 - 2026-04-01: switched issue draft and issue conclusion Context generation to source-log-derived natural summary prose.
 - 2026-04-01: relaxed lifecycle audit from exact sentence-count slots to bounded natural-summary integrity checks.
 - 2026-04-01: replayed the representative closed `S0E` child-issue batch and re-audited it under the new rule.
+- 2026-04-01: reopened `S0E-6D` with `P4` after operator review confirmed that the current renderer still reads too template-shaped for a human-facing `Context` block.
+- 2026-04-01: completed `P4-C1-S1` by narrowing the `Context` gate to prose-first checks only, removing hard prose-anchor validation from lifecycle audit.

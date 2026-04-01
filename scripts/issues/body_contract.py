@@ -19,6 +19,7 @@ VERSION_SUFFIX_RE = re.compile(r"\s+v\d+\s*$", re.IGNORECASE)
 INLINE_CODE_RE = re.compile(r"`([^`]*)`")
 SECTION_PHASE_PREFIX_RE = re.compile(r"^`?P\d+(?:-C\d+(?:-S\d+(?:S\d+)*)?)?`?:\s*")
 LOG_ID_FROM_PATH_RE = re.compile(r"log-(?P<id>[A-Z0-9]+(?:-[A-Z0-9]+)*)-")
+PLACEHOLDER_RE = re.compile(r"<placeholder>|\btodo\b|\btbd\b|\bn/a\b", re.IGNORECASE)
 VERB_LEADERS = {
     "add",
     "align",
@@ -398,17 +399,6 @@ def _format_pr_refs(merged_pr_numbers: list[int] | None) -> str:
     return ", ".join(refs[:-1]) + f", and {refs[-1]}"
 
 
-def issue_body_expected_context_anchors(source_log_text: str) -> list[str]:
-    fields = _parse_fields(source_log_text)
-    requested_id = str(fields.get("id") or "").strip()
-    subject = _normalize_title_subject(str(fields.get("title") or requested_id))
-    anchors = [anchor for anchor in [requested_id, subject] if anchor]
-    previous_id = _extract_follow_up_id(str(fields.get("previous_log") or ""))
-    if previous_id and _issue_context_scope_label(source_log_text) == "child":
-        anchors.append(previous_id)
-    return anchors
-
-
 def build_issue_draft_context_lines(source_log_text: str) -> list[str]:
     fields = _parse_fields(source_log_text)
     requested_id = str(fields.get("id") or "this log").strip() or "this log"
@@ -480,6 +470,9 @@ def validate_issue_context_lines(section_lines: list[str], line_bounds: tuple[in
         if not sentence:
             invalid_lines.append(raw)
             continue
+        if PLACEHOLDER_RE.search(sentence):
+            invalid_lines.append(raw)
+            continue
         if CJK_RE.search(sentence) or not re.search(r"[A-Za-z]", sentence):
             invalid_lines.append(raw)
             continue
@@ -490,19 +483,9 @@ def validate_issue_context_lines(section_lines: list[str], line_bounds: tuple[in
             invalid_lines.append(raw)
 
     if invalid_lines:
-        return False, "Context lines must each be one English sentence on one bullet row", invalid_lines
+        return False, "Context lines must be readable English sentences with no placeholder scaffolding", invalid_lines
 
-    if source_log_text:
-        joined = " ".join(bullet_lines).lower()
-        anchors = issue_body_expected_context_anchors(source_log_text)
-        primary_anchor = anchors[0] if anchors else None
-        secondary_anchors = anchors[1:] if len(anchors) > 1 else []
-        if primary_anchor and primary_anchor.lower() not in joined:
-            return False, f"Context must mention the source-log issue id anchor: {primary_anchor}", bullet_lines
-        if secondary_anchors and not any(anchor.lower() in joined for anchor in secondary_anchors):
-            return False, f"Context must mention at least one additional source-log-specific anchor: {secondary_anchors}", bullet_lines
-
-    return True, f"Context contains between {min_count} and {max_count} one-sentence English bullet rows with source-log-specific anchors", invalid_lines
+    return True, f"Context contains between {min_count} and {max_count} readable English bullet sentences with basic placeholder hygiene", invalid_lines
 
 
 def pr_body_is_evidence_footer_eligible(source_log_text: str) -> bool:

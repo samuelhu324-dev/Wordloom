@@ -617,9 +617,9 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
 
     if issue_state == "CLOSED":
         if context_valid:
-            checks.append(_build_check("closed-body-shape", "pass", f"concluded issue keeps the canonical natural-summary Context contract within line range {context_line_bounds}"))
+            checks.append(_build_check("closed-body-shape", "pass", f"concluded issue keeps the prose-first Context gate within line range {context_line_bounds}"))
         else:
-            checks.append(_build_check("closed-body-shape", "fail", f"concluded issue does not satisfy the canonical natural-summary Context contract within line range {context_line_bounds}"))
+            checks.append(_build_check("closed-body-shape", "fail", f"concluded issue does not satisfy the prose-first Context gate within line range {context_line_bounds}"))
     else:
         checks.append(_build_check("closed-body-shape", "skipped", "closed-body shape is not required while the issue remains open"))
 
