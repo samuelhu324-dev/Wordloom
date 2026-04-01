@@ -29,6 +29,7 @@
   **phase_log_17**: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
   **phase_log_18**: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
   **phase_log_19**: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
+  **phase_log_20**: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -230,6 +231,9 @@
 - [x] `P102`：`S0E-7B/P2-C1-S2` 已把 attribution-stop 收口为 verifier 之前的独立 retained-evidence outcome，workflow summary / annotations / manifest / final failure 都不再把它伪装成 verifier drift
 - [x] `P103`：`S0E-7B` 已完成 `P3-C1-S1`，现已有一条 representative resolved sample，证明 handoff 会以 `pr-body-log-row` 作为 winning surface 并进入 `continue-to-verifier` gate
 - [x] `P104`：`S0E-7B/P3-C1-S2` 已完成 attribution-stop sample，现已有一条 `stop-conflicting-attribution` 代表性样本，并通过 sample manifest 明确记住 `skipped-before-verifier` 边界
+- [x] `P105`：已新建 `S0E-7C`，用于承接历史 logs 的批量 review / format 审查 / lifecycle completeness sampling，而不把这类 follow-up 混进 `S0E-7B` 或直接升级成 bulk apply
+- [x] `P106`：`S0E-7C` 已完成 `P1-P2`，现已新增 manifest-driven historical log review planner，并保留一组覆盖 closed-loop / issue-open-no-pr / log-only 的 representative samples
+- [x] `P107`：`S0E-7C` 已完成 `P3`，现已新增 manual GitHub Actions mirror workflow，可通过 `workflow_dispatch` 重放同一 review planner 并保留 summary / plan artifacts
 
 ## Current Status（进展摘要）
 
@@ -273,6 +277,7 @@
 - `S0E-7A` 已完成 `P3`：第一轮 rollout 现明确继续保持 manual-only，后续是否扩大到自动 PR-event mirroring 现在有了清晰的 attribution 前提和 adoption criteria，因此该 slice 的 v1 决策链已闭合；
 - `S0E-4E` 已完成 `P3`：`PR event -> source_log_path` attribution 现已具有明确的 consume-or-stop handoff contract，因此 `S0E-7A` 后续接入自动 PR-event mirroring 时不必再猜什么时候 verify、什么时候应在 attribution 阶段先停下；
 - `S0E-7B` 已完成并进入 `stable`：attribution resolver、GitHub Actions consume-or-stop wiring，以及 resolved/stop representative samples 现已全部落地，因此 `4E -> 7A` 的 implementation follow-up 已从 contract follow-up 推进到可验证的执行层；
+- `S0E-7C` 已完成并进入 `stable`：历史 logs 的批量 review planner、representative sample manifest/plan，以及 manual dispatch mirror workflow 现已全部落地，因此后续 historical backfill 可以先从结构化 review 结果进入 targeted follow-up；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
@@ -376,6 +381,7 @@
 - 2026-03-29：新增 `S0E-2D` 与 `S0E-2E` 两条 follow-up logs，把 enriched issue creation 和 post-merge issue conclusion 明确拆成两个独立 contract，而不再只停留在口头记忆里的“2D/2E”。
 - 2026-04-01：`S0E-7B/P1` 已完成：新增 attribution resolver entrypoint，并固定 normalized PR payload snapshot + attribution result JSON 这对 retained artifact paths，为后续 `S0E-7A` consume-or-stop 接线提供直接输入。
 - 2026-04-01：`S0E-7B/P2-P3` 已完成：GitHub Actions workflow 现已先做 attribution 再分流到 continue-or-stop，同时 repo 也已补齐 resolved / stop 两类 representative samples 与 sample manifest，因此 `S0E-7B` 现可视为 `stable`。
+- 2026-04-01：新增 `S0E-7C`，并完成 historical log review planner、representative sample manifest/plan 与 manual mirror workflow，为旧 logs 的批量审查和后续 targeted backfill 提供 review-first 入口。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
 - 2026-03-29：完成 `S0E-2D/P3`，历史真实 issue `#288` 已按当前 creation body contract 审核并回收，当前 `S0E-2D` 也已成功创建真实 sample issue `#297` 并完成 write-back。

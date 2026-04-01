@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "selection_filters": {
+    "scope": "S0E historical lifecycle follow-up samples",
+    "goal": "review old logs before any targeted backfill or apply mutation"
+  },
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "skip_live": false
+  },
+  "items": [
+    {
+      "log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "notes": "closed-loop sample"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "notes": "issue exists but PR flow is still missing"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md",
+      "notes": "stable log without issue/PR links yet"
+    }
+  ]
+}
