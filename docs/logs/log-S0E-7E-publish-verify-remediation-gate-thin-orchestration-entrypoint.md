@@ -123,13 +123,17 @@
 
 ## Current Status
 
-- `S0E-7E` has now completed `P0-P2` at the thin-gate contract, planner, and delegated-handoff level.
+- `S0E-7E` has now completed `P0-P3` at the thin-gate contract, planner, delegated-handoff, and representative-validation level.
 - The new slice now retains one explicit contract artifact for the thin gate boundary, CLI surface, normalized decision vocabulary, and evidence shape.
 - A new planner entrypoint now exists at `scripts/issues/plan_publish_verify_remediation_gate.py`, and it now normalizes planning plus delegated handoff without replacing the existing family-specific adapters:
   - lifecycle-family planning for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`;
   - delegated apply handoff for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`;
   - front-half reuse for `pr-create-preflight`, which remains planning-only.
-- `P3-P4` remain open because representative pass/stop validation breadth and future wrapping boundaries still need explicit follow-up.
+- Representative validation now retains:
+  - one issue-side delegated pass path through targeted relationship remediation;
+  - one PR-side delegated pass path through guarded PR-body rewrite;
+  - one PR-side planning-only stop path at `S4-local-branch-materialization` plus one explicit delegated-apply rejection for `pr-create-preflight`.
+- `P4` remains open because future wrapping boundaries for publish-time automation and CI still need explicit follow-up.
 
 ## P0 (Contract | v1)
 
@@ -192,6 +196,20 @@
 - The thin gate now delegates `pr-body-rewrite` into `apply_pr_body_scope_with_pre_gate.py` when the reused lifecycle gate allows continuation.
 - `pr-create-preflight` remains connected only as a front-half planning family: the thin gate reuses its planning surface but still rejects delegated apply so branch materialization, remote publish, and live PR publish stay behind their existing boundaries.
 - The thin gate therefore owns one normalized orchestration surface across issue-side and PR-side families without pretending that every supported family shares the same mutation stage model.
+
+## P3 (Representative validation | v1)
+
+### P3-C1-S1 (Representative delegated pass path validated | v1)
+
+- The thin gate now retains one representative issue-side delegated pass path through `issue-relationship`, using the targeted-remediation eligibility rule without widening it into a generic allow-all gate.
+- The same thin gate also retains one representative PR-side delegated pass path through `pr-body-rewrite`, proving that a live PR mutation can still sit behind the same normalized orchestration surface.
+- These retained pass paths leave the family-owned guarded adapters authoritative while making the top-level gate outcome and downstream artifact routing uniform.
+
+### P3-C1-S2 (Representative stop path and planning-only boundary validated | v1)
+
+- The thin gate now retains one representative `pr-create-preflight` stop path with `hard-fail-input`, explicit warnings, and `S4-local-branch-materialization` as the stop boundary.
+- The same validation round also records an explicit delegated-apply rejection for `pr-create-preflight`, so the boundary between planning-only front-half reuse and later create stages is now evidenced rather than implied.
+- The retained validation summary therefore covers both positive delegation and negative boundary enforcement on the same thin gate surface.
 
 ## Numbering
 
@@ -256,8 +274,8 @@
 
 ### P3 (Representative validation)
 
-- [ ] `P3-C1-S1`: representative pass path validated
-- [ ] `P3-C1-S2`: representative stop path validated
+- [x] `P3-C1-S1`: representative pass path validated
+- [x] `P3-C1-S2`: representative stop path validated
 
 ### P4 (Future rollout boundary)
 
@@ -294,7 +312,7 @@
 
 ### P2-C1-S1S2 (Delegated handoff connected and minimally validated | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `c273a625`
 - artifacts:
   - `docs/issues/publish-verify-remediation-gate-S0E-5A-p5-pass-issue-conclusion-delegated-apply-result.json`
   - `docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-delegated-apply-result.json`
@@ -306,6 +324,21 @@
   - The thin gate delegated the `S0E-5A` issue-conclusion pass sample into the existing guarded issue-conclusion adapter and retained the isolated gate, plan, guarded-result, body, and apply-result artifacts.
   - The thin gate delegated the `S0E-5B` relationship sample through `allowed-via-targeted-relationship-remediation`, proving that family-specific guarded eligibility can stay narrower than the raw lifecycle gate decision.
   - The thin gate also delegated the `S0E-5B` PR-body rewrite sample into the existing guarded PR-body adapter, while the entrypoint contract continues to keep `pr-create-preflight` planning-only.
+
+### P3-C1-S1S2 (Representative pass/stop ledger retained | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7E-p3-c1-representative-validation.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-delegated-apply-result.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-5B-p3-pass-pr-body-rewrite-delegated-apply-result.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-5C-p2-stop-pr-create-preflight-result.json`
+- expected:
+  - `S0E-7E` should retain one representative delegated pass ledger that covers at least one issue-side family and one PR-side family.
+  - The same retained evidence should make the `pr-create-preflight` planning-only stop boundary and delegated-apply rejection explicit.
+- observed:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7E-p3-c1-representative-validation.json` now records one issue-side delegated pass path, one PR-side delegated pass path, one PR-side planning-only stop path, and one explicit delegated-apply rejection for `pr-create-preflight`.
+  - The thin gate therefore now retains representative evidence for both positive delegation and negative boundary enforcement without widening `pr-create-preflight` into later create stages.
 
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
@@ -321,3 +354,4 @@
 - 2026-04-02: opened `S0E-7E` as the implementation follow-up to `S0E-7D/P4`, focused on one thin `publish-verify-remediation gate` orchestration entrypoint rather than another taxonomy-only slice.
 - 2026-04-02: completed `P0-P1` by retaining the thin gate contract artifact, implementing `plan_publish_verify_remediation_gate.py`, and proving that the new surface can normalize one lifecycle-family `allow-apply` sample plus one `pr-create-preflight` `hard-fail-input` stop sample without replacing existing family adapters.
 - 2026-04-02: completed `P2` by connecting delegated handoff for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`, while explicitly keeping `pr-create-preflight` as a planning-only front-half family.
+- 2026-04-02: completed `P3` by retaining one representative issue-side pass path, one representative PR-side pass path, one `pr-create-preflight` planning-only stop path, and one explicit delegated-apply rejection for the create boundary.

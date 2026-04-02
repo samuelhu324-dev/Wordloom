@@ -1,0 +1,70 @@
+{
+  "mode": "publish-verify-remediation-gate-representative-validation",
+  "result": "ok",
+  "requested_id": "S0E-7E",
+  "scope": [
+    "P3"
+  ],
+  "version": "v1",
+  "summary": {
+    "delegated_apply_pass_cases": 2,
+    "planning_only_stop_cases": 1,
+    "delegated_apply_rejection_cases": 1
+  },
+  "cases": [
+    {
+      "case_id": "issue-side-pass-relationship-targeted-remediation",
+      "operation_family": "issue-relationship",
+      "validation_kind": "delegated-apply-pass",
+      "source_artifact_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-delegated-apply-result.json",
+      "normalized_decision": "allow-apply",
+      "delegated_apply_requested": true,
+      "delegated_apply_executed": true,
+      "delegated_action": "applied-after-pre-gate",
+      "decision_reason": "The thin gate delegated issue-relationship apply into the existing guarded adapter (allowed-via-targeted-relationship-remediation).",
+      "notes": [
+        "The representative issue-side pass path proves that thin-gate orchestration may preserve a narrower family-owned eligibility rule than the raw lifecycle gate decision.",
+        "The delegated result remains idempotent on replay because the child issue was already attached to the requested parent issue."
+      ]
+    },
+    {
+      "case_id": "pr-side-pass-body-rewrite",
+      "operation_family": "pr-body-rewrite",
+      "validation_kind": "delegated-apply-pass",
+      "source_artifact_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p3-pass-pr-body-rewrite-delegated-apply-result.json",
+      "normalized_decision": "allow-apply",
+      "delegated_apply_requested": true,
+      "delegated_apply_executed": true,
+      "delegated_action": "applied-after-pre-gate",
+      "decision_reason": "The thin gate delegated PR body rewrite into the existing guarded adapter after the lifecycle gate allowed continuation.",
+      "notes": [
+        "The representative PR-side pass path proves that the thin gate can hand off a live PR mutation without flattening PR create into the same stage model."
+      ]
+    },
+    {
+      "case_id": "pr-side-stop-create-preflight",
+      "operation_family": "pr-create-preflight",
+      "validation_kind": "planning-only-stop",
+      "source_artifact_path": "docs/issues/publish-verify-remediation-gate-S0E-5C-p2-stop-pr-create-preflight-result.json",
+      "normalized_decision": "hard-fail-input",
+      "delegated_apply_requested": false,
+      "delegated_apply_executed": false,
+      "stopped_before_stage": "S4-local-branch-materialization",
+      "decision_reason": "Create-specific front-half preflight found invalid prerequisites before local branch materialization.",
+      "notes": [
+        "The representative stop path proves that thin-gate orchestration can expose a create-time stop boundary without pretending that later create stages belong to the same apply path.",
+        "The linked front-half preflight result carries the concrete prerequisite failures that kept the family in planning-only mode."
+      ]
+    },
+    {
+      "case_id": "pr-create-delegated-apply-boundary-rejection",
+      "operation_family": "pr-create-preflight",
+      "validation_kind": "delegated-apply-rejected",
+      "observed_exit_code": 1,
+      "observed_message": "Thin gate delegated apply does not extend PR create beyond front-half preflight; use dry-run planning only for pr-create-preflight",
+      "notes": [
+        "The rejection is intentional and contract-owned: the thin gate must not flatten branch materialization, remote publish, or live PR publish into delegated apply."
+      ]
+    }
+  ]
+}
