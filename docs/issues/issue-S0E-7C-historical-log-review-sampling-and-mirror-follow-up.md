@@ -14,7 +14,6 @@
 
 ## Links
 
-- Log: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
-- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
+- Log: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
 - Parent log: `docs/logs/log-S0E-docs-management-v5.md`
-- Previous log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+- Previous log: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`

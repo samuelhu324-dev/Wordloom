@@ -161,6 +161,13 @@ def _normalize_specific_subject(title: str) -> str:
     return text
 
 
+def _compose_issue_title(log_id: str, keyword: str, specific_subject: str) -> str:
+    prefix = f"{keyword}/"
+    if specific_subject.lower().startswith(prefix.lower()):
+        return f"{log_id}: {specific_subject}"
+    return f"{log_id}: {keyword}/{specific_subject}"
+
+
 def _infer_keyword(fields: dict[str, str], title: str, tags: list[str], section_text: str) -> str:
     explicit = fields.get("issue_keyword", "").strip()
     if explicit:
@@ -559,7 +566,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
 
     keyword = _infer_keyword(fields, log_title, tags, section_text)
     specific_subject = _normalize_specific_subject(log_title)
-    issue_title = f"{log_id}: {keyword}/{specific_subject}"
+    issue_title = _compose_issue_title(log_id, keyword, specific_subject)
 
     top_labels = _derive_top_labels(fields, tags)
     scope_labels = _derive_scope_labels(fields, log_id, scope)

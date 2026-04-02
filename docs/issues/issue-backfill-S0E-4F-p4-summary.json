@@ -1,0 +1,42 @@
+{
+  "mode": "issue-backfill-summary",
+  "result": "ok",
+  "scope": "S0E-4F/P4",
+  "created_issues": [
+    {
+      "requested_id": "S0E-1A",
+      "issue_number": 316,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/316",
+      "state": "CLOSED",
+      "parent_issue": null
+    },
+    {
+      "requested_id": "S0E-2C",
+      "issue_number": 313,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/313",
+      "state": "CLOSED",
+      "parent_issue": 248
+    },
+    {
+      "requested_id": "S0E-3A",
+      "issue_number": 314,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/314",
+      "state": "CLOSED",
+      "parent_issue": 248
+    },
+    {
+      "requested_id": "S0E-7C",
+      "issue_number": 315,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/315",
+      "state": "CLOSED",
+      "parent_issue": 248
+    }
+  ],
+  "evidence": [
+    "docs/issues/issue-conclusion-S0E-4F-p4-backfill-plan.json",
+    "docs/issues/issue-conclusion-S0E-4F-p4-backfill-s0e-1a-apply-result.json",
+    "docs/issues/issue-conclusion-S0E-4F-p4-backfill-s0e-2c-apply-result.json",
+    "docs/issues/issue-conclusion-S0E-4F-p4-backfill-s0e-3a-apply-result.json",
+    "docs/issues/issue-conclusion-S0E-4F-p4-backfill-s0e-7c-apply-result.json"
+  ]
+}
