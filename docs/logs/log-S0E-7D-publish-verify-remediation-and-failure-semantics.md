@@ -124,6 +124,13 @@
   - `P0-P3` have fixed the taxonomy, replay/backfill order, representative samples, and remediation semantics with retained evidence
   - the Evidence section includes traceable `headSha` values plus artifact paths (or CI run URLs)
 
+## Current Status
+
+- `S0E-7D` has now completed `P0-P1` at the contract and taxonomy-mapping level.
+- The first retained taxonomy artifact now fixes the ordered replay/backfill pipeline, the four handling semantics, and the strong-structure versus weak-structure family split for the current docs/GitHub workflow.
+- The same artifact now maps the currently known issue/PR/log failure surfaces into default semantics rather than leaving operators to infer whether a given drift should block, replay, stay manual, or enter reconciliation.
+- Recent `S0E-4F` and `S0E-7C` findings are now explicitly covered by that taxonomy, especially PR development linkage, deterministic labels, source-log write-back, parent relationships, exact DoD refs, Context prose drift, and source-block note contamination.
+
 ## P0 (Contract | v1)
 
 ### P0-C1-S1 (Failure taxonomy fixed | v1)
@@ -164,6 +171,32 @@
   - expected deterministic values versus live observed values;
   - failure family (`strong-structure` / `weak-structure`) and handling semantic (`block` / `replayable` / `manual` / `reconciliation`);
   - downstream artifact paths for remediation manifest, apply result, and post-apply verify result when applicable.
+
+## P1 (Taxonomy mapping | v1)
+
+### P1-C1-S1 (Current failure surfaces split into structural families | v1)
+
+- The current docs/GitHub workflow now distinguishes the following strong-structure surfaces as deterministic and fail-closed by default:
+  - PR labels;
+  - PR development linkage;
+  - issue parent relationship;
+  - source-log write-back;
+  - canonical issue/PR body sections;
+  - exact DoD PR refs;
+  - explicit live-versus-source conflicts.
+- The current workflow now distinguishes the following weak-structure surfaces as bounded but still human-owned:
+  - issue `Context` prose quality;
+  - issue/PR summary wording;
+  - explanatory notes outside canonical source blocks.
+
+### P1-C1-S2 (Default handling semantics mapped per family | v1)
+
+- Default semantics are now fixed per known failure surface rather than guessed ad hoc:
+  - `block`: canonical body section failures;
+  - `replayable`: PR labels, PR development linkage, issue parent relationship, source-log write-back, and exact DoD PR refs;
+  - `manual`: `Context` prose, summary wording, and freeform explanatory notes;
+  - `reconciliation`: explicit live-versus-source conflicts such as mismatched write-back references or incompatible live relationships.
+- This mapping does not prevent future follow-up slices from refining a surface's semantics, but v1 now fixes the default decision path that operators and later automation should follow.
 
 ## Numbering
 
@@ -212,15 +245,15 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: failure taxonomy fixed
-- [ ] `P0-C1-S2`: replay / backfill order fixed
-- [ ] `P0-C1-S3`: handling semantics fixed
-- [ ] `P0-C1-S4`: evidence contract fixed
+- [x] `P0-C1-S1`: failure taxonomy fixed
+- [x] `P0-C1-S2`: replay / backfill order fixed
+- [x] `P0-C1-S3`: handling semantics fixed
+- [x] `P0-C1-S4`: evidence contract fixed
 
 ### P1 (Taxonomy mapping)
 
-- [ ] `P1-C1-S1`: failure surfaces split into strong-structure versus weak-structure families
-- [ ] `P1-C1-S2`: default handling semantic mapped per failure family
+- [x] `P1-C1-S1`: failure surfaces split into strong-structure versus weak-structure families
+- [x] `P1-C1-S2`: default handling semantic mapped per failure family
 
 ### P2 (Representative validation)
 
@@ -242,6 +275,18 @@
 - This section is the human-facing ledger and should remain separate from `Evidence Footer Source`.
 - Prefer one stable ledger shape per unit: heading with `P*-C*-S*` and date, then `headSha`, `artifacts`, `expected`, and `observed`.
 
+### P0-C1-S1S2S3S4 / P1-C1-S1S2 (Failure taxonomy and mapping retained | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts: `docs/issues/failure-semantics-S0E-7D-p0-p1-taxonomy.json`
+- expected:
+  - `S0E-7D` should retain one explicit taxonomy artifact covering strong-structure versus weak-structure families.
+  - The same artifact should retain the ordered replay/backfill pipeline and default handling semantics.
+  - Current issue/PR/log failure surfaces should be mapped to one default semantic instead of left implicit.
+- observed:
+  - `docs/issues/failure-semantics-S0E-7D-p0-p1-taxonomy.json` now records the ordered replay pipeline, four handling semantics, two structural families, and the current mapped surfaces.
+  - The owner log now marks `P0-P1` complete and cites the retained taxonomy artifact as the first bounded evidence surface for this slice.
+
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
 - headSha: `<git sha>`
@@ -254,3 +299,4 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-04-02: opened `S0E-7D` to separate failure taxonomy, replay/backfill order, and remediation semantics from the already-landed `S0E-7C` review planner and `S0E-4F` historical metadata backfill work.
+- 2026-04-02: completed `P0-P1` by retaining the first structured failure taxonomy/mapping artifact for the current docs/GitHub workflow, covering strong versus weak structure, ordered replay/backfill, and default handling semantics per known failure surface.

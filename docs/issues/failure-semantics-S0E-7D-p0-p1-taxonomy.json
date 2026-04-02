@@ -1,0 +1,165 @@
+{
+  "mode": "failure-semantics-taxonomy",
+  "result": "ok",
+  "requested_id": "S0E-7D",
+  "scope": [
+    "P0",
+    "P1"
+  ],
+  "version": "v1",
+  "ordered_pipeline": [
+    "source-log",
+    "deterministic-derive",
+    "live-audit",
+    "remediation-manifest",
+    "apply",
+    "post-apply-verify"
+  ],
+  "handling_semantics": {
+    "block": "The failure must stop publish/apply until the structured contract is corrected.",
+    "replayable": "The failure is mechanically repairable through deterministic derive plus bounded replay/apply.",
+    "manual": "The failure requires human confirmation or authoring and must remain explicit instead of being guessed.",
+    "reconciliation": "Live state and source-log contract conflict, so automation must stop and surface the mismatch instead of overwriting either side blindly."
+  },
+  "families": [
+    {
+      "name": "strong-structure",
+      "default_policy": "fail-closed",
+      "description": "Deterministic contract surfaces whose expected values can be derived mechanically from source logs or canonical specs."
+    },
+    {
+      "name": "weak-structure",
+      "default_policy": "warning-or-manual",
+      "description": "Bounded prose or human-authored surfaces that may drift without invalidating the entire publish/apply pipeline."
+    }
+  ],
+  "surfaces": [
+    {
+      "surface": "pr.labels",
+      "object_kind": "pr",
+      "owner_surface": "source-log frontmatter + deterministic derive",
+      "family": "strong-structure",
+      "default_semantic": "replayable",
+      "reason": "Expected PR labels are derived deterministically from issue_top_labels, issue_scope_labels, issue_module_labels, explicit pr_labels, and drills/evidence eligibility.",
+      "recent_examples": [
+        "S0E-7C/#312",
+        "S0E-2A/#287",
+        "S0E-2B/#290",
+        "S0E-2C/#291",
+        "S0E-3A/#292"
+      ]
+    },
+    {
+      "surface": "pr.development-linkage",
+      "object_kind": "pr",
+      "owner_surface": "source-log issue link or explicit pr_development_issue",
+      "family": "strong-structure",
+      "default_semantic": "replayable",
+      "reason": "The expected Development issue is deterministic, and GitHub-recognized linkage now depends on explicit trailing close-link rows such as Closes #309.",
+      "recent_examples": [
+        "S0E-5C/#310",
+        "S0E-7C/#311",
+        "S0E-7C/#312"
+      ]
+    },
+    {
+      "surface": "issue.parent-relationship",
+      "object_kind": "issue",
+      "owner_surface": "source-log parent spine linkage + live GitHub relationship state",
+      "family": "strong-structure",
+      "default_semantic": "replayable",
+      "reason": "GitHub sidebar relationships are separate from body metadata and require explicit relationship apply rather than prose edits.",
+      "recent_examples": [
+        "S0E-2C/#313",
+        "S0E-3A/#314",
+        "S0E-7C/#315"
+      ]
+    },
+    {
+      "surface": "source-log.write-back",
+      "object_kind": "log",
+      "owner_surface": "source-log links.issue / links.pr",
+      "family": "strong-structure",
+      "default_semantic": "replayable",
+      "reason": "When the source log owns explicit issue/pr linkage, blank or stale write-back breaks later deterministic derive and historical replay.",
+      "recent_examples": [
+        "S0E-1A",
+        "S0E-2C",
+        "S0E-3A",
+        "S0E-7C"
+      ]
+    },
+    {
+      "surface": "body.canonical-sections",
+      "object_kind": "issue-or-pr",
+      "owner_surface": "canonical body contract",
+      "family": "strong-structure",
+      "default_semantic": "block",
+      "reason": "Missing or misplaced canonical sections break contract validation and should stop publish/apply rather than be silently tolerated.",
+      "recent_examples": [
+        "historical S0E PR family audited by S0E-4F/P2",
+        "closed child-issue refresh batches under S0E-6F"
+      ]
+    },
+    {
+      "surface": "dod.exact-pr-refs",
+      "object_kind": "issue",
+      "owner_surface": "merged PR evidence set",
+      "family": "strong-structure",
+      "default_semantic": "replayable",
+      "reason": "Final issue conclusion DoD must preserve exact merged PR refs, so drift is mechanically repairable from merged PR evidence.",
+      "recent_examples": [
+        "S0E-2D/#297",
+        "S0E-2C/#313",
+        "S0E-7C/#315"
+      ]
+    },
+    {
+      "surface": "live-vs-source explicit conflict",
+      "object_kind": "issue-or-pr-or-log",
+      "owner_surface": "source-log intent versus live GitHub state",
+      "family": "strong-structure",
+      "default_semantic": "reconciliation",
+      "reason": "When both sides are explicit but disagree, automation must stop and surface the mismatch instead of replaying one side over the other.",
+      "recent_examples": [
+        "issue number/url mismatch in backfill planning",
+        "source-log issue URL conflicts with explicit issue reference"
+      ]
+    },
+    {
+      "surface": "issue.context-prose",
+      "object_kind": "issue",
+      "owner_surface": "human-authored or single-item generated Context prose",
+      "family": "weak-structure",
+      "default_semantic": "manual",
+      "reason": "Context wording is bounded by gate rules but still requires human-quality judgment and should not be guessed by batch replay once ownership is single-item authoring.",
+      "recent_examples": [
+        "S0E-6D context drift batches",
+        "S0E-6E single-item context authoring"
+      ]
+    },
+    {
+      "surface": "summary.wording",
+      "object_kind": "issue-or-pr",
+      "owner_surface": "human-facing summary bullets or prose blocks",
+      "family": "weak-structure",
+      "default_semantic": "manual",
+      "reason": "Summary wording should remain compact and deterministic, but wording quality itself is not a mechanical contract breach unless it leaks placeholders into publish surfaces.",
+      "recent_examples": [
+        "PR Summary placeholder follow-up under S0E-4C",
+        "natural-language issue Context drift under S0E-6D"
+      ]
+    },
+    {
+      "surface": "operator notes outside canonical source blocks",
+      "object_kind": "log-or-issue-or-pr",
+      "owner_surface": "human explanatory prose",
+      "family": "weak-structure",
+      "default_semantic": "manual",
+      "reason": "Freeform notes may inform later work, but they must not be mistaken for deterministic source rows consumed by automation.",
+      "recent_examples": [
+        "S0E-4C Evidence Footer Source note drift"
+      ]
+    }
+  ]
+}
