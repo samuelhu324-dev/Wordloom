@@ -36,6 +36,7 @@
   **phase_log_24**: `docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`
   **phase_log_25**: `docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`
   **phase_log_26**: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
+  **phase_log_27**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -135,6 +136,8 @@
   - 详见：`docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
 - `S0E-7D`（Phase 7D）：publish / verify / remediation / failure semantics
   - 详见：`docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
+- `S0E-7E`（Phase 7E）：publish-verify-remediation gate thin orchestration entrypoint
+  - 详见：`docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -274,6 +277,7 @@
 - [x] `P133`：`S0E-7D` 已完成 `P0-P1`，现在已经保留第一份 failure taxonomy artifact，把当前已知 issue/PR/log drift surfaces 显式映射到 `strong-structure` / `weak-structure` 以及 `block` / `replayable` / `manual` / `reconciliation`
 - [x] `P134`：`S0E-7D` 已完成 `P2-P3`，现在已经保留 representative manifest / audit summary，并把 replay-only remediation contract、mixed-batch split 规则、以及 post-apply verify stop rules 固定为结构化证据
 - [x] `P135`：`S0E-7D` 已完成 `P4`，现在已经把 future `publish-verify-remediation gate` 的名称、决策词汇、adapter reuse 边界和非目标面固定为结构化 surface contract
+- [x] `P136`：已新建 `S0E-7E`，用于把 `S0E-7D/P4` 命名的 future `publish-verify-remediation gate` 落成一层薄编排入口，并明确其与既有 guarded adapters 的实现边界
 
 ## Current Status（进展摘要）
 
@@ -466,6 +470,7 @@
 - 2026-04-02：`S0E-7D/P0-P1` 已完成：第一份 failure taxonomy / mapping artifact 已落地，当前 docs/GitHub workflow 的主要 drift surfaces 现已显式归类到 strong/weak structure 与四类 handling semantics。
 - 2026-04-02：`S0E-7D/P2-P3` 已完成：现在已有覆盖四类 handling semantics 的 representative manifest / audit summary，同时 replay-only remediation contract、mixed-batch split 规则和 post-apply verify stop rules 也已固定为结构化证据。
 - 2026-04-02：`S0E-7D/P4` 已完成：future `publish-verify-remediation gate` 的名称、决策词汇、adapter reuse 边界与非目标面现已固定，后续若实现统一入口，只需要做一层薄编排而不是重写既有 guarded adapters。
+- 2026-04-02：新增 `S0E-7E`，作为 `S0E-7D/P4` 的直接实现 follow-up，后续将把 future `publish-verify-remediation gate` 从命名 surface 落成一个薄编排入口，并复用现有 issue/relationship/PR guarded adapters。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
 - 2026-03-29：完成 `S0E-2D/P3`，历史真实 issue `#288` 已按当前 creation body contract 审核并回收，当前 `S0E-2D` 也已成功创建真实 sample issue `#297` 并完成 write-back。
