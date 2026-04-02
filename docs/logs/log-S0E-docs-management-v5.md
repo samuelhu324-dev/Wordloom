@@ -33,6 +33,7 @@
   **phase_log_21**: `docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md`
   **phase_log_22**: `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`
   **phase_log_23**: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`
+  **phase_log_24**: `docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -41,7 +42,7 @@
   **phase_log_5**: `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
   **phase_log_6**: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 **created**: `2026-03-28`
-  **updated**: `2026-04-01`
+  **updated**: `2026-04-02`
 
 ---
 
@@ -118,6 +119,8 @@
   - 详见：`docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
 - `S0E-6A`（Phase 6A）：log structure normalization and dual-track evidence contract
   - 详见：`docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`
+- `S0E-6F`（Phase 6F）：issue body metadata and links boundary follow-up
+  - 详见：`docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`
 - `S0E-4C`（Phase 4C）：PR summary / development issue rendering / issue relationship attach follow-up
   - 详见：`docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
 - `S0E-3A`（Phase 3A）：roadmap milestone and child-log bridge contract
@@ -252,6 +255,7 @@
 - [x] `P120`：`S0E-6E` 已完成 `P4-C1-S1`，`S0E-2B/#288` 与 `S0E-2A/#289` 已按单条 authoring 路径逐条优化 `Context`，随后再次通过 lifecycle audit
 - [x] `P121`：`S0E-2E` 与 `S0E-6E` 已补充 final conclusion body wording 约定：`Context` 末句负责说明 slice 留下的结果/基线，精确 PR 证据只保留在 `DoD`
 - [x] `P122`：`S0E-6E` 已把同一条 outcome-ending 规则扩展到其余已关闭 `S0E` 子 issues，并同步把单条 conclusion generator 的默认末句从 PR-evidence wording 改成结果/基线 wording
+- [x] `P123`：已新建 `S0E-6F`，用于收口 issue body 的字段归属微调：`Metadata` 去掉 `Source log`，`Links` 新增可选 `Previous log`，并把后续 renderer / gate / runbook 的落地措施集中记账
 
 ## Current Status（进展摘要）
 
@@ -309,6 +313,7 @@
 - `S0E-6E/P4-C1-S1` 已完成：`S0E-2B/#288` 与 `S0E-2A/#289` 现已作为第一对真实 one-item live refresh 样本，用新的 authoring 路径逐条优化 `Context` 并再次通过审计；
 - `S0E-2E` 与 `S0E-6E` 现已补上 conclusion wording 约定：若 final body 同时保留 `Context` 与 `DoD`，则 `Context` 尾句只讲最终留下的结果/可复用状态，不再重复 `#287/#290` 这类 PR 证据；
 - `S0E-6E/P4-C1-S2` 已完成：除 `S0E-2A/#289` 与 `S0E-2B/#288` 之外，其余已关闭 `S0E` 子 issues 也已全部改写为同一条 outcome-ending 规则，并再次通过批量 lifecycle audit；同时单条 conclusion generator 的默认 outcome 句也已改掉，不再生成 `closed through #...` 这类重复尾句；
+- 已新建 `S0E-6F` 作为 issue body 字段归属微调 follow-up：目标只收两件事，`Metadata` 去掉 `Source log`，以及 `Links` 增加可选 `Previous log`，并把 renderer / gate / runbook / validation 的后续实施措施集中到同一条 log；
 - `S0E-6C` 已完成并进入 `stable`：issue `Context` 现已固定 main/child 两档英文句子合同，issue draft / issue conclusion / lifecycle audit 也已接到同一规则上，`#309` 已通过真实重写与 re-audit；
 - `S0E-5C` 的真实链路现已打通：issue `#309` 不再停留在 issue-only sample，PR `#310` 已创建并合并，inline post-apply verification 已通过，final issue conclusion 也已写回 closed issue；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
@@ -428,6 +433,7 @@
 - 2026-04-01：`S0E-6E/P4-C1-S1` 已完成：`S0E-2B/#288` 与 `S0E-2A/#289` 已按新的单条 authoring 路径逐条优化 live `Context`，并再次通过 lifecycle audit。
 - 2026-04-01：补充 final issue-conclusion wording 约定：若结案 body 同时保留 `Context` 与 `DoD`，则 `Context` 末句改为描述 slice 留下的结果/基线，精确 PR 证据只保留在 `DoD`。
 - 2026-04-01：`S0E-6E/P4-C1-S2` 已完成：其余已关闭 `S0E` 子 issues 也已统一改写为 outcome-ending `Context`，同时单条 conclusion generator 的默认结尾不再重复 `DoD` 里的 PR evidence wording。
+- 2026-04-02：新增 `S0E-6F`，用于把 issue body 的字段归属进一步收紧为“状态留在 Metadata，导航留在 Links”：本轮 follow-up 的明确目标是移除 `Metadata` 中的 `Source log`，并为 `Links` 增加可选 `Previous log`，同时预先记住 renderer / gate / runbook / validation 的实施路径。
 - 2026-04-01：新增并完成 `S0E-6C`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同；`#309` 也已在真实 conclusion replay 后通过新的 lifecycle audit gate。
 - 2026-04-01：完成 `S0E-5C` 的真实 lifecycle follow-through，PR `#310` 已创建并合并，issue `#309` 已完成 final body write-back；当时的 GitHub Actions mirror dispatch 也据此暴露出“workflow 需先对默认分支可见”这一前置条件，并在后续 `S0E-7C/P4` 中被正面解决。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
