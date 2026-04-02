@@ -1,0 +1,180 @@
+{
+  "mode": "publish-verify-remediation-gate-read-only-wrapper-contract",
+  "result": "ok",
+  "requested_id": "S0E-7F",
+  "scope": [
+    "P0",
+    "P1",
+    "P2",
+    "P3"
+  ],
+  "version": "v1",
+  "alignment": {
+    "failure_semantics_source": "docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md",
+    "thin_gate_source": "docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md",
+    "secondary_enforcement_source": "docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md"
+  },
+  "wrapper_boundary": {
+    "ownership": [
+      "choose when the thin gate is invoked",
+      "emit wrapper-owned summary and artifact manifest outputs",
+      "publish retained artifacts for operator or CI consumption",
+      "surface normalized stop/pass outcomes using secondary-enforcement wording"
+    ],
+    "non_ownership": [
+      "live delegated apply",
+      "family-specific verify semantics",
+      "publish-time authority",
+      "PR create post-preflight stages"
+    ],
+    "default_execution_mode": "read-only",
+    "delegated_apply_policy": "disabled-by-contract",
+    "failure_wording": "drift-detected-or-continuation-blocked",
+    "success_wording": "read-only-wrapper-pass-does-not-claim-publish-ownership"
+  },
+  "selected_adoption_shape": {
+    "wrapper_style": "manual-or-ci-secondary-enforcement",
+    "preferred_initial_surface": "local-operator-facing",
+    "next_surface": "workflow_dispatch",
+    "compatible_existing_surface": ".github/workflows/s0e-pr-body-secondary-enforcement.yml",
+    "reason": "The repo already has a manual secondary-enforcement workflow family that publishes retained artifacts after verification without claiming it prevented publish."
+  },
+  "wrapper_request_contract": {
+    "required_fields": [
+      "operation_family",
+      "selection_input_path",
+      "selection_input_kind",
+      "wrapper_result_path",
+      "wrapper_summary_path",
+      "artifact_manifest_path"
+    ],
+    "optional_fields": [
+      "family_input_path",
+      "family_input_kind",
+      "repo",
+      "audit_plan_path",
+      "remediation_plan_path",
+      "decision_path",
+      "family_plan_path",
+      "thin_gate_result_path",
+      "trusted_source_log_path",
+      "trigger_surface",
+      "wrapper_notes"
+    ],
+    "fixed_wrapper_flags": {
+      "delegate_apply": false,
+      "read_only": true,
+      "secondary_enforcement": true
+    },
+    "selection_input_kind_values": [
+      "manifest",
+      "audit-plan"
+    ],
+    "family_input_kind_values": [
+      "manifest",
+      "plan",
+      "result"
+    ],
+    "supported_operation_families": [
+      "issue-conclusion",
+      "issue-relationship",
+      "pr-body-rewrite",
+      "pr-create-preflight"
+    ]
+  },
+  "wrapper_result_contract": {
+    "required_fields": [
+      "mode",
+      "result",
+      "read_only",
+      "secondary_enforcement",
+      "trigger_surface",
+      "operation_family",
+      "normalized_decision",
+      "apply_allowed",
+      "delegated_apply_requested",
+      "delegated_apply_executed",
+      "decision_reason",
+      "stop_reason",
+      "wrapper_result_path",
+      "wrapper_summary_path",
+      "artifact_manifest_path",
+      "thin_gate_result_path",
+      "published_artifact_root",
+      "verify_summary_decision",
+      "warnings"
+    ],
+    "result_values": [
+      "pass",
+      "stop",
+      "error"
+    ],
+    "verify_summary_decision_values": [
+      "not-run",
+      "converged",
+      "stop-incomplete-convergence",
+      "stop-for-reconciliation"
+    ],
+    "stop_reason_values": [
+      "continuation-blocked-by-thin-gate",
+      "planning-only-boundary",
+      "missing-wrapper-artifact",
+      "wrapper-input-invalid"
+    ]
+  },
+  "retained_artifact_set": {
+    "wrapper_owned": [
+      "wrapper result json",
+      "workflow/operator summary markdown",
+      "artifact manifest json"
+    ],
+    "downstream_thin_gate": [
+      "thin gate result json",
+      "lifecycle gate decision json when emitted",
+      "audit plan json when emitted",
+      "remediation plan json when emitted",
+      "family plan json when emitted"
+    ],
+    "top_level_exposure_rules": [
+      "Expose only normalized gate decision, stop reason, and summary-only verify fields at the wrapper top level.",
+      "Do not copy family-specific verify payloads into the wrapper result as if they were universal schema.",
+      "Keep delegated_apply_requested and delegated_apply_executed explicitly false for the read-only wrapper path."
+    ]
+  },
+  "explicit_boundaries": [
+    "Do not let the read-only wrapper trigger live delegated apply, even for families that the thin gate can delegate in other contexts.",
+    "Do not reinterpret pr-create-preflight as ownership of branch materialization, remote publish, or live PR publish.",
+    "Do not claim that a wrapper stop prevented publish when the wrapper runs as secondary enforcement after live state exists.",
+    "Do not create a CI-only decision vocabulary; reuse the thin gate's normalized outcomes.",
+    "Do not flatten family-owned verify semantics into wrapper-owned fake success/failure payloads."
+  ],
+  "implemented_entrypoint": {
+    "script_path": "scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py",
+    "delegate_apply": false,
+    "wrapper_owned_outputs": [
+      "wrapper_result_path",
+      "wrapper_summary_path",
+      "artifact_manifest_path"
+    ],
+    "result_exit_codes": {
+      "pass": 0,
+      "stop": 1,
+      "error": 2
+    }
+  },
+  "operator_facing_surface": {
+    "script_path": "scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1",
+    "trigger_surface": "local-operator-facing",
+    "default_artifact_root": "artifacts/operator-facing/publish-verify-remediation-gate-read-only-wrapper/<run-id>-<slug>",
+    "operator_owned_defaults": [
+      "wrapper-result.json",
+      "workflow-summary.md",
+      "artifact-manifest.json",
+      "thin-gate-result.json"
+    ],
+    "notes": [
+      "When selection_input_kind=manifest, the operator-facing surface also defaults lifecycle gate audit/remediation/decision artifacts under the same artifact root.",
+      "When operation_family=pr-create-preflight, the operator-facing surface also defaults the family plan artifact under the same artifact root."
+    ]
+  ]
+}
