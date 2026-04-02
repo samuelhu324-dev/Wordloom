@@ -19,9 +19,10 @@
 ## PR Body Checks
 
 - Required sections: `Metadata`, `Summary`, `Execution Checklist`, `Links`.
-- Section order: `Metadata -> Summary -> Execution Checklist -> Links -> Evidence Footer (when applicable) -> Development Link (when applicable)`.
+- Section order: `Metadata -> Summary -> Execution Checklist -> Links -> Evidence Footer (when applicable)`.
 - Metadata bullet rows must be contiguous with no blank gaps.
-- Links may only use PR-body categories: `Log`, `Issue`, `Runbook`, `Evidence artifact`, `Parent log`, `Roadmap`.
+- Links may only use PR-body categories: `Log`, `Runbook`, `Evidence artifact`, `Parent log`, `Roadmap`.
+- `Development Link` must not appear in canonical PR bodies; development-issue identity belongs only in `Metadata`.
 - `Evidence Footer` must be omitted when no `Evidence Footer Source` block exists.
 - `Evidence Footer` must match the `Evidence Footer Source` rows exactly and preserve order.
 - Every `Evidence Footer` row must use the canonical line shape:

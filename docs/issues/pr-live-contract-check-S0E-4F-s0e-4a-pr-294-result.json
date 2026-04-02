@@ -1,0 +1,62 @@
+{
+  "mode": "live-pr-body-contract-check",
+  "result": "fail",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+  "pr_number": 294,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/294",
+  "pr_title": "S0E-4A/P0-P3: GitHub pull request automation contract v1",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4a-pr-294-body.md",
+  "status": "fail",
+  "warnings": [],
+  "expected_evidence_footer_lines": [],
+  "checks": [
+    {
+      "name": "required-pr-sections",
+      "status": "pass",
+      "details": "required PR sections are present"
+    },
+    {
+      "name": "pr-section-order",
+      "status": "fail",
+      "details": "unexpected sections present: ['Development Link']"
+    },
+    {
+      "name": "metadata-row-shape",
+      "status": "pass",
+      "details": "metadata bullet rows are contiguous"
+    },
+    {
+      "name": "pr-link-categories",
+      "status": "fail",
+      "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/293`']"
+    },
+    {
+      "name": "evidence-footer-source-shape",
+      "status": "pass",
+      "details": "no Evidence Footer Source rows were provided"
+    },
+    {
+      "name": "evidence-footer-eligibility",
+      "status": "fail",
+      "details": "Evidence Footer is rendered but the source log is not drills/evidence eligible"
+    },
+    {
+      "name": "evidence-footer-presence",
+      "status": "fail",
+      "details": "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"
+    },
+    {
+      "name": "evidence-footer-line-shape",
+      "status": "fail",
+      "details": "Evidence Footer rows do not match the canonical line shape: ['`8f99ca5d` / `S0E-4A` / `P0-C1-S1S2S3S4S5`: fix PR automation contract', '`10f2bcfe` / `S0E-4A` / `P1-C1-S1S2`: roll PR metadata and scaffold into templates', '`6c94f4f7` / `S0E-4A` / `P2-C1-S1S2`: validate dry-run PR prep flow', '`7855c127` / `S0E-4A` / `P3-C1-S1`: create source issue and real PR flow', '`83093f85` / `S0E-4A` / `P3-C1-S2`: create real PR and write back evidence']"
+    },
+    {
+      "name": "development-link-presence",
+      "status": "fail",
+      "details": "Development Link section is no longer allowed in canonical PR bodies"
+    }
+  ],
+  "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4a-pr-294-result.json"
+}

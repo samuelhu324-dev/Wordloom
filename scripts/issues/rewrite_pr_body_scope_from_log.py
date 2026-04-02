@@ -121,10 +121,8 @@ def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, re
     }
     if evidence_footer_lines:
         rewritten_sections["Evidence Footer"] = [f"- {line}" for line in evidence_footer_lines]
-    if pr_development_issue:
-        rewritten_sections["Development Link"] = [f"- Closes {pr_development_issue}"]
 
-    ordered_sections = ["Metadata", "Summary", "Execution Checklist", "Links", "Evidence Footer", "Development Link"]
+    ordered_sections = ["Metadata", "Summary", "Execution Checklist", "Links", "Evidence Footer"]
 
     rendered: list[str] = []
     for section_name in ordered_sections:

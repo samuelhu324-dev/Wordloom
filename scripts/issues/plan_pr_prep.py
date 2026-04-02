@@ -424,10 +424,12 @@ def _extract_checked_phase_numbers(section_lines: list[str]) -> list[int]:
 
 def _build_default_link_lines(fields: dict[str, str], source_log_path: str) -> list[str]:
     lines = [f"Log: `{source_log_path}`"]
-    if fields.get("issue", "").strip():
-        lines.append(f"Issue: `{fields['issue'].strip()}`")
     if fields.get("runbook", "").strip():
         lines.append(f"Runbook: `{fields['runbook'].strip()}`")
+    if fields.get("parent_log", "").strip():
+        lines.append(f"Parent log: `{fields['parent_log'].strip()}`")
+    if fields.get("roadmap", "").strip():
+        lines.append(f"Roadmap: `{fields['roadmap'].strip()}`")
     return lines
 
 
@@ -520,15 +522,6 @@ def _render_body_preview(
             "",
             *[f"- {item}" for item in evidence_footer_lines],
         ])
-    if pr_development_issue:
-        lines.extend(
-            [
-                "",
-                "## Development Link",
-                "",
-                f"- Closes {pr_development_issue}",
-            ]
-        )
     return "\n".join(lines)
 
 

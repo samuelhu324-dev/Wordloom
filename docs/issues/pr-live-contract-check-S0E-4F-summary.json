@@ -1,0 +1,437 @@
+{
+  "mode": "S0E-4F-p2-live-pr-audit",
+  "total": 17,
+  "pass": 0,
+  "fail": 17,
+  "items": [
+    {
+      "pr_number": 249,
+      "pr_title": "S0E-1A/P0-P2: structured cv generator",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-1a-pr-249-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-1a-pr-249-result.json",
+      "failed_checks": [
+        {
+          "name": "required-pr-sections",
+          "details": "missing required PR sections: ['Metadata', 'Summary', 'Execution Checklist', 'Links']"
+        },
+        {
+          "name": "pr-section-order",
+          "details": "missing required sections for canonical order: ['Metadata', 'Summary', 'Execution Checklist', 'Links']"
+        }
+      ]
+    },
+    {
+      "pr_number": 287,
+      "pr_title": "S0E-2A/P0-P3: semi-automated Git issue creation contract v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2a-pr-287-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2a-pr-287-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/289`']"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "details": "Evidence Footer is rendered but the source log is not drills/evidence eligible"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "details": "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "details": "Evidence Footer rows do not match the canonical line shape: ['`0cc4aece` / `S0E-2A` / `P0-C1-S1S2S3`: scaffold issue automation contract', '`424f1f8a` / `S0E-2A` / `P1-C1-S1S2`: add issue-aware template fields', '`d32e8d3d` / `S0E-2A` / `P2-C1-S1S2`: validate first issue scaffold sample', '`07528621` / `S0E-2A` / `P2-C2-S1S2`: validate S4E-5B issue sample', '`137659fe` / `S0E-2A` / `P2-C3-S1S2`: validate S6A-4A issue sample', '`d9325b1d` / `S0E-2A` / `P3-C1-S1S2`: define issue creation procedure']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 290,
+      "pr_title": "S0E-2B/P0-P3: real GitHub issue creation automation v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2b-pr-290-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2b-pr-290-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/288`']"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "details": "Evidence Footer is rendered but the source log is not drills/evidence eligible"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "details": "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "details": "Evidence Footer rows do not match the canonical line shape: ['`4dcda40f` / `S0E-2B` / `P0-C1-S1S2S3`: define issue creation automation contract', '`47452bf5` / `S0E-2B` / `P1-C1-S1S2`: implement draft generation', '`59b435e6` / `S0E-2B` / `P2-C1-S1S2`: implement create issue mode', '`a696f181` / `S0E-2B` / `P3-C1-S1S2`: verify runs and write back issues']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 291,
+      "pr_title": "S0E-2C/ P0-P3: batch issue creation and backfill tooling",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2c-pr-291-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2c-pr-291-result.json",
+      "failed_checks": [
+        {
+          "name": "required-pr-sections",
+          "details": "missing required PR sections: ['Metadata', 'Summary', 'Execution Checklist', 'Links']"
+        },
+        {
+          "name": "pr-section-order",
+          "details": "missing required sections for canonical order: ['Metadata', 'Summary', 'Execution Checklist', 'Links']"
+        }
+      ]
+    },
+    {
+      "pr_number": 292,
+      "pr_title": "S0E-3A/P0-P3: roadmap milestone log bridge",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-3a-pr-292-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-3a-pr-292-result.json",
+      "failed_checks": [
+        {
+          "name": "required-pr-sections",
+          "details": "missing required PR sections: ['Metadata', 'Summary', 'Execution Checklist', 'Links']"
+        },
+        {
+          "name": "pr-section-order",
+          "details": "missing required sections for canonical order: ['Metadata', 'Summary', 'Execution Checklist', 'Links']"
+        }
+      ]
+    },
+    {
+      "pr_number": 294,
+      "pr_title": "S0E-4A/P0-P3: GitHub pull request automation contract v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4a-pr-294-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4a-pr-294-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/293`']"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "details": "Evidence Footer is rendered but the source log is not drills/evidence eligible"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "details": "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "details": "Evidence Footer rows do not match the canonical line shape: ['`8f99ca5d` / `S0E-4A` / `P0-C1-S1S2S3S4S5`: fix PR automation contract', '`10f2bcfe` / `S0E-4A` / `P1-C1-S1S2`: roll PR metadata and scaffold into templates', '`6c94f4f7` / `S0E-4A` / `P2-C1-S1S2`: validate dry-run PR prep flow', '`7855c127` / `S0E-4A` / `P3-C1-S1`: create source issue and real PR flow', '`83093f85` / `S0E-4A` / `P3-C1-S2`: create real PR and write back evidence']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 296,
+      "pr_title": "S0E-4B/P0-P3: PR title compression, structural label inheritance, and body scope alignment follow-up v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4b-pr-296-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4b-pr-296-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/295`']"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "details": "Evidence Footer is rendered but the source log is not drills/evidence eligible"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "details": "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "details": "Evidence Footer rows do not match the canonical line shape: ['`P0-C1-S1` / `P1-C1-S1`: `scripts/issues/plan_pr_prep.py` now derives aggregate PR titles from the selected commit phase set instead of always using `<ID>: <log title>`.', '`P0-C1-S2` / `P1-C1-S1`: `scripts/issues/plan_pr_prep.py` now inherits PR labels from explicit issue-side structural labels and may reuse `issue_projects` when that field is explicitly populated.', '`P0-C1-S3` / `P1-C1-S2`: `scripts/issues/plan_pr_prep.py` and `scripts/issues/create_pr_from_plan.py` now preserve separate `Evidence Footer` and `Development Link` sections and accept broader `Execution Checklist` heading variants.', '`P2-C1-S1` / `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-plan.json` now renders `S0E-4A/P0-P3: GitHub pull request automation contract v1`, carries `EVOLUTION, s0/knowledge system, sub/1`, and the matching body preview now shows separate `Evidence Footer` and `Development Link` sections.', '`P3-C1-S1`: `scripts/issues/plan_pr_prep.py` now adds `drills` when the source log contains substantive evidence/drill execution.', '`P3-C1-S2`: `scripts/issues/gen_issue_draft.py` now defaults issue projects for `docs/logs/*` sources to `wordloom Board`, while `scripts/issues/plan_pr_prep.py` leaves PR projects empty unless `pr_projects` is explicitly populated.', '`P3-C1-S3`: live PR `#294` now uses title `S0E-4A/P0-P3: GitHub pull request automation contract v1`, carries labels `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`, and has been updated to the regenerated body shape with separate `Execution Checklist`, `Evidence Footer`, and `Development Link` sections without default project noise.', '`P3-C1-S3`: generated `Execution Checklist` lines now preserve backticks around the `P*-C*-S*` identifier segment so the rendered PR body matches the log-side checklist style.', '`P3-C1-S4`: issue-create now has a real project-assignment path, but GitHub-side project resolution remains blocked in the current environment by project lookup/auth limitations.', '`P3-C1-S5`: generated issue and PR bodies now start directly at `## Metadata`, removing the redundant top-level title heading while keeping machine-readable structure intact.', '`P3-C1-S6`: a first attempt to create the real `S0E-4B` PR from `main` failed on cherry-pick because the selected commit depends on unmerged `S0E-4A` file changes; the validation PR base is therefore temporarily stacked on `pr-prep/s0e-4a`.', \"`P3-C1-S7`: the `S0E-4B` validation PR exposed that GitHub's stacked PR commit views can repeat already-reviewed upstream commits from the base PR branch ancestry; the review contract now treats compare-base semantics and `Files changed` as authoritative.\", '`P3-C1-S8`: `scripts/issues/plan_pr_prep.py` now prefers checked execution-checklist phase coverage when deriving aggregate PR titles, so logs that already completed `P0-P2` at creation time still render `P0-P3` after the implementation-phase commits land.', '`P3-C1-S9`: the branch policy is now explicit: `S0E-docs-management-v5` remains the mixed authoring branch for the spine and parent-log ledger work, while `pr-prep/*` branches are short-lived review artifacts for one PR each.', '`P3-C1-S8`: live PR `#296` has been retitled from the commit-only `P3-C1-...` form to the checklist-derived aggregate form `S0E-4B/P0-P3: PR title compression, structural label inheritance, and body scope alignment follow-up v1`.', '`P3-C1-S10`: GitHub now shows real issue `#295` with labels `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`, and project item `wordloom Board / Backlog`, proving the issue-create project path works with the updated token scopes.', '`P3-C1-S11`: live PR `#296` is now retargeted to `main`, eliminating the temporary stacked-base review noise once upstream PR `#294` merged.']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 298,
+      "pr_title": "S0E-2D/P0-P3: issue creation metadata enrichment and English body contract v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2d-pr-298-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2d-pr-298-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/297`']"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "details": "Evidence Footer is rendered but the source log is not drills/evidence eligible"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "details": "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "details": "Evidence Footer rows do not match the canonical line shape: ['`7434a944` / `S0E-2D` / `P1-C1-S1S2`: enrich issue draft metadata and body scaffold', '`8745b016` / `S0E-2D` / `P2-C1-S1S2`: validate enriched issue draft samples', '`4e0f61a9` / `S0E-2D` / `P1-C2-S3+P3-C3-S2`: normalize parent issue rendering and audit sibling issues', '`7cabb59b` / `S0E-2D` / `P1-C2-S4+P3-C3-S3`: render plain parent issue references']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 299,
+      "pr_title": "S0E-4A/P3-C2-S1S2: derive development issue fallback and multi-issue formatting",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4a-pr-299-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4a-pr-299-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/293`']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 301,
+      "pr_title": "S0E-4C/P0-P4: PR summary, development-link rendering, and issue relationship follow-up v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4c-pr-301-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4c-pr-301-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/300`', '- Generated PR body should keep `Summary`, `Evidence Footer`, and `Development Link` as separate sections.', '- `Summary` must not degrade to `<placeholder>` on a live PR create path.']"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "details": "invalid Evidence Footer Source rows: ['Generated PR body should keep `Summary`, `Evidence Footer`, and `Development Link` as separate sections.', '`Summary` must not degrade to `<placeholder>` on a live PR create path.']"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "details": "Evidence Footer Source is present but the source log is not drills/evidence eligible"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "details": "rendered Evidence Footer rows do not match source rows: ['`P1-C1-S1`: `scripts/issues/plan_pr_prep.py` now persists normalized short development-issue refs in plan output, and `scripts/issues/create_pr_from_plan.py` rewrites the metadata row to that same short-ref form before live PR creation.', '`P1-C1-S2`: `scripts/issues/create_pr_from_plan.py` now blocks live PR creation when the preview `Summary` still contains `- <placeholder>` or when the planned item carries zero explicit summary bullets.', '`P1-C1-S3`: `scripts/issues/apply_issue_relationships.py` now provides a real relationship apply path using GitHub GraphQL `addSubIssue`, including idempotent success when the requested parent-child link already exists and fail-closed behavior for conflicting parents.', '`P1-C1-S3`: the GitHub GraphQL mutation shape was verified against live `S0E` issue IDs while wiring the apply path, confirming that sidebar `Relationships` must be attached through sub-issue mutation instead of issue-body edits.', '`P2-C1-S1`: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md` now carries explicit `PR Summary Inputs`, and regenerated artifacts `docs/issues/pr-prep-S0E-2D-sample-plan.json` plus `docs/issues/pr-prep-S0E-2D-sample-body.md` confirm that `Summary` is now populated while `Development issue` remains the normalized short ref `#297`.', '`P2-C1-S1`: the regenerated `pr-prep-S0E-2D` plan now records `pr_development_issue: #297`, `pr_development_issue_refs: [\"#297\"]`, and `summary_bullet_count: 3`, proving the create-path fail-closed gate now has explicit structured input to consume.', '`P2-C1-S2`: `docs/issues/issue-relationship-S0E-4C-sample-plan.json` validates a representative `S0E` child relationship sample for `#248 -> #295` with clean traceability through `parent_log` and `child_log_path`.', '`P2-C1-S2`: `docs/issues/issue-relationship-S0E-4C-sample-apply-result.json` confirms the representative child issue was already attached to the requested parent and that the new apply path returns idempotent success as `already-linked-child-to-parent` instead of mutating or failing.', '`P3-C1-S1`: live PR `#296` was rewritten from the regenerated `docs/issues/pr-prep-S0E-4B-sample-body.md`, which now renders `Development issue: #295` as a plain short ref and keeps `Development Link` aligned as `Closes #295`.', '`P3-C1-S1`: live PR `#298` was rewritten from `docs/issues/pr-prep-S0E-2D-sample-body.md`, replacing the old `- <placeholder>` summary with explicit bullets and restoring the separate `Development Link` section.', '`P3-C1-S3`: the four historical merged PRs visible in the `S0E` list were audited as `#294`, `#296`, `#298`, and `#299`; only `#296` and `#298` required live body remediation, while `#294` and `#299` already matched the current contract.', '`P3-C1-S2`: live issue `#300` was created from `docs/issues/issue-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`, and `docs/issues/issue-relationship-S0E-4C-p4-apply-result.json` confirms the child issue is now attached to parent `#248` in GitHub sidebar `Relationships`.', '`P4-C1-S1`: live PR `#301` was created from clean branch `pr-prep/s0e-4c`, merged at `2026-03-30T03:44:43Z`, and auto-closed issue `#300` through `Closes #300` while preserving short-ref `Development issue` metadata in the PR body.', '`P4-C1-S2`: `docs/issues/issue-conclusion-S0E-4C-p4-plan.json`, `docs/issues/issue-conclusion-S0E-4C-p4-s0e-4c-body.md`, and `docs/issues/issue-conclusion-S0E-4C-p4-s0e-4c-apply-result.json` prove the final issue body now carries `DoD -> #301` plus deterministic `Issue` and `PR` links after the full closed loop.', '`P4-C1-S2`: `scripts/issues/plan_pr_prep.py` now compares commit selection against `origin/<base>` when available, aligning PR-prep dry-run selection with the real create-path worktree base used by `scripts/issues/create_pr_from_plan.py`.']"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "details": "Evidence Footer rows do not match the canonical line shape: ['`P1-C1-S1`: `scripts/issues/plan_pr_prep.py` now persists normalized short development-issue refs in plan output, and `scripts/issues/create_pr_from_plan.py` rewrites the metadata row to that same short-ref form before live PR creation.', '`P1-C1-S2`: `scripts/issues/create_pr_from_plan.py` now blocks live PR creation when the preview `Summary` still contains `- <placeholder>` or when the planned item carries zero explicit summary bullets.', '`P1-C1-S3`: `scripts/issues/apply_issue_relationships.py` now provides a real relationship apply path using GitHub GraphQL `addSubIssue`, including idempotent success when the requested parent-child link already exists and fail-closed behavior for conflicting parents.', '`P1-C1-S3`: the GitHub GraphQL mutation shape was verified against live `S0E` issue IDs while wiring the apply path, confirming that sidebar `Relationships` must be attached through sub-issue mutation instead of issue-body edits.', '`P2-C1-S1`: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md` now carries explicit `PR Summary Inputs`, and regenerated artifacts `docs/issues/pr-prep-S0E-2D-sample-plan.json` plus `docs/issues/pr-prep-S0E-2D-sample-body.md` confirm that `Summary` is now populated while `Development issue` remains the normalized short ref `#297`.', '`P2-C1-S1`: the regenerated `pr-prep-S0E-2D` plan now records `pr_development_issue: #297`, `pr_development_issue_refs: [\"#297\"]`, and `summary_bullet_count: 3`, proving the create-path fail-closed gate now has explicit structured input to consume.', '`P2-C1-S2`: `docs/issues/issue-relationship-S0E-4C-sample-plan.json` validates a representative `S0E` child relationship sample for `#248 -> #295` with clean traceability through `parent_log` and `child_log_path`.', '`P2-C1-S2`: `docs/issues/issue-relationship-S0E-4C-sample-apply-result.json` confirms the representative child issue was already attached to the requested parent and that the new apply path returns idempotent success as `already-linked-child-to-parent` instead of mutating or failing.', '`P3-C1-S1`: live PR `#296` was rewritten from the regenerated `docs/issues/pr-prep-S0E-4B-sample-body.md`, which now renders `Development issue: #295` as a plain short ref and keeps `Development Link` aligned as `Closes #295`.', '`P3-C1-S1`: live PR `#298` was rewritten from `docs/issues/pr-prep-S0E-2D-sample-body.md`, replacing the old `- <placeholder>` summary with explicit bullets and restoring the separate `Development Link` section.', '`P3-C1-S3`: the four historical merged PRs visible in the `S0E` list were audited as `#294`, `#296`, `#298`, and `#299`; only `#296` and `#298` required live body remediation, while `#294` and `#299` already matched the current contract.', '`P3-C1-S2`: live issue `#300` was created from `docs/issues/issue-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`, and `docs/issues/issue-relationship-S0E-4C-p4-apply-result.json` confirms the child issue is now attached to parent `#248` in GitHub sidebar `Relationships`.', '`P4-C1-S1`: live PR `#301` was created from clean branch `pr-prep/s0e-4c`, merged at `2026-03-30T03:44:43Z`, and auto-closed issue `#300` through `Closes #300` while preserving short-ref `Development issue` metadata in the PR body.', '`P4-C1-S2`: `docs/issues/issue-conclusion-S0E-4C-p4-plan.json`, `docs/issues/issue-conclusion-S0E-4C-p4-s0e-4c-body.md`, and `docs/issues/issue-conclusion-S0E-4C-p4-s0e-4c-apply-result.json` prove the final issue body now carries `DoD -> #301` plus deterministic `Issue` and `PR` links after the full closed loop.', '`P4-C1-S2`: `scripts/issues/plan_pr_prep.py` now compares commit selection against `origin/<base>` when available, aligning PR-prep dry-run selection with the real create-path worktree base used by `scripts/issues/create_pr_from_plan.py`.']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 302,
+      "pr_title": "S0E-4C/P5-C1-S1: harden create-path cherry-pick fallback",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4c-pr-302-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4c-pr-302-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/300`']"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "details": "invalid Evidence Footer Source rows: ['Generated PR body should keep `Summary`, `Evidence Footer`, and `Development Link` as separate sections.', '`Summary` must not degrade to `<placeholder>` on a live PR create path.']"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "details": "Evidence Footer Source is present but the source log is not drills/evidence eligible"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "details": "Evidence Footer Source exists but the rendered Evidence Footer section is missing"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 304,
+      "pr_title": "S0E-4D/P0-P2: review-hold, full-auto, and lifecycle orchestration follow-up v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4d-pr-304-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4d-pr-304-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/303`']"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "details": "Evidence Footer is rendered but the source log is not drills/evidence eligible"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "details": "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "details": "Evidence Footer rows do not match the canonical line shape: ['`P0-C1-S1` / `P0-C1-S3`: this log now fixes `review-hold` as the default mode, narrows `full-auto` to automatable stages only, and makes post-merge continuation contingent on confirmed merge completion rather than implicit merge ownership.', '`P0-C1-S2` / `P1-C1-S1`: `docs/logs/log-S0E-docs-management-v5.md` now records `S0E-4D` as the dedicated lifecycle-orchestration owner instead of leaving that boundary inside `S0E-2D`.', '`P1-C1-S2` / `P2-C1-S1`: `docs/runbook/run-S0E-log-to-issue-creation.md` now carries one operator-facing command-pattern block for staged review, explicit resume, and post-merge full-auto continuation while keeping contract ownership in `S0E-4D`.', '`P2-C1-S2`: this log now includes fail-closed examples for ambiguous continuation requests, blocked closed-loop requests, and downstream-only resume commands.']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 306,
+      "pr_title": "S0E-5A/P0-P5: lifecycle audit gate and dry-run planner v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5a-pr-306-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5a-pr-306-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/305`']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 308,
+      "pr_title": "S0E-5B/P0-P3: guarded lifecycle apply expansion v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5b-pr-308-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5b-pr-308-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/307`']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 310,
+      "pr_title": "S0E-5C/P0-P4: guarded PR create decomposition v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5c-pr-310-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5c-pr-310-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-section-order",
+          "details": "unexpected sections present: ['Development Link']"
+        },
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/309`']"
+        },
+        {
+          "name": "development-link-presence",
+          "details": "Development Link section is no longer allowed in canonical PR bodies"
+        }
+      ]
+    },
+    {
+      "pr_number": 311,
+      "pr_title": "S0E-7C/P0-P4: workflow/historical log review sampling and mirror follow-up v1",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-7c-pr-311-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-7c-pr-311-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Issue: ``']"
+        }
+      ]
+    },
+    {
+      "pr_number": 312,
+      "pr_title": "S0E-7C/P4-C1-S3: remove planner runtime closure dependency",
+      "result": "fail",
+      "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-7c-pr-312-body.md",
+      "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-7c-pr-312-result.json",
+      "failed_checks": [
+        {
+          "name": "pr-link-categories",
+          "details": "PR Links section contains invalid rows: ['- Log: docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md', '- Issue: `', '- Runbook: `', '- Evidence artifact: scripts/issues/plan_historical_log_review.py']"
+        }
+      ]
+    }
+  ]
+}

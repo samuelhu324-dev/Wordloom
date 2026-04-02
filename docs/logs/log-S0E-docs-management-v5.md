@@ -34,6 +34,7 @@
   **phase_log_22**: `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`
   **phase_log_23**: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`
   **phase_log_24**: `docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`
+  **phase_log_25**: `docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -121,6 +122,8 @@
   - 详见：`docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`
 - `S0E-6F`（Phase 6F）：issue body metadata and links boundary follow-up
   - 详见：`docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`
+- `S0E-4F`（Phase 4F）：PR body metadata-links redundancy follow-up
+  - 详见：`docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`
 - `S0E-4C`（Phase 4C）：PR summary / development issue rendering / issue relationship attach follow-up
   - 详见：`docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
 - `S0E-3A`（Phase 3A）：roadmap milestone and child-log bridge contract
@@ -259,6 +262,9 @@
 - [x] `P124`：`S0E-6F` 已完成 `P0-P1`，issue draft / issue conclusion preview / lifecycle audit / owner logs / runbook 现已统一到“Metadata 只留状态字段、Links 承接 deterministic navigation”的新边界
 - [x] `P125`：`S0E-6F` 已完成 `P2`，新的代表性 artifacts 已生成，当前 `10` 条 closed `S0E` child issues 也已按同一边界完成 bounded refresh，并通过 `10/10` post-refresh lifecycle audit
 - [x] `P126`：`S0E-6F` 已完成 `P3`，issue body contract 现已显式区分 top-level parent 与 child issue：`#248` 已刷新到 parent-aware body shape，且 `S0E` parent-plus-child `11` 条 issue 现已一起通过 post-refresh lifecycle audit
+- [x] `P127`：已新建 `S0E-4F`，专门收口 PR body 中 `Development Link` 与 `Links -> Issue` 的重复问题，并把当前 `17` 条 live `S0E` PR 的全量审查范围固定到同一条 log
+- [x] `P128`：`S0E-4F` 已完成 `P0-P1`，shared PR contract / preview-create-rewrite renderer / canonical spec / log templates 现已统一到“Development issue 只留在 Metadata、Links 只保留 deterministic navigation”的新边界
+- [x] `P129`：`S0E-4F` 已完成 `P2`，当前 `17` 条 live `S0E` PR 已全量审查为 `17/17 fail`，后续 rewrite scope 也已固定为一个按 `4` 类 drift family 分层执行的 bounded batch
 
 ## Current Status（进展摘要）
 
@@ -320,6 +326,7 @@
 - `S0E-6F` 已完成 `P0-P1`：issue draft rendering、issue conclusion preview、lifecycle audit、`S0E-2D` / `S0E-2E` / `S0E-5D` owner wording 与 runbook 现已一起切到新边界，不再把 `Source log` 当作 `Metadata` 行；
 - `S0E-6F` 已完成 `P2`：代表性 draft/conclusion artifacts 已重生成，当前 `10` 条 closed `S0E` child issues 也已完成 bounded live refresh，post-refresh lifecycle audit 现为 `10/10 pass`；
 - `S0E-6F` 已完成 `P3` 并继续保持 `stable`：当前 contract 已进一步显式区分 top-level parent issue 与 child issue，live parent issue `#248` 现已回写到 parent-aware body shape，且扩展后的 `11` 条 `S0E` parent-plus-child issues 已通过同一份 post-refresh lifecycle audit；
+- 已新建 `S0E-4F` 作为下一条 PR-body follow-up：目标是去掉 PR body 里重复的 `Development Link` 与 `Links -> Issue`，并对当前 `17` 条 live `S0E` PR 做一轮显式全量审查；
 - `S0E-6C` 已完成并进入 `stable`：issue `Context` 现已固定 main/child 两档英文句子合同，issue draft / issue conclusion / lifecycle audit 也已接到同一规则上，`#309` 已通过真实重写与 re-audit；
 - `S0E-5C` 的真实链路现已打通：issue `#309` 不再停留在 issue-only sample，PR `#310` 已创建并合并，inline post-apply verification 已通过，final issue conclusion 也已写回 closed issue；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
@@ -443,6 +450,7 @@
 - 2026-04-02：`S0E-6F/P0-P1` 已完成：issue create / conclusion 的 renderer、lifecycle audit 的 link-boundary 检查，以及 `2D/2E/5D` owner wording 与 runbook 现已全部对齐到新规则，后续只剩 representative artifacts 与 live-reconciliation scope 决策。
 - 2026-04-02：`S0E-6F/P2` 已完成：`6F` representative draft/conclusion artifacts 已生成，live reconciliation scope 已固定为当前 `10` 条 closed `S0E` child issues，并已完成 bounded refresh 与 `10/10` post-refresh lifecycle audit。
 - 2026-04-02：`S0E-6F/P3` 已完成：issue body contract 现已显式区分 top-level parent 与 child issue，`#248` 已刷新为 parent-aware body shape，且扩展后的 `11` 条 `S0E` parent-plus-child issues 已通过同一份 post-refresh lifecycle audit。
+- 2026-04-02：新增 `S0E-4F`，用于收口 PR body 的两处重复面：去掉独立 `Development Link` section，并把 `Links` 里的 `Issue` 行移除，随后对当前 `17` 条 live `S0E` PR 做一轮显式全量审查。
 - 2026-04-01：新增并完成 `S0E-6C`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同；`#309` 也已在真实 conclusion replay 后通过新的 lifecycle audit gate。
 - 2026-04-01：完成 `S0E-5C` 的真实 lifecycle follow-through，PR `#310` 已创建并合并，issue `#309` 已完成 final body write-back；当时的 GitHub Actions mirror dispatch 也据此暴露出“workflow 需先对默认分支可见”这一前置条件，并在后续 `S0E-7C/P4` 中被正面解决。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。

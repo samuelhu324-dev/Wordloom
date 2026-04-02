@@ -7,9 +7,9 @@ from gen_issue_draft import _parse_fields, _parse_sections
 
 
 PR_REQUIRED_SECTIONS = ["Metadata", "Summary", "Execution Checklist", "Links"]
-PR_OPTIONAL_SECTIONS = ["Evidence Footer", "Development Link"]
+PR_OPTIONAL_SECTIONS = ["Evidence Footer"]
 ISSUE_REQUIRED_SECTIONS = ["Metadata", "Context", "Definition of Done (DoD)", "Links"]
-PR_ALLOWED_LINK_LABELS = {"Log", "Issue", "Runbook", "Evidence artifact", "Parent log", "Roadmap"}
+PR_ALLOWED_LINK_LABELS = {"Log", "Runbook", "Evidence artifact", "Parent log", "Roadmap"}
 ISSUE_ALLOWED_LINK_LABELS = {"Log", "Runbook", "Parent log", "Previous log", "Roadmap"}
 EVIDENCE_FOOTER_LINE_RE = re.compile(r"^`(?P<stage>[^`]+)` \| artifact: `(?P<artifact>[^`]+)`$")
 LINK_LINE_RE = re.compile(r"^- (?P<label>[^:]+):\s+`[^`]*`$")
@@ -914,13 +914,10 @@ def validate_pr_body_contract(*, body_markdown: str, source_log_text: str, pr_de
     else:
         checks.append(ContractCheck("evidence-footer-line-shape", "pass", "no Evidence Footer rows were rendered"))
 
-    if pr_development_issue:
-        if "Development Link" not in sections:
-            checks.append(ContractCheck("development-link-presence", "fail", "Development Link section is required when a development issue exists"))
-        else:
-            checks.append(ContractCheck("development-link-presence", "pass", "Development Link section is present for the development issue"))
-    elif "Development Link" in sections:
-        checks.append(ContractCheck("development-link-presence", "fail", "Development Link section must be omitted when no development issue exists"))
+    if "Development Link" in sections:
+        checks.append(ContractCheck("development-link-presence", "fail", "Development Link section is no longer allowed in canonical PR bodies"))
+    elif pr_development_issue:
+        checks.append(ContractCheck("development-link-presence", "pass", "Development issue is tracked only through Metadata as required"))
     else:
         checks.append(ContractCheck("development-link-presence", "pass", "Development Link section is correctly omitted"))
 

@@ -120,7 +120,7 @@
   - child-issue `Definition of Done (DoD)` contains short PR refs such as `#299` and `#300`, while top-level parent issues keep a child-issue short-ref ledger;
   - `Links` keeps deterministic log navigation, including optional `Roadmap`, and does not add issue or PR lines in the conclusion contract.
 - PR body is now fixed as:
-  - `Metadata -> Summary -> Execution Checklist -> Links -> Evidence Footer (when applicable) -> Development Link (only when an issue exists)`.
+  - `Metadata -> Summary -> Execution Checklist -> Links -> Evidence Footer (when applicable)`.
 - Metadata-like bullet rows across creation / conclusion / PR bodies must be contiguous with no blank paragraphs between adjacent bullets.
 - Inline code is now fixed as:
   - metadata values use backticks by default;

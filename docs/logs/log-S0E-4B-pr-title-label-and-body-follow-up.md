@@ -44,7 +44,7 @@
 
 - `S0E-4B` exists as the narrow follow-up to `S0E-4A`, focused only on PR title naming, PR label inheritance, and PR body section formatting.
 - Structural PR labels should no longer rely only on `pr_labels`; they should inherit explicit issue-side structural labels from the same log.
-- PR body generation should match the newer log template shape, especially flat execution checklist parsing plus separate `Evidence Footer` and `Development Link` sections.
+- PR body generation should match the newer log template shape, especially flat execution checklist parsing plus a separate `Evidence Footer` section while development issue identity stays only in `Metadata`.
 - Stacked PRs should be interpreted by their compare base and `Files changed` delta, not by GitHub's full head-branch commit ancestry list.
 
 **Default choices (phase defaults / v1)**:
@@ -74,7 +74,6 @@
 **PR links / evidence footer**:
 
 - Log: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/295`
 - Runbook: ``
 - Evidence artifact: `docs/issues/pr-prep-S0E-4B-sample-plan.json`
 
@@ -97,7 +96,7 @@
 - Generated PR titles can distinguish whole-phase aggregate PRs from incremental `P*-C*-S*` follow-ups.
 - Generated PR labels inherit at least the explicit top/scope/module labels from the same source log.
 - Body generation can parse `Execution Checklist` sections even when the heading variant changes.
-- `Evidence Footer` and `Development Link` remain separate sections in the generated PR body.
+- `Evidence Footer` remains a separate section in the generated PR body, while development issue identity stays only in `Metadata`.
 - Issue creation for logs under `docs/logs/` defaults to project `wordloom Board` unless an explicit project override is supplied.
 - Live issue creation and project assignment are validated by issue `#295` on `wordloom Board`.
 - PR creation stays project-empty by default unless `pr_projects` is explicitly populated.
@@ -128,7 +127,7 @@
 ### P0-C1-S3 (Body section boundaries | v1)
 
 - The body generator should treat any `## Execution Checklist...` heading variant as the checklist source section.
-- `Evidence Footer` and `Development Link` must remain separate body sections.
+- `Evidence Footer` remains the only optional PR body section; development issue identity stays in `Metadata` instead of a separate section.
 
 ## P3 (Projects, drills, and live PR audit | v1)
 
@@ -189,7 +188,7 @@
 ### P3-C1-S11 (Post-merge PR realignment | v1)
 
 - After upstream PR `#294` merged, PR `#296` should no longer stay based on `pr-prep/s0e-4a`.
-- The live `S0E-4B` PR should be retargeted to `main`, and its body should be aligned so metadata and Development link reflect the final non-stacked state.
+- The live `S0E-4B` PR should be retargeted to `main`, and its body should be aligned so metadata reflects the final non-stacked state.
 
 ## Plan (draft)
 
@@ -242,11 +241,11 @@
 
 - `P0-C1-S1` / `P1-C1-S1`: `scripts/issues/plan_pr_prep.py` now derives aggregate PR titles from the selected commit phase set instead of always using `<ID>: <log title>`.
 - `P0-C1-S2` / `P1-C1-S1`: `scripts/issues/plan_pr_prep.py` now inherits PR labels from explicit issue-side structural labels and may reuse `issue_projects` when that field is explicitly populated.
-- `P0-C1-S3` / `P1-C1-S2`: `scripts/issues/plan_pr_prep.py` and `scripts/issues/create_pr_from_plan.py` now preserve separate `Evidence Footer` and `Development Link` sections and accept broader `Execution Checklist` heading variants.
-- `P2-C1-S1` / `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-plan.json` now renders `S0E-4A/P0-P3: GitHub pull request automation contract v1`, carries `EVOLUTION, s0/knowledge system, sub/1`, and the matching body preview now shows separate `Evidence Footer` and `Development Link` sections.
+- `P0-C1-S3` / `P1-C1-S2`: `scripts/issues/plan_pr_prep.py` and `scripts/issues/create_pr_from_plan.py` now preserve a separate `Evidence Footer` section, keep development issue identity in `Metadata`, and accept broader `Execution Checklist` heading variants.
+- `P2-C1-S1` / `P2-C1-S2`: `docs/issues/pr-prep-S0E-4A-sample-plan.json` now renders `S0E-4A/P0-P3: GitHub pull request automation contract v1`, carries `EVOLUTION, s0/knowledge system, sub/1`, and the matching body preview now shows the canonical `Evidence Footer` without a redundant Development section.
 - `P3-C1-S1`: `scripts/issues/plan_pr_prep.py` now adds `drills` when the source log contains substantive evidence/drill execution.
 - `P3-C1-S2`: `scripts/issues/gen_issue_draft.py` now defaults issue projects for `docs/logs/*` sources to `wordloom Board`, while `scripts/issues/plan_pr_prep.py` leaves PR projects empty unless `pr_projects` is explicitly populated.
-- `P3-C1-S3`: live PR `#294` now uses title `S0E-4A/P0-P3: GitHub pull request automation contract v1`, carries labels `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`, and has been updated to the regenerated body shape with separate `Execution Checklist`, `Evidence Footer`, and `Development Link` sections without default project noise.
+- `P3-C1-S3`: live PR `#294` now uses title `S0E-4A/P0-P3: GitHub pull request automation contract v1`, carries labels `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`, and was updated to the then-canonical regenerated body shape without default project noise; later PR-body redundancy narrowing is owned by `S0E-4F`.
 - `P3-C1-S3`: generated `Execution Checklist` lines now preserve backticks around the `P*-C*-S*` identifier segment so the rendered PR body matches the log-side checklist style.
 - `P3-C1-S4`: issue-create now has a real project-assignment path, but GitHub-side project resolution remains blocked in the current environment by project lookup/auth limitations.
 - `P3-C1-S5`: generated issue and PR bodies now start directly at `## Metadata`, removing the redundant top-level title heading while keeping machine-readable structure intact.

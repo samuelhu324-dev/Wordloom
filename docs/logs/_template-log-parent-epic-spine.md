@@ -37,7 +37,7 @@
 **pr_projects**: ``          # exact GitHub Project names for the PR; if blank, PR automation leaves project assignment empty by default
 **pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave the PR milestone empty
 **pr_base**: ``              # exact PR base branch, e.g. main; if blank, dry-run may report it missing but must not guess another base
-**pr_development_issue**: `` # exact issue number/url the PR should link in Development; if blank, automation must leave Development linkage empty
+**pr_development_issue**: `` # exact issue number/url the PR should record in Metadata as Development issue; if blank, automation must leave that metadata row empty
 **created**: `YYYY-MM-DD`
 **updated**: `YYYY-MM-DD`
 
@@ -54,7 +54,7 @@
 
 - <默认认证/默认存储/默认入口/默认环境/默认语义……>
 - 若 `issue_*` 字段为空，automation 必须保守留空并要求人工确认，而不是猜测 title keyword、labels 或 milestone。
-- 若 `pr_*` 字段为空，PR automation 必须保守留空并显式报告缺口，而不是复制 issue metadata 或猜测 base / milestone / development link。
+- 若 `pr_*` 字段为空，PR automation 必须保守留空并显式报告缺口，而不是复制 issue metadata 或猜测 base / milestone / development issue。
 - roadmap 与 logs 的机械桥接必须通过 `roadmap_path + roadmap_milestone + roadmap_phase` 明确声明；roadmap 内的正式 bridge ledger 默认只计入 child logs，而不是 parent/spine prose。
 
 ## PR Summary Inputs（可选）
@@ -76,7 +76,6 @@
 
 - Parent log: `docs/logs/log-<ID>.md`
 - Child log source(s): ``
-- Issue: ``
 - Evidence artifact: ``
 
 **Evidence Footer Source**:
@@ -84,7 +83,7 @@
 - `P1-C1-S1` | artifact: ``
 
 - Parent/spine 只有在自身确实拥有对应 phase/unit 证据时才应填写 footer rows；仅做聚合时，应让 child logs 继续作为 footer source 的实际持有者。
-- Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
+- Generated PR body should keep `Evidence Footer` as the only optional section; development issue identity stays in `Metadata`.
 - `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
 
 **Non-goals（不做什么）**（可选，但建议写）:

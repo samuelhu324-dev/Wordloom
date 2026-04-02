@@ -173,12 +173,12 @@ Section order:
 3. `Execution Checklist`
 4. `Links`
 5. `Evidence Footer` when applicable
-6. `Development Link` only when an issue exists
 
 Canonical notes:
 
 - `Metadata` rows must stay contiguous with no blank rows between bullets.
-- `Development Link` appears only when a development issue exists.
+- `Metadata` is the only user-facing owner for development-issue identity in PR bodies.
+- `Links` must keep deterministic navigation rows only and must not repeat the development issue as an `Issue` row.
 - `Evidence Footer` is reserved for drills/evidence-carrying logs only.
 - If the log does not qualify for Evidence Footer, the whole section must be omitted.
 - Fallback to commit footer is not allowed.
@@ -208,7 +208,6 @@ Canonical shape:
 ## Links
 
 - Log: `docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/307`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json`
 
@@ -216,10 +215,6 @@ Canonical shape:
 
 - `P1-C1-S1` | artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json`
 - `P2-C1-S1` | artifact: `docs/issues/pr-create-preflight-S0E-5C-p2-stop-branch-collision.json`
-
-## Development Link
-
-- Closes #307
 ```
 
 ## P0-Locked Inputs For P1
