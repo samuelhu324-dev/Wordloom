@@ -1,0 +1,91 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-6F-metadata-links-sample-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 3,
+  "planned_items": 3,
+  "warnings": [
+    "S0E-2A: preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+    "S0E-2D: preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+    "S0E-5C: preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "issue_title": "S0E-2A: contract/semi-automated Git issue creation contract",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-6F-metadata-links-sample-s0e-2a-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 287,
+          "title": "S0E-2A/P0-P3: semi-automated Git issue creation contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/287",
+          "merged_at": "2026-03-28T12:22:18Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default"
+      ],
+      "reason": "Representative conclusion preview for a closed early issue-creation contract sample under the new metadata-versus-links boundary."
+    },
+    {
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "issue_number": 297,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/297",
+      "issue_title": "S0E-2D: contract/issue creation metadata enrichment and English body contract",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-6F-metadata-links-sample-s0e-2d-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 298,
+          "title": "S0E-2D/P0-P3: issue creation metadata enrichment and English body contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/298",
+          "merged_at": "2026-03-29T14:43:52Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default"
+      ],
+      "reason": "Representative conclusion preview for an enriched issue-creation sample that now carries Previous log in Links instead of Source log in Metadata."
+    },
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "issue_number": 309,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/309",
+      "issue_title": "S0E-5C: workflow/guarded PR create decomposition",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-6F-metadata-links-sample-s0e-5c-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 310,
+          "title": "S0E-5C/P0-P4: guarded PR create decomposition v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/310",
+          "merged_at": "2026-04-01T00:49:22Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default"
+      ],
+      "reason": "Representative conclusion preview for a later workflow sample under the new metadata-versus-links boundary."
+    }
+  ]
+}

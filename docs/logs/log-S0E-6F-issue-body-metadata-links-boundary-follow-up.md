@@ -5,7 +5,7 @@
 **id**: `S0E-6F`
 **kind**: `log`
 **title**: `issue body metadata and links boundary follow-up v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Workflow, Automation, Contract, Formatting, epic/s0, sub/1`
 **links**: ``
@@ -100,17 +100,20 @@
 
 ## Stability (what draft means now)
 
-- This log remains `draft` until:
+- This log can be marked `stable` when:
   - the field-allocation contract is fixed in `S0E-2D`, `S0E-2E`, and the shared body-contract owner surfaces;
   - generators and planners are updated to the same rule;
-  - representative issue artifacts or live issue samples prove the new boundary without creating fresh body drift.
+  - representative issue artifacts prove the new boundary locally;
+  - the bounded live reconciliation decision is explicit and the chosen live sample set verifies cleanly.
 
 ## Current Status
 
 - `S0E-6F` is now opened as a narrow field-boundary follow-up to `S0E-2D`, `S0E-2E`, `S0E-5D`, and `S0E-6E`.
 - `P0` is now completed: the field-allocation contract is fixed as `Metadata = state rows only`, `Links = deterministic navigation rows`, with `reference_log_*` explicitly left out.
 - `P1` is now completed: issue draft rendering, issue conclusion preview rendering, lifecycle audit link validation, and operator/runbook wording are now aligned to the same boundary.
-- The current remaining work is `P2`: retain representative issue artifacts under the new rule and then decide whether live issue reconciliation should stay representative-only or expand to a bounded historical batch.
+- `P2` is now completed: representative creation/conclusion artifacts have been regenerated, the live reconciliation scope has been fixed as the current `10` closed `S0E` child issues only, and that bounded batch now re-audits cleanly.
+- `#248` remains intentionally out of scope for `6F/P2` because it is the older top-level parent issue with a pre-contract body family rather than a current child issue body governed by the `2D/2E/5D` shape.
+- `S0E-6F` is now `stable`: the contract, implementation, representative artifacts, bounded live refresh, and post-refresh lifecycle audit all agree on the same metadata-versus-links boundary.
 
 ## P0 (Field-allocation contract | v1)
 
@@ -161,6 +164,8 @@
 
 - Audit whether only representative issue bodies need live reconciliation or whether the existing `S0E` family should be normalized in one bounded batch.
 - Keep this decision explicit instead of silently rewriting all historical issue bodies under the new micro-contract.
+- The chosen `6F/P2` scope is the current `10` closed `S0E` child issues `#288/#289/#293/#295/#297/#300/#303/#305/#307/#309`.
+- The open top-level parent issue `#248` is excluded because it belongs to an older pre-contract body shape and would require a separate parent-issue normalization decision.
 
 ## Execution Checklist (unchecked)
 
@@ -178,8 +183,8 @@
 
 ### P2 (Representative validation and reconciliation)
 
-- [ ] `P2-C1-S1`: representative issue artifacts regenerated
-- [ ] `P2-C1-S2`: live-issue reconciliation scope decided
+- [x] `P2-C1-S1`: representative issue artifacts regenerated
+- [x] `P2-C1-S2`: live-issue reconciliation scope decided
 
 ## Evidence (reserved)
 
@@ -203,9 +208,40 @@
 - observed:
   - issue draft rendering now emits state-only `Metadata`, conclusion previews strip historical `Source log` rows from preserved metadata, lifecycle audit now accepts optional `Previous log` and rejects `Source log` in `Metadata`, and the owner logs plus runbook now describe the same field allocation
 
+### P2 (representative artifacts regenerated and bounded live refresh completed | 2026-04-02)
+
+- artifacts:
+  - `docs/issues/issue-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`
+  - `docs/issues/issue-S0E-6F-issue-body-metadata-links-boundary-follow-up.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-sample-manifest.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-sample-plan.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-sample-s0e-2a-body.md`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-sample-s0e-2d-body.md`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-sample-s0e-5c-body.md`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-manifest.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-plan.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-2b-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-2a-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-4a-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-4b-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-2d-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-4c-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-4d-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-5a-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-5b-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-5c-apply-result.json`
+  - `docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-live-summary.json`
+  - `docs/issues/lifecycle-audit-S0E-6F-metadata-links-refresh-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-6F-metadata-links-refresh-manifest-plan.json`
+- expected:
+  - representative issue artifacts should show `Source log` removed from `Metadata`, `Log` retained in `Links`, and `Previous log` projected into `Links` when the source log declares it; the chosen bounded live refresh set should then verify cleanly under the new audit check
+- observed:
+  - the regenerated `S0E-6F` draft artifact and representative conclusion previews now show state-only `Metadata` plus deterministic `Links`, the bounded live refresh set was fixed as the current `10` closed `S0E` child issues, and the post-refresh lifecycle audit now passes on all `10/10` refreshed live issue bodies
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-02: opened `S0E-6F` to narrow the issue body field boundary without reopening the broader section-order contract.
 - 2026-04-02: fixed the v1 target as two explicit moves only: remove `Source log` from issue `Metadata`, and add optional `Previous log` under issue `Links`.
 - 2026-04-02: recorded the concrete implementation measures in advance: shared renderer updates first, then gate/runbook alignment, then representative validation plus an explicit live-reconciliation decision.
 - 2026-04-02: completed `P0-P1` by updating issue draft rendering, issue conclusion preview rendering, lifecycle audit link validation, and the owner/runbook wording to the same metadata-versus-links boundary.
+- 2026-04-02: completed `P2` by regenerating representative `6F` draft/conclusion artifacts, fixing the live reconciliation scope to the current `10` closed `S0E` child issues, applying that bounded batch, and re-auditing the refreshed live issue bodies with `10/10` pass.

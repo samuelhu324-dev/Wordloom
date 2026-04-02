@@ -257,6 +257,7 @@
 - [x] `P122`：`S0E-6E` 已把同一条 outcome-ending 规则扩展到其余已关闭 `S0E` 子 issues，并同步把单条 conclusion generator 的默认末句从 PR-evidence wording 改成结果/基线 wording
 - [x] `P123`：已新建 `S0E-6F`，用于收口 issue body 的字段归属微调：`Metadata` 去掉 `Source log`，`Links` 新增可选 `Previous log`，并把后续 renderer / gate / runbook 的落地措施集中记账
 - [x] `P124`：`S0E-6F` 已完成 `P0-P1`，issue draft / issue conclusion preview / lifecycle audit / owner logs / runbook 现已统一到“Metadata 只留状态字段、Links 承接 deterministic navigation”的新边界
+- [x] `P125`：`S0E-6F` 已完成 `P2`，新的代表性 artifacts 已生成，当前 `10` 条 closed `S0E` child issues 也已按同一边界完成 bounded refresh，并通过 `10/10` post-refresh lifecycle audit
 
 ## Current Status（进展摘要）
 
@@ -316,6 +317,7 @@
 - `S0E-6E/P4-C1-S2` 已完成：除 `S0E-2A/#289` 与 `S0E-2B/#288` 之外，其余已关闭 `S0E` 子 issues 也已全部改写为同一条 outcome-ending 规则，并再次通过批量 lifecycle audit；同时单条 conclusion generator 的默认 outcome 句也已改掉，不再生成 `closed through #...` 这类重复尾句；
 - 已新建 `S0E-6F` 作为 issue body 字段归属微调 follow-up：目标只收两件事，`Metadata` 去掉 `Source log`，以及 `Links` 增加可选 `Previous log`，并把 renderer / gate / runbook / validation 的后续实施措施集中到同一条 log；
 - `S0E-6F` 已完成 `P0-P1`：issue draft rendering、issue conclusion preview、lifecycle audit、`S0E-2D` / `S0E-2E` / `S0E-5D` owner wording 与 runbook 现已一起切到新边界，不再把 `Source log` 当作 `Metadata` 行；
+- `S0E-6F` 已完成 `P2` 并进入 `stable`：代表性 draft/conclusion artifacts 已重生成，当前 `10` 条 closed `S0E` child issues 也已完成 bounded live refresh，post-refresh lifecycle audit 现为 `10/10 pass`；
 - `S0E-6C` 已完成并进入 `stable`：issue `Context` 现已固定 main/child 两档英文句子合同，issue draft / issue conclusion / lifecycle audit 也已接到同一规则上，`#309` 已通过真实重写与 re-audit；
 - `S0E-5C` 的真实链路现已打通：issue `#309` 不再停留在 issue-only sample，PR `#310` 已创建并合并，inline post-apply verification 已通过，final issue conclusion 也已写回 closed issue；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
@@ -437,6 +439,7 @@
 - 2026-04-01：`S0E-6E/P4-C1-S2` 已完成：其余已关闭 `S0E` 子 issues 也已统一改写为 outcome-ending `Context`，同时单条 conclusion generator 的默认结尾不再重复 `DoD` 里的 PR evidence wording。
 - 2026-04-02：新增 `S0E-6F`，用于把 issue body 的字段归属进一步收紧为“状态留在 Metadata，导航留在 Links”：本轮 follow-up 的明确目标是移除 `Metadata` 中的 `Source log`，并为 `Links` 增加可选 `Previous log`，同时预先记住 renderer / gate / runbook / validation 的实施路径。
 - 2026-04-02：`S0E-6F/P0-P1` 已完成：issue create / conclusion 的 renderer、lifecycle audit 的 link-boundary 检查，以及 `2D/2E/5D` owner wording 与 runbook 现已全部对齐到新规则，后续只剩 representative artifacts 与 live-reconciliation scope 决策。
+- 2026-04-02：`S0E-6F/P2` 已完成：`6F` representative draft/conclusion artifacts 已生成，live reconciliation scope 已固定为当前 `10` 条 closed `S0E` child issues，并已完成 bounded refresh 与 `10/10` post-refresh lifecycle audit。
 - 2026-04-01：新增并完成 `S0E-6C`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同；`#309` 也已在真实 conclusion replay 后通过新的 lifecycle audit gate。
 - 2026-04-01：完成 `S0E-5C` 的真实 lifecycle follow-through，PR `#310` 已创建并合并，issue `#309` 已完成 final body write-back；当时的 GitHub Actions mirror dispatch 也据此暴露出“workflow 需先对默认分支可见”这一前置条件，并在后续 `S0E-7C/P4` 中被正面解决。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
