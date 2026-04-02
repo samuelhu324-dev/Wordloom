@@ -1,0 +1,111 @@
+{
+  "mode": "publish-verify-remediation-gate-read-only-wrapper-representative-validation",
+  "result": "ok",
+  "requested_id": "S0E-7F",
+  "scope": [
+    "P4"
+  ],
+  "version": "v1",
+  "summary": {
+    "shared_wrapper_cases": 2,
+    "operator_surface_cases": 2,
+    "pass_cases": 2,
+    "stop_cases": 2,
+    "planning_only_stop_cases": 2
+  },
+  "cases": [
+    {
+      "case_id": "shared-wrapper-pass-issue-conclusion",
+      "surface": "shared-read-only-wrapper",
+      "trigger_surface": "local-cli",
+      "operation_family": "issue-conclusion",
+      "validation_kind": "read-only-pass",
+      "source_artifact_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-wrapper-result.json",
+      "normalized_decision": "allow-apply",
+      "wrapper_result": "pass",
+      "apply_allowed": true,
+      "delegated_apply_requested": false,
+      "delegated_apply_executed": false,
+      "decision_reason": "The shared wrapper preserved the thin gate's allow-apply outcome while keeping delegated apply disabled by contract.",
+      "notes": [
+        "The pass case proves the shared Python wrapper can surface a wrapper-owned pass result without claiming publish ownership.",
+        "The wrapper remains read-only even when the underlying thin gate family is eligible for delegated continuation in other contexts."
+      ]
+    },
+    {
+      "case_id": "shared-wrapper-stop-pr-create-preflight",
+      "surface": "shared-read-only-wrapper",
+      "trigger_surface": "local-cli",
+      "operation_family": "pr-create-preflight",
+      "validation_kind": "planning-only-stop",
+      "source_artifact_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-wrapper-result.json",
+      "normalized_decision": "hard-fail-input",
+      "wrapper_result": "stop",
+      "apply_allowed": false,
+      "delegated_apply_requested": false,
+      "delegated_apply_executed": false,
+      "stop_reason": "continuation-blocked-by-thin-gate",
+      "stopped_before_stage": "S4-local-branch-materialization",
+      "decision_reason": "Create-specific front-half preflight found invalid prerequisites before local branch materialization.",
+      "notes": [
+        "The shared wrapper stop case proves that pr-create-preflight stays planning-only even when routed through the wrapper layer.",
+        "The retained wrapper result keeps the stop boundary explicit instead of flattening later create stages into one wrapper-owned outcome."
+      ]
+    },
+    {
+      "case_id": "operator-surface-pass-issue-conclusion",
+      "surface": "local-operator-facing-wrapper",
+      "trigger_surface": "local-operator-facing",
+      "operation_family": "issue-conclusion",
+      "validation_kind": "operator-facing-pass",
+      "source_artifact_path": "artifacts/_tmp_s0e_7f_p3_operator_surface_pass/wrapper-result.json",
+      "normalized_decision": "allow-apply",
+      "wrapper_result": "pass",
+      "apply_allowed": true,
+      "delegated_apply_requested": false,
+      "delegated_apply_executed": false,
+      "published_artifact_root": "artifacts/_tmp_s0e_7f_p3_operator_surface_pass",
+      "decision_reason": "The local operator-facing surface preserved the shared wrapper pass semantics and wrote wrapper-owned artifacts under one operator root.",
+      "notes": [
+        "The pass case proves the PowerShell surface can derive wrapper-owned output paths without widening into live delegated apply.",
+        "The operator-facing surface preserves trigger_surface=local-operator-facing so downstream evidence can distinguish it from the shared wrapper's direct CLI use."
+      ]
+    },
+    {
+      "case_id": "operator-surface-stop-pr-create-preflight",
+      "surface": "local-operator-facing-wrapper",
+      "trigger_surface": "local-operator-facing",
+      "operation_family": "pr-create-preflight",
+      "validation_kind": "operator-facing-planning-only-stop",
+      "source_artifact_path": "artifacts/_tmp_s0e_7f_p3_operator_surface_stop/wrapper-result.json",
+      "normalized_decision": "hard-fail-input",
+      "wrapper_result": "stop",
+      "apply_allowed": false,
+      "delegated_apply_requested": false,
+      "delegated_apply_executed": false,
+      "stop_reason": "continuation-blocked-by-thin-gate",
+      "stopped_before_stage": "S4-local-branch-materialization",
+      "published_artifact_root": "artifacts/_tmp_s0e_7f_p3_operator_surface_stop",
+      "decision_reason": "The local operator-facing surface preserved the shared wrapper stop semantics and retained the family-plan/front-half evidence under the same operator root.",
+      "notes": [
+        "The stop case proves the operator-facing surface keeps pr-create-preflight on the planning-only side of the boundary.",
+        "The retained artifact root includes wrapper-owned outputs plus the family-plan/front-half preflight evidence needed to explain the stop."
+      ]
+    }
+  ],
+  "adoption_decision": {
+    "broader_ci_adoption_justified": false,
+    "current_recommended_next_surface": "workflow_dispatch",
+    "reason": "The repo now has representative shared-wrapper and local-operator-facing evidence, but it does not yet have a dedicated manual GitHub Actions wrapper surface over the shared entrypoint.",
+    "required_before_broader_ci": [
+      "Add one manual workflow_dispatch wrapper that reuses the shared read-only wrapper entrypoint and publishes the same wrapper-owned artifacts.",
+      "Keep the GitHub-side surface secondary-enforcement-only and read-only by default, matching S0E-7A wording.",
+      "Retain at least one pass sample and one stop sample from the workflow_dispatch surface before considering broader CI widening."
+    ]
+  },
+  "boundary_conclusions": [
+    "The same read-only wrapper result vocabulary (pass / stop / error) now spans both direct shared-wrapper invocation and the local operator-facing surface.",
+    "pr-create-preflight remains planning-only through both wrapper layers, with the stop boundary still fixed at S4-local-branch-materialization.",
+    "Broader CI adoption remains a follow-up surface decision, not an implicit consequence of finishing the local wrapper adoption slice."
+  ]
+}

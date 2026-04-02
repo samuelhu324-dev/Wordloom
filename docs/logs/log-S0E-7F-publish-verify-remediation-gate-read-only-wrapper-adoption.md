@@ -5,7 +5,7 @@
 **id**: `S0E-7F`
 **kind**: `log`
 **title**: `workflow/publish-verify-remediation gate read-only wrapper adoption v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Actions, Workflow, Automation, Drills, Evidence, epic/s0, sub/1`
 **links**: ``
@@ -87,6 +87,7 @@
 - `P0-C1-S1S2 / P1-C1-S1S2` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7F-p0-p1-read-only-wrapper-contract.json`
 - `P2-C1-S1` | artifact: `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`
 - `P3-C1-S1` | artifact: `scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1`
+- `P4-C1-S1` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7F-p4-c1-representative-validation.json`
 
 - Keep footer rows low-cardinality: prefer one contract artifact per completed unit instead of replaying all downstream retained artifacts before the wrapper entrypoint exists.
 
@@ -130,12 +131,10 @@
 
 ## Current Status
 
-- `S0E-7F` is now opened as the implementation follow-up after `S0E-7E` reached a stable thin-gate surface.
-- The immediate goal is not to widen live mutation ownership, but to attach one wrapper-safe read-only surface that can replay thin-gate planning and publish retained evidence.
-- Existing likely adoption surfaces already exist in the repo, especially the GitHub Actions secondary-enforcement family represented by `.github/workflows/s0e-pr-body-secondary-enforcement.yml`; this slice exists to connect that style of wrapper to the thin gate without flattening family semantics.
-- `P0-P1` are now completed at the contract layer: the repo now retains one explicit wrapper-boundary plus request/result/artifact contract artifact for the read-only wrapper path, aligned to `S0E-7A` secondary-enforcement wording and `S0E-7E` normalized thin-gate outputs.
-- `P2` is now completed: the repo now has a shared wrapper entrypoint at `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`, and the entrypoint has already been smoke-validated on one lifecycle-family pass sample plus one `pr-create-preflight` stop sample.
-- `P3` is now completed: the repo now has a local operator-facing PowerShell surface at `scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1`, and that surface now defaults an operator artifact root plus the required wrapper/thin-gate output paths without widening into live delegated apply.
+- `S0E-7F` has now completed `P0-P4` at the wrapper-boundary, request/result contract, shared entrypoint, operator-facing surface, and representative-validation levels, and the slice now meets its stable ledger threshold.
+- The repo now retains one explicit representative validation ledger at `docs/issues/publish-verify-remediation-gate-S0E-7F-p4-c1-representative-validation.json`, covering both the shared wrapper path and the local operator-facing surface on one pass sample plus one planning-only stop sample each.
+- The wrapper adoption boundary remains intentionally narrow: both wrapper layers reuse the thin gate's normalized decision vocabulary, both preserve `delegate_apply=false`, and both keep `pr-create-preflight` fixed at `S4-local-branch-materialization`.
+- Broader CI adoption is now explicitly deferred rather than implied: the retained `P4` ledger concludes that `workflow_dispatch` is the next eligible widening surface, but that GitHub-side surface still needs its own representative pass/stop evidence before broader CI rollout is justified.
 
 ## P0 (Boundary contract | v1)
 
@@ -149,7 +148,7 @@
 
 - The wrapper should preserve the same `secondary enforcement` wording already fixed in `S0E-7A`.
 - Wrapper failure means `drift detected or continuation blocked`, not `publish prevented`.
-- The first preferred adoption shape is now explicitly `workflow_dispatch`-compatible and aligned to the retained artifact/publication style already used by `.github/workflows/s0e-pr-body-secondary-enforcement.yml`.
+- The first preferred adoption shape is now explicitly `local-operator-facing`, with `workflow_dispatch` reserved as the next widening surface once wrapper-side representative evidence is complete.
 
 ## P1 (Wrapper contract | v1)
 
@@ -189,6 +188,7 @@
 
 - Retain at least one wrapper pass case and one wrapper stop case over the same thin-gate decision vocabulary.
 - The representative set should explicitly preserve `pr-create-preflight` as planning-only even when the wrapper surface is present.
+- The retained representative ledger should also make clear whether broader CI adoption is justified now or should remain a follow-up after a dedicated `workflow_dispatch` surface exists.
 
 ## Numbering
 
@@ -258,7 +258,7 @@
 
 ### P4 (Representative validation)
 
-- [ ] `P4-C1-S1`: representative wrapper pass/stop evidence retained
+- [x] `P4-C1-S1`: representative wrapper pass/stop evidence retained
 
 ## Evidence (reserved)
 
@@ -315,6 +315,23 @@
   - `scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1` now defaults one operator artifact root, derives wrapper-owned output paths, forwards optional family inputs and notes, and invokes the shared Python wrapper with `trigger_surface=local-operator-facing`.
   - The retained local pass run now emits `artifacts/_tmp_s0e_7f_p3_operator_surface_pass/wrapper-result.json` with wrapper result `pass`, while the retained local stop run now emits `artifacts/_tmp_s0e_7f_p3_operator_surface_stop/wrapper-result.json` with wrapper result `stop`; both runs also retain workflow summaries plus artifact manifests under their operator-facing artifact roots.
 
+### P4-C1-S1 (Representative wrapper validation retained and rollout boundary fixed | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p4-c1-representative-validation.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-wrapper-result.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-wrapper-result.json`
+  - `artifacts/_tmp_s0e_7f_p3_operator_surface_pass/wrapper-result.json`
+  - `artifacts/_tmp_s0e_7f_p3_operator_surface_stop/wrapper-result.json`
+- expected:
+  - `S0E-7F` should retain one representative ledger that covers both the shared read-only wrapper and the local operator-facing surface on pass and stop paths.
+  - The same retained ledger should keep `pr-create-preflight` planning-only through both wrapper layers and state whether broader CI adoption is already justified.
+- observed:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p4-c1-representative-validation.json` now records four representative cases: shared-wrapper pass, shared-wrapper stop, operator-surface pass, and operator-surface stop.
+  - The retained `P4` ledger now proves that both wrapper layers reuse the same top-level wrapper result vocabulary, both preserve `delegate_apply=false`, and both keep `pr-create-preflight` stopped before `S4-local-branch-materialization`.
+  - The same ledger explicitly concludes that broader CI adoption is not yet justified solely from `P2-P4`; the next widening surface should be a dedicated read-only `workflow_dispatch` wrapper with its own representative pass/stop evidence.
+
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
 - headSha: `<git sha>`
@@ -330,3 +347,5 @@
 - 2026-04-02: completed `P0-P1` by retaining the first read-only wrapper contract artifact, fixing wrapper ownership boundaries, request/result fields, retained artifact set, and the alignment to `S0E-7A` secondary-enforcement wording plus `S0E-7E` normalized thin-gate outputs.
 - 2026-04-02: completed `P2` by implementing the shared read-only wrapper entrypoint, retaining wrapper-owned result/summary/manifest outputs, and smoke-validating one lifecycle-family pass sample plus one `pr-create-preflight` stop sample.
 - 2026-04-02: completed `P3` by adding the first local operator-facing PowerShell surface over the shared read-only wrapper entrypoint, including default artifact-root derivation, operator-friendly output paths, and retained pass/stop smoke evidence.
+- 2026-04-02: completed `P4` by retaining one representative validation ledger that spans the shared wrapper and the local operator-facing surface, and by explicitly deferring broader CI widening until a dedicated read-only `workflow_dispatch` surface exists.
+- 2026-04-02: promoted `S0E-7F` to `stable` after retaining the `P4` representative wrapper ledger and fixing the next eligible widening surface as `workflow_dispatch` rather than implicit CI expansion.
