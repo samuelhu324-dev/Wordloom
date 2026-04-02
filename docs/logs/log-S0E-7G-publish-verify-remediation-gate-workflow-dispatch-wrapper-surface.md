@@ -233,7 +233,7 @@
 
 ### P0-C1-S1S2 / P1-C1-S1S2 (workflow_dispatch wrapper boundary and contract retained | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `1a923769`
 - artifacts:
   - `docs/issues/publish-verify-remediation-gate-S0E-7G-p0-p1-workflow-dispatch-surface-contract.json`
   - `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
@@ -247,7 +247,7 @@
 
 ### P2-C1-S1 (Manual workflow_dispatch wrapper surface implemented | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `1a923769`
 - artifacts:
   - `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`
   - `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`
