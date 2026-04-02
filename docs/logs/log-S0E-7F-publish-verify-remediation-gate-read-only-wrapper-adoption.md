@@ -80,7 +80,13 @@
 
 - Log: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
 - Runbook: ``
-- Evidence artifact: ``
+- Evidence artifact: `docs/issues/publish-verify-remediation-gate-S0E-7F-p0-p1-read-only-wrapper-contract.json`
+
+**Evidence Footer Source**:
+
+- `P0-C1-S1S2 / P1-C1-S1S2` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7F-p0-p1-read-only-wrapper-contract.json`
+
+- Keep footer rows low-cardinality: prefer one contract artifact per completed unit instead of replaying all downstream retained artifacts before the wrapper entrypoint exists.
 
 ## Definitions (optional)
 
@@ -125,6 +131,7 @@
 - `S0E-7F` is now opened as the implementation follow-up after `S0E-7E` reached a stable thin-gate surface.
 - The immediate goal is not to widen live mutation ownership, but to attach one wrapper-safe read-only surface that can replay thin-gate planning and publish retained evidence.
 - Existing likely adoption surfaces already exist in the repo, especially the GitHub Actions secondary-enforcement family represented by `.github/workflows/s0e-pr-body-secondary-enforcement.yml`; this slice exists to connect that style of wrapper to the thin gate without flattening family semantics.
+- `P0-P1` are now completed at the contract layer: the repo now retains one explicit wrapper-boundary plus request/result/artifact contract artifact for the read-only wrapper path, aligned to `S0E-7A` secondary-enforcement wording and `S0E-7E` normalized thin-gate outputs.
 
 ## P0 (Boundary contract | v1)
 
@@ -132,11 +139,13 @@
 
 - The wrapper owns invocation timing, wrapper-scoped manifests/summaries, and retained artifact publication.
 - The wrapper does not own live delegated apply, family-specific verify logic, or publish-time authority.
+- The retained `P0-P1` contract artifact now fixes `delegate_apply=false`, `read_only=true`, and `secondary_enforcement=true` as the default wrapper posture instead of leaving those rules implicit.
 
 ### P0-C1-S2 (Secondary-enforcement alignment fixed | v1)
 
 - The wrapper should preserve the same `secondary enforcement` wording already fixed in `S0E-7A`.
 - Wrapper failure means `drift detected or continuation blocked`, not `publish prevented`.
+- The first preferred adoption shape is now explicitly `workflow_dispatch`-compatible and aligned to the retained artifact/publication style already used by `.github/workflows/s0e-pr-body-secondary-enforcement.yml`.
 
 ## P1 (Wrapper contract | v1)
 
@@ -144,11 +153,13 @@
 
 - The wrapper should pass through one explicit operation family, selection input, optional family input, and explicit artifact output paths.
 - The wrapper should record whether the run is read-only, whether delegated apply was intentionally disabled, and which artifact roots were published.
+- The retained contract artifact now fixes six required request fields for the wrapper: `operation_family`, `selection_input_path`, `selection_input_kind`, `wrapper_result_path`, `wrapper_summary_path`, and `artifact_manifest_path`.
 
 ### P1-C1-S2 (Wrapper result and artifact set fixed | v1)
 
 - The wrapper should emit one wrapper-owned summary artifact plus one machine-readable manifest of downstream thin-gate artifacts.
 - The wrapper result should surface only wrapper-safe top-level fields: normalized gate decision, stop reason if any, and summary-only verify exposure when present.
+- The retained contract artifact now fixes the wrapper result values (`pass` / `stop` / `error`), the wrapper stop reasons, and the split between wrapper-owned artifacts and downstream thin-gate artifacts.
 
 ## P2 (Shared entrypoint | v1)
 
@@ -221,13 +232,13 @@
 
 ### P0 (Boundary contract)
 
-- [ ] `P0-C1-S1`: read-only wrapper ownership boundary fixed
-- [ ] `P0-C1-S2`: secondary-enforcement alignment fixed
+- [x] `P0-C1-S1`: read-only wrapper ownership boundary fixed
+- [x] `P0-C1-S2`: secondary-enforcement alignment fixed
 
 ### P1 (Wrapper contract)
 
-- [ ] `P1-C1-S1`: wrapper request envelope fixed
-- [ ] `P1-C1-S2`: wrapper result and artifact set fixed
+- [x] `P1-C1-S1`: wrapper request envelope fixed
+- [x] `P1-C1-S2`: wrapper result and artifact set fixed
 
 ### P2 (Shared entrypoint)
 
@@ -247,6 +258,19 @@
 - This section is the human-facing ledger and should remain separate from `Evidence Footer Source`.
 - Prefer one stable ledger shape per unit: heading with `P*-C*-S*` and date, then `headSha`, `artifacts`, `expected`, and `observed`.
 
+### P0-C1-S1S2 / P1-C1-S1S2 (Read-only wrapper boundary and contract retained | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p0-p1-read-only-wrapper-contract.json`
+  - `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+- expected:
+  - `S0E-7F` should retain one explicit ownership boundary proving that the first wrapper path is read-only, secondary-enforcement-only, and does not reopen live delegated apply.
+  - The same retained contract should fix one wrapper request envelope plus one wrapper result/artifact shape over the thin gate's normalized outputs.
+- observed:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p0-p1-read-only-wrapper-contract.json` now records wrapper ownership versus non-ownership, fixed read-only flags, compatible `workflow_dispatch` adoption shape, required wrapper request fields, required wrapper result fields, retained artifact split, and explicit wrapper boundaries.
+  - `S0E-7F` now explicitly aligns its wrapper wording to `.github/workflows/s0e-pr-body-secondary-enforcement.yml`, so later `P2-P3` implementation can reuse the existing secondary-enforcement artifact/publication posture instead of inventing a second CI contract.
+
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
 - headSha: `<git sha>`
@@ -259,3 +283,4 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-04-02: opened `S0E-7F` as the implementation follow-up after `S0E-7E` stabilized the thin-gate contract, planner, delegated handoff, representative validation, and wrapper boundary.
+- 2026-04-02: completed `P0-P1` by retaining the first read-only wrapper contract artifact, fixing wrapper ownership boundaries, request/result fields, retained artifact set, and the alignment to `S0E-7A` secondary-enforcement wording plus `S0E-7E` normalized thin-gate outputs.
