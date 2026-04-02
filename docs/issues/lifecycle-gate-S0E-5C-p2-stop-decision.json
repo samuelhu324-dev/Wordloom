@@ -1,7 +1,7 @@
 {
   "mode": "lifecycle-pre-gate-dry-run",
   "result": "ok",
-  "selection_input": "manifest",
+  "selection_input": "audit-plan",
   "operation": "plan-lifecycle-pre-gate",
   "manifest_path": "docs/issues/lifecycle-audit-S0E-5C-p2-pass-manifest.json",
   "audit_plan_path": "docs/issues/lifecycle-audit-S0E-5C-p2-stop-plan.json",

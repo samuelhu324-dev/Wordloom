@@ -121,6 +121,15 @@
   - the thin gate entrypoint, delegated handoff rules, and representative drills have all been exercised successfully;
   - the Evidence section includes traceable `headSha` values plus artifact paths (or CI run URLs).
 
+## Current Status
+
+- `S0E-7E` has now completed `P0-P1` at the thin-gate contract and planner-implementation level.
+- The new slice now retains one explicit contract artifact for the thin gate boundary, CLI surface, normalized decision vocabulary, and evidence shape.
+- A new planner entrypoint now exists at `scripts/issues/plan_publish_verify_remediation_gate.py`, and it currently normalizes two execution paths without replacing the existing family-specific adapters:
+  - lifecycle-family planning for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`;
+  - front-half reuse for `pr-create-preflight`.
+- `P2-P4` remain open because delegated apply handoff, representative pass/stop validation breadth, and future wrapping boundaries still need explicit follow-up.
+
 ## P0 (Contract | v1)
 
 ### P0-C1-S1 (Thin gate boundary fixed | v1)
@@ -146,6 +155,28 @@
   - normalized gate decision and delegated-apply allowance;
   - downstream remediation/apply/verify artifact paths when applicable;
   - explicit stop reasons when the gate does not allow continuation.
+
+## P1 (Thin gate planner | v1)
+
+### P1-C1-S1 (Thin gate CLI and input-output shape fixed | v1)
+
+- The thin gate planner now exposes one concrete CLI surface through `scripts/issues/plan_publish_verify_remediation_gate.py`.
+- The planner accepts:
+  - one explicit `operation_family`;
+  - one explicit `selection_input_path` plus `selection_input_kind`;
+  - one optional `family_input_path` plus `family_input_kind` for families such as `pr-create-preflight` that still need family-specific planning input.
+- The planner emits one normalized top-level result artifact regardless of family, so callers no longer need to interpret each adapter's result shape independently before deciding what happens next.
+
+### P1-C1-S2 (Normalized decision emission implemented | v1)
+
+- The planner now normalizes the current family results into one shared decision vocabulary:
+  - `allow-apply`;
+  - `stop-for-remediation`;
+  - `hard-fail-input`;
+  - `stop-for-reconciliation`.
+- Lifecycle families reuse `plan_lifecycle_pre_gate.py` and then upgrade its aggregate output into the thinner gate surface without changing the underlying family rules.
+- `pr-create-preflight` reuses `plan_pr_create_preflight_with_gate.py` and maps its front-half outcome into the same thin gate vocabulary while keeping `S4-local-branch-materialization` as the stop boundary.
+- The current implementation deliberately stops short of delegated apply; `P2` remains the place where the thin gate will actually hand off into guarded apply adapters.
 
 ## Numbering
 
@@ -194,14 +225,14 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: thin gate boundary fixed
-- [ ] `P0-C1-S2`: CLI and decision surface fixed
-- [ ] `P0-C1-S3`: evidence contract fixed
+- [x] `P0-C1-S1`: thin gate boundary fixed
+- [x] `P0-C1-S2`: CLI and decision surface fixed
+- [x] `P0-C1-S3`: evidence contract fixed
 
 ### P1 (Thin gate planner)
 
-- [ ] `P1-C1-S1`: thin gate CLI and input-output shape fixed
-- [ ] `P1-C1-S2`: normalized decision emission implemented
+- [x] `P1-C1-S1`: thin gate CLI and input-output shape fixed
+- [x] `P1-C1-S2`: normalized decision emission implemented
 
 ### P2 (Delegated apply handoff)
 
@@ -223,6 +254,29 @@
 - This section is the human-facing ledger and should remain separate from `Evidence Footer Source`.
 - Prefer one stable ledger shape per unit: heading with `P*-C*-S*` and date, then `headSha`, `artifacts`, `expected`, and `observed`.
 
+### P0-C1-S1S2S3 (Thin gate contract retained | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts: `docs/issues/failure-semantics-S0E-7E-p0-c1-thin-gate-contract.json`
+- expected:
+  - `S0E-7E` should retain one explicit contract artifact for the thin gate boundary, CLI surface, normalized decision vocabulary, and evidence contract.
+  - The same artifact should keep the gate narrow enough that existing family adapters remain authoritative.
+- observed:
+  - `docs/issues/failure-semantics-S0E-7E-p0-c1-thin-gate-contract.json` now records the canonical entrypoint name, supported operation families, decision vocabulary, CLI inputs, evidence fields, and explicit non-goals.
+
+### P1-C1-S1S2 (Thin gate planner implemented and smoke-validated | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts:
+  - `docs/issues/publish-verify-remediation-gate-S0E-5A-p5-pass-issue-conclusion-result.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-5C-p2-stop-pr-create-preflight-result.json`
+- expected:
+  - The new thin gate planner should normalize at least one lifecycle-family allow path and one `pr-create-preflight` stop path without replacing the underlying family adapters.
+  - The resulting JSON outputs should share one top-level decision vocabulary and one common evidence shape.
+- observed:
+  - The new planner script emits one normalized `allow-apply` result for the reused lifecycle-family pass sample and preserves the delegated issue-conclusion adapter path.
+  - The same planner also emits one normalized `hard-fail-input` stop result for the reused `pr-create-preflight` stop sample, while keeping `S4-local-branch-materialization` as the preflight stop boundary rather than flattening later create stages.
+
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
 - headSha: `<git sha>`
@@ -235,3 +289,4 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-04-02: opened `S0E-7E` as the implementation follow-up to `S0E-7D/P4`, focused on one thin `publish-verify-remediation gate` orchestration entrypoint rather than another taxonomy-only slice.
+- 2026-04-02: completed `P0-P1` by retaining the thin gate contract artifact, implementing `plan_publish_verify_remediation_gate.py`, and proving that the new surface can normalize one lifecycle-family `allow-apply` sample plus one `pr-create-preflight` `hard-fail-input` stop sample without replacing existing family adapters.

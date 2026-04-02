@@ -1,0 +1,68 @@
+{
+  "mode": "publish-verify-remediation-gate-contract",
+  "result": "ok",
+  "requested_id": "S0E-7E",
+  "scope": [
+    "P0"
+  ],
+  "version": "v1",
+  "entrypoint": {
+    "canonical_name": "publish-verify-remediation gate",
+    "script_path": "scripts/issues/plan_publish_verify_remediation_gate.py",
+    "supported_operation_families": [
+      "issue-conclusion",
+      "issue-relationship",
+      "pr-body-rewrite",
+      "pr-create-preflight"
+    ],
+    "ownership": "Thin orchestration only; mutation-family rules remain owned by existing guarded adapters."
+  },
+  "cli_contract": {
+    "required_inputs": [
+      "operation_family",
+      "selection_input_path"
+    ],
+    "optional_inputs": [
+      "selection_input_kind",
+      "family_input_path",
+      "family_input_kind",
+      "repo",
+      "audit_plan_path",
+      "remediation_plan_path",
+      "decision_path",
+      "family_plan_path",
+      "result_path"
+    ],
+    "selection_input_kind_values": [
+      "manifest",
+      "audit-plan"
+    ],
+    "family_input_kind_values": [
+      "manifest",
+      "plan"
+    ]
+  },
+  "decision_vocab": [
+    "allow-apply",
+    "stop-for-remediation",
+    "hard-fail-input",
+    "stop-for-reconciliation",
+    "stop-incomplete-convergence"
+  ],
+  "required_output_fields": [
+    "operation_family",
+    "selection_input_kind",
+    "selection_input_path",
+    "normalized_decision",
+    "apply_allowed",
+    "delegated_adapter_path",
+    "decision_reason",
+    "downstream_artifacts",
+    "warnings"
+  ],
+  "explicit_boundaries": [
+    "Do not replace issue conclusion, relationship attach, PR body rewrite, or PR create family-specific logic with one flat super-command.",
+    "Do not collapse PR create branch materialization, remote publish, or live PR publish into the thin gate planner.",
+    "Do not widen the entrypoint into prose quality review, summary rewriting, or blank-field inference."
+  ]
+}

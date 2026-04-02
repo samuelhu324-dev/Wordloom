@@ -278,6 +278,7 @@
 - [x] `P134`：`S0E-7D` 已完成 `P2-P3`，现在已经保留 representative manifest / audit summary，并把 replay-only remediation contract、mixed-batch split 规则、以及 post-apply verify stop rules 固定为结构化证据
 - [x] `P135`：`S0E-7D` 已完成 `P4`，现在已经把 future `publish-verify-remediation gate` 的名称、决策词汇、adapter reuse 边界和非目标面固定为结构化 surface contract
 - [x] `P136`：已新建 `S0E-7E`，用于把 `S0E-7D/P4` 命名的 future `publish-verify-remediation gate` 落成一层薄编排入口，并明确其与既有 guarded adapters 的实现边界
+- [x] `P137`：`S0E-7E` 已完成 `P0-P1`，现在已经保留 thin gate contract artifact，并实现了一条新的 `publish-verify-remediation gate` planner，用统一 decision artifact 复用 lifecycle-family allow path 与 `pr-create-preflight` stop path
 
 ## Current Status（进展摘要）
 
@@ -470,6 +471,7 @@
 - 2026-04-02：`S0E-7D/P0-P1` 已完成：第一份 failure taxonomy / mapping artifact 已落地，当前 docs/GitHub workflow 的主要 drift surfaces 现已显式归类到 strong/weak structure 与四类 handling semantics。
 - 2026-04-02：`S0E-7D/P2-P3` 已完成：现在已有覆盖四类 handling semantics 的 representative manifest / audit summary，同时 replay-only remediation contract、mixed-batch split 规则和 post-apply verify stop rules 也已固定为结构化证据。
 - 2026-04-02：`S0E-7D/P4` 已完成：future `publish-verify-remediation gate` 的名称、决策词汇、adapter reuse 边界与非目标面现已固定，后续若实现统一入口，只需要做一层薄编排而不是重写既有 guarded adapters。
+- 2026-04-02：`S0E-7E/P0-P1` 已完成：thin gate contract artifact 已落地，新 planner 现已能统一一条 lifecycle-family `allow-apply` 样本和一条 `pr-create-preflight` `hard-fail-input` stop 样本的顶层 decision artifact，而不替换现有 family adapters。
 - 2026-04-02：新增 `S0E-7E`，作为 `S0E-7D/P4` 的直接实现 follow-up，后续将把 future `publish-verify-remediation gate` 从命名 surface 落成一个薄编排入口，并复用现有 issue/relationship/PR guarded adapters。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
