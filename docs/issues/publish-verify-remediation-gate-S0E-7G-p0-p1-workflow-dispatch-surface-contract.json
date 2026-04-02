@@ -1,0 +1,94 @@
+{
+  "mode": "publish-verify-remediation-gate-workflow-dispatch-surface-contract",
+  "result": "ok",
+  "requested_id": "S0E-7G",
+  "scope": [
+    "P0",
+    "P1"
+  ],
+  "version": "v1",
+  "alignment": {
+    "secondary_enforcement_source": "docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md",
+    "thin_gate_source": "docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md",
+    "shared_wrapper_source": "docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md"
+  },
+  "workflow_boundary": {
+    "ownership": [
+      "accept manual workflow_dispatch inputs for the shared read-only wrapper",
+      "derive one workflow-owned artifact root and explicit output paths",
+      "publish retained artifacts and GitHub-visible workflow summary",
+      "fail only after summary and artifact upload have completed"
+    ],
+    "non_ownership": [
+      "live delegated apply",
+      "family-specific verify semantics",
+      "automatic pull_request rollout",
+      "publish-time ownership"
+    ],
+    "fixed_flags": {
+      "read_only": true,
+      "secondary_enforcement": true,
+      "delegate_apply": false
+    },
+    "trigger_policy": "workflow_dispatch-only",
+    "failure_wording": "drift-detected-or-continuation-blocked",
+    "success_wording": "read-only-manual-dispatch-pass-does-not-claim-publish-ownership"
+  },
+  "workflow_request_contract": {
+    "required_fields": [
+      "operation_family",
+      "selection_input_path"
+    ],
+    "optional_fields": [
+      "selection_input_kind",
+      "family_input_path",
+      "family_input_kind",
+      "repo",
+      "trusted_source_log_path",
+      "wrapper_notes"
+    ],
+    "supported_operation_families": [
+      "issue-conclusion",
+      "issue-relationship",
+      "pr-body-rewrite",
+      "pr-create-preflight"
+    ],
+    "selection_input_kind_values": [
+      "manifest",
+      "audit-plan"
+    ],
+    "family_input_kind_values": [
+      "manifest",
+      "plan",
+      "result"
+    ]
+  },
+  "workflow_artifact_contract": {
+    "artifact_root_pattern": "artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/<run-id>-<run-attempt>",
+    "required_outputs": [
+      "wrapper-result.json",
+      "workflow-summary.md",
+      "artifact-manifest.json",
+      "thin-gate-result.json"
+    ],
+    "conditional_outputs": [
+      "lifecycle-audit-plan.json",
+      "lifecycle-remediation-plan.json",
+      "lifecycle-gate-decision.json",
+      "family-plan.json",
+      "dispatch-run-manifest.json"
+    ],
+    "upload_policy": "upload-before-fail",
+    "github_surfaces": [
+      "workflow summary",
+      "check annotations",
+      "uploaded artifact bundle"
+    ]
+  },
+  "boundary_rules": [
+    "Do not perform live delegated apply from workflow_dispatch.",
+    "Do not reinterpret pr-create-preflight as ownership of later PR create stages.",
+    "Do not fail before retained artifacts have been written and uploaded.",
+    "Do not widen this workflow into automatic pull_request execution without a later explicit decision slice."
+  ]
+}
