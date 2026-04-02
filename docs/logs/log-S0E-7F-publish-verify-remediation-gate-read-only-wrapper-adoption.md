@@ -299,7 +299,7 @@
 
 ### P3-C1-S1 (Local operator-facing surface connected and smoke-validated | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `3ba19c3b`
 - artifacts:
   - `scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1`
   - `artifacts/_tmp_s0e_7f_p3_operator_surface_pass/wrapper-result.json`
