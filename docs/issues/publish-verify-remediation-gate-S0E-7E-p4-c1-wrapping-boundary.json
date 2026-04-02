@@ -1,0 +1,85 @@
+{
+  "mode": "publish-verify-remediation-gate-wrapping-boundary",
+  "result": "ok",
+  "requested_id": "S0E-7E",
+  "scope": [
+    "P4"
+  ],
+  "version": "v1",
+  "wrapper_profiles": [
+    {
+      "name": "local-operator-wrapper",
+      "purpose": "Invoke the thin gate with explicit family ownership, persist retained artifacts, and stop immediately on non-allow decisions.",
+      "allowed_responsibilities": [
+        "Pass the exact operation_family, selection_input_kind, and explicit artifact output paths into the thin gate.",
+        "Request delegated apply only for families that the thin gate already marks as delegated-apply-capable.",
+        "Persist the top-level gate result plus any downstream family-owned artifacts emitted by the chosen adapter."
+      ],
+      "forbidden_responsibilities": [
+        "Do not infer operation family or blank issue/pr fields from prose-only context.",
+        "Do not bypass a non-allow gate decision by invoking family adapters directly.",
+        "Do not reinterpret family-specific warnings into a different top-level decision vocabulary."
+      ]
+    },
+    {
+      "name": "publish-time-automation-wrapper",
+      "purpose": "Wrap the thin gate at publish time without flattening PR create stages or family-owned mutation semantics.",
+      "allowed_responsibilities": [
+        "Invoke the thin gate only after explicit source selection has already fixed the requested family and artifact roots.",
+        "Use thin-gate delegated apply only for issue-conclusion, issue-relationship, and pr-body-rewrite.",
+        "Stop on planning-only or rejected families such as pr-create-preflight and hand control back to the existing create-specific stage owner."
+      ],
+      "forbidden_responsibilities": [
+        "Do not collapse branch materialization, remote publish, live PR publish, and post-merge follow-up into one atomic publish gate.",
+        "Do not treat the thin gate as a generic mutation bus for future families that do not yet have bounded adapters.",
+        "Do not synthesize post-apply success when the underlying family-specific verify surface has not run."
+      ]
+    },
+    {
+      "name": "ci-secondary-enforcement-wrapper",
+      "purpose": "Use the thin gate as a read-only or replay-audit contract surface for CI mirrors and retained artifact publication.",
+      "allowed_responsibilities": [
+        "Re-run planning or retained-evidence validation against explicit artifacts and publish the resulting JSON outputs.",
+        "Surface non-allow decisions, missing artifacts, or incomplete-convergence findings as CI-visible failures.",
+        "Mirror retained thin-gate artifacts for traceability without mutating live GitHub state."
+      ],
+      "forbidden_responsibilities": [
+        "Do not perform live delegated apply from CI by default.",
+        "Do not own family-specific post-apply verification rules; CI may only surface their retained results.",
+        "Do not widen CI checks into prose lint or non-contract quality review."
+      ]
+    }
+  ],
+  "post_apply_verify_exposure": {
+    "top_level_rule": "The thin gate may expose only wrapper-safe verify summary fields; family-specific verify logic remains owned by the underlying adapter or downstream verifier.",
+    "allowed_top_level_fields": [
+      "verify_owner",
+      "verify_required",
+      "verify_artifact_path",
+      "verify_summary_decision"
+    ],
+    "verify_summary_decision_values": [
+      "not-run",
+      "converged",
+      "stop-incomplete-convergence",
+      "stop-for-reconciliation"
+    ],
+    "required_meanings": {
+      "not-run": "No post-apply verify was required or no family-owned verify artifact exists yet.",
+      "converged": "A family-owned post-apply verify artifact explicitly says the requested target set converged.",
+      "stop-incomplete-convergence": "The delegated apply ran but the retained family-owned verify artifact shows incomplete convergence, new deterministic drift, or missing evidence.",
+      "stop-for-reconciliation": "The retained family-owned verify artifact surfaced a live-versus-source conflict that requires operator resolution."
+    },
+    "forbidden_top_level_behavior": [
+      "Do not copy family-specific check rows, warning taxonomies, or prose diagnostics into a fake universal verify schema.",
+      "Do not mark convergence from apply success alone; a separate family-owned verify result is required whenever verify_required=true.",
+      "Do not let wrapper code reinterpret family-specific verify semantics into allow-apply or publish-success without an explicit retained verify artifact."
+    ]
+  },
+  "boundary_rules": [
+    "Thin gate wrapping must stay orchestration-only: wrappers may choose when to invoke the gate, but they must not redefine family-owned stage boundaries.",
+    "Delegated apply remains family-scoped: only bounded adapters already behind the thin gate may run under wrapper control.",
+    "PR create remains split: wrappers may call the thin gate for issue-readiness and front-half preflight, but later create stages remain outside delegated thin-gate apply.",
+    "Post-apply verify remains family-owned: the thin gate may surface retained verify summaries, but it must not absorb the underlying verify logic into one generic contract."
+  ]
+}

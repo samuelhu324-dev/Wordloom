@@ -1,0 +1,47 @@
+{
+  "mode": "publish-verify-remediation-gate-read-only-wrapper-artifact-manifest",
+  "result": "pass",
+  "read_only": true,
+  "secondary_enforcement": true,
+  "trigger_surface": "local-cli",
+  "operation_family": "issue-conclusion",
+  "selection_input": {
+    "kind": "manifest",
+    "path": "docs/issues/lifecycle-audit-S0E-5A-p5-pass-manifest.json"
+  },
+  "family_input": {
+    "kind": null,
+    "path": null
+  },
+  "thin_gate": {
+    "result_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-thin-gate-result.json",
+    "normalized_decision": "allow-apply",
+    "apply_allowed": true,
+    "decision_reason": "The lifecycle pre-gate passed, so the requested family is eligible for delegated continuation behind the thin gate surface.",
+    "stopped_before_stage": null
+  },
+  "wrapper": {
+    "result_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-wrapper-result.json",
+    "stop_reason": "",
+    "verify_summary_decision": "not-run",
+    "published_artifact_root": "docs/issues",
+    "trusted_source_log_path": "",
+    "notes": []
+  },
+  "retained_artifacts": {
+    "wrapper_summary_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-workflow-summary.md",
+    "artifact_manifest_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-artifact-manifest.json",
+    "thin_gate_result_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-thin-gate-result.json",
+    "gate_decision_path": "docs/issues/lifecycle-gate-S0E-7F-p2-pass-issue-conclusion-decision.json",
+    "audit_plan_path": "docs/issues/lifecycle-audit-S0E-7F-p2-pass-issue-conclusion-plan.json",
+    "remediation_plan_path": null,
+    "family_plan_path": null,
+    "family_result_path": null,
+    "delegated_result_path": null
+  },
+  "failure_semantics": {
+    "classification": "read-only wrapper pass",
+    "wrapper_role": "secondary enforcement",
+    "publish_owner": "family-owned local or live path"
+  }
+}
