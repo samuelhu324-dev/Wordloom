@@ -123,7 +123,7 @@
 
 ## Current Status
 
-- `S0E-7E` has now completed `P0-P3` at the thin-gate contract, planner, delegated-handoff, and representative-validation level.
+- `S0E-7E` has now completed `P0-P4` at the thin-gate contract, planner, delegated-handoff, representative-validation, and future-wrapping-boundary level.
 - The new slice now retains one explicit contract artifact for the thin gate boundary, CLI surface, normalized decision vocabulary, and evidence shape.
 - A new planner entrypoint now exists at `scripts/issues/plan_publish_verify_remediation_gate.py`, and it now normalizes planning plus delegated handoff without replacing the existing family-specific adapters:
   - lifecycle-family planning for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`;
@@ -133,7 +133,10 @@
   - one issue-side delegated pass path through targeted relationship remediation;
   - one PR-side delegated pass path through guarded PR-body rewrite;
   - one PR-side planning-only stop path at `S4-local-branch-materialization` plus one explicit delegated-apply rejection for `pr-create-preflight`.
-- `P4` remains open because future wrapping boundaries for publish-time automation and CI still need explicit follow-up.
+- Future wrapping boundaries are now fixed at the contract level:
+  - local or publish-time wrappers may orchestrate the thin gate, but they may not redefine family-owned stage boundaries;
+  - CI wrappers remain secondary-enforcement/read-only by default;
+  - top-level post-apply verify exposure must stay summary-only and must not absorb family-specific verify logic into one generic schema.
 
 ## P0 (Contract | v1)
 
@@ -211,6 +214,15 @@
 - The same validation round also records an explicit delegated-apply rejection for `pr-create-preflight`, so the boundary between planning-only front-half reuse and later create stages is now evidenced rather than implied.
 - The retained validation summary therefore covers both positive delegation and negative boundary enforcement on the same thin gate surface.
 
+## P4 (Future rollout boundary | v1)
+
+### P4-C1-S1 (Publish-time and CI wrapping boundary fixed | v1)
+
+- Future wrappers may orchestrate the thin gate, but they must stay orchestration-only: they may choose when to invoke the gate, not redefine family-owned mutation stages.
+- Publish-time wrappers may request delegated apply only for the currently bounded families (`issue-conclusion`, `issue-relationship`, `pr-body-rewrite`) and must hand `pr-create-preflight` back to its existing create-stage owner.
+- CI wrappers remain secondary-enforcement surfaces by default: they may replay planning, publish retained artifacts, and surface failures, but they should not perform live delegated apply.
+- The thin gate may expose only wrapper-safe post-apply verify summary fields at top level; detailed verify semantics remain owned by the family-specific adapter or downstream verifier.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -279,7 +291,7 @@
 
 ### P4 (Future rollout boundary)
 
-- [ ] `P4-C1-S1`: publish-time and CI wrapping boundary fixed
+- [x] `P4-C1-S1`: publish-time and CI wrapping boundary fixed
 
 ## Evidence (reserved)
 
@@ -327,7 +339,7 @@
 
 ### P3-C1-S1S2 (Representative pass/stop ledger retained | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `ae1fc07e`
 - artifacts:
   - `docs/issues/publish-verify-remediation-gate-S0E-7E-p3-c1-representative-validation.json`
   - `docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-delegated-apply-result.json`
@@ -339,6 +351,19 @@
 - observed:
   - `docs/issues/publish-verify-remediation-gate-S0E-7E-p3-c1-representative-validation.json` now records one issue-side delegated pass path, one PR-side delegated pass path, one PR-side planning-only stop path, and one explicit delegated-apply rejection for `pr-create-preflight`.
   - The thin gate therefore now retains representative evidence for both positive delegation and negative boundary enforcement without widening `pr-create-preflight` into later create stages.
+
+### P4-C1-S1 (Future wrapping boundary retained | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7E-p4-c1-wrapping-boundary.json`
+  - `docs/issues/failure-semantics-S0E-7E-p0-c1-thin-gate-contract.json`
+- expected:
+  - `S0E-7E` should fix how local wrappers, publish-time automation, and CI may wrap the thin gate without redefining family-owned mutation stages.
+  - The same retained contract should state which post-apply verify facts may surface at the thin-gate top level and which verify semantics must remain family-owned.
+- observed:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7E-p4-c1-wrapping-boundary.json` now records three wrapper profiles, the allowed and forbidden responsibilities for each, and the boundary that keeps CI secondary-enforcement-only by default.
+  - The same artifact also fixes a summary-only post-apply verify exposure rule, so future wrappers may surface retained convergence decisions without flattening family-specific verify logic into one generic schema.
 
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
@@ -355,3 +380,4 @@
 - 2026-04-02: completed `P0-P1` by retaining the thin gate contract artifact, implementing `plan_publish_verify_remediation_gate.py`, and proving that the new surface can normalize one lifecycle-family `allow-apply` sample plus one `pr-create-preflight` `hard-fail-input` stop sample without replacing existing family adapters.
 - 2026-04-02: completed `P2` by connecting delegated handoff for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`, while explicitly keeping `pr-create-preflight` as a planning-only front-half family.
 - 2026-04-02: completed `P3` by retaining one representative issue-side pass path, one representative PR-side pass path, one `pr-create-preflight` planning-only stop path, and one explicit delegated-apply rejection for the create boundary.
+- 2026-04-02: completed `P4` by fixing wrapper boundaries for local operator, publish-time automation, and CI, and by constraining top-level post-apply verify exposure to summary-only fields.

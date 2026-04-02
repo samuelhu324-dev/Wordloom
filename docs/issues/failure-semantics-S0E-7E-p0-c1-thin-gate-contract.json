@@ -4,7 +4,8 @@
   "requested_id": "S0E-7E",
   "scope": [
     "P0",
-    "P2"
+    "P2",
+    "P4"
   ],
   "version": "v1",
   "entrypoint": {
@@ -75,6 +76,7 @@
     "Do not replace issue conclusion, relationship attach, PR body rewrite, or PR create family-specific logic with one flat super-command.",
     "Do not collapse PR create branch materialization, remote publish, or live PR publish into the thin gate planner.",
     "Do not delegate thin-gate apply through pr-create-preflight; that family remains front-half planning only until later create stages are explicitly wrapped.",
+    "Do not let publish-time or CI wrappers reinterpret family-specific post-apply verify logic into a fake universal success schema.",
     "Do not widen the entrypoint into prose quality review, summary rewriting, or blank-field inference."
   ]
 }
