@@ -25,10 +25,14 @@
 - [x] `P3-C1-S1`: manual dispatch mirror workflow added
 - [x] `P3-C1-S2`: retained artifact and advisory fail policy fixed
 - [x] `P4-C1-S1`: full-series `S0E` manifest and backlog plan retained
+- [x] `P4-C1-S2`: first live mirror replay path enabled and evidenced
+- [x] `P4-C1-S3`: default-branch runtime closure removed and verified
+- [x] `P4-C1-S4`: closed child-issue Context repair batch applied and audited
+- [x] `P4-C1-S5`: natural-summary Context replay applied and re-audited under the `S0E-6D` weak gate
+- [x] `P4-C1-S6`: fact-pool/style-family Context replay applied and re-audited under the prose-first gate
 
 ## Links
 
 - Log: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
-- Issue: ``
 - Runbook: ``
 - Evidence artifact: `docs/issues/historical-log-review-S0E-series-plan.json`

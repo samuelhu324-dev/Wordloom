@@ -9,5 +9,13 @@
   "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-2b-pr-290-rewritten-body.md",
   "apply_result_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-2b-pr-290-apply-result.json",
   "body_changed": true,
-  "warnings": []
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "warnings": [
+    "missing live PR labels were backfilled from the deterministic source-log label set"
+  ]
 }

@@ -34,3 +34,5 @@
 - `P2-C1-S1` | artifact: `docs/issues/pr-create-S0E-5C-p2-pass-front-half-preflight-result.json`
 - `P3-C1-S1S2` | artifact: `docs/issues/pr-create-S0E-5C-p3-publish-and-post-apply-decision.md`
 - `P4-C1-S1S2` | artifact: `docs/issues/pr-prep-S0E-5B-real-post-apply-verify-result.json`
+
+Closes #309

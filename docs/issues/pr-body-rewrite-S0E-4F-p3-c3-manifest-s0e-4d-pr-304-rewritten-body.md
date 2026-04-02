@@ -28,3 +28,5 @@
 - Log: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/issue-conclusion-S0E-4D-p3-plan.json`
+
+Closes #303

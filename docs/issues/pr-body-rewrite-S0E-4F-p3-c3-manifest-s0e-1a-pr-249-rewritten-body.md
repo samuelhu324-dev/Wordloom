@@ -5,7 +5,7 @@
 - Candidate PR-prep branch: `pr-prep/s0e-1a`
 - Source log: `docs/logs/log-S0E-1A-structured-cv-generator.md`
 - Labels: `drills`
-- Development issue: 
+- Development issue: #316
 
 ## Summary
 
@@ -18,3 +18,5 @@
 
 - Log: `docs/logs/log-S0E-1A-structured-cv-generator.md`
 - Parent log: `docs/logs/log-S0D-6A-docs-management-v4.md`
+
+Closes #316

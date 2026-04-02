@@ -5,7 +5,7 @@
 - Candidate PR-prep branch: `pr-prep/s0e-3a`
 - Source log: `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
 - Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
-- Development issue: 
+- Development issue: #314
 
 ## Summary
 
@@ -34,3 +34,5 @@
 - Log: `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
 - Parent log: `docs/logs/log-S0E-docs-management-v5.md`
 - Roadmap: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+
+Closes #314

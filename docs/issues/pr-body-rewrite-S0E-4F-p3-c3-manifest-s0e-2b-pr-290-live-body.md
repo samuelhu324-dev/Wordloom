@@ -1,8 +1,10 @@
 ## Metadata
 
 - Requested ID: `S0E-2B`
+- Base branch: `main`
+- Candidate PR-prep branch: `pr-prep/s0e-2b`
 - Source log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
-- Labels: `EVOLUTION, s0/knowledge system, sub/1`
+- Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
 - Development issue: #288
 
 ## Summary
@@ -26,17 +28,5 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/288`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-prep-S0E-2B-remediation-plan.json`
-
-## Evidence Footer
-
-- `4dcda40f` / `S0E-2B` / `P0-C1-S1S2S3`: define issue creation automation contract
-- `47452bf5` / `S0E-2B` / `P1-C1-S1S2`: implement draft generation
-- `59b435e6` / `S0E-2B` / `P2-C1-S1S2`: implement create issue mode
-- `a696f181` / `S0E-2B` / `P3-C1-S1S2`: verify runs and write back issues
-
-## Development Link
-
-- Closes #288

@@ -26,17 +26,5 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/303`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
-- Evidence artifact: ``
-
-## Evidence Footer
-
-- `P0-C1-S1` / `P0-C1-S3`: this log now fixes `review-hold` as the default mode, narrows `full-auto` to automatable stages only, and makes post-merge continuation contingent on confirmed merge completion rather than implicit merge ownership.
-- `P0-C1-S2` / `P1-C1-S1`: `docs/logs/log-S0E-docs-management-v5.md` now records `S0E-4D` as the dedicated lifecycle-orchestration owner instead of leaving that boundary inside `S0E-2D`.
-- `P1-C1-S2` / `P2-C1-S1`: `docs/runbook/run-S0E-log-to-issue-creation.md` now carries one operator-facing command-pattern block for staged review, explicit resume, and post-merge full-auto continuation while keeping contract ownership in `S0E-4D`.
-- `P2-C1-S2`: this log now includes fail-closed examples for ambiguous continuation requests, blocked closed-loop requests, and downstream-only resume commands.
-
-## Development Link
-
-- Closes #303
+- Evidence artifact: `docs/issues/issue-conclusion-S0E-4D-p3-plan.json`

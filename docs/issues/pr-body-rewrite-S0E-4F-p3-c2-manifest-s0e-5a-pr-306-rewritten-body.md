@@ -34,3 +34,5 @@
 - Log: `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/issue-conclusion-S0E-5A-p5-pass-guarded-apply-result.json`
+
+Closes #305

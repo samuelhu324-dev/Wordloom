@@ -21,10 +21,5 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/293`
 - Runbook: ``
 - Evidence artifact: `docs/issues/pr-prep-S0E-4A-sample-plan.json`
-
-## Development Link
-
-- Closes #293

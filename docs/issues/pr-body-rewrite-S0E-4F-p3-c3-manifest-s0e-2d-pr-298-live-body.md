@@ -36,17 +36,5 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/297`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-prep-S0E-2D-sample-plan.json`
-
-## Evidence Footer
-
-- `7434a944` / `S0E-2D` / `P1-C1-S1S2`: enrich issue draft metadata and body scaffold
-- `8745b016` / `S0E-2D` / `P2-C1-S1S2`: validate enriched issue draft samples
-- `4e0f61a9` / `S0E-2D` / `P1-C2-S3+P3-C3-S2`: normalize parent issue rendering and audit sibling issues
-- `7cabb59b` / `S0E-2D` / `P1-C2-S4+P3-C3-S3`: render plain parent issue references
-
-## Development Link
-
-- Closes #297

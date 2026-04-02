@@ -5,7 +5,7 @@
 - Candidate PR-prep branch: `pr-prep/s0e-7c-runtime-closure`
 - Source log: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
 - Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
-- Development issue: 
+- Development issue: #315
 
 ## Summary
 
@@ -23,3 +23,5 @@
 - Log: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
 - Runbook: ``
 - Evidence artifact: `docs/issues/historical-log-review-S0E-series-plan.json`
+
+Closes #315

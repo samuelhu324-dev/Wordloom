@@ -26,7 +26,6 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/307`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json`
 
@@ -34,7 +33,3 @@
 
 - `P1-C1-S1` | artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json`
 - `P2-C1-S1` | artifact: `docs/issues/pr-create-preflight-S0E-5C-p2-stop-branch-collision.json`
-
-## Development Link
-
-- Closes #307

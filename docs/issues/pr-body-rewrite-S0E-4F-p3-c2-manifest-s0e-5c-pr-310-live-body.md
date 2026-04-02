@@ -1,4 +1,4 @@
-## Metadata
+﻿## Metadata
 
 - Requested ID: `S0E-5C`
 - Base branch: `main`
@@ -25,7 +25,6 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/309`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-create-S0E-5C-p1-boundary-map.json`
 
@@ -36,6 +35,8 @@
 - `P3-C1-S1S2` | artifact: `docs/issues/pr-create-S0E-5C-p3-publish-and-post-apply-decision.md`
 - `P4-C1-S1S2` | artifact: `docs/issues/pr-prep-S0E-5B-real-post-apply-verify-result.json`
 
-## Development Link
 
-- Closes #309
+
+
+Closes #309
+

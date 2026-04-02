@@ -39,3 +39,5 @@
 - Log: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
 - Runbook: ``
 - Evidence artifact: `docs/issues/pr-prep-S0E-4B-sample-plan.json`
+
+Closes #295

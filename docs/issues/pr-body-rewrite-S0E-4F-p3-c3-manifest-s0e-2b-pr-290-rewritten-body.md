@@ -30,3 +30,5 @@
 - Log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-prep-S0E-2B-remediation-plan.json`
+
+Closes #288

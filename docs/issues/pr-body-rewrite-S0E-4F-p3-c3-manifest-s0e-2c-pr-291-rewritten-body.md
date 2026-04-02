@@ -5,7 +5,7 @@
 - Candidate PR-prep branch: `pr-prep/s0e-2c`
 - Source log: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
 - Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
-- Development issue: 
+- Development issue: #313
 
 ## Summary
 
@@ -28,3 +28,5 @@
 - Log: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Parent log: `docs/logs/log-S0E-docs-management-v5.md`
+
+Closes #313

@@ -32,10 +32,5 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/305`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/issue-conclusion-S0E-5A-p5-pass-guarded-apply-result.json`
-
-## Development Link
-
-- Closes #305

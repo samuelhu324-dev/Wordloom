@@ -38,3 +38,5 @@
 - Log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-prep-S0E-2D-sample-plan.json`
+
+Closes #297

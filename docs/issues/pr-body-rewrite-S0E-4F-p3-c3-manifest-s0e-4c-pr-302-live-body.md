@@ -20,10 +20,5 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/300`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-prep-S0E-4C-p5-plan.json`
-
-## Development Link
-
-- Closes #300

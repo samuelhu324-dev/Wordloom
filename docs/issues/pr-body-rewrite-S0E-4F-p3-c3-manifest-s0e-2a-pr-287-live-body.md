@@ -1,8 +1,10 @@
 ## Metadata
 
 - Requested ID: `S0E-2A`
+- Base branch: `main`
+- Candidate PR-prep branch: `pr-prep/s0e-2a`
 - Source log: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
-- Labels: `EVOLUTION, s0/knowledge system, sub/1`
+- Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
 - Development issue: #289
 
 ## Summary
@@ -30,19 +32,5 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/289`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-prep-S0E-2A-remediation-plan.json`
-
-## Evidence Footer
-
-- `0cc4aece` / `S0E-2A` / `P0-C1-S1S2S3`: scaffold issue automation contract
-- `424f1f8a` / `S0E-2A` / `P1-C1-S1S2`: add issue-aware template fields
-- `d32e8d3d` / `S0E-2A` / `P2-C1-S1S2`: validate first issue scaffold sample
-- `07528621` / `S0E-2A` / `P2-C2-S1S2`: validate S4E-5B issue sample
-- `137659fe` / `S0E-2A` / `P2-C3-S1S2`: validate S6A-4A issue sample
-- `d9325b1d` / `S0E-2A` / `P3-C1-S1S2`: define issue creation procedure
-
-## Development Link
-
-- Closes #289

@@ -1,0 +1,18 @@
+{
+  "mode": "pr-metadata-completeness-audit",
+  "result": "ok",
+  "scope": "S0E-4F/P4",
+  "summary": {
+    "total_prs": 17,
+    "prs_with_expected_development_issue": 17,
+    "prs_with_closing_issue_refs": 17,
+    "prs_with_missing_labels": 0,
+    "prs_with_metadata_development_issue": 17,
+    "prs_with_closes_footer": 17,
+    "failures": 0
+  },
+  "evidence": [
+    "docs/issues/pr-body-rewrite-S0E-4F-p4-c2-manifest-result.json",
+    "docs/issues/pr-body-rewrite-S0E-4F-p4-c3-manifest-result.json"
+  ]
+}

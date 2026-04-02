@@ -34,3 +34,5 @@
 - Log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 - Runbook: ``
 - Evidence artifact: `docs/issues/pr-prep-S0E-4A-sample-plan.json`
+
+Closes #293

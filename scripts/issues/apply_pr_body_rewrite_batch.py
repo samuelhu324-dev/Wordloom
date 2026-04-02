@@ -6,7 +6,8 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from gen_issue_draft import _derive_repo_slug, _repo_rel, _repo_root, _require_gh_auth, _require_gh_cli, _run_command
+from gen_issue_draft import _derive_repo_slug, _load_text, _parse_fields, _parse_sections, _repo_rel, _repo_root, _require_gh_auth, _require_gh_cli, _run_command
+from plan_pr_prep import _build_pr_labels
 from rewrite_pr_body_scope_from_log import rewrite_pr_body_scope
 
 
@@ -22,6 +23,7 @@ class PrBodyRewriteBatchItemResult:
     rewritten_body_path: str
     apply_result_path: str
     body_changed: bool
+    labels_applied: list[str]
     warnings: list[str]
 
 
@@ -68,7 +70,7 @@ def _fetch_pr(repo: str, pr_ref: str) -> dict:
         "--repo",
         repo,
         "--json",
-        "number,url,title,body,state",
+        "number,url,title,body,state,labels",
     ])
     if cmd.returncode != 0:
         raise SystemExit(f"Failed to view PR {pr_ref} in {repo}: {cmd.stderr.strip()}")
@@ -78,8 +80,8 @@ def _fetch_pr(repo: str, pr_ref: str) -> dict:
         raise SystemExit(f"Failed to parse PR view JSON: {exc}") from exc
 
 
-def _edit_pr_body(repo: str, pr_ref: str, body_path: Path) -> None:
-    cmd = _run_command([
+def _edit_pr(repo: str, pr_ref: str, body_path: Path, add_labels: list[str]) -> None:
+    command = [
         "gh",
         "pr",
         "edit",
@@ -88,7 +90,10 @@ def _edit_pr_body(repo: str, pr_ref: str, body_path: Path) -> None:
         repo,
         "--body-file",
         str(body_path),
-    ])
+    ]
+    for label in add_labels:
+        command.extend(["--add-label", label])
+    cmd = _run_command(command)
     if cmd.returncode != 0:
         raise SystemExit(f"gh pr edit failed: {cmd.stderr.strip()}")
 
@@ -135,6 +140,8 @@ def apply_pr_body_rewrite_batch(args: argparse.Namespace) -> PrBodyRewriteBatchR
         source_log_path = _coerce_path(source_log_rel, repo_root)
         if not source_log_path.is_file():
             raise SystemExit(f"Source log not found: {source_log_path}")
+        source_log_text = _load_text(source_log_path)
+        expected_labels = _build_pr_labels(_parse_fields(source_log_text), _parse_sections(source_log_text))
 
         slug = f"{manifest_path.stem}-{requested_id.lower()}-pr-{pr_number}"
         live_body_path = manifest_path.with_name(f"{slug}-live-body.md")
@@ -144,6 +151,8 @@ def apply_pr_body_rewrite_batch(args: argparse.Namespace) -> PrBodyRewriteBatchR
 
         before = _fetch_pr(repo, str(pr_number))
         live_body_text = str(before.get("body") or "")
+        live_labels = [label.get("name", "") for label in before.get("labels", []) if isinstance(label, dict) and label.get("name")]
+        missing_labels = [label for label in expected_labels if label not in live_labels]
         live_body_path.write_text(live_body_text, encoding="utf-8")
 
         rewrite_pr_body_scope(
@@ -155,7 +164,7 @@ def apply_pr_body_rewrite_batch(args: argparse.Namespace) -> PrBodyRewriteBatchR
         )
 
         rewritten_body_text = rewritten_body_path.read_text(encoding="utf-8")
-        _edit_pr_body(repo, str(pr_number), rewritten_body_path)
+        _edit_pr(repo, str(pr_number), rewritten_body_path, missing_labels)
         after = _fetch_pr(repo, str(pr_number))
 
         warnings: list[str] = []
@@ -164,6 +173,8 @@ def apply_pr_body_rewrite_batch(args: argparse.Namespace) -> PrBodyRewriteBatchR
             warnings.append("rewritten PR body matched the fetched live body; live edit path was still exercised")
         if str(after.get("state") or "") != "MERGED":
             warnings.append(f"historical rewrite target is in state {after.get('state')}; expected MERGED")
+        if missing_labels:
+            warnings.append("missing live PR labels were backfilled from the deterministic source-log label set")
 
         item_result = PrBodyRewriteBatchItemResult(
             requested_id=requested_id,
@@ -176,6 +187,7 @@ def apply_pr_body_rewrite_batch(args: argparse.Namespace) -> PrBodyRewriteBatchR
             rewritten_body_path=_repo_rel(rewritten_body_path),
             apply_result_path=_repo_rel(apply_result_path),
             body_changed=body_changed,
+            labels_applied=missing_labels,
             warnings=warnings,
         )
         apply_result_path.write_text(json.dumps(asdict(item_result), indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
