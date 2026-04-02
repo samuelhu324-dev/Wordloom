@@ -30,6 +30,15 @@
   **phase_log_18**: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
   **phase_log_19**: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
   **phase_log_20**: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
+  **phase_log_21**: `docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md`
+  **phase_log_22**: `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`
+  **phase_log_23**: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`
+  **phase_log_24**: `docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`
+  **phase_log_25**: `docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`
+  **phase_log_26**: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
+  **phase_log_27**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  **phase_log_28**: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  **phase_log_29**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -38,7 +47,7 @@
   **phase_log_5**: `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
   **phase_log_6**: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 **created**: `2026-03-28`
-  **updated**: `2026-03-30`
+  **updated**: `2026-04-02`
 
 ---
 
@@ -115,6 +124,10 @@
   - 详见：`docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
 - `S0E-6A`（Phase 6A）：log structure normalization and dual-track evidence contract
   - 详见：`docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`
+- `S0E-6F`（Phase 6F）：issue body metadata and links boundary follow-up
+  - 详见：`docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`
+- `S0E-4F`（Phase 4F）：PR body metadata-links redundancy follow-up
+  - 详见：`docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`
 - `S0E-4C`（Phase 4C）：PR summary / development issue rendering / issue relationship attach follow-up
   - 详见：`docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
 - `S0E-3A`（Phase 3A）：roadmap milestone and child-log bridge contract
@@ -123,6 +136,10 @@
   - 详见：`docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 - `S0E-4B`（Phase 4B）：PR title / label / body follow-up
   - 详见：`docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
+- `S0E-7D`（Phase 7D）：publish / verify / remediation / failure semantics
+  - 详见：`docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
+- `S0E-7E`（Phase 7E）：publish-verify-remediation gate thin orchestration entrypoint
+  - 详见：`docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -234,6 +251,46 @@
 - [x] `P105`：已新建 `S0E-7C`，用于承接历史 logs 的批量 review / format 审查 / lifecycle completeness sampling，而不把这类 follow-up 混进 `S0E-7B` 或直接升级成 bulk apply
 - [x] `P106`：`S0E-7C` 已完成 `P1-P2`，现已新增 manifest-driven historical log review planner，并保留一组覆盖 closed-loop / issue-open-no-pr / log-only 的 representative samples
 - [x] `P107`：`S0E-7C` 已完成 `P3`，现已新增 manual GitHub Actions mirror workflow，可通过 `workflow_dispatch` 重放同一 review planner 并保留 summary / plan artifacts
+- [x] `P108`：`S0E-5C` 已完成真实 lifecycle follow-through：PR `#310` 已创建并合并，issue `#309` 已完成 final issue-conclusion write-back，因此这条 slice 不再只是 issue-only sample
+- [x] `P109`：`S0E-7C` 已完成 `P4-C1-S1`，现已新增覆盖整个 `S0E` family 的 full-series historical review manifest/plan，历史 backlog 现在有了第一份结构化基线读数
+- [x] `P110`：`S0E-7C` 已完成 `P4-C1-S2`，focused PR `#311` 已把历史 review mirror workflow 挂到默认分支，且 `S0E-docs-management-v5` 上的 live dispatch `run 23827100968` 已成功保留首条 full-series replay evidence
+- [x] `P111`：`S0E-6C` 已完成 `P0-P3`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同，并已通过 `#309` 的真实 conclusion replay 与 lifecycle audit gate 验证
+- [x] `P112`：`S0E-7C` 已完成 `P4-C1-S3`，focused PR `#312` 已移除 historical review planner 在默认分支上的 runtime closure 缺口，`main` 上的 live dispatch `run 23827684652` 也已成功闭环
+- [x] `P113`：`S0E-7C` 已完成 `P4-C1-S4`，截图范围内全部已关闭 `S0E` 子 issues 都已重新检查并重跑 conclusion，`9/10` 条 `Context` 漂移已被批量修复，修复后 `10/10` lifecycle audit 全部通过
+- [x] `P114`：已新建并完成 `S0E-6D/P0-P3`，issue `Context` contract 已从 rigid sentence-slot template 升级为 natural-summary + weak gate，draft/conclusion renderer 与 lifecycle audit 现已统一到同一规则
+- [x] `P115`：`S0E-7C` 已完成 `P4-C1-S5`，刚才审查过的 `10` 条已关闭 `S0E` 子 issues 已按 `S0E-6D` 的 natural-summary `Context` 规则重写，并再次通过 `10/10` lifecycle audit
+- [x] `P116`：`S0E-6D` 已完成 `P4-C1-S1`，`Context` gate 现已收缩为 prose-first 弱约束，只检查 `3-5` 条可读英文句子行、基本完整性和 placeholder hygiene，不再强制 prose anchors
+- [x] `P117`：`S0E-6D` 已完成 `P4-C1-S2`，issue `Context` renderer 现已改成 `fact pool + style family`，preview bodies 开始按 issue 变化句子顺序和入口，而不再共享同一条 sentence-slot 骨架
+- [x] `P118`：`S0E-6D` 已完成 `P4-C1-S3`，刚才那 `10` 条 closed `S0E` 子 issues 已按 fact-pool/style-family renderer 完成 live replay，并再次通过 `10/10` lifecycle audit
+- [x] `P119`：已新建并完成 `S0E-6E/P0-P3`，`Context` 现已改成“单条生成、批量保留”的 ownership model；issue draft 默认回到 scaffold，batch conclusion 默认只保留并告警，不再顺手代写正文
+- [x] `P120`：`S0E-6E` 已完成 `P4-C1-S1`，`S0E-2B/#288` 与 `S0E-2A/#289` 已按单条 authoring 路径逐条优化 `Context`，随后再次通过 lifecycle audit
+- [x] `P121`：`S0E-2E` 与 `S0E-6E` 已补充 final conclusion body wording 约定：`Context` 末句负责说明 slice 留下的结果/基线，精确 PR 证据只保留在 `DoD`
+- [x] `P122`：`S0E-6E` 已把同一条 outcome-ending 规则扩展到其余已关闭 `S0E` 子 issues，并同步把单条 conclusion generator 的默认末句从 PR-evidence wording 改成结果/基线 wording
+- [x] `P123`：已新建 `S0E-6F`，用于收口 issue body 的字段归属微调：`Metadata` 去掉 `Source log`，`Links` 新增可选 `Previous log`，并把后续 renderer / gate / runbook 的落地措施集中记账
+- [x] `P124`：`S0E-6F` 已完成 `P0-P1`，issue draft / issue conclusion preview / lifecycle audit / owner logs / runbook 现已统一到“Metadata 只留状态字段、Links 承接 deterministic navigation”的新边界
+- [x] `P125`：`S0E-6F` 已完成 `P2`，新的代表性 artifacts 已生成，当前 `10` 条 closed `S0E` child issues 也已按同一边界完成 bounded refresh，并通过 `10/10` post-refresh lifecycle audit
+- [x] `P126`：`S0E-6F` 已完成 `P3`，issue body contract 现已显式区分 top-level parent 与 child issue：`#248` 已刷新到 parent-aware body shape，且 `S0E` parent-plus-child `11` 条 issue 现已一起通过 post-refresh lifecycle audit
+- [x] `P127`：已新建 `S0E-4F`，专门收口 PR body 中 `Development Link` 与 `Links -> Issue` 的重复问题，并把当前 `17` 条 live `S0E` PR 的全量审查范围固定到同一条 log
+- [x] `P128`：`S0E-4F` 已完成 `P0-P1`，shared PR contract / preview-create-rewrite renderer / canonical spec / log templates 现已统一到“Development issue 只留在 Metadata、Links 只保留 deterministic navigation”的新边界
+- [x] `P129`：`S0E-4F` 已完成 `P2`，当前 `17` 条 live `S0E` PR 已全量审查为 `17/17 fail`，后续 rewrite scope 也已固定为一个按 `4` 类 drift family 分层执行的 bounded batch
+- [x] `P130`：`S0E-4F` 已完成 `P3`，rewrite rollout 最终分成 `4` 个 cycle：先修 parser/source-log blocker，再跑 `2` 轮 live PR rewrite batch，最后对同一组 `17` 条 live `S0E` PR 做 post-apply verify，并得到 `17/17 pass`
+- [x] `P131`：`S0E-4F` 已完成 `P4`，现已补上 PR Development/label 的 live GitHub metadata gap，补建并 conclude 了原先缺失的 `S0E-1A/#316`、`S0E-2C/#313`、`S0E-3A/#314`、`S0E-7C/#315`，同一组 `17` 条 audited PR 现已达到 body + metadata 双重完整
+- [x] `P132`：已新建 `S0E-7D`，用于把当前 docs/GitHub workflow 的 `publish -> verify -> remediation -> failure handling` 语义收口为明确的 failure taxonomy、replay/backfill contract 与 handling semantics
+- [x] `P133`：`S0E-7D` 已完成 `P0-P1`，现在已经保留第一份 failure taxonomy artifact，把当前已知 issue/PR/log drift surfaces 显式映射到 `strong-structure` / `weak-structure` 以及 `block` / `replayable` / `manual` / `reconciliation`
+- [x] `P134`：`S0E-7D` 已完成 `P2-P3`，现在已经保留 representative manifest / audit summary，并把 replay-only remediation contract、mixed-batch split 规则、以及 post-apply verify stop rules 固定为结构化证据
+- [x] `P135`：`S0E-7D` 已完成 `P4`，现在已经把 future `publish-verify-remediation gate` 的名称、决策词汇、adapter reuse 边界和非目标面固定为结构化 surface contract
+- [x] `P136`：已新建 `S0E-7E`，用于把 `S0E-7D/P4` 命名的 future `publish-verify-remediation gate` 落成一层薄编排入口，并明确其与既有 guarded adapters 的实现边界
+- [x] `P137`：`S0E-7E` 已完成 `P0-P1`，现在已经保留 thin gate contract artifact，并实现了一条新的 `publish-verify-remediation gate` planner，用统一 decision artifact 复用 lifecycle-family allow path 与 `pr-create-preflight` stop path
+- [x] `P138`：`S0E-7E` 已完成 `P2`，现在 thin gate 已能把 `issue-conclusion`、`issue-relationship` 与 `pr-body-rewrite` 委托到既有 guarded adapters，同时保持 `pr-create-preflight` 仍是 planning-only front-half family
+- [x] `P139`：`S0E-7E` 已完成 `P3`，现在 thin gate 已保留 representative issue-side pass、PR-side pass、`pr-create-preflight` planning-only stop 与 delegated-apply rejection 四类边界证据
+- [x] `P140`：`S0E-7E` 已完成 `P4`，现在 thin gate 的 local/publish-time/CI wrapping boundary 与 top-level post-apply verify exposure 都已固定为结构化 contract
+- [x] `P141`：`S0E-7D` ledger 已补齐，`S0E-7E` 已收口为 `stable`，并已新建 `S0E-7F` 作为 thin gate read-only/CI-style wrapper adoption 的 implementation follow-up
+- [x] `P142`：`S0E-7F` 已完成 `P0-P1`，现在已经保留第一份 read-only wrapper contract artifact，把 wrapper ownership boundary、request/result envelope、artifact set 与 `7A/7E` 对齐关系固定为结构化 contract
+- [x] `P143`：`S0E-7F` 已完成 `P2`，现在已实现 shared read-only wrapper entrypoint，并保留了一条 lifecycle-family pass 样本和一条 `pr-create-preflight` stop 样本的 wrapper result/summary/manifest 证据
+- [x] `P144`：`S0E-7F` 已完成 `P3`，现在已接上本地 operator-facing PowerShell surface，并保留了一条 pass 样本和一条 stop 样本的本地 artifact-root 证据
+- [x] `P145`：`S0E-7F` 已完成 `P4` 并收口为 `stable`，现在已经保留横跨 shared wrapper 与 local operator-facing surface 的 representative validation ledger，并明确把 `workflow_dispatch` 固定为下一个 eligible widening surface
+- [x] `P146`：已新建 `S0E-7G`，并已完成 `P0-P2`，现在已经保留 GitHub-side manual wrapper contract artifact，并实现了一个 manual `workflow_dispatch` surface 来调用 shared read-only wrapper
+- [x] `P147`：`S0E-7G/P3` 已完成第一轮 dispatchability check，当前 blocker 已明确收口为“workflow 尚未在 default branch 可见”，因此 live pass/stop dispatch evidence 需等该可见性前置条件满足后继续
 
 ## Current Status（进展摘要）
 
@@ -278,6 +335,26 @@
 - `S0E-4E` 已完成 `P3`：`PR event -> source_log_path` attribution 现已具有明确的 consume-or-stop handoff contract，因此 `S0E-7A` 后续接入自动 PR-event mirroring 时不必再猜什么时候 verify、什么时候应在 attribution 阶段先停下；
 - `S0E-7B` 已完成并进入 `stable`：attribution resolver、GitHub Actions consume-or-stop wiring，以及 resolved/stop representative samples 现已全部落地，因此 `4E -> 7A` 的 implementation follow-up 已从 contract follow-up 推进到可验证的执行层；
 - `S0E-7C` 已完成并进入 `stable`：历史 logs 的批量 review planner、representative sample manifest/plan，以及 manual dispatch mirror workflow 现已全部落地，因此后续 historical backfill 可以先从结构化 review 结果进入 targeted follow-up；
+- `S0E-7C/P4` 已完成第一轮 Actions 打通：`#311` 现已让历史 review mirror workflow 对默认分支可见，而 `run 23827100968` 也已证明同一 workflow 可以在 `S0E-docs-management-v5` 上成功重放 full-series `S0E` historical review；
+- `S0E-7C/P4` 已进一步完成默认分支 runtime closure：focused PR `#312` 移除了 planner 对 `body_contract.py` 的 `main` 运行时依赖，而 `run 23827684652` 已证明 historical review mirror workflow 现在可以直接在默认分支成功完成 full-series replay；
+- `S0E-7C/P4` 已进一步完成 closed child issue 修复闭环：截图范围内全部已关闭 `S0E` 子 issues 都已重新检查，`#288/#289/#293/#295/#297/#300/#303/#305/#307` 的 `Context` 漂移已通过批量 conclusion replay 回补，随后批量 lifecycle audit 对 `10` 条子 issue 全部给出 `pass`；
+- `S0E-6D` 已完成并进入 `stable`：issue `Context` 已从 rigid sentence slots 升级为 source-log-derived natural-summary renderer + weak deterministic gate，draft / conclusion / lifecycle audit 三条路径现已统一；
+- `S0E-7C/P4` 已进一步完成 `S0E-6D` 的 live replay：刚才审查过的 `10` 条 closed `S0E` child issues 已按 natural-summary `Context` 规则重写，并再次通过 `10/10` lifecycle audit；
+- `S0E-6D` 已重新打开 `P4`：下一步不再继续加弱模板，而是要把 `Context` 收口成 prose-first weak gate + fact-pool/style-family renderer，让 issue `Context` 真正回到“给人读”的摘要入口；
+- `S0E-6D/P4-C1-S1` 已完成：lifecycle audit 不再强制 `Context` 在正文里显式携带 prose anchors，当前 gate 已收缩为 `3-5` 条可读英文句子行、基本完整性与 placeholder hygiene；
+- `S0E-6D/P4-C1-S2` 已完成：issue `Context` renderer 现已从 sentence-slot assembly 切到 `fact pool + style family`；
+- `S0E-6D/P4-C1-S3` 已完成：刚才审查过的 `10` 条 closed `S0E` child issues 已按 fact-pool/style-family renderer 完成新一轮 live replay，并再次通过 `10/10` lifecycle audit，因此这条 slice 现已重新回到 `stable`；
+- `S0E-6E` 已完成并进入 `stable`：`Context` 的 ownership 现已从“batch-capable rewrite surface”改成“single-item authoring surface”，新的单条生成脚本、scaffold-first issue draft 默认值，以及 batch-preserve conclusion planning 都已落地并留存样本；
+- `S0E-6E/P4-C1-S1` 已完成：`S0E-2B/#288` 与 `S0E-2A/#289` 现已作为第一对真实 one-item live refresh 样本，用新的 authoring 路径逐条优化 `Context` 并再次通过审计；
+- `S0E-2E` 与 `S0E-6E` 现已补上 conclusion wording 约定：若 final body 同时保留 `Context` 与 `DoD`，则 `Context` 尾句只讲最终留下的结果/可复用状态，不再重复 `#287/#290` 这类 PR 证据；
+- `S0E-6E/P4-C1-S2` 已完成：除 `S0E-2A/#289` 与 `S0E-2B/#288` 之外，其余已关闭 `S0E` 子 issues 也已全部改写为同一条 outcome-ending 规则，并再次通过批量 lifecycle audit；同时单条 conclusion generator 的默认 outcome 句也已改掉，不再生成 `closed through #...` 这类重复尾句；
+- 已新建 `S0E-6F` 作为 issue body 字段归属微调 follow-up：目标只收两件事，`Metadata` 去掉 `Source log`，以及 `Links` 增加可选 `Previous log`，并把 renderer / gate / runbook / validation 的后续实施措施集中到同一条 log；
+- `S0E-6F` 已完成 `P0-P1`：issue draft rendering、issue conclusion preview、lifecycle audit、`S0E-2D` / `S0E-2E` / `S0E-5D` owner wording 与 runbook 现已一起切到新边界，不再把 `Source log` 当作 `Metadata` 行；
+- `S0E-6F` 已完成 `P2`：代表性 draft/conclusion artifacts 已重生成，当前 `10` 条 closed `S0E` child issues 也已完成 bounded live refresh，post-refresh lifecycle audit 现为 `10/10 pass`；
+- `S0E-6F` 已完成 `P3` 并继续保持 `stable`：当前 contract 已进一步显式区分 top-level parent issue 与 child issue，live parent issue `#248` 现已回写到 parent-aware body shape，且扩展后的 `11` 条 `S0E` parent-plus-child issues 已通过同一份 post-refresh lifecycle audit；
+- 已新建 `S0E-4F` 作为下一条 PR-body follow-up：目标是去掉 PR body 里重复的 `Development Link` 与 `Links -> Issue`，并对当前 `17` 条 live `S0E` PR 做一轮显式全量审查；
+- `S0E-6C` 已完成并进入 `stable`：issue `Context` 现已固定 main/child 两档英文句子合同，issue draft / issue conclusion / lifecycle audit 也已接到同一规则上，`#309` 已通过真实重写与 re-audit；
+- `S0E-5C` 的真实链路现已打通：issue `#309` 不再停留在 issue-only sample，PR `#310` 已创建并合并，inline post-apply verification 已通过，final issue conclusion 也已写回 closed issue；
 - `S0E-5D` 已完成 `P0`：canonical issue creation / issue conclusion / PR body families 已固定，`Metadata` 一类子条目不允许夹空段，且 Evidence Footer 已先锁定为 drills/evidence-only 并禁止 commit-footer fallback；
 - `S0E-5D` 已完成 `P1`：Evidence Footer 现已固定为只读取 `PR Summary Inputs (optional)` 下的 `Evidence Footer Source`，并且唯一允许的行型要求阶段串与 artifact 路径串都使用反引号；
 - `S0E-5D` 已完成 `P2`：section order、metadata 空段规则、allowed link categories、Evidence Footer presence/shape 现已进入 hard gate，可用 pass/stop fixture 机械验证；
@@ -382,6 +459,42 @@
 - 2026-04-01：`S0E-7B/P1` 已完成：新增 attribution resolver entrypoint，并固定 normalized PR payload snapshot + attribution result JSON 这对 retained artifact paths，为后续 `S0E-7A` consume-or-stop 接线提供直接输入。
 - 2026-04-01：`S0E-7B/P2-P3` 已完成：GitHub Actions workflow 现已先做 attribution 再分流到 continue-or-stop，同时 repo 也已补齐 resolved / stop 两类 representative samples 与 sample manifest，因此 `S0E-7B` 现可视为 `stable`。
 - 2026-04-01：新增 `S0E-7C`，并完成 historical log review planner、representative sample manifest/plan 与 manual mirror workflow，为旧 logs 的批量审查和后续 targeted backfill 提供 review-first 入口。
+- 2026-04-01：`S0E-7C/P4` 已完成第一轮 full-series backlog + live Actions enablement：`#311` 已把 mirror workflow 挂到默认分支，`run 23827006381` 证明了 dispatch visibility，而 `run 23827100968` 已在 `S0E-docs-management-v5` 上成功保留第一条 full-series replay evidence。
+- 2026-04-01：`S0E-7C/P4-C1-S3` 已完成：focused PR `#312` 已移除 planner 在 `main` 上的 runtime closure 缺口，随后 `run 23827684652` 已在默认分支成功完成 full-series historical review replay。
+- 2026-04-01：`S0E-7C/P4-C1-S4` 已完成：截图范围内全部已关闭 `S0E` 子 issues 都已重新检查并重跑 conclusion，`9/10` 条失效 `Context` 已批量修复，后续 lifecycle audit 也已对 `10/10` 子 issues 给出 `pass`。
+- 2026-04-01：新增并完成 `S0E-6D`，issue `Context` contract 已从 rigid sentence-slot template 升级为 natural-summary renderer + weak deterministic gate，并把 draft / conclusion / lifecycle audit 三条路径统一到同一规则。
+- 2026-04-01：`S0E-7C/P4-C1-S5` 已完成：刚才审查过的 `10` 条 closed `S0E` 子 issues 已按 `S0E-6D` 的 natural-summary `Context` 规则重写，并再次通过 `10/10` lifecycle audit。
+- 2026-04-01：根据 operator review，`S0E-6D` 已新增 `P4`，后续将继续把 `Context` gate 收缩为 prose-first 弱约束，并把 renderer 改成 fact-pool + style-family，而不再停留在 template-shaped natural-summary。
+- 2026-04-01：`S0E-6D/P4-C1-S1` 已完成：`Context` gate 现已收缩为 prose-first 弱约束，只检查 `3-5` 条可读英文句子行、基本完整性和 placeholder hygiene，不再强制 prose anchors。
+- 2026-04-01：`S0E-6D/P4-C1-S2` 已完成：issue `Context` renderer 现已切到 `fact pool + style family`，preview bodies 已开始按不同 issue 变化句子顺序和 lead sentence，而不再共享同一条 sentence-slot 骨架。
+- 2026-04-01：`S0E-6D/P4-C1-S3` 已完成：刚才那 `10` 条 closed `S0E` 子 issues 已按 fact-pool/style-family renderer 完成 live replay，并再次通过 `10/10` lifecycle audit；`S0E-6D` 也因此重新回到 `stable`。
+- 2026-04-01：新增并完成 `S0E-6E`，`Context` 现在明确改成“单条生成、批量保留”的边界：新增单条 `Context` draft 脚本，issue draft 默认回到 scaffold，而 batch issue-conclusion 计划默认只保留 live `Context` 并报告 drift。
+- 2026-04-01：`S0E-6E/P4-C1-S1` 已完成：`S0E-2B/#288` 与 `S0E-2A/#289` 已按新的单条 authoring 路径逐条优化 live `Context`，并再次通过 lifecycle audit。
+- 2026-04-01：补充 final issue-conclusion wording 约定：若结案 body 同时保留 `Context` 与 `DoD`，则 `Context` 末句改为描述 slice 留下的结果/基线，精确 PR 证据只保留在 `DoD`。
+- 2026-04-01：`S0E-6E/P4-C1-S2` 已完成：其余已关闭 `S0E` 子 issues 也已统一改写为 outcome-ending `Context`，同时单条 conclusion generator 的默认结尾不再重复 `DoD` 里的 PR evidence wording。
+- 2026-04-02：新增 `S0E-6F`，用于把 issue body 的字段归属进一步收紧为“状态留在 Metadata，导航留在 Links”：本轮 follow-up 的明确目标是移除 `Metadata` 中的 `Source log`，并为 `Links` 增加可选 `Previous log`，同时预先记住 renderer / gate / runbook / validation 的实施路径。
+- 2026-04-02：`S0E-6F/P0-P1` 已完成：issue create / conclusion 的 renderer、lifecycle audit 的 link-boundary 检查，以及 `2D/2E/5D` owner wording 与 runbook 现已全部对齐到新规则，后续只剩 representative artifacts 与 live-reconciliation scope 决策。
+- 2026-04-02：`S0E-6F/P2` 已完成：`6F` representative draft/conclusion artifacts 已生成，live reconciliation scope 已固定为当前 `10` 条 closed `S0E` child issues，并已完成 bounded refresh 与 `10/10` post-refresh lifecycle audit。
+- 2026-04-02：`S0E-6F/P3` 已完成：issue body contract 现已显式区分 top-level parent 与 child issue，`#248` 已刷新为 parent-aware body shape，且扩展后的 `11` 条 `S0E` parent-plus-child issues 已通过同一份 post-refresh lifecycle audit。
+- 2026-04-02：新增 `S0E-4F`，用于收口 PR body 的两处重复面：去掉独立 `Development Link` section，并把 `Links` 里的 `Issue` 行移除，随后对当前 `17` 条 live `S0E` PR 做一轮显式全量审查。
+- 2026-04-01：新增并完成 `S0E-6C`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同；`#309` 也已在真实 conclusion replay 后通过新的 lifecycle audit gate。
+- 2026-04-01：完成 `S0E-5C` 的真实 lifecycle follow-through，PR `#310` 已创建并合并，issue `#309` 已完成 final body write-back；当时的 GitHub Actions mirror dispatch 也据此暴露出“workflow 需先对默认分支可见”这一前置条件，并在后续 `S0E-7C/P4` 中被正面解决。
+- 2026-04-02：新增 `S0E-7D`，作为 `S0E-7C` historical review 和 `S0E-4F` metadata backfill 之后的 failure-semantics follow-up，后续将集中收口强/弱结构化 failure taxonomy、replay/backfill 顺序以及 `block/replayable/manual/reconciliation` handling semantics。
+- 2026-04-02：`S0E-7D/P0-P1` 已完成：第一份 failure taxonomy / mapping artifact 已落地，当前 docs/GitHub workflow 的主要 drift surfaces 现已显式归类到 strong/weak structure 与四类 handling semantics。
+- 2026-04-02：`S0E-7D/P2-P3` 已完成：现在已有覆盖四类 handling semantics 的 representative manifest / audit summary，同时 replay-only remediation contract、mixed-batch split 规则和 post-apply verify stop rules 也已固定为结构化证据。
+- 2026-04-02：`S0E-7D/P4` 已完成：future `publish-verify-remediation gate` 的名称、决策词汇、adapter reuse 边界与非目标面现已固定，后续若实现统一入口，只需要做一层薄编排而不是重写既有 guarded adapters。
+- 2026-04-02：`S0E-7E/P0-P1` 已完成：thin gate contract artifact 已落地，新 planner 现已能统一一条 lifecycle-family `allow-apply` 样本和一条 `pr-create-preflight` `hard-fail-input` stop 样本的顶层 decision artifact，而不替换现有 family adapters。
+- 2026-04-02：`S0E-7E/P2` 已完成：thin gate 现已能委托 issue-conclusion、issue-relationship、pr-body-rewrite 三条 guarded apply handoff，同时显式拒绝把 `pr-create-preflight` 扁平化成 create 后半段 apply。
+- 2026-04-02：`S0E-7E/P3` 已完成：thin gate 现已保留 representative issue-side pass、PR-side pass、`pr-create-preflight` planning-only stop，以及 delegated-apply rejection 的结构化 ledger，因此 `P4` 只剩 future wrapping boundary 的 follow-up。
+- 2026-04-02：`S0E-7E/P4` 已完成：thin gate 的 local/publish-time/CI wrapping boundary 与 summary-only post-apply verify exposure 现已固定，因此该入口后续只需在这些边界内被接入，而不必再重谈 family-owned semantics。
+- 2026-04-02：`S0E-7D/P4` 与 `S0E-7E/P4` 的 ledger headSha 已补齐，`S0E-7E` 现已提升为 `stable`，并新开 `S0E-7F` 作为 thin gate read-only/CI-style wrapper adoption 的 implementation follow-up。
+- 2026-04-02：`S0E-7F/P0-P1` 已完成：第一份 read-only wrapper contract artifact 已落地，当前 wrapper 的 ownership boundary、required request/result fields、artifact manifest/summaries，以及与 `S0E-7A` secondary-enforcement wording 和 `S0E-7E` normalized thin-gate outputs 的对齐关系都已固定。
+- 2026-04-02：`S0E-7F/P2` 已完成：shared read-only wrapper entrypoint 已落地，并已保留一条 lifecycle-family pass 样本和一条 `pr-create-preflight` stop 样本的 wrapper result/summary/manifest 证据，且 delegated apply 仍被硬性禁用。
+- 2026-04-02：`S0E-7F/P3` 已完成：本地 operator-facing PowerShell surface 已接到 shared wrapper 上，并已保留一条 pass 样本和一条 stop 样本的本地 artifact-root 证据；下一步只剩 `P4` 的 representative validation 收口或继续接到 manual `workflow_dispatch` surface。
+- 2026-04-02：`S0E-7F/P4` 已完成：现在已保留一份横跨 shared wrapper 与 local operator-facing surface 的 representative validation ledger，并明确结论为“暂不直接扩大到更广 CI adoption；下一步先做 dedicated read-only workflow_dispatch surface”。
+- 2026-04-02：已新建 `S0E-7G` 并完成 `P0-P2`：GitHub-side manual `workflow_dispatch` wrapper contract 已落地，新的 workflow surface 也已实现并接到 shared read-only wrapper；下一步只剩 representative pass/stop dispatch evidence。
+- 2026-04-02：`S0E-7G/P3` 已完成第一轮 dispatchability check：当前不是 wrapper runtime 出错，而是 GitHub 仍要求 workflow 先在 default branch 可见；因此下一步应先让该 workflow 出现在 `main`，再补 live pass/stop dispatch evidence。
+- 2026-04-02：新增 `S0E-7E`，作为 `S0E-7D/P4` 的直接实现 follow-up，后续将把 future `publish-verify-remediation gate` 从命名 surface 落成一个薄编排入口，并复用现有 issue/relationship/PR guarded adapters。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
 - 2026-03-29：完成 `S0E-2D/P3`，历史真实 issue `#288` 已按当前 creation body contract 审核并回收，当前 `S0E-2D` 也已成功创建真实 sample issue `#297` 并完成 write-back。
