@@ -38,7 +38,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-03-31`
-**updated**: `2026-03-31`
+**updated**: `2026-04-02`
 
 ---
 
@@ -109,12 +109,15 @@
 - The canonical spec is now recorded in `docs/issues/body-contract-S0E-5D-p0-canonical-spec.md`.
 - Issue Creation body is now fixed as:
   - `Metadata -> Context -> Definition of Done (DoD) -> Links`;
+  - `Metadata` keeps issue-state rows only and does not render `Source log`;
+  - deterministic log navigation such as `Log`, `Runbook`, `Parent log`, and optional `Previous log` stays in `Links`;
   - empty `Context` and empty `Definition of Done (DoD)` are both preserved at creation time.
 - Issue Conclusion body is now fixed as:
   - `Metadata -> Context -> Definition of Done (DoD) -> Links`;
+  - `Metadata` keeps issue-state rows only and does not render `Source log`;
   - `Context` remains present and must contain substantive conclusion-stage content;
   - `Definition of Done (DoD)` contains short PR refs such as `#299` and `#300`;
-  - `Links` does not add issue or PR lines in the conclusion contract.
+  - `Links` keeps deterministic log navigation and does not add issue or PR lines in the conclusion contract.
 - PR body is now fixed as:
   - `Metadata -> Summary -> Execution Checklist -> Links -> Evidence Footer (when applicable) -> Development Link (only when an issue exists)`.
 - Metadata-like bullet rows across creation / conclusion / PR bodies must be contiguous with no blank paragraphs between adjacent bullets.
@@ -160,7 +163,7 @@
 - Lifecycle audit in `plan_lifecycle_audit.py` now additionally checks:
   - issue section order;
   - metadata bullet contiguity;
-  - allowed issue-link categories;
+  - allowed issue-link categories, including optional `Previous log`;
   - closed-issue substantive `Context` retention.
 - Issue conclusion rendering in `plan_issue_conclusion.py` is now aligned to the canonical contract by:
   - always keeping the `Context` section;

@@ -10,7 +10,8 @@
 - Required sections: `Metadata`, `Context`, `Definition of Done (DoD)`, `Links`.
 - Section order: `Metadata -> Context -> Definition of Done (DoD) -> Links`.
 - Metadata bullet rows must be contiguous with no blank gaps.
-- Links may only use issue-body categories: `Log`, `Runbook`, `Parent log`, `Roadmap`.
+- Metadata must not render `Source log`; deterministic log navigation belongs in `Links`.
+- Links may only use issue-body categories: `Log`, `Runbook`, `Parent log`, `Previous log`, `Roadmap`.
 - Closed issues must keep substantive `Context` content.
 
 ## PR Body Checks

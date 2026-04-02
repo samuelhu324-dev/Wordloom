@@ -34,7 +34,7 @@
 **pr_base**: ``
 **pr_development_issue**: ``
 **created**: `2026-03-29`
-**updated**: `2026-03-30`
+**updated**: `2026-04-02`
 
 ---
 
@@ -166,11 +166,11 @@
 
 ### P1-C1-S1 (Final English issue-conclusion body shape | v1)
 
-- The create-time `Metadata` block should be preserved so labels, project, milestone, source log, and parent issue remain visible after closure.
+- The create-time `Metadata` block should be preserved so labels, project, milestone, and parent issue remain visible after closure, while deterministic log navigation stays in `Links`.
 - `Context` becomes optional during conclusion v1; if retained, it should be one short English closure note rather than a replay of the original contract scope.
 - When `Context` is retained, its final sentence should carry outcome wording such as "left a stable baseline" or "left the path in a reusable live form" instead of repeating PR evidence that belongs in `Definition of Done (DoD)`.
 - `Definition of Done (DoD)` is mandatory in the final conclusion body and should list the ordered short PR refs as the final delivery ledger.
-- `Links` should preserve deterministic references such as log path, issue URL, parent log, and one PR URL line per merged PR in the same order used by the selected merged-PR set.
+- `Links` should preserve deterministic references such as log path, parent log, optional previous log, and one PR URL line per merged PR in the same order used by the selected merged-PR set.
 - The final body shape is:
 
 ```md
@@ -179,7 +179,6 @@
 - Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`
 - Projects: `wordloom Board`
 - Milestone: ``
-- Source log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
 - Parent issue: #248
 
 ## Definition of Done (DoD)
@@ -192,6 +191,7 @@
 - Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/297`
 - PR: `https://github.com/samuelhu324-dev/wordloom-v3/pull/298`
 - Parent log: `docs/logs/log-S0E-docs-management-v5.md`
+- Previous log: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
 ```
 
 ### P1-C1-S2 (Exact-ID PR selection and ordering rules | v1)

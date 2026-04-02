@@ -198,9 +198,11 @@
 - Step 8: when `Parent issue` is present, render it as plain text short GitHub issue reference such as `#248`, not a full URL and not a code span.
 - Step 9: confirm `issue_projects`; if they are blank, keep them blank or use the existing `docs/logs/* -> wordloom Board` default rather than guessing from prose.
 - Step 10: keep the generated issue body English-only, start directly from `## Metadata`, and do not repeat the issue title inside the body.
-- Step 11: leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text.
-- Step 12: create the real GitHub issue through the normal repository UI path.
-- Step 13: after creation, record the issue URL back into the source log in a later tracked docs update.
+- Step 11: keep `Metadata` limited to state rows such as labels, projects, milestone, and parent issue; do not leave `Source log` in `Metadata`.
+- Step 12: confirm `Links` carries deterministic navigation rows such as `Log`, `Runbook`, `Roadmap`, `Parent log`, and optional `Previous log` when the source log explicitly declares it.
+- Step 13: leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text.
+- Step 14: create the real GitHub issue through the normal repository UI path.
+- Step 15: after creation, record the issue URL back into the source log in a later tracked docs update.
 
 ### 5.8 Manual issue-conclusion procedure
 
@@ -208,10 +210,10 @@
 - Step 2: treat GitHub auto-close as state evidence only. A closed issue may still need a final body write-back if it still shows the create-time empty scaffold.
 - Step 3: collect candidate PRs by exact ID prefix from merged PR titles, for example `S0E-2D/` for issue `S0E-2D`; do not expand the set by prose similarity.
 - Step 4: if multiple merged PRs match, order them by parsed `P*` then `C*`/`S*` units when available; otherwise order them by `mergedAt` ascending and then PR number ascending.
-- Step 5: preserve the existing `Metadata` block from issue creation.
+- Step 5: preserve the existing `Metadata` block from issue creation, but remove any historical `Source log` row because log navigation now belongs in `Links`.
 - Step 6: do not render a separate `Development` section in the final user-facing body.
 - Step 7: write `Definition of Done (DoD)` as the ordered short PR-ref ledger only, for example `- #296`.
-- Step 8: update `Links` so they include deterministic issue/log references plus one PR link line per merged PR in the same order.
+- Step 8: update `Links` so they include deterministic log/navigation references such as `Log`, `Parent log`, and optional `Previous log`, plus one PR link line per merged PR in the same order.
 - Step 9: if the issue is already closed, edit it in place rather than treating the closed state as a blocker.
 - Step 10: if the issue is still open after merge, write the final body first and then close the issue with `reason=completed`.
 
@@ -239,7 +241,7 @@
   - `milestone`: string or `null`
   - `parent_issue`: string or `null`
   - `issue_projects`: array of explicit or default project names
-  - `body_markdown`: markdown body that starts at `Metadata`, keeps `Context` and `Definition of Done (DoD)` structurally present but blank by default, and includes deterministic `Links`
+  - `body_markdown`: markdown body that starts at `Metadata`, keeps `Context` and `Definition of Done (DoD)` structurally present but blank by default, and includes deterministic `Links` beginning with `Log` plus optional `Previous log` when declared
   - `warnings`: array of conservative fallback warnings, for example `issue_milestone missing`, `module labels left blank`
 - Optional output files:
   - markdown issue draft under `docs/issues/`

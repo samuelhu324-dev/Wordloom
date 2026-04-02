@@ -34,7 +34,7 @@
 **pr_base**: ``
 **pr_development_issue**: ``
 **created**: `2026-03-29`
-**updated**: `2026-03-30`
+**updated**: `2026-04-02`
 
 ---
 
@@ -56,6 +56,7 @@
 - `issue_projects` is authoritative when explicitly populated; otherwise the existing `docs/logs/* -> wordloom Board` default still applies.
 - Generated issue bodies must be English-only even when the source log is bilingual.
 - The generated issue body should keep the section structure `Metadata -> Context -> Definition of Done (DoD) -> Links`, but automation should only fill metadata and deterministic links by default.
+- `Metadata` should keep issue-state rows only, while deterministic navigation rows such as `Log`, `Runbook`, `Roadmap`, `Parent log`, and optional `Previous log` belong in `Links`.
 - `Context` and `Definition of Done (DoD)` remain intentionally unexpanded during creation v1 unless an operator supplies explicit overrides.
 
 ## PR Summary Inputs (optional)
@@ -105,8 +106,8 @@
 - Milestone derivation is explicitly tied to frontmatter or exact roadmap bridge fields rather than prose guessing.
 - The generated issue body is English-only.
 - `Context` and `Definition of Done (DoD)` remain structurally present but are not auto-written as final prose during creation.
-- `Links` contain only deterministic references such as source log, runbook, roadmap, parent log, and parent issue when those inputs are explicitly available.
-- `Links` contain only deterministic references such as source log, runbook, roadmap, and parent log when those inputs are explicitly available.
+- `Links` contain only deterministic references such as log, runbook, roadmap, parent log, and optional previous log when those inputs are explicitly available.
+- `Parent issue` remains metadata-only and must not be repeated inside `Links`.
 - The contract explains how enriched issue creation still stays fail-closed when milestone, relationship, or project data is missing.
 
 ## Stability (what stable means)
@@ -143,7 +144,6 @@
 - Labels: `...`
 - Projects: `...`
 - Milestone: `...`
-- Source log: `...`
 - Parent issue: #248
 
 ## Context
@@ -156,10 +156,11 @@
 - Runbook: `...`
 - Roadmap: `...`
 - Parent log: `...`
+- Previous log: `...`
 ```
 
 - `Context` and `Definition of Done (DoD)` remain intentionally empty unless the operator supplies explicit text.
-- `Links` should only include deterministic references already known from frontmatter or controlled overrides, excluding `Parent issue` which belongs only in `Metadata`.
+- `Links` should only include deterministic references already known from frontmatter or controlled overrides, excluding `Parent issue` which belongs only in `Metadata` and excluding log-only `reference_log_*` rows.
 
 ## Numbering
 

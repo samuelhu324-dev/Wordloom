@@ -10,7 +10,6 @@
 - Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`
 - Projects: `wordloom Board`
 - Milestone: ``
-- Source log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 - Parent issue: #248
 ```
 
@@ -48,6 +47,7 @@ Canonical notes:
 - `Context` must remain present even when empty.
 - `Definition of Done (DoD)` must remain present even when empty.
 - `Metadata` rows must stay contiguous with no blank rows between bullets.
+- `Metadata` must not render `Source log`; deterministic log navigation belongs in `Links`.
 
 Canonical shape:
 
@@ -69,6 +69,7 @@ Canonical shape:
 - Log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Parent log: `docs/logs/log-S0E-docs-management-v5.md`
+- Previous log: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
 ```
 
 ## Issue Conclusion Canonical Body
@@ -95,7 +96,6 @@ Canonical shape:
 - Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`
 - Projects: `wordloom Board`
 - Milestone: ``
-- Source log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 - Parent issue: #248
 
 ## Context
@@ -112,6 +112,7 @@ Canonical shape:
 - Log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Parent log: `docs/logs/log-S0E-docs-management-v5.md`
+- Previous log: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
 ```
 
 ## PR Canonical Body

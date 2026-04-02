@@ -345,16 +345,9 @@ def _resolve_parent_issue(repo_root: Path, fields: dict[str, str], override: str
 
 
 def _build_links(fields: dict[str, str], log_rel_path: str) -> list[str]:
-    lines = [f"- Log: `{log_rel_path}`"]
-    for key, label in [
-        ("runbook", "Runbook"),
-        ("roadmap", "Roadmap"),
-        ("parent_log", "Parent log"),
-    ]:
-        value = fields.get(key, "").strip()
-        if value:
-            lines.append(f"- {label}: `{value}`")
-    return lines
+    from body_contract import build_canonical_issue_link_lines
+
+    return build_canonical_issue_link_lines(fields, log_rel_path)
 
 
 def _render_issue_markdown(
@@ -363,7 +356,6 @@ def _render_issue_markdown(
     labels: list[str],
     issue_projects: list[str],
     milestone: str | None,
-    source_log: str,
     parent_issue: str | None,
     show_parent_issue: bool,
     link_lines: list[str],
@@ -375,7 +367,6 @@ def _render_issue_markdown(
         f"- Labels: {', '.join(f'`{label}`' for label in labels) if labels else '``'}",
         f"- Projects: `{', '.join(issue_projects)}`",
         f"- Milestone: `{milestone or ''}`",
-        f"- Source log: `{source_log}`",
     ]
     if show_parent_issue:
         lines.append(f"- Parent issue: {parent_issue or ''}")
@@ -590,7 +581,6 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         labels=all_labels,
         issue_projects=issue_projects,
         milestone=milestone,
-        source_log=rel_log_path,
         parent_issue=parent_issue,
         show_parent_issue=show_parent_issue,
         link_lines=link_lines,

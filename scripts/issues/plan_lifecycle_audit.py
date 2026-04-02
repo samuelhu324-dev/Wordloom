@@ -7,7 +7,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from body_contract import ISSUE_ALLOWED_LINK_LABELS, bullets_are_contiguous, extract_section_order, issue_body_context_line_bounds, link_labels_are_allowed, validate_issue_context_lines
+from body_contract import ISSUE_ALLOWED_LINK_LABELS, build_canonical_issue_link_lines, bullets_are_contiguous, extract_section_order, issue_body_context_line_bounds, link_labels_are_allowed, metadata_contains_source_log_row, validate_issue_context_lines
 from gen_issue_draft import (
     _derive_function_labels,
     _derive_module_labels,
@@ -539,6 +539,11 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     else:
         checks.append(_build_check("metadata-row-shape", "fail", "Metadata bullet rows contain blank gaps or non-bullet content"))
 
+    if metadata_contains_source_log_row(metadata_lines):
+        checks.append(_build_check("metadata-links-boundary", "fail", "Metadata still contains Source log; deterministic log navigation now belongs in Links"))
+    else:
+        checks.append(_build_check("metadata-links-boundary", "pass", "Metadata keeps state rows only while deterministic log navigation stays in Links"))
+
     if expected_labels:
         missing_labels = [label for label in expected_labels if label not in live_labels]
         if missing_labels:
@@ -592,16 +597,7 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     else:
         checks.append(_build_check("link-categories", "fail", f"Links section contains invalid rows: {invalid_link_rows}"))
 
-    expected_link_fragments = [f"Log: `{_repo_rel(source_log_path)}`"]
-    runbook_value = fields.get("runbook", "").strip()
-    if runbook_value:
-        expected_link_fragments.append(f"Runbook: `{runbook_value}`")
-    parent_log_value = fields.get("parent_log", "").strip()
-    if parent_log_value:
-        expected_link_fragments.append(f"Parent log: `{parent_log_value}`")
-    roadmap_value = fields.get("roadmap", "").strip()
-    if roadmap_value:
-        expected_link_fragments.append(f"Roadmap: `{roadmap_value}`")
+    expected_link_fragments = [line[2:] for line in build_canonical_issue_link_lines(fields, _repo_rel(source_log_path))]
     missing_link_fragments = [fragment for fragment in expected_link_fragments if not _contains_fragment(link_lines, fragment)]
     if missing_link_fragments:
         checks.append(_build_check("links-coverage", "fail", f"Links section is missing expected issue-link fragments: {missing_link_fragments}"))

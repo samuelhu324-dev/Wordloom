@@ -18,7 +18,7 @@ from gen_issue_draft import (
     _require_gh_cli,
     _run_command,
 )
-from body_contract import build_issue_conclusion_context_lines, issue_body_context_line_bounds, validate_issue_context_lines
+from body_contract import build_canonical_issue_link_lines, build_issue_conclusion_context_lines, issue_body_context_line_bounds, strip_issue_navigation_metadata_rows, validate_issue_context_lines
 
 
 ISSUE_URL_RE = re.compile(r"/issues/(?P<number>\d+)$")
@@ -229,13 +229,12 @@ def _has_substantive_text(section_lines: list[str]) -> bool:
     return False
 
 
-def _fallback_metadata_lines(issue_data: dict, source_log_rel: str) -> list[str]:
+def _fallback_metadata_lines(issue_data: dict) -> list[str]:
     labels = [item.get("name", "") for item in issue_data.get("labels", []) if isinstance(item, dict) and item.get("name")]
     return [
         f"- Labels: {', '.join(f'`{label}`' for label in labels) if labels else '``'}",
         "- Projects: ``",
         "- Milestone: ``",
-        f"- Source log: `{source_log_rel}`",
     ]
 
 
@@ -266,7 +265,7 @@ def _sort_prs(items: list[dict]) -> list[dict]:
     )
 
 
-def _build_link_lines(existing_link_lines: list[str], issue_url: str, merged_prs: list[MergedPrEvidence]) -> list[str]:
+def _build_link_lines(existing_link_lines: list[str], fields: dict[str, str], source_log_rel: str, issue_url: str, merged_prs: list[MergedPrEvidence]) -> list[str]:
     result: list[str] = []
     seen: set[str] = set()
 
@@ -275,10 +274,14 @@ def _build_link_lines(existing_link_lines: list[str], issue_url: str, merged_prs
             seen.add(line)
             result.append(line)
 
+    for line in build_canonical_issue_link_lines(fields, source_log_rel):
+        add(line)
+
     for line in existing_link_lines:
         if line.startswith("- PR:") or line.startswith("- Issue:"):
             continue
-        add(line)
+        if line.strip():
+            add(line.strip())
     return result
 
 
@@ -416,8 +419,9 @@ def _build_item(
     body = str(issue_data.get("body") or "")
     metadata_lines = _extract_bullet_lines(_extract_section_lines(body, "Metadata"))
     if not metadata_lines:
-        metadata_lines = _fallback_metadata_lines(issue_data, _repo_rel(source_log_path))
+        metadata_lines = _fallback_metadata_lines(issue_data)
         warnings.append("issue body metadata block missing; preview uses reconstructed metadata")
+    metadata_lines = strip_issue_navigation_metadata_rows(metadata_lines)
 
     source_log_text = _load_text(source_log_path)
     context_section_lines = _extract_section_lines(body, "Context")
@@ -431,7 +435,7 @@ def _build_item(
     else:
         context_lines = context_section_lines
     existing_link_lines = _extract_bullet_lines(_extract_section_lines(body, "Links"))
-    link_lines = _build_link_lines(existing_link_lines, issue_url, ordered_prs)
+    link_lines = _build_link_lines(existing_link_lines, fields, _repo_rel(source_log_path), issue_url, ordered_prs)
 
     if context_mode == "single-generate":
         warnings.append("preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended")

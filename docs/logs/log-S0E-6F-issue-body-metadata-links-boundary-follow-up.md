@@ -108,8 +108,9 @@
 ## Current Status
 
 - `S0E-6F` is now opened as a narrow field-boundary follow-up to `S0E-2D`, `S0E-2E`, `S0E-5D`, and `S0E-6E`.
-- The current change target is deliberately small: `Source log` leaves `Metadata`, while optional `Previous log` enters issue `Links`.
-- The expected implementation path is already bounded to renderer/planner/runbook/gate updates; this slice is not intended to reopen `Context` ownership or broader section-order debates.
+- `P0` is now completed: the field-allocation contract is fixed as `Metadata = state rows only`, `Links = deterministic navigation rows`, with `reference_log_*` explicitly left out.
+- `P1` is now completed: issue draft rendering, issue conclusion preview rendering, lifecycle audit link validation, and operator/runbook wording are now aligned to the same boundary.
+- The current remaining work is `P2`: retain representative issue artifacts under the new rule and then decide whether live issue reconciliation should stay representative-only or expand to a bounded historical batch.
 
 ## P0 (Field-allocation contract | v1)
 
@@ -165,15 +166,15 @@
 
 ### P0 (Field-allocation contract)
 
-- [ ] `P0-C1-S1`: metadata narrowed to state rows only
-- [ ] `P0-C1-S2`: deterministic link ownership clarified
-- [ ] `P0-C1-S3`: narrow-boundary non-goals fixed
+- [x] `P0-C1-S1`: metadata narrowed to state rows only
+- [x] `P0-C1-S2`: deterministic link ownership clarified
+- [x] `P0-C1-S3`: narrow-boundary non-goals fixed
 
 ### P1 (Implementation measures)
 
-- [ ] `P1-C1-S1`: shared issue-body renderers updated first
-- [ ] `P1-C1-S2`: gate and verification surfaces aligned
-- [ ] `P1-C1-S3`: operator/runbook wording updated
+- [x] `P1-C1-S1`: shared issue-body renderers updated first
+- [x] `P1-C1-S2`: gate and verification surfaces aligned
+- [x] `P1-C1-S3`: operator/runbook wording updated
 
 ### P2 (Representative validation and reconciliation)
 
@@ -182,10 +183,29 @@
 
 ## Evidence (reserved)
 
-- Artifacts are the source of truth for evidence; this log will record the retained sample paths, validation runs, and any bounded live-reconciliation decisions after implementation starts.
+- Artifacts are the source of truth for evidence; this log records the owner surfaces and implementation files now aligned to the `6F/P1` field boundary while representative regenerated issue artifacts remain pending under `P2`.
+
+### P0-P1 (field boundary fixed across renderers, gate, and owner wording | 2026-04-02)
+
+- artifacts:
+  - `scripts/issues/body_contract.py`
+  - `scripts/issues/gen_issue_draft.py`
+  - `scripts/issues/plan_issue_conclusion.py`
+  - `scripts/issues/plan_lifecycle_audit.py`
+  - `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
+  - `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
+  - `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`
+  - `docs/issues/body-contract-S0E-5D-p0-canonical-spec.md`
+  - `docs/issues/hard-gate-shape-S0E-5D-p2-canonical-spec.md`
+  - `docs/runbook/run-S0E-log-to-issue-creation.md`
+- expected:
+  - issue creation and issue conclusion should both stop rendering `Source log` in `Metadata`, should allow optional `Previous log` under issue `Links`, and should keep lifecycle audit aligned to the same narrower boundary
+- observed:
+  - issue draft rendering now emits state-only `Metadata`, conclusion previews strip historical `Source log` rows from preserved metadata, lifecycle audit now accepts optional `Previous log` and rejects `Source log` in `Metadata`, and the owner logs plus runbook now describe the same field allocation
 
 ## Recent changes (for traceability, optional)
 
 - 2026-04-02: opened `S0E-6F` to narrow the issue body field boundary without reopening the broader section-order contract.
 - 2026-04-02: fixed the v1 target as two explicit moves only: remove `Source log` from issue `Metadata`, and add optional `Previous log` under issue `Links`.
 - 2026-04-02: recorded the concrete implementation measures in advance: shared renderer updates first, then gate/runbook alignment, then representative validation plus an explicit live-reconciliation decision.
+- 2026-04-02: completed `P0-P1` by updating issue draft rendering, issue conclusion preview rendering, lifecycle audit link validation, and the owner/runbook wording to the same metadata-versus-links boundary.

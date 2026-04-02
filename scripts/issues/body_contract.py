@@ -10,7 +10,7 @@ PR_REQUIRED_SECTIONS = ["Metadata", "Summary", "Execution Checklist", "Links"]
 PR_OPTIONAL_SECTIONS = ["Evidence Footer", "Development Link"]
 ISSUE_REQUIRED_SECTIONS = ["Metadata", "Context", "Definition of Done (DoD)", "Links"]
 PR_ALLOWED_LINK_LABELS = {"Log", "Issue", "Runbook", "Evidence artifact", "Parent log", "Roadmap"}
-ISSUE_ALLOWED_LINK_LABELS = {"Log", "Runbook", "Parent log", "Roadmap"}
+ISSUE_ALLOWED_LINK_LABELS = {"Log", "Runbook", "Parent log", "Previous log", "Roadmap"}
 EVIDENCE_FOOTER_LINE_RE = re.compile(r"^`(?P<stage>[^`]+)` \| artifact: `(?P<artifact>[^`]+)`$")
 LINK_LINE_RE = re.compile(r"^- (?P<label>[^:]+):\s+`[^`]*`$")
 CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
@@ -764,6 +764,46 @@ def link_labels_are_allowed(link_lines: list[str], allowed_labels: set[str]) -> 
 def validate_evidence_footer_source_lines(lines: list[str]) -> tuple[bool, list[str]]:
     invalid = [line for line in lines if not EVIDENCE_FOOTER_LINE_RE.fullmatch(line)]
     return not invalid, invalid
+
+
+def _extract_bullet_label(line: str) -> str | None:
+    stripped = line.strip()
+    if not stripped.startswith("- "):
+        return None
+    label, separator, _ = stripped[2:].partition(":")
+    if not separator:
+        return None
+    return label.strip()
+
+
+def metadata_contains_source_log_row(metadata_lines: list[str]) -> bool:
+    return any(_extract_bullet_label(line) == "Source log" for line in metadata_lines)
+
+
+def strip_issue_navigation_metadata_rows(metadata_lines: list[str]) -> list[str]:
+    cleaned: list[str] = []
+    for line in metadata_lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if _extract_bullet_label(stripped) == "Source log":
+            continue
+        cleaned.append(stripped)
+    return cleaned
+
+
+def build_canonical_issue_link_lines(fields: dict[str, str], source_log_rel: str) -> list[str]:
+    lines = [f"- Log: `{source_log_rel}`"]
+    for key, label in [
+        ("runbook", "Runbook"),
+        ("roadmap", "Roadmap"),
+        ("parent_log", "Parent log"),
+        ("previous_log", "Previous log"),
+    ]:
+        value = str(fields.get(key) or "").strip()
+        if value:
+            lines.append(f"- {label}: `{value}`")
+    return lines
 
 
 def validate_pr_body_contract(*, body_markdown: str, source_log_text: str, pr_development_issue: str | None) -> PrBodyContractResult:
