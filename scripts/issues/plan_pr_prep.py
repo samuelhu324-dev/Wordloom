@@ -7,7 +7,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from body_contract import PR_ALLOWED_LINK_LABELS, extract_pr_summary_inputs, link_labels_are_allowed
+from body_contract import PR_ALLOWED_LINK_LABELS, build_pr_closing_issue_lines, extract_pr_summary_inputs, link_labels_are_allowed
 from gen_issue_draft import _load_text, _parse_fields, _parse_sections, _repo_rel, _repo_root, _run_command
 
 
@@ -491,6 +491,7 @@ def _render_body_preview(
     pr_projects: list[str],
     pr_development_issue: str | None,
 ) -> str:
+    closing_issue_lines = build_pr_closing_issue_lines(pr_development_issue)
     summary_lines = [f"- {item}" for item in summary_bullets] or ["- <placeholder>"]
     checklist_lines = [f"- [x] `{item.identifier}`: {item.text}" for item in checklist_items] or ["- [ ] <placeholder>"]
     lines = [
@@ -521,6 +522,11 @@ def _render_body_preview(
             "## Evidence Footer",
             "",
             *[f"- {item}" for item in evidence_footer_lines],
+        ])
+    if closing_issue_lines:
+        lines.extend([
+            "",
+            *closing_issue_lines,
         ])
     return "\n".join(lines)
 

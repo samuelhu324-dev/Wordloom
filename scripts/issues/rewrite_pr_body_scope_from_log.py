@@ -4,7 +4,7 @@ import argparse
 import re
 from pathlib import Path
 
-from body_contract import extract_pr_summary_inputs, pr_body_is_evidence_footer_eligible, validate_pr_body_contract
+from body_contract import build_pr_closing_issue_lines, extract_pr_summary_inputs, pr_body_is_evidence_footer_eligible, validate_pr_body_contract
 from gen_issue_draft import _load_text, _parse_fields, _parse_sections, _repo_rel, _repo_root
 from plan_pr_prep import (
     _build_default_link_lines,
@@ -102,6 +102,7 @@ def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, re
     )
     pr_labels = _build_pr_labels(source_fields, source_sections)
     pr_development_issue, _ = _derive_pr_development_issue(source_fields)
+    closing_issue_lines = build_pr_closing_issue_lines(pr_development_issue)
     link_lines = _select_pr_link_lines(source_fields, explicit_link_lines, source_log_rel)
 
     rewritten_sections: dict[str, list[str]] = {
@@ -129,6 +130,9 @@ def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, re
         if section_name not in rewritten_sections:
             continue
         rendered.extend(_render_section(section_name, rewritten_sections[section_name]))
+
+    if closing_issue_lines:
+        rendered.extend([*closing_issue_lines, ""])
 
     body_text = "\n".join(rendered).rstrip() + "\n"
     contract_result = validate_pr_body_contract(

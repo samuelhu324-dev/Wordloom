@@ -14,6 +14,7 @@ ISSUE_ALLOWED_LINK_LABELS = {"Log", "Runbook", "Parent log", "Previous log", "Ro
 EVIDENCE_FOOTER_LINE_RE = re.compile(r"^`(?P<stage>[^`]+)` \| artifact: `(?P<artifact>[^`]+)`$")
 LINK_LINE_RE = re.compile(r"^- (?P<label>[^:]+):\s+`[^`]*`$")
 ISSUE_REF_RE = re.compile(r"(?:/issues/|^#?)(?P<number>\d+)$")
+PR_CLOSING_ISSUE_LINE_RE = re.compile(r"^Closes #(?P<number>\d+)$")
 PHASE_LOG_KEY_RE = re.compile(r"^phase_log_(?P<index>\d+)$")
 CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
 SENTENCE_TERMINATOR_RE = re.compile(r"[.!?]")
@@ -839,6 +840,39 @@ def normalize_issue_short_ref(value: str | None) -> str | None:
     return f"#{number}" if number is not None else None
 
 
+def parse_issue_refs(value: str | None) -> list[str]:
+    if not value:
+        return []
+    refs: list[str] = []
+    for part in str(value).split(","):
+        token = part.strip()
+        if not token:
+            continue
+        match = ISSUE_REF_RE.search(token)
+        if match:
+            refs.append(f"#{match.group('number')}")
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for ref in refs:
+        if ref not in seen:
+            seen.add(ref)
+            ordered.append(ref)
+    return ordered
+
+
+def build_pr_closing_issue_lines(pr_development_issue: str | None) -> list[str]:
+    return [f"Closes {ref}" for ref in parse_issue_refs(pr_development_issue)]
+
+
+def extract_pr_closing_issue_lines(body_markdown: str) -> list[str]:
+    lines: list[str] = []
+    for raw in body_markdown.splitlines():
+        stripped = raw.strip()
+        if PR_CLOSING_ISSUE_LINE_RE.fullmatch(stripped):
+            lines.append(stripped)
+    return lines
+
+
 def build_canonical_issue_link_lines(fields: dict[str, str], source_log_rel: str) -> list[str]:
     lines = [f"- Log: `{source_log_rel}`"]
     for key, label in [
@@ -931,6 +965,18 @@ def validate_pr_body_contract(*, body_markdown: str, source_log_text: str, pr_de
         checks.append(ContractCheck("development-link-presence", "pass", "Development issue is tracked only through Metadata as required"))
     else:
         checks.append(ContractCheck("development-link-presence", "pass", "Development Link section is correctly omitted"))
+
+    expected_closing_lines = build_pr_closing_issue_lines(pr_development_issue)
+    rendered_closing_lines = extract_pr_closing_issue_lines(body_markdown)
+    if expected_closing_lines:
+        if rendered_closing_lines != expected_closing_lines:
+            checks.append(ContractCheck("github-development-linkage", "fail", f"GitHub closing-link footer does not match the development issue set: {rendered_closing_lines}"))
+        else:
+            checks.append(ContractCheck("github-development-linkage", "pass", "GitHub closing-link footer matches the development issue set"))
+    elif rendered_closing_lines:
+        checks.append(ContractCheck("github-development-linkage", "fail", "GitHub closing-link footer must be omitted when no development issue is defined"))
+    else:
+        checks.append(ContractCheck("github-development-linkage", "pass", "GitHub closing-link footer is correctly omitted"))
 
     status = "pass" if all(check.status != "fail" for check in checks) else "fail"
     return PrBodyContractResult(
