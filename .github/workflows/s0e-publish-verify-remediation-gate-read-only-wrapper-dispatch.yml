@@ -117,7 +117,6 @@ jobs:
             --repo "$S0E_WRAPPER_REPO"
             --remediation-plan-path "$S0E_WRAPPER_REMEDIATION_PLAN_JSON"
             --decision-path "$S0E_WRAPPER_DECISION_JSON"
-            --family-plan-path "$S0E_WRAPPER_FAMILY_PLAN_JSON"
             --thin-gate-result-path "$S0E_WRAPPER_THIN_GATE_RESULT_JSON"
             --wrapper-result-path "$S0E_WRAPPER_RESULT_JSON"
             --wrapper-summary-path "$S0E_WRAPPER_SUMMARY_MD"
