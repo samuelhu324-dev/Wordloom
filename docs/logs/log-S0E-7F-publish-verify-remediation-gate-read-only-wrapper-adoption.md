@@ -260,7 +260,7 @@
 
 ### P0-C1-S1S2 / P1-C1-S1S2 (Read-only wrapper boundary and contract retained | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `fa79952b`
 - artifacts:
   - `docs/issues/publish-verify-remediation-gate-S0E-7F-p0-p1-read-only-wrapper-contract.json`
   - `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
