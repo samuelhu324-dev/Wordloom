@@ -1,0 +1,29 @@
+{
+  "mode": "publish-verify-remediation-gate-apply",
+  "result": "ok",
+  "operation_family": "issue-relationship",
+  "selection_input_kind": "audit-plan",
+  "selection_input_path": "docs/issues/lifecycle-audit-S0E-5B-p1-pass-plan.json",
+  "family_input_kind": null,
+  "family_input_path": null,
+  "normalized_decision": "allow-apply",
+  "apply_allowed": true,
+  "delegated_adapter_path": "scripts/issues/apply_issue_relationships_with_pre_gate.py",
+  "delegated_apply_requested": true,
+  "delegated_apply_executed": true,
+  "delegated_action": "applied-after-pre-gate",
+  "decision_reason": "The thin gate delegated issue-relationship apply into the existing guarded adapter (allowed-via-targeted-relationship-remediation).",
+  "stopped_before_stage": null,
+  "downstream_artifacts": {
+    "audit_plan_path": null,
+    "gate_decision_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-gate-decision.json",
+    "remediation_plan_path": null,
+    "family_plan_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-plan.json",
+    "family_result_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-apply-result.json",
+    "delegated_result_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-guarded-result.json"
+  },
+  "warnings": [
+    "relationship apply allowed through targeted remediation because attach-parent-relationship is the only planned follow-up action",
+    "child issue was already attached to the requested parent issue"
+  ]
+}

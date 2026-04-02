@@ -3,7 +3,8 @@
   "result": "ok",
   "requested_id": "S0E-7E",
   "scope": [
-    "P0"
+    "P0",
+    "P2"
   ],
   "version": "v1",
   "entrypoint": {
@@ -31,6 +32,12 @@
       "remediation_plan_path",
       "decision_path",
       "family_plan_path",
+      "delegate_apply",
+      "delegated_result_path",
+      "apply_result_path",
+      "body_path",
+      "context_mode",
+      "leave_open",
       "result_path"
     ],
     "selection_input_kind_values": [
@@ -39,7 +46,8 @@
     ],
     "family_input_kind_values": [
       "manifest",
-      "plan"
+      "plan",
+      "result"
     ]
   },
   "decision_vocab": [
@@ -56,6 +64,9 @@
     "normalized_decision",
     "apply_allowed",
     "delegated_adapter_path",
+    "delegated_apply_requested",
+    "delegated_apply_executed",
+    "delegated_action",
     "decision_reason",
     "downstream_artifacts",
     "warnings"
@@ -63,6 +74,7 @@
   "explicit_boundaries": [
     "Do not replace issue conclusion, relationship attach, PR body rewrite, or PR create family-specific logic with one flat super-command.",
     "Do not collapse PR create branch materialization, remote publish, or live PR publish into the thin gate planner.",
+    "Do not delegate thin-gate apply through pr-create-preflight; that family remains front-half planning only until later create stages are explicitly wrapped.",
     "Do not widen the entrypoint into prose quality review, summary rewriting, or blank-field inference."
   ]
 }

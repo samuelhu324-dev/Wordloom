@@ -1,0 +1,20 @@
+{
+  "mode": "relationship-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-plan.json",
+  "item_index": 0,
+  "relationship_type": "child-of",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "parent_issue_number": 248,
+  "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+  "parent_issue_title": "S0E: evolution/docs management v5",
+  "child_issue_number": 307,
+  "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/307",
+  "child_issue_title": "S0E-5B: workflow/guarded lifecycle apply expansion",
+  "previous_parent_issue_number": 248,
+  "final_parent_issue_number": 248,
+  "applied_action": "already-linked-child-to-parent",
+  "warnings": [
+    "child issue was already attached to the requested parent issue"
+  ]
+}

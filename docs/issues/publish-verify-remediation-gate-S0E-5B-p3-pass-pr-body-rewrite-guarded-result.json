@@ -1,0 +1,13 @@
+{
+  "mode": "guarded-pr-body-rewrite-apply",
+  "result": "ok",
+  "gate_input_kind": "manifest",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0E-5B-p3-pass-manifest.json",
+  "gate_decision_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p3-pass-pr-body-rewrite-gate-decision.json",
+  "gate_decision": "allow-apply",
+  "apply_allowed": true,
+  "pr_create_result_path": "docs/issues/pr-prep-S0E-5B-real-create-result.json",
+  "guarded_action": "applied-after-pre-gate",
+  "apply_result_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p3-pass-pr-body-rewrite-apply-result.json",
+  "warnings": []
+}

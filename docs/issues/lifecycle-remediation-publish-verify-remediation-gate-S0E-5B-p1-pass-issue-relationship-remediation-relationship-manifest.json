@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_number": 248,
+      "child_issue_number": 307,
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "reason": "Guarded pass-to-apply sample for the live S0E-5B relationship-attach path before any PR-side expansion begins."
+    }
+  ]
+}

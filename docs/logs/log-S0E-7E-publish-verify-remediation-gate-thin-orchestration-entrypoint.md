@@ -123,12 +123,13 @@
 
 ## Current Status
 
-- `S0E-7E` has now completed `P0-P1` at the thin-gate contract and planner-implementation level.
+- `S0E-7E` has now completed `P0-P2` at the thin-gate contract, planner, and delegated-handoff level.
 - The new slice now retains one explicit contract artifact for the thin gate boundary, CLI surface, normalized decision vocabulary, and evidence shape.
-- A new planner entrypoint now exists at `scripts/issues/plan_publish_verify_remediation_gate.py`, and it currently normalizes two execution paths without replacing the existing family-specific adapters:
+- A new planner entrypoint now exists at `scripts/issues/plan_publish_verify_remediation_gate.py`, and it now normalizes planning plus delegated handoff without replacing the existing family-specific adapters:
   - lifecycle-family planning for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`;
-  - front-half reuse for `pr-create-preflight`.
-- `P2-P4` remain open because delegated apply handoff, representative pass/stop validation breadth, and future wrapping boundaries still need explicit follow-up.
+  - delegated apply handoff for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`;
+  - front-half reuse for `pr-create-preflight`, which remains planning-only.
+- `P3-P4` remain open because representative pass/stop validation breadth and future wrapping boundaries still need explicit follow-up.
 
 ## P0 (Contract | v1)
 
@@ -177,6 +178,20 @@
 - Lifecycle families reuse `plan_lifecycle_pre_gate.py` and then upgrade its aggregate output into the thinner gate surface without changing the underlying family rules.
 - `pr-create-preflight` reuses `plan_pr_create_preflight_with_gate.py` and maps its front-half outcome into the same thin gate vocabulary while keeping `S4-local-branch-materialization` as the stop boundary.
 - The current implementation deliberately stops short of delegated apply; `P2` remains the place where the thin gate will actually hand off into guarded apply adapters.
+
+## P2 (Delegated apply handoff | v1)
+
+### P2-C1-S1 (Issue-side delegated apply families connected | v1)
+
+- The thin gate now delegates `issue-conclusion` into `apply_issue_conclusion_with_pre_gate.py` when the normalized decision allows continuation.
+- The same surface now delegates `issue-relationship` into `apply_issue_relationships_with_pre_gate.py`, including the targeted-remediation path where relationship attach is the only planned follow-up action.
+- The thin gate result now records whether delegated apply was requested, whether it actually executed, which delegated action occurred, and which downstream guarded-adapter result artifact was emitted.
+
+### P2-C1-S2 (PR-side delegated families connected without stage flattening | v1)
+
+- The thin gate now delegates `pr-body-rewrite` into `apply_pr_body_scope_with_pre_gate.py` when the reused lifecycle gate allows continuation.
+- `pr-create-preflight` remains connected only as a front-half planning family: the thin gate reuses its planning surface but still rejects delegated apply so branch materialization, remote publish, and live PR publish stay behind their existing boundaries.
+- The thin gate therefore owns one normalized orchestration surface across issue-side and PR-side families without pretending that every supported family shares the same mutation stage model.
 
 ## Numbering
 
@@ -236,8 +251,8 @@
 
 ### P2 (Delegated apply handoff)
 
-- [ ] `P2-C1-S1`: issue-side delegated apply families connected
-- [ ] `P2-C1-S2`: PR-side delegated families connected without stage flattening
+- [x] `P2-C1-S1`: issue-side delegated apply families connected
+- [x] `P2-C1-S2`: PR-side delegated families connected without stage flattening
 
 ### P3 (Representative validation)
 
@@ -256,7 +271,7 @@
 
 ### P0-C1-S1S2S3 (Thin gate contract retained | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `44bf9c2b`
 - artifacts: `docs/issues/failure-semantics-S0E-7E-p0-c1-thin-gate-contract.json`
 - expected:
   - `S0E-7E` should retain one explicit contract artifact for the thin gate boundary, CLI surface, normalized decision vocabulary, and evidence contract.
@@ -266,7 +281,7 @@
 
 ### P1-C1-S1S2 (Thin gate planner implemented and smoke-validated | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `44bf9c2b`
 - artifacts:
   - `docs/issues/publish-verify-remediation-gate-S0E-5A-p5-pass-issue-conclusion-result.json`
   - `docs/issues/publish-verify-remediation-gate-S0E-5C-p2-stop-pr-create-preflight-result.json`
@@ -276,6 +291,21 @@
 - observed:
   - The new planner script emits one normalized `allow-apply` result for the reused lifecycle-family pass sample and preserves the delegated issue-conclusion adapter path.
   - The same planner also emits one normalized `hard-fail-input` stop result for the reused `pr-create-preflight` stop sample, while keeping `S4-local-branch-materialization` as the preflight stop boundary rather than flattening later create stages.
+
+### P2-C1-S1S2 (Delegated handoff connected and minimally validated | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts:
+  - `docs/issues/publish-verify-remediation-gate-S0E-5A-p5-pass-issue-conclusion-delegated-apply-result.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-delegated-apply-result.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-5B-p3-pass-pr-body-rewrite-delegated-apply-result.json`
+- expected:
+  - The thin gate should hand off supported issue-side and PR-body-rewrite families into the existing guarded adapters without inventing new mutation semantics.
+  - `pr-create-preflight` should remain connected only as a front-half planning family rather than being flattened into later create stages.
+- observed:
+  - The thin gate delegated the `S0E-5A` issue-conclusion pass sample into the existing guarded issue-conclusion adapter and retained the isolated gate, plan, guarded-result, body, and apply-result artifacts.
+  - The thin gate delegated the `S0E-5B` relationship sample through `allowed-via-targeted-relationship-remediation`, proving that family-specific guarded eligibility can stay narrower than the raw lifecycle gate decision.
+  - The thin gate also delegated the `S0E-5B` PR-body rewrite sample into the existing guarded PR-body adapter, while the entrypoint contract continues to keep `pr-create-preflight` planning-only.
 
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
@@ -290,3 +320,4 @@
 
 - 2026-04-02: opened `S0E-7E` as the implementation follow-up to `S0E-7D/P4`, focused on one thin `publish-verify-remediation gate` orchestration entrypoint rather than another taxonomy-only slice.
 - 2026-04-02: completed `P0-P1` by retaining the thin gate contract artifact, implementing `plan_publish_verify_remediation_gate.py`, and proving that the new surface can normalize one lifecycle-family `allow-apply` sample plus one `pr-create-preflight` `hard-fail-input` stop sample without replacing existing family adapters.
+- 2026-04-02: completed `P2` by connecting delegated handoff for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`, while explicitly keeping `pr-create-preflight` as a planning-only front-half family.

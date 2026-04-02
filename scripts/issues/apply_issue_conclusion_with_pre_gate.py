@@ -43,6 +43,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--apply-result-path", dest="apply_result_path", help="Override output path for the underlying issue-conclusion apply result")
     parser.add_argument("--body-path", dest="body_path", help="Override output path for the applied issue body markdown")
     parser.add_argument("--guarded-result-path", dest="guarded_result_path", help="Override output path for the guarded apply result")
+    parser.add_argument("--context-mode", dest="context_mode", choices=["preserve-existing", "single-generate"], default="preserve-existing", help="Pass through the issue-conclusion context rendering mode when the delegated planner is invoked")
     parser.add_argument("--leave-open", dest="leave_open", action="store_true", help="Update the issue body but do not close an open issue")
     return parser.parse_args()
 
@@ -94,6 +95,7 @@ def guarded_issue_conclusion_apply(args: argparse.Namespace) -> GuardedIssueConc
                 argparse.Namespace(
                     manifest_path=_repo_rel(conclusion_manifest_path),
                     plan_path=_repo_rel(conclusion_plan_path),
+                    context_mode=args.context_mode,
                 )
             )
         conclusion_plan_rel = _repo_rel(conclusion_plan_path)
