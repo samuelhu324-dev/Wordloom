@@ -84,6 +84,7 @@
 - `P0-C1-S1S2 / P1-C1-S1S2` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7G-p0-p1-workflow-dispatch-surface-contract.json`
 - `P2-C1-S1` | artifact: `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`
 - `P3-C1-S1` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-representative-validation.json`
+- `P3-C1-S1` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-dispatch-visibility-check.json`
 
 ## Definitions (optional)
 
@@ -124,7 +125,7 @@
 - `S0E-7G` is now opened as the GitHub-side manual wrapper follow-up after `S0E-7F` fixed the shared wrapper, local operator-facing surface, and representative local evidence.
 - `P0-P1` are now completed at the contract layer: the repo now retains one explicit contract artifact for the GitHub-side manual wrapper boundary, request envelope, workflow-owned artifact root, and upload-before-fail policy.
 - `P2` is now completed: the repo now has one manual GitHub Actions workflow at `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`, and that workflow now invokes the shared wrapper with `trigger_surface=workflow_dispatch`, emits workflow summary plus annotations, uploads retained artifacts, and only then fails on non-pass outcomes.
-- `P3` remains the last open unit: retain one representative pass dispatch and one representative stop dispatch before deciding whether this slice can be marked `stable`.
+- `P3` remains the last open unit: the first dispatch attempt is now blocked by GitHub's default-branch workflow-visibility rule, so representative pass/stop dispatch evidence still has to wait until the workflow is visible on `main`.
 
 ## P0 (Boundary contract | v1)
 
@@ -163,6 +164,7 @@
 
 - Retain one workflow dispatch that returns wrapper result `pass` on a frozen pass sample.
 - Retain one workflow dispatch that returns wrapper result `stop` on a frozen `pr-create-preflight` stop sample while preserving `S4-local-branch-materialization`.
+- If the workflow is not yet visible on the default branch, retain the dispatchability blocker explicitly instead of pretending representative live evidence already exists.
 
 ## Numbering
 
@@ -233,7 +235,7 @@
 
 ### P0-C1-S1S2 / P1-C1-S1S2 (workflow_dispatch wrapper boundary and contract retained | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `8492be78`
 - artifacts:
   - `docs/issues/publish-verify-remediation-gate-S0E-7G-p0-p1-workflow-dispatch-surface-contract.json`
   - `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
@@ -247,7 +249,7 @@
 
 ### P2-C1-S1 (Manual workflow_dispatch wrapper surface implemented | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `8492be78`
 - artifacts:
   - `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`
   - `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`
@@ -257,6 +259,18 @@
 - observed:
   - `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml` now accepts explicit family/input parameters, derives one per-run artifact root, invokes the shared wrapper with `trigger_surface=workflow_dispatch`, writes a retained GitHub summary plus dispatch manifest, emits check annotations, uploads the workflow-owned artifact root, and only then fails on non-pass outcomes.
   - The workflow now reuses `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py` directly, so GitHub-side dispatches preserve the same wrapper result vocabulary and read-only contract already fixed in `S0E-7F`.
+
+### P3-C1-S1 (workflow_dispatch visibility check blocked before live representative runs | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-dispatch-visibility-check.json`
+- expected:
+  - `S0E-7G` should dispatch the new manual workflow on the active ref and then retain one pass run plus one stop run as representative live evidence.
+  - If GitHub cannot resolve the workflow yet, the repo should retain that blocker explicitly so later continuation does not confuse a visibility problem with a runtime problem inside the wrapper.
+- observed:
+  - The first `gh workflow run` attempt on ref `S0E-docs-management-v5` returned HTTP `404` with the message `workflow ... not found on the default branch`, which means the workflow implementation itself is pushed but GitHub cannot dispatch it until the file becomes visible on `main`.
+  - `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-dispatch-visibility-check.json` now records the attempted pass-sample inputs, the default-branch visibility blocker, and the exact next steps required before live representative pass/stop dispatches can be retained.
 
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
@@ -272,3 +286,4 @@
 - 2026-04-02: opened `S0E-7G` as the manual GitHub-side `workflow_dispatch` wrapper follow-up after `S0E-7F` stabilized the shared read-only wrapper and local operator-facing surface.
 - 2026-04-02: completed `P0-P1` by retaining the first `workflow_dispatch` wrapper contract artifact, fixing GitHub-side ownership boundaries, supported inputs, workflow-owned artifact root, and upload-before-fail policy.
 - 2026-04-02: completed `P2` by adding `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml` over the shared read-only wrapper, with summary, annotations, artifact upload, and fail-after-upload behavior.
+- 2026-04-02: attempted `P3` dispatch evidence on `S0E-docs-management-v5`, but GitHub returned a default-branch visibility `404`; the blocker is now retained explicitly so live representative pass/stop dispatches can resume after the workflow becomes visible on `main`.
