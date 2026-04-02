@@ -89,6 +89,7 @@
 - `P1`: align canonical spec, gate surfaces, and renderer wording to the new PR-body boundary
 - `P2`: review the current `S0E` PR inventory and decide which live PR bodies need rewrite
 - `P3`: execute the bounded live PR rewrite batch and re-verify the full audited set
+- `P4`: close the remaining GitHub metadata completeness gap for live PR Development/labels and backfill missing historical issues where the source log had never been written back
 
 ## Success Criteria (DoD)
 
@@ -98,6 +99,8 @@
 - PR hard-gate/body-contract checks describe the same narrower boundary as the canonical spec.
 - The full current `S0E` PR set is reviewed through one explicit inventory, with any needed live rewrite scope made explicit.
 - The bounded live rewrite batch is applied successfully and the same `17` audited PRs re-verify as pass under the narrowed contract.
+- The same `17` live `S0E` PRs all expose GitHub-recognized Development linkage and deterministic labels, not just canonical body text.
+- Historical audited logs that previously lacked any issue write-back now have explicit GitHub issues, source-log `links.issue` write-back, and closed issue-conclusion bodies.
 
 ## Stability (what draft means now)
 
@@ -117,6 +120,7 @@
 - The rewrite scope was fixed as one explicit bounded batch over all `17` audited PRs, grouped by drift family instead of left as ad hoc future spot-fixes.
 - `P3` has now completed the live rewrite rollout itself: all `17` audited PRs were rewritten in bounded batches, and post-apply verification now returns `17/17 pass`.
 - This rollout required multiple cycles rather than one monolithic apply step: one unblocking cycle for parser/source-log cleanup, one lower-risk metadata-links-only rewrite batch, one heavier canonical rebuild batch, and one final post-apply verify cycle.
+- `P4` has now closed the remaining GitHub metadata gap: all `17` audited live `S0E` PRs now expose GitHub-recognized Development linkage through explicit close-link footer lines, all deterministic PR labels are present live, and the previously issue-less logs `S0E-1A`, `S0E-2C`, `S0E-3A`, and `S0E-7C` now have written-back GitHub issues that were concluded and closed.
 
 ## P0 (PR-body ownership boundary | v1)
 
@@ -211,6 +215,29 @@
 - After both rewrite batches landed, the same `17` audited live `S0E` PRs were re-fetched from GitHub and revalidated against the narrowed PR body contract.
 - The post-apply verification result is now `17/17 pass`.
 
+## P4 (GitHub metadata completeness and historical issue backfill | v1)
+
+### P4-C1-S1 (Future PR path emits GitHub-recognized development linkage | v1)
+
+- The shared PR preview/create/rewrite path now appends deterministic `Closes #...` footer lines whenever a source log resolves a PR development issue.
+- This keeps `Development issue` human-readable in `Metadata` while also giving GitHub a machine-recognized linkage surface for the right-hand `Development` sidebar.
+
+### P4-C2-S1 (Live PR metadata backfill converged | v1)
+
+- The two existing rewrite manifests were replayed through the updated live apply path so canonical PR bodies now also carry the close-link footer lines.
+- The same live apply path now backfills any missing deterministic PR labels during historical rewrite instead of limiting itself to body text.
+- Post-backfill live audit now shows the full `17`-PR audited set with expected labels present, `Development issue` metadata rendered, and GitHub `closingIssuesReferences` populated.
+
+### P4-C3-S1 (Previously issue-less historical logs backfilled | v1)
+
+- The previously issue-less audited logs `S0E-1A`, `S0E-2C`, `S0E-3A`, and `S0E-7C` now have live GitHub issues `#316`, `#313`, `#314`, and `#315` respectively.
+- Their source logs now carry explicit `links.issue` write-back, and the primary audited PR links for `S0E-1A`, `S0E-2C`, and `S0E-3A` are no longer blank.
+
+### P4-C4-S1 (Backfilled issue lifecycle closed | v1)
+
+- Newly created backfill issues were attached to parent issue `#248` where applicable (`#313`, `#314`, `#315`) and then concluded from merged PR evidence.
+- Final issue states are now closed for `#313`, `#314`, `#315`, and `#316`.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (PR-body ownership boundary)
@@ -237,6 +264,13 @@
 - [x] `P3-C3-S1`: canonical rebuild batch applied
 - [x] `P3-C4-S1`: post-apply live verify closed
 
+### P4 (GitHub metadata completeness and historical issue backfill)
+
+- [x] `P4-C1-S1`: future PR path emits GitHub-recognized development linkage
+- [x] `P4-C2-S1`: live PR metadata backfill converged
+- [x] `P4-C3-S1`: previously issue-less historical logs backfilled
+- [x] `P4-C4-S1`: backfilled issue lifecycle closed
+
 ## Evidence
 
 - `P0-C1-S1` / `P1-C1-S3`: `scripts/issues/body_contract.py` now removes `Development Link` from canonical PR optional sections, removes `Issue` from allowed PR link labels, and rejects any rendered `Development Link` section.
@@ -250,6 +284,10 @@
 - `P3-C2-S1`: `docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest.json` and `docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-result.json` record the first live apply cycle for `#299/#306/#308/#310/#311/#312`, with per-PR `*-live-body.md`, `*-rewritten-body.md`, and `*-apply-result.json` artifacts.
 - `P3-C3-S1`: `docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest.json` and `docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-result.json` record the second live apply cycle for `#249/#287/#290/#291/#292/#294/#296/#298/#301/#302/#304`, with per-PR `*-live-body.md`, `*-rewritten-body.md`, and `*-apply-result.json` artifacts.
 - `P3-C4-S1`: `docs/issues/pr-live-contract-check-S0E-4F-post-apply-summary.json` records the final post-apply verify result as `17 pass / 0 fail`, and the matching `*-post-apply-result.json` files preserve each live PR's final pass check.
+- `P4-C1-S1`: `scripts/issues/body_contract.py`, `scripts/issues/plan_pr_prep.py`, `scripts/issues/rewrite_pr_body_scope_from_log.py`, and `scripts/issues/apply_pr_body_rewrite_batch.py` now emit and verify deterministic `Closes #...` footer lines for PR development linkage and backfill missing PR labels during historical live rewrite.
+- `P4-C2-S1`: `docs/issues/pr-body-rewrite-S0E-4F-p4-c2-manifest-result.json`, `docs/issues/pr-body-rewrite-S0E-4F-p4-c3-manifest-result.json`, and `docs/issues/pr-metadata-completeness-S0E-4F-p4-summary.json` record the live PR metadata replay and final `17/17` metadata-complete audit.
+- `P4-C3-S1`: `docs/issues/issue-S0E-1A-structured-cv-generator.json`, `docs/issues/issue-S0E-2C-batch-issue-creation-and-backfill-tooling.json`, `docs/issues/issue-S0E-3A-roadmap-milestone-log-bridge.json`, and `docs/issues/issue-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.json` record the four newly created historical backfill issues.
+- `P4-C4-S1`: `docs/issues/issue-conclusion-S0E-4F-p4-backfill-plan.json`, the four matching `issue-conclusion-S0E-4F-p4-backfill-*-apply-result.json` files, and `docs/issues/issue-backfill-S0E-4F-p4-summary.json` record the final issue-conclusion and close-state convergence for `#313/#314/#315/#316`.
 
 ## Recent changes (for traceability, optional)
 
@@ -261,3 +299,7 @@
 - 2026-04-02: completed `P3-C2-S1` by live-rewriting the lower-risk metadata-links cleanup batch `#299/#306/#308/#310/#311/#312`.
 - 2026-04-02: completed `P3-C3-S1` by live-rewriting the remaining canonical rebuild batch `#249/#287/#290/#291/#292/#294/#296/#298/#301/#302/#304`.
 - 2026-04-02: completed `P3-C4-S1` by re-verifying all `17` audited live `S0E` PRs to `17/17 pass` under the narrowed PR body contract.
+- 2026-04-02: completed `P4-C1-S1` by teaching the shared PR preview/create/rewrite path to emit deterministic `Closes #...` footer lines and by teaching the live rewrite batch to backfill missing PR labels.
+- 2026-04-02: completed `P4-C2-S1` by replaying both bounded PR rewrite manifests so the same `17` audited live `S0E` PRs now expose GitHub-recognized Development linkage and deterministic labels.
+- 2026-04-02: completed `P4-C3-S1` by creating and writing back the previously missing historical issues `#316` (`S0E-1A`), `#313` (`S0E-2C`), `#314` (`S0E-3A`), and `#315` (`S0E-7C`).
+- 2026-04-02: completed `P4-C4-S1` by attaching `#313/#314/#315` to parent `#248`, concluding all four backfilled issues from merged PR evidence, and closing `#313/#314/#315/#316`.

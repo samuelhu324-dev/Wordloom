@@ -1,0 +1,147 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-4F-p4-backfill-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 4,
+  "planned_items": 4,
+  "warnings": [
+    "S0E-1A: issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+    "S0E-1A: preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+    "S0E-1A: existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording",
+    "S0E-1A: existing issue DoD is still blank create-time scaffold",
+    "S0E-2C: issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+    "S0E-2C: preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+    "S0E-2C: existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording",
+    "S0E-2C: existing issue DoD is still blank create-time scaffold",
+    "S0E-3A: issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+    "S0E-3A: preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+    "S0E-3A: existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording",
+    "S0E-3A: existing issue DoD is still blank create-time scaffold",
+    "S0E-7C: issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+    "S0E-7C: preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+    "S0E-7C: existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording",
+    "S0E-7C: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-1A",
+      "source_log_path": "docs/logs/log-S0E-1A-structured-cv-generator.md",
+      "issue_number": 316,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/316",
+      "issue_title": "S0E-1A: evidence/structured CV generator",
+      "issue_state": "OPEN",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-4F-p4-backfill-s0e-1a-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 249,
+          "title": "S0E-1A/P0-P2: structured cv generator",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/249",
+          "merged_at": "2026-03-22T06:28:59Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+        "preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+        "existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": null
+    },
+    {
+      "requested_id": "S0E-2C",
+      "source_log_path": "docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md",
+      "issue_number": 313,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/313",
+      "issue_title": "S0E-2C: automation/batch issue creation and issue relationship backfill tooling",
+      "issue_state": "OPEN",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-4F-p4-backfill-s0e-2c-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 291,
+          "title": "S0E-2C/ P0-P3: batch issue creation and backfill tooling",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/291",
+          "merged_at": "2026-03-29T02:10:01Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+        "preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+        "existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": null
+    },
+    {
+      "requested_id": "S0E-3A",
+      "source_log_path": "docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md",
+      "issue_number": 314,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/314",
+      "issue_title": "S0E-3A: contract/roadmap milestone and log bridge contract",
+      "issue_state": "OPEN",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-4F-p4-backfill-s0e-3a-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 292,
+          "title": "S0E-3A/P0-P3: roadmap milestone log bridge",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/292",
+          "merged_at": "2026-03-29T08:48:26Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+        "preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+        "existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": null
+    },
+    {
+      "requested_id": "S0E-7C",
+      "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+      "issue_number": 315,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/315",
+      "issue_title": "S0E-7C: workflow/workflow/historical log review sampling and mirror follow-up",
+      "issue_state": "OPEN",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-4F-p4-backfill-s0e-7c-body.md",
+      "merged_pr_count": 2,
+      "merged_prs": [
+        {
+          "number": 311,
+          "title": "S0E-7C/P0-P4: workflow/historical log review sampling and mirror follow-up v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/311",
+          "merged_at": "2026-04-01T01:10:13Z"
+        },
+        {
+          "number": 312,
+          "title": "S0E-7C/P4-C1-S3: remove planner runtime closure dependency",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/312",
+          "merged_at": "2026-04-01T01:36:14Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+        "preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+        "existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": null
+    }
+  ]
+}
