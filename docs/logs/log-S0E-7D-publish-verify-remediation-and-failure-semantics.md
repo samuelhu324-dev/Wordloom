@@ -5,7 +5,7 @@
 **id**: `S0E-7D`
 **kind**: `log`
 **title**: `publish, verify, remediation, and failure semantics v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Drills, Evidence, epic/s0, sub/1`
 **links**: ``
@@ -126,12 +126,13 @@
 
 ## Current Status
 
-- `S0E-7D` has now completed `P0-P3` at the contract, representative-validation, and remediation-semantics level.
+- `S0E-7D` has now completed `P0-P4` at the contract, representative-validation, remediation-semantics, and future-gate-surface level.
 - The first retained taxonomy artifact now fixes the ordered replay/backfill pipeline, the four handling semantics, and the strong-structure versus weak-structure family split for the current docs/GitHub workflow.
 - The same artifact now maps the currently known issue/PR/log failure surfaces into default semantics rather than leaving operators to infer whether a given drift should block, replay, stay manual, or enter reconciliation.
 - Recent `S0E-4F` and `S0E-7C` findings are now explicitly covered by that taxonomy, especially PR development linkage, deterministic labels, source-log write-back, parent relationships, exact DoD refs, Context prose drift, and source-block note contamination.
 - `P2` now retains one bounded representative manifest and one structured audit summary across all four handling semantics, so the repo no longer needs operator prose to explain how `block`, `replayable`, `manual`, and `reconciliation` differ in practice.
 - `P3` now fixes the guarded remediation/apply contract: only replayable items may enter apply, mixed-semantics batches must split before mutation, and post-apply verify must stop incomplete convergence rather than looping with ad hoc live edits.
+- `P4` now names the future gate surface itself as one explicit `publish-verify-remediation gate`, and fixes how it should delegate to the current pre-gate/adaptor family without flattening PR create, PR rewrite, relationship attach, conclusion apply, or historical backfill into one unsafe generic command.
 
 ## P0 (Contract | v1)
 
@@ -242,6 +243,24 @@
   - missing or inconsistent apply/verify evidence.
 - Any such stop result must open a new bounded audit/remediation cycle instead of being folded into the original apply attempt.
 
+## P4 (Future gate surface | v1)
+
+### P4-C1-S1 (Future publish/verify/remediation gate surface scoped and named | v1)
+
+- The future unified surface is now explicitly named `publish-verify-remediation gate`.
+- Its first implementation target is one thin orchestration entrypoint that normalizes:
+  - input kinds;
+  - decision vocabulary;
+  - remediation artifact emission;
+  - apply delegation;
+  - post-apply verify outcomes.
+- v1 keeps this surface narrow by reusing the current mutation-family adapters instead of replacing them:
+  - issue conclusion stays behind `apply_issue_conclusion_with_pre_gate.py`;
+  - relationship attach stays behind `apply_issue_relationships_with_pre_gate.py`;
+  - PR body rewrite stays behind `apply_pr_body_scope_with_pre_gate.py`;
+  - PR create remains front-half preflight only through `plan_pr_create_preflight_with_gate.py`.
+- The new surface therefore consolidates naming and orchestration, not mutation semantics: it must not collapse branch materialization, remote publish, live PR publish, prose QA, or GitHub Actions secondary enforcement into one flat gate decision.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -311,7 +330,7 @@
 
 ### P4 (Future gate surface)
 
-- [ ] `P4-C1-S1`: future publish/verify/remediation gate surface scoped and named
+- [x] `P4-C1-S1`: future publish/verify/remediation gate surface scoped and named
 
 ## Evidence (reserved)
 
@@ -321,7 +340,7 @@
 
 ### P0-C1-S1S2S3S4 / P1-C1-S1S2 (Failure taxonomy and mapping retained | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `d25b1991`
 - artifacts: `docs/issues/failure-semantics-S0E-7D-p0-p1-taxonomy.json`
 - expected:
   - `S0E-7D` should retain one explicit taxonomy artifact covering strong-structure versus weak-structure families.
@@ -333,7 +352,7 @@
 
 ### P2-C1-S1S2 (Representative failure samples and audit summary retained | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `51210152`
 - artifacts:
   - `docs/issues/failure-semantics-S0E-7D-p2-c1-representative-manifest.json`
   - `docs/issues/failure-semantics-S0E-7D-p2-c1-audit-summary.json`
@@ -346,14 +365,25 @@
 
 ### P3-C1-S1S2 (Remediation/apply and post-apply verify contract retained | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `51210152`
 - artifacts: `docs/issues/failure-semantics-S0E-7D-p3-c1-remediation-and-verify-contract.json`
 - expected:
   - `S0E-7D` should fix one guarded replay/apply contract that only admits replayable findings.
   - The same contract should retain explicit stop rules for mixed-semantics batches and incomplete post-apply convergence.
 - observed:
   - `docs/issues/failure-semantics-S0E-7D-p3-c1-remediation-and-verify-contract.json` now fixes stage-by-stage entry conditions, manifest row requirements, allowed/forbidden apply targets, and post-apply verify stop rules.
-  - The owner log now marks `P3` complete and leaves `P4` as the only remaining open phase for this slice.
+  - The owner log now marks `P3` complete and leaves gate-surface consolidation as the final open phase for this slice.
+
+### P4-C1-S1 (Future gate surface scoped and named | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts: `docs/issues/failure-semantics-S0E-7D-p4-c1-gate-surface.json`
+- expected:
+  - `S0E-7D` should fix one explicit future gate name and one narrow orchestration surface for the current docs/GitHub workflow family.
+  - The same artifact should say which existing pre-gate adapters are reused and which boundaries remain out of scope.
+- observed:
+  - `docs/issues/failure-semantics-S0E-7D-p4-c1-gate-surface.json` now names the unified surface as `publish-verify-remediation gate`, fixes its decision vocabulary, and records how it delegates to the existing issue/relationship/PR/body/create pre-gate adapters.
+  - The same artifact now explicitly excludes prose QA, generic blank-field inference, branch materialization, remote publish, live PR publish, and GitHub Actions secondary enforcement from the v1 gate surface.
 
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
@@ -370,3 +400,4 @@
 - 2026-04-02: completed `P0-P1` by retaining the first structured failure taxonomy/mapping artifact for the current docs/GitHub workflow, covering strong versus weak structure, ordered replay/backfill, and default handling semantics per known failure surface.
 - 2026-04-02: completed `P2` by retaining one representative manifest and one structured audit summary across `block`, `replayable`, `manual`, and `reconciliation`, making the stop/split behavior explicit before apply.
 - 2026-04-02: completed `P3` by fixing the guarded replay/apply contract, explicit manifest-row requirements, and post-apply verify stop rules for incomplete convergence.
+- 2026-04-02: completed `P4` by naming the future `publish-verify-remediation gate`, fixing its decision vocabulary and reuse boundaries, and constraining it to orchestration rather than generic mutation flattening.
