@@ -129,6 +129,10 @@ jobs:
             WRAPPER_ARGS+=(--audit-plan-path "$S0E_WRAPPER_AUDIT_PLAN_JSON")
           fi
 
+          if [ "$S0E_WRAPPER_OPERATION_FAMILY" != "pr-create-preflight" ] || [ "$S0E_WRAPPER_FAMILY_INPUT_KIND" != "plan" ]; then
+            WRAPPER_ARGS+=(--family-plan-path "$S0E_WRAPPER_FAMILY_PLAN_JSON")
+          fi
+
           if [ -n "$S0E_WRAPPER_FAMILY_INPUT_PATH" ]; then
             WRAPPER_ARGS+=(--family-input-path "$S0E_WRAPPER_FAMILY_INPUT_PATH")
             WRAPPER_ARGS+=(--family-input-kind "$S0E_WRAPPER_FAMILY_INPUT_KIND")
