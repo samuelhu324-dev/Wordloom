@@ -92,6 +92,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -113,16 +115,22 @@ jobs:
             "$S0E_WRAPPER_SELECTION_INPUT_PATH"
             --selection-input-kind "$S0E_WRAPPER_SELECTION_INPUT_KIND"
             --repo "$S0E_WRAPPER_REPO"
-            --audit-plan-path "$S0E_WRAPPER_AUDIT_PLAN_JSON"
             --remediation-plan-path "$S0E_WRAPPER_REMEDIATION_PLAN_JSON"
             --decision-path "$S0E_WRAPPER_DECISION_JSON"
-            --family-plan-path "$S0E_WRAPPER_FAMILY_PLAN_JSON"
             --thin-gate-result-path "$S0E_WRAPPER_THIN_GATE_RESULT_JSON"
             --wrapper-result-path "$S0E_WRAPPER_RESULT_JSON"
             --wrapper-summary-path "$S0E_WRAPPER_SUMMARY_MD"
             --artifact-manifest-path "$S0E_WRAPPER_MANIFEST_JSON"
             --trigger-surface workflow_dispatch
           )
+
+          if [ "$S0E_WRAPPER_SELECTION_INPUT_KIND" = "manifest" ]; then
+            WRAPPER_ARGS+=(--audit-plan-path "$S0E_WRAPPER_AUDIT_PLAN_JSON")
+          fi
+
+          if [ "$S0E_WRAPPER_OPERATION_FAMILY" != "pr-create-preflight" ] || [ "$S0E_WRAPPER_FAMILY_INPUT_KIND" != "plan" ]; then
+            WRAPPER_ARGS+=(--family-plan-path "$S0E_WRAPPER_FAMILY_PLAN_JSON")
+          fi
 
           if [ -n "$S0E_WRAPPER_FAMILY_INPUT_PATH" ]; then
             WRAPPER_ARGS+=(--family-input-path "$S0E_WRAPPER_FAMILY_INPUT_PATH")
