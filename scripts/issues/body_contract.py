@@ -87,20 +87,33 @@ def _parse_pr_summary_inputs(section_lines: list[str]) -> tuple[list[str], list[
     link_lines: list[str] = []
     evidence_footer_source_lines: list[str] = []
     current: str | None = None
+    evidence_footer_source_started = False
 
     for raw in section_lines:
         stripped = raw.strip()
         if stripped == "**PR summary bullets**:":
             current = "summary"
+            evidence_footer_source_started = False
             continue
         if stripped in {"**PR links**:", "**PR links / evidence footer**:"}:
             current = "links"
+            evidence_footer_source_started = False
             continue
         if stripped == "**Evidence Footer Source**:":
             current = "evidence-footer-source"
+            evidence_footer_source_started = False
             continue
+        if current == "evidence-footer-source":
+            if stripped.startswith("- "):
+                evidence_footer_source_lines.append(stripped[2:].strip())
+                evidence_footer_source_started = True
+                continue
+            if not evidence_footer_source_started and not stripped:
+                continue
+            current = None
         if stripped.startswith("**") and stripped.endswith(":"):
             current = None
+            evidence_footer_source_started = False
             continue
         if not stripped.startswith("- "):
             continue
@@ -109,8 +122,6 @@ def _parse_pr_summary_inputs(section_lines: list[str]) -> tuple[list[str], list[
             summary_bullets.append(value)
         elif current == "links":
             link_lines.append(value)
-        elif current == "evidence-footer-source":
-            evidence_footer_source_lines.append(value)
 
     return summary_bullets, link_lines, evidence_footer_source_lines
 

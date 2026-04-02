@@ -77,10 +77,6 @@
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/pr-prep-S0E-4C-p5-plan.json`
 
-**Evidence Footer Source**:
-
-- `P5-C1-S1` | artifact: `docs/issues/pr-prep-S0E-4C-p5-plan.json`
-
 - Generated PR body should keep `Summary`, `Evidence Footer`, and `Development Link` as separate sections.
 - `Summary` must not degrade to `<placeholder>` on a live PR create path.
 

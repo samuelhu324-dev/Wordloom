@@ -1,0 +1,13 @@
+{
+  "requested_id": "S0E-7C",
+  "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+  "pr_number": 311,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/311",
+  "pr_title": "S0E-7C/P0-P4: workflow/historical log review sampling and mirror follow-up v1",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-s0e-7c-pr-311-live-body.md",
+  "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-s0e-7c-pr-311-rewritten-body.md",
+  "apply_result_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-s0e-7c-pr-311-apply-result.json",
+  "body_changed": true,
+  "warnings": []
+}

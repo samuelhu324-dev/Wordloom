@@ -265,6 +265,7 @@
 - [x] `P127`：已新建 `S0E-4F`，专门收口 PR body 中 `Development Link` 与 `Links -> Issue` 的重复问题，并把当前 `17` 条 live `S0E` PR 的全量审查范围固定到同一条 log
 - [x] `P128`：`S0E-4F` 已完成 `P0-P1`，shared PR contract / preview-create-rewrite renderer / canonical spec / log templates 现已统一到“Development issue 只留在 Metadata、Links 只保留 deterministic navigation”的新边界
 - [x] `P129`：`S0E-4F` 已完成 `P2`，当前 `17` 条 live `S0E` PR 已全量审查为 `17/17 fail`，后续 rewrite scope 也已固定为一个按 `4` 类 drift family 分层执行的 bounded batch
+- [x] `P130`：`S0E-4F` 已完成 `P3`，rewrite rollout 最终分成 `4` 个 cycle：先修 parser/source-log blocker，再跑 `2` 轮 live PR rewrite batch，最后对同一组 `17` 条 live `S0E` PR 做 post-apply verify，并得到 `17/17 pass`
 
 ## Current Status（进展摘要）
 

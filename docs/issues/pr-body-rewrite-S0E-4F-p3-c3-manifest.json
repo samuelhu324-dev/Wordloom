@@ -1,0 +1,75 @@
+{
+  "version": "1",
+  "mode": "pr-body-rewrite-apply",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-1A",
+      "source_log_path": "docs/logs/log-S0E-1A-structured-cv-generator.md",
+      "pr_number": 249,
+      "reason": "Rebuild the legacy pre-canonical PR body into the current canonical family"
+    },
+    {
+      "requested_id": "S0E-2C",
+      "source_log_path": "docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md",
+      "pr_number": 291,
+      "reason": "Rebuild the legacy pre-canonical PR body into the current canonical family"
+    },
+    {
+      "requested_id": "S0E-3A",
+      "source_log_path": "docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md",
+      "pr_number": 292,
+      "reason": "Rebuild the legacy pre-canonical PR body into the current canonical family"
+    },
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "pr_number": 287,
+      "reason": "Normalize the historical merged PR body after removing redundant Development Link and Links Issue rows"
+    },
+    {
+      "requested_id": "S0E-2B",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "pr_number": 290,
+      "reason": "Normalize the historical merged PR body after removing redundant Development Link and Links Issue rows"
+    },
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "pr_number": 294,
+      "reason": "Normalize the historical merged PR body after the narrowed metadata-links contract landed"
+    },
+    {
+      "requested_id": "S0E-4B",
+      "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+      "pr_number": 296,
+      "reason": "Normalize the historical merged PR body after the narrowed metadata-links contract landed"
+    },
+    {
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "pr_number": 298,
+      "reason": "Normalize the historical merged PR body after the narrowed metadata-links contract landed"
+    },
+    {
+      "requested_id": "S0E-4C",
+      "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "pr_number": 301,
+      "reason": "Normalize the historical merged PR body after footer-source parsing and source-log cleanup unblocked replay"
+    },
+    {
+      "requested_id": "S0E-4C",
+      "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "pr_number": 302,
+      "reason": "Normalize the historical merged PR body after footer-source parsing and source-log cleanup unblocked replay"
+    },
+    {
+      "requested_id": "S0E-4D",
+      "source_log_path": "docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md",
+      "pr_number": 304,
+      "reason": "Normalize the historical merged PR body after removing redundant Development Link and Links Issue rows"
+    }
+  ]
+}

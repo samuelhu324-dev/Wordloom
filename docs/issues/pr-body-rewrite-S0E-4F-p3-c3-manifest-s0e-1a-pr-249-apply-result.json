@@ -1,0 +1,13 @@
+{
+  "requested_id": "S0E-1A",
+  "source_log_path": "docs/logs/log-S0E-1A-structured-cv-generator.md",
+  "pr_number": 249,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/249",
+  "pr_title": "S0E-1A/P0-P2: structured cv generator",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-1a-pr-249-live-body.md",
+  "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-1a-pr-249-rewritten-body.md",
+  "apply_result_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-1a-pr-249-apply-result.json",
+  "body_changed": true,
+  "warnings": []
+}

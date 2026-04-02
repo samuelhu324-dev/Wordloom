@@ -88,6 +88,7 @@
 - `P0`: define the narrower PR-body ownership boundary for development-issue identity versus deterministic links
 - `P1`: align canonical spec, gate surfaces, and renderer wording to the new PR-body boundary
 - `P2`: review the current `S0E` PR inventory and decide which live PR bodies need rewrite
+- `P3`: execute the bounded live PR rewrite batch and re-verify the full audited set
 
 ## Success Criteria (DoD)
 
@@ -96,6 +97,7 @@
 - `Metadata` remains the single user-facing owner for development-issue identity in PR bodies.
 - PR hard-gate/body-contract checks describe the same narrower boundary as the canonical spec.
 - The full current `S0E` PR set is reviewed through one explicit inventory, with any needed live rewrite scope made explicit.
+- The bounded live rewrite batch is applied successfully and the same `17` audited PRs re-verify as pass under the narrowed contract.
 
 ## Stability (what draft means now)
 
@@ -112,7 +114,9 @@
 - The canonical PR body family now keeps development issue identity only in `Metadata` and no longer renders `Development Link` or `Links -> Issue`.
 - `P2` has now audited the full current `17` live `S0E` PR set: `#249`, `#287`, `#290`, `#291`, `#292`, `#294`, `#296`, `#298`, `#299`, `#301`, `#302`, `#304`, `#306`, `#308`, `#310`, `#311`, `#312`.
 - The live audit result is `17/17 fail` against the narrowed PR body contract, so this slice no longer has any ambiguity about whether remediation is needed.
-- The rewrite scope is now fixed as one explicit bounded batch over all `17` audited PRs, grouped by drift family instead of left as ad hoc future spot-fixes.
+- The rewrite scope was fixed as one explicit bounded batch over all `17` audited PRs, grouped by drift family instead of left as ad hoc future spot-fixes.
+- `P3` has now completed the live rewrite rollout itself: all `17` audited PRs were rewritten in bounded batches, and post-apply verification now returns `17/17 pass`.
+- This rollout required multiple cycles rather than one monolithic apply step: one unblocking cycle for parser/source-log cleanup, one lower-risk metadata-links-only rewrite batch, one heavier canonical rebuild batch, and one final post-apply verify cycle.
 
 ## P0 (PR-body ownership boundary | v1)
 
@@ -185,6 +189,28 @@
   - family D: otherwise-canonical PRs that only retain an invalid `Links -> Issue` row (`#311`, `#312`).
 - The bounded batch manifest is now recorded so the later rewrite step no longer needs to rediscover scope.
 
+## P3 (Bounded live rewrite rollout | v1)
+
+### P3-C1-S1 (Rewrite path unblocked for mixed historical logs | v1)
+
+- `Evidence Footer Source` parsing is now restricted to the contiguous bullet rows immediately under its heading, so later explanatory bullets do not get misread as footer-source rows.
+- `S0E-4C` no longer carries a stale non-eligible `Evidence Footer Source` block in `PR Summary Inputs`, which was the last source-log-level blocker for replaying `#301` and `#302` under the narrowed PR contract.
+
+### P3-C2-S1 (Low-risk metadata-links cleanup batch applied | v1)
+
+- The first bounded live apply cycle covers the lower-risk PRs whose main drift is the narrowed metadata-links boundary.
+- This batch rewrites `#299`, `#306`, `#308`, `#310`, `#311`, and `#312` from manifest `docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest.json`.
+
+### P3-C3-S1 (Canonical rebuild batch applied | v1)
+
+- The second bounded live apply cycle covers the remaining historical PRs that required full canonical replay rather than a narrow links cleanup.
+- This batch rewrites `#249`, `#287`, `#290`, `#291`, `#292`, `#294`, `#296`, `#298`, `#301`, `#302`, and `#304` from manifest `docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest.json`.
+
+### P3-C4-S1 (Post-apply live verify closed | v1)
+
+- After both rewrite batches landed, the same `17` audited live `S0E` PRs were re-fetched from GitHub and revalidated against the narrowed PR body contract.
+- The post-apply verification result is now `17/17 pass`.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (PR-body ownership boundary)
@@ -204,6 +230,13 @@
 - [x] `P2-C1-S1`: current `S0E` PR inventory reviewed
 - [x] `P2-C1-S2`: bounded rewrite scope fixed explicitly
 
+### P3 (Bounded live rewrite rollout)
+
+- [x] `P3-C1-S1`: rewrite path unblocked for mixed historical logs
+- [x] `P3-C2-S1`: low-risk metadata-links cleanup batch applied
+- [x] `P3-C3-S1`: canonical rebuild batch applied
+- [x] `P3-C4-S1`: post-apply live verify closed
+
 ## Evidence
 
 - `P0-C1-S1` / `P1-C1-S3`: `scripts/issues/body_contract.py` now removes `Development Link` from canonical PR optional sections, removes `Issue` from allowed PR link labels, and rejects any rendered `Development Link` section.
@@ -213,6 +246,10 @@
 - `P2-C1-S1`: `docs/issues/pr-live-contract-check-S0E-4F-summary.json` records the full `17`-PR live audit result as `0 pass / 17 fail` under the narrowed PR body contract.
 - `P2-C1-S1`: the per-PR audit artifacts `docs/issues/pr-live-contract-check-S0E-4F-*-result.json` and matching `*-body.md` files now preserve the exact live failure reasons for each audited PR.
 - `P2-C1-S2`: `docs/issues/pr-body-rewrite-S0E-4F-p2-manifest.json` fixes the bounded rewrite scope as all `17` audited PRs, grouped into four explicit drift families.
+- `P3-C1-S1`: `scripts/issues/body_contract.py` now treats `Evidence Footer Source` as the contiguous bullet block immediately under its heading, and `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md` no longer carries the stale non-eligible footer-source block that had blocked `#301/#302` replay.
+- `P3-C2-S1`: `docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest.json` and `docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-result.json` record the first live apply cycle for `#299/#306/#308/#310/#311/#312`, with per-PR `*-live-body.md`, `*-rewritten-body.md`, and `*-apply-result.json` artifacts.
+- `P3-C3-S1`: `docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest.json` and `docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-result.json` record the second live apply cycle for `#249/#287/#290/#291/#292/#294/#296/#298/#301/#302/#304`, with per-PR `*-live-body.md`, `*-rewritten-body.md`, and `*-apply-result.json` artifacts.
+- `P3-C4-S1`: `docs/issues/pr-live-contract-check-S0E-4F-post-apply-summary.json` records the final post-apply verify result as `17 pass / 0 fail`, and the matching `*-post-apply-result.json` files preserve each live PR's final pass check.
 
 ## Recent changes (for traceability, optional)
 
@@ -220,3 +257,7 @@
 - 2026-04-02: fixed the first review inventory as the current `17` live `S0E` PRs so later remediation decisions can be made against one explicit set instead of ad hoc spot checks.
 - 2026-04-02: completed `P0-P1` locally by updating the canonical PR spec, hard gate, PR preview/create path, PR rewrite path, and log templates so PR bodies keep development issue identity only in `Metadata`.
 - 2026-04-02: completed `P2` by auditing all `17` current live `S0E` PRs, confirming `17/17` still drift from the narrowed PR body contract, and fixing the later rewrite scope as one explicit bounded batch grouped by four drift families.
+- 2026-04-02: completed `P3-C1-S1` by tightening `Evidence Footer Source` extraction to the contiguous bullet block and removing the stale non-eligible footer-source block from `S0E-4C`, which unblocked the last mixed historical rewrite path.
+- 2026-04-02: completed `P3-C2-S1` by live-rewriting the lower-risk metadata-links cleanup batch `#299/#306/#308/#310/#311/#312`.
+- 2026-04-02: completed `P3-C3-S1` by live-rewriting the remaining canonical rebuild batch `#249/#287/#290/#291/#292/#294/#296/#298/#301/#302/#304`.
+- 2026-04-02: completed `P3-C4-S1` by re-verifying all `17` audited live `S0E` PRs to `17/17 pass` under the narrowed PR body contract.
