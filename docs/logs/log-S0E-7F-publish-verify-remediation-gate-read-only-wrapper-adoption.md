@@ -317,7 +317,7 @@
 
 ### P4-C1-S1 (Representative wrapper validation retained and rollout boundary fixed | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `d9b90613`
 - artifacts:
   - `docs/issues/publish-verify-remediation-gate-S0E-7F-p4-c1-representative-validation.json`
   - `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-wrapper-result.json`
