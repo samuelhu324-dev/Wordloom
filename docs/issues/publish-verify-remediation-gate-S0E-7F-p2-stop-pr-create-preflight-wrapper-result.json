@@ -1,0 +1,39 @@
+{
+  "mode": "publish-verify-remediation-gate-read-only-wrapper",
+  "result": "stop",
+  "read_only": true,
+  "secondary_enforcement": true,
+  "trigger_surface": "local-cli",
+  "operation_family": "pr-create-preflight",
+  "selection_input_kind": "audit-plan",
+  "selection_input_path": "docs/issues/lifecycle-audit-S0E-5C-p2-stop-plan.json",
+  "family_input_kind": "manifest",
+  "family_input_path": "docs/issues/pr-prep-S0E-5C-p2-stop-manifest.json",
+  "normalized_decision": "hard-fail-input",
+  "apply_allowed": false,
+  "delegated_apply_requested": false,
+  "delegated_apply_executed": false,
+  "decision_reason": "Create-specific front-half preflight found invalid prerequisites before local branch materialization.",
+  "stop_reason": "continuation-blocked-by-thin-gate",
+  "stopped_before_stage": "S4-local-branch-materialization",
+  "wrapper_result_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-wrapper-result.json",
+  "wrapper_summary_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-workflow-summary.md",
+  "artifact_manifest_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-artifact-manifest.json",
+  "thin_gate_result_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-thin-gate-result.json",
+  "published_artifact_root": "docs/issues",
+  "verify_summary_decision": "not-run",
+  "warnings": [
+    "Local branch already exists: pr-prep/s0e-5b"
+  ],
+  "retained_artifacts": {
+    "wrapper_summary_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-workflow-summary.md",
+    "artifact_manifest_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-artifact-manifest.json",
+    "thin_gate_result_path": "docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-thin-gate-result.json",
+    "gate_decision_path": "docs/issues/lifecycle-gate-S0E-5C-p2-stop-decision.json",
+    "audit_plan_path": null,
+    "remediation_plan_path": null,
+    "family_plan_path": "docs/issues/pr-prep-S0E-7F-p2-stop-pr-create-preflight-plan.json",
+    "family_result_path": "docs/issues/pr-prep-S0E-7F-p2-stop-pr-create-preflight-front-half-preflight-result.json",
+    "delegated_result_path": null
+  }
+}

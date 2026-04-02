@@ -1,0 +1,28 @@
+{
+  "mode": "publish-verify-remediation-gate-dry-run",
+  "result": "ok",
+  "operation_family": "pr-create-preflight",
+  "selection_input_kind": "audit-plan",
+  "selection_input_path": "docs/issues/lifecycle-audit-S0E-5C-p2-stop-plan.json",
+  "family_input_kind": "manifest",
+  "family_input_path": "docs/issues/pr-prep-S0E-5C-p2-stop-manifest.json",
+  "normalized_decision": "hard-fail-input",
+  "apply_allowed": false,
+  "delegated_adapter_path": "scripts/issues/plan_pr_create_preflight_with_gate.py",
+  "delegated_apply_requested": false,
+  "delegated_apply_executed": false,
+  "delegated_action": "planned-only",
+  "decision_reason": "Create-specific front-half preflight found invalid prerequisites before local branch materialization.",
+  "stopped_before_stage": "S4-local-branch-materialization",
+  "downstream_artifacts": {
+    "audit_plan_path": null,
+    "gate_decision_path": "docs/issues/lifecycle-gate-S0E-5C-p2-stop-decision.json",
+    "remediation_plan_path": null,
+    "family_plan_path": "docs/issues/pr-prep-S0E-7F-p2-stop-pr-create-preflight-plan.json",
+    "family_result_path": "docs/issues/pr-prep-S0E-7F-p2-stop-pr-create-preflight-front-half-preflight-result.json",
+    "delegated_result_path": null
+  },
+  "warnings": [
+    "Local branch already exists: pr-prep/s0e-5b"
+  ]
+}
