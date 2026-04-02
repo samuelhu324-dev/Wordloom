@@ -5,7 +5,8 @@
   "scope": [
     "P0",
     "P1",
-    "P2"
+    "P2",
+    "P3"
   ],
   "version": "v1",
   "alignment": {
@@ -33,7 +34,8 @@
   },
   "selected_adoption_shape": {
     "wrapper_style": "manual-or-ci-secondary-enforcement",
-    "preferred_initial_surface": "workflow_dispatch",
+    "preferred_initial_surface": "local-operator-facing",
+    "next_surface": "workflow_dispatch",
     "compatible_existing_surface": ".github/workflows/s0e-pr-body-secondary-enforcement.yml",
     "reason": "The repo already has a manual secondary-enforcement workflow family that publishes retained artifacts after verification without claiming it prevented publish."
   },
@@ -159,5 +161,20 @@
       "stop": 1,
       "error": 2
     }
+  },
+  "operator_facing_surface": {
+    "script_path": "scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1",
+    "trigger_surface": "local-operator-facing",
+    "default_artifact_root": "artifacts/operator-facing/publish-verify-remediation-gate-read-only-wrapper/<run-id>-<slug>",
+    "operator_owned_defaults": [
+      "wrapper-result.json",
+      "workflow-summary.md",
+      "artifact-manifest.json",
+      "thin-gate-result.json"
+    ],
+    "notes": [
+      "When selection_input_kind=manifest, the operator-facing surface also defaults lifecycle gate audit/remediation/decision artifacts under the same artifact root.",
+      "When operation_family=pr-create-preflight, the operator-facing surface also defaults the family plan artifact under the same artifact root."
+    ]
   ]
 }

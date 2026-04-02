@@ -86,6 +86,7 @@
 
 - `P0-C1-S1S2 / P1-C1-S1S2` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7F-p0-p1-read-only-wrapper-contract.json`
 - `P2-C1-S1` | artifact: `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`
+- `P3-C1-S1` | artifact: `scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1`
 
 - Keep footer rows low-cardinality: prefer one contract artifact per completed unit instead of replaying all downstream retained artifacts before the wrapper entrypoint exists.
 
@@ -134,6 +135,7 @@
 - Existing likely adoption surfaces already exist in the repo, especially the GitHub Actions secondary-enforcement family represented by `.github/workflows/s0e-pr-body-secondary-enforcement.yml`; this slice exists to connect that style of wrapper to the thin gate without flattening family semantics.
 - `P0-P1` are now completed at the contract layer: the repo now retains one explicit wrapper-boundary plus request/result/artifact contract artifact for the read-only wrapper path, aligned to `S0E-7A` secondary-enforcement wording and `S0E-7E` normalized thin-gate outputs.
 - `P2` is now completed: the repo now has a shared wrapper entrypoint at `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`, and the entrypoint has already been smoke-validated on one lifecycle-family pass sample plus one `pr-create-preflight` stop sample.
+- `P3` is now completed: the repo now has a local operator-facing PowerShell surface at `scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1`, and that surface now defaults an operator artifact root plus the required wrapper/thin-gate output paths without widening into live delegated apply.
 
 ## P0 (Boundary contract | v1)
 
@@ -178,6 +180,8 @@
 
 - Connect the wrapper to one concrete execution surface, preferably manual `workflow_dispatch` in GitHub Actions or an equivalent local operator wrapper.
 - The adopted surface should publish retained artifacts and fail only after summaries/manifests are written.
+- `scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1` now serves as the first adopted local operator-facing surface, wrapping the shared Python entrypoint with operator-friendly defaults for artifact roots, wrapper-owned outputs, manifest-mode gate artifacts, and `pr-create-preflight` family-plan output paths.
+- The operator-facing surface now stamps `trigger_surface=local-operator-facing`, preserves the wrapper's read-only exit semantics (`pass=0`, `stop=1`, `error=2`), and still leaves any existing mutation-family ownership outside this local surface.
 
 ## P4 (Representative validation | v1)
 
@@ -250,7 +254,7 @@
 
 ### P3 (Execution surface adoption)
 
-- [ ] `P3-C1-S1`: one operator-facing wrapper surface connected
+- [x] `P3-C1-S1`: one operator-facing wrapper surface connected
 
 ### P4 (Representative validation)
 
@@ -293,6 +297,24 @@
   - `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py` now invokes `scripts/issues/plan_publish_verify_remediation_gate.py` with delegated apply disabled, writes wrapper-owned result/summary/manifest artifacts, and maps thin-gate outcomes into wrapper-level `pass` / `stop` / `error` plus `secondary enforcement` wording.
   - The retained `issue-conclusion` pass sample now emits `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-wrapper-result.json` with wrapper result `pass` and normalized thin-gate decision `allow-apply`, while the retained `pr-create-preflight` stop sample now emits `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-wrapper-result.json` with wrapper result `stop`, thin-gate decision `hard-fail-input`, and stop boundary `S4-local-branch-materialization`.
 
+### P3-C1-S1 (Local operator-facing surface connected and smoke-validated | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts:
+  - `scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1`
+  - `artifacts/_tmp_s0e_7f_p3_operator_surface_pass/wrapper-result.json`
+  - `artifacts/_tmp_s0e_7f_p3_operator_surface_pass/workflow-summary.md`
+  - `artifacts/_tmp_s0e_7f_p3_operator_surface_pass/artifact-manifest.json`
+  - `artifacts/_tmp_s0e_7f_p3_operator_surface_stop/wrapper-result.json`
+  - `artifacts/_tmp_s0e_7f_p3_operator_surface_stop/workflow-summary.md`
+  - `artifacts/_tmp_s0e_7f_p3_operator_surface_stop/artifact-manifest.json`
+- expected:
+  - `S0E-7F` should connect one local operator-facing surface over the shared read-only wrapper entrypoint so an operator can invoke the wrapper without hand-authoring every output path.
+  - The same local surface should preserve wrapper-owned retained artifacts and wrapper exit semantics on both a pass path and a stop path.
+- observed:
+  - `scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1` now defaults one operator artifact root, derives wrapper-owned output paths, forwards optional family inputs and notes, and invokes the shared Python wrapper with `trigger_surface=local-operator-facing`.
+  - The retained local pass run now emits `artifacts/_tmp_s0e_7f_p3_operator_surface_pass/wrapper-result.json` with wrapper result `pass`, while the retained local stop run now emits `artifacts/_tmp_s0e_7f_p3_operator_surface_stop/wrapper-result.json` with wrapper result `stop`; both runs also retain workflow summaries plus artifact manifests under their operator-facing artifact roots.
+
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
 - headSha: `<git sha>`
@@ -307,3 +329,4 @@
 - 2026-04-02: opened `S0E-7F` as the implementation follow-up after `S0E-7E` stabilized the thin-gate contract, planner, delegated handoff, representative validation, and wrapper boundary.
 - 2026-04-02: completed `P0-P1` by retaining the first read-only wrapper contract artifact, fixing wrapper ownership boundaries, request/result fields, retained artifact set, and the alignment to `S0E-7A` secondary-enforcement wording plus `S0E-7E` normalized thin-gate outputs.
 - 2026-04-02: completed `P2` by implementing the shared read-only wrapper entrypoint, retaining wrapper-owned result/summary/manifest outputs, and smoke-validating one lifecycle-family pass sample plus one `pr-create-preflight` stop sample.
+- 2026-04-02: completed `P3` by adding the first local operator-facing PowerShell surface over the shared read-only wrapper entrypoint, including default artifact-root derivation, operator-friendly output paths, and retained pass/stop smoke evidence.

@@ -285,6 +285,7 @@
 - [x] `P141`：`S0E-7D` ledger 已补齐，`S0E-7E` 已收口为 `stable`，并已新建 `S0E-7F` 作为 thin gate read-only/CI-style wrapper adoption 的 implementation follow-up
 - [x] `P142`：`S0E-7F` 已完成 `P0-P1`，现在已经保留第一份 read-only wrapper contract artifact，把 wrapper ownership boundary、request/result envelope、artifact set 与 `7A/7E` 对齐关系固定为结构化 contract
 - [x] `P143`：`S0E-7F` 已完成 `P2`，现在已实现 shared read-only wrapper entrypoint，并保留了一条 lifecycle-family pass 样本和一条 `pr-create-preflight` stop 样本的 wrapper result/summary/manifest 证据
+- [x] `P144`：`S0E-7F` 已完成 `P3`，现在已接上本地 operator-facing PowerShell surface，并保留了一条 pass 样本和一条 stop 样本的本地 artifact-root 证据
 
 ## Current Status（进展摘要）
 
@@ -484,6 +485,7 @@
 - 2026-04-02：`S0E-7D/P4` 与 `S0E-7E/P4` 的 ledger headSha 已补齐，`S0E-7E` 现已提升为 `stable`，并新开 `S0E-7F` 作为 thin gate read-only/CI-style wrapper adoption 的 implementation follow-up。
 - 2026-04-02：`S0E-7F/P0-P1` 已完成：第一份 read-only wrapper contract artifact 已落地，当前 wrapper 的 ownership boundary、required request/result fields、artifact manifest/summaries，以及与 `S0E-7A` secondary-enforcement wording 和 `S0E-7E` normalized thin-gate outputs 的对齐关系都已固定。
 - 2026-04-02：`S0E-7F/P2` 已完成：shared read-only wrapper entrypoint 已落地，并已保留一条 lifecycle-family pass 样本和一条 `pr-create-preflight` stop 样本的 wrapper result/summary/manifest 证据，且 delegated apply 仍被硬性禁用。
+- 2026-04-02：`S0E-7F/P3` 已完成：本地 operator-facing PowerShell surface 已接到 shared wrapper 上，并已保留一条 pass 样本和一条 stop 样本的本地 artifact-root 证据；下一步只剩 `P4` 的 representative validation 收口或继续接到 manual `workflow_dispatch` surface。
 - 2026-04-02：新增 `S0E-7E`，作为 `S0E-7D/P4` 的直接实现 follow-up，后续将把 future `publish-verify-remediation gate` 从命名 surface 落成一个薄编排入口，并复用现有 issue/relationship/PR guarded adapters。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
