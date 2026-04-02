@@ -1,0 +1,324 @@
+name: s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation_family:
+        description: "Thin-gate family to replay through the shared read-only wrapper."
+        required: true
+        type: choice
+        options:
+          - issue-conclusion
+          - issue-relationship
+          - pr-body-rewrite
+          - pr-create-preflight
+      selection_input_path:
+        description: "Manifest or frozen audit-plan path used as the wrapper selection input."
+        required: true
+        type: string
+      selection_input_kind:
+        description: "How to interpret selection_input_path."
+        required: false
+        type: choice
+        default: audit-plan
+        options:
+          - manifest
+          - audit-plan
+      family_input_path:
+        description: "Optional family-specific input path."
+        required: false
+        type: string
+        default: ""
+      family_input_kind:
+        description: "How to interpret family_input_path when provided."
+        required: false
+        type: choice
+        default: manifest
+        options:
+          - manifest
+          - plan
+          - result
+      repo:
+        description: "Optional repository slug override (owner/repo). Blank uses the current repository."
+        required: false
+        type: string
+        default: ""
+      trusted_source_log_path:
+        description: "Optional trusted source log path retained for traceability."
+        required: false
+        type: string
+        default: ""
+      wrapper_notes:
+        description: "Optional single-line note retained in the workflow-owned manifest."
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  wrapper_dispatch:
+    name: publish-verify-remediation-gate-read-only-wrapper
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+      S0E_WRAPPER_REPO: ${{ inputs.repo != '' && inputs.repo || github.repository }}
+      S0E_WRAPPER_OPERATION_FAMILY: ${{ inputs.operation_family }}
+      S0E_WRAPPER_SELECTION_INPUT_PATH: ${{ inputs.selection_input_path }}
+      S0E_WRAPPER_SELECTION_INPUT_KIND: ${{ inputs.selection_input_kind }}
+      S0E_WRAPPER_FAMILY_INPUT_PATH: ${{ inputs.family_input_path }}
+      S0E_WRAPPER_FAMILY_INPUT_KIND: ${{ inputs.family_input_kind }}
+      S0E_WRAPPER_TRUSTED_SOURCE_LOG_PATH: ${{ inputs.trusted_source_log_path }}
+      S0E_WRAPPER_NOTES: ${{ inputs.wrapper_notes }}
+      S0E_WRAPPER_ARTIFACT_DIR: artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/${{ github.run_id }}-${{ github.run_attempt }}
+      S0E_WRAPPER_RESULT_JSON: artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/${{ github.run_id }}-${{ github.run_attempt }}/wrapper-result.json
+      S0E_WRAPPER_SUMMARY_MD: artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/${{ github.run_id }}-${{ github.run_attempt }}/workflow-summary.md
+      S0E_WRAPPER_MANIFEST_JSON: artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/${{ github.run_id }}-${{ github.run_attempt }}/artifact-manifest.json
+      S0E_WRAPPER_THIN_GATE_RESULT_JSON: artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/${{ github.run_id }}-${{ github.run_attempt }}/thin-gate-result.json
+      S0E_WRAPPER_AUDIT_PLAN_JSON: artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/${{ github.run_id }}-${{ github.run_attempt }}/lifecycle-audit-plan.json
+      S0E_WRAPPER_REMEDIATION_PLAN_JSON: artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/${{ github.run_id }}-${{ github.run_attempt }}/lifecycle-remediation-plan.json
+      S0E_WRAPPER_DECISION_JSON: artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/${{ github.run_id }}-${{ github.run_attempt }}/lifecycle-gate-decision.json
+      S0E_WRAPPER_FAMILY_PLAN_JSON: artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/${{ github.run_id }}-${{ github.run_attempt }}/family-plan.json
+      S0E_WRAPPER_DISPATCH_MANIFEST_JSON: artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/${{ github.run_id }}-${{ github.run_attempt }}/dispatch-run-manifest.json
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Prepare artifact directory
+        run: |
+          set -euo pipefail
+          mkdir -p "$S0E_WRAPPER_ARTIFACT_DIR"
+
+      - name: Run shared read-only wrapper
+        id: wrapper
+        run: |
+          set +e
+
+          WRAPPER_ARGS=(
+            "$S0E_WRAPPER_OPERATION_FAMILY"
+            "$S0E_WRAPPER_SELECTION_INPUT_PATH"
+            --selection-input-kind "$S0E_WRAPPER_SELECTION_INPUT_KIND"
+            --repo "$S0E_WRAPPER_REPO"
+            --audit-plan-path "$S0E_WRAPPER_AUDIT_PLAN_JSON"
+            --remediation-plan-path "$S0E_WRAPPER_REMEDIATION_PLAN_JSON"
+            --decision-path "$S0E_WRAPPER_DECISION_JSON"
+            --family-plan-path "$S0E_WRAPPER_FAMILY_PLAN_JSON"
+            --thin-gate-result-path "$S0E_WRAPPER_THIN_GATE_RESULT_JSON"
+            --wrapper-result-path "$S0E_WRAPPER_RESULT_JSON"
+            --wrapper-summary-path "$S0E_WRAPPER_SUMMARY_MD"
+            --artifact-manifest-path "$S0E_WRAPPER_MANIFEST_JSON"
+            --trigger-surface workflow_dispatch
+          )
+
+          if [ -n "$S0E_WRAPPER_FAMILY_INPUT_PATH" ]; then
+            WRAPPER_ARGS+=(--family-input-path "$S0E_WRAPPER_FAMILY_INPUT_PATH")
+            WRAPPER_ARGS+=(--family-input-kind "$S0E_WRAPPER_FAMILY_INPUT_KIND")
+          fi
+
+          if [ -n "$S0E_WRAPPER_TRUSTED_SOURCE_LOG_PATH" ]; then
+            WRAPPER_ARGS+=(--trusted-source-log-path "$S0E_WRAPPER_TRUSTED_SOURCE_LOG_PATH")
+          fi
+
+          if [ -n "$S0E_WRAPPER_NOTES" ]; then
+            WRAPPER_ARGS+=(--wrapper-notes "$S0E_WRAPPER_NOTES")
+          fi
+
+          python scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py "${WRAPPER_ARGS[@]}"
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Write workflow summary
+        if: always()
+        env:
+          WRAPPER_EXIT_CODE: ${{ steps.wrapper.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          result_path = Path(os.environ["S0E_WRAPPER_RESULT_JSON"])
+          summary_path = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          retained_summary_path = Path(os.environ["S0E_WRAPPER_SUMMARY_MD"])
+          exit_code = os.environ.get("WRAPPER_EXIT_CODE", "")
+
+          lines = [
+              "## Publish Verify Remediation Gate Read-Only Wrapper Dispatch",
+              "",
+              "- Mode: `secondary enforcement`",
+              "- Trigger surface: `workflow_dispatch`",
+              f"- Repository: `{os.environ['S0E_WRAPPER_REPO']}`",
+              f"- Operation family: `{os.environ['S0E_WRAPPER_OPERATION_FAMILY']}`",
+              f"- Selection input: `{os.environ['S0E_WRAPPER_SELECTION_INPUT_PATH']}` ({os.environ['S0E_WRAPPER_SELECTION_INPUT_KIND']})",
+          ]
+
+          if result_path.is_file():
+              payload = json.loads(result_path.read_text(encoding="utf-8"))
+              lines.extend(
+                  [
+                      f"- Wrapper result: `{payload.get('result', 'unknown')}`",
+                      f"- Normalized thin-gate decision: `{payload.get('normalized_decision', 'unknown')}`",
+                      f"- Stop reason: `{payload.get('stop_reason', '')}`",
+                      f"- Stopped before stage: `{payload.get('stopped_before_stage', '')}`",
+                      f"- Artifact root: `{payload.get('published_artifact_root', '')}`",
+                      f"- Wrapper result artifact: `{payload.get('wrapper_result_path', '')}`",
+                      f"- Thin gate result artifact: `{payload.get('thin_gate_result_path', '')}`",
+                      "",
+                      "This workflow replays the shared read-only wrapper. A stop or error means drift was detected or continuation was blocked in a secondary-enforcement surface; it does not mean GitHub Actions prevented publish.",
+                  ]
+              )
+          else:
+              lines.extend(
+                  [
+                      "- Wrapper result: `missing-result-artifact`",
+                      f"- Wrapper exit code: `{exit_code or 'unknown'}`",
+                      "",
+                      "The workflow could not find the retained wrapper result artifact, so it cannot prove pass/stop/error semantics for this dispatch.",
+                  ]
+              )
+
+          rendered = "\n".join(lines) + "\n"
+          summary_path.write_text(rendered, encoding="utf-8")
+          retained_summary_path.write_text(rendered, encoding="utf-8")
+          PY
+
+      - name: Write dispatch run manifest
+        if: always()
+        env:
+          WRAPPER_EXIT_CODE: ${{ steps.wrapper.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          result_path = Path(os.environ["S0E_WRAPPER_RESULT_JSON"])
+          manifest_path = Path(os.environ["S0E_WRAPPER_DISPATCH_MANIFEST_JSON"])
+          wrapper_result = "missing-result-artifact"
+          normalized_decision = ""
+          stop_reason = "missing-result-artifact"
+          stopped_before_stage = ""
+
+          if result_path.is_file():
+              payload = json.loads(result_path.read_text(encoding="utf-8"))
+              wrapper_result = str(payload.get("result") or "unknown")
+              normalized_decision = str(payload.get("normalized_decision") or "")
+              stop_reason = str(payload.get("stop_reason") or "")
+              stopped_before_stage = str(payload.get("stopped_before_stage") or "")
+
+          manifest = {
+              "mode": "publish-verify-remediation-gate-workflow-dispatch-run-manifest",
+              "result": wrapper_result,
+              "trigger_surface": "workflow_dispatch",
+              "repository": os.environ["S0E_WRAPPER_REPO"],
+              "operation_family": os.environ["S0E_WRAPPER_OPERATION_FAMILY"],
+              "selection_input_path": os.environ["S0E_WRAPPER_SELECTION_INPUT_PATH"],
+              "selection_input_kind": os.environ["S0E_WRAPPER_SELECTION_INPUT_KIND"],
+              "family_input_path": os.environ.get("S0E_WRAPPER_FAMILY_INPUT_PATH", ""),
+              "family_input_kind": os.environ.get("S0E_WRAPPER_FAMILY_INPUT_KIND", ""),
+              "run_id": os.environ.get("GITHUB_RUN_ID", ""),
+              "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", ""),
+              "workflow": os.environ.get("GITHUB_WORKFLOW", ""),
+              "wrapper_exit_code": os.environ.get("WRAPPER_EXIT_CODE", ""),
+              "normalized_decision": normalized_decision,
+              "stop_reason": stop_reason,
+              "stopped_before_stage": stopped_before_stage,
+              "retained_artifacts": {
+                  "wrapper_result_path": os.environ["S0E_WRAPPER_RESULT_JSON"],
+                  "wrapper_summary_path": os.environ["S0E_WRAPPER_SUMMARY_MD"],
+                  "artifact_manifest_path": os.environ["S0E_WRAPPER_MANIFEST_JSON"],
+                  "thin_gate_result_path": os.environ["S0E_WRAPPER_THIN_GATE_RESULT_JSON"],
+                  "dispatch_run_manifest_path": os.environ["S0E_WRAPPER_DISPATCH_MANIFEST_JSON"],
+              },
+              "failure_semantics": {
+                  "classification": (
+                      "missing-wrapper-result-artifact"
+                      if wrapper_result == "missing-result-artifact"
+                      else ("workflow-dispatch read-only stop" if wrapper_result == "stop" else ("workflow-dispatch read-only error" if wrapper_result == "error" else "workflow-dispatch read-only pass"))
+                  ),
+                  "github_actions_role": "secondary enforcement",
+                  "publish_owner": "family-owned local or live path",
+              },
+          }
+
+          manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+          PY
+
+      - name: Emit check annotations
+        if: always()
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          result_path = Path(os.environ["S0E_WRAPPER_RESULT_JSON"])
+          if not result_path.is_file():
+              print("::error title=missing wrapper result artifact::workflow_dispatch wrapper did not retain wrapper-result.json")
+              raise SystemExit(0)
+
+          payload = json.loads(result_path.read_text(encoding="utf-8"))
+          result = str(payload.get("result") or "unknown")
+          if result == "pass":
+              print("::notice title=read-only wrapper pass::workflow_dispatch wrapper replay passed without claiming publish ownership")
+          elif result == "stop":
+              print("::error title=read-only wrapper stop::workflow_dispatch wrapper stopped after retaining artifacts; see workflow summary and uploaded artifacts")
+          else:
+              print("::error title=read-only wrapper error::workflow_dispatch wrapper errored after retaining artifacts where possible")
+          PY
+
+      - name: Upload workflow artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s0e-publish-verify-remediation-gate-read-only-wrapper-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.S0E_WRAPPER_ARTIFACT_DIR }}
+          if-no-files-found: warn
+
+      - name: Fail on non-pass outcome
+        if: always()
+        env:
+          WRAPPER_EXIT_CODE: ${{ steps.wrapper.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          result_path = Path(os.environ["S0E_WRAPPER_RESULT_JSON"])
+          exit_code = int(os.environ.get("WRAPPER_EXIT_CODE") or "0")
+
+          if not result_path.is_file():
+              print("workflow_dispatch wrapper result artifact missing", file=sys.stderr)
+              raise SystemExit(1)
+
+          payload = json.loads(result_path.read_text(encoding="utf-8"))
+          result = str(payload.get("result") or "unknown")
+          if result != "pass":
+              raise SystemExit(exit_code if exit_code != 0 else 1)
+          PY
