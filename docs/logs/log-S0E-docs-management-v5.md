@@ -494,6 +494,7 @@
 - 2026-04-02：`S0E-7F/P4` 已完成：现在已保留一份横跨 shared wrapper 与 local operator-facing surface 的 representative validation ledger，并明确结论为“暂不直接扩大到更广 CI adoption；下一步先做 dedicated read-only workflow_dispatch surface”。
 - 2026-04-02：已新建 `S0E-7G` 并完成 `P0-P2`：GitHub-side manual `workflow_dispatch` wrapper contract 已落地，新的 workflow surface 也已实现并接到 shared read-only wrapper；下一步只剩 representative pass/stop dispatch evidence。
 - 2026-04-02：`S0E-7G/P3` 已完成第一轮 dispatchability check：当前不是 wrapper runtime 出错，而是 GitHub 仍要求 workflow 先在 default branch 可见；因此下一步应先让该 workflow 出现在 `main`，再补 live pass/stop dispatch evidence。
+- 2026-04-02：`S0E-7G/P3` 已完成：workflow_dispatch surface 现已通过一条 representative pass run 与一条 representative stop run，且 workflow 为 frozen audit-plan / frozen pr-create-preflight-plan replay 补齐了参数与 checkout 边界；`S0E-7G` 因而进入 `stable`。
 - 2026-04-02：新增 `S0E-7E`，作为 `S0E-7D/P4` 的直接实现 follow-up，后续将把 future `publish-verify-remediation gate` 从命名 surface 落成一个薄编排入口，并复用现有 issue/relationship/PR guarded adapters。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
