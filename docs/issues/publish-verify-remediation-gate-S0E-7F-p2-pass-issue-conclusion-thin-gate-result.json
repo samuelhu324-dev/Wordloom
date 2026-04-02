@@ -1,0 +1,26 @@
+{
+  "mode": "publish-verify-remediation-gate-dry-run",
+  "result": "ok",
+  "operation_family": "issue-conclusion",
+  "selection_input_kind": "manifest",
+  "selection_input_path": "docs/issues/lifecycle-audit-S0E-5A-p5-pass-manifest.json",
+  "family_input_kind": null,
+  "family_input_path": null,
+  "normalized_decision": "allow-apply",
+  "apply_allowed": true,
+  "delegated_adapter_path": "scripts/issues/apply_issue_conclusion_with_pre_gate.py",
+  "delegated_apply_requested": false,
+  "delegated_apply_executed": false,
+  "delegated_action": "planned-only",
+  "decision_reason": "The lifecycle pre-gate passed, so the requested family is eligible for delegated continuation behind the thin gate surface.",
+  "stopped_before_stage": null,
+  "downstream_artifacts": {
+    "audit_plan_path": "docs/issues/lifecycle-audit-S0E-7F-p2-pass-issue-conclusion-plan.json",
+    "gate_decision_path": "docs/issues/lifecycle-gate-S0E-7F-p2-pass-issue-conclusion-decision.json",
+    "remediation_plan_path": null,
+    "family_plan_path": null,
+    "family_result_path": null,
+    "delegated_result_path": null
+  },
+  "warnings": []
+}

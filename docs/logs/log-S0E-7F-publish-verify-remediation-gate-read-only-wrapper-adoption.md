@@ -85,6 +85,7 @@
 **Evidence Footer Source**:
 
 - `P0-C1-S1S2 / P1-C1-S1S2` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7F-p0-p1-read-only-wrapper-contract.json`
+- `P2-C1-S1` | artifact: `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`
 
 - Keep footer rows low-cardinality: prefer one contract artifact per completed unit instead of replaying all downstream retained artifacts before the wrapper entrypoint exists.
 
@@ -132,6 +133,7 @@
 - The immediate goal is not to widen live mutation ownership, but to attach one wrapper-safe read-only surface that can replay thin-gate planning and publish retained evidence.
 - Existing likely adoption surfaces already exist in the repo, especially the GitHub Actions secondary-enforcement family represented by `.github/workflows/s0e-pr-body-secondary-enforcement.yml`; this slice exists to connect that style of wrapper to the thin gate without flattening family semantics.
 - `P0-P1` are now completed at the contract layer: the repo now retains one explicit wrapper-boundary plus request/result/artifact contract artifact for the read-only wrapper path, aligned to `S0E-7A` secondary-enforcement wording and `S0E-7E` normalized thin-gate outputs.
+- `P2` is now completed: the repo now has a shared wrapper entrypoint at `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`, and the entrypoint has already been smoke-validated on one lifecycle-family pass sample plus one `pr-create-preflight` stop sample.
 
 ## P0 (Boundary contract | v1)
 
@@ -167,6 +169,8 @@
 
 - Add one dedicated entrypoint that invokes `scripts/issues/plan_publish_verify_remediation_gate.py` in read-only mode and captures normalized outputs into wrapper-owned artifacts.
 - The same entrypoint should make it explicit that delegated apply is disabled, even for families that the thin gate can delegate in other contexts.
+- `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py` now exists as that shared entrypoint, and it writes three wrapper-owned outputs on every run: one wrapper result JSON, one workflow/operator summary markdown artifact, and one artifact-manifest JSON.
+- The implemented wrapper now maps thin-gate outcomes into wrapper-level `pass` / `stop` / `error`, always keeps `delegated_apply_requested=false` and `delegated_apply_executed=false`, and preserves `secondary enforcement` wording even when a stop or input error occurs.
 
 ## P3 (Execution surface adoption | v1)
 
@@ -242,7 +246,7 @@
 
 ### P2 (Shared entrypoint)
 
-- [ ] `P2-C1-S1`: read-only thin-gate wrapper entrypoint implemented
+- [x] `P2-C1-S1`: read-only thin-gate wrapper entrypoint implemented
 
 ### P3 (Execution surface adoption)
 
@@ -271,6 +275,24 @@
   - `docs/issues/publish-verify-remediation-gate-S0E-7F-p0-p1-read-only-wrapper-contract.json` now records wrapper ownership versus non-ownership, fixed read-only flags, compatible `workflow_dispatch` adoption shape, required wrapper request fields, required wrapper result fields, retained artifact split, and explicit wrapper boundaries.
   - `S0E-7F` now explicitly aligns its wrapper wording to `.github/workflows/s0e-pr-body-secondary-enforcement.yml`, so later `P2-P3` implementation can reuse the existing secondary-enforcement artifact/publication posture instead of inventing a second CI contract.
 
+### P2-C1-S1 (Shared read-only wrapper entrypoint implemented and smoke-validated | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts:
+  - `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-wrapper-result.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-workflow-summary.md`
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-artifact-manifest.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-wrapper-result.json`
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-workflow-summary.md`
+  - `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-artifact-manifest.json`
+- expected:
+  - `S0E-7F` should implement one shared read-only wrapper entrypoint that invokes the thin gate without delegated apply and emits wrapper-owned result, summary, and artifact-manifest outputs.
+  - The same entrypoint should prove one pass path and one stop path while keeping `pr-create-preflight` explicitly planning-only.
+- observed:
+  - `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py` now invokes `scripts/issues/plan_publish_verify_remediation_gate.py` with delegated apply disabled, writes wrapper-owned result/summary/manifest artifacts, and maps thin-gate outcomes into wrapper-level `pass` / `stop` / `error` plus `secondary enforcement` wording.
+  - The retained `issue-conclusion` pass sample now emits `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-wrapper-result.json` with wrapper result `pass` and normalized thin-gate decision `allow-apply`, while the retained `pr-create-preflight` stop sample now emits `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-stop-pr-create-preflight-wrapper-result.json` with wrapper result `stop`, thin-gate decision `hard-fail-input`, and stop boundary `S4-local-branch-materialization`.
+
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
 - headSha: `<git sha>`
@@ -284,3 +306,4 @@
 
 - 2026-04-02: opened `S0E-7F` as the implementation follow-up after `S0E-7E` stabilized the thin-gate contract, planner, delegated handoff, representative validation, and wrapper boundary.
 - 2026-04-02: completed `P0-P1` by retaining the first read-only wrapper contract artifact, fixing wrapper ownership boundaries, request/result fields, retained artifact set, and the alignment to `S0E-7A` secondary-enforcement wording plus `S0E-7E` normalized thin-gate outputs.
+- 2026-04-02: completed `P2` by implementing the shared read-only wrapper entrypoint, retaining wrapper-owned result/summary/manifest outputs, and smoke-validating one lifecycle-family pass sample plus one `pr-create-preflight` stop sample.
