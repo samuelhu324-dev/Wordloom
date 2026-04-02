@@ -376,7 +376,7 @@
 
 ### P4-C1-S1 (Future gate surface scoped and named | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `53bd8fa3`
 - artifacts: `docs/issues/failure-semantics-S0E-7D-p4-c1-gate-surface.json`
 - expected:
   - `S0E-7D` should fix one explicit future gate name and one narrow orchestration surface for the current docs/GitHub workflow family.

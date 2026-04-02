@@ -5,7 +5,7 @@
 **id**: `S0E-7E`
 **kind**: `log`
 **title**: `publish-verify-remediation gate thin orchestration entrypoint v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Drills, Evidence, epic/s0, sub/1`
 **links**: ``
@@ -123,7 +123,7 @@
 
 ## Current Status
 
-- `S0E-7E` has now completed `P0-P4` at the thin-gate contract, planner, delegated-handoff, representative-validation, and future-wrapping-boundary level.
+- `S0E-7E` has now completed `P0-P4` at the thin-gate contract, planner, delegated-handoff, representative-validation, and future-wrapping-boundary level, and the slice now meets its stable ledger threshold.
 - The new slice now retains one explicit contract artifact for the thin gate boundary, CLI surface, normalized decision vocabulary, and evidence shape.
 - A new planner entrypoint now exists at `scripts/issues/plan_publish_verify_remediation_gate.py`, and it now normalizes planning plus delegated handoff without replacing the existing family-specific adapters:
   - lifecycle-family planning for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`;
@@ -354,7 +354,7 @@
 
 ### P4-C1-S1 (Future wrapping boundary retained | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `8c817dd6`
 - artifacts:
   - `docs/issues/publish-verify-remediation-gate-S0E-7E-p4-c1-wrapping-boundary.json`
   - `docs/issues/failure-semantics-S0E-7E-p0-c1-thin-gate-contract.json`
@@ -381,3 +381,4 @@
 - 2026-04-02: completed `P2` by connecting delegated handoff for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`, while explicitly keeping `pr-create-preflight` as a planning-only front-half family.
 - 2026-04-02: completed `P3` by retaining one representative issue-side pass path, one representative PR-side pass path, one `pr-create-preflight` planning-only stop path, and one explicit delegated-apply rejection for the create boundary.
 - 2026-04-02: completed `P4` by fixing wrapper boundaries for local operator, publish-time automation, and CI, and by constraining top-level post-apply verify exposure to summary-only fields.
+- 2026-04-02: promoted `S0E-7E` to `stable` after backfilling the final `P4` ledger entry and moving read-only/CI-style wrapper adoption into a dedicated follow-up slice.

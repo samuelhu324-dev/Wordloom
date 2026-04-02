@@ -282,6 +282,7 @@
 - [x] `P138`：`S0E-7E` 已完成 `P2`，现在 thin gate 已能把 `issue-conclusion`、`issue-relationship` 与 `pr-body-rewrite` 委托到既有 guarded adapters，同时保持 `pr-create-preflight` 仍是 planning-only front-half family
 - [x] `P139`：`S0E-7E` 已完成 `P3`，现在 thin gate 已保留 representative issue-side pass、PR-side pass、`pr-create-preflight` planning-only stop 与 delegated-apply rejection 四类边界证据
 - [x] `P140`：`S0E-7E` 已完成 `P4`，现在 thin gate 的 local/publish-time/CI wrapping boundary 与 top-level post-apply verify exposure 都已固定为结构化 contract
+- [x] `P141`：`S0E-7D` ledger 已补齐，`S0E-7E` 已收口为 `stable`，并已新建 `S0E-7F` 作为 thin gate read-only/CI-style wrapper adoption 的 implementation follow-up
 
 ## Current Status（进展摘要）
 
@@ -478,6 +479,7 @@
 - 2026-04-02：`S0E-7E/P2` 已完成：thin gate 现已能委托 issue-conclusion、issue-relationship、pr-body-rewrite 三条 guarded apply handoff，同时显式拒绝把 `pr-create-preflight` 扁平化成 create 后半段 apply。
 - 2026-04-02：`S0E-7E/P3` 已完成：thin gate 现已保留 representative issue-side pass、PR-side pass、`pr-create-preflight` planning-only stop，以及 delegated-apply rejection 的结构化 ledger，因此 `P4` 只剩 future wrapping boundary 的 follow-up。
 - 2026-04-02：`S0E-7E/P4` 已完成：thin gate 的 local/publish-time/CI wrapping boundary 与 summary-only post-apply verify exposure 现已固定，因此该入口后续只需在这些边界内被接入，而不必再重谈 family-owned semantics。
+- 2026-04-02：`S0E-7D/P4` 与 `S0E-7E/P4` 的 ledger headSha 已补齐，`S0E-7E` 现已提升为 `stable`，并新开 `S0E-7F` 作为 thin gate read-only/CI-style wrapper adoption 的 implementation follow-up。
 - 2026-04-02：新增 `S0E-7E`，作为 `S0E-7D/P4` 的直接实现 follow-up，后续将把 future `publish-verify-remediation gate` 从命名 surface 落成一个薄编排入口，并复用现有 issue/relationship/PR guarded adapters。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
