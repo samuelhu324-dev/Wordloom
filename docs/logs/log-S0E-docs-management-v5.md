@@ -272,6 +272,7 @@
 - [x] `P131`：`S0E-4F` 已完成 `P4`，现已补上 PR Development/label 的 live GitHub metadata gap，补建并 conclude 了原先缺失的 `S0E-1A/#316`、`S0E-2C/#313`、`S0E-3A/#314`、`S0E-7C/#315`，同一组 `17` 条 audited PR 现已达到 body + metadata 双重完整
 - [x] `P132`：已新建 `S0E-7D`，用于把当前 docs/GitHub workflow 的 `publish -> verify -> remediation -> failure handling` 语义收口为明确的 failure taxonomy、replay/backfill contract 与 handling semantics
 - [x] `P133`：`S0E-7D` 已完成 `P0-P1`，现在已经保留第一份 failure taxonomy artifact，把当前已知 issue/PR/log drift surfaces 显式映射到 `strong-structure` / `weak-structure` 以及 `block` / `replayable` / `manual` / `reconciliation`
+- [x] `P134`：`S0E-7D` 已完成 `P2-P3`，现在已经保留 representative manifest / audit summary，并把 replay-only remediation contract、mixed-batch split 规则、以及 post-apply verify stop rules 固定为结构化证据
 
 ## Current Status（进展摘要）
 
@@ -462,6 +463,7 @@
 - 2026-04-01：完成 `S0E-5C` 的真实 lifecycle follow-through，PR `#310` 已创建并合并，issue `#309` 已完成 final body write-back；当时的 GitHub Actions mirror dispatch 也据此暴露出“workflow 需先对默认分支可见”这一前置条件，并在后续 `S0E-7C/P4` 中被正面解决。
 - 2026-04-02：新增 `S0E-7D`，作为 `S0E-7C` historical review 和 `S0E-4F` metadata backfill 之后的 failure-semantics follow-up，后续将集中收口强/弱结构化 failure taxonomy、replay/backfill 顺序以及 `block/replayable/manual/reconciliation` handling semantics。
 - 2026-04-02：`S0E-7D/P0-P1` 已完成：第一份 failure taxonomy / mapping artifact 已落地，当前 docs/GitHub workflow 的主要 drift surfaces 现已显式归类到 strong/weak structure 与四类 handling semantics。
+- 2026-04-02：`S0E-7D/P2-P3` 已完成：现在已有覆盖四类 handling semantics 的 representative manifest / audit summary，同时 replay-only remediation contract、mixed-batch split 规则和 post-apply verify stop rules 也已固定为结构化证据。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
 - 2026-03-29：完成 `S0E-2D/P3`，历史真实 issue `#288` 已按当前 creation body contract 审核并回收，当前 `S0E-2D` 也已成功创建真实 sample issue `#297` 并完成 write-back。

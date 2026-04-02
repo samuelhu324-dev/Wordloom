@@ -1,0 +1,72 @@
+{
+  "mode": "failure-semantics-audit-summary",
+  "result": "ok",
+  "requested_id": "S0E-7D",
+  "scope": [
+    "P2"
+  ],
+  "version": "v1",
+  "taxonomy_artifact": "docs/issues/failure-semantics-S0E-7D-p0-p1-taxonomy.json",
+  "representative_manifest_path": "docs/issues/failure-semantics-S0E-7D-p2-c1-representative-manifest.json",
+  "summary": {
+    "total_samples": 4,
+    "family_counts": {
+      "strong-structure": 3,
+      "weak-structure": 1
+    },
+    "semantic_counts": {
+      "block": 1,
+      "replayable": 1,
+      "manual": 1,
+      "reconciliation": 1
+    },
+    "overall_gate_decision": "mixed-stop",
+    "decision_reason": "The representative set intentionally spans all four handling classes, so only the replayable subset can continue into remediation manifest planning."
+  },
+  "sample_audit": [
+    {
+      "sample_id": "block-pr-canonical-sections",
+      "classification": {
+        "family": "strong-structure",
+        "semantic": "block"
+      },
+      "gate_outcome": "stop-before-apply",
+      "why": "Canonical section drift is a contract breach and must be corrected before replay/apply proceeds."
+    },
+    {
+      "sample_id": "replayable-pr-development-linkage",
+      "classification": {
+        "family": "strong-structure",
+        "semantic": "replayable"
+      },
+      "gate_outcome": "eligible-for-remediation-manifest",
+      "why": "The expected values are deterministic, bounded, and already proven by S0E-4F live replay/backfill artifacts."
+    },
+    {
+      "sample_id": "manual-issue-context-prose",
+      "classification": {
+        "family": "weak-structure",
+        "semantic": "manual"
+      },
+      "gate_outcome": "stop-for-human-authoring",
+      "why": "Context prose quality is human-owned even when weak-gated."
+    },
+    {
+      "sample_id": "reconciliation-live-vs-source-conflict",
+      "classification": {
+        "family": "strong-structure",
+        "semantic": "reconciliation"
+      },
+      "gate_outcome": "stop-for-reconciliation",
+      "why": "An explicit live/source conflict must be resolved before deterministic replay can resume."
+    }
+  ],
+  "allowed_next_step_subset": [
+    "replayable-pr-development-linkage"
+  ],
+  "required_splits_before_apply": [
+    "Do not mix replayable items with manual items in the same apply batch.",
+    "Do not mix replayable items with reconciliation items in the same apply batch.",
+    "Do not downgrade block findings into replayable manifest rows."
+  ]
+}

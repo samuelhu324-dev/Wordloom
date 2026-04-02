@@ -126,10 +126,12 @@
 
 ## Current Status
 
-- `S0E-7D` has now completed `P0-P1` at the contract and taxonomy-mapping level.
+- `S0E-7D` has now completed `P0-P3` at the contract, representative-validation, and remediation-semantics level.
 - The first retained taxonomy artifact now fixes the ordered replay/backfill pipeline, the four handling semantics, and the strong-structure versus weak-structure family split for the current docs/GitHub workflow.
 - The same artifact now maps the currently known issue/PR/log failure surfaces into default semantics rather than leaving operators to infer whether a given drift should block, replay, stay manual, or enter reconciliation.
 - Recent `S0E-4F` and `S0E-7C` findings are now explicitly covered by that taxonomy, especially PR development linkage, deterministic labels, source-log write-back, parent relationships, exact DoD refs, Context prose drift, and source-block note contamination.
+- `P2` now retains one bounded representative manifest and one structured audit summary across all four handling semantics, so the repo no longer needs operator prose to explain how `block`, `replayable`, `manual`, and `reconciliation` differ in practice.
+- `P3` now fixes the guarded remediation/apply contract: only replayable items may enter apply, mixed-semantics batches must split before mutation, and post-apply verify must stop incomplete convergence rather than looping with ad hoc live edits.
 
 ## P0 (Contract | v1)
 
@@ -198,6 +200,48 @@
   - `reconciliation`: explicit live-versus-source conflicts such as mismatched write-back references or incompatible live relationships.
 - This mapping does not prevent future follow-up slices from refining a surface's semantics, but v1 now fixes the default decision path that operators and later automation should follow.
 
+## P2 (Representative validation | v1)
+
+### P2-C1-S1 (Representative manifest retained across all four handling classes | v1)
+
+- The retained representative manifest now carries one bounded sample for each handling semantic:
+  - `block`: canonical PR body section drift;
+  - `replayable`: PR development linkage / deterministic label backfill;
+  - `manual`: issue `Context` prose quality drift;
+  - `reconciliation`: explicit live-versus-source reference conflict.
+- Each sample now records the target kind, source owner surface, expected versus observed values, semantic classification, next action, and retained evidence paths.
+- The representative set is intentionally mixed so the later audit summary can prove that only the replayable subset is eligible for remediation-manifest planning.
+
+### P2-C1-S2 (Structured audit summary retained | v1)
+
+- The retained audit summary now normalizes the same four representative samples into one machine-readable gate summary.
+- The summary explicitly records:
+  - family counts;
+  - semantic counts;
+  - the mixed-stop overall gate outcome;
+  - the exact subset that may proceed into remediation-manifest planning.
+- This keeps `P2` as validation rather than mutation: the output proves classification and stop/split behavior before any replay/apply step begins.
+
+## P3 (Remediation contract | v1)
+
+### P3-C1-S1 (Replayable remediation/apply contract fixed | v1)
+
+- Replay/apply is now explicitly restricted to items already classified as `replayable`.
+- A remediation manifest row must carry exact target identity, source-log ownership, surface name, family/semantic classification, expected versus observed values, and explicit downstream apply/verify artifact paths.
+- Mixed batches must split before mutation:
+  - `block` findings must stop and return to contract correction;
+  - `manual` findings must remain human-authored;
+  - `reconciliation` findings must stop for operator resolution.
+
+### P3-C1-S2 (Post-apply verify and incomplete-convergence stop rules fixed | v1)
+
+- Post-apply verify must re-fetch the same targets mutated by apply and compare them against the same expected deterministic values used during planning.
+- Verify must stop the cycle, not silently retry live edits, when any of the following occurs:
+  - incomplete convergence;
+  - new deterministic drift introduced by apply;
+  - missing or inconsistent apply/verify evidence.
+- Any such stop result must open a new bounded audit/remediation cycle instead of being folded into the original apply attempt.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -257,13 +301,13 @@
 
 ### P2 (Representative validation)
 
-- [ ] `P2-C1-S1`: representative manifest retained across all four handling classes
-- [ ] `P2-C1-S2`: structured audit summary retained
+- [x] `P2-C1-S1`: representative manifest retained across all four handling classes
+- [x] `P2-C1-S2`: structured audit summary retained
 
 ### P3 (Remediation contract)
 
-- [ ] `P3-C1-S1`: replayable remediation/apply contract fixed
-- [ ] `P3-C1-S2`: post-apply verify and incomplete-convergence stop rules fixed
+- [x] `P3-C1-S1`: replayable remediation/apply contract fixed
+- [x] `P3-C1-S2`: post-apply verify and incomplete-convergence stop rules fixed
 
 ### P4 (Future gate surface)
 
@@ -287,6 +331,30 @@
   - `docs/issues/failure-semantics-S0E-7D-p0-p1-taxonomy.json` now records the ordered replay pipeline, four handling semantics, two structural families, and the current mapped surfaces.
   - The owner log now marks `P0-P1` complete and cites the retained taxonomy artifact as the first bounded evidence surface for this slice.
 
+### P2-C1-S1S2 (Representative failure samples and audit summary retained | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts:
+  - `docs/issues/failure-semantics-S0E-7D-p2-c1-representative-manifest.json`
+  - `docs/issues/failure-semantics-S0E-7D-p2-c1-audit-summary.json`
+- expected:
+  - `S0E-7D` should retain one bounded representative sample for each handling semantic.
+  - The same retained audit output should prove that only replayable samples may continue into remediation-manifest planning.
+- observed:
+  - `docs/issues/failure-semantics-S0E-7D-p2-c1-representative-manifest.json` now records one sample each for `block`, `replayable`, `manual`, and `reconciliation`.
+  - `docs/issues/failure-semantics-S0E-7D-p2-c1-audit-summary.json` now records a mixed-stop gate outcome and the exact replayable subset eligible for the next stage.
+
+### P3-C1-S1S2 (Remediation/apply and post-apply verify contract retained | 2026-04-02)
+
+- headSha: `<pending-next-commit>`
+- artifacts: `docs/issues/failure-semantics-S0E-7D-p3-c1-remediation-and-verify-contract.json`
+- expected:
+  - `S0E-7D` should fix one guarded replay/apply contract that only admits replayable findings.
+  - The same contract should retain explicit stop rules for mixed-semantics batches and incomplete post-apply convergence.
+- observed:
+  - `docs/issues/failure-semantics-S0E-7D-p3-c1-remediation-and-verify-contract.json` now fixes stage-by-stage entry conditions, manifest row requirements, allowed/forbidden apply targets, and post-apply verify stop rules.
+  - The owner log now marks `P3` complete and leaves `P4` as the only remaining open phase for this slice.
+
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
 - headSha: `<git sha>`
@@ -300,3 +368,5 @@
 
 - 2026-04-02: opened `S0E-7D` to separate failure taxonomy, replay/backfill order, and remediation semantics from the already-landed `S0E-7C` review planner and `S0E-4F` historical metadata backfill work.
 - 2026-04-02: completed `P0-P1` by retaining the first structured failure taxonomy/mapping artifact for the current docs/GitHub workflow, covering strong versus weak structure, ordered replay/backfill, and default handling semantics per known failure surface.
+- 2026-04-02: completed `P2` by retaining one representative manifest and one structured audit summary across `block`, `replayable`, `manual`, and `reconciliation`, making the stop/split behavior explicit before apply.
+- 2026-04-02: completed `P3` by fixing the guarded replay/apply contract, explicit manifest-row requirements, and post-apply verify stop rules for incomplete convergence.
