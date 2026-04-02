@@ -262,7 +262,7 @@
 
 ### P3-C1-S1 (workflow_dispatch visibility check blocked before live representative runs | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `5c9c6fe3`
 - artifacts:
   - `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-dispatch-visibility-check.json`
 - expected:
