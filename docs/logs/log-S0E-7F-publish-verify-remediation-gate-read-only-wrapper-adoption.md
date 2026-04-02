@@ -277,7 +277,7 @@
 
 ### P2-C1-S1 (Shared read-only wrapper entrypoint implemented and smoke-validated | 2026-04-02)
 
-- headSha: `<pending-next-commit>`
+- headSha: `8b7fa6e3`
 - artifacts:
   - `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`
   - `docs/issues/publish-verify-remediation-gate-S0E-7F-p2-pass-issue-conclusion-wrapper-result.json`
