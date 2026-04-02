@@ -37,6 +37,8 @@
   **phase_log_25**: `docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`
   **phase_log_26**: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
   **phase_log_27**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  **phase_log_28**: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  **phase_log_29**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -287,6 +289,7 @@
 - [x] `P143`：`S0E-7F` 已完成 `P2`，现在已实现 shared read-only wrapper entrypoint，并保留了一条 lifecycle-family pass 样本和一条 `pr-create-preflight` stop 样本的 wrapper result/summary/manifest 证据
 - [x] `P144`：`S0E-7F` 已完成 `P3`，现在已接上本地 operator-facing PowerShell surface，并保留了一条 pass 样本和一条 stop 样本的本地 artifact-root 证据
 - [x] `P145`：`S0E-7F` 已完成 `P4` 并收口为 `stable`，现在已经保留横跨 shared wrapper 与 local operator-facing surface 的 representative validation ledger，并明确把 `workflow_dispatch` 固定为下一个 eligible widening surface
+- [x] `P146`：已新建 `S0E-7G`，并已完成 `P0-P2`，现在已经保留 GitHub-side manual wrapper contract artifact，并实现了一个 manual `workflow_dispatch` surface 来调用 shared read-only wrapper
 
 ## Current Status（进展摘要）
 
@@ -488,6 +491,7 @@
 - 2026-04-02：`S0E-7F/P2` 已完成：shared read-only wrapper entrypoint 已落地，并已保留一条 lifecycle-family pass 样本和一条 `pr-create-preflight` stop 样本的 wrapper result/summary/manifest 证据，且 delegated apply 仍被硬性禁用。
 - 2026-04-02：`S0E-7F/P3` 已完成：本地 operator-facing PowerShell surface 已接到 shared wrapper 上，并已保留一条 pass 样本和一条 stop 样本的本地 artifact-root 证据；下一步只剩 `P4` 的 representative validation 收口或继续接到 manual `workflow_dispatch` surface。
 - 2026-04-02：`S0E-7F/P4` 已完成：现在已保留一份横跨 shared wrapper 与 local operator-facing surface 的 representative validation ledger，并明确结论为“暂不直接扩大到更广 CI adoption；下一步先做 dedicated read-only workflow_dispatch surface”。
+- 2026-04-02：已新建 `S0E-7G` 并完成 `P0-P2`：GitHub-side manual `workflow_dispatch` wrapper contract 已落地，新的 workflow surface 也已实现并接到 shared read-only wrapper；下一步只剩 representative pass/stop dispatch evidence。
 - 2026-04-02：新增 `S0E-7E`，作为 `S0E-7D/P4` 的直接实现 follow-up，后续将把 future `publish-verify-remediation gate` 从命名 surface 落成一个薄编排入口，并复用现有 issue/relationship/PR guarded adapters。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。
