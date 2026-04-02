@@ -53,10 +53,11 @@
 - Relationship ownership must come from explicit metadata such as `issue_parent` or a controlled issue/log mapping; title similarity and prose similarity remain out of scope.
 - For child logs that already declare `parent_log`, issue creation may derive `issue_parent` from the parent log's exact `links.issue`; top-level issues with no `parent_log` omit the `Parent issue` field entirely.
 - When rendered, `Parent issue` belongs only in `Metadata` and should use plain-text short GitHub issue reference form such as `#248`.
+- Top-level parent issues may populate `Definition of Done (DoD)` with the known child issue short-ref ledger, while child issues keep create-time `Definition of Done (DoD)` empty by default.
 - `issue_projects` is authoritative when explicitly populated; otherwise the existing `docs/logs/* -> wordloom Board` default still applies.
 - Generated issue bodies must be English-only even when the source log is bilingual.
 - The generated issue body should keep the section structure `Metadata -> Context -> Definition of Done (DoD) -> Links`, but automation should only fill metadata and deterministic links by default.
-- `Metadata` should keep issue-state rows only, while deterministic navigation rows such as `Log`, `Runbook`, `Roadmap`, `Parent log`, and optional `Previous log` belong in `Links`.
+- `Metadata` should keep issue-state rows only, while deterministic navigation rows such as `Log`, `Runbook`, optional `Roadmap`, `Parent log`, and optional `Previous log` belong in `Links`.
 - `Context` and `Definition of Done (DoD)` remain intentionally unexpanded during creation v1 unless an operator supplies explicit overrides.
 
 ## PR Summary Inputs (optional)
@@ -106,8 +107,9 @@
 - Milestone derivation is explicitly tied to frontmatter or exact roadmap bridge fields rather than prose guessing.
 - The generated issue body is English-only.
 - `Context` and `Definition of Done (DoD)` remain structurally present but are not auto-written as final prose during creation.
-- `Links` contain only deterministic references such as log, runbook, roadmap, parent log, and optional previous log when those inputs are explicitly available.
+- `Links` contain only deterministic references such as log, runbook, optional roadmap, parent log, and optional previous log when those inputs are explicitly available.
 - `Parent issue` remains metadata-only and must not be repeated inside `Links`.
+- Top-level parent issue bodies omit `Parent issue` and may render the known child issue set in `Definition of Done (DoD)`.
 - The contract explains how enriched issue creation still stays fail-closed when milestone, relationship, or project data is missing.
 
 ## Stability (what stable means)
@@ -138,6 +140,8 @@
 - The generated issue body must use English section headings and English machine-filled content only.
 - The body shape should be:
 
+- Child issue shape:
+
 ```md
 ## Metadata
 
@@ -159,7 +163,29 @@
 - Previous log: `...`
 ```
 
-- `Context` and `Definition of Done (DoD)` remain intentionally empty unless the operator supplies explicit text.
+- Top-level parent issue shape:
+
+```md
+## Metadata
+
+- Labels: `...`
+- Projects: `...`
+- Milestone: `...`
+
+## Context
+
+## Definition of Done (DoD)
+
+- #288
+- #289
+
+## Links
+
+- Log: `...`
+- Roadmap: `...`
+```
+
+- `Context` remains intentionally empty unless the operator supplies explicit text; child issue `Definition of Done (DoD)` stays empty by default, while top-level parent issues may carry the known child issue ledger.
 - `Links` should only include deterministic references already known from frontmatter or controlled overrides, excluding `Parent issue` which belongs only in `Metadata` and excluding log-only `reference_log_*` rows.
 
 ## Numbering

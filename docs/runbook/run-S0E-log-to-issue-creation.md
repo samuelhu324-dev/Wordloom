@@ -199,8 +199,8 @@
 - Step 9: confirm `issue_projects`; if they are blank, keep them blank or use the existing `docs/logs/* -> wordloom Board` default rather than guessing from prose.
 - Step 10: keep the generated issue body English-only, start directly from `## Metadata`, and do not repeat the issue title inside the body.
 - Step 11: keep `Metadata` limited to state rows such as labels, projects, milestone, and parent issue; do not leave `Source log` in `Metadata`.
-- Step 12: confirm `Links` carries deterministic navigation rows such as `Log`, `Runbook`, `Roadmap`, `Parent log`, and optional `Previous log` when the source log explicitly declares it.
-- Step 13: leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text.
+- Step 12: confirm `Links` carries deterministic navigation rows such as `Log`, `Runbook`, optional `Roadmap`, `Parent log`, and optional `Previous log` when the source log explicitly declares them; top-level parent issues omit `Parent log`.
+- Step 13: child issues leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text; top-level parent issues may populate `Definition of Done (DoD)` with the known child issue short-ref ledger.
 - Step 14: create the real GitHub issue through the normal repository UI path.
 - Step 15: after creation, record the issue URL back into the source log in a later tracked docs update.
 
@@ -212,8 +212,8 @@
 - Step 4: if multiple merged PRs match, order them by parsed `P*` then `C*`/`S*` units when available; otherwise order them by `mergedAt` ascending and then PR number ascending.
 - Step 5: preserve the existing `Metadata` block from issue creation, but remove any historical `Source log` row because log navigation now belongs in `Links`.
 - Step 6: do not render a separate `Development` section in the final user-facing body.
-- Step 7: write `Definition of Done (DoD)` as the ordered short PR-ref ledger only, for example `- #296`.
-- Step 8: update `Links` so they include deterministic log/navigation references such as `Log`, `Parent log`, and optional `Previous log`, plus one PR link line per merged PR in the same order.
+- Step 7: child issues write `Definition of Done (DoD)` as the ordered short PR-ref ledger only, for example `- #296`; top-level parent issues keep `Definition of Done (DoD)` as the ordered child issue short-ref ledger instead.
+- Step 8: update `Links` so they include deterministic log/navigation references such as `Log`, optional `Roadmap`, `Parent log`, and optional `Previous log`, plus one PR link line per merged PR in the same order.
 - Step 9: if the issue is already closed, edit it in place rather than treating the closed state as a blocker.
 - Step 10: if the issue is still open after merge, write the final body first and then close the issue with `reason=completed`.
 

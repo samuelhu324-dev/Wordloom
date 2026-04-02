@@ -110,14 +110,15 @@
 - Issue Creation body is now fixed as:
   - `Metadata -> Context -> Definition of Done (DoD) -> Links`;
   - `Metadata` keeps issue-state rows only and does not render `Source log`;
-  - deterministic log navigation such as `Log`, `Runbook`, `Parent log`, and optional `Previous log` stays in `Links`;
-  - empty `Context` and empty `Definition of Done (DoD)` are both preserved at creation time.
+  - deterministic log navigation such as `Log`, `Runbook`, optional `Roadmap`, `Parent log`, and optional `Previous log` stays in `Links`;
+  - child issues keep create-time `Definition of Done (DoD)` empty, while top-level parent issues may render the known child issue short-ref ledger;
+  - top-level parent issues omit `Parent issue` from `Metadata` and omit `Parent log` from `Links`.
 - Issue Conclusion body is now fixed as:
   - `Metadata -> Context -> Definition of Done (DoD) -> Links`;
   - `Metadata` keeps issue-state rows only and does not render `Source log`;
   - `Context` remains present and must contain substantive conclusion-stage content;
-  - `Definition of Done (DoD)` contains short PR refs such as `#299` and `#300`;
-  - `Links` keeps deterministic log navigation and does not add issue or PR lines in the conclusion contract.
+  - child-issue `Definition of Done (DoD)` contains short PR refs such as `#299` and `#300`, while top-level parent issues keep a child-issue short-ref ledger;
+  - `Links` keeps deterministic log navigation, including optional `Roadmap`, and does not add issue or PR lines in the conclusion contract.
 - PR body is now fixed as:
   - `Metadata -> Summary -> Execution Checklist -> Links -> Evidence Footer (when applicable) -> Development Link (only when an issue exists)`.
 - Metadata-like bullet rows across creation / conclusion / PR bodies must be contiguous with no blank paragraphs between adjacent bullets.
@@ -164,6 +165,7 @@
   - issue section order;
   - metadata bullet contiguity;
   - allowed issue-link categories, including optional `Previous log`;
+  - top-level parent issue omission of `Parent issue` / `Parent log` plus child-issue-ledger DoD ownership;
   - closed-issue substantive `Context` retention.
 - Issue conclusion rendering in `plan_issue_conclusion.py` is now aligned to the canonical contract by:
   - always keeping the `Context` section;

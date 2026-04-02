@@ -170,7 +170,7 @@
 - `Context` becomes optional during conclusion v1; if retained, it should be one short English closure note rather than a replay of the original contract scope.
 - When `Context` is retained, its final sentence should carry outcome wording such as "left a stable baseline" or "left the path in a reusable live form" instead of repeating PR evidence that belongs in `Definition of Done (DoD)`.
 - `Definition of Done (DoD)` is mandatory in the final conclusion body and should list the ordered short PR refs as the final delivery ledger.
-- `Links` should preserve deterministic references such as log path, parent log, optional previous log, and one PR URL line per merged PR in the same order used by the selected merged-PR set.
+- `Links` should preserve deterministic references such as log path, optional roadmap, parent log, optional previous log, and one PR URL line per merged PR in the same order used by the selected merged-PR set.
 - The final body shape is:
 
 ```md

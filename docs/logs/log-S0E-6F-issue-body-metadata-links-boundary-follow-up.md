@@ -49,13 +49,20 @@
 - The immediate contract change is intentionally small and explicit:
   - remove `Source log` from issue `Metadata`;
   - add optional `Previous log` under issue `Links` when the source log declares it.
+- The follow-up now also fixes the parent-versus-child body split that became visible once the narrower field boundary stabilized:
+  - top-level parent issues omit `Parent issue` from `Metadata` and omit `Parent log` from `Links`;
+  - top-level parent issue `Definition of Done (DoD)` becomes the ordered child-issue short-ref ledger rather than a merged-PR ledger;
+  - optional `Roadmap` belongs in issue `Links` for both parent and child issues when the source log declares it.
 - This slice does not widen issue bodies to mirror every `reference_log_*` field. The follow-up is specifically about a cleaner separation between state metadata and navigation links.
 
 **Default choices (phase defaults / v1)**:
 
 - `Metadata` should describe issue state and ownership only, such as labels, projects, milestone, and parent issue when present.
 - Deterministic navigation rows belong in `Links`, including the canonical source log path.
+- Top-level parent issues still use the same section order, but they omit `Parent issue` and `Parent log` because those rows describe child ownership rather than parent ownership.
+- Top-level parent issues keep `Definition of Done (DoD)` as the child-issue short-ref ledger, while child issues continue to use merged PR short refs at conclusion time.
 - `Previous log` is allowed in issue `Links`, but remains optional and must be omitted when the source log does not declare it.
+- `Roadmap` is an allowed optional issue-link row for both parent and child issues and must be omitted when the source log does not declare it.
 - `reference_log_*` rows remain log-only structure in v1 and should not be projected into issue bodies.
 - The same field-allocation rule should apply to both issue creation and issue conclusion bodies so the section boundary stays stable across the lifecycle.
 
@@ -89,12 +96,15 @@
 - `P0`: define the issue-body field-allocation contract for `Metadata` versus `Links`
 - `P1`: implement renderer, planner, gate, and runbook changes for the new field boundary
 - `P2`: validate representative creation/conclusion outputs and decide which live issue bodies need reconciliation
+- `P3`: extend the issue-body contract from child-only normalization into an explicit parent-versus-child body family and refresh the governed `S0E` parent-plus-child set
 
 ## Success Criteria (DoD)
 
 - Issue creation and issue conclusion both stop rendering `Source log` inside `Metadata`.
 - Issue `Links` always contain `Log` when the source log path is known.
 - Issue `Links` may render `Previous log` only when the source log explicitly carries `links.previous_log`.
+- Optional `Roadmap` can appear in `Links` for both parent and child issues when the source log declares it.
+- Top-level parent issues omit `Parent issue` from `Metadata`, omit `Parent log` from `Links`, and render the child issue ledger in `Definition of Done (DoD)`.
 - The contract stays narrow: `reference_log_*` remains out of issue bodies.
 - Runbook wording, shared renderers, and lifecycle/body-contract checks all describe the same field boundary.
 
@@ -112,8 +122,9 @@
 - `P0` is now completed: the field-allocation contract is fixed as `Metadata = state rows only`, `Links = deterministic navigation rows`, with `reference_log_*` explicitly left out.
 - `P1` is now completed: issue draft rendering, issue conclusion preview rendering, lifecycle audit link validation, and operator/runbook wording are now aligned to the same boundary.
 - `P2` is now completed: representative creation/conclusion artifacts have been regenerated, the live reconciliation scope has been fixed as the current `10` closed `S0E` child issues only, and that bounded batch now re-audits cleanly.
-- `#248` remains intentionally out of scope for `6F/P2` because it is the older top-level parent issue with a pre-contract body family rather than a current child issue body governed by the `2D/2E/5D` shape.
-- `S0E-6F` is now `stable`: the contract, implementation, representative artifacts, bounded live refresh, and post-refresh lifecycle audit all agree on the same metadata-versus-links boundary.
+- `P3` is now completed: the parent-versus-child body-family split is explicit, the top-level parent issue `#248` has been refreshed in place to the new parent body shape, and the full `11`-item `S0E` parent-plus-child audit now passes.
+- `#248` was intentionally excluded from `6F/P2` as a pre-contract parent body, but is now covered by the new `6F/P3` parent-aware follow-up.
+- `S0E-6F` is now `stable`: the contract, implementation, representative artifacts, bounded child refresh, parent refresh, and post-refresh parent-plus-child lifecycle audit all agree on the same issue-body family boundary.
 
 ## P0 (Field-allocation contract | v1)
 
@@ -167,6 +178,31 @@
 - The chosen `6F/P2` scope is the current `10` closed `S0E` child issues `#288/#289/#293/#295/#297/#300/#303/#305/#307/#309`.
 - The open top-level parent issue `#248` is excluded because it belongs to an older pre-contract body shape and would require a separate parent-issue normalization decision.
 
+## P3 (Parent-versus-child issue body family and live refresh | v1)
+
+### P3-C1-S1 (Parent issue body owns a different DoD lane | v1)
+
+- Top-level parent issues keep the canonical issue section order but do not reuse the child-issue ownership rows mechanically.
+- `Metadata` omits `Parent issue` for top-level parent issues.
+- `Definition of Done (DoD)` on a top-level parent issue is the ordered child-issue short-ref ledger, not a merged-PR ledger.
+
+### P3-C1-S2 (Parent and child links share one deterministic link family | v1)
+
+- `Log` remains mandatory when the source log path is known.
+- `Roadmap` is now an allowed optional issue-link row for both parent and child issues when the source log declares it.
+- Top-level parent issues omit `Parent log`, while child issues may continue to render `Parent log` and optional `Previous log`.
+
+### P3-C2-S1 (Renderer and audit surfaces become parent-aware | v1)
+
+- Issue draft rendering now derives top-level parent `Definition of Done (DoD)` rows from the known child issue ledger.
+- Lifecycle audit now distinguishes top-level parent issue checks from child issue checks instead of applying child-only PR-ledger assumptions to every issue body.
+
+### P3-C2-S2 (Refresh the governed S0E parent-plus-child set | v1)
+
+- Regenerate a representative top-level parent artifact for `S0E-docs-management-v5`.
+- Refresh the live top-level parent issue `#248` to the new parent body shape.
+- Re-audit the governed `S0E` family as one `11`-item parent-plus-child set so the parent/child split is verified together.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Field-allocation contract)
@@ -185,6 +221,13 @@
 
 - [x] `P2-C1-S1`: representative issue artifacts regenerated
 - [x] `P2-C1-S2`: live-issue reconciliation scope decided
+
+### P3 (Parent-versus-child issue body family and live refresh)
+
+- [x] `P3-C1-S1`: parent issue DoD ownership lane fixed
+- [x] `P3-C1-S2`: parent and child deterministic link family aligned
+- [x] `P3-C2-S1`: renderer and audit surfaces made parent-aware
+- [x] `P3-C2-S2`: `S0E` parent-plus-child live refresh and audit completed
 
 ## Evidence (reserved)
 
@@ -238,6 +281,28 @@
 - observed:
   - the regenerated `S0E-6F` draft artifact and representative conclusion previews now show state-only `Metadata` plus deterministic `Links`, the bounded live refresh set was fixed as the current `10` closed `S0E` child issues, and the post-refresh lifecycle audit now passes on all `10/10` refreshed live issue bodies
 
+### P3 (parent-aware body family rollout completed | 2026-04-02)
+
+- artifacts:
+  - `scripts/issues/body_contract.py`
+  - `scripts/issues/gen_issue_draft.py`
+  - `scripts/issues/plan_lifecycle_audit.py`
+  - `docs/issues/issue-S0E-docs-management-v5.md`
+  - `docs/issues/issue-S0E-docs-management-v5.json`
+  - `docs/issues/issue-S0E-6F-parent-body-refresh-live.json`
+  - `docs/issues/lifecycle-audit-S0E-6F-parent-child-refresh-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-6F-parent-child-refresh-manifest-plan.json`
+  - `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
+  - `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
+  - `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`
+  - `docs/issues/body-contract-S0E-5D-p0-canonical-spec.md`
+  - `docs/issues/hard-gate-shape-S0E-5D-p2-canonical-spec.md`
+  - `docs/runbook/run-S0E-log-to-issue-creation.md`
+- expected:
+  - top-level parent issues should omit `Parent issue` and `Parent log`, should render child issue refs in `Definition of Done (DoD)`, should allow optional `Roadmap` in `Links`, and the governed `S0E` parent-plus-child set should audit cleanly under one manifest
+- observed:
+  - the regenerated top-level parent artifact now uses `sub/0` metadata, single-generated parent `Context`, child issue refs `#288/#289/#293/#295/#297/#300/#303/#305/#307/#309` in `Definition of Done (DoD)`, and deterministic `Links` with `Log` plus `Roadmap`; live issue `#248` now matches that body shape, and the expanded `11`-item parent-plus-child lifecycle audit now passes without warnings
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-02: opened `S0E-6F` to narrow the issue body field boundary without reopening the broader section-order contract.
@@ -245,3 +310,4 @@
 - 2026-04-02: recorded the concrete implementation measures in advance: shared renderer updates first, then gate/runbook alignment, then representative validation plus an explicit live-reconciliation decision.
 - 2026-04-02: completed `P0-P1` by updating issue draft rendering, issue conclusion preview rendering, lifecycle audit link validation, and the owner/runbook wording to the same metadata-versus-links boundary.
 - 2026-04-02: completed `P2` by regenerating representative `6F` draft/conclusion artifacts, fixing the live reconciliation scope to the current `10` closed `S0E` child issues, applying that bounded batch, and re-auditing the refreshed live issue bodies with `10/10` pass.
+- 2026-04-02: completed `P3` by making the issue-body contract parent-aware, refreshing live parent issue `#248` to the new top-level body shape, and re-auditing the governed `11`-item `S0E` parent-plus-child set with `11/11` pass.

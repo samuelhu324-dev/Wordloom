@@ -11,6 +11,8 @@
 - Section order: `Metadata -> Context -> Definition of Done (DoD) -> Links`.
 - Metadata bullet rows must be contiguous with no blank gaps.
 - Metadata must not render `Source log`; deterministic log navigation belongs in `Links`.
+- Top-level parent issues must omit `Parent issue` from `Metadata` and `Parent log` from `Links`.
+- Top-level parent issues use child issue short refs in `Definition of Done (DoD)`; child issues use merged PR short refs only after conclusion.
 - Links may only use issue-body categories: `Log`, `Runbook`, `Parent log`, `Previous log`, `Roadmap`.
 - Closed issues must keep substantive `Context` content.
 

@@ -232,6 +232,8 @@ def _derive_top_labels(fields: dict[str, str], tags: list[str]) -> list[str]:
 
 
 def _derive_scope_labels(fields: dict[str, str], log_id: str, scope: str) -> list[str]:
+    from body_contract import issue_uses_parent_body_contract
+
     explicit = _split_csv(fields.get("issue_scope_labels"))
     if explicit:
         return explicit
@@ -239,7 +241,7 @@ def _derive_scope_labels(fields: dict[str, str], log_id: str, scope: str) -> lis
     mapped = SCOPE_LABELS.get(scope)
     if mapped:
         labels.append(mapped)
-    labels.append(_derive_sub_label(log_id))
+    labels.append("sub/0" if issue_uses_parent_body_contract(fields) else _derive_sub_label(log_id))
     return labels
 
 
@@ -350,6 +352,32 @@ def _build_links(fields: dict[str, str], log_rel_path: str) -> list[str]:
     return build_canonical_issue_link_lines(fields, log_rel_path)
 
 
+def _build_parent_issue_dod_lines(repo_root: Path, fields: dict[str, str]) -> list[str]:
+    from body_contract import extract_phase_log_paths, normalize_issue_short_ref, parse_issue_number
+
+    refs: list[tuple[int, str]] = []
+    seen: set[str] = set()
+    for phase_log_path in extract_phase_log_paths(fields):
+        candidate = (repo_root / phase_log_path).resolve()
+        if not candidate.is_file():
+            continue
+        child_fields = _parse_fields(_load_text(candidate))
+        short_ref = normalize_issue_short_ref(child_fields.get("issue"))
+        if not short_ref or short_ref in seen:
+            continue
+        seen.add(short_ref)
+        refs.append((parse_issue_number(short_ref) or 10**9, short_ref))
+    return [f"- {short_ref}" for _, short_ref in sorted(refs, key=lambda item: (item[0], item[1]))]
+
+
+def _build_issue_dod_lines(repo_root: Path, fields: dict[str, str]) -> list[str]:
+    from body_contract import issue_uses_parent_body_contract
+
+    if issue_uses_parent_body_contract(fields):
+        return _build_parent_issue_dod_lines(repo_root, fields)
+    return []
+
+
 def _render_issue_markdown(
     *,
     title: str,
@@ -358,6 +386,7 @@ def _render_issue_markdown(
     milestone: str | None,
     parent_issue: str | None,
     show_parent_issue: bool,
+    dod_lines: list[str],
     link_lines: list[str],
     context_lines: list[str],
 ) -> str:
@@ -377,6 +406,8 @@ def _render_issue_markdown(
         *context_lines,
         "",
         "## Definition of Done (DoD)",
+        "",
+        *dod_lines,
         "",
         "## Links",
         "",
@@ -556,12 +587,17 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         warnings.append("Context was single-generated from the source log; review it manually before create/apply")
     else:
         warnings.append("Context was left as scaffold; generate or author single-item Context text separately before lifecycle completion")
-    warnings.append("Definition of Done (DoD) remains intentionally blank pending operator input")
 
     rel_log_path = _repo_rel(log_path)
     link_lines = _build_links(fields, rel_log_path)
+    dod_lines = _build_issue_dod_lines(repo_root, fields)
     issue_projects = _derive_issue_projects(fields, rel_log_path)
     from body_contract import build_issue_draft_context_lines
+
+    if dod_lines:
+        warnings.append("Definition of Done (DoD) was populated from the known child issue ledger because this is a top-level parent issue")
+    else:
+        warnings.append("Definition of Done (DoD) remains intentionally blank pending operator input")
 
     default_output = repo_root / "docs" / "issues" / f"issue-{log_path.stem.removeprefix('log-')}.md"
     output_path = Path(args.output_path) if args.output_path else default_output
@@ -583,6 +619,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         milestone=milestone,
         parent_issue=parent_issue,
         show_parent_issue=show_parent_issue,
+        dod_lines=dod_lines,
         link_lines=link_lines,
         context_lines=context_lines,
     )

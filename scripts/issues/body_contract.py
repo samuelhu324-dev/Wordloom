@@ -13,6 +13,8 @@ PR_ALLOWED_LINK_LABELS = {"Log", "Issue", "Runbook", "Evidence artifact", "Paren
 ISSUE_ALLOWED_LINK_LABELS = {"Log", "Runbook", "Parent log", "Previous log", "Roadmap"}
 EVIDENCE_FOOTER_LINE_RE = re.compile(r"^`(?P<stage>[^`]+)` \| artifact: `(?P<artifact>[^`]+)`$")
 LINK_LINE_RE = re.compile(r"^- (?P<label>[^:]+):\s+`[^`]*`$")
+ISSUE_REF_RE = re.compile(r"(?:/issues/|^#?)(?P<number>\d+)$")
+PHASE_LOG_KEY_RE = re.compile(r"^phase_log_(?P<index>\d+)$")
 CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
 SENTENCE_TERMINATOR_RE = re.compile(r"[.!?]")
 VERSION_SUFFIX_RE = re.compile(r"\s+v\d+\s*$", re.IGNORECASE)
@@ -155,6 +157,7 @@ def _strip_markdown(text: str) -> str:
     plain = INLINE_CODE_RE.sub(r"\1", text)
     plain = plain.replace("**", "")
     plain = plain.replace("->", " to ")
+    plain = plain.replace("→", " to ")
     plain = plain.replace("&", " and ")
     plain = re.sub(r"<[^>]+>", "", plain)
     plain = re.sub(r"\s+", " ", plain)
@@ -780,6 +783,10 @@ def metadata_contains_source_log_row(metadata_lines: list[str]) -> bool:
     return any(_extract_bullet_label(line) == "Source log" for line in metadata_lines)
 
 
+def metadata_contains_parent_issue_row(metadata_lines: list[str]) -> bool:
+    return any(_extract_bullet_label(line) == "Parent issue" for line in metadata_lines)
+
+
 def strip_issue_navigation_metadata_rows(metadata_lines: list[str]) -> list[str]:
     cleaned: list[str] = []
     for line in metadata_lines:
@@ -790,6 +797,35 @@ def strip_issue_navigation_metadata_rows(metadata_lines: list[str]) -> list[str]
             continue
         cleaned.append(stripped)
     return cleaned
+
+
+def issue_uses_parent_body_contract(fields: dict[str, str]) -> bool:
+    return not str(fields.get("parent_log") or "").strip()
+
+
+def extract_phase_log_paths(fields: dict[str, str]) -> list[str]:
+    entries: list[tuple[int, str]] = []
+    for key, value in fields.items():
+        match = PHASE_LOG_KEY_RE.fullmatch(key)
+        if not match:
+            continue
+        path = str(value or "").strip()
+        if not path:
+            continue
+        entries.append((int(match.group("index")), path))
+    return [path for _, path in sorted(entries, key=lambda item: item[0])]
+
+
+def parse_issue_number(value: str | None) -> int | None:
+    if not value:
+        return None
+    match = ISSUE_REF_RE.search(value.strip())
+    return int(match.group("number")) if match else None
+
+
+def normalize_issue_short_ref(value: str | None) -> str | None:
+    number = parse_issue_number(value)
+    return f"#{number}" if number is not None else None
 
 
 def build_canonical_issue_link_lines(fields: dict[str, str], source_log_rel: str) -> list[str]:

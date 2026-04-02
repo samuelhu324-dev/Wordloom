@@ -46,10 +46,12 @@ Canonical notes:
 
 - `Context` must remain present even when empty.
 - `Definition of Done (DoD)` must remain present even when empty.
+- `Definition of Done (DoD)` must remain present even when empty for child issues.
+- Top-level parent issues omit `Parent issue` from `Metadata`, omit `Parent log` from `Links`, and may render known child issue short refs in `Definition of Done (DoD)`.
 - `Metadata` rows must stay contiguous with no blank rows between bullets.
 - `Metadata` must not render `Source log`; deterministic log navigation belongs in `Links`.
 
-Canonical shape:
+Canonical child shape:
 
 ```md
 ## Metadata
@@ -57,7 +59,6 @@ Canonical shape:
 - Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`
 - Projects: `wordloom Board`
 - Milestone: ``
-- Source log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 - Parent issue: #248
 
 ## Context
@@ -70,6 +71,28 @@ Canonical shape:
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Parent log: `docs/logs/log-S0E-docs-management-v5.md`
 - Previous log: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
+```
+
+Canonical top-level parent shape:
+
+```md
+## Metadata
+
+- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/0`
+- Projects: `wordloom Board`
+- Milestone: ``
+
+## Context
+
+## Definition of Done (DoD)
+
+- #288
+- #289
+
+## Links
+
+- Log: `docs/logs/log-S0E-docs-management-v5.md`
+- Roadmap: `docs/roadmap/draft.md`
 ```
 
 ## Issue Conclusion Canonical Body
@@ -85,10 +108,12 @@ Canonical notes:
 
 - `Context` must remain present and contain substantive conclusion-stage content.
 - `Definition of Done (DoD)` must contain the related PR refs as short refs.
+- Child-issue `Definition of Done (DoD)` must contain the related PR refs as short refs.
+- Top-level parent issues keep the same section order, but their `Definition of Done (DoD)` remains a child-issue short-ref ledger instead of a merged-PR ledger.
 - If multiple related PRs exist, each PR ref must be one bullet line.
 - `Links` must not add issue or PR lines in the conclusion body contract.
 
-Canonical shape:
+Canonical child-conclusion shape:
 
 ```md
 ## Metadata
@@ -113,6 +138,30 @@ Canonical shape:
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Parent log: `docs/logs/log-S0E-docs-management-v5.md`
 - Previous log: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
+```
+
+Canonical top-level parent refresh shape:
+
+```md
+## Metadata
+
+- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/0`
+- Projects: `wordloom Board`
+- Milestone: ``
+
+## Context
+
+- This parent issue keeps the S0E spine aligned while the attached child issue set carries the delivery slices.
+
+## Definition of Done (DoD)
+
+- #288
+- #289
+
+## Links
+
+- Log: `docs/logs/log-S0E-docs-management-v5.md`
+- Roadmap: `docs/roadmap/draft.md`
 ```
 
 ## PR Canonical Body
