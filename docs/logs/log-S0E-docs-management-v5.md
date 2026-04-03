@@ -258,6 +258,7 @@
 - [x] `P110`：`S0E-7C` 已完成 `P4-C1-S2`，focused PR `#311` 已把历史 review mirror workflow 挂到默认分支，且 `S0E-docs-management-v5` 上的 live dispatch `run 23827100968` 已成功保留首条 full-series replay evidence
 - [x] `P111`：`S0E-6C` 已完成 `P0-P3`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同，并已通过 `#309` 的真实 conclusion replay 与 lifecycle audit gate 验证
 - [x] `P112`：`S0E-7C` 已完成 `P4-C1-S3`，focused PR `#312` 已移除 historical review planner 在默认分支上的 runtime closure 缺口，`main` 上的 live dispatch `run 23827684652` 也已成功闭环
+- [x] `P113`：`S0E-3B` 已完成 `P2-C1-S2`，live issue `#322` 已通过自动 `gen_issue_draft.py --create` 路径创建并回写到 source log；后续受控 PR create / merge accounting 已预留到 `P4`
 - [x] `P113`：`S0E-7C` 已完成 `P4-C1-S4`，截图范围内全部已关闭 `S0E` 子 issues 都已重新检查并重跑 conclusion，`9/10` 条 `Context` 漂移已被批量修复，修复后 `10/10` lifecycle audit 全部通过
 - [x] `P114`：已新建并完成 `S0E-6D/P0-P3`，issue `Context` contract 已从 rigid sentence-slot template 升级为 natural-summary + weak gate，draft/conclusion renderer 与 lifecycle audit 现已统一到同一规则
 - [x] `P115`：`S0E-7C` 已完成 `P4-C1-S5`，刚才审查过的 `10` 条已关闭 `S0E` 子 issues 已按 `S0E-6D` 的 natural-summary `Context` 规则重写，并再次通过 `10/10` lifecycle audit

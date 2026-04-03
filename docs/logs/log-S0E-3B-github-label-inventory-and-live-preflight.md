@@ -103,8 +103,9 @@
 
 - `P0`: contract for label inventory ownership, advisory-vs-fail-closed semantics, and operator workflow
 - `P1`: implement explicit live label preflight in the issue-draft generator
-- `P2`: retain one representative draft-generation sample against the live repository label inventory
+- `P2`: retain one representative draft-generation sample, then create and write back one live issue for the same label-preflight path
 - `P3`: decide later rollout policy for whether selected higher-trust entrypoints should require live label preflight by default
+- `P4`: record the controlled PR create/merge lifecycle for this slice without mixing it into the contract or draft-generation units
 
 ## Success Criteria (DoD)
 
@@ -113,11 +114,13 @@
 - Advisory preflight emits structured warnings when labels are missing instead of hiding the mismatch.
 - Create mode still fails closed if any requested label does not exist in GitHub.
 - At least one representative sample result shows the derived labels and the live-preflight outcome together in one structured artifact.
+- The live issue creation and source-log write-back for this slice are recorded under explicit `P-C-S` units rather than only in narrative notes.
+- The later controlled PR create/merge path has reserved `P-C-S` slots before execution starts so review-lifecycle evidence can be recorded without renumbering drift.
 
 ## Stability (what stable means)
 
 - This log can be marked `stable` when:
-  - `P0-P3` have fixed the contract, the implementation path, and the rollout boundary for live label preflight
+  - `P0-P4` have fixed the contract, the implementation path, the rollout boundary, and the controlled review-lifecycle accounting for live label preflight
   - the Evidence section includes traceable `headSha` values plus artifact paths (or CI run URLs)
 
 ## Current Status
@@ -125,8 +128,9 @@
 - `S0E-3B` is now opened as the dedicated slice for GitHub label inventory ownership and issue-label live preflight.
 - `P0` is complete: the repo now has an explicit contract that live GitHub labels are authoritative, advisory preflight is separate from real create mode, and missing labels must never be auto-created on the fly.
 - `P1` is complete: `scripts/issues/gen_issue_draft.py` now supports explicit live label preflight outside create mode, with separate warning-vs-fail behavior.
-- `P2` is complete: one representative issue-draft sample for `S0E-3B` was generated with live label preflight and then promoted into live GitHub issue `#322`.
+- `P2` is complete: one representative issue-draft sample was retained as `P2-C1-S1`, then live GitHub issue `#322` was created and written back to the source log as `P2-C1-S2`.
 - `P3` remains open: the repo has not yet decided which higher-trust entrypoints, if any, should require live label preflight by default.
+- `P4` remains open: the dedicated controlled PR create/merge lifecycle for `S0E-3B` has not been executed yet, but its accounting slots are now fixed in advance.
 
 ## P0 (Contract | v1)
 
@@ -164,6 +168,23 @@
 - Run the issue-draft generator on `S0E-3B` itself with live label preflight enabled.
 - Retain the generated draft markdown and JSON result so later slices can reuse the sample when discussing rollout policy.
 
+### P2-C1-S2 (Live issue creation and source-log write-back retained | v1)
+
+- Run the same `S0E-3B` sample through explicit `--create` after live label preflight passes.
+- Record the resulting live issue number/URL in the JSON sidecar and write the issue URL back to `links.issue` in a later tracked docs update.
+
+## P4 (Controlled PR lifecycle accounting | v1)
+
+### P4-C1-S1 (Dedicated controlled PR creation recorded | v1)
+
+- When `S0E-3B` enters review, create one dedicated controlled PR that scopes only this slice's commits.
+- Record the PR number/URL and the exact PR title/body scope used for the review unit.
+
+### P4-C1-S2 (Merge and post-merge write-back recorded | v1)
+
+- After the controlled PR is merged, record the merged PR reference back into `links.pr` and any exact-ID evidence rows needed by downstream lifecycle work.
+- Keep merge accounting as a distinct step from PR creation so review and post-merge follow-through remain separately traceable.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -179,7 +200,7 @@
 
 **Commit discipline (recommended)**:
 
-- Fix the label inventory contract first, then land the script change, then retain a live-preflight sample before widening the rollout policy.
+- Fix the label inventory contract first, then land the script change, then retain a live-preflight sample, then record the live issue creation/write-back before widening the rollout policy or opening the controlled PR.
 
 ## Plan (draft)
 
@@ -187,6 +208,11 @@
 
 - `P3-C1-S1`: decide which entrypoints should require live label preflight by default
 - `P3-C1-S2`: decide whether missing-label advisory mode should stay available after rollout hardening
+
+### P4 (Controlled PR lifecycle accounting)
+
+- `P4-C1-S1`: create one dedicated controlled PR for `S0E-3B`
+- `P4-C1-S2`: merge the dedicated PR and write back the merged PR reference
 
 ## Execution Checklist (unchecked)
 
@@ -203,11 +229,17 @@
 ### P2 (Representative verification)
 
 - [x] `P2-C1-S1`: representative issue draft sample retained
+- [x] `P2-C1-S2`: live issue creation and source-log write-back retained
 
 ### P3 (Rollout policy)
 
 - [ ] `P3-C1-S1`: default-required entrypoints decided
 - [ ] `P3-C1-S2`: advisory-mode retention policy decided
+
+### P4 (Controlled PR lifecycle accounting)
+
+- [ ] `P4-C1-S1`: dedicated controlled PR creation recorded
+- [ ] `P4-C1-S2`: merge and post-merge write-back recorded
 
 ## Evidence (reserved)
 
@@ -236,11 +268,24 @@
 - expected:
   - The repo should retain one issue-draft sample that includes both derived labels and a live-preflight result against the repository's actual GitHub labels.
 - observed:
-  - Running `gen_issue_draft.py` on `S0E-3B` with live label preflight produced a draft plus structured JSON result under `docs/issues/`, and explicit `--create` then created live GitHub issue `#322` with the same derived label set.
+  - Running `gen_issue_draft.py` on `S0E-3B` with live label preflight produced a draft plus structured JSON result under `docs/issues/`, proving the derived label set resolved against the repository's live GitHub labels before any real create mutation ran.
+
+### P2-C1-S2 (Live issue creation and source-log write-back retained | 2026-04-03)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `docs/issues/issue-S0E-3B-github-label-inventory-and-live-preflight.json`
+  - `docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md`
+- issue_url: `https://github.com/samuelhu324-dev/wordloom-v3/issues/322`
+- issue_number: `322`
+- expected:
+  - After the representative live-preflight sample passes, the same slice should be able to create one real GitHub issue and then write the resulting issue URL back to the source log in a later tracked update.
+- observed:
+  - Explicit `--create` created live issue `#322`, the JSON sidecar retained the creation result fields, and this source log now records the same issue URL in `links.issue` as a separate tracked write-back step.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-04-03: opened `S0E-3B` to isolate GitHub label inventory ownership and issue-label live preflight from the broader `S0E-2A` issue-creation contract.
 - 2026-04-03: extended `gen_issue_draft.py` with explicit live label preflight so draft generation can warn or fail before real issue creation.
-- 2026-04-03: retained one representative `S0E-3B` draft-generation sample that records the live GitHub label check outcome alongside the derived draft metadata.
-- 2026-04-03: created live GitHub issue `#322` through the automated `gen_issue_draft.py --create` path and wrote the resulting issue URL back to this source log.
+- 2026-04-03: completed `P2-C1-S1` by retaining one representative `S0E-3B` draft-generation sample that records the live GitHub label check outcome alongside the derived draft metadata.
+- 2026-04-03: completed `P2-C1-S2` by creating live GitHub issue `#322` through the automated `gen_issue_draft.py --create` path and writing the resulting issue URL back to this source log.
