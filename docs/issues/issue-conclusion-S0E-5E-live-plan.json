@@ -1,0 +1,41 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-5E-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-5E: preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+    "S0E-5E: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-5E",
+      "source_log_path": "docs/logs/log-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md",
+      "issue_number": 353,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/353",
+      "issue_title": "S0E-5E: contract/parent issue DoD child-log ordering and gate",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-5E-live-s0e-5e-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 354,
+          "title": "S0E-5E/P0-P3: parent issue DoD child-log ordering and gate v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/354",
+          "merged_at": "2026-04-03T13:51:51Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Resume S0E-5E after merge: exact-ID merged PR evidence is now available, so run the final issue conclusion now."
+    }
+  ]
+}

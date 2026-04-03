@@ -14,14 +14,21 @@
       "issue_number": 353,
       "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/353",
       "issue_title": "S0E-5E: contract/parent issue DoD child-log ordering and gate",
-      "issue_state": "OPEN",
-      "lifecycle_stage": "issue-created",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
       "expected_parent_issue_number": 248,
       "actual_parent_issue_number": 248,
       "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/353",
-      "source_log_pr_url": null,
-      "merged_pr_count": 0,
-      "merged_prs": [],
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/354",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 354,
+          "title": "S0E-5E/P0-P3: parent issue DoD child-log ordering and gate v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/354",
+          "merged_at": "2026-04-03T13:51:51Z"
+        }
+      ],
       "planned_action": "pass-audit",
       "applied_action": null,
       "status": "pass",
@@ -68,13 +75,13 @@
         },
         {
           "name": "exact-id-merged-pr-evidence",
-          "status": "skipped",
-          "details": "no merged PR evidence is required for the current issue-created stage"
+          "status": "pass",
+          "details": "found 1 exact-ID merged PR(s)"
         },
         {
           "name": "final-dod-pr-refs",
-          "status": "skipped",
-          "details": "no final DoD PR refs are required before merged PR evidence exists"
+          "status": "pass",
+          "details": "DoD PR refs match the exact-ID merged PR evidence set"
         },
         {
           "name": "link-categories",
@@ -93,13 +100,13 @@
         },
         {
           "name": "closed-body-shape",
-          "status": "skipped",
-          "details": "closed-body shape is not required while the issue remains open"
+          "status": "pass",
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
         },
         {
           "name": "source-log-pr-link",
-          "status": "skipped",
-          "details": "source log links.pr is blank"
+          "status": "pass",
+          "details": "source log links.pr is represented in the exact-ID merged PR evidence set"
         }
       ],
       "warnings": [],
