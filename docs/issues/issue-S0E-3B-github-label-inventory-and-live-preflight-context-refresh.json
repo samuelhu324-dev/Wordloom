@@ -1,0 +1,37 @@
+{
+  "mode": "draft-generation",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md",
+  "draft_path": "docs/issues/issue-S0E-3B-github-label-inventory-and-live-preflight-context-refresh.md",
+  "title": "S0E-3B: contract/GitHub label inventory and issue-label live preflight contract",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- S0E-3B is the dedicated follow-up for the current labels problem in issue automation: it separates label inventory ownership and live-preflight behavior from the broader S0E-2A issue-creation contract.\n- The boundary being recorded here is contract for label inventory ownership, advisory-vs-fail-closed semantics, and operator workflow.\n- It carries the work forward from S0E-3A while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the GitHub label inventory and issue-label live preflight contract path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "issue_milestone missing",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) remains intentionally blank pending operator input"
+  ],
+  "live_label_check_enabled": false,
+  "live_label_check_repo": null,
+  "matched_live_labels": [],
+  "missing_live_labels": [],
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
+}

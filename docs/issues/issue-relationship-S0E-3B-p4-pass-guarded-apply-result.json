@@ -1,0 +1,17 @@
+{
+  "mode": "issue-relationship-guarded-apply",
+  "result": "ok",
+  "gate_input_kind": "manifest",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0E-3B-p4-pass-manifest.json",
+  "gate_decision_path": "docs/issues/lifecycle-gate-S0E-3B-p4-pass-decision.json",
+  "gate_decision": "stop-for-remediation",
+  "gate_apply_allowed": false,
+  "guarded_eligibility": "allowed-via-targeted-relationship-remediation",
+  "relationship_manifest_path": "docs/issues/lifecycle-remediation-S0E-3B-p4-pass-relationship-manifest.json",
+  "relationship_plan_path": "docs/issues/issue-relationship-lifecycle-remediation-S0E-3B-p4-pass-relationship-manifest-plan.json",
+  "guarded_action": "applied-after-pre-gate",
+  "apply_result_path": "docs/issues/issue-relationship-lifecycle-remediation-S0E-3B-p4-pass-relationship-manifest-parent-248-child-322-apply-result.json",
+  "warnings": [
+    "relationship apply allowed through targeted remediation because attach-parent-relationship is the only planned follow-up action"
+  ]
+}

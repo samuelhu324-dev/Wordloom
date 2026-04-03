@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "mode": "lifecycle-audit-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "expected_parent_issue_number": 248
+  },
+  "items": [
+    {
+      "requested_id": "S0E-3B",
+      "source_log_path": "docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md",
+      "issue_number": 322,
+      "reason": "Controlled PR-create pass sample for S0E-3B after live issue creation and source-log write-back are both in place."
+    }
+  ]
+}

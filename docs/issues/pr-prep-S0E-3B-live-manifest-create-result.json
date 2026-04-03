@@ -1,0 +1,42 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-3B-live-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-3B",
+  "source_log_path": "docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-3b",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 4,
+  "selected_commits": [
+    "ec5854f7c997170454547a19ef0499ed01995f17",
+    "0759144a9152ea37a8af1cbe051eeff633577540",
+    "6bfcd7f522cf0c2ffde9ff6633e6d4c02d942895",
+    "31a55a634eeb984ac9d31c16458277b48d7fe796"
+  ],
+  "pr_title": "S0E-3B/P0-P2: GitHub label inventory and issue-label live preflight contract v1",
+  "draft": false,
+  "pr_number": 323,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/323",
+  "body_path": "docs/issues/pr-prep-S0E-3B-live-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#322",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0E-3B-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0E-3B-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at ec5854f7; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply ec5854f7... S0E-3B/P0-P2: add GitHub label live preflight"
+  ]
+}

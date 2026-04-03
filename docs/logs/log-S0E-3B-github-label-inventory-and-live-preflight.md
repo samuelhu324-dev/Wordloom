@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Labels, Automation, epic/s0, sub/1`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/322`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/323`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -124,7 +124,8 @@
 - `P1` is complete: `scripts/issues/gen_issue_draft.py` now supports explicit live label preflight outside create mode, with separate warning-vs-fail behavior.
 - `P2` is complete: one representative issue-draft sample was retained as `P2-C1-S1`, then live GitHub issue `#322` was created and written back to the source log as `P2-C1-S2`.
 - `P3` remains open: the repo has not yet decided which higher-trust entrypoints, if any, should require live label preflight by default.
-- `P4` remains open: the dedicated controlled PR create/merge lifecycle for `S0E-3B` has not been executed yet, but its accounting slots are now fixed in advance.
+- `P4-C1-S1` is complete: after targeted lifecycle remediation attached parent issue `#248` and refreshed the live issue Context, dedicated controlled PR `#323` was created as a ready-for-review PR and passed immediate post-apply body verification.
+- `P4-C1-S2` remains open: merge and post-merge write-back have not been executed yet.
 
 ## P0 (Contract | v1)
 
@@ -232,7 +233,7 @@
 
 ### P4 (Controlled PR lifecycle accounting)
 
-- [ ] `P4-C1-S1`: dedicated controlled PR creation recorded
+- [x] `P4-C1-S1`: dedicated controlled PR creation recorded
 - [ ] `P4-C1-S2`: merge and post-merge write-back recorded
 
 ## Evidence (reserved)
@@ -277,9 +278,35 @@
 - observed:
   - Explicit `--create` created live issue `#322`, the JSON sidecar retained the creation result fields, and this source log now records the same issue URL in `links.issue` as a separate tracked write-back step.
 
+### P4-C1-S1 (Dedicated controlled PR creation recorded | 2026-04-03)
+
+- headSha: `31a55a63`
+- artifacts:
+  - `docs/issues/lifecycle-audit-S0E-3B-p4-pass-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-3B-p4-pass-plan.json`
+  - `docs/issues/lifecycle-gate-S0E-3B-p4-pass-decision.json`
+  - `docs/issues/lifecycle-remediation-S0E-3B-p4-pass-plan.json`
+  - `docs/issues/lifecycle-remediation-S0E-3B-p4-pass-relationship-manifest.json`
+  - `docs/issues/issue-relationship-S0E-3B-p4-pass-guarded-apply-result.json`
+  - `docs/issues/issue-S0E-3B-github-label-inventory-and-live-preflight-context-refresh.json`
+  - `docs/issues/pr-prep-S0E-3B-live-manifest.json`
+  - `docs/issues/pr-prep-S0E-3B-live-manifest-plan.json`
+  - `docs/issues/pr-prep-S0E-3B-live-manifest-front-half-preflight-result.json`
+  - `docs/issues/pr-prep-S0E-3B-live-manifest-create-result.json`
+  - `docs/issues/pr-prep-S0E-3B-live-manifest-post-apply-verify-result.json`
+- pr_url: `https://github.com/samuelhu324-dev/wordloom-v3/pull/323`
+- pr_number: `323`
+- expected:
+  - `S0E-3B` should be able to open one dedicated controlled PR after the live issue is complete enough to pass the lifecycle pre-gate and the PR body preview passes canonical contract validation.
+  - The same retained step should keep review-lifecycle accounting separate from later merge/write-back follow-through.
+- observed:
+  - The first gated preflight attempt stopped because live issue `#322` still lacked the GitHub sidebar parent relationship and a compliant multi-sentence Context block.
+  - Targeted remediation attached child issue `#322` to parent issue `#248`, refreshed the live issue body with a single-generated Context block, reran the gate successfully, and then created ready-for-review PR `#323` from branch `pr-prep/s0e-3b` with immediate post-apply body verification status `pass`.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-03: opened `S0E-3B` to isolate GitHub label inventory ownership and issue-label live preflight from the broader `S0E-2A` issue-creation contract.
 - 2026-04-03: extended `gen_issue_draft.py` with explicit live label preflight so draft generation can warn or fail before real issue creation.
 - 2026-04-03: completed `P2-C1-S1` by retaining one representative `S0E-3B` draft-generation sample that records the live GitHub label check outcome alongside the derived draft metadata.
 - 2026-04-03: completed `P2-C1-S2` by creating live GitHub issue `#322` through the automated `gen_issue_draft.py --create` path and writing the resulting issue URL back to this source log.
+- 2026-04-03: completed `P4-C1-S1` by remediating the lifecycle gate blockers on issue `#322`, rerunning controlled PR preflight to pass, and creating ready-for-review PR `#323` with post-apply verification status `pass`.
