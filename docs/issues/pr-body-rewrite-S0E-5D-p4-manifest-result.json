@@ -1,0 +1,63 @@
+{
+  "mode": "pr-body-rewrite-apply-batch",
+  "result": "ok",
+  "manifest_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest.json",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "total_items": 4,
+  "applied_items": 4,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "pr_number": 299,
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/299",
+      "pr_title": "S0E-4A/P3-C2-S1S2: derive development issue fallback and multi-issue formatting",
+      "pr_state": "MERGED",
+      "live_body_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-4a-pr-299-live-body.md",
+      "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-4a-pr-299-rewritten-body.md",
+      "apply_result_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-4a-pr-299-apply-result.json",
+      "body_changed": true,
+      "warnings": []
+    },
+    {
+      "requested_id": "S0E-4C",
+      "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "pr_number": 302,
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/302",
+      "pr_title": "S0E-4C/P5-C1-S1: harden create-path cherry-pick fallback",
+      "pr_state": "MERGED",
+      "live_body_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-4c-pr-302-live-body.md",
+      "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-4c-pr-302-rewritten-body.md",
+      "apply_result_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-4c-pr-302-apply-result.json",
+      "body_changed": true,
+      "warnings": []
+    },
+    {
+      "requested_id": "S0E-5A",
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "pr_number": 306,
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/306",
+      "pr_title": "S0E-5A/P0-P5: lifecycle audit gate and dry-run planner v1",
+      "pr_state": "MERGED",
+      "live_body_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-5a-pr-306-live-body.md",
+      "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-5a-pr-306-rewritten-body.md",
+      "apply_result_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-5a-pr-306-apply-result.json",
+      "body_changed": true,
+      "warnings": []
+    },
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "pr_number": 308,
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/308",
+      "pr_title": "S0E-5B/P0-P3: guarded lifecycle apply expansion v1",
+      "pr_state": "MERGED",
+      "live_body_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-5b-pr-308-live-body.md",
+      "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-5b-pr-308-rewritten-body.md",
+      "apply_result_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-5b-pr-308-apply-result.json",
+      "body_changed": true,
+      "warnings": []
+    }
+  ]
+}

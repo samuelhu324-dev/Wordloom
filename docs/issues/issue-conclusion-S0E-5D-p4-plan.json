@@ -1,0 +1,207 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-5D-p4-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 7,
+  "planned_items": 7,
+  "warnings": [
+    "S0E-4A: existing Context section is blank; preview uses the canonical conclusion Context line",
+    "S0E-4B: existing Context section is blank; preview uses the canonical conclusion Context line",
+    "S0E-2D: existing Context section is blank; preview uses the canonical conclusion Context line",
+    "S0E-4C: existing Context section is blank; preview uses the canonical conclusion Context line",
+    "S0E-4D: existing Context section is blank; preview uses the canonical conclusion Context line",
+    "S0E-5A: existing Context section is blank; preview uses the canonical conclusion Context line",
+    "S0E-5B: existing Context section is blank; preview uses the canonical conclusion Context line"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "issue_number": 293,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/293",
+      "issue_title": "S0E-4A: contract/GitHub pull request automation contract",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-5D-p4-s0e-4a-body.md",
+      "merged_pr_count": 2,
+      "merged_prs": [
+        {
+          "number": 294,
+          "title": "S0E-4A/P0-P3: GitHub pull request automation contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/294",
+          "merged_at": "2026-03-29T10:22:55Z"
+        },
+        {
+          "number": 299,
+          "title": "S0E-4A/P3-C2-S1S2: derive development issue fallback and multi-issue formatting",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/299",
+          "merged_at": "2026-03-30T00:09:46Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "existing Context section is blank; preview uses the canonical conclusion Context line"
+      ],
+      "reason": "Normalize the historical closed issue body for the exact-ID multi-PR sample"
+    },
+    {
+      "requested_id": "S0E-4B",
+      "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+      "issue_number": 295,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/295",
+      "issue_title": "S0E-4B: contract/PR title compression, structural label inheritance, and body footer follow-up",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-5D-p4-s0e-4b-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 296,
+          "title": "S0E-4B/P0-P3: PR title compression, structural label inheritance, and body scope alignment follow-up v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/296",
+          "merged_at": "2026-03-29T12:22:37Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "existing Context section is blank; preview uses the canonical conclusion Context line"
+      ],
+      "reason": "Normalize the historical closed issue body for the PR follow-up sample"
+    },
+    {
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "issue_number": 297,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/297",
+      "issue_title": "S0E-2D: contract/issue creation metadata enrichment and English body contract",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-5D-p4-s0e-2d-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 298,
+          "title": "S0E-2D/P0-P3: issue creation metadata enrichment and English body contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/298",
+          "merged_at": "2026-03-29T14:43:52Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "existing Context section is blank; preview uses the canonical conclusion Context line"
+      ],
+      "reason": "Normalize the historical closed issue body for the enriched issue-creation sample"
+    },
+    {
+      "requested_id": "S0E-4C",
+      "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "issue_number": 300,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/300",
+      "issue_title": "S0E-4C: contract/PR summary, development-link rendering, and issue relationship follow-up",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-5D-p4-s0e-4c-body.md",
+      "merged_pr_count": 2,
+      "merged_prs": [
+        {
+          "number": 301,
+          "title": "S0E-4C/P0-P4: PR summary, development-link rendering, and issue relationship follow-up v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/301",
+          "merged_at": "2026-03-30T03:44:43Z"
+        },
+        {
+          "number": 302,
+          "title": "S0E-4C/P5-C1-S1: harden create-path cherry-pick fallback",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/302",
+          "merged_at": "2026-03-30T04:21:10Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "existing Context section is blank; preview uses the canonical conclusion Context line"
+      ],
+      "reason": "Normalize the historical closed issue body for the relationship plus fallback create-path sample"
+    },
+    {
+      "requested_id": "S0E-4D",
+      "source_log_path": "docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md",
+      "issue_number": 303,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/303",
+      "issue_title": "S0E-4D: workflow/review-hold, full-auto, and lifecycle orchestration follow-up",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-5D-p4-s0e-4d-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 304,
+          "title": "S0E-4D/P0-P2: review-hold, full-auto, and lifecycle orchestration follow-up v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/304",
+          "merged_at": "2026-03-30T07:00:07Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "existing Context section is blank; preview uses the canonical conclusion Context line"
+      ],
+      "reason": "Normalize the historical closed issue body for the staged review-hold sample"
+    },
+    {
+      "requested_id": "S0E-5A",
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "issue_number": 305,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/305",
+      "issue_title": "S0E-5A: workflow/lifecycle audit gate and dry-run planner",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-5D-p4-s0e-5a-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 306,
+          "title": "S0E-5A/P0-P5: lifecycle audit gate and dry-run planner v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/306",
+          "merged_at": "2026-03-30T12:52:01Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "existing Context section is blank; preview uses the canonical conclusion Context line"
+      ],
+      "reason": "Normalize the historical closed issue body for the lifecycle gate sample"
+    },
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "issue_number": 307,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/307",
+      "issue_title": "S0E-5B: workflow/guarded lifecycle apply expansion",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-5D-p4-s0e-5b-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 308,
+          "title": "S0E-5B/P0-P3: guarded lifecycle apply expansion v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/308",
+          "merged_at": "2026-03-30T14:15:19Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "existing Context section is blank; preview uses the canonical conclusion Context line"
+      ],
+      "reason": "Normalize the historical closed issue body for the guarded closed-loop sample"
+    }
+  ]
+}

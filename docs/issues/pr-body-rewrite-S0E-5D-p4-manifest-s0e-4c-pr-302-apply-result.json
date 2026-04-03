@@ -1,0 +1,13 @@
+{
+  "requested_id": "S0E-4C",
+  "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+  "pr_number": 302,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/302",
+  "pr_title": "S0E-4C/P5-C1-S1: harden create-path cherry-pick fallback",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-4c-pr-302-live-body.md",
+  "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-4c-pr-302-rewritten-body.md",
+  "apply_result_path": "docs/issues/pr-body-rewrite-S0E-5D-p4-manifest-s0e-4c-pr-302-apply-result.json",
+  "body_changed": true,
+  "warnings": []
+}

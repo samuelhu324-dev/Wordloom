@@ -1,0 +1,54 @@
+{
+  "mode": "pr-body-contract-check",
+  "result": "fail",
+  "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+  "body_path": "docs/issues/pr-body-contract-S0E-5D-p2-stop-unquoted-footer-body.md",
+  "status": "fail",
+  "warnings": [],
+  "expected_evidence_footer_lines": [
+    "`P1-C1-S1` | artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json`",
+    "`P2-C1-S1` | artifact: `docs/issues/pr-create-preflight-S0E-5C-p2-stop-branch-collision.json`"
+  ],
+  "checks": [
+    {
+      "name": "required-pr-sections",
+      "status": "pass",
+      "details": "required PR sections are present"
+    },
+    {
+      "name": "pr-section-order",
+      "status": "pass",
+      "details": "section order matches the canonical contract"
+    },
+    {
+      "name": "metadata-row-shape",
+      "status": "pass",
+      "details": "metadata bullet rows are contiguous"
+    },
+    {
+      "name": "pr-link-categories",
+      "status": "pass",
+      "details": "PR Links section uses only allowed link categories"
+    },
+    {
+      "name": "evidence-footer-source-shape",
+      "status": "pass",
+      "details": "Evidence Footer Source rows match the canonical line shape"
+    },
+    {
+      "name": "evidence-footer-presence",
+      "status": "fail",
+      "details": "rendered Evidence Footer rows do not match source rows: ['P1-C1-S1 | artifact: docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json', 'P2-C1-S1 | artifact: docs/issues/pr-create-preflight-S0E-5C-p2-stop-branch-collision.json']"
+    },
+    {
+      "name": "evidence-footer-line-shape",
+      "status": "fail",
+      "details": "Evidence Footer rows do not match the canonical line shape: ['P1-C1-S1 | artifact: docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json', 'P2-C1-S1 | artifact: docs/issues/pr-create-preflight-S0E-5C-p2-stop-branch-collision.json']"
+    },
+    {
+      "name": "development-link-presence",
+      "status": "pass",
+      "details": "Development Link section is present for the development issue"
+    }
+  ]
+}
