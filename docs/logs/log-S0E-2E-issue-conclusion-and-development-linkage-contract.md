@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Issues, PR, Automation, epic/s0, sub/0e2e`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/324`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/325`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -115,6 +115,8 @@
 
 ## Current Status
 
+- Live issue `#324` now tracks `S0E-2E`, and ready-for-review PR `#325` now carries the exact-ID contract plus retained live-flow evidence for this slice.
+- The current full-auto run is paused at the intended human merge boundary: issue conclusion for live issue `#324` cannot be applied until PR `#325` is actually merged.
 - `P0` is complete: lifecycle order, the merge boundary, and the exact-ID merged-PR linkage boundary are now fixed.
 - `P1` is complete: the final English conclusion body shape and the exact-ID PR selection plus ordering rules are now fixed.
 - `P1-C1-S3` is complete: retained conclusion `Context` blocks now end on outcome wording, while exact merged-PR evidence remains only in `Definition of Done (DoD)` and `Links`.
@@ -362,6 +364,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: created live issue `#324`, refreshed its single-item draft Context, attached the expected sidebar parent relationship to `#248`, and opened ready-for-review PR `#325`; full-auto now pauses at the human merge boundary before live issue conclusion for `#324`.
 - 2026-03-29: opened `S0E-2E` to define post-merge issue conclusion, Development linkage, and final English DoD rendering as a separate slice from issue creation and PR creation.
 - 2026-03-30: completed `P0` by fixing the lifecycle boundary, exact-ID merged-PR linkage rule, and the distinction between GitHub closed state versus final issue conclusion.
 - 2026-03-30: completed `P1` by defining the final English conclusion body shape, deterministic multi-PR ordering rules, and the shared operator procedure in the runbook.

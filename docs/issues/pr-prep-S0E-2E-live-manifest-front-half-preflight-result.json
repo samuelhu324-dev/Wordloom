@@ -12,16 +12,14 @@
   "requested_id": "S0E-2E",
   "source_log_path": "docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md",
   "candidate_pr_branch": "pr-prep/s0e-2e",
-  "selected_commit_count": 4,
-  "summary_bullet_count": 0,
+  "selected_commit_count": 5,
+  "summary_bullet_count": 3,
   "gate_decision": "allow-apply",
   "gate_apply_allowed": true,
-  "preflight_decision": "stop-before-local-materialization",
-  "preflight_allowed": false,
+  "preflight_decision": "allow-front-half-preflight",
+  "preflight_allowed": true,
   "stopped_before_stage": "S4-local-branch-materialization",
-  "warnings": [
-    "preview body still contains placeholder Summary content or zero summary bullets"
-  ],
+  "warnings": [],
   "checks": [
     {
       "name": "lifecycle-pre-gate",
@@ -36,7 +34,7 @@
     {
       "name": "selected-commits",
       "status": "pass",
-      "details": "selected commit count = 4"
+      "details": "selected commit count = 5"
     },
     {
       "name": "gh-prerequisites",
@@ -60,8 +58,8 @@
     },
     {
       "name": "preview-integrity",
-      "status": "fail",
-      "details": "preview body still contains placeholder Summary content or zero summary bullets"
+      "status": "pass",
+      "details": "preview body is create-ready with summary_bullet_count = 3"
     },
     {
       "name": "body-shape-contract",
