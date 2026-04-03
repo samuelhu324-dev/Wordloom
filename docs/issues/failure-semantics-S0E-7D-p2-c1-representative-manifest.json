@@ -1,0 +1,113 @@
+{
+  "mode": "failure-semantics-representative-manifest",
+  "result": "ok",
+  "requested_id": "S0E-7D",
+  "scope": [
+    "P2"
+  ],
+  "version": "v1",
+  "taxonomy_artifact": "docs/issues/failure-semantics-S0E-7D-p0-p1-taxonomy.json",
+  "samples": [
+    {
+      "sample_id": "block-pr-canonical-sections",
+      "target_kind": "pr",
+      "target_ref": "#301",
+      "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "surface": "body.canonical-sections",
+      "family": "strong-structure",
+      "semantic": "block",
+      "expected": {
+        "contract": "Canonical PR body sections must match the active body contract before publish or replay.",
+        "required_shape": [
+          "Metadata",
+          "Summary",
+          "Execution Checklist",
+          "Links",
+          "Evidence Footer (when eligible)"
+        ]
+      },
+      "observed": {
+        "drift": "Historical PRs may retain non-canonical sections such as a duplicated Development Link section or invalid Links rows.",
+        "why_it_blocks": "The expected body shape is contract-owned, so publish/apply must stop until the contract breach is corrected or a canonical rewrite source is prepared."
+      },
+      "decision": "stop-before-apply",
+      "next_action": "Correct the contract breach first; do not treat canonical-section drift as an apply-time guessable repair.",
+      "evidence_paths": [
+        "docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md"
+      ]
+    },
+    {
+      "sample_id": "replayable-pr-development-linkage",
+      "target_kind": "pr",
+      "target_ref": "#310",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "surface": "pr.development-linkage",
+      "family": "strong-structure",
+      "semantic": "replayable",
+      "expected": {
+        "development_issue": "#309",
+        "github_surface": "Trailing close-link footer lines such as Closes #309",
+        "deterministic_labels": [
+          "EVOLUTION",
+          "s0/knowledge system",
+          "sub/1"
+        ]
+      },
+      "observed": {
+        "drift": "Metadata could show Development issue without GitHub closingIssuesReferences or full deterministic PR labels.",
+        "repair_mode": "Replayable through deterministic derive, bounded PR body rewrite/apply, label backfill, and post-apply verify."
+      },
+      "decision": "plan-remediation-manifest",
+      "next_action": "Emit deterministic close-link rows and missing labels into a bounded replay manifest, then re-fetch live PR state.",
+      "evidence_paths": [
+        "docs/issues/pr-metadata-completeness-S0E-4F-p4-summary.json",
+        "docs/issues/pr-body-rewrite-S0E-4F-p4-c2-manifest-result.json"
+      ]
+    },
+    {
+      "sample_id": "manual-issue-context-prose",
+      "target_kind": "issue",
+      "target_ref": "#289",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "surface": "issue.context-prose",
+      "family": "weak-structure",
+      "semantic": "manual",
+      "expected": {
+        "quality_bar": "Readable 3-5 sentence Context prose with no placeholders and a clear outcome sentence.",
+        "ownership": "Single-item authoring or human confirmation."
+      },
+      "observed": {
+        "drift": "Context wording may be awkward, stale, or still too template-shaped while remaining structurally valid.",
+        "why_not_replayable": "Prose quality is not a deterministic field and should not be batch-guessed during remediation."
+      },
+      "decision": "stop-for-human-authoring",
+      "next_action": "Surface the drift as manual work and keep it outside replay/apply batches.",
+      "evidence_paths": [
+        "docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md",
+        "docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md"
+      ]
+    },
+    {
+      "sample_id": "reconciliation-live-vs-source-conflict",
+      "target_kind": "log-or-issue",
+      "target_ref": "source-log write-back reference",
+      "source_log_path": "docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md",
+      "surface": "live-vs-source explicit conflict",
+      "family": "strong-structure",
+      "semantic": "reconciliation",
+      "expected": {
+        "source_of_truth": "Explicit links.issue / links.pr rows in the source log must agree with live GitHub references.",
+        "apply_policy": "No overwrite when both sides are explicit and conflicting."
+      },
+      "observed": {
+        "drift": "If a source-log issue URL or explicit issue reference conflicts with live issue identity, replay must stop before any body, relationship, or write-back mutation.",
+        "why_it_stops": "The mismatch is not a missing field but a competing explicit claim about ownership or identity."
+      },
+      "decision": "stop-for-reconciliation",
+      "next_action": "Require operator resolution of the winning reference and then regenerate deterministic expectations from the corrected source.",
+      "evidence_paths": [
+        "docs/issues/failure-semantics-S0E-7D-p0-p1-taxonomy.json"
+      ]
+    }
+  ]
+}

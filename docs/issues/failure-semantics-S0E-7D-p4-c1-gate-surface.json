@@ -1,0 +1,138 @@
+{
+  "mode": "failure-semantics-future-gate-surface",
+  "result": "ok",
+  "requested_id": "S0E-7D",
+  "scope": [
+    "P4"
+  ],
+  "version": "v1",
+  "gate_surface": {
+    "canonical_name": "publish-verify-remediation gate",
+    "proposed_entrypoint": "scripts/issues/plan_publish_verify_remediation_gate.py",
+    "purpose": "Expose one contract-owned gate surface that normalizes publish-time eligibility, remediation planning, bounded apply delegation, and post-apply convergence checks across the current docs/GitHub workflow family.",
+    "decision_vocab": [
+      "allow-apply",
+      "stop-for-remediation",
+      "hard-fail-input",
+      "stop-for-reconciliation",
+      "stop-incomplete-convergence"
+    ],
+    "workflow_family": [
+      "issue lifecycle conclusion and relationship repair",
+      "historical PR body rewrite and metadata backfill",
+      "PR create front-half preflight",
+      "source-log write-back and historical issue backfill planning"
+    ]
+  },
+  "reused_existing_entrypoints": [
+    {
+      "path": "scripts/issues/plan_lifecycle_pre_gate.py",
+      "role": "Issue-side audit plus remediation planning decision surface",
+      "kept_as": "Underlying issue/relationship/conclusion pre-gate engine"
+    },
+    {
+      "path": "scripts/issues/apply_issue_conclusion_with_pre_gate.py",
+      "role": "Guarded issue-conclusion apply",
+      "kept_as": "Mutation-family adapter behind the new gate surface"
+    },
+    {
+      "path": "scripts/issues/apply_issue_relationships_with_pre_gate.py",
+      "role": "Guarded issue relationship attach",
+      "kept_as": "Mutation-family adapter behind the new gate surface"
+    },
+    {
+      "path": "scripts/issues/apply_pr_body_scope_with_pre_gate.py",
+      "role": "Guarded PR body rewrite",
+      "kept_as": "Mutation-family adapter behind the new gate surface"
+    },
+    {
+      "path": "scripts/issues/plan_pr_create_preflight_with_gate.py",
+      "role": "Create-time issue-readiness and front-half preflight",
+      "kept_as": "Publish-side preflight adapter behind the new gate surface"
+    }
+  ],
+  "surface_contract": {
+    "inputs": [
+      "selection input: manifest, frozen audit plan, or contract-owned replay manifest",
+      "operation family: issue-conclusion, issue-relationship, pr-body-rewrite, pr-create-preflight, or backfill-only planning",
+      "source owner references: source_log_path, exact issue/pr refs, and explicit artifact output roots",
+      "policy profile: warning handling, reconciliation handling, and whether apply delegation is permitted"
+    ],
+    "stages": [
+      "input normalization",
+      "taxonomy-aware classification or classification replay",
+      "deterministic derive",
+      "live audit or retained-live-state comparison",
+      "decision emission",
+      "optional remediation manifest planning for replayable findings",
+      "optional bounded apply delegation to a mutation-family adapter",
+      "required post-apply verify and convergence decision"
+    ],
+    "outputs": [
+      "one top-level gate decision artifact",
+      "zero or one remediation manifest artifact set",
+      "zero or one delegated apply result artifact",
+      "zero or one post-apply verify artifact with convergence decision"
+    ]
+  },
+  "decision_rules": [
+    {
+      "decision": "allow-apply",
+      "when": "All selected findings are already pass or replayable and no blocking, manual, reconciliation, or input-error states remain.",
+      "next_step": "Delegate only the bounded mutation family requested by the operator and require post-apply verify."
+    },
+    {
+      "decision": "stop-for-remediation",
+      "when": "At least one selected finding is replayable but still unresolved, or any warning/manual work remains that should prevent publish/apply continuation.",
+      "next_step": "Emit remediation artifacts and stop before mutation unless the chosen adapter has an explicitly approved narrow continuation rule."
+    },
+    {
+      "decision": "hard-fail-input",
+      "when": "The input set is malformed, ambiguous, or missing required ownership fields.",
+      "next_step": "Do not plan remediation or apply; correct the input contract first."
+    },
+    {
+      "decision": "stop-for-reconciliation",
+      "when": "Any explicit live-versus-source conflict survives classification or reappears during replay planning.",
+      "next_step": "Require operator resolution of the winning source of truth before restarting the gate."
+    },
+    {
+      "decision": "stop-incomplete-convergence",
+      "when": "A delegated apply ran but post-apply verify shows incomplete convergence, new deterministic drift, or missing evidence.",
+      "next_step": "Open a new bounded remediation cycle instead of looping with ad hoc live edits."
+    }
+  ],
+  "mutation_family_policy": [
+    {
+      "family": "issue-conclusion",
+      "current_adapter": "scripts/issues/apply_issue_conclusion_with_pre_gate.py",
+      "continuation_rule": "allow-apply only"
+    },
+    {
+      "family": "issue-relationship",
+      "current_adapter": "scripts/issues/apply_issue_relationships_with_pre_gate.py",
+      "continuation_rule": "allow-apply or the existing narrow targeted-remediation continuation rule when relationship attach is the sole planned remediation family"
+    },
+    {
+      "family": "pr-body-rewrite",
+      "current_adapter": "scripts/issues/apply_pr_body_scope_with_pre_gate.py",
+      "continuation_rule": "allow-apply only"
+    },
+    {
+      "family": "pr-create-preflight",
+      "current_adapter": "scripts/issues/plan_pr_create_preflight_with_gate.py",
+      "continuation_rule": "preflight-only reuse; this gate does not collapse branch materialization, remote publish, or live PR publish into one atomic decision"
+    }
+  ],
+  "explicit_non_goals": [
+    "Do not widen the gate into generic prose quality review or summary rewriting.",
+    "Do not replace branch materialization, remote publish, or GitHub Actions secondary enforcement with one flat publish yes/no decision.",
+    "Do not infer blank issue_* or pr_* values while trying to make the gate more convenient.",
+    "Do not allow the new surface to bypass existing mutation-family-specific contracts."
+  ],
+  "recommended_rollout": [
+    "First use the new surface as a naming and artifact contract that delegates to existing pre-gate adapters.",
+    "Then add one thin entrypoint that normalizes decision vocab and output paths without changing mutation-family behavior.",
+    "Only after that consider attaching the same surface to future publish-time automation or CI mirrors."
+  ]
+}
