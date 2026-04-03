@@ -7,7 +7,10 @@
 
 ## Context
 
-- <placeholder>
+- It carries the work forward from S0E-6F while staying on the same parent S0E chain.
+- S0E-5E exists to fix one unresolved ordering question in the parent-issue conclusion contract: the top-level parent Definition of Done (DoD) child-issue ledger should not keep inheriting issue-number order when the intended reading order is the child log creation sequence.
+- The scoped change here was to define the canonical ordering contract for top-level parent issue child ledgers.
+- This issue keeps the working ledger for the parent issue DoD child-log ordering and gate path while delivery is still being tracked.
 
 ## Definition of Done (DoD)
 

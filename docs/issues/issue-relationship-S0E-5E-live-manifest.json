@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/353",
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md",
+      "reason": "Attach the live S0E-5E issue under the top-level S0E parent issue before PR prep and post-merge lifecycle continuation."
+    }
+  ]
+}
