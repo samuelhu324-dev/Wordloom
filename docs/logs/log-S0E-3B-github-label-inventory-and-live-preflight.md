@@ -54,6 +54,7 @@
 - Advisory preflight should surface missing labels as structured warnings; real create mode remains fail-closed on missing GitHub labels.
 - The repo should prefer one reusable live label preflight path instead of scattering `gh label list` checks across multiple scripts.
 - Module labels remain best-effort and operator-confirmed; live preflight validates existence, not semantic correctness.
+- Controlled PR titles/bodies/footers should describe merge-content scope only; review-lifecycle accounting such as `P4-C1-S1` stays in the source-log ledger and evidence instead of being forced into the PR title/body.
 
 ## PR Summary Inputs (optional)
 
@@ -125,6 +126,7 @@
 - `P2` is complete: one representative issue-draft sample was retained as `P2-C1-S1`, then live GitHub issue `#322` was created and written back to the source log as `P2-C1-S2`.
 - `P3` remains open: the repo has not yet decided which higher-trust entrypoints, if any, should require live label preflight by default.
 - `P4-C1-S1` is complete: after targeted lifecycle remediation attached parent issue `#248` and refreshed the live issue Context, dedicated controlled PR `#323` was created as a ready-for-review PR and passed immediate post-apply body verification.
+- `P4-C1-S1` now has its scope rule clarified as well: live PR `#323` keeps merge-content scope `P0-P2` in title/body/footer, while the PR-creation lifecycle accounting remains recorded only in this source log and its retained evidence artifacts.
 - `P4-C1-S2` remains open: merge and post-merge write-back have not been executed yet.
 
 ## P0 (Contract | v1)
@@ -174,6 +176,7 @@
 
 - When `S0E-3B` enters review, create one dedicated controlled PR that scopes only this slice's commits.
 - Record the PR number/URL and the exact PR title/body scope used for the review unit.
+- The PR title/body/footer should continue to express merge-content scope; `P4-C1-S1` remains ledger accounting for the act of opening the controlled PR rather than an instruction to retitle the PR itself as a lifecycle unit.
 
 ### P4-C1-S2 (Merge and post-merge write-back recorded | v1)
 
@@ -302,6 +305,7 @@
 - observed:
   - The first gated preflight attempt stopped because live issue `#322` still lacked the GitHub sidebar parent relationship and a compliant multi-sentence Context block.
   - Targeted remediation attached child issue `#322` to parent issue `#248`, refreshed the live issue body with a single-generated Context block, reran the gate successfully, and then created ready-for-review PR `#323` from branch `pr-prep/s0e-3b` with immediate post-apply body verification status `pass`.
+  - A later PR-body scope replay first retained a gate-stop artifact showing that the original create-stage lifecycle manifest was not the right gate input for an open PR body-only mutation, then completed a direct single-item rewrite apply that kept live PR `#323` on merge-content scope `P0-P2`; `P4-C1-S1` remains recorded only in this source log.
 
 ## Recent changes (for traceability, optional)
 
@@ -310,3 +314,4 @@
 - 2026-04-03: completed `P2-C1-S1` by retaining one representative `S0E-3B` draft-generation sample that records the live GitHub label check outcome alongside the derived draft metadata.
 - 2026-04-03: completed `P2-C1-S2` by creating live GitHub issue `#322` through the automated `gen_issue_draft.py --create` path and writing the resulting issue URL back to this source log.
 - 2026-04-03: completed `P4-C1-S1` by remediating the lifecycle gate blockers on issue `#322`, rerunning controlled PR preflight to pass, and creating ready-for-review PR `#323` with post-apply verification status `pass`.
+- 2026-04-03: clarified `P4-C1-S1` review-scope policy, retained one gate-stop artifact for the non-applicable create-stage lifecycle manifest, and then replayed live PR `#323` through a direct single-item body rewrite so its title/body/footer now stay on merge-content scope `P0-P2` while the controlled-PR lifecycle accounting remains recorded only in this source log.

@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-02`
-**updated**: `2026-04-02`
+**updated**: `2026-04-03`
 
 ---
 
@@ -90,6 +90,7 @@
 - `P2`: review the current `S0E` PR inventory and decide which live PR bodies need rewrite
 - `P3`: execute the bounded live PR rewrite batch and re-verify the full audited set
 - `P4`: close the remaining GitHub metadata completeness gap for live PR Development/labels and backfill missing historical issues where the source log had never been written back
+- `P5`: repair footer-scope convergence so PR titles, checklist selection, and Evidence Footer all describe the same merge-content scope in both preview and live rewrite paths
 
 ## Success Criteria (DoD)
 
@@ -101,6 +102,8 @@
 - The bounded live rewrite batch is applied successfully and the same `17` audited PRs re-verify as pass under the narrowed contract.
 - The same `17` live `S0E` PRs all expose GitHub-recognized Development linkage and deterministic labels, not just canonical body text.
 - Historical audited logs that previously lacked any issue write-back now have explicit GitHub issues, source-log `links.issue` write-back, and closed issue-conclusion bodies.
+- Follow-up scope rewrites stop over-showing Evidence Footer rows when a PR title narrows review scope to a phase span or exact `P-C-S` unit.
+- The affected live PRs `#320`, `#321`, and `#323` are rewritten so their footer rows match the same merge-content scope already used by the title and Execution Checklist.
 
 ## Stability (what draft means now)
 
@@ -121,6 +124,7 @@
 - `P3` has now completed the live rewrite rollout itself: all `17` audited PRs were rewritten in bounded batches, and post-apply verification now returns `17/17 pass`.
 - This rollout required multiple cycles rather than one monolithic apply step: one unblocking cycle for parser/source-log cleanup, one lower-risk metadata-links-only rewrite batch, one heavier canonical rebuild batch, and one final post-apply verify cycle.
 - `P4` has now closed the remaining GitHub metadata gap: all `17` audited live `S0E` PRs now expose GitHub-recognized Development linkage through explicit close-link footer lines, all deterministic PR labels are present live, and the previously issue-less logs `S0E-1A`, `S0E-2C`, `S0E-3A`, and `S0E-7C` now have written-back GitHub issues that were concluded and closed.
+- `P5` is now complete: the shared PR-prep preview path and the live PR rewrite path both filter `Evidence Footer` through the same title-derived scope selector that already owns `Execution Checklist`, and the affected live PRs `#320`, `#321`, and `#323` have been rewritten to that converged scope.
 
 ## P0 (PR-body ownership boundary | v1)
 
@@ -238,6 +242,20 @@
 - Newly created backfill issues were attached to parent issue `#248` where applicable (`#313`, `#314`, `#315`) and then concluded from merged PR evidence.
 - Final issue states are now closed for `#313`, `#314`, `#315`, and `#316`.
 
+## P5 (Footer-scope convergence follow-up | v1)
+
+### P5-C1-S1 (Preview and rewrite selectors converge | v1)
+
+- The shared PR-prep dry-run path and the live PR rewrite path must both scope `Evidence Footer` through the same title-derived selector already used for `Execution Checklist`.
+- A PR title that resolves to `P0-P2` may keep only the `P0/P1/P2` footer rows; a title that resolves to `P3-C1-S1` may keep only the exact `P3-C1-S1` footer row.
+- Lifecycle bookkeeping such as `P4-C1-S1` remains source-log accounting and must not leak into PR footer/body scope unless the PR title itself intentionally reviews that lifecycle unit.
+
+### P5-C2-S1 (Affected live PR bodies rewritten and re-verified | v1)
+
+- The merged `S0E-7G` PRs `#320` and `#321` must be rewritten so their live bodies retain only footer rows that match their existing PR titles.
+- The open `S0E-3B` PR `#323` must keep merge-content scope `P0-P2` in its title/body/footer, while `P4-C1-S1` stays recorded only in the source log ledger and evidence.
+- Post-apply verification must confirm all three rewritten live PR bodies pass the canonical PR body contract after the footer-scope fix.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (PR-body ownership boundary)
@@ -271,6 +289,11 @@
 - [x] `P4-C3-S1`: previously issue-less historical logs backfilled
 - [x] `P4-C4-S1`: backfilled issue lifecycle closed
 
+### P5 (Footer-scope convergence follow-up)
+
+- [x] `P5-C1-S1`: preview and rewrite selectors converge
+- [x] `P5-C2-S1`: affected live PR bodies rewritten and re-verified
+
 ## Evidence
 
 - `P0-C1-S1` / `P1-C1-S3`: `scripts/issues/body_contract.py` now removes `Development Link` from canonical PR optional sections, removes `Issue` from allowed PR link labels, and rejects any rendered `Development Link` section.
@@ -288,6 +311,9 @@
 - `P4-C2-S1`: `docs/issues/pr-body-rewrite-S0E-4F-p4-c2-manifest-result.json`, `docs/issues/pr-body-rewrite-S0E-4F-p4-c3-manifest-result.json`, and `docs/issues/pr-metadata-completeness-S0E-4F-p4-summary.json` record the live PR metadata replay and final `17/17` metadata-complete audit.
 - `P4-C3-S1`: `docs/issues/issue-S0E-1A-structured-cv-generator.json`, `docs/issues/issue-S0E-2C-batch-issue-creation-and-backfill-tooling.json`, `docs/issues/issue-S0E-3A-roadmap-milestone-log-bridge.json`, and `docs/issues/issue-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.json` record the four newly created historical backfill issues.
 - `P4-C4-S1`: `docs/issues/issue-conclusion-S0E-4F-p4-backfill-plan.json`, the four matching `issue-conclusion-S0E-4F-p4-backfill-*-apply-result.json` files, and `docs/issues/issue-backfill-S0E-4F-p4-summary.json` record the final issue-conclusion and close-state convergence for `#313/#314/#315/#316`.
+- `P5-C1-S1`: `scripts/issues/plan_pr_prep.py`, `scripts/issues/rewrite_pr_body_scope_from_log.py`, and `scripts/issues/body_contract.py` now filter and verify `Evidence Footer` through the same title-derived scope selector already used for `Execution Checklist`, removing the earlier full-footer leakage from scope-limited PR previews, rewrites, and live verification.
+- `P5-C2-S1`: `docs/issues/pr-body-rewrite-S0E-4F-p5-c1-manifest.json` and `docs/issues/pr-body-rewrite-S0E-4F-p5-c1-manifest-result.json` record the bounded historical rewrite of merged PRs `#320/#321`, while `docs/issues/pr-prep-S0E-3B-live-manifest-guarded-pr-body-rewrite-result.json` preserves the retained gate-stop artifact for open PR `#323` and `docs/issues/pr-prep-S0E-3B-live-manifest-rewrite-apply-result.json` records the final single-item live rewrite apply.
+- `P5-C2-S1`: `docs/issues/pr-live-contract-check-320-result.json`, `docs/issues/pr-live-contract-check-321-result.json`, and `docs/issues/pr-live-contract-check-323-result.json` preserve the post-apply live contract verification results for the three affected PRs.
 
 ## Recent changes (for traceability, optional)
 
@@ -303,3 +329,5 @@
 - 2026-04-02: completed `P4-C2-S1` by replaying both bounded PR rewrite manifests so the same `17` audited live `S0E` PRs now expose GitHub-recognized Development linkage and deterministic labels.
 - 2026-04-02: completed `P4-C3-S1` by creating and writing back the previously missing historical issues `#316` (`S0E-1A`), `#313` (`S0E-2C`), `#314` (`S0E-3A`), and `#315` (`S0E-7C`).
 - 2026-04-02: completed `P4-C4-S1` by attaching `#313/#314/#315` to parent `#248`, concluding all four backfilled issues from merged PR evidence, and closing `#313/#314/#315/#316`.
+- 2026-04-03: completed `P5-C1-S1` by fixing the shared footer-scope selector so PR preview generation and live PR rewrite both scope `Evidence Footer` to the same merge-content scope already used by PR titles and checked checklist rows.
+- 2026-04-03: completed `P5-C2-S1` by rewriting live PRs `#320`, `#321`, and `#323` to their title-derived footer scope and re-verifying all three bodies against the canonical PR body contract.

@@ -12,6 +12,7 @@ from plan_pr_prep import (
     _derive_scope_from_pr_title,
     _derive_pr_development_issue,
     _extract_checked_items,
+    _extract_scoped_evidence_lines,
     _filter_checked_items,
     _find_section_lines,
     _normalize_branch_name,
@@ -89,7 +90,9 @@ def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, re
     source_fields = _parse_fields(source_log_text)
     source_log_rel = _repo_rel(source_log_path)
     summary_bullets, explicit_link_lines, evidence_lines = extract_pr_summary_inputs(source_log_text)
-    evidence_footer_lines = evidence_lines if pr_body_is_evidence_footer_eligible(source_log_text) else []
+    evidence_footer_lines = []
+    if pr_body_is_evidence_footer_eligible(source_log_text):
+        evidence_footer_lines = _extract_scoped_evidence_lines(evidence_lines, scope_kind, scope_refs)
     if not summary_bullets:
         summary_bullets = _extract_summary_bullets(body_sections.get("Summary", []))
 

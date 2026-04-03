@@ -274,6 +274,7 @@
 - [x] `P124`：`S0E-6F` 已完成 `P0-P1`，issue draft / issue conclusion preview / lifecycle audit / owner logs / runbook 现已统一到“Metadata 只留状态字段、Links 承接 deterministic navigation”的新边界
 - [x] `P125`：`S0E-6F` 已完成 `P2`，新的代表性 artifacts 已生成，当前 `10` 条 closed `S0E` child issues 也已按同一边界完成 bounded refresh，并通过 `10/10` post-refresh lifecycle audit
 - [x] `P126`：`S0E-6F` 已完成 `P3`，issue body contract 现已显式区分 top-level parent 与 child issue：`#248` 已刷新到 parent-aware body shape，且 `S0E` parent-plus-child `11` 条 issue 现已一起通过 post-refresh lifecycle audit
+- [x] `P148`：`S0E-4F` 已完成 `P5`，PR preview 与 live rewrite 现已共享同一条 Evidence Footer scope selector；live PR `#320/#321/#323` 也已按各自 title scope 重写并再次通过 canonical PR body verification
 - [x] `P127`：已新建 `S0E-4F`，专门收口 PR body 中 `Development Link` 与 `Links -> Issue` 的重复问题，并把当前 `17` 条 live `S0E` PR 的全量审查范围固定到同一条 log
 - [x] `P128`：`S0E-4F` 已完成 `P0-P1`，shared PR contract / preview-create-rewrite renderer / canonical spec / log templates 现已统一到“Development issue 只留在 Metadata、Links 只保留 deterministic navigation”的新边界
 - [x] `P129`：`S0E-4F` 已完成 `P2`，当前 `17` 条 live `S0E` PR 已全量审查为 `17/17 fail`，后续 rewrite scope 也已固定为一个按 `4` 类 drift family 分层执行的 bounded batch

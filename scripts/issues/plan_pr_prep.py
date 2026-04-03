@@ -391,9 +391,9 @@ def _extract_scoped_evidence_lines(
     evidence_lines: list[str] = []
     for raw in section_lines:
         stripped = raw.strip()
-        if not stripped.startswith("- "):
+        if not stripped:
             continue
-        value = stripped[2:].strip()
+        value = stripped[2:].strip() if stripped.startswith("- ") else stripped
         evidence_scope_refs = _extract_evidence_scope_refs(value)
         if scope_kind == "all" or not scope_refs:
             evidence_lines.append(value)
@@ -658,7 +658,11 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
         warnings.append("scope-aligned checklist selection found no matches; preview falls back to all checked items")
         scoped_checklist_items = checklist_items
 
-    scoped_evidence_lines = evidence_footer_source_lines
+    scoped_evidence_lines = _extract_scoped_evidence_lines(
+        evidence_footer_source_lines,
+        pr_scope_kind,
+        pr_scope_refs,
+    )
 
     link_lines = _select_pr_link_lines(fields, explicit_link_lines, source_log_rel)
     preview_body = _render_body_preview(

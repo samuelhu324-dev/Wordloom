@@ -1,0 +1,25 @@
+{
+  "mode": "lifecycle-remediation-dry-run",
+  "result": "ok",
+  "audit_plan_path": "docs/issues/lifecycle-audit-S0E-3B-p4-scope-rewrite-plan.json",
+  "selection_input": "audit-plan",
+  "operation": "plan-lifecycle-remediation",
+  "total_items": 1,
+  "planned_items": 0,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0E-3B",
+      "source_log_path": "docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md",
+      "issue_number": 322,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/322",
+      "audit_status": "warning",
+      "remediation_status": "skipped",
+      "planned_action": "skip-remediation-no-actionable-findings",
+      "applied_action": null,
+      "steps": [],
+      "warnings": [],
+      "reason": "Controlled PR-create pass sample for S0E-3B after live issue creation and source-log write-back are both in place."
+    }
+  ]
+}

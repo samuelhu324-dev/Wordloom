@@ -13,9 +13,11 @@ PR_ALLOWED_LINK_LABELS = {"Log", "Runbook", "Evidence artifact", "Parent log", "
 ISSUE_ALLOWED_LINK_LABELS = {"Log", "Runbook", "Parent log", "Previous log", "Roadmap"}
 EVIDENCE_FOOTER_LINE_RE = re.compile(r"^`(?P<stage>[^`]+)` \| artifact: `(?P<artifact>[^`]+)`$")
 LINK_LINE_RE = re.compile(r"^- (?P<label>[^:]+):\s+`[^`]*`$")
+CHECKLIST_ITEM_RE = re.compile(r"^- \[(?:x| )\] `?(?P<identifier>[^`]+)`?:")
 ISSUE_REF_RE = re.compile(r"(?:/issues/|^#?)(?P<number>\d+)$")
 PR_CLOSING_ISSUE_LINE_RE = re.compile(r"^Closes #(?P<number>\d+)$")
 PHASE_LOG_KEY_RE = re.compile(r"^phase_log_(?P<index>\d+)$")
+SCOPE_REF_RE = re.compile(r"\bP\d+(?:-C\d+(?:-S\d+(?:S\d+)*)?)?\b")
 CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
 SENTENCE_TERMINATOR_RE = re.compile(r"[.!?]")
 VERSION_SUFFIX_RE = re.compile(r"\s+v\d+\s*$", re.IGNORECASE)
@@ -723,6 +725,96 @@ def pr_body_is_evidence_footer_eligible(source_log_text: str) -> bool:
     return any(token in tags or token in pr_labels or token in title for token in ["drills", "evidence"])
 
 
+def _extract_scope_refs(text: str) -> list[str]:
+    seen: set[str] = set()
+    refs: list[str] = []
+    for match in SCOPE_REF_RE.finditer(text):
+        value = match.group(0)
+        if value not in seen:
+            seen.add(value)
+            refs.append(value)
+    return refs
+
+
+def _phase_ref(value: str) -> str | None:
+    match = re.match(r"P\d+", value)
+    return match.group(0) if match else None
+
+
+def _expand_unit_scope_ref(token: str) -> list[str]:
+    stripped = token.strip()
+    if not stripped or "-S" not in stripped:
+        return [stripped] if stripped else []
+
+    prefix, step_suffix = stripped.split("-S", 1)
+    step_numbers = [part for part in step_suffix.split("S") if part]
+    if len(step_numbers) <= 1 or any(not part.isdigit() for part in step_numbers):
+        return [stripped]
+    return [f"{prefix}-S{part}" for part in step_numbers]
+
+
+def _extract_rendered_checklist_scope(checklist_lines: list[str]) -> tuple[str, list[str]]:
+    identifiers: list[str] = []
+    seen: set[str] = set()
+    for raw in checklist_lines:
+        match = CHECKLIST_ITEM_RE.match(raw.strip())
+        if not match:
+            continue
+        identifier = match.group("identifier").strip()
+        if identifier not in seen:
+            seen.add(identifier)
+            identifiers.append(identifier)
+
+    if not identifiers:
+        return "all", []
+
+    if any("-C" in identifier or "-S" in identifier for identifier in identifiers):
+        expanded: list[str] = []
+        for identifier in identifiers:
+            expanded.extend(_expand_unit_scope_ref(identifier))
+        deduped: list[str] = []
+        seen_units: set[str] = set()
+        for identifier in expanded:
+            if identifier and identifier not in seen_units:
+                seen_units.add(identifier)
+                deduped.append(identifier)
+        return "units", deduped
+
+    phase_refs: list[str] = []
+    seen_phases: set[str] = set()
+    for identifier in identifiers:
+        phase = _phase_ref(identifier)
+        if phase and phase not in seen_phases:
+            seen_phases.add(phase)
+            phase_refs.append(phase)
+    return ("phases", phase_refs) if phase_refs else ("all", [])
+
+
+def _filter_evidence_footer_lines_for_scope(lines: list[str], scope_kind: str, scope_refs: list[str]) -> list[str]:
+    if scope_kind == "all" or not scope_refs:
+        return list(lines)
+
+    filtered: list[str] = []
+    phase_scope = set(scope_refs)
+    for line in lines:
+        raw_line_refs = _extract_scope_refs(line.split(":", 1)[0])
+        line_refs: list[str] = []
+        if scope_kind == "units":
+            for ref in raw_line_refs:
+                line_refs.extend(_expand_unit_scope_ref(ref))
+        else:
+            line_refs = raw_line_refs
+        if not line_refs:
+            continue
+        if scope_kind == "phases":
+            if any((_phase_ref(ref) or "") in phase_scope for ref in line_refs):
+                filtered.append(line)
+            continue
+        if any(ref in scope_refs for ref in line_refs):
+            filtered.append(line)
+    return filtered
+
+
 def _validate_order(actual: list[str], expected_prefix: list[str], optional_tail: list[str]) -> tuple[str, str]:
     allowed = expected_prefix + optional_tail
     unknown = [name for name in actual if name not in allowed]
@@ -931,6 +1023,8 @@ def validate_pr_body_contract(*, body_markdown: str, source_log_text: str, pr_de
         checks.append(ContractCheck("evidence-footer-source-shape", "pass", "no Evidence Footer Source rows were provided"))
 
     rendered_footer_lines = [line.strip()[2:].strip() for line in sections.get("Evidence Footer", []) if line.strip().startswith("- ")]
+    rendered_scope_kind, rendered_scope_refs = _extract_rendered_checklist_scope(sections.get("Execution Checklist", []))
+    scoped_expected_evidence_lines = _filter_evidence_footer_lines_for_scope(expected_evidence_lines, rendered_scope_kind, rendered_scope_refs)
     evidence_footer_eligible = pr_body_is_evidence_footer_eligible(source_log_text)
     if expected_evidence_lines and not evidence_footer_eligible:
         checks.append(ContractCheck("evidence-footer-eligibility", "fail", "Evidence Footer Source is present but the source log is not drills/evidence eligible"))
@@ -939,13 +1033,15 @@ def validate_pr_body_contract(*, body_markdown: str, source_log_text: str, pr_de
     else:
         checks.append(ContractCheck("evidence-footer-eligibility", "pass", "Evidence Footer eligibility matches the source log tags/labels contract"))
 
-    if expected_evidence_lines:
+    if scoped_expected_evidence_lines:
         if "Evidence Footer" not in sections:
             checks.append(ContractCheck("evidence-footer-presence", "fail", "Evidence Footer Source exists but the rendered Evidence Footer section is missing"))
-        elif rendered_footer_lines != expected_evidence_lines:
+        elif rendered_footer_lines != scoped_expected_evidence_lines:
             checks.append(ContractCheck("evidence-footer-presence", "fail", f"rendered Evidence Footer rows do not match source rows: {rendered_footer_lines}"))
         else:
             checks.append(ContractCheck("evidence-footer-presence", "pass", "rendered Evidence Footer rows match the source block exactly"))
+    elif expected_evidence_lines and "Evidence Footer" in sections:
+        checks.append(ContractCheck("evidence-footer-presence", "fail", "Evidence Footer section must be omitted when no source rows match the rendered checklist scope"))
     elif "Evidence Footer" in sections:
         checks.append(ContractCheck("evidence-footer-presence", "fail", "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"))
     else:
@@ -983,7 +1079,7 @@ def validate_pr_body_contract(*, body_markdown: str, source_log_text: str, pr_de
         status=status,
         checks=checks,
         warnings=warnings,
-        expected_evidence_footer_lines=expected_evidence_lines,
+        expected_evidence_footer_lines=scoped_expected_evidence_lines,
     )
 
 
