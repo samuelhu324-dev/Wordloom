@@ -1,0 +1,14 @@
+{
+  "defaults": {
+    "requested_id": "S0E-5E",
+    "source_log_path": "docs/logs/log-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md",
+    "base_branch": "main",
+    "head_ref": "HEAD",
+    "candidate_pr_branch": "pr-prep/s0e-5e-live"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5E"
+    }
+  ]
+}
