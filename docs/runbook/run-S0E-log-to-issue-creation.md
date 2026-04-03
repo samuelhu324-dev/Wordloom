@@ -98,6 +98,9 @@
   - `python scripts/issues/gen_issue_draft.py <log_path>`
 - Example:
   - `python scripts/issues/gen_issue_draft.py docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+- Default rollout rule after `S0E-3B/P3`:
+  - single-log draft generation stays local-first and does not require live label preflight by default
+  - operators may still request advisory live label preflight explicitly with `--check-live-labels --repo <owner/repo>` when they want an earlier GitHub-backed label inventory check without entering create mode
 - Outputs:
   - markdown draft under `docs/issues/issue-<log-slug>.md`
   - structured JSON sidecar under `docs/issues/issue-<log-slug>.json`
@@ -107,6 +110,9 @@
 
 - Explicit create entry:
   - `python scripts/issues/gen_issue_draft.py <log_path> --create --repo <owner/repo>`
+- Default rollout rule after `S0E-3B/P3`:
+  - create mode is a default-required live label preflight entrypoint; it always checks the live GitHub label catalog before `gh issue create`
+  - missing labels remain fail-closed here even when advisory draft-generation mode is still available elsewhere
 - Current prerequisites:
   - `gh` CLI installed
   - `gh auth status` succeeds
@@ -124,12 +130,17 @@
   - `python scripts/issues/plan_issue_batch.py <manifest_path>`
 - Example:
   - `python scripts/issues/plan_issue_batch.py docs/issues/issue-batch-S0E-2C-sample-manifest.json`
+- Default rollout rule after `S0E-3B/P3`:
+  - batch issue planning is now treated as a higher-trust, create-adjacent entrypoint and therefore runs advisory live label preflight by default
+  - operators may disable that default only with explicit `--no-live-label-check` when they intentionally need offline-only scaffolding
+  - operators may escalate the default advisory behavior to fail-closed with `--fail-on-missing-live-labels`
 - Outputs:
   - per-log markdown drafts and JSON sidecars for selected logs
   - one batch plan artifact under `docs/issues/issue-batch-<manifest-stem>-plan.json`
   - stdout JSON summary with `planned_items`, `warnings`, and per-item `planned_action`
 - Safety rules:
   - batch planning does not call GitHub create APIs
+  - default advisory live label preflight still does not mutate GitHub state; it only enriches planner evidence with matched/missing label results
   - if a source log already has `links.issue`, the planner must mark it as `skip-existing-issue`
   - parent-child linking, milestone apply, and write-back remain later explicit phases, not part of `P1`
 

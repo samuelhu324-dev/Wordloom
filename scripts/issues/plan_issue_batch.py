@@ -42,6 +42,19 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Plan batch issue draft creation from a manifest")
     parser.add_argument("manifest_path", help="Path to a batch issue manifest JSON file")
     parser.add_argument("--plan-path", dest="plan_path", help="Override output plan JSON path")
+    parser.add_argument("--repo", dest="repo", help="Repository slug override for live label preflight during batch planning")
+    parser.add_argument(
+        "--no-live-label-check",
+        dest="no_live_label_check",
+        action="store_true",
+        help="Disable the default advisory live label preflight used by batch issue planning",
+    )
+    parser.add_argument(
+        "--fail-on-missing-live-labels",
+        dest="fail_on_missing_live_labels",
+        action="store_true",
+        help="Escalate batch planner live label preflight from advisory warnings to fail-closed behavior",
+    )
     return parser.parse_args()
 
 
@@ -112,7 +125,15 @@ def _parse_issue_link(fields: dict[str, str]) -> tuple[int | None, str | None]:
     return issue_number, raw_issue
 
 
-def _build_draft_args(item: dict) -> SimpleNamespace:
+def _build_draft_args(item: dict, args: argparse.Namespace) -> SimpleNamespace:
+    check_live_labels = item.get("check_live_labels")
+    if check_live_labels is None:
+        check_live_labels = not args.no_live_label_check
+
+    fail_on_missing_live_labels = item.get("fail_on_missing_live_labels")
+    if fail_on_missing_live_labels is None:
+        fail_on_missing_live_labels = bool(args.fail_on_missing_live_labels)
+
     return SimpleNamespace(
         log_path=item["log_path"],
         output_path=item.get("output_path"),
@@ -121,7 +142,10 @@ def _build_draft_args(item: dict) -> SimpleNamespace:
         milestone_override=item.get("milestone_override"),
         module_label_overrides=_split_csv(item.get("module_label_overrides")) if isinstance(item.get("module_label_overrides"), str) else item.get("module_label_overrides"),
         strict_label_check=bool(item.get("strict_label_check", False)),
-        repo=item.get("repo"),
+        repo=item.get("repo") or args.repo,
+        check_live_labels=bool(check_live_labels),
+        fail_on_missing_live_labels=bool(fail_on_missing_live_labels),
+        context_mode=item.get("context_mode") or "scaffold",
         create_issue=False,
     )
 
@@ -141,7 +165,7 @@ def plan_issue_batch(args: argparse.Namespace) -> BatchPlanResult:
         log_path = _coerce_path(item["log_path"], repo_root)
         fields = _parse_fields(_load_text(log_path))
         issue_number, issue_url = _parse_issue_link(fields)
-        draft_result = generate_issue_draft(_build_draft_args(item), emit_result=False)
+        draft_result = generate_issue_draft(_build_draft_args(item, args), emit_result=False)
 
         warnings = list(draft_result.warnings)
         if issue_url:

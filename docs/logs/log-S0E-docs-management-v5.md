@@ -296,6 +296,8 @@
 - [x] `P145`：`S0E-7F` 已完成 `P4` 并收口为 `stable`，现在已经保留横跨 shared wrapper 与 local operator-facing surface 的 representative validation ledger，并明确把 `workflow_dispatch` 固定为下一个 eligible widening surface
 - [x] `P146`：已新建 `S0E-7G`，并已完成 `P0-P2`，现在已经保留 GitHub-side manual wrapper contract artifact，并实现了一个 manual `workflow_dispatch` surface 来调用 shared read-only wrapper
 - [x] `P147`：`S0E-7G/P3` 已完成第一轮 dispatchability check，当前 blocker 已明确收口为“workflow 尚未在 default branch 可见”，因此 live pass/stop dispatch evidence 需等该可见性前置条件满足后继续
+- [x] `P149`：`S0E-3B` 已完成 `P3`，现已固定 rollout boundary：单条 draft 继续保持 opt-in live label preflight，显式 `--create` 继续 fail-closed，而 `plan_issue_batch.py` 现已把 advisory live label preflight 提升为默认行为并保留显式 offline override
+- [x] `P150`：`S0E-3B` 已完成 `P4-C1-S2` 并进入 `stable`，PR `#323` 现已作为 `P0-P2` merge-content review unit 合并，merge commit `54c36d8ef3d3975b5b6a97ca7163f1a8a5843f9d` 已被写回 ledger；关联 issue `#322` 仍保持 open，后续 issue-conclusion 不再与 PR lifecycle accounting 混记
 
 ## Current Status（进展摘要）
 

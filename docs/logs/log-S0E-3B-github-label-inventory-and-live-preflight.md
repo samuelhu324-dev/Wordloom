@@ -5,7 +5,7 @@
 **id**: `S0E-3B`
 **kind**: `log`
 **title**: `GitHub label inventory and issue-label live preflight contract v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Labels, Automation, epic/s0, sub/1`
 **links**: ``
@@ -55,6 +55,8 @@
 - The repo should prefer one reusable live label preflight path instead of scattering `gh label list` checks across multiple scripts.
 - Module labels remain best-effort and operator-confirmed; live preflight validates existence, not semantic correctness.
 - Controlled PR titles/bodies/footers should describe merge-content scope only; review-lifecycle accounting such as `P4-C1-S1` stays in the source-log ledger and evidence instead of being forced into the PR title/body.
+- Default-required live label preflight now applies to create-adjacent entrypoints only: explicit `--create` remains fail-closed, while `plan_issue_batch.py` now runs advisory live label preflight by default and single-log local draft generation stays opt-in.
+- Advisory-mode retention remains available after rollout hardening: operators may still use single-log draft generation without GitHub access, may request `--check-live-labels` explicitly there, and may disable the batch planner's default live check only with an explicit offline override.
 
 ## PR Summary Inputs (optional)
 
@@ -111,6 +113,7 @@
 - At least one representative sample result shows the derived labels and the live-preflight outcome together in one structured artifact.
 - The live issue creation and source-log write-back for this slice are recorded under explicit `P-C-S` units rather than only in narrative notes.
 - The later controlled PR create/merge path has reserved `P-C-S` slots before execution starts so review-lifecycle evidence can be recorded without renumbering drift.
+- The rollout policy explicitly fixes which entrypoints default to live label preflight and which still permit offline-only drafting without silently weakening create-path guarantees.
 
 ## Stability (what stable means)
 
@@ -118,16 +121,19 @@
   - `P0-P4` have fixed the contract, the implementation path, the rollout boundary, and the controlled review-lifecycle accounting for live label preflight
   - the Evidence section includes traceable `headSha` values plus artifact paths (or CI run URLs)
 
+- `S0E-3B` is now `stable` because `P0-P4` are complete: the contract, live-preflight implementation, rollout boundary, dedicated PR lifecycle accounting, and post-merge write-back are all fixed explicitly in this source log.
+
 ## Current Status
 
 - `S0E-3B` is now opened as the dedicated slice for GitHub label inventory ownership and issue-label live preflight.
 - `P0` is complete: the repo now has an explicit contract that live GitHub labels are authoritative, advisory preflight is separate from real create mode, and missing labels must never be auto-created on the fly.
 - `P1` is complete: `scripts/issues/gen_issue_draft.py` now supports explicit live label preflight outside create mode, with separate warning-vs-fail behavior.
 - `P2` is complete: one representative issue-draft sample was retained as `P2-C1-S1`, then live GitHub issue `#322` was created and written back to the source log as `P2-C1-S2`.
-- `P3` remains open: the repo has not yet decided which higher-trust entrypoints, if any, should require live label preflight by default.
+- `P3` is complete: create-adjacent entrypoints now have an explicit rollout policy, with `gen_issue_draft.py --create` remaining fail-closed and `plan_issue_batch.py` running advisory live label preflight by default while single-log draft generation stays opt-in.
 - `P4-C1-S1` is complete: after targeted lifecycle remediation attached parent issue `#248` and refreshed the live issue Context, dedicated controlled PR `#323` was created as a ready-for-review PR and passed immediate post-apply body verification.
 - `P4-C1-S1` now has its scope rule clarified as well: live PR `#323` keeps merge-content scope `P0-P2` in title/body/footer, while the PR-creation lifecycle accounting remains recorded only in this source log and its retained evidence artifacts.
-- `P4-C1-S2` remains open: merge and post-merge write-back have not been executed yet.
+- `P4-C1-S2` is complete: PR `#323` is now merged as `54c36d8ef3d3975b5b6a97ca7163f1a8a5843f9d`, and this source log now records the merged review reference as a distinct post-merge step while keeping the still-open issue `#322` separate from PR-lifecycle accounting.
+- `S0E-3B` is now `stable`: the contract, implementation, rollout policy, and controlled PR lifecycle bookkeeping are all fixed for v1.
 
 ## P0 (Contract | v1)
 
@@ -170,6 +176,20 @@
 - Run the same `S0E-3B` sample through explicit `--create` after live label preflight passes.
 - Record the resulting live issue number/URL in the JSON sidecar and write the issue URL back to `links.issue` in a later tracked docs update.
 
+## P3 (Rollout policy | v1)
+
+### P3-C1-S1 (Default-required entrypoints decided | v1)
+
+- Single-log local draft generation remains offline-capable by default and does not require live label preflight unless the operator explicitly requests it.
+- Explicit create mode remains a default-required live label preflight entrypoint and must continue to fail closed on missing GitHub labels.
+- Batch issue planning is now treated as a higher-trust, create-adjacent entrypoint and therefore runs advisory live label preflight by default.
+
+### P3-C1-S2 (Advisory-mode retention policy decided | v1)
+
+- Advisory live label preflight remains available for single-log draft generation through explicit `--check-live-labels`.
+- The batch planner may disable its default live label preflight only through an explicit offline override rather than by silent fallback.
+- Fail-closed escalation remains available through `--fail-on-missing-live-labels` when operators want the same gate semantics before any later create/apply stage.
+
 ## P4 (Controlled PR lifecycle accounting | v1)
 
 ### P4-C1-S1 (Dedicated controlled PR creation recorded | v1)
@@ -204,13 +224,11 @@
 
 ### P3 (Rollout policy)
 
-- `P3-C1-S1`: decide which entrypoints should require live label preflight by default
-- `P3-C1-S2`: decide whether missing-label advisory mode should stay available after rollout hardening
+- Completed in `P3-C1-S1S2`; no further rollout-policy units are planned inside `S0E-3B` v1.
 
 ### P4 (Controlled PR lifecycle accounting)
 
-- `P4-C1-S1`: create one dedicated controlled PR for `S0E-3B`
-- `P4-C1-S2`: merge the dedicated PR and write back the merged PR reference
+- Completed in `P4-C1-S1S2`; later issue-conclusion work for still-open issue `#322` remains part of the issue-lifecycle family rather than this PR-lifecycle slice.
 
 ## Execution Checklist (unchecked)
 
@@ -231,13 +249,13 @@
 
 ### P3 (Rollout policy)
 
-- [ ] `P3-C1-S1`: default-required entrypoints decided
-- [ ] `P3-C1-S2`: advisory-mode retention policy decided
+- [x] `P3-C1-S1`: default-required entrypoints decided
+- [x] `P3-C1-S2`: advisory-mode retention policy decided
 
 ### P4 (Controlled PR lifecycle accounting)
 
 - [x] `P4-C1-S1`: dedicated controlled PR creation recorded
-- [ ] `P4-C1-S2`: merge and post-merge write-back recorded
+- [x] `P4-C1-S2`: merge and post-merge write-back recorded
 
 ## Evidence (reserved)
 
@@ -307,11 +325,42 @@
   - Targeted remediation attached child issue `#322` to parent issue `#248`, refreshed the live issue body with a single-generated Context block, reran the gate successfully, and then created ready-for-review PR `#323` from branch `pr-prep/s0e-3b` with immediate post-apply body verification status `pass`.
   - A later PR-body scope replay first retained a gate-stop artifact showing that the original create-stage lifecycle manifest was not the right gate input for an open PR body-only mutation, then completed a direct single-item rewrite apply that kept live PR `#323` on merge-content scope `P0-P2`; `P4-C1-S1` remains recorded only in this source log.
 
+### P3-C1-S1S2 (Rollout policy fixed and representative batch path retained | 2026-04-03)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `scripts/issues/plan_issue_batch.py`
+  - `docs/runbook/run-S0E-log-to-issue-creation.md`
+  - `docs/issues/issue-batch-S0E-3B-p3-rollout-manifest.json`
+  - `docs/issues/issue-batch-S0E-3B-p3-rollout-plan.json`
+- expected:
+  - The repo should explicitly decide which issue-automation entrypoints default to live label preflight and whether advisory mode remains available after rollout hardening.
+  - A representative batch-planning sample should prove that higher-trust planning now records live label preflight by default without mutating GitHub state.
+- observed:
+  - The runbook now fixes one explicit rollout policy: single-log draft generation stays opt-in/offline-capable, explicit create mode remains fail-closed, and `plan_issue_batch.py` now runs advisory live label preflight by default unless the operator requests the explicit offline override.
+  - The retained batch-planning sample proves the higher-trust planner now records live label preflight in its generated issue JSON sidecars while still preserving dry-run-only semantics for issue creation itself.
+
+### P4-C1-S2 (Merge and post-merge write-back recorded | 2026-04-03)
+
+- headSha: `<git sha>`
+- artifacts:
+  - `docs/issues/pr-prep-S0E-3B-live-manifest-create-result.json`
+  - `docs/issues/pr-view-S0E-3B-p4-c1-s2-merge.json`
+- pr_url: `https://github.com/samuelhu324-dev/wordloom-v3/pull/323`
+- pr_number: `323`
+- expected:
+  - After the dedicated controlled PR is merged, the repo should retain exact merged-review evidence as a separate post-merge accounting step instead of collapsing it into PR creation.
+- observed:
+  - Live PR `#323` is now merged at `2026-04-03T07:30:13Z` with merge commit `54c36d8ef3d3975b5b6a97ca7163f1a8a5843f9d`, and this source log now records that merged state as the completion of `P4-C1-S2`.
+  - Live issue `#322` remains open, which confirms the PR-lifecycle write-back and later issue-conclusion ownership are still separate concerns.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-03: opened `S0E-3B` to isolate GitHub label inventory ownership and issue-label live preflight from the broader `S0E-2A` issue-creation contract.
 - 2026-04-03: extended `gen_issue_draft.py` with explicit live label preflight so draft generation can warn or fail before real issue creation.
 - 2026-04-03: completed `P2-C1-S1` by retaining one representative `S0E-3B` draft-generation sample that records the live GitHub label check outcome alongside the derived draft metadata.
 - 2026-04-03: completed `P2-C1-S2` by creating live GitHub issue `#322` through the automated `gen_issue_draft.py --create` path and writing the resulting issue URL back to this source log.
+- 2026-04-03: completed `P3` by fixing the rollout boundary: single-log draft generation remains opt-in for live label preflight, explicit create mode remains fail-closed, and batch issue planning now runs advisory live label preflight by default unless operators request the explicit offline override.
 - 2026-04-03: completed `P4-C1-S1` by remediating the lifecycle gate blockers on issue `#322`, rerunning controlled PR preflight to pass, and creating ready-for-review PR `#323` with post-apply verification status `pass`.
 - 2026-04-03: clarified `P4-C1-S1` review-scope policy, retained one gate-stop artifact for the non-applicable create-stage lifecycle manifest, and then replayed live PR `#323` through a direct single-item body rewrite so its title/body/footer now stay on merge-content scope `P0-P2` while the controlled-PR lifecycle accounting remains recorded only in this source log.
+- 2026-04-03: completed `P4-C1-S2` by recording that PR `#323` is now merged with merge commit `54c36d8ef3d3975b5b6a97ca7163f1a8a5843f9d`; issue `#322` remains open and therefore still belongs to the later issue-conclusion flow rather than PR-lifecycle accounting.
