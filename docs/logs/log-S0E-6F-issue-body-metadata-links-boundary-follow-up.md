@@ -305,7 +305,7 @@
 
 ## Recent changes (for traceability, optional)
 
-- 2026-04-03: wrote back live issue `#331` and open ready-for-review PR `#343`; full-auto remains paused at the human merge boundary before post-merge issue conclusion.
+- 2026-04-03: wrote back live issue `#331`, merged PR `#343`, applied the final issue-conclusion body, and confirmed the live issue is closed.
 - 2026-04-02: opened `S0E-6F` to narrow the issue body field boundary without reopening the broader section-order contract.
 - 2026-04-02: fixed the v1 target as two explicit moves only: remove `Source log` from issue `Metadata`, and add optional `Previous log` under issue `Links`.
 - 2026-04-02: recorded the concrete implementation measures in advance: shared renderer updates first, then gate/runbook alignment, then representative validation plus an explicit live-reconciliation decision.

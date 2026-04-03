@@ -1,0 +1,41 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-6C-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-6C: preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+    "S0E-6C: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-6C",
+      "source_log_path": "docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md",
+      "issue_number": 334,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/334",
+      "issue_title": "S0E-6C: contract/issue Context sentence contract and gate",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-6C-live-s0e-6c-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 345,
+          "title": "S0E-6C/P0-P3: issue Context sentence contract and gate v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/345",
+          "merged_at": "2026-04-03T12:42:19Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Resume S0E-6C after merge: exact-ID merged PR evidence is now available, so run the post-merge issue conclusion now."
+    }
+  ]
+}

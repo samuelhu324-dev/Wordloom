@@ -382,7 +382,7 @@
 
 ## Recent changes (for traceability, optional)
 
-- 2026-04-03: wrote back live issue `#330`, created ready-for-review PR `#347` with post-apply body verification status `pass`, and paused full-auto at the human merge boundary before any later issue-conclusion step.
+- 2026-04-03: wrote back live issue `#330`, created and merged PR `#347`, applied the final issue-conclusion body, and confirmed the live issue is closed.
 - 2026-03-31: created `S0E-5D` as a dedicated follow-up for body contract normalization, Evidence Footer unification, and hard-gate shape checks after live object drift was confirmed across representative issues and PRs.
 - 2026-03-31: completed `P0` by converting operator-supplied formatting rules into one canonical body spec for issue creation, issue conclusion, and PR body shape, and by pre-locking Evidence Footer to drills/evidence-only with no commit-footer fallback.
 - 2026-03-31: completed `P1` by fixing one explicit `Evidence Footer Source` block, one exact footer line shape, and the rule that both the stage token and artifact path must use inline code while all fallback footer styles remain forbidden.

@@ -262,7 +262,7 @@
 
 ## Recent changes (for traceability, optional)
 
-- 2026-04-03: wrote back live issue `#332`, created ready-for-review PR `#348` with post-apply body verification status `pass`, and paused full-auto at the human merge boundary before any later issue-conclusion step.
+- 2026-04-03: wrote back live issue `#332`, created and merged PR `#348`, applied the final issue-conclusion body, and confirmed the live issue is closed.
 - 2026-03-31: created `S0E-6A` to separate log-structure normalization from the already-stabilized PR body contract work in `S0E-5D`.
 - 2026-03-31: fixed the initial position that `Evidence Footer Source` and `Evidence` should both remain, with explicit split ownership instead of replacement semantics.
 - 2026-03-31: updated parent/phase log templates so the dual-track evidence boundary is explicit at authoring time rather than staying as informal guidance.

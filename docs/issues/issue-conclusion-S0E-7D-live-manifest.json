@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "context_mode": "preserve-existing"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-7D",
+      "source_log_path": "docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md",
+      "issue_number": 341,
+      "reason": "Resume S0E-7D after merge: exact-ID merged PR evidence is now available, so run the post-merge issue conclusion now."
+    }
+  ]
+}

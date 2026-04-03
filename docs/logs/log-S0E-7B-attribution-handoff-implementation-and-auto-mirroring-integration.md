@@ -324,7 +324,7 @@
 
 ## Recent changes (for traceability, optional)
 
-- 2026-04-03: wrote back live issue `#337`, remediated the required sidebar parent relationship, created ready-for-review PR `#351` with post-apply body verification status `pass`, and paused full-auto at the human merge boundary.
+- 2026-04-03: wrote back live issue `#337`, remediated the required sidebar parent relationship, created and merged PR `#351`, applied the final issue-conclusion body, and confirmed the live issue is closed.
 - 2026-04-01: opened `S0E-7B` as the implementation follow-up for attribution payload emission and automatic mirroring integration after `S0E-4E` completed the handoff contract.
 - 2026-04-01: completed `P0` by fixing the ownership split between attribution contract (`S0E-4E`) and attribution implementation / workflow wiring (`S0E-7B`).
 - 2026-04-01: completed `P1` by adding `scripts/issues/resolve_pr_source_log_attribution.py`, which emits the `4E -> 7A` handoff payload plus a normalized PR payload snapshot using stable repo-relative artifact paths.

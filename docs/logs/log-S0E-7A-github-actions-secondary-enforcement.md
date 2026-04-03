@@ -329,7 +329,7 @@
 
 ## Recent changes (for traceability, optional)
 
-- 2026-04-03: wrote back live issue `#338`, remediated the required sidebar parent relationship, created ready-for-review PR `#350` with post-apply body verification status `pass`, and paused full-auto at the human merge boundary.
+- 2026-04-03: wrote back live issue `#338`, remediated the required sidebar parent relationship, created and merged PR `#350`, applied the final issue-conclusion body, and confirmed the live issue is closed.
 - 2026-03-31: re-scoped `S0E-7A` to GitHub-side concerns only, leaving Actions as secondary enforcement and moving local log stability / gate policy to `S0E-6B`.
 - 2026-03-31: completed `P0` by fixing the GitHub Actions ownership boundary in one place: Actions is not the primary publish owner and should mirror the same verifier semantics already fixed in the local create path.
 - 2026-03-31: completed `P1` by fixing and scaffolding the first manual mirror-verifier workflow in GitHub Actions, including explicit inputs, explicit artifacts, and summary wording that preserves the secondary-enforcement boundary.

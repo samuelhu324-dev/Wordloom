@@ -276,7 +276,7 @@
 
 ## Recent changes (for traceability, optional)
 
-- 2026-04-03: wrote back live issue `#336`, remediated the required sidebar parent relationship, created ready-for-review PR `#349` with post-apply body verification status `pass`, and paused full-auto at the human merge boundary.
+- 2026-04-03: wrote back live issue `#336`, remediated the required sidebar parent relationship, created and merged PR `#349`, applied the final issue-conclusion body, and confirmed the live issue is closed.
 - 2026-04-01: created `S0E-6E` to separate single-item `Context` authoring from batch issue replay and conclusion planning.
 - 2026-04-01: added `scripts/issues/generate_issue_context_draft.py` as the dedicated one-log-at-a-time `Context` generation entrypoint.
 - 2026-04-01: changed `scripts/issues/gen_issue_draft.py` so `Context` returns to scaffold-first output by default unless `--context-mode single-generate` is explicitly requested.

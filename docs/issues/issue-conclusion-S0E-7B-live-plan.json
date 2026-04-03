@@ -1,0 +1,41 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-7B-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-7B: preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+    "S0E-7B: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-7B",
+      "source_log_path": "docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md",
+      "issue_number": 337,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/337",
+      "issue_title": "S0E-7B: workflow/attribution handoff implementation and automatic mirroring integration",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-7B-live-s0e-7b-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 351,
+          "title": "S0E-7B/P0-P3: workflow/attribution handoff implementation and automatic mirroring integration v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/351",
+          "merged_at": "2026-04-03T12:42:35Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Resume S0E-7B after merge: exact-ID merged PR evidence is now available, so run the post-merge issue conclusion now."
+    }
+  ]
+}

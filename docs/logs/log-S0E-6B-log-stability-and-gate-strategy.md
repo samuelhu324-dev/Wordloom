@@ -343,7 +343,7 @@
 
 ## Recent changes (for traceability, optional)
 
-- 2026-04-03: wrote back live issue `#333` and open ready-for-review PR `#344`; full-auto remains paused at the human merge boundary before post-merge issue conclusion.
+- 2026-04-03: wrote back live issue `#333`, merged PR `#344`, applied the final issue-conclusion body, and confirmed the live issue is closed.
 - 2026-03-31: created `S0E-6B` as the dedicated follow-up for local log stability policy after `S0E-6A` fixed the dual-track structure contract.
 - 2026-03-31: completed `P0` by fixing two boundaries in one place: local log gates should stay contract-first rather than prose-first, and `stable` should imply a stronger post-hoc validation pass for contract-bearing logs.
 - 2026-03-31: completed `P1` by fixing the first bounded deterministic check surface and a four-class failure taxonomy, so later wiring work can target explicit machine surfaces instead of an open-ended lint idea.
