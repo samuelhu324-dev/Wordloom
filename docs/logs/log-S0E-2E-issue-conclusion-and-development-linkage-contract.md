@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, PR, Automation, epic/s0, sub/0e2e`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/324`
   **pr**: ``
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
@@ -34,7 +34,7 @@
 **pr_base**: ``
 **pr_development_issue**: ``
 **created**: `2026-03-29`
-**updated**: `2026-04-02`
+**updated**: `2026-04-03`
 
 ---
 
@@ -56,6 +56,25 @@
 - If conclusion `Context` is retained, its closing sentence should describe the resulting closure state or stable handoff left by the slice, rather than repeat merged PR evidence that already belongs in `Definition of Done (DoD)`.
 - Conclusion content must stay English-only.
 - Merge approval remains a human review step outside automation scope even when conclusion generation exists.
+
+## PR Summary Inputs (optional)
+
+**PR summary bullets**:
+
+- Define post-merge issue conclusion as a dedicated contract instead of leaving issue closure as an informal manual step.
+- Add deterministic dry-run conclusion planning from exact-ID merged PR evidence while keeping the final issue body English-only and DoD-led.
+- Materialise the contract with a real issue-conclusion write-back path that updates the live issue body and closes open post-merge issues when appropriate.
+
+**PR checklist source**:
+
+- Default source: reuse this log's checked execution checklist items for the generated PR checklist block.
+
+**PR links / evidence footer**:
+
+- Log: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
+- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/324`
+- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
+- Evidence artifact: `docs/issues/issue-conclusion-S0E-2E-sample-plan.json`
 
 ## Definitions (optional)
 
