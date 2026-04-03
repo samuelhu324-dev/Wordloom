@@ -7,10 +7,10 @@
 
 ## Context
 
-- It left the publish-verify-remediation gate thin orchestration entrypoint path in a reusable live form instead of relying on ad hoc operator memory.
-- S0E-7E exists to implement the thin orchestration entrypoint named by S0E-7D/P4, rather than reopening failure taxonomy or rewriting the existing guarded adapters.
-- The boundary here was to define the implementation boundary, naming, CLI shape, and evidence contract for the thin gate entrypoint.
-- It carries the work forward from S0E-7D while staying on the same parent S0E chain.
+- Mutation families such as issue conclusion, relationship attach, PR rewrite, and PR-create preflight were each returning their own result shape to callers.
+- This slice introduced a thin orchestration entrypoint that normalizes those outcomes into one decision vocabulary without replacing family-specific adapters.
+- Apply still delegates to the existing family gates, so relationship remediation, issue conclusion, and PR rewrite keep their own safety rules.
+- The retained evidence shows both delegated pass paths and planning-only stops, proving the gate can unify decisions without flattening family boundaries.
 
 ## Definition of Done (DoD)
 

@@ -7,10 +7,10 @@
 
 ## Context
 
-- S0E-5D exists to fix a problem that is now clearly separate from guarded PR create: the system still lacks one explicit body contract that keeps issue creation, issue conclusion, PR body rendering, Evidence Footer shape, and hard-gate formatting checks aligned.
-- The scoped change here was to define one canonical body contract for issue creation, issue conclusion, and PR body.
-- It carries the work forward from S0E-5C while staying on the same parent S0E chain.
-- This issue keeps the working ledger for the body contract and gate shape normalization path while delivery is still being tracked.
+- The system had separate body templates for issue creation, issue conclusion, and PR bodies, so the same automation family produced visibly different shapes in live GitHub objects.
+- This slice fixed one canonical contract for metadata layout, section order, Evidence Footer shape, and inline-code rules across those bodies.
+- The hard gate now checks body shape rather than section presence alone, including blank-line discipline and allowed link categories.
+- Representative merged PRs and closed issues were rewritten under that contract to prove the normalized body can survive live verification.
 
 ## Definition of Done (DoD)
 

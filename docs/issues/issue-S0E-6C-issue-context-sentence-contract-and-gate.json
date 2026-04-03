@@ -19,7 +19,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- S0E-6C is the dedicated follow-up for issue-body Context shape after S0E-2D, S0E-2E, S0E-5D, and S0E-6B fixed the broader issue-body and gate contracts.\n- The scoped change here was to fix the canonical Context sentence-count contract for main issues and child issues.\n- It carries the work forward from S0E-6B while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the issue Context sentence contract and gate path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- Issue Context had been left blank, reduced to placeholders, or repeated as one generic paragraph across unrelated issues.\r\n- This slice fixed a deterministic Context contract with four English bullet sentences for child-log issues and five for main-log issues.\r\n- The same rule now drives both issue-draft rendering and conclusion-time rewrites, so create and close paths no longer diverge.\r\n- Lifecycle audit now blocks issue bodies whose Context lacks the required line count, one-sentence-per-line shape, or source-log-specific anchors.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -41,3 +41,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/334",
   "created_at": "2026-04-03T11:49:10.581084+00:00"
 }
+

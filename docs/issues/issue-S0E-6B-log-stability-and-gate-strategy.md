@@ -7,10 +7,10 @@
 
 ## Context
 
-- This issue keeps the working ledger for the log stability and gate strategy path while delivery is still being tracked.
-- S0E-6B is now the dedicated follow-up for log stability policy after S0E-6A fixed the dual-track evidence structure model.
-- The scoped change here was to fix the boundary between normal draft authoring, local log gates, and stronger stable-transition gates.
-- It carries the work forward from S0E-6A while staying on the same parent S0E chain.
+- Template-authored logs improved consistency, but the repo still lacked a rule for when downstream automation is allowed to trust their structure.
+- This slice defined narrow local gates that check automation-facing surfaces and stable-transition hygiene without turning prose review into a linter.
+- Logs that drive issue or PR automation, or that claim stable status, now require stronger post-hoc validation than ordinary drafts.
+- The rollout policy makes passing local gates mandatory for automation entrypoints while leaving day-to-day authoring advisory and lightweight.
 
 ## Definition of Done (DoD)
 

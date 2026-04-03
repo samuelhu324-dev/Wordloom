@@ -7,10 +7,10 @@
 
 ## Context
 
-- The scoped change here was to define the single-item versus batch-preserve ownership boundary for issue Context.
-- S0E-6E exists because S0E-6D successfully weakened the gate, but it still kept Context generation inside batch-capable draft/conclusion replay paths.
-- It carries the work forward from S0E-6D while staying on the same parent S0E chain.
-- This issue keeps the working ledger for the single-item Context authoring and batch-preserve boundary path while delivery is still being tracked.
+- Batch issue-draft and issue-conclusion flows were still rewriting Context by default, which erased the line between operator-authored prose and bulk automation.
+- This slice moved Context drafting into a single-item generator that works one log at a time and leaves issue-draft scaffolding conservative by default.
+- Batch conclusion planning now preserves the live Context block unless an operator explicitly requests regeneration for one item.
+- Representative closed issues were refreshed through that one-item path to prove natural Context edits can stay operator-owned without breaking the audit contract.
 
 ## Definition of Done (DoD)
 

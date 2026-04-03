@@ -7,10 +7,10 @@
 
 ## Context
 
-- S0E-7B is now the implementation follow-up after S0E-4E/P3: it owns how the attribution result payload is actually produced and then consumed by S0E-7A in a future automatic PR-event path.
-- The boundary here was to fix the implementation ownership boundary between S0E-4E contract and S0E-7B execution wiring.
-- It carries the work forward from S0E-4E while staying on the same parent S0E chain.
-- This issue keeps the working ledger for the workflow/attribution handoff implementation and automatic mirroring integration path while delivery is still being tracked.
+- S0E-4E defined the attribution contract, but no implementation yet produced the handoff payload or fed it into the GitHub Actions verifier path.
+- This slice added a resolver that emits source-log attribution when it is safe and stops fail-closed when the candidate set is missing, conflicting, or malformed.
+- The secondary-enforcement workflow now resolves attribution before verification and halts with retained evidence whenever attribution is not eligible.
+- Representative pass and stop cases proved the handoff can drive automation without hiding why verification was skipped.
 
 ## Definition of Done (DoD)
 

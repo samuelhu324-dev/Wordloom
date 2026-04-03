@@ -19,7 +19,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- This issue keeps the working ledger for the issue body metadata and links boundary follow-up path while delivery is still being tracked.\n- S0E-6F exists because the current issue body contract still mixes one navigation field into Metadata: Source log is rendered as if it were object-state metadata even though it functions as a deterministic navigation link.\n- The scoped change here was to define the issue-body field-allocation contract for Metadata versus Links.\n- It carries the work forward from S0E-6E while staying on the same parent S0E chain.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- The issue body still treated Source log as metadata even though it behaves as a navigation link rather than issue state.\r\n- This slice kept Metadata limited to issue state fields and moved deterministic navigation rows into Links, including optional previous-log references.\r\n- Top-level parent issues and child issues now follow separate body rules so parent ledgers do not inherit child-oriented fields by accident.\r\n- Lifecycle audit was updated around that split so historical S0E issues can be checked against one explicit Metadata-versus-Links contract.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -41,3 +41,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/331",
   "created_at": "2026-04-03T11:48:54.720591+00:00"
 }
+

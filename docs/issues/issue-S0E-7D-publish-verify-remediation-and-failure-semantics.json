@@ -21,7 +21,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- The boundary here was to define the failure taxonomy, replay/backfill order, and handling semantics contract.\n- S0E-7D is the dedicated follow-up slice for making publish to verify to remediation to failure handling semantics explicit across the current docs/GitHub automation family.\n- It carries the work forward from S0E-7C while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the publish, verify, remediation, and failure semantics path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- Recent PR and issue fixes exposed repeated drift, but the repo still lacked a shared language for which failures block, replay, reconcile, or stay manual.\r\n- This slice defined the publish-to-verify-to-remediation taxonomy, separating strong-structure failures from weaker prose and summary problems.\r\n- It also fixed the ordered replay pipeline so repairs move through source log, derivation, audit, manifest, apply, and verify instead of ad hoc edits.\r\n- Representative manifests and audits now record each handling semantic explicitly, which gives later automation a stable classification surface.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -44,3 +44,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/341",
   "created_at": "2026-04-03T11:50:06.312213+00:00"
 }
+

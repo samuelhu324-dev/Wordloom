@@ -21,7 +21,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- This issue keeps the working ledger for the publish-verify-remediation gate thin orchestration entrypoint path while delivery is still being tracked.\n- S0E-7E exists to implement the thin orchestration entrypoint named by S0E-7D/P4, rather than reopening failure taxonomy or rewriting the existing guarded adapters.\n- The boundary here was to define the implementation boundary, naming, CLI shape, and evidence contract for the thin gate entrypoint.\n- It carries the work forward from S0E-7D while staying on the same parent S0E chain.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- Mutation families such as issue conclusion, relationship attach, PR rewrite, and PR-create preflight were each returning their own result shape to callers.\r\n- This slice introduced a thin orchestration entrypoint that normalizes those outcomes into one decision vocabulary without replacing family-specific adapters.\r\n- Apply still delegates to the existing family gates, so relationship remediation, issue conclusion, and PR rewrite keep their own safety rules.\r\n- The retained evidence shows both delegated pass paths and planning-only stops, proving the gate can unify decisions without flattening family boundaries.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -44,3 +44,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/342",
   "created_at": "2026-04-03T11:50:11.869154+00:00"
 }
+

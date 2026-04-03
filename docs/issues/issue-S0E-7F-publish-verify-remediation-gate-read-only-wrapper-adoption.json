@@ -21,7 +21,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- S0E-7F is the dedicated implementation follow-up after S0E-7E/P4, focused on adopting one wrapper-safe, read-only surface over the thin publish-verify-remediation gate.\n- The boundary here was to fix the read-only wrapper adoption boundary and its relationship to S0E-7A secondary enforcement plus S0E-7E thin-gate semantics.\n- It carries the work forward from S0E-7E while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the workflow/publish-verify-remediation gate read-only wrapper adoption path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- After the thin gate existed, callers still needed a way to inspect remediation decisions without risking live apply.\r\n- This slice added a read-only wrapper that runs thin-gate planning, publishes wrapper-owned summaries and manifests, and keeps delegated apply disabled.\r\n- The wrapper reuses the same normalized decision outputs while preserving the secondary-enforcement language established for drift detection.\r\n- Pass and stop samples confirmed that operators can replay verification locally without mutating issues or PRs.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -44,3 +44,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/339",
   "created_at": "2026-04-03T11:49:55.933998+00:00"
 }
+

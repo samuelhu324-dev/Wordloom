@@ -21,7 +21,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- S0E-5D exists to fix a problem that is now clearly separate from guarded PR create: the system still lacks one explicit body contract that keeps issue creation, issue conclusion, PR body rendering, Evidence Footer shape, and hard-gate formatting checks aligned.\n- The scoped change here was to define one canonical body contract for issue creation, issue conclusion, and PR body.\n- It carries the work forward from S0E-5C while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the body contract and gate shape normalization path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- The system had separate body templates for issue creation, issue conclusion, and PR bodies, so the same automation family produced visibly different shapes in live GitHub objects.\r\n- This slice fixed one canonical contract for metadata layout, section order, Evidence Footer shape, and inline-code rules across those bodies.\r\n- The hard gate now checks body shape rather than section presence alone, including blank-line discipline and allowed link categories.\r\n- Representative merged PRs and closed issues were rewritten under that contract to prove the normalized body can survive live verification.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -44,3 +44,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/330",
   "created_at": "2026-04-03T11:48:48.450604+00:00"
 }
+

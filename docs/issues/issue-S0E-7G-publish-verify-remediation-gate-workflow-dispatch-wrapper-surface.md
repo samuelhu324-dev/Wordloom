@@ -7,10 +7,10 @@
 
 ## Context
 
-- It carries the work forward from S0E-7F while staying on the same parent S0E chain.
-- S0E-7G is the dedicated follow-up after S0E-7F/P4, focused on attaching the shared read-only wrapper to one GitHub-side manual workflow_dispatch surface.
-- The scoped change here was to fix the GitHub-side wrapper ownership boundary and trigger policy.
-- This issue keeps the working ledger for the workflow/publish-verify-remediation gate workflow_dispatch wrapper surface path while delivery is still being tracked.
+- The read-only wrapper worked locally, but operators still could not trigger the same verification flow from a GitHub-side manual workflow.
+- This slice exposed a workflow_dispatch entrypoint that calls the shared wrapper with explicit family selection, run-specific artifact roots, and uploaded summaries.
+- The workflow keeps delegate_apply disabled and preserves the secondary-enforcement wording so GitHub-side runs stay read-only.
+- Representative dispatch runs demonstrated that the Actions surface can coordinate verification artifacts without reopening publish ownership or family-specific semantics.
 
 ## Definition of Done (DoD)
 

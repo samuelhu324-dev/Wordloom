@@ -19,7 +19,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- S0E-7B is now the implementation follow-up after S0E-4E/P3: it owns how the attribution result payload is actually produced and then consumed by S0E-7A in a future automatic PR-event path.\n- The boundary here was to fix the implementation ownership boundary between S0E-4E contract and S0E-7B execution wiring.\n- It carries the work forward from S0E-4E while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the workflow/attribution handoff implementation and automatic mirroring integration path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- S0E-4E defined the attribution contract, but no implementation yet produced the handoff payload or fed it into the GitHub Actions verifier path.\r\n- This slice added a resolver that emits source-log attribution when it is safe and stops fail-closed when the candidate set is missing, conflicting, or malformed.\r\n- The secondary-enforcement workflow now resolves attribution before verification and halts with retained evidence whenever attribution is not eligible.\r\n- Representative pass and stop cases proved the handoff can drive automation without hiding why verification was skipped.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -41,3 +41,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/337",
   "created_at": "2026-04-03T11:49:45.778361+00:00"
 }
+

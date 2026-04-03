@@ -19,7 +19,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- The scoped change here was to define the single-item versus batch-preserve ownership boundary for issue Context.\n- S0E-6E exists because S0E-6D successfully weakened the gate, but it still kept Context generation inside batch-capable draft/conclusion replay paths.\n- It carries the work forward from S0E-6D while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the single-item Context authoring and batch-preserve boundary path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- Batch issue-draft and issue-conclusion flows were still rewriting Context by default, which erased the line between operator-authored prose and bulk automation.\r\n- This slice moved Context drafting into a single-item generator that works one log at a time and leaves issue-draft scaffolding conservative by default.\r\n- Batch conclusion planning now preserves the live Context block unless an operator explicitly requests regeneration for one item.\r\n- Representative closed issues were refreshed through that one-item path to prove natural Context edits can stay operator-owned without breaking the audit contract.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -41,3 +41,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/336",
   "created_at": "2026-04-03T11:49:39.768442+00:00"
 }
+

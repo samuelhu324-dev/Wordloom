@@ -7,10 +7,10 @@
 
 ## Context
 
-- This issue keeps the working ledger for the workflow/github actions secondary enforcement path while delivery is still being tracked.
-- S0E-7A is now the dedicated follow-up for GitHub Actions integration after S0E-5C/P4 wired post-apply verification into the local live create path.
-- The boundary here was to fix the boundary between local primary verification and GitHub Actions secondary enforcement.
-- It carries the work forward from S0E-6B while staying on the same parent S0E chain.
+- Local PR creation already had post-apply verification, but the repo still lacked a clear GitHub Actions policy for how CI should participate.
+- This slice defined GitHub Actions as secondary enforcement that verifies an already-live PR instead of claiming publish-time ownership.
+- The workflow reuses the same live verifier and emits machine-readable results plus retained artifacts rather than screenshot-only evidence.
+- Broader rollout stays deliberately limited until the mirror path proves it can surface drift without blurring attribution or publish responsibility.
 
 ## Definition of Done (DoD)
 

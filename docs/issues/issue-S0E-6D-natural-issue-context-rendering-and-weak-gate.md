@@ -7,10 +7,10 @@
 
 ## Context
 
-- It carries the work forward from S0E-6C while staying on the same parent S0E chain.
-- S0E-6D exists because S0E-6C fixed deterministic Context shape, but the renderer still produced text that felt too uniform and too machine-shaped when compared with the more natural historical issue bodies already used in the repo.
-- The scoped detail here is redefine the Context contract from rigid sentence slots to source-log-derived natural summary.
-- This issue keeps the working ledger for the natural issue Context rendering and weak gate path while delivery is still being tracked.
+- S0E-6C made Context deterministic, but the renderer still produced prose that looked like the same template with nouns swapped.
+- This slice replaced rigid sentence slots with source-log-derived summaries so different issues can sound specific without losing contract shape.
+- The gate was narrowed to prose-integrity checks such as line counts, readable English, and placeholder hygiene rather than rhetorical pattern matching.
+- Replayed closed-issue samples showed the new renderer can pass audit while reading like manual project notes instead of machine scaffolding.
 
 ## Definition of Done (DoD)
 

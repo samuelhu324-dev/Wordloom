@@ -7,10 +7,10 @@
 
 ## Context
 
-- S0E-6C is the dedicated follow-up for issue-body Context shape after S0E-2D, S0E-2E, S0E-5D, and S0E-6B fixed the broader issue-body and gate contracts.
-- The scoped change here was to fix the canonical Context sentence-count contract for main issues and child issues.
-- It carries the work forward from S0E-6B while staying on the same parent S0E chain.
-- This issue keeps the working ledger for the issue Context sentence contract and gate path while delivery is still being tracked.
+- Issue Context had been left blank, reduced to placeholders, or repeated as one generic paragraph across unrelated issues.
+- This slice fixed a deterministic Context contract with four English bullet sentences for child-log issues and five for main-log issues.
+- The same rule now drives both issue-draft rendering and conclusion-time rewrites, so create and close paths no longer diverge.
+- Lifecycle audit now blocks issue bodies whose Context lacks the required line count, one-sentence-per-line shape, or source-log-specific anchors.
 
 ## Definition of Done (DoD)
 

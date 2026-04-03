@@ -21,7 +21,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- It carries the work forward from S0E-7F while staying on the same parent S0E chain.\n- S0E-7G is the dedicated follow-up after S0E-7F/P4, focused on attaching the shared read-only wrapper to one GitHub-side manual workflow_dispatch surface.\n- The scoped change here was to fix the GitHub-side wrapper ownership boundary and trigger policy.\n- This issue keeps the working ledger for the workflow/publish-verify-remediation gate workflow_dispatch wrapper surface path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- The read-only wrapper worked locally, but operators still could not trigger the same verification flow from a GitHub-side manual workflow.\r\n- This slice exposed a workflow_dispatch entrypoint that calls the shared wrapper with explicit family selection, run-specific artifact roots, and uploaded summaries.\r\n- The workflow keeps delegate_apply disabled and preserves the secondary-enforcement wording so GitHub-side runs stay read-only.\r\n- Representative dispatch runs demonstrated that the Actions surface can coordinate verification artifacts without reopening publish ownership or family-specific semantics.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -44,3 +44,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/340",
   "created_at": "2026-04-03T11:50:00.570050+00:00"
 }
+

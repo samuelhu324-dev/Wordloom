@@ -19,7 +19,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- It carries the work forward from S0E-6C while staying on the same parent S0E chain.\n- S0E-6D exists because S0E-6C fixed deterministic Context shape, but the renderer still produced text that felt too uniform and too machine-shaped when compared with the more natural historical issue bodies already used in the repo.\n- The scoped detail here is redefine the Context contract from rigid sentence slots to source-log-derived natural summary.\n- This issue keeps the working ledger for the natural issue Context rendering and weak gate path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- S0E-6C made Context deterministic, but the renderer still produced prose that looked like the same template with nouns swapped.\r\n- This slice replaced rigid sentence slots with source-log-derived summaries so different issues can sound specific without losing contract shape.\r\n- The gate was narrowed to prose-integrity checks such as line counts, readable English, and placeholder hygiene rather than rhetorical pattern matching.\r\n- Replayed closed-issue samples showed the new renderer can pass audit while reading like manual project notes instead of machine scaffolding.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -41,3 +41,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/335",
   "created_at": "2026-04-03T11:49:16.611778+00:00"
 }
+

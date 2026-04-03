@@ -7,10 +7,10 @@
 
 ## Context
 
-- This issue keeps the working ledger for the issue body metadata and links boundary follow-up path while delivery is still being tracked.
-- S0E-6F exists because the current issue body contract still mixes one navigation field into Metadata: Source log is rendered as if it were object-state metadata even though it functions as a deterministic navigation link.
-- The scoped change here was to define the issue-body field-allocation contract for Metadata versus Links.
-- It carries the work forward from S0E-6E while staying on the same parent S0E chain.
+- The issue body still treated Source log as metadata even though it behaves as a navigation link rather than issue state.
+- This slice kept Metadata limited to issue state fields and moved deterministic navigation rows into Links, including optional previous-log references.
+- Top-level parent issues and child issues now follow separate body rules so parent ledgers do not inherit child-oriented fields by accident.
+- Lifecycle audit was updated around that split so historical S0E issues can be checked against one explicit Metadata-versus-Links contract.
 
 ## Definition of Done (DoD)
 

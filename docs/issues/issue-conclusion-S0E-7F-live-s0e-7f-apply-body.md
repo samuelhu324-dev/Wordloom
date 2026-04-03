@@ -7,10 +7,10 @@
 
 ## Context
 
-- S0E-7F is the dedicated implementation follow-up after S0E-7E/P4, focused on adopting one wrapper-safe, read-only surface over the thin publish-verify-remediation gate.
-- The boundary here was to fix the read-only wrapper adoption boundary and its relationship to S0E-7A secondary enforcement plus S0E-7E thin-gate semantics.
-- It carries the work forward from S0E-7E while staying on the same parent S0E chain.
-- It left the workflow/publish-verify-remediation gate read-only wrapper adoption path in a reusable live form instead of relying on ad hoc operator memory.
+- After the thin gate existed, callers still needed a way to inspect remediation decisions without risking live apply.
+- This slice added a read-only wrapper that runs thin-gate planning, publishes wrapper-owned summaries and manifests, and keeps delegated apply disabled.
+- The wrapper reuses the same normalized decision outputs while preserving the secondary-enforcement language established for drift detection.
+- Pass and stop samples confirmed that operators can replay verification locally without mutating issues or PRs.
 
 ## Definition of Done (DoD)
 

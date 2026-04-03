@@ -21,7 +21,7 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- The boundary here was to define the dual-track evidence model and section ownership rules.\n- S0E-6A exists to normalize how logs expose machine-consumable structure without deleting the human ledger value that current Evidence sections already provide.\n- It carries the work forward from S0E-5D while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the log structure normalization and dual-track evidence contract path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`\n",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- Earlier logs mixed automation inputs with human evidence notes, which made PR links and footer rows ambiguous to parse.\r\n- This slice separated PR Summary Inputs as the automation contract from Evidence as the human audit ledger, with different ownership and density rules.\r\n- Parent and phase templates were updated so authors declare that split up front instead of relying on later cleanup.\r\n- Representative mixed-shape logs were migrated to split PR links and Evidence Footer Source so the normalized structure exists in live samples.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`\r\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
@@ -44,3 +44,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/332",
   "created_at": "2026-04-03T11:48:59.942549+00:00"
 }
+

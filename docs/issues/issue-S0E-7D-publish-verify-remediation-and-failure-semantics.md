@@ -7,10 +7,10 @@
 
 ## Context
 
-- The boundary here was to define the failure taxonomy, replay/backfill order, and handling semantics contract.
-- S0E-7D is the dedicated follow-up slice for making publish to verify to remediation to failure handling semantics explicit across the current docs/GitHub automation family.
-- It carries the work forward from S0E-7C while staying on the same parent S0E chain.
-- This issue keeps the working ledger for the publish, verify, remediation, and failure semantics path while delivery is still being tracked.
+- Recent PR and issue fixes exposed repeated drift, but the repo still lacked a shared language for which failures block, replay, reconcile, or stay manual.
+- This slice defined the publish-to-verify-to-remediation taxonomy, separating strong-structure failures from weaker prose and summary problems.
+- It also fixed the ordered replay pipeline so repairs move through source log, derivation, audit, manifest, apply, and verify instead of ad hoc edits.
+- Representative manifests and audits now record each handling semantic explicitly, which gives later automation a stable classification surface.
 
 ## Definition of Done (DoD)
 

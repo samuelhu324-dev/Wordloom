@@ -7,10 +7,10 @@
 
 ## Context
 
-- The boundary here was to define the dual-track evidence model and section ownership rules.
-- S0E-6A exists to normalize how logs expose machine-consumable structure without deleting the human ledger value that current Evidence sections already provide.
-- It carries the work forward from S0E-5D while staying on the same parent S0E chain.
-- This issue keeps the working ledger for the log structure normalization and dual-track evidence contract path while delivery is still being tracked.
+- Earlier logs mixed automation inputs with human evidence notes, which made PR links and footer rows ambiguous to parse.
+- This slice separated PR Summary Inputs as the automation contract from Evidence as the human audit ledger, with different ownership and density rules.
+- Parent and phase templates were updated so authors declare that split up front instead of relying on later cleanup.
+- Representative mixed-shape logs were migrated to split PR links and Evidence Footer Source so the normalized structure exists in live samples.
 
 ## Definition of Done (DoD)
 
