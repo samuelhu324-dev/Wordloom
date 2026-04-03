@@ -78,12 +78,6 @@
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 - Evidence artifact: `docs/issues/issue-S0E-3B-github-label-inventory-and-live-preflight.json`
 
-**Evidence Footer Source**:
-
-- `P0-C1-S1S2` | artifact: `docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md`
-- `P1-C1-S1` | artifact: `scripts/issues/gen_issue_draft.py`
-- `P2-C1-S1` | artifact: `docs/issues/issue-S0E-3B-github-label-inventory-and-live-preflight.json`
-
 ## Definitions (optional)
 
 - `label inventory`: the live set of labels that already exists in the target GitHub repository.
