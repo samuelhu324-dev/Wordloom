@@ -652,10 +652,10 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
             checks.append(_build_check("parent-child-dod-ordering", "fail", f"DoD child-issue refs {actual_dod_refs or '[]'} do not preserve expected source-log-owned ordering {expected_child_issue_refs or '[]'}"))
 
         expected_child_issue_numbers = [parse_issue_number(ref) for ref in expected_child_issue_refs]
-        if actual_subissue_numbers == expected_child_issue_numbers and expected_child_issue_numbers:
-            checks.append(_build_check("sidebar-child-relationships", "pass", "live GitHub sub-issue relationships match the expected parent child-issue set"))
+        if set(actual_subissue_numbers) == set(expected_child_issue_numbers) and expected_child_issue_numbers:
+            checks.append(_build_check("sidebar-child-relationships", "pass", "live GitHub sub-issue relationships match the expected parent child-issue set regardless of display order"))
         else:
-            checks.append(_build_check("sidebar-child-relationships", "fail", f"live GitHub sub-issue relationships {actual_subissue_numbers or '[]'} do not match expected {expected_child_issue_numbers or '[]'}"))
+            checks.append(_build_check("sidebar-child-relationships", "fail", f"live GitHub sub-issue relationships {actual_subissue_numbers or '[]'} do not match expected child set {expected_child_issue_numbers or '[]'}"))
 
         checks.append(_build_check("final-dod-pr-refs", "skipped", "top-level parent issue DoD is a child-issue ledger, not a merged PR ledger"))
     elif issue_state == "CLOSED":

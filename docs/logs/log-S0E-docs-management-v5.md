@@ -304,16 +304,15 @@
 - [x] `P153`：`S0E-5E` 已完成 `P2`，parent issue draft generation 与 lifecycle audit 现已共享同一套 child-ledger ordering helper，不再各自以 issue number 作为本地排序实现
 - [x] `P154`：`S0E-5E` 已完成 `P3`，parent-side lifecycle audit 现已把 child-ledger ordering drift 作为显式 check 暴露出来，并已用 `#248` 留下一条 bounded replay sample；该样本同时证明 live parent issue 仍需后续 refresh/remediation
 - [x] `P155`：`S0E-5E` 已完成 full-auto live lifecycle，issue `#353` 与 PR `#354` 均已跑通到 merge/conclusion 闭环；当前剩余 follow-up 不再是 child slice lifecycle，而是 parent issue `#248` 的 bounded refresh/remediation
+- [x] `P156`：parent issue `#248` 已完成 bounded refresh/remediation，缺失的 sidebar child relationships `#342/#339/#340` 已补齐，live body 已按 source-log-owned child ledger、完整 `Roadmap` link 与新的 parent `Context` 回写；post-refresh bounded audit 现已回到 `pass`
 
 ## Current Status（进展摘要）
 
-- `S0E` 现阶段仍是 `draft`，重点是把 contract 先讲清楚，而不是抢先实现；
-- `S0E-2A` 已完成 title keyword、labels taxonomy、body scaffold 与 milestone mapping 的第一轮收口，并把 issue-aware template fields 落到 parent/phase templates；
-- `S0E-2A` 已完成第一条自举式 sample、`S4E-5B` / `S6A-4A` 两条 cross-log validation，以及 `P3` 的最小人工创建流程和 future script entry contract；
-- `S0E-2B` 已建立并完成 `P0`，明确真正的 GitHub issue 自动创建必须以 `draft-generation` 为默认模式、以 `--create` 为显式 opt-in，并继承 fail-closed contract；
-- `S0E-2B` 已完成 `P1`：本地 `log_path -> docs/issues/*.md` draft-generation 脚本和 JSON sidecar 已跑通，下一步应进入 `P2` 的真实 GitHub create issue 入口；
-- `S0E-2B` 已完成 `P2`：脚本已通过 `gh` prerequisite checks 成功创建真实 issue `#288`，下一步应进入 `P3` 去验证 write-back discipline，并决定是否继续用同一路径创建 `S0E-2A` 的真实 issue；
-- `S0E-2B` 已完成 `P3`：真实 create path 与 write-back discipline 都已验证，`S0E-2A` 的真实 issue `#289` 也已通过同一路径创建并回写到 source log；
+- `S0E` 仍保持 `draft`，但 active work 已不再是大面积 contract 开荒，而是 parent spine `#248` 的持续记账与 bounded refresh；绝大多数 child slices 已完成各自的 real-run 验证或 full-auto 闭环。
+- `S0E-5E` 已把 top-level parent issue `DoD` 的 child-ledger 排序正式收口为 source-log-owned ordering，并已用 live issue `#353` 与 merged PR `#354` 完成一条独立 full-auto lifecycle 样本。
+- parent issue `#248` 当前已完成一轮新的 bounded refresh：缺失的 `#342/#339/#340` sidebar child relationships 已补齐，live body 也已回写为完整 child ledger、显式 `Roadmap` link 与新的 parent `Context`。
+- `S0E` parent 的 authoritative child ledger 现已明确固定为 `created -> phase_log order -> short ref`，因此 parent body ordering 与 GitHub sidebar relationship completeness 已被分离为两个独立审计面。
+- 除 parent spine 的滚动记账外，`S0E` 现阶段的主要已完成能力面已经覆盖 issue body contract、PR body contract、relationship attach、lifecycle audit/pre-gate、Context authoring、attribution handoff、historical replay，以及 thin/read-only publish-verify wrappers。
 - `S0E-2C` 已建立为后续 slice，专门处理单条 issue creation 之后的批量化、关系补链与历史回填；
 - `S0E-2C` 已完成 `P2-C1-S1`：parent-child linking 现在只接受显式 issue number / URL 作为关系输入，`log_path` 仅保留为 traceability 字段；
 - `S0E-2C` 已完成 `P2-C1-S2`：relationship dry-run 现在可以只读 manifest 并输出 `planned / skipped / error / reconciliation` 四类结果，未引入任何 apply 行为；
@@ -448,6 +447,7 @@
 
 ## Recent changes（for traceability，可选）
 
+- 2026-04-03：已完成 `S0E` parent issue `#248` 的 bounded refresh/remediation：缺失的 `#342/#339/#340` child relationships 已补齐，live parent body 已按 source-log-owned child ledger、完整 `Roadmap` link 与新的 parent `Context` 回写，随后 bounded replay audit 已重新回到 `pass`。
 - 2026-03-28：首次创建 `S0E` spine，用于承接 docs-management v5 中的 issue scaffold / taxonomy / structured mapping 主题。
 - 2026-03-28：新增 `S0E-2C`，把 batch issue creation / parent-child linking / milestone-backfill tooling 从 `S0E-2B` 中拆出为独立 follow-up slice。
 - 2026-03-28：`S0E-2C/P2-C1-S1` 已固定 relationship manifest contract，为下一步 linking/backfill dry-run implementation 提供稳定输入边界。
