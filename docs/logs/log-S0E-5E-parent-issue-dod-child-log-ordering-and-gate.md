@@ -52,6 +52,7 @@
 
 - The parent issue `Definition of Done (DoD)` child ledger should be ordered by the referenced child log's `created` field in ascending order.
 - If multiple child logs share the same `created` value, the first tie-breaker should be the parent log's explicit `phase_log_*` declaration order; the final tie-breaker should be the child issue short ref.
+- If any child log participating in the parent ledger is missing a valid `created` value, that item should become a fail-closed contract error for parent-ledger rendering and audit rather than silently falling back to issue-number order.
 - The ordering rule should stay source-log-owned rather than GitHub-timestamp-owned, because parent issue rendering is derived from repo logs rather than from mutable board views.
 - Lifecycle audit should treat parent DoD ordering as a deterministic contract surface, not as cosmetic prose.
 
@@ -61,6 +62,7 @@
 - Do not rely only on issue numbers as the semantic order for parent issue ledgers once a source-log-owned ordering rule exists.
 - Do not make the new ordering rule depend on prose parsing from `Decision / Outcome` or `Recent changes`.
 - Do not let missing child-log `created` values pass invisibly if the rule is promoted to authoritative contract.
+- Do not silently downgrade missing or invalid child-log `created` metadata into a warning-only condition once parent-ledger ordering is declared deterministic.
 
 ## Scope
 
@@ -98,15 +100,18 @@
 - The current parent issue helper still collects child issue refs and then sorts them by issue number, which is deterministic but not aligned to the child log creation sequence.
 - `S0E-6F` already made the parent issue body family explicit, so the remaining gap is no longer field ownership; it is ordering semantics.
 - The ordering question is now important because `S0E-docs-management-v5/#248` is close to needing a fresh parent conclusion body, and the current child ledger order will look arbitrary if replay keeps following issue number allocation.
-- `S0E-5E` is the dedicated place to fix that ordering rule before the parent issue conclusion is replayed again.
+- `P0` is now completed: the authoritative ordering source is fixed as child-log `created` ascending, and the rule is now explicitly scoped to top-level parent issue child ledgers rather than child issue merged-PR ledgers.
+- `P1` is now completed: the fallback chain is fixed as `created -> phase_log_* declaration order -> child issue short ref`, and missing or invalid `created` is now explicitly classified as a fail-closed contract error rather than a warning-only drift.
+- `S0E-5E` now moves to implementation reuse and gate work under `P2-P3` before the parent issue conclusion is replayed again.
 
 ## P0 (Parent child-ledger ordering contract | v1)
 
 ### P0-C1-S1 (Parent issue DoD ordering source fixed | v1)
 
 - Top-level parent issue child refs should be ordered from source-log facts, not from project view position and not from issue number allocation.
-- The primary ordering key should be the child log's `created` field.
+- The primary ordering key is the child log's frontmatter `created` field parsed as the canonical repo-side creation date for that child slice.
 - The ordering rule applies only to parent issue child ledgers, not to child issue merged-PR ledgers.
+- Issue number order is no longer considered semantic order for parent DoD ledgers; it is only an implementation-detail fallback of the old helper that this slice replaces.
 
 ## P1 (Fallback and tie-break chain | v1)
 
@@ -114,7 +119,13 @@
 
 - If two child logs share the same `created` value, the first tie-breaker should be the explicit `phase_log_*` order declared by the parent log.
 - If child logs still cannot be distinguished after that, the final tie-breaker should be the child issue short ref.
-- Missing `created` should be handled explicitly rather than guessed from later evidence blocks or issue timestamps.
+- Neither GitHub issue timestamps nor board order are valid tie-break inputs for this rule.
+
+### P1-C1-S2 (Missing `created` becomes a fail-closed contract error | v1)
+
+- A child log included in the parent ledger must carry a valid frontmatter `created` value if parent-ledger ordering is being rendered or audited under this contract.
+- Missing or invalid `created` is a strong-structure failure for parent issue ordering and should stop deterministic parent-ledger rendering rather than degrading to warning-only output.
+- Parent issue draft generation, parent issue refresh, and lifecycle audit should all surface the same fail-closed outcome for that case so operators repair the child log metadata instead of accepting guessed order.
 
 ## P2 (Renderer and planner reuse | v1)
 
@@ -134,15 +145,13 @@
 
 ## Plan (draft)
 
-- `P0-C1-S1`: fix the parent child-ledger ordering contract
-- `P1-C1-S1`: fix tie-break and missing-data rules
 - `P2-C1-S1`: reuse one shared helper across renderer and conclusion planning
 - `P3-C1-S1`: add audit coverage and one replay sample
 
 ## Execution Checklist (unchecked)
 
-- [ ] `P0-C1-S1`: parent issue DoD ordering source fixed
-- [ ] `P1-C1-S1`: deterministic fallback chain fixed
+- [x] `P0-C1-S1`: parent issue DoD ordering source fixed
+- [x] `P1-C1-S1`: deterministic fallback chain fixed
 - [ ] `P2-C1-S1`: renderer and conclusion planner share one ordering helper
 - [ ] `P3-C1-S1`: parent DoD ordering drift checked in audit and replayed once
 
@@ -150,6 +159,21 @@
 
 - This slice will retain the contract note, implementation file diffs, and one bounded parent replay sample once the ordering rule is implemented.
 
+### P0-P1 (ordering source and fail-closed fallback chain fixed | 2026-04-03)
+
+- artifacts:
+  - `docs/logs/log-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md`
+  - `docs/logs/log-S0E-docs-management-v5.md`
+  - `docs/issues/issue-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md`
+  - `docs/issues/issue-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.json`
+- expected:
+  - parent issue child-ledger ordering should stop using issue-number order as the semantic default
+  - the contract should fix one tie-break chain for equal dates and one explicit outcome for missing dates before implementation starts
+- observed:
+  - the contract now fixes parent DoD ordering as child-log `created` ascending, then parent `phase_log_*` declaration order, then child issue short ref
+  - missing or invalid child-log `created` is now explicitly classified as a fail-closed strong-structure error for parent-ledger rendering and audit
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-03: created `S0E-5E` to isolate the parent issue `Definition of Done (DoD)` child-ledger ordering problem before replaying the top-level `S0E` parent issue conclusion.
+- 2026-04-03: completed `P0-P1` by fixing the ordering contract to `created -> phase_log_* -> child issue short ref`, and by classifying missing or invalid child-log `created` as a fail-closed parent-ordering error rather than a warning-only drift.
