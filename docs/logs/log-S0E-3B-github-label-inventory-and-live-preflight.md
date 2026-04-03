@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Labels, Automation, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/322`
   **pr**: ``
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
@@ -125,7 +125,7 @@
 - `S0E-3B` is now opened as the dedicated slice for GitHub label inventory ownership and issue-label live preflight.
 - `P0` is complete: the repo now has an explicit contract that live GitHub labels are authoritative, advisory preflight is separate from real create mode, and missing labels must never be auto-created on the fly.
 - `P1` is complete: `scripts/issues/gen_issue_draft.py` now supports explicit live label preflight outside create mode, with separate warning-vs-fail behavior.
-- `P2` is complete: one representative issue-draft sample for `S0E-3B` can now be generated with live label preflight against the repository's actual label inventory.
+- `P2` is complete: one representative issue-draft sample for `S0E-3B` was generated with live label preflight and then promoted into live GitHub issue `#322`.
 - `P3` remains open: the repo has not yet decided which higher-trust entrypoints, if any, should require live label preflight by default.
 
 ## P0 (Contract | v1)
@@ -236,10 +236,11 @@
 - expected:
   - The repo should retain one issue-draft sample that includes both derived labels and a live-preflight result against the repository's actual GitHub labels.
 - observed:
-  - Running `gen_issue_draft.py` on `S0E-3B` with live label preflight now produces a draft plus structured JSON result under `docs/issues/`, proving the current derived labels resolve against the live GitHub label catalog.
+  - Running `gen_issue_draft.py` on `S0E-3B` with live label preflight produced a draft plus structured JSON result under `docs/issues/`, and explicit `--create` then created live GitHub issue `#322` with the same derived label set.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-04-03: opened `S0E-3B` to isolate GitHub label inventory ownership and issue-label live preflight from the broader `S0E-2A` issue-creation contract.
 - 2026-04-03: extended `gen_issue_draft.py` with explicit live label preflight so draft generation can warn or fail before real issue creation.
 - 2026-04-03: retained one representative `S0E-3B` draft-generation sample that records the live GitHub label check outcome alongside the derived draft metadata.
+- 2026-04-03: created live GitHub issue `#322` through the automated `gen_issue_draft.py --create` path and wrote the resulting issue URL back to this source log.

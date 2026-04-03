@@ -1,5 +1,5 @@
 {
-  "mode": "draft-generation",
+  "mode": "create-issue",
   "result": "ok",
   "context_mode": "scaffold",
   "log_path": "docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md",
@@ -26,7 +26,8 @@
     "issue_milestone missing",
     "live label preflight passed against samuelhu324-dev/wordloom-v3",
     "Context was left as scaffold; generate or author single-item Context text separately before lifecycle completion",
-    "Definition of Done (DoD) remains intentionally blank pending operator input"
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
   ],
   "live_label_check_enabled": true,
   "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
@@ -36,7 +37,7 @@
     "sub/1"
   ],
   "missing_live_labels": [],
-  "issue_number": null,
-  "issue_url": null,
-  "created_at": null
+  "issue_number": 322,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/322",
+  "created_at": "2026-04-03T05:30:34.171578+00:00"
 }
