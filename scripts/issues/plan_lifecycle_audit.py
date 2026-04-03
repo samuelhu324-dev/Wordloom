@@ -647,9 +647,9 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     actual_dod_refs = _extract_dod_refs(dod_lines)
     if uses_parent_contract:
         if actual_dod_refs == expected_child_issue_refs and expected_child_issue_refs:
-            checks.append(_build_check("parent-child-dod-refs", "pass", "DoD child-issue refs match the expected parent child-issue ledger"))
+            checks.append(_build_check("parent-child-dod-ordering", "pass", "DoD child-issue refs preserve the expected source-log-owned ordering (`created -> phase_log_* -> short ref`)"))
         else:
-            checks.append(_build_check("parent-child-dod-refs", "fail", f"DoD child-issue refs {actual_dod_refs or '[]'} do not match expected {expected_child_issue_refs or '[]'}"))
+            checks.append(_build_check("parent-child-dod-ordering", "fail", f"DoD child-issue refs {actual_dod_refs or '[]'} do not preserve expected source-log-owned ordering {expected_child_issue_refs or '[]'}"))
 
         expected_child_issue_numbers = [parse_issue_number(ref) for ref in expected_child_issue_refs]
         if actual_subissue_numbers == expected_child_issue_numbers and expected_child_issue_numbers:

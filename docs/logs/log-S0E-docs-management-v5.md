@@ -302,6 +302,7 @@
 - [x] `P151`：已新建 `S0E-5E`，用于把 top-level parent issue `Definition of Done (DoD)` 的 child-ledger 排序从 issue-number order 收口为 source-log-owned ordering contract，并预留对应 gate 入口
 - [x] `P152`：`S0E-5E` 已完成 `P0-P1`，parent issue child-ledger 的 contract 现已固定为 `child log created -> parent phase_log order -> child issue short ref`，且缺失/无效 `created` 已被明确定义为 fail-closed strong-structure error
 - [x] `P153`：`S0E-5E` 已完成 `P2`，parent issue draft generation 与 lifecycle audit 现已共享同一套 child-ledger ordering helper，不再各自以 issue number 作为本地排序实现
+- [x] `P154`：`S0E-5E` 已完成 `P3`，parent-side lifecycle audit 现已把 child-ledger ordering drift 作为显式 check 暴露出来，并已用 `#248` 留下一条 bounded replay sample；该样本同时证明 live parent issue 仍需后续 refresh/remediation
 
 ## Current Status（进展摘要）
 
