@@ -1,0 +1,30 @@
+{
+    "mode":  "pr-source-log-attribution-sample-manifest",
+    "result":  "ok",
+    "samples":  {
+                    "resolved":  {
+                                     "pr_payload_input_path":  "docs/issues/pr-source-log-attribution-S0E-7B-p3-resolved-pr-payload.json",
+                                     "normalized_pr_payload_path":  "docs/issues/pr-source-log-attribution-S0E-7B-p3-resolved-normalized-pr-payload.json",
+                                     "attribution_result_path":  "docs/issues/pr-source-log-attribution-S0E-7B-p3-resolved-result.json",
+                                     "attribution_result":  "resolved",
+                                     "winning_surface":  "pr-body-log-row",
+                                     "source_log_path":  "docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md",
+                                     "verifier_gate":  "continue-to-verifier",
+                                     "verifier_executed":  true
+                                 },
+                    "stop":  {
+                                 "pr_payload_input_path":  "docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-pr-payload.json",
+                                 "normalized_pr_payload_path":  "docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-normalized-pr-payload.json",
+                                 "attribution_result_path":  "docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-result.json",
+                                 "attribution_result":  "stop-conflicting-attribution",
+                                 "stop_reason":  "conflicting-attribution",
+                                 "source_log_path":  "",
+                                 "verifier_gate":  "skipped-before-verifier",
+                                 "verifier_executed":  false
+                             }
+                },
+    "exits":  {
+                  "resolved_attribution":  0,
+                  "stop_attribution":  1
+              }
+}

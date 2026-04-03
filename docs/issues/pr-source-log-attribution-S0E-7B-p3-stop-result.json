@@ -1,0 +1,45 @@
+{
+  "mode": "pr-source-log-attribution",
+  "result": "stop-conflicting-attribution",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "pr_ref": "779",
+  "pr_url": "https://github.com/example/example/pull/779",
+  "source_log_path": "",
+  "winning_surface": "",
+  "consulted_surfaces": [
+    "explicit-provenance",
+    "pr-body-log-row",
+    "exact-id-branch-fallback"
+  ],
+  "stop_reason": "conflicting-attribution",
+  "eligible_for_secondary_enforcement": false,
+  "pr_payload_path": "docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-normalized-pr-payload.json",
+  "surface_details": [
+    {
+      "surface": "explicit-provenance",
+      "status": "absent",
+      "value": null,
+      "details": "trusted explicit provenance was not supplied",
+      "candidates": []
+    },
+    {
+      "surface": "pr-body-log-row",
+      "status": "candidate",
+      "value": "docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md",
+      "details": "PR body Log row carried one exact repo-relative source_log_path",
+      "candidates": [
+        "docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md"
+      ]
+    },
+    {
+      "surface": "exact-id-branch-fallback",
+      "status": "candidate",
+      "value": "docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md",
+      "details": "PR head ref exact-ID fallback resolved to one source log",
+      "candidates": [
+        "docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md"
+      ]
+    }
+  ],
+  "result_path": "docs/issues/pr-source-log-attribution-S0E-7B-p3-stop-result.json"
+}
