@@ -39,6 +39,7 @@
   **phase_log_27**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
   **phase_log_28**: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
   **phase_log_29**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  **phase_log_30**: `docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -47,7 +48,7 @@
   **phase_log_5**: `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
   **phase_log_6**: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
 **created**: `2026-03-28`
-  **updated**: `2026-04-02`
+  **updated**: `2026-04-03`
 
 ---
 
@@ -218,6 +219,7 @@
 - [x] `P72`：`S0E-5C` 已完成 `P4`，`create_pr_from_plan.py` 现已把 post-apply live verifier 直接接到真实 `gh pr create` 后面，并把验证状态与 artifact 路径写回同一份 `pr-create result` JSON
 - [x] `P73`：`S0E-5C/P4` 已用历史样本 `S0E-5B/#308` 完成非破坏性验证，`docs/issues/pr-prep-S0E-5B-real-post-apply-live-body.md` 与 `...-verify-result.json` 已证明新执行顺序可产出稳定证据
 - [x] `P74`：已新建 `S0E-6B`，用于收口 AI-authored logs 的本地 gate / `stable` 后验 gate 策略，并把这部分从 GitHub Actions slice 中拆开
+- [x] `P75`：已新建 `S0E-3B`，用于把 GitHub label inventory、issue-label live preflight，以及 advisory-vs-fail-closed 边界从 `S0E-2A` 中拆成独立 slice；当前 issue draft 生成已补上可选 live label preflight
 - [x] `P75`：`S0E-6B` 已完成 `P0`，现已固定 local log gates 只应约束 automation-facing surfaces 与 `stable` 转换质量，而不应演化成 prose linter
 - [x] `P76`：`S0E-7A` 已重构回 GitHub-side slice，现仅负责 Actions secondary enforcement、artifact publishing 与 CI failure surfacing 边界
 - [x] `P77`：`S0E-6B` 已完成 `P1`，现已固定第一版 local log gate 只检查五类 deterministic surfaces：frontmatter、required sections、`PR Summary Inputs` 形状、`Evidence Footer Source` 行型、placeholder hygiene
