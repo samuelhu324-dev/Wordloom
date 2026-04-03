@@ -1,0 +1,21 @@
+{
+  "mode": "issue-context-draft",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+  "output_path": "docs/issues/issue-context-S0E-2B-6E-refresh.md",
+  "phase": "conclusion",
+  "merged_pr_numbers": [
+    290
+  ],
+  "context_lines": [
+    "- The live ledger now closes this slice through #290.",
+    "- This issue centers on contract\uff08mode boundary\u3001script I/O contract\u3001creation evidence contract\uff09.",
+    "- The boundary being recorded here is draft-generation to create-issue.",
+    "- It carries the work forward from S0E-2A while staying on the same parent S0E chain."
+  ],
+  "warnings": [
+    "This script is the single-item Context authoring entrypoint; review the generated text before copying or applying it",
+    "Conclusion-phase Context generation is intended for one closed issue at a time after merged PR evidence is known"
+  ]
+}
