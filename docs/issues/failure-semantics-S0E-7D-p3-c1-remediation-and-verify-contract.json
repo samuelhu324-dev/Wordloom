@@ -1,0 +1,162 @@
+{
+  "mode": "failure-semantics-remediation-contract",
+  "result": "ok",
+  "requested_id": "S0E-7D",
+  "scope": [
+    "P3"
+  ],
+  "version": "v1",
+  "prerequisites": {
+    "taxonomy_artifact": "docs/issues/failure-semantics-S0E-7D-p0-p1-taxonomy.json",
+    "representative_manifest_path": "docs/issues/failure-semantics-S0E-7D-p2-c1-representative-manifest.json",
+    "audit_summary_path": "docs/issues/failure-semantics-S0E-7D-p2-c1-audit-summary.json"
+  },
+  "entry_conditions": [
+    "Each selected target must have an explicit deterministic owner surface such as source_log_path, exact issue/pr ref, or canonical contract owner.",
+    "Expected values must be fully derived before apply; blank issue_* or pr_* fields remain blank rather than inferred.",
+    "Only items classified as semantic=replayable may enter remediation-manifest or apply.",
+    "Any selected block, manual, or reconciliation finding must stop the mixed batch until the batch is split or corrected."
+  ],
+  "pipeline_contract": [
+    {
+      "stage": "source-log",
+      "allowed_actions": [
+        "Read source log",
+        "Validate required ownership fields",
+        "Retain source artifact path"
+      ],
+      "stop_conditions": [
+        "missing-source-log",
+        "invalid-frontmatter-shape",
+        "multiple competing owner logs"
+      ]
+    },
+    {
+      "stage": "deterministic-derive",
+      "allowed_actions": [
+        "Derive expected labels, development linkage, parent refs, write-back targets, and canonical body shape",
+        "Record blanks as explicit blanks",
+        "Emit normalized expected-value payload"
+      ],
+      "stop_conditions": [
+        "non-deterministic-required-field",
+        "guessed-label-or-milestone",
+        "ambiguous-derived-target"
+      ]
+    },
+    {
+      "stage": "live-audit",
+      "allowed_actions": [
+        "Fetch live GitHub state or retained live artifact",
+        "Compare expected versus observed values",
+        "Classify each finding by family and semantic"
+      ],
+      "stop_conditions": [
+        "unclassified-finding",
+        "live-fetch-failure",
+        "explicit-live-vs-source-conflict"
+      ]
+    },
+    {
+      "stage": "remediation-manifest",
+      "allowed_actions": [
+        "Emit bounded manifest rows for replayable findings only",
+        "Record exact target refs, expected values, observed values, and intended mutations",
+        "Link downstream apply and verify artifact paths"
+      ],
+      "stop_conditions": [
+        "mixed-semantics-batch",
+        "missing-expected-values",
+        "apply-step-not-bounded"
+      ]
+    },
+    {
+      "stage": "apply",
+      "allowed_actions": [
+        "Apply only the manifest-declared mutations",
+        "Retain before/after artifacts and per-item apply results",
+        "Backfill deterministic labels or close-link rows only when already derived"
+      ],
+      "stop_conditions": [
+        "operator-added-out-of-band-mutation",
+        "attempted-manual-prose-rewrite",
+        "attempted-reconciliation-overwrite",
+        "apply-command-failure"
+      ]
+    },
+    {
+      "stage": "post-apply-verify",
+      "allowed_actions": [
+        "Re-fetch the same target set from live state",
+        "Compare against the same expected deterministic values",
+        "Emit per-item convergence status and final gate decision"
+      ],
+      "stop_conditions": [
+        "incomplete-convergence",
+        "new-drift-introduced",
+        "missing-post-apply-evidence"
+      ]
+    }
+  ],
+  "manifest_row_requirements": [
+    "requested_id",
+    "target_kind",
+    "target_ref",
+    "source_log_path",
+    "surface",
+    "family",
+    "semantic",
+    "expected",
+    "observed",
+    "planned_mutation",
+    "planned_apply_artifact_path",
+    "planned_verify_artifact_path"
+  ],
+  "apply_contract": {
+    "allowed_targets": [
+      "Deterministic label backfill",
+      "Deterministic PR development-linkage footer rows",
+      "Deterministic parent relationship attach",
+      "Deterministic source-log write-back",
+      "Canonical body rewrite from approved source"
+    ],
+    "forbidden_targets": [
+      "Manual Context prose authoring",
+      "Guessing blank issue_* or pr_* fields",
+      "Overwriting explicit live/source conflicts",
+      "Adding mutations not declared in the remediation manifest"
+    ],
+    "required_evidence": [
+      "live-before artifact",
+      "manifest row or batch manifest",
+      "per-target apply result",
+      "live-after verify artifact"
+    ],
+    "allow_apply_decision": "A batch may proceed only when every selected item is replayable, fully derived, and bounded to explicit manifest rows."
+  },
+  "post_apply_verify": {
+    "required_checks": [
+      "Fetch the same target objects mutated by apply",
+      "Compare against the exact same expected deterministic values used during planning",
+      "Confirm intended live surfaces converged without creating new drift"
+    ],
+    "pass_condition": "All selected replayable targets converge exactly to expected deterministic values and all required artifacts are retained.",
+    "stop_rules": [
+      {
+        "decision": "stop-incomplete-convergence",
+        "when": "Any replayable target still differs from expected values after apply.",
+        "required_follow_up": "Retain verify output and open a new remediation cycle instead of silently re-editing live state."
+      },
+      {
+        "decision": "stop-new-drift",
+        "when": "Apply fixed one surface but introduced unexpected drift on another deterministic surface.",
+        "required_follow_up": "Treat the result as a fresh audit finding and classify it again before any new mutation."
+      },
+      {
+        "decision": "stop-missing-evidence",
+        "when": "Before/after/apply artifacts are incomplete or inconsistent with the manifest.",
+        "required_follow_up": "Do not mark convergence; regenerate evidence or rerun the bounded cycle."
+      }
+    ]
+  }
+}
