@@ -1,0 +1,41 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-5E-live-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-5E",
+  "source_log_path": "docs/logs/log-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-5e-live",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 5,
+  "selected_commits": [
+    "e4a150cf2f5f7bba95805e1b68b25c02618080ff",
+    "fddbeb73f974e1b30f48a93ebcd43fac269ba61d",
+    "4630b06aa5d0a35639a5fd429cc363fe6a2b90a1",
+    "cf9712cb3ecd497bba025bff0772b12d36e98fb6",
+    "9ea6d41b24421d1f704848f9891643c0b8e05bac"
+  ],
+  "pr_title": "S0E-5E/P0-P3: parent issue DoD child-log ordering and gate v1",
+  "draft": false,
+  "pr_number": 354,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/354",
+  "body_path": "docs/issues/pr-prep-S0E-5E-live-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#353",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0E-5E-live-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0E-5E-live-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped"
+  ]
+}

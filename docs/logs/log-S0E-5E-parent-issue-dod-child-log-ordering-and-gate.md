@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, Contract, Ordering, Gate, epic/s0, sub/0e5e`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/353`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/354`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
