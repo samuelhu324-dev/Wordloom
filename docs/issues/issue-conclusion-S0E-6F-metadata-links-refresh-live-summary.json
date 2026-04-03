@@ -1,0 +1,72 @@
+﻿[
+    {
+        "body":  "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n\r\n- S0E-2B took the validated S0E-2A contract and moved it from local draft generation into a real GitHub issue creation path.\r\n- The slice fixed the boundary between safe draft-generation by default and explicit opt-in create-issue execution.\r\n- It kept the create path fail-closed around repo context, label existence, and other prerequisites instead of guessing missing metadata at runtime.\r\n- It left the issue-create path in a reusable live form instead of keeping it as a local-only draft workflow.\r\n\r\n\r\n## Definition of Done (DoD)\r\n\r\n- #290\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`\r\n\r\n",
+        "number":  288,
+        "state":  "CLOSED",
+        "title":  "S0E-2B: automation/real GitHub issue creation automation",
+        "url":  "https://github.com/samuelhu324-dev/wordloom-v3/issues/288"
+    },
+    {
+        "body":  "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n\r\n- S0E-2A fixed the first semi-automated contract for turning structured logs into GitHub issue drafts without jumping straight to freeform issue summaries.\r\n- The slice narrowed the work to title keywords, label taxonomy, body scaffold, and milestone/frontmatter mapping for the issue-create path.\r\n- It carried the docs-management line forward from S0D-6A and became the contract base for the later real creation follow-up in S0E-2B.\r\n- It left a stable contract baseline that later issue-creation automation could build on without redefining the draft shape.\r\n\r\n\r\n## Definition of Done (DoD)\r\n\r\n- #287\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0D-6A-docs-management-v4.md`\r\n\r\n",
+        "number":  289,
+        "state":  "CLOSED",
+        "title":  "S0E-2A: contract/semi-automated Git issue creation contract",
+        "url":  "https://github.com/samuelhu324-dev/wordloom-v3/issues/289"
+    },
+    {
+        "body":  "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n\r\n- S0E-4A defines PR automation as a separate contract instead of hiding it inside issue automation.\r\n- The boundary being recorded here is contract for commit selection, PR metadata fields, and description structure.\r\n- It carries the work forward from S0E-3A while staying on the same parent S0E chain.\r\n- It left a stable PR-automation baseline that later follow-ups could refine without reopening the original separation from issue automation.\r\n\r\n\r\n## Definition of Done (DoD)\r\n\r\n- #294\r\n- #299\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`\r\n\r\n",
+        "number":  293,
+        "state":  "CLOSED",
+        "title":  "S0E-4A: contract/GitHub pull request automation contract",
+        "url":  "https://github.com/samuelhu324-dev/wordloom-v3/issues/293"
+    },
+    {
+        "body":  "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n\r\n- S0E-4B exists as the narrow follow-up to S0E-4A, focused only on PR title naming, PR label inheritance, and PR body section formatting.\r\n- The boundary being recorded here is contract corrections for PR title range compression, structural label inheritance, and body section boundaries.\r\n- It carries the work forward from S0E-4A while staying on the same parent S0E chain.\r\n- It left a narrower corrective baseline for later PR-facing follow-ups without reopening the broader S0E-4A contract.\r\n\r\n\r\n## Definition of Done (DoD)\r\n\r\n- #296\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`\r\n\r\n",
+        "number":  295,
+        "state":  "CLOSED",
+        "title":  "S0E-4B: contract/PR title compression, structural label inheritance, and body footer follow-up",
+        "url":  "https://github.com/samuelhu324-dev/wordloom-v3/issues/295"
+    },
+    {
+        "body":  "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n\r\n- S0E-2D reopens the issue-automation line after S0E-2C so issue creation can carry richer pre-create metadata instead of stopping at draft generation plus dry-run reconciliation.\r\n- The boundary being recorded here is contract for milestone, relationship, project, language, and body-structure rules at issue-creation time.\r\n- It carries the work forward from S0E-2C while staying on the same parent S0E chain.\r\n- It left the issue-create path with a richer metadata baseline that later creation and conclusion flows could reuse directly.\r\n\r\n\r\n## Definition of Done (DoD)\r\n\r\n- #298\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`\r\n\r\n",
+        "number":  297,
+        "state":  "CLOSED",
+        "title":  "S0E-2D: contract/issue creation metadata enrichment and English body contract",
+        "url":  "https://github.com/samuelhu324-dev/wordloom-v3/issues/297"
+    },
+    {
+        "body":  "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n\r\n- S0E-4C exists as the next narrow follow-up after S0E-4B, focused on three specific GitHub-facing mismatches that are still visible in live output.\r\n- The scoped detail here is contract for PR summary requiredness, development-issue rendering, and parent-relationship attach boundary.\r\n- It carries the work forward from S0E-4B while staying on the same parent S0E chain.\r\n- It left the GitHub-facing output path more internally aligned so later lifecycle follow-ups did not need to reopen these formatting mismatches.\r\n\r\n\r\n## Definition of Done (DoD)\r\n\r\n- #301\r\n- #302\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`\r\n\r\n",
+        "number":  300,
+        "state":  "CLOSED",
+        "title":  "S0E-4C: contract/PR summary, development-link rendering, and issue relationship follow-up",
+        "url":  "https://github.com/samuelhu324-dev/wordloom-v3/issues/300"
+    },
+    {
+        "body":  "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n\r\n- S0E-4D exists as the next follow-up after S0E-4C, focused on the operator-facing orchestration boundary across issue creation to PR creation to merge to issue conclusion.\r\n- The scoped detail here is contract for review-hold, full-auto, default human-gated behavior, and slice ownership boundaries.\r\n- It carries the work forward from S0E-4C while staying on the same parent S0E chain.\r\n- It left the lifecycle path with a clearer operator-facing orchestration model instead of relying on implicit handoff behavior.\r\n\r\n\r\n## Definition of Done (DoD)\r\n\r\n- #304\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`\r\n\r\n",
+        "number":  303,
+        "state":  "CLOSED",
+        "title":  "S0E-4D: workflow/review-hold, full-auto, and lifecycle orchestration follow-up",
+        "url":  "https://github.com/samuelhu324-dev/wordloom-v3/issues/303"
+    },
+    {
+        "body":  "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n\r\n- S0E-5A exists to define one lifecycle-audit gate that runs before any mutation across the issue to PR to merge to relationship to conclusion chain.\r\n- The boundary being recorded here is contract for audit scope, stage model, severity rules, and evidence shape.\r\n- It carries the work forward from S0E-4D while staying on the same parent S0E chain.\r\n- It left a reusable audit gate baseline that later guarded apply paths could build on without redefining the stage model.\r\n\r\n\r\n## Definition of Done (DoD)\r\n\r\n- #306\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`\r\n\r\n",
+        "number":  305,
+        "state":  "CLOSED",
+        "title":  "S0E-5A: workflow/lifecycle audit gate and dry-run planner",
+        "url":  "https://github.com/samuelhu324-dev/wordloom-v3/issues/305"
+    },
+    {
+        "body":  "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n\r\n- S0E-5B exists as the follow-up after S0E-5A, focused on expanding guarded pre-gate behavior from one issue-conclusion mutation path to a broader set of real lifecycle apply operations.\r\n- The boundary here was to define the expansion boundary from guarded issue-conclusion apply to broader guarded lifecycle apply.\r\n- It carries the work forward from S0E-5A while staying on the same parent S0E chain.\r\n- It left guarded apply as a reusable lifecycle pattern rather than a one-off issue-conclusion path.\r\n\r\n\r\n## Definition of Done (DoD)\r\n\r\n- #308\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`\r\n\r\n",
+        "number":  307,
+        "state":  "CLOSED",
+        "title":  "S0E-5B: workflow/guarded lifecycle apply expansion",
+        "url":  "https://github.com/samuelhu324-dev/wordloom-v3/issues/307"
+    },
+    {
+        "body":  "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n\r\n- S0E-5C exists as the follow-up after S0E-5B, focused specifically on whether guarded apply should expand from in-place mutation families to PR create itself.\r\n- The concrete scope here is decompose PR create into guardable sub-stages with explicit failure boundaries.\r\n- It carries the work forward from S0E-5B while staying on the same parent S0E chain.\r\n- It left PR creation as a staged guarded path with explicit boundaries instead of treating it as one indivisible mutation.\r\n\r\n\r\n## Definition of Done (DoD)\r\n\r\n- #310\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md`\r\n\r\n",
+        "number":  309,
+        "state":  "CLOSED",
+        "title":  "S0E-5C: workflow/guarded PR create decomposition",
+        "url":  "https://github.com/samuelhu324-dev/wordloom-v3/issues/309"
+    }
+]

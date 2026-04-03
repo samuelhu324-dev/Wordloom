@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-plan.json",
+  "item_index": 2,
+  "requested_id": "S0E-4A",
+  "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 293,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/293",
+  "issue_title": "S0E-4A: contract/GitHub pull request automation contract",
+  "previous_issue_state": "CLOSED",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-4a-apply-body.md",
+  "close_reason": null,
+  "warnings": [
+    "issue was already closed before apply; body updated in place"
+  ]
+}

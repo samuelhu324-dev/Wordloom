@@ -1,0 +1,84 @@
+{
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-docs-management-v5",
+      "source_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "issue_number": 248,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "reason": "Verify that the top-level S0E parent issue now uses parent-aware Metadata, child-issue DoD refs, and deterministic Links including Roadmap."
+    },
+    {
+      "requested_id": "S0E-2B",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "issue_number": 288,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "reason": "Re-audit the closed S0E-2B child issue under the expanded parent/child issue body contract."
+    },
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "reason": "Re-audit the closed S0E-2A child issue under the expanded parent/child issue body contract."
+    },
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "issue_number": 293,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/293",
+      "reason": "Re-audit the closed S0E-4A child issue under the expanded parent/child issue body contract."
+    },
+    {
+      "requested_id": "S0E-4B",
+      "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+      "issue_number": 295,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/295",
+      "reason": "Re-audit the closed S0E-4B child issue under the expanded parent/child issue body contract."
+    },
+    {
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "issue_number": 297,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/297",
+      "reason": "Re-audit the closed S0E-2D child issue under the expanded parent/child issue body contract."
+    },
+    {
+      "requested_id": "S0E-4C",
+      "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "issue_number": 300,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/300",
+      "reason": "Re-audit the closed S0E-4C child issue under the expanded parent/child issue body contract."
+    },
+    {
+      "requested_id": "S0E-4D",
+      "source_log_path": "docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md",
+      "issue_number": 303,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/303",
+      "reason": "Re-audit the closed S0E-4D child issue under the expanded parent/child issue body contract."
+    },
+    {
+      "requested_id": "S0E-5A",
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "issue_number": 305,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/305",
+      "reason": "Re-audit the closed S0E-5A child issue under the expanded parent/child issue body contract."
+    },
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "issue_number": 307,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/307",
+      "reason": "Re-audit the closed S0E-5B child issue under the expanded parent/child issue body contract."
+    },
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "issue_number": 309,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/309",
+      "reason": "Re-audit the closed S0E-5C child issue under the expanded parent/child issue body contract."
+    }
+  ]
+}
