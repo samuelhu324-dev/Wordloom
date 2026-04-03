@@ -102,7 +102,8 @@
 - The ordering question is now important because `S0E-docs-management-v5/#248` is close to needing a fresh parent conclusion body, and the current child ledger order will look arbitrary if replay keeps following issue number allocation.
 - `P0` is now completed: the authoritative ordering source is fixed as child-log `created` ascending, and the rule is now explicitly scoped to top-level parent issue child ledgers rather than child issue merged-PR ledgers.
 - `P1` is now completed: the fallback chain is fixed as `created -> phase_log_* declaration order -> child issue short ref`, and missing or invalid `created` is now explicitly classified as a fail-closed contract error rather than a warning-only drift.
-- `S0E-5E` now moves to implementation reuse and gate work under `P2-P3` before the parent issue conclusion is replayed again.
+- `P2` is now completed: parent issue draft generation and lifecycle audit now call the same shared child-ledger ordering helper, so both surfaces consume the same `created -> phase_log_* -> short ref` rule and fail closed on missing or invalid child-log `created` metadata.
+- `S0E-5E` now moves to bounded audit/replay work under `P3` before the parent issue conclusion is replayed again.
 
 ## P0 (Parent child-ledger ordering contract | v1)
 
@@ -145,14 +146,13 @@
 
 ## Plan (draft)
 
-- `P2-C1-S1`: reuse one shared helper across renderer and conclusion planning
 - `P3-C1-S1`: add audit coverage and one replay sample
 
 ## Execution Checklist (unchecked)
 
 - [x] `P0-C1-S1`: parent issue DoD ordering source fixed
 - [x] `P1-C1-S1`: deterministic fallback chain fixed
-- [ ] `P2-C1-S1`: renderer and conclusion planner share one ordering helper
+- [x] `P2-C1-S1`: renderer and conclusion planner share one ordering helper
 - [ ] `P3-C1-S1`: parent DoD ordering drift checked in audit and replayed once
 
 ## Evidence (reserved)
@@ -173,7 +173,25 @@
   - the contract now fixes parent DoD ordering as child-log `created` ascending, then parent `phase_log_*` declaration order, then child issue short ref
   - missing or invalid child-log `created` is now explicitly classified as a fail-closed strong-structure error for parent-ledger rendering and audit
 
+### P2 (shared ordering helper wired into renderer and planner | 2026-04-03)
+
+- artifacts:
+  - `scripts/issues/body_contract.py`
+  - `scripts/issues/gen_issue_draft.py`
+  - `scripts/issues/plan_lifecycle_audit.py`
+  - `docs/logs/log-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md`
+  - `docs/logs/log-S0E-docs-management-v5.md`
+- expected:
+  - parent issue draft generation and lifecycle audit should stop carrying separate child-ledger sort implementations
+  - both surfaces should reuse one helper that orders child issue refs by `created -> phase_log_* declaration order -> short ref`
+  - missing or invalid child-log `created` should now fail closed from the shared helper instead of leaving one caller to drift independently
+- observed:
+  - `ordered_parent_child_issue_refs(...)` now centralizes the parent child-ledger ordering rule in `body_contract.py`
+  - `gen_issue_draft.py` and `plan_lifecycle_audit.py` now both consume the same helper rather than reimplementing issue-number sort locally
+  - the shared helper now raises a deterministic stop if a participating child log lacks valid `YYYY-MM-DD` `created` metadata
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-03: created `S0E-5E` to isolate the parent issue `Definition of Done (DoD)` child-ledger ordering problem before replaying the top-level `S0E` parent issue conclusion.
 - 2026-04-03: completed `P0-P1` by fixing the ordering contract to `created -> phase_log_* -> child issue short ref`, and by classifying missing or invalid child-log `created` as a fail-closed parent-ordering error rather than a warning-only drift.
+- 2026-04-03: completed `P2` by centralizing parent child-ledger ordering in one shared helper and wiring both issue draft generation and lifecycle audit to the same fail-closed ordering implementation.
