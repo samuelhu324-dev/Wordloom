@@ -259,6 +259,7 @@
 - [x] `P111`：`S0E-6C` 已完成 `P0-P3`，issue `Context` 现已固定为 main log `5` 句 / child log `4` 句的英文单句逐行合同，并已通过 `#309` 的真实 conclusion replay 与 lifecycle audit gate 验证
 - [x] `P112`：`S0E-7C` 已完成 `P4-C1-S3`，focused PR `#312` 已移除 historical review planner 在默认分支上的 runtime closure 缺口，`main` 上的 live dispatch `run 23827684652` 也已成功闭环
 - [x] `P113`：`S0E-3B` 已完成 `P2-C1-S2`，live issue `#322` 已通过自动 `gen_issue_draft.py --create` 路径创建并回写到 source log；后续受控 PR create / merge accounting 已预留到 `P4`
+- [x] `P114`：`S0E-3B` 已完成 `P4-C1-S1`，在 issue `#322` 的 targeted remediation 通过后，dedicated controlled PR `#323` 已创建并通过 post-apply live PR body verification；剩余仅 `P4-C1-S2` merge/write-back follow-through
 - [x] `P113`：`S0E-7C` 已完成 `P4-C1-S4`，截图范围内全部已关闭 `S0E` 子 issues 都已重新检查并重跑 conclusion，`9/10` 条 `Context` 漂移已被批量修复，修复后 `10/10` lifecycle audit 全部通过
 - [x] `P114`：已新建并完成 `S0E-6D/P0-P3`，issue `Context` contract 已从 rigid sentence-slot template 升级为 natural-summary + weak gate，draft/conclusion renderer 与 lifecycle audit 现已统一到同一规则
 - [x] `P115`：`S0E-7C` 已完成 `P4-C1-S5`，刚才审查过的 `10` 条已关闭 `S0E` 子 issues 已按 `S0E-6D` 的 natural-summary `Context` 规则重写，并再次通过 `10/10` lifecycle audit
@@ -273,6 +274,7 @@
 - [x] `P124`：`S0E-6F` 已完成 `P0-P1`，issue draft / issue conclusion preview / lifecycle audit / owner logs / runbook 现已统一到“Metadata 只留状态字段、Links 承接 deterministic navigation”的新边界
 - [x] `P125`：`S0E-6F` 已完成 `P2`，新的代表性 artifacts 已生成，当前 `10` 条 closed `S0E` child issues 也已按同一边界完成 bounded refresh，并通过 `10/10` post-refresh lifecycle audit
 - [x] `P126`：`S0E-6F` 已完成 `P3`，issue body contract 现已显式区分 top-level parent 与 child issue：`#248` 已刷新到 parent-aware body shape，且 `S0E` parent-plus-child `11` 条 issue 现已一起通过 post-refresh lifecycle audit
+- [x] `P148`：`S0E-4F` 已完成 `P5`，PR preview 与 live rewrite 现已共享同一条 Evidence Footer scope selector；live PR `#320/#321/#323` 也已按各自 title scope 重写并再次通过 canonical PR body verification
 - [x] `P127`：已新建 `S0E-4F`，专门收口 PR body 中 `Development Link` 与 `Links -> Issue` 的重复问题，并把当前 `17` 条 live `S0E` PR 的全量审查范围固定到同一条 log
 - [x] `P128`：`S0E-4F` 已完成 `P0-P1`，shared PR contract / preview-create-rewrite renderer / canonical spec / log templates 现已统一到“Development issue 只留在 Metadata、Links 只保留 deterministic navigation”的新边界
 - [x] `P129`：`S0E-4F` 已完成 `P2`，当前 `17` 条 live `S0E` PR 已全量审查为 `17/17 fail`，后续 rewrite scope 也已固定为一个按 `4` 类 drift family 分层执行的 bounded batch
@@ -294,6 +296,8 @@
 - [x] `P145`：`S0E-7F` 已完成 `P4` 并收口为 `stable`，现在已经保留横跨 shared wrapper 与 local operator-facing surface 的 representative validation ledger，并明确把 `workflow_dispatch` 固定为下一个 eligible widening surface
 - [x] `P146`：已新建 `S0E-7G`，并已完成 `P0-P2`，现在已经保留 GitHub-side manual wrapper contract artifact，并实现了一个 manual `workflow_dispatch` surface 来调用 shared read-only wrapper
 - [x] `P147`：`S0E-7G/P3` 已完成第一轮 dispatchability check，当前 blocker 已明确收口为“workflow 尚未在 default branch 可见”，因此 live pass/stop dispatch evidence 需等该可见性前置条件满足后继续
+- [x] `P149`：`S0E-3B` 已完成 `P3`，现已固定 rollout boundary：单条 draft 继续保持 opt-in live label preflight，显式 `--create` 继续 fail-closed，而 `plan_issue_batch.py` 现已把 advisory live label preflight 提升为默认行为并保留显式 offline override
+- [x] `P150`：`S0E-3B` 已完成 `P4-C1-S2` 并进入 `stable`，PR `#323` 现已作为 `P0-P2` merge-content review unit 合并，merge commit `54c36d8ef3d3975b5b6a97ca7163f1a8a5843f9d` 已被写回 ledger；关联 issue `#322` 仍保持 open，后续 issue-conclusion 不再与 PR lifecycle accounting 混记
 
 ## Current Status（进展摘要）
 

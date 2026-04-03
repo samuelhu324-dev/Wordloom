@@ -98,6 +98,9 @@
   - `python scripts/issues/gen_issue_draft.py <log_path>`
 - Example:
   - `python scripts/issues/gen_issue_draft.py docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+- Default rollout rule after `S0E-3B/P3`:
+  - single-log draft generation stays local-first and does not require live label preflight by default
+  - operators may still request advisory live label preflight explicitly with `--check-live-labels --repo <owner/repo>` when they want an earlier GitHub-backed label inventory check without entering create mode
 - Outputs:
   - markdown draft under `docs/issues/issue-<log-slug>.md`
   - structured JSON sidecar under `docs/issues/issue-<log-slug>.json`
@@ -107,6 +110,9 @@
 
 - Explicit create entry:
   - `python scripts/issues/gen_issue_draft.py <log_path> --create --repo <owner/repo>`
+- Default rollout rule after `S0E-3B/P3`:
+  - create mode is a default-required live label preflight entrypoint; it always checks the live GitHub label catalog before `gh issue create`
+  - missing labels remain fail-closed here even when advisory draft-generation mode is still available elsewhere
 - Current prerequisites:
   - `gh` CLI installed
   - `gh auth status` succeeds
@@ -124,12 +130,17 @@
   - `python scripts/issues/plan_issue_batch.py <manifest_path>`
 - Example:
   - `python scripts/issues/plan_issue_batch.py docs/issues/issue-batch-S0E-2C-sample-manifest.json`
+- Default rollout rule after `S0E-3B/P3`:
+  - batch issue planning is now treated as a higher-trust, create-adjacent entrypoint and therefore runs advisory live label preflight by default
+  - operators may disable that default only with explicit `--no-live-label-check` when they intentionally need offline-only scaffolding
+  - operators may escalate the default advisory behavior to fail-closed with `--fail-on-missing-live-labels`
 - Outputs:
   - per-log markdown drafts and JSON sidecars for selected logs
   - one batch plan artifact under `docs/issues/issue-batch-<manifest-stem>-plan.json`
   - stdout JSON summary with `planned_items`, `warnings`, and per-item `planned_action`
 - Safety rules:
   - batch planning does not call GitHub create APIs
+  - default advisory live label preflight still does not mutate GitHub state; it only enriches planner evidence with matched/missing label results
   - if a source log already has `links.issue`, the planner must mark it as `skip-existing-issue`
   - parent-child linking, milestone apply, and write-back remain later explicit phases, not part of `P1`
 
@@ -198,9 +209,11 @@
 - Step 8: when `Parent issue` is present, render it as plain text short GitHub issue reference such as `#248`, not a full URL and not a code span.
 - Step 9: confirm `issue_projects`; if they are blank, keep them blank or use the existing `docs/logs/* -> wordloom Board` default rather than guessing from prose.
 - Step 10: keep the generated issue body English-only, start directly from `## Metadata`, and do not repeat the issue title inside the body.
-- Step 11: leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text.
-- Step 12: create the real GitHub issue through the normal repository UI path.
-- Step 13: after creation, record the issue URL back into the source log in a later tracked docs update.
+- Step 11: keep `Metadata` limited to state rows such as labels, projects, milestone, and parent issue; do not leave `Source log` in `Metadata`.
+- Step 12: confirm `Links` carries deterministic navigation rows such as `Log`, `Runbook`, optional `Roadmap`, `Parent log`, and optional `Previous log` when the source log explicitly declares them; top-level parent issues omit `Parent log`.
+- Step 13: child issues leave `Context` plus `Definition of Done (DoD)` intentionally blank unless a human is ready to supply explicit final text; top-level parent issues may populate `Definition of Done (DoD)` with the known child issue short-ref ledger.
+- Step 14: create the real GitHub issue through the normal repository UI path.
+- Step 15: after creation, record the issue URL back into the source log in a later tracked docs update.
 
 ### 5.8 Manual issue-conclusion procedure
 
@@ -208,10 +221,10 @@
 - Step 2: treat GitHub auto-close as state evidence only. A closed issue may still need a final body write-back if it still shows the create-time empty scaffold.
 - Step 3: collect candidate PRs by exact ID prefix from merged PR titles, for example `S0E-2D/` for issue `S0E-2D`; do not expand the set by prose similarity.
 - Step 4: if multiple merged PRs match, order them by parsed `P*` then `C*`/`S*` units when available; otherwise order them by `mergedAt` ascending and then PR number ascending.
-- Step 5: preserve the existing `Metadata` block from issue creation.
+- Step 5: preserve the existing `Metadata` block from issue creation, but remove any historical `Source log` row because log navigation now belongs in `Links`.
 - Step 6: do not render a separate `Development` section in the final user-facing body.
-- Step 7: write `Definition of Done (DoD)` as the ordered short PR-ref ledger only, for example `- #296`.
-- Step 8: update `Links` so they include deterministic issue/log references plus one PR link line per merged PR in the same order.
+- Step 7: child issues write `Definition of Done (DoD)` as the ordered short PR-ref ledger only, for example `- #296`; top-level parent issues keep `Definition of Done (DoD)` as the ordered child issue short-ref ledger instead.
+- Step 8: update `Links` so they include deterministic log/navigation references such as `Log`, optional `Roadmap`, `Parent log`, and optional `Previous log`, plus one PR link line per merged PR in the same order.
 - Step 9: if the issue is already closed, edit it in place rather than treating the closed state as a blocker.
 - Step 10: if the issue is still open after merge, write the final body first and then close the issue with `reason=completed`.
 
@@ -239,7 +252,7 @@
   - `milestone`: string or `null`
   - `parent_issue`: string or `null`
   - `issue_projects`: array of explicit or default project names
-  - `body_markdown`: markdown body that starts at `Metadata`, keeps `Context` and `Definition of Done (DoD)` structurally present but blank by default, and includes deterministic `Links`
+  - `body_markdown`: markdown body that starts at `Metadata`, keeps `Context` and `Definition of Done (DoD)` structurally present but blank by default, and includes deterministic `Links` beginning with `Log` plus optional `Previous log` when declared
   - `warnings`: array of conservative fallback warnings, for example `issue_milestone missing`, `module labels left blank`
 - Optional output files:
   - markdown issue draft under `docs/issues/`
