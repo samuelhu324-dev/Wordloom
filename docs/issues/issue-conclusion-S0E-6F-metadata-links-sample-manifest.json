@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "reason": "Representative conclusion preview for a closed early issue-creation contract sample under the new metadata-versus-links boundary."
+    },
+    {
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "issue_number": 297,
+      "reason": "Representative conclusion preview for an enriched issue-creation sample that now carries Previous log in Links instead of Source log in Metadata."
+    },
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "issue_number": 309,
+      "reason": "Representative conclusion preview for a later workflow sample under the new metadata-versus-links boundary."
+    }
+  ]
+}

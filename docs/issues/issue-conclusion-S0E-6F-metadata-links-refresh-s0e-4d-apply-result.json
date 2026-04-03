@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-plan.json",
+  "item_index": 6,
+  "requested_id": "S0E-4D",
+  "source_log_path": "docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 303,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/303",
+  "issue_title": "S0E-4D: workflow/review-hold, full-auto, and lifecycle orchestration follow-up",
+  "previous_issue_state": "CLOSED",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S0E-6F-metadata-links-refresh-s0e-4d-apply-body.md",
+  "close_reason": null,
+  "warnings": [
+    "issue was already closed before apply; body updated in place"
+  ]
+}

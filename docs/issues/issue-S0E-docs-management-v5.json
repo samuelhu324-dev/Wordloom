@@ -1,0 +1,33 @@
+{
+  "mode": "draft-generation",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-docs-management-v5.md",
+  "draft_path": "docs/issues/issue-S0E-docs-management-v5.md",
+  "title": "S0E-docs-management-v5: evidence/docs management v5",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/0"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": null,
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/0`\n- Projects: `wordloom Board`\n- Milestone: ``\n\n## Context\n\n- The concrete scope here is structured logs to semi-automated Git issue creation.\n- S0E-docs-management-v5 defines the parent docs management v5 path for the current S0E spine.\n- It keeps the parent record aligned so downstream child slices can extend S0E-docs-management-v5 without reopening the spine contract.\n- This issue keeps the working ledger for the docs management v5 path while delivery is still being tracked.\n- It stays as the issue-side ledger entry for the evolving docs management v5 path.\n\n## Definition of Done (DoD)\n\n- #288\n- #289\n- #293\n- #295\n- #297\n- #300\n- #303\n- #305\n- #307\n- #309\n\n## Links\n\n- Log: `docs/logs/log-S0E-docs-management-v5.md`\n- Roadmap: `docs/roadmap/draft.md`\n",
+  "warnings": [
+    "issue_keyword inferred from source log content",
+    "module labels left blank",
+    "issue_milestone missing",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) was populated from the known child issue ledger because this is a top-level parent issue"
+  ],
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
+}
