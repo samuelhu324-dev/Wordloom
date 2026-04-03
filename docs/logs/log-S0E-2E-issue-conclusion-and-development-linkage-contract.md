@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Issues, PR, Automation, epic/s0, sub/0e2e`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/324`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/325`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -115,6 +115,8 @@
 
 ## Current Status
 
+- Live issue `#324` now carries the final conclusion body for `S0E-2E`, and merged PR `#325` is now recorded as the exact-ID delivery PR for this latest full-auto run.
+- The latest full-auto cycle is now closed end to end on the live path: issue creation, sidebar relationship remediation, ready-for-review PR creation, human merge, and final issue conclusion write-back have all been exercised again for `S0E-2E`.
 - `P0` is complete: lifecycle order, the merge boundary, and the exact-ID merged-PR linkage boundary are now fixed.
 - `P1` is complete: the final English conclusion body shape and the exact-ID PR selection plus ordering rules are now fixed.
 - `P1-C1-S3` is complete: retained conclusion `Context` blocks now end on outcome wording, while exact merged-PR evidence remains only in `Definition of Done (DoD)` and `Links`.
@@ -359,9 +361,12 @@
 - `P3-C1-S2`: `docs/issues/issue-conclusion-S0E-2E-sample-s0e-2d-apply-body.md` is the exact body written back to live issue `#297`, showing revised DoD short ref `#298` and no `Development` section.
 - `P3-C1-S2`: live issue `#297` now shows the final conclusion body and no longer retains the create-time blank `Context` / `Definition of Done (DoD)` scaffold.
 - `P3-C2-S1` / `P3-C2-S2`: live issue `#295` was updated under the revised format and closed after write-back, proving the second-cycle real sample for short-ref-only DoD rendering.
+- `P3-C3-S1` / `P3-C3-S2`: `docs/issues/issue-conclusion-S0E-2E-live-plan.json` and `docs/issues/issue-conclusion-S0E-2E-live-apply-result.json` now retain the latest live full-auto closeout for issue `#324`, proving that the same exact-ID conclusion flow also works after the newer live PR `#325` merged.
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: resumed `S0E-2E` after review, confirmed PR `#325` merged, generated a single-item conclusion preview from exact-ID merged PR evidence, and wrote the final conclusion body back to already-closed live issue `#324` in place.
+- 2026-04-03: created live issue `#324`, refreshed its single-item draft Context, attached the expected sidebar parent relationship to `#248`, and opened ready-for-review PR `#325`; full-auto now pauses at the human merge boundary before live issue conclusion for `#324`.
 - 2026-03-29: opened `S0E-2E` to define post-merge issue conclusion, Development linkage, and final English DoD rendering as a separate slice from issue creation and PR creation.
 - 2026-03-30: completed `P0` by fixing the lifecycle boundary, exact-ID merged-PR linkage rule, and the distinction between GitHub closed state versus final issue conclusion.
 - 2026-03-30: completed `P1` by defining the final English conclusion body shape, deterministic multi-PR ordering rules, and the shared operator procedure in the runbook.

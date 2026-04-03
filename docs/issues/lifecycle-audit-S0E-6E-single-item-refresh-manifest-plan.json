@@ -1,0 +1,210 @@
+{
+  "mode": "lifecycle-audit-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-audit-S0E-6E-single-item-refresh-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-lifecycle-audit",
+  "total_items": 2,
+  "planned_items": 2,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0E-2B",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "issue_number": 288,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "issue_title": "S0E-2B: automation/real GitHub issue creation automation",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
+      "expected_parent_issue_number": 248,
+      "actual_parent_issue_number": 248,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/290",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 290,
+          "title": "S0E-2B/P0-P3: real GitHub issue creation automation v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/290",
+          "merged_at": "2026-03-28T13:00:58Z"
+        }
+      ],
+      "planned_action": "pass-audit",
+      "applied_action": null,
+      "status": "pass",
+      "checks": [
+        {
+          "name": "source-log-issue-writeback",
+          "status": "pass",
+          "details": "source log links.issue matches the live issue URL"
+        },
+        {
+          "name": "required-body-sections",
+          "status": "pass",
+          "details": "Metadata, Context, Definition of Done (DoD), and Links sections are present"
+        },
+        {
+          "name": "issue-section-order",
+          "status": "pass",
+          "details": "issue body section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "Metadata bullet rows are contiguous"
+        },
+        {
+          "name": "expected-labels",
+          "status": "pass",
+          "details": "live issue labels cover the deterministic label set derived from the source log"
+        },
+        {
+          "name": "body-parent-metadata",
+          "status": "pass",
+          "details": "Metadata section records Parent issue: #248"
+        },
+        {
+          "name": "sidebar-parent-relationship",
+          "status": "pass",
+          "details": "live GitHub parent relationship points to #248"
+        },
+        {
+          "name": "exact-id-merged-pr-evidence",
+          "status": "pass",
+          "details": "found 1 exact-ID merged PR(s)"
+        },
+        {
+          "name": "final-dod-pr-refs",
+          "status": "pass",
+          "details": "DoD PR refs match the exact-ID merged PR evidence set"
+        },
+        {
+          "name": "link-categories",
+          "status": "pass",
+          "details": "Links section uses only allowed issue link categories"
+        },
+        {
+          "name": "links-coverage",
+          "status": "pass",
+          "details": "Links section covers the expected canonical issue-link fragments"
+        },
+        {
+          "name": "context-sentence-shape",
+          "status": "pass",
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
+        },
+        {
+          "name": "closed-body-shape",
+          "status": "pass",
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
+        },
+        {
+          "name": "source-log-pr-link",
+          "status": "pass",
+          "details": "source log links.pr is represented in the exact-ID merged PR evidence set"
+        }
+      ],
+      "warnings": [],
+      "reason": "Verify that the one-item Context refresh for S0E-2B still passes lifecycle audit under the prose-first gate."
+    },
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "issue_title": "S0E-2A: contract/semi-automated Git issue creation contract",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
+      "expected_parent_issue_number": 248,
+      "actual_parent_issue_number": 248,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/287",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 287,
+          "title": "S0E-2A/P0-P3: semi-automated Git issue creation contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/287",
+          "merged_at": "2026-03-28T12:22:18Z"
+        }
+      ],
+      "planned_action": "pass-audit",
+      "applied_action": null,
+      "status": "pass",
+      "checks": [
+        {
+          "name": "source-log-issue-writeback",
+          "status": "pass",
+          "details": "source log links.issue matches the live issue URL"
+        },
+        {
+          "name": "required-body-sections",
+          "status": "pass",
+          "details": "Metadata, Context, Definition of Done (DoD), and Links sections are present"
+        },
+        {
+          "name": "issue-section-order",
+          "status": "pass",
+          "details": "issue body section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "Metadata bullet rows are contiguous"
+        },
+        {
+          "name": "expected-labels",
+          "status": "pass",
+          "details": "live issue labels cover the deterministic label set derived from the source log"
+        },
+        {
+          "name": "body-parent-metadata",
+          "status": "pass",
+          "details": "Metadata section records Parent issue: #248"
+        },
+        {
+          "name": "sidebar-parent-relationship",
+          "status": "pass",
+          "details": "live GitHub parent relationship points to #248"
+        },
+        {
+          "name": "exact-id-merged-pr-evidence",
+          "status": "pass",
+          "details": "found 1 exact-ID merged PR(s)"
+        },
+        {
+          "name": "final-dod-pr-refs",
+          "status": "pass",
+          "details": "DoD PR refs match the exact-ID merged PR evidence set"
+        },
+        {
+          "name": "link-categories",
+          "status": "pass",
+          "details": "Links section uses only allowed issue link categories"
+        },
+        {
+          "name": "links-coverage",
+          "status": "pass",
+          "details": "Links section covers the expected canonical issue-link fragments"
+        },
+        {
+          "name": "context-sentence-shape",
+          "status": "pass",
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
+        },
+        {
+          "name": "closed-body-shape",
+          "status": "pass",
+          "details": "concluded issue keeps the prose-first Context gate within line range (3, 4)"
+        },
+        {
+          "name": "source-log-pr-link",
+          "status": "pass",
+          "details": "source log links.pr is represented in the exact-ID merged PR evidence set"
+        }
+      ],
+      "warnings": [],
+      "reason": "Verify that the one-item Context refresh for S0E-2A still passes lifecycle audit under the prose-first gate."
+    }
+  ]
+}
