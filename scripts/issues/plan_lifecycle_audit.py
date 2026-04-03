@@ -7,6 +7,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from body_contract import ISSUE_ALLOWED_LINK_LABELS, build_canonical_issue_link_lines, bullets_are_contiguous, extract_phase_log_paths, extract_section_order, issue_body_context_line_bounds, issue_uses_parent_body_contract, link_labels_are_allowed, metadata_contains_parent_issue_row, metadata_contains_source_log_row, normalize_issue_short_ref, parse_issue_number, validate_issue_context_lines
 from gen_issue_draft import (
     _derive_function_labels,
     _derive_module_labels,
@@ -289,6 +290,67 @@ query($owner:String!, $name:String!, $number:Int!) {
     return (int(number) if number is not None else None), str(title) if title else None
 
 
+def _fetch_issue_subissues(repo: str, issue_number: int) -> list[int]:
+    owner, name = repo.split("/", 1)
+    query = """
+query($owner:String!, $name:String!, $number:Int!) {
+  repository(owner:$owner, name:$name) {
+    issue(number:$number) {
+      subIssues(first:100) {
+        nodes {
+          number
+        }
+      }
+    }
+  }
+}
+"""
+    cmd = _run_command([
+        "gh",
+        "api",
+        "graphql",
+        "-f",
+        f"query={query}",
+        "-F",
+        f"owner={owner}",
+        "-F",
+        f"name={name}",
+        "-F",
+        f"number={issue_number}",
+    ])
+    if cmd.returncode != 0:
+        raise SystemExit(f"Failed to fetch issue sub-issues via GraphQL: {cmd.stderr.strip()}")
+    try:
+        payload = json.loads(cmd.stdout)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Failed to parse GraphQL issue sub-issues JSON: {exc}") from exc
+    nodes = ((((payload.get("data") or {}).get("repository") or {}).get("issue") or {}).get("subIssues") or {}).get("nodes") or []
+    result: list[int] = []
+    for node in nodes:
+        if not isinstance(node, dict):
+            continue
+        number = node.get("number")
+        if number is not None:
+            result.append(int(number))
+    return sorted(result)
+
+
+def _expected_child_issue_refs(fields: dict[str, str], repo_root: Path) -> list[str]:
+    refs: list[tuple[int, str]] = []
+    seen: set[str] = set()
+    for phase_log_path in extract_phase_log_paths(fields):
+        resolved = _coerce_path(phase_log_path, repo_root)
+        if not resolved.is_file():
+            continue
+        child_fields = _parse_fields(_load_text(resolved))
+        short_ref = normalize_issue_short_ref(child_fields.get("issue"))
+        if not short_ref or short_ref in seen:
+            continue
+        seen.add(short_ref)
+        refs.append((parse_issue_number(short_ref) or 10**9, short_ref))
+    return [short_ref for _, short_ref in sorted(refs, key=lambda item: (item[0], item[1]))]
+
+
 def _load_log_issue_ref(log_path: str | None, repo_root: Path) -> tuple[int | None, str | None]:
     if not log_path:
         return None, None
@@ -475,9 +537,12 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     link_lines = _extract_bullet_lines(_extract_section_lines(issue_body, "Links"))
     context_lines = _extract_section_lines(issue_body, "Context")
 
+    uses_parent_contract = issue_uses_parent_body_contract(fields)
     expected_parent_issue_number, parent_warnings = _expected_parent_issue_number(item, defaults, fields, repo_root)
     warnings.extend(parent_warnings)
     actual_parent_issue_number, _ = _fetch_issue_parent(repo, issue_number)
+    expected_child_issue_refs = _expected_child_issue_refs(fields, repo_root) if uses_parent_contract else []
+    actual_subissue_numbers = _fetch_issue_subissues(repo, issue_number) if uses_parent_contract else []
 
     override_refs = _normalize_pr_override_refs(item.get("merged_pr_overrides"))
     if override_refs:
@@ -519,11 +584,29 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     else:
         checks.append(_build_check("source-log-issue-writeback", "fail", "source log links.issue is blank"))
 
-    missing_sections = [name for name in ["Metadata", "Definition of Done (DoD)", "Links"] if name not in body_sections]
+    missing_sections = [name for name in ["Metadata", "Context", "Definition of Done (DoD)", "Links"] if name not in body_sections]
     if missing_sections:
         checks.append(_build_check("required-body-sections", "fail", f"missing required sections: {', '.join(missing_sections)}"))
     else:
-        checks.append(_build_check("required-body-sections", "pass", "Metadata, Definition of Done (DoD), and Links sections are present"))
+        checks.append(_build_check("required-body-sections", "pass", "Metadata, Context, Definition of Done (DoD), and Links sections are present"))
+
+    issue_section_order = extract_section_order(issue_body)
+    expected_issue_section_order = ["Metadata", "Context", "Definition of Done (DoD)", "Links"]
+    filtered_issue_order = [name for name in issue_section_order if name in expected_issue_section_order]
+    if filtered_issue_order == expected_issue_section_order:
+        checks.append(_build_check("issue-section-order", "pass", "issue body section order matches the canonical contract"))
+    else:
+        checks.append(_build_check("issue-section-order", "fail", f"issue body section order is {filtered_issue_order}; expected {expected_issue_section_order}"))
+
+    if bullets_are_contiguous(_extract_section_lines(issue_body, "Metadata")):
+        checks.append(_build_check("metadata-row-shape", "pass", "Metadata bullet rows are contiguous"))
+    else:
+        checks.append(_build_check("metadata-row-shape", "fail", "Metadata bullet rows contain blank gaps or non-bullet content"))
+
+    if metadata_contains_source_log_row(metadata_lines):
+        checks.append(_build_check("metadata-links-boundary", "fail", "Metadata still contains Source log; deterministic log navigation now belongs in Links"))
+    else:
+        checks.append(_build_check("metadata-links-boundary", "pass", "Metadata keeps state rows only while deterministic log navigation stays in Links"))
 
     if expected_labels:
         missing_labels = [label for label in expected_labels if label not in live_labels]
@@ -534,7 +617,17 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     else:
         checks.append(_build_check("expected-labels", "skipped", "no deterministic labels were derived from the source log"))
 
-    if expected_parent_issue_number is not None:
+    if uses_parent_contract:
+        if metadata_contains_parent_issue_row(metadata_lines):
+            checks.append(_build_check("body-parent-metadata", "fail", "top-level parent issue body must omit Parent issue from Metadata"))
+        else:
+            checks.append(_build_check("body-parent-metadata", "pass", "top-level parent issue body correctly omits Parent issue from Metadata"))
+
+        if actual_parent_issue_number is None:
+            checks.append(_build_check("sidebar-parent-relationship", "pass", "top-level parent issue has no parent relationship attached in GitHub"))
+        else:
+            checks.append(_build_check("sidebar-parent-relationship", "fail", f"top-level parent issue is unexpectedly attached to parent #{actual_parent_issue_number}"))
+    elif expected_parent_issue_number is not None:
         if _contains_fragment(metadata_lines, f"Parent issue: #{expected_parent_issue_number}"):
             checks.append(_build_check("body-parent-metadata", "pass", f"Metadata section records Parent issue: #{expected_parent_issue_number}"))
         else:
@@ -548,7 +641,9 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
         checks.append(_build_check("body-parent-metadata", "skipped", "no expected parent issue was derived for this item"))
         checks.append(_build_check("sidebar-parent-relationship", "skipped", "no expected parent issue was derived for this item"))
 
-    if issue_state == "CLOSED":
+    if uses_parent_contract:
+        checks.append(_build_check("exact-id-merged-pr-evidence", "skipped", "top-level parent issue DoD is owned by child issue refs rather than merged PR evidence"))
+    elif issue_state == "CLOSED":
         if ordered_prs:
             checks.append(_build_check("exact-id-merged-pr-evidence", "pass", f"found {len(ordered_prs)} exact-ID merged PR(s)"))
         else:
@@ -562,7 +657,20 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
 
     expected_dod_refs = [f"#{pr.number}" for pr in ordered_prs]
     actual_dod_refs = _extract_dod_refs(dod_lines)
-    if issue_state == "CLOSED":
+    if uses_parent_contract:
+        if actual_dod_refs == expected_child_issue_refs and expected_child_issue_refs:
+            checks.append(_build_check("parent-child-dod-refs", "pass", "DoD child-issue refs match the expected parent child-issue ledger"))
+        else:
+            checks.append(_build_check("parent-child-dod-refs", "fail", f"DoD child-issue refs {actual_dod_refs or '[]'} do not match expected {expected_child_issue_refs or '[]'}"))
+
+        expected_child_issue_numbers = [parse_issue_number(ref) for ref in expected_child_issue_refs]
+        if actual_subissue_numbers == expected_child_issue_numbers and expected_child_issue_numbers:
+            checks.append(_build_check("sidebar-child-relationships", "pass", "live GitHub sub-issue relationships match the expected parent child-issue set"))
+        else:
+            checks.append(_build_check("sidebar-child-relationships", "fail", f"live GitHub sub-issue relationships {actual_subissue_numbers or '[]'} do not match expected {expected_child_issue_numbers or '[]'}"))
+
+        checks.append(_build_check("final-dod-pr-refs", "skipped", "top-level parent issue DoD is a child-issue ledger, not a merged PR ledger"))
+    elif issue_state == "CLOSED":
         if actual_dod_refs == expected_dod_refs and expected_dod_refs:
             checks.append(_build_check("final-dod-pr-refs", "pass", "DoD PR refs match the exact-ID merged PR evidence set"))
         else:
@@ -572,26 +680,31 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     else:
         checks.append(_build_check("final-dod-pr-refs", "skipped", "no final DoD PR refs are required before merged PR evidence exists"))
 
-    expected_link_fragments = [f"Log: `{_repo_rel(source_log_path)}`"]
-    runbook_value = fields.get("runbook", "").strip()
-    if runbook_value:
-        expected_link_fragments.append(f"Runbook: `{runbook_value}`")
-    if issue_state == "CLOSED" or ordered_prs:
-        expected_link_fragments.append(issue_url)
-        expected_link_fragments.extend(pr.url for pr in ordered_prs)
+    links_allowed, invalid_link_rows = link_labels_are_allowed(link_lines, ISSUE_ALLOWED_LINK_LABELS)
+    if links_allowed:
+        checks.append(_build_check("link-categories", "pass", "Links section uses only allowed issue link categories"))
+    else:
+        checks.append(_build_check("link-categories", "fail", f"Links section contains invalid rows: {invalid_link_rows}"))
+
+    expected_link_fragments = [line[2:] for line in build_canonical_issue_link_lines(fields, _repo_rel(source_log_path))]
     missing_link_fragments = [fragment for fragment in expected_link_fragments if not _contains_fragment(link_lines, fragment)]
     if missing_link_fragments:
-        checks.append(_build_check("links-coverage", "fail", f"Links section is missing expected fragments: {missing_link_fragments}"))
+        checks.append(_build_check("links-coverage", "fail", f"Links section is missing expected issue-link fragments: {missing_link_fragments}"))
     else:
-        checks.append(_build_check("links-coverage", "pass", "Links section covers the expected log, runbook, issue, and PR references for the current stage"))
+        checks.append(_build_check("links-coverage", "pass", "Links section covers the expected canonical issue-link fragments"))
+
+    context_line_bounds = issue_body_context_line_bounds(_load_text(source_log_path))
+    context_valid, context_details, invalid_context_lines = validate_issue_context_lines(context_lines, context_line_bounds, _load_text(source_log_path))
+    if context_valid:
+        checks.append(_build_check("context-sentence-shape", "pass", context_details))
+    else:
+        checks.append(_build_check("context-sentence-shape", "fail", f"{context_details}: {invalid_context_lines or '[]'}"))
 
     if issue_state == "CLOSED":
-        if _has_substantive_text(context_lines):
-            checks.append(_build_check("closed-body-shape", "fail", "concluded issue still contains substantive Context content"))
-        elif "Context" in body_sections:
-            checks.append(_build_check("closed-body-shape", "warning", "concluded issue still carries an empty Context section"))
+        if context_valid:
+            checks.append(_build_check("closed-body-shape", "pass", f"concluded issue keeps the prose-first Context gate within line range {context_line_bounds}"))
         else:
-            checks.append(_build_check("closed-body-shape", "pass", "concluded issue body omits the transient Context section"))
+            checks.append(_build_check("closed-body-shape", "fail", f"concluded issue does not satisfy the prose-first Context gate within line range {context_line_bounds}"))
     else:
         checks.append(_build_check("closed-body-shape", "skipped", "closed-body shape is not required while the issue remains open"))
 
