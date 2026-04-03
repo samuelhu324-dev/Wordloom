@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Actions, Automation, Contract, PR, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/326`
   **pr**: ``
   **runbook**: ``
   **roadmap**: ``
@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-03-31`
-**updated**: `2026-03-31`
+**updated**: `2026-04-03`
 
 ---
 
@@ -60,7 +60,6 @@
 - Use this block when the log is expected to drive PR creation directly.
 - Keep the content human-facing and short; the PR body should summarise scope, not replay commit history.
 - `PR Summary Inputs` is the automation-facing contract surface; it should stay compact, deterministic, and free of explanatory prose.
-- `Evidence Footer Source` does not replace `Evidence`: the footer source feeds PR/gate automation, while `Evidence` remains the human ledger.
 
 **PR summary bullets**:
 
@@ -78,17 +77,6 @@
 - Issue: ``
 - Runbook: ``
 - Evidence artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
-
-**Evidence Footer Source**:
-
-- `P0-C1-S1` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
-- `P1-C1-S1S2` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
-- `P2-C1-S1S2` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
-- `P3-C1-S1S2` | artifact: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
-
-- Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
-- Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
-- `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
 
 ## Definitions (optional)
 
