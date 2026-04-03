@@ -1,0 +1,7 @@
+{
+  "number": 778,
+  "url": "https://github.com/example/example/pull/778",
+  "title": "S0E-7B/P2-P3: attribution consume-or-stop workflow and representative samples",
+  "body": "## Metadata\n\n- Requested ID: `S0E-7B`\n\n## Summary\n\n- Wire attribution into the GitHub Actions consume-or-stop path.\n\n## Execution Checklist\n\n- [x] `P2-C1-S1`: wire resolved attribution into mirror verification\n- [x] `P2-C1-S2`: wire attribution-stop before verifier execution\n\n## Links\n\n- Log: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`\n",
+  "headRefName": "pr-prep/s0e-7b"
+}
