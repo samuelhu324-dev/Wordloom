@@ -1,0 +1,19 @@
+{
+  "mode": "issue-context-draft",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md",
+  "output_path": "docs/issues/issue-context-S0E-4F-draft.md",
+  "phase": "draft",
+  "merged_pr_numbers": [],
+  "context_lines": [
+    "- It carries the work forward from S0E-6F while staying on the same parent S0E chain.",
+    "- S0E-4F exists because the current PR body still carries two user-facing redundancies after the newer issue-body and PR-body contracts stabilized.",
+    "- The boundary here was to define the narrower PR-body ownership boundary for development-issue identity versus deterministic links.",
+    "- This issue keeps the working ledger for the PR body metadata-links redundancy follow-up path while delivery is still being tracked."
+  ],
+  "warnings": [
+    "This script is the single-item Context authoring entrypoint; review the generated text before copying or applying it",
+    "Draft-phase Context generation is intended for one-log-at-a-time authoring, not for batch issue rewrites"
+  ]
+}
