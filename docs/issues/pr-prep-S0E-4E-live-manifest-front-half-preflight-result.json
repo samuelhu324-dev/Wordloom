@@ -12,7 +12,7 @@
   "requested_id": "S0E-4E",
   "source_log_path": "docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md",
   "candidate_pr_branch": "pr-prep/s0e-4e",
-  "selected_commit_count": 3,
+  "selected_commit_count": 4,
   "summary_bullet_count": 3,
   "gate_decision": "allow-apply",
   "gate_apply_allowed": true,
@@ -34,7 +34,7 @@
     {
       "name": "selected-commits",
       "status": "pass",
-      "details": "selected commit count = 3"
+      "details": "selected commit count = 4"
     },
     {
       "name": "gh-prerequisites",

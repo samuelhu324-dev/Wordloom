@@ -1,0 +1,42 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-4E-live-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-4E",
+  "source_log_path": "docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-4e",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 4,
+  "selected_commits": [
+    "3d4d4b1b68f8f10a48ba56b655009e5212f97803",
+    "113fc2e4bdcb4eefcf44d00403ae2d6c2b0d0725",
+    "d31fd453f055a900fd10f1b1c17419def0786dc0",
+    "07f608d9c983a5f8eb99cb2face1588bf2fb8e79"
+  ],
+  "pr_title": "S0E-4E/P0-P3: contract/pr-event source-log attribution contract v1",
+  "draft": false,
+  "pr_number": 328,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/328",
+  "body_path": "docs/issues/pr-prep-S0E-4E-live-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#326",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0E-4E-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0E-4E-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 3d4d4b1b; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 3d4d4b1b6... S0E-4E/P1-C1-S1S2: fix attribution surfaces and precedence"
+  ]
+}

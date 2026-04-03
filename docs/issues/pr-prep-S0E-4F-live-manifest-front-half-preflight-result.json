@@ -12,7 +12,7 @@
   "requested_id": "S0E-4F",
   "source_log_path": "docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md",
   "candidate_pr_branch": "pr-prep/s0e-4f",
-  "selected_commit_count": 7,
+  "selected_commit_count": 8,
   "summary_bullet_count": 3,
   "gate_decision": "allow-apply",
   "gate_apply_allowed": true,
@@ -34,7 +34,7 @@
     {
       "name": "selected-commits",
       "status": "pass",
-      "details": "selected commit count = 7"
+      "details": "selected commit count = 8"
     },
     {
       "name": "gh-prerequisites",
