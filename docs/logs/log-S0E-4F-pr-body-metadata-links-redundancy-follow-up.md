@@ -125,8 +125,8 @@
 - This rollout required multiple cycles rather than one monolithic apply step: one unblocking cycle for parser/source-log cleanup, one lower-risk metadata-links-only rewrite batch, one heavier canonical rebuild batch, and one final post-apply verify cycle.
 - `P4` has now closed the remaining GitHub metadata gap: all `17` audited live `S0E` PRs now expose GitHub-recognized Development linkage through explicit close-link footer lines, all deterministic PR labels are present live, and the previously issue-less logs `S0E-1A`, `S0E-2C`, `S0E-3A`, and `S0E-7C` now have written-back GitHub issues that were concluded and closed.
 - `P5` is now complete: the shared PR-prep preview path and the live PR rewrite path both filter `Evidence Footer` through the same title-derived scope selector that already owns `Execution Checklist`, and the affected live PRs `#320`, `#321`, and `#323` have been rewritten to that converged scope.
-- The latest full-auto live cycle has now advanced through issue creation, Context refresh, targeted lifecycle remediation, and ready-for-review PR creation: issue `#327` and PR `#329` now exist live, and post-apply PR body verification returned `pass`.
-- Full-auto is now paused at the human merge boundary for `#329`; issue conclusion cannot run until merged-PR evidence exists.
+- The latest full-auto live cycle is now closed end to end on the live path: issue `#327` was created, remediated to pass lifecycle gates, carried by merged PR `#329`, and then updated in place with the final issue-conclusion body.
+- Exact-ID merged PR selection for `S0E-4F` resolves to one-item set `#329`, and live issue `#327` now remains in `CLOSED` state with final DoD short ref `#329`.
 
 ## P0 (PR-body ownership boundary | v1)
 
@@ -319,6 +319,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: resumed `S0E-4F` after review, confirmed PR `#329` merged, generated the single-item conclusion preview from exact-ID merged PR evidence, and wrote the final conclusion body back to already-closed live issue `#327` in place.
 - 2026-04-03: created live issue `#327`, refreshed its single-generated Context, attached the expected sidebar parent relationship to `#248`, and opened ready-for-review PR `#329`; full-auto now pauses at the human merge boundary before any later issue-conclusion step.
 - 2026-04-02: opened `S0E-4F` to narrow duplicated development-issue surfaces out of the PR body family after the issue-body redundancy cleanup in `S0E-6F` stabilized.
 - 2026-04-02: fixed the first review inventory as the current `17` live `S0E` PRs so later remediation decisions can be made against one explicit set instead of ad hoc spot checks.
