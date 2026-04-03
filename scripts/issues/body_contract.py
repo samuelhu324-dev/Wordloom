@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from datetime import datetime
 import re
 from dataclasses import asdict, dataclass
+from pathlib import Path
 
 from gen_issue_draft import _parse_fields, _parse_sections
 
@@ -930,6 +932,52 @@ def parse_issue_number(value: str | None) -> int | None:
 def normalize_issue_short_ref(value: str | None) -> str | None:
     number = parse_issue_number(value)
     return f"#{number}" if number is not None else None
+
+
+def _resolve_repo_path(repo_root: Path, raw_path: str) -> Path:
+    candidate = Path(raw_path)
+    if candidate.is_absolute():
+        return candidate.resolve()
+    return (repo_root / candidate).resolve()
+
+
+def _repo_relative_or_absolute(path: Path, repo_root: Path) -> str:
+    try:
+        return path.relative_to(repo_root).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def ordered_parent_child_issue_refs(repo_root: Path, fields: dict[str, str]) -> list[str]:
+    refs: list[tuple[str, int, str]] = []
+    seen: set[str] = set()
+    for phase_index, phase_log_path in enumerate(extract_phase_log_paths(fields)):
+        resolved = _resolve_repo_path(repo_root, phase_log_path)
+        if not resolved.is_file():
+            continue
+        child_fields = _parse_fields(resolved.read_text(encoding="utf-8"))
+        short_ref = normalize_issue_short_ref(child_fields.get("issue"))
+        if not short_ref or short_ref in seen:
+            continue
+
+        created_raw = str(child_fields.get("created") or "").strip()
+        if not created_raw:
+            child_log = _repo_relative_or_absolute(resolved, repo_root)
+            raise SystemExit(
+                f"Parent child-ledger ordering requires child log created metadata: {child_log} ({short_ref})"
+            )
+        try:
+            datetime.strptime(created_raw, "%Y-%m-%d")
+        except ValueError as exc:
+            child_log = _repo_relative_or_absolute(resolved, repo_root)
+            raise SystemExit(
+                f"Parent child-ledger ordering requires child log created metadata in YYYY-MM-DD format: {child_log} ({short_ref})"
+            ) from exc
+
+        seen.add(short_ref)
+        refs.append((created_raw, phase_index, short_ref))
+
+    return [short_ref for _, _, short_ref in sorted(refs, key=lambda item: (item[0], item[1], item[2]))]
 
 
 def parse_issue_refs(value: str | None) -> list[str]:
