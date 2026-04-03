@@ -40,6 +40,7 @@
   **phase_log_28**: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
   **phase_log_29**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **phase_log_30**: `docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md`
+  **phase_log_31**: `docs/logs/log-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
   **phase_log_8**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **phase_log_2**: `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
@@ -298,6 +299,10 @@
 - [x] `P147`：`S0E-7G/P3` 已完成第一轮 dispatchability check，当前 blocker 已明确收口为“workflow 尚未在 default branch 可见”，因此 live pass/stop dispatch evidence 需等该可见性前置条件满足后继续
 - [x] `P149`：`S0E-3B` 已完成 `P3`，现已固定 rollout boundary：单条 draft 继续保持 opt-in live label preflight，显式 `--create` 继续 fail-closed，而 `plan_issue_batch.py` 现已把 advisory live label preflight 提升为默认行为并保留显式 offline override
 - [x] `P150`：`S0E-3B` 已完成 `P4-C1-S2` 并进入 `stable`，PR `#323` 现已作为 `P0-P2` merge-content review unit 合并，merge commit `54c36d8ef3d3975b5b6a97ca7163f1a8a5843f9d` 已被写回 ledger；关联 issue `#322` 仍保持 open，后续 issue-conclusion 不再与 PR lifecycle accounting 混记
+- [x] `P151`：已新建 `S0E-5E`，用于把 top-level parent issue `Definition of Done (DoD)` 的 child-ledger 排序从 issue-number order 收口为 source-log-owned ordering contract，并预留对应 gate 入口
+- [x] `P152`：`S0E-5E` 已完成 `P0-P1`，parent issue child-ledger 的 contract 现已固定为 `child log created -> parent phase_log order -> child issue short ref`，且缺失/无效 `created` 已被明确定义为 fail-closed strong-structure error
+- [x] `P153`：`S0E-5E` 已完成 `P2`，parent issue draft generation 与 lifecycle audit 现已共享同一套 child-ledger ordering helper，不再各自以 issue number 作为本地排序实现
+- [x] `P154`：`S0E-5E` 已完成 `P3`，parent-side lifecycle audit 现已把 child-ledger ordering drift 作为显式 check 暴露出来，并已用 `#248` 留下一条 bounded replay sample；该样本同时证明 live parent issue 仍需后续 refresh/remediation
 
 ## Current Status（进展摘要）
 

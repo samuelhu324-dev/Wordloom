@@ -380,21 +380,9 @@ def _build_links(fields: dict[str, str], log_rel_path: str) -> list[str]:
 
 
 def _build_parent_issue_dod_lines(repo_root: Path, fields: dict[str, str]) -> list[str]:
-    from body_contract import extract_phase_log_paths, normalize_issue_short_ref, parse_issue_number
+    from body_contract import ordered_parent_child_issue_refs
 
-    refs: list[tuple[int, str]] = []
-    seen: set[str] = set()
-    for phase_log_path in extract_phase_log_paths(fields):
-        candidate = (repo_root / phase_log_path).resolve()
-        if not candidate.is_file():
-            continue
-        child_fields = _parse_fields(_load_text(candidate))
-        short_ref = normalize_issue_short_ref(child_fields.get("issue"))
-        if not short_ref or short_ref in seen:
-            continue
-        seen.add(short_ref)
-        refs.append((parse_issue_number(short_ref) or 10**9, short_ref))
-    return [f"- {short_ref}" for _, short_ref in sorted(refs, key=lambda item: (item[0], item[1]))]
+    return [f"- {short_ref}" for short_ref in ordered_parent_child_issue_refs(repo_root, fields)]
 
 
 def _build_issue_dod_lines(repo_root: Path, fields: dict[str, str]) -> list[str]:

@@ -7,7 +7,7 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from body_contract import ISSUE_ALLOWED_LINK_LABELS, build_canonical_issue_link_lines, bullets_are_contiguous, extract_phase_log_paths, extract_section_order, issue_body_context_line_bounds, issue_uses_parent_body_contract, link_labels_are_allowed, metadata_contains_parent_issue_row, metadata_contains_source_log_row, normalize_issue_short_ref, parse_issue_number, validate_issue_context_lines
+from body_contract import ISSUE_ALLOWED_LINK_LABELS, build_canonical_issue_link_lines, bullets_are_contiguous, extract_section_order, issue_body_context_line_bounds, issue_uses_parent_body_contract, link_labels_are_allowed, metadata_contains_parent_issue_row, metadata_contains_source_log_row, ordered_parent_child_issue_refs, parse_issue_number, validate_issue_context_lines
 from gen_issue_draft import (
     _derive_function_labels,
     _derive_module_labels,
@@ -336,19 +336,7 @@ query($owner:String!, $name:String!, $number:Int!) {
 
 
 def _expected_child_issue_refs(fields: dict[str, str], repo_root: Path) -> list[str]:
-    refs: list[tuple[int, str]] = []
-    seen: set[str] = set()
-    for phase_log_path in extract_phase_log_paths(fields):
-        resolved = _coerce_path(phase_log_path, repo_root)
-        if not resolved.is_file():
-            continue
-        child_fields = _parse_fields(_load_text(resolved))
-        short_ref = normalize_issue_short_ref(child_fields.get("issue"))
-        if not short_ref or short_ref in seen:
-            continue
-        seen.add(short_ref)
-        refs.append((parse_issue_number(short_ref) or 10**9, short_ref))
-    return [short_ref for _, short_ref in sorted(refs, key=lambda item: (item[0], item[1]))]
+    return ordered_parent_child_issue_refs(repo_root, fields)
 
 
 def _load_log_issue_ref(log_path: str | None, repo_root: Path) -> tuple[int | None, str | None]:
@@ -659,9 +647,9 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     actual_dod_refs = _extract_dod_refs(dod_lines)
     if uses_parent_contract:
         if actual_dod_refs == expected_child_issue_refs and expected_child_issue_refs:
-            checks.append(_build_check("parent-child-dod-refs", "pass", "DoD child-issue refs match the expected parent child-issue ledger"))
+            checks.append(_build_check("parent-child-dod-ordering", "pass", "DoD child-issue refs preserve the expected source-log-owned ordering (`created -> phase_log_* -> short ref`)"))
         else:
-            checks.append(_build_check("parent-child-dod-refs", "fail", f"DoD child-issue refs {actual_dod_refs or '[]'} do not match expected {expected_child_issue_refs or '[]'}"))
+            checks.append(_build_check("parent-child-dod-ordering", "fail", f"DoD child-issue refs {actual_dod_refs or '[]'} do not preserve expected source-log-owned ordering {expected_child_issue_refs or '[]'}"))
 
         expected_child_issue_numbers = [parse_issue_number(ref) for ref in expected_child_issue_refs]
         if actual_subissue_numbers == expected_child_issue_numbers and expected_child_issue_numbers:
