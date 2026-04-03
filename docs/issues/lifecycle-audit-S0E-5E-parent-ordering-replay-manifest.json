@@ -1,0 +1,14 @@
+{
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-docs-management-v5",
+      "source_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "issue_number": 248,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "reason": "Run one bounded parent replay sample focused on source-log-owned child-ledger ordering under the S0E parent issue."
+    }
+  ]
+}

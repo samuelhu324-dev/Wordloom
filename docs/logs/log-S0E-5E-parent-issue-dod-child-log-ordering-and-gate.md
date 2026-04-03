@@ -103,7 +103,8 @@
 - `P0` is now completed: the authoritative ordering source is fixed as child-log `created` ascending, and the rule is now explicitly scoped to top-level parent issue child ledgers rather than child issue merged-PR ledgers.
 - `P1` is now completed: the fallback chain is fixed as `created -> phase_log_* declaration order -> child issue short ref`, and missing or invalid `created` is now explicitly classified as a fail-closed contract error rather than a warning-only drift.
 - `P2` is now completed: parent issue draft generation and lifecycle audit now call the same shared child-ledger ordering helper, so both surfaces consume the same `created -> phase_log_* -> short ref` rule and fail closed on missing or invalid child-log `created` metadata.
-- `S0E-5E` now moves to bounded audit/replay work under `P3` before the parent issue conclusion is replayed again.
+- `P3` is now completed: lifecycle audit exposes parent child-ledger ordering drift as an explicit check, and one bounded parent replay sample for `#248` has been retained.
+- The bounded `#248` sample currently blocks live parent refresh: audit found stale child-ledger ordering, missing newer child refs in the live parent DoD, and a missing `Roadmap` link row, while the replay preview produced the full source-log-owned child ledger expected by the new contract.
 
 ## P0 (Parent child-ledger ordering contract | v1)
 
@@ -146,14 +147,14 @@
 
 ## Plan (draft)
 
-- `P3-C1-S1`: add audit coverage and one replay sample
+- Follow-up work should be handled as a bounded parent refresh/remediation step rather than by reopening the ordering contract.
 
 ## Execution Checklist (unchecked)
 
 - [x] `P0-C1-S1`: parent issue DoD ordering source fixed
 - [x] `P1-C1-S1`: deterministic fallback chain fixed
 - [x] `P2-C1-S1`: renderer and conclusion planner share one ordering helper
-- [ ] `P3-C1-S1`: parent DoD ordering drift checked in audit and replayed once
+- [x] `P3-C1-S1`: parent DoD ordering drift checked in audit and replayed once
 
 ## Evidence (reserved)
 
@@ -190,8 +191,28 @@
   - `gen_issue_draft.py` and `plan_lifecycle_audit.py` now both consume the same helper rather than reimplementing issue-number sort locally
   - the shared helper now raises a deterministic stop if a participating child log lacks valid `YYYY-MM-DD` `created` metadata
 
+### P3 (explicit ordering audit surface and bounded parent replay sample | 2026-04-03)
+
+- artifacts:
+  - `scripts/issues/plan_lifecycle_audit.py`
+  - `docs/issues/lifecycle-audit-S0E-5E-parent-ordering-replay-manifest.json`
+  - `docs/issues/lifecycle-audit-S0E-5E-parent-ordering-replay-manifest-plan.json`
+  - `docs/issues/issue-S0E-5E-parent-ordering-replay-s0e-parent-body.md`
+  - `docs/issues/issue-S0E-5E-parent-ordering-replay-s0e-parent-body.json`
+  - `docs/logs/log-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md`
+  - `docs/logs/log-S0E-docs-management-v5.md`
+- expected:
+  - lifecycle audit should expose parent child-ledger ordering as an explicit deterministic check rather than only an implicit ref comparison
+  - one bounded parent replay sample should prove what the parent body now renders under the `created -> phase_log_* -> short ref` ordering rule
+  - the first replay should be able to surface stale live parent body drift without broadening the gate to unrelated prose
+- observed:
+  - `plan_lifecycle_audit.py` now emits `parent-child-dod-ordering` so ordering drift is explicit in parent-side audit results
+  - the bounded `#248` audit sample blocked as expected because the live parent issue still carries the older truncated child ledger and is also missing the canonical `Roadmap` link row
+  - the bounded replay preview regenerated the parent DoD with the full source-log-owned child ledger in the new deterministic order, proving replay output is stable even though live refresh has not yet been applied
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-03: created `S0E-5E` to isolate the parent issue `Definition of Done (DoD)` child-ledger ordering problem before replaying the top-level `S0E` parent issue conclusion.
 - 2026-04-03: completed `P0-P1` by fixing the ordering contract to `created -> phase_log_* -> child issue short ref`, and by classifying missing or invalid child-log `created` as a fail-closed parent-ordering error rather than a warning-only drift.
 - 2026-04-03: completed `P2` by centralizing parent child-ledger ordering in one shared helper and wiring both issue draft generation and lifecycle audit to the same fail-closed ordering implementation.
+- 2026-04-03: completed `P3` by promoting parent child-ledger ordering into an explicit lifecycle-audit check and by retaining one bounded `#248` replay sample that shows the live parent issue is now stale against the new ordering contract.

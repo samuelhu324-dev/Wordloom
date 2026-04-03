@@ -1,0 +1,121 @@
+{
+  "mode": "lifecycle-audit-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-audit-S0E-5E-parent-ordering-replay-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-lifecycle-audit",
+  "total_items": 1,
+  "planned_items": 0,
+  "warnings": [
+    "S0E-docs-management-v5: blocked"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-docs-management-v5",
+      "source_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "issue_number": 248,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "issue_title": "S0E: evolution/docs management v5",
+      "issue_state": "OPEN",
+      "lifecycle_stage": "issue-created",
+      "expected_parent_issue_number": null,
+      "actual_parent_issue_number": null,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "source_log_pr_url": null,
+      "merged_pr_count": 0,
+      "merged_prs": [],
+      "planned_action": "block-mutation",
+      "applied_action": null,
+      "status": "blocked",
+      "checks": [
+        {
+          "name": "source-log-issue-writeback",
+          "status": "pass",
+          "details": "source log links.issue matches the live issue URL"
+        },
+        {
+          "name": "required-body-sections",
+          "status": "pass",
+          "details": "Metadata, Context, Definition of Done (DoD), and Links sections are present"
+        },
+        {
+          "name": "issue-section-order",
+          "status": "pass",
+          "details": "issue body section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "Metadata bullet rows are contiguous"
+        },
+        {
+          "name": "metadata-links-boundary",
+          "status": "pass",
+          "details": "Metadata keeps state rows only while deterministic log navigation stays in Links"
+        },
+        {
+          "name": "expected-labels",
+          "status": "pass",
+          "details": "live issue labels cover the deterministic label set derived from the source log"
+        },
+        {
+          "name": "body-parent-metadata",
+          "status": "pass",
+          "details": "top-level parent issue body correctly omits Parent issue from Metadata"
+        },
+        {
+          "name": "sidebar-parent-relationship",
+          "status": "pass",
+          "details": "top-level parent issue has no parent relationship attached in GitHub"
+        },
+        {
+          "name": "exact-id-merged-pr-evidence",
+          "status": "skipped",
+          "details": "top-level parent issue DoD is owned by child issue refs rather than merged PR evidence"
+        },
+        {
+          "name": "parent-child-dod-ordering",
+          "status": "fail",
+          "details": "DoD child-issue refs ['#288', '#289', '#293', '#295', '#297', '#300', '#303', '#305', '#307', '#309'] do not preserve expected source-log-owned ordering ['#289', '#288', '#313', '#295', '#314', '#293', '#297', '#324', '#300', '#303', '#305', '#307', '#309', '#330', '#332', '#333', '#338', '#326', '#337', '#315', '#334', '#335', '#336', '#331', '#327', '#341', '#342', '#339', '#340', '#322']"
+        },
+        {
+          "name": "sidebar-child-relationships",
+          "status": "fail",
+          "details": "live GitHub sub-issue relationships [288, 289, 293, 295, 297, 300, 303, 305, 307, 309, 313, 314, 315, 322, 324, 326, 327, 330, 331, 332, 333, 334, 335, 336, 337, 338, 341] do not match expected [289, 288, 313, 295, 314, 293, 297, 324, 300, 303, 305, 307, 309, 330, 332, 333, 338, 326, 337, 315, 334, 335, 336, 331, 327, 341, 342, 339, 340, 322]"
+        },
+        {
+          "name": "final-dod-pr-refs",
+          "status": "skipped",
+          "details": "top-level parent issue DoD is a child-issue ledger, not a merged PR ledger"
+        },
+        {
+          "name": "link-categories",
+          "status": "pass",
+          "details": "Links section uses only allowed issue link categories"
+        },
+        {
+          "name": "links-coverage",
+          "status": "fail",
+          "details": "Links section is missing expected issue-link fragments: ['Roadmap: `docs/roadmap/draft.md`']"
+        },
+        {
+          "name": "context-sentence-shape",
+          "status": "pass",
+          "details": "Context contains between 4 and 5 readable English bullet sentences with basic placeholder hygiene"
+        },
+        {
+          "name": "closed-body-shape",
+          "status": "skipped",
+          "details": "closed-body shape is not required while the issue remains open"
+        },
+        {
+          "name": "source-log-pr-link",
+          "status": "skipped",
+          "details": "source log links.pr is blank"
+        }
+      ],
+      "warnings": [],
+      "reason": "Run one bounded parent replay sample focused on source-log-owned child-ledger ordering under the S0E parent issue."
+    }
+  ]
+}
