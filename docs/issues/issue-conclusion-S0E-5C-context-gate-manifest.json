@@ -1,0 +1,15 @@
+{
+  "version": "1",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "issue_number": 309,
+      "body_output_path": "docs/issues/issue-conclusion-S0E-5C-context-gate-s0e-5c-body.md",
+      "reason": "Re-run issue conclusion after the S0E-6C Context sentence contract fix so the closed issue body satisfies the child-log 4-sentence rule."
+    }
+  ]
+}
