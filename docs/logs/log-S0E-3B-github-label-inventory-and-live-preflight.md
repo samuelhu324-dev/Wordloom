@@ -133,6 +133,7 @@
 - `P4-C1-S1` is complete: after targeted lifecycle remediation attached parent issue `#248` and refreshed the live issue Context, dedicated controlled PR `#323` was created as a ready-for-review PR and passed immediate post-apply body verification.
 - `P4-C1-S1` now has its scope rule clarified as well: live PR `#323` keeps merge-content scope `P0-P2` in title/body/footer, while the PR-creation lifecycle accounting remains recorded only in this source log and its retained evidence artifacts.
 - `P4-C1-S2` is complete: PR `#323` is now merged as `54c36d8ef3d3975b5b6a97ca7163f1a8a5843f9d`, and this source log now records the merged review reference as a distinct post-merge step while keeping the still-open issue `#322` separate from PR-lifecycle accounting.
+- The latest full-auto closeout is now complete as well: exact-ID merged PR selection for `S0E-3B` still resolves to one-item set `#323` only, no additional merged `S0E-3B/` PRs were found, and live issue `#322` now carries the final conclusion body in `CLOSED` state.
 - `S0E-3B` is now `stable`: the contract, implementation, rollout policy, and controlled PR lifecycle bookkeeping are all fixed for v1.
 
 ## P0 (Contract | v1)
@@ -352,10 +353,11 @@
   - After the dedicated controlled PR is merged, the repo should retain exact merged-review evidence as a separate post-merge accounting step instead of collapsing it into PR creation.
 - observed:
   - Live PR `#323` is now merged at `2026-04-03T07:30:13Z` with merge commit `54c36d8ef3d3975b5b6a97ca7163f1a8a5843f9d`, and this source log now records that merged state as the completion of `P4-C1-S2`.
-  - Live issue `#322` remains open, which confirms the PR-lifecycle write-back and later issue-conclusion ownership are still separate concerns.
+  - The later issue-conclusion flow stayed separate from this PR-lifecycle step as intended; that later full-auto closeout has now also completed, and live issue `#322` now ends in `CLOSED` state with final DoD short ref `#323`.
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: resumed `S0E-3B` after review, confirmed that exact-ID merged PR selection still resolves to `#323` only, generated the single-item conclusion preview from merged PR evidence, and wrote the final conclusion body back to live issue `#322` before closing it with `reason=completed`.
 - 2026-04-03: opened `S0E-3B` to isolate GitHub label inventory ownership and issue-label live preflight from the broader `S0E-2A` issue-creation contract.
 - 2026-04-03: extended `gen_issue_draft.py` with explicit live label preflight so draft generation can warn or fail before real issue creation.
 - 2026-04-03: completed `P2-C1-S1` by retaining one representative `S0E-3B` draft-generation sample that records the live GitHub label check outcome alongside the derived draft metadata.
