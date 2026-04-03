@@ -1,0 +1,39 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-5C-context-gate-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-5C: existing Context section did not satisfy the canonical 4-sentence issue-body contract; preview uses the canonical conclusion Context block"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "issue_number": 309,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/309",
+      "issue_title": "S0E-5C: workflow/guarded PR create decomposition",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-5C-context-gate-s0e-5c-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 310,
+          "title": "S0E-5C/P0-P4: guarded PR create decomposition v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/310",
+          "merged_at": "2026-04-01T00:49:22Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "existing Context section did not satisfy the canonical 4-sentence issue-body contract; preview uses the canonical conclusion Context block"
+      ],
+      "reason": "Re-run issue conclusion after the S0E-6C Context sentence contract fix so the closed issue body satisfies the child-log 4-sentence rule."
+    }
+  ]
+}
