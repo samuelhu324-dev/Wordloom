@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Actions, Automation, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/338`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/350`
   **runbook**: ``
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -77,13 +77,6 @@
 - Issue: ``
 - Runbook: ``
 - Evidence artifact: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
-
-**Evidence Footer Source**:
-
-- `P0-C1-S1` | artifact: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
-- `P1-C1-S1S2` | artifact: `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
-- `P2-C1-S1S2` | artifact: `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
-- `P3-C1-S1S2` | artifact: `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
@@ -336,6 +329,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: wrote back live issue `#338`, remediated the required sidebar parent relationship, created ready-for-review PR `#350` with post-apply body verification status `pass`, and paused full-auto at the human merge boundary.
 - 2026-03-31: re-scoped `S0E-7A` to GitHub-side concerns only, leaving Actions as secondary enforcement and moving local log stability / gate policy to `S0E-6B`.
 - 2026-03-31: completed `P0` by fixing the GitHub Actions ownership boundary in one place: Actions is not the primary publish owner and should mirror the same verifier semantics already fixed in the local create path.
 - 2026-03-31: completed `P1` by fixing and scaffolding the first manual mirror-verifier workflow in GitHub Actions, including explicit inputs, explicit artifacts, and summary wording that preserves the secondary-enforcement boundary.

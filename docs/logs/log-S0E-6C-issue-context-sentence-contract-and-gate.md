@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Workflow, Automation, Contract, Formatting, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/334`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/345`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -236,6 +236,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: wrote back live issue `#334` and open ready-for-review PR `#345`; full-auto remains paused at the human merge boundary before post-merge issue conclusion.
 - 2026-04-01: created `S0E-6C` as the dedicated follow-up for issue-body `Context` sentence count and gate semantics.
 - 2026-04-01: fixed the deterministic `Context` sentence contract to `5` lines for main issues and `4` lines for child issues, with one English sentence per bullet row.
 - 2026-04-01: wired the same canonical `Context` block into issue draft generation, issue conclusion planning, and lifecycle audit.

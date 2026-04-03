@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Drills, Evidence, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/342`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/318`
   **runbook**: ``
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -376,6 +376,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: resumed `S0E-7E` after review, confirmed merged PR `#318`, generated the exact-ID conclusion preview, wrote the final conclusion body back to live issue `#342`, and closed the issue with `reason=completed`.
 - 2026-04-02: opened `S0E-7E` as the implementation follow-up to `S0E-7D/P4`, focused on one thin `publish-verify-remediation gate` orchestration entrypoint rather than another taxonomy-only slice.
 - 2026-04-02: completed `P0-P1` by retaining the thin gate contract artifact, implementing `plan_publish_verify_remediation_gate.py`, and proving that the new surface can normalize one lifecycle-family `allow-apply` sample plus one `pr-create-preflight` `hard-fail-input` stop sample without replacing existing family adapters.
 - 2026-04-02: completed `P2` by connecting delegated handoff for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`, while explicitly keeping `pr-create-preflight` as a planning-only front-half family.

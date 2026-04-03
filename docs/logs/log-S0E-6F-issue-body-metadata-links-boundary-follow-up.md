@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Workflow, Automation, Contract, Formatting, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/331`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/343`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -305,6 +305,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: wrote back live issue `#331` and open ready-for-review PR `#343`; full-auto remains paused at the human merge boundary before post-merge issue conclusion.
 - 2026-04-02: opened `S0E-6F` to narrow the issue body field boundary without reopening the broader section-order contract.
 - 2026-04-02: fixed the v1 target as two explicit moves only: remove `Source log` from issue `Metadata`, and add optional `Previous log` under issue `Links`.
 - 2026-04-02: recorded the concrete implementation measures in advance: shared renderer updates first, then gate/runbook alignment, then representative validation plus an explicit live-reconciliation decision.

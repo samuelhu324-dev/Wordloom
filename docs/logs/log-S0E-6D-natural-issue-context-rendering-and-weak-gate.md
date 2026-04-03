@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Workflow, Automation, Contract, Formatting, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/335`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/346`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -265,6 +265,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: wrote back live issue `#335` and open ready-for-review PR `#346`; full-auto remains paused at the human merge boundary before post-merge issue conclusion.
 - 2026-04-01: created `S0E-6D` as the follow-up that replaces `S0E-6C`'s rigid Context slotting with a natural-summary renderer and weak gate.
 - 2026-04-01: switched issue draft and issue conclusion Context generation to source-log-derived natural summary prose.
 - 2026-04-01: relaxed lifecycle audit from exact sentence-count slots to bounded natural-summary integrity checks.

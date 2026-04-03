@@ -1,0 +1,41 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-6E-live-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-6E",
+  "source_log_path": "docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-6e",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 3,
+  "selected_commits": [
+    "63273ba7a89e4a1c9c3bc3430f43c007d9ed6ea9",
+    "39d7fc016024eecbf8916710254b13ddaace0a76",
+    "8c5a067e669370246934d9b82c3bb46aadbc7db3"
+  ],
+  "pr_title": "S0E-6E/P0-P4: single-item Context authoring and batch-preserve boundary v1",
+  "draft": false,
+  "pr_number": 349,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/349",
+  "body_path": "docs/issues/pr-prep-S0E-6E-live-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#336",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0E-6E-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0E-6E-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 63273ba7; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 63273ba7a... S0E-6E/P0-P3: split Context authoring from batch preservation"
+  ]
+}

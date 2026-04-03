@@ -1,0 +1,16 @@
+{
+    "version":  "1",
+    "mode":  "lifecycle-audit-dry-run",
+    "defaults":  {
+                     "repo":  "samuelhu324-dev/wordloom-v3",
+                     "expected_parent_issue_number":  248
+                 },
+    "items":  [
+                  {
+                      "requested_id":  "S0E-6C",
+                      "source_log_path":  "docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md",
+                      "issue_number":  334,
+                      "reason":  "Full-auto lifecycle pass for S0E-6C after live issue creation and source-log write-back."
+                  }
+              ]
+}

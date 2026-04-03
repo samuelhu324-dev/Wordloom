@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Issues, PR, Automation, Contract, Formatting, Evidence, epic/s0, sub/0e5d`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/330`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/347`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -84,6 +84,23 @@
 - The contract clearly says when Evidence Footer is required, when it may be omitted, and whether fallback to commit-derived lines is allowed.
 - The contract clearly says what hard gate must inspect: section order, body shape, blank-line rules, footer style, and allowed link categories.
 - The result is concrete enough that generator scripts can be refactored toward one source of truth instead of preserving multiple implicit templates.
+
+## PR Summary Inputs (optional)
+
+**PR summary bullets**:
+
+- Fix one canonical body contract for issue creation, issue conclusion, and PR body shape under the same automation family.
+- Normalize Evidence Footer shape and hard-gate body checks so formatting drift stops surviving as an implicit side effect.
+- Retain the selective historical rewrite batch that proves representative merged PRs and closed issues now converge on the canonical body contract.
+
+**PR checklist source**:
+
+- Default source: reuse this log's checked execution checklist once the canonical contract, hard gate, and representative normalization batch all verify cleanly.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`
+- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 
 ## Current Status
 
@@ -365,6 +382,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: wrote back live issue `#330`, created ready-for-review PR `#347` with post-apply body verification status `pass`, and paused full-auto at the human merge boundary before any later issue-conclusion step.
 - 2026-03-31: created `S0E-5D` as a dedicated follow-up for body contract normalization, Evidence Footer unification, and hard-gate shape checks after live object drift was confirmed across representative issues and PRs.
 - 2026-03-31: completed `P0` by converting operator-supplied formatting rules into one canonical body spec for issue creation, issue conclusion, and PR body shape, and by pre-locking Evidence Footer to drills/evidence-only with no commit-footer fallback.
 - 2026-03-31: completed `P1` by fixing one explicit `Evidence Footer Source` block, one exact footer line shape, and the rule that both the stage token and artifact path must use inline code while all fallback footer styles remain forbidden.

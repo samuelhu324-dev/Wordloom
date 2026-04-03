@@ -1,0 +1,46 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
+  "draft_path": "docs/issues/issue-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
+  "title": "S0E-7F: workflow/publish-verify-remediation gate read-only wrapper adoption",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [
+    "drills"
+  ],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- S0E-7F is the dedicated implementation follow-up after S0E-7E/P4, focused on adopting one wrapper-safe, read-only surface over the thin publish-verify-remediation gate.\n- The boundary here was to fix the read-only wrapper adoption boundary and its relationship to S0E-7A secondary enforcement plus S0E-7E thin-gate semantics.\n- It carries the work forward from S0E-7E while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the workflow/publish-verify-remediation gate read-only wrapper adoption path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "issue_milestone missing",
+    "live label preflight passed against samuelhu324-dev/wordloom-v3",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "live_label_check_enabled": true,
+  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
+  "matched_live_labels": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "missing_live_labels": [],
+  "issue_number": 339,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/339",
+  "created_at": "2026-04-03T11:49:55.933998+00:00"
+}

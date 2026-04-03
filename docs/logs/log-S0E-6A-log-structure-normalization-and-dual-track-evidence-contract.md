@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Issues, PR, Automation, Contract, Formatting, Evidence, epic/s0, sub/0e6a`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/332`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/348`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -86,6 +86,23 @@
 - The contract clearly says which sections remain prose-first and must not be parsed as automation contract inputs.
 - Parent and phase templates can be updated mechanically from this slice without inventing new semantics during template editing.
 - Historical log migration can be prioritized by shape risk instead of by ad hoc cleanup preference.
+
+## PR Summary Inputs (optional)
+
+**PR summary bullets**:
+
+- Normalize logs to one dual-track structure where `PR Summary Inputs` stays automation-facing while `Evidence` remains the human ledger.
+- Fix the structured-input boundary so `PR links` and `Evidence Footer Source` stop drifting into mixed legacy shapes.
+- Retain template and migration guidance that lets later log families adopt the same structure without inventing new semantics per slice.
+
+**PR checklist source**:
+
+- Default source: reuse this log's checked execution checklist once the dual-track model, template guidance, and representative migration policy all verify cleanly.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`
+- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
 
 ## Stability (what stable means)
 
@@ -245,6 +262,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: wrote back live issue `#332`, created ready-for-review PR `#348` with post-apply body verification status `pass`, and paused full-auto at the human merge boundary before any later issue-conclusion step.
 - 2026-03-31: created `S0E-6A` to separate log-structure normalization from the already-stabilized PR body contract work in `S0E-5D`.
 - 2026-03-31: fixed the initial position that `Evidence Footer Source` and `Evidence` should both remain, with explicit split ownership instead of replacement semantics.
 - 2026-03-31: updated parent/phase log templates so the dual-track evidence boundary is explicit at authoring time rather than staying as informal guidance.

@@ -1,0 +1,16 @@
+{
+    "version":  "1",
+    "mode":  "lifecycle-audit-dry-run",
+    "defaults":  {
+                     "repo":  "samuelhu324-dev/wordloom-v3",
+                     "expected_parent_issue_number":  248
+                 },
+    "items":  [
+                  {
+                      "requested_id":  "S0E-7F",
+                      "source_log_path":  "docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
+                      "issue_number":  339,
+                      "reason":  "Full-auto lifecycle pass for S0E-7F after live issue creation and source-log write-back."
+                  }
+              ]
+}

@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Drills, Evidence, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/341`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/352`
   **runbook**: ``
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -396,6 +396,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-03: wrote back live issue `#341`, remediated the required sidebar parent relationship, created ready-for-review PR `#352` with post-apply body verification status `pass`, and paused full-auto at the human merge boundary.
 - 2026-04-02: opened `S0E-7D` to separate failure taxonomy, replay/backfill order, and remediation semantics from the already-landed `S0E-7C` review planner and `S0E-4F` historical metadata backfill work.
 - 2026-04-02: completed `P0-P1` by retaining the first structured failure taxonomy/mapping artifact for the current docs/GitHub workflow, covering strong versus weak structure, ordered replay/backfill, and default handling semantics per known failure surface.
 - 2026-04-02: completed `P2` by retaining one representative manifest and one structured audit summary across `block`, `replayable`, `manual`, and `reconciliation`, making the stop/split behavior explicit before apply.
