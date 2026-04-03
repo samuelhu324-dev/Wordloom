@@ -290,6 +290,7 @@
 - [x] `P144`：`S0E-7F` 已完成 `P3`，现在已接上本地 operator-facing PowerShell surface，并保留了一条 pass 样本和一条 stop 样本的本地 artifact-root 证据
 - [x] `P145`：`S0E-7F` 已完成 `P4` 并收口为 `stable`，现在已经保留横跨 shared wrapper 与 local operator-facing surface 的 representative validation ledger，并明确把 `workflow_dispatch` 固定为下一个 eligible widening surface
 - [x] `P146`：已新建 `S0E-7G`，并已完成 `P0-P2`，现在已经保留 GitHub-side manual wrapper contract artifact，并实现了一个 manual `workflow_dispatch` surface 来调用 shared read-only wrapper
+- [x] `P147`：`S0E-7G/P3` 已完成第一轮 dispatchability check，当前 blocker 已明确收口为“workflow 尚未在 default branch 可见”，因此 live pass/stop dispatch evidence 需等该可见性前置条件满足后继续
 
 ## Current Status（进展摘要）
 
@@ -492,6 +493,8 @@
 - 2026-04-02：`S0E-7F/P3` 已完成：本地 operator-facing PowerShell surface 已接到 shared wrapper 上，并已保留一条 pass 样本和一条 stop 样本的本地 artifact-root 证据；下一步只剩 `P4` 的 representative validation 收口或继续接到 manual `workflow_dispatch` surface。
 - 2026-04-02：`S0E-7F/P4` 已完成：现在已保留一份横跨 shared wrapper 与 local operator-facing surface 的 representative validation ledger，并明确结论为“暂不直接扩大到更广 CI adoption；下一步先做 dedicated read-only workflow_dispatch surface”。
 - 2026-04-02：已新建 `S0E-7G` 并完成 `P0-P2`：GitHub-side manual `workflow_dispatch` wrapper contract 已落地，新的 workflow surface 也已实现并接到 shared read-only wrapper；下一步只剩 representative pass/stop dispatch evidence。
+- 2026-04-02：`S0E-7G/P3` 已完成第一轮 dispatchability check：当前不是 wrapper runtime 出错，而是 GitHub 仍要求 workflow 先在 default branch 可见；因此下一步应先让该 workflow 出现在 `main`，再补 live pass/stop dispatch evidence。
+- 2026-04-02：`S0E-7G/P3` 已完成：workflow_dispatch surface 现已通过一条 representative pass run 与一条 representative stop run，且 workflow 为 frozen audit-plan / frozen pr-create-preflight-plan replay 补齐了参数与 checkout 边界；`S0E-7G` 因而进入 `stable`。
 - 2026-04-02：新增 `S0E-7E`，作为 `S0E-7D/P4` 的直接实现 follow-up，后续将把 future `publish-verify-remediation gate` 从命名 surface 落成一个薄编排入口，并复用现有 issue/relationship/PR guarded adapters。
 - 2026-03-29：完成 `S0E-2D/P1`，issue draft 生成器已切换到 enriched metadata precedence，并且不再把 source log 的中英文 bullets 直接灌进 GitHub issue body。
 - 2026-03-29：完成 `S0E-2D/P2`，`S4E-5B` 与 `S4A-1A` 的 enriched draft 样本已验证 roadmap milestone 解析与关系字段缺失时的保守留空。

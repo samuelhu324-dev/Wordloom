@@ -1,0 +1,117 @@
+{
+  "mode": "publish-verify-remediation-gate-workflow-dispatch-representative-validation",
+  "result": "ok",
+  "requested_id": "S0E-7G",
+  "scope": [
+    "P3"
+  ],
+  "version": "v1",
+  "summary": {
+    "workflow_dispatch_cases": 2,
+    "pass_cases": 1,
+    "stop_cases": 1,
+    "runtime_fix_commits": 4
+  },
+  "cases": [
+    {
+      "case_id": "workflow-dispatch-pass-issue-conclusion",
+      "surface": "github-actions-workflow-dispatch",
+      "trigger_surface": "workflow_dispatch",
+      "operation_family": "issue-conclusion",
+      "validation_kind": "read-only-pass",
+      "head_sha": "f03bb7d77a9100ef4d0c13d8c8f4077e7d6d9144",
+      "run_id": 23901772523,
+      "run_url": "https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23901772523",
+      "job_url": "https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23901772523/job/69699993272",
+      "workflow_conclusion": "success",
+      "artifact": {
+        "id": 6241988140,
+        "name": "s0e-publish-verify-remediation-gate-read-only-wrapper-23901772523-1",
+        "digest": "sha256:3942581520c70371c5d1b7f53fe60e4fb62e9adeef749134fb696e521b899197"
+      },
+      "selection_input_kind": "audit-plan",
+      "selection_input_path": "docs/issues/lifecycle-audit-S0E-5A-p5-pass-plan.json",
+      "family_input_kind": null,
+      "family_input_path": null,
+      "wrapper_result": "pass",
+      "normalized_decision": "allow-apply",
+      "apply_allowed": true,
+      "delegated_apply_requested": false,
+      "delegated_apply_executed": false,
+      "stop_reason": "",
+      "stopped_before_stage": null,
+      "published_artifact_root": "artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/23901772523-1",
+      "source_artifact_path": "artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/23901772523-1/wrapper-result.json",
+      "notes": [
+        "The representative pass dispatch proves the GitHub-side manual wrapper can replay a frozen lifecycle-family allow path without claiming publish ownership.",
+        "The uploaded artifact root retained wrapper-result, thin-gate-result, lifecycle-gate-decision, workflow-summary, and dispatch-run-manifest before the workflow completed."
+      ]
+    },
+    {
+      "case_id": "workflow-dispatch-stop-pr-create-preflight",
+      "surface": "github-actions-workflow-dispatch",
+      "trigger_surface": "workflow_dispatch",
+      "operation_family": "pr-create-preflight",
+      "validation_kind": "planning-only-stop",
+      "head_sha": "18d6eee07e34adfc85ee34628cdafc91b713d7e8",
+      "run_id": 23902262129,
+      "run_url": "https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23902262129",
+      "job_url": "https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23902262129/job/69701697536",
+      "workflow_conclusion": "failure",
+      "artifact": {
+        "id": 6242198301,
+        "name": "s0e-publish-verify-remediation-gate-read-only-wrapper-23902262129-1",
+        "digest": "sha256:38b19ef1a8e96d02636da37581aee98391d9ddf149b4183b50b141799c97a023"
+      },
+      "selection_input_kind": "audit-plan",
+      "selection_input_path": "docs/issues/lifecycle-audit-S0E-5C-p2-stop-plan.json",
+      "family_input_kind": "plan",
+      "family_input_path": "docs/issues/pr-prep-S0E-5C-p2-stop-plan.json",
+      "wrapper_result": "stop",
+      "normalized_decision": "hard-fail-input",
+      "apply_allowed": false,
+      "delegated_apply_requested": false,
+      "delegated_apply_executed": false,
+      "stop_reason": "continuation-blocked-by-thin-gate",
+      "stopped_before_stage": "S4-local-branch-materialization",
+      "published_artifact_root": "artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/23902262129-1",
+      "source_artifact_path": "artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/23902262129-1/wrapper-result.json",
+      "warnings": [
+        "unexpected sections present: ['Development Link']; PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/309`']; rendered Evidence Footer rows do not match source rows: ['- `167291fc` / `S0E-5C` / `P0`: decompose guarded PR create stages', '- `6ca0da28` / `S0E-5C` / `P1`: map guarded PR create boundaries']; Evidence Footer rows do not match the canonical line shape: ['- `167291fc` / `S0E-5C` / `P0`: decompose guarded PR create stages', '- `6ca0da28` / `S0E-5C` / `P1`: map guarded PR create boundaries']; Development Link section is no longer allowed in canonical PR bodies; GitHub closing-link footer does not match the development issue set: []"
+      ],
+      "notes": [
+        "The representative stop dispatch proves the GitHub-side manual wrapper preserves planning-only pr-create-preflight behavior and stops before S4-local-branch-materialization.",
+        "The workflow failed only after publishing summary and uploaded artifacts, matching the read-only secondary-enforcement contract."
+      ]
+    }
+  ],
+  "runtime_reconciliation": [
+    {
+      "head_sha": "f03bb7d77a9100ef4d0c13d8c8f4077e7d6d9144",
+      "change": "Only pass --audit-plan-path when selection_input_kind=manifest so frozen audit-plan replays do not violate the thin-gate contract."
+    },
+    {
+      "head_sha": "07a39d45652cef623c07869e9dde4d610ef2be63",
+      "change": "Checkout now uses fetch-depth: 0 so pr-create-preflight comparisons against origin/main are available on the GitHub runner."
+    },
+    {
+      "head_sha": "18d6eee07e34adfc85ee34628cdafc91b713d7e8",
+      "change": "The workflow no longer passes forbidden family-plan overrides when pr-create-preflight is replayed from a frozen plan input."
+    }
+  ],
+  "adoption_decision": {
+    "broader_ci_adoption_justified": false,
+    "current_recommended_surface": "manual-workflow_dispatch",
+    "reason": "The dedicated manual GitHub-side wrapper surface is now evidenced, but broader automatic CI widening would still need its own ownership and trigger-policy slice.",
+    "required_before_broader_ci": [
+      "Keep workflow_dispatch manual-only unless a later slice explicitly widens trigger policy.",
+      "Preserve delegate_apply=false, read_only=true, and secondary_enforcement=true on any broader wrapper surface.",
+      "Require representative pass and stop evidence again if any new CI trigger surface is introduced."
+    ]
+  },
+  "boundary_conclusions": [
+    "The GitHub-side manual wrapper now reuses the same wrapper result vocabulary as the shared Python wrapper and the local operator-facing surface.",
+    "The workflow uploads retained artifacts before failing on non-pass outcomes, so stop evidence survives secondary-enforcement failure semantics.",
+    "pr-create-preflight remains planning-only on the GitHub-side surface, with the stop boundary still fixed at S4-local-branch-materialization."
+  ]
+}

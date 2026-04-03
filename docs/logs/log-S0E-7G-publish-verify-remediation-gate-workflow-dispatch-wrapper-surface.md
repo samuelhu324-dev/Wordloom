@@ -5,7 +5,7 @@
 **id**: `S0E-7G`
 **kind**: `log`
 **title**: `workflow/publish-verify-remediation gate workflow_dispatch wrapper surface v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Actions, Workflow, Automation, Drills, Evidence, epic/s0, sub/1`
 **links**: ``
@@ -84,6 +84,7 @@
 - `P0-C1-S1S2 / P1-C1-S1S2` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7G-p0-p1-workflow-dispatch-surface-contract.json`
 - `P2-C1-S1` | artifact: `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`
 - `P3-C1-S1` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-representative-validation.json`
+- `P3-C1-S1` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-dispatch-visibility-check.json`
 
 ## Definitions (optional)
 
@@ -121,10 +122,10 @@
 
 ## Current Status
 
-- `S0E-7G` is now opened as the GitHub-side manual wrapper follow-up after `S0E-7F` fixed the shared wrapper, local operator-facing surface, and representative local evidence.
-- `P0-P1` are now completed at the contract layer: the repo now retains one explicit contract artifact for the GitHub-side manual wrapper boundary, request envelope, workflow-owned artifact root, and upload-before-fail policy.
-- `P2` is now completed: the repo now has one manual GitHub Actions workflow at `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`, and that workflow now invokes the shared wrapper with `trigger_surface=workflow_dispatch`, emits workflow summary plus annotations, uploads retained artifacts, and only then fails on non-pass outcomes.
-- `P3` remains the last open unit: retain one representative pass dispatch and one representative stop dispatch before deciding whether this slice can be marked `stable`.
+- `S0E-7G` is now stable: the GitHub-side manual wrapper surface is implemented, dispatchable, and evidenced with one representative pass run plus one representative stop run.
+- `P0-P1` are completed at the contract layer: the repo retains one explicit contract artifact for the GitHub-side manual wrapper boundary, request envelope, workflow-owned artifact root, and upload-before-fail policy.
+- `P2` is completed: the repo has one manual GitHub Actions workflow at `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`, and that workflow invokes the shared wrapper with `trigger_surface=workflow_dispatch`, emits workflow summary plus annotations, uploads retained artifacts, and only then fails on non-pass outcomes.
+- `P3` is completed: after the workflow became visible on `main`, representative `workflow_dispatch` pass/stop runs were retained on `S0E-docs-management-v5`, and the workflow surface was hardened for frozen audit-plan and frozen pr-create-preflight-plan replay on GitHub runners.
 
 ## P0 (Boundary contract | v1)
 
@@ -163,6 +164,7 @@
 
 - Retain one workflow dispatch that returns wrapper result `pass` on a frozen pass sample.
 - Retain one workflow dispatch that returns wrapper result `stop` on a frozen `pr-create-preflight` stop sample while preserving `S4-local-branch-materialization`.
+- If the workflow is not yet visible on the default branch, retain the dispatchability blocker explicitly instead of pretending representative live evidence already exists.
 
 ## Numbering
 
@@ -224,7 +226,7 @@
 
 ### P3 (Representative dispatch evidence)
 
-- [ ] `P3-C1-S1`: representative pass and stop workflow dispatches retained
+- [x] `P3-C1-S1`: representative pass and stop workflow dispatches retained
 
 ## Evidence (reserved)
 
@@ -233,7 +235,7 @@
 
 ### P0-C1-S1S2 / P1-C1-S1S2 (workflow_dispatch wrapper boundary and contract retained | 2026-04-02)
 
-- headSha: `1a923769`
+- headSha: `8492be78`
 - artifacts:
   - `docs/issues/publish-verify-remediation-gate-S0E-7G-p0-p1-workflow-dispatch-surface-contract.json`
   - `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`
@@ -247,7 +249,7 @@
 
 ### P2-C1-S1 (Manual workflow_dispatch wrapper surface implemented | 2026-04-02)
 
-- headSha: `1a923769`
+- headSha: `8492be78`
 - artifacts:
   - `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`
   - `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py`
@@ -257,6 +259,48 @@
 - observed:
   - `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml` now accepts explicit family/input parameters, derives one per-run artifact root, invokes the shared wrapper with `trigger_surface=workflow_dispatch`, writes a retained GitHub summary plus dispatch manifest, emits check annotations, uploads the workflow-owned artifact root, and only then fails on non-pass outcomes.
   - The workflow now reuses `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py` directly, so GitHub-side dispatches preserve the same wrapper result vocabulary and read-only contract already fixed in `S0E-7F`.
+
+### P3-C1-S1 (workflow_dispatch visibility check blocked before live representative runs | 2026-04-02)
+
+- headSha: `5c9c6fe3`
+- artifacts:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-dispatch-visibility-check.json`
+- expected:
+  - `S0E-7G` should dispatch the new manual workflow on the active ref and then retain one pass run plus one stop run as representative live evidence.
+  - If GitHub cannot resolve the workflow yet, the repo should retain that blocker explicitly so later continuation does not confuse a visibility problem with a runtime problem inside the wrapper.
+- observed:
+  - The first `gh workflow run` attempt on ref `S0E-docs-management-v5` returned HTTP `404` with the message `workflow ... not found on the default branch`, which means the workflow implementation itself is pushed but GitHub cannot dispatch it until the file becomes visible on `main`.
+  - `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-dispatch-visibility-check.json` now records the attempted pass-sample inputs, the default-branch visibility blocker, and the exact next steps required before live representative pass/stop dispatches can be retained.
+
+### P3-C1-S1 (Representative workflow_dispatch pass retained | 2026-04-02)
+
+- headSha: `f03bb7d7`
+- artifacts:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-representative-validation.json`
+  - `artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/23901772523-1/wrapper-result.json`
+  - `artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/23901772523-1/thin-gate-result.json`
+  - `artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/23901772523-1/dispatch-run-manifest.json`
+- expected:
+  - `S0E-7G` should retain one GitHub-side manual dispatch that surfaces wrapper result `pass` on a frozen lifecycle-family allow path while keeping delegated apply disabled.
+  - The same retained run should prove that the workflow uploads a workflow-owned artifact root and completes successfully on pass outcomes.
+- observed:
+  - Run `23901772523` (`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23901772523`) replayed `issue-conclusion` over `docs/issues/lifecycle-audit-S0E-5A-p5-pass-plan.json` and retained wrapper result `pass`, normalized decision `allow-apply`, and uploaded artifact `s0e-publish-verify-remediation-gate-read-only-wrapper-23901772523-1`.
+  - The retained pass artifacts now prove that the GitHub-side manual wrapper can surface an allow path without claiming publish ownership or enabling delegated apply inside the workflow surface.
+
+### P3-C1-S1 (Representative workflow_dispatch stop retained | 2026-04-02)
+
+- headSha: `18d6eee0`
+- artifacts:
+  - `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-representative-validation.json`
+  - `artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/23902262129-1/wrapper-result.json`
+  - `artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/23902262129-1/thin-gate-result.json`
+  - `artifacts/github-actions/publish-verify-remediation-gate-read-only-wrapper/23902262129-1/dispatch-run-manifest.json`
+- expected:
+  - `S0E-7G` should retain one GitHub-side manual dispatch that surfaces wrapper result `stop` on a frozen `pr-create-preflight` stop sample while preserving `S4-local-branch-materialization`.
+  - The same retained run should fail only after summary and artifact upload have already completed.
+- observed:
+  - Run `23902262129` (`https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/23902262129`) replayed `pr-create-preflight` over `docs/issues/lifecycle-audit-S0E-5C-p2-stop-plan.json` plus the frozen precomputed family plan `docs/issues/pr-prep-S0E-5C-p2-stop-plan.json`, and retained wrapper result `stop`, normalized decision `hard-fail-input`, stop reason `continuation-blocked-by-thin-gate`, and stop boundary `S4-local-branch-materialization`.
+  - The workflow failed only in the final non-pass policy step after publishing summary and artifact upload, so the GitHub-side manual wrapper now has one representative stop run whose retained artifacts explain the planning-only create boundary.
 
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
@@ -272,3 +316,5 @@
 - 2026-04-02: opened `S0E-7G` as the manual GitHub-side `workflow_dispatch` wrapper follow-up after `S0E-7F` stabilized the shared read-only wrapper and local operator-facing surface.
 - 2026-04-02: completed `P0-P1` by retaining the first `workflow_dispatch` wrapper contract artifact, fixing GitHub-side ownership boundaries, supported inputs, workflow-owned artifact root, and upload-before-fail policy.
 - 2026-04-02: completed `P2` by adding `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml` over the shared read-only wrapper, with summary, annotations, artifact upload, and fail-after-upload behavior.
+- 2026-04-02: attempted `P3` dispatch evidence on `S0E-docs-management-v5`, but GitHub returned a default-branch visibility `404`; the blocker is now retained explicitly so live representative pass/stop dispatches can resume after the workflow becomes visible on `main`.
+- 2026-04-02: completed `P3` by hardening the workflow surface for frozen audit-plan and frozen pr-create-preflight-plan replays, then retaining one representative pass dispatch and one representative stop dispatch with traceable run URLs and uploaded artifact references.

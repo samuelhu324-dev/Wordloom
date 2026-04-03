@@ -1,0 +1,36 @@
+{
+  "mode": "publish-verify-remediation-gate-workflow-dispatch-visibility-check",
+  "result": "blocked-before-dispatch",
+  "requested_id": "S0E-7G",
+  "scope": [
+    "P3"
+  ],
+  "version": "v1",
+  "workflow_path": ".github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml",
+  "dispatch_ref": "S0E-docs-management-v5",
+  "dispatch_inputs": {
+    "operation_family": "issue-conclusion",
+    "selection_input_path": "docs/issues/lifecycle-audit-S0E-5A-p5-pass-plan.json",
+    "selection_input_kind": "audit-plan",
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "trusted_source_log_path": "docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md",
+    "wrapper_notes": "S0E-7G P3 pass sample"
+  },
+  "dispatch_attempt": {
+    "tool": "gh workflow run",
+    "timestamp_utc": "2026-04-02T00:00:00Z",
+    "http_status": 404,
+    "message": "workflow s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml not found on the default branch"
+  },
+  "failure_semantics": {
+    "classification": "default-branch-visibility-blocked",
+    "stage": "dispatchability-check",
+    "owner": "GitHub workflow visibility requirement",
+    "workflow_role": "secondary enforcement"
+  },
+  "next_steps": [
+    "Publish the workflow file on the repository default branch so GitHub Actions can resolve it for workflow_dispatch.",
+    "After default-branch visibility exists, dispatch one frozen pass sample and one frozen stop sample on the target ref.",
+    "Retain the resulting run URLs and downloaded artifact references in the S0E-7G evidence ledger before marking the slice stable."
+  ]
+}
