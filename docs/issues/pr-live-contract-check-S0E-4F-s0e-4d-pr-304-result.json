@@ -1,0 +1,62 @@
+{
+  "mode": "live-pr-body-contract-check",
+  "result": "fail",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "source_log_path": "docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md",
+  "pr_number": 304,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/304",
+  "pr_title": "S0E-4D/P0-P2: review-hold, full-auto, and lifecycle orchestration follow-up v1",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4d-pr-304-body.md",
+  "status": "fail",
+  "warnings": [],
+  "expected_evidence_footer_lines": [],
+  "checks": [
+    {
+      "name": "required-pr-sections",
+      "status": "pass",
+      "details": "required PR sections are present"
+    },
+    {
+      "name": "pr-section-order",
+      "status": "fail",
+      "details": "unexpected sections present: ['Development Link']"
+    },
+    {
+      "name": "metadata-row-shape",
+      "status": "pass",
+      "details": "metadata bullet rows are contiguous"
+    },
+    {
+      "name": "pr-link-categories",
+      "status": "fail",
+      "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/303`']"
+    },
+    {
+      "name": "evidence-footer-source-shape",
+      "status": "pass",
+      "details": "no Evidence Footer Source rows were provided"
+    },
+    {
+      "name": "evidence-footer-eligibility",
+      "status": "fail",
+      "details": "Evidence Footer is rendered but the source log is not drills/evidence eligible"
+    },
+    {
+      "name": "evidence-footer-presence",
+      "status": "fail",
+      "details": "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"
+    },
+    {
+      "name": "evidence-footer-line-shape",
+      "status": "fail",
+      "details": "Evidence Footer rows do not match the canonical line shape: ['`P0-C1-S1` / `P0-C1-S3`: this log now fixes `review-hold` as the default mode, narrows `full-auto` to automatable stages only, and makes post-merge continuation contingent on confirmed merge completion rather than implicit merge ownership.', '`P0-C1-S2` / `P1-C1-S1`: `docs/logs/log-S0E-docs-management-v5.md` now records `S0E-4D` as the dedicated lifecycle-orchestration owner instead of leaving that boundary inside `S0E-2D`.', '`P1-C1-S2` / `P2-C1-S1`: `docs/runbook/run-S0E-log-to-issue-creation.md` now carries one operator-facing command-pattern block for staged review, explicit resume, and post-merge full-auto continuation while keeping contract ownership in `S0E-4D`.', '`P2-C1-S2`: this log now includes fail-closed examples for ambiguous continuation requests, blocked closed-loop requests, and downstream-only resume commands.']"
+    },
+    {
+      "name": "development-link-presence",
+      "status": "fail",
+      "details": "Development Link section is no longer allowed in canonical PR bodies"
+    }
+  ],
+  "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4d-pr-304-result.json"
+}

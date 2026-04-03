@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, epic/s0, sub/0e2c`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/313`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/291`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
@@ -24,7 +24,7 @@
 **issue_milestone**: ``
 **issue_parent**: ``
 **created**: `2026-03-28`
-**updated**: `2026-03-28`
+**updated**: `2026-04-02`
 
 ---
 

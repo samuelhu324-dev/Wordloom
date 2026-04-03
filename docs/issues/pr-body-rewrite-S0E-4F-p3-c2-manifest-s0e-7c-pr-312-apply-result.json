@@ -1,0 +1,21 @@
+{
+  "requested_id": "S0E-7C",
+  "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+  "pr_number": 312,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/312",
+  "pr_title": "S0E-7C/P4-C1-S3: remove planner runtime closure dependency",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-s0e-7c-pr-312-live-body.md",
+  "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-s0e-7c-pr-312-rewritten-body.md",
+  "apply_result_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-s0e-7c-pr-312-apply-result.json",
+  "body_changed": true,
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "warnings": [
+    "missing live PR labels were backfilled from the deterministic source-log label set"
+  ]
+}

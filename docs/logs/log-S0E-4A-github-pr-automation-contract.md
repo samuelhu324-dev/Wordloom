@@ -34,7 +34,7 @@
 **pr_base**: `main`
 **pr_development_issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/293`
 **created**: `2026-03-29`
-**updated**: `2026-03-29`
+**updated**: `2026-03-30`
 
 ---
 
@@ -119,8 +119,8 @@
 
 ### P0-C1-S3 (Development link and review boundary | v1)
 
-- PR automation may prepare the Development link metadata, but merge approval remains a human review step.
-- The PR should link back to its issue through explicit metadata and body references, not guesswork.
+- PR automation may prepare the Development issue metadata, but merge approval remains a human review step.
+- The PR should link back to its issue through explicit metadata, not guesswork.
 - No automatic merge is part of v1.
 - `pr_development_issue` is the approved explicit source for Development linkage in v1; if it is blank, automation may fall back only to the source log's exact `links.issue` instead of inventing a relationship from prose or title similarity.
 - Reviewers, approvals, and merge execution remain outside automation scope even after real PR creation exists; v1 only prepares or creates the PR object and its metadata.
@@ -179,7 +179,7 @@
 ### P3-C1-S2 (Metadata assignment and linkage | v1)
 
 - PR labels should be applied from `pr_labels` when present; missing labels must fail before PR creation rather than being silently dropped.
-- `pr_development_issue` should be materialized in the PR body using an explicit closing/linkage line so GitHub can attach the PR to the intended issue.
+- `pr_development_issue` should be materialized in PR `Metadata` as the single user-facing development-issue row.
 - Missing optional metadata such as `pr_projects` and `pr_milestone` should be reported as intentionally skipped when blank, not guessed or backfilled from unrelated fields.
 
 ### P3-C2-S1 (Development issue fallback | v1)
@@ -190,7 +190,7 @@
 ### P3-C2-S2 (Multiple Development issues | v1)
 
 - If multiple Development issues are explicitly supplied, they must be rendered as a comma-separated English list such as `#293, #297`.
-- The same comma-separated list must be used consistently in both PR metadata preview and the final `Development Link` section.
+- The same comma-separated list must be used consistently anywhere the PR metadata renders development issue refs.
 
 ## PR Summary Inputs
 
@@ -208,7 +208,6 @@
 **PR links / evidence footer**:
 
 - Log: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
-- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/293`
 - Runbook: ``
 - Evidence artifact: `docs/issues/pr-prep-S0E-4A-sample-plan.json`
 
@@ -308,3 +307,5 @@
 - 2026-03-29: completed `P3` by creating source issue `#293`, opening draft PR `#294` from clean branch `pr-prep/s0e-4a`, and verifying GitHub-side label plus Development linkage behavior.
 - 2026-03-29: opened `S0E-4B` as the post-first-PR follow-up for title compression, structural label inheritance, and body footer/link formatting.
 - 2026-03-29: completed `P3-C2` follow-up by deriving Development issue from the source log issue when blank and by normalizing multiple Development issues to one comma-separated list.
+- 2026-03-30: historical issue `#293` was concluded and closed as `completed` after auditing exact-ID merged PR evidence from both `#294` and `#299`.
+- 2026-03-30: sidebar parent-child relationship `#248 -> #293` was attached during the `S0E-4D/P4` audit after issue-body remediation and conclusion had already completed.

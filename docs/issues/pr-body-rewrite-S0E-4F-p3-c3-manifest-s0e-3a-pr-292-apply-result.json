@@ -1,0 +1,21 @@
+{
+  "requested_id": "S0E-3A",
+  "source_log_path": "docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md",
+  "pr_number": 292,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/292",
+  "pr_title": "S0E-3A/P0-P3: roadmap milestone log bridge",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-3a-pr-292-live-body.md",
+  "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-3a-pr-292-rewritten-body.md",
+  "apply_result_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-3a-pr-292-apply-result.json",
+  "body_changed": true,
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "warnings": [
+    "missing live PR labels were backfilled from the deterministic source-log label set"
+  ]
+}

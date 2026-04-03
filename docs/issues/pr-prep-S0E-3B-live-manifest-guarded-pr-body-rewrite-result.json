@@ -1,0 +1,15 @@
+{
+  "mode": "guarded-pr-body-rewrite-apply",
+  "result": "ok",
+  "gate_input_kind": "manifest",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0E-3B-p4-pass-manifest.json",
+  "gate_decision_path": "docs/issues/lifecycle-gate-S0E-3B-p4-scope-rewrite-decision.json",
+  "gate_decision": "stop-for-remediation",
+  "apply_allowed": false,
+  "pr_create_result_path": "docs/issues/pr-prep-S0E-3B-live-manifest-create-result.json",
+  "guarded_action": "stopped-before-apply",
+  "apply_result_path": null,
+  "warnings": [
+    "mutation blocked by lifecycle pre-gate decision: stop-for-remediation"
+  ]
+}

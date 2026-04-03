@@ -1,0 +1,14 @@
+{
+  "requested_id": "S0E-5B",
+  "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+  "pr_number": 308,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/308",
+  "pr_title": "S0E-5B/P0-P3: guarded lifecycle apply expansion v1",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-s0e-5b-pr-308-live-body.md",
+  "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-s0e-5b-pr-308-rewritten-body.md",
+  "apply_result_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c2-manifest-s0e-5b-pr-308-apply-result.json",
+  "body_changed": true,
+  "labels_applied": [],
+  "warnings": []
+}
