@@ -1,0 +1,45 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md",
+  "draft_path": "docs/issues/issue-S0E-2E-issue-conclusion-and-development-linkage-contract.md",
+  "title": "S0E-2E: contract/issue conclusion and development linkage contract",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [
+    "drills"
+  ],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- The scoped detail here is contract for lifecycle order, post-merge boundary, development linkage, and English conclusion body rules.\n- S0E-2E defines issue conclusion as a separate post-merge slice instead of leaving issue closure as an informal manual step.\n- It carries the work forward from S0E-2D while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the issue conclusion and development linkage contract path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "issue_milestone missing",
+    "live label preflight passed against samuelhu324-dev/wordloom-v3",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) remains intentionally blank pending operator input"
+  ],
+  "live_label_check_enabled": true,
+  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
+  "matched_live_labels": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "missing_live_labels": [],
+  "issue_number": 324,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/324",
+  "created_at": "2026-04-03T10:53:54.914191+00:00"
+}

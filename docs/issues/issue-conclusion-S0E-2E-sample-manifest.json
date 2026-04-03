@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "issue_number": 293,
+      "reason": "Validate exact-ID merged PR selection and conclusion preview for the first real PR automation sample"
+    },
+    {
+      "requested_id": "S0E-4B",
+      "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+      "issue_number": 295,
+      "reason": "Validate exact-ID merged PR selection and conclusion preview for the PR follow-up sample"
+    },
+    {
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "issue_number": 297,
+      "reason": "Validate exact-ID merged PR selection and conclusion preview for the issue-creation enrichment sample"
+    }
+  ]
+}

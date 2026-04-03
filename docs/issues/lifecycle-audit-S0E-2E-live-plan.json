@@ -1,0 +1,109 @@
+{
+  "mode": "lifecycle-audit-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-audit-S0E-2E-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-lifecycle-audit",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0E-2E",
+      "source_log_path": "docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md",
+      "issue_number": 324,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/324",
+      "issue_title": "S0E-2E: contract/issue conclusion and development linkage contract",
+      "issue_state": "OPEN",
+      "lifecycle_stage": "issue-created",
+      "expected_parent_issue_number": 248,
+      "actual_parent_issue_number": 248,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/324",
+      "source_log_pr_url": null,
+      "merged_pr_count": 0,
+      "merged_prs": [],
+      "planned_action": "pass-audit",
+      "applied_action": null,
+      "status": "pass",
+      "checks": [
+        {
+          "name": "source-log-issue-writeback",
+          "status": "pass",
+          "details": "source log links.issue matches the live issue URL"
+        },
+        {
+          "name": "required-body-sections",
+          "status": "pass",
+          "details": "Metadata, Context, Definition of Done (DoD), and Links sections are present"
+        },
+        {
+          "name": "issue-section-order",
+          "status": "pass",
+          "details": "issue body section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "Metadata bullet rows are contiguous"
+        },
+        {
+          "name": "metadata-links-boundary",
+          "status": "pass",
+          "details": "Metadata keeps state rows only while deterministic log navigation stays in Links"
+        },
+        {
+          "name": "expected-labels",
+          "status": "pass",
+          "details": "live issue labels cover the deterministic label set derived from the source log"
+        },
+        {
+          "name": "body-parent-metadata",
+          "status": "pass",
+          "details": "Metadata section records Parent issue: #248"
+        },
+        {
+          "name": "sidebar-parent-relationship",
+          "status": "pass",
+          "details": "live GitHub parent relationship points to #248"
+        },
+        {
+          "name": "exact-id-merged-pr-evidence",
+          "status": "skipped",
+          "details": "no merged PR evidence is required for the current issue-created stage"
+        },
+        {
+          "name": "final-dod-pr-refs",
+          "status": "skipped",
+          "details": "no final DoD PR refs are required before merged PR evidence exists"
+        },
+        {
+          "name": "link-categories",
+          "status": "pass",
+          "details": "Links section uses only allowed issue link categories"
+        },
+        {
+          "name": "links-coverage",
+          "status": "pass",
+          "details": "Links section covers the expected canonical issue-link fragments"
+        },
+        {
+          "name": "context-sentence-shape",
+          "status": "pass",
+          "details": "Context contains between 3 and 4 readable English bullet sentences with basic placeholder hygiene"
+        },
+        {
+          "name": "closed-body-shape",
+          "status": "skipped",
+          "details": "closed-body shape is not required while the issue remains open"
+        },
+        {
+          "name": "source-log-pr-link",
+          "status": "skipped",
+          "details": "source log links.pr is blank"
+        }
+      ],
+      "warnings": [],
+      "reason": "Full-auto lifecycle pass for S0E-2E after live issue creation and source-log write-back."
+    }
+  ]
+}
