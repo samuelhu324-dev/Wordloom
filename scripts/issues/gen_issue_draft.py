@@ -7,7 +7,7 @@ import re
 import shutil
 import subprocess
 import sys
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 
@@ -31,6 +31,7 @@ DEFAULT_COMMAND_TIMEOUT_SECONDS = 180
 class IssueDraftResult:
     mode: str
     result: str
+    context_mode: str
     log_path: str
     draft_path: str
     title: str
@@ -43,6 +44,10 @@ class IssueDraftResult:
     parent_issue: str | None
     body_markdown: str
     warnings: list[str]
+    live_label_check_enabled: bool = False
+    live_label_check_repo: str | None = None
+    matched_live_labels: list[str] = field(default_factory=list)
+    missing_live_labels: list[str] = field(default_factory=list)
     issue_number: int | None = None
     issue_url: str | None = None
     created_at: str | None = None
@@ -67,7 +72,30 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Fail if derived labels are empty or malformed",
     )
-    parser.add_argument("--repo", dest="repo", help="Repository slug for future create mode")
+    parser.add_argument(
+        "--context-mode",
+        dest="context_mode",
+        choices=["scaffold", "single-generate"],
+        default="scaffold",
+        help="How to fill the Context section: scaffold leaves a placeholder, single-generate renders one log-specific draft",
+    )
+    parser.add_argument(
+        "--repo",
+        dest="repo",
+        help="Repository slug for live label preflight and create mode",
+    )
+    parser.add_argument(
+        "--check-live-labels",
+        dest="check_live_labels",
+        action="store_true",
+        help="Validate derived labels against the live GitHub label inventory without creating an issue",
+    )
+    parser.add_argument(
+        "--fail-on-missing-live-labels",
+        dest="fail_on_missing_live_labels",
+        action="store_true",
+        help="When live label preflight is enabled, fail if any derived label is missing from GitHub",
+    )
     parser.add_argument(
         "--create",
         dest="create_issue",
@@ -153,6 +181,13 @@ def _normalize_specific_subject(title: str) -> str:
     return text
 
 
+def _compose_issue_title(log_id: str, keyword: str, specific_subject: str) -> str:
+    prefix = f"{keyword}/"
+    if specific_subject.lower().startswith(prefix.lower()):
+        return f"{log_id}: {specific_subject}"
+    return f"{log_id}: {keyword}/{specific_subject}"
+
+
 def _infer_keyword(fields: dict[str, str], title: str, tags: list[str], section_text: str) -> str:
     explicit = fields.get("issue_keyword", "").strip()
     if explicit:
@@ -224,6 +259,8 @@ def _derive_top_labels(fields: dict[str, str], tags: list[str]) -> list[str]:
 
 
 def _derive_scope_labels(fields: dict[str, str], log_id: str, scope: str) -> list[str]:
+    from body_contract import issue_uses_parent_body_contract
+
     explicit = _split_csv(fields.get("issue_scope_labels"))
     if explicit:
         return explicit
@@ -231,7 +268,7 @@ def _derive_scope_labels(fields: dict[str, str], log_id: str, scope: str) -> lis
     mapped = SCOPE_LABELS.get(scope)
     if mapped:
         labels.append(mapped)
-    labels.append(_derive_sub_label(log_id))
+    labels.append("sub/0" if issue_uses_parent_body_contract(fields) else _derive_sub_label(log_id))
     return labels
 
 
@@ -337,16 +374,35 @@ def _resolve_parent_issue(repo_root: Path, fields: dict[str, str], override: str
 
 
 def _build_links(fields: dict[str, str], log_rel_path: str) -> list[str]:
-    lines = [f"- Log: `{log_rel_path}`"]
-    for key, label in [
-        ("runbook", "Runbook"),
-        ("roadmap", "Roadmap"),
-        ("parent_log", "Parent log"),
-    ]:
-        value = fields.get(key, "").strip()
-        if value:
-            lines.append(f"- {label}: `{value}`")
-    return lines
+    from body_contract import build_canonical_issue_link_lines
+
+    return build_canonical_issue_link_lines(fields, log_rel_path)
+
+
+def _build_parent_issue_dod_lines(repo_root: Path, fields: dict[str, str]) -> list[str]:
+    from body_contract import extract_phase_log_paths, normalize_issue_short_ref, parse_issue_number
+
+    refs: list[tuple[int, str]] = []
+    seen: set[str] = set()
+    for phase_log_path in extract_phase_log_paths(fields):
+        candidate = (repo_root / phase_log_path).resolve()
+        if not candidate.is_file():
+            continue
+        child_fields = _parse_fields(_load_text(candidate))
+        short_ref = normalize_issue_short_ref(child_fields.get("issue"))
+        if not short_ref or short_ref in seen:
+            continue
+        seen.add(short_ref)
+        refs.append((parse_issue_number(short_ref) or 10**9, short_ref))
+    return [f"- {short_ref}" for _, short_ref in sorted(refs, key=lambda item: (item[0], item[1]))]
+
+
+def _build_issue_dod_lines(repo_root: Path, fields: dict[str, str]) -> list[str]:
+    from body_contract import issue_uses_parent_body_contract
+
+    if issue_uses_parent_body_contract(fields):
+        return _build_parent_issue_dod_lines(repo_root, fields)
+    return []
 
 
 def _render_issue_markdown(
@@ -355,10 +411,11 @@ def _render_issue_markdown(
     labels: list[str],
     issue_projects: list[str],
     milestone: str | None,
-    source_log: str,
     parent_issue: str | None,
     show_parent_issue: bool,
+    dod_lines: list[str],
     link_lines: list[str],
+    context_lines: list[str],
 ) -> str:
     lines = [
         "## Metadata",
@@ -366,7 +423,6 @@ def _render_issue_markdown(
         f"- Labels: {', '.join(f'`{label}`' for label in labels) if labels else '``'}",
         f"- Projects: `{', '.join(issue_projects)}`",
         f"- Milestone: `{milestone or ''}`",
-        f"- Source log: `{source_log}`",
     ]
     if show_parent_issue:
         lines.append(f"- Parent issue: {parent_issue or ''}")
@@ -374,7 +430,11 @@ def _render_issue_markdown(
         "",
         "## Context",
         "",
+        *context_lines,
+        "",
         "## Definition of Done (DoD)",
+        "",
+        *dod_lines,
         "",
         "## Links",
         "",
@@ -382,6 +442,10 @@ def _render_issue_markdown(
         "",
     ])
     return "\n".join(lines)
+
+
+def _default_context_scaffold_lines() -> list[str]:
+    return ["- <placeholder>"]
 
 
 def _validate_labels(labels: list[str], strict: bool) -> None:
@@ -429,6 +493,13 @@ def _fetch_existing_labels(repo: str) -> set[str]:
     except json.JSONDecodeError as exc:
         raise SystemExit(f"Failed to parse label list JSON: {exc}") from exc
     return {item.get('name', '').strip() for item in data if isinstance(item, dict)}
+
+
+def _live_label_preflight(repo: str, labels: list[str]) -> tuple[list[str], list[str]]:
+    existing_labels = _fetch_existing_labels(repo)
+    matched = [label for label in labels if label in existing_labels]
+    missing = [label for label in labels if label not in existing_labels]
+    return matched, missing
 
 
 def _fetch_existing_milestones(repo: str) -> set[str]:
@@ -506,6 +577,9 @@ def _create_issue(
 
 def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) -> IssueDraftResult:
     repo_root = _repo_root()
+    if args.fail_on_missing_live_labels and not (args.check_live_labels or args.create_issue):
+        raise SystemExit("--fail-on-missing-live-labels requires --check-live-labels or --create")
+
     log_path = (repo_root / args.log_path).resolve() if not Path(args.log_path).is_absolute() else Path(args.log_path)
     if not log_path.is_file():
         raise SystemExit(f"Log file not found: {log_path}")
@@ -522,7 +596,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
 
     keyword = _infer_keyword(fields, log_title, tags, section_text)
     specific_subject = _normalize_specific_subject(log_title)
-    issue_title = f"{log_id}: {keyword}/{specific_subject}"
+    issue_title = _compose_issue_title(log_id, keyword, specific_subject)
 
     top_labels = _derive_top_labels(fields, tags)
     scope_labels = _derive_scope_labels(fields, log_id, scope)
@@ -530,6 +604,20 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     module_labels = _derive_module_labels(fields, _normalize_override_list(args.module_label_overrides))
     all_labels = _dedupe(top_labels + scope_labels + function_labels + module_labels)
     _validate_labels(all_labels, args.strict_label_check)
+
+    live_label_check_enabled = bool(args.check_live_labels or args.create_issue)
+    live_label_check_repo: str | None = None
+    matched_live_labels: list[str] = []
+    missing_live_labels: list[str] = []
+    if live_label_check_enabled:
+        _require_gh_cli()
+        _require_gh_auth()
+        live_label_check_repo = _derive_repo_slug(args.repo)
+        matched_live_labels, missing_live_labels = _live_label_preflight(live_label_check_repo, all_labels)
+        if missing_live_labels and (args.create_issue or args.fail_on_missing_live_labels):
+            raise SystemExit(
+                f"Missing pre-created labels in {live_label_check_repo}: {', '.join(missing_live_labels)}"
+            )
 
     milestone, milestone_warnings = _derive_milestone(fields, args.milestone_override)
     parent_issue, show_parent_issue, parent_warnings = _resolve_parent_issue(repo_root, fields, args.parent_issue)
@@ -545,11 +633,29 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         warnings.append("issue_milestone missing")
     if show_parent_issue and not parent_issue:
         warnings.append("issue_parent missing")
-    warnings.append("Context and Definition of Done (DoD) left intentionally blank pending operator input")
+    if live_label_check_enabled and live_label_check_repo:
+        if missing_live_labels:
+            warnings.append(
+                f"live label preflight against {live_label_check_repo} found missing labels: {', '.join(missing_live_labels)}"
+            )
+        else:
+            warnings.append(f"live label preflight passed against {live_label_check_repo}")
+    context_mode = str(getattr(args, "context_mode", "scaffold") or "scaffold")
+    if context_mode == "single-generate":
+        warnings.append("Context was single-generated from the source log; review it manually before create/apply")
+    else:
+        warnings.append("Context was left as scaffold; generate or author single-item Context text separately before lifecycle completion")
 
     rel_log_path = _repo_rel(log_path)
     link_lines = _build_links(fields, rel_log_path)
+    dod_lines = _build_issue_dod_lines(repo_root, fields)
     issue_projects = _derive_issue_projects(fields, rel_log_path)
+    from body_contract import build_issue_draft_context_lines
+
+    if dod_lines:
+        warnings.append("Definition of Done (DoD) was populated from the known child issue ledger because this is a top-level parent issue")
+    else:
+        warnings.append("Definition of Done (DoD) remains intentionally blank pending operator input")
 
     default_output = repo_root / "docs" / "issues" / f"issue-{log_path.stem.removeprefix('log-')}.md"
     output_path = Path(args.output_path) if args.output_path else default_output
@@ -562,21 +668,25 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         result_path = repo_root / result_path
     result_path.parent.mkdir(parents=True, exist_ok=True)
 
+    context_lines = build_issue_draft_context_lines(text) if context_mode == "single-generate" else _default_context_scaffold_lines()
+
     markdown = _render_issue_markdown(
         title=issue_title,
         labels=all_labels,
         issue_projects=issue_projects,
         milestone=milestone,
-        source_log=rel_log_path,
         parent_issue=parent_issue,
         show_parent_issue=show_parent_issue,
+        dod_lines=dod_lines,
         link_lines=link_lines,
+        context_lines=context_lines,
     )
     output_path.write_text(markdown, encoding="utf-8")
 
     result = IssueDraftResult(
         mode="create-issue" if args.create_issue else "draft-generation",
         result="ok",
+        context_mode=context_mode,
         log_path=rel_log_path,
         draft_path=_repo_rel(output_path),
         title=issue_title,
@@ -589,16 +699,14 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         parent_issue=parent_issue,
         body_markdown=markdown,
         warnings=warnings,
+        live_label_check_enabled=live_label_check_enabled,
+        live_label_check_repo=live_label_check_repo,
+        matched_live_labels=matched_live_labels,
+        missing_live_labels=missing_live_labels,
     )
 
     if args.create_issue:
-        _require_gh_cli()
-        _require_gh_auth()
-        repo = _derive_repo_slug(args.repo)
-        existing_labels = _fetch_existing_labels(repo)
-        missing_labels = [label for label in all_labels if label not in existing_labels]
-        if missing_labels:
-            raise SystemExit(f"Missing pre-created labels in {repo}: {', '.join(missing_labels)}")
+        repo = live_label_check_repo or _derive_repo_slug(args.repo)
 
         if milestone:
             milestones = _fetch_existing_milestones(repo)
