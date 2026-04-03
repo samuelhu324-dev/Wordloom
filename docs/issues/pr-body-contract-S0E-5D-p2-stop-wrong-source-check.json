@@ -1,0 +1,51 @@
+{
+  "mode": "pr-body-contract-check",
+  "result": "fail",
+  "source_log_path": "docs/issues/pr-body-contract-S0E-5D-p2-stop-wrong-source-log.md",
+  "body_path": "docs/issues/pr-body-contract-S0E-5D-p2-pass-body.md",
+  "status": "fail",
+  "warnings": [],
+  "expected_evidence_footer_lines": [],
+  "checks": [
+    {
+      "name": "required-pr-sections",
+      "status": "pass",
+      "details": "required PR sections are present"
+    },
+    {
+      "name": "pr-section-order",
+      "status": "pass",
+      "details": "section order matches the canonical contract"
+    },
+    {
+      "name": "metadata-row-shape",
+      "status": "pass",
+      "details": "metadata bullet rows are contiguous"
+    },
+    {
+      "name": "pr-link-categories",
+      "status": "pass",
+      "details": "PR Links section uses only allowed link categories"
+    },
+    {
+      "name": "evidence-footer-source-shape",
+      "status": "pass",
+      "details": "no Evidence Footer Source rows were provided"
+    },
+    {
+      "name": "evidence-footer-presence",
+      "status": "fail",
+      "details": "Evidence Footer section must be omitted when no Evidence Footer Source rows exist"
+    },
+    {
+      "name": "evidence-footer-line-shape",
+      "status": "pass",
+      "details": "Evidence Footer rows match the canonical line shape"
+    },
+    {
+      "name": "development-link-presence",
+      "status": "pass",
+      "details": "Development Link section is present for the development issue"
+    }
+  ]
+}

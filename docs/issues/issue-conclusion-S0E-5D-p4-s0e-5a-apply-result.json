@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S0E-5D-p4-plan.json",
+  "item_index": 5,
+  "requested_id": "S0E-5A",
+  "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 305,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/305",
+  "issue_title": "S0E-5A: workflow/lifecycle audit gate and dry-run planner",
+  "previous_issue_state": "CLOSED",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S0E-5D-p4-s0e-5a-apply-body.md",
+  "close_reason": null,
+  "warnings": [
+    "issue was already closed before apply; body updated in place"
+  ]
+}

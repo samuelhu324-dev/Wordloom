@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S0E-5D-p4-plan.json",
+  "item_index": 2,
+  "requested_id": "S0E-2D",
+  "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 297,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/297",
+  "issue_title": "S0E-2D: contract/issue creation metadata enrichment and English body contract",
+  "previous_issue_state": "CLOSED",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S0E-5D-p4-s0e-2d-apply-body.md",
+  "close_reason": null,
+  "warnings": [
+    "issue was already closed before apply; body updated in place"
+  ]
+}

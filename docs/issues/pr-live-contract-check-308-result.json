@@ -1,0 +1,64 @@
+{
+  "mode": "live-pr-body-contract-check",
+  "result": "pass",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+  "pr_number": 308,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/308",
+  "pr_title": "S0E-5B/P0-P3: guarded lifecycle apply expansion v1",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-live-contract-check-308-body.md",
+  "status": "pass",
+  "warnings": [],
+  "expected_evidence_footer_lines": [
+    "`P1-C1-S1` | artifact: `docs/issues/issue-relationship-S0E-5B-p1-pass-guarded-apply-result.json`",
+    "`P2-C1-S1` | artifact: `docs/issues/pr-create-preflight-S0E-5C-p2-stop-branch-collision.json`"
+  ],
+  "checks": [
+    {
+      "name": "required-pr-sections",
+      "status": "pass",
+      "details": "required PR sections are present"
+    },
+    {
+      "name": "pr-section-order",
+      "status": "pass",
+      "details": "section order matches the canonical contract"
+    },
+    {
+      "name": "metadata-row-shape",
+      "status": "pass",
+      "details": "metadata bullet rows are contiguous"
+    },
+    {
+      "name": "pr-link-categories",
+      "status": "pass",
+      "details": "PR Links section uses only allowed link categories"
+    },
+    {
+      "name": "evidence-footer-source-shape",
+      "status": "pass",
+      "details": "Evidence Footer Source rows match the canonical line shape"
+    },
+    {
+      "name": "evidence-footer-eligibility",
+      "status": "pass",
+      "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+    },
+    {
+      "name": "evidence-footer-presence",
+      "status": "pass",
+      "details": "rendered Evidence Footer rows match the source block exactly"
+    },
+    {
+      "name": "evidence-footer-line-shape",
+      "status": "pass",
+      "details": "Evidence Footer rows match the canonical line shape"
+    },
+    {
+      "name": "development-link-presence",
+      "status": "pass",
+      "details": "Development Link section is present for the development issue"
+    }
+  ]
+}

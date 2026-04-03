@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, PR, Automation, Drills, Evidence, epic/s0, sub/0e5c`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/309`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/310`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/309`
 **created**: `2026-03-30`
-**updated**: `2026-03-31`
+**updated**: `2026-04-01`
 
 ---
 
@@ -112,6 +112,7 @@
 - `P2` is now completed: live issue `#309` has been created and attached under parent issue `#248`, and one bounded front-half sample now proves that `S1-S3` can emit both pass and stop results without entering local branch materialization or live PR publication.
 - `P3` is now completed: `S6` remains operator-held in v1, while post-apply live verification is now fixed to run immediately after live PR publication and before `S7` local evidence finalization; later GitHub Actions enforcement may mirror that same verification, but it is no longer the primary publish-time owner.
 - `P4` is now completed: `create_pr_from_plan.py` now runs live PR body verification immediately after `gh pr create`, writes the fetched live body plus verification result artifacts, and serializes verification status/paths into the same `pr-create result` JSON.
+- The real lifecycle chain is now closed: PR `#310` has been created and merged from the guarded create path, inline post-apply verification passed at publish time, and issue `#309` now has its final issue-conclusion body written back in place.
 - `S0E-5C` remains `stable`: the slice has now finished decomposition, ownership splitting, publish-boundary decision work, and the first inline post-apply verification wiring for guarded `PR create` without over-claiming that unattended live publish is safe in v1.
 
 ## P0 (PR create stage map | v1)
@@ -279,6 +280,25 @@
   - `create_pr_from_plan.py` now calls the reusable live verifier immediately after `gh pr create`, derives deterministic `-post-apply-live-body.md` and `-post-apply-verify-result.json` artifact names, and writes verification status back into the serialized create-result JSON
   - representative non-destructive validation against historical sample `S0E-5B/#308` returned `pass`, proving the new inline verifier wiring can reuse an existing create-result sample without creating a new live PR
 
+### Real lifecycle follow-through (merged PR and concluded issue | 2026-04-01)
+
+- headSha: `da238fd3`
+- artifacts:
+  - `docs/issues/pr-prep-S0E-5C-p2-pass-plan.json`
+  - `docs/issues/pr-prep-S0E-5C-p2-pass-create-body.md`
+  - `docs/issues/pr-prep-S0E-5C-p2-pass-create-result.json`
+  - `docs/issues/pr-prep-S0E-5C-p2-pass-post-apply-live-body.md`
+  - `docs/issues/pr-prep-S0E-5C-p2-pass-post-apply-verify-result.json`
+  - `docs/issues/issue-conclusion-S0E-5C-live-manifest.json`
+  - `docs/issues/issue-conclusion-S0E-5C-live-plan.json`
+  - `docs/issues/issue-conclusion-S0E-5C-live-s0e-5c-body.md`
+  - `docs/issues/issue-conclusion-S0E-5C-live-s0e-5c-apply-body.md`
+  - `docs/issues/issue-conclusion-S0E-5C-live-s0e-5c-apply-result.json`
+- expected:
+  - `S0E-5C` should progress from a live issue-only sample into a real `PR -> merge -> conclusion` closure, while the guarded create path records publish-time verification artifacts and the issue-conclusion path writes the final body back in place
+- observed:
+  - PR `#310` was created from the refreshed `P0-P4` plan, inline post-apply verification returned `pass`, the PR was merged into `main`, and issue `#309` remained `CLOSED` after its final conclusion body was written back through the issue-conclusion apply path
+
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: created `S0E-5C` as the dedicated follow-up for guarded `PR create` decomposition after `S0E-5B` reached stable state on in-place guarded mutation families.
@@ -288,3 +308,4 @@
 - 2026-03-30: completed `P2` by adding a bounded front-half preflight entrypoint, then recording one live pass sample and one create-specific stop sample that both stop before `S4-local-branch-materialization`.
 - 2026-03-31: completed `P3` by fixing `S6` as an operator-held live publish boundary in v1, placing post-apply live verification immediately after publish and before `S7`, and keeping any later GitHub Actions verification as secondary enforcement; `S0E-5C` is now `stable`.
 - 2026-03-31: completed `P4` by wiring the reusable live PR verifier directly into `create_pr_from_plan.py`, persisting post-apply verification status and artifact paths in the create-result JSON, and validating the flow non-destructively against historical sample `S0E-5B/#308`.
+- 2026-04-01: completed the first real lifecycle closure for `S0E-5C`: PR `#310` was created and merged from the guarded create path, inline post-apply verification passed, and issue `#309` received its final conclusion body write-back.
