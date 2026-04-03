@@ -1,0 +1,34 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "context_mode": "scaffold",
+  "log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+  "draft_path": "docs/issues/issue-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+  "title": "S0E-7C: workflow/workflow/historical log review sampling and mirror follow-up",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: #248\n\n## Context\n\n- <placeholder>\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n- Previous log: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "issue_milestone missing",
+    "Context was left as scaffold; generate or author single-item Context text separately before lifecycle completion",
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "issue_number": 315,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/315",
+  "created_at": "2026-04-02T05:05:52.451498+00:00"
+}

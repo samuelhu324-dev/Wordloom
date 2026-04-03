@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Roadmap, Milestone, Automation, epic/s0, sub/0e3a`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/314`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/292`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
@@ -34,7 +34,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-03-29`
-**updated**: `2026-03-29`
+**updated**: `2026-04-02`
 
 ---
 

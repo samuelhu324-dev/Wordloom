@@ -1,0 +1,14 @@
+{
+  "requested_id": "S0E-7G",
+  "source_log_path": "docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md",
+  "pr_number": 321,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/321",
+  "pr_title": "S0E-7G/P3-C1-S1: retain workflow_dispatch representative evidence",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p5-c1-manifest-s0e-7g-pr-321-live-body.md",
+  "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p5-c1-manifest-s0e-7g-pr-321-rewritten-body.md",
+  "apply_result_path": "docs/issues/pr-body-rewrite-S0E-4F-p5-c1-manifest-s0e-7g-pr-321-apply-result.json",
+  "body_changed": true,
+  "labels_applied": [],
+  "warnings": []
+}

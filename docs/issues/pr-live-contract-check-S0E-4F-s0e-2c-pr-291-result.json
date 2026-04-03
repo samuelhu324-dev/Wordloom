@@ -1,0 +1,62 @@
+{
+  "mode": "live-pr-body-contract-check",
+  "result": "fail",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "source_log_path": "docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md",
+  "pr_number": 291,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/291",
+  "pr_title": "S0E-2C/ P0-P3: batch issue creation and backfill tooling",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2c-pr-291-body.md",
+  "status": "fail",
+  "warnings": [],
+  "expected_evidence_footer_lines": [],
+  "checks": [
+    {
+      "name": "required-pr-sections",
+      "status": "fail",
+      "details": "missing required PR sections: ['Metadata', 'Summary', 'Execution Checklist', 'Links']"
+    },
+    {
+      "name": "pr-section-order",
+      "status": "fail",
+      "details": "missing required sections for canonical order: ['Metadata', 'Summary', 'Execution Checklist', 'Links']"
+    },
+    {
+      "name": "metadata-row-shape",
+      "status": "pass",
+      "details": "metadata bullet rows are contiguous"
+    },
+    {
+      "name": "pr-link-categories",
+      "status": "pass",
+      "details": "PR Links section uses only allowed link categories"
+    },
+    {
+      "name": "evidence-footer-source-shape",
+      "status": "pass",
+      "details": "no Evidence Footer Source rows were provided"
+    },
+    {
+      "name": "evidence-footer-eligibility",
+      "status": "pass",
+      "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+    },
+    {
+      "name": "evidence-footer-presence",
+      "status": "pass",
+      "details": "Evidence Footer section is omitted when the source block is absent"
+    },
+    {
+      "name": "evidence-footer-line-shape",
+      "status": "pass",
+      "details": "no Evidence Footer rows were rendered"
+    },
+    {
+      "name": "development-link-presence",
+      "status": "pass",
+      "details": "Development Link section is correctly omitted"
+    }
+  ],
+  "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2c-pr-291-result.json"
+}

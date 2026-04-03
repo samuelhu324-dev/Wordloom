@@ -37,7 +37,7 @@
 **pr_projects**: ``          # exact GitHub Project names for the PR; if blank, PR automation leaves project assignment empty by default
 **pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave the PR milestone empty
 **pr_base**: ``              # exact PR base branch, e.g. main; if blank, dry-run may report it missing but must not guess another base
-**pr_development_issue**: `` # exact issue number/url the PR should link in Development; if blank, automation must leave Development linkage empty
+**pr_development_issue**: `` # exact issue number/url the PR should record in Metadata as Development issue; if blank, automation must leave that metadata row empty
 **created**: `YYYY-MM-DD`
 **updated**: `YYYY-MM-DD`
 
@@ -54,12 +54,14 @@
 
 - <默认认证/默认存储/默认入口/默认环境/默认语义……>
 - 若 `issue_*` 字段为空，automation 必须保守留空并要求人工确认，而不是猜测 title keyword、labels 或 milestone。
-- 若 `pr_*` 字段为空，PR automation 必须保守留空并显式报告缺口，而不是复制 issue metadata 或猜测 base / milestone / development link。
+- 若 `pr_*` 字段为空，PR automation 必须保守留空并显式报告缺口，而不是复制 issue metadata 或猜测 base / milestone / development issue。
 - roadmap 与 logs 的机械桥接必须通过 `roadmap_path + roadmap_milestone + roadmap_phase` 明确声明；roadmap 内的正式 bridge ledger 默认只计入 child logs，而不是 parent/spine prose。
 
 ## PR Summary Inputs（可选）
 
 - 仅当 parent/spine log 本身会作为 PR contract source 时填写；多数情况下，真正的 PR 描述仍应来自 child phase log。
+- `PR Summary Inputs` 是 automation-facing contract；execution evidence 的人工账本仍应保留在 `Evidence` 或 child log 的证据段落中。
+- parent/spine log 默认不应从 prose 聚合里直接合成 `Evidence Footer Source`；若证据实际属于 child logs，应优先在这里引用 child sources，而不是重写 child evidence ledger。
 
 **PR summary bullets**:
 
@@ -70,15 +72,19 @@
 - 默认应指向具体 child log 的 execution checklist，而不是 parent/spine 自己重新发明一套 checklist。
 - 若 parent/spine 只做聚合，应在这里写明“由哪些 child logs 组成该 PR”。
 
-**PR links / evidence footer**:
+**PR links**:
 
 - Parent log: `docs/logs/log-<ID>.md`
 - Child log source(s): ``
-- Issue: ``
 - Evidence artifact: ``
 
-- Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
-- `Evidence Footer` lines should prefer: `sha / ID / P*-C*-S* : summary`.
+**Evidence Footer Source**:
+
+- `P1-C1-S1` | artifact: ``
+
+- Parent/spine 只有在自身确实拥有对应 phase/unit 证据时才应填写 footer rows；仅做聚合时，应让 child logs 继续作为 footer source 的实际持有者。
+- Generated PR body should keep `Evidence Footer` as the only optional section; development issue identity stays in `Metadata`.
+- `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
 
 **Non-goals（不做什么）**（可选，但建议写）:
 
@@ -131,6 +137,11 @@
 - <一句话：整体到哪了>
 - <哪些 phase stable/draft>
 - <最近 1~2 个关键风险/变更>
+
+## Evidence（可选，聚合型记账）
+
+- parent/spine log 通常不是 execution evidence 的主记账面；若保留本节，默认应记录聚合性的 traceability，而不是重复 child log 的完整 drill ledger。
+- 若 evidence 真正属于 child phase logs，应优先在本节引用 child log 或 child artifacts，而不是把 child 的 `expected/observed` 全量复制回 parent/spine。
 
 ## Notes（落地原则，可选）
 

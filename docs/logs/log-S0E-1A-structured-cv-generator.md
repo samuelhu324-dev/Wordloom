@@ -9,15 +9,15 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Tooling, CV, Demo, Drills, Evidence, epic/s0e, sub/1a`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/316`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/249`
   **runbook**: ``
   **parent_log**: `docs/logs/log-S0D-6A-docs-management-v4.md`
   **previous_log**: ``
   **reference_log_1**: `docs/logs/log-S0D-6A-structured-roadmap-and-demo.md`
   **reference_log_2**: `docs/logs/log-S1-1-gov-role-minimal-ops-loop.md`
 **created**: `2026-03-22`
-**updated**: `2026-03-22`
+**updated**: `2026-04-02`
 
 ---
 

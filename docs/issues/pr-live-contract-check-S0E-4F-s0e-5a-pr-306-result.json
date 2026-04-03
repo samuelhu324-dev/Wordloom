@@ -1,0 +1,62 @@
+{
+  "mode": "live-pr-body-contract-check",
+  "result": "fail",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+  "pr_number": 306,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/306",
+  "pr_title": "S0E-5A/P0-P5: lifecycle audit gate and dry-run planner v1",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5a-pr-306-body.md",
+  "status": "fail",
+  "warnings": [],
+  "expected_evidence_footer_lines": [],
+  "checks": [
+    {
+      "name": "required-pr-sections",
+      "status": "pass",
+      "details": "required PR sections are present"
+    },
+    {
+      "name": "pr-section-order",
+      "status": "fail",
+      "details": "unexpected sections present: ['Development Link']"
+    },
+    {
+      "name": "metadata-row-shape",
+      "status": "pass",
+      "details": "metadata bullet rows are contiguous"
+    },
+    {
+      "name": "pr-link-categories",
+      "status": "fail",
+      "details": "PR Links section contains invalid rows: ['- Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/305`']"
+    },
+    {
+      "name": "evidence-footer-source-shape",
+      "status": "pass",
+      "details": "no Evidence Footer Source rows were provided"
+    },
+    {
+      "name": "evidence-footer-eligibility",
+      "status": "pass",
+      "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+    },
+    {
+      "name": "evidence-footer-presence",
+      "status": "pass",
+      "details": "Evidence Footer section is omitted when the source block is absent"
+    },
+    {
+      "name": "evidence-footer-line-shape",
+      "status": "pass",
+      "details": "no Evidence Footer rows were rendered"
+    },
+    {
+      "name": "development-link-presence",
+      "status": "fail",
+      "details": "Development Link section is no longer allowed in canonical PR bodies"
+    }
+  ],
+  "result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5a-pr-306-result.json"
+}

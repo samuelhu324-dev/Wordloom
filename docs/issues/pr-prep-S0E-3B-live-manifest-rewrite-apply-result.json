@@ -1,0 +1,15 @@
+{
+  "mode": "pr-body-rewrite-apply",
+  "result": "ok",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "pr_number": 323,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/323",
+  "pr_title": "S0E-3B/P0-P2: GitHub label inventory and issue-label live preflight contract v1",
+  "pr_state": "OPEN",
+  "source_log_path": "docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md",
+  "requested_id": "S0E-3B",
+  "live_body_path": "docs/issues/pr-prep-S0E-3B-live-manifest-rewrite-live-body.md",
+  "rewritten_body_path": "docs/issues/pr-prep-S0E-3B-live-manifest-rewrite-rewritten-body.md",
+  "body_changed": true,
+  "warnings": []
+}

@@ -1,16 +1,22 @@
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 
-from gen_issue_draft import _load_text, _parse_sections, _repo_rel, _repo_root
+from body_contract import build_pr_closing_issue_lines, extract_pr_summary_inputs, pr_body_is_evidence_footer_eligible, validate_pr_body_contract
+from gen_issue_draft import _load_text, _parse_fields, _parse_sections, _repo_rel, _repo_root
 from plan_pr_prep import (
+    _build_default_link_lines,
+    _build_pr_labels,
     _derive_scope_from_pr_title,
+    _derive_pr_development_issue,
     _extract_checked_items,
     _extract_scoped_evidence_lines,
     _filter_checked_items,
     _find_section_lines,
-    _matches_scope,
+    _normalize_branch_name,
+    _select_pr_link_lines,
 )
 
 
@@ -40,20 +46,38 @@ def _render_section(name: str, lines: list[str]) -> list[str]:
     return [f"## {name}", "", *cleaned_lines, ""]
 
 
-def _extract_heading_evidence_lines(section_lines: list[str], scope_kind: str, scope_refs: list[str]) -> list[str]:
-    lines: list[str] = []
+METADATA_LINE_RE = re.compile(r"^- (?P<label>[^:]+):\s*(?P<value>.*)$")
+
+
+def _parse_metadata_map(section_lines: list[str]) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for raw in section_lines:
+        match = METADATA_LINE_RE.match(raw.strip())
+        if not match:
+            continue
+        values[match.group("label").strip()] = match.group("value").strip()
+    return values
+
+
+def _strip_wrapping_backticks(value: str) -> str:
+    stripped = value.strip()
+    if stripped.startswith("`") and stripped.endswith("`") and len(stripped) >= 2:
+        return stripped[1:-1]
+    return stripped
+
+
+def _extract_summary_bullets(section_lines: list[str]) -> list[str]:
+    bullets: list[str] = []
     for raw in section_lines:
         stripped = raw.strip()
-        if not stripped.startswith("### "):
-            continue
-        heading = stripped[4:].strip()
-        if _matches_scope(heading, scope_kind, scope_refs):
-            lines.append(heading)
-    return lines
+        if stripped.startswith("- "):
+            bullets.append(stripped[2:].strip())
+    return bullets
 
 
 def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, requested_id: str, pr_title: str, output_path: Path) -> str:
-    source_sections = _parse_sections(_load_text(source_log_path))
+    source_log_text = _load_text(source_log_path)
+    source_sections = _parse_sections(source_log_text)
     body_sections = _parse_sections(_load_text(existing_body_path))
 
     scope_kind, scope_refs = _derive_scope_from_pr_title(pr_title, requested_id)
@@ -63,34 +87,46 @@ def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, re
     if checklist_items and not filtered_checklist_items:
         raise SystemExit("No checklist items matched the requested PR title scope")
 
-    evidence_lines = _extract_scoped_evidence_lines(
-        _find_section_lines(source_sections, "Evidence"),
-        scope_kind,
-        scope_refs,
+    source_fields = _parse_fields(source_log_text)
+    source_log_rel = _repo_rel(source_log_path)
+    summary_bullets, explicit_link_lines, evidence_lines = extract_pr_summary_inputs(source_log_text)
+    evidence_footer_lines = []
+    if pr_body_is_evidence_footer_eligible(source_log_text):
+        evidence_footer_lines = _extract_scoped_evidence_lines(evidence_lines, scope_kind, scope_refs)
+    if not summary_bullets:
+        summary_bullets = _extract_summary_bullets(body_sections.get("Summary", []))
+
+    metadata_map = _parse_metadata_map(body_sections.get("Metadata", []))
+    base_branch = _strip_wrapping_backticks(metadata_map.get("Base branch", "")) or "main"
+    candidate_pr_branch = (
+        _strip_wrapping_backticks(metadata_map.get("Candidate PR-prep branch", ""))
+        or _strip_wrapping_backticks(metadata_map.get("PR-prep branch", ""))
+        or f"pr-prep/{_normalize_branch_name(requested_id)}"
     )
-    if not evidence_lines:
-        evidence_lines = _extract_heading_evidence_lines(
-            _find_section_lines(source_sections, "Evidence"),
-            scope_kind,
-            scope_refs,
-        )
-    if not evidence_lines:
-        raise SystemExit("No evidence lines matched the requested PR title scope")
+    pr_labels = _build_pr_labels(source_fields, source_sections)
+    pr_development_issue, _ = _derive_pr_development_issue(source_fields)
+    closing_issue_lines = build_pr_closing_issue_lines(pr_development_issue)
+    link_lines = _select_pr_link_lines(source_fields, explicit_link_lines, source_log_rel)
 
-    ordered_sections = [
-        "Metadata",
-        "Summary",
-        "Execution Checklist",
-        "Links",
-        "Evidence Footer",
-        "Development Link",
-    ]
-
-    rewritten_sections: dict[str, list[str]] = dict(body_sections)
-    rewritten_sections["Execution Checklist"] = [
+    rewritten_sections: dict[str, list[str]] = {
+        "Metadata": [
+            f"- Requested ID: `{requested_id}`",
+            f"- Base branch: `{base_branch}`",
+            f"- Candidate PR-prep branch: `{candidate_pr_branch}`",
+            f"- Source log: `{source_log_rel}`",
+            f"- Labels: `{', '.join(pr_labels)}`",
+            f"- Development issue: {pr_development_issue or ''}",
+        ],
+        "Summary": [f"- {item}" for item in summary_bullets] or ["- <placeholder>"],
+        "Execution Checklist": [
         f"- [x] `{item.identifier}`: {item.text}" for item in filtered_checklist_items
-    ]
-    rewritten_sections["Evidence Footer"] = [f"- {line}" for line in evidence_lines]
+        ],
+        "Links": [f"- {item}" for item in link_lines],
+    }
+    if evidence_footer_lines:
+        rewritten_sections["Evidence Footer"] = [f"- {line}" for line in evidence_footer_lines]
+
+    ordered_sections = ["Metadata", "Summary", "Execution Checklist", "Links", "Evidence Footer"]
 
     rendered: list[str] = []
     for section_name in ordered_sections:
@@ -98,8 +134,21 @@ def rewrite_pr_body_scope(*, source_log_path: Path, existing_body_path: Path, re
             continue
         rendered.extend(_render_section(section_name, rewritten_sections[section_name]))
 
+    if closing_issue_lines:
+        rendered.extend([*closing_issue_lines, ""])
+
+    body_text = "\n".join(rendered).rstrip() + "\n"
+    contract_result = validate_pr_body_contract(
+        body_markdown=body_text,
+        source_log_text=source_log_text,
+        pr_development_issue=pr_development_issue,
+    )
+    if contract_result.status != "pass":
+        failed = [f"{check.name}: {check.details}" for check in contract_result.checks if check.status == "fail"]
+        raise SystemExit("Rewritten PR body failed the canonical contract: " + "; ".join(failed))
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text("\n".join(rendered).rstrip() + "\n", encoding="utf-8")
+    output_path.write_text(body_text, encoding="utf-8")
     return _repo_rel(output_path)
 
 

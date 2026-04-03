@@ -1,0 +1,32 @@
+{
+  "mode": "issue-conclusion-manifest",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-1A",
+      "source_log_path": "docs/logs/log-S0E-1A-structured-cv-generator.md",
+      "issue_number": 316,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/316"
+    },
+    {
+      "requested_id": "S0E-2C",
+      "source_log_path": "docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md",
+      "issue_number": 313,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/313"
+    },
+    {
+      "requested_id": "S0E-3A",
+      "source_log_path": "docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md",
+      "issue_number": 314,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/314"
+    },
+    {
+      "requested_id": "S0E-7C",
+      "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+      "issue_number": 315,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/315"
+    }
+  ]
+}

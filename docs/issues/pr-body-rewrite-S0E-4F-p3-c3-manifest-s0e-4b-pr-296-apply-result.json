@@ -1,0 +1,14 @@
+{
+  "requested_id": "S0E-4B",
+  "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+  "pr_number": 296,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/296",
+  "pr_title": "S0E-4B/P0-P3: PR title compression, structural label inheritance, and body scope alignment follow-up v1",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-4b-pr-296-live-body.md",
+  "rewritten_body_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-4b-pr-296-rewritten-body.md",
+  "apply_result_path": "docs/issues/pr-body-rewrite-S0E-4F-p3-c3-manifest-s0e-4b-pr-296-apply-result.json",
+  "body_changed": true,
+  "labels_applied": [],
+  "warnings": []
+}

@@ -1,0 +1,123 @@
+{
+  "mode": "S0E-4F-p2-rewrite-manifest",
+  "status": "planned",
+  "decision": "rewrite-all-17",
+  "source_log_path": "docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md",
+  "audit_summary_path": "docs/issues/pr-live-contract-check-S0E-4F-summary.json",
+  "total_prs": 17,
+  "rewrite_families": [
+    {
+      "family": "A",
+      "description": "legacy pre-canonical PRs missing canonical PR sections entirely",
+      "planned_action": "full-body-rebuild",
+      "prs": [
+        {
+          "pr_number": 249,
+          "source_log_path": "docs/logs/log-S0E-1A-structured-cv-generator.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-1a-pr-249-result.json"
+        },
+        {
+          "pr_number": 291,
+          "source_log_path": "docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2c-pr-291-result.json"
+        },
+        {
+          "pr_number": 292,
+          "source_log_path": "docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-3a-pr-292-result.json"
+        }
+      ]
+    },
+    {
+      "family": "B",
+      "description": "canonical-body PRs that still carry Development Link, Links->Issue, and stale or non-canonical Evidence Footer drift",
+      "planned_action": "full-canonical-rewrite",
+      "prs": [
+        {
+          "pr_number": 287,
+          "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2a-pr-287-result.json"
+        },
+        {
+          "pr_number": 290,
+          "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2b-pr-290-result.json"
+        },
+        {
+          "pr_number": 294,
+          "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4a-pr-294-result.json"
+        },
+        {
+          "pr_number": 296,
+          "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4b-pr-296-result.json"
+        },
+        {
+          "pr_number": 298,
+          "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-2d-pr-298-result.json"
+        },
+        {
+          "pr_number": 301,
+          "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4c-pr-301-result.json"
+        },
+        {
+          "pr_number": 302,
+          "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4c-pr-302-result.json"
+        },
+        {
+          "pr_number": 304,
+          "source_log_path": "docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4d-pr-304-result.json"
+        }
+      ]
+    },
+    {
+      "family": "C",
+      "description": "canonical-body PRs that now only need the narrowed metadata-links cleanup",
+      "planned_action": "targeted-metadata-links-rewrite",
+      "prs": [
+        {
+          "pr_number": 299,
+          "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-4a-pr-299-result.json"
+        },
+        {
+          "pr_number": 306,
+          "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5a-pr-306-result.json"
+        },
+        {
+          "pr_number": 308,
+          "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5b-pr-308-result.json"
+        },
+        {
+          "pr_number": 310,
+          "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-5c-pr-310-result.json"
+        }
+      ]
+    },
+    {
+      "family": "D",
+      "description": "otherwise-canonical PRs that only retain an invalid Links->Issue row",
+      "planned_action": "links-only-rewrite",
+      "prs": [
+        {
+          "pr_number": 311,
+          "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-7c-pr-311-result.json"
+        },
+        {
+          "pr_number": 312,
+          "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+          "audit_result_path": "docs/issues/pr-live-contract-check-S0E-4F-s0e-7c-pr-312-result.json"
+        }
+      ]
+    }
+  ]
+}

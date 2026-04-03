@@ -1,0 +1,70 @@
+{
+  "mode": "live-pr-body-contract-check",
+  "result": "pass",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "source_log_path": "docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md",
+  "pr_number": 321,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/321",
+  "pr_title": "S0E-7G/P3-C1-S1: retain workflow_dispatch representative evidence",
+  "pr_state": "MERGED",
+  "live_body_path": "docs/issues/pr-live-contract-check-321-body.md",
+  "status": "pass",
+  "warnings": [],
+  "expected_evidence_footer_lines": [
+    "`P3-C1-S1` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-representative-validation.json`",
+    "`P3-C1-S1` | artifact: `docs/issues/publish-verify-remediation-gate-S0E-7G-p3-c1-dispatch-visibility-check.json`"
+  ],
+  "checks": [
+    {
+      "name": "required-pr-sections",
+      "status": "pass",
+      "details": "required PR sections are present"
+    },
+    {
+      "name": "pr-section-order",
+      "status": "pass",
+      "details": "section order matches the canonical contract"
+    },
+    {
+      "name": "metadata-row-shape",
+      "status": "pass",
+      "details": "metadata bullet rows are contiguous"
+    },
+    {
+      "name": "pr-link-categories",
+      "status": "pass",
+      "details": "PR Links section uses only allowed link categories"
+    },
+    {
+      "name": "evidence-footer-source-shape",
+      "status": "pass",
+      "details": "Evidence Footer Source rows match the canonical line shape"
+    },
+    {
+      "name": "evidence-footer-eligibility",
+      "status": "pass",
+      "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+    },
+    {
+      "name": "evidence-footer-presence",
+      "status": "pass",
+      "details": "rendered Evidence Footer rows match the source block exactly"
+    },
+    {
+      "name": "evidence-footer-line-shape",
+      "status": "pass",
+      "details": "Evidence Footer rows match the canonical line shape"
+    },
+    {
+      "name": "development-link-presence",
+      "status": "pass",
+      "details": "Development Link section is correctly omitted"
+    },
+    {
+      "name": "github-development-linkage",
+      "status": "pass",
+      "details": "GitHub closing-link footer is correctly omitted"
+    }
+  ],
+  "result_path": "docs/issues/pr-live-contract-check-321-result.json"
+}

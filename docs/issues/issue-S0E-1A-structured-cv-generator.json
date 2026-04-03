@@ -1,0 +1,39 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "context_mode": "scaffold",
+  "log_path": "docs/logs/log-S0E-1A-structured-cv-generator.md",
+  "draft_path": "docs/issues/issue-S0E-1A-structured-cv-generator.md",
+  "title": "S0E-1A: evidence/structured CV generator",
+  "top_labels": [
+    "EVOLUTION",
+    "CV"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [
+    "drills"
+  ],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": null,
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `CV`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: \n\n## Context\n\n- <placeholder>\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0E-1A-structured-cv-generator.md`\n- Parent log: `docs/logs/log-S0D-6A-docs-management-v4.md`\n",
+  "warnings": [
+    "parent_log path missing; issue_parent left blank",
+    "issue_keyword inferred from source log content",
+    "module labels left blank",
+    "issue_milestone missing",
+    "issue_parent missing",
+    "Context was left as scaffold; generate or author single-item Context text separately before lifecycle completion",
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "issue_number": 316,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/316",
+  "created_at": "2026-04-02T05:06:39.550065+00:00"
+}

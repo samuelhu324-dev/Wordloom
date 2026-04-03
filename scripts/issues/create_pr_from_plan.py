@@ -193,16 +193,6 @@ def _ensure_branch_absent(branch_name: str) -> None:
         raise SystemExit(f"Remote branch already exists: origin/{branch_name}")
 
 
-def _append_development_link(body_text: str, development_issue: str | None) -> str:
-    issue_refs = _extract_issue_refs(development_issue)
-    if not issue_refs:
-        return body_text
-    link_line = f"Closes {', '.join(issue_refs)}"
-    if link_line in body_text:
-        return body_text
-    return body_text.rstrip() + "\n\n## Development Link\n\n- " + link_line + "\n"
-
-
 def _normalize_issue_ref_display(issue_ref: str | None) -> str | None:
     issue_refs = _extract_issue_refs(issue_ref)
     if not issue_refs:
@@ -369,7 +359,7 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
     if not milestone:
         warnings.append("pr_milestone left blank; PR milestone assignment intentionally skipped")
     if not development_issue:
-        warnings.append("pr_development_issue left blank; PR body omits Development link keyword")
+        warnings.append("pr_development_issue left blank; PR Metadata keeps Development issue empty")
 
     source_head_ref = str(item.get("head_ref") or "HEAD")
     source_head_sha = _git("rev-parse", source_head_ref)
@@ -410,7 +400,6 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
 
         normalized_development_issue = _normalize_issue_ref_display(development_issue)
         create_body = _rewrite_development_issue_metadata(preview_body, normalized_development_issue)
-        create_body = _append_development_link(create_body, normalized_development_issue)
         create_body_path.write_text(create_body, encoding="utf-8")
         pr_number, pr_url = _create_pr(
             repo=repo,

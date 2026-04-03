@@ -1,0 +1,45 @@
+{
+  "version": "1",
+  "mode": "pr-body-rewrite-apply",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "pr_number": 299,
+      "reason": "Apply the narrowed metadata-links cleanup to the exact-unit historical PR"
+    },
+    {
+      "requested_id": "S0E-5A",
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "pr_number": 306,
+      "reason": "Remove the redundant Development Link and Links Issue rows from the lifecycle gate sample PR"
+    },
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "pr_number": 308,
+      "reason": "Remove the redundant Development Link and Links Issue rows from the guarded lifecycle sample PR"
+    },
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "pr_number": 310,
+      "reason": "Remove the redundant Development Link and Links Issue rows from the guarded PR create sample PR"
+    },
+    {
+      "requested_id": "S0E-7C",
+      "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+      "pr_number": 311,
+      "reason": "Remove the residual invalid Links Issue row from the otherwise-canonical historical review sample PR"
+    },
+    {
+      "requested_id": "S0E-7C",
+      "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+      "pr_number": 312,
+      "reason": "Remove the residual invalid Links Issue row from the otherwise-canonical runtime-closure follow-up PR"
+    }
+  ]
+}

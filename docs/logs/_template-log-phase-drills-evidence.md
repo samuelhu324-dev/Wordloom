@@ -31,7 +31,7 @@
 **pr_projects**: ``          # exact GitHub Project names for the PR; if blank, PR automation leaves project assignment empty by default
 **pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave the PR milestone empty
 **pr_base**: ``              # exact PR base branch, e.g. main; if blank, dry-run may report it missing but must not guess another base
-**pr_development_issue**: `` # exact issue number/url the PR should link in Development; if blank, automation must leave Development linkage empty
+**pr_development_issue**: `` # exact issue number/url the PR should record in Metadata as Development issue; if blank, automation must leave that metadata row empty
 **created**: `YYYY-MM-DD`
 **updated**: `YYYY-MM-DD`
 
@@ -55,6 +55,8 @@
 
 - Use this block when the log is expected to drive PR creation directly.
 - Keep the content human-facing and short; the PR body should summarise scope, not replay commit history.
+- `PR Summary Inputs` is the automation-facing contract surface; it should stay compact, deterministic, and free of explanatory prose.
+- `Evidence Footer Source` does not replace `Evidence`: the footer source feeds PR/gate automation, while `Evidence` remains the human ledger.
 
 **PR summary bullets**:
 
@@ -65,15 +67,19 @@
 - Default source: reuse the child log's execution checklist for the generated PR checklist block.
 - If a generated PR should omit or reorder checklist items, note that override explicitly here.
 
-**PR links / evidence footer**:
+**PR links**:
 
 - Log: `docs/logs/log-<ID>.md`
-- Issue: ``
 - Runbook: ``
 - Evidence artifact: ``
 
-- Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
-- `Evidence Footer` lines should prefer: `sha / ID / P*-C*-S* : summary`.
+**Evidence Footer Source**:
+
+- `P1-C1-S1` | artifact: ``
+
+- Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
+- Generated PR body should keep `Evidence Footer` as the only optional section; development issue identity stays in `Metadata`.
+- `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
 
 ## Definitions (optional)
 
@@ -174,6 +180,8 @@
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
+- This section is the human-facing ledger and should remain separate from `Evidence Footer Source`.
+- Prefer one stable ledger shape per unit: heading with `P*-C*-S*` and date, then `headSha`, `artifacts`, `expected`, and `observed`.
 
 ### <Pn-Cx-Sy> (<Drill name> | YYYY-MM-DD)
 
