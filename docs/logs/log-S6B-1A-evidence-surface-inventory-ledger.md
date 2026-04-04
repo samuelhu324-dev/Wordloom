@@ -74,6 +74,7 @@
 - `P1`: current evidence total table（当前 major surfaces、owner、retention、lookup path、family owner map）
 - `P2`: retention/storage baseline + hotspot list（回答 major surfaces 哪些 retained、哪些 tmp，以及当前最明显的混放面）
 - `P3`: generator/emission baseline（回答哪些 family 可以直接写 fact-source、哪些只能写 retained summary 或 workflow-derived output）
+- `P4`: bounded cutover baseline（回答收口顺序、coexistence 规则、停止条件，以及哪些面现在不能先动）
 
 ## Success Criteria (DoD)
 
@@ -83,6 +84,7 @@
 - 至少保留一版 `family owner map`，回答每类 surface 的主 contract owner 是哪条 log/script/workflow family。
 - 至少明确回答 `artifacts`、`docs/issues`、`docs/labs/_snapshot` 三个 major surfaces 当前哪些应该 retained、哪些默认 tmp。
 - 至少明确回答当前主要 script/workflow families 哪些允许直接产生 `fact-source`，哪些只允许产生 `retained-summary` 或 `workflow-derived` surface。
+- 至少明确回答 cutover 的 rollout order、bounded coexistence 规则，以及什么情况下某个旧 surface 才允许停止继续写入。
 - 至少识别出 3 个后续最值得治理的 hotspot，而不是只给出泛泛的目录批评。
 
 ## Stability (what stable means)
@@ -271,6 +273,40 @@
   - 必须说明它取代的是哪类旧 lookup path，还是与旧 surface bounded coexistence
   - 若还回答不了 owner / lookup / retention，就默认先按 `tmp-scratch` 处理，而不是直接升级为 retained contract
 
+## P4 (Bounded cutover baseline | v1)
+
+### P4-C1-S1 (Rollout order fixed | v1)
+
+- 当前 cutover 顺序固定为以下四段，而不是并行大清理：
+  - Stage 1: 先固定 vocabulary 和 write discipline，只约束新产物不得继续扩大混放面。
+  - Stage 2: 优先收口 `artifacts/` 根目录中的 `retained-summary` 与 `tmp-scratch` 命名边界，让 operator 能凭命名直接判断 retained 还是 tmp。
+  - Stage 3: 再处理 `docs/issues/*` 的 bounded tmp lane 问题，只在确有 replay scratch 需求时定义独立 tmp surface，避免污染现有 retained workflow outputs。
+  - Stage 4: 最后才讨论历史例外、旧 path 和 CI-only inspection bundle 的回收，不要求一次性清空旧目录。
+- 这一定序的原因是：`artifacts/` 的混放风险最高、误判成本最低、且不依赖重开 `docs/issues` contract；而 `docs/issues` 与历史例外的收口都更依赖前面几轮 naming / generator discipline 已稳定。
+
+### P4-C1-S2 (Bounded coexistence rules fixed | v1)
+
+- cutover 期间允许 retained surface 与旧 surface bounded coexistence，但必须满足以下规则：
+  - 新 retained surface 一旦启用，新的写入默认只能进入新 contract，不再继续向旧 surface 扩张。
+  - 旧 surface 在 coexistence 期间仍可保留 lookup 价值，但不应继续承担“默认写入位置”的角色。
+  - 任何 coexistence 必须能从 owning log / spine log 解释：新 surface 是替代谁，还是只是补充 lookup layer。
+  - coexistence 允许存在历史只读例外，但不允许新增 `_tmp_` 内容伪装成 retained，也不允许新增 retained 内容继续占用旧 tmp 语义路径。
+- `docs/labs/_snapshot/**` 当前不进入 cutover 迁移范围：它已被固定为 `fact-source` retained surface，现阶段重点是保护其 contract，不是重命名它。
+- `docs/logs/*.md` 当前也不进入目录收口范围：它是 human-ledger layer，后续最多补回挂规则，不应被当作待搬迁的 artifact tree。
+
+### P4-C1-S3 (Stop conditions fixed | v1)
+
+- 某个旧 surface 只有同时满足以下条件，才允许停止继续写入或宣布完成收口：
+  - 新 surface 的 `class`、`owner`、`lookup path` 已固定，并在 owning log / spine log 中可被明确引用。
+  - 新 surface 已完成至少一轮真实写入，operator 不需要靠口头知识也能找到它。
+  - 与旧 surface 对应的 generator/emission policy 已切换，不会在下一轮 run 或 workflow 中继续回写旧路径。
+  - 若旧 surface 仍承担历史 lookup 价值，必须明确写成 read-only coexistence，而不是模糊地“先都保留着”。
+- 若以上条件有任何一项未满足，则旧 surface 只能继续处于 bounded coexistence，不能强行宣称 cutover 完成。
+- 当前 repo 级 stop-condition 结论是：
+  - `artifacts/` 可进入第一优先级 bounded cleanup，但目前还未满足“新 retained-summary / tmp-scratch 命名边界被真实执行一轮”的 stop condition。
+  - `docs/issues/*` 目前不应启动大规模路径 cutover；在没有明确 tmp lane contract 前，只应继续维持 retained workflow surface discipline。
+  - `docs/labs/_snapshot/**` 与 `docs/logs/*.md` 当前不属于需要 cutover away 的对象，应视为需要保护 contract 的稳定 retained layers。
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -300,6 +336,12 @@
 - P3-C1-S2: fix which current generator families may only emit `retained-summary` or `workflow-derived` outputs
 - P3-C1-S3: fix naming and ownership expectations for future retained versus tmp surfaces
 
+### P4 (Bounded cutover baseline)
+
+- P4-C1-S1: fix the bounded rollout order for current evidence-surface cleanup
+- P4-C1-S2: fix coexistence rules so new retained surfaces do not keep expanding old paths
+- P4-C1-S3: fix stop conditions for when an old surface may stop receiving writes
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -328,6 +370,12 @@
 - [x] `P3-C1-S2`: retained-summary and workflow-derived emission boundary fixed
 - [x] `P3-C1-S3`: naming and ownership expectations fixed
 
+### P4 (Bounded cutover baseline)
+
+- [x] `P4-C1-S1`: bounded rollout order fixed
+- [x] `P4-C1-S2`: coexistence rules fixed
+- [x] `P4-C1-S3`: stop conditions fixed
+
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for later machine-facing inventory artifacts; this log currently records the first bounded repo-level total table and hotspot list in human-facing form.
@@ -340,3 +388,4 @@
 - 2026-04-04: completed `P0/P1` v1 by formalizing the inventory columns, scale baseline, family-level granularity rule, and a first repo-level family owner map so later retention work has a concrete contract baseline.
 - 2026-04-04: completed `P2` v1 in the same log by fixing the current class-to-retention baseline, answering retained versus tmp for `artifacts`, `docs/issues`, and `docs/labs/_snapshot`, and recording operator storage shortcuts for future surfaces.
 - 2026-04-04: completed `P3` v1 in the same log by fixing which current generator families may emit `fact-source`, which may only emit `retained-summary` or `workflow-derived` outputs, and what naming/ownership contract new retained surfaces must satisfy.
+- 2026-04-04: completed `P4` v1 in the same log by fixing the bounded rollout order, coexistence rules, and stop conditions for future evidence-surface cutover work.
