@@ -115,6 +115,7 @@
 - `P0` is now complete: `S0F-1F` is wired into the spine, the materialization boundary is fixed around emitted read-only output rather than taxonomy redesign, and the next follow-up is `P1` live lifecycle audit bucket emission.
 - `P1` is now complete: the live lifecycle audit result emits `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage`, one representative retained sample now carries the emitted diagnosis-layer fields directly, and the next follow-up is `P2` supporting historical emission.
 - `P2` is now complete: the supporting historical pre-screen surface emits additive diagnosis-layer fields only for deterministic cases, the retained historical sample now carries the new fields directly, and the next follow-up is `P3` retained output packaging.
+- `P3` is now complete: one reviewer-facing bucket-output summary packages the live and historical retained samples together, output-reading expectations are fixed for diagnosis-layer consumers, and the next follow-up is `P4` downstream contract packaging.
 
 ## P0 Materialization Boundary (completed)
 
@@ -169,6 +170,23 @@
 - A `log-only` historical item now materializes as `creation-writeback-gap`, while structurally clean but still in-progress items remain unbucketed rather than being forced into the wrong lifecycle owner.
 - `bucket_source_checks` on the supporting surface now records the deterministic historical review signal that justified the emitted bucket, which preserves traceability across live and historical result shapes.
 
+## P3 Retained Output Packaging (completed)
+
+- `S0F-1F` now packages the emitted diagnosis-layer output into one reviewer-facing retained summary rather than leaving live and historical samples as separate raw JSON entrypoints only.
+- v1 packaging is intentionally thin: it does not replace the underlying retained samples, but it gives reviewers and later consumers one stable summary surface that explains how to read decision-layer versus diagnosis-layer fields across both owners.
+
+### P3-C1-S1 (Representative emitted bucket-output samples retained | v1)
+
+- `docs/issues/bucketed-audit-output-S0F-1F-p3-summary.json` now packages both retained sample owners together: the live lifecycle audit sample and the supporting historical review sample.
+- The packaged summary preserves one emitted live blocked sample, one emitted historical log-only sample, and one intentionally unbucketed historical in-progress sample so the retained baseline covers both positive attribution and fail-closed empty-diagnosis cases.
+- This summary becomes the first single retained entrypoint for emitted bucket-output review under `S0F-1F` instead of requiring reviewers to open multiple raw sample plans and infer the comparison by hand.
+
+### P3-C1-S2 (Reviewer-facing output-reading contract fixed | v1)
+
+- The reviewer-facing summary now fixes the reading order explicitly: read decision-layer status and planned action first, then read diagnosis-layer bucket fields only when they are emitted.
+- The summary also fixes one critical interpretation rule for later consumers: an empty diagnosis layer may still be the correct output when the retained surface does not yet have enough deterministic evidence to justify stage-local attribution.
+- `bucket_source_checks` and `bucket_stage` are now documented as the two traceability handles diagnosis-layer consumers should rely on when they need to explain or group emitted buckets without reparsing raw bucket labels manually.
+
 ## Plan (draft)
 
 ### P0 (Materialization boundary and spine wiring)
@@ -214,8 +232,8 @@
 
 ### P3 (Retained output packaging)
 
-- [ ] `P3-C1-S1`: representative emitted bucket-output samples retained
-- [ ] `P3-C1-S2`: reviewer-facing output-reading contract fixed
+- [x] `P3-C1-S1`: representative emitted bucket-output samples retained
+- [x] `P3-C1-S2`: reviewer-facing output-reading contract fixed
 
 ### P4 (Downstream contract packaging)
 
@@ -237,6 +255,7 @@
 - `P1-C1-S2`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` now retains the first representative emitted live sample with `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage` carried directly in the result payload.
 - `P2-C1-S1` / `P2-C1-S2`: `scripts/issues/plan_historical_log_review.py` now emits additive diagnosis-layer bucket fields on supporting historical review items, but only for deterministic lifecycle gaps that can be aligned with the `S0F-1E` vocabulary without guessing.
 - `P2-C1-S1` / `P2-C1-S2`: `docs/issues/historical-log-review-S0E-7C-sample-plan.json` now retains the updated supporting sample shape, including one `log-only` item that materializes as `creation-writeback-gap` while in-progress items remain intentionally unbucketed.
+- `P3-C1-S1` / `P3-C1-S2`: `docs/issues/bucketed-audit-output-S0F-1F-p3-summary.json` now packages the representative live and historical emitted samples into one reviewer-facing summary and fixes how diagnosis-layer consumers should interpret emitted versus intentionally empty bucket fields.
 
 ## Numbering
 
