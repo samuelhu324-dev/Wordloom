@@ -5,7 +5,7 @@
 **id**: `S0F-1E`
 **kind**: `log`
 **title**: `completeness classification buckets and audit output taxonomy v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Audit, Contract, Classification, epic/s0, sub/1e`
 **links**: ``
@@ -119,6 +119,7 @@
 - `P2` is now complete: PR-stage bucket families and naming rules are fixed, representative PR checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P3` conclusion-stage bucket families.
 - `P3` is now complete: conclusion-stage bucket families and naming rules are fixed, representative conclusion checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P4` audit-output contract and retained sample.
 - `P4` is now complete: the audit-output contract is fixed for coexisting decision-layer and diagnosis-layer fields, one representative retained sample path is fixed, and no further phase is currently required inside this slice.
+- `S0F-1E` is now stable: the stage-local bucket taxonomy is fixed across `creation`, `pr`, and `conclusion`, the additive audit-output contract is fixed, and representative retained samples now cover both the primary live audit surface and the supporting historical pre-screen surface.
 
 ## P0 Bucket Taxonomy Boundary (completed)
 
