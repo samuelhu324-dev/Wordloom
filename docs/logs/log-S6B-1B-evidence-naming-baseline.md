@@ -222,6 +222,24 @@
 - 样例优先覆盖当前最常见的三类 surface：`artifacts/` retained-summary、`artifacts/_tmp_*` / `_local_*`、`docs/labs/_snapshot/**`。
 - 如果后续发现某个 family 的命名长期脱离本样例层，应优先先补 mapping，再决定是否真正执行 rename。
 
+### P4-C2-S1 (First local bounded rename sample executed | v1)
+
+| surface class | old path | new path | execution note |
+| --- | --- | --- | --- |
+| `retained-summary` | `artifacts/p0c4_dual_run_window.view.json` | `artifacts/p0c4.dual-run-window.view.json` | 选作第一条 retained-summary 实操样例，因为当前 repo 内未发现稳定的非-log 引用 |
+| `tmp-scratch` | `artifacts/_tmp_recent_write_gate_runs.json` | `artifacts/_tmp_write_gate_recent_runs_20260404.json` | 保留 tmp 身份，同时补足 purpose + date |
+| `tmp-scratch` | `artifacts/_tmp_p3c2_write_gate_runs.json` | `artifacts/_tmp_p3c2_write_gate_runs_20260404.json` | 保留 tmp 身份，同时补足最小时间上下文 |
+
+### P4-C2-S2 (Ignored-surface execution boundary fixed | v1)
+
+- 上述 rename 已在当前 workspace 本地执行。
+- 这些样例文件位于 `artifacts/` ignored operator surface 下，默认受 `.gitignore` 覆盖，因此本次提交不会把 renamed artifact 本体推上远端。
+- 这次提交会保留的是：
+  - naming baseline 本身
+  - current-to-target mapping 样例
+  - “本地已执行一轮 bounded rename rehearsal”的记账结果
+- 若后续要把某类 renamed artifacts 变成 repo-tracked retained surface，应先在 `S6B-1A` / `S6B-1B` 中明确它们不再属于 ignored operator scratch lane，再决定是否纳入版本控制。
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -257,6 +275,8 @@
 - P4-C1-S2: retain first current-to-target sample mappings for tmp-scratch names
 - P4-C1-S3: retain first current-to-target sample mappings for snapshot run identity
 - P4-C1-S4: fix bounded sample usage rules for later cleanup
+- P4-C2-S1: execute one local bounded rename sample across low-risk retained-summary and tmp-scratch files
+- P4-C2-S2: fix the execution boundary for ignored artifact surfaces
 
 ## Execution Checklist (unchecked)
 
@@ -289,6 +309,8 @@
 - [x] `P4-C1-S2`: tmp-scratch sample mappings retained
 - [x] `P4-C1-S3`: snapshot run-identity sample mappings retained
 - [x] `P4-C1-S4`: bounded sample usage rules fixed
+- [x] `P4-C2-S1`: first local bounded rename sample executed
+- [x] `P4-C2-S2`: ignored-surface execution boundary fixed
 
 ## Evidence (reserved)
 
@@ -303,3 +325,4 @@
 - 2026-04-04: completed `P2` v1 by fixing explicit tmp identity, anti-confusion rules between tmp and retained naming, and a first example set for `_tmp_` / `_local_` scratch outputs.
 - 2026-04-04: completed `P3` v1 by fixing directory-first run identity, stable key file role names, and snapshot naming anti-patterns for `docs/labs/_snapshot/**` fact-source surfaces.
 - 2026-04-04: completed `P4` v1 by retaining the first bounded current-to-target rename sample set for retained-summary, tmp-scratch, and snapshot run identity, so later cleanup work has concrete mapping examples instead of only abstract naming rules.
+- 2026-04-04: executed a first local bounded rename rehearsal under `P4/C2` on one retained-summary artifact and two tmp artifacts, and fixed the rule that ignored operator surfaces are recorded in the naming ledger but not pushed as tracked artifact files by default.

@@ -203,3 +203,4 @@
 - 2026-04-04: `S6B-1B/P2` fixed the first tmp-scratch naming baseline, including explicit tmp identity, anti-confusion rules, and example patterns, so retained-summary and tmp surfaces now have visibly different naming semantics.
 - 2026-04-04: `S6B-1B/P3` fixed the first snapshot run-identity naming baseline, including directory-first identity, stable key file role names, and anti-patterns for fact-source naming under `docs/labs/_snapshot/**`.
 - 2026-04-04: `S6B-1B/P4` retained the first bounded rename sample set, mapping representative current names to target shapes across retained-summary, tmp-scratch, and snapshot fact-source surfaces.
+- 2026-04-04: `S6B-1B/P4-C2` executed a first local bounded rename rehearsal on ignored `artifacts/` samples and recorded the execution boundary so naming cleanup can advance without accidentally pushing operator scratch surfaces as tracked repo artifacts.
