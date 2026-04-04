@@ -131,6 +131,41 @@
 - `must-migrate-early` 的标准是：这个 surface虽然不是命令入口，但它承担当前 family 的 SoT 叙述角色。
 - `bounded-legacy-allowed` 的标准是：历史 log 仍可暂时保留旧路径文字，但不能再作为新增文档的默认写法。
 
+## P2 (Dual-read / fallback policy | v1)
+
+### P2-C1-S1 (Generator write priority fixed | v1)
+
+- 当前 `write_gate` retained-summary family 的 generator baseline 以 `scripts/p1_write_gate_regression.ps1` 为准：
+  - `artifacts/s2b.write-gate.runs.latest.json` 是 required primary write target
+  - `artifacts/write_gate_runs.latest.json` 是 coexistence 期间 required legacy mirror target
+- 写入顺序应保持为：先写 primary path，再写 legacy alias；primary path 决定 canonical SoT，legacy alias 只承担兼容镜像职责。
+- coexistence 尚未结束前，dual-write 不应退化为“primary 成功即可、alias 失败可忽略”。原因是这会制造看不见的 split-brain：
+  - 新入口看到的是 primary
+  - 旧引用看到的是 alias
+  - 一旦两者内容不同步，repo 会同时存在两个自称最新的 retained-summary 入口
+- 因此 v1 generator 规则固定为：
+  - primary write failure => 整次收集失败
+  - legacy alias write failure => 同样视为 coexistence 失效，应修复后再宣称本轮 write-gate mapping 已成功刷新
+- 新增 generator/wrapper 若需要消费这套规则，默认应把 primary path 暴露为主参数；legacy alias 只作为 coexistence 期间的兼容输出，不应再被设计成新的默认 SoT。
+
+### P2-C1-S2 (Consumer read priority and fallback fixed | v1)
+
+- 当前 repo 内对这条 SoT 的自动化读取面并不深；仓内已确认的硬实现主要是 generator dual-write，而不是第二个 repo-internal automated reader。
+- 因此 v1 的 `dual-read/fallback` 应按 consumer 类型分层，而不是假装所有引用面都在主动读文件：
+
+| consumer class | current examples | read priority | fallback rule |
+| --- | --- | --- | --- |
+| `operator/manual lookup` | `docs/runbook/run-S2B-projection-table-merge.md`, `docs/QUICK_COMMANDS.md` | 先读 primary path | 若外部笔记/旧 runbook 仍指向 alias，可临时回到 legacy alias，但应把 primary 当作当前 SoT |
+| `active family log lookup` | `docs/logs/log-S2B-projection-table-merge.md` | 先认 primary path | 允许同时保留 alias 说明，帮助读者把旧 log 里的路径映射到新 SoT |
+| `broad historical references` | `docs/logs/log-S2B-3A-unified-consumer-framework.md`, `docs/logs/log-S2B-4A-table-merge-migration.md`, `docs/logs/log-S2B-5A-table-merge-migration.md`, `docs/logs/log-S2B-5A-table-merge-migration-v2.md`, `docs/logs/log-S2B-6A-unified-outbox-table-merge.md`, `docs/logs/log-S0D-2A-drills-evidence-automation.md` | 不视为 active consumer | 可暂时继续保留旧路径文字，但其 fallback 语义仅限“历史文字仍可被理解”，不等于这些 log 继续定义当前 SoT |
+
+- `operator/manual lookup` 的核心规则是：
+  - 若 primary path 存在，则默认只看 primary
+  - 只有当你是沿着旧文档、旧笔记、旧排障记录回溯时，legacy alias 才是允许的 fallback
+- `active family log lookup` 的核心规则是：当前 family 的 active log 必须把 primary path 写成第一事实源，并显式说明 alias 仍在 coexistence。
+- `broad historical references` 的核心规则是：它们不是“正在读 alias 的 consumer”，而是“仍记着旧路径的历史叙述”；因此后续治理重点是补注释和迁移表述，而不是给这些 log 发明代码级 fallback。
+- v1 还固定一条防歧义规则：consumer 不应把 primary path 与 legacy alias 当成两个独立数据源同时比对或分别引用；在 coexistence 期间，它们表达的是同一份 run mapping 的两个入口名。
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -172,8 +207,8 @@
 
 ### P2 (Dual-read / fallback)
 
-- [ ] `P2-C1-S1`: generator write priority fixed
-- [ ] `P2-C1-S2`: consumer read priority and fallback fixed
+- [x] `P2-C1-S1`: generator write priority fixed
+- [x] `P2-C1-S2`: consumer read priority and fallback fixed
 
 ### P3 (Legacy alias retirement gate)
 
@@ -191,3 +226,4 @@
 - 2026-04-04: opened `S6B-1C` to continue the tracked retained-summary migration work after `S6B-1B/P4-C4` enabled the first dual-write coexistence baseline for `write_gate` run mappings.
 - 2026-04-04: fixed `P0` v1 by retaining the primary-vs-alias boundary for `artifacts/s2b.write-gate.runs.latest.json` versus `artifacts/write_gate_runs.latest.json`, and by scoping the migration unit to one tracked retained-summary family before wider rollout.
 - 2026-04-04: completed `P1` v1 by identifying the first high-value lookup surfaces around `write_gate` retained-summary SoT and separating them into must-migrate-now, must-migrate-early, and bounded-legacy-allowed buckets.
+- 2026-04-04: completed `P2` v1 by fixing generator write priority for primary-versus-alias dual-write, separating manual/operator lookup from historical text references, and retaining explicit fallback rules for coexistence.
