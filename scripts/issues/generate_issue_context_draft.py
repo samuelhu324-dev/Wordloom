@@ -6,7 +6,6 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from body_contract import build_issue_draft_context_lines
 from gen_issue_draft import _load_text, _repo_rel, _repo_root
 from issue_context_llm import generate_issue_context_lines_with_llm
 
@@ -32,9 +31,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--phase",
         dest="phase",
-        choices=["draft", "conclusion"],
-        default="draft",
-        help="Render a draft-side or conclusion-side Context block",
+        choices=["conclusion"],
+        default="conclusion",
+        help="Render a conclusion-side Context block",
     )
     parser.add_argument(
         "--merged-pr",
@@ -68,12 +67,9 @@ def generate_issue_context_draft(args: argparse.Namespace) -> IssueContextDraftR
         raise SystemExit(f"Issue Context source log not found: {log_path}")
 
     log_text = _load_text(log_path)
-    phase = str(args.phase or "draft")
+    phase = str(args.phase or "conclusion")
     merged_pr_numbers = [int(number) for number in args.merged_pr_numbers or []]
-    if phase == "conclusion":
-        context_lines = generate_issue_context_lines_with_llm(log_text, merged_pr_numbers)
-    else:
-        context_lines = build_issue_draft_context_lines(log_text)
+    context_lines = generate_issue_context_lines_with_llm(log_text, merged_pr_numbers)
 
     stem = log_path.stem.removeprefix("log-")
     default_output = repo_root / "docs" / "issues" / f"issue-context-{stem}-{phase}.md"
@@ -86,12 +82,9 @@ def generate_issue_context_draft(args: argparse.Namespace) -> IssueContextDraftR
     output_path.write_text(markdown, encoding="utf-8")
 
     warnings = [
-        "This script is the single-item Context authoring entrypoint; review the generated text before copying or applying it",
+        "This script is the single-item conclusion Context authoring entrypoint; review the generated text before copying or applying it",
     ]
-    if phase == "draft":
-        warnings.append("Draft-phase Context generation is intended for one-log-at-a-time authoring, not for batch issue rewrites")
-    else:
-        warnings.append("Conclusion-phase Context generation is intended for one closed issue at a time after merged PR evidence is known")
+    warnings.append("Conclusion-phase Context generation is intended for one closed issue at a time after merged PR evidence is known")
 
     result = IssueContextDraftResult(
         mode="issue-context-draft",

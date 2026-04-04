@@ -100,7 +100,7 @@
 - `P0`: contract for LLM-authored Context generation and exact sentence-count validation
 - `P1`: replace deterministic Context template assembly in the issue-conclusion path
 - `P2`: remove silent template fallback and retain fail-closed generation evidence
-- `P3`: decide whether draft preview should later adopt the same LLM-authored Context path
+- `P3`: keep draft preview create-time Context empty by default and retire draft-side one-item Context generation
 
 ## Success Criteria (DoD)
 
@@ -153,7 +153,7 @@
 
 ### P3 (Draft preview follow-up)
 
-- P3-C1-S1: decide whether draft preview should later adopt the same LLM-authored Context path or remain empty/preserved by default
+- P3-C1-S1: keep draft preview create-time Context empty by default and retire draft-side one-item Context generation
 
 ## Execution Checklist (unchecked)
 
@@ -173,7 +173,7 @@
 
 ### P3 (Draft preview follow-up)
 
-- [ ] `P3-C1-S1`: draft preview adoption decision recorded
+- [x] `P3-C1-S1`: draft preview create-time Context remains empty by default and draft-side one-item generation is retired
 
 ## Evidence (reserved)
 
@@ -196,7 +196,7 @@
 - observed:
   - `body_contract.py` now enforces an exact `4` versus `5` sentence-count gate for child versus parent issue Context blocks
   - the issue-conclusion planner, guarded apply surface, thin gate passthrough, and single-item Context draft helper now accept `llm-generate` and use the new LLM-backed Context authoring path on conclusion instead of deterministic template assembly
-  - `single-generate` remains only as a compatibility alias on the conclusion path and is no longer treated as the canonical authoring mode
+  - create-time issue drafting remains structurally empty for `Context`, so the first rollout boundary still holds while conclusion authoring moves to the LLM-backed path
 
 ### P1-C1-S1S2 (representative LLM-authored conclusion sample retained | 2026-04-04)
 
@@ -223,9 +223,25 @@
   - canonical conclusion surfaces now accept only `preserve-existing` or `llm-generate`, and the tracked live `S0F-1A` conclusion manifest now names `llm-generate` explicitly
   - the retained controlled-failure sample exited non-zero on `unknown_model` and wrote the failure output to `issue-conclusion-S0F-1B-p2-fail-closed.txt`, with no fallback plan artifact emitted
 
+### P3-C1-S1 (draft preview remains empty by default | 2026-04-04)
+
+- artifacts:
+  - `scripts/issues/gen_issue_draft.py`
+  - `scripts/issues/generate_issue_context_draft.py`
+  - `docs/issues/issue-S0F-1B-p3-draft-body.md`
+  - `docs/issues/issue-S0F-1B-p3-draft-result.json`
+  - `docs/issues/issue-context-S0F-1B-p3-draft-rejected.txt`
+- expected:
+  - create-time draft rendering should keep the `Context` section structurally present but empty by default
+  - one-item draft-side Context authoring should no longer offer a draft-phase generation path
+- observed:
+  - `gen_issue_draft.py` now accepts only `--context-mode scaffold`, and the retained `S0F-1B` draft sample leaves `## Context` empty while emitting the existing create-time warning that substantive Context belongs to issue conclusion
+  - `generate_issue_context_draft.py` now exposes only `--phase conclusion`, and the retained rejection artifact shows that `--phase draft` is refused at the CLI boundary instead of silently reintroducing a draft-side generation path
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-04: created `S0F-1B` as the dedicated follow-up slice for replacing deterministic issue Context templates with LLM-authored Context generation under an exact child/main sentence-count contract.
 - 2026-04-04: completed `P0` by changing the Context validator to exact child/main sentence counts and wiring a new GitHub Models-backed LLM Context generator into the canonical issue-conclusion path.
 - 2026-04-04: completed `P1` by retaining one representative conclusion sample for `S0F-1A` that generated a valid four-sentence child issue Context block through `llm-generate` without falling back to deterministic template assembly.
 - 2026-04-04: completed `P2` by removing the remaining `single-generate` compatibility path from canonical conclusion surfaces and retaining one controlled fail-closed sample that stops on LLM generation error instead of falling back to the older deterministic Context builder.
+- 2026-04-04: completed `P3` by keeping create-time draft `Context` empty by default, retiring draft-side one-item Context generation, and retaining both a positive empty-draft sample and a CLI rejection artifact for the removed `--phase draft` surface.
