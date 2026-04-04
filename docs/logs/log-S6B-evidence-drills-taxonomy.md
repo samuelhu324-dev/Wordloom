@@ -209,3 +209,4 @@
 - 2026-04-04: opened `S6B-1C` as the next bounded follow-up under `S6B`, focused on tracked retained-summary coexistence migration for `write_gate` SoT surfaces, including lookup migration inventory, dual-read/fallback, and legacy alias stop conditions.
 - 2026-04-04: `S6B-1C/P0-P1` fixed the first tracked retained-summary coexistence contract and high-value lookup migration inventory, separating immediate primary-path migrations from bounded legacy references.
 - 2026-04-04: `S6B-1C/P2` fixed the first dual-read/fallback policy for tracked retained-summary coexistence, clarifying primary-versus-alias write priority and separating manual lookup fallback from mere historical text references.
+- 2026-04-04: `S6B-1C/P3` fixed the first legacy-alias retirement gate for tracked retained-summary coexistence, including dual-write stop conditions, active-alias retirement conditions, and a bounded observation/rollback rule before alias removal.

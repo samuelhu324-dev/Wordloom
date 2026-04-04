@@ -166,6 +166,44 @@
 - `broad historical references` 的核心规则是：它们不是“正在读 alias 的 consumer”，而是“仍记着旧路径的历史叙述”；因此后续治理重点是补注释和迁移表述，而不是给这些 log 发明代码级 fallback。
 - v1 还固定一条防歧义规则：consumer 不应把 primary path 与 legacy alias 当成两个独立数据源同时比对或分别引用；在 coexistence 期间，它们表达的是同一份 run mapping 的两个入口名。
 
+## P3 (Legacy alias retirement gate | v1)
+
+### P3-C1-S1 (Dual-write stop conditions fixed | v1)
+
+- 停止 `write_gate` retained-summary dual-write 的前提，不是“旧路径看起来很少用了”，而是以下条件同时满足：
+  - `scripts/p1_write_gate_regression.ps1` 继续以 primary path 作为唯一 canonical output，且不存在第二个 repo-tracked generator 仍默认只写 alias
+  - 高价值 active lookup surfaces 已全部以 primary path 为默认入口：`docs/runbook/run-S2B-projection-table-merge.md`、`docs/QUICK_COMMANDS.md`、`docs/logs/log-S2B-projection-table-merge.md`
+  - repo 内未发现新的 repo-tracked automated reader 仍要求 alias 作为唯一读取入口；当前已确认的脚本面只有 generator dual-write，本仓内没有第二个明确自动 consumer 依赖 alias
+  - 至少完成一个 bounded observation window，证明 operator 实际排障与 run lookup 已不再需要 alias 才能完成日常路径查找
+- 在以上条件满足前，停止 alias 写入会把 coexistence 从“有界兼容”变成“名义兼容、实际断流”，因此不允许仅因为 primary 已稳定就提前停掉 legacy 写入。
+
+### P3-C1-S2 (Dual-read / alias-reference stop conditions fixed | v1)
+
+- 结束 alias 作为 active reference 的条件，应与“历史文本里仍保留旧名字”分开判断：
+  - `active operator surfaces` 不再把 alias 当默认入口，且不再要求用户先查 alias 再映射回 primary
+  - `active family log` 已把 primary path 固定为唯一当前 SoT；若仍提 alias，也只能以“historical alias / retired name”身份出现
+  - `bounded-legacy-allowed` 那批历史 logs 可继续保留旧路径文字，但它们必须被明确视为 historical narrative，而不是当前 SoT contract
+  - repo 中不得再新增把 `artifacts/write_gate_runs.latest.json` 当成当前默认 SoT 的新文档、新脚本参数默认值或新 helper surface
+- 因此 v1 固定两条 retirement 语义：
+  - `end dual-write`：表示 generator 不再继续刷新 alias 文件
+  - `end active alias references`：表示 active docs/runbooks/logs 不再把 alias 当现行入口
+- 这两个动作可以接近发生，但不应混成同一个开关；即使停止 dual-write，历史日志中的旧名字也可能继续存在，只是它们不再构成 active alias contract。
+
+### P3-C1-S3 (Observation window and rollback boundary fixed | v1)
+
+- alias removal 之前，至少需要一个最小观察窗口：
+  - 连续 2 次成功的 `scripts/p1_write_gate_regression.ps1` refresh 周期中，primary path 都成功刷新
+  - 这 2 次周期内未出现因为缺少 alias 而必须依赖旧路径才能完成 operator lookup 的新增证据
+  - 这 2 次周期内 repo-tracked active surfaces 未重新引入把 alias 当默认 SoT 的新引用
+- 若观察窗口内出现以下任一情况，则视为不满足 removal gate，应保持或恢复 coexistence：
+  - operator/runbook/quick-command 仍需要 alias 才能完成主流程 lookup
+  - 新增脚本、wrapper 或 helper surface 把 alias 当成唯一输入/输出约定
+  - primary path 与 alias 的预期角色再次混淆，导致文档或日志把两者写成并列 SoT
+- rollback boundary 也需要明确：
+  - 若 alias 已停止写入但观察窗口内暴露出 active dependency，应优先恢复 generator dual-write，而不是要求 operator 先手工适配
+  - 若 active docs 已去掉 alias，但仍发现真实 lookup 依赖，则应先恢复文档中的 alias compatibility note，再继续 migration
+  - rollback 的目标不是长期回到旧路径，而是把 coexistence 恢复到可观测、可迁移、不会 silently break 的状态
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -212,9 +250,9 @@
 
 ### P3 (Legacy alias retirement gate)
 
-- [ ] `P3-C1-S1`: dual-write stop conditions fixed
-- [ ] `P3-C1-S2`: dual-read / alias-reference stop conditions fixed
-- [ ] `P3-C1-S3`: observation window and rollback boundary fixed
+- [x] `P3-C1-S1`: dual-write stop conditions fixed
+- [x] `P3-C1-S2`: dual-read / alias-reference stop conditions fixed
+- [x] `P3-C1-S3`: observation window and rollback boundary fixed
 
 ## Evidence (reserved)
 
@@ -227,3 +265,4 @@
 - 2026-04-04: fixed `P0` v1 by retaining the primary-vs-alias boundary for `artifacts/s2b.write-gate.runs.latest.json` versus `artifacts/write_gate_runs.latest.json`, and by scoping the migration unit to one tracked retained-summary family before wider rollout.
 - 2026-04-04: completed `P1` v1 by identifying the first high-value lookup surfaces around `write_gate` retained-summary SoT and separating them into must-migrate-now, must-migrate-early, and bounded-legacy-allowed buckets.
 - 2026-04-04: completed `P2` v1 by fixing generator write priority for primary-versus-alias dual-write, separating manual/operator lookup from historical text references, and retaining explicit fallback rules for coexistence.
+- 2026-04-04: completed `P3` v1 by fixing stop conditions for ending dual-write and active alias references, and by retaining a bounded observation window plus rollback boundary before alias removal.
