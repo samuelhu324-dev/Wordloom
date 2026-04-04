@@ -92,6 +92,14 @@
   - the first naming baseline for `retained-summary`, `tmp-scratch`, and snapshot run identity is retained
   - later cleanup work can reference this naming baseline directly instead of renegotiating filename semantics every time
 
+## PR Summary Inputs (optional)
+
+**PR summary bullets**:
+
+- Fix the first naming baseline for retained-summary, tmp-scratch, and snapshot run identity so operators can infer surface role before opening file contents.
+- Retain a bounded current-to-target rename sample set for `artifacts/`, `_tmp_` / `_local_`, and `docs/labs/_snapshot/**` surfaces instead of leaving naming cleanup at abstract rules only.
+- Start the first tracked retained-summary coexistence path by selecting `write_gate` as the candidate family, enabling dual-write, and migrating the first primary lookup surfaces.
+
 ## P0 (Naming axes | v1)
 
 ### P0-C1-S1 (Naming fields fixed | v1)
