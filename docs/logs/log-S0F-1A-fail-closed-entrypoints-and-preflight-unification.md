@@ -82,7 +82,7 @@
 
 - Log: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
 - Runbook: ``
-- Evidence artifact: ``
+- Evidence artifact: `docs/issues/pr-prep-S0F-1A-p2-stop-manifest-front-half-preflight-result.json`
 
 ## Definitions (optional)
 
@@ -202,8 +202,8 @@
 
 ### P2 (PR preflight unification)
 
-- [ ] `P2-C1-S1`: mandatory live publish preflight rule fixed
-- [ ] `P2-C1-S2`: representative preview-vs-publish sample retained
+- [x] `P2-C1-S1`: mandatory live publish preflight rule fixed
+- [x] `P2-C1-S2`: representative preview-vs-publish sample retained
 
 ### P3 (Wrapper convergence)
 
@@ -247,8 +247,27 @@
   - the same entrypoint now treats scaffold/placeholder Context as a create-time stop condition for real creation
   - one retained `--create` sample for `S0F-1A` failed closed on the blank `issue_keyword` path, while one single-generated dry-run sample still produced the expected markdown and JSON artifacts for review
 
+### P2-C1-S1S2 (mandatory PR front-half preflight boundary landed | 2026-04-04)
+
+- headSha: `e2bf872b6bad67c4766ca15c0eebc496c27a8609`
+- artifacts:
+  - `scripts/issues/create_pr_from_plan.py`
+  - `docs/issues/pr-prep-S0F-1A-p2-stop-manifest.json`
+  - `docs/issues/pr-prep-S0F-1A-p2-stop-manifest-plan.json`
+  - `docs/issues/pr-prep-S0F-1A-p2-stop-body.md`
+  - `docs/issues/pr-prep-S0F-1A-p2-stop-manifest-front-half-preflight-result.json`
+  - `docs/issues/pr-prep-S0F-1A-p2-stop-create-blocked-utf8.txt`
+- expected:
+  - live `create_pr_from_plan.py` stops unless a matching `pr-create-front-half-preflight` artifact exists and explicitly allows continuation
+  - one retained stop sample proves `plan_pr_prep` preview generation can still succeed while live publish remains blocked before local branch materialization
+- observed:
+  - `create_pr_from_plan.py` now fails closed when the front-half preflight artifact is missing, points at a different plan item, or carries a non-allow decision
+  - the retained `S0F-1A` stop sample still generated a valid PR-prep plan and body preview with `summary_bullet_count = 3`, but front-half preflight blocked continuation because `candidate_pr_branch` reused the occupied `S0F-docs-management-v6` branch
+  - replaying `create_pr_from_plan.py` against that stop sample now exits non-zero with `PR create fail-closed preflight blocked publish before local branch materialization: Local branch already exists: S0F-docs-management-v6`, proving preview warning no longer implies publish eligibility
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-04: created `S0F-1A` as the first v6 slice to address fail-closed issue creation, PR preflight, wrapper-only live mutation, and retry semantics.
 - 2026-04-04: completed `P0` by fixing the first explicit contract for create-time stop conditions, PR front-half preflight language, wrapper-only mutation boundaries, and transient-versus-semantic retry vocabulary.
 - 2026-04-04: completed `P1` by hardening `scripts/issues/gen_issue_draft.py` so real `create-issue` fails closed on inferred keyword and scaffold/placeholder Context while still preserving reviewable draft/result artifacts.
+- 2026-04-04: completed `P2` by hardening `scripts/issues/create_pr_from_plan.py` so live PR publish now requires a matching successful front-half preflight artifact, then retained one `S0F-1A` stop sample that proves preview generation does not imply publish eligibility.

@@ -1,0 +1,69 @@
+{
+  "mode": "pr-prep-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/pr-prep-S0F-1A-p2-stop-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-pr-prep",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0F-1A",
+      "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+      "current_branch": "S0F-docs-management-v6",
+      "head_ref": "HEAD",
+      "base_branch": "main",
+      "merge_base": "c92ea29fd74a826796dca32d10439488717ee9a7",
+      "candidate_pr_branch": "S0F-docs-management-v6",
+      "pr_title": "S0F-1A/P0-P1: fail-closed entrypoints and preflight unification v1",
+      "pr_scope_kind": "phases",
+      "pr_scope_refs": [
+        "P0",
+        "P1"
+      ],
+      "pr_base": "main",
+      "pr_labels": [
+        "EVOLUTION",
+        "s0/knowledge system",
+        "sub/1",
+        "drills"
+      ],
+      "pr_projects": [],
+      "pr_milestone": null,
+      "pr_development_issue": null,
+      "pr_development_issue_refs": [],
+      "summary_bullet_count": 3,
+      "preview_body_path": "docs/issues/pr-prep-S0F-1A-p2-stop-body.md",
+      "selected_commit_count": 1,
+      "selected_commits": [
+        {
+          "sha": "e2bf872b6bad67c4766ca15c0eebc496c27a8609",
+          "subject": "S0F-1A/P0-P1: fail-closed issue creation entrypoints",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        }
+      ],
+      "branch_commits": [
+        {
+          "sha": "ccdf702ff2d2c9aa12aeddff93cdaf0c0906aaae",
+          "subject": "docs: start S0F docs management v6",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "e2bf872b6bad67c4766ca15c0eebc496c27a8609",
+          "subject": "S0F-1A/P0-P1: fail-closed issue creation entrypoints",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        }
+      ],
+      "planned_action": "prepare-pr-prep-branch",
+      "status": "planned",
+      "warnings": []
+    }
+  ]
+}

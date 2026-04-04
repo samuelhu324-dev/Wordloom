@@ -121,7 +121,7 @@
 - [x] `P0`：`S0F` parent/spine created and scope boundary fixed
 - [x] `P1`：`S0F-1A` created with the first concrete fail-closed cleanup scope
 - [x] `P2`：issue creation create-time hard-fail boundary fixed
-- [ ] `P3`：PR create preflight becomes the only allowed live publish front-half
+- [x] `P3`：PR create preflight becomes the only allowed live publish front-half
 - [ ] `P4`：issue conclusion / relationship / PR rewrite live mutation wrapper convergence fixed
 - [ ] `P5`：optional GitHub Actions secondary enforcement policy fixed after local entrypoints converge
 
@@ -129,7 +129,7 @@
 
 - `S0F` is now opened and pushed as docs-management v6 on branch `S0F-docs-management-v6`.
 - The first active child slice `S0F-1A` is no longer just a placeholder: `P0` contract language is fixed and `P1` has already hardened the real issue creation entrypoint.
-- The first retained evidence now shows the exact boundary in action: draft-generation still works, but real `create-issue` stops before any GitHub mutation when `issue_keyword` would be inferred.
+- The retained evidence now shows two hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, and PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result.
 
 ## Evidence（可选，聚合型记账）
 
@@ -152,6 +152,23 @@
   - `S0F-1A` was created from the phase template and wired into the `S0F` parent spine
   - `gen_issue_draft.py --create` now fails closed on the blank `issue_keyword` path for `S0F-1A`
   - the same log still produced a single-generated draft/result artifact for review without crossing into live creation
+
+### S0F-1A (first mandatory PR front-half preflight sample | 2026-04-04)
+
+- headSha: `e2bf872b6bad67c4766ca15c0eebc496c27a8609`
+- artifacts:
+  - `scripts/issues/create_pr_from_plan.py`
+  - `docs/issues/pr-prep-S0F-1A-p2-stop-manifest.json`
+  - `docs/issues/pr-prep-S0F-1A-p2-stop-manifest-plan.json`
+  - `docs/issues/pr-prep-S0F-1A-p2-stop-manifest-front-half-preflight-result.json`
+  - `docs/issues/pr-prep-S0F-1A-p2-stop-create-blocked-utf8.txt`
+- expected:
+  - real PR publish may no longer continue from plain `plan_pr_prep` output without a matching successful front-half preflight artifact
+  - one retained stop sample proves preview planning can still succeed while live PR publish remains blocked before local branch materialization
+- observed:
+  - `create_pr_from_plan.py` now requires a matching `pr-create-front-half-preflight` result artifact and refuses live publish when that artifact is missing, mismatched, or not publish-eligible
+  - the retained `S0F-1A` stop sample still produced a valid PR-prep plan and preview body, but front-half preflight stopped on the occupied `S0F-docs-management-v6` branch before any live publish stage
+  - replaying `create_pr_from_plan.py` against that stop sample now exits non-zero with `PR create fail-closed preflight blocked publish before local branch materialization`, proving preview no longer implies publish eligibility
 
 ## Notes（落地原则，可选）
 
@@ -190,3 +207,4 @@
 
 - 2026-04-04：初始化 `S0F`，把 docs-management v6 的问题定义为 fail-closed entrypoints、preflight/gate unification、以及 optional GitHub Actions secondary enforcement 的新 spine。
 - 2026-04-04：`S0F-1A/P0-P1` 已完成第一轮收口；真实 issue creation 现在会在 inferred keyword 路径上 fail-closed，并保留同源 draft-generation evidence 供后续 review 使用。
+- 2026-04-04：`S0F-1A/P2` 已完成；真实 `create_pr_from_plan.py` 现在把 front-half preflight result 视为 live publish 的硬前置，且已用一个 occupied-branch stop 样本证明 preview planning 不再等于 publish 资格。
