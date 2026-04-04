@@ -5,13 +5,13 @@
 **id**: `S0F-1C`
 **kind**: `log`
 **title**: `guarded multi-item live mutation remediation v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Drills, Evidence, epic/s0, sub/1c`
 **links**: ``
   **issue**: ``
   **pr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S0F-1C-guarded-multi-item-remediation.md`
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
   **previous_log**: `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
@@ -81,8 +81,8 @@
 **PR links**:
 
 - Log: `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
-- Runbook: ``
-- Evidence artifact: `docs/issues/lifecycle-post-verify-S0F-1C-p3-summary.json`
+- Runbook: `docs/runbook/run-S0F-1C-guarded-multi-item-remediation.md`
+- Evidence artifact: `docs/issues/lifecycle-repeatability-S0F-1C-p4-summary.json`
 
 ## Definitions (optional)
 
@@ -211,6 +211,15 @@
   - `planned` plus preserve-existing warnings that only confirm merged-PR override sourcing and live Context preservation counts as a clean preserve result
   - any new structural warning beyond that baseline must be retained as target-local drift rather than merged into a generic batch warning bucket
 
+## P4 Operator Repeatability (completed)
+
+- stable operator entry:
+  - `docs/runbook/run-S0F-1C-guarded-multi-item-remediation.md` is now the stable procedural guide for the representative multi-item remediation path
+- packaging rule:
+  - the runbook stays thin and procedural while `S0F-1C` remains the contract owner for batch-stage semantics, split rules, and evidence expectations
+- repeatability rule:
+  - `P1` preview lineage, `P2` guarded live sample, and `P3` per-target post-verify all remain linked from one packaging summary so operators can re-enter the path without replaying branch archaeology
+
 ## Plan (draft)
 
 ### P0 (Contract and spine wiring)
@@ -261,7 +270,7 @@
 
 ### P4 (Operator repeatability)
 
-- [ ] `P4-C1-S1`: repeatable operator runbook retained
+- [x] `P4-C1-S1`: repeatable operator runbook retained
 
 ## Evidence (reserved)
 
@@ -359,3 +368,22 @@
   - `S0F-1C/P3` derived one post-verify manifest per target from the shared `P2` issue-conclusion manifest and ran `plan_issue_conclusion.py --context-mode preserve-existing` separately for `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`
   - all three post-verify plans remained in `planned` state and emitted only the expected preserve-existing baseline warnings for explicit merged-PR overrides and live Context preservation, so the retained drift summary classifies all three items as `clean-preserve`
   - the retained `P3` summary artifact now records the per-target manifests, plans, and clean-preserve status, which closes the batch loop without relying on aggregate-only success language
+
+### P4-C1-S1 (operator runbook retained and slice marked stable | 2026-04-04)
+
+- artifacts:
+  - `docs/runbook/run-S0F-1C-guarded-multi-item-remediation.md`
+  - `docs/issues/lifecycle-repeatability-S0F-1C-p4-summary.json`
+  - `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - `P4` should package the already-retained `P1-P3` path into one operator-facing runbook without creating a second source of truth for contract semantics
+  - once the runbook exists and the path is repeatable end-to-end, `S0F-1C` should be able to move from `draft` to `stable`
+- observed:
+  - the new runbook documents the canonical local operator sequence for shared preview planning, per-target guarded apply, and per-target preserve-existing post-verify, while keeping split rules and evidence expectations linked back to the owning `S0F-1C` log
+  - the repeatability summary packages the `P1` preview sample, `P2` guarded live sample, and `P3` post-verify summary into one stable operator bundle, so later re-entry no longer depends on branch archaeology or chat history
+  - `S0F-1C` is now marked `stable` because the slice has a retained preview sample, a retained guarded live sample, a retained per-target post-verify bundle, and one stable runbook that explains how to repeat the path without reopening raw mutation entrypoints
+
+## Recent changes (for traceability, optional)
+
+- 2026-04-04: completed `P4` by publishing the `S0F-1C` operator runbook, packaging `P1-P3` into a repeatability summary artifact, and marking the slice stable.
