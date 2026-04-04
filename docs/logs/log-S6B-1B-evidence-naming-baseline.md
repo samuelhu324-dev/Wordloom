@@ -76,12 +76,14 @@
 - `P1`: retained-summary naming baseline（`artifacts/` 稳定 ledger 命名）
 - `P2`: tmp-scratch naming baseline（临时调查物命名）
 - `P3`: snapshot run identity baseline（`docs/labs/_snapshot/**` run dir 与关键文件命名）
+- `P4`: bounded rename sample set（当前名字到目标名字的第一轮 mapping 样例）
 
 ## Success Criteria (DoD)
 
 - 至少明确回答 retained-summary 文件名里必须出现哪些字段，且不再接受纯 `latest` / `runs` / `result` 这类裸名字作为稳定入口。
 - 至少明确回答 tmp-scratch 文件名如何显式暴露 tmp 身份，避免被误认成 retained ledger。
 - 至少明确回答 `docs/labs/_snapshot/**` 的 run identity 应主要由目录表达，而不是把 run 上下文散落到模糊文件名中。
+- 至少保留一组 bounded rename sample mappings，回答“当前常见名字如果要收口，目标形态应该长什么样”。
 - naming grammar 至少能让 operator 在不打开内容的前提下，大致判断：`这是什么`、`谁的`、`是 retained 还是 tmp`、`该从哪里看起`。
 
 ## Stability (what stable means)
@@ -184,6 +186,42 @@
 - 不推荐把 scenario、owner、run_id、status 全部堆进单个文件名中，导致 run 目录本身失去存在意义。
 - 不推荐把 snapshot fact-source 文件命名成 retained-summary 风格，例如 `s3a.coverage.latest.json`。
 
+## P4 (Bounded rename sample set | v1)
+
+### P4-C1-S1 (Retained-summary sample mappings retained | v1)
+
+| current name | target shape | notes |
+| --- | --- | --- |
+| `s5b3a-runs.json` | `s5b3a.runs.history.json` | 补上点分 grammar，并把裸 `runs` 收口为 retained summary history surface |
+| `s2d-runs.json` | `s2d.runs.history.json` | 保留 owner family，明确这是 history-like summary，而不是原始事实源 |
+| `s2b3a-baseline-runs.final.json` | `s2b3a.baseline.runs.final.json` | 把复合 purpose 拆成稳定字段顺序 |
+| `p0c4_dual_run_window.view.json` | `p0c4.dual-run-window.view.json` | 把 retained summary 统一到点分命名，而不是混用下划线 |
+
+### P4-C1-S2 (Tmp-scratch sample mappings retained | v1)
+
+| current name | target shape | notes |
+| --- | --- | --- |
+| `_tmp_p3c2_write_gate_runs.json` | `_tmp_p3c2_write_gate_runs_20260404.json` | tmp 身份保留，同时补上最小时间或 run context |
+| `_tmp_recent_write_gate_runs.json` | `_tmp_write_gate_recent_runs_20260404.json` | 避免只有“recent”这种局部语境，补足 purpose + date |
+| `_tmp_pr_prep_s0e_2d_plan.json` | `_tmp_s0e_pr_prep_plan_2d_20260404.json` | 先写 owner，再写 purpose/context，避免词序漂移 |
+| `_local_s2b6a/` | `_local_s2b6a_review_20260404/` | `_local_` 目录也应补足用途或上下文，而不是只剩 family id |
+
+### P4-C1-S3 (Snapshot run-identity sample mappings retained | v1)
+
+| current shape | target shape | notes |
+| --- | --- | --- |
+| `auto/S5B-3A/<run_id>/output.json` | `auto/S5B-3A/<run_id>/result.json` | run identity 由目录承担，文件名只表达角色 |
+| `auto/S2B-2A-1A/<run_id>/manifest-output.json` | `auto/S2B-2A-1A/<run_id>/manifest.json` | 避免在单文件名里重复编码 output 语义 |
+| `manual/_lab-S3A-2A-3A-expB/<run_id>/capture-context.json` | `manual/_lab-S3A-2A-3A-expB/<run_id>/context.json` | manual track 也应优先使用稳定角色名 |
+| `auto/<scenario>/<run_id>/final-result.json` | `auto/<scenario>/<run_id>/result.json` | 若目录已表达 run identity，文件名应回到标准 role name |
+
+### P4-C1-S4 (Bounded sample usage rules fixed | v1)
+
+- 本节样例的目的不是要求今天立刻 repo-wide rename，而是给后续 bounded cleanup 一个明确目标形态。
+- 若某个现有名字已经被外部脚本或 log 稳定引用，则后续真实 rename 应先进入 coexistence，再切换 lookup path，不应直接硬切。
+- 样例优先覆盖当前最常见的三类 surface：`artifacts/` retained-summary、`artifacts/_tmp_*` / `_local_*`、`docs/labs/_snapshot/**`。
+- 如果后续发现某个 family 的命名长期脱离本样例层，应优先先补 mapping，再决定是否真正执行 rename。
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -213,6 +251,13 @@
 - P3-C1-S2: fix stable role names for key files inside snapshot run dirs
 - P3-C1-S3: define snapshot naming anti-patterns
 
+### P4 (Bounded rename sample set)
+
+- P4-C1-S1: retain first current-to-target sample mappings for retained-summary names
+- P4-C1-S2: retain first current-to-target sample mappings for tmp-scratch names
+- P4-C1-S3: retain first current-to-target sample mappings for snapshot run identity
+- P4-C1-S4: fix bounded sample usage rules for later cleanup
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Naming axes)
@@ -238,6 +283,13 @@
 - [x] `P3-C1-S2`: key file role names fixed
 - [x] `P3-C1-S3`: snapshot naming anti-patterns fixed
 
+### P4 (Bounded rename sample set)
+
+- [x] `P4-C1-S1`: retained-summary sample mappings retained
+- [x] `P4-C1-S2`: tmp-scratch sample mappings retained
+- [x] `P4-C1-S3`: snapshot run-identity sample mappings retained
+- [x] `P4-C1-S4`: bounded sample usage rules fixed
+
 ## Evidence (reserved)
 
 - This log is the human-facing naming ledger for evidence surfaces; later script-side validators or rename plans should reference this baseline instead of redefining naming semantics ad hoc.
@@ -250,3 +302,4 @@
 - 2026-04-04: completed `P0/P1` v1 by fixing the naming fields, per-surface grammar split, retained-summary grammar, anti-pattern set, and first example set for stable summary names.
 - 2026-04-04: completed `P2` v1 by fixing explicit tmp identity, anti-confusion rules between tmp and retained naming, and a first example set for `_tmp_` / `_local_` scratch outputs.
 - 2026-04-04: completed `P3` v1 by fixing directory-first run identity, stable key file role names, and snapshot naming anti-patterns for `docs/labs/_snapshot/**` fact-source surfaces.
+- 2026-04-04: completed `P4` v1 by retaining the first bounded current-to-target rename sample set for retained-summary, tmp-scratch, and snapshot run identity, so later cleanup work has concrete mapping examples instead of only abstract naming rules.
