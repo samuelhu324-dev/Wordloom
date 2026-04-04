@@ -119,22 +119,39 @@
 ## Execution Checklist（当前骨架里程碑汇总）
 
 - [x] `P0`：`S0F` parent/spine created and scope boundary fixed
-- [ ] `P1`：`S0F-1A` created with the first concrete fail-closed cleanup scope
-- [ ] `P2`：issue creation create-time hard-fail boundary fixed
+- [x] `P1`：`S0F-1A` created with the first concrete fail-closed cleanup scope
+- [x] `P2`：issue creation create-time hard-fail boundary fixed
 - [ ] `P3`：PR create preflight becomes the only allowed live publish front-half
 - [ ] `P4`：issue conclusion / relationship / PR rewrite live mutation wrapper convergence fixed
 - [ ] `P5`：optional GitHub Actions secondary enforcement policy fixed after local entrypoints converge
 
 ## Current Status（进展摘要）
 
-- `S0F` is newly opened as docs-management v6.
-- The first active child slice is `S0F-1A`, which will focus on fail-closed entrypoints, deterministic preflight, and wrapper unification for the current docs/GitHub lifecycle.
-- The immediate risk being addressed is entrypoint drift: callers can still choose softer paths than the contract language implies.
+- `S0F` is now opened and pushed as docs-management v6 on branch `S0F-docs-management-v6`.
+- The first active child slice `S0F-1A` is no longer just a placeholder: `P0` contract language is fixed and `P1` has already hardened the real issue creation entrypoint.
+- The first retained evidence now shows the exact boundary in action: draft-generation still works, but real `create-issue` stops before any GitHub mutation when `issue_keyword` would be inferred.
 
 ## Evidence（可选，聚合型记账）
 
 - parent/spine log 通常不是 execution evidence 的主记账面；若保留本节，默认应记录聚合性的 traceability，而不是重复 child log 的完整 drill ledger。
 - 若 evidence 真正属于 child phase logs，应优先在本节引用 child log 或 child artifacts，而不是把 child 的 `expected/observed` 全量复制回 parent/spine。
+
+### S0F-1A (first fail-closed issue-create sample | 2026-04-04)
+
+- headSha: `ccdf702ff2d2c9aa12aeddff93cdaf0c0906aaae`
+- artifacts:
+  - `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
+  - `scripts/issues/gen_issue_draft.py`
+  - `docs/issues/issue-S0F-1A-create-preflight-fail.json`
+  - `docs/issues/issue-S0F-1A-single-generate-draft.json`
+- expected:
+  - `S0F-1A` exists as the first concrete v6 child slice
+  - real `create-issue` stops before GitHub mutation when `issue_keyword` would be inferred
+  - draft-generation still produces a retained preview/result artifact under the same source log
+- observed:
+  - `S0F-1A` was created from the phase template and wired into the `S0F` parent spine
+  - `gen_issue_draft.py --create` now fails closed on the blank `issue_keyword` path for `S0F-1A`
+  - the same log still produced a single-generated draft/result artifact for review without crossing into live creation
 
 ## Notes（落地原则，可选）
 
@@ -172,3 +189,4 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-04-04：初始化 `S0F`，把 docs-management v6 的问题定义为 fail-closed entrypoints、preflight/gate unification、以及 optional GitHub Actions secondary enforcement 的新 spine。
+- 2026-04-04：`S0F-1A/P0-P1` 已完成第一轮收口；真实 issue creation 现在会在 inferred keyword 路径上 fail-closed，并保留同源 draft-generation evidence 供后续 review 使用。

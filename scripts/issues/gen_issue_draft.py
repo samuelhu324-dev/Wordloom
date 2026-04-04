@@ -182,10 +182,30 @@ def _normalize_specific_subject(title: str) -> str:
 
 
 def _compose_issue_title(log_id: str, keyword: str, specific_subject: str) -> str:
+    if not keyword.strip():
+        return f"{log_id}: {specific_subject}"
     prefix = f"{keyword}/"
     if specific_subject.lower().startswith(prefix.lower()):
         return f"{log_id}: {specific_subject}"
     return f"{log_id}: {keyword}/{specific_subject}"
+
+
+def _context_contains_placeholder(context_lines: list[str]) -> bool:
+    for line in context_lines:
+        if "<placeholder>" in line.lower():
+            return True
+    return False
+
+
+def _create_issue_preflight_failures(*, explicit_issue_keyword: str, context_mode: str, context_lines: list[str]) -> list[str]:
+    failures: list[str] = []
+    if not explicit_issue_keyword.strip():
+        failures.append("real create-issue requires an explicit issue_keyword; inferred title keywords are not allowed")
+    if context_mode != "single-generate":
+        failures.append("real create-issue requires --context-mode single-generate; scaffold Context is not allowed")
+    if _context_contains_placeholder(context_lines):
+        failures.append("real create-issue requires non-placeholder Context lines before live creation")
+    return failures
 
 
 def _infer_keyword(fields: dict[str, str], title: str, tags: list[str], section_text: str) -> str:
@@ -582,6 +602,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     tags = _split_csv(fields.get("tags"))
     section_text = "\n".join(text for lines in sections.values() for text in lines)
 
+    explicit_issue_keyword = fields.get("issue_keyword", "").strip()
     keyword = _infer_keyword(fields, log_title, tags, section_text)
     specific_subject = _normalize_specific_subject(log_title)
     issue_title = _compose_issue_title(log_id, keyword, specific_subject)
@@ -592,6 +613,10 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     module_labels = _derive_module_labels(fields, _normalize_override_list(args.module_label_overrides))
     all_labels = _dedupe(top_labels + scope_labels + function_labels + module_labels)
     _validate_labels(all_labels, args.strict_label_check)
+
+    context_mode = str(getattr(args, "context_mode", "scaffold") or "scaffold")
+    from body_contract import build_issue_draft_context_lines
+    context_lines = build_issue_draft_context_lines(text) if context_mode == "single-generate" else _default_context_scaffold_lines()
 
     live_label_check_enabled = bool(args.check_live_labels or args.create_issue)
     live_label_check_repo: str | None = None
@@ -613,7 +638,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     warnings: list[str] = []
     warnings.extend(milestone_warnings)
     warnings.extend(parent_warnings)
-    if not fields.get("issue_keyword"):
+    if not explicit_issue_keyword:
         warnings.append("issue_keyword inferred from source log content")
     if not module_labels:
         warnings.append("module labels left blank")
@@ -628,7 +653,6 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
             )
         else:
             warnings.append(f"live label preflight passed against {live_label_check_repo}")
-    context_mode = str(getattr(args, "context_mode", "scaffold") or "scaffold")
     if context_mode == "single-generate":
         warnings.append("Context was single-generated from the source log; review it manually before create/apply")
     else:
@@ -638,8 +662,6 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     link_lines = _build_links(fields, rel_log_path)
     dod_lines = _build_issue_dod_lines(repo_root, fields)
     issue_projects = _derive_issue_projects(fields, rel_log_path)
-    from body_contract import build_issue_draft_context_lines
-
     if dod_lines:
         warnings.append("Definition of Done (DoD) was populated from the known child issue ledger because this is a top-level parent issue")
     else:
@@ -656,8 +678,6 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         result_path = repo_root / result_path
     result_path.parent.mkdir(parents=True, exist_ok=True)
 
-    context_lines = build_issue_draft_context_lines(text) if context_mode == "single-generate" else _default_context_scaffold_lines()
-
     markdown = _render_issue_markdown(
         title=issue_title,
         labels=all_labels,
@@ -670,6 +690,13 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         context_lines=context_lines,
     )
     output_path.write_text(markdown, encoding="utf-8")
+
+    create_preflight_failures = _create_issue_preflight_failures(
+        explicit_issue_keyword=explicit_issue_keyword,
+        context_mode=context_mode,
+        context_lines=context_lines,
+    )
+    warnings.extend(create_preflight_failures)
 
     result = IssueDraftResult(
         mode="create-issue" if args.create_issue else "draft-generation",
@@ -694,6 +721,10 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     )
 
     if args.create_issue:
+        if create_preflight_failures:
+            result_path.write_text(json.dumps(asdict(result), indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+            raise SystemExit("create-issue fail-closed preflight failed: " + "; ".join(create_preflight_failures))
+
         repo = live_label_check_repo or _derive_repo_slug(args.repo)
 
         if milestone:

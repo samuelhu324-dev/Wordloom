@@ -190,15 +190,15 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: issue creation hard-fail boundary fixed
-- [ ] `P0-C1-S2`: PR create front-half boundary fixed
-- [ ] `P0-C1-S3`: wrapper-only live mutation boundary fixed
-- [ ] `P0-C1-S4`: retry vocabulary fixed
+- [x] `P0-C1-S1`: issue creation hard-fail boundary fixed
+- [x] `P0-C1-S2`: PR create front-half boundary fixed
+- [x] `P0-C1-S3`: wrapper-only live mutation boundary fixed
+- [x] `P0-C1-S4`: retry vocabulary fixed
 
 ### P1 (Issue creation hard-fail)
 
-- [ ] `P1-C1-S1`: exact create-time stop conditions defined
-- [ ] `P1-C1-S2`: create-time fail-closed enforcement implemented
+- [x] `P1-C1-S1`: exact create-time stop conditions defined
+- [x] `P1-C1-S2`: create-time fail-closed enforcement implemented
 
 ### P2 (PR preflight unification)
 
@@ -216,6 +216,39 @@
 - This section is the human-facing ledger and should remain separate from `Evidence Footer Source`.
 - Prefer one stable ledger shape per unit: heading with `P*-C*-S*` and date, then `headSha`, `artifacts`, `expected`, and `observed`.
 
+### P0-C1-S1S2S3S4 (fail-closed entrypoint contract fixed | 2026-04-04)
+
+- headSha: `ccdf702ff2d2c9aa12aeddff93cdaf0c0906aaae`
+- artifacts:
+  - `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one explicit contract fixes create-time stop conditions, PR front-half preflight boundary, wrapper-only mutation, and retry vocabulary
+  - the new v6 child slice is linked into the parent spine instead of staying as an isolated note
+- observed:
+  - `S0F-1A` now records the exact fail-closed entrypoint contract for issue creation, PR front-half preflight, wrapper-only live mutation, and transient-versus-semantic retry boundaries
+  - `S0F` parent now treats `S0F-1A` as the first concrete child slice and records the first implementation evidence under the new spine
+
+### P1-C1-S1S2 (real issue creation fail-closed enforcement landed | 2026-04-04)
+
+- headSha: `ccdf702ff2d2c9aa12aeddff93cdaf0c0906aaae`
+- artifacts:
+  - `scripts/issues/gen_issue_draft.py`
+  - `docs/issues/issue-S0F-1A-create-preflight-fail.md`
+  - `docs/issues/issue-S0F-1A-create-preflight-fail.json`
+  - `docs/issues/issue-S0F-1A-single-generate-draft.md`
+  - `docs/issues/issue-S0F-1A-single-generate-draft.json`
+- expected:
+  - real `create-issue` stops before GitHub mutation when `issue_keyword` would be inferred
+  - real `create-issue` stops when `Context` is scaffold/placeholder instead of a single-generated block
+  - dry-run draft-generation still produces retained artifacts for review even when real creation would fail closed
+- observed:
+  - `gen_issue_draft.py` now treats inferred `issue_keyword` as a create-time stop condition and emits a non-zero exit before any live issue creation is attempted
+  - the same entrypoint now treats scaffold/placeholder Context as a create-time stop condition for real creation
+  - one retained `--create` sample for `S0F-1A` failed closed on the blank `issue_keyword` path, while one single-generated dry-run sample still produced the expected markdown and JSON artifacts for review
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-04: created `S0F-1A` as the first v6 slice to address fail-closed issue creation, PR preflight, wrapper-only live mutation, and retry semantics.
+- 2026-04-04: completed `P0` by fixing the first explicit contract for create-time stop conditions, PR front-half preflight language, wrapper-only mutation boundaries, and transient-versus-semantic retry vocabulary.
+- 2026-04-04: completed `P1` by hardening `scripts/issues/gen_issue_draft.py` so real `create-issue` fails closed on inferred keyword and scaffold/placeholder Context while still preserving reviewable draft/result artifacts.
