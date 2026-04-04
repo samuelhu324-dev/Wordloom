@@ -106,6 +106,31 @@
 - 本 log 的最小治理单元不是“所有 artifacts 命名”，而是单一 tracked retained-summary family：`write_gate` run mapping SoT。
 - 后续若推广到其他 tracked retained-summary family，应复用本 log 的迁移框架，而不是重写一套规则。
 
+## P1 (Lookup migration inventory | v1)
+
+### P1-C1-S1 (High-value lookup surfaces identified | v1)
+
+- 当前与 `write_gate` retained-summary SoT 直接相关的高价值 lookup surfaces，可先分为四类：
+  - `generator entry`: `scripts/p1_write_gate_regression.ps1`
+  - `operator runbook`: `docs/runbook/run-S2B-projection-table-merge.md`
+  - `operator quick lookup`: `docs/QUICK_COMMANDS.md`
+  - `family SoT logs`: `docs/logs/log-S2B-projection-table-merge.md`, `docs/logs/log-S2B-3A-unified-consumer-framework.md`, `docs/logs/log-S2B-4A-table-merge-migration.md`, `docs/logs/log-S2B-5A-table-merge-migration.md`, `docs/logs/log-S2B-5A-table-merge-migration-v2.md`, `docs/logs/log-S2B-6A-unified-outbox-table-merge.md`, `docs/logs/log-S0D-2A-drills-evidence-automation.md`
+- 上述四类里，前 3 类直接决定 operator 会先看到哪个路径；`family SoT logs` 则决定 repo 级长期叙述会不会继续把旧路径当成唯一事实源。
+
+### P1-C1-S2 (Must-migrate versus bounded-legacy references separated | v1)
+
+| reference class | current examples | migration bucket | current rule |
+| --- | --- | --- | --- |
+| `generator entry` | `scripts/p1_write_gate_regression.ps1` | `must-migrate-now` | 已切到 primary path，并保留 legacy alias dual-write |
+| `operator runbook` | `docs/runbook/run-S2B-projection-table-merge.md` | `must-migrate-now` | 新主路径应作为默认 lookup，旧路径只作为 coexistence alias |
+| `operator quick lookup` | `docs/QUICK_COMMANDS.md` | `must-migrate-now` | 用户抄命令/查路径时应先看到 primary path |
+| `family SoT log (active)` | `docs/logs/log-S2B-projection-table-merge.md` | `must-migrate-early` | active family log 应明确 primary path 已取代旧路径成为 SoT |
+| `family SoT logs (broad historical set)` | `docs/logs/log-S2B-3A-unified-consumer-framework.md`, `docs/logs/log-S2B-4A-table-merge-migration.md`, `docs/logs/log-S2B-5A-table-merge-migration.md`, `docs/logs/log-S2B-5A-table-merge-migration-v2.md`, `docs/logs/log-S2B-6A-unified-outbox-table-merge.md`, `docs/logs/log-S0D-2A-drills-evidence-automation.md` | `bounded-legacy-allowed` | 允许短期保留旧路径文字引用，但后续应逐批补为 “primary path + legacy alias” 表达 |
+
+- `must-migrate-now` 的标准是：这个 surface 会直接影响新的 operator 行为或 generator 默认出口。
+- `must-migrate-early` 的标准是：这个 surface虽然不是命令入口，但它承担当前 family 的 SoT 叙述角色。
+- `bounded-legacy-allowed` 的标准是：历史 log 仍可暂时保留旧路径文字，但不能再作为新增文档的默认写法。
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -142,8 +167,8 @@
 
 ### P1 (Lookup migration inventory)
 
-- [ ] `P1-C1-S1`: high-value lookup surfaces identified
-- [ ] `P1-C1-S2`: must-migrate versus bounded-legacy references separated
+- [x] `P1-C1-S1`: high-value lookup surfaces identified
+- [x] `P1-C1-S2`: must-migrate versus bounded-legacy references separated
 
 ### P2 (Dual-read / fallback)
 
@@ -165,3 +190,4 @@
 
 - 2026-04-04: opened `S6B-1C` to continue the tracked retained-summary migration work after `S6B-1B/P4-C4` enabled the first dual-write coexistence baseline for `write_gate` run mappings.
 - 2026-04-04: fixed `P0` v1 by retaining the primary-vs-alias boundary for `artifacts/s2b.write-gate.runs.latest.json` versus `artifacts/write_gate_runs.latest.json`, and by scoping the migration unit to one tracked retained-summary family before wider rollout.
+- 2026-04-04: completed `P1` v1 by identifying the first high-value lookup surfaces around `write_gate` retained-summary SoT and separating them into must-migrate-now, must-migrate-early, and bounded-legacy-allowed buckets.
