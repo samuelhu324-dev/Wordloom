@@ -5,7 +5,7 @@
 **id**: `S0F-1F`
 **kind**: `log`
 **title**: `bucketed audit output materialization v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Audit, Contract, Classification, Runtime, epic/s0, sub/1f`
 **links**: ``
