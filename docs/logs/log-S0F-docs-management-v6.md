@@ -23,6 +23,7 @@
   **phase_log_3**: `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
   **phase_log_4**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
   **phase_log_5**: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  **phase_log_6**: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -122,6 +123,8 @@
   - 详见：`docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
 - `S0F-1E`（Phase 1E）：completeness classification buckets and audit output taxonomy
   - 详见：`docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+- `S0F-1F`（Phase 1F）：bucketed audit output materialization
+  - 详见：`docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -146,6 +149,7 @@
 - `S0F-1C/P4` is now complete: the runbook and repeatability summary are retained, and no further phase is currently required inside this slice.
 - `S0F-1D/P4` is now complete: the first stable read-only completeness package is fixed around the live lifecycle-audit entrypoint plus a compact historical pre-screen sample, and no further phase is currently required inside this slice.
 - `S0F-1E` is now stable: the bucket taxonomy is fixed across all three lifecycle stages, the additive audit-output contract is fixed, and no further phase is currently required inside this slice.
+- `S0F-1F/P0` is now complete: the next follow-up is fixed around materializing emitted diagnosis-layer bucket fields on real read-only output surfaces, and the immediate next step is `P1` live lifecycle audit bucket emission.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
