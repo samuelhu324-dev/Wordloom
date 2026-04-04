@@ -113,6 +113,7 @@
 - The next remaining gap is no longer taxonomy definition but output materialization: current retained result bundles still expose the necessary checks, yet the bucket fields themselves are not fixed as emitted runtime/planner output.
 - `S0F-1F` is now opened as the next `S0F` follow-up so that bucket taxonomy becomes a real retained output surface rather than a docs-only contract.
 - `P0` is now complete: `S0F-1F` is wired into the spine, the materialization boundary is fixed around emitted read-only output rather than taxonomy redesign, and the next follow-up is `P1` live lifecycle audit bucket emission.
+- `P1` is now complete: the live lifecycle audit result emits `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage`, one representative retained sample now carries the emitted diagnosis-layer fields directly, and the next follow-up is `P2` supporting historical emission.
 
 ## P0 Materialization Boundary (completed)
 
@@ -131,6 +132,24 @@
 - `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage` remain the target emitted fields, but this slice now fixes that they must be derived from existing structured evidence and retained directly in planner/audit output.
 - Historical pre-screen output remains a supporting follow-up surface only where attribution is still deterministic under the same taxonomy; it does not own the first materialization step.
 - The next implementation work therefore begins with live audit emission and retained sample regeneration, not with remediation routing or new free-text reasoning layers.
+
+## P1 Live Audit Emission (completed)
+
+- `S0F-1F` now lowers the `S0F-1E` taxonomy into emitted diagnosis-layer fields on the primary live lifecycle audit result surface.
+- v1 materialization stays additive: existing decision-layer status, planned action, and retained check arrays remain intact while emitted diagnosis fields summarize deterministic bucket attribution above them.
+
+### P1-C1-S1 (Deterministic bucket attribution emitted on live lifecycle audit output | v1)
+
+- `scripts/issues/plan_lifecycle_audit.py` now emits `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage` on each retained item instead of leaving those fields as documentation-only contract language.
+- Bucket attribution now derives strictly from existing structured evidence on the live audit surface: only `fail` or `warning` checks that already have fixed stage-local ownership under `S0F-1E` may emit a diagnosis bucket.
+- v1 stays fail-closed for attribution: if the live audit surface does not have enough deterministic structured evidence to attribute a bucket, the item keeps its decision-layer result without a guessed diagnosis bucket.
+- The emitted `bucket_stage` is now the lifecycle owner implied by the retained `primary_bucket`, while `bucket_source_checks` records which named checks justified each emitted diagnosis bucket.
+
+### P1-C1-S2 (Representative live audit output sample retained with emitted diagnosis-layer fields | v1)
+
+- `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` now retains a representative live lifecycle audit result with emitted diagnosis-layer fields present directly on the item.
+- The retained sample proves that the existing `blocked` decision-layer summary can coexist with emitted diagnosis-layer output, with `sidebar-parent-relationship` materializing as `creation-sidebar-relationship-gap` rather than requiring downstream consumers to re-parse the raw check list.
+- This retained output becomes the first concrete baseline for later consumers that need stable diagnosis-layer fields from live audit output rather than contract prose alone.
 
 ## Plan (draft)
 
@@ -167,8 +186,8 @@
 
 ### P1 (Live audit emission)
 
-- [ ] `P1-C1-S1`: deterministic bucket attribution materialized on live lifecycle audit output
-- [ ] `P1-C1-S2`: representative live audit output sample retained with emitted diagnosis-layer fields
+- [x] `P1-C1-S1`: deterministic bucket attribution materialized on live lifecycle audit output
+- [x] `P1-C1-S2`: representative live audit output sample retained with emitted diagnosis-layer fields
 
 ### P2 (Supporting historical emission)
 
@@ -196,6 +215,8 @@
 - `scripts/issues/plan_historical_log_review.py` remains the supporting implementation anchor for later additive diagnosis-layer emission where structure-first pre-screen output can still map deterministically into the same taxonomy.
 - `P0-C1-S1` / `P0-C1-S2`: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md` now fixes the implementation boundary recorded here: the slice is wired into the `S0F` spine, emitted diagnosis-layer ownership is assigned to live lifecycle audit output first, and the next follow-up is `P1` live bucket emission.
 - `P0-C1-S1`: `docs/logs/log-S0F-docs-management-v6.md` now records `S0F-1F` as the next explicit `S0F` child slice after `S0F-1E` stabilized the taxonomy contract.
+- `P1-C1-S1`: `scripts/issues/plan_lifecycle_audit.py` now emits additive diagnosis-layer bucket fields on each live lifecycle audit item, deriving bucket attribution only from existing structured check evidence and stage ownership already fixed in `S0F-1E`.
+- `P1-C1-S2`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` now retains the first representative emitted live sample with `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage` carried directly in the result payload.
 
 ## Numbering
 

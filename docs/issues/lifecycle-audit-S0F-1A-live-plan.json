@@ -27,6 +27,16 @@
       "planned_action": "block-mutation",
       "applied_action": null,
       "status": "blocked",
+      "primary_bucket": "creation-sidebar-relationship-gap",
+      "bucket_set": [
+        "creation-sidebar-relationship-gap"
+      ],
+      "bucket_source_checks": {
+        "creation-sidebar-relationship-gap": [
+          "sidebar-parent-relationship"
+        ]
+      },
+      "bucket_stage": "creation",
       "checks": [
         {
           "name": "source-log-issue-writeback",
