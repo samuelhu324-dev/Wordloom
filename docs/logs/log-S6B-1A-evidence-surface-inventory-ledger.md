@@ -73,6 +73,7 @@
 - `P0`: inventory contract（表头、分类轴、counts 记录规则）
 - `P1`: current evidence total table（当前 major surfaces、owner、retention、lookup path、family owner map）
 - `P2`: retention/storage baseline + hotspot list（回答 major surfaces 哪些 retained、哪些 tmp，以及当前最明显的混放面）
+- `P3`: generator/emission baseline（回答哪些 family 可以直接写 fact-source、哪些只能写 retained summary 或 workflow-derived output）
 
 ## Success Criteria (DoD)
 
@@ -81,6 +82,7 @@
 - 至少记录一组当前 counts/scale baseline，帮助后续区分“主要面”和“尾部面”。
 - 至少保留一版 `family owner map`，回答每类 surface 的主 contract owner 是哪条 log/script/workflow family。
 - 至少明确回答 `artifacts`、`docs/issues`、`docs/labs/_snapshot` 三个 major surfaces 当前哪些应该 retained、哪些默认 tmp。
+- 至少明确回答当前主要 script/workflow families 哪些允许直接产生 `fact-source`，哪些只允许产生 `retained-summary` 或 `workflow-derived` surface。
 - 至少识别出 3 个后续最值得治理的 hotspot，而不是只给出泛泛的目录批评。
 
 ## Stability (what stable means)
@@ -222,6 +224,53 @@
 - Hotspot 4: `docs/issues/` 当前仍没有显式 tmp lane，因此若后续出现一次性 replay scratch 输出，必须避免直接混入 retained workflow surface。
 - Hotspot 5: 少量历史/过渡路径仍留下旧 path 痕迹或 CI-only inspection bundle，后续 cutover 需要明确定义哪些例外允许 coexistence，哪些应回收。
 
+## P3 (Generator / emission baseline | v1)
+
+### P3-C1-S1 (Fact-source emission boundary fixed | v1)
+
+- 允许直接写入 `fact-source` 的 family 仅限真正负责一次 run/drill capture 的执行链：
+  - `backend/scripts/cli.py`
+  - `backend/scripts/labs/*`
+  - `cli_app/scenarios/*`
+  - 对应 manual drill 的 operator-managed capture 流程
+- 这些 family 如果直接产出 run evidence，目标 surface 必须是 `docs/labs/_snapshot/auto/**` 或 `docs/labs/_snapshot/manual/**`。
+- 这类 direct emission 的 contract 是：
+  - 产物必须按单次 run/drill 可回放地落在 run directory 下
+  - 允许后续再派生 summary 或 log ledger，但不能只写 summary 而不保留最小 fact-source
+  - 不得把一次 run 的原始事实源直接散落到 `docs/logs/`、`docs/issues/` 或 `artifacts/_tmp_*` 冒充 retained runtime evidence
+
+### P3-C1-S2 (Retained-summary and workflow-derived emission boundary fixed | v1)
+
+- 允许直接写入 `retained-summary` 的 family：
+  - hard-gate scripts
+  - CI collectors
+  - projection / onboarding wrappers
+  - 已接受的 low-cardinality history/index aggregators
+- 这类 family 的目标 surface 应是 `artifacts/` 下稳定命名的 summary/history ledger，例如 `*runs.json`、`write_gate_runs.latest.json`，而不是 `_tmp_*` scratch path。
+- 这类 retained-summary 允许只保留聚合结果，但前提是它们引用或对应的 raw fact-source 已存在于上游 run/drill surface；summary 本身不能冒充底层事实源。
+- 允许直接写入 `workflow-derived` 的 family：
+  - `scripts/issues/*`
+  - GitHub write-back helpers
+  - bounded replay / lifecycle audit tools
+- 这类 family 的目标 surface 应是 `docs/issues/*`；它们服务于 docs/GitHub automation replay、apply、audit、publish-verify，不应直接产出 runtime fact-source。
+
+### P3-C1-S3 (Naming and ownership expectations fixed | v1)
+
+- 新 surface 在创建前至少要先回答三个 contract 字段：
+  - `class`
+  - `primary contract owner`
+  - `target lookup path`
+- 如果产物 intended to be `retained-summary` 或 `workflow-derived retained output`：
+  - 名称不得继续使用 `_tmp_` / `_local_` 语义
+  - 必须落在已有 retained surface 下，而不是先落临时目录再长期滞留
+- 如果产物 intended to be `tmp-scratch`：
+  - 应显式保留 `_tmp_` / `_local_` 语义
+  - 不得放入 `docs/labs/_snapshot/**`、`docs/issues/*` 或稳定命名的 `artifacts/*.json` 中伪装成 retained surface
+- 如果某个 family 想新增 retained surface：
+  - 必须能被回挂到 owning log / spine log
+  - 必须说明它取代的是哪类旧 lookup path，还是与旧 surface bounded coexistence
+  - 若还回答不了 owner / lookup / retention，就默认先按 `tmp-scratch` 处理，而不是直接升级为 retained contract
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -245,6 +294,12 @@
 - P2-C1-S3: retain operator storage shortcuts for new surfaces
 - P2-C1-S4: retain the hotspot list and hand it back to later cutover work
 
+### P3 (Generator / emission baseline)
+
+- P3-C1-S1: fix which current generator families may emit `fact-source` directly
+- P3-C1-S2: fix which current generator families may only emit `retained-summary` or `workflow-derived` outputs
+- P3-C1-S3: fix naming and ownership expectations for future retained versus tmp surfaces
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -267,6 +322,12 @@
 - [x] `P2-C1-S3`: operator storage shortcuts fixed
 - [x] `P2-C1-S4`: hotspot list retained
 
+### P3 (Generator / emission baseline)
+
+- [x] `P3-C1-S1`: fact-source emission boundary fixed
+- [x] `P3-C1-S2`: retained-summary and workflow-derived emission boundary fixed
+- [x] `P3-C1-S3`: naming and ownership expectations fixed
+
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for later machine-facing inventory artifacts; this log currently records the first bounded repo-level total table and hotspot list in human-facing form.
@@ -278,3 +339,4 @@
 - 2026-04-04: opened `S6B-1A` as the first bounded follow-up under `S6B`, focused on retaining one repo-level evidence total table before any storage or cutover discussion widens.
 - 2026-04-04: completed `P0/P1` v1 by formalizing the inventory columns, scale baseline, family-level granularity rule, and a first repo-level family owner map so later retention work has a concrete contract baseline.
 - 2026-04-04: completed `P2` v1 in the same log by fixing the current class-to-retention baseline, answering retained versus tmp for `artifacts`, `docs/issues`, and `docs/labs/_snapshot`, and recording operator storage shortcuts for future surfaces.
+- 2026-04-04: completed `P3` v1 in the same log by fixing which current generator families may emit `fact-source`, which may only emit `retained-summary` or `workflow-derived` outputs, and what naming/ownership contract new retained surfaces must satisfy.

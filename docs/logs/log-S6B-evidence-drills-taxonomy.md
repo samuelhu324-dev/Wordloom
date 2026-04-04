@@ -196,3 +196,4 @@
 - 2026-04-04: opened `S6B` to separate evidence taxonomy, retention classes, generator ownership, and bounded cleanup order from the already-stable `S6A` hard-gate and drills contracts.
 - 2026-04-04: `S6B-1A/P0-P1` retained the first formal repo inventory ledger, current scale baseline, and family owner map, so `S6B/P2-P4` can now work from a concrete surface baseline instead of rerunning ad-hoc discovery.
 - 2026-04-04: `S6B-1A/P2` fixed the current retention/storage baseline in-place, including retained versus tmp handling for `artifacts`, `docs/issues`, and `docs/labs/_snapshot`, while keeping later cutover work open.
+- 2026-04-04: `S6B-1A/P3` fixed the current generator/emission baseline in-place, including which families may emit `fact-source` directly, which are limited to `retained-summary` or `workflow-derived` outputs, and what naming/ownership contract future retained surfaces must satisfy.
