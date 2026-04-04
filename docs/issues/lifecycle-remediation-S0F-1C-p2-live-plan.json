@@ -1,0 +1,76 @@
+{
+  "mode": "lifecycle-remediation-dry-run",
+  "result": "ok",
+  "audit_plan_path": "docs/issues/lifecycle-audit-S0F-1C-p1-preview-plan.json",
+  "selection_input": "audit-plan",
+  "operation": "plan-lifecycle-remediation",
+  "total_items": 3,
+  "planned_items": 3,
+  "warnings": [
+    "S6B-1A: planned",
+    "S6B-1B: planned",
+    "S6B-1C: planned"
+  ],
+  "items": [
+    {
+      "requested_id": "S6B-1A",
+      "source_log_path": "docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md",
+      "issue_number": 357,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/357",
+      "audit_status": "blocked",
+      "remediation_status": "planned",
+      "planned_action": "plan-remediation",
+      "applied_action": null,
+      "steps": [
+        {
+          "action_kind": "plan-issue-conclusion-refresh",
+          "status": "planned",
+          "details": "Prepare an issue-conclusion plan so the final body and close state can be regenerated from exact-ID merged PR evidence.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-S0F-1C-p2-live-issue-conclusion-manifest.json"
+        }
+      ],
+      "warnings": [],
+      "reason": "Audit issue #357 before and after the S0F-1B historical Context refresh to ensure the conclusion rewrite passes the lifecycle gate."
+    },
+    {
+      "requested_id": "S6B-1B",
+      "source_log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+      "issue_number": 358,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/358",
+      "audit_status": "blocked",
+      "remediation_status": "planned",
+      "planned_action": "plan-remediation",
+      "applied_action": null,
+      "steps": [
+        {
+          "action_kind": "plan-issue-conclusion-refresh",
+          "status": "planned",
+          "details": "Prepare an issue-conclusion plan so the final body and close state can be regenerated from exact-ID merged PR evidence.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-S0F-1C-p2-live-issue-conclusion-manifest.json"
+        }
+      ],
+      "warnings": [],
+      "reason": "Audit issue #358 before and after the S0F-1B historical Context refresh to ensure the conclusion rewrite passes the lifecycle gate."
+    },
+    {
+      "requested_id": "S6B-1C",
+      "source_log_path": "docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md",
+      "issue_number": 359,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/359",
+      "audit_status": "blocked",
+      "remediation_status": "planned",
+      "planned_action": "plan-remediation",
+      "applied_action": null,
+      "steps": [
+        {
+          "action_kind": "plan-issue-conclusion-refresh",
+          "status": "planned",
+          "details": "Prepare an issue-conclusion plan so the final body and close state can be regenerated from exact-ID merged PR evidence.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-S0F-1C-p2-live-issue-conclusion-manifest.json"
+        }
+      ],
+      "warnings": [],
+      "reason": "Audit issue #359 before and after the S0F-1B historical Context refresh to ensure the conclusion rewrite passes the lifecycle gate."
+    }
+  ]
+}
