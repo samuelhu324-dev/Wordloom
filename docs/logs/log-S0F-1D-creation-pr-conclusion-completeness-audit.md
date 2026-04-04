@@ -128,6 +128,7 @@
 - `P1` is now complete: create-time issue completeness is fixed for issue body plus sidebar ownership, blank optional `Links` rows are explicitly non-canonical, and the next follow-up is `P2` PR development-linkage completeness.
 - `P2` is now complete: PR completeness is fixed as a semantic audit surface rather than a render-only body check, development-linkage completeness is unified across source log, PR metadata, close-link footer, and GitHub linkage state, and the next follow-up is `P3` conclusion-time completeness.
 - `P3` is now complete: conclusion-time completeness is fixed for final issue body plus sidebar re-check, child versus top-level parent close-out rules are explicit, and the next follow-up is `P4` read-only audit packaging.
+- `P4` is now complete: the first stable read-only audit packaging is fixed around one live lifecycle-audit entrypoint plus one optional historical pre-screen, representative retained samples already exist, and no further phase is currently required inside this slice.
 
 ## P0 Lifecycle Completeness Matrix (completed)
 
@@ -230,11 +231,19 @@
 - For top-level parent issues, conclusion-time sidebar completeness includes the absence of an unexpected parent relationship plus the expected ordered child-issue relationship set.
 - Source-log write-back and source-log PR linkage remain part of the conclusion audit surface because a concluded issue is incomplete when its final live state no longer matches the source-log navigation and merged-PR evidence boundary.
 
-## P4 Read-Only Audit Packaging (planned)
+## P4 Read-Only Audit Packaging (completed)
 
 - The first stable entrypoint should accept one manifest and emit per-item classification across the three lifecycle stages.
 - Output should preserve stage-local failures such as `creation-links-gap`, `pr-development-linkage-gap`, or `conclusion-dod-mismatch` instead of one generic drift bucket.
 - The first retained sample should stay small and representative so reviewers can compare audit output against live GitHub state by hand.
+
+### P4-C1-S1 (First stable read-only audit package fixed | v1)
+
+- The first stable read-only completeness entrypoint is now fixed as `scripts/issues/plan_lifecycle_audit.py`, using `docs/issues/lifecycle-audit-*-manifest.json` as input and `docs/issues/lifecycle-audit-*-plan.json` as the retained result shape.
+- This entrypoint is primary because it audits the live issue body, labels, parent/sub-issue sidebar state, exact-ID merged PR evidence, final DoD refs, and source-log write-back on the same item instead of classifying lifecycle state from markdown alone.
+- The entrypoint already emits the stage boundary needed by this slice through `lifecycle_stage`, `status`, `planned_action`, and per-check names, so v1 packaging can preserve creation, PR, and conclusion completeness as one read-only evidence bundle without introducing a new mutation path.
+- `scripts/issues/plan_historical_log_review.py` remains the optional batch pre-screen for logs that still need lifecycle-stage discovery or structure-only review before live completeness audit is meaningful; it is supporting packaging, not the primary completeness owner.
+- Representative retained samples are now explicit: `docs/issues/lifecycle-audit-S0F-1A-live-manifest.json` plus `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` demonstrate a live creation-stage completeness failure bundle, while `docs/issues/historical-log-review-S0E-7C-sample-manifest.json` plus `docs/issues/historical-log-review-S0E-7C-sample-plan.json` remain the compact historical pre-screen sample for mixed lifecycle states.
 
 ## Plan (draft)
 
@@ -286,7 +295,7 @@
 
 ### P4 (Read-only audit entrypoint)
 
-- [ ] `P4-C1-S1`: representative read-only completeness audit sample retained
+- [x] `P4-C1-S1`: representative read-only completeness audit sample retained
 
 ## Notes (optional)
 
@@ -303,6 +312,8 @@
 - `P2-C1-S1` / `P2-C1-S2`: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`, `docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`, and `docs/issues/pr-metadata-completeness-S0E-4F-p4-summary.json` remain the contract and evidence anchors for the unified PR completeness lane: development issue identity is metadata-owned, `Closes #...` rows and GitHub linkage must converge, and the retained historical audit already proves the lane is auditable on live PRs.
 - `P3-C1-S1` / `P3-C1-S2`: `scripts/issues/plan_lifecycle_audit.py`, `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`, and `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md` remain the implementation and contract anchors for conclusion completeness recorded here: final issue body shape is validated against merged-PR evidence, child versus top-level parent DoD ownership stays explicit, and conclusion-time `Context` remains bound to the exact four/five sentence-count contract.
 - `P3-C1-S1` / `P3-C1-S2`: the current lifecycle audit surface already proves the conclusion re-check lane is broader than body prose alone by reviewing label coverage, source-log write-back, parent/sub-issue relationships, merged-PR evidence, final DoD refs, Links coverage, and closed-body Context validity on the same live issue.
+- `P4-C1-S1`: `scripts/issues/plan_lifecycle_audit.py`, `docs/issues/lifecycle-audit-S0F-1A-live-manifest.json`, and `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` now anchor the first stable read-only completeness package recorded here: one manifest-driven live audit entrypoint emits lifecycle stage, gate status, planned action, and per-check results in a retained JSON bundle without mutating GitHub state.
+- `P4-C1-S1`: `scripts/issues/plan_historical_log_review.py`, `docs/issues/historical-log-review-S0E-7C-sample-manifest.json`, and `docs/issues/historical-log-review-S0E-7C-sample-plan.json` remain the compact supporting sample for batch pre-screen packaging: they classify mixed lifecycle states (`log-only`, `issue-open-no-pr`, `concluded`) and preserve structure-review output before the primary live completeness audit is invoked.
 
 ## Numbering
 
