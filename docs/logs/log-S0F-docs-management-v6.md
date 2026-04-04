@@ -21,6 +21,7 @@
   **phase_log_1**: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
   **phase_log_2**: `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
   **phase_log_3**: `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
+  **phase_log_4**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -116,8 +117,8 @@
   - 详见：`docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
 - `S0F-1C`（Phase 1C）：guarded multi-item live mutation remediation
   - 详见：`docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
-- `S0F-1D`（Phase 1D）：optional GitHub Actions secondary enforcement rollout
-  - 详见：``
+- `S0F-1D`（Phase 1D）：creation / PR / conclusion completeness audit
+  - 详见：`docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -140,6 +141,7 @@
 - `S0F-1C/P2` is now complete: the shared multi-item issue-conclusion manifest is applied per target through repeated family-owned guarded wrapper calls, and the next follow-up is `P3` preserve-existing post-verify plus per-target drift retention.
 - `S0F-1C/P3` is now complete: preserve-existing re-verification is retained per target after the guarded live sample, all three representative S6B items classify as clean-preserve, and the next follow-up is `P4` operator runbook plus repeatability packaging.
 - `S0F-1C/P4` is now complete: the runbook and repeatability summary are retained, and no further phase is currently required inside this slice.
+- `S0F-1D/P0` is now complete: the three-stage completeness matrix is fixed, lifecycle ownership is explicit for body plus sidebar state, and the next follow-up is `P1` create-time issue completeness for body plus sidebar coverage.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
