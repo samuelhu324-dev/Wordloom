@@ -93,6 +93,14 @@
   - the first tracked retained-summary coexistence migration contract is retained
   - later rename/cutover work can reuse its migration, fallback, and stop-condition rules directly
 
+## PR Summary Inputs (optional)
+
+**PR summary bullets**:
+
+- Fix the coexistence contract for the tracked `write_gate` retained-summary family by separating the new primary path from the legacy alias.
+- Inventory the high-value lookup surfaces and split immediate primary-path migrations from bounded historical legacy references.
+- Retain explicit dual-write, manual fallback, and alias-retirement gates so the tracked rename path can progress without a breaking cutover.
+
 ## P0 (Coexistence contract | v1)
 
 ### P0-C1-S1 (Primary and alias boundary fixed | v1)
