@@ -114,13 +114,25 @@
 - `S0F-1D` is now stable as the lifecycle completeness-model slice: stage ownership, body/sidebar completeness boundaries, and the first read-only audit packaging are all fixed.
 - The next remaining gap is output granularity rather than ownership: current read-only planners can already emit rich per-check evidence, but their top-level summaries still stop too early at `pass/warning/blocked/reconciliation/error` instead of naming deterministic stage-local completeness buckets.
 - `S0F-1E` is now opened as the next `S0F` follow-up so that the completeness classification defined in `S0F-1D` can be lowered into a stable audit-output taxonomy rather than remaining only a contract-level description.
-- `P0` is the first follow-up: wire `S0F-1E` into the spine and fix the diagnosis-layer bucket vocabulary boundary before any bucket family is refined stage by stage.
+- `P0` is now complete: `S0F-1E` is wired into the spine, the decision-layer versus diagnosis-layer boundary is fixed, and the next follow-up is `P1` creation-stage bucket families.
 
-## P0 Bucket Taxonomy Boundary (planned)
+## P0 Bucket Taxonomy Boundary (completed)
 
 - `S0F-1E` should first fix the split between decision-layer audit status and diagnosis-layer completeness buckets.
 - The primary live audit surface should remain `plan_lifecycle_audit.py`, but its output should gain a stable bucket vocabulary rather than relying only on free-text check names and reason strings.
 - Historical pre-screen output may map into the same bucket family where practical, but it should not force the live lifecycle taxonomy to flatten down to structure-only review categories.
+
+### P0-C1-S1 (Spine wiring fixed | v1)
+
+- `S0F-1E` is now the canonical `S0F` follow-up for deterministic audit-output bucket taxonomy rather than an informal future direction after `S0F-1D`.
+- The parent `S0F` spine now points to `S0F-1E` explicitly and records it as the next child slice after `S0F-1D` stabilized lifecycle completeness ownership and read-only audit packaging.
+
+### P0-C1-S2 (Decision layer versus diagnosis layer boundary fixed | v1)
+
+- `Decision layer` is now fixed as the stop/allow surface exposed by existing audit results, including `pass`, `warning`, `blocked`, `reconciliation`, and `error`.
+- `Diagnosis layer` is now fixed as the deterministic bucket vocabulary that explains which lifecycle stage failed and what family of completeness defect was found.
+- `S0F-1E` now records that bucket labels are additive to existing statuses rather than replacements for them, which preserves current gate semantics while making downstream classification machine-readable.
+- The primary output owner remains the live lifecycle audit surface, while historical log review stays a supporting pre-screen that may map into the same taxonomy without flattening the model back to structure-only review.
 
 ## P1 Creation Bucket Families (planned)
 
@@ -172,8 +184,8 @@
 
 ### P0 (Taxonomy boundary and spine wiring)
 
-- [ ] `P0-C1-S1`: `S0F-1E` created and wired into the `S0F` parent spine
-- [ ] `P0-C1-S2`: decision-layer versus diagnosis-layer boundary fixed
+- [x] `P0-C1-S1`: `S0F-1E` created and wired into the `S0F` parent spine
+- [x] `P0-C1-S2`: decision-layer versus diagnosis-layer boundary fixed
 
 ### P1 (Creation buckets)
 
@@ -204,6 +216,8 @@
 - `S0F-1D` now provides the ownership model consumed by this slice: `creation`, `pr`, and `conclusion` completeness already exist as explicit lifecycle categories, but they are not yet emitted as stable diagnosis buckets in current retained audit output.
 - `scripts/issues/plan_lifecycle_audit.py` and `scripts/issues/plan_historical_log_review.py` already provide the two read-only result surfaces this slice will normalize: both emit machine-readable status plus detailed checks, which makes them suitable foundations for a shared bucket taxonomy instead of a new audit family.
 - `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` and `docs/issues/historical-log-review-S0E-7C-sample-plan.json` remain representative retained samples proving that rich check-level evidence already exists and can be lowered into deterministic bucket labels in a later phase.
+- `P0-C1-S1` / `P0-C1-S2`: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md` now fixes the initial taxonomy boundary recorded here: the slice is wired into the `S0F` spine, the decision-layer versus diagnosis-layer split is explicit, and bucket labels are defined as additive to existing gate statuses.
+- `P0-C1-S1`: `docs/logs/log-S0F-docs-management-v6.md` now records `S0F-1E` as the next explicit follow-up slice under the `S0F` spine and reflects `P0` as complete rather than leaving the new child slice as an ungrounded placeholder.
 
 ## Numbering
 
