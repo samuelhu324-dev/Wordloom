@@ -201,10 +201,8 @@ def _create_issue_preflight_failures(*, explicit_issue_keyword: str, context_mod
     failures: list[str] = []
     if not explicit_issue_keyword.strip():
         failures.append("real create-issue requires an explicit issue_keyword; inferred title keywords are not allowed")
-    if context_mode != "single-generate":
-        failures.append("real create-issue requires --context-mode single-generate; scaffold Context is not allowed")
-    if _context_contains_placeholder(context_lines):
-        failures.append("real create-issue requires non-placeholder Context lines before live creation")
+    if context_mode == "scaffold" and _context_contains_placeholder(context_lines):
+        failures.append("real create-issue requires the Context section to exist without placeholder scaffold lines before live creation")
     return failures
 
 
@@ -453,7 +451,7 @@ def _render_issue_markdown(
 
 
 def _default_context_scaffold_lines() -> list[str]:
-    return ["- <placeholder>"]
+    return []
 
 
 def _validate_labels(labels: list[str], strict: bool) -> None:
@@ -656,7 +654,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     if context_mode == "single-generate":
         warnings.append("Context was single-generated from the source log; review it manually before create/apply")
     else:
-        warnings.append("Context was left as scaffold; generate or author single-item Context text separately before lifecycle completion")
+        warnings.append("Context section was left intentionally empty at create time; generate or author substantive Context text during issue conclusion")
 
     rel_log_path = _repo_rel(log_path)
     link_lines = _build_links(fields, rel_log_path)

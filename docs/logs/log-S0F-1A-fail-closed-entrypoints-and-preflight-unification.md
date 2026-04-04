@@ -54,12 +54,13 @@
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
 - Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
-- Real `create-issue` may not proceed when `issue_keyword` is inferred, when `Context` is still scaffold/placeholder, or when controlled metadata does not pass preflight.
+- Real `create-issue` may not proceed when `issue_keyword` is inferred or when controlled metadata does not pass preflight, but it only needs the `Context` section to exist structurally; create-time Context content may remain empty.
 - Real PR publish may not proceed from plain `plan_pr_prep` output alone; it must pass the create-time front-half preflight gate first.
 - Real issue conclusion / relationship / PR body rewrite may not proceed through raw family apply scripts when a thin gate or guarded wrapper exists for that family.
 - Retry is reserved for transient execution surfaces such as GitHub/network/process failures; semantic failures must be corrected at the source contract and then rerun.
 - GitHub Actions remains optional secondary enforcement, not the primary place where these invariants are first defined.
 - `S0F-1A` 沿用 `S0F` 的 `road-002` milestone 归属；在 exact `M*-P*` slot 还未单独记账前，这里只补现有 roadmap/milestone 锚点，不新造 roadmap phase。
+- 实质性的 `Context` prose generation and write-back belongs to issue conclusion, not issue creation; create-time `single-generate` remains optional one-item authoring help rather than a mandatory live-create gate.
 
 ## PR Summary Inputs (optional)
 
@@ -70,7 +71,7 @@
 
 **PR summary bullets**:
 
-- Fix the first fail-closed boundary for real issue creation by stopping on inferred keyword, scaffold Context, and uncontrolled metadata gaps.
+- Fix the first fail-closed boundary for real issue creation by stopping on inferred keyword and uncontrolled metadata gaps while keeping `Context` structurally present but create-time-empty.
 - Make PR create front-half preflight the only allowed path before any live PR publish step.
 - Converge issue conclusion, relationship attach, and PR body rewrite toward wrapper-only live mutation entrypoints instead of raw family apply calls.
 - Narrow GitHub Actions and workflow_dispatch surfaces back to explicit secondary enforcement so local fail-closed entrypoints remain the primary ownership boundary.
@@ -97,7 +98,7 @@
 ## Constraints
 
 - Do not classify prose quality as replayable just to make the pipeline look more automated.
-- Do not allow inferred title keyword, scaffold Context, or placeholder PR summary to cross into a real live mutation path.
+- Do not allow inferred title keyword, placeholder `Context` scaffold lines, or placeholder PR summary to cross into a real live mutation path.
 - Do not let older family scripts remain de facto canonical just because they are convenient to call directly.
 - Do not require GitHub Actions before local fail-closed boundaries exist.
 
@@ -111,7 +112,7 @@
 
 ## Success Criteria (DoD)
 
-- Real issue creation fails closed when `issue_keyword` is inferred, when `Context` is scaffold/placeholder, or when controlled metadata is missing.
+- Real issue creation fails closed when `issue_keyword` is inferred or when controlled metadata is missing, while still preserving an empty-but-present `Context` section at create time.
 - A plain PR-prep dry-run preview can no longer be mistaken for an allowed live publish path.
 - Live mutation families with existing wrappers/gates can no longer be called through softer raw apply entrypoints without explicit operator opt-in and retained evidence.
 - Retry semantics clearly distinguish transient execution failures from semantic contract failures.
@@ -129,8 +130,8 @@
 
 - Real `create-issue` must stop when:
   - `issue_keyword` would be inferred instead of read from an allowed explicit source;
-  - `Context` is still scaffold/placeholder;
   - controlled metadata required for create-time mutation is missing, malformed, or conflicts with live prerequisites.
+- Real `create-issue` must preserve the canonical `Context` section, but create-time content may remain intentionally empty; conclusion owns the first required substantive Context write-back.
 - Dry-run issue draft generation may still surface the same defects as warnings, but those warnings may not cross into real creation.
 
 ### P0-C1-S2 (PR create front-half boundary fixed | v1)
@@ -175,7 +176,7 @@
 
 ### P1 (Issue creation hard-fail)
 
-- P1-C1-S1: define the exact create-time stop conditions for inferred keyword and scaffold Context
+- P1-C1-S1: define the exact create-time stop conditions for inferred keyword and placeholder Context scaffold lines
 - P1-C1-S2: wire those conditions into the real issue creation entrypoint and retained result semantics
 
 ### P2 (PR preflight unification)
