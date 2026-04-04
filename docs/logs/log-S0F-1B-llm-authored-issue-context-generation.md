@@ -169,7 +169,7 @@
 
 ### P2 (Fail-closed fallback semantics)
 
-- [ ] `P2-C1-S1`: silent template fallback removed from the canonical conclusion path
+- [x] `P2-C1-S1`: silent template fallback removed from the canonical conclusion path
 
 ### P3 (Draft preview follow-up)
 
@@ -210,8 +210,22 @@
   - the retained `S0F-1B` sample for concluded issue `#364` produced an exact four-sentence English Context block through `--context-mode llm-generate`
   - the sample plan records the LLM-authored path explicitly and no longer emits the old deterministic outcome-wording warning family
 
+### P2-C1-S1 (fail-closed generation evidence retained | 2026-04-04)
+
+- artifacts:
+  - `docs/issues/issue-conclusion-S0F-1B-p1-sample-manifest.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p2-fail-closed.txt`
+  - `docs/issues/issue-conclusion-S0F-1A-live-manifest.json`
+- expected:
+  - the canonical conclusion path should no longer accept `single-generate` as a compatibility shortcut
+  - LLM generation failure should stop before any replacement Context plan is emitted instead of falling back silently to deterministic template assembly
+- observed:
+  - canonical conclusion surfaces now accept only `preserve-existing` or `llm-generate`, and the tracked live `S0F-1A` conclusion manifest now names `llm-generate` explicitly
+  - the retained controlled-failure sample exited non-zero on `unknown_model` and wrote the failure output to `issue-conclusion-S0F-1B-p2-fail-closed.txt`, with no fallback plan artifact emitted
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-04: created `S0F-1B` as the dedicated follow-up slice for replacing deterministic issue Context templates with LLM-authored Context generation under an exact child/main sentence-count contract.
 - 2026-04-04: completed `P0` by changing the Context validator to exact child/main sentence counts and wiring a new GitHub Models-backed LLM Context generator into the canonical issue-conclusion path.
 - 2026-04-04: completed `P1` by retaining one representative conclusion sample for `S0F-1A` that generated a valid four-sentence child issue Context block through `llm-generate` without falling back to deterministic template assembly.
+- 2026-04-04: completed `P2` by removing the remaining `single-generate` compatibility path from canonical conclusion surfaces and retaining one controlled fail-closed sample that stops on LLM generation error instead of falling back to the older deterministic Context builder.

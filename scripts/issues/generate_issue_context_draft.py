@@ -47,7 +47,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--context-mode",
         dest="context_mode",
-        choices=["single-generate", "llm-generate"],
+        choices=["llm-generate"],
         default="llm-generate",
         help="How to render one-item Context authoring output; llm-generate is the canonical mode",
     )
