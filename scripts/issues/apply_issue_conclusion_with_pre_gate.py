@@ -20,6 +20,8 @@ class GuardedIssueConclusionApplyResult:
     result: str
     gate_input_kind: str
     gate_input_path: str
+    item_index: int
+    requested_id: str | None
     gate_decision_path: str
     gate_decision: str
     apply_allowed: bool
@@ -35,6 +37,7 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run issue conclusion apply behind the lifecycle pre-gate")
     parser.add_argument("gate_input_path", help="Path to a lifecycle-audit manifest JSON file or frozen lifecycle-audit plan JSON file")
     parser.add_argument("conclusion_manifest_path", help="Path to an issue-conclusion manifest JSON file")
+    parser.add_argument("--item-index", dest="item_index", type=int, default=0, help="Issue-conclusion manifest item index to plan and apply")
     parser.add_argument("--gate-input-kind", dest="gate_input_kind", choices=["manifest", "audit-plan"], default="manifest", help="Interpret the gate input as a manifest or a frozen audit plan")
     parser.add_argument("--repo", dest="repo", help="Repository slug override")
     parser.add_argument("--gate-audit-plan-path", dest="gate_audit_plan_path", help="Override output path for the lifecycle-audit plan when gate input is a manifest")
@@ -170,6 +173,7 @@ def guarded_issue_conclusion_apply(args: argparse.Namespace) -> GuardedIssueConc
     conclusion_plan_rel: str | None = None
     apply_result_rel: str | None = None
     guarded_action: str
+    requested_id: str | None = None
 
     conclusion_manifest_path, guarded_eligibility, blocked_reason = _resolve_conclusion_manifest_path(
         repo_root=repo_root,
@@ -198,7 +202,7 @@ def guarded_issue_conclusion_apply(args: argparse.Namespace) -> GuardedIssueConc
             apply_result = apply_issue_conclusion_from_plan(
                 argparse.Namespace(
                     plan_path=conclusion_plan_rel,
-                    item_index=0,
+                    item_index=args.item_index,
                     repo=args.repo,
                     leave_open=args.leave_open,
                     result_path=args.apply_result_path,
@@ -206,6 +210,7 @@ def guarded_issue_conclusion_apply(args: argparse.Namespace) -> GuardedIssueConc
                     allow_raw_live_mutation_internal=True,
                 )
             )
+        requested_id = str(apply_result.requested_id or "") or None
         apply_result_rel = str(apply_result.plan_path).replace("-plan.json", f"-{apply_result.requested_id.lower()}-apply-result.json")
         if args.apply_result_path:
             apply_result_rel = _repo_rel(_coerce_path(args.apply_result_path, repo_root))
@@ -217,6 +222,8 @@ def guarded_issue_conclusion_apply(args: argparse.Namespace) -> GuardedIssueConc
         result="ok",
         gate_input_kind=args.gate_input_kind,
         gate_input_path=_repo_rel(gate_input_path),
+        item_index=args.item_index,
+        requested_id=requested_id,
         gate_decision_path=_default_decision_path(gate_result, args.gate_decision_path, repo_root),
         gate_decision=gate_result.decision,
         apply_allowed=gate_result.apply_allowed,

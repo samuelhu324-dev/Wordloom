@@ -82,7 +82,7 @@
 
 - Log: `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
 - Runbook: ``
-- Evidence artifact: `docs/issues/lifecycle-preview-S0F-1C-p1-summary.json`
+- Evidence artifact: `docs/issues/lifecycle-guarded-apply-S0F-1C-p2-summary.json`
 
 ## Definitions (optional)
 
@@ -184,6 +184,20 @@
 - sample rule:
   - `P1` may use a frozen audit-plan assembled from retained single-item audit outputs when the aggregate live audit path is already known to be operationally unstable for the representative set, so long as the retained sample is clearly marked preview-only and no live mutation occurs.
 
+## P2 Guarded Apply Split Rules (completed)
+
+- shared upstream artifacts:
+  - one retained multi-item audit-plan may feed one shared pre-gate decision and one shared remediation plan
+  - one remediation plan may emit one shared downstream issue-conclusion manifest when all items stay inside the same issue-conclusion family
+- live apply ownership:
+  - even when the downstream issue-conclusion manifest contains multiple items, live mutation still executes per target through repeated calls to the family-owned guarded wrapper
+  - the guarded wrapper, not the caller, owns the pre-gate rerun, remediation-manifest match check, and raw-live-mutation delegation boundary
+- split rules:
+  - if the remediation plan contains more than one live-mutation family, the batch must split before any apply step
+  - if all items remain inside one family, the batch may share the upstream gate/remediation artifacts but must retain per-target guarded result, plan, and apply result artifacts
+- representative live sample rule:
+  - `P2` may use `preserve-existing` on already-closed historical issues to prove the guarded apply path without introducing fresh LLM-authored prose drift during the live-sample step itself
+
 ## Plan (draft)
 
 ### P0 (Contract and spine wiring)
@@ -224,8 +238,8 @@
 
 ### P2 (Guarded apply)
 
-- [ ] `P2-C1-S1`: per-target eligibility and remediation handoff rules fixed
-- [ ] `P2-C1-S2`: representative guarded multi-item live sample retained
+- [x] `P2-C1-S1`: per-target eligibility and remediation handoff rules fixed
+- [x] `P2-C1-S2`: representative guarded multi-item live sample retained
 
 ### P3 (Post-refresh verification)
 
@@ -289,3 +303,28 @@
   - `S0F-1C/P1` now retains a canonical three-item preview manifest for `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`, with shared repo and expected-parent defaults plus per-target `requested_id`, `source_log_path`, `issue_number`, and `reason`
   - because the aggregate live lifecycle-audit path for this target set was already known to be operationally unstable, the retained preview sample uses a frozen multi-item audit-plan assembled from the already-retained `S0F-1B/P5` single-item audit outputs, which preserves per-target checks and merged PR evidence while keeping the sample strictly preview-only
   - `plan_lifecycle_pre_gate.py --input-kind audit-plan` then produced one stop-for-remediation decision and one remediation plan covering all three targets, with the downstream issue-conclusion manifest retaining exact merged PR overrides `#360/#361/#362` and no live mutation performed anywhere in the `P1` sample
+
+### P2-C1-S1S2 (guarded multi-item live sample retained | 2026-04-04)
+
+- artifacts:
+  - `scripts/issues/apply_issue_conclusion_with_pre_gate.py`
+  - `docs/issues/lifecycle-gate-S0F-1C-p2-live-decision.json`
+  - `docs/issues/lifecycle-remediation-S0F-1C-p2-live-plan.json`
+  - `docs/issues/lifecycle-remediation-S0F-1C-p2-live-issue-conclusion-manifest.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p2-s6b-1a-guarded-result.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p2-s6b-1a-plan.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p2-s6b-1a-apply-result.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p2-s6b-1b-guarded-result.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p2-s6b-1b-plan.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p2-s6b-1b-apply-result.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p2-s6b-1c-guarded-result.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p2-s6b-1c-plan.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p2-s6b-1c-apply-result.json`
+  - `docs/issues/lifecycle-guarded-apply-S0F-1C-p2-summary.json`
+- expected:
+  - `P2` should prove that a shared multi-item remediation-owned issue-conclusion manifest can still be applied only through the family-owned guarded wrapper, with live mutation executed per target rather than through a reopened raw batch surface
+  - the retained sample should keep one shared gate/remediation lineage for the batch while preserving one guarded result and one apply result per target
+- observed:
+  - `apply_issue_conclusion_with_pre_gate.py` now accepts `--item-index`, which closes the previous wrapper gap where a shared multi-item issue-conclusion manifest could only be applied at item index `0`
+  - `S0F-1C/P2` retained one shared gate decision and one shared remediation plan for the representative `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359` sample, then applied all three items through repeated wrapper invocations against the same remediation-owned issue-conclusion manifest with item indexes `0`, `1`, and `2`
+  - all three guarded results recorded `allowed-via-targeted-conclusion-remediation` and `applied-after-pre-gate`, which proves the live sample remained inside the issue-conclusion family-owned guarded surface instead of reopening raw apply entrypoints or collapsing the batch into one opaque live mutation step
