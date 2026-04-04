@@ -89,6 +89,15 @@
 - `multi-item remediation`: a workflow that refreshes or repairs more than one live target under one manifest while still preserving per-target gate and evidence outputs.
 - `guarded batch`: a batch surface that may orchestrate several items, but only by delegating each real mutation through the family-owned guarded apply path.
 - `post-refresh preserve-existing verify`: a non-mutating verification run that confirms the freshly written live body still satisfies the canonical contract when preserved as-is.
+- `mixed-remediation batch`: a candidate batch whose downstream follow-up actions span different live-mutation families for the same apply pass; v1 treats that as a split-or-stop condition rather than something one guarded apply may partially absorb.
+- `per-target failure semantics`: a rule that each target keeps its own stage-local stop reason, such as preview-plan stop, guarded-apply block, or post-verify drift stop, even when the top-level manifest contains several items.
+
+## P0 Contract Vocabulary (v1)
+
+- `preview planning` is a read-only stage that may audit live state, run lifecycle pre-gate, and emit remediation or downstream manifests, but it may not perform any GitHub mutation.
+- `guarded apply` is the only live-mutation stage, and it must enter through a family-owned wrapper such as `apply_issue_conclusion_with_pre_gate.py`, `apply_issue_relationships_with_pre_gate.py`, or `apply_pr_body_scope_with_pre_gate.py` rather than a raw apply script.
+- `preserve-existing post-verify` is a mandatory non-mutating follow-up stage after live refresh; it re-plans against the just-written live body while preserving that body, so drift can be measured without performing another rewrite.
+- `multi-item manifest` means one input manifest may enumerate several targets, but each target still keeps its own audit result, remediation status, downstream manifest path, guarded apply result, and post-verify artifact.
 
 ## Constraints
 
@@ -96,6 +105,8 @@
 - Do not treat aggregate success as sufficient evidence; each target still needs traceable per-item outputs.
 - Do not allow batch tooling to hide semantic failures behind retry language meant for transient execution problems.
 - Do not broaden the first rollout beyond a reviewable representative set.
+- Do not let one guarded apply invocation absorb mixed remediation families; if a remediation plan spans conclusion, relationship, or PR-body actions together, the operator must split the batch by family before mutation.
+- Do not treat post-verify as optional bookkeeping; a live refresh batch is incomplete until `preserve-existing` verification artifacts are retained per target.
 
 ## Scope
 
@@ -112,6 +123,7 @@
 - Post-refresh verification can distinguish a clean preserved live body from a drifted or malformed one on a per-target basis.
 - Operators can tell from retained artifacts which stage stopped: preview planning, guarded apply, or preserve-existing re-verify.
 - The first representative batch sample remains small enough for hand review while still proving the contract is reusable.
+- The stage vocabulary is explicit enough that later `P1-P3` implementation can map one retained artifact family to each stage without inventing new failure semantics.
 
 ## Stability (what stable means)
 
@@ -137,6 +149,23 @@
 **Commit discipline (recommended)**:
 
 - After each meaningful `P*-C*-S*` unit is complete, commit and push promptly on `S0F-docs-management-v6` so the new spine does not drift ahead of origin.
+
+## P0 Stage Contract (completed)
+
+- Stage 1 `preview planning`:
+  - allowed operations: lifecycle audit, pre-gate decision, remediation planning, downstream manifest generation
+  - forbidden operations: any GitHub mutation, any raw apply delegation, any rewrite of live issue or PR state
+  - retained outputs: audit manifest/plan, pre-gate decision, remediation plan, family-specific downstream manifests
+- Stage 2 `guarded apply`:
+  - allowed operations: exactly one family-owned guarded wrapper consumes one compatible downstream manifest or one compatible remediation-derived manifest path and performs live mutation
+  - forbidden operations: mixed-family apply in one pass, raw apply entrypoints, silent fallback from a blocked manifest to a guessed target set
+  - retained outputs: guarded result artifact, apply body/result artifacts, explicit eligibility/warning surface when remediation-owned apply is allowed
+- Stage 3 `preserve-existing post-verify`:
+  - allowed operations: non-mutating re-plan against live state with `preserve-existing`, drift detection, post-refresh contract validation
+  - forbidden operations: another rewrite disguised as verification, silent regeneration of Context/body content during verification
+  - retained outputs: post-verify plan and any per-target drift findings, with one artifact per target rather than aggregate-only status
+- Batch-level rule:
+  - one multi-item batch may share a top-level manifest and shared naming slug, but stage artifacts must still preserve per-target traceability so operators can split, rerun, or stop one target without losing the others' evidence trail.
 
 ## Plan (draft)
 
@@ -169,7 +198,7 @@
 ### P0 (Contract and spine wiring)
 
 - [x] `P0-C1-S1`: `S0F-1C` created and wired into the `S0F` parent spine
-- [ ] `P0-C1-S2`: batch-stage vocabulary fixed for preview, guarded apply, and preserve-existing post-verify
+- [x] `P0-C1-S2`: batch-stage vocabulary fixed for preview, guarded apply, and preserve-existing post-verify
 
 ### P1 (Preview planning)
 
@@ -207,3 +236,22 @@
 - observed:
   - `S0F-1C` now exists as a draft child log with explicit `P0-P4` scope for preview planning, guarded multi-item live apply, preserve-existing post-verify, and operator repeatability
   - the `S0F` parent spine now points `phase_log_3` at this child slice and records it as the next follow-up after the `S0F-1B` historical refresh proof set
+
+### P0-C1-S2 (batch-stage vocabulary fixed | 2026-04-04)
+
+- artifacts:
+  - `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `scripts/issues/plan_lifecycle_pre_gate.py`
+  - `scripts/issues/plan_lifecycle_remediation.py`
+  - `scripts/issues/apply_issue_conclusion_with_pre_gate.py`
+  - `scripts/issues/apply_issue_relationships_with_pre_gate.py`
+  - `scripts/issues/apply_pr_body_scope_with_pre_gate.py`
+  - `scripts/issues/plan_issue_conclusion.py`
+- expected:
+  - `S0F-1C/P0` should define one explicit three-stage vocabulary so future batch implementation work does not blur preview planning, live mutation, and post-refresh verification into one command surface
+  - the contract should align with already-existing pre-gate, remediation, guarded apply, and `preserve-existing` verification surfaces rather than inventing new semantics disconnected from the current repo
+- observed:
+  - the log now defines `preview planning`, `guarded apply`, `preserve-existing post-verify`, `mixed-remediation batch`, and `per-target failure semantics` as the canonical `S0F-1C` vocabulary for multi-item remediation work
+  - the completed `P0` stage contract now states allowed operations, forbidden operations, and retained outputs for all three stages, which makes later `P1-P3` work traceable back to one explicit contract instead of ad hoc batch wording
+  - the vocabulary is aligned to the current implementation surface: `plan_lifecycle_pre_gate.py` and `plan_lifecycle_remediation.py` own preview planning, family-owned `*_with_pre_gate.py` wrappers own live mutation, and `plan_issue_conclusion.py --context-mode preserve-existing` anchors post-refresh re-verification semantics
