@@ -1,0 +1,28 @@
+{
+  "version": "1",
+  "mode": "lifecycle-audit-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "expected_parent_issue_number": 356
+  },
+  "items": [
+    {
+      "requested_id": "S6B-1A",
+      "source_log_path": "docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md",
+      "issue_number": 357,
+      "reason": "Post-refresh audit for the S0F-1B rewrite of the historical S6B-1A Context block."
+    },
+    {
+      "requested_id": "S6B-1B",
+      "source_log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+      "issue_number": 358,
+      "reason": "Post-refresh audit for the S0F-1B rewrite of the historical S6B-1B Context block."
+    },
+    {
+      "requested_id": "S6B-1C",
+      "source_log_path": "docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md",
+      "issue_number": 359,
+      "reason": "Post-refresh audit for the S0F-1B rewrite of the historical S6B-1C Context block."
+    }
+  ]
+}

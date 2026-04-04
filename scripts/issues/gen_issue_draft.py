@@ -75,9 +75,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--context-mode",
         dest="context_mode",
-        choices=["scaffold", "single-generate"],
+        choices=["scaffold"],
         default="scaffold",
-        help="How to fill the Context section: scaffold leaves a placeholder, single-generate renders one log-specific draft",
+        help="How to fill the Context section at create time: scaffold keeps the section structurally present but empty",
     )
     parser.add_argument(
         "--repo",
@@ -613,8 +613,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     _validate_labels(all_labels, args.strict_label_check)
 
     context_mode = str(getattr(args, "context_mode", "scaffold") or "scaffold")
-    from body_contract import build_issue_draft_context_lines
-    context_lines = build_issue_draft_context_lines(text) if context_mode == "single-generate" else _default_context_scaffold_lines()
+    context_lines = _default_context_scaffold_lines()
 
     live_label_check_enabled = bool(args.check_live_labels or args.create_issue)
     live_label_check_repo: str | None = None
@@ -651,10 +650,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
             )
         else:
             warnings.append(f"live label preflight passed against {live_label_check_repo}")
-    if context_mode == "single-generate":
-        warnings.append("Context was single-generated from the source log; review it manually before create/apply")
-    else:
-        warnings.append("Context section was left intentionally empty at create time; generate or author substantive Context text during issue conclusion")
+    warnings.append("Context section was left intentionally empty at create time; generate or author substantive Context text during issue conclusion")
 
     rel_log_path = _repo_rel(log_path)
     link_lines = _build_links(fields, rel_log_path)

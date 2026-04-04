@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "context_mode": "llm-generate"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1A",
+      "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+      "issue_number": 364,
+      "reason": "Resume S0F-1A after merge under the corrected model where substantive Context prose is generated only during issue conclusion."
+    }
+  ]
+}

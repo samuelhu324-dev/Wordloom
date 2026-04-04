@@ -1,0 +1,7 @@
+usage: generate_issue_context_draft.py [-h] [--output-path OUTPUT_PATH]
+                                       [--result-path RESULT_PATH]
+                                       [--phase {conclusion}]
+                                       [--merged-pr MERGED_PR_NUMBERS]
+                                       [--context-mode {llm-generate}]
+                                       log_path
+generate_issue_context_draft.py: error: argument --phase: invalid choice: 'draft' (choose from conclusion)

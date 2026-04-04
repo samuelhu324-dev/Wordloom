@@ -1,0 +1,41 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-remediation-S0F-1B-p5-s6b-1a-issue-conclusion-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S6B-1A: merged PR set supplied by explicit override",
+    "S6B-1A: preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence"
+  ],
+  "items": [
+    {
+      "requested_id": "S6B-1A",
+      "source_log_path": "docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md",
+      "issue_number": 357,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/357",
+      "issue_title": "S6B-1A: inventory/evidence surface inventory ledger",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-lifecycle-remediation-S0F-1B-p5-s6b-1a-issue-conclusion-s6b-1a-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 360,
+          "title": "S6B-1A/P0-P4: evidence surface inventory ledger (repo evidence total table + current ownership map) v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/360",
+          "merged_at": "2026-04-04T07:29:26Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "merged PR set supplied by explicit override",
+        "preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence"
+      ],
+      "reason": "Audit issue #357 before and after the S0F-1B historical Context refresh to ensure the conclusion rewrite passes the lifecycle gate."
+    }
+  ]
+}

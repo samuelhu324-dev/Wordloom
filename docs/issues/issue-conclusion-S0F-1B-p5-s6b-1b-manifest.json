@@ -1,0 +1,19 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "context_mode": "llm-generate"
+  },
+  "items": [
+    {
+      "requested_id": "S6B-1B",
+      "source_log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+      "issue_number": 358,
+      "merged_pr_overrides": [
+        "#361"
+      ],
+      "reason": "Rewrite the historical deterministic Context block on closed issue #358 through the stabilized S0F-1B LLM-authored conclusion path."
+    }
+  ]
+}

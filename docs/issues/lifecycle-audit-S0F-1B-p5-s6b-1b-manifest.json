@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "mode": "lifecycle-audit-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "expected_parent_issue_number": 356
+  },
+  "items": [
+    {
+      "requested_id": "S6B-1B",
+      "source_log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+      "issue_number": 358,
+      "reason": "Audit issue #358 before and after the S0F-1B historical Context refresh to ensure the conclusion rewrite passes the lifecycle gate."
+    }
+  ]
+}
