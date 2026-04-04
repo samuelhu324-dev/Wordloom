@@ -125,6 +125,7 @@
 - The current shared tooling already covers much of the structure space: issue creation body shape is fixed, conclusion-time Context and DoD contracts are fixed, and guarded live mutation ownership is fixed.
 - The remaining gap is semantic completeness review, especially on the PR side: current body-contract checks can validate `Development issue` rendering and `Closes #...` rows when a source value exists, but they still permit source-log omission to pass as blank-as-blank instead of classifying that omission as an audit failure.
 - `P0` is now complete: the field-timing matrix is fixed, the three-stage completeness ownership is explicit, and the next follow-up is `P1` create-time issue completeness for body plus sidebar state.
+- `P1` is now complete: create-time issue completeness is fixed for issue body plus sidebar ownership, blank optional `Links` rows are explicitly non-canonical, and the next follow-up is `P2` PR development-linkage completeness.
 
 ## P0 Lifecycle Completeness Matrix (completed)
 
@@ -158,12 +159,27 @@
 - Blank optional `Links` rows are now explicitly non-canonical at every stage; completeness review should treat missing values as omitted rows, not empty placeholder rows.
 - `Development` is now fixed as PR-owned for first write and Conclusion-owned for re-check, which prevents future slices from modeling it as a conclusion-only surface.
 
-## P1 Create-Time Completeness Rules (planned)
+## P1 Create-Time Completeness Rules (completed)
 
 - `Metadata` fields are required when frontmatter or controlled derivation supplies them; otherwise they must stay blank rather than guessed.
 - `Links` rows render only when the corresponding source-log value exists; empty `Runbook`, `Roadmap`, `Parent log`, or `Previous log` rows are non-canonical.
 - Parent relationship completeness includes both body `Parent issue` rendering and live sidebar relationship state.
 - Default project fallback, if retained, must be audited explicitly rather than treated as invisible behavior.
+
+### P1-C1-S1 (Create-time field matrix fixed for issue body plus sidebar state | v1)
+
+- Create-time issue body completeness now owns exactly four sections in one stage-correct shape: `Metadata -> Context -> Definition of Done (DoD) -> Links`.
+- `Metadata` rows are complete only when they follow frontmatter or controlled derivation rules: labels from deterministic derivation, project from explicit `issue_projects` or the current docs/logs default, milestone from explicit `issue_milestone` or exact roadmap bridge metadata, and parent issue from explicit `issue_parent` or the parent log's exact `links.issue`.
+- `Context` is complete at create time only when it remains structurally present and intentionally empty; substantive prose belongs to conclusion, not creation.
+- `Definition of Done (DoD)` is complete at create time when child issues remain empty by default and top-level parent issues render only the deterministic child-issue ledger already owned by the parent body contract.
+- Create-time sidebar completeness now includes labels, projects, milestone, and parent relationship whenever those surfaces are already deterministically known before PR creation.
+
+### P1-C1-S2 (Blank-as-omitted Links review rule fixed | v1)
+
+- `Links` completeness at create time now means deterministic non-empty rows only: `Log` is always present, while `Runbook`, `Roadmap`, `Parent log`, and `Previous log` render only when the corresponding source-log value exists.
+- Empty optional `Links` rows such as `Runbook: `` ` are explicitly non-canonical and should fail completeness review rather than pass as harmless placeholders.
+- `Parent issue` remains metadata-only and may not be repeated under `Links`, even when parent relationship completeness is also checked on the live sidebar surface.
+- `reference_log_*` rows remain outside create-time `Links` completeness because they are traceability inputs for readers, not deterministic issue-body navigation rows.
 
 ## P2 PR-Time Completeness Rules (planned)
 
@@ -220,8 +236,8 @@
 
 ### P1 (Creation completeness)
 
-- [ ] `P1-C1-S1`: create-time field matrix fixed for issue body plus sidebar state
-- [ ] `P1-C1-S2`: blank-as-omitted Links review rule fixed
+- [x] `P1-C1-S1`: create-time field matrix fixed for issue body plus sidebar state
+- [x] `P1-C1-S2`: blank-as-omitted Links review rule fixed
 
 ### P2 (PR completeness)
 
@@ -246,6 +262,8 @@
 
 - `P0-C1-S1` / `P0-C1-S2`: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md` now fixes the three-stage completeness matrix, including the ownership split for body versus sidebar state and the non-canonical status of blank optional `Links` rows.
 - `P0-C1-S1`: `docs/logs/log-S0F-docs-management-v6.md` now records `S0F-1D` as the next explicit follow-up slice under the `S0F` spine and reflects `P0` as complete rather than leaving `1D` as a placeholder follow-up.
+- `P1-C1-S1` / `P1-C1-S2`: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md` now fixes create-time completeness ownership for issue body and sidebar state, including the rule that create-time `Context` remains intentionally empty while create-time labels/projects/milestone/parent attachment stay inside the audit boundary.
+- `P1-C1-S1` / `P1-C1-S2`: `scripts/issues/gen_issue_draft.py` and `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md` remain the implementation and contract anchors for the create-time matrix recorded here: milestone derivation stays exact-bridge-only, parent issue may derive from `parent_log.links.issue`, top-level parent DoD may carry the child-issue ledger, and `Links` render only non-empty deterministic rows.
 
 ## Numbering
 
