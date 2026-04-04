@@ -122,14 +122,14 @@
 - [x] `P1`：`S0F-1A` created with the first concrete fail-closed cleanup scope
 - [x] `P2`：issue creation create-time hard-fail boundary fixed
 - [x] `P3`：PR create preflight becomes the only allowed live publish front-half
-- [ ] `P4`：issue conclusion / relationship / PR rewrite live mutation wrapper convergence fixed
+- [x] `P4`：issue conclusion / relationship / PR rewrite live mutation wrapper convergence fixed
 - [ ] `P5`：optional GitHub Actions secondary enforcement policy fixed after local entrypoints converge
 
 ## Current Status（进展摘要）
 
 - `S0F` is now opened and pushed as docs-management v6 on branch `S0F-docs-management-v6`.
 - The first active child slice `S0F-1A` is no longer just a placeholder: `P0` contract language is fixed and `P1` has already hardened the real issue creation entrypoint.
-- The retained evidence now shows two hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, and PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result.
+- The retained evidence now shows three hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, and raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces.
 
 ## Evidence（可选，聚合型记账）
 
@@ -170,6 +170,27 @@
   - the retained `S0F-1A` stop sample still produced a valid PR-prep plan and preview body, but front-half preflight stopped on the occupied `S0F-docs-management-v6` branch before any live publish stage
   - replaying `create_pr_from_plan.py` against that stop sample now exits non-zero with `PR create fail-closed preflight blocked publish before local branch materialization`, proving preview no longer implies publish eligibility
 
+### S0F-1A (wrapper-only live mutation convergence sample | 2026-04-04)
+
+- headSha: `e123c71f3ccb35ef07fd7a4c3ee0bde103ef7c52`
+- artifacts:
+  - `scripts/issues/raw_live_mutation_guard.py`
+  - `scripts/issues/apply_issue_conclusion_from_plan.py`
+  - `scripts/issues/apply_issue_relationships.py`
+  - `scripts/issues/apply_pr_body_scope_with_pre_gate.py`
+  - `scripts/issues/apply_pr_body_rewrite_batch.py`
+  - `docs/issues/raw-live-mutation-S0F-1A-p3-inventory.json`
+  - `docs/issues/issue-conclusion-S0F-1A-p3-raw-blocked.txt`
+  - `docs/issues/issue-relationship-S0F-1A-p3-raw-blocked.txt`
+  - `docs/issues/pr-body-rewrite-S0F-1A-p3-raw-blocked.txt`
+- expected:
+  - raw family apply scripts may remain for bounded internal reuse, but operator-facing live mutation must converge to guarded wrapper or thin-gate surfaces
+  - one retained inventory plus one retained block sample per family proves raw issue-conclusion, issue-relationship, and PR body rewrite entrypoints no longer act as default live mutation surfaces
+- observed:
+  - raw issue-conclusion and issue-relationship apply scripts now fail closed unless a hidden internal-only flag is supplied by their guarded wrappers
+  - raw PR body rewrite functions now fail closed outside the guarded single-PR rewrite path, while the historical batch rewrite script remains bounded internal reuse instead of an operator-facing default
+  - the retained `S0F-1A` block samples now point operators at `apply_*_with_pre_gate.py` or the thin-gate `--delegate-apply` surfaces, proving wrapper-only convergence is enforced in code rather than only documented
+
 ## Notes（落地原则，可选）
 
 - `S0F-docs-management-v6` is the current mixed authoring branch for this new spine.
@@ -208,3 +229,4 @@
 - 2026-04-04：初始化 `S0F`，把 docs-management v6 的问题定义为 fail-closed entrypoints、preflight/gate unification、以及 optional GitHub Actions secondary enforcement 的新 spine。
 - 2026-04-04：`S0F-1A/P0-P1` 已完成第一轮收口；真实 issue creation 现在会在 inferred keyword 路径上 fail-closed，并保留同源 draft-generation evidence 供后续 review 使用。
 - 2026-04-04：`S0F-1A/P2` 已完成；真实 `create_pr_from_plan.py` 现在把 front-half preflight result 视为 live publish 的硬前置，且已用一个 occupied-branch stop 样本证明 preview planning 不再等于 publish 资格。
+- 2026-04-04：`S0F-1A/P3` 已完成；raw issue-conclusion、issue-relationship 与 PR body rewrite 入口现在都已收口为 internal-only bounded reuse，并以 guarded wrapper / thin-gate surface 作为 canonical operator-facing live mutation path。

@@ -82,7 +82,7 @@
 
 - Log: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
 - Runbook: ``
-- Evidence artifact: `docs/issues/pr-prep-S0F-1A-p2-stop-manifest-front-half-preflight-result.json`
+- Evidence artifact: `docs/issues/raw-live-mutation-S0F-1A-p3-inventory.json`
 
 ## Definitions (optional)
 
@@ -207,8 +207,8 @@
 
 ### P3 (Wrapper convergence)
 
-- [ ] `P3-C1-S1`: raw versus wrapped mutation entrypoints inventoried
-- [ ] `P3-C1-S2`: canonical operator-facing wrapper surfaces fixed
+- [x] `P3-C1-S1`: raw versus wrapped mutation entrypoints inventoried
+- [x] `P3-C1-S2`: canonical operator-facing wrapper surfaces fixed
 
 ## Evidence (reserved)
 
@@ -265,9 +265,31 @@
   - the retained `S0F-1A` stop sample still generated a valid PR-prep plan and body preview with `summary_bullet_count = 3`, but front-half preflight blocked continuation because `candidate_pr_branch` reused the occupied `S0F-docs-management-v6` branch
   - replaying `create_pr_from_plan.py` against that stop sample now exits non-zero with `PR create fail-closed preflight blocked publish before local branch materialization: Local branch already exists: S0F-docs-management-v6`, proving preview warning no longer implies publish eligibility
 
+### P3-C1-S1S2 (wrapper-only live mutation convergence landed | 2026-04-04)
+
+- headSha: `e123c71f3ccb35ef07fd7a4c3ee0bde103ef7c52`
+- artifacts:
+  - `scripts/issues/raw_live_mutation_guard.py`
+  - `scripts/issues/apply_issue_conclusion_from_plan.py`
+  - `scripts/issues/apply_issue_relationships.py`
+  - `scripts/issues/apply_pr_body_scope_with_pre_gate.py`
+  - `scripts/issues/apply_pr_body_rewrite_batch.py`
+  - `docs/issues/raw-live-mutation-S0F-1A-p3-inventory.json`
+  - `docs/issues/issue-conclusion-S0F-1A-p3-raw-blocked.txt`
+  - `docs/issues/issue-relationship-S0F-1A-p3-raw-blocked.txt`
+  - `docs/issues/pr-body-rewrite-S0F-1A-p3-raw-blocked.txt`
+- expected:
+  - raw family apply scripts remain available only for bounded internal reuse and can no longer act as operator-facing default live mutation entrypoints
+  - issue conclusion, relationship attach, and single-PR body rewrite each point operators to a canonical guarded wrapper or thin-gate delegated surface instead of allowing direct raw apply
+- observed:
+  - `raw_live_mutation_guard.py` now centralizes one internal-only guard and raw issue-conclusion plus issue-relationship apply scripts enforce it before any GitHub mutation path starts
+  - `apply_pr_body_scope_with_pre_gate.py` now treats its inner live rewrite function as internal-only and the historical batch rewrite script also fails closed unless an internal-only flag is supplied for bounded reuse
+  - the retained `S0F-1A` inventory plus three block samples now show the exact canonical surfaces for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`, and each raw entrypoint exits with a wrapper-only guidance message instead of behaving like a default operator path
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-04: created `S0F-1A` as the first v6 slice to address fail-closed issue creation, PR preflight, wrapper-only live mutation, and retry semantics.
 - 2026-04-04: completed `P0` by fixing the first explicit contract for create-time stop conditions, PR front-half preflight language, wrapper-only mutation boundaries, and transient-versus-semantic retry vocabulary.
 - 2026-04-04: completed `P1` by hardening `scripts/issues/gen_issue_draft.py` so real `create-issue` fails closed on inferred keyword and scaffold/placeholder Context while still preserving reviewable draft/result artifacts.
 - 2026-04-04: completed `P2` by hardening `scripts/issues/create_pr_from_plan.py` so live PR publish now requires a matching successful front-half preflight artifact, then retained one `S0F-1A` stop sample that proves preview generation does not imply publish eligibility.
+- 2026-04-04: completed `P3` by hardening raw issue-conclusion, issue-relationship, and PR body rewrite mutation paths behind one internal-only guard, then retaining one inventory artifact plus one raw-block sample per family to prove guarded wrapper convergence.
