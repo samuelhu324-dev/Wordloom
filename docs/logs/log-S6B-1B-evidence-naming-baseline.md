@@ -9,7 +9,7 @@
 **scope**: `S6`
 **tags**: `EVOLUTION, Evidence, Drills, Taxonomy, Naming, Retention, epic/s6, sub/1b`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/358`
   **pr**: ``
   **runbook**: ``
   **roadmap**: `docs/roadmap/_draft/road-S2-.md`
@@ -23,7 +23,7 @@
 **issue_scope_labels**: `s6/evidence & drills, sub/1`
 **issue_module_labels**: ``
 **issue_milestone**: `road-S2`
-**issue_parent**: ``
+**issue_parent**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/356`
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/_draft/road-S2-.md`
 **roadmap_milestone**: `M5`
@@ -33,7 +33,7 @@
 **pr_projects**: ``
 **pr_milestone**: `road-S2`
 **pr_base**: `main`
-**pr_development_issue**: ``
+**pr_development_issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/358`
 **created**: `2026-04-04`
 **updated**: `2026-04-04`
 
