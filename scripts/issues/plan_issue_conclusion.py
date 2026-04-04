@@ -72,9 +72,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--context-mode",
         dest="context_mode",
-        choices=["preserve-existing", "single-generate"],
-        default="preserve-existing",
-        help="How to handle Context during conclusion planning: preserve-existing keeps the live block, single-generate rewrites it from the source log",
+        choices=["single-generate"],
+        default="single-generate",
+        help="How to handle Context during conclusion planning: single-generate rewrites the Context block from the source log",
     )
     return parser.parse_args()
 
@@ -427,28 +427,18 @@ def _build_item(
     context_section_lines = _extract_section_lines(body, "Context")
     context_line_bounds = issue_body_context_line_bounds(source_log_text)
     context_ok, _, _ = validate_issue_context_lines(context_section_lines, context_line_bounds, source_log_text)
-    context_mode = str(item.get("context_mode") or defaults.get("context_mode") or cli_context_mode or "preserve-existing")
-    if context_mode not in {"preserve-existing", "single-generate"}:
-        raise SystemExit(f"Unsupported issue-conclusion context_mode: {context_mode}")
-    if context_mode == "single-generate":
-        context_lines = build_issue_conclusion_context_lines(source_log_text, [pr.number for pr in ordered_prs])
-    else:
-        context_lines = context_section_lines
+    requested_context_mode = str(item.get("context_mode") or defaults.get("context_mode") or cli_context_mode or "single-generate")
+    if requested_context_mode != "single-generate":
+        warnings.append(
+            f"legacy context_mode '{requested_context_mode}' was ignored; issue conclusion planning now always single-generates Context from the source log"
+        )
+    context_lines = build_issue_conclusion_context_lines(source_log_text, [pr.number for pr in ordered_prs])
     existing_link_lines = _extract_bullet_lines(_extract_section_lines(body, "Links"))
     link_lines = _build_link_lines(existing_link_lines, fields, _repo_rel(source_log_path), issue_url, ordered_prs)
 
-    if context_mode == "single-generate":
-        warnings.append("preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended")
-        if not context_ok:
-            warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording")
-    else:
-        if context_section_lines:
-            if context_ok:
-                warnings.append("preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default")
-            else:
-                warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview preserves the live Context block and leaves one-item Context authoring to manual or single-item generation")
-        else:
-            warnings.append("Context section is blank in the live issue body; batch conclusion planning preserved that state instead of auto-authoring replacement prose")
+    warnings.append("preview uses a single-generated conclusion Context block derived from the source log and merged PR evidence")
+    if not context_ok:
+        warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview replaced it with a single-generated conclusion Context block")
     if not _has_substantive_text(_extract_section_lines(body, "Definition of Done (DoD)")):
         warnings.append("existing issue DoD is still blank create-time scaffold")
 

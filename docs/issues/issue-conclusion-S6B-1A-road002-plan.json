@@ -7,9 +7,7 @@
   "total_items": 1,
   "planned_items": 1,
   "warnings": [
-    "S6B-1A: issue body metadata block missing; preview uses reconstructed metadata",
-    "S6B-1A: preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
-    "S6B-1A: existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording"
+    "S6B-1A: preview uses a single-generated conclusion Context block derived from the source log and merged PR evidence"
   ],
   "items": [
     {
@@ -33,9 +31,7 @@
       "applied_action": null,
       "status": "planned",
       "warnings": [
-        "issue body metadata block missing; preview uses reconstructed metadata",
-        "preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
-        "existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording"
+        "preview uses a single-generated conclusion Context block derived from the source log and merged PR evidence"
       ],
       "reason": "Refresh S6B-1A after correcting the roadmap/milestone target to road-002, then conclude the child issue from merged PR evidence."
     }

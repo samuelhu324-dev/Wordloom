@@ -94,6 +94,7 @@ def guarded_issue_conclusion_apply(args: argparse.Namespace) -> GuardedIssueConc
                 argparse.Namespace(
                     manifest_path=_repo_rel(conclusion_manifest_path),
                     plan_path=_repo_rel(conclusion_plan_path),
+                    context_mode=getattr(args, "context_mode", "single-generate"),
                 )
             )
         conclusion_plan_rel = _repo_rel(conclusion_plan_path)

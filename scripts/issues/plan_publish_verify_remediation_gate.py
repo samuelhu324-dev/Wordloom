@@ -71,7 +71,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--delegated-result-path", dest="delegated_result_path", help="Override output path for the delegated guarded-adapter result")
     parser.add_argument("--apply-result-path", dest="apply_result_path", help="Override output path for the underlying apply result emitted by the guarded adapter")
     parser.add_argument("--body-path", dest="body_path", help="Override output path for body write-back artifacts when the delegated adapter supports them")
-    parser.add_argument("--context-mode", dest="context_mode", choices=["preserve-existing", "single-generate"], default="preserve-existing", help="Pass through the issue-conclusion context rendering mode when delegated issue-conclusion apply is requested")
+    parser.add_argument("--context-mode", dest="context_mode", choices=["single-generate"], default="single-generate", help="Pass through the issue-conclusion context rendering mode when delegated issue-conclusion apply is requested")
     parser.add_argument("--leave-open", dest="leave_open", action="store_true", help="Pass through to issue-conclusion delegated apply so the issue body updates without closing the issue")
     parser.add_argument("--result-path", dest="result_path", help="Override output path for the thin gate result JSON")
     return parser.parse_args()
