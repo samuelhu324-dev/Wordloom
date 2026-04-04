@@ -1,15 +1,16 @@
 ## Metadata
 
-- Labels: `EVOLUTION`, `s6/evidence & drills`, `sub/1`, `drills`
+- Labels: `sub/1`, `EVOLUTION`, `s6/evidence & drills`, `drills`
 - Projects: `wordloom Board`
-- Milestone: `road-S2`
+- Milestone: `road-002: projection runtime platformization and evidence governance`
 - Parent issue: #356
 
 ## Context
 
-
-- <placeholder>
-
+- S6B-1A carries the S0E follow-up for evidence surface inventory ledger.
+- The boundary being recorded here is repo evidence total table + current ownership map.
+- It stays attached to the parent S0E record while narrowing the work to one delivery boundary.
+- It left the finished evidence surface inventory ledger path with a stable reusable baseline.
 
 ## Definition of Done (DoD)
 

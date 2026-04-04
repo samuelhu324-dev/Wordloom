@@ -1,15 +1,16 @@
 ## Metadata
 
-- Labels: `EVOLUTION`, `s6/evidence & drills`, `sub/1`, `drills`
+- Labels: `sub/1`, `EVOLUTION`, `s6/evidence & drills`, `drills`
 - Projects: `wordloom Board`
-- Milestone: `road-S2`
+- Milestone: `road-002: projection runtime platformization and evidence governance`
 - Parent issue: #356
 
 ## Context
 
-
-- <placeholder>
-
+- It carries the work forward from S6B-1A while staying on the same parent S0E chain.
+- S6B-1B carries the S0E follow-up for evidence naming baseline.
+- The boundary being recorded here is retained-summary + tmp-scratch + snapshot run identity.
+- It left the finished evidence naming baseline path with a stable reusable baseline.
 
 ## Definition of Done (DoD)
 
