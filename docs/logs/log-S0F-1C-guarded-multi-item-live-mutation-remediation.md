@@ -82,7 +82,7 @@
 
 - Log: `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
 - Runbook: ``
-- Evidence artifact: ``
+- Evidence artifact: `docs/issues/lifecycle-preview-S0F-1C-p1-summary.json`
 
 ## Definitions (optional)
 
@@ -167,6 +167,23 @@
 - Batch-level rule:
   - one multi-item batch may share a top-level manifest and shared naming slug, but stage artifacts must still preserve per-target traceability so operators can split, rerun, or stop one target without losing the others' evidence trail.
 
+## P1 Preview Manifest Shape (completed)
+
+- top-level fields:
+  - `version`, `mode`, and `defaults.repo` stay explicit so the sample remains replayable without hidden repo inference
+  - `defaults.expected_parent_issue_number` may be shared at the manifest level when all targets belong to the same audited parent issue
+- per-item required fields:
+  - `requested_id`
+  - `source_log_path`
+  - `issue_number`
+  - `reason`
+- per-item derived preview outputs:
+  - one frozen audit-plan item retaining checks, merged PR evidence, and audit status
+  - one pre-gate decision item retaining gate status and remediation summary
+  - one remediation-plan item retaining planned steps and downstream manifest path
+- sample rule:
+  - `P1` may use a frozen audit-plan assembled from retained single-item audit outputs when the aggregate live audit path is already known to be operationally unstable for the representative set, so long as the retained sample is clearly marked preview-only and no live mutation occurs.
+
 ## Plan (draft)
 
 ### P0 (Contract and spine wiring)
@@ -202,8 +219,8 @@
 
 ### P1 (Preview planning)
 
-- [ ] `P1-C1-S1`: representative multi-item manifest shape fixed
-- [ ] `P1-C1-S2`: preview-only multi-item sample retained
+- [x] `P1-C1-S1`: representative multi-item manifest shape fixed
+- [x] `P1-C1-S2`: preview-only multi-item sample retained
 
 ### P2 (Guarded apply)
 
@@ -255,3 +272,20 @@
   - the log now defines `preview planning`, `guarded apply`, `preserve-existing post-verify`, `mixed-remediation batch`, and `per-target failure semantics` as the canonical `S0F-1C` vocabulary for multi-item remediation work
   - the completed `P0` stage contract now states allowed operations, forbidden operations, and retained outputs for all three stages, which makes later `P1-P3` work traceable back to one explicit contract instead of ad hoc batch wording
   - the vocabulary is aligned to the current implementation surface: `plan_lifecycle_pre_gate.py` and `plan_lifecycle_remediation.py` own preview planning, family-owned `*_with_pre_gate.py` wrappers own live mutation, and `plan_issue_conclusion.py --context-mode preserve-existing` anchors post-refresh re-verification semantics
+
+### P1-C1-S1S2 (preview-only multi-item sample retained | 2026-04-04)
+
+- artifacts:
+  - `docs/issues/lifecycle-audit-S0F-1C-p1-preview-manifest.json`
+  - `docs/issues/lifecycle-audit-S0F-1C-p1-preview-plan.json`
+  - `docs/issues/lifecycle-gate-S0F-1C-p1-preview-decision.json`
+  - `docs/issues/lifecycle-remediation-S0F-1C-p1-preview-plan.json`
+  - `docs/issues/lifecycle-remediation-S0F-1C-p1-preview-issue-conclusion-manifest.json`
+  - `docs/issues/lifecycle-preview-S0F-1C-p1-summary.json`
+- expected:
+  - `P1` should retain one representative multi-item manifest shape for historical refresh work, with shared defaults at the top level and per-target grounding fields at the item level
+  - the representative sample should prove that multiple targets can pass through preview planning, pre-gate decision, and remediation planning without performing any live mutation
+- observed:
+  - `S0F-1C/P1` now retains a canonical three-item preview manifest for `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`, with shared repo and expected-parent defaults plus per-target `requested_id`, `source_log_path`, `issue_number`, and `reason`
+  - because the aggregate live lifecycle-audit path for this target set was already known to be operationally unstable, the retained preview sample uses a frozen multi-item audit-plan assembled from the already-retained `S0F-1B/P5` single-item audit outputs, which preserves per-target checks and merged PR evidence while keeping the sample strictly preview-only
+  - `plan_lifecycle_pre_gate.py --input-kind audit-plan` then produced one stop-for-remediation decision and one remediation plan covering all three targets, with the downstream issue-conclusion manifest retaining exact merged PR overrides `#360/#361/#362` and no live mutation performed anywhere in the `P1` sample
