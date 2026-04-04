@@ -198,3 +198,5 @@
 - 2026-04-04: `S6B-1A/P2` fixed the current retention/storage baseline in-place, including retained versus tmp handling for `artifacts`, `docs/issues`, and `docs/labs/_snapshot`, while keeping later cutover work open.
 - 2026-04-04: `S6B-1A/P3` fixed the current generator/emission baseline in-place, including which families may emit `fact-source` directly, which are limited to `retained-summary` or `workflow-derived` outputs, and what naming/ownership contract future retained surfaces must satisfy.
 - 2026-04-04: `S6B-1A/P4` fixed the bounded cutover baseline in-place, including rollout order, coexistence rules, and stop conditions, so later cleanup work can stay bounded instead of turning into a repo-wide rename wave.
+- 2026-04-04: opened `S6B-1B` as the next bounded follow-up under `S6B`, focused on evidence naming readability for retained-summary, tmp-scratch, and snapshot run identity after `S6B-1A` stabilized the family and policy baseline.
+- 2026-04-04: `S6B-1B/P0-P1` fixed the first naming baseline for field selection, per-surface grammar split, and retained-summary naming patterns, so later tmp and snapshot naming work can inherit one stable style.
