@@ -19,6 +19,7 @@
   **reference_log_3**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
   **reference_log_4**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **phase_log_1**: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
+  **phase_log_2**: `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -110,8 +111,8 @@
 
 - `S0F-1A`（Phase 1）：fail-closed entrypoints and preflight unification
   - 详见：`docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
-- `S0F-1B`（Phase 1B）：canonical keyword whitelist and issue-create hard gate
-  - 详见：``
+- `S0F-1B`（Phase 1B）：LLM-authored issue Context generation and exact sentence-count contract
+  - 详见：`docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
 - `S0F-1C`（Phase 1C）：live mutation wrapper convergence for issue / PR families
   - 详见：``
 - `S0F-1D`（Phase 1D）：optional GitHub Actions secondary enforcement rollout
@@ -130,6 +131,7 @@
 
 - `S0F` is now opened and pushed as docs-management v6 on branch `S0F-docs-management-v6`.
 - The first active child slice `S0F-1A` is no longer just a placeholder: `P0` contract language is fixed and `P1` has already hardened the real issue creation entrypoint.
+- The next child slice `S0F-1B` is now reserved for replacing deterministic issue Context templates with LLM-authored Context generation under an exact child/main sentence-count contract.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
