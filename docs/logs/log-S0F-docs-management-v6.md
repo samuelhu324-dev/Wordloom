@@ -132,6 +132,7 @@
 - `S0F` is now opened and pushed as docs-management v6 on branch `S0F-docs-management-v6`.
 - The first active child slice `S0F-1A` is no longer just a placeholder: `P0` contract language is fixed and `P1` has already hardened the real issue creation entrypoint.
 - Child slice `S0F-1B` is now complete and stable: create-time issue bodies keep an empty `Context`, conclusion-time issue bodies use LLM-authored Context under an exact child/main sentence-count contract, and the retired deterministic Context builder surface has been removed from the shared contract module.
+- `S0F-1B` has also now proved the historical rewrite path in practice: three older closed `S6B` child issues were regenerated through the guarded conclusion remediation path, live body snapshots were retained, and the Context gate was hardened so dotted file paths inside a valid single sentence no longer cause false drift findings.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
@@ -208,6 +209,22 @@
   - `S0F-1A` now retains one explicit boundary artifact that classifies the thin gate and guarded local wrappers as the primary mutation boundary while classifying both audited GitHub workflows as secondary enforcement only
   - the read-only wrapper dispatch workflow now records `secondary_enforcement=true`, `local_primary_boundary=true`, and `publish_owner=local fail-closed family entrypoint` in its retained run manifest
   - the PR body mirror workflow now records `trigger_surface=workflow_dispatch`, `local_primary_boundary=true`, and a post-publish-only role note in its retained manifest while preserving attribution-stop semantics before mirror verification
+
+### S0F-1B (historical Context refresh and post-review hardening sample | 2026-04-04)
+
+- artifacts:
+  - `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-live-summary.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1a-live.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1b-live.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1c-live.json`
+- expected:
+  - the new LLM-authored Context contract should not remain only a sample-path improvement; it should also be able to replace historical deterministic Context bodies on already-closed issues through the guarded conclusion remediation path
+  - post-refresh verification should preserve the rewritten Context blocks without false failures caused by dotted file paths or compressed one-item LLM output
+- observed:
+  - `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359` were rewritten in place through the guarded issue-conclusion remediation path, and the retained live snapshots now show natural Context prose instead of the earlier deterministic template family
+  - `issue_context_llm.py` now normalizes compressed one-item multi-sentence `lines` output into exact sentence rows, and `body_contract.py` now detects real sentence boundaries instead of treating dotted file paths as multiple sentences
+  - the retained `S0F-1B` summary artifact records both the representative preview files and the post-refresh verification artifacts, so this slice now covers not just contract design but also historical live rewrite proof
 
 ## Notes（落地原则，可选）
 

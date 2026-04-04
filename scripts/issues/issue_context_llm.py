@@ -15,6 +15,7 @@ DEFAULT_GITHUB_MODELS_ENDPOINT = "https://models.github.ai/inference/chat/comple
 DEFAULT_GITHUB_API_VERSION = "2026-03-10"
 DEFAULT_CONTEXT_MODEL = "openai/gpt-4.1-mini"
 JSON_BLOCK_RE = re.compile(r"\{.*\}", re.DOTALL)
+SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'`(])")
 
 
 def _coerce_endpoint(base_or_endpoint: str | None) -> str:
@@ -176,14 +177,31 @@ def _normalize_lines(payload: dict, target_count: int) -> list[str]:
     if not isinstance(raw_lines, list):
         raise SystemExit("LLM Context generation failed: JSON payload must contain a lines array")
 
-    lines: list[str] = []
-    for raw in raw_lines:
-        text = str(raw).strip()
-        if not text:
-            continue
-        if text.startswith("- "):
-            text = text[2:].strip()
-        lines.append(f"- {text}")
+    def _coerce_bullet_lines(values: list[object]) -> list[str]:
+        lines: list[str] = []
+        for raw in values:
+            text = str(raw).strip()
+            if not text:
+                continue
+            if text.startswith("- "):
+                text = text[2:].strip()
+            lines.append(f"- {text}")
+        return lines
+
+    def _split_sentence_lines(values: list[object]) -> list[str]:
+        collapsed = " ".join(str(raw).strip() for raw in values if str(raw).strip())
+        if not collapsed:
+            return []
+        if collapsed.startswith("- "):
+            collapsed = collapsed[2:].strip()
+        parts = [part.strip() for part in SENTENCE_SPLIT_RE.split(collapsed) if part.strip()]
+        return [f"- {part}" for part in parts]
+
+    lines = _coerce_bullet_lines(raw_lines)
+    if len(lines) != target_count:
+        split_lines = _split_sentence_lines(raw_lines)
+        if len(split_lines) == target_count:
+            lines = split_lines
 
     if len(lines) != target_count:
         raise SystemExit(f"LLM Context generation failed: expected exactly {target_count} lines but received {len(lines)}")

@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-lifecycle-remediation-S0F-1B-p5-s6b-1a-issue-conclusion-plan.json",
+  "item_index": 0,
+  "requested_id": "S6B-1A",
+  "source_log_path": "docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 357,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/357",
+  "issue_title": "S6B-1A: inventory/evidence surface inventory ledger",
+  "previous_issue_state": "CLOSED",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-lifecycle-remediation-S0F-1B-p5-s6b-1a-issue-conclusion-s6b-1a-apply-body.md",
+  "close_reason": null,
+  "warnings": [
+    "issue was already closed before apply; body updated in place"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "mode": "s0f-1b-p5-live-context-refresh-summary",
+  "result": "ok",
+  "requested_id": "S0F-1B",
+  "scope": [
+    "P5"
+  ],
+  "version": "v1",
+  "code_changes": {
+    "llm_normalization": "scripts/issues/issue_context_llm.py now splits a single returned lines-array element into exact sentence rows when the model compresses multiple sentences into one item.",
+    "context_gate": "scripts/issues/body_contract.py now detects real multi-sentence boundaries instead of counting every punctuation mark, so dotted file paths no longer produce false Context-gate failures."
+  },
+  "refreshed_items": [
+    {
+      "requested_id": "S6B-1A",
+      "issue_number": 357,
+      "merged_pr": 360,
+      "preview_artifacts": [
+        "docs/issues/issue-context-S0F-1B-p5-s6b-1a-preview.md",
+        "docs/issues/issue-context-S0F-1B-p5-s6b-1a-preview.json"
+      ],
+      "guarded_result": "docs/issues/issue-conclusion-S0F-1B-p5-s6b-1a-guarded-result.json",
+      "live_snapshot": "docs/issues/issue-conclusion-S0F-1B-p5-s6b-1a-live.json",
+      "post_verify_plan": "docs/issues/issue-conclusion-S0F-1B-p5-s6b-1a-post-verify-plan.json"
+    },
+    {
+      "requested_id": "S6B-1B",
+      "issue_number": 358,
+      "merged_pr": 361,
+      "preview_artifacts": [
+        "docs/issues/issue-context-S0F-1B-p5-s6b-1b-preview.md",
+        "docs/issues/issue-context-S0F-1B-p5-s6b-1b-preview.json"
+      ],
+      "guarded_result": "docs/issues/issue-conclusion-S0F-1B-p5-s6b-1b-guarded-result.json",
+      "live_snapshot": "docs/issues/issue-conclusion-S0F-1B-p5-s6b-1b-live.json",
+      "post_verify_plan": "docs/issues/issue-conclusion-S0F-1B-p5-s6b-1b-post-verify-plan.json"
+    },
+    {
+      "requested_id": "S6B-1C",
+      "issue_number": 359,
+      "merged_pr": 362,
+      "preview_artifacts": [
+        "docs/issues/issue-context-S0F-1B-p5-s6b-1c-preview.md",
+        "docs/issues/issue-context-S0F-1B-p5-s6b-1c-preview.json"
+      ],
+      "guarded_result": "docs/issues/issue-conclusion-S0F-1B-p5-s6b-1c-guarded-result.json",
+      "live_snapshot": "docs/issues/issue-conclusion-S0F-1B-p5-s6b-1c-live.json",
+      "post_verify_plan": "docs/issues/issue-conclusion-S0F-1B-p5-s6b-1c-post-verify-plan.json"
+    }
+  ],
+  "post_refresh_rule": {
+    "status": "pass",
+    "summary": "All three historical S6B issues were refreshed through the guarded conclusion remediation path and now preserve their live Context blocks without triggering Context drift on preserve-existing post-verification.",
+    "notes": [
+      "The guarded apply path updated already-closed issues in place without reopening them.",
+      "Exact merged PR evidence remained pinned through explicit overrides #360, #361, and #362."
+    ]
+  }
+}

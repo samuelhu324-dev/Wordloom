@@ -71,6 +71,7 @@
 - Remove silent template fallback from the canonical issue-conclusion Context generation path so invalid output fails closed instead of reverting to old stock phrasing.
 - Keep create-time issue Context structurally present but empty while the first LLM rollout is limited to issue conclusion authoring.
 - Remove the retired deterministic Context template builders from the shared contract surface so the canonical paths cannot drift back toward template assembly.
+- Retain representative historical rewrite artifacts and prove that the guarded conclusion path can replace legacy deterministic Context blocks on already-closed issues without reopening them.
 
 **PR checklist source**:
 
@@ -81,7 +82,7 @@
 
 - Log: `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
 - Runbook: ``
-- Evidence artifact: `docs/issues/issue-conclusion-S0F-1B-p1-sample-plan.json`
+- Evidence artifact: `docs/issues/issue-conclusion-S0F-1B-p5-live-summary.json`
 
 ## Definitions (optional)
 
@@ -103,6 +104,7 @@
 - `P2`: remove silent template fallback and retain fail-closed generation evidence
 - `P3`: keep draft preview create-time Context empty by default and retire draft-side one-item Context generation
 - `P4`: remove retired deterministic Context builder surfaces and mark the v1 contract stable
+- `P5`: refresh representative historical deterministic Context bodies through the guarded conclusion path and harden the gate against dotted-path false positives
 
 ## Success Criteria (DoD)
 
@@ -112,6 +114,7 @@
 - Invalid Context generation no longer falls back silently to the old deterministic template pool.
 - The first rollout remains limited to conclusion authoring while create-time issue Context stays structurally present but empty.
 - Shared issue-body contract code no longer exports or consumes the retired deterministic Context builder surface.
+- Representative historical closed issues can be rewritten through the guarded conclusion remediation path and then preserved by post-refresh verification without new Context drift warnings.
 
 ## Stability (what stable means)
 
@@ -164,6 +167,13 @@
 
 - P4-C1-S1: remove the retired deterministic Context builder surface from the shared contract module and retain one stability artifact proving only create-empty plus conclusion-LLM paths remain
 
+### P5 (Historical refresh and post-review hardening)
+
+- P5-C1-S1: make single-item LLM normalization robust when the model compresses multiple sentences into one array item
+- P5-C1-S2: retain canonical preview artifacts for representative historical S6B child issues targeted for Context refresh
+- P5-C1-S3: rewrite representative historical deterministic Context blocks on closed issues through the guarded conclusion remediation path
+- P5-C1-S4: harden the Context gate so dotted file paths do not produce false multi-sentence failures, then retain post-refresh verification artifacts
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -187,6 +197,13 @@
 ### P4 (Stability cleanup)
 
 - [x] `P4-C1-S1`: retired deterministic Context builder surface removed and v1 contract marked stable
+
+### P5 (Historical refresh and post-review hardening)
+
+- [x] `P5-C1-S1`: single-item LLM normalization now tolerates one-item multi-sentence array compression
+- [x] `P5-C1-S2`: representative historical S6B preview artifacts retained under `S0F-1B`
+- [x] `P5-C1-S3`: closed issues `#357/#358/#359` rewritten through the guarded conclusion remediation path
+- [x] `P5-C1-S4`: dotted-path false positives removed from the Context gate and post-refresh verification retained
 
 ## Evidence (reserved)
 
@@ -266,6 +283,43 @@
   - `body_contract.py` no longer contains the retired deterministic fact-pool/template builder helpers, so the shared issue-body contract no longer exposes a hidden fallback surface for draft or conclusion Context generation
   - the retained stability artifact records that `single-generate`, `build_issue_draft_context_lines`, and `build_issue_conclusion_context_lines` are absent from `scripts/issues/**`, while the canonical remaining surfaces are `gen_issue_draft.py --context-mode scaffold` and `generate_issue_context_draft.py --phase conclusion --context-mode llm-generate`
 
+### P5-C1-S1S2S3S4 (historical deterministic Context refreshes retained and re-verified | 2026-04-04)
+
+- artifacts:
+  - `scripts/issues/issue_context_llm.py`
+  - `scripts/issues/body_contract.py`
+  - `docs/issues/issue-context-S0F-1B-p5-s6b-1a-preview.md`
+  - `docs/issues/issue-context-S0F-1B-p5-s6b-1a-preview.json`
+  - `docs/issues/issue-context-S0F-1B-p5-s6b-1b-preview.md`
+  - `docs/issues/issue-context-S0F-1B-p5-s6b-1b-preview.json`
+  - `docs/issues/issue-context-S0F-1B-p5-s6b-1c-preview.md`
+  - `docs/issues/issue-context-S0F-1B-p5-s6b-1c-preview.json`
+  - `docs/issues/lifecycle-audit-S0F-1B-p5-s6b-1a-manifest.json`
+  - `docs/issues/lifecycle-audit-S0F-1B-p5-s6b-1b-manifest.json`
+  - `docs/issues/lifecycle-audit-S0F-1B-p5-s6b-1c-manifest.json`
+  - `docs/issues/lifecycle-remediation-S0F-1B-p5-s6b-1a-issue-conclusion-manifest.json`
+  - `docs/issues/lifecycle-remediation-S0F-1B-p5-s6b-1b-issue-conclusion-manifest.json`
+  - `docs/issues/lifecycle-remediation-S0F-1B-p5-s6b-1c-issue-conclusion-manifest.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1a-guarded-result.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1b-guarded-result.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1c-guarded-result.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1a-live.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1b-live.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1c-live.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1a-post-verify-plan.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1b-post-verify-plan.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1c-post-verify-plan.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-live-summary.json`
+- expected:
+  - the one-item LLM authoring path should remain exact-count valid even when the model compresses multiple sentences into one JSON array element
+  - three representative historical child issues with deterministic Context bodies should be rewritten through the guarded conclusion remediation path and remain closed after apply
+  - post-refresh verification should preserve the rewritten live Context blocks without reintroducing Context-gate drift, including cases where dotted file paths appear inside a valid single sentence
+- observed:
+  - `issue_context_llm.py` now normalizes one compressed array element into exact sentence rows when the model returns multiple sentences inside a single `lines` item, which allowed `S6B-1B` to produce a canonical four-line preview artifact instead of failing the exact-count gate
+  - issues `#357`, `#358`, and `#359` were rewritten in place through `apply_issue_conclusion_with_pre_gate.py` using remediation-derived manifests and explicit merged-PR overrides `#360/#361/#362`, with each guarded result recording `allowed-via-targeted-conclusion-remediation` and `issue was already closed before apply; body updated in place`
+  - `body_contract.py` now detects true multi-sentence boundaries instead of counting every period character, so the `S6B-1C` line containing `artifacts/s2b.write-gate.runs.latest.json` no longer triggers a false Context-gate failure during post-refresh verification
+  - the retained live snapshots and post-verify plans show that all three refreshed issues now preserve their live Context blocks under `preserve-existing` without the old deterministic template wording returning as a follow-up drift artifact
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-04: created `S0F-1B` as the dedicated follow-up slice for replacing deterministic issue Context templates with LLM-authored Context generation under an exact child/main sentence-count contract.
@@ -274,3 +328,4 @@
 - 2026-04-04: completed `P2` by removing the remaining `single-generate` compatibility path from canonical conclusion surfaces and retaining one controlled fail-closed sample that stops on LLM generation error instead of falling back to the older deterministic Context builder.
 - 2026-04-04: completed `P3` by keeping create-time draft `Context` empty by default, retiring draft-side one-item Context generation, and retaining both a positive empty-draft sample and a CLI rejection artifact for the removed `--phase draft` surface.
 - 2026-04-04: completed `P4` by deleting the retired deterministic Context builder surface from `body_contract.py`, retaining one stability artifact that records the remaining canonical paths, and marking `S0F-1B` stable.
+- 2026-04-04: completed `P5` by retaining canonical historical preview artifacts for `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`, rewriting all three live issues through the guarded conclusion remediation path, and then hardening both LLM normalization and the Context gate so post-refresh verification preserves the new prose without false dotted-path failures.

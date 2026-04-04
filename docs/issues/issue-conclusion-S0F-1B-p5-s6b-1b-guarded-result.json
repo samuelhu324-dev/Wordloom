@@ -1,0 +1,18 @@
+{
+  "mode": "issue-conclusion-guarded-apply",
+  "result": "ok",
+  "gate_input_kind": "manifest",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0F-1B-p5-s6b-1b-manifest.json",
+  "gate_decision_path": "docs/issues/lifecycle-gate-S0F-1B-p5-s6b-1b-decision.json",
+  "gate_decision": "stop-for-remediation",
+  "apply_allowed": false,
+  "guarded_eligibility": "allowed-via-targeted-conclusion-remediation",
+  "conclusion_manifest_path": "docs/issues/lifecycle-remediation-S0F-1B-p5-s6b-1b-issue-conclusion-manifest.json",
+  "conclusion_plan_path": "docs/issues/issue-conclusion-lifecycle-remediation-S0F-1B-p5-s6b-1b-issue-conclusion-plan.json",
+  "guarded_action": "applied-after-pre-gate",
+  "apply_result_path": "docs/issues/issue-conclusion-lifecycle-remediation-S0F-1B-p5-s6b-1b-issue-conclusion-s6b-1b-apply-result.json",
+  "warnings": [
+    "issue conclusion apply allowed through targeted remediation because issue-conclusion refresh is the only planned follow-up action",
+    "issue was already closed before apply; body updated in place"
+  ]
+}

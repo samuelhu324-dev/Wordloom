@@ -22,6 +22,7 @@ PHASE_LOG_KEY_RE = re.compile(r"^phase_log_(?P<index>\d+)$")
 SCOPE_REF_RE = re.compile(r"\bP\d+(?:-C\d+(?:-S\d+(?:S\d+)*)?)?\b")
 CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
 SENTENCE_TERMINATOR_RE = re.compile(r"[.!?]")
+MULTI_SENTENCE_BOUNDARY_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z])")
 VERSION_SUFFIX_RE = re.compile(r"\s+v\d+\s*$", re.IGNORECASE)
 INLINE_CODE_RE = re.compile(r"`([^`]*)`")
 SECTION_PHASE_PREFIX_RE = re.compile(r"^`?P\d+(?:-C\d+(?:-S\d+(?:S\d+)*)?)?`?:\s*")
@@ -346,7 +347,7 @@ def validate_issue_context_lines(section_lines: list[str], line_bounds: tuple[in
         if not re.search(r"[.!?]$", sentence):
             invalid_lines.append(raw)
             continue
-        if len(SENTENCE_TERMINATOR_RE.findall(sentence)) != 1:
+        if MULTI_SENTENCE_BOUNDARY_RE.search(sentence):
             invalid_lines.append(raw)
 
     if invalid_lines:
