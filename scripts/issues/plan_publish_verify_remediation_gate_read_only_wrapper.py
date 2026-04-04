@@ -228,7 +228,7 @@ def run_read_only_wrapper(args: argparse.Namespace) -> ReadOnlyWrapperResult:
                     delegated_result_path=None,
                     apply_result_path=None,
                     body_path=None,
-                    context_mode="preserve-existing",
+                    context_mode="single-generate",
                     leave_open=False,
                     result_path=_repo_rel(thin_gate_result_path),
                 )
