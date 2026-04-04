@@ -228,9 +228,9 @@
 
 ### P2 (Tmp-scratch naming)
 
-- [ ] `P2-C1-S1`: tmp identity kept visible
-- [ ] `P2-C1-S2`: tmp anti-confusion rule fixed
-- [ ] `P2-C1-S3`: tmp examples retained
+- [x] `P2-C1-S1`: tmp identity kept visible
+- [x] `P2-C1-S2`: tmp anti-confusion rule fixed
+- [x] `P2-C1-S3`: tmp examples retained
 
 ### P3 (Snapshot run identity)
 
@@ -248,3 +248,4 @@
 - 2026-04-04: opened `S6B-1B` to continue the screenshot-1 naming problem after `S6B-1A` fixed evidence families, retention, generator policy, and bounded cutover order.
 - 2026-04-04: retained the first naming baseline for `artifacts/` retained-summary files, `_tmp_` / `_local_` scratch outputs, and `docs/labs/_snapshot/**` run identity so later cleanup can standardize names without collapsing all surfaces into one directory model.
 - 2026-04-04: completed `P0/P1` v1 by fixing the naming fields, per-surface grammar split, retained-summary grammar, anti-pattern set, and first example set for stable summary names.
+- 2026-04-04: completed `P2` v1 by fixing explicit tmp identity, anti-confusion rules between tmp and retained naming, and a first example set for `_tmp_` / `_local_` scratch outputs.
