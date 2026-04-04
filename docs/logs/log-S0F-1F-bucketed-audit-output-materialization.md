@@ -114,6 +114,7 @@
 - `S0F-1F` is now opened as the next `S0F` follow-up so that bucket taxonomy becomes a real retained output surface rather than a docs-only contract.
 - `P0` is now complete: `S0F-1F` is wired into the spine, the materialization boundary is fixed around emitted read-only output rather than taxonomy redesign, and the next follow-up is `P1` live lifecycle audit bucket emission.
 - `P1` is now complete: the live lifecycle audit result emits `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage`, one representative retained sample now carries the emitted diagnosis-layer fields directly, and the next follow-up is `P2` supporting historical emission.
+- `P2` is now complete: the supporting historical pre-screen surface emits additive diagnosis-layer fields only for deterministic cases, the retained historical sample now carries the new fields directly, and the next follow-up is `P3` retained output packaging.
 
 ## P0 Materialization Boundary (completed)
 
@@ -150,6 +151,23 @@
 - `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` now retains a representative live lifecycle audit result with emitted diagnosis-layer fields present directly on the item.
 - The retained sample proves that the existing `blocked` decision-layer summary can coexist with emitted diagnosis-layer output, with `sidebar-parent-relationship` materializing as `creation-sidebar-relationship-gap` rather than requiring downstream consumers to re-parse the raw check list.
 - This retained output becomes the first concrete baseline for later consumers that need stable diagnosis-layer fields from live audit output rather than contract prose alone.
+
+## P2 Supporting Historical Emission (completed)
+
+- `S0F-1F` now extends additive diagnosis-layer emission to the supporting historical pre-screen surface, but only where the pre-screen result itself carries enough deterministic evidence to justify a lifecycle bucket.
+- v1 keeps live and historical semantics aligned by refusing to over-attribute: historical review may emit the same diagnosis-layer fields, but only for deterministic lifecycle gaps that map cleanly into the bucket families already fixed in `S0F-1E`.
+
+### P2-C1-S1 (Historical pre-screen output adopts additive diagnosis-layer fields where deterministic | v1)
+
+- `scripts/issues/plan_historical_log_review.py` now emits `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage` on retained review items.
+- Historical diagnosis emission is intentionally narrower than live lifecycle audit emission: v1 only materializes buckets for deterministic historical review findings such as missing issue/PR linkage evidence or invalid evidence-footer-source structure, while leaving non-deterministic in-progress states unbucketed.
+- This keeps the supporting pre-screen additive and fail-closed: items such as `issue-open-no-pr` may still be `review-required`, but they do not emit a guessed PR bucket until the supporting surface actually has enough evidence to justify one.
+
+### P2-C1-S2 (Cross-surface diagnosis semantics aligned with the live owner | v1)
+
+- Historical pre-screen bucket labels now reuse the same stage-local vocabulary as the live owner instead of inventing a separate structure-review taxonomy.
+- A `log-only` historical item now materializes as `creation-writeback-gap`, while structurally clean but still in-progress items remain unbucketed rather than being forced into the wrong lifecycle owner.
+- `bucket_source_checks` on the supporting surface now records the deterministic historical review signal that justified the emitted bucket, which preserves traceability across live and historical result shapes.
 
 ## Plan (draft)
 
@@ -191,8 +209,8 @@
 
 ### P2 (Supporting historical emission)
 
-- [ ] `P2-C1-S1`: historical pre-screen output adopts additive diagnosis-layer fields where deterministic
-- [ ] `P2-C1-S2`: cross-surface diagnosis semantics remain aligned with the live owner
+- [x] `P2-C1-S1`: historical pre-screen output adopts additive diagnosis-layer fields where deterministic
+- [x] `P2-C1-S2`: cross-surface diagnosis semantics remain aligned with the live owner
 
 ### P3 (Retained output packaging)
 
@@ -217,6 +235,8 @@
 - `P0-C1-S1`: `docs/logs/log-S0F-docs-management-v6.md` now records `S0F-1F` as the next explicit `S0F` child slice after `S0F-1E` stabilized the taxonomy contract.
 - `P1-C1-S1`: `scripts/issues/plan_lifecycle_audit.py` now emits additive diagnosis-layer bucket fields on each live lifecycle audit item, deriving bucket attribution only from existing structured check evidence and stage ownership already fixed in `S0F-1E`.
 - `P1-C1-S2`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` now retains the first representative emitted live sample with `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage` carried directly in the result payload.
+- `P2-C1-S1` / `P2-C1-S2`: `scripts/issues/plan_historical_log_review.py` now emits additive diagnosis-layer bucket fields on supporting historical review items, but only for deterministic lifecycle gaps that can be aligned with the `S0F-1E` vocabulary without guessing.
+- `P2-C1-S1` / `P2-C1-S2`: `docs/issues/historical-log-review-S0E-7C-sample-plan.json` now retains the updated supporting sample shape, including one `log-only` item that materializes as `creation-writeback-gap` while in-progress items remain intentionally unbucketed.
 
 ## Numbering
 

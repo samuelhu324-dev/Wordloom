@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from gen_issue_draft import (
@@ -57,6 +57,10 @@ class HistoricalLogReviewItem:
     status: str
     checks: list[ReviewCheck]
     warnings: list[str]
+    primary_bucket: str | None = None
+    bucket_set: list[str] = field(default_factory=list)
+    bucket_source_checks: dict[str, list[str]] = field(default_factory=dict)
+    bucket_stage: str | None = None
     reason: str | None = None
 
 
@@ -280,6 +284,44 @@ def _classify_item(
     return "pr-closed-unmerged", "manual-reconcile", "review-required", "linked PR is closed without merge evidence"
 
 
+def _build_historical_lifecycle_gap_check(lifecycle_stage: str, reason: str | None) -> ReviewCheck | None:
+    if lifecycle_stage == "log-only":
+        return ReviewCheck("historical-lifecycle-gap", "warning", reason or "log has no linked issue or PR evidence yet")
+    if lifecycle_stage == "issue-closed-no-pr":
+        return ReviewCheck("historical-lifecycle-gap", "warning", reason or "issue is closed without linked PR evidence")
+    if lifecycle_stage == "pr-merged-no-issue":
+        return ReviewCheck("historical-lifecycle-gap", "warning", reason or "merged PR exists but issue linkage is missing")
+    return None
+
+
+def _derive_historical_bucket_summary(checks: list[ReviewCheck], lifecycle_stage: str) -> tuple[str | None, list[str], dict[str, list[str]], str | None]:
+    bucket_source_checks: dict[str, list[str]] = {}
+
+    for check in checks:
+        bucket: str | None = None
+        if check.name == "evidence-footer-source-shape" and check.status == "fail":
+            bucket = "pr-evidence-footer-gap"
+        elif check.name == "historical-lifecycle-gap":
+            if lifecycle_stage == "log-only":
+                bucket = "creation-writeback-gap"
+            elif lifecycle_stage == "issue-closed-no-pr":
+                bucket = "conclusion-pr-evidence-gap"
+            elif lifecycle_stage == "pr-merged-no-issue":
+                bucket = "pr-development-linkage-gap"
+
+        if not bucket:
+            continue
+
+        bucket_checks = bucket_source_checks.setdefault(bucket, [])
+        if check.name not in bucket_checks:
+            bucket_checks.append(check.name)
+
+    bucket_set = list(bucket_source_checks.keys())
+    primary_bucket = bucket_set[0] if bucket_set else None
+    bucket_stage = primary_bucket.split("-", 1)[0] if primary_bucket else None
+    return primary_bucket, bucket_set, bucket_source_checks, bucket_stage
+
+
 def _error_item(log_path: str, requested_id: str, detail: str) -> HistoricalLogReviewItem:
     return HistoricalLogReviewItem(
         requested_id=requested_id,
@@ -298,6 +340,10 @@ def _error_item(log_path: str, requested_id: str, detail: str) -> HistoricalLogR
         status="error",
         checks=[ReviewCheck("item-load", "fail", detail)],
         warnings=[],
+        primary_bucket=None,
+        bucket_set=[],
+        bucket_source_checks={},
+        bucket_stage=None,
         reason=detail,
     )
 
@@ -367,6 +413,12 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str | None, s
         pr_merged_at=pr_merged_at,
     )
 
+    lifecycle_gap_check = _build_historical_lifecycle_gap_check(lifecycle_stage, reason)
+    if lifecycle_gap_check is not None:
+        checks.append(lifecycle_gap_check)
+
+    primary_bucket, bucket_set, bucket_source_checks, bucket_stage = _derive_historical_bucket_summary(checks, lifecycle_stage)
+
     return HistoricalLogReviewItem(
         requested_id=requested_id,
         source_log_path=source_log_path,
@@ -384,6 +436,10 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str | None, s
         status=item_status,
         checks=checks,
         warnings=warnings,
+        primary_bucket=primary_bucket,
+        bucket_set=bucket_set,
+        bucket_source_checks=bucket_source_checks,
+        bucket_stage=bucket_stage,
         reason=reason,
     )
 
