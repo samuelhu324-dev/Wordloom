@@ -9,7 +9,7 @@
 **scope**: `S6`
 **tags**: `EVOLUTION, Evidence, Drills, Taxonomy, Artifacts, Retention, epic/s6, sub/6b`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/356`
   **pr**: ``
   **runbook**: ``
   **roadmap**: `docs/roadmap/_draft/road-S2-.md`
