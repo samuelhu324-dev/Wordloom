@@ -27,6 +27,10 @@
       "structure_status": "pass",
       "planned_action": "none",
       "status": "pass-review",
+      "primary_bucket": null,
+      "bucket_set": [],
+      "bucket_source_checks": {},
+      "bucket_stage": null,
       "checks": [
         {
           "name": "frontmatter-required-fields",
@@ -87,6 +91,10 @@
       "structure_status": "pass",
       "planned_action": "complete-pr-create",
       "status": "review-required",
+      "primary_bucket": null,
+      "bucket_set": [],
+      "bucket_source_checks": {},
+      "bucket_stage": null,
       "checks": [
         {
           "name": "frontmatter-required-fields",
@@ -142,6 +150,16 @@
       "structure_status": "pass",
       "planned_action": "open-issue-flow",
       "status": "review-required",
+      "primary_bucket": "creation-writeback-gap",
+      "bucket_set": [
+        "creation-writeback-gap"
+      ],
+      "bucket_source_checks": {
+        "creation-writeback-gap": [
+          "historical-lifecycle-gap"
+        ]
+      },
+      "bucket_stage": "creation",
       "checks": [
         {
           "name": "frontmatter-required-fields",
@@ -172,6 +190,11 @@
           "name": "stable-contradiction",
           "status": "pass",
           "details": "stable status does not contradict the execution checklist"
+        },
+        {
+          "name": "historical-lifecycle-gap",
+          "status": "warning",
+          "details": "log has no linked issue or PR evidence yet"
         }
       ],
       "warnings": [],
