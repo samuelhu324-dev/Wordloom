@@ -6,8 +6,9 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from body_contract import build_issue_conclusion_context_lines, build_issue_draft_context_lines
+from body_contract import build_issue_draft_context_lines
 from gen_issue_draft import _load_text, _repo_rel, _repo_root
+from issue_context_llm import generate_issue_context_lines_with_llm
 
 
 @dataclass
@@ -43,6 +44,13 @@ def _parse_args() -> argparse.Namespace:
         default=[],
         help="Repeatable merged PR number used only for conclusion-phase Context drafts",
     )
+    parser.add_argument(
+        "--context-mode",
+        dest="context_mode",
+        choices=["single-generate", "llm-generate"],
+        default="llm-generate",
+        help="How to render one-item Context authoring output; llm-generate is the canonical mode",
+    )
     return parser.parse_args()
 
 
@@ -63,7 +71,7 @@ def generate_issue_context_draft(args: argparse.Namespace) -> IssueContextDraftR
     phase = str(args.phase or "draft")
     merged_pr_numbers = [int(number) for number in args.merged_pr_numbers or []]
     if phase == "conclusion":
-        context_lines = build_issue_conclusion_context_lines(log_text, merged_pr_numbers)
+        context_lines = generate_issue_context_lines_with_llm(log_text, merged_pr_numbers)
     else:
         context_lines = build_issue_draft_context_lines(log_text)
 
@@ -88,7 +96,7 @@ def generate_issue_context_draft(args: argparse.Namespace) -> IssueContextDraftR
     result = IssueContextDraftResult(
         mode="issue-context-draft",
         result="ok",
-        context_mode="single-generate",
+        context_mode=str(args.context_mode or "llm-generate"),
         log_path=_repo_rel(log_path),
         output_path=_repo_rel(output_path),
         phase=phase,

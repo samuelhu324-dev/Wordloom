@@ -80,7 +80,7 @@
 
 - Log: `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
 - Runbook: ``
-- Evidence artifact: ``
+- Evidence artifact: `docs/issues/issue-conclusion-S0F-1B-p1-sample-plan.json`
 
 ## Definitions (optional)
 
@@ -159,13 +159,13 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: exact child-versus-parent sentence-count contract fixed
-- [ ] `P0-C1-S2`: deterministic style requirements removed from the canonical Context contract
+- [x] `P0-C1-S1`: exact child-versus-parent sentence-count contract fixed
+- [x] `P0-C1-S2`: deterministic style requirements removed from the canonical Context contract
 
 ### P1 (Issue conclusion generation)
 
-- [ ] `P1-C1-S1`: issue-conclusion Context generation switched to an LLM-authored path
-- [ ] `P1-C1-S2`: one representative conclusion sample retained without template fallback
+- [x] `P1-C1-S1`: issue-conclusion Context generation switched to an LLM-authored path
+- [x] `P1-C1-S2`: one representative conclusion sample retained without template fallback
 
 ### P2 (Fail-closed fallback semantics)
 
@@ -181,6 +181,37 @@
 - This section is the human-facing ledger and should remain separate from `Evidence Footer Source`.
 - Prefer one stable ledger shape per unit: heading with `P*-C*-S*` and date, then `headSha`, `artifacts`, `expected`, and `observed`.
 
+### P0-C1-S1S2 (LLM-authored Context contract fixed | 2026-04-04)
+
+- artifacts:
+  - `scripts/issues/body_contract.py`
+  - `scripts/issues/issue_context_llm.py`
+  - `scripts/issues/plan_issue_conclusion.py`
+  - `scripts/issues/apply_issue_conclusion_with_pre_gate.py`
+  - `scripts/issues/plan_publish_verify_remediation_gate.py`
+  - `scripts/issues/generate_issue_context_draft.py`
+- expected:
+  - child issue Context validates only at exactly four sentences while top-level parent issue Context validates only at exactly five sentences
+  - the canonical conclusion path no longer depends on deterministic fact-pool template assembly
+- observed:
+  - `body_contract.py` now enforces an exact `4` versus `5` sentence-count gate for child versus parent issue Context blocks
+  - the issue-conclusion planner, guarded apply surface, thin gate passthrough, and single-item Context draft helper now accept `llm-generate` and use the new LLM-backed Context authoring path on conclusion instead of deterministic template assembly
+  - `single-generate` remains only as a compatibility alias on the conclusion path and is no longer treated as the canonical authoring mode
+
+### P1-C1-S1S2 (representative LLM-authored conclusion sample retained | 2026-04-04)
+
+- artifacts:
+  - `docs/issues/issue-conclusion-S0F-1B-p1-sample-manifest.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p1-sample-plan.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p1-sample-body.md`
+- expected:
+  - one representative issue-conclusion dry-run proves the new LLM-authored path can generate a valid child-issue Context block without deterministic template fallback
+- observed:
+  - the retained `S0F-1B` sample for concluded issue `#364` produced an exact four-sentence English Context block through `--context-mode llm-generate`
+  - the sample plan records the LLM-authored path explicitly and no longer emits the old deterministic outcome-wording warning family
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-04: created `S0F-1B` as the dedicated follow-up slice for replacing deterministic issue Context templates with LLM-authored Context generation under an exact child/main sentence-count contract.
+- 2026-04-04: completed `P0` by changing the Context validator to exact child/main sentence counts and wiring a new GitHub Models-backed LLM Context generator into the canonical issue-conclusion path.
+- 2026-04-04: completed `P1` by retaining one representative conclusion sample for `S0F-1A` that generated a valid four-sentence child issue Context block through `llm-generate` without falling back to deterministic template assembly.

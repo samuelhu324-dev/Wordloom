@@ -1,0 +1,19 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1A",
+      "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+      "issue_number": 364,
+      "merged_pr_overrides": [
+        "#365"
+      ],
+      "body_output_path": "docs/issues/issue-conclusion-S0F-1B-p1-sample-body.md",
+      "reason": "Representative S0F-1B sample proving the conclusion path can generate LLM-authored Context without deterministic template fallback."
+    }
+  ]
+}

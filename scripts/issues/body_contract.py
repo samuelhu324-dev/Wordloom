@@ -162,7 +162,7 @@ def issue_body_expected_context_line_count(source_log_text: str) -> int:
 def issue_body_context_line_bounds(source_log_text: str) -> tuple[int, int]:
     fields = _parse_fields(source_log_text)
     parent_log = str(fields.get("parent_log") or "").strip()
-    return (4, 5) if not parent_log else (3, 4)
+    return (5, 5) if not parent_log else (4, 4)
 
 
 def _issue_context_scope_label(source_log_text: str) -> str:
@@ -694,6 +694,8 @@ def validate_issue_context_lines(section_lines: list[str], line_bounds: tuple[in
     if len(trimmed) != len(bullet_lines):
         return False, "Context contains non-bullet content or blank-gap drift", invalid_lines
     if len(bullet_lines) < min_count or len(bullet_lines) > max_count:
+        if min_count == max_count:
+            return False, f"Context must contain exactly {min_count} English bullet sentences; found {len(bullet_lines)}", invalid_lines
         return False, f"Context must contain between {min_count} and {max_count} English bullet sentences; found {len(bullet_lines)}", invalid_lines
 
     for raw in bullet_lines:
@@ -716,6 +718,8 @@ def validate_issue_context_lines(section_lines: list[str], line_bounds: tuple[in
     if invalid_lines:
         return False, "Context lines must be readable English sentences with no placeholder scaffolding", invalid_lines
 
+    if min_count == max_count:
+        return True, f"Context contains exactly {min_count} readable English bullet sentences with basic placeholder hygiene", invalid_lines
     return True, f"Context contains between {min_count} and {max_count} readable English bullet sentences with basic placeholder hygiene", invalid_lines
 
 
