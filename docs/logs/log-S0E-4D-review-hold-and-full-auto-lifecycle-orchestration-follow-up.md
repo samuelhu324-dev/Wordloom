@@ -5,14 +5,14 @@
 **id**: `S0E-4D`
 **kind**: `log`
 **title**: `review-hold, full-auto, and lifecycle orchestration follow-up v1`
-**status**: `stable`
+**status**: `draft`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Issues, PR, Automation, epic/s0, sub/0e4d`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/303`
-  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/304`
+  **pr**: ``
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
-  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+  **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md`
   **reference_log_1**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
@@ -23,12 +23,12 @@
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
 **issue_module_labels**: ``
-**issue_milestone**: `road-002-projection-runtime-platformization-and-evidence-governance`
+**issue_milestone**: ``
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
-**roadmap_phase**: `M5-P1`
+**roadmap_path**: ``
+**roadmap_milestone**: ``
+**roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
 **pr_projects**: ``
@@ -73,7 +73,7 @@
 - Log: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
 - Issue: `https://github.com/samuelhu324-dev/wordloom-v3/issues/303`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
-- Evidence artifact: `docs/issues/issue-conclusion-S0E-4D-p3-plan.json`
+- Evidence artifact: ``
 
 ## Definitions (optional)
 
@@ -95,7 +95,6 @@
 - `P1`: align parent log, child logs, and runbook wording around one orchestration vocabulary
 - `P2`: define representative operator command patterns for staged review, closed-loop continuation, and explicit resume-after-review flows
 - `P3`: validate one staged path and one closed-loop path against the documented handoff rules
-- `P4`: audit representative issue completeness after write-back, with special focus on sidebar relationships versus body-only parent metadata
 
 ## Success Criteria (DoD)
 
@@ -113,11 +112,8 @@
 
 ## Current Status
 
-- `S0E-4D` now owns the lifecycle-orchestration boundary across `review-hold`, explicit resume-after-review, and post-merge `full-auto` continuation.
-- Live issue `#303` has been created, attached to parent issue `#248`, delivered through merged PR `#304`, and concluded in place through the final issue-conclusion write-back.
-- Historical validation cycles have also been replayed end to end: `S0E-2A` issue `#289` now concludes against remediated PR `#287`, `S0E-2B` issue `#288` now concludes against remediated PR `#290`, and `S0E-4A` issue `#293` now concludes against exact-ID merged PRs `#294` plus `#299`.
-- Representative closed issues `#289`, `#293`, `#295`, `#297`, `#300`, and `#303` have now been audited for both final body completeness and live sidebar relationship state; the only live defects found were missing parent-child attachments on `#289`, `#293`, and `#297`, and those gaps are now repaired.
-- `S0E-4D` is now `stable` because both the staged review-hold path and the resumed closed-loop path have been exercised against the same real sample.
+- `S0E-4D` is newly opened to take over lifecycle orchestration wording that no longer belongs inside the narrower `S0E-2D` issue-create contract.
+- The immediate goal is to keep `S0E-2D` focused on issue-create metadata, keep `S0E-2E` focused on post-merge conclusion, and give the cross-stage continuation rule its own stable owner.
 
 ## P0 (Contract | v1)
 
@@ -222,25 +218,6 @@ Resume S0E-4D after review; PR #302 is merged, so run the post-merge issue concl
 
 - P3-C1-S1: validate one staged path that stops after issue/PR preparation under `review-hold`
 - P3-C1-S2: validate one closed-loop path that continues through merge follow-through and issue conclusion under explicit `full-auto`
-- P3-C2-S1: replay the historical `S0E-2A` lifecycle by remediating merged PR metadata and concluding the still-open issue
-- P3-C2-S2: replay the historical `S0E-2B` lifecycle by remediating merged PR metadata and concluding the still-open issue
-- P3-C3-S1: audit the historical `S0E-4A` merged PR set and conclude the still-open issue against exact-ID merged evidence
-- P3-C4-S1: audit representative closed child issues for relationship coverage and post-conclusion body completeness
-- P3-C4-S2: attach any still-missing sidebar parent-child relationships discovered during the audit
-
-## P4 (Audit Boundary)
-
-### P4-C1-S1 (Issue body versus sidebar relationship completeness | v1)
-
-- A concluded issue body can already be correct while the live GitHub sidebar relationship is still missing.
-- Body metadata such as `Parent issue: #248` is not proof that the GitHub child-parent relationship mutation actually happened.
-- Post-creation and post-conclusion audits must therefore check both the final issue body and the live sidebar relationship state.
-
-### P4-C1-S2 (Representative audit expectation | v1)
-
-- A representative audit should sample at least one current issue and several historical issues that already passed create, PR, merge, and conclusion.
-- If the body is already compliant, remediation should prefer the smallest missing write-back, such as a relationship attach, instead of rewriting the whole issue again.
-- Evidence should retain one post-remediation live snapshot so operators can confirm that the body contract and sidebar relationship contract have converged.
 
 ## Execution Checklist (unchecked)
 
@@ -262,18 +239,8 @@ Resume S0E-4D after review; PR #302 is merged, so run the post-merge issue concl
 
 ### P3 (Drill / Verify)
 
-- [x] `P3-C1-S1`: staged review path validated under `review-hold`
-- [x] `P3-C1-S2`: explicit closed-loop path validated under `full-auto`
-- [x] `P3-C2-S1`: historical `S0E-2A` lifecycle replayed through PR remediation and final issue conclusion
-- [x] `P3-C2-S2`: historical `S0E-2B` lifecycle replayed through PR remediation and final issue conclusion
-- [x] `P3-C3-S1`: historical `S0E-4A` lifecycle audited and concluded against both exact-ID merged PRs
-- [x] `P3-C4-S1`: representative closed child issues audited for relationship coverage and post-conclusion body completeness
-- [x] `P3-C4-S2`: still-missing sidebar parent-child relationships repaired for historical issues `#289`, `#293`, and `#297`
-
-### P4 (Audit Boundary)
-
-- [x] `P4-C1-S1`: body completeness and sidebar relationship completeness were recorded as separate audit dimensions
-- [x] `P4-C1-S2`: a post-remediation live snapshot was captured to prove relationship convergence under parent issue `#248`
+- [ ] `P3-C1-S1`: staged review path validated under `review-hold`
+- [ ] `P3-C1-S2`: explicit closed-loop path validated under `full-auto`
 
 ## Evidence (reserved)
 
@@ -282,20 +249,8 @@ Resume S0E-4D after review; PR #302 is merged, so run the post-merge issue concl
 - `P0-C1-S2` / `P1-C1-S1`: `docs/logs/log-S0E-docs-management-v5.md` now records `S0E-4D` as the dedicated lifecycle-orchestration owner instead of leaving that boundary inside `S0E-2D`.
 - `P1-C1-S2` / `P2-C1-S1`: `docs/runbook/run-S0E-log-to-issue-creation.md` now carries one operator-facing command-pattern block for staged review, explicit resume, and post-merge full-auto continuation while keeping contract ownership in `S0E-4D`.
 - `P2-C1-S2`: this log now includes fail-closed examples for ambiguous continuation requests, blocked closed-loop requests, and downstream-only resume commands.
-- `P3-C1-S1`: `docs/issues/issue-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.json` records the real create-issue run for live issue `#303`, `docs/issues/issue-relationship-S0E-4D-p3-manifest-plan.json` plans the `#248 -> #303` sidebar relation, `docs/issues/issue-relationship-S0E-4D-p3-manifest-parent-248-child-303-apply-result.json` confirms the live attach, and draft PR `#304` was opened from `docs/issues/pr-prep-S0E-4D-p3-plan.json` under the staged review-hold path.
-- `P3-C1-S2`: `docs/issues/pr-prep-S0E-4D-p3-create-result.json` records live PR `#304`, `docs/issues/issue-conclusion-S0E-4D-p3-plan.json` proves the merged-PR evidence set after merge, and `docs/issues/issue-conclusion-S0E-4D-p3-s0e-4d-apply-result.json` confirms issue `#303` was updated in place after auto-close with final `DoD -> #304`.
-- `P3-C2-S1`: `docs/issues/pr-prep-S0E-2A-remediation-plan.json` and `docs/issues/pr-prep-S0E-2A-remediation-result.json` capture the historical merged PR `#287` title/body remediation, while `docs/issues/issue-conclusion-S0E-2A-remediation-plan.json` and `docs/issues/issue-conclusion-S0E-2A-remediation-apply-result.json` confirm final closure of issue `#289`.
-- `P3-C2-S2`: `docs/issues/pr-prep-S0E-2B-remediation-plan.json` and `docs/issues/pr-prep-S0E-2B-remediation-result.json` capture the historical merged PR `#290` title/body remediation, while `docs/issues/issue-conclusion-S0E-2B-remediation-plan.json` and `docs/issues/issue-conclusion-S0E-2B-remediation-apply-result.json` confirm final closure of issue `#288`.
-- `P3-C3-S1`: `docs/issues/issue-conclusion-S0E-4A-remediation-plan.json` and `docs/issues/issue-conclusion-S0E-4A-remediation-apply-result.json` confirm that issue `#293` was concluded against exact-ID merged PR evidence from both `#294` and `#299` without needing further PR body remediation.
-- `P3-C4-S1`: `docs/issues/issue-relationship-S0E-4D-p4-live-audit.json` now shows the representative closed set `#289`, `#293`, `#295`, `#297`, `#300`, and `#303` together with parent `#248`, allowing one live snapshot to distinguish attached versus unattached child issues.
-- `P3-C4-S2`: `docs/issues/issue-relationship-S0E-4D-p4-legacy-relationship-audit-plan.json` plus the three apply results for child issues `#289`, `#293`, and `#297` confirm that the missing sidebar parent-child relationships were attached after conclusion-body audits had already passed.
-- `P4-C1-S1` / `P4-C1-S2`: this log now records the audit lesson that body metadata and sidebar relationships are separate completion dimensions, and it keeps the post-remediation GraphQL snapshot as the proof of convergence.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-03-30: opened `S0E-4D` so lifecycle orchestration modes (`review-hold` / `full-auto`) have a dedicated owner instead of drifting between issue-create and runbook wording.
 - 2026-03-30: completed `P2` by fixing deterministic command patterns for staged review, explicit resume, and post-merge full-auto continuation, plus fail-closed examples for ambiguous or blocked requests.
-- 2026-03-30: completed `P3` by creating live issue `#303`, attaching it to parent `#248`, opening draft PR `#304` as the staged review-hold sample, then resuming through merge and final issue conclusion to validate the post-merge closed loop.
-- 2026-03-30: extended `P3` with historical validation cycles by remediating merged PRs `#287` and `#290`, then concluding still-open issues `#289`, `#288`, and `#293` against their exact-ID merged PR evidence.
-- 2026-03-30: extended `P3` again to audit representative closed child issues for relationship coverage, then repaired the missing sidebar parent-child attachments on `#289`, `#293`, and `#297`.
-- 2026-03-30: completed `P4` by recording body-versus-sidebar audit boundaries and storing a post-remediation live GraphQL snapshot for the representative `S0E` child issue set.

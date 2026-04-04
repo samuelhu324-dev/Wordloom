@@ -12,7 +12,7 @@
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/295`
   **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/296`
   **runbook**: ``
-  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+  **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
   **reference_log_1**: `docs/logs/_template-log-parent-epic-spine.md`
@@ -22,12 +22,12 @@
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
 **issue_module_labels**: ``
-**issue_milestone**: `road-002-projection-runtime-platformization-and-evidence-governance`
+**issue_milestone**: ``
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
-**roadmap_phase**: `M5-P1`
+**roadmap_path**: ``
+**roadmap_milestone**: ``
+**roadmap_phase**: ``
 **pr_labels**: ``
 **pr_projects**: ``
 **pr_milestone**: ``

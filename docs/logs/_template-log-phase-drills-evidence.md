@@ -23,10 +23,10 @@
 **issue_milestone**: ``      # exact GitHub milestone name; if blank, automation must leave milestone empty
 **issue_parent**: ``         # parent issue reference if already known; otherwise leave blank
 **issue_projects**: ``       # defaults to `wordloom Board` for logs under docs/logs in this workspace unless a different explicit project list is provided
-**roadmap_path**: ``         # exact roadmap file that owns this log's bridge, e.g. docs/roadmap/road-001-...md
+**roadmap_path**: ``         # exact roadmap file that owns this log's bridge, e.g. docs/roadmap/road-S1-...md
 **roadmap_milestone**: ``    # exact roadmap milestone, e.g. M3
 **roadmap_phase**: ``        # exact roadmap phase, e.g. M3-P2; parent/spine-only logs may leave this blank
-**roadmap_bridge_refs**: ``  # optional exact-slot refs when one child log maps to multiple slots, e.g. docs/roadmap/road-001-...md#M3-P2, docs/roadmap/road-001-...md#M3-P3
+**roadmap_bridge_refs**: ``  # optional exact-slot refs when one child log maps to multiple slots, e.g. docs/roadmap/road-S1-...md#M3-P2, docs/roadmap/road-S1-...md#M3-P3
 **pr_labels**: ``            # extra PR labels beyond inherited issue_top_labels / issue_scope_labels / issue_module_labels; add `drills` whenever the log contains substantive evidence/drill execution; all labels must already exist in GitHub
 **pr_projects**: ``          # exact GitHub Project names for the PR; if blank, PR automation leaves project assignment empty by default
 **pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave the PR milestone empty

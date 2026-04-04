@@ -9,9 +9,7 @@
 
 ## Summary
 
-- Define post-merge issue conclusion as a dedicated contract instead of leaving issue closure as an informal manual step.
-- Add deterministic dry-run conclusion planning from exact-ID merged PR evidence while keeping the final issue body English-only and DoD-led.
-- Materialise the contract with a real issue-conclusion write-back path that updates the live issue body and closes open post-merge issues when appropriate.
+- <placeholder>
 
 ## Execution Checklist
 
@@ -35,6 +33,6 @@
 
 - Log: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
 - Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`
-- Evidence artifact: `docs/issues/issue-conclusion-S0E-2E-sample-plan.json`
+- Parent log: `docs/logs/log-S0E-docs-management-v5.md`
 
 Closes #324

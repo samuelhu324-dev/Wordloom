@@ -1,7 +1,6 @@
 {
-  "mode": "create-issue",
+  "mode": "draft-generation",
   "result": "ok",
-  "context_mode": "single-generate",
   "log_path": "docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md",
   "draft_path": "docs/issues/issue-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md",
   "title": "S0E-6A: contract/log structure normalization and dual-track evidence contract",
@@ -21,27 +20,14 @@
   ],
   "milestone": null,
   "parent_issue": "#248",
-  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- Earlier logs mixed automation inputs with human evidence notes, which made PR links and footer rows ambiguous to parse.\r\n- This slice separated PR Summary Inputs as the automation contract from Evidence as the human audit ledger, with different ownership and density rules.\r\n- Parent and phase templates were updated so authors declare that split up front instead of relying on later cleanup.\r\n- Representative mixed-shape logs were migrated to split PR links and Evidence Footer Source so the normalized structure exists in live samples.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`\r\n",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Source log: `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`\n- Parent issue: #248\n\n## Context\n\n## Definition of Done (DoD)\n\n## Links\n\n- Log: `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\n",
   "warnings": [
     "issue_parent derived from parent log issue link",
     "module labels left blank",
     "issue_milestone missing",
-    "live label preflight passed against samuelhu324-dev/wordloom-v3",
-    "Context was single-generated from the source log; review it manually before create/apply",
-    "Definition of Done (DoD) remains intentionally blank pending operator input",
-    "source log write-back not performed; update links.issue in a later tracked docs change"
+    "Context and Definition of Done (DoD) left intentionally blank pending operator input"
   ],
-  "live_label_check_enabled": true,
-  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
-  "matched_live_labels": [
-    "EVOLUTION",
-    "s0/knowledge system",
-    "sub/1",
-    "drills"
-  ],
-  "missing_live_labels": [],
-  "issue_number": 332,
-  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/332",
-  "created_at": "2026-04-03T11:48:59.942549+00:00"
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
 }
-

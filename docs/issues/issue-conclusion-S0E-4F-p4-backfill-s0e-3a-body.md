@@ -19,7 +19,7 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
-- Roadmap: `docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md`
+- Roadmap: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
 - Parent log: `docs/logs/log-S0E-docs-management-v5.md`
 - Previous log: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
 

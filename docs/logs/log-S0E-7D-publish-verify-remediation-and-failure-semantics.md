@@ -9,10 +9,10 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Drills, Evidence, epic/s0, sub/1`
 **links**: ``
-  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/341`
-  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/352`
+  **issue**: ``
+  **pr**: ``
   **runbook**: ``
-  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+  **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`
   **reference_log_1**: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
@@ -23,12 +23,12 @@
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
 **issue_module_labels**: ``
-**issue_milestone**: `road-002-projection-runtime-platformization-and-evidence-governance`
+**issue_milestone**: ``
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
-**roadmap_phase**: `M5-P3`
+**roadmap_path**: ``
+**roadmap_milestone**: ``
+**roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
 **pr_projects**: ``
@@ -396,7 +396,6 @@
 
 ## Recent changes (for traceability, optional)
 
-- 2026-04-03: wrote back live issue `#341`, remediated the required sidebar parent relationship, created and merged PR `#352`, applied the final issue-conclusion body, and confirmed the live issue is closed.
 - 2026-04-02: opened `S0E-7D` to separate failure taxonomy, replay/backfill order, and remediation semantics from the already-landed `S0E-7C` review planner and `S0E-4F` historical metadata backfill work.
 - 2026-04-02: completed `P0-P1` by retaining the first structured failure taxonomy/mapping artifact for the current docs/GitHub workflow, covering strong versus weak structure, ordered replay/backfill, and default handling semantics per known failure surface.
 - 2026-04-02: completed `P2` by retaining one representative manifest and one structured audit summary across `block`, `replayable`, `manual`, and `reconciliation`, making the stop/split behavior explicit before apply.

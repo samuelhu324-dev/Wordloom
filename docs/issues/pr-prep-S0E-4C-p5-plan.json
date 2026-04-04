@@ -18,7 +18,7 @@
       "base_branch": "main",
       "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
       "candidate_pr_branch": "pr-prep/s0e-4c-p5",
-      "pr_title": "S0E-4C/P5-C1-S1: harden create-path cherry-pick fallback",
+      "pr_title": "S0E-4C/P0-P5: PR summary, development-link rendering, and issue relationship follow-up v1",
       "pr_base": "main",
       "pr_labels": [
         "EVOLUTION",
@@ -34,7 +34,7 @@
       ],
       "summary_bullet_count": 3,
       "preview_body_path": "docs/issues/pr-prep-S0E-4C-p5-body.md",
-      "selected_commit_count": 8,
+      "selected_commit_count": 7,
       "selected_commits": [
         {
           "sha": "18fbfe4036b1daf3a34460e0c64fbb0736798c21",
@@ -81,13 +81,6 @@
         {
           "sha": "c4b6656dd1babede3c3bc1cc6052beb48f510742",
           "subject": "S0E-4C/P5-C1-S1: harden create-path cherry-pick fallback",
-          "matched_id": "S0E-4C",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
-        },
-        {
-          "sha": "bf30fae0a0e06452abda6729cfda13f4485e2c3d",
-          "subject": "S0E-4C/P5-C1-S1: refresh P5 PR-prep artifacts",
           "matched_id": "S0E-4C",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
@@ -265,13 +258,6 @@
         {
           "sha": "c4b6656dd1babede3c3bc1cc6052beb48f510742",
           "subject": "S0E-4C/P5-C1-S1: harden create-path cherry-pick fallback",
-          "matched_id": "S0E-4C",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
-        },
-        {
-          "sha": "bf30fae0a0e06452abda6729cfda13f4485e2c3d",
-          "subject": "S0E-4C/P5-C1-S1: refresh P5 PR-prep artifacts",
           "matched_id": "S0E-4C",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"

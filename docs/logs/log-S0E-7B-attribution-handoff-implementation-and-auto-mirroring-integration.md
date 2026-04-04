@@ -9,10 +9,10 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Actions, Automation, Workflow, PR, epic/s0, sub/1`
 **links**: ``
-  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/337`
-  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/351`
+  **issue**: ``
+  **pr**: ``
   **runbook**: ``
-  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+  **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
   **reference_log_1**: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
@@ -23,12 +23,12 @@
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
 **issue_module_labels**: ``
-**issue_milestone**: `road-002-projection-runtime-platformization-and-evidence-governance`
+**issue_milestone**: ``
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
-**roadmap_phase**: `M5-P3`
+**roadmap_path**: ``
+**roadmap_milestone**: ``
+**roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
 **pr_projects**: ``
@@ -77,6 +77,13 @@
 - Issue: ``
 - Runbook: ``
 - Evidence artifact: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
+
+**Evidence Footer Source**:
+
+- `P0-C1-S1` | artifact: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
+- `P1-C1-S1S2` | artifact: `scripts/issues/resolve_pr_source_log_attribution.py`
+- `P2-C1-S1S2` | artifact: `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+- `P3-C1-S1S2` | artifact: `docs/issues/pr-source-log-attribution-S0E-7B-p3-sample-manifest.json`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.
@@ -324,7 +331,6 @@
 
 ## Recent changes (for traceability, optional)
 
-- 2026-04-03: wrote back live issue `#337`, remediated the required sidebar parent relationship, created and merged PR `#351`, applied the final issue-conclusion body, and confirmed the live issue is closed.
 - 2026-04-01: opened `S0E-7B` as the implementation follow-up for attribution payload emission and automatic mirroring integration after `S0E-4E` completed the handoff contract.
 - 2026-04-01: completed `P0` by fixing the ownership split between attribution contract (`S0E-4E`) and attribution implementation / workflow wiring (`S0E-7B`).
 - 2026-04-01: completed `P1` by adding `scripts/issues/resolve_pr_source_log_attribution.py`, which emits the `4E -> 7A` handoff payload plus a normalized PR payload snapshot using stable repo-relative artifact paths.

@@ -488,7 +488,7 @@
         },
         {
           "sha": "be35c7bcd9102e4041bf1088e42e3e891323b4fc",
-          "subject": "road-001/P0-C1-S1: clarify roadmap ownership boundary",
+          "subject": "road-S1/P0-C1-S1: clarify roadmap ownership boundary",
           "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
@@ -502,7 +502,7 @@
         },
         {
           "sha": "8704eda0a8794f9610f9db4fbe1bed7a298d815f",
-          "subject": "docs/report: split reports and sync road-001-01",
+          "subject": "docs/report: split reports and sync road-S1-1",
           "matched_id": null,
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
@@ -985,7 +985,7 @@
         },
         {
           "sha": "508dbccd67515ca3c51e2c4139cd4805d9b61733",
-          "subject": "S4E/P0-C1-S1S2: close parent and sync road-001",
+          "subject": "S4E/P0-C1-S1S2: close parent and sync road-S1",
           "matched_id": "S4E",
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"

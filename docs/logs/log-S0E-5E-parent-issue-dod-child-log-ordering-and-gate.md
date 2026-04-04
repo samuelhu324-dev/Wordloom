@@ -5,14 +5,14 @@
 **id**: `S0E-5E`
 **kind**: `log`
 **title**: `parent issue DoD child-log ordering and gate v1`
-**status**: `stable`
+**status**: `draft`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, Contract, Ordering, Gate, epic/s0, sub/0e5e`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/353`
-  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/354`
+  **pr**: ``
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
-  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+  **roadmap**: ``
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`
   **reference_log_1**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
@@ -23,12 +23,12 @@
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
 **issue_module_labels**: ``
-**issue_milestone**: `road-002-projection-runtime-platformization-and-evidence-governance`
+**issue_milestone**: ``
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
-**roadmap_phase**: `M5-P2`
+**roadmap_path**: ``
+**roadmap_milestone**: ``
+**roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
 **pr_projects**: ``
@@ -97,14 +97,14 @@
 
 ## Current Status
 
-- The old parent issue helper used issue-number order, but `P2` has already replaced that path with the shared source-log-owned ordering helper.
-- `S0E-6F` already made the parent issue body family explicit, so `S0E-5E` has now closed the remaining ordering-semantics gap and verified it through one full live lifecycle.
-- `S0E-5E` is now fully closed through the live chain: issue `#353` was created and attached under parent `#248`, PR `#354` was created and merged, and the final issue conclusion body has been written back in place.
+- The current parent issue helper still collects child issue refs and then sorts them by issue number, which is deterministic but not aligned to the child log creation sequence.
+- `S0E-6F` already made the parent issue body family explicit, so the remaining gap is no longer field ownership; it is ordering semantics.
+- The ordering question is now important because `S0E-docs-management-v5/#248` is close to needing a fresh parent conclusion body, and the current child ledger order will look arbitrary if replay keeps following issue number allocation.
 - `P0` is now completed: the authoritative ordering source is fixed as child-log `created` ascending, and the rule is now explicitly scoped to top-level parent issue child ledgers rather than child issue merged-PR ledgers.
 - `P1` is now completed: the fallback chain is fixed as `created -> phase_log_* declaration order -> child issue short ref`, and missing or invalid `created` is now explicitly classified as a fail-closed contract error rather than a warning-only drift.
 - `P2` is now completed: parent issue draft generation and lifecycle audit now call the same shared child-ledger ordering helper, so both surfaces consume the same `created -> phase_log_* -> short ref` rule and fail closed on missing or invalid child-log `created` metadata.
 - `P3` is now completed: lifecycle audit exposes parent child-ledger ordering drift as an explicit check, and one bounded parent replay sample for `#248` has been retained.
-- The bounded `#248` sample still blocks live parent refresh: audit found stale child-ledger ordering, missing newer child refs in the live parent DoD, and a missing `Roadmap` link row, while the replay preview produced the full source-log-owned child ledger expected by the new contract.
+- The bounded `#248` sample currently blocks live parent refresh: audit found stale child-ledger ordering, missing newer child refs in the live parent DoD, and a missing `Roadmap` link row, while the replay preview produced the full source-log-owned child ledger expected by the new contract.
 
 ## P0 (Parent child-ledger ordering contract | v1)
 
@@ -147,7 +147,7 @@
 
 ## Plan (draft)
 
-- Follow-up work should now be handled as a bounded parent refresh/remediation step rather than by reopening the ordering contract or the child-slice lifecycle.
+- Follow-up work should be handled as a bounded parent refresh/remediation step rather than by reopening the ordering contract.
 
 ## Execution Checklist (unchecked)
 
@@ -210,43 +210,9 @@
   - the bounded `#248` audit sample blocked as expected because the live parent issue still carries the older truncated child ledger and is also missing the canonical `Roadmap` link row
   - the bounded replay preview regenerated the parent DoD with the full source-log-owned child ledger in the new deterministic order, proving replay output is stable even though live refresh has not yet been applied
 
-### Full-auto (live issue -> PR -> merge -> conclusion closure | 2026-04-03)
-
-- artifacts:
-  - `docs/issues/issue-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md`
-  - `docs/issues/issue-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.json`
-  - `docs/issues/issue-relationship-S0E-5E-live-manifest.json`
-  - `docs/issues/issue-relationship-S0E-5E-live-manifest-plan.json`
-  - `docs/issues/issue-relationship-S0E-5E-live-manifest-parent-248-child-353-apply-result.json`
-  - `docs/issues/lifecycle-audit-S0E-5E-live-manifest.json`
-  - `docs/issues/lifecycle-audit-S0E-5E-live-manifest-plan.json`
-  - `docs/issues/pr-prep-S0E-5E-live-manifest.json`
-  - `docs/issues/pr-prep-S0E-5E-live-plan.json`
-  - `docs/issues/pr-prep-S0E-5E-live-body.md`
-  - `docs/issues/pr-prep-S0E-5E-live-create-body.md`
-  - `docs/issues/pr-prep-S0E-5E-live-create-result.json`
-  - `docs/issues/pr-prep-S0E-5E-live-post-apply-live-body.md`
-  - `docs/issues/pr-prep-S0E-5E-live-post-apply-verify-result.json`
-  - `docs/issues/issue-conclusion-S0E-5E-live-manifest.json`
-  - `docs/issues/issue-conclusion-S0E-5E-live-plan.json`
-  - `docs/issues/issue-conclusion-S0E-5E-live-s0e-5e-body.md`
-  - `docs/issues/issue-conclusion-S0E-5E-live-s0e-5e-apply-body.md`
-  - `docs/issues/issue-conclusion-S0E-5E-live-s0e-5e-apply-result.json`
-  - `docs/logs/log-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md`
-  - `docs/logs/log-S0E-docs-management-v5.md`
-- expected:
-  - the slice should be able to run through one full live lifecycle without reopening the contract itself
-  - the live issue should be created with the deterministic body contract, attached to parent `#248`, carried by one exact-ID PR, and concluded from exact-ID merged PR evidence
-  - the final lifecycle audit should pass on the concluded live issue and retain both issue and PR write-back evidence
-- observed:
-  - live issue `#353` was created from the `S0E-5E` draft, attached to parent `#248`, and passed the issue-created lifecycle audit before PR prep
-  - ready PR `#354` was created from the exact `S0E-5E` commit set, passed post-apply live PR body verification, and merged cleanly
-  - final issue conclusion was applied in place after merge, and the refreshed live lifecycle audit now passes in `concluded` state with exact-ID merged PR evidence `#354` and matching `links.pr`
-
 ## Recent changes (for traceability, optional)
 
 - 2026-04-03: created `S0E-5E` to isolate the parent issue `Definition of Done (DoD)` child-ledger ordering problem before replaying the top-level `S0E` parent issue conclusion.
 - 2026-04-03: completed `P0-P1` by fixing the ordering contract to `created -> phase_log_* -> child issue short ref`, and by classifying missing or invalid child-log `created` as a fail-closed parent-ordering error rather than a warning-only drift.
 - 2026-04-03: completed `P2` by centralizing parent child-ledger ordering in one shared helper and wiring both issue draft generation and lifecycle audit to the same fail-closed ordering implementation.
 - 2026-04-03: completed `P3` by promoting parent child-ledger ordering into an explicit lifecycle-audit check and by retaining one bounded `#248` replay sample that shows the live parent issue is now stale against the new ordering contract.
-- 2026-04-03: ran `S0E-5E` through full-auto end to end: created live issue `#353`, attached it under parent `#248`, created and merged PR `#354`, applied the final issue conclusion body, and re-audited the concluded live issue to a pass state.

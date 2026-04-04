@@ -41,7 +41,7 @@
       ],
       "summary_bullet_count": 3,
       "preview_body_path": "docs/issues/pr-prep-S0E-4E-live-body.md",
-      "selected_commit_count": 4,
+      "selected_commit_count": 3,
       "selected_commits": [
         {
           "sha": "3d4d4b1b68f8f10a48ba56b655009e5212f97803",
@@ -60,13 +60,6 @@
         {
           "sha": "d31fd453f055a900fd10f1b1c17419def0786dc0",
           "subject": "S0E-4E/P3-C1-S1S2: fix attribution handoff contract",
-          "matched_id": "S0E-4E",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
-        },
-        {
-          "sha": "07f608d9c983a5f8eb99cb2face1588bf2fb8e79",
-          "subject": "S0E-4E/P3-C2-S1: create live issue and preflight PR",
           "matched_id": "S0E-4E",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
@@ -1015,20 +1008,6 @@
           "sha": "7f1b6a294755d50331c79d71a7622f521da74a87",
           "subject": "S0E-3B/P4-C2-S1: conclude live issue after merge",
           "matched_id": "S0E-3B",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "07f608d9c983a5f8eb99cb2face1588bf2fb8e79",
-          "subject": "S0E-4E/P3-C2-S1: create live issue and preflight PR",
-          "matched_id": "S0E-4E",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
-        },
-        {
-          "sha": "4deafaa24fd1ab9f61dcd4b13f77b69904dd4511",
-          "subject": "S0E-4F/P5-C3-S1: create live issue and preflight PR",
-          "matched_id": "S0E-4F",
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
         }

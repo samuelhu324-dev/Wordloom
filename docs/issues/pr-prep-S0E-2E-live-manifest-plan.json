@@ -7,7 +7,8 @@
   "total_items": 1,
   "planned_items": 1,
   "warnings": [
-    "S0E-2E: pr_development_issue derived from source log issue link"
+    "S0E-2E: pr_development_issue derived from source log issue link",
+    "S0E-2E: source log is missing PR summary bullets; preview uses placeholders"
   ],
   "items": [
     {
@@ -39,9 +40,9 @@
       "pr_development_issue_refs": [
         "#324"
       ],
-      "summary_bullet_count": 3,
+      "summary_bullet_count": 0,
       "preview_body_path": "docs/issues/pr-prep-S0E-2E-live-body.md",
-      "selected_commit_count": 5,
+      "selected_commit_count": 4,
       "selected_commits": [
         {
           "sha": "ab5c4023035aeab6cad32f563ac522f478a934b1",
@@ -67,13 +68,6 @@
         {
           "sha": "38f46cd0d6fcc2805f73cb34e1521a705743c955",
           "subject": "S0E-2E/P1-C2-P3-C2: revise conclusion format and apply #295",
-          "matched_id": "S0E-2E",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
-        },
-        {
-          "sha": "c63f1a9c2cee5c7d7d676fb5d10652a1f92e3f1b",
-          "subject": "S0E-2E/P3-C3-S1: create live issue and preflight PR",
           "matched_id": "S0E-2E",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
@@ -996,19 +990,13 @@
           "matched_id": "S0E-3B",
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "c63f1a9c2cee5c7d7d676fb5d10652a1f92e3f1b",
-          "subject": "S0E-2E/P3-C3-S1: create live issue and preflight PR",
-          "matched_id": "S0E-2E",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
         }
       ],
       "planned_action": "prepare-pr-prep-branch",
       "status": "planned",
       "warnings": [
-        "pr_development_issue derived from source log issue link"
+        "pr_development_issue derived from source log issue link",
+        "source log is missing PR summary bullets; preview uses placeholders"
       ]
     }
   ]

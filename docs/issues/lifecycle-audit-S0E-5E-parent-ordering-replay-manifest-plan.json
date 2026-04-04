@@ -5,8 +5,10 @@
   "selection_input": "manifest",
   "operation": "plan-lifecycle-audit",
   "total_items": 1,
-  "planned_items": 1,
-  "warnings": [],
+  "planned_items": 0,
+  "warnings": [
+    "S0E-docs-management-v5: blocked"
+  ],
   "items": [
     {
       "requested_id": "S0E-docs-management-v5",
@@ -22,9 +24,9 @@
       "source_log_pr_url": null,
       "merged_pr_count": 0,
       "merged_prs": [],
-      "planned_action": "pass-audit",
+      "planned_action": "block-mutation",
       "applied_action": null,
-      "status": "pass",
+      "status": "blocked",
       "checks": [
         {
           "name": "source-log-issue-writeback",
@@ -73,13 +75,13 @@
         },
         {
           "name": "parent-child-dod-ordering",
-          "status": "pass",
-          "details": "DoD child-issue refs preserve the expected source-log-owned ordering (`created -> phase_log_* -> short ref`)"
+          "status": "fail",
+          "details": "DoD child-issue refs ['#288', '#289', '#293', '#295', '#297', '#300', '#303', '#305', '#307', '#309'] do not preserve expected source-log-owned ordering ['#289', '#288', '#313', '#295', '#314', '#293', '#297', '#324', '#300', '#303', '#305', '#307', '#309', '#330', '#332', '#333', '#338', '#326', '#337', '#315', '#334', '#335', '#336', '#331', '#327', '#341', '#342', '#339', '#340', '#322']"
         },
         {
           "name": "sidebar-child-relationships",
-          "status": "pass",
-          "details": "live GitHub sub-issue relationships match the expected parent child-issue set regardless of display order"
+          "status": "fail",
+          "details": "live GitHub sub-issue relationships [288, 289, 293, 295, 297, 300, 303, 305, 307, 309, 313, 314, 315, 322, 324, 326, 327, 330, 331, 332, 333, 334, 335, 336, 337, 338, 341] do not match expected [289, 288, 313, 295, 314, 293, 297, 324, 300, 303, 305, 307, 309, 330, 332, 333, 338, 326, 337, 315, 334, 335, 336, 331, 327, 341, 342, 339, 340, 322]"
         },
         {
           "name": "final-dod-pr-refs",
@@ -93,8 +95,8 @@
         },
         {
           "name": "links-coverage",
-          "status": "pass",
-          "details": "Links section covers the expected canonical issue-link fragments"
+          "status": "fail",
+          "details": "Links section is missing expected issue-link fragments: ['Roadmap: `docs/roadmap/draft.md`']"
         },
         {
           "name": "context-sentence-shape",

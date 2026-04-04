@@ -2,18 +2,14 @@
 
 - Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`
 - Projects: `wordloom Board`
-- Milestone: `road-002-projection-runtime-platformization-and-evidence-governance`
+- Milestone: ``
 - Parent issue: #248
 
 ## Context
 
-- The issue body still treated Source log as metadata even though it behaves as a navigation link rather than issue state.
-- This slice kept Metadata limited to issue state fields and moved deterministic navigation rows into Links, including optional previous-log references.
-- Top-level parent issues and child issues now follow separate body rules so parent ledgers do not inherit child-oriented fields by accident.
-- Lifecycle audit was updated around that split so historical S0E issues can be checked against one explicit Metadata-versus-Links contract.
+- <placeholder>
 
 ## Definition of Done (DoD)
-
 
 ## Links
 

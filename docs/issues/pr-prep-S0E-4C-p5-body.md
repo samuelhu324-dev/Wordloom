@@ -42,8 +42,13 @@
 
 ## Evidence Footer
 
+- `18fbfe40` / `S0E-4C` / `P0-P1`: normalize PR summary gate and relationship apply
+- `cc72eb91` / `S0E-4C` / `P2-P3`: regenerate artifacts and reconcile legacy PRs
+- `7468d552` / `S0E-4C` / `P4-C1-S1`: create live issue and attach parent
+- `db1f26e3` / `S0E-4C` / `P4-C1-S1`: add live PR prep artifacts
+- `22e72115` / `S0E-4C` / `P4-C1-S1`: align PR prep with remote base
+- `c9e39dfe` / `S0E-4C` / `P4-C1-S2`: record closed-loop evidence and stabilize
 - `c4b6656d` / `S0E-4C` / `P5-C1-S1`: harden create-path cherry-pick fallback
-- `bf30fae0` / `S0E-4C` / `P5-C1-S1`: refresh P5 PR-prep artifacts
 
 ## Development Link
 

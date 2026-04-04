@@ -43,7 +43,7 @@
       ],
       "summary_bullet_count": 3,
       "preview_body_path": "docs/issues/pr-prep-S0E-4F-live-body.md",
-      "selected_commit_count": 8,
+      "selected_commit_count": 7,
       "selected_commits": [
         {
           "sha": "6cdc0b267e0f6a4b74c43caeb8942227cdf0465a",
@@ -90,13 +90,6 @@
         {
           "sha": "5db06efaf0842cae63b55bbace3b6d6387f080a6",
           "subject": "S0E-4F/P5-C1-S1S2: align footer scope and rewrite live PRs",
-          "matched_id": "S0E-4F",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
-        },
-        {
-          "sha": "4deafaa24fd1ab9f61dcd4b13f77b69904dd4511",
-          "subject": "S0E-4F/P5-C3-S1: create live issue and preflight PR",
           "matched_id": "S0E-4F",
           "status": "selected",
           "reason": "commit subject matches requested ID prefix"
@@ -1047,20 +1040,6 @@
           "matched_id": "S0E-3B",
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "07f608d9c983a5f8eb99cb2face1588bf2fb8e79",
-          "subject": "S0E-4E/P3-C2-S1: create live issue and preflight PR",
-          "matched_id": "S0E-4E",
-          "status": "skipped",
-          "reason": "commit subject does not match requested ID prefix"
-        },
-        {
-          "sha": "4deafaa24fd1ab9f61dcd4b13f77b69904dd4511",
-          "subject": "S0E-4F/P5-C3-S1: create live issue and preflight PR",
-          "matched_id": "S0E-4F",
-          "status": "selected",
-          "reason": "commit subject matches requested ID prefix"
         }
       ],
       "planned_action": "prepare-pr-prep-branch",
