@@ -72,7 +72,7 @@
 
 - `P0`: inventory contract（表头、分类轴、counts 记录规则）
 - `P1`: current evidence total table（当前 major surfaces、owner、retention、lookup path、family owner map）
-- `P2`: hotspot list（当前最明显的混放面与后续治理顺序建议）
+- `P2`: retention/storage baseline + hotspot list（回答 major surfaces 哪些 retained、哪些 tmp，以及当前最明显的混放面）
 
 ## Success Criteria (DoD)
 
@@ -80,6 +80,7 @@
 - 对每个 major family 至少能回答：`class`、`current surface`、`representative examples`、`generator/owner`、`retention intent`、`lookup path`。
 - 至少记录一组当前 counts/scale baseline，帮助后续区分“主要面”和“尾部面”。
 - 至少保留一版 `family owner map`，回答每类 surface 的主 contract owner 是哪条 log/script/workflow family。
+- 至少明确回答 `artifacts`、`docs/issues`、`docs/labs/_snapshot` 三个 major surfaces 当前哪些应该 retained、哪些默认 tmp。
 - 至少识别出 3 个后续最值得治理的 hotspot，而不是只给出泛泛的目录批评。
 
 ## Stability (what stable means)
@@ -161,14 +162,65 @@
 | `tmp-scratch` | `artifacts/_tmp_*`, `_local_*`, downloaded CI inspection bundles | the immediate operator/investigation that created the bundle | ad-hoc scripts, downloads, local extraction helpers | the immediate temp folder itself | default is temporary；除非后续被显式升级为 retained lookup bundle |
 | `evidence-lite` | `docs/UI&UX/**` | UI fix-note process / UI owner slice | human-authored fix notes | `docs/UI&UX/README.md` | intentionally outside the heavy drill/hard-gate chain |
 
-## P2 (Hotspot list | v1)
+## P2 (Retention / storage baseline | v1)
 
-### P2-C1-S1 (First hotspot list retained | v1)
+### P2-C1-S1 (Class-to-retention baseline fixed | v1)
+
+- `human-ledger`:
+  - default retention: `retained`
+  - default storage surface: `docs/logs/*.md`
+  - reason: 这些文件是 operator-facing ledger，承担长期 lookup 和 narrative responsibility。
+- `fact-source`:
+  - default retention: `retained`
+  - default storage surface: `docs/labs/_snapshot/auto/**`, `docs/labs/_snapshot/manual/**`
+  - reason: 这是最强的 run/drill 事实源，不能按一次性 scratch 处理。
+- `retained-summary`:
+  - default retention: `retained`
+  - default storage surface: named ledgers under `artifacts/` without `_tmp_` prefix
+  - reason: 这些文件承担 low-cardinality history/index/summary 角色，应保留稳定 lookup path。
+- `workflow-derived`:
+  - default retention: `retained`
+  - default storage surface: accepted workflow outputs under `docs/issues/*`
+  - reason: 它们是 `S0E` docs/GitHub automation 的 replay/audit surface，不应默认视为 tmp。
+- `tmp-scratch`:
+  - default retention: `tmp`
+  - default storage surface: `artifacts/_tmp_*`, `_local_*`, ad-hoc downloaded inspection bundles
+  - reason: 这些内容服务于一次性调查或局部实验，除非被显式升级，否则不应视为长期 retained evidence。
+- `evidence-lite`:
+  - default retention: `retained`
+  - default storage surface: `docs/UI&UX/**`
+  - reason: 虽然不进入 heavy drill/hard-gate 主链路，但仍属于长期可追溯修复记录。
+
+### P2-C1-S2 (Surface-specific policy fixed | v1)
+
+- `artifacts/`:
+  - `retained`: named ledgers and accepted summary surfaces such as `*runs.json`, `write_gate_runs.latest.json`, and other non-`_tmp_` summary/history files.
+  - `tmp`: `_tmp_*`, `_local_*`, downloaded CI inspection bundles, one-off extraction outputs, ad-hoc replay scratch bundles.
+  - current rule: 若文件名或目录名仍带 `_tmp_` / `_local_` 语义，则默认按 tmp 处理；若要长期保留，后续应升级为稳定命名 surface。
+- `docs/issues/`:
+  - `retained`: issue mirrors, issue conclusions, PR prep/live/body surfaces, lifecycle audit/gate outputs, publish-verify outputs, roadmap-bridge manifests/plans, and other accepted `S0E` workflow-derived files.
+  - `tmp`: 当前不额外指定新的 tmp 子族；若未来出现一次性 scratch/replay 文件，应优先不要直接落在 `docs/issues/` retained surface 下。
+  - current rule: 现有 `docs/issues/*` 默认视为 `workflow-derived retained outputs`，直到后续 cutover 明确拆出 tmp lane。
+- `docs/labs/_snapshot/`:
+  - `retained`: `auto/**` and `manual/**` run directories by default.
+  - `tmp`: none by default inside the retained snapshot tree.
+  - current rule: `docs/labs/_snapshot` 不承担 scratch lane；如果只是临时调查或下载物，应优先落在 `artifacts/_tmp_*` 而不是伪装成 snapshot run evidence。
+
+### P2-C1-S3 (Operator storage decision shortcuts fixed | v1)
+
+- 如果产物是单次 run/drill 的原始事实源：放到 `docs/labs/_snapshot/...`，默认 `retained`。
+- 如果产物是人读的总结、结论、DoD 或 evidence ledger：写回 owning log 的 `docs/logs/*.md`。
+- 如果产物是 docs/GitHub automation 的 mirror / prep / apply / audit / publish-verify surface：放到 `docs/issues/*`，默认 `retained`。
+- 如果产物是 low-cardinality summary/history/index ledger：放到 `artifacts/` 的稳定命名文件，不要用 `_tmp_` 前缀。
+- 如果产物只服务于一次性调查、下载、提取、局部重放：放到 `artifacts/_tmp_*` 或 `_local_*`，默认 `tmp`。
+
+### P2-C1-S4 (Hotspot list retained | v1)
 
 - Hotspot 1: `artifacts/` 根目录当前同时容纳 `retained-summary` 与 `tmp-scratch`，operator 很难仅凭目录层级区分长期 ledger 与一次性调查产物。
 - Hotspot 2: `docs/issues/` 规模已足够大，但其默认身份仍容易被误读成“通用 evidence 仓”；实际上它更接近 docs/GitHub automation 的 workflow-derived retained outputs。
 - Hotspot 3: `docs/logs` 中的 `Evidence` ledger 与 `docs/labs/_snapshot` 的 fact-source contract 已有明确分层，但 repo 级 vocabulary 还没把这两者公开收口为不同 family。
-- Hotspot 4: 少量历史/过渡路径仍留下旧 path 痕迹或 CI-only inspection bundle，后续 cutover 需要明确定义哪些例外允许 coexistence，哪些应回收。
+- Hotspot 4: `docs/issues/` 当前仍没有显式 tmp lane，因此若后续出现一次性 replay scratch 输出，必须避免直接混入 retained workflow surface。
+- Hotspot 5: 少量历史/过渡路径仍留下旧 path 痕迹或 CI-only inspection bundle，后续 cutover 需要明确定义哪些例外允许 coexistence，哪些应回收。
 
 ## Numbering
 
@@ -186,9 +238,12 @@
 - P1-C1-S1: retain the first repo-level evidence total table
 - P1-C1-S2: retain current scale baseline and dominant file families
 
-### P2 (Hotspot list)
+### P2 (Retention / storage baseline)
 
-- P2-C1-S1: retain the first hotspot list and hand it back to `S6B/P2-P4`
+- P2-C1-S1: fix the class-to-retention baseline for the current evidence families
+- P2-C1-S2: answer which current `artifacts`, `docs/issues`, and `docs/labs/_snapshot` surfaces are retained versus tmp
+- P2-C1-S3: retain operator storage shortcuts for new surfaces
+- P2-C1-S4: retain the hotspot list and hand it back to later cutover work
 
 ## Execution Checklist (unchecked)
 
@@ -207,7 +262,10 @@
 
 ### P2 (Hotspot list)
 
-- [ ] `P2-C1-S1`: first hotspot list retained
+- [x] `P2-C1-S1`: class-to-retention baseline fixed
+- [x] `P2-C1-S2`: surface-specific retained versus tmp policy fixed
+- [x] `P2-C1-S3`: operator storage shortcuts fixed
+- [x] `P2-C1-S4`: hotspot list retained
 
 ## Evidence (reserved)
 
@@ -219,3 +277,4 @@
 
 - 2026-04-04: opened `S6B-1A` as the first bounded follow-up under `S6B`, focused on retaining one repo-level evidence total table before any storage or cutover discussion widens.
 - 2026-04-04: completed `P0/P1` v1 by formalizing the inventory columns, scale baseline, family-level granularity rule, and a first repo-level family owner map so later retention work has a concrete contract baseline.
+- 2026-04-04: completed `P2` v1 in the same log by fixing the current class-to-retention baseline, answering retained versus tmp for `artifacts`, `docs/issues`, and `docs/labs/_snapshot`, and recording operator storage shortcuts for future surfaces.
