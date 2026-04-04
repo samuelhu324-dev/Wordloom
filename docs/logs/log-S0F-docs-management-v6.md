@@ -123,13 +123,13 @@
 - [x] `P2`：issue creation create-time hard-fail boundary fixed
 - [x] `P3`：PR create preflight becomes the only allowed live publish front-half
 - [x] `P4`：issue conclusion / relationship / PR rewrite live mutation wrapper convergence fixed
-- [ ] `P5`：optional GitHub Actions secondary enforcement policy fixed after local entrypoints converge
+- [x] `P5`：optional GitHub Actions secondary enforcement policy fixed after local entrypoints converge
 
 ## Current Status（进展摘要）
 
 - `S0F` is now opened and pushed as docs-management v6 on branch `S0F-docs-management-v6`.
 - The first active child slice `S0F-1A` is no longer just a placeholder: `P0` contract language is fixed and `P1` has already hardened the real issue creation entrypoint.
-- The retained evidence now shows three hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, and raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces.
+- The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 
 ## Evidence（可选，聚合型记账）
 
@@ -191,10 +191,25 @@
   - raw PR body rewrite functions now fail closed outside the guarded single-PR rewrite path, while the historical batch rewrite script remains bounded internal reuse instead of an operator-facing default
   - the retained `S0F-1A` block samples now point operators at `apply_*_with_pre_gate.py` or the thin-gate `--delegate-apply` surfaces, proving wrapper-only convergence is enforced in code rather than only documented
 
+### S0F-1A (GitHub Actions secondary-enforcement narrowing sample | 2026-04-04)
+
+- artifacts:
+  - `docs/issues/github-actions-secondary-enforcement-S0F-1A-p4-boundary.json`
+  - `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`
+  - `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+- expected:
+  - after local fail-closed entrypoints converge, GitHub Actions remains an optional replay or drift-detection surface rather than the place where publish ownership is first decided
+  - workflow-owned summaries and manifests state the local owner explicitly so a stop/error cannot be misread as CI having prevented publish
+- observed:
+  - `S0F-1A` now retains one explicit boundary artifact that classifies the thin gate and guarded local wrappers as the primary mutation boundary while classifying both audited GitHub workflows as secondary enforcement only
+  - the read-only wrapper dispatch workflow now records `secondary_enforcement=true`, `local_primary_boundary=true`, and `publish_owner=local fail-closed family entrypoint` in its retained run manifest
+  - the PR body mirror workflow now records `trigger_surface=workflow_dispatch`, `local_primary_boundary=true`, and a post-publish-only role note in its retained manifest while preserving attribution-stop semantics before mirror verification
+
 ## Notes（落地原则，可选）
 
 - `S0F-docs-management-v6` is the current mixed authoring branch for this new spine.
 - Future CI or wrapper work must stay downstream of local fail-closed contract fixes.
+- GitHub Actions summaries and manifests must keep naming the local entrypoint as publish owner so a later workflow change cannot silently become the primary control plane.
 
 ## Stability（stable 口径）
 

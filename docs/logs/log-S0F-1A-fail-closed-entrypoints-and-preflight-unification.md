@@ -72,6 +72,7 @@
 - Fix the first fail-closed boundary for real issue creation by stopping on inferred keyword, scaffold Context, and uncontrolled metadata gaps.
 - Make PR create front-half preflight the only allowed path before any live PR publish step.
 - Converge issue conclusion, relationship attach, and PR body rewrite toward wrapper-only live mutation entrypoints instead of raw family apply calls.
+- Narrow GitHub Actions and workflow_dispatch surfaces back to explicit secondary enforcement so local fail-closed entrypoints remain the primary ownership boundary.
 
 **PR checklist source**:
 
@@ -105,7 +106,7 @@
 - `P1`: real issue creation hard-fail boundary
 - `P2`: PR create front-half preflight as the only allowed live publish entry
 - `P3`: issue conclusion / relationship / PR body rewrite wrapper convergence
-- (optional) `P4`: narrow secondary-enforcement policy for later CI/GitHub Actions rollout
+- `P4`: narrow secondary-enforcement policy for later CI/GitHub Actions rollout
 
 ## Success Criteria (DoD)
 
@@ -210,6 +211,10 @@
 - [x] `P3-C1-S1`: raw versus wrapped mutation entrypoints inventoried
 - [x] `P3-C1-S2`: canonical operator-facing wrapper surfaces fixed
 
+### P4 (Secondary-enforcement narrowing)
+
+- [x] `P4-C1-S1`: local-primary versus GitHub-secondary boundary fixed
+
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths (or CI run URLs).
@@ -286,6 +291,20 @@
   - `apply_pr_body_scope_with_pre_gate.py` now treats its inner live rewrite function as internal-only and the historical batch rewrite script also fails closed unless an internal-only flag is supplied for bounded reuse
   - the retained `S0F-1A` inventory plus three block samples now show the exact canonical surfaces for `issue-conclusion`, `issue-relationship`, and `pr-body-rewrite`, and each raw entrypoint exits with a wrapper-only guidance message instead of behaving like a default operator path
 
+### P4-C1-S1 (GitHub Actions secondary-enforcement boundary narrowed | 2026-04-04)
+
+- artifacts:
+  - `docs/issues/github-actions-secondary-enforcement-S0F-1A-p4-boundary.json`
+  - `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`
+  - `.github/workflows/s0e-pr-body-secondary-enforcement.yml`
+- expected:
+  - GitHub Actions surfaces remain explicitly optional secondary enforcement after local fail-closed entrypoints have already decided whether create/apply/publish may continue
+  - workflow summaries and retained manifests can no longer be read as if `workflow_dispatch` or mirror verification owned publish authorization
+- observed:
+  - the new `S0F-1A` boundary artifact records local fail-closed wrappers and the thin gate as the primary ownership surface, while both GitHub workflows are explicitly classified as read-only or post-publish secondary enforcement only
+  - the read-only wrapper dispatch workflow now states `local fail-closed family entrypoint` as the primary mutation owner and retains the same artifact-first failure semantics without claiming publish prevention
+  - the PR body mirror workflow now states `local create path` as the primary publish owner, treats attribution failure as `skipped-before-verifier`, and records its workflow role as post-publish secondary enforcement rather than publish authorization
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-04: created `S0F-1A` as the first v6 slice to address fail-closed issue creation, PR preflight, wrapper-only live mutation, and retry semantics.
@@ -293,3 +312,4 @@
 - 2026-04-04: completed `P1` by hardening `scripts/issues/gen_issue_draft.py` so real `create-issue` fails closed on inferred keyword and scaffold/placeholder Context while still preserving reviewable draft/result artifacts.
 - 2026-04-04: completed `P2` by hardening `scripts/issues/create_pr_from_plan.py` so live PR publish now requires a matching successful front-half preflight artifact, then retained one `S0F-1A` stop sample that proves preview generation does not imply publish eligibility.
 - 2026-04-04: completed `P3` by hardening raw issue-conclusion, issue-relationship, and PR body rewrite mutation paths behind one internal-only guard, then retaining one inventory artifact plus one raw-block sample per family to prove guarded wrapper convergence.
+- 2026-04-04: completed `P4` by fixing one explicit local-primary versus GitHub-secondary boundary artifact and tightening both GitHub workflow summaries/manifests so `workflow_dispatch` and mirror verification remain secondary enforcement only.
