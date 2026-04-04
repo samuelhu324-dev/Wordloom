@@ -1,0 +1,47 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0F-1A-live-manifest-plan.json",
+  "preflight_result_path": "docs/issues/pr-prep-S0F-1A-live-manifest-front-half-preflight-result.json",
+  "item_index": 0,
+  "requested_id": "S0F-1A",
+  "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0f-1a",
+  "base_branch": "main",
+  "merge_base": "c92ea29fd74a826796dca32d10439488717ee9a7",
+  "selected_commit_count": 6,
+  "selected_commits": [
+    "e2bf872b6bad67c4766ca15c0eebc496c27a8609",
+    "e123c71f3e69225df049567d15a466deab331da4",
+    "091d10dffc43971c550ee4995b723765c41290b1",
+    "26e585476028f5e1c69976316ca2f4f45a04202d",
+    "34a68342c9de331fd8791cbce6955ad326db0bd7",
+    "121c79dbd4cd6c34d60605bddc04476ad27d0a66"
+  ],
+  "pr_title": "S0F-1A/P0-P4: fail-closed entrypoints and preflight unification v1",
+  "draft": true,
+  "preflight_decision": "allow-front-half-preflight",
+  "preflight_allowed": true,
+  "pr_number": 365,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/365",
+  "body_path": "docs/issues/pr-prep-S0F-1A-live-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#364",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0F-1A-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0F-1A-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at e2bf872b; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply e2bf872b6... S0F-1A/P0-P1: fail-closed issue creation entrypoints"
+  ]
+}

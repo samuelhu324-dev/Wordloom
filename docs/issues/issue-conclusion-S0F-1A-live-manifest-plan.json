@@ -1,0 +1,45 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-remediation-S0F-1A-live-issue-conclusion-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0F-1A: merged PR set supplied by explicit override",
+    "S0F-1A: preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+    "S0F-1A: existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording",
+    "S0F-1A: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-1A",
+      "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+      "issue_number": 364,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/364",
+      "issue_title": "S0F-1A: automation/fail-closed entrypoints and preflight unification",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-lifecycle-remediation-S0F-1A-live-issue-conclusion-s0f-1a-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 365,
+          "title": "S0F-1A/P0-P4: fail-closed entrypoints and preflight unification v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/365",
+          "merged_at": "2026-04-04T09:31:34Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "merged PR set supplied by explicit override",
+        "preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+        "existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Full-auto lifecycle rerun for S0F-1A after moving substantive Context generation from create time to issue conclusion."
+    }
+  ]
+}

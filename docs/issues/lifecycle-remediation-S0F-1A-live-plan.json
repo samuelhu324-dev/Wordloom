@@ -1,0 +1,34 @@
+{
+  "mode": "lifecycle-remediation-dry-run",
+  "result": "ok",
+  "audit_plan_path": "docs/issues/lifecycle-audit-S0F-1A-live-manifest-plan.json",
+  "selection_input": "audit-plan",
+  "operation": "plan-lifecycle-remediation",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0F-1A: planned"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-1A",
+      "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+      "issue_number": 364,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/364",
+      "audit_status": "blocked",
+      "remediation_status": "planned",
+      "planned_action": "plan-remediation",
+      "applied_action": null,
+      "steps": [
+        {
+          "action_kind": "plan-issue-conclusion-refresh",
+          "status": "planned",
+          "details": "Prepare an issue-conclusion plan so the final body and close state can be regenerated from exact-ID merged PR evidence.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-S0F-1A-live-issue-conclusion-manifest.json"
+        }
+      ],
+      "warnings": [],
+      "reason": "Full-auto lifecycle rerun for S0F-1A after moving substantive Context generation from create time to issue conclusion."
+    }
+  ]
+}

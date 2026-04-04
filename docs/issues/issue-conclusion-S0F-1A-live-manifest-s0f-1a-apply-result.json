@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S0F-1A-live-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0F-1A",
+  "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 364,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/364",
+  "issue_title": "S0F-1A: automation/fail-closed entrypoints and preflight unification",
+  "previous_issue_state": "CLOSED",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S0F-1A-live-body.md",
+  "close_reason": null,
+  "warnings": [
+    "issue was already closed before apply; body updated in place"
+  ]
+}

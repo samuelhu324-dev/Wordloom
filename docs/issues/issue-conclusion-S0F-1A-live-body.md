@@ -7,9 +7,14 @@
 
 ## Context
 
+- The scoped detail here is contract for fail-closed entrypoints, retry vocabulary, and wrapper-only mutation rules.
+- S0F-1A is the first follow-up slice under S0F, and it directly addresses the still-soft entrypoints exposed by the current docs/GitHub lifecycle: issue creation, PR create front-half, and post-merge issue/PR live mutation.
+- It carries the work forward from S0E-7G while staying on the same parent S0E chain.
+- It left the fail-closed entrypoints and preflight unification path in a reusable live form for later automation work.
 
 ## Definition of Done (DoD)
 
+- #365
 
 ## Links
 
@@ -17,3 +22,4 @@
 - Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 - Parent log: `docs/logs/log-S0F-docs-management-v6.md`
 - Previous log: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+

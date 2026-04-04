@@ -1,0 +1,148 @@
+{
+  "mode": "pr-prep-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/pr-prep-S0F-1A-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-pr-prep",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0F-1A: pr_development_issue derived from source log issue link"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-1A",
+      "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+      "current_branch": "S0F-docs-management-v6",
+      "head_ref": "HEAD",
+      "base_branch": "main",
+      "merge_base": "c92ea29fd74a826796dca32d10439488717ee9a7",
+      "candidate_pr_branch": "pr-prep/s0f-1a",
+      "pr_title": "S0F-1A/P0-P4: fail-closed entrypoints and preflight unification v1",
+      "pr_scope_kind": "phases",
+      "pr_scope_refs": [
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "pr_base": "main",
+      "pr_labels": [
+        "EVOLUTION",
+        "s0/knowledge system",
+        "sub/1",
+        "drills"
+      ],
+      "pr_projects": [],
+      "pr_milestone": null,
+      "pr_development_issue": "#364",
+      "pr_development_issue_refs": [
+        "#364"
+      ],
+      "summary_bullet_count": 4,
+      "preview_body_path": "docs/issues/pr-prep-S0F-1A-live-body.md",
+      "selected_commit_count": 6,
+      "selected_commits": [
+        {
+          "sha": "e2bf872b6bad67c4766ca15c0eebc496c27a8609",
+          "subject": "S0F-1A/P0-P1: fail-closed issue creation entrypoints",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "e123c71f3e69225df049567d15a466deab331da4",
+          "subject": "S0F-1A/P2-C1-S1S2: enforce PR create preflight boundary",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "091d10dffc43971c550ee4995b723765c41290b1",
+          "subject": "S0F-1A/P3-C1-S1S2: converge wrapper-only live mutation surfaces",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "26e585476028f5e1c69976316ca2f4f45a04202d",
+          "subject": "S0F-1A/P4-C1-S1: narrow GitHub Actions secondary enforcement boundary",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "34a68342c9de331fd8791cbce6955ad326db0bd7",
+          "subject": "S0F-1A/P4-C2-S1: wire road-002 anchors and live issues",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "121c79dbd4cd6c34d60605bddc04476ad27d0a66",
+          "subject": "S0F-1A/P1-C2-S1: defer substantive context to conclusion",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        }
+      ],
+      "branch_commits": [
+        {
+          "sha": "ccdf702ff2d2c9aa12aeddff93cdaf0c0906aaae",
+          "subject": "docs: start S0F docs management v6",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "e2bf872b6bad67c4766ca15c0eebc496c27a8609",
+          "subject": "S0F-1A/P0-P1: fail-closed issue creation entrypoints",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "e123c71f3e69225df049567d15a466deab331da4",
+          "subject": "S0F-1A/P2-C1-S1S2: enforce PR create preflight boundary",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "091d10dffc43971c550ee4995b723765c41290b1",
+          "subject": "S0F-1A/P3-C1-S1S2: converge wrapper-only live mutation surfaces",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "26e585476028f5e1c69976316ca2f4f45a04202d",
+          "subject": "S0F-1A/P4-C1-S1: narrow GitHub Actions secondary enforcement boundary",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "34a68342c9de331fd8791cbce6955ad326db0bd7",
+          "subject": "S0F-1A/P4-C2-S1: wire road-002 anchors and live issues",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "121c79dbd4cd6c34d60605bddc04476ad27d0a66",
+          "subject": "S0F-1A/P1-C2-S1: defer substantive context to conclusion",
+          "matched_id": "S0F-1A",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        }
+      ],
+      "planned_action": "prepare-pr-prep-branch",
+      "status": "planned",
+      "warnings": [
+        "pr_development_issue derived from source log issue link"
+      ]
+    }
+  ]
+}
