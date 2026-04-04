@@ -1,0 +1,215 @@
+# log-S0F-1E (Phase 1E: completeness classification buckets and audit output taxonomy)
+
+---
+
+**id**: `S0F-1E`
+**kind**: `log`
+**title**: `completeness classification buckets and audit output taxonomy v1`
+**status**: `draft`
+**scope**: `S0`
+**tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Audit, Contract, Classification, epic/s0, sub/1e`
+**links**: ``
+  **issue**: ``
+  **pr**: ``
+  **runbook**: ``
+  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+  **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
+  **previous_log**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
+  **reference_log_1**: `docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md`
+  **reference_log_2**: `docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`
+  **reference_log_3**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
+**issue_keyword**: `audit`
+**issue_top_labels**: `EVOLUTION`
+**issue_scope_labels**: `s0/knowledge system, sub/1`
+**issue_module_labels**: ``
+**issue_milestone**: `road-002: projection runtime platformization and evidence governance`
+**issue_parent**: ``
+**issue_projects**: ``
+**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+**roadmap_milestone**: `M5`
+**roadmap_phase**: ``
+**roadmap_bridge_refs**: ``
+**pr_labels**: ``
+**pr_projects**: ``
+**pr_milestone**: ``
+**pr_base**: `main`
+**pr_development_issue**: ``
+**created**: `2026-04-04`
+**updated**: `2026-04-04`
+
+---
+
+## Decision / Outcome
+
+**Decision**:
+
+- `S0F-1E` is the next follow-up slice after `S0F-1D`, and it turns the lifecycle completeness model into one explicit audit-output taxonomy that can be emitted by read-only review tooling.
+- v1 should stop reporting lifecycle drift only through coarse gate statuses such as `pass`, `warning`, or `blocked`. The audit surface should also emit deterministic completeness buckets that say which stage failed and what kind of failure was found.
+- The first target is not remediation automation. It is a stable classification vocabulary plus one output contract that lets reviewers and later tooling distinguish `creation`, `pr`, and `conclusion` defects without rereading the full evidence bundle.
+- The initial taxonomy should stay additive: existing gate statuses may remain for stop/allow decisions, but they should no longer be the only machine-readable summary of completeness gaps.
+
+**Default choices (phase defaults / v1)**:
+
+- Stage ownership from `S0F-1D` remains canonical: `Creation`, `PR`, and `Conclusion` buckets must map back to the lifecycle ownership already fixed there.
+- Bucket labels should be deterministic and compact, for example `creation-links-gap`, `pr-development-linkage-gap`, or `conclusion-dod-mismatch`, instead of prose-only reason strings.
+- v1 should prefer a single primary audit-output taxonomy shared by live lifecycle audit results, while allowing historical pre-screen output to map into the same bucket family where possible.
+- Existing `status` fields such as `pass`, `warning`, `blocked`, `reconciliation`, or `error` remain decision-layer summaries; bucket labels become the diagnosis layer underneath them.
+- The first rollout stays read-only and evidence-first: classification output may guide later remediation work, but it must not trigger mutation inside this slice.
+
+## PR Summary Inputs (optional)
+
+**PR summary bullets**:
+
+- Create one explicit taxonomy for lifecycle completeness buckets so audit output can name stage-local failure classes rather than only generic gate states.
+- Define how existing read-only planners should expose bucketed completeness findings without breaking the current decision-layer status fields.
+- Prepare the next follow-up path for deterministic audit-output consumption by remediation planning or review tooling.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for generated PR checklist blocks.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+- Parent log: `docs/logs/log-S0F-docs-management-v6.md`
+
+## Definitions (optional)
+
+- `bucket`: one deterministic audit classification label that names the lifecycle stage and defect family at a finer grain than overall gate status.
+- `decision layer`: the existing audit result surface that answers whether an item is `pass`, `warning`, `blocked`, `reconciliation`, or `error`.
+- `diagnosis layer`: the new audit result surface that answers what kind of completeness defect actually occurred, such as `creation-links-gap` or `conclusion-context-shape-gap`.
+- `bucket family`: a stable grouping of related bucket labels under the same lifecycle stage, such as creation metadata buckets, PR linkage buckets, or conclusion body buckets.
+
+## Constraints
+
+- Do not redefine lifecycle ownership already fixed in `S0F-1D`; `S0F-1E` consumes that model and turns it into audit-output taxonomy.
+- Do not collapse diagnosis buckets back into free-text reason strings that downstream tooling cannot classify deterministically.
+- Do not break existing audit decision fields while introducing bucketed output; v1 should extend the output contract, not replace stop/allow semantics prematurely.
+- Do not widen this slice into automatic remediation planning or live mutation; classification output must remain read-only here.
+
+## Scope
+
+- `P0`: define the completeness bucket taxonomy and wire `S0F-1E` into the `S0F` spine
+- `P1`: fix creation-stage bucket families and naming rules
+- `P2`: fix PR-stage bucket families and naming rules
+- `P3`: fix conclusion-stage bucket families and naming rules
+- `P4`: package one audit-output contract and representative retained classification sample
+
+## Success Criteria (DoD)
+
+- Review tooling can emit a stable lifecycle bucket label in addition to overall gate status.
+- Bucket labels make it obvious whether a defect belongs to `creation`, `pr`, or `conclusion` ownership.
+- The taxonomy is precise enough that later tooling can route follow-up work without reparsing free-text evidence.
+- At least one retained audit sample proves the bucketed output format can coexist with the existing decision-layer statuses.
+
+## Stability (what stable means)
+
+- This log can be marked `stable` when:
+  - the stage-local bucket taxonomy is fixed for `creation`, `pr`, and `conclusion` completeness;
+  - one audit-output contract records how bucket labels coexist with current gate statuses;
+  - at least one retained sample demonstrates the bucketed output shape without requiring manual reinterpretation.
+
+## Current Status
+
+- `S0F-1D` is now stable as the lifecycle completeness-model slice: stage ownership, body/sidebar completeness boundaries, and the first read-only audit packaging are all fixed.
+- The next remaining gap is output granularity rather than ownership: current read-only planners can already emit rich per-check evidence, but their top-level summaries still stop too early at `pass/warning/blocked/reconciliation/error` instead of naming deterministic stage-local completeness buckets.
+- `S0F-1E` is now opened as the next `S0F` follow-up so that the completeness classification defined in `S0F-1D` can be lowered into a stable audit-output taxonomy rather than remaining only a contract-level description.
+- `P0` is the first follow-up: wire `S0F-1E` into the spine and fix the diagnosis-layer bucket vocabulary boundary before any bucket family is refined stage by stage.
+
+## P0 Bucket Taxonomy Boundary (planned)
+
+- `S0F-1E` should first fix the split between decision-layer audit status and diagnosis-layer completeness buckets.
+- The primary live audit surface should remain `plan_lifecycle_audit.py`, but its output should gain a stable bucket vocabulary rather than relying only on free-text check names and reason strings.
+- Historical pre-screen output may map into the same bucket family where practical, but it should not force the live lifecycle taxonomy to flatten down to structure-only review categories.
+
+## P1 Creation Bucket Families (planned)
+
+- Creation buckets should classify deterministic gaps such as metadata derivation mismatch, blank-as-rendered Links drift, sidebar parent attachment drift, or create-time Context/DoD shape violations.
+- Bucket labels should remain compact and stage-prefixed so they can be aggregated without extra interpretation.
+
+## P2 PR Bucket Families (planned)
+
+- PR buckets should classify semantic completeness gaps such as missing development linkage, footer/linkage divergence, metadata row mismatch, or deterministic label drift.
+- PR bucket rules should preserve the distinction between a structurally valid PR body and a semantically incomplete PR lifecycle state.
+
+## P3 Conclusion Bucket Families (planned)
+
+- Conclusion buckets should classify final body and sidebar re-check defects such as Context sentence-shape mismatch, DoD ledger mismatch, Links coverage drift, merged-PR evidence mismatch, or parent/sub-issue relationship drift.
+- Conclusion bucket rules should preserve the difference between open-issue transitional states and true closed-loop completeness failures.
+
+## P4 Audit Output Contract and Sample (planned)
+
+- The first stable output contract should show how `status`, `planned_action`, and new bucket labels coexist in one retained audit bundle.
+- The first representative sample should stay small and should demonstrate at least one stage-local bucket without requiring mutation or remediation replay.
+
+## Plan (draft)
+
+### P0 (Taxonomy boundary and spine wiring)
+
+- P0-C1-S1: create `S0F-1E` and wire it into the `S0F` parent spine as the next follow-up slice
+- P0-C1-S2: define the split between decision-layer status and diagnosis-layer bucket taxonomy
+
+### P1 (Creation buckets)
+
+- P1-C1-S1: define creation-stage bucket families and naming conventions
+- P1-C1-S2: map representative creation completeness checks to deterministic bucket labels
+
+### P2 (PR buckets)
+
+- P2-C1-S1: define PR-stage bucket families and naming conventions
+- P2-C1-S2: map representative PR completeness checks to deterministic bucket labels
+
+### P3 (Conclusion buckets)
+
+- P3-C1-S1: define conclusion-stage bucket families and naming conventions
+- P3-C1-S2: map representative conclusion completeness checks to deterministic bucket labels
+
+### P4 (Audit output contract)
+
+- P4-C1-S1: retain one representative audit-output sample carrying both status and bucket labels
+
+## Execution Checklist (unchecked)
+
+### P0 (Taxonomy boundary and spine wiring)
+
+- [ ] `P0-C1-S1`: `S0F-1E` created and wired into the `S0F` parent spine
+- [ ] `P0-C1-S2`: decision-layer versus diagnosis-layer boundary fixed
+
+### P1 (Creation buckets)
+
+- [ ] `P1-C1-S1`: creation-stage bucket families fixed
+- [ ] `P1-C1-S2`: representative creation checks mapped to bucket labels
+
+### P2 (PR buckets)
+
+- [ ] `P2-C1-S1`: PR-stage bucket families fixed
+- [ ] `P2-C1-S2`: representative PR checks mapped to bucket labels
+
+### P3 (Conclusion buckets)
+
+- [ ] `P3-C1-S1`: conclusion-stage bucket families fixed
+- [ ] `P3-C1-S2`: representative conclusion checks mapped to bucket labels
+
+### P4 (Audit output contract)
+
+- [ ] `P4-C1-S1`: representative bucketed audit-output sample retained
+
+## Notes (optional)
+
+- `S0F-1E` does not replace `S0F-1D`; it productizes the classification model that `S0F-1D` already fixed.
+- If the next implementation step exposes bucket overlap or ambiguity, this slice should refine taxonomy first rather than rushing into automated remediation routing.
+
+## Evidence
+
+- `S0F-1D` now provides the ownership model consumed by this slice: `creation`, `pr`, and `conclusion` completeness already exist as explicit lifecycle categories, but they are not yet emitted as stable diagnosis buckets in current retained audit output.
+- `scripts/issues/plan_lifecycle_audit.py` and `scripts/issues/plan_historical_log_review.py` already provide the two read-only result surfaces this slice will normalize: both emit machine-readable status plus detailed checks, which makes them suitable foundations for a shared bucket taxonomy instead of a new audit family.
+- `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` and `docs/issues/historical-log-review-S0E-7C-sample-plan.json` remain representative retained samples proving that rich check-level evidence already exists and can be lowered into deterministic bucket labels in a later phase.
+
+## Numbering
+
+- `S<n>`: Step.
+- `C<n>`: Cycle.
+
+**Commit / PR naming**:
+
+- `S0F-1E/P<phase>-C<cycle>-S<steps>: <summary>`, where `<steps>` can be a single step (`1`, meaning `...-S1`) or multiple consecutive steps grouped within the same phase / cycle (for example `1S2`, meaning `...-S1S2`).
