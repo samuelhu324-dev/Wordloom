@@ -20,5 +20,4 @@
 - Log: `docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md`
 - Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 - Parent log: `docs/logs/log-S6B-evidence-drills-taxonomy.md`
-- Roadmap: `docs/roadmap/_draft/road-S2-.md`
 
