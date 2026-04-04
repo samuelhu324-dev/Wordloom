@@ -116,6 +116,7 @@
 - `S0F-1E` is now opened as the next `S0F` follow-up so that the completeness classification defined in `S0F-1D` can be lowered into a stable audit-output taxonomy rather than remaining only a contract-level description.
 - `P0` is now complete: `S0F-1E` is wired into the spine, the decision-layer versus diagnosis-layer boundary is fixed, and the next follow-up is `P1` creation-stage bucket families.
 - `P1` is now complete: creation-stage bucket families and naming rules are fixed, representative create-time checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P2` PR-stage bucket families.
+- `P2` is now complete: PR-stage bucket families and naming rules are fixed, representative PR checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P3` conclusion-stage bucket families.
 
 ## P0 Bucket Taxonomy Boundary (completed)
 
@@ -160,10 +161,32 @@
 - `context-sentence-shape` on an open issue maps to `creation-timing-gap` only when substantive Context prose appears too early or violates the create-time empty-Context contract; otherwise the check remains a creation-stage pass rather than forcing a future-stage bucket.
 - `exact-id-merged-pr-evidence`, `final-dod-pr-refs`, and `source-log-pr-link` do not create creation buckets in v1 when they merely indicate that the item has not advanced into PR or conclusion ownership yet; they remain neutral or transition-signaling checks until later-stage bucket families are applied.
 
-## P2 PR Bucket Families (planned)
+## P2 PR Bucket Families (completed)
 
 - PR buckets should classify semantic completeness gaps such as missing development linkage, footer/linkage divergence, metadata row mismatch, or deterministic label drift.
 - PR bucket rules should preserve the distinction between a structurally valid PR body and a semantically incomplete PR lifecycle state.
+
+### P2-C1-S1 (PR-stage bucket families fixed | v1)
+
+- PR-stage diagnosis buckets are now fixed as compact stage-prefixed labels rather than as free-text contract failures.
+- `pr-body-shape-gap` owns structural PR body defects, including missing required sections, wrong PR section ordering, or malformed Metadata bullet shape.
+- `pr-metadata-gap` owns deterministic PR metadata defects, especially when the canonical PR body carries the wrong `Development issue` metadata row or retains disallowed structural surfaces such as a legacy `Development Link` section.
+- `pr-development-linkage-gap` owns semantic PR linkage defects across the full owned development-linkage lane: source-log expectation, rendered `Development issue` metadata, rendered `Closes #...` footer rows, and GitHub-recognized closing-link behavior must converge.
+- `pr-label-gap` owns deterministic PR label drift where live or planned PR labels do not match the derivable label set required by the source log and PR-prep contract.
+- `pr-links-gap` owns PR Links section defects such as invalid link categories or other navigation drift in the canonical PR `Links` block.
+- `pr-evidence-footer-gap` owns Evidence Footer contract failures, including source-row shape defects, eligibility drift, missing/extra rendered footer rows, and canonical footer-line shape violations.
+
+### P2-C1-S2 (Representative PR checks mapped to bucket labels | v1)
+
+- `pr-section-order` and `metadata-row-shape` now map to `pr-body-shape-gap` because they describe canonical PR-body structural drift rather than semantic PR linkage defects.
+- `development-link-presence` now maps to `pr-metadata-gap` when the PR body still renders a legacy `Development Link` section or otherwise violates the rule that development identity is Metadata-owned.
+- Rendered `Metadata -> Development issue` row mismatch, whether surfaced through PR body validation or PR-prep comparison, also maps to `pr-metadata-gap` because it is the metadata expression of PR ownership rather than the full GitHub linkage lane by itself.
+- `github-development-linkage` now maps to `pr-development-linkage-gap` because it represents divergence between expected development issue identity and the rendered `Closes #...` footer rows GitHub uses to materialize linkage.
+- Source-log expectation gaps around `pr_development_issue` and same-ID `links.issue` fallback also map to `pr-development-linkage-gap`, because `S0F-1D` already fixed that lane as a semantic PR completeness surface rather than a render-only one.
+- Deterministic PR label drift derived through `plan_pr_prep.py` now maps to `pr-label-gap`, including missing inherited labels and missing derived `drills` when the source log is evidence-eligible.
+- `pr-link-categories` now maps to `pr-links-gap` because it describes invalid navigation rows inside the canonical PR `Links` block.
+- `evidence-footer-source-shape`, `evidence-footer-eligibility`, `evidence-footer-presence`, and `evidence-footer-line-shape` now map to `pr-evidence-footer-gap` because they all describe one owned footer contract: whether footer rows are allowed, required, canonically shaped, and scope-aligned.
+- A PR may therefore remain structurally valid while still landing in `pr-development-linkage-gap` or `pr-label-gap`, which preserves the `rendered correctly` versus `semantically complete` distinction already fixed in `S0F-1D`.
 
 ## P3 Conclusion Bucket Families (planned)
 
@@ -215,8 +238,8 @@
 
 ### P2 (PR buckets)
 
-- [ ] `P2-C1-S1`: PR-stage bucket families fixed
-- [ ] `P2-C1-S2`: representative PR checks mapped to bucket labels
+- [x] `P2-C1-S1`: PR-stage bucket families fixed
+- [x] `P2-C1-S2`: representative PR checks mapped to bucket labels
 
 ### P3 (Conclusion buckets)
 
@@ -241,6 +264,8 @@
 - `P0-C1-S1`: `docs/logs/log-S0F-docs-management-v6.md` now records `S0F-1E` as the next explicit follow-up slice under the `S0F` spine and reflects `P0` as complete rather than leaving the new child slice as an ungrounded placeholder.
 - `P1-C1-S1` / `P1-C1-S2`: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md` and `scripts/issues/plan_lifecycle_audit.py` remain the contract and implementation anchors for creation bucket taxonomy recorded here: create-time ownership is already fixed for body plus sidebar state, and the current live audit check names provide the concrete surfaces now grouped under `creation-body-shape-gap`, `creation-metadata-gap`, `creation-links-gap`, `creation-sidebar-relationship-gap`, `creation-timing-gap`, and `creation-writeback-gap`.
 - `P1-C1-S1` / `P1-C1-S2`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` remains the representative retained creation-stage evidence bundle for this mapping work because it already shows one live `issue-created` sample with canonical create-time checks such as `source-log-issue-writeback`, `required-body-sections`, `expected-labels`, `sidebar-parent-relationship`, `links-coverage`, and `context-sentence-shape`.
+- `P2-C1-S1` / `P2-C1-S2`: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`, `scripts/issues/body_contract.py`, `scripts/issues/plan_pr_prep.py`, and `scripts/issues/verify_live_pr_body_contract.py` remain the contract and implementation anchors for PR bucket taxonomy recorded here: PR ownership is already fixed for development linkage, labels, and footer/link convergence, while the current PR contract check names provide the concrete surfaces now grouped under `pr-body-shape-gap`, `pr-metadata-gap`, `pr-development-linkage-gap`, `pr-label-gap`, `pr-links-gap`, and `pr-evidence-footer-gap`.
+- `P2-C1-S1` / `P2-C1-S2`: `docs/issues/pr-metadata-completeness-S0E-4F-p4-summary.json` remains the representative retained PR evidence bundle for this mapping work because it already proves the unified PR completeness lane can be summarized across expected development issue, metadata row, closing refs, labels, and GitHub linkage without collapsing back to a render-only pass/fail view.
 
 ## Numbering
 
