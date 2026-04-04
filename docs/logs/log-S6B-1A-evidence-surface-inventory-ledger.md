@@ -1,0 +1,221 @@
+# log-S6B-1A（Evidence surface inventory ledger：repo evidence total table + current ownership map）
+
+---
+
+**id**: `S6B-1A`
+**kind**: `log`
+**title**: `evidence surface inventory ledger (repo evidence total table + current ownership map) v1`
+**status**: `draft`
+**scope**: `S6`
+**tags**: `EVOLUTION, Evidence, Drills, Taxonomy, Inventory, Retention, epic/s6, sub/1a`
+**links**: ``
+  **issue**: ``
+  **pr**: ``
+  **runbook**: ``
+  **roadmap**: ``
+  **parent_log**: `docs/logs/log-S6B-evidence-drills-taxonomy.md`
+  **previous_log**: ``
+  **reference_log_1**: `docs/logs/log-S6A-evidence-drills-spine.md`
+  **reference_log_2**: `docs/logs/log-S0D-2A-drills-evidence-automation.md`
+  **reference_log_3**: `docs/logs/log-S0D-4A-UI-layered-fix-notes.md`
+**issue_keyword**: ``
+**issue_top_labels**: ``
+**issue_scope_labels**: ``
+**issue_module_labels**: ``
+**issue_milestone**: ``
+**issue_parent**: ``
+**issue_projects**: ``
+**roadmap_path**: ``
+**roadmap_milestone**: ``
+**roadmap_phase**: ``
+**roadmap_bridge_refs**: ``
+**pr_labels**: ``
+**pr_projects**: ``
+**pr_milestone**: ``
+**pr_base**: ``
+**pr_development_issue**: ``
+**created**: `2026-04-04`
+**updated**: `2026-04-04`
+
+---
+
+## Decision / Outcome
+
+**Decision**:
+
+- `S6B-1A` 的第一轮交付是 repo 级 evidence total table：先把当前证据面按 family 做成一份结构化 inventory ledger，而不是继续用口头印象描述“证据很多、很乱”。
+- v1 盘点以 family-level 为主，不逐个枚举每个文件；优先记录“哪一类东西、落在哪、谁生成、保留意图是什么、operator 从哪里看”。
+- 这份 inventory 直接服务于后续 `S6B/P2-P4`：retention policy、generator policy 与 bounded cutover 不能脱离当前 surfaces 直接空想。
+
+**Default choices (phase defaults / v1)**:
+
+- 先按当前真实仓库 surfaces 建账，不先设计理想目录。
+- 先记录 major families 与 representative examples，不先追求每个单文件都入表。
+- 当前 evidence total table 采用六类 taxonomy：`human-ledger`、`fact-source`、`retained-summary`、`workflow-derived`、`tmp-scratch`、`evidence-lite`。
+- counts 只作为当前基线观察值，不作为长期 contract 字段；长期 contract 以 family、owner、retention 和 lookup path 为准。
+- `P0/P1` 的 v1 交付必须同时保留 `family owner map`，避免 inventory 只回答“东西在哪”，却回答不了“谁对这类 surface 的 contract 负责”。
+
+## Definitions (optional)
+
+- `family-level inventory`: 以文件族或目录族为单位记账，而不是把每个单独 artifact 都列为一行。
+- `owner map`: 记录哪个 log family、script family 或 workflow family 对该 surface 拥有 contract。
+- `lookup path`: operator 最先应该去看的入口路径，不等于所有可能存放内容的路径。
+
+## Constraints
+
+- 不把 `docs/logs` 的 `Evidence` 区与 `docs/labs/_snapshot` 下的 run_dir 混为一类；前者是 ledger，后者才是 runtime fact-source。
+- 不把 `docs/issues` 的 plan/manifest/apply-result 一律提升为 retained runtime evidence；它们默认是 docs/GitHub automation 派生产物。
+- 不把所有 `_tmp_*` 目录都当作垃圾；v1 只标记为 `tmp-scratch`，后续再细分是否存在应升级为 retained lookup bundle 的少数例外。
+- `UI evidence-lite` 保持独立记录，不强行并入 heavy track hard-gate taxonomy。
+
+## Scope
+
+- `P0`: inventory contract（表头、分类轴、counts 记录规则）
+- `P1`: current evidence total table（当前 major surfaces、owner、retention、lookup path、family owner map）
+- `P2`: hotspot list（当前最明显的混放面与后续治理顺序建议）
+
+## Success Criteria (DoD)
+
+- 当前 repo 的主要 evidence surfaces 至少被收口为一份 family-level total table。
+- 对每个 major family 至少能回答：`class`、`current surface`、`representative examples`、`generator/owner`、`retention intent`、`lookup path`。
+- 至少记录一组当前 counts/scale baseline，帮助后续区分“主要面”和“尾部面”。
+- 至少保留一版 `family owner map`，回答每类 surface 的主 contract owner 是哪条 log/script/workflow family。
+- 至少识别出 3 个后续最值得治理的 hotspot，而不是只给出泛泛的目录批评。
+
+## Stability (what stable means)
+
+- This log can be marked `stable` when:
+  - the first repo-level evidence total table is retained and accepted as the baseline inventory
+  - downstream `S6B` work can reference this ledger directly instead of rerunning ad-hoc discovery each time
+
+## P0 (Contract | v1)
+
+### P0-C1-S1 (Inventory columns fixed | v1)
+
+- v1 total table 统一使用以下列：
+  - `class`
+  - `current surface`
+  - `representative examples`
+  - `generator / owner`
+  - `retention intent`
+  - `lookup path`
+  - `notes / current risk`
+
+### P0-C1-S2 (Scale baseline rule fixed | v1)
+
+- counts 只记录当前 snapshot，不进入长期 machine contract。
+- v1 允许记录目录级和族级数量，例如：
+  - `docs/issues`: 当前约 `720` 个 `.json` 与 `432` 个 `.md`
+  - `artifacts/`: 当前顶层约 `61` 个目录与 `49` 个 `.json`
+  - `docs/labs/_snapshot`: 当前顶层分为 `auto/` 与 `manual/`
+
+### P0-C1-S3 (Family-level granularity fixed | v1)
+
+- v1 不逐个列出每个 issue artifact、每个 run_dir 或每个 `_tmp_*` 目录。
+- 同一类 surface 先按 family 入表，例如 `issue-conclusion-*`、`pr-prep-*`、`*runs.json`、`docs/labs/_snapshot/auto/*`。
+
+### P0-C1-S4 (Primary owner discipline fixed | v1)
+
+- 每类 surface 除了记录 generator，还必须记录 `primary contract owner`。
+- `primary contract owner` 回答的是：当后续要判断保留策略、命名规则、lookup 入口或 cutover 边界时，默认应由哪条 log family 或 script/workflow family 负责。
+- generator 与 owner 可以不同：例如 `docs/issues/*` 的具体文件由脚本生成，但其 contract owner 仍是 `S0E` 这条 docs/GitHub automation 线，而不是单个脚本文件本身。
+
+## P1 (Current evidence total table | v1)
+
+### P1-C1-S1 (Repo evidence total table retained | v1)
+
+| class | current surface | representative examples | generator / owner | retention intent | lookup path | notes / current risk |
+| --- | --- | --- | --- | --- | --- | --- |
+| `human-ledger` | `docs/logs/*.md` | `log-S6A-evidence-drills-spine.md`, `log-S0E-docs-management-v5.md` | corresponding log owner slices | retained | start from the owning log or spine log | records headSha + artifact paths, but is not the raw machine fact-source |
+| `fact-source` | `docs/labs/_snapshot/auto/**`, `docs/labs/_snapshot/manual/**` | `docs/labs/_snapshot/auto/S3A-2A-3A/<scenario>/<run_id>/`, `docs/labs/_snapshot/manual/_lab-S3A-2A-3A-expB/<run_id>/` | `backend/scripts/cli.py`, `backend/scripts/labs/*`, `cli_app/scenarios/*` | retained for actual drill/run evidence | start from `docs/labs/_snapshot/auto/` or the owning runbook/log | strongest runtime evidence surface; should not be confused with summary ledgers |
+| `retained-summary` | `artifacts/*.json` summary and run ledgers | `s5b3a-runs.json`, `s5b4a-runs.json`, `s2d-runs.json`, `write_gate_runs.latest.json` | hard-gate scripts, CI collectors, projection/onboarding wrappers | retained | start from the named ledger file or owning log/runbook | low-cardinality history/index layer; currently mixed with tmp material in the same root |
+| `workflow-derived` | `docs/issues/*` docs/GitHub automation outputs | `issue-conclusion-*`, `pr-prep-*`, `issue-relationship-*`, `lifecycle-audit-*`, `publish-verify-*` | docs/GitHub automation scripts and bounded replay tools | retained when they are the accepted workflow artifacts | start from the owning `S0E` log family and the matching file family | currently very large: about `720` `.json` and `432` `.md`; should not be mistaken for runtime drill evidence |
+| `tmp-scratch` | `artifacts/_tmp_*`, `_local_*`, downloaded CI inspection bundles, extraction helpers | `_tmp_ci_run_*`, `_tmp_s4d4b_run_*`, `_tmp_pr_prep_*`, `_tmp_extract_*` | ad-hoc operator work, one-off scripts, CI downloads | temporary by default | start from the immediate investigation folder only | current largest ambiguity inside `artifacts/`; some bundles may later deserve bounded retained policy |
+| `evidence-lite` | `docs/UI&UX/**` | `UI-FIX-20260313-*.md`, `assets/README.md` | UI fix-note process | retained, but separate from heavy drills flow | start from `docs/UI&UX/README.md` | intentionally separate from `_result.json` / hard-gate / CI artifact contract |
+
+### P1-C1-S2 (Current scale baseline retained | v1)
+
+- `docs/issues/` 当前族级规模：约 `720` 个 `.json`、`432` 个 `.md`。
+- `docs/issues/` 当前最大文件族包括：
+  - `issue-conclusion-*`: `373`
+  - `pr-prep-*`: `202`
+  - `pr-live-*`: `96`
+  - `pr-body-*`: `88`
+  - `issue-relationship-*`: `77`
+  - `lifecycle-audit-*`: `72`
+- `artifacts/` 当前顶层规模：约 `61` 个目录、`49` 个 `.json`、`10` 个 `.md`、`5` 个 `.txt`，另有少量 `.ps1`、`.graphql`、`.sh`。
+- `docs/labs/_snapshot/` 当前顶层为 `auto/` 与 `manual/` 两个根。
+
+### P1-C1-S3 (Family owner map retained | v1)
+
+- 下表记录的是当前 repo 级 evidence surfaces 的 `primary contract owner`，用于回答后续 retention / naming / lookup / cutover 应优先找谁，而不是简单复述“文件是谁生成的”。
+
+| class | family / surface slice | primary contract owner | current generator(s) | primary lookup path | notes |
+| --- | --- | --- | --- | --- | --- |
+| `human-ledger` | `docs/logs/*.md` parent / phase / spine logs | owning log family itself（如 `S0E`, `S2B`, `S2C`, `S2D`, `S3A`, `S4*`, `S5*`, `S6*`） | human-authored, sometimes tool-assisted | the owning log or parent spine log | ledger layer；记录 artifact path 与结论，但不是 raw fact-source |
+| `fact-source` | `docs/labs/_snapshot/auto/**` | owning scenario/runbook/log family | `backend/scripts/cli.py`, `backend/scripts/labs/*`, `cli_app/scenarios/*` | the scenario run directory under `docs/labs/_snapshot/auto/` | strongest machine-facing run evidence；owner 不应退化成单个脚本路径 |
+| `fact-source` | `docs/labs/_snapshot/manual/**` | the manual drill owner under the corresponding log/runbook | operator-managed manual capture | the specific run directory under `docs/labs/_snapshot/manual/` | manual track 仍是 fact-source，只是生成方式不同于 auto |
+| `retained-summary` | top-level run ledgers such as `*runs.json`, `write_gate_runs.latest.json` | the owning hard-gate / projection / wrapper family | hard-gate scripts, CI collectors, projection/onboarding wrappers | the named retained ledger file | retained summary layer；不应与 `_tmp_*` 调查产物长期混放 |
+| `workflow-derived` | `docs/issues/issue-*.md` and `issue-*.json` mirrors | `S0E` docs/GitHub automation family | `scripts/issues/*` generators and rewriters | the matching issue mirror path under `docs/issues/` | mirrors accepted workflow state，不等同于 runtime drill evidence |
+| `workflow-derived` | `docs/issues/pr-prep-*`, `pr-live-*`, `pr-body-*`, `lifecycle-*`, `publish-verify-*` | `S0E` PR/lifecycle automation family | `scripts/issues/*`, GitHub write-back helpers, replay tools | the matching family under `docs/issues/` | workflow-derived retained outputs；主要服务 docs/GitHub automation replay 和审计 |
+| `tmp-scratch` | `artifacts/_tmp_*`, `_local_*`, downloaded CI inspection bundles | the immediate operator/investigation that created the bundle | ad-hoc scripts, downloads, local extraction helpers | the immediate temp folder itself | default is temporary；除非后续被显式升级为 retained lookup bundle |
+| `evidence-lite` | `docs/UI&UX/**` | UI fix-note process / UI owner slice | human-authored fix notes | `docs/UI&UX/README.md` | intentionally outside the heavy drill/hard-gate chain |
+
+## P2 (Hotspot list | v1)
+
+### P2-C1-S1 (First hotspot list retained | v1)
+
+- Hotspot 1: `artifacts/` 根目录当前同时容纳 `retained-summary` 与 `tmp-scratch`，operator 很难仅凭目录层级区分长期 ledger 与一次性调查产物。
+- Hotspot 2: `docs/issues/` 规模已足够大，但其默认身份仍容易被误读成“通用 evidence 仓”；实际上它更接近 docs/GitHub automation 的 workflow-derived retained outputs。
+- Hotspot 3: `docs/logs` 中的 `Evidence` ledger 与 `docs/labs/_snapshot` 的 fact-source contract 已有明确分层，但 repo 级 vocabulary 还没把这两者公开收口为不同 family。
+- Hotspot 4: 少量历史/过渡路径仍留下旧 path 痕迹或 CI-only inspection bundle，后续 cutover 需要明确定义哪些例外允许 coexistence，哪些应回收。
+
+## Numbering
+
+- `S<n>`: Step.
+- `C<n>`: Cycle.
+
+**Commit / PR naming**:
+
+- `S6B-1A/P<phase>-C<cycle>-S<steps>: <summary>`
+
+## Plan (draft)
+
+### P1 (Current table)
+
+- P1-C1-S1: retain the first repo-level evidence total table
+- P1-C1-S2: retain current scale baseline and dominant file families
+
+### P2 (Hotspot list)
+
+- P2-C1-S1: retain the first hotspot list and hand it back to `S6B/P2-P4`
+
+## Execution Checklist (unchecked)
+
+### P0 (Contract)
+
+- [x] `P0-C1-S1`: inventory columns fixed
+- [x] `P0-C1-S2`: scale baseline rule fixed
+- [x] `P0-C1-S3`: family-level granularity fixed
+- [x] `P0-C1-S4`: primary owner discipline fixed
+
+### P1 (Current table)
+
+- [x] `P1-C1-S1`: repo evidence total table retained
+- [x] `P1-C1-S2`: current scale baseline retained
+- [x] `P1-C1-S3`: family owner map retained
+
+### P2 (Hotspot list)
+
+- [ ] `P2-C1-S1`: first hotspot list retained
+
+## Evidence (reserved)
+
+- Artifacts are the source of truth for later machine-facing inventory artifacts; this log currently records the first bounded repo-level total table and hotspot list in human-facing form.
+- This section should remain separate from any future retained inventory JSON.
+- Prefer one stable ledger shape per unit: heading with `P*-C*-S*` and date, then `headSha`, `artifacts`, `expected`, and `observed`.
+
+## Recent changes (for traceability, optional)
+
+- 2026-04-04: opened `S6B-1A` as the first bounded follow-up under `S6B`, focused on retaining one repo-level evidence total table before any storage or cutover discussion widens.
+- 2026-04-04: completed `P0/P1` v1 by formalizing the inventory columns, scale baseline, family-level granularity rule, and a first repo-level family owner map so later retention work has a concrete contract baseline.
