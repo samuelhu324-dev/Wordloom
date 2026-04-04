@@ -93,6 +93,14 @@
   - the first repo-level evidence total table is retained and accepted as the baseline inventory
   - downstream `S6B` work can reference this ledger directly instead of rerunning ad-hoc discovery each time
 
+## PR Summary Inputs (optional)
+
+**PR summary bullets**:
+
+- Retain the first repo-level evidence inventory ledger across `human-ledger`, `fact-source`, `retained-summary`, `workflow-derived`, `tmp-scratch`, and `evidence-lite` surfaces.
+- Fix the current retention and storage baseline so `artifacts`, `docs/issues`, and `docs/labs/_snapshot` no longer rely on one implicit evidence bucket.
+- Record the current generator/emission policy and bounded cutover order so later `S6B` cleanup can reuse one stable owner-and-migration contract.
+
 ## P0 (Contract | v1)
 
 ### P0-C1-S1 (Inventory columns fixed | v1)
