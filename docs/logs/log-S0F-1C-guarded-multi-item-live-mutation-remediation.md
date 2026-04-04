@@ -82,7 +82,7 @@
 
 - Log: `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
 - Runbook: ``
-- Evidence artifact: `docs/issues/lifecycle-guarded-apply-S0F-1C-p2-summary.json`
+- Evidence artifact: `docs/issues/lifecycle-post-verify-S0F-1C-p3-summary.json`
 
 ## Definitions (optional)
 
@@ -198,6 +198,19 @@
 - representative live sample rule:
   - `P2` may use `preserve-existing` on already-closed historical issues to prove the guarded apply path without introducing fresh LLM-authored prose drift during the live-sample step itself
 
+## P3 Post-Verify Drift Rules (completed)
+
+- mandatory follow-up rule:
+  - every guarded live sample must be followed by non-mutating `preserve-existing` verification before the batch can be considered complete
+- verification ownership:
+  - post-verify remains on the family planning surface rather than the apply surface, so no live mutation is allowed during drift confirmation
+- per-target drift retention:
+  - each target keeps its own post-verify manifest, plan, preview body, and drift status
+  - aggregate batch summaries may report the overall result, but they do not replace per-target evidence
+- clean-preserve rule:
+  - `planned` plus preserve-existing warnings that only confirm merged-PR override sourcing and live Context preservation counts as a clean preserve result
+  - any new structural warning beyond that baseline must be retained as target-local drift rather than merged into a generic batch warning bucket
+
 ## Plan (draft)
 
 ### P0 (Contract and spine wiring)
@@ -243,8 +256,8 @@
 
 ### P3 (Post-refresh verification)
 
-- [ ] `P3-C1-S1`: preserve-existing post-verify fixed as mandatory batch follow-up
-- [ ] `P3-C1-S2`: representative per-target drift report retained
+- [x] `P3-C1-S1`: preserve-existing post-verify fixed as mandatory batch follow-up
+- [x] `P3-C1-S2`: representative per-target drift report retained
 
 ### P4 (Operator repeatability)
 
@@ -328,3 +341,21 @@
   - `apply_issue_conclusion_with_pre_gate.py` now accepts `--item-index`, which closes the previous wrapper gap where a shared multi-item issue-conclusion manifest could only be applied at item index `0`
   - `S0F-1C/P2` retained one shared gate decision and one shared remediation plan for the representative `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359` sample, then applied all three items through repeated wrapper invocations against the same remediation-owned issue-conclusion manifest with item indexes `0`, `1`, and `2`
   - all three guarded results recorded `allowed-via-targeted-conclusion-remediation` and `applied-after-pre-gate`, which proves the live sample remained inside the issue-conclusion family-owned guarded surface instead of reopening raw apply entrypoints or collapsing the batch into one opaque live mutation step
+
+### P3-C1-S1S2 (per-target preserve-existing post-verify retained | 2026-04-04)
+
+- artifacts:
+  - `docs/issues/issue-conclusion-S0F-1C-p3-s6b-1a-post-verify-manifest.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p3-s6b-1a-post-verify-plan.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p3-s6b-1b-post-verify-manifest.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p3-s6b-1b-post-verify-plan.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p3-s6b-1c-post-verify-manifest.json`
+  - `docs/issues/issue-conclusion-S0F-1C-p3-s6b-1c-post-verify-plan.json`
+  - `docs/issues/lifecycle-post-verify-S0F-1C-p3-summary.json`
+- expected:
+  - `P3` should prove that preserve-existing re-verification is a mandatory follow-up after the representative guarded live sample, and that drift is retained per target instead of inferred from aggregate batch success
+  - each target should produce a non-mutating post-verify plan that confirms whether the just-written live body remains structurally valid when preserved as-is
+- observed:
+  - `S0F-1C/P3` derived one post-verify manifest per target from the shared `P2` issue-conclusion manifest and ran `plan_issue_conclusion.py --context-mode preserve-existing` separately for `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`
+  - all three post-verify plans remained in `planned` state and emitted only the expected preserve-existing baseline warnings for explicit merged-PR overrides and live Context preservation, so the retained drift summary classifies all three items as `clean-preserve`
+  - the retained `P3` summary artifact now records the per-target manifests, plans, and clean-preserve status, which closes the batch loop without relying on aggregate-only success language
