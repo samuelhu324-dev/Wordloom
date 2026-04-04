@@ -787,7 +787,7 @@ bash scripts/ops/cloud_release_workflow.sh \
 - 2026-03-25: `P3-C3-S3` 已补出第二条 preflight-level targeted evidence：通过不存在的 `--env-file` 触发 `release_contract_gate` FAIL；同时为当前 WSL/Windows 混合环境补齐了 Windows OpenSSH client preference，避免 `/usr/bin/ssh` 把 contract 样本误判成 reachability failure。
 - 2026-03-25: `P3-C3-S3` 已拿到第一条 targeted gate-fail evidence：通过无效 `--ssh-identity-file` 触发 `identity_auth_gate` FAIL，artifact 已如实记录 `terminalGate=identity_auth_gate`、`failureClass=identity_auth_failure`，且后续 gates 保持 `NOT_RUN`。
 - 2026-03-25: `P3-C3-S1/S2` 已完成第一版落地：`cloud_release_workflow.sh` 现已输出 gate-level results、`terminalGate` 与 `evidenceComplete`，并把 failure taxonomy 收口为更稳定的 low-cardinality classes。
-- 2026-03-25: 在 `road-S1/M4` 明确之后，已把 `S4D-4A` 的下一段工作固定为 `P3-C3`：继续留在当前 phase 下，专门收口 release preflight gates、failure taxonomy refinement 与 gate-level evidence contract，而不是新开 `S6B` 顶层 spine。
+- 2026-03-25: 在 `road-001/M4` 明确之后，已把 `S4D-4A` 的下一段工作固定为 `P3-C3`：继续留在当前 phase 下，专门收口 release preflight gates、failure taxonomy refinement 与 gate-level evidence contract，而不是新开 `S6B` 顶层 spine。
 - 2026-03-25: 创建 `S4D-4A`，把 `S4D` 的下一步工作重点明确收敛到“半自动 release workflow + failure taxonomy + evidence capture”，而不是继续停留在人工 SSH 操作层。
 - 2026-03-25: 已新增 `scripts/ops/cloud_release_workflow.sh`，把远端 preflight / deploy / verify / optional rollback 收口为单入口 workflow，并固定输出 evidence bundle 与 failure class 摘要。
 - 2026-03-25: 第一次本地触发 workflow 样本暴露出结果记账 bug：`ssh` 失败时 `run_remote_step()` 仍返回成功，导致 `summary.json` 错写 PASS；当前已转入修复并准备重跑。

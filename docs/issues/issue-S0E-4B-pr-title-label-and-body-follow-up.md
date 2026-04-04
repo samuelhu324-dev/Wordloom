@@ -2,7 +2,7 @@
 
 - Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`
 - Projects: `wordloom Board`
-- Milestone: ``
+- Milestone: `road-002-projection-runtime-platformization-and-evidence-governance`
 - Source log: `docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md`
 - Parent issue: #248
 

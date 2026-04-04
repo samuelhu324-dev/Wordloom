@@ -12,7 +12,7 @@
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/309`
   **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/310`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
-  **roadmap**: ``
+  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md`
   **reference_log_1**: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
@@ -23,12 +23,12 @@
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
 **issue_module_labels**: ``
-**issue_milestone**: ``
+**issue_milestone**: `road-002-projection-runtime-platformization-and-evidence-governance`
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: ``
-**roadmap_milestone**: ``
-**roadmap_phase**: ``
+**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+**roadmap_milestone**: `M5`
+**roadmap_phase**: `M5-P2`
 **roadmap_bridge_refs**: ``
 **pr_labels**: `drills`
 **pr_projects**: ``

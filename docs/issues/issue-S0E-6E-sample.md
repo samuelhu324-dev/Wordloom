@@ -2,7 +2,7 @@
 
 - Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`
 - Projects: `wordloom Board`
-- Milestone: ``
+- Milestone: `road-002-projection-runtime-platformization-and-evidence-governance`
 - Source log: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`
 - Parent issue: #248
 

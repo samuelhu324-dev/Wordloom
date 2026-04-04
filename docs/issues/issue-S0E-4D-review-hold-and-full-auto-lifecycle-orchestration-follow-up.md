@@ -2,7 +2,7 @@
 
 - Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`
 - Projects: `wordloom Board`
-- Milestone: ``
+- Milestone: `road-002-projection-runtime-platformization-and-evidence-governance`
 - Source log: `docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md`
 - Parent issue: #248
 

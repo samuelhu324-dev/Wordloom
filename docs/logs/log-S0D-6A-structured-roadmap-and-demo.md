@@ -50,7 +50,7 @@
 
 - `P0`: 为 roadmap 与 demo 定义结构化 contract（命名规则、目录结构、Milestone + P* 约定）。
 - `P1`: 落地模板与具体实例：
-  - 新建/更新 `road-template-structured-roadmap.md`、`road-S1-...`、`road-S1-1-...` 等；
+  - 新建/更新 `road-template-structured-roadmap.md`、`road-001-...`、`road-001-01-...` 等；
   - 新建 demo 容器 `docs/demo/demo-001/` 下的 `_cv` 等子目录与 CV Markdown。
 - `P2`: 基于当前仓库资产做一次“归类检查”（sanity check）：
   - roadmap：确认原 v1–v5 内容有去处（例如附录/legacy）；
@@ -132,7 +132,7 @@
 
 ### P0 (Contract)
 
-- [x] `P0-C1-S1`: 路线结构 contract 已在本日志中写明，并在 road-S1 / road-S1-1 中落地。
+- [x] `P0-C1-S1`: 路线结构 contract 已在本日志中写明，并在 road-001 / road-001-01 中落地。
 - [x] `P0-C1-S2`: demo 容器 contract 已在本日志中写明，并在 demo-001 中落地。
 - [x] `P0-C1-S3`: evidence contract 已写明，将以本次 commit/push 为依据。
 
@@ -144,7 +144,7 @@
 
 ### P2 (Drill / Verify)
 
-- [x] `P2-C1-S1`: 已人工检查主要文件与引用路径（road-S1, road-S1-1, demo-001, legacy/），无明显缺失。
+- [x] `P2-C1-S1`: 已人工检查主要文件与引用路径（road-001, road-001-01, demo-001, legacy/），无明显缺失。
 
 ### P3 (Wrap-up)
 
@@ -158,8 +158,8 @@
 - branch: `S0D`
 - artifacts:
   - `docs/roadmap/road-template-structured-roadmap.md`
-  - `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
-  - `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
+  - `docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md`
+  - `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md`
   - `docs/demo/demo-001/_cv/cv-001-backend-p1.md`
   - `docs/demo/demo-001/_cv/cv-001-backend-p2.md`
   - `docs/roadmap/legacy/` 下的旧 ADR / roadmap 文本（如存在）

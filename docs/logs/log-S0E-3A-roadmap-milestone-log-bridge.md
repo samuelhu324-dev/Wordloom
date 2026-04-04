@@ -12,22 +12,22 @@
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/314`
   **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/292`
   **runbook**: ``
-  **roadmap**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
   **reference_log_1**: `docs/logs/log-S0D-6A-structured-roadmap-and-demo.md`
   **reference_log_2**: `docs/roadmap/road-template-structured-roadmap.md`
-  **reference_log_3**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
+  **reference_log_3**: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
 **issue_module_labels**: ``
-**issue_milestone**: ``
+**issue_milestone**: `road-002-projection-runtime-platformization-and-evidence-governance`
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
-**roadmap_milestone**: ``
-**roadmap_phase**: ``
+**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+**roadmap_milestone**: `M5`
+**roadmap_phase**: `M5-P0`
 **pr_labels**: ``
 **pr_projects**: ``
 **pr_milestone**: ``
@@ -72,14 +72,14 @@
 
 - `P0`: contract for roadmap bridge fields, ledger structure, and child-log-first ownership
 - `P1`: template updates for roadmap files and parent/phase logs
-- `P2`: migrate one real roadmap path such as `road-S1` / `road-S1-1` to the bridge ledger format
+- `P2`: migrate one real roadmap path such as `road-001` / `road-001-01` to the bridge ledger format
 - `P3`: verify that milestone extraction can read the bridge mechanically without relying on prose scanning
 
 ## Current Status
 
 - `P0` is complete: the bridge ownership, field contract, and fail-closed milestone rule are now fixed in this log.
 - `P1` is complete: the parent-log template, phase-log template, and roadmap template now expose the new bridge structure.
-- `P2` is complete: `road-S1` and `road-S1-1` now record explicit child-log-first bridge ledgers plus parent/branch alignment.
+- `P2` is complete: `road-001` and `road-001-01` now record explicit child-log-first bridge ledgers plus parent/branch alignment.
 - `P3` is complete: mechanical extraction now reads the bridge ledgers and parent-alignment blocks directly, without scanning prose sections.
 - `P3-C2` is complete: the historical child logs used by the sample pair now carry primary `roadmap_*` anchors plus exact-slot `roadmap_bridge_refs`, so the dry-run aligns all mapped rows without warning fallback.
 
@@ -177,8 +177,8 @@
 
 ### P2 (Roadmap migration)
 
-- P2-C1-S1: migrate `road-S1` to the mainline bridge-ledger format
-- P2-C1-S2: migrate `road-S1-1` to the branch-road bridge-ledger format
+- P2-C1-S1: migrate `road-001` to the mainline bridge-ledger format
+- P2-C1-S2: migrate `road-001-01` to the branch-road bridge-ledger format
 - P2-C1-S3: record parent/branch alignment explicitly so branch outputs still count toward the mainline
 
 ### P3 (Mechanical verification)
@@ -206,15 +206,15 @@
 
 ### P2 (Roadmap migration)
 
-- [x] `P2-C1-S1`: `road-S1` migrated to the mainline bridge-ledger format
-- [x] `P2-C1-S2`: `road-S1-1` migrated to the branch-road bridge-ledger format
+- [x] `P2-C1-S1`: `road-001` migrated to the mainline bridge-ledger format
+- [x] `P2-C1-S2`: `road-001-01` migrated to the branch-road bridge-ledger format
 - [x] `P2-C1-S3`: parent/branch alignment recorded explicitly in both roadmaps
 
 ### P3 (Mechanical verification)
 
 - [x] `P3-C1-S1`: milestone extraction validated against migrated roadmap ledgers without prose scanning
 - [x] `P3-C1-S2`: fallback rules documented for unmapped slots and missing child-log bridge fields
-- [x] `P3-C1-S3`: sample manifest and dry-run plan artifact emitted for `road-S1` + `road-S1-1`
+- [x] `P3-C1-S3`: sample manifest and dry-run plan artifact emitted for `road-001` + `road-001-01`
 - [x] `P3-C2-S1`: exact-slot child-log refs added for multi-slot roadmap ownership
 - [x] `P3-C2-S2`: historical child logs used by the sample pair backfilled and revalidated to eliminate warning fallback
 
@@ -226,12 +226,12 @@
 - `P1-C1-S2`: `docs/roadmap/road-template-main-roadmap.md` now defines the mainline-road structure and branch absorption rules.
 - `P1-C1-S2`: `docs/roadmap/road-template-branch-roadmap.md` now defines the branch-road structure and parent contribution rules.
 - `P1-C1-S3`: `docs/roadmap/road-template-structured-roadmap.md` remains as a compatibility chooser so older references do not break.
-- `P2-C1-S1`: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md` now carries explicit mainline bridge ledgers and marks branch-origin child logs as `via road-S1-1`.
-- `P2-C1-S2`: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md` now carries explicit branch bridge ledgers.
+- `P2-C1-S1`: `docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md` now carries explicit mainline bridge ledgers and marks branch-origin child logs as `via road-001-01`.
+- `P2-C1-S2`: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md` now carries explicit branch bridge ledgers.
 - `P2-C1-S3`: both roadmaps now record parent/branch alignment explicitly instead of hiding it in prose-only ownership paragraphs.
-- `P3-C1-S1`: `scripts/issues/plan_roadmap_bridge_extraction.py` now extracts bridge rows mechanically from `road-S1` and `road-S1-1` without scanning prose sections.
+- `P3-C1-S1`: `scripts/issues/plan_roadmap_bridge_extraction.py` now extracts bridge rows mechanically from `road-001` and `road-001-01` without scanning prose sections.
 - `P3-C2-S1`: the phase and parent log templates now expose optional `roadmap_bridge_refs` so one log can declare multiple exact roadmap slots without inventing prose fallback.
-- `P3-C2-S2`: the historical child logs referenced by `road-S1` + `road-S1-1` now carry primary `roadmap_*` anchors plus exact-slot `roadmap_bridge_refs`.
+- `P3-C2-S2`: the historical child logs referenced by `road-001` + `road-001-01` now carry primary `roadmap_*` anchors plus exact-slot `roadmap_bridge_refs`.
 - `P3-C2-S2`: `docs/issues/roadmap-bridge-S0E-3A-sample-plan.json` now confirms `40` bridge rows were extracted, `36` mapped rows are `aligned`, `4` remain explicitly `unmapped`, and warning fallback has dropped to `0`.
 - `P3-C1-S3`: `docs/issues/roadmap-bridge-S0E-3A-sample-manifest.json` defines the reusable dry-run input boundary for one mainline/branch roadmap pair.
 
@@ -240,6 +240,6 @@
 - 2026-03-29: opened `S0E-3A` to define a child-log-first roadmap/milestone bridge contract before any v2 milestone automation is attempted.
 - 2026-03-29: completed `P0` by fixing bridge ownership, template field requirements, and fail-closed milestone semantics in the phase contract.
 - 2026-03-29: completed `P1` by rolling roadmap bridge fields into the parent/phase log templates, splitting roadmap authoring into mainline and branch templates, and keeping a compatibility chooser for older references.
-- 2026-03-29: completed `P2` by migrating both `road-S1` and `road-S1-1` to explicit bridge ledgers and writing the parent/branch alignment back into both files.
-- 2026-03-29: completed `P3` by adding a manifest-driven roadmap bridge extraction dry-run, generating a sample plan for `road-S1` + `road-S1-1`, and documenting the fallback rule that keeps the roadmap ledger canonical when older child logs still lack `roadmap_*` fields.
+- 2026-03-29: completed `P2` by migrating both `road-001` and `road-001-01` to explicit bridge ledgers and writing the parent/branch alignment back into both files.
+- 2026-03-29: completed `P3` by adding a manifest-driven roadmap bridge extraction dry-run, generating a sample plan for `road-001` + `road-001-01`, and documenting the fallback rule that keeps the roadmap ledger canonical when older child logs still lack `roadmap_*` fields.
 - 2026-03-29: completed `P3-C2` by adding exact-slot `roadmap_bridge_refs`, backfilling the sample pair's historical child logs, and rerunning extraction until all mapped rows aligned without warning fallback.

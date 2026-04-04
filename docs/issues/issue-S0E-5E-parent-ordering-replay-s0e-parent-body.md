@@ -2,7 +2,7 @@
 
 - Labels: `EVOLUTION`, `s0/knowledge system`, `sub/0`
 - Projects: `wordloom Board`
-- Milestone: ``
+- Milestone: `road-002-projection-runtime-platformization-and-evidence-governance`
 
 ## Context
 
@@ -48,4 +48,4 @@
 ## Links
 
 - Log: `docs/logs/log-S0E-docs-management-v5.md`
-- Roadmap: `docs/roadmap/draft.md`
+- Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`

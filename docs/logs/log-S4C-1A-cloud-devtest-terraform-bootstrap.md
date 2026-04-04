@@ -131,7 +131,7 @@
 
 ### P3（Drill / Wording）
 
-- P3-C1-S1：写一段 interview-style 段落，说明「从本地 Docker/脚本 → 云服务 → Terraform/IaC」的关系，并链接到本 log 与 `road-S1`。
+- P3-C1-S1：写一段 interview-style 段落，说明「从本地 Docker/脚本 → 云服务 → Terraform/IaC」的关系，并链接到本 log 与 `road-001`。
 
 ## Execution Checklist (unchecked)
 
@@ -219,4 +219,4 @@
 
 ## Recent changes (for traceability, optional)
 
-- 2026-03-22：初始化 `S4C-1A`，定义 cloud dev/test Terraform bootstrap 的合同与计划，用于承接原 `road-S1-2` 中的 Terraform 学习路径。
+- 2026-03-22：初始化 `S4C-1A`，定义 cloud dev/test Terraform bootstrap 的合同与计划，用于承接原 `road-001-2` 中的 Terraform 学习路径。

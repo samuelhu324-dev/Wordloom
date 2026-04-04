@@ -1,32 +1,32 @@
-# road-S1-systems-platform-ops-roadmap-v5
+# road-001-systems-platform-ops-roadmap-v5
 
 ---
 
-**id**: `road-S1`
+**id**: `road-001`
 **kind**: `roadmap`
-**title**: `S1: Wordloom-v3 systems/platform & SaaS-grade ops roadmap (v5 spine)`
+**title**: `001: Wordloom-v3 systems/platform & SaaS-grade ops roadmap (v5 spine)`
 **status**: `draft`
-**scope**: `S1`
+**scope**: `001`
 **tags**: `ROADMAP, systems/platform, planning, v5, government-role`
 **links**: ``
   **source**: `legacy/from_structured_docs/from-roadmap/ROADMAP v5.md`
-  **child_road_1**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
+  **child_road_1**: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md`
   **reference_log_1**: `docs/roadmap/road-template-main-roadmap.md`
 **created**: `2026-03-21`
 **updated**: `2026-03-29`
 
 ---
 
-> 说明：这一份 `road-S1` 现在明确作为主线 roadmap 使用，承载长期 backbone；像 `road-S1-1` 这样的 focused branch road 可以突然出现、集中解决一段内容，但它完成的 child logs 仍然可以显式回流记入 `road-S1` 的主线 ledger，而不要求主线正文吸收全部 branch narrative。
+> 说明：这一份 `road-001` 现在明确作为主线 roadmap 使用，承载长期 backbone；像 `road-001-01` 这样的 focused branch road 可以突然出现、集中解决一段内容，但它完成的 child logs 仍然可以显式回流记入 `road-001` 的主线 ledger，而不要求主线正文吸收全部 branch narrative。
 
 ## Positioning
 
 **Context / role targeting（总路线视角）**
 
-- `road-S1` 是围绕 wordloom-v3 的长期 systems/platform + SaaS 级产品能力主线。
+- `road-001` 是围绕 wordloom-v3 的长期 systems/platform + SaaS 级产品能力主线。
 - 它不只针对某一个岗位，而是覆盖：systems/platform ops、DevOps、平台工程、云工程、后端偏运行面的多种角色族。
-- 所有 `road-S1-*`（例如 `road-S1-1` 政府岗最小闭环）都被视为从这条总路线中「抽出一段并做适配」。
-- 在当前仓库资产的记账边界上，`road-S1` 应优先承接持续向前演进的 cloud/runtime 主心骨，也就是 `S4C`（cloud services / Terraform / cloud-dev infra）与 `S4D`（cloud runtime deploy / verify / rollback / semi-automated workflow）这两条主线。
+- 所有 `road-001-*`（例如 `road-001-01` 政府岗最小闭环）都被视为从这条总路线中「抽出一段并做适配」。
+- 在当前仓库资产的记账边界上，`road-001` 应优先承接持续向前演进的 cloud/runtime 主心骨，也就是 `S4C`（cloud services / Terraform / cloud-dev infra）与 `S4D`（cloud runtime deploy / verify / rollback / semi-automated workflow）这两条主线。
 
 **One-sentence goal**
 
@@ -37,25 +37,25 @@
 - **Primary audience**: 你自己（个人职业路线），以及未来需要了解你平台/运维能力的用人方；不限定在政府岗。
 - **Time horizon**: 1–3 年的长期演进，可按 Milestone M* 分阶段前进。
 - **Code base**: 以 `wordloom-v3` 为主，必要时可以扩展到 demo/sample 仓库，但总路线优先利用现有 S* spine 资产。
-- **Current ownership boundary**: `road-S1` 主体记账应优先覆盖 `S4C + S4D + S4E` 这类继续向 SaaS-grade / cloud-runtime / release-governance 主心骨延伸的资产；像 `S4B` 的本地最小闭环与 `S5A-3B` 的 recovery sample，则更适合作为 `road-S1-1` 这类 role-focused 子路线的主完成面。
+- **Current ownership boundary**: `road-001` 主体记账应优先覆盖 `S4C + S4D + S4E` 这类继续向 SaaS-grade / cloud-runtime / release-governance 主心骨延伸的资产；像 `S4B` 的本地最小闭环与 `S5A-3B` 的 recovery sample，则更适合作为 `road-001-01` 这类 role-focused 子路线的主完成面。
 
 ## Mainline / Branch Rules
 
-- `road-S1` 是主线 road，负责保留长期 backbone 的 milestone 语言与完成面索引。
-- `road-S1-1` 这类支线 road 可以在某个时间点突然出现，用来集中解决一个 focused detour，而不是改写主线的全部 narrative。
-- 如果某个 child log 在支线里完成，但本质上也属于 `road-S1` 的一部分，那么 `road-S1` 的 bridge ledger 仍然要显式记住该 child log，并标注 `via road-S1-1`。
+- `road-001` 是主线 road，负责保留长期 backbone 的 milestone 语言与完成面索引。
+- `road-001-01` 这类支线 road 可以在某个时间点突然出现，用来集中解决一个 focused detour，而不是改写主线的全部 narrative。
+- 如果某个 child log 在支线里完成，但本质上也属于 `road-001` 的一部分，那么 `road-001` 的 bridge ledger 仍然要显式记住该 child log，并标注 `via road-001-01`。
 - 主线 ledger 的 canonical rows 仍然只能指向 child logs，而不是直接把 branch-road 文件当成完成项。
 
 ## Roadmap / Log Bridge Contract
 
-- `road-S1` owns the long-running `M* / M*-P*` language.
+- `road-001` owns the long-running `M* / M*-P*` language.
 - Child logs own implementation and evidence.
 - Branch-road outputs may count back to the mainline, but only through explicit child-log mappings.
 - `Evidence Pointers` remain supporting pointers only; they do not replace the bridge ledger.
 
 ## Branch Road Register
 
-- `road-S1-1`: government-role minimal systems/platform ops loop
+- `road-001-01`: government-role minimal systems/platform ops loop
   - Why it exists: keep a short, interview-oriented minimal loop from flooding the mainline body.
   - Mainline slots it helps satisfy: `M1`, `M2`, parts of `M3`, parts of `M4`, and the minimal recovery/hybrid framing in `M5`.
   - Concentrated child logs: `S4A-*`, `S4B-*`, and `S5A-3B`.
@@ -192,9 +192,9 @@
 **Bridge Ledger (child logs only)**
 
 - `M1-P0`:
-  - `docs/logs/log-S4A-1A-ops-scripting-baseline.md` via `road-S1-1`
+  - `docs/logs/log-S4A-1A-ops-scripting-baseline.md` via `road-001-01`
 - `M1-P1`:
-  - `docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md` via `road-S1-1`
+  - `docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md` via `road-001-01`
 - `M1-P2`:
   - `unmapped`
 - `M1-P3`:
@@ -216,13 +216,13 @@
 **Bridge Ledger (child logs only)**
 
 - `M2-P0`:
-  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` via `road-S1-1`
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` via `road-001-01`
 - `M2-P1`:
-  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` via `road-S1-1`
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` via `road-001-01`
 - `M2-P2`:
-  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` via `road-S1-1`
+  - `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md` via `road-001-01`
 - `M2-P3`:
-  - `docs/logs/log-S4A-1A-ops-scripting-baseline.md` via `road-S1-1`
+  - `docs/logs/log-S4A-1A-ops-scripting-baseline.md` via `road-001-01`
 
 **Plan (P0–P3)**
 
@@ -241,7 +241,7 @@
 **Bridge Ledger (child logs only)**
 
 - `M3-P0`:
-  - `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md` via `road-S1-1`
+  - `docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md` via `road-001-01`
 - `M3-P1`:
   - `docs/logs/log-S4C-2A-cloud-devtest-db-and-storage.md`
 - `M3-P2`:
@@ -274,7 +274,7 @@
 **Bridge Ledger (child logs only)**
 
 - `M4-P0`:
-  - `docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md` via `road-S1-1`
+  - `docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md` via `road-001-01`
 - `M4-P1`:
   - `docs/logs/log-S4D-1A-cloud-runtime-release-path.md`
 - `M4-P2`:
@@ -304,10 +304,10 @@
 **Next spine note**
 
 - `M4` 的下一步主承接物是 `S4D`：把 `S4B` 的本地 packaging 基线与 `S4C` 的 cloud infra 连成一条 cloud/staging runtime 的 deploy -> verify -> rollback operator path。
-- 因此在 roadmap 记账边界上，`S4D` 与其后续 control-plane / governance spine `S4E` 都应算作 `road-S1` 主心骨的一部分，而不是 `road-S1-1` 的完成面；`road-S1-1` 可以引用它们来说明“将来怎么往上长”，但不应把 `S4D/S4E` 的 cloud-runtime / release-governance 主线吞回最小闭环子路线。
+- 因此在 roadmap 记账边界上，`S4D` 与其后续 control-plane / governance spine `S4E` 都应算作 `road-001` 主心骨的一部分，而不是 `road-001-01` 的完成面；`road-001-01` 可以引用它们来说明“将来怎么往上长”，但不应把 `S4D/S4E` 的 cloud-runtime / release-governance 主线吞回最小闭环子路线。
 - `F1` 中提到的 productionization automation 与 `F3` 中提到的 failure taxonomy / evidence discipline，在当前阶段不应只作为“触发条件说明”存在；只要它们直接服务于 `S4D` 的 deploy / verify / rollback operator path，就应优先记在 `M4` 当前完成面之内。
 - `S4E` 现在已经完成了这一层 release operating model 升级：trigger surface policy、environment promotion、release governance、artifact/release records、approval hierarchy、higher-environment blocking 与 execution-layer enforcement 都已形成 v1 spine；因此 `M4` 当前不再把它视为候选扩展，而是视为已完成的 control-plane 闭环。
-- 在此基础上，接下来仍属于 `road-S1` future-capability 的，是把 `S4E/P3` 固定的 execution decision step、break-glass input capture 与 external approval write-back 继续压成仓库实现；这部分优先记在 `F8`，而不是重新回到 parent 定义阶段。
+- 在此基础上，接下来仍属于 `road-001` future-capability 的，是把 `S4E/P3` 固定的 execution decision step、break-glass input capture 与 external approval write-back 继续压成仓库实现；这部分优先记在 `F8`，而不是重新回到 parent 定义阶段。
 
 ### M5: Backup / recovery, governance & hybrid/cloud + second-layer capabilities
 
@@ -319,9 +319,9 @@
 **Bridge Ledger (child logs only)**
 
 - `M5-P0`:
-  - `docs/logs/log-S4A-4A-hybrid-runtime-awareness.md` via `road-S1-1`
+  - `docs/logs/log-S4A-4A-hybrid-runtime-awareness.md` via `road-001-01`
 - `M5-P1`:
-  - `docs/logs/log-S5A-3B-object-storage-backup.md` via `road-S1-1`
+  - `docs/logs/log-S5A-3B-object-storage-backup.md` via `road-001-01`
 - `M5-P2`:
   - `docs/logs/log-S4E-4A-enforcement-auditability-and-environment-approver-policy.md`
 - `M5-P3`:
@@ -329,7 +329,7 @@
 
 **Boundary note for completed `S4E`**
 
-- `S4E` 当前已经完成 release operating model / governance v1，因此它在 `road-S1` 里的第一归属仍应视为 `M4`，因为它延续的是 deploy / verify / rollback / release-control-plane 这条 runtime operations 主线；
+- `S4E` 当前已经完成 release operating model / governance v1，因此它在 `road-001` 里的第一归属仍应视为 `M4`，因为它延续的是 deploy / verify / rollback / release-control-plane 这条 runtime operations 主线；
 - `S4E` 中较强的 release governance / approval hierarchy / release records / cross-environment promotion 语义，说明它已经开始触碰 `M5` 的治理边界，但当前第一归属仍不是 `M5`；
 - 因此现阶段更准确的写法不是把 `S4E` 继续当 future candidate，而是把它视为 `M4` 已完成的一段治理扩展，并把后续仓库实现压到 `F8` 这类 future capability 中。
 
@@ -343,17 +343,17 @@
 
 ## 与子路线的关系
 
-- `road-S1-1-gov-role-minimal-ops-loop`：主要选取 M1–M5 中「对政府岗最直接命中」的一圈，做成 4–8 周的最小闭环。
-- 当前更准确的边界是：`road-S1` 主体继续承接 `S4C + S4D + S4E` 这类 cloud/runtime/release-governance 主线，而 `road-S1-1` 主要承接 `S4B` 的最小 runtime / scripting / Terraform baseline，并吸收 `S4A` 的方法论语言与 `S5A-3B` 的 backup/recovery 样本。
-- 未来可以新增：`road-S1-2`（例如偏云工程 / 多云）、`road-S1-3`（偏平台工程 / IDP）等，均从本文件的 M1–M5 中选子集并加细节。
+- `road-001-01-gov-role-minimal-ops-loop`：主要选取 M1–M5 中「对政府岗最直接命中」的一圈，做成 4–8 周的最小闭环。
+- 当前更准确的边界是：`road-001` 主体继续承接 `S4C + S4D + S4E` 这类 cloud/runtime/release-governance 主线，而 `road-001-01` 主要承接 `S4B` 的最小 runtime / scripting / Terraform baseline，并吸收 `S4A` 的方法论语言与 `S5A-3B` 的 backup/recovery 样本。
+- 未来可以新增：`road-001-02`（例如偏云工程 / 多云）、`road-001-03`（偏平台工程 / IDP）等，均从本文件的 M1–M5 中选子集并加细节。
 
 ## Recent Changes
 
-- 2026-03-29: migrated `road-S1` to the mainline-road bridge-ledger format; branch-road outputs now count back through explicit child-log mappings marked `via road-S1-1` instead of prose-only references.
-- 2026-03-27: `S4E` 已完成到 `S4E-5B` 并形成稳定的 release governance / execution-layer spine；当前已把它从 `road-S1` 中的“候选边界”改写为已完成主线，并新增 `F8 release governance implementation follow-through`，专门承接 execution decision step、break-glass input capture 与 external approval write-back 的后续实现。
-- 2026-03-27: 已正式打开 `S4E` / `S4E-1A`，把更高一层的 release operating model、trigger policy 与 governance boundary 从 `S4D-4B/4C` 的后续讨论中提升为独立主线；当前在 `road-S1` 中仍以 `M4` 为第一归属。
-- 2026-03-27: 明确补充 `S4E` 候选边界：若后续开启新 phase 承接更高一层的 release operating model，它在 `road-S1` 中通常先归 `M4`，只有上升到更完整的 release governance / cross-environment promotion / release records 制度时才开始同时触碰 `M5`；`F1/F3` 继续保留为触发条件说明，而不是主归属。
+- 2026-03-29: migrated `road-001` to the mainline-road bridge-ledger format; branch-road outputs now count back through explicit child-log mappings marked `via road-001-01` instead of prose-only references.
+- 2026-03-27: `S4E` 已完成到 `S4E-5B` 并形成稳定的 release governance / execution-layer spine；当前已把它从 `road-001` 中的“候选边界”改写为已完成主线，并新增 `F8 release governance implementation follow-through`，专门承接 execution decision step、break-glass input capture 与 external approval write-back 的后续实现。
+- 2026-03-27: 已正式打开 `S4E` / `S4E-1A`，把更高一层的 release operating model、trigger policy 与 governance boundary 从 `S4D-4B/4C` 的后续讨论中提升为独立主线；当前在 `road-001` 中仍以 `M4` 为第一归属。
+- 2026-03-27: 明确补充 `S4E` 候选边界：若后续开启新 phase 承接更高一层的 release operating model，它在 `road-001` 中通常先归 `M4`，只有上升到更完整的 release governance / cross-environment promotion / release records 制度时才开始同时触碰 `M5`；`F1/F3` 继续保留为触发条件说明，而不是主归属。
 - 2026-03-26: 新增 `F7 Runtime access path evolution`，明确把 target access boundary 分成三种路径：全云/VPC、overlay network、reverse tunnel bridge；并记录当前已完成的是第 3 种桥接方案，第 1/2 种保留后续演进。
 - 2026-03-25: 把当前 `S4D` 暴露出的 release gates / failure taxonomy / evidence discipline 明确下沉到 `M4` 完成面；`F1` 与 `F3` 继续保留为触发条件说明，但不再把这些内容误判为主要属于未来 `M5` 的话题。
 - 2026-03-25: 新增 “Future capabilities & trigger conditions” 条目，明确 productionization automation、云服务基础、failure taxonomy、安全治理、Kubernetes、Kafka 与 local-first/cloud-selective 的触发条件，避免把未触发能力过早塞进当前主线。
-- 2026-03-25: 明确 roadmap 记账边界：`road-S1` 主体优先承接 `S4C + S4D` 的 cloud/runtime 主线，而 `road-S1-1` 承接政府岗最小闭环中的 `S4B + S5A-3B` 与 `S4A` 方法论引用。
+- 2026-03-25: 明确 roadmap 记账边界：`road-001` 主体优先承接 `S4C + S4D` 的 cloud/runtime 主线，而 `road-001-01` 承接政府岗最小闭环中的 `S4B + S5A-3B` 与 `S4A` 方法论引用。

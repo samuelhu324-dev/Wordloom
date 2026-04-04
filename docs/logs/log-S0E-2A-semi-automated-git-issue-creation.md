@@ -12,17 +12,21 @@
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/289`
   **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/287`
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
+  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0E-docs-management-v5.md`
   **previous_log**: `docs/logs/log-S0D-6A-docs-management-v4.md`
   **reference_log_1**: `docs/logs/log-S4E-release-operating-model-and-governance.md`
   **reference_log_2**: `docs/logs/log-S6A-evidence-drills-spine.md`
-  **reference_log_3**: `docs/roadmap/draft.md`
+  **reference_log_3**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
 **issue_module_labels**: ``
-**issue_milestone**: ``
+**issue_milestone**: `road-002-projection-runtime-platformization-and-evidence-governance`
 **issue_parent**: ``
+**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+**roadmap_milestone**: `M5`
+**roadmap_phase**: `M5-P0`
 **created**: `2026-03-28`
 **updated**: `2026-03-30`
 

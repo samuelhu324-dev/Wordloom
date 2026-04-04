@@ -1,15 +1,15 @@
-# road-S1-1-gov-role-minimal-ops-loop
+# road-001-01-gov-role-minimal-ops-loop
 
 ---
 
-**id**: `road-S1-1`
+**id**: `road-001-01`
 **kind**: `roadmap`
-**title**: `S1-1: Government-role minimal systems/platform ops loop`
+**title**: `001-01: Government-role minimal systems/platform ops loop`
 **status**: `draft`
-**scope**: `S1`
+**scope**: `001`
 **tags**: `ROADMAP, systems/platform, government-role, minimal-loop`
 **links**: ``
-  **parent_road**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+  **parent_road**: `docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md`
   **source**: `legacy/from_structured_docs/from-roadmap/ROADMAP v5.md`
   **reference_template**: `docs/roadmap/road-template-branch-roadmap.md`
   **reference_log_1**: `docs/logs/log-S4B-infra-as-code-and-runtime-packaging.md`
@@ -25,13 +25,13 @@
 
 **Context / role targeting**
 
-- 这一份 `road-S1-1` 是 `road-S1`（ROADMAP v5）的一个子路线，专门聚焦“对准政府这个岗需要的所有最小闭环 / 技术需求”。
+- 这一份 `road-001-01` 是 `road-001`（ROADMAP v5）的一个子路线，专门聚焦“对准政府这个岗需要的所有最小闭环 / 技术需求”。
 - 它不是覆盖 ROADMAP v5 的全部广度，而是从中挑出对岗位描述最直接命中的那一圈：
   - systems / platform operations
   - automation / scripting / reproducible environment
   - backup / recovery / disaster readiness
   - documented sustainable runtime
-- 在当前仓库记账边界上，`road-S1-1` 不负责承接 `S4C/S4D` 这类继续向 cloud/runtime 主心骨演进的主线；它更准确的职责，是把 `S4B` 的本地最小 runtime / scripting / Terraform baseline，连同 `S5A-3B` 的 recovery sample 和 `S4A` 的方法论语言，收口成“现在就能讲”的政府岗最小闭环。
+- 在当前仓库记账边界上，`road-001-01` 不负责承接 `S4C/S4D` 这类继续向 cloud/runtime 主心骨演进的主线；它更准确的职责，是把 `S4B` 的本地最小 runtime / scripting / Terraform baseline，连同 `S5A-3B` 的 recovery sample 和 `S4A` 的方法论语言，收口成“现在就能讲”的政府岗最小闭环。
 
 **One-sentence goal**
 
@@ -40,41 +40,41 @@
 ## Scope & Audience
 
 - **Primary audience**: 招聘 JD 中的 systems / platform operations / DevOps-support 岗位（含政府 / 公共部门）。
-- **Relation to road-S1**: 从 road-S1 的完整路线中抽取必需的最小闭环，优先完成可以“现在就讲”的部分。
+- **Relation to road-001**: 从 road-001 的完整路线中抽取必需的最小闭环，优先完成可以“现在就讲”的部分。
 - **Time horizon**: 约 4–8 周，可滚动拉长，但 v1 聚焦最小闭环，而不是所有增强项。
 
 ## Parent / Branch Rules
 
-- `road-S1-1` 是 `road-S1` 之下的支线 road，不是第二条独立主线。
-- 它存在的原因，是把一段 focused minimal loop 集中解决掉，而不污染 `road-S1` 的长线 narrative。
-- 但它完成的 child logs 仍然属于 `road-S1` 的一部分，因此 branch ledger 和 parent ledger 都需要显式记账同一批 child logs。
+- `road-001-01` 是 `road-001` 之下的支线 road，不是第二条独立主线。
+- 它存在的原因，是把一段 focused minimal loop 集中解决掉，而不污染 `road-001` 的长线 narrative。
+- 但它完成的 child logs 仍然属于 `road-001` 的一部分，因此 branch ledger 和 parent ledger 都需要显式记账同一批 child logs。
 - 如果某个 slot 暂时没有合适的 child log，就必须写 `unmapped`，不能继续藏在 prose 中。
 
 ## Roadmap / Log Bridge Contract
 
 - This branch road owns focused selection and parent alignment.
 - Child logs remain the canonical implementation rows.
-- Any output that counts back to `road-S1` must be stated explicitly in both the branch ledger and the parent road ledger.
+- Any output that counts back to `road-001` must be stated explicitly in both the branch ledger and the parent road ledger.
 
 ## Parent Contribution Ledger
 
-- `road-S1 M1-P0 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
-- `road-S1 M1-P1 <- docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
-- `road-S1 M2-P0 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
-- `road-S1 M2-P1 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
-- `road-S1 M2-P2 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
-- `road-S1 M2-P3 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
-- `road-S1 M3-P0 <- docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
-- `road-S1 M4-P0 <- docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
-- `road-S1 M5-P0 <- docs/logs/log-S4A-4A-hybrid-runtime-awareness.md`
-- `road-S1 M5-P1 <- docs/logs/log-S5A-3B-object-storage-backup.md`
+- `road-001 M1-P0 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
+- `road-001 M1-P1 <- docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
+- `road-001 M2-P0 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-001 M2-P1 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-001 M2-P2 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-001 M2-P3 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
+- `road-001 M3-P0 <- docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
+- `road-001 M4-P0 <- docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
+- `road-001 M5-P0 <- docs/logs/log-S4A-4A-hybrid-runtime-awareness.md`
+- `road-001 M5-P1 <- docs/logs/log-S5A-3B-object-storage-backup.md`
 
 ## Current ownership boundary
 
-- `road-S1-1` 的主完成面当前应以 `S4B` 为核心：也就是 from-zero runtime、ops scripts、Terraform skeleton 与 deployable dev/test baseline；
+- `road-001-01` 的主完成面当前应以 `S4B` 为核心：也就是 from-zero runtime、ops scripts、Terraform skeleton 与 deployable dev/test baseline；
 - `S4A` 在这条子路线里主要提供 hard-gate / post-change verification / operator wording 的方法来源，而不是作为当前主完成面的整棵树全量纳入；
 - `S5A-3B` 继续作为 backup / recovery / sanitise / verify 的最小 recovery sample；
-- `S4C` 与 `S4D` 则应明确算在 `road-S1` 主线里，因为它们承接的是 cloud services / cloud runtime deploy-verify-rollback 的持续演进，而不是政府岗最小闭环的主记账面。
+- `S4C` 与 `S4D` 则应明确算在 `road-001` 主线里，因为它们承接的是 cloud services / cloud runtime deploy-verify-rollback 的持续演进，而不是政府岗最小闭环的主记账面。
 
 ## Milestone overview (picked from ROADMAP v5)
 
@@ -82,7 +82,7 @@
 - **M3. Runtime packaging & deploy / verify / rollback**（Docker/compose + scripts + post-change verification）
 - **M4. Backup / recovery / operational support narrative**（S5A-3B 为核心样本）
 
-Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只要求能讲“基本概念 + 如何往上长”，不要求马上交付完整云侧样本。
+Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-001-01` 中只要求能讲“基本概念 + 如何往上长”，不要求马上交付完整云侧样本。
 
 **Current evidence base (v1)**
 
@@ -90,7 +90,7 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 - `S4B` 顶层 spine 已在 2026-03-25 正式标记为 `stable`，因此这里引用的不再只是分散样本，而是一个已经完成 parent/child 对齐记账的最小 runtime/IaC 闭环；
 - `S4A`：提供 systems/platform wording、hard-gate、post-change verification 与 fallback 叙事的方法来源；
 - `S5A-3B`：提供 backup / recovery / sanitise / verify 的恢复闭环样本；
-- `S4C/S4D`：保留在 `road-S1` 主线中，作为“如果继续往 cloud/runtime 主心骨延伸，会如何增长”的上层方向，而不是本子路线当前的主完成面。
+- `S4C/S4D`：保留在 `road-001` 主线中，作为“如果继续往 cloud/runtime 主心骨延伸，会如何增长”的上层方向，而不是本子路线当前的主完成面。
 
 ## Milestones (M1–M5) and current status
 
@@ -115,8 +115,8 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 
 **Parent alignment**
 
-- `road-S1 M1-P0 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
-- `road-S1 M1-P1 <- docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
+- `road-001 M1-P0 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
+- `road-001 M1-P1 <- docs/logs/log-S4A-5A-operational-visibility-and-post-change-verification.md`
 
 **Plan (P0–P3)**
 
@@ -155,10 +155,10 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 
 **Parent alignment**
 
-- `road-S1 M2-P0 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
-- `road-S1 M2-P1 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
-- `road-S1 M2-P2 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
-- `road-S1 M2-P3 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
+- `road-001 M2-P0 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-001 M2-P1 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-001 M2-P2 <- docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
+- `road-001 M2-P3 <- docs/logs/log-S4A-1A-ops-scripting-baseline.md`
 
 **Plan (P0–P3)**
 
@@ -197,7 +197,7 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 
 **Parent alignment**
 
-- `road-S1 M3-P0 <- docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
+- `road-001 M3-P0 <- docs/logs/log-S4B-2A-infra-as-code-devtest-db-terraform-skeleton.md`
 
 **Plan (P0–P3)**
 
@@ -236,7 +236,7 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 
 **Parent alignment**
 
-- `road-S1 M4-P0 <- docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
+- `road-001 M4-P0 <- docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
 
 **Plan (P0–P3)**
 
@@ -300,8 +300,8 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 
 **Parent alignment**
 
-- `road-S1 M5-P0 <- docs/logs/log-S4A-4A-hybrid-runtime-awareness.md`
-- `road-S1 M5-P1 <- docs/logs/log-S5A-3B-object-storage-backup.md`
+- `road-001 M5-P0 <- docs/logs/log-S4A-4A-hybrid-runtime-awareness.md`
+- `road-001 M5-P1 <- docs/logs/log-S5A-3B-object-storage-backup.md`
 
 **Plan (P0–P3)**
 
@@ -359,7 +359,7 @@ Cloud fundamentals / hybrid awareness 仍然重要，但在 `road-S1-1` 中只�
 
 ## Recent Changes
 
-- 2026-03-29: migrated `road-S1-1` to the branch-road bridge-ledger format and wrote explicit parent alignment back to `road-S1` instead of leaving those links inside prose-only descriptions.
-- 2026-03-21: 从早期的 `road-001` 重构为 `road-S1-1`，明确其作为 road-S1 子路线的定位，保留原有 M1–M5 结构，并强调这是“政府岗最小闭环”的子集，而不是覆盖 ROADMAP v5 的全部内容。
-- 2026-03-25: 明确当前记账边界：`road-S1-1` 以 `S4B` 为最小闭环主完成面，吸收 `S4A` 的方法论与 `S5A-3B` 的 recovery sample；`S4C/S4D` 继续归入 `road-S1` 主线承接。
-- 2026-03-25: 同步 `S4B` 最新闭环状态：`S4B`、`S4B-1A`、`S4B-2A` 均已标记为 `stable`，因此 `road-S1-1` 当前引用的最小 runtime + Terraform baseline evidence 已形成稳定父子链路。
+- 2026-03-29: migrated `road-001-01` to the branch-road bridge-ledger format and wrote explicit parent alignment back to `road-001` instead of leaving those links inside prose-only descriptions.
+- 2026-03-21: 从早期的单文件 `road-001` 草稿重构为 `road-001-01` 支线路线，明确其作为 road-001 子路线的定位，保留原有 M1–M5 结构，并强调这是“政府岗最小闭环”的子集，而不是覆盖 ROADMAP v5 的全部内容。
+- 2026-03-25: 明确当前记账边界：`road-001-01` 以 `S4B` 为最小闭环主完成面，吸收 `S4A` 的方法论与 `S5A-3B` 的 recovery sample；`S4C/S4D` 继续归入 `road-001` 主线承接。
+- 2026-03-25: 同步 `S4B` 最新闭环状态：`S4B`、`S4B-1A`、`S4B-2A` 均已标记为 `stable`，因此 `road-001-01` 当前引用的最小 runtime + Terraform baseline evidence 已形成稳定父子链路。

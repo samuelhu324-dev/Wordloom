@@ -16,10 +16,10 @@
   **reference_log_1**: `docs/logs/log-S4A-1A-ops-scripting-baseline.md`
   **reference_log_2**: `docs/logs/log-S4A-2A-deploy-verify-rollback-runtime-path.md`
   **reference_log_3**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
-**roadmap_path**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
+**roadmap_path**: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md`
 **roadmap_milestone**: `M2`
 **roadmap_phase**: `M2-P0`
-**roadmap_bridge_refs**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P0, docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P1, docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M2-P2, docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P1, docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M4-P2`
+**roadmap_bridge_refs**: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M2-P0, docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M2-P1, docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M2-P2, docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M4-P1, docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M4-P2`
 **created**: `2026-03-21`
 **updated**: `2026-03-25`
 

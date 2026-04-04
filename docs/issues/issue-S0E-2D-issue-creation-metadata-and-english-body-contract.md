@@ -2,7 +2,7 @@
 
 - Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`
 - Projects: `wordloom Board`
-- Milestone: ``
+- Milestone: `road-002-projection-runtime-platformization-and-evidence-governance`
 - Source log: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
 - Parent issue: #248
 

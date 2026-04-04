@@ -15,10 +15,10 @@
   **runbook**: ``
   **parent_log**: `docs/logs/log-S5A-security-governance.md`
   **previous_log**: `docs/logs/log-S5A-3A-backup-sanitization.md`
-**roadmap_path**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
+**roadmap_path**: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md`
 **roadmap_milestone**: `M5`
 **roadmap_phase**: `M5-P1`
-**roadmap_bridge_refs**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P1, docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P2`
+**roadmap_bridge_refs**: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M5-P1, docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M5-P2`
 **created**: `2026-03-03`
 **updated**: `2026-03-04`
 
