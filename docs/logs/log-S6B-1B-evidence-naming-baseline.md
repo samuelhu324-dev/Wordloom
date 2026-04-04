@@ -240,6 +240,40 @@
   - “本地已执行一轮 bounded rename rehearsal”的记账结果
 - 若后续要把某类 renamed artifacts 变成 repo-tracked retained surface，应先在 `S6B-1A` / `S6B-1B` 中明确它们不再属于 ignored operator scratch lane，再决定是否纳入版本控制。
 
+### P4-C3-S1 (First repo-tracked coexistence candidate selected | v1)
+
+| current tracked path | candidate target shape | owner family | why selected now |
+| --- | --- | --- | --- |
+| `artifacts/write_gate_runs.latest.json` | `artifacts/s2b.write-gate.runs.latest.json` | `S2B` write-gate family | 当前是 repo-tracked retained-summary，且 naming 含义最明显地偏向“generic latest file”而不是稳定 family-owned summary surface |
+
+- 这条路径被选为 `C3` 候选，不是因为它最容易改，而是因为它最能代表“真实 tracked retained-summary rename 不能只改文件名，还要处理脚本 / runbook / log / quick-command 引用”的完整问题。
+
+### P4-C3-S2 (Tracked coexistence prerequisites fixed | v1)
+
+- 对 repo-tracked retained-summary，真实 rename 之前至少要满足以下前置条件：
+  - generator 默认写入路径已切换到新名字
+  - 旧路径在 coexistence 期间仍能被读取，或者存在清晰 alias / fallback 机制
+  - 主要 operator lookup 文档已同步到新路径
+  - 旧路径何时停止继续写入有明确 stop condition，而不是无限期双写
+- 对 `artifacts/write_gate_runs.latest.json` 而言，当前至少涉及：
+  - `scripts/p1_write_gate_regression.ps1`
+  - 多份 `docs/runbook` / `docs/QUICK_COMMANDS`
+  - 大量 `S2B-*` / `S0D-*` logs 中的 SoT 引用
+- 因此 `C3` 的结论是：这条 tracked retained-summary 现在已经适合进入 coexistence 设计，但还不适合在没有 alias/fallback 的前提下直接 rename。
+
+### P4-C3-S3 (Deferred execution boundary fixed | v1)
+
+- `C3` 本轮不直接执行 `artifacts/write_gate_runs.latest.json` 的真实 rename。
+- 原因不是 naming baseline 不够清楚，而是当前引用面过深，直接改名会同时破坏：
+  - generator 默认输出路径
+  - operator runbook lookup path
+  - 大量历史 log 中的 SoT 文字引用
+- 因此 `C3` 完成的不是 rename 本身，而是把第一条 tracked candidate、其目标形态、以及进入真实 coexistence 之前必须补齐的边界固定下来。
+- 后续若继续做 `C4`，合理方向应是：
+  - 先给 generator 增加新路径或 alias 支持
+  - 再补一轮 docs / runbook / quick-command lookup migration
+  - 最后才进入 bounded dual-write / dual-read coexistence 或正式切换
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -277,6 +311,9 @@
 - P4-C1-S4: fix bounded sample usage rules for later cleanup
 - P4-C2-S1: execute one local bounded rename sample across low-risk retained-summary and tmp-scratch files
 - P4-C2-S2: fix the execution boundary for ignored artifact surfaces
+- P4-C3-S1: select the first repo-tracked retained-summary candidate for coexistence-oriented rename
+- P4-C3-S2: fix prerequisites for a tracked retained-summary coexistence cutover
+- P4-C3-S3: fix the deferred execution boundary for deep-reference tracked paths
 
 ## Execution Checklist (unchecked)
 
@@ -311,6 +348,9 @@
 - [x] `P4-C1-S4`: bounded sample usage rules fixed
 - [x] `P4-C2-S1`: first local bounded rename sample executed
 - [x] `P4-C2-S2`: ignored-surface execution boundary fixed
+- [x] `P4-C3-S1`: first repo-tracked coexistence candidate selected
+- [x] `P4-C3-S2`: tracked coexistence prerequisites fixed
+- [x] `P4-C3-S3`: deferred execution boundary fixed
 
 ## Evidence (reserved)
 
@@ -326,3 +366,4 @@
 - 2026-04-04: completed `P3` v1 by fixing directory-first run identity, stable key file role names, and snapshot naming anti-patterns for `docs/labs/_snapshot/**` fact-source surfaces.
 - 2026-04-04: completed `P4` v1 by retaining the first bounded current-to-target rename sample set for retained-summary, tmp-scratch, and snapshot run identity, so later cleanup work has concrete mapping examples instead of only abstract naming rules.
 - 2026-04-04: executed a first local bounded rename rehearsal under `P4/C2` on one retained-summary artifact and two tmp artifacts, and fixed the rule that ignored operator surfaces are recorded in the naming ledger but not pushed as tracked artifact files by default.
+- 2026-04-04: completed `P4/C3` by selecting `artifacts/write_gate_runs.latest.json` as the first repo-tracked coexistence candidate, fixing its target naming shape and cutover prerequisites, and explicitly deferring direct rename until alias / fallback and lookup migration boundaries are ready.
