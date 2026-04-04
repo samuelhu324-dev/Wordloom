@@ -9,25 +9,25 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, epic/s0, sub/0f`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/363`
   **pr**: ``
   **adr**: ``
   **runbook**: ``
-  **roadmap**: ``
+  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **reference_log_1**: `docs/logs/log-S0E-docs-management-v5.md`
   **reference_log_2**: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
   **reference_log_3**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
   **reference_log_4**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **phase_log_1**: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
-**issue_keyword**: ``
+**issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
 **issue_module_labels**: ``
-**issue_milestone**: ``
+**issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: ``
-**roadmap_milestone**: ``
+**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+**roadmap_milestone**: `M5`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -56,6 +56,7 @@
 - 若 `issue_*` 字段为空，automation 必须保守留空并要求人工确认，而不是猜测 title keyword、labels 或 milestone。
 - 若 `pr_*` 字段为空，PR automation 必须保守留空并显式报告缺口，而不是复制 issue metadata 或猜测 base / milestone / development issue。
 - roadmap 与 logs 的机械桥接必须通过 `roadmap_path + roadmap_milestone + roadmap_phase` 明确声明；roadmap 内的正式 bridge ledger 默认只计入 child logs，而不是 parent/spine prose。
+- `S0F` parent/spine 属于现有 `road-002` 的治理支撑面；这里补的是既有 milestone/roadmap 归属，不引入新的 milestone 或平行 roadmap。
 
 **PR Summary Inputs（可选）**
 

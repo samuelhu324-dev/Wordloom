@@ -9,10 +9,10 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Drills, Evidence, epic/s0, sub/1a`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/364`
   **pr**: ``
   **runbook**: ``
-  **roadmap**: ``
+  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
   **previous_log**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **reference_log_1**: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
@@ -20,15 +20,15 @@
   **reference_log_3**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **reference_log_4**: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
   **reference_log_5**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
-**issue_keyword**: ``
+**issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
 **issue_module_labels**: ``
-**issue_milestone**: ``
+**issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: ``
-**roadmap_milestone**: ``
+**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+**roadmap_milestone**: `M5`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -59,6 +59,7 @@
 - Real issue conclusion / relationship / PR body rewrite may not proceed through raw family apply scripts when a thin gate or guarded wrapper exists for that family.
 - Retry is reserved for transient execution surfaces such as GitHub/network/process failures; semantic failures must be corrected at the source contract and then rerun.
 - GitHub Actions remains optional secondary enforcement, not the primary place where these invariants are first defined.
+- `S0F-1A` 沿用 `S0F` 的 `road-002` milestone 归属；在 exact `M*-P*` slot 还未单独记账前，这里只补现有 roadmap/milestone 锚点，不新造 roadmap phase。
 
 ## PR Summary Inputs (optional)
 

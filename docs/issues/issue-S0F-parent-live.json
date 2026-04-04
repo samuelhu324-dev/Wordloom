@@ -1,0 +1,41 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0F-docs-management-v6.md",
+  "draft_path": "docs/issues/issue-S0F-parent-live.md",
+  "title": "S0F-docs-management-v6: automation/docs management v6",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/0"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": "road-002: projection runtime platformization and evidence governance",
+  "parent_issue": null,
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/0`\n- Projects: `wordloom Board`\n- Milestone: `road-002: projection runtime platformization and evidence governance`\n\n## Context\n\n- S0F-docs-management-v6 carries the automation work for docs management v6.\n- The concrete scope here is fail-closed docs/GitHub lifecycle entrypoints.\n- It keeps the parent record aligned so downstream child slices can extend S0F-docs-management-v6 without reopening the spine contract.\n- This issue keeps the working ledger for the docs management v6 path while delivery is still being tracked.\n- It stays as the issue-side ledger entry for the evolving docs management v6 path.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0F-docs-management-v6.md`\n- Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`\n",
+  "warnings": [
+    "module labels left blank",
+    "live label preflight passed against samuelhu324-dev/wordloom-v3",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "live_label_check_enabled": true,
+  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
+  "matched_live_labels": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/0"
+  ],
+  "missing_live_labels": [],
+  "issue_number": 363,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/363",
+  "created_at": "2026-04-04T09:14:38.391401+00:00"
+}

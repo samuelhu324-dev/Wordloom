@@ -1,0 +1,45 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+  "draft_path": "docs/issues/issue-S0F-1A-live.md",
+  "title": "S0F-1A: automation/fail-closed entrypoints and preflight unification",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [
+    "drills"
+  ],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": "road-002: projection runtime platformization and evidence governance",
+  "parent_issue": "#363",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: `road-002: projection runtime platformization and evidence governance`\n- Parent issue: #363\n\n## Context\n\n- The scoped detail here is contract for fail-closed entrypoints, retry vocabulary, and wrapper-only mutation rules.\n- S0F-1A is the first follow-up slice under S0F, and it directly addresses the still-soft entrypoints exposed by the current docs/GitHub lifecycle: issue creation, PR create front-half, and post-merge issue/PR live mutation.\n- It carries the work forward from S0E-7G while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the fail-closed entrypoints and preflight unification path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`\n- Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`\n- Parent log: `docs/logs/log-S0F-docs-management-v6.md`\n- Previous log: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "live label preflight passed against samuelhu324-dev/wordloom-v3",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "live_label_check_enabled": true,
+  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
+  "matched_live_labels": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "missing_live_labels": [],
+  "issue_number": 364,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/364",
+  "created_at": "2026-04-04T09:15:01.606142+00:00"
+}
