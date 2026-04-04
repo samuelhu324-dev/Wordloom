@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "mode": "pr-prep-dry-run",
+  "defaults": {
+    "requested_id": "S0F-1A",
+    "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+    "base_branch": "main",
+    "head_ref": "HEAD",
+    "candidate_pr_branch": "S0F-docs-management-v6"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1A",
+      "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+      "reason": "Representative P2 stop sample: preview generation remains available, but live PR publish must stop because the prepared branch name is already occupied by the current mixed working branch."
+    }
+  ]
+}

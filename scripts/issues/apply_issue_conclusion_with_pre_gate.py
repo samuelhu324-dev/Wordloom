@@ -107,6 +107,7 @@ def guarded_issue_conclusion_apply(args: argparse.Namespace) -> GuardedIssueConc
                     leave_open=args.leave_open,
                     result_path=args.apply_result_path,
                     body_path=args.body_path,
+                    allow_raw_live_mutation_internal=True,
                 )
             )
         apply_result_rel = str(apply_result.plan_path).replace("-plan.json", f"-{apply_result.requested_id.lower()}-apply-result.json")

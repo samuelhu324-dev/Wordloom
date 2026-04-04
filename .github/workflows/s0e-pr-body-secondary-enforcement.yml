@@ -158,33 +158,35 @@ jobs:
               "## S0E PR Body Secondary Enforcement",
               "",
               "- Mode: `secondary enforcement`",
+              "- Trigger surface: `workflow_dispatch`",
+              "- Primary publish owner: `local create path`",
               "- PR ref: `{}`".format(os.environ["S0E_MIRROR_PR_REF"]),
               "- Repository: `{}`".format(os.environ["S0E_MIRROR_REPO"]),
           ]
 
-            attribution_path = Path(os.environ["S0E_ATTRIBUTION_RESULT_JSON"])
-            attribution_result = "missing-result-artifact"
-            attribution_source_log = ""
-            if attribution_path.is_file():
+          attribution_path = Path(os.environ["S0E_ATTRIBUTION_RESULT_JSON"])
+          attribution_result = "missing-result-artifact"
+          attribution_source_log = ""
+          if attribution_path.is_file():
               attribution = json.loads(attribution_path.read_text(encoding="utf-8"))
               attribution_result = str(attribution.get("result") or "unknown")
               attribution_source_log = str(attribution.get("source_log_path") or "")
               lines.extend(
-                [
-                  "- Attribution result: `{}`".format(attribution_result),
-                  "- Winning surface: `{}`".format(attribution.get("winning_surface", "")),
-                  "- Stop reason: `{}`".format(attribution.get("stop_reason", "")),
-                  "- Source log: `{}`".format(attribution_source_log),
-                  "- Attribution result artifact: `{}`".format(attribution.get("result_path", "")),
-                  "- Attribution PR payload artifact: `{}`".format(attribution.get("pr_payload_path", "")),
-                ]
+                  [
+                      "- Attribution result: `{}`".format(attribution_result),
+                      "- Winning surface: `{}`".format(attribution.get("winning_surface", "")),
+                      "- Stop reason: `{}`".format(attribution.get("stop_reason", "")),
+                      "- Source log: `{}`".format(attribution_source_log),
+                      "- Attribution result artifact: `{}`".format(attribution.get("result_path", "")),
+                      "- Attribution PR payload artifact: `{}`".format(attribution.get("pr_payload_path", "")),
+                  ]
               )
-            else:
+          else:
               lines.extend(
-                [
-                  "- Attribution result: `missing-result-artifact`",
-                  "- Source log: ``",
-                ]
+                  [
+                      "- Attribution result: `missing-result-artifact`",
+                      "- Source log: ``",
+                  ]
               )
 
           if result_path.is_file():
@@ -196,17 +198,17 @@ jobs:
                       "- Live body artifact: `{}`".format(data.get("live_body_path", "")),
                       "- Verify result artifact: `{}`".format(data.get("result_path", "")),
                       "",
-                      "This workflow re-checks live state after publish. A failure means post-publish contract drift was detected; it does not mean GitHub Actions prevented the original PR creation.",
+                      "This workflow re-checks live state after publish. A failure means post-publish contract drift was detected inside a secondary-enforcement surface; it does not mean GitHub Actions prevented or authorized the original PR creation.",
                   ]
               )
-                  elif attribution_result != "resolved":
-                    lines.extend(
-                      [
-                        "- Verify result: `skipped-before-verifier`",
-                        "",
-                        "This workflow stopped in attribution before verifier execution. The retained attribution artifact explains why ownership could not be trusted enough to continue.",
-                      ]
-                    )
+          elif attribution_result != "resolved":
+              lines.extend(
+                  [
+                      "- Verify result: `skipped-before-verifier`",
+                      "",
+                      "This workflow stopped in attribution before verifier execution. The retained attribution artifact explains why ownership could not be trusted enough to continue.",
+                  ]
+              )
           else:
               lines.extend(
                   [
@@ -237,39 +239,42 @@ jobs:
 
           artifact_dir = Path(os.environ["S0E_MIRROR_ARTIFACT_DIR"])
           result_path = artifact_dir / "verify-result.json"
-            attribution_result_path = Path(os.environ["S0E_ATTRIBUTION_RESULT_JSON"])
-            attribution_payload_path = Path(os.environ["S0E_ATTRIBUTION_PAYLOAD_JSON"])
-            attribution_console_path = Path(os.environ["S0E_ATTRIBUTION_CONSOLE_JSON"])
+          attribution_result_path = Path(os.environ["S0E_ATTRIBUTION_RESULT_JSON"])
+          attribution_payload_path = Path(os.environ["S0E_ATTRIBUTION_PAYLOAD_JSON"])
+          attribution_console_path = Path(os.environ["S0E_ATTRIBUTION_CONSOLE_JSON"])
           live_body_path = artifact_dir / "live-pr-body.md"
           console_path = artifact_dir / "verify-console.json"
           summary_path = Path(os.environ["S0E_MIRROR_SUMMARY_MD"])
           manifest_path = Path(os.environ["S0E_MIRROR_MANIFEST_JSON"])
           exit_code = os.environ.get("VERIFY_EXIT_CODE", "")
 
-            result = "missing-result-artifact"
+          result = "missing-result-artifact"
           pr_url = ""
-            source_log_path = ""
-            attribution_result = "missing-result-artifact"
-            stop_reason = "missing-result-artifact"
-            attribution_pr_url = ""
-            if attribution_result_path.is_file():
+          source_log_path = ""
+          attribution_result = "missing-result-artifact"
+          stop_reason = "missing-result-artifact"
+          attribution_pr_url = ""
+          if attribution_result_path.is_file():
               attribution_payload = json.loads(attribution_result_path.read_text(encoding="utf-8"))
               attribution_result = str(attribution_payload.get("result") or "unknown")
               stop_reason = str(attribution_payload.get("stop_reason") or "")
               attribution_pr_url = str(attribution_payload.get("pr_url") or "")
               source_log_path = str(attribution_payload.get("source_log_path") or "")
 
-            if result_path.is_file():
+          if result_path.is_file():
               payload = json.loads(result_path.read_text(encoding="utf-8"))
               result = str(payload.get("result") or "unknown")
               pr_url = str(payload.get("pr_url") or "")
-            elif attribution_result != "resolved":
+          elif attribution_result != "resolved":
               result = attribution_result
               pr_url = attribution_pr_url
 
           manifest = {
               "mode": "github-actions-secondary-enforcement-artifact-manifest",
               "result": result,
+              "trigger_surface": "workflow_dispatch",
+              "secondary_enforcement": True,
+              "local_primary_boundary": True,
               "repository": os.environ["S0E_MIRROR_REPO"],
               "source_log_path": source_log_path,
               "pr_ref": os.environ["S0E_MIRROR_PR_REF"],
@@ -288,10 +293,10 @@ jobs:
                 "attribution_result_path": attribution_result_path.as_posix() if attribution_result_path.exists() else "",
                 "attribution_pr_payload_path": attribution_payload_path.as_posix() if attribution_payload_path.exists() else "",
                 "attribution_console_path": attribution_console_path.as_posix() if attribution_console_path.exists() else "",
-                  "live_body_path": live_body_path.as_posix() if live_body_path.exists() else "",
-                  "verify_result_path": result_path.as_posix() if result_path.exists() else "",
-                  "verify_console_path": console_path.as_posix() if console_path.exists() else "",
-                  "workflow_summary_path": summary_path.as_posix() if summary_path.exists() else "",
+                "live_body_path": live_body_path.as_posix() if live_body_path.exists() else "",
+                "verify_result_path": result_path.as_posix() if result_path.exists() else "",
+                "verify_console_path": console_path.as_posix() if console_path.exists() else "",
+                "workflow_summary_path": summary_path.as_posix() if summary_path.exists() else "",
               },
               "failure_semantics": {
                 "classification": (
@@ -300,8 +305,9 @@ jobs:
                   else ("post-publish drift detected" if result != "pass" else "no drift detected")
                 ),
                 "failed_stage": "attribution" if attribution_result != "resolved" else ("mirror-verification" if result != "pass" else ""),
-                  "primary_publish_owner": "local create path",
-                  "github_actions_role": "secondary enforcement",
+                "primary_publish_owner": "local create path",
+                "github_actions_role": "secondary enforcement",
+                "workflow_role_note": "mirror verification runs after publish and never owns authorization for the original PR creation",
               },
           }
 
@@ -320,27 +326,27 @@ jobs:
 
           artifact_dir = Path(os.environ["S0E_MIRROR_ARTIFACT_DIR"])
           result_path = artifact_dir / "verify-result.json"
-            attribution_path = Path(os.environ["S0E_ATTRIBUTION_RESULT_JSON"])
+          attribution_path = Path(os.environ["S0E_ATTRIBUTION_RESULT_JSON"])
 
-            if not attribution_path.is_file():
+          if not attribution_path.is_file():
               print("::error title=S0E secondary enforcement::attribution result artifact missing; retained artifacts are incomplete")
               raise SystemExit(0)
 
-            attribution = json.loads(attribution_path.read_text(encoding="utf-8"))
-            attribution_result = str(attribution.get("result") or "unknown")
-            stop_reason = str(attribution.get("stop_reason") or "")
-            pr_url = str(attribution.get("pr_url") or "")
+          attribution = json.loads(attribution_path.read_text(encoding="utf-8"))
+          attribution_result = str(attribution.get("result") or "unknown")
+          stop_reason = str(attribution.get("stop_reason") or "")
+          pr_url = str(attribution.get("pr_url") or "")
 
-            if attribution_result != "resolved":
+          if attribution_result != "resolved":
               print(f"::error title=S0E secondary enforcement::attribution stopped before verifier execution for {pr_url} ({stop_reason})")
               raise SystemExit(0)
 
-            if not result_path.is_file():
+          if not result_path.is_file():
               print("::error title=S0E secondary enforcement::mirror verifier result artifact missing after resolved attribution")
               raise SystemExit(0)
 
-            payload = json.loads(result_path.read_text(encoding="utf-8"))
-            result = str(payload.get("result") or "unknown")
+          payload = json.loads(result_path.read_text(encoding="utf-8"))
+          result = str(payload.get("result") or "unknown")
 
           if result == "pass":
               print(f"::notice title=S0E secondary enforcement::live PR body contract pass for {pr_url}")
@@ -375,14 +381,14 @@ jobs:
           import sys
           from pathlib import Path
 
-            attribution_path = Path(os.environ["S0E_ATTRIBUTION_RESULT_JSON"])
+          attribution_path = Path(os.environ["S0E_ATTRIBUTION_RESULT_JSON"])
           result_path = Path(os.environ["S0E_MIRROR_ARTIFACT_DIR"]) / "verify-result.json"
-            if not attribution_path.is_file():
+          if not attribution_path.is_file():
               print("attribution result artifact missing; secondary enforcement cannot determine attribution outcome", file=sys.stderr)
               raise SystemExit(1)
 
-            attribution = json.loads(attribution_path.read_text(encoding="utf-8"))
-            if attribution.get("result") != "resolved":
+          attribution = json.loads(attribution_path.read_text(encoding="utf-8"))
+          if attribution.get("result") != "resolved":
               print(
                 "secondary enforcement stopped before mirror verification because source-log attribution did not resolve cleanly",
                 file=sys.stderr,

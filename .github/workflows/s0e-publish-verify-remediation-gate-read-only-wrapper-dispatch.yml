@@ -172,6 +172,7 @@ jobs:
               "",
               "- Mode: `secondary enforcement`",
               "- Trigger surface: `workflow_dispatch`",
+              "- Primary mutation owner: `local fail-closed family entrypoint`",
               f"- Repository: `{os.environ['S0E_WRAPPER_REPO']}`",
               f"- Operation family: `{os.environ['S0E_WRAPPER_OPERATION_FAMILY']}`",
               f"- Selection input: `{os.environ['S0E_WRAPPER_SELECTION_INPUT_PATH']}` ({os.environ['S0E_WRAPPER_SELECTION_INPUT_KIND']})",
@@ -189,7 +190,7 @@ jobs:
                       f"- Wrapper result artifact: `{payload.get('wrapper_result_path', '')}`",
                       f"- Thin gate result artifact: `{payload.get('thin_gate_result_path', '')}`",
                       "",
-                      "This workflow replays the shared read-only wrapper. A stop or error means drift was detected or continuation was blocked in a secondary-enforcement surface; it does not mean GitHub Actions prevented publish.",
+                        "This workflow replays the shared read-only wrapper after the local fail-closed contract already exists. A stop or error means drift was detected or continuation was blocked in a secondary-enforcement surface; it does not mean GitHub Actions prevented publish or owned the original mutation decision.",
                   ]
               )
           else:
@@ -237,6 +238,8 @@ jobs:
               "mode": "publish-verify-remediation-gate-workflow-dispatch-run-manifest",
               "result": wrapper_result,
               "trigger_surface": "workflow_dispatch",
+              "secondary_enforcement": True,
+              "local_primary_boundary": True,
               "repository": os.environ["S0E_WRAPPER_REPO"],
               "operation_family": os.environ["S0E_WRAPPER_OPERATION_FAMILY"],
               "selection_input_path": os.environ["S0E_WRAPPER_SELECTION_INPUT_PATH"],
@@ -264,7 +267,8 @@ jobs:
                       else ("workflow-dispatch read-only stop" if wrapper_result == "stop" else ("workflow-dispatch read-only error" if wrapper_result == "error" else "workflow-dispatch read-only pass"))
                   ),
                   "github_actions_role": "secondary enforcement",
-                  "publish_owner": "family-owned local or live path",
+                  "publish_owner": "local fail-closed family entrypoint",
+                  "workflow_role_note": "workflow_dispatch replay is evidence-oriented and never the first publish authorization boundary",
               },
           }
 

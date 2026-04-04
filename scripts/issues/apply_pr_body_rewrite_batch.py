@@ -8,6 +8,7 @@ from pathlib import Path
 
 from gen_issue_draft import _derive_repo_slug, _load_text, _parse_fields, _parse_sections, _repo_rel, _repo_root, _require_gh_auth, _require_gh_cli, _run_command
 from plan_pr_prep import _build_pr_labels
+from raw_live_mutation_guard import add_raw_live_mutation_guard_arg, require_raw_live_mutation_guard
 from rewrite_pr_body_scope_from_log import rewrite_pr_body_scope
 
 
@@ -44,6 +45,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("manifest_path", help="Path to a PR body rewrite manifest JSON file")
     parser.add_argument("--repo", dest="repo", help="Repository slug override")
     parser.add_argument("--result-path", dest="result_path", help="Override output batch result JSON path")
+    add_raw_live_mutation_guard_arg(parser)
     return parser.parse_args()
 
 
@@ -107,6 +109,10 @@ def _derive_repo(manifest: dict, override: str | None) -> str:
 
 
 def apply_pr_body_rewrite_batch(args: argparse.Namespace) -> PrBodyRewriteBatchResult:
+    require_raw_live_mutation_guard(
+        args,
+        canonical_surface="scripts/issues/apply_pr_body_scope_with_pre_gate.py for single-PR live rewrite; this batch script remains bounded internal historical reuse only",
+    )
     repo_root = _repo_root()
     manifest_path = _coerce_path(args.manifest_path, repo_root)
     if not manifest_path.is_file():

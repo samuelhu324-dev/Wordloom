@@ -683,10 +683,20 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
 
     context_line_bounds = issue_body_context_line_bounds(_load_text(source_log_path))
     context_valid, context_details, invalid_context_lines = validate_issue_context_lines(context_lines, context_line_bounds, _load_text(source_log_path))
-    if context_valid:
-        checks.append(_build_check("context-sentence-shape", "pass", context_details))
+    has_context_content = any(line.strip() for line in context_lines)
+    if issue_state == "CLOSED":
+        if context_valid:
+            checks.append(_build_check("context-sentence-shape", "pass", context_details))
+        else:
+            checks.append(_build_check("context-sentence-shape", "fail", f"{context_details}: {invalid_context_lines or '[]'}"))
     else:
-        checks.append(_build_check("context-sentence-shape", "fail", f"{context_details}: {invalid_context_lines or '[]'}"))
+        if has_context_content:
+            if context_valid:
+                checks.append(_build_check("context-sentence-shape", "pass", context_details))
+            else:
+                checks.append(_build_check("context-sentence-shape", "warning", f"open issue Context prose is present but not yet conclusion-grade: {context_details}: {invalid_context_lines or '[]'}"))
+        else:
+            checks.append(_build_check("context-sentence-shape", "pass", "open issue keeps the required Context section structurally present while substantive Context prose is deferred to conclusion"))
 
     if issue_state == "CLOSED":
         if context_valid:
