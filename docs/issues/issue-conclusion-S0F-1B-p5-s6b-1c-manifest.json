@@ -1,0 +1,19 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "context_mode": "llm-generate"
+  },
+  "items": [
+    {
+      "requested_id": "S6B-1C",
+      "source_log_path": "docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md",
+      "issue_number": 359,
+      "merged_pr_overrides": [
+        "#362"
+      ],
+      "reason": "Rewrite the historical deterministic Context block on closed issue #359 through the stabilized S0F-1B LLM-authored conclusion path."
+    }
+  ]
+}

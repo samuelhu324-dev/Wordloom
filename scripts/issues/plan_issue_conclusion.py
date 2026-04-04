@@ -18,7 +18,8 @@ from gen_issue_draft import (
     _require_gh_cli,
     _run_command,
 )
-from body_contract import build_canonical_issue_link_lines, build_issue_conclusion_context_lines, issue_body_context_line_bounds, strip_issue_navigation_metadata_rows, validate_issue_context_lines
+from body_contract import build_canonical_issue_link_lines, issue_body_context_line_bounds, strip_issue_navigation_metadata_rows, validate_issue_context_lines
+from issue_context_llm import generate_issue_context_lines_with_llm
 
 
 ISSUE_URL_RE = re.compile(r"/issues/(?P<number>\d+)$")
@@ -72,9 +73,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--context-mode",
         dest="context_mode",
-        choices=["preserve-existing", "single-generate"],
+        choices=["preserve-existing", "llm-generate"],
         default="preserve-existing",
-        help="How to handle Context during conclusion planning: preserve-existing keeps the live block, single-generate rewrites it from the source log",
+        help="How to handle Context during conclusion planning: preserve-existing keeps the live block, while llm-generate rewrites it from the source log",
     )
     return parser.parse_args()
 
@@ -428,19 +429,19 @@ def _build_item(
     context_line_bounds = issue_body_context_line_bounds(source_log_text)
     context_ok, _, _ = validate_issue_context_lines(context_section_lines, context_line_bounds, source_log_text)
     context_mode = str(item.get("context_mode") or defaults.get("context_mode") or cli_context_mode or "preserve-existing")
-    if context_mode not in {"preserve-existing", "single-generate"}:
+    if context_mode not in {"preserve-existing", "llm-generate"}:
         raise SystemExit(f"Unsupported issue-conclusion context_mode: {context_mode}")
-    if context_mode == "single-generate":
-        context_lines = build_issue_conclusion_context_lines(source_log_text, [pr.number for pr in ordered_prs])
+    if context_mode == "llm-generate":
+        context_lines = generate_issue_context_lines_with_llm(source_log_text, [pr.number for pr in ordered_prs])
     else:
         context_lines = context_section_lines
     existing_link_lines = _extract_bullet_lines(_extract_section_lines(body, "Links"))
     link_lines = _build_link_lines(existing_link_lines, fields, _repo_rel(source_log_path), issue_url, ordered_prs)
 
-    if context_mode == "single-generate":
-        warnings.append("preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended")
+    if context_mode == "llm-generate":
+        warnings.append("preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence")
         if not context_ok:
-            warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview uses the single-generated conclusion Context block with outcome wording instead of PR-evidence wording")
+            warnings.append(f"existing Context section did not satisfy the prose-first Context gate for line range {context_line_bounds}; preview replaces it with an LLM-authored conclusion Context block")
     else:
         if context_section_lines:
             if context_ok:

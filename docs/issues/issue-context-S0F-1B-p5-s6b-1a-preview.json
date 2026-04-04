@@ -1,0 +1,19 @@
+{
+  "mode": "issue-context-draft",
+  "result": "ok",
+  "context_mode": "llm-generate",
+  "log_path": "docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md",
+  "output_path": "docs/issues/issue-context-S0F-1B-p5-s6b-1a-preview.md",
+  "phase": "conclusion",
+  "merged_pr_numbers": [],
+  "context_lines": [
+    "- The first deliverable of S6B-1A is a repo-level evidence total table that structures current evidence surfaces by family instead of relying on informal impressions.",
+    "- This initial version focuses on family-level inventory capturing the type, location, creator, retention intent, and access path of major evidence families.",
+    "- The inventory incorporates six taxonomy categories including human-ledger, fact-source, retained-summary, workflow-derived, tmp-scratch, and evidence-lite.",
+    "- The table serves as a concrete baseline for subsequent retention policies, generator policies, and migration sequencing in the S6B epic."
+  ],
+  "warnings": [
+    "This script is the single-item conclusion Context authoring entrypoint; review the generated text before copying or applying it",
+    "Conclusion-phase Context generation is intended for one closed issue at a time after merged PR evidence is known"
+  ]
+}

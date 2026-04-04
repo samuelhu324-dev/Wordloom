@@ -1,0 +1,51 @@
+{
+  "mode": "s0f-1b-p4-context-stability",
+  "result": "ok",
+  "requested_id": "S0F-1B",
+  "scope": [
+    "P4"
+  ],
+  "version": "v1",
+  "decision": {
+    "status": "stable",
+    "create_time_context": "empty-but-present",
+    "conclusion_time_context": "llm-authored",
+    "exact_sentence_counts": {
+      "child_issue": 4,
+      "top_level_parent_issue": 5
+    },
+    "summary": "The v1 contract is stable: create-time issue bodies keep an empty Context section, conclusion-time issue bodies use the dedicated LLM authoring path, and the retired deterministic Context builders have been removed from the shared contract module."
+  },
+  "canonical_surfaces": {
+    "create_time": [
+      "scripts/issues/gen_issue_draft.py --context-mode scaffold"
+    ],
+    "conclusion_time": [
+      "scripts/issues/generate_issue_context_draft.py --phase conclusion --context-mode llm-generate",
+      "scripts/issues/plan_issue_conclusion.py --context-mode llm-generate",
+      "scripts/issues/apply_issue_conclusion_with_pre_gate.py --context-mode llm-generate"
+    ]
+  },
+  "retired_surfaces_absent_from_scripts": [
+    "single-generate",
+    "build_issue_draft_context_lines",
+    "build_issue_conclusion_context_lines"
+  ],
+  "boundary_rules": [
+    "Do not reintroduce deterministic draft or conclusion Context builders through shared contract helpers.",
+    "Do keep create-time Context structurally present but empty until conclusion owns the first substantive Context write-back.",
+    "Do keep exact sentence-count validation at four for child issues and five for top-level parent issues.",
+    "Do fail closed on conclusion-time LLM generation errors instead of silently falling back to template assembly."
+  ],
+  "source_alignment": {
+    "reference_log": "docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md",
+    "inspected_runtime_surfaces": [
+      "scripts/issues/body_contract.py",
+      "scripts/issues/issue_context_llm.py",
+      "scripts/issues/gen_issue_draft.py",
+      "scripts/issues/generate_issue_context_draft.py",
+      "scripts/issues/plan_issue_conclusion.py",
+      "scripts/issues/apply_issue_conclusion_with_pre_gate.py"
+    ]
+  }
+}

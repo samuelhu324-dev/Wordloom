@@ -1,0 +1,36 @@
+{
+  "mode": "draft-generation",
+  "result": "ok",
+  "context_mode": "scaffold",
+  "log_path": "docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md",
+  "draft_path": "docs/issues/issue-S0F-1B-p3-draft-body.md",
+  "title": "S0F-1B: automation/llm-authored issue Context generation",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": "road-002: projection runtime platformization and evidence governance",
+  "parent_issue": "#363",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\n- Projects: `wordloom Board`\n- Milestone: `road-002: projection runtime platformization and evidence governance`\n- Parent issue: #363\n\n## Context\n\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`\n- Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`\n- Parent log: `docs/logs/log-S0F-docs-management-v6.md`\n- Previous log: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "Context section was left intentionally empty at create time; generate or author substantive Context text during issue conclusion",
+    "Definition of Done (DoD) remains intentionally blank pending operator input"
+  ],
+  "live_label_check_enabled": false,
+  "live_label_check_repo": null,
+  "matched_live_labels": [],
+  "missing_live_labels": [],
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
+}

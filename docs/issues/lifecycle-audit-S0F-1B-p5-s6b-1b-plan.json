@@ -1,0 +1,118 @@
+{
+  "mode": "lifecycle-audit-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-audit-S0F-1B-p5-s6b-1b-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-lifecycle-audit",
+  "total_items": 1,
+  "planned_items": 0,
+  "warnings": [
+    "S6B-1B: blocked"
+  ],
+  "items": [
+    {
+      "requested_id": "S6B-1B",
+      "source_log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+      "issue_number": 358,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/358",
+      "issue_title": "S6B-1B: naming/evidence naming baseline",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
+      "expected_parent_issue_number": 356,
+      "actual_parent_issue_number": 356,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/358",
+      "source_log_pr_url": null,
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 361,
+          "title": "S6B-1B/P0-P4: evidence naming baseline (retained-summary + tmp-scratch + snapshot run identity) v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/361",
+          "merged_at": "2026-04-04T07:30:51Z"
+        }
+      ],
+      "planned_action": "block-mutation",
+      "applied_action": null,
+      "status": "blocked",
+      "checks": [
+        {
+          "name": "source-log-issue-writeback",
+          "status": "pass",
+          "details": "source log links.issue matches the live issue URL"
+        },
+        {
+          "name": "required-body-sections",
+          "status": "pass",
+          "details": "Metadata, Context, Definition of Done (DoD), and Links sections are present"
+        },
+        {
+          "name": "issue-section-order",
+          "status": "pass",
+          "details": "issue body section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "Metadata bullet rows are contiguous"
+        },
+        {
+          "name": "metadata-links-boundary",
+          "status": "pass",
+          "details": "Metadata keeps state rows only while deterministic log navigation stays in Links"
+        },
+        {
+          "name": "expected-labels",
+          "status": "pass",
+          "details": "live issue labels cover the deterministic label set derived from the source log"
+        },
+        {
+          "name": "body-parent-metadata",
+          "status": "pass",
+          "details": "Metadata section records Parent issue: #356"
+        },
+        {
+          "name": "sidebar-parent-relationship",
+          "status": "pass",
+          "details": "live GitHub parent relationship points to #356"
+        },
+        {
+          "name": "exact-id-merged-pr-evidence",
+          "status": "pass",
+          "details": "found 1 exact-ID merged PR(s)"
+        },
+        {
+          "name": "final-dod-pr-refs",
+          "status": "pass",
+          "details": "DoD PR refs match the exact-ID merged PR evidence set"
+        },
+        {
+          "name": "link-categories",
+          "status": "pass",
+          "details": "Links section uses only allowed issue link categories"
+        },
+        {
+          "name": "links-coverage",
+          "status": "fail",
+          "details": "Links section is missing expected issue-link fragments: ['Roadmap: `docs/roadmap/_draft/road-S2-.md`']"
+        },
+        {
+          "name": "context-sentence-shape",
+          "status": "pass",
+          "details": "Context contains exactly 4 readable English bullet sentences with basic placeholder hygiene"
+        },
+        {
+          "name": "closed-body-shape",
+          "status": "pass",
+          "details": "concluded issue keeps the prose-first Context gate within line range (4, 4)"
+        },
+        {
+          "name": "source-log-pr-link",
+          "status": "skipped",
+          "details": "source log links.pr is blank"
+        }
+      ],
+      "warnings": [],
+      "reason": "Audit issue #358 before and after the S0F-1B historical Context refresh to ensure the conclusion rewrite passes the lifecycle gate."
+    }
+  ]
+}
