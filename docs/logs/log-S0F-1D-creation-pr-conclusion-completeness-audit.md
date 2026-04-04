@@ -127,6 +127,7 @@
 - `P0` is now complete: the field-timing matrix is fixed, the three-stage completeness ownership is explicit, and the next follow-up is `P1` create-time issue completeness for body plus sidebar state.
 - `P1` is now complete: create-time issue completeness is fixed for issue body plus sidebar ownership, blank optional `Links` rows are explicitly non-canonical, and the next follow-up is `P2` PR development-linkage completeness.
 - `P2` is now complete: PR completeness is fixed as a semantic audit surface rather than a render-only body check, development-linkage completeness is unified across source log, PR metadata, close-link footer, and GitHub linkage state, and the next follow-up is `P3` conclusion-time completeness.
+- `P3` is now complete: conclusion-time completeness is fixed for final issue body plus sidebar re-check, child versus top-level parent close-out rules are explicit, and the next follow-up is `P4` read-only audit packaging.
 
 ## P0 Lifecycle Completeness Matrix (completed)
 
@@ -207,12 +208,27 @@
 - The canonical PR-body contract still validates row shape and exact footer equality, but completeness review now layers on the semantic question of whether the expected development issue set itself was left blank incorrectly.
 - Historical evidence already proves the unified lane is viable: the retained `S0E-4F/P4` metadata-completeness audit shows `17/17` PRs with expected development issue, metadata row, closing refs, labels, and GitHub linkage present after convergence.
 
-## P3 Conclusion-Time Completeness Rules (planned)
+## P3 Conclusion-Time Completeness Rules (completed)
 
 - Child issue conclusion requires exact four-sentence Context; top-level parent issue conclusion requires exact five-sentence Context.
 - Final DoD must match the exact-ID merged PR set for child issues and the owned child-issue ledger for top-level parent issues.
 - Final Links must still obey blank-as-omitted rules while re-checking any newly written source-log references.
 - Conclusion review should re-check existing sidebar state instead of assuming earlier creation/PR attachments remained valid.
+
+### P3-C1-S1 (Final issue body completeness fixed | v1)
+
+- Conclusion-time issue completeness now owns the final body shape `Metadata -> Context -> Definition of Done (DoD) -> Links` and evaluates that shape against the lifecycle state after merge rather than against create-time expectations.
+- `Context` is conclusion-complete only when it satisfies the owned sentence-count contract: child issues require exactly four readable English bullet sentences, while top-level parent issues require exactly five.
+- `Definition of Done (DoD)` is conclusion-complete only when it matches the correct owned ledger for the item kind: exact-ID merged PR short refs for child issues and the source-log-owned child-issue ledger for top-level parent issues.
+- `Links` are conclusion-complete only when they still obey blank-as-omitted rules and cover the current deterministic navigation set derived from the source log, including any PR references or log-side writes introduced during convergence.
+- Final issue body completeness now distinguishes open-versus-closed expectations explicitly: open issues may still defer substantive conclusion content, while closed issues must satisfy the full conclusion-grade body contract.
+
+### P3-C1-S2 (Conclusion-time sidebar re-check fixed | v1)
+
+- Conclusion review now re-checks previously attached sidebar state instead of assuming earlier create-time or PR-time attachments remained correct after convergence.
+- For child issues, conclusion-time sidebar completeness includes the expected parent relationship, deterministic labels, and the requirement that merged PR evidence actually exists for the same exact ID scope.
+- For top-level parent issues, conclusion-time sidebar completeness includes the absence of an unexpected parent relationship plus the expected ordered child-issue relationship set.
+- Source-log write-back and source-log PR linkage remain part of the conclusion audit surface because a concluded issue is incomplete when its final live state no longer matches the source-log navigation and merged-PR evidence boundary.
 
 ## P4 Read-Only Audit Packaging (planned)
 
@@ -265,8 +281,8 @@
 
 ### P3 (Conclusion completeness)
 
-- [ ] `P3-C1-S1`: final issue body completeness rule fixed
-- [ ] `P3-C1-S2`: conclusion-time sidebar re-check rule fixed
+- [x] `P3-C1-S1`: final issue body completeness rule fixed
+- [x] `P3-C1-S2`: conclusion-time sidebar re-check rule fixed
 
 ### P4 (Read-only audit entrypoint)
 
@@ -285,6 +301,8 @@
 - `P1-C1-S1` / `P1-C1-S2`: `scripts/issues/gen_issue_draft.py` and `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md` remain the implementation and contract anchors for the create-time matrix recorded here: milestone derivation stays exact-bridge-only, parent issue may derive from `parent_log.links.issue`, top-level parent DoD may carry the child-issue ledger, and `Links` render only non-empty deterministic rows.
 - `P2-C1-S1` / `P2-C1-S2`: `scripts/issues/body_contract.py`, `scripts/issues/plan_pr_prep.py`, and `scripts/issues/verify_live_pr_body_contract.py` remain the implementation anchors for PR completeness recorded here: the current contract validates rendered metadata/footer shape, derives development issue from explicit `pr_development_issue` or source-log `links.issue`, and therefore exposes exactly where render-only validation still differs from semantic completeness review.
 - `P2-C1-S1` / `P2-C1-S2`: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`, `docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`, and `docs/issues/pr-metadata-completeness-S0E-4F-p4-summary.json` remain the contract and evidence anchors for the unified PR completeness lane: development issue identity is metadata-owned, `Closes #...` rows and GitHub linkage must converge, and the retained historical audit already proves the lane is auditable on live PRs.
+- `P3-C1-S1` / `P3-C1-S2`: `scripts/issues/plan_lifecycle_audit.py`, `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`, and `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md` remain the implementation and contract anchors for conclusion completeness recorded here: final issue body shape is validated against merged-PR evidence, child versus top-level parent DoD ownership stays explicit, and conclusion-time `Context` remains bound to the exact four/five sentence-count contract.
+- `P3-C1-S1` / `P3-C1-S2`: the current lifecycle audit surface already proves the conclusion re-check lane is broader than body prose alone by reviewing label coverage, source-log write-back, parent/sub-issue relationships, merged-PR evidence, final DoD refs, Links coverage, and closed-body Context validity on the same live issue.
 
 ## Numbering
 
