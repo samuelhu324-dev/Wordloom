@@ -12,27 +12,27 @@
   **issue**: ``
   **pr**: ``
   **runbook**: ``
-  **roadmap**: ``
+  **roadmap**: `docs/roadmap/_draft/road-S2-.md`
   **parent_log**: ``
   **previous_log**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_1**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_2**: `docs/logs/log-S0D-2A-drills-evidence-automation.md`
   **reference_log_3**: `docs/logs/log-S0B-2A-scripts-snapshots-management.md`
-**issue_keyword**: ``
-**issue_top_labels**: ``
-**issue_scope_labels**: ``
+**issue_keyword**: `taxonomy`
+**issue_top_labels**: `EVOLUTION`
+**issue_scope_labels**: `s6/evidence & drills, sub/0`
 **issue_module_labels**: ``
-**issue_milestone**: ``
+**issue_milestone**: `road-S2`
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: ``
-**roadmap_milestone**: ``
-**roadmap_phase**: ``
-**roadmap_bridge_refs**: ``
+**roadmap_path**: `docs/roadmap/_draft/road-S2-.md`
+**roadmap_milestone**: `M5`
+**roadmap_phase**: `P2-P4`
+**roadmap_bridge_refs**: `S6B spine -> road-S2 / M5 / P2-P4`
 **pr_labels**: ``
 **pr_projects**: ``
-**pr_milestone**: ``
-**pr_base**: ``
+**pr_milestone**: `road-S2`
+**pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
 **updated**: `2026-04-04`

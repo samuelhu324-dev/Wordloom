@@ -5,34 +5,34 @@
 **id**: `S6B-1C`
 **kind**: `log`
 **title**: `tracked retained-summary coexistence migration (lookup migration + dual-read/fallback + legacy alias stop condition) v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S6`
 **tags**: `EVOLUTION, Evidence, Drills, Taxonomy, Naming, Coexistence, Retention, epic/s6, sub/1c`
 **links**: ``
   **issue**: ``
   **pr**: ``
   **runbook**: ``
-  **roadmap**: ``
+  **roadmap**: `docs/roadmap/_draft/road-S2-.md`
   **parent_log**: `docs/logs/log-S6B-evidence-drills-taxonomy.md`
   **previous_log**: `docs/logs/log-S6B-1B-evidence-naming-baseline.md`
   **reference_log_1**: `docs/logs/log-S6B-1B-evidence-naming-baseline.md`
   **reference_log_2**: `docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md`
   **reference_log_3**: `docs/logs/log-S2B-projection-table-merge.md`
-**issue_keyword**: ``
-**issue_top_labels**: ``
-**issue_scope_labels**: ``
+**issue_keyword**: `coexistence`
+**issue_top_labels**: `EVOLUTION`
+**issue_scope_labels**: `s6/evidence & drills, sub/1`
 **issue_module_labels**: ``
-**issue_milestone**: ``
+**issue_milestone**: `road-S2`
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: ``
-**roadmap_milestone**: ``
-**roadmap_phase**: ``
-**roadmap_bridge_refs**: ``
+**roadmap_path**: `docs/roadmap/_draft/road-S2-.md`
+**roadmap_milestone**: `M5`
+**roadmap_phase**: `P3`
+**roadmap_bridge_refs**: `S6B-1C -> road-S2 / M5 / P3`
 **pr_labels**: ``
 **pr_projects**: ``
-**pr_milestone**: ``
-**pr_base**: ``
+**pr_milestone**: `road-S2`
+**pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
 **updated**: `2026-04-04`
