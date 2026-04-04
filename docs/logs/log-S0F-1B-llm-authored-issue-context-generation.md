@@ -5,7 +5,7 @@
 **id**: `S0F-1B`
 **kind**: `log`
 **title**: `llm-authored issue Context generation v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, epic/s0, sub/1b`
 **links**: ``
@@ -70,6 +70,7 @@
 - Tighten the Context shape contract to exact sentence counts: four for child issues and five for top-level parent issues.
 - Remove silent template fallback from the canonical issue-conclusion Context generation path so invalid output fails closed instead of reverting to old stock phrasing.
 - Keep create-time issue Context structurally present but empty while the first LLM rollout is limited to issue conclusion authoring.
+- Remove the retired deterministic Context template builders from the shared contract surface so the canonical paths cannot drift back toward template assembly.
 
 **PR checklist source**:
 
@@ -101,6 +102,7 @@
 - `P1`: replace deterministic Context template assembly in the issue-conclusion path
 - `P2`: remove silent template fallback and retain fail-closed generation evidence
 - `P3`: keep draft preview create-time Context empty by default and retire draft-side one-item Context generation
+- `P4`: remove retired deterministic Context builder surfaces and mark the v1 contract stable
 
 ## Success Criteria (DoD)
 
@@ -109,6 +111,7 @@
 - Top-level parent issue Context validates only when it contains exactly five readable English bullet sentences.
 - Invalid Context generation no longer falls back silently to the old deterministic template pool.
 - The first rollout remains limited to conclusion authoring while create-time issue Context stays structurally present but empty.
+- Shared issue-body contract code no longer exports or consumes the retired deterministic Context builder surface.
 
 ## Stability (what stable means)
 
@@ -116,6 +119,8 @@
   - the exact four/five sentence-count contract is enforced for child versus parent issue Context;
   - conclusion-time Context generation no longer depends on the older deterministic template pool;
   - at least one retained issue-conclusion sample proves the LLM-authored path can pass validation without falling back to stock phrasing.
+
+- `S0F-1B` is now `stable` because `P0-P4` are complete: the exact-count contract is enforced, create-time `Context` remains empty, conclusion-time authoring uses the dedicated LLM path, fallback has been removed, and the retired deterministic builder surface has been deleted from the shared contract module.
 
 ## Numbering
 
@@ -155,6 +160,10 @@
 
 - P3-C1-S1: keep draft preview create-time Context empty by default and retire draft-side one-item Context generation
 
+### P4 (Stability cleanup)
+
+- P4-C1-S1: remove the retired deterministic Context builder surface from the shared contract module and retain one stability artifact proving only create-empty plus conclusion-LLM paths remain
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -174,6 +183,10 @@
 ### P3 (Draft preview follow-up)
 
 - [x] `P3-C1-S1`: draft preview create-time Context remains empty by default and draft-side one-item generation is retired
+
+### P4 (Stability cleanup)
+
+- [x] `P4-C1-S1`: retired deterministic Context builder surface removed and v1 contract marked stable
 
 ## Evidence (reserved)
 
@@ -238,6 +251,21 @@
   - `gen_issue_draft.py` now accepts only `--context-mode scaffold`, and the retained `S0F-1B` draft sample leaves `## Context` empty while emitting the existing create-time warning that substantive Context belongs to issue conclusion
   - `generate_issue_context_draft.py` now exposes only `--phase conclusion`, and the retained rejection artifact shows that `--phase draft` is refused at the CLI boundary instead of silently reintroducing a draft-side generation path
 
+### P4-C1-S1 (deterministic builder surface removed and contract stabilized | 2026-04-04)
+
+- artifacts:
+  - `scripts/issues/body_contract.py`
+  - `scripts/issues/issue_context_llm.py`
+  - `scripts/issues/gen_issue_draft.py`
+  - `scripts/issues/generate_issue_context_draft.py`
+  - `docs/issues/issue-context-S0F-1B-p4-stability.json`
+- expected:
+  - the shared contract module should no longer export the retired deterministic draft or conclusion Context builders
+  - the only remaining canonical Context paths should be create-time empty scaffolding and conclusion-time LLM authoring under the exact four/five sentence-count contract
+- observed:
+  - `body_contract.py` no longer contains the retired deterministic fact-pool/template builder helpers, so the shared issue-body contract no longer exposes a hidden fallback surface for draft or conclusion Context generation
+  - the retained stability artifact records that `single-generate`, `build_issue_draft_context_lines`, and `build_issue_conclusion_context_lines` are absent from `scripts/issues/**`, while the canonical remaining surfaces are `gen_issue_draft.py --context-mode scaffold` and `generate_issue_context_draft.py --phase conclusion --context-mode llm-generate`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-04: created `S0F-1B` as the dedicated follow-up slice for replacing deterministic issue Context templates with LLM-authored Context generation under an exact child/main sentence-count contract.
@@ -245,3 +273,4 @@
 - 2026-04-04: completed `P1` by retaining one representative conclusion sample for `S0F-1A` that generated a valid four-sentence child issue Context block through `llm-generate` without falling back to deterministic template assembly.
 - 2026-04-04: completed `P2` by removing the remaining `single-generate` compatibility path from canonical conclusion surfaces and retaining one controlled fail-closed sample that stops on LLM generation error instead of falling back to the older deterministic Context builder.
 - 2026-04-04: completed `P3` by keeping create-time draft `Context` empty by default, retiring draft-side one-item Context generation, and retaining both a positive empty-draft sample and a CLI rejection artifact for the removed `--phase draft` surface.
+- 2026-04-04: completed `P4` by deleting the retired deterministic Context builder surface from `body_contract.py`, retaining one stability artifact that records the remaining canonical paths, and marking `S0F-1B` stable.

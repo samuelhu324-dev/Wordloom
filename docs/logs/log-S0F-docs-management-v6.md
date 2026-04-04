@@ -131,7 +131,7 @@
 
 - `S0F` is now opened and pushed as docs-management v6 on branch `S0F-docs-management-v6`.
 - The first active child slice `S0F-1A` is no longer just a placeholder: `P0` contract language is fixed and `P1` has already hardened the real issue creation entrypoint.
-- The next child slice `S0F-1B` is now reserved for replacing deterministic issue Context templates with LLM-authored Context generation under an exact child/main sentence-count contract.
+- Child slice `S0F-1B` is now complete and stable: create-time issue bodies keep an empty `Context`, conclusion-time issue bodies use LLM-authored Context under an exact child/main sentence-count contract, and the retired deterministic Context builder surface has been removed from the shared contract module.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
