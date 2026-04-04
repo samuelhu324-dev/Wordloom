@@ -115,6 +115,7 @@
 - The next remaining gap is output granularity rather than ownership: current read-only planners can already emit rich per-check evidence, but their top-level summaries still stop too early at `pass/warning/blocked/reconciliation/error` instead of naming deterministic stage-local completeness buckets.
 - `S0F-1E` is now opened as the next `S0F` follow-up so that the completeness classification defined in `S0F-1D` can be lowered into a stable audit-output taxonomy rather than remaining only a contract-level description.
 - `P0` is now complete: `S0F-1E` is wired into the spine, the decision-layer versus diagnosis-layer boundary is fixed, and the next follow-up is `P1` creation-stage bucket families.
+- `P1` is now complete: creation-stage bucket families and naming rules are fixed, representative create-time checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P2` PR-stage bucket families.
 
 ## P0 Bucket Taxonomy Boundary (completed)
 
@@ -134,10 +135,30 @@
 - `S0F-1E` now records that bucket labels are additive to existing statuses rather than replacements for them, which preserves current gate semantics while making downstream classification machine-readable.
 - The primary output owner remains the live lifecycle audit surface, while historical log review stays a supporting pre-screen that may map into the same taxonomy without flattening the model back to structure-only review.
 
-## P1 Creation Bucket Families (planned)
+## P1 Creation Bucket Families (completed)
 
 - Creation buckets should classify deterministic gaps such as metadata derivation mismatch, blank-as-rendered Links drift, sidebar parent attachment drift, or create-time Context/DoD shape violations.
 - Bucket labels should remain compact and stage-prefixed so they can be aggregated without extra interpretation.
+
+### P1-C1-S1 (Creation-stage bucket families fixed | v1)
+
+- Creation-stage diagnosis buckets are now fixed as compact stage-prefixed labels rather than free-text summaries.
+- `creation-body-shape-gap` owns structural create-time body defects, including missing required sections, wrong section ordering, or malformed Metadata bullet shape.
+- `creation-metadata-gap` owns deterministic create-time metadata defects, including expected-label drift and body-side `Parent issue` metadata mismatch when a parent relationship is derivable.
+- `creation-links-gap` owns create-time link-surface defects, including `Metadata/Links` boundary drift, invalid link categories, and missing canonical deterministic link fragments.
+- `creation-sidebar-relationship-gap` owns create-time sidebar attachment drift, especially parent relationship mismatch on child issues and unexpected parent attachment on top-level parent issues.
+- `creation-timing-gap` owns create-time timing violations where a field is structurally present but semantically belongs to a later stage, such as substantive Context prose appearing on an open issue or other create-time breaches of the empty-Context / pre-PR DoD expectation.
+- `creation-writeback-gap` owns source-log write-back defects that prevent the create-time item from being deterministically anchored to its live issue URL.
+
+### P1-C1-S2 (Representative creation checks mapped to bucket labels | v1)
+
+- `source-log-issue-writeback` now maps to `creation-writeback-gap` when the live issue URL and source-log `links.issue` do not converge.
+- `required-body-sections`, `issue-section-order`, and `metadata-row-shape` now map to `creation-body-shape-gap` because they all represent canonical create-time body-structure failures rather than different lifecycle owners.
+- `expected-labels` and `body-parent-metadata` now map to `creation-metadata-gap` because both are deterministic create-time state surfaces derived from source metadata and controlled derivation rules.
+- `metadata-links-boundary`, `link-categories`, and `links-coverage` now map to `creation-links-gap` because they all describe create-time navigation drift and blank-as-omitted violations on the issue body.
+- `sidebar-parent-relationship` now maps to `creation-sidebar-relationship-gap` when the live GitHub parent attachment does not match create-time ownership.
+- `context-sentence-shape` on an open issue maps to `creation-timing-gap` only when substantive Context prose appears too early or violates the create-time empty-Context contract; otherwise the check remains a creation-stage pass rather than forcing a future-stage bucket.
+- `exact-id-merged-pr-evidence`, `final-dod-pr-refs`, and `source-log-pr-link` do not create creation buckets in v1 when they merely indicate that the item has not advanced into PR or conclusion ownership yet; they remain neutral or transition-signaling checks until later-stage bucket families are applied.
 
 ## P2 PR Bucket Families (planned)
 
@@ -189,8 +210,8 @@
 
 ### P1 (Creation buckets)
 
-- [ ] `P1-C1-S1`: creation-stage bucket families fixed
-- [ ] `P1-C1-S2`: representative creation checks mapped to bucket labels
+- [x] `P1-C1-S1`: creation-stage bucket families fixed
+- [x] `P1-C1-S2`: representative creation checks mapped to bucket labels
 
 ### P2 (PR buckets)
 
@@ -218,6 +239,8 @@
 - `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` and `docs/issues/historical-log-review-S0E-7C-sample-plan.json` remain representative retained samples proving that rich check-level evidence already exists and can be lowered into deterministic bucket labels in a later phase.
 - `P0-C1-S1` / `P0-C1-S2`: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md` now fixes the initial taxonomy boundary recorded here: the slice is wired into the `S0F` spine, the decision-layer versus diagnosis-layer split is explicit, and bucket labels are defined as additive to existing gate statuses.
 - `P0-C1-S1`: `docs/logs/log-S0F-docs-management-v6.md` now records `S0F-1E` as the next explicit follow-up slice under the `S0F` spine and reflects `P0` as complete rather than leaving the new child slice as an ungrounded placeholder.
+- `P1-C1-S1` / `P1-C1-S2`: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md` and `scripts/issues/plan_lifecycle_audit.py` remain the contract and implementation anchors for creation bucket taxonomy recorded here: create-time ownership is already fixed for body plus sidebar state, and the current live audit check names provide the concrete surfaces now grouped under `creation-body-shape-gap`, `creation-metadata-gap`, `creation-links-gap`, `creation-sidebar-relationship-gap`, `creation-timing-gap`, and `creation-writeback-gap`.
+- `P1-C1-S1` / `P1-C1-S2`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` remains the representative retained creation-stage evidence bundle for this mapping work because it already shows one live `issue-created` sample with canonical create-time checks such as `source-log-issue-writeback`, `required-body-sections`, `expected-labels`, `sidebar-parent-relationship`, `links-coverage`, and `context-sentence-shape`.
 
 ## Numbering
 
