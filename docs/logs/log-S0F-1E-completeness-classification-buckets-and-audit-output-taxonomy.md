@@ -118,6 +118,7 @@
 - `P1` is now complete: creation-stage bucket families and naming rules are fixed, representative create-time checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P2` PR-stage bucket families.
 - `P2` is now complete: PR-stage bucket families and naming rules are fixed, representative PR checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P3` conclusion-stage bucket families.
 - `P3` is now complete: conclusion-stage bucket families and naming rules are fixed, representative conclusion checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P4` audit-output contract and retained sample.
+- `P4` is now complete: the audit-output contract is fixed for coexisting decision-layer and diagnosis-layer fields, one representative retained sample path is fixed, and no further phase is currently required inside this slice.
 
 ## P0 Bucket Taxonomy Boundary (completed)
 
@@ -217,10 +218,24 @@
 - `expected-labels` and `body-parent-metadata` remain context-sensitive: when they fail on concluded issues they may still be emitted under `conclusion-sidebar-relationship-gap` or `conclusion-body-shape-gap` depending on whether the drift is live-relationship state or final body metadata shape, rather than reopening create-time taxonomy.
 - Open-issue transitional states do not automatically create conclusion buckets in v1; conclusion buckets are only authoritative when the item is already in conclusion ownership or when merged-PR evidence makes a close-out defect semantically attributable to the conclusion stage.
 
-## P4 Audit Output Contract and Sample (planned)
+## P4 Audit Output Contract and Sample (completed)
 
 - The first stable output contract should show how `status`, `planned_action`, and new bucket labels coexist in one retained audit bundle.
 - The first representative sample should stay small and should demonstrate at least one stage-local bucket without requiring mutation or remediation replay.
+
+### P4-C1-S1 (Bucketed audit-output contract fixed | v1)
+
+- The first stable audit-output contract now preserves the existing decision layer and adds an explicit diagnosis layer rather than replacing the current result shape.
+- The minimum retained decision-layer fields remain `mode`, `result`, `manifest_path`, `selection_input`, `operation`, and per-item `status`, `planned_action`, and `lifecycle_stage`.
+- The minimum retained diagnosis-layer fields are now fixed conceptually as:
+  - `primary_bucket`: the single highest-signal deterministic bucket for the item after stage attribution;
+  - `bucket_set`: the full deduplicated set of stage-local bucket labels supported by the item's failing or warning checks;
+  - `bucket_source_checks`: the check names that justified each emitted bucket;
+  - `bucket_stage`: the lifecycle owner implied by the emitted bucket family (`creation`, `pr`, or `conclusion`).
+- `status` continues to answer `can this proceed?`, while `primary_bucket` and `bucket_set` answer `what exactly is wrong?`; this preserves stop/allow semantics while making downstream routing deterministic.
+- v1 packaging stays additive and backward-compatible: existing retained `checks` arrays remain authoritative evidence, while bucket fields become a stable summary layer above them.
+- The primary retained sample for this slice remains `docs/issues/lifecycle-audit-S0F-1A-live-plan.json`, because it already shows one live `issue-created` item with enough existing evidence to support a deterministic `creation-sidebar-relationship-gap` diagnosis without inventing new runtime surfaces.
+- `docs/issues/historical-log-review-S0E-7C-sample-plan.json` remains the supporting sample that proves the same diagnosis-layer contract can coexist with a structure-first pre-screen, but it is not the primary owner of lifecycle completeness buckets.
 
 ## Plan (draft)
 
@@ -272,7 +287,7 @@
 
 ### P4 (Audit output contract)
 
-- [ ] `P4-C1-S1`: representative bucketed audit-output sample retained
+- [x] `P4-C1-S1`: representative bucketed audit-output sample retained
 
 ## Notes (optional)
 
@@ -292,6 +307,8 @@
 - `P2-C1-S1` / `P2-C1-S2`: `docs/issues/pr-metadata-completeness-S0E-4F-p4-summary.json` remains the representative retained PR evidence bundle for this mapping work because it already proves the unified PR completeness lane can be summarized across expected development issue, metadata row, closing refs, labels, and GitHub linkage without collapsing back to a render-only pass/fail view.
 - `P3-C1-S1` / `P3-C1-S2`: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md` and `scripts/issues/plan_lifecycle_audit.py` remain the contract and implementation anchors for conclusion bucket taxonomy recorded here: conclusion ownership is already fixed for final Context, DoD, Links, merged PR evidence, source-log write-back, and sidebar re-check, while the current live audit check names provide the concrete surfaces now grouped under `conclusion-body-shape-gap`, `conclusion-context-gap`, `conclusion-dod-gap`, `conclusion-links-gap`, `conclusion-sidebar-relationship-gap`, `conclusion-pr-evidence-gap`, and `conclusion-writeback-gap`.
 - `P3-C1-S1` / `P3-C1-S2`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` remains a useful retained transition sample because it already shows how several conclusion-owned checks stay neutral before close-out, while future `P4` output packaging can demonstrate how those same check families become authoritative conclusion buckets once the lifecycle reaches merged-open or concluded state.
+- `P4-C1-S1`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` now anchors the first representative bucketed audit-output sample recorded here: it already contains the decision-layer fields (`status=blocked`, `planned_action=block-mutation`, `lifecycle_stage=issue-created`) and the underlying checks needed to summarize the item deterministically as a creation-stage diagnosis, with `sidebar-parent-relationship` providing the strongest current `primary_bucket` candidate.
+- `P4-C1-S1`: `docs/issues/historical-log-review-S0E-7C-sample-plan.json` remains the supporting retained sample for additive packaging because it proves the decision layer can already coexist with mixed lifecycle-stage classification (`log-only`, `issue-open-no-pr`, `concluded`) before the diagnosis layer is overlaid.
 
 ## Numbering
 
