@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "log_path": "docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md",
+      "output_path": "docs/issues/issue-S0E-3B-p3-rollout-sample.md",
+      "result_path": "docs/issues/issue-S0E-3B-p3-rollout-sample.json"
+    },
+    {
+      "log_path": "docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md",
+      "output_path": "docs/issues/issue-S0E-4F-p3-rollout-sample.md",
+      "result_path": "docs/issues/issue-S0E-4F-p3-rollout-sample.json"
+    }
+  ]
+}

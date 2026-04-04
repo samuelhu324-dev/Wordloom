@@ -17,10 +17,10 @@
   **reference_log_1**: `docs/logs/log-S5A-security-governance.md`
   **reference_log_2**: `docs/logs/log-S5B-security-governance-hard-gates.md`
   **reference_log_3**: `docs/logs/log-S6A-evidence-drills-spine.md`
-**roadmap_path**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
+**roadmap_path**: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md`
 **roadmap_milestone**: `M5`
 **roadmap_phase**: `M5-P0`
-**roadmap_bridge_refs**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P0, docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M5-P3`
+**roadmap_bridge_refs**: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M5-P0, docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M5-P3`
 **created**: `2026-03-21`
 **updated**: `2026-03-21`
 

@@ -1,0 +1,303 @@
+{
+  "mode": "pr-prep-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/pr-prep-S0E-4D-p3-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-pr-prep",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0E-4D",
+      "source_log_path": "docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md",
+      "current_branch": "S0E-docs-management-v5",
+      "head_ref": "HEAD",
+      "base_branch": "main",
+      "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+      "candidate_pr_branch": "pr-prep/s0e-4d",
+      "pr_title": "S0E-4D/P0-P2: review-hold, full-auto, and lifecycle orchestration follow-up v1",
+      "pr_scope_kind": "phases",
+      "pr_scope_refs": [
+        "P0",
+        "P1",
+        "P2"
+      ],
+      "pr_base": "main",
+      "pr_labels": [
+        "EVOLUTION",
+        "s0/knowledge system",
+        "sub/1",
+        "drills"
+      ],
+      "pr_projects": [],
+      "pr_milestone": null,
+      "pr_development_issue": "#303",
+      "pr_development_issue_refs": [
+        "#303"
+      ],
+      "summary_bullet_count": 3,
+      "preview_body_path": "docs/issues/pr-prep-S0E-4D-p3-body.md",
+      "selected_commit_count": 3,
+      "selected_commits": [
+        {
+          "sha": "27c1550829b5c63ce1bd377bf3ddae9fe3ff96d2",
+          "subject": "S0E-4D/P0-C1-S1S2: scaffold lifecycle orchestration follow-up",
+          "matched_id": "S0E-4D",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "8e991afdd78932b76a8d6155d7192c9db3f6b729",
+          "subject": "S0E-4D/P2-C1-S1S2: fix orchestration command patterns",
+          "matched_id": "S0E-4D",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "53a8cc710ec2c3a13970e303163f617c0c328fad",
+          "subject": "S0E-4D/P3-C1-S1: open live issue and stage review-hold path",
+          "matched_id": "S0E-4D",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        }
+      ],
+      "branch_commits": [
+        {
+          "sha": "8f99ca5d0bd035f19a5d05abfef838919e41b536",
+          "subject": "S0E-4A/P0-C1-S1S2S3S4S5: fix PR automation contract",
+          "matched_id": "S0E-4A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "10f2bcfee5711c3bb99d7af8546e4a142afa75ed",
+          "subject": "S0E-4A/P1-C1-S1S2: roll PR metadata and scaffold into templates",
+          "matched_id": "S0E-4A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "6c94f4f7d74357c3a02f87c64a745ae07aaf2223",
+          "subject": "S0E-4A/P2-C1-S1S2: validate dry-run PR prep flow",
+          "matched_id": "S0E-4A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "7855c1278be0f0aa9815e8c397967f83a6623f28",
+          "subject": "S0E-4A/P3-C1-S1: create source issue and real PR flow",
+          "matched_id": "S0E-4A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "83093f85618cabbf2da6de48f3b7ee028a5d119e",
+          "subject": "S0E-4A/P3-C1-S2: create real PR and write back evidence",
+          "matched_id": "S0E-4A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "898a82c990390f9bd7eb2e3ddeb65bf94ea19bed",
+          "subject": "S0E-4B/P3-C1-S1S2S3S4S5: refine body format and issue-project validation",
+          "matched_id": "S0E-4B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "43210aecc60b92d75bee4c266191dd4e52421e18",
+          "subject": "S0E-4B/P3-C1-S6: stack validation on S0E-4A prep branch",
+          "matched_id": "S0E-4B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "a882e5481ed0ae07c479647263f4c7276331e20c",
+          "subject": "S0E-4B/P3-C1-S7S8S9: clarify stacked PR semantics and title span precedence",
+          "matched_id": "S0E-4B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "039fc82198e8e9e04ff7a79b308d5c78ba992bb6",
+          "subject": "S0E-4B/P3-C1-S10S11: align live issue project and PR base",
+          "matched_id": "S0E-4B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "0c8feaaea7c5b91c9a225ddb0d0c04c47427e857",
+          "subject": "S0E-2D/P1-C1-S1S2: enrich issue draft metadata and body scaffold",
+          "matched_id": "S0E-2D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "6da79e5b58d3d966760f61c99d6ebc0f42ae3709",
+          "subject": "S0E-2D/P2-C1-S1S2: validate enriched issue draft samples",
+          "matched_id": "S0E-2D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "fd7d91caa313900bcd48df25b36ba04fae4fe5fb",
+          "subject": "S0E-2D/P1-C2-S3+P3-C3-S2: normalize parent issue rendering and audit sibling issues",
+          "matched_id": "S0E-2D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "925b5f44c89bf6b0581f12a0c2785ab6c1e03dab",
+          "subject": "S0E-2D/P1-C2-S4+P3-C3-S3: render plain parent issue references",
+          "matched_id": "S0E-2D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "f092a46f4b7eed0061413bad93082d92925f31dc",
+          "subject": "S0E-4A/P3-C2-S1S2: derive development issue fallback and multi-issue formatting",
+          "matched_id": "S0E-4A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "ab5c4023035aeab6cad32f563ac522f478a934b1",
+          "subject": "S0E-2E/P0-P1: fix conclusion boundary and body contract",
+          "matched_id": "S0E-2E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "35cd843fbe4ca2a77b4f43f4d95d6eb894ca5947",
+          "subject": "S0E-2E/P2-C1-S1S2: plan dry-run issue conclusion output",
+          "matched_id": "S0E-2E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "5ba5545ac4503d298b6ac7d0200af5609471cd22",
+          "subject": "S0E-2E/P3-C1-S1S2: apply real issue conclusion write-back",
+          "matched_id": "S0E-2E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "38f46cd0d6fcc2805f73cb34e1521a705743c955",
+          "subject": "S0E-2E/P1-C2-P3-C2: revise conclusion format and apply #295",
+          "matched_id": "S0E-2E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "18fbfe4036b1daf3a34460e0c64fbb0736798c21",
+          "subject": "S0E-4C/P0-P1: normalize PR summary gate and relationship apply",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "cc72eb9157413812a1f1e6f9064230b3ca5333d8",
+          "subject": "S0E-4C/P2-P3: regenerate artifacts and reconcile legacy PRs",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "7468d5524d8e4ae91d9f76e2a7f6238bfc1c23b2",
+          "subject": "S0E-4C/P4-C1-S1: create live issue and attach parent",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "db1f26e3d62394b2c60e94e9b528aca5efcf06d6",
+          "subject": "S0E-4C/P4-C1-S1: add live PR prep artifacts",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "22e721157149e8f774eb52802de35fc35ceb4e97",
+          "subject": "S0E-4C/P4-C1-S1: align PR prep with remote base",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "c9e39dfe83728651374750c4982807eb4c35356a",
+          "subject": "S0E-4C/P4-C1-S2: record closed-loop evidence and stabilize",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "c4b6656dd1babede3c3bc1cc6052beb48f510742",
+          "subject": "S0E-4C/P5-C1-S1: harden create-path cherry-pick fallback",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "bf30fae0a0e06452abda6729cfda13f4485e2c3d",
+          "subject": "S0E-4C/P5-C1-S1: refresh P5 PR-prep artifacts",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "e6de7a371fdfc276640444768675dbad5938fbc2",
+          "subject": "S0E-4C/P5-C1-S2: validate fallback PR and update issue #300",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "2e226a98804d6155d6d816baf2f8d7799b9d5d7e",
+          "subject": "S0E-4C/P6-C1-S1S2: align PR body scope and rewrite PR 296",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "6065638e1c62fe33c0a2a6daed8abbb4d104ab42",
+          "subject": "S0E-4C/P7-C1-S1S2: replay merged PR scope for 301 and 302",
+          "matched_id": "S0E-4C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "c2d5075462a0572356bd1c0e926ca3f0821ba618",
+          "subject": "S0E-2D/P4-C1-S1S2S3: reopen lifecycle mode contract",
+          "matched_id": "S0E-2D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "27c1550829b5c63ce1bd377bf3ddae9fe3ff96d2",
+          "subject": "S0E-4D/P0-C1-S1S2: scaffold lifecycle orchestration follow-up",
+          "matched_id": "S0E-4D",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "8e991afdd78932b76a8d6155d7192c9db3f6b729",
+          "subject": "S0E-4D/P2-C1-S1S2: fix orchestration command patterns",
+          "matched_id": "S0E-4D",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "53a8cc710ec2c3a13970e303163f617c0c328fad",
+          "subject": "S0E-4D/P3-C1-S1: open live issue and stage review-hold path",
+          "matched_id": "S0E-4D",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        }
+      ],
+      "planned_action": "prepare-pr-prep-branch",
+      "status": "planned",
+      "warnings": []
+    }
+  ]
+}

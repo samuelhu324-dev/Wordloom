@@ -1,0 +1,42 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-6F-live-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-6F",
+  "source_log_path": "docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-6f",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 4,
+  "selected_commits": [
+    "7aee9e10d1e532ec3dbc9d5ea7e25f8759f619f2",
+    "1150976bff9bbd9e7527ae7bf3ec76010cefd149",
+    "84d33d5be6b5641d2b67afa78a92c033d3bcc7c4",
+    "b7573f046f304689958d46d7ad568ebc7c8eaed9"
+  ],
+  "pr_title": "S0E-6F/P0-P3: issue body metadata and links boundary follow-up v1",
+  "draft": false,
+  "pr_number": 343,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/343",
+  "body_path": "docs/issues/pr-prep-S0E-6F-live-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#331",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0E-6F-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0E-6F-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 7aee9e10; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 7aee9e10d... S0E-6F/P0-C1-S1: open metadata-links boundary follow-up"
+  ]
+}

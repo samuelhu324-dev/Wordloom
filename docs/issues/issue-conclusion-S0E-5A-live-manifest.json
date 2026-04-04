@@ -1,0 +1,15 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5A",
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "issue_number": 305,
+      "reason": "Conclude the live S0E-5A issue after merged PR #306 and the live parent relationship are both in place."
+    }
+  ]
+}

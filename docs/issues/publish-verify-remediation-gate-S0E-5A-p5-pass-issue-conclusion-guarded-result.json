@@ -1,0 +1,16 @@
+{
+  "mode": "issue-conclusion-guarded-apply",
+  "result": "ok",
+  "gate_input_kind": "audit-plan",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0E-5A-p5-pass-plan.json",
+  "gate_decision_path": "docs/issues/publish-verify-remediation-gate-S0E-5A-p5-pass-issue-conclusion-gate-decision.json",
+  "gate_decision": "allow-apply",
+  "apply_allowed": true,
+  "conclusion_manifest_path": "docs/issues/issue-conclusion-S0E-4D-p3-manifest.json",
+  "conclusion_plan_path": "docs/issues/publish-verify-remediation-gate-S0E-5A-p5-pass-issue-conclusion-plan.json",
+  "guarded_action": "applied-after-pre-gate",
+  "apply_result_path": "docs/issues/publish-verify-remediation-gate-S0E-5A-p5-pass-issue-conclusion-apply-result.json",
+  "warnings": [
+    "issue was already closed before apply; body updated in place"
+  ]
+}

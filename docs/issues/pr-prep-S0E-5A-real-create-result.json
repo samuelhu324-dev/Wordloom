@@ -1,0 +1,40 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-5A-real-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-5A",
+  "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-5a",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 5,
+  "selected_commits": [
+    "22b00afce8cf343c47ba16a390e10e99e78933a1",
+    "593919fcec7c706cfeae016b0d5486383f516377",
+    "2bcc12fa73ac79f3a768fe904ace762e2f4cfb64",
+    "47cd1812be178808d257203a727dafe7fc940213",
+    "77ff9ebad527e14b8b0ccae7ca29278ad07c3757"
+  ],
+  "pr_title": "S0E-5A/P0-P5: lifecycle audit gate and dry-run planner v1",
+  "draft": false,
+  "pr_number": 306,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/306",
+  "body_path": "docs/issues/pr-prep-S0E-5A-real-create-body.md",
+  "labels_applied": [
+    "drills",
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#305",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 22b00afc; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 22b00afc... S0E-5A/P0-P2: add lifecycle audit gate and dry-run planner"
+  ]
+}

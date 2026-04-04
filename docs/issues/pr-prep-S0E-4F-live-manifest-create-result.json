@@ -1,0 +1,46 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-4F-live-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-4F",
+  "source_log_path": "docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-4f",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 8,
+  "selected_commits": [
+    "6cdc0b267e0f6a4b74c43caeb8942227cdf0465a",
+    "26e2a7f2b89af0a19a483417b5d766a2ca768bf6",
+    "dcb591787179d9c3154388c19f33a93c6a8db00d",
+    "55358defb31c3c63ebc0bc3ba3fc1992ddfba2e4",
+    "500085d609daf18ff25157bb5925ab76283477f7",
+    "a6b042b45e71ae95e1a72d2ed20b81346815c52e",
+    "5db06efaf0842cae63b55bbace3b6d6387f080a6",
+    "4deafaa24fd1ab9f61dcd4b13f77b69904dd4511"
+  ],
+  "pr_title": "S0E-4F/P0-P5: PR body metadata-links redundancy follow-up v1",
+  "draft": false,
+  "pr_number": 329,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/329",
+  "body_path": "docs/issues/pr-prep-S0E-4F-live-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#327",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0E-4F-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0E-4F-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 6cdc0b26; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 6cdc0b267... S0E-4F/P0-P2: narrow PR metadata-links contract and audit live S0E PRs"
+  ]
+}

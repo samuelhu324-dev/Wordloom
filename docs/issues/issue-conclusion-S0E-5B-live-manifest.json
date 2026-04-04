@@ -1,0 +1,15 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "issue_number": 307,
+      "reason": "Close out the representative S0E-5B guarded multi-mutation lifecycle sample after PR #308 merged."
+    }
+  ]
+}

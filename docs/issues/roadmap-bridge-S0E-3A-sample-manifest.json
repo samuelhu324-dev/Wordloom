@@ -7,11 +7,11 @@
   },
   "items": [
     {
-      "roadmap_path": "docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md",
+      "roadmap_path": "docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md",
       "roadmap_kind": "mainline"
     },
     {
-      "roadmap_path": "docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md",
+      "roadmap_path": "docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md",
       "roadmap_kind": "branch"
     }
   ]

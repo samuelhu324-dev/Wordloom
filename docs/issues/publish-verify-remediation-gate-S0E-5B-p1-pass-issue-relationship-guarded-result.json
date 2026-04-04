@@ -1,0 +1,18 @@
+{
+  "mode": "issue-relationship-guarded-apply",
+  "result": "ok",
+  "gate_input_kind": "audit-plan",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0E-5B-p1-pass-plan.json",
+  "gate_decision_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-gate-decision.json",
+  "gate_decision": "stop-for-remediation",
+  "gate_apply_allowed": false,
+  "guarded_eligibility": "allowed-via-targeted-relationship-remediation",
+  "relationship_manifest_path": "docs/issues/lifecycle-remediation-publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-remediation-relationship-manifest.json",
+  "relationship_plan_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-plan.json",
+  "guarded_action": "applied-after-pre-gate",
+  "apply_result_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p1-pass-issue-relationship-apply-result.json",
+  "warnings": [
+    "relationship apply allowed through targeted remediation because attach-parent-relationship is the only planned follow-up action",
+    "child issue was already attached to the requested parent issue"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-4C-p5-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-4C",
+  "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-4c-p5",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 8,
+  "selected_commits": [
+    "18fbfe4036b1daf3a34460e0c64fbb0736798c21",
+    "cc72eb9157413812a1f1e6f9064230b3ca5333d8",
+    "7468d5524d8e4ae91d9f76e2a7f6238bfc1c23b2",
+    "db1f26e3d62394b2c60e94e9b528aca5efcf06d6",
+    "22e721157149e8f774eb52802de35fc35ceb4e97",
+    "c9e39dfe83728651374750c4982807eb4c35356a",
+    "c4b6656dd1babede3c3bc1cc6052beb48f510742",
+    "bf30fae0a0e06452abda6729cfda13f4485e2c3d"
+  ],
+  "pr_title": "S0E-4C/P5-C1-S1: harden create-path cherry-pick fallback",
+  "draft": false,
+  "pr_number": 302,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/302",
+  "body_path": "docs/issues/pr-prep-S0E-4C-p5-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#300",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 18fbfe40; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 18fbfe40... S0E-4C/P0-P1: normalize PR summary gate and relationship apply"
+  ]
+}

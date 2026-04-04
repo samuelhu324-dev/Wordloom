@@ -1,0 +1,68 @@
+{
+  "version": "1",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-2B",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "issue_number": 288,
+      "reason": "Re-run the closed child issue conclusion after the source-log-derived Context contract revision so S0E-2B no longer reuses generic boilerplate wording."
+    },
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "reason": "Re-run the closed child issue conclusion after the source-log-derived Context contract revision so S0E-2A no longer reuses generic boilerplate wording."
+    },
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "issue_number": 293,
+      "reason": "Re-run the closed child issue conclusion after the source-log-derived Context contract revision so S0E-4A no longer reuses generic boilerplate wording."
+    },
+    {
+      "requested_id": "S0E-4B",
+      "source_log_path": "docs/logs/log-S0E-4B-pr-title-label-and-body-follow-up.md",
+      "issue_number": 295,
+      "reason": "Re-run the closed child issue conclusion after the source-log-derived Context contract revision so S0E-4B no longer reuses generic boilerplate wording."
+    },
+    {
+      "requested_id": "S0E-2D",
+      "source_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "issue_number": 297,
+      "reason": "Re-run the closed child issue conclusion after the source-log-derived Context contract revision so S0E-2D no longer reuses generic boilerplate wording."
+    },
+    {
+      "requested_id": "S0E-4C",
+      "source_log_path": "docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md",
+      "issue_number": 300,
+      "reason": "Re-run the closed child issue conclusion after the source-log-derived Context contract revision so S0E-4C no longer reuses generic boilerplate wording."
+    },
+    {
+      "requested_id": "S0E-4D",
+      "source_log_path": "docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md",
+      "issue_number": 303,
+      "reason": "Re-run the closed child issue conclusion after the source-log-derived Context contract revision so S0E-4D no longer reuses generic boilerplate wording."
+    },
+    {
+      "requested_id": "S0E-5A",
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "issue_number": 305,
+      "reason": "Re-run the closed child issue conclusion after the source-log-derived Context contract revision so S0E-5A no longer reuses generic boilerplate wording."
+    },
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "issue_number": 307,
+      "reason": "Re-run the closed child issue conclusion after the source-log-derived Context contract revision so S0E-5B no longer reuses generic boilerplate wording."
+    },
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "issue_number": 309,
+      "reason": "Re-run the closed child issue conclusion after the source-log-derived Context contract revision so S0E-5C keeps the same shape but now carries log-specific context wording."
+    }
+  ]
+}

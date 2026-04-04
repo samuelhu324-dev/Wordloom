@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S0E-7F-live-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-7F",
+  "source_log_path": "docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 339,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/339",
+  "issue_title": "S0E-7F: workflow/publish-verify-remediation gate read-only wrapper adoption",
+  "previous_issue_state": "OPEN",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S0E-7F-live-s0e-7f-apply-body.md",
+  "close_reason": "completed",
+  "warnings": [
+    "issue was open before apply; body updated and issue closed with reason=completed"
+  ]
+}

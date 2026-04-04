@@ -1,0 +1,47 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md",
+  "draft_path": "docs/issues/issue-S0E-5D-body-contract-and-gate-shape-normalization.md",
+  "title": "S0E-5D: contract/body contract and gate shape normalization",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [
+    "drills"
+  ],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- The system had separate body templates for issue creation, issue conclusion, and PR bodies, so the same automation family produced visibly different shapes in live GitHub objects.\r\n- This slice fixed one canonical contract for metadata layout, section order, Evidence Footer shape, and inline-code rules across those bodies.\r\n- The hard gate now checks body shape rather than section presence alone, including blank-line discipline and allowed link categories.\r\n- Representative merged PRs and closed issues were rewritten under that contract to prove the normalized body can survive live verification.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`\r\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "issue_milestone missing",
+    "live label preflight passed against samuelhu324-dev/wordloom-v3",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "live_label_check_enabled": true,
+  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
+  "matched_live_labels": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "missing_live_labels": [],
+  "issue_number": 330,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/330",
+  "created_at": "2026-04-03T11:48:48.450604+00:00"
+}
+

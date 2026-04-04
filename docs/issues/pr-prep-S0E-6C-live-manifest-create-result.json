@@ -1,0 +1,39 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-6C-live-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-6C",
+  "source_log_path": "docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-6c",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 1,
+  "selected_commits": [
+    "df0fce6b316911683f86357c4935414b05c31b4f"
+  ],
+  "pr_title": "S0E-6C/P0-P3: issue Context sentence contract and gate v1",
+  "draft": false,
+  "pr_number": 345,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/345",
+  "body_path": "docs/issues/pr-prep-S0E-6C-live-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#334",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0E-6C-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0E-6C-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at df0fce6b; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply df0fce6b3... S0E-6C/P0-P3: fix issue Context sentence contract and gate"
+  ]
+}

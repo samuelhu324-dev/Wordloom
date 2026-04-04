@@ -1,0 +1,41 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-6D-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-6D: preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+    "S0E-6D: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-6D",
+      "source_log_path": "docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md",
+      "issue_number": 335,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/335",
+      "issue_title": "S0E-6D: contract/natural issue Context rendering and weak gate",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-6D-live-s0e-6d-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 346,
+          "title": "S0E-6D/P0-P4: natural issue Context rendering and weak gate v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/346",
+          "merged_at": "2026-04-03T12:42:22Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Resume S0E-6D after merge: exact-ID merged PR evidence is now available, so run the post-merge issue conclusion now."
+    }
+  ]
+}

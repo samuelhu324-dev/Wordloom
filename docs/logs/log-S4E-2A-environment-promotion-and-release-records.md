@@ -16,7 +16,7 @@
   **previous_log**: `docs/logs/log-S4E-1A-release-trigger-policy-and-governance-boundary.md`
   **reference_log_1**: `docs/logs/log-S4E-1A-release-trigger-policy-and-governance-boundary.md`
   **reference_log_2**: `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
-  **reference_log_3**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+  **reference_log_3**: `docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md`
 **created**: `2026-03-27`
 **updated**: `2026-03-27`
 

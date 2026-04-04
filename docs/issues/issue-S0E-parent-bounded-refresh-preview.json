@@ -1,0 +1,37 @@
+{
+  "mode": "draft-generation",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-docs-management-v5.md",
+  "draft_path": "docs/issues/issue-S0E-parent-bounded-refresh-preview.md",
+  "title": "S0E-docs-management-v5: evidence/docs management v5",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/0"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": null,
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/0`\n- Projects: `wordloom Board`\n- Milestone: ``\n\n## Context\n\n- The concrete scope here is the S0E spine for structured-log-driven GitHub issue and PR automation.\n- S0E-docs-management-v5 now holds the parent ledger that ties issue drafting, lifecycle audit, remediation, and publish-time verification into one owned path.\n- Completed child slices have fixed the body contract, relationship semantics, context authoring boundary, attribution flow, and publish-verify wrappers that this spine depends on.\n- This parent issue now tracks the child DoD ledger in source-log-owned order rather than GitHub sidebar display order or raw issue-number order.\n- It remains the issue-side navigation and progress ledger for the still-open docs management v5 line while new follow-up slices are cut from the same spine.\n\n## Definition of Done (DoD)\n\n- #289\n- #288\n- #313\n- #295\n- #314\n- #293\n- #297\n- #324\n- #300\n- #303\n- #305\n- #307\n- #309\n- #330\n- #332\n- #333\n- #338\n- #326\n- #337\n- #315\n- #334\n- #335\n- #336\n- #331\n- #327\n- #341\n- #342\n- #339\n- #340\n- #322\n- #353\n\n## Links\n\n- Log: `docs/logs/log-S0E-docs-management-v5.md`\n- Roadmap: `docs/roadmap/draft.md`\n",
+  "warnings": [
+    "issue_keyword inferred from source log content",
+    "module labels left blank",
+    "issue_milestone missing",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) was populated from the known child issue ledger because this is a top-level parent issue"
+  ],
+  "live_label_check_enabled": false,
+  "live_label_check_repo": null,
+  "matched_live_labels": [],
+  "missing_live_labels": [],
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
+}

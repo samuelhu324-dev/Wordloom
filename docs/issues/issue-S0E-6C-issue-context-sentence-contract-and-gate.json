@@ -1,0 +1,44 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md",
+  "draft_path": "docs/issues/issue-S0E-6C-issue-context-sentence-contract-and-gate.md",
+  "title": "S0E-6C: contract/issue Context sentence contract and gate",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- Issue Context had been left blank, reduced to placeholders, or repeated as one generic paragraph across unrelated issues.\r\n- This slice fixed a deterministic Context contract with four English bullet sentences for child-log issues and five for main-log issues.\r\n- The same rule now drives both issue-draft rendering and conclusion-time rewrites, so create and close paths no longer diverge.\r\n- Lifecycle audit now blocks issue bodies whose Context lacks the required line count, one-sentence-per-line shape, or source-log-specific anchors.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`\r\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "issue_milestone missing",
+    "live label preflight passed against samuelhu324-dev/wordloom-v3",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "live_label_check_enabled": true,
+  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
+  "matched_live_labels": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "missing_live_labels": [],
+  "issue_number": 334,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/334",
+  "created_at": "2026-04-03T11:49:10.581084+00:00"
+}
+

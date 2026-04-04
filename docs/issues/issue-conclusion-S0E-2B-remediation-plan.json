@@ -1,0 +1,45 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-2B-remediation-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-2B: issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+    "S0E-2B: merged PR set supplied by explicit override",
+    "S0E-2B: existing Context section is blank; preview omits optional Context block",
+    "S0E-2B: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-2B",
+      "source_log_path": "docs/logs/log-S0E-2B-real-github-issue-creation-automation.md",
+      "issue_number": 288,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/288",
+      "issue_title": "S0E-2B: automation/real GitHub issue creation automation",
+      "issue_state": "OPEN",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-2B-remediation-s0e-2b-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 290,
+          "title": "S0E-2B/P0-P3: real GitHub issue creation automation v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/290",
+          "merged_at": "2026-03-28T13:00:58Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+        "merged PR set supplied by explicit override",
+        "existing Context section is blank; preview omits optional Context block",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Conclude historical S0E-2B issue after PR #290 body/title remediation and exact-ID merged evidence audit."
+    }
+  ]
+}

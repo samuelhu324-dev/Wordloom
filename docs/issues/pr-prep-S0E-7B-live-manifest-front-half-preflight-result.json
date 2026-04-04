@@ -1,0 +1,70 @@
+{
+  "mode": "pr-create-front-half-preflight",
+  "result": "ok",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "gate_input_kind": "manifest",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0E-7B-live-manifest.json",
+  "gate_decision_path": "docs/issues/lifecycle-gate-S0E-7B-live-decision.json",
+  "pr_prep_input_kind": "manifest",
+  "pr_prep_input_path": "docs/issues/pr-prep-S0E-7B-live-manifest.json",
+  "pr_prep_plan_path": "docs/issues/pr-prep-S0E-7B-live-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-7B",
+  "source_log_path": "docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md",
+  "candidate_pr_branch": "pr-prep/s0e-7b",
+  "selected_commit_count": 3,
+  "summary_bullet_count": 3,
+  "gate_decision": "allow-apply",
+  "gate_apply_allowed": true,
+  "preflight_decision": "allow-front-half-preflight",
+  "preflight_allowed": true,
+  "stopped_before_stage": "S4-local-branch-materialization",
+  "warnings": [],
+  "checks": [
+    {
+      "name": "lifecycle-pre-gate",
+      "status": "pass",
+      "details": "lifecycle pre-gate allowed the issue-created sample to continue into create-time preflight"
+    },
+    {
+      "name": "plan-item-state",
+      "status": "pass",
+      "details": "PR-prep item is in planned state"
+    },
+    {
+      "name": "selected-commits",
+      "status": "pass",
+      "details": "selected commit count = 3"
+    },
+    {
+      "name": "gh-prerequisites",
+      "status": "pass",
+      "details": "gh CLI and auth are available for preflight reads"
+    },
+    {
+      "name": "label-existence",
+      "status": "pass",
+      "details": "all requested PR labels exist"
+    },
+    {
+      "name": "milestone-existence",
+      "status": "skipped",
+      "details": "pr_milestone left blank by contract"
+    },
+    {
+      "name": "branch-availability",
+      "status": "pass",
+      "details": "prepared branch name is currently free: pr-prep/s0e-7b"
+    },
+    {
+      "name": "preview-integrity",
+      "status": "pass",
+      "details": "preview body is create-ready with summary_bullet_count = 3"
+    },
+    {
+      "name": "body-shape-contract",
+      "status": "pass",
+      "details": "preview body matches the canonical PR body contract"
+    }
+  ]
+}

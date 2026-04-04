@@ -25,8 +25,8 @@
 
 ## Template chooser
 
-- Use `docs/roadmap/road-template-main-roadmap.md` for a mainline roadmap such as `road-S1`.
-- Use `docs/roadmap/road-template-branch-roadmap.md` for a focused branch roadmap such as `road-S1-1`.
+- Use `docs/roadmap/road-template-main-roadmap.md` for a mainline roadmap such as `road-001`.
+- Use `docs/roadmap/road-template-branch-roadmap.md` for a focused branch roadmap such as `road-001-01`.
 
 ## Split rationale
 

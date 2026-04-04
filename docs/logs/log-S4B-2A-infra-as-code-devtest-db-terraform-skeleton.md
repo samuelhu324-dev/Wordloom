@@ -15,10 +15,10 @@
   **parent_log**: `docs/logs/log-S4B-infra-as-code-and-runtime-packaging.md`
   **reference_log_1**: `docs/logs/log-S4B-1A-infra-as-code-and-runtime-packaging-baseline.md`
   **reference_log_2**: `docs/ROADMAP v5.md`
-**roadmap_path**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md`
+**roadmap_path**: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md`
 **roadmap_milestone**: `M3`
 **roadmap_phase**: `M3-P0`
-**roadmap_bridge_refs**: `docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P0, docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P1, docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P2, docs/roadmap/road-S1-1-gov-role-minimal-ops-loop.md#M3-P3`
+**roadmap_bridge_refs**: `docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M3-P0, docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M3-P1, docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M3-P2, docs/roadmap/road-001-01-gov-role-minimal-ops-loop.md#M3-P3`
 **created**: `2026-03-21`
 **updated**: `2026-03-25`
 

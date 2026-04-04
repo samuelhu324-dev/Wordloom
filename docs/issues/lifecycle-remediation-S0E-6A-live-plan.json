@@ -1,0 +1,34 @@
+{
+  "mode": "lifecycle-remediation-dry-run",
+  "result": "ok",
+  "audit_plan_path": "docs/issues/lifecycle-audit-S0E-6A-live-plan.json",
+  "selection_input": "audit-plan",
+  "operation": "plan-lifecycle-remediation",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-6A: planned"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-6A",
+      "source_log_path": "docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md",
+      "issue_number": 332,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/332",
+      "audit_status": "blocked",
+      "remediation_status": "planned",
+      "planned_action": "plan-remediation",
+      "applied_action": null,
+      "steps": [
+        {
+          "action_kind": "attach-parent-relationship",
+          "status": "planned",
+          "details": "Prepare a child-of relationship attach from the expected parent issue to the audited child issue.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-S0E-6A-live-relationship-manifest.json"
+        }
+      ],
+      "warnings": [],
+      "reason": "Full-auto lifecycle pass for S0E-6A after live issue creation and source-log write-back."
+    }
+  ]
+}

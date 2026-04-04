@@ -1,0 +1,41 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-6E-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-6E: preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+    "S0E-6E: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-6E",
+      "source_log_path": "docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md",
+      "issue_number": 336,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/336",
+      "issue_title": "S0E-6E: contract/single-item Context authoring and batch-preserve boundary",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-6E-live-s0e-6e-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 349,
+          "title": "S0E-6E/P0-P4: single-item Context authoring and batch-preserve boundary v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/349",
+          "merged_at": "2026-04-03T12:42:25Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Resume S0E-6E after merge: exact-ID merged PR evidence is now available, so run the post-merge issue conclusion now."
+    }
+  ]
+}

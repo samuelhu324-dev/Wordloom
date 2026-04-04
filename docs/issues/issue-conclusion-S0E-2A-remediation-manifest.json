@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-2A",
+      "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "issue_number": 289,
+      "merged_pr_overrides": ["#287"],
+      "reason": "Conclude historical S0E-2A issue after PR #287 body/title remediation and exact-ID merged evidence audit."
+    }
+  ]
+}

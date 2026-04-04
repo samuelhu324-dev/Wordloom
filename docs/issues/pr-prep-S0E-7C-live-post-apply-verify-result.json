@@ -1,0 +1,71 @@
+{
+  "mode": "live-pr-body-contract-check",
+  "result": "fail",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "source_log_path": "docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md",
+  "pr_number": 311,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/311",
+  "pr_title": "S0E-7C/P0-P4: workflow/historical log review sampling and mirror follow-up v1",
+  "pr_state": "OPEN",
+  "live_body_path": "docs/issues/pr-prep-S0E-7C-live-post-apply-live-body.md",
+  "status": "fail",
+  "warnings": [],
+  "expected_evidence_footer_lines": [
+    "`P0-C1-S1S2` | artifact: `docs/logs/log-S0E-7C-historical-log-review-sampling-and-mirror-follow-up.md`",
+    "`P1-C1-S1S2` | artifact: `scripts/issues/plan_historical_log_review.py`",
+    "`P2-C1-S1S2` | artifact: `docs/issues/historical-log-review-S0E-7C-sample-plan.json`",
+    "`P3-C1-S1S2` | artifact: `.github/workflows/s0e-historical-log-review-mirror.yml`",
+    "`P4-C1-S1` | artifact: `docs/issues/historical-log-review-S0E-series-plan.json`",
+    "Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.",
+    "Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.",
+    "`Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape."
+  ],
+  "checks": [
+    {
+      "name": "required-pr-sections",
+      "status": "pass",
+      "details": "required PR sections are present"
+    },
+    {
+      "name": "pr-section-order",
+      "status": "pass",
+      "details": "section order matches the canonical contract"
+    },
+    {
+      "name": "metadata-row-shape",
+      "status": "pass",
+      "details": "metadata bullet rows are contiguous"
+    },
+    {
+      "name": "pr-link-categories",
+      "status": "pass",
+      "details": "PR Links section uses only allowed link categories"
+    },
+    {
+      "name": "evidence-footer-source-shape",
+      "status": "fail",
+      "details": "invalid Evidence Footer Source rows: ['Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.', 'Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.', '`Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.']"
+    },
+    {
+      "name": "evidence-footer-eligibility",
+      "status": "fail",
+      "details": "Evidence Footer Source is present but the source log is not drills/evidence eligible"
+    },
+    {
+      "name": "evidence-footer-presence",
+      "status": "pass",
+      "details": "rendered Evidence Footer rows match the source block exactly"
+    },
+    {
+      "name": "evidence-footer-line-shape",
+      "status": "fail",
+      "details": "Evidence Footer rows do not match the canonical line shape: ['Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.', 'Generated PR body should keep `Evidence Footer` and `Development Link` as separate sections.', '`Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.']"
+    },
+    {
+      "name": "development-link-presence",
+      "status": "pass",
+      "details": "Development Link section is correctly omitted"
+    }
+  ],
+  "result_path": "docs/issues/pr-prep-S0E-7C-live-post-apply-verify-result.json"
+}

@@ -22,7 +22,7 @@
 
 **Context / role targeting**
 
-- Use this template for a long-running mainline roadmap such as `road-S1`.
+- Use this template for a long-running mainline roadmap such as `road-001`.
 - The mainline owns the backbone narrative, broad milestone language, and the stable list of direct/absorbed child-log outcomes.
 - Branch roads may appear later to solve a focused problem without forcing the mainline body to absorb all branch-only narrative detail.
 

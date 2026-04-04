@@ -13,7 +13,7 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
   **pr**: ``
   **adr**: ``
   **runbook**: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
-  **roadmap**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+  **roadmap**: `docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md`
   **reference_log_1**: `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
   **reference_log_2**: `docs/logs/log-S4D-4B-github-actions-release-dispatch.md`
   **reference_log_3**: `docs/logs/log-S4D-4C-408-timeout-eradication.md`
@@ -67,7 +67,7 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 - 本 log 负责：
   - 定义 `S4E` 的目标边界、默认基线与 phase 拆分；
   - 索引 `S4D-4B` / `S4D-4C` 已完成的控制面资产，并为更高层 release policy 提供统一入口；
-  - 说明 `S4E` 在 `road-S1` 中与 `M4/M5`、`F1/F3` 的关系。
+  - 说明 `S4E` 在 `road-001` 中与 `M4/M5`、`F1/F3` 的关系。
 - 本 log 不负责：
   - 具体 deploy / verify / rollback helper 的实现细节；
   - stable runner、reverse tunnel、RDS allowlist、timeout 根因治理本身；
@@ -77,7 +77,7 @@ log-S4E（Release Operating Model / Trigger Policy / Governance Boundary）
 
 - 结构层面：
   - 读者能在 30 秒内理解 `S4E` 处理什么、与 `S4D` 的边界是什么、第一阶段先做什么；
-  - `road-S1` 与 `S4E` 的关系明确，不再把 release policy 误判为纯 future note。
+  - `road-001` 与 `S4E` 的关系明确，不再把 release policy 误判为纯 future note。
 - 工程层面：
   - 至少固定一份 trigger surface policy；
   - 至少固定一份 approval / governance boundary 说明；

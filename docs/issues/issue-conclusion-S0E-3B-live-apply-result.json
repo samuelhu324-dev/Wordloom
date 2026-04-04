@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S0E-3B-live-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-3B",
+  "source_log_path": "docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 322,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/322",
+  "issue_title": "S0E-3B: contract/GitHub label inventory and issue-label live preflight contract",
+  "previous_issue_state": "OPEN",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S0E-3B-live-apply-body.md",
+  "close_reason": "completed",
+  "warnings": [
+    "issue was open before apply; body updated and issue closed with reason=completed"
+  ]
+}

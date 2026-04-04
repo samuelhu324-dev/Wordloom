@@ -1,0 +1,44 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md",
+  "draft_path": "docs/issues/issue-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md",
+  "title": "S0E-7B: workflow/attribution handoff implementation and automatic mirroring integration",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- S0E-4E defined the attribution contract, but no implementation yet produced the handoff payload or fed it into the GitHub Actions verifier path.\r\n- This slice added a resolver that emits source-log attribution when it is safe and stops fail-closed when the candidate set is missing, conflicting, or malformed.\r\n- The secondary-enforcement workflow now resolves attribution before verification and halts with retained evidence whenever attribution is not eligible.\r\n- Representative pass and stop cases proved the handoff can drive automation without hiding why verification was skipped.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`\r\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "issue_milestone missing",
+    "live label preflight passed against samuelhu324-dev/wordloom-v3",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "live_label_check_enabled": true,
+  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
+  "matched_live_labels": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "missing_live_labels": [],
+  "issue_number": 337,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/337",
+  "created_at": "2026-04-03T11:49:45.778361+00:00"
+}
+

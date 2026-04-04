@@ -13,7 +13,7 @@
   **pr**: ``
   **adr**: ``
   **runbook**: `docs/runbook/run-S4C-cloud-devtest-runtime-path.md`
-  **roadmap**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+  **roadmap**: `docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md`
   **reference_log_1**: `docs/logs/_template-log-phase-drills-evidence.md`
   **reference_log_2**: ``
   **phase_log_1**: `docs/logs/log-S4C-1A-cloud-devtest-terraform-bootstrap.md`
@@ -28,7 +28,7 @@
 
 **Decision**:
 
-- 把「cloud services + Terraform minimal path（dev/test-focused）」从 `road-S1-2` 中抽离，收口为 `S4C` 这一条以 Terraform 为主的 infra backbone，后续通过 phase logs 实现和验证。
+- 把「cloud services + Terraform minimal path（dev/test-focused）」从 `road-001-2` 中抽离，收口为 `S4C` 这一条以 Terraform 为主的 infra backbone，后续通过 phase logs 实现和验证。
 - 明确边界：`S4C` 只负责 cloud dev/test 级基础设施（网络、托管数据库、对象存储）以及与 wordloom-v3 的连接方式，不直接覆盖生产级多云/安全治理（交由 S5A/S5B 以及将来的 S1 子路来承接）。
 
 **Default choices（默认基线 / v1）**:
@@ -46,9 +46,9 @@
 
 ## Background（背景）
 
-- `road-S1` 中 M3/M5 已经提出「IaC & infrastructure primitives（Terraform + dev/test env → 云基础）」的长期目标，但具体练习路径容易和其他内容纠缠在一起。
+- `road-001` 中 M3/M5 已经提出「IaC & infrastructure primitives（Terraform + dev/test env → 云基础）」的长期目标，但具体练习路径容易和其他内容纠缠在一起。
 - 你当前几乎没有云平台实战经验，希望有一条从 0 开始、围绕 wordloom-v3 的最小实践路线：从开账号 > 建网络 > 开托管 Postgres/存储 > 让本机 API 连上云资源。
-- 之前的 `road-S1-2` 尝试把这条路线写成子 road，但与 logs/phase 的角色有一定重叠；因此本次改造把它收口成 S4C epic + phase logs，road 只保留高层路线。
+- 之前的 `road-001-2` 尝试把这条路线写成子 road，但与 logs/phase 的角色有一定重叠；因此本次改造把它收口成 S4C epic + phase logs，road 只保留高层路线。
 
 ## Constraints（约束）
 
@@ -145,5 +145,5 @@
 
 ## Recent changes（for traceability，可选）
 
-- 2026-03-22：创建 `S4C` epic skeleton，用于承接原 `road-S1-2` 中的 cloud + Terraform 最小路径内容，将详细实践下放到 phase logs 与 Terraform 模块中。
+- 2026-03-22：创建 `S4C` epic skeleton，用于承接原 `road-001-2` 中的 cloud + Terraform 最小路径内容，将详细实践下放到 phase logs 与 Terraform 模块中。
 - 2026-03-23：S4C-3A 完成 cloud-dev runtime integration drill，新增 `run-S4C-cloud-devtest-runtime-path.md`，并将 epic 收口为 `stable`。

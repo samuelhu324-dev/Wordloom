@@ -1,0 +1,45 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-5D-live-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-5D",
+  "source_log_path": "docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-5d",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 7,
+  "selected_commits": [
+    "477a71e0228ea8e7952a2f4a788dcf8e848c62b4",
+    "a06078347a9630e725f1f8894a67d16caf4a2414",
+    "fdeb2e35a7547298e7b5371a5bcacfbaecc913b0",
+    "46fca78cfe0133f95cf82f6d3aa3811daabba56a",
+    "7be23e25e66b59b67e933905907fbb6c9015a485",
+    "e70e42e9e43d7b803c3b2cfa3a0d2274616818a2",
+    "dd7cac0c2358c78b2400ceab5e61f40e30387fd9"
+  ],
+  "pr_title": "S0E-5D/P0-P4: body contract and gate shape normalization v1",
+  "draft": false,
+  "pr_number": 347,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/347",
+  "body_path": "docs/issues/pr-prep-S0E-5D-live-manifest-create-body.md",
+  "labels_applied": [
+    "drills",
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#330",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0E-5D-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0E-5D-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 477a71e0; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 477a71e02... S0E-5D: add body contract normalization log"
+  ]
+}

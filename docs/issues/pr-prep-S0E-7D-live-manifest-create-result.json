@@ -1,0 +1,42 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0E-7D-live-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0E-7D",
+  "source_log_path": "docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0e-7d",
+  "base_branch": "main",
+  "merge_base": "4f8f778145c3443787ef56e0702003dc8f247eda",
+  "selected_commit_count": 4,
+  "selected_commits": [
+    "5263420b807acfbd3b2c4e1919cc561e172e4d12",
+    "d25b1991e611bb2f34c16410693a1c66373119fc",
+    "512101521014bd7432bb5663eeb0bc52e13799b7",
+    "53bd8fa34cd89b7699e1d21cb049d6e8fccaa726"
+  ],
+  "pr_title": "S0E-7D/P0-P4: publish, verify, remediation, and failure semantics v1",
+  "draft": false,
+  "pr_number": 352,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/352",
+  "body_path": "docs/issues/pr-prep-S0E-7D-live-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#341",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0E-7D-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0E-7D-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 5263420b; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 5263420b8... S0E-7D/P0: scaffold failure semantics follow-up"
+  ]
+}

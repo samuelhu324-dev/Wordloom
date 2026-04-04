@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_number": 248,
+      "child_issue_number": 289,
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+      "reason": "Historical issue concluded correctly but sidebar parent relationship was still missing during S0E-4D P4 audit."
+    },
+    {
+      "parent_issue_number": 248,
+      "child_issue_number": 293,
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "reason": "Historical issue concluded correctly but sidebar parent relationship was still missing during S0E-4D P4 audit."
+    },
+    {
+      "parent_issue_number": 248,
+      "child_issue_number": 297,
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+      "reason": "Historical issue concluded correctly but sidebar parent relationship was still missing during S0E-4D P4 audit."
+    }
+  ]
+}

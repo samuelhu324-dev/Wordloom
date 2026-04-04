@@ -15,10 +15,10 @@
   **parent_log**: `docs/logs/log-S4C-cloud-services-and-terraform-epic.md`
   **previous_log**: `docs/logs/log-S4C-2A-cloud-devtest-db-and-storage.md`
   **reference_log_1**: `docs/logs/_template-log-phase-drills-evidence.md`
-**roadmap_path**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md`
+**roadmap_path**: `docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md`
 **roadmap_milestone**: `M3`
 **roadmap_phase**: `M3-P2`
-**roadmap_bridge_refs**: `docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M3-P2, docs/roadmap/road-S1-systems-platform-ops-roadmap-v5.md#M3-P3`
+**roadmap_bridge_refs**: `docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md#M3-P2, docs/roadmap/road-001-systems-platform-ops-roadmap-v5.md#M3-P3`
 **created**: `2026-03-22`
 **updated**: `2026-03-23`
 
@@ -48,7 +48,7 @@
 - `P0`: contract（cloud-dev env 命名、配置边界、smoke evidence 约定）。
 - `P1`: implementation（为 wordloom-v3 增加/整理 cloud-dev env 配置入口）。
 - `P2`: drill / verify（运行一次本机 runtime -> 云上 DB/存储的 smoke drill）。
-- `P3`: drill / wording（总结 cloud-dev runtime integration 的 narrative，并与 S4C-2A / road-S1 对齐）。
+- `P3`: drill / wording（总结 cloud-dev runtime integration 的 narrative，并与 S4C-2A / road-001 对齐）。
 
 ## Success Criteria (DoD)
 

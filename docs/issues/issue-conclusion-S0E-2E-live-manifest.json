@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "context_mode": "single-generate"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-2E",
+      "source_log_path": "docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md",
+      "issue_number": 324,
+      "reason": "Resume S0E-2E after review: PR #325 is merged, so run the post-merge issue conclusion now."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_number": 248,
+      "child_issue_number": 331,
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md",
+      "reason": "Full-auto lifecycle pass for S0E-6F after live issue creation and source-log write-back."
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-4A-remediation-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-4A: issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+    "S0E-4A: merged PR set supplied by explicit override",
+    "S0E-4A: existing Context section is blank; preview omits optional Context block",
+    "S0E-4A: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-4A",
+      "source_log_path": "docs/logs/log-S0E-4A-github-pr-automation-contract.md",
+      "issue_number": 293,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/293",
+      "issue_title": "S0E-4A: contract/GitHub pull request automation contract",
+      "issue_state": "OPEN",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-4A-remediation-s0e-4a-body.md",
+      "merged_pr_count": 2,
+      "merged_prs": [
+        {
+          "number": 294,
+          "title": "S0E-4A/P0-P3: GitHub pull request automation contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/294",
+          "merged_at": "2026-03-29T10:22:55Z"
+        },
+        {
+          "number": 299,
+          "title": "S0E-4A/P3-C2-S1S2: derive development issue fallback and multi-issue formatting",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/299",
+          "merged_at": "2026-03-30T00:09:46Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+        "merged PR set supplied by explicit override",
+        "existing Context section is blank; preview omits optional Context block",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Conclude historical S0E-4A issue after auditing both exact-ID merged PRs #294 and #299."
+    }
+  ]
+}

@@ -5,7 +5,7 @@
 **id**: `S0E-docs-management-v5`
 **kind**: `log`
 **title**: `docs management v5 (structured logs → semi-automated Git issue creation) v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Automation, epic/s0, sub/0e`
 **links**: ``
@@ -13,7 +13,7 @@
   **pr**: ``
   **adr**: ``
   **runbook**: ``
-  **roadmap**: `docs/roadmap/draft.md`
+  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **reference_log_1**: `docs/logs/log-S0D-6A-docs-management-v4.md`
   **reference_log_2**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_3**: `docs/logs/log-S4E-release-operating-model-and-governance.md`
@@ -161,7 +161,7 @@
 - [x] `P13`：`S0E-4A` 已起草，用于把 GitHub PR automation 从 issue automation 中独立出来
 - [x] `P14`：`S0E-3A` 已完成 `P0-P1`，roadmap bridge contract 和 template rollout 已正式收口
 - [x] `P15`：`S0E-3A/P1` 已继续细化为主线/支线 roadmap 双模板，便于后续支线回流主线时保持清晰记账
-- [x] `P16`：`S0E-3A/P2` 已完成首条真实迁移样例，`road-S1` 与 `road-S1-1` 已显式记住 parent/branch bridge ledger
+- [x] `P16`：`S0E-3A/P2` 已完成首条真实迁移样例，`road-001` 与 `road-001-01` 已显式记住 parent/branch bridge ledger
 - [x] `P17`：`S0E-3A/P3` 已完成 mechanical extraction dry-run，roadmap bridge 现在可以在不扫 prose 的前提下输出结构化计划结果
 - [x] `P18`：`S0E-3A/P3-C2` 已完成 child-log bridge metadata backfill，sample pair 的 `36` 条 warning rows 已被压成 `aligned`
 - [x] `P19`：`S0E-4A/P0` 已完成 PR automation contract 收口，commit selection、PR metadata/description、development-link boundary 已固定
@@ -306,13 +306,11 @@
 
 ## Current Status（进展摘要）
 
-- `S0E` 现阶段仍是 `draft`，重点是把 contract 先讲清楚，而不是抢先实现；
-- `S0E-2A` 已完成 title keyword、labels taxonomy、body scaffold 与 milestone mapping 的第一轮收口，并把 issue-aware template fields 落到 parent/phase templates；
-- `S0E-2A` 已完成第一条自举式 sample、`S4E-5B` / `S6A-4A` 两条 cross-log validation，以及 `P3` 的最小人工创建流程和 future script entry contract；
-- `S0E-2B` 已建立并完成 `P0`，明确真正的 GitHub issue 自动创建必须以 `draft-generation` 为默认模式、以 `--create` 为显式 opt-in，并继承 fail-closed contract；
-- `S0E-2B` 已完成 `P1`：本地 `log_path -> docs/issues/*.md` draft-generation 脚本和 JSON sidecar 已跑通，下一步应进入 `P2` 的真实 GitHub create issue 入口；
-- `S0E-2B` 已完成 `P2`：脚本已通过 `gh` prerequisite checks 成功创建真实 issue `#288`，下一步应进入 `P3` 去验证 write-back discipline，并决定是否继续用同一路径创建 `S0E-2A` 的真实 issue；
-- `S0E-2B` 已完成 `P3`：真实 create path 与 write-back discipline 都已验证，`S0E-2A` 的真实 issue `#289` 也已通过同一路径创建并回写到 source log；
+- `S0E` 仍保持 `draft`，但 active work 已不再是大面积 contract 开荒，而是 parent spine `#248` 的持续记账与 bounded refresh；绝大多数 child slices 已完成各自的 real-run 验证或 full-auto 闭环。
+- `S0E-5E` 已把 top-level parent issue `DoD` 的 child-ledger 排序正式收口为 source-log-owned ordering，并已用 live issue `#353` 与 merged PR `#354` 完成一条独立 full-auto lifecycle 样本。
+- parent issue `#248` 当前已完成一轮新的 bounded refresh：缺失的 `#342/#339/#340` sidebar child relationships 已补齐，live body 也已回写为完整 child ledger、显式 `Roadmap` link 与新的 parent `Context`。
+- `S0E` parent 的 authoritative child ledger 现已明确固定为 `created -> phase_log order -> short ref`，因此 parent body ordering 与 GitHub sidebar relationship completeness 已被分离为两个独立审计面。
+- 除 parent spine 的滚动记账外，`S0E` 现阶段的主要已完成能力面已经覆盖 issue body contract、PR body contract、relationship attach、lifecycle audit/pre-gate、Context authoring、attribution handoff、historical replay，以及 thin/read-only publish-verify wrappers。
 - `S0E-2C` 已建立为后续 slice，专门处理单条 issue creation 之后的批量化、关系补链与历史回填；
 - `S0E-2C` 已完成 `P2-C1-S1`：parent-child linking 现在只接受显式 issue number / URL 作为关系输入，`log_path` 仅保留为 traceability 字段；
 - `S0E-2C` 已完成 `P2-C1-S2`：relationship dry-run 现在可以只读 manifest 并输出 `planned / skipped / error / reconciliation` 四类结果，未引入任何 apply 行为；
@@ -391,8 +389,8 @@
 - `S0E-2E` 现在可视为 `stable`：contract、dry-run planner、real write-back 与 attached PR accounting 都已完成闭环；
 - `S0E-3A` 草案已把 roadmap/log bridge 的核心问题收口为 child-log-first contract，并把 roadmap/log templates 增加了统一 bridge 字段；
 - `S0E-3A` 已完成 `P0-P1`：phase log 已固定 bridge ownership / field contract / fail-closed semantics，template rollout 也已落到 parent/phase/roadmap 三类模板；
-- `S0E-3A/P1` 已进一步拆分 roadmap authoring 为 mainline / branch 两种模板，以对应 `road-S1` 和 `road-S1-1` 这类非线性关系；
-- `S0E-3A/P2` 已完成第一条真实迁移：`road-S1` 和 `road-S1-1` 现在都用 child-log-first bridge ledger 记账，并且支线产出能显式回流主线；
+- `S0E-3A/P1` 已进一步拆分 roadmap authoring 为 mainline / branch 两种模板，以对应 `road-001` 和 `road-001-01` 这类非线性关系；
+- `S0E-3A/P2` 已完成第一条真实迁移：`road-001` 和 `road-001-01` 现在都用 child-log-first bridge ledger 记账，并且支线产出能显式回流主线；
 - `S0E-3A/P3` 已完成：现在可以从 roadmap bridge ledger 机械抽取 `M*-P* -> child log` 结构化结果，并且 parent/branch alignment 也能做 dry-run 验证；
 - `S0E-3A/P3-C2` 已完成：sample pair 涉及的历史 child logs 已补齐 primary `roadmap_*` anchors 和 exact-slot `roadmap_bridge_refs`，sample plan 现在保留 `4` 个显式 `unmapped` slots，但不再有 warning fallback；
 - `S0E-4A/P0` 已完成：PR automation 的 contract 已明确收口到 clean PR-prep branch strategy、`pr_*` frontmatter precedence、PR description boundary 和 Development linkage boundary；
@@ -447,6 +445,7 @@
 
 ## Recent changes（for traceability，可选）
 
+- 2026-04-03：已完成 `S0E` parent issue `#248` 的 bounded refresh/remediation：缺失的 `#342/#339/#340` child relationships 已补齐，live parent body 已按 source-log-owned child ledger、完整 `Roadmap` link 与新的 parent `Context` 回写，随后 bounded replay audit 已重新回到 `pass`。
 - 2026-03-28：首次创建 `S0E` spine，用于承接 docs-management v5 中的 issue scaffold / taxonomy / structured mapping 主题。
 - 2026-03-28：新增 `S0E-2C`，把 batch issue creation / parent-child linking / milestone-backfill tooling 从 `S0E-2B` 中拆出为独立 follow-up slice。
 - 2026-03-28：`S0E-2C/P2-C1-S1` 已固定 relationship manifest contract，为下一步 linking/backfill dry-run implementation 提供稳定输入边界。
@@ -454,8 +453,8 @@
 - 2026-03-28：`S0E-2C/P3` 已完成 milestone/write-back reconciliation contract 和 dry-run validation，下一步可以评估是否进入 `P4` 或收口到稳定状态。
 - 2026-03-29：补充 roadmap/log bridge 与 PR metadata fields 到 templates，并新增 `S0E-3A` / `S0E-4A` 草案，作为 v2 issue+PR automation 的前置设计层。
 - 2026-03-29：`S0E-3A/P0-P1` 已完成，下一步应进入真实 roadmap path migration，避免新 bridge 只停留在模板层。
-- 2026-03-29：`S0E-3A/P1` 已进一步拆成 mainline / branch roadmap 双模板，并保留兼容 chooser，下一步可以直接迁移 `road-S1` / `road-S1-1`。
-- 2026-03-29：`S0E-3A/P2` 已完成：`road-S1` / `road-S1-1` 都已迁移到显式 bridge ledger，下一步进入 `P3` 做 mechanical extraction 验证。
+- 2026-03-29：`S0E-3A/P1` 已进一步拆成 mainline / branch roadmap 双模板，并保留兼容 chooser，下一步可以直接迁移 `road-001` / `road-001-01`。
+- 2026-03-29：`S0E-3A/P2` 已完成：`road-001` / `road-001-01` 都已迁移到显式 bridge ledger，下一步进入 `P3` 做 mechanical extraction 验证。
 - 2026-03-29：`S0E-3A/P3` 已完成：manifest-driven roadmap bridge dry-run 已落地，并通过 sample plan 验证了 mainline/branch extraction 与 parent alignment；下一步可以把这套输出接到 issue/milestone automation v2。
 - 2026-03-29：`S0E-3A/P3-C2` 已完成：sample pair 涉及的历史 child logs 已回填 exact-slot roadmap metadata，roadmap bridge dry-run 的 mapped rows 现已全部对齐；下一步应切到 `S0E-4A` 收口 PR automation contract 与 dry-run PR-prep 路径。
 - 2026-03-29：`S0E-4A/P0` 已完成：PR automation 的 contract 已固定，下一步应进入 `P1` 把 `pr_*` fields 和 PR description scaffold 正式写回模板。

@@ -1,0 +1,44 @@
+{
+  "mode": "create-issue",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md",
+  "draft_path": "docs/issues/issue-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md",
+  "title": "S0E-6E: contract/single-item Context authoring and batch-preserve boundary",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": "#248",
+  "body_markdown": "## Metadata\r\n\r\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`\r\n- Projects: `wordloom Board`\r\n- Milestone: ``\r\n- Parent issue: #248\r\n\r\n## Context\r\n\r\n- Batch issue-draft and issue-conclusion flows were still rewriting Context by default, which erased the line between operator-authored prose and bulk automation.\r\n- This slice moved Context drafting into a single-item generator that works one log at a time and leaves issue-draft scaffolding conservative by default.\r\n- Batch conclusion planning now preserves the live Context block unless an operator explicitly requests regeneration for one item.\r\n- Representative closed issues were refreshed through that one-item path to prove natural Context edits can stay operator-owned without breaking the audit contract.\r\n\r\n## Definition of Done (DoD)\r\n\r\n\r\n## Links\r\n\r\n- Log: `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`\r\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\r\n- Parent log: `docs/logs/log-S0E-docs-management-v5.md`\r\n- Previous log: `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`\r\n",
+  "warnings": [
+    "issue_parent derived from parent log issue link",
+    "module labels left blank",
+    "issue_milestone missing",
+    "live label preflight passed against samuelhu324-dev/wordloom-v3",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "source log write-back not performed; update links.issue in a later tracked docs change"
+  ],
+  "live_label_check_enabled": true,
+  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
+  "matched_live_labels": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "missing_live_labels": [],
+  "issue_number": 336,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/336",
+  "created_at": "2026-04-03T11:49:39.768442+00:00"
+}
+

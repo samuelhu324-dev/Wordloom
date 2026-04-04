@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-plan.json",
+  "item_index": 1,
+  "requested_id": "S0E-2A",
+  "source_log_path": "docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 289,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/289",
+  "issue_title": "S0E-2A: contract/semi-automated Git issue creation contract",
+  "previous_issue_state": "CLOSED",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S0E-7C-child-issues-context-repair-s0e-2a-apply-body.md",
+  "close_reason": null,
+  "warnings": [
+    "issue was already closed before apply; body updated in place"
+  ]
+}

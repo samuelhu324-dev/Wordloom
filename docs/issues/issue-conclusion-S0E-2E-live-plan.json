@@ -1,0 +1,41 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-2E-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-2E: preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+    "S0E-2E: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-2E",
+      "source_log_path": "docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md",
+      "issue_number": 324,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/324",
+      "issue_title": "S0E-2E: contract/issue conclusion and development linkage contract",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-2E-live-s0e-2e-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 325,
+          "title": "S0E-2E/P0-P3: issue conclusion and development linkage contract v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/325",
+          "merged_at": "2026-04-03T11:03:57Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "preview uses a single-generated conclusion Context block that ends on outcome wording and keeps exact merged-PR evidence in DoD only; do not use this mode for batch authoring unless the rewrite is explicitly intended",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Resume S0E-2E after review: PR #325 is merged, so run the post-merge issue conclusion now."
+    }
+  ]
+}

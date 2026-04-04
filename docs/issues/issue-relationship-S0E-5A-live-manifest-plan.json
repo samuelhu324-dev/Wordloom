@@ -1,0 +1,26 @@
+{
+  "mode": "relationship-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-relationship-S0E-5A-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-relationships",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "relationship_type": "child-of",
+      "parent_issue_number": 248,
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "child_issue_number": 305,
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/305",
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "planned_action": "link-child-to-parent",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [],
+      "reason": "Attach the live S0E-5A issue to the parent S0E spine before final lifecycle conclusion evidence is recorded."
+    }
+  ]
+}

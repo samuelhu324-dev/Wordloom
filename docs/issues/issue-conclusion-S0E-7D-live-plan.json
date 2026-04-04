@@ -1,0 +1,41 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-7D-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-7D: preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+    "S0E-7D: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-7D",
+      "source_log_path": "docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md",
+      "issue_number": 341,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/341",
+      "issue_title": "S0E-7D: contract/publish, verify, remediation, and failure semantics",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-7D-live-s0e-7d-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 352,
+          "title": "S0E-7D/P0-P4: publish, verify, remediation, and failure semantics v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/352",
+          "merged_at": "2026-04-03T12:42:39Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Resume S0E-7D after merge: exact-ID merged PR evidence is now available, so run the post-merge issue conclusion now."
+    }
+  ]
+}

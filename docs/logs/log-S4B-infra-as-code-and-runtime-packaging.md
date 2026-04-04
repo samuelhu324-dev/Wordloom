@@ -159,7 +159,7 @@
 ## Current Status（进展摘要）
 
 - 当前状态：`S4B-1A` 已完成 dev/test runtime baseline、FAIL→PASS from-zero drills、operator wording 与 runbook，`S4B-2A` 已完成 devtest DB Terraform skeleton 与 `terraform init/validate/plan` PASS evidence；
-- 结论：`S4B` 顶层稳定口径已满足，可标记为 `stable`，并作为 `road-S1-1` 最小 ops loop 中的 IaC / runtime-packaging 主 completion surface；
+- 结论：`S4B` 顶层稳定口径已满足，可标记为 `stable`，并作为 `road-001-01` 最小 ops loop 中的 IaC / runtime-packaging 主 completion surface；
 - 风险：Terraform/IaC 部分在 v1 仍停留于 skeleton 与 plan 级别，后续若进入更深云端资源管理，可在新 phase 中补 `apply`/provider 级证据，而不影响当前 v1 stable 判定；
 
 ## Stability（stable 口径）

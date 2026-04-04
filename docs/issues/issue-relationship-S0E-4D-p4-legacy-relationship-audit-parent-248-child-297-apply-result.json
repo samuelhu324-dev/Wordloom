@@ -1,0 +1,18 @@
+{
+  "mode": "relationship-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-relationship-S0E-4D-p4-legacy-relationship-audit-plan.json",
+  "item_index": 2,
+  "relationship_type": "child-of",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "parent_issue_number": 248,
+  "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+  "parent_issue_title": "S0E: evolution/docs management v5",
+  "child_issue_number": 297,
+  "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/297",
+  "child_issue_title": "S0E-2D: contract/issue creation metadata enrichment and English body contract",
+  "previous_parent_issue_number": null,
+  "final_parent_issue_number": 248,
+  "applied_action": "link-child-to-parent",
+  "warnings": []
+}

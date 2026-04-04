@@ -1,0 +1,41 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S0E-5B-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0E-5B: existing Context section is blank; preview omits optional Context block",
+    "S0E-5B: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0E-5B",
+      "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+      "issue_number": 307,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/307",
+      "issue_title": "S0E-5B: workflow/guarded lifecycle apply expansion",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-S0E-5B-live-s0e-5b-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 308,
+          "title": "S0E-5B/P0-P2: guarded lifecycle apply expansion v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/308",
+          "merged_at": "2026-03-30T14:15:19Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "existing Context section is blank; preview omits optional Context block",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Close out the representative S0E-5B guarded multi-mutation lifecycle sample after PR #308 merged."
+    }
+  ]
+}

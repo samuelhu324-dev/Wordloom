@@ -1,0 +1,14 @@
+{
+    "defaults":  {
+                     "requested_id":  "S0E-5D",
+                     "source_log_path":  "docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md",
+                     "base_branch":  "main",
+                     "head_ref":  "HEAD",
+                     "candidate_pr_branch":  "pr-prep/s0e-5d"
+                 },
+    "items":  [
+                  {
+                      "requested_id":  "S0E-5D"
+                  }
+              ]
+}

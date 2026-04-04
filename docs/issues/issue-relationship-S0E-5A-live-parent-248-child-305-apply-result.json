@@ -1,0 +1,20 @@
+{
+  "mode": "relationship-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-relationship-S0E-5A-live-manifest-plan.json",
+  "item_index": 0,
+  "relationship_type": "child-of",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "parent_issue_number": 248,
+  "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+  "parent_issue_title": "S0E: evolution/docs management v5",
+  "child_issue_number": 305,
+  "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/305",
+  "child_issue_title": "S0E-5A: workflow/lifecycle audit gate and dry-run planner",
+  "previous_parent_issue_number": null,
+  "final_parent_issue_number": 248,
+  "applied_action": "link-child-to-parent",
+  "warnings": [
+    "relationship apply executed through direct gh api graphql mutation after the helper stalled while capturing gh subprocess output"
+  ]
+}

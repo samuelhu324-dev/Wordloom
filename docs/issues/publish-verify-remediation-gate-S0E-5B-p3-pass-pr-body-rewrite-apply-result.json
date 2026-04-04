@@ -1,0 +1,15 @@
+{
+  "mode": "pr-body-rewrite-apply",
+  "result": "ok",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "pr_number": 308,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/308",
+  "pr_title": "S0E-5B/P0-P3: guarded lifecycle apply expansion v1",
+  "pr_state": "MERGED",
+  "source_log_path": "docs/logs/log-S0E-5B-guarded-lifecycle-apply-expansion.md",
+  "requested_id": "S0E-5B",
+  "live_body_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p3-pass-pr-body-rewrite-live-body.md",
+  "rewritten_body_path": "docs/issues/publish-verify-remediation-gate-S0E-5B-p3-pass-pr-body-rewrite-rewritten-body.md",
+  "body_changed": true,
+  "warnings": []
+}

@@ -1,0 +1,14 @@
+{
+    "defaults":  {
+                     "requested_id":  "S0E-6D",
+                     "source_log_path":  "docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md",
+                     "base_branch":  "main",
+                     "head_ref":  "HEAD",
+                     "candidate_pr_branch":  "pr-prep/s0e-6d"
+                 },
+    "items":  [
+                  {
+                      "requested_id":  "S0E-6D"
+                  }
+              ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0E-5C",
+      "source_log_path": "docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md",
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/309",
+      "reason": "Real issue-conclusion follow-through after merged PR #310 for S0E-5C."
+    }
+  ]
+}

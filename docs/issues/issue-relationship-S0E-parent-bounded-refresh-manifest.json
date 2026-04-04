@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/342",
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md",
+      "reason": "Attach missing S0E-7E child issue before the bounded parent refresh so the parent sidebar child set is complete."
+    },
+    {
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/339",
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
+      "reason": "Attach missing S0E-7F child issue before the bounded parent refresh so the parent sidebar child set is complete."
+    },
+    {
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/248",
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/340",
+      "parent_log_path": "docs/logs/log-S0E-docs-management-v5.md",
+      "child_log_path": "docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md",
+      "reason": "Attach missing S0E-7G child issue before the bounded parent refresh so the parent sidebar child set is complete."
+    }
+  ]
+}

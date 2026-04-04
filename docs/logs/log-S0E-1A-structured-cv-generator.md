@@ -12,6 +12,7 @@
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/316`
   **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/249`
   **runbook**: ``
+  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0D-6A-docs-management-v4.md`
   **previous_log**: ``
   **reference_log_1**: `docs/logs/log-S0D-6A-structured-roadmap-and-demo.md`
