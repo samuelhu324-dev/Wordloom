@@ -1,0 +1,52 @@
+{
+  "mode": "s0f-1c-p3-post-verify-summary",
+  "result": "ok",
+  "requested_id": "S0F-1C",
+  "scope": [
+    "P3"
+  ],
+  "shared_source": {
+    "live_sample_summary": "docs/issues/lifecycle-guarded-apply-S0F-1C-p2-summary.json",
+    "shared_conclusion_manifest": "docs/issues/lifecycle-remediation-S0F-1C-p2-live-issue-conclusion-manifest.json"
+  },
+  "post_verify_items": [
+    {
+      "requested_id": "S6B-1A",
+      "manifest": "docs/issues/issue-conclusion-S0F-1C-p3-s6b-1a-post-verify-manifest.json",
+      "plan": "docs/issues/issue-conclusion-S0F-1C-p3-s6b-1a-post-verify-plan.json",
+      "status": "planned",
+      "drift_status": "clean-preserve",
+      "notes": [
+        "merged PR set supplied by explicit override",
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default"
+      ]
+    },
+    {
+      "requested_id": "S6B-1B",
+      "manifest": "docs/issues/issue-conclusion-S0F-1C-p3-s6b-1b-post-verify-manifest.json",
+      "plan": "docs/issues/issue-conclusion-S0F-1C-p3-s6b-1b-post-verify-plan.json",
+      "status": "planned",
+      "drift_status": "clean-preserve",
+      "notes": [
+        "merged PR set supplied by explicit override",
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default"
+      ]
+    },
+    {
+      "requested_id": "S6B-1C",
+      "manifest": "docs/issues/issue-conclusion-S0F-1C-p3-s6b-1c-post-verify-manifest.json",
+      "plan": "docs/issues/issue-conclusion-S0F-1C-p3-s6b-1c-post-verify-plan.json",
+      "status": "planned",
+      "drift_status": "clean-preserve",
+      "notes": [
+        "merged PR set supplied by explicit override",
+        "preview preserves the existing live Context block because batch conclusion planning now avoids Context authoring by default"
+      ]
+    }
+  ],
+  "summary": {
+    "status": "pass",
+    "detail": "All three representative S6B targets passed preserve-existing post-verification without new drift findings after the S0F-1C P2 guarded live sample.",
+    "rule": "P3 requires one post-verify artifact per target so clean preservation is evidenced per item rather than inferred from aggregate batch success."
+  }
+}

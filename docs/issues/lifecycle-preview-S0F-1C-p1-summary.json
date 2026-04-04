@@ -1,0 +1,38 @@
+{
+  "mode": "s0f-1c-p1-preview-summary",
+  "result": "ok",
+  "requested_id": "S0F-1C",
+  "scope": [
+    "P1"
+  ],
+  "sample_kind": "preview-only-multi-item-remediation",
+  "sample_targets": [
+    {
+      "requested_id": "S6B-1A",
+      "issue_number": 357,
+      "merged_pr_override": "#360"
+    },
+    {
+      "requested_id": "S6B-1B",
+      "issue_number": 358,
+      "merged_pr_override": "#361"
+    },
+    {
+      "requested_id": "S6B-1C",
+      "issue_number": 359,
+      "merged_pr_override": "#362"
+    }
+  ],
+  "artifacts": {
+    "manifest": "docs/issues/lifecycle-audit-S0F-1C-p1-preview-manifest.json",
+    "frozen_audit_plan": "docs/issues/lifecycle-audit-S0F-1C-p1-preview-plan.json",
+    "gate_decision": "docs/issues/lifecycle-gate-S0F-1C-p1-preview-decision.json",
+    "remediation_plan": "docs/issues/lifecycle-remediation-S0F-1C-p1-preview-plan.json",
+    "downstream_issue_conclusion_manifest": "docs/issues/lifecycle-remediation-S0F-1C-p1-preview-issue-conclusion-manifest.json"
+  },
+  "notes": [
+    "The representative multi-item sample uses a frozen audit-plan assembled from retained single-item S0F-1B/P5 audit outputs, because the aggregate live lifecycle-audit path for this target set was already known to be operationally unstable during parent-relationship lookup.",
+    "The preview-only sample still proves the intended P1 boundary: one multi-item manifest can retain per-target audit state, produce one pre-gate decision, and emit one remediation plan plus one compatible downstream issue-conclusion manifest without performing any live mutation.",
+    "All three sample items stop at pre-gate with stop-for-remediation, so P1 retains the planning surface only and deliberately does not cross into guarded apply."
+  ]
+}

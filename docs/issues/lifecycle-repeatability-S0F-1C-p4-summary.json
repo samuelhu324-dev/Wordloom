@@ -1,0 +1,25 @@
+{
+  "mode": "s0f-1c-p4-repeatability-summary",
+  "result": "ok",
+  "requested_id": "S0F-1C",
+  "scope": [
+    "P4"
+  ],
+  "runbook": "docs/runbook/run-S0F-1C-guarded-multi-item-remediation.md",
+  "packaged_inputs": {
+    "preview_summary": "docs/issues/lifecycle-preview-S0F-1C-p1-summary.json",
+    "guarded_apply_summary": "docs/issues/lifecycle-guarded-apply-S0F-1C-p2-summary.json",
+    "post_verify_summary": "docs/issues/lifecycle-post-verify-S0F-1C-p3-summary.json"
+  },
+  "operator_rules": [
+    "Use one shared batch lineage only when all live mutations remain inside one family-owned guarded surface.",
+    "Execute live mutation per target through the wrapper even when the upstream conclusion manifest is shared.",
+    "Retain one post-verify plan per target; aggregate success never replaces per-target verification evidence.",
+    "A frozen audit-plan fallback is acceptable only when the aggregate live audit path is already known to be operationally unstable and the retained sample stays preview-only or pre-gate-only until the guarded family path resumes ownership."
+  ],
+  "summary": {
+    "status": "pass",
+    "detail": "S0F-1C now has a stable operator runbook that packages the retained P1 preview lineage, P2 guarded live sample, and P3 per-target clean-preserve verification into one repeatable multi-item remediation path.",
+    "next_boundary": "Future expansion may add more families, but each family must prove the same shared-upstream plus per-target guarded-apply plus per-target post-verify shape before entering this runbook."
+  }
+}

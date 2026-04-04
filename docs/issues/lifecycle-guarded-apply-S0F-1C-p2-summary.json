@@ -1,0 +1,45 @@
+{
+  "mode": "s0f-1c-p2-guarded-apply-summary",
+  "result": "ok",
+  "requested_id": "S0F-1C",
+  "scope": [
+    "P2"
+  ],
+  "code_changes": {
+    "guarded_issue_conclusion_wrapper": "scripts/issues/apply_issue_conclusion_with_pre_gate.py now accepts --item-index so one shared multi-item conclusion manifest can be applied per target through repeated family-owned guarded wrapper invocations instead of reopening raw apply entrypoints."
+  },
+  "shared_artifacts": {
+    "gate_input": "docs/issues/lifecycle-audit-S0F-1C-p1-preview-plan.json",
+    "gate_decision": "docs/issues/lifecycle-gate-S0F-1C-p2-live-decision.json",
+    "remediation_plan": "docs/issues/lifecycle-remediation-S0F-1C-p2-live-plan.json",
+    "downstream_issue_conclusion_manifest": "docs/issues/lifecycle-remediation-S0F-1C-p2-live-issue-conclusion-manifest.json"
+  },
+  "applied_items": [
+    {
+      "requested_id": "S6B-1A",
+      "item_index": 0,
+      "guarded_result": "docs/issues/issue-conclusion-S0F-1C-p2-s6b-1a-guarded-result.json",
+      "plan": "docs/issues/issue-conclusion-S0F-1C-p2-s6b-1a-plan.json",
+      "apply_result": "docs/issues/issue-conclusion-S0F-1C-p2-s6b-1a-apply-result.json"
+    },
+    {
+      "requested_id": "S6B-1B",
+      "item_index": 1,
+      "guarded_result": "docs/issues/issue-conclusion-S0F-1C-p2-s6b-1b-guarded-result.json",
+      "plan": "docs/issues/issue-conclusion-S0F-1C-p2-s6b-1b-plan.json",
+      "apply_result": "docs/issues/issue-conclusion-S0F-1C-p2-s6b-1b-apply-result.json"
+    },
+    {
+      "requested_id": "S6B-1C",
+      "item_index": 2,
+      "guarded_result": "docs/issues/issue-conclusion-S0F-1C-p2-s6b-1c-guarded-result.json",
+      "plan": "docs/issues/issue-conclusion-S0F-1C-p2-s6b-1c-plan.json",
+      "apply_result": "docs/issues/issue-conclusion-S0F-1C-p2-s6b-1c-apply-result.json"
+    }
+  ],
+  "notes": [
+    "The representative guarded live sample keeps one shared pre-gate decision and one shared remediation-owned issue-conclusion manifest for the whole batch, but executes live mutation per target through repeated wrapper calls with explicit item indexes 0, 1, and 2.",
+    "All three items remained on the issue-conclusion family path; no mixed remediation families were absorbed into the same live apply pass.",
+    "Each guarded apply ran with context-mode preserve-existing and reported allowed-via-targeted-conclusion-remediation while updating already-closed issues in place."
+  ]
+}
