@@ -117,6 +117,7 @@
 - `P0` is now complete: `S0F-1E` is wired into the spine, the decision-layer versus diagnosis-layer boundary is fixed, and the next follow-up is `P1` creation-stage bucket families.
 - `P1` is now complete: creation-stage bucket families and naming rules are fixed, representative create-time checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P2` PR-stage bucket families.
 - `P2` is now complete: PR-stage bucket families and naming rules are fixed, representative PR checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P3` conclusion-stage bucket families.
+- `P3` is now complete: conclusion-stage bucket families and naming rules are fixed, representative conclusion checks are mapped into deterministic diagnosis buckets, and the next follow-up is `P4` audit-output contract and retained sample.
 
 ## P0 Bucket Taxonomy Boundary (completed)
 
@@ -188,10 +189,33 @@
 - `evidence-footer-source-shape`, `evidence-footer-eligibility`, `evidence-footer-presence`, and `evidence-footer-line-shape` now map to `pr-evidence-footer-gap` because they all describe one owned footer contract: whether footer rows are allowed, required, canonically shaped, and scope-aligned.
 - A PR may therefore remain structurally valid while still landing in `pr-development-linkage-gap` or `pr-label-gap`, which preserves the `rendered correctly` versus `semantically complete` distinction already fixed in `S0F-1D`.
 
-## P3 Conclusion Bucket Families (planned)
+## P3 Conclusion Bucket Families (completed)
 
 - Conclusion buckets should classify final body and sidebar re-check defects such as Context sentence-shape mismatch, DoD ledger mismatch, Links coverage drift, merged-PR evidence mismatch, or parent/sub-issue relationship drift.
 - Conclusion bucket rules should preserve the difference between open-issue transitional states and true closed-loop completeness failures.
+
+### P3-C1-S1 (Conclusion-stage bucket families fixed | v1)
+
+- Conclusion-stage diagnosis buckets are now fixed as compact stage-prefixed labels rather than as mixed prose-only close-out findings.
+- `conclusion-body-shape-gap` owns final issue body structure defects, including missing required sections, wrong issue section ordering, malformed Metadata bullet shape, and closed-body shape failures on concluded issues.
+- `conclusion-context-gap` owns conclusion Context defects, including sentence-count or sentence-shape mismatch against the child/top-level-parent contract and other failures of the conclusion-grade prose gate.
+- `conclusion-dod-gap` owns final DoD ledger defects, including mismatch against exact-ID merged PR refs for child issues and child-ledger ordering drift for top-level parent issues.
+- `conclusion-links-gap` owns final Links surface defects, including invalid issue link categories, missing canonical deterministic link fragments, or other blank-as-omitted navigation drift in the concluded issue body.
+- `conclusion-sidebar-relationship-gap` owns conclusion-time sidebar re-check defects, including parent relationship mismatch for child issues and unexpected or misordered sub-issue relationship state for top-level parent issues.
+- `conclusion-pr-evidence-gap` owns close-out PR evidence defects, including missing exact-ID merged PR evidence, final DoD PR ref divergence, and source-log PR link drift against the merged evidence set.
+- `conclusion-writeback-gap` owns source-log write-back drift where the concluded live issue no longer converges with source-log navigation state.
+
+### P3-C1-S2 (Representative conclusion checks mapped to bucket labels | v1)
+
+- `required-body-sections`, `issue-section-order`, `metadata-row-shape`, and `closed-body-shape` now map to `conclusion-body-shape-gap` when the issue is in conclusion ownership, because they describe final body-structure drift rather than create-time scaffolding mistakes.
+- `context-sentence-shape` now maps to `conclusion-context-gap` on concluded issues because it directly encodes the exact four/five sentence conclusion contract already fixed in `S0F-1D`.
+- `final-dod-pr-refs` and `parent-child-dod-ordering` now map to `conclusion-dod-gap` because they both describe the owned final DoD ledger surface for child and top-level parent issues respectively.
+- `link-categories` and `links-coverage` now map to `conclusion-links-gap` because they both describe the final deterministic `Links` block after merge/conclusion.
+- `sidebar-parent-relationship` and `sidebar-child-relationships` now map to `conclusion-sidebar-relationship-gap` because they describe the conclusion-time re-check that live GitHub relationship state still matches the converged issue result.
+- `exact-id-merged-pr-evidence`, `final-dod-pr-refs`, and `source-log-pr-link` now map to `conclusion-pr-evidence-gap` when they indicate missing or divergent merged PR evidence on a concluded issue; the bucket stays neutral during earlier lifecycle stages when PR evidence is not yet owned by conclusion.
+- `source-log-issue-writeback` now maps to `conclusion-writeback-gap` when the final live issue URL and source-log write-back no longer converge after conclusion.
+- `expected-labels` and `body-parent-metadata` remain context-sensitive: when they fail on concluded issues they may still be emitted under `conclusion-sidebar-relationship-gap` or `conclusion-body-shape-gap` depending on whether the drift is live-relationship state or final body metadata shape, rather than reopening create-time taxonomy.
+- Open-issue transitional states do not automatically create conclusion buckets in v1; conclusion buckets are only authoritative when the item is already in conclusion ownership or when merged-PR evidence makes a close-out defect semantically attributable to the conclusion stage.
 
 ## P4 Audit Output Contract and Sample (planned)
 
@@ -243,8 +267,8 @@
 
 ### P3 (Conclusion buckets)
 
-- [ ] `P3-C1-S1`: conclusion-stage bucket families fixed
-- [ ] `P3-C1-S2`: representative conclusion checks mapped to bucket labels
+- [x] `P3-C1-S1`: conclusion-stage bucket families fixed
+- [x] `P3-C1-S2`: representative conclusion checks mapped to bucket labels
 
 ### P4 (Audit output contract)
 
@@ -266,6 +290,8 @@
 - `P1-C1-S1` / `P1-C1-S2`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` remains the representative retained creation-stage evidence bundle for this mapping work because it already shows one live `issue-created` sample with canonical create-time checks such as `source-log-issue-writeback`, `required-body-sections`, `expected-labels`, `sidebar-parent-relationship`, `links-coverage`, and `context-sentence-shape`.
 - `P2-C1-S1` / `P2-C1-S2`: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`, `scripts/issues/body_contract.py`, `scripts/issues/plan_pr_prep.py`, and `scripts/issues/verify_live_pr_body_contract.py` remain the contract and implementation anchors for PR bucket taxonomy recorded here: PR ownership is already fixed for development linkage, labels, and footer/link convergence, while the current PR contract check names provide the concrete surfaces now grouped under `pr-body-shape-gap`, `pr-metadata-gap`, `pr-development-linkage-gap`, `pr-label-gap`, `pr-links-gap`, and `pr-evidence-footer-gap`.
 - `P2-C1-S1` / `P2-C1-S2`: `docs/issues/pr-metadata-completeness-S0E-4F-p4-summary.json` remains the representative retained PR evidence bundle for this mapping work because it already proves the unified PR completeness lane can be summarized across expected development issue, metadata row, closing refs, labels, and GitHub linkage without collapsing back to a render-only pass/fail view.
+- `P3-C1-S1` / `P3-C1-S2`: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md` and `scripts/issues/plan_lifecycle_audit.py` remain the contract and implementation anchors for conclusion bucket taxonomy recorded here: conclusion ownership is already fixed for final Context, DoD, Links, merged PR evidence, source-log write-back, and sidebar re-check, while the current live audit check names provide the concrete surfaces now grouped under `conclusion-body-shape-gap`, `conclusion-context-gap`, `conclusion-dod-gap`, `conclusion-links-gap`, `conclusion-sidebar-relationship-gap`, `conclusion-pr-evidence-gap`, and `conclusion-writeback-gap`.
+- `P3-C1-S1` / `P3-C1-S2`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` remains a useful retained transition sample because it already shows how several conclusion-owned checks stay neutral before close-out, while future `P4` output packaging can demonstrate how those same check families become authoritative conclusion buckets once the lifecycle reaches merged-open or concluded state.
 
 ## Numbering
 
