@@ -1,0 +1,46 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S6B-1B-plan.json",
+  "item_index": 0,
+  "requested_id": "S6B-1B",
+  "source_log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s6b-1b",
+  "base_branch": "main",
+  "merge_base": "472e67acb180680c2af852b521a50d40ffa4cd2f",
+  "selected_commit_count": 9,
+  "selected_commits": [
+    "5bd533c4680a8260c7543ce0366f8ea83bab1623",
+    "34863c123acf25bb53546b7b551a4d84a77b8115",
+    "3d507f24b692e48d5a2ef28a77ae3d76f3b338bd",
+    "de352e003f282579472692aa5eb527b7befadf88",
+    "cdbd773cc2fdcb9631896a240e22c59c1ec5ac98",
+    "308b9aed9363544563ad45ce4e57672036e7690a",
+    "f6e1d6275593d893e0e8b1fb3c7e0118fd5c7398",
+    "23bd5a7be4861abdbb273a1b1df3255011567362",
+    "f0385b09ba677db1c5e7075972cebb006f35ab12"
+  ],
+  "pr_title": "S6B-1B/P0-P4: evidence naming baseline (retained-summary + tmp-scratch + snapshot run identity) v1",
+  "draft": false,
+  "pr_number": 361,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/361",
+  "body_path": "docs/issues/pr-prep-S6B-1B-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s6/evidence & drills",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": "road-S2",
+  "development_issue": "#358",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S6B-1B-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S6B-1B-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 5bd533c4; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 5bd533c46... S6B-1B/P0-P1: fix naming axes and summary baseline"
+  ]
+}

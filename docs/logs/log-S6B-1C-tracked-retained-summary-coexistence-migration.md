@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Evidence, Drills, Taxonomy, Naming, Coexistence, Retention, epic/s6, sub/1c`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/359`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/362`
   **runbook**: ``
   **roadmap**: `docs/roadmap/_draft/road-S2-.md`
   **parent_log**: `docs/logs/log-S6B-evidence-drills-taxonomy.md`

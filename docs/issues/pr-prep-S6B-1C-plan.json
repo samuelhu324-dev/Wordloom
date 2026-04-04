@@ -1,0 +1,255 @@
+{
+  "mode": "pr-prep-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/pr-prep-S6B-1C-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-pr-prep",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S6B-1C",
+      "source_log_path": "docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md",
+      "current_branch": "S6B",
+      "head_ref": "S6B",
+      "base_branch": "main",
+      "merge_base": "472e67acb180680c2af852b521a50d40ffa4cd2f",
+      "candidate_pr_branch": "pr-prep/s6b-1c",
+      "pr_title": "S6B-1C/P0-P3: tracked retained-summary coexistence migration (lookup migration + dual-read/fallback + legacy alias stop condition) v1",
+      "pr_scope_kind": "phases",
+      "pr_scope_refs": [
+        "P0",
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "pr_base": "main",
+      "pr_labels": [
+        "EVOLUTION",
+        "s6/evidence & drills",
+        "sub/1",
+        "drills"
+      ],
+      "pr_projects": [],
+      "pr_milestone": "road-S2",
+      "pr_development_issue": "#359",
+      "pr_development_issue_refs": [
+        "#359"
+      ],
+      "summary_bullet_count": 3,
+      "preview_body_path": "docs/issues/pr-prep-S6B-1C-body.md",
+      "selected_commit_count": 6,
+      "selected_commits": [
+        {
+          "sha": "cb6b08dfb93ae0b4ff9f5ab397eadb20c719261c",
+          "subject": "S6B-1C/P0-C1-S1: open tracked coexistence migration log",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "b73f3aaccefe27c3393c08da67271bf2fa3ee786",
+          "subject": "S6B-1C/P0-P1: fix lookup migration inventory",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "1d89e01f7b8397dd6bfd87a365c4a6dd8c6c72ab",
+          "subject": "S6B-1C/P2: fix dual-read fallback policy",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "b1b541d36b3deda29baa7ee9f4d831ba6c3e1433",
+          "subject": "S6B-1C/P3: fix legacy alias retirement gate",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "f96670d3e6b1c14d1c3cf46a28e3e51932332039",
+          "subject": "S6B-1C/P0-C2-S1: write back live issue link",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "50a99abb10a294228e37bdbaeee42e88b2dca833",
+          "subject": "S6B-1C/P0-C2-S2: add PR summary inputs",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        }
+      ],
+      "branch_commits": [
+        {
+          "sha": "4ea46d5bdc82189e2da33d9fe908e77c432a0612",
+          "subject": "S6B-1A/P0-P1: formalize inventory ledger and owner map",
+          "matched_id": "S6B-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "90665ce56420677a2c74e0b505f84a7973f4da4b",
+          "subject": "S6B-1A/P2: fix retention and storage baseline",
+          "matched_id": "S6B-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "e37e7081362a0a5456474037b4fba5aed016e5bd",
+          "subject": "S6B-1A/P3: fix generator and emission baseline",
+          "matched_id": "S6B-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "531c8d2f08108cc730f4c7c1068ba0fcf88f02ab",
+          "subject": "S6B-1A/P4: fix bounded cutover baseline",
+          "matched_id": "S6B-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "5bd533c4680a8260c7543ce0366f8ea83bab1623",
+          "subject": "S6B-1B/P0-P1: fix naming axes and summary baseline",
+          "matched_id": "S6B-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "34863c123acf25bb53546b7b551a4d84a77b8115",
+          "subject": "S6B-1B/P2: fix tmp scratch naming baseline",
+          "matched_id": "S6B-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "3d507f24b692e48d5a2ef28a77ae3d76f3b338bd",
+          "subject": "S6B-1B/P3: fix snapshot run identity baseline",
+          "matched_id": "S6B-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "de352e003f282579472692aa5eb527b7befadf88",
+          "subject": "S6B-1B/P4: retain bounded rename sample set",
+          "matched_id": "S6B-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "cdbd773cc2fdcb9631896a240e22c59c1ec5ac98",
+          "subject": "S6B-1B/P4-C2-S1: execute bounded rename samples",
+          "matched_id": "S6B-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "308b9aed9363544563ad45ce4e57672036e7690a",
+          "subject": "S6B-1B/P4-C3-S1: select tracked coexistence candidate",
+          "matched_id": "S6B-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "f6e1d6275593d893e0e8b1fb3c7e0118fd5c7398",
+          "subject": "S6B-1B/P4-C4-S1: enable tracked coexistence baseline",
+          "matched_id": "S6B-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "cb6b08dfb93ae0b4ff9f5ab397eadb20c719261c",
+          "subject": "S6B-1C/P0-C1-S1: open tracked coexistence migration log",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "b73f3aaccefe27c3393c08da67271bf2fa3ee786",
+          "subject": "S6B-1C/P0-P1: fix lookup migration inventory",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "1d89e01f7b8397dd6bfd87a365c4a6dd8c6c72ab",
+          "subject": "S6B-1C/P2: fix dual-read fallback policy",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "b1b541d36b3deda29baa7ee9f4d831ba6c3e1433",
+          "subject": "S6B-1C/P3: fix legacy alias retirement gate",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "071f49b4ef0327859b22429171272722c962462f",
+          "subject": "S6B/P0-S1: wire road-S2 automation metadata",
+          "matched_id": "S6B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "d31a76e1efb580c5c5383a7e89a2397cd99283ae",
+          "subject": "S6B/P0-S2: write back live issue link",
+          "matched_id": "S6B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "3617a8a82c9b88f91e7ae16853a89ebb3ca4f352",
+          "subject": "S6B-1A/P0-C2-S1: write back live issue link",
+          "matched_id": "S6B-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "23bd5a7be4861abdbb273a1b1df3255011567362",
+          "subject": "S6B-1B/P0-C2-S1: write back live issue link",
+          "matched_id": "S6B-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "f96670d3e6b1c14d1c3cf46a28e3e51932332039",
+          "subject": "S6B-1C/P0-C2-S1: write back live issue link",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "9d8de9e60166858483b2eb703791d743534d9554",
+          "subject": "S6B-1A/P0-C2-S2: add PR summary inputs",
+          "matched_id": "S6B-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "f0385b09ba677db1c5e7075972cebb006f35ab12",
+          "subject": "S6B-1B/P0-C2-S2: add PR summary inputs",
+          "matched_id": "S6B-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "50a99abb10a294228e37bdbaeee42e88b2dca833",
+          "subject": "S6B-1C/P0-C2-S2: add PR summary inputs",
+          "matched_id": "S6B-1C",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        }
+      ],
+      "planned_action": "prepare-pr-prep-branch",
+      "status": "planned",
+      "warnings": []
+    }
+  ]
+}

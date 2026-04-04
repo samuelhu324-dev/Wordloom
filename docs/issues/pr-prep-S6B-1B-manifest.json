@@ -1,0 +1,12 @@
+{
+  "defaults": {
+    "base_branch": "main"
+  },
+  "items": [
+    {
+      "requested_id": "S6B-1B",
+      "source_log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+      "candidate_pr_branch": "pr-prep/s6b-1b"
+    }
+  ]
+}

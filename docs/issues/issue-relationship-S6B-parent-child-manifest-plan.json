@@ -1,0 +1,54 @@
+{
+  "mode": "relationship-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-relationship-S6B-parent-child-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-relationships",
+  "total_items": 3,
+  "planned_items": 3,
+  "warnings": [],
+  "items": [
+    {
+      "relationship_type": "child-of",
+      "parent_issue_number": 356,
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/356",
+      "child_issue_number": 357,
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/357",
+      "parent_log_path": "docs/logs/log-S6B-evidence-drills-taxonomy.md",
+      "child_log_path": "docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md",
+      "planned_action": "link-child-to-parent",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [],
+      "reason": "Attach S6B-1A under the S6B parent issue"
+    },
+    {
+      "relationship_type": "child-of",
+      "parent_issue_number": 356,
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/356",
+      "child_issue_number": 358,
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/358",
+      "parent_log_path": "docs/logs/log-S6B-evidence-drills-taxonomy.md",
+      "child_log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+      "planned_action": "link-child-to-parent",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [],
+      "reason": "Attach S6B-1B under the S6B parent issue"
+    },
+    {
+      "relationship_type": "child-of",
+      "parent_issue_number": 356,
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/356",
+      "child_issue_number": 359,
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/359",
+      "parent_log_path": "docs/logs/log-S6B-evidence-drills-taxonomy.md",
+      "child_log_path": "docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md",
+      "planned_action": "link-child-to-parent",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [],
+      "reason": "Attach S6B-1C under the S6B parent issue"
+    }
+  ]
+}

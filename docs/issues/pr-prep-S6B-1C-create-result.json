@@ -1,0 +1,43 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S6B-1C-plan.json",
+  "item_index": 0,
+  "requested_id": "S6B-1C",
+  "source_log_path": "docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s6b-1c",
+  "base_branch": "main",
+  "merge_base": "472e67acb180680c2af852b521a50d40ffa4cd2f",
+  "selected_commit_count": 6,
+  "selected_commits": [
+    "cb6b08dfb93ae0b4ff9f5ab397eadb20c719261c",
+    "b73f3aaccefe27c3393c08da67271bf2fa3ee786",
+    "1d89e01f7b8397dd6bfd87a365c4a6dd8c6c72ab",
+    "b1b541d36b3deda29baa7ee9f4d831ba6c3e1433",
+    "f96670d3e6b1c14d1c3cf46a28e3e51932332039",
+    "50a99abb10a294228e37bdbaeee42e88b2dca833"
+  ],
+  "pr_title": "S6B-1C/P0-P3: tracked retained-summary coexistence migration (lookup migration + dual-read/fallback + legacy alias stop condition) v1",
+  "draft": false,
+  "pr_number": 362,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/362",
+  "body_path": "docs/issues/pr-prep-S6B-1C-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s6/evidence & drills",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": "road-S2",
+  "development_issue": "#359",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S6B-1C-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S6B-1C-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at cb6b08df; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply cb6b08dfb... S6B-1C/P0-C1-S1: open tracked coexistence migration log"
+  ]
+}

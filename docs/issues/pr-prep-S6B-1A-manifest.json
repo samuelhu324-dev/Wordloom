@@ -1,0 +1,12 @@
+{
+  "defaults": {
+    "base_branch": "main"
+  },
+  "items": [
+    {
+      "requested_id": "S6B-1A",
+      "source_log_path": "docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md",
+      "candidate_pr_branch": "pr-prep/s6b-1a"
+    }
+  ]
+}

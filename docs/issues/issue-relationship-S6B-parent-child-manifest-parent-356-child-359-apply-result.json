@@ -1,0 +1,18 @@
+{
+  "mode": "relationship-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-relationship-S6B-parent-child-manifest-plan.json",
+  "item_index": 2,
+  "relationship_type": "child-of",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "parent_issue_number": 356,
+  "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/356",
+  "parent_issue_title": "S6B-evidence-drills-taxonomy: taxonomy/evidence & drills taxonomy",
+  "child_issue_number": 359,
+  "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/359",
+  "child_issue_title": "S6B-1C: coexistence/tracked retained-summary coexistence migration",
+  "previous_parent_issue_number": null,
+  "final_parent_issue_number": 356,
+  "applied_action": "link-child-to-parent",
+  "warnings": []
+}

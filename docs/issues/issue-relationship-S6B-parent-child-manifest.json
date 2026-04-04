@@ -1,0 +1,28 @@
+{
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_number": 356,
+      "child_issue_number": 357,
+      "parent_log_path": "docs/logs/log-S6B-evidence-drills-taxonomy.md",
+      "child_log_path": "docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md",
+      "reason": "Attach S6B-1A under the S6B parent issue"
+    },
+    {
+      "parent_issue_number": 356,
+      "child_issue_number": 358,
+      "parent_log_path": "docs/logs/log-S6B-evidence-drills-taxonomy.md",
+      "child_log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+      "reason": "Attach S6B-1B under the S6B parent issue"
+    },
+    {
+      "parent_issue_number": 356,
+      "child_issue_number": 359,
+      "parent_log_path": "docs/logs/log-S6B-evidence-drills-taxonomy.md",
+      "child_log_path": "docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md",
+      "reason": "Attach S6B-1C under the S6B parent issue"
+    }
+  ]
+}

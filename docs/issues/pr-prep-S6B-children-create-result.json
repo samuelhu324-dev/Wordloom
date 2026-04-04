@@ -1,0 +1,46 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S6B-children-plan.json",
+  "item_index": 0,
+  "requested_id": "S6B-1A",
+  "source_log_path": "docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s6b-1a",
+  "base_branch": "main",
+  "merge_base": "17e70b56d8dffd1ed71c2b5c1d8f20ec852ba9d8",
+  "selected_commit_count": 6,
+  "selected_commits": [
+    "4ea46d5bdc82189e2da33d9fe908e77c432a0612",
+    "90665ce56420677a2c74e0b505f84a7973f4da4b",
+    "e37e7081362a0a5456474037b4fba5aed016e5bd",
+    "531c8d2f08108cc730f4c7c1068ba0fcf88f02ab",
+    "3617a8a82c9b88f91e7ae16853a89ebb3ca4f352",
+    "9d8de9e60166858483b2eb703791d743534d9554"
+  ],
+  "pr_title": "S6B-1A/P0-P4: evidence surface inventory ledger (repo evidence total table + current ownership map) v1",
+  "draft": false,
+  "pr_number": 360,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/360",
+  "body_path": "docs/issues/pr-prep-S6B-children-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s6/evidence & drills",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": "road-S2",
+  "development_issue": "#357",
+  "post_apply_verify_status": "fail",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S6B-children-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S6B-children-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "plan merge_base differed from current origin/base merge_base; create path used current repository state",
+    "cherry-pick fallback used after conflict at 3617a8a8; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 3617a8a82... S6B-1A/P0-C2-S1: write back live issue link",
+    "post-apply live PR body verification failed immediately after publish; see docs/issues/pr-prep-S6B-children-post-apply-verify-result.json",
+    "post-apply verify failure: GitHub closing-link footer does not match the development issue set: ['Closes #359']"
+  ]
+}
