@@ -126,6 +126,7 @@
 - The remaining gap is semantic completeness review, especially on the PR side: current body-contract checks can validate `Development issue` rendering and `Closes #...` rows when a source value exists, but they still permit source-log omission to pass as blank-as-blank instead of classifying that omission as an audit failure.
 - `P0` is now complete: the field-timing matrix is fixed, the three-stage completeness ownership is explicit, and the next follow-up is `P1` create-time issue completeness for body plus sidebar state.
 - `P1` is now complete: create-time issue completeness is fixed for issue body plus sidebar ownership, blank optional `Links` rows are explicitly non-canonical, and the next follow-up is `P2` PR development-linkage completeness.
+- `P2` is now complete: PR completeness is fixed as a semantic audit surface rather than a render-only body check, development-linkage completeness is unified across source log, PR metadata, close-link footer, and GitHub linkage state, and the next follow-up is `P3` conclusion-time completeness.
 
 ## P0 Lifecycle Completeness Matrix (completed)
 
@@ -181,12 +182,30 @@
 - `Parent issue` remains metadata-only and may not be repeated under `Links`, even when parent relationship completeness is also checked on the live sidebar surface.
 - `reference_log_*` rows remain outside create-time `Links` completeness because they are traceability inputs for readers, not deterministic issue-body navigation rows.
 
-## P2 PR-Time Completeness Rules (planned)
+## P2 PR-Time Completeness Rules (completed)
 
 - PR completeness must distinguish `rendered correctly` from `semantically complete`.
 - If the source log implies an exact issue owner for the PR lifecycle, a blank `pr_development_issue` must be auditable as a gap even if the body omitted the field consistently.
 - `Development issue` metadata, `Closes #...` footer rows, and GitHub-recognized development linkage should be checked as one owned surface.
 - PR labels remain a required completeness surface whenever the deterministic label set can be derived from the source log.
+
+### P2-C1-S1 (PR development-linkage completeness fixed as a semantic audit surface | v1)
+
+- PR completeness now distinguishes two different questions: whether the PR body renders consistently with its inputs, and whether those inputs are semantically complete for the lifecycle stage.
+- A render-only pass is no longer sufficient when the source log already exposes an exact issue owner through explicit `pr_development_issue` or the same-ID `links.issue` fallback path.
+- PR development-linkage completeness is now defined as one owned four-part surface:
+  - source-log expectation for the development issue set;
+  - rendered PR `Metadata -> Development issue` row;
+  - rendered `Closes #...` footer rows;
+  - GitHub-recognized PR development linkage state.
+- A PR may still be structurally valid while failing completeness review if the source-log expectation is blank only because metadata was omitted rather than because the lifecycle truly has no owned development issue.
+
+### P2-C1-S2 (PR labels and close-link footer completeness fixed | v1)
+
+- Deterministic PR labels remain part of completeness whenever the source log can derive them; missing live labels are a completeness gap even when the PR body itself is structurally valid.
+- `Closes #...` footer rows are no longer treated as a presentation detail; they are part of the same completeness lane as `Development issue` metadata because GitHub uses them to materialize live development linkage.
+- The canonical PR-body contract still validates row shape and exact footer equality, but completeness review now layers on the semantic question of whether the expected development issue set itself was left blank incorrectly.
+- Historical evidence already proves the unified lane is viable: the retained `S0E-4F/P4` metadata-completeness audit shows `17/17` PRs with expected development issue, metadata row, closing refs, labels, and GitHub linkage present after convergence.
 
 ## P3 Conclusion-Time Completeness Rules (planned)
 
@@ -241,8 +260,8 @@
 
 ### P2 (PR completeness)
 
-- [ ] `P2-C1-S1`: PR development-linkage completeness rule fixed
-- [ ] `P2-C1-S2`: PR labels and close-link footer completeness rule fixed
+- [x] `P2-C1-S1`: PR development-linkage completeness rule fixed
+- [x] `P2-C1-S2`: PR labels and close-link footer completeness rule fixed
 
 ### P3 (Conclusion completeness)
 
@@ -264,6 +283,8 @@
 - `P0-C1-S1`: `docs/logs/log-S0F-docs-management-v6.md` now records `S0F-1D` as the next explicit follow-up slice under the `S0F` spine and reflects `P0` as complete rather than leaving `1D` as a placeholder follow-up.
 - `P1-C1-S1` / `P1-C1-S2`: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md` now fixes create-time completeness ownership for issue body and sidebar state, including the rule that create-time `Context` remains intentionally empty while create-time labels/projects/milestone/parent attachment stay inside the audit boundary.
 - `P1-C1-S1` / `P1-C1-S2`: `scripts/issues/gen_issue_draft.py` and `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md` remain the implementation and contract anchors for the create-time matrix recorded here: milestone derivation stays exact-bridge-only, parent issue may derive from `parent_log.links.issue`, top-level parent DoD may carry the child-issue ledger, and `Links` render only non-empty deterministic rows.
+- `P2-C1-S1` / `P2-C1-S2`: `scripts/issues/body_contract.py`, `scripts/issues/plan_pr_prep.py`, and `scripts/issues/verify_live_pr_body_contract.py` remain the implementation anchors for PR completeness recorded here: the current contract validates rendered metadata/footer shape, derives development issue from explicit `pr_development_issue` or source-log `links.issue`, and therefore exposes exactly where render-only validation still differs from semantic completeness review.
+- `P2-C1-S1` / `P2-C1-S2`: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`, `docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`, and `docs/issues/pr-metadata-completeness-S0E-4F-p4-summary.json` remain the contract and evidence anchors for the unified PR completeness lane: development issue identity is metadata-owned, `Closes #...` rows and GitHub linkage must converge, and the retained historical audit already proves the lane is auditable on live PRs.
 
 ## Numbering
 
