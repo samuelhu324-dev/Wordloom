@@ -32,8 +32,11 @@ param(
   # Poll timeout for runs to reach completed.
   [int]$TimeoutMinutes = 25,
 
-  # Output mapping file (SoT pointer to find GH runs).
-  [string]$OutPath = "artifacts/write_gate_runs.latest.json",
+  # Primary output mapping file (new SoT pointer to find GH runs).
+  [string]$OutPath = "artifacts/s2b.write-gate.runs.latest.json",
+
+  # Legacy compatibility alias written during coexistence.
+  [string]$LegacyOutPath = "artifacts/write_gate_runs.latest.json",
 
   # If set, only dispatch workflows (no collection).
   [switch]$DispatchOnly,
@@ -136,18 +139,18 @@ for ($round = 1; $round -le $Rounds; $round++) {
   if (-not $CollectOnly) {
     $minCreatedAtUtc = (Get-Date).ToUniversalTime().AddMinutes(-1)
     foreach ($scenario in $expected) {
-      $args = @(
+      $workflowRunArgs = @(
         "workflow", "run", "drill-write-gate.yml",
         "--repo", $Repo,
         "--ref", $Ref
       )
 
       foreach ($p in (New-WorkflowInputs -ScenarioId $scenario)) {
-        $args += @("-f", $p)
+        $workflowRunArgs += @("-f", $p)
       }
 
       # Avoid noisy output; the run URL is captured later.
-      & gh @args | Out-Null
+      & gh @workflowRunArgs | Out-Null
     }
 
     if ($DispatchOnly) {
@@ -220,16 +223,27 @@ for ($round = 1; $round -le $Rounds; $round++) {
       continue
     }
 
-    $outDir = Split-Path -Parent $OutPath
-    if ($outDir -and (-not (Test-Path $outDir))) {
-      New-Item -ItemType Directory -Force $outDir | Out-Null
+    $json = $selected | ConvertTo-Json -Depth 6
+
+    $writeTargets = @($OutPath)
+    if ($LegacyOutPath -and $LegacyOutPath -ne $OutPath) {
+      $writeTargets += $LegacyOutPath
     }
 
-    $json = $selected | ConvertTo-Json -Depth 6
-    Write-Utf8NoBom -Path $OutPath -Content ($json + "`n")
+    foreach ($targetPath in $writeTargets) {
+      $targetDir = Split-Path -Parent $targetPath
+      if ($targetDir -and (-not (Test-Path $targetDir))) {
+        New-Item -ItemType Directory -Force $targetDir | Out-Null
+      }
+      Write-Utf8NoBom -Path $targetPath -Content ($json + "`n")
+    }
 
     Write-Host ("[round {0}/{1}] Selected runs: {2}/{3}" -f $round, $Rounds, $selected.Count, $expected.Count)
     ($selected | Format-Table -AutoSize scenario_id,run_id,status,conclusion,url | Out-String) | Write-Host
+    Write-Host ("[round {0}/{1}] Wrote primary mapping: {2}" -f $round, $Rounds, $OutPath)
+    if ($LegacyOutPath -and $LegacyOutPath -ne $OutPath) {
+      Write-Host ("[round {0}/{1}] Wrote legacy alias: {2}" -f $round, $Rounds, $LegacyOutPath)
+    }
 
     Write-Host ("[round {0}/{1}] Evidence snippet (paste into log):" -f $round, $Rounds)
     foreach ($row in $selected) {

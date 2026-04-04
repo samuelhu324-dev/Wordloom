@@ -173,7 +173,8 @@ python backend/scripts/search_outbox_worker.py
 
 输出：
 
-- `artifacts/write_gate_runs.latest.json`（run_id ↔ scenario_id 映射；用于从 GH 下载 artifacts 进行排障）
+- `artifacts/s2b.write-gate.runs.latest.json`（primary SoT；run_id ↔ scenario_id 映射；用于从 GH 下载 artifacts 进行排障）
+- `artifacts/write_gate_runs.latest.json`（legacy alias；coexistence 期间继续保留）
 
 建议做 bulk 实验时只改 1 个参数，然后看：
 
