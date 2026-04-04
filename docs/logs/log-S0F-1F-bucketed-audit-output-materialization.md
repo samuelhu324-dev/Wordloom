@@ -116,6 +116,7 @@
 - `P1` is now complete: the live lifecycle audit result emits `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage`, one representative retained sample now carries the emitted diagnosis-layer fields directly, and the next follow-up is `P2` supporting historical emission.
 - `P2` is now complete: the supporting historical pre-screen surface emits additive diagnosis-layer fields only for deterministic cases, the retained historical sample now carries the new fields directly, and the next follow-up is `P3` retained output packaging.
 - `P3` is now complete: one reviewer-facing bucket-output summary packages the live and historical retained samples together, output-reading expectations are fixed for diagnosis-layer consumers, and the next follow-up is `P4` downstream contract packaging.
+- `P4` is now complete: one downstream-facing diagnosis-layer contract packages stable field names, null semantics, and cross-surface consumer rules, and no further phase is currently required inside this slice.
 
 ## P0 Materialization Boundary (completed)
 
@@ -187,6 +188,17 @@
 - The summary also fixes one critical interpretation rule for later consumers: an empty diagnosis layer may still be the correct output when the retained surface does not yet have enough deterministic evidence to justify stage-local attribution.
 - `bucket_source_checks` and `bucket_stage` are now documented as the two traceability handles diagnosis-layer consumers should rely on when they need to explain or group emitted buckets without reparsing raw bucket labels manually.
 
+## P4 Downstream Contract Packaging (completed)
+
+- `S0F-1F` now packages the emitted diagnosis-layer output as one downstream-facing contract instead of leaving later consumers to reconstruct the field semantics from samples and reviewer notes.
+- v1 contract packaging fixes field names, null behavior, cross-surface interpretation rules, and compatibility expectations for later diagnosis-layer consumers.
+
+### P4-C1-S1 (Emitted diagnosis-layer contract packaged for downstream consumers | v1)
+
+- `docs/issues/bucketed-audit-output-S0F-1F-p4-contract.json` now defines the stable downstream contract for `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage` across the current retained owner surfaces.
+- The contract fixes one key fail-closed rule for downstream tooling: null or empty diagnosis-layer fields are valid contract output when a retained surface does not yet have enough deterministic structured evidence to justify attribution.
+- The contract also records the ownership split across current consumers: live lifecycle audit remains the primary diagnosis-layer owner, historical log review remains a supporting deterministic surface only, and the reviewer summary remains a packaged interpretation layer rather than a new owner.
+
 ## Plan (draft)
 
 ### P0 (Materialization boundary and spine wiring)
@@ -237,7 +249,7 @@
 
 ### P4 (Downstream contract packaging)
 
-- [ ] `P4-C1-S1`: emitted diagnosis-layer contract packaged for downstream consumers
+- [x] `P4-C1-S1`: emitted diagnosis-layer contract packaged for downstream consumers
 
 ## Notes (optional)
 
@@ -256,6 +268,7 @@
 - `P2-C1-S1` / `P2-C1-S2`: `scripts/issues/plan_historical_log_review.py` now emits additive diagnosis-layer bucket fields on supporting historical review items, but only for deterministic lifecycle gaps that can be aligned with the `S0F-1E` vocabulary without guessing.
 - `P2-C1-S1` / `P2-C1-S2`: `docs/issues/historical-log-review-S0E-7C-sample-plan.json` now retains the updated supporting sample shape, including one `log-only` item that materializes as `creation-writeback-gap` while in-progress items remain intentionally unbucketed.
 - `P3-C1-S1` / `P3-C1-S2`: `docs/issues/bucketed-audit-output-S0F-1F-p3-summary.json` now packages the representative live and historical emitted samples into one reviewer-facing summary and fixes how diagnosis-layer consumers should interpret emitted versus intentionally empty bucket fields.
+- `P4-C1-S1`: `docs/issues/bucketed-audit-output-S0F-1F-p4-contract.json` now packages the downstream-facing emitted diagnosis-layer contract, including stable field names, null and empty semantics, cross-surface consumer rules, and compatibility expectations for later tooling.
 
 ## Numbering
 
