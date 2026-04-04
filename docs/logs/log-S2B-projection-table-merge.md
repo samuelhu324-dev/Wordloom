@@ -108,7 +108,7 @@
 
 ## Evidence（证据与 SoT 规则）
 
-- 固定 write-gate 回归包 run↔scenario 映射 SoT：`artifacts/write_gate_runs.latest.json`
+- 固定 write-gate 回归包 run↔scenario 映射 SoT：`artifacts/s2b.write-gate.runs.latest.json`（legacy alias：`artifacts/write_gate_runs.latest.json`）
 - 具体 run URL/conclusion 与结论，优先入账到对应子 log（例如 `S2B-4A`），本 log 只作为“总清单 + 决策边界”。
 
 ## Problem（要解决的真正问题）
