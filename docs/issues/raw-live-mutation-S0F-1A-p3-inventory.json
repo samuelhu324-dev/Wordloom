@@ -1,0 +1,32 @@
+{
+  "mode": "raw-live-mutation-wrapper-inventory",
+  "requested_id": "S0F-1A",
+  "scope": "P3-C1-S1S2",
+  "summary": "Canonical operator-facing live mutation surfaces now converge on guarded wrappers or the thin gate, while raw family apply scripts remain internal-only bounded reuse.",
+  "families": [
+    {
+      "family": "issue-conclusion",
+      "raw_entrypoint": "scripts/issues/apply_issue_conclusion_from_plan.py",
+      "canonical_guarded_surface": "scripts/issues/apply_issue_conclusion_with_pre_gate.py",
+      "canonical_thin_gate_surface": "scripts/issues/plan_publish_verify_remediation_gate.py --delegate-apply issue-conclusion",
+      "read_only_wrapper_surface": "scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py issue-conclusion",
+      "operator_facing_status": "raw blocked; guarded wrapper canonical"
+    },
+    {
+      "family": "issue-relationship",
+      "raw_entrypoint": "scripts/issues/apply_issue_relationships.py",
+      "canonical_guarded_surface": "scripts/issues/apply_issue_relationships_with_pre_gate.py",
+      "canonical_thin_gate_surface": "scripts/issues/plan_publish_verify_remediation_gate.py --delegate-apply issue-relationship",
+      "read_only_wrapper_surface": "scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py issue-relationship",
+      "operator_facing_status": "raw blocked; guarded wrapper canonical"
+    },
+    {
+      "family": "pr-body-rewrite",
+      "raw_entrypoint": "scripts/issues/apply_pr_body_rewrite_batch.py",
+      "canonical_guarded_surface": "scripts/issues/apply_pr_body_scope_with_pre_gate.py",
+      "canonical_thin_gate_surface": "scripts/issues/plan_publish_verify_remediation_gate.py --delegate-apply pr-body-rewrite",
+      "read_only_wrapper_surface": "scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py pr-body-rewrite",
+      "operator_facing_status": "single-PR live rewrite converged to guarded wrapper; historical batch rewrite remains internal-only bounded reuse"
+    }
+  ]
+}

@@ -10,6 +10,7 @@ from pathlib import Path
 
 from gen_issue_draft import _derive_repo_slug, _repo_rel, _repo_root, _require_gh_auth, _require_gh_cli, _run_command
 from plan_lifecycle_pre_gate import plan_lifecycle_pre_gate
+from raw_live_mutation_guard import require_raw_live_mutation_guard
 from rewrite_pr_body_scope_from_log import rewrite_pr_body_scope
 
 
@@ -117,6 +118,10 @@ def _edit_pr_body(repo: str, pr_ref: str, body_path: Path) -> None:
 
 
 def apply_pr_body_scope(args: argparse.Namespace) -> PrBodyRewriteApplyResult:
+    require_raw_live_mutation_guard(
+        args,
+        canonical_surface="scripts/issues/apply_pr_body_scope_with_pre_gate.py or scripts/issues/plan_publish_verify_remediation_gate.py --delegate-apply pr-body-rewrite",
+    )
     repo_root = _repo_root()
     create_result_path = _coerce_path(args.pr_create_result_path, repo_root)
     if not create_result_path.is_file():
@@ -219,7 +224,22 @@ def guarded_pr_body_scope_apply(args: argparse.Namespace) -> GuardedPrBodyRewrit
         warnings.append(f"mutation blocked by lifecycle pre-gate decision: {gate_result.decision}")
     else:
         with contextlib.redirect_stdout(io.StringIO()):
-            apply_result = apply_pr_body_scope(args)
+            apply_result = apply_pr_body_scope(
+                argparse.Namespace(
+                    gate_input_path=args.gate_input_path,
+                    pr_create_result_path=args.pr_create_result_path,
+                    gate_input_kind=args.gate_input_kind,
+                    repo=args.repo,
+                    gate_audit_plan_path=args.gate_audit_plan_path,
+                    gate_remediation_plan_path=args.gate_remediation_plan_path,
+                    gate_decision_path=args.gate_decision_path,
+                    live_body_path=args.live_body_path,
+                    rewritten_body_path=args.rewritten_body_path,
+                    apply_result_path=args.apply_result_path,
+                    guarded_result_path=args.guarded_result_path,
+                    allow_raw_live_mutation_internal=True,
+                )
+            )
         apply_result_rel = _repo_rel(_coerce_path(args.apply_result_path, repo_root)) if args.apply_result_path else create_result_path.with_name(f"{create_result_path.stem.removesuffix('-create-result')}-rewrite-apply-result.json").relative_to(repo_root).as_posix()
         guarded_action = "applied-after-pre-gate"
         warnings.extend(list(apply_result.warnings or []))

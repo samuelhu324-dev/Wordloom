@@ -30,6 +30,7 @@ class PrCreateResult:
     mode: str
     result: str
     plan_path: str
+    preflight_result_path: str
     item_index: int
     requested_id: str
     source_log_path: str
@@ -41,6 +42,8 @@ class PrCreateResult:
     selected_commits: list[str]
     pr_title: str
     draft: bool
+    preflight_decision: str
+    preflight_allowed: bool
     pr_number: int | None
     pr_url: str | None
     body_path: str
@@ -60,6 +63,11 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--item-index", dest="item_index", type=int, default=0, help="Plan item index to apply")
     parser.add_argument("--repo", dest="repo", help="Repository slug override")
     parser.add_argument("--ready", dest="ready", action="store_true", help="Create a ready-for-review PR instead of a draft")
+    parser.add_argument(
+        "--preflight-result-path",
+        dest="preflight_result_path",
+        help="Path to a successful PR create front-half preflight result JSON; defaults to the canonical sibling artifact beside the plan",
+    )
     parser.add_argument("--result-path", dest="result_path", help="Override output result JSON path")
     return parser.parse_args()
 
@@ -78,8 +86,99 @@ def _load_plan(path: Path) -> dict:
         raise SystemExit(f"Failed to parse PR-prep plan JSON: {exc}") from exc
 
 
+def _load_preflight_result(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Failed to parse PR create front-half preflight JSON: {exc}") from exc
+
+
+def _default_preflight_result_path(plan_path: Path) -> Path:
+    stem = plan_path.stem.removesuffix("-plan")
+    return plan_path.with_name(f"{stem}-front-half-preflight-result.json")
+
+
 def _repo_rel(path: Path) -> str:
     return path.relative_to(_repo_root()).as_posix()
+
+
+def _require_allowed_preflight_result(
+    *,
+    preflight_path: Path,
+    preflight_data: dict,
+    repo: str,
+    plan_path: Path,
+    item_index: int,
+    item: dict,
+) -> None:
+    if preflight_data.get("mode") != "pr-create-front-half-preflight":
+        raise SystemExit(
+            f"PR create fail-closed preflight result has unexpected mode at {preflight_path}: {preflight_data.get('mode')!r}"
+        )
+    if preflight_data.get("result") != "ok":
+        raise SystemExit(
+            f"PR create fail-closed preflight result is not usable at {preflight_path}: result={preflight_data.get('result')!r}"
+        )
+
+    expected_plan_path = _repo_rel(plan_path)
+    mismatches: list[str] = []
+    if str(preflight_data.get("repository") or "") != repo:
+        mismatches.append(
+            f"repository mismatch: expected {repo}, found {str(preflight_data.get('repository') or '<blank>')}"
+        )
+    if str(preflight_data.get("pr_prep_plan_path") or "") != expected_plan_path:
+        mismatches.append(
+            "pr_prep_plan_path mismatch: "
+            f"expected {expected_plan_path}, found {str(preflight_data.get('pr_prep_plan_path') or '<blank>')}"
+        )
+    if int(preflight_data.get("item_index") or 0) != item_index:
+        mismatches.append(
+            f"item_index mismatch: expected {item_index}, found {preflight_data.get('item_index')!r}"
+        )
+    if str(preflight_data.get("requested_id") or "") != str(item.get("requested_id") or ""):
+        mismatches.append(
+            "requested_id mismatch: "
+            f"expected {str(item.get('requested_id') or '<blank>')}, found {str(preflight_data.get('requested_id') or '<blank>')}"
+        )
+    if str(preflight_data.get("source_log_path") or "") != str(item.get("source_log_path") or ""):
+        mismatches.append(
+            "source_log_path mismatch: "
+            f"expected {str(item.get('source_log_path') or '<blank>')}, found {str(preflight_data.get('source_log_path') or '<blank>')}"
+        )
+    if str(preflight_data.get("candidate_pr_branch") or "") != str(item.get("candidate_pr_branch") or ""):
+        mismatches.append(
+            "candidate_pr_branch mismatch: "
+            f"expected {str(item.get('candidate_pr_branch') or '<blank>')}, found {str(preflight_data.get('candidate_pr_branch') or '<blank>')}"
+        )
+    if int(preflight_data.get("selected_commit_count") or 0) != len(item.get("selected_commits") or []):
+        mismatches.append(
+            "selected_commit_count mismatch: "
+            f"expected {len(item.get('selected_commits') or [])}, found {preflight_data.get('selected_commit_count')!r}"
+        )
+    if int(preflight_data.get("summary_bullet_count") or 0) != int(item.get("summary_bullet_count") or 0):
+        mismatches.append(
+            "summary_bullet_count mismatch: "
+            f"expected {int(item.get('summary_bullet_count') or 0)}, found {preflight_data.get('summary_bullet_count')!r}"
+        )
+    if mismatches:
+        raise SystemExit(
+            "PR create fail-closed preflight result does not match the requested plan item: " + "; ".join(mismatches)
+        )
+
+    if not bool(preflight_data.get("gate_apply_allowed")):
+        raise SystemExit(
+            "PR create fail-closed preflight blocked publish because lifecycle pre-gate did not allow continuation"
+        )
+    if not bool(preflight_data.get("preflight_allowed")):
+        raise SystemExit(
+            "PR create fail-closed preflight blocked publish before local branch materialization: "
+            + "; ".join(str(entry) for entry in preflight_data.get("warnings") or [])
+        )
+    if str(preflight_data.get("preflight_decision") or "") != "allow-front-half-preflight":
+        raise SystemExit(
+            "PR create fail-closed preflight decision is not publish-eligible: "
+            f"{str(preflight_data.get('preflight_decision') or '<blank>')}"
+        )
 
 
 def _git(*args: str, cwd: Path | None = None) -> str:
@@ -305,6 +404,27 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
         raise SystemExit(f"Selected plan item is not in planned state: {item.get('status')}")
 
     repo = _derive_repo_slug(args.repo)
+
+    preflight_result_path = (
+        _coerce_path(args.preflight_result_path, repo_root)
+        if args.preflight_result_path
+        else _default_preflight_result_path(plan_path)
+    )
+    if not preflight_result_path.is_file():
+        raise SystemExit(
+            "PR create now requires a successful front-half preflight result before live publish; "
+            f"missing artifact: {preflight_result_path}"
+        )
+    preflight_result = _load_preflight_result(preflight_result_path)
+    _require_allowed_preflight_result(
+        preflight_path=preflight_result_path,
+        preflight_data=preflight_result,
+        repo=repo,
+        plan_path=plan_path,
+        item_index=args.item_index,
+        item=item,
+    )
+
     _require_gh_cli()
     _require_gh_auth()
 
@@ -443,6 +563,7 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
         mode="pr-create",
         result="ok",
         plan_path=_repo_rel(plan_path),
+        preflight_result_path=_repo_rel(preflight_result_path),
         item_index=args.item_index,
         requested_id=item["requested_id"],
         source_log_path=item["source_log_path"],
@@ -454,6 +575,8 @@ def create_pr_from_plan(args: argparse.Namespace) -> PrCreateResult:
         selected_commits=selected_shas,
         pr_title=item["pr_title"],
         draft=draft,
+        preflight_decision=str(preflight_result.get("preflight_decision") or ""),
+        preflight_allowed=bool(preflight_result.get("preflight_allowed")),
         pr_number=pr_number,
         pr_url=pr_url,
         body_path=_repo_rel(create_body_path),

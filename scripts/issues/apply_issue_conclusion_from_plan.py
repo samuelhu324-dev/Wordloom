@@ -7,6 +7,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from gen_issue_draft import _derive_repo_slug, _repo_root, _require_gh_auth, _require_gh_cli, _run_command
+from raw_live_mutation_guard import add_raw_live_mutation_guard_arg, require_raw_live_mutation_guard
 
 
 @dataclass
@@ -36,6 +37,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--leave-open", dest="leave_open", action="store_true", help="Update the issue body but do not close an open issue")
     parser.add_argument("--result-path", dest="result_path", help="Override output result JSON path")
     parser.add_argument("--body-path", dest="body_path", help="Override output applied body markdown path")
+    add_raw_live_mutation_guard_arg(parser)
     return parser.parse_args()
 
 
@@ -107,6 +109,10 @@ def _close_issue(repo: str, issue_ref: str, reason: str) -> None:
 
 
 def apply_issue_conclusion_from_plan(args: argparse.Namespace) -> IssueConclusionApplyResult:
+    require_raw_live_mutation_guard(
+        args,
+        canonical_surface="scripts/issues/apply_issue_conclusion_with_pre_gate.py or scripts/issues/plan_publish_verify_remediation_gate.py --delegate-apply issue-conclusion",
+    )
     repo_root = _repo_root()
     plan_path = _coerce_path(args.plan_path, repo_root)
     if not plan_path.is_file():

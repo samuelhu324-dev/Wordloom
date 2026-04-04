@@ -1,0 +1,72 @@
+{
+  "mode": "pr-create-front-half-preflight",
+  "result": "ok",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "gate_input_kind": "audit-plan",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0E-5C-p2-pass-plan.json",
+  "gate_decision_path": "docs/issues/lifecycle-gate-S0E-5C-p2-pass-decision.json",
+  "pr_prep_input_kind": "manifest",
+  "pr_prep_input_path": "docs/issues/pr-prep-S0F-1A-p2-stop-manifest.json",
+  "pr_prep_plan_path": "docs/issues/pr-prep-S0F-1A-p2-stop-manifest-plan.json",
+  "item_index": 0,
+  "requested_id": "S0F-1A",
+  "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+  "candidate_pr_branch": "S0F-docs-management-v6",
+  "selected_commit_count": 1,
+  "summary_bullet_count": 3,
+  "gate_decision": "allow-apply",
+  "gate_apply_allowed": true,
+  "preflight_decision": "stop-before-local-materialization",
+  "preflight_allowed": false,
+  "stopped_before_stage": "S4-local-branch-materialization",
+  "warnings": [
+    "Local branch already exists: S0F-docs-management-v6"
+  ],
+  "checks": [
+    {
+      "name": "lifecycle-pre-gate",
+      "status": "pass",
+      "details": "lifecycle pre-gate allowed the issue-created sample to continue into create-time preflight"
+    },
+    {
+      "name": "plan-item-state",
+      "status": "pass",
+      "details": "PR-prep item is in planned state"
+    },
+    {
+      "name": "selected-commits",
+      "status": "pass",
+      "details": "selected commit count = 1"
+    },
+    {
+      "name": "gh-prerequisites",
+      "status": "pass",
+      "details": "gh CLI and auth are available for preflight reads"
+    },
+    {
+      "name": "label-existence",
+      "status": "pass",
+      "details": "all requested PR labels exist"
+    },
+    {
+      "name": "milestone-existence",
+      "status": "skipped",
+      "details": "pr_milestone left blank by contract"
+    },
+    {
+      "name": "branch-availability",
+      "status": "fail",
+      "details": "Local branch already exists: S0F-docs-management-v6"
+    },
+    {
+      "name": "preview-integrity",
+      "status": "pass",
+      "details": "preview body is create-ready with summary_bullet_count = 3"
+    },
+    {
+      "name": "body-shape-contract",
+      "status": "pass",
+      "details": "preview body matches the canonical PR body contract"
+    }
+  ]
+}

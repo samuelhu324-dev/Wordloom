@@ -1,0 +1,89 @@
+{
+  "mode": "s0f-1a-p4-github-actions-secondary-enforcement-boundary",
+  "result": "ok",
+  "requested_id": "S0F-1A",
+  "scope": [
+    "P4"
+  ],
+  "version": "v1",
+  "decision": {
+    "local_primary_boundary": true,
+    "github_actions_secondary_only": true,
+    "summary": "Local fail-closed entrypoints remain the primary ownership boundary; GitHub Actions workflow_dispatch and post-publish mirror workflows remain optional secondary-enforcement surfaces only."
+  },
+  "primary_owner": {
+    "label": "local fail-closed entrypoints",
+    "owned_surfaces": [
+      "scripts/issues/apply_issue_conclusion_with_pre_gate.py",
+      "scripts/issues/apply_issue_relationships_with_pre_gate.py",
+      "scripts/issues/apply_pr_body_scope_with_pre_gate.py",
+      "scripts/issues/create_pr_from_plan.py",
+      "scripts/issues/plan_publish_verify_remediation_gate.py"
+    ],
+    "why": [
+      "These surfaces define preflight and fail-closed mutation eligibility before live apply or publish occurs.",
+      "They own contract validation and continuation decisions rather than replaying an already-live state from CI."
+    ]
+  },
+  "secondary_surfaces": [
+    {
+      "surface": ".github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml",
+      "trigger": "workflow_dispatch",
+      "role": "secondary enforcement",
+      "ownership": [
+        "manual replay of the shared read-only wrapper",
+        "artifact retention",
+        "GitHub-visible summary and annotations"
+      ],
+      "non_ownership": [
+        "live delegated apply",
+        "first-definition of mutation invariants",
+        "publish ownership"
+      ],
+      "fixed_flags": {
+        "read_only": true,
+        "secondary_enforcement": true,
+        "delegate_apply": false
+      }
+    },
+    {
+      "surface": ".github/workflows/s0e-pr-body-secondary-enforcement.yml",
+      "trigger": "workflow_dispatch",
+      "role": "secondary enforcement",
+      "ownership": [
+        "source-log attribution before mirror verification",
+        "post-publish drift detection",
+        "artifact retention"
+      ],
+      "non_ownership": [
+        "original PR creation",
+        "publish authorization",
+        "repairing attribution ambiguity by guesswork"
+      ],
+      "fixed_flags": {
+        "post_publish_only": true,
+        "secondary_enforcement": true
+      }
+    }
+  ],
+  "boundary_rules": [
+    "Do not describe a GitHub Actions stop or error as proof that GitHub Actions prevented publish.",
+    "Do not let workflow_dispatch become the first place where create/apply/publish invariants are enforced.",
+    "Do not widen GitHub Actions surfaces into live delegated apply while local fail-closed entrypoints remain the primary control plane.",
+    "Do preserve artifact-first failure semantics so workflow evidence survives even when a replay stops or drifts.",
+    "Do treat attribution failure as a stop-before-verifier condition, not as permission to continue with guessed ownership."
+  ],
+  "source_alignment": {
+    "reference_logs": [
+      "docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md",
+      "docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md",
+      "docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
+      "docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md"
+    ],
+    "inspected_runtime_surfaces": [
+      "scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py",
+      ".github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml",
+      ".github/workflows/s0e-pr-body-secondary-enforcement.yml"
+    ]
+  }
+}

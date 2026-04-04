@@ -7,6 +7,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from gen_issue_draft import _derive_repo_slug, _repo_root, _require_gh_auth, _require_gh_cli, _run_command
+from raw_live_mutation_guard import add_raw_live_mutation_guard_arg, require_raw_live_mutation_guard
 
 
 FETCH_ISSUE_QUERY = (
@@ -57,6 +58,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--item-index", dest="item_index", type=int, default=0, help="Plan item index to apply")
     parser.add_argument("--repo", dest="repo", help="Repository slug override")
     parser.add_argument("--result-path", dest="result_path", help="Override output result JSON path")
+    add_raw_live_mutation_guard_arg(parser)
     return parser.parse_args()
 
 
@@ -125,6 +127,10 @@ def _add_sub_issue(parent_issue_id: str, child_issue_id: str) -> dict:
 
 
 def apply_issue_relationships(args: argparse.Namespace) -> IssueRelationshipApplyResult:
+    require_raw_live_mutation_guard(
+        args,
+        canonical_surface="scripts/issues/apply_issue_relationships_with_pre_gate.py or scripts/issues/plan_publish_verify_remediation_gate.py --delegate-apply issue-relationship",
+    )
     repo_root = _repo_root()
     plan_path = _coerce_path(args.plan_path, repo_root)
     if not plan_path.is_file():

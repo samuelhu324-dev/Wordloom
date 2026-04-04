@@ -203,6 +203,7 @@ def guarded_issue_relationship_apply(args: argparse.Namespace) -> GuardedRelatio
                     item_index=0,
                     repo=args.repo,
                     result_path=args.apply_result_path,
+                    allow_raw_live_mutation_internal=True,
                 )
             )
         if args.apply_result_path:

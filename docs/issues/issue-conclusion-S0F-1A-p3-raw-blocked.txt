@@ -1,0 +1,1 @@
+raw live mutation entrypoint is internal-only; use the canonical guarded surface instead: scripts/issues/apply_issue_conclusion_with_pre_gate.py or scripts/issues/plan_publish_verify_remediation_gate.py --delegate-apply issue-conclusion

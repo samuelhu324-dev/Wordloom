@@ -1,0 +1,42 @@
+{
+  "mode": "draft-generation",
+  "result": "ok",
+  "context_mode": "single-generate",
+  "log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+  "draft_path": "docs/issues/issue-S0F-1A-single-generate-draft.md",
+  "title": "S0F-1A: evidence/fail-closed entrypoints and preflight unification",
+  "top_labels": [
+    "EVOLUTION"
+  ],
+  "scope_labels": [
+    "s0/knowledge system",
+    "sub/1"
+  ],
+  "function_labels": [
+    "drills"
+  ],
+  "module_labels": [],
+  "issue_projects": [
+    "wordloom Board"
+  ],
+  "milestone": null,
+  "parent_issue": null,
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: ``\n- Parent issue: \n\n## Context\n\n- The scoped detail here is contract for fail-closed entrypoints, retry vocabulary, and wrapper-only mutation rules.\n- S0F-1A is the first follow-up slice under S0F, and it directly addresses the still-soft entrypoints exposed by the current docs/GitHub lifecycle: issue creation, PR create front-half, and post-merge issue/PR live mutation.\n- It carries the work forward from S0E-7G while staying on the same parent S0E chain.\n- This issue keeps the working ledger for the fail-closed entrypoints and preflight unification path while delivery is still being tracked.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`\n- Parent log: `docs/logs/log-S0F-docs-management-v6.md`\n- Previous log: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`\n",
+  "warnings": [
+    "parent_log issue link missing; issue_parent left blank",
+    "issue_keyword inferred from source log content",
+    "module labels left blank",
+    "issue_milestone missing",
+    "issue_parent missing",
+    "Context was single-generated from the source log; review it manually before create/apply",
+    "Definition of Done (DoD) remains intentionally blank pending operator input",
+    "real create-issue requires an explicit issue_keyword; inferred title keywords are not allowed"
+  ],
+  "live_label_check_enabled": false,
+  "live_label_check_repo": null,
+  "matched_live_labels": [],
+  "missing_live_labels": [],
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
+}
