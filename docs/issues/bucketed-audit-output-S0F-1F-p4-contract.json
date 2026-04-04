@@ -1,0 +1,104 @@
+{
+  "mode": "s0f-1f-p4-bucketed-output-contract",
+  "result": "ok",
+  "requested_id": "S0F-1F",
+  "scope": [
+    "P4"
+  ],
+  "version": "v1",
+  "contract_owner": "emitted diagnosis-layer bucket output",
+  "upstream_artifacts": {
+    "taxonomy_source": "docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md",
+    "live_owner_sample": "docs/issues/lifecycle-audit-S0F-1A-live-plan.json",
+    "historical_supporting_sample": "docs/issues/historical-log-review-S0E-7C-sample-plan.json",
+    "reviewer_summary": "docs/issues/bucketed-audit-output-S0F-1F-p3-summary.json"
+  },
+  "consumer_entrypoints": [
+    {
+      "surface": "live-lifecycle-audit",
+      "artifact": "docs/issues/lifecycle-audit-S0F-1A-live-plan.json",
+      "owner_role": "primary diagnosis-layer owner"
+    },
+    {
+      "surface": "historical-log-review",
+      "artifact": "docs/issues/historical-log-review-S0E-7C-sample-plan.json",
+      "owner_role": "supporting diagnosis-layer owner for deterministic historical gaps only"
+    },
+    {
+      "surface": "reviewer-summary",
+      "artifact": "docs/issues/bucketed-audit-output-S0F-1F-p3-summary.json",
+      "owner_role": "reader-facing packaged interpretation layer"
+    }
+  ],
+  "item_contract": {
+    "decision_layer_fields": [
+      "status",
+      "planned_action"
+    ],
+    "diagnosis_layer_fields": [
+      "primary_bucket",
+      "bucket_set",
+      "bucket_source_checks",
+      "bucket_stage"
+    ],
+    "field_rules": [
+      {
+        "field": "primary_bucket",
+        "type": "string|null",
+        "rule": "Must be null when the retained surface does not have enough deterministic structured evidence to justify one highest-signal diagnosis bucket."
+      },
+      {
+        "field": "bucket_set",
+        "type": "array[string]",
+        "rule": "Must contain the deduplicated emitted bucket family labels justified by retained evidence; may be empty when no deterministic attribution is allowed."
+      },
+      {
+        "field": "bucket_source_checks",
+        "type": "object<string, array[string]>",
+        "rule": "Maps each emitted bucket label to the retained check names that justified that bucket on the current owner surface."
+      },
+      {
+        "field": "bucket_stage",
+        "type": "string|null",
+        "rule": "Must equal the lifecycle owner prefix of primary_bucket when a primary bucket exists; otherwise null."
+      }
+    ]
+  },
+  "consumer_rules": [
+    "Always read decision-layer status and planned_action before diagnosis-layer fields; diagnosis output does not replace stop or allow semantics.",
+    "Treat diagnosis-layer fields as additive summaries above the retained checks array rather than as a replacement for raw audit evidence.",
+    "Do not infer a bucket from free-text reason or lifecycle_stage alone when primary_bucket is null and bucket_set is empty.",
+    "Use bucket_source_checks as the required traceability link whenever a consumer needs to explain why a diagnosis bucket was emitted.",
+    "Use bucket_stage for grouping and routing across surfaces; do not reparsed bucket prefixes ad hoc outside this contract."
+  ],
+  "cross_surface_rules": [
+    {
+      "surface": "live-lifecycle-audit",
+      "rule": "May emit the fullest diagnosis-layer attribution because it owns lifecycle-stage plus check-level completeness evidence."
+    },
+    {
+      "surface": "historical-log-review",
+      "rule": "May emit diagnosis-layer buckets only for deterministic historical review gaps that map cleanly into the fixed S0F-1E vocabulary."
+    },
+    {
+      "surface": "reviewer-summary",
+      "rule": "May restate packaged diagnosis-layer readings, but must reference retained sample artifacts instead of inventing new bucket values."
+    }
+  ],
+  "null_and_empty_semantics": {
+    "primary_bucket": "null means no diagnosis bucket may be emitted deterministically on the current surface.",
+    "bucket_set": "[] means the diagnosis layer is intentionally empty rather than missing from the artifact.",
+    "bucket_source_checks": "{} means no emitted bucket has a justified check lineage on the current surface.",
+    "bucket_stage": "null means there is no emitted primary diagnosis bucket to attribute to a lifecycle owner."
+  },
+  "compatibility_rules": [
+    "Existing decision-layer consumers may ignore diagnosis-layer fields without breaking current stop or allow behavior.",
+    "Diagnosis-layer consumers must accept both emitted and intentionally empty diagnosis fields across retained surfaces.",
+    "Future surfaces may adopt the same diagnosis-layer field names only if they preserve the same fail-closed null and empty semantics recorded here."
+  ],
+  "summary": {
+    "status": "pass",
+    "detail": "S0F-1F P4 packages one downstream-facing contract for emitted diagnosis-layer bucket output so later tooling can depend on stable field names, null semantics, and cross-surface interpretation rules.",
+    "next_boundary": "The next step after P4 is to mark S0F-1F stable if no further output-shape gaps remain, or open a follow-up slice only if a new consumer needs additional surface-specific contract rules."
+  }
+}

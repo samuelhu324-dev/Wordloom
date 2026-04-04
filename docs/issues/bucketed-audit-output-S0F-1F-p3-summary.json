@@ -1,0 +1,92 @@
+{
+  "mode": "s0f-1f-p3-bucketed-output-summary",
+  "result": "ok",
+  "requested_id": "S0F-1F",
+  "scope": [
+    "P3"
+  ],
+  "packaged_inputs": {
+    "live_audit_sample": "docs/issues/lifecycle-audit-S0F-1A-live-plan.json",
+    "historical_review_sample": "docs/issues/historical-log-review-S0E-7C-sample-plan.json"
+  },
+  "reviewer_rules": [
+    "Read decision-layer fields first: status and planned_action still answer whether the current item is pass, blocked, review-required, or requires reconciliation.",
+    "Read primary_bucket only when it is non-null: it is the highest-signal deterministic diagnosis bucket already justified by retained structured evidence.",
+    "Treat an empty bucket_set as intentional when the retained surface does not yet have enough deterministic evidence to attribute a lifecycle bucket; do not guess from free-text reason strings.",
+    "Use bucket_source_checks as the traceability link back to the exact retained checks that justified the emitted diagnosis bucket.",
+    "Use bucket_stage to group emitted diagnosis buckets by lifecycle owner across live and historical surfaces without reparsing bucket labels by hand."
+  ],
+  "representative_items": [
+    {
+      "sample": "live-audit-blocked-creation-gap",
+      "source": "docs/issues/lifecycle-audit-S0F-1A-live-plan.json",
+      "requested_id": "S0F-1A",
+      "owner_surface": "live-lifecycle-audit",
+      "lifecycle_stage": "issue-created",
+      "decision_layer": {
+        "status": "blocked",
+        "planned_action": "block-mutation"
+      },
+      "diagnosis_layer": {
+        "primary_bucket": "creation-sidebar-relationship-gap",
+        "bucket_set": [
+          "creation-sidebar-relationship-gap"
+        ],
+        "bucket_stage": "creation",
+        "bucket_source_checks": {
+          "creation-sidebar-relationship-gap": [
+            "sidebar-parent-relationship"
+          ]
+        }
+      },
+      "reader_interpretation": "The item is blocked for creation-stage relationship drift, and the reviewer can confirm the diagnosis directly from the emitted bucket fields without rereading the full check list first."
+    },
+    {
+      "sample": "historical-log-only-gap",
+      "source": "docs/issues/historical-log-review-S0E-7C-sample-plan.json",
+      "requested_id": "S0E-7B",
+      "owner_surface": "historical-log-review",
+      "lifecycle_stage": "log-only",
+      "decision_layer": {
+        "status": "review-required",
+        "planned_action": "open-issue-flow"
+      },
+      "diagnosis_layer": {
+        "primary_bucket": "creation-writeback-gap",
+        "bucket_set": [
+          "creation-writeback-gap"
+        ],
+        "bucket_stage": "creation",
+        "bucket_source_checks": {
+          "creation-writeback-gap": [
+            "historical-lifecycle-gap"
+          ]
+        }
+      },
+      "reader_interpretation": "The historical review surface has enough evidence to say the item never reached deterministic issue writeback, so the reviewer gets a creation-stage diagnosis bucket even though this is a supporting pre-screen surface."
+    },
+    {
+      "sample": "historical-open-issue-no-pr-yet",
+      "source": "docs/issues/historical-log-review-S0E-7C-sample-plan.json",
+      "requested_id": "S0E-5C",
+      "owner_surface": "historical-log-review",
+      "lifecycle_stage": "issue-open-no-pr",
+      "decision_layer": {
+        "status": "review-required",
+        "planned_action": "complete-pr-create"
+      },
+      "diagnosis_layer": {
+        "primary_bucket": null,
+        "bucket_set": [],
+        "bucket_stage": null,
+        "bucket_source_checks": {}
+      },
+      "reader_interpretation": "The item still needs follow-up, but the retained historical surface does not yet have enough deterministic evidence to emit a PR-owned diagnosis bucket, so an empty diagnosis layer is the correct fail-closed reading."
+    }
+  ],
+  "summary": {
+    "status": "pass",
+    "detail": "S0F-1F P3 packages one reviewer-facing bucket-output summary that points at both retained sample surfaces and fixes how reviewers should read decision-layer versus diagnosis-layer fields.",
+    "next_boundary": "P4 should package the emitted diagnosis-layer contract for downstream consumers so later tooling can depend on this summary shape rather than raw sample-specific interpretation."
+  }
+}

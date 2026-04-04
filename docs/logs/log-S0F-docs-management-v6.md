@@ -19,6 +19,11 @@
   **reference_log_3**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
   **reference_log_4**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **phase_log_1**: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
+  **phase_log_2**: `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
+  **phase_log_3**: `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
+  **phase_log_4**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
+  **phase_log_5**: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  **phase_log_6**: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -110,12 +115,16 @@
 
 - `S0F-1A`（Phase 1）：fail-closed entrypoints and preflight unification
   - 详见：`docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
-- `S0F-1B`（Phase 1B）：canonical keyword whitelist and issue-create hard gate
-  - 详见：``
-- `S0F-1C`（Phase 1C）：live mutation wrapper convergence for issue / PR families
-  - 详见：``
-- `S0F-1D`（Phase 1D）：optional GitHub Actions secondary enforcement rollout
-  - 详见：``
+- `S0F-1B`（Phase 1B）：LLM-authored issue Context generation and exact sentence-count contract
+  - 详见：`docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
+- `S0F-1C`（Phase 1C）：guarded multi-item live mutation remediation
+  - 详见：`docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
+- `S0F-1D`（Phase 1D）：creation / PR / conclusion completeness audit
+  - 详见：`docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
+- `S0F-1E`（Phase 1E）：completeness classification buckets and audit output taxonomy
+  - 详见：`docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+- `S0F-1F`（Phase 1F）：bucketed audit output materialization
+  - 详见：`docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -130,7 +139,23 @@
 
 - `S0F` is now opened and pushed as docs-management v6 on branch `S0F-docs-management-v6`.
 - The first active child slice `S0F-1A` is no longer just a placeholder: `P0` contract language is fixed and `P1` has already hardened the real issue creation entrypoint.
+- Child slice `S0F-1B` is now complete and stable: create-time issue bodies keep an empty `Context`, conclusion-time issue bodies use LLM-authored Context under an exact child/main sentence-count contract, and the retired deterministic Context builder surface has been removed from the shared contract module.
+- `S0F-1B` has also now proved the historical rewrite path in practice: three older closed `S6B` child issues were regenerated through the guarded conclusion remediation path, live body snapshots were retained, and the Context gate was hardened so dotted file paths inside a valid single sentence no longer cause false drift findings.
+- `S0F-1C` is now stable as the multi-item remediation slice: it retained the preview, guarded apply, and post-verify bundles, and it now exposes one operator runbook for repeatable historical remediation without reopening raw mutation entrypoints.
+- `S0F-1C/P0` is now complete: the batch-stage vocabulary is fixed, the three-stage contract is explicit, and the next follow-up is `P1` manifest shape plus preview-only sample retention.
+- `S0F-1C/P1` is now complete: one representative multi-item preview manifest and frozen audit-plan sample are retained, pre-gate stops cleanly at preview time, and the next follow-up is `P2` guarded live-apply contract plus representative apply sample retention.
+- `S0F-1C/P2` is now complete: the shared multi-item issue-conclusion manifest is applied per target through repeated family-owned guarded wrapper calls, and the next follow-up is `P3` preserve-existing post-verify plus per-target drift retention.
+- `S0F-1C/P3` is now complete: preserve-existing re-verification is retained per target after the guarded live sample, all three representative S6B items classify as clean-preserve, and the next follow-up is `P4` operator runbook plus repeatability packaging.
+- `S0F-1C/P4` is now complete: the runbook and repeatability summary are retained, and no further phase is currently required inside this slice.
+- `S0F-1D/P4` is now complete: the first stable read-only completeness package is fixed around the live lifecycle-audit entrypoint plus a compact historical pre-screen sample, and no further phase is currently required inside this slice.
+- `S0F-1E` is now stable: the bucket taxonomy is fixed across all three lifecycle stages, the additive audit-output contract is fixed, and no further phase is currently required inside this slice.
+- `S0F-1F/P0` is now complete: the next follow-up is fixed around materializing emitted diagnosis-layer bucket fields on real read-only output surfaces, and the immediate next step is `P1` live lifecycle audit bucket emission.
+- `S0F-1F/P1` is now complete: the primary live lifecycle audit surface emits additive diagnosis-layer bucket fields directly in retained output, one representative live sample is retained with emitted bucket data, and the next follow-up is `P2` supporting historical emission.
+- `S0F-1F/P2` is now complete: the supporting historical pre-screen surface emits additive diagnosis-layer fields for deterministic cases, one representative historical sample is retained with emitted bucket data, and the next follow-up is `P3` retained output packaging.
+- `S0F-1F/P3` is now complete: one reviewer-facing retained summary now packages live and historical emitted bucket-output samples together, diagnosis-layer reading rules are fixed, and the next follow-up is `P4` downstream contract packaging.
+- `S0F-1F/P4` is now complete: one downstream-facing diagnosis-layer contract packages stable field names, null semantics, and cross-surface consumer rules, and no further phase is currently required inside this slice.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
+- The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
 ## Evidence（可选，聚合型记账）
 
@@ -205,6 +230,22 @@
   - `S0F-1A` now retains one explicit boundary artifact that classifies the thin gate and guarded local wrappers as the primary mutation boundary while classifying both audited GitHub workflows as secondary enforcement only
   - the read-only wrapper dispatch workflow now records `secondary_enforcement=true`, `local_primary_boundary=true`, and `publish_owner=local fail-closed family entrypoint` in its retained run manifest
   - the PR body mirror workflow now records `trigger_surface=workflow_dispatch`, `local_primary_boundary=true`, and a post-publish-only role note in its retained manifest while preserving attribution-stop semantics before mirror verification
+
+### S0F-1B (historical Context refresh and post-review hardening sample | 2026-04-04)
+
+- artifacts:
+  - `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-live-summary.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1a-live.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1b-live.json`
+  - `docs/issues/issue-conclusion-S0F-1B-p5-s6b-1c-live.json`
+- expected:
+  - the new LLM-authored Context contract should not remain only a sample-path improvement; it should also be able to replace historical deterministic Context bodies on already-closed issues through the guarded conclusion remediation path
+  - post-refresh verification should preserve the rewritten Context blocks without false failures caused by dotted file paths or compressed one-item LLM output
+- observed:
+  - `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359` were rewritten in place through the guarded issue-conclusion remediation path, and the retained live snapshots now show natural Context prose instead of the earlier deterministic template family
+  - `issue_context_llm.py` now normalizes compressed one-item multi-sentence `lines` output into exact sentence rows, and `body_contract.py` now detects real sentence boundaries instead of treating dotted file paths as multiple sentences
+  - the retained `S0F-1B` summary artifact records both the representative preview files and the post-refresh verification artifacts, so this slice now covers not just contract design but also historical live rewrite proof
 
 ## Notes（落地原则，可选）
 

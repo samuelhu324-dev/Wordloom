@@ -4,7 +4,7 @@ import argparse
 import json
 import re
 import sys
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from body_contract import ISSUE_ALLOWED_LINK_LABELS, build_canonical_issue_link_lines, bullets_are_contiguous, extract_section_order, issue_body_context_line_bounds, issue_uses_parent_body_contract, link_labels_are_allowed, metadata_contains_parent_issue_row, metadata_contains_source_log_row, ordered_parent_child_issue_refs, parse_issue_number, validate_issue_context_lines
@@ -66,6 +66,10 @@ class LifecycleAuditPlanItem:
     status: str
     checks: list[AuditCheck]
     warnings: list[str]
+    primary_bucket: str | None = None
+    bucket_set: list[str] = field(default_factory=list)
+    bucket_source_checks: dict[str, list[str]] = field(default_factory=dict)
+    bucket_stage: str | None = None
     reason: str | None = None
 
 
@@ -404,6 +408,73 @@ def _build_planned_action(status: str) -> str:
     return "error-audit-input"
 
 
+def _is_conclusion_owned_stage(lifecycle_stage: str | None) -> bool:
+    return lifecycle_stage in {"merged-open", "concluded"}
+
+
+def _bucket_for_check(check_name: str, check_status: str, lifecycle_stage: str | None) -> str | None:
+    if check_status not in {"fail", "warning"}:
+        return None
+
+    if check_name == "expected-labels":
+        return None if _is_conclusion_owned_stage(lifecycle_stage) else "creation-metadata-gap"
+
+    if check_name == "body-parent-metadata":
+        return "conclusion-body-shape-gap" if _is_conclusion_owned_stage(lifecycle_stage) else "creation-metadata-gap"
+
+    if check_name == "sidebar-parent-relationship":
+        return "conclusion-sidebar-relationship-gap" if _is_conclusion_owned_stage(lifecycle_stage) else "creation-sidebar-relationship-gap"
+
+    if check_name == "sidebar-child-relationships":
+        return "conclusion-sidebar-relationship-gap" if _is_conclusion_owned_stage(lifecycle_stage) else None
+
+    if check_name == "source-log-issue-writeback":
+        return "conclusion-writeback-gap" if _is_conclusion_owned_stage(lifecycle_stage) else "creation-writeback-gap"
+
+    if check_name in {"required-body-sections", "issue-section-order", "metadata-row-shape"}:
+        return "conclusion-body-shape-gap" if _is_conclusion_owned_stage(lifecycle_stage) else "creation-body-shape-gap"
+
+    if check_name in {"metadata-links-boundary", "link-categories", "links-coverage"}:
+        return "conclusion-links-gap" if _is_conclusion_owned_stage(lifecycle_stage) else "creation-links-gap"
+
+    if check_name == "context-sentence-shape":
+        return "conclusion-context-gap" if _is_conclusion_owned_stage(lifecycle_stage) else "creation-timing-gap"
+
+    if check_name == "closed-body-shape":
+        return "conclusion-body-shape-gap" if _is_conclusion_owned_stage(lifecycle_stage) else None
+
+    if check_name == "parent-child-dod-ordering":
+        return "conclusion-dod-gap" if _is_conclusion_owned_stage(lifecycle_stage) else None
+
+    if check_name == "final-dod-pr-refs":
+        return "conclusion-dod-gap" if _is_conclusion_owned_stage(lifecycle_stage) else None
+
+    if check_name in {"exact-id-merged-pr-evidence", "source-log-pr-link"}:
+        return "conclusion-pr-evidence-gap" if _is_conclusion_owned_stage(lifecycle_stage) else None
+
+    return None
+
+
+def _derive_bucket_summary(checks: list[AuditCheck], lifecycle_stage: str | None) -> tuple[str | None, list[str], dict[str, list[str]], str | None]:
+    bucket_source_checks: dict[str, list[str]] = {}
+    ranked_checks = sorted(
+        enumerate(checks),
+        key=lambda item: (0 if item[1].status == "fail" else 1, item[0]),
+    )
+    for _, check in ranked_checks:
+        bucket = _bucket_for_check(check.name, check.status, lifecycle_stage)
+        if not bucket:
+            continue
+        bucket_checks = bucket_source_checks.setdefault(bucket, [])
+        if check.name not in bucket_checks:
+            bucket_checks.append(check.name)
+
+    bucket_set = list(bucket_source_checks.keys())
+    primary_bucket = bucket_set[0] if bucket_set else None
+    bucket_stage = primary_bucket.split("-", 1)[0] if primary_bucket else None
+    return primary_bucket, bucket_set, bucket_source_checks, bucket_stage
+
+
 def _classify_stage(issue_state: str, merged_prs: list[MergedPrEvidence], source_log_pr_url: str | None, link_lines: list[str]) -> str:
     if issue_state == "CLOSED":
         return "concluded"
@@ -485,6 +556,10 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
             planned_action="error-missing-issue-reference",
             applied_action=None,
             status="error",
+            primary_bucket=None,
+            bucket_set=[],
+            bucket_source_checks={},
+            bucket_stage=None,
             checks=[],
             warnings=warnings + ["explicit issue reference is required or source log links.issue must be populated"],
             reason=item.get("reason"),
@@ -508,6 +583,10 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
             planned_action="reconcile-audit-input",
             applied_action=None,
             status="reconciliation",
+            primary_bucket=None,
+            bucket_set=[],
+            bucket_source_checks={},
+            bucket_stage=None,
             checks=[],
             warnings=warnings,
             reason=item.get("reason"),
@@ -727,6 +806,8 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     else:
         status = "pass"
 
+    primary_bucket, bucket_set, bucket_source_checks, bucket_stage = _derive_bucket_summary(checks, lifecycle_stage)
+
     return LifecycleAuditPlanItem(
         requested_id=requested_id,
         source_log_path=_repo_rel(source_log_path),
@@ -744,6 +825,10 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
         planned_action=_build_planned_action(status),
         applied_action=None,
         status=status,
+        primary_bucket=primary_bucket,
+        bucket_set=bucket_set,
+        bucket_source_checks=bucket_source_checks,
+        bucket_stage=bucket_stage,
         checks=checks,
         warnings=warnings,
         reason=item.get("reason"),
