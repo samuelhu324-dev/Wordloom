@@ -1,0 +1,43 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/issue-conclusion-S6B-1B-road002-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S6B-1B: issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+    "S6B-1B: existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview preserves the live Context block and leaves one-item Context authoring to manual or single-item generation",
+    "S6B-1B: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S6B-1B",
+      "source_log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+      "issue_number": 358,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/358",
+      "issue_title": "S6B-1B: naming/evidence naming baseline",
+      "issue_state": "OPEN",
+      "preview_body_path": "docs/issues/issue-conclusion-S6B-1B-road002-s6b-1b-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 361,
+          "title": "S6B-1B/P0-P4: evidence naming baseline (retained-summary + tmp-scratch + snapshot run identity) v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/361",
+          "merged_at": "2026-04-04T07:30:51Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "issue is not closed yet; conclusion body may still be planned after merge evidence is available",
+        "existing Context section did not satisfy the prose-first Context gate for line range (3, 4); preview preserves the live Context block and leaves one-item Context authoring to manual or single-item generation",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Refresh S6B-1B after correcting the roadmap/milestone target to road-002, then conclude the child issue from merged PR evidence."
+    }
+  ]
+}

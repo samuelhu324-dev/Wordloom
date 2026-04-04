@@ -1,4 +1,4 @@
-{
+﻿{
   "mode": "pr-prep-dry-run",
   "result": "ok",
   "manifest_path": "docs/issues/pr-prep-S6B-1B-manifest.json",
@@ -33,7 +33,7 @@
         "drills"
       ],
       "pr_projects": [],
-      "pr_milestone": "road-S2",
+      "pr_milestone": "road-002: projection runtime platformization and evidence governance",
       "pr_development_issue": "#358",
       "pr_development_issue_refs": [
         "#358"
@@ -214,7 +214,7 @@
         },
         {
           "sha": "071f49b4ef0327859b22429171272722c962462f",
-          "subject": "S6B/P0-S1: wire road-S2 automation metadata",
+          "subject": "S6B/P0-S1: wire road-002: projection runtime platformization and evidence governance automation metadata",
           "matched_id": "S6B",
           "status": "skipped",
           "reason": "commit subject does not match requested ID prefix"
@@ -275,3 +275,4 @@
     }
   ]
 }
+

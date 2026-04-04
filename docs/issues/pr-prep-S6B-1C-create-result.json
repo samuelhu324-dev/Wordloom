@@ -1,4 +1,4 @@
-{
+﻿{
   "mode": "pr-create",
   "result": "ok",
   "plan_path": "docs/issues/pr-prep-S6B-1C-plan.json",
@@ -30,7 +30,7 @@
     "drills"
   ],
   "projects_applied": [],
-  "milestone_applied": "road-S2",
+  "milestone_applied": "road-002: projection runtime platformization and evidence governance",
   "development_issue": "#359",
   "post_apply_verify_status": "pass",
   "post_apply_verify_result_path": "docs/issues/pr-prep-S6B-1C-post-apply-verify-result.json",
@@ -41,3 +41,4 @@
     "original cherry-pick error: error: could not apply cb6b08dfb... S6B-1C/P0-C1-S1: open tracked coexistence migration log"
   ]
 }
+

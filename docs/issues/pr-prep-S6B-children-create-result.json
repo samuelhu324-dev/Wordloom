@@ -1,4 +1,4 @@
-{
+﻿{
   "mode": "pr-create",
   "result": "ok",
   "plan_path": "docs/issues/pr-prep-S6B-children-plan.json",
@@ -30,7 +30,7 @@
     "drills"
   ],
   "projects_applied": [],
-  "milestone_applied": "road-S2",
+  "milestone_applied": "road-002: projection runtime platformization and evidence governance",
   "development_issue": "#357",
   "post_apply_verify_status": "fail",
   "post_apply_verify_result_path": "docs/issues/pr-prep-S6B-children-post-apply-verify-result.json",
@@ -44,3 +44,4 @@
     "post-apply verify failure: GitHub closing-link footer does not match the development issue set: ['Closes #359']"
   ]
 }
+

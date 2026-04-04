@@ -12,7 +12,7 @@
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/356`
   **pr**: ``
   **runbook**: ``
-  **roadmap**: `docs/roadmap/_draft/road-S2-.md`
+  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: ``
   **previous_log**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_1**: `docs/logs/log-S6A-evidence-drills-spine.md`
@@ -22,16 +22,16 @@
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s6/evidence & drills, sub/0`
 **issue_module_labels**: ``
-**issue_milestone**: `road-S2`
+**issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
-**roadmap_path**: `docs/roadmap/_draft/road-S2-.md`
+**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 **roadmap_milestone**: `M5`
 **roadmap_phase**: `P2-P4`
-**roadmap_bridge_refs**: `S6B spine -> road-S2 / M5 / P2-P4`
+**roadmap_bridge_refs**: `S6B spine -> road-002 / M5 / P2-P4`
 **pr_labels**: ``
 **pr_projects**: ``
-**pr_milestone**: `road-S2`
+**pr_milestone**: `road-002: projection runtime platformization and evidence governance`
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`

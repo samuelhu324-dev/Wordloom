@@ -1,0 +1,16 @@
+{
+  "mode": "issue-conclusion-guarded-apply",
+  "result": "ok",
+  "gate_input_kind": "manifest",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0E-7D-live-manifest.json",
+  "gate_decision_path": "docs/issues/lifecycle-gate-S0E-7D-live-decision.json",
+  "gate_decision": "stop-for-remediation",
+  "apply_allowed": false,
+  "conclusion_manifest_path": "docs/issues/issue-conclusion-S6B-1A-road002-manifest.json",
+  "conclusion_plan_path": null,
+  "guarded_action": "stopped-before-apply",
+  "apply_result_path": null,
+  "warnings": [
+    "mutation blocked by lifecycle pre-gate decision: stop-for-remediation"
+  ]
+}

@@ -1,4 +1,4 @@
-## Metadata
+﻿## Metadata
 
 - Requested ID: `S6B-1C`
 - Base branch: `main`
@@ -29,6 +29,7 @@
 
 - Log: `docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md`
 - Parent log: `docs/logs/log-S6B-evidence-drills-taxonomy.md`
-- Roadmap: `docs/roadmap/_draft/road-S2-.md`
+- Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 
 Closes #359
+

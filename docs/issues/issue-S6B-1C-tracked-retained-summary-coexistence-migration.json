@@ -1,4 +1,4 @@
-{
+﻿{
   "mode": "create-issue",
   "result": "ok",
   "context_mode": "scaffold",
@@ -19,9 +19,9 @@
   "issue_projects": [
     "wordloom Board"
   ],
-  "milestone": "road-S2",
+  "milestone": "road-002: projection runtime platformization and evidence governance",
   "parent_issue": "#356",
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s6/evidence & drills`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: `road-S2`\n- Parent issue: #356\n\n## Context\n\n- <placeholder>\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md`\n- Roadmap: `docs/roadmap/_draft/road-S2-.md`\n- Parent log: `docs/logs/log-S6B-evidence-drills-taxonomy.md`\n- Previous log: `docs/logs/log-S6B-1B-evidence-naming-baseline.md`\n",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s6/evidence & drills`, `sub/1`, `drills`\n- Projects: `wordloom Board`\n- Milestone: `road-002: projection runtime platformization and evidence governance`\n- Parent issue: #356\n\n## Context\n\n- <placeholder>\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md`\n- Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`\n- Parent log: `docs/logs/log-S6B-evidence-drills-taxonomy.md`\n- Previous log: `docs/logs/log-S6B-1B-evidence-naming-baseline.md`\n",
   "warnings": [
     "module labels left blank",
     "live label preflight passed against samuelhu324-dev/wordloom-v3",
@@ -42,3 +42,4 @@
   "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/359",
   "created_at": "2026-04-04T07:19:18.469441+00:00"
 }
+

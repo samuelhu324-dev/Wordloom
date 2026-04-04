@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S6B-1C-road002-plan.json",
+  "item_index": 0,
+  "requested_id": "S6B-1C",
+  "source_log_path": "docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 359,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/359",
+  "issue_title": "S6B-1C: coexistence/tracked retained-summary coexistence migration",
+  "previous_issue_state": "OPEN",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S6B-1C-road002-s6b-1c-apply-body.md",
+  "close_reason": "completed",
+  "warnings": [
+    "issue was open before apply; body updated and issue closed with reason=completed"
+  ]
+}
