@@ -274,6 +274,31 @@
   - 再补一轮 docs / runbook / quick-command lookup migration
   - 最后才进入 bounded dual-write / dual-read coexistence 或正式切换
 
+### P4-C4-S1 (Tracked alias/fallback coexistence enabled | v1)
+
+- `scripts/p1_write_gate_regression.ps1` 现在默认写入新的 primary SoT：`artifacts/s2b.write-gate.runs.latest.json`。
+- 同时保留 legacy alias 写入：`artifacts/write_gate_runs.latest.json`。
+- 这意味着 generator 已进入 bounded dual-write coexistence，而不是继续只写旧路径。
+
+### P4-C4-S2 (Primary lookup migration started | v1)
+
+- 第一轮 operator-facing lookup migration 已覆盖最关键的最小面：
+  - `docs/runbook/run-S2B-projection-table-merge.md`
+  - `docs/QUICK_COMMANDS.md`
+  - `docs/logs/log-S2B-projection-table-merge.md`
+- 这些入口现在统一表达为：
+  - primary SoT：`artifacts/s2b.write-gate.runs.latest.json`
+  - legacy alias：`artifacts/write_gate_runs.latest.json`
+
+### P4-C4-S3 (Tracked coexistence stop-condition still open | v1)
+
+- `C4` 已完成 generator dual-write 和最小 lookup migration，但 stop condition 仍未满足。
+- 当前还不能移除 legacy alias，原因是：
+  - 旧路径在 repo 内仍有大量历史 log / runbook / helper references
+  - 还未完成全量 lookup migration
+  - 还未验证 downstream operator workflow 是否已稳定转向新 primary path
+- 因此 `C4` 的结果是：tracked coexistence 已开始，但 cutover 仍处于 dual-write / dual-read 阶段。
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -314,6 +339,9 @@
 - P4-C3-S1: select the first repo-tracked retained-summary candidate for coexistence-oriented rename
 - P4-C3-S2: fix prerequisites for a tracked retained-summary coexistence cutover
 - P4-C3-S3: fix the deferred execution boundary for deep-reference tracked paths
+- P4-C4-S1: enable tracked alias/fallback coexistence for the first retained-summary candidate
+- P4-C4-S2: start the primary lookup migration for the first tracked retained-summary candidate
+- P4-C4-S3: retain the open stop-condition boundary for tracked coexistence
 
 ## Execution Checklist (unchecked)
 
@@ -351,6 +379,9 @@
 - [x] `P4-C3-S1`: first repo-tracked coexistence candidate selected
 - [x] `P4-C3-S2`: tracked coexistence prerequisites fixed
 - [x] `P4-C3-S3`: deferred execution boundary fixed
+- [x] `P4-C4-S1`: tracked alias/fallback coexistence enabled
+- [x] `P4-C4-S2`: primary lookup migration started
+- [x] `P4-C4-S3`: tracked coexistence stop-condition boundary retained
 
 ## Evidence (reserved)
 
@@ -367,3 +398,4 @@
 - 2026-04-04: completed `P4` v1 by retaining the first bounded current-to-target rename sample set for retained-summary, tmp-scratch, and snapshot run identity, so later cleanup work has concrete mapping examples instead of only abstract naming rules.
 - 2026-04-04: executed a first local bounded rename rehearsal under `P4/C2` on one retained-summary artifact and two tmp artifacts, and fixed the rule that ignored operator surfaces are recorded in the naming ledger but not pushed as tracked artifact files by default.
 - 2026-04-04: completed `P4/C3` by selecting `artifacts/write_gate_runs.latest.json` as the first repo-tracked coexistence candidate, fixing its target naming shape and cutover prerequisites, and explicitly deferring direct rename until alias / fallback and lookup migration boundaries are ready.
+- 2026-04-04: completed `P4/C4` by enabling dual-write coexistence from `scripts/p1_write_gate_regression.ps1` to the new primary path `artifacts/s2b.write-gate.runs.latest.json`, starting the minimal lookup migration, and keeping legacy alias removal explicitly out of scope until broader references are migrated.

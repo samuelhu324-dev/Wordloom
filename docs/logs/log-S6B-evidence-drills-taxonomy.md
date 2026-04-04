@@ -205,3 +205,4 @@
 - 2026-04-04: `S6B-1B/P4` retained the first bounded rename sample set, mapping representative current names to target shapes across retained-summary, tmp-scratch, and snapshot fact-source surfaces.
 - 2026-04-04: `S6B-1B/P4-C2` executed a first local bounded rename rehearsal on ignored `artifacts/` samples and recorded the execution boundary so naming cleanup can advance without accidentally pushing operator scratch surfaces as tracked repo artifacts.
 - 2026-04-04: `S6B-1B/P4-C3` selected the first repo-tracked retained-summary coexistence candidate (`artifacts/write_gate_runs.latest.json`) and fixed the prerequisites for a future alias/fallback-based cutover instead of attempting a breaking direct rename.
+- 2026-04-04: `S6B-1B/P4-C4` enabled the first tracked retained-summary coexistence baseline by dual-writing `write_gate` run mappings to a new primary path plus legacy alias and starting the first operator lookup migration.

@@ -123,7 +123,8 @@ write-gate：
 PowerShell 一键（触发 + 等待完成 + 写出 run↔scenario 映射）：
 
 - `\scripts\p1_write_gate_regression.ps1`
-- 输出：`artifacts/write_gate_runs.latest.json`
+- 输出（primary SoT）：`artifacts/s2b.write-gate.runs.latest.json`
+- coexistence alias：`artifacts/write_gate_runs.latest.json`
 
 ## 5) Local Operation
 
