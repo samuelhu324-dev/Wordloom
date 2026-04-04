@@ -234,9 +234,9 @@
 
 ### P3 (Snapshot run identity)
 
-- [ ] `P3-C1-S1`: run identity belongs to directory first
-- [ ] `P3-C1-S2`: key file role names fixed
-- [ ] `P3-C1-S3`: snapshot naming anti-patterns fixed
+- [x] `P3-C1-S1`: run identity belongs to directory first
+- [x] `P3-C1-S2`: key file role names fixed
+- [x] `P3-C1-S3`: snapshot naming anti-patterns fixed
 
 ## Evidence (reserved)
 
@@ -249,3 +249,4 @@
 - 2026-04-04: retained the first naming baseline for `artifacts/` retained-summary files, `_tmp_` / `_local_` scratch outputs, and `docs/labs/_snapshot/**` run identity so later cleanup can standardize names without collapsing all surfaces into one directory model.
 - 2026-04-04: completed `P0/P1` v1 by fixing the naming fields, per-surface grammar split, retained-summary grammar, anti-pattern set, and first example set for stable summary names.
 - 2026-04-04: completed `P2` v1 by fixing explicit tmp identity, anti-confusion rules between tmp and retained naming, and a first example set for `_tmp_` / `_local_` scratch outputs.
+- 2026-04-04: completed `P3` v1 by fixing directory-first run identity, stable key file role names, and snapshot naming anti-patterns for `docs/labs/_snapshot/**` fact-source surfaces.
