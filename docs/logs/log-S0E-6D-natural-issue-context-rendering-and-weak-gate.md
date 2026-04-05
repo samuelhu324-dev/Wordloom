@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Issues, Workflow, Automation, Contract, Formatting, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/335`
   **pr**: ``
   **runbook**: `docs/runbook/run-S0E-log-to-issue-creation.md`
   **roadmap**: ``
@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-01`
-**updated**: `2026-04-01`
+**updated**: `2026-04-05`
 
 ---
 

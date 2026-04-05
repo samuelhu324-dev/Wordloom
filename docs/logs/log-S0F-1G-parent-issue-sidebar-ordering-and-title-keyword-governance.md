@@ -98,6 +98,7 @@
 - `P3`: fix lifecycle-audit title-prefix validation and bucket attribution
 - `P4`: package retained migration inventory and controlled repair path for historical drift
 - `P5`: migrate the bounded legacy keyword set into the controlled vocabulary and repair matching live issue titles
+- `P6`: reconcile missing source-log issue write-back on parent child lanes and re-verify full parent child-set convergence
 
 ## Success Criteria (DoD)
 
@@ -125,7 +126,24 @@
 - `P3` is now complete: lifecycle audit now derives the canonical expected title prefix from the same source-log-owned title composition path used by issue draft generation, live title-prefix drift now fails deterministically under audit, and that drift is attributed to the existing `creation-metadata-gap` bucket instead of inventing a second title taxonomy.
 - `P4` is now complete: one retained governance inventory now records the bounded set of historical legacy title-keyword items and the current top-level parent ordering state, one controlled repair-boundary package now fixes which mutation paths are allowed versus disallowed for later cleanup, and no further phase is currently required inside this slice.
 - `P5` is now complete: the bounded historical legacy keyword set has been migrated directly on `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`, one guarded live title-repair surface now realigns those three live issue titles to the new source-log-owned controlled keywords, and the post-repair legacy inventory is now empty.
+- `P6` is now complete: the missing child-log `links.issue` write-back set under parent issues `#248` and `#363` has been reconciled directly on the affected `S0E` and `S0F` child logs, one bounded backfill manifest plus dry-run plan now prove there are no residual write-back actions left on that set, and a fresh full identity-governance inventory now reconverges both parent child sets with zero active drift.
 - `S0F-1G` is now stable: parent sidebar ordering ownership is fixed and re-verified on the live parent lane, title keyword governance now fails closed at both create-time and lifecycle-audit time, and one retained `P4` package now bounds historical cleanup without reopening guess-first or bulk-rewrite behavior.
+
+## P6 Parent Child-Lane Source-Log Issue Write-Back Reconciliation (completed)
+
+- `S0F-1G` now closes the follow-up gap that `P5` intentionally left open after workspace cleanup: the live parent child relationships on `#248` and `#363` were already correct on GitHub, but several child logs still had blank `links.issue`, so the canonical source-log-owned child set lagged behind the real live parent set.
+- v1 keeps the scope bounded to source-log issue URL write-back only. `P6` does not reopen parent reprioritize, title repair, label cleanup, or generic historical reconciliation.
+
+### P6-C1-S1 (Bounded source-log write-back plan retained for the affected child set | v1)
+
+- `artifacts/s0f-1g-p6-source-log-writeback-manifest.json` now names the exact affected child logs whose live issues already existed on GitHub but whose `links.issue` had lagged blank in source.
+- `scripts/issues/plan_issue_backfill.py` remains the canonical dry-run planner for this lane, and `artifacts/s0f-1g-p6-source-log-writeback-plan.json` now retains the converged post-write-back plan where every affected item resolves to `skip-no-change`, proving the bounded write-back set has no residual reconciliation work left.
+
+### P6-C1-S2 (Parent child-set convergence restored by direct source-log write-back | v1)
+
+- The affected `S0E` child logs `S0E-5D`, `S0E-6A`, `S0E-6B`, `S0E-6C`, `S0E-6D`, `S0E-6E`, `S0E-6F`, `S0E-7A`, `S0E-7B`, `S0E-7D`, `S0E-7E`, `S0E-7F`, and `S0E-7G` now carry the correct live GitHub issue URLs, so parent issue `#248` once again derives the same canonical child set that already exists live.
+- The affected `S0F` child logs `S0F-1B`, `S0F-1C`, `S0F-1D`, and `S0F-1E` now also carry their correct live issue URLs, so parent issue `#363` now derives the same canonical child set that already exists live.
+- `artifacts/s0f-1g-p6-identity-governance-inventory.json` now proves the reconverged post-write-back state: no legacy title-keyword items remain, both parent inventories are present again, and `active_parent_ordering_drift_count = 0`.
 
 ## P5 Bounded Legacy Keyword Migration and Live Title Repair (completed)
 
@@ -262,6 +280,11 @@
 - P5-C1-S1: migrate the retained legacy source-log keyword set into controlled vocabulary values
 - P5-C1-S2: repair the matching live issue titles through one guarded source-log-owned title surface
 
+### P6 (Parent child-lane source-log issue write-back reconciliation)
+
+- P6-C1-S1: retain one bounded source-log issue write-back plan for the affected parent child lanes
+- P6-C1-S2: write back the missing child-log issue URLs and re-verify full parent child-set convergence
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Governance boundary and spine wiring)
@@ -294,11 +317,17 @@
 - [x] `P5-C1-S1`: retained legacy source-log keyword set migrated into controlled vocabulary values
 - [x] `P5-C1-S2`: matching live issue titles repaired through one guarded source-log-owned title surface
 
+### P6 (Parent child-lane source-log issue write-back reconciliation)
+
+- [x] `P6-C1-S1`: bounded source-log issue write-back plan retained for the affected parent child lanes
+- [x] `P6-C1-S2`: missing child-log issue URLs written back and full parent child-set convergence re-verified
+
 ## Notes (optional)
 
 - `S0F-1G` is intentionally narrow: it owns the governance contract first, not immediate bulk historical rewrite.
 - If `P1` lands before `P2` and `P3`, parent ordering repair may close the remaining `#248` blocker earlier, but title keyword governance should still remain inside the same slice until both enforcement layers are fixed.
 - The workspace cleanup that ran before `P5` intentionally reverted local `docs/logs` write-back leftovers and deleted ignored `docs/issues` scratch outputs; later parent-ordering inventories should therefore treat uncommitted write-back evidence separately from live GitHub ordering state instead of assuming those local write-backs are still present.
+- `P6` resolves that follow-up directly: the missing child-log issue URLs are now tracked back into source, so full parent child-set inventory can once again run from a clean workspace without depending on uncommitted local leftovers.
 
 ## Evidence
 
@@ -313,3 +342,6 @@
 - `P5-C1-S1`: `docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md`, `docs/logs/log-S6B-1B-evidence-naming-baseline.md`, and `docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md` now migrate the bounded historical keyword set from `inventory / naming / coexistence` into `records / taxonomy / migration`.
 - `P5-C1-S2`: `scripts/issues/repair_issue_title_from_log.py` now retains the guarded live title-repair surface, and `artifacts/s0f-1g-p5-s6b-1a-title-repair-apply.json`, `artifacts/s0f-1g-p5-s6b-1b-title-repair-apply.json`, and `artifacts/s0f-1g-p5-s6b-1c-title-repair-apply.json` retain the three bounded live repairs for issues `#357`, `#358`, and `#359`.
 - `P5-C1-S2`: `artifacts/s0f-1g-p5-identity-governance-inventory.json` now records the post-repair state with `legacy_title_keyword_item_count = 0`; this retained sample intentionally skips parent-ordering inventory because the pre-`P5` workspace cleanup removed local write-back leftovers that were never committed as source evidence.
+- `P6-C1-S1`: `artifacts/s0f-1g-p6-source-log-writeback-manifest.json` and `artifacts/s0f-1g-p6-source-log-writeback-plan.json` now retain the exact source-log issue write-back set for the affected `S0E` and `S0F` child logs under parents `#248` and `#363`.
+- `P6-C1-S2`: `docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md`, `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`, `docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md`, `docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md`, `docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md`, `docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md`, `docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`, `docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md`, `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`, `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`, `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`, `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`, `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`, `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`, `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`, `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`, and `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md` now write back the missing `links.issue` values directly into source.
+- `P6-C1-S2`: `artifacts/s0f-1g-p6-identity-governance-inventory.json` now records the clean post-write-back state where both tracked parent lanes match their canonical source-log-owned child sets again.

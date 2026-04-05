@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, epic/s0, sub/1b`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/366`
   **pr**: ``
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-04`
+**updated**: `2026-04-05`
 
 ---
 
