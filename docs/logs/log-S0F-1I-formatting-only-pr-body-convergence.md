@@ -11,7 +11,7 @@
 **links**: ``
   **issue**: ``
   **pr**: ``
-  **runbook**: `docs/runbook/run-S0F-1I-pr-body-completeness-check.md`
+  **runbook**: `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
   **previous_log**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
@@ -120,7 +120,8 @@
 - `P2` is now complete: `scripts/issues/apply_pr_body_rewrite_batch.py` has been applied successfully to `S0F-1A/#365`, `S0F-1B/#371`, `S0F-1C/#372`, `S0F-1D/#373`, `S0F-1E/#374`, and `S0F-1G/#377`, and the retained batch result shows `body_changed=true` for all six items with no warnings.
 - `P3` is now complete: `artifacts/s0f-1i-post-repair-pr-body-completeness-review-s0f.json` now proves exact-match convergence across the full current live `S0F` child set, with `S0F-1A` through `S0F-1G` all classified as `exact-match`, zero `formatting-only-drift`, zero `substantive-drift`, and zero `stop` items.
 - `P4` is now complete: one standard operator-facing check entrypoint now packages the stable reviewer state through `scripts/issues/plan_pr_body_completeness_check_wrapper.py` and `scripts/issues/invoke_pr_body_completeness_check.ps1`, and one retained local pass run proves the current `S0F` set passes that standard check with `fail_on_findings=true`.
-- `P4-C2-S1` is now complete: `docs/runbook/run-S0F-1I-pr-body-completeness-check.md` packages the operator-facing runbook for the standard local check without reopening the reviewer contract or the historical rewrite lane.
+- `P4-C2-S1` is now complete: the thin operator-facing runbook lane has been proven and retained for the standard local check without reopening the reviewer contract or the historical rewrite lane.
+- `S0F-1H/P4-C2-S2` is now complete: the stable runbook ownership has been rehomed onto the reviewer slice at `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`, which `S0F-1I` now consumes as the standard procedural surface.
 - `S0F-1I` is now stable: the bounded formatting-only set has been converged through the canonical historical rewrite surface, the post-repair reviewer rerun proves the full current live `S0F` child set has reached exact-match PR body state, and that stable state is now exposed through one standard local check entrypoint.
 
 ## P4 Standard Check Packaging (completed)
@@ -142,7 +143,7 @@
 
 ### P4-C2-S1 (Operator-facing runbook retained for the standard local check | v1)
 
-- `docs/runbook/run-S0F-1I-pr-body-completeness-check.md` now packages the standard local check as one thin runbook aligned to the repo runbook template.
+- The stable operator runbook is now reviewer-owned under `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`, so `S0F-1I` remains the consumer of that procedural surface rather than the permanent owner.
 - The runbook fixes the canonical local command, artifact root, minimum evidence files, and first-response troubleshooting path without turning into a second source of truth for reviewer semantics.
 
 ## P3 Post-Repair Verification (completed)
@@ -240,7 +241,7 @@
 - `scripts/issues/plan_pr_body_completeness_check_wrapper.py` now packages the canonical reviewer as a standard read-only local check wrapper.
 - `scripts/issues/invoke_pr_body_completeness_check.ps1` now provides the operator-facing local entrypoint for that standard check.
 - `artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/wrapper-result.json` records the retained stable pass result for the current `S0F` set under the standard check surface.
-- `docs/runbook/run-S0F-1I-pr-body-completeness-check.md` now provides the operator-facing runbook for the standard local check surface.
+- `docs/runbook/run-S0F-1H-pr-body-completeness-review.md` now provides the operator-facing runbook for the standard local check surface consumed by `S0F-1I`.
 
 ## Numbering
 

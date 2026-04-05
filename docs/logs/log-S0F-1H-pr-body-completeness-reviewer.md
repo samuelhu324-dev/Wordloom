@@ -9,9 +9,9 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Audit, Contract, Review, epic/s0, sub/1h`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/378`
   **pr**: ``
-  **runbook**: ``
+  **runbook**: `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
   **previous_log**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
@@ -56,6 +56,7 @@
 - Missing `links.pr` is a review stop condition, not a silent skip, because the source log otherwise fails to name the canonical live PR under review.
 - A slice that owns neither a live issue nor a live PR yet is outside the live PR-body review set and should classify as a bounded skip rather than as a stop.
 - The first rollout stays read-only and artifact-first so later policy or CI use can depend on a retained review bundle before any enforcement is widened.
+- Once the standard local check path stops moving, the operator runbook should live with the reviewer slice rather than with a downstream repair slice, so the procedural entrypoint and the review contract stay aligned.
 
 ## PR Summary Inputs (optional)
 
@@ -103,13 +104,15 @@
 - The reviewer stops explicitly on missing canonical PR ownership input instead of guessing the live PR.
 - At least one retained result bundle proves the reviewer can classify a real `S0F` set.
 - The retained output is read-only and can be reused later for standard review or CI policy if needed.
+- One thin runbook exists for operators so the stable local entrypoint, evidence root, and first-response boundary stay reviewer-owned rather than repair-owned.
 
 ## Stability (what stable means)
 
 - This log can be marked `stable` when:
   - one canonical read-only reviewer exists and reuses the existing expected-body rewrite contract;
   - one retained sample bundle proves formatting-only drift can be separated from substantive drift;
-  - unresolved source-log ownership gaps are reported explicitly as stop states instead of being hidden as silent skips.
+  - unresolved source-log ownership gaps are reported explicitly as stop states instead of being hidden as silent skips;
+  - one thin reviewer-owned runbook fixes the stable operator path for the standard local check.
 
 ## Current Status
 
@@ -120,6 +123,7 @@
 - The first retained bundle also exposed the remaining ownership blocker explicitly instead of hiding it: `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1E`, and `S0F-1G` initially stopped under `stop-missing-pr-link` because their source logs left `links.pr` blank.
 - `P3` is now complete: the reviewer now retains live-body, expected-body, and diff artifacts under `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/`, and the operator-facing review surface is fixed.
 - `P4` is now complete: the bounded missing `links.pr` set on `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1E`, and `S0F-1G` has been written back directly in source, the retained `S0F` review bundle has been rerun against the now-canonical full live current child set, and the current `S0F-1H` slice itself now classifies as a bounded skip until it owns a live PR.
+- `P4-C2-S2` is now complete: `docs/runbook/run-S0F-1H-pr-body-completeness-review.md` now fixes the reviewer-owned operator runbook for the stable local check path, and the earlier downstream `S0F-1I` packaging surface now consumes that same runbook instead of owning a parallel procedural source.
 
 ## P4 Source-Log PR Ownership Convergence (completed)
 
@@ -136,6 +140,12 @@
 - `artifacts/s0f-1h-pr-body-completeness-review-s0f.json` is now rerun after the `links.pr` write-back set converged, so the retained bundle no longer depends on `stop-missing-pr-link` for the current live `S0F` child set.
 - The rerun remains the canonical proof surface for whether the reviewer now sees exact, formatting-only, or substantive drift across the full current `S0F` lane.
 - The current `S0F-1H` source log itself remains outside that live child set until it owns a live issue/PR pair, so the rerun now classifies it as a bounded skip instead of a stop.
+
+### P4-C2-S2 (Reviewer-owned runbook institutionalized for the stable local check path | v1)
+
+- `docs/runbook/run-S0F-1H-pr-body-completeness-review.md` now provides the single operator-facing runbook for PR body completeness review and the stable local pass-or-stop wrapper.
+- This keeps the procedural entrypoint attached to the reviewer-owned contract surface instead of leaving it owned by the downstream formatting-only convergence slice.
+- `S0F-1I` remains the bounded live-repair consumer of that standard check surface, but it no longer needs to own a separate runbook definition.
 
 ## P3 Operator Review Packaging (completed)
 
@@ -228,6 +238,7 @@
 
 - P4-C1-S1: write back the bounded missing `links.pr` set needed for canonical reviewer coverage
 - P4-C1-S2: rerun the retained `S0F` reviewer bundle after source-log PR ownership converges
+- P4-C2-S2: institutionalize one reviewer-owned runbook for the stable local check path
 
 ## Execution Checklist (unchecked)
 
@@ -254,6 +265,7 @@
 
 - [x] `P4-C1-S1`: bounded missing `links.pr` set written back on the affected `S0F` child logs
 - [x] `P4-C1-S2`: retained `S0F` reviewer bundle rerun after source-log PR ownership converged
+- [x] `P4-C2-S2`: reviewer-owned runbook retained for the stable local check path
 
 ## Notes (optional)
 
@@ -267,6 +279,7 @@
 - `artifacts/s0f-1h-pr-body-completeness-review-s0f.json` now retains the rerun `S0F` review bundle after the bounded `links.pr` write-back set converged.
 - `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1f-live-body.md` and `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1f-expected-body.md` prove the `S0F-1F/#375` exact-match state directly.
 - `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1a-raw.diff` proves the `S0F-1A/#365` mismatch is currently formatting-only rather than substantive.
+- `docs/runbook/run-S0F-1H-pr-body-completeness-review.md` now provides the reviewer-owned operator procedure for the stable local check surface.
 - `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`, `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`, `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`, `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`, and `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md` now carry the canonical live merged PR URLs needed for full reviewer coverage.
 
 ## Numbering
