@@ -1,6 +1,33 @@
 name: s0f-pr-body-completeness-standard-check-dispatch
 
 on:
+  push:
+    branches:
+      - main
+      - S0F-docs-management-v6
+    paths:
+      - '.github/workflows/s0f-pr-body-completeness-standard-check-dispatch.yml'
+      - 'package.json'
+      - 'scripts/issues/review_pr_body_completeness.py'
+      - 'scripts/issues/plan_pr_body_completeness_check_wrapper.py'
+      - 'scripts/issues/invoke_pr_body_completeness_check.ps1'
+      - 'docs/runbook/run-S0F-1H-pr-body-completeness-review.md'
+      - 'docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md'
+      - 'docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md'
+      - 'docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/s0f-pr-body-completeness-standard-check-dispatch.yml'
+      - 'package.json'
+      - 'scripts/issues/review_pr_body_completeness.py'
+      - 'scripts/issues/plan_pr_body_completeness_check_wrapper.py'
+      - 'scripts/issues/invoke_pr_body_completeness_check.ps1'
+      - 'docs/runbook/run-S0F-1H-pr-body-completeness-review.md'
+      - 'docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md'
+      - 'docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md'
+      - 'docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md'
   workflow_dispatch:
     inputs:
       requested_id_prefixes:
@@ -39,10 +66,10 @@ jobs:
 
     env:
       GH_TOKEN: ${{ github.token }}
-      S0F_CHECK_REPO: ${{ inputs.repo != '' && inputs.repo || github.repository }}
-      S0F_CHECK_REQUESTED_PREFIXES: ${{ inputs.requested_id_prefixes }}
-      S0F_CHECK_LOGS_DIR: ${{ inputs.logs_dir }}
-      S0F_CHECK_NOTES: ${{ inputs.wrapper_notes }}
+      S0F_CHECK_REPO: ${{ github.event_name == 'workflow_dispatch' && inputs.repo != '' && inputs.repo || github.repository }}
+      S0F_CHECK_REQUESTED_PREFIXES: ${{ github.event_name == 'workflow_dispatch' && inputs.requested_id_prefixes || 'S0F-' }}
+      S0F_CHECK_LOGS_DIR: ${{ github.event_name == 'workflow_dispatch' && inputs.logs_dir || '' }}
+      S0F_CHECK_NOTES: ${{ github.event_name == 'workflow_dispatch' && inputs.wrapper_notes || '' }}
       S0F_CHECK_ARTIFACT_DIR: artifacts/github-actions/pr-body-completeness-check/${{ github.run_id }}-${{ github.run_attempt }}
       S0F_CHECK_RESULT_JSON: artifacts/github-actions/pr-body-completeness-check/${{ github.run_id }}-${{ github.run_attempt }}/wrapper-result.json
       S0F_CHECK_SUMMARY_MD: artifacts/github-actions/pr-body-completeness-check/${{ github.run_id }}-${{ github.run_attempt }}/workflow-summary.md
