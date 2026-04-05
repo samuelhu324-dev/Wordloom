@@ -1,0 +1,269 @@
+{
+  "mode": "pr-body-completeness-review",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "requested_id_prefixes": [
+    "S0F-"
+  ],
+  "logs_dir": "docs/logs",
+  "result_path": "artifacts/s0f-1h-pr-body-completeness-review-s0f.json",
+  "artifact_dir": "artifacts/s0f-1h-pr-body-completeness-review-s0f-files",
+  "summary": {
+    "total_logs_reviewed": 7,
+    "counts_by_result": {
+      "formatting-only-drift": 1,
+      "stop-missing-pr-link": 5,
+      "exact-match": 1
+    },
+    "exact_match_ids": [
+      "S0F-1F"
+    ],
+    "formatting_only_ids": [
+      "S0F-1A"
+    ],
+    "substantive_drift_ids": [],
+    "stop_ids": [
+      "S0F-1B",
+      "S0F-1C",
+      "S0F-1D",
+      "S0F-1E",
+      "S0F-1G"
+    ]
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1A",
+      "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+      "pr_ref": "365",
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/365",
+      "pr_title": "S0F-1A/P0-P4: fail-closed entrypoints and preflight unification v1",
+      "pr_state": "MERGED",
+      "result": "formatting-only-drift",
+      "details": "live PR body drifted only by formatting noise after normalization",
+      "raw_match": false,
+      "normalized_match": true,
+      "live_body_path": "artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1a-live-body.md",
+      "expected_body_path": "artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1a-expected-body.md",
+      "raw_diff_path": "artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1a-raw.diff",
+      "normalized_diff_path": null,
+      "contract_result": "pass",
+      "contract_checks": [
+        {
+          "name": "required-pr-sections",
+          "status": "pass",
+          "details": "required PR sections are present"
+        },
+        {
+          "name": "pr-section-order",
+          "status": "pass",
+          "details": "section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "metadata bullet rows are contiguous"
+        },
+        {
+          "name": "pr-link-categories",
+          "status": "pass",
+          "details": "PR Links section uses only allowed link categories"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "no Evidence Footer Source rows were provided"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "status": "pass",
+          "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "status": "pass",
+          "details": "Evidence Footer section is omitted when the source block is absent"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "status": "pass",
+          "details": "no Evidence Footer rows were rendered"
+        },
+        {
+          "name": "development-link-presence",
+          "status": "pass",
+          "details": "Development issue is tracked only through Metadata as required"
+        },
+        {
+          "name": "github-development-linkage",
+          "status": "pass",
+          "details": "GitHub closing-link footer matches the development issue set"
+        }
+      ],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1B",
+      "source_log_path": "docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md",
+      "pr_ref": "",
+      "pr_url": "",
+      "pr_title": "",
+      "pr_state": "",
+      "result": "stop-missing-pr-link",
+      "details": "source log links.pr is blank, so the reviewer cannot resolve a canonical live PR to compare",
+      "raw_match": false,
+      "normalized_match": false,
+      "live_body_path": null,
+      "expected_body_path": null,
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": null,
+      "contract_checks": [],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1C",
+      "source_log_path": "docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md",
+      "pr_ref": "",
+      "pr_url": "",
+      "pr_title": "",
+      "pr_state": "",
+      "result": "stop-missing-pr-link",
+      "details": "source log links.pr is blank, so the reviewer cannot resolve a canonical live PR to compare",
+      "raw_match": false,
+      "normalized_match": false,
+      "live_body_path": null,
+      "expected_body_path": null,
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": null,
+      "contract_checks": [],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1D",
+      "source_log_path": "docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md",
+      "pr_ref": "",
+      "pr_url": "",
+      "pr_title": "",
+      "pr_state": "",
+      "result": "stop-missing-pr-link",
+      "details": "source log links.pr is blank, so the reviewer cannot resolve a canonical live PR to compare",
+      "raw_match": false,
+      "normalized_match": false,
+      "live_body_path": null,
+      "expected_body_path": null,
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": null,
+      "contract_checks": [],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1E",
+      "source_log_path": "docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md",
+      "pr_ref": "",
+      "pr_url": "",
+      "pr_title": "",
+      "pr_state": "",
+      "result": "stop-missing-pr-link",
+      "details": "source log links.pr is blank, so the reviewer cannot resolve a canonical live PR to compare",
+      "raw_match": false,
+      "normalized_match": false,
+      "live_body_path": null,
+      "expected_body_path": null,
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": null,
+      "contract_checks": [],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1F",
+      "source_log_path": "docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md",
+      "pr_ref": "375",
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/375",
+      "pr_title": "S0F-1F/P0-P4: bucketed audit output materialization v1",
+      "pr_state": "MERGED",
+      "result": "exact-match",
+      "details": "live PR body matched the source-log-derived expected body exactly",
+      "raw_match": true,
+      "normalized_match": true,
+      "live_body_path": "artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1f-live-body.md",
+      "expected_body_path": "artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1f-expected-body.md",
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": "pass",
+      "contract_checks": [
+        {
+          "name": "required-pr-sections",
+          "status": "pass",
+          "details": "required PR sections are present"
+        },
+        {
+          "name": "pr-section-order",
+          "status": "pass",
+          "details": "section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "metadata bullet rows are contiguous"
+        },
+        {
+          "name": "pr-link-categories",
+          "status": "pass",
+          "details": "PR Links section uses only allowed link categories"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "no Evidence Footer Source rows were provided"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "status": "pass",
+          "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "status": "pass",
+          "details": "Evidence Footer section is omitted when the source block is absent"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "status": "pass",
+          "details": "no Evidence Footer rows were rendered"
+        },
+        {
+          "name": "development-link-presence",
+          "status": "pass",
+          "details": "Development issue is tracked only through Metadata as required"
+        },
+        {
+          "name": "github-development-linkage",
+          "status": "pass",
+          "details": "GitHub closing-link footer matches the development issue set"
+        }
+      ],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1G",
+      "source_log_path": "docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md",
+      "pr_ref": "",
+      "pr_url": "",
+      "pr_title": "",
+      "pr_state": "",
+      "result": "stop-missing-pr-link",
+      "details": "source log links.pr is blank, so the reviewer cannot resolve a canonical live PR to compare",
+      "raw_match": false,
+      "normalized_match": false,
+      "live_body_path": null,
+      "expected_body_path": null,
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": null,
+      "contract_checks": [],
+      "contract_warnings": []
+    }
+  ]
+}
