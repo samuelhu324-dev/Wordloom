@@ -27,6 +27,7 @@
   **phase_log_7**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
   **phase_log_8**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
   **phase_log_9**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  **phase_log_10**: `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -134,6 +135,8 @@
   - 详见：`docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
 - `S0F-1I`（Phase 1I）：formatting-only PR body convergence
   - 详见：`docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- `S0F-1J`（Phase 1J）：PR body completeness task and CI gate
+  - 详见：`docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -186,6 +189,13 @@
 - `S0F-1I/P4` is now complete: the stable reviewer state is now packaged as one standard primary local `--fail-on-findings` check entrypoint through a read-only wrapper plus operator-facing PowerShell surface, and one retained local pass run proves the current `S0F` set clears that standard check.
 - `S0F-1I/P4-C2-S1` is now complete: one thin runbook lane for the standard local check has been retained and later rehomed under `S0F-1H` reviewer ownership.
 - `S0F-1I` is now stable: the previously bounded formatting-only `S0F` PR body set has been converged through the canonical rewrite surface, re-verified to exact-match state, and packaged behind one standard local check entrypoint.
+- `S0F-1J` is now opened as the next `S0F` follow-up slice for packaging the stable PR body completeness standard check behind one repo task and one workflow-dispatch CI gate without changing reviewer semantics.
+- `S0F-1J/P1` is now complete: `package.json` now exposes one repo-owned standard check task that delegates to the canonical PowerShell entrypoint instead of duplicating wrapper logic.
+- `S0F-1J/P2` is now complete: one workflow-dispatch GitHub Actions gate now replays the same standard check with retained artifacts and fail-on-non-pass semantics.
+- `S0F-1J/P3-C1-S1` is now complete: the reviewer-owned runbook has been replayed successfully through `npm run check:pr-body-completeness:s0f`, and one retained local pass bundle now proves the repo-task surface is usable.
+- `S0F-1J/P3-C1-S2` is now complete: the workflow-backed CI gate has now completed successfully on GitHub Actions run `24003260082`, and one uploaded artifact bundle proves the CI replay surface is usable as a secondary-enforcement gate.
+- `S0F-1J` is now stable: the PR body completeness standard check is packaged behind both a repo-owned task and a workflow-backed CI gate, and the reviewer-owned runbook has been replayed successfully through both surfaces.
+- `S0F-1J/P4` is now opened: live issue `#382` has been created, the GitHub sidebar parent relationship has been converged onto `#363` through the guarded lifecycle relationship surface, and the retained post-repair audit now passes the `issue-created` stage so the next step is guarded PR creation.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 

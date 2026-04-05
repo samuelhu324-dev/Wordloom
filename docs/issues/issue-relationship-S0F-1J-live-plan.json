@@ -1,0 +1,26 @@
+{
+  "mode": "relationship-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-remediation-S0F-1J-live-relationship-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-relationships",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "relationship_type": "child-of",
+      "parent_issue_number": 363,
+      "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/363",
+      "child_issue_number": 382,
+      "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/382",
+      "parent_log_path": "docs/logs/log-S0F-docs-management-v6.md",
+      "child_log_path": "docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md",
+      "planned_action": "link-child-to-parent",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [],
+      "reason": "Full-auto lifecycle run for S0F-1J after the repo-task and CI-gate packaging slice stabilized."
+    }
+  ]
+}

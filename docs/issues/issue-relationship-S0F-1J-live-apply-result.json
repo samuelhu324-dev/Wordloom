@@ -1,0 +1,18 @@
+{
+  "mode": "relationship-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-relationship-S0F-1J-live-plan.json",
+  "item_index": 0,
+  "relationship_type": "child-of",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "parent_issue_number": 363,
+  "parent_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/363",
+  "parent_issue_title": "S0F-docs-management-v6: automation/docs management v6",
+  "child_issue_number": 382,
+  "child_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/382",
+  "child_issue_title": "S0F-1J: automation/PR body completeness task and CI gate",
+  "previous_parent_issue_number": null,
+  "final_parent_issue_number": 363,
+  "applied_action": "link-child-to-parent",
+  "warnings": []
+}
