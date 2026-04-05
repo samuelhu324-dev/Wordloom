@@ -74,6 +74,8 @@
   - `docs/logs/patch/_template-log-patch-note.md`
 - Ops maintenance template:
   - `docs/logs/maintenance/_template-log-maintenance-sweep.md`
+- First real ops-maintenance sample:
+  - `docs/logs/maintenance/log-S0F-M1-github-actions-runner-and-dispatch-health-check.md`
 - Tiny direct patch ledger:
   - `docs/logs/ledger-direct-patch-commits.md`
 
@@ -117,4 +119,5 @@
 - `docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md`
 - `docs/logs/patch/_template-log-patch-note.md`
 - `docs/logs/maintenance/_template-log-maintenance-sweep.md`
+- `docs/logs/maintenance/log-S0F-M1-github-actions-runner-and-dispatch-health-check.md`
 - `docs/logs/ledger-direct-patch-commits.md`

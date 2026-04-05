@@ -81,6 +81,7 @@
 - `P1`: refactor the lane model into family patch, ops maintenance, and tiny direct patch
 - `P2`: upgrade templates and folder guidance to match the refined model
 - `P3`: decide the GitHub `MAINTENANCE` label admission rule and document when it should remain unused
+- `P4`: publish the first real ops-maintenance sample so the heavier maintenance template is no longer only a blank form
 
 ## Success Criteria (DoD)
 
@@ -88,6 +89,7 @@
 - The maintenance template is heavy enough to capture real operator maintenance work with trigger, environment, action, result, evidence, and follow-up.
 - The patch template supports family-bound patch IDs such as `S0F-P1-<slug>`.
 - The GitHub `MAINTENANCE` label has an explicit admission rule and is no longer an ambiguous missing-or-misc concept.
+- The repo contains at least one real ops-maintenance sample log grounded in live workflow and runner evidence, not just a blank maintenance template.
 
 ## Current Status
 
@@ -96,6 +98,7 @@
 - `P1` is now complete: the lane model now distinguishes `family patch`, `ops maintenance`, and `tiny direct patch` instead of grouping family-local patch work under generic maintenance.
 - `P2` is now complete: the patch template now supports family patch IDs, and the maintenance template is now a heavy ops-maintenance template with report-oriented sections.
 - `P3` is now complete: GitHub `MAINTENANCE` is now documented as an already-existing but reserved top-level label for true ops-maintenance work only; ordinary family patches should not use it.
+- `P4` is now complete: `docs/logs/maintenance/log-S0F-M1-github-actions-runner-and-dispatch-health-check.md` now publishes the first real ops-maintenance sample using live workflow and runner evidence instead of placeholder text only.
 - `S0F-2B` is now stable: the repo now has a more realistic operating model for patch versus maintenance work, and the templates now match that boundary.
 
 ## Plan (draft)
@@ -120,6 +123,10 @@
 
 - P3-C1-S1: decide whether and when the live GitHub `MAINTENANCE` top-level label should be used
 
+### P4 (Real ops-maintenance sample)
+
+- P4-C1-S1: publish the first real ops-maintenance sample log for GitHub Actions runner and workflow-dispatch health
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Refinement boundary and spine wiring)
@@ -142,12 +149,17 @@
 
 - [x] `P3-C1-S1`: `MAINTENANCE` label admission rule documented
 
+### P4 (Real ops-maintenance sample)
+
+- [x] `P4-C1-S1`: first real ops-maintenance sample published
+
 ## Evidence
 
 - `docs/runbook/run-S0F-2B-family-patch-and-ops-maintenance-model.md` now defines the refined family-patch versus ops-maintenance model and the `MAINTENANCE` label admission rule.
 - `docs/logs/patch/_template-log-patch-note.md` now supports family-bound patch IDs such as `S0F-P1-<slug>`.
 - `docs/logs/maintenance/_template-log-maintenance-sweep.md` now captures heavy ops-maintenance reporting fields instead of lightweight grouped-cleanup prose only.
 - Live GitHub label inventory for `samuelhu324-dev/wordloom-v3` now confirms that `MAINTENANCE` already exists, so the real missing piece was admission policy rather than label creation.
+- `docs/logs/maintenance/log-S0F-M1-github-actions-runner-and-dispatch-health-check.md` now provides the first real ops-maintenance sample, showing both healthy comparison evidence and current findings on workflow-run degradation and runner inventory state.
 
 ## Numbering
 
