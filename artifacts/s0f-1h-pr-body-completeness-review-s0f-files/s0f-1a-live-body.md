@@ -1,0 +1,37 @@
+## Metadata
+
+- Requested ID: `S0F-1A`
+- Base branch: `main`
+- Candidate PR-prep branch: `pr-prep/s0f-1a`
+- Source log: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
+- Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
+- Development issue: #364
+
+## Summary
+
+- Fix the first fail-closed boundary for real issue creation by stopping on inferred keyword and uncontrolled metadata gaps while keeping `Context` structurally present but create-time-empty.
+- Make PR create front-half preflight the only allowed path before any live PR publish step.
+- Converge issue conclusion, relationship attach, and PR body rewrite toward wrapper-only live mutation entrypoints instead of raw family apply calls.
+- Narrow GitHub Actions and workflow_dispatch surfaces back to explicit secondary enforcement so local fail-closed entrypoints remain the primary ownership boundary.
+
+## Execution Checklist
+
+- [x] `P0-C1-S1`: issue creation hard-fail boundary fixed
+- [x] `P0-C1-S2`: PR create front-half boundary fixed
+- [x] `P0-C1-S3`: wrapper-only live mutation boundary fixed
+- [x] `P0-C1-S4`: retry vocabulary fixed
+- [x] `P1-C1-S1`: exact create-time stop conditions defined
+- [x] `P1-C1-S2`: create-time fail-closed enforcement implemented
+- [x] `P2-C1-S1`: mandatory live publish preflight rule fixed
+- [x] `P2-C1-S2`: representative preview-vs-publish sample retained
+- [x] `P3-C1-S1`: raw versus wrapped mutation entrypoints inventoried
+- [x] `P3-C1-S2`: canonical operator-facing wrapper surfaces fixed
+- [x] `P4-C1-S1`: local-primary versus GitHub-secondary boundary fixed
+
+## Links
+
+- Log: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
+- Runbook: ``
+- Evidence artifact: `docs/issues/raw-live-mutation-S0F-1A-p3-inventory.json`
+
+Closes #364

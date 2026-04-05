@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Audit, Contract, Classification, epic/s0, sub/1e`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/369`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/374`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`

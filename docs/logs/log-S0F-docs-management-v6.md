@@ -25,6 +25,8 @@
   **phase_log_5**: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
   **phase_log_6**: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
   **phase_log_7**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
+  **phase_log_8**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
+  **phase_log_9**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -128,6 +130,10 @@
   - 详见：`docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
 - `S0F-1G`（Phase 1G）：parent issue sidebar ordering and title keyword governance
   - 详见：`docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
+- `S0F-1H`（Phase 1H）：PR body completeness reviewer
+  - 详见：`docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
+- `S0F-1I`（Phase 1I）：formatting-only PR body convergence
+  - 详见：`docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -167,6 +173,19 @@
 - `S0F-1G/P5` is now complete: the bounded legacy keyword set has been migrated directly on `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`, one guarded live title-repair surface now converges those three issue titles onto the migrated source-log-owned controlled keywords, and the post-repair legacy inventory is now empty.
 - `S0F-1G/P6` is now complete: the missing child-log `links.issue` write-back set under parent lanes `#248` and `#363` has been reconciled directly in source, one bounded backfill dry-run plan has been retained for the affected child set, and a fresh full identity-governance inventory now shows both parent child sets reconverged with zero active drift.
 - `S0F-1G` is now stable: parent sidebar ordering ownership is fixed and re-verified, title keyword governance now fails closed at both create-time and audit-time, and historical cleanup is now bounded by an explicit retained inventory plus repair contract.
+- `S0F-1H` is now opened as the next `S0F` follow-up slice for standardizing read-only PR body completeness review around canonical source-log ownership.
+- `S0F-1H/P1` is now complete: one dedicated reviewer under `scripts/issues/review_pr_body_completeness.py` rebuilds expected PR bodies through the canonical rewrite surface, validates the live PR body contract, and classifies exact versus normalized drift without mutating GitHub state.
+- `S0F-1H/P2` is now complete: one retained `S0F` sample bundle under `artifacts/s0f-1h-pr-body-completeness-review-s0f.json` now classifies `S0F-1F/#375` as an exact match, `S0F-1A/#365` as formatting-only drift, and no currently reviewable `S0F` PR body as substantive drift.
+- `S0F-1H/P4` is now complete: the bounded missing `links.pr` set on `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1E`, and `S0F-1G` has been written back directly in source so the read-only reviewer can cover the full current `S0F` child set canonically instead of stopping on partial source ownership.
+- `S0F-1H/P4-C2-S2` is now complete: one reviewer-owned runbook under `docs/runbook/run-S0F-1H-pr-body-completeness-review.md` now fixes the stable local operator path for PR body completeness review and its pass-or-stop wrapper.
+- `S0F-1H` is now stable: the read-only reviewer surface exists, formatting-only drift is separated cleanly from substantive drift, the full current live `S0F` child set now has canonical source-log PR ownership for reviewer coverage, not-yet-live slices now classify as bounded skips instead of false stop states, and the stable operator path is now institutionalized under the reviewer-owned runbook.
+- `S0F-1I` is now opened as the next `S0F` follow-up slice for bounded live convergence of the remaining formatting-only PR body drift exposed by `S0F-1H`.
+- `S0F-1I/P1` is now complete: one explicit six-item merged-PR rewrite manifest retains the full formatting-only `S0F` target set discovered by `S0F-1H`.
+- `S0F-1I/P2` is now complete: the canonical historical PR body rewrite batch has been applied successfully to `S0F-1A/#365`, `S0F-1B/#371`, `S0F-1C/#372`, `S0F-1D/#373`, `S0F-1E/#374`, and `S0F-1G/#377`, with retained per-item apply artifacts and no warnings.
+- `S0F-1I/P3` is now complete: the post-repair reviewer rerun now records `exact-match` across the full current live `S0F` child set, with zero remaining formatting-only drift, zero substantive drift, and zero stop items.
+- `S0F-1I/P4` is now complete: the stable reviewer state is now packaged as one standard primary local `--fail-on-findings` check entrypoint through a read-only wrapper plus operator-facing PowerShell surface, and one retained local pass run proves the current `S0F` set clears that standard check.
+- `S0F-1I/P4-C2-S1` is now complete: one thin runbook lane for the standard local check has been retained and later rehomed under `S0F-1H` reviewer ownership.
+- `S0F-1I` is now stable: the previously bounded formatting-only `S0F` PR body set has been converged through the canonical rewrite surface, re-verified to exact-match state, and packaged behind one standard local check entrypoint.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
