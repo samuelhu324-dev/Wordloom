@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Audit, Contract, Governance, epic/s0, sub/1g`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/376`
   **pr**: ``
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
@@ -22,7 +22,7 @@
   **reference_log_5**: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
 **issue_keyword**: `audit`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/1g`
+**issue_scope_labels**: `s0/knowledge system, sub/1`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
