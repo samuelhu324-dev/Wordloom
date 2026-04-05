@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1H",
+      "source_log_path": "docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md",
+      "issue_number": 378,
+      "merged_pr_overrides": [
+        "#379"
+      ],
+      "reason": "Full-auto lifecycle run for S0F-1H after reviewer-owned runbook institutionalization under P4-C2-S2."
+    }
+  ]
+}

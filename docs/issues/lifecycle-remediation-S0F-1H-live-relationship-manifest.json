@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_number": 363,
+      "child_issue_number": 378,
+      "parent_log_path": "docs/logs/log-S0F-docs-management-v6.md",
+      "child_log_path": "docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md",
+      "reason": "Full-auto lifecycle run for S0F-1H after reviewer-owned runbook institutionalization under P4-C2-S2."
+    }
+  ]
+}

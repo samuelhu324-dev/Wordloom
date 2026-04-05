@@ -1,0 +1,44 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0F-1H-live-manifest-plan.json",
+  "preflight_result_path": "docs/issues/pr-prep-S0F-1H-live-manifest-front-half-preflight-result.json",
+  "item_index": 0,
+  "requested_id": "S0F-1H",
+  "source_log_path": "docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0f-1h",
+  "base_branch": "main",
+  "merge_base": "c92ea29fd74a826796dca32d10439488717ee9a7",
+  "selected_commit_count": 3,
+  "selected_commits": [
+    "35b476385bcc567edd0f6a81f2184c5d3eb40271",
+    "bc3479ca0e0b31bb99d05146ae05e875a1eddc5d",
+    "8ef7472db9f5d0be108c310eb66236b11688cba7"
+  ],
+  "pr_title": "S0F-1H/P0-P4: PR body completeness reviewer v1",
+  "draft": false,
+  "preflight_decision": "allow-front-half-preflight",
+  "preflight_allowed": true,
+  "pr_number": 379,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/379",
+  "body_path": "docs/issues/pr-prep-S0F-1H-live-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#378",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0F-1H-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0F-1H-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 8ef7472d; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 8ef7472db... S0F-1H/P4-C2-S2: institutionalize reviewer runbook and open live issue"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "mode": "lifecycle-audit-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "expected_parent_issue_number": 363
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1H",
+      "source_log_path": "docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md",
+      "issue_number": 378,
+      "reason": "Full-auto lifecycle run for S0F-1H after reviewer-owned runbook institutionalization under P4-C2-S2."
+    }
+  ]
+}

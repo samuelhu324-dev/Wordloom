@@ -1,0 +1,14 @@
+{
+  "defaults": {
+    "requested_id": "S0F-1H",
+    "source_log_path": "docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md",
+    "base_branch": "main",
+    "head_ref": "HEAD",
+    "candidate_pr_branch": "pr-prep/s0f-1h"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1H"
+    }
+  ]
+}

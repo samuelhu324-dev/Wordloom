@@ -1,0 +1,463 @@
+{
+  "mode": "pr-prep-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/pr-prep-S0F-1H-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-pr-prep",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0F-1H: pr_development_issue derived from source log issue link"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-1H",
+      "source_log_path": "docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md",
+      "current_branch": "S0F-docs-management-v6",
+      "head_ref": "HEAD",
+      "base_branch": "main",
+      "merge_base": "c92ea29fd74a826796dca32d10439488717ee9a7",
+      "candidate_pr_branch": "pr-prep/s0f-1h",
+      "pr_title": "S0F-1H/P0-P4: PR body completeness reviewer v1",
+      "pr_scope_kind": "phases",
+      "pr_scope_refs": [
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "pr_base": "main",
+      "pr_labels": [
+        "EVOLUTION",
+        "s0/knowledge system",
+        "sub/1",
+        "drills"
+      ],
+      "pr_projects": [],
+      "pr_milestone": null,
+      "pr_development_issue": "#378",
+      "pr_development_issue_refs": [
+        "#378"
+      ],
+      "summary_bullet_count": 3,
+      "preview_body_path": "docs/issues/pr-prep-S0F-1H-live-body.md",
+      "selected_commit_count": 3,
+      "selected_commits": [
+        {
+          "sha": "35b476385bcc567edd0f6a81f2184c5d3eb40271",
+          "subject": "S0F-1H/P0-P3-C1-S1S2: add PR body completeness reviewer",
+          "matched_id": "S0F-1H",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "bc3479ca0e0b31bb99d05146ae05e875a1eddc5d",
+          "subject": "S0F-1H/P4-C1-S1S2: converge reviewer PR ownership coverage",
+          "matched_id": "S0F-1H",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "8ef7472db9f5d0be108c310eb66236b11688cba7",
+          "subject": "S0F-1H/P4-C2-S2: institutionalize reviewer runbook and open live issue",
+          "matched_id": "S0F-1H",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        }
+      ],
+      "branch_commits": [
+        {
+          "sha": "ccdf702ff2d2c9aa12aeddff93cdaf0c0906aaae",
+          "subject": "docs: start S0F docs management v6",
+          "matched_id": null,
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "e2bf872b6bad67c4766ca15c0eebc496c27a8609",
+          "subject": "S0F-1A/P0-P1: fail-closed issue creation entrypoints",
+          "matched_id": "S0F-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "e123c71f3e69225df049567d15a466deab331da4",
+          "subject": "S0F-1A/P2-C1-S1S2: enforce PR create preflight boundary",
+          "matched_id": "S0F-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "091d10dffc43971c550ee4995b723765c41290b1",
+          "subject": "S0F-1A/P3-C1-S1S2: converge wrapper-only live mutation surfaces",
+          "matched_id": "S0F-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "26e585476028f5e1c69976316ca2f4f45a04202d",
+          "subject": "S0F-1A/P4-C1-S1: narrow GitHub Actions secondary enforcement boundary",
+          "matched_id": "S0F-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "34a68342c9de331fd8791cbce6955ad326db0bd7",
+          "subject": "S0F-1A/P4-C2-S1: wire road-002 anchors and live issues",
+          "matched_id": "S0F-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "121c79dbd4cd6c34d60605bddc04476ad27d0a66",
+          "subject": "S0F-1A/P1-C2-S1: defer substantive context to conclusion",
+          "matched_id": "S0F-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "2513f648fbc049de773d22580fb6dcc10fcbce2d",
+          "subject": "S0F-1A/P1-C2-S2: complete corrected full-auto conclusion flow",
+          "matched_id": "S0F-1A",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "9f0e2d062b86a46e14144a866737c18489ec2f02",
+          "subject": "S0F-1B/P0-C1-S1: create LLM-authored Context slice",
+          "matched_id": "S0F-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "ee349cd9eb6ce4027462c20cd94b2434ea758fc6",
+          "subject": "S0F-1B/P0-P1: switch conclusion Context to LLM authoring",
+          "matched_id": "S0F-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "22ecb4acfd526a2552e23a2a931aaed4df2f77ce",
+          "subject": "S0F-1B/P2-C1-S1: remove conclusion Context fallback",
+          "matched_id": "S0F-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "26e2657f8dfc7581b0e8d9ad516f1c752831df97",
+          "subject": "S0F-1B/P3-C1-S1: retire draft-side Context generation",
+          "matched_id": "S0F-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "f15b55dce00d9cb6dc6de5d1038b1fe40842b656",
+          "subject": "S0F-1B/P4-C1-S1: stabilize Context contract surface",
+          "matched_id": "S0F-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "f8595e793f3a0f1c819207d2199b7bdcbc0ed2f6",
+          "subject": "S0F-1B/P5-C1-S1: refresh historical issue Context evidence",
+          "matched_id": "S0F-1B",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "335d72e2bd97effd53e4586c598bcc54b7345ed1",
+          "subject": "S0F-1C/P0-C1-S1: create multi-item remediation log",
+          "matched_id": "S0F-1C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "78761a7d77197ffb7c4f1ba7e95fa596f8e741a9",
+          "subject": "S0F-1C/P0-C1-S2: define multi-item stage contract",
+          "matched_id": "S0F-1C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "993e59de7282fe0fe76d089b9cd7370e507cc765",
+          "subject": "S0F-1C/P1-C1-S1S2: retain preview-only multi-item sample",
+          "matched_id": "S0F-1C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "033206f3ffab943ee82b0fed277bf26393bc4cd4",
+          "subject": "S0F-1C/P2-C1-S1S2: retain guarded multi-item live sample",
+          "matched_id": "S0F-1C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "148bdf1f28f64dc304eb90d8949c54a62a7ba4fd",
+          "subject": "S0F-1C/P3-C1-S1S2: retain per-target post-verify drift evidence",
+          "matched_id": "S0F-1C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "5dfa24233bf1ffc8b8f090d5d020c633bae1676d",
+          "subject": "S0F-1C/P4-C1-S1: retain remediation runbook",
+          "matched_id": "S0F-1C",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "4b6b35f17a534efc15512faf1e5b2c00a326e984",
+          "subject": "S0F-1D/P0-C1-S1S2: fix completeness audit matrix",
+          "matched_id": "S0F-1D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "c0825051701e94aa4357c8349a6e3080a8b131d5",
+          "subject": "S0F-1D/P1-C1-S1S2: fix create-time completeness rules",
+          "matched_id": "S0F-1D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "93a2199afb8feb2688a2681bf0bf461bfd5e0dd7",
+          "subject": "S0F-1D/P2-C1-S1S2: fix PR completeness rules",
+          "matched_id": "S0F-1D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "b42da68efe70507b15fe71a93347bff1ec643505",
+          "subject": "S0F-1D/P3-C1-S1S2: fix conclusion completeness rules",
+          "matched_id": "S0F-1D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "ba7ab2a09fe518810c1216b10421c924f440d6fb",
+          "subject": "S0F-1D/P4-C1-S1: package read-only audit entrypoint",
+          "matched_id": "S0F-1D",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "8283bcbab1ab2cc96ead7a1c6337cfbcf38ec19b",
+          "subject": "S0F-1E/P0-C1-S1S2: create bucket taxonomy slice",
+          "matched_id": "S0F-1E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "a9cca5011cce144b01397da4a543f83163e27464",
+          "subject": "S0F-1E/P0-C1-S1S2: align taxonomy boundary status",
+          "matched_id": "S0F-1E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "6be1df0a23d5ff411b2dff4689ff0b09dbcac9a0",
+          "subject": "S0F-1E/P1-C1-S1S2: fix creation bucket taxonomy",
+          "matched_id": "S0F-1E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "53f87989efc594a9cadc7a7b0c6bab538efda5ef",
+          "subject": "S0F-1E/P2-C1-S1S2: fix PR bucket taxonomy",
+          "matched_id": "S0F-1E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "916fa59e90a66120decd353306be1b70cb5235b6",
+          "subject": "S0F-1E/P3-C1-S1S2: fix conclusion bucket taxonomy",
+          "matched_id": "S0F-1E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "965fcbe6ee16c770ae2134eb7f2414aef64e632a",
+          "subject": "S0F-1E/P4-C1-S1: package bucketed audit output",
+          "matched_id": "S0F-1E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "a0e06b8583c472eab7fe8d271103e012cda92af2",
+          "subject": "S0F-1E/P4-C2-S1: mark bucket taxonomy slice stable",
+          "matched_id": "S0F-1E",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "f4769eea6f77bf023254c07b2ebeed0927104a04",
+          "subject": "S0F-1F/P0-C1-S1S2: create bucket materialization slice",
+          "matched_id": "S0F-1F",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "9476faff51c4ed8921ba4164e8f65290c4acd0d5",
+          "subject": "S0F-1F/P1-C1-S1S2: emit live audit bucket fields",
+          "matched_id": "S0F-1F",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "1be6ab9cdca4e6f531206670cf256a6f8ba728f1",
+          "subject": "S0F-1F/P2-C1-S1S2: emit historical review bucket fields",
+          "matched_id": "S0F-1F",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "c611297bed327f2d866130932af5abfc3a64c4dc",
+          "subject": "S0F-1F/P3-C1-S1S2: package bucketed output review summary",
+          "matched_id": "S0F-1F",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "a108f15aad34b3b281a18519f9953bbb850c1d30",
+          "subject": "S0F-1F/P4-C1-S1: package bucketed output contract",
+          "matched_id": "S0F-1F",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "4852aa7179677d94178b1a154fc9d36e8fb0849a",
+          "subject": "S0F-1F/P4-C2-S1: mark bucket output slice stable",
+          "matched_id": "S0F-1F",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "1796b687f2993a32a6c7938741bf1fe25cb897ca",
+          "subject": "S0F-1G/P0-C1-S1S2: open sidebar and title-keyword governance slice",
+          "matched_id": "S0F-1G",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "1cefe286f549159d830840aa745675bab40b5ecb",
+          "subject": "S0F-1G/P1-C1-S1S2: repair parent sidebar ordering path",
+          "matched_id": "S0F-1G",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "4d6e07438f19b4d9874136a7ec0d6735365f3c90",
+          "subject": "S0F-1G/P2-C1-S1S2: enforce controlled issue keywords",
+          "matched_id": "S0F-1G",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "e4378c9bcb130ae51a8e43d99c4b2bfb44da1842",
+          "subject": "S0F-1F/P4-C1-S3: attach local experiment outputs",
+          "matched_id": "S0F-1F",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "ca7d4acdb6ca130d647b765e781807ebac3810f1",
+          "subject": "S0F-1G/P3-C1-S1S2: audit title-prefix governance drift",
+          "matched_id": "S0F-1G",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "15dcdd21433b9fcbee45504f943c076aae3395db",
+          "subject": "S0F-1G/P4-C1-S1S2: package historical identity drift",
+          "matched_id": "S0F-1G",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "db11936589a071cd54d31bed56363c309bd51748",
+          "subject": "S0F-1G/P5-C1-S1S2: migrate legacy keyword titles",
+          "matched_id": "S0F-1G",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "a3f72a89b577b4504a7af4f963d0321345370fff",
+          "subject": "S0F-1G/P6-C1-S1S2: reconcile source-log issue writeback",
+          "matched_id": "S0F-1G",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "a135bc011b20c5a33c86db97815354458ca7cb8e",
+          "subject": "S0F-1G/P6-C3-S1: write back live issue link",
+          "matched_id": "S0F-1G",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "53b17551d3be6aa1e6b184a6b49044d7eb88b65c",
+          "subject": "S0F-1F/P4-C2-S1: stabilize merged PR body rewrite",
+          "matched_id": "S0F-1F",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "cd3423ea9eba9f4ad4ca87a50342739afc00ede3",
+          "subject": "S0F-1F/P4-C2-S2: stabilize guarded PR body rewrite",
+          "matched_id": "S0F-1F",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "35b476385bcc567edd0f6a81f2184c5d3eb40271",
+          "subject": "S0F-1H/P0-P3-C1-S1S2: add PR body completeness reviewer",
+          "matched_id": "S0F-1H",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "bc3479ca0e0b31bb99d05146ae05e875a1eddc5d",
+          "subject": "S0F-1H/P4-C1-S1S2: converge reviewer PR ownership coverage",
+          "matched_id": "S0F-1H",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        },
+        {
+          "sha": "11f17c695c2e5fd67d0066859266a43c8cfe386f",
+          "subject": "S0F-1I/P0-P3-C1-S1: converge formatting-only PR bodies",
+          "matched_id": "S0F-1I",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "291f598563063a22f42ad280ac2ebc31f29b460f",
+          "subject": "S0F-1I/P4-C1-S1S2: package standard PR body check",
+          "matched_id": "S0F-1I",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "6a6b4db8ed73ffbe22e9b437d2ab7608a3b4a53e",
+          "subject": "S0F-1I/P4-C2-S1: add PR body check runbook",
+          "matched_id": "S0F-1I",
+          "status": "skipped",
+          "reason": "commit subject does not match requested ID prefix"
+        },
+        {
+          "sha": "8ef7472db9f5d0be108c310eb66236b11688cba7",
+          "subject": "S0F-1H/P4-C2-S2: institutionalize reviewer runbook and open live issue",
+          "matched_id": "S0F-1H",
+          "status": "selected",
+          "reason": "commit subject matches requested ID prefix"
+        }
+      ],
+      "planned_action": "prepare-pr-prep-branch",
+      "status": "planned",
+      "warnings": [
+        "pr_development_issue derived from source log issue link"
+      ]
+    }
+  ]
+}

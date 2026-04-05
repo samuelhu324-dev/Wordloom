@@ -1,0 +1,34 @@
+## Metadata
+
+- Requested ID: `S0F-1H`
+- Base branch: `main`
+- Candidate PR-prep branch: `pr-prep/s0f-1h`
+- Source log: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
+- Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
+- Development issue: #378
+
+## Summary
+
+- Add one read-only reviewer that rebuilds canonical expected PR bodies from source logs and compares them against live GitHub PR bodies.
+- Separate exact matches, formatting-only drift, and substantive drift so blank-line noise no longer masks real completeness gaps.
+- Retain one `S0F` sample review bundle that also reports stop conditions when source logs still omit canonical `links.pr` ownership.
+
+## Execution Checklist
+
+- [x] `P0-C1-S1`: `S0F-1H` created and wired into the `S0F` parent spine
+- [x] `P0-C1-S2`: read-only reviewer boundary fixed
+- [x] `P1-C1-S1`: canonical expected-body rebuild reused for review
+- [x] `P1-C1-S2`: normalized comparison boundary fixed without hiding semantic drift
+- [x] `P2-C1-S1`: real `S0F` sample review bundle retained
+- [x] `P2-C1-S2`: explicit stop-state reporting retained for missing `links.pr`
+- [x] `P3-C1-S1`: reviewer output files and diff artifacts retained
+- [x] `P4-C1-S1`: bounded missing `links.pr` set written back on the affected `S0F` child logs
+- [x] `P4-C1-S2`: retained `S0F` reviewer bundle rerun after source-log PR ownership converged
+- [x] `P4-C2-S2`: reviewer-owned runbook retained for the stable local check path
+
+## Links
+
+- Log: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
+- Parent log: `docs/logs/log-S0F-docs-management-v6.md`
+
+Closes #378

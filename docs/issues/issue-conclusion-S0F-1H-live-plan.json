@@ -1,0 +1,45 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-remediation-S0F-1H-live-post-merge-issue-conclusion-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0F-1H: merged PR set supplied by explicit override",
+    "S0F-1H: preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence",
+    "S0F-1H: existing Context section did not satisfy the prose-first Context gate for line range (4, 4); preview replaces it with an LLM-authored conclusion Context block",
+    "S0F-1H: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-1H",
+      "source_log_path": "docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md",
+      "issue_number": 378,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/378",
+      "issue_title": "S0F-1H: audit/PR body completeness reviewer",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-lifecycle-remediation-S0F-1H-live-post-merge-issue-conclusion-s0f-1h-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 379,
+          "title": "S0F-1H/P0-P4: PR body completeness reviewer v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/379",
+          "merged_at": "2026-04-05T13:51:12Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "merged PR set supplied by explicit override",
+        "preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence",
+        "existing Context section did not satisfy the prose-first Context gate for line range (4, 4); preview replaces it with an LLM-authored conclusion Context block",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Full-auto lifecycle run for S0F-1H after reviewer-owned runbook institutionalization under P4-C2-S2."
+    }
+  ]
+}
