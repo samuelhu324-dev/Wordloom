@@ -1,0 +1,15 @@
+{
+  "mode": "issue-title-repair",
+  "result": "ok",
+  "apply": true,
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "log_path": "docs/logs/log-S6B-1B-evidence-naming-baseline.md",
+  "issue_number": 358,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/358",
+  "issue_state": "CLOSED",
+  "before_title": "S6B-1B: naming/evidence naming baseline",
+  "expected_title": "S6B-1B: taxonomy/evidence naming baseline",
+  "final_title": "S6B-1B: taxonomy/evidence naming baseline",
+  "changed": true,
+  "warnings": []
+}

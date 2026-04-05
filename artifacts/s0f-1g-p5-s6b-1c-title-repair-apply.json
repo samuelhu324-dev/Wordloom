@@ -1,0 +1,15 @@
+{
+  "mode": "issue-title-repair",
+  "result": "ok",
+  "apply": true,
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "log_path": "docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md",
+  "issue_number": 359,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/359",
+  "issue_state": "CLOSED",
+  "before_title": "S6B-1C: coexistence/tracked retained-summary coexistence migration",
+  "expected_title": "S6B-1C: migration/tracked retained-summary coexistence migration",
+  "final_title": "S6B-1C: migration/tracked retained-summary coexistence migration",
+  "changed": true,
+  "warnings": []
+}

@@ -57,6 +57,7 @@
 - Title keyword governance should land in two layers: create-time hard-fail validation and lifecycle-audit drift detection against the canonical source-log-derived expectation.
 - Existing live issues with historically wrong title prefixes may remain temporarily, but they should become explicitly classifiable drift rather than silently acceptable state.
 - `S0F-1G` should not widen into generic issue-title rewriting across the whole repository before the vocabulary contract, audit semantics, and migration boundary are fixed.
+- Once the historical drift inventory is bounded tightly enough, one follow-up phase may still perform explicit source-log keyword migration plus matching bounded live title repair for that named set only.
 
 ## PR Summary Inputs (optional)
 
@@ -96,6 +97,7 @@
 - `P2`: fix create-time controlled vocabulary enforcement for `issue_keyword`
 - `P3`: fix lifecycle-audit title-prefix validation and bucket attribution
 - `P4`: package retained migration inventory and controlled repair path for historical drift
+- `P5`: migrate the bounded legacy keyword set into the controlled vocabulary and repair matching live issue titles
 
 ## Success Criteria (DoD)
 
@@ -122,7 +124,25 @@
 - `P2` is now complete: create-time issue generation now treats `issue_keyword` as a controlled vocabulary input instead of accepting arbitrary explicit free text, real `--create` runs fail closed on disallowed keywords, and the phase templates now document the controlled keyword boundary directly.
 - `P3` is now complete: lifecycle audit now derives the canonical expected title prefix from the same source-log-owned title composition path used by issue draft generation, live title-prefix drift now fails deterministically under audit, and that drift is attributed to the existing `creation-metadata-gap` bucket instead of inventing a second title taxonomy.
 - `P4` is now complete: one retained governance inventory now records the bounded set of historical legacy title-keyword items and the current top-level parent ordering state, one controlled repair-boundary package now fixes which mutation paths are allowed versus disallowed for later cleanup, and no further phase is currently required inside this slice.
+- `P5` is now complete: the bounded historical legacy keyword set has been migrated directly on `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`, one guarded live title-repair surface now realigns those three live issue titles to the new source-log-owned controlled keywords, and the post-repair legacy inventory is now empty.
 - `S0F-1G` is now stable: parent sidebar ordering ownership is fixed and re-verified on the live parent lane, title keyword governance now fails closed at both create-time and lifecycle-audit time, and one retained `P4` package now bounds historical cleanup without reopening guess-first or bulk-rewrite behavior.
+
+## P5 Bounded Legacy Keyword Migration and Live Title Repair (completed)
+
+- `S0F-1G` now uses its own bounded `P4` inventory instead of opening a new slice elsewhere: the three historical legacy keyword items discovered under `S6B-1A`, `S6B-1B`, and `S6B-1C` are migrated in place under this same governance lane.
+- v1 keeps the scope explicit and small: only the three retained legacy keyword items are touched, and each live title repair is derived from the migrated source log through one guarded surface instead of through ad hoc `gh issue edit` calls.
+
+### P5-C1-S1 (Bounded source-log keyword migration landed for the retained legacy set | v1)
+
+- `docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md` now migrates `issue_keyword` from `inventory` to `records`, which keeps the ledger/registry semantics while moving the slice back into the controlled vocabulary.
+- `docs/logs/log-S6B-1B-evidence-naming-baseline.md` now migrates `issue_keyword` from `naming` to `taxonomy`, which keeps the naming-baseline slice inside the existing vocabulary lane used for structure and classification semantics.
+- `docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md` now migrates `issue_keyword` from `coexistence` to `migration`, which keeps the slice aligned with the controlled migration lane rather than a free-text coexistence label.
+
+### P5-C1-S2 (Guarded live title repair converged the same bounded set | v1)
+
+- `scripts/issues/repair_issue_title_from_log.py` now provides one bounded live repair surface that derives the canonical issue title from the source log and applies a guarded `gh issue edit --title` only when explicitly invoked through the internal raw-live-mutation guard.
+- That surface has now been used to repair issue `#357` to `S6B-1A: records/evidence surface inventory ledger`, issue `#358` to `S6B-1B: taxonomy/evidence naming baseline`, and issue `#359` to `S6B-1C: migration/tracked retained-summary coexistence migration`.
+- `artifacts/s0f-1g-p5-identity-governance-inventory.json` now proves the bounded legacy keyword set is empty after repair, while the repair surface remains narrow enough that later title cleanup still cannot silently expand into a repo-wide bulk rewrite.
 
 ## P4 Historical Drift Packaging (completed)
 
@@ -237,6 +257,11 @@
 - P4-C1-S1: retain one migration inventory for existing historical title-prefix and parent-ordering drift
 - P4-C1-S2: package the controlled repair boundary for later historical cleanup
 
+### P5 (Bounded legacy keyword migration and live title repair)
+
+- P5-C1-S1: migrate the retained legacy source-log keyword set into controlled vocabulary values
+- P5-C1-S2: repair the matching live issue titles through one guarded source-log-owned title surface
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Governance boundary and spine wiring)
@@ -264,10 +289,16 @@
 - [x] `P4-C1-S1`: migration inventory retained for historical title-prefix and parent-ordering drift
 - [x] `P4-C1-S2`: controlled repair boundary packaged for later cleanup
 
+### P5 (Bounded legacy keyword migration and live title repair)
+
+- [x] `P5-C1-S1`: retained legacy source-log keyword set migrated into controlled vocabulary values
+- [x] `P5-C1-S2`: matching live issue titles repaired through one guarded source-log-owned title surface
+
 ## Notes (optional)
 
 - `S0F-1G` is intentionally narrow: it owns the governance contract first, not immediate bulk historical rewrite.
 - If `P1` lands before `P2` and `P3`, parent ordering repair may close the remaining `#248` blocker earlier, but title keyword governance should still remain inside the same slice until both enforcement layers are fixed.
+- The workspace cleanup that ran before `P5` intentionally reverted local `docs/logs` write-back leftovers and deleted ignored `docs/issues` scratch outputs; later parent-ordering inventories should therefore treat uncommitted write-back evidence separately from live GitHub ordering state instead of assuming those local write-backs are still present.
 
 ## Evidence
 
@@ -279,3 +310,6 @@
 - `P3-C1-S2`: `artifacts/s0f-1g-p3-title-prefix-drift-log.md`, `artifacts/s0f-1g-p3-fail-manifest.json`, and `artifacts/s0f-1g-p3-fail-plan.json` now retain one local drift simulation where the copied source log changes `issue_keyword` to `automation`, causing `title-prefix-governance=fail` and `creation-metadata-gap` attribution on the same live issue; because the copied log also changes the canonical `Log:` path, that retained fail sample additionally records the expected local `links-coverage` miss from the temporary path change.
 - `P4-C1-S1`: `scripts/issues/inventory_issue_identity_governance_drift.py` and `artifacts/s0f-1g-p4-identity-governance-inventory.json` now retain the first bounded historical governance inventory, including the three legacy source-keyword items `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`, plus the current parent-ordering state for `#248` and `#363`.
 - `P4-C1-S2`: `artifacts/s0f-1g-p4-controlled-repair-boundary.json` now packages the bounded repair contract, including the current prohibition on bulk live title rewrites and the canonical reprioritize surface for any future parent-ordering drift.
+- `P5-C1-S1`: `docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md`, `docs/logs/log-S6B-1B-evidence-naming-baseline.md`, and `docs/logs/log-S6B-1C-tracked-retained-summary-coexistence-migration.md` now migrate the bounded historical keyword set from `inventory / naming / coexistence` into `records / taxonomy / migration`.
+- `P5-C1-S2`: `scripts/issues/repair_issue_title_from_log.py` now retains the guarded live title-repair surface, and `artifacts/s0f-1g-p5-s6b-1a-title-repair-apply.json`, `artifacts/s0f-1g-p5-s6b-1b-title-repair-apply.json`, and `artifacts/s0f-1g-p5-s6b-1c-title-repair-apply.json` retain the three bounded live repairs for issues `#357`, `#358`, and `#359`.
+- `P5-C1-S2`: `artifacts/s0f-1g-p5-identity-governance-inventory.json` now records the post-repair state with `legacy_title_keyword_item_count = 0`; this retained sample intentionally skips parent-ordering inventory because the pre-`P5` workspace cleanup removed local write-back leftovers that were never committed as source evidence.

@@ -74,6 +74,8 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Inventory historical issue-identity governance drift from source logs and live GitHub issues")
     parser.add_argument("--repo", dest="repo", help="Repository slug override")
     parser.add_argument("--output-path", dest="output_path", help="Override output JSON path")
+    parser.add_argument("--skip-legacy-title-keywords", dest="skip_legacy_title_keywords", action="store_true", help="Skip inventorying historical legacy issue_keyword items")
+    parser.add_argument("--skip-parent-ordering", dest="skip_parent_ordering", action="store_true", help="Skip inventorying top-level parent sub-issue ordering state")
     return parser.parse_args()
 
 
@@ -251,18 +253,24 @@ def inventory_issue_identity_governance_drift(args: argparse.Namespace) -> Ident
             continue
         sections = _parse_sections(text)
 
-        legacy_item = _build_legacy_title_keyword_item(repo_root, log_path, fields, sections, repo)
-        if legacy_item is not None:
-            legacy_title_keyword_items.append(legacy_item)
+        if not args.skip_legacy_title_keywords:
+            legacy_item = _build_legacy_title_keyword_item(repo_root, log_path, fields, sections, repo)
+            if legacy_item is not None:
+                legacy_title_keyword_items.append(legacy_item)
 
-        parent_item = _build_parent_ordering_item(repo_root, log_path, fields, repo)
-        if parent_item is not None:
-            parent_ordering_items.append(parent_item)
+        if not args.skip_parent_ordering:
+            parent_item = _build_parent_ordering_item(repo_root, log_path, fields, repo)
+            if parent_item is not None:
+                parent_ordering_items.append(parent_item)
 
     active_parent_ordering_drift_count = sum(1 for item in parent_ordering_items if item.status != "matches-canonical-order")
-    if not legacy_title_keyword_items:
+    if args.skip_legacy_title_keywords:
+        warnings.append("legacy title-keyword inventory skipped by request")
+    elif not legacy_title_keyword_items:
         warnings.append("no historical live issues currently require legacy title-keyword migration inventory")
-    if not parent_ordering_items:
+    if args.skip_parent_ordering:
+        warnings.append("parent ordering inventory skipped by request")
+    elif not parent_ordering_items:
         warnings.append("no top-level parent issues with canonical child ledgers were found for parent ordering inventory")
 
     return IdentityGovernanceInventoryResult(

@@ -1,0 +1,16 @@
+{
+  "mode": "issue-identity-governance-inventory",
+  "result": "ok",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "generated_at": "2026-04-05T06:13:22.987187+00:00",
+  "scanned_logs": 135,
+  "legacy_title_keyword_item_count": 0,
+  "parent_ordering_item_count": 0,
+  "active_parent_ordering_drift_count": 0,
+  "warnings": [
+    "no historical live issues currently require legacy title-keyword migration inventory",
+    "parent ordering inventory skipped by request"
+  ],
+  "legacy_title_keyword_items": [],
+  "parent_ordering_items": []
+}
