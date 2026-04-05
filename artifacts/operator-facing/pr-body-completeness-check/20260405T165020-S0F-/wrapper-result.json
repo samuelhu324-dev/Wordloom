@@ -1,0 +1,43 @@
+{
+  "mode": "pr-body-completeness-standard-check",
+  "result": "pass",
+  "read_only": true,
+  "primary_local_boundary": true,
+  "trigger_surface": "local-operator-facing",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "requested_id_prefixes": [
+    "S0F-"
+  ],
+  "fail_on_findings": true,
+  "total_logs_reviewed": 9,
+  "exact_match_ids": [
+    "S0F-1A",
+    "S0F-1B",
+    "S0F-1C",
+    "S0F-1D",
+    "S0F-1E",
+    "S0F-1F",
+    "S0F-1G"
+  ],
+  "formatting_only_ids": [],
+  "substantive_drift_ids": [],
+  "stop_ids": [],
+  "skip_ids": [
+    "S0F-1H",
+    "S0F-1I"
+  ],
+  "decision_reason": "The standard PR body completeness check passed with no substantive drift and no stop-state ownership gaps.",
+  "stop_reason": "",
+  "wrapper_result_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/wrapper-result.json",
+  "wrapper_summary_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/workflow-summary.md",
+  "artifact_manifest_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/artifact-manifest.json",
+  "review_result_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-result.json",
+  "review_artifact_dir": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files",
+  "warnings": [],
+  "retained_artifacts": {
+    "wrapper_summary_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/workflow-summary.md",
+    "artifact_manifest_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/artifact-manifest.json",
+    "review_result_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-result.json",
+    "review_artifact_dir": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files"
+  }
+}

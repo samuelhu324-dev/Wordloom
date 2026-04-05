@@ -77,7 +77,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--fail-on-findings",
         action="store_true",
-        help="Exit non-zero when any item is not exact-match or formatting-only-drift",
+        help="Exit non-zero when any item is substantive drift or a stop-state ownership gap",
     )
     return parser.parse_args()
 

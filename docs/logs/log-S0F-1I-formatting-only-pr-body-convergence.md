@@ -89,6 +89,7 @@
 - Do not hand-edit merged PR bodies outside the canonical historical rewrite surface.
 - Do not mix current in-progress slices that do not yet own a live PR into the convergence target set.
 - Do not use reviewer normalization itself as the live mutation mechanism; canonical expected-body rewrite remains the only repair source.
+- Do not introduce a second classifier for the standard check entrypoint; any operator-facing or CI-facing check must delegate to the canonical reviewer and preserve the same stop semantics.
 
 ## Scope
 
@@ -96,6 +97,7 @@
 - `P1`: retain one bounded historical rewrite manifest for the formatting-only `S0F` PR set
 - `P2`: apply the bounded merged-PR rewrite batch to the formatting-only target set
 - `P3`: rerun `S0F-1H` reviewer and retain the exact-match convergence result
+- `P4`: package the stable `S0F` reviewer state as one standard `--fail-on-findings` local check entrypoint
 
 ## Success Criteria (DoD)
 
@@ -117,7 +119,25 @@
 - `P1` is now complete: `artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest.json` retains one explicit six-item merged-PR rewrite manifest for the formatting-only `S0F` target set.
 - `P2` is now complete: `scripts/issues/apply_pr_body_rewrite_batch.py` has been applied successfully to `S0F-1A/#365`, `S0F-1B/#371`, `S0F-1C/#372`, `S0F-1D/#373`, `S0F-1E/#374`, and `S0F-1G/#377`, and the retained batch result shows `body_changed=true` for all six items with no warnings.
 - `P3` is now complete: `artifacts/s0f-1i-post-repair-pr-body-completeness-review-s0f.json` now proves exact-match convergence across the full current live `S0F` child set, with `S0F-1A` through `S0F-1G` all classified as `exact-match`, zero `formatting-only-drift`, zero `substantive-drift`, and zero `stop` items.
-- `S0F-1I` is now stable: the bounded formatting-only set has been converged through the canonical historical rewrite surface, and the post-repair reviewer rerun proves the full current live `S0F` child set has reached exact-match PR body state.
+- `P4` is now complete: one standard operator-facing check entrypoint now packages the stable reviewer state through `scripts/issues/plan_pr_body_completeness_check_wrapper.py` and `scripts/issues/invoke_pr_body_completeness_check.ps1`, and one retained local pass run proves the current `S0F` set passes that standard check with `fail_on_findings=true`.
+- `S0F-1I` is now stable: the bounded formatting-only set has been converged through the canonical historical rewrite surface, the post-repair reviewer rerun proves the full current live `S0F` child set has reached exact-match PR body state, and that stable state is now exposed through one standard local check entrypoint.
+
+## P4 Standard Check Packaging (completed)
+
+- `S0F-1I` now uses its post-convergence stable state to package the reviewer as one standard local check entrypoint instead of leaving `review_pr_body_completeness.py --fail-on-findings` as a raw script contract only.
+- v1 keeps the packaging single-sourced: the new entrypoint does not invent a second classifier, but wraps the canonical reviewer, records standard pass/stop/error semantics, and publishes one operator-facing artifact bundle.
+
+### P4-C1-S1 (Primary local standard check wrapper fixed around the canonical reviewer | v1)
+
+- `scripts/issues/plan_pr_body_completeness_check_wrapper.py` now provides one standard read-only check wrapper around `review_pr_body_completeness.py`.
+- The wrapper fixes primary-local-boundary semantics explicitly: it passes only when the canonical reviewer finds zero `substantive-drift` items and zero `stop` items, while preserving `skip-no-live-pr-owned` as a bounded non-failing state for slices that do not yet own a live PR.
+- The wrapper also retains one standard result JSON, one workflow summary markdown file, and one artifact manifest JSON file so later operator or CI surfaces can consume the same check result without reconstructing semantics ad hoc.
+
+### P4-C1-S2 (Operator-facing local check entrypoint retained with one stable pass run | v1)
+
+- `scripts/issues/invoke_pr_body_completeness_check.ps1` now provides the operator-facing local entrypoint for the standard check, publishing retained artifacts under `artifacts/operator-facing/pr-body-completeness-check/`.
+- The retained run under `artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/wrapper-result.json` now records a `pass` result for the current `S0F` set with `fail_on_findings=true`.
+- The same retained run records `exact-match` for `S0F-1A` through `S0F-1G`, zero formatting-only drift, zero substantive drift, zero stop items, and bounded skips only for `S0F-1H` and `S0F-1I`.
 
 ## P3 Post-Repair Verification (completed)
 
@@ -169,6 +189,11 @@
 
 - P3-C1-S1: rerun `S0F-1H` reviewer and retain the exact-match convergence result
 
+### P4 (Standard check packaging)
+
+- P4-C1-S1: wrap the canonical reviewer in one primary local standard check surface
+- P4-C1-S2: retain one operator-facing local pass run for the current stable `S0F` set
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Convergence boundary and spine wiring)
@@ -188,6 +213,11 @@
 
 - [x] `P3-C1-S1`: post-repair `S0F-1H` reviewer rerun retained and exact-match convergence verified
 
+### P4 (Standard check packaging)
+
+- [x] `P4-C1-S1`: canonical reviewer wrapped as one primary local standard check surface
+- [x] `P4-C1-S2`: operator-facing local pass run retained for the current stable `S0F` set
+
 ## Notes (optional)
 
 - `S0F-1I` intentionally assumes `S0F-1H` classification is already correct. It does not reopen the classification taxonomy or normalization rules.
@@ -199,6 +229,9 @@
 - `artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest.json` retains the exact six-item merged-PR target set for this convergence run.
 - `artifacts/s0f-1i-formatting-only-pr-body-rewrite-result.json` records the successful bounded six-item rewrite batch.
 - `artifacts/s0f-1i-post-repair-pr-body-completeness-review-s0f.json` records the post-repair exact-match rerun across the full current live `S0F` child set.
+- `scripts/issues/plan_pr_body_completeness_check_wrapper.py` now packages the canonical reviewer as a standard read-only local check wrapper.
+- `scripts/issues/invoke_pr_body_completeness_check.ps1` now provides the operator-facing local entrypoint for that standard check.
+- `artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/wrapper-result.json` records the retained stable pass result for the current `S0F` set under the standard check surface.
 
 ## Numbering
 
