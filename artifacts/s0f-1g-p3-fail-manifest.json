@@ -1,0 +1,10 @@
+{
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "source_log_path": "artifacts/s0f-1g-p3-title-prefix-drift-log.md"
+    }
+  ]
+}

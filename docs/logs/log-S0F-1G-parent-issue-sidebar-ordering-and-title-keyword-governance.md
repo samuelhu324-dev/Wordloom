@@ -120,6 +120,24 @@
 - `P1` is now complete: lifecycle audit now preserves the real GitHub sub-issue sidebar order instead of sorting it away, one controlled reprioritize path is retained under `scripts/issues/reprioritize_parent_subissues.py`, and the live `#248` parent sidebar can now be repaired back to the canonical source-log-owned order without destructive remove/re-add behavior.
 - The live `#248` repair is now complete and re-verified: the retained reprioritize result under `artifacts/` converged to the expected child order, and a focused rerun of `plan_lifecycle_audit.py` now passes the parent `sidebar-child-relationships` check instead of leaving `S0E` blocked on an ordering mismatch.
 - `P2` is now complete: create-time issue generation now treats `issue_keyword` as a controlled vocabulary input instead of accepting arbitrary explicit free text, real `--create` runs fail closed on disallowed keywords, and the phase templates now document the controlled keyword boundary directly.
+- `P3` is now complete: lifecycle audit now derives the canonical expected title prefix from the same source-log-owned title composition path used by issue draft generation, live title-prefix drift now fails deterministically under audit, and that drift is attributed to the existing `creation-metadata-gap` bucket instead of inventing a second title taxonomy.
+
+## P3 Lifecycle Audit Title Keyword Enforcement (completed)
+
+- `S0F-1G` now fixes the audit-time side of title keyword governance at the existing lifecycle-audit entrypoint rather than adding a parallel title linter with different semantics.
+- v1 keeps the rule narrow and deterministic: audit only checks whether the live GitHub issue title still starts with the canonical `ID: keyword/` prefix derived from the source log, and it reuses the same issue-title composition path already used for local draft generation.
+
+### P3-C1-S1 (Canonical expected title prefix derived from source-log-owned keyword state | v1)
+
+- `scripts/issues/gen_issue_draft.py` now exposes one shared issue-title derivation helper so draft generation and lifecycle audit consume the same source-log-owned title composition rule.
+- `scripts/issues/plan_lifecycle_audit.py` now derives the expected title prefix from that shared helper instead of reconstructing or guessing the keyword boundary independently.
+- This keeps the governance surface single-sourced: if the repo's deterministic issue-title grammar changes later, create-time previews and audit-time validation will move together rather than drift apart.
+
+### P3-C1-S2 (Lifecycle audit fails deterministically on title-prefix drift and attributes it to metadata governance | v1)
+
+- Lifecycle audit now emits one explicit `title-prefix-governance` check comparing the live issue title prefix against the canonical source-log-derived expectation.
+- When the live title drifts to the wrong keyword prefix, the audit item now fails instead of silently accepting the title as long as the body and links still pass.
+- The new check maps into the existing `creation-metadata-gap` bucket because title prefix is owned by deterministic source metadata and issue identity governance, not by body, links, or sidebar taxonomy.
 
 ## P2 Create-Time Title Keyword Governance (completed)
 
@@ -219,8 +237,8 @@
 
 ### P3 (Lifecycle audit title keyword enforcement)
 
-- [ ] `P3-C1-S1`: canonical expected title prefix derived from source-log-owned keyword state
-- [ ] `P3-C1-S2`: lifecycle audit emits deterministic title-prefix drift failure and bucket attribution
+- [x] `P3-C1-S1`: canonical expected title prefix derived from source-log-owned keyword state
+- [x] `P3-C1-S2`: lifecycle audit emits deterministic title-prefix drift failure and bucket attribution
 
 ### P4 (Historical drift packaging)
 
@@ -232,7 +250,11 @@
 - `S0F-1G` is intentionally narrow: it owns the governance contract first, not immediate bulk historical rewrite.
 - If `P1` lands before `P2` and `P3`, parent ordering repair may close the remaining `#248` blocker earlier, but title keyword governance should still remain inside the same slice until both enforcement layers are fixed.
 
-## Evidence (reserved)
+## Evidence
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths after concrete repair or enforcement work begins.
 - `P0` is intentionally contract-first, so retained execution evidence begins with later implementation or repair phases rather than with this initial opening step.
+- `P3-C1-S1`: `scripts/issues/gen_issue_draft.py` now exposes the shared issue-title derivation helper consumed by both draft generation and lifecycle audit, keeping create-time and audit-time title expectations on one deterministic source-log-owned path.
+- `P3-C1-S1` / `P3-C1-S2`: `scripts/issues/plan_lifecycle_audit.py` now emits `title-prefix-governance`, compares the live title prefix against the canonical expected prefix, and attributes drift to `creation-metadata-gap`.
+- `P3-C1-S2`: `artifacts/s0f-1g-p3-pass-manifest.json` and `artifacts/s0f-1g-p3-pass-plan.json` now retain one focused live-audit pass where issue `#305` keeps `title-prefix-governance=pass` for the canonical `S0E-5A: workflow/` prefix.
+- `P3-C1-S2`: `artifacts/s0f-1g-p3-title-prefix-drift-log.md`, `artifacts/s0f-1g-p3-fail-manifest.json`, and `artifacts/s0f-1g-p3-fail-plan.json` now retain one local drift simulation where the copied source log changes `issue_keyword` to `automation`, causing `title-prefix-governance=fail` and `creation-metadata-gap` attribution on the same live issue; because the copied log also changes the canonical `Log:` path, that retained fail sample additionally records the expected local `links-coverage` miss from the temporary path change.
