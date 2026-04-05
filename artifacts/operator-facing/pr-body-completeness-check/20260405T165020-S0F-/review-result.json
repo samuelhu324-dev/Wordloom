@@ -1,0 +1,563 @@
+{
+  "mode": "pr-body-completeness-review",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "requested_id_prefixes": [
+    "S0F-"
+  ],
+  "logs_dir": "docs/logs",
+  "result_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-result.json",
+  "artifact_dir": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files",
+  "summary": {
+    "total_logs_reviewed": 9,
+    "counts_by_result": {
+      "exact-match": 7,
+      "skip-no-live-pr-owned": 2
+    },
+    "exact_match_ids": [
+      "S0F-1A",
+      "S0F-1B",
+      "S0F-1C",
+      "S0F-1D",
+      "S0F-1E",
+      "S0F-1F",
+      "S0F-1G"
+    ],
+    "formatting_only_ids": [],
+    "substantive_drift_ids": [],
+    "stop_ids": [],
+    "skip_ids": [
+      "S0F-1H",
+      "S0F-1I"
+    ]
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1A",
+      "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+      "pr_ref": "365",
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/365",
+      "pr_title": "S0F-1A/P0-P4: fail-closed entrypoints and preflight unification v1",
+      "pr_state": "MERGED",
+      "result": "exact-match",
+      "details": "live PR body matched the source-log-derived expected body exactly",
+      "raw_match": true,
+      "normalized_match": true,
+      "live_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1a-live-body.md",
+      "expected_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1a-expected-body.md",
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": "pass",
+      "contract_checks": [
+        {
+          "name": "required-pr-sections",
+          "status": "pass",
+          "details": "required PR sections are present"
+        },
+        {
+          "name": "pr-section-order",
+          "status": "pass",
+          "details": "section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "metadata bullet rows are contiguous"
+        },
+        {
+          "name": "pr-link-categories",
+          "status": "pass",
+          "details": "PR Links section uses only allowed link categories"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "no Evidence Footer Source rows were provided"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "status": "pass",
+          "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "status": "pass",
+          "details": "Evidence Footer section is omitted when the source block is absent"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "status": "pass",
+          "details": "no Evidence Footer rows were rendered"
+        },
+        {
+          "name": "development-link-presence",
+          "status": "pass",
+          "details": "Development issue is tracked only through Metadata as required"
+        },
+        {
+          "name": "github-development-linkage",
+          "status": "pass",
+          "details": "GitHub closing-link footer matches the development issue set"
+        }
+      ],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1B",
+      "source_log_path": "docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md",
+      "pr_ref": "371",
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/371",
+      "pr_title": "S0F-1B/P0-P5: llm-authored issue Context generation v1",
+      "pr_state": "MERGED",
+      "result": "exact-match",
+      "details": "live PR body matched the source-log-derived expected body exactly",
+      "raw_match": true,
+      "normalized_match": true,
+      "live_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1b-live-body.md",
+      "expected_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1b-expected-body.md",
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": "pass",
+      "contract_checks": [
+        {
+          "name": "required-pr-sections",
+          "status": "pass",
+          "details": "required PR sections are present"
+        },
+        {
+          "name": "pr-section-order",
+          "status": "pass",
+          "details": "section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "metadata bullet rows are contiguous"
+        },
+        {
+          "name": "pr-link-categories",
+          "status": "pass",
+          "details": "PR Links section uses only allowed link categories"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "no Evidence Footer Source rows were provided"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "status": "pass",
+          "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "status": "pass",
+          "details": "Evidence Footer section is omitted when the source block is absent"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "status": "pass",
+          "details": "no Evidence Footer rows were rendered"
+        },
+        {
+          "name": "development-link-presence",
+          "status": "pass",
+          "details": "Development issue is tracked only through Metadata as required"
+        },
+        {
+          "name": "github-development-linkage",
+          "status": "pass",
+          "details": "GitHub closing-link footer matches the development issue set"
+        }
+      ],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1C",
+      "source_log_path": "docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md",
+      "pr_ref": "372",
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/372",
+      "pr_title": "S0F-1C/P0-P4: guarded multi-item live mutation remediation v1",
+      "pr_state": "MERGED",
+      "result": "exact-match",
+      "details": "live PR body matched the source-log-derived expected body exactly",
+      "raw_match": true,
+      "normalized_match": true,
+      "live_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1c-live-body.md",
+      "expected_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1c-expected-body.md",
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": "pass",
+      "contract_checks": [
+        {
+          "name": "required-pr-sections",
+          "status": "pass",
+          "details": "required PR sections are present"
+        },
+        {
+          "name": "pr-section-order",
+          "status": "pass",
+          "details": "section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "metadata bullet rows are contiguous"
+        },
+        {
+          "name": "pr-link-categories",
+          "status": "pass",
+          "details": "PR Links section uses only allowed link categories"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "no Evidence Footer Source rows were provided"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "status": "pass",
+          "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "status": "pass",
+          "details": "Evidence Footer section is omitted when the source block is absent"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "status": "pass",
+          "details": "no Evidence Footer rows were rendered"
+        },
+        {
+          "name": "development-link-presence",
+          "status": "pass",
+          "details": "Development issue is tracked only through Metadata as required"
+        },
+        {
+          "name": "github-development-linkage",
+          "status": "pass",
+          "details": "GitHub closing-link footer matches the development issue set"
+        }
+      ],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1D",
+      "source_log_path": "docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md",
+      "pr_ref": "373",
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/373",
+      "pr_title": "S0F-1D/P0-P4: creation, PR, and conclusion completeness audit v1",
+      "pr_state": "MERGED",
+      "result": "exact-match",
+      "details": "live PR body matched the source-log-derived expected body exactly",
+      "raw_match": true,
+      "normalized_match": true,
+      "live_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1d-live-body.md",
+      "expected_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1d-expected-body.md",
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": "pass",
+      "contract_checks": [
+        {
+          "name": "required-pr-sections",
+          "status": "pass",
+          "details": "required PR sections are present"
+        },
+        {
+          "name": "pr-section-order",
+          "status": "pass",
+          "details": "section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "metadata bullet rows are contiguous"
+        },
+        {
+          "name": "pr-link-categories",
+          "status": "pass",
+          "details": "PR Links section uses only allowed link categories"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "no Evidence Footer Source rows were provided"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "status": "pass",
+          "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "status": "pass",
+          "details": "Evidence Footer section is omitted when the source block is absent"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "status": "pass",
+          "details": "no Evidence Footer rows were rendered"
+        },
+        {
+          "name": "development-link-presence",
+          "status": "pass",
+          "details": "Development issue is tracked only through Metadata as required"
+        },
+        {
+          "name": "github-development-linkage",
+          "status": "pass",
+          "details": "GitHub closing-link footer matches the development issue set"
+        }
+      ],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1E",
+      "source_log_path": "docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md",
+      "pr_ref": "374",
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/374",
+      "pr_title": "S0F-1E/P0-P4: completeness classification buckets and audit output taxonomy v1",
+      "pr_state": "MERGED",
+      "result": "exact-match",
+      "details": "live PR body matched the source-log-derived expected body exactly",
+      "raw_match": true,
+      "normalized_match": true,
+      "live_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1e-live-body.md",
+      "expected_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1e-expected-body.md",
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": "pass",
+      "contract_checks": [
+        {
+          "name": "required-pr-sections",
+          "status": "pass",
+          "details": "required PR sections are present"
+        },
+        {
+          "name": "pr-section-order",
+          "status": "pass",
+          "details": "section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "metadata bullet rows are contiguous"
+        },
+        {
+          "name": "pr-link-categories",
+          "status": "pass",
+          "details": "PR Links section uses only allowed link categories"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "no Evidence Footer Source rows were provided"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "status": "pass",
+          "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "status": "pass",
+          "details": "Evidence Footer section is omitted when the source block is absent"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "status": "pass",
+          "details": "no Evidence Footer rows were rendered"
+        },
+        {
+          "name": "development-link-presence",
+          "status": "pass",
+          "details": "Development issue is tracked only through Metadata as required"
+        },
+        {
+          "name": "github-development-linkage",
+          "status": "pass",
+          "details": "GitHub closing-link footer matches the development issue set"
+        }
+      ],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1F",
+      "source_log_path": "docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md",
+      "pr_ref": "375",
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/375",
+      "pr_title": "S0F-1F/P0-P4: bucketed audit output materialization v1",
+      "pr_state": "MERGED",
+      "result": "exact-match",
+      "details": "live PR body matched the source-log-derived expected body exactly",
+      "raw_match": true,
+      "normalized_match": true,
+      "live_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1f-live-body.md",
+      "expected_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1f-expected-body.md",
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": "pass",
+      "contract_checks": [
+        {
+          "name": "required-pr-sections",
+          "status": "pass",
+          "details": "required PR sections are present"
+        },
+        {
+          "name": "pr-section-order",
+          "status": "pass",
+          "details": "section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "metadata bullet rows are contiguous"
+        },
+        {
+          "name": "pr-link-categories",
+          "status": "pass",
+          "details": "PR Links section uses only allowed link categories"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "no Evidence Footer Source rows were provided"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "status": "pass",
+          "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "status": "pass",
+          "details": "Evidence Footer section is omitted when the source block is absent"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "status": "pass",
+          "details": "no Evidence Footer rows were rendered"
+        },
+        {
+          "name": "development-link-presence",
+          "status": "pass",
+          "details": "Development issue is tracked only through Metadata as required"
+        },
+        {
+          "name": "github-development-linkage",
+          "status": "pass",
+          "details": "GitHub closing-link footer matches the development issue set"
+        }
+      ],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1G",
+      "source_log_path": "docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md",
+      "pr_ref": "377",
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/377",
+      "pr_title": "S0F-1G/P0-P6: parent issue sidebar ordering and title keyword governance v1",
+      "pr_state": "MERGED",
+      "result": "exact-match",
+      "details": "live PR body matched the source-log-derived expected body exactly",
+      "raw_match": true,
+      "normalized_match": true,
+      "live_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1g-live-body.md",
+      "expected_body_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/review-files/s0f-1g-expected-body.md",
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": "pass",
+      "contract_checks": [
+        {
+          "name": "required-pr-sections",
+          "status": "pass",
+          "details": "required PR sections are present"
+        },
+        {
+          "name": "pr-section-order",
+          "status": "pass",
+          "details": "section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "metadata bullet rows are contiguous"
+        },
+        {
+          "name": "pr-link-categories",
+          "status": "pass",
+          "details": "PR Links section uses only allowed link categories"
+        },
+        {
+          "name": "evidence-footer-source-shape",
+          "status": "pass",
+          "details": "no Evidence Footer Source rows were provided"
+        },
+        {
+          "name": "evidence-footer-eligibility",
+          "status": "pass",
+          "details": "Evidence Footer eligibility matches the source log tags/labels contract"
+        },
+        {
+          "name": "evidence-footer-presence",
+          "status": "pass",
+          "details": "Evidence Footer section is omitted when the source block is absent"
+        },
+        {
+          "name": "evidence-footer-line-shape",
+          "status": "pass",
+          "details": "no Evidence Footer rows were rendered"
+        },
+        {
+          "name": "development-link-presence",
+          "status": "pass",
+          "details": "Development issue is tracked only through Metadata as required"
+        },
+        {
+          "name": "github-development-linkage",
+          "status": "pass",
+          "details": "GitHub closing-link footer matches the development issue set"
+        }
+      ],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1H",
+      "source_log_path": "docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md",
+      "pr_ref": "",
+      "pr_url": "",
+      "pr_title": "",
+      "pr_state": "",
+      "result": "skip-no-live-pr-owned",
+      "details": "source log owns neither a live issue nor a live PR yet, so PR-body completeness review is not applicable for this slice",
+      "raw_match": false,
+      "normalized_match": false,
+      "live_body_path": null,
+      "expected_body_path": null,
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": null,
+      "contract_checks": [],
+      "contract_warnings": []
+    },
+    {
+      "requested_id": "S0F-1I",
+      "source_log_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
+      "pr_ref": "",
+      "pr_url": "",
+      "pr_title": "",
+      "pr_state": "",
+      "result": "skip-no-live-pr-owned",
+      "details": "source log owns neither a live issue nor a live PR yet, so PR-body completeness review is not applicable for this slice",
+      "raw_match": false,
+      "normalized_match": false,
+      "live_body_path": null,
+      "expected_body_path": null,
+      "raw_diff_path": null,
+      "normalized_diff_path": null,
+      "contract_result": null,
+      "contract_checks": [],
+      "contract_warnings": []
+    }
+  ]
+}
