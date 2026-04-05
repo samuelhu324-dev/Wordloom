@@ -24,6 +24,7 @@
   **phase_log_4**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
   **phase_log_5**: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
   **phase_log_6**: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+  **phase_log_7**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -41,7 +42,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-04`
+**updated**: `2026-04-05`
 
 ---
 
@@ -125,6 +126,8 @@
   - 详见：`docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
 - `S0F-1F`（Phase 1F）：bucketed audit output materialization
   - 详见：`docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+- `S0F-1G`（Phase 1G）：parent issue sidebar ordering and title keyword governance
+  - 详见：`docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -154,6 +157,7 @@
 - `S0F-1F/P2` is now complete: the supporting historical pre-screen surface emits additive diagnosis-layer fields for deterministic cases, one representative historical sample is retained with emitted bucket data, and the next follow-up is `P3` retained output packaging.
 - `S0F-1F/P3` is now complete: one reviewer-facing retained summary now packages live and historical emitted bucket-output samples together, diagnosis-layer reading rules are fixed, and the next follow-up is `P4` downstream contract packaging.
 - `S0F-1F/P4` is now complete: one downstream-facing diagnosis-layer contract packages stable field names, null semantics, and cross-surface consumer rules, and no further phase is currently required inside this slice.
+- `S0F-1G` is now opened as the next follow-up slice: it concentrates the last explicit parent issue sidebar ordering blocker and the missing hard governance around issue title keyword prefixes into one deterministic identity-governance lane.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
