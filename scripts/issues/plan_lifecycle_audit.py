@@ -336,7 +336,7 @@ query($owner:String!, $name:String!, $number:Int!) {
         number = node.get("number")
         if number is not None:
             result.append(int(number))
-    return sorted(result)
+    return result
 
 
 def _expected_child_issue_refs(fields: dict[str, str], repo_root: Path) -> list[str]:
