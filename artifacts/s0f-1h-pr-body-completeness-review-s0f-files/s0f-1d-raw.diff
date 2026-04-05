@@ -1,0 +1,71 @@
+--- expected/S0F-1D
++++ live/S0F-1D
+@@ -1,34 +1,34 @@
+-## Metadata
+-
+-- Requested ID: `S0F-1D`
+-- Base branch: `main`
+-- Candidate PR-prep branch: `pr-prep/s0f-1d`
+-- Source log: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
+-- Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
+-- Development issue: #368
+-
+-## Summary
+-
+-- Define one explicit completeness-audit contract for the three lifecycle stages: issue creation, PR development linkage, and issue conclusion.
+-- Fix the field-timing matrix so create-time, PR-time, and conclusion-time expectations are no longer inferred ad hoc during review.
+-- Add a dedicated PR development-linkage completeness lane that can detect source-log omissions instead of validating only rendered PR body structure.
+-- Keep the first rollout read-only so historical and active slices can be classified before remediation is introduced.
+-
+-## Execution Checklist
+-
+-- [x] `P0-C1-S1`: `S0F-1D` created and wired into the `S0F` parent spine
+-- [x] `P0-C1-S2`: three-stage completeness matrix fixed
+-- [x] `P1-C1-S1`: create-time field matrix fixed for issue body plus sidebar state
+-- [x] `P1-C1-S2`: blank-as-omitted Links review rule fixed
+-- [x] `P2-C1-S1`: PR development-linkage completeness rule fixed
+-- [x] `P2-C1-S2`: PR labels and close-link footer completeness rule fixed
+-- [x] `P3-C1-S1`: final issue body completeness rule fixed
+-- [x] `P3-C1-S2`: conclusion-time sidebar re-check rule fixed
+-- [x] `P4-C1-S1`: representative read-only completeness audit sample retained
+-
+-## Links
+-
+-- Log: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
+-- Parent log: `docs/logs/log-S0F-docs-management-v6.md`
+-
+-Closes #368
++## Metadata
++
++- Requested ID: `S0F-1D`
++- Base branch: `main`
++- Candidate PR-prep branch: `pr-prep/s0f-1d`
++- Source log: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
++- Labels: `EVOLUTION, s0/knowledge system, sub/1, drills`
++- Development issue: #368
++
++## Summary
++
++- Define one explicit completeness-audit contract for the three lifecycle stages: issue creation, PR development linkage, and issue conclusion.
++- Fix the field-timing matrix so create-time, PR-time, and conclusion-time expectations are no longer inferred ad hoc during review.
++- Add a dedicated PR development-linkage completeness lane that can detect source-log omissions instead of validating only rendered PR body structure.
++- Keep the first rollout read-only so historical and active slices can be classified before remediation is introduced.
++
++## Execution Checklist
++
++- [x] `P0-C1-S1`: `S0F-1D` created and wired into the `S0F` parent spine
++- [x] `P0-C1-S2`: three-stage completeness matrix fixed
++- [x] `P1-C1-S1`: create-time field matrix fixed for issue body plus sidebar state
++- [x] `P1-C1-S2`: blank-as-omitted Links review rule fixed
++- [x] `P2-C1-S1`: PR development-linkage completeness rule fixed
++- [x] `P2-C1-S2`: PR labels and close-link footer completeness rule fixed
++- [x] `P3-C1-S1`: final issue body completeness rule fixed
++- [x] `P3-C1-S2`: conclusion-time sidebar re-check rule fixed
++- [x] `P4-C1-S1`: representative read-only completeness audit sample retained
++
++## Links
++
++- Log: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
++- Parent log: `docs/logs/log-S0F-docs-management-v6.md`
++
++Closes #368
