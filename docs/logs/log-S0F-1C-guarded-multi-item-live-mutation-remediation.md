@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Drills, Evidence, epic/s0, sub/1c`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/367`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/372`
   **runbook**: `docs/runbook/run-S0F-1C-guarded-multi-item-remediation.md`
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`

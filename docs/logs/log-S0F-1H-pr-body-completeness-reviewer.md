@@ -54,6 +54,7 @@
 - Expected-body rebuild should reuse the existing PR body rewrite contract instead of introducing a second summary or checklist renderer.
 - Normalization should stay narrow and structural: line-ending and trailing-whitespace cleanup plus blank-line collapse are allowed, but semantic row differences must still surface as substantive drift.
 - Missing `links.pr` is a review stop condition, not a silent skip, because the source log otherwise fails to name the canonical live PR under review.
+- A slice that owns neither a live issue nor a live PR yet is outside the live PR-body review set and should classify as a bounded skip rather than as a stop.
 - The first rollout stays read-only and artifact-first so later policy or CI use can depend on a retained review bundle before any enforcement is widened.
 
 ## PR Summary Inputs (optional)
@@ -78,14 +79,15 @@
 - `exact match`: the live PR body matches the source-log-derived expected body byte-for-byte.
 - `formatting-only drift`: the live PR body differs byte-for-byte, but matches after narrow whitespace and blank-line normalization.
 - `substantive drift`: the live PR body still differs from the source-log-derived expected body after normalization.
-- `review stop`: the reviewer cannot resolve a canonical live PR because the source log does not provide deterministic PR ownership input such as `links.pr`.
+- `review stop`: the reviewer cannot resolve a canonical live PR because the source log is already inside a live-owned lifecycle lane but does not provide deterministic PR ownership input such as `links.pr`.
+- `review skip`: the source log does not yet own a live issue or live PR, so PR-body completeness review is not applicable to that slice yet.
 
 ## Constraints
 
 - Do not guess a live PR when the source log leaves `links.pr` blank.
 - Do not widen normalization until substantive checklist, metadata, links, or footer drift could be hidden by it.
 - Do not introduce a second expected-body renderer that can drift from the canonical rewrite surface.
-- Do not mix this slice with live PR body mutation or PR-link write-back repair.
+- Do not widen this slice into live PR body mutation or generic GitHub metadata repair beyond bounded source-log `links.pr` convergence needed to make the reviewer coverage canonical.
 
 ## Scope
 
@@ -93,6 +95,7 @@
 - `P1`: add the read-only expected-body rebuild plus normalized-diff reviewer
 - `P2`: retain one `S0F` sample review bundle and classify exact, formatting-only, and stop states
 - `P3`: package the operator-facing review standard and retained artifact surface
+- `P4`: reconcile bounded source-log `links.pr` write-back so the reviewer can cover the full current `S0F` child set canonically
 
 ## Success Criteria (DoD)
 
@@ -114,8 +117,25 @@
 - `P0` is now complete: `S0F-1H` is wired into the spine, the reviewer boundary is fixed as read-only, and the next follow-up is `P1` canonical expected-body rebuild plus normalized comparison.
 - `P1` is now complete: `scripts/issues/review_pr_body_completeness.py` rebuilds the canonical expected PR body from each source log by reusing `rewrite_pr_body_scope_from_log.py`, validates the live PR body contract, and classifies exact versus normalized drift without mutating GitHub state.
 - `P2` is now complete: `artifacts/s0f-1h-pr-body-completeness-review-s0f.json` retains one live `S0F` sample bundle showing `S0F-1F` as an exact match, `S0F-1A` as formatting-only drift, and no substantive drift in the currently reviewable set.
-- The same retained bundle also makes the remaining ownership blocker explicit instead of hiding it: `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1E`, and `S0F-1G` all stop under `stop-missing-pr-link` because their source logs still leave `links.pr` blank.
-- `P3` is now complete: the reviewer now retains live-body, expected-body, and diff artifacts under `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/`, and `S0F-1H` is stable as the read-only review standard for this lane.
+- The first retained bundle also exposed the remaining ownership blocker explicitly instead of hiding it: `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1E`, and `S0F-1G` initially stopped under `stop-missing-pr-link` because their source logs left `links.pr` blank.
+- `P3` is now complete: the reviewer now retains live-body, expected-body, and diff artifacts under `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/`, and the operator-facing review surface is fixed.
+- `P4` is now complete: the bounded missing `links.pr` set on `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1E`, and `S0F-1G` has been written back directly in source, the retained `S0F` review bundle has been rerun against the now-canonical full live current child set, and the current `S0F-1H` slice itself now classifies as a bounded skip until it owns a live PR.
+
+## P4 Source-Log PR Ownership Convergence (completed)
+
+- `S0F-1H` now closes the exact blocker that the first `P3` review bundle exposed: canonical review coverage was still partial because several `S0F` child logs had converged live PRs on GitHub but still left `links.pr` blank in source.
+- v1 keeps this extension deliberately narrow and reviewer-owned: `P4` writes back only the missing source-log PR URLs needed for canonical live-PR resolution, then reruns the read-only reviewer. It does not widen into live PR body mutation, label repair, or generic metadata backfill.
+
+### P4-C1-S1 (Bounded missing links.pr set written back directly on the affected S0F child logs | v1)
+
+- The affected `S0F` child logs `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1E`, and `S0F-1G` now carry their correct live merged PR URLs directly in `links.pr`.
+- This restores canonical source-log ownership for the full current `S0F` child set without requiring the reviewer to guess live PR mappings from title search or GitHub heuristics.
+
+### P4-C1-S2 (Retained S0F reviewer bundle rerun against the now-canonical full child set | v1)
+
+- `artifacts/s0f-1h-pr-body-completeness-review-s0f.json` is now rerun after the `links.pr` write-back set converged, so the retained bundle no longer depends on `stop-missing-pr-link` for the current live `S0F` child set.
+- The rerun remains the canonical proof surface for whether the reviewer now sees exact, formatting-only, or substantive drift across the full current `S0F` lane.
+- The current `S0F-1H` source log itself remains outside that live child set until it owns a live issue/PR pair, so the rerun now classifies it as a bounded skip instead of a stop.
 
 ## P3 Operator Review Packaging (completed)
 
@@ -136,14 +156,19 @@
 ### P2-C1-S1 (Exact, formatting-only, and stop-state classification retained on one live sample set | v1)
 
 - The retained `S0F` review bundle now classifies `S0F-1F/#375` as `exact-match`, proving the earlier merged-PR body repair has converged to the source-log-owned expected body exactly.
-- The same bundle classifies `S0F-1A/#365` as `formatting-only-drift`, proving byte-level mismatch can now be downgraded safely when normalization removes the observed noise.
-- The same bundle records zero `substantive-drift` items in the currently reviewable `S0F` set.
+- The same bundle classifies `S0F-1A/#365`, `S0F-1B/#371`, `S0F-1C/#372`, `S0F-1D/#373`, `S0F-1E/#374`, and `S0F-1G/#377` as `formatting-only-drift`, proving byte-level mismatch can now be downgraded safely when normalization removes the observed noise across the current live `S0F` PR set.
+- The same bundle records zero `substantive-drift` items and zero remaining `stop-missing-pr-link` items in the currently reviewable live `S0F` set.
 
 ### P2-C1-S2 (Missing source-log PR ownership now reports as an explicit review stop | v1)
 
 - The retained sample now reports `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1E`, and `S0F-1G` as `stop-missing-pr-link` because their canonical source logs still do not write back `links.pr`.
 - This keeps the review surface honest: those items are no longer silently omitted from the sweep, but they are also not guessed from live GitHub search heuristics.
 - The remaining follow-up for those items belongs outside this slice: source-log PR-link write-back must converge before the reviewer can evaluate those PR bodies canonically.
+
+### P2-C1-S3 (Not-yet-live slices classify as bounded skips instead of review stops | v1)
+
+- The reviewer now classifies a source log as `skip-no-live-pr-owned` when it owns neither a live issue nor a live PR yet.
+- This keeps the stop taxonomy precise: missing `links.pr` remains a real ownership gap only for slices already inside a live-owned lane, while the current in-progress reviewer slice itself is simply outside the live PR review set until its own issue/PR lifecycle starts.
 
 ## P1 Read-Only Reviewer Implementation (completed)
 
@@ -161,6 +186,7 @@
 - The reviewer now performs two comparisons per item: a raw byte-level comparison and a normalized comparison that strips trailing whitespace, normalizes line endings, trims outer blank space, and collapses blank-line runs.
 - A PR body therefore classifies as `formatting-only-drift` only when the normalized forms match exactly; any surviving row or content difference remains a `substantive-drift` item.
 - The reviewer also stops explicitly when `links.pr` is blank or invalid, so normalization never becomes an excuse for reviewing the wrong live PR.
+- The reviewer now also distinguishes not-yet-live slices from broken ownership: when both `links.issue` and `links.pr` are blank, the item classifies as a bounded skip instead of a stop.
 
 ## P0 Reviewer Boundary and Spine Wiring (completed)
 
@@ -198,6 +224,11 @@
 
 - P3-C1-S1: retain reviewer output files and diff artifacts as the operator-facing review surface
 
+### P4 (Source-log PR ownership convergence)
+
+- P4-C1-S1: write back the bounded missing `links.pr` set needed for canonical reviewer coverage
+- P4-C1-S2: rerun the retained `S0F` reviewer bundle after source-log PR ownership converges
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Reviewer boundary and spine wiring)
@@ -219,6 +250,11 @@
 
 - [x] `P3-C1-S1`: reviewer output files and diff artifacts retained
 
+### P4 (Source-log PR ownership convergence)
+
+- [x] `P4-C1-S1`: bounded missing `links.pr` set written back on the affected `S0F` child logs
+- [x] `P4-C1-S2`: retained `S0F` reviewer bundle rerun after source-log PR ownership converged
+
 ## Notes (optional)
 
 - `S0F-1H` intentionally stops short of any live repair path. If a reviewer surfaces substantive drift later, that repair should still go through the existing bounded PR body rewrite surfaces rather than through this reviewer.
@@ -228,9 +264,10 @@
 
 - `scripts/issues/review_pr_body_completeness.py` now provides the dedicated read-only reviewer surface for this slice.
 - `scripts/issues/rewrite_pr_body_scope_from_log.py` remains the canonical expected-body rebuild surface reused by the reviewer instead of duplicated logic.
-- `artifacts/s0f-1h-pr-body-completeness-review-s0f.json` retains the current `S0F` sample review bundle with exact, formatting-only, and stop-state classifications.
+- `artifacts/s0f-1h-pr-body-completeness-review-s0f.json` now retains the rerun `S0F` review bundle after the bounded `links.pr` write-back set converged.
 - `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1f-live-body.md` and `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1f-expected-body.md` prove the `S0F-1F/#375` exact-match state directly.
 - `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1a-raw.diff` proves the `S0F-1A/#365` mismatch is currently formatting-only rather than substantive.
+- `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`, `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`, `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`, `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`, and `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md` now carry the canonical live merged PR URLs needed for full reviewer coverage.
 
 ## Numbering
 

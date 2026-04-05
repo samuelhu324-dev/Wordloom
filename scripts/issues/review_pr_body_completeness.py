@@ -198,10 +198,32 @@ def _write_optional_diff(path: Path, diff_text: str) -> str | None:
 def _review_one_log(*, source_log_path: Path, repo_slug: str, artifact_dir: Path) -> ReviewItemResult:
     fields = _parse_fields(_load_text(source_log_path))
     requested_id = str(fields.get("id") or "").strip()
+    issue_link = str(fields.get("issue") or "").strip()
     pr_link = str(fields.get("pr") or "").strip()
     source_log_rel = _repo_rel(source_log_path)
     artifact_dir.mkdir(parents=True, exist_ok=True)
     item_slug = _safe_slug(requested_id.lower())
+
+    if not issue_link and not pr_link:
+        return ReviewItemResult(
+            requested_id=requested_id,
+            source_log_path=source_log_rel,
+            pr_ref="",
+            pr_url="",
+            pr_title="",
+            pr_state="",
+            result="skip-no-live-pr-owned",
+            details="source log owns neither a live issue nor a live PR yet, so PR-body completeness review is not applicable for this slice",
+            raw_match=False,
+            normalized_match=False,
+            live_body_path=None,
+            expected_body_path=None,
+            raw_diff_path=None,
+            normalized_diff_path=None,
+            contract_result=None,
+            contract_checks=[],
+            contract_warnings=[],
+        )
 
     if not pr_link:
         return ReviewItemResult(
@@ -354,6 +376,7 @@ def run_pr_body_completeness_review(
 
     substantive_ids = [item.requested_id for item in items if item.result == "substantive-drift"]
     stop_ids = [item.requested_id for item in items if item.result.startswith("stop-")]
+    skip_ids = [item.requested_id for item in items if item.result.startswith("skip-")]
     formatting_only_ids = [item.requested_id for item in items if item.result == "formatting-only-drift"]
     exact_match_ids = [item.requested_id for item in items if item.result == "exact-match"]
 
@@ -371,6 +394,7 @@ def run_pr_body_completeness_review(
             "formatting_only_ids": formatting_only_ids,
             "substantive_drift_ids": substantive_ids,
             "stop_ids": stop_ids,
+            "skip_ids": skip_ids,
         },
         "items": [asdict(item) for item in items],
     }
