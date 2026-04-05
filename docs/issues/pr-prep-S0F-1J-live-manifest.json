@@ -1,0 +1,14 @@
+{
+  "defaults": {
+    "requested_id": "S0F-1J",
+    "source_log_path": "docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md",
+    "base_branch": "main",
+    "head_ref": "HEAD",
+    "candidate_pr_branch": "pr-prep/s0f-1j"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1J"
+    }
+  ]
+}

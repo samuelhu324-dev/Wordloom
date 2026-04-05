@@ -1,0 +1,19 @@
+{
+  "mode": "issue-conclusion-apply",
+  "result": "ok",
+  "plan_path": "docs/issues/issue-conclusion-S0F-1J-live-plan.json",
+  "item_index": 0,
+  "requested_id": "S0F-1J",
+  "source_log_path": "docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "issue_number": 382,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/382",
+  "issue_title": "S0F-1J: automation/PR body completeness task and CI gate",
+  "previous_issue_state": "CLOSED",
+  "final_issue_state": "CLOSED",
+  "body_path": "docs/issues/issue-conclusion-S0F-1J-live-apply-body.md",
+  "close_reason": null,
+  "warnings": [
+    "issue was already closed before apply; body updated in place"
+  ]
+}

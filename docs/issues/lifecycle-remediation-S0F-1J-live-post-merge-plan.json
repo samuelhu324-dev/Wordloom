@@ -1,0 +1,34 @@
+{
+  "mode": "lifecycle-remediation-dry-run",
+  "result": "ok",
+  "audit_plan_path": "docs/issues/lifecycle-audit-S0F-1J-live-post-merge-plan.json",
+  "selection_input": "audit-plan",
+  "operation": "plan-lifecycle-remediation",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0F-1J: planned"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-1J",
+      "source_log_path": "docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md",
+      "issue_number": 382,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/382",
+      "audit_status": "blocked",
+      "remediation_status": "planned",
+      "planned_action": "plan-remediation",
+      "applied_action": null,
+      "steps": [
+        {
+          "action_kind": "plan-issue-conclusion-refresh",
+          "status": "planned",
+          "details": "Prepare an issue-conclusion plan so the final body and close state can be regenerated from exact-ID merged PR evidence.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-S0F-1J-live-post-merge-issue-conclusion-manifest.json"
+        }
+      ],
+      "warnings": [],
+      "reason": "Full-auto lifecycle run for S0F-1J after the repo-task and CI-gate packaging slice stabilized."
+    }
+  ]
+}

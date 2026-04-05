@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "mode": "relationship-dry-run",
+  "defaults": {
+    "relationship_type": "child-of"
+  },
+  "items": [
+    {
+      "parent_issue_number": 363,
+      "child_issue_number": 382,
+      "parent_log_path": "docs/logs/log-S0F-docs-management-v6.md",
+      "child_log_path": "docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md",
+      "reason": "Full-auto lifecycle run for S0F-1J after the repo-task and CI-gate packaging slice stabilized."
+    }
+  ]
+}

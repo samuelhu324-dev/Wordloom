@@ -1,0 +1,45 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-remediation-S0F-1J-live-post-merge-issue-conclusion-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0F-1J: merged PR set supplied by explicit override",
+    "S0F-1J: preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence",
+    "S0F-1J: existing Context section did not satisfy the prose-first Context gate for line range (4, 4); preview replaces it with an LLM-authored conclusion Context block",
+    "S0F-1J: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-1J",
+      "source_log_path": "docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md",
+      "issue_number": 382,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/382",
+      "issue_title": "S0F-1J: automation/PR body completeness task and CI gate",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-lifecycle-remediation-S0F-1J-live-post-merge-issue-conclusion-s0f-1j-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 383,
+          "title": "S0F-1J/P0-P4: PR body completeness task and CI gate v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/383",
+          "merged_at": "2026-04-05T14:30:25Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "merged PR set supplied by explicit override",
+        "preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence",
+        "existing Context section did not satisfy the prose-first Context gate for line range (4, 4); preview replaces it with an LLM-authored conclusion Context block",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Full-auto lifecycle run for S0F-1J after the repo-task and CI-gate packaging slice stabilized."
+    }
+  ]
+}

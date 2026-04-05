@@ -1,0 +1,141 @@
+{
+  "mode": "lifecycle-audit-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-audit-S0F-1J-live-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-lifecycle-audit",
+  "total_items": 1,
+  "planned_items": 0,
+  "warnings": [
+    "S0F-1J: blocked"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-1J",
+      "source_log_path": "docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md",
+      "issue_number": 382,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/382",
+      "issue_title": "S0F-1J: automation/PR body completeness task and CI gate",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
+      "expected_parent_issue_number": 363,
+      "actual_parent_issue_number": 363,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/382",
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/383",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 383,
+          "title": "S0F-1J/P0-P4: PR body completeness task and CI gate v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/383",
+          "merged_at": "2026-04-05T14:30:25Z"
+        }
+      ],
+      "planned_action": "block-mutation",
+      "applied_action": null,
+      "status": "blocked",
+      "checks": [
+        {
+          "name": "source-log-issue-writeback",
+          "status": "pass",
+          "details": "source log links.issue matches the live issue URL"
+        },
+        {
+          "name": "title-prefix-governance",
+          "status": "pass",
+          "details": "live issue title prefix matches expected 'S0F-1J: automation/' derived from source-log issue_keyword 'automation'"
+        },
+        {
+          "name": "required-body-sections",
+          "status": "pass",
+          "details": "Metadata, Context, Definition of Done (DoD), and Links sections are present"
+        },
+        {
+          "name": "issue-section-order",
+          "status": "pass",
+          "details": "issue body section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "Metadata bullet rows are contiguous"
+        },
+        {
+          "name": "metadata-links-boundary",
+          "status": "pass",
+          "details": "Metadata keeps state rows only while deterministic log navigation stays in Links"
+        },
+        {
+          "name": "expected-labels",
+          "status": "pass",
+          "details": "live issue labels cover the deterministic label set derived from the source log"
+        },
+        {
+          "name": "body-parent-metadata",
+          "status": "pass",
+          "details": "Metadata section records Parent issue: #363"
+        },
+        {
+          "name": "sidebar-parent-relationship",
+          "status": "pass",
+          "details": "live GitHub parent relationship points to #363"
+        },
+        {
+          "name": "exact-id-merged-pr-evidence",
+          "status": "pass",
+          "details": "found 1 exact-ID merged PR(s)"
+        },
+        {
+          "name": "final-dod-pr-refs",
+          "status": "fail",
+          "details": "DoD PR refs [] do not match expected ['#383']"
+        },
+        {
+          "name": "link-categories",
+          "status": "pass",
+          "details": "Links section uses only allowed issue link categories"
+        },
+        {
+          "name": "links-coverage",
+          "status": "pass",
+          "details": "Links section covers the expected canonical issue-link fragments"
+        },
+        {
+          "name": "context-sentence-shape",
+          "status": "fail",
+          "details": "Context must contain exactly 4 English bullet sentences; found 0: []"
+        },
+        {
+          "name": "closed-body-shape",
+          "status": "fail",
+          "details": "concluded issue does not satisfy the prose-first Context gate within line range (4, 4)"
+        },
+        {
+          "name": "source-log-pr-link",
+          "status": "pass",
+          "details": "source log links.pr is represented in the exact-ID merged PR evidence set"
+        }
+      ],
+      "warnings": [],
+      "primary_bucket": "conclusion-dod-gap",
+      "bucket_set": [
+        "conclusion-dod-gap",
+        "conclusion-context-gap",
+        "conclusion-body-shape-gap"
+      ],
+      "bucket_source_checks": {
+        "conclusion-dod-gap": [
+          "final-dod-pr-refs"
+        ],
+        "conclusion-context-gap": [
+          "context-sentence-shape"
+        ],
+        "conclusion-body-shape-gap": [
+          "closed-body-shape"
+        ]
+      },
+      "bucket_stage": "conclusion",
+      "reason": "Full-auto lifecycle run for S0F-1J after the repo-task and CI-gate packaging slice stabilized."
+    }
+  ]
+}
