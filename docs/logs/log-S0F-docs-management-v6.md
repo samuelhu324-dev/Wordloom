@@ -26,6 +26,7 @@
   **phase_log_6**: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
   **phase_log_7**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
   **phase_log_8**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
+  **phase_log_9**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -131,6 +132,8 @@
   - 详见：`docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
 - `S0F-1H`（Phase 1H）：PR body completeness reviewer
   - 详见：`docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
+- `S0F-1I`（Phase 1I）：formatting-only PR body convergence
+  - 详见：`docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -175,6 +178,11 @@
 - `S0F-1H/P2` is now complete: one retained `S0F` sample bundle under `artifacts/s0f-1h-pr-body-completeness-review-s0f.json` now classifies `S0F-1F/#375` as an exact match, `S0F-1A/#365` as formatting-only drift, and no currently reviewable `S0F` PR body as substantive drift.
 - `S0F-1H/P4` is now complete: the bounded missing `links.pr` set on `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1E`, and `S0F-1G` has been written back directly in source so the read-only reviewer can cover the full current `S0F` child set canonically instead of stopping on partial source ownership.
 - `S0F-1H` is now stable: the read-only reviewer surface exists, formatting-only drift is separated cleanly from substantive drift, the full current live `S0F` child set now has canonical source-log PR ownership for reviewer coverage, and not-yet-live slices now classify as bounded skips instead of false stop states.
+- `S0F-1I` is now opened as the next `S0F` follow-up slice for bounded live convergence of the remaining formatting-only PR body drift exposed by `S0F-1H`.
+- `S0F-1I/P1` is now complete: one explicit six-item merged-PR rewrite manifest retains the full formatting-only `S0F` target set discovered by `S0F-1H`.
+- `S0F-1I/P2` is now complete: the canonical historical PR body rewrite batch has been applied successfully to `S0F-1A/#365`, `S0F-1B/#371`, `S0F-1C/#372`, `S0F-1D/#373`, `S0F-1E/#374`, and `S0F-1G/#377`, with retained per-item apply artifacts and no warnings.
+- `S0F-1I/P3` is now complete: the post-repair reviewer rerun now records `exact-match` across the full current live `S0F` child set, with zero remaining formatting-only drift, zero substantive drift, and zero stop items.
+- `S0F-1I` is now stable: the previously bounded formatting-only `S0F` PR body set has been converged through the canonical rewrite surface and re-verified to exact-match state.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 

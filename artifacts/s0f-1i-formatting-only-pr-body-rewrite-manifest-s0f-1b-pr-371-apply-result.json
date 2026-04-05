@@ -1,0 +1,14 @@
+{
+  "requested_id": "S0F-1B",
+  "source_log_path": "docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md",
+  "pr_number": 371,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/371",
+  "pr_title": "S0F-1B/P0-P5: llm-authored issue Context generation v1",
+  "pr_state": "MERGED",
+  "live_body_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1b-pr-371-live-body.md",
+  "rewritten_body_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1b-pr-371-rewritten-body.md",
+  "apply_result_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1b-pr-371-apply-result.json",
+  "body_changed": true,
+  "labels_applied": [],
+  "warnings": []
+}

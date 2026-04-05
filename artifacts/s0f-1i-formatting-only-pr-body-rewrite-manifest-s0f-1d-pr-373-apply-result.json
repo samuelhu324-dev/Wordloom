@@ -1,0 +1,14 @@
+{
+  "requested_id": "S0F-1D",
+  "source_log_path": "docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md",
+  "pr_number": 373,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/373",
+  "pr_title": "S0F-1D/P0-P4: creation, PR, and conclusion completeness audit v1",
+  "pr_state": "MERGED",
+  "live_body_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1d-pr-373-live-body.md",
+  "rewritten_body_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1d-pr-373-rewritten-body.md",
+  "apply_result_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1d-pr-373-apply-result.json",
+  "body_changed": true,
+  "labels_applied": [],
+  "warnings": []
+}

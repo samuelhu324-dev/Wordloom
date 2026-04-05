@@ -1,0 +1,14 @@
+{
+  "requested_id": "S0F-1A",
+  "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+  "pr_number": 365,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/365",
+  "pr_title": "S0F-1A/P0-P4: fail-closed entrypoints and preflight unification v1",
+  "pr_state": "MERGED",
+  "live_body_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1a-pr-365-live-body.md",
+  "rewritten_body_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1a-pr-365-rewritten-body.md",
+  "apply_result_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1a-pr-365-apply-result.json",
+  "body_changed": true,
+  "labels_applied": [],
+  "warnings": []
+}
