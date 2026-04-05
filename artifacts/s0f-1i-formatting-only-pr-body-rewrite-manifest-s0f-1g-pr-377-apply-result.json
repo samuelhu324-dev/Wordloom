@@ -1,0 +1,14 @@
+{
+  "requested_id": "S0F-1G",
+  "source_log_path": "docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md",
+  "pr_number": 377,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/377",
+  "pr_title": "S0F-1G/P0-P6: parent issue sidebar ordering and title keyword governance v1",
+  "pr_state": "MERGED",
+  "live_body_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1g-pr-377-live-body.md",
+  "rewritten_body_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1g-pr-377-rewritten-body.md",
+  "apply_result_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1g-pr-377-apply-result.json",
+  "body_changed": true,
+  "labels_applied": [],
+  "warnings": []
+}

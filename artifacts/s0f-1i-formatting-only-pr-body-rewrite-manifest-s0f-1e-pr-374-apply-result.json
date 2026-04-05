@@ -1,0 +1,14 @@
+{
+  "requested_id": "S0F-1E",
+  "source_log_path": "docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md",
+  "pr_number": 374,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/374",
+  "pr_title": "S0F-1E/P0-P4: completeness classification buckets and audit output taxonomy v1",
+  "pr_state": "MERGED",
+  "live_body_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1e-pr-374-live-body.md",
+  "rewritten_body_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1e-pr-374-rewritten-body.md",
+  "apply_result_path": "artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest-s0f-1e-pr-374-apply-result.json",
+  "body_changed": true,
+  "labels_applied": [],
+  "warnings": []
+}

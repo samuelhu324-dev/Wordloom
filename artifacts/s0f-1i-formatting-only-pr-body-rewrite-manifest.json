@@ -1,0 +1,38 @@
+{
+  "mode": "pr-body-rewrite-apply",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1A",
+      "source_log_path": "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+      "pr_number": 365
+    },
+    {
+      "requested_id": "S0F-1B",
+      "source_log_path": "docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md",
+      "pr_number": 371
+    },
+    {
+      "requested_id": "S0F-1C",
+      "source_log_path": "docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md",
+      "pr_number": 372
+    },
+    {
+      "requested_id": "S0F-1D",
+      "source_log_path": "docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md",
+      "pr_number": 373
+    },
+    {
+      "requested_id": "S0F-1E",
+      "source_log_path": "docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md",
+      "pr_number": 374
+    },
+    {
+      "requested_id": "S0F-1G",
+      "source_log_path": "docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md",
+      "pr_number": 377
+    }
+  ]
+}

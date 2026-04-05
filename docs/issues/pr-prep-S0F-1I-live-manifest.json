@@ -1,0 +1,14 @@
+{
+  "defaults": {
+    "requested_id": "S0F-1I",
+    "source_log_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
+    "base_branch": "main",
+    "head_ref": "HEAD",
+    "candidate_pr_branch": "pr-prep/s0f-1i"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1I"
+    }
+  ]
+}
