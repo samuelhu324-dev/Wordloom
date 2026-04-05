@@ -1,0 +1,41 @@
+{
+  "mode": "pr-body-completeness-standard-check-artifact-manifest",
+  "result": "pass",
+  "read_only": true,
+  "primary_local_boundary": true,
+  "trigger_surface": "local-operator-facing",
+  "requested_id_prefixes": [
+    "S0F-"
+  ],
+  "decision_reason": "The standard PR body completeness check passed with no substantive drift and no stop-state ownership gaps.",
+  "stop_reason": "",
+  "counts": {
+    "total_logs_reviewed": 10,
+    "exact_match": 7,
+    "formatting_only": 2,
+    "substantive_drift": 0,
+    "stop": 0,
+    "skip": 1
+  },
+  "reviewer": {
+    "fail_on_findings": true,
+    "review_result_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/review-result.json",
+    "review_artifact_dir": "artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/review-files"
+  },
+  "wrapper": {
+    "result_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/wrapper-result.json",
+    "summary_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/workflow-summary.md",
+    "notes": []
+  },
+  "retained_artifacts": {
+    "wrapper_summary_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/workflow-summary.md",
+    "artifact_manifest_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/artifact-manifest.json",
+    "review_result_path": "artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/review-result.json",
+    "review_artifact_dir": "artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/review-files"
+  },
+  "failure_semantics": {
+    "classification": "standard check pass",
+    "wrapper_role": "primary local boundary",
+    "publish_owner": "review_pr_body_completeness.py classification contract"
+  }
+}

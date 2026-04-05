@@ -5,7 +5,7 @@
 **id**: `S0F-1J`
 **kind**: `log`
 **title**: `PR body completeness task and CI gate v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Audit, Packaging, Contract, epic/s0, sub/1j`
 **links**: ``
@@ -107,7 +107,8 @@
 - `P1` is now complete in source: `package.json` now exposes one repo-owned task that delegates to `scripts/issues/invoke_pr_body_completeness_check.ps1`.
 - `P2` is now complete in source: `.github/workflows/s0f-pr-body-completeness-standard-check-dispatch.yml` now replays the same standard check as a workflow-dispatch CI gate with retained artifacts and fail-on-non-pass semantics.
 - `P3-C1-S1` is now complete: the reviewer-owned runbook has been replayed successfully through `npm run check:pr-body-completeness:s0f`, and the retained local pass bundle now lives under `artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/`.
-- `P3-C1-S2` remains the active completion boundary: the packaged workflow-dispatch CI gate still needs one retained pass run before this slice can be marked stable.
+- `P3-C1-S2` is now complete: the packaged CI gate has now run successfully on GitHub Actions under run `24003260082`, and the retained uploaded artifact is `s0f-pr-body-completeness-standard-check-24003260082-1`.
+- `S0F-1J` is now stable: the standard PR body completeness check is packaged behind one repo-owned task and one workflow-backed CI gate, and the reviewer-owned runbook has been replayed successfully through both surfaces.
 
 ## Plan (draft)
 
@@ -147,7 +148,7 @@
 ### P3 (Runbook validation)
 
 - [x] `P3-C1-S1`: runbook replayed successfully through the local repo task
-- [ ] `P3-C1-S2`: runbook replayed successfully through the workflow-dispatch CI gate
+- [x] `P3-C1-S2`: runbook replayed successfully through the workflow-dispatch CI gate
 
 ## Evidence
 
@@ -158,6 +159,7 @@
 - `.github/workflows/s0f-pr-body-completeness-standard-check-dispatch.yml` now provides the workflow-dispatch CI replay surface for the same standard check.
 - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md` remains the reviewer-owned runbook that this slice validates rather than replaces.
 - `artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/wrapper-result.json` records a `pass` result from the repo-owned task replay documented in the runbook.
+- GitHub Actions run `24003260082` under `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/24003260082` completed with `success` on event `push`, and the retained uploaded artifact is `s0f-pr-body-completeness-standard-check-24003260082-1`.
 
 ## Numbering
 
