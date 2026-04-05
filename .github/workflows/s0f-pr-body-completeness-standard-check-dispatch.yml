@@ -1,0 +1,283 @@
+name: s0f-pr-body-completeness-standard-check-dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      requested_id_prefixes:
+        description: "Comma-separated requested-ID prefixes to review."
+        required: false
+        type: string
+        default: "S0F-"
+      repo:
+        description: "Optional repository slug override (owner/repo). Blank uses the current repository."
+        required: false
+        type: string
+        default: ""
+      logs_dir:
+        description: "Optional logs directory override. Blank uses docs/logs."
+        required: false
+        type: string
+        default: ""
+      wrapper_notes:
+        description: "Optional single-line note retained in the workflow-owned artifact manifest."
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  pr_body_completeness_check:
+    name: pr-body-completeness-standard-check
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+      S0F_CHECK_REPO: ${{ inputs.repo != '' && inputs.repo || github.repository }}
+      S0F_CHECK_REQUESTED_PREFIXES: ${{ inputs.requested_id_prefixes }}
+      S0F_CHECK_LOGS_DIR: ${{ inputs.logs_dir }}
+      S0F_CHECK_NOTES: ${{ inputs.wrapper_notes }}
+      S0F_CHECK_ARTIFACT_DIR: artifacts/github-actions/pr-body-completeness-check/${{ github.run_id }}-${{ github.run_attempt }}
+      S0F_CHECK_RESULT_JSON: artifacts/github-actions/pr-body-completeness-check/${{ github.run_id }}-${{ github.run_attempt }}/wrapper-result.json
+      S0F_CHECK_SUMMARY_MD: artifacts/github-actions/pr-body-completeness-check/${{ github.run_id }}-${{ github.run_attempt }}/workflow-summary.md
+      S0F_CHECK_MANIFEST_JSON: artifacts/github-actions/pr-body-completeness-check/${{ github.run_id }}-${{ github.run_attempt }}/artifact-manifest.json
+      S0F_CHECK_REVIEW_RESULT_JSON: artifacts/github-actions/pr-body-completeness-check/${{ github.run_id }}-${{ github.run_attempt }}/review-result.json
+      S0F_CHECK_REVIEW_DIR: artifacts/github-actions/pr-body-completeness-check/${{ github.run_id }}-${{ github.run_attempt }}/review-files
+      S0F_CHECK_DISPATCH_MANIFEST_JSON: artifacts/github-actions/pr-body-completeness-check/${{ github.run_id }}-${{ github.run_attempt }}/dispatch-run-manifest.json
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Prepare artifact directory
+        run: |
+          set -euo pipefail
+          mkdir -p "$S0F_CHECK_ARTIFACT_DIR"
+
+      - name: Run standard PR body completeness check
+        id: wrapper
+        run: |
+          set +e
+
+          WRAPPER_ARGS=(
+            --repo "$S0F_CHECK_REPO"
+            --review-result-path "$S0F_CHECK_REVIEW_RESULT_JSON"
+            --review-artifact-dir "$S0F_CHECK_REVIEW_DIR"
+            --wrapper-result-path "$S0F_CHECK_RESULT_JSON"
+            --wrapper-summary-path "$S0F_CHECK_SUMMARY_MD"
+            --artifact-manifest-path "$S0F_CHECK_MANIFEST_JSON"
+            --trigger-surface workflow_dispatch
+          )
+
+          if [ -n "$S0F_CHECK_LOGS_DIR" ]; then
+            WRAPPER_ARGS+=(--logs-dir "$S0F_CHECK_LOGS_DIR")
+          fi
+
+          if [ -n "$S0F_CHECK_NOTES" ]; then
+            WRAPPER_ARGS+=(--wrapper-notes "$S0F_CHECK_NOTES")
+          fi
+
+          IFS=',' read -ra PREFIXES <<< "$S0F_CHECK_REQUESTED_PREFIXES"
+          for prefix in "${PREFIXES[@]}"; do
+            trimmed="$(echo "$prefix" | xargs)"
+            if [ -n "$trimmed" ]; then
+              WRAPPER_ARGS+=(--requested-id-prefix "$trimmed")
+            fi
+          done
+
+          python scripts/issues/plan_pr_body_completeness_check_wrapper.py "${WRAPPER_ARGS[@]}"
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Write workflow summary
+        if: always()
+        env:
+          WRAPPER_EXIT_CODE: ${{ steps.wrapper.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          result_path = Path(os.environ["S0F_CHECK_RESULT_JSON"])
+          summary_path = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          retained_summary_path = Path(os.environ["S0F_CHECK_SUMMARY_MD"])
+          exit_code = os.environ.get("WRAPPER_EXIT_CODE", "")
+
+          lines = [
+              "## S0F PR Body Completeness Standard Check",
+              "",
+              "- Mode: `secondary enforcement`",
+              "- Trigger surface: `workflow_dispatch`",
+              "- Primary review owner: `local reviewer-owned standard check`",
+              f"- Repository: `{os.environ['S0F_CHECK_REPO']}`",
+              f"- Requested ID prefixes: `{os.environ['S0F_CHECK_REQUESTED_PREFIXES']}`",
+          ]
+
+          if result_path.is_file():
+              payload = json.loads(result_path.read_text(encoding="utf-8"))
+              lines.extend(
+                  [
+                      f"- Wrapper result: `{payload.get('result', 'unknown')}`",
+                      f"- Stop reason: `{payload.get('stop_reason', '')}`",
+                      f"- Total logs reviewed: `{payload.get('total_logs_reviewed', 0)}`",
+                      f"- Wrapper result artifact: `{payload.get('wrapper_result_path', '')}`",
+                      f"- Review result artifact: `{payload.get('review_result_path', '')}`",
+                      f"- Review artifact dir: `{payload.get('review_artifact_dir', '')}`",
+                      "",
+                      "This workflow replays the same standard read-only PR body completeness check behind a CI surface. A stop or error means retained reviewer findings remain; it does not replace the local reviewer-owned boundary.",
+                  ]
+              )
+          else:
+              lines.extend(
+                  [
+                      "- Wrapper result: `missing-result-artifact`",
+                      f"- Wrapper exit code: `{exit_code or 'unknown'}`",
+                      "",
+                      "The workflow could not find the retained wrapper result artifact, so it cannot prove pass/stop/error semantics for this dispatch.",
+                  ]
+              )
+
+          rendered = "\n".join(lines) + "\n"
+          summary_path.write_text(rendered, encoding="utf-8")
+          retained_summary_path.write_text(rendered, encoding="utf-8")
+          PY
+
+      - name: Write dispatch run manifest
+        if: always()
+        env:
+          WRAPPER_EXIT_CODE: ${{ steps.wrapper.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          result_path = Path(os.environ["S0F_CHECK_RESULT_JSON"])
+          manifest_path = Path(os.environ["S0F_CHECK_DISPATCH_MANIFEST_JSON"])
+          wrapper_result = "missing-result-artifact"
+          stop_reason = "missing-result-artifact"
+          total_logs_reviewed = 0
+
+          if result_path.is_file():
+              payload = json.loads(result_path.read_text(encoding="utf-8"))
+              wrapper_result = str(payload.get("result") or "unknown")
+              stop_reason = str(payload.get("stop_reason") or "")
+              total_logs_reviewed = int(payload.get("total_logs_reviewed") or 0)
+
+          manifest = {
+              "mode": "pr-body-completeness-workflow-dispatch-run-manifest",
+              "result": wrapper_result,
+              "trigger_surface": "workflow_dispatch",
+              "secondary_enforcement": True,
+              "local_primary_boundary": True,
+              "repository": os.environ["S0F_CHECK_REPO"],
+              "requested_id_prefixes": os.environ["S0F_CHECK_REQUESTED_PREFIXES"],
+              "logs_dir": os.environ.get("S0F_CHECK_LOGS_DIR", ""),
+              "wrapper_notes": os.environ.get("S0F_CHECK_NOTES", ""),
+              "run_id": os.environ.get("GITHUB_RUN_ID", ""),
+              "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", ""),
+              "workflow": os.environ.get("GITHUB_WORKFLOW", ""),
+              "wrapper_exit_code": os.environ.get("WRAPPER_EXIT_CODE", ""),
+              "stop_reason": stop_reason,
+              "total_logs_reviewed": total_logs_reviewed,
+              "retained_artifacts": {
+                  "wrapper_result_path": os.environ["S0F_CHECK_RESULT_JSON"],
+                  "wrapper_summary_path": os.environ["S0F_CHECK_SUMMARY_MD"],
+                  "artifact_manifest_path": os.environ["S0F_CHECK_MANIFEST_JSON"],
+                  "review_result_path": os.environ["S0F_CHECK_REVIEW_RESULT_JSON"],
+                  "review_artifact_dir": os.environ["S0F_CHECK_REVIEW_DIR"],
+                  "dispatch_run_manifest_path": os.environ["S0F_CHECK_DISPATCH_MANIFEST_JSON"],
+              },
+              "failure_semantics": {
+                  "classification": (
+                      "missing-wrapper-result-artifact"
+                      if wrapper_result == "missing-result-artifact"
+                      else ("workflow-dispatch read-only stop" if wrapper_result == "stop" else ("workflow-dispatch read-only error" if wrapper_result == "error" else "workflow-dispatch read-only pass"))
+                  ),
+                  "github_actions_role": "secondary enforcement",
+                  "publish_owner": "local reviewer-owned standard check",
+                  "workflow_role_note": "workflow_dispatch replay is evidence-oriented and never the first review authorization boundary",
+              },
+          }
+
+          manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+          PY
+
+      - name: Emit check annotations
+        if: always()
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          result_path = Path(os.environ["S0F_CHECK_RESULT_JSON"])
+          if not result_path.is_file():
+              print("::error title=missing wrapper result artifact::workflow_dispatch standard check did not retain wrapper-result.json")
+              raise SystemExit(0)
+
+          payload = json.loads(result_path.read_text(encoding="utf-8"))
+          result = str(payload.get("result") or "unknown")
+          if result == "pass":
+              print("::notice title=pr-body-completeness pass::workflow_dispatch standard check passed without changing ownership semantics")
+          elif result == "stop":
+              print("::error title=pr-body-completeness stop::workflow_dispatch standard check retained findings; see workflow summary and uploaded artifacts")
+          else:
+              print("::error title=pr-body-completeness error::workflow_dispatch standard check errored after retaining artifacts where possible")
+          PY
+
+      - name: Upload workflow artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s0f-pr-body-completeness-standard-check-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.S0F_CHECK_ARTIFACT_DIR }}
+          if-no-files-found: warn
+
+      - name: Fail on non-pass outcome
+        if: always()
+        env:
+          WRAPPER_EXIT_CODE: ${{ steps.wrapper.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          result_path = Path(os.environ["S0F_CHECK_RESULT_JSON"])
+          exit_code = int(os.environ.get("WRAPPER_EXIT_CODE") or "0")
+
+          if not result_path.is_file():
+              print("workflow_dispatch standard check result artifact missing", file=sys.stderr)
+              raise SystemExit(1)
+
+          payload = json.loads(result_path.read_text(encoding="utf-8"))
+          result = str(payload.get("result") or "unknown")
+          if result != "pass":
+              raise SystemExit(exit_code if exit_code != 0 else 1)
+          PY

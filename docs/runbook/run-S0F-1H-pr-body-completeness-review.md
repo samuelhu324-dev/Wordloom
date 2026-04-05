@@ -52,6 +52,8 @@
 
 - Operator-facing root:
   - `artifacts/operator-facing/pr-body-completeness-check/<run-id>-<slug>/`
+- Workflow-dispatch root:
+  - `artifacts/github-actions/pr-body-completeness-check/<run-id>-<run-attempt>/`
 - Minimum evidence files:
   - `wrapper-result.json`
   - `workflow-summary.md`
@@ -81,10 +83,22 @@
 
 ### 4.2 Operator instructions
 
+- Repo task:
+
+```powershell
+npm run check:pr-body-completeness:s0f
+```
+
 - Stable entrypoint:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/issues/invoke_pr_body_completeness_check.ps1 -RequestedIdPrefix S0F- -PythonExe c:/python314/python.exe
+```
+
+- Workflow-dispatch CI gate:
+
+```powershell
+gh workflow run s0f-pr-body-completeness-standard-check-dispatch.yml --ref S0F-docs-management-v6 -f requested_id_prefixes=S0F-
 ```
 
 - Allowed inputs:
@@ -93,6 +107,9 @@ powershell -ExecutionPolicy Bypass -File scripts/issues/invoke_pr_body_completen
   - `-LogsDir` if the default `docs/logs` root must be overridden
   - `-WrapperNotes` for retained operator notes
   - `-RunId` or `-ArtifactRoot` only when the output root must be fixed explicitly
+- Workflow-dispatch inputs:
+  - `requested_id_prefixes` as one comma-separated prefix set such as `S0F-`
+  - `repo`, `logs_dir`, and `wrapper_notes` when the default workflow-owned surface must be overridden
 - Success looks like:
   - PowerShell exits `0`
   - `wrapper-result.json` records `result=pass`
@@ -115,6 +132,18 @@ powershell -ExecutionPolicy Bypass -File scripts/issues/invoke_pr_body_completen
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/issues/invoke_pr_body_completeness_check.ps1 -RequestedIdPrefix S0F- -PythonExe c:/python314/python.exe
+```
+
+- Canonical repo task:
+
+```powershell
+npm run check:pr-body-completeness:s0f
+```
+
+- Canonical workflow-dispatch replay:
+
+```powershell
+gh workflow run s0f-pr-body-completeness-standard-check-dispatch.yml --ref S0F-docs-management-v6 -f requested_id_prefixes=S0F-
 ```
 
 - If the wrapper itself needs to be invoked directly for debugging, use the stable Python surface rather than calling the reviewer with ad hoc paths:
@@ -151,3 +180,4 @@ c:/python314/python.exe scripts/issues/plan_pr_body_completeness_check_wrapper.p
 - Do not use this runbook as the source of truth for reviewer semantics; the wrapper and canonical reviewer own those definitions.
 - If operators need to repair formatting-only drift, leave this runbook and follow the bounded live convergence surfaces retained by `S0F-1I`.
 - The next likely expansion point remains wiring this same stable check surface into a repo task or CI gate once operator expectations no longer change.
+- `S0F-1J` owns the next packaging step where this stable local check is exposed through a repo task and a workflow-dispatch CI gate without changing reviewer semantics.
