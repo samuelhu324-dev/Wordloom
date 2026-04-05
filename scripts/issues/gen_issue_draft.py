@@ -204,6 +204,19 @@ def _compose_issue_title(log_id: str, keyword: str, specific_subject: str) -> st
     return f"{log_id}: {keyword}/{specific_subject}"
 
 
+def _derive_issue_title(
+    log_id: str,
+    log_title: str,
+    tags: list[str],
+    sections: dict[str, list[str]],
+    fields: dict[str, str],
+) -> tuple[str, str]:
+    section_text = "\n".join(text for lines in sections.values() for text in lines)
+    keyword = _infer_keyword(fields, log_title, tags, section_text)
+    specific_subject = _normalize_specific_subject(log_title)
+    return _compose_issue_title(log_id, keyword, specific_subject), keyword
+
+
 def _context_contains_placeholder(context_lines: list[str]) -> bool:
     for line in context_lines:
         if "<placeholder>" in line.lower():
@@ -639,13 +652,9 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     log_title = fields.get("title", log_id)
     scope = fields.get("scope", "")
     tags = _split_csv(fields.get("tags"))
-    section_text = "\n".join(text for lines in sections.values() for text in lines)
-
     explicit_issue_keyword = fields.get("issue_keyword", "").strip()
     normalized_issue_keyword = _normalize_issue_keyword(explicit_issue_keyword)
-    keyword = _infer_keyword(fields, log_title, tags, section_text)
-    specific_subject = _normalize_specific_subject(log_title)
-    issue_title = _compose_issue_title(log_id, keyword, specific_subject)
+    issue_title, keyword = _derive_issue_title(log_id, log_title, tags, sections, fields)
 
     top_labels = _derive_top_labels(fields, tags)
     scope_labels = _derive_scope_labels(fields, log_id, scope)
