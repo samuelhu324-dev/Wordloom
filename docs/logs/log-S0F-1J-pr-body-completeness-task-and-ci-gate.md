@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Audit, Packaging, Contract, epic/s0, sub/1j`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/382`
   **pr**: ``
   **runbook**: `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
@@ -85,6 +85,7 @@
 - `P1`: package one repo-owned local task for the standard PR body completeness check
 - `P2`: package one workflow-dispatch CI gate for the same standard check
 - `P3`: validate the reviewer-owned runbook against the packaged local and CI surfaces and retain evidence
+- `P4`: run the canonical full-auto lifecycle for the now-stable packaging slice and retain the live issue/PR/conclusion evidence
 
 ## Success Criteria (DoD)
 
@@ -92,6 +93,7 @@
 - One workflow-dispatch CI gate can replay the same standard check and fail on retained findings without claiming primary ownership.
 - The runbook documents both packaged surfaces clearly enough that the local and CI replays can be executed from the documented path.
 - The retained evidence proves both packaged surfaces currently pass on the stable `S0F` set.
+- The live lifecycle for `S0F-1J` can be completed through the canonical guarded issue-create, PR-create, merge, and issue-conclusion surfaces with retained manifests and clean final audit state.
 
 ## Stability (what stable means)
 
@@ -108,7 +110,8 @@
 - `P2` is now complete in source: `.github/workflows/s0f-pr-body-completeness-standard-check-dispatch.yml` now replays the same standard check as a workflow-dispatch CI gate with retained artifacts and fail-on-non-pass semantics.
 - `P3-C1-S1` is now complete: the reviewer-owned runbook has been replayed successfully through `npm run check:pr-body-completeness:s0f`, and the retained local pass bundle now lives under `artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/`.
 - `P3-C1-S2` is now complete: the packaged CI gate has now run successfully on GitHub Actions under run `24003260082`, and the retained uploaded artifact is `s0f-pr-body-completeness-standard-check-24003260082-1`.
-- `S0F-1J` is now stable: the standard PR body completeness check is packaged behind one repo-owned task and one workflow-backed CI gate, and the reviewer-owned runbook has been replayed successfully through both surfaces.
+- `S0F-1J` is now stable at the packaging boundary: the standard PR body completeness check is packaged behind one repo-owned task and one workflow-backed CI gate, and the reviewer-owned runbook has been replayed successfully through both surfaces.
+- `P4` is now opened: live issue `#382` has been created through the canonical issue-create path, source-log issue ownership is now written back, and the next step is the retained full-auto lifecycle audit and PR-prep chain.
 
 ## Plan (draft)
 
@@ -130,6 +133,12 @@
 - P3-C1-S1: replay the runbook through the packaged local repo task and retain the pass evidence
 - P3-C1-S2: replay the runbook through the packaged workflow-dispatch CI gate and retain the pass evidence
 
+### P4 (Full-auto lifecycle)
+
+- P4-C1-S1: create the live issue and retain the lifecycle audit / remediation / PR-prep manifests
+- P4-C1-S2: create and merge the live PR through the guarded preflight and create surfaces
+- P4-C1-S3: conclude the live issue through the guarded conclusion surface and retain a clean final audit
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Packaging boundary and spine wiring)
@@ -150,6 +159,12 @@
 - [x] `P3-C1-S1`: runbook replayed successfully through the local repo task
 - [x] `P3-C1-S2`: runbook replayed successfully through the workflow-dispatch CI gate
 
+### P4 (Full-auto lifecycle)
+
+- [x] `P4-C1-S1`: live issue created and source-log issue ownership written back
+- [ ] `P4-C1-S2`: live PR created and merged through the guarded preflight/create path
+- [ ] `P4-C1-S3`: live issue concluded through the guarded conclusion path and final audit passes
+
 ## Evidence
 
 - `scripts/issues/review_pr_body_completeness.py` remains the canonical reviewer surface consumed by this slice.
@@ -160,6 +175,7 @@
 - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md` remains the reviewer-owned runbook that this slice validates rather than replaces.
 - `artifacts/operator-facing/pr-body-completeness-check/20260405T220906-S0F-/wrapper-result.json` records a `pass` result from the repo-owned task replay documented in the runbook.
 - GitHub Actions run `24003260082` under `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/24003260082` completed with `success` on event `push`, and the retained uploaded artifact is `s0f-pr-body-completeness-standard-check-24003260082-1`.
+- GitHub issue `#382` now exists as the live lifecycle anchor for the stable packaging slice and was created through `scripts/issues/gen_issue_draft.py --create` with parent issue `#363` derived from the `S0F` spine.
 
 ## Numbering
 

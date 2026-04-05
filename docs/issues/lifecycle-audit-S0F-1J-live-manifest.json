@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "mode": "lifecycle-audit-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "expected_parent_issue_number": 363
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1J",
+      "source_log_path": "docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md",
+      "issue_number": 382,
+      "reason": "Full-auto lifecycle run for S0F-1J after the repo-task and CI-gate packaging slice stabilized."
+    }
+  ]
+}
