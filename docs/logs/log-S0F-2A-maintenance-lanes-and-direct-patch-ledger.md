@@ -45,7 +45,6 @@
 **Decision**:
 
 - `S0F-2A` institutionalizes one explicit three-lane model for work that does not fit cleanly into the existing full slice log lifecycle: standard slice work, maintenance sweep work, and tiny direct patch work.
-- `S0F-2A` institutionalizes one explicit three-lane model for work that does not fit cleanly into the existing full slice log lifecycle: standard slice work, maintenance sweep work, and tiny direct patch or patch-log work.
 - v1 should not weaken the existing log-driven system. Instead, it adds two bounded escape hatches so mixed small fixes can be shipped without inventing fake slice names or polluting formal phase logs.
 - The new model should stay operationally simple: one thin policy runbook defines when each lane is allowed, and one shared direct-patch ledger gives tiny no-log commits a deterministic place to be remembered.
 
@@ -114,6 +113,7 @@
 - `P1` is now complete: the repo now has one three-lane model that keeps full slice logs as the default path while adding bounded maintenance and direct-patch escapes.
 - `P2` is now complete: future grouped cleanup now belongs under `docs/logs/maintenance/`, future patch notes now belong under `docs/logs/patch/`, and tiny no-log fixes still have explicit commit-boundary rules instead of being squeezed into fake slice titles.
 - `P3` is now complete: the thin runbook/policy, shared direct-patch ledger, and concrete maintenance/patch templates are all published for immediate reuse.
+- `S0F-2A` now remains as the first baseline for small-work policy, while `S0F-2B` refines the live model further into `family patch + ops maintenance + tiny direct patch`.
 - `S0F-2A` is now stable: the repo has a concrete, documented answer for work that is too small or too mixed for the standard slice lifecycle without allowing untracked patch drift.
 
 ## Plan (draft)

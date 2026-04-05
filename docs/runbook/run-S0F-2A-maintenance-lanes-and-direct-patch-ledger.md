@@ -15,7 +15,7 @@
   **positive**: `"Clear lane selection", "Less fake slice naming", "Small-fix traceability without forcing every patch into the full lifecycle"`
   **negative**: `"Adds one more procedural surface", "Requires discipline not to hide real contract work in maintenance bundles", "Direct patch lane still needs manual judgment"`
 **supersedes**: `null`
-**superseded_by**: `null`
+**superseded_by**: `docs/runbook/run-S0F-2B-family-patch-and-ops-maintenance-model.md`
 
 ---
 

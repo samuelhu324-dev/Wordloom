@@ -29,6 +29,7 @@
   **phase_log_9**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
   **phase_log_10**: `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
   **phase_log_11**: `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
+  **phase_log_12**: `docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -140,6 +141,8 @@
   - 详见：`docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
 - `S0F-2A`（Phase 2A）：maintenance lanes and direct patch ledger
   - 详见：`docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
+- `S0F-2B`（Phase 2B）：family patch and ops maintenance model
+  - 详见：`docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -208,6 +211,11 @@
 - `S0F-2A/P2` is now complete: future maintenance logs now have a stable `family-M<n>-<slug>` naming rule, and tiny direct patch commits now have bounded commit-subject and escalation rules.
 - `S0F-2A/P3` is now complete: one thin runbook/policy, one shared direct-patch ledger, and one minimal maintenance-log template are now published for immediate reuse.
 - `S0F-2A` is now stable: the repo has a documented path for work that is too small or too mixed for the formal slice system without letting those changes disappear into untracked commits.
+- `S0F-2B` is now opened as the next `S0F` follow-up slice for refining that earlier small-work policy into `family patch + ops maintenance + tiny direct patch`.
+- `S0F-2B/P1` is now complete: the lane model now distinguishes family-owned patch work from real ops-maintenance work instead of calling both maintenance.
+- `S0F-2B/P2` is now complete: the patch template now supports family-bound patch IDs such as `S0F-P1`, and the maintenance template is now a heavier ops-maintenance report template.
+- `S0F-2B/P3` is now complete: the already-live GitHub `MAINTENANCE` top-level label is now governed by an explicit admission rule and reserved for true ops-maintenance work only.
+- `S0F-2B` is now stable: the repo now has a sharper and more operationally realistic model for patch versus maintenance work.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
