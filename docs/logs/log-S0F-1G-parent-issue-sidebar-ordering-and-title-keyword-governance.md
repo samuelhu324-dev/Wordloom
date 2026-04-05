@@ -117,6 +117,26 @@
 - The first gap is already concrete in live evidence: parent issue `#248` is no longer blocked by prose, DoD, or link coverage, but only by GitHub sidebar child ordering drift against the source-log-owned expected order.
 - The second gap is also now concrete in code inspection: real issue creation requires an explicit `issue_keyword`, but current tooling does not yet enforce a controlled vocabulary or audit fail condition for semantically wrong title prefixes such as `inventory`, `naming`, or `coexistence`.
 - `P0` is now complete: `S0F-1G` is wired into the spine, the shared governance boundary is fixed, and the next follow-up is `P1` top-level parent sidebar ordering ownership and repair semantics.
+- `P1` is now complete: lifecycle audit now preserves the real GitHub sub-issue sidebar order instead of sorting it away, one controlled reprioritize path is retained under `scripts/issues/reprioritize_parent_subissues.py`, and the live `#248` parent sidebar can now be repaired back to the canonical source-log-owned order without destructive remove/re-add behavior.
+- The live `#248` repair is now complete and re-verified: the retained reprioritize result under `artifacts/` converged to the expected child order, and a focused rerun of `plan_lifecycle_audit.py` now passes the parent `sidebar-child-relationships` check instead of leaving `S0E` blocked on an ordering mismatch.
+
+## P1 Parent Sidebar Ordering (completed)
+
+- `S0F-1G` now fixes the ownership boundary for top-level parent sub-issue order at the same contract layer that already owns canonical parent child-ledger order in the source log and issue body contract.
+- v1 therefore makes two changes together: the lifecycle audit must read the real live sidebar order as-is, and the live repair path must reuse the same canonical source-log ordering instead of accepting ad hoc manual GitHub drag-and-drop.
+
+### P1-C1-S1 (Real sidebar-order audit semantics fixed | v1)
+
+- `scripts/issues/plan_lifecycle_audit.py` no longer sorts the live GitHub sub-issue numbers before comparing them to the canonical parent child ledger.
+- The `sidebar-child-relationships` check now audits the actual live GitHub sidebar order, which closes the earlier semantic gap where order drift could be partially hidden by accidental sorting before comparison.
+- The canonical expected order remains source-log-owned through `ordered_parent_child_issue_refs(...)`, so audit now compares the correct live order against the correct deterministic contract.
+
+### P1-C1-S2 (Controlled parent ordering repair path retained | v1)
+
+- `scripts/issues/reprioritize_parent_subissues.py` now retains one controlled parent repair path that derives expected child order from the parent source log, fetches live GitHub sub-issues, fails closed when the live child set does not match the canonical set, and only then plans or applies ordered `reprioritizeSubIssue` mutations.
+- This repair path is intentionally non-destructive: it reorders existing GitHub sub-issue relationships in place instead of removing and re-adding child issues.
+- The retained result output defaults to `artifacts/`, which keeps this repair path aligned with the new local scratch-output hygiene boundary rather than reopening `docs/issues` commit noise.
+- The first live use of this repair path has now been completed against parent issue `#248`, and the subsequent focused lifecycle-audit rerun confirms the parent ordering blocker is cleared under the corrected audit semantics.
 
 ## P0 Governance Boundary (completed)
 
@@ -171,8 +191,8 @@
 
 ### P1 (Parent sidebar ordering)
 
-- [ ] `P1-C1-S1`: top-level parent sub-issue ordering source-of-truth and audit semantics fixed
-- [ ] `P1-C1-S2`: one controlled repair path retained for remaining parent ordering drift
+- [x] `P1-C1-S1`: top-level parent sub-issue ordering source-of-truth and audit semantics fixed
+- [x] `P1-C1-S2`: one controlled repair path retained for remaining parent ordering drift
 
 ### P2 (Create-time title keyword governance)
 
