@@ -28,6 +28,7 @@
   **phase_log_8**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
   **phase_log_9**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
   **phase_log_10**: `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
+  **phase_log_11**: `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -137,6 +138,8 @@
   - 详见：`docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
 - `S0F-1J`（Phase 1J）：PR body completeness task and CI gate
   - 详见：`docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
+- `S0F-2A`（Phase 2A）：maintenance lanes and direct patch ledger
+  - 详见：`docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -199,6 +202,11 @@
 - `S0F-1J/P4-C1-S2` is now complete: live PR `#383` has been created through the guarded front-half preflight and canonical PR-create surface, merged successfully, and written back to the child log so the remaining full-auto step is guarded issue conclusion plus final lifecycle audit.
 - `S0F-1J/P4-C1-S3` is now complete: the already-closed issue `#382` has been refreshed in place through the guarded issue-conclusion surface using targeted conclusion remediation, and the retained final lifecycle audit now passes cleanly with `lifecycle_stage=concluded` and exact merged-PR evidence `#383`.
 - `S0F-1J` is now full-auto complete: the stable packaging slice has now traversed the full live lifecycle from creation through PR merge to guarded conclusion without reopening any non-canonical mutation path.
+- `S0F-2A` is now opened as the next `S0F` follow-up slice for institutionalizing how this repo should handle mixed small fixes, maintenance sweeps, and tiny direct patch commits that do not belong naturally in the full slice lifecycle.
+- `S0F-2A/P1` is now complete: one explicit three-lane model now distinguishes standard slice work, maintenance sweep bundles, and direct patch commits.
+- `S0F-2A/P2` is now complete: future maintenance logs now have a stable `family-M<n>-<slug>` naming rule, and tiny direct patch commits now have bounded commit-subject and escalation rules.
+- `S0F-2A/P3` is now complete: one thin runbook/policy, one shared direct-patch ledger, and one minimal maintenance-log template are now published for immediate reuse.
+- `S0F-2A` is now stable: the repo has a documented path for work that is too small or too mixed for the formal slice system without letting those changes disappear into untracked commits.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
