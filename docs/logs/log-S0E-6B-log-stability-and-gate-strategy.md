@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Automation, Contract, Formatting, Evidence, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/333`
   **pr**: ``
   **runbook**: ``
   **roadmap**: ``
@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-03-31`
-**updated**: `2026-03-31`
+**updated**: `2026-04-05`
 
 ---
 

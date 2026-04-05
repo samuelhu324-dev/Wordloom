@@ -220,6 +220,20 @@ htmlcov/
 
 artifacts/
 
+# Future local scratch outputs under docs/issues should not be committed by default.
+# Already tracked retained contract samples remain tracked until explicitly cleaned up.
+docs/issues/issue-*.json
+docs/issues/issue-*.md
+docs/issues/lifecycle-audit-*.json
+docs/issues/lifecycle-gate-*.json
+docs/issues/lifecycle-remediation-*.json
+docs/issues/pr-live-contract-check-*.md
+docs/issues/pr-live-contract-check-*-result.json
+docs/issues/pr-prep-*.json
+docs/issues/pr-prep-*.md
+docs/issues/pr-create-*.json
+docs/issues/pr-create-*.md
+
 # Terraform local state for the S4D stable runner host
 infra/terraform/aws/runner-host/.terraform/
 infra/terraform/aws/runner-host/terraform.tfstate

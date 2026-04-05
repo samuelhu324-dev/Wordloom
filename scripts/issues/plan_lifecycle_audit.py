@@ -9,6 +9,7 @@ from pathlib import Path
 
 from body_contract import ISSUE_ALLOWED_LINK_LABELS, build_canonical_issue_link_lines, bullets_are_contiguous, extract_section_order, issue_body_context_line_bounds, issue_uses_parent_body_contract, link_labels_are_allowed, metadata_contains_parent_issue_row, metadata_contains_source_log_row, ordered_parent_child_issue_refs, parse_issue_number, validate_issue_context_lines
 from gen_issue_draft import (
+    _derive_issue_title,
     _derive_function_labels,
     _derive_module_labels,
     _derive_repo_slug,
@@ -336,7 +337,7 @@ query($owner:String!, $name:String!, $number:Int!) {
         number = node.get("number")
         if number is not None:
             result.append(int(number))
-    return sorted(result)
+    return result
 
 
 def _expected_child_issue_refs(fields: dict[str, str], repo_root: Path) -> list[str]:
@@ -396,6 +397,14 @@ def _extract_dod_refs(lines: list[str]) -> list[str]:
     return refs
 
 
+def _issue_title_prefix(title: str) -> str:
+    normalized = title.strip()
+    if not normalized:
+        return normalized
+    prefix, separator, _ = normalized.partition("/")
+    return f"{prefix}{separator}" if separator else normalized
+
+
 def _build_planned_action(status: str) -> str:
     if status == "pass":
         return "pass-audit"
@@ -415,6 +424,9 @@ def _is_conclusion_owned_stage(lifecycle_stage: str | None) -> bool:
 def _bucket_for_check(check_name: str, check_status: str, lifecycle_stage: str | None) -> str | None:
     if check_status not in {"fail", "warning"}:
         return None
+
+    if check_name == "title-prefix-governance":
+        return "creation-metadata-gap"
 
     if check_name == "expected-labels":
         return None if _is_conclusion_owned_stage(lifecycle_stage) else "creation-metadata-gap"
@@ -632,6 +644,8 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
     tags = _split_csv(fields.get("tags"))
     log_title = str(fields.get("title") or requested_id)
     scope = str(fields.get("scope") or "")
+    expected_issue_title, expected_issue_keyword = _derive_issue_title(requested_id, log_title, tags, log_sections, fields)
+    expected_issue_title_prefix = _issue_title_prefix(expected_issue_title)
     expected_labels = []
     if _item_bool(item, defaults, "check_expected_labels", True):
         expected_labels = list(dict.fromkeys(
@@ -650,6 +664,20 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
         checks.append(_build_check("source-log-issue-writeback", "fail", "source log links.issue does not match the live issue URL"))
     else:
         checks.append(_build_check("source-log-issue-writeback", "fail", "source log links.issue is blank"))
+
+    actual_issue_title_prefix = _issue_title_prefix(issue_title)
+    if issue_title.startswith(expected_issue_title_prefix):
+        checks.append(_build_check(
+            "title-prefix-governance",
+            "pass",
+            f"live issue title prefix matches expected '{expected_issue_title_prefix}' derived from source-log issue_keyword '{expected_issue_keyword}'",
+        ))
+    else:
+        checks.append(_build_check(
+            "title-prefix-governance",
+            "fail",
+            f"live issue title prefix '{actual_issue_title_prefix}' does not match expected '{expected_issue_title_prefix}' derived from source-log issue_keyword '{expected_issue_keyword}'",
+        ))
 
     missing_sections = [name for name in ["Metadata", "Context", "Definition of Done (DoD)", "Links"] if name not in body_sections]
     if missing_sections:

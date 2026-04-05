@@ -1,0 +1,10 @@
+{
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md"
+    }
+  ]
+}

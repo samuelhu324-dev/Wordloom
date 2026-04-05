@@ -24,6 +24,7 @@
   **phase_log_4**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
   **phase_log_5**: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
   **phase_log_6**: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+  **phase_log_7**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -41,7 +42,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-04`
+**updated**: `2026-04-05`
 
 ---
 
@@ -125,6 +126,8 @@
   - 详见：`docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
 - `S0F-1F`（Phase 1F）：bucketed audit output materialization
   - 详见：`docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+- `S0F-1G`（Phase 1G）：parent issue sidebar ordering and title keyword governance
+  - 详见：`docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -154,6 +157,16 @@
 - `S0F-1F/P2` is now complete: the supporting historical pre-screen surface emits additive diagnosis-layer fields for deterministic cases, one representative historical sample is retained with emitted bucket data, and the next follow-up is `P3` retained output packaging.
 - `S0F-1F/P3` is now complete: one reviewer-facing retained summary now packages live and historical emitted bucket-output samples together, diagnosis-layer reading rules are fixed, and the next follow-up is `P4` downstream contract packaging.
 - `S0F-1F/P4` is now complete: one downstream-facing diagnosis-layer contract packages stable field names, null semantics, and cross-surface consumer rules, and no further phase is currently required inside this slice.
+- `S0F-1F` now also owns the local scratch-output hygiene follow-up for broad repair work: future `docs/issues` scratch families default to ignored patterns or `artifacts/` instead of showing up as routine commit candidates.
+- `S0F-1G` is now opened as the next follow-up slice: it concentrates the last explicit parent issue sidebar ordering blocker and the missing hard governance around issue title keyword prefixes into one deterministic identity-governance lane.
+- `S0F-1G/P1` is now complete: lifecycle audit preserves real GitHub sidebar order, one controlled parent sub-issue reprioritize path is retained, and the remaining `#248` blocker is now owned by a deterministic repair path instead of an audit-only mismatch.
+- The first live `S0F-1G/P1` repair is also now complete: parent issue `#248` has been reprioritized back to the canonical source-log order and a focused lifecycle-audit rerun now passes the parent sidebar-order check.
+- `S0F-1G/P2` is now complete: create-time issue generation treats `issue_keyword` as a real controlled vocabulary input, disallowed explicit title keywords now hard-fail before GitHub mutation, and the shared templates now document the allowed keyword boundary directly.
+- `S0F-1G/P3` is now complete: lifecycle audit reuses the same source-log-owned issue-title composition path as draft generation, live title-prefix drift now fails deterministically under `title-prefix-governance`, and that drift is attributed to the existing `creation-metadata-gap` bucket rather than to a new ad hoc title taxonomy.
+- `S0F-1G/P4` is now complete: one retained inventory bounds the current historical legacy title-keyword set to `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`, the parent-ordering inventory now records zero active drift on `#248` and `#363`, and one controlled repair-boundary package fixes the allowed versus disallowed live cleanup surfaces.
+- `S0F-1G/P5` is now complete: the bounded legacy keyword set has been migrated directly on `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`, one guarded live title-repair surface now converges those three issue titles onto the migrated source-log-owned controlled keywords, and the post-repair legacy inventory is now empty.
+- `S0F-1G/P6` is now complete: the missing child-log `links.issue` write-back set under parent lanes `#248` and `#363` has been reconciled directly in source, one bounded backfill dry-run plan has been retained for the affected child set, and a fresh full identity-governance inventory now shows both parent child sets reconverged with zero active drift.
+- `S0F-1G` is now stable: parent sidebar ordering ownership is fixed and re-verified, title keyword governance now fails closed at both create-time and audit-time, and historical cleanup is now bounded by an explicit retained inventory plus repair contract.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 

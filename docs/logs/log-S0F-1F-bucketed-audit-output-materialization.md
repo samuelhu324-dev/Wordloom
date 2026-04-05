@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Audit, Contract, Classification, Runtime, epic/s0, sub/1f`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/370`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/375`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -117,6 +117,7 @@
 - `P2` is now complete: the supporting historical pre-screen surface emits additive diagnosis-layer fields only for deterministic cases, the retained historical sample now carries the new fields directly, and the next follow-up is `P3` retained output packaging.
 - `P3` is now complete: one reviewer-facing bucket-output summary packages the live and historical retained samples together, output-reading expectations are fixed for diagnosis-layer consumers, and the next follow-up is `P4` downstream contract packaging.
 - `P4` is now complete: one downstream-facing diagnosis-layer contract packages stable field names, null semantics, and cross-surface consumer rules, and no further phase is currently required inside this slice.
+- A downstream packaging hygiene follow-up is now also fixed under `P4`: broad repair work may still emit many local `docs/issues/*` scratch files during investigation, but future scratch-output families now default to ignored `docs/issues` patterns or `artifacts/` so they stop leaking into routine commits.
 
 ## P0 Materialization Boundary (completed)
 
@@ -224,6 +225,7 @@
 ### P4 (Downstream contract packaging)
 
 - P4-C1-S1: package the emitted diagnosis-layer contract for later review or remediation consumers
+- P4-C1-S2: keep future local scratch-output families out of routine commits by default
 
 ## Execution Checklist (unchecked)
 
@@ -250,6 +252,7 @@
 ### P4 (Downstream contract packaging)
 
 - [x] `P4-C1-S1`: emitted diagnosis-layer contract packaged for downstream consumers
+- [x] `P4-C1-S2`: future local scratch-output families default to ignored `docs/issues` patterns or `artifacts/`
 
 ## Notes (optional)
 

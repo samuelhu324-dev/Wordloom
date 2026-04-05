@@ -1,0 +1,125 @@
+{
+  "mode": "lifecycle-audit-dry-run",
+  "result": "ok",
+  "manifest_path": "artifacts/s0f-1g-p3-pass-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-lifecycle-audit",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [],
+  "items": [
+    {
+      "requested_id": "S0E-5A",
+      "source_log_path": "docs/logs/log-S0E-5A-lifecycle-audit-gate-and-dry-run-planner.md",
+      "issue_number": 305,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/305",
+      "issue_title": "S0E-5A: workflow/lifecycle audit gate and dry-run planner",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
+      "expected_parent_issue_number": 248,
+      "actual_parent_issue_number": 248,
+      "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/305",
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/306",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 306,
+          "title": "S0E-5A/P0-P5: lifecycle audit gate and dry-run planner v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/306",
+          "merged_at": "2026-03-30T12:52:01Z"
+        }
+      ],
+      "planned_action": "pass-audit",
+      "applied_action": null,
+      "status": "pass",
+      "checks": [
+        {
+          "name": "source-log-issue-writeback",
+          "status": "pass",
+          "details": "source log links.issue matches the live issue URL"
+        },
+        {
+          "name": "title-prefix-governance",
+          "status": "pass",
+          "details": "live issue title prefix matches expected 'S0E-5A: workflow/' derived from source-log issue_keyword 'workflow'"
+        },
+        {
+          "name": "required-body-sections",
+          "status": "pass",
+          "details": "Metadata, Context, Definition of Done (DoD), and Links sections are present"
+        },
+        {
+          "name": "issue-section-order",
+          "status": "pass",
+          "details": "issue body section order matches the canonical contract"
+        },
+        {
+          "name": "metadata-row-shape",
+          "status": "pass",
+          "details": "Metadata bullet rows are contiguous"
+        },
+        {
+          "name": "metadata-links-boundary",
+          "status": "pass",
+          "details": "Metadata keeps state rows only while deterministic log navigation stays in Links"
+        },
+        {
+          "name": "expected-labels",
+          "status": "pass",
+          "details": "live issue labels cover the deterministic label set derived from the source log"
+        },
+        {
+          "name": "body-parent-metadata",
+          "status": "pass",
+          "details": "Metadata section records Parent issue: #248"
+        },
+        {
+          "name": "sidebar-parent-relationship",
+          "status": "pass",
+          "details": "live GitHub parent relationship points to #248"
+        },
+        {
+          "name": "exact-id-merged-pr-evidence",
+          "status": "pass",
+          "details": "found 1 exact-ID merged PR(s)"
+        },
+        {
+          "name": "final-dod-pr-refs",
+          "status": "pass",
+          "details": "DoD PR refs match the exact-ID merged PR evidence set"
+        },
+        {
+          "name": "link-categories",
+          "status": "pass",
+          "details": "Links section uses only allowed issue link categories"
+        },
+        {
+          "name": "links-coverage",
+          "status": "pass",
+          "details": "Links section covers the expected canonical issue-link fragments"
+        },
+        {
+          "name": "context-sentence-shape",
+          "status": "pass",
+          "details": "Context contains exactly 4 readable English bullet sentences with basic placeholder hygiene"
+        },
+        {
+          "name": "closed-body-shape",
+          "status": "pass",
+          "details": "concluded issue keeps the prose-first Context gate within line range (4, 4)"
+        },
+        {
+          "name": "source-log-pr-link",
+          "status": "pass",
+          "details": "source log links.pr is represented in the exact-ID merged PR evidence set"
+        }
+      ],
+      "warnings": [],
+      "primary_bucket": null,
+      "bucket_set": [],
+      "bucket_source_checks": {},
+      "bucket_stage": null,
+      "reason": null
+    }
+  ]
+}

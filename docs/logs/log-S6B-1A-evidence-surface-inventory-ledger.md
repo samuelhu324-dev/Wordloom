@@ -18,7 +18,7 @@
   **reference_log_1**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_2**: `docs/logs/log-S0D-2A-drills-evidence-automation.md`
   **reference_log_3**: `docs/logs/log-S0D-4A-UI-layered-fix-notes.md`
-**issue_keyword**: `inventory`
+**issue_keyword**: `records`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s6/evidence & drills, sub/1`
 **issue_module_labels**: ``
@@ -35,7 +35,7 @@
 **pr_base**: `main`
 **pr_development_issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/357`
 **created**: `2026-04-04`
-**updated**: `2026-04-04`
+**updated**: `2026-04-05`
 
 ---
 
