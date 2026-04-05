@@ -5,7 +5,7 @@
 **id**: `S0F-1G`
 **kind**: `log`
 **title**: `parent issue sidebar ordering and title keyword governance v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Audit, Contract, Governance, epic/s0, sub/1g`
 **links**: ``
@@ -121,6 +121,25 @@
 - The live `#248` repair is now complete and re-verified: the retained reprioritize result under `artifacts/` converged to the expected child order, and a focused rerun of `plan_lifecycle_audit.py` now passes the parent `sidebar-child-relationships` check instead of leaving `S0E` blocked on an ordering mismatch.
 - `P2` is now complete: create-time issue generation now treats `issue_keyword` as a controlled vocabulary input instead of accepting arbitrary explicit free text, real `--create` runs fail closed on disallowed keywords, and the phase templates now document the controlled keyword boundary directly.
 - `P3` is now complete: lifecycle audit now derives the canonical expected title prefix from the same source-log-owned title composition path used by issue draft generation, live title-prefix drift now fails deterministically under audit, and that drift is attributed to the existing `creation-metadata-gap` bucket instead of inventing a second title taxonomy.
+- `P4` is now complete: one retained governance inventory now records the bounded set of historical legacy title-keyword items and the current top-level parent ordering state, one controlled repair-boundary package now fixes which mutation paths are allowed versus disallowed for later cleanup, and no further phase is currently required inside this slice.
+- `S0F-1G` is now stable: parent sidebar ordering ownership is fixed and re-verified on the live parent lane, title keyword governance now fails closed at both create-time and lifecycle-audit time, and one retained `P4` package now bounds historical cleanup without reopening guess-first or bulk-rewrite behavior.
+
+## P4 Historical Drift Packaging (completed)
+
+- `S0F-1G` now packages the remaining historical cleanup surface instead of leaving legacy keyword drift and repaired parent-order evidence as implicit repo knowledge.
+- v1 keeps the package bounded: it inventories only the currently known legacy source-owned keyword drift and the current top-level parent ordering state, then fixes which canonical repair surfaces may be used later.
+
+### P4-C1-S1 (Historical title-prefix and parent-ordering migration inventory retained | v1)
+
+- `scripts/issues/inventory_issue_identity_governance_drift.py` now inventories two bounded identity-governance surfaces from the live repo state: source logs whose explicit `issue_keyword` is now outside the controlled vocabulary, and top-level parent issues whose live GitHub sub-issue order may still diverge from the source-log-owned child ledger.
+- `artifacts/s0f-1g-p4-identity-governance-inventory.json` now records the first retained inventory result. The current historical title-keyword set is bounded to three legacy items: `S6B-1A` (`inventory`, issue `#357`), `S6B-1B` (`naming`, issue `#358`), and `S6B-1C` (`coexistence`, issue `#359`).
+- The same retained inventory also records that the currently known top-level parent lanes are already converged: both `S0E-docs-management-v5` (`#248`) and `S0F-docs-management-v6` (`#363`) now match the canonical source-log-owned child order, so the current active parent-ordering drift count is `0`.
+
+### P4-C1-S2 (Controlled repair boundary packaged for later historical cleanup | v1)
+
+- `artifacts/s0f-1g-p4-controlled-repair-boundary.json` now fixes the allowed versus disallowed repair boundary for later historical cleanup instead of leaving it implicit.
+- Historical title-prefix cleanup remains intentionally bounded: there is still no productized live title-rewrite surface, so any future repair must migrate the source log to a controlled keyword first, preview the new source-owned title, and only then consider a later bounded live rename plus lifecycle-audit verification.
+- Parent-ordering cleanup remains stricter than title cleanup: if ordering drift ever reappears, the only canonical live repair surface remains `scripts/issues/reprioritize_parent_subissues.py --apply --allow-raw-live-mutation-internal`, and it may run only when the live child set exactly matches the canonical source-log-owned child set.
 
 ## P3 Lifecycle Audit Title Keyword Enforcement (completed)
 
@@ -242,8 +261,8 @@
 
 ### P4 (Historical drift packaging)
 
-- [ ] `P4-C1-S1`: migration inventory retained for historical title-prefix and parent-ordering drift
-- [ ] `P4-C1-S2`: controlled repair boundary packaged for later cleanup
+- [x] `P4-C1-S1`: migration inventory retained for historical title-prefix and parent-ordering drift
+- [x] `P4-C1-S2`: controlled repair boundary packaged for later cleanup
 
 ## Notes (optional)
 
@@ -258,3 +277,5 @@
 - `P3-C1-S1` / `P3-C1-S2`: `scripts/issues/plan_lifecycle_audit.py` now emits `title-prefix-governance`, compares the live title prefix against the canonical expected prefix, and attributes drift to `creation-metadata-gap`.
 - `P3-C1-S2`: `artifacts/s0f-1g-p3-pass-manifest.json` and `artifacts/s0f-1g-p3-pass-plan.json` now retain one focused live-audit pass where issue `#305` keeps `title-prefix-governance=pass` for the canonical `S0E-5A: workflow/` prefix.
 - `P3-C1-S2`: `artifacts/s0f-1g-p3-title-prefix-drift-log.md`, `artifacts/s0f-1g-p3-fail-manifest.json`, and `artifacts/s0f-1g-p3-fail-plan.json` now retain one local drift simulation where the copied source log changes `issue_keyword` to `automation`, causing `title-prefix-governance=fail` and `creation-metadata-gap` attribution on the same live issue; because the copied log also changes the canonical `Log:` path, that retained fail sample additionally records the expected local `links-coverage` miss from the temporary path change.
+- `P4-C1-S1`: `scripts/issues/inventory_issue_identity_governance_drift.py` and `artifacts/s0f-1g-p4-identity-governance-inventory.json` now retain the first bounded historical governance inventory, including the three legacy source-keyword items `S6B-1A/#357`, `S6B-1B/#358`, and `S6B-1C/#359`, plus the current parent-ordering state for `#248` and `#363`.
+- `P4-C1-S2`: `artifacts/s0f-1g-p4-controlled-repair-boundary.json` now packages the bounded repair contract, including the current prohibition on bulk live title rewrites and the canonical reprioritize surface for any future parent-ordering drift.

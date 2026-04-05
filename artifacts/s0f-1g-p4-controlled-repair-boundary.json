@@ -1,0 +1,52 @@
+{
+  "mode": "issue-identity-governance-repair-boundary",
+  "result": "ok",
+  "scope": "S0F-1G/P4-C1-S2",
+  "title_keyword_repair_boundary": {
+    "inventory_owner": "artifacts/s0f-1g-p4-identity-governance-inventory.json",
+    "canonical_expected_title_source": "scripts/issues/gen_issue_draft.py::_derive_issue_title",
+    "verification_surface": "scripts/issues/plan_lifecycle_audit.py::title-prefix-governance",
+    "current_live_mutation_surface": null,
+    "allowed_now": [
+      "retain one bounded migration inventory for historical source logs whose explicit issue_keyword is now outside the controlled vocabulary",
+      "repair historical title-prefix drift only after the source log itself is migrated to a controlled keyword and the new source-owned title has been previewed",
+      "verify any later live title repair by rerunning lifecycle audit so title-prefix-governance converges on the migrated source-log-owned prefix"
+    ],
+    "disallowed_now": [
+      "repo-wide bulk live title rewrites without an explicit bounded inventory",
+      "renaming live issue titles while leaving the source log on a legacy issue_keyword",
+      "guessing a replacement keyword from prose alone when the historical log still needs an explicit controlled migration decision"
+    ],
+    "current_inventory_summary": {
+      "legacy_keyword_items": [
+        "S6B-1A / issue #357 / inventory",
+        "S6B-1B / issue #358 / naming",
+        "S6B-1C / issue #359 / coexistence"
+      ],
+      "active_live_title_prefix_drifts_against_current_source_logs": 0,
+      "note": "these items are legacy source-keyword drift, not live/source mismatch drift, because the live issue titles still match the current historical source logs"
+    }
+  },
+  "parent_ordering_repair_boundary": {
+    "inventory_owner": "artifacts/s0f-1g-p4-identity-governance-inventory.json",
+    "canonical_expected_order_source": "body_contract.ordered_parent_child_issue_refs(...) from the parent source log",
+    "canonical_repair_surface": "scripts/issues/reprioritize_parent_subissues.py --apply --allow-raw-live-mutation-internal",
+    "verification_surface": "scripts/issues/plan_lifecycle_audit.py::sidebar-child-relationships",
+    "allowed_now": [
+      "apply ordered reprioritizeSubIssue mutations only when the live child set exactly matches the canonical source-log-owned child set",
+      "use lifecycle audit after repair to prove the parent sidebar order converged"
+    ],
+    "disallowed_now": [
+      "remove-and-readd child issues as a shortcut for reordering",
+      "reprioritize when the live child set does not match the canonical source-log-owned set",
+      "treat the current GitHub sidebar order as self-authoritative when it diverges from the parent log"
+    ],
+    "current_inventory_summary": {
+      "active_parent_ordering_drifts": 0,
+      "verified_parents": [
+        "S0E-docs-management-v5 / issue #248 / matches-canonical-order",
+        "S0F-docs-management-v6 / issue #363 / matches-canonical-order"
+      ]
+    }
+  }
+}
