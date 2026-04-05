@@ -19,6 +19,7 @@
   **reference_log_2**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
   **reference_log_3**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **reference_log_4**: `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`
+  **reference_log_5**: `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
@@ -86,6 +87,7 @@
 - `P2`: package one workflow-dispatch CI gate for the same standard check
 - `P3`: validate the reviewer-owned runbook against the packaged local and CI surfaces and retain evidence
 - `P4`: run the canonical full-auto lifecycle for the now-stable packaging slice and retain the live issue/PR/conclusion evidence
+- `P5`: package the maintenance/patch log folder conventions and concrete templates under the new small-work policy surface
 
 ## Success Criteria (DoD)
 
@@ -94,6 +96,7 @@
 - The runbook documents both packaged surfaces clearly enough that the local and CI replays can be executed from the documented path.
 - The retained evidence proves both packaged surfaces currently pass on the stable `S0F` set.
 - The live lifecycle for `S0F-1J` can be completed through the canonical guarded issue-create, PR-create, merge, and issue-conclusion surfaces with retained manifests and clean final audit state.
+- The published small-work policy can point operators to concrete `docs/logs/maintenance/` and `docs/logs/patch/` homes with reusable templates instead of only prose guidance.
 
 ## Stability (what stable means)
 
@@ -115,6 +118,7 @@
 - `P4-C1-S2` is now complete: live PR `#383` has been created through the guarded front-half preflight and canonical PR-create surface, merged successfully, and written back into the source log.
 - `P4-C1-S3` is now complete: the already-closed live issue `#382` has been updated in place through the guarded issue-conclusion surface using targeted conclusion remediation, and the retained final lifecycle audit now passes cleanly at `lifecycle_stage=concluded`.
 - `S0F-1J` is now full-auto complete: creation, guarded parent-relationship convergence, PR create/merge, guarded issue conclusion, and final lifecycle audit have all been retained under the canonical lifecycle artifact family for this slice.
+- `P5-C1-S1` is now complete: the small-work policy is now physically packaged under `docs/logs/maintenance/` and `docs/logs/patch/`, with one concrete template published in each folder and `S0F-2A` updated to treat those folders as the canonical homes for maintenance and patch logs.
 
 ## Plan (draft)
 
@@ -142,6 +146,10 @@
 - P4-C1-S2: create and merge the live PR through the guarded preflight and create surfaces
 - P4-C1-S3: conclude the live issue through the guarded conclusion surface and retain a clean final audit
 
+### P5 (Maintenance and patch folder packaging)
+
+- P5-C1-S1: package canonical `maintenance/` and `patch/` homes plus reusable templates for the new small-work policy surfaces
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Packaging boundary and spine wiring)
@@ -168,6 +176,10 @@
 - [x] `P4-C1-S2`: live PR created and merged through the guarded preflight/create path
 - [x] `P4-C1-S3`: live issue concluded through the guarded conclusion path and final audit passes
 
+### P5 (Maintenance and patch folder packaging)
+
+- [x] `P5-C1-S1`: maintenance/patch folder conventions and templates packaged for immediate reuse
+
 ## Evidence
 
 - `scripts/issues/review_pr_body_completeness.py` remains the canonical reviewer surface consumed by this slice.
@@ -182,6 +194,8 @@
 - GitHub PR `#383` now exists as the live merged PR for the packaging slice and was created through `scripts/issues/create_pr_from_plan.py` after a passing guarded front-half preflight.
 - `docs/issues/issue-conclusion-S0F-1J-live-guarded-apply-result.json` records that issue conclusion was allowed via targeted remediation even though the issue had already been auto-closed by the merged PR footer, and the body was updated in place successfully.
 - `docs/issues/lifecycle-audit-S0F-1J-live-final-plan.json` records a clean final `pass` state for `S0F-1J` with `issue_state=CLOSED`, `lifecycle_stage=concluded`, exact merged-PR evidence `#383`, and fully passing conclusion checks.
+- `docs/logs/maintenance/_template-log-maintenance-sweep.md` now provides the first concrete maintenance-log template at the canonical maintenance-log location.
+- `docs/logs/patch/_template-log-patch-note.md` now provides the first concrete patch-log template at the canonical patch-log location.
 
 ## Numbering
 

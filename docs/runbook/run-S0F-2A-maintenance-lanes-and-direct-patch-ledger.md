@@ -11,7 +11,7 @@
 **context_issue**:
   **DoD**: ``
   **Labs**: ``
-**decision**: `Provide one thin policy surface for deciding when work should remain a standard slice, when it should be grouped into one maintenance sweep log, and when a tiny direct patch commit is allowed without a dedicated slice log.`
+**decision**: `Provide one thin policy surface for deciding when work should remain a standard slice, when it should be grouped into one maintenance sweep log, and when a tiny direct patch commit or short patch note is allowed without a dedicated slice log.`
   **positive**: `"Clear lane selection", "Less fake slice naming", "Small-fix traceability without forcing every patch into the full lifecycle"`
   **negative**: `"Adds one more procedural surface", "Requires discipline not to hide real contract work in maintenance bundles", "Direct patch lane still needs manual judgment"`
 **supersedes**: `null`
@@ -48,6 +48,7 @@
   - reviewer context matters more than individual mini-DoDs
 - Surface:
   - one lightweight maintenance log named `family-M<n>-<slug>`
+  - stored under `docs/logs/maintenance/`
   - one commit or one short burst of commits tied to that same bounded bundle
 
 ### 2.3 Direct patch lane
@@ -59,8 +60,9 @@
   - ledger write-back or tiny metadata correction
   - no new contract, no retained evidence, no multi-step reasoning
 - Surface:
-  - a direct commit without a dedicated slice log
-  - one row appended to `docs/logs/ledger-direct-patch-commits.md`
+  - the smallest form is a direct commit without a dedicated slice log
+  - if the patch still needs one short local note, keep that note under `docs/logs/patch/`
+  - one row appended to `docs/logs/ledger-direct-patch-commits.md` for direct no-log patch commits
 
 ## 3) Escalation Rule
 
@@ -83,19 +85,36 @@
 - Format:
 
 ```text
-docs/logs/log-<family>-M<n>-<slug>.md
+docs/logs/maintenance/log-<family>-M<n>-<slug>.md
 ```
 
 - Examples:
-  - `docs/logs/log-S0F-M1-post-lifecycle-fallout-cleanup.md`
-  - `docs/logs/log-S4D-M2-runner-script-hygiene-sweep.md`
+  - `docs/logs/maintenance/log-S0F-M1-post-lifecycle-fallout-cleanup.md`
+  - `docs/logs/maintenance/log-S4D-M2-runner-script-hygiene-sweep.md`
 
 - Rules:
   - `M` means maintenance sweep, not a new formal slice lineage
   - `<family>` should point to the owning spine or family, not to every touched child
   - `<slug>` should describe why the changes were grouped, not list every file
 
-### 4.2 Direct patch commit subject
+### 4.2 Patch log placement
+
+- Format:
+
+```text
+docs/logs/patch/log-<family>-patch-<slug>.md
+```
+
+- Examples:
+  - `docs/logs/patch/log-S0F-patch-log-folderization.md`
+  - `docs/logs/patch/log-S4D-patch-runner-readme-fix.md`
+
+- Rules:
+  - use a patch log only when the change is still small and local but benefits from one short note
+  - do not use a patch log to hide grouped same-source cleanup; that belongs in `docs/logs/maintenance/`
+  - do not use a patch log when the change really deserves a full slice log
+
+### 4.3 Direct patch commit subject
 
 - Preferred subject shapes:
 
@@ -129,6 +148,7 @@ ledger(<area>): <summary>
 ## 6) Shared Ledger
 
 - All direct patch commits should append one short row to `docs/logs/ledger-direct-patch-commits.md`.
+- Patch logs stored under `docs/logs/patch/` do not need a ledger row unless there is also a separate tiny no-log patch commit in the same change set.
 - Minimum row fields:
   - date
   - commit
@@ -137,9 +157,15 @@ ledger(<area>): <summary>
   - validation
   - follow-up needed or `none`
 
-## 7) Minimal Maintenance Template
+## 7) Templates
 
-- Use this only for maintenance sweeps, not for full slice logs.
+- Maintenance template path:
+  - `docs/logs/maintenance/_template-log-maintenance-sweep.md`
+- Patch template path:
+  - `docs/logs/patch/_template-log-patch-note.md`
+
+- Use the maintenance template only for maintenance sweeps, not for full slice logs.
+- Use the patch template only for tiny local patch notes, not for maintenance bundles or full slices.
 
 ```md
 # log-<family>-M<n> (<short title>)
@@ -179,6 +205,38 @@ ledger(<area>): <summary>
 - `<commit sha / subject>`
 ```
 
+```md
+# log-<family>-patch-<slug> (<short title>)
+
+---
+
+**id**: `<family>-patch-<slug>`
+**kind**: `log`
+**title**: `<short title>`
+**status**: `stable`
+**scope**: `<family>`
+**links**:
+  **parent_log**: `<parent log path>`
+
+---
+
+## Why This Patch Exists
+
+- `<one short reason>`
+
+## Change
+
+- `<small local fix>`
+
+## Validation
+
+- `<command, check, or manual verification>`
+
+## Commit
+
+- `<commit sha / subject>`
+```
+
 ## 8) First-Response Guidance
 
 - If you can explain the work honestly in one direct diff sentence, use the direct patch lane.
@@ -190,3 +248,5 @@ ledger(<area>): <summary>
 - `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
 - `docs/logs/log-S0F-docs-management-v6.md`
 - `docs/logs/ledger-direct-patch-commits.md`
+- `docs/logs/maintenance/_template-log-maintenance-sweep.md`
+- `docs/logs/patch/_template-log-patch-note.md`

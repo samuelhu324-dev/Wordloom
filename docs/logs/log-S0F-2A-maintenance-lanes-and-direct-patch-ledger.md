@@ -45,6 +45,7 @@
 **Decision**:
 
 - `S0F-2A` institutionalizes one explicit three-lane model for work that does not fit cleanly into the existing full slice log lifecycle: standard slice work, maintenance sweep work, and tiny direct patch work.
+- `S0F-2A` institutionalizes one explicit three-lane model for work that does not fit cleanly into the existing full slice log lifecycle: standard slice work, maintenance sweep work, and tiny direct patch or patch-log work.
 - v1 should not weaken the existing log-driven system. Instead, it adds two bounded escape hatches so mixed small fixes can be shipped without inventing fake slice names or polluting formal phase logs.
 - The new model should stay operationally simple: one thin policy runbook defines when each lane is allowed, and one shared direct-patch ledger gives tiny no-log commits a deterministic place to be remembered.
 
@@ -52,7 +53,7 @@
 
 - Keep the existing slice log system as the default lane for any work that has an independent contract, DoD, or replayable evidence surface.
 - Introduce one new maintenance-log lane for grouped same-source cleanup, fallout repair, or mixed small fixes that are worth one bounded narrative but not worth several formal child slices.
-- Introduce one direct-patch lane only for tiny local fixes that do not add a contract, do not need retained evidence, and do not widen system ownership.
+- Introduce one direct-patch lane only for tiny local fixes that do not add a contract, do not need retained evidence, and do not widen system ownership; when a tiny patch still needs one short note, keep that note under `docs/logs/patch/` rather than in the main log root.
 - Treat lane choice as a semantics decision, not a file-count decision: if a change has its own independent meaning, it should not hide inside a patch bundle.
 
 ## PR Summary Inputs (optional)
@@ -76,7 +77,7 @@
 
 - `standard slice lane`: the current full log-driven path used when work owns a real contract, success criteria, and often a live issue/PR lifecycle.
 - `maintenance sweep lane`: one bounded log used to group related small fixes discovered through the same replay, cleanup pass, or operator session.
-- `direct patch lane`: a tiny no-log commit path used only when the change is local, obvious, low-risk, and not worth a standalone narrative.
+- `direct patch lane`: a tiny patch path used only when the change is local, obvious, low-risk, and not worth a standalone narrative; the smallest version uses only the shared ledger, while the narrated version keeps one short patch note under `docs/logs/patch/`.
 
 ## Constraints
 
@@ -89,15 +90,15 @@
 
 - `P0`: create `S0F-2A`, wire it into the `S0F` spine, and define the lane boundary problem explicitly
 - `P1`: define the three-lane decision model and escalation rules
-- `P2`: standardize maintenance-log naming and direct-patch commit boundaries
-- `P3`: publish one thin runbook, one shared direct-patch ledger, and one minimal maintenance template
+- `P2`: standardize maintenance-log naming, patch-log location, and direct-patch commit boundaries
+- `P3`: publish one thin runbook, one shared direct-patch ledger, and one minimal template under both `maintenance/` and `patch/`
 
 ## Success Criteria (DoD)
 
 - One reader can determine in under a minute whether a change belongs in the standard slice lane, maintenance sweep lane, or direct patch lane.
-- One stable naming rule exists for future maintenance logs so grouped cleanup does not need fake slice titles or ad hoc issue wording.
+- One stable home exists for future maintenance logs and patch logs so grouped cleanup does not need fake slice titles or ad hoc placement.
 - One explicit direct-patch boundary exists so tiny fixes can land without pretending to be full slices.
-- One shared ledger exists for direct patch commits, and one minimal maintenance template exists for grouped small-change logs.
+- One shared ledger exists for direct patch commits, and one minimal template exists under both `docs/logs/maintenance/` and `docs/logs/patch/`.
 
 ## Stability (what stable means)
 
@@ -111,8 +112,8 @@
 - `S0F-2A` is now opened as the next `S0F` follow-up slice for institutionalizing how this repo handles small grouped fixes and tiny direct patches that do not fit naturally into the full slice lifecycle.
 - `P0` is now complete: `S0F-2A` is wired into the spine, the problem is scoped as lane governance rather than as an ad hoc naming complaint, and the next step is explicit lane selection policy.
 - `P1` is now complete: the repo now has one three-lane model that keeps full slice logs as the default path while adding bounded maintenance and direct-patch escapes.
-- `P2` is now complete: future grouped cleanup can be named as maintenance logs under a dedicated `*-M<n>` family, and tiny no-log fixes now have explicit commit-boundary rules instead of being squeezed into fake slice titles.
-- `P3` is now complete: the thin runbook/policy, shared direct-patch ledger, and minimal maintenance template are all published for immediate reuse.
+- `P2` is now complete: future grouped cleanup now belongs under `docs/logs/maintenance/`, future patch notes now belong under `docs/logs/patch/`, and tiny no-log fixes still have explicit commit-boundary rules instead of being squeezed into fake slice titles.
+- `P3` is now complete: the thin runbook/policy, shared direct-patch ledger, and concrete maintenance/patch templates are all published for immediate reuse.
 - `S0F-2A` is now stable: the repo has a concrete, documented answer for work that is too small or too mixed for the standard slice lifecycle without allowing untracked patch drift.
 
 ## Plan (draft)
@@ -130,12 +131,12 @@
 ### P2 (Naming and commit boundary)
 
 - P2-C1-S1: standardize future maintenance-log naming as `family-M<n>-<slug>`
-- P2-C1-S2: standardize direct-patch commit boundaries and commit-subject shape
+- P2-C1-S2: standardize patch-log placement under `docs/logs/patch/` and direct-patch commit boundaries
 
 ### P3 (Published surfaces)
 
 - P3-C1-S1: publish one thin runbook/policy for lane choice and escalation
-- P3-C1-S2: publish one shared direct-patch ledger and one minimal maintenance-log template
+- P3-C1-S2: publish one shared direct-patch ledger plus one minimal maintenance template and one minimal patch template
 
 ## Execution Checklist (unchecked)
 
@@ -152,18 +153,18 @@
 ### P2 (Naming and commit boundary)
 
 - [x] `P2-C1-S1`: future maintenance-log naming standardized
-- [x] `P2-C1-S2`: direct-patch commit boundary standardized
+- [x] `P2-C1-S2`: patch-log placement and direct-patch boundary standardized
 
 ### P3 (Published surfaces)
 
 - [x] `P3-C1-S1`: thin lane-policy runbook published
-- [x] `P3-C1-S2`: shared direct-patch ledger and minimal maintenance template published
+- [x] `P3-C1-S2`: shared direct-patch ledger plus maintenance/patch templates published
 
 ## Evidence
 
-- `docs/runbook/run-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md` now defines the three-lane model, escalation rules, maintenance-log naming rule, and direct-patch boundary in one operator-facing procedural surface.
+- `docs/runbook/run-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md` now defines the three-lane model, folder placement rules, escalation rules, maintenance-log naming rule, and direct-patch boundary in one operator-facing procedural surface.
 - `docs/logs/ledger-direct-patch-commits.md` now exists as the shared repository ledger for tiny no-log patch commits.
-- The runbook now publishes one minimal maintenance-log template so grouped cleanup can be written once without inflating into a fake full slice.
+- `docs/logs/maintenance/_template-log-maintenance-sweep.md` and `docs/logs/patch/_template-log-patch-note.md` now publish concrete templates at the canonical homes for maintenance and patch notes.
 - `docs/logs/log-S0F-docs-management-v6.md` now points to `S0F-2A` as the next institutional follow-up under the `S0F` spine.
 
 ## Numbering
