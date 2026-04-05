@@ -1,0 +1,45 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-S0F-1I-live-manifest-plan.json",
+  "preflight_result_path": "docs/issues/pr-prep-S0F-1I-live-manifest-front-half-preflight-result.json",
+  "item_index": 0,
+  "requested_id": "S0F-1I",
+  "source_log_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0f-1i",
+  "base_branch": "main",
+  "merge_base": "c92ea29fd74a826796dca32d10439488717ee9a7",
+  "selected_commit_count": 4,
+  "selected_commits": [
+    "11f17c695c2e5fd67d0066859266a43c8cfe386f",
+    "291f598563063a22f42ad280ac2ebc31f29b460f",
+    "6a6b4db8ed73ffbe22e9b437d2ab7608a3b4a53e",
+    "f6278512d4b7da459b7174133196181756fda397"
+  ],
+  "pr_title": "S0F-1I/P0-P4: formatting-only PR body convergence v1",
+  "draft": false,
+  "preflight_decision": "allow-front-half-preflight",
+  "preflight_allowed": true,
+  "pr_number": 381,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/381",
+  "body_path": "docs/issues/pr-prep-S0F-1I-live-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/1",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#380",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-S0F-1I-live-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-S0F-1I-live-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 11f17c69; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 11f17c695... S0F-1I/P0-P3-C1-S1: converge formatting-only PR bodies"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "mode": "issue-conclusion-guarded-apply",
+  "result": "ok",
+  "gate_input_kind": "manifest",
+  "gate_input_path": "docs/issues/lifecycle-audit-S0F-1I-live-manifest.json",
+  "item_index": 0,
+  "requested_id": "S0F-1I",
+  "gate_decision_path": "docs/issues/lifecycle-gate-S0F-1I-live-post-merge-decision.json",
+  "gate_decision": "stop-for-remediation",
+  "apply_allowed": false,
+  "guarded_eligibility": "allowed-via-targeted-conclusion-remediation",
+  "conclusion_manifest_path": "docs/issues/lifecycle-remediation-S0F-1I-live-post-merge-issue-conclusion-manifest.json",
+  "conclusion_plan_path": "docs/issues/issue-conclusion-S0F-1I-live-plan.json",
+  "guarded_action": "applied-after-pre-gate",
+  "apply_result_path": "docs/issues/issue-conclusion-S0F-1I-live-apply-result.json",
+  "warnings": [
+    "issue conclusion apply allowed through targeted remediation because issue-conclusion refresh is the only planned follow-up action",
+    "issue was already closed before apply; body updated in place"
+  ]
+}

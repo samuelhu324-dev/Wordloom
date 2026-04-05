@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-1I",
+      "source_log_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
+      "issue_number": 380,
+      "merged_pr_overrides": [
+        "#381"
+      ],
+      "reason": "Full-auto lifecycle run for S0F-1I after bounded formatting-only convergence and standard check packaging stabilized."
+    }
+  ]
+}

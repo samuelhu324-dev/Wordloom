@@ -14,14 +14,21 @@
       "issue_number": 380,
       "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/380",
       "issue_title": "S0F-1I: automation/formatting-only PR body convergence",
-      "issue_state": "OPEN",
-      "lifecycle_stage": "issue-created",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
       "expected_parent_issue_number": 363,
       "actual_parent_issue_number": 363,
       "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/380",
-      "source_log_pr_url": null,
-      "merged_pr_count": 0,
-      "merged_prs": [],
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/381",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 381,
+          "title": "S0F-1I/P0-P4: formatting-only PR body convergence v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/381",
+          "merged_at": "2026-04-05T13:57:00Z"
+        }
+      ],
       "planned_action": "pass-audit",
       "applied_action": null,
       "status": "pass",
@@ -73,13 +80,13 @@
         },
         {
           "name": "exact-id-merged-pr-evidence",
-          "status": "skipped",
-          "details": "no merged PR evidence is required for the current issue-created stage"
+          "status": "pass",
+          "details": "found 1 exact-ID merged PR(s)"
         },
         {
           "name": "final-dod-pr-refs",
-          "status": "skipped",
-          "details": "no final DoD PR refs are required before merged PR evidence exists"
+          "status": "pass",
+          "details": "DoD PR refs match the exact-ID merged PR evidence set"
         },
         {
           "name": "link-categories",
@@ -94,17 +101,17 @@
         {
           "name": "context-sentence-shape",
           "status": "pass",
-          "details": "open issue keeps the required Context section structurally present while substantive Context prose is deferred to conclusion"
+          "details": "Context contains exactly 4 readable English bullet sentences with basic placeholder hygiene"
         },
         {
           "name": "closed-body-shape",
-          "status": "skipped",
-          "details": "closed-body shape is not required while the issue remains open"
+          "status": "pass",
+          "details": "concluded issue keeps the prose-first Context gate within line range (4, 4)"
         },
         {
           "name": "source-log-pr-link",
-          "status": "skipped",
-          "details": "source log links.pr is blank"
+          "status": "pass",
+          "details": "source log links.pr is represented in the exact-ID merged PR evidence set"
         }
       ],
       "warnings": [],
