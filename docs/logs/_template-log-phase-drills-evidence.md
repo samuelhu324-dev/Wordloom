@@ -16,7 +16,7 @@
   **parent_log**: `docs/logs/log-<PARENT>.md`
   **previous_log**: ``
   **reference_log_1**: ``
-**issue_keyword**: ``        # controlled fixed keyword; leave blank if title keyword should stay manual
+**issue_keyword**: ``        # controlled fixed keyword; allowed values include audit/automation/contract/evidence/enforcement/migration/policy/records/runtime/taxonomy/workflow
 **issue_top_labels**: ``     # comma-separated existing labels only
 **issue_scope_labels**: ``   # comma-separated labels usually derived from scope / hierarchy
 **issue_module_labels**: ``  # comma-separated module labels; leave blank when impact is not explicit

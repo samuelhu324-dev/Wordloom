@@ -119,6 +119,24 @@
 - `P0` is now complete: `S0F-1G` is wired into the spine, the shared governance boundary is fixed, and the next follow-up is `P1` top-level parent sidebar ordering ownership and repair semantics.
 - `P1` is now complete: lifecycle audit now preserves the real GitHub sub-issue sidebar order instead of sorting it away, one controlled reprioritize path is retained under `scripts/issues/reprioritize_parent_subissues.py`, and the live `#248` parent sidebar can now be repaired back to the canonical source-log-owned order without destructive remove/re-add behavior.
 - The live `#248` repair is now complete and re-verified: the retained reprioritize result under `artifacts/` converged to the expected child order, and a focused rerun of `plan_lifecycle_audit.py` now passes the parent `sidebar-child-relationships` check instead of leaving `S0E` blocked on an ordering mismatch.
+- `P2` is now complete: create-time issue generation now treats `issue_keyword` as a controlled vocabulary input instead of accepting arbitrary explicit free text, real `--create` runs fail closed on disallowed keywords, and the phase templates now document the controlled keyword boundary directly.
+
+## P2 Create-Time Title Keyword Governance (completed)
+
+- `S0F-1G` now fixes the create-time side of title keyword governance at the existing issue-draft entrypoint rather than adding a second disconnected checker.
+- v1 keeps the current fail-closed shape but strengthens it: real issue creation still requires an explicit `issue_keyword`, and that explicit value must now also belong to the controlled vocabulary allowed for the source-log shape.
+
+### P2-C1-S1 (Controlled vocabulary input rules fixed for issue_keyword | v1)
+
+- `scripts/issues/gen_issue_draft.py` now defines one controlled issue-keyword vocabulary for real issue creation instead of accepting any explicit free-text token.
+- The standard allowed set now covers the legitimate repo-level create-time keywords already in use on stable slices, including `audit`, `automation`, `contract`, `evidence`, `enforcement`, `migration`, `policy`, `records`, `runtime`, `taxonomy`, and `workflow`.
+- Top-level parent or spine logs may additionally use `governance` and `platform`, which keeps higher-level ownership lanes available without reopening arbitrary free-text keyword drift.
+
+### P2-C1-S2 (Real issue creation hard-fails on disallowed title keywords | v1)
+
+- Real `gen_issue_draft.py --create` runs now fail closed not only when `issue_keyword` is blank, but also when the explicit keyword falls outside the controlled vocabulary.
+- Draft generation may still render a local preview so operators can inspect the proposed body, but the live create path stops before GitHub mutation on disallowed keywords such as `inventory`, `naming`, or `coexistence`.
+- The phase templates now document the controlled keyword boundary directly so new logs are authored against the same create-time contract instead of relying on implicit repo memory.
 
 ## P1 Parent Sidebar Ordering (completed)
 
@@ -196,8 +214,8 @@
 
 ### P2 (Create-time title keyword governance)
 
-- [ ] `P2-C1-S1`: controlled vocabulary input rules fixed for `issue_keyword`
-- [ ] `P2-C1-S2`: real issue creation hard-fails on disallowed title keywords
+- [x] `P2-C1-S1`: controlled vocabulary input rules fixed for `issue_keyword`
+- [x] `P2-C1-S2`: real issue creation hard-fails on disallowed title keywords
 
 ### P3 (Lifecycle audit title keyword enforcement)
 

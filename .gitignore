@@ -222,6 +222,8 @@ artifacts/
 
 # Future local scratch outputs under docs/issues should not be committed by default.
 # Already tracked retained contract samples remain tracked until explicitly cleaned up.
+docs/issues/issue-*.json
+docs/issues/issue-*.md
 docs/issues/lifecycle-audit-*.json
 docs/issues/lifecycle-gate-*.json
 docs/issues/lifecycle-remediation-*.json

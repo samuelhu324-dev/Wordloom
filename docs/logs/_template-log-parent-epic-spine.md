@@ -22,7 +22,7 @@
   **phase_log_4**: ``
   **phase_log_5**: ``
   **phase_log_6**: ``
-**issue_keyword**: ``        # controlled fixed keyword; leave blank if title keyword should stay manual
+**issue_keyword**: ``        # controlled fixed keyword; parent/spine may also use governance/platform in addition to the standard allowed values
 **issue_top_labels**: ``     # comma-separated existing labels only
 **issue_scope_labels**: ``   # comma-separated labels usually derived from scope / hierarchy
 **issue_module_labels**: ``  # comma-separated module labels; leave blank when impact is not explicit

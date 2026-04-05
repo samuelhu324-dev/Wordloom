@@ -25,6 +25,20 @@ FIELD_RE = re.compile(r"^\s*\*\*([^*]+)\*\*:\s*`(.*)`\s*$")
 VERSION_SUFFIX_RE = re.compile(r"\s+v\d+\s*$", re.IGNORECASE)
 DEFAULT_WORKSPACE_PROJECT = "wordloom Board"
 DEFAULT_COMMAND_TIMEOUT_SECONDS = 180
+CONTROLLED_ISSUE_KEYWORDS = {
+    "audit",
+    "automation",
+    "contract",
+    "evidence",
+    "enforcement",
+    "migration",
+    "policy",
+    "records",
+    "runtime",
+    "taxonomy",
+    "workflow",
+}
+PARENT_CONTROLLED_ISSUE_KEYWORDS = {"governance", "platform"}
 
 
 @dataclass
@@ -197,10 +211,37 @@ def _context_contains_placeholder(context_lines: list[str]) -> bool:
     return False
 
 
-def _create_issue_preflight_failures(*, explicit_issue_keyword: str, context_mode: str, context_lines: list[str]) -> list[str]:
+def _normalize_issue_keyword(value: str) -> str:
+    return value.strip().lower()
+
+
+def _allowed_issue_keywords(fields: dict[str, str]) -> list[str]:
+    from body_contract import issue_uses_parent_body_contract
+
+    allowed = set(CONTROLLED_ISSUE_KEYWORDS)
+    if issue_uses_parent_body_contract(fields):
+        allowed.update(PARENT_CONTROLLED_ISSUE_KEYWORDS)
+    return sorted(allowed)
+
+
+def _create_issue_preflight_failures(
+    *,
+    explicit_issue_keyword: str,
+    fields: dict[str, str],
+    context_mode: str,
+    context_lines: list[str],
+) -> list[str]:
     failures: list[str] = []
-    if not explicit_issue_keyword.strip():
+    normalized_issue_keyword = _normalize_issue_keyword(explicit_issue_keyword)
+    if not normalized_issue_keyword:
         failures.append("real create-issue requires an explicit issue_keyword; inferred title keywords are not allowed")
+    else:
+        allowed_issue_keywords = _allowed_issue_keywords(fields)
+        if normalized_issue_keyword not in allowed_issue_keywords:
+            failures.append(
+                "real create-issue requires issue_keyword to be one of the controlled vocabulary values "
+                + f"{allowed_issue_keywords}; got '{explicit_issue_keyword.strip()}'"
+            )
     if context_mode == "scaffold" and _context_contains_placeholder(context_lines):
         failures.append("real create-issue requires the Context section to exist without placeholder scaffold lines before live creation")
     return failures
@@ -209,7 +250,7 @@ def _create_issue_preflight_failures(*, explicit_issue_keyword: str, context_mod
 def _infer_keyword(fields: dict[str, str], title: str, tags: list[str], section_text: str) -> str:
     explicit = fields.get("issue_keyword", "").strip()
     if explicit:
-        return explicit
+        return _normalize_issue_keyword(explicit)
 
     haystack = " ".join([title, section_text, " ".join(tags)]).lower()
     checks = [
@@ -601,6 +642,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     section_text = "\n".join(text for lines in sections.values() for text in lines)
 
     explicit_issue_keyword = fields.get("issue_keyword", "").strip()
+    normalized_issue_keyword = _normalize_issue_keyword(explicit_issue_keyword)
     keyword = _infer_keyword(fields, log_title, tags, section_text)
     specific_subject = _normalize_specific_subject(log_title)
     issue_title = _compose_issue_title(log_id, keyword, specific_subject)
@@ -637,6 +679,8 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     warnings.extend(parent_warnings)
     if not explicit_issue_keyword:
         warnings.append("issue_keyword inferred from source log content")
+    elif normalized_issue_keyword != explicit_issue_keyword:
+        warnings.append(f"issue_keyword normalized to lower-case controlled token: {normalized_issue_keyword}")
     if not module_labels:
         warnings.append("module labels left blank")
     if not milestone:
@@ -687,6 +731,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
 
     create_preflight_failures = _create_issue_preflight_failures(
         explicit_issue_keyword=explicit_issue_keyword,
+        fields=fields,
         context_mode=context_mode,
         context_lines=context_lines,
     )
