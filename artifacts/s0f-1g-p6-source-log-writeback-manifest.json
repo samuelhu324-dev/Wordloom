@@ -1,0 +1,111 @@
+{
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3",
+    "write_back_issue_url": true,
+    "desired_milestone": null
+  },
+  "items": [
+    {
+      "issue_number": 330,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/330",
+      "source_log_path": "docs/logs/log-S0E-5D-body-contract-and-gate-shape-normalization.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 332,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/332",
+      "source_log_path": "docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 333,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/333",
+      "source_log_path": "docs/logs/log-S0E-6B-log-stability-and-gate-strategy.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 334,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/334",
+      "source_log_path": "docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 335,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/335",
+      "source_log_path": "docs/logs/log-S0E-6D-natural-issue-context-rendering-and-weak-gate.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 336,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/336",
+      "source_log_path": "docs/logs/log-S0E-6E-single-item-context-authoring-and-batch-preserve-boundary.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 331,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/331",
+      "source_log_path": "docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 338,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/338",
+      "source_log_path": "docs/logs/log-S0E-7A-github-actions-secondary-enforcement.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 337,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/337",
+      "source_log_path": "docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 341,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/341",
+      "source_log_path": "docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 342,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/342",
+      "source_log_path": "docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 339,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/339",
+      "source_log_path": "docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 340,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/340",
+      "source_log_path": "docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0E parent child-set convergence"
+    },
+    {
+      "issue_number": 366,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/366",
+      "source_log_path": "docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0F parent child-set convergence"
+    },
+    {
+      "issue_number": 367,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/367",
+      "source_log_path": "docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0F parent child-set convergence"
+    },
+    {
+      "issue_number": 368,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/368",
+      "source_log_path": "docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0F parent child-set convergence"
+    },
+    {
+      "issue_number": 369,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/369",
+      "source_log_path": "docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md",
+      "reason": "S0F-1G/P6 source-log write-back reconciliation for S0F parent child-set convergence"
+    }
+  ]
+}

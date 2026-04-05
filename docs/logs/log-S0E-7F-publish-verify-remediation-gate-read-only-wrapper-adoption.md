@@ -9,7 +9,7 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Actions, Workflow, Automation, Drills, Evidence, epic/s0, sub/1`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/339`
   **pr**: ``
   **runbook**: ``
   **roadmap**: ``
@@ -35,7 +35,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-02`
-**updated**: `2026-04-02`
+**updated**: `2026-04-05`
 
 ---
 
