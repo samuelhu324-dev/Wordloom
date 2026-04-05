@@ -34,7 +34,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-04`
+**updated**: `2026-04-05`
 
 ---
 
@@ -118,6 +118,7 @@
 - `P3` is now complete: one reviewer-facing bucket-output summary packages the live and historical retained samples together, output-reading expectations are fixed for diagnosis-layer consumers, and the next follow-up is `P4` downstream contract packaging.
 - `P4` is now complete: one downstream-facing diagnosis-layer contract packages stable field names, null semantics, and cross-surface consumer rules, and no further phase is currently required inside this slice.
 - A downstream packaging hygiene follow-up is now also fixed under `P4`: broad repair work may still emit many local `docs/issues/*` scratch files during investigation, but future scratch-output families now default to ignored `docs/issues` patterns or `artifacts/` so they stop leaking into routine commits.
+- `P4-C1-S3` is now recorded under this slice as bookkeeping only: the screenshot1-era `docs/issues/issue-*`, `docs/issues/issue-conclusion-*`, and `docs/issues/issue-relationship-*` files are treated as post-stabilization local experiments that exercised the already-landed `S0F-1F` output-packaging boundary, not as new productized contract surface.
 
 ## P0 Materialization Boundary (completed)
 
@@ -200,6 +201,12 @@
 - The contract fixes one key fail-closed rule for downstream tooling: null or empty diagnosis-layer fields are valid contract output when a retained surface does not yet have enough deterministic structured evidence to justify attribution.
 - The contract also records the ownership split across current consumers: live lifecycle audit remains the primary diagnosis-layer owner, historical log review remains a supporting deterministic surface only, and the reviewer summary remains a packaged interpretation layer rather than a new owner.
 
+### P4-C1-S3 (Post-stabilization local experiment outputs attributed back to this slice | bookkeeping)
+
+- The screenshot1 `docs/issues/*` files were generated after `S0F-1F` had already stabilized while probing how broad repair and audit packaging surfaces behaved under local experimentation.
+- Those files therefore belong under `S0F-1F` bookkeeping rather than under a new delivery phase: they exercise the same retained output and downstream packaging boundary already fixed here, even when the filenames come from temporary conclusion or relationship experiments.
+- The classification remains intentionally narrow: these local experiment files are evidence of post-stabilization probing, not a new stable retained contract, and future scratch families should still prefer ignored `docs/issues` patterns or `artifacts/`.
+
 ## Plan (draft)
 
 ### P0 (Materialization boundary and spine wiring)
@@ -226,6 +233,7 @@
 
 - P4-C1-S1: package the emitted diagnosis-layer contract for later review or remediation consumers
 - P4-C1-S2: keep future local scratch-output families out of routine commits by default
+- P4-C1-S3: attribute screenshot1-era local `docs/issues` experiment outputs back to the stabilized `S0F-1F` packaging boundary for bookkeeping
 
 ## Execution Checklist (unchecked)
 
@@ -253,6 +261,7 @@
 
 - [x] `P4-C1-S1`: emitted diagnosis-layer contract packaged for downstream consumers
 - [x] `P4-C1-S2`: future local scratch-output families default to ignored `docs/issues` patterns or `artifacts/`
+- [x] `P4-C1-S3`: screenshot1-era local `docs/issues` experiment outputs attributed back to `S0F-1F` as post-stabilization bookkeeping
 
 ## Notes (optional)
 
@@ -272,6 +281,7 @@
 - `P2-C1-S1` / `P2-C1-S2`: `docs/issues/historical-log-review-S0E-7C-sample-plan.json` now retains the updated supporting sample shape, including one `log-only` item that materializes as `creation-writeback-gap` while in-progress items remain intentionally unbucketed.
 - `P3-C1-S1` / `P3-C1-S2`: `docs/issues/bucketed-audit-output-S0F-1F-p3-summary.json` now packages the representative live and historical emitted samples into one reviewer-facing summary and fixes how diagnosis-layer consumers should interpret emitted versus intentionally empty bucket fields.
 - `P4-C1-S1`: `docs/issues/bucketed-audit-output-S0F-1F-p4-contract.json` now packages the downstream-facing emitted diagnosis-layer contract, including stable field names, null and empty semantics, cross-surface consumer rules, and compatibility expectations for later tooling.
+- `P4-C1-S3`: the screenshot1-era `docs/issues/issue-*`, `docs/issues/issue-conclusion-*`, and `docs/issues/issue-relationship-*` files are now explicitly classified as post-stabilization local experiment outputs hanging off the already-complete `S0F-1F` packaging boundary rather than as a new stable output family.
 
 ## Numbering
 
