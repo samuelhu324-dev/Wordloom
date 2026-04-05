@@ -18,7 +18,7 @@
   **reference_log_1**: `docs/logs/log-S6B-1B-evidence-naming-baseline.md`
   **reference_log_2**: `docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md`
   **reference_log_3**: `docs/logs/log-S2B-projection-table-merge.md`
-**issue_keyword**: `coexistence`
+**issue_keyword**: `migration`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s6/evidence & drills, sub/1`
 **issue_module_labels**: ``
@@ -35,7 +35,7 @@
 **pr_base**: `main`
 **pr_development_issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/359`
 **created**: `2026-04-04`
-**updated**: `2026-04-04`
+**updated**: `2026-04-05`
 
 ---
 

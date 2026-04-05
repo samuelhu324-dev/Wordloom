@@ -1,0 +1,15 @@
+{
+  "mode": "issue-title-repair",
+  "result": "ok",
+  "apply": true,
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "log_path": "docs/logs/log-S6B-1A-evidence-surface-inventory-ledger.md",
+  "issue_number": 357,
+  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/357",
+  "issue_state": "CLOSED",
+  "before_title": "S6B-1A: inventory/evidence surface inventory ledger",
+  "expected_title": "S6B-1A: records/evidence surface inventory ledger",
+  "final_title": "S6B-1A: records/evidence surface inventory ledger",
+  "changed": true,
+  "warnings": []
+}
