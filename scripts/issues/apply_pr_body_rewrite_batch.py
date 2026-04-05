@@ -83,21 +83,32 @@ def _fetch_pr(repo: str, pr_ref: str) -> dict:
 
 
 def _edit_pr(repo: str, pr_ref: str, body_path: Path, add_labels: list[str]) -> None:
-    command = [
+    body_text = body_path.read_text(encoding="utf-8")
+    cmd = _run_command([
         "gh",
-        "pr",
-        "edit",
-        pr_ref,
-        "--repo",
-        repo,
-        "--body-file",
-        str(body_path),
-    ]
-    for label in add_labels:
-        command.extend(["--add-label", label])
-    cmd = _run_command(command)
+        "api",
+        f"repos/{repo}/pulls/{pr_ref}",
+        "--method",
+        "PATCH",
+        "-f",
+        f"body={body_text}",
+    ])
     if cmd.returncode != 0:
-        raise SystemExit(f"gh pr edit failed: {cmd.stderr.strip()}")
+        raise SystemExit(f"gh api pull update failed: {cmd.stderr.strip()}")
+
+    for label in add_labels:
+        label_cmd = _run_command([
+            "gh",
+            "pr",
+            "edit",
+            pr_ref,
+            "--repo",
+            repo,
+            "--add-label",
+            label,
+        ])
+        if label_cmd.returncode != 0:
+            raise SystemExit(f"gh pr edit --add-label failed: {label_cmd.stderr.strip()}")
 
 
 def _derive_repo(manifest: dict, override: str | None) -> str:
