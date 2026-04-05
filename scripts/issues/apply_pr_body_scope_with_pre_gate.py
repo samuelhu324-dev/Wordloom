@@ -103,18 +103,18 @@ def _fetch_pr(repo: str, pr_ref: str) -> dict:
 
 
 def _edit_pr_body(repo: str, pr_ref: str, body_path: Path) -> None:
+    body_text = body_path.read_text(encoding="utf-8")
     cmd = _run_command([
         "gh",
-        "pr",
-        "edit",
-        pr_ref,
-        "--repo",
-        repo,
-        "--body-file",
-        str(body_path),
+        "api",
+        f"repos/{repo}/pulls/{pr_ref}",
+        "--method",
+        "PATCH",
+        "-f",
+        f"body={body_text}",
     ])
     if cmd.returncode != 0:
-        raise SystemExit(f"gh pr edit failed: {cmd.stderr.strip()}")
+        raise SystemExit(f"gh api pull update failed: {cmd.stderr.strip()}")
 
 
 def apply_pr_body_scope(args: argparse.Namespace) -> PrBodyRewriteApplyResult:
