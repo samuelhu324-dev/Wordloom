@@ -72,6 +72,20 @@
 - Execute `R1` first because it is bounded current refinement with no front-door change.
 - Execute `A1` only after the remediation-governance contract boundary and area-code choice are defended tightly enough for a current-state write.
 
+## Pilot Result
+
+- `S0F-3F/P5` now closes the first bounded family pilot without reopening discovery.
+- What this pilot proved:
+  - one bounded source family can be swept without forcing every log into a current contract
+  - refinement-only writes can be executed safely before any front-door admission work
+  - support-only history can be classified explicitly instead of lingering as accidental future-candidate noise
+- Next carried-forward package:
+  - `A1` remains the next bounded admission-design lane
+  - its task is to compress `S0F-1C` into one explicit remediation-governance current contract shape and to decide whether the registry should reuse `REMED` or adopt a narrower area name
+- Workflow refinement needs from this pilot:
+  - no change is required to the worksheet or adjudication model before the next lane
+  - the open problem is semantic admission design for `A1`, not workflow ambiguity
+
 ## Reader Notes
 
 - This sweep does not say every `S0F-1` log should become a current contract.
@@ -80,6 +94,7 @@
 - The lighter-weight follow-up remains separate from that admission candidate: `S0F-1A` should feed refinement traceability into existing `ICR` and `PRA` contracts rather than create a new front-door record.
 - The bounded family now has explicit package separation, so later execution can fail closed on scope creep instead of quietly mixing traceability cleanup with new-area admission.
 - The first write stage is now complete for `R1`, while `A1` remains intentionally blocked until remediation area naming and current-contract scope are explicit enough.
+- The pilot is therefore complete as a workflow proof even though the admission-design follow-up remains open.
 
 ## Source Refs
 

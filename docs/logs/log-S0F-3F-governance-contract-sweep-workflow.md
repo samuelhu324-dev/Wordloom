@@ -78,9 +78,10 @@
 - `P2` is now complete for that same bounded family: the first `S0F-1` worksheet outcomes are now formally adjudicated, no row remains in an unresolved defer queue, and the family now exits `P2` with one clear admission candidate plus one small refinement package.
 - `P3` is now complete for that same bounded family: the accepted `S0F-1` outcomes are now translated into one split action-package model, with `R1` reserved for bounded traceability refinement and `A1` reserved for remediation-governance admission work.
 - `P4` is now complete for the justified first write stage: `R1` has been executed on `GC-ICR-0001` and `GC-PRA-0001`, front-door state remains unchanged, and `A1` remains blocked until remediation-governance naming and scope are explicit enough for admission work.
+- `P5` is now complete for that same bounded family: the first pilot run is now closed, the workflow itself needs no immediate structural revision, and `A1` is now fixed as the next bounded admission-design package rather than as an implicit auto-next write.
 - The first `S0F-1` worksheet shows a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and one bounded remediation surface still looks like a real current-admission candidate.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up is `P5`: close the first pilot run by recording what this family sweep proved, while carrying `A1` forward as the next bounded admission-design package rather than silently auto-executing it.
+- The immediate next follow-up after this pilot is the carried-forward `A1` admission-design lane: compress `S0F-1C` into one explicit remediation-governance current contract shape and settle the area-code choice before any front-door admission write.
 
 ## Problem Statement
 
@@ -462,6 +463,40 @@
   - `bounded new admission`: one or more defended new current contracts should be landed next
 - The first execution run should remain small enough that one reviewer can still read the full decision table without losing current-state meaning.
 
+## P5 First Pilot Close-Out (`S0F-1A` through `S0F-1J`)
+
+### What The Pilot Proved
+
+- The workflow can separate `already covered`, `refine existing`, `support-only history`, and `admit new current` without turning one source family into blanket registry growth.
+- The workflow can translate adjudication into split packages and execute the low-risk refinement lane first without contaminating front-door state.
+- The workflow can hold a real admission candidate in a blocked state without losing determinism about what the next package should do.
+
+### Workflow Refinement Result
+
+- No immediate structural revision is required for:
+  - sweep packet fields
+  - worksheet row fields
+  - adjudication vocabulary
+  - package split rule
+  - write-stage stop discipline
+- The first pilot therefore closes as `workflow accepted for reuse` rather than `workflow needs redesign`.
+
+### Carried-Forward Next Package
+
+- The carried-forward next package is `A1`, not a second generic family sweep.
+- `A1` must answer two explicit design questions before any admission write begins:
+  - what is the exact current remediation-governance contract boundary distilled from `S0F-1C`
+  - should that boundary land under the earlier shortlist area `REMED`, or is a narrower current area name required
+- `A1` is therefore an admission-design package first, not yet a contract-write package.
+
+### P5 Result
+
+- The first bounded `S0F-1` family pilot is now complete.
+- The family sweep ends with:
+  - `R1` executed and validated
+  - `A1` carried forward as the next bounded admission-design lane
+  - no additional changes required to the workflow scaffold before that next lane starts
+
 ## Plan (draft)
 
 ### P0 (Slice opening and workflow scaffold)
@@ -523,5 +558,5 @@
 
 ### P5 (First pilot run)
 
-- [ ] `P5-C1-S1`: first bounded family sweep completed through the v1 workflow
-- [ ] `P5-C1-S2`: workflow refinement needs recorded after the pilot run
+- [x] `P5-C1-S1`: first bounded family sweep completed through the v1 workflow
+- [x] `P5-C1-S2`: workflow refinement needs recorded after the pilot run
