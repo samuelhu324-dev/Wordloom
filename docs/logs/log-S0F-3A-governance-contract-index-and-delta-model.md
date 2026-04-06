@@ -301,6 +301,55 @@ contract_record:
 - Governance views can stay explanatory because active-state records now have their own explicit home.
 - `P4` does not yet backfill historical contracts. It only fixes naming, minimum record shape, and the smallest viable home for index records and views.
 
+## P5 Baseline (Backtrace and migration)
+
+- Historical logs without explicit delta blocks remain valid event truth and do not need to be rewritten before concentration work can begin.
+- Backtrace must proceed from current active governance need toward history, not from history toward completeness. In other words, first identify which active contract needs a current-state record, then reconstruct only the minimum historical lineage required to support that active record.
+- The baseline backtrace order is:
+  - locate the current active contract meaning in the most recent authoritative source,
+  - identify the most recent source anchor that materially changed that meaning,
+  - identify the first source anchor that introduced that meaning or its predecessor,
+  - capture only the minimal intermediate sources required to explain a supersession or a material semantic shift.
+- Git history may be used as forensic support when log prose is ambiguous, but Git history does not replace source-log anchors as the preferred traceability surface in the final record.
+
+## P5 Partial Backfill Rule
+
+- Backfill is explicitly partial-first, not completeness-first.
+- The default priority order is:
+  - contracts that currently gate live mutation or CI outcomes,
+  - contracts that currently produce reviewer findings, failure semantics, or operator decisions,
+  - contracts that are repeatedly referenced across new slices and patches,
+  - contracts that are useful only as deep historical context.
+- A backfill pass is considered sufficient when one active contract record can answer current-state questions with:
+  - one current summary,
+  - one `introduced_by`,
+  - one `last_changed_by`,
+  - one minimal `source_refs` set,
+  - and optional supersession links where materially needed.
+- The migration goal is not to replay every historical wording change. The migration goal is to concentrate enough traceability that a reader no longer needs broad log archaeology for current-state questions.
+
+## P5 Future-authoring Rule
+
+- Future non-contract-first logs may still change governance contracts, but they should do so by adding one or more explicit delta blocks at the relevant phase/step rather than hiding those changes only inside prose.
+- Future logs do not need to create or update every active contract record immediately during the same edit, but if the contract affects current live gating, reviewer semantics, or operator-facing decisions, the corresponding active record should be created or updated in the same slice when practical.
+- If a future log cannot determine the full historical lineage at authoring time, it may still emit the delta block and create a bounded follow-up for backtrace completion rather than deferring the delta declaration itself.
+
+## P5 Canonical Backfill Workflow
+
+- The baseline migration workflow is:
+  - identify one active governance contract that currently matters,
+  - create or update one active contract record under `docs/governance/contracts/`,
+  - populate `introduced_by`, `last_changed_by`, and minimal `source_refs` from the best available log-owned evidence,
+  - add a governance view only if readers need a concentrated explanation across multiple active records,
+  - open a bounded follow-up only when historical ambiguity materially blocks the active record from being trustworthy.
+
+## P5 Consequences
+
+- The repo now has a migration rule that can start immediately without requiring a one-shot rewrite of historical logs.
+- Historical ambiguity is now handled by bounded backtrace work rather than by widening `reference_logs` or duplicating broad narrative summaries.
+- Future authors now have a clear rule: emit deltas where changes happen, and backfill active records by priority instead of waiting for perfect historical completeness.
+- `P5` completes the baseline operating model for governance-contract concentration: terminology, truth split, reference semantics, delta input, active index target, and migration path are now all fixed.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and terminology boundary)
@@ -373,9 +422,9 @@ contract_record:
 
 ### P5 (Backtrace and migration)
 
-- [ ] `P5-C1-S1`: backtrace rule for historical logs without explicit deltas fixed
-- [ ] `P5-C1-S2`: partial backfill rule fixed
-- [ ] `P5-C1-S3`: future non-contract-first logs can still declare contract changes cleanly
+- [x] `P5-C1-S1`: backtrace rule for historical logs without explicit deltas fixed
+- [x] `P5-C1-S2`: partial backfill rule fixed
+- [x] `P5-C1-S3`: future non-contract-first logs can still declare contract changes cleanly
 
 ## Current Status
 
@@ -385,8 +434,9 @@ contract_record:
 - `P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and an explicit escalation rule now stops those references from becoming ancestry dumps.
 - `P3` is now complete: the minimum governance-contract delta block is fixed, including one shared field set plus action-specific requirements for `add`, `modify`, `retire`, `supersede`, and `apply-without-change`.
 - `P4` is now complete: stable `contract_id` naming rules, the minimum active-index record shape, and the smallest viable homes under `docs/governance/contracts/` and `docs/governance/views/` are now fixed.
-- The slice remains in framing mode beyond `P4`: no backfill rule is fixed yet.
-- The main design hypothesis is now materially more complete: future governance contracts can be emitted as deltas, concentrated into active-state records, and explained in reader-facing views without collapsing those roles back together.
+- `P5` is now complete: historical backtrace rules, partial backfill priority rules, and future-authoring rules for non-contract-first logs are now fixed as the baseline migration path.
+- `S0F-3A` is now baseline-complete: the repo now has one end-to-end governance-contract concentration model covering terminology, truth layers, reference semantics, delta input, active-state records, and migration/backfill rules.
+- The main design hypothesis is now fully operational at the baseline level: future governance contracts can be emitted as deltas, concentrated into active-state records, explained in reader-facing views, and migrated incrementally from older logs without demanding one-shot historical rewrites.
 
 ## Evidence
 
@@ -397,6 +447,7 @@ contract_record:
 - The `P2` baseline in this slice now fixes that queue lineage and causal references are different surfaces with different jobs, which reduces pressure to use `reference_logs` as a hidden contract registry.
 - The `P3` baseline in this slice now fixes the minimum delta declaration that later phases can ingest into an active index without forcing future authors to invent per-log contract prose formats.
 - The `P4` baseline in this slice now fixes both the target record shape and the canonical home for active governance contracts and governance views.
+- The `P5` baseline in this slice now fixes the migration path: backtrace from current active need, backfill by present importance, and let future non-contract-first logs declare deltas without waiting for full historical reconstruction.
 
 ## Numbering
 
