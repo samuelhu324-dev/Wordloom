@@ -25,6 +25,7 @@
   **reference_log_8**: `docs/governance/views/view-wf-admission-package-v1.md`
   **reference_log_9**: `docs/governance/views/view-attr-family-sweep-v1.md`
   **reference_log_10**: `docs/governance/views/view-attr-admission-package-v1.md`
+  **reference_log_11**: `docs/governance/views/view-prb-follow-up-family-sweep-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -94,9 +95,14 @@
 - `P2-C3` is now complete for that same bounded attribution family: `S0E-4E` is now formally accepted as the sole `ATTR` admission candidate, `S0E-7B` is now fixed as support-only implementation history, and no `ATTR` defer queue remains open.
 - `P3-C3` is now complete for that same bounded attribution family: the adjudicated `ATTR` outcomes are now translated into one admission-only package `A3`, with `S0E-4E` isolated as the sole possible front-door lane and `S0E-7B` explicitly excluded from current-state writes.
 - `P4-C3` is now complete for that same bounded attribution family: `A3` is now executed, `ATTR` is now admitted as a live current governance area, and `GC-ATTR-0001` now concentrates the `S0E-4E` attribution precedence and ambiguity-stop boundary at the front door.
+- `P1-C4` is now complete for the fourth bounded family: the residual `PRB` follow-up worksheet now covers the deprecated `GC-PRB-0001` umbrella and its preserved backfill note instead of leaving the post-split residue as an unexamined future lane.
+- `P2-C4` is now complete for that same bounded residual family: both the preserved umbrella and its backfill note are now fixed as support-only or legacy history, no current admission candidate remains, and no defer queue is left open.
+- `P3-C4` is now complete for that same bounded residual family: the adjudicated `PRB` follow-up outcomes are now translated into one no-op current-state package `N4`, with explicit non-writes to the front door and to the successor `PRR` and `PRG` records.
+- `P4-C4` is now complete for that same bounded residual family: `N4` is now executed as a bounded no-op current-state closure, confirming that no further `PRB` current-admission lane remains after the earlier split executed.
 - The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up after the completed `ATTR` family is to choose the next bounded unswept family or confirm whether only a later `PRB` follow-up lane remains worth reopening under this workflow.
+- No bounded unswept family remains inside the currently approved shortlist after `C4`.
+- The immediate next follow-up is therefore no longer another family admission lane inside this slice; future reuse should reopen `S0F-3F` only if a genuinely new bounded family or a defended legacy refresh question appears.
 
 ## Problem Statement
 
@@ -387,6 +393,117 @@
 - The third bounded family therefore exits `P4-C3` in a clean completed state:
   - `A3` executed and validated
   - no further package remains open inside the `ATTR` family
+
+## P1 Fourth Bounded Family Execution (`GC-PRB-0001` residual follow-up)
+
+### Sweep Packet
+
+- bounded source family:
+  - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+- already-active current contracts reviewed for overlap:
+  - `GC-PRR-0001`
+  - `GC-PRG-0001`
+- known support or adjacent surfaces under this family context:
+  - `view-prb-split-package-v1.md` already explains the executed split from the old fused umbrella into the current reviewer and gate contracts
+  - `S0F-3E/P6-C3` already executed the lineage change, so this sweep reopens only the residual question of whether any later front-door admission lane still remains
+- exact question answered by this sweep:
+  - whether any residual `PRB` follow-up record still deserves current admission after the earlier split into `PRR` and `PRG`,
+  - or whether the preserved umbrella and backfill surfaces now remain support-only or legacy history only
+- stop condition for this run:
+  - stop before current-state writes if the family cannot defend whether any residual current owner is still missing after the `PRR` and `PRG` split already executed
+
+### Candidate Worksheet
+
+| candidate surface | source owner | current semantic owner | overlap type | proposed outcome | reason for outcome | allowed action package | front-door effect | legacy effect |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| deprecated fused `PRB` umbrella redirect surface | `GC-PRB-0001` | `GC-PRR-0001` and `GC-PRG-0001` | `support-only` | `support-only history` | the preserved umbrella now redirects deterministically to the live reviewer and gate records and no longer owns an independent current front-door rule | keep as support-only legacy umbrella history | none | retain deprecated file and redirects only |
+| `PRB` contract backfill note | `GC-PRB-0001 backfill` | `` | `support-only` | `support-only history` | the backfill note exists only to preserve contract backtrace and source history for the deprecated umbrella rather than to express a second current rule | keep as support-only backtrace history only | none | retain backfill note only |
+
+### P1 Result
+
+- The fourth bounded residual worksheet does not justify any new registry growth.
+- Current provisional result by row class:
+  - `support-only history`: deprecated `GC-PRB-0001` umbrella and its backfill note
+  - `candidate new current`: none
+- The fourth worksheet therefore suggests one bounded closure lane rather than another admission lane:
+  - if `P2-C4` accepts the provisional outcomes, the family should close as `no-op current-state`
+
+## P2 Fourth Bounded Family Adjudication (`GC-PRB-0001` residual follow-up)
+
+### Accepted Outcomes
+
+- `support-only history`:
+  - deprecated fused `PRB` umbrella redirect surface
+  - `PRB` contract backfill note
+
+### Defer Queue
+
+- No row remains in `defer adjudication` for the bounded residual `PRB` follow-up pass.
+- This does not mean the preserved files are disposable.
+- It means the family now exits adjudication with no defended current admission candidate and two defended support-only or legacy classifications.
+
+### P2 Adjudication Result
+
+- The bounded residual `PRB` family now exits `P2-C4` with no current-admission lane.
+- The bounded residual `PRB` family does not justify any additional current record under:
+  - `PRB`
+  - `PRR`
+  - `PRG`
+- `P3-C4` should therefore package a bounded no-op current-state closure rather than any admission or refinement bundle.
+
+## P3 Fourth Bounded Family Action Package (`GC-PRB-0001` residual follow-up)
+
+### Package Rule
+
+- The bounded residual `PRB` family does not collapse into another admission bundle.
+- `P3-C4` fixes one package only:
+  - `N4`: bounded no-op current-state package
+- No refinement or admission package is opened because the adjudicated family contains no defended current candidate and no defended current-refinement row.
+
+### `N4` Bounded No-Op Current-State Package
+
+- target work:
+  - confirm that the preserved umbrella and its backfill note remain outside the current registry after the executed split into `PRR` and `PRG`
+  - update sweep surfaces to record the closure decision explicitly so the residual `PRB` lane does not remain an implicit pending question
+- explicit non-writes at `P3-C4`:
+  - do not update `INDEX.md`
+  - do not create a new contract file
+  - do not modify current `PRR` or `PRG` contract boundaries
+
+### Explicit Exclusion Set
+
+- `P3-C4` excludes these surfaces from any current-state action package entirely:
+  - deprecated `GC-PRB-0001` umbrella beyond its preserved redirect standing
+  - `GC-PRB-0001 backfill`
+  - current `PRR` and `PRG` records
+
+### P3 Result
+
+- The bounded residual `PRB` family now exits packaging with one execution order only:
+  - execute `N4` as a bounded no-op current-state closure
+- This means `P4-C4` can close the lane cleanly without reopening front-door mutation.
+
+## P4 Fourth Bounded Family Write Stage (`GC-PRB-0001` residual follow-up)
+
+### Executed Writes
+
+- `N4` is now executed.
+- Applied writes:
+  - sweep surfaces now record that the residual `PRB` lane closes as `no-op current-state`
+
+### Validated Non-Writes
+
+- `INDEX.md` remains unchanged during this stage.
+- No new `PRB`, `PRR`, or `PRG` current record is admitted or modified during this stage.
+- The deprecated umbrella and backfill note remain support-only or legacy history only.
+
+### P4 Result
+
+- The bounded residual `PRB` family now proves that the workflow can close a remaining shortlist question with a defended no-op current-state result instead of forcing one more admission.
+- The fourth bounded family therefore exits `P4-C4` in a clean completed state:
+  - `N4` executed and validated
+  - no further bounded family remains open inside the currently approved shortlist
 
 ## P2 Second Bounded Family Adjudication (`S0E-7D` through `S0E-7G`)
 
