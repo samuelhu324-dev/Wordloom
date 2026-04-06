@@ -236,6 +236,71 @@ contract_delta:
 - Historical logs without delta blocks are still valid event truth, but future contract changes now have a preferred structured expression that is small enough to add incrementally.
 - `P3` does not yet fix extraction tooling or index storage. It only fixes the minimum delta declaration shape and action semantics.
 
+## P4 Baseline (Active contract index)
+
+- `contract_id` naming rules:
+  - A `contract_id` names a governance rule, not a log, issue, PR, branch, or implementation artifact.
+  - A `contract_id` must remain stable across ordinary wording cleanup, enforcement-surface cleanup, and later log phases unless the contract meaning itself changes materially.
+  - The canonical baseline format is uppercase hyphenated segments:
+    - `<AREA>-<SUBJECT>-<RULE>`
+    - examples: `PR-BODY-LIVE-MATCH-SOURCE-LOG`, `REVIEW-HISTORICAL-DRIFT-REPORT-ONLY`, `PATCH-LANE-FAMILY-OWNED`
+  - Segments should describe semantic meaning, not temporary implementation details such as script filenames, run IDs, or slice IDs.
+  - If one contract truly replaces another, keep a new `contract_id` and connect the relationship through `supersedes` / `superseded_by` rather than silently reusing the old identifier for a new meaning.
+
+- Minimum active-index record fields:
+  - `contract_id`: stable governance-contract identifier
+  - `status`: one of `draft`, `active`, `deprecated`, `superseded`, or `retired`
+  - `summary`: one concise statement of the current effective contract meaning
+  - `governance_area`: the governance surface this contract belongs to
+  - `applies_to`: the targets governed by this contract
+  - `enforcement_surface`: the workflow, script, runbook, adapter, or manual path that enforces or operationalizes the current contract
+  - `violation_semantics`: the current intended result when the contract is violated
+  - `introduced_by`: the first known source anchor that introduced this contract
+  - `last_changed_by`: the most recent source anchor that changed this contract's meaning
+  - `source_refs`: the minimal current source-log references that a reader should inspect for traceability
+  - `supersedes`: optional list of earlier contract IDs this record replaces
+  - `superseded_by`: optional list of later contract IDs that replaced this one
+  - `notes`: optional reader-facing clarifications that do not override the structured fields above
+
+## P4 Canonical Form
+
+- The baseline active-index record shape is:
+
+```yaml
+contract_record:
+  contract_id: <stable-governance-contract-id>
+  status: <draft|active|deprecated|superseded|retired>
+  summary: <current effective contract meaning>
+  governance_area: <governed area>
+  applies_to: <targets governed by this contract>
+  enforcement_surface: <workflow|script|runbook|adapter|manual>
+  violation_semantics: <fail|warning|report-only|neutral>
+  introduced_by: <first source anchor>
+  last_changed_by: <most recent source anchor>
+  source_refs:
+    - <minimal source-log reference>
+  supersedes:
+    - <optional replaced contract id>
+  superseded_by:
+    - <optional replacement contract id>
+  notes:
+    - <optional clarification>
+```
+
+- The smallest viable home is now fixed as:
+  - `docs/governance/contracts/` for active governance-contract index records
+  - `docs/governance/views/` for human-readable governance views
+- The smallest viable reusable templates are now fixed as:
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/governance/views/_template-governance-view.md`
+
+## P4 Consequences
+
+- Later phases now have both a stable delta input surface and a stable active-state record target.
+- Future concentration work no longer needs to invent a new home each time a governance contract is extracted from scattered logs.
+- Governance views can stay explanatory because active-state records now have their own explicit home.
+- `P4` does not yet backfill historical contracts. It only fixes naming, minimum record shape, and the smallest viable home for index records and views.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and terminology boundary)
@@ -302,9 +367,9 @@ contract_delta:
 
 ### P4 (Active contract index)
 
-- [ ] `P4-C1-S1`: stable `contract_id` naming rules fixed
-- [ ] `P4-C1-S2`: minimum active-contract index record shape fixed
-- [ ] `P4-C1-S3`: smallest viable home for the index and the reader-facing view fixed
+- [x] `P4-C1-S1`: stable `contract_id` naming rules fixed
+- [x] `P4-C1-S2`: minimum active-contract index record shape fixed
+- [x] `P4-C1-S3`: smallest viable home for the index and the reader-facing view fixed
 
 ### P5 (Backtrace and migration)
 
@@ -319,8 +384,9 @@ contract_delta:
 - `P1` is now complete: the four-layer truth model is fixed. Logs own event truth, delta declarations own change truth, active index records own current-state truth, and governance views own human-readable concentration.
 - `P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and an explicit escalation rule now stops those references from becoming ancestry dumps.
 - `P3` is now complete: the minimum governance-contract delta block is fixed, including one shared field set plus action-specific requirements for `add`, `modify`, `retire`, `supersede`, and `apply-without-change`.
-- The slice remains in framing mode beyond `P3`: no final active-index record shape or backfill rule is fixed yet.
-- The main design hypothesis is now materially more operational: current effective governance state should be queried from an index, contract evolution should be expressed through explicit deltas, chronology should stay log-owned, and future contract changes should no longer hide only inside prose.
+- `P4` is now complete: stable `contract_id` naming rules, the minimum active-index record shape, and the smallest viable homes under `docs/governance/contracts/` and `docs/governance/views/` are now fixed.
+- The slice remains in framing mode beyond `P4`: no backfill rule is fixed yet.
+- The main design hypothesis is now materially more complete: future governance contracts can be emitted as deltas, concentrated into active-state records, and explained in reader-facing views without collapsing those roles back together.
 
 ## Evidence
 
@@ -330,6 +396,7 @@ contract_delta:
 - The `P1` baseline in this slice now fixes the ownership split among event truth, change truth, current-state truth, and human-readable concentration so later phases can define schemas without collapsing those roles back together.
 - The `P2` baseline in this slice now fixes that queue lineage and causal references are different surfaces with different jobs, which reduces pressure to use `reference_logs` as a hidden contract registry.
 - The `P3` baseline in this slice now fixes the minimum delta declaration that later phases can ingest into an active index without forcing future authors to invent per-log contract prose formats.
+- The `P4` baseline in this slice now fixes both the target record shape and the canonical home for active governance contracts and governance views.
 
 ## Numbering
 
