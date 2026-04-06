@@ -115,6 +115,32 @@
 - `Operational Surfaces`: execution surfaces such as GitHub Actions workflows, runners, deploy scripts, compose entrypoints, infra adapters, and other environment-facing mechanisms.
 - `S0F-3A` belongs to `Governance Contracts`, not to `Application Domain`, and not purely to `Operational Surfaces`.
 
+## P1 Baseline (Truth-layer split)
+
+- `Event Truth`:
+  - Lives in logs.
+  - Records what happened, why it happened, how the slice advanced, and what evidence was retained.
+  - May mention contract changes, but does not by itself serve as the stable registry of current active governance contracts.
+- `Change Truth`:
+  - Lives in governance-contract delta declarations emitted from a specific phase or step.
+  - Records that a governance contract was added, modified, retired, superseded, or explicitly applied without semantic change.
+  - Is the smallest machine-readable unit of governance-contract evolution.
+- `Current-state Truth`:
+  - Lives in active governance-contract index records.
+  - Records which governance contracts are currently active, where each one was introduced, where it was most recently changed, what surfaces enforce it, and what violation semantics currently apply.
+  - Answers current-state questions without requiring readers to replay a full event history.
+- `Human-readable Concentration`:
+  - Lives in governance views that explain how a family or governance surface currently works.
+  - Summarizes the active-state model for human readers, but does not replace logs as evidence and does not replace the index as the machine-readable source of current effective contract state.
+
+## P1 Consequences
+
+- Logs remain the canonical event ledger and continue to own chronology, execution evidence, and slice-level decisions.
+- Governance-contract deltas become the canonical expression of contract change, even when the surrounding log is not a contract-first slice.
+- The active governance-contract index becomes the canonical expression of current effective governance state, rather than asking readers to reconstruct that state from scattered prose.
+- Governance views become explanation surfaces, not hidden registries; if a view and the index disagree, the index wins for current-state questions and the logs win for historical evidence.
+- `P1` does not yet fix the delta schema or the index schema. It only fixes the four truth layers and their ownership boundaries so later phases can design those schemas without re-litigating the model.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and terminology boundary)
@@ -162,10 +188,10 @@
 
 ### P1 (Truth-layer split)
 
-- [ ] `P1-C1-S1`: logs defined as event truth
-- [ ] `P1-C1-S2`: governance-contract deltas defined as change truth
-- [ ] `P1-C1-S3`: active contract index records defined as current-state truth
-- [ ] `P1-C1-S4`: governance views defined as human-readable concentration
+- [x] `P1-C1-S1`: logs defined as event truth
+- [x] `P1-C1-S2`: governance-contract deltas defined as change truth
+- [x] `P1-C1-S3`: active contract index records defined as current-state truth
+- [x] `P1-C1-S4`: governance views defined as human-readable concentration
 
 ### P2 (Reference semantics)
 
@@ -195,14 +221,16 @@
 
 - `S0F-3A` is now opened as the next `S0F` follow-up slice for concentrating governance-contract truth into an index-plus-delta model instead of leaving active contract state recoverable only from scattered log prose.
 - `P0` is now complete: the slice is wired into the `S0F` spine, and the terminology boundary among `Application Domain`, `Governance Contracts`, and `Operational Surfaces` is now fixed as the baseline for later contract-index work.
-- The slice is still in framing mode beyond `P0`: the core problem statement and phase decomposition are drafted, but no final contract schema, delta block, index record shape, or backfill rule is fixed yet.
-- The main design hypothesis is now explicit: keep logs as event truth, add machine-readable governance-contract deltas where rules change, and concentrate current effective governance contracts into a separate active-state index rather than overloading `reference_logs` or Git history.
+- `P1` is now complete: the four-layer truth model is fixed. Logs own event truth, delta declarations own change truth, active index records own current-state truth, and governance views own human-readable concentration.
+- The slice remains in framing mode beyond `P1`: no final delta schema, index record shape, reference-rule contract, or backfill rule is fixed yet.
+- The main design hypothesis is now no longer just implicit prose: current effective governance state should be queried from an index, contract evolution should be expressed through deltas, and historical reconstruction should remain log-owned rather than being overloaded onto `reference_logs` or Git history.
 
 ## Evidence
 
 - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md` shows that materially important contract changes can accumulate across later phases inside one slice, not only at `P0`.
 - `docs/logs/patch/log-S0F-P1-s0f-pr-body-completeness-standard-check-dispatch-failure-triage.md` shows that later patch work may surface governance-contract ambiguity without being a contract-first slice.
 - `docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md` shows that stable lane policy can be expressed clearly once its vocabulary and boundaries are concentrated, which motivates doing the same for governance contracts more generally.
+- The `P1` baseline in this slice now fixes the ownership split among event truth, change truth, current-state truth, and human-readable concentration so later phases can define schemas without collapsing those roles back together.
 
 ## Numbering
 
