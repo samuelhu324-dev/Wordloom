@@ -74,6 +74,7 @@
 - The immediate motivation is already concrete: the first landing batch under `S0F-3D` proved that coarse areas can carry multiple parallel active contracts, which now raises the need for explicit split and absorption handling before future registry growth continues.
 - `P1` is now complete: the canonical registry-lineage verbs are now fixed, and the difference among `split into`, `absorbed into`, `superseded by`, and `retired` is now explicit enough to guide later legacy handling and migration work.
 - `P2` is now complete: old areas now have one explicit `frozen legacy area` state, and split areas now stop receiving new sequence numbers once narrower current areas take over.
+- `P3` is now complete: old records now have one explicit legacy disposition model, and non-active records with current successors now require deterministic reader redirection instead of silent historical drift.
 - No migration has been executed yet in this slice.
 
 ## Problem Statement
@@ -194,6 +195,64 @@
 - Current-state readability improves because area growth now has one explicit stop rule instead of silent namespace drift.
 - Later `P3` and `P4` can build on this rule by deciding how frozen areas and frozen records should be surfaced outside the current front-door index.
 
+## P3 Baseline (Legacy records and references)
+
+### Legacy Record Disposition Model
+
+- `active`:
+  - use when the record is still part of current-state interpretation
+  - an `active` record should not behave like a redirect shell
+- `deprecated`:
+  - use when the old record must remain stored and citable, but should no longer be read as an independently active rule because its meaning has been absorbed into one newer current record or decomposed across multiple newer current records
+  - this is the default legacy disposition for `absorbed into` and `split into`
+- `superseded`:
+  - use when one newer record replaces the older record as the current effective rule for the same governed surface
+  - this remains the right status for one-to-one versional replacement
+- `retired`:
+  - use when the old record remains historical only and no current successor needs to carry its meaning forward
+
+### Disposition Rules
+
+- Do not force every old record into `superseded`.
+- Use `deprecated` when the old record still exists mainly to preserve traceability while readers should now interpret one or more different current records instead.
+- In particular:
+  - `absorbed into` normally yields `deprecated`, not `superseded`, because the old record lost independent standing rather than being replaced by a same-surface version
+  - `split into` normally yields `deprecated`, not `superseded`, because multiple current descendants now carry the old meaning
+  - `superseded` should stay reserved for one older record replaced by one newer current record for the same surface
+  - `retired` should stay reserved for historical-only records with no required current destination
+
+### Old-Record Redirection Rule
+
+- Any stored non-active record that still has one or more current successors should contain one deterministic reader-facing redirect near the top of the file.
+- That redirect should answer three questions immediately:
+  - what this old record's current standing is
+  - which lineage verb explains why it is no longer current
+  - where the reader should go now for current interpretation
+- The old file remains the stable home for old IDs and old references.
+- The redirect exists so readers do not need to infer current meaning from filename age, folder order, or surrounding historical notes.
+
+### Redirect Shape by Lineage
+
+- For `absorbed into`:
+  - point to one primary current record
+  - state that the old record remains historical and no longer stands independently beside the absorbing record
+- For `split into`:
+  - list all current descendant records that now carry the narrower live meaning
+  - state that the old record remains a historical umbrella only
+- For `superseded by`:
+  - point to the one successor record
+  - keep record-level `superseded_by` aligned with that successor
+- For `retired`:
+  - state explicitly that no current successor is required
+  - do not invent a redirect target just to avoid an empty destination
+
+### P3 Consequences
+
+- Old record IDs remain resolvable because their files stay in place.
+- Current readers no longer need to guess whether a historical file is still active.
+- Split and absorption cases no longer have to misuse `superseded_by` just to express that newer current records exist.
+- Later migration work can update coarse historical records without deleting them and without leaving their current meaning ambiguous.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and problem boundary)
@@ -247,8 +306,8 @@
 
 ### P3 (Legacy records and references)
 
-- [ ] `P3-C1-S1`: legacy record disposition model fixed
-- [ ] `P3-C1-S2`: old-record redirection rule fixed
+- [x] `P3-C1-S1`: legacy record disposition model fixed
+- [x] `P3-C1-S2`: old-record redirection rule fixed
 
 ### P4 (Current versus historical surfaces)
 
