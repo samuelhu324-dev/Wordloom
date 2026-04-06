@@ -76,7 +76,8 @@
 - `P2` is now complete: old areas now have one explicit `frozen legacy area` state, and split areas now stop receiving new sequence numbers once narrower current areas take over.
 - `P3` is now complete: old records now have one explicit legacy disposition model, and non-active records with current successors now require deterministic reader redirection instead of silent historical drift.
 - `P4` is now complete: `INDEX.md` is now fixed as the current-state-only front door, and historical discoverability is now routed through explicit legacy or view surfaces rather than raw folder scanning.
-- No migration has been executed yet in this slice.
+- `P5` is now complete: the repo now has one first bounded migration package for splitting the coarse `ISS` area into narrower current descendants while preserving old IDs, file paths, and references.
+- No migration has been executed yet in this slice; `P5` defines the first bounded package to execute later.
 
 ## Problem Statement
 
@@ -299,6 +300,71 @@
 - Historical discoverability remains explicit because old records, redirects, views, and logs now have distinct jobs.
 - Later migration work can add legacy views without changing the rule that `INDEX.md` itself stays current-only.
 
+## P5 Baseline (First bounded migration package)
+
+### Package Goal
+
+- The first bounded migration package targets the already-landed coarse `ISS` area only.
+- The package exists because `GC-ISS-0001` through `GC-ISS-0005` are all current, but they already fall into multiple narrower governance surfaces that should not keep sharing one growing coarse namespace.
+- The package is intentionally bounded: it defines one first practical split without reopening unrelated governance areas.
+
+### Package Name
+
+- `ISS split package v1`
+
+### Target Current Areas
+
+- When this package is executed later, `ISS` should split into these narrower current areas:
+  - `ICR`: issue creation governance
+  - `ICL`: issue conclusion governance
+  - `ICT`: issue Context governance
+  - `IID`: issue identity governance
+- These area codes are intentionally short, uppercase, and stable enough to replace the coarse `ISS` bucket for future current growth.
+
+### Record Mapping
+
+- The first bounded mapping is:
+  - `GC-ISS-0001` -> future `GC-ICR-0001`
+  - `GC-ISS-0002` -> future `GC-ICL-0001`
+  - `GC-ISS-0003` -> future `GC-ICT-0001`
+  - `GC-ISS-0004` -> future `GC-IID-0001`
+  - `GC-ISS-0005` -> future `GC-IID-0002`
+- This mapping keeps semantic concentration aligned with the existing `governance_area` fields already present inside the landed `ISS` records.
+- The package does not require semantic rewrites of the governed rules before the namespace split can happen.
+
+### Migration Rules
+
+- Execute this package only as one bounded batch.
+- Do not leave the front door in a hybrid state where both `ISS` and all descendant areas are treated as equally current growth namespaces.
+- The package should perform all of the following together:
+  - publish the successor current records under `ICR`, `ICL`, `ICT`, and `IID`
+  - freeze `ISS` as one legacy area
+  - convert the old `GC-ISS-*` records into preserved historical files with deterministic legacy redirects
+  - update `INDEX.md` so the current front door points only at the successor current areas
+
+### Preservation Rules
+
+- The package must preserve:
+  - old record IDs such as `GC-ISS-0004`
+  - old file paths under `docs/governance/contracts/`
+  - old links from logs, notes, audits, and historical references
+- Old `GC-ISS-*` files should stay in place and become `deprecated` historical records after successor publication.
+- Each old `GC-ISS-*` file should gain one `Legacy Redirect` section that points to its successor current record or records.
+- The new successor files should keep the same `contract_id` values so semantic identity survives the namespace migration.
+
+### Front-Door Cleanup Rule
+
+- After successor current records exist, `INDEX.md` should stop presenting `ISS` as one current area.
+- The front door should instead present the narrower current areas and their successor records.
+- Historical discoverability for old `ISS` IDs should live in the preserved files, redirect notes, migration logs, and governance views rather than in one mixed current-plus-legacy `ISS` table.
+
+### P5 Consequences
+
+- The repo now has one concrete example of how to split a coarse active area without deleting its history.
+- Later migrations can reuse this package shape instead of improvising per-area exceptions.
+- The package keeps old citations stable while making future current growth land in narrower areas.
+- `ISS` now serves as the canonical first migration target for proving the lineage and legacy model end to end.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and problem boundary)
@@ -362,5 +428,5 @@
 
 ### P5 (Migration package)
 
-- [ ] `P5-C1-S1`: first bounded migration package defined
-- [ ] `P5-C1-S2`: old ID and old reference preservation rule fixed
+- [x] `P5-C1-S1`: first bounded migration package defined
+- [x] `P5-C1-S2`: old ID and old reference preservation rule fixed
