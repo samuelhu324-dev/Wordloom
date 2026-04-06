@@ -36,6 +36,7 @@
   **phase_log_16**: `docs/logs/log-S0F-3D-first-governance-contract-landing-batch.md`
   **phase_log_17**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
   **phase_log_18**: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+  **phase_log_19**: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -161,6 +162,8 @@
   - 详见：`docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
 - `S0F-3F`（Phase 3F）：governance contract sweep workflow
   - 详见：`docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+- `S0F-3G`（Phase 3G）：governance cleanup staging and phased file cleanup
+  - 详见：`docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -284,6 +287,8 @@
 - `S0F-3F/P2-C5` is now complete: the bounded residual `S0E-2A` through `S0E-2C` family is now formally adjudicated with the early precursor title and create-metadata surfaces absorbed into current `IID` and `ICR` contracts, the later create-path and batch-path tooling fixed as support-only history, and no defer queue left open.
 - `S0F-3F/P3-C5` is now complete: the bounded residual `S0E-2A` through `S0E-2C` family is now packaged as one no-op current-state lane `N5`, with explicit non-writes to the front door and to the current `ICR` and `IID` records.
 - `S0F-3F/P4-C5` is now complete: the bounded residual `S0E-2A` through `S0E-2C` family now closes as a defended no-op current-state result, confirming that no further `S0E-2` precursor or tooling admission lane remains open in this legacy-refresh reuse pass.
+- `S0F-3G` is now opened as the next `S0F` follow-up slice for staged governance-file cleanup, so later file reduction can happen in bounded manifests instead of being mixed back into `S0F-3F` admission and residual sweeps.
+- `S0F-3G/P0` is now complete: the cleanup boundary, allowed cleanup outcomes, and round-by-round manifest model are now fixed without deleting or moving any files yet.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
