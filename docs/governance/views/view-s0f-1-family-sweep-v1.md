@@ -24,6 +24,8 @@
 
 ## Current Sweep Result
 
+- `adjudication status`:
+  - `S0F-3F/P2` accepts the first `S0F-1` family worksheet without opening a defer queue.
 - `already covered`:
   - `S0F-1B` -> `GC-ICT-0001`
   - `S0F-1D` -> `GC-COMPL-0001`
@@ -40,12 +42,15 @@
   - `S0F-1I/P1-P3` formatting-only merged-PR convergence lane
 - `candidate new current`:
   - `S0F-1C` guarded multi-item remediation stages remain the one clear bounded admission candidate not yet represented at the current front door
+- `defer adjudication`:
+  - none in this first bounded family pass
 
 ## Reader Notes
 
 - This sweep does not say every `S0F-1` log should become a current contract.
 - The first bounded family result is intentionally mixed: the registry already covers most of the stable semantic surfaces, while several later logs remain runtime packaging or repair support.
 - The most likely next admission candidate after this worksheet is the still-unlanded remediation governance lane rather than another PR-review or issue-identity split.
+- The lighter-weight follow-up remains separate from that admission candidate: `S0F-1A` should feed refinement traceability into existing `ICR` and `PRA` contracts rather than create a new front-door record.
 
 ## Source Refs
 

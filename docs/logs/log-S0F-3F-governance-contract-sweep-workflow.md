@@ -75,9 +75,10 @@
 - `S0F-3F` is now opened as the next `S0F` follow-up slice for repeatable governance-contract sweeping after the registry-lineage baseline fixed by `S0F-3E`.
 - `P0` is now complete: the repo now has a first `contract sweep workflow v1` scaffold with one required worksheet shape, one decision table, and one allowed-action matrix.
 - `P1` is now complete for the first bounded source family: `S0F-1A` through `S0F-1J` now have one explicit sweep packet and one candidate worksheet instead of being treated as ten unrelated future admissions.
+- `P2` is now complete for that same bounded family: the first `S0F-1` worksheet outcomes are now formally adjudicated, no row remains in an unresolved defer queue, and the family now exits `P2` with one clear admission candidate plus one small refinement package.
 - The first `S0F-1` worksheet shows a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and one bounded remediation surface still looks like a real current-admission candidate.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up is `P2`: accept or revise the first worksheet's provisional row outcomes before any current-state write package is assembled.
+- The immediate next follow-up is `P3`: translate the accepted `S0F-1` adjudication into one bounded action package without mixing refinement-only work and current-admission work.
 
 ## Problem Statement
 
@@ -235,6 +236,52 @@
 - Do not use `admit new current` merely because a candidate is recent or well written.
 - Do not use `support-only history` as a vague discard bucket when the real outcome is `split current`, `absorb into current`, or `retire surface`.
 
+## P2 First Bounded Family Adjudication (`S0F-1A` through `S0F-1J`)
+
+### Accepted Outcomes
+
+- `refine existing`:
+  - `S0F-1A` issue-create fail-closed boundary -> `GC-ICR-0001`
+  - `S0F-1A` PR-create front-half preflight boundary -> `GC-PRA-0001`
+- `already covered`:
+  - `S0F-1B` issue Context LLM-authored exact-count rule -> `GC-ICT-0001`
+  - `S0F-1D` lifecycle three-stage completeness matrix -> `GC-COMPL-0001`
+  - `S0F-1G` parent sidebar ordering ownership -> `GC-IID-0001`
+  - `S0F-1G` title keyword controlled vocabulary -> `GC-IID-0002`
+  - `S0F-1H` PR body canonical review classification -> `GC-PRR-0001`
+  - `S0F-1I/P4 + S0F-1J/P1-P3` packaged PR-body standard-check gate -> `GC-PRG-0001`
+- `support-only history`:
+  - `S0F-1E` completeness diagnosis bucket taxonomy
+  - `S0F-1F` bucketed audit output materialization
+  - `S0F-1I/P1-P3` formatting-only merged-PR convergence lane
+- `admit new current`:
+  - `S0F-1C` guarded multi-item remediation stages
+
+### Defer Queue
+
+- No row remains in `defer adjudication` for the first bounded `S0F-1` family pass.
+- This does not mean every row will cause front-door writes.
+- It means every row now has one defended primary outcome, so later packaging can proceed without reopening classification.
+
+### P2 Adjudication Result
+
+- The first bounded `S0F-1` family now exits `P2` with two intentionally separate downstream lanes:
+  - one small refinement lane:
+    - add `S0F-1A` traceability to `GC-ICR-0001`
+    - add `S0F-1A` traceability to `GC-PRA-0001`
+  - one bounded current-admission lane:
+    - evaluate one remediation-governance contract derived from `S0F-1C`
+- The first bounded family does not justify any further current admission for:
+  - `S0F-1E`
+  - `S0F-1F`
+  - `S0F-1I/P1-P3`
+- The first bounded family also does not justify reopening current front-door ownership for:
+  - `S0F-1B`
+  - `S0F-1D`
+  - `S0F-1G`
+  - `S0F-1H`
+  - `S0F-1I/P4 + S0F-1J/P1-P3`
+
 ## P3 Baseline (Allowed-action matrix)
 
 ### Outcome-to-Action Mapping
@@ -377,8 +424,8 @@
 
 ### P2 (Decision table)
 
-- [ ] `P2-C1-S1`: all worksheet rows resolved to one allowed outcome
-- [ ] `P2-C1-S2`: unresolved rows isolated into one explicit defer queue
+- [x] `P2-C1-S1`: all worksheet rows resolved to one allowed outcome
+- [x] `P2-C1-S2`: unresolved rows isolated into one explicit defer queue
 
 ### P3 (Allowed-action package)
 
