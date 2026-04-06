@@ -26,6 +26,14 @@
 
 - `<small local fix>`
 
+## Current Evidence
+
+- `<current failing run, diff, log, or other evidence>`
+
+## Next Step
+
+- `<immediate next action for this patch lane>`
+
 ## Validation
 
 - `<command, check, or manual verification>`

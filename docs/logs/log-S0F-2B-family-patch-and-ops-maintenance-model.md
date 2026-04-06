@@ -82,6 +82,7 @@
 - `P2`: upgrade templates and folder guidance to match the refined model
 - `P3`: decide the GitHub `MAINTENANCE` label admission rule and document when it should remain unused
 - `P4`: publish the first real ops-maintenance sample so the heavier maintenance template is no longer only a blank form
+- `P5`: tighten the family patch template into a triage-note shape and open the first real family patch sample under that refined template
 
 ## Success Criteria (DoD)
 
@@ -90,6 +91,7 @@
 - The patch template supports family-bound patch IDs such as `S0F-P1-<slug>`.
 - The GitHub `MAINTENANCE` label has an explicit admission rule and is no longer an ambiguous missing-or-misc concept.
 - The repo contains at least one real ops-maintenance sample log grounded in live workflow and runner evidence, not just a blank maintenance template.
+- The repo contains at least one real family patch sample with current evidence and next-step triage fields instead of a template-only placeholder.
 
 ## Current Status
 
@@ -99,6 +101,7 @@
 - `P2` is now complete: the patch template now supports family patch IDs, and the maintenance template is now a heavy ops-maintenance template with report-oriented sections.
 - `P3` is now complete: GitHub `MAINTENANCE` is now documented as an already-existing but reserved top-level label for true ops-maintenance work only; ordinary family patches should not use it.
 - `P4` is now complete: `docs/logs/maintenance/log-S0F-M1-github-actions-runner-and-dispatch-health-check.md` now publishes the first real ops-maintenance sample using live workflow and runner evidence instead of placeholder text only.
+- `P5` is now complete: the family patch template now includes `Current Evidence` and `Next Step`, and `docs/logs/patch/log-S0F-P1-s0f-pr-body-completeness-standard-check-dispatch-failure-triage.md` now records the first real family-patch triage sample with concrete workflow-artifact evidence.
 - `S0F-2B` is now stable: the repo now has a more realistic operating model for patch versus maintenance work, and the templates now match that boundary.
 
 ## Plan (draft)
@@ -127,6 +130,10 @@
 
 - P4-C1-S1: publish the first real ops-maintenance sample log for GitHub Actions runner and workflow-dispatch health
 
+### P5 (Real family patch sample)
+
+- P5-C1-S1: tighten the patch template into a triage-note shape and publish the first real family-patch sample
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Refinement boundary and spine wiring)
@@ -153,6 +160,10 @@
 
 - [x] `P4-C1-S1`: first real ops-maintenance sample published
 
+### P5 (Real family patch sample)
+
+- [x] `P5-C1-S1`: first real family patch sample published with current evidence and next-step triage fields
+
 ## Evidence
 
 - `docs/runbook/run-S0F-2B-family-patch-and-ops-maintenance-model.md` now defines the refined family-patch versus ops-maintenance model and the `MAINTENANCE` label admission rule.
@@ -160,6 +171,7 @@
 - `docs/logs/maintenance/_template-log-maintenance-sweep.md` now captures heavy ops-maintenance reporting fields instead of lightweight grouped-cleanup prose only.
 - Live GitHub label inventory for `samuelhu324-dev/wordloom-v3` now confirms that `MAINTENANCE` already exists, so the real missing piece was admission policy rather than label creation.
 - `docs/logs/maintenance/log-S0F-M1-github-actions-runner-and-dispatch-health-check.md` now provides the first real ops-maintenance sample, showing both healthy comparison evidence and current findings on workflow-run degradation and runner inventory state.
+- `docs/logs/patch/log-S0F-P1-s0f-pr-body-completeness-standard-check-dispatch-failure-triage.md` now shows the first real family-patch triage note, and the patch template now includes `Current Evidence` and `Next Step` as stable fields.
 
 ## Numbering
 
