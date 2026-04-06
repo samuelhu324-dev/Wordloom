@@ -41,7 +41,7 @@
   - `S0F-1F` bucket materialization surfaces
   - `S0F-1I/P1-P3` formatting-only merged-PR convergence lane
 - `candidate new current`:
-  - `S0F-1C` guarded multi-item remediation stages remain the one clear bounded admission candidate not yet represented at the current front door
+  - `S0F-1C` guarded multi-item remediation stages were the one clear bounded admission candidate, and that lane is now landed as `GC-REMED-0001` under `S0F-3F/P6`
 - `defer adjudication`:
   - none in this first bounded family pass
 
@@ -56,9 +56,9 @@
   - add `S0F-1A` as current boundary clarification for fail-closed PR-create front-half preflight
 - `A1 admission package`:
   - status:
-    - still blocked after `S0F-3F/P4`
-  - derive one bounded remediation-governance current contract from `S0F-1C`
-  - evaluate whether the registry should reactivate the earlier `REMED` shortlist area from `S0F-3C` or justify a narrower current area name before any front-door write
+    - executed under `S0F-3F/P6`
+  - admit `REMED` as the stable current area for remediation-stage governance
+  - create `GC-REMED-0001` from the bounded `S0F-1C` surface
   - keep `S0F-1C` preview planning, guarded apply, and preserve-existing post-verify together as one governance surface rather than splitting them into separate first-pass current records
 - `excluded from current action package`:
   - `S0F-1E`
@@ -70,7 +70,7 @@
 
 - Do not mix `R1` and `A1` in one write pass.
 - Execute `R1` first because it is bounded current refinement with no front-door change.
-- Execute `A1` only after the remediation-governance contract boundary and area-code choice are defended tightly enough for a current-state write.
+- `S0F-3F/P6` then executes `A1` after fixing the remediation-governance contract boundary and confirming that `REMED` is still the right reusable area name.
 
 ## Pilot Result
 
@@ -79,22 +79,23 @@
   - one bounded source family can be swept without forcing every log into a current contract
   - refinement-only writes can be executed safely before any front-door admission work
   - support-only history can be classified explicitly instead of lingering as accidental future-candidate noise
-- Next carried-forward package:
-  - `A1` remains the next bounded admission-design lane
-  - its task is to compress `S0F-1C` into one explicit remediation-governance current contract shape and to decide whether the registry should reuse `REMED` or adopt a narrower area name
+- Final execution result:
+  - `R1` is executed on `GC-ICR-0001` and `GC-PRA-0001`
+  - `A1` is executed under `S0F-3F/P6` by admitting `REMED` and creating `GC-REMED-0001`
+  - the first bounded `S0F-1` family now closes with no carried forward package inside this family
 - Workflow refinement needs from this pilot:
   - no change is required to the worksheet or adjudication model before the next lane
-  - the open problem is semantic admission design for `A1`, not workflow ambiguity
+  - the next problem is choosing the next bounded family to sweep, not fixing ambiguity inside the completed `S0F-1` family
 
 ## Reader Notes
 
 - This sweep does not say every `S0F-1` log should become a current contract.
 - The first bounded family result is intentionally mixed: the registry already covers most of the stable semantic surfaces, while several later logs remain runtime packaging or repair support.
-- The most likely next admission candidate after this worksheet is the still-unlanded remediation governance lane rather than another PR-review or issue-identity split.
+- The remediation governance lane that originally remained unlanded after the worksheet is now admitted as `GC-REMED-0001` under `REMED`.
 - The lighter-weight follow-up remains separate from that admission candidate: `S0F-1A` should feed refinement traceability into existing `ICR` and `PRA` contracts rather than create a new front-door record.
 - The bounded family now has explicit package separation, so later execution can fail closed on scope creep instead of quietly mixing traceability cleanup with new-area admission.
-- The first write stage is now complete for `R1`, while `A1` remains intentionally blocked until remediation area naming and current-contract scope are explicit enough.
-- The pilot is therefore complete as a workflow proof even though the admission-design follow-up remains open.
+- The first write stage completed `R1`, and the later admission stage completed `A1` without reopening the earlier adjudication.
+- The family is therefore fully closed both as a workflow proof and as an executed bounded-family admission result.
 
 ## Source Refs
 
@@ -109,3 +110,5 @@
 - `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
 - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
 - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
+- `docs/governance/contracts/GC-REMED-0001-guarded-batch-multi-item-remediation-stages.md`
+- `docs/governance/views/view-remed-admission-package-v1.md`

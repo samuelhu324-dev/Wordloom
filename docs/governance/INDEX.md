@@ -60,6 +60,9 @@
 - `PRR`:
   - `PR Review`
   - used for reviewer-owned PR body completeness classification and canonical drift interpretation
+- `REMED`:
+  - `Remediation`
+  - used for multi-item remediation governance such as preview-first batch staging, family-owned guarded apply delegation, split-before-mutation, and mandatory preserve-existing post-verify
 
 ## Controlled Area-Code Dictionary
 
@@ -78,6 +81,7 @@
   - `PRA`: PR creation and PR automation governance
   - `PRG`: PR body standard-check gate governance
   - `PRR`: PR body reviewer and review-classification governance
+  - `REMED`: multi-item remediation stage governance
 
 ## Filename Model
 
@@ -188,6 +192,12 @@
 | record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `GC-PRR-0001` | `PR-BODY-CANONICAL-REVIEW-CLASSIFICATION` | PR body reviewer classifies exact match, formatting-only drift, and substantive drift against canonical expectations | `active` | `report-only` | `independent` | Separates read-only PR body review classification from downstream gate behavior and historical rewrite actions | `docs/governance/contracts/GC-PRR-0001-pr-body-canonical-review-classification.md` |
+
+### Remediation (`REMED`)
+
+| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `GC-REMED-0001` | `GUARDED-BATCH-MULTI-ITEM-REMEDIATION-STAGES` | Multi-item remediation keeps preview planning, guarded apply, and preserve-existing post-verify as separate fail-closed stages | `active` | `fail` | `independent` | Concentrates the current remediation-stage boundary so multi-item repair stays preview-first, family-owned at apply time, and split before mixed-family mutation | `docs/governance/contracts/GC-REMED-0001-guarded-batch-multi-item-remediation-stages.md` |
 
 ## Reader Notes
 

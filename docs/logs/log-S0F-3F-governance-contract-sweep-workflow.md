@@ -20,6 +20,7 @@
   **reference_log_3**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
   **reference_log_4**: `docs/governance/views/view-contract-sweep-workflow-v1.md`
   **reference_log_5**: `docs/governance/views/view-s0f-1-family-sweep-v1.md`
+  **reference_log_6**: `docs/governance/views/view-remed-admission-package-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -69,6 +70,7 @@
 - `P3`: fix the allowed-action matrix for each sweep outcome
 - `P4`: fix the mandatory write targets, preservation notes, and stop rules that keep current-state surfaces readable
 - `P5`: run the first bounded family through the worksheet and use the workflow to decide the next execution package
+- `P6`: execute the carried-forward admission package only if area naming and current-contract scope are now explicit enough for front-door mutation
 
 ## Current Status
 
@@ -79,9 +81,10 @@
 - `P3` is now complete for that same bounded family: the accepted `S0F-1` outcomes are now translated into one split action-package model, with `R1` reserved for bounded traceability refinement and `A1` reserved for remediation-governance admission work.
 - `P4` is now complete for the justified first write stage: `R1` has been executed on `GC-ICR-0001` and `GC-PRA-0001`, front-door state remains unchanged, and `A1` remains blocked until remediation-governance naming and scope are explicit enough for admission work.
 - `P5` is now complete for that same bounded family: the first pilot run is now closed, the workflow itself needs no immediate structural revision, and `A1` is now fixed as the next bounded admission-design package rather than as an implicit auto-next write.
-- The first `S0F-1` worksheet shows a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and one bounded remediation surface still looks like a real current-admission candidate.
+- `P6` is now complete for that same bounded family: `A1` is no longer a design-only placeholder, `REMED` is now admitted as a current governance area, and `GC-REMED-0001` now concentrates the `S0F-1C` remediation-stage boundary at the front door.
+- The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up after this pilot is the carried-forward `A1` admission-design lane: compress `S0F-1C` into one explicit remediation-governance current contract shape and settle the area-code choice before any front-door admission write.
+- The immediate next follow-up after this completed family is not another remediation write inside `S0F-1C`; it is to choose the next bounded unswept family, with the strongest open reading question now shifted toward broader workflow or attribution families rather than the already-admitted remediation stage surface.
 
 ## Problem Statement
 
@@ -497,6 +500,48 @@
   - `A1` carried forward as the next bounded admission-design lane
   - no additional changes required to the workflow scaffold before that next lane starts
 
+## P6 A1 Admission Execution (`S0F-1A` through `S0F-1J`)
+
+### Area-Code Choice
+
+- `P6` reopens only the carried-forward `A1` package.
+- Chosen area code:
+  - `REMED`
+- Rationale:
+  - the admitted current surface spans preview planning, guarded apply delegation, split-before-mutation, and preserve-existing post-verify across more than one live-mutation family
+  - that surface is narrower than the broader publish-verify-remediation taxonomy owned by `S0E-7D`, but broader than any one issue-conclusion, relationship, or PR-body guarded wrapper
+  - `REMED` was already the defended shortlist area in `S0F-3C`, and the compressed `S0F-1C` boundary now proves that the name remains precise enough for stable current reuse
+
+### Admitted Current Boundary
+
+- The executed `A1` package admits one current contract only:
+  - `GC-REMED-0001`
+  - `GUARDED-BATCH-MULTI-ITEM-REMEDIATION-STAGES`
+- That record concentrates:
+  - preview-first entry into multi-item remediation
+  - family-owned guarded apply as the only live mutation boundary
+  - split-before-mutation when one remediation plan spans more than one live-mutation family
+  - mandatory preserve-existing post-verify before batch completion
+- That record explicitly does not absorb:
+  - the broader publish-verify-remediation taxonomy or future gate naming from `S0E-7D`
+  - family-specific continuation exceptions such as the targeted relationship-only continuation rule under `S0E-5B`
+  - support-only runtime packaging surfaces
+
+### Executed Writes
+
+- `INDEX.md` now admits `REMED` as a controlled area code and current front-door section.
+- `GC-REMED-0001` now exists as the current remediation-governance record derived from `S0F-1C`.
+- `view-remed-admission-package-v1.md` now explains why `REMED` was admitted and what remains outside the new current boundary.
+- The `S0F-1` family sweep view now records `A1` as executed rather than blocked.
+
+### P6 Result
+
+- The first bounded `S0F-1` family is now fully closed at the package level:
+  - `R1` executed as bounded refinement
+  - `A1` executed as bounded current admission
+- `S0F-3F` now proves that the workflow can carry one bounded family all the way from worksheet to adjudication to split packaging to refinement execution to separate later admission without reopening the earlier judgment.
+- The next follow-up should therefore return to family selection rather than continue mutating the already-admitted `REMED` surface.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and workflow scaffold)
@@ -529,6 +574,11 @@
 - P5-C1-S1: complete one first bounded family sweep through the v1 worksheet
 - P5-C1-S2: record whether the workflow needs another refinement pass before wider reuse
 
+### P6 (Admission execution after bounded design)
+
+- P6-C1-S1: settle the carried-forward area-code and current-boundary choice for `A1`
+- P6-C1-S2: execute the minimal front-door admission writes justified by that bounded package
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Slice opening and workflow scaffold)
@@ -560,3 +610,8 @@
 
 - [x] `P5-C1-S1`: first bounded family sweep completed through the v1 workflow
 - [x] `P5-C1-S2`: workflow refinement needs recorded after the pilot run
+
+### P6 (Admission execution after bounded design)
+
+- [x] `P6-C1-S1`: carried-forward `A1` area-code and current-boundary choice fixed
+- [x] `P6-C1-S2`: minimal front-door admission writes executed for the bounded `A1` package
