@@ -91,9 +91,10 @@
 - `P4-C2` is now complete for that same bounded workflow family: `A2` is now executed, `WF` is now admitted as a live current governance area, and `GC-WF-0001` now concentrates the `S0E-7D` workflow-failure taxonomy and handling boundary at the front door.
 - `P1-C3` is now complete for the third bounded family: `S0E-4E` and `S0E-7B` now have one explicit attribution-family sweep packet and candidate worksheet instead of remaining an informal `ATTR` shortlist placeholder.
 - `P2-C3` is now complete for that same bounded attribution family: `S0E-4E` is now formally accepted as the sole `ATTR` admission candidate, `S0E-7B` is now fixed as support-only implementation history, and no `ATTR` defer queue remains open.
+- `P3-C3` is now complete for that same bounded attribution family: the adjudicated `ATTR` outcomes are now translated into one admission-only package `A3`, with `S0E-4E` isolated as the sole possible front-door lane and `S0E-7B` explicitly excluded from current-state writes.
 - The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up after `P2-C3` is `P3-C3`: package the adjudicated `ATTR` outcomes into one bounded admission lane without widening into implementation or workflow cleanup.
+- The immediate next follow-up after `P3-C3` is `P4-C3`: execute only the bounded `A3` lane if the `ATTR` area and one-contract admission boundary remain explicit enough for front-door mutation.
 
 ## Problem Statement
 
@@ -324,6 +325,43 @@
   - `PRA`
   - `PRG`
 - `P3-C3` should therefore package one admission-only lane rather than one mixed attribution-plus-implementation bundle.
+
+## P3 Third Bounded Family Action Package (`S0E-4E` and `S0E-7B`)
+
+### Package Rule
+
+- The bounded `ATTR` family does not collapse into a mixed execution bundle.
+- `P3-C3` fixes one package only:
+  - `A3`: bounded current-admission package
+- No separate refinement package is opened because the adjudicated family contains one admission candidate and no defended current-refinement rows.
+
+### `A3` Bounded Current-Admission Package
+
+- target work:
+  - derive one current `ATTR` contract from `S0E-4E`
+  - keep the contract boundary limited to attribution precedence, fail-closed ambiguity taxonomy, and consume-or-stop handoff semantics
+  - confirm in `P4-C3` that the later implementation slice remains outside the front door as support-only workflow history
+- explicit non-writes at `P3-C3`:
+  - do not yet update `INDEX.md`
+  - do not yet create a new contract file
+  - do not admit any second attribution-adjacent record from `S0E-7B`
+- rationale:
+  - `S0E-4E` is the only adjudicated `admit new current` row in the bounded `ATTR` family, so it remains the only candidate admission lane for the next write stage
+
+### Explicit Exclusion Set
+
+- `P3-C3` excludes these surfaces from the current action package entirely:
+  - `S0E-7B`
+  - adjacent current areas `PRA` and `PRG`
+- `P3-C3` also excludes package widening such as:
+  - admitting one implementation or workflow-wiring record beside the attribution contract in the same bundle
+  - reopening workflow enforcement or PR-create surfaces while the bounded `ATTR` lane is still being packaged
+
+### P3 Result
+
+- The bounded `ATTR` family now exits packaging with one execution order rather than only one adjudication result:
+  - execute `A3` only if the `ATTR` area name and one-record contract boundary remain explicit enough for front-door mutation
+- This means `P4-C3` can stay minimal and fail closed on scope creep instead of quietly widening into an attribution-plus-implementation landing.
 
 ## P2 Second Bounded Family Adjudication (`S0E-7D` through `S0E-7G`)
 

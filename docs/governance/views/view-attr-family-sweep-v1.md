@@ -28,11 +28,22 @@
 - `defer adjudication`:
   - none in this bounded `ATTR` family pass
 
-## Likely Next Package Direction
+## Action Package
 
-- The bounded `ATTR` family now exits `P2-C3` with one likely downstream lane only:
-  - evaluate one `ATTR` current contract derived from `S0E-4E`
-- `S0E-7B` remains outside the front door unless a later family sweep reopens the implementation slice with a defended different question.
+- `A3 admission package`:
+  - status:
+    - packaged under `S0F-3F/P3-C3`
+  - derive one bounded `ATTR` current contract from `S0E-4E`
+  - keep the contract boundary limited to attribution precedence, fail-closed ambiguity taxonomy, and consume-or-stop handoff semantics
+- `excluded from current action package`:
+  - `S0E-7B`
+  - adjacent current areas `PRA` and `PRG`
+
+## Sequencing Rule
+
+- Do not widen `A3` into a mixed attribution-plus-implementation bundle.
+- Execute `P4-C3` only for the bounded `S0E-4E` admission lane if the `ATTR` area name and one-contract boundary remain explicit enough for front-door mutation.
+- Keep `S0E-7B` outside the current write surface unless a later family sweep reopens the implementation slice with a defended different question.
 
 ## Reader Notes
 
@@ -43,6 +54,9 @@
 - The accepted bounded `ATTR` result is therefore also narrow by design:
   - admit at most one `ATTR` current contract from `S0E-4E`
   - keep `S0E-7B` outside the front door as support-only implementation and workflow history
+- The packaged result is now equally narrow by design:
+  - one admission-only lane exists for `S0E-4E`
+  - no refinement, split, or secondary admission lane is opened for the implementation slice
 - The adjacent current surfaces remain adjacent only:
   - `GC-PRA-0001` already owns PR creation and metadata precedence rather than PR-event attribution ownership
   - `GC-PRG-0001` already owns gate outcomes after review findings rather than attribution-stage ownership resolution
