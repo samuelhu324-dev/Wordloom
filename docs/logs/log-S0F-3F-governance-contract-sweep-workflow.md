@@ -24,6 +24,7 @@
   **reference_log_7**: `docs/governance/views/view-wf-family-sweep-v1.md`
   **reference_log_8**: `docs/governance/views/view-wf-admission-package-v1.md`
   **reference_log_9**: `docs/governance/views/view-attr-family-sweep-v1.md`
+  **reference_log_10**: `docs/governance/views/view-attr-admission-package-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -92,9 +93,10 @@
 - `P1-C3` is now complete for the third bounded family: `S0E-4E` and `S0E-7B` now have one explicit attribution-family sweep packet and candidate worksheet instead of remaining an informal `ATTR` shortlist placeholder.
 - `P2-C3` is now complete for that same bounded attribution family: `S0E-4E` is now formally accepted as the sole `ATTR` admission candidate, `S0E-7B` is now fixed as support-only implementation history, and no `ATTR` defer queue remains open.
 - `P3-C3` is now complete for that same bounded attribution family: the adjudicated `ATTR` outcomes are now translated into one admission-only package `A3`, with `S0E-4E` isolated as the sole possible front-door lane and `S0E-7B` explicitly excluded from current-state writes.
+- `P4-C3` is now complete for that same bounded attribution family: `A3` is now executed, `ATTR` is now admitted as a live current governance area, and `GC-ATTR-0001` now concentrates the `S0E-4E` attribution precedence and ambiguity-stop boundary at the front door.
 - The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up after `P3-C3` is `P4-C3`: execute only the bounded `A3` lane if the `ATTR` area and one-contract admission boundary remain explicit enough for front-door mutation.
+- The immediate next follow-up after the completed `ATTR` family is to choose the next bounded unswept family or confirm whether only a later `PRB` follow-up lane remains worth reopening under this workflow.
 
 ## Problem Statement
 
@@ -362,6 +364,29 @@
 - The bounded `ATTR` family now exits packaging with one execution order rather than only one adjudication result:
   - execute `A3` only if the `ATTR` area name and one-record contract boundary remain explicit enough for front-door mutation
 - This means `P4-C3` can stay minimal and fail closed on scope creep instead of quietly widening into an attribution-plus-implementation landing.
+
+## P4 Third Bounded Family Write Stage (`S0E-4E` and `S0E-7B`)
+
+### Executed Writes
+
+- `A3` is now executed.
+- Applied writes:
+  - `INDEX.md` now admits `ATTR` as a controlled area code and current front-door section
+  - `GC-ATTR-0001` now exists as the current attribution record derived from `S0E-4E`
+  - `view-attr-admission-package-v1.md` now explains why `ATTR` was admitted and what remains outside the new current boundary
+
+### Validated Non-Writes
+
+- No second `ATTR` record is admitted during this stage.
+- `S0E-7B` remains outside the front door as support-only implementation and workflow history.
+- No adjacent current area under `PRA` or `PRG` is widened or rewritten during this stage.
+
+### P4 Result
+
+- The bounded `ATTR` family now proves that the workflow can admit one current attribution contract without dragging implementation and workflow-wiring surfaces across the front-door boundary.
+- The third bounded family therefore exits `P4-C3` in a clean completed state:
+  - `A3` executed and validated
+  - no further package remains open inside the `ATTR` family
 
 ## P2 Second Bounded Family Adjudication (`S0E-7D` through `S0E-7G`)
 

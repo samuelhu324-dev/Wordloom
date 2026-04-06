@@ -32,8 +32,9 @@
 
 - `A3 admission package`:
   - status:
-    - packaged under `S0F-3F/P3-C3`
-  - derive one bounded `ATTR` current contract from `S0E-4E`
+    - executed under `S0F-3F/P4-C3`
+  - admit `ATTR` as the stable current area for source-log attribution and provenance resolution
+  - create `GC-ATTR-0001` from the bounded `S0E-4E` surface
   - keep the contract boundary limited to attribution precedence, fail-closed ambiguity taxonomy, and consume-or-stop handoff semantics
 - `excluded from current action package`:
   - `S0E-7B`
@@ -42,8 +43,16 @@
 ## Sequencing Rule
 
 - Do not widen `A3` into a mixed attribution-plus-implementation bundle.
-- Execute `P4-C3` only for the bounded `S0E-4E` admission lane if the `ATTR` area name and one-contract boundary remain explicit enough for front-door mutation.
+- `S0F-3F/P4-C3` then executes `A3` only for the bounded `S0E-4E` admission lane after confirming that `ATTR` remains the right area name and that one contract is sufficient.
 - Keep `S0E-7B` outside the current write surface unless a later family sweep reopens the implementation slice with a defended different question.
+
+## Final Execution Result
+
+- `A3` is now executed under `S0F-3F/P4-C3` by admitting `ATTR` and creating `GC-ATTR-0001`.
+- The bounded `ATTR` family now closes with:
+  - one admitted current attribution record derived from `S0E-4E`
+  - no front-door admission for `S0E-7B`
+  - no secondary split package or refinement package required inside this family
 
 ## Reader Notes
 
@@ -57,6 +66,9 @@
 - The packaged result is now equally narrow by design:
   - one admission-only lane exists for `S0E-4E`
   - no refinement, split, or secondary admission lane is opened for the implementation slice
+- That admission-only lane is now executed and closed:
+  - `GC-ATTR-0001` owns the current front-door attribution precedence and ambiguity-stop boundary
+  - `S0E-7B` remains support-only implementation and workflow history
 - The adjacent current surfaces remain adjacent only:
   - `GC-PRA-0001` already owns PR creation and metadata precedence rather than PR-event attribution ownership
   - `GC-PRG-0001` already owns gate outcomes after review findings rather than attribution-stage ownership resolution
@@ -68,3 +80,5 @@
 - `docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
 - `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
 - `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
+- `docs/governance/contracts/GC-ATTR-0001-pr-event-source-log-attribution-precedence.md`
+- `docs/governance/views/view-attr-admission-package-v1.md`

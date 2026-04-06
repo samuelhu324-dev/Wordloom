@@ -39,6 +39,9 @@
 - `COMPL`:
   - `Completeness`
   - used for lifecycle completeness audit contracts that classify create-time, PR-time, and conclusion-time completeness as distinct governance surfaces
+- `ATTR`:
+  - `Attribution`
+  - used for source-log attribution and provenance resolution surfaces such as ordered ownership precedence, fail-closed ambiguity policy, and explicit consume-or-stop handoff before downstream verification
 - `ICL`:
   - `Issue Conclusion`
   - used for issue-conclusion governance such as post-merge conclusion timing and exact delivery-PR linkage
@@ -76,6 +79,7 @@
   - the code names one governance area, not one temporary implementation detail, branch name, or one-off fix
   - the code is not reused retroactively for a different governance surface
 - Current admitted area codes:
+  - `ATTR`: source-log attribution and provenance resolution governance
   - `COMPL`: lifecycle completeness audit governance
   - `ICL`: issue conclusion governance
   - `ICR`: issue creation governance
@@ -147,6 +151,12 @@
   - supersede means the earlier record is no longer the current effective rule for the overlapping scope and should be reflected in both index relations and record-level `supersedes` or `superseded_by` fields
 
 ## Area Grouping
+
+### Attribution (`ATTR`)
+
+| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `GC-ATTR-0001` | `PR-EVENT-SOURCE-LOG-ATTRIBUTION-PRECEDENCE` | PR-event source-log attribution resolves through ordered precedence, fail-closed ambiguity policy, and explicit consume-or-stop handoff | `active` | `fail` | `independent` | Concentrates source-log attribution ownership, ambiguity-stop handling, and downstream consume-or-stop gating without turning later implementation or workflow wiring into separate current records | `docs/governance/contracts/GC-ATTR-0001-pr-event-source-log-attribution-precedence.md` |
 
 ### Completeness Audit (`COMPL`)
 
