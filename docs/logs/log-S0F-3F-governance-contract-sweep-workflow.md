@@ -90,9 +90,10 @@
 - `P3-C2` is now complete for that same bounded workflow family: the adjudicated `WF` outcomes are now translated into one admission-only package `A2`, with `S0E-7D` isolated as the sole possible front-door lane and `S0E-7E` through `S0E-7G` explicitly excluded from current-state writes.
 - `P4-C2` is now complete for that same bounded workflow family: `A2` is now executed, `WF` is now admitted as a live current governance area, and `GC-WF-0001` now concentrates the `S0E-7D` workflow-failure taxonomy and handling boundary at the front door.
 - `P1-C3` is now complete for the third bounded family: `S0E-4E` and `S0E-7B` now have one explicit attribution-family sweep packet and candidate worksheet instead of remaining an informal `ATTR` shortlist placeholder.
+- `P2-C3` is now complete for that same bounded attribution family: `S0E-4E` is now formally accepted as the sole `ATTR` admission candidate, `S0E-7B` is now fixed as support-only implementation history, and no `ATTR` defer queue remains open.
 - The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up after opening the bounded `ATTR` family is `P2-C3`: formally adjudicate whether `S0E-4E` is the sole current admission candidate and whether `S0E-7B` remains support-only implementation history.
+- The immediate next follow-up after `P2-C3` is `P3-C3`: package the adjudicated `ATTR` outcomes into one bounded admission lane without widening into implementation or workflow cleanup.
 
 ## Problem Statement
 
@@ -297,6 +298,32 @@
 - The third worksheet therefore suggests one narrow next adjudication lane rather than a mixed attribution-plus-implementation landing bundle:
   - if `P2-C3` accepts the provisional outcomes, the most likely next current-admission work is one bounded `ATTR` current contract derived from `S0E-4E`
   - before any front-door write, `P2-C3` should explicitly confirm that attribution payload emission and workflow consume-or-stop wiring remain outside the current registry as support-only implementation layers
+
+## P2 Third Bounded Family Adjudication (`S0E-4E` and `S0E-7B`)
+
+### Accepted Outcomes
+
+- `admit new current`:
+  - `S0E-4E` PR-event source-log attribution precedence, ambiguity policy, and handoff contract
+- `support-only history`:
+  - `S0E-7B` attribution payload emission and automatic consume-or-stop wiring
+
+### Defer Queue
+
+- No row remains in `defer adjudication` for the bounded `ATTR` family pass.
+- This does not mean `ATTR` will necessarily mutate the front door immediately.
+- It means the family now exits adjudication with one defended candidate owner and one defended non-current classification, so later packaging can proceed without reopening row ownership.
+
+### P2 Adjudication Result
+
+- The bounded `ATTR` family now exits `P2-C3` with one intentionally narrow downstream lane:
+  - evaluate one `ATTR` current contract derived from `S0E-4E`
+- The bounded `ATTR` family does not justify any separate current admission for:
+  - `S0E-7B`
+- The bounded `ATTR` family also does not justify reopening adjacent current ownership under:
+  - `PRA`
+  - `PRG`
+- `P3-C3` should therefore package one admission-only lane rather than one mixed attribution-plus-implementation bundle.
 
 ## P2 Second Bounded Family Adjudication (`S0E-7D` through `S0E-7G`)
 

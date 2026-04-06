@@ -19,25 +19,30 @@
 
 ## Current Sweep Result
 
-- `worksheet status`:
-  - `S0F-3F/P1-C3` now fixes the bounded `ATTR` family packet and provisional worksheet.
-- `candidate new current`:
-  - `S0E-4E` is the provisional bounded `ATTR` admission candidate because it owns the stable attribution precedence, fail-closed ambiguity taxonomy, and handoff payload contract.
+- `adjudication status`:
+  - `S0F-3F/P2-C3` accepts the bounded `ATTR` family worksheet without opening a defer queue.
+- `admit new current`:
+  - `S0E-4E` is now accepted as the sole bounded `ATTR` admission candidate because it owns the stable attribution precedence, fail-closed ambiguity taxonomy, and handoff payload contract.
 - `support-only history`:
-  - `S0E-7B` is provisionally classified as implementation and workflow-wiring history because it emits and consumes the attribution payload without owning the underlying attribution semantics.
+  - `S0E-7B` is now fixed as implementation and workflow-wiring history rather than a separate current contract because it emits and consumes the attribution payload without owning the underlying attribution semantics.
 - `defer adjudication`:
-  - none opened at worksheet stage for this bounded `ATTR` family pass
+  - none in this bounded `ATTR` family pass
 
 ## Likely Next Package Direction
 
-- If `P2-C3` accepts the provisional worksheet, the bounded `ATTR` family most likely narrows to one admission-only lane derived from `S0E-4E`.
-- `S0E-7B` should remain outside the front door unless later adjudication finds that the implementation slice owns an independent current rule rather than a replay surface.
+- The bounded `ATTR` family now exits `P2-C3` with one likely downstream lane only:
+  - evaluate one `ATTR` current contract derived from `S0E-4E`
+- `S0E-7B` remains outside the front door unless a later family sweep reopens the implementation slice with a defended different question.
 
 ## Reader Notes
 
-- The bounded family is intentionally narrow:
+- This view now reflects formal adjudication rather than only a worksheet-stage reading.
+- The bounded family remains intentionally narrow:
   - `S0E-4E` owns attribution contract semantics
   - `S0E-7B` owns implementation and consume-or-stop wiring over that contract
+- The accepted bounded `ATTR` result is therefore also narrow by design:
+  - admit at most one `ATTR` current contract from `S0E-4E`
+  - keep `S0E-7B` outside the front door as support-only implementation and workflow history
 - The adjacent current surfaces remain adjacent only:
   - `GC-PRA-0001` already owns PR creation and metadata precedence rather than PR-event attribution ownership
   - `GC-PRG-0001` already owns gate outcomes after review findings rather than attribution-stage ownership resolution
