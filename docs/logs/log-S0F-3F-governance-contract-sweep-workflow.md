@@ -19,6 +19,7 @@
   **reference_log_2**: `docs/logs/log-S0F-3D-first-governance-contract-landing-batch.md`
   **reference_log_3**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
   **reference_log_4**: `docs/governance/views/view-contract-sweep-workflow-v1.md`
+  **reference_log_5**: `docs/governance/views/view-s0f-1-family-sweep-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -73,8 +74,10 @@
 
 - `S0F-3F` is now opened as the next `S0F` follow-up slice for repeatable governance-contract sweeping after the registry-lineage baseline fixed by `S0F-3E`.
 - `P0` is now complete: the repo now has a first `contract sweep workflow v1` scaffold with one required worksheet shape, one decision table, and one allowed-action matrix.
+- `P1` is now complete for the first bounded source family: `S0F-1A` through `S0F-1J` now have one explicit sweep packet and one candidate worksheet instead of being treated as ten unrelated future admissions.
+- The first `S0F-1` worksheet shows a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and one bounded remediation surface still looks like a real current-admission candidate.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up is `P1`: run one bounded source family through this worksheet instead of sweeping by prose intuition.
+- The immediate next follow-up is `P2`: accept or revise the first worksheet's provisional row outcomes before any current-state write package is assembled.
 
 ## Problem Statement
 
@@ -138,6 +141,69 @@
   - the candidate provides evidence, packaging, or historical support without owning the live rule itself
 - `unclear`:
   - the sweep has not yet justified any stronger classification
+
+## P1 First Bounded Family Execution (`S0F-1A` through `S0F-1J`)
+
+### Sweep Packet
+
+- bounded source family:
+  - `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
+  - `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
+  - `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
+  - `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
+  - `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  - `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+  - `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
+  - `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
+- already-active current contracts reviewed for overlap:
+  - `GC-ICR-0001`
+  - `GC-ICT-0001`
+  - `GC-IID-0001`
+  - `GC-IID-0002`
+  - `GC-PRA-0001`
+  - `GC-COMPL-0001`
+  - `GC-PRR-0001`
+  - `GC-PRG-0001`
+- known legacy surfaces under this family context:
+  - legacy `GC-ISS-*` records preserved after the `ISS` split
+  - legacy `GC-PRB-0001` umbrella preserved after the `PRB` split
+- exact question answered by this sweep:
+  - which `S0F-1` semantic surfaces are already concentrated into current governance contracts,
+  - which `S0F-1` surfaces are only support, repair, or packaging history,
+  - and whether one bounded not-yet-landed current-admission candidate still remains inside the family
+- stop condition for this run:
+  - stop before current-state writes if any worksheet row cannot defend one primary current owner or one non-current classification
+
+### Candidate Worksheet
+
+| candidate surface | source owner | current semantic owner | overlap type | proposed outcome | reason for outcome | allowed action package | front-door effect | legacy effect |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| issue-create fail-closed boundary | `S0F-1A` | `GC-ICR-0001` | `same-surface refinement` | `refine existing` | current issue-create contract already owns deterministic metadata and create-time scaffold boundaries, but `S0F-1A` remains the first stable fail-closed entrypoint clarification | later add `S0F-1A` traceability to `GC-ICR-0001` | none in `INDEX.md` | no legacy change |
+| PR-create front-half preflight boundary | `S0F-1A` | `GC-PRA-0001` | `same-surface refinement` | `refine existing` | current PR-create contract already owns exact commit scoping and bounded create-time staging, but `S0F-1A` still clarifies the fail-closed publish boundary | later add `S0F-1A` traceability to `GC-PRA-0001` | none in `INDEX.md` | no legacy change |
+| issue Context LLM-authored exact-count rule | `S0F-1B` | `GC-ICT-0001` | `same-surface refinement` | `already covered` | current issue-Context contract already treats `S0F-1B` as the current authoring-path owner inside the same sentence-count rule | no current-state write required | none | no legacy change |
+| guarded multi-item remediation stages | `S0F-1C` | `` | `none` | `admit new current` | stable batch-stage vocabulary, wrapper-owned live mutation boundary, and per-target failure semantics remain unrepresented at the front door even after `S0F-3D` and `S0F-3E` | later admit one bounded current remediation contract and area code | later add one new area only if `P2/P3` confirm | no legacy change required yet |
+| lifecycle three-stage completeness matrix | `S0F-1D` | `GC-COMPL-0001` | `same-surface refinement` | `already covered` | `GC-COMPL-0001` is already the concentrated current contract for this exact semantic surface | no current-state write required | none | no legacy change |
+| completeness diagnosis bucket taxonomy | `S0F-1E` | `` | `support-only` | `support-only history` | bucket taxonomy sharpens audit reading, but it does not own an independent front-door governance rule beyond the current completeness matrix | keep as supporting history only | none | retain log and artifacts only |
+| bucketed audit output materialization | `S0F-1F` | `` | `support-only` | `support-only history` | emitted diagnosis-layer fields are runtime and retained-output packaging, not a separate current governance surface | keep as supporting history only | none | retain log and artifacts only |
+| parent sidebar ordering ownership | `S0F-1G` | `GC-IID-0001` | `same-surface refinement` | `already covered` | current issue-identity contract already owns this exact source-log-versus-GitHub ordering rule | no current-state write required | none | no legacy change |
+| title keyword controlled vocabulary | `S0F-1G` | `GC-IID-0002` | `same-surface refinement` | `already covered` | current issue-identity contract already concentrates create-time and audit-time title keyword governance | no current-state write required | none | no legacy change |
+| PR body canonical review classification | `S0F-1H` | `GC-PRR-0001` | `same-surface refinement` | `already covered` | current PR-review contract already concentrates the read-only reviewer classification semantics directly from `S0F-1H` | no current-state write required | none | no legacy change |
+| formatting-only merged-PR convergence lane | `S0F-1I/P1-P3` | `` | `support-only` | `support-only history` | this lane consumes reviewer results and performs bounded repair, but it does not own a new enduring current rule after convergence is complete | keep as supporting repair history only | none | retain log and artifacts only |
+| packaged PR-body standard-check gate | `S0F-1I/P4 + S0F-1J/P1-P3` | `GC-PRG-0001` | `same-surface refinement` | `already covered` | current PR-gate contract already concentrates fail-on-substantive-drift semantics and packaged local or CI replay surfaces | no current-state write required | none | no legacy change |
+
+### P1 Result
+
+- The first bounded `S0F-1` worksheet does not justify a bulk registry expansion.
+- Current result by row class:
+  - `already covered`: `S0F-1B`, `S0F-1D`, `S0F-1G` sidebar ordering, `S0F-1G` title keyword governance, `S0F-1H`, and `S0F-1I/P4 + S0F-1J/P1-P3`
+  - `refine existing`: `S0F-1A` issue-create and PR-create boundary clarifications
+  - `support-only history`: `S0F-1E`, `S0F-1F`, and `S0F-1I/P1-P3`
+  - `candidate new current`: `S0F-1C`
+- The first worksheet therefore suggests one narrow next package rather than another broad sweep:
+  - if `P2` accepts the provisional outcomes, the most likely next current-admission work is one bounded remediation-governance contract derived from `S0F-1C`
+  - before that, the lighter-weight refinement package is to add `S0F-1A` traceability to `GC-ICR-0001` and `GC-PRA-0001`
 
 ## P2 Baseline (Decision table)
 
@@ -306,8 +372,8 @@
 
 ### P1 (Sweep packet and worksheet)
 
-- [ ] `P1-C1-S1`: first bounded source family chosen for execution
-- [ ] `P1-C1-S2`: candidate worksheet filled before current-state writes begin
+- [x] `P1-C1-S1`: first bounded source family chosen for execution
+- [x] `P1-C1-S2`: candidate worksheet filled before current-state writes begin
 
 ### P2 (Decision table)
 

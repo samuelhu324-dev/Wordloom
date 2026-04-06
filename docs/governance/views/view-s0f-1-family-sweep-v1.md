@@ -1,0 +1,62 @@
+# S0F-1 Family Sweep v1
+
+## Purpose
+
+- This view concentrates the first executed `S0F-3F/P1` sweep packet for the bounded `S0F-1A` through `S0F-1J` source family.
+- It exists so readers can see which `S0F-1` surfaces are already represented by current governance contracts, which remain support-only history, and which still justify a later admission package.
+
+## Sweep Packet
+
+- Bounded source family:
+  - `S0F-1A` through `S0F-1J`
+- Current contracts reviewed:
+  - `GC-ICR-0001`
+  - `GC-ICT-0001`
+  - `GC-IID-0001`
+  - `GC-IID-0002`
+  - `GC-PRA-0001`
+  - `GC-COMPL-0001`
+  - `GC-PRR-0001`
+  - `GC-PRG-0001`
+- Legacy surfaces already known:
+  - legacy `GC-ISS-*` files preserved after the `ISS -> ICR / ICL / ICT / IID` split
+  - legacy `GC-PRB-0001` umbrella preserved after the `PRB -> PRR / PRG` split
+
+## Current Sweep Result
+
+- `already covered`:
+  - `S0F-1B` -> `GC-ICT-0001`
+  - `S0F-1D` -> `GC-COMPL-0001`
+  - `S0F-1G` sidebar ordering -> `GC-IID-0001`
+  - `S0F-1G` title keyword governance -> `GC-IID-0002`
+  - `S0F-1H` -> `GC-PRR-0001`
+  - `S0F-1I/P4 + S0F-1J/P1-P3` packaged PR-body gate -> `GC-PRG-0001`
+- `refine existing`:
+  - `S0F-1A` issue-create fail-closed boundary -> `GC-ICR-0001`
+  - `S0F-1A` PR-create front-half preflight boundary -> `GC-PRA-0001`
+- `support-only history`:
+  - `S0F-1E` diagnosis bucket taxonomy
+  - `S0F-1F` bucket materialization surfaces
+  - `S0F-1I/P1-P3` formatting-only merged-PR convergence lane
+- `candidate new current`:
+  - `S0F-1C` guarded multi-item remediation stages remain the one clear bounded admission candidate not yet represented at the current front door
+
+## Reader Notes
+
+- This sweep does not say every `S0F-1` log should become a current contract.
+- The first bounded family result is intentionally mixed: the registry already covers most of the stable semantic surfaces, while several later logs remain runtime packaging or repair support.
+- The most likely next admission candidate after this worksheet is the still-unlanded remediation governance lane rather than another PR-review or issue-identity split.
+
+## Source Refs
+
+- `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+- `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
+- `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
+- `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
+- `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
+- `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+- `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+- `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
+- `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
+- `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
