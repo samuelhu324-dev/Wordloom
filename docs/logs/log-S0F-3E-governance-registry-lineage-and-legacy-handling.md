@@ -75,6 +75,7 @@
 - `P1` is now complete: the canonical registry-lineage verbs are now fixed, and the difference among `split into`, `absorbed into`, `superseded by`, and `retired` is now explicit enough to guide later legacy handling and migration work.
 - `P2` is now complete: old areas now have one explicit `frozen legacy area` state, and split areas now stop receiving new sequence numbers once narrower current areas take over.
 - `P3` is now complete: old records now have one explicit legacy disposition model, and non-active records with current successors now require deterministic reader redirection instead of silent historical drift.
+- `P4` is now complete: `INDEX.md` is now fixed as the current-state-only front door, and historical discoverability is now routed through explicit legacy or view surfaces rather than raw folder scanning.
 - No migration has been executed yet in this slice.
 
 ## Problem Statement
@@ -253,6 +254,51 @@
 - Split and absorption cases no longer have to misuse `superseded_by` just to express that newer current records exist.
 - Later migration work can update coarse historical records without deleting them and without leaving their current meaning ambiguous.
 
+## P4 Baseline (Current versus historical surfaces)
+
+### `INDEX.md` Current-Only Rule
+
+- `docs/governance/INDEX.md` is the current-state front door and should be read as current interpretation only.
+- `INDEX.md` should not try to become a complete archive ledger for every historical record that still exists on disk.
+- A record belongs in `INDEX.md` only when at least one of the following is true:
+  - it is currently `active`
+  - it is intentionally shown there to explain a still-current one-to-one replacement relationship that readers must understand at front-door level
+- Historical storage and historical discoverability are required, but they are not the primary job of `INDEX.md`.
+
+### Front-Door Exclusion Rule
+
+- `INDEX.md` should not ask readers to infer current meaning from mixed listings of active and historical files.
+- In particular, the front door should not become a dump of:
+  - frozen legacy areas
+  - deprecated records whose current meaning now lives elsewhere
+  - retired records that no longer govern a live surface
+  - raw folder-presence evidence presented as if it were current-state admission
+- If a historical item still matters to current interpretation, that connection should be expressed through redirects, lineage notes, or a dedicated legacy view rather than by diluting the front-door current tables.
+
+### Historical Discoverability Rule
+
+- Historical files must remain discoverable through explicit surfaces, not through reader guesswork.
+- The allowed discovery surfaces are:
+  - the old record file itself
+  - lineage or redirect notes inside that file
+  - future legacy-oriented view files under `docs/governance/views/`
+  - migration logs and governance follow-up logs that explain how current and historical records relate
+- This means the repo may preserve old files in `docs/governance/contracts/` while still teaching readers that folder presence alone does not imply current status.
+
+### Folder-Scan Interpretation Rule
+
+- A raw scan of `docs/governance/contracts/` must be treated as storage inspection, not as front-door interpretation.
+- Readers should use `INDEX.md` first for current state.
+- Readers should use record-local redirects, future legacy views, or migration logs when they need historical lineage.
+- This rule prevents the coexistence of active files and historical files in one folder from being misread as one flat set of equally current contracts.
+
+### P4 Consequences
+
+- Old files can remain in place without forcing `INDEX.md` to mirror the entire archive.
+- Current-state scanning becomes more trustworthy because front-door tables no longer need to double as historical storage.
+- Historical discoverability remains explicit because old records, redirects, views, and logs now have distinct jobs.
+- Later migration work can add legacy views without changing the rule that `INDEX.md` itself stays current-only.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and problem boundary)
@@ -311,8 +357,8 @@
 
 ### P4 (Current versus historical surfaces)
 
-- [ ] `P4-C1-S1`: `INDEX.md` current-only rule fixed
-- [ ] `P4-C1-S2`: historical discoverability rule fixed
+- [x] `P4-C1-S1`: `INDEX.md` current-only rule fixed
+- [x] `P4-C1-S2`: historical discoverability rule fixed
 
 ### P5 (Migration package)
 

@@ -5,6 +5,14 @@
 - This file is the front-door registry for governance contracts.
 - It exists so readers do not need to scan long filenames or reconstruct current governance state from raw folder listings alone.
 - It also acts as the controlled admission surface for new governance area codes and for the minimum registry fields every live record must expose here.
+- It is a current-state surface, not a full historical ledger of every governance-contract file preserved on disk.
+
+## Current-State Boundary
+
+- Read this file as the current governance front door.
+- Presence in this file means the record belongs to current-state interpretation at front-door level.
+- Absence from this file does not mean an old record file was deleted; historical files may still exist under `docs/governance/contracts/`.
+- When old records remain stored for lineage, redirects, or traceability, they should be discovered through the old file itself, dedicated legacy views under `docs/governance/views/`, or migration logs rather than by widening this file into a mixed current-plus-history index.
 
 ## Registry Model
 
@@ -151,3 +159,5 @@
 - Use `contract_id` to understand semantic identity.
 - Use the `relation` column first to tell whether `0001`, `0002`, or later entries are independent, refinements, or replacements.
 - Use the `what it currently solves` column to understand the current problem boundary solved by that record.
+- Do not treat a raw folder scan of `docs/governance/contracts/` as the current registry; that folder may contain preserved historical files as well as current ones.
+- When historical lineage matters, follow the record-local redirect notes, migration logs, or dedicated governance views rather than expecting this file to duplicate the full archive.
