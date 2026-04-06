@@ -75,7 +75,8 @@
 - `P0` is now complete: the cleanup problem is now separated from admission work, and future file reduction can proceed in explicit rounds instead of reopening `S0F-3F` for mixed cleanup-plus-judgment passes.
 - `P1` is now complete for the first bounded candidate family: the governance helper-view set under `docs/governance/views/` is now separated into keep-current, keep-legacy, and support-only sweep-helper classes without making destructive changes.
 - `P2` is now complete for that same bounded helper-view family: one reusable workflow explainer remains `keep current`, two split-lineage aids remain `keep legacy`, and the eight support-only helper views now resolve into one later move lane toward an explicit support-only location with no defer queue.
-- The immediate next follow-up is `P3`: define the first bounded cleanup manifest for that move lane, including the exact target location and reference-update set.
+- `P3` is now complete for that same bounded helper-view family: the first bounded cleanup manifest now fixes `docs/governance/views/support-only/` as the target location and records the exact planned rename paths plus reference-update set for the eight support-only helper views without moving files yet.
+- The immediate next follow-up is `P4`: execute the first bounded cleanup round from the new manifest and then revalidate reader paths and helper-view links.
 
 ## Problem Statement
 
@@ -289,6 +290,48 @@
   - which files were deferred and why
 - Cleanup evidence must make it possible to explain later why a preserved file still exists or why a removed file was safe to remove.
 
+## P3 First Bounded Cleanup Manifest (`S0F-3G-views-round-1`)
+
+### Manifest Decision
+
+- The first bounded cleanup manifest is now fixed as:
+  - `docs/governance/views/support-only/cleanup-manifest-S0F-3G-views-round-1.json`
+- Chosen support-only target location:
+  - `docs/governance/views/support-only/`
+- Rationale:
+  - the target stays inside the governance-view surface so later readers can still find sweep and admission helper history by one stable convention
+  - the target remains distinct from current reusable workflow and split-lineage views that stay at the root of `docs/governance/views/`
+  - the whole helper subset can move together without mixing in current or legacy redirect files
+
+### Manifest Scope
+
+- planned move set:
+  - `view-s0f-1-family-sweep-v1.md`
+  - `view-remed-admission-package-v1.md`
+  - `view-wf-family-sweep-v1.md`
+  - `view-wf-admission-package-v1.md`
+  - `view-attr-family-sweep-v1.md`
+  - `view-attr-admission-package-v1.md`
+  - `view-prb-follow-up-family-sweep-v1.md`
+  - `view-issue-automation-follow-up-family-sweep-v1.md`
+- reference-update set recorded in the manifest:
+  - `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+  - helper-view cross-links inside:
+    - `view-s0f-1-family-sweep-v1.md`
+    - `view-wf-family-sweep-v1.md`
+    - `view-attr-family-sweep-v1.md`
+- explicit non-move set:
+  - `view-contract-sweep-workflow-v1.md`
+  - `view-iss-split-package-v1.md`
+  - `view-prb-split-package-v1.md`
+  - `_template-governance-view.md`
+
+### P3 Result
+
+- The first bounded helper-view family now exits `P3` with one executable later move manifest rather than only one abstract move intention.
+- No file is moved during `P3`.
+- `P4` can therefore execute one bounded rename-and-reference-update round without reopening target-location design.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -340,8 +383,8 @@
 
 ### P3 (Cleanup manifest)
 
-- [ ] `P3-C1-S1`: first bounded cleanup manifest defined
-- [ ] `P3-C1-S2`: mixed or unsafe cleanup rejected before file writes begin
+- [x] `P3-C1-S1`: first bounded cleanup manifest defined
+- [x] `P3-C1-S2`: mixed or unsafe cleanup rejected before file writes begin
 
 ### P4 (First cleanup round)
 
@@ -413,3 +456,15 @@
   - the next phase can define one bounded move manifest instead of relitigating which views are still eligible for cleanup
 - observed:
   - the first helper-view family now exits adjudication with one `keep current` workflow explainer, two `keep legacy` split-lineage aids, eight views assigned to one later support-only move lane, and no defer queue
+
+### P3-C1-S1S2 (first helper-view cleanup manifest fixed | 2026-04-06)
+
+- headSha: `<TBD-after-manifest-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/governance/views/support-only/cleanup-manifest-S0F-3G-views-round-1.json`
+- expected:
+  - the first support-only helper subset has one explicit target location and one exact planned reference-update set before any rename round begins
+  - `P4` can execute one bounded move round without reopening destination design
+- observed:
+  - the first helper-view move lane now has one concrete manifest under `docs/governance/views/support-only/`, with eight planned target paths, one bounded reference-update set, and an explicit non-move set for current, legacy, and template files
