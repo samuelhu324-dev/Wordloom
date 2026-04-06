@@ -111,4 +111,4 @@
 - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
 - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
 - `docs/governance/contracts/GC-REMED-0001-guarded-batch-multi-item-remediation-stages.md`
-- `docs/governance/views/view-remed-admission-package-v1.md`
+- `docs/governance/views/support-only/view-remed-admission-package-v1.md`

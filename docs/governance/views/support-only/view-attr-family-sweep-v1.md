@@ -81,4 +81,4 @@
 - `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
 - `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
 - `docs/governance/contracts/GC-ATTR-0001-pr-event-source-log-attribution-precedence.md`
-- `docs/governance/views/view-attr-admission-package-v1.md`
+- `docs/governance/views/support-only/view-attr-admission-package-v1.md`

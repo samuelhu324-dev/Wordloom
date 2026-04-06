@@ -19,14 +19,14 @@
   **reference_log_2**: `docs/logs/log-S0F-3D-first-governance-contract-landing-batch.md`
   **reference_log_3**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
   **reference_log_4**: `docs/governance/views/view-contract-sweep-workflow-v1.md`
-  **reference_log_5**: `docs/governance/views/view-s0f-1-family-sweep-v1.md`
-  **reference_log_6**: `docs/governance/views/view-remed-admission-package-v1.md`
-  **reference_log_7**: `docs/governance/views/view-wf-family-sweep-v1.md`
-  **reference_log_8**: `docs/governance/views/view-wf-admission-package-v1.md`
-  **reference_log_9**: `docs/governance/views/view-attr-family-sweep-v1.md`
-  **reference_log_10**: `docs/governance/views/view-attr-admission-package-v1.md`
-  **reference_log_11**: `docs/governance/views/view-prb-follow-up-family-sweep-v1.md`
-  **reference_log_12**: `docs/governance/views/view-issue-automation-follow-up-family-sweep-v1.md`
+  **reference_log_5**: `docs/governance/views/support-only/view-s0f-1-family-sweep-v1.md`
+  **reference_log_6**: `docs/governance/views/support-only/view-remed-admission-package-v1.md`
+  **reference_log_7**: `docs/governance/views/support-only/view-wf-family-sweep-v1.md`
+  **reference_log_8**: `docs/governance/views/support-only/view-wf-admission-package-v1.md`
+  **reference_log_9**: `docs/governance/views/support-only/view-attr-family-sweep-v1.md`
+  **reference_log_10**: `docs/governance/views/support-only/view-attr-admission-package-v1.md`
+  **reference_log_11**: `docs/governance/views/support-only/view-prb-follow-up-family-sweep-v1.md`
+  **reference_log_12**: `docs/governance/views/support-only/view-issue-automation-follow-up-family-sweep-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -384,7 +384,7 @@
 - Applied writes:
   - `INDEX.md` now admits `ATTR` as a controlled area code and current front-door section
   - `GC-ATTR-0001` now exists as the current attribution record derived from `S0E-4E`
-  - `view-attr-admission-package-v1.md` now explains why `ATTR` was admitted and what remains outside the new current boundary
+  - `docs/governance/views/support-only/view-attr-admission-package-v1.md` now explains why `ATTR` was admitted and what remains outside the new current boundary
 
 ### Validated Non-Writes
 
@@ -708,7 +708,7 @@
 - Applied writes:
   - `INDEX.md` now admits `WF` as a controlled area code and current front-door section
   - `GC-WF-0001` now exists as the current workflow-failure record derived from `S0E-7D`
-  - `view-wf-admission-package-v1.md` now explains why `WF` was admitted and what remains outside the new current boundary
+  - `docs/governance/views/support-only/view-wf-admission-package-v1.md` now explains why `WF` was admitted and what remains outside the new current boundary
 
 ### Validated Non-Writes
 
@@ -1042,7 +1042,7 @@
 
 - `INDEX.md` now admits `REMED` as a controlled area code and current front-door section.
 - `GC-REMED-0001` now exists as the current remediation-governance record derived from `S0F-1C`.
-- `view-remed-admission-package-v1.md` now explains why `REMED` was admitted and what remains outside the new current boundary.
+- `docs/governance/views/support-only/view-remed-admission-package-v1.md` now explains why `REMED` was admitted and what remains outside the new current boundary.
 - The `S0F-1` family sweep view now records `A1` as executed rather than blocked.
 
 ### P6 Result

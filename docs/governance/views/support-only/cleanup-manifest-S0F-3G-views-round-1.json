@@ -5,7 +5,7 @@
   "defaults": {
     "proposed_cleanup_outcome": "move to support-only location",
     "target_directory": "docs/governance/views/support-only/",
-    "status": "planned"
+    "status": "executed"
   },
   "items": [
     {
@@ -17,7 +17,7 @@
         "docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md"
       ],
       "evidence_of_reproducibility_or_reader_replacement": "Support-only family-sweep explanation for a closed pilot family; current workflow reading remains carried by view-contract-sweep-workflow-v1.md and current contracts.",
-      "status": "planned"
+      "status": "executed"
     },
     {
       "candidate_path": "docs/governance/views/view-remed-admission-package-v1.md",
@@ -29,7 +29,7 @@
         "docs/governance/views/view-s0f-1-family-sweep-v1.md"
       ],
       "evidence_of_reproducibility_or_reader_replacement": "Support-only admission explanation for an already-admitted current contract; live REMED meaning remains at GC-REMED-0001 and INDEX.md.",
-      "status": "planned"
+      "status": "executed"
     },
     {
       "candidate_path": "docs/governance/views/view-wf-family-sweep-v1.md",
@@ -40,7 +40,7 @@
         "docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md"
       ],
       "evidence_of_reproducibility_or_reader_replacement": "Support-only family-sweep explanation for a closed WF lane; current reader value remains historical rather than front-door current.",
-      "status": "planned"
+      "status": "executed"
     },
     {
       "candidate_path": "docs/governance/views/view-wf-admission-package-v1.md",
@@ -52,7 +52,7 @@
         "docs/governance/views/view-wf-family-sweep-v1.md"
       ],
       "evidence_of_reproducibility_or_reader_replacement": "Support-only admission explanation for an already-admitted WF contract; live meaning remains at GC-WF-0001 and INDEX.md.",
-      "status": "planned"
+      "status": "executed"
     },
     {
       "candidate_path": "docs/governance/views/view-attr-family-sweep-v1.md",
@@ -63,7 +63,7 @@
         "docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md"
       ],
       "evidence_of_reproducibility_or_reader_replacement": "Support-only family-sweep explanation for a closed ATTR lane; current reader value remains historical rather than front-door current.",
-      "status": "planned"
+      "status": "executed"
     },
     {
       "candidate_path": "docs/governance/views/view-attr-admission-package-v1.md",
@@ -75,7 +75,7 @@
         "docs/governance/views/view-attr-family-sweep-v1.md"
       ],
       "evidence_of_reproducibility_or_reader_replacement": "Support-only admission explanation for an already-admitted ATTR contract; live meaning remains at GC-ATTR-0001 and INDEX.md.",
-      "status": "planned"
+      "status": "executed"
     },
     {
       "candidate_path": "docs/governance/views/view-prb-follow-up-family-sweep-v1.md",
@@ -86,7 +86,7 @@
         "docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md"
       ],
       "evidence_of_reproducibility_or_reader_replacement": "Support-only residual closure explanation for an already-resolved PRB legacy question; split-lineage aid remains preserved separately at view-prb-split-package-v1.md.",
-      "status": "planned"
+      "status": "executed"
     },
     {
       "candidate_path": "docs/governance/views/view-issue-automation-follow-up-family-sweep-v1.md",
@@ -97,7 +97,7 @@
         "docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md"
       ],
       "evidence_of_reproducibility_or_reader_replacement": "Support-only residual closure explanation for an already-resolved S0E-2 precursor family; live issue-governance meaning remains at current contracts and source-owner logs.",
-      "status": "planned"
+      "status": "executed"
     }
   ]
 }

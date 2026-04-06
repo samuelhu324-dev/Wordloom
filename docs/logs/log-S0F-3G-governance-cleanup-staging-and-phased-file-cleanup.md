@@ -76,7 +76,8 @@
 - `P1` is now complete for the first bounded candidate family: the governance helper-view set under `docs/governance/views/` is now separated into keep-current, keep-legacy, and support-only sweep-helper classes without making destructive changes.
 - `P2` is now complete for that same bounded helper-view family: one reusable workflow explainer remains `keep current`, two split-lineage aids remain `keep legacy`, and the eight support-only helper views now resolve into one later move lane toward an explicit support-only location with no defer queue.
 - `P3` is now complete for that same bounded helper-view family: the first bounded cleanup manifest now fixes `docs/governance/views/support-only/` as the target location and records the exact planned rename paths plus reference-update set for the eight support-only helper views without moving files yet.
-- The immediate next follow-up is `P4`: execute the first bounded cleanup round from the new manifest and then revalidate reader paths and helper-view links.
+- `P4` is now complete for that same bounded helper-view family: the eight support-only helper views now live under `docs/governance/views/support-only/`, the bounded `S0F-3F` and helper-view cross-links are rewritten to the new location, and the first cleanup round now closes with reader paths revalidated.
+- The immediate next follow-up is `P5`: decide whether a second bounded cleanup family is now defended strongly enough for another manifest-driven round.
 
 ## Problem Statement
 
@@ -332,6 +333,43 @@
 - No file is moved during `P3`.
 - `P4` can therefore execute one bounded rename-and-reference-update round without reopening target-location design.
 
+## P4 First Bounded Cleanup Round (`S0F-3G-views-round-1`)
+
+### Executed Changes
+
+- executed move set:
+  - `docs/governance/views/view-s0f-1-family-sweep-v1.md` -> `docs/governance/views/support-only/view-s0f-1-family-sweep-v1.md`
+  - `docs/governance/views/view-remed-admission-package-v1.md` -> `docs/governance/views/support-only/view-remed-admission-package-v1.md`
+  - `docs/governance/views/view-wf-family-sweep-v1.md` -> `docs/governance/views/support-only/view-wf-family-sweep-v1.md`
+  - `docs/governance/views/view-wf-admission-package-v1.md` -> `docs/governance/views/support-only/view-wf-admission-package-v1.md`
+  - `docs/governance/views/view-attr-family-sweep-v1.md` -> `docs/governance/views/support-only/view-attr-family-sweep-v1.md`
+  - `docs/governance/views/view-attr-admission-package-v1.md` -> `docs/governance/views/support-only/view-attr-admission-package-v1.md`
+  - `docs/governance/views/view-prb-follow-up-family-sweep-v1.md` -> `docs/governance/views/support-only/view-prb-follow-up-family-sweep-v1.md`
+  - `docs/governance/views/view-issue-automation-follow-up-family-sweep-v1.md` -> `docs/governance/views/support-only/view-issue-automation-follow-up-family-sweep-v1.md`
+- executed reference rewrites:
+  - `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+  - helper-view cross-links inside:
+    - `docs/governance/views/support-only/view-s0f-1-family-sweep-v1.md`
+    - `docs/governance/views/support-only/view-wf-family-sweep-v1.md`
+    - `docs/governance/views/support-only/view-attr-family-sweep-v1.md`
+  - `docs/governance/views/support-only/cleanup-manifest-S0F-3G-views-round-1.json` status fields
+
+### Validation Result
+
+- post-move reader-path validation confirms that the bounded `S0F-3F` reference set now points at `docs/governance/views/support-only/` for all eight helper views.
+- helper-view internal cross-links now resolve within the same `support-only/` location for the `S0F-1`, `WF`, and `ATTR` pairs.
+- the explicit non-move set remains unchanged:
+  - `view-contract-sweep-workflow-v1.md`
+  - `view-iss-split-package-v1.md`
+  - `view-prb-split-package-v1.md`
+  - `_template-governance-view.md`
+
+### P4 Result
+
+- The first bounded helper-view cleanup round is now executed without widening scope beyond the manifest.
+- The root of `docs/governance/views/` now keeps only the reusable workflow view, the two lineage aids, the template, and the `support-only/` folder for closed-lane helper history.
+- `P5` can now focus on whether another bounded cleanup family exists, rather than revisiting the already-executed first move lane.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -388,8 +426,8 @@
 
 ### P4 (First cleanup round)
 
-- [ ] `P4-C1-S1`: only justified file changes executed from the bounded manifest
-- [ ] `P4-C1-S2`: reader paths, redirects, and current-state cleanliness revalidated after the round
+- [x] `P4-C1-S1`: only justified file changes executed from the bounded manifest
+- [x] `P4-C1-S2`: reader paths, redirects, and current-state cleanliness revalidated after the round
 
 ### P5 (Later rounds)
 
@@ -468,3 +506,27 @@
   - `P4` can execute one bounded move round without reopening destination design
 - observed:
   - the first helper-view move lane now has one concrete manifest under `docs/governance/views/support-only/`, with eight planned target paths, one bounded reference-update set, and an explicit non-move set for current, legacy, and template files
+
+### P4-C1-S1S2 (first helper-view cleanup round executed | 2026-04-06)
+
+- headSha: `<TBD-after-cleanup-round-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/views/support-only/cleanup-manifest-S0F-3G-views-round-1.json`
+  - `docs/governance/views/support-only/view-s0f-1-family-sweep-v1.md`
+  - `docs/governance/views/support-only/view-remed-admission-package-v1.md`
+  - `docs/governance/views/support-only/view-wf-family-sweep-v1.md`
+  - `docs/governance/views/support-only/view-wf-admission-package-v1.md`
+  - `docs/governance/views/support-only/view-attr-family-sweep-v1.md`
+  - `docs/governance/views/support-only/view-attr-admission-package-v1.md`
+  - `docs/governance/views/support-only/view-prb-follow-up-family-sweep-v1.md`
+  - `docs/governance/views/support-only/view-issue-automation-follow-up-family-sweep-v1.md`
+- expected:
+  - the first helper-view support-only subset is moved as one bounded round without breaking `S0F-3F` navigation or helper-view cross-links
+  - root-level governance views stay focused on reusable workflow and stable lineage reading
+- observed:
+  - all eight manifest-listed helper views now live under `docs/governance/views/support-only/`
+  - `S0F-3F` reference logs and the three helper-view cross-links now point to the new location
+  - no additional current, legacy, or template file is moved during this round

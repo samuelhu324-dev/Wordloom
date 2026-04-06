@@ -85,4 +85,4 @@
 - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
 - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
 - `docs/governance/contracts/GC-WF-0001-publish-verify-remediation-failure-taxonomy-and-handling.md`
-- `docs/governance/views/view-wf-admission-package-v1.md`
+- `docs/governance/views/support-only/view-wf-admission-package-v1.md`
