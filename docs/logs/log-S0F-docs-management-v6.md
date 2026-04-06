@@ -31,6 +31,7 @@
   **phase_log_11**: `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
   **phase_log_12**: `docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md`
   **phase_log_13**: `docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
+  **phase_log_14**: `docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -225,6 +226,7 @@
 - `S0F-3A/P3` is now complete: the minimum governance-contract delta block is fixed with one shared field set plus action-specific requirements for `add`, `modify`, `retire`, `supersede`, and `apply-without-change`.
 - `S0F-3A/P4` is now complete: stable `contract_id` naming rules, the minimum active-contract index record shape, and the smallest viable homes under `docs/governance/contracts/` and `docs/governance/views/` are now fixed.
 - `S0F-3A/P5` is now complete: historical backtrace rules, partial backfill priority rules, and future-authoring rules for non-contract-first logs are now fixed, and one reusable backfill note template now exists under `docs/governance/contracts/_template-backfill-note.md`.
+- `S0F-3B` is now opened as the next `S0F` follow-up slice for governance-contract registry and naming ergonomics.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
