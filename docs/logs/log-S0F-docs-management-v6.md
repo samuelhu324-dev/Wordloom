@@ -35,6 +35,7 @@
   **phase_log_15**: `docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
   **phase_log_16**: `docs/logs/log-S0F-3D-first-governance-contract-landing-batch.md`
   **phase_log_17**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
+  **phase_log_18**: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -52,7 +53,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-05`
+**updated**: `2026-04-06`
 
 ---
 
@@ -148,6 +149,18 @@
   - 详见：`docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
 - `S0F-2B`（Phase 2B）：family patch and ops maintenance model
   - 详见：`docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md`
+- `S0F-3A`（Phase 3A）：governance contract index and delta model
+  - 详见：`docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
+- `S0F-3B`（Phase 3B）：governance contract registry and naming model
+  - 详见：`docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md`
+- `S0F-3C`（Phase 3C）：governance contract series audit and admission
+  - 详见：`docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
+- `S0F-3D`（Phase 3D）：first governance contract landing batch
+  - 详见：`docs/logs/log-S0F-3D-first-governance-contract-landing-batch.md`
+- `S0F-3E`（Phase 3E）：governance registry lineage and legacy handling
+  - 详见：`docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
+- `S0F-3F`（Phase 3F）：governance contract sweep workflow
+  - 详见：`docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -247,6 +260,8 @@
 - `S0F-3E/P5` is now complete: the repo now has one first bounded `ISS` split package that defines descendant area codes, old-record preservation rules, and the exact front-door cleanup boundary for a later execution slice.
 - `S0F-3E/P6` is now complete: the `ISS` split package is now executed in place, the current front door now points at `ICR / ICL / ICT / IID`, and old `GC-ISS-*` files now survive as deprecated legacy records with deterministic redirects.
 - `S0F-3E/P6-C3` is now complete: the old fused `PRB` front-door contract is now split into separate reviewer (`PRR`) and gate (`PRG`) current records, while `GC-PRB-0001` survives as a deprecated legacy umbrella record.
+- `S0F-3F` is now opened as the next `S0F` follow-up slice for repeatable governance-contract sweeping, so future family scans can use one fixed worksheet, one decision table, and one allowed-action matrix instead of ad hoc judgment.
+- `S0F-3F/P0` is now complete: the first `contract sweep workflow v1` scaffold and supporting governance view are now published, and the immediate next follow-up is `P1` first-family worksheet execution.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
