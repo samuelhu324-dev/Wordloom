@@ -85,9 +85,10 @@
 - `P6` is now complete for that same bounded family: `A1` is no longer a design-only placeholder, `REMED` is now admitted as a current governance area, and `GC-REMED-0001` now concentrates the `S0F-1C` remediation-stage boundary at the front door.
 - `P1-C2` is now complete for the second bounded family: `S0E-7D` through `S0E-7G` now have one explicit workflow-governance sweep packet and one candidate worksheet instead of remaining an undifferentiated `WF` shortlist placeholder.
 - `P2-C2` is now complete for that same bounded workflow family: `S0E-7D` is now formally accepted as the sole `WF` admission candidate, `S0E-7E` through `S0E-7G` are now fixed as support-only orchestration or transport history, and no `WF` defer queue remains open.
+- `P3-C2` is now complete for that same bounded workflow family: the adjudicated `WF` outcomes are now translated into one admission-only package `A2`, with `S0E-7D` isolated as the sole possible front-door lane and `S0E-7E` through `S0E-7G` explicitly excluded from current-state writes.
 - The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up after `P2-C2` is now `P3-C2`: translate the adjudicated `WF` family outcomes into one bounded action package, with `S0E-7D` isolated as the only possible front-door admission lane and `S0E-7E` through `S0E-7G` excluded from current-state writes.
+- The immediate next follow-up after `P3-C2` is now `P4-C2`: execute only the bounded `A2` lane if the `WF` area and one-contract admission boundary remain explicit enough for front-door mutation.
 
 ## Problem Statement
 
@@ -287,6 +288,45 @@
   - `PRG`
   - `REMED`
 - `P3-C2` should therefore package one admission-only lane rather than one mixed workflow bundle.
+
+## P3 Second Bounded Family Action Package (`S0E-7D` through `S0E-7G`)
+
+### Package Rule
+
+- The bounded `WF` family does not collapse into a mixed execution bundle.
+- `P3-C2` fixes one package only:
+  - `A2`: bounded current-admission package
+- No separate refinement package is opened because the adjudicated family contains one admission candidate and no defended current-refinement rows.
+
+### `A2` Bounded Current-Admission Package
+
+- target work:
+  - derive one current `WF` contract from `S0E-7D`
+  - keep the contract boundary limited to failure taxonomy, ordered replay/backfill, and handling semantics
+  - confirm in `P4-C2` that the later thin-gate, wrapper, and workflow-dispatch surfaces remain outside the front door as support-only implementation layers
+- explicit non-writes at `P3-C2`:
+  - do not yet update `INDEX.md`
+  - do not yet create a new contract file
+  - do not admit any second workflow-adjacent record from `S0E-7E`, `S0E-7F`, or `S0E-7G`
+- rationale:
+  - `S0E-7D` is the only adjudicated `admit new current` row in the bounded `WF` family, so it remains the only candidate admission lane for the next write stage
+
+### Explicit Exclusion Set
+
+- `P3-C2` excludes these surfaces from the current action package entirely:
+  - `S0E-7E`
+  - `S0E-7F`
+  - `S0E-7G`
+  - adjacent current areas `PRA`, `PRG`, and `REMED`
+- `P3-C2` also excludes package widening such as:
+  - admitting one thin-gate contract plus one wrapper contract in the same bundle
+  - reopening attribution, PR-create, gate, or remediation surfaces while the bounded `WF` lane is still being packaged
+
+### P3 Result
+
+- The bounded `WF` family now exits packaging with one execution order rather than only one adjudication result:
+  - execute `A2` only if the `WF` area name and one-record contract boundary remain explicit enough for front-door mutation
+- This means `P4-C2` can stay minimal and fail closed on scope creep instead of quietly widening into a multi-record workflow landing.
 
 ## P2 Baseline (Decision table)
 

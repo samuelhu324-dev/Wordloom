@@ -33,12 +33,35 @@
 - `defer adjudication`:
   - none in this bounded `WF` family pass
 
+## Action Package
+
+- `A2 admission package`:
+  - status:
+    - packaged under `S0F-3F/P3-C2`
+  - derive one bounded `WF` current contract from `S0E-7D`
+  - keep the admission surface limited to failure taxonomy, ordered replay/backfill, and handling semantics rather than absorbing thin-gate, wrapper, or transport packaging
+  - prepare one minimal front-door package only after `P4-C2` confirms that `WF` remains the right area name and that one contract is sufficient
+- `excluded from current action package`:
+  - `S0E-7E`
+  - `S0E-7F`
+  - `S0E-7G`
+  - adjacent current areas `PRA`, `PRG`, and `REMED`
+
+## Sequencing Rule
+
+- Do not widen `A2` into a mixed workflow bundle.
+- Execute `P4-C2` only for the bounded `S0E-7D` admission lane if the current-area and single-contract boundary remain explicit enough for front-door mutation.
+- Keep `S0E-7E` through `S0E-7G` outside the current write surface unless a later family sweep reopens them with a defended different question.
+
 ## Reader Notes
 
 - This view now reflects formal adjudication rather than only a worksheet-stage reading.
 - The accepted bounded `WF` result remains narrow by design:
   - admit at most one `WF` current contract from `S0E-7D`
   - keep `S0E-7E` through `S0E-7G` outside the front door as support-only orchestration, wrapper, and transport history
+- The packaged result is therefore also narrow by design:
+  - one admission-only lane exists for `S0E-7D`
+  - no refinement, split, or secondary admission lane is opened for the later wrapper surfaces
 - `REMED` remains adjacent but distinct:
   - `GC-REMED-0001` owns multi-item remediation-stage boundaries
   - the adjudicated `WF` lane would instead own the broader failure taxonomy and handling semantics that the later orchestration and wrapper surfaces replay
