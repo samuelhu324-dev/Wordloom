@@ -22,6 +22,7 @@ contract_record:
   superseded_by: []
   notes:
     - S0E-5C refines the create-time boundary by showing that lifecycle pre-gate reuse is partial and does not authorize the whole PR-create flow as one opaque mutation.
+    - Reviewed again in S0F-3E/P6-C2 and retained as one concentrated current contract because exact commit scoping, metadata precedence, and create-time stage ownership still read as one coherent PR-create boundary.
 ```
 
 ## Reader Notes

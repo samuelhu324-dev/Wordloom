@@ -27,7 +27,8 @@
 ## Decision
 
 - This backfill is already sufficient for current-state use because the active question is not who first invented PR-body review in general, but which retained governance contract currently makes the standard check fail on substantive historical merged-PR drift.
+- Reviewed again in `S0F-3E/P6-C2`: this file remains support-only contract backtrace, not a second current contract surface.
 
 ## Follow-up
 
-- If the repo later splits live enforcement from historical audit reporting, this contract record should either be modified materially or superseded by separate live-gate and historical-audit records.# governance-contract-backfill: GC-PRB-0001
+- If the repo later splits live enforcement from historical audit reporting, this contract record should either be modified materially or superseded by separate live-gate and historical-audit records.

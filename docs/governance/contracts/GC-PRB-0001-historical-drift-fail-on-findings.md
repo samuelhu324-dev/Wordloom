@@ -24,6 +24,7 @@ contract_record:
   notes:
     - S0F-P1 currently shows this contract in action rather than changing its meaning: the workflow-dispatch replay stops because historical merged PR #383 still classifies as substantive drift.
     - This record describes the current active fail semantics, not a desired future split between live enforcement and historical audit reporting.
+    - Reviewed again in S0F-3E/P6-C2: a later split into live-gate versus historical-audit successor contracts remains plausible, but this fused current record still answers the active fail semantics cleanly enough to retain for now.
 ```
 
 ## Reader Notes

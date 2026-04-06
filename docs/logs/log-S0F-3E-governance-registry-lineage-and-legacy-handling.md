@@ -408,6 +408,19 @@
 - The repo now has one working example of current-state cleanup without destructive history loss.
 - Later area splits can follow the same execution shape with less ambiguity.
 
+### P6-C2 Adjacent Review Result
+
+- `GC-PRA-0001` does not need immediate split or refactor.
+  - Reason: exact ID-scoped commit selection, metadata precedence, and stage-aware create-time ownership still read as one coherent PR-creation boundary rather than as parallel current contracts.
+  - Consequence: keep `PRA` unchanged for now.
+- `GC-PRB-0001` is a real future split candidate, but should not be split in the same move as `ISS`.
+  - Reason: the current record still answers one fused current question cleanly: whether historical merged-PR substantive drift remains a fail-on-findings non-pass condition in the live standard check.
+  - Future split target: one live-gate contract plus one historical-audit or reporting contract, but only after successor current records are explicitly authored.
+  - Consequence: keep `PRB` current-state shape unchanged for now, but treat it as the next likely concentration follow-up.
+- `GC-PRB-0001` backfill remains a support-only historical note, not a second current contract surface.
+  - Reason: it exists to justify `introduced_by`, `last_changed_by`, and source backtrace for the active record, not to express an additional active rule.
+  - Consequence: keep it outside the front door and treat later `PRB` split work as a contract-and-backfill refresh rather than as promotion of the backfill note itself.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and problem boundary)
@@ -446,6 +459,9 @@
 - P6-C1-S1: publish successor current records under `ICR`, `ICL`, `ICT`, and `IID`
 - P6-C1-S2: convert legacy `GC-ISS-*` records into deprecated redirect files
 - P6-C1-S3: update the current front door and migration view after the split executes
+- P6-C2-S1: review whether `GC-PRA-0001` still reads cleanly as one concentrated current contract
+- P6-C2-S2: review whether `GC-PRB-0001` should split into live-gate and historical-audit successor contracts
+- P6-C2-S3: classify the `GC-PRB-0001` backfill note as support-only history rather than a second current contract surface
 
 ## Execution Checklist (unchecked)
 
@@ -485,3 +501,6 @@
 - [x] `P6-C1-S1`: successor current records published under `ICR`, `ICL`, `ICT`, and `IID`
 - [x] `P6-C1-S2`: legacy `GC-ISS-*` records converted to deprecated redirect files
 - [x] `P6-C1-S3`: current front door and migration view updated after split execution
+- [x] `P6-C2-S1`: `GC-PRA-0001` reviewed and retained as one concentrated current contract
+- [x] `P6-C2-S2`: `GC-PRB-0001` reviewed as a deferred future split candidate rather than immediate split work
+- [x] `P6-C2-S3`: `GC-PRB-0001` backfill classified as support-only history, not a second current contract surface
