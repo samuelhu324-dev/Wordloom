@@ -22,8 +22,8 @@
   **phase_log_2**: `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
   **phase_log_3**: `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
   **phase_log_4**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
-  **phase_log_5**: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
-  **phase_log_6**: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+  **phase_log_5**: `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  **phase_log_6**: `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
   **phase_log_7**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
   **phase_log_8**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
   **phase_log_9**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
@@ -135,9 +135,9 @@
 - `S0F-1D`（Phase 1D）：creation / PR / conclusion completeness audit
   - 详见：`docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
 - `S0F-1E`（Phase 1E）：completeness classification buckets and audit output taxonomy
-  - 详见：`docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  - 详见：`docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
 - `S0F-1F`（Phase 1F）：bucketed audit output materialization
-  - 详见：`docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+  - 详见：`docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
 - `S0F-1G`（Phase 1G）：parent issue sidebar ordering and title keyword governance
   - 详见：`docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
 - `S0F-1H`（Phase 1H）：PR body completeness reviewer
@@ -297,6 +297,7 @@
 - `S0F-3G/P5-C2` is now complete as an intake screen for the supplied `S0E-3* / 4* / 5*` batch: the batch does not open another cleanup family, because its files are dominated by direct source-owner logs for active current contracts, active follow-up contract owners, or non-governance bridge material that should remain outside destructive cleanup.
 - `S0F-3G/P5-C3` is now complete as an intake screen for the supplied `S0E-6* / 7*` batch: this second supplied set also does not open another cleanup family, because it is dominated by direct current-contract source-owner logs, active normalization and gate-owner logs, or workflow-history files that remain reader-facing even when governance adjudication marks them support-only.
 - `S0F-3G/P5-C4` is now complete as a repo-side full scan of `docs/logs/`: the scan does surface one strongest support-only proto-family around `S0F-1E`, `S0F-1F`, and the historical `S0F-1I/P1-P3` repair lane, but it still does not open another cleanup family because the wider `docs/logs/` support-only class has not yet been given one defended relocation model and adjacent support-only logs still remain entangled with reader-facing runbook, issue, or workflow history.
+- `S0F-3G/P6` is now complete for the first bounded `docs/logs/` support-only move round: one stable `docs/logs/support-only/s0/` location model plus directory index now exists, the fully support-only `S0F-1E` and `S0F-1F` logs have moved there with bounded reference rewrites, and `S0F-1I` remains explicitly deferred because the file still mixes support-only repair history with later current-adjacent gate standing.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 

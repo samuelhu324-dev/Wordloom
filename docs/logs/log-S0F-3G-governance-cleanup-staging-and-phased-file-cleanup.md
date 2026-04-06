@@ -81,6 +81,7 @@
 - `P5-C2` is now complete as an intake screen for the externally supplied `S0E-3* / 4* / 5*` batch: the supplied set does not open another cleanup family, because it is dominated by source-owner logs for current contracts, active follow-up contract owners, or non-governance bridge logs that remain outside destructive cleanup by boundary.
 - `P5-C3` is now complete as an intake screen for the externally supplied `S0E-6* / 7*` batch: this second supplied set also does not open another cleanup family, because it is dominated by direct current-contract source-owner logs, active normalization and gate-owner logs, or workflow-history files that remain reader-facing even when governance adjudication marks them support-only.
 - `P5-C4` is now complete as a repo-side full scan of `docs/logs/`: the scan does surface one strongest support-only proto-family around `S0F-1E`, `S0F-1F`, and the historical `S0F-1I/P1-P3` repair lane, but it still does not open another cleanup family because the wider `docs/logs/` support-only class has not yet been given one defended relocation model and adjacent support-only logs still remain entangled with reader-facing runbook, issue, or workflow history.
+- `P6` is now complete for the first bounded `docs/logs/` support-only move round: the slice now fixes `docs/logs/support-only/s0/` as the first stable location model for fully support-only `S0` logs, moves `S0F-1E` and `S0F-1F` there with bounded reference rewrites plus one directory index and manifest, and leaves `S0F-1I` in explicit `defer cleanup` standing because the file still mixes support-only repair history with later current-adjacent gate ownership.
 - The immediate next follow-up is now externalized cleanly: either provide one new bounded candidate batch that looks like helper residue, legacy redirect, or reproducible output, or let a later repo-side scan defend another cleanup family strongly enough for execution.
 
 ## Problem Statement
@@ -585,6 +586,80 @@
   - first defend one `docs/logs/` support-only location model plus its navigation rules
   - then reopen only the narrowed `S0F-1E/F/I` proto-family if the reference-update set remains bounded and discoverability loss can be ruled out
 
+## P6 First Bounded `docs/logs/` Move Round (`S0F-1E`, `S0F-1F`, `S0F-1I` proto-family)
+
+### P6 Scope
+
+- bounded candidate family reopened from the narrowed proto-family:
+  - `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  - `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- exact question answered by this round:
+  - whether `S0F-3G` can now defend one first `docs/logs/` support-only location model strongly enough to execute a bounded move round for the narrowed `S0F-1E/F/I` proto-family without harming reader navigation or collapsing mixed-standing logs into oversimplified history files
+
+### P6 Location Model
+
+- chosen `docs/logs/` support-only destination model:
+  - `docs/logs/support-only/s0/`
+- directory navigation rule:
+  - `docs/logs/` root remains the current-log and parent-spine surface
+  - `docs/logs/support-only/INDEX.md` becomes the directory entrypoint for relocated support-only historical logs
+  - scope-specific support-only subdirectories such as `docs/logs/support-only/s0/` hold only logs whose entire file standing is already reduced to support-only historical value
+- stop rule added by this model:
+  - do not move a log into `docs/logs/support-only/` if the file still mixes support-only history with later current-adjacent or current-reader standing that would make whole-file relocation semantically misleading
+
+### P6 Candidate Decision
+
+- `move to support-only location`:
+  - `S0F-1E`
+    - rationale: the full file now reads as closed taxonomy history already downgraded to support-only by `S0F-3F`, and its remaining references are bounded to parent-spine, sweep-history, and adjacent historical child-log navigation
+  - `S0F-1F`
+    - rationale: the full file now reads as closed emitted-output packaging history already downgraded to support-only by `S0F-3F`, and its remaining references are likewise bounded to parent-spine, sweep-history, and adjacent historical child-log navigation
+- `defer cleanup`:
+  - `S0F-1I`
+    - rationale: `S0F-3F` fixed only the historical `P1-P3` repair lane as support-only history, while the same file still records later stable current-adjacent gate standing consumed by runbook, issue, and contract surfaces, so whole-file relocation would currently mix two different standings into one misleading move
+
+### P6 Manifest Decision
+
+- first bounded `docs/logs/` cleanup manifest:
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-logs-round-1.json`
+- manifest scope:
+  - move:
+    - `S0F-1E`
+    - `S0F-1F`
+  - defer:
+    - `S0F-1I`
+  - required navigation support:
+    - `docs/logs/support-only/INDEX.md`
+    - one root-level `docs/logs/INDEX.md` pointer to the support-only directory model
+
+### P6 Executed Changes
+
+- executed move set:
+  - `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md` -> `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  - `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md` -> `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
+- executed reference rewrites:
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
+  - `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+  - `docs/governance/views/support-only/view-s0f-1-family-sweep-v1.md`
+  - `docs/logs/INDEX.md`
+  - moved log self-path references inside `S0F-1E` and `S0F-1F`
+- executed support files:
+  - `docs/logs/support-only/INDEX.md`
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-logs-round-1.json`
+
+### P6 Result
+
+- The first bounded `docs/logs/` support-only location model is now defended and executed in one narrow round.
+- `S0F-1E` and `S0F-1F` now leave the root `docs/logs/` surface because their whole-file standing is fully support-only and their remaining reader paths were bounded enough for safe rewrite.
+- `S0F-1I` remains in `defer cleanup` standing, which is the stronger result here than a forced move:
+  - the historical `P1-P3` repair lane is support-only
+  - but the file as a whole still carries later current-adjacent gate packaging and active downstream traceability, so whole-file relocation would currently over-collapse meaning
+- This round therefore turns the earlier proto-family into one real executed cleanup family, but only by narrowing the move set from `S0F-1E/F/I` to the defended pure-support-only subset `S0F-1E/F`.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -621,6 +696,10 @@
 - P5-C3-S2: reject semantic support-only files that remain reader-facing workflow history or active gate owners from forced cleanup rounds
 - P5-C4-S1: run a repo-side full scan of `docs/logs/` to surface the strongest next cleanup proto-family rather than relying only on supplied batches
 - P5-C4-S2: refuse a `docs/logs/` move round until one stable support-only destination model and bounded rewrite pattern are both defended
+- P6-C1-S1: define the first stable `docs/logs/` support-only destination and navigation model
+- P6-C1-S2: separate whole-file pure support-only logs from mixed-standing logs before any move write begins
+- P6-C2-S1: execute the first bounded `docs/logs/` move round only for the pure support-only subset with bounded reference rewrites
+- P6-C2-S2: defer mixed-standing logs such as `S0F-1I` rather than forcing whole-file relocation
 - P5-C1-S2: stop the slice when the remaining files are all either current, legacy-needed, or explicitly deferred
 
 ## Execution Checklist (unchecked)
@@ -659,6 +738,10 @@
 - [x] `P5-C3-S2`: semantic support-only workflow-history and active gate-owner logs excluded from forced cleanup by explicit boundary result
 - [x] `P5-C4-S1`: repo-side full scan of `docs/logs/` completed to surface the strongest next support-only cleanup proto-family
 - [x] `P5-C4-S2`: `docs/logs/` move round rejected until one stable support-only destination model and bounded rewrite pattern are both defended
+- [x] `P6-C1-S1`: first stable `docs/logs/` support-only destination and navigation model defined
+- [x] `P6-C1-S2`: whole-file pure support-only logs separated from mixed-standing logs before move writes
+- [x] `P6-C2-S1`: first bounded `docs/logs/` move round executed for the pure support-only subset with bounded reference rewrites
+- [x] `P6-C2-S2`: mixed-standing logs such as `S0F-1I` deferred instead of being forced into whole-file relocation
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -821,8 +904,8 @@
   - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
   - `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
-  - `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
-  - `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+  - `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  - `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
   - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
   - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
   - `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
@@ -837,3 +920,25 @@
   - the full scan narrows the strongest future `docs/logs/` cleanup proto-family to `S0F-1E`, `S0F-1F`, and the historical `S0F-1I/P1-P3` repair standing
   - no new cleanup family is opened yet because `docs/logs/` still lacks one defended support-only destination model and bounded rewrite pattern comparable to the already-executed governance-view move lane
   - the wider support-only log class remains mixed because `S0E-2B/C` and `S0E-7B/E/F/G` still keep runbook, issue, workflow, or implementation-history reader value that makes premature relocation unsafe
+
+### P6-C1S2-C2S2 (first docs/logs support-only move round executed | 2026-04-07)
+
+- headSha: `<TBD-after-logs-round-1-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/logs/INDEX.md`
+  - `docs/logs/support-only/INDEX.md`
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-logs-round-1.json`
+  - `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  - `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+  - `docs/governance/views/support-only/view-s0f-1-family-sweep-v1.md`
+- expected:
+  - the first bounded `docs/logs/` support-only model either executes one safe move round for the pure-support-only subset or stops cleanly if mixed-standing logs cannot be separated without reader-value loss
+- observed:
+  - `docs/logs/support-only/s0/` now exists as the first stable support-only location for fully support-only `S0` logs
+  - `S0F-1E` and `S0F-1F` now live there with bounded reference rewrites and one new support-only directory index
+  - `S0F-1I` remains explicitly deferred because the file still mixes support-only `P1-P3` repair history with later current-adjacent gate standing and downstream traceability surfaces
+  - the first `docs/logs/` cleanup round therefore executes safely only by narrowing the earlier proto-family to the pure-support-only subset rather than forcing whole-file relocation for all three candidates

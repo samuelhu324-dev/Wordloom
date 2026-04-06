@@ -14,9 +14,9 @@
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
-  **previous_log**: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  **previous_log**: `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
   **reference_log_1**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
-  **reference_log_2**: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  **reference_log_2**: `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
 **issue_keyword**: `audit`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1f`
@@ -69,7 +69,7 @@
 
 **PR links**:
 
-- Log: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+- Log: `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
 - Parent log: `docs/logs/log-S0F-docs-management-v6.md`
 
 ## Definitions (optional)
@@ -273,7 +273,7 @@
 - `S0F-1E` now provides the fixed taxonomy consumed by this slice: the bucket families, check mappings, and additive diagnosis-layer contract are stable enough to materialize on real output surfaces.
 - `scripts/issues/plan_lifecycle_audit.py` remains the primary implementation anchor because it already owns lifecycle-stage attribution and the richest retained check arrays needed for deterministic bucket emission.
 - `scripts/issues/plan_historical_log_review.py` remains the supporting implementation anchor for later additive diagnosis-layer emission where structure-first pre-screen output can still map deterministically into the same taxonomy.
-- `P0-C1-S1` / `P0-C1-S2`: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md` now fixes the implementation boundary recorded here: the slice is wired into the `S0F` spine, emitted diagnosis-layer ownership is assigned to live lifecycle audit output first, and the next follow-up is `P1` live bucket emission.
+- `P0-C1-S1` / `P0-C1-S2`: `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md` now fixes the implementation boundary recorded here: the slice is wired into the `S0F` spine, emitted diagnosis-layer ownership is assigned to live lifecycle audit output first, and the next follow-up is `P1` live bucket emission.
 - `P0-C1-S1`: `docs/logs/log-S0F-docs-management-v6.md` now records `S0F-1F` as the next explicit `S0F` child slice after `S0F-1E` stabilized the taxonomy contract.
 - `P1-C1-S1`: `scripts/issues/plan_lifecycle_audit.py` now emits additive diagnosis-layer bucket fields on each live lifecycle audit item, deriving bucket attribution only from existing structured check evidence and stage ownership already fixed in `S0F-1E`.
 - `P1-C1-S2`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` now retains the first representative emitted live sample with `primary_bucket`, `bucket_set`, `bucket_source_checks`, and `bucket_stage` carried directly in the result payload.

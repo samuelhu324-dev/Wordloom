@@ -19,7 +19,7 @@
   **reference_log_2**: `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
   **reference_log_3**: `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
   **reference_log_4**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
-  **reference_log_5**: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  **reference_log_5**: `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
   **reference_log_6**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
   **reference_log_7**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
 **issue_keyword**: `automation`

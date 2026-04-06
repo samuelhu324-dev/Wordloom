@@ -70,7 +70,7 @@
 
 **PR links**:
 
-- Log: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+- Log: `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
 - Parent log: `docs/logs/log-S0F-docs-management-v6.md`
 
 ## Definitions (optional)
@@ -300,7 +300,7 @@
 - `S0F-1D` now provides the ownership model consumed by this slice: `creation`, `pr`, and `conclusion` completeness already exist as explicit lifecycle categories, but they are not yet emitted as stable diagnosis buckets in current retained audit output.
 - `scripts/issues/plan_lifecycle_audit.py` and `scripts/issues/plan_historical_log_review.py` already provide the two read-only result surfaces this slice will normalize: both emit machine-readable status plus detailed checks, which makes them suitable foundations for a shared bucket taxonomy instead of a new audit family.
 - `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` and `docs/issues/historical-log-review-S0E-7C-sample-plan.json` remain representative retained samples proving that rich check-level evidence already exists and can be lowered into deterministic bucket labels in a later phase.
-- `P0-C1-S1` / `P0-C1-S2`: `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md` now fixes the initial taxonomy boundary recorded here: the slice is wired into the `S0F` spine, the decision-layer versus diagnosis-layer split is explicit, and bucket labels are defined as additive to existing gate statuses.
+- `P0-C1-S1` / `P0-C1-S2`: `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md` now fixes the initial taxonomy boundary recorded here: the slice is wired into the `S0F` spine, the decision-layer versus diagnosis-layer split is explicit, and bucket labels are defined as additive to existing gate statuses.
 - `P0-C1-S1`: `docs/logs/log-S0F-docs-management-v6.md` now records `S0F-1E` as the next explicit follow-up slice under the `S0F` spine and reflects `P0` as complete rather than leaving the new child slice as an ungrounded placeholder.
 - `P1-C1-S1` / `P1-C1-S2`: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md` and `scripts/issues/plan_lifecycle_audit.py` remain the contract and implementation anchors for creation bucket taxonomy recorded here: create-time ownership is already fixed for body plus sidebar state, and the current live audit check names provide the concrete surfaces now grouped under `creation-body-shape-gap`, `creation-metadata-gap`, `creation-links-gap`, `creation-sidebar-relationship-gap`, `creation-timing-gap`, and `creation-writeback-gap`.
 - `P1-C1-S1` / `P1-C1-S2`: `docs/issues/lifecycle-audit-S0F-1A-live-plan.json` remains the representative retained creation-stage evidence bundle for this mapping work because it already shows one live `issue-created` sample with canonical create-time checks such as `source-log-issue-writeback`, `required-body-sections`, `expected-labels`, `sidebar-parent-relationship`, `links-coverage`, and `context-sentence-shape`.

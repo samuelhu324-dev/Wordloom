@@ -16,7 +16,7 @@
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
   **previous_log**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
   **reference_log_1**: `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
-  **reference_log_2**: `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+  **reference_log_2**: `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
   **reference_log_3**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
 **issue_keyword**: `audit`
 **issue_top_labels**: `EVOLUTION`
@@ -280,7 +280,7 @@
 - `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1f-live-body.md` and `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1f-expected-body.md` prove the `S0F-1F/#375` exact-match state directly.
 - `artifacts/s0f-1h-pr-body-completeness-review-s0f-files/s0f-1a-raw.diff` proves the `S0F-1A/#365` mismatch is currently formatting-only rather than substantive.
 - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md` now provides the reviewer-owned operator procedure for the stable local check surface.
-- `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`, `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`, `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`, `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`, and `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md` now carry the canonical live merged PR URLs needed for full reviewer coverage.
+- `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`, `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`, `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`, `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`, and `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md` now carry the canonical live merged PR URLs needed for full reviewer coverage.
 
 ## Numbering
 

@@ -80,6 +80,12 @@
 
 # what they might contain
 
+## Support-only historical logs
+
+- `docs/logs/` root remains the current-log and parent-spine surface.
+- Fully support-only historical logs that no longer need root placement may be relocated under `docs/logs/support-only/` when `S0F-3G` or a later bounded cleanup slice proves discoverability and rewrite safety.
+- `docs/logs/support-only/INDEX.md` is the directory entrypoint for relocated support-only logs; mixed-standing or still-reader-facing logs stay at the root until a later bounded round proves they are safe to move.
+
 ## S0-related
 
 ### current logs

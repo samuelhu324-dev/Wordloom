@@ -181,8 +181,8 @@
   - `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
   - `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
   - `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
-  - `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
-  - `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+  - `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  - `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
   - `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
   - `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
   - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
