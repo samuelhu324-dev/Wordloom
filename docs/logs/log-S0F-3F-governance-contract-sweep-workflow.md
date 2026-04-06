@@ -26,6 +26,7 @@
   **reference_log_9**: `docs/governance/views/view-attr-family-sweep-v1.md`
   **reference_log_10**: `docs/governance/views/view-attr-admission-package-v1.md`
   **reference_log_11**: `docs/governance/views/view-prb-follow-up-family-sweep-v1.md`
+  **reference_log_12**: `docs/governance/views/view-issue-automation-follow-up-family-sweep-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -99,10 +100,14 @@
 - `P2-C4` is now complete for that same bounded residual family: both the preserved umbrella and its backfill note are now fixed as support-only or legacy history, no current admission candidate remains, and no defer queue is left open.
 - `P3-C4` is now complete for that same bounded residual family: the adjudicated `PRB` follow-up outcomes are now translated into one no-op current-state package `N4`, with explicit non-writes to the front door and to the successor `PRR` and `PRG` records.
 - `P4-C4` is now complete for that same bounded residual family: `N4` is now executed as a bounded no-op current-state closure, confirming that no further `PRB` current-admission lane remains after the earlier split executed.
+- `P1-C5` is now complete for the fifth bounded family: `S0E-2A` through `S0E-2C` now have one explicit issue-automation precursor and tooling sweep packet and candidate worksheet instead of remaining an informal residual family outside current-state reading.
+- `P2-C5` is now complete for that same bounded residual family: early title-keyword and create-metadata precursor surfaces are now fixed as absorbed into current `GC-IID-0002` and `GC-ICR-0001`, later create-path and batch-path tooling are now fixed as support-only history, and no defer queue remains open.
+- `P3-C5` is now complete for that same bounded residual family: the adjudicated `S0E-2A` through `S0E-2C` outcomes are now translated into one no-op current-state package `N5`, with explicit non-writes to the front door and to the current `ICR` and `IID` records.
+- `P4-C5` is now complete for that same bounded residual family: `N5` is now executed as a bounded no-op current-state closure, confirming that no further `S0E-2` precursor or tooling admission lane remains after later issue-governance concentration and fail-closed tightening.
 - The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- No bounded unswept family remains inside the currently approved shortlist after `C4`.
-- The immediate next follow-up is therefore no longer another family admission lane inside this slice; future reuse should reopen `S0F-3F` only if a genuinely new bounded family or a defended legacy refresh question appears.
+- No bounded unswept family remains inside the currently approved shortlist after `C4`, and the first defended legacy-refresh reuse under `C5` also closes without front-door mutation.
+- The immediate next follow-up is therefore again no longer another family admission lane inside this slice; future reuse should reopen `S0F-3F` only if a genuinely new bounded family or a defended legacy refresh question appears.
 
 ## Problem Statement
 
@@ -504,6 +509,126 @@
 - The fourth bounded family therefore exits `P4-C4` in a clean completed state:
   - `N4` executed and validated
   - no further bounded family remains open inside the currently approved shortlist
+
+## P1 Fifth Bounded Family Execution (`S0E-2A` through `S0E-2C` residual follow-up)
+
+### Sweep Packet
+
+- bounded source family:
+  - `docs/logs/log-S0E-2A-semi-automated-git-issue-creation.md`
+  - `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+  - `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
+- already-active current contracts reviewed for overlap:
+  - `GC-ICR-0001`
+  - `GC-IID-0002`
+- known support or adjacent surfaces under this family context:
+  - `GC-ISS-0001` now survives only as a deprecated legacy redirect to `GC-ICR-0001` after the `ISS` split already executed
+  - `S0E-2D` now owns the current issue-create metadata and English-body concentration under `GC-ICR-0001`
+  - `S0F-1G` now owns the current fail-closed title-keyword governance under `GC-IID-0002`
+- exact question answered by this sweep:
+  - whether any residual issue-automation precursor or batch-tooling surface from `S0E-2A` through `S0E-2C` still deserves independent current admission after later issue-governance concentration,
+  - or whether the early precursor semantics now remain absorbed into the current issue-create and issue-identity contracts while the create-path and batch-path tooling remain support-only history only
+- stop condition for this run:
+  - stop before current-state writes if the family cannot defend whether any residual `S0E-2` surface still owns an independent current contract boundary after `ICR` and `IID` concentration already executed
+
+### Candidate Worksheet
+
+| candidate surface | source owner | current semantic owner | overlap type | proposed outcome | reason for outcome | allowed action package | front-door effect | legacy effect |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| issue title keyword vocabulary and fixed title mapping | `S0E-2A` | `GC-IID-0002` | `same-surface refinement` | `absorb into current` | the early controlled keyword vocabulary remains historically important, but current fail-closed create-time and audit-time title-keyword governance is now concentrated by `S0F-1G` under `GC-IID-0002` rather than by the earlier semi-automation contract slice | later close as absorbed standing only | none | retain precursor log as historical source only |
+| issue creation metadata, body scaffold, and milestone blank-fallback contract | `S0E-2A` | `GC-ICR-0001` | `same-surface refinement` | `absorb into current` | the early scaffold and mapping contract is now superseded in active reading by the narrower current issue-create concentration under `S0E-2D`, so it no longer needs independent current standing at the front door | later close as absorbed standing only | none | retain precursor log as historical source only |
+| explicit draft-generation versus create-issue mode boundary and creation-side evidence path | `S0E-2B` | `GC-ICR-0001` | `support-only` | `support-only history` | the real create path executes the current issue-create contract, but its explicit mode split, CLI path, and creation evidence retention are implementation and operator tooling surfaces rather than a separate current governance record | keep as supporting implementation history only | none | retain log, script, and sample artifacts only |
+| batch issue planning, relationship backfill, and milestone reconciliation tooling | `S0E-2C` | `` | `support-only` | `support-only history` | the batch manifest, dry-run planning, and reconciliation tooling extend operator control surfaces over existing issue-governance contracts without owning an independent front-door rule | keep as supporting operator tooling history only | none | retain log, runbook, scripts, and sample artifacts only |
+
+### P1 Result
+
+- The fifth bounded residual worksheet does not justify any new registry growth.
+- Current provisional result by row class:
+  - `absorb into current`: `S0E-2A` title-keyword vocabulary and `S0E-2A` create-metadata or scaffold contract
+  - `support-only history`: `S0E-2B` and `S0E-2C`
+  - `candidate new current`: none
+- The fifth worksheet therefore suggests one bounded closure lane rather than another admission lane:
+  - if `P2-C5` accepts the provisional outcomes, the family should close as `no-op current-state`
+
+## P2 Fifth Bounded Family Adjudication (`S0E-2A` through `S0E-2C` residual follow-up)
+
+### Accepted Outcomes
+
+- `absorb into current`:
+  - `S0E-2A` issue title keyword vocabulary and fixed title mapping -> `GC-IID-0002`
+  - `S0E-2A` issue creation metadata, body scaffold, and milestone blank-fallback contract -> `GC-ICR-0001`
+- `support-only history`:
+  - `S0E-2B` explicit draft-generation versus create-issue mode boundary and creation-side evidence path
+  - `S0E-2C` batch issue planning, relationship backfill, and milestone reconciliation tooling
+
+### Defer Queue
+
+- No row remains in `defer adjudication` for the bounded residual `S0E-2A` through `S0E-2C` follow-up pass.
+- This does not mean the precursor logs or tooling artifacts are disposable.
+- It means the family now exits adjudication with no defended current admission candidate, two defended absorbed surfaces, and two defended support-only historical classifications.
+
+### P2 Adjudication Result
+
+- The bounded residual `S0E-2A` through `S0E-2C` family now exits `P2-C5` with no current-admission lane.
+- The bounded residual family does not justify any additional current record under:
+  - `ICR`
+  - `IID`
+- `P3-C5` should therefore package a bounded no-op current-state closure rather than any admission or refinement bundle.
+
+## P3 Fifth Bounded Family Action Package (`S0E-2A` through `S0E-2C` residual follow-up)
+
+### Package Rule
+
+- The bounded residual `S0E-2A` through `S0E-2C` family does not collapse into another admission bundle.
+- `P3-C5` fixes one package only:
+  - `N5`: bounded no-op current-state package
+- No refinement or admission package is opened because the adjudicated family contains no defended current candidate and no defended current-refinement row that still requires front-door mutation.
+
+### `N5` Bounded No-Op Current-State Package
+
+- target work:
+  - confirm that the early precursor semantics from `S0E-2A` now read through current `GC-IID-0002` and `GC-ICR-0001`
+  - confirm that the `S0E-2B` and `S0E-2C` create-path and batch-path tooling remain outside the current registry as support-only implementation or operator history
+  - update sweep surfaces to record the closure decision explicitly so the residual `S0E-2` lane does not remain an implicit pending question
+- explicit non-writes at `P3-C5`:
+  - do not update `INDEX.md`
+  - do not create a new contract file
+  - do not modify current `ICR` or `IID` contract boundaries
+
+### Explicit Exclusion Set
+
+- `P3-C5` excludes these surfaces from any current-state action package entirely:
+  - `S0E-2A` beyond its absorbed precursor standing
+  - `S0E-2B`
+  - `S0E-2C`
+  - current `ICR` and `IID` records
+
+### P3 Result
+
+- The bounded residual `S0E-2A` through `S0E-2C` family now exits packaging with one execution order only:
+  - execute `N5` as a bounded no-op current-state closure
+- This means `P4-C5` can close the lane cleanly without reopening front-door mutation.
+
+## P4 Fifth Bounded Family Write Stage (`S0E-2A` through `S0E-2C` residual follow-up)
+
+### Executed Writes
+
+- `N5` is now executed.
+- Applied writes:
+  - sweep surfaces now record that the residual `S0E-2A` through `S0E-2C` lane closes as `no-op current-state`
+
+### Validated Non-Writes
+
+- `INDEX.md` remains unchanged during this stage.
+- No new `ICR`, `IID`, or other current record is admitted or modified during this stage.
+- `S0E-2A` remains absorbed precursor history only, and `S0E-2B` plus `S0E-2C` remain support-only tooling history only.
+
+### P4 Result
+
+- The bounded residual `S0E-2A` through `S0E-2C` family now proves that the workflow can close an early precursor and tooling lane with a defended no-op current-state result instead of reopening already concentrated current issue-governance records.
+- The fifth bounded family therefore exits `P4-C5` in a clean completed state:
+  - `N5` executed and validated
+  - no further defended `S0E-2` precursor or tooling admission lane remains open inside this reuse pass
 
 ## P2 Second Bounded Family Adjudication (`S0E-7D` through `S0E-7G`)
 
