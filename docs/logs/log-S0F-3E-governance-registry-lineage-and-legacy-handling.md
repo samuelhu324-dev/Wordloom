@@ -73,6 +73,7 @@
 - `S0F-3E` is now opened as the next `S0F` follow-up slice for governance-registry lineage and legacy handling.
 - The immediate motivation is already concrete: the first landing batch under `S0F-3D` proved that coarse areas can carry multiple parallel active contracts, which now raises the need for explicit split and absorption handling before future registry growth continues.
 - `P1` is now complete: the canonical registry-lineage verbs are now fixed, and the difference among `split into`, `absorbed into`, `superseded by`, and `retired` is now explicit enough to guide later legacy handling and migration work.
+- `P2` is now complete: old areas now have one explicit `frozen legacy area` state, and split areas now stop receiving new sequence numbers once narrower current areas take over.
 - No migration has been executed yet in this slice.
 
 ## Problem Statement
@@ -148,6 +149,51 @@
   - do not use `absorbed into` when the real situation is version replacement of the same surface
   - do not use `retired` as a vague synonym for any non-current state when a more specific lineage verb is actually known
 
+## P2 Baseline (Frozen legacy areas)
+
+### `frozen legacy area`
+
+- Use `frozen legacy area` when an older area code must remain historically visible but is no longer allowed to act as a growing current namespace.
+- A frozen legacy area is not deleted.
+- A frozen legacy area is also not current-growth-eligible.
+- This state exists specifically to solve the case where an older coarse area has been split into narrower current areas, but the old files and old references must still survive.
+
+### Trigger Rule
+
+- An area should enter `frozen legacy` when all of the following are true:
+  - the old area is no longer the preferred current grouping for new contract admission
+  - one or more newer current areas now carry the active interpretation that the old area used to group
+  - the repo still needs the old area code and old files for historical traceability or reference preservation
+- The most common trigger is `split into`, but a similar freeze may also happen after a large migration that leaves the old area historically important but no longer current.
+
+### Sequence-Stop Rule
+
+- Once an area becomes `frozen legacy`, that area stops receiving new sequence numbers.
+- In practical terms:
+  - no new `GC-<OLDAREA>-000N` records should be created under that old area after freeze
+  - all new current records must land under the newer current areas instead
+  - the old area's existing sequence remains as a closed historical namespace rather than an open active line
+- This rule exists to prevent dual-track drift where the repo continues to grow both the old coarse area and the newer narrower areas at the same time.
+
+### Allowed Actions After Freeze
+
+- After an area is frozen, the repo may still:
+  - preserve the old files in place
+  - add lineage notes or redirection notes to old files
+  - cite old record IDs in migration notes, traceability notes, or historical references
+  - index the frozen area in a future historical or legacy view if one is introduced
+- After an area is frozen, the repo should not:
+  - admit new active records into that area
+  - keep treating the old area as the preferred current registry grouping in `INDEX.md`
+  - reopen the old area for growth just because one later edge case appears easier to file there
+
+### P2 Consequences
+
+- Future splits can preserve old area files without letting old area namespaces continue to compete with current ones.
+- Old references remain valid because the old files still exist.
+- Current-state readability improves because area growth now has one explicit stop rule instead of silent namespace drift.
+- Later `P3` and `P4` can build on this rule by deciding how frozen areas and frozen records should be surfaced outside the current front-door index.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and problem boundary)
@@ -196,8 +242,8 @@
 
 ### P2 (Frozen legacy areas)
 
-- [ ] `P2-C1-S1`: `frozen legacy area` rule fixed
-- [ ] `P2-C1-S2`: old-area sequence-stop rule fixed
+- [x] `P2-C1-S1`: `frozen legacy area` rule fixed
+- [x] `P2-C1-S2`: old-area sequence-stop rule fixed
 
 ### P3 (Legacy records and references)
 
