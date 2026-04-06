@@ -34,6 +34,7 @@
   **phase_log_14**: `docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md`
   **phase_log_15**: `docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
   **phase_log_16**: `docs/logs/log-S0F-3D-first-governance-contract-landing-batch.md`
+  **phase_log_17**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -238,6 +239,8 @@
 - `S0F-3C/P5` is now complete: the next population step is fixed as shortlist-admission-first, the first bounded landing batch is now `ISS + PRA + COMPL`, and broader shortlist expansion is explicitly sequenced behind that first multi-area registry pass.
 - `S0F-3D` is now opened as the first bounded governance-contract landing slice after the `S0F-3C` audit baseline.
 - `S0F-3D/P1-P4` are now complete: the first `ISS`, `PRA`, and `COMPL` active records now exist under `docs/governance/contracts/`, and the front-door governance index now shows the first multi-area landing batch in deterministic sort order.
+- `S0F-3E` is now opened as the next `S0F` follow-up slice for governance-registry lineage and legacy handling, specifically to fix `split into`, `absorbed into`, frozen legacy areas, and old-reference survival before later registry growth continues.
+- `S0F-3E/P1` is now complete: the registry-lineage verbs are now fixed so `split into`, `absorbed into`, `superseded by`, and `retired` are no longer treated as interchangeable labels.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
