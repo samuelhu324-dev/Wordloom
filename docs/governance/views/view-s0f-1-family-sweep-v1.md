@@ -45,12 +45,36 @@
 - `defer adjudication`:
   - none in this first bounded family pass
 
+## Action Packages
+
+- `R1 refinement package`:
+  - target `GC-ICR-0001`
+  - add `S0F-1A` as current boundary clarification for fail-closed issue-create entrypoints
+  - target `GC-PRA-0001`
+  - add `S0F-1A` as current boundary clarification for fail-closed PR-create front-half preflight
+- `A1 admission package`:
+  - derive one bounded remediation-governance current contract from `S0F-1C`
+  - evaluate whether the registry should reactivate the earlier `REMED` shortlist area from `S0F-3C` or justify a narrower current area name before any front-door write
+  - keep `S0F-1C` preview planning, guarded apply, and preserve-existing post-verify together as one governance surface rather than splitting them into separate first-pass current records
+- `excluded from current action package`:
+  - `S0F-1E`
+  - `S0F-1F`
+  - `S0F-1I/P1-P3`
+  - all `already covered` rows that do not require traceability refinement
+
+## Sequencing Rule
+
+- Do not mix `R1` and `A1` in one write pass.
+- Execute `R1` first because it is bounded current refinement with no front-door change.
+- Execute `A1` only after the remediation-governance contract boundary and area-code choice are defended tightly enough for a current-state write.
+
 ## Reader Notes
 
 - This sweep does not say every `S0F-1` log should become a current contract.
 - The first bounded family result is intentionally mixed: the registry already covers most of the stable semantic surfaces, while several later logs remain runtime packaging or repair support.
 - The most likely next admission candidate after this worksheet is the still-unlanded remediation governance lane rather than another PR-review or issue-identity split.
 - The lighter-weight follow-up remains separate from that admission candidate: `S0F-1A` should feed refinement traceability into existing `ICR` and `PRA` contracts rather than create a new front-door record.
+- The bounded family now has explicit package separation, so later execution can fail closed on scope creep instead of quietly mixing traceability cleanup with new-area admission.
 
 ## Source Refs
 

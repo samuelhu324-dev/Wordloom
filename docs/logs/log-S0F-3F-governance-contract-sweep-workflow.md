@@ -76,9 +76,10 @@
 - `P0` is now complete: the repo now has a first `contract sweep workflow v1` scaffold with one required worksheet shape, one decision table, and one allowed-action matrix.
 - `P1` is now complete for the first bounded source family: `S0F-1A` through `S0F-1J` now have one explicit sweep packet and one candidate worksheet instead of being treated as ten unrelated future admissions.
 - `P2` is now complete for that same bounded family: the first `S0F-1` worksheet outcomes are now formally adjudicated, no row remains in an unresolved defer queue, and the family now exits `P2` with one clear admission candidate plus one small refinement package.
+- `P3` is now complete for that same bounded family: the accepted `S0F-1` outcomes are now translated into one split action-package model, with `R1` reserved for bounded traceability refinement and `A1` reserved for remediation-governance admission work.
 - The first `S0F-1` worksheet shows a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and one bounded remediation surface still looks like a real current-admission candidate.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up is `P3`: translate the accepted `S0F-1` adjudication into one bounded action package without mixing refinement-only work and current-admission work.
+- The immediate next follow-up is `P4`: execute only the justified write targets in package order, starting with `R1` and leaving `A1` blocked until the remediation contract boundary and area naming are explicit enough.
 
 ## Problem Statement
 
@@ -282,6 +283,59 @@
   - `S0F-1H`
   - `S0F-1I/P4 + S0F-1J/P1-P3`
 
+## P3 First Bounded Family Action Package (`S0F-1A` through `S0F-1J`)
+
+### Package Split Rule
+
+- The first bounded `S0F-1` family does not collapse into one mixed execution bundle.
+- `P3` fixes two separate packages and treats their separation as part of the governance contract:
+  - `R1`: bounded current-refinement package
+  - `A1`: bounded current-admission package
+- Any attempt to merge those two packages into one write pass is out of scope for the first pilot run because it would mix low-risk traceability refinement with front-door area-admission change.
+
+### `R1` Bounded Current-Refinement Package
+
+- target writes:
+  - update `GC-ICR-0001` to add `S0F-1A` as current boundary clarification for fail-closed issue-create entrypoints
+  - update `GC-PRA-0001` to add `S0F-1A` as current boundary clarification for fail-closed PR-create front-half preflight
+- explicit non-writes:
+  - no `INDEX.md` change
+  - no new area code
+  - no legacy redirect change
+- rationale:
+  - these two rows were adjudicated as `refine existing`, so the justified write is traceability and reader-guidance concentration only
+
+### `A1` Bounded Current-Admission Package
+
+- target work:
+  - derive one current remediation-governance contract from `S0F-1C`
+  - decide whether that contract should revive the earlier `REMED` shortlist area from `S0F-3C` or land under a narrower newly defended area name
+  - prepare the minimal front-door package only after that area and contract boundary are explicit
+- explicit non-writes at `P3`:
+  - do not yet update `INDEX.md`
+  - do not yet create a new contract file
+  - do not yet admit any second remediation-adjacent record
+- rationale:
+  - `S0F-1C` is the only adjudicated `admit new current` row in the first bounded family, so it remains the only candidate admission lane for the next write stage
+
+### Explicit Exclusion Set
+
+- `P3` excludes these surfaces from the current action package entirely:
+  - `S0F-1E`
+  - `S0F-1F`
+  - `S0F-1I/P1-P3`
+  - all rows already adjudicated as `already covered` with no further refinement need
+- `P3` also excludes package mixing such as:
+  - adding `S0F-1A` traceability and a new remediation area in one commit unit
+  - sweeping `ATTR`, `WF`, or any non-`S0F-1` family while this pilot family is still being executed
+
+### P3 Result
+
+- The first bounded family now has one execution order rather than only one classification result:
+  - execute `R1` first
+  - hold `A1` until the remediation-governance contract boundary and area-code choice are explicit enough for front-door mutation
+- This means the first pilot family can advance under `P4` without reopening `P2` and without silently widening scope.
+
 ## P3 Baseline (Allowed-action matrix)
 
 ### Outcome-to-Action Mapping
@@ -429,8 +483,8 @@
 
 ### P3 (Allowed-action package)
 
-- [ ] `P3-C1-S1`: one bounded action package derived from the resolved outcomes
-- [ ] `P3-C1-S2`: unrelated cleanup excluded from the current-state action package
+- [x] `P3-C1-S1`: one bounded action package derived from the resolved outcomes
+- [x] `P3-C1-S2`: unrelated cleanup excluded from the current-state action package
 
 ### P4 (Write targets and stop rules)
 
