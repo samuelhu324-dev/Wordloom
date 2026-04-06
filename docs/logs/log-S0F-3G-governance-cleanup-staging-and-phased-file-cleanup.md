@@ -74,7 +74,8 @@
 - The immediate motivation is already concrete: `S0F-3E` preserved legacy lineage files and `S0F-3F` preserved residual-family sweep views so the front door stayed safe, which now means later cleanup must distinguish what is still reader-facing history from what is only bounded helper residue.
 - `P0` is now complete: the cleanup problem is now separated from admission work, and future file reduction can proceed in explicit rounds instead of reopening `S0F-3F` for mixed cleanup-plus-judgment passes.
 - `P1` is now complete for the first bounded candidate family: the governance helper-view set under `docs/governance/views/` is now separated into keep-current, keep-legacy, and support-only sweep-helper classes without making destructive changes.
-- The immediate next follow-up is `P2`: resolve whether the support-only helper subset should stay in place, move to one support-only location, or be deferred round by round.
+- `P2` is now complete for that same bounded helper-view family: one reusable workflow explainer remains `keep current`, two split-lineage aids remain `keep legacy`, and the eight support-only helper views now resolve into one later move lane toward an explicit support-only location with no defer queue.
+- The immediate next follow-up is `P3`: define the first bounded cleanup manifest for that move lane, including the exact target location and reference-update set.
 
 ## Problem Statement
 
@@ -218,6 +219,50 @@
 - Stop if one cleanup round tries to mix governance cleanup with unrelated repo hygiene.
 - Stop if the round cannot prove how readers will still discover the same history after the proposed move or deletion.
 
+## P2 First Bounded Family Adjudication (`docs/governance/views/` helper-view family)
+
+### Accepted Outcomes
+
+- `keep current`:
+  - `docs/governance/views/view-contract-sweep-workflow-v1.md`
+- `keep legacy`:
+  - `docs/governance/views/view-iss-split-package-v1.md`
+  - `docs/governance/views/view-prb-split-package-v1.md`
+- `move to support-only location`:
+  - `docs/governance/views/view-s0f-1-family-sweep-v1.md`
+  - `docs/governance/views/view-remed-admission-package-v1.md`
+  - `docs/governance/views/view-wf-family-sweep-v1.md`
+  - `docs/governance/views/view-wf-admission-package-v1.md`
+  - `docs/governance/views/view-attr-family-sweep-v1.md`
+  - `docs/governance/views/view-attr-admission-package-v1.md`
+  - `docs/governance/views/view-prb-follow-up-family-sweep-v1.md`
+  - `docs/governance/views/view-issue-automation-follow-up-family-sweep-v1.md`
+
+### Decision Notes
+
+- The helper subset is now defended strongly enough for one later move lane because:
+  - none of the eight support-only helper views is a current front-door file
+  - none of them acts as the primary split-lineage aid preserved by `S0F-3E`
+  - their active references are bounded to `S0F-3F` and a small number of helper-view cross-links that can be rewritten together in one later round
+- The intended support-only destination should remain inside the governance-views surface rather than moving into an unrelated docs area, so later readers can still find bounded sweep and admission history by convention.
+- The current defended destination class is therefore:
+  - one explicit support-only location under `docs/governance/views/`
+- The exact target path and rename set remain `P3` work, not `P2` work.
+
+### Defer Queue
+
+- No row remains in `defer cleanup` for the first bounded helper-view family.
+- This does not mean the move should happen immediately.
+- It means the family now exits `P2` with one explicit later move lane and without any unresolved keep-versus-move ambiguity.
+
+### P2 Result
+
+- The first bounded helper-view family now exits decision with one clean split:
+  - one reusable workflow explainer remains where it is
+  - two split-lineage aids remain where they are
+  - eight support-only helper views move together in one later bounded manifest
+- `P3` should therefore define one move manifest rather than reopening candidate classification.
+
 ## P3 Baseline (Round manifest and evidence)
 
 ### Cleanup Manifest Shape
@@ -290,8 +335,8 @@
 
 ### P2 (Cleanup decision model)
 
-- [ ] `P2-C1-S1`: first candidate family resolved to allowed cleanup outcomes
-- [ ] `P2-C1-S2`: unresolved cleanup rows isolated into one explicit defer queue
+- [x] `P2-C1-S1`: first candidate family resolved to allowed cleanup outcomes
+- [x] `P2-C1-S2`: unresolved cleanup rows isolated into one explicit defer queue
 
 ### P3 (Cleanup manifest)
 
@@ -346,3 +391,25 @@
   - the next cleanup round can focus on the support-only helper subset without relitigating current workflow and split-lineage aids
 - observed:
   - the first bounded helper-view family is now explicitly inventoried, with one reusable workflow view kept current, two split-lineage aids kept legacy, and eight closed-lane helper views carried forward as support-only cleanup candidates only
+
+### P2-C1-S1S2 (first helper-view cleanup family adjudicated | 2026-04-06)
+
+- headSha: `<TBD-after-adjudication-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/governance/views/view-contract-sweep-workflow-v1.md`
+  - `docs/governance/views/view-iss-split-package-v1.md`
+  - `docs/governance/views/view-prb-split-package-v1.md`
+  - `docs/governance/views/view-s0f-1-family-sweep-v1.md`
+  - `docs/governance/views/view-remed-admission-package-v1.md`
+  - `docs/governance/views/view-wf-family-sweep-v1.md`
+  - `docs/governance/views/view-wf-admission-package-v1.md`
+  - `docs/governance/views/view-attr-family-sweep-v1.md`
+  - `docs/governance/views/view-attr-admission-package-v1.md`
+  - `docs/governance/views/view-prb-follow-up-family-sweep-v1.md`
+  - `docs/governance/views/view-issue-automation-follow-up-family-sweep-v1.md`
+- expected:
+  - the first helper-view family resolves cleanly to keep-current, keep-legacy, and later-move outcomes without reopening current-state or split-lineage ambiguity
+  - the next phase can define one bounded move manifest instead of relitigating which views are still eligible for cleanup
+- observed:
+  - the first helper-view family now exits adjudication with one `keep current` workflow explainer, two `keep legacy` split-lineage aids, eight views assigned to one later support-only move lane, and no defer queue
