@@ -39,9 +39,18 @@
 - `COMPL`:
   - `Completeness`
   - used for lifecycle completeness audit contracts that classify create-time, PR-time, and conclusion-time completeness as distinct governance surfaces
-- `ISS`:
-  - `Issue`
-  - used for issue-lifecycle governance such as creation metadata, conclusion linkage, Context shape, parent sidebar ordering, and title keyword vocabulary
+- `ICL`:
+  - `Issue Conclusion`
+  - used for issue-conclusion governance such as post-merge conclusion timing and exact delivery-PR linkage
+- `ICR`:
+  - `Issue Creation`
+  - used for issue-creation governance such as deterministic creation metadata and English-only scaffold boundaries
+- `ICT`:
+  - `Issue Context`
+  - used for issue-Context governance such as sentence count, one-sentence-per-line shape, and source-log-derived anchors
+- `IID`:
+  - `Issue Identity`
+  - used for issue identity governance such as parent sidebar ordering ownership and controlled title keyword vocabulary
 - `PRA`:
   - `PR Automation`
   - used for PR-creation governance such as exact ID-scoped commit selection, metadata precedence, and bounded create-time stage ownership
@@ -59,7 +68,10 @@
   - the code is not reused retroactively for a different governance surface
 - Current admitted area codes:
   - `COMPL`: lifecycle completeness audit governance
-  - `ISS`: issue lifecycle and issue identity governance
+  - `ICL`: issue conclusion governance
+  - `ICR`: issue creation governance
+  - `ICT`: issue Context governance
+  - `IID`: issue identity governance
   - `PRA`: PR creation and PR automation governance
   - `PRB`: PR body completeness review and closely related PR-body governance surfaces
 
@@ -130,15 +142,30 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `GC-COMPL-0001` | `LIFECYCLE-THREE-STAGE-COMPLETENESS-AUDIT` | Lifecycle completeness is audited separately at creation, PR, and conclusion stages | `active` | `fail` | `independent` | Makes lifecycle completeness a stage-owned audit surface instead of one final-state-only review | `docs/governance/contracts/GC-COMPL-0001-lifecycle-three-stage-completeness-audit.md` |
 
-### Issue Governance (`ISS`)
+### Issue Conclusion (`ICL`)
 
 | record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `GC-ISS-0001` | `ISSUE-CREATION-METADATA-ENGLISH-BODY` | Issue creation must resolve metadata deterministically and render an English-only scaffold | `active` | `fail` | `independent` | Concentrates create-time issue metadata, English body shape, and blank-as-blank creation boundaries into one active rule | `docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md` |
-| `GC-ISS-0002` | `ISSUE-CONCLUSION-POST-MERGE-LINKAGE` | Issue conclusion happens only after merge and must record exact delivery PR linkage | `active` | `fail` | `independent` | Makes post-merge conclusion and exact delivery-PR linkage explicit instead of treating close state as sufficient | `docs/governance/contracts/GC-ISS-0002-issue-conclusion-post-merge-linkage.md` |
-| `GC-ISS-0003` | `ISSUE-CONTEXT-SENTENCE-COUNT-MAIN-VS-CHILD` | Issue Context keeps exact main-versus-child sentence counts under one source-log-derived rule | `active` | `fail` | `independent` | Keeps Context shape under one active contract while absorbing the later LLM-authored authoring path into the same rule | `docs/governance/contracts/GC-ISS-0003-issue-context-sentence-count-main-vs-child.md` |
-| `GC-ISS-0004` | `ISSUE-PARENT-SIDEBAR-ORDERING-OWNERSHIP` | Top-level parent sidebar ordering remains source-log-owned rather than GitHub-owned | `active` | `fail` | `independent` | Makes parent sidebar order an audited projection of the source-log child ledger instead of an unowned GitHub ordering state | `docs/governance/contracts/GC-ISS-0004-parent-sidebar-ordering-ownership.md` |
-| `GC-ISS-0005` | `ISSUE-TITLE-KEYWORD-CONTROLLED-VOCABULARY` | Issue title keyword prefixes must come from the controlled vocabulary at create time and audit time | `active` | `fail` | `independent` | Concentrates create-time and audit-time title keyword governance into one fail-closed issue identity rule | `docs/governance/contracts/GC-ISS-0005-issue-title-keyword-controlled-vocabulary.md` |
+| `GC-ICL-0001` | `ISSUE-CONCLUSION-POST-MERGE-LINKAGE` | Issue conclusion happens only after merge and must record exact delivery PR linkage | `active` | `fail` | `independent` | Makes post-merge conclusion and exact delivery-PR linkage explicit instead of treating close state as sufficient | `docs/governance/contracts/GC-ICL-0001-issue-conclusion-post-merge-linkage.md` |
+
+### Issue Creation (`ICR`)
+
+| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `GC-ICR-0001` | `ISSUE-CREATION-METADATA-ENGLISH-BODY` | Issue creation must resolve metadata deterministically and render an English-only scaffold | `active` | `fail` | `independent` | Concentrates create-time issue metadata, English body shape, and blank-as-blank creation boundaries into one active rule | `docs/governance/contracts/GC-ICR-0001-issue-creation-metadata-english-body.md` |
+
+### Issue Context (`ICT`)
+
+| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `GC-ICT-0001` | `ISSUE-CONTEXT-SENTENCE-COUNT-MAIN-VS-CHILD` | Issue Context keeps exact main-versus-child sentence counts under one source-log-derived rule | `active` | `fail` | `independent` | Keeps Context shape under one active contract while absorbing the later LLM-authored authoring path into the same rule | `docs/governance/contracts/GC-ICT-0001-issue-context-sentence-count-main-vs-child.md` |
+
+### Issue Identity (`IID`)
+
+| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `GC-IID-0001` | `ISSUE-PARENT-SIDEBAR-ORDERING-OWNERSHIP` | Top-level parent sidebar ordering remains source-log-owned rather than GitHub-owned | `active` | `fail` | `independent` | Makes parent sidebar order an audited projection of the source-log child ledger instead of an unowned GitHub ordering state | `docs/governance/contracts/GC-IID-0001-parent-sidebar-ordering-ownership.md` |
+| `GC-IID-0002` | `ISSUE-TITLE-KEYWORD-CONTROLLED-VOCABULARY` | Issue title keyword prefixes must come from the controlled vocabulary at create time and audit time | `active` | `fail` | `independent` | Concentrates create-time and audit-time title keyword governance into one fail-closed issue identity rule | `docs/governance/contracts/GC-IID-0002-issue-title-keyword-controlled-vocabulary.md` |
 
 ### PR Automation (`PRA`)
 

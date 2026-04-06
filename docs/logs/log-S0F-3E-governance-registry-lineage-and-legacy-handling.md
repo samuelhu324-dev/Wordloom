@@ -67,6 +67,7 @@
 - `P3`: define how old records remain stored, cited, and redirected after absorption or split
 - `P4`: define how current-state indexing and historical storage stay separated so old references remain usable without polluting the front door
 - `P5`: define the first migration package that can later apply these rules to already-landed coarse areas such as `ISS`
+- `P6`: execute the first bounded `ISS` split package inside this slice
 
 ## Current Status
 
@@ -77,7 +78,8 @@
 - `P3` is now complete: old records now have one explicit legacy disposition model, and non-active records with current successors now require deterministic reader redirection instead of silent historical drift.
 - `P4` is now complete: `INDEX.md` is now fixed as the current-state-only front door, and historical discoverability is now routed through explicit legacy or view surfaces rather than raw folder scanning.
 - `P5` is now complete: the repo now has one first bounded migration package for splitting the coarse `ISS` area into narrower current descendants while preserving old IDs, file paths, and references.
-- No migration has been executed yet in this slice; `P5` defines the first bounded package to execute later.
+- `P6` is now complete: the first bounded `ISS` split package is now executed, successor current records now live under `ICR`, `ICL`, `ICT`, and `IID`, and old `GC-ISS-*` files now survive as deprecated legacy records with deterministic redirects.
+- The first bounded migration is now executed in this slice.
 
 ## Problem Statement
 
@@ -365,6 +367,47 @@
 - The package keeps old citations stable while making future current growth land in narrower areas.
 - `ISS` now serves as the canonical first migration target for proving the lineage and legacy model end to end.
 
+## P6 Execution (ISS split package v1)
+
+### Execution Result
+
+- `ISS split package v1` is now executed inside `S0F-3E` rather than being deferred to a later slice.
+- The current front door no longer uses `ISS` as one active growth namespace.
+- The successor current areas are now:
+  - `ICR`: issue creation governance
+  - `ICL`: issue conclusion governance
+  - `ICT`: issue Context governance
+  - `IID`: issue identity governance
+- `ISS` now survives only as a frozen legacy area through preserved old files and migration views.
+
+### Published Successor Records
+
+- The executed successor current records are:
+  - `GC-ICR-0001`: `ISSUE-CREATION-METADATA-ENGLISH-BODY`
+  - `GC-ICL-0001`: `ISSUE-CONCLUSION-POST-MERGE-LINKAGE`
+  - `GC-ICT-0001`: `ISSUE-CONTEXT-SENTENCE-COUNT-MAIN-VS-CHILD`
+  - `GC-IID-0001`: `ISSUE-PARENT-SIDEBAR-ORDERING-OWNERSHIP`
+  - `GC-IID-0002`: `ISSUE-TITLE-KEYWORD-CONTROLLED-VOCABULARY`
+
+### Legacy Preservation Result
+
+- The old `GC-ISS-*` files remain in place under `docs/governance/contracts/`.
+- The old `GC-ISS-*` files now use `deprecated` status rather than `active` status.
+- Each old `GC-ISS-*` file now contains one deterministic `Legacy Redirect` section that points readers to the current successor record.
+- Old file paths, old record IDs, and old references remain valid.
+
+### Front-Door Result
+
+- `docs/governance/INDEX.md` now exposes the narrower current areas only.
+- The front door no longer presents one active `ISS` area table.
+- Historical `ISS` discovery now routes through the preserved old files and governance views instead of the current front door.
+
+### P6 Consequences
+
+- The lineage model is now exercised end to end on a real already-landed area, not just on future planning text.
+- The repo now has one working example of current-state cleanup without destructive history loss.
+- Later area splits can follow the same execution shape with less ambiguity.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and problem boundary)
@@ -398,6 +441,12 @@
 - P5-C1-S1: define the first bounded migration package that can later apply these rules to coarse areas already landed in the registry
 - P5-C1-S2: define how that package should preserve old IDs, old file paths, and old references while still cleaning up the current-state view
 
+### P6 (Execute first bounded migration package)
+
+- P6-C1-S1: publish successor current records under `ICR`, `ICL`, `ICT`, and `IID`
+- P6-C1-S2: convert legacy `GC-ISS-*` records into deprecated redirect files
+- P6-C1-S3: update the current front door and migration view after the split executes
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Slice opening and problem boundary)
@@ -430,3 +479,9 @@
 
 - [x] `P5-C1-S1`: first bounded migration package defined
 - [x] `P5-C1-S2`: old ID and old reference preservation rule fixed
+
+### P6 (Execute first bounded migration package)
+
+- [x] `P6-C1-S1`: successor current records published under `ICR`, `ICL`, `ICT`, and `IID`
+- [x] `P6-C1-S2`: legacy `GC-ISS-*` records converted to deprecated redirect files
+- [x] `P6-C1-S3`: current front door and migration view updated after split execution
