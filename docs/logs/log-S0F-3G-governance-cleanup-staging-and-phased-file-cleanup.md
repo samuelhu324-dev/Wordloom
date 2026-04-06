@@ -80,6 +80,7 @@
 - `P5` is now complete for the second bounded candidate family under `docs/governance/contracts/`: the preserved legacy redirect set and the paired `GC-PRB-0001` backfill note are now reviewed as the next cleanup family, but that family converges to `keep legacy` plus one explicit `defer cleanup` result rather than opening a second move or delete round.
 - `P5-C2` is now complete as an intake screen for the externally supplied `S0E-3* / 4* / 5*` batch: the supplied set does not open another cleanup family, because it is dominated by source-owner logs for current contracts, active follow-up contract owners, or non-governance bridge logs that remain outside destructive cleanup by boundary.
 - `P5-C3` is now complete as an intake screen for the externally supplied `S0E-6* / 7*` batch: this second supplied set also does not open another cleanup family, because it is dominated by direct current-contract source-owner logs, active normalization and gate-owner logs, or workflow-history files that remain reader-facing even when governance adjudication marks them support-only.
+- `P5-C4` is now complete as a repo-side full scan of `docs/logs/`: the scan does surface one strongest support-only proto-family around `S0F-1E`, `S0F-1F`, and the historical `S0F-1I/P1-P3` repair lane, but it still does not open another cleanup family because the wider `docs/logs/` support-only class has not yet been given one defended relocation model and adjacent support-only logs still remain entangled with reader-facing runbook, issue, or workflow history.
 - The immediate next follow-up is now externalized cleanly: either provide one new bounded candidate batch that looks like helper residue, legacy redirect, or reproducible output, or let a later repo-side scan defend another cleanup family strongly enough for execution.
 
 ## Problem Statement
@@ -539,6 +540,51 @@
   - semantic `support-only` status from `S0F-3F` does not by itself prove cleanup readiness in `S0F-3G`
   - logs that remain direct reader-facing evidence, workflow history, or active gate ownership should remain outside destructive cleanup until a later bounded family proves redundancy
 
+## P5 Repo-Side Full Scan (`docs/logs/`)
+
+### P5-C4 Scope
+
+- repo-side scan target:
+  - all markdown files under `docs/logs/`
+- observed scan surface:
+  - `155` markdown files total under `docs/logs/`
+  - dominant family concentrations during the scan:
+    - `S0E`: `34`
+    - `S0F`: `20`
+    - `S2B`: `12`
+- objective:
+  - determine whether a repo-side full scan of `docs/logs/` now defends the next bounded `S0F-3G` cleanup family instead of waiting for another externally supplied batch
+
+### P5-C4 Decision
+
+- result:
+  - `no new cleanup family opened`
+- strongest support-only proto-family surfaced by the repo-side scan:
+  - `S0F-1E`
+  - `S0F-1F`
+  - `S0F-1I` historical repair lane (`P1-P3` standing only)
+    - rationale: `S0F-3F` already fixed these as support-only history, and the full scan shows that `S0F-1E` plus `S0F-1F` now have little remaining reader-path value outside sweep history while `S0F-1I` survives mostly as superseded repair history beside the later current `GC-PRG-0001` concentration
+- do not open a new cleanup family yet for the wider support-only log class:
+  - `S0E-2B`
+  - `S0E-2C`
+  - `S0E-7B`
+  - `S0E-7E`
+  - `S0E-7F`
+  - `S0E-7G`
+    - rationale: even though `S0F-3F` fixed these as support-only history, the repo-side scan still finds them entangled with runbook, issue, workflow, or implementation-history reader paths, so they are not yet analogous to the already-moved governance views in relocation safety terms
+- do not open a new cleanup family yet for the `S0F-1E/F/I` proto-family itself:
+  - rationale: the scan does not yet defend one stable `docs/logs/` support-only destination, one bounded reference-rewrite pattern, or one discoverability rule equivalent to the already-executed `docs/governance/views/support-only/` move lane
+
+### P5-C4 Result
+
+- The repo-side full scan of `docs/logs/` does not justify a new cleanup execution round yet.
+- The scan still adds useful structure:
+  - it narrows the strongest future `docs/logs/` cleanup candidate family to `S0F-1E`, `S0F-1F`, and the historical `S0F-1I/P1-P3` repair standing
+  - it also confirms that the broader support-only log class is still mixed, because neighboring `S0E-2B/C` and `S0E-7B/E/F/G` records remain reader-facing implementation, workflow, or operator history rather than clean relocation residue
+- The practical next requirement before a future `docs/logs/` cleanup round is therefore explicit:
+  - first defend one `docs/logs/` support-only location model plus its navigation rules
+  - then reopen only the narrowed `S0F-1E/F/I` proto-family if the reference-update set remains bounded and discoverability loss can be ruled out
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -573,6 +619,8 @@
 - P5-C2-S2: exclude source-owner and out-of-scope logs from destructive cleanup unless later bounded evidence proves redundancy
 - P5-C3-S1: screen the next supplied batch for direct current-contract source-owner files before considering any cleanup action
 - P5-C3-S2: reject semantic support-only files that remain reader-facing workflow history or active gate owners from forced cleanup rounds
+- P5-C4-S1: run a repo-side full scan of `docs/logs/` to surface the strongest next cleanup proto-family rather than relying only on supplied batches
+- P5-C4-S2: refuse a `docs/logs/` move round until one stable support-only destination model and bounded rewrite pattern are both defended
 - P5-C1-S2: stop the slice when the remaining files are all either current, legacy-needed, or explicitly deferred
 
 ## Execution Checklist (unchecked)
@@ -609,6 +657,8 @@
 - [x] `P5-C2-S2`: source-owner and out-of-scope logs excluded from destructive cleanup by explicit boundary result
 - [x] `P5-C3-S1`: supplied `S0E-6* / 7*` batch screened for direct current-contract source-owner exclusions before cleanup consideration
 - [x] `P5-C3-S2`: semantic support-only workflow-history and active gate-owner logs excluded from forced cleanup by explicit boundary result
+- [x] `P5-C4-S1`: repo-side full scan of `docs/logs/` completed to surface the strongest next support-only cleanup proto-family
+- [x] `P5-C4-S2`: `docs/logs/` move round rejected until one stable support-only destination model and bounded rewrite pattern are both defended
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -763,3 +813,27 @@
   - `S0E-6C` and `S0E-7D` remain direct source-owner logs for active current contracts and stay outside cleanup by boundary
   - `S0E-7B`, `S0E-7E`, `S0E-7F`, and `S0E-7G` remain outside destructive cleanup because governance-level support-only status does not override their still-reader-facing workflow-history role
   - the remaining supplied logs also stay outside destructive cleanup because they still read as active normalization, gate, wrapper, or mirror-review owners rather than as helper residue
+
+### P5-C4-S1S2 (repo-side full scan of docs/logs completed | 2026-04-06)
+
+- headSha: `<TBD-after-docs-logs-scan-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+  - `docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+  - `docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+  - `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
+  - `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
+  - `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
+  - `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+- expected:
+  - a repo-side full scan of `docs/logs/` either yields one defensible new cleanup family or narrows the best future candidate set without forcing a premature move round
+- observed:
+  - the full scan narrows the strongest future `docs/logs/` cleanup proto-family to `S0F-1E`, `S0F-1F`, and the historical `S0F-1I/P1-P3` repair standing
+  - no new cleanup family is opened yet because `docs/logs/` still lacks one defended support-only destination model and bounded rewrite pattern comparable to the already-executed governance-view move lane
+  - the wider support-only log class remains mixed because `S0E-2B/C` and `S0E-7B/E/F/G` still keep runbook, issue, workflow, or implementation-history reader value that makes premature relocation unsafe
