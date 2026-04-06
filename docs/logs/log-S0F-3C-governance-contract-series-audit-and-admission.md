@@ -77,7 +77,7 @@
 - `P1` is now complete: the first whole-series audit has produced a bounded candidate set across the current `S0E` and `S0F-1*` corpus.
 - `P2` is now complete: implementation-first surfaces, evidence-only surfaces, and packaging-only surfaces are now explicitly treated as non-admission candidates unless a later adjudication proves they own independent governance semantics.
 - `P3` is now complete: the first active-admission shortlist and provisional area-code map are now fixed well enough to guide later record creation without reopening full-series discovery.
-- `P4` is now opened: a smaller unresolved queue still needs explicit adjudication before the next landing pass.
+- `P4` is now complete: the first unresolved queue is now explicitly adjudicated, with each surface either absorbed into an existing shortlist contract or kept outside the active registry by explicit rule.
 - `P5` remains pending: this slice has not yet created additional governance-contract records; it has only fixed the audit-and-admission baseline for that later work.
 
 ## Audit Boundary
@@ -161,14 +161,38 @@
 - `REMED` candidate family:
   - `GUARDED-BATCH-MULTI-ITEM-REMEDIATION-STAGES`
 
-## P4 Adjudication Queue
+## P4 Adjudication Result
 
-- The first audit pass leaves a smaller unresolved queue that should be decided explicitly before more bulk admission work begins:
-  - `S0E-5A`: determine whether lifecycle audit gate ownership is a true governance contract or only an implementation shell around already-owned audit semantics
-  - `S0E-5C`: determine whether guarded decomposition and wrapper-only mutation boundaries own a distinct contract beyond `S0F-1A` and `S0F-1C`
-  - `S0F-1B`: determine whether LLM-authored Context belongs as a separate contract or should remain absorbed inside the main Context sentence-count contract
-  - `S0F-2A` and `S0F-2B`: determine whether patch and maintenance lanes are live governance-contract registry material or repo-operations policy that should remain outside the active contract registry
-- This queue is intentionally small. The purpose is to keep the registry conservative while still leaving future growth paths explicit.
+- `P4` resolves the first unresolved queue by forcing every candidate into one of three outcomes:
+  - merge into an already-approved shortlist contract
+  - remain outside the active registry as implementation or operations policy
+  - defer only when neither of the first two outcomes can yet be defended
+- The result of this pass is conservative by design: no new independent contract was added from the adjudication queue.
+
+### Adjudicated Surfaces
+
+- `S0E-5A`:
+  - decision: remain outside the active registry as an orchestration and planner shell
+  - rationale: its durable semantics are already absorbed by the `COMPL` shortlist candidate for lifecycle completeness audit and the `WF` shortlist candidate for failure handling; the slice itself mainly owns dry-run planner orchestration, pre-gate entrypoint shape, and artifact emission
+- `S0E-5C`:
+  - decision: remain outside the active registry as guarded PR-create decomposition and orchestration packaging
+  - rationale: the meaningful stable governance surface is already captured by the `PRA` shortlist candidate for PR-create boundary and metadata discipline; `S0E-5C` mainly explains stage decomposition, operator-held publish ownership, and post-apply verification placement rather than a separately indexable rule
+- `S0F-1B`:
+  - decision: merge into the existing `ISSUE-CONTEXT-SENTENCE-COUNT-MAIN-VS-CHILD` shortlist contract rather than land as a separate record
+  - rationale: `S0F-1B` materially changes the authoring path from deterministic templates to LLM-grounded generation, but the governed contract surface remains the same issue Context shape, count, and fail-closed validation boundary
+- `S0F-2A`:
+  - decision: remain outside the active registry as repo-operations lane policy
+  - rationale: it governs how small work is packaged and remembered, but it does not belong to the current issue/PR lifecycle governance registry that `S0F-3C` is concentrating
+- `S0F-2B`:
+  - decision: remain outside the active registry as repo-operations lane refinement policy
+  - rationale: it sharpens `family patch` versus `ops maintenance`, but this remains operating-model governance for repo work lanes rather than an active lifecycle contract that should sit beside issue creation, PR attribution, or completeness audit records
+
+### P4 Consequences
+
+- The active shortlist remains bounded and does not grow through adjudication by default.
+- Future registry population can now treat `S0E-5A` and `S0E-5C` as support and enforcement sources rather than as missing active records.
+- Future `ISS` admission should explicitly mention that the issue Context contract now uses the `S0F-1B` LLM-authored path as the current semantic owner of authoring method, without splitting the contract into two parallel records.
+- `S0F-2A` and `S0F-2B` may still deserve a future governance view or separate repo-operations policy index, but they should not enter the current active lifecycle-governance registry.
 
 ## P5 Next Execution Boundary
 
@@ -234,8 +258,8 @@
 
 ### P4 (Adjudication queue)
 
-- [ ] `P4-C1-S1`: uncertain queue explicitly adjudicated
-- [ ] `P4-C1-S2`: unresolved surfaces merged, deferred, or admitted by explicit rule
+- [x] `P4-C1-S1`: uncertain queue explicitly adjudicated
+- [x] `P4-C1-S2`: unresolved surfaces merged, deferred, or admitted by explicit rule
 
 ### P5 (Next landing boundary)
 
