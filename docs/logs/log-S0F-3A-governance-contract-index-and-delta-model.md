@@ -176,6 +176,66 @@
 - When chronology and causality diverge, the two fields may legitimately point to different logs. That is expected under this model and no longer counts as a structural smell by itself.
 - `P2` does not yet define machine-readable validation for these fields, but it does fix their meaning tightly enough to guide future authoring and later enforcement.
 
+## P3 Baseline (Governance-contract delta block)
+
+- A governance-contract delta block is the minimum machine-readable declaration that a specific phase or step changed governance-contract state.
+- A delta block belongs to one concrete source location such as `S0F-3A/P3-C1-S1` or another phase/step anchor; it is not a free-floating family summary.
+- The minimum shared fields for every delta block are:
+  - `action`: one of `add`, `modify`, `retire`, `supersede`, or `apply-without-change`
+  - `contract_id`: the stable governance-contract identifier being acted on
+  - `summary`: one concise sentence describing the effective contract meaning after this delta
+  - `rationale`: the local reason this delta exists in this phase or step
+  - `source_anchor`: the exact log phase/step that owns the delta
+  - `scope`: the governed surface this delta applies to
+  - `enforcement_surface`: the workflow, script, runbook, adapter, or manual path that enforces or operationalizes the contract
+  - `violation_semantics`: the current intended result when the contract is violated, such as `fail`, `warning`, `report-only`, or `neutral`
+- The minimum action-specific fields are:
+  - `add`:
+    - must include `introduced_by`
+    - must not include `supersedes_contract_id` unless the add also acts as a replacement contract under a `supersede` action instead
+  - `modify`:
+    - must include `changed_from` as a short description of the prior effective meaning being changed
+  - `retire`:
+    - must include `retired_reason`
+  - `supersede`:
+    - must include `supersedes_contract_id`
+    - must include `replacement_summary`
+  - `apply-without-change`:
+    - must include `applied_context`
+    - must not claim semantic change; it records that an existing contract was used or replayed in this phase without changing its meaning
+
+## P3 Canonical Form
+
+- A delta block should be readable in prose logs but structured enough for later extraction.
+- The baseline canonical shape is:
+
+```yaml
+contract_delta:
+  action: <add|modify|retire|supersede|apply-without-change>
+  contract_id: <stable-governance-contract-id>
+  summary: <effective contract meaning after this delta>
+  rationale: <why this delta exists here>
+  source_anchor: <log-id/phase-cycle-step>
+  scope: <governed surface>
+  enforcement_surface: <workflow|script|runbook|adapter|manual>
+  violation_semantics: <fail|warning|report-only|neutral>
+  introduced_by: <required for add>
+  changed_from: <required for modify>
+  retired_reason: <required for retire>
+  supersedes_contract_id: <required for supersede>
+  replacement_summary: <required for supersede>
+  applied_context: <required for apply-without-change>
+```
+
+- Fields that do not apply to the chosen `action` should be omitted rather than filled with placeholder prose.
+
+## P3 Consequences
+
+- Any future log phase may now declare contract change explicitly without pretending the whole log is a contract-only slice.
+- Later `P4` index records now have a stable minimum input surface to ingest.
+- Historical logs without delta blocks are still valid event truth, but future contract changes now have a preferred structured expression that is small enough to add incrementally.
+- `P3` does not yet fix extraction tooling or index storage. It only fixes the minimum delta declaration shape and action semantics.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and terminology boundary)
@@ -236,9 +296,9 @@
 
 ### P3 (Governance-contract delta block)
 
-- [ ] `P3-C1-S1`: minimum `add` delta fields fixed
-- [ ] `P3-C1-S2`: minimum `modify` delta fields fixed
-- [ ] `P3-C1-S3`: minimum retire/supersede/apply-only delta fields fixed
+- [x] `P3-C1-S1`: minimum `add` delta fields fixed
+- [x] `P3-C1-S2`: minimum `modify` delta fields fixed
+- [x] `P3-C1-S3`: minimum retire/supersede/apply-only delta fields fixed
 
 ### P4 (Active contract index)
 
@@ -258,8 +318,9 @@
 - `P0` is now complete: the slice is wired into the `S0F` spine, and the terminology boundary among `Application Domain`, `Governance Contracts`, and `Operational Surfaces` is now fixed as the baseline for later contract-index work.
 - `P1` is now complete: the four-layer truth model is fixed. Logs own event truth, delta declarations own change truth, active index records own current-state truth, and governance views own human-readable concentration.
 - `P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and an explicit escalation rule now stops those references from becoming ancestry dumps.
-- The slice remains in framing mode beyond `P2`: no final delta schema, index record shape, or backfill rule is fixed yet.
-- The main design hypothesis is now operationally tighter: current effective governance state should be queried from an index, contract evolution should be expressed through deltas, chronology should stay log-owned, and causal traceability should remain compact rather than spreading across oversized reference chains.
+- `P3` is now complete: the minimum governance-contract delta block is fixed, including one shared field set plus action-specific requirements for `add`, `modify`, `retire`, `supersede`, and `apply-without-change`.
+- The slice remains in framing mode beyond `P3`: no final active-index record shape or backfill rule is fixed yet.
+- The main design hypothesis is now materially more operational: current effective governance state should be queried from an index, contract evolution should be expressed through explicit deltas, chronology should stay log-owned, and future contract changes should no longer hide only inside prose.
 
 ## Evidence
 
@@ -268,6 +329,7 @@
 - `docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md` shows that stable lane policy can be expressed clearly once its vocabulary and boundaries are concentrated, which motivates doing the same for governance contracts more generally.
 - The `P1` baseline in this slice now fixes the ownership split among event truth, change truth, current-state truth, and human-readable concentration so later phases can define schemas without collapsing those roles back together.
 - The `P2` baseline in this slice now fixes that queue lineage and causal references are different surfaces with different jobs, which reduces pressure to use `reference_logs` as a hidden contract registry.
+- The `P3` baseline in this slice now fixes the minimum delta declaration that later phases can ingest into an active index without forcing future authors to invent per-log contract prose formats.
 
 ## Numbering
 
