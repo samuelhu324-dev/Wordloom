@@ -79,6 +79,7 @@
 - `P4` is now complete for that same bounded helper-view family: the eight support-only helper views now live under `docs/governance/views/support-only/`, the bounded `S0F-3F` and helper-view cross-links are rewritten to the new location, and the first cleanup round now closes with reader paths revalidated.
 - `P5` is now complete for the second bounded candidate family under `docs/governance/contracts/`: the preserved legacy redirect set and the paired `GC-PRB-0001` backfill note are now reviewed as the next cleanup family, but that family converges to `keep legacy` plus one explicit `defer cleanup` result rather than opening a second move or delete round.
 - `P5-C2` is now complete as an intake screen for the externally supplied `S0E-3* / 4* / 5*` batch: the supplied set does not open another cleanup family, because it is dominated by source-owner logs for current contracts, active follow-up contract owners, or non-governance bridge logs that remain outside destructive cleanup by boundary.
+- `P5-C3` is now complete as an intake screen for the externally supplied `S0E-6* / 7*` batch: this second supplied set also does not open another cleanup family, because it is dominated by direct current-contract source-owner logs, active normalization and gate-owner logs, or workflow-history files that remain reader-facing even when governance adjudication marks them support-only.
 - The immediate next follow-up is now externalized cleanly: either provide one new bounded candidate batch that looks like helper residue, legacy redirect, or reproducible output, or let a later repo-side scan defend another cleanup family strongly enough for execution.
 
 ## Problem Statement
@@ -484,6 +485,60 @@
   - good next cleanup candidates look like helper residue, legacy redirect surfaces, or reproducible outputs whose current semantic owner already exists elsewhere
   - source-owner logs for active current contracts or still-live follow-up contract slices should stay outside destructive cleanup unless a later bounded round proves they have become redundant
 
+## P5 Supplied Batch Intake Screen (S0E-6* / 7*)
+
+### P5-C3 Scope
+
+- supplied logs reviewed in this intake screen:
+  - `S0E-6A`
+  - `S0E-6B`
+  - `S0E-6C`
+  - `S0E-6D`
+  - `S0E-6E`
+  - `S0E-6F`
+  - `S0E-7A`
+  - `S0E-7B`
+  - `S0E-7C`
+  - `S0E-7D`
+  - `S0E-7E`
+  - `S0E-7F`
+  - `S0E-7G`
+- objective:
+  - determine whether the supplied `S0E-6* / 7*` set opens one new bounded cleanup family inside `S0F-3G`
+
+### P5-C3 Decision
+
+- result:
+  - `no new cleanup family opened`
+- exclude from cleanup intake as direct source-owner logs for active current contracts:
+  - `S0E-6C`
+    - rationale: this log remains a direct evidence owner for current `ICT` governance and is cited by `GC-ICT-0001`, so it is outside destructive cleanup by boundary
+  - `S0E-7D`
+    - rationale: this log remains a direct evidence owner for current `WF` governance and is cited by both `GC-WF-0001` and `GC-REMED-0001`, so it cannot be treated as helper residue
+- exclude from cleanup intake as support-only semantically but still reader-facing workflow history:
+  - `S0E-7B`
+  - `S0E-7E`
+  - `S0E-7F`
+  - `S0E-7G`
+    - rationale: governance sweep work already fixed these as support-only history, but in file-management terms they still read as implementation and workflow history rather than redundant cleanup residue
+- exclude from cleanup intake as active normalization, gate, or mirror-review owners:
+  - `S0E-6A`
+  - `S0E-6B`
+  - `S0E-6D`
+  - `S0E-6E`
+  - `S0E-6F`
+  - `S0E-7A`
+  - `S0E-7C`
+    - rationale: these logs still own active contract-normalization, gate, wrapper, or mirror-review behavior and therefore do not match the already-proven cleanup shapes of helper residue, legacy redirect, or reproducible output
+
+### P5-C3 Result
+
+- The supplied `S0E-6* / 7*` batch does not justify a new cleanup execution round.
+- The right way to hang this second supplied batch into `S0F-3G` is again as an explicit screened intake that closes with `no new cleanup family opened`.
+- This round strengthens the cleanup boundary further:
+  - semantic `support-only` status from `S0F-3F` does not by itself prove cleanup readiness in `S0F-3G`
+  - logs that remain direct reader-facing evidence, workflow history, or active gate ownership should remain outside destructive cleanup until a later bounded family proves redundancy
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -516,6 +571,8 @@
 - P5-C1-S1: repeat bounded cleanup rounds while the candidate set remains defended and finite
 - P5-C2-S1: screen externally supplied candidate batches before opening another cleanup family
 - P5-C2-S2: exclude source-owner and out-of-scope logs from destructive cleanup unless later bounded evidence proves redundancy
+- P5-C3-S1: screen the next supplied batch for direct current-contract source-owner files before considering any cleanup action
+- P5-C3-S2: reject semantic support-only files that remain reader-facing workflow history or active gate owners from forced cleanup rounds
 - P5-C1-S2: stop the slice when the remaining files are all either current, legacy-needed, or explicitly deferred
 
 ## Execution Checklist (unchecked)
@@ -550,6 +607,8 @@
 - [x] `P5-C1-S1`: later bounded cleanup rounds executed only while the candidate set remains defended
 - [x] `P5-C2-S1`: externally supplied candidate batch screened before opening another cleanup family
 - [x] `P5-C2-S2`: source-owner and out-of-scope logs excluded from destructive cleanup by explicit boundary result
+- [x] `P5-C3-S1`: supplied `S0E-6* / 7*` batch screened for direct current-contract source-owner exclusions before cleanup consideration
+- [x] `P5-C3-S2`: semantic support-only workflow-history and active gate-owner logs excluded from forced cleanup by explicit boundary result
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -685,3 +744,22 @@
   - no new cleanup family is opened from the supplied batch
   - direct source-owner logs for active current contracts remain outside cleanup by boundary
   - the remaining supplied logs also remain outside destructive cleanup because they still read as active follow-up owners or non-governance bridge material rather than as helper residue
+
+### P5-C3-S1S2 (supplied S0E-6/7 batch screened for cleanup eligibility | 2026-04-06)
+
+- headSha: `<TBD-after-supplied-batch-screen-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+  - `docs/governance/contracts/GC-ICT-0001-issue-context-sentence-count-main-vs-child.md`
+  - `docs/governance/contracts/GC-WF-0001-publish-verify-remediation-failure-taxonomy-and-handling.md`
+  - `docs/governance/contracts/GC-REMED-0001-guarded-batch-multi-item-remediation-stages.md`
+  - supplied batch logs under `docs/logs/log-S0E-6A` through `docs/logs/log-S0E-7G`
+- expected:
+  - the externally supplied `S0E-6* / 7*` set either yields one defensible new cleanup family or is screened out cleanly without forcing destructive work
+- observed:
+  - no new cleanup family is opened from the supplied batch
+  - `S0E-6C` and `S0E-7D` remain direct source-owner logs for active current contracts and stay outside cleanup by boundary
+  - `S0E-7B`, `S0E-7E`, `S0E-7F`, and `S0E-7G` remain outside destructive cleanup because governance-level support-only status does not override their still-reader-facing workflow-history role
+  - the remaining supplied logs also stay outside destructive cleanup because they still read as active normalization, gate, wrapper, or mirror-review owners rather than as helper residue
