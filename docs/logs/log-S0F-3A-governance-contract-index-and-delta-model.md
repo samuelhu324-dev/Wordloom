@@ -84,6 +84,8 @@
 - `P3`: define the minimum machine-readable governance-contract delta block that any phase may emit when it changes contract state
 - `P4`: define the minimum active-contract index record shape and naming rules
 - `P5`: define backtrace and migration rules so existing scattered governance contracts can be concentrated incrementally without freezing normal slice work
+- `P6`: publish the first real governance-contract sample and bounded backfill note using `S0F-1J / S0F-P1`
+- `P7`: scaffold the front-door governance registry, abbreviation glossary, and short record/file naming model
 
 ## Success Criteria (DoD)
 
@@ -93,6 +95,8 @@
 - The repo has one minimal governance-contract delta model that can be emitted by any relevant phase, not only by special contract-only slices.
 - The repo has one minimal active-contract index model that can point back to introduced/last-changed sources without becoming a prose chronicle.
 - The migration path explicitly supports partial backfill and incremental concentration rather than demanding a one-shot rewrite of all historical logs.
+- The repo contains at least one real governance-contract record plus one bounded backfill note derived from existing `S0F` sources rather than from template-only placeholders.
+- The repo contains one front-door governance index that explains registry prefixes, area abbreviations, sequence semantics, and the current active sample set.
 
 ## Background
 
@@ -350,6 +354,26 @@ contract_record:
 - Future authors now have a clear rule: emit deltas where changes happen, and backfill active records by priority instead of waiting for perfect historical completeness.
 - `P5` completes the baseline operating model for governance-contract concentration: terminology, truth split, reference semantics, delta input, active index target, and migration path are now all fixed.
 
+## P6 Sample (First real governance-contract record)
+
+- The first real governance-contract sample now uses `S0F-1J` as the active packaging source and `S0F-P1` as the current-need and triage surface.
+- The sampled contract is `PR-BODY-HISTORICAL-DRIFT-FAIL-ON-FINDINGS`, which states the current active behavior that substantive drift on historical merged PRs still produces a non-pass standard-check result.
+- This sample intentionally demonstrates the `P5` migration rule in practice:
+  - start from one active current-state need,
+  - backtrace only as far as needed to support the active record,
+  - retain one bounded backfill note instead of replaying every historical wording change.
+
+## P7 Sample (Registry and naming scaffold)
+
+- The first registry scaffold now moves the sample away from long standalone filenames and toward a dual-identifier model:
+  - `record_id` for file-system and index scanning
+  - `contract_id` for semantic identity
+- The baseline sample is now rehomed as `GC-PRB-0001-historical-drift-fail-on-findings.md`, where:
+  - `GC` means governance contract
+  - `PRB` means PR body review area
+  - `0001` means the first indexed contract in that area
+- The new front-door `docs/governance/INDEX.md` now explains those abbreviations, sequence semantics, and what the indexed sample currently solves.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and terminology boundary)
@@ -387,6 +411,16 @@ contract_record:
 - P5-C1-S1: define how existing logs are backtraced when no explicit delta block exists yet
 - P5-C1-S2: define partial backfill rules so active/high-value contracts can be concentrated first
 - P5-C1-S3: define how future non-contract-first logs still declare contract changes without pretending to be contract-only slices
+
+### P6 (First real governance-contract sample)
+
+- P6-C1-S1: publish one real governance-contract record using `S0F-1J / S0F-P1`
+- P6-C1-S2: publish one bounded backfill note proving the migration rule can be run on existing sources
+
+### P7 (Registry and naming scaffold)
+
+- P7-C1-S1: scaffold the front-door governance index and abbreviation glossary
+- P7-C1-S2: rehome the first real sample under `GC-<AREA>-<NNNN>-<summary>` naming
 
 ## Execution Checklist (unchecked)
 
@@ -426,6 +460,16 @@ contract_record:
 - [x] `P5-C1-S2`: partial backfill rule fixed
 - [x] `P5-C1-S3`: future non-contract-first logs can still declare contract changes cleanly
 
+### P6 (First real governance-contract sample)
+
+- [x] `P6-C1-S1`: first real governance-contract record published from `S0F-1J / S0F-P1`
+- [x] `P6-C1-S2`: bounded backfill note published for the same contract sample
+
+### P7 (Registry and naming scaffold)
+
+- [x] `P7-C1-S1`: front-door governance index and abbreviation glossary scaffolded
+- [x] `P7-C1-S2`: first real sample rehomed under the `GC-<AREA>-<NNNN>-<summary>` naming model
+
 ## Current Status
 
 - `S0F-3A` is now opened as the next `S0F` follow-up slice for concentrating governance-contract truth into an index-plus-delta model instead of leaving active contract state recoverable only from scattered log prose.
@@ -436,6 +480,8 @@ contract_record:
 - `P4` is now complete: stable `contract_id` naming rules, the minimum active-index record shape, and the smallest viable homes under `docs/governance/contracts/` and `docs/governance/views/` are now fixed.
 - `P5` is now complete: historical backtrace rules, partial backfill priority rules, and future-authoring rules for non-contract-first logs are now fixed as the baseline migration path.
 - `S0F-3A` is now baseline-complete: the repo now has one end-to-end governance-contract concentration model covering terminology, truth layers, reference semantics, delta input, active-state records, and migration/backfill rules.
+- `P6` is now complete: the repo now has one real governance-contract sample and one bounded backfill note under `docs/governance/contracts/`, both derived from the live `S0F-1J / S0F-P1` reviewer/triage surface instead of from placeholder text.
+- `P7` is now complete: the repo now has one front-door governance index, one abbreviation glossary, and one short record/file naming scaffold, and the first sample now lives under the `GC-PRB-0001-<summary>` model instead of only under a long semantic filename.
 - The main design hypothesis is now fully operational at the baseline level: future governance contracts can be emitted as deltas, concentrated into active-state records, explained in reader-facing views, and migrated incrementally from older logs without demanding one-shot historical rewrites.
 
 ## Evidence
@@ -448,6 +494,7 @@ contract_record:
 - The `P3` baseline in this slice now fixes the minimum delta declaration that later phases can ingest into an active index without forcing future authors to invent per-log contract prose formats.
 - The `P4` baseline in this slice now fixes both the target record shape and the canonical home for active governance contracts and governance views.
 - The `P5` baseline in this slice now fixes the migration path: backtrace from current active need, backfill by present importance, and let future non-contract-first logs declare deltas without waiting for full historical reconstruction.
+- `docs/governance/INDEX.md` now provides the front-door registry and abbreviation glossary, `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md` now provides the first real active governance-contract record, and `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md` now shows the corresponding bounded backfill note for that same sample.
 
 ## Numbering
 

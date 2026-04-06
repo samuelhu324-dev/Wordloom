@@ -54,3 +54,18 @@
   - a refinement of an earlier rule,
   - or a replacement for an earlier rule.
 - That distinction should be expressed through the record body and index columns such as `supersedes`, `superseded_by`, and `notes`.
+
+## Area Grouping
+
+### PR Body Review (`PRB`)
+
+| record_id | contract_id | title | status | violation_semantics | what it currently solves | record |
+| --- | --- | --- | --- | --- | --- | --- |
+| `GC-PRB-0001` | `PR-BODY-HISTORICAL-DRIFT-FAIL-ON-FINDINGS` | Historical merged PR substantive drift still fails the standard check | `active` | `fail` | Makes the current non-pass behavior explicit when historical merged PRs remain substantive drift inside the review-owned set | `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md` |
+
+## Reader Notes
+
+- Start here before opening individual governance-contract files.
+- Use `record_id` to scan the registry quickly.
+- Use `contract_id` to understand semantic identity.
+- Use the `what it currently solves` column to tell whether `0001`, `0002`, or later entries are solving distinct problems or refining earlier ones.
