@@ -28,6 +28,7 @@
 
 - This backfill is already sufficient for current-state use because the active question is not who first invented PR-body review in general, but which retained governance contract currently makes the standard check fail on substantive historical merged-PR drift.
 - Reviewed again in `S0F-3E/P6-C2`: this file remains support-only contract backtrace, not a second current contract surface.
+- After `S0F-3E/P6-C3`, this file now supports the deprecated legacy umbrella `GC-PRB-0001` and its successor current records rather than acting as a front-door current contract surface.
 
 ## Follow-up
 

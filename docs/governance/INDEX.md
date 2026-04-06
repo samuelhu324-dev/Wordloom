@@ -54,9 +54,12 @@
 - `PRA`:
   - `PR Automation`
   - used for PR-creation governance such as exact ID-scoped commit selection, metadata precedence, and bounded create-time stage ownership
-- `PRB`:
-  - `PR Body`
-  - used for governance contracts primarily about PR body completeness review, drift semantics, rewrite, or packaging surfaces
+- `PRG`:
+  - `PR Gate`
+  - used for current gate semantics that turn reviewer findings into pass or non-pass standard-check outcomes
+- `PRR`:
+  - `PR Review`
+  - used for reviewer-owned PR body completeness classification and canonical drift interpretation
 
 ## Controlled Area-Code Dictionary
 
@@ -73,7 +76,8 @@
   - `ICT`: issue Context governance
   - `IID`: issue identity governance
   - `PRA`: PR creation and PR automation governance
-  - `PRB`: PR body completeness review and closely related PR-body governance surfaces
+  - `PRG`: PR body standard-check gate governance
+  - `PRR`: PR body reviewer and review-classification governance
 
 ## Filename Model
 
@@ -173,11 +177,17 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `GC-PRA-0001` | `PR-CREATION-ID-SCOPED-COMMIT-SELECTION` | PR creation uses exact ID-scoped commit selection and explicit metadata precedence | `active` | `fail` | `independent` | Concentrates the PR-create boundary around exact scope selection, explicit metadata precedence, and bounded create-time staging | `docs/governance/contracts/GC-PRA-0001-pr-creation-id-scoped-commit-selection.md` |
 
-### PR Body Review (`PRB`)
+### PR Gate (`PRG`)
 
 | record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `GC-PRB-0001` | `PR-BODY-HISTORICAL-DRIFT-FAIL-ON-FINDINGS` | Historical merged PR substantive drift still fails the standard check | `active` | `fail` | `independent` | Makes the current non-pass behavior explicit when historical merged PRs remain substantive drift inside the review-owned set | `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md` |
+| `GC-PRG-0001` | `PR-BODY-STANDARD-CHECK-FAIL-ON-SUBSTANTIVE-DRIFT` | Standard PR body check stays non-pass when reviewer findings include substantive drift | `active` | `fail` | `independent` | Separates the gate decision from reviewer classification so local and CI standard checks stay fail-closed on substantive PR body drift | `docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md` |
+
+### PR Review (`PRR`)
+
+| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `GC-PRR-0001` | `PR-BODY-CANONICAL-REVIEW-CLASSIFICATION` | PR body reviewer classifies exact match, formatting-only drift, and substantive drift against canonical expectations | `active` | `report-only` | `independent` | Separates read-only PR body review classification from downstream gate behavior and historical rewrite actions | `docs/governance/contracts/GC-PRR-0001-pr-body-canonical-review-classification.md` |
 
 ## Reader Notes
 

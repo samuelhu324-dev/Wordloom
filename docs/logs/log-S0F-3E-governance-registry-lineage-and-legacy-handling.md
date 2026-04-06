@@ -79,6 +79,7 @@
 - `P4` is now complete: `INDEX.md` is now fixed as the current-state-only front door, and historical discoverability is now routed through explicit legacy or view surfaces rather than raw folder scanning.
 - `P5` is now complete: the repo now has one first bounded migration package for splitting the coarse `ISS` area into narrower current descendants while preserving old IDs, file paths, and references.
 - `P6` is now complete: the first bounded `ISS` split package is now executed, successor current records now live under `ICR`, `ICL`, `ICT`, and `IID`, and old `GC-ISS-*` files now survive as deprecated legacy records with deterministic redirects.
+- `P6-C3` is now complete: the old fused `PRB` front-door contract is now split into separate reviewer and gate current records, while `GC-PRB-0001` survives as a deprecated legacy umbrella record.
 - The first bounded migration is now executed in this slice.
 
 ## Problem Statement
@@ -421,6 +422,15 @@
   - Reason: it exists to justify `introduced_by`, `last_changed_by`, and source backtrace for the active record, not to express an additional active rule.
   - Consequence: keep it outside the front door and treat later `PRB` split work as a contract-and-backfill refresh rather than as promotion of the backfill note itself.
 
+### P6-C3 PRB Split Result
+
+- `GC-PRB-0001` no longer remains the front-door current record for PR-body semantics.
+- The current active successor contracts are now:
+  - `GC-PRR-0001`: reviewer-owned classification of exact match, formatting-only drift, and substantive drift against canonical source-log-derived PR body expectations
+  - `GC-PRG-0001`: standard-check gate semantics that remain non-pass when reviewer findings contain substantive drift under `fail_on_findings=true`
+- The old `GC-PRB-0001` file remains stored as a deprecated historical umbrella record with deterministic redirects to both successors.
+- The `GC-PRB-0001` backfill note remains support-only history and now supports the deprecated umbrella record rather than a current front-door contract.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and problem boundary)
@@ -462,6 +472,9 @@
 - P6-C2-S1: review whether `GC-PRA-0001` still reads cleanly as one concentrated current contract
 - P6-C2-S2: review whether `GC-PRB-0001` should split into live-gate and historical-audit successor contracts
 - P6-C2-S3: classify the `GC-PRB-0001` backfill note as support-only history rather than a second current contract surface
+- P6-C3-S1: publish successor current records for PR-body review classification and PR-body gate semantics
+- P6-C3-S2: convert `GC-PRB-0001` into a deprecated legacy umbrella record with redirects
+- P6-C3-S3: update the current front door and governance views after the PRB split executes
 
 ## Execution Checklist (unchecked)
 
@@ -504,3 +517,6 @@
 - [x] `P6-C2-S1`: `GC-PRA-0001` reviewed and retained as one concentrated current contract
 - [x] `P6-C2-S2`: `GC-PRB-0001` reviewed as a deferred future split candidate rather than immediate split work
 - [x] `P6-C2-S3`: `GC-PRB-0001` backfill classified as support-only history, not a second current contract surface
+- [x] `P6-C3-S1`: PR-body reviewer and gate successor current records published
+- [x] `P6-C3-S2`: `GC-PRB-0001` converted into a deprecated redirect umbrella record
+- [x] `P6-C3-S3`: front door and governance view updated after the PRB split execution

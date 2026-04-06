@@ -7,14 +7,14 @@
 ```yaml
 contract_record:
   contract_id: PR-BODY-HISTORICAL-DRIFT-FAIL-ON-FINDINGS
-  status: active
+  status: deprecated
   summary: The standard PR body completeness check currently treats substantive drift on historical merged PR bodies in the review-owned live set as a fail-on-findings non-pass condition.
   governance_area: pr-body-completeness-review
   applies_to: historical merged PR bodies that are canonically owned by source logs and fall inside the current reviewer-owned PR body completeness review set
   enforcement_surface: review_pr_body_completeness.py plus the standard check wrapper surfaces consumed locally and by workflow-dispatch CI replay
   violation_semantics: fail
   introduced_by: S0F-1I/P4-C1-S1
-  last_changed_by: S0F-1J/P2-C1-S1
+  last_changed_by: S0F-3E/P6-C3-S2
   source_refs:
     - docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md
     - docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md
@@ -22,18 +22,27 @@ contract_record:
   supersedes: []
   superseded_by: []
   notes:
-    - S0F-P1 currently shows this contract in action rather than changing its meaning: the workflow-dispatch replay stops because historical merged PR #383 still classifies as substantive drift.
-    - This record describes the current active fail semantics, not a desired future split between live enforcement and historical audit reporting.
-    - Reviewed again in S0F-3E/P6-C2: a later split into live-gate versus historical-audit successor contracts remains plausible, but this fused current record still answers the active fail semantics cleanly enough to retain for now.
+    - This preserved umbrella record now redirects readers to GC-PRR-0001 and GC-PRG-0001 after the S0F-3E P6-C3 split.
 ```
+
+## Legacy Redirect
+
+- Current standing:
+  - `deprecated`
+- Lineage:
+  - `split into GC-PRR-0001 and GC-PRG-0001`
+- Read now:
+  - `GC-PRR-0001`
+  - `GC-PRG-0001`
 
 ## Reader Notes
 
-- Current active meaning:
-  - The reviewer-owned standard check may continue to review historical merged PR bodies if they are inside the canonical source-log-owned review set.
-  - If one of those items still classifies as `substantive-drift`, the standard check remains non-pass under `fail_on_findings=true`.
-- Current concrete example:
-  - `S0F-P1` records that run `24004275695` stops because `S0F-1J/#383` is still substantive drift after normalization.
+- Historical umbrella meaning preserved:
+  - The old fused `PRB` contract used to combine read-only reviewer classification and fail-on-findings gate semantics in one record.
+  - That combined current reading is now replaced by one reviewer contract and one gate contract.
+- Current successors:
+  - `GC-PRR-0001`
+  - `GC-PRG-0001`
 
 ## Traceability
 
