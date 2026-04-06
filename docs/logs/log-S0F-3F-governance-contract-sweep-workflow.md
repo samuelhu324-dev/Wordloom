@@ -77,9 +77,10 @@
 - `P1` is now complete for the first bounded source family: `S0F-1A` through `S0F-1J` now have one explicit sweep packet and one candidate worksheet instead of being treated as ten unrelated future admissions.
 - `P2` is now complete for that same bounded family: the first `S0F-1` worksheet outcomes are now formally adjudicated, no row remains in an unresolved defer queue, and the family now exits `P2` with one clear admission candidate plus one small refinement package.
 - `P3` is now complete for that same bounded family: the accepted `S0F-1` outcomes are now translated into one split action-package model, with `R1` reserved for bounded traceability refinement and `A1` reserved for remediation-governance admission work.
+- `P4` is now complete for the justified first write stage: `R1` has been executed on `GC-ICR-0001` and `GC-PRA-0001`, front-door state remains unchanged, and `A1` remains blocked until remediation-governance naming and scope are explicit enough for admission work.
 - The first `S0F-1` worksheet shows a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and one bounded remediation surface still looks like a real current-admission candidate.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up is `P4`: execute only the justified write targets in package order, starting with `R1` and leaving `A1` blocked until the remediation contract boundary and area naming are explicit enough.
+- The immediate next follow-up is `P5`: close the first pilot run by recording what this family sweep proved, while carrying `A1` forward as the next bounded admission-design package rather than silently auto-executing it.
 
 ## Problem Statement
 
@@ -336,6 +337,35 @@
   - hold `A1` until the remediation-governance contract boundary and area-code choice are explicit enough for front-door mutation
 - This means the first pilot family can advance under `P4` without reopening `P2` and without silently widening scope.
 
+## P4 First Bounded Family Write Stage (`S0F-1A` through `S0F-1J`)
+
+### Executed Writes
+
+- `R1` is now executed.
+- Applied writes:
+  - `GC-ICR-0001` now cites `S0F-1A` as the current fail-closed issue-create boundary clarification
+  - `GC-PRA-0001` now cites `S0F-1A` as the current fail-closed PR-create front-half clarification
+
+### Validated Non-Writes
+
+- `INDEX.md` remains unchanged.
+- No new area code is admitted during this stage.
+- No legacy redirect or frozen-area state changes are introduced during this stage.
+
+### Blocked Package Carry-Forward
+
+- `A1` remains blocked by design after `P4`.
+- The blocker is not execution capacity; the blocker is missing front-door precision:
+  - remediation-governance current scope is not yet compressed into one explicit contract shape
+  - area naming is not yet fixed tightly enough to decide whether `REMED` should be reactivated or narrowed further
+
+### P4 Result
+
+- The first bounded family now proves that the workflow can execute refinement-only writes without accidentally dragging admission work across the boundary.
+- The pilot family therefore exits `P4` in a clean intermediate state:
+  - `R1` executed and validated
+  - `A1` intentionally held for later admission design
+
 ## P3 Baseline (Allowed-action matrix)
 
 ### Outcome-to-Action Mapping
@@ -488,8 +518,8 @@
 
 ### P4 (Write targets and stop rules)
 
-- [ ] `P4-C1-S1`: only justified write targets updated
-- [ ] `P4-C1-S2`: redirects, successor existence, and front-door cleanliness validated
+- [x] `P4-C1-S1`: only justified write targets updated
+- [x] `P4-C1-S2`: redirects, successor existence, and front-door cleanliness validated
 
 ### P5 (First pilot run)
 

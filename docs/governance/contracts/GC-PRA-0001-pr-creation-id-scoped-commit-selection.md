@@ -14,15 +14,17 @@ contract_record:
   enforcement_surface: PR prep planners, create-time preflight, and the bounded guarded PR-create path that preserves explicit stage boundaries before publication
   violation_semantics: fail
   introduced_by: S0E-4A/P0-C1-S1
-  last_changed_by: S0E-5C/P1-C1-S1
+  last_changed_by: S0F-3F/P4-C1-S1
   source_refs:
     - docs/logs/log-S0E-4A-github-pr-automation-contract.md
+    - docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md
     - docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md
   supersedes: []
   superseded_by: []
   notes:
     - S0E-5C refines the create-time boundary by showing that lifecycle pre-gate reuse is partial and does not authorize the whole PR-create flow as one opaque mutation.
     - Reviewed again in S0F-3E/P6-C2 and retained as one concentrated current contract because exact commit scoping, metadata precedence, and create-time stage ownership still read as one coherent PR-create boundary.
+    - S0F-3F/P4 adds S0F-1A as the fail-closed PR-create front-half clarification without widening this record into a second parallel create contract.
 ```
 
 ## Reader Notes
@@ -36,5 +38,7 @@ contract_record:
 
 - Stable contract owner:
   - `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
+- Current fail-closed boundary clarification:
+  - `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
 - Current boundary clarification:
   - `docs/logs/log-S0E-5C-guarded-pr-create-decomposition.md`

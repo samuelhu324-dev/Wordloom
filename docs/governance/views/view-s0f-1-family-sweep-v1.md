@@ -48,11 +48,15 @@
 ## Action Packages
 
 - `R1 refinement package`:
+  - status:
+    - executed under `S0F-3F/P4`
   - target `GC-ICR-0001`
   - add `S0F-1A` as current boundary clarification for fail-closed issue-create entrypoints
   - target `GC-PRA-0001`
   - add `S0F-1A` as current boundary clarification for fail-closed PR-create front-half preflight
 - `A1 admission package`:
+  - status:
+    - still blocked after `S0F-3F/P4`
   - derive one bounded remediation-governance current contract from `S0F-1C`
   - evaluate whether the registry should reactivate the earlier `REMED` shortlist area from `S0F-3C` or justify a narrower current area name before any front-door write
   - keep `S0F-1C` preview planning, guarded apply, and preserve-existing post-verify together as one governance surface rather than splitting them into separate first-pass current records
@@ -75,6 +79,7 @@
 - The most likely next admission candidate after this worksheet is the still-unlanded remediation governance lane rather than another PR-review or issue-identity split.
 - The lighter-weight follow-up remains separate from that admission candidate: `S0F-1A` should feed refinement traceability into existing `ICR` and `PRA` contracts rather than create a new front-door record.
 - The bounded family now has explicit package separation, so later execution can fail closed on scope creep instead of quietly mixing traceability cleanup with new-area admission.
+- The first write stage is now complete for `R1`, while `A1` remains intentionally blocked until remediation area naming and current-contract scope are explicit enough.
 
 ## Source Refs
 
