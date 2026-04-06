@@ -59,7 +59,8 @@
 
 - `S0F-3B` is now opened as the next `S0F` follow-up slice for governance-contract registry and naming ergonomics.
 - `P0` is now complete: `S0F-3B` is wired into the `S0F` spine and the boundary is fixed around front-door registry ergonomics rather than around deeper contract semantics already owned by `S0F-3A`.
-- Later phases are still pending: the front-door index, glossary, filename rollout, and first sample rehoming are not fixed yet.
+- `P1` is now complete: `docs/governance/INDEX.md` now exists as the front-door governance registry and glossary surface.
+- Later phases are still pending: filename rollout, sequence semantics, and first sample rehoming are not fixed yet.
 
 ## Plan (draft)
 
@@ -97,8 +98,8 @@
 
 ### P1 (Front-door governance index)
 
-- [ ] `P1-C1-S1`: `docs/governance/INDEX.md` created as the front-door registry surface
-- [ ] `P1-C1-S2`: glossary for abbreviations and registry fields fixed
+- [x] `P1-C1-S1`: `docs/governance/INDEX.md` created as the front-door registry surface
+- [x] `P1-C1-S2`: glossary for abbreviations and registry fields fixed
 
 ### P2 (Record ID and filename model)
 
