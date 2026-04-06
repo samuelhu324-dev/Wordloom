@@ -73,7 +73,8 @@
 - `S0F-3G` is now opened as the next `S0F` follow-up slice for staged governance-file cleanup after the bounded sweep workflow has already closed the currently defended admission and residual-family questions.
 - The immediate motivation is already concrete: `S0F-3E` preserved legacy lineage files and `S0F-3F` preserved residual-family sweep views so the front door stayed safe, which now means later cleanup must distinguish what is still reader-facing history from what is only bounded helper residue.
 - `P0` is now complete: the cleanup problem is now separated from admission work, and future file reduction can proceed in explicit rounds instead of reopening `S0F-3F` for mixed cleanup-plus-judgment passes.
-- The immediate next follow-up is `P1`: inventory one first candidate cleanup set without making destructive changes yet.
+- `P1` is now complete for the first bounded candidate family: the governance helper-view set under `docs/governance/views/` is now separated into keep-current, keep-legacy, and support-only sweep-helper classes without making destructive changes.
+- The immediate next follow-up is `P2`: resolve whether the support-only helper subset should stay in place, move to one support-only location, or be deferred round by round.
 
 ## Problem Statement
 
@@ -129,6 +130,70 @@
   - `reason for outcome`
   - `preconditions before write`
   - `cleanup-round scope`
+
+## P1 First Bounded Candidate Inventory (`docs/governance/views/` helper-view family)
+
+### Inventory Packet
+
+- bounded candidate family:
+  - `docs/governance/views/view-contract-sweep-workflow-v1.md`
+  - `docs/governance/views/view-s0f-1-family-sweep-v1.md`
+  - `docs/governance/views/view-remed-admission-package-v1.md`
+  - `docs/governance/views/view-wf-family-sweep-v1.md`
+  - `docs/governance/views/view-wf-admission-package-v1.md`
+  - `docs/governance/views/view-attr-family-sweep-v1.md`
+  - `docs/governance/views/view-attr-admission-package-v1.md`
+  - `docs/governance/views/view-prb-split-package-v1.md`
+  - `docs/governance/views/view-prb-follow-up-family-sweep-v1.md`
+  - `docs/governance/views/view-issue-automation-follow-up-family-sweep-v1.md`
+  - `docs/governance/views/view-iss-split-package-v1.md`
+- excluded from this bounded family:
+  - `docs/governance/views/_template-governance-view.md`
+    - rationale:
+      - it is an active authoring template rather than a cleanup candidate from lineage or residual sweep work
+- exact question answered by this inventory:
+  - which governance helper views under `docs/governance/views/` still act as reusable or legacy reader aids,
+  - which now read only as support-only sweep helpers,
+  - and which subset is safe to consider for one first bounded cleanup round without touching active contracts or `INDEX.md`
+- stop condition for this inventory:
+  - stop before any move or delete decision if a view still appears necessary for current workflow reuse, split-lineage interpretation, or deterministic redirect reading
+
+### Candidate Inventory
+
+| candidate path | candidate class | current reader value | current semantic owner, if any | proposed cleanup outcome | reason for outcome | preconditions before write | cleanup-round scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `docs/governance/views/view-contract-sweep-workflow-v1.md` | `current-state file` | reusable reader aid for the active `S0F-3F` sweep method | `S0F-3F` | `keep current` | this is the reusable workflow explainer rather than one one-off helper view, so later cleanup should not treat it as residual residue | none beyond ordinary reference validation | `views-round-1-inventory` |
+| `docs/governance/views/view-iss-split-package-v1.md` | `legacy redirect file` | stable lineage aid for the executed `ISS -> ICR/ICL/ICT/IID` split | `S0F-3E` | `keep legacy` | it still explains one major namespace split and preserves reader-facing lineage value beyond one single sweep round | none beyond reference validation | `views-round-1-inventory` |
+| `docs/governance/views/view-prb-split-package-v1.md` | `legacy redirect file` | stable lineage aid for the executed `PRB -> PRR/PRG` split | `S0F-3E` | `keep legacy` | it still explains one front-door split and is directly used by later residual `PRB` reading | none beyond reference validation | `views-round-1-inventory` |
+| `docs/governance/views/view-s0f-1-family-sweep-v1.md` | `support-only sweep helper` | first-pilot family sweep explanation for already-closed `S0F-1` execution | `S0F-3F` | `move to support-only location` | it is no longer a reusable workflow contract and mainly records one closed pilot-family result, so it looks like a support-only helper candidate rather than a current reader surface | prove a stable support-only destination and update `S0F-3F` references safely | `views-round-1-inventory` |
+| `docs/governance/views/view-remed-admission-package-v1.md` | `support-only sweep helper` | one-package explanation for the already-admitted `REMED` lane | `S0F-3F` | `move to support-only location` | the current front door and active contract already explain live `REMED`; this view mainly preserves one bounded admission explanation | prove replacement discoverability and update references from `S0F-3F` or related helper views | `views-round-1-inventory` |
+| `docs/governance/views/view-wf-family-sweep-v1.md` | `support-only sweep helper` | one-family worksheet explanation for the already-closed `WF` lane | `S0F-3F` | `move to support-only location` | it records one closed bounded-family result rather than an active reusable workflow rule | prove support-only destination and update internal helper-view references safely | `views-round-1-inventory` |
+| `docs/governance/views/view-wf-admission-package-v1.md` | `support-only sweep helper` | one-package explanation for the already-admitted `WF` lane | `S0F-3F` | `move to support-only location` | the active `WF` meaning now reads through `GC-WF-0001` and `INDEX.md`; this view mainly preserves one admission explanation surface | prove replacement discoverability and update references from `S0F-3F` and `view-wf-family-sweep-v1.md` safely | `views-round-1-inventory` |
+| `docs/governance/views/view-attr-family-sweep-v1.md` | `support-only sweep helper` | one-family worksheet explanation for the already-closed `ATTR` lane | `S0F-3F` | `move to support-only location` | it records one closed bounded-family result rather than a reusable workflow rule or required lineage redirect | prove support-only destination and update internal helper-view references safely | `views-round-1-inventory` |
+| `docs/governance/views/view-attr-admission-package-v1.md` | `support-only sweep helper` | one-package explanation for the already-admitted `ATTR` lane | `S0F-3F` | `move to support-only location` | the active `ATTR` meaning now reads through `GC-ATTR-0001` and `INDEX.md`; this view mainly preserves one admission explanation surface | prove replacement discoverability and update references from `S0F-3F` and `view-attr-family-sweep-v1.md` safely | `views-round-1-inventory` |
+| `docs/governance/views/view-prb-follow-up-family-sweep-v1.md` | `support-only sweep helper` | no-op residual closure note for already-resolved `PRB` residue | `S0F-3F` | `move to support-only location` | it preserves one residual closure explanation, but it no longer participates in current front-door reading | prove support-only destination and update references from `S0F-3F` safely | `views-round-1-inventory` |
+| `docs/governance/views/view-issue-automation-follow-up-family-sweep-v1.md` | `support-only sweep helper` | no-op residual closure note for already-resolved `S0E-2` precursor residue | `S0F-3F` | `move to support-only location` | it preserves one residual closure explanation, but it no longer participates in current front-door reading | prove support-only destination and update references from `S0F-3F` safely | `views-round-1-inventory` |
+
+### P1 Inventory Result
+
+- The first bounded cleanup inventory now separates the helper-view family into three defended classes:
+  - `keep current`:
+    - `view-contract-sweep-workflow-v1.md`
+  - `keep legacy`:
+    - `view-iss-split-package-v1.md`
+    - `view-prb-split-package-v1.md`
+  - `support-only sweep helper candidate`:
+    - `view-s0f-1-family-sweep-v1.md`
+    - `view-remed-admission-package-v1.md`
+    - `view-wf-family-sweep-v1.md`
+    - `view-wf-admission-package-v1.md`
+    - `view-attr-family-sweep-v1.md`
+    - `view-attr-admission-package-v1.md`
+    - `view-prb-follow-up-family-sweep-v1.md`
+    - `view-issue-automation-follow-up-family-sweep-v1.md`
+- No file is deleted, moved, or rewritten during `P1`.
+- The first bounded candidate family therefore exits inventory with one clear `P2` question:
+  - whether the support-only helper subset should remain in place for now or move together into one explicit support-only location in a later bounded round
 
 ## P2 Baseline (Cleanup outcomes)
 
@@ -220,8 +285,8 @@
 
 ### P1 (Candidate inventory)
 
-- [ ] `P1-C1-S1`: first bounded candidate cleanup family inventoried
-- [ ] `P1-C1-S2`: current-state files separated from legacy, support-only, reproducible, and unclear candidates
+- [x] `P1-C1-S1`: first bounded candidate cleanup family inventoried
+- [x] `P1-C1-S2`: current-state files separated from legacy, support-only, reproducible, and unclear candidates
 
 ### P2 (Cleanup decision model)
 
@@ -259,3 +324,25 @@
   - later file reduction can proceed in explicit, reviewable rounds
 - observed:
   - `S0F-3G` now fixes the cleanup boundary, outcome vocabulary, and first-round staging model without deleting any files yet
+
+### P1-C1-S1S2 (first helper-view cleanup family inventoried | 2026-04-06)
+
+- headSha: `<TBD-after-inventory-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/governance/views/view-contract-sweep-workflow-v1.md`
+  - `docs/governance/views/view-iss-split-package-v1.md`
+  - `docs/governance/views/view-prb-split-package-v1.md`
+  - `docs/governance/views/view-s0f-1-family-sweep-v1.md`
+  - `docs/governance/views/view-remed-admission-package-v1.md`
+  - `docs/governance/views/view-wf-family-sweep-v1.md`
+  - `docs/governance/views/view-wf-admission-package-v1.md`
+  - `docs/governance/views/view-attr-family-sweep-v1.md`
+  - `docs/governance/views/view-attr-admission-package-v1.md`
+  - `docs/governance/views/view-prb-follow-up-family-sweep-v1.md`
+  - `docs/governance/views/view-issue-automation-follow-up-family-sweep-v1.md`
+- expected:
+  - one first bounded cleanup family is separated into keep-current, keep-legacy, and support-only helper candidates before any file moves begin
+  - the next cleanup round can focus on the support-only helper subset without relitigating current workflow and split-lineage aids
+- observed:
+  - the first bounded helper-view family is now explicitly inventoried, with one reusable workflow view kept current, two split-lineage aids kept legacy, and eight closed-lane helper views carried forward as support-only cleanup candidates only
