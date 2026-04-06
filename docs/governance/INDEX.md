@@ -31,3 +31,16 @@
   - `PR Body`
   - used for governance contracts primarily about PR body completeness review, drift semantics, rewrite, or packaging surfaces
 - Future area codes should stay short, stable, and explicitly documented here before broad reuse.
+
+## Filename Model
+
+- `record_id` is the short registry/file-system identifier.
+- The baseline governance-contract filename model is:
+  - `GC-<AREA>-<NNNN>-<summary>.md`
+- Example:
+  - `GC-PRB-0001-historical-drift-fail-on-findings.md`
+- Under this model:
+  - `GC` identifies the record family as a governance-contract registry item
+  - `PRB` identifies the governance area
+  - `0001` identifies the record sequence inside that area
+  - `<summary>` keeps the filename human-scannable without forcing the long semantic `contract_id` to carry the whole file-system burden

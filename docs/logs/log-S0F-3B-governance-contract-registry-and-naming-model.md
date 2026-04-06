@@ -60,7 +60,8 @@
 - `S0F-3B` is now opened as the next `S0F` follow-up slice for governance-contract registry and naming ergonomics.
 - `P0` is now complete: `S0F-3B` is wired into the `S0F` spine and the boundary is fixed around front-door registry ergonomics rather than around deeper contract semantics already owned by `S0F-3A`.
 - `P1` is now complete: `docs/governance/INDEX.md` now exists as the front-door governance registry and glossary surface.
-- Later phases are still pending: filename rollout, sequence semantics, and first sample rehoming are not fixed yet.
+- `P2` is now complete: `record_id` is now fixed as the short registry/file-system identifier, and the baseline filename model is now `GC-<AREA>-<NNNN>-<summary>.md`.
+- Later phases are still pending: sequence semantics and first sample rehoming are not fixed yet.
 
 ## Plan (draft)
 
@@ -103,8 +104,8 @@
 
 ### P2 (Record ID and filename model)
 
-- [ ] `P2-C1-S1`: `record_id` fixed as the short registry/file-system identifier
-- [ ] `P2-C1-S2`: baseline filename model fixed
+- [x] `P2-C1-S1`: `record_id` fixed as the short registry/file-system identifier
+- [x] `P2-C1-S2`: baseline filename model fixed
 
 ### P3 (Sequence semantics)
 
