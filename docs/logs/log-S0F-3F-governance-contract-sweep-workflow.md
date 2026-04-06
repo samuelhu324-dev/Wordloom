@@ -21,6 +21,7 @@
   **reference_log_4**: `docs/governance/views/view-contract-sweep-workflow-v1.md`
   **reference_log_5**: `docs/governance/views/view-s0f-1-family-sweep-v1.md`
   **reference_log_6**: `docs/governance/views/view-remed-admission-package-v1.md`
+  **reference_log_7**: `docs/governance/views/view-wf-family-sweep-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -82,9 +83,10 @@
 - `P4` is now complete for the justified first write stage: `R1` has been executed on `GC-ICR-0001` and `GC-PRA-0001`, front-door state remains unchanged, and `A1` remains blocked until remediation-governance naming and scope are explicit enough for admission work.
 - `P5` is now complete for that same bounded family: the first pilot run is now closed, the workflow itself needs no immediate structural revision, and `A1` is now fixed as the next bounded admission-design package rather than as an implicit auto-next write.
 - `P6` is now complete for that same bounded family: `A1` is no longer a design-only placeholder, `REMED` is now admitted as a current governance area, and `GC-REMED-0001` now concentrates the `S0F-1C` remediation-stage boundary at the front door.
+- `P1-C2` is now complete for the second bounded family: `S0E-7D` through `S0E-7G` now have one explicit workflow-governance sweep packet and one candidate worksheet instead of remaining an undifferentiated `WF` shortlist placeholder.
 - The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up after this completed family is not another remediation write inside `S0F-1C`; it is to choose the next bounded unswept family, with the strongest open reading question now shifted toward broader workflow or attribution families rather than the already-admitted remediation stage surface.
+- The immediate next follow-up after the completed `S0F-1` family is now `P2-C2` for the bounded workflow-governance family: adjudicate whether `S0E-7D` should land as the sole `WF` current contract while `S0E-7E` through `S0E-7G` remain support-only orchestration and wrapper history.
 
 ## Problem Statement
 
@@ -211,6 +213,48 @@
 - The first worksheet therefore suggests one narrow next package rather than another broad sweep:
   - if `P2` accepts the provisional outcomes, the most likely next current-admission work is one bounded remediation-governance contract derived from `S0F-1C`
   - before that, the lighter-weight refinement package is to add `S0F-1A` traceability to `GC-ICR-0001` and `GC-PRA-0001`
+
+## P1 Second Bounded Family Execution (`S0E-7D` through `S0E-7G`)
+
+### Sweep Packet
+
+- bounded source family:
+  - `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
+  - `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+- already-active current contracts reviewed for overlap:
+  - `GC-PRA-0001`
+  - `GC-PRG-0001`
+  - `GC-REMED-0001`
+- known support or adjacent surfaces under this family context:
+  - `S0E-5A` lifecycle audit / pre-gate planner shell already adjudicated as support and orchestration only under `S0F-3C/P4`
+  - `S0E-5C` guarded PR-create decomposition already adjudicated as support and orchestration only under `S0F-3C/P4`
+  - `S0E-7A` secondary-enforcement wording remains adjacent wrapper policy rather than a candidate current lifecycle-governance contract
+- exact question answered by this sweep:
+  - whether the `publish -> verify -> remediation -> failure handling` taxonomy now justifies one bounded `WF` current contract,
+  - and whether the later thin-gate plus wrapper surfaces remain support-only orchestration or transport layers rather than parallel front-door records
+- stop condition for this run:
+  - stop before current-state writes if the family cannot defend whether `S0E-7D` is the sole current owner or whether any later wrapper/orchestration surface still requires independent current standing
+
+### Candidate Worksheet
+
+| candidate surface | source owner | current semantic owner | overlap type | proposed outcome | reason for outcome | allowed action package | front-door effect | legacy effect |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| publish-verify-remediation failure taxonomy and handling semantics | `S0E-7D` | `` | `none` | `admit new current` | stable strong-versus-weak failure taxonomy, ordered replay/backfill pipeline, and `block`/`replayable`/`manual`/`reconciliation` handling semantics remain unrepresented at the front door even after `REMED` admission | later admit one bounded `WF` current contract and area code | later add one new area only if `P2/P3` confirm | no legacy change required yet |
+| thin publish-verify-remediation gate orchestration surface | `S0E-7E` | `` | `support-only` | `support-only history` | thin-gate normalization and delegated-handoff packaging reuse the workflow taxonomy owned by `S0E-7D` plus existing family adapters, but do not themselves define a separate durable front-door rule | keep as supporting orchestration history only | none | retain log and implementation surfaces only |
+| read-only thin-gate wrapper adoption | `S0E-7F` | `` | `support-only` | `support-only history` | read-only wrapper adoption fixes wrapper posture, request/result shape, and operator-facing wrapper semantics over the same thin-gate vocabulary instead of owning a parallel governance contract | keep as supporting wrapper history only | none | retain log and implementation surfaces only |
+| workflow_dispatch read-only wrapper surface | `S0E-7G` | `` | `support-only` | `support-only history` | GitHub-side `workflow_dispatch` packaging is a transport-only replay surface over the existing read-only wrapper and thin-gate semantics, not a new current lifecycle-governance rule | keep as supporting transport history only | none | retain log and workflow surfaces only |
+
+### P1 Result
+
+- The second bounded `WF` worksheet also does not justify bulk registry growth.
+- Current provisional result by row class:
+  - `candidate new current`: `S0E-7D`
+  - `support-only history`: `S0E-7E`, `S0E-7F`, and `S0E-7G`
+- The second worksheet therefore suggests one narrow next adjudication lane rather than a mixed workflow admission bundle:
+  - if `P2-C2` accepts the provisional outcomes, the most likely next current-admission work is one bounded `WF` current contract derived from `S0E-7D`
+  - before any front-door write, `P2-C2` should explicitly confirm that thin-gate orchestration, read-only wrapper adoption, and GitHub-side dispatch packaging remain outside the current registry as support-only implementation layers
 
 ## P2 Baseline (Decision table)
 
