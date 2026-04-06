@@ -30,6 +30,7 @@
   **phase_log_10**: `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
   **phase_log_11**: `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
   **phase_log_12**: `docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md`
+  **phase_log_13**: `docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -216,7 +217,9 @@
 - `S0F-2B/P2` is now complete: the patch template now supports family-bound patch IDs such as `S0F-P1`, and the maintenance template is now a heavier ops-maintenance report template.
 - `S0F-2B/P3` is now complete: the already-live GitHub `MAINTENANCE` top-level label is now governed by an explicit admission rule and reserved for true ops-maintenance work only.
 - `S0F-2B/P4-C1-S1` is now complete: the repo now has a first real ops-maintenance sample under `docs/logs/maintenance/log-S0F-M1-github-actions-runner-and-dispatch-health-check.md`, grounded in live workflow-run and runner-inventory evidence rather than template placeholders.
+- `S0F-2B/P5-C1-S1` is now complete: the family patch template now carries `Current Evidence` and `Next Step`, and the first real family patch sample `docs/logs/patch/log-S0F-P1-s0f-pr-body-completeness-standard-check-dispatch-failure-triage.md` now records that the current `S0F` workflow failure is an expected non-pass caused by real `S0F-1J` drift rather than by workflow-execution breakage.
 - `S0F-2B` is now stable: the repo now has a sharper and more operationally realistic model for patch versus maintenance work.
+- `S0F-3A/P0` is now complete: the new governance-contract concentration slice is wired into the spine, and the terminology boundary among application domain, governance contracts, and operational surfaces is now fixed as the baseline for later index and delta work.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
