@@ -23,6 +23,7 @@
   **reference_log_6**: `docs/governance/views/view-remed-admission-package-v1.md`
   **reference_log_7**: `docs/governance/views/view-wf-family-sweep-v1.md`
   **reference_log_8**: `docs/governance/views/view-wf-admission-package-v1.md`
+  **reference_log_9**: `docs/governance/views/view-attr-family-sweep-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -88,9 +89,10 @@
 - `P2-C2` is now complete for that same bounded workflow family: `S0E-7D` is now formally accepted as the sole `WF` admission candidate, `S0E-7E` through `S0E-7G` are now fixed as support-only orchestration or transport history, and no `WF` defer queue remains open.
 - `P3-C2` is now complete for that same bounded workflow family: the adjudicated `WF` outcomes are now translated into one admission-only package `A2`, with `S0E-7D` isolated as the sole possible front-door lane and `S0E-7E` through `S0E-7G` explicitly excluded from current-state writes.
 - `P4-C2` is now complete for that same bounded workflow family: `A2` is now executed, `WF` is now admitted as a live current governance area, and `GC-WF-0001` now concentrates the `S0E-7D` workflow-failure taxonomy and handling boundary at the front door.
+- `P1-C3` is now complete for the third bounded family: `S0E-4E` and `S0E-7B` now have one explicit attribution-family sweep packet and candidate worksheet instead of remaining an informal `ATTR` shortlist placeholder.
 - The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up after the completed `WF` family is to choose the next bounded unswept family, with `ATTR` now the most obvious remaining current-admission question unless a broader workflow readback lane is intentionally reopened.
+- The immediate next follow-up after opening the bounded `ATTR` family is `P2-C3`: formally adjudicate whether `S0E-4E` is the sole current admission candidate and whether `S0E-7B` remains support-only implementation history.
 
 ## Problem Statement
 
@@ -259,6 +261,42 @@
 - The second worksheet therefore suggests one narrow next adjudication lane rather than a mixed workflow admission bundle:
   - if `P2-C2` accepts the provisional outcomes, the most likely next current-admission work is one bounded `WF` current contract derived from `S0E-7D`
   - before any front-door write, `P2-C2` should explicitly confirm that thin-gate orchestration, read-only wrapper adoption, and GitHub-side dispatch packaging remain outside the current registry as support-only implementation layers
+
+## P1 Third Bounded Family Execution (`S0E-4E` and `S0E-7B`)
+
+### Sweep Packet
+
+- bounded source family:
+  - `docs/logs/log-S0E-4E-pr-event-source-log-attribution-contract.md`
+  - `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
+- already-active current contracts reviewed for overlap:
+  - `GC-PRA-0001`
+  - `GC-PRG-0001`
+- known support or adjacent surfaces under this family context:
+  - `S0E-7A` secondary-enforcement workflow remains the downstream consumer of resolved attribution rather than the contract owner for attribution semantics
+  - `S0E-5D` canonical PR-body `Links` row contract remains an allowed attribution surface inside the `S0E-4E` contract rather than a separate `ATTR` admission candidate
+- exact question answered by this sweep:
+  - whether source-log attribution and provenance resolution now justify one bounded `ATTR` current contract,
+  - and whether later attribution payload emission plus consume-or-stop wiring remain support-only implementation history rather than parallel front-door records
+- stop condition for this run:
+  - stop before current-state writes if the family cannot defend whether `S0E-4E` is the sole current owner or whether `S0E-7B` still needs independent current standing beyond implementation and workflow wiring
+
+### Candidate Worksheet
+
+| candidate surface | source owner | current semantic owner | overlap type | proposed outcome | reason for outcome | allowed action package | front-door effect | legacy effect |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| PR-event source-log attribution precedence, ambiguity policy, and handoff contract | `S0E-4E` | `` | `none` | `admit new current` | stable attribution precedence, fail-closed ambiguity taxonomy, and consume-or-stop handoff semantics remain unrepresented at the front door even after current PR automation and gate admissions | later admit one bounded `ATTR` current contract and area code | later add one new area only if `P2/P3` confirm | no legacy change required yet |
+| attribution payload emission and automatic consume-or-stop wiring | `S0E-7B` | `` | `support-only` | `support-only history` | the implementation emits and consumes the `S0E-4E` handoff payload, but it explicitly does not own attribution semantics, stop taxonomy, or current-state ownership rules | keep as supporting implementation and workflow history only | none | retain log, workflow, script, and sample artifacts only |
+
+### P1 Result
+
+- The third bounded `ATTR` worksheet also does not justify bulk registry growth.
+- Current provisional result by row class:
+  - `candidate new current`: `S0E-4E`
+  - `support-only history`: `S0E-7B`
+- The third worksheet therefore suggests one narrow next adjudication lane rather than a mixed attribution-plus-implementation landing bundle:
+  - if `P2-C3` accepts the provisional outcomes, the most likely next current-admission work is one bounded `ATTR` current contract derived from `S0E-4E`
+  - before any front-door write, `P2-C3` should explicitly confirm that attribution payload emission and workflow consume-or-stop wiring remain outside the current registry as support-only implementation layers
 
 ## P2 Second Bounded Family Adjudication (`S0E-7D` through `S0E-7G`)
 
