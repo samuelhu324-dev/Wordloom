@@ -77,7 +77,8 @@
 - `P2` is now complete for that same bounded helper-view family: one reusable workflow explainer remains `keep current`, two split-lineage aids remain `keep legacy`, and the eight support-only helper views now resolve into one later move lane toward an explicit support-only location with no defer queue.
 - `P3` is now complete for that same bounded helper-view family: the first bounded cleanup manifest now fixes `docs/governance/views/support-only/` as the target location and records the exact planned rename paths plus reference-update set for the eight support-only helper views without moving files yet.
 - `P4` is now complete for that same bounded helper-view family: the eight support-only helper views now live under `docs/governance/views/support-only/`, the bounded `S0F-3F` and helper-view cross-links are rewritten to the new location, and the first cleanup round now closes with reader paths revalidated.
-- The immediate next follow-up is `P5`: decide whether a second bounded cleanup family is now defended strongly enough for another manifest-driven round.
+- `P5` is now complete for the second bounded candidate family under `docs/governance/contracts/`: the preserved legacy redirect set and the paired `GC-PRB-0001` backfill note are now reviewed as the next cleanup family, but that family converges to `keep legacy` plus one explicit `defer cleanup` result rather than opening a second move or delete round.
+- The immediate next follow-up is now externalized cleanly: either provide one new bounded candidate batch for review, or let a later repo-side scan defend another cleanup family strongly enough for execution.
 
 ## Problem Statement
 
@@ -370,6 +371,63 @@
 - The root of `docs/governance/views/` now keeps only the reusable workflow view, the two lineage aids, the template, and the `support-only/` folder for closed-lane helper history.
 - `P5` can now focus on whether another bounded cleanup family exists, rather than revisiting the already-executed first move lane.
 
+## P5 Second Bounded Candidate Review (`docs/governance/contracts/` legacy-and-backfill subset)
+
+### Inventory Packet
+
+- bounded candidate family:
+  - `docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md`
+  - `docs/governance/contracts/GC-ISS-0002-issue-conclusion-post-merge-linkage.md`
+  - `docs/governance/contracts/GC-ISS-0003-issue-context-sentence-count-main-vs-child.md`
+  - `docs/governance/contracts/GC-ISS-0004-parent-sidebar-ordering-ownership.md`
+  - `docs/governance/contracts/GC-ISS-0005-issue-title-keyword-controlled-vocabulary.md`
+  - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+- excluded from this bounded family:
+  - active current contract records under `docs/governance/contracts/`
+  - `_template-contract-record.md`
+  - `_template-backfill-note.md`
+- exact question answered by this review:
+  - whether the preserved legacy redirect records and the paired `GC-PRB-0001` backfill note are now safe for relocation or deletion after the first helper-view cleanup round,
+  - or whether they must remain in place because legacy redirect semantics, first-sample traceability, and current reader discoverability still depend on their current paths
+- stop condition for this review:
+  - stop before any move or delete decision if a candidate still depends on `S0F-3E` legacy-preservation rules, current filename-model examples, or direct contract-pair discoverability that would become weaker after relocation
+
+### Candidate Review
+
+| candidate path | candidate class | current reader value | current semantic owner, if any | proposed cleanup outcome | reason for outcome | preconditions before write | cleanup-round scope |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md` | `legacy redirect file` | preserved old contract ID and deterministic redirect after the `ISS -> ICR` split | `S0F-3E` | `keep legacy` | `S0F-3E` explicitly preserved old IDs and old file paths for `GC-ISS-*`, so moving this file would weaken the already-fixed lineage contract | none beyond ordinary reference validation | `contracts-round-1-review` |
+| `docs/governance/contracts/GC-ISS-0002-issue-conclusion-post-merge-linkage.md` | `legacy redirect file` | preserved old contract ID and deterministic redirect after the `ISS -> ICL` split | `S0F-3E` | `keep legacy` | same preserved-path rule as the rest of the `GC-ISS-*` split set | none beyond ordinary reference validation | `contracts-round-1-review` |
+| `docs/governance/contracts/GC-ISS-0003-issue-context-sentence-count-main-vs-child.md` | `legacy redirect file` | preserved old contract ID and deterministic redirect after the `ISS -> ICT` split | `S0F-3E` | `keep legacy` | same preserved-path rule as the rest of the `GC-ISS-*` split set | none beyond ordinary reference validation | `contracts-round-1-review` |
+| `docs/governance/contracts/GC-ISS-0004-parent-sidebar-ordering-ownership.md` | `legacy redirect file` | preserved old contract ID and deterministic redirect after the `ISS -> IID` split | `S0F-3E` | `keep legacy` | same preserved-path rule as the rest of the `GC-ISS-*` split set | none beyond ordinary reference validation | `contracts-round-1-review` |
+| `docs/governance/contracts/GC-ISS-0005-issue-title-keyword-controlled-vocabulary.md` | `legacy redirect file` | preserved old contract ID and deterministic redirect after the `ISS -> IID` split | `S0F-3E` | `keep legacy` | same preserved-path rule as the rest of the `GC-ISS-*` split set | none beyond ordinary reference validation | `contracts-round-1-review` |
+| `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md` | `legacy redirect file` | preserved deprecated umbrella record for the executed `PRB -> PRR/PRG` split | `S0F-3E` | `keep legacy` | the umbrella redirect is still cited by `INDEX.md`, governance views, and earlier registry-model logs as the canonical deprecated sample, so relocation would widen lineage churn without current readability gain | none beyond ordinary reference validation | `contracts-round-1-review` |
+| `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md` | `unclear cleanup candidate` | paired support-only backtrace for the deprecated `GC-PRB-0001` sample and the first real contract/backfill example | `S0F-3E` | `defer cleanup` | the file is support-only rather than current, but it is still co-cited with the umbrella record in early registry-model logs and remains easier to discover while co-located with the paired contract sample | any future move would first need one defended contract-backfill location model plus reference rewrites for the registry-model examples | `contracts-round-1-review` |
+
+### Accepted Outcomes
+
+- `keep legacy`:
+  - `GC-ISS-0001`
+  - `GC-ISS-0002`
+  - `GC-ISS-0003`
+  - `GC-ISS-0004`
+  - `GC-ISS-0005`
+  - `GC-PRB-0001`
+- `defer cleanup`:
+  - `GC-PRB-0001 backfill`
+
+### P5 Result
+
+- The second bounded candidate family does exist, but it does not justify a second executable move or delete manifest yet.
+- The preserved legacy redirect set remains in place by design because `S0F-3E` explicitly bound old IDs and old file paths into the lineage contract.
+- The paired `GC-PRB-0001` backfill note remains the only `defer cleanup` row because it is support-only but still co-located with the deprecated umbrella and early registry-model sample references.
+- This means the known governance cleanup surface now converges cleanly to three buckets:
+  - already executed move round for support-only helper views
+  - keep-in-place legacy redirect contracts
+  - one deferred support-only contract backfill note pending a stronger future location model
+- The slice therefore does not need a `P6` execution round right now; the clean next input is a new bounded candidate batch rather than another forced cleanup write.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -431,7 +489,7 @@
 
 ### P5 (Later rounds)
 
-- [ ] `P5-C1-S1`: later bounded cleanup rounds executed only while the candidate set remains defended
+- [x] `P5-C1-S1`: later bounded cleanup rounds executed only while the candidate set remains defended
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -530,3 +588,23 @@
   - all eight manifest-listed helper views now live under `docs/governance/views/support-only/`
   - `S0F-3F` reference logs and the three helper-view cross-links now point to the new location
   - no additional current, legacy, or template file is moved during this round
+
+### P5-C1-S1 (second bounded contract family reviewed | 2026-04-06)
+
+- headSha: `<TBD-after-contract-review-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
+  - `docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md`
+  - `docs/governance/contracts/GC-ISS-0002-issue-conclusion-post-merge-linkage.md`
+  - `docs/governance/contracts/GC-ISS-0003-issue-context-sentence-count-main-vs-child.md`
+  - `docs/governance/contracts/GC-ISS-0004-parent-sidebar-ordering-ownership.md`
+  - `docs/governance/contracts/GC-ISS-0005-issue-title-keyword-controlled-vocabulary.md`
+  - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+- expected:
+  - the next bounded governance-contract cleanup family either yields one defensible new manifest or converges to explicit keep/defer outcomes without forced file movement
+- observed:
+  - the preserved `GC-ISS-*` redirect set and deprecated `GC-PRB-0001` umbrella remain keep-in-place legacy files
+  - the paired `GC-PRB-0001` backfill note remains the only deferred cleanup row because its support-only status is clear but its future home is not yet defended strongly enough for relocation
