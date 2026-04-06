@@ -84,9 +84,10 @@
 - `P5` is now complete for that same bounded family: the first pilot run is now closed, the workflow itself needs no immediate structural revision, and `A1` is now fixed as the next bounded admission-design package rather than as an implicit auto-next write.
 - `P6` is now complete for that same bounded family: `A1` is no longer a design-only placeholder, `REMED` is now admitted as a current governance area, and `GC-REMED-0001` now concentrates the `S0F-1C` remediation-stage boundary at the front door.
 - `P1-C2` is now complete for the second bounded family: `S0E-7D` through `S0E-7G` now have one explicit workflow-governance sweep packet and one candidate worksheet instead of remaining an undifferentiated `WF` shortlist placeholder.
+- `P2-C2` is now complete for that same bounded workflow family: `S0E-7D` is now formally accepted as the sole `WF` admission candidate, `S0E-7E` through `S0E-7G` are now fixed as support-only orchestration or transport history, and no `WF` defer queue remains open.
 - The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up after the completed `S0F-1` family is now `P2-C2` for the bounded workflow-governance family: adjudicate whether `S0E-7D` should land as the sole `WF` current contract while `S0E-7E` through `S0E-7G` remain support-only orchestration and wrapper history.
+- The immediate next follow-up after `P2-C2` is now `P3-C2`: translate the adjudicated `WF` family outcomes into one bounded action package, with `S0E-7D` isolated as the only possible front-door admission lane and `S0E-7E` through `S0E-7G` excluded from current-state writes.
 
 ## Problem Statement
 
@@ -255,6 +256,37 @@
 - The second worksheet therefore suggests one narrow next adjudication lane rather than a mixed workflow admission bundle:
   - if `P2-C2` accepts the provisional outcomes, the most likely next current-admission work is one bounded `WF` current contract derived from `S0E-7D`
   - before any front-door write, `P2-C2` should explicitly confirm that thin-gate orchestration, read-only wrapper adoption, and GitHub-side dispatch packaging remain outside the current registry as support-only implementation layers
+
+## P2 Second Bounded Family Adjudication (`S0E-7D` through `S0E-7G`)
+
+### Accepted Outcomes
+
+- `admit new current`:
+  - `S0E-7D` publish-verify-remediation failure taxonomy and handling semantics
+- `support-only history`:
+  - `S0E-7E` thin publish-verify-remediation gate orchestration surface
+  - `S0E-7F` read-only thin-gate wrapper adoption
+  - `S0E-7G` workflow_dispatch read-only wrapper surface
+
+### Defer Queue
+
+- No row remains in `defer adjudication` for the bounded `WF` family pass.
+- This does not mean `WF` will necessarily mutate the front door immediately.
+- It means the family now exits adjudication with one defended candidate owner and three defended non-current classifications, so later packaging can proceed without reopening row ownership.
+
+### P2 Adjudication Result
+
+- The bounded `WF` family now exits `P2-C2` with one intentionally narrow downstream lane:
+  - evaluate one `WF` current contract derived from `S0E-7D`
+- The bounded `WF` family does not justify any separate current admission for:
+  - `S0E-7E`
+  - `S0E-7F`
+  - `S0E-7G`
+- The bounded `WF` family also does not justify reopening adjacent current ownership under:
+  - `PRA`
+  - `PRG`
+  - `REMED`
+- `P3-C2` should therefore package one admission-only lane rather than one mixed workflow bundle.
 
 ## P2 Baseline (Decision table)
 
