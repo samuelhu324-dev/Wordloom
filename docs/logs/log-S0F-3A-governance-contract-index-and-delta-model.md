@@ -141,6 +141,41 @@
 - Governance views become explanation surfaces, not hidden registries; if a view and the index disagree, the index wins for current-state questions and the logs win for historical evidence.
 - `P1` does not yet fix the delta schema or the index schema. It only fixes the four truth layers and their ownership boundaries so later phases can design those schemas without re-litigating the model.
 
+## P2 Baseline (Reference semantics)
+
+- `previous_log`:
+  - Expresses direct queue/order lineage only.
+  - Answers one question: which immediately preceding slice or log lane this new log is advancing from.
+  - Must not be used as a catch-all causal reference field.
+  - Should normally contain exactly one direct predecessor; if there is no meaningful direct predecessor, it may remain blank.
+- `reference_logs`:
+  - Express near-cause, near-contract, or near-trigger references only.
+  - Answer a different question: which recent logs a reader must inspect to understand why this new log exists or which current contract changes it is inheriting, refining, or responding to.
+  - Must not be used to enumerate full ancestry, all remotely related logs, or every historical touchpoint in the same family.
+  - Should remain a minimal set. If more than three references feel necessary, that is a signal that the missing piece is contract concentration or a governance view, not another larger reference list.
+- `parent_log` and `origin_log` remain separate from both fields:
+  - `parent_log` answers where the log is structurally housed.
+  - `origin_log` answers which family-owned source the patch or follow-up still belongs to.
+  - Neither field replaces queue semantics or near-cause semantics.
+
+## P2 Escalation Rule
+
+- If a new log appears to need many `reference_logs` just to be understandable, stop expanding the list and treat that as explicit evidence for missing governance-contract concentration.
+- In that case, the follow-up should prefer one of these actions:
+  - add or refine a governance view for human-readable concentration,
+  - add or refine index records for current active contract state,
+  - or open a dedicated follow-up slice to concentrate the missing contract surface.
+- The purpose of this escalation rule is to prevent `reference_logs` from degenerating into a transitive ancestry dump.
+
+## P2 Consequences
+
+- A reader can now separate order from cause:
+  - read `previous_log` to understand progression order,
+  - read `reference_logs` to understand why the current log was opened or which recent contract changes matter.
+- Future logs should prefer one clean `previous_log` plus a small, intentional `reference_logs` set over broad genealogy chains.
+- When chronology and causality diverge, the two fields may legitimately point to different logs. That is expected under this model and no longer counts as a structural smell by itself.
+- `P2` does not yet define machine-readable validation for these fields, but it does fix their meaning tightly enough to guide future authoring and later enforcement.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and terminology boundary)
@@ -195,9 +230,9 @@
 
 ### P2 (Reference semantics)
 
-- [ ] `P2-C1-S1`: `previous_log` semantics narrowed to direct predecessor only
-- [ ] `P2-C1-S2`: `reference_logs` semantics narrowed to near-cause and near-contract use only
-- [ ] `P2-C1-S3`: escalation rule fixed for over-referenced slices
+- [x] `P2-C1-S1`: `previous_log` semantics narrowed to direct predecessor only
+- [x] `P2-C1-S2`: `reference_logs` semantics narrowed to near-cause and near-contract use only
+- [x] `P2-C1-S3`: escalation rule fixed for over-referenced slices
 
 ### P3 (Governance-contract delta block)
 
@@ -222,8 +257,9 @@
 - `S0F-3A` is now opened as the next `S0F` follow-up slice for concentrating governance-contract truth into an index-plus-delta model instead of leaving active contract state recoverable only from scattered log prose.
 - `P0` is now complete: the slice is wired into the `S0F` spine, and the terminology boundary among `Application Domain`, `Governance Contracts`, and `Operational Surfaces` is now fixed as the baseline for later contract-index work.
 - `P1` is now complete: the four-layer truth model is fixed. Logs own event truth, delta declarations own change truth, active index records own current-state truth, and governance views own human-readable concentration.
-- The slice remains in framing mode beyond `P1`: no final delta schema, index record shape, reference-rule contract, or backfill rule is fixed yet.
-- The main design hypothesis is now no longer just implicit prose: current effective governance state should be queried from an index, contract evolution should be expressed through deltas, and historical reconstruction should remain log-owned rather than being overloaded onto `reference_logs` or Git history.
+- `P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and an explicit escalation rule now stops those references from becoming ancestry dumps.
+- The slice remains in framing mode beyond `P2`: no final delta schema, index record shape, or backfill rule is fixed yet.
+- The main design hypothesis is now operationally tighter: current effective governance state should be queried from an index, contract evolution should be expressed through deltas, chronology should stay log-owned, and causal traceability should remain compact rather than spreading across oversized reference chains.
 
 ## Evidence
 
@@ -231,6 +267,7 @@
 - `docs/logs/patch/log-S0F-P1-s0f-pr-body-completeness-standard-check-dispatch-failure-triage.md` shows that later patch work may surface governance-contract ambiguity without being a contract-first slice.
 - `docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md` shows that stable lane policy can be expressed clearly once its vocabulary and boundaries are concentrated, which motivates doing the same for governance contracts more generally.
 - The `P1` baseline in this slice now fixes the ownership split among event truth, change truth, current-state truth, and human-readable concentration so later phases can define schemas without collapsing those roles back together.
+- The `P2` baseline in this slice now fixes that queue lineage and causal references are different surfaces with different jobs, which reduces pressure to use `reference_logs` as a hidden contract registry.
 
 ## Numbering
 
