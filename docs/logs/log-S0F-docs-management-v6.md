@@ -33,6 +33,7 @@
   **phase_log_13**: `docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
   **phase_log_14**: `docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md`
   **phase_log_15**: `docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
+  **phase_log_16**: `docs/logs/log-S0F-3D-first-governance-contract-landing-batch.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -235,6 +236,8 @@
 - `S0F-3C/P1-P3` are now complete at baseline: one first-pass whole-series inventory, one explicit non-admission rule set, and one bounded active-admission shortlist plus provisional area-code map now exist.
 - `S0F-3C/P4` is now complete: the first unresolved queue has been explicitly adjudicated, `S0E-5A` and `S0E-5C` remain outside the active registry as orchestration shells, `S0F-1B` is absorbed into the main issue-Context contract, and `S0F-2A / S0F-2B` remain outside the current lifecycle-governance registry as repo-operations lane policy.
 - `S0F-3C/P5` is now complete: the next population step is fixed as shortlist-admission-first, the first bounded landing batch is now `ISS + PRA + COMPL`, and broader shortlist expansion is explicitly sequenced behind that first multi-area registry pass.
+- `S0F-3D` is now opened as the first bounded governance-contract landing slice after the `S0F-3C` audit baseline.
+- `S0F-3D/P1-P4` are now complete: the first `ISS`, `PRA`, and `COMPL` active records now exist under `docs/governance/contracts/`, and the front-door governance index now shows the first multi-area landing batch in deterministic sort order.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
