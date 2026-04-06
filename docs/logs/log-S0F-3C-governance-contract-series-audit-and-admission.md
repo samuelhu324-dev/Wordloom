@@ -78,7 +78,7 @@
 - `P2` is now complete: implementation-first surfaces, evidence-only surfaces, and packaging-only surfaces are now explicitly treated as non-admission candidates unless a later adjudication proves they own independent governance semantics.
 - `P3` is now complete: the first active-admission shortlist and provisional area-code map are now fixed well enough to guide later record creation without reopening full-series discovery.
 - `P4` is now complete: the first unresolved queue is now explicitly adjudicated, with each surface either absorbed into an existing shortlist contract or kept outside the active registry by explicit rule.
-- `P5` remains pending: this slice has not yet created additional governance-contract records; it has only fixed the audit-and-admission baseline for that later work.
+- `P5` is now complete: the next execution boundary is fixed as `shortlist admission first`, with one bounded first landing batch under `ISS`, `PRA`, and `COMPL`, while broader shortlist expansion remains sequenced behind that initial registry-population pass.
 
 ## Audit Boundary
 
@@ -197,10 +197,48 @@
 ## P5 Next Execution Boundary
 
 - The next landing step should not reopen whole-series discovery again.
-- Instead, the next follow-up should do one of these:
-  - accept this audit baseline and start bounded record admission from the approved shortlist,
-  - or resolve the adjudication queue first if the user wants the admission boundary even tighter.
-- Until then, `S0F-3C` treats the current result as an admission baseline rather than as authority to bulk-create the full registry immediately.
+
+### P5 Decision
+
+- `P5` fixes the next follow-up path as `shortlist admission first`.
+- The registry should now move from audit baseline to bounded population without reopening discovery, re-litigating `P4`, or bulk-admitting the whole shortlist in one step.
+- The first landing batch should be:
+  - `ISS`
+  - `PRA`
+  - `COMPL`
+- These three areas are chosen first because they carry the clearest lifecycle-governance semantics, they are already repeatedly referenced across the source family, and together they test the registry against more than one governance surface without forcing a full-area explosion.
+
+### P5 Landing Rules
+
+- The next follow-up should admit records only from the approved shortlist.
+- The first admission batch should remain bounded to these candidate families:
+  - `ISSUE-CREATION-METADATA-ENGLISH-BODY`
+  - `ISSUE-CONCLUSION-POST-MERGE-LINKAGE`
+  - `ISSUE-CONTEXT-SENTENCE-COUNT-MAIN-VS-CHILD`
+  - `ISSUE-PARENT-SIDEBAR-ORDERING-OWNERSHIP`
+  - `ISSUE-TITLE-KEYWORD-CONTROLLED-VOCABULARY`
+  - `PR-CREATION-ID-SCOPED-COMMIT-SELECTION`
+  - `LIFECYCLE-THREE-STAGE-COMPLETENESS-AUDIT`
+- The next follow-up should not admit these areas yet:
+  - `ATTR`
+  - `WF`
+  - `REMED`
+  - additional `PRB` records beyond the already-seeded `GC-PRB-0001`
+- The purpose of this limit is to validate multi-area population and registry readability without turning the first landing pass into another broad audit.
+
+### P5 Sequencing Rule
+
+- The next follow-up should sequence registry population in this order:
+  - batch 1: `ISS`, `PRA`, `COMPL`
+  - batch 2: `ATTR` and `WF` if batch 1 proves the glossary, relation, and index-table model still read cleanly
+  - batch 3: `REMED` and later `PRB` follow-up records only after the first two batches no longer need naming or readability correction
+- New area codes outside the current shortlist remain disallowed until one later slice explicitly reopens admission scope.
+
+### P5 Consequences
+
+- `S0F-3C` is no longer only an audit baseline; it now governs the order and limit of the next population step.
+- Future registry creation should cite `S0F-3C/P5` when choosing why `ISS`, `PRA`, and `COMPL` are admitted first.
+- If the first landing batch exposes new readability or overlap problems, the follow-up should tighten `INDEX` or record shape inside the approved shortlist rather than reopening full-series audit.
 
 ## Plan (draft)
 
@@ -263,5 +301,5 @@
 
 ### P5 (Next landing boundary)
 
-- [ ] `P5-C1-S1`: next follow-up path chosen between shortlist admission and adjudication-first tightening
-- [ ] `P5-C1-S2`: future registry creation bounded to the accepted audit baseline
+- [x] `P5-C1-S1`: next follow-up path chosen as shortlist-admission-first
+- [x] `P5-C1-S2`: future registry creation bounded to the accepted audit baseline
