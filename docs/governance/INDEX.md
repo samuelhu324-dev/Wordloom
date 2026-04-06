@@ -44,3 +44,13 @@
   - `PRB` identifies the governance area
   - `0001` identifies the record sequence inside that area
   - `<summary>` keeps the filename human-scannable without forcing the long semantic `contract_id` to carry the whole file-system burden
+
+## Sequence Rule
+
+- `0001`, `0002`, `0003`, and later numbers are sequence numbers inside one governance area code.
+- The number answers: which registry entry this is within that area.
+- The number does not by itself prove whether the later entry is:
+  - a new independent rule,
+  - a refinement of an earlier rule,
+  - or a replacement for an earlier rule.
+- That distinction should be expressed through the record body and index columns such as `supersedes`, `superseded_by`, and `notes`.

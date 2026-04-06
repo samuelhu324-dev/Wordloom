@@ -61,7 +61,8 @@
 - `P0` is now complete: `S0F-3B` is wired into the `S0F` spine and the boundary is fixed around front-door registry ergonomics rather than around deeper contract semantics already owned by `S0F-3A`.
 - `P1` is now complete: `docs/governance/INDEX.md` now exists as the front-door governance registry and glossary surface.
 - `P2` is now complete: `record_id` is now fixed as the short registry/file-system identifier, and the baseline filename model is now `GC-<AREA>-<NNNN>-<summary>.md`.
-- Later phases are still pending: sequence semantics and first sample rehoming are not fixed yet.
+- `P3` is now complete: the index now explains what `0001`, `0002`, and later sequence numbers mean inside one area, and how readers should distinguish registry order from semantic replacement.
+- Later phases are still pending: the first sample rehoming is not fixed yet.
 
 ## Plan (draft)
 
@@ -109,8 +110,8 @@
 
 ### P3 (Sequence semantics)
 
-- [ ] `P3-C1-S1`: sequence meaning fixed within one governance area
-- [ ] `P3-C1-S2`: refinement versus replacement reading rule fixed
+- [x] `P3-C1-S1`: sequence meaning fixed within one governance area
+- [x] `P3-C1-S2`: refinement versus replacement reading rule fixed
 
 ### P4 (Sample rehoming)
 
