@@ -37,10 +37,10 @@
 
 - `A2 admission package`:
   - status:
-    - packaged under `S0F-3F/P3-C2`
-  - derive one bounded `WF` current contract from `S0E-7D`
+    - executed under `S0F-3F/P4-C2`
+  - admit `WF` as the stable current area for workflow failure handling
+  - create `GC-WF-0001` from the bounded `S0E-7D` surface
   - keep the admission surface limited to failure taxonomy, ordered replay/backfill, and handling semantics rather than absorbing thin-gate, wrapper, or transport packaging
-  - prepare one minimal front-door package only after `P4-C2` confirms that `WF` remains the right area name and that one contract is sufficient
 - `excluded from current action package`:
   - `S0E-7E`
   - `S0E-7F`
@@ -50,8 +50,16 @@
 ## Sequencing Rule
 
 - Do not widen `A2` into a mixed workflow bundle.
-- Execute `P4-C2` only for the bounded `S0E-7D` admission lane if the current-area and single-contract boundary remain explicit enough for front-door mutation.
+- `S0F-3F/P4-C2` then executes `A2` only for the bounded `S0E-7D` admission lane after confirming that `WF` remains the right area name and that one contract is sufficient.
 - Keep `S0E-7E` through `S0E-7G` outside the current write surface unless a later family sweep reopens them with a defended different question.
+
+## Final Execution Result
+
+- `A2` is now executed under `S0F-3F/P4-C2` by admitting `WF` and creating `GC-WF-0001`.
+- The bounded `WF` family now closes with:
+  - one admitted current workflow-failure record derived from `S0E-7D`
+  - no front-door admission for `S0E-7E`, `S0E-7F`, or `S0E-7G`
+  - no secondary split package or refinement package required inside this family
 
 ## Reader Notes
 
@@ -62,6 +70,9 @@
 - The packaged result is therefore also narrow by design:
   - one admission-only lane exists for `S0E-7D`
   - no refinement, split, or secondary admission lane is opened for the later wrapper surfaces
+- That admission-only lane is now executed and closed:
+  - `GC-WF-0001` owns the current front-door workflow failure taxonomy
+  - `S0E-7E` through `S0E-7G` remain support-only orchestration, wrapper, and transport history
 - `REMED` remains adjacent but distinct:
   - `GC-REMED-0001` owns multi-item remediation-stage boundaries
   - the adjudicated `WF` lane would instead own the broader failure taxonomy and handling semantics that the later orchestration and wrapper surfaces replay
@@ -73,3 +84,5 @@
 - `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
 - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
 - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+- `docs/governance/contracts/GC-WF-0001-publish-verify-remediation-failure-taxonomy-and-handling.md`
+- `docs/governance/views/view-wf-admission-package-v1.md`

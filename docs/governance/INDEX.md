@@ -63,6 +63,9 @@
 - `REMED`:
   - `Remediation`
   - used for multi-item remediation governance such as preview-first batch staging, family-owned guarded apply delegation, split-before-mutation, and mandatory preserve-existing post-verify
+- `WF`:
+  - `Workflow Failure Handling`
+  - used for publish-verify-remediation failure taxonomy, ordered replay/backfill handling, and explicit block/replayable/manual/reconciliation workflow semantics
 
 ## Controlled Area-Code Dictionary
 
@@ -82,6 +85,7 @@
   - `PRG`: PR body standard-check gate governance
   - `PRR`: PR body reviewer and review-classification governance
   - `REMED`: multi-item remediation stage governance
+  - `WF`: workflow failure handling governance
 
 ## Filename Model
 
@@ -198,6 +202,12 @@
 | record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `GC-REMED-0001` | `GUARDED-BATCH-MULTI-ITEM-REMEDIATION-STAGES` | Multi-item remediation keeps preview planning, guarded apply, and preserve-existing post-verify as separate fail-closed stages | `active` | `fail` | `independent` | Concentrates the current remediation-stage boundary so multi-item repair stays preview-first, family-owned at apply time, and split before mixed-family mutation | `docs/governance/contracts/GC-REMED-0001-guarded-batch-multi-item-remediation-stages.md` |
+
+### Workflow Failure Handling (`WF`)
+
+| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `GC-WF-0001` | `PUBLISH-VERIFY-REMEDIATION-FAILURE-TAXONOMY-AND-HANDLING` | Publish-verify-remediation failures stay split into strong-versus-weak structure families with explicit handling semantics | `active` | `fail` | `independent` | Concentrates workflow failure taxonomy, ordered replay/backfill, and explicit block/replayable/manual/reconciliation handling without turning thin-gate or wrapper packaging into separate current records | `docs/governance/contracts/GC-WF-0001-publish-verify-remediation-failure-taxonomy-and-handling.md` |
 
 ## Reader Notes
 

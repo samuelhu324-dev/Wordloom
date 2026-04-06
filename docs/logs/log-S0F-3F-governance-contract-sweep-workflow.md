@@ -22,6 +22,7 @@
   **reference_log_5**: `docs/governance/views/view-s0f-1-family-sweep-v1.md`
   **reference_log_6**: `docs/governance/views/view-remed-admission-package-v1.md`
   **reference_log_7**: `docs/governance/views/view-wf-family-sweep-v1.md`
+  **reference_log_8**: `docs/governance/views/view-wf-admission-package-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -86,9 +87,10 @@
 - `P1-C2` is now complete for the second bounded family: `S0E-7D` through `S0E-7G` now have one explicit workflow-governance sweep packet and one candidate worksheet instead of remaining an undifferentiated `WF` shortlist placeholder.
 - `P2-C2` is now complete for that same bounded workflow family: `S0E-7D` is now formally accepted as the sole `WF` admission candidate, `S0E-7E` through `S0E-7G` are now fixed as support-only orchestration or transport history, and no `WF` defer queue remains open.
 - `P3-C2` is now complete for that same bounded workflow family: the adjudicated `WF` outcomes are now translated into one admission-only package `A2`, with `S0E-7D` isolated as the sole possible front-door lane and `S0E-7E` through `S0E-7G` explicitly excluded from current-state writes.
+- `P4-C2` is now complete for that same bounded workflow family: `A2` is now executed, `WF` is now admitted as a live current governance area, and `GC-WF-0001` now concentrates the `S0E-7D` workflow-failure taxonomy and handling boundary at the front door.
 - The first `S0F-1` worksheet still reads as a mixed result by design: most stable semantic surfaces are already covered by current contracts, several later slices remain support-only history, and the formerly open remediation candidate is now closed through bounded `REMED` admission.
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
-- The immediate next follow-up after `P3-C2` is now `P4-C2`: execute only the bounded `A2` lane if the `WF` area and one-contract admission boundary remain explicit enough for front-door mutation.
+- The immediate next follow-up after the completed `WF` family is to choose the next bounded unswept family, with `ATTR` now the most obvious remaining current-admission question unless a broader workflow readback lane is intentionally reopened.
 
 ## Problem Statement
 
@@ -327,6 +329,29 @@
 - The bounded `WF` family now exits packaging with one execution order rather than only one adjudication result:
   - execute `A2` only if the `WF` area name and one-record contract boundary remain explicit enough for front-door mutation
 - This means `P4-C2` can stay minimal and fail closed on scope creep instead of quietly widening into a multi-record workflow landing.
+
+## P4 Second Bounded Family Write Stage (`S0E-7D` through `S0E-7G`)
+
+### Executed Writes
+
+- `A2` is now executed.
+- Applied writes:
+  - `INDEX.md` now admits `WF` as a controlled area code and current front-door section
+  - `GC-WF-0001` now exists as the current workflow-failure record derived from `S0E-7D`
+  - `view-wf-admission-package-v1.md` now explains why `WF` was admitted and what remains outside the new current boundary
+
+### Validated Non-Writes
+
+- No second `WF` record is admitted during this stage.
+- `S0E-7E`, `S0E-7F`, and `S0E-7G` remain outside the front door as support-only orchestration, wrapper, and transport history.
+- No adjacent current area under `PRA`, `PRG`, or `REMED` is widened or rewritten during this stage.
+
+### P4 Result
+
+- The bounded `WF` family now proves that the workflow can admit one current taxonomy contract without dragging later wrapper or transport packaging across the front-door boundary.
+- The second bounded family therefore exits `P4-C2` in a clean completed state:
+  - `A2` executed and validated
+  - no further package remains open inside the `WF` family
 
 ## P2 Baseline (Decision table)
 
