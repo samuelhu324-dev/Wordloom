@@ -405,7 +405,7 @@
 
 - bounded source family:
   - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
-  - `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
 - already-active current contracts reviewed for overlap:
   - `GC-PRR-0001`
   - `GC-PRG-0001`

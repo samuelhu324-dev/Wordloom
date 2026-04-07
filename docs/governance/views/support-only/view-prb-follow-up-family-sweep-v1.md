@@ -65,4 +65,4 @@
 - `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
 - `docs/governance/views/view-prb-split-package-v1.md`
 - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
-- `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+- `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`

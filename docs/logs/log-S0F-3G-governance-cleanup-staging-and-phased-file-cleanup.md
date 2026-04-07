@@ -77,14 +77,15 @@
 - `P2` is now complete for that same bounded helper-view family: one reusable workflow explainer remains `keep current`, two split-lineage aids remain `keep legacy`, and the eight support-only helper views now resolve into one later move lane toward an explicit support-only location with no defer queue.
 - `P3` is now complete for that same bounded helper-view family: the first bounded cleanup manifest now fixes `docs/governance/views/support-only/` as the target location and records the exact planned rename paths plus reference-update set for the eight support-only helper views without moving files yet.
 - `P4` is now complete for that same bounded helper-view family: the eight support-only helper views now live under `docs/governance/views/support-only/`, the bounded `S0F-3F` and helper-view cross-links are rewritten to the new location, and the first cleanup round now closes with reader paths revalidated.
-- `P5` is now complete for the second bounded candidate family under `docs/governance/contracts/`: the preserved legacy redirect set and the paired `GC-PRB-0001` backfill note are now reviewed as the next cleanup family, but that family converges to `keep legacy` plus one explicit `defer cleanup` result rather than opening a second move or delete round.
+- `P5` is now complete for the second bounded candidate family under `docs/governance/contracts/`: the preserved legacy redirect set and the paired `GC-PRB-0001` backfill note are now reviewed as the next cleanup family, with the backfill note carried into an explicit defer queue until one contracts-side support-only location model can be defended.
 - `P5-C2` is now complete as an intake screen for the externally supplied `S0E-3* / 4* / 5*` batch: the supplied set does not open another cleanup family, because it is dominated by source-owner logs for current contracts, active follow-up contract owners, or non-governance bridge logs that remain outside destructive cleanup by boundary.
 - `P5-C3` is now complete as an intake screen for the externally supplied `S0E-6* / 7*` batch: this second supplied set also does not open another cleanup family, because it is dominated by direct current-contract source-owner logs, active normalization and gate-owner logs, or workflow-history files that remain reader-facing even when governance adjudication marks them support-only.
 - `P5-C4` is now complete as a repo-side full scan of `docs/logs/`: the scan does surface one strongest support-only proto-family around `S0F-1E`, `S0F-1F`, and the historical `S0F-1I/P1-P3` repair lane, but it still does not open another cleanup family because the wider `docs/logs/` support-only class has not yet been given one defended relocation model and adjacent support-only logs still remain entangled with reader-facing runbook, issue, or workflow history.
 - `P6` is now complete for the first bounded `docs/logs/` support-only move round: the slice now fixes `docs/logs/support-only/s0/` as the first stable location model for fully support-only `S0` logs, moves `S0F-1E` and `S0F-1F` there with bounded reference rewrites plus one directory index and manifest, and leaves `S0F-1I` in explicit `defer cleanup` standing because the file still mixes support-only repair history with later current-adjacent gate ownership.
 - `P7` is now complete as the first mixed-standing cleanup review round: `S0F-1I` has now been rechecked as a fragment-level candidate, but the round closes by formalizing its blocker sets rather than splitting or relocating it because contracts, runbook ownership, parent-spine navigation, issue bodies, and PR-prep surfaces still consume the root file as one current-adjacent readable source.
 - `P8` is now complete as the first non-`S0` whole-file support-only scan: the slice rechecked the strongest S2-S6 candidates under the existing `docs/logs/support-only/` model, but no new cleanup family is opened because the near-candidates still remain current-adjacent through parent spines, runbooks, `INDEX.md`, or active onboarding and migration reading.
-- The immediate next follow-up is now narrowed again: either continue the mixed-standing line on another deferred root-file candidate, or wait until a later bounded scope can prove one non-`S0` family has truly reached whole-file support-only standing instead of only broad historical value.
+- `P9` is now complete as the first `docs/governance/contracts/` support-only move round: the slice now fixes `docs/governance/contracts/support-only/` as the contracts-side relocation model for whole-file support-only backtrace notes, moves `GC-PRB-0001-backfill` there with bounded reference rewrites plus one directory index and cleanup manifest, and closes the only remaining contracts-family defer row from `P5`.
+- The immediate next follow-up is now narrowed again: either continue the mixed-standing line on another deferred root-file candidate, or wait until a later bounded scope can prove another whole-file non-current family is ready for relocation under an already-defended model.
 
 ## Problem Statement
 
@@ -388,7 +389,7 @@
   - `docs/governance/contracts/GC-ISS-0004-parent-sidebar-ordering-ownership.md`
   - `docs/governance/contracts/GC-ISS-0005-issue-title-keyword-controlled-vocabulary.md`
   - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
-  - `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
 - excluded from this bounded family:
   - active current contract records under `docs/governance/contracts/`
   - `_template-contract-record.md`
@@ -409,7 +410,7 @@
 | `docs/governance/contracts/GC-ISS-0004-parent-sidebar-ordering-ownership.md` | `legacy redirect file` | preserved old contract ID and deterministic redirect after the `ISS -> IID` split | `S0F-3E` | `keep legacy` | same preserved-path rule as the rest of the `GC-ISS-*` split set | none beyond ordinary reference validation | `contracts-round-1-review` |
 | `docs/governance/contracts/GC-ISS-0005-issue-title-keyword-controlled-vocabulary.md` | `legacy redirect file` | preserved old contract ID and deterministic redirect after the `ISS -> IID` split | `S0F-3E` | `keep legacy` | same preserved-path rule as the rest of the `GC-ISS-*` split set | none beyond ordinary reference validation | `contracts-round-1-review` |
 | `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md` | `legacy redirect file` | preserved deprecated umbrella record for the executed `PRB -> PRR/PRG` split | `S0F-3E` | `keep legacy` | the umbrella redirect is still cited by `INDEX.md`, governance views, and earlier registry-model logs as the canonical deprecated sample, so relocation would widen lineage churn without current readability gain | none beyond ordinary reference validation | `contracts-round-1-review` |
-| `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md` | `unclear cleanup candidate` | paired support-only backtrace for the deprecated `GC-PRB-0001` sample and the first real contract/backfill example | `S0F-3E` | `defer cleanup` | the file is support-only rather than current, but it is still co-cited with the umbrella record in early registry-model logs and remains easier to discover while co-located with the paired contract sample | any future move would first need one defended contract-backfill location model plus reference rewrites for the registry-model examples | `contracts-round-1-review` |
+| `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md` | `unclear cleanup candidate` | paired support-only backtrace for the deprecated `GC-PRB-0001` sample and the first real contract/backfill example | `S0F-3E` | `defer cleanup` | the file is support-only rather than current, but it is still co-cited with the umbrella record in early registry-model logs and remains easier to discover while co-located with the paired contract sample | any future move would first need one defended contract-backfill location model plus reference rewrites for the registry-model examples | `contracts-round-1-review` |
 
 ### Accepted Outcomes
 
@@ -790,6 +791,8 @@
 - P7-C1-S2: reject fragment extraction or whole-file relocation when current-adjacent contracts, runbook, or issue-prep surfaces still depend on the root file as one readable source
 - P8-C1-S1: scan non-`S0` logs for whole-file support-only families under the existing `docs/logs/support-only/` model
 - P8-C1-S2: reject families whose files still retain parent-spine, runbook, `INDEX.md`, or onboarding-methodology reader value even when they are historically broad or version-superseded
+- P9-C1-S1: define the first stable `docs/governance/contracts/` support-only destination and navigation model for whole-file support-only contract backtraces
+- P9-C1-S2: execute the bounded `GC-PRB-0001` backfill move with exact reference rewrites and close the earlier contracts-family defer row
 - P5-C1-S2: stop the slice when the remaining files are all either current, legacy-needed, or explicitly deferred
 
 ## Execution Checklist (unchecked)
@@ -836,6 +839,8 @@
 - [x] `P7-C1-S2`: fragment extraction and whole-file relocation rejected when current-adjacent reader surfaces still require the root file
 - [x] `P8-C1-S1`: non-`S0` logs scanned for whole-file support-only families under the existing relocation model
 - [x] `P8-C1-S2`: historically broad or version-superseded non-`S0` files rejected when parent or runbook readers still consume them as current methodology
+- [x] `P9-C1-S1`: first stable `docs/governance/contracts/` support-only destination and navigation model defined
+- [x] `P9-C1-S2`: bounded `GC-PRB-0001` backfill move executed with exact reference rewrites and the earlier contracts defer row closed
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -948,7 +953,7 @@
   - `docs/governance/contracts/GC-ISS-0004-parent-sidebar-ordering-ownership.md`
   - `docs/governance/contracts/GC-ISS-0005-issue-title-keyword-controlled-vocabulary.md`
   - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
-  - `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
 - expected:
   - the next bounded governance-contract cleanup family either yields one defensible new manifest or converges to explicit keep/defer outcomes without forced file movement
 - observed:
@@ -1047,7 +1052,7 @@
   - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
   - `docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md`
   - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
-  - `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
   - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
   - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
   - `docs/issues/pr-prep-S0F-1I-live-body.md`
@@ -1075,3 +1080,54 @@
 - observed:
   - no bounded non-`S0` move-ready family is found under the current `docs/logs/support-only/` model
   - the strongest near-candidate remains `S2B-5A` v1, but parent-spine, runbook, `INDEX`, and broader historical-lineage readers still keep the file in readable current-methodology territory rather than relocation-ready support-only residue
+
+## P9 First Contracts Support-Only Move Round (`GC-PRB-0001` backfill)
+
+### Inventory Packet
+
+- bounded candidate family:
+  - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+- relocation target defined in this round:
+  - `docs/governance/contracts/support-only/`
+- exact question answered by this round:
+  - whether the deferred `GC-PRB-0001` backfill note has now reached whole-file relocation readiness once one explicit contracts-side support-only destination, directory navigation note, and bounded rewrite set are all defended,
+  - or whether the earlier `P5` defer result still has to remain open because the backfill note depends on root-level co-location with the deprecated umbrella record
+- stop condition for this round:
+  - stop before file movement if discoverability still depends on root-level co-location rather than an explicit support-only contracts location plus direct reference rewrites
+
+### Executed Result
+
+- `GC-PRB-0001` remains `keep legacy` at the contracts root as the deprecated redirect umbrella.
+- `GC-PRB-0001 backfill` now qualifies as one whole-file support-only contract backtrace rather than a mixed or current-adjacent record.
+- This round therefore executes one bounded move only:
+  - create `docs/governance/contracts/support-only/` as the contracts-side support-only relocation surface
+  - move `GC-PRB-0001-backfill` into that directory
+  - add one directory index plus one cleanup manifest so discoverability does not rely on implicit co-location
+  - rewrite the bounded exact-path references in `S0F-3A`, `S0F-3F`, the `PRB` follow-up sweep view, and this cleanup ledger
+
+### P9 Result
+
+- The earlier `P5` contracts-family defer queue is now reduced by one executed move-ready file.
+- `docs/governance/contracts/` root remains the current-plus-legacy contract surface.
+- `docs/governance/contracts/support-only/` now exists as the bounded location model for whole-file support-only contract backtraces that no longer need root-level placement.
+
+### P9-C1-S1S2 (contracts support-only location model defined and first backfill move executed | 2026-04-07)
+
+- headSha: `<TBD-after-contracts-support-only-move-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/INDEX.md`
+  - `docs/governance/contracts/support-only/INDEX.md`
+  - `docs/governance/contracts/support-only/cleanup-manifest-S0F-3G-contracts-round-2.json`
+  - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/governance/views/support-only/view-prb-follow-up-family-sweep-v1.md`
+  - `docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
+  - `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+- expected:
+  - one previously deferred contracts-side support-only backfill note either remains blocked for discoverability reasons or moves into a defended support-only destination with explicit navigation and bounded reference rewrites
+- observed:
+  - `GC-PRB-0001-backfill` is now moved out of the contracts root without weakening discoverability, because the round adds a dedicated `docs/governance/contracts/support-only/` location model, a local directory index, and exact-path rewrites for the small set of reader-facing references that still cite the file directly
+  - the deprecated umbrella sample `GC-PRB-0001` remains rooted in place, so legacy redirect readability is preserved while the support-only backtrace is no longer co-located with current or legacy front-door contract files

@@ -494,7 +494,7 @@ contract_record:
 - The `P3` baseline in this slice now fixes the minimum delta declaration that later phases can ingest into an active index without forcing future authors to invent per-log contract prose formats.
 - The `P4` baseline in this slice now fixes both the target record shape and the canonical home for active governance contracts and governance views.
 - The `P5` baseline in this slice now fixes the migration path: backtrace from current active need, backfill by present importance, and let future non-contract-first logs declare deltas without waiting for full historical reconstruction.
-- `docs/governance/INDEX.md` now provides the front-door registry and abbreviation glossary, `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md` now provides the first real active governance-contract record, and `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md` now shows the corresponding bounded backfill note for that same sample.
+- `docs/governance/INDEX.md` now provides the front-door registry and abbreviation glossary, `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md` now provides the first real active governance-contract record, and `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md` now shows the corresponding bounded backfill note for that same sample.
 
 ## Numbering
 

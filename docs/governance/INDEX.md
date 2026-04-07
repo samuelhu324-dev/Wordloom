@@ -11,7 +11,7 @@
 
 - Read this file as the current governance front door.
 - Presence in this file means the record belongs to current-state interpretation at front-door level.
-- Absence from this file does not mean an old record file was deleted; historical files may still exist under `docs/governance/contracts/`.
+- Absence from this file does not mean an old record file was deleted; historical files may still exist under `docs/governance/contracts/`, including bounded support-only relocations under `docs/governance/contracts/support-only/`.
 - When old records remain stored for lineage, redirects, or traceability, they should be discovered through the old file itself, dedicated legacy views under `docs/governance/views/`, or migration logs rather than by widening this file into a mixed current-plus-history index.
 
 ## Registry Model
