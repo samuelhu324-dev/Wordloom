@@ -20,7 +20,7 @@
   **reference_log_3**: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
   **reference_log_4**: `docs/logs/_template-log-structured-extraction-clean-lane.md`
   **reference_log_5**: `docs/logs/_template-log-structured-extraction-mixed-role-lane.md`
-  **reference_log_6**: `docs/logs/log-S0F-1I-run-1-lifecycle-exact-path-successor-package.md`
+  **reference_log_6**: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -79,9 +79,9 @@
 - `P1` is now complete: one artifact responsibility map now aligns recurring governance operation with the `S0F-4A` six-outlet model, so future work can decide consistently what belongs in `runbook`, `packet template`, `log`, `manifest`, and `view` without collapsing role and disposition back into the same file.
 - `P2` is now complete: one naming and opening rule set now fixes how recurring governance work should open bounded execution logs without colliding with `S0F-2A` maintenance lanes, `S0F-2B` family-patch lanes, or the original control slices.
 - `P3` is now complete: the first reusable structured-log extraction templates are now published as one clean-lane template and one mixed-role transformation template, and `3H` now also records one explicit six-outlet naming sample set for later review and refinement.
-- `P4` is now complete: the first bounded pilot package is now opened as `S0F-1I-run-1`, with one concrete mixed-role execution log and one blocker manifest that target the remaining lifecycle exact-path consumers without reopening `S0F-3G` as the operator worksheet.
-- Naming is now also tightened for active use: new recurring governance logs should use owner-first `run-<n>` filenames, and any newly created runbook under this model should prefer stable-surface-first names rather than transient slice chronology unless inherited history makes that unsafe.
-- The immediate next follow-up is now no longer more naming design inside `3H`; it is the bounded execution of the `S0F-1I-run-1` package itself and, only if that package changes cleanup standing, one concise consequence write-back into `S0F-3G`.
+- `P4` is now complete: the first bounded pilot package has been revised from provisional `S0F-1I-run-1` packaging into a true next child slice `S0F-1K`, with one concrete mixed-role execution log and one blocker manifest that target the remaining lifecycle exact-path consumers without reopening `S0F-3G` as the operator worksheet.
+- Naming is now also tightened for active use: owner-first `run-<n>` remains the default for recurring governance packages, but when a follow-up clearly reads as the next human-facing child slice in the same family lineage, the repo may promote it to the next slice id instead of keeping the parent id plus `run-<n>`.
+- The immediate next follow-up is now no longer more naming design inside `3H`; it is the bounded execution of `S0F-1K` itself and, only if that package changes cleanup standing, one concise consequence write-back into `S0F-3G`.
 
 ## Problem Statement
 
@@ -353,12 +353,11 @@
 
 ### First Concrete Naming Example
 
-- the next `S0F-1I` lifecycle-successor package should default to a filename of the form:
-  - `log-S0F-1I-run-1-lifecycle-exact-path-successor-package.md`
-- why this is the right example:
-  - readers will search for `S0F-1I`, not for `S0F-3H`, when they want the target standing
-  - the package is one bounded successor-resolution run, not a new full slice
-  - the name makes clear that `S0F-3H` supplied the method while `S0F-1I` remains the target owner
+- the first provisional example for this model was `log-S0F-1I-run-1-lifecycle-exact-path-successor-package.md`.
+- after review, that pilot is now promoted into true child slice `S0F-1K` because human readers expect lineage-first numbering more than repeated reuse of `S0F-1I` in the filename.
+- naming rule refined from that pilot:
+  - default to `log-<owner-id>-run-<n>-<slug>.md` when the package is primarily one repeat package under an unchanged owner
+  - promote to the next child slice id when the package is better understood as the next bounded family follow-up and not merely another replay of the same owner log
 
 ## P3 Reusable Extraction Templates
 
@@ -404,7 +403,7 @@
 - full slice log baseline:
   - `log-S0F-1I-formatting-only-pr-body-convergence.md`
 - bounded recurring-run baseline:
-  - `log-S0F-1I-run-1-lifecycle-exact-path-successor-package.md`
+  - `log-S0F-1K-lifecycle-exact-path-successor-package.md`
 
 #### `contract`
 
@@ -458,6 +457,7 @@
 - `log`:
   - keep existing slice-first names for established phase logs
   - use owner-first `log-<owner-id>-run-<n>-<slug>.md` for new recurring governance packages
+  - if a package starts reading as the next true family child slice rather than as another replay under the same owner, promote it to the next slice id instead of keeping the `run-<n>` form
   - avoid slugs longer than one concrete package purpose plus one qualifier such as `package`, `review`, `recheck`, `reduction`, or `migration`
 - `runbook`:
   - keep inherited slice-style names when old readers already depend on them
@@ -472,22 +472,22 @@
 - `disposition/placement`:
   - continue to express state through placement and status rather than through filename prefixes
 
-## P4 First Pilot Package (`S0F-1I-run-1`)
+## P4 First Pilot Package (`S0F-1K`)
 
 ### Pilot Decision
 
-- the first concrete `3H` pilot is now opened as:
-  - `docs/logs/log-S0F-1I-run-1-lifecycle-exact-path-successor-package.md`
+- the first concrete `3H` pilot is now formalized as:
+  - `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
 - its paired blocker manifest is now published at:
-  - `docs/logs/support-only/s0f-1i-run-1-lifecycle-exact-path-successor-manifest.json`
+  - `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
 - this pilot intentionally does not reopen `S0F-3G` yet.
 - it opens the bounded package in the new model first, so later execution can work from one narrow ledger plus one exact blocker file set.
 
 ### Pilot Result
 
 - `3H` now has a real bounded execution-log sample rather than only abstract naming and template guidance.
-- the `S0F-1I` follow-up package is now framed as lifecycle-source successor work, not as another generic cleanup recheck.
-- the remaining human-facing lifecycle exact-path blockers are now retained as one explicit run-1 manifest instead of being rediscovered from scattered `docs/issues/` bodies.
+- the `S0F-1K` child slice is now framed as lifecycle-source successor work, not as another generic cleanup recheck.
+- the remaining human-facing lifecycle exact-path blockers are now retained as one explicit `S0F-1K` manifest instead of being rediscovered from scattered `docs/issues/` bodies.
 - `S0F-3G` standing remains unchanged for now by design; the pilot package exists so later execution can decide the redirect-safe successor model without stretching `3G` into a live worksheet again.
 
 ## First Template Direction
@@ -514,4 +514,4 @@
 - `2026-04-07`: Completed `S0F-3H/P1` by fixing one recurring-run artifact responsibility map aligned with `S0F-4A`, including the `runbook` / `packet template` / `log` / `manifest` / `view` split, one open-new-log rule, and one `S0F-1I` pilot-preparation rule for the remaining lifecycle exact-path successor package at `headSha: fb1d1fa0eb490f2375d5386d4f50b1f8c1fd68e1`.
 - `2026-04-07`: Completed `S0F-3H/P2` by fixing one bounded execution-log naming and opening model, including the canonical `log-<owner-id>-run-<n>-<slug>.md` rule, owner-selection and collision-avoidance rules against maintenance and patch lanes, parent-spine/control-slice write-back rules, and the first concrete filename model for the next `S0F-1I` lifecycle-successor package at `headSha: d8955db073660baa37c526f1cb9f3e740491208c`.
 - `2026-04-07`: Completed `S0F-3H/P3` by publishing one clean-lane structured-log extraction template, one mixed-role transformation template, and one explicit six-outlet naming sample set for later naming review and adjustment at `headSha: 6551adb949f3e69bd5c217fef9f821287a1f56e8`.
-- `2026-04-07`: Completed `S0F-3H/P4` by opening the first bounded pilot package as `S0F-1I-run-1`, publishing one paired blocker manifest for the remaining lifecycle exact-path consumers, and tightening active naming defaults so new recurring governance logs and future runbooks no longer depend on transient slice chronology by default at `headSha: c8d0ef617e81f6f3dc71ca07b813ab6e37ef842d`.
+- `2026-04-07`: Completed `S0F-3H/P4` by formalizing the first bounded pilot package as new child slice `S0F-1K`, publishing one paired blocker manifest for the remaining lifecycle exact-path consumers, and refining naming so the repo may promote a repeat-package pilot into the next lineage slice when that reads more clearly than reusing the old owner id with `run-<n>` at `headSha: c8d0ef617e81f6f3dc71ca07b813ab6e37ef842d`.

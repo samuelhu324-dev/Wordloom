@@ -1,13 +1,13 @@
-# log-S0F-1I-run-1-lifecycle-exact-path-successor-package (structured extraction mixed-role lane)
+# log-S0F-1K (Phase 1K: lifecycle exact-path successor package)
 
 ---
 
-**id**: `S0F-1I-run-1`
+**id**: `S0F-1K`
 **kind**: `log`
 **title**: `lifecycle exact-path successor package v1`
 **status**: `draft`
 **scope**: `S0`
-**tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Cleanup, Lifecycle, Ledger, epic/s0, sub/1`
+**tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Cleanup, Lifecycle, Ledger, epic/s0, sub/1k`
 **links**: ``
   **issue**: ``
   **pr**: ``
@@ -19,7 +19,7 @@
   **reference_log_2**: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
   **reference_log_3**: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
   **reference_log_4**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
-  **reference_log_5**: `docs/logs/support-only/s0f-1i-run-1-lifecycle-exact-path-successor-manifest.json`
+  **reference_log_5**: `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
@@ -40,6 +40,14 @@
 **updated**: `2026-04-07`
 
 ---
+
+## Decision / Outcome
+
+**Decision**:
+
+- `S0F-1K` opens the next bounded family follow-up after `S0F-1I`.
+- This slice exists because the repo now has a real next-step package around `S0F-1I`, but readers understand that package more clearly as the next child slice in the same lineage than as another reuse of `S0F-1I` with a `run-1` suffix.
+- v1 therefore treats lifecycle exact-path successor handling as its own child slice while preserving `S0F-1I` as the previous source-owner log.
 
 ## Why This Mixed-Role Lane Exists
 
@@ -106,12 +114,12 @@
 - allowed:
   - retain one exact blocker manifest for the human-facing lifecycle-source surfaces
   - define one candidate successor model for later execution
-  - open one bounded run ledger under the `3H` naming model
+  - open one bounded child slice ledger under the revised `3H` naming rule
 - non-writes:
   - no immediate file move for `S0F-1I`
   - no new contract
   - no new runbook
-  - no rewrite of machine-generated JSON lifecycle artifacts in this opening package
+  - no rewrite of machine-generated historical JSON lifecycle artifacts in this opening package
 
 ## Candidate Successor Model
 
@@ -131,8 +139,8 @@
 
 ## Naming Samples
 
-- bounded execution log:
-  - `log-S0F-1I-run-1-lifecycle-exact-path-successor-package.md`
+- child slice log:
+  - `log-S0F-1K-lifecycle-exact-path-successor-package.md`
 - possible future stable-surface runbook if this lane becomes repeatable:
   - `run-lifecycle-exact-path-successor-resolution.md`
 - possible later legacy-location pattern:
@@ -141,13 +149,13 @@
 ## Validation
 
 - the package is narrower than reopening `S0F-3G`
-- the owner id is the real target reader search key
+- the reader-facing lineage is now clearer than the provisional `run-1` naming form
 - no current semantic or procedural outlet is duplicated at package open
 - the blocker set is explicit instead of being rediscovered from scattered lifecycle bodies
 
 ## Evidence
 
 - headSha:
-  - `c8d0ef617e81f6f3dc71ca07b813ab6e37ef842d`
+  - `<backfill after publish>`
 - artifacts:
-  - `docs/logs/support-only/s0f-1i-run-1-lifecycle-exact-path-successor-manifest.json`
+  - `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`

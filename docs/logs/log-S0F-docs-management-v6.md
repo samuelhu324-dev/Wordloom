@@ -28,17 +28,18 @@
   **phase_log_8**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
   **phase_log_9**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
   **phase_log_10**: `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
-  **phase_log_11**: `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
-  **phase_log_12**: `docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md`
-  **phase_log_13**: `docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
-  **phase_log_14**: `docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md`
-  **phase_log_15**: `docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
-  **phase_log_16**: `docs/logs/log-S0F-3D-first-governance-contract-landing-batch.md`
-  **phase_log_17**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
-  **phase_log_18**: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
-  **phase_log_19**: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
-  **phase_log_20**: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
-  **phase_log_21**: `docs/logs/log-S0F-3H-recurring-governance-run-model-and-ledger-split.md`
+  **phase_log_11**: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
+  **phase_log_12**: `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
+  **phase_log_13**: `docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md`
+  **phase_log_14**: `docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
+  **phase_log_15**: `docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md`
+  **phase_log_16**: `docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
+  **phase_log_17**: `docs/logs/log-S0F-3D-first-governance-contract-landing-batch.md`
+  **phase_log_18**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
+  **phase_log_19**: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+  **phase_log_20**: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  **phase_log_21**: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+  **phase_log_22**: `docs/logs/log-S0F-3H-recurring-governance-run-model-and-ledger-split.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -148,6 +149,8 @@
   - 详见：`docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
 - `S0F-1J`（Phase 1J）：PR body completeness task and CI gate
   - 详见：`docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
+- `S0F-1K`（Phase 1K）：lifecycle exact-path successor package
+  - 详见：`docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
 - `S0F-2A`（Phase 2A）：maintenance lanes and direct patch ledger
   - 详见：`docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
 - `S0F-2B`（Phase 2B）：family patch and ops maintenance model
@@ -193,7 +196,7 @@
 - `S0F-3H/P1` is now complete: the recurring governance artifact-responsibility map is fixed and aligned with `S0F-4A`, so future packages can separate stable procedure, bounded packet inputs, run ledgers, manifests, and optional reader views without collapsing them back into one long-lived slice log.
 - `S0F-3H/P2` is now complete: bounded execution logs now have one canonical naming and opening rule that keeps recurring governance packages discoverable under the existing `log` role while preventing collisions with maintenance lanes, patch lanes, or the original `3F/3G` control slices.
 - `S0F-3H/P3` is now complete: the first reusable structured-log extraction templates are published for both clean-lane and mixed-role cases, and the six-outlet naming sample set is now explicit enough for later naming refinement without reopening the whole role-boundary debate.
-- `S0F-3H/P4` is now complete: the first real bounded pilot package is opened as `S0F-1I-run-1`, the remaining lifecycle exact-path blockers are retained in one explicit run manifest, and active naming defaults are now tightened around owner-first recurring logs plus stable-surface-first new runbooks.
+- `S0F-3H/P4` is now complete: the first real bounded pilot package is now formalized as new child slice `S0F-1K`, the remaining lifecycle exact-path blockers are retained in one explicit manifest, and active naming defaults are now tightened so recurring follow-ups may escalate from `run-<n>` packaging into a true next slice when human readers need lineage-first numbering.
 - `S0F-1E` is now stable: the bucket taxonomy is fixed across all three lifecycle stages, the additive audit-output contract is fixed, and no further phase is currently required inside this slice.
 - `S0F-1F/P0` is now complete: the next follow-up is fixed around materializing emitted diagnosis-layer bucket fields on real read-only output surfaces, and the immediate next step is `P1` live lifecycle audit bucket emission.
 - `S0F-1F/P1` is now complete: the primary live lifecycle audit surface emits additive diagnosis-layer bucket fields directly in retained output, one representative live sample is retained with emitted bucket data, and the next follow-up is `P2` supporting historical emission.

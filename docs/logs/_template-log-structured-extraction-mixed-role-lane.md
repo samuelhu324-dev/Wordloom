@@ -95,7 +95,7 @@
 - bounded execution log:
   - `log-<owner-id>-run-<n>-<mixed-role-slug>.md`
 - likely mixed-role sample shape:
-  - `log-S0F-1I-run-1-lifecycle-exact-path-successor-package.md`
+  - `log-S0F-1K-lifecycle-exact-path-successor-package.md`
 - possible support-only destination after later success:
   - `docs/logs/support-only/<scope>/log-<slice-id>-<summary>.md`
 
