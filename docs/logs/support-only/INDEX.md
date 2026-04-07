@@ -9,6 +9,7 @@
 - `s0/`
   - `log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
   - `log-S0F-1F-bucketed-audit-output-materialization.md`
+  - `log-S0F-1I-formatting-only-pr-body-convergence.md`
 
 ## Navigation Rule
 

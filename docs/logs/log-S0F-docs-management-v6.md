@@ -26,7 +26,7 @@
   **phase_log_6**: `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
   **phase_log_7**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
   **phase_log_8**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
-  **phase_log_9**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  **phase_log_9**: `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
   **phase_log_10**: `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
   **phase_log_11**: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
   **phase_log_12**: `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
@@ -146,7 +146,7 @@
 - `S0F-1H`（Phase 1H）：PR body completeness reviewer
   - 详见：`docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
 - `S0F-1I`（Phase 1I）：formatting-only PR body convergence
-  - 详见：`docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - 详见：`docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
 - `S0F-1J`（Phase 1J）：PR body completeness task and CI gate
   - 详见：`docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
 - `S0F-1K`（Phase 1K）：lifecycle exact-path successor package
@@ -200,6 +200,7 @@
 - `S0F-1K/P1` is now complete: the successor package now fixes a keep-legacy root-anchor model for the six retained lifecycle readers, so `S0F-1I` stays at its current exact path for provenance-safe reading while any future support-only move remains a later bounded decision rather than an implicit cleanup side effect.
 - `S0F-1K/P2` is now complete: the future `S0F-1I` relocation shape is now fixed as `support-only target body + mandatory root stub`, which means any later cleanup re-entry can be judged as a bounded execution choice instead of reopening the directory-model or discoverability question.
 - `S0F-1K/P3` is now complete: the exact root-stub body and bounded move checklist are now retained as preview artifacts, so the next decision point is whether to execute a real cleanup re-entry rather than how to design the stub.
+- `S0F-1K/P4` is now complete: `S0F-1I` has now moved to `docs/logs/support-only/s0/`, the old root path is preserved as a stub for retained lifecycle discoverability, and direct navigation surfaces now read the moved retained body rather than the stub.
 - `S0F-1E` is now stable: the bucket taxonomy is fixed across all three lifecycle stages, the additive audit-output contract is fixed, and no further phase is currently required inside this slice.
 - `S0F-1F/P0` is now complete: the next follow-up is fixed around materializing emitted diagnosis-layer bucket fields on real read-only output surfaces, and the immediate next step is `P1` live lifecycle audit bucket emission.
 - `S0F-1F/P1` is now complete: the primary live lifecycle audit surface emits additive diagnosis-layer bucket fields directly in retained output, one representative live sample is retained with emitted bucket data, and the next follow-up is `P2` supporting historical emission.

@@ -3,8 +3,8 @@
   "package_type": "lifecycle-exact-path-successor",
   "target_owner": "S0F-1I",
   "source_log_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
-  "status": "p3-stub-preview-retained",
-  "current_disposition": "defer cleanup",
+  "status": "p4-relocation-executed",
+  "current_disposition": "support-only body moved and root stub retained",
   "human_facing_exact_path_consumers": [
     "docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md",
     "docs/issues/issue-conclusion-S0F-1I-live-apply-body.md",
@@ -57,8 +57,15 @@
     "root_stub_preview_path": "docs/logs/support-only/s0f-1k-s0f-1i-root-stub-preview.md",
     "root_stub_preview_ready": true,
     "execution_checklist_ready": true,
-    "move_not_executed_yet": true,
-    "next_decision": "decide whether reopening S0F-3G for stub-backed relocation is worth executing now"
+    "move_not_executed_yet": false,
+    "next_decision": "none; the stub-backed relocation is now executed"
+  },
+  "p4_execution_result": {
+    "support_only_target_path": "docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md",
+    "root_stub_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
+    "cleanup_manifest": "docs/logs/support-only/cleanup-manifest-S0F-3G-exact-path-round-2.json",
+    "direct_navigation_updates_executed": true,
+    "historical_lifecycle_readers_left_on_root_stub": true
   },
   "non_goals": [
     "reopen semantic PR-body convergence work",

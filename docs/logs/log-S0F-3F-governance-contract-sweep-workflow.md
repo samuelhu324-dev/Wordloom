@@ -187,7 +187,7 @@
   - `docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md`
   - `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
   - `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
-  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
   - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
 - already-active current contracts reviewed for overlap:
   - `GC-ICR-0001`

@@ -91,7 +91,8 @@
 - `P12-C2-S1S2` is now complete: the `PRG/PRB` contract-lineage group no longer uses `S0F-1I` as a current exact-path source anchor, and the cleanup slice rechecks `S0F-1I` again after those changes, confirming that root relocation is still blocked only by retained lifecycle artifacts rather than by contracts or runbook discoverability.
 - `S0F-1K/P2` is now complete as the successor-planning follow-up: the remaining `S0F-1I` relocation model is now explicit as `support-only target body + mandatory root stub`, so a later `S0F-3G` re-entry would be execution-only rather than another model-finding pass.
 - `S0F-1K/P3` is now complete as the successor-planning follow-up: one preview artifact now contains the exact root stub body plus execution checklist for `S0F-1I`, so a later `S0F-3G` re-entry can open as a bounded move round or stay deferred without any remaining stub-design ambiguity.
-- The immediate next follow-up is now narrower than it was at `P11`: another `S0F-3G` re-entry is useful only if the repo chooses to execute the now-defined stub-backed relocation for the remaining issue and PR-prep exact-path consumers, because the runbook and contract-lineage dependency groups have now already been reduced and the successor model itself is no longer the blocker.
+- `P13` is now complete as the executed `S0F-1I` stub-backed relocation round: the retained body now lives under `docs/logs/support-only/s0/`, the root path is preserved as a stub, direct navigation surfaces now point to the moved retained body, and the six historical lifecycle readers remain readable without bulk rewrites.
+- The immediate next follow-up now moves off successor-model design and onto post-move judgment only if the repo later finds one reader-path regression, because the previously deferred lifecycle exact-path relocation is now executed.
 - The broader structural follow-up is now split into `S0F-4A`, which fixes document role boundaries, write-back protocol, naming baselines, and disposition rules, and into `S0F-3H`, which turns recurring cleanup reuse into runbook-driven packets plus bounded ledgers so later rounds no longer have to keep stretching this slice into a permanent operator notebook.
 
 ## Problem Statement
@@ -926,6 +927,49 @@
 - `S0F-1I` still remains deferred, but the remaining blocker set is now cleaner and smaller:
   - retained lifecycle artifacts
 - The next meaningful cleanup-enabling work is therefore no longer runbook or contract-lineage concentration; it is one redirect-safe lifecycle-source model if the repo still wants to relocate `S0F-1I` later.
+
+## P13 Stub-Backed Exact-Path Relocation Round (`S0F-1I`)
+
+### P13 Scope
+
+- bounded relocation family reopened after `S0F-1K/P3` completed the planning lane:
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/support-only/INDEX.md`
+- exact question answered by this round:
+  - whether the now-defined `support-only target body + root stub` model can be executed without broad lifecycle-body rewrites and without weakening reader discoverability
+
+### P13 Execution Model
+
+- execution rule added by this round:
+  - once the exact-path relocation model is explicit and previewed, `S0F-3G` may reopen for one bounded move round that executes the support-only body move plus root stub replacement, so long as historical lifecycle readers remain readable through the stub and direct navigation surfaces are rewritten to the moved retained body
+
+### P13-C1-S1 Stub-Backed Relocation Execution
+
+- applied changes:
+  - the retained `S0F-1I` body now lives at `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` is now a stub that preserves the original exact path
+  - `docs/logs/support-only/INDEX.md` now lists the moved `S0F-1I` body beside the earlier `S0F-1E` and `S0F-1F` entries
+  - direct navigation surfaces that should read the moved retained body now point to the support-only path instead of the root stub
+
+### P13 Manifest Decision
+
+- executed relocation manifest:
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-exact-path-round-2.json`
+- manifest scope:
+  - executed move:
+    - support-only retained body move for `S0F-1I`
+    - root stub replacement at the old exact path
+  - preserved reader model:
+    - six retained lifecycle and PR-prep bodies keep the root stub as their exact-path citation surface
+
+### P13 Result
+
+- `P13` closes the remaining lifecycle exact-path relocation question for `S0F-1I` without rewriting the retained lifecycle bodies themselves.
+- `S0F-1I` no longer remains a deferred root-placement row under `S0F-3G`:
+  - the retained body is now support-only
+  - the old root path is now a discoverability-preserving stub
+  - direct navigation surfaces read the moved retained body explicitly
 
 ## Plan (draft)
 

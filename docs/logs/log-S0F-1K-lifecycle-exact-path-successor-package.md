@@ -14,11 +14,11 @@
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
-  **previous_log**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  **previous_log**: `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
   **reference_log_1**: `docs/logs/log-S0F-3H-recurring-governance-run-model-and-ledger-split.md`
   **reference_log_2**: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
   **reference_log_3**: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
-  **reference_log_4**: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  **reference_log_4**: `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
   **reference_log_5**: `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
@@ -76,7 +76,7 @@
 
 ## Current Blockers
 
-- exact-path consumers:
+- exact-path consumers now preserved through the root stub:
   - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
   - `docs/issues/issue-conclusion-S0F-1I-live-apply-body.md`
   - `docs/issues/issue-conclusion-lifecycle-remediation-S0F-1I-live-post-merge-issue-conclusion-s0f-1i-body.md`
@@ -84,10 +84,9 @@
   - `docs/issues/pr-prep-S0F-1I-live-manifest-create-body.md`
   - `docs/issues/pr-prep-S0F-1I-live-manifest-post-apply-live-body.md`
 - unresolved outlet identities:
-  - none for `contract` or `runbook`
-  - successor handling for historical lifecycle-source reading is still undecided
+  - none for `contract`, `runbook`, or lifecycle-source relocation model
 - current disposition standing:
-  - `defer cleanup`
+  - `support-only body moved and root stub retained`
 
 ## Export-First Plan
 
@@ -164,6 +163,8 @@
   - define the exact stub-backed relocation contract so any later support-only move becomes an execution choice rather than another naming or discoverability debate
 - `P3`:
   - retain one execution-ready root-stub preview and move checklist so a later `S0F-3G` re-entry can decide whether to execute the stub-backed relocation without redesigning the stub text
+- `P4`:
+  - execute the support-only move, replace the root path with the planned stub, and rewrite only the direct navigation surfaces that should now point at the moved retained body
 
 ## Current Status
 
@@ -175,14 +176,16 @@
 - `P2` is now complete: the remaining uncertainty is no longer where `S0F-1I` would move or what would hold the root path afterwards; it is only whether a later `S0F-3G` execution round is worth taking now that the stub-backed model is defined.
 - `P3` is now complete: one preview artifact now carries the exact root-stub body and bounded execution checklist that a later cleanup round would use, so the next decision can be about execution value rather than stub wording.
 - `P3` is now complete: the package still does not move `S0F-1I`, but it now removes the last design ambiguity about what the root file would look like immediately after a stub-backed relocation.
+- `P4` is now complete: `S0F-1I` now lives at `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`, while the root path is preserved as a stub for retained lifecycle and PR-prep exact-path readers.
+- `P4` is now complete: direct navigation surfaces that should read the moved retained body now point to the support-only target, while the six retained lifecycle readers remain unchanged and continue to resolve through the root stub.
 
 ## Residual Blocker Ledger
 
 - keep after close-out:
-  - exact list of human-facing lifecycle bodies that still point at the root `S0F-1I` path
-  - explicit statement that `S0F-3G` standing remains unchanged until this package executes real successor handling
-  - explicit future move contract: support-only target plus root stub, without mandatory historical reader rewrites at decision time
-  - one preview artifact containing the exact stub body and execution checklist for a future `S0F-3G` re-entry
+  - exact list of human-facing lifecycle bodies that still point at the root `S0F-1I` path through the executed stub
+  - explicit statement that `S0F-3G` now owns the executed relocation outcome rather than a remaining model-finding defer row
+  - executed move contract: support-only target plus root stub, without mandatory historical reader rewrites at execution time
+  - one preview artifact containing the stub body and execution checklist that was used to make the executed move explicit before file surgery
 
 ## Naming Samples
 
@@ -205,6 +208,7 @@
 - `P2` reuses the existing support-only location model from `S0F-3G/P6` instead of inventing a special-case destination for one deferred log
 - `P2` avoids unnecessary historical reader rewrites by making the root stub, not mass relinking, the default discoverability bridge
 - `P3` keeps execution and planning separated: it produces the real would-be stub text without falsely claiming that the move already happened
+- `P4` keeps lifecycle provenance intact by moving the retained body while preserving the old root path as a real stub rather than forcing six historical reader rewrites
 
 ## Evidence
 
@@ -213,6 +217,7 @@
 - artifacts:
   - `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
   - `docs/logs/support-only/INDEX.md`
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-exact-path-round-2.json`
   - `docs/logs/support-only/s0f-1k-s0f-1i-root-stub-preview.md`
   - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
   - `docs/issues/issue-conclusion-S0F-1I-live-apply-body.md`
