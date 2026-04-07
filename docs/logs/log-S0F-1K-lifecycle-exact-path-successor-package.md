@@ -203,7 +203,7 @@
 ## Evidence
 
 - headSha:
-  - `86d4280de2d295a9dfb5e2a175789eb7339b5d8b`
+  - `52719a2418f69dcf83e4e8c7d0e28778ae512f63`
 - artifacts:
   - `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
   - `docs/logs/support-only/INDEX.md`
