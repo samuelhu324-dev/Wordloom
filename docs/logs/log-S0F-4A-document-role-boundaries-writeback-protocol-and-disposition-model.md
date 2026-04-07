@@ -517,7 +517,7 @@
 
 ### P6-C1-S1 through P6-C1-S2 (first bounded retained-content rewrite lane opened and executed on `S0F-1I` | 2026-04-07)
 
-- headSha: `<TBD-after-s0f-4a-p6-c1-s2-commit>`
+- headSha: `3f793c3f1c5dd1779018beaec618f02fba5a7544`
 - artifacts:
   - `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
   - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
