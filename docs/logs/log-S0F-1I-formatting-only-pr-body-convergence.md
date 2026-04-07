@@ -125,6 +125,7 @@
 - `S0F-1I` is now stable in rewritten form: the bounded formatting-only set has been converged through the canonical historical rewrite surface, the post-repair reviewer rerun proves the full current live `S0F` child set has reached exact-match PR body state, and the retained log now keeps only the slice-local record plus bridge context required for later cleanup review.
 - `S0F-1K/P1` is now complete: this file remains intentionally held at its current root path as the exact-path source anchor for retained lifecycle and PR-prep bodies, while any later support-only move or legacy-stub relocation is tracked only through `S0F-1K`.
 - `S0F-1K/P2` is now complete: if a later cleanup round executes relocation, the intended destination is `docs/logs/support-only/s0/` and the current root path must remain occupied by a stub rather than becoming a broken historical citation.
+- `S0F-1K/P3` is now complete: the exact would-be root stub body and its bounded move checklist are now retained as preview-only artifacts, so no later cleanup round needs to invent the stub shape from scratch.
 
 ## Retained Content After P6-C1-S2
 

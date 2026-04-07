@@ -162,6 +162,8 @@
   - defend the keep-legacy root-anchor model for remaining human-facing lifecycle-source readers before any relocation attempt
 - `P2`:
   - define the exact stub-backed relocation contract so any later support-only move becomes an execution choice rather than another naming or discoverability debate
+- `P3`:
+  - retain one execution-ready root-stub preview and move checklist so a later `S0F-3G` re-entry can decide whether to execute the stub-backed relocation without redesigning the stub text
 
 ## Current Status
 
@@ -171,6 +173,8 @@
 - cleanup standing is intentionally unchanged after `P1`: `S0F-3G` should still read `S0F-1I` as `defer cleanup` until a later phase proves that any legacy-stub relocation is actually readable.
 - `P2` is now complete: the future relocation shape is explicit rather than implied, with one support-only target path, one mandatory root stub path, and one rule that historical lifecycle readers may keep the root path as their citation surface.
 - `P2` is now complete: the remaining uncertainty is no longer where `S0F-1I` would move or what would hold the root path afterwards; it is only whether a later `S0F-3G` execution round is worth taking now that the stub-backed model is defined.
+- `P3` is now complete: one preview artifact now carries the exact root-stub body and bounded execution checklist that a later cleanup round would use, so the next decision can be about execution value rather than stub wording.
+- `P3` is now complete: the package still does not move `S0F-1I`, but it now removes the last design ambiguity about what the root file would look like immediately after a stub-backed relocation.
 
 ## Residual Blocker Ledger
 
@@ -178,6 +182,7 @@
   - exact list of human-facing lifecycle bodies that still point at the root `S0F-1I` path
   - explicit statement that `S0F-3G` standing remains unchanged until this package executes real successor handling
   - explicit future move contract: support-only target plus root stub, without mandatory historical reader rewrites at decision time
+  - one preview artifact containing the exact stub body and execution checklist for a future `S0F-3G` re-entry
 
 ## Naming Samples
 
@@ -199,6 +204,7 @@
 - `P1` keeps provenance-safe reading intact because it changes interpretation first and location later
 - `P2` reuses the existing support-only location model from `S0F-3G/P6` instead of inventing a special-case destination for one deferred log
 - `P2` avoids unnecessary historical reader rewrites by making the root stub, not mass relinking, the default discoverability bridge
+- `P3` keeps execution and planning separated: it produces the real would-be stub text without falsely claiming that the move already happened
 
 ## Evidence
 
@@ -207,6 +213,7 @@
 - artifacts:
   - `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
   - `docs/logs/support-only/INDEX.md`
+  - `docs/logs/support-only/s0f-1k-s0f-1i-root-stub-preview.md`
   - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
   - `docs/issues/issue-conclusion-S0F-1I-live-apply-body.md`
   - `docs/issues/issue-conclusion-lifecycle-remediation-S0F-1I-live-post-merge-issue-conclusion-s0f-1i-body.md`
