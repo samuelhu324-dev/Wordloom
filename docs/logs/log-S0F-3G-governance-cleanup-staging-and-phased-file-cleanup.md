@@ -35,7 +35,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-06`
-**updated**: `2026-04-06`
+**updated**: `2026-04-07`
 
 ---
 
@@ -82,7 +82,8 @@
 - `P5-C3` is now complete as an intake screen for the externally supplied `S0E-6* / 7*` batch: this second supplied set also does not open another cleanup family, because it is dominated by direct current-contract source-owner logs, active normalization and gate-owner logs, or workflow-history files that remain reader-facing even when governance adjudication marks them support-only.
 - `P5-C4` is now complete as a repo-side full scan of `docs/logs/`: the scan does surface one strongest support-only proto-family around `S0F-1E`, `S0F-1F`, and the historical `S0F-1I/P1-P3` repair lane, but it still does not open another cleanup family because the wider `docs/logs/` support-only class has not yet been given one defended relocation model and adjacent support-only logs still remain entangled with reader-facing runbook, issue, or workflow history.
 - `P6` is now complete for the first bounded `docs/logs/` support-only move round: the slice now fixes `docs/logs/support-only/s0/` as the first stable location model for fully support-only `S0` logs, moves `S0F-1E` and `S0F-1F` there with bounded reference rewrites plus one directory index and manifest, and leaves `S0F-1I` in explicit `defer cleanup` standing because the file still mixes support-only repair history with later current-adjacent gate ownership.
-- The immediate next follow-up is now externalized cleanly: either provide one new bounded candidate batch that looks like helper residue, legacy redirect, or reproducible output, or let a later repo-side scan defend another cleanup family strongly enough for execution.
+- `P7` is now complete as the first mixed-standing cleanup review round: `S0F-1I` has now been rechecked as a fragment-level candidate, but the round closes by formalizing its blocker sets rather than splitting or relocating it because contracts, runbook ownership, parent-spine navigation, issue bodies, and PR-prep surfaces still consume the root file as one current-adjacent readable source.
+- The immediate next follow-up is now narrowed more precisely: either apply the same mixed-standing review model to another candidate whose whole-file move was previously deferred, or start a new repo-side scan for non-`S0` logs whose entire file standing is already support-only and therefore does not require fragment extraction first.
 
 ## Problem Statement
 
@@ -660,6 +661,55 @@
   - but the file as a whole still carries later current-adjacent gate packaging and active downstream traceability, so whole-file relocation would currently over-collapse meaning
 - This round therefore turns the earlier proto-family into one real executed cleanup family, but only by narrowing the move set from `S0F-1E/F/I` to the defended pure-support-only subset `S0F-1E/F`.
 
+## P7 First Mixed-Standing Review Round (`S0F-1I` fragment-level recheck)
+
+### P7 Scope
+
+- bounded candidate family reopened from the prior `defer cleanup` lane:
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- exact question answered by this round:
+  - whether the mixed-standing `S0F-1I` file can now be split into one support-only historical fragment and one current-adjacent residual source cleanly enough to justify extraction or relocation under `S0F-3G`
+
+### P7 Review Model
+
+- fragment-level rule added by this round:
+  - semantic `support-only history` for one subsection such as `P1-P3` is not by itself enough to justify file surgery
+  - `S0F-3G` may extract or relocate fragments only if the remaining root file would still preserve one coherent reader-facing purpose and the rewrite set stays bounded across contracts, runbook, issue bodies, and PR-prep surfaces
+- blocker classes reviewed explicitly:
+  - current-adjacent contracts and legacy umbrellas
+  - reviewer-owned runbook surfaces
+  - parent-spine and adjacent-log navigation
+  - issue-body and PR-prep lifecycle surfaces derived from the same root log
+
+### P7 Candidate Decision
+
+- `defer cleanup`:
+  - `S0F-1I`
+    - rationale:
+      - `S0F-3F` only downgraded `S0F-1I/P1-P3` to support-only repair history
+      - the same root file still carries later `P4` standard-check packaging standing that is cited by `GC-PRG-0001`, preserved legacy `GC-PRB-0001`, the reviewer-owned runbook, parent-spine navigation, and live issue or PR-prep support files
+      - extracting `P1-P3` into a second file would therefore require one wider rewrite contract for fragment naming, successor naming, and source-of-truth wording across those downstream surfaces, which this cleanup round cannot yet defend safely
+
+### P7 Manifest Decision
+
+- first mixed-standing cleanup review manifest:
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-mixed-standing-round-1.json`
+- manifest scope:
+  - review only:
+    - `S0F-1I`
+  - no file moves:
+    - the round retains root placement for `S0F-1I`
+  - no fragment extraction:
+    - the round records blocker sets instead of inventing one new split-file naming model prematurely
+
+### P7 Result
+
+- The first mixed-standing review round now closes one ambiguity that remained after `P6`: `S0F-1I` is not merely a deferred whole-file move candidate, but a file whose support-only semantics are fragment-scoped while its reader-facing downstream usage is still root-file-scoped.
+- This makes the stronger cleanup rule explicit for later rounds:
+  - do not treat partial support-only standing as permission for file surgery
+  - first prove one bounded successor model for both extracted history and the remaining current-adjacent source
+- `S0F-1I` therefore remains at `docs/logs/` root by defended choice rather than by unfinished investigation.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -700,6 +750,8 @@
 - P6-C1-S2: separate whole-file pure support-only logs from mixed-standing logs before any move write begins
 - P6-C2-S1: execute the first bounded `docs/logs/` move round only for the pure support-only subset with bounded reference rewrites
 - P6-C2-S2: defer mixed-standing logs such as `S0F-1I` rather than forcing whole-file relocation
+- P7-C1-S1: recheck one deferred mixed-standing log as a fragment-level cleanup candidate and inventory its blocker surfaces explicitly
+- P7-C1-S2: reject fragment extraction or whole-file relocation when current-adjacent contracts, runbook, or issue-prep surfaces still depend on the root file as one readable source
 - P5-C1-S2: stop the slice when the remaining files are all either current, legacy-needed, or explicitly deferred
 
 ## Execution Checklist (unchecked)
@@ -742,6 +794,8 @@
 - [x] `P6-C1-S2`: whole-file pure support-only logs separated from mixed-standing logs before move writes
 - [x] `P6-C2-S1`: first bounded `docs/logs/` move round executed for the pure support-only subset with bounded reference rewrites
 - [x] `P6-C2-S2`: mixed-standing logs such as `S0F-1I` deferred instead of being forced into whole-file relocation
+- [x] `P7-C1-S1`: one deferred mixed-standing log rechecked as a fragment-level cleanup candidate with explicit blocker inventory
+- [x] `P7-C1-S2`: fragment extraction and whole-file relocation rejected when current-adjacent reader surfaces still require the root file
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -942,3 +996,23 @@
   - `S0F-1E` and `S0F-1F` now live there with bounded reference rewrites and one new support-only directory index
   - `S0F-1I` remains explicitly deferred because the file still mixes support-only `P1-P3` repair history with later current-adjacent gate standing and downstream traceability surfaces
   - the first `docs/logs/` cleanup round therefore executes safely only by narrowing the earlier proto-family to the pure-support-only subset rather than forcing whole-file relocation for all three candidates
+
+### P7-C1-S1S2 (mixed-standing S0F-1I fragment review closed without file surgery | 2026-04-07)
+
+- headSha: `<TBD-after-mixed-standing-review-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-mixed-standing-round-1.json`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md`
+  - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+  - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/issues/pr-prep-S0F-1I-live-body.md`
+- expected:
+  - one deferred mixed-standing file is re-evaluated explicitly at fragment level, and the round either proves one safe extraction model or records why the root file must remain intact
+- observed:
+  - `S0F-1I` is now confirmed as fragment-scoped support-only history plus root-scoped current-adjacent traceability, so neither whole-file relocation nor `P1-P3` extraction is defended yet
+  - the blocker sets are now retained explicitly across contracts, runbook, parent-spine or adjacent logs, and issue or PR-prep surfaces, making the defer decision auditable instead of implicit

@@ -1,0 +1,45 @@
+{
+  "round_id": "S0F-3G-mixed-standing-round-1",
+  "bounded_candidate_set": [
+    "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md"
+  ],
+  "defaults": {
+    "support_only_root": "docs/logs/support-only/",
+    "mixed_standing_policy": "do not relocate or extract fragments when current-adjacent reader surfaces still depend on the root log as one readable source",
+    "review_goal": "distinguish whole-file move readiness from fragment-level historical standing"
+  },
+  "items": [
+    {
+      "candidate_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
+      "candidate_class": "mixed-standing log",
+      "support_only_fragment": "S0F-1I/P1-P3",
+      "current_adjacent_fragment": "S0F-1I/P4 plus downstream standard-check traceability",
+      "proposed_cleanup_outcome": "defer cleanup",
+      "blocking_reference_sets": {
+        "contracts": [
+          "docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md",
+          "docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md",
+          "docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md"
+        ],
+        "runbook": [
+          "docs/runbook/run-S0F-1H-pr-body-completeness-review.md"
+        ],
+        "parent_and_adjacent_logs": [
+          "docs/logs/log-S0F-docs-management-v6.md",
+          "docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md",
+          "docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md"
+        ],
+        "issue_and_pr_prep_surfaces": [
+          "docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md",
+          "docs/issues/issue-conclusion-S0F-1I-live-apply-body.md",
+          "docs/issues/issue-conclusion-lifecycle-remediation-S0F-1I-live-post-merge-issue-conclusion-s0f-1i-body.md",
+          "docs/issues/pr-prep-S0F-1I-live-body.md",
+          "docs/issues/pr-prep-S0F-1I-live-manifest-create-body.md",
+          "docs/issues/pr-prep-S0F-1I-live-manifest-post-apply-live-body.md"
+        ]
+      },
+      "reason": "The support-only standing under S0F-3F applies only to the historical P1-P3 repair lane. The same file still serves as the readable source for later standard-check packaging, runbook consumption, and live lifecycle issue or PR-prep surfaces, so fragment extraction would require a wider rewrite contract than this cleanup slice can defend safely.",
+      "status": "deferred-validated"
+    }
+  ]
+}

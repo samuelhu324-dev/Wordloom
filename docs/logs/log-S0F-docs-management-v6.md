@@ -54,7 +54,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-06`
+**updated**: `2026-04-07`
 
 ---
 
@@ -298,6 +298,7 @@
 - `S0F-3G/P5-C3` is now complete as an intake screen for the supplied `S0E-6* / 7*` batch: this second supplied set also does not open another cleanup family, because it is dominated by direct current-contract source-owner logs, active normalization and gate-owner logs, or workflow-history files that remain reader-facing even when governance adjudication marks them support-only.
 - `S0F-3G/P5-C4` is now complete as a repo-side full scan of `docs/logs/`: the scan does surface one strongest support-only proto-family around `S0F-1E`, `S0F-1F`, and the historical `S0F-1I/P1-P3` repair lane, but it still does not open another cleanup family because the wider `docs/logs/` support-only class has not yet been given one defended relocation model and adjacent support-only logs still remain entangled with reader-facing runbook, issue, or workflow history.
 - `S0F-3G/P6` is now complete for the first bounded `docs/logs/` support-only move round: one stable `docs/logs/support-only/s0/` location model plus directory index now exists, the fully support-only `S0F-1E` and `S0F-1F` logs have moved there with bounded reference rewrites, and `S0F-1I` remains explicitly deferred because the file still mixes support-only repair history with later current-adjacent gate standing.
+- `S0F-3G/P7` is now complete as the first mixed-standing cleanup review round: `S0F-1I` has now been rechecked at fragment level, and the slice records a defended non-write result because contracts, runbook, parent-spine, and issue or PR-prep surfaces still depend on the root file as one readable current-adjacent source.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
