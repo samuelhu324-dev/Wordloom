@@ -1274,7 +1274,7 @@
 
 ### P11-C1-S1S2 (post-rewrite S0F-1I cleanup re-entry closes as exact-path defer again | 2026-04-07)
 
-- headSha: `<TBD-after-mixed-standing-round-3-commit>`
+- headSha: `d969b65b16b138d7ff161a937ccb1c042149aa90`
 - artifacts:
   - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
