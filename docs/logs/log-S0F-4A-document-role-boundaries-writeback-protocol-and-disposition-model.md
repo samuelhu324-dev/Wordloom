@@ -79,6 +79,7 @@
 - `P3`: define the fixed close-out write-back protocol for future slices
 - `P4`: define disposition and placement rules, including future external-storage planning boundary
 - `P5`: later pilot one or two bounded families against this model rather than attempting repo-wide retroactive rewrite immediately
+- `P6`: open one bounded retained-content rewrite lane for the strongest mixed-role deferred log before returning to `S0F-3G` cleanup disposition work
 
 ## Current Status
 
@@ -89,7 +90,8 @@
 - `P3` is now complete: one fixed close-out write-back protocol now exists so future slices can export stable rule/procedure/summary material out of logs mechanically instead of improvising the order each time.
 - `P4` is now complete: disposition and placement are now fixed as a separate responsibility plane, and future AWS or external object storage can be planned as an evidence/archive substrate without turning current contracts, runbooks, or views into remote-only surfaces.
 - `P5` is now complete: the model has now been tested against one retained mixed-role case (`S0F-1I`) and one cleaner positive-control family (`WF`), and the pilot confirms that the six-outlet split is usable without forcing premature runbook invention, archive-first relocation, or broad retroactive rewrites.
-- The immediate next follow-up is no longer whether the role model works in principle; it is to decide where the next bounded rewrite should actually be applied first, with `S0F-1I` remaining the strongest mixed-role cleanup candidate and `WF` remaining the positive-control example that needs no structural correction.
+- `P6` is now opened: `S0F-1I` is fixed as the first bounded retained-content rewrite lane under `S0F-4A`, so the next execution pass can thin the log intentionally before `S0F-3G` attempts another cleanup or relocation decision.
+- `P6-C1-S1` is now complete: the retained-content rewrite packet, outlet targets, and stop boundary are now fixed for `S0F-1I`, and the next immediate follow-up is `P6-C1-S2` actual rewrite execution rather than another abstract role-boundary discussion.
 
 ## P1 Six-Outlet Document Role Model
 
@@ -347,6 +349,44 @@
 - the pilot further confirms that the close-out protocol should tolerate `no new runbook` and `no new view` outcomes when the outlet identity is already stable enough or still intentionally absent
 - the next bounded follow-up should therefore target one real retained mixed-role log rewrite, not another conceptual naming pass
 
+## P6 First Bounded Retained-Content Rewrite Lane
+
+### P6-C1-S1 Rewrite Packet Fixed (`S0F-1I`)
+
+- chosen rewrite target:
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- rationale for choosing `P6` rather than another `P5` cycle:
+  - the pilot stage is already complete
+  - the next unit is not another validation pass of the same model but one new bounded execution lane
+  - the work should therefore advance as a new phase that consumes the validated outlet model rather than as one more pilot cycle
+- exact question for this rewrite lane:
+  - what content must still remain in `S0F-1I` as slice-local ledger, evidence, and bridge notes after stable gate semantics already read through `GC-PRG-0001` and stable operator procedure already reads through `run-S0F-1H-pr-body-completeness-review.md`
+- fixed outlet targets before rewrite begins:
+  - `contract` remains unchanged:
+    - `GC-PRG-0001`
+  - `runbook` remains unchanged:
+    - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+  - `index/front-door` remains unchanged:
+    - no new `INDEX.md` mutation is justified at this stage
+  - `view` remains intentionally absent unless the rewrite proves one bounded family-summary surface is still needed after log thinning
+  - `log` is the only outlet expected to change materially in the next execution step
+  - `disposition/placement` remains deferred until the rewritten log proves whether root placement is still justified
+- retained-content buckets that the next rewrite step must distinguish explicitly:
+  - keep as slice-local ledger:
+    - bounded convergence decision, target-set definition, and close-out narrative
+  - keep as bridge notes only:
+    - references explaining why current gate semantics now live in `PRG` and why current procedure now lives in the reviewer-owned runbook
+  - thin or compress where possible:
+    - wording that restates stable gate semantics or stable operator procedure now owned elsewhere
+  - do not move yet:
+    - any fragment still required for current source-reference reading or parent-spine traceability
+- stop boundary for `P6-C1-S2`:
+  - do not invent a new runbook unless the rewrite exposes a genuinely distinct stable operator procedure not already covered by `S0F-1H`
+  - do not invent a new view unless the rewrite leaves one durable bounded family-summary need that the retained log should no longer carry
+  - do not reopen cleanup placement inside `P6-C1-S2`; the output of the rewrite should feed a later `S0F-3G` decision instead
+- packet result:
+  - the repo now has one fixed first rewrite lane under `S0F-4A`, and the next execution can work directly on retained-content thinning instead of re-deciding scope
+
 ## Plan (draft)
 
 ### P0 (Slice opening)
@@ -378,6 +418,11 @@
 
 - P5-C1-S1: test the model against one mixed-role retained log and one cleaner positive-control family before any broader retroactive rewrite
 
+### P6 (First retained-content rewrite lane)
+
+- P6-C1-S1: fix one bounded rewrite packet for `S0F-1I`, including outlet targets, retained-content buckets, and stop boundary
+- P6-C1-S2: execute the `S0F-1I` retained-content rewrite without deciding relocation yet
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Slice opening)
@@ -408,6 +453,11 @@
 ### P5 (Later pilots)
 
 - [x] `P5-C1-S1`: model tested against one mixed-role retained log and one cleaner positive-control family
+
+### P6 (First retained-content rewrite lane)
+
+- [x] `P6-C1-S1`: bounded `S0F-1I` rewrite packet fixed with outlet targets, retained-content buckets, and stop boundary
+- [ ] `P6-C1-S2`: `S0F-1I` retained-content rewrite executed without relocation decision
 
 ## Evidence (reserved)
 
