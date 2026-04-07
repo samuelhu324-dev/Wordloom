@@ -88,7 +88,8 @@
 - `P2` is now complete: naming baseline is now fixed per outlet, including when `INDEX.md` is enough on its own, when views need stable family-oriented names, and why disposition should not invent a second naming universe.
 - `P3` is now complete: one fixed close-out write-back protocol now exists so future slices can export stable rule/procedure/summary material out of logs mechanically instead of improvising the order each time.
 - `P4` is now complete: disposition and placement are now fixed as a separate responsibility plane, and future AWS or external object storage can be planned as an evidence/archive substrate without turning current contracts, runbooks, or views into remote-only surfaces.
-- The immediate next follow-up is not repo-wide retroactive surgery; it is to apply this model on one or two bounded families first so the protocol can prove itself against real mixed-role and cleaner positive-control cases.
+- `P5` is now complete: the model has now been tested against one retained mixed-role case (`S0F-1I`) and one cleaner positive-control family (`WF`), and the pilot confirms that the six-outlet split is usable without forcing premature runbook invention, archive-first relocation, or broad retroactive rewrites.
+- The immediate next follow-up is no longer whether the role model works in principle; it is to decide where the next bounded rewrite should actually be applied first, with `S0F-1I` remaining the strongest mixed-role cleanup candidate and `WF` remaining the positive-control example that needs no structural correction.
 
 ## P1 Six-Outlet Document Role Model
 
@@ -288,6 +289,64 @@
   - rationale:
     - current rule, support-only residue, and family-summary surfaces are already more clearly separated there than in `S0F-1I`
 
+## P5 Pilot Execution
+
+### P5-C1-S1 Mixed-Role Retained Log Check (`S0F-1I`)
+
+- tested surface:
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- current outlet mapping under the `S0F-4A` model:
+  - `contract`:
+    - `GC-PRG-0001` already owns the stable current gate rule for packaged non-pass semantics
+  - `runbook`:
+    - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md` already owns the stable operator-facing local review and check procedure
+  - `index/front-door`:
+    - no additional front-door mutation is justified because the current gate entry already reads through the admitted `PRG` record rather than through `S0F-1I`
+  - `view`:
+    - no additional family view is required because the lane is already bounded, the stable current reader entrypoint is the current contract plus the reviewer-owned runbook, and one extra summary surface would mostly duplicate a completed convergence package
+  - `log`:
+    - `S0F-1I` still has a justified retained job as the slice-local execution ledger for the historical rewrite manifest, post-repair reviewer evidence, wrapper packaging bridge notes, and the explanation of why stable procedure ownership moved to `S0F-1H` while stable gate semantics remained concentrated through `PRG`
+  - `disposition/placement`:
+    - `S0F-1I` should remain `defer cleanup` rather than move immediately because the role split is now explainable, but current traceability and source-reference reading still rely on the retained log path
+- pilot result:
+  - `S0F-1I` is a real mixed-role case, but the pilot shows the remaining ambiguity is no longer that the repo lacks outlet names
+  - the remaining ambiguity is only whether and when this retained log should be rewritten down further before any later support-only move
+  - the stop rule is therefore working: do not force one extra `view`, do not invent a second runbook, and do not relocate the log just because current rule and procedure already have other homes
+
+### P5-C1-S1 Cleaner Positive-Control Check (`WF` family)
+
+- tested surface set:
+  - `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
+  - `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  - `docs/governance/contracts/GC-WF-0001-publish-verify-remediation-failure-taxonomy-and-handling.md`
+  - `docs/governance/views/support-only/view-wf-admission-package-v1.md`
+- current outlet mapping under the `S0F-4A` model:
+  - `contract`:
+    - `GC-WF-0001` already concentrates the stable current workflow-failure taxonomy and handling semantics
+  - `runbook`:
+    - no separate runbook is currently justified, which is acceptable because the family stabilizes a current rule and one admission-summary view without yet stabilizing a distinct operator procedure surface that would deserve its own long-term procedural home
+  - `index/front-door`:
+    - `INDEX.md` already carries the current `WF` front-door reading, so no additional index mutation is required for the pilot
+  - `view`:
+    - `view-wf-admission-package-v1.md` already provides the bounded reader-facing concentration explaining why `WF` was admitted and why `S0E-7E` through `S0E-7G` remain outside the front door
+  - `log`:
+    - `S0E-7D` remains the primary semantic source log behind the current contract, while `S0E-7E` through `S0E-7G` remain support-only orchestration, wrapper, and transport history
+  - `disposition/placement`:
+    - the family already follows role-first placement correctly: current contract in `contracts/`, support-only explanation view in `views/support-only/`, and support-only residual logs left as non-front-door history
+- pilot result:
+  - `WF` proves the positive-control path works cleanly when the outlet split has already been executed well enough
+  - the model does not need to invent a runbook or an archive surface merely to complete the matrix; absence of a stable operator procedure is a valid result under the stop rule
+  - the main corrective conclusion is therefore asymmetric: `WF` needs no structural rewrite, while `S0F-1I` remains the better candidate for a later bounded log-thinning or support-only decision
+
+### P5 Result
+
+- the pilot confirms that the six-outlet model is actionable rather than only descriptive
+- the pilot also confirms that `disposition/placement` should stay downstream of role separation: the `WF` family already lands cleanly because role outlets are explicit, while `S0F-1I` still reads as `defer cleanup` because current traceability survives even after contract and runbook exports exist
+- the pilot further confirms that the close-out protocol should tolerate `no new runbook` and `no new view` outcomes when the outlet identity is already stable enough or still intentionally absent
+- the next bounded follow-up should therefore target one real retained mixed-role log rewrite, not another conceptual naming pass
+
 ## Plan (draft)
 
 ### P0 (Slice opening)
@@ -348,13 +407,13 @@
 
 ### P5 (Later pilots)
 
-- [ ] `P5-C1-S1`: model tested against one mixed-role retained log and one cleaner positive-control family
+- [x] `P5-C1-S1`: model tested against one mixed-role retained log and one cleaner positive-control family
 
 ## Evidence (reserved)
 
 ### P0-C1-S1 through P4-C1-S2 (role-boundary model, naming baseline, write-back protocol, and disposition rules fixed | 2026-04-07)
 
-- headSha: `<TBD-after-s0f-4a-commit>`
+- headSha: `a4f1c9a82b966ce1fd58148e281d27b95b016975`
 - artifacts:
   - `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
@@ -364,3 +423,20 @@
   - the repo should gain one explicit model for how stable rule, procedure, summary, index, and placement responsibilities leave structured logs over time
 - observed:
   - `S0F-4A` now fixes six outlet roles, one fixed close-out protocol, one naming baseline, and one placement plus externalization boundary without forcing immediate retroactive rewrite across the whole repo
+
+### P5-C1-S1 (mixed-role and positive-control pilots applied to the outlet model | 2026-04-07)
+
+- headSha: `<TBD-after-s0f-4a-p5-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
+  - `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  - `docs/governance/contracts/GC-WF-0001-publish-verify-remediation-failure-taxonomy-and-handling.md`
+  - `docs/governance/views/support-only/view-wf-admission-package-v1.md`
+- expected:
+  - the outlet model should be able to explain one mixed-role retained log and one already-clean family without inventing missing surfaces just to complete the matrix
+- observed:
+  - `S0F-1I` now reads as a defended `defer cleanup` case with current rule and procedure already exported, while `WF` now reads as a clean role-first landing with no missing outlet beyond an intentionally absent runbook
