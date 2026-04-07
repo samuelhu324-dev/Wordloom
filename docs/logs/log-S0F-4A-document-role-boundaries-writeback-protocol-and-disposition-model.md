@@ -426,7 +426,7 @@
 
 ### P5-C1-S1 (mixed-role and positive-control pilots applied to the outlet model | 2026-04-07)
 
-- headSha: `<TBD-after-s0f-4a-p5-commit>`
+- headSha: `bb2d07c8e4eff07190b16c34b0eb7ba87bea749b`
 - artifacts:
   - `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
   - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
