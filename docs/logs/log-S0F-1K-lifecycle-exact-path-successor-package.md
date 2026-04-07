@@ -48,6 +48,7 @@
 - `S0F-1K` opens the next bounded family follow-up after `S0F-1I`.
 - This slice exists because the repo now has a real next-step package around `S0F-1I`, but readers understand that package more clearly as the next child slice in the same lineage than as another reuse of `S0F-1I` with a `run-1` suffix.
 - v1 therefore treats lifecycle exact-path successor handling as its own child slice while preserving `S0F-1I` as the previous source-owner log.
+- `P1` locks the opening successor model: keep `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` as the live exact-path root anchor for the remaining human-facing lifecycle bodies, and let `S0F-1K` own only the later decision about whether a support-only move plus legacy stub becomes readable enough to execute.
 
 ## Why This Mixed-Role Lane Exists
 
@@ -114,6 +115,7 @@
 - allowed:
   - retain one exact blocker manifest for the human-facing lifecycle-source surfaces
   - define one candidate successor model for later execution
+  - mark retained lifecycle readers so they treat `S0F-1I` as an intentionally held root anchor rather than as an accidental current-owner dependency
   - open one bounded child slice ledger under the revised `3H` naming rule
 - non-writes:
   - no immediate file move for `S0F-1I`
@@ -127,9 +129,24 @@
   - current rule: `docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md`
   - current packaging continuation: `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
   - current operator path: `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
-- historical lifecycle-source handling under test:
-  - keep one root-path locator or legacy stub only if lifecycle bodies still need the exact old path for provenance-safe reading
-  - move the full retained log body later only if that locator model remains readable and does not recreate current-role ambiguity
+- `P1` exact-path anchor decision:
+  - keep `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` in place as the exact-path root anchor for the six retained human-facing lifecycle bodies
+  - treat `S0F-1K` as the bounded successor-planning ledger, not as a new replacement source path for those historical bodies
+  - defer any support-only move until a later phase can leave a legacy stub or locator at the root path without harming provenance-safe reading
+
+## Phase Execution
+
+- `P0`:
+  - open the bounded child slice, retain one explicit blocker manifest, and fix the successor-handling boundary
+- `P1`:
+  - defend the keep-legacy root-anchor model for remaining human-facing lifecycle-source readers before any relocation attempt
+
+## Current Status
+
+- `P0` is complete: `S0F-1K` is opened as the bounded child slice, the blocker set is explicit, and the package is wired as the lineage-first follow-up to `S0F-1I`.
+- `P1` is now complete: the working model is no longer "move first and hope readers follow"; instead, `S0F-1I` remains the held exact-path root anchor, while `S0F-1K` owns only the future decision about whether a support-only move plus legacy stub is worth doing.
+- `P1` is now complete: the six retained lifecycle reading surfaces are now annotated to say that `S0F-1I` stays their source-log anchor for now and that `S0F-1K` is only the successor-handling ledger.
+- cleanup standing is intentionally unchanged after `P1`: `S0F-3G` should still read `S0F-1I` as `defer cleanup` until a later phase proves that any legacy-stub relocation is actually readable.
 
 ## Residual Blocker Ledger
 
@@ -152,6 +169,7 @@
 - the reader-facing lineage is now clearer than the provisional `run-1` naming form
 - no current semantic or procedural outlet is duplicated at package open
 - the blocker set is explicit instead of being rediscovered from scattered lifecycle bodies
+- `P1` keeps provenance-safe reading intact because it changes interpretation first and location later
 
 ## Evidence
 
@@ -159,3 +177,9 @@
   - `939ae658cbc85c9c2f22ec70fcb5f4e311f63f4d`
 - artifacts:
   - `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
+  - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/issues/issue-conclusion-S0F-1I-live-apply-body.md`
+  - `docs/issues/issue-conclusion-lifecycle-remediation-S0F-1I-live-post-merge-issue-conclusion-s0f-1i-body.md`
+  - `docs/issues/pr-prep-S0F-1I-live-body.md`
+  - `docs/issues/pr-prep-S0F-1I-live-manifest-create-body.md`
+  - `docs/issues/pr-prep-S0F-1I-live-manifest-post-apply-live-body.md`

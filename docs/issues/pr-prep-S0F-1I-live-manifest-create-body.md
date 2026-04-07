@@ -24,9 +24,15 @@
 - [x] `P4-C1-S2`: operator-facing local pass run retained for the current stable `S0F` set
 - [x] `P4-C2-S1`: thin operator-facing runbook retained for the standard local check
 
+## Lifecycle Source Note
+
+- This retained manifest-create body still treats `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` as its exact-path source log.
+- `S0F-1K` is the successor-planning ledger for any later relocation, so this body should keep the current `S0F-1I` anchor until that later step is real.
+
 ## Links
 
 - Log: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- Successor package: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
 - Parent log: `docs/logs/log-S0F-docs-management-v6.md`
 
 Closes #380

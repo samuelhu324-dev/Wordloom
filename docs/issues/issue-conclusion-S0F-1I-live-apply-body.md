@@ -16,9 +16,15 @@
 
 - #381
 
+## Lifecycle Source Note
+
+- This retained conclusion body still uses `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` as its provenance-safe exact-path source anchor.
+- `S0F-1K` records successor handling for that anchor, but this body should keep reading the current `S0F-1I` root path until a later stub or locator move is explicitly executed.
+
 ## Links
 
 - Log: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- Successor package: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
 - Runbook: `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
 - Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 - Parent log: `docs/logs/log-S0F-docs-management-v6.md`

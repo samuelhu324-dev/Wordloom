@@ -16,9 +16,15 @@
 
 - #381
 
+## Lifecycle Source Note
+
+- This retained post-merge conclusion body still reads `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` as its exact-path source anchor.
+- `S0F-1K` owns successor planning only; do not replace this historical source path unless a later phase lands a readable legacy stub or locator.
+
 ## Links
 
 - Log: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- Successor package: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
 - Runbook: `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
 - Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 - Parent log: `docs/logs/log-S0F-docs-management-v6.md`

@@ -24,9 +24,15 @@
 - [x] `P4-C1-S2`: operator-facing local pass run retained for the current stable `S0F` set
 - [x] `P4-C2-S1`: thin operator-facing runbook retained for the standard local check
 
+## Lifecycle Source Note
+
+- `Requested ID: S0F-1I` and `Source log: docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` remain intentionally historical here.
+- `S0F-1K` records future successor handling, but this retained PR-prep body should keep the current `S0F-1I` root path until a later legacy-stub or support-only move is explicitly approved.
+
 ## Links
 
 - Log: `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- Successor package: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
 - Parent log: `docs/logs/log-S0F-docs-management-v6.md`
 
 Closes #380

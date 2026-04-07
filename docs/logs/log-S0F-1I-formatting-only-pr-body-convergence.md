@@ -22,6 +22,7 @@
   **reference_log_5**: `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
   **reference_log_6**: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
   **reference_log_7**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
+  **reference_log_8**: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
@@ -122,6 +123,7 @@
 - `P4` is now complete: the stable reviewer state was packaged behind one standard local check entrypoint, but the enduring current gate rule and the enduring operator procedure no longer need to be restated here in full because they now read through `GC-PRG-0001`, `S0F-1J`, and the reviewer-owned runbook.
 - `P6-C1-S2` is now complete under `S0F-4A`: this log has now been thinned intentionally so it keeps the bounded convergence ledger, the retained evidence path, and only the minimum bridge notes needed to explain why later stable gate semantics and stable operator procedure now read elsewhere.
 - `S0F-1I` is now stable in rewritten form: the bounded formatting-only set has been converged through the canonical historical rewrite surface, the post-repair reviewer rerun proves the full current live `S0F` child set has reached exact-match PR body state, and the retained log now keeps only the slice-local record plus bridge context required for later cleanup review.
+- `S0F-1K/P1` is now complete: this file remains intentionally held at its current root path as the exact-path source anchor for retained lifecycle and PR-prep bodies, while any later support-only move or legacy-stub relocation is tracked only through `S0F-1K`.
 
 ## Retained Content After P6-C1-S2
 
