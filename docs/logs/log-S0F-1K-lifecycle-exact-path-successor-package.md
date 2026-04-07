@@ -5,7 +5,7 @@
 **id**: `S0F-1K`
 **kind**: `log`
 **title**: `lifecycle exact-path successor package v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Cleanup, Lifecycle, Ledger, epic/s0, sub/1k`
 **links**: ``
@@ -213,7 +213,7 @@
 ## Evidence
 
 - headSha:
-  - `1837620960f9db0bd206fbe5d0f675dced2363b2`
+  - `82008fae1e71ec81b756ed25f48f233c0f637c9d`
 - artifacts:
   - `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
   - `docs/logs/support-only/INDEX.md`
