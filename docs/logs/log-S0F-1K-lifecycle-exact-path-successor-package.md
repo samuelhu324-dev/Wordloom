@@ -134,12 +134,34 @@
   - treat `S0F-1K` as the bounded successor-planning ledger, not as a new replacement source path for those historical bodies
   - defer any support-only move until a later phase can leave a legacy stub or locator at the root path without harming provenance-safe reading
 
+## P2 Relocation Contract
+
+- future support-only target:
+  - `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- future root stub path:
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- `P2` contract decision:
+  - if `S0F-1I` ever leaves the root, the full retained body moves to the existing `docs/logs/support-only/s0/` surface rather than to a new custom directory
+  - the current root path must remain occupied by a stub, not by a deleted path and not by an informal locator note elsewhere
+  - historical lifecycle and PR-prep readers may continue to cite the root path; the stub is the discoverability-preserving bridge that makes broad reader rewrites optional rather than mandatory
+- minimum root stub shape:
+  - frontmatter fields must include `kind: stub`, `status: archived`, `moved_from`, `moved_to`, and `moved_at`
+  - the body must say the file moved, point directly to the support-only target, and state `Do not edit here`
+  - if execution needs lineage clarity beyond `moved_to`, add `old_id: S0F-1I` rather than inventing a second narrative header
+- execution gate for a future move:
+  - `docs/logs/support-only/INDEX.md` must remain the active directory index for support-only logs
+  - `docs/logs/support-only/s0/` must remain the stable scope bucket for `S0` support-only logs
+  - `S0F-3G` must reopen as an execution round before any file move so cleanup disposition is changed by one explicit write, not by silent drift inside `S0F-1K`
+  - no bulk rewrite of the six retained lifecycle readers is required at move time unless one reader proves the root stub unreadable in practice
+
 ## Phase Execution
 
 - `P0`:
   - open the bounded child slice, retain one explicit blocker manifest, and fix the successor-handling boundary
 - `P1`:
   - defend the keep-legacy root-anchor model for remaining human-facing lifecycle-source readers before any relocation attempt
+- `P2`:
+  - define the exact stub-backed relocation contract so any later support-only move becomes an execution choice rather than another naming or discoverability debate
 
 ## Current Status
 
@@ -147,12 +169,15 @@
 - `P1` is now complete: the working model is no longer "move first and hope readers follow"; instead, `S0F-1I` remains the held exact-path root anchor, while `S0F-1K` owns only the future decision about whether a support-only move plus legacy stub is worth doing.
 - `P1` is now complete: the six retained lifecycle reading surfaces are now annotated to say that `S0F-1I` stays their source-log anchor for now and that `S0F-1K` is only the successor-handling ledger.
 - cleanup standing is intentionally unchanged after `P1`: `S0F-3G` should still read `S0F-1I` as `defer cleanup` until a later phase proves that any legacy-stub relocation is actually readable.
+- `P2` is now complete: the future relocation shape is explicit rather than implied, with one support-only target path, one mandatory root stub path, and one rule that historical lifecycle readers may keep the root path as their citation surface.
+- `P2` is now complete: the remaining uncertainty is no longer where `S0F-1I` would move or what would hold the root path afterwards; it is only whether a later `S0F-3G` execution round is worth taking now that the stub-backed model is defined.
 
 ## Residual Blocker Ledger
 
 - keep after close-out:
   - exact list of human-facing lifecycle bodies that still point at the root `S0F-1I` path
   - explicit statement that `S0F-3G` standing remains unchanged until this package executes real successor handling
+  - explicit future move contract: support-only target plus root stub, without mandatory historical reader rewrites at decision time
 
 ## Naming Samples
 
@@ -162,6 +187,8 @@
   - `run-lifecycle-exact-path-successor-resolution.md`
 - possible later legacy-location pattern:
   - `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- root stub stays at:
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
 
 ## Validation
 
@@ -170,6 +197,8 @@
 - no current semantic or procedural outlet is duplicated at package open
 - the blocker set is explicit instead of being rediscovered from scattered lifecycle bodies
 - `P1` keeps provenance-safe reading intact because it changes interpretation first and location later
+- `P2` reuses the existing support-only location model from `S0F-3G/P6` instead of inventing a special-case destination for one deferred log
+- `P2` avoids unnecessary historical reader rewrites by making the root stub, not mass relinking, the default discoverability bridge
 
 ## Evidence
 
@@ -177,6 +206,7 @@
   - `86d4280de2d295a9dfb5e2a175789eb7339b5d8b`
 - artifacts:
   - `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
+  - `docs/logs/support-only/INDEX.md`
   - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
   - `docs/issues/issue-conclusion-S0F-1I-live-apply-body.md`
   - `docs/issues/issue-conclusion-lifecycle-remediation-S0F-1I-live-post-merge-issue-conclusion-s0f-1i-body.md`

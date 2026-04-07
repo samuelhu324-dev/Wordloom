@@ -3,7 +3,7 @@
   "package_type": "lifecycle-exact-path-successor",
   "target_owner": "S0F-1I",
   "source_log_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
-  "status": "p1-root-anchor-held",
+  "status": "p2-relocation-contract-defined",
   "current_disposition": "defer cleanup",
   "human_facing_exact_path_consumers": [
     "docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md",
@@ -28,6 +28,30 @@
   "p1_reader_acknowledgements": {
     "exact_path_source_remains_s0f_1i": true,
     "successor_package_recorded_in_lifecycle_readers": true
+  },
+  "p2_relocation_contract": {
+    "support_only_target_path": "docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md",
+    "root_stub_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
+    "support_only_directory_index": "docs/logs/support-only/INDEX.md",
+    "scope_bucket": "docs/logs/support-only/s0/",
+    "root_stub_required": true,
+    "bulk_reader_rewrites_required_by_default": false,
+    "root_stub_minimum_frontmatter": [
+      "kind: stub",
+      "status: archived",
+      "moved_from",
+      "moved_to",
+      "moved_at"
+    ],
+    "root_stub_body_requirements": [
+      "direct pointer to support-only target",
+      "explicit do-not-edit warning"
+    ],
+    "execution_preconditions": [
+      "support-only index remains the defended relocation front door",
+      "support-only s0 scope bucket remains stable",
+      "S0F-3G reopens as the execution owner before any file move"
+    ]
   },
   "non_goals": [
     "reopen semantic PR-body convergence work",
