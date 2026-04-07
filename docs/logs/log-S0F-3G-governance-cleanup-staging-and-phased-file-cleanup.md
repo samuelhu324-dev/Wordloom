@@ -86,7 +86,8 @@
 - `P8` is now complete as the first non-`S0` whole-file support-only scan: the slice rechecked the strongest S2-S6 candidates under the existing `docs/logs/support-only/` model, but no new cleanup family is opened because the near-candidates still remain current-adjacent through parent spines, runbooks, `INDEX.md`, or active onboarding and migration reading.
 - `P9` is now complete as the first `docs/governance/contracts/` support-only move round: the slice now fixes `docs/governance/contracts/support-only/` as the contracts-side relocation model for whole-file support-only backtrace notes, moves `GC-PRB-0001-backfill` there with bounded reference rewrites plus one directory index and cleanup manifest, and closes the only remaining contracts-family defer row from `P5`.
 - `P10` is now complete as the second mixed-standing `S0F-1I` review round: the slice rechecks the same deferred root-file candidate after `P9`, but closes again as a defended non-write result because the remaining blockers are now confirmed to be upstream ownership changes rather than cleanup-local rewrites.
-- The immediate next follow-up is now narrowed again: either wait for one upstream contract, runbook, or lifecycle-surface consolidation that can actually lift the `S0F-1I` blocker set, or return to non-`S0` repo-side scanning once one whole-file support-only family can be defended under the existing location models.
+- `P11-C1-S1S2` is now complete as the third mixed-standing `S0F-1I` review round: after `S0F-4A/P6-C1-S2` thinned the retained log itself, `S0F-3G` re-enters the deferred row and confirms that root relocation is still not justified under the existing support-only model because exact-path discoverability still survives in contracts, the reviewer-owned runbook, and retained issue or PR-prep lifecycle artifacts.
+- The immediate next follow-up is now narrower than it was at `P10`: another `S0F-3G` re-entry is not useful until one successor or redirect model exists for those remaining exact-path consumers, because the older mixed-role ownership-text blocker has now already been removed by `S0F-4A/P6-C1-S2`.
 - The broader structural follow-up is now split into `S0F-4A`, which fixes document role boundaries, write-back protocol, naming baselines, and disposition rules so later cleanup rounds no longer have to infer those responsibilities ad hoc from mixed-role logs.
 
 ## Problem Statement
@@ -808,6 +809,54 @@
 - The remaining blocker set is now formalized as an upstream-ownership gate rather than a cleanup-local uncertainty set.
 - This means a later round can re-enter `S0F-1I` quickly only when one of those four unblock groups changes materially; until then, repeated relocation attempts would just replay the same non-write conclusion.
 
+## P11 Third Mixed-Standing Review Round (`S0F-1I` post-rewrite cleanup re-entry)
+
+### P11 Scope
+
+- bounded candidate family reopened after one material upstream ownership change:
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- exact question answered by this round:
+  - whether `S0F-4A/P6-C1-S2` has now reduced the remaining `S0F-1I` blocker set enough that `S0F-3G` can execute one root-file relocation or support-only decision under the existing `docs/logs/support-only/` model,
+  - or whether the file still remains exact-path-dependent even after its mixed-role ownership text has been thinned out
+
+### P11 Review Model
+
+- post-rewrite re-entry rule added by this round:
+  - when one deferred mixed-standing row receives a real upstream retained-content rewrite, the cleanup slice should reopen it as one new phase rather than as another cycle under the old round because the candidate state itself has changed materially
+  - this is therefore `P11`, not `P10-C2`, because the input is no longer just a second pass over the same blocker inventory
+- post-rewrite decision test used here:
+  - separate old mixed-role ownership-text blockers from remaining exact-path discoverability blockers
+  - if the rewrite removes the former but the latter still survive across current reader-facing surfaces, keep `defer cleanup` rather than forcing relocation under a misleading whole-file support-only label
+
+### P11 Candidate Decision
+
+- `defer cleanup`:
+  - `S0F-1I`
+    - rationale:
+      - `GC-PRG-0001`, the preserved deprecated `GC-PRB-0001` umbrella, and the support-only `GC-PRB-0001` backfill still cite `S0F-1I` as one stable source anchor for the standard-check packaging lineage
+      - the reviewer-owned runbook still directs operators to `S0F-1I` when formatting-only repair surfaces need to be followed, so the root file still carries procedural discoverability even after the runbook itself stopped duplicating ownership text
+      - retained issue and PR-prep lifecycle artifacts still carry exact-path source-log references to `S0F-1I`, and this round still has no defended redirect model for moving those lifecycle surfaces over to a support-only path without widening scope into lifecycle-history surgery
+      - the earlier mixed-role text-duplication problem is no longer the primary blocker, which is progress, but removing that blocker alone is not yet enough to justify whole-file relocation
+
+### P11 Manifest Decision
+
+- third mixed-standing cleanup review manifest:
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-mixed-standing-round-3.json`
+- manifest scope:
+  - review only:
+    - `S0F-1I`
+  - no file moves:
+    - the round keeps root placement for `S0F-1I`
+  - no fragment extraction:
+    - the round records that retained-content thinning is now complete and that the remaining blocker set is exact-path discoverability, not unresolved mixed-role text ownership
+
+### P11 Result
+
+- `S0F-1I` still remains at the root by defended choice, but the reason has now narrowed again.
+- `P11` proves that `S0F-4A/P6-C1-S2` was sufficient to justify re-entry into `S0F-3G`, which is why this work belongs under a new `P` phase rather than one more `P10` cycle.
+- The current blocker set is now mostly exact-path discoverability across contracts, runbook, and lifecycle artifacts rather than mixed-role text concentration inside the log itself.
+- The next meaningful cleanup step is therefore no longer another generic `S0F-1I` recheck; it is one later successor or redirect model for those remaining exact-path consumers if relocation is still desired.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -856,6 +905,8 @@
 - P9-C1-S2: execute the bounded `GC-PRB-0001` backfill move with exact reference rewrites and close the earlier contracts-family defer row
 - P10-C1-S1: re-evaluate the surviving `S0F-1I` mixed-standing defer row after `P9` and separate cleanup-local blockers from upstream ownership blockers
 - P10-C1-S2: formalize exact unblock conditions for later `S0F-1I` re-entry instead of reopening fragment extraction without a successor source model
+- P11-C1-S1: re-enter `S0F-1I` after `S0F-4A/P6-C1-S2` and test whether the retained-content rewrite is enough to reopen cleanup disposition safely
+- P11-C1-S2: decide whether the rewritten `S0F-1I` can now move under the existing support-only model or must remain deferred because exact-path discoverability still survives elsewhere
 - P5-C1-S2: stop the slice when the remaining files are all either current, legacy-needed, or explicitly deferred
 
 ## Execution Checklist (unchecked)
@@ -906,6 +957,8 @@
 - [x] `P9-C1-S2`: bounded `GC-PRB-0001` backfill move executed with exact reference rewrites and the earlier contracts defer row closed
 - [x] `P10-C1-S1`: surviving `S0F-1I` mixed-standing blockers rechecked after `P9` and separated into cleanup-local versus upstream-ownership classes
 - [x] `P10-C1-S2`: exact unblock conditions recorded so later `S0F-1I` re-entry can happen without rediscovering the blocker model
+- [x] `P11-C1-S1`: `S0F-1I` re-entered after `S0F-4A/P6-C1-S2` so cleanup can judge the rewritten log rather than the older mixed-role version
+- [x] `P11-C1-S2`: the rewritten `S0F-1I` is still deferred because exact-path discoverability remains live across contracts, runbook, and lifecycle artifacts under the current model
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -1218,3 +1271,23 @@
 - observed:
   - `S0F-1I` remains not move-ready, but the remaining blocker set is now narrowed to four explicit upstream ownership changes rather than one generic mixed-standing warning
   - `S0F-3G` can now stop rechecking `S0F-1I` opportunistically until contracts, runbook, parent navigation, or lifecycle-source handling actually change in a way that could lift one of those blockers
+
+### P11-C1-S1S2 (post-rewrite S0F-1I cleanup re-entry closes as exact-path defer again | 2026-04-07)
+
+- headSha: `<TBD-after-mixed-standing-round-3-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-mixed-standing-round-3.json`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md`
+  - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+  - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/issues/pr-prep-S0F-1I-live-body.md`
+- expected:
+  - after `S0F-4A/P6-C1-S2`, one new `S0F-3G` re-entry round should be able to decide whether the rewritten `S0F-1I` is finally move-ready or whether exact-path consumers still keep it rooted
+- observed:
+  - the retained-content rewrite was enough to justify a new `P11` re-entry round rather than another `P10` cycle
+  - `S0F-1I` still remains deferred, but the remaining blocker set is now narrowed to exact-path discoverability in contracts, the reviewer-owned runbook, and retained lifecycle artifacts rather than to unresolved mixed-role text ownership inside the log itself
