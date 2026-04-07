@@ -127,6 +127,7 @@
 - `S0F-1K/P2` is now complete: if a later cleanup round executes relocation, the intended destination is `docs/logs/support-only/s0/` and the current root path must remain occupied by a stub rather than becoming a broken historical citation.
 - `S0F-1K/P3` is now complete: the exact would-be root stub body and its bounded move checklist are now retained as preview-only artifacts, so no later cleanup round needs to invent the stub shape from scratch.
 - `S0F-1K/P4` is now complete: the full retained body now lives at this support-only path, while the original root path is preserved as a stub so historical lifecycle and PR-prep readers can keep one exact-path citation surface.
+- `S0F-1K/P4-C2-S1` is now complete: the six retained historical lifecycle and PR-prep readers were rechecked after the move, and no reader regression required direct retargeting away from the root stub.
 
 ## Retained Content After P6-C1-S2
 

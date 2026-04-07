@@ -19,7 +19,8 @@
 ## Lifecycle Source Note
 
 - This retained conclusion body still uses `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` as its provenance-safe exact-path source anchor.
-- `S0F-1K` records successor handling for that anchor, but this body should keep reading the current `S0F-1I` root path until a later stub or locator move is explicitly executed.
+- That root path is now an executed stub which points to `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`.
+- `S0F-1K/P4-C2-S1` verified that this body remains readable without a direct retarget, so the root-stub citation stays intentional.
 
 ## Links
 

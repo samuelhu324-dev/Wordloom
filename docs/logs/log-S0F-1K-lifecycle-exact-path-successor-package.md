@@ -165,6 +165,7 @@
   - retain one execution-ready root-stub preview and move checklist so a later `S0F-3G` re-entry can decide whether to execute the stub-backed relocation without redesigning the stub text
 - `P4`:
   - execute the support-only move, replace the root path with the planned stub, and rewrite only the direct navigation surfaces that should now point at the moved retained body
+  - `C2-S1`: verify that the six retained lifecycle readers still read acceptably through the executed root stub and record whether any direct retarget is actually needed
 
 ## Current Status
 
@@ -178,6 +179,7 @@
 - `P3` is now complete: the package still does not move `S0F-1I`, but it now removes the last design ambiguity about what the root file would look like immediately after a stub-backed relocation.
 - `P4` is now complete: `S0F-1I` now lives at `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`, while the root path is preserved as a stub for retained lifecycle and PR-prep exact-path readers.
 - `P4` is now complete: direct navigation surfaces that should read the moved retained body now point to the support-only target, while the six retained lifecycle readers remain unchanged and continue to resolve through the root stub.
+- `P4-C2-S1` is now complete: the six retained lifecycle and PR-prep readers were rechecked against the executed root stub, and no reader regression was found that justified direct retargeting away from the old exact path.
 
 ## Residual Blocker Ledger
 
@@ -186,6 +188,7 @@
   - explicit statement that `S0F-3G` now owns the executed relocation outcome rather than a remaining model-finding defer row
   - executed move contract: support-only target plus root stub, without mandatory historical reader rewrites at execution time
   - one preview artifact containing the stub body and execution checklist that was used to make the executed move explicit before file surgery
+  - one post-move verification result confirming that the six retained historical readers remain acceptable on the root-stub model
 
 ## Naming Samples
 
@@ -209,6 +212,7 @@
 - `P2` avoids unnecessary historical reader rewrites by making the root stub, not mass relinking, the default discoverability bridge
 - `P3` keeps execution and planning separated: it produces the real would-be stub text without falsely claiming that the move already happened
 - `P4` keeps lifecycle provenance intact by moving the retained body while preserving the old root path as a real stub rather than forcing six historical reader rewrites
+- `P4-C2-S1` confirms that the executed stub is sufficient for the retained historical readers, so the repo does not need a second wave of direct lifecycle-body rewrites
 
 ## Evidence
 

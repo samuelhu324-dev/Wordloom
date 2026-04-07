@@ -27,7 +27,8 @@
 ## Lifecycle Source Note
 
 - This retained post-apply manifest body still reads `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` as its exact-path source anchor.
-- `S0F-1K` holds the future successor decision only; keep this historical body pointed at the current `S0F-1I` root path until any stub-backed move is executed deliberately.
+- That root path is now an executed stub which points to `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`.
+- `S0F-1K/P4-C2-S1` verified that this historical body remains readable through the root stub without a direct retarget.
 
 ## Links
 

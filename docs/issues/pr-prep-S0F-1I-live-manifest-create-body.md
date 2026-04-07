@@ -27,7 +27,8 @@
 ## Lifecycle Source Note
 
 - This retained manifest-create body still treats `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` as its exact-path source log.
-- `S0F-1K` is the successor-planning ledger for any later relocation, so this body should keep the current `S0F-1I` anchor until that later step is real.
+- That root path is now an executed stub which points to `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`.
+- `S0F-1K/P4-C2-S1` verified that this body should keep the root-stub anchor rather than be retargeted.
 
 ## Links
 

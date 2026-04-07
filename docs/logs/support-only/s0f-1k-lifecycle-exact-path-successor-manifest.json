@@ -3,7 +3,7 @@
   "package_type": "lifecycle-exact-path-successor",
   "target_owner": "S0F-1I",
   "source_log_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
-  "status": "p4-relocation-executed",
+  "status": "p4-c2-reader-verified",
   "current_disposition": "support-only body moved and root stub retained",
   "human_facing_exact_path_consumers": [
     "docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md",
@@ -66,6 +66,12 @@
     "cleanup_manifest": "docs/logs/support-only/cleanup-manifest-S0F-3G-exact-path-round-2.json",
     "direct_navigation_updates_executed": true,
     "historical_lifecycle_readers_left_on_root_stub": true
+  },
+  "p4_c2_reader_verification": {
+    "verified_reader_count": 6,
+    "root_stub_reading_model_still_valid": true,
+    "direct_reader_retargets_required": false,
+    "note": "The six retained lifecycle and PR-prep readers remain acceptable on the executed root-stub model, so no second-wave direct retarget was required."
   },
   "non_goals": [
     "reopen semantic PR-body convergence work",

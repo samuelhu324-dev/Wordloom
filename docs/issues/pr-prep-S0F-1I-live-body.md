@@ -27,7 +27,8 @@
 ## Lifecycle Source Note
 
 - `Requested ID: S0F-1I` and `Source log: docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` remain intentionally historical here.
-- `S0F-1K` records future successor handling, but this retained PR-prep body should keep the current `S0F-1I` root path until a later legacy-stub or support-only move is explicitly approved.
+- That root path is now an executed stub which points to `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`.
+- `S0F-1K/P4-C2-S1` verified that this retained PR-prep body should keep the root-stub citation rather than be retargeted.
 
 ## Links
 
