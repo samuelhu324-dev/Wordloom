@@ -1368,7 +1368,7 @@
 
 ### P12-C1-S1 and P12-C2-S1S2 (runbook and contract-lineage exact-path dependencies reduced before post-reduction recheck | 2026-04-07)
 
-- headSha: `<TBD-after-exact-path-round-1-commit>`
+- headSha: `2e845ed795d4fb200a44aa76e5318bc58cd8ba48`
 - artifacts:
   - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
