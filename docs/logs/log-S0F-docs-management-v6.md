@@ -37,6 +37,7 @@
   **phase_log_17**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
   **phase_log_18**: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
   **phase_log_19**: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  **phase_log_20**: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -302,7 +303,7 @@
 - `S0F-3G/P8` is now complete as the first non-`S0` whole-file support-only scan: the slice rechecked the strongest `S2-S6` near-candidates under the existing `docs/logs/support-only/` model, but no new cleanup family opens because those files still retain parent-spine, runbook, `INDEX`, or onboarding-methodology reader value.
 - `S0F-3G/P9` is now complete as the first `docs/governance/contracts/` support-only move round: one stable `docs/governance/contracts/support-only/` location model now exists, the `GC-PRB-0001` backfill note has moved there with bounded reference rewrites plus a directory index and cleanup manifest, and the earlier contracts-family defer queue is correspondingly reduced.
 - `S0F-3G/P10` is now complete as the second mixed-standing `S0F-1I` review round: the slice does not reopen file surgery, but it now formalizes the exact unblock conditions across contracts, runbook, parent-spine navigation, and retained issue or PR-prep surfaces so the remaining defer row can be re-evaluated later without rediscovering the blocker model from scratch.
-- `S0F-3G/P11` is now complete as a combined `3F/3G` overview round: one reader-facing governance view now summarizes semantic sweep state, cleanup execution state, and the remaining open defer or near-candidate set so the overall completion picture no longer depends on mentally merging the two phase logs.
+- `S0F-4A` is now opened as the next `S0F` follow-up slice for document role boundaries, write-back protocol, naming baselines, and disposition rules, so future slices can export stable rule or procedure or summary material out of structured logs before another mixed-role cleanup problem accumulates.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
