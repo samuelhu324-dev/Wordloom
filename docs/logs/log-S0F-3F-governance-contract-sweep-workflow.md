@@ -108,6 +108,7 @@
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
 - No bounded unswept family remains inside the currently approved shortlist after `C4`, and the first defended legacy-refresh reuse under `C5` also closes without front-door mutation.
 - The immediate next follow-up is therefore again no longer another family admission lane inside this slice; future reuse should reopen `S0F-3F` only if a genuinely new bounded family or a defended legacy refresh question appears.
+- The recurring-operation follow-up is now also split into `S0F-3H`, so later sweep replays can move onto runbook-driven packets and bounded ledgers instead of continuing to enlarge this origin slice.
 - The adjacent next structural follow-up is now split into `S0F-4A`, where document role boundaries and write-back protocol can be fixed without overloading this sweep ledger with naming and placement policy.
 
 ## Problem Statement

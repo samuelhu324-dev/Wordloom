@@ -38,6 +38,7 @@
   **phase_log_18**: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
   **phase_log_19**: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
   **phase_log_20**: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+  **phase_log_21**: `docs/logs/log-S0F-3H-recurring-governance-run-model-and-ledger-split.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -188,6 +189,7 @@
 - `S0F-1C/P3` is now complete: preserve-existing re-verification is retained per target after the guarded live sample, all three representative S6B items classify as clean-preserve, and the next follow-up is `P4` operator runbook plus repeatability packaging.
 - `S0F-1C/P4` is now complete: the runbook and repeatability summary are retained, and no further phase is currently required inside this slice.
 - `S0F-1D/P4` is now complete: the first stable read-only completeness package is fixed around the live lifecycle-audit entrypoint plus a compact historical pre-screen sample, and no further phase is currently required inside this slice.
+- `S0F-3H` is now opened as the process-structure follow-up to `S0F-3F`, `S0F-3G`, and `S0F-4A`: recurring governance work should now split stable operator method into runbooks and templates while keeping logs as bounded execution ledgers rather than endlessly reusing the same origin slices.
 - `S0F-1E` is now stable: the bucket taxonomy is fixed across all three lifecycle stages, the additive audit-output contract is fixed, and no further phase is currently required inside this slice.
 - `S0F-1F/P0` is now complete: the next follow-up is fixed around materializing emitted diagnosis-layer bucket fields on real read-only output surfaces, and the immediate next step is `P1` live lifecycle audit bucket emission.
 - `S0F-1F/P1` is now complete: the primary live lifecycle audit surface emits additive diagnosis-layer bucket fields directly in retained output, one representative live sample is retained with emitted bucket data, and the next follow-up is `P2` supporting historical emission.

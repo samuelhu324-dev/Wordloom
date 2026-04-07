@@ -90,7 +90,7 @@
 - `P12-C1-S1` is now complete: the reviewer-owned runbook no longer points to `S0F-1I` as a live repair lane, and now reads that surface as archived historical ledger only while current procedure reads through `S0F-1J` plus the canonical wrapper.
 - `P12-C2-S1S2` is now complete: the `PRG/PRB` contract-lineage group no longer uses `S0F-1I` as a current exact-path source anchor, and the cleanup slice rechecks `S0F-1I` again after those changes, confirming that root relocation is still blocked only by retained lifecycle artifacts rather than by contracts or runbook discoverability.
 - The immediate next follow-up is now narrower than it was at `P11`: another `S0F-3G` re-entry is not useful until one redirect-safe successor model exists for the remaining issue and PR-prep exact-path consumers, because the runbook and contract-lineage dependency groups have now already been reduced.
-- The broader structural follow-up is now split into `S0F-4A`, which fixes document role boundaries, write-back protocol, naming baselines, and disposition rules so later cleanup rounds no longer have to infer those responsibilities ad hoc from mixed-role logs.
+- The broader structural follow-up is now split into `S0F-4A`, which fixes document role boundaries, write-back protocol, naming baselines, and disposition rules, and into `S0F-3H`, which turns recurring cleanup reuse into runbook-driven packets plus bounded ledgers so later rounds no longer have to keep stretching this slice into a permanent operator notebook.
 
 ## Problem Statement
 
