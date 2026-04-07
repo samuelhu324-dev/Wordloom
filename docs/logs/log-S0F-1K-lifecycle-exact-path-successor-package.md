@@ -156,6 +156,6 @@
 ## Evidence
 
 - headSha:
-  - `<backfill after publish>`
+  - `939ae658cbc85c9c2f22ec70fcb5f4e311f63f4d`
 - artifacts:
   - `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
