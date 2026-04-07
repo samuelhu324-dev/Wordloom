@@ -18,6 +18,8 @@
   **reference_log_1**: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
   **reference_log_2**: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
   **reference_log_3**: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+  **reference_log_4**: `docs/logs/_template-log-structured-extraction-clean-lane.md`
+  **reference_log_5**: `docs/logs/_template-log-structured-extraction-mixed-role-lane.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -75,8 +77,9 @@
 - `P0` is now complete: the boundary is explicit that `S0F-3F` and `S0F-3G` are origin and control slices, while future recurring operation should move toward runbook-driven packets plus smaller per-run ledgers.
 - `P1` is now complete: one artifact responsibility map now aligns recurring governance operation with the `S0F-4A` six-outlet model, so future work can decide consistently what belongs in `runbook`, `packet template`, `log`, `manifest`, and `view` without collapsing role and disposition back into the same file.
 - `P2` is now complete: one naming and opening rule set now fixes how recurring governance work should open bounded execution logs without colliding with `S0F-2A` maintenance lanes, `S0F-2B` family-patch lanes, or the original control slices.
-- The immediate next follow-up is now `P3`: publish the first reusable extraction templates so future mixed-role cleanup can start from one fixed packet shape rather than restating the same boundaries again.
-- The first practical pilot after `P3` should still be the remaining `S0F-1I` lifecycle exact-path successor problem, but that work should now open as one bounded execution log under the `3H` naming model and only write consequence deltas back to `S0F-3G` if cleanup status actually changes.
+- `P3` is now complete: the first reusable structured-log extraction templates are now published as one clean-lane template and one mixed-role transformation template, and `3H` now also records one explicit six-outlet naming sample set for later review and refinement.
+- The immediate next follow-up is now `P4`: pilot the model on the remaining `S0F-1I` lifecycle exact-path successor package using the new bounded-run naming rule plus the mixed-role template.
+- The first practical pilot under `P4` should now open as one bounded execution log under the `3H` naming model and only write consequence deltas back to `S0F-3G` if cleanup status actually changes.
 
 ## Problem Statement
 
@@ -355,6 +358,99 @@
   - the package is one bounded successor-resolution run, not a new full slice
   - the name makes clear that `S0F-3H` supplied the method while `S0F-1I` remains the target owner
 
+## P3 Reusable Extraction Templates
+
+### Published Templates
+
+- clean-lane template:
+  - `docs/logs/_template-log-structured-extraction-clean-lane.md`
+- mixed-role transformation template:
+  - `docs/logs/_template-log-structured-extraction-mixed-role-lane.md`
+- both templates are bounded execution-log templates, not new role types.
+- they exist to help later packages open quickly under the `3H` model without re-deriving the same outlet and disposition questions every time.
+
+### Clean-Lane Template Rule
+
+- use the clean-lane template when:
+  - one older structured log is already close to a single dominant current role
+  - export targets are mostly clear before the package opens
+  - the expected close-out is mostly current contract or summary concentration plus light retained history
+- positive-control sample family:
+  - `WF`
+- expected result shape:
+  - minimal bridge notes in the retained log
+  - no forced new runbook if no real stable procedure exists
+  - disposition can usually be judged soon after export validation
+
+### Mixed-Role Template Rule
+
+- use the mixed-role template when:
+  - one retained log still mixes stable rule, stable procedure, family-summary reading, and historical repair ledger
+  - exact-path consumers or lifecycle surfaces still block immediate relocation
+  - the package needs explicit export-first and thin-later discipline
+- reference transformation sample:
+  - `S0F-1I`
+- expected result shape:
+  - stable current rule and procedure leave first
+  - the retained log is thinned to slice-local ledger plus minimum bridge notes
+  - disposition stays blocked until remaining exact-path consumers are reduced explicitly
+
+### Six-Outlet Naming Samples
+
+#### `log`
+
+- full slice log baseline:
+  - `log-S0F-1I-formatting-only-pr-body-convergence.md`
+- bounded recurring-run baseline:
+  - `log-S0F-1I-run-1-lifecycle-exact-path-successor-package.md`
+
+#### `contract`
+
+- current baseline:
+  - `GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md`
+- another valid sample shape:
+  - `GC-WF-0001-workflow-failure-taxonomy-and-handling.md`
+
+#### `runbook`
+
+- inherited valid sample:
+  - `run-S0F-1H-pr-body-completeness-review.md`
+- preferred future shape when the stable surface is clearer than the slice id:
+  - `run-pr-body-completeness-review.md`
+  - `run-lifecycle-successor-resolution.md`
+
+#### `view`
+
+- current baseline:
+  - `view-contract-sweep-workflow-v1.md`
+- bounded family summary sample:
+  - `view-wf-family-sweep-v1.md`
+
+#### `index/front-door`
+
+- current baseline:
+  - `INDEX.md`
+- local support-only entry sample:
+  - `support-only/INDEX.md`
+
+#### `disposition/placement`
+
+- no dedicated filename prefix by default
+- sample expression through placement:
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
+- sample expression through status only:
+  - one retained root log marked `defer cleanup`
+
+### Naming Review Rule
+
+- if a proposed filename tries to encode both role and disposition at once, simplify it.
+- prefer:
+  - stable role in the filename
+  - disposition in placement or status
+- if a proposed filename reads like one whole paragraph, shorten the slug before the file is opened.
+- if a proposed package name still sounds like the origin control slice rather than the target owner, change the owner id before opening the log.
+
 ## First Template Direction
 
 - Clean sample lane: use the `WF` family as the positive-control example where one source can mostly map cleanly into current contract plus light retained history.
@@ -370,7 +466,7 @@
 - [x] `P0`: open `S0F-3H` and fix the origin-log versus recurring-operation boundary
 - [x] `P1`: define the artifact responsibility map for runbook, packet, log, manifest, and view
 - [x] `P2`: fix naming and opening rules for future bounded execution logs
-- [ ] `P3`: publish the first reusable extraction templates
+- [x] `P3`: publish the first reusable extraction templates
 - [ ] `P4`: pilot the model on the next `S0F-1I` lifecycle-successor package
 
 ## Evidence
@@ -378,3 +474,4 @@
 - `2026-04-07`: Opened `S0F-3H` to separate recurring governance operating method from the historical origin ledgers in `S0F-3F` and `S0F-3G`, wired the new slice into the `S0F` parent spine as the next process-structure follow-up, and published the opening boundary at `headSha: 9cd6806ad79e0fd8d9ab16f4887cf5602f07f8e2`.
 - `2026-04-07`: Completed `S0F-3H/P1` by fixing one recurring-run artifact responsibility map aligned with `S0F-4A`, including the `runbook` / `packet template` / `log` / `manifest` / `view` split, one open-new-log rule, and one `S0F-1I` pilot-preparation rule for the remaining lifecycle exact-path successor package at `headSha: fb1d1fa0eb490f2375d5386d4f50b1f8c1fd68e1`.
 - `2026-04-07`: Completed `S0F-3H/P2` by fixing one bounded execution-log naming and opening model, including the canonical `log-<owner-id>-run-<n>-<slug>.md` rule, owner-selection and collision-avoidance rules against maintenance and patch lanes, parent-spine/control-slice write-back rules, and the first concrete filename model for the next `S0F-1I` lifecycle-successor package at `headSha: d8955db073660baa37c526f1cb9f3e740491208c`.
+- `2026-04-07`: Completed `S0F-3H/P3` by publishing one clean-lane structured-log extraction template, one mixed-role transformation template, and one explicit six-outlet naming sample set for later naming review and adjustment.
