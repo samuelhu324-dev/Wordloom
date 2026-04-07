@@ -73,8 +73,9 @@
 
 - `S0F-3H` is now opened as the next `S0F` follow-up slice because the repo has now outgrown the pattern where recurring governance work is driven mainly by appending more rounds to the original `3F` and `3G` logs.
 - `P0` is now complete: the boundary is explicit that `S0F-3F` and `S0F-3G` are origin and control slices, while future recurring operation should move toward runbook-driven packets plus smaller per-run ledgers.
-- The immediate next follow-up is `P1`: fix one artifact responsibility map so later work can answer, without ad hoc debate, which content belongs in a runbook, which content belongs in a template or packet, and which content belongs only in a run log.
-- The first practical pilot after `P1` should still be the remaining `S0F-1I` lifecycle exact-path successor problem, but that work should be opened under the new `3H` operating model rather than by continuing to stretch `3G` into an indefinite operator notebook.
+- `P1` is now complete: one artifact responsibility map now aligns recurring governance operation with the `S0F-4A` six-outlet model, so future work can decide consistently what belongs in `runbook`, `packet template`, `log`, `manifest`, and `view` without collapsing role and disposition back into the same file.
+- The immediate next follow-up is now `P2`: fix naming and opening rules for bounded execution ledgers so recurring work can split into small child logs without losing traceability or parent-spine discoverability.
+- The first practical pilot after `P2` should still be the remaining `S0F-1I` lifecycle exact-path successor problem, but that work should be opened under the new `3H` operating model rather than by continuing to stretch `3G` into an indefinite operator notebook.
 
 ## Problem Statement
 
@@ -106,6 +107,150 @@
 - If an older structured log still mixes enduring procedure with historical run detail, export the enduring procedure first, then thin the original log to its slice-local convergence ledger before deciding its placement.
 - The repo may open more than one log for the same broad area when that improves auditability; the constraint is not "one area, one endless log", but "one bounded purpose per log".
 
+## P1 Artifact Responsibility Map
+
+### Alignment With `S0F-4A`
+
+- `S0F-4A` remains the role-boundary source of truth:
+  - `contract` owns stable current rule
+  - `runbook` owns stable operator procedure
+  - `view` owns bounded reader-facing summary
+  - `index/front-door` owns current navigation
+  - `log` owns slice-local ledger
+  - `disposition/placement` owns file state only after role export is settled
+- `S0F-3H/P1` does not replace that model.
+- `S0F-3H/P1` fixes the recurring-operation layer that sits on top of it:
+  - how one repeatable governance run should package its procedure, inputs, execution record, and optional reader summary
+  - how to avoid putting all of that back into one endlessly growing log
+- `packet template` is therefore not a seventh document role.
+- It is one execution support artifact that helps later runs update the six `S0F-4A` outlets in a controlled order.
+
+### Artifact Responsibilities
+
+#### `runbook`
+
+- use when:
+  - the repo expects the same operator sequence to be replayed more than once
+  - the stop rules, checks, or branch points are stable enough to survive beyond one package
+- must own:
+  - ordered operator steps
+  - preflight checks
+  - stop or continue rules
+  - verification expectations
+  - references to the current contract or current front-door reader surfaces
+- must not own:
+  - per-run candidate sets
+  - one-off file lists
+  - evolving historical narration of each execution round
+- relation to `S0F-4A`:
+  - this is the stable `runbook` outlet, not a support-only annex inside a log
+
+#### `packet template`
+
+- use when:
+  - a recurring lane needs one bounded reusable input shape before execution begins
+  - the repo must know exactly which files, outlets, and stop conditions a run is allowed to touch
+- must own:
+  - package boundary
+  - required inputs
+  - expected outlet targets
+  - allowed writes and explicit non-writes
+  - closure checks for the package
+- must not own:
+  - final evidence of what happened in a specific run
+  - stable semantic rule text that belongs in a contract
+  - disposition decisions that have not yet passed role export
+- relation to `S0F-4A`:
+  - the packet enforces `contract -> runbook -> index/front-door -> view -> log rewrite -> disposition/placement` as the default export order when a run actually closes
+
+#### `log`
+
+- use when:
+  - one materially distinct package or round needs an auditable ledger
+  - the repo needs to explain why a bounded run was opened, what changed, and what remained unresolved
+- must own:
+  - package-local decision record
+  - execution narrative
+  - retained bridge notes
+  - evidence references
+  - bounded next-step statement
+- must not own permanently:
+  - evergreen operator instructions
+  - stable current rule concentration
+  - repeatable packet shape once that shape is already reusable
+- relation to `S0F-4A`:
+  - this is the retained `log` outlet after exports, not the temporary dumping ground for every enduring responsibility
+
+#### `manifest`
+
+- use when:
+  - one run needs an exact machine-readable or audit-friendly inventory
+  - later readers must reconstruct candidate scope, dependency scope, move sets, or non-write sets without replaying prose
+- must own:
+  - exact file or candidate inventory
+  - dependency or blocker set
+  - explicit changed, kept, deferred, or non-write rows
+- must not own:
+  - the human explanation of why the package exists
+  - stable operator guidance
+  - front-door reader interpretation that belongs in a view
+- relation to `S0F-4A`:
+  - manifest is supporting ledger infrastructure; it helps execute and defend disposition but does not itself become a new role or new file-state class
+
+#### `view`
+
+- use when:
+  - a bounded family or package now benefits from one reader-facing summary that should survive beyond the execution log
+  - the repo needs a compact current-vs-support-only-vs-legacy reading surface
+- must own:
+  - bounded family summary
+  - readable outcome table or family map
+  - current-reader interpretation where replaying the full ledger would be wasteful
+- must not own:
+  - operator procedure
+  - current rule enforcement semantics
+  - raw execution evidence
+- relation to `S0F-4A`:
+  - this is the stable `view` outlet and should be created only when a genuine reader-facing summary exists, not to satisfy a matrix mechanically
+
+### Responsibility Split Rules
+
+- first question:
+  - is this content a stable operating method, a bounded execution input, a run ledger, a machine-readable inventory, or a reader summary?
+- second question:
+  - if the content is stable and current, which `S0F-4A` outlet owns it?
+- third question:
+  - only after those ownership questions are resolved, does `disposition/placement` decide whether the retained file stays current, moves to `support-only`, remains `keep legacy`, or remains `defer cleanup`
+- consequence:
+  - do not solve mixed-role drift by inventing a new folder first
+  - solve it by exporting stable responsibilities out of the log first
+
+### Open-New-Log Rule v1
+
+- open a new bounded log when any of these become true:
+  - the package has a materially different candidate set or dependency set
+  - the allowed writes differ from the prior run
+  - the operator is answering a new question rather than replaying the same packet unchanged
+  - the retained evidence would otherwise obscure the previous round's close-out
+- do not open a new log merely because one more evidence line exists for the same unchanged package
+- do not append a new long-lived replay series back into `S0F-3F` or `S0F-3G` once the method itself is already stable
+
+### `S0F-1I` Pilot Preparation Rule
+
+- for the remaining `S0F-1I` lifecycle exact-path successor package, the intended split is now:
+  - `runbook`:
+    - only if the lifecycle-successor resolution sequence is defended as repeatable beyond this one package
+  - `packet template`:
+    - exact-path consumer inventory, successor target, allowed writes, explicit non-writes, and close-out checks
+  - `log`:
+    - one bounded package ledger for why this successor run exists and what it changes
+  - `manifest`:
+    - exact lifecycle artifact list plus blocker resolution set
+  - `view`:
+    - only if later readers need a compact standing summary after the package closes
+- therefore the next pilot should not begin by reopening `S0F-3G` as the primary worksheet.
+- it should begin by opening one smaller package under the `3H` operating split and only then write cleanup consequences back to `3G` if relocation status actually changes.
+
 ## First Template Direction
 
 - Clean sample lane: use the `WF` family as the positive-control example where one source can mostly map cleanly into current contract plus light retained history.
@@ -119,7 +264,7 @@
 ## Execution Checklist
 
 - [x] `P0`: open `S0F-3H` and fix the origin-log versus recurring-operation boundary
-- [ ] `P1`: define the artifact responsibility map for runbook, packet, log, manifest, and view
+- [x] `P1`: define the artifact responsibility map for runbook, packet, log, manifest, and view
 - [ ] `P2`: fix naming and opening rules for future bounded execution logs
 - [ ] `P3`: publish the first reusable extraction templates
 - [ ] `P4`: pilot the model on the next `S0F-1I` lifecycle-successor package
@@ -127,3 +272,4 @@
 ## Evidence
 
 - `2026-04-07`: Opened `S0F-3H` to separate recurring governance operating method from the historical origin ledgers in `S0F-3F` and `S0F-3G`, wired the new slice into the `S0F` parent spine as the next process-structure follow-up, and published the opening boundary at `headSha: 9cd6806ad79e0fd8d9ab16f4887cf5602f07f8e2`.
+- `2026-04-07`: Completed `S0F-3H/P1` by fixing one recurring-run artifact responsibility map aligned with `S0F-4A`, including the `runbook` / `packet template` / `log` / `manifest` / `view` split, one open-new-log rule, and one `S0F-1I` pilot-preparation rule for the remaining lifecycle exact-path successor package.
