@@ -272,4 +272,4 @@
 ## Evidence
 
 - `2026-04-07`: Opened `S0F-3H` to separate recurring governance operating method from the historical origin ledgers in `S0F-3F` and `S0F-3G`, wired the new slice into the `S0F` parent spine as the next process-structure follow-up, and published the opening boundary at `headSha: 9cd6806ad79e0fd8d9ab16f4887cf5602f07f8e2`.
-- `2026-04-07`: Completed `S0F-3H/P1` by fixing one recurring-run artifact responsibility map aligned with `S0F-4A`, including the `runbook` / `packet template` / `log` / `manifest` / `view` split, one open-new-log rule, and one `S0F-1I` pilot-preparation rule for the remaining lifecycle exact-path successor package.
+- `2026-04-07`: Completed `S0F-3H/P1` by fixing one recurring-run artifact responsibility map aligned with `S0F-4A`, including the `runbook` / `packet template` / `log` / `manifest` / `view` split, one open-new-log rule, and one `S0F-1I` pilot-preparation rule for the remaining lifecycle exact-path successor package at `headSha: fb1d1fa0eb490f2375d5386d4f50b1f8c1fd68e1`.
