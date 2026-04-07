@@ -93,6 +93,7 @@
 - `P6` is now opened: `S0F-1I` is fixed as the first bounded retained-content rewrite lane under `S0F-4A`, so the next execution pass can thin the log intentionally before `S0F-3G` attempts another cleanup or relocation decision.
 - `P6-C1-S1` is now complete: the retained-content rewrite packet, outlet targets, and stop boundary are now fixed for `S0F-1I`.
 - `P6-C1-S2` is now complete: `S0F-1I` has now been rewritten down to slice-local convergence ledger, retained evidence path, and minimum bridge notes only, while stable gate semantics and stable operator procedure are left reading through their already-exported current homes.
+- `S0F-4B` is now opened as the bounded compatibility follow-up: old parent/child templates remain the only canonical source-log families, while six outlets are narrowed to weak-structure export ownership rather than a replacement source-log format.
 
 ## P1 Six-Outlet Document Role Model
 

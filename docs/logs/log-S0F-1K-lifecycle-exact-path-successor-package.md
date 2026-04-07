@@ -170,6 +170,7 @@
 ## Current Status
 
 - `P0` is complete: `S0F-1K` is opened as the bounded child slice, the blocker set is explicit, and the package is wired as the lineage-first follow-up to `S0F-1I`.
+- `S0F-4B` now narrows how this file should be read in the future: `S0F-1K` remains valid as the historical restructuring ledger for the `S0F-1I` exact-path package, but it should not be reused as the default source-log template precedent for future issue-source or PR-source work.
 - `P1` is now complete: the working model is no longer "move first and hope readers follow"; instead, `S0F-1I` remains the held exact-path root anchor, while `S0F-1K` owns only the future decision about whether a support-only move plus legacy stub is worth doing.
 - `P1` is now complete: the six retained lifecycle reading surfaces are now annotated to say that `S0F-1I` stays their source-log anchor for now and that `S0F-1K` is only the successor-handling ledger.
 - cleanup standing is intentionally unchanged after `P1`: `S0F-3G` should still read `S0F-1I` as `defer cleanup` until a later phase proves that any legacy-stub relocation is actually readable.

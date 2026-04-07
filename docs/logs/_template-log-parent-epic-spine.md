@@ -86,6 +86,21 @@
 - Generated PR body should keep `Evidence Footer` as the only optional section; development issue identity stays in `Metadata`.
 - `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
 
+## Exported Sections / Outlet Ownership（可选）
+
+- 该区块只用于声明 weak-structure 内容应该分流到哪个 outlet；它不是 source-log 改写许可。
+- parent/spine 作为 source log 时，应继续保留 minimum core：`Decision / Outcome`、`PR Summary Inputs`（当该 log 会作为 automation source 时）、`Execution Checklist`、`Current Status`、`Evidence`。
+- six outlets 的用途是给弱结构内容找稳定归宿，而不是替代 source-log 的强结构骨架。
+
+**Outlet ownership**:
+
+- `contract`: <哪些稳定规则正文应外移到 contract>
+- `runbook`: <哪些稳定操作步骤应外移到 runbook>
+- `view`: <哪些读者摘要/家族综述应外移到 view>
+- `index/front-door`: <哪些导航入口应外移到 INDEX/front-door>
+- `disposition/placement`: <哪些 support-only / legacy / cleanup standing 应外移到 disposition 记账面>
+- `log-retained core`: <本 source log 仍保留哪些自动化依赖强结构与桥接说明>
+
 **Non-goals（不做什么）**（可选，但建议写）:
 
 - <明确本 epic/spine 不覆盖的内容，防止读者脑补>

@@ -81,6 +81,21 @@
 - Generated PR body should keep `Evidence Footer` as the only optional section; development issue identity stays in `Metadata`.
 - `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
 
+## Exported Sections / Outlet Ownership (optional)
+
+- Use this block only to split weak-structure content out of the source log after outlet ownership is explicit.
+- Do not use outlet export to delete the source-log minimum core: `Decision / Outcome`, `PR Summary Inputs` when this log is an automation source, `Execution Checklist`, `Current Status`, and `Evidence` must remain readable here.
+- Strong-structure sections stay owned by the source log unless a later contract explicitly authorizes a different automation reader model.
+
+**Outlet ownership**:
+
+- `contract`: <stable rule text that should leave this log>
+- `runbook`: <stable repeatable operator procedure that should leave this log>
+- `view`: <reader-facing family or status summary that should leave this log>
+- `index/front-door`: <navigation or entrypoint mutations that should leave this log>
+- `disposition/placement`: <support-only / legacy / cleanup standing that should leave this log>
+- `log-retained core`: <what must remain here as source-log strong structure plus bridge notes>
+
 ## Definitions (optional)
 
 - <3-10 key terms so readers do not need to infer meaning>
@@ -176,6 +191,11 @@
 
 - [ ] `P1-C1-S1`: ...
 - [ ] `P1-C1-S2`: ...
+
+## Current Status (recommended)
+
+- <One-line overall state for this source log>
+- <What is already stable, what still remains open, and whether automation should still read this log as an active source>
 
 ## Evidence (reserved)
 
