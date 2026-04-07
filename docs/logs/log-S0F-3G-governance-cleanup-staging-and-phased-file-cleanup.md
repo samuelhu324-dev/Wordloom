@@ -83,7 +83,8 @@
 - `P5-C4` is now complete as a repo-side full scan of `docs/logs/`: the scan does surface one strongest support-only proto-family around `S0F-1E`, `S0F-1F`, and the historical `S0F-1I/P1-P3` repair lane, but it still does not open another cleanup family because the wider `docs/logs/` support-only class has not yet been given one defended relocation model and adjacent support-only logs still remain entangled with reader-facing runbook, issue, or workflow history.
 - `P6` is now complete for the first bounded `docs/logs/` support-only move round: the slice now fixes `docs/logs/support-only/s0/` as the first stable location model for fully support-only `S0` logs, moves `S0F-1E` and `S0F-1F` there with bounded reference rewrites plus one directory index and manifest, and leaves `S0F-1I` in explicit `defer cleanup` standing because the file still mixes support-only repair history with later current-adjacent gate ownership.
 - `P7` is now complete as the first mixed-standing cleanup review round: `S0F-1I` has now been rechecked as a fragment-level candidate, but the round closes by formalizing its blocker sets rather than splitting or relocating it because contracts, runbook ownership, parent-spine navigation, issue bodies, and PR-prep surfaces still consume the root file as one current-adjacent readable source.
-- The immediate next follow-up is now narrowed more precisely: either apply the same mixed-standing review model to another candidate whose whole-file move was previously deferred, or start a new repo-side scan for non-`S0` logs whose entire file standing is already support-only and therefore does not require fragment extraction first.
+- `P8` is now complete as the first non-`S0` whole-file support-only scan: the slice rechecked the strongest S2-S6 candidates under the existing `docs/logs/support-only/` model, but no new cleanup family is opened because the near-candidates still remain current-adjacent through parent spines, runbooks, `INDEX.md`, or active onboarding and migration reading.
+- The immediate next follow-up is now narrowed again: either continue the mixed-standing line on another deferred root-file candidate, or wait until a later bounded scope can prove one non-`S0` family has truly reached whole-file support-only standing instead of only broad historical value.
 
 ## Problem Statement
 
@@ -710,6 +711,41 @@
   - first prove one bounded successor model for both extracted history and the remaining current-adjacent source
 - `S0F-1I` therefore remains at `docs/logs/` root by defended choice rather than by unfinished investigation.
 
+## P8 First Non-`S0` Whole-File Support-Only Scan (`S2-S6`)
+
+### P8 Scope
+
+- repo-side scan target reopened under the now-stable `docs/logs/support-only/` model:
+  - non-`S0` markdown logs under `docs/logs/`, with priority on `S2` through `S6`
+- exact question answered by this round:
+  - whether any bounded non-`S0` family now contains logs whose entire file standing is already support-only or historical-only, so they could enter the existing `docs/logs/support-only/` relocation model without fragment extraction first
+
+### P8 Candidate Review
+
+- strongest near-candidates reviewed:
+  - `docs/logs/log-S2B-1A-failure-contract-v1.md`
+  - `docs/logs/log-S2B-5A-table-merge-migration.md`
+  - `docs/logs/log-S2B-5A-table-merge-migration-v2.md`
+  - `docs/logs/log-S2D-1A-projection-onboarding-contract-and-sample.md`
+- result:
+  - `no new cleanup family opened`
+
+### P8 Decision Notes
+
+- `S2B-1A-failure-contract-v1` is not cleanup-ready as support-only history because it remains cited by `docs/INDEX.md`, `docs/logs/INDEX.md`, the projection-table-merge runbook, and later evidence or stable-entry logs as one still-readable contract baseline.
+- `S2B-5A-table-merge-migration.md` is the closest historical candidate, but it is still part of one current reader-facing `S2B` version line rather than a detached support-only residue:
+  - the parent `S2B` spine still treats the Search closure path through `S2B-5A-table-merge-migration-v2.md` as active SoT context
+  - broad historical references under later `S6B` material still treat both `S2B-5A` variants as an allowed historical set rather than as relocation-ready residue
+- `S2D-1A` and adjacent onboarding samples are not support-only cleanup candidates at all under the current boundary because the `S2D` spine still treats them as active sample, adoption, and hard-gate methodology surfaces.
+- The non-`S0` scan therefore reinforces one additional rule for `S0F-3G`:
+  - broad historical value or superseded-by-v2 status is not enough to prove whole-file support-only standing when parent spines, runbooks, or onboarding frameworks still depend on the file as readable current methodology
+
+### P8 Result
+
+- The first non-`S0` whole-file support-only scan closes without opening a move round.
+- No `S2-S6` family currently matches the `S0F-1E/F` pattern of whole-file pure support-only history with bounded rewrite surfaces.
+- The strongest future non-`S0` candidate remains the earlier `S2B-5A` Search-closure v1 path, but it still needs one stronger parent-spine and lineage decision before it could be treated as relocation-ready cleanup residue.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -752,6 +788,8 @@
 - P6-C2-S2: defer mixed-standing logs such as `S0F-1I` rather than forcing whole-file relocation
 - P7-C1-S1: recheck one deferred mixed-standing log as a fragment-level cleanup candidate and inventory its blocker surfaces explicitly
 - P7-C1-S2: reject fragment extraction or whole-file relocation when current-adjacent contracts, runbook, or issue-prep surfaces still depend on the root file as one readable source
+- P8-C1-S1: scan non-`S0` logs for whole-file support-only families under the existing `docs/logs/support-only/` model
+- P8-C1-S2: reject families whose files still retain parent-spine, runbook, `INDEX.md`, or onboarding-methodology reader value even when they are historically broad or version-superseded
 - P5-C1-S2: stop the slice when the remaining files are all either current, legacy-needed, or explicitly deferred
 
 ## Execution Checklist (unchecked)
@@ -796,6 +834,8 @@
 - [x] `P6-C2-S2`: mixed-standing logs such as `S0F-1I` deferred instead of being forced into whole-file relocation
 - [x] `P7-C1-S1`: one deferred mixed-standing log rechecked as a fragment-level cleanup candidate with explicit blocker inventory
 - [x] `P7-C1-S2`: fragment extraction and whole-file relocation rejected when current-adjacent reader surfaces still require the root file
+- [x] `P8-C1-S1`: non-`S0` logs scanned for whole-file support-only families under the existing relocation model
+- [x] `P8-C1-S2`: historically broad or version-superseded non-`S0` files rejected when parent or runbook readers still consume them as current methodology
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -1016,3 +1056,22 @@
 - observed:
   - `S0F-1I` is now confirmed as fragment-scoped support-only history plus root-scoped current-adjacent traceability, so neither whole-file relocation nor `P1-P3` extraction is defended yet
   - the blocker sets are now retained explicitly across contracts, runbook, parent-spine or adjacent logs, and issue or PR-prep surfaces, making the defer decision auditable instead of implicit
+
+### P8-C1-S1S2 (non-S0 whole-file support-only scan closed with no new family | 2026-04-07)
+
+- headSha: `<TBD-after-non-s0-scan-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/logs/log-S2B-projection-table-merge.md`
+  - `docs/logs/log-S2B-5A-table-merge-migration.md`
+  - `docs/logs/log-S2B-5A-table-merge-migration-v2.md`
+  - `docs/logs/log-S2D-projection-onboarding-hard-gates.md`
+  - `docs/logs/INDEX.md`
+  - `docs/INDEX.md`
+  - `docs/runbook/run-S2B-projection-table-merge.md`
+- expected:
+  - one non-`S0` repo-side scan either opens the first whole-file support-only family outside `s0/` or narrows the strongest near-candidate with explicit non-write reasons
+- observed:
+  - no bounded non-`S0` move-ready family is found under the current `docs/logs/support-only/` model
+  - the strongest near-candidate remains `S2B-5A` v1, but parent-spine, runbook, `INDEX`, and broader historical-lineage readers still keep the file in readable current-methodology territory rather than relocation-ready support-only residue
