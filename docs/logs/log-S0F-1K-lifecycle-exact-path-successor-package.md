@@ -174,7 +174,7 @@
 ## Evidence
 
 - headSha:
-  - `939ae658cbc85c9c2f22ec70fcb5f4e311f63f4d`
+  - `86d4280de2d295a9dfb5e2a175789eb7339b5d8b`
 - artifacts:
   - `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
   - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
