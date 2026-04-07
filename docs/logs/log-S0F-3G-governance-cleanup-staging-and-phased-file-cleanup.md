@@ -18,6 +18,7 @@
   **reference_log_1**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
   **reference_log_2**: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
   **reference_log_3**: `docs/governance/INDEX.md`
+  **reference_log_4**: `docs/governance/views/view-s0f-governance-sweep-and-cleanup-overview-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -86,6 +87,7 @@
 - `P8` is now complete as the first non-`S0` whole-file support-only scan: the slice rechecked the strongest S2-S6 candidates under the existing `docs/logs/support-only/` model, but no new cleanup family is opened because the near-candidates still remain current-adjacent through parent spines, runbooks, `INDEX.md`, or active onboarding and migration reading.
 - `P9` is now complete as the first `docs/governance/contracts/` support-only move round: the slice now fixes `docs/governance/contracts/support-only/` as the contracts-side relocation model for whole-file support-only backtrace notes, moves `GC-PRB-0001-backfill` there with bounded reference rewrites plus one directory index and cleanup manifest, and closes the only remaining contracts-family defer row from `P5`.
 - `P10` is now complete as the second mixed-standing `S0F-1I` review round: the slice rechecks the same deferred root-file candidate after `P9`, but closes again as a defended non-write result because the remaining blockers are now confirmed to be upstream ownership changes rather than cleanup-local rewrites.
+- `P11` is now complete as the first combined `3F/3G` overview round: one reader-facing governance view now concentrates what `3F` has already semantically processed, what `3G` has already physically moved or deferred, and which bounded families still remain open, so later readers do not have to mentally merge two ledgers and multiple manifests just to understand overall completion state.
 - The immediate next follow-up is now narrowed again: either wait for one upstream contract, runbook, or lifecycle-surface consolidation that can actually lift the `S0F-1I` blocker set, or return to non-`S0` repo-side scanning once one whole-file support-only family can be defended under the existing location models.
 
 ## Problem Statement
@@ -855,6 +857,8 @@
 - P9-C1-S2: execute the bounded `GC-PRB-0001` backfill move with exact reference rewrites and close the earlier contracts-family defer row
 - P10-C1-S1: re-evaluate the surviving `S0F-1I` mixed-standing defer row after `P9` and separate cleanup-local blockers from upstream ownership blockers
 - P10-C1-S2: formalize exact unblock conditions for later `S0F-1I` re-entry instead of reopening fragment extraction without a successor source model
+- P11-C1-S1: publish one combined reader-facing overview that explains how `3F` semantic sweep state and `3G` cleanup state fit together
+- P11-C1-S2: summarize what has already been processed, moved, kept, deferred, and still remains open so readers can locate the next real decision point quickly
 - P5-C1-S2: stop the slice when the remaining files are all either current, legacy-needed, or explicitly deferred
 
 ## Execution Checklist (unchecked)
@@ -905,6 +909,8 @@
 - [x] `P9-C1-S2`: bounded `GC-PRB-0001` backfill move executed with exact reference rewrites and the earlier contracts defer row closed
 - [x] `P10-C1-S1`: surviving `S0F-1I` mixed-standing blockers rechecked after `P9` and separated into cleanup-local versus upstream-ownership classes
 - [x] `P10-C1-S2`: exact unblock conditions recorded so later `S0F-1I` re-entry can happen without rediscovering the blocker model
+- [x] `P11-C1-S1`: combined reader-facing overview published for the `3F` semantic lane and the `3G` cleanup lane
+- [x] `P11-C1-S2`: overall processed-versus-open state summarized so readers can see completion status without manually merging multiple ledgers
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -1217,3 +1223,17 @@
 - observed:
   - `S0F-1I` remains not move-ready, but the remaining blocker set is now narrowed to four explicit upstream ownership changes rather than one generic mixed-standing warning
   - `S0F-3G` can now stop rechecking `S0F-1I` opportunistically until contracts, runbook, parent navigation, or lifecycle-source handling actually change in a way that could lift one of those blockers
+
+### P11-C1-S1S2 (combined `3F/3G` overview published for reader-facing state concentration | 2026-04-07)
+
+- headSha: `<TBD-after-overview-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/views/view-s0f-governance-sweep-and-cleanup-overview-v1.md`
+- expected:
+  - one reader-facing surface should explain the relationship between semantic sweep and cleanup placement work, summarize what families are already processed, and identify what still remains open without requiring manual cross-reading of multiple ledgers and manifests
+- observed:
+  - `3F` and `3G` remain operationally separate on purpose, but readers now have one concentrated overview showing what was semantically swept, what was physically moved or kept, and where the remaining open cleanup state actually lives
+  - overall completion state is now readable from one governance view instead of only from the accumulated history inside two long phase logs

@@ -27,6 +27,7 @@
   **reference_log_10**: `docs/governance/views/support-only/view-attr-admission-package-v1.md`
   **reference_log_11**: `docs/governance/views/support-only/view-prb-follow-up-family-sweep-v1.md`
   **reference_log_12**: `docs/governance/views/support-only/view-issue-automation-follow-up-family-sweep-v1.md`
+  **reference_log_13**: `docs/governance/views/view-s0f-governance-sweep-and-cleanup-overview-v1.md`
 **issue_keyword**: `governance`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -108,6 +109,7 @@
 - The workflow is intentionally conservative: it exists to reduce ad hoc judgment drift before future family sweeps scale out.
 - No bounded unswept family remains inside the currently approved shortlist after `C4`, and the first defended legacy-refresh reuse under `C5` also closes without front-door mutation.
 - The immediate next follow-up is therefore again no longer another family admission lane inside this slice; future reuse should reopen `S0F-3F` only if a genuinely new bounded family or a defended legacy refresh question appears.
+- One combined reader-facing overview now exists at `docs/governance/views/view-s0f-governance-sweep-and-cleanup-overview-v1.md` so semantic sweep state can be read together with downstream cleanup state without mentally merging the two ledgers by hand.
 
 ## Problem Statement
 
