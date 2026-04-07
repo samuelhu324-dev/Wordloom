@@ -74,8 +74,9 @@
 - `S0F-3H` is now opened as the next `S0F` follow-up slice because the repo has now outgrown the pattern where recurring governance work is driven mainly by appending more rounds to the original `3F` and `3G` logs.
 - `P0` is now complete: the boundary is explicit that `S0F-3F` and `S0F-3G` are origin and control slices, while future recurring operation should move toward runbook-driven packets plus smaller per-run ledgers.
 - `P1` is now complete: one artifact responsibility map now aligns recurring governance operation with the `S0F-4A` six-outlet model, so future work can decide consistently what belongs in `runbook`, `packet template`, `log`, `manifest`, and `view` without collapsing role and disposition back into the same file.
-- The immediate next follow-up is now `P2`: fix naming and opening rules for bounded execution ledgers so recurring work can split into small child logs without losing traceability or parent-spine discoverability.
-- The first practical pilot after `P2` should still be the remaining `S0F-1I` lifecycle exact-path successor problem, but that work should be opened under the new `3H` operating model rather than by continuing to stretch `3G` into an indefinite operator notebook.
+- `P2` is now complete: one naming and opening rule set now fixes how recurring governance work should open bounded execution logs without colliding with `S0F-2A` maintenance lanes, `S0F-2B` family-patch lanes, or the original control slices.
+- The immediate next follow-up is now `P3`: publish the first reusable extraction templates so future mixed-role cleanup can start from one fixed packet shape rather than restating the same boundaries again.
+- The first practical pilot after `P3` should still be the remaining `S0F-1I` lifecycle exact-path successor problem, but that work should now open as one bounded execution log under the `3H` naming model and only write consequence deltas back to `S0F-3G` if cleanup status actually changes.
 
 ## Problem Statement
 
@@ -251,6 +252,109 @@
 - therefore the next pilot should not begin by reopening `S0F-3G` as the primary worksheet.
 - it should begin by opening one smaller package under the `3H` operating split and only then write cleanup consequences back to `3G` if relocation status actually changes.
 
+## P2 Bounded Execution Log Naming And Opening Rules
+
+### Naming Boundary
+
+- bounded execution logs remain `log` role documents under the `S0F-4A` naming baseline.
+- they do not create a new top-level role, a new folder class, or a replacement for maintenance or patch notes.
+- the purpose of `P2` is therefore not to invent a new ontology.
+- the purpose is to make recurring-run logs discoverable, narrow, and non-colliding.
+
+### Canonical Filename Rule
+
+- default filename shape:
+  - `log-<owner-id>-run-<n>-<slug>.md`
+- where:
+  - `<owner-id>` is the narrowest family, slice, or target identifier that a reader would actually search first
+  - `run-<n>` is the bounded execution-log sequence for that owner, starting at `run-1`
+  - `<slug>` is the concrete package purpose, not a restatement of the whole origin workflow
+- rationale:
+  - keep the file clearly inside the existing `log` naming universe
+  - distinguish recurring execution ledgers from full slice logs, maintenance logs, and patch notes
+  - make it possible to open multiple logs for one owner without pretending they are new phases of the original origin slice
+
+### Owner Selection Rule
+
+- choose `<owner-id>` by reader lookup priority, not by historical credit:
+  - use the target family or deferred row when the package is really about one target
+  - use the workflow family only when the package truly spans more than one target under the same stable method
+- examples:
+  - use `S0F-1I` for a package that exists only to resolve the remaining `S0F-1I` lifecycle exact-path successor problem
+  - use `S0F-3G` only if one later package again covers multiple cleanup rows as one genuine cleanup-family run rather than one target-specific follow-up
+- do not default to `S0F-3H` as the owner id merely because the operating model came from this slice
+- `S0F-3H` owns the method, not every later package filename
+
+### Sequence Rule
+
+- increment `run-<n>` only when the new log is materially distinct for the same owner.
+- a materially distinct run means at least one of the following changed:
+  - candidate set
+  - dependency set
+  - allowed writes
+  - governing question
+  - close-out consequence surface
+- do not increment the sequence merely for one more evidence line or one small same-package replay.
+- if the package is unchanged, keep adding evidence to the same bounded log or the same manifest set.
+
+### Collision-Avoidance Rule
+
+- do not use `run-<n>` logs where `S0F-2A` or `S0F-2B` already provide a better lane:
+  - use `docs/logs/maintenance/` for real ops-maintenance work
+  - use `docs/logs/patch/` for family patch or tiny direct patch lanes
+- bounded execution logs under this `3H` model are for recurring governance packages that still need a substantive auditable ledger but no longer deserve to reopen the original control slice.
+- do not use `P<n>` in the filename of these logs.
+- `P/C/S` remain body-level execution markers and commit-subject notation, not the filename discriminator for recurring-run ledgers.
+
+### Placement Rule
+
+- keep bounded execution logs under `docs/logs/` by default.
+- do not create a new top-level `runs/`, `packets/`, or `operations/` folder for this lane.
+- if a future repo-wide volume problem appears, solve that later with an explicit placement slice rather than preemptively fragmenting discoverability now.
+- support-only relocation remains a later disposition question, not part of the opening rule.
+
+### Required Link Set At Open
+
+- every bounded execution log should declare at least:
+  - `parent_log`: the active spine or direct parent family log that keeps the high-level storyline readable
+  - `reference_log`: the origin control slice or source-owner log whose method or standing produced this package
+  - packet or manifest references when those files exist for the package
+- rationale:
+  - parent spine stays readable without becoming the operator notebook
+  - origin slices keep traceability without needing to host every replay
+  - the bounded package remains independently auditable
+
+### Parent-Spine And Control-Slice Write-Back Rule
+
+- parent spine:
+  - always gets one concise status line when a bounded execution log opens or closes with a meaningful result
+- origin control slice such as `S0F-3F` or `S0F-3G`:
+  - gets a consequence write-back only when the package changes the standing of that slice's open row, blocker model, or cleanup/admission state
+- do not mirror the full execution ledger back into the control slice once the method is already stable.
+- this is the main mechanism that prevents `3F` and `3G` from turning back into endless operator notebooks.
+
+### Opening Checklist v1
+
+- before opening a bounded execution log, confirm all of the following:
+  - the stable method already exists in a runbook, packet rule, or control slice
+  - the package is narrower than reopening the full origin slice
+  - the owner id is the narrowest reader-meaningful search key
+  - the package needs an auditable ledger and is not just a patch or maintenance note
+  - parent-spine write-back expectations are clear
+- if those checks fail, either:
+  - keep the work in the existing bounded log if the package is not actually new
+  - escalate to a full slice if the work introduces a new stable method or policy
+  - route to maintenance or patch lanes if the work is really small-work policy territory
+
+### First Concrete Naming Example
+
+- the next `S0F-1I` lifecycle-successor package should default to a filename of the form:
+  - `log-S0F-1I-run-1-lifecycle-exact-path-successor-package.md`
+- why this is the right example:
+  - readers will search for `S0F-1I`, not for `S0F-3H`, when they want the target standing
+  - the package is one bounded successor-resolution run, not a new full slice
+  - the name makes clear that `S0F-3H` supplied the method while `S0F-1I` remains the target owner
+
 ## First Template Direction
 
 - Clean sample lane: use the `WF` family as the positive-control example where one source can mostly map cleanly into current contract plus light retained history.
@@ -265,7 +369,7 @@
 
 - [x] `P0`: open `S0F-3H` and fix the origin-log versus recurring-operation boundary
 - [x] `P1`: define the artifact responsibility map for runbook, packet, log, manifest, and view
-- [ ] `P2`: fix naming and opening rules for future bounded execution logs
+- [x] `P2`: fix naming and opening rules for future bounded execution logs
 - [ ] `P3`: publish the first reusable extraction templates
 - [ ] `P4`: pilot the model on the next `S0F-1I` lifecycle-successor package
 
@@ -273,3 +377,4 @@
 
 - `2026-04-07`: Opened `S0F-3H` to separate recurring governance operating method from the historical origin ledgers in `S0F-3F` and `S0F-3G`, wired the new slice into the `S0F` parent spine as the next process-structure follow-up, and published the opening boundary at `headSha: 9cd6806ad79e0fd8d9ab16f4887cf5602f07f8e2`.
 - `2026-04-07`: Completed `S0F-3H/P1` by fixing one recurring-run artifact responsibility map aligned with `S0F-4A`, including the `runbook` / `packet template` / `log` / `manifest` / `view` split, one open-new-log rule, and one `S0F-1I` pilot-preparation rule for the remaining lifecycle exact-path successor package at `headSha: fb1d1fa0eb490f2375d5386d4f50b1f8c1fd68e1`.
+- `2026-04-07`: Completed `S0F-3H/P2` by fixing one bounded execution-log naming and opening model, including the canonical `log-<owner-id>-run-<n>-<slug>.md` rule, owner-selection and collision-avoidance rules against maintenance and patch lanes, parent-spine/control-slice write-back rules, and the first concrete filename model for the next `S0F-1I` lifecycle-successor package.
