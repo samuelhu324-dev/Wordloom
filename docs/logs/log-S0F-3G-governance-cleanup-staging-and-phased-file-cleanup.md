@@ -87,7 +87,9 @@
 - `P9` is now complete as the first `docs/governance/contracts/` support-only move round: the slice now fixes `docs/governance/contracts/support-only/` as the contracts-side relocation model for whole-file support-only backtrace notes, moves `GC-PRB-0001-backfill` there with bounded reference rewrites plus one directory index and cleanup manifest, and closes the only remaining contracts-family defer row from `P5`.
 - `P10` is now complete as the second mixed-standing `S0F-1I` review round: the slice rechecks the same deferred root-file candidate after `P9`, but closes again as a defended non-write result because the remaining blockers are now confirmed to be upstream ownership changes rather than cleanup-local rewrites.
 - `P11-C1-S1S2` is now complete as the third mixed-standing `S0F-1I` review round: after `S0F-4A/P6-C1-S2` thinned the retained log itself, `S0F-3G` re-enters the deferred row and confirms that root relocation is still not justified under the existing support-only model because exact-path discoverability still survives in contracts, the reviewer-owned runbook, and retained issue or PR-prep lifecycle artifacts.
-- The immediate next follow-up is now narrower than it was at `P10`: another `S0F-3G` re-entry is not useful until one successor or redirect model exists for those remaining exact-path consumers, because the older mixed-role ownership-text blocker has now already been removed by `S0F-4A/P6-C1-S2`.
+- `P12-C1-S1` is now complete: the reviewer-owned runbook no longer points to `S0F-1I` as a live repair lane, and now reads that surface as archived historical ledger only while current procedure reads through `S0F-1J` plus the canonical wrapper.
+- `P12-C2-S1S2` is now complete: the `PRG/PRB` contract-lineage group no longer uses `S0F-1I` as a current exact-path source anchor, and the cleanup slice rechecks `S0F-1I` again after those changes, confirming that root relocation is still blocked only by retained lifecycle artifacts rather than by contracts or runbook discoverability.
+- The immediate next follow-up is now narrower than it was at `P11`: another `S0F-3G` re-entry is not useful until one redirect-safe successor model exists for the remaining issue and PR-prep exact-path consumers, because the runbook and contract-lineage dependency groups have now already been reduced.
 - The broader structural follow-up is now split into `S0F-4A`, which fixes document role boundaries, write-back protocol, naming baselines, and disposition rules so later cleanup rounds no longer have to infer those responsibilities ad hoc from mixed-role logs.
 
 ## Problem Statement
@@ -857,6 +859,72 @@
 - The current blocker set is now mostly exact-path discoverability across contracts, runbook, and lifecycle artifacts rather than mixed-role text concentration inside the log itself.
 - The next meaningful cleanup step is therefore no longer another generic `S0F-1I` recheck; it is one later successor or redirect model for those remaining exact-path consumers if relocation is still desired.
 
+## P12 Exact-Path Dependency Reduction Round (`S0F-1I`)
+
+### P12 Scope
+
+- bounded dependency-reduction family reopened from the `P11` defer result:
+  - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+  - `docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md`
+  - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- exact question answered by this round:
+  - whether the runbook and contract-lineage exact-path dependencies on `S0F-1I` can now be reduced without reopening semantic ownership,
+  - and whether that reduction is enough to make `S0F-1I` move-ready under the existing support-only model
+
+### P12 Review Model
+
+- dependency-reduction rule added by this round:
+  - when one deferred cleanup row remains blocked by exact-path consumers outside the log itself, `S0F-3G` may record one bounded dependency-reduction round so long as the edits only narrow discoverability dependence and do not reopen current semantic ownership
+  - this work belongs in a new `P12` phase rather than as a `P11` follow-up cycle because it performs real upstream dependency edits before the next cleanup decision, not just one more non-write review
+
+### P12-C1-S1 Runbook Dependency Reduction
+
+- applied change:
+  - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md` no longer treats `S0F-1I` as the live repair lane for current operators
+- resulting rule:
+  - current operator procedure now reads through the reviewer-owned runbook plus `S0F-1J` packaging surfaces
+  - `S0F-1I` now survives in the runbook only as archived historical ledger for backtrace and retained evidence review
+
+### P12-C2-S1 Contract/Lineage Dependency Reduction
+
+- applied changes:
+  - `GC-PRG-0001` no longer keeps `S0F-1I` in `source_refs` as if it were the stable current source anchor
+  - deprecated `GC-PRB-0001` and its support-only backfill note now treat `S0F-1I/P4-C1-S1` as historical baseline notation rather than as one current exact-path source reference
+- resulting rule:
+  - current gate packaging and current active triage now read through `S0F-1J` plus the patch surface
+  - `S0F-1I` remains only as historical introduction baseline where lineage still needs that fact
+
+### P12-C2-S2 Post-Reduction Cleanup Decision
+
+- `defer cleanup`:
+  - `S0F-1I`
+    - rationale:
+      - contracts and runbook no longer form the primary exact-path blocker set, which is progress
+      - retained issue and PR-prep lifecycle artifacts still name `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md` directly, and this round still does not own one redirect-safe relocation model for those historical lifecycle bodies
+      - under the current `docs/logs/support-only/` model, moving the root file now would still weaken lifecycle-source discoverability more than it would simplify root-level navigation
+
+### P12 Manifest Decision
+
+- exact-path dependency reduction manifest:
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-exact-path-round-1.json`
+- manifest scope:
+  - dependency reductions:
+    - runbook repair guidance
+    - contract-lineage source-anchor compression
+  - cleanup decision:
+    - keep root placement for `S0F-1I`
+  - explicit remaining blocker set:
+    - retained issue and PR-prep lifecycle artifacts only
+
+### P12 Result
+
+- `P12` removes two of the three exact-path dependency groups that still blocked `S0F-1I` at `P11`.
+- `S0F-1I` still remains deferred, but the remaining blocker set is now cleaner and smaller:
+  - retained lifecycle artifacts
+- The next meaningful cleanup-enabling work is therefore no longer runbook or contract-lineage concentration; it is one redirect-safe lifecycle-source model if the repo still wants to relocate `S0F-1I` later.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -907,6 +975,9 @@
 - P10-C1-S2: formalize exact unblock conditions for later `S0F-1I` re-entry instead of reopening fragment extraction without a successor source model
 - P11-C1-S1: re-enter `S0F-1I` after `S0F-4A/P6-C1-S2` and test whether the retained-content rewrite is enough to reopen cleanup disposition safely
 - P11-C1-S2: decide whether the rewritten `S0F-1I` can now move under the existing support-only model or must remain deferred because exact-path discoverability still survives elsewhere
+- P12-C1-S1: reduce the reviewer-owned runbook's exact-path dependence on `S0F-1I` by moving current repair guidance onto successor or archived-historical reading
+- P12-C2-S1: compress `PRG/PRB` contract-lineage source-anchor dependence on `S0F-1I` into historical baseline notation rather than current exact-path ownership
+- P12-C2-S2: re-evaluate `S0F-1I` after those dependency reductions and decide whether lifecycle artifacts still block relocation
 - P5-C1-S2: stop the slice when the remaining files are all either current, legacy-needed, or explicitly deferred
 
 ## Execution Checklist (unchecked)
@@ -959,6 +1030,9 @@
 - [x] `P10-C1-S2`: exact unblock conditions recorded so later `S0F-1I` re-entry can happen without rediscovering the blocker model
 - [x] `P11-C1-S1`: `S0F-1I` re-entered after `S0F-4A/P6-C1-S2` so cleanup can judge the rewritten log rather than the older mixed-role version
 - [x] `P11-C1-S2`: the rewritten `S0F-1I` is still deferred because exact-path discoverability remains live across contracts, runbook, and lifecycle artifacts under the current model
+- [x] `P12-C1-S1`: reviewer-owned runbook no longer points to `S0F-1I` as a live repair owner and now treats it as archived historical ledger only
+- [x] `P12-C2-S1`: `PRG/PRB` contract-lineage group no longer uses `S0F-1I` as a current exact-path source anchor
+- [x] `P12-C2-S2`: post-reduction cleanup review confirms that retained lifecycle artifacts are now the only remaining relocation blocker for `S0F-1I`
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -1291,3 +1365,23 @@
 - observed:
   - the retained-content rewrite was enough to justify a new `P11` re-entry round rather than another `P10` cycle
   - `S0F-1I` still remains deferred, but the remaining blocker set is now narrowed to exact-path discoverability in contracts, the reviewer-owned runbook, and retained lifecycle artifacts rather than to unresolved mixed-role text ownership inside the log itself
+
+### P12-C1-S1 and P12-C2-S1S2 (runbook and contract-lineage exact-path dependencies reduced before post-reduction recheck | 2026-04-07)
+
+- headSha: `<TBD-after-exact-path-round-1-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-exact-path-round-1.json`
+  - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+  - `docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md`
+  - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/issues/pr-prep-S0F-1I-live-body.md`
+- expected:
+  - one bounded dependency-reduction round should remove the runbook and contract-lineage exact-path blockers on `S0F-1I` without reopening semantic ownership, then confirm whether lifecycle artifacts still block relocation
+- observed:
+  - the runbook now reads `S0F-1I` as archived historical ledger only, and the `PRG/PRB` lineage set now treats `S0F-1I/P4-C1-S1` as historical baseline notation rather than as a current exact-path source anchor
+  - `S0F-1I` still remains deferred, but the remaining relocation blocker set is now narrowed to retained lifecycle artifacts only

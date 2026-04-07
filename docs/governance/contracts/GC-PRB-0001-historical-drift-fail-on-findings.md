@@ -16,7 +16,6 @@ contract_record:
   introduced_by: S0F-1I/P4-C1-S1
   last_changed_by: S0F-3E/P6-C3-S2
   source_refs:
-    - docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md
     - docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md
     - docs/logs/patch/log-S0F-P1-s0f-pr-body-completeness-standard-check-dispatch-failure-triage.md
   supersedes: []
@@ -50,5 +49,5 @@ contract_record:
   - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
 - Current active triage surface:
   - `docs/logs/patch/log-S0F-P1-s0f-pr-body-completeness-standard-check-dispatch-failure-triage.md`
-- Earlier standard-check baseline:
-  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- Earlier standard-check baseline introduced by:
+  - `S0F-1I/P4-C1-S1`

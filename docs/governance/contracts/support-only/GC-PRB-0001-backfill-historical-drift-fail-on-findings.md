@@ -16,13 +16,12 @@
 - `introduced_by`: `S0F-1I/P4-C1-S1`
 - `last_changed_by`: `S0F-1J/P2-C1-S1`
 - `source_refs`:
-  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
   - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
   - `docs/logs/patch/log-S0F-P1-s0f-pr-body-completeness-standard-check-dispatch-failure-triage.md`
 
 ## Historical Gaps
 
-- `S0F-1H` is the earlier reviewer-origin surface for substantive-drift classification, but this backfill treats `S0F-1I/P4-C1-S1` as the first sufficient source anchor for the current standard-check fail semantics because that phase fixed the wrapper-level pass/non-pass rule used later by `S0F-1J`.
+- `S0F-1H` is the earlier reviewer-origin surface for substantive-drift classification, but this backfill still treats `S0F-1I/P4-C1-S1` as the first sufficient historical baseline for the current standard-check fail semantics because that phase fixed the wrapper-level pass/non-pass rule used later by `S0F-1J`.
 
 ## Decision
 

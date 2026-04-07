@@ -40,7 +40,7 @@
   - issue/PR lifecycle creation for slices that do not yet own live GitHub state
 - Source materials:
   - `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
-  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
   - `scripts/issues/review_pr_body_completeness.py`
   - `scripts/issues/plan_pr_body_completeness_check_wrapper.py`
@@ -176,8 +176,9 @@ c:/python314/python.exe scripts/issues/plan_pr_body_completeness_check_wrapper.p
 
 ## 7) Notes and Boundaries
 
-- This runbook is procedural only; the reviewer contract still lives in `S0F-1H`, and the bounded formatting-only repair lane still lives in `S0F-1I`.
+- This runbook is procedural only; the reviewer contract still lives in `S0F-1H`, and the former formatting-only repair lane now survives only as archived historical ledger and retained evidence under `S0F-1I`.
 - Do not use this runbook as the source of truth for reviewer semantics; the wrapper and canonical reviewer own those definitions.
-- If operators need to repair formatting-only drift, leave this runbook and follow the bounded live convergence surfaces retained by `S0F-1I`.
+- Current packaged execution surfaces should read through `S0F-1J` and the canonical wrapper rather than through `S0F-1I` as a live repair owner.
+- If operators need historical context for the former formatting-only repair lane, consult the archived `S0F-1I` convergence ledger and its retained artifacts; current operator procedure does not depend on that path.
 - The next likely expansion point remains wiring this same stable check surface into a repo task or CI gate once operator expectations no longer change.
 - `S0F-1J` owns the next packaging step where this stable local check is exposed through a repo task and a workflow-dispatch CI gate without changing reviewer semantics.

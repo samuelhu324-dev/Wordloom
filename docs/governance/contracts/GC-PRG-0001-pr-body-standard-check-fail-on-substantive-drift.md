@@ -16,13 +16,13 @@ contract_record:
   introduced_by: S0F-1I/P4-C1-S1
   last_changed_by: S0F-3E/P6-C3-S1
   source_refs:
-    - docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md
     - docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md
     - docs/logs/patch/log-S0F-P1-s0f-pr-body-completeness-standard-check-dispatch-failure-triage.md
   supersedes: []
   superseded_by: []
   notes:
     - This current record concentrates the gate semantics that were previously fused into the older GC-PRB-0001 umbrella.
+    - S0F-1I now survives only as the archived convergence baseline that introduced this gate standing; it is no longer the stable current source anchor for this record.
 ```
 
 ## Reader Notes
@@ -35,5 +35,5 @@ contract_record:
 
 - Stable gate packaging owner:
   - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
-- Stable gate semantics concentration:
-  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- Historical baseline introduced by:
+  - `S0F-1I/P4-C1-S1`
