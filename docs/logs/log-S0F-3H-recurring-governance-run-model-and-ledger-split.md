@@ -126,4 +126,4 @@
 
 ## Evidence
 
-- `2026-04-07`: Opened `S0F-3H` to separate recurring governance operating method from the historical origin ledgers in `S0F-3F` and `S0F-3G`, and wired the new slice into the `S0F` parent spine as the next process-structure follow-up.
+- `2026-04-07`: Opened `S0F-3H` to separate recurring governance operating method from the historical origin ledgers in `S0F-3F` and `S0F-3G`, wired the new slice into the `S0F` parent spine as the next process-structure follow-up, and published the opening boundary at `headSha: 9cd6806ad79e0fd8d9ab16f4887cf5602f07f8e2`.
