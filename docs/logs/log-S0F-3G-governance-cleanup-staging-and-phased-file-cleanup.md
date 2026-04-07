@@ -85,7 +85,8 @@
 - `P7` is now complete as the first mixed-standing cleanup review round: `S0F-1I` has now been rechecked as a fragment-level candidate, but the round closes by formalizing its blocker sets rather than splitting or relocating it because contracts, runbook ownership, parent-spine navigation, issue bodies, and PR-prep surfaces still consume the root file as one current-adjacent readable source.
 - `P8` is now complete as the first non-`S0` whole-file support-only scan: the slice rechecked the strongest S2-S6 candidates under the existing `docs/logs/support-only/` model, but no new cleanup family is opened because the near-candidates still remain current-adjacent through parent spines, runbooks, `INDEX.md`, or active onboarding and migration reading.
 - `P9` is now complete as the first `docs/governance/contracts/` support-only move round: the slice now fixes `docs/governance/contracts/support-only/` as the contracts-side relocation model for whole-file support-only backtrace notes, moves `GC-PRB-0001-backfill` there with bounded reference rewrites plus one directory index and cleanup manifest, and closes the only remaining contracts-family defer row from `P5`.
-- The immediate next follow-up is now narrowed again: either continue the mixed-standing line on another deferred root-file candidate, or wait until a later bounded scope can prove another whole-file non-current family is ready for relocation under an already-defended model.
+- `P10` is now complete as the second mixed-standing `S0F-1I` review round: the slice rechecks the same deferred root-file candidate after `P9`, but closes again as a defended non-write result because the remaining blockers are now confirmed to be upstream ownership changes rather than cleanup-local rewrites.
+- The immediate next follow-up is now narrowed again: either wait for one upstream contract, runbook, or lifecycle-surface consolidation that can actually lift the `S0F-1I` blocker set, or return to non-`S0` repo-side scanning once one whole-file support-only family can be defended under the existing location models.
 
 ## Problem Statement
 
@@ -747,6 +748,65 @@
 - No `S2-S6` family currently matches the `S0F-1E/F` pattern of whole-file pure support-only history with bounded rewrite surfaces.
 - The strongest future non-`S0` candidate remains the earlier `S2B-5A` Search-closure v1 path, but it still needs one stronger parent-spine and lineage decision before it could be treated as relocation-ready cleanup residue.
 
+## P10 Second Mixed-Standing Review Round (`S0F-1I` unblock-condition formalization)
+
+### P10 Scope
+
+- bounded candidate family reopened from the remaining mixed-standing defer lane:
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- exact question answered by this round:
+  - whether the `S0F-1I` defer result from `P7` can now be narrowed further into one executable cleanup write,
+  - or whether the right next step is instead to formalize which upstream ownership changes would have to land first before any later extraction or relocation could become safe
+
+### P10 Review Model
+
+- unblock-condition rule added by this round:
+  - when a mixed-standing defer row survives a first blocker inventory, a later `S0F-3G` round may still add value by converting that blocker inventory into exact re-entry conditions rather than repeating the same whole-file move rejection loosely
+  - the round remains non-destructive if the only plausible unblockers live in contracts, runbook ownership, parent-spine navigation, or retained issue and PR-prep history that this cleanup slice does not own directly
+- blocker groups rechecked after `P9`:
+  - contracts and legacy backtrace surfaces
+  - reviewer-owned runbook guidance
+  - parent-spine and adjacent-log navigation
+  - retained issue and PR-prep source-log surfaces
+
+### P10 Candidate Decision
+
+- `defer cleanup`:
+  - `S0F-1I`
+    - rationale:
+      - `GC-PRG-0001` still concentrates active gate semantics on `S0F-1I` as the stable gate semantics concentration while `GC-PRB-0001` and its support-only backfill still preserve `S0F-1I/P4-C1-S1` as the earlier standard-check baseline
+      - the reviewer-owned runbook still directs operators to `S0F-1I` for the bounded formatting-only repair lane, so the root file still carries current procedural discoverability even though its `P1-P3` repair history is support-only semantically
+      - retained issue and PR-prep surfaces still treat `S0F-1I` as their source log, and this cleanup slice has no defended redirect model for rewriting those historical lifecycle bodies away from the root file without widening scope into lifecycle-history surgery
+
+### P10 Unblock Conditions
+
+- contracts unblock:
+  - a later current or legacy contract concentration must stop treating `S0F-1I` as the stable active semantics concentration for the `P4` gate-standing residue, either by consolidating that standing fully into `S0F-1J` or by creating one narrower successor source surface
+- runbook unblock:
+  - the reviewer-owned runbook must stop sending operators to `S0F-1I` as the live repair lane and instead point to one successor procedural or archived historical location that preserves discoverability without requiring the root file to remain current-adjacent
+- parent-spine unblock:
+  - the `S0F` spine and adjacent `S0F-1J` or `S0F-3F` navigation must be able to describe `S0F-1I` as closed repair history only, rather than as the still-readable concentration for later gate packaging standing
+- lifecycle-surface unblock:
+  - retained issue and PR-prep files must either be allowed to keep following a relocated path directly, or a stable historical redirect model must exist for source-log references inside those lifecycle artifacts
+
+### P10 Manifest Decision
+
+- second mixed-standing cleanup review manifest:
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-mixed-standing-round-2.json`
+- manifest scope:
+  - review only:
+    - `S0F-1I`
+  - no file moves:
+    - the round keeps root placement for `S0F-1I`
+  - no fragment extraction:
+    - the round now records exact unblock conditions rather than reopening fragment surgery without a successor ownership model
+
+### P10 Result
+
+- `S0F-1I` remains at the root, but it is no longer just a generic deferred mixed-standing row.
+- The remaining blocker set is now formalized as an upstream-ownership gate rather than a cleanup-local uncertainty set.
+- This means a later round can re-enter `S0F-1I` quickly only when one of those four unblock groups changes materially; until then, repeated relocation attempts would just replay the same non-write conclusion.
+
 ## Plan (draft)
 
 ### P0 (Slice opening and cleanup boundary)
@@ -793,6 +853,8 @@
 - P8-C1-S2: reject families whose files still retain parent-spine, runbook, `INDEX.md`, or onboarding-methodology reader value even when they are historically broad or version-superseded
 - P9-C1-S1: define the first stable `docs/governance/contracts/` support-only destination and navigation model for whole-file support-only contract backtraces
 - P9-C1-S2: execute the bounded `GC-PRB-0001` backfill move with exact reference rewrites and close the earlier contracts-family defer row
+- P10-C1-S1: re-evaluate the surviving `S0F-1I` mixed-standing defer row after `P9` and separate cleanup-local blockers from upstream ownership blockers
+- P10-C1-S2: formalize exact unblock conditions for later `S0F-1I` re-entry instead of reopening fragment extraction without a successor source model
 - P5-C1-S2: stop the slice when the remaining files are all either current, legacy-needed, or explicitly deferred
 
 ## Execution Checklist (unchecked)
@@ -841,6 +903,8 @@
 - [x] `P8-C1-S2`: historically broad or version-superseded non-`S0` files rejected when parent or runbook readers still consume them as current methodology
 - [x] `P9-C1-S1`: first stable `docs/governance/contracts/` support-only destination and navigation model defined
 - [x] `P9-C1-S2`: bounded `GC-PRB-0001` backfill move executed with exact reference rewrites and the earlier contracts defer row closed
+- [x] `P10-C1-S1`: surviving `S0F-1I` mixed-standing blockers rechecked after `P9` and separated into cleanup-local versus upstream-ownership classes
+- [x] `P10-C1-S2`: exact unblock conditions recorded so later `S0F-1I` re-entry can happen without rediscovering the blocker model
 - [ ] `P5-C1-S2`: slice closed when the remaining set converges to keep, legacy, or defer standing only
 
 ## Evidence (reserved)
@@ -1131,3 +1195,25 @@
 - observed:
   - `GC-PRB-0001-backfill` is now moved out of the contracts root without weakening discoverability, because the round adds a dedicated `docs/governance/contracts/support-only/` location model, a local directory index, and exact-path rewrites for the small set of reader-facing references that still cite the file directly
   - the deprecated umbrella sample `GC-PRB-0001` remains rooted in place, so legacy redirect readability is preserved while the support-only backtrace is no longer co-located with current or legacy front-door contract files
+
+### P10-C1-S1S2 (mixed-standing S0F-1I defer upgraded into explicit unblock conditions | 2026-04-07)
+
+- headSha: `<TBD-after-mixed-standing-round-2-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-mixed-standing-round-1.json`
+  - `docs/logs/support-only/cleanup-manifest-S0F-3G-mixed-standing-round-2.json`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
+  - `docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md`
+  - `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
+  - `docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+  - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+  - `docs/issues/issue-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/issues/pr-prep-S0F-1I-live-body.md`
+- expected:
+  - the surviving mixed-standing defer row either proves one newly safe extraction or relocation path, or upgrades the earlier blocker inventory into exact re-entry conditions that make future non-write or write rounds more auditable
+- observed:
+  - `S0F-1I` remains not move-ready, but the remaining blocker set is now narrowed to four explicit upstream ownership changes rather than one generic mixed-standing warning
+  - `S0F-3G` can now stop rechecking `S0F-1I` opportunistically until contracts, runbook, parent navigation, or lifecycle-source handling actually change in a way that could lift one of those blockers
