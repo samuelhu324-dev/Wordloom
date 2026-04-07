@@ -91,7 +91,8 @@
 - `P4` is now complete: disposition and placement are now fixed as a separate responsibility plane, and future AWS or external object storage can be planned as an evidence/archive substrate without turning current contracts, runbooks, or views into remote-only surfaces.
 - `P5` is now complete: the model has now been tested against one retained mixed-role case (`S0F-1I`) and one cleaner positive-control family (`WF`), and the pilot confirms that the six-outlet split is usable without forcing premature runbook invention, archive-first relocation, or broad retroactive rewrites.
 - `P6` is now opened: `S0F-1I` is fixed as the first bounded retained-content rewrite lane under `S0F-4A`, so the next execution pass can thin the log intentionally before `S0F-3G` attempts another cleanup or relocation decision.
-- `P6-C1-S1` is now complete: the retained-content rewrite packet, outlet targets, and stop boundary are now fixed for `S0F-1I`, and the next immediate follow-up is `P6-C1-S2` actual rewrite execution rather than another abstract role-boundary discussion.
+- `P6-C1-S1` is now complete: the retained-content rewrite packet, outlet targets, and stop boundary are now fixed for `S0F-1I`.
+- `P6-C1-S2` is now complete: `S0F-1I` has now been rewritten down to slice-local convergence ledger, retained evidence path, and minimum bridge notes only, while stable gate semantics and stable operator procedure are left reading through their already-exported current homes.
 
 ## P1 Six-Outlet Document Role Model
 
@@ -387,6 +388,29 @@
 - packet result:
   - the repo now has one fixed first rewrite lane under `S0F-4A`, and the next execution can work directly on retained-content thinning instead of re-deciding scope
 
+### P6-C1-S2 Rewrite Executed (`S0F-1I`)
+
+- applied target:
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- rewrite result by outlet:
+  - `contract`:
+    - unchanged; stable gate rule continues to read through `GC-PRG-0001`
+  - `runbook`:
+    - unchanged; stable operator procedure continues to read through `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+  - `index/front-door`:
+    - unchanged; no front-door mutation was justified by the rewrite
+  - `view`:
+    - still intentionally absent; the rewrite did not expose a durable family-summary need that deserved a separate retained view
+  - `log`:
+    - rewritten to keep only the bounded convergence ledger, retained evidence path, and bridge notes explaining where stable gate semantics and stable procedure now live
+  - `disposition/placement`:
+    - still deferred for later `S0F-3G` review; the rewrite clarifies the remaining root-file value, but does not decide relocation
+- concrete thinning effect:
+  - the old `P4` section no longer restates full wrapper semantics, pass or stop rules, and runbook ownership detail as if `S0F-1I` were still the primary home for those surfaces
+  - the log now keeps only enough bridge context to explain why `PRG`, `S0F-1J`, and the reviewer-owned runbook are the stable downstream homes
+- execution result:
+  - the first bounded retained-content rewrite lane now proves the `S0F-4A` model can be used to thin one mixed-role retained log without forcing premature relocation or inventing a missing outlet
+
 ## Plan (draft)
 
 ### P0 (Slice opening)
@@ -457,7 +481,7 @@
 ### P6 (First retained-content rewrite lane)
 
 - [x] `P6-C1-S1`: bounded `S0F-1I` rewrite packet fixed with outlet targets, retained-content buckets, and stop boundary
-- [ ] `P6-C1-S2`: `S0F-1I` retained-content rewrite executed without relocation decision
+- [x] `P6-C1-S2`: `S0F-1I` retained-content rewrite executed without relocation decision
 
 ## Evidence (reserved)
 
@@ -490,3 +514,17 @@
   - the outlet model should be able to explain one mixed-role retained log and one already-clean family without inventing missing surfaces just to complete the matrix
 - observed:
   - `S0F-1I` now reads as a defended `defer cleanup` case with current rule and procedure already exported, while `WF` now reads as a clean role-first landing with no missing outlet beyond an intentionally absent runbook
+
+### P6-C1-S1 through P6-C1-S2 (first bounded retained-content rewrite lane opened and executed on `S0F-1I` | 2026-04-07)
+
+- headSha: `<TBD-after-s0f-4a-p6-c1-s2-commit>`
+- artifacts:
+  - `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md`
+  - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+- expected:
+  - the first retained-content rewrite lane should thin one mixed-role retained log down to slice-local ledger plus minimum bridge notes without deciding relocation prematurely
+- observed:
+  - `S0F-1I` now keeps the convergence ledger and evidence path while no longer restating full gate and runbook ownership text that already reads through current exported surfaces

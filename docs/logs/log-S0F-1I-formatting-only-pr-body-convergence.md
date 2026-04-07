@@ -39,7 +39,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-05`
-**updated**: `2026-04-05`
+**updated**: `2026-04-07`
 
 ---
 
@@ -119,32 +119,35 @@
 - `P1` is now complete: `artifacts/s0f-1i-formatting-only-pr-body-rewrite-manifest.json` retains one explicit six-item merged-PR rewrite manifest for the formatting-only `S0F` target set.
 - `P2` is now complete: `scripts/issues/apply_pr_body_rewrite_batch.py` has been applied successfully to `S0F-1A/#365`, `S0F-1B/#371`, `S0F-1C/#372`, `S0F-1D/#373`, `S0F-1E/#374`, and `S0F-1G/#377`, and the retained batch result shows `body_changed=true` for all six items with no warnings.
 - `P3` is now complete: `artifacts/s0f-1i-post-repair-pr-body-completeness-review-s0f.json` now proves exact-match convergence across the full current live `S0F` child set, with `S0F-1A` through `S0F-1G` all classified as `exact-match`, zero `formatting-only-drift`, zero `substantive-drift`, and zero `stop` items.
-- `P4` is now complete: one standard operator-facing check entrypoint now packages the stable reviewer state through `scripts/issues/plan_pr_body_completeness_check_wrapper.py` and `scripts/issues/invoke_pr_body_completeness_check.ps1`, and one retained local pass run proves the current `S0F` set passes that standard check with `fail_on_findings=true`.
-- `P4-C2-S1` is now complete: the thin operator-facing runbook lane has been proven and retained for the standard local check without reopening the reviewer contract or the historical rewrite lane.
-- `S0F-1H/P4-C2-S2` is now complete: the stable runbook ownership has been rehomed onto the reviewer slice at `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`, which `S0F-1I` now consumes as the standard procedural surface.
-- `S0F-1I` is now stable: the bounded formatting-only set has been converged through the canonical historical rewrite surface, the post-repair reviewer rerun proves the full current live `S0F` child set has reached exact-match PR body state, and that stable state is now exposed through one standard local check entrypoint.
+- `P4` is now complete: the stable reviewer state was packaged behind one standard local check entrypoint, but the enduring current gate rule and the enduring operator procedure no longer need to be restated here in full because they now read through `GC-PRG-0001`, `S0F-1J`, and the reviewer-owned runbook.
+- `P6-C1-S2` is now complete under `S0F-4A`: this log has now been thinned intentionally so it keeps the bounded convergence ledger, the retained evidence path, and only the minimum bridge notes needed to explain why later stable gate semantics and stable operator procedure now read elsewhere.
+- `S0F-1I` is now stable in rewritten form: the bounded formatting-only set has been converged through the canonical historical rewrite surface, the post-repair reviewer rerun proves the full current live `S0F` child set has reached exact-match PR body state, and the retained log now keeps only the slice-local record plus bridge context required for later cleanup review.
 
-## P4 Standard Check Packaging (completed)
+## Retained Content After P6-C1-S2
 
-- `S0F-1I` now uses its post-convergence stable state to package the reviewer as one standard local check entrypoint instead of leaving `review_pr_body_completeness.py --fail-on-findings` as a raw script contract only.
-- v1 keeps the packaging single-sourced: the new entrypoint does not invent a second classifier, but wraps the canonical reviewer, records standard pass/stop/error semantics, and publishes one operator-facing artifact bundle.
+- keep as slice-local ledger:
+  - why the formatting-only lane existed
+  - which merged PR set was rewritten
+  - what post-repair reviewer evidence closed the lane
+- keep as bridge notes only:
+  - stable gate semantics now read through `GC-PRG-0001` and later packaging continuation under `S0F-1J`
+  - stable operator procedure now reads through `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+- no longer carried here as primary ownership text:
+  - full operator instructions for the standard check
+  - full pass or stop semantics for the packaged gate
+  - duplicated explanation of wrapper and runbook surfaces that now have their own stable homes
 
-### P4-C1-S1 (Primary local standard check wrapper fixed around the canonical reviewer | v1)
+## P4 Stable Packaging Bridge Notes (retained)
 
-- `scripts/issues/plan_pr_body_completeness_check_wrapper.py` now provides one standard read-only check wrapper around `review_pr_body_completeness.py`.
-- The wrapper fixes primary-local-boundary semantics explicitly: it passes only when the canonical reviewer finds zero `substantive-drift` items and zero `stop` items, while preserving `skip-no-live-pr-owned` as a bounded non-failing state for slices that do not yet own a live PR.
-- The wrapper also retains one standard result JSON, one workflow summary markdown file, and one artifact manifest JSON file so later operator or CI surfaces can consume the same check result without reconstructing semantics ad hoc.
-
-### P4-C1-S2 (Operator-facing local check entrypoint retained with one stable pass run | v1)
-
-- `scripts/issues/invoke_pr_body_completeness_check.ps1` now provides the operator-facing local entrypoint for the standard check, publishing retained artifacts under `artifacts/operator-facing/pr-body-completeness-check/`.
-- The retained run under `artifacts/operator-facing/pr-body-completeness-check/20260405T165020-S0F-/wrapper-result.json` now records a `pass` result for the current `S0F` set with `fail_on_findings=true`.
-- The same retained run records `exact-match` for `S0F-1A` through `S0F-1G`, zero formatting-only drift, zero substantive drift, zero stop items, and bounded skips only for `S0F-1H` and `S0F-1I`.
-
-### P4-C2-S1 (Operator-facing runbook retained for the standard local check | v1)
-
-- The stable operator runbook is now reviewer-owned under `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`, so `S0F-1I` remains the consumer of that procedural surface rather than the permanent owner.
-- The runbook fixes the canonical local command, artifact root, minimum evidence files, and first-response troubleshooting path without turning into a second source of truth for reviewer semantics.
+- `S0F-1I` used its post-convergence stable state to package one standard local check entrypoint rather than leaving `review_pr_body_completeness.py --fail-on-findings` as a raw script surface only.
+- That packaging now survives here only as bridge context because its enduring current semantics and enduring operator procedure are already concentrated elsewhere:
+  - current gate semantics:
+    - `docs/governance/contracts/GC-PRG-0001-pr-body-standard-check-fail-on-substantive-drift.md`
+  - current packaging continuation:
+    - `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
+  - current operator procedure:
+    - `docs/runbook/run-S0F-1H-pr-body-completeness-review.md`
+- The retained local pass run still matters as evidence that the convergence lane ended in one stable packaged check surface, but the full procedural and contract restatement no longer needs to live in this log.
 
 ## P3 Post-Repair Verification (completed)
 
