@@ -175,7 +175,8 @@
 - `P1` is now complete: the repo now has one explicit minimum field set, one fixed section shape, and one retained-chronology boundary for compact contract-history blocks, so later history extraction no longer needs to improvise what may enter a current contract body.
 - `P2` is now complete: the repo now has one explicit `DOC` lineage-view shape and one fixed navigation split among current contract, family front door, promotion map, lineage view, and retained source-owner logs, so later history publication no longer needs to improvise where historical reading should begin.
 - `P3` is now complete: later cleanup now has one explicit history-aware admission rule and one explicit stop/no-op reason set, so old-log relocation can no longer rely on standing-loss and redirect-loss alone when key historical meaning still has no durable extracted surface.
-- The next immediate work is `P4`: inventory the first bounded pilot source set across `S0B/S0C/S0D/S0E/S0F` for the initial `DOC` history surface.
+- `P4` is now complete: the first bounded pilot source set and one defended major-chain reading path are now explicit, so later history publication can start from a compressed cross-era source packet instead of from open-ended archaeology.
+- The next immediate work is `P5`: decide the first bounded write-back package across compact history blocks, one `DOC` lineage view, and any required front-door notes.
 
 ## P1 (Compact history block contract | v1)
 
@@ -329,6 +330,95 @@
   - later re-entry to old-log cleanup should not reopen merely from `DOC` current-surface stabilization alone
   - it should reopen after one family history package exists strongly enough that old explanatory logs are no longer the only durable historical reading path
 
+## P4 (Pilot source inventory | v1)
+
+### P4-C1-S1 (First bounded pilot source set inventoried across `S0B/S0C/S0D/S0E/S0F` | v1)
+
+- The first pilot source set is now bounded by one inclusion rule:
+  - include only the strongest cross-era surfaces that directly changed how current `DOC` contracts are authored, structured, bridged, normalized, promoted, or read
+- The first included primary source set is now:
+  - `S0B-3A`:
+    - `docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md`
+    - reason: fixes stable identifiers, frontmatter, and decoupled metadata as the earliest durable structural base for later doc-first contracts
+  - `S0C-1A`:
+    - `docs/logs/log-S0C-1A-log-extensions.md`
+    - reason: turns logs from freeform notes into structured decision surfaces with stable outcome-first reading
+  - `S0D-1A`:
+    - `docs/logs/log-S0D-1A-log-entries-orchestration.md`
+    - reason: fixes the parent-spine plus child-log model and the `P/C/S` execution ledger that later source-owner `DOC` logs inherit directly
+  - `S0E-3A`:
+    - `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
+    - reason: adds machine-readable roadmap bridging so log lineage no longer lives only in prose references
+  - `S0E-6A`:
+    - `docs/logs/log-S0E-6A-log-structure-normalization-and-dual-track-evidence-contract.md`
+    - reason: fixes the dual-track split between automation-facing structure and human evidence ledger, which current contract and lineage surfaces now depend on indirectly
+  - `S0F-4A`:
+    - `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+    - reason: supplies the first major current-rule concentration later promoted into `DOC-DRB-0001`
+  - `S0F-4B`:
+    - `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
+    - reason: fixes source-log compatibility and weak-structure export discipline later promoted into `DOC-SLC-0001`
+  - `S0F-3I`:
+    - `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
+    - reason: fixes the seven-family taxonomy and placement model later promoted into `DOC-TAX-0001`
+  - `S0F-4C`:
+    - `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
+    - reason: fixes family-first front-door transition later promoted into `DOC-FDT-0001`
+  - `S0F-4D`:
+    - `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
+    - reason: fixes the physical current `DOC` contract home and the initial old-`GC-*` triage model
+  - `S0F-4E`:
+    - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+    - reason: records the actual promotion event that turns the source-owner quartet into active family-owned `DOC` contracts
+  - `S0F-4F`:
+    - `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
+    - reason: fixes the stable post-promotion reader surface from which current `DOC` reading now starts
+- The following surfaces are now explicitly classified as secondary context, not first-pilot primary sources:
+  - `S0B-2A`:
+    - useful for scripts and snapshots governance, but not one direct prerequisite for reading current `DOC` contract lineage
+  - `S0C-3A` and `S0C-4A`:
+    - important for CLI and scenario operations, but not part of the first `DOC` structural-history chain
+  - `S0D-6A`:
+    - relevant as roadmap container evolution, but secondary to the more direct bridge contract in `S0E-3A`
+  - `S0E-docs-management-v5`:
+    - valuable as the `S0E` parent spine, but not the first cross-era milestone source because the pilot needs stronger phase-local structural anchors than one umbrella summary
+  - `S0F-3J`:
+    - remains an important downstream consumer of the history-extraction gate, but not one of the formative sources for the first `DOC` history surface itself
+
+### P4-C1-S2 (First defended major-chain reading path fixed | v1)
+
+- The first defended major-chain reading path is now fixed as one compressed sequence with one strongest source per structural turn:
+  1. `S0B-3A`
+     - stable identifiers, frontmatter, and metadata decoupling become the base document-management grammar
+  2. `S0C-1A`
+     - logs become structured decision surfaces instead of loose chronology
+  3. `S0D-1A`
+     - parent spine plus child-log orchestration and `P/C/S` ledger turn that structure into a reusable execution system
+  4. `S0E-3A`
+     - roadmap bridge makes milestone and log lineage machine-readable instead of prose-only
+  5. `S0E-6A`
+     - dual-track evidence normalization separates automation-facing structure from human evidence ledger
+  6. `S0F-4A` plus `S0F-4B` plus `S0F-3I` plus `S0F-4C`
+     - the core `DOC` source-owner quartet fixes role boundaries, source-log compatibility, taxonomy, and family-front-door transition
+  7. `S0F-4D`
+     - current `DOC` contract home and old-`GC-*` triage are fixed explicitly
+  8. `S0F-4E`
+     - the quartet is promoted into family-owned current contracts
+  9. `S0F-4F`
+     - the reader surface is consolidated into the stable current `DOC` front door
+- The defended reading rule for this path is now:
+  - use these sources as the first pilot `DOC` history skeleton
+  - treat everything else as supporting deep-chronology material unless later publication proves one omitted surface is necessary for a reader to understand a major turn
+- This means the first lineage view should not try to narrate every `S0` phase.
+- It should narrate one bounded arc:
+  - document identity and structure became explicit
+  - logs became orchestrated and bridgeable
+  - automation-facing structure was normalized
+  - governance rules were concentrated into the source-owner quartet
+  - that quartet was promoted and stabilized into the current `DOC` surface
+- The immediate consequence for `P5` is now clear:
+  - the first publication package should use this compressed source set and this major-chain path rather than reopening source selection from scratch
+
 ## Plan (draft)
 
 ### P1 (Compact history block contract)
@@ -379,8 +469,8 @@
 
 ### P4 (Pilot source inventory)
 
-- [ ] `P4-C1-S1`: first bounded pilot source set inventoried
-- [ ] `P4-C1-S2`: first defended major-chain reading path fixed
+- [x] `P4-C1-S1`: first bounded pilot source set inventoried
+- [x] `P4-C1-S2`: first defended major-chain reading path fixed
 
 ### P5 (First publication package)
 
@@ -430,9 +520,23 @@
   - `S0F-4G/P3` now requires `history extracted enough` before a historical source log becomes a default cleanup candidate
   - the lane now fixes explicit stop and no-op reasons for cases where old logs still carry core explanatory value despite already losing current-state primacy
 
+### P4-C1-S1S2 (First pilot source set and major-chain path fixed | 2026-04-08)
+
+- headSha: `<pending commit for S0F-4G/P4-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo has one bounded first-pilot source set for `DOC` history extraction
+  - the repo has one defended major-chain reading path instead of an open-ended archive scan
+- observed:
+  - `S0F-4G/P4` now fixes the first cross-era pilot source packet and explicitly classifies secondary-context logs out of the primary extraction lane
+  - later history publication can now start from one compressed `S0B -> S0C -> S0D -> S0E -> S0F` structural arc rather than from an unconstrained full-history dump
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4G` as the next bounded follow-up so later history extraction and cleanup work can proceed through a reusable mechanism instead of ad hoc archaeology.
 - 2026-04-08: completed `P1` so compact contract-history blocks now have one fixed minimum shape and one explicit source-owner-only chronology boundary.
 - 2026-04-08: completed `P2` so the first `DOC` lineage-view shape and its navigation split are now explicit.
 - 2026-04-08: completed `P3` so cleanup admission now includes one explicit history-extraction gate and one history-missing stop-reason set.
+- 2026-04-08: completed `P4` so the first `DOC` history pilot now has one bounded source set and one defended major-chain reading path.
