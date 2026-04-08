@@ -16,6 +16,18 @@
 - Absence from this file does not mean an old record file was deleted; historical files may still exist under `docs/governance/contracts/`, including bounded support-only relocations under `docs/governance/contracts/support-only/`.
 - When old records remain stored for lineage, redirects, or traceability, they should be discovered through the old file itself, dedicated legacy views under `docs/governance/views/`, or migration logs rather than by widening this file into a mixed current-plus-history index.
 
+## Old GC File Retention Rule
+
+- Old `GC-*` files under `docs/governance/contracts/` should be read in three buckets:
+  - `current narrow-registry`: current rows still admitted in this file
+  - `legacy redirect`: old record IDs or split-package files preserved so readers can land on the old path and then follow the current successor
+  - `support-only history or backtrace`: historical files kept only for bounded backtrace or cleanup evidence after current reading and redirect value have already moved elsewhere
+- Practical retention rule:
+  - `current narrow-registry` stays readable in `docs/governance/contracts/` root
+  - `legacy redirect` also stays readable in `docs/governance/contracts/` root because its primary value is stable old-path discoverability
+  - only `support-only history or backtrace` is a default candidate for later relocation into `docs/governance/contracts/support-only/`
+- This means the contracts root is intentionally mixed between current registry rows and preserved redirect files during transition; that coexistence is not by itself a cleanup bug.
+
 ## Registry Model
 
 - `record_id`:
@@ -231,3 +243,4 @@
 - Use the `what it currently solves` column to understand the current problem boundary solved by that record.
 - Do not treat a raw folder scan of `docs/governance/contracts/` as the current registry; that folder may contain preserved historical files as well as current ones.
 - When historical lineage matters, follow the record-local redirect notes, migration logs, or dedicated governance views rather than expecting this file to duplicate the full archive.
+- When deciding whether an old root-level `GC-*` file should still remain in place, use `docs/governance/views/view-gc-triage-and-retention-rule-v1.md` instead of guessing from filename age alone.

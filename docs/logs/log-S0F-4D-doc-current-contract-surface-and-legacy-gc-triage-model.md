@@ -26,6 +26,7 @@
   **reference_log_9**: `docs/governance/contract/INDEX.md`
   **reference_log_10**: `docs/governance/contract/_template-doc-contract-record.md`
   **reference_log_11**: `docs/governance/views/view-doc-contract-promotion-map-v1.md`
+  **reference_log_12**: `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
 **issue_keyword**: `taxonomy`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/4`
@@ -181,6 +182,26 @@
   - `FDT`: front-door transition
 - These are now fixed in `docs/governance/contract/INDEX.md` as the first candidate areas for promoted `DOC` current contracts.
 
+## P2 (Old GC triage | v1)
+
+### P2-C1-S1 (Three-bucket interpretation rule fixed | v1)
+
+- Old `GC-*` files must now be interpreted through three practical standing buckets:
+  - `current narrow-registry`
+  - `legacy redirect`
+  - `support-only history or backtrace`
+- The bucket is decided by current reader function, not by file age alone.
+- `current narrow-registry` means the file is still admitted by `docs/governance/INDEX.md` as a current governance-registry row.
+- `legacy redirect` means the old root path still matters because it preserves stable old-ID lineage and redirects readers to a current successor.
+- `support-only history or backtrace` means the file remains only for bounded historical explanation or cleanup traceability after current reading and redirect value already moved elsewhere.
+
+### P2-C1-S2 (Relocation-versus-retention rule fixed | v1)
+
+- `current narrow-registry` files remain in `docs/governance/contracts/` root.
+- `legacy redirect` files also remain in `docs/governance/contracts/` root because that old root path is part of the redirect contract.
+- Only `support-only history or backtrace` is a default candidate for later relocation into `docs/governance/contracts/support-only/`.
+- No old `GC-*` file should move to support-only merely because it is deprecated or has a newer successor; relocation begins only after direct references and reader discoverability can survive the move explicitly.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -240,8 +261,8 @@
 
 ### P2 (Old GC triage)
 
-- [ ] `P2-C1-S1`: three triage buckets defined for old `GC-*`
-- [ ] `P2-C1-S2`: relocation-versus-retention boundary fixed for those buckets
+- [x] `P2-C1-S1`: three triage buckets defined for old `GC-*`
+- [x] `P2-C1-S2`: relocation-versus-retention boundary fixed for those buckets
 
 ### P3 (Promotion path from source-owner logs)
 
@@ -256,8 +277,9 @@
 - `S0F-4D` is now opened as the next bounded follow-up after `S0F-4C`: the repo already has family-first front doors, but it still needs one explicit storage answer for new `DOC` contracts and one triage answer for old `GC-*` files.
 - `P0` is now fixed: new `DOC` contracts should first land under `docs/governance/contract/`, `views/` remains the reader-summary layer, and old `GC-*` files should be triaged before any later archive or relocation decision.
 - `P1` is now complete: the repo now has one explicit `DOC` contract naming model, one template, and one first `DOC` area-code dictionary under `docs/governance/contract/`, so future promoted `DOC` contracts no longer need to reuse `GC-*` naming by default.
+- `P2` is now complete: the repo now has one explicit practical triage rule for old `GC-*` files, and the retention-versus-relocation boundary is fixed so only `support-only history or backtrace` becomes a later relocation candidate while `current narrow-registry` and `legacy redirect` stay readable in the contracts root.
 - `P3` is now complete: the repo now has one explicit source-owner promotion rule and one first mapping set, so future `DOC` contract extraction can follow deterministic targets such as `S0F-4A -> DOC-DRB-0001` and `S0F-3I -> DOC-TAX-0001`.
-- The next immediate follow-up returns to old `GC-*` handling: define the practical retention-versus-relocation boundary for the three old-file triage buckets.
+- The remaining follow-up is now narrower: `P4` should define the first concrete cleanup boundary for which already-triaged old `GC-*` subset is actually safe to keep in place versus relocate deeper.
 
 ## Evidence (reserved)
 
@@ -287,6 +309,18 @@
 - observed:
   - the repo now has one explicit `DOC-<AREA>-<NNNN>-<summary>.md` naming model, one first `DOC` area-code dictionary, and one reusable template for future promoted `DOC` contracts
 
+### P2-C1-S1 through P2-C1-S2 (old GC triage and retention rule fixed | 2026-04-08)
+
+- headSha: `0bfee7479fe9c3e57030c78da04ce8df86926c9e`
+- artifacts: `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
+- artifacts: `docs/governance/INDEX.md`
+- artifacts: `docs/governance/contracts/support-only/INDEX.md`
+- artifacts: `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
+- expected:
+  - one reader should be able to explain why deprecated old `GC-*` files do not automatically move to support-only and why only the support-only bucket becomes a default relocation candidate
+- observed:
+  - the repo now has one explicit three-bucket triage rule and one practical retention rule that keeps current registry rows and legacy redirects at the root while reserving support-only relocation for bounded backtrace-only files
+
 ### P3-C1-S1 (source-owner DOC log promotion rule fixed | 2026-04-08)
 
 - headSha: `195a08c842e96da6483118017a0139deff22460a`
@@ -303,4 +337,5 @@
 
 - 2026-04-08: opened `S0F-4D` to fix the new `DOC` current contract home and the old `GC-*` triage model after the family-first transition in `S0F-4C`.
 - 2026-04-08: completed `P1` by fixing the `DOC` contract naming model, the first `DOC` area-code dictionary, and one reusable family-owned contract template under `docs/governance/contract/`.
+- 2026-04-08: completed `P2` by fixing the practical three-bucket triage rule for old `GC-*` files and by stating that only `support-only history or backtrace` becomes a default relocation candidate while `current narrow-registry` and `legacy redirect` remain root-readable.
 - 2026-04-08: completed `P3` by fixing the source-owner `DOC` log promotion rule and the first deterministic promotion map into `DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`, and `DOC-FDT-0001`.
