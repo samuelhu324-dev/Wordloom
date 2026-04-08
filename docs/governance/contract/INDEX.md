@@ -57,6 +57,16 @@
 
 - Use `docs/governance/contract/_template-doc-contract-record.md` when creating a new `DOC` family-owned current contract.
 
+## Promotion Path
+
+- Current source-owner `DOC` logs may later promote into family-owned `DOC` contracts here.
+- The first mapped promotion set is:
+  - `S0F-4A` -> `DOC-DRB-0001`
+  - `S0F-4B` -> `DOC-SLC-0001`
+  - `S0F-3I` -> `DOC-TAX-0001`
+  - `S0F-4C` -> `DOC-FDT-0001`
+- Until those files are actually created, the source-owner logs remain the current primary sources.
+
 ## Landing Rule
 
 - A new file belongs here when all of the following are true:
@@ -78,4 +88,5 @@
 - `docs/governance/views/view-gc-dual-reading-transition-v1.md`
 - `docs/governance/views/view-disposition-role-in-family-transition-v1.md`
 - `docs/governance/contract/_template-doc-contract-record.md`
+- `docs/governance/views/view-doc-contract-promotion-map-v1.md`
 - `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
