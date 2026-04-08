@@ -5,7 +5,7 @@
 **id**: `S0F-4F`
 **kind**: `log`
 **title**: `DOC reader-surface consolidation after first promotion quartet v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, Consolidation, epic/s0, sub/4f`
 **links**: ``
@@ -217,6 +217,35 @@
   - future mapping extensions, if admitted later, still reuse the same source-owner-to-contract rule
   - the map remains separate from the contract index and the family front door because it owns deterministic mapping and extension semantics rather than directory inventory or family-first reading behavior
 
+## P3 (Post-consolidation boundary | v1)
+
+### P3-C1-S1 (Post-consolidation reader notes and next-step boundary fixed | v1)
+
+- After `P2`, the post-consolidation reader position is now fixed as:
+  - the `DOC` contract index is the directory-level landed contract surface for the first mapped quartet
+  - the `DOC` front door is the family-first current reader entry for those active rule sets
+  - the promotion map remains the deterministic mapping and future-extension surface rather than a stale pre-execution note
+- The retained source-owner logs for `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` are now explicitly downstream of that reader story:
+  - keep them as lineage, evidence, and source-owner traceability surfaces
+  - do not treat them as the strongest current reader entry for the active quartet
+- The next follow-up boundary is now fixed more tightly:
+  - do not reopen `DOC` reader-surface wording again unless a later cleanup lane or later mapping extension creates a real contradiction
+  - the next natural `DOC`-adjacent work is a bounded old-`GC-*` cleanup candidate lane that looks only for files that have already lost both current-registry standing and root-path redirect duty
+  - the already-adjudicated first old-`GC-*` boundary remains unchanged, so `GC-ISS-*` and `GC-PRB-0001` are not reopened merely because the `DOC` quartet is now fully active
+
+### P3-C1-S2 (Bounded follow-up decision fixed | v1)
+
+- `S0F-4F` does not need one additional bounded export tail.
+- Rationale:
+  - the three target reader surfaces are already converged
+  - no new reader file is justified after the index, front door, and promotion map now read coherently together
+  - the next remaining problem is no longer wording convergence inside `DOC`; it is later cleanup adjudication for a different old-`GC-*` subset
+  - reopening more `DOC` reader notes inside this slice would blur the handoff between post-quartet consolidation and old-namespace cleanup
+- Outcome:
+  - `S0F-4F` is now stable
+  - the first mapped `DOC` quartet and its three main reader surfaces now form the defended steady-state baseline
+  - the next bounded follow-up should open outside this slice as one old-`GC-*` cleanup candidate lane or equivalent triage package grounded in the existing triage and first-boundary rules
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -272,8 +301,8 @@
 
 ### P3 (Post-consolidation boundary)
 
-- [ ] `P3-C1-S1`: post-consolidation reader notes and next-step boundary fixed
-- [ ] `P3-C1-S2`: bounded follow-up decision fixed
+- [x] `P3-C1-S1`: post-consolidation reader notes and next-step boundary fixed
+- [x] `P3-C1-S2`: bounded follow-up decision fixed
 
 ## Current Status
 
@@ -281,7 +310,8 @@
 - `P0` is now complete: the problem boundary is fixed as reader-surface consolidation rather than one more contract extraction or old-`GC-*` cleanup lane.
 - `P1` is now complete: the residual wording inventory is explicit for all three target surfaces, and the remaining work is now tightly bounded to wording convergence rather than additional discovery.
 - `P2` is now complete: the `DOC` contract index, the `DOC` front door, and the promotion map now all read as one steady-state quartet-active story while still preserving their distinct reader jobs.
-- The immediate next step is `P3`: fix the post-consolidation reader notes and next-step boundary so later old-`GC-*` cleanup can proceed from a stable `DOC` reader surface without reopening the same wording debate.
+- `P3` is now complete: the post-consolidation reader notes and next-step boundary are now explicit, no further bounded export tail is warranted inside this slice, and later old-`GC-*` cleanup can now proceed from a stable `DOC` reader surface without reopening the same wording debate.
+- `S0F-4F` is now stable: the first mapped `DOC` quartet and its three main reader surfaces now form one defended steady-state baseline.
 
 ## Evidence (reserved)
 
@@ -327,8 +357,22 @@
 - observed:
   - the three reader surfaces now converge on one stronger steady-state story: the contract index owns landed quartet inventory and future-extension landing semantics, the DOC front door owns family-first current reading for the active quartet, and the promotion map owns deterministic mapping plus future extension semantics without reading like a stale pre-execution plan
 
+### P3-C1-S1 through P3-C1-S2 (post-consolidation boundary fixed and no extra export tail required | 2026-04-08)
+
+- headSha: `13777f845a96d254febbd5562ae40453314edbdf`
+- artifacts:
+  - `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
+  - `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
+- expected:
+  - one reader should be able to tell where `DOC` reader-surface work stops, why no more consolidation export is needed, and what later old-`GC-*` cleanup must still respect
+- observed:
+  - the post-consolidation boundary is now explicit: `DOC` quartet reading is stable, retained source-owner logs are now firmly traceability-first for those four rule sets, no additional `DOC` reader-surface export is needed, and any later cleanup must respect the standing triage rule plus the already-adjudicated first root-retention boundary
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4F` as the post-quartet `DOC` reader-surface consolidation lane, fixed the three target reader surfaces, and fixed `P1` residual-wording inventory as the immediate next step.
 - 2026-04-08: completed `P1` by inventorying the exact residual mixed-transition wording and role-overlap set across the `DOC` contract index, the `DOC` front door, and the promotion map so `P2` can now converge wording without reopening discovery.
 - 2026-04-08: completed `P2` by converging the `DOC` contract index, the `DOC` front door, and the promotion map onto one steady-state quartet-active story while preserving their distinct reader jobs.
+- 2026-04-08: completed `P3` by fixing the post-consolidation reader notes and next-step boundary, concluding that no further bounded export tail is needed inside `S0F-4F`, and handing later old-`GC-*` cleanup off to a separate bounded lane.
