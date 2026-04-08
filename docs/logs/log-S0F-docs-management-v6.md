@@ -42,6 +42,7 @@
   **phase_log_22**: `docs/logs/log-S0F-3H-recurring-governance-run-model-and-ledger-split.md`
   **phase_log_23**: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
   **phase_log_24**: `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
+  **phase_log_25**: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -259,6 +260,7 @@
 - `S0F-3A/P0` is now complete: the new governance-contract concentration slice is wired into the spine, and the terminology boundary among application domain, governance contracts, and operational surfaces is now fixed as the baseline for later index and delta work.
 - `S0F-3A/P1` is now complete: the four-layer truth split is fixed so logs own event truth, governance-contract deltas own change truth, active index records own current-state truth, and governance views own human-readable concentration.
 - `S0F-3I/P5` is now complete: the first family placement map now states where `DOC/DOM/PRO/INT/OPS/SEC/EVD` currently live, and later cleanup can now distinguish `needs better indexing` from `needs real relocation` instead of pushing every contract family toward one fake universal folder.
+- `S0F-4C` is now opened as the next bounded follow-up after `S0F-3I/P5`: the repo now has one explicit transition lane for `DOC/OPS` family front doors, for demoting `GC-*` from umbrella vocabulary to narrower legacy-registry wording, and for clarifying that `disposition` helps standing but does not replace family ownership.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
 - `S0F-3A/P3` is now complete: the minimum governance-contract delta block is fixed with one shared field set plus action-specific requirements for `add`, `modify`, `retire`, `supersede`, and `apply-without-change`.
 - `S0F-3A/P4` is now complete: stable `contract_id` naming rules, the minimum active-contract index record shape, and the smallest viable homes under `docs/governance/contracts/` and `docs/governance/views/` are now fixed.
