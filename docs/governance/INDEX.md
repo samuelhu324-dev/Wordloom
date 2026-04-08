@@ -6,6 +6,7 @@
 - It exists so readers do not need to scan long filenames or reconstruct current governance state from raw folder listings alone.
 - It also acts as the controlled admission surface for new governance area codes and for the minimum registry fields every live record must expose here.
 - It is a current-state surface, not a full historical ledger of every governance-contract file preserved on disk.
+- Repo-wide cross-family contract scanning now lives separately in `docs/governance/views/view-contract-family-inventory-v1.md`; this file remains the narrow front door for current registry-admitted governance contracts only.
 
 ## Current-State Boundary
 

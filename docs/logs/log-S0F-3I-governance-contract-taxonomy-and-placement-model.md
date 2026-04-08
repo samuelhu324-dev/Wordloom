@@ -19,6 +19,7 @@
   **reference_log_2**: `docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
   **reference_log_3**: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
   **reference_log_4**: `docs/logs/INDEX.md`
+  **reference_log_5**: `docs/governance/views/view-contract-family-inventory-v1.md`
 **issue_keyword**: `taxonomy`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -112,6 +113,7 @@
 - `P1`: define SoT-first placement rules for each family
 - `P2`: define how contract family and `S0-S6` levels relate without collapsing into one axis
 - `P3`: pre-allocate the future security and tenant taxonomy boundary so later auth/tenant work opens under `SEC` instead of a generic governance bucket
+- `P4`: publish the first contract inventory/index draft using `family + primary SoT + affected levels + registry status` so the taxonomy is exercised on real repo surfaces instead of remaining template-only
 
 ## Success Criteria (DoD)
 
@@ -222,6 +224,27 @@
   - `SEC-DAT`: sensitive data handling, backup, sanitization, and related protection surfaces
 - Later registry admission may still concentrate selected `SEC` rules into a current active governance registry, but the family taxonomy should exist before any such admission decision.
 
+## P4 (First inventory/index draft | v1)
+
+### P4-C1-S1 (Cross-family contract inventory draft | v1)
+
+- The first applied inventory should not widen `docs/governance/INDEX.md` into a universal contract ledger.
+- Instead, the repo now keeps one separate reader-facing inventory draft at:
+  - `docs/governance/views/view-contract-family-inventory-v1.md`
+- The draft uses one common row shape across representative current surfaces:
+  - `contract family`
+  - `representative contract or surface`
+  - `primary SoT`
+  - `affected levels`
+  - `registry status`
+- This makes `S0F-3I` a real applied taxonomy pass rather than a purely conceptual naming slice.
+
+### P4-C1-S2 (Registry boundary clarified against inventory | v1)
+
+- `docs/governance/INDEX.md` remains the front door for current registry-admitted governance contracts only.
+- The new cross-family inventory view is the right place for repo-wide contract scanning when a reader needs to compare `DOM/PRO/INT/OPS/SEC/EVD/DOC` without pretending they all live under `GC-*`.
+- This preserves the `GC-*` registry as a narrow current-state surface while still giving the repo one practical inventory draft.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -262,6 +285,11 @@
 
 - P3-C1-S1: define the first `SEC` subfamilies before future permission and tenant work opens
 
+### P4 (First inventory/index draft)
+
+- P4-C1-S1: publish one cross-family contract inventory draft using the new taxonomy row shape
+- P4-C1-S2: clarify the boundary between the cross-family inventory draft and the narrow `GC-*` governance front door
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -284,11 +312,17 @@
 
 - [x] `P3-C1-S1`: `SEC` split baseline fixed for future auth, tenant, and policy work
 
+### P4 (First inventory/index draft)
+
+- [x] `P4-C1-S1`: cross-family contract inventory draft published
+- [x] `P4-C1-S2`: governance front-door versus cross-family inventory boundary clarified
+
 ## Current Status (recommended)
 
 - `S0F-3I` now fixes the missing taxonomy boundary: the repo can talk about seven contract families without pretending they all belong in one registry or one folder.
 - `S0-S6` is now explicitly treated as the affected-level map rather than as the first-level contract taxonomy.
 - Future permission, tenant, and policy work should now open under `SEC` first, while `GC-*` should remain the narrower registry-admitted governance subset rather than the umbrella name for all contracts.
+- `P4` is now complete as a new phase, not another cycle on `P0-P3`: the repo now has one first applied inventory draft at `docs/governance/views/view-contract-family-inventory-v1.md`, so taxonomy, placement, and level rules now read against real representative surfaces instead of staying abstract.
 
 ## Evidence (reserved)
 
@@ -307,6 +341,18 @@
 - observed:
   - seven contract families are now explicit, SoT-first placement is fixed, `S0-S6` is clarified as the level map, and future security or tenant work now has a pre-split `SEC` family boundary
 
+### P4-C1-S1 through P4-C1-S2 (first contract inventory/index draft published and registry boundary clarified | 2026-04-08)
+
+- headSha: `a38253d97970c5b1a775c634f0089647c6d69281`
+- artifacts: `docs/governance/views/view-contract-family-inventory-v1.md`
+- artifacts: `docs/governance/INDEX.md`
+- artifacts: `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
+- expected:
+  - the taxonomy should be exercised on one real cross-family inventory surface without collapsing the narrow `GC-*` front door into a universal contract ledger
+- observed:
+  - the repo now has one separate cross-family inventory draft, while `docs/governance/INDEX.md` stays the current registry-admitted governance front door only
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-3I` to split contract family from system level, narrow `GC-*` to the admitted governance subset, and pre-allocate the future security and tenant contract boundary under `SEC`.
+- 2026-04-08: completed `P4` by publishing the first cross-family contract inventory draft and by clarifying that `docs/governance/INDEX.md` remains the narrow `GC-*` registry front door rather than the universal contract index.
