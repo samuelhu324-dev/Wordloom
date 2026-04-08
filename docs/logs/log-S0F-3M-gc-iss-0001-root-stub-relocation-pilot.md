@@ -210,6 +210,28 @@
   - one support-only index addition
   - zero pre-existing reader retargets
 
+## P3 (Post-move verification | v1)
+
+### P3-C1-S1 (Root-stub landing and successor guidance verified for `GC-ISS-0001` | v1)
+
+- `P3` now verifies the executed root stub as a reader surface rather than assuming the move succeeded just because the files exist.
+- The root path remains readable and carries the expected bridge fields and guidance:
+  - old record identity is still visible at the original root path
+  - the stub points readers to `GC-ICR-0001` for current rule meaning
+  - the stub points readers to the moved support-only retained body when historical wording is needed
+  - the stub still reads like a landing surface rather than like a deleted-path placeholder
+
+### P3-C1-S2 (Moved retained body and zero-retarget execution result verified | v1)
+
+- The moved retained body is now confirmed readable under the contracts-side support-only surface.
+- `docs/governance/contracts/support-only/INDEX.md` exposes the moved `GC-ISS-0001` body explicitly, so support-only navigation does not depend on directory browsing.
+- The zero-retarget result also verifies cleanly:
+  - `view-iss-split-package-v1.md` still cites the root path
+  - `view-gc-first-cleanup-boundary-v1.md` still cites the root path
+  - `log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md` still cites the root path
+  - no reader regression was found that would force a second rewrite wave after the move
+- `P3` therefore confirms that the representative `GC-ISS-0001` pilot is not merely executed; it is executed cleanly enough to support a real widen-versus-hold decision in `P4`.
+
 ## Plan (draft)
 
 ### P1 (Rewrite-set inventory)
@@ -251,8 +273,8 @@
 
 ### P3 (Post-move verification)
 
-- [ ] `P3-C1-S1`: root-stub landing and successor guidance verified
-- [ ] `P3-C1-S2`: moved-body reading and retargeted references verified
+- [x] `P3-C1-S1`: root-stub landing and successor guidance verified
+- [x] `P3-C1-S2`: moved-body reading and retargeted references verified
 
 ### P4 (Next-lane decision)
 
@@ -267,7 +289,8 @@
 - No existing reader surface currently has to be retargeted to the moved support-only body; lineage, cleanup-boundary, and cleanup-ledger citations should remain on the future root stub path.
 - `P2` is now complete: `GC-ISS-0001` is no longer a full retained body at the root path; it now runs on the executed `support-only retained body + root stub` model.
 - The support-only index now exposes the moved retained body explicitly, and execution did not require any pre-existing reader-surface retargets.
-- The immediate next step is `P3`: verify that the root stub, moved retained body, and zero-retarget execution result all read correctly in practice.
+- `P3` is now complete: the executed root stub reads correctly, the moved retained body is readable under the support-only surface, and the zero-retarget execution result did not regress the current lineage or cleanup readers.
+- The immediate next step is `P4`: decide whether this verified pilot result should widen to more `GC-ISS-*` records or remain one defended pilot for now.
 
 ## Evidence (reserved)
 
@@ -322,8 +345,28 @@
   - the full retained body now lives under the contracts-side support-only surface while the original root path remains occupied by a stub
   - the support-only index now lists the moved retained body, and no pre-existing reader surface had to be retargeted during execution
 
+### P3-C1-S1S2 (Post-move verification passed for `GC-ISS-0001` pilot | 2026-04-09)
+
+- headSha: `<pending commit for S0F-3M/P3-C1-S1S2>`
+- artifacts:
+  - `docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md`
+  - `docs/governance/contracts/support-only/GC-ISS-0001-issue-creation-metadata-english-body.md`
+  - `docs/governance/contracts/support-only/INDEX.md`
+  - `docs/governance/views/view-iss-split-package-v1.md`
+  - `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
+  - `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+  - `docs/logs/support-only/s0f-3m-gc-iss-0001-post-move-verification.json`
+  - `docs/logs/log-S0F-3M-gc-iss-0001-root-stub-relocation-pilot.md`
+- expected:
+  - the root stub remains a readable old-ID landing surface with correct successor and moved-body guidance
+  - the moved retained body remains readable under support-only without forcing a second reader-retarget wave
+- observed:
+  - the root stub is readable and preserves old-ID landing, successor guidance, and moved-body guidance exactly as planned
+  - the moved retained body is readable under support-only, the local support-only index exposes it explicitly, and the current lineage / cleanup readers still resolve through the root path without regression
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-3M` as the first bounded `GC-ISS-0001` root-stub relocation pilot after `S0F-3L/P4` chose a representative ISS-first execution lane.
 - 2026-04-09: completed `P1` by fixing the exact `GC-ISS-0001` rewrite-set inventory and confirming that the current reader surface should stay on the future root stub path rather than being broadly retargeted to support-only.
 - 2026-04-09: completed `P2` by moving the `GC-ISS-0001` retained full body to contracts support-only, replacing the root file with the executed stub, and updating the local support-only index without requiring a pre-existing reader-retarget wave.
+- 2026-04-09: completed `P3` by verifying that the executed root stub, moved retained body, local support-only navigation, and zero-retarget execution result all read cleanly after the move.
