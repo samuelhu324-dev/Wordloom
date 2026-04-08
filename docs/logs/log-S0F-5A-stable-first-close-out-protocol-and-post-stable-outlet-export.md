@@ -164,6 +164,39 @@
 - The stable reviewer question is therefore not `did every outlet get a file?`
 - The correct question is `did every outlet receive an explicit answer, including justified no-op where export is not warranted?`
 
+## P3 (Post-stable export packaging | v1)
+
+### P3-C1-S1 (`Pn+1` style export packaging rule fixed | v1)
+
+- After a slice reaches the stable-entry close-out gate and completes the mandatory questionnaire, the default export packaging decision is:
+  - use one bounded post-stable follow-up phase such as `Pn+1` when the remaining work is primarily outlet export, write-back, thinning, or placement consequence handling rather than new semantic exploration
+- Prefer one bounded `Pn+1` style export phase when all of the following are true:
+  - the slice-local question is already converged
+  - the remaining work touches more than one outlet or more than one retained file
+  - the repo needs one auditable package for export ordering, no-op justification, and consequence write-backs
+  - repeated draft-stage multi-file updates would otherwise obscure the close-out boundary
+- Do not force a `Pn+1` export phase when either of these is true:
+  - the correct questionnaire result is effectively all no-op except retained log status
+  - one already-bounded follow-up slice exists and is the more reader-meaningful owner for the remaining work
+- The purpose of `Pn+1` is therefore not to create one mandatory extra phase for every stable slice.
+- Its purpose is to package post-stable export work into one defended bounded unit when export is real work rather than a tiny tail edit.
+
+### P3-C1-S2 (Minimum write-back set and stop rule fixed | v1)
+
+- When a stable slice does open one bounded post-stable export phase, the minimum write-back set is:
+  - update or create each outlet explicitly approved by the close-out questionnaire
+  - rewrite the source log so it keeps only retained strong structure, evidence, and bridge notes for the exported material
+  - update the relevant `index/front-door` only when current navigation changed
+  - update `disposition/placement` only after role export is already settled
+  - write one concise parent-spine status line describing the export package outcome
+- The export package may also write one consequence update into an origin control slice, but only when the package changes that slice's still-open standing, blocker, or cleanup state.
+- Stop the export package immediately when any of the following becomes true:
+  - the supposed target outlet still lacks stable identity
+  - one export would force the repo to invent a new reader surface only to satisfy the matrix mechanically
+  - role ownership becomes ambiguous again during the package
+  - the package starts introducing new semantic design rather than exporting already-stable meaning
+- If the stop rule triggers, the correct result is to keep the retained log as the temporary home and open a later bounded slice for the missing stable target rather than faking completion through premature outlet creation.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -225,8 +258,8 @@
 
 ### P3 (Post-stable export packaging)
 
-- [ ] `P3-C1-S1`: `Pn+1` style export packaging rule fixed
-- [ ] `P3-C1-S2`: minimum write-back and stop rule fixed
+- [x] `P3-C1-S1`: `Pn+1` style export packaging rule fixed
+- [x] `P3-C1-S2`: minimum write-back and stop rule fixed
 
 ### P4 (Anti-proliferation rule)
 
@@ -246,7 +279,8 @@
 - `P1` is now complete: the repo now has one explicit draft-stage concentration rule and one explicit stable-entry close-out gate, so later outlet export can begin from a defended review boundary instead of from ongoing draft churn.
 - Template hardening is intentionally deferred: the parent and phase-log templates should not be rewritten from `P1` alone, because they still need the later `P2` questionnaire and `P3` export-packaging rules before that guidance is safe to freeze into scaffolds.
 - `P2` is now complete: the repo now has one mandatory outlet-by-outlet close-out questionnaire and one explicit allowed no-op answer set, so `stable` review can ask for explicit ownership decisions without forcing a mechanical six-file export.
-- The next immediate step is now `P3`: define when a stable slice should package export as one bounded post-stable phase such as `Pn+1`, and what the minimum write-back set and stop rule of that phase should be.
+- `P3` is now complete: the repo now has one explicit rule for when a stable slice should package export as one bounded `Pn+1` style follow-up phase, plus one minimum write-back set and stop rule for that package.
+- The next immediate step is now `P4`: define the anti-proliferation gate for `runbook`, `view`, and later template hardening so the export package does not become a mechanical file explosion.
 
 ## Evidence (reserved)
 
@@ -283,8 +317,19 @@
 - observed:
   - the repo now has one outlet-by-outlet close-out questionnaire plus one explicit allowed no-op answer set, so stable review no longer depends on either memory or a mechanical all-outlets export expectation
 
+### P3-C1-S1 through P3-C1-S2 (post-stable export packaging rule fixed | 2026-04-08)
+
+- headSha: `5b4f0b356d586c6d1b8a303ca7a2ac60dddc46f2`
+- artifacts: `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
+- artifacts: `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to explain when a stable slice deserves one bounded `Pn+1` style export package and what minimum write-backs plus stop rules govern that package
+- observed:
+  - the repo now has one explicit `Pn+1` packaging rule, one minimum write-back set for post-stable export work, and one stop rule that blocks premature outlet creation when stable target identity is still missing
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-5A` to formalize stable-first close-out timing and post-stable outlet export before the first real `DOC` promoted contract body.
 - 2026-04-08: completed `P1` by fixing the draft-stage concentration rule, the stable-entry close-out gate, and the decision to defer template hardening until later `P2/P3/P4` rules converge.
 - 2026-04-08: completed `P2` by fixing the mandatory outlet-by-outlet close-out questionnaire and the allowed no-op answer set for stable slices.
+- 2026-04-08: completed `P3` by fixing when post-stable export should be packaged as one bounded `Pn+1` style follow-up phase and by defining the minimum write-back set plus stop rule for that export package.
