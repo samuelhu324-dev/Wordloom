@@ -197,6 +197,32 @@
   - no selected subset currently satisfies `standing-loss + redirect-loss`
   - the clean input to `P2` is therefore an adjudication of explicit `no new admissible candidate yet`, not a relocation package
 
+## P2 (Cleanup adjudication | v1)
+
+### P2-C1-S1 (Admissibility adjudicated from the null-inventory result | v1)
+
+- The adjudication target for this round is no longer `which residue file should move next?`
+- The actual adjudication target is `does the repo currently prove one post-boundary old-GC subset that has already lost both current-registry standing and root-path redirect duty?`
+- Based on `P1`, the answer remains `no`:
+  - no root-level old-`GC-*` subset exists outside the already-defended keep boundary
+  - the only non-current residue set still carries published redirect or lineage duty
+  - no source contradiction has been found that would reopen the first cleanup boundary
+- Result for `P2-C1-S1`:
+  - no currently selected subset is admissible for cleanup under the standing-loss plus redirect-loss rule
+  - `S0F-3J` therefore advances on an explicit null adjudication rather than on a deferred or ambiguous maybe-candidate
+
+### P2-C1-S2 (Minimum defended result fixed as stop-with-explicit-no-op | v1)
+
+- The minimum defended result for this round is not `move-to-support-only`, because no admissible subset has been proven.
+- The minimum defended result is also not a fresh `keep-in-root` package, because the only relevant root-level residue set was already defended by the first cleanup boundary and is not being reopened here.
+- The correct bounded result for this slice is therefore:
+  - `stop-with-explicit-no-op` for post-`DOC`-stabilization old-`GC-*` cleanup admission at the current repo state
+  - keep the first already-defended boundary unchanged
+  - permit a future cleanup re-entry only if one later source change proves that some old root path has actually lost redirect duty in addition to current-registry standing
+- Result for `P2-C1-S2`:
+  - `S0F-3J` now has one defended minimum outcome for the current repo state
+  - the next round can package this stop result cleanly instead of pretending there is an unfinished relocation package waiting to run
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -248,8 +274,8 @@
 
 ### P2 (Cleanup adjudication)
 
-- [ ] `P2-C1-S1`: admissibility decided for the selected subset
-- [ ] `P2-C1-S2`: minimum defended result fixed
+- [x] `P2-C1-S1`: admissibility decided for the selected subset
+- [x] `P2-C1-S2`: minimum defended result fixed
 
 ### P3 (Bounded cleanup package)
 
@@ -266,7 +292,8 @@
 - `S0F-3J` is now opened as the next bounded follow-up after `S0F-4F`: `DOC` current reading is stable enough that old `GC-*` cleanup can now be evaluated without reopening `DOC` reader-surface wording.
 - `P0` is now complete: the cleanup-candidate admission rule, the excluded already-defended keep set, and the explicit six-outlet close-out requirement are now fixed.
 - `P1` is now complete: the inventory shows that the only old root-level `GC-*` residue outside the current narrow registry is still the already-defended `GC-ISS-*` plus `GC-PRB-0001` redirect set, so no new admissible cleanup candidate subset has been found yet.
-- The immediate next step is `P2`: adjudicate that null-inventory result explicitly and decide whether this lane should close as a defended `no-op / stop` package rather than as a relocation package.
+- `P2` is now complete: the null-inventory result is now adjudicated explicitly, and the minimum defended result for the current repo state is `stop-with-explicit-no-op` rather than a fresh relocation or keep-in-root package.
+- The immediate next step is `P3`: package that bounded stop result, fix any retained reader notes or stop rules that belong in this lane, and prepare the slice for final six-outlet close-out.
 
 ## Evidence (reserved)
 
@@ -303,7 +330,25 @@
   - published split-package, triage, and boundary views still assign redirect or lineage value to that whole residue set
   - no newly admissible cleanup subset is currently proven by source
 
+### P2-C1-S1 through P2-C1-S2 (null inventory adjudicated as explicit stop-with-no-op | 2026-04-08)
+
+- headSha: `9a4b44b0224a9ffe8aaaaa23189d02c2b349566b`
+- artifacts:
+  - `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
+  - `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
+  - `docs/governance/views/view-iss-split-package-v1.md`
+  - `docs/governance/views/view-prb-split-package-v1.md`
+  - `docs/logs/log-S0F-3J-old-gc-cleanup-candidate-selection-after-doc-reader-stabilization.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to explain whether `S0F-3J` currently owns a real cleanup move package or instead owns an explicit stop decision grounded in the published standing and redirect rules
+- observed:
+  - no currently selected old-`GC-*` subset is admissible for cleanup under the standing-loss plus redirect-loss test
+  - the first already-defended keep boundary remains intact without contradiction
+  - the minimum defended result for the current repo state is `stop-with-explicit-no-op`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-3J` as the next bounded old-`GC-*` cleanup candidate-selection lane after `DOC` reader stabilization, fixed the admission boundary, excluded the already-defended keep set from default re-entry, and fixed the six-outlet close-out requirement for the lane.
 - 2026-04-08: completed `P1` inventory and recorded the current null result: no new old-`GC-*` subset outside the already-defended keep set can yet prove both standing-loss and redirect-loss, so the next round should adjudicate an explicit no-op or stop package rather than force a relocation candidate.
+- 2026-04-08: completed `P2` adjudication and fixed the minimum defended result as `stop-with-explicit-no-op`, because no post-boundary old-`GC-*` subset is currently proven admissible for cleanup.
