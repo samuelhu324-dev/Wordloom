@@ -121,6 +121,7 @@
 - `P1`: inventory residual mixed-transition wording and role overlap across `INDEX.md`, `view-doc-current-front-door-v1.md`, and `view-doc-contract-promotion-map-v1.md`
 - `P2`: converge those reader surfaces onto one steady-state quartet-active story without collapsing their distinct roles
 - `P3`: fix the post-consolidation reader notes, next-step boundary, and retained-source-owner framing so later old-`GC-*` cleanup can proceed from a stable `DOC` reader surface
+- `P4`: apply one explicit six-outlet close-out evaluation to this stable consolidation slice and decide whether the same template-owned evaluation block should become the default final-round check for later logs
 
 ## Success Criteria (DoD)
 
@@ -128,6 +129,7 @@
 - One reader can tell that the first mapped `DOC` promotion quartet is fully active without having to infer that from multiple separate files.
 - One reader can tell that the promotion map is still meaningful even though the first mapping set has already been executed.
 - The repo has one bounded follow-up lane for reader-surface convergence before old-`GC-*` cleanup begins.
+- One reader can explain the six-outlet answer for `S0F-4F` without mistaking `no-op` for missing work or assuming every outlet must create a new file.
 
 ## Stability (what stable means)
 
@@ -246,6 +248,47 @@
   - the first mapped `DOC` quartet and its three main reader surfaces now form the defended steady-state baseline
   - the next bounded follow-up should open outside this slice as one old-`GC-*` cleanup candidate lane or equivalent triage package grounded in the existing triage and first-boundary rules
 
+## P4 (Six-outlet evaluation and template recommendation | v1)
+
+### P4-C1-S1 (`S0F-4F` six-outlet evaluation completed | v1)
+
+- `contract`:
+  - answer: no-op
+  - reason: `no stable current rule changed`
+  - explanation: `S0F-4F` consolidates reader-surface wording around already-active `DOC` contracts, but it does not define or materially change a new stable contract rule body beyond what `DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`, and `DOC-FDT-0001` already own
+- `runbook`:
+  - answer: no-op
+  - reason: `procedure not repeatable beyond this package`
+  - explanation: this slice stabilizes reader-surface wording and boundary language, not one reusable operator sequence that should leave the log as a stable runbook
+- `view`:
+  - answer: export complete
+  - result: `docs/governance/views/view-doc-current-front-door-v1.md` and `docs/governance/views/view-doc-contract-promotion-map-v1.md` were already the correct bounded reader surfaces for this slice and were converged directly in `P2`, so no additional new `view` is justified
+- `index/front-door`:
+  - answer: export complete
+  - result: `docs/governance/contract/INDEX.md` was converged directly in `P2` as the correct directory-level landing surface for the active quartet
+- `disposition/placement`:
+  - answer: no-op
+  - explanation: `S0F-4F` intentionally stops before old-`GC-*` cleanup adjudication, so no new standing or placement decision is made here beyond reaffirming the existing triage rule and the already-adjudicated first cleanup boundary
+- `log-retained core`:
+  - answer: retain
+  - reason: `log still owns slice-local bridge and evidence`
+  - explanation: this log remains the bounded decision record, wording-drift ledger, close-out rationale, and next-step handoff point for post-quartet consolidation
+
+### P4-C1-S2 (Template recommendation and immediate handoff fixed | v1)
+
+- Recommendation for later logs:
+  - yes, future logs should generally keep the current template block around `Exported Sections / Outlet Ownership` and should explicitly evaluate the six outlets during the final stable-summary round rather than leaving that question implicit
+  - that recommendation should be applied as authoring discipline first, not as a mechanical retrofit that forces every slice to split six files
+  - the final-round question should stay `what is the answer for each outlet?`, not `which new file must be created for each outlet?`
+- Boundaries on that recommendation:
+  - do not retrofit older stable logs in bulk merely to add the block after the fact
+  - do not treat the template block as a command that every slice must create new `contract`, `runbook`, `view`, or `disposition` files
+  - keep using justified `no-op` when the stable answer is retention or direct write-back into an already-correct surface
+- Immediate handoff after `P4`:
+  - the next natural work is still one bounded old-`GC-*` cleanup candidate lane
+  - that cleanup should start only after we explicitly agree on the target subset and the cleanup admission rule for `lost current-registry standing + lost root redirect duty`
+  - after this `P4` evaluation, the next step should therefore be discussion and target selection, not immediate cleanup execution inside `S0F-4F`
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -279,6 +322,11 @@
 - P3-C1-S1: fix post-consolidation reader notes and next-step boundary for later `DOC`-adjacent cleanup work
 - P3-C1-S2: decide whether any additional bounded export or follow-up is warranted after the reader surfaces converge
 
+### P4 (Six-outlet evaluation and template recommendation)
+
+- P4-C1-S1: evaluate `S0F-4F` explicitly against `contract / runbook / view / index/front-door / disposition/placement / log-retained core`
+- P4-C1-S2: decide whether the template-owned final-round outlet-evaluation block should become the default discipline for later logs and fix the immediate handoff to old-`GC-*` cleanup discussion
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -304,6 +352,11 @@
 - [x] `P3-C1-S1`: post-consolidation reader notes and next-step boundary fixed
 - [x] `P3-C1-S2`: bounded follow-up decision fixed
 
+### P4 (Six-outlet evaluation and template recommendation)
+
+- [x] `P4-C1-S1`: six-outlet evaluation completed for `S0F-4F`
+- [x] `P4-C1-S2`: template recommendation and immediate handoff fixed
+
 ## Current Status
 
 - `S0F-4F` is now opened as the next bounded follow-up after `S0F-4E`: the first mapped `DOC` promotion quartet is active, but the three main `DOC` reader surfaces still need one consolidation pass so they read as one steady-state story instead of as leftover staged landing notes.
@@ -312,6 +365,7 @@
 - `P2` is now complete: the `DOC` contract index, the `DOC` front door, and the promotion map now all read as one steady-state quartet-active story while still preserving their distinct reader jobs.
 - `P3` is now complete: the post-consolidation reader notes and next-step boundary are now explicit, no further bounded export tail is warranted inside this slice, and later old-`GC-*` cleanup can now proceed from a stable `DOC` reader surface without reopening the same wording debate.
 - `S0F-4F` is now stable: the first mapped `DOC` quartet and its three main reader surfaces now form one defended steady-state baseline.
+- `P4` is now complete: the six-outlet answer is explicit for this slice, the correct result is a mixed `export-complete` plus justified `no-op` pattern rather than mechanical six-file splitting, and the next step is discussion plus target selection before any old-`GC-*` cleanup lane opens.
 
 ## Evidence (reserved)
 
@@ -370,9 +424,26 @@
 - observed:
   - the post-consolidation boundary is now explicit: `DOC` quartet reading is stable, retained source-owner logs are now firmly traceability-first for those four rule sets, no additional `DOC` reader-surface export is needed, and any later cleanup must respect the standing triage rule plus the already-adjudicated first root-retention boundary
 
+### P4-C1-S1 through P4-C1-S2 (six-outlet evaluation completed and template recommendation fixed | 2026-04-08)
+
+- headSha: `b41b6184ee4a92b2986d3e7494d21670ec5863e6`
+- artifacts:
+  - `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/governance/views/view-doc-contract-promotion-map-v1.md`
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
+  - `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
+  - `docs/logs/_template-log-phase-drills-evidence.md`
+- expected:
+  - one reader should be able to tell which outlets were truly exercised by `S0F-4F`, which ones are justified no-op, and whether later logs should standardize the explicit final-round outlet assessment block
+- observed:
+  - `S0F-4F` now has one explicit six-outlet answer: `view` and `index/front-door` are real exports already completed in-place, `contract`, `runbook`, and `disposition/placement` are justified no-op for this slice, and `log-retained core` remains retained; future logs should usually keep this explicit final-round evaluation discipline without turning it into a mechanical six-file split rule
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4F` as the post-quartet `DOC` reader-surface consolidation lane, fixed the three target reader surfaces, and fixed `P1` residual-wording inventory as the immediate next step.
 - 2026-04-08: completed `P1` by inventorying the exact residual mixed-transition wording and role-overlap set across the `DOC` contract index, the `DOC` front door, and the promotion map so `P2` can now converge wording without reopening discovery.
 - 2026-04-08: completed `P2` by converging the `DOC` contract index, the `DOC` front door, and the promotion map onto one steady-state quartet-active story while preserving their distinct reader jobs.
 - 2026-04-08: completed `P3` by fixing the post-consolidation reader notes and next-step boundary, concluding that no further bounded export tail is needed inside `S0F-4F`, and handing later old-`GC-*` cleanup off to a separate bounded lane.
+- 2026-04-08: completed `P4` by evaluating `S0F-4F` explicitly against all six outlets, fixing the recommendation that later logs should usually keep the final-round outlet-evaluation block, and stopping before old-`GC-*` cleanup so the next step can be discussed first.
