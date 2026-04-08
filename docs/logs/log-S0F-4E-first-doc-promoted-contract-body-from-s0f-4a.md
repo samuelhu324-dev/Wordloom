@@ -5,7 +5,7 @@
 **id**: `S0F-4E`
 **kind**: `log`
 **title**: `DOC promoted contract lanes from S0F-4A, S0F-4B, and S0F-3I v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, Promotion, epic/s0, sub/4e`
 **links**: ``
@@ -248,6 +248,46 @@
   - retained source-owner traces for all promoted lanes
   - still-unpromoted `DOC` areas that continue to read directly through source-owner logs
 - This keeps the front door truthful without pretending that the third lane is already fully stable or that every mapped `DOC` area has already been promoted.
+
+## P3 (Third-lane stable review and close-out | C3)
+
+### P3-C3-S1 (`S0F-5A` close-out questionnaire applied for the third lane | v1)
+
+- `contract`:
+  - answer: export complete
+  - result: `DOC-TAX-0001` is explicit enough to become the active current rule surface for this `DOC` area
+- `runbook`:
+  - answer: no-op
+  - reason: `procedure not repeatable beyond this package`
+  - explanation: this promotion lane stabilizes a current rule body about taxonomy and placement, not one new repeatable operator procedure beyond the existing close-out method already governed elsewhere
+- `view`:
+  - answer: no-op
+  - reason: `full log is already the most efficient reader surface`
+  - explanation: no additional summary view is warranted beyond the existing `DOC` family front door plus the dedicated placement-map support view because one extra `TAX` summary file would mostly restate the same rule already concentrated in the contract, source log, and support view together
+- `index/front-door`:
+  - answer: export complete
+  - result: `docs/governance/contract/INDEX.md` and `docs/governance/views/view-doc-current-front-door-v1.md` already reflect the third landed `DOC` promotion
+- `disposition/placement`:
+  - answer: no-op
+  - explanation: no further placement change is needed because the active contract, front door, retained source-owner log, and supporting placement-map view already sit in the correct role-first homes
+- `log-retained core`:
+  - answer: retain
+  - reason: `log still owns slice-local bridge and evidence`
+  - explanation: `S0F-4E` remains the third promotion-lane ledger, and `S0F-3I` remains the retained source-owner traceability log for lineage and evidence
+
+### P3-C3-S2 (Third-lane close-out outcome fixed | v1)
+
+- Stable close-out review now concludes that the third promotion lane does not need one bounded post-stable export tail.
+- Rationale:
+  - the stable current rule is already exported into `DOC-TAX-0001`
+  - the necessary `index/front-door` updates are already complete
+  - no new repeatable operator procedure emerged that would justify a runbook
+  - no additional bounded reader-summary surface is warranted beyond the existing front door, the promotion-lane ledger, and the already-published placement-map support view
+  - no further disposition change is required to make the third promotion lane readable or correctly placed
+- Outcome:
+  - `DOC-TAX-0001` now becomes the third active family-owned `DOC` contract
+  - `S0F-3I` stops serving as the current SoT for this rule set and remains as retained source-owner traceability
+  - `S0F-4E` is now stable again after completing its third promotion cycle
 
 ## P1 (Second contract body extraction | C2)
 
@@ -503,6 +543,8 @@
 - [x] `P3-C2-S2`: second-lane close-out outcome fixed
 - [ ] `P3-C3-S1`: `S0F-5A` close-out questionnaire applied for the third lane
 - [ ] `P3-C3-S2`: third-lane close-out outcome fixed
+- [x] `P3-C3-S1`: `S0F-5A` close-out questionnaire applied for the third lane
+- [x] `P3-C3-S2`: third-lane close-out outcome fixed
 
 ## Current Status
 
@@ -518,7 +560,8 @@
 - `S0F-4E` is now reopened in `C3` rather than in a new slice: the third active lane is `S0F-3I` -> `DOC-TAX-0001`, and the immediate next step is substantive third-lane contract extraction under the already-proven pattern.
 - `P1-C3` is now complete: the third draft family-owned `DOC` contract body now exists, and the extracted rule text keeps taxonomy, placement, and consolidation-threshold semantics explicit without turning the placement-map view into duplicate contract prose.
 - `P2-C3` is now complete: the `DOC` contract index and the `DOC` family front door now both acknowledge `DOC-TAX-0001` as the third landed family-owned `DOC` contract draft while preserving `S0F-3I` as the retained source-owner SoT during draft stage.
-- The next immediate step is `P3-C3`: run the stable-first close-out questionnaire for the third lane and decide whether `DOC-TAX-0001` closes directly or needs one bounded post-stable export tail.
+- `P3-C3` is now complete: the stable-first close-out questionnaire has been answered outlet by outlet for the third lane, `DOC-TAX-0001` is now active, no bounded post-stable export tail is needed, and `S0F-4E` is now stable again after completing three promotion cycles.
+- The next immediate step is not more `4E` export work; it is to decide whether the fourth mapped `DOC` promotion should target `S0F-4C` -> `DOC-FDT-0001` next or whether the current `DOC` family should pause and consolidate reader guidance before that fourth lane.
 
 ## Evidence (reserved)
 
@@ -657,6 +700,19 @@
 - observed:
   - the `DOC` contract index now names `DOC-TAX-0001` as the third landed record, and the `DOC` front door now explains the mixed transition state in which two active promoted contracts and one draft promoted contract coexist while `S0F-3I` remains the retained source-owner SoT during third-lane draft stage
 
+### P3-C3-S1 through P3-C3-S2 (third stable close-out review completed and no post-stable export tail required | 2026-04-08)
+
+- headSha: `ece7d41054fcbb2b0eb93a99fc83e4cfa2bc3b09`
+- artifacts:
+  - `docs/governance/contract/DOC-TAX-0001-governance-contract-taxonomy-and-placement-model.md`
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+- expected:
+  - one reader should be able to tell whether the third promotion lane needs any bounded post-stable tail work, and whether `DOC-TAX-0001` is now only a draft landing or a real active current contract
+- observed:
+  - close-out review now answers every outlet explicitly for the third lane, promotes `DOC-TAX-0001` to active current contract status, retains `S0F-3I` and `S0F-4E` only for source-owner traceability and promotion-lane ledger roles, and concludes that no additional post-stable export tail is justified
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4E` as the first real `DOC` promotion lane, fixed `S0F-4A -> DOC-DRB-0001` as the first extraction target, and fixed `S0F-5A` as the inherited close-out protocol.
@@ -670,3 +726,4 @@
 - 2026-04-08: reopened `S0F-4E` in `C3` so the third mapped promotion lane (`S0F-3I` -> `DOC-TAX-0001`) can be executed inside the same slice rather than in a new near-duplicate follow-up.
 - 2026-04-08: completed `P1-C3` by extracting the first draft `DOC-TAX-0001` body from `S0F-3I` and aligning its metadata, source-owner relationship, and third-lane draft-stage landing semantics.
 - 2026-04-08: completed `P2-C3` by landing `DOC-TAX-0001` into the `DOC` contract index and updating the `DOC` family front door to reflect the third mixed source-owner plus promoted-contract reading state.
+- 2026-04-08: completed `P3-C3` by applying the `S0F-5A` close-out questionnaire to the third lane, promoting `DOC-TAX-0001` from draft to active current contract status, and concluding that no bounded post-stable export tail is required.

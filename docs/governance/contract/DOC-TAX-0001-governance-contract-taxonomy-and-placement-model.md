@@ -10,14 +10,14 @@ doc_contract:
   contract_id: GOVERNANCE-CONTRACT-TAXONOMY-AND-PLACEMENT-MODEL
   family: DOC
   area: TAX
-  status: draft
+  status: active
   summary: Documentation-governance taxonomy must keep contract family separate from system level, narrow `GC-*` to the registry-admitted governance subset, and prefer primary-SoT-first distributed placement over one fake universal contracts folder.
   primary_source_owner: docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md
   applies_to: documentation-governance taxonomy, family placement reading, family-versus-level interpretation, cross-family inventory reading, and later DOC family contract landing decisions derived from the same taxonomy rule set
   enforcement_surface: taxonomy-facing governance views, source-owner promotion work, and later family front-door or placement decisions
   violation_semantics: warning
   introduced_by: S0F-3I/P0-P5
-  last_changed_by: S0F-4E/P1-C3-S1S2
+  last_changed_by: S0F-4E/P3-C3-S1S2
   source_refs:
     - docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md
     - docs/governance/views/view-contract-family-placement-map-v1.md
@@ -26,7 +26,7 @@ doc_contract:
   superseded_by: []
   notes:
     - This file is the third family-owned DOC contract body promoted out of a source-owner log.
-    - S0F-3I remains the source-owner SoT while this record is still draft and before later close-out review completes under S0F-5A.
+    - S0F-3I remains the retained source-owner traceability log for this rule set after stable close-out review completed under S0F-5A.
     - The placement map remains a supporting view for concrete current-state scanning; this record owns the stable taxonomy and placement rule, not every future directory choice.
 ```
 
@@ -90,10 +90,10 @@ doc_contract:
 
 ## Reader Notes
 
-- This file is the first draft of the family-owned current contract body mapped from `S0F-3I`.
-- While this record remains `draft`, `S0F-3I` continues to own the strongest current source traceability for this rule set.
+- This file is the third active family-owned current contract body mapped from `S0F-3I`.
+- `S0F-3I` remains the retained source-owner traceability log for lineage, evidence, and concentrated historical source context, but current reader-facing rule ownership now reads here.
 - The placement map at `docs/governance/views/view-contract-family-placement-map-v1.md` remains the descriptive current-state scan that helps readers answer where families live today.
-- Later `S0F-4E` phases should align this record with the `DOC` contract index, any necessary front doors, and the stable-first close-out questionnaire defined by `S0F-5A`.
+- Stable close-out review for the third promotion lane has completed under `S0F-5A`, and no bounded post-stable export tail was required.
 
 ## Traceability
 

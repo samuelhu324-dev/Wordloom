@@ -26,9 +26,9 @@
   - retained source-owner traceability: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
   - current role: keeps the old two source-log templates canonical and narrows outlet ownership to weak-structure export, and now reads primarily through the second active family-owned `DOC` contract body
 - `GOVERNANCE-CONTRACT-TAXONOMY-AND-PLACEMENT-MODEL`:
-  - promoted current contract draft: `docs/governance/contract/DOC-TAX-0001-governance-contract-taxonomy-and-placement-model.md`
-  - retained source-owner SoT during draft stage: `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
-  - current role: fixes the seven-family taxonomy, placement model, and family-versus-level split, with the third family-owned contract body now landed but not yet fully closed out
+  - active current contract: `docs/governance/contract/DOC-TAX-0001-governance-contract-taxonomy-and-placement-model.md`
+  - retained source-owner traceability: `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
+  - current role: fixes the seven-family taxonomy, placement model, and family-versus-level split, and now reads primarily through the third active family-owned `DOC` contract body
 - `DOC-AND-OPS-FRONT-DOOR-TRANSITION-AND-GC-DEMOTION-MODEL`:
   - current primary source: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
   - current role: fixes how readers should transition from registry-first wording to family-first reading
@@ -36,13 +36,13 @@
 ## Reader Notes
 
 - This front door is intentionally a `view` rather than a new `GC-*` record.
-- The `DOC` family now has two active promoted contracts, one draft promoted contract, and still-unpromoted source-owner areas:
+- The `DOC` family now has three active promoted contracts and still-unpromoted source-owner areas:
   - `DOC-DRB-0001` is now the current active contract for document role boundaries
   - `S0F-4A` remains the retained source-owner traceability log for that rule set
 - `DOC-SLC-0001` is now the current active contract for source-log compatibility and weak-structure export discipline
 - `S0F-4B` remains the retained source-owner traceability log for that rule set
-- `DOC-TAX-0001` now exists as the third landed family-owned `DOC` contract draft
-- `S0F-3I` remains the retained source-owner SoT for that draft-stage rule set
+- `DOC-TAX-0001` is now the current active contract for taxonomy and placement model
+- `S0F-3I` remains the retained source-owner traceability log for that rule set
 - Other `DOC` areas still keep their strongest rule text in source-owner logs because those promotions have not landed yet.
 - Promoted contract bodies should land under `docs/governance/contract/` with the family-owned filename model `DOC-<AREA>-<NNNN>-<summary>.md`.
 - The current planned promotion map lives at `docs/governance/views/view-doc-contract-promotion-map-v1.md`.
