@@ -49,6 +49,7 @@
 - If a future row needs more than one plausible primary SoT, that is a signal to fix SoT ownership first rather than to widen the inventory with duplicated rows by default.
 - For the directory-level placement answer, use `docs/governance/views/view-contract-family-placement-map-v1.md`; this inventory stays focused on representative contract rows rather than full path mapping.
 - For the current `DOC` family reader entry, use `docs/governance/views/view-doc-current-front-door-v1.md` before scanning the underlying source-owner logs individually.
+- For the current `OPS` family reader entry, use `docs/governance/views/view-ops-current-front-door-v1.md` before scanning the underlying runtime spines, runbooks, and workflow-owned surfaces individually.
 
 ## Source Refs
 

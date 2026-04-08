@@ -22,6 +22,7 @@
   **reference_log_5**: `docs/governance/views/view-contract-family-inventory-v1.md`
   **reference_log_6**: `docs/governance/views/view-contract-family-placement-map-v1.md`
   **reference_log_7**: `docs/governance/views/view-doc-current-front-door-v1.md`
+  **reference_log_8**: `docs/governance/views/view-ops-current-front-door-v1.md`
 **issue_keyword**: `taxonomy`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/4`
@@ -173,6 +174,25 @@
   - `S0F-4C`: family-front-door transition and `GC-*` demotion model
 - Under this model, those surfaces are already current `DOC` contracts even before any later admission or naming reform work.
 
+## P2 (OPS front door | v1)
+
+### P2-C1-S1 (First OPS current front-door shape | v1)
+
+- The repo now keeps one current `OPS` family reader entry at:
+  - `docs/governance/views/view-ops-current-front-door-v1.md`
+- That surface is family-first rather than registry-first:
+  - it tells the reader how to start reading current `OPS` meaning
+  - it does not require turning active runtime spines or runbooks into registry records just to make the family legible
+
+### P2-C1-S2 (OPS source-owner mapping | v1)
+
+- The first `OPS` front door currently maps these source-owner surfaces directly:
+  - `S4A`: systems/platform operations runtime foundation
+  - `S4D`: cloud runtime deploy/verify/rollback
+  - `S4E`: release operating model and governance boundary
+  - `run-S4D-cloud-runtime-release-operations`: stable operator-facing release path
+- Under this model, current `OPS` reading stays anchored in runtime spines, runbooks, workflows, and scripts rather than being compressed into one narrow registry surface.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -232,8 +252,8 @@
 
 ### P2 (OPS front door)
 
-- [ ] `P2-C1-S1`: first `OPS` current front-door shape defined
-- [ ] `P2-C1-S2`: `OPS` current reading separated from old governance-registry wording
+- [x] `P2-C1-S1`: first `OPS` current front-door shape defined
+- [x] `P2-C1-S2`: `OPS` current reading separated from old governance-registry wording
 
 ### P3 (GC demotion and dual-reading transition)
 
@@ -248,7 +268,8 @@
 - `S0F-4C` is now opened as the next bounded transition lane after `S0F-3I/P5`: the repo has a family taxonomy and placement map, but it still needs one explicit reader-facing migration model away from registry-first `GC-*` language.
 - `P0` is now fixed: family, front door, legacy registry prefix, and disposition are now separated conceptually enough to guide later `DOC` and `OPS` front-door work.
 - `P1` is now complete: the repo now has one first `DOC` current front door at `docs/governance/views/view-doc-current-front-door-v1.md`, and `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` are now explicitly readable as current `DOC` contracts without first passing through `GC-*` vocabulary.
-- The next immediate implementation-free follow-up remains `OPS`: define one first `OPS` current front door while leaving old storage identifiers intact.
+- `P2` is now complete: the repo now has one first `OPS` current front door at `docs/governance/views/view-ops-current-front-door-v1.md`, and current operational meaning now reads through `S4A`, `S4D`, `S4E`, and the stable runbook layer rather than through old governance-registry wording.
+- The next immediate follow-up is the dual-reading rule itself: define how old `GC-*` language may remain as lineage/storage vocabulary without remaining the primary reader vocabulary.
 
 ## Evidence (reserved)
 
@@ -277,7 +298,20 @@
 - observed:
   - the repo now has one explicit `DOC` family front door and one direct mapping from that front door to the current source-owner `DOC` contracts
 
+### P2-C1-S1 through P2-C1-S2 (OPS current front door defined and mapped | 2026-04-08)
+
+- headSha: `81bc3dbf426adf2c84c3cdf5a7d77d8c83b0cd14`
+- artifacts: `docs/governance/views/view-ops-current-front-door-v1.md`
+- artifacts: `docs/governance/views/view-contract-family-inventory-v1.md`
+- artifacts: `docs/governance/views/view-contract-family-placement-map-v1.md`
+- artifacts: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
+- expected:
+  - one reader should be able to find the current `OPS` family entry and read runtime-operational meaning without first translating it into narrow governance-registry wording
+- observed:
+  - the repo now has one explicit `OPS` family front door and one direct mapping from that front door to the current runtime spines and runbook-owned operational surfaces
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4C` to separate family, front door, legacy registry prefix, and disposition so the repo can move toward `DOC/OPS/...` current reading without immediate mass rename.
 - 2026-04-08: completed `P1` by publishing the first `DOC` current front door and by mapping `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into one family-first reading model.
+- 2026-04-08: completed `P2` by publishing the first `OPS` current front door and by mapping `S4A`, `S4D`, `S4E`, and the stable release-operations runbook into one family-first reading model.
