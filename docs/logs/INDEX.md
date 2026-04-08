@@ -9,6 +9,9 @@
 - S5: Security & Governance
 - S6: Evidence & Drills
 
+- `S0-S6` is the system-level map used by this index; it is not the first-level contract taxonomy.
+- Contract-family classification should be treated as a separate axis from these levels, so one contract family may affect more than one `S` level and one `S` level may contain more than one contract family.
+
 ### S0: Knowledge System
 
 - Docs-centered management

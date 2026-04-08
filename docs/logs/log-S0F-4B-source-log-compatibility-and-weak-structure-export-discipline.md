@@ -241,6 +241,7 @@
 
 - `S0F-4B` now records the compatibility rule that future source logs should still use the old two templates while six outlets only own weak-structure exports.
 - The documentation side is now bounded: old template family stays canonical, `S0F-1K` is demoted to historical sample status, and future work should move next to script-side source-log admission rather than inventing another documentation shape.
+- taxonomy and placement questions are now split out to `S0F-3I`, so `S0F-4B` no longer needs to overload template compatibility with repo-wide contract-family classification.
 - The next two bounded follow-ups are now explicit as well:
   - one script-side admission and fail-closed gate lane so automation stops trusting arbitrary `source_log_path` inputs
   - one old-log weak-structure export inventory lane so historical source logs can slim down without losing automation-facing strong structure

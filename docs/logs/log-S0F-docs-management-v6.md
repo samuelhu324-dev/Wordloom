@@ -41,6 +41,7 @@
   **phase_log_21**: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
   **phase_log_22**: `docs/logs/log-S0F-3H-recurring-governance-run-model-and-ledger-split.md`
   **phase_log_23**: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
+  **phase_log_24**: `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -325,6 +326,7 @@
 - `S0F-4A/P6-C1-S1` is now complete: `S0F-1I` is now fixed as the first bounded retained-content rewrite lane under `S0F-4A`, with outlet targets, retained-content buckets, and stop rules declared in advance so the next pass can rewrite the log before `S0F-3G` reopens cleanup disposition.
 - `S0F-4A/P6-C1-S2` is now complete: `S0F-1I` has now been thinned down to slice-local convergence ledger, retained evidence path, and minimum bridge notes only, so the next structural follow-up can return to `S0F-3G` for a cleaner cleanup or relocation decision instead of revisiting mixed-role ownership first.
 - `S0F-4B` is now opened as the compatibility follow-up to `S0F-4A`: the old parent/child source-log templates remain canonical, six outlets now act only as weak-structure export ownership, and future automation-facing source logs should not adopt the `S0F-1K` mixed-role shape as a default template.
+- `S0F-3I` is now opened as the taxonomy follow-up: the repo now distinguishes seven contract families from the existing `S0-S6` level map, narrows `GC-*` to the admitted governance subset, and pre-splits future security and tenant work under `SEC` instead of one generic governance bucket.
 - The retained evidence now shows four hard boundaries in action: draft-generation still works while real `create-issue` stops on inferred keyword, PR preview planning still works while real `create_pr_from_plan.py` refuses to continue from a stop-state front-half preflight result, raw family apply scripts now fail closed unless they are invoked through the canonical guarded surfaces, and GitHub Actions surfaces are explicitly narrowed back to optional secondary enforcement after local contract ownership is already fixed.
 - The corrected live rerun for `S0F-1A` now reaches the entire closed loop under the updated contract: create keeps `Context` structurally present but empty, PR `#365` merged successfully, and issue `#364` concluded through the guarded issue-conclusion surface after a targeted conclusion-owned remediation handoff.
 
