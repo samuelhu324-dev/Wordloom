@@ -20,6 +20,7 @@
   **reference_log_3**: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
   **reference_log_4**: `docs/logs/INDEX.md`
   **reference_log_5**: `docs/governance/views/view-contract-family-inventory-v1.md`
+  **reference_log_6**: `docs/governance/views/view-contract-family-placement-map-v1.md`
 **issue_keyword**: `taxonomy`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -58,6 +59,7 @@
   - `EVD`: evidence and gate contracts
   - `DOC`: documentation and governance contracts
 - `GC-*` is narrowed by this model: it no longer means `all contracts in the repo`; it now means only the current registry-admitted governance contract subset that is worth concentrating as a current active rule surface.
+- v1 also now answers the first placement question directly: the seven families are not expected to collapse into one folder, so the repo needs one explicit map of current primary directories, mixed supporting surfaces, and reorganization thresholds instead of one abstract reminder to `keep SoT first`.
 
 **Default choices (phase defaults / v1)** (optional, but recommended):
 
@@ -114,6 +116,7 @@
 - `P2`: define how contract family and `S0-S6` levels relate without collapsing into one axis
 - `P3`: pre-allocate the future security and tenant taxonomy boundary so later auth/tenant work opens under `SEC` instead of a generic governance bucket
 - `P4`: publish the first contract inventory/index draft using `family + primary SoT + affected levels + registry status` so the taxonomy is exercised on real repo surfaces instead of remaining template-only
+- `P5`: publish one current family placement map and one consolidation threshold so readers can answer `where do these contracts live today?` without forcing a fake unified folder model
 
 ## Success Criteria (DoD)
 
@@ -122,6 +125,7 @@
 - The repo has one explicit answer for where each family normally keeps its primary SoT.
 - The repo has one explicit answer that `S0-S6` is an affected-level map, not a first-level contract-family taxonomy.
 - Future auth, tenant, and policy work can open under a pre-split `SEC` family instead of being mixed back into a broad undefined governance bucket.
+- One reader can answer where each family currently lives, which directories act as primary SoT versus supporting surfaces, and whether later cleanup should mean `stronger indexing` or `real physical relocation`.
 
 ## Stability (what stable means)
 
@@ -245,6 +249,29 @@
 - The new cross-family inventory view is the right place for repo-wide contract scanning when a reader needs to compare `DOM/PRO/INT/OPS/SEC/EVD/DOC` without pretending they all live under `GC-*`.
 - This preserves the `GC-*` registry as a narrow current-state surface while still giving the repo one practical inventory draft.
 
+## P5 (Current placement map and consolidation threshold | v1)
+
+### P5-C1-S1 (Current family placement map published | v1)
+
+- The repo now keeps one separate placement scan at:
+  - `docs/governance/views/view-contract-family-placement-map-v1.md`
+- That view answers the concrete follow-up left open by `P1` and `P4`:
+  - which directories currently hold the strongest SoT for each family
+  - which families are already concentrated enough
+  - which families remain mixed by design because their SoT lives in code, workflows, scripts, tests, and retained artifacts together
+
+### P5-C1-S2 (Consolidation threshold fixed | v1)
+
+- A later cleanup slice should not create one universal `contracts/` folder for all seven families.
+- Reorganization is justified only when at least one of these is true:
+  - readers repeatedly fail to locate the primary SoT for the same family
+  - one family grows enough parallel front doors that a stable family index or directory hub would reduce ambiguity
+  - current placement causes real duplicate rule ownership rather than mere cross-link cost
+- Under that rule:
+  - `DOC`, `OPS`, and `EVD` currently need stronger indexing more than physical relocation
+  - `PRO`, `INT`, and `SEC` still need mixed placement because code, scripts, workflows, tests, and docs co-own the current enforceable meaning
+  - `DOM` remains primarily code-first under backend module, migration, and test surfaces, so forcing it into a docs-first folder now would weaken SoT rather than clarify it
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -290,6 +317,11 @@
 - P4-C1-S1: publish one cross-family contract inventory draft using the new taxonomy row shape
 - P4-C1-S2: clarify the boundary between the cross-family inventory draft and the narrow `GC-*` governance front door
 
+### P5 (Current placement map and consolidation threshold)
+
+- P5-C1-S1: publish one current family placement map with primary directories, supporting surfaces, and concentration status
+- P5-C1-S2: fix the threshold for when later slices should build stronger family hubs versus keeping distributed SoT placement
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -317,12 +349,18 @@
 - [x] `P4-C1-S1`: cross-family contract inventory draft published
 - [x] `P4-C1-S2`: governance front-door versus cross-family inventory boundary clarified
 
+### P5 (Current placement map and consolidation threshold)
+
+- [x] `P5-C1-S1`: current family placement map published
+- [x] `P5-C1-S2`: consolidation threshold fixed against fake one-folder cleanup pressure
+
 ## Current Status (recommended)
 
 - `S0F-3I` now fixes the missing taxonomy boundary: the repo can talk about seven contract families without pretending they all belong in one registry or one folder.
 - `S0-S6` is now explicitly treated as the affected-level map rather than as the first-level contract taxonomy.
 - Future permission, tenant, and policy work should now open under `SEC` first, while `GC-*` should remain the narrower registry-admitted governance subset rather than the umbrella name for all contracts.
 - `P4` is now complete as a new phase, not another cycle on `P0-P3`: the repo now has one first applied inventory draft at `docs/governance/views/view-contract-family-inventory-v1.md`, so taxonomy, placement, and level rules now read against real representative surfaces instead of staying abstract.
+- `P5` is now complete as the first concrete placement answer: the repo now has one current family placement map at `docs/governance/views/view-contract-family-placement-map-v1.md`, and later cleanup can now distinguish `needs better indexing` from `needs real relocation` instead of treating every family as if it should end up in one folder.
 
 ## Evidence (reserved)
 
@@ -352,7 +390,19 @@
 - observed:
   - the repo now has one separate cross-family inventory draft, while `docs/governance/INDEX.md` stays the current registry-admitted governance front door only
 
+### P5-C1-S1 through P5-C1-S2 (current family placement map published and consolidation threshold fixed | 2026-04-08)
+
+- headSha: `5ee05672687a2229d85b65299522bf6d290b97a9`
+- artifacts: `docs/governance/views/view-contract-family-placement-map-v1.md`
+- artifacts: `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
+- artifacts: `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to answer where each contract family currently lives and whether later cleanup should mean better indexing or actual relocation
+- observed:
+  - the repo now has one explicit family placement scan, and the cleanup threshold now separates `distributed SoT by design` from `placement is actually too fragmented`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-3I` to split contract family from system level, narrow `GC-*` to the admitted governance subset, and pre-allocate the future security and tenant contract boundary under `SEC`.
 - 2026-04-08: completed `P4` by publishing the first cross-family contract inventory draft and by clarifying that `docs/governance/INDEX.md` remains the narrow `GC-*` registry front door rather than the universal contract index.
+- 2026-04-08: completed `P5` by publishing the first current family placement map and by fixing the threshold for when later slices should build family hubs versus keeping distributed primary SoT placement.

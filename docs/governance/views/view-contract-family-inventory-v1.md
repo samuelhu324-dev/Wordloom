@@ -47,6 +47,7 @@
 - The seven-family taxonomy and the `GC-*` narrowing rule come from `S0F-3I`; this view only applies them to representative current surfaces.
 - The affinities shown here do not make `S0-S6` a substitute for family. They only show where these representative contracts currently concentrate.
 - If a future row needs more than one plausible primary SoT, that is a signal to fix SoT ownership first rather than to widen the inventory with duplicated rows by default.
+- For the directory-level placement answer, use `docs/governance/views/view-contract-family-placement-map-v1.md`; this inventory stays focused on representative contract rows rather than full path mapping.
 
 ## Source Refs
 

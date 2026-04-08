@@ -59,7 +59,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-07`
+**updated**: `2026-04-08`
 
 ---
 
@@ -258,6 +258,7 @@
 - `S0F-2B` is now stable: the repo now has a sharper and more operationally realistic model for patch versus maintenance work.
 - `S0F-3A/P0` is now complete: the new governance-contract concentration slice is wired into the spine, and the terminology boundary among application domain, governance contracts, and operational surfaces is now fixed as the baseline for later index and delta work.
 - `S0F-3A/P1` is now complete: the four-layer truth split is fixed so logs own event truth, governance-contract deltas own change truth, active index records own current-state truth, and governance views own human-readable concentration.
+- `S0F-3I/P5` is now complete: the first family placement map now states where `DOC/DOM/PRO/INT/OPS/SEC/EVD` currently live, and later cleanup can now distinguish `needs better indexing` from `needs real relocation` instead of pushing every contract family toward one fake universal folder.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
 - `S0F-3A/P3` is now complete: the minimum governance-contract delta block is fixed with one shared field set plus action-specific requirements for `add`, `modify`, `retire`, `supersede`, and `apply-without-change`.
 - `S0F-3A/P4` is now complete: stable `contract_id` naming rules, the minimum active-contract index record shape, and the smallest viable homes under `docs/governance/contracts/` and `docs/governance/views/` are now fixed.
