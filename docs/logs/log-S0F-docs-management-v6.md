@@ -49,6 +49,8 @@
   **phase_log_29**: `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
   **phase_log_30**: `docs/logs/log-S0F-3J-old-gc-cleanup-candidate-selection-after-doc-reader-stabilization.md`
   **phase_log_31**: `docs/logs/log-S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate.md`
+  **phase_log_32**: `docs/logs/log-S0F-3K-history-aware-old-gc-cleanup-recheck-after-doc-history-publication.md`
+  **phase_log_33**: `docs/logs/log-S0F-3L-old-gc-root-redirect-replacement-and-stub-model.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -66,7 +68,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-08`
+**updated**: `2026-04-09`
 
 ---
 
@@ -307,6 +309,13 @@
 - `S0F-4G/P3` is now complete: later cleanup now requires one explicit `history extracted enough` admission answer in addition to standing-loss and redirect-loss, and the repo now has one fixed stop-reason set for cases where old logs are no longer current but still remain the only durable explanatory history surface.
 - `S0F-4G/P4` is now complete: the first `DOC` history pilot source packet is now bounded across `S0B/S0C/S0D/S0E/S0F`, one defended major-chain reading path is fixed, and the next immediate work is no longer source discovery but the first real write-back package for compact history plus lineage publication.
 - `S0F-4G/P5` is now landed and `S0F-4G` remains stable: the first `DOC` history publication package now exists as one real lineage view, four active-contract compact-history write-backs, and one minimal front-door history note, so later old-log cleanup can be re-evaluated against a published history surface instead of a design-only package boundary.
+- `S0F-3K` is now opened as the first history-aware old-`GC-*` cleanup recheck after `S0F-4G` publication: the lane now re-evaluates the preserved old root-level subset under `standing-loss + redirect-loss + history extracted enough` instead of the earlier two-test model alone.
+- `S0F-3K/P1` is now complete: the published `DOC` lineage view, front-door history note, and compact-history write-backs are verified as real source, so the current recheck no longer stops on `history surface missing`.
+- `S0F-3K/P2` is now complete: the preserved old root-level subset still fails admission because redirect-loss remains false even after the history gate is satisfied, so no new cleanup-admissible subset exists yet.
+- `S0F-3K/P3` is now complete: the repo now carries a refined no-op result that narrows the remaining blocker to active root-path redirect duty instead of broad historical under-extraction.
+- `S0F-3K/P4` is now complete and `S0F-3K` is now stable: the six-outlet review resolves to retained-log ownership plus justified `no-op` elsewhere, and later cleanup re-entry should focus on redirect replacement proof or genuinely new residue discovery rather than on re-litigating the published `DOC` history package.
+- `S0F-3L` is now opened as the bounded follow-up after `S0F-3K`: the next question is no longer whether history publication exists, but whether preserved old root-level `GC-*` redirect duty can eventually be replaced by a defended `root stub + replacement target` model without losing old-ID landing, discoverability, or lineage reading.
+- `S0F-3L/P1` is now complete: the preserved old root-level subset still owns old-path landing, deterministic redirect, and some direct path discoverability, but current rule meaning, broad history extraction, and the PRB support-only backtrace body are already owned by newer surfaces, so the next immediate work is the concrete root-stub model contract rather than another inventory round.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
