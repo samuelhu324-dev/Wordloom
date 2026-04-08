@@ -5,7 +5,7 @@
 **id**: `S0F-4E`
 **kind**: `log`
 **title**: `DOC promoted contract lanes from S0F-4A and S0F-4B v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, Promotion, epic/s0, sub/4e`
 **links**: ``
@@ -221,6 +221,46 @@
   - still-unpromoted `DOC` areas that continue to read directly through source-owner logs
 - This keeps the front door truthful without pretending that the second lane is already fully stable or that every mapped `DOC` area has already been promoted.
 
+## P3 (Second-lane stable review and close-out | C2)
+
+### P3-C2-S1 (`S0F-5A` close-out questionnaire applied for the second lane | v1)
+
+- `contract`:
+  - answer: export complete
+  - result: `DOC-SLC-0001` is explicit enough to become the active current rule surface for this `DOC` area
+- `runbook`:
+  - answer: no-op
+  - reason: `procedure not repeatable beyond this package`
+  - explanation: this promotion lane stabilizes a current rule body about source-log compatibility and export ownership, not one new repeatable operator procedure beyond the existing close-out method already governed elsewhere
+- `view`:
+  - answer: no-op
+  - reason: `full log is already the most efficient reader surface`
+  - explanation: no additional summary view is warranted beyond the existing `DOC` family front door because one extra `SLC` summary file would mostly restate the same compatibility rule already concentrated in the contract plus the promotion log
+- `index/front-door`:
+  - answer: export complete
+  - result: `docs/governance/contract/INDEX.md` and `docs/governance/views/view-doc-current-front-door-v1.md` already reflect the second landed `DOC` promotion
+- `disposition/placement`:
+  - answer: no-op
+  - explanation: no further placement change is needed because the active contract, front door, and retained source-owner log already sit in the correct role-first homes
+- `log-retained core`:
+  - answer: retain
+  - reason: `log still owns slice-local bridge and evidence`
+  - explanation: `S0F-4E` remains the second promotion-lane ledger, and `S0F-4B` remains the retained source-owner traceability log for lineage and evidence
+
+### P3-C2-S2 (Second-lane close-out outcome fixed | v1)
+
+- Stable close-out review now concludes that the second promotion lane does not need one bounded post-stable export tail.
+- Rationale:
+  - the stable current rule is already exported into `DOC-SLC-0001`
+  - the necessary `index/front-door` updates are already complete
+  - no new repeatable operator procedure emerged that would justify a runbook
+  - no additional bounded reader-summary surface is warranted beyond the existing front door and the promotion-lane ledger
+  - no further disposition change is required to make the second promotion lane readable or correctly placed
+- Outcome:
+  - `DOC-SLC-0001` now becomes the second active family-owned `DOC` contract
+  - `S0F-4B` stops serving as the current SoT for this rule set and remains as retained source-owner traceability
+  - `S0F-4E` is now stable again after completing its second promotion cycle
+
 ## P1 (First contract body extraction | v1)
 
 ### P1-C1-S1 (Stable current rule body extracted into `DOC-DRB-0001` | v1)
@@ -376,6 +416,8 @@
 - [x] `P3-C1-S2`: close-out outcome fixed
 - [ ] `P3-C2-S1`: `S0F-5A` close-out questionnaire applied for the second lane
 - [ ] `P3-C2-S2`: second-lane close-out outcome fixed
+- [x] `P3-C2-S1`: `S0F-5A` close-out questionnaire applied for the second lane
+- [x] `P3-C2-S2`: second-lane close-out outcome fixed
 
 ## Current Status
 
@@ -387,7 +429,8 @@
 - `S0F-4E` is now reopened in `C2` rather than in a new slice: the second active lane is `S0F-4B` -> `DOC-SLC-0001`.
 - `P1-C2` is now complete: the second draft family-owned `DOC` contract body now exists, and the extracted rule text keeps source-log compatibility, weak-structure export ownership, strong-structure retention, and `S0F-1K` historical-sample status explicit without reopening adjacent automation follow-up lanes.
 - `P2-C2` is now complete: the `DOC` contract index and the `DOC` family front door now both acknowledge `DOC-SLC-0001` as the second landed family-owned `DOC` contract draft while preserving `S0F-4B` as the retained source-owner SoT during draft stage.
-- The next immediate step is `P3-C2`: run the stable-first close-out questionnaire for the second lane and decide whether `DOC-SLC-0001` closes directly or needs one bounded post-stable export tail.
+- `P3-C2` is now complete: the stable-first close-out questionnaire has been answered outlet by outlet for the second lane, `DOC-SLC-0001` is now active, no bounded post-stable export tail is needed, and `S0F-4E` is now stable again after completing two promotion cycles.
+- The next immediate step is not more `4E` export work; it is to decide whether the third mapped `DOC` promotion should target `S0F-3I` -> `DOC-TAX-0001` or `S0F-4C` -> `DOC-FDT-0001` next.
 
 ## Evidence (reserved)
 
@@ -479,6 +522,20 @@
 - observed:
   - the `DOC` contract index now names `DOC-SLC-0001` as the second landed record, and the `DOC` front door now explains the mixed transition state in which one active promoted contract and one draft promoted contract coexist while `S0F-4B` remains the retained source-owner SoT during second-lane draft stage
 
+### P3-C2-S1 through P3-C2-S2 (second stable close-out review completed and no post-stable export tail required | 2026-04-08)
+
+- headSha: `bc25e043ce5dd64a7e2f1eb4fa69b9a1f95d811d`
+- artifacts:
+  - `docs/governance/contract/DOC-SLC-0001-source-log-compatibility-and-weak-structure-export-discipline.md`
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to tell whether the second promotion lane needs any bounded post-stable tail work, and whether `DOC-SLC-0001` is now only a draft landing or a real active current contract
+- observed:
+  - close-out review now answers every outlet explicitly for the second lane, promotes `DOC-SLC-0001` to active current contract status, retains `S0F-4B` and `S0F-4E` only for source-owner traceability and promotion-lane ledger roles, and concludes that no additional post-stable export tail is justified
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4E` as the first real `DOC` promotion lane, fixed `S0F-4A -> DOC-DRB-0001` as the first extraction target, and fixed `S0F-5A` as the inherited close-out protocol.
@@ -488,3 +545,4 @@
 - 2026-04-08: reopened `S0F-4E` in `C2` so the second mapped promotion lane (`S0F-4B` -> `DOC-SLC-0001`) can be executed inside the same slice rather than in a new near-duplicate follow-up.
 - 2026-04-08: completed `P1-C2` by extracting the first draft `DOC-SLC-0001` body from `S0F-4B` and aligning its metadata, source-owner relationship, and second-lane draft-stage landing semantics.
 - 2026-04-08: completed `P2-C2` by landing `DOC-SLC-0001` into the `DOC` contract index and updating the `DOC` family front door to reflect the second mixed source-owner plus promoted-contract reading state.
+- 2026-04-08: completed `P3-C2` by applying the `S0F-5A` close-out questionnaire to the second lane, promoting `DOC-SLC-0001` from draft to active current contract status, and concluding that no bounded post-stable export tail is required.

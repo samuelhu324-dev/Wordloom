@@ -66,9 +66,9 @@
   - retained source-owner traceability: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
 - `DOC-SLC-0001`:
   - file: `docs/governance/contract/DOC-SLC-0001-source-log-compatibility-and-weak-structure-export-discipline.md`
-  - status: `draft`
-  - current role: second landed family-owned `DOC` contract body for source-log compatibility and weak-structure export discipline
-  - retained source-owner SoT during draft stage: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
+  - status: `active`
+  - current role: second active family-owned `DOC` contract body for source-log compatibility and weak-structure export discipline
+  - retained source-owner traceability: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
 
 ## Promotion Path
 
@@ -96,7 +96,7 @@
 - This directory no longer starts empty: `DOC-DRB-0001` and `DOC-SLC-0001` are now landed family-owned `DOC` contract records.
 - During transition, current `DOC` meaning may still live primarily in source-owner logs such as `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` while this directory becomes the active stable landing surface.
 - `DOC-DRB-0001` has now completed stable close-out review and is the first active family-owned `DOC` contract under this landing surface.
-- `DOC-SLC-0001` is now the second landed promotion and remains in draft-stage transition until its own close-out review completes.
+- `DOC-SLC-0001` has now completed stable close-out review and is the second active family-owned `DOC` contract under this landing surface.
 - Other mapped `DOC` areas may still live primarily in source-owner logs until their own promotion lanes complete.
 - The first promoted `DOC` contracts should use the admitted area dictionary above rather than reusing `GC-*` prefixes.
 

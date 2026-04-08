@@ -10,14 +10,14 @@ doc_contract:
   contract_id: SOURCE-LOG-COMPATIBILITY-AND-WEAK-STRUCTURE-EXPORT-DISCIPLINE
   family: DOC
   area: SLC
-  status: draft
+  status: active
   summary: Current documentation-governance source logs must keep the old two canonical source-log templates as the only default strong-structure families, while six outlets operate only as export ownership for weak-structure content rather than as permission to replace source-log strong structure.
   primary_source_owner: docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md
   applies_to: documentation-governance parent and phase logs, source-log slimming decisions, template compatibility guidance, and weak-structure export decisions derived from the same source-log family
   enforcement_surface: source-log authoring guidance, weak-structure export review, and future source-log admission decisions
   violation_semantics: warning
   introduced_by: S0F-4B/P0-P2
-  last_changed_by: S0F-4E/P1-C2-S1S2
+  last_changed_by: S0F-4E/P3-C2-S1S2
   source_refs:
     - docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md
     - docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md
@@ -25,7 +25,7 @@ doc_contract:
   superseded_by: []
   notes:
     - This file is the second family-owned DOC contract body promoted out of a source-owner log.
-    - S0F-4B remains the source-owner SoT while this record is still draft and before later close-out review completes under S0F-5A.
+    - S0F-4B remains the retained source-owner traceability log for this rule set after stable close-out review completed under S0F-5A.
     - S0F-1K remains a bounded historical restructuring sample and is not elevated by this record into a default source-log template precedent.
 ```
 
@@ -75,9 +75,9 @@ doc_contract:
 
 ## Reader Notes
 
-- This file is the first draft of the family-owned current contract body mapped from `S0F-4B`.
-- While this record remains `draft`, `S0F-4B` continues to own the strongest current source traceability for this rule set.
-- Later `S0F-4E` phases should align this record with the `DOC` contract index, any necessary front doors, and the stable-first close-out questionnaire defined by `S0F-5A`.
+- This file is the second active family-owned current contract body mapped from `S0F-4B`.
+- `S0F-4B` remains the retained source-owner traceability log for lineage, evidence, and concentrated historical source context, but current reader-facing rule ownership now reads here.
+- Stable close-out review for the second promotion lane has completed under `S0F-5A`, and no bounded post-stable export tail was required.
 
 ## Traceability
 
