@@ -45,6 +45,7 @@
   **phase_log_25**: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
   **phase_log_26**: `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
   **phase_log_27**: `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
+  **phase_log_28**: `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -271,6 +272,7 @@
 - `S0F-5A/P3` is now complete: the repo now has one explicit rule for when a stable slice should use one bounded `Pn+1` style post-stable export phase, plus one minimum write-back set and stop rule that prevents export packaging from degenerating into premature outlet creation.
 - `S0F-5A/P4` is now complete: the repo now has one explicit anti-proliferation gate for `runbook` and `view` extraction, and the converged close-out rule is now hardened directly into the parent and phase-log templates so later authors no longer need to remember it ad hoc.
 - `S0F-5A/P5` is now complete and `S0F-5A` is now stable: the protocol has been piloted successfully on recent stable lane `S0F-4D`, which confirms that explicit multi-outlet export plus justified `runbook` no-op is a valid outcome, and future `S0F-4E` `DOC` promotion work can now inherit this close-out pattern directly.
+- `S0F-4E` is now opened as the first real `DOC` promotion lane: `S0F-4A` is fixed as the first source-owner promotion target, `DOC-DRB-0001` is fixed as the deterministic first promoted contract filename, and the next immediate work is substantive contract-body extraction rather than more naming or timing design.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
