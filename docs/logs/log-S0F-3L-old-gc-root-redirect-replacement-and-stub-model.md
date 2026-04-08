@@ -225,6 +225,39 @@
   - only a bounded direct-navigation set should move to the support-only target
   - broad lineage and old-ID readers may continue to cite the root path through the stub
 
+## P3 (Applicability test | v1)
+
+### P3-C1-S1 (Common stub model applies cleanly to `GC-ISS-*` but not yet to `GC-PRB-0001` as one shared execution packet | v1)
+
+- `P3` now answers the main applicability question directly:
+  - the common stub model is structurally usable for both families
+  - but it is not yet equally execution-ready across the whole preserved subset
+- The `GC-ISS-*` split set is now the cleaner first pilot candidate because all five records share the same basic shape:
+  - one deprecated legacy redirect file
+  - one single current successor each
+  - one uniform preserved-path rule already stated by `view-iss-split-package-v1.md` and the first cleanup boundary
+  - no paired support-only backfill body that has to move in lockstep with the stub decision
+- `GC-PRB-0001` is different in two material ways:
+  - it is one multi-successor umbrella redirect rather than one single-successor split record
+  - it still carries stronger sample and lineage weight in earlier registry-model surfaces than the `GC-ISS-*` records do
+- Under this reading, the answer to `one model for the whole preserved subset right now?` is now:
+  - `not as one shared first execution packet`
+  - `yes as one shared design family with one narrower ISS-first pilot and one deferred PRB judgment`
+
+### P3-C1-S2 (Split rule and stop reasons fixed for the first execution boundary | v1)
+
+- The preserved subset must now split for the next decision round:
+  - `GC-ISS-*` may proceed as one narrower first pilot package if `P4` affirms execution value
+  - `GC-PRB-0001` should stay out of that first move round for now
+- The explicit reasons to stop a full-subset move are now fixed as:
+  - `multi-successor umbrella handling still heavier on PRB than on ISS`
+  - `canonical deprecated sample role still live on PRB in earlier registry-history surfaces`
+  - `paired umbrella plus already-moved support-only backfill relationship still deserves its own execution judgment`
+- This is not a rejection of the stub model itself.
+- It is a boundary decision about execution order:
+  - the common model is good enough to support an ISS-first pilot
+  - it is not yet defended strongly enough to justify folding `GC-PRB-0001` into the same first package
+
 ## Plan (draft)
 
 ### P1 (Root-duty inventory)
@@ -265,8 +298,8 @@
 
 ### P3 (Applicability test)
 
-- [ ] `P3-C1-S1`: preserved subset applicability tested
-- [ ] `P3-C1-S2`: stop reasons or split rules fixed if needed
+- [x] `P3-C1-S1`: preserved subset applicability tested
+- [x] `P3-C1-S2`: stop reasons or split rules fixed if needed
 
 ### P4 (Next-lane decision)
 
@@ -278,8 +311,9 @@
 - The repo now has one explicit place to answer whether root-level legacy redirect reading can be preserved through a stub model instead of through whole retained bodies.
 - `P1` is now complete: the preserved root-level subset still owns old-path landing, deterministic redirect, and some direct path discoverability, but it no longer owns the current effective rule meaning itself.
 - `P2` is now complete: the repo now has one explicit root-stub minimum shape, one fixed support-only replacement-target model, and one navigation split between root-stub citations and moved full-body citations.
-- No relocation result is assumed yet; this slice remains design-first, but it is now ready to enter `P3`.
-- The immediate next step is `P3`: test whether this one model can cover both the `GC-ISS-*` split set and the `GC-PRB-0001` umbrella cleanly, or whether the preserved subset must split into a narrower pilot.
+- `P3` is now complete: the common stub model is good enough for an `ISS`-first pilot, but the preserved subset should not move as one shared first execution packet because `GC-PRB-0001` still carries heavier umbrella and sample obligations.
+- No relocation result is assumed yet; this slice remains design-first, but it is now ready to enter `P4`.
+- The immediate next step is `P4`: decide whether to open a real `GC-ISS-*` pilot execution package or stop with an explicit `design ready but execution deferred` result.
 
 ## Evidence (reserved)
 
@@ -332,8 +366,26 @@
   - the root-stub preview now shows both single-successor and multi-successor preserved old-`GC-*` cases
   - the replacement model now reuses the existing contracts-side support-only surface and keeps mass reader rewrites out of bounds by default
 
+### P3-C1-S1S2 (Applicability split fixed for ISS-first pilot versus deferred PRB judgment | 2026-04-09)
+
+- headSha: `<pending commit for S0F-3L/P3-C1-S1S2>`
+- artifacts:
+  - `docs/logs/support-only/s0f-3l-gc-root-stub-applicability-manifest.json`
+  - `docs/governance/views/view-iss-split-package-v1.md`
+  - `docs/governance/views/view-prb-split-package-v1.md`
+  - `docs/governance/views/support-only/view-prb-follow-up-family-sweep-v1.md`
+  - `docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
+  - `docs/logs/log-S0F-3L-old-gc-root-redirect-replacement-and-stub-model.md`
+- expected:
+  - the repo has one explicit answer on whether the same stub model can drive one first shared execution packet
+  - the repo has explicit split or stop reasons if full-subset execution is not yet safe
+- observed:
+  - the `GC-ISS-*` split set is now defended as the narrower first pilot candidate under the shared stub model
+  - `GC-PRB-0001` remains deferred for the first move round because its umbrella and sample obligations are still heavier than the ISS pattern
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-3L` as the redirect-replacement and stub-model follow-up after the `S0F-3K` refined no-op result.
 - 2026-04-09: completed `P1` by inventorying the preserved subset's remaining root-path duties and separating them from duties already replaced by current successors, lineage views, or support-only backtrace surfaces.
 - 2026-04-09: completed `P2` by fixing the minimum root-stub shape, the support-only replacement-target model, and the navigation split that a later cleanup-execution round would have to preserve.
+- 2026-04-09: completed `P3` by fixing the applicability split, keeping the common model as the shared design family, but narrowing the first move-ready pilot candidate to `GC-ISS-*` while deferring `GC-PRB-0001`.
