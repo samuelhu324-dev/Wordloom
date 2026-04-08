@@ -47,6 +47,7 @@
 **Default choices (phase defaults / v1)** (optional, but recommended):
 
 - <For example: dev/test first; avoid production-grade complexity; do not commit generated artifacts; required evidence JSON fields>
+- draft 阶段默认继续把 source log 当作集中面；如果问题边界、规则、过程、reader summary 或 front-door 影响仍在变化，不要过早把 weak-structure 内容拆到多个 outlets。
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
 - Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
@@ -86,6 +87,8 @@
 - Use this block only to split weak-structure content out of the source log after outlet ownership is explicit.
 - Do not use outlet export to delete the source-log minimum core: `Decision / Outcome`, `PR Summary Inputs` when this log is an automation source, `Execution Checklist`, `Current Status`, and `Evidence` must remain readable here.
 - Strong-structure sections stay owned by the source log unless a later contract explicitly authorizes a different automation reader model.
+- Once the slice reaches stable close-out review, answer `contract / runbook / view / index/front-door / disposition/placement / log-retained core` explicitly; justified `no-op` is valid, but skipping the outlet decision is not.
+- Do not export `runbook` or `view` mechanically; only export them when they have a stable reusable role beyond shortening one finished log.
 
 **Outlet ownership**:
 
@@ -121,6 +124,7 @@
 - This log can be marked `stable` when:
   - <The P0-Pn contract, entry scripts, and drills have all been exercised successfully>
   - The Evidence section includes traceable `headSha` values plus artifact paths (or CI run URLs)
+- `stable` is the normal gate for close-out review, not a command to emit every outlet; explicit `no-op` answers remain valid when `contract`, `runbook`, `view`, or `index/front-door` export is not warranted.
 
 ## P0 (Contract | v1)
 
@@ -196,6 +200,7 @@
 
 - <One-line overall state for this source log>
 - <What is already stable, what still remains open, and whether automation should still read this log as an active source>
+- If the log is already stable or entering stable review, state whether the next step is a bounded `Pn+1` export package, direct log retention, or deferred export because target outlet identity is still not stable.
 
 ## Evidence (reserved)
 

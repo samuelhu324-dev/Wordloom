@@ -53,6 +53,7 @@
 **Default choices（默认基线 / v1）**（可选，但推荐在 parent/spine 明确）:
 
 - <默认认证/默认存储/默认入口/默认环境/默认语义……>
+- draft 阶段默认继续把 source log 当作集中面；在问题边界、稳定规则、稳定过程、reader summary 或 front-door 影响仍在变化时，不要过早把 weak-structure 内容分流到多个 outlets。
 - 若 `issue_*` 字段为空，automation 必须保守留空并要求人工确认，而不是猜测 title keyword、labels 或 milestone。
 - 若 `pr_*` 字段为空，PR automation 必须保守留空并显式报告缺口，而不是复制 issue metadata 或猜测 base / milestone / development issue。
 - roadmap 与 logs 的机械桥接必须通过 `roadmap_path + roadmap_milestone + roadmap_phase` 明确声明；roadmap 内的正式 bridge ledger 默认只计入 child logs，而不是 parent/spine prose。
@@ -91,6 +92,8 @@
 - 该区块只用于声明 weak-structure 内容应该分流到哪个 outlet；它不是 source-log 改写许可。
 - parent/spine 作为 source log 时，应继续保留 minimum core：`Decision / Outcome`、`PR Summary Inputs`（当该 log 会作为 automation source 时）、`Execution Checklist`、`Current Status`、`Evidence`。
 - six outlets 的用途是给弱结构内容找稳定归宿，而不是替代 source-log 的强结构骨架。
+- 当 log 进入 stable close-out review 时，应逐一回答 `contract / runbook / view / index/front-door / disposition/placement / log-retained core` 问题；显式 `no-op` 是合法结果，但不得跳过问卷。
+- 不要为了凑齐 outlets 机械创建 `runbook` 或 `view`；只有在它们具有稳定角色时才导出。
 
 **Outlet ownership**:
 
@@ -152,6 +155,7 @@
 - <一句话：整体到哪了>
 - <哪些 phase stable/draft>
 - <最近 1~2 个关键风险/变更>
+- 若该 log 已进入 stable close-out review，建议在这里明确写出：哪些 outlets 已导出、哪些是 justified no-op、以及下一步是 `Pn+1` 导出包还是直接保持 log-retained。
 
 ## Evidence（可选，聚合型记账）
 
@@ -167,6 +171,7 @@
 - 本 log 标记为 `stable` 表示：
   - <默认基线/phase 拆分/证据口径稳定>
   - <稳定入口（单命令/工作流/CLI）明确>
+- `stable` 是 close-out review 的正常入口，不等于必须机械生成所有 outlets；若某个 outlet 不应导出，应在 close-out 问卷中给出显式 `no-op` 理由。
 
 ## Numbering & Commit Naming（编号与提交命名）
 

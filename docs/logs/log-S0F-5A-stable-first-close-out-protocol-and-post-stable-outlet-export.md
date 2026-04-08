@@ -197,6 +197,43 @@
   - the package starts introducing new semantic design rather than exporting already-stable meaning
 - If the stop rule triggers, the correct result is to keep the retained log as the temporary home and open a later bounded slice for the missing stable target rather than faking completion through premature outlet creation.
 
+## P4 (Anti-proliferation rule | v1)
+
+### P4-C1-S1 (Runbook extraction gate fixed | v1)
+
+- Export a `runbook` only when all of the following are true:
+  - the slice stabilizes one repeatable operator procedure beyond this single package
+  - ordered steps, stop rules, and verification expectations are stable enough to survive later reuse
+  - the procedure can be described without replaying one specific candidate inventory, one-off blocker set, or one historical execution narrative
+- Do not export a `runbook` when any of the following is true:
+  - the procedure is still bound to one narrow package and is not expected to repeat
+  - the steps are still changing materially with the semantics of the slice itself
+  - the source log remains the clearest place to explain the bounded execution without inventing a second operator surface
+- Operational prose inside a log is therefore not sufficient by itself to justify a `runbook`.
+- The extraction gate is repeatability plus stable operator identity, not mere presence of steps.
+
+### P4-C1-S2 (View and summary extraction gate fixed | v1)
+
+- Export a `view` only when all of the following are true:
+  - later readers would materially benefit from one bounded reader-facing summary instead of replaying the full source log
+  - the summary has a stable reading job such as family interpretation, current-versus-legacy status, lineage map, or compact outcome table
+  - the summary does not simply duplicate stable meaning already owned by `contract` or stable procedure already owned by `runbook`
+- Do not export a `view` when any of the following is true:
+  - the retained source log is already the most efficient reader surface
+  - the proposed summary would mostly restate the same content in shorter prose without adding a distinct reading role
+  - the summary exists only to satisfy the six-outlet matrix mechanically
+- The correct no-op answer for `view` is therefore common and legitimate.
+- `view` extraction requires a durable reader job, not just a desire to shorten one finished log.
+
+### P4-C1-S3 (Template hardening rule applied | v1)
+
+- The parent and phase-log templates should now carry the converged close-out rule directly:
+  - draft logs stay concentrated by default while boundaries are still moving
+  - stable logs must answer the outlet-by-outlet close-out questionnaire explicitly
+  - justified `no-op` answers are valid
+  - `runbook` and `view` extraction require a stable role, not matrix completion
+- Template hardening is now allowed because `P1` through `P3` already fixed timing, questionnaire, and export-packaging rules, and `P4` now fixes the anti-proliferation gates needed to freeze authoring guidance safely.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -263,9 +300,9 @@
 
 ### P4 (Anti-proliferation rule)
 
-- [ ] `P4-C1-S1`: runbook extraction gate fixed
-- [ ] `P4-C1-S2`: view and summary extraction gate fixed
-- [ ] `P4-C1-S3`: template hardening gate fixed for parent and phase-log scaffolds
+- [x] `P4-C1-S1`: runbook extraction gate fixed
+- [x] `P4-C1-S2`: view and summary extraction gate fixed
+- [x] `P4-C1-S3`: template hardening gate fixed for parent and phase-log scaffolds
 
 ### P5 (Pilot)
 
@@ -280,7 +317,8 @@
 - Template hardening is intentionally deferred: the parent and phase-log templates should not be rewritten from `P1` alone, because they still need the later `P2` questionnaire and `P3` export-packaging rules before that guidance is safe to freeze into scaffolds.
 - `P2` is now complete: the repo now has one mandatory outlet-by-outlet close-out questionnaire and one explicit allowed no-op answer set, so `stable` review can ask for explicit ownership decisions without forcing a mechanical six-file export.
 - `P3` is now complete: the repo now has one explicit rule for when a stable slice should package export as one bounded `Pn+1` style follow-up phase, plus one minimum write-back set and stop rule for that package.
-- The next immediate step is now `P4`: define the anti-proliferation gate for `runbook`, `view`, and later template hardening so the export package does not become a mechanical file explosion.
+- `P4` is now complete: the repo now has one explicit anti-proliferation gate for `runbook` and `view` extraction, and the converged close-out rule is now safe to freeze into the parent and phase-log templates.
+- The next immediate step is now `P5`: pilot the full protocol on one recent stable governance lane and then decide whether `S0F-4E` should use this close-out pattern directly for the first real `DOC` promotion body.
 
 ## Evidence (reserved)
 
@@ -327,9 +365,22 @@
 - observed:
   - the repo now has one explicit `Pn+1` packaging rule, one minimum write-back set for post-stable export work, and one stop rule that blocks premature outlet creation when stable target identity is still missing
 
+### P4-C1-S1 through P4-C1-S3 (anti-proliferation and template hardening rule fixed | 2026-04-08)
+
+- headSha: `caefbefa8587b914d890f9e2cffeb3c4686a61cc`
+- artifacts: `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
+- artifacts: `docs/logs/_template-log-parent-epic-spine.md`
+- artifacts: `docs/logs/_template-log-phase-drills-evidence.md`
+- artifacts: `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to explain when `runbook` and `view` extraction are justified, and future authors should no longer need memory alone to apply the close-out protocol correctly when opening new logs
+- observed:
+  - the repo now has explicit anti-proliferation gates for `runbook` and `view`, and both log templates now carry stable-first close-out guidance instead of requiring ad hoc recall
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-5A` to formalize stable-first close-out timing and post-stable outlet export before the first real `DOC` promoted contract body.
 - 2026-04-08: completed `P1` by fixing the draft-stage concentration rule, the stable-entry close-out gate, and the decision to defer template hardening until later `P2/P3/P4` rules converge.
 - 2026-04-08: completed `P2` by fixing the mandatory outlet-by-outlet close-out questionnaire and the allowed no-op answer set for stable slices.
 - 2026-04-08: completed `P3` by fixing when post-stable export should be packaged as one bounded `Pn+1` style follow-up phase and by defining the minimum write-back set plus stop rule for that export package.
+- 2026-04-08: completed `P4` by fixing the anti-proliferation gates for `runbook` and `view` extraction and by hardening the converged close-out rule into the parent and phase-log templates.
