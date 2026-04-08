@@ -179,6 +179,52 @@
   - can the repo replace `root-path landing + deterministic redirect + direct path discoverability` with a stub model
   - without needing the full retained body to remain at root
 
+## P2 (Replacement model | v1)
+
+### P2-C1-S1 (Root-stub minimum shape fixed for preserved old GC redirects | v1)
+
+- `S0F-3L/P2` now fixes one reusable root-stub minimum for this contract family.
+- The stub must preserve the old root path as a readable landing surface rather than deleting the old file path outright.
+- The minimum stub shape for preserved old `GC-*` records is now:
+  - one stub heading that keeps the old record identity visible, for example `# governance-contract-stub: <record_id>`
+  - one metadata block that records:
+    - `record_id`
+    - `contract_id`
+    - `status: archived`
+    - `moved_from`
+    - `moved_to`
+    - `moved_at`
+  - one `This file moved` section that points readers to:
+    - the current active successor record or successor pair
+    - the moved support-only full-body target when the historical wording itself is needed
+  - one `Reader Notes` block that states:
+    - the root path remains occupied to preserve old-ID landing
+    - current rule meaning should be read through the successor current records
+    - the stub is not the editable retained body
+    - `Do not edit here`
+- This shape intentionally does not copy the whole legacy contract body into the stub.
+- The stub is a bridge surface, not a second retained full-body clone.
+
+### P2-C1-S2 (Replacement-target and navigation-support contract fixed | v1)
+
+- The replacement target for any moved full retained body is now fixed to the existing contracts-side support-only surface:
+  - `docs/governance/contracts/support-only/<same-basename>.md`
+- `P2` reuses the existing support-only contract-location model rather than inventing a special-case directory for preserved old `GC-*` redirects.
+- The navigation split is now fixed as follows:
+  - keep old root-path citations unchanged when the reader job is old-ID landing, split-package lineage, or cleanup-boundary enumeration of the preserved legacy set
+  - rewrite direct references only when a surface is supposed to open the full retained historical body rather than merely land on the old ID and follow successor guidance
+  - list every moved full-body target in `docs/governance/contracts/support-only/INDEX.md` so support-only discoverability remains explicit
+  - record the final keep-root-citation versus retarget-to-support-only decision in one bounded cleanup manifest during later execution
+- The execution gate for any later move is now explicit:
+  - one cleanup-execution owner must reopen before any preserved old root-level file is rewritten
+  - the support-only index must already remain the stable local front door for moved bodies
+  - the move must prove that bounded direct-navigation rewrites are sufficient and that mass lineage-view rewrites are not required
+- `P2` therefore fixes the model boundary clearly:
+  - root stub preserves landing and redirect duty
+  - support-only target preserves the full retained body
+  - only a bounded direct-navigation set should move to the support-only target
+  - broad lineage and old-ID readers may continue to cite the root path through the stub
+
 ## Plan (draft)
 
 ### P1 (Root-duty inventory)
@@ -214,8 +260,8 @@
 
 ### P2 (Replacement model)
 
-- [ ] `P2-C1-S1`: root-stub minimum shape fixed
-- [ ] `P2-C1-S2`: replacement-target and navigation support contract fixed
+- [x] `P2-C1-S1`: root-stub minimum shape fixed
+- [x] `P2-C1-S2`: replacement-target and navigation support contract fixed
 
 ### P3 (Applicability test)
 
@@ -231,8 +277,9 @@
 - `S0F-3L` is now opened as the bounded follow-up after `S0F-3K`.
 - The repo now has one explicit place to answer whether root-level legacy redirect reading can be preserved through a stub model instead of through whole retained bodies.
 - `P1` is now complete: the preserved root-level subset still owns old-path landing, deterministic redirect, and some direct path discoverability, but it no longer owns the current effective rule meaning itself.
-- No relocation result is assumed yet; this slice remains design-first, but it is now ready to enter `P2`.
-- The immediate next step is `P2`: define the minimum root-stub shape and the replacement-target/navigation contract that would have to preserve those remaining root-only duties.
+- `P2` is now complete: the repo now has one explicit root-stub minimum shape, one fixed support-only replacement-target model, and one navigation split between root-stub citations and moved full-body citations.
+- No relocation result is assumed yet; this slice remains design-first, but it is now ready to enter `P3`.
+- The immediate next step is `P3`: test whether this one model can cover both the `GC-ISS-*` split set and the `GC-PRB-0001` umbrella cleanly, or whether the preserved subset must split into a narrower pilot.
 
 ## Evidence (reserved)
 
@@ -269,7 +316,24 @@
   - the preserved subset still owns old-path landing, deterministic redirect, and direct path discoverability for some legacy boundary views
   - current semantics, broad family history orientation, and the PRB support-only backtrace body are already owned by newer surfaces outside the preserved root files
 
+### P2-C1-S1S2 (Root-stub and replacement-target contract fixed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-3L/P2-C1-S1S2>`
+- artifacts:
+  - `docs/logs/support-only/s0f-3l-gc-root-stub-preview.md`
+  - `docs/governance/contracts/support-only/INDEX.md`
+  - `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
+  - `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
+  - `docs/logs/log-S0F-3L-old-gc-root-redirect-replacement-and-stub-model.md`
+- expected:
+  - the repo has one explicit minimum root-stub shape for preserved old `GC-*` redirects
+  - the repo has one explicit support-only replacement-target and navigation-support contract for any later move round
+- observed:
+  - the root-stub preview now shows both single-successor and multi-successor preserved old-`GC-*` cases
+  - the replacement model now reuses the existing contracts-side support-only surface and keeps mass reader rewrites out of bounds by default
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-3L` as the redirect-replacement and stub-model follow-up after the `S0F-3K` refined no-op result.
 - 2026-04-09: completed `P1` by inventorying the preserved subset's remaining root-path duties and separating them from duties already replaced by current successors, lineage views, or support-only backtrace surfaces.
+- 2026-04-09: completed `P2` by fixing the minimum root-stub shape, the support-only replacement-target model, and the navigation split that a later cleanup-execution round would have to preserve.
