@@ -44,6 +44,7 @@
   **phase_log_24**: `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
   **phase_log_25**: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
   **phase_log_26**: `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
+  **phase_log_27**: `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -264,6 +265,8 @@
 - `S0F-4C` is now opened as the next bounded follow-up after `S0F-3I/P5`: the repo now has one explicit transition lane for `DOC/OPS` family front doors, for demoting `GC-*` from umbrella vocabulary to narrower legacy-registry wording, and for clarifying that `disposition` helps standing but does not replace family ownership.
 - `S0F-4C` is now stable: the repo now has first `DOC` and `OPS` current front doors, one explicit `GC-*` dual-reading transition rule, and one explicit disposition-role rule, so later work can refine family entry surfaces without reopening whether `GC-*` is still the universal contract vocabulary.
 - `S0F-4D` is now stable as the next bounded follow-up after `S0F-4C`: the repo now has one explicit `DOC` contract home, one naming and promotion model, one practical old-`GC-*` retention rule, and one first concrete cleanup boundary that freezes the preserved legacy redirect set at the contracts root while keeping the `GC-PRB-0001` backfill note as the first explicit support-only exception.
+- `S0F-5A` is now opened as the next bounded follow-up after `S0F-4D`: before the first real `DOC` promoted contract lane opens, the repo will first formalize one stable-first close-out protocol so draft slices do not churn many outlet files too early and stable slices can use one defended post-stable export step when that is actually justified.
+- `S0F-5A/P1` is now complete: the repo now has one explicit rule that draft slices normally stay concentrated in the source log while boundaries are still moving, one explicit rule that `stable` is the normal gate for close-out review rather than a command to emit all outlets, and one explicit decision to defer template hardening until the later questionnaire and export-packaging rules are fixed.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
