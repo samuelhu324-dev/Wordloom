@@ -46,6 +46,7 @@
   **phase_log_26**: `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
   **phase_log_27**: `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
   **phase_log_28**: `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+  **phase_log_29**: `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -288,6 +289,7 @@
 - `S0F-4E/P1-C4` is now complete: the repo now has its fourth family-owned `DOC` contract draft at `DOC-FDT-0001`, the family-front-door transition and `GC-*` demotion rule body is no longer only implicit inside `S0F-4C`, and the next immediate work is minimal fourth-lane index plus front-door landing rather than another extraction pass.
 - `S0F-4E/P2-C4` is now complete: the `DOC` contract landing surfaces now expose `DOC-FDT-0001` as the fourth landed family-owned `DOC` contract draft, while still preserving `S0F-4C` as the retained source-owner SoT during draft-stage transition, and the next immediate work is fourth-lane stable-first close-out review under `S0F-5A`.
 - `S0F-4E/P3-C4` is now complete and `S0F-4E` is now stable again: the fourth `DOC` promotion lane has passed the `S0F-5A` close-out questionnaire, `DOC-FDT-0001` is now the fourth active family-owned `DOC` contract, no bounded post-stable export tail is required, and `S0F-4C` now remains as retained source-owner traceability rather than the current rule SoT.
+- `S0F-4F` is now opened as the next bounded follow-up after `S0F-4E`: the first mapped `DOC` promotion quartet is active, but the `DOC` contract index, `DOC` front door, and promotion map still need one consolidation pass so they read as one steady-state post-quartet reader surface rather than as residual staged-landing language.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
