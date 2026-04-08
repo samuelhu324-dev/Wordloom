@@ -5,7 +5,7 @@
 **id**: `S0F-4E`
 **kind**: `log`
 **title**: `first DOC promoted contract body from S0F-4A v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, Promotion, epic/s0, sub/4e`
 **links**: ``
@@ -192,6 +192,46 @@
   - still-unpromoted `DOC` areas that continue to read directly through source-owner logs
 - This keeps the front door truthful without pretending that `DOC-DRB-0001` is already fully stable or that every other `DOC` area has also been promoted.
 
+## P3 (Stable review and close-out | v1)
+
+### P3-C1-S1 (`S0F-5A` close-out questionnaire applied | v1)
+
+- `contract`:
+  - answer: export complete
+  - result: `DOC-DRB-0001` is explicit enough to become the active current rule surface for this `DOC` area
+- `runbook`:
+  - answer: no-op
+  - reason: `procedure not repeatable beyond this package`
+  - explanation: this promotion lane stabilizes a current rule body, not one new repeatable operator procedure beyond the existing close-out method already governed elsewhere
+- `view`:
+  - answer: no-op
+  - reason: `full log is already the most efficient reader surface`
+  - explanation: no additional summary view is warranted beyond the existing `DOC` family front door because one extra `DRB` summary file would mostly restate the same rule already concentrated in the contract plus the promotion log
+- `index/front-door`:
+  - answer: export complete
+  - result: `docs/governance/contract/INDEX.md` and `docs/governance/views/view-doc-current-front-door-v1.md` already reflect the first landed `DOC` promotion
+- `disposition/placement`:
+  - answer: no-op
+  - explanation: no further placement change is needed because the active contract, front door, and retained source-owner log already sit in the correct role-first homes
+- `log-retained core`:
+  - answer: retain
+  - reason: `log still owns slice-local bridge and evidence`
+  - explanation: `S0F-4E` remains the promotion-lane ledger, and `S0F-4A` remains the retained source-owner traceability log for lineage and evidence
+
+### P3-C1-S2 (Close-out outcome fixed | v1)
+
+- Stable close-out review now concludes that `S0F-4E` does not need one bounded post-stable export tail.
+- Rationale:
+  - the stable current rule is already exported into `DOC-DRB-0001`
+  - the necessary `index/front-door` updates are already complete
+  - no new repeatable operator procedure emerged that would justify a runbook
+  - no additional bounded reader-summary surface is warranted beyond the existing front door and the promotion-lane ledger
+  - no further disposition change is required to make the first promotion lane readable or correctly placed
+- Outcome:
+  - `DOC-DRB-0001` now becomes the first active family-owned `DOC` contract
+  - `S0F-4A` stops serving as the current SoT for this rule set and remains as retained source-owner traceability
+  - `S0F-4E` is now stable
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -243,8 +283,8 @@
 
 ### P3 (Stable review and close-out)
 
-- [ ] `P3-C1-S1`: `S0F-5A` close-out questionnaire applied
-- [ ] `P3-C1-S2`: close-out outcome fixed
+- [x] `P3-C1-S1`: `S0F-5A` close-out questionnaire applied
+- [x] `P3-C1-S2`: close-out outcome fixed
 
 ## Current Status
 
@@ -252,7 +292,8 @@
 - `P0` is now complete: the first promotion target is fixed as `S0F-4A` -> `DOC-DRB-0001`, and the lane now has one deterministic filename and one inherited close-out protocol.
 - `P1` is now complete: the first draft of `DOC-DRB-0001` now exists as a family-owned `DOC` contract body, and the extracted rule text keeps the six-outlet model, write-back order, stop rule, and disposition separation explicit without re-importing older transitional placement assumptions.
 - `P2` is now complete: the `DOC` contract index and the `DOC` family front door now both acknowledge `DOC-DRB-0001` as the first landed family-owned `DOC` contract draft while preserving `S0F-4A` as the retained source-owner SoT during draft stage.
-- The next immediate step is `P3`: run the stable-first close-out questionnaire from `S0F-5A` and decide whether this first promotion lane closes directly or needs one bounded post-stable export tail.
+- `P3` is now complete: the stable-first close-out questionnaire has been answered outlet by outlet, `DOC-DRB-0001` is now active, no bounded post-stable export tail is needed, and `S0F-4E` is now stable.
+- The next immediate step is not more `4E` export work; it is to decide which mapped `DOC` source-owner lane should become the second real promotion target under the now-proven pattern.
 
 ## Evidence (reserved)
 
@@ -294,8 +335,23 @@
 - observed:
   - the `DOC` contract index now names `DOC-DRB-0001` as the first active landed record, and the `DOC` front door now explains the mixed transition state in which one family-owned contract draft exists while `S0F-4A` remains the retained source-owner SoT during draft stage
 
+### P3-C1-S1 through P3-C1-S2 (stable close-out review completed and no post-stable export tail required | 2026-04-08)
+
+- headSha: `2e454861e03ba2147e03c094a1a88ce551398b91`
+- artifacts:
+  - `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md`
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to tell whether the first promotion lane needs any bounded post-stable tail work, and whether `DOC-DRB-0001` is now only a draft landing or a real active current contract
+- observed:
+  - close-out review now answers every outlet explicitly, promotes `DOC-DRB-0001` to active current contract status, retains `S0F-4A` and `S0F-4E` only for source-owner traceability and promotion-lane ledger roles, and concludes that no additional post-stable export tail is justified
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4E` as the first real `DOC` promotion lane, fixed `S0F-4A -> DOC-DRB-0001` as the first extraction target, and fixed `S0F-5A` as the inherited close-out protocol.
 - 2026-04-08: completed `P1` by extracting the first draft `DOC-DRB-0001` body from `S0F-4A` and aligning its metadata, source-owner relationship, and draft-stage landing semantics.
 - 2026-04-08: completed `P2` by landing `DOC-DRB-0001` into the `DOC` contract index and updating the `DOC` family front door to reflect the first mixed source-owner plus promoted-contract reading state.
+- 2026-04-08: completed `P3` by applying the `S0F-5A` close-out questionnaire, promoting `DOC-DRB-0001` from draft to active current contract status, and concluding that no bounded post-stable export tail is required.

@@ -10,14 +10,14 @@ doc_contract:
   contract_id: DOCUMENT-ROLE-BOUNDARIES-WRITEBACK-AND-DISPOSITION
   family: DOC
   area: DRB
-  status: draft
+  status: active
   summary: Current documentation-governance surfaces must keep outlet role ownership explicit, export stable rule and procedure material out of source-owner logs in one fixed order, and treat disposition or placement as downstream state rather than as a peer document type.
   primary_source_owner: docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md
   applies_to: documentation-governance source-owner logs, promoted DOC contracts, stable runbooks, bounded views, directory front doors, and later placement decisions derived from the same close-out package
   enforcement_surface: source-owner log close-out review and family-owned contract landing decisions
   violation_semantics: warning
   introduced_by: S0F-4A/P1-P4
-  last_changed_by: S0F-4E/P1-C1-S1S2
+  last_changed_by: S0F-4E/P3-C1-S1S2
   source_refs:
     - docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md
     - docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md
@@ -25,7 +25,7 @@ doc_contract:
   superseded_by: []
   notes:
     - This file is the first family-owned DOC contract body promoted out of its source-owner log.
-    - S0F-4A remains the source-owner SoT while this record is still draft and before later close-out review completes under S0F-5A.
+    - S0F-4A remains the retained source-owner traceability log for this rule set after stable close-out review completed under S0F-5A.
     - Later family-specific placement decisions may refine concrete paths without changing the role-boundary rule concentrated here.
 ```
 
@@ -126,9 +126,9 @@ doc_contract:
 
 ## Reader Notes
 
-- This file is the first draft of the family-owned current contract body mapped from `S0F-4A`.
-- While this record remains `draft`, `S0F-4A` continues to own the strongest current source traceability for this rule set.
-- Later `S0F-4E` phases should align this record with the `DOC` contract index, any necessary front doors, and the stable-first close-out questionnaire defined by `S0F-5A`.
+- This file is the first active family-owned current contract body mapped from `S0F-4A`.
+- `S0F-4A` remains the retained source-owner traceability log for lineage, evidence, and concentrated historical source context, but current reader-facing rule ownership now reads here.
+- Stable close-out review for the first promotion lane has completed under `S0F-5A`, and no bounded post-stable export tail was required.
 
 ## Traceability
 
