@@ -5,7 +5,7 @@
 **id**: `S0F-5A`
 **kind**: `log`
 **title**: `stable-first close-out protocol and post-stable outlet export v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Workflow, Closeout, Runbook, Contract, Views, epic/s0, sub/5a`
 **links**: ``
@@ -93,6 +93,13 @@
 - One reader can explain why `stable` is the normal gate for export review, not a signal that every possible outlet must now be created.
 - One reader can explain when a stable slice should open one bounded post-stable export step instead of spreading write-backs across the draft period.
 - One reader can explain why `runbook` extraction depends on stable repeated procedure rather than on the mere presence of operational prose inside a log.
+
+## Stability (what stable means)
+
+- This log can be marked `stable` when:
+  - the stable-first gate, the mandatory close-out questionnaire, the post-stable export packaging rule, and the anti-proliferation gates are all explicit enough to reuse without reopening their semantics first
+  - the parent and phase-log templates already carry the converged close-out guidance
+  - at least one recent stable governance lane has been piloted successfully against the protocol and yields a clear answer for whether a later `DOC` promotion slice should use this pattern directly
 
 ## P0 (Scaffold | v1)
 
@@ -306,8 +313,8 @@
 
 ### P5 (Pilot)
 
-- [ ] `P5-C1-S1`: one recent stable lane piloted
-- [ ] `P5-C1-S2`: follow-up `DOC` promotion lane sequencing fixed
+- [x] `P5-C1-S1`: one recent stable lane piloted
+- [x] `P5-C1-S2`: follow-up `DOC` promotion lane sequencing fixed
 
 ## Current Status
 
@@ -318,7 +325,48 @@
 - `P2` is now complete: the repo now has one mandatory outlet-by-outlet close-out questionnaire and one explicit allowed no-op answer set, so `stable` review can ask for explicit ownership decisions without forcing a mechanical six-file export.
 - `P3` is now complete: the repo now has one explicit rule for when a stable slice should package export as one bounded `Pn+1` style follow-up phase, plus one minimum write-back set and stop rule for that package.
 - `P4` is now complete: the repo now has one explicit anti-proliferation gate for `runbook` and `view` extraction, and the converged close-out rule is now safe to freeze into the parent and phase-log templates.
-- The next immediate step is now `P5`: pilot the full protocol on one recent stable governance lane and then decide whether `S0F-4E` should use this close-out pattern directly for the first real `DOC` promotion body.
+- `P5` is now complete: the protocol has now been piloted against recent stable lane `S0F-4D`, and that pilot yields one clear follow-up answer for future `DOC` promotion work.
+- `S0F-5A` is now stable: the repo now has one complete stable-first close-out protocol, one hardened template baseline, and one recent stable pilot confirming how to apply the protocol to future `DOC` promotion slices.
+- The next immediate step is now to open `S0F-4E` for the first real `DOC` promoted contract body, using `S0F-5A` as the close-out protocol rather than reopening timing or outlet-export debates.
+
+## P5 (Pilot | v1)
+
+### P5-C1-S1 (Recent stable governance lane piloted on `S0F-4D` | v1)
+
+- Chosen pilot lane:
+  - `S0F-4D`
+- Reason for choosing it:
+  - it is a recent stable governance lane
+  - it already spans `contract`, `view`, `index/front-door`, and `disposition/placement` concerns
+  - it directly precedes the future `S0F-4E` `DOC` promotion lane, so it is the most decision-relevant pilot for this protocol
+- Pilot result under the `S0F-5A` questionnaire:
+  - `contract`:
+    - yes, `S0F-4D` established the `DOC` current-contract home, naming model, and template under `docs/governance/contract/`
+  - `runbook`:
+    - justified `no-op`
+    - reason: `S0F-4D` stabilizes storage, naming, and transition rules, but it does not define one repeatable operator procedure that should become a stable runbook
+  - `view`:
+    - yes, multiple stable reader surfaces were justified and exported, including the `DOC` front-door and `GC` triage / cleanup-boundary views
+  - `index/front-door`:
+    - yes, `docs/governance/contract/INDEX.md` and related front-door guidance were changed materially
+  - `disposition/placement`:
+    - yes, the old-`GC-*` triage and first cleanup boundary were explicit enough to record standing consequences
+  - `log-retained core`:
+    - yes, `S0F-4D` still retains the bounded ledger, checklist, evidence, and sequencing for the placement lane
+- Pilot reading:
+  - the protocol correctly classifies `S0F-4D` as a slice that legitimately exports several outlets while also keeping `runbook` as an explicit no-op
+  - this confirms that the protocol does not force six-outlet completion mechanically and can still support a multi-outlet positive-control case cleanly
+
+### P5-C1-S2 (Decision for future `S0F-4E` promotion lane fixed | v1)
+
+- The first real `DOC` promotion lane should use the `S0F-5A` close-out pattern directly.
+- Practical reading for `S0F-4E`:
+  - open `S0F-4E` as the first real promoted-contract slice
+  - let `S0F-4E` do the substantive promotion work for one chosen `DOC-<AREA>-<NNNN>` body
+  - when `S0F-4E` reaches stable review, apply the `S0F-5A` questionnaire and anti-proliferation gates explicitly
+  - only open one bounded `Pn+1` export phase if the remaining work is truly export/thinning/consequence packaging rather than substantive contract authorship
+- This means `S0F-4E` should not reopen the old question of whether close-out happens during draft churn.
+- It should inherit that answer from `S0F-5A` and use the protocol as already-fixed operating guidance.
 
 ## Evidence (reserved)
 
@@ -377,6 +425,17 @@
 - observed:
   - the repo now has explicit anti-proliferation gates for `runbook` and `view`, and both log templates now carry stable-first close-out guidance instead of requiring ad hoc recall
 
+### P5-C1-S1 through P5-C1-S2 (pilot on `S0F-4D` and `S0F-4E` sequencing fixed | 2026-04-08)
+
+- headSha: `842f418a234de0e23ea33ac621ee6d2443a9bf04`
+- artifacts: `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
+- artifacts: `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
+- artifacts: `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to see that the protocol works on one recent stable governance lane and that the first real `DOC` promotion lane can now inherit this close-out model directly
+- observed:
+  - `S0F-4D` works as a clean positive-control pilot: it justifies `contract`, `view`, `index/front-door`, and `disposition/placement` exports while keeping `runbook` as explicit no-op, and that result is strong enough to let future `S0F-4E` promotion work use `S0F-5A` as inherited close-out guidance
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-5A` to formalize stable-first close-out timing and post-stable outlet export before the first real `DOC` promoted contract body.
@@ -384,3 +443,4 @@
 - 2026-04-08: completed `P2` by fixing the mandatory outlet-by-outlet close-out questionnaire and the allowed no-op answer set for stable slices.
 - 2026-04-08: completed `P3` by fixing when post-stable export should be packaged as one bounded `Pn+1` style follow-up phase and by defining the minimum write-back set plus stop rule for that export package.
 - 2026-04-08: completed `P4` by fixing the anti-proliferation gates for `runbook` and `view` extraction and by hardening the converged close-out rule into the parent and phase-log templates.
+- 2026-04-08: completed `P5` by piloting the protocol on stable lane `S0F-4D`, confirming that explicit `runbook` no-op plus multi-outlet export is a valid positive-control outcome, and fixing that future `S0F-4E` promotion work should use `S0F-5A` directly as its close-out protocol.
