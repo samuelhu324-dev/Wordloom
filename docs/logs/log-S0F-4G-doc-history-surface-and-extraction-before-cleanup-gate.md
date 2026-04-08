@@ -173,7 +173,8 @@
 - `S0F-4G` is now opened as the next bounded follow-up after `S0F-3J` and the stabilized `DOC` reader surface.
 - `P0` is now complete: the missing problem is fixed as `history surface + extraction-before-cleanup gate`, not as another old-`GC-*` scan and not as one temporary history note inside the parent spine.
 - `P1` is now complete: the repo now has one explicit minimum field set, one fixed section shape, and one retained-chronology boundary for compact contract-history blocks, so later history extraction no longer needs to improvise what may enter a current contract body.
-- The next immediate work is `P2`: define the first family-owned `DOC` lineage-view shape and the navigation path from current contract to lineage surface to retained source-owner logs.
+- `P2` is now complete: the repo now has one explicit `DOC` lineage-view shape and one fixed navigation split among current contract, family front door, promotion map, lineage view, and retained source-owner logs, so later history publication no longer needs to improvise where historical reading should begin.
+- The next immediate work is `P3`: define the extraction-before-cleanup gate and how later old-log cleanup must fail or stop when history surfaces are still missing.
 
 ## P1 (Compact history block contract | v1)
 
@@ -221,6 +222,64 @@
   - lineage view gives the bounded reader-facing evolution chain
   - retained source-owner logs keep the detailed chronology and proof
 
+## P2 (Family lineage view contract | v1)
+
+### P2-C1-S1 (First `DOC` lineage-view shape fixed | v1)
+
+- The first family-owned lineage surface is now fixed as one bounded `view`, not as one new `contract`, not as one expansion of the current `DOC` front door, and not as one source-owner-log rewrite.
+- The recommended filename model is now:
+  - `view-<family>-history-and-lineage-v<version>.md`
+- The first expected concrete target for this lane is therefore:
+  - `view-doc-history-and-lineage-v1.md`
+- The lineage view owns one distinct reader job:
+  - explain the major evolution chain that produced the current `DOC` surface
+  - show which current contracts came out of which source-owner logs
+  - point readers from current-state surfaces into historical reading without forcing a full archaeology pass
+- The minimum section shape for that lineage view is now fixed as:
+  - `Purpose`:
+    - why this history surface exists and what it is not
+  - `Current Reading First`:
+    - a short reminder that current rule meaning still starts at the active `DOC` contract and current front door
+  - `Major Evolution Chain`:
+    - one ordered chain of the few predecessor surfaces a reader actually needs
+  - `Current Contract To Source-Owner Map`:
+    - current active `DOC` contracts paired with retained source-owner logs
+  - `Historical Milestones`:
+    - bounded milestone rows such as `structure`, `bridge`, `automation`, `promotion`, `cleanup boundary`, each linked to the strongest source surface
+  - `Read Next`:
+    - a compact navigation block for readers who want either current meaning, family history, or full chronology
+- The lineage view should prefer:
+  - milestone compression over exhaustive chronology
+  - source links over retelling
+  - family-level reading over slice-local execution detail
+
+### P2-C1-S2 (Current-contract to lineage-view navigation split fixed | v1)
+
+- The repo now fixes one explicit navigation split among the five nearby reader surfaces:
+  - `current contract body`:
+    - owns current effective rule meaning plus the compact history block
+  - `DOC front door`:
+    - owns family-first current reading and tells readers where to start for present meaning
+  - `promotion map`:
+    - owns deterministic source-owner-to-contract mapping and future extension semantics
+  - `lineage view`:
+    - owns bounded historical interpretation and major evolution-chain reading
+  - `retained source-owner logs`:
+    - own detailed chronology, evidence, and slice-local decision sequence
+- The navigation rule is now:
+  - if the reader asks `what is true now?`, start at the `DOC` front door and then open the active current contract
+  - if the reader asks `how did this current shape emerge?`, start at the lineage view
+  - if the reader asks `which source-owner produced which contract?`, use the promotion map
+  - if the reader asks `what exactly happened in detail?`, open the retained source-owner logs
+- The compact history block inside a current contract should therefore point outward like this:
+  - `Read history in full` should prefer the lineage view first
+  - the lineage view should then point to the retained source-owner logs for deep chronology
+- The lineage view must not duplicate the existing front door or promotion map:
+  - do not restate the whole active contract inventory as if it were a second front door
+  - do not restate only source-owner-to-contract mapping as if it were just a history-flavored promotion map
+  - do not replay detailed `P/C/S` closure as if it were a source-owner log
+- Under this split, later history publication can add one real historical reader surface without blurring the already-stabilized `DOC` current-reading surfaces.
+
 ## Plan (draft)
 
 ### P1 (Compact history block contract)
@@ -261,8 +320,8 @@
 
 ### P2 (Family lineage view contract)
 
-- [ ] `P2-C1-S1`: first `DOC` lineage-view shape fixed
-- [ ] `P2-C1-S2`: current-contract to lineage-view navigation fixed
+- [x] `P2-C1-S1`: first `DOC` lineage-view shape fixed
+- [x] `P2-C1-S2`: current-contract to lineage-view navigation fixed
 
 ### P3 (Extraction-before-cleanup gate)
 
@@ -296,7 +355,21 @@
   - `S0F-4G/P1` now fixes the minimum compact-history block rows and the retained source-owner-only chronology boundary directly in the lane contract
   - later history extraction can now reuse one bounded definition instead of improvising contract-local history prose
 
+### P2-C1-S1S2 (DOC lineage-view contract and navigation split fixed | 2026-04-08)
+
+- headSha: `<pending commit for S0F-4G/P2-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo has one explicit history-view shape for `DOC`
+  - the repo has one explicit navigation split among front door, current contract, promotion map, lineage view, and retained source-owner logs
+- observed:
+  - `S0F-4G/P2` now fixes the first `DOC` lineage-view section model and the outward navigation rule from current contracts into family history
+  - later history publication can now create one bounded reader-facing historical surface without reopening the jobs already owned by the `DOC` front door or promotion map
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4G` as the next bounded follow-up so later history extraction and cleanup work can proceed through a reusable mechanism instead of ad hoc archaeology.
 - 2026-04-08: completed `P1` so compact contract-history blocks now have one fixed minimum shape and one explicit source-owner-only chronology boundary.
+- 2026-04-08: completed `P2` so the first `DOC` lineage-view shape and its navigation split are now explicit.
