@@ -5,7 +5,7 @@
 **id**: `S0F-3J`
 **kind**: `log`
 **title**: `old GC cleanup candidate selection after DOC reader stabilization v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Cleanup, GC, epic/s0, sub/3j`
 **links**: ``
@@ -248,6 +248,46 @@
   - retained reader guidance and future stop rules now live inside this lane
   - `P4` can now answer the six outlets from a fully packaged stop result rather than from a still-fluid adjudication state
 
+## P4 (Six-outlet evaluation | v1)
+
+### P4-C1-S1 (Six-outlet answer fixed for the bounded stop package | v1)
+
+- `contract`:
+  - answer: `no-op`
+  - reason: `no stable current rule changed`
+  - explanation: `S0F-3J` does not create or modify a new cleanup rule beyond the already-published triage and first-boundary views; it only confirms that those stable rules still yield no new admissible candidate
+- `runbook`:
+  - answer: `no-op`
+  - reason: `procedure not repeatable beyond this package`
+  - explanation: this slice does not stabilize a new reusable operator sequence; it records one bounded adjudication that the current repo state still stops before relocation
+- `view`:
+  - answer: `no-op`
+  - reason: `full log is already the most efficient reader surface`
+  - explanation: one extra candidate-summary view would mostly restate the same stop result already expressed compactly in this lane and in the existing boundary views
+- `index/front-door`:
+  - answer: `no-op`
+  - reason: `no current navigation changed`
+  - explanation: no root file moved, no support-only index row changed, and no governance front door needs updated landing guidance because the defended outcome is explicit stop
+- `disposition/placement`:
+  - answer: `no-op`
+  - reason: `role export not settled yet`
+  - explanation: no new subset reached relocation eligibility, so there is no new keep / move / placement mutation to export from this lane
+- `log-retained core`:
+  - answer: `retain`
+  - reason: `log still owns slice-local bridge and evidence`
+  - explanation: candidate inventory, null adjudication, stop-package reasoning, future re-entry rules, and close-out answers belong here as the strong-structure ledger for this bounded stop result
+
+### P4-C1-S2 (No bounded export tail warranted; slice marked stable | v1)
+
+- `S0F-3J` does not need one additional bounded export tail.
+- Reason:
+  - the six-outlet review is effectively one retained-log result plus justified `no-op` across the other outlets
+  - no further export package is needed to update a contract, runbook, view, index, or placement surface
+  - the lane's current reader job is already complete once the stop result and re-entry rules are explicit
+- Stable result:
+  - `S0F-3J` is now `stable`
+  - the post-`DOC`-stabilization old-`GC-*` cleanup re-entry question is now answered for the current repo state: no new admissible cleanup subset exists, no relocation package is warranted, and future re-entry requires new source evidence of redirect-loss
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -309,8 +349,8 @@
 
 ### P4 (Six-outlet evaluation)
 
-- [ ] `P4-C1-S1`: six-outlet answer fixed for the cleanup candidate package
-- [ ] `P4-C1-S2`: bounded follow-up or no-tail result fixed
+- [x] `P4-C1-S1`: six-outlet answer fixed for the cleanup candidate package
+- [x] `P4-C1-S2`: bounded follow-up or no-tail result fixed
 
 ## Current Status
 
@@ -319,7 +359,8 @@
 - `P1` is now complete: the inventory shows that the only old root-level `GC-*` residue outside the current narrow registry is still the already-defended `GC-ISS-*` plus `GC-PRB-0001` redirect set, so no new admissible cleanup candidate subset has been found yet.
 - `P2` is now complete: the null-inventory result is now adjudicated explicitly, and the minimum defended result for the current repo state is `stop-with-explicit-no-op` rather than a fresh relocation or keep-in-root package.
 - `P3` is now complete: this lane is now packaged as one bounded stop result with retained reader notes and explicit re-entry rules, rather than as a latent relocation package.
-- The immediate next step is `P4`: answer the six outlets explicitly for this defended stop package and decide whether any bounded export tail is warranted before marking the slice stable.
+- `P4` is now complete: the six outlets are now answered explicitly, no bounded export tail is warranted, and `S0F-3J` is now stable as the defended post-`DOC`-stabilization stop result for old-`GC-*` cleanup admission.
+- There is no immediate follow-up required inside `S0F-3J`; any later cleanup re-entry should open a new bounded slice only if future source changes prove redirect-loss for one old root-level `GC-*` path.
 
 ## Evidence (reserved)
 
@@ -387,9 +428,23 @@
   - retained reader guidance now states that family-first stabilization alone does not dissolve old root-level redirect value
   - later re-entry is now gated on one future source change that proves redirect-loss, not on repeated re-scanning of the same deprecated files
 
+### P4-C1-S1 through P4-C1-S2 (six-outlet close-out completed; no export tail required | 2026-04-08)
+
+- headSha: `8aa3f10b7848515e60d785727768b40481b72037`
+- artifacts:
+  - `docs/logs/log-S0F-3J-old-gc-cleanup-candidate-selection-after-doc-reader-stabilization.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to explain the six-outlet result for `S0F-3J` without assuming that a stable cleanup lane must emit new contract, view, index, or placement files
+- observed:
+  - the correct close-out result is one retained-log package plus justified `no-op` across `contract`, `runbook`, `view`, `index/front-door`, and `disposition/placement`
+  - no bounded export tail is warranted after the close-out review
+  - `S0F-3J` now satisfies its stable criteria as a defended stop package
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-3J` as the next bounded old-`GC-*` cleanup candidate-selection lane after `DOC` reader stabilization, fixed the admission boundary, excluded the already-defended keep set from default re-entry, and fixed the six-outlet close-out requirement for the lane.
 - 2026-04-08: completed `P1` inventory and recorded the current null result: no new old-`GC-*` subset outside the already-defended keep set can yet prove both standing-loss and redirect-loss, so the next round should adjudicate an explicit no-op or stop package rather than force a relocation candidate.
 - 2026-04-08: completed `P2` adjudication and fixed the minimum defended result as `stop-with-explicit-no-op`, because no post-boundary old-`GC-*` subset is currently proven admissible for cleanup.
 - 2026-04-08: completed `P3` packaging and fixed the retained reader notes plus future re-entry stop rules, so this lane now owns one bounded stop package rather than one incomplete relocation placeholder.
+- 2026-04-08: completed `P4` six-outlet close-out, concluded that no bounded export tail is warranted, and marked `S0F-3J` stable as the defended no-op stop package for the current old-`GC-*` cleanup state.
