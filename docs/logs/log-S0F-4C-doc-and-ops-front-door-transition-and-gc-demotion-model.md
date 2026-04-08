@@ -21,6 +21,7 @@
   **reference_log_4**: `docs/governance/INDEX.md`
   **reference_log_5**: `docs/governance/views/view-contract-family-inventory-v1.md`
   **reference_log_6**: `docs/governance/views/view-contract-family-placement-map-v1.md`
+  **reference_log_7**: `docs/governance/views/view-doc-current-front-door-v1.md`
 **issue_keyword**: `taxonomy`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/4`
@@ -153,6 +154,25 @@
 - `disposition/placement` answers standing and cleanup state.
 - It may say `legacy`, `support-only`, `deprecated`, or `current family-owned`, but it does not answer the first question of family ownership by itself.
 
+## P1 (DOC front door | v1)
+
+### P1-C1-S1 (First DOC current front-door shape | v1)
+
+- The repo now keeps one current `DOC` family reader entry at:
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+- That surface is intentionally family-first rather than registry-first:
+  - it tells the reader how to start reading current `DOC` meaning
+  - it does not require creating or reusing a `GC-*` record just to make `DOC` legible
+
+### P1-C1-S2 (DOC source-owner mapping | v1)
+
+- The first `DOC` front door currently maps these source-owner contracts directly:
+  - `S0F-4A`: document role boundaries, write-back protocol, and disposition model
+  - `S0F-4B`: source-log compatibility and weak-structure export discipline
+  - `S0F-3I`: governance contract taxonomy and placement model
+  - `S0F-4C`: family-front-door transition and `GC-*` demotion model
+- Under this model, those surfaces are already current `DOC` contracts even before any later admission or naming reform work.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -207,8 +227,8 @@
 
 ### P1 (DOC front door)
 
-- [ ] `P1-C1-S1`: first `DOC` current front-door shape defined
-- [ ] `P1-C1-S2`: `S0F-4A`, `S0F-4B`, and `S0F-3I` mapped into `DOC` reading model
+- [x] `P1-C1-S1`: first `DOC` current front-door shape defined
+- [x] `P1-C1-S2`: `S0F-4A`, `S0F-4B`, and `S0F-3I` mapped into `DOC` reading model
 
 ### P2 (OPS front door)
 
@@ -227,7 +247,8 @@
 
 - `S0F-4C` is now opened as the next bounded transition lane after `S0F-3I/P5`: the repo has a family taxonomy and placement map, but it still needs one explicit reader-facing migration model away from registry-first `GC-*` language.
 - `P0` is now fixed: family, front door, legacy registry prefix, and disposition are now separated conceptually enough to guide later `DOC` and `OPS` front-door work.
-- The next immediate implementation-free follow-up is not mass rename; it is to define one first `DOC` current front door and one first `OPS` current front door while leaving old storage identifiers intact.
+- `P1` is now complete: the repo now has one first `DOC` current front door at `docs/governance/views/view-doc-current-front-door-v1.md`, and `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` are now explicitly readable as current `DOC` contracts without first passing through `GC-*` vocabulary.
+- The next immediate implementation-free follow-up remains `OPS`: define one first `OPS` current front door while leaving old storage identifiers intact.
 
 ## Evidence (reserved)
 
@@ -244,6 +265,19 @@
 - observed:
   - `S0F-4C` now fixes the first transition boundary and opens the next bounded follow-up around `DOC` and `OPS` family-first front doors
 
+### P1-C1-S1 through P1-C1-S2 (DOC current front door defined and mapped | 2026-04-08)
+
+- headSha: `455724f6aa70aa6a5e554221bee8a13b0610d9dc`
+- artifacts: `docs/governance/views/view-doc-current-front-door-v1.md`
+- artifacts: `docs/governance/views/view-contract-family-inventory-v1.md`
+- artifacts: `docs/governance/views/view-contract-family-placement-map-v1.md`
+- artifacts: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
+- expected:
+  - one reader should be able to find the current `DOC` family entry and read `S0F-4A`, `S0F-4B`, and `S0F-3I` as `DOC` contracts without first translating them into legacy registry language
+- observed:
+  - the repo now has one explicit `DOC` family front door and one direct mapping from that front door to the current source-owner `DOC` contracts
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4C` to separate family, front door, legacy registry prefix, and disposition so the repo can move toward `DOC/OPS/...` current reading without immediate mass rename.
+- 2026-04-08: completed `P1` by publishing the first `DOC` current front door and by mapping `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into one family-first reading model.
