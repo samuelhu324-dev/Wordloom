@@ -5,7 +5,7 @@
 **id**: `S0F-4D`
 **kind**: `log`
 **title**: `doc current contract surface and legacy GC triage model v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, Taxonomy, epic/s0, sub/4d`
 **links**: ``
@@ -27,6 +27,7 @@
   **reference_log_10**: `docs/governance/contract/_template-doc-contract-record.md`
   **reference_log_11**: `docs/governance/views/view-doc-contract-promotion-map-v1.md`
   **reference_log_12**: `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
+  **reference_log_13**: `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
 **issue_keyword**: `taxonomy`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/4`
@@ -141,6 +142,7 @@
 - This log can be marked `stable` when:
   - the new `DOC` contract home and old `GC-*` triage model are explicit enough that later extraction work can proceed without reopening the directory question first
   - the repo has at least one usable front door for `docs/governance/contract/`
+  - the repo has at least one concrete old-`GC-*` cleanup boundary that shows which already-triaged files stay root-readable and which already belong to support-only
 
 ## P0 (Contract | v1)
 
@@ -201,6 +203,19 @@
 - `legacy redirect` files also remain in `docs/governance/contracts/` root because that old root path is part of the redirect contract.
 - Only `support-only history or backtrace` is a default candidate for later relocation into `docs/governance/contracts/support-only/`.
 - No old `GC-*` file should move to support-only merely because it is deprecated or has a newer successor; relocation begins only after direct references and reader discoverability can survive the move explicitly.
+
+## P4 (Cleanup boundary | v1)
+
+### P4-C1-S1 (First old-GC cleanup boundary fixed | v1)
+
+- The first concrete old-`GC-*` cleanup boundary is now fixed as follows:
+  - keep the preserved legacy redirect set at the contracts root:
+    - `GC-ISS-0001` through `GC-ISS-0005`
+    - `GC-PRB-0001`
+  - keep the already-relocated support-only backtrace note in the support-only contracts surface:
+    - `GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
+- This means `P4` does not open a new move round.
+- It fixes the first stable keep-versus-support-only boundary so later cleanup does not keep reopening the same adjudicated old-file subset.
 
 ## Numbering
 
@@ -270,7 +285,7 @@
 
 ### P4 (Cleanup boundary)
 
-- [ ] `P4-C1-S1`: first cleanup boundary fixed for old `GC-*`
+- [x] `P4-C1-S1`: first cleanup boundary fixed for old `GC-*`
 
 ## Current Status (recommended)
 
@@ -279,7 +294,8 @@
 - `P1` is now complete: the repo now has one explicit `DOC` contract naming model, one template, and one first `DOC` area-code dictionary under `docs/governance/contract/`, so future promoted `DOC` contracts no longer need to reuse `GC-*` naming by default.
 - `P2` is now complete: the repo now has one explicit practical triage rule for old `GC-*` files, and the retention-versus-relocation boundary is fixed so only `support-only history or backtrace` becomes a later relocation candidate while `current narrow-registry` and `legacy redirect` stay readable in the contracts root.
 - `P3` is now complete: the repo now has one explicit source-owner promotion rule and one first mapping set, so future `DOC` contract extraction can follow deterministic targets such as `S0F-4A -> DOC-DRB-0001` and `S0F-3I -> DOC-TAX-0001`.
-- The remaining follow-up is now narrower: `P4` should define the first concrete cleanup boundary for which already-triaged old `GC-*` subset is actually safe to keep in place versus relocate deeper.
+- `P4` is now complete: the repo now has one first concrete old-`GC-*` cleanup boundary, so the already-adjudicated legacy redirect set no longer re-enters relocation debate and the existing `GC-PRB-0001` backfill note remains the first explicit support-only exception.
+- `S0F-4D` is now stable: the new `DOC` contract home, naming model, promotion path, old-`GC-*` triage rule, and first cleanup boundary are explicit enough that later promotion or cleanup work can proceed without reopening the same storage model questions.
 
 ## Evidence (reserved)
 
@@ -333,9 +349,21 @@
 - observed:
   - the repo now has one explicit first promotion map from source-owner `DOC` logs to deterministic `DOC-<AREA>-<NNNN>` targets
 
+### P4-C1-S1 (first old-GC cleanup boundary fixed | 2026-04-08)
+
+- headSha: `b0dc43a4d75a50465bc4b98f1b2adbe8c5a6c21b`
+- artifacts: `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
+- artifacts: `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
+- artifacts: `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
+- expected:
+  - one reader should be able to explain which already-triaged old `GC-*` files are now explicitly frozen at the contracts root and which existing file is the first explicit support-only exception
+- observed:
+  - the repo now has one stable first cleanup boundary: `GC-ISS-*` and `GC-PRB-0001` remain root-readable as preserved legacy redirects, while `GC-PRB-0001-backfill` remains the bounded support-only backtrace exception
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4D` to fix the new `DOC` current contract home and the old `GC-*` triage model after the family-first transition in `S0F-4C`.
 - 2026-04-08: completed `P1` by fixing the `DOC` contract naming model, the first `DOC` area-code dictionary, and one reusable family-owned contract template under `docs/governance/contract/`.
 - 2026-04-08: completed `P2` by fixing the practical three-bucket triage rule for old `GC-*` files and by stating that only `support-only history or backtrace` becomes a default relocation candidate while `current narrow-registry` and `legacy redirect` remain root-readable.
+- 2026-04-08: completed `P4` by fixing the first concrete old-`GC-*` cleanup boundary, freezing the preserved legacy redirect set at the contracts root, and confirming the existing `GC-PRB-0001` backfill note as the first explicit support-only exception.
 - 2026-04-08: completed `P3` by fixing the source-owner `DOC` log promotion rule and the first deterministic promotion map into `DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`, and `DOC-FDT-0001`.

@@ -44,11 +44,13 @@
 - A deprecated file may still deserve the root path if its redirect value is still active.
 - A file should not move to support-only merely because a newer contract exists somewhere else.
 - The first question is not `is this old?`; it is `what standing does this file still serve for current readers?`
+- For the first concrete old-`GC-*` cleanup boundary already fixed under this rule, read `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`.
 
 ## Source Refs
 
 - `docs/governance/INDEX.md`
 - `docs/governance/contracts/support-only/INDEX.md`
+- `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
 - `docs/governance/views/view-gc-dual-reading-transition-v1.md`
 - `docs/governance/views/view-disposition-role-in-family-transition-v1.md`
 - `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
