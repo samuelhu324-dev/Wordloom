@@ -149,6 +149,30 @@
 - This means the future stable-review question for `S0F-4E` is not whether close-out protocol exists.
 - The question is only how `contract`, `view`, `index/front-door`, `disposition/placement`, and `log-retained core` should be answered once the first promoted body is real.
 
+## P1 (First contract body extraction | v1)
+
+### P1-C1-S1 (Stable current rule body extracted into `DOC-DRB-0001` | v1)
+
+- The first promoted `DOC` contract body now exists at:
+  - `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md`
+- The extracted body concentrates the stable rule set from `S0F-4A` around:
+  - six explicit outlet responsibilities
+  - one fixed close-out question set and write order
+  - one stop rule that allows justified `no new runbook` or `no new view` outcomes
+  - downstream disposition and placement rules
+- The extracted body intentionally avoids copying transitional or later-refined placement examples that would blur the stable role-boundary rule with subsequent `S0F-4D` and `S0F-5A` consequences.
+
+### P1-C1-S2 (Metadata and retained source-owner relationship aligned | v1)
+
+- `DOC-DRB-0001` is marked as the first promoted family-owned `DOC` contract body but remains `draft`.
+- `S0F-4A` remains the primary source-owner SoT during this draft stage.
+- The promoted body now records:
+  - one stable `record_id` and semantic `contract_id`
+  - one explicit `primary_source_owner`
+  - one bounded enforcement surface
+  - one minimal source-ref set linking the source-owner lane and the promotion lane
+- This keeps `P1` focused on substantive contract extraction without prematurely claiming that front-door alignment or stable close-out review is already complete.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -190,8 +214,8 @@
 
 ### P1 (First contract body extraction)
 
-- [ ] `P1-C1-S1`: stable current rule body extracted into `DOC-DRB-0001`
-- [ ] `P1-C1-S2`: metadata and source-owner relationship aligned
+- [x] `P1-C1-S1`: stable current rule body extracted into `DOC-DRB-0001`
+- [x] `P1-C1-S2`: metadata and source-owner relationship aligned
 
 ### P2 (Landing and front-door alignment)
 
@@ -207,7 +231,8 @@
 
 - `S0F-4E` is now opened as the first real `DOC` promotion lane after `S0F-5A` stabilized the close-out protocol.
 - `P0` is now complete: the first promotion target is fixed as `S0F-4A` -> `DOC-DRB-0001`, and the lane now has one deterministic filename and one inherited close-out protocol.
-- The next immediate step is to extract the first substantive contract body from `S0F-4A` into `DOC-DRB-0001` without reopening naming or close-out debates.
+- `P1` is now complete: the first draft of `DOC-DRB-0001` now exists as a family-owned `DOC` contract body, and the extracted rule text keeps the six-outlet model, write-back order, stop rule, and disposition separation explicit without re-importing older transitional placement assumptions.
+- The next immediate step is `P2`: land this new contract body into the `DOC` contract index and update only the minimum front-door reading surfaces that should now point at a real promoted file.
 
 ## Evidence (reserved)
 
@@ -224,6 +249,19 @@
 - observed:
   - the repo now has one explicit first promotion lane: `S0F-4A` is chosen as the source-owner SoT, `DOC-DRB-0001` is fixed as the first real promoted target, and `S0F-5A` is fixed as the inherited close-out protocol
 
+### P1-C1-S1 through P1-C1-S2 (first draft `DOC-DRB-0001` extracted from `S0F-4A` | 2026-04-08)
+
+- headSha: `ca12baf1169c2261e8467b1d8100279d9afe1f00`
+- artifacts:
+  - `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to open a real family-owned `DOC` contract file and read the stable role-boundary rule without replaying the full `S0F-4A` source log first
+- observed:
+  - the repo now has its first promoted `DOC` contract draft, and the extracted body preserves the six-outlet rule set, fixed write order, stop rule, and downstream disposition model while keeping `S0F-4A` explicit as the retained source-owner SoT during draft stage
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4E` as the first real `DOC` promotion lane, fixed `S0F-4A -> DOC-DRB-0001` as the first extraction target, and fixed `S0F-5A` as the inherited close-out protocol.
+- 2026-04-08: completed `P1` by extracting the first draft `DOC-DRB-0001` body from `S0F-4A` and aligning its metadata, source-owner relationship, and draft-stage landing semantics.
