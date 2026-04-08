@@ -177,6 +177,30 @@
 - The second promotion lane should reuse `S0F-5A` directly for stable review.
 - This means the `S0F-4E/C2` question is only how each outlet should be answered for the `S0F-4B` rule set, not whether one new promotion-specific close-out method is needed.
 
+## P1 (Second contract body extraction | C2)
+
+### P1-C2-S1 (Stable current rule body extracted into `DOC-SLC-0001` | v1)
+
+- The second promoted `DOC` contract body now exists at:
+  - `docs/governance/contract/DOC-SLC-0001-source-log-compatibility-and-weak-structure-export-discipline.md`
+- The extracted body concentrates the stable rule set from `S0F-4B` around:
+  - the old two templates remaining the only canonical source-log families
+  - six outlets acting only as weak-structure export ownership
+  - strong-structure versus weak-structure separation
+  - the rule that `S0F-1K` remains historical sample status only
+- The extracted body intentionally avoids reopening later script-side admission or fail-closed gating lanes that `S0F-4B` explicitly left as separate follow-ups.
+
+### P1-C2-S2 (Metadata and retained source-owner relationship aligned for `DOC-SLC-0001` | v1)
+
+- `DOC-SLC-0001` is marked as the second promoted family-owned `DOC` contract body but remains `draft`.
+- `S0F-4B` remains the primary source-owner SoT during this draft stage.
+- The promoted body now records:
+  - one stable `record_id` and semantic `contract_id`
+  - one explicit `primary_source_owner`
+  - one bounded enforcement surface
+  - one minimal source-ref set linking the source-owner lane and the promotion lane
+- This keeps second-lane `P1` focused on substantive contract extraction without prematurely claiming that front-door alignment or stable close-out review is already complete.
+
 ## P1 (First contract body extraction | v1)
 
 ### P1-C1-S1 (Stable current rule body extracted into `DOC-DRB-0001` | v1)
@@ -314,6 +338,8 @@
 - [x] `P1-C1-S2`: metadata and source-owner relationship aligned
 - [ ] `P1-C2-S1`: stable current rule body extracted into `DOC-SLC-0001`
 - [ ] `P1-C2-S2`: metadata and source-owner relationship aligned for the second lane
+ - [x] `P1-C2-S1`: stable current rule body extracted into `DOC-SLC-0001`
+ - [x] `P1-C2-S2`: metadata and source-owner relationship aligned for the second lane
 
 ### P2 (Landing and front-door alignment)
 
@@ -336,7 +362,9 @@
 - `P1` is now complete: the first draft of `DOC-DRB-0001` now exists as a family-owned `DOC` contract body, and the extracted rule text keeps the six-outlet model, write-back order, stop rule, and disposition separation explicit without re-importing older transitional placement assumptions.
 - `P2` is now complete: the `DOC` contract index and the `DOC` family front door now both acknowledge `DOC-DRB-0001` as the first landed family-owned `DOC` contract draft while preserving `S0F-4A` as the retained source-owner SoT during draft stage.
 - `P3` is now complete: the stable-first close-out questionnaire has been answered outlet by outlet, `DOC-DRB-0001` is now active, no bounded post-stable export tail is needed, and `S0F-4E` is now stable.
-- `S0F-4E` is now reopened in `C2` rather than in a new slice: the next active lane is `S0F-4B` -> `DOC-SLC-0001`, and the immediate next step is substantive second-lane contract extraction under the already-proven pattern.
+- `S0F-4E` is now reopened in `C2` rather than in a new slice: the second active lane is `S0F-4B` -> `DOC-SLC-0001`.
+- `P1-C2` is now complete: the second draft family-owned `DOC` contract body now exists, and the extracted rule text keeps source-log compatibility, weak-structure export ownership, strong-structure retention, and `S0F-1K` historical-sample status explicit without reopening adjacent automation follow-up lanes.
+- The next immediate step is `P2-C2`: land `DOC-SLC-0001` into the `DOC` contract index and update the `DOC` family front door to reflect the second mixed source-owner plus promoted-contract reading state.
 
 ## Evidence (reserved)
 
@@ -403,6 +431,18 @@
 - observed:
   - `S0F-4E` is now explicitly reopened in `C2`, the second mapped promotion target is fixed as `S0F-4B` -> `DOC-SLC-0001`, and the lane will reuse the same `P1/P2/P3` promotion pattern under `S0F-5A`
 
+### P1-C2-S1 through P1-C2-S2 (second draft `DOC-SLC-0001` extracted from `S0F-4B` | 2026-04-08)
+
+- headSha: `daf00b7bf751a42dc5a7d5dc77dcae6911c5e50b`
+- artifacts:
+  - `docs/governance/contract/DOC-SLC-0001-source-log-compatibility-and-weak-structure-export-discipline.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to open a real family-owned `DOC` contract file and read the stable source-log compatibility rule without replaying the full `S0F-4B` source log first
+- observed:
+  - the repo now has its second promoted `DOC` contract draft, and the extracted body preserves the canonical-template rule, weak-structure export discipline, strong-structure retention boundary, and historical-sample rule for `S0F-1K` while keeping `S0F-4B` explicit as the retained source-owner SoT during draft stage
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4E` as the first real `DOC` promotion lane, fixed `S0F-4A -> DOC-DRB-0001` as the first extraction target, and fixed `S0F-5A` as the inherited close-out protocol.
@@ -410,3 +450,4 @@
 - 2026-04-08: completed `P2` by landing `DOC-DRB-0001` into the `DOC` contract index and updating the `DOC` family front door to reflect the first mixed source-owner plus promoted-contract reading state.
 - 2026-04-08: completed `P3` by applying the `S0F-5A` close-out questionnaire, promoting `DOC-DRB-0001` from draft to active current contract status, and concluding that no bounded post-stable export tail is required.
 - 2026-04-08: reopened `S0F-4E` in `C2` so the second mapped promotion lane (`S0F-4B` -> `DOC-SLC-0001`) can be executed inside the same slice rather than in a new near-duplicate follow-up.
+- 2026-04-08: completed `P1-C2` by extracting the first draft `DOC-SLC-0001` body from `S0F-4B` and aligning its metadata, source-owner relationship, and second-lane draft-stage landing semantics.
