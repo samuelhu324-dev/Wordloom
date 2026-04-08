@@ -229,6 +229,26 @@
   - one minimal source-ref set linking the source-owner lane, the placement-map support view, and the promotion lane
 - This keeps third-lane `P1` focused on substantive contract extraction without prematurely claiming that front-door alignment or stable close-out review is already complete.
 
+## P2 (Third-lane landing and front-door alignment | C3)
+
+### P2-C3-S1 (Third promoted file landed in `docs/governance/contract/INDEX.md` | v1)
+
+- `docs/governance/contract/INDEX.md` now records `DOC-TAX-0001` as the third landed `DOC` contract record.
+- The index now makes three third-lane facts explicit:
+  - `DOC-TAX-0001` is the third landed promotion under the admitted mapping set
+  - the record remains `draft` during third-lane transition
+  - readers should still read the promoted body together with its retained source-owner SoT until close-out review completes
+
+### P2-C3-S2 (Required `DOC` front-door updates completed for the third lane | v1)
+
+- `docs/governance/views/view-doc-current-front-door-v1.md` now reflects the third mixed landing state for the `DOC` family.
+- The front door now distinguishes:
+  - two active promoted contracts (`DOC-DRB-0001`, `DOC-SLC-0001`)
+  - one draft promoted contract (`DOC-TAX-0001`)
+  - retained source-owner traces for all promoted lanes
+  - still-unpromoted `DOC` areas that continue to read directly through source-owner logs
+- This keeps the front door truthful without pretending that the third lane is already fully stable or that every mapped `DOC` area has already been promoted.
+
 ## P1 (Second contract body extraction | C2)
 
 ### P1-C2-S1 (Stable current rule body extracted into `DOC-SLC-0001` | v1)
@@ -472,6 +492,8 @@
 - [x] `P2-C2-S2`: required `DOC` front-door updates completed for the second lane
 - [ ] `P2-C3-S1`: third promoted file landed in `docs/governance/contract/INDEX.md`
 - [ ] `P2-C3-S2`: required `DOC` front-door updates completed for the third lane
+- [x] `P2-C3-S1`: third promoted file landed in `docs/governance/contract/INDEX.md`
+- [x] `P2-C3-S2`: required `DOC` front-door updates completed for the third lane
 
 ### P3 (Stable review and close-out)
 
@@ -495,7 +517,8 @@
 - `P3-C2` is now complete: the stable-first close-out questionnaire has been answered outlet by outlet for the second lane, `DOC-SLC-0001` is now active, no bounded post-stable export tail is needed, and `S0F-4E` is now stable again after completing two promotion cycles.
 - `S0F-4E` is now reopened in `C3` rather than in a new slice: the third active lane is `S0F-3I` -> `DOC-TAX-0001`, and the immediate next step is substantive third-lane contract extraction under the already-proven pattern.
 - `P1-C3` is now complete: the third draft family-owned `DOC` contract body now exists, and the extracted rule text keeps taxonomy, placement, and consolidation-threshold semantics explicit without turning the placement-map view into duplicate contract prose.
-- The next immediate step is `P2-C3`: land `DOC-TAX-0001` into the `DOC` contract index and update the `DOC` family front door to reflect the third mixed source-owner plus promoted-contract reading state.
+- `P2-C3` is now complete: the `DOC` contract index and the `DOC` family front door now both acknowledge `DOC-TAX-0001` as the third landed family-owned `DOC` contract draft while preserving `S0F-3I` as the retained source-owner SoT during draft stage.
+- The next immediate step is `P3-C3`: run the stable-first close-out questionnaire for the third lane and decide whether `DOC-TAX-0001` closes directly or needs one bounded post-stable export tail.
 
 ## Evidence (reserved)
 
@@ -622,6 +645,18 @@
 - observed:
   - the repo now has its third promoted `DOC` contract draft, and the extracted body preserves the family-versus-level split, seven-family taxonomy, `GC-*` narrowing rule, and primary-SoT-first placement rule while keeping the descriptive current placement scan in its supporting view and `S0F-3I` explicit as the retained source-owner SoT during draft stage
 
+### P2-C3-S1 through P2-C3-S2 (third promoted `DOC` draft landed in index and front door | 2026-04-08)
+
+- headSha: `46316e5920fd39b92f884cc2dca14d2f71b1eae4`
+- artifacts:
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+- expected:
+  - one reader should be able to discover `DOC-TAX-0001` from the current `DOC` contract landing surfaces without being misled into thinking the third promotion lane has already fully stabilized
+- observed:
+  - the `DOC` contract index now names `DOC-TAX-0001` as the third landed record, and the `DOC` front door now explains the mixed transition state in which two active promoted contracts and one draft promoted contract coexist while `S0F-3I` remains the retained source-owner SoT during third-lane draft stage
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4E` as the first real `DOC` promotion lane, fixed `S0F-4A -> DOC-DRB-0001` as the first extraction target, and fixed `S0F-5A` as the inherited close-out protocol.
@@ -634,3 +669,4 @@
 - 2026-04-08: completed `P3-C2` by applying the `S0F-5A` close-out questionnaire to the second lane, promoting `DOC-SLC-0001` from draft to active current contract status, and concluding that no bounded post-stable export tail is required.
 - 2026-04-08: reopened `S0F-4E` in `C3` so the third mapped promotion lane (`S0F-3I` -> `DOC-TAX-0001`) can be executed inside the same slice rather than in a new near-duplicate follow-up.
 - 2026-04-08: completed `P1-C3` by extracting the first draft `DOC-TAX-0001` body from `S0F-3I` and aligning its metadata, source-owner relationship, and third-lane draft-stage landing semantics.
+- 2026-04-08: completed `P2-C3` by landing `DOC-TAX-0001` into the `DOC` contract index and updating the `DOC` family front door to reflect the third mixed source-owner plus promoted-contract reading state.
