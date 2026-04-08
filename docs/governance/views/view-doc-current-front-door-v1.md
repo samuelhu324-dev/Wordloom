@@ -11,14 +11,16 @@
 - The `DOC` family includes current rule surfaces about document roles, source-log compatibility, taxonomy, placement, and later family-first front-door transition.
 - The current `DOC` front door is family-first rather than registry-first:
   - start here for current reading
-  - then open the stable or bounded source-owner logs that currently hold the authoritative rule text
+  - then open the landed family-owned contract body when one exists
+  - otherwise open the stable or bounded source-owner log that currently holds the authoritative rule text
 - Under this model, `DOC` current reading does not require first creating a `GC-*` registry record.
 
 ## Active Contracts
 
 - `DOCUMENT-ROLE-BOUNDARIES-WRITEBACK-PROTOCOL-AND-DISPOSITION-MODEL`:
-  - current primary source: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
-  - current role: fixes the six-outlet role model, write-back order, and disposition separation
+  - promoted current contract draft: `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md`
+  - retained source-owner SoT during draft stage: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+  - current role: fixes the six-outlet role model, write-back order, and disposition separation, with the first family-owned contract body now landed but not yet fully closed out
 - `SOURCE-LOG-COMPATIBILITY-AND-WEAK-STRUCTURE-EXPORT-DISCIPLINE`:
   - current primary source: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
   - current role: keeps the old two source-log templates canonical and narrows outlet ownership to weak-structure export
@@ -32,14 +34,17 @@
 ## Reader Notes
 
 - This front door is intentionally a `view` rather than a new `GC-*` record.
-- The current `DOC` family still keeps its strongest rule text in source-owner logs because those logs remain the most authoritative current SoT for these contracts.
-- Later admission work may still promote selected `DOC` rules into a more concentrated current contract surface, but the family-front-door reading should exist before any such promotion decision.
-- When that promotion happens, the promoted contract bodies should land under `docs/governance/contract/` with the family-owned filename model `DOC-<AREA>-<NNNN>-<summary>.md`.
+- The `DOC` family is now in a mixed landing state:
+  - `DOC-DRB-0001` already exists as a family-owned current contract draft
+  - `S0F-4A` still remains the retained source-owner SoT for that rule set until later stable close-out review completes
+- Other `DOC` areas still keep their strongest rule text in source-owner logs because those promotions have not landed yet.
+- Promoted contract bodies should land under `docs/governance/contract/` with the family-owned filename model `DOC-<AREA>-<NNNN>-<summary>.md`.
 - The current planned promotion map lives at `docs/governance/views/view-doc-contract-promotion-map-v1.md`.
 
 ## Source Refs
 
 - `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+- `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md`
 - `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
 - `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
 - `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`

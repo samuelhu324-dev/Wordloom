@@ -173,6 +173,25 @@
   - one minimal source-ref set linking the source-owner lane and the promotion lane
 - This keeps `P1` focused on substantive contract extraction without prematurely claiming that front-door alignment or stable close-out review is already complete.
 
+## P2 (Landing and front-door alignment | v1)
+
+### P2-C1-S1 (First promoted file landed in `docs/governance/contract/INDEX.md` | v1)
+
+- `docs/governance/contract/INDEX.md` now records `DOC-DRB-0001` as the first active landed `DOC` contract record.
+- The index now makes three things explicit in one place:
+  - this directory no longer starts empty
+  - `DOC-DRB-0001` is the first landed promotion under the admitted mapping set
+  - while the record remains `draft`, readers should still read the promoted body together with its retained source-owner SoT
+
+### P2-C1-S2 (Required `DOC` front-door updates completed | v1)
+
+- `docs/governance/views/view-doc-current-front-door-v1.md` now reflects the first mixed landing state for the `DOC` family.
+- The front door now distinguishes:
+  - landed family-owned contract body when one exists
+  - retained source-owner SoT during draft stage
+  - still-unpromoted `DOC` areas that continue to read directly through source-owner logs
+- This keeps the front door truthful without pretending that `DOC-DRB-0001` is already fully stable or that every other `DOC` area has also been promoted.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -219,8 +238,8 @@
 
 ### P2 (Landing and front-door alignment)
 
-- [ ] `P2-C1-S1`: first promoted file landed in `docs/governance/contract/INDEX.md`
-- [ ] `P2-C1-S2`: required `DOC` front-door updates completed
+- [x] `P2-C1-S1`: first promoted file landed in `docs/governance/contract/INDEX.md`
+- [x] `P2-C1-S2`: required `DOC` front-door updates completed
 
 ### P3 (Stable review and close-out)
 
@@ -232,7 +251,8 @@
 - `S0F-4E` is now opened as the first real `DOC` promotion lane after `S0F-5A` stabilized the close-out protocol.
 - `P0` is now complete: the first promotion target is fixed as `S0F-4A` -> `DOC-DRB-0001`, and the lane now has one deterministic filename and one inherited close-out protocol.
 - `P1` is now complete: the first draft of `DOC-DRB-0001` now exists as a family-owned `DOC` contract body, and the extracted rule text keeps the six-outlet model, write-back order, stop rule, and disposition separation explicit without re-importing older transitional placement assumptions.
-- The next immediate step is `P2`: land this new contract body into the `DOC` contract index and update only the minimum front-door reading surfaces that should now point at a real promoted file.
+- `P2` is now complete: the `DOC` contract index and the `DOC` family front door now both acknowledge `DOC-DRB-0001` as the first landed family-owned `DOC` contract draft while preserving `S0F-4A` as the retained source-owner SoT during draft stage.
+- The next immediate step is `P3`: run the stable-first close-out questionnaire from `S0F-5A` and decide whether this first promotion lane closes directly or needs one bounded post-stable export tail.
 
 ## Evidence (reserved)
 
@@ -261,7 +281,21 @@
 - observed:
   - the repo now has its first promoted `DOC` contract draft, and the extracted body preserves the six-outlet rule set, fixed write order, stop rule, and downstream disposition model while keeping `S0F-4A` explicit as the retained source-owner SoT during draft stage
 
+### P2-C1-S1 through P2-C1-S2 (first promoted `DOC` draft landed in index and front door | 2026-04-08)
+
+- headSha: `63cbd89472c7f799568fbd632f40ba73fd982c78`
+- artifacts:
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to discover `DOC-DRB-0001` from the current `DOC` contract landing surfaces without being misled into thinking the whole family has already fully stabilized under promoted contracts
+- observed:
+  - the `DOC` contract index now names `DOC-DRB-0001` as the first active landed record, and the `DOC` front door now explains the mixed transition state in which one family-owned contract draft exists while `S0F-4A` remains the retained source-owner SoT during draft stage
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4E` as the first real `DOC` promotion lane, fixed `S0F-4A -> DOC-DRB-0001` as the first extraction target, and fixed `S0F-5A` as the inherited close-out protocol.
 - 2026-04-08: completed `P1` by extracting the first draft `DOC-DRB-0001` body from `S0F-4A` and aligning its metadata, source-owner relationship, and draft-stage landing semantics.
+- 2026-04-08: completed `P2` by landing `DOC-DRB-0001` into the `DOC` contract index and updating the `DOC` family front door to reflect the first mixed source-owner plus promoted-contract reading state.

@@ -57,6 +57,14 @@
 
 - Use `docs/governance/contract/_template-doc-contract-record.md` when creating a new `DOC` family-owned current contract.
 
+## Active Records
+
+- `DOC-DRB-0001`:
+  - file: `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md`
+  - status: `draft`
+  - current role: first landed family-owned `DOC` contract body for document role boundaries, write-back order, and disposition separation
+  - retained source-owner SoT during draft stage: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+
 ## Promotion Path
 
 - Current source-owner `DOC` logs may later promote into family-owned `DOC` contracts here.
@@ -66,6 +74,7 @@
   - `S0F-3I` -> `DOC-TAX-0001`
   - `S0F-4C` -> `DOC-FDT-0001`
 - Until those files are actually created, the source-owner logs remain the current primary sources.
+- `DOC-DRB-0001` is now the first landed promotion under this map.
 
 ## Landing Rule
 
@@ -78,8 +87,9 @@
 
 ## Reader Notes
 
-- This directory starts empty on purpose: the first step is to fix the home and entry model before extracting stable rule bodies out of source-owner logs.
-- During transition, current `DOC` meaning may still live primarily in source-owner logs such as `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` while this directory becomes the future stable landing surface.
+- This directory no longer starts empty: `DOC-DRB-0001` is now the first landed family-owned `DOC` contract draft.
+- During transition, current `DOC` meaning may still live primarily in source-owner logs such as `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` while this directory becomes the active stable landing surface.
+- When a landed record is still `draft`, readers should treat the promoted contract body and its retained source-owner log together rather than assuming all front-door and close-out consequences are already complete.
 - The first promoted `DOC` contracts should use the admitted area dictionary above rather than reusing `GC-*` prefixes.
 
 ## Source Refs
