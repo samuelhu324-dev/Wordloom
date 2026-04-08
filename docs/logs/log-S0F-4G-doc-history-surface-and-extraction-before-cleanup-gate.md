@@ -5,7 +5,7 @@
 **id**: `S0F-4G`
 **kind**: `log`
 **title**: `DOC history surface and extraction-before-cleanup gate v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, History, Lineage, epic/s0, sub/4g`
 **links**: ``
@@ -152,6 +152,18 @@
   - one first pilot source set is bounded clearly enough that later extraction work no longer depends on ad hoc archaeology
   - the next execution lane after `S0F-4G` is obvious enough that later cleanup or family work does not need to reopen the same design debate
 
+## Stable Result
+
+- `S0F-4G` is now stable because the repo now has:
+  - one reusable compact-history block contract for family-owned current contracts
+  - one reusable family-lineage-view contract for reader-facing historical navigation
+  - one explicit history-aware cleanup gate with fixed stop reasons
+  - one bounded pilot source packet plus one fixed first publication package boundary
+- Later work no longer needs to reopen whether `DOC` history should live in contracts, views, or old logs before cleanup.
+- The remaining work is purely executional:
+  - publish the first bounded `DOC` history package
+  - re-evaluate old-log cleanup only after that package lands
+
 ## P0 (Contract | v1)
 
 ### P0-C1-S1 (Problem boundary fixed | v1)
@@ -176,7 +188,7 @@
 - `P2` is now complete: the repo now has one explicit `DOC` lineage-view shape and one fixed navigation split among current contract, family front door, promotion map, lineage view, and retained source-owner logs, so later history publication no longer needs to improvise where historical reading should begin.
 - `P3` is now complete: later cleanup now has one explicit history-aware admission rule and one explicit stop/no-op reason set, so old-log relocation can no longer rely on standing-loss and redirect-loss alone when key historical meaning still has no durable extracted surface.
 - `P4` is now complete: the first bounded pilot source set and one defended major-chain reading path are now explicit, so later history publication can start from a compressed cross-era source packet instead of from open-ended archaeology.
-- The next immediate work is `P5`: decide the first bounded write-back package across compact history blocks, one `DOC` lineage view, and any required front-door notes.
+- `P5` is now complete: the first bounded publication package is now fixed around one new `DOC` lineage view, four compact-history write-backs on the active `DOC` quartet, and one minimal front-door history note, so the next lane no longer needs to reopen package boundaries before landing the first real historical reader surfaces.
 
 ## P1 (Compact history block contract | v1)
 
@@ -419,6 +431,47 @@
 - The immediate consequence for `P5` is now clear:
   - the first publication package should use this compressed source set and this major-chain path rather than reopening source selection from scratch
 
+## P5 (First publication package | v1)
+
+### P5-C1-S1 (First history-surface write-back package fixed | v1)
+
+- The first bounded publication package is now fixed as one `DOC`-only landing batch with three included write-back surfaces and four explicit exclusions.
+- The included write-back surfaces are now:
+  - one new lineage view:
+    - `docs/governance/views/view-doc-history-and-lineage-v1.md`
+    - job: publish the bounded major-chain history for `DOC` using the `P4` pilot packet
+  - four compact-history write-backs on the active `DOC` quartet:
+    - `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md`
+    - `docs/governance/contract/DOC-SLC-0001-source-log-compatibility-and-weak-structure-export-discipline.md`
+    - `docs/governance/contract/DOC-TAX-0001-governance-contract-taxonomy-and-placement-model.md`
+    - `docs/governance/contract/DOC-FDT-0001-family-front-door-transition-and-gc-demotion-model.md`
+    - job: add one bounded `## Compact History` block to each current contract using the `P1` field contract and links back into the lineage view plus retained source-owner log
+  - one minimal current-reading navigation note:
+    - `docs/governance/views/view-doc-current-front-door-v1.md`
+    - job: tell readers that current meaning still starts here, while historical reading now starts at the lineage view
+- The excluded surfaces for the first package are now fixed as:
+  - `docs/governance/views/view-doc-contract-promotion-map-v1.md`
+    - keep unchanged because `P2` already fixed that mapping and the first history package must not blur history-reading with source-owner-to-contract mapping
+  - retained source-owner logs such as `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C`
+    - keep unchanged because they still own detailed chronology, evidence, and slice-local decision sequence after the first history package lands
+  - any old-`GC-*` cleanup, relocation, or support-only move
+    - keep out because `P3` makes cleanup a downstream review that must happen only after publication is real and re-readable
+  - any `OPS` or non-`DOC` family history publication
+    - keep out because the first package must remain one defended `DOC` pilot rather than a cross-family rollout
+- The publication order for this first bounded package is now fixed as:
+  1. publish the lineage view first so one family-owned history target exists
+  2. write the four compact-history blocks so each current contract has a stable path into that family history target
+  3. update the `DOC` front door with one minimal history-reading note
+  4. stop without cleanup changes and re-evaluate old historical logs only in a later bounded cleanup review
+- The first package is now also bounded by one content rule:
+  - the lineage view should narrate the compressed `S0B-3A -> S0C-1A -> S0D-1A -> S0E-3A -> S0E-6A -> S0F source-owner quartet -> S0F-4D -> S0F-4E -> S0F-4F` arc
+  - each compact-history block should narrate only the direct contract-local chain needed to orient the reader to that contract's current shape
+  - the front-door note should add navigation only and should not become a second lineage summary
+- Under this package boundary, `history extracted enough` remains false until all three included write-back surfaces are landed together strongly enough that the retained source-owner log is no longer the only practical first historical entrypoint.
+- The next execution lane after `S0F-4G` is therefore now explicit:
+  - land the first `DOC` history publication package exactly as bounded above
+  - then reopen old-log cleanup review only if the published package proves history is now discoverable without raw-log archaeology
+
 ## Plan (draft)
 
 ### P1 (Compact history block contract)
@@ -474,7 +527,7 @@
 
 ### P5 (First publication package)
 
-- [ ] `P5-C1-S1`: first history-surface write-back package fixed
+- [x] `P5-C1-S1`: first history-surface write-back package fixed
 
 ## Evidence (reserved)
 
@@ -533,6 +586,19 @@
   - `S0F-4G/P4` now fixes the first cross-era pilot source packet and explicitly classifies secondary-context logs out of the primary extraction lane
   - later history publication can now start from one compressed `S0B -> S0C -> S0D -> S0E -> S0F` structural arc rather than from an unconstrained full-history dump
 
+### P5-C1-S1 (First publication package fixed | 2026-04-08)
+
+- headSha: `<pending commit for S0F-4G/P5-C1-S1>`
+- artifacts:
+  - `docs/logs/log-S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo has one explicit first write-back package boundary for `DOC` history publication
+  - later execution no longer needs to reopen which `DOC` surfaces are in-scope for the first real lineage landing
+- observed:
+  - `S0F-4G/P5` now fixes one bounded first publication package around the lineage view, the four active compact-history contract write-backs, and one minimal front-door note
+  - later work can now execute publication directly and keep cleanup review as a separate downstream admission decision
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4G` as the next bounded follow-up so later history extraction and cleanup work can proceed through a reusable mechanism instead of ad hoc archaeology.
@@ -540,3 +606,4 @@
 - 2026-04-08: completed `P2` so the first `DOC` lineage-view shape and its navigation split are now explicit.
 - 2026-04-08: completed `P3` so cleanup admission now includes one explicit history-extraction gate and one history-missing stop-reason set.
 - 2026-04-08: completed `P4` so the first `DOC` history pilot now has one bounded source set and one defended major-chain reading path.
+- 2026-04-08: completed `P5` so the first real `DOC` history publication package is now fixed as one bounded landing batch and `S0F-4G` can close as a stable design lane.
