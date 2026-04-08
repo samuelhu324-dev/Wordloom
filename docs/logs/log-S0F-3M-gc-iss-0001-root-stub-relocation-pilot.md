@@ -5,7 +5,7 @@
 **id**: `S0F-3M`
 **kind**: `log`
 **title**: `GC-ISS-0001 root-stub relocation pilot v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Cleanup, Redirect, GC, ISS, Pilot, epic/s0, sub/3m`
 **links**: ``
@@ -232,6 +232,29 @@
   - no reader regression was found that would force a second rewrite wave after the move
 - `P3` therefore confirms that the representative `GC-ISS-0001` pilot is not merely executed; it is executed cleanly enough to support a real widen-versus-hold decision in `P4`.
 
+## P4 (Next-lane decision | v1)
+
+### P4-C1-S1 (Hold the verified pilot; do not widen to the rest of `GC-ISS-*` yet | v1)
+
+- `P4` now closes the widen-versus-hold question explicitly.
+- The result of `S0F-3M` is not `expand immediately` and not `the pilot failed`.
+- The defended answer is now:
+  - keep `GC-ISS-0001` as one verified pilot
+  - do not widen the same execution pattern to `GC-ISS-0002` through `GC-ISS-0005` yet
+  - keep `GC-PRB-0001` on its separate deferred path
+- The main reason to hold is that the pilot has already delivered the thing this slice needed most:
+  - proof that `support-only retained body + root stub` works in practice for one real ISS record
+- Widening now would add more cleanup writes, but it would not change the current semantic reading model:
+  - the current active issue-governance contracts already live at `GC-ICR-0001`, `GC-ICL-0001`, `GC-ICT-0001`, `GC-IID-0001`, and `GC-IID-0002`
+  - the remaining old `GC-ISS-*` files are legacy redirects, not current rule owners
+- `P4` also fixes the family-boundary answer that motivated the user's question:
+  - the `DOC` family is current for doc-first control-plane contracts such as role boundaries, source-log compatibility, taxonomy, placement, and front-door transition
+  - it is not the semantic owner for the active issue-governance registry contracts that still read through current `GC-*` narrow-registry records
+- Under that model, the meaning of this cleanup lane is now narrower and more practical:
+  - it exists to reduce legacy-root clutter safely when doing so adds reader or maintenance value
+  - it does not exist to re-home every active governance contract into the `DOC` family by default
+- Future widening remains allowed, but only if one later bounded slice can show concrete value beyond `the model is feasible`, because feasibility is already proven now.
+
 ## Plan (draft)
 
 ### P1 (Rewrite-set inventory)
@@ -278,7 +301,7 @@
 
 ### P4 (Next-lane decision)
 
-- [ ] `P4-C1-S1`: widen-versus-hold decision recorded
+- [x] `P4-C1-S1`: widen-versus-hold decision recorded
 
 ## Current Status (recommended)
 
@@ -290,7 +313,11 @@
 - `P2` is now complete: `GC-ISS-0001` is no longer a full retained body at the root path; it now runs on the executed `support-only retained body + root stub` model.
 - The support-only index now exposes the moved retained body explicitly, and execution did not require any pre-existing reader-surface retargets.
 - `P3` is now complete: the executed root stub reads correctly, the moved retained body is readable under the support-only surface, and the zero-retarget execution result did not regress the current lineage or cleanup readers.
-- The immediate next step is `P4`: decide whether this verified pilot result should widen to more `GC-ISS-*` records or remain one defended pilot for now.
+- `P4` is now complete and `S0F-3M` is now stable: the verified pilot should be held as one defended result rather than widened immediately to the rest of `GC-ISS-*`.
+- The repo now has one explicit answer that separates `legacy redirect cleanup` from `current contract promotion`:
+  - current active issue-governance rules still read through current `GC-*` narrow-registry contracts
+  - current doc-first control-plane rules read through `DOC-*` family contracts
+- The immediate next step is no longer inside `S0F-3M`; future work should reopen only if one bounded slice has concrete value in widening the same cleanup model to more legacy ISS redirects.
 
 ## Evidence (reserved)
 
@@ -364,9 +391,28 @@
   - the root stub is readable and preserves old-ID landing, successor guidance, and moved-body guidance exactly as planned
   - the moved retained body is readable under support-only, the local support-only index exposes it explicitly, and the current lineage / cleanup readers still resolve through the root path without regression
 
+### P4-C1-S1 (Hold-versus-widen decision fixed after verified pilot | 2026-04-09)
+
+- headSha: `<pending commit for S0F-3M/P4-C1-S1>`
+- artifacts:
+  - `docs/logs/support-only/s0f-3m-gc-iss-0001-p4-decision-manifest.json`
+  - `docs/governance/INDEX.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
+  - `docs/governance/contracts/GC-ISS-0002-issue-conclusion-post-merge-linkage.md`
+  - `docs/governance/contracts/GC-ISS-0003-issue-context-sentence-count-main-vs-child.md`
+  - `docs/logs/log-S0F-3M-gc-iss-0001-root-stub-relocation-pilot.md`
+- expected:
+  - the repo has one explicit answer on whether the verified `GC-ISS-0001` pilot should widen immediately to the rest of `GC-ISS-*`
+  - the repo has one explicit answer on why this cleanup lane does or does not imply a broader `GC -> DOC` migration
+- observed:
+  - the pilot is now held as one defended verified result and does not widen immediately to `GC-ISS-0002` through `GC-ISS-0005`
+  - the repo now records that current issue-governance semantics still live in active `GC-*` narrow-registry contracts, while `DOC-*` remains the current family for doc-first control-plane contracts rather than a default replacement for those active governance records
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-3M` as the first bounded `GC-ISS-0001` root-stub relocation pilot after `S0F-3L/P4` chose a representative ISS-first execution lane.
 - 2026-04-09: completed `P1` by fixing the exact `GC-ISS-0001` rewrite-set inventory and confirming that the current reader surface should stay on the future root stub path rather than being broadly retargeted to support-only.
 - 2026-04-09: completed `P2` by moving the `GC-ISS-0001` retained full body to contracts support-only, replacing the root file with the executed stub, and updating the local support-only index without requiring a pre-existing reader-retarget wave.
 - 2026-04-09: completed `P3` by verifying that the executed root stub, moved retained body, local support-only navigation, and zero-retarget execution result all read cleanly after the move.
+- 2026-04-09: completed `P4` by holding the verified `GC-ISS-0001` result as one defended pilot, declining immediate expansion to the remaining `GC-ISS-*` redirects, and fixing the boundary between legacy `GC` cleanup work and current `DOC` family promotion.
