@@ -24,9 +24,10 @@
 
 ## Reader Notes
 
-- This is a promotion map, not a proof that all four contracts have already been extracted.
-- Until a promoted file actually exists, the source-owner log remains the current primary source.
-- The map exists so future extraction work stays deterministic about naming and area ownership.
+- This remains a promotion map first: it owns deterministic source-owner-to-contract mapping, not the full directory-inventory job or the family front-door job.
+- The first mapping set above is now fully executed: `DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`, and `DOC-FDT-0001` are all landed as active family-owned current contracts.
+- For later mapping extensions that are not yet executed, the source-owner log remains the current primary source until the corresponding promoted file exists.
+- The map therefore remains meaningful after the first quartet completed because it still fixes naming, area ownership, and future extension semantics deterministically.
 
 ## Source Refs
 

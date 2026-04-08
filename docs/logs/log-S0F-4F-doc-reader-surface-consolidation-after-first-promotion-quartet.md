@@ -188,6 +188,35 @@
 - Role-overlap note:
   - the promotion map should remain the deterministic source-owner-to-contract mapping surface and light historical framing surface, not a duplicate of the contract index or the family front door
 
+## P2 (Reader-surface convergence | v1)
+
+### P2-C1-S1 (`INDEX.md` converged onto steady-state quartet-active directory language | v1)
+
+- `docs/governance/contract/INDEX.md` now reads as the active landed contract surface for the first mapped `DOC` quartet rather than as a temporary landing pad that still centers source-owner-primary wording for `S0F-4A` through `S0F-4C`.
+- The `Promotion Path` section now distinguishes:
+  - the first executed mapping set that is already landed and active
+  - later mapping extensions that may still begin in source-owner logs if they are admitted in the future
+- The `Reader Notes` section now makes the current steady-state explicit:
+  - this directory is the active landed contract surface for the first quartet
+  - retained source-owner logs remain lineage and traceability surfaces rather than the strongest current reader entry for those four rule sets
+
+### P2-C1-S2 (`DOC` front door converged onto steady-state quartet-active family-reading language | v1)
+
+- `docs/governance/views/view-doc-current-front-door-v1.md` now reads as the standing family-first reader entry rather than as an initial transitional front door.
+- The current-reading rule now distinguishes:
+  - open the active family-owned contract body for any area inside the first mapped quartet
+  - use retained source-owner logs primarily for lineage, evidence, and historical traceability
+  - fall back to source-owner-primary reading only for later unmapped `DOC` areas if such areas are admitted in the future
+- The promotion-map reference is now reframed as one current mapping surface that already includes an executed first set rather than as a merely planned follow-up.
+
+### P2-C1-S3 (Promotion map converged onto executed-first-set plus still-valid mapping language | v1)
+
+- `docs/governance/views/view-doc-contract-promotion-map-v1.md` now reads as a still-live mapping surface after execution instead of as a pre-execution planning note.
+- The reader notes now distinguish:
+  - the first mapping set is already fully executed and active
+  - future mapping extensions, if admitted later, still reuse the same source-owner-to-contract rule
+  - the map remains separate from the contract index and the family front door because it owns deterministic mapping and extension semantics rather than directory inventory or family-first reading behavior
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -237,9 +266,9 @@
 
 ### P2 (Reader-surface convergence)
 
-- [ ] `P2-C1-S1`: `INDEX.md` converged onto steady-state quartet-active language
-- [ ] `P2-C1-S2`: `DOC` front door converged onto steady-state quartet-active language
-- [ ] `P2-C1-S3`: promotion map converged onto executed-first-set plus still-valid mapping language
+- [x] `P2-C1-S1`: `INDEX.md` converged onto steady-state quartet-active language
+- [x] `P2-C1-S2`: `DOC` front door converged onto steady-state quartet-active language
+- [x] `P2-C1-S3`: promotion map converged onto executed-first-set plus still-valid mapping language
 
 ### P3 (Post-consolidation boundary)
 
@@ -251,7 +280,8 @@
 - `S0F-4F` is now opened as the next bounded follow-up after `S0F-4E`: the first mapped `DOC` promotion quartet is active, but the three main `DOC` reader surfaces still need one consolidation pass so they read as one steady-state story instead of as leftover staged landing notes.
 - `P0` is now complete: the problem boundary is fixed as reader-surface consolidation rather than one more contract extraction or old-`GC-*` cleanup lane.
 - `P1` is now complete: the residual wording inventory is explicit for all three target surfaces, and the remaining work is now tightly bounded to wording convergence rather than additional discovery.
-- The immediate next step is `P2`: converge `INDEX.md`, the `DOC` front door, and the promotion map onto one steady-state quartet-active story while keeping their reader jobs distinct.
+- `P2` is now complete: the `DOC` contract index, the `DOC` front door, and the promotion map now all read as one steady-state quartet-active story while still preserving their distinct reader jobs.
+- The immediate next step is `P3`: fix the post-consolidation reader notes and next-step boundary so later old-`GC-*` cleanup can proceed from a stable `DOC` reader surface without reopening the same wording debate.
 
 ## Evidence (reserved)
 
@@ -283,7 +313,22 @@
 - observed:
   - the residual drift set is now bounded: the contract index still carries some future-promotion and source-owner-primary language that is too broad for the active quartet, the DOC front door still carries some first-surface and planned-map wording that understates the steady state, and the promotion map now needs the strongest reframing because it still reads mostly as a pre-execution plan instead of as an executed-first-set mapping surface
 
+### P2-C1-S1 through P2-C1-S3 (three DOC reader surfaces converged onto steady-state quartet-active language | 2026-04-08)
+
+- headSha: `4a9bcd0107f3a6e1fbee7e7f43e4024f47a76d99`
+- artifacts:
+  - `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/governance/views/view-doc-contract-promotion-map-v1.md`
+- expected:
+  - one reader should be able to tell that the first mapped `DOC` quartet is fully active while still understanding why the index, front door, and promotion map remain three separate files
+- observed:
+  - the three reader surfaces now converge on one stronger steady-state story: the contract index owns landed quartet inventory and future-extension landing semantics, the DOC front door owns family-first current reading for the active quartet, and the promotion map owns deterministic mapping plus future extension semantics without reading like a stale pre-execution plan
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4F` as the post-quartet `DOC` reader-surface consolidation lane, fixed the three target reader surfaces, and fixed `P1` residual-wording inventory as the immediate next step.
 - 2026-04-08: completed `P1` by inventorying the exact residual mixed-transition wording and role-overlap set across the `DOC` contract index, the `DOC` front door, and the promotion map so `P2` can now converge wording without reopening discovery.
+- 2026-04-08: completed `P2` by converging the `DOC` contract index, the `DOC` front door, and the promotion map onto one steady-state quartet-active story while preserving their distinct reader jobs.

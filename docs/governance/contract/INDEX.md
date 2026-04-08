@@ -82,17 +82,14 @@
 
 ## Promotion Path
 
-- Current source-owner `DOC` logs may later promote into family-owned `DOC` contracts here.
-- The first mapped promotion set is:
+- Future source-owner `DOC` logs may later promote into family-owned `DOC` contracts here when later mapping extensions are admitted.
+- The first executed mapped promotion set is:
   - `S0F-4A` -> `DOC-DRB-0001`
   - `S0F-4B` -> `DOC-SLC-0001`
   - `S0F-3I` -> `DOC-TAX-0001`
   - `S0F-4C` -> `DOC-FDT-0001`
-- Until those files are actually created, the source-owner logs remain the current primary sources.
-- `DOC-DRB-0001` is now the first landed promotion under this map.
-- `DOC-SLC-0001` is now the second landed promotion under this map.
-- `DOC-TAX-0001` is now the third landed promotion under this map.
-- `DOC-FDT-0001` is now the fourth landed promotion under this map.
+- `DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`, and `DOC-FDT-0001` are now landed and active under this first mapping set.
+- If later mapping extensions are admitted, their source-owner logs remain the current primary sources until those later promotions are executed.
 
 ## Landing Rule
 
@@ -106,12 +103,14 @@
 ## Reader Notes
 
 - This directory no longer starts empty: `DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`, and `DOC-FDT-0001` are now landed family-owned `DOC` contract records.
-- During transition, current `DOC` meaning may still live primarily in source-owner logs such as `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` while this directory becomes the active stable landing surface.
+- This directory now acts as the active landed contract surface for the first mapped `DOC` quartet.
 - `DOC-DRB-0001` has now completed stable close-out review and is the first active family-owned `DOC` contract under this landing surface.
 - `DOC-SLC-0001` has now completed stable close-out review and is the second active family-owned `DOC` contract under this landing surface.
 - `DOC-TAX-0001` has now completed stable close-out review and is the third active family-owned `DOC` contract under this landing surface.
 - `DOC-FDT-0001` has now completed stable close-out review and is the fourth active family-owned `DOC` contract under this landing surface.
 - The first mapped `DOC` promotion set is now fully landed as active family-owned current contract bodies.
+- The retained source-owner logs for `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` remain lineage and traceability surfaces for those rule sets rather than the strongest current reader entry.
+- Later `DOC` mapping extensions, if admitted, may still begin in source-owner logs until their own promotion lanes complete.
 - The first promoted `DOC` contracts should use the admitted area dictionary above rather than reusing `GC-*` prefixes.
 
 ## Source Refs
