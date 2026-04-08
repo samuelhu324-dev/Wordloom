@@ -1,0 +1,26 @@
+{
+  "id": "S0F-3M",
+  "phase": "P2",
+  "generatedAt": "2026-04-09",
+  "pilotRecord": "GC-ISS-0001",
+  "writes": {
+    "movedRetainedBody": {
+      "from": "docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md",
+      "to": "docs/governance/contracts/support-only/GC-ISS-0001-issue-creation-metadata-english-body.md"
+    },
+    "rootStub": {
+      "path": "docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md",
+      "currentSuccessor": "GC-ICR-0001",
+      "movedAt": "2026-04-09"
+    },
+    "supportOnlyIndex": {
+      "path": "docs/governance/contracts/support-only/INDEX.md",
+      "addedMember": "GC-ISS-0001-issue-creation-metadata-english-body.md"
+    }
+  },
+  "boundedReferenceRewrites": [],
+  "p2Conclusion": {
+    "status": "executed",
+    "summary": "The representative GC-ISS-0001 pilot now exists on the root-stub model. The retained full body moved to contracts support-only, the root path stayed occupied by a stub, the support-only index now exposes the moved body, and no pre-existing reader surface required retargeting during execution."
+  }
+}

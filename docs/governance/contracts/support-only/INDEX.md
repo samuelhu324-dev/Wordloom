@@ -9,6 +9,7 @@
 
 ## Current Members
 
+- `GC-ISS-0001-issue-creation-metadata-english-body.md`
 - `GC-PRB-0001-backfill-historical-drift-fail-on-findings.md`
 
 ## Navigation Rule

@@ -1,51 +1,22 @@
-# governance-contract-record: GC-ISS-0001
+# governance-contract-stub: GC-ISS-0001
 
 - `record_id`: `GC-ISS-0001`
 - `contract_id`: `ISSUE-CREATION-METADATA-ENGLISH-BODY`
-- `title`: `issue creation must resolve metadata deterministically and render an English-only scaffold`
+- `status`: `archived`
+- `moved_from`: `docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md`
+- `moved_to`: `docs/governance/contracts/support-only/GC-ISS-0001-issue-creation-metadata-english-body.md`
+- `moved_at`: `2026-04-09`
 
-```yaml
-contract_record:
-  contract_id: ISSUE-CREATION-METADATA-ENGLISH-BODY
-  status: deprecated
-  summary: Issue creation must resolve milestone, relationship, project, and deterministic links before live creation while rendering an English-only body scaffold that keeps Context and child DoD intentionally unexpanded.
-  governance_area: issue-creation-governance
-  applies_to: source-log-owned GitHub issue creation for child and top-level logs within the docs-GitHub lifecycle
-  enforcement_surface: issue draft and create surfaces that derive metadata from frontmatter or exact controlled bridges and stop when required creation metadata is ambiguous
-  violation_semantics: fail
-  introduced_by: S0E-2D/P0-C1-S1
-  last_changed_by: S0F-3E/P6-C1-S2
-  source_refs:
-    - docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md
-    - docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md
-  supersedes: []
-  superseded_by: []
-  notes:
-    - This preserved legacy ISS-area record now redirects readers to GC-ICR-0001 after the S0F-3E P6 namespace split.
-```
+## This file moved
 
-## Legacy Redirect
-
-- Current standing:
-  - `deprecated`
-- Lineage:
-  - `split into ICR as GC-ICR-0001`
-- Read now:
+- Current active successor:
   - `GC-ICR-0001`
+- Retained historical body:
+  - `docs/governance/contracts/support-only/GC-ISS-0001-issue-creation-metadata-english-body.md`
 
 ## Reader Notes
 
-- Historical meaning preserved:
-  - Creation may derive only deterministic metadata such as milestone, parent issue, project, and stable navigation links.
-  - Creation must not auto-author final Context or child issue DoD prose.
-- Historical boundary preserved:
-  - Missing or ambiguous creation metadata remains blank or stops the mutation path rather than being guessed from prose.
-- Current successor:
-  - `GC-ICR-0001`
-
-## Traceability
-
-- Stable semantic owner:
-  - `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
-- Current completeness concentration:
-  - `docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md`
+- This root path remains occupied so old-ID links and legacy citations can still land here first.
+- Read `GC-ICR-0001` for current rule meaning.
+- Open the moved support-only body only when the retained historical wording itself is needed.
+- Do not edit here.

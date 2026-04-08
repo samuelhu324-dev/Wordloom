@@ -187,6 +187,29 @@
   - `P2` does not need a broad rewrite wave
   - `P2` only needs the bounded core writes of `move full body + leave root stub + add support-only index entry`
 
+## P2 (Relocation execution | v1)
+
+### P2-C1-S1 (Moved retained full body and wrote root stub for `GC-ISS-0001` | v1)
+
+- `P2` now executes the representative pilot instead of keeping it design-only.
+- The retained historical body for `GC-ISS-0001` now lives at:
+  - `docs/governance/contracts/support-only/GC-ISS-0001-issue-creation-metadata-english-body.md`
+- The original root path is now occupied by the planned stub rather than the full retained body:
+  - `docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md`
+- The executed stub keeps the old ID readable, points readers to `GC-ICR-0001` for current rule meaning, and exposes the moved support-only body only when the retained historical wording is needed.
+
+### P2-C1-S2 (Support-only index updated; no bounded rewrite wave needed | v1)
+
+- `docs/governance/contracts/support-only/INDEX.md` now lists the moved `GC-ISS-0001` retained body explicitly.
+- The pre-existing reader-surface split fixed in `P1` holds at execution time:
+  - no lineage, cleanup-boundary, or cleanup-ledger surface needed retargeting during `P2`
+  - no broad direct-navigation rewrite wave was required to land the pilot cleanly
+- The practical `P2` result is therefore:
+  - one moved retained body
+  - one root stub left in place
+  - one support-only index addition
+  - zero pre-existing reader retargets
+
 ## Plan (draft)
 
 ### P1 (Rewrite-set inventory)
@@ -223,8 +246,8 @@
 
 ### P2 (Relocation execution)
 
-- [ ] `P2-C1-S1`: full retained body moved and root stub written
-- [ ] `P2-C1-S2`: support-only index and bounded rewrites applied
+- [x] `P2-C1-S1`: full retained body moved and root stub written
+- [x] `P2-C1-S2`: support-only index and bounded rewrites applied
 
 ### P3 (Post-move verification)
 
@@ -242,7 +265,9 @@
 - `P0` is now complete: pilot scope, execution order, and evidence contract are fixed.
 - `P1` is now complete: the exact pre-existing reference surface is fixed, and it turns out to be narrower than the design lane had to assume.
 - No existing reader surface currently has to be retargeted to the moved support-only body; lineage, cleanup-boundary, and cleanup-ledger citations should remain on the future root stub path.
-- The immediate next step is `P2`: execute the bounded core writes for `GC-ISS-0001` by moving the retained full body, writing the root stub, and adding the support-only index entry.
+- `P2` is now complete: `GC-ISS-0001` is no longer a full retained body at the root path; it now runs on the executed `support-only retained body + root stub` model.
+- The support-only index now exposes the moved retained body explicitly, and execution did not require any pre-existing reader-surface retargets.
+- The immediate next step is `P3`: verify that the root stub, moved retained body, and zero-retarget execution result all read correctly in practice.
 
 ## Evidence (reserved)
 
@@ -281,7 +306,24 @@
   - the pre-existing reader surfaces are all lineage, cleanup-boundary, or cleanup-ledger readers that should remain on the root path through the future stub
   - no pre-existing reader surface currently requires retargeting to the moved full body, so `P2` may proceed with only the bounded core writes plus the support-only index addition
 
+### P2-C1-S1S2 (Root-stub relocation executed for `GC-ISS-0001` pilot | 2026-04-09)
+
+- headSha: `<pending commit for S0F-3M/P2-C1-S1S2>`
+- artifacts:
+  - `docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md`
+  - `docs/governance/contracts/support-only/GC-ISS-0001-issue-creation-metadata-english-body.md`
+  - `docs/governance/contracts/support-only/INDEX.md`
+  - `docs/logs/support-only/s0f-3m-gc-iss-0001-execution-manifest.json`
+  - `docs/logs/log-S0F-3M-gc-iss-0001-root-stub-relocation-pilot.md`
+- expected:
+  - the representative `GC-ISS-0001` pilot executes as `move full body + leave root stub + add support-only index entry`
+  - the move lands without a broad pre-existing reader-retarget wave
+- observed:
+  - the full retained body now lives under the contracts-side support-only surface while the original root path remains occupied by a stub
+  - the support-only index now lists the moved retained body, and no pre-existing reader surface had to be retargeted during execution
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-3M` as the first bounded `GC-ISS-0001` root-stub relocation pilot after `S0F-3L/P4` chose a representative ISS-first execution lane.
 - 2026-04-09: completed `P1` by fixing the exact `GC-ISS-0001` rewrite-set inventory and confirming that the current reader surface should stay on the future root stub path rather than being broadly retargeted to support-only.
+- 2026-04-09: completed `P2` by moving the `GC-ISS-0001` retained full body to contracts support-only, replacing the root file with the executed stub, and updating the local support-only index without requiring a pre-existing reader-retarget wave.
