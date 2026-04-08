@@ -16,6 +16,12 @@
   - open a source-owner log as the current primary rule surface only when a later unmapped `DOC` area has not yet been promoted
 - Under this model, `DOC` current reading does not require first creating a `GC-*` registry record.
 
+## History Reading
+
+- Use `docs/governance/views/view-doc-history-and-lineage-v1.md` when the question is `how did the current DOC surface emerge?`
+- Keep using this front door when the question is `what is true now?`
+- Use retained source-owner logs for detailed chronology and evidence after the lineage view has oriented the reader to the major chain.
+
 ## Active Contracts
 
 - `DOCUMENT-ROLE-BOUNDARIES-WRITEBACK-PROTOCOL-AND-DISPOSITION-MODEL`:
@@ -50,6 +56,7 @@
 - The first mapped `DOC` promotion quartet is now fully readable through family-owned current contracts.
 - Promoted contract bodies should land under `docs/governance/contract/` with the family-owned filename model `DOC-<AREA>-<NNNN>-<summary>.md`.
 - The current `DOC` promotion map, including the already-executed first mapping set, lives at `docs/governance/views/view-doc-contract-promotion-map-v1.md`.
+- The current `DOC` family history surface lives at `docs/governance/views/view-doc-history-and-lineage-v1.md`.
 
 ## Source Refs
 
@@ -63,3 +70,4 @@
 - `docs/governance/contract/DOC-FDT-0001-family-front-door-transition-and-gc-demotion-model.md`
 - `docs/governance/contract/INDEX.md`
 - `docs/governance/views/view-doc-contract-promotion-map-v1.md`
+- `docs/governance/views/view-doc-history-and-lineage-v1.md`

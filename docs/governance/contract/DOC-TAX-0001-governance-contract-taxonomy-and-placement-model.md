@@ -88,6 +88,23 @@ doc_contract:
   - one family grows too many parallel front doors to scan cheaply
   - multiple files begin restating the same rule without one clear primary owner
 
+## Compact History
+
+- `Current source-owner origin`:
+  - `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
+- `Why this current contract exists`:
+  - governance reading needed one stable current rule surface that separates contract family from system level and keeps placement `SoT-first` instead of overloading the old `GC-*` registry vocabulary
+- `Major evolution chain`:
+  - `S0F-3I` fixed the seven-family taxonomy and placement model
+  - `S0F-4D` fixed the `DOC` family contract landing model that made current family-owned publication explicit
+  - `S0F-4E` promoted that taxonomy rule into `DOC-TAX-0001`
+  - `S0F-4F` consolidated the steady-state `DOC` reader surfaces that now depend on this family split
+- `Read history in full`:
+  - start at `docs/governance/views/view-doc-history-and-lineage-v1.md`
+  - then open `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md` for detailed chronology and evidence
+- `Cleanup dependency`:
+  - the retained source-owner log stays protected as detailed chronology until a later history-aware cleanup review confirms that this compact block plus the lineage view are sufficient for first-pass historical reading
+
 ## Reader Notes
 
 - This file is the third active family-owned current contract body mapped from `S0F-3I`.

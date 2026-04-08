@@ -124,6 +124,23 @@ doc_contract:
 - Any later externalization must keep one in-repo manifest or traceability surface so current reading never depends on mutable bucket listing.
 - Do not create a repo-wide `archive/` placeholder merely to simulate future object storage.
 
+## Compact History
+
+- `Current source-owner origin`:
+  - `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+- `Why this current contract exists`:
+  - mixed-role governance logs needed one stable current home for role boundaries, write-back order, and disposition separation after those semantics stopped needing source-owner-first reading
+- `Major evolution chain`:
+  - `S0F-4A` concentrated the rule set
+  - `S0F-4D` fixed the current `DOC` contract home
+  - `S0F-4E` promoted that rule set into `DOC-DRB-0001`
+  - `S0F-4F` consolidated the steady-state `DOC` reader surfaces around the active quartet
+- `Read history in full`:
+  - start at `docs/governance/views/view-doc-history-and-lineage-v1.md`
+  - then open `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md` for detailed chronology and evidence
+- `Cleanup dependency`:
+  - the retained source-owner log stays protected as detailed chronology until a later history-aware cleanup review confirms that this compact block plus the lineage view are sufficient for first-pass historical reading
+
 ## Reader Notes
 
 - This file is the first active family-owned current contract body mapped from `S0F-4A`.

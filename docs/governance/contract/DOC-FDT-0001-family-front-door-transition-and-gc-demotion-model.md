@@ -66,6 +66,23 @@ doc_contract:
 - Disposition helps standing and cleanup decisions.
 - Disposition does not replace family classification or current front-door ownership.
 
+## Compact History
+
+- `Current source-owner origin`:
+  - `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
+- `Why this current contract exists`:
+  - the repo needed one stable current rule surface for family-first reading so `GC-*` could stop acting like the umbrella contract universe while lineage-safe storage and transition notes remained explicit
+- `Major evolution chain`:
+  - `S0F-4C` fixed the family versus front-door versus disposition split and the first `GC-*` demotion rule
+  - `S0F-4D` fixed the current `DOC` contract home that could hold this transition rule directly
+  - `S0F-4E` promoted that transition rule into `DOC-FDT-0001`
+  - `S0F-4F` consolidated the steady-state `DOC` front door and promotion-map split that this contract now governs
+- `Read history in full`:
+  - start at `docs/governance/views/view-doc-history-and-lineage-v1.md`
+  - then open `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md` for detailed chronology and evidence
+- `Cleanup dependency`:
+  - the retained source-owner log stays protected as detailed chronology until a later history-aware cleanup review confirms that this compact block plus the lineage view are sufficient for first-pass historical reading
+
 ## Reader Notes
 
 - This file is the fourth active family-owned current contract body mapped from `S0F-4C`.

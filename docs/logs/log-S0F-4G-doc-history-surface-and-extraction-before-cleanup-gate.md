@@ -189,6 +189,7 @@
 - `P3` is now complete: later cleanup now has one explicit history-aware admission rule and one explicit stop/no-op reason set, so old-log relocation can no longer rely on standing-loss and redirect-loss alone when key historical meaning still has no durable extracted surface.
 - `P4` is now complete: the first bounded pilot source set and one defended major-chain reading path are now explicit, so later history publication can start from a compressed cross-era source packet instead of from open-ended archaeology.
 - `P5` is now complete: the first bounded publication package is now fixed around one new `DOC` lineage view, four compact-history write-backs on the active `DOC` quartet, and one minimal front-door history note, so the next lane no longer needs to reopen package boundaries before landing the first real historical reader surfaces.
+- The first `DOC` history publication package is now landed: one lineage view exists, the active quartet now carries compact history blocks, and the `DOC` front door now points readers to a separate family history surface before any later cleanup re-entry.
 
 ## P1 (Compact history block contract | v1)
 
@@ -497,6 +498,7 @@
 ### P5 (First publication package)
 
 - P5-C1-S1: decide the first write-back package across contract-history block, lineage view, and any front-door notes
+- P5-C1-S2: land the first bounded `DOC` history publication package on the agreed `view + four contracts + front-door note` surface set
 
 ## Execution Checklist (unchecked)
 
@@ -528,6 +530,7 @@
 ### P5 (First publication package)
 
 - [x] `P5-C1-S1`: first history-surface write-back package fixed
+- [x] `P5-C1-S2`: first history-surface write-back package landed
 
 ## Evidence (reserved)
 
@@ -599,6 +602,27 @@
   - `S0F-4G/P5` now fixes one bounded first publication package around the lineage view, the four active compact-history contract write-backs, and one minimal front-door note
   - later work can now execute publication directly and keep cleanup review as a separate downstream admission decision
 
+### P5-C1-S2 (First publication package landed | 2026-04-08)
+
+- headSha: `<pending commit for S0F-4G/P5-C1-S2>`
+- artifacts:
+  - `docs/governance/views/view-doc-history-and-lineage-v1.md`
+  - `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md`
+  - `docs/governance/contract/DOC-SLC-0001-source-log-compatibility-and-weak-structure-export-discipline.md`
+  - `docs/governance/contract/DOC-TAX-0001-governance-contract-taxonomy-and-placement-model.md`
+  - `docs/governance/contract/DOC-FDT-0001-family-front-door-transition-and-gc-demotion-model.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/logs/log-S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate.md`
+- expected:
+  - the repo has one real bounded `DOC` history reader surface rather than only a package definition
+  - each active `DOC` contract now has a compact path into family history and then into retained source-owner chronology
+  - current-reading and history-reading are now distinct but explicitly connected
+- observed:
+  - the first `DOC` lineage view is now published under `docs/governance/views/`
+  - the active quartet now carries compact history blocks pointing readers to the lineage view and the retained source-owner logs
+  - the `DOC` front door now separates current meaning from history reading without duplicating the lineage summary
+  - later cleanup re-entry can now judge `history extracted enough` against a real published package instead of against a design-only contract
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4G` as the next bounded follow-up so later history extraction and cleanup work can proceed through a reusable mechanism instead of ad hoc archaeology.
@@ -607,3 +631,4 @@
 - 2026-04-08: completed `P3` so cleanup admission now includes one explicit history-extraction gate and one history-missing stop-reason set.
 - 2026-04-08: completed `P4` so the first `DOC` history pilot now has one bounded source set and one defended major-chain reading path.
 - 2026-04-08: completed `P5` so the first real `DOC` history publication package is now fixed as one bounded landing batch and `S0F-4G` can close as a stable design lane.
+- 2026-04-08: landed the first `DOC` history publication package so lineage reading now exists as a real view and the active quartet now exposes compact historical orientation directly from current contracts.

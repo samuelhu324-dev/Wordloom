@@ -73,6 +73,23 @@ doc_contract:
 - Do not reuse `S0F-1K` as the default source-log shape for new slices.
 - If a future automation reader wants field-level extraction instead of whole-section reading, that change must land first as an explicit automation contract rather than as silent documentation drift.
 
+## Compact History
+
+- `Current source-owner origin`:
+  - `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
+- `Why this current contract exists`:
+  - the repo needed one current rule surface that keeps source-log strong structure explicit while allowing weak-structure export through bounded outlets instead of mixed-role template drift
+- `Major evolution chain`:
+  - `S0F-4B` fixed compatibility between the old canonical source-log templates and the six-outlet model
+  - `S0F-4D` fixed the current `DOC` contract landing pattern for promoted family-owned rules
+  - `S0F-4E` promoted that compatibility rule into `DOC-SLC-0001`
+  - `S0F-4F` consolidated the current `DOC` reader story so this rule now reads through the active quartet
+- `Read history in full`:
+  - start at `docs/governance/views/view-doc-history-and-lineage-v1.md`
+  - then open `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md` for detailed chronology and evidence
+- `Cleanup dependency`:
+  - the retained source-owner log stays protected as detailed chronology until a later history-aware cleanup review confirms that this compact block plus the lineage view are sufficient for first-pass historical reading
+
 ## Reader Notes
 
 - This file is the second active family-owned current contract body mapped from `S0F-4B`.
