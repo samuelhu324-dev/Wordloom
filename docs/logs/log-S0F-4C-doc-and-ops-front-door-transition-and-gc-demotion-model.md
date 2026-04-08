@@ -5,7 +5,7 @@
 **id**: `S0F-4C`
 **kind**: `log`
 **title**: `doc and ops front-door transition and GC demotion model v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, Taxonomy, epic/s0, sub/4c`
 **links**: ``
@@ -24,6 +24,7 @@
   **reference_log_7**: `docs/governance/views/view-doc-current-front-door-v1.md`
   **reference_log_8**: `docs/governance/views/view-ops-current-front-door-v1.md`
   **reference_log_9**: `docs/governance/views/view-gc-dual-reading-transition-v1.md`
+  **reference_log_10**: `docs/governance/views/view-disposition-role-in-family-transition-v1.md`
 **issue_keyword**: `taxonomy`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/4`
@@ -205,6 +206,17 @@
   - family current front doors become the first reader vocabulary where they already exist
   - `docs/governance/INDEX.md` remains valid, but only as the narrow registry front door rather than the universal contract front door
 
+  ## P4 (Disposition role in migration | v1)
+
+  ### P4-C1-S1 (Disposition supports standing and cleanup, not family ownership | v1)
+
+  - The repo now keeps one explicit disposition-role surface at:
+    - `docs/governance/views/view-disposition-role-in-family-transition-v1.md`
+  - Under this rule:
+    - disposition answers current versus legacy/support-only/deprecated standing
+    - disposition may guide placement and cleanup decisions
+    - disposition does not replace family classification or current front-door ownership
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -273,7 +285,7 @@
 
 ### P4 (Disposition role in migration)
 
-- [ ] `P4-C1-S1`: disposition role fixed for transition without replacing family ownership
+- [x] `P4-C1-S1`: disposition role fixed for transition without replacing family ownership
 
 ## Current Status (recommended)
 
@@ -282,7 +294,8 @@
 - `P1` is now complete: the repo now has one first `DOC` current front door at `docs/governance/views/view-doc-current-front-door-v1.md`, and `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` are now explicitly readable as current `DOC` contracts without first passing through `GC-*` vocabulary.
 - `P2` is now complete: the repo now has one first `OPS` current front door at `docs/governance/views/view-ops-current-front-door-v1.md`, and current operational meaning now reads through `S4A`, `S4D`, `S4E`, and the stable runbook layer rather than through old governance-registry wording.
 - `P3` is now complete: the repo now has one explicit dual-reading rule, so `GC-*` may remain as lineage/storage vocabulary while current reading moves to family front doors where those already exist.
-- The next immediate follow-up is `disposition`: define precisely how placement and standing support transition work without replacing family or front-door ownership.
+- `P4` is now complete: the repo now has one explicit rule for what `disposition` owns during transition, so standing and cleanup can be clarified without blurring family ownership or current front-door reading.
+- `S0F-4C` is now stable: `DOC` and `OPS` current front doors exist, the `GC-*` dual-reading rule is explicit, and `disposition` is now bounded to standing and cleanup rather than to family meaning.
 
 ## Evidence (reserved)
 
@@ -334,9 +347,22 @@
 - observed:
   - the repo now has one explicit dual-reading rule, and `docs/governance/INDEX.md` now reads as the narrow registry front door rather than as the universal front door for every contract family
 
+### P4-C1-S1 (disposition role fixed for family-first transition | 2026-04-08)
+
+- headSha: `bbff10fa1ac0d8d37d0ca6f4b23ed2c8e791bb95`
+- artifacts: `docs/governance/views/view-disposition-role-in-family-transition-v1.md`
+- artifacts: `docs/governance/views/view-contract-family-placement-map-v1.md`
+- artifacts: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
+- artifacts: `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to explain how disposition supports standing and cleanup during transition without treating it as a substitute for family or front-door ownership
+- observed:
+  - the repo now has one explicit disposition-role surface, and `S0F-4C` now closes with family, front door, lineage vocabulary, and standing all separated clearly enough for later transition work
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4C` to separate family, front door, legacy registry prefix, and disposition so the repo can move toward `DOC/OPS/...` current reading without immediate mass rename.
 - 2026-04-08: completed `P1` by publishing the first `DOC` current front door and by mapping `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into one family-first reading model.
 - 2026-04-08: completed `P2` by publishing the first `OPS` current front door and by mapping `S4A`, `S4D`, `S4E`, and the stable release-operations runbook into one family-first reading model.
 - 2026-04-08: completed `P3` by publishing the first dual-reading transition rule, so old `GC-*` identifiers remain valid for lineage and storage while current reading shifts to family front doors where available.
+- 2026-04-08: completed `P4` by publishing the disposition-role rule, so standing and cleanup now support family-first transition without replacing family ownership or current front-door reading.

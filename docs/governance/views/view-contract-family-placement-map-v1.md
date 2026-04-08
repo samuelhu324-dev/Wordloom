@@ -48,6 +48,7 @@
 - This view is descriptive, not prescriptive: it tells you where the repo currently keeps meaning, not where an imaginary perfect repository would place every file.
 - The most fragmented-looking families are not automatically the most broken ones. `PRO`, `INT`, `SEC`, and `EVD` are mixed because their enforceable semantics already span code, workflows, tests, and retained artifacts.
 - The family most likely to justify later concentration work is `DOM`, but only if you decide the business-rule reading path now needs a reader-facing front door beyond module code plus tests.
+- If the question is about current versus legacy or support-only standing, use `docs/governance/views/view-disposition-role-in-family-transition-v1.md`; placement and disposition are related, but they are not the same question.
 
 ## Source Refs
 
