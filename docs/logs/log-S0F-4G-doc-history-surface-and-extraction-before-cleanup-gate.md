@@ -174,7 +174,8 @@
 - `P0` is now complete: the missing problem is fixed as `history surface + extraction-before-cleanup gate`, not as another old-`GC-*` scan and not as one temporary history note inside the parent spine.
 - `P1` is now complete: the repo now has one explicit minimum field set, one fixed section shape, and one retained-chronology boundary for compact contract-history blocks, so later history extraction no longer needs to improvise what may enter a current contract body.
 - `P2` is now complete: the repo now has one explicit `DOC` lineage-view shape and one fixed navigation split among current contract, family front door, promotion map, lineage view, and retained source-owner logs, so later history publication no longer needs to improvise where historical reading should begin.
-- The next immediate work is `P3`: define the extraction-before-cleanup gate and how later old-log cleanup must fail or stop when history surfaces are still missing.
+- `P3` is now complete: later cleanup now has one explicit history-aware admission rule and one explicit stop/no-op reason set, so old-log relocation can no longer rely on standing-loss and redirect-loss alone when key historical meaning still has no durable extracted surface.
+- The next immediate work is `P4`: inventory the first bounded pilot source set across `S0B/S0C/S0D/S0E/S0F` for the initial `DOC` history surface.
 
 ## P1 (Compact history block contract | v1)
 
@@ -280,6 +281,54 @@
   - do not replay detailed `P/C/S` closure as if it were a source-owner log
 - Under this split, later history publication can add one real historical reader surface without blurring the already-stabilized `DOC` current-reading surfaces.
 
+## P3 (Extraction-before-cleanup gate | v1)
+
+### P3-C1-S1 (History-aware cleanup admission rule fixed | v1)
+
+- Later old-log cleanup admission must now satisfy three questions instead of two:
+  - has the candidate already lost `current standing`?
+  - has the candidate already lost `redirect or root-path lineage duty`?
+  - has the candidate's core historical meaning already been extracted into durable current or reader-facing history surfaces?
+- The third question is now mandatory whenever the candidate still acts as one of the main readable explanations for how the current family surface emerged.
+- The new admission rule is therefore:
+  - a candidate old log may enter bounded cleanup only when `standing-loss`, `redirect-loss`, and `history extracted enough` are all true
+- `history extracted enough` is now defined minimally as:
+  - current rule meaning already reads through the active current contract or other current surface
+  - compact history orientation is available at the current-contract layer when that current surface is family-owned
+  - one lineage or equivalent bounded reader-facing history surface exists, or the retained source-owner log is no longer the only practical historical entrypoint
+  - direct reader navigation toward deeper chronology remains explicit after the move
+- Under this rule, a file may fail cleanup admission even after losing current standing and redirect duty if the repo would otherwise force future readers to reconstruct the key evolution chain from raw historical logs alone.
+- This rule does not replace the existing triage model from `S0F-4D` or the null-candidate stop result from `S0F-3J`.
+- It tightens the later admission bar by saying:
+  - standing and redirect questions are necessary
+  - history extraction is an additional necessary condition when the file still carries core explanatory value
+
+### P3-C1-S2 (History-missing stop and no-op reasons fixed | v1)
+
+- The first allowed history-aware stop and no-op reasons are now fixed as:
+  - `history surface missing`:
+    - no lineage view or equivalent bounded historical reader surface exists yet for the relevant family chain
+  - `compact current-history missing`:
+    - the active current contract still lacks the minimum compact history block needed to orient readers away from the old log
+  - `source-owner still sole practical history entrypoint`:
+    - the candidate old log still acts as the only efficient way to understand the major evolution chain
+  - `navigation to deep chronology not yet explicit`:
+    - a cleanup move would weaken discoverability because readers would not know where the detailed chronology now lives
+  - `pilot extraction not published yet`:
+    - the family has chosen extraction as the next step, but the first bounded write-back package is not yet landed
+- These reasons are now valid even if:
+  - the file is already deprecated
+  - the file is no longer current-state-first
+  - the directory looks tidy enough to move it
+- The review outcome model is therefore tightened to three explicit classes:
+  - `admissible for cleanup now`
+  - `not admissible because redirect or standing still active`
+  - `not admissible because history extraction still incomplete`
+- This gives later cleanup lanes one explicit way to stop without pretending the candidate is still current and without pretending the relocation is already safe.
+- For `S0F-4G`, the immediate consequence is straightforward:
+  - later re-entry to old-log cleanup should not reopen merely from `DOC` current-surface stabilization alone
+  - it should reopen after one family history package exists strongly enough that old explanatory logs are no longer the only durable historical reading path
+
 ## Plan (draft)
 
 ### P1 (Compact history block contract)
@@ -325,8 +374,8 @@
 
 ### P3 (Extraction-before-cleanup gate)
 
-- [ ] `P3-C1-S1`: history-aware cleanup admission rule fixed
-- [ ] `P3-C1-S2`: history-missing stop and no-op reasons fixed
+- [x] `P3-C1-S1`: history-aware cleanup admission rule fixed
+- [x] `P3-C1-S2`: history-missing stop and no-op reasons fixed
 
 ### P4 (Pilot source inventory)
 
@@ -368,8 +417,22 @@
   - `S0F-4G/P2` now fixes the first `DOC` lineage-view section model and the outward navigation rule from current contracts into family history
   - later history publication can now create one bounded reader-facing historical surface without reopening the jobs already owned by the `DOC` front door or promotion map
 
+### P3-C1-S1S2 (History-aware cleanup admission and stop reasons fixed | 2026-04-08)
+
+- headSha: `<pending commit for S0F-4G/P3-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - later cleanup has one explicit third admission test beyond standing and redirect duty
+  - later cleanup has one explicit stop-reason set when history extraction is still incomplete
+- observed:
+  - `S0F-4G/P3` now requires `history extracted enough` before a historical source log becomes a default cleanup candidate
+  - the lane now fixes explicit stop and no-op reasons for cases where old logs still carry core explanatory value despite already losing current-state primacy
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4G` as the next bounded follow-up so later history extraction and cleanup work can proceed through a reusable mechanism instead of ad hoc archaeology.
 - 2026-04-08: completed `P1` so compact contract-history blocks now have one fixed minimum shape and one explicit source-owner-only chronology boundary.
 - 2026-04-08: completed `P2` so the first `DOC` lineage-view shape and its navigation split are now explicit.
+- 2026-04-08: completed `P3` so cleanup admission now includes one explicit history-extraction gate and one history-missing stop-reason set.
