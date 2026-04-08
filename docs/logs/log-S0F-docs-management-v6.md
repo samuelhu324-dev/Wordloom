@@ -51,6 +51,7 @@
   **phase_log_31**: `docs/logs/log-S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate.md`
   **phase_log_32**: `docs/logs/log-S0F-3K-history-aware-old-gc-cleanup-recheck-after-doc-history-publication.md`
   **phase_log_33**: `docs/logs/log-S0F-3L-old-gc-root-redirect-replacement-and-stub-model.md`
+  **phase_log_34**: `docs/logs/log-S0F-3M-gc-iss-0001-root-stub-relocation-pilot.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -319,6 +320,8 @@
 - `S0F-3L/P2` is now complete: the repo now has one explicit root-stub minimum shape, one fixed support-only replacement-target model, and one navigation split between root-stub citations and moved full-body citations, so the next immediate work is no longer model invention but testing whether this one model applies cleanly across both `GC-ISS-*` and `GC-PRB-0001`.
 - `S0F-3L/P3` is now complete: the shared stub model remains valid as one design family, but the first move-ready candidate now narrows to the `GC-ISS-*` split set while `GC-PRB-0001` remains deferred for a later explicit umbrella judgment, so the next immediate work is a `P4` decision on whether to execute an ISS-first pilot or stop at design-ready state.
 - `S0F-3L/P4` is now complete and `S0F-3L` is now stable: preserved old `GC-*` redirect content now splits into one bounded migration lane and one retained defer lane, so the repo should open a representative `GC-ISS-0001` root-stub relocation pilot next while keeping `GC-PRB-0001` as a full retained root redirect until a separate umbrella-specific execution slice proves it safe to move.
+- `S0F-3M` is now opened as that next bounded execution slice: the first real relocation pilot is narrowed to `GC-ISS-0001`, with `P1` reserved for the exact rewrite-set inventory before any file move, root-stub write, or support-only index mutation is executed.
+- `S0F-3M/P1` is now complete: the `GC-ISS-0001` reference surface is narrower than expected, with lineage and cleanup readers staying on the future root stub path and no pre-existing reader surface currently requiring retargeting to the moved full body, so the next immediate work is the bounded `P2` execution write set.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
