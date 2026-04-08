@@ -48,6 +48,7 @@
   **phase_log_28**: `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
   **phase_log_29**: `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
   **phase_log_30**: `docs/logs/log-S0F-3J-old-gc-cleanup-candidate-selection-after-doc-reader-stabilization.md`
+  **phase_log_31**: `docs/logs/log-S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -300,6 +301,8 @@
 - `S0F-3J/P2` is now complete: that null-inventory result is now adjudicated explicitly, no post-boundary old-`GC-*` subset is currently admissible for cleanup, and the minimum defended result is `stop-with-explicit-no-op` rather than a synthetic relocation package.
 - `S0F-3J/P3` is now complete: the lane now packages that result as one bounded stop package with explicit retained reader notes and future re-entry rules, so the next immediate work is the six-outlet close-out rather than any hidden relocation tail.
 - `S0F-3J/P4` is now complete and `S0F-3J` is now stable: the six-outlet review resolves to one retained-log stop package plus justified `no-op` across the other outlets, no bounded export tail is warranted, and later old-`GC-*` cleanup should reopen only from new redirect-loss evidence rather than from repeated scanning of the same preserved root files.
+- `S0F-4G` is now opened as the next bounded follow-up after `S0F-3J`: the repo now treats durable history extraction as a first-class missing layer, so later cleanup and support-only decisions must eventually answer not only standing and redirect questions but also whether current contracts and family views already expose enough evolution history for future readers.
+- `S0F-4G/P1` is now complete: the repo now has one explicit minimum compact-history block shape and one explicit retained source-owner-only chronology boundary, so later history extraction can proceed with a fixed `current contract vs lineage view vs source-owner log` split instead of ad hoc prose decisions.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
