@@ -131,6 +131,39 @@
 - The required next action at that gate is: answer the close-out questionnaire explicitly and then decide whether the correct result is `export`, `partial export`, `log-only retention`, or `defer because target outlet identity is still not stable`.
 - Template hardening is not part of this `P1` gate; it should follow later once the mandatory questionnaire and post-stable export packaging rules are fixed.
 
+## P2 (Mandatory close-out questionnaire | v1)
+
+### P2-C1-S1 (Mandatory outlet questions fixed | v1)
+
+- Every stable slice entering close-out review must answer the following questions explicitly:
+  - `contract`: did this slice define or materially change one stable current rule that should now read outside the log?
+  - `runbook`: did this slice stabilize one repeatable operator procedure with durable steps, stop rules, and verification expectations?
+  - `view`: did this slice produce one bounded reader-facing summary that would save later readers from replaying the full ledger?
+  - `index/front-door`: did this slice change current navigation, directory entrypoints, or current-reader landing guidance?
+  - `disposition/placement`: did this slice change standing or physical placement only after the relevant stable role exports were already settled?
+  - `log-retained core`: what must remain in the source log as slice-local decision record, evidence ledger, bridge notes, and automation-facing strong structure even after any exports?
+- These questions must be answered outlet by outlet.
+- A stable slice is not allowed to skip the questionnaire by asserting only that it is `done` or `stable`.
+
+### P2-C1-S2 (Allowed no-op answers fixed | v1)
+
+- The close-out questionnaire may legitimately return `no-op` for any outlet, but the reason must be explicit and low-cardinality.
+- The first allowed no-op result set is:
+  - `no stable current rule changed`:
+    - do not export a new or changed `contract`
+  - `procedure not repeatable beyond this package`:
+    - do not export a `runbook`
+  - `full log is already the most efficient reader surface`:
+    - do not export a `view`
+  - `no current navigation changed`:
+    - do not touch `index/front-door`
+  - `role export not settled yet`:
+    - do not write `disposition/placement` changes yet
+  - `log still owns slice-local bridge and evidence`:
+    - retain the source log as the primary ledger
+- The stable reviewer question is therefore not `did every outlet get a file?`
+- The correct question is `did every outlet receive an explicit answer, including justified no-op where export is not warranted?`
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -187,8 +220,8 @@
 
 ### P2 (Mandatory close-out questionnaire)
 
-- [ ] `P2-C1-S1`: mandatory outlet questions fixed
-- [ ] `P2-C1-S2`: allowed no-op answers fixed
+- [x] `P2-C1-S1`: mandatory outlet questions fixed
+- [x] `P2-C1-S2`: allowed no-op answers fixed
 
 ### P3 (Post-stable export packaging)
 
@@ -212,7 +245,8 @@
 - `P0` is now complete: the problem is fixed as `stable-first close-out protocol` work rather than immediate `DOC` promotion work.
 - `P1` is now complete: the repo now has one explicit draft-stage concentration rule and one explicit stable-entry close-out gate, so later outlet export can begin from a defended review boundary instead of from ongoing draft churn.
 - Template hardening is intentionally deferred: the parent and phase-log templates should not be rewritten from `P1` alone, because they still need the later `P2` questionnaire and `P3` export-packaging rules before that guidance is safe to freeze into scaffolds.
-- The next immediate step is now `P2`: define the mandatory close-out questionnaire and the allowed no-op answers for stable slices.
+- `P2` is now complete: the repo now has one mandatory outlet-by-outlet close-out questionnaire and one explicit allowed no-op answer set, so `stable` review can ask for explicit ownership decisions without forcing a mechanical six-file export.
+- The next immediate step is now `P3`: define when a stable slice should package export as one bounded post-stable phase such as `Pn+1`, and what the minimum write-back set and stop rule of that phase should be.
 
 ## Evidence (reserved)
 
@@ -239,7 +273,18 @@
 - observed:
   - the repo now has one explicit draft-stage concentration rule, one explicit stable-entry close-out gate, and one explicit deferral of template hardening until the later questionnaire and packaging rules are fixed
 
+### P2-C1-S1 through P2-C1-S2 (mandatory close-out questionnaire fixed | 2026-04-08)
+
+- headSha: `bb41cdeedbc97d041fd95bb2fe59edd79ebaad9c`
+- artifacts: `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
+- artifacts: `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to explain which questions every stable slice must answer at close-out and why explicit no-op answers are valid when an outlet is not warranted
+- observed:
+  - the repo now has one outlet-by-outlet close-out questionnaire plus one explicit allowed no-op answer set, so stable review no longer depends on either memory or a mechanical all-outlets export expectation
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-5A` to formalize stable-first close-out timing and post-stable outlet export before the first real `DOC` promoted contract body.
 - 2026-04-08: completed `P1` by fixing the draft-stage concentration rule, the stable-entry close-out gate, and the decision to defer template hardening until later `P2/P3/P4` rules converge.
+- 2026-04-08: completed `P2` by fixing the mandatory outlet-by-outlet close-out questionnaire and the allowed no-op answer set for stable slices.
