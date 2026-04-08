@@ -34,6 +34,7 @@
 - This front door is intentionally a `view` rather than a new `GC-*` record.
 - The current `DOC` family still keeps its strongest rule text in source-owner logs because those logs remain the most authoritative current SoT for these contracts.
 - Later admission work may still promote selected `DOC` rules into a more concentrated current contract surface, but the family-front-door reading should exist before any such promotion decision.
+- When that promotion happens, the promoted contract bodies should land under `docs/governance/contract/` with the family-owned filename model `DOC-<AREA>-<NNNN>-<summary>.md`.
 
 ## Source Refs
 
@@ -41,3 +42,4 @@
 - `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
 - `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
 - `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
+- `docs/governance/contract/INDEX.md`

@@ -24,6 +24,7 @@
   **reference_log_7**: `docs/governance/views/view-disposition-role-in-family-transition-v1.md`
   **reference_log_8**: `docs/governance/INDEX.md`
   **reference_log_9**: `docs/governance/contract/INDEX.md`
+  **reference_log_10**: `docs/governance/contract/_template-doc-contract-record.md`
 **issue_keyword**: `taxonomy`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/4`
@@ -160,6 +161,25 @@
 - `docs/governance/views/` remains the reader-summary, family-front-door, and transition-rule layer.
 - It should not be merged into `contract/` because current explanation and current rule body are different responsibilities.
 
+## P1 (DOC current contract surface | v1)
+
+### P1-C1-S1 (DOC contract naming model and template | v1)
+
+- New `DOC` family-owned current contracts now use the filename model:
+  - `DOC-<AREA>-<NNNN>-<summary>.md`
+- The repo now keeps one dedicated template for this surface at:
+  - `docs/governance/contract/_template-doc-contract-record.md`
+- New `DOC` contracts should therefore stop defaulting to `GC-*` prefixes and should not use bare area-only identifiers such as `ICR-001-...`.
+
+### P1-C1-S2 (DOC area-code dictionary fixed | v1)
+
+- The first admitted `DOC` area codes are now:
+  - `DRB`: document role boundaries
+  - `SLC`: source-log compatibility
+  - `TAX`: taxonomy and placement
+  - `FDT`: front-door transition
+- These are now fixed in `docs/governance/contract/INDEX.md` as the first candidate areas for promoted `DOC` current contracts.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -214,8 +234,8 @@
 
 ### P1 (DOC current contract surface)
 
-- [ ] `P1-C1-S1`: first `docs/governance/contract/INDEX.md` front door defined
-- [ ] `P1-C1-S2`: new `DOC` contract landing rule defined
+- [x] `P1-C1-S1`: first `docs/governance/contract/INDEX.md` front door defined
+- [x] `P1-C1-S2`: new `DOC` contract landing rule defined
 
 ### P2 (Old GC triage)
 
@@ -234,7 +254,8 @@
 
 - `S0F-4D` is now opened as the next bounded follow-up after `S0F-4C`: the repo already has family-first front doors, but it still needs one explicit storage answer for new `DOC` contracts and one triage answer for old `GC-*` files.
 - `P0` is now fixed: new `DOC` contracts should first land under `docs/governance/contract/`, `views/` remains the reader-summary layer, and old `GC-*` files should be triaged before any later archive or relocation decision.
-- The next immediate follow-up is not broad cleanup; it is to define the first usable `DOC` contract index and one repeatable promotion path from source-owner logs into that new contract surface.
+- `P1` is now complete: the repo now has one explicit `DOC` contract naming model, one template, and one first `DOC` area-code dictionary under `docs/governance/contract/`, so future promoted `DOC` contracts no longer need to reuse `GC-*` naming by default.
+- The next immediate follow-up is the promotion path itself: define how source-owner `DOC` logs map into the new `DOC-<AREA>-<NNNN>` surface.
 
 ## Evidence (reserved)
 
@@ -252,6 +273,19 @@
 - observed:
   - `S0F-4D` now fixes the first storage and triage boundary, and the new `docs/governance/contract/` directory now has an explicit front door instead of remaining an empty folder
 
+### P1-C1-S1 through P1-C1-S2 (DOC naming model, template, and area dictionary fixed | 2026-04-08)
+
+- headSha: `26b30c0e6a6c87dd2d1062abafcba64260896fb7`
+- artifacts: `docs/governance/contract/INDEX.md`
+- artifacts: `docs/governance/contract/_template-doc-contract-record.md`
+- artifacts: `docs/governance/views/view-doc-current-front-door-v1.md`
+- artifacts: `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
+- expected:
+  - one reader should be able to explain how future `DOC` current contracts are named and why they no longer default to `GC-*`
+- observed:
+  - the repo now has one explicit `DOC-<AREA>-<NNNN>-<summary>.md` naming model, one first `DOC` area-code dictionary, and one reusable template for future promoted `DOC` contracts
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4D` to fix the new `DOC` current contract home and the old `GC-*` triage model after the family-first transition in `S0F-4C`.
+- 2026-04-08: completed `P1` by fixing the `DOC` contract naming model, the first `DOC` area-code dictionary, and one reusable family-owned contract template under `docs/governance/contract/`.
