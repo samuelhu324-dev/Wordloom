@@ -205,6 +205,30 @@
 - The third promotion lane should reuse `S0F-5A` directly for stable review.
 - This means the `S0F-4E/C3` question is only how each outlet should be answered for the `S0F-3I` rule set, not whether one new promotion-specific close-out method is needed.
 
+## P1 (Third contract body extraction | C3)
+
+### P1-C3-S1 (Stable current rule body extracted into `DOC-TAX-0001` | v1)
+
+- The third promoted `DOC` contract body now exists at:
+  - `docs/governance/contract/DOC-TAX-0001-governance-contract-taxonomy-and-placement-model.md`
+- The extracted body concentrates the stable rule set from `S0F-3I` around:
+  - contract family versus system level as two separate axes
+  - the seven-family taxonomy baseline
+  - `GC-*` narrowing to the registry-admitted governance subset
+  - primary-SoT-first distributed placement and consolidation threshold rules
+- The extracted body intentionally avoids copying the full descriptive placement scan itself as if the contract should own every current directory listing; that reader job stays concentrated in the placement-map view.
+
+### P1-C3-S2 (Metadata and retained source-owner relationship aligned for `DOC-TAX-0001` | v1)
+
+- `DOC-TAX-0001` is marked as the third promoted family-owned `DOC` contract body but remains `draft`.
+- `S0F-3I` remains the primary source-owner SoT during this draft stage.
+- The promoted body now records:
+  - one stable `record_id` and semantic `contract_id`
+  - one explicit `primary_source_owner`
+  - one bounded enforcement surface
+  - one minimal source-ref set linking the source-owner lane, the placement-map support view, and the promotion lane
+- This keeps third-lane `P1` focused on substantive contract extraction without prematurely claiming that front-door alignment or stable close-out review is already complete.
+
 ## P1 (Second contract body extraction | C2)
 
 ### P1-C2-S1 (Stable current rule body extracted into `DOC-SLC-0001` | v1)
@@ -437,6 +461,8 @@
  - [x] `P1-C2-S2`: metadata and source-owner relationship aligned for the second lane
 - [ ] `P1-C3-S1`: stable current rule body extracted into `DOC-TAX-0001`
 - [ ] `P1-C3-S2`: metadata and source-owner relationship aligned for the third lane
+- [x] `P1-C3-S1`: stable current rule body extracted into `DOC-TAX-0001`
+- [x] `P1-C3-S2`: metadata and source-owner relationship aligned for the third lane
 
 ### P2 (Landing and front-door alignment)
 
@@ -468,6 +494,8 @@
 - `P2-C2` is now complete: the `DOC` contract index and the `DOC` family front door now both acknowledge `DOC-SLC-0001` as the second landed family-owned `DOC` contract draft while preserving `S0F-4B` as the retained source-owner SoT during draft stage.
 - `P3-C2` is now complete: the stable-first close-out questionnaire has been answered outlet by outlet for the second lane, `DOC-SLC-0001` is now active, no bounded post-stable export tail is needed, and `S0F-4E` is now stable again after completing two promotion cycles.
 - `S0F-4E` is now reopened in `C3` rather than in a new slice: the third active lane is `S0F-3I` -> `DOC-TAX-0001`, and the immediate next step is substantive third-lane contract extraction under the already-proven pattern.
+- `P1-C3` is now complete: the third draft family-owned `DOC` contract body now exists, and the extracted rule text keeps taxonomy, placement, and consolidation-threshold semantics explicit without turning the placement-map view into duplicate contract prose.
+- The next immediate step is `P2-C3`: land `DOC-TAX-0001` into the `DOC` contract index and update the `DOC` family front door to reflect the third mixed source-owner plus promoted-contract reading state.
 
 ## Evidence (reserved)
 
@@ -583,6 +611,17 @@
 - observed:
   - `S0F-4E` is now explicitly reopened in `C3`, the third mapped promotion target is fixed as `S0F-3I` -> `DOC-TAX-0001`, and the lane will reuse the same `P1/P2/P3` promotion pattern under `S0F-5A`
 
+### P1-C3-S1 through P1-C3-S2 (third draft `DOC-TAX-0001` extracted from `S0F-3I` | 2026-04-08)
+
+- headSha: `19b80ac7f487f57cb34e80d3f54fb5a27657d18c`
+- artifacts:
+  - `docs/governance/contract/DOC-TAX-0001-governance-contract-taxonomy-and-placement-model.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+- expected:
+  - one reader should be able to open a real family-owned `DOC` contract file and read the stable taxonomy and placement rule without replaying the full `S0F-3I` source log first
+- observed:
+  - the repo now has its third promoted `DOC` contract draft, and the extracted body preserves the family-versus-level split, seven-family taxonomy, `GC-*` narrowing rule, and primary-SoT-first placement rule while keeping the descriptive current placement scan in its supporting view and `S0F-3I` explicit as the retained source-owner SoT during draft stage
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4E` as the first real `DOC` promotion lane, fixed `S0F-4A -> DOC-DRB-0001` as the first extraction target, and fixed `S0F-5A` as the inherited close-out protocol.
@@ -594,3 +633,4 @@
 - 2026-04-08: completed `P2-C2` by landing `DOC-SLC-0001` into the `DOC` contract index and updating the `DOC` family front door to reflect the second mixed source-owner plus promoted-contract reading state.
 - 2026-04-08: completed `P3-C2` by applying the `S0F-5A` close-out questionnaire to the second lane, promoting `DOC-SLC-0001` from draft to active current contract status, and concluding that no bounded post-stable export tail is required.
 - 2026-04-08: reopened `S0F-4E` in `C3` so the third mapped promotion lane (`S0F-3I` -> `DOC-TAX-0001`) can be executed inside the same slice rather than in a new near-duplicate follow-up.
+- 2026-04-08: completed `P1-C3` by extracting the first draft `DOC-TAX-0001` body from `S0F-3I` and aligning its metadata, source-owner relationship, and third-lane draft-stage landing semantics.
