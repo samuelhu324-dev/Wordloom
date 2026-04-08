@@ -171,6 +171,32 @@
 - The required final-round question is not `which six files get created?`
 - The required question is `what is the explicit answer for contract / runbook / view / index/front-door / disposition/placement / log-retained core for this cleanup candidate package?`
 
+## P1 (Candidate subset inventory | v1)
+
+### P1-C1-S1 (Standing-loss inventory completed for the next plausible old-GC subset | v1)
+
+- `docs/governance/INDEX.md` still admits only the current narrow-registry rows under the newer area set (`ATTR`, `COMPL`, `ICL`, `ICR`, `ICT`, `IID`, `PRA`, `PRG`, `PRR`, `REMED`, `WF`), so the old root-level `GC-*` files outside that front door are easy to enumerate directly.
+- A root scan of `docs/governance/contracts/` shows only one non-current old-namespace residue set beyond the active registry rows:
+  - `GC-ISS-0001` through `GC-ISS-0005`
+  - `GC-PRB-0001`
+- That residue set is exactly the already-adjudicated first cleanup boundary, not a newly discovered post-`DOC`-stabilization candidate pool.
+- The already-relocated `GC-PRB-0001-backfill-historical-drift-fail-on-findings.md` remains in `docs/governance/contracts/support-only/` and therefore does not reopen as a new root-level candidate subset here.
+- Result for `P1-C1-S1`:
+  - no new plausible old-`GC-*` candidate subset currently exists outside the already-defended keep set
+  - `S0F-3J` therefore carries forward one explicit null-inventory result instead of manufacturing a cleanup candidate from file age or deprecated status alone
+
+### P1-C1-S2 (Root-path redirect-duty inventory completed for the same subset | v1)
+
+- The old `GC-ISS-*` split-package view still says to keep all old `GC-ISS-*` file paths in place and to keep those old record IDs valid as preserved historical redirect records.
+- The old `GC-PRB-0001` split-package view still says the deprecated umbrella file remains preserved on disk while current meaning is read through `GC-PRR-0001` and `GC-PRG-0001`.
+- The old-`GC-*` retention rule and first cleanup boundary still say the same thing operationally:
+  - `GC-ISS-*` and `GC-PRB-0001` remain `legacy redirect` files at the contracts root
+  - they should not be proposed again merely because they are deprecated
+- Because the only non-current residue set still carries explicit redirect and lineage duty across the published views, this slice cannot yet prove redirect-loss for any new subset.
+- Result for `P1-C1-S2`:
+  - no selected subset currently satisfies `standing-loss + redirect-loss`
+  - the clean input to `P2` is therefore an adjudication of explicit `no new admissible candidate yet`, not a relocation package
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -217,8 +243,8 @@
 
 ### P1 (Candidate subset inventory)
 
-- [ ] `P1-C1-S1`: next plausible old-`GC-*` candidate subset inventoried for standing-loss
-- [ ] `P1-C1-S2`: root-path redirect duty inventoried for the same subset
+- [x] `P1-C1-S1`: next plausible old-`GC-*` candidate subset inventoried for standing-loss
+- [x] `P1-C1-S2`: root-path redirect duty inventoried for the same subset
 
 ### P2 (Cleanup adjudication)
 
@@ -239,7 +265,8 @@
 
 - `S0F-3J` is now opened as the next bounded follow-up after `S0F-4F`: `DOC` current reading is stable enough that old `GC-*` cleanup can now be evaluated without reopening `DOC` reader-surface wording.
 - `P0` is now complete: the cleanup-candidate admission rule, the excluded already-defended keep set, and the explicit six-outlet close-out requirement are now fixed.
-- The immediate next step is `P1`: select and inventory the next plausible old-`GC-*` candidate subset against the standing-loss plus redirect-loss rule.
+- `P1` is now complete: the inventory shows that the only old root-level `GC-*` residue outside the current narrow registry is still the already-defended `GC-ISS-*` plus `GC-PRB-0001` redirect set, so no new admissible cleanup candidate subset has been found yet.
+- The immediate next step is `P2`: adjudicate that null-inventory result explicitly and decide whether this lane should close as a defended `no-op / stop` package rather than as a relocation package.
 
 ## Evidence (reserved)
 
@@ -257,6 +284,26 @@
 - observed:
   - `S0F-3J` now fixes the cleanup-candidate admission rule, excludes the already-defended keep set from default re-entry, and carries the explicit six-outlet close-out requirement into the new cleanup lane from the start
 
+### P1-C1-S1 through P1-C1-S2 (candidate inventory yields no new admissible old-GC subset | 2026-04-08)
+
+- headSha: `a2096440519912e22c84442457b0f8945ecd64a1`
+- artifacts:
+  - `docs/governance/INDEX.md`
+  - `docs/governance/contracts/support-only/INDEX.md`
+  - `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
+  - `docs/governance/views/view-gc-dual-reading-transition-v1.md`
+  - `docs/governance/views/view-iss-split-package-v1.md`
+  - `docs/governance/views/view-prb-split-package-v1.md`
+  - `docs/logs/log-S0F-3J-old-gc-cleanup-candidate-selection-after-doc-reader-stabilization.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to explain whether any post-`DOC`-stabilization old-`GC-*` subset now satisfies the admission question without reopening the already-defended keep set mechanically
+- observed:
+  - the only old root-level `GC-*` residue outside the current narrow registry is still the previously defended `GC-ISS-*` plus `GC-PRB-0001` redirect set
+  - published split-package, triage, and boundary views still assign redirect or lineage value to that whole residue set
+  - no newly admissible cleanup subset is currently proven by source
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-3J` as the next bounded old-`GC-*` cleanup candidate-selection lane after `DOC` reader stabilization, fixed the admission boundary, excluded the already-defended keep set from default re-entry, and fixed the six-outlet close-out requirement for the lane.
+- 2026-04-08: completed `P1` inventory and recorded the current null result: no new old-`GC-*` subset outside the already-defended keep set can yet prove both standing-loss and redirect-loss, so the next round should adjudicate an explicit no-op or stop package rather than force a relocation candidate.
