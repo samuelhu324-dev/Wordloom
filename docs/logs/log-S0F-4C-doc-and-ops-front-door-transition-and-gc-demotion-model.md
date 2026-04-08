@@ -23,6 +23,7 @@
   **reference_log_6**: `docs/governance/views/view-contract-family-placement-map-v1.md`
   **reference_log_7**: `docs/governance/views/view-doc-current-front-door-v1.md`
   **reference_log_8**: `docs/governance/views/view-ops-current-front-door-v1.md`
+  **reference_log_9**: `docs/governance/views/view-gc-dual-reading-transition-v1.md`
 **issue_keyword**: `taxonomy`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/4`
@@ -193,6 +194,17 @@
   - `run-S4D-cloud-runtime-release-operations`: stable operator-facing release path
 - Under this model, current `OPS` reading stays anchored in runtime spines, runbooks, workflows, and scripts rather than being compressed into one narrow registry surface.
 
+## P3 (GC demotion and dual-reading transition | v1)
+
+### P3-C1-S1 (Legacy-registry versus family-first dual-reading rule | v1)
+
+- The repo now keeps one explicit transition surface at:
+  - `docs/governance/views/view-gc-dual-reading-transition-v1.md`
+- Under this rule:
+  - `GC-*` remains valid as storage and lineage vocabulary
+  - family current front doors become the first reader vocabulary where they already exist
+  - `docs/governance/INDEX.md` remains valid, but only as the narrow registry front door rather than the universal contract front door
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -257,7 +269,7 @@
 
 ### P3 (GC demotion and dual-reading transition)
 
-- [ ] `P3-C1-S1`: legacy-registry versus family-first dual-reading transition fixed
+- [x] `P3-C1-S1`: legacy-registry versus family-first dual-reading transition fixed
 
 ### P4 (Disposition role in migration)
 
@@ -269,7 +281,8 @@
 - `P0` is now fixed: family, front door, legacy registry prefix, and disposition are now separated conceptually enough to guide later `DOC` and `OPS` front-door work.
 - `P1` is now complete: the repo now has one first `DOC` current front door at `docs/governance/views/view-doc-current-front-door-v1.md`, and `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` are now explicitly readable as current `DOC` contracts without first passing through `GC-*` vocabulary.
 - `P2` is now complete: the repo now has one first `OPS` current front door at `docs/governance/views/view-ops-current-front-door-v1.md`, and current operational meaning now reads through `S4A`, `S4D`, `S4E`, and the stable runbook layer rather than through old governance-registry wording.
-- The next immediate follow-up is the dual-reading rule itself: define how old `GC-*` language may remain as lineage/storage vocabulary without remaining the primary reader vocabulary.
+- `P3` is now complete: the repo now has one explicit dual-reading rule, so `GC-*` may remain as lineage/storage vocabulary while current reading moves to family front doors where those already exist.
+- The next immediate follow-up is `disposition`: define precisely how placement and standing support transition work without replacing family or front-door ownership.
 
 ## Evidence (reserved)
 
@@ -310,8 +323,20 @@
 - observed:
   - the repo now has one explicit `OPS` family front door and one direct mapping from that front door to the current runtime spines and runbook-owned operational surfaces
 
+### P3-C1-S1 (legacy-registry versus family-first dual-reading rule fixed | 2026-04-08)
+
+- headSha: `f1a28ceaf81a41344d2d555f32b2d98c1aa6c73e`
+- artifacts: `docs/governance/views/view-gc-dual-reading-transition-v1.md`
+- artifacts: `docs/governance/INDEX.md`
+- artifacts: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
+- expected:
+  - one reader should be able to preserve old `GC-*` lineage while switching current reading to family-first front doors where they already exist
+- observed:
+  - the repo now has one explicit dual-reading rule, and `docs/governance/INDEX.md` now reads as the narrow registry front door rather than as the universal front door for every contract family
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-4C` to separate family, front door, legacy registry prefix, and disposition so the repo can move toward `DOC/OPS/...` current reading without immediate mass rename.
 - 2026-04-08: completed `P1` by publishing the first `DOC` current front door and by mapping `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into one family-first reading model.
 - 2026-04-08: completed `P2` by publishing the first `OPS` current front door and by mapping `S4A`, `S4D`, `S4E`, and the stable release-operations runbook into one family-first reading model.
+- 2026-04-08: completed `P3` by publishing the first dual-reading transition rule, so old `GC-*` identifiers remain valid for lineage and storage while current reading shifts to family front doors where available.

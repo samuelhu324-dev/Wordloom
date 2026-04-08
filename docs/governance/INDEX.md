@@ -2,11 +2,12 @@
 
 ## Purpose
 
-- This file is the front-door registry for governance contracts.
+- This file is the narrow front-door registry for governance contracts that currently remain admitted inside the governance-registry model.
 - It exists so readers do not need to scan long filenames or reconstruct current governance state from raw folder listings alone.
 - It also acts as the controlled admission surface for new governance area codes and for the minimum registry fields every live record must expose here.
 - It is a current-state surface, not a full historical ledger of every governance-contract file preserved on disk.
 - Repo-wide cross-family contract scanning now lives separately in `docs/governance/views/view-contract-family-inventory-v1.md`; this file remains the narrow front door for current registry-admitted governance contracts only.
+- During the family-first transition, readers should not treat this file as the universal front door for every contract family; where a family front door already exists, read that family surface first and return here only for narrow registry meaning.
 
 ## Current-State Boundary
 
@@ -35,8 +36,9 @@
 ## Abbreviation Glossary
 
 - `GC`:
-  - `Governance Contract`
-  - used as the stable front prefix for governance-contract registry records
+  - `Governance Contract` legacy registry prefix
+  - used as the stable stored prefix for governance-registry records
+  - not the umbrella name for the whole contract universe once family-first reading exists
 - `COMPL`:
   - `Completeness`
   - used for lifecycle completeness audit contracts that classify create-time, PR-time, and conclusion-time completeness as distinct governance surfaces
