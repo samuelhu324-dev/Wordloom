@@ -223,6 +223,31 @@
   - `S0F-3J` now has one defended minimum outcome for the current repo state
   - the next round can package this stop result cleanly instead of pretending there is an unfinished relocation package waiting to run
 
+## P3 (Bounded cleanup package | v1)
+
+### P3-C1-S1 (Bounded stop package written for the current repo state | v1)
+
+- `S0F-3J` does not end in a support-only relocation packet, because this slice never proved one admissible cleanup subset.
+- `S0F-3J` also does not reopen the first keep-legacy boundary, because that question is already defended elsewhere and no contradiction has been found here.
+- The bounded package written by this phase is therefore a stop package with one narrow meaning:
+  - post-`DOC`-stabilization old-`GC-*` cleanup admission was rechecked
+  - the current repo state still yields no new admissible subset
+  - the correct immediate package outcome is explicit `no-op`, not deferred ambiguity
+- This preserves the lane as a useful governance checkpoint rather than leaving it as a half-open discovery round.
+
+### P3-C1-S2 (Retained reader notes and stop rules fixed for later re-entry | v1)
+
+- The retained reader note for this slice is now explicit:
+  - later readers should treat `S0F-3J` as the post-`DOC`-stabilization confirmation that the first old-`GC-*` cleanup boundary still holds unchanged
+  - they should not infer from this lane that old root-level residue automatically becomes support-only once family-first reading stabilizes
+- The stop rule for later re-entry is also explicit:
+  - do not reopen this lane merely because the same deprecated files still exist at root
+  - reopen only if one later source change proves that an old root-level `GC-*` path no longer provides redirect or lineage value
+  - if that happens, open a new bounded follow-up from the changed source state rather than mutating `S0F-3J` into a retroactive relocation lane
+- Result for `P3-C1-S2`:
+  - retained reader guidance and future stop rules now live inside this lane
+  - `P4` can now answer the six outlets from a fully packaged stop result rather than from a still-fluid adjudication state
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -279,8 +304,8 @@
 
 ### P3 (Bounded cleanup package)
 
-- [ ] `P3-C1-S1`: bounded cleanup package or explicit stop package written
-- [ ] `P3-C1-S2`: retained reader notes and stop rules fixed
+- [x] `P3-C1-S1`: bounded cleanup package or explicit stop package written
+- [x] `P3-C1-S2`: retained reader notes and stop rules fixed
 
 ### P4 (Six-outlet evaluation)
 
@@ -293,7 +318,8 @@
 - `P0` is now complete: the cleanup-candidate admission rule, the excluded already-defended keep set, and the explicit six-outlet close-out requirement are now fixed.
 - `P1` is now complete: the inventory shows that the only old root-level `GC-*` residue outside the current narrow registry is still the already-defended `GC-ISS-*` plus `GC-PRB-0001` redirect set, so no new admissible cleanup candidate subset has been found yet.
 - `P2` is now complete: the null-inventory result is now adjudicated explicitly, and the minimum defended result for the current repo state is `stop-with-explicit-no-op` rather than a fresh relocation or keep-in-root package.
-- The immediate next step is `P3`: package that bounded stop result, fix any retained reader notes or stop rules that belong in this lane, and prepare the slice for final six-outlet close-out.
+- `P3` is now complete: this lane is now packaged as one bounded stop result with retained reader notes and explicit re-entry rules, rather than as a latent relocation package.
+- The immediate next step is `P4`: answer the six outlets explicitly for this defended stop package and decide whether any bounded export tail is warranted before marking the slice stable.
 
 ## Evidence (reserved)
 
@@ -347,8 +373,23 @@
   - the first already-defended keep boundary remains intact without contradiction
   - the minimum defended result for the current repo state is `stop-with-explicit-no-op`
 
+### P3-C1-S1 through P3-C1-S2 (bounded stop package and re-entry rules fixed | 2026-04-08)
+
+- headSha: `1d1fabf1b76cea2106cb82e9ed260a1f9ec6b2f2`
+- artifacts:
+  - `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
+  - `docs/logs/log-S0F-3J-old-gc-cleanup-candidate-selection-after-doc-reader-stabilization.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to explain the bounded package owned by `S0F-3J` without mistaking it for either a hidden relocation round or a reopened first cleanup boundary
+- observed:
+  - `S0F-3J` now packages the current repo-state result as an explicit stop-with-no-op package
+  - retained reader guidance now states that family-first stabilization alone does not dissolve old root-level redirect value
+  - later re-entry is now gated on one future source change that proves redirect-loss, not on repeated re-scanning of the same deprecated files
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-08: opened `S0F-3J` as the next bounded old-`GC-*` cleanup candidate-selection lane after `DOC` reader stabilization, fixed the admission boundary, excluded the already-defended keep set from default re-entry, and fixed the six-outlet close-out requirement for the lane.
 - 2026-04-08: completed `P1` inventory and recorded the current null result: no new old-`GC-*` subset outside the already-defended keep set can yet prove both standing-loss and redirect-loss, so the next round should adjudicate an explicit no-op or stop package rather than force a relocation candidate.
 - 2026-04-08: completed `P2` adjudication and fixed the minimum defended result as `stop-with-explicit-no-op`, because no post-boundary old-`GC-*` subset is currently proven admissible for cleanup.
+- 2026-04-08: completed `P3` packaging and fixed the retained reader notes plus future re-entry stop rules, so this lane now owns one bounded stop package rather than one incomplete relocation placeholder.
