@@ -1,10 +1,10 @@
-# log-S0F-4E (Phase 4E: DOC promoted contract lanes from S0F-4A, S0F-4B, and S0F-3I)
+# log-S0F-4E (Phase 4E: DOC promoted contract lanes from S0F-4A, S0F-4B, S0F-3I, and S0F-4C)
 
 ---
 
 **id**: `S0F-4E`
 **kind**: `log`
-**title**: `DOC promoted contract lanes from S0F-4A, S0F-4B, and S0F-3I v1`
+**title**: `DOC promoted contract lanes from S0F-4A, S0F-4B, S0F-3I, and S0F-4C v1`
 **status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, Promotion, epic/s0, sub/4e`
@@ -23,6 +23,7 @@
   **reference_log_6**: `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
   **reference_log_7**: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
   **reference_log_8**: `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
+  **reference_log_9**: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/4`
@@ -60,6 +61,10 @@
 - This same slice now reopens in `C3` to execute the third mapped `DOC` promotion lane instead of opening one more near-duplicate slice:
   - source-owner log: `S0F-3I`
   - promoted contract target: `DOC-TAX-0001`
+- The third promotion lane is now complete and stable.
+- This same slice now reopens in `C4` to execute the fourth mapped `DOC` promotion lane instead of opening one more near-duplicate slice:
+  - source-owner log: `S0F-4C`
+  - promoted contract target: `DOC-FDT-0001`
 - This slice now exists to prove that the first promotion was not a one-off and that the same family-owned promotion pattern can be replayed on the next mapped `DOC` source-owner lane under the same close-out protocol.
 
 **Default choices (phase defaults / v1)**:
@@ -76,9 +81,9 @@
 
 **PR summary bullets**:
 
-- Replay the now-proven `DOC` promotion pattern on the third mapped source-owner lane.
-- Land `DOC-TAX-0001` under `docs/governance/contract/` using the admitted `TAX` area and the family-owned naming model.
-- Reuse `S0F-5A` as the stable close-out protocol instead of reopening outlet-export timing debates for the third promotion lane.
+- Replay the now-proven `DOC` promotion pattern on the fourth mapped source-owner lane.
+- Land `DOC-FDT-0001` under `docs/governance/contract/` using the admitted `FDT` area and the family-owned naming model.
+- Reuse `S0F-5A` as the stable close-out protocol instead of reopening outlet-export timing debates for the fourth promotion lane.
 
 **PR checklist source**:
 
@@ -90,9 +95,11 @@
 - First completed source-owner log: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
 - Second source-owner log: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
 - Third source-owner log: `docs/logs/log-S0F-3I-governance-contract-taxonomy-and-placement-model.md`
+- Fourth source-owner log: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
 - First target contract: `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md`
 - Second target contract: `docs/governance/contract/DOC-SLC-0001-source-log-compatibility-and-weak-structure-export-discipline.md`
 - Third target contract: `docs/governance/contract/DOC-TAX-0001-governance-contract-taxonomy-and-placement-model.md`
+- Fourth target contract: `docs/governance/contract/DOC-FDT-0001-family-front-door-transition-and-gc-demotion-model.md`
 
 ## Exported Sections / Outlet Ownership (optional)
 
@@ -134,7 +141,9 @@
 - One reader can explain why the second promoted file should be `DOC-SLC-0001` rather than an ad hoc name.
 - One reader can explain why `S0F-3I` is the third chosen source-owner promotion target.
 - One reader can explain why the third promoted file should be `DOC-TAX-0001` rather than an ad hoc name.
-- The repo lands at least three real family-owned current `DOC` contract bodies under `docs/governance/contract/`.
+- One reader can explain why `S0F-4C` is the fourth chosen source-owner promotion target.
+- One reader can explain why the fourth promoted file should be `DOC-FDT-0001` rather than an ad hoc name.
+- The repo lands at least four real family-owned current `DOC` contract bodies under `docs/governance/contract/`.
 - Stable review of each promotion lane can be executed through `S0F-5A` without reopening timing or anti-proliferation debates.
 
 ## Stability (what stable means)
@@ -204,6 +213,109 @@
 
 - The third promotion lane should reuse `S0F-5A` directly for stable review.
 - This means the `S0F-4E/C3` question is only how each outlet should be answered for the `S0F-3I` rule set, not whether one new promotion-specific close-out method is needed.
+
+### P0-C4-S1 (Fourth promotion target fixed | v1)
+
+- The fourth real promotion target is now fixed as:
+  - `S0F-4C` -> `DOC-FDT-0001`
+- Rationale:
+  - `S0F-4C` is the last mapped `DOC` lane and directly tests whether the promotion pattern also works for family front-door transition and `GC-*` demotion rules rather than only for role-boundary, source-log-compatibility, or taxonomy rules
+  - it is the natural fourth step after `DOC-DRB-0001`, `DOC-SLC-0001`, and `DOC-TAX-0001` because it fixes how those already-promoted `DOC` rule sets should be read through family-first front doors instead of legacy registry-first wording
+
+### P0-C4-S2 (Fourth promotion filename fixed | v1)
+
+- The fourth promoted file should be named:
+  - `docs/governance/contract/DOC-FDT-0001-family-front-door-transition-and-gc-demotion-model.md`
+- This cycle therefore does not need to reopen `DOC` area ownership, numbering, or file-model decisions.
+
+### P0-C4-S3 (Fourth-cycle close-out protocol inheritance fixed | v1)
+
+- The fourth promotion lane should reuse `S0F-5A` directly for stable review.
+- This means the `S0F-4E/C4` question is only how each outlet should be answered for the `S0F-4C` rule set, not whether one new promotion-specific close-out method is needed.
+
+## P1 (Fourth contract body extraction | C4)
+
+### P1-C4-S1 (Stable current rule body extracted into `DOC-FDT-0001` | v1)
+
+- The fourth promoted `DOC` contract body now exists at:
+  - `docs/governance/contract/DOC-FDT-0001-family-front-door-transition-and-gc-demotion-model.md`
+- The extracted body concentrates the stable rule set from `S0F-4C` around:
+  - family ownership, current front door, and disposition remaining three different questions
+  - `GC-*` narrowing to one legacy or narrow registry prefix rather than the umbrella contract universe
+  - family-first current reading starting with `DOC` and `OPS` rather than mass-renaming old registry files first
+  - dual-reading transition rules that keep lineage-safe storage identifiers while changing the reader-facing current vocabulary
+- The extracted body intentionally avoids copying every supporting front-door or transition view in full as if the contract should own all reader-summary prose; those reader jobs stay concentrated in the published `DOC`, `OPS`, and dual-reading support views.
+
+### P1-C4-S2 (Metadata and retained source-owner relationship aligned for `DOC-FDT-0001` | v1)
+
+- `DOC-FDT-0001` is marked as the fourth promoted family-owned `DOC` contract body but remains `draft`.
+- `S0F-4C` remains the primary source-owner SoT during this draft stage.
+- The promoted body now records:
+  - one stable `record_id` and semantic `contract_id`
+  - one explicit `primary_source_owner`
+  - one bounded enforcement surface
+  - one minimal source-ref set linking the source-owner lane, the family front doors, the dual-reading transition view, and the promotion lane
+- This keeps fourth-lane `P1` focused on substantive contract extraction without prematurely claiming that front-door alignment or stable close-out review is already complete.
+
+## P2 (Fourth-lane landing and front-door alignment | C4)
+
+### P2-C4-S1 (Fourth promoted file landed in `docs/governance/contract/INDEX.md` | v1)
+
+- `docs/governance/contract/INDEX.md` now records `DOC-FDT-0001` as the fourth landed `DOC` contract record.
+- The index now makes three fourth-lane facts explicit:
+  - `DOC-FDT-0001` is the fourth landed promotion under the admitted mapping set
+  - the record remains `draft` during fourth-lane transition
+  - readers should still read the promoted body together with its retained source-owner SoT until close-out review completes
+
+### P2-C4-S2 (Required `DOC` front-door updates completed for the fourth lane | v1)
+
+- `docs/governance/views/view-doc-current-front-door-v1.md` now reflects the fourth mixed landing state for the `DOC` family.
+- The front door now distinguishes:
+  - three active promoted contracts (`DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`)
+  - one draft promoted contract (`DOC-FDT-0001`)
+  - retained source-owner traces for all four promoted lanes
+  - no remaining mapped `DOC` area outside the active fourth-lane close-out path
+- This keeps the front door truthful without pretending that the fourth lane is already fully stable while still showing that the mapped `DOC` quartet is now physically landed.
+
+## P3 (Fourth-lane stable review and close-out | C4)
+
+### P3-C4-S1 (`S0F-5A` close-out questionnaire applied for the fourth lane | v1)
+
+- `contract`:
+  - answer: export complete
+  - result: `DOC-FDT-0001` is explicit enough to become the active current rule surface for this `DOC` area
+- `runbook`:
+  - answer: no-op
+  - reason: `procedure not repeatable beyond this package`
+  - explanation: this promotion lane stabilizes a current rule body about family-first front-door transition and `GC-*` demotion, not one new repeatable operator procedure beyond the existing close-out method already governed elsewhere
+- `view`:
+  - answer: no-op
+  - reason: `full log is already the most efficient reader surface`
+  - explanation: no additional summary view is warranted beyond the existing `DOC` front door, `OPS` front door, and `GC-*` dual-reading transition view because one extra `FDT` summary file would mostly restate the same transition rule already concentrated across the active contract, retained source-owner log, and published support views together
+- `index/front-door`:
+  - answer: export complete
+  - result: `docs/governance/contract/INDEX.md` and `docs/governance/views/view-doc-current-front-door-v1.md` already reflect the fourth landed `DOC` promotion
+- `disposition/placement`:
+  - answer: no-op
+  - explanation: no further placement change is needed because the active contract, family front doors, retained source-owner log, and published dual-reading or disposition support surfaces already sit in the correct role-first homes
+- `log-retained core`:
+  - answer: retain
+  - reason: `log still owns slice-local bridge and evidence`
+  - explanation: `S0F-4E` remains the fourth promotion-lane ledger, and `S0F-4C` remains the retained source-owner traceability log for lineage and evidence
+
+### P3-C4-S2 (Fourth-lane close-out outcome fixed | v1)
+
+- Stable close-out review now concludes that the fourth promotion lane does not need one bounded post-stable export tail.
+- Rationale:
+  - the stable current rule is already exported into `DOC-FDT-0001`
+  - the necessary `index/front-door` updates are already complete
+  - no new repeatable operator procedure emerged that would justify a runbook
+  - no additional bounded reader-summary surface is warranted beyond the existing front doors, the promotion-lane ledger, and the already-published transition support views
+  - no further disposition change is required to make the fourth promotion lane readable or correctly placed
+- Outcome:
+  - `DOC-FDT-0001` now becomes the fourth active family-owned `DOC` contract
+  - `S0F-4C` stops serving as the current SoT for this rule set and remains as retained source-owner traceability
+  - `S0F-4E` is now stable again after completing its fourth promotion cycle
 
 ## P1 (Third contract body extraction | C3)
 
@@ -480,6 +592,8 @@
 - P1-C2-S2: align metadata, source refs, and retained source-owner relationship for the second contract body
 - P1-C3-S1: extract the stable current rule body from `S0F-3I` into the first draft of `DOC-TAX-0001`
 - P1-C3-S2: align metadata, source refs, and retained source-owner relationship for the third contract body
+- P1-C4-S1: extract the stable current rule body from `S0F-4C` into the first draft of `DOC-FDT-0001`
+- P1-C4-S2: align metadata, source refs, and retained source-owner relationship for the fourth contract body
 
 ### P2 (Landing and front-door alignment)
 
@@ -489,6 +603,8 @@
 - P2-C2-S2: update any required `DOC` family front-door reading once the second promoted file exists
 - P2-C3-S1: update `docs/governance/contract/INDEX.md` to land the third real `DOC` promoted file
 - P2-C3-S2: update any required `DOC` family front-door reading once the third promoted file exists
+- P2-C4-S1: update `docs/governance/contract/INDEX.md` to land the fourth real `DOC` promoted file
+- P2-C4-S2: update any required `DOC` family front-door reading once the fourth promoted file exists
 
 ### P3 (Stable review and close-out)
 
@@ -498,6 +614,8 @@
 - P3-C2-S2: decide whether a bounded post-stable export tail is needed or whether the second promotion lane closes directly
 - P3-C3-S1: run `S0F-5A` close-out questionnaire on the third promotion lane
 - P3-C3-S2: decide whether a bounded post-stable export tail is needed or whether the third promotion lane closes directly
+- P3-C4-S1: run `S0F-5A` close-out questionnaire on the fourth promotion lane
+- P3-C4-S2: decide whether a bounded post-stable export tail is needed or whether the fourth promotion lane closes directly
 
 ## Execution Checklist (unchecked)
 
@@ -512,17 +630,20 @@
 - [x] `P0-C3-S1`: third promotion target fixed
 - [x] `P0-C3-S2`: third promotion filename fixed
 - [x] `P0-C3-S3`: third-cycle close-out protocol inheritance fixed
+- [x] `P0-C4-S1`: fourth promotion target fixed
+- [x] `P0-C4-S2`: fourth promotion filename fixed
+- [x] `P0-C4-S3`: fourth-cycle close-out protocol inheritance fixed
 
 ### P1 (First contract body extraction)
 
 - [x] `P1-C1-S1`: stable current rule body extracted into `DOC-DRB-0001`
 - [x] `P1-C1-S2`: metadata and source-owner relationship aligned
- - [x] `P1-C2-S1`: stable current rule body extracted into `DOC-SLC-0001`
- - [x] `P1-C2-S2`: metadata and source-owner relationship aligned for the second lane
-- [ ] `P1-C3-S1`: stable current rule body extracted into `DOC-TAX-0001`
-- [ ] `P1-C3-S2`: metadata and source-owner relationship aligned for the third lane
+- [x] `P1-C2-S1`: stable current rule body extracted into `DOC-SLC-0001`
+- [x] `P1-C2-S2`: metadata and source-owner relationship aligned for the second lane
 - [x] `P1-C3-S1`: stable current rule body extracted into `DOC-TAX-0001`
 - [x] `P1-C3-S2`: metadata and source-owner relationship aligned for the third lane
+- [x] `P1-C4-S1`: stable current rule body extracted into `DOC-FDT-0001`
+- [x] `P1-C4-S2`: metadata and source-owner relationship aligned for the fourth lane
 
 ### P2 (Landing and front-door alignment)
 
@@ -530,10 +651,10 @@
 - [x] `P2-C1-S2`: required `DOC` front-door updates completed
 - [x] `P2-C2-S1`: second promoted file landed in `docs/governance/contract/INDEX.md`
 - [x] `P2-C2-S2`: required `DOC` front-door updates completed for the second lane
-- [ ] `P2-C3-S1`: third promoted file landed in `docs/governance/contract/INDEX.md`
-- [ ] `P2-C3-S2`: required `DOC` front-door updates completed for the third lane
 - [x] `P2-C3-S1`: third promoted file landed in `docs/governance/contract/INDEX.md`
 - [x] `P2-C3-S2`: required `DOC` front-door updates completed for the third lane
+- [x] `P2-C4-S1`: fourth promoted file landed in `docs/governance/contract/INDEX.md`
+- [x] `P2-C4-S2`: required `DOC` front-door updates completed for the fourth lane
 
 ### P3 (Stable review and close-out)
 
@@ -541,10 +662,10 @@
 - [x] `P3-C1-S2`: close-out outcome fixed
 - [x] `P3-C2-S1`: `S0F-5A` close-out questionnaire applied for the second lane
 - [x] `P3-C2-S2`: second-lane close-out outcome fixed
-- [ ] `P3-C3-S1`: `S0F-5A` close-out questionnaire applied for the third lane
-- [ ] `P3-C3-S2`: third-lane close-out outcome fixed
 - [x] `P3-C3-S1`: `S0F-5A` close-out questionnaire applied for the third lane
 - [x] `P3-C3-S2`: third-lane close-out outcome fixed
+- [x] `P3-C4-S1`: `S0F-5A` close-out questionnaire applied for the fourth lane
+- [x] `P3-C4-S2`: fourth-lane close-out outcome fixed
 
 ## Current Status
 
@@ -561,7 +682,11 @@
 - `P1-C3` is now complete: the third draft family-owned `DOC` contract body now exists, and the extracted rule text keeps taxonomy, placement, and consolidation-threshold semantics explicit without turning the placement-map view into duplicate contract prose.
 - `P2-C3` is now complete: the `DOC` contract index and the `DOC` family front door now both acknowledge `DOC-TAX-0001` as the third landed family-owned `DOC` contract draft while preserving `S0F-3I` as the retained source-owner SoT during draft stage.
 - `P3-C3` is now complete: the stable-first close-out questionnaire has been answered outlet by outlet for the third lane, `DOC-TAX-0001` is now active, no bounded post-stable export tail is needed, and `S0F-4E` is now stable again after completing three promotion cycles.
-- The next immediate step is not more `4E` export work; it is to decide whether the fourth mapped `DOC` promotion should target `S0F-4C` -> `DOC-FDT-0001` next or whether the current `DOC` family should pause and consolidate reader guidance before that fourth lane.
+- `S0F-4E` is now reopened in `C4` rather than in a new slice: the fourth active lane is `S0F-4C` -> `DOC-FDT-0001`, and the immediate next step is substantive fourth-lane contract extraction under the already-proven pattern.
+- `P1-C4` is now complete: the fourth draft family-owned `DOC` contract body now exists, and the extracted rule text keeps family-first front-door transition, `GC-*` demotion, and dual-reading semantics explicit without turning the existing family-front-door or transition views into duplicate contract prose.
+- `P2-C4` is now complete: the `DOC` contract index and the `DOC` family front door now both acknowledge `DOC-FDT-0001` as the fourth landed family-owned `DOC` contract draft while preserving `S0F-4C` as the retained source-owner SoT during draft stage.
+- `P3-C4` is now complete: the stable-first close-out questionnaire has been answered outlet by outlet for the fourth lane, `DOC-FDT-0001` is now active, no bounded post-stable export tail is needed, and `S0F-4E` is now stable again after completing four promotion cycles.
+- The first mapped `DOC` promotion quartet is now fully active, and the next immediate step is a light consolidation pass on `DOC` reader surfaces rather than one more promotion lane inside this slice.
 
 ## Evidence (reserved)
 
@@ -688,6 +813,56 @@
 - observed:
   - the repo now has its third promoted `DOC` contract draft, and the extracted body preserves the family-versus-level split, seven-family taxonomy, `GC-*` narrowing rule, and primary-SoT-first placement rule while keeping the descriptive current placement scan in its supporting view and `S0F-3I` explicit as the retained source-owner SoT during draft stage
 
+### P0-C4-S1 through P0-C4-S3 (fourth `DOC` promotion lane reopened inside `S0F-4E` | 2026-04-08)
+
+- headSha: `7b5e43d3c2c3bdef17398417900d8de8125b475e`
+- artifacts:
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to tell that the fourth mapped `DOC` promotion lane stays inside `S0F-4E` as a new cycle rather than opening a fourth near-duplicate slice
+- observed:
+  - `S0F-4E` is now explicitly reopened in `C4`, the fourth mapped promotion target is fixed as `S0F-4C` -> `DOC-FDT-0001`, and the lane will reuse the same `P1/P2/P3` promotion pattern under `S0F-5A`
+
+### P1-C4-S1 through P1-C4-S2 (fourth draft `DOC-FDT-0001` extracted from `S0F-4C` | 2026-04-08)
+
+- headSha: `7b5e43d3c2c3bdef17398417900d8de8125b475e`
+- artifacts:
+  - `docs/governance/contract/DOC-FDT-0001-family-front-door-transition-and-gc-demotion-model.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to open a real family-owned `DOC` contract file and read the stable family-front-door transition and `GC-*` demotion rule without replaying the full `S0F-4C` source log first
+- observed:
+  - the repo now has its fourth promoted `DOC` contract draft, and the extracted body preserves family-versus-front-door-versus-disposition separation, `GC-*` demotion, family-first current reading for `DOC` and `OPS`, and the dual-reading transition rule while keeping reader-summary details in the published front-door and transition support views and `S0F-4C` explicit as the retained source-owner SoT during draft stage
+
+### P2-C4-S1 through P2-C4-S2 (fourth promoted `DOC` draft landed in index and front door | 2026-04-08)
+
+- headSha: `7b5e43d3c2c3bdef17398417900d8de8125b475e`
+- artifacts:
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to discover `DOC-FDT-0001` from the current `DOC` contract landing surfaces without being misled into thinking the fourth promotion lane has already fully stabilized
+- observed:
+  - the `DOC` contract index now names `DOC-FDT-0001` as the fourth landed record, and the `DOC` front door now explains the mixed transition state in which three active promoted contracts and one draft promoted contract coexist while `S0F-4C` remains the retained source-owner SoT during fourth-lane draft stage
+
+### P3-C4-S1 through P3-C4-S2 (fourth stable close-out review completed and no post-stable export tail required | 2026-04-08)
+
+- headSha: `7b5e43d3c2c3bdef17398417900d8de8125b475e`
+- artifacts:
+  - `docs/governance/contract/DOC-FDT-0001-family-front-door-transition-and-gc-demotion-model.md`
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - one reader should be able to tell whether the fourth promotion lane needs any bounded post-stable tail work, and whether `DOC-FDT-0001` is now only a draft landing or a real active current contract
+- observed:
+  - close-out review now answers every outlet explicitly for the fourth lane, promotes `DOC-FDT-0001` to active current contract status, retains `S0F-4C` and `S0F-4E` only for source-owner traceability and promotion-lane ledger roles, and concludes that no additional post-stable export tail is justified
+
 ### P2-C3-S1 through P2-C3-S2 (third promoted `DOC` draft landed in index and front door | 2026-04-08)
 
 - headSha: `46316e5920fd39b92f884cc2dca14d2f71b1eae4`
@@ -727,3 +902,7 @@
 - 2026-04-08: completed `P1-C3` by extracting the first draft `DOC-TAX-0001` body from `S0F-3I` and aligning its metadata, source-owner relationship, and third-lane draft-stage landing semantics.
 - 2026-04-08: completed `P2-C3` by landing `DOC-TAX-0001` into the `DOC` contract index and updating the `DOC` family front door to reflect the third mixed source-owner plus promoted-contract reading state.
 - 2026-04-08: completed `P3-C3` by applying the `S0F-5A` close-out questionnaire to the third lane, promoting `DOC-TAX-0001` from draft to active current contract status, and concluding that no bounded post-stable export tail is required.
+- 2026-04-08: reopened `S0F-4E` in `C4` so the fourth mapped promotion lane (`S0F-4C` -> `DOC-FDT-0001`) can be executed inside the same slice rather than in a new near-duplicate follow-up.
+- 2026-04-08: completed `P1-C4` by extracting the first draft `DOC-FDT-0001` body from `S0F-4C` and aligning its metadata, source-owner relationship, and fourth-lane draft-stage landing semantics.
+- 2026-04-08: completed `P2-C4` by landing `DOC-FDT-0001` into the `DOC` contract index and updating the `DOC` family front door to reflect the fourth mixed source-owner plus promoted-contract reading state.
+- 2026-04-08: completed `P3-C4` by applying the `S0F-5A` close-out questionnaire to the fourth lane, promoting `DOC-FDT-0001` from draft to active current contract status, and concluding that no bounded post-stable export tail is required.
