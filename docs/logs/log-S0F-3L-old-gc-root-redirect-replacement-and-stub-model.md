@@ -5,7 +5,7 @@
 **id**: `S0F-3L`
 **kind**: `log`
 **title**: `old GC root redirect replacement and stub model v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Cleanup, Redirect, GC, epic/s0, sub/3l`
 **links**: ``
@@ -258,6 +258,25 @@
   - the common model is good enough to support an ISS-first pilot
   - it is not yet defended strongly enough to justify folding `GC-PRB-0001` into the same first package
 
+## P4 (Next-lane decision | v1)
+
+### P4-C1-S1 (Narrower ISS-first execution pilot chosen; PRB remains deferred | v1)
+
+- `P4` now closes the execution-boundary question explicitly:
+  - do not open one full preserved-subset move for all remaining old root-level `GC-*` redirects
+  - do not stop at `design ready but no execution lane`
+  - instead open one narrower execution pilot under the shared stub model
+- The migration disposition is now split into two explicit buckets:
+  - `GC-ISS-*` is now `migratable via bounded pilot`, because its remaining root duty can be preserved by a root stub while the full retained body moves to the contracts-side support-only surface
+  - `GC-PRB-0001` is still `not migratable yet`, because its umbrella redirect role and earlier-surface sample weight still make it too heavy for the first execution round
+- `P4` therefore chooses one representative first move instead of one family-wide wave.
+- The recommended first execution record is `GC-ISS-0001` because it is the cleanest representative of the single-successor ISS split pattern and already sits on the narrowest direct-reference footprint.
+- If that representative pilot proves the stub, support-only target, index entry, and bounded reference-rewrite contract in practice, later work may decide whether to extend the same move to `GC-ISS-0002` through `GC-ISS-0005`.
+- No equivalent execution go-ahead is granted to `GC-PRB-0001` in this slice.
+- The practical handling rule after `P4` is now:
+  - move-ready next lane: one bounded ISS root-stub relocation pilot
+  - stay-put next lane: `GC-PRB-0001` remains a full retained root redirect until a separate umbrella-specific execution slice proves otherwise
+
 ## Plan (draft)
 
 ### P1 (Root-duty inventory)
@@ -303,7 +322,7 @@
 
 ### P4 (Next-lane decision)
 
-- [ ] `P4-C1-S1`: next execution boundary decided
+- [x] `P4-C1-S1`: next execution boundary decided
 
 ## Current Status (recommended)
 
@@ -312,8 +331,10 @@
 - `P1` is now complete: the preserved root-level subset still owns old-path landing, deterministic redirect, and some direct path discoverability, but it no longer owns the current effective rule meaning itself.
 - `P2` is now complete: the repo now has one explicit root-stub minimum shape, one fixed support-only replacement-target model, and one navigation split between root-stub citations and moved full-body citations.
 - `P3` is now complete: the common stub model is good enough for an `ISS`-first pilot, but the preserved subset should not move as one shared first execution packet because `GC-PRB-0001` still carries heavier umbrella and sample obligations.
-- No relocation result is assumed yet; this slice remains design-first, but it is now ready to enter `P4`.
-- The immediate next step is `P4`: decide whether to open a real `GC-ISS-*` pilot execution package or stop with an explicit `design ready but execution deferred` result.
+- `P4` is now complete and `S0F-3L` is now stable: the repo should not treat preserved old `GC-*` redirect content as one yes/no migration bucket.
+- `GC-ISS-*` is now judged `migratable via bounded pilot`, with `GC-ISS-0001` recommended as the first representative execution record under the shared root-stub model.
+- `GC-PRB-0001` is now judged `not migratable yet` for the first move round and should remain a full retained root redirect until a separate umbrella-specific execution slice reopens it.
+- The immediate next step is no longer design work inside `S0F-3L`; it is to open one new bounded execution slice for the `GC-ISS-0001` pilot and leave `GC-PRB-0001` untouched meanwhile.
 
 ## Evidence (reserved)
 
@@ -383,9 +404,27 @@
   - the `GC-ISS-*` split set is now defended as the narrower first pilot candidate under the shared stub model
   - `GC-PRB-0001` remains deferred for the first move round because its umbrella and sample obligations are still heavier than the ISS pattern
 
+### P4-C1-S1 (Execution boundary fixed as representative ISS-first pilot, not full-subset move | 2026-04-09)
+
+- headSha: `<pending commit for S0F-3L/P4-C1-S1>`
+- artifacts:
+  - `docs/logs/support-only/s0f-3l-gc-root-stub-p4-decision-manifest.json`
+  - `docs/governance/contracts/support-only/INDEX.md`
+  - `docs/governance/views/view-iss-split-package-v1.md`
+  - `docs/governance/views/view-prb-split-package-v1.md`
+  - `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
+  - `docs/logs/log-S0F-3L-old-gc-root-redirect-replacement-and-stub-model.md`
+- expected:
+  - the repo has one explicit yes-or-no execution answer for the preserved old `GC-*` redirect family after the design work
+  - later cleanup does not need to reopen whether the next move should be full-subset, pilot, or no-op
+- observed:
+  - `GC-ISS-*` is now judged migration-capable only through a bounded pilot, with `GC-ISS-0001` fixed as the recommended first representative move
+  - `GC-PRB-0001` remains non-migratable for the first round and stays as a full retained root redirect pending a separate umbrella-specific execution judgment
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-3L` as the redirect-replacement and stub-model follow-up after the `S0F-3K` refined no-op result.
 - 2026-04-09: completed `P1` by inventorying the preserved subset's remaining root-path duties and separating them from duties already replaced by current successors, lineage views, or support-only backtrace surfaces.
 - 2026-04-09: completed `P2` by fixing the minimum root-stub shape, the support-only replacement-target model, and the navigation split that a later cleanup-execution round would have to preserve.
 - 2026-04-09: completed `P3` by fixing the applicability split, keeping the common model as the shared design family, but narrowing the first move-ready pilot candidate to `GC-ISS-*` while deferring `GC-PRB-0001`.
+- 2026-04-09: completed `P4` by rejecting both a full preserved-subset move and a design-only stop, fixing the next step as one representative `GC-ISS-0001` pilot while leaving `GC-PRB-0001` at root for a later umbrella-specific judgment.

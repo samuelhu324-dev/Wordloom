@@ -1,0 +1,65 @@
+{
+  "id": "S0F-3L",
+  "phase": "P4",
+  "generatedAt": "2026-04-09",
+  "question": "Should the repo execute a full preserved-subset move, a narrower pilot, or stop with a design-ready no-op?",
+  "decision": {
+    "status": "narrower-pilot",
+    "summary": "The preserved old GC redirect family should not move as one full subset. A representative ISS-first pilot is now the defended next execution lane, while GC-PRB-0001 stays deferred.",
+    "recommendedNextSlice": "Open one bounded execution slice for a representative ISS legacy-redirect relocation pilot.",
+    "recommendedPilotRecord": "GC-ISS-0001",
+    "fullSubsetMove": "rejected-for-now",
+    "designReadyNoOp": "rejected-for-now"
+  },
+  "migrationDisposition": {
+    "gc_iss_split_set": {
+      "status": "migratable-via-pilot",
+      "members": [
+        "GC-ISS-0001",
+        "GC-ISS-0002",
+        "GC-ISS-0003",
+        "GC-ISS-0004",
+        "GC-ISS-0005"
+      ],
+      "immediateHandling": [
+        "Keep the old root path occupied by a root stub rather than deleting the historical landing surface.",
+        "Move only the retained full body for the pilot record to docs/governance/contracts/support-only/<same-basename>.md.",
+        "Add the moved full body to docs/governance/contracts/support-only/INDEX.md.",
+        "Rewrite only bounded direct full-body references; lineage and old-ID landing references may continue to cite the root stub path."
+      ],
+      "whyNow": [
+        "The ISS family already shares a uniform single-successor redirect model.",
+        "Its root-path references are concentrated in lineage and cleanup-boundary surfaces that remain compatible with a stub-preserved root path.",
+        "A one-record pilot can prove the move checklist without forcing a five-record wave immediately."
+      ],
+      "evidence": [
+        "docs/governance/views/view-iss-split-package-v1.md",
+        "docs/governance/views/view-gc-first-cleanup-boundary-v1.md",
+        "docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md",
+        "docs/logs/support-only/s0f-3l-gc-root-stub-applicability-manifest.json"
+      ]
+    },
+    "gc_prb_0001": {
+      "status": "not-migratable-yet",
+      "members": [
+        "GC-PRB-0001"
+      ],
+      "immediateHandling": [
+        "Keep the full retained redirect body at docs/governance/contracts/ for now.",
+        "Do not fold PRB into the first ISS execution packet.",
+        "Revisit only in a separate umbrella-specific slice that judges the umbrella redirect together with its already-moved support-only backfill relationship."
+      ],
+      "whyNotNow": [
+        "PRB remains a multi-successor umbrella redirect rather than a simple single-successor record.",
+        "PRB still carries stronger canonical deprecated-sample weight in earlier registry-model surfaces.",
+        "The umbrella-plus-backfill pairing deserves an explicit execution judgment rather than inheriting the ISS pilot decision."
+      ],
+      "evidence": [
+        "docs/governance/views/view-prb-split-package-v1.md",
+        "docs/governance/views/support-only/view-prb-follow-up-family-sweep-v1.md",
+        "docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md",
+        "docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md"
+      ]
+    }
+  }
+}
