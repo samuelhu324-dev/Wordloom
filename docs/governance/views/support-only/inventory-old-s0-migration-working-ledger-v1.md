@@ -61,7 +61,8 @@
   - first issue-governance source-owner packet promoted under `S0F-4I`
 - `S0F-5B/P4-C2` now admits the second bounded seed set as the first supporting source-owner packet already absorbed by those executed issue-governance `DOC` contracts.
 - `S0F-5B/P4-C3` now admits the third bounded seed set as the first source-owner packet already absorbed by the current `DOC` history reader surface.
-- Wider old-`S0` population still remains a later bounded follow-up after these first three defended seed packets prove the shared ledger shape across retained-source, supporting-contract, and supporting-view rows.
+- `S0F-5B/P4-C4` now admits the fourth bounded seed set as the second source-owner packet already absorbed by that same `DOC` history reader surface.
+- Wider old-`S0` population still remains a later bounded follow-up after these first four defended seed packets prove the shared ledger shape across retained-source, supporting-contract, and multiple supporting-view row packets.
 
 ## Working Rows
 
@@ -81,6 +82,8 @@
 | `S0F-4D` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting history row; the DOC contract home and legacy-GC triage milestone are already concentrated into the DOC history reader surface rather than retained as a current front-door row` |
 | `S0F-4E` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting history row; the first DOC promotion event is already concentrated into the DOC history reader surface` |
 | `S0F-4F` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting history row; reader-surface consolidation is already concentrated into the DOC history reader surface rather than retained as a separate migration target` |
+| `S0E-3A` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting lineage row; roadmap bridge structure is already concentrated into the DOC history reader surface as an early milestone rather than retained as a separate current migration target` |
+| `S0E-6A` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting lineage row; the automation-versus-evidence split is already concentrated into the DOC history reader surface as a pre-DOC enabling milestone` |
 
 ## Source Refs
 

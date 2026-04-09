@@ -40,6 +40,9 @@
 - Current state after `S0F-5B/P4-C3`:
   - the third bounded seed set is now admitted as the first source-owner packet already absorbed by the current `DOC` history reader surface
   - the migration ledger now distinguishes supporting rows absorbed by `contract` targets from supporting rows absorbed by `view` targets
+- Current state after `S0F-5B/P4-C4`:
+  - the fourth bounded seed set is now admitted as the second source-owner packet already absorbed by that same `DOC` history reader surface
+  - the migration ledger now proves that one executed reader-facing `view` target may accumulate multiple defended source-owner subpackets without collapsing them into one generic history bucket
 
 ## Current Migration Rows
 
@@ -59,6 +62,8 @@
 | `S0F-4D` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
 | `S0F-4E` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
 | `S0F-4F` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
+| `S0E-3A` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
+| `S0E-6A` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
 
 ## Reader Notes
 
