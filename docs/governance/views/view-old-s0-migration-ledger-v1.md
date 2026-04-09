@@ -60,6 +60,44 @@
   - `view-doc-contract-promotion-map-v1`: `1` row (`S0F-4I`)
 - Read this view as the current migration answer to `which old S0 surfaces are already absorbed into DOC, and through which current outlet do they now read?`
 
+## Grouped DOC Reading
+
+- Use this section when the question is not `what are all the rows?` but `which DOC reading surface should I open first?`
+- The row table below remains the canonical bounded projection.
+
+### Contract-First DOC Reading
+
+- Count: `11`
+- Open the active `DOC` contract body first when the old `S0` surface now reads as current rule meaning:
+  - `S0F-4A` -> `DOC-DRB-0001`
+  - `S0F-4B` -> `DOC-SLC-0001`
+  - `S0F-3I` -> `DOC-TAX-0001`
+  - `S0F-4C` -> `DOC-FDT-0001`
+  - `S0E-2D` -> `DOC-ICR-0001`
+  - `S0E-2E` -> `DOC-ICL-0001`
+  - `S0E-6C` -> `DOC-ICT-0001`
+  - `S0F-1G` -> `DOC-IID-0001` and `DOC-IID-0002`
+  - `S0F-1A` -> `DOC-ICR-0001`
+  - `S0F-1B` -> `DOC-ICT-0001`
+  - `S0F-1D` -> `DOC-ICR-0001` and `DOC-ICL-0001`
+
+### History-View DOC Reading
+
+- Count: `6`
+- Open `view-doc-history-and-lineage-v1` first when the old `S0` surface now reads as lineage, history, or history-publication context:
+  - `S0F-4D`
+  - `S0F-4E`
+  - `S0F-4F`
+  - `S0E-3A`
+  - `S0E-6A`
+  - `S0F-4G`
+
+### Promotion-Map DOC Reading
+
+- Count: `1`
+- Open `view-doc-contract-promotion-map-v1` first when the old `S0` surface now reads as a bounded promotion packet or landing map:
+  - `S0F-4I`
+
 ## Current Migration Rows
 
 | source surface | current standing | target family | target outlet | target surface | follow-up owner |

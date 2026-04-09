@@ -55,6 +55,7 @@
   **phase_log_35**: `docs/logs/log-S0F-4H-active-gc-current-registry-family-mapping-and-rehoming.md`
   **phase_log_36**: `docs/logs/log-S0F-4I-issue-governance-doc-promotion-extension-and-gc-demotion-packet.md`
   **phase_log_37**: `docs/logs/log-S0F-5B-old-s0-migration-ledger-view-and-support-only-inventory-model.md`
+  **phase_log_38**: `docs/logs/log-S0F-6A-view-old-s0-migration-ledger-reader-summary-and-grouped-doc-reading.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -348,6 +349,7 @@
 - `S0F-5B/P4-C4` is now complete inside the same stable lane: the fourth bounded seed set admits `S0E-3A` and `S0E-6A` as earlier source-owner lineage rows already absorbed by that same current `DOC` history reader surface, and later widening is now explicitly constrained by target-surface coherence as well as packet kind.
 - `S0F-5B/P4-C5` is now complete inside the same stable lane: the fifth bounded seed set admits `S0F-4I` as the first bounded execution lane already absorbed by the current `DOC` promotion-map reader surface, and later widening is now explicitly constrained by reader-surface class as well as exact target-surface coherence.
 - `S0F-5B/P4-C6` is now complete inside the same stable lane: the sixth bounded seed set admits `S0F-4G` as the history-publication lane already absorbed by the current `DOC` history reader surface, and later widening is now explicitly constrained by history-surface subtype as well as exact target-surface coherence.
+- `S0F-6A` is now opened and completed as the bounded follow-up for reader-summary enhancement on the migration view: `view-old-s0-migration-ledger-v1.md` now groups the already-admitted `DOC` absorption state by `contract`, `history view`, and `promotion-map view`, so readers can reach the right current surface faster without reopening row admission or support-only ledger semantics.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
