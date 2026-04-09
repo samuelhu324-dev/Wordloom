@@ -5,7 +5,7 @@
 **id**: `S0F-5B`
 **kind**: `log`
 **title**: `old-S0 migration ledger view and support-only inventory model v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Records, Views, Inventory, Contract, epic/s0, sub/5b`
 **links**: ``
@@ -104,12 +104,12 @@
 
 **Outlet ownership**:
 
-- `contract`: no-op unless this slice later fixes one stable normative rule that is not already owned by `S0F-4A`, `S0F-4B`, or `S0F-5A`
-- `runbook`: no-op unless the migration backlog later proves one stable repeatable operator procedure beyond the slice-local execution ledger
-- `view`: one reader-facing migration ledger view that shows current backlog status without exposing every provisional working note
-- `index/front-door`: any bounded navigation update needed so readers can discover the migration ledger view from current governance reader surfaces
-- `disposition/placement`: one support-only standing for the working inventory itself if that surface is admitted
-- `log-retained core`: slice-local reasoning, field-contract decisions, execution checklist, evidence, and follow-up boundary
+- `contract`: no-op; `S0F-5B` does not create one new current rule contract beyond the already-owned model from `S0F-4A`, `S0F-4B`, and `S0F-5A`
+- `runbook`: no-op; this slice fixes backlog-surface modeling rather than one stable repeatable operator procedure
+- `view`: landed as `docs/governance/views/view-old-s0-migration-ledger-v1.md`
+- `index/front-door`: no-op; the migration ledger view is discoverable through `S0F-5B` and does not yet require broader front-door mutation
+- `disposition/placement`: landed as one support-only working-ledger standing for `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+- `log-retained core`: keep this source log for slice-local reasoning, field-contract decisions, execution checklist, evidence, and follow-up boundary
 
 ## Definitions (optional)
 
@@ -265,6 +265,31 @@
 - P4-C1-S1: admit one first bounded seed set for shared migration tracking
 - P4-C1-S2: fix the next follow-up boundary for wider old-`S0` migration population
 
+### P4-C1-S1 (First bounded seed set admitted | v1)
+
+- The first bounded seed set is now admitted as the already-executed first `DOC` migration chain.
+- This seed set is intentionally limited to rows whose migration result is already defended and visible on disk through current `DOC` contracts:
+  - first `DOC` source-owner quartet:
+    - `S0F-4A` -> `DOC-DRB-0001`
+    - `S0F-4B` -> `DOC-SLC-0001`
+    - `S0F-3I` -> `DOC-TAX-0001`
+    - `S0F-4C` -> `DOC-FDT-0001`
+  - first issue-governance source-owner packet:
+    - `S0E-2D` -> `DOC-ICR-0001`
+    - `S0E-2E` -> `DOC-ICL-0001`
+    - `S0E-6C` -> `DOC-ICT-0001`
+    - `S0F-1G` -> `DOC-IID-0001` and `DOC-IID-0002`
+- These rows are admitted into both the support-only working ledger and the reader-facing migration view as real seeded data rather than remaining an abstract model shell.
+
+### P4-C1-S2 (Next follow-up boundary fixed | v1)
+
+- The next widening step is now fixed as: later bounded lanes may extend the shared migration ledger only with the next defended old-`S0` source-owner packet, not by performing one whole-series bulk population pass.
+- Why this boundary is correct:
+  - the first seed set is enough to prove the ledger shape on real rows
+  - later lanes can now add rows without reopening field contracts or reader-view boundaries
+  - the repo should still avoid flooding the migration ledger with mixed-provenance backlog rows before the next bounded packet is explicit
+- `S0F-5B` therefore closes as one stable ledger-model lane with one first admitted seed packet, not as the whole migration sweep itself.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -289,8 +314,8 @@
 
 ### P4 (Seed-set admission)
 
-- [ ] `P4-C1-S1`: first bounded seed set admitted
-- [ ] `P4-C1-S2`: next follow-up boundary fixed
+- [x] `P4-C1-S1`: first bounded seed set admitted
+- [x] `P4-C1-S2`: next follow-up boundary fixed
 
 ## Current Status (recommended)
 
@@ -299,7 +324,9 @@
 - `P1` is now complete: the ownership split among source log, support-only working ledger, and reader-facing migration view is explicit enough to reuse.
 - `P2` is now complete: the support-only inventory row contract, standing values, and row-status semantics are now fixed and materialized in one working-ledger file.
 - `P3` is now complete: the reader-facing migration projection contract is now fixed and materialized in one bounded migration view.
-- The immediate next step is `P4`: admit the first bounded seed set so later old-`S0` migration work updates shared row surfaces instead of only carrying empty model shells.
+- `P4` is now complete: the first bounded seed set is admitted as the already-executed first `DOC` migration chain, and both shared ledger surfaces now carry real seeded rows.
+- `S0F-5B` is now `stable`.
+- The next step is no longer ledger-model design; it is the next bounded follow-up that widens the shared migration ledger with one further defended old-`S0` source-owner packet.
 
 ## Evidence (reserved)
 
@@ -360,9 +387,26 @@
   - the reader-facing migration view now fixes the bounded summary fields it should show
   - the omission boundary is explicit, and row-level blockers remain in the support-only working ledger rather than leaking into the view
 
+### P4-C1-S1S2 (First bounded seed set admitted and next follow-up boundary fixed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5B/P4-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5B-old-s0-migration-ledger-view-and-support-only-inventory-model.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the shared ledger surfaces carry one real first seed packet rather than only model placeholders
+  - the next widening step is explicit enough that later lanes can extend the ledger without reopening its surface design
+- observed:
+  - the first bounded seed set now records the already-executed first `DOC` migration chain across the source-owner quartet and the first issue-governance packet
+  - the support-only working ledger and the reader-facing migration view now both carry real rows
+  - `S0F-5B` is now ready to close as `stable`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5B` as the bounded lane for old-`S0` migration-ledger surface design, fixing the immediate next job as `reader-facing view + support-only inventory` modeling rather than direct repo-wide backlog execution.
 - 2026-04-09: completed `P1` by fixing the ownership split among source log, support-only working ledger, and reader-facing migration view.
 - 2026-04-09: completed `P2` by fixing the shared working-ledger row contract, standing values, and row semantics, and materializing the first support-only inventory file.
 - 2026-04-09: completed `P3` by fixing the reader-facing migration projection contract and materializing the first bounded migration view.
+- 2026-04-09: completed `P4` by admitting the first bounded seed set as the already-executed first `DOC` migration chain, landing those rows in both shared ledger surfaces, and closing `S0F-5B` as stable.

@@ -55,15 +55,24 @@
 
 ## Current Ledger State
 
-- `S0F-5B/P1-P3` fixes the working-ledger contract only.
-- No first bounded seed set is admitted yet.
-- Population begins at `S0F-5B/P4` or a later bounded follow-up that explicitly owns the first old-`S0` row packet.
+- `S0F-5B/P4` now admits the first bounded seed set as the already-executed first `DOC` migration chain.
+- The first seed set is intentionally narrow:
+  - first `DOC` source-owner quartet promoted under `S0F-4E`
+  - first issue-governance source-owner packet promoted under `S0F-4I`
+- Wider old-`S0` population remains a later bounded follow-up after this initial seed packet proves the shared ledger shape on real rows.
 
 ## Working Rows
 
 | source surface | current standing | candidate family | candidate outlet | action type | target surface | blocker | follow-up owner | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<pending first bounded seed set>` | `unreviewed` | `` | `` | `` | `` | `seed set not admitted yet` | `S0F-5B/P4` | `P1-P3 fixed the row contract before any shared backlog rows are populated` |
+| `S0F-4A` | `done` | `DOC` | `contract` | `add` | `DOC-DRB-0001` | `` | `none (executed)` | `first source-owner quartet row; active rule now reads through DOC current contract while the log remains retained traceability` |
+| `S0F-4B` | `done` | `DOC` | `contract` | `add` | `DOC-SLC-0001` | `` | `none (executed)` | `source-log compatibility rule now reads through DOC current contract while the log remains retained traceability` |
+| `S0F-3I` | `done` | `DOC` | `contract` | `add` | `DOC-TAX-0001` | `` | `none (executed)` | `taxonomy and placement rule now reads through DOC current contract while the log remains retained traceability` |
+| `S0F-4C` | `done` | `DOC` | `contract` | `add` | `DOC-FDT-0001` | `` | `none (executed)` | `family-front-door transition rule now reads through DOC current contract while the log remains retained traceability` |
+| `S0E-2D` | `done` | `DOC` | `contract` | `add` | `DOC-ICR-0001` | `` | `none (executed)` | `issue-creation source-owner row admitted through the first executed issue-governance packet` |
+| `S0E-2E` | `done` | `DOC` | `contract` | `add` | `DOC-ICL-0001` | `` | `none (executed)` | `issue-conclusion source-owner row admitted through the first executed issue-governance packet` |
+| `S0E-6C` | `done` | `DOC` | `contract` | `add` | `DOC-ICT-0001` | `` | `none (executed)` | `issue-context source-owner row admitted through the first executed issue-governance packet` |
+| `S0F-1G` | `done` | `DOC` | `contract` | `split` | `DOC-IID-0001` and `DOC-IID-0002` | `` | `none (executed)` | `one source-owner log now reads through two DOC issue-identity contracts under one shared execution packet` |
 
 ## Source Refs
 

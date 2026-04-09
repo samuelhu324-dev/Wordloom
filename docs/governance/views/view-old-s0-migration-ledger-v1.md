@@ -30,13 +30,23 @@
 - Current state after `S0F-5B/P1-P3`:
   - the repo now has one explicit split between a support-only working ledger and this reader-facing migration view
   - the working-ledger row contract and the reader-facing projection contract are now fixed
-  - no first bounded seed set is admitted yet, so this view records the model state rather than pretending that shared backlog population is already complete
+- Current state after `S0F-5B/P4`:
+  - the first bounded seed set is now admitted as the already-executed first `DOC` migration chain
+  - the reader-facing view now exposes real seeded rows rather than only the model shell
+  - the next widening step remains a later bounded follow-up, not a whole-series backlog flood into this view
 
 ## Current Migration Rows
 
 | source surface | current standing | target family | target outlet | target surface | follow-up owner |
 | --- | --- | --- | --- | --- | --- |
-| `first bounded seed set not admitted yet` | `pending population` | `` | `` | `` | `S0F-5B/P4` |
+| `S0F-4A` | `done` | `DOC` | `contract` | `DOC-DRB-0001` | `none (executed)` |
+| `S0F-4B` | `done` | `DOC` | `contract` | `DOC-SLC-0001` | `none (executed)` |
+| `S0F-3I` | `done` | `DOC` | `contract` | `DOC-TAX-0001` | `none (executed)` |
+| `S0F-4C` | `done` | `DOC` | `contract` | `DOC-FDT-0001` | `none (executed)` |
+| `S0E-2D` | `done` | `DOC` | `contract` | `DOC-ICR-0001` | `none (executed)` |
+| `S0E-2E` | `done` | `DOC` | `contract` | `DOC-ICL-0001` | `none (executed)` |
+| `S0E-6C` | `done` | `DOC` | `contract` | `DOC-ICT-0001` | `none (executed)` |
+| `S0F-1G` | `done` | `DOC` | `contract` | `DOC-IID-0001` and `DOC-IID-0002` | `none (executed)` |
 
 ## Reader Notes
 
