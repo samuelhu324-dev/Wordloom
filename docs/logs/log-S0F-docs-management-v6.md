@@ -58,6 +58,7 @@
   **phase_log_38**: `docs/logs/log-S0F-6A-view-old-s0-migration-ledger-reader-summary-and-grouped-doc-reading.md`
   **phase_log_39**: `docs/logs/log-S0F-6B-old-s0-absorption-coverage-and-history-chain-views.md`
   **phase_log_40**: `docs/logs/log-S0F-6C-outlet-and-lifecycle-observability.md`
+  **phase_log_41**: `docs/logs/log-S0F-5C-priority-packet-decomposition-and-cleanup-admission.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -370,6 +371,8 @@
 - `S0F-6C/P2` is now complete: the first bounded overview field set is fixed, and one aggregate observability surface now lands the current `S0F` live child-set distribution across practical lifecycle stage, reader-facing standing, and dominant current outlet.
 - `S0F-6C/P3` is now complete: the first detail field set and bounded population rule are fixed, and one per-item observability surface now lands current lifecycle stage, current reading home, stop reason, and next-open routing for that same `S0F` live child-set population.
 - `S0F-6C/P4` is now complete and `S0F-6C` is now stable: first-open routing is explicit across overview, detail, current contracts, and retained logs, and the stable close-out review resolves to landed `view` surfaces plus justified `no-op` for the other outlets.
+- `S0F-5C` is now opened as the bounded follow-up for priority-first decomposition of unresolved old-`S0` packets: the first admitted queue is `S0F-1H` / `S0F-1I` / `S0F-1J` first, then `S0E-5A` plus `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G`, and cleanup admission is now explicitly deferred behind those packet-level outcomes.
+- `S0F-5C/P1` is now complete: one reusable packet-priority test and one cleanup-admission gate are now fixed, so later packet work can distinguish `priority A`, `priority B`, `non-write defer`, and real cleanup admission without reopening the old-`S0` backlog model.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
@@ -580,3 +583,5 @@
 - 2026-04-09: completed `S0F-6C/P2` by fixing the first overview field set and landing the first bounded aggregate observability surface for the current `S0F` live child-set population.
 - 2026-04-09: completed `S0F-6C/P3` by fixing the first detail field set and landing the first bounded per-item observability surface for that same current `S0F` live child-set population.
 - 2026-04-09: completed `S0F-6C/P4` by fixing first-open routing and answering the six-outlet stable close-out review, so `S0F-6C` now closes as `stable`.
+- 2026-04-09: opened `S0F-5C` as the bounded follow-up for priority-first decomposition of unresolved old-`S0` packets before any broader cleanup lane opens.
+- 2026-04-09: completed `S0F-5C/P1` by fixing the reusable packet-priority criteria and the cleanup-admission gate before any packet write-back or cleanup execution begins.
