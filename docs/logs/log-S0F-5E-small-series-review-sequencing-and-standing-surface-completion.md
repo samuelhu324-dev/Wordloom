@@ -270,8 +270,31 @@
 
 ### P5 (S0C standing surface)
 
-- `P5-C1-S1`: publish `docs/governance/views/view-old-s0-series-s0c-standing-v1.md`
-- `P5-C1-S2`: fix the `S0C` row contract and reader routing so the series becomes reviewable without replaying aggregate-only counts
+### P5-C1-S1 (`S0C` series standing view landed | v1)
+
+- `S0C` now has its first bounded per-log drill-down reader surface at:
+  - `docs/governance/views/view-old-s0-series-s0c-standing-v1.md`
+- The surface now makes the full `S0C` review-scope population explicit in one place:
+  - one already surfaced structural-prerequisite row: `S0C-1A`
+  - eight remaining outside-surfaced-set rows: `S0C-2A`, `S0C-3A`, `S0C-3A-1A`, `S0C-3A-2A`, `S0C-3A-3A`, `S0C-4A`, `S0C-4A-1A`, and `S0C-5A`
+- This completes the last missing small-series standing-surface prerequisite inside `S0F-5E` before the final bounded series review step starts.
+
+### P5-C1-S2 (`S0C` row contract and reader routing fixed | v1)
+
+- The new `S0C` drill-down now reuses the stable per-log row contract already proven by the earlier series surfaces:
+  - `source log`
+  - `series`
+  - `currently surfaced`
+  - `reader-facing standing`
+  - `current family`
+  - `current reading home`
+  - `history role`
+  - `notes`
+- Reader routing for `S0C` is now explicit:
+  - open `view-old-s0-series-s0c-standing-v1.md` first for per-log standing inside `S0C`
+  - open `view-old-s0-absorption-coverage-overview-v1.md` first for aggregate per-series distribution
+  - open `view-old-s0-migration-ledger-v1.md` first for already admitted cross-series rows
+- `P5` therefore closes the final missing-series-surface problem without pre-judging the unresolved `S0C` rows; `P6` remains the bounded follow-up that will classify the `S0C` remainder by standing and current reading home.
 
 ### P6 (S0C review)
 
@@ -307,8 +330,8 @@
 
 ### P5 (S0C standing surface)
 
-- [ ] `P5-C1-S1`: `S0C` series standing view landed
-- [ ] `P5-C1-S2`: `S0C` reader routing fixed
+- [x] `P5-C1-S1`: `S0C` series standing view landed
+- [x] `P5-C1-S2`: `S0C` reader routing fixed
 
 ### P6 (S0C review)
 
@@ -322,7 +345,8 @@
 - `P2` is now complete: `S0B-2A` no longer sits as generic unresolved remainder and now reads as retained tooling-governance evidence outside the `DOC` surfaced set.
 - `P3` is now complete: `S0D` now has its bounded series standing view and explicit reader routing, so the series no longer depends on aggregate-only counts for per-log review entry.
 - `P4` is now complete: `S0D-2A` through `S0D-6A` no longer sit as generic unresolved remainder and now read as retained governance evidence for repo-local tooling, runbook, UI, workflow-packing, and roadmap/demo surfaces.
-- The immediate next step is now `P5`: publish the missing `S0C` series standing surface so the larger remaining small-series backlog becomes reviewable under the same drill-down model.
+- `P5` is now complete: `S0C` now has its bounded series standing view and explicit reader routing, so the last unresolved small-series backlog can now be reviewed directly under the same drill-down model.
+- The immediate next step is now `P6`: classify the `S0C` remainder by standing and current reading home, then decide whether any later cleanup-admission consequence is justified.
 - This log should currently be read as the source owner for the next lower-volume old-`S0` review entry path rather than as a cleanup-execution lane.
 
 ## Evidence (reserved)
@@ -386,7 +410,7 @@
 
 ### P4-C1-S1S2 (`S0D` retained-governance classification and write-back landed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-5E/P4-C1-S1S2>`
+- headSha: `a3d966a1e`
 - artifacts:
   - `docs/governance/views/view-old-s0-series-s0d-standing-v1.md`
   - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
@@ -399,6 +423,20 @@
   - `S0D-2A` through `S0D-6A` now all read as retained governance evidence outside the `DOC` surfaced set rather than as missing `DOC` history rows
   - the `S0D` series view and support-only working ledger now carry the same defended result, with no new cleanup-admission candidate surfaced by this review
 
+### P5-C1-S1S2 (`S0C` standing surface and reader routing landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5E/P5-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-series-s0c-standing-v1.md`
+  - `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - `S0C` should stop depending on aggregate-only coverage counts for per-log review entry
+  - the final bounded follow-up should be able to classify the remaining `S0C` rows under one explicit series drill-down contract rather than by improvised row shape
+- observed:
+  - the repo now has one explicit `S0C` series standing surface with the full nine-row review population and one already surfaced `S0C-1A` anchor
+  - `S0C` reader routing is now explicit enough that `P6` can review the unresolved rows directly under the same drill-down model already used elsewhere
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5E` as the bounded small-series review follow-up after `S0F-5D`.
@@ -407,3 +445,4 @@
 - 2026-04-09: completed `P2` by classifying `S0B-2A` as retained tooling-governance evidence and writing that result back to the `S0B` series standing view and support-only working ledger.
 - 2026-04-09: completed `P3` by publishing the first `S0D` series standing view and fixing the reader-routing contract needed for bounded `S0D` remainder review.
 - 2026-04-09: completed `P4` by classifying `S0D-2A` through `S0D-6A` as retained governance evidence and writing those results back to the `S0D` series standing view and support-only working ledger.
+- 2026-04-09: completed `P5` by publishing the first `S0C` series standing view and fixing the reader-routing contract needed for bounded `S0C` remainder review.
