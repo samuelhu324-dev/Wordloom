@@ -209,6 +209,26 @@
 - The large `docs/issues/` historical artifact set remains intentionally unchanged in `P2` and continues to resolve through the preserved root stubs.
 - `P2` therefore lands the defended split from `P1` exactly as planned: direct navigation surfaces are retargeted, while exact-path historical consumers remain stable without mass rewrite.
 
+## P3 (Post-move verification | v1)
+
+### P3-C1-S1 (Post-move discoverability verified | v1)
+
+- The first post-move verification artifact for this lane is now fixed as:
+  - `docs/logs/support-only/s0f-5d-workflow-support-round-1-post-move-verification.json`
+- The verification result is now explicit and bounded:
+  - the three root stubs still land cleanly for exact-path historical readers
+  - the three moved retained bodies remain readable under `docs/logs/support-only/s0/`
+  - the support-only index and planned direct-navigation set now expose the moved bodies directly
+- `P3` also closes one missed direct-navigation rewrite from the `P1` plan: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md` now points to the moved support-only `S0E-7E` / `S0E-7F` / `S0E-7G` bodies instead of their old root paths.
+
+### P3-C1-S2 (Standing and cleanup-ledger write-back landed | v1)
+
+- The minimum reader-facing write-back set from `P1` is now executed:
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+- The `S0E-7E` / `S0E-7F` / `S0E-7G` standing rows now describe the support-only retained-body reading home explicitly while preserving the root stubs as intentional exact-path landing surfaces.
+- The working ledger now points each retained workflow-support row at its moved support-only target surface instead of the historical root path.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -267,15 +287,16 @@
 
 ### P3 (Post-move verification)
 
-- [ ] `P3-C1-S1`: post-move discoverability verified
-- [ ] `P3-C1-S2`: standing and cleanup-ledger write-back landed
+- [x] `P3-C1-S1`: post-move discoverability verified
+- [x] `P3-C1-S2`: standing and cleanup-ledger write-back landed
 
 ## Current Status (recommended)
 
 - `S0F-5D` is now opened as the bounded cleanup-execution follow-up to `S0F-5C`.
 - `P0` and `P1` are now complete: the execution subset, exact target paths, manifest, and rewrite split are all explicit before any file move is attempted.
 - `P2` is now complete: the retained bodies are moved, the root stubs are landed, and the bounded direct-navigation rewrite set is executed without widening into machine-generated artifact rewrites.
-- The immediate next step is now `P3`: verify post-move discoverability and then write back the landed result to the minimum standing and cleanup-ledger surfaces.
+- `P3` is now complete: post-move verification, the missed `S0F-1G` direct-navigation catch-up rewrite, and the minimum standing/cleanup-ledger write-back are all landed.
+- There is no further execution step inside `S0F-5D`; any later follow-up should begin from a new admitted cleanup subset rather than reopening this round.
 - This log should currently be read as the source owner for the first admitted workflow-support cleanup execution lane.
 
 ## Evidence (reserved)
@@ -311,7 +332,7 @@
 
 ### P2-C1-S1S2 (Workflow-support retained-body move and direct-navigation rewrites landed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-5D/P2-C1-S1S2>`
+- headSha: `e0037d293`
 - artifacts:
   - `docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
   - `docs/logs/support-only/s0/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
@@ -328,8 +349,25 @@
   - the three retained workflow-support bodies now live under `docs/logs/support-only/s0/`, and each former root path is preserved as a stub
   - the bounded navigation surfaces now point to the moved retained bodies directly, while the `docs/issues/` historical artifacts remain unchanged and continue to resolve through the stubs
 
+### P3-C1-S1S2 (Workflow-support post-move verification and standing write-back landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5D/P3-C1-S1S2>`
+- artifacts:
+  - `docs/logs/support-only/s0f-5d-workflow-support-round-1-post-move-verification.json`
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
+  - `docs/logs/log-S0F-5D-first-admitted-workflow-support-cleanup-execution.md`
+- expected:
+  - post-move verification should show that the moved retained bodies are readable under support-only and that old exact paths still land safely through stubs
+  - the minimum reader-facing write-back set should describe the moved support-only reading home directly without reopening machine-generated historical artifacts
+- observed:
+  - the first workflow-support cleanup round now has an explicit post-move verification artifact covering stub landing, moved-body readability, support-only navigation, and standing write-back
+  - the last missed direct-navigation reader inside `S0F-1G` now points at the moved support-only bodies, while standing and working-ledger surfaces now describe the moved support-only reading home directly
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5D` as the bounded cleanup-execution follow-up for the first admitted workflow-support subset after `S0F-5C` stabilized the cleanup-admission screen.
 - 2026-04-09: completed `P1` by fixing the exact support-only target paths, the cleanup manifest, and the split between direct navigation rewrites and preserved root-stub consumers.
 - 2026-04-09: completed `P2` by moving `S0E-7E` / `S0E-7F` / `S0E-7G` into `docs/logs/support-only/s0/`, landing root stubs, and retargeting the bounded direct-navigation surfaces.
+- 2026-04-09: completed `P3` by verifying support-only discoverability, catching up the missed `S0F-1G` direct-navigation rewrite, and writing the moved support-only reading home back into the standing and cleanup-ledger surfaces.
