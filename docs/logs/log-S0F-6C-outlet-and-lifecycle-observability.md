@@ -54,6 +54,7 @@
   - support-only mutable execution ledgers
   - old-`S0` historical absorption views
 - `P1` is now complete: the observability lane now has one explicit two-layer reader split and one minimum reader-facing vocabulary for lifecycle stage, standing, outlet result, stop reason, and next owner.
+- `P2` is now complete: the first bounded overview field set is fixed, and one aggregate observability surface now publishes the current `S0F` live child-set distribution for lifecycle stage, standing, and dominant current outlet.
 
 **Default choices (phase defaults / v1)**:
 
@@ -103,7 +104,7 @@
 
 - `contract`: no-op for now; existing lifecycle and workflow contracts remain the current rule owners unless `S0F-6C` later proves a contract gap rather than a visibility gap
 - `runbook`: no-op for now; this slice starts from reader observability rather than operator procedure
-- `view`: planned; this slice is expected to land one overview observability surface and one bounded detail surface or defended equivalent
+- `view`: landed in part as `docs/governance/views/view-outlet-and-lifecycle-observability-overview-v1.md`; one bounded detail surface or defended equivalent remains sequenced into later `P3`
 - `index/front-door`: no-op for now; broader front-door mutation should wait until the first observability surfaces prove stable reader value
 - `disposition/placement`: no-op for now; mutable support-only placement and cleanup standing remain outside this reader-facing lane
 - `log-retained core`: keep this source log for the observability contract, field boundaries, routing rationale, and close-out decision
@@ -244,6 +245,57 @@
   - it lets readers see where an item stands now
   - it keeps the full operator mutation story in support-only ledgers and retained logs when that deeper execution history is still needed
 
+## P2 (Overview observability | v1)
+
+### P2-C1-S1 (Overview field set fixed | v1)
+
+- The minimum field set for the first bounded observability overview surface is now fixed as:
+  - `population`
+  - `in-scope items`
+  - `items with live issue`
+  - `items with live PR`
+  - `practical lifecycle stage distribution`
+  - `lifecycle standing distribution`
+  - `dominant current outlet distribution`
+  - `notes`
+- Field intent is now fixed as:
+  - `population`:
+    - states the exact bounded item family the overview is allowed to count
+    - prevents the first overview from pretending to summarize the whole repo
+  - `in-scope items`:
+    - gives the count of bounded source logs inside that population
+  - `items with live issue`:
+    - states how many items have entered the real GitHub lifecycle at issue level
+  - `items with live PR`:
+    - states how many items have reached PR linkage rather than remaining issue-only
+  - `practical lifecycle stage distribution`:
+    - uses the practical audit-stage buckets already defended by `S0E-5A`: `issue-created`, `pr-linked`, `merged-open`, and `concluded`
+    - stays aggregate-first rather than item-by-item narrative
+  - `lifecycle standing distribution`:
+    - summarizes the P1 reader-facing standing vocabulary across the same bounded population
+  - `dominant current outlet distribution`:
+    - counts the narrowest current reader-facing home that best explains where each bounded item now reads first
+    - intentionally records one dominant current outlet per item rather than every historical or secondary export the slice may also have emitted
+  - `notes`:
+    - keeps one short explanation of exclusions, dominant-outlet interpretation, or other bounded reading caveats
+- The first bounded overview population is now fixed as:
+  - current `S0F` child slices under the live lifecycle packet that already have both a real GitHub issue and a real PR written back in source
+  - specifically: `S0F-1A`, `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1G`, `S0F-1H`, and `S0F-1J`
+- This first population boundary is intentional:
+  - it is large enough to show real current distribution
+  - it stays inside one owner lineage for `S0F-6C`
+  - it avoids pretending that parent spines, support-only logs, or earlier `S0E` historical packets already form one unified observability population without a defended expansion decision
+
+### P2-C1-S2 (First bounded overview surface landed | v1)
+
+- The first bounded aggregate observability surface now exists at `docs/governance/views/view-outlet-and-lifecycle-observability-overview-v1.md`.
+- This first view answers:
+  - how many current `S0F` live child items are inside the first defended observability population
+  - how many of them have live issue and PR traceability written back in source
+  - how that bounded population currently distributes across practical lifecycle stage, reader-facing standing, and dominant current outlet
+- This first view intentionally stops at aggregate overview.
+- It does not yet try to answer per-item stop reason, next-owner routing, or detailed item-by-item standing; those remain sequenced into `P3`.
+
 ## Plan (draft)
 
 ### P1 (Observability split and field vocabulary)
@@ -280,8 +332,8 @@
 
 ### P2 (Overview observability)
 
-- [ ] `P2-C1-S1`: overview field set fixed
-- [ ] `P2-C1-S2`: first bounded overview surface landed
+- [x] `P2-C1-S1`: overview field set fixed
+- [x] `P2-C1-S2`: first bounded overview surface landed
 
 ### P3 (Per-item detail)
 
@@ -298,8 +350,9 @@
 - `S0F-6C` is now opened as the bounded follow-up for outlet and lifecycle observability.
 - `P0` is now complete: the problem is fixed as a missing reader-facing visibility lane rather than as another `S0F-6B` widening cycle.
 - `P1` is now complete: the observability split is explicit across `overview` and `detail`, and the minimum reader-facing vocabulary is now fixed across `lifecycle stage`, `lifecycle standing`, `outlet result`, `stop reason`, and `next owner`.
-- `P2` through `P4` remain open.
-- The next implementation step is to define the first overview field set and land the first bounded aggregate observability surface before any per-item detail table is widened.
+- `P2` is now complete: the first bounded overview field set is fixed, and the first aggregate observability surface is now landed for the current `S0F` live child-set population.
+- `P3` through `P4` remain open.
+- The next implementation step is to define the per-item detail field set and bounded population rule before landing the first detail surface.
 
 ## Evidence (reserved)
 
@@ -330,7 +383,23 @@
   - the minimum reader-facing vocabulary is now fixed across `lifecycle stage`, `lifecycle standing`, `outlet result`, `stop reason`, and `next owner`
   - later `P2` and `P3` work can now define field sets and first bounded surfaces without reopening these boundary questions first
 
+### P2-C1-S1S2 (Overview field set fixed and first bounded observability overview landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-6C/P2-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-6C-outlet-and-lifecycle-observability.md`
+  - `docs/governance/views/view-outlet-and-lifecycle-observability-overview-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - readers should be able to see one bounded aggregate answer for the first defended observability population without replaying each live child log manually
+  - the first overview should separate stage distribution, standing distribution, and dominant current outlet distribution without collapsing them into one generic status number
+- observed:
+  - the first bounded overview field set is now fixed around population, live lifecycle entry, practical stage buckets, standing buckets, and dominant current outlet buckets
+  - the first aggregate observability surface is now landed for the current `S0F` live child set of `S0F-1A`, `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1G`, `S0F-1H`, and `S0F-1J`
+  - live GitHub state confirms the current bounded set is fully `concluded`, fully `complete`, and currently reads first through contract-dominant current homes in this first overview cut
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-6C` as the bounded follow-up for outlet and lifecycle observability after concluding that `S0F-6B` itself was already complete within its own historical absorption boundary.
 - 2026-04-09: completed `P1` by fixing the two-layer observability split and the minimum reader-facing vocabulary for lifecycle stage, lifecycle standing, outlet result, stop reason, and next owner.
+- 2026-04-09: completed `P2` by fixing the first overview field set and landing the first bounded aggregate observability surface for the current `S0F` live child-set population.
