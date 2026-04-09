@@ -204,6 +204,24 @@
 - `P2-C1-S1`: classify `S0E-2A`, `S0E-2B`, `S0E-2C`, and `S0E-3B`
 - `P2-C1-S2`: write back the defended packet result to the shared surfaces
 
+### P2-C1-S1 (Issue/preflight packet classified | v1)
+
+- `S0E-2A`, `S0E-2B`, `S0E-2C`, and `S0E-3B` are now fixed as `retained-evidence` rather than as missing `DOC` absorption rows.
+- The defended packet boundary is now explicit:
+  - `S0E-2A` remains bounded first-contract evidence for semi-automated issue creation, but current operator reading now starts from the thin issue-creation runbook and draft-generation entrypoint rather than from this old log as one current `DOC` surface
+  - `S0E-2B` remains bounded real-create automation evidence, while current create-mode behavior now reads through the live runbook and explicit `--create` script path
+  - `S0E-2C` remains bounded batch-planning and backfill-tooling evidence, while current planning behavior now reads through the batch/relationship/backfill script set and the runbook's operator procedures
+  - `S0E-3B` remains bounded live-label-preflight evidence, while current enforcement now reads through the runbook and script-level live label checks rather than through the source log as one separate current `DOC` home
+- This packet does not widen the current `DOC` surfaced set because the current on-disk `DOC` front door and existing issue-governance contract set do not yet present these rows themselves as the first-open reading surfaces.
+
+### P2-C1-S2 (Issue/preflight packet write-back landed | v1)
+
+- The bounded shared-surface write-back set for the issue/preflight packet is now fixed as:
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+- `S0E-2A`, `S0E-2B`, `S0E-2C`, and `S0E-3B` now stop reading as generic unresolved remainder inside the `S0E` series view.
+- The support-only working ledger now records the same defended result: the packet is done as retained issue-creation, batch-planning, and live-label-preflight evidence outside the current `DOC` surfaced set.
+
 ### P3 (PR/linkage packet)
 
 - `P3-C1-S1`: classify `S0E-4A`, `S0E-4B`, `S0E-4C`, `S0E-4D`, `S0E-4E`, and `S0E-4F`
@@ -238,8 +256,8 @@
 
 ### P2 (Issue/preflight packet)
 
-- [ ] `P2-C1-S1`: issue/preflight packet classified
-- [ ] `P2-C1-S2`: issue/preflight packet write-back landed
+- [x] `P2-C1-S1`: issue/preflight packet classified
+- [x] `P2-C1-S2`: issue/preflight packet write-back landed
 
 ### P3 (PR/linkage packet)
 
@@ -266,7 +284,8 @@
 - `S0F-5F` is now opened as the bounded remaining-`S0E` review follow-up after `S0F-5E`.
 - The lane now owns the still-`unreviewed` rows inside the `S0E` standing surface rather than the already-settled `DOC`, `non-doc`, and retained-support rows.
 - `P1` is now complete: the remaining `S0E` backlog is now split into four bounded packets with one defended review order.
-- The immediate next step is now `P2`: classify the issue/preflight packet (`S0E-2A`, `S0E-2B`, `S0E-2C`, `S0E-3B`) and write back the defended result.
+- `P2` is now complete: the issue/preflight packet no longer sits as generic unresolved remainder and now reads as retained issue-creation, batch-planning, and live-label-preflight evidence rooted in current runbook and script surfaces.
+- The immediate next step is now `P3`: classify the PR/linkage packet (`S0E-4A` through `S0E-4F`) and write back the defended result.
 - This log should currently be read as the source owner for the unresolved `S0E` standing backlog rather than as a promotion or cleanup-execution lane.
 
 ## Evidence (reserved)
@@ -300,9 +319,25 @@
   - the remaining unresolved `S0E` rows now read as four bounded packets rather than one generic remainder bucket
   - the next bounded review path is now explicit as issue/preflight first, PR/linkage second, lifecycle/log-stability third, and authoring/rendering/workflow-follow-up fourth
 
+### P2-C1-S1S2 (Issue/preflight packet classified as retained evidence | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5F/P2-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/logs/log-S0F-5F-remaining-s0e-standing-adjudication-and-packeted-review.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the issue/preflight packet should stop reading as one generic unresolved bucket inside `S0E`
+  - the packet should receive one defended standing result without widening the current `DOC` surfaced set prematurely
+- observed:
+  - `S0E-2A`, `S0E-2B`, `S0E-2C`, and `S0E-3B` now read as retained issue-creation, batch-planning, and live-label-preflight evidence rooted in current runbook and script surfaces
+  - the `S0E` standing view and support-only working ledger now carry the same defended result without adding one new current `DOC` absorption row
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5F` as the bounded remaining-`S0E` standing-adjudication and packeted-review lane after `S0F-5E`.
 - 2026-04-09: fixed the initial scope as the still-unreviewed `S0E` rows already visible in the `S0E` standing surface rather than the already-settled `DOC`, retained-support, and non-`DOC` rows.
 - 2026-04-09: fixed the immediate next step as packet-order design first, then bounded review of issue/preflight, PR/linkage, lifecycle/log-stability, and authoring/rendering/workflow-follow-up groups.
 - 2026-04-09: completed `P1` by fixing the exact unresolved `S0E` packet inventory and the defended packet review order.
+- 2026-04-09: completed `P2` by classifying `S0E-2A`, `S0E-2B`, `S0E-2C`, and `S0E-3B` as retained issue-creation, batch-planning, and live-label-preflight evidence and writing that result back to the `S0E` standing view and support-only working ledger.
