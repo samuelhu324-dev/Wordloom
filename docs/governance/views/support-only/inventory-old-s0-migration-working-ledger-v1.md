@@ -64,7 +64,8 @@
 - `S0F-5B/P4-C4` now admits the fourth bounded seed set as the second source-owner packet already absorbed by that same `DOC` history reader surface.
 - `S0F-5B/P4-C5` now admits the fifth bounded seed set as the first source-owner execution lane already absorbed by the current `DOC` promotion-map reader surface.
 - `S0F-5B/P4-C6` now admits the sixth bounded seed set as the third source-owner packet already absorbed by the current `DOC` history reader surface.
-- Wider old-`S0` population still remains a later bounded follow-up after these first six defended seed packets prove the shared ledger shape across retained-source, supporting-contract, and multiple target-coherent supporting-view packets.
+- `S0F-5B/P4-C7` now admits the seventh bounded seed set as the fourth source-owner packet already absorbed by the current `DOC` history reader surface.
+- Wider old-`S0` population still remains a later bounded follow-up after these first seven defended seed packets prove the shared ledger shape across retained-source, supporting-contract, and multiple target-coherent supporting-view packets.
 
 ## Working Rows
 
@@ -88,6 +89,9 @@
 | `S0E-6A` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting lineage row; the automation-versus-evidence split is already concentrated into the DOC history reader surface as a pre-DOC enabling milestone` |
 | `S0F-4I` | `done` | `DOC` | `view` | `merge` | `view-doc-contract-promotion-map-v1` | `` | `none (executed)` | `supporting promotion-lane row; the bounded issue-governance DOC extension packet is already concentrated into the DOC promotion-map reader surface as one landed extension unit rather than retained as a separate current migration target` |
 | `S0F-4G` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting history-publication row; the first durable DOC history surface and extraction-before-cleanup gate are already concentrated into the DOC history reader surface rather than retained as a separate current migration target` |
+| `S0B-3A` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting structural-prerequisite row; stable document identity and explicit metadata grammar now survive through the DOC history reader surface as the earliest reusable prerequisite for current DOC reading` |
+| `S0C-1A` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting structural-prerequisite row; decision-first log structure now survives through the DOC history reader surface as an early prerequisite for readable retained-source chronology` |
+| `S0D-1A` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting structural-prerequisite row; parent-spine orchestration and reusable P/C/S execution grammar now survive through the DOC history reader surface as an early prerequisite for coherent DOC lineage reading` |
 
 ## Source Refs
 

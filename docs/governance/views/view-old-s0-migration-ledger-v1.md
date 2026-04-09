@@ -49,14 +49,17 @@
 - Current state after `S0F-5B/P4-C6`:
   - the sixth bounded seed set is now admitted as the third source-owner packet already absorbed by the current `DOC` history reader surface
   - the migration ledger now shows that the `DOC` history reader surface absorbs both lineage milestones and its own history-publication gate, while remaining separated from the promotion-map surface
+- Current state after `S0F-5B/P4-C7`:
+  - the seventh bounded seed set is now admitted as the fourth source-owner packet already absorbed by the current `DOC` history reader surface
+  - the migration ledger now shows that the `DOC` history reader surface absorbs pre-`DOC` structural prerequisites, later lineage milestones, and the history-publication gate as distinct defended history subtypes
 
 ## DOC Absorption Snapshot
 
-- Current `S0 -> DOC` absorption rows tracked here: `18`
+- Current `S0 -> DOC` absorption rows tracked here: `21`
 - Rows absorbed into current `DOC` contract targets: `11`
-- Rows absorbed into current `DOC` reader-facing `view` targets: `7`
+- Rows absorbed into current `DOC` reader-facing `view` targets: `10`
 - Current `DOC` `view` targets now represented here:
-  - `view-doc-history-and-lineage-v1`: `6` rows (`S0F-4D`, `S0F-4E`, `S0F-4F`, `S0E-3A`, `S0E-6A`, `S0F-4G`)
+  - `view-doc-history-and-lineage-v1`: `9` rows (`S0F-4D`, `S0F-4E`, `S0F-4F`, `S0E-3A`, `S0E-6A`, `S0F-4G`, `S0B-3A`, `S0C-1A`, `S0D-1A`)
   - `view-doc-contract-promotion-map-v1`: `1` row (`S0F-4I`)
 - Read this view as the current migration answer to `which old S0 surfaces are already absorbed into DOC, and through which current outlet do they now read?`
 
@@ -105,7 +108,7 @@
 
 ### History-View DOC Reading
 
-- Count: `6`
+- Count: `9`
 - Use this group when the question is `how did this current DOC surface emerge or why does it read this way now?`
 - Open first:
   - `view-doc-history-and-lineage-v1`
@@ -118,6 +121,9 @@
   - `S0E-3A`
   - `S0E-6A`
   - `S0F-4G`
+  - `S0B-3A`
+  - `S0C-1A`
+  - `S0D-1A`
 
 ### Promotion-Map DOC Reading
 
@@ -152,6 +158,9 @@
 | `S0E-6A` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
 | `S0F-4I` | `done` | `DOC` | `view` | `view-doc-contract-promotion-map-v1` | `none (executed)` |
 | `S0F-4G` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
+| `S0B-3A` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
+| `S0C-1A` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
+| `S0D-1A` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
 
 ## Reader Notes
 

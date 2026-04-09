@@ -396,6 +396,28 @@
 - Do not flatten those subtypes into one generic history packet unless a later bounded lane explicitly owns that synthesis.
 - This keeps the migration ledger readable not only by exact target surface, but also by the kind of historical reading work that target surface now concentrates.
 
+### P4-C7-S1 (Seventh bounded seed set admitted | v1)
+
+- The seventh bounded seed set is now admitted as the fourth source-owner packet already absorbed by the current `DOC` history reader surface.
+- This packet covers the pre-`DOC` structural milestones explicitly concentrated by `docs/governance/views/view-doc-history-and-lineage-v1.md` as the deepest reusable prerequisites for current `DOC` reading:
+  - `S0B-3A` -> `view-doc-history-and-lineage-v1`
+  - `S0C-1A` -> `view-doc-history-and-lineage-v1`
+  - `S0D-1A` -> `view-doc-history-and-lineage-v1`
+- These rows differ from `C4` and `C6`:
+  - they are not later lineage milestones already framed inside the `S0E` and `S0F` era
+  - they are not the history-publication lane that made the durable `DOC` history surface reusable
+- They are the older structural prerequisite rows whose meaning now survives through the `DOC` history reader surface as the earliest bounded explanation of why current `DOC` contracts, logs, and history reading can be read coherently at all.
+
+### P4-C7-S2 (Next widening boundary refined for pre-DOC structural prerequisites | v1)
+
+- After `C7`, the next widening step is refined again as:
+  - for `view`-absorbed supporting rows under one exact history reader surface, keep distinct packet subtypes explicit when they differ materially between:
+    - pre-`DOC` structural prerequisites
+    - lineage milestones
+    - history-publication or extraction-gate lanes
+- Do not flatten those three subtypes into one generic history packet unless a later bounded lane explicitly owns that synthesis.
+- This keeps the migration ledger readable across the full depth of the current `DOC` history surface, from earliest structural prerequisites through later lineage milestones and into the publication gate that fixed durable history reading.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -432,6 +454,8 @@
 - [x] `P4-C5-S2`: next widening boundary refined for reader-surface classes
 - [x] `P4-C6-S1`: sixth bounded seed set admitted
 - [x] `P4-C6-S2`: next widening boundary refined for history-surface subtypes
+- [x] `P4-C7-S1`: seventh bounded seed set admitted
+- [x] `P4-C7-S2`: next widening boundary refined for pre-DOC structural prerequisites
 
 ## Current Status (recommended)
 
@@ -446,6 +470,7 @@
 - `P4-C4` is now complete: the fourth bounded seed set is admitted as the second source-owner packet already absorbed by that same current `DOC` history reader surface.
 - `P4-C5` is now complete: the fifth bounded seed set is admitted as the first source-owner execution lane already absorbed by the current `DOC` promotion-map reader surface.
 - `P4-C6` is now complete: the sixth bounded seed set is admitted as the third source-owner packet already absorbed by the current `DOC` history reader surface.
+- `P4-C7` is now complete: the seventh bounded seed set is admitted as the fourth source-owner packet already absorbed by the current `DOC` history reader surface.
 - `S0F-5B` is now `stable`.
 - The next step is no longer ledger-model design; it is the next bounded follow-up that widens the shared migration ledger with one further defended packet of retained source-owner rows, contract-absorbed supporting rows, or one target-coherent and subtype-coherent `view`-absorbed supporting packet.
 
@@ -605,6 +630,23 @@
   - the shared ledger surfaces now show the `DOC` history reader surface absorbing both lineage rows and the history-publication gate row
   - later widening is now constrained by exact target surface and by history-surface subtype coherence
 
+### P4-C7-S1S2 (Seventh bounded seed set admitted and widening boundary refined for pre-DOC structural prerequisites | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5B/P4-C7-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5B-old-s0-migration-ledger-view-and-support-only-inventory-model.md`
+  - `docs/governance/views/view-doc-history-and-lineage-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the shared ledger surfaces show that the `DOC` history reader surface absorbs not only `S0E` and `S0F` lineage rows, but also the earlier structural prerequisite rows that make current `DOC` history reading intelligible
+  - later widening is refined enough that pre-`DOC` structural prerequisites remain reader-legible rather than flattening into the same subtype bucket as later lineage milestones or the history-publication gate
+- observed:
+  - `S0B-3A`, `S0C-1A`, and `S0D-1A` are now admitted as the seventh bounded seed set under `view-doc-history-and-lineage-v1`
+  - the shared ledger surfaces now show the `DOC` history reader surface absorbing pre-`DOC` structural prerequisites, later lineage rows, and the history-publication gate as distinct defended subtypes
+  - later widening is now constrained by exact target surface and by explicit separation among pre-`DOC` structural prerequisites, later lineage milestones, and history-publication lanes
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5B` as the bounded lane for old-`S0` migration-ledger surface design, fixing the immediate next job as `reader-facing view + support-only inventory` modeling rather than direct repo-wide backlog execution.
@@ -617,3 +659,4 @@
 - 2026-04-09: completed `P4-C4` by admitting `S0E-3A` and `S0E-6A` as the fourth bounded seed set under the same current `DOC` history reader surface and refining later widening by exact current target-surface coherence.
 - 2026-04-09: completed `P4-C5` by admitting `S0F-4I` as the fifth bounded seed set under the current `DOC` promotion-map reader surface and refining later widening by reader-surface class as well as target-surface coherence.
 - 2026-04-09: completed `P4-C6` by admitting `S0F-4G` as the sixth bounded seed set under the current `DOC` history reader surface and refining later widening by history-surface subtype as well as target-surface coherence.
+- 2026-04-09: completed `P4-C7` by admitting `S0B-3A`, `S0C-1A`, and `S0D-1A` as the seventh bounded seed set under the current `DOC` history reader surface and refining later widening by separating pre-`DOC` structural prerequisites from later lineage milestones and history-publication lanes.
