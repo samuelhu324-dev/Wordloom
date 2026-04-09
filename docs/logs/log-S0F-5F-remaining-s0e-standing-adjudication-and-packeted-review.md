@@ -249,6 +249,23 @@
 - `P4-C1-S1`: classify `S0E-5B`, `S0E-5C`, `S0E-5D`, `S0E-5E`, and `S0E-6B`
 - `P4-C1-S2`: write back the defended packet result to the shared surfaces
 
+### P4-C1-S1 (Lifecycle/log-stability packet classified | v1)
+
+- `S0E-5B`, `S0E-5C`, and `S0E-5D` are now fixed as `retained-evidence`, while `S0E-5E` and `S0E-6B` are now fixed as `history-lineage`.
+- The defended packet boundary is now explicit:
+  - `S0E-5B`, `S0E-5C`, and `S0E-5D` remain bounded guarded-lifecycle, PR-create-gate, and body-contract evidence whose active meaning now reads through live planner and verification surfaces rather than through one current `DOC` first-open home
+  - `S0E-5E` remains historically relevant because its parent-issue DoD ordering rule now survives mainly as lineage into later issue-body boundary work
+  - `S0E-6B` remains historically relevant because its broader log-stability gate strategy now survives mainly as lineage into later dual-track evidence and gate surfaces rather than as one current surface on its own
+- This packet also stays outside the current `DOC` surfaced set because these rows now read through repo-local gate, planner, and later-lineage surfaces rather than through an already-published `DOC` front door or history/promotion-map view.
+
+### P4-C1-S2 (Lifecycle/log-stability packet write-back landed | v1)
+
+- The bounded shared-surface write-back set for the lifecycle/log-stability packet is now fixed as:
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+- `S0E-5B`, `S0E-5C`, `S0E-5D`, `S0E-5E`, and `S0E-6B` now stop reading as generic unresolved remainder inside the `S0E` series view.
+- The support-only working ledger now records the same defended result: retained gate/body evidence plus lineage into later body and log-gate surfaces outside the current `DOC` surfaced set.
+
 ### P5 (Authoring/rendering/workflow-follow-up packet)
 
 - `P5-C1-S1`: classify `S0E-1A`, `S0E-1B`, `S0E-6D`, `S0E-6E`, `S0E-6F`, `S0E-7A`, `S0E-7B`, and `S0E-7C`
@@ -283,8 +300,8 @@
 
 ### P4 (Lifecycle/log-stability packet)
 
-- [ ] `P4-C1-S1`: lifecycle/log-stability packet classified
-- [ ] `P4-C1-S2`: lifecycle/log-stability packet write-back landed
+- [x] `P4-C1-S1`: lifecycle/log-stability packet classified
+- [x] `P4-C1-S2`: lifecycle/log-stability packet write-back landed
 
 ### P5 (Authoring/rendering/workflow-follow-up packet)
 
@@ -303,7 +320,8 @@
 - `P1` is now complete: the remaining `S0E` backlog is now split into four bounded packets with one defended review order.
 - `P2` is now complete: the issue/preflight packet no longer sits as generic unresolved remainder and now reads as retained issue-creation, batch-planning, and live-label-preflight evidence rooted in current runbook and script surfaces.
 - `P3` is now complete: the PR/linkage packet no longer sits as generic unresolved remainder and now reads as retained PR/lifecycle evidence plus attribution lineage rooted in current runbook, planner, and resolver surfaces.
-- The immediate next step is now `P4`: classify the lifecycle/log-stability packet (`S0E-5B`, `S0E-5C`, `S0E-5D`, `S0E-5E`, `S0E-6B`) and write back the defended result.
+- `P4` is now complete: the lifecycle/log-stability packet no longer sits as generic unresolved remainder and now reads as retained gate/body evidence plus lineage into later body and log-gate surfaces.
+- The immediate next step is now `P5`: classify the authoring/rendering/workflow-follow-up packet (`S0E-1A`, `S0E-1B`, `S0E-6D`, `S0E-6E`, `S0E-6F`, `S0E-7A`, `S0E-7B`, `S0E-7C`) and write back the defended result.
 - This log should currently be read as the source owner for the unresolved `S0E` standing backlog rather than as a promotion or cleanup-execution lane.
 
 ## Evidence (reserved)
@@ -367,6 +385,21 @@
   - `S0E-4A`, `S0E-4B`, `S0E-4C`, `S0E-4D`, and `S0E-4F` now read as retained PR/lifecycle evidence, while `S0E-4E` now reads as attribution lineage into the later resolver and `S0E-7B` implementation surfaces
   - the `S0E` standing view and support-only working ledger now carry the same defended result without adding one new current `DOC` absorption row
 
+### P4-C1-S1S2 (Lifecycle/log-stability packet classified as retained evidence and lineage | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5F/P4-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/logs/log-S0F-5F-remaining-s0e-standing-adjudication-and-packeted-review.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the lifecycle/log-stability packet should stop reading as one generic unresolved bucket inside `S0E`
+  - the packet should receive defended current-home results without forcing one new `DOC` surface that the current front door and promotion map do not yet expose
+- observed:
+  - `S0E-5B`, `S0E-5C`, and `S0E-5D` now read as retained gate/body evidence, while `S0E-5E` and `S0E-6B` now read as lineage into later body and log-gate surfaces
+  - the `S0E` standing view and support-only working ledger now carry the same defended result without adding one new current `DOC` absorption row
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5F` as the bounded remaining-`S0E` standing-adjudication and packeted-review lane after `S0F-5E`.
@@ -375,3 +408,4 @@
 - 2026-04-09: completed `P1` by fixing the exact unresolved `S0E` packet inventory and the defended packet review order.
 - 2026-04-09: completed `P2` by classifying `S0E-2A`, `S0E-2B`, `S0E-2C`, and `S0E-3B` as retained issue-creation, batch-planning, and live-label-preflight evidence and writing that result back to the `S0E` standing view and support-only working ledger.
 - 2026-04-09: completed `P3` by classifying `S0E-4A` through `S0E-4F` as retained PR/lifecycle evidence plus attribution lineage and writing that result back to the `S0E` standing view and support-only working ledger.
+- 2026-04-09: completed `P4` by classifying `S0E-5B` through `S0E-6B` as retained gate/body evidence plus lineage into later body and log-gate surfaces and writing that result back to the `S0E` standing view and support-only working ledger.
