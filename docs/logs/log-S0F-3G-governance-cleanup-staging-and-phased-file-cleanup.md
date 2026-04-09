@@ -1249,9 +1249,9 @@
   - `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
   - `docs/logs/log-S0E-2C-batch-issue-creation-and-backfill-tooling.md`
   - `docs/logs/log-S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration.md`
-  - `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
-  - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
-  - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  - `docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/support-only/s0/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
 - expected:
   - a repo-side full scan of `docs/logs/` either yields one defensible new cleanup family or narrows the best future candidate set without forcing a premature move round
 - observed:

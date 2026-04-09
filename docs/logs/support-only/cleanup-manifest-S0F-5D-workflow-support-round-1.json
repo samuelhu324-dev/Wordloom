@@ -94,7 +94,7 @@
       "target_path": "docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md",
       "root_stub_path": "docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md",
       "requires_self_path_rewrite": true,
-      "status": "planned"
+      "status": "executed"
     },
     {
       "candidate_path": "docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
@@ -103,7 +103,7 @@
       "target_path": "docs/logs/support-only/s0/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
       "root_stub_path": "docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
       "requires_self_path_rewrite": true,
-      "status": "planned"
+      "status": "executed"
     },
     {
       "candidate_path": "docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md",
@@ -112,7 +112,7 @@
       "target_path": "docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md",
       "root_stub_path": "docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md",
       "requires_self_path_rewrite": true,
-      "status": "planned"
+      "status": "executed"
     }
   ]
 }

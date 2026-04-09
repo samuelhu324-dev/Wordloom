@@ -16,8 +16,8 @@
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **reference_log_1**: `docs/logs/log-S0E-docs-management-v5.md`
   **reference_log_2**: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
-  **reference_log_3**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
-  **reference_log_4**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  **reference_log_3**: `docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  **reference_log_4**: `docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **phase_log_1**: `docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md`
   **phase_log_2**: `docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md`
   **phase_log_3**: `docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md`
@@ -379,6 +379,7 @@
 - `S0F-5C/P4` is now complete and `S0F-5C` is now stable: the first post-adjudication cleanup screen is now explicit, `S0E-7E` / `S0E-7F` / `S0E-7G` are admitted as the first safe support-only cleanup-candidate subset, and the remaining current-adjacent roots are now split into executed relocation, source-owner defer, and planner-shell defer rather than one generic future cleanup question.
 - `S0F-5D` is now opened as the bounded cleanup-execution follow-up for that admitted subset: the lane will execute `S0E-7E` / `S0E-7F` / `S0E-7G` under the existing `docs/logs/support-only/s0/` relocation model, with the immediate next step fixed as the exact manifest and discoverability rewrite set rather than another admission review.
 - `S0F-5D/P1` is now complete: the first workflow-support cleanup manifest now fixes the exact retained-body target paths, preserves the old root paths as stubs for machine-generated issue and lifecycle artifacts, and narrows `P2` to one bounded move-plus-direct-navigation rewrite set rather than a mass rewrite of every historical exact-path consumer.
+- `S0F-5D/P2` is now complete: `S0E-7E` / `S0E-7F` / `S0E-7G` now live under `docs/logs/support-only/s0/`, their old root paths are preserved as stubs for exact-path historical consumers, and the bounded direct-navigation surfaces now point at the moved retained bodies instead of relying on root-level co-location.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.

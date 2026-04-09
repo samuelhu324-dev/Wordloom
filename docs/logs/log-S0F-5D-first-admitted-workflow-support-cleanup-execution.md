@@ -190,6 +190,25 @@
   - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
 - This split is the defended bounded result for `P1`: direct navigation is retargeted where it improves active discoverability, while exact-path historical artifacts remain provenance-safe through the preserved root stubs.
 
+## P2 (Relocation execution | v1)
+
+### P2-C1-S1 (Retained bodies moved and root stubs landed | v1)
+
+- `S0E-7E`, `S0E-7F`, and `S0E-7G` now live at:
+  - `docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/support-only/s0/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+- Their original root paths are now preserved as stubs rather than deleted files.
+- The moved retained bodies now rewrite their self-path and adjacent workflow-support references to the new `support-only/s0/` locations so direct readers do not bounce through stubs unnecessarily.
+
+### P2-C1-S2 (Bounded direct-navigation rewrites landed | v1)
+
+- The bounded direct-navigation set from `P1` is now executed:
+  - `docs/logs/support-only/INDEX.md` now lists the moved workflow-support logs explicitly.
+  - `docs/logs/log-S0E-docs-management-v5.md`, `docs/logs/log-S0F-docs-management-v6.md`, and the named follow-up logs/views now point to the moved retained bodies directly.
+- The large `docs/issues/` historical artifact set remains intentionally unchanged in `P2` and continues to resolve through the preserved root stubs.
+- `P2` therefore lands the defended split from `P1` exactly as planned: direct navigation surfaces are retargeted, while exact-path historical consumers remain stable without mass rewrite.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -243,8 +262,8 @@
 
 ### P2 (Relocation execution)
 
-- [ ] `P2-C1-S1`: admitted subset moved into `docs/logs/support-only/s0/`
-- [ ] `P2-C1-S2`: bounded reference rewrites and discoverability updates landed
+- [x] `P2-C1-S1`: admitted subset moved into `docs/logs/support-only/s0/`
+- [x] `P2-C1-S2`: bounded reference rewrites and discoverability updates landed
 
 ### P3 (Post-move verification)
 
@@ -255,7 +274,8 @@
 
 - `S0F-5D` is now opened as the bounded cleanup-execution follow-up to `S0F-5C`.
 - `P0` and `P1` are now complete: the execution subset, exact target paths, manifest, and rewrite split are all explicit before any file move is attempted.
-- The immediate next step is now `P2`: execute the retained-body move plus root-stub replacement for `S0E-7E` / `S0E-7F` / `S0E-7G`, then land the bounded direct-navigation rewrites.
+- `P2` is now complete: the retained bodies are moved, the root stubs are landed, and the bounded direct-navigation rewrite set is executed without widening into machine-generated artifact rewrites.
+- The immediate next step is now `P3`: verify post-move discoverability and then write back the landed result to the minimum standing and cleanup-ledger surfaces.
 - This log should currently be read as the source owner for the first admitted workflow-support cleanup execution lane.
 
 ## Evidence (reserved)
@@ -265,7 +285,7 @@
 
 ### P0-C1-S1S2 (S0F-5D scaffold and cleanup-execution boundary landed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-5D/P0-C1-S1S2>`
+- headSha: `2b86eb8ea`
 - artifacts:
   - `docs/logs/log-S0F-5D-first-admitted-workflow-support-cleanup-execution.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
@@ -278,7 +298,7 @@
 
 ### P1-C1-S1S2 (Workflow-support cleanup manifest and rewrite split fixed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-5D/P1-C1-S1S2>`
+- headSha: `2b86eb8ea`
 - artifacts:
   - `docs/logs/log-S0F-5D-first-admitted-workflow-support-cleanup-execution.md`
   - `docs/logs/support-only/cleanup-manifest-S0F-5D-workflow-support-round-1.json`
@@ -289,7 +309,27 @@
   - `P2` is now bounded to one retained-body move plus root-stub package for `S0E-7E` / `S0E-7F` / `S0E-7G`
   - the large `docs/issues/` evidence surface is no longer an execution-time surprise because it is fixed as preserved root-stub consumption rather than a mandatory mass-rewrite target
 
+### P2-C1-S1S2 (Workflow-support retained-body move and direct-navigation rewrites landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5D/P2-C1-S1S2>`
+- artifacts:
+  - `docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/support-only/s0/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  - `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  - `docs/logs/support-only/INDEX.md`
+  - `docs/logs/support-only/cleanup-manifest-S0F-5D-workflow-support-round-1.json`
+- expected:
+  - the admitted workflow-support subset should move as retained bodies into `docs/logs/support-only/s0/` without breaking exact-path historical consumers
+  - the bounded direct-navigation surfaces should point to the moved bodies directly after execution
+- observed:
+  - the three retained workflow-support bodies now live under `docs/logs/support-only/s0/`, and each former root path is preserved as a stub
+  - the bounded navigation surfaces now point to the moved retained bodies directly, while the `docs/issues/` historical artifacts remain unchanged and continue to resolve through the stubs
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5D` as the bounded cleanup-execution follow-up for the first admitted workflow-support subset after `S0F-5C` stabilized the cleanup-admission screen.
 - 2026-04-09: completed `P1` by fixing the exact support-only target paths, the cleanup manifest, and the split between direct navigation rewrites and preserved root-stub consumers.
+- 2026-04-09: completed `P2` by moving `S0E-7E` / `S0E-7F` / `S0E-7G` into `docs/logs/support-only/s0/`, landing root stubs, and retargeting the bounded direct-navigation surfaces.

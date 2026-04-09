@@ -321,9 +321,9 @@
 
 - tested surface set:
   - `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
-  - `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
-  - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
-  - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  - `docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/support-only/s0/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   - `docs/governance/contracts/GC-WF-0001-publish-verify-remediation-failure-taxonomy-and-handling.md`
   - `docs/governance/views/support-only/view-wf-admission-package-v1.md`
 - current outlet mapping under the `S0F-4A` model:
@@ -506,9 +506,9 @@
   - `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
   - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
   - `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
-  - `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
-  - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
-  - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  - `docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/support-only/s0/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   - `docs/governance/contracts/GC-WF-0001-publish-verify-remediation-failure-taxonomy-and-handling.md`
   - `docs/governance/views/support-only/view-wf-admission-package-v1.md`
 - expected:

@@ -17,7 +17,7 @@
   **previous_log**: `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
   **reference_log_1**: `docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md`
   **reference_log_2**: `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
-  **reference_log_3**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  **reference_log_3**: `docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **reference_log_4**: `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`
   **reference_log_5**: `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
 **issue_keyword**: `automation`

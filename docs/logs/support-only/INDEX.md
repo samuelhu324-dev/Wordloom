@@ -10,6 +10,9 @@
   - `log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md`
   - `log-S0F-1F-bucketed-audit-output-materialization.md`
   - `log-S0F-1I-formatting-only-pr-body-convergence.md`
+  - `log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
 
 ## Navigation Rule
 
