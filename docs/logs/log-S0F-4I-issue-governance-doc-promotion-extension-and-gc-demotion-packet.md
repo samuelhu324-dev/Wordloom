@@ -224,6 +224,28 @@
 - P3-C1-S1: define the matching `GC` demotion or redirect treatment for the replaced current rows
 - P3-C1-S2: align current-reader transition writes so `docs/governance/INDEX.md` and family-first reading remain clear together
 
+### P3-C1-S1 (Matching GC demotion treatment fixed | v1)
+
+- The five replaced issue-governance `GC-*` rows are now demoted from current narrow-registry standing to lineage-safe legacy redirect standing:
+  - `GC-ICR-0001` -> `DOC-ICR-0001`
+  - `GC-ICL-0001` -> `DOC-ICL-0001`
+  - `GC-ICT-0001` -> `DOC-ICT-0001`
+  - `GC-IID-0001` -> `DOC-IID-0001`
+  - `GC-IID-0002` -> `DOC-IID-0002`
+- The root files remain in place.
+- This step does not move them to support-only.
+- Their standing is now `deprecated legacy redirect`, not `current narrow-registry`.
+
+### P3-C1-S2 (Current-reader transition packet fixed | v1)
+
+- `docs/governance/INDEX.md` no longer lists those five issue-governance rows as current registry entries.
+- `DOC` family-first reading now remains explicit through the already-landed replacement packet.
+- The transition views and registry examples now align with that result:
+  - `view-gc-dual-reading-transition-v1.md` now points issue-governance current reading to the `DOC` family-owned packet
+  - `view-gc-triage-and-retention-rule-v1.md` no longer uses `GC-ICR-0001` or `GC-ICT-0001` as examples of current narrow-registry rows
+  - `view-contract-family-inventory-v1.md` no longer presents `GC-ICR-0001` as a representative current-registry row
+- This closes the current-reader ambiguity while preserving the old `GC-*` root paths for lineage-safe landing.
+
 ### P4 (Execution boundary decision)
 
 - P4-C1-S1: decide whether the full bounded packet executes now or needs one narrower execution step first
@@ -247,8 +269,8 @@
 
 ### P3 (GC demotion and transition packet)
 
-- [ ] `P3-C1-S1`: matching GC demotion treatment fixed
-- [ ] `P3-C1-S2`: current-reader transition packet fixed
+- [x] `P3-C1-S1`: matching GC demotion treatment fixed
+- [x] `P3-C1-S2`: current-reader transition packet fixed
 
 ### P4 (Execution boundary decision)
 
@@ -262,7 +284,8 @@
 - `P1` is now complete: the next `DOC` mapping extension is admitted and the target naming boundary is fixed as `DOC-ICR-0001`, `DOC-ICL-0001`, `DOC-ICT-0001`, `DOC-IID-0001`, and `DOC-IID-0002`.
 - The four-unit execution shape remains intact even though the issue-identity unit preserves two target records.
 - `P2` is now complete: the five replacement `DOC` contract bodies are landed and the `DOC` contract index, promotion map, and family front door now expose the issue-governance extension packet explicitly.
-- The immediate next step is `P3`: define the matching `GC` demotion and current-reader transition packet for the old current `GC-*` rows.
+- `P3` is now complete: the old issue-governance `GC-*` rows are now demoted to legacy redirect standing and the current-reader transition is aligned so `DOC` is the first current reading surface while the old `GC` root paths remain for lineage.
+- The immediate next step is `P4`: decide whether the full bounded packet is now execution-complete and ready to close, or whether one narrower follow-up is still required.
 
 ## Evidence (reserved)
 
@@ -325,8 +348,33 @@
   - the `DOC` contract index and front door now expose those new current bodies explicitly
   - the old current `GC-*` rows are intentionally still untouched at this stage, leaving demotion and current-reader transition to `P3`
 
+### P3-C1-S1S2 (GC demotion and current-reader transition packet fixed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-4I/P3-C1-S1S2>`
+- artifacts:
+  - `docs/logs/support-only/s0f-4i-gc-issue-governance-demotion-transition-packet.json`
+  - `docs/governance/contracts/GC-ICR-0001-issue-creation-metadata-english-body.md`
+  - `docs/governance/contracts/GC-ICL-0001-issue-conclusion-post-merge-linkage.md`
+  - `docs/governance/contracts/GC-ICT-0001-issue-context-sentence-count-main-vs-child.md`
+  - `docs/governance/contracts/GC-IID-0001-parent-sidebar-ordering-ownership.md`
+  - `docs/governance/contracts/GC-IID-0002-issue-title-keyword-controlled-vocabulary.md`
+  - `docs/governance/INDEX.md`
+  - `docs/governance/views/view-gc-dual-reading-transition-v1.md`
+  - `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
+  - `docs/governance/views/view-contract-family-inventory-v1.md`
+  - `docs/logs/log-S0F-4I-issue-governance-doc-promotion-extension-and-gc-demotion-packet.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the old issue-governance `GC-*` rows no longer appear as current registry-admitted records
+  - current readers can reach the family-owned `DOC` packet first without losing lineage-safe `GC` landing paths
+- observed:
+  - the five old `GC-*` rows are now deprecated legacy redirects to the corresponding `DOC-*` family-owned current bodies
+  - `docs/governance/INDEX.md` no longer exposes them as current narrow-registry entries
+  - the current transition views now agree that issue-governance meaning reads first through `DOC` while the old `GC` root files remain occupied for lineage
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-4I` as the direct execution follow-up after `S0F-4H`, dedicated to the bounded four-unit issue-governance `DOC` promotion-extension packet and matching `GC` demotion plan.
 - 2026-04-09: completed `P1` by admitting the next `DOC` mapping extension for the issue-governance packet and fixing the target naming boundary for the five replacement `DOC` records.
 - 2026-04-09: completed `P2` by landing the bounded replacement `DOC` packet, publishing five family-owned issue-governance current bodies, and aligning the `DOC` contract index, promotion map, and family front door before `GC` demotion begins.
+- 2026-04-09: completed `P3` by demoting the old issue-governance `GC-*` rows into legacy redirect standing and aligning the current-reader transition so `DOC` becomes the first current reading surface.

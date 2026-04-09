@@ -32,7 +32,7 @@
 | `SEC` | `search query authorization drills` | `docs/logs/log-S5B-4A-search-query-authorization-drills.md` plus authorization code and hard-gate evidence | `S2, S5, S6` | `family-owned (non-registry)` |
 | `EVD` | `stable entry contract` | `docs/logs/log-S6A-1A-stable-entry-contract.md` and `docs/runbook/run-S6A-evidence-drills-spine.md` | `S4, S6` | `family-owned (non-registry)` |
 | `EVD` | `hard-gate evidence JSON` | `docs/logs/log-S6A-4A-hard-gate-evidence-json.md` plus gate scripts, evidence schema, and CI checks | `S4, S6` | `family-owned (non-registry)` |
-| `GC current registry` | `issue creation metadata english body` | `docs/governance/contracts/GC-ICR-0001-issue-creation-metadata-english-body.md` | `S0` | `registry-admitted` |
+| `GC current registry` | `PR event source-log attribution precedence` | `docs/governance/contracts/GC-ATTR-0001-pr-event-source-log-attribution-precedence.md` | `S0` | `registry-admitted` |
 | `GC current registry` | `PR creation ID-scoped commit selection` | `docs/governance/contracts/GC-PRA-0001-pr-creation-id-scoped-commit-selection.md` | `S0` | `registry-admitted` |
 | `GC current registry` | `workflow failure taxonomy and handling` | `docs/governance/contracts/GC-WF-0001-publish-verify-remediation-failure-taxonomy-and-handling.md` | `S0, S6` | `registry-admitted` |
 

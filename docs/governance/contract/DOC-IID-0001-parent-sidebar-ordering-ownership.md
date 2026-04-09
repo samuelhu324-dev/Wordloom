@@ -45,7 +45,7 @@ doc_contract:
 
 ## Reader Notes
 
-- `GC-IID-0001` remains a lineage-safe narrow-registry row during transition, but current family-owned reading may now start here.
+- `GC-IID-0001` remains occupied as a lineage-safe legacy redirect surface during transition, but current family-owned reading now starts here.
 
 ## Traceability
 

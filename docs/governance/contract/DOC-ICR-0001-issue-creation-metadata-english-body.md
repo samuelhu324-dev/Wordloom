@@ -50,7 +50,7 @@ doc_contract:
 
 ## Reader Notes
 
-- `GC-ICR-0001` remains a lineage-safe narrow-registry row during transition, but current family-owned reading may now start here.
+- `GC-ICR-0001` remains occupied as a lineage-safe legacy redirect surface during transition, but current family-owned reading now starts here.
 - The retained source-owner logs remain detailed chronology and evidence surfaces for the rule set.
 
 ## Traceability

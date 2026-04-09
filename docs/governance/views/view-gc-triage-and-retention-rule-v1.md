@@ -32,7 +32,7 @@
 ## Practical Examples
 
 - `current narrow-registry`:
-  - active records such as `GC-ICR-0001`, `GC-ICT-0001`, and `GC-PRG-0001` remain current registry rows and stay in the contracts root
+  - active records such as `GC-ATTR-0001`, `GC-PRA-0001`, and `GC-PRG-0001` remain current registry rows and stay in the contracts root
 - `legacy redirect`:
   - preserved old split-package records such as `GC-ISS-0001` through `GC-ISS-0005` remain readable at the old root path because they redirect readers toward the later `ICR`, `ICL`, `ICT`, and `IID` surfaces
 - `support-only history or backtrace`:

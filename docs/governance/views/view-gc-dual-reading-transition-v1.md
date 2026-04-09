@@ -26,6 +26,7 @@
 - `DOC` current reading:
   - start at `docs/governance/views/view-doc-current-front-door-v1.md`
   - do not ask first whether `S0F-4A`, `S0F-4B`, or `S0F-3I` already have a `GC-*` record
+  - issue-governance current reading now also starts there through `DOC-ICR-0001`, `DOC-ICL-0001`, `DOC-ICT-0001`, `DOC-IID-0001`, and `DOC-IID-0002` rather than through the deprecated `GC-ICR/ICL/ICT/IID` rows
 - `OPS` current reading:
   - start at `docs/governance/views/view-ops-current-front-door-v1.md`
   - do not compress `S4A`, `S4D`, and `S4E` into one narrow governance-registry question before reading their active meaning

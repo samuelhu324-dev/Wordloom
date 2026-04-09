@@ -15,6 +15,7 @@
 - Presence in this file means the record belongs to current-state interpretation at front-door level.
 - Absence from this file does not mean an old record file was deleted; historical files may still exist under `docs/governance/contracts/`, including bounded support-only relocations under `docs/governance/contracts/support-only/`.
 - When old records remain stored for lineage, redirects, or traceability, they should be discovered through the old file itself, dedicated legacy views under `docs/governance/views/`, or migration logs rather than by widening this file into a mixed current-plus-history index.
+- The issue-governance surfaces formerly read here through `GC-ICR-0001`, `GC-ICL-0001`, `GC-ICT-0001`, `GC-IID-0001`, and `GC-IID-0002` now read first through the `DOC` family front door and the corresponding `DOC-*` family-owned current bodies.
 
 ## Old GC File Retention Rule
 
@@ -178,31 +179,6 @@
 | record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `GC-COMPL-0001` | `LIFECYCLE-THREE-STAGE-COMPLETENESS-AUDIT` | Lifecycle completeness is audited separately at creation, PR, and conclusion stages | `active` | `fail` | `independent` | Makes lifecycle completeness a stage-owned audit surface instead of one final-state-only review | `docs/governance/contracts/GC-COMPL-0001-lifecycle-three-stage-completeness-audit.md` |
-
-### Issue Conclusion (`ICL`)
-
-| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `GC-ICL-0001` | `ISSUE-CONCLUSION-POST-MERGE-LINKAGE` | Issue conclusion happens only after merge and must record exact delivery PR linkage | `active` | `fail` | `independent` | Makes post-merge conclusion and exact delivery-PR linkage explicit instead of treating close state as sufficient | `docs/governance/contracts/GC-ICL-0001-issue-conclusion-post-merge-linkage.md` |
-
-### Issue Creation (`ICR`)
-
-| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `GC-ICR-0001` | `ISSUE-CREATION-METADATA-ENGLISH-BODY` | Issue creation must resolve metadata deterministically and render an English-only scaffold | `active` | `fail` | `independent` | Concentrates create-time issue metadata, English body shape, and blank-as-blank creation boundaries into one active rule | `docs/governance/contracts/GC-ICR-0001-issue-creation-metadata-english-body.md` |
-
-### Issue Context (`ICT`)
-
-| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `GC-ICT-0001` | `ISSUE-CONTEXT-SENTENCE-COUNT-MAIN-VS-CHILD` | Issue Context keeps exact main-versus-child sentence counts under one source-log-derived rule | `active` | `fail` | `independent` | Keeps Context shape under one active contract while absorbing the later LLM-authored authoring path into the same rule | `docs/governance/contracts/GC-ICT-0001-issue-context-sentence-count-main-vs-child.md` |
-
-### Issue Identity (`IID`)
-
-| record_id | contract_id | title | status | violation_semantics | relation | what it currently solves | record |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `GC-IID-0001` | `ISSUE-PARENT-SIDEBAR-ORDERING-OWNERSHIP` | Top-level parent sidebar ordering remains source-log-owned rather than GitHub-owned | `active` | `fail` | `independent` | Makes parent sidebar order an audited projection of the source-log child ledger instead of an unowned GitHub ordering state | `docs/governance/contracts/GC-IID-0001-parent-sidebar-ordering-ownership.md` |
-| `GC-IID-0002` | `ISSUE-TITLE-KEYWORD-CONTROLLED-VOCABULARY` | Issue title keyword prefixes must come from the controlled vocabulary at create time and audit time | `active` | `fail` | `independent` | Concentrates create-time and audit-time title keyword governance into one fail-closed issue identity rule | `docs/governance/contracts/GC-IID-0002-issue-title-keyword-controlled-vocabulary.md` |
 
 ### PR Automation (`PRA`)
 
