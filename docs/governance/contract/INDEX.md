@@ -35,6 +35,11 @@
   - `SLC`: source-log compatibility and weak-structure export discipline
   - `TAX`: taxonomy and placement model
   - `FDT`: family front-door transition and `GC-*` demotion model
+- Next admitted extension area codes under `S0F-4I/P1`:
+  - `ICR`: issue creation governance for deterministic metadata and English scaffold boundaries under family-owned `DOC` reading
+  - `ICL`: issue conclusion governance for post-merge linkage and final-body writeback under family-owned `DOC` reading
+  - `ICT`: issue Context governance for source-log-derived sentence-count and shape validation under family-owned `DOC` reading
+  - `IID`: issue identity governance for parent sidebar ordering and controlled title vocabulary under family-owned `DOC` reading
 
 ## Required Fields
 
@@ -88,6 +93,11 @@
   - `S0F-4B` -> `DOC-SLC-0001`
   - `S0F-3I` -> `DOC-TAX-0001`
   - `S0F-4C` -> `DOC-FDT-0001`
+- The next admitted extension set is now fixed under `S0F-4I/P1` as:
+  - issue creation -> `DOC-ICR-0001`
+  - issue conclusion -> `DOC-ICL-0001`
+  - issue context -> `DOC-ICT-0001`
+  - issue identity -> `DOC-IID-0001` and `DOC-IID-0002`
 - `DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`, and `DOC-FDT-0001` are now landed and active under this first mapping set.
 - If later mapping extensions are admitted, their source-owner logs remain the current primary sources until those later promotions are executed.
 

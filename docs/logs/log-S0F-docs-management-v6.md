@@ -53,6 +53,7 @@
   **phase_log_33**: `docs/logs/log-S0F-3L-old-gc-root-redirect-replacement-and-stub-model.md`
   **phase_log_34**: `docs/logs/log-S0F-3M-gc-iss-0001-root-stub-relocation-pilot.md`
   **phase_log_35**: `docs/logs/log-S0F-4H-active-gc-current-registry-family-mapping-and-rehoming.md`
+  **phase_log_36**: `docs/logs/log-S0F-4I-issue-governance-doc-promotion-extension-and-gc-demotion-packet.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -331,6 +332,8 @@
 - `S0F-4H/P2` is now complete: the keep-versus-promote rule is fixed as `DOC-target candidate but keep current in GC until the replacement family-owned packet is explicit`, no `DOC/OPS` family split is currently justified inside the five-record issue-governance subset, and the next step is testing whether one bounded `DOC`-target packet can carry that subset cleanly.
 - `S0F-4H/P3` is now complete: the five-record issue-governance subset can move as one bounded `DOC`-target packet, but only as a four-unit area-level packet rather than as one monolithic replacement contract, so the remaining decision is whether to execute that packet next or hold it as a defended applicability result.
 - `S0F-4H/P4` is now complete and `S0F-4H` is now stable: the four-unit `DOC` packet should be held as the defended next executable shape rather than executed inside this slice, because the actual move still needs a dedicated `DOC` promotion-extension lane with new DOC mapping admission and matching `GC` demotion writes.
+- `S0F-4I` is now opened as that dedicated follow-up lane: it will execute the bounded four-unit issue-governance `DOC` promotion extension and the matching `GC` demotion and current-reader transition packet instead of reopening the already-settled mapping question.
+- `S0F-4I/P1` is now complete: the next `DOC` mapping extension is admitted for the issue-governance packet, the target naming boundary is fixed as `DOC-ICR-0001`, `DOC-ICL-0001`, `DOC-ICT-0001`, `DOC-IID-0001`, and `DOC-IID-0002`, and the next step is drafting the bounded replacement `DOC` packet itself.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
