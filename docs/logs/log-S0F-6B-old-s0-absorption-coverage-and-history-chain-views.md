@@ -248,6 +248,40 @@
 - `P3-C1-S1`: define the per-series and per-log standing field set
 - `P3-C1-S2`: land the first bounded series drill-down surface or equivalent grouped shape
 
+### P3-C1-S1 (Per-series drill-down field set fixed | v1)
+
+- The minimum field set for the first bounded series drill-down surface is now fixed as:
+  - `source log`
+  - `series`
+  - `currently surfaced`
+  - `reader-facing standing`
+  - `current family`
+  - `current reading home`
+  - `history role`
+  - `notes`
+- Field intent is now fixed as:
+  - `currently surfaced`:
+    - answers whether the log is already admitted into the current old-`S0 -> DOC` surfaced set
+  - `reader-facing standing`:
+    - uses the fixed vocabulary from `P1`
+  - `current family`:
+    - answers which current family presently owns the best defended reading home when such a home is known
+  - `current reading home`:
+    - names the current contract body, current `view`, or unresolved state rather than restating generic standing only
+  - `history role`:
+    - explains whether the log acts as structural prerequisite, lineage milestone, retained evidence, retired predecessor, or another bounded historical role
+  - `notes`:
+    - stays short and reader-facing; it must not become support-only blocker prose
+- The first drill-down surface may leave some fields unresolved when a log is still `unreviewed`, but it must do so explicitly rather than silently omitting the row.
+
+### P3-C1-S2 (First bounded series drill-down surface landed | v1)
+
+- The first bounded series drill-down surface now exists at `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`.
+- `S0B` is used as the first bounded pilot because it is the smallest current review-scope series and already shows two different states at once:
+  - one row already surfaced into the current `DOC` history view
+  - one row still outside the current surfaced set
+- This first drill-down therefore proves that the per-log standing view can show both `current-view` and `unreviewed` without collapsing them into one generic `not yet absorbed` bucket.
+
 ### P4 (Contract-history chain)
 
 - `P4-C1-S1`: define the current-surface-to-history-chain field set
@@ -277,8 +311,8 @@
 
 ### P3 (Series drill-down)
 
-- [ ] `P3-C1-S1`: per-series drill-down field set fixed
-- [ ] `P3-C1-S2`: first bounded series drill-down surface landed
+- [x] `P3-C1-S1`: per-series drill-down field set fixed
+- [x] `P3-C1-S2`: first bounded series drill-down surface landed
 
 ### P4 (Contract-history chain)
 
@@ -296,7 +330,8 @@
 - `P0` is now complete: the problem is fixed as one reader-facing `view` layering gap above the current surfaced migration set, not as immediate contract mutation or ad hoc row widening.
 - `P1` is now complete: the layered `view` split and the minimum reader-facing standing vocabulary are now explicit enough to reuse.
 - `P2` is now complete: the minimum field set for one bounded aggregate coverage-overview surface is fixed, and the first aggregate old-`S0` absorption coverage view is now landed.
-- The next step is `P3`: define the per-series and per-log standing field set before landing the first bounded series drill-down surface.
+- `P3` is now complete: the per-series and per-log standing field set is fixed, and the first bounded `S0B` series drill-down surface is now landed.
+- The next step is `P4`: define the current-surface-to-history-chain field set before landing the first bounded contract-history-chain reading surface.
 
 ## Evidence (reserved)
 
@@ -342,8 +377,24 @@
   - the first aggregate old-`S0` absorption coverage view is now landed and shows both repo-level totals and per-series distribution across `S0B` through `S0F`
   - the first aggregate view now answers coverage and distribution while explicitly holding per-log standing and current-surface historical chains for later phases
 
+### P3-C1-S1S2 (Per-series drill-down field set fixed and first bounded S0B surface landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-6B/P3-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-6B-old-s0-absorption-coverage-and-history-chain-views.md`
+  - `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - later series drill-down surfaces should inherit one fixed per-log field set rather than improvising row shape per series
+  - the first bounded drill-down surface should prove that the reader-facing standing vocabulary can show mixed states inside one real series
+- observed:
+  - the minimum per-series/per-log field set is now fixed as `source log`, `series`, `currently surfaced`, `reader-facing standing`, `current family`, `current reading home`, `history role`, and `notes`
+  - the first bounded `S0B` drill-down surface is now landed and shows one surfaced `current-view` row plus one row still outside the surfaced set as explicit `unreviewed`
+  - later series drill-down work can now widen by series without reopening row-shape or standing-display questions first
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-6B` as the bounded follow-up for old-`S0` absorption coverage, per-series standing, and contract-history-chain `view` layering.
 - 2026-04-09: completed `P1` by fixing the layered `view` split and the minimum reader-facing standing vocabulary for old-`S0` per-log reading.
 - 2026-04-09: completed `P2` by fixing the aggregate coverage-overview field set and landing the first bounded old-`S0` absorption coverage overview view.
+- 2026-04-09: completed `P3` by fixing the per-series/per-log field set and landing the first bounded `S0B` series drill-down surface.
