@@ -356,6 +356,27 @@
   - by row kind (`retained`, `contract`-absorbed, `view`-absorbed)
   - and by the exact current reader surface that now owns the reading job.
 
+### P4-C5-S1 (Fifth bounded seed set admitted | v1)
+
+- The fifth bounded seed set is now admitted as the first source-owner execution lane already absorbed by the current `DOC` promotion-map reader surface.
+- This packet covers the bounded issue-governance extension lane explicitly concentrated by `docs/governance/views/view-doc-contract-promotion-map-v1.md` as the landed extension set under `S0F-4I/P2`:
+  - `S0F-4I` -> `view-doc-contract-promotion-map-v1`
+- This row differs from `C3` and `C4`:
+  - it is not a history milestone absorbed by the `DOC` history view
+  - it is a bounded execution lane whose current reader-facing meaning now survives through the `DOC` promotion-map surface as the landed extension packet
+- This makes the migration ledger more complete across `DOC` reader surfaces: old `S0` absorption into `DOC` can now be read through current contracts, current history reading, and current promotion-map reading.
+
+### P4-C5-S2 (Next widening boundary refined for reader-surface classes | v1)
+
+- After `C5`, the next widening step is refined again as:
+  - admit later rows only when they form one defended packet that preserves:
+    - row kind coherence
+    - exact current target-surface coherence
+    - reader-surface class coherence when the target outlet is `view`
+- For `view`-absorbed supporting rows, keep history-reading packets and promotion-map packets separate unless a later bounded lane explicitly owns a cross-view synthesis packet.
+- A single source-owner lane may still be one defended packet when the current `view` target already concentrates that lane as one landed reader-facing unit.
+- This prevents the migration ledger from flattening all `view` absorption into one generic bucket while still allowing one-lane packets when that is the real reader-facing shape on disk.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -388,6 +409,8 @@
 - [x] `P4-C3-S2`: next widening boundary refined again
 - [x] `P4-C4-S1`: fourth bounded seed set admitted
 - [x] `P4-C4-S2`: next widening boundary refined further
+- [x] `P4-C5-S1`: fifth bounded seed set admitted
+- [x] `P4-C5-S2`: next widening boundary refined for reader-surface classes
 
 ## Current Status (recommended)
 
@@ -400,8 +423,9 @@
 - `P4-C2` is now complete: the second bounded seed set is admitted as the first supporting source-owner packet already absorbed by the executed issue-governance `DOC` contracts.
 - `P4-C3` is now complete: the third bounded seed set is admitted as the first source-owner packet already absorbed by the current `DOC` history reader surface.
 - `P4-C4` is now complete: the fourth bounded seed set is admitted as the second source-owner packet already absorbed by that same current `DOC` history reader surface.
+- `P4-C5` is now complete: the fifth bounded seed set is admitted as the first source-owner execution lane already absorbed by the current `DOC` promotion-map reader surface.
 - `S0F-5B` is now `stable`.
-- The next step is no longer ledger-model design; it is the next bounded follow-up that widens the shared migration ledger with one further defended packet of retained source-owner rows, contract-absorbed supporting rows, or one target-coherent `view`-absorbed supporting packet.
+- The next step is no longer ledger-model design; it is the next bounded follow-up that widens the shared migration ledger with one further defended packet of retained source-owner rows, contract-absorbed supporting rows, or one target-coherent and reader-class-coherent `view`-absorbed supporting packet.
 
 ## Evidence (reserved)
 
@@ -526,6 +550,22 @@
   - the shared ledger surfaces now show two defended subpackets absorbed by the same `DOC` history reader surface
   - later widening is now constrained by both row kind and target-surface coherence rather than only by outlet kind
 
+### P4-C5-S1S2 (Fifth bounded seed set admitted and widening boundary refined for reader-surface classes | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5B/P4-C5-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5B-old-s0-migration-ledger-view-and-support-only-inventory-model.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the shared ledger surfaces show that old `S0` absorption into `DOC` now spans more than one current `view` target, not only the history reader surface
+  - later widening is refined enough that distinct `DOC` reader-surface classes remain separated instead of collapsing into one generic `view` bucket
+- observed:
+  - `S0F-4I` is now admitted as the fifth bounded seed set under `view-doc-contract-promotion-map-v1`
+  - the shared ledger surfaces now show both `DOC` history-reading and `DOC` promotion-map reading as current `view` absorption targets
+  - later widening is now constrained by row kind, exact target surface, and reader-surface class coherence
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5B` as the bounded lane for old-`S0` migration-ledger surface design, fixing the immediate next job as `reader-facing view + support-only inventory` modeling rather than direct repo-wide backlog execution.
@@ -536,3 +576,4 @@
 - 2026-04-09: completed `P4-C2` by admitting `S0F-1A`, `S0F-1B`, and `S0F-1D` as the second bounded seed set under the executed issue-governance `DOC` packet and refining later widening to packetized follow-up additions.
 - 2026-04-09: completed `P4-C3` by admitting `S0F-4D`, `S0F-4E`, and `S0F-4F` as the third bounded seed set under the current `DOC` history reader surface and refining later widening by packet kind and outlet kind.
 - 2026-04-09: completed `P4-C4` by admitting `S0E-3A` and `S0E-6A` as the fourth bounded seed set under the same current `DOC` history reader surface and refining later widening by exact current target-surface coherence.
+- 2026-04-09: completed `P4-C5` by admitting `S0F-4I` as the fifth bounded seed set under the current `DOC` promotion-map reader surface and refining later widening by reader-surface class as well as target-surface coherence.

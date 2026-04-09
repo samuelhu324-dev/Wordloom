@@ -43,6 +43,19 @@
 - Current state after `S0F-5B/P4-C4`:
   - the fourth bounded seed set is now admitted as the second source-owner packet already absorbed by that same `DOC` history reader surface
   - the migration ledger now proves that one executed reader-facing `view` target may accumulate multiple defended source-owner subpackets without collapsing them into one generic history bucket
+- Current state after `S0F-5B/P4-C5`:
+  - the fifth bounded seed set is now admitted as the first source-owner execution lane already absorbed by the current `DOC` promotion-map reader surface
+  - the migration ledger now shows two distinct `DOC` reader-facing `view` targets participating in old-`S0` absorption: one history surface and one promotion-map surface
+
+## DOC Absorption Snapshot
+
+- Current `S0 -> DOC` absorption rows tracked here: `17`
+- Rows absorbed into current `DOC` contract targets: `11`
+- Rows absorbed into current `DOC` reader-facing `view` targets: `6`
+- Current `DOC` `view` targets now represented here:
+  - `view-doc-history-and-lineage-v1`: `5` rows (`S0F-4D`, `S0F-4E`, `S0F-4F`, `S0E-3A`, `S0E-6A`)
+  - `view-doc-contract-promotion-map-v1`: `1` row (`S0F-4I`)
+- Read this view as the current migration answer to `which old S0 surfaces are already absorbed into DOC, and through which current outlet do they now read?`
 
 ## Current Migration Rows
 
@@ -64,6 +77,7 @@
 | `S0F-4F` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
 | `S0E-3A` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
 | `S0E-6A` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
+| `S0F-4I` | `done` | `DOC` | `view` | `view-doc-contract-promotion-map-v1` | `none (executed)` |
 
 ## Reader Notes
 
