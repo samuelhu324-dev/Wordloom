@@ -271,6 +271,24 @@
 - `P5-C1-S1`: classify `S0E-1A`, `S0E-1B`, `S0E-6D`, `S0E-6E`, `S0E-6F`, `S0E-7A`, `S0E-7B`, and `S0E-7C`
 - `P5-C1-S2`: write back the defended packet result to the shared surfaces
 
+### P5-C1-S1 (Authoring/rendering/workflow-follow-up packet classified | v1)
+
+- `S0E-1A` is now fixed as `non-doc`, `S0E-1B` is now fixed as `retired-lineage`, `S0E-6D`, `S0E-6E`, `S0E-6F`, `S0E-7B`, and `S0E-7C` are now fixed as `retained-evidence`, and `S0E-7A` is now fixed as `history-lineage`.
+- The defended packet boundary is now explicit:
+  - `S0E-1A` and `S0E-1B` belong to the CV demo/export side line rather than to the current DOC issue-governance family
+  - `S0E-6D`, `S0E-6E`, and `S0E-6F` remain bounded issue-context and issue-body rendering evidence whose active meaning now reads through the runbook and live authoring/rendering helpers rather than through one current `DOC` first-open home
+  - `S0E-7A` remains historically relevant because its workflow-enforcement boundary later reads through the attribution-handoff and WF packet surfaces rather than through this source log as the first-open current surface
+  - `S0E-7B` and `S0E-7C` remain bounded attribution and lifecycle-audit evidence whose active operational meaning now reads through the resolver, workflow hooks, and audit planners rather than through one current `DOC` front-door surface
+- This packet completes the standing adjudication of every previously-unresolved `S0E` row without widening the current `DOC` surfaced set.
+
+### P5-C1-S2 (Authoring/rendering/workflow-follow-up packet write-back landed | v1)
+
+- The bounded shared-surface write-back set for the final remaining `S0E` packet is now fixed as:
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+- `S0E` now stops reading as a series with any generic unresolved remainder.
+- The support-only working ledger now records the same defended result: all remaining `S0E` rows are now classified as non-DOC, retired lineage, retained evidence, or history lineage rather than as unresolved backlog.
+
 ### P6 (After-review consequence)
 
 - `P6-C1-S1`: determine whether the remaining `S0E` review result surfaces any later cleanup-admission subset
@@ -305,8 +323,8 @@
 
 ### P5 (Authoring/rendering/workflow-follow-up packet)
 
-- [ ] `P5-C1-S1`: authoring/rendering/workflow-follow-up packet classified
-- [ ] `P5-C1-S2`: authoring/rendering/workflow-follow-up packet write-back landed
+- [x] `P5-C1-S1`: authoring/rendering/workflow-follow-up packet classified
+- [x] `P5-C1-S2`: authoring/rendering/workflow-follow-up packet write-back landed
 
 ### P6 (After-review consequence)
 
@@ -321,7 +339,8 @@
 - `P2` is now complete: the issue/preflight packet no longer sits as generic unresolved remainder and now reads as retained issue-creation, batch-planning, and live-label-preflight evidence rooted in current runbook and script surfaces.
 - `P3` is now complete: the PR/linkage packet no longer sits as generic unresolved remainder and now reads as retained PR/lifecycle evidence plus attribution lineage rooted in current runbook, planner, and resolver surfaces.
 - `P4` is now complete: the lifecycle/log-stability packet no longer sits as generic unresolved remainder and now reads as retained gate/body evidence plus lineage into later body and log-gate surfaces.
-- The immediate next step is now `P5`: classify the authoring/rendering/workflow-follow-up packet (`S0E-1A`, `S0E-1B`, `S0E-6D`, `S0E-6E`, `S0E-6F`, `S0E-7A`, `S0E-7B`, `S0E-7C`) and write back the defended result.
+- `P5` is now complete: the final remaining `S0E` packet no longer sits as generic unresolved remainder and now reads as non-DOC demo roots, retired lineage, retained rendering/audit evidence, and workflow lineage.
+- The immediate next step is now `P6`: decide whether the completed `S0E` result implies any cleanup-admission consequence or whether the next bounded follow-up should now move to `S0F`.
 - This log should currently be read as the source owner for the unresolved `S0E` standing backlog rather than as a promotion or cleanup-execution lane.
 
 ## Evidence (reserved)
@@ -400,6 +419,21 @@
   - `S0E-5B`, `S0E-5C`, and `S0E-5D` now read as retained gate/body evidence, while `S0E-5E` and `S0E-6B` now read as lineage into later body and log-gate surfaces
   - the `S0E` standing view and support-only working ledger now carry the same defended result without adding one new current `DOC` absorption row
 
+### P5-C1-S1S2 (Final remaining `S0E` packet classified and write-back landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5F/P5-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/logs/log-S0F-5F-remaining-s0e-standing-adjudication-and-packeted-review.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the final remaining `S0E` packet should stop reading as one generic unresolved bucket inside the series view
+  - the full `S0E` series should no longer carry any generic unresolved remainder after this packet lands
+- observed:
+  - `S0E-1A` now reads as a non-DOC demo/tooling root, `S0E-1B` now reads as retired archive lineage, `S0E-6D`, `S0E-6E`, `S0E-6F`, `S0E-7B`, and `S0E-7C` now read as retained rendering/audit evidence, and `S0E-7A` now reads as workflow lineage
+  - the `S0E` standing view and support-only working ledger now carry bounded standing for every row in the series, with no generic unresolved remainder left
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5F` as the bounded remaining-`S0E` standing-adjudication and packeted-review lane after `S0F-5E`.
@@ -409,3 +443,4 @@
 - 2026-04-09: completed `P2` by classifying `S0E-2A`, `S0E-2B`, `S0E-2C`, and `S0E-3B` as retained issue-creation, batch-planning, and live-label-preflight evidence and writing that result back to the `S0E` standing view and support-only working ledger.
 - 2026-04-09: completed `P3` by classifying `S0E-4A` through `S0E-4F` as retained PR/lifecycle evidence plus attribution lineage and writing that result back to the `S0E` standing view and support-only working ledger.
 - 2026-04-09: completed `P4` by classifying `S0E-5B` through `S0E-6B` as retained gate/body evidence plus lineage into later body and log-gate surfaces and writing that result back to the `S0E` standing view and support-only working ledger.
+- 2026-04-09: completed `P5` by classifying the final remaining `S0E` packet as non-DOC demo roots, retired lineage, retained rendering/audit evidence, and workflow lineage and writing that result back to the `S0E` standing view and support-only working ledger.
