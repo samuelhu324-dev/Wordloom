@@ -121,6 +121,7 @@
 - `P1`: define the grouped reader-summary contract for the migration view
 - `P2`: land the first grouped `DOC` reading summary in `view-old-s0-migration-ledger-v1.md`
 - `P3`: define per-group reader-path notes and handoff order so each grouped class tells readers what to open next
+- `P4`: add one question-first reader decision block so readers can route by intent before scanning the grouped classes
 
 ## Success Criteria (DoD)
 
@@ -128,6 +129,7 @@
 - The grouped summary stays consistent with the canonical row table instead of becoming a second competing ledger.
 - `contract`, `history view`, and `promotion-map view` remain visibly distinct reading groups.
 - One reader can tell what to open first and what to open next for each grouped reading class without inferring the handoff from other files.
+- One reader can start from a concrete question and jump to the right current `DOC` surface without first translating that question into one of the grouped classes.
 
 ## Stability (what stable means)
 
@@ -135,6 +137,7 @@
   - the grouped reader-summary contract is explicit enough to reuse
   - the first grouped `DOC` reading summary is landed in the migration view
   - the grouped classes carry enough reader-path guidance that later readers do not need to improvise the next hop
+  - the view also exposes one compact question-first decision layer for readers who think in questions rather than class names
   - later enhancement work no longer needs to reopen whether grouped reading belongs in the migration view at all
 
 ## P0 (Contract | v1)
@@ -208,6 +211,25 @@
   - `promotion-map view` group: `view-doc-contract-promotion-map-v1` first, then the landed current contract or front door if needed
 - This keeps the migration view self-sufficient for fast reader routing while preserving the row table as the canonical projection.
 
+## P4 (Question-first reader decision block)
+
+### P4-C1-S1 (Decision-block contract fixed | v1)
+
+- The migration view may now carry one compact decision block above the grouped classes.
+- The block should start from natural reader questions, not from migration-row fields.
+- The first decision-block questions are now fixed as:
+  - `what is true now?`
+  - `how did this DOC surface emerge?`
+  - `which lane or packet landed this DOC result?`
+  - `where is the full migration inventory?`
+- Each question should point to one first-open surface only, with one short reason.
+
+### P4-C1-S2 (Decision-block landed | v1)
+
+- `view-old-s0-migration-ledger-v1.md` now carries one question-first reader decision block above the grouped classes.
+- This block does not replace the grouped classes.
+- It exists so a reader can route from intent first, then use the grouped classes and row table only if more detail is needed.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -230,6 +252,11 @@
 - [x] `P3-C1-S1`: per-group reader-path notes fixed
 - [x] `P3-C1-S2`: per-group handoff order fixed
 
+### P4 (Question-first reader decision block)
+
+- [x] `P4-C1-S1`: decision-block contract fixed
+- [x] `P4-C1-S2`: decision block landed
+
 ## Current Status (recommended)
 
 - `S0F-6A` is now opened as the bounded follow-up for migration-view reader summary enhancement.
@@ -237,14 +264,15 @@
 - `P1` is now complete: the grouped reader-summary contract and first group boundary are explicit enough to reuse.
 - `P2` is now complete: the first grouped `DOC` reading summary is landed in the migration view.
 - `P3` is now complete: each grouped reading class now carries one bounded reader-path note and one fixed handoff order, so the migration view can route readers directly instead of only grouping rows.
+- `P4` is now complete: the migration view now also carries one question-first decision block, so readers can route by intent before choosing a grouped reading class.
 - `S0F-6A` is now `stable`.
-- The next step is no longer whether grouped reading belongs in the view; it is whether later follow-up should add more grouped reader classes, deeper grouped handoffs, or return to migration-row widening itself.
+- The next step is no longer whether grouped reading belongs in the view; it is whether later follow-up should add more question classes, deeper grouped handoffs, or return to migration-row widening itself.
 
 ## Evidence (reserved)
 
-### P0-P3-C1-S1S2 (S0F-6A scaffold, grouped reader summary, and first reader-path handoffs landed | 2026-04-09)
+### P0-P4-C1-S1S2 (S0F-6A scaffold, grouped summary, reader-path handoffs, and question-first decision block landed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-6A/P0-P3-C1-S1S2>`
+- headSha: `<pending commit for S0F-6A/P0-P4-C1-S1S2>`
 - artifacts:
   - `docs/logs/log-S0F-6A-view-old-s0-migration-ledger-reader-summary-and-grouped-doc-reading.md`
   - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
@@ -253,10 +281,12 @@
   - the migration view gains one reader-speed layer without reopening migration-row admission
   - grouped `DOC` reading classes remain visibly distinct and reconcilable with the canonical row table
   - each grouped class tells readers what to open first and what to open next
+  - one compact question-first block routes readers who start from intent rather than grouped class names
 - observed:
   - `S0F-6A` now owns the grouped reader-summary contract and execution notes
   - the migration view now groups current `DOC` absorption by `contract`, `history view`, and `promotion-map view`
   - the grouped classes now also carry explicit reader-path notes and handoff order
+  - the view now also exposes one question-first decision block for direct routing by reader intent
   - the canonical row table remains intact under the grouped reader summary
 
 ## Recent changes (for traceability, optional)
@@ -265,3 +295,4 @@
 - 2026-04-09: completed `P1` by fixing the grouped reader-summary contract and the first `DOC` reader-surface group boundary.
 - 2026-04-09: completed `P2` by landing the first grouped `DOC` reading summary in `view-old-s0-migration-ledger-v1.md`.
 - 2026-04-09: completed `P3` by fixing per-group reader-path notes and handoff order so the grouped summary now routes readers to the right next surface directly.
+- 2026-04-09: completed `P4` by landing one question-first decision block so readers can route by intent before using the grouped classes or canonical row table.

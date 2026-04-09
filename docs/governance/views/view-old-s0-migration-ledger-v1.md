@@ -65,6 +65,22 @@
 - Use this section when the question is not `what are all the rows?` but `which DOC reading surface should I open first?`
 - The row table below remains the canonical bounded projection.
 
+## Reader Decision Block
+
+- Start here when you have a concrete question and want one first-open surface immediately.
+- `what is true now?`
+  - open first: `view-doc-current-front-door-v1`
+  - why: this is the current family-first `DOC` entrypoint for active rule reading
+- `how did this DOC surface emerge?`
+  - open first: `view-doc-history-and-lineage-v1`
+  - why: this is the bounded family history surface for lineage, evolution chain, and history-publication context
+- `which lane or packet landed this DOC result?`
+  - open first: `view-doc-contract-promotion-map-v1`
+  - why: this is the current promotion-map surface for bounded landing packets and source-owner-to-contract mapping
+- `where is the full migration inventory?`
+  - open first: `view-old-s0-migration-ledger-v1` row table below
+  - why: this remains the canonical bounded projection of already-admitted old-`S0 -> DOC` absorption rows
+
 ### Contract-First DOC Reading
 
 - Count: `11`
