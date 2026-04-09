@@ -5,7 +5,7 @@
 **id**: `S0F-4I`
 **kind**: `log`
 **title**: `issue-governance DOC promotion extension and GC demotion packet v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, Promotion, Demotion, Family, Packet, epic/s0, sub/4i`
 **links**: ``
@@ -98,15 +98,17 @@
 
 ## Exported Sections / Outlet Ownership
 
-- This slice is expected to end in real current-surface writes rather than another mapping-only answer.
+- `P1` through `P3` already completed the real current-surface writes for this slice.
+- `P4` is the stable close-out review: the remaining job is to answer the six outlets explicitly and defend whether any further export is still needed.
 
 **Outlet ownership**:
 
-- `contract`: new family-owned `DOC` current bodies for the bounded issue-governance packet
-- `view`: only if one compact issue-governance reader surface is needed to keep the packet interpretable after promotion
-- `index/front-door`: `docs/governance/contract/INDEX.md`, `docs/governance/views/view-doc-current-front-door-v1.md`, and any required current-reader transition surfaces
-- `disposition/placement`: matching `GC` demotion, redirect, or retained-current standing decisions after the replacement `DOC` packet is explicit
-- `log-retained core`: execution ledger, evidence, packet-shape notes, and stop reasons if the real promotion packet cannot complete in one bounded pass
+- `contract`: no-op; the bounded issue-governance replacement packet already landed in `P2` as `DOC-ICR-0001`, `DOC-ICL-0001`, `DOC-ICT-0001`, `DOC-IID-0001`, and `DOC-IID-0002`
+- `runbook`: no-op; this slice did not produce a stable repeatable operator procedure beyond the source-log execution ledger
+- `view`: no-op; the required reader-facing transition surfaces were already updated in `P2` and `P3`, so no new standalone view export is warranted at close-out
+- `index/front-door`: no-op; the required `DOC` and `GC` front-door/index mutations were already executed in `P2` and `P3`
+- `disposition/placement`: no-op; the required placement and demotion decisions already landed in `P3`, and no additional support-only or legacy move is required for close-out
+- `log-retained core`: keep this source log as the retained execution ledger for the bounded packet decision, the packet-shape rationale, the phase-by-phase evidence trail, and the bridge notes linking `S0F-4H` applicability to the executed `S0F-4I` promotion/demotion packet
 
 ## Definitions (optional)
 
@@ -128,7 +130,7 @@
 - `P1`: admit the next `DOC` mapping extension for the four landing units and fix their target naming boundary
 - `P2`: draft the bounded replacement `DOC` packet and align required `contract` or `index/front-door` writes
 - `P3`: define and test the matching `GC` demotion and current-reader transition packet for the replaced issue-governance rows
-- `P4`: decide whether the full bounded packet is ready for real execution now or needs one narrower follow-up inside the same lane
+- `P4`: run the stable close-out review and answer the six outlets explicitly before marking the lane stable
 
 ## Success Criteria (DoD)
 
@@ -142,7 +144,8 @@
 - This log can be marked `stable` when:
   - the four-unit promotion-extension boundary is explicit
   - the matching `GC` demotion and current-reader transition plan is explicit enough to defend
-  - the next step is clear as `execute`, `hold`, or `split` within this execution lane
+  - the six-outlet close-out review is explicit, with justified `no-op` answers where no further export is warranted
+  - the next step is clear as retained-log close-out rather than another hidden export tail inside this lane
 
 ## P0 (Contract | v1)
 
@@ -246,9 +249,22 @@
   - `view-contract-family-inventory-v1.md` no longer presents `GC-ICR-0001` as a representative current-registry row
 - This closes the current-reader ambiguity while preserving the old `GC-*` root paths for lineage-safe landing.
 
-### P4 (Execution boundary decision)
+### P4 (Stable close-out review)
 
-- P4-C1-S1: decide whether the full bounded packet executes now or needs one narrower execution step first
+- P4-C1-S1: answer `contract / runbook / view / index/front-door / disposition/placement / log-retained core` explicitly and decide whether any further export is still required for stable close-out
+
+### P4-C1-S1 (Six-outlet close-out review fixed | v1)
+
+- The bounded issue-governance packet is execution-complete in this lane.
+- `P4` does not open another implementation tail.
+- It fixes the stable close-out answer across the six outlets as follows:
+  - `contract`: no-op because the replacement `DOC` packet already landed in `P2`
+  - `runbook`: no-op because no reusable operator procedure was introduced here beyond the slice-local execution ledger
+  - `view`: no-op because the required reader-facing transition surfaces were already updated in `P2` and `P3`
+  - `index/front-door`: no-op because the required front-door and index mutations were already executed in `P2` and `P3`
+  - `disposition/placement`: no-op because the required `GC` demotion and redirect standing already landed in `P3`
+  - `log-retained core`: keep, because this source log remains the right owner for the execution ledger, evidence, packet-shape rationale, and lineage bridge notes
+- This means `S0F-4I` closes as `stable retained-log close-out`, not as another export-splitting lane.
 
 ## Execution Checklist (unchecked)
 
@@ -274,7 +290,7 @@
 
 ### P4 (Execution boundary decision)
 
-- [ ] `P4-C1-S1`: next execution boundary decided
+- [x] `P4-C1-S1`: six-outlet stable close-out review fixed
 
 ## Current Status (recommended)
 
@@ -285,7 +301,9 @@
 - The four-unit execution shape remains intact even though the issue-identity unit preserves two target records.
 - `P2` is now complete: the five replacement `DOC` contract bodies are landed and the `DOC` contract index, promotion map, and family front door now expose the issue-governance extension packet explicitly.
 - `P3` is now complete: the old issue-governance `GC-*` rows are now demoted to legacy redirect standing and the current-reader transition is aligned so `DOC` is the first current reading surface while the old `GC` root paths remain for lineage.
-- The immediate next step is `P4`: decide whether the full bounded packet is now execution-complete and ready to close, or whether one narrower follow-up is still required.
+- `P4` is now complete: the six-outlet close-out review is explicit and resolves to justified `no-op` for `contract`, `runbook`, `view`, `index/front-door`, and `disposition/placement`, with retained ownership in `log-retained core`.
+- `S0F-4I` is now `stable`.
+- No further export tail is required inside this lane; later work should start from the now-stable `DOC` issue-governance current surface and its matching `GC` legacy redirects.
 
 ## Evidence (reserved)
 
@@ -372,9 +390,24 @@
   - `docs/governance/INDEX.md` no longer exposes them as current narrow-registry entries
   - the current transition views now agree that issue-governance meaning reads first through `DOC` while the old `GC` root files remain occupied for lineage
 
+### P4-C1-S1 (Six-outlet stable close-out review fixed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-4I/P4-C1-S1>`
+- artifacts:
+  - `docs/logs/log-S0F-4I-issue-governance-doc-promotion-extension-and-gc-demotion-packet.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the lane explicitly answers all six outlets at stable close-out review
+  - no further export tail remains hidden behind the already-landed `DOC` promotion and `GC` demotion packet
+- observed:
+  - the six outlets are now answered explicitly with justified `no-op` for `contract`, `runbook`, `view`, `index/front-door`, and `disposition/placement`
+  - retained ownership stays in `log-retained core` for the execution ledger, evidence, packet-shape rationale, and lineage bridge notes
+  - `S0F-4I` is now ready to close as `stable`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-4I` as the direct execution follow-up after `S0F-4H`, dedicated to the bounded four-unit issue-governance `DOC` promotion-extension packet and matching `GC` demotion plan.
 - 2026-04-09: completed `P1` by admitting the next `DOC` mapping extension for the issue-governance packet and fixing the target naming boundary for the five replacement `DOC` records.
 - 2026-04-09: completed `P2` by landing the bounded replacement `DOC` packet, publishing five family-owned issue-governance current bodies, and aligning the `DOC` contract index, promotion map, and family front door before `GC` demotion begins.
 - 2026-04-09: completed `P3` by demoting the old issue-governance `GC-*` rows into legacy redirect standing and aligning the current-reader transition so `DOC` becomes the first current reading surface.
+- 2026-04-09: completed `P4` by fixing the six-outlet close-out review explicitly, marking all remaining export outlets as justified `no-op`, and retaining this source log as the stable execution ledger for the packet.
