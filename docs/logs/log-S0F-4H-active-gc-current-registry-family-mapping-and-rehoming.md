@@ -218,6 +218,28 @@
 - P3-C1-S1: test whether the issue-governance current set can re-home as one bounded packet or must split further
 - P3-C1-S2: record the explicit split or defer reasons if one shared packet is not yet safe
 
+### P3-C1-S1 (Bounded packet applicability tested | v1)
+
+- The applicability result is now `yes`, but only for one bounded `DOC`-target promotion packet, not for one monolithic replacement contract.
+- Why one bounded packet is safe enough to carry forward:
+  - the full subset already aligns to one target family: `DOC`
+  - the current `DOC` landing model already exists under `docs/governance/contract/`
+  - the current `GC` issue-governance set already behaves as one executed split package lineage rather than as five unrelated records
+- Why one monolithic replacement contract is not safe:
+  - the subset still contains four distinct governance areas: `ICR`, `ICL`, `ICT`, and `IID`
+  - those areas already expose distinct current rule boundaries and traceability clusters
+  - collapsing them into one coarse replacement body would reduce reader clarity relative to the current split-package model
+
+### P3-C1-S2 (Split or defer reasons fixed | v1)
+
+- No further family split is required.
+- No per-record micro-split is currently required either.
+- The defended packet shape is now:
+  - one bounded `DOC`-target promotion packet
+  - four landing units inside that packet: issue creation, issue conclusion, issue context, and issue identity
+  - `GC-IID-0001` and `GC-IID-0002` remain together as one shared issue-identity unit because they already share the same source-owner cluster under `S0F-1G`
+- The remaining defer reason is execution-shaped rather than taxonomy-shaped: the repo still needs one explicit replacement `DOC` reading surface and one matching `GC` demotion plan before current reading should move.
+
 ### P4 (Next-lane decision)
 
 - P4-C1-S1: choose among real promotion packet, narrower pilot, or defended no-op
@@ -241,8 +263,8 @@
 
 ### P3 (Applicability test)
 
-- [ ] `P3-C1-S1`: bounded execution packet applicability tested
-- [ ] `P3-C1-S2`: split or defer reasons fixed if needed
+- [x] `P3-C1-S1`: bounded execution packet applicability tested
+- [x] `P3-C1-S2`: split or defer reasons fixed if needed
 
 ### P4 (Next-lane decision)
 
@@ -256,7 +278,9 @@
 - `P1` is now complete: the active issue-governance subset is explicit and the first-pass likely target-family result is `DOC`, not `OPS`.
 - `P2` is now complete: the decision rule is fixed as `DOC-target promotion candidate, but keep current in GC until one explicit replacement packet is proved`.
 - No family split is currently justified inside the five-record issue-governance subset.
-- The immediate next step is `P3`: test whether one bounded `DOC`-target packet can actually carry this subset without weakening current-reader clarity.
+- `P3` is now complete: one bounded `DOC`-target packet is applicable for the full subset, but only as a four-unit packet rather than as one monolithic replacement contract.
+- The issue-governance subset does not need a `DOC/OPS` split and does not need per-record fragmentation beyond the existing area-level grouping.
+- The immediate next step is `P4`: decide whether to execute that four-unit `DOC` promotion packet next or hold the result as a defended applicability decision.
 
 ## Evidence (reserved)
 
@@ -317,8 +341,29 @@
   - the keep-versus-promote rule is now explicit: keep in `GC` until a replacement family-owned current packet is explicit, then allow demotion of the old `GC-*` rows to lineage-safe standing
   - no family split is currently justified, but actual promotion remains gated on `P3` applicability testing for one bounded `DOC`-target packet
 
+### P3-C1-S1S2 (Bounded DOC-target packet applicability fixed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-4H/P3-C1-S1S2>`
+- artifacts:
+  - `docs/logs/support-only/s0f-4h-active-gc-issue-governance-p3-applicability.json`
+  - `docs/logs/support-only/s0f-4h-active-gc-issue-governance-rehoming-rule.json`
+  - `docs/logs/log-S0F-4H-active-gc-current-registry-family-mapping-and-rehoming.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/contract/_template-doc-contract-record.md`
+  - `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md`
+  - `docs/governance/views/view-iss-split-package-v1.md`
+- expected:
+  - the repo has one explicit answer for whether the full issue-governance subset can move as one bounded packet or needs deeper splitting first
+  - the repo has one explicit packet shape if applicability is positive
+- observed:
+  - one bounded `DOC`-target packet is applicable for the full issue-governance subset
+  - the safe packet shape is `four area-level landing units`, not one monolithic replacement body
+  - `GC-IID-0001` and `GC-IID-0002` remain one shared issue-identity landing unit because they already share the same source-owner cluster and governance area
+  - no `DOC/OPS` split and no deeper per-record fragmentation is currently required before the next decision point
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-4H` as the bounded active current `GC-*` family-mapping and re-homing lane after `S0F-3M` stabilized the first verified legacy cleanup pilot.
 - 2026-04-09: completed `P1` by fixing the active issue-governance subset inventory and recording a first-pass `DOC` ownership mapping hypothesis for all five current records.
 - 2026-04-09: completed `P2` by fixing the keep-versus-promote rule, confirming that no `DOC/OPS` family split is currently needed, and carrying the five-record subset forward as one `DOC`-target promotion candidate for `P3` applicability testing.
+- 2026-04-09: completed `P3` by proving that the five-record issue-governance subset can move as one bounded `DOC` packet, but only in the form of four area-level landing units rather than one omnibus replacement contract.
