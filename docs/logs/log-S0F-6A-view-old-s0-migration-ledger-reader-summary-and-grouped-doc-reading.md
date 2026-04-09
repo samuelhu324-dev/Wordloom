@@ -122,6 +122,7 @@
 - `P2`: land the first grouped `DOC` reading summary in `view-old-s0-migration-ledger-v1.md`
 - `P3`: define per-group reader-path notes and handoff order so each grouped class tells readers what to open next
 - `P4`: add one question-first reader decision block so readers can route by intent before scanning the grouped classes
+- `P5`: run the publish close-out review and answer the six outlets explicitly before holding the lane as a released `view` enhancement
 
 ## Success Criteria (DoD)
 
@@ -138,6 +139,7 @@
   - the first grouped `DOC` reading summary is landed in the migration view
   - the grouped classes carry enough reader-path guidance that later readers do not need to improvise the next hop
   - the view also exposes one compact question-first decision layer for readers who think in questions rather than class names
+  - the six-outlet publish close-out review is explicit, with justified `no-op` answers where no further export is warranted
   - later enhancement work no longer needs to reopen whether grouped reading belongs in the migration view at all
 
 ## P0 (Contract | v1)
@@ -230,6 +232,28 @@
 - This block does not replace the grouped classes.
 - It exists so a reader can route from intent first, then use the grouped classes and row table only if more detail is needed.
 
+## P5 (Publish close-out review)
+
+### P5-C1-S1 (Six-outlet close-out review completed | v1)
+
+- `S0F-6A` now completes its publish close-out review by answering the six outlets explicitly:
+  - `contract`: no-op; this slice does not change current `DOC` rule text, contract shape, or contract history blocks
+  - `runbook`: no-op; this slice does not define a stable operator procedure
+  - `view`: keep the landed enhancement in `view-old-s0-migration-ledger-v1.md` as the released reader-facing result
+  - `index/front-door`: no-op; the migration view remains reachable through existing lineage and does not require a broader navigation mutation in this slice
+  - `disposition/placement`: no-op; this slice does not change row standing, support-only placement, or cleanup status
+  - `log-retained core`: keep this source log for the grouped-summary contract, release rationale, and the boundary explaining why this lane publishes a `view` enhancement rather than a contract change
+- This makes the release boundary explicit: `S0F-6A` publishes reader routing, not new `DOC` rule content.
+
+### P5-C1-S2 (Post-release boundary fixed | v1)
+
+- After `P5`, `S0F-6A` should be held as one released `view` enhancement lane rather than widened indefinitely.
+- Any later work should reopen only for one clearly different question, such as:
+  - additional reader question classes
+  - a new front-door export need
+  - or a downstream contract/history-lane change that genuinely alters the right first-open routing
+- This prevents the lane from drifting from `reader routing release` into open-ended migration or contract evolution work.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -257,6 +281,11 @@
 - [x] `P4-C1-S1`: decision-block contract fixed
 - [x] `P4-C1-S2`: decision block landed
 
+### P5 (Publish close-out review)
+
+- [x] `P5-C1-S1`: six-outlet close-out review completed
+- [x] `P5-C1-S2`: post-release boundary fixed
+
 ## Current Status (recommended)
 
 - `S0F-6A` is now opened as the bounded follow-up for migration-view reader summary enhancement.
@@ -265,14 +294,15 @@
 - `P2` is now complete: the first grouped `DOC` reading summary is landed in the migration view.
 - `P3` is now complete: each grouped reading class now carries one bounded reader-path note and one fixed handoff order, so the migration view can route readers directly instead of only grouping rows.
 - `P4` is now complete: the migration view now also carries one question-first decision block, so readers can route by intent before choosing a grouped reading class.
+- `P5` is now complete: the six-outlet publish close-out review is explicit, the released result is fixed as one `view` enhancement, and all other outlets are justified `no-op`.
 - `S0F-6A` is now `stable`.
-- The next step is no longer whether grouped reading belongs in the view; it is whether later follow-up should add more question classes, deeper grouped handoffs, or return to migration-row widening itself.
+- The next step is no longer whether grouped reading belongs in the view; it is whether a later bounded lane should add more question classes, publish a broader front-door export, or return to migration-row widening itself.
 
 ## Evidence (reserved)
 
-### P0-P4-C1-S1S2 (S0F-6A scaffold, grouped summary, reader-path handoffs, and question-first decision block landed | 2026-04-09)
+### P0-P5-C1-S1S2 (S0F-6A scaffold, grouped summary, handoffs, decision block, and publish close-out landed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-6A/P0-P4-C1-S1S2>`
+- headSha: `<pending commit for S0F-6A/P0-P5-C1-S1S2>`
 - artifacts:
   - `docs/logs/log-S0F-6A-view-old-s0-migration-ledger-reader-summary-and-grouped-doc-reading.md`
   - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
@@ -282,11 +312,13 @@
   - grouped `DOC` reading classes remain visibly distinct and reconcilable with the canonical row table
   - each grouped class tells readers what to open first and what to open next
   - one compact question-first block routes readers who start from intent rather than grouped class names
+  - the six outlets are explicitly closed so the lane can publish as a `view` enhancement without pretending to be a contract or runbook change
 - observed:
   - `S0F-6A` now owns the grouped reader-summary contract and execution notes
   - the migration view now groups current `DOC` absorption by `contract`, `history view`, and `promotion-map view`
   - the grouped classes now also carry explicit reader-path notes and handoff order
   - the view now also exposes one question-first decision block for direct routing by reader intent
+  - the publish close-out review now fixes `view` as the only landed outlet and records justified `no-op` for the other five outlets
   - the canonical row table remains intact under the grouped reader summary
 
 ## Recent changes (for traceability, optional)
@@ -296,3 +328,4 @@
 - 2026-04-09: completed `P2` by landing the first grouped `DOC` reading summary in `view-old-s0-migration-ledger-v1.md`.
 - 2026-04-09: completed `P3` by fixing per-group reader-path notes and handoff order so the grouped summary now routes readers to the right next surface directly.
 - 2026-04-09: completed `P4` by landing one question-first decision block so readers can route by intent before using the grouped classes or canonical row table.
+- 2026-04-09: completed `P5` by fixing the six-outlet publish close-out review and holding `S0F-6A` as one released `view` enhancement lane.
