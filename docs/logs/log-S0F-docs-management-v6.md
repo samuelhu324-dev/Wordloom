@@ -57,6 +57,7 @@
   **phase_log_37**: `docs/logs/log-S0F-5B-old-s0-migration-ledger-view-and-support-only-inventory-model.md`
   **phase_log_38**: `docs/logs/log-S0F-6A-view-old-s0-migration-ledger-reader-summary-and-grouped-doc-reading.md`
   **phase_log_39**: `docs/logs/log-S0F-6B-old-s0-absorption-coverage-and-history-chain-views.md`
+  **phase_log_40**: `docs/logs/log-S0F-6C-outlet-and-lifecycle-observability.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -364,6 +365,8 @@
 - `S0F-6B` is now reopened in `C4` rather than in a new slice: the fourth bounded current-surface history-chain pilot is fixed as `DOC-FDT-0001`, the matching chain surface is now landed under the already-stable row contract, and the lane remains stable after that widening step.
 - `S0F-6B` is now reopened in `P3-C2` rather than in a new slice: the second bounded series drill-down pilot is fixed as `S0E`, the matching series surface is now landed under the already-stable row contract, and the lane remains stable after that widening step.
 - `S0F-6B` is now reopened in `P3-C3` rather than in a new slice: the third bounded series drill-down pilot is fixed as `S0F`, the matching series surface is now landed under the already-stable row contract, and the lane remains stable after that widening step.
+- `S0F-6C` is now opened as the bounded follow-up for outlet and lifecycle observability: the lane is intentionally separated from `S0F-6B` because the missing reader question is current execution visibility rather than old-`S0` absorption readability.
+- `S0F-6C/P1` is now complete: the observability split is explicit across `overview` and `detail`, and the minimum reader-facing vocabulary is now fixed across `lifecycle stage`, `lifecycle standing`, `outlet result`, `stop reason`, and `next owner`, so later view landing can proceed without reopening those boundary questions.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
@@ -569,3 +572,5 @@
 - 2026-04-04：`S0F-1A/P0-P1` 已完成第一轮收口；真实 issue creation 现在会在 inferred keyword 路径上 fail-closed，并保留同源 draft-generation evidence 供后续 review 使用。
 - 2026-04-04：`S0F-1A/P2` 已完成；真实 `create_pr_from_plan.py` 现在把 front-half preflight result 视为 live publish 的硬前置，且已用一个 occupied-branch stop 样本证明 preview planning 不再等于 publish 资格。
 - 2026-04-04：`S0F-1A/P3` 已完成；raw issue-conclusion、issue-relationship 与 PR body rewrite 入口现在都已收口为 internal-only bounded reuse，并以 guarded wrapper / thin-gate surface 作为 canonical operator-facing live mutation path。
+- 2026-04-09: opened `S0F-6C` as the bounded follow-up for outlet and lifecycle observability after concluding that `S0F-6B` itself was already complete within its own historical absorption boundary.
+- 2026-04-09: completed `S0F-6C/P1` by fixing the two-layer observability split and the minimum reader-facing vocabulary for lifecycle stage, lifecycle standing, outlet result, stop reason, and next owner.
