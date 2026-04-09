@@ -60,6 +60,7 @@
   **phase_log_40**: `docs/logs/log-S0F-6C-outlet-and-lifecycle-observability.md`
   **phase_log_41**: `docs/logs/log-S0F-5C-priority-packet-decomposition-and-cleanup-admission.md`
   **phase_log_42**: `docs/logs/log-S0F-5D-first-admitted-workflow-support-cleanup-execution.md`
+  **phase_log_43**: `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -381,6 +382,8 @@
 - `S0F-5D/P1` is now complete: the first workflow-support cleanup manifest now fixes the exact retained-body target paths, preserves the old root paths as stubs for machine-generated issue and lifecycle artifacts, and narrows `P2` to one bounded move-plus-direct-navigation rewrite set rather than a mass rewrite of every historical exact-path consumer.
 - `S0F-5D/P2` is now complete: `S0E-7E` / `S0E-7F` / `S0E-7G` now live under `docs/logs/support-only/s0/`, their old root paths are preserved as stubs for exact-path historical consumers, and the bounded direct-navigation surfaces now point at the moved retained bodies instead of relying on root-level co-location.
 - `S0F-5D/P3` is now complete: post-move verification now proves the stub landing and support-only readability result, `S0F-1G` is caught up into the planned direct-navigation set, and the standing/working-ledger surfaces now point readers at the moved retained bodies explicitly.
+- `S0F-5E` is now opened as the bounded small-series review follow-up after `S0F-5D`: the lane will review `S0B-2A` first, then publish and use `S0D` and `S0C` standing drill-down surfaces in that order, instead of reopening larger-series cleanup execution immediately.
+- `S0F-5E/P1-P2` are now complete: the repo now has one defended `S0B -> S0D -> S0C` small-series review order, and `S0B-2A` now reads as retained tooling-governance evidence outside the `DOC` surfaced set rather than as generic unresolved remainder.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.

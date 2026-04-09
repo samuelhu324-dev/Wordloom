@@ -27,7 +27,7 @@
 
 | source log | series | currently surfaced | reader-facing standing | current family | current reading home | history role | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `S0B-2A` | `S0B` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
+| `S0B-2A` | `S0B` | `no` | `retained-evidence` | `repo tooling and evidence surfaces` | `backend/scripts/cli.py` plus `docs/labs/_snapshot/` and `docs/runbook/_snapshot/` | `retained tooling-governance evidence` | `scripts taxonomy, unified entrypoint, snapshot-root policy, and cutover/stub governance now read through live repo tooling and evidence-root surfaces; the old row remains bounded historical detail rather than one DOC-history prerequisite` |
 | `S0B-3A` | `S0B` | `yes` | `current-view` | `DOC` | `view-doc-history-and-lineage-v1` | `structural prerequisite` | `already admitted into the surfaced set as one pre-DOC structural prerequisite for current DOC history reading` |
 
 ## Reader Routing
@@ -45,6 +45,7 @@
 - Use `view-old-s0-absorption-coverage-overview-v1.md` when the question is still aggregate and series-level only.
 - Use `view-old-s0-migration-ledger-v1.md` when the question is `which rows are already admitted into the surfaced set across all series?`
 - This first `S0B` surface does not decide any later `contract-history chain` yet; it only shows the bounded current standing of the `S0B` rows.
+- `S0B-2A` now shows that a reviewed row may remain outside the `DOC` surfaced set and still resolve as retained-evidence when its active meaning now reads through live repo tooling and evidence-root surfaces instead of through a current `DOC` view.
 
 ## Source Refs
 
@@ -53,3 +54,4 @@
 - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
 - `docs/logs/log-S0B-2A-scripts-snapshots-management.md`
 - `docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md`
+- `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
