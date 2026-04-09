@@ -1,0 +1,109 @@
+{
+  "id": "s0f-4h-p1-active-gc-issue-governance-family-mapping-inventory",
+  "created_at": "2026-04-09",
+  "phase": "S0F-4H/P1-C1-S1S2",
+  "question": "Which family most likely owns the active GC issue-governance current subset under the seven-family model?",
+  "bounded_subset": [
+    "GC-ICR-0001",
+    "GC-ICL-0001",
+    "GC-ICT-0001",
+    "GC-IID-0001",
+    "GC-IID-0002"
+  ],
+  "inventory_summary": {
+    "subset_role": "active issue-governance current registry",
+    "dominant_semantic_cluster": "docs/GitHub lifecycle governance",
+    "likely_cluster_target_family": "DOC",
+    "ops_fit": "weak",
+    "notes": [
+      "All five records govern issue creation, issue conclusion, issue context, sidebar identity, or issue-title vocabulary rather than deploy, verify, rollback, release, or runtime operator execution.",
+      "The current DOC front door is defined as the family-first reader surface for doc-first control-plane contracts.",
+      "The current OPS front door is defined around deploy, verify, rollback, release operations, runtime operating model, and operator paths.",
+      "This artifact records likely ownership only; it does not yet decide keep-versus-promote or execute any re-homing write."
+    ]
+  },
+  "records": [
+    {
+      "contract_id": "GC-ICR-0001",
+      "summary": "issue creation metadata, English body scaffold, and create-path governance",
+      "likely_target_family": "DOC",
+      "confidence": "high",
+      "why": [
+        "Governance is tied to source-log-owned GitHub issue creation semantics rather than runtime operations.",
+        "Residual family-sweep evidence already treats precursor create-metadata meaning as absorbed into GC-ICR-0001, not as an OPS surface.",
+        "The active rule set reads as doc-first control-plane policy for how issue documents are authored and structured."
+      ],
+      "ops_counter_signal": [
+        "No deploy, release, runtime, rollback, or operator-runbook semantics are present."
+      ]
+    },
+    {
+      "contract_id": "GC-ICL-0001",
+      "summary": "issue conclusion and post-merge linkage governance",
+      "likely_target_family": "DOC",
+      "confidence": "high",
+      "why": [
+        "The contract governs conclusion-time documentation and exact delivery-PR linkage for source-log-owned issues.",
+        "Its semantic center is lifecycle writeback and docs/GitHub record closure, not runtime operations.",
+        "It fits the doc-first control-plane pattern more closely than the OPS release/runtime pattern."
+      ],
+      "ops_counter_signal": [
+        "The contract does not define deploy or release operator procedures."
+      ]
+    },
+    {
+      "contract_id": "GC-ICT-0001",
+      "summary": "issue context sentence-count and main-vs-child rendering governance",
+      "likely_target_family": "DOC",
+      "confidence": "high",
+      "why": [
+        "The rule set is about issue body shape, language, and rendering discipline.",
+        "Earlier family-sweep evidence already maps S0F-1B context-generation semantics into GC-ICT-0001 as current governance coverage.",
+        "This is document-structure governance rather than runtime operator policy."
+      ],
+      "ops_counter_signal": [
+        "No operator path, release gate, or runtime execution semantics are present."
+      ]
+    },
+    {
+      "contract_id": "GC-IID-0001",
+      "summary": "parent sidebar ordering ownership",
+      "likely_target_family": "DOC",
+      "confidence": "high",
+      "why": [
+        "The contract governs reader-facing issue identity and sidebar ordering for source-log-owned parent issues.",
+        "Earlier family-sweep evidence already classifies the S0F-1G sidebar-ordering surface through GC-IID-0001.",
+        "The rule set is about docs/GitHub information architecture rather than runtime operations."
+      ],
+      "ops_counter_signal": [
+        "No deploy, rollback, runtime, or operator procedure meaning is involved."
+      ]
+    },
+    {
+      "contract_id": "GC-IID-0002",
+      "summary": "issue title keyword controlled vocabulary",
+      "likely_target_family": "DOC",
+      "confidence": "high",
+      "why": [
+        "The contract governs issue-title vocabulary and naming discipline for docs-managed GitHub issues.",
+        "Residual issue-automation sweep evidence already treats title-keyword semantics as absorbed into GC-IID-0002.",
+        "This is naming and document-identity governance, not runtime operations."
+      ],
+      "ops_counter_signal": [
+        "The contract does not define an operator-facing runtime workflow."
+      ]
+    }
+  ],
+  "source_refs": [
+    "docs/governance/contracts/GC-ICR-0001-issue-creation-metadata-english-body.md",
+    "docs/governance/contracts/GC-ICL-0001-issue-conclusion-post-merge-linkage.md",
+    "docs/governance/contracts/GC-ICT-0001-issue-context-sentence-count-main-vs-child.md",
+    "docs/governance/contracts/GC-IID-0001-parent-sidebar-ordering-ownership.md",
+    "docs/governance/contracts/GC-IID-0002-issue-title-keyword-controlled-vocabulary.md",
+    "docs/governance/views/view-doc-current-front-door-v1.md",
+    "docs/governance/views/view-ops-current-front-door-v1.md",
+    "docs/governance/views/support-only/view-s0f-1-family-sweep-v1.md",
+    "docs/governance/views/support-only/view-issue-automation-follow-up-family-sweep-v1.md",
+    "docs/governance/views/view-contract-family-inventory-v1.md"
+  ]
+}

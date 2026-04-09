@@ -52,6 +52,7 @@
   **phase_log_32**: `docs/logs/log-S0F-3K-history-aware-old-gc-cleanup-recheck-after-doc-history-publication.md`
   **phase_log_33**: `docs/logs/log-S0F-3L-old-gc-root-redirect-replacement-and-stub-model.md`
   **phase_log_34**: `docs/logs/log-S0F-3M-gc-iss-0001-root-stub-relocation-pilot.md`
+  **phase_log_35**: `docs/logs/log-S0F-4H-active-gc-current-registry-family-mapping-and-rehoming.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -325,6 +326,8 @@
 - `S0F-3M/P2` is now complete: the representative `GC-ISS-0001` pilot is now live on the `support-only retained body + root stub` model, the contracts-side support-only index now exposes the moved retained body, and no pre-existing reader surface needed retargeting during execution, so the next immediate work is `P3` post-move verification.
 - `S0F-3M/P3` is now complete: the root stub, moved retained body, support-only local navigation, and zero-retarget execution result all verify cleanly in practice, so the next immediate work is `P4` deciding whether to widen the same execution pattern to more `GC-ISS-*` records or hold the result as one defended pilot.
 - `S0F-3M/P4` is now complete and `S0F-3M` is now stable: the verified `GC-ISS-0001` result should be held as one defended pilot rather than widened immediately, because current issue-governance semantics already live in active `GC-*` narrow-registry contracts while `DOC-*` remains the separate current family for doc-first control-plane contracts.
+- `S0F-4H` is now opened as the bounded follow-up for that remaining current-owner question: the next job is no longer legacy redirect cleanup, but deciding whether the active current `GC-*` issue-governance subset should stay in the narrow registry or re-home into family-owned `DOC` or `OPS` current surfaces under the seven-family model.
+- `S0F-4H/P1` is now complete: the active issue-governance current-registry subset is fixed as `GC-ICR-0001`, `GC-ICL-0001`, `GC-ICT-0001`, `GC-IID-0001`, and `GC-IID-0002`, and the first-pass mapping result is that this bounded cluster aligns with `DOC` far more strongly than `OPS` because it governs docs/GitHub lifecycle shape, naming, identity, and writeback semantics rather than runtime operations.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
