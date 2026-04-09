@@ -219,8 +219,31 @@
 
 ### P3 (S0D standing surface)
 
-- `P3-C1-S1`: publish `docs/governance/views/view-old-s0-series-s0d-standing-v1.md`
-- `P3-C1-S2`: fix the `S0D` row contract and reader routing so the series becomes reviewable without replaying aggregate-only counts
+### P3-C1-S1 (`S0D` series standing view landed | v1)
+
+- `S0D` now has its first bounded per-log drill-down reader surface at:
+  - `docs/governance/views/view-old-s0-series-s0d-standing-v1.md`
+- The surface now makes the full `S0D` review-scope population explicit in one place:
+  - one already surfaced structural-prerequisite row: `S0D-1A`
+  - five remaining outside-surfaced-set rows: `S0D-2A` through `S0D-6A`
+- This completes the missing standing-surface prerequisite that had been blocking bounded `S0D` review under the same model already proven for `S0B`, `S0E`, and `S0F`.
+
+### P3-C1-S2 (`S0D` row contract and reader routing fixed | v1)
+
+- The new `S0D` drill-down now reuses the stable per-log row contract already proven by the earlier series surfaces:
+  - `source log`
+  - `series`
+  - `currently surfaced`
+  - `reader-facing standing`
+  - `current family`
+  - `current reading home`
+  - `history role`
+  - `notes`
+- Reader routing for `S0D` is now explicit:
+  - open `view-old-s0-series-s0d-standing-v1.md` first for per-log standing inside `S0D`
+  - open `view-old-s0-absorption-coverage-overview-v1.md` first for aggregate per-series distribution
+  - open `view-old-s0-migration-ledger-v1.md` first for already admitted cross-series rows
+- `P3` therefore closes the missing-series-surface problem without pre-judging the unresolved `S0D` rows; `P4` remains the bounded follow-up that will classify `S0D-2A` through `S0D-6A` by standing and current reading home.
 
 ### P4 (S0D review)
 
@@ -256,8 +279,8 @@
 
 ### P3 (S0D standing surface)
 
-- [ ] `P3-C1-S1`: `S0D` series standing view landed
-- [ ] `P3-C1-S2`: `S0D` reader routing fixed
+- [x] `P3-C1-S1`: `S0D` series standing view landed
+- [x] `P3-C1-S2`: `S0D` reader routing fixed
 
 ### P4 (S0D review)
 
@@ -279,7 +302,8 @@
 - `S0F-5E` is now opened as the bounded small-series review follow-up after `S0F-5D`.
 - `P1` is now complete: the defended next review order is now explicit as `S0B -> S0D -> S0C`.
 - `P2` is now complete: `S0B-2A` no longer sits as generic unresolved remainder and now reads as retained tooling-governance evidence outside the `DOC` surfaced set.
-- The immediate next step is now `P3`: publish the missing `S0D` series standing surface so the `S0D` remainder becomes reviewable under the same drill-down model.
+- `P3` is now complete: `S0D` now has its bounded series standing view and explicit reader routing, so the series no longer depends on aggregate-only counts for per-log review entry.
+- The immediate next step is now `P4`: classify `S0D-2A` through `S0D-6A` by standing and current reading home, then write those defended results back to the bounded shared surfaces.
 - This log should currently be read as the source owner for the next lower-volume old-`S0` review entry path rather than as a cleanup-execution lane.
 
 ## Evidence (reserved)
@@ -289,7 +313,7 @@
 
 ### P0-C1-S1S2 (Small-series review-sequence scaffold landed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-5E/P0-P2 write-back>`
+- headSha: `4c06af8ca`
 - artifacts:
   - `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
@@ -302,7 +326,7 @@
 
 ### P1-C1-S1S2 (Small-series review order fixed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-5E/P0-P2 write-back>`
+- headSha: `4c06af8ca`
 - artifacts:
   - `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
@@ -315,7 +339,7 @@
 
 ### P2-C1-S1S2 (`S0B-2A` retained-evidence classification and write-back landed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-5E/P0-P2 write-back>`
+- headSha: `4c06af8ca`
 - artifacts:
   - `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
   - `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`
@@ -327,9 +351,24 @@
   - `S0B-2A` now reads as retained tooling-governance evidence outside the `DOC` surfaced set
   - the `S0B` series view and support-only working ledger now carry the same defended result without implying one new cleanup-admission candidate yet
 
+### P3-C1-S1S2 (`S0D` standing surface and reader routing landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5E/P3-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-series-s0d-standing-v1.md`
+  - `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - `S0D` should stop depending on aggregate-only coverage counts for per-log review entry
+  - the next bounded follow-up should be able to classify `S0D-2A` through `S0D-6A` under one explicit series drill-down contract rather than by improvised row shape
+- observed:
+  - the repo now has one explicit `S0D` series standing surface with the full six-row review population and one already surfaced `S0D-1A` anchor
+  - `S0D` reader routing is now explicit enough that `P4` can review the unresolved rows directly under the same drill-down model already used elsewhere
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5E` as the bounded small-series review follow-up after `S0F-5D`.
 - 2026-04-09: fixed the next recommended order as `S0B-2A` first, then `S0D` standing-and-review, then `S0C` standing-and-review.
 - 2026-04-09: completed `P1` by fixing why `S0B` is the first next review entry and why `S0D` should precede `S0C` once the missing drill-down surfaces are published.
 - 2026-04-09: completed `P2` by classifying `S0B-2A` as retained tooling-governance evidence and writing that result back to the `S0B` series standing view and support-only working ledger.
+- 2026-04-09: completed `P3` by publishing the first `S0D` series standing view and fixing the reader-routing contract needed for bounded `S0D` remainder review.
