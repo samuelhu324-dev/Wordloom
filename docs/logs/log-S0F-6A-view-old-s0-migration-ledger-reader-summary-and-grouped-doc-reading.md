@@ -120,18 +120,21 @@
 - `P0`: open `S0F-6A`, wire it into the parent spine, and fix the problem as `reader summary enhancement` work rather than migration widening
 - `P1`: define the grouped reader-summary contract for the migration view
 - `P2`: land the first grouped `DOC` reading summary in `view-old-s0-migration-ledger-v1.md`
+- `P3`: define per-group reader-path notes and handoff order so each grouped class tells readers what to open next
 
 ## Success Criteria (DoD)
 
 - One reader can identify the current `DOC` reading path class without scanning the whole row table manually.
 - The grouped summary stays consistent with the canonical row table instead of becoming a second competing ledger.
 - `contract`, `history view`, and `promotion-map view` remain visibly distinct reading groups.
+- One reader can tell what to open first and what to open next for each grouped reading class without inferring the handoff from other files.
 
 ## Stability (what stable means)
 
 - This log can be marked `stable` when:
   - the grouped reader-summary contract is explicit enough to reuse
   - the first grouped `DOC` reading summary is landed in the migration view
+  - the grouped classes carry enough reader-path guidance that later readers do not need to improvise the next hop
   - later enhancement work no longer needs to reopen whether grouped reading belongs in the migration view at all
 
 ## P0 (Contract | v1)
@@ -187,6 +190,24 @@
 - The row table remains the canonical bounded projection.
 - The new grouped summary is now the fastest entrypoint for `which DOC reading surface should I open first?`
 
+## P3 (Reader-path notes and handoffs)
+
+### P3-C1-S1 (Per-group reader-path notes fixed | v1)
+
+- Each grouped `DOC` reading class may now carry one short note answering:
+  - when to use this group
+  - what to open first
+- These notes stay reader-facing and must not duplicate source-log evidence or support-only row commentary.
+
+### P3-C1-S2 (Per-group handoff order fixed | v1)
+
+- The grouped summary may now state one bounded `open first -> then open` sequence for each reading class.
+- The first fixed handoff order is now:
+  - `contract` group: current `DOC` front door or the listed contract body first, then retained source-owner trace only if needed
+  - `history view` group: `view-doc-history-and-lineage-v1` first, then retained source-owner chronology if needed
+  - `promotion-map view` group: `view-doc-contract-promotion-map-v1` first, then the landed current contract or front door if needed
+- This keeps the migration view self-sufficient for fast reader routing while preserving the row table as the canonical projection.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -204,20 +225,26 @@
 - [x] `P2-C1-S1`: grouped DOC reader summary landed
 - [x] `P2-C1-S2`: reader-speed boundary fixed
 
+### P3 (Reader-path notes and handoffs)
+
+- [x] `P3-C1-S1`: per-group reader-path notes fixed
+- [x] `P3-C1-S2`: per-group handoff order fixed
+
 ## Current Status (recommended)
 
 - `S0F-6A` is now opened as the bounded follow-up for migration-view reader summary enhancement.
 - `P0` is now complete: the slice is fixed as reader-summary work rather than row-widening work.
 - `P1` is now complete: the grouped reader-summary contract and first group boundary are explicit enough to reuse.
 - `P2` is now complete: the first grouped `DOC` reading summary is landed in the migration view.
+- `P3` is now complete: each grouped reading class now carries one bounded reader-path note and one fixed handoff order, so the migration view can route readers directly instead of only grouping rows.
 - `S0F-6A` is now `stable`.
-- The next step is no longer whether grouped reading belongs in the view; it is whether later follow-up should add more grouped reader classes or keep widening migration coverage itself.
+- The next step is no longer whether grouped reading belongs in the view; it is whether later follow-up should add more grouped reader classes, deeper grouped handoffs, or return to migration-row widening itself.
 
 ## Evidence (reserved)
 
-### P0-P2-C1-S1S2 (S0F-6A scaffold and first grouped reader summary landed | 2026-04-09)
+### P0-P3-C1-S1S2 (S0F-6A scaffold, grouped reader summary, and first reader-path handoffs landed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-6A/P0-P2-C1-S1S2>`
+- headSha: `<pending commit for S0F-6A/P0-P3-C1-S1S2>`
 - artifacts:
   - `docs/logs/log-S0F-6A-view-old-s0-migration-ledger-reader-summary-and-grouped-doc-reading.md`
   - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
@@ -225,9 +252,11 @@
 - expected:
   - the migration view gains one reader-speed layer without reopening migration-row admission
   - grouped `DOC` reading classes remain visibly distinct and reconcilable with the canonical row table
+  - each grouped class tells readers what to open first and what to open next
 - observed:
   - `S0F-6A` now owns the grouped reader-summary contract and execution notes
   - the migration view now groups current `DOC` absorption by `contract`, `history view`, and `promotion-map view`
+  - the grouped classes now also carry explicit reader-path notes and handoff order
   - the canonical row table remains intact under the grouped reader summary
 
 ## Recent changes (for traceability, optional)
@@ -235,3 +264,4 @@
 - 2026-04-09: opened `S0F-6A` as the bounded follow-up for migration-view reader summary enhancement rather than further migration-row widening.
 - 2026-04-09: completed `P1` by fixing the grouped reader-summary contract and the first `DOC` reader-surface group boundary.
 - 2026-04-09: completed `P2` by landing the first grouped `DOC` reading summary in `view-old-s0-migration-ledger-v1.md`.
+- 2026-04-09: completed `P3` by fixing per-group reader-path notes and handoff order so the grouped summary now routes readers to the right next surface directly.

@@ -68,6 +68,12 @@
 ### Contract-First DOC Reading
 
 - Count: `11`
+- Use this group when the question is `what is true now for this rule set under DOC?`
+- Open first:
+  - `view-doc-current-front-door-v1`
+- Then open:
+  - the listed `DOC-*` contract body for the exact area you need
+  - the retained source-owner log only if you need detailed chronology or evidence
 - Open the active `DOC` contract body first when the old `S0` surface now reads as current rule meaning:
   - `S0F-4A` -> `DOC-DRB-0001`
   - `S0F-4B` -> `DOC-SLC-0001`
@@ -84,6 +90,11 @@
 ### History-View DOC Reading
 
 - Count: `6`
+- Use this group when the question is `how did this current DOC surface emerge or why does it read this way now?`
+- Open first:
+  - `view-doc-history-and-lineage-v1`
+- Then open:
+  - the retained source-owner log only if you need full chronology, detailed evidence, or the exact publication gate rationale
 - Open `view-doc-history-and-lineage-v1` first when the old `S0` surface now reads as lineage, history, or history-publication context:
   - `S0F-4D`
   - `S0F-4E`
@@ -95,6 +106,11 @@
 ### Promotion-Map DOC Reading
 
 - Count: `1`
+- Use this group when the question is `which bounded source-owner lane or cluster landed into which DOC packet or contract target?`
+- Open first:
+  - `view-doc-contract-promotion-map-v1`
+- Then open:
+  - the landed current `DOC` contract body or `view-doc-current-front-door-v1` if you need the current reading surface after the mapping answer
 - Open `view-doc-contract-promotion-map-v1` first when the old `S0` surface now reads as a bounded promotion packet or landing map:
   - `S0F-4I`
 
