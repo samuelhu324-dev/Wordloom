@@ -5,7 +5,7 @@
 **id**: `S0F-5E`
 **kind**: `log`
 **title**: `small-series review sequencing and standing-surface completion v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Records, Views, Migration, Review, epic/s0, sub/5e`
 **links**: ``
@@ -301,6 +301,30 @@
 - `P6-C1-S1`: classify the unfinished `S0C` rows by standing and current reading home
 - `P6-C1-S2`: determine whether the `S0C` review result surfaces any new cleanup-admission candidate worth a later execution-only follow-up
 
+### P6-C1-S1 (`S0C` standing classified | v1)
+
+- `S0C-2A` through `S0C-5A` and the `S0C-3A-*` / `S0C-4A-*` child rows are now fixed under bounded non-`DOC` standing rather than as generic unresolved remainder.
+- The defended `P6` classification boundary is now explicit:
+  - `S0C-2A` reads as `retired-lineage` because it records the defended retirement of legacy integration suites whose failures no longer represent current-system regressions, while current protection now reads through current library application, repository, and invariant-focused tests instead of through those suites as active quality gates
+  - `S0C-3A`, `S0C-3A-1A`, `S0C-3A-2A`, and `S0C-3A-3A` read as `retained-evidence` because their active CLI thinning, dispatch, parser, and artifact-contract meaning now reads through the live `backend/scripts/cli.py` and `backend/scripts/cli_app/*` surfaces rather than through one current `DOC` history row
+  - `S0C-4A` and `S0C-4A-1A` read as `retained-evidence` because scenario taxonomy, catalog, and guardrail behavior now reads through the stable runbook, scenario catalog, validator, and workflow references rather than through one current `DOC` history row
+  - `S0C-5A` reads as `history-lineage` because its step/cycle naming and PR-description discipline later concentrate into the current parent-spine and template-based log-orchestration surfaces rather than remaining one standalone current rule body
+- None of these rows is now treated as one new `DOC` absorption candidate:
+  - `S0C-3A` and `S0C-4A` were already explicitly marked by `S0F-4G` as important secondary CLI/scenario context rather than the first `DOC` structural-history chain
+  - `S0C-2A` and `S0C-5A` remain historically relevant, but their current meaning no longer widens the `DOC` surfaced set
+
+### P6-C1-S2 (`S0C` write-back and cleanup consequence fixed | v1)
+
+- The bounded shared-surface write-back set for the `S0C` remainder is now fixed as:
+  - `docs/governance/views/view-old-s0-series-s0c-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+- `S0C` now stops reading as one partially reviewed small series with eight generic unresolved rows.
+- The cleanup-admission consequence is now explicit: no new cleanup-execution subset is justified by this review.
+  - `S0C-3A` through `S0C-4A-1A` remain root retained governance evidence that points directly at still-live repo-local CLI, scenario, validator, and workflow surfaces rather than at support-only movable retained bodies
+  - `S0C-2A` is retired legacy-suite lineage rather than one cleanup-move candidate
+  - `S0C-5A` now survives as lineage into the current log-orchestration model rather than as one relocatable retained-support body
+- `S0F-5E` therefore closes as a review-completion lane, not as the admission point for a second cleanup-execution follow-up.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -335,8 +359,8 @@
 
 ### P6 (S0C review)
 
-- [ ] `P6-C1-S1`: `S0C` standing classified
-- [ ] `P6-C1-S2`: later cleanup-admission consequence fixed
+- [x] `P6-C1-S1`: `S0C` standing classified
+- [x] `P6-C1-S2`: later cleanup-admission consequence fixed
 
 ## Current Status (recommended)
 
@@ -346,8 +370,9 @@
 - `P3` is now complete: `S0D` now has its bounded series standing view and explicit reader routing, so the series no longer depends on aggregate-only counts for per-log review entry.
 - `P4` is now complete: `S0D-2A` through `S0D-6A` no longer sit as generic unresolved remainder and now read as retained governance evidence for repo-local tooling, runbook, UI, workflow-packing, and roadmap/demo surfaces.
 - `P5` is now complete: `S0C` now has its bounded series standing view and explicit reader routing, so the last unresolved small-series backlog can now be reviewed directly under the same drill-down model.
-- The immediate next step is now `P6`: classify the `S0C` remainder by standing and current reading home, then decide whether any later cleanup-admission consequence is justified.
-- This log should currently be read as the source owner for the next lower-volume old-`S0` review entry path rather than as a cleanup-execution lane.
+- `P6` is now complete: `S0C-2A` now reads as retired legacy-suite lineage, `S0C-3A` through `S0C-4A-1A` now read as retained repo-local CLI/scenario governance evidence, and `S0C-5A` now reads as lineage into the current log-orchestration model rather than as generic unresolved remainder.
+- No later cleanup-admission subset is surfaced by the `S0C` review result.
+- `S0F-5E` is now stable as the completed small-series review-sequencing and standing-surface completion lane.
 
 ## Evidence (reserved)
 
@@ -425,7 +450,7 @@
 
 ### P5-C1-S1S2 (`S0C` standing surface and reader routing landed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-5E/P5-C1-S1S2>`
+- headSha: `3badf4145`
 - artifacts:
   - `docs/governance/views/view-old-s0-series-s0c-standing-v1.md`
   - `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
@@ -437,6 +462,21 @@
   - the repo now has one explicit `S0C` series standing surface with the full nine-row review population and one already surfaced `S0C-1A` anchor
   - `S0C` reader routing is now explicit enough that `P6` can review the unresolved rows directly under the same drill-down model already used elsewhere
 
+### P6-C1-S1S2 (`S0C` remainder classified with no new cleanup admission | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5E/P6-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-series-s0c-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the eight remaining `S0C` rows should stop reading as generic unresolved remainder and instead receive bounded standing results under the new drill-down surface
+  - the `S0C` review should make the cleanup consequence explicit rather than leaving one implicit future-cleanup question
+- observed:
+  - `S0C-2A` now reads as retired legacy-suite lineage, `S0C-3A` through `S0C-4A-1A` now read as retained repo-local CLI/scenario governance evidence, and `S0C-5A` now reads as lineage into the current log-orchestration model
+  - no new cleanup-execution subset is justified by the `S0C` result because the remaining rows either stay at live repo-local roots, record retired lineage, or already collapse into the current orchestration lineage without a support-only move target
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5E` as the bounded small-series review follow-up after `S0F-5D`.
@@ -446,3 +486,4 @@
 - 2026-04-09: completed `P3` by publishing the first `S0D` series standing view and fixing the reader-routing contract needed for bounded `S0D` remainder review.
 - 2026-04-09: completed `P4` by classifying `S0D-2A` through `S0D-6A` as retained governance evidence and writing those results back to the `S0D` series standing view and support-only working ledger.
 - 2026-04-09: completed `P5` by publishing the first `S0C` series standing view and fixing the reader-routing contract needed for bounded `S0C` remainder review.
+- 2026-04-09: completed `P6` by classifying the remaining `S0C` rows as retired legacy-suite lineage, retained repo-local CLI/scenario governance evidence, and current log-orchestration lineage, with no new cleanup-admission subset justified.
