@@ -52,6 +52,9 @@
 - Current state after `S0F-5B/P4-C7`:
   - the seventh bounded seed set is now admitted as the fourth source-owner packet already absorbed by the current `DOC` history reader surface
   - the migration ledger now shows that the `DOC` history reader surface absorbs pre-`DOC` structural prerequisites, later lineage milestones, and the history-publication gate as distinct defended history subtypes
+- Current state after `S0F-5B/P4-C8`:
+  - the current on-disk `DOC` surfaced coverage set is now explicit for v1 across the current front door, history view, and promotion-map view
+  - later widening is now gated on new current-surface concentration rather than on generic discovery of older historical logs
 
 ## DOC Absorption Snapshot
 
@@ -61,6 +64,9 @@
 - Current `DOC` `view` targets now represented here:
   - `view-doc-history-and-lineage-v1`: `9` rows (`S0F-4D`, `S0F-4E`, `S0F-4F`, `S0E-3A`, `S0E-6A`, `S0F-4G`, `S0B-3A`, `S0C-1A`, `S0D-1A`)
   - `view-doc-contract-promotion-map-v1`: `1` row (`S0F-4I`)
+- Current surfaced-coverage boundary for v1:
+  - all old-`S0` rows explicitly concentrated by the current on-disk `DOC` front door, `DOC` history view, and `DOC` promotion-map view are now admitted here
+  - remaining old-`S0` backlog, if any, is outside the current `DOC` surfaced coverage set until a later lane widens one current `DOC` surface or publishes a new one
 - Read this view as the current migration answer to `which old S0 surfaces are already absorbed into DOC, and through which current outlet do they now read?`
 
 ## Grouped DOC Reading

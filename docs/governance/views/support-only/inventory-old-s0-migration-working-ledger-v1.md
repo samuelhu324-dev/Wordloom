@@ -65,7 +65,8 @@
 - `S0F-5B/P4-C5` now admits the fifth bounded seed set as the first source-owner execution lane already absorbed by the current `DOC` promotion-map reader surface.
 - `S0F-5B/P4-C6` now admits the sixth bounded seed set as the third source-owner packet already absorbed by the current `DOC` history reader surface.
 - `S0F-5B/P4-C7` now admits the seventh bounded seed set as the fourth source-owner packet already absorbed by the current `DOC` history reader surface.
-- Wider old-`S0` population still remains a later bounded follow-up after these first seven defended seed packets prove the shared ledger shape across retained-source, supporting-contract, and multiple target-coherent supporting-view packets.
+- `S0F-5B/P4-C8` now fixes the current on-disk `DOC` surfaced coverage boundary for v1: no further defended packet is currently visible on the existing `DOC` front door, `DOC` history view, or `DOC` promotion-map view without first widening one of those surfaces or publishing a new current `DOC` reader surface.
+- Wider old-`S0` population still remains a later bounded follow-up, but it is now explicitly outside the current `DOC` surfaced coverage set until one later lane creates a new defended current-surface concentration point.
 
 ## Working Rows
 

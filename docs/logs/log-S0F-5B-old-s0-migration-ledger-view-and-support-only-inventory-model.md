@@ -418,6 +418,26 @@
 - Do not flatten those three subtypes into one generic history packet unless a later bounded lane explicitly owns that synthesis.
 - This keeps the migration ledger readable across the full depth of the current `DOC` history surface, from earliest structural prerequisites through later lineage milestones and into the publication gate that fixed durable history reading.
 
+### P4-C8-S1 (Current DOC surfaced coverage boundary fixed | v1)
+
+- After `C7`, the shared migration ledger now covers every old-`S0` source-owner row or bounded source cluster that is explicitly concentrated by the current on-disk `DOC` reading surfaces:
+  - current `DOC` contracts exposed through `view-doc-current-front-door-v1`
+  - current `DOC` history reading exposed through `view-doc-history-and-lineage-v1`
+  - current `DOC` promotion-packet reading exposed through `view-doc-contract-promotion-map-v1`
+- No further defended packet is currently visible on those existing `DOC` reader surfaces without first mutating one of those surfaces or publishing a new current `DOC` reader surface.
+- `S0F-5B` therefore now holds one explicit `current DOC surfaced coverage complete for v1` answer rather than leaving readers to guess whether the shared migration ledger is still missing any already-concentrated current `DOC` packet.
+
+### P4-C8-S2 (Next widening gate fixed after surfaced-coverage completion | v1)
+
+- After `C8`, later widening should proceed only when one of these bounded conditions becomes true:
+  - one current `DOC` reader surface is widened by a later defended lane and thereby concentrates additional old-`S0` source rows
+  - one currently retained old-`S0` source-owner packet is promoted or absorbed into a current `DOC` contract target and becomes visible on the current `DOC` front door
+  - one new current `DOC` reader-facing `view` is published and becomes the first stable reading home for additional old-`S0` meaning
+- Do not widen merely because the repo still contains more historical old-`S0` logs somewhere.
+- The migration ledger now distinguishes two questions cleanly:
+  - `what old S0 meaning is already absorbed by current DOC surfaces now?`
+  - `what wider historical old S0 backlog may still matter later, but is not yet concentrated into one current DOC surface?`
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -456,6 +476,8 @@
 - [x] `P4-C6-S2`: next widening boundary refined for history-surface subtypes
 - [x] `P4-C7-S1`: seventh bounded seed set admitted
 - [x] `P4-C7-S2`: next widening boundary refined for pre-DOC structural prerequisites
+- [x] `P4-C8-S1`: current DOC surfaced coverage boundary fixed
+- [x] `P4-C8-S2`: next widening gate fixed after surfaced-coverage completion
 
 ## Current Status (recommended)
 
@@ -471,8 +493,9 @@
 - `P4-C5` is now complete: the fifth bounded seed set is admitted as the first source-owner execution lane already absorbed by the current `DOC` promotion-map reader surface.
 - `P4-C6` is now complete: the sixth bounded seed set is admitted as the third source-owner packet already absorbed by the current `DOC` history reader surface.
 - `P4-C7` is now complete: the seventh bounded seed set is admitted as the fourth source-owner packet already absorbed by the current `DOC` history reader surface.
+- `P4-C8` is now complete: the shared migration ledger now explicitly holds the full current on-disk `DOC` surfaced coverage set for v1, and later widening is now gated on new current-surface concentration rather than on generic old-log discovery.
 - `S0F-5B` is now `stable`.
-- The next step is no longer ledger-model design; it is the next bounded follow-up that widens the shared migration ledger with one further defended packet of retained source-owner rows, contract-absorbed supporting rows, or one target-coherent and subtype-coherent `view`-absorbed supporting packet.
+- The next step is no longer ledger-model design or current-surface coverage catch-up; it is the next bounded follow-up that widens the shared migration ledger only when one further defended packet becomes newly concentrated by a current `DOC` contract target or current `DOC` reader-facing view.
 
 ## Evidence (reserved)
 
@@ -647,6 +670,22 @@
   - the shared ledger surfaces now show the `DOC` history reader surface absorbing pre-`DOC` structural prerequisites, later lineage rows, and the history-publication gate as distinct defended subtypes
   - later widening is now constrained by exact target surface and by explicit separation among pre-`DOC` structural prerequisites, later lineage milestones, and history-publication lanes
 
+### P4-C8-S1S2 (Current DOC surfaced coverage boundary fixed and next widening gate updated | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5B/P4-C8-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5B-old-s0-migration-ledger-view-and-support-only-inventory-model.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the shared migration ledger should answer explicitly whether the current on-disk `DOC` surfaced coverage set is now complete for v1
+  - later widening should be gated by new current-surface concentration rather than by open-ended discovery of any remaining historical old-`S0` log
+- observed:
+  - the shared migration ledger now explicitly holds the full current on-disk `DOC` surfaced coverage set for v1 across current contracts, history reading, and promotion-map reading
+  - no further defended packet is currently visible on those existing `DOC` reader surfaces without first widening one of those surfaces or publishing a new current `DOC` reader surface
+  - later widening is now explicitly gated on new current-surface concentration instead of generic old-log discovery
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5B` as the bounded lane for old-`S0` migration-ledger surface design, fixing the immediate next job as `reader-facing view + support-only inventory` modeling rather than direct repo-wide backlog execution.
@@ -660,3 +699,4 @@
 - 2026-04-09: completed `P4-C5` by admitting `S0F-4I` as the fifth bounded seed set under the current `DOC` promotion-map reader surface and refining later widening by reader-surface class as well as target-surface coherence.
 - 2026-04-09: completed `P4-C6` by admitting `S0F-4G` as the sixth bounded seed set under the current `DOC` history reader surface and refining later widening by history-surface subtype as well as target-surface coherence.
 - 2026-04-09: completed `P4-C7` by admitting `S0B-3A`, `S0C-1A`, and `S0D-1A` as the seventh bounded seed set under the current `DOC` history reader surface and refining later widening by separating pre-`DOC` structural prerequisites from later lineage milestones and history-publication lanes.
+- 2026-04-09: completed `P4-C8` by fixing the current on-disk `DOC` surfaced coverage boundary for v1 and gating later widening on new current-surface concentration rather than generic old-log discovery.
