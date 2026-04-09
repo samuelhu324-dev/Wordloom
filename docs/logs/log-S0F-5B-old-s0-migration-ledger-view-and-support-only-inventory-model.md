@@ -290,6 +290,28 @@
   - the repo should still avoid flooding the migration ledger with mixed-provenance backlog rows before the next bounded packet is explicit
 - `S0F-5B` therefore closes as one stable ledger-model lane with one first admitted seed packet, not as the whole migration sweep itself.
 
+### P4-C2-S1 (Second bounded seed set admitted | v1)
+
+- The second bounded seed set is now admitted inside the same stable lane as the first supporting source-owner packet already absorbed by the executed issue-governance `DOC` contracts.
+- This packet is intentionally narrower than a whole-series sweep and covers the supporting source-owner logs explicitly referenced by the current `DOC` issue-governance contracts:
+  - `S0F-1A` -> `DOC-ICR-0001`
+  - `S0F-1B` -> `DOC-ICT-0001`
+  - `S0F-1D` -> `DOC-ICR-0001` and `DOC-ICL-0001`
+- These rows differ from the first seed set:
+  - they are not the retained source-owner traceability rows shown on the `DOC` current front door
+  - they are supporting source-owner rows whose semantics are already absorbed into the executed `DOC` contracts
+- This makes the shared migration ledger more truthful: not every meaningful old-`S0` source row has the same migration relationship to the current `DOC` surface.
+
+### P4-C2-S2 (Next widening boundary refined | v1)
+
+- After `C2`, the next widening step is refined as:
+  - admit later rows only when they form one defended packet of the same kind, either:
+    - retained source-owner traceability rows for one executed current family packet
+    - or supporting absorbed source-owner rows for one executed current family packet
+- Do not mix these two row kinds casually inside one new packet unless one later bounded lane explicitly owns that mixed packet shape.
+- Do not widen by opportunistic single-row additions when the row does not yet belong to one defended packet.
+- This keeps the migration ledger packetized and prevents it from degrading into one ad hoc backlog dump.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -316,6 +338,8 @@
 
 - [x] `P4-C1-S1`: first bounded seed set admitted
 - [x] `P4-C1-S2`: next follow-up boundary fixed
+- [x] `P4-C2-S1`: second bounded seed set admitted
+- [x] `P4-C2-S2`: next widening boundary refined
 
 ## Current Status (recommended)
 
@@ -325,8 +349,9 @@
 - `P2` is now complete: the support-only inventory row contract, standing values, and row-status semantics are now fixed and materialized in one working-ledger file.
 - `P3` is now complete: the reader-facing migration projection contract is now fixed and materialized in one bounded migration view.
 - `P4` is now complete: the first bounded seed set is admitted as the already-executed first `DOC` migration chain, and both shared ledger surfaces now carry real seeded rows.
+- `P4-C2` is now complete: the second bounded seed set is admitted as the first supporting source-owner packet already absorbed by the executed issue-governance `DOC` contracts.
 - `S0F-5B` is now `stable`.
-- The next step is no longer ledger-model design; it is the next bounded follow-up that widens the shared migration ledger with one further defended old-`S0` source-owner packet.
+- The next step is no longer ledger-model design; it is the next bounded follow-up that widens the shared migration ledger with one further defended packet of either retained source-owner rows or supporting absorbed source-owner rows.
 
 ## Evidence (reserved)
 
@@ -403,6 +428,22 @@
   - the support-only working ledger and the reader-facing migration view now both carry real rows
   - `S0F-5B` is now ready to close as `stable`
 
+### P4-C2-S1S2 (Second bounded seed set admitted and widening boundary refined | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5B/P4-C2-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5B-old-s0-migration-ledger-view-and-support-only-inventory-model.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the shared ledger surfaces distinguish retained source-owner rows from supporting absorbed source-owner rows
+  - the next widening boundary is refined enough that later additions stay packetized rather than ad hoc
+- observed:
+  - `S0F-1A`, `S0F-1B`, and `S0F-1D` are now admitted as the second bounded seed set under the already-executed issue-governance `DOC` packet
+  - the shared ledger surfaces now carry both retained-source and supporting-source migration relationships explicitly
+  - later widening is now constrained to the next defended packet shape rather than loose single-row additions
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5B` as the bounded lane for old-`S0` migration-ledger surface design, fixing the immediate next job as `reader-facing view + support-only inventory` modeling rather than direct repo-wide backlog execution.
@@ -410,3 +451,4 @@
 - 2026-04-09: completed `P2` by fixing the shared working-ledger row contract, standing values, and row semantics, and materializing the first support-only inventory file.
 - 2026-04-09: completed `P3` by fixing the reader-facing migration projection contract and materializing the first bounded migration view.
 - 2026-04-09: completed `P4` by admitting the first bounded seed set as the already-executed first `DOC` migration chain, landing those rows in both shared ledger surfaces, and closing `S0F-5B` as stable.
+- 2026-04-09: completed `P4-C2` by admitting `S0F-1A`, `S0F-1B`, and `S0F-1D` as the second bounded seed set under the executed issue-governance `DOC` packet and refining later widening to packetized follow-up additions.

@@ -34,6 +34,9 @@
   - the first bounded seed set is now admitted as the already-executed first `DOC` migration chain
   - the reader-facing view now exposes real seeded rows rather than only the model shell
   - the next widening step remains a later bounded follow-up, not a whole-series backlog flood into this view
+- Current state after `S0F-5B/P4-C2`:
+  - the second bounded seed set is now admitted as the first supporting source-owner packet already absorbed by the executed issue-governance `DOC` contracts
+  - the migration ledger now distinguishes retained source-owner rows from supporting absorbed rows without reopening the ledger contract itself
 
 ## Current Migration Rows
 
@@ -47,6 +50,9 @@
 | `S0E-2E` | `done` | `DOC` | `contract` | `DOC-ICL-0001` | `none (executed)` |
 | `S0E-6C` | `done` | `DOC` | `contract` | `DOC-ICT-0001` | `none (executed)` |
 | `S0F-1G` | `done` | `DOC` | `contract` | `DOC-IID-0001` and `DOC-IID-0002` | `none (executed)` |
+| `S0F-1A` | `done` | `DOC` | `contract` | `DOC-ICR-0001` | `none (executed)` |
+| `S0F-1B` | `done` | `DOC` | `contract` | `DOC-ICT-0001` | `none (executed)` |
+| `S0F-1D` | `done` | `DOC` | `contract` | `DOC-ICR-0001` and `DOC-ICL-0001` | `none (executed)` |
 
 ## Reader Notes
 

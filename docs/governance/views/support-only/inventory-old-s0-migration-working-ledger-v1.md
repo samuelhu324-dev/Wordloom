@@ -59,7 +59,8 @@
 - The first seed set is intentionally narrow:
   - first `DOC` source-owner quartet promoted under `S0F-4E`
   - first issue-governance source-owner packet promoted under `S0F-4I`
-- Wider old-`S0` population remains a later bounded follow-up after this initial seed packet proves the shared ledger shape on real rows.
+- `S0F-5B/P4-C2` now admits the second bounded seed set as the first supporting source-owner packet already absorbed by those executed issue-governance `DOC` contracts.
+- Wider old-`S0` population still remains a later bounded follow-up after these first two defended seed packets prove the shared ledger shape on both retained-source and supporting-source rows.
 
 ## Working Rows
 
@@ -73,6 +74,9 @@
 | `S0E-2E` | `done` | `DOC` | `contract` | `add` | `DOC-ICL-0001` | `` | `none (executed)` | `issue-conclusion source-owner row admitted through the first executed issue-governance packet` |
 | `S0E-6C` | `done` | `DOC` | `contract` | `add` | `DOC-ICT-0001` | `` | `none (executed)` | `issue-context source-owner row admitted through the first executed issue-governance packet` |
 | `S0F-1G` | `done` | `DOC` | `contract` | `split` | `DOC-IID-0001` and `DOC-IID-0002` | `` | `none (executed)` | `one source-owner log now reads through two DOC issue-identity contracts under one shared execution packet` |
+| `S0F-1A` | `done` | `DOC` | `contract` | `update` | `DOC-ICR-0001` | `` | `none (executed)` | `supporting source-owner row; fail-closed entrypoint boundary is already concentrated into the issue-creation DOC contract rather than remaining a separate retained-source target` |
+| `S0F-1B` | `done` | `DOC` | `contract` | `update` | `DOC-ICT-0001` | `` | `none (executed)` | `supporting source-owner row; authoring-path context boundary is already concentrated into the issue-context DOC contract` |
+| `S0F-1D` | `done` | `DOC` | `contract` | `merge` | `DOC-ICR-0001` and `DOC-ICL-0001` | `` | `none (executed)` | `supporting source-owner row; lifecycle completeness semantics are already absorbed across issue-creation and issue-conclusion DOC contracts rather than retained as one separate DOC target` |
 
 ## Source Refs
 
