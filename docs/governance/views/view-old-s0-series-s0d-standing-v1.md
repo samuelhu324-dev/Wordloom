@@ -28,11 +28,11 @@
 | source log | series | currently surfaced | reader-facing standing | current family | current reading home | history role | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `S0D-1A` | `S0D` | `yes` | `current-view` | `DOC` | `view-doc-history-and-lineage-v1` | `structural prerequisite` | `already admitted into the surfaced set as one pre-DOC structural prerequisite for current DOC history reading` |
-| `S0D-2A` | `S0D` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0D-3A` | `S0D` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0D-4A` | `S0D` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0D-5A` | `S0D` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0D-6A` | `S0D` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
+| `S0D-2A` | `S0D` | `no` | `retained-evidence` | `repo tooling and evidence surfaces` | `backend/scripts/ci/workflow_artifacts.py` plus `docs/labs/_snapshot/auto/` and `artifacts/*runs*.json` | `retained drills/evidence automation governance` | `run_dir discovery, summary-ledger shape, and hard-gate evidence bookkeeping now read through live artifact helper and snapshot/ledger surfaces; the old row remains bounded historical automation-governance detail rather than one DOC-history prerequisite` |
+| `S0D-3A` | `S0D` | `no` | `retained-evidence` | `repo runbook and operator-entry surfaces` | `docs/runbook/_template-runbook.md` plus `docs/runbook/run-S5B-security-governance-hard-gates.md` and `docs/runbook/run-S6A-evidence-drills-spine.md` | `retained runbook-governance evidence` | `top-level runbook entry rules, thinness guidance, and validation expectations now read through the live runbook template and adopted operator entry surfaces; the old row remains bounded strategy and adoption history rather than one DOC-history row` |
+| `S0D-4A` | `S0D` | `no` | `retained-evidence` | `repo UI evidence-lite surfaces` | `docs/UI&UX/README.md` plus `docs/UI&UX/UI-FIX-NOTE-TEMPLATE.md` and `docs/UI&UX/assets/README.md` | `retained UI evidence-lite governance` | `frontend light-track boundaries, note fields, and asset rules now read through the current UI evidence-lite surfaces and note corpus; the old row remains bounded governance history rather than one DOC-related current-reading target` |
+| `S0D-5A` | `S0D` | `no` | `retained-evidence` | `repo drills packaging and workflow evidence surfaces` | `.github/workflows/reusable-labs-scenario-runner.yml` plus `backend/scripts/ci/workflow_artifacts.py` and `.github/workflows/drill-failures.yml` | `retained evidence-packing governance` | `minimal-success versus failure-bundle packing rules now read through the live workflow and artifact-helper surfaces; the old row remains bounded packaging-governance detail rather than one new DOC surface` |
+| `S0D-6A` | `S0D` | `no` | `retained-evidence` | `repo roadmap and demo surfaces` | `docs/roadmap/road-template-main-roadmap.md` plus `docs/roadmap/road-template-branch-roadmap.md` and `docs/demo/demo-001/` | `retained roadmap/demo container governance` | `roadmap and demo-container organization now read through the current roadmap templates, bridge-aware roadmap surfaces, and structured demo container roots; the old row remains bounded container-evolution context and is secondary to the direct roadmap bridge contract in S0E-3A` |
 
 ## Reader Routing
 
@@ -48,8 +48,8 @@
 - Read this view when the question is `inside S0D, what is the standing of each old log now?`
 - Use `view-old-s0-absorption-coverage-overview-v1.md` when the question is still aggregate and series-level only.
 - Use `view-old-s0-migration-ledger-v1.md` when the question is `which rows are already admitted into the surfaced set across all series?`
-- This third `S0D` surface makes the next smaller unfinished series reviewable without forcing readers to replay aggregate-only counts or improvise a per-log row contract.
-- `S0D-1A` remains the only already surfaced row in the series, while `S0D-2A` through `S0D-6A` remain intentionally unresolved until the bounded `P4` review classifies their current reading homes.
+- This third `S0D` surface now shows one mixed result: `S0D-1A` remains the only already surfaced `DOC` history row, while `S0D-2A` through `S0D-6A` resolve outside the surfaced set as retained governance evidence for repo-local tooling, runbook, UI, workflow-packing, and roadmap/demo surfaces.
+- `S0D` therefore no longer carries generic unresolved remainder; later follow-up, if any, should begin from narrower cleanup or concentration questions rather than from another first-pass standing review.
 
 ## Source Refs
 

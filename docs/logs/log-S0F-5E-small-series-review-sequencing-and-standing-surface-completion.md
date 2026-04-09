@@ -247,8 +247,26 @@
 
 ### P4 (S0D review)
 
-- `P4-C1-S1`: classify the unfinished `S0D` rows by standing and current reading home
-- `P4-C1-S2`: write back the defended `S0D` results to the bounded shared surfaces
+### P4-C1-S1 (`S0D` standing classified | v1)
+
+- `S0D-2A` through `S0D-6A` are now fixed as `retained-evidence` rather than as missing `DOC` history rows.
+- The defended `P4` classification boundary is now explicit:
+  - `S0D-2A` remains bounded drills/evidence automation governance whose active meaning now reads through live artifact helpers, snapshot roots, and runs ledgers
+  - `S0D-3A` remains bounded runbook-governance strategy whose active meaning now reads through the runbook template and adopted operator-entry surfaces
+  - `S0D-4A` remains bounded UI evidence-lite governance whose active meaning now reads through the current UI light-track README, note template, asset rules, and note corpus
+  - `S0D-5A` remains bounded workflow-packing governance whose active meaning now reads through the reusable labs runner, artifact helper, and `drill-failures` workflow contract
+  - `S0D-6A` remains bounded roadmap/demo container governance whose active meaning now reads through the current roadmap templates, bridge-aware roadmap surfaces, and structured demo container roots
+- None of these rows is now treated as one new `DOC` absorption candidate:
+  - `S0D-2A` through `S0D-5A` govern repo-local operator or evidence surfaces rather than one current `DOC` contract or `DOC` history reader
+  - `S0D-6A` is already explicitly secondary context to the more direct roadmap-bridge contract in `S0E-3A`
+
+### P4-C1-S2 (`S0D` write-back landed | v1)
+
+- The bounded shared-surface write-back set for the `S0D` remainder is now fixed as:
+  - `docs/governance/views/view-old-s0-series-s0d-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+- `S0D` now stops reading as one partially reviewed series with five generic unresolved rows.
+- The support-only working ledger now carries the same defended result: `S0D-2A` through `S0D-6A` are all done as retained governance evidence outside the `DOC` surfaced set, with no new cleanup-admission candidate implied by this review.
 
 ### P5 (S0C standing surface)
 
@@ -284,8 +302,8 @@
 
 ### P4 (S0D review)
 
-- [ ] `P4-C1-S1`: `S0D` standing classified
-- [ ] `P4-C1-S2`: `S0D` write-back landed
+- [x] `P4-C1-S1`: `S0D` standing classified
+- [x] `P4-C1-S2`: `S0D` write-back landed
 
 ### P5 (S0C standing surface)
 
@@ -303,7 +321,8 @@
 - `P1` is now complete: the defended next review order is now explicit as `S0B -> S0D -> S0C`.
 - `P2` is now complete: `S0B-2A` no longer sits as generic unresolved remainder and now reads as retained tooling-governance evidence outside the `DOC` surfaced set.
 - `P3` is now complete: `S0D` now has its bounded series standing view and explicit reader routing, so the series no longer depends on aggregate-only counts for per-log review entry.
-- The immediate next step is now `P4`: classify `S0D-2A` through `S0D-6A` by standing and current reading home, then write those defended results back to the bounded shared surfaces.
+- `P4` is now complete: `S0D-2A` through `S0D-6A` no longer sit as generic unresolved remainder and now read as retained governance evidence for repo-local tooling, runbook, UI, workflow-packing, and roadmap/demo surfaces.
+- The immediate next step is now `P5`: publish the missing `S0C` series standing surface so the larger remaining small-series backlog becomes reviewable under the same drill-down model.
 - This log should currently be read as the source owner for the next lower-volume old-`S0` review entry path rather than as a cleanup-execution lane.
 
 ## Evidence (reserved)
@@ -353,7 +372,7 @@
 
 ### P3-C1-S1S2 (`S0D` standing surface and reader routing landed | 2026-04-09)
 
-- headSha: `<pending commit for S0F-5E/P3-C1-S1S2>`
+- headSha: `d328f34f6`
 - artifacts:
   - `docs/governance/views/view-old-s0-series-s0d-standing-v1.md`
   - `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
@@ -365,6 +384,21 @@
   - the repo now has one explicit `S0D` series standing surface with the full six-row review population and one already surfaced `S0D-1A` anchor
   - `S0D` reader routing is now explicit enough that `P4` can review the unresolved rows directly under the same drill-down model already used elsewhere
 
+### P4-C1-S1S2 (`S0D` retained-governance classification and write-back landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5E/P4-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-series-s0d-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the five remaining `S0D` rows should stop reading as generic unresolved remainder and instead receive bounded standing results under the new drill-down surface
+  - those results should avoid inventing one `DOC` current home when the rows now read mainly through repo-local runbook, tooling, UI, workflow, and roadmap/demo surfaces
+- observed:
+  - `S0D-2A` through `S0D-6A` now all read as retained governance evidence outside the `DOC` surfaced set rather than as missing `DOC` history rows
+  - the `S0D` series view and support-only working ledger now carry the same defended result, with no new cleanup-admission candidate surfaced by this review
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5E` as the bounded small-series review follow-up after `S0F-5D`.
@@ -372,3 +406,4 @@
 - 2026-04-09: completed `P1` by fixing why `S0B` is the first next review entry and why `S0D` should precede `S0C` once the missing drill-down surfaces are published.
 - 2026-04-09: completed `P2` by classifying `S0B-2A` as retained tooling-governance evidence and writing that result back to the `S0B` series standing view and support-only working ledger.
 - 2026-04-09: completed `P3` by publishing the first `S0D` series standing view and fixing the reader-routing contract needed for bounded `S0D` remainder review.
+- 2026-04-09: completed `P4` by classifying `S0D-2A` through `S0D-6A` as retained governance evidence and writing those results back to the `S0D` series standing view and support-only working ledger.
