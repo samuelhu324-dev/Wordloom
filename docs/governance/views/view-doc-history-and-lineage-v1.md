@@ -33,6 +33,8 @@
    - the quartet is promoted into family-owned current `DOC` contracts
 9. `S0F-4F`
    - reader surfaces are consolidated into the stable current `DOC` front door and promotion-map split
+10. `S0F-4G`
+   - the first durable `DOC` history surface and extraction-before-cleanup gate are fixed so history can be read through a stable family view instead of only through source-log archaeology
 
 ## Current Contract To Source-Owner Map
 
@@ -56,6 +58,7 @@
 | current `DOC` landing | `S0F-4D` | family-owned `DOC` contracts get a stable current home and old-`GC-*` cleanup gets a first bounded triage model |
 | promotion event | `S0F-4E` | the source-owner quartet becomes the active `DOC` contract quartet |
 | reader-surface consolidation | `S0F-4F` | current reading, mapping, and history can now stay separate instead of collapsing into one mixed summary |
+| history publication gate | `S0F-4G` | the lineage view and extraction-before-cleanup rule become explicit enough that later history reading and cleanup no longer depend on ad hoc archaeology |
 
 ## Read Next
 
@@ -88,3 +91,4 @@
 - `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
 - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
 - `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
+- `docs/logs/log-S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate.md`
