@@ -59,6 +59,7 @@
 - The first cleanup question for this slice is intentionally deferred behind those packet decompositions: old logs should be considered for cleanup admission only after the current-adjacent packets above have either landed into defended current homes or been explicitly classified as retained-only / `no-op` / `non-doc`.
 - `P1` is now complete: one reusable packet-priority test and one cleanup-admission gate are now fixed, so later packet work no longer needs to improvise whether a row should be decomposed first, deferred as mixed-standing, or admitted into a real cleanup lane.
 - `P2` is now complete: the `S0F-1H` / `S0F-1I` / `S0F-1J` packet is no longer treated as one unresolved `DOC` candidate remainder, and its defended result is now fixed as `GC current registry` current-home concentration plus one retained convergence-evidence row rather than one next `DOC` surfaced packet.
+- `P3` is now complete: the `S0E-5A` plus `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G` lifecycle-and-workflow packet is no longer treated as one unresolved `DOC`-adjacent remainder, and its defended result is now fixed as narrow `GC current registry` concentration in `GC-COMPL-0001` and `GC-WF-0001` plus retained planner / thin-gate / wrapper / transport rows rather than one next `DOC` surfaced packet.
 
 **Default choices (phase defaults / v1)**:
 
@@ -265,6 +266,54 @@
 - `P3-C1-S1`: classify the `S0E-5A` / `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G` packet by current-home and retained-only boundaries
 - `P3-C1-S2`: write back the defended packet result to the appropriate shared surfaces without treating wrapper/orchestration history as parallel current rule surfaces
 
+### P3-C1-S1 (Lifecycle/workflow packet classified | v1)
+
+- The `S0E-5A` plus `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G` packet is now fixed as one coherent lifecycle-audit plus publish-verify-remediation packet rather than five independent unresolved `S0E` rows.
+- The packet stays current-adjacent because it already shapes:
+  - lifecycle completeness semantics and stage-aware pre-gate reading
+  - workflow-failure taxonomy and handling semantics
+  - thin-gate orchestration over current family-owned adapters
+  - read-only wrapper adoption and local operator replay
+  - GitHub-side `workflow_dispatch` transport and retained artifact publication
+- The defended packet split is now:
+  - `S0E-5A`:
+    - current family outcome: `GC current registry`
+    - current-home outcome: `GC-COMPL-0001` plus `scripts/issues/plan_lifecycle_pre_gate.py`
+    - standing outcome inside old-`S0` review: `retained-evidence`
+    - reason: the row no longer owns the stable semantic completeness matrix directly, because that meaning is now concentrated in `GC-COMPL-0001`; it survives as the bounded lifecycle-audit and pre-gate planner shell that current guarded flows still reuse
+  - `S0E-7D`:
+    - current family outcome: `GC current registry`
+    - current-home outcome: `GC-WF-0001`
+    - standing outcome inside old-`S0` review: `non-doc`
+    - reason: the workflow-failure taxonomy, replay/backfill ordering, and handling semantics now concentrate in the active `WF` governance record rather than in a `DOC` reader surface or a later wrapper shell
+  - `S0E-7E`:
+    - current family outcome: `GC current registry` with retained orchestration support
+    - current-home outcome: `GC-WF-0001` plus `scripts/issues/plan_publish_verify_remediation_gate.py`
+    - standing outcome inside old-`S0` review: `retained-evidence`
+    - reason: the thin gate remains a bounded orchestration surface that reuses the current workflow-failure contract and existing family-owned adapters instead of becoming a parallel current rule record
+  - `S0E-7F`:
+    - current family outcome: `GC current registry` with retained wrapper support
+    - current-home outcome: `GC-WF-0001` plus `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py` and `scripts/issues/invoke_publish_verify_remediation_gate_read_only_wrapper.ps1`
+    - standing outcome inside old-`S0` review: `retained-evidence`
+    - reason: the read-only wrapper adoption remains a secondary-enforcement and operator-facing wrapper path that replays the thin gate without owning a separate current contract body
+  - `S0E-7G`:
+    - current family outcome: `GC current registry` with retained transport support
+    - current-home outcome: `GC-WF-0001` plus `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml`
+    - standing outcome inside old-`S0` review: `retained-evidence`
+    - reason: the `workflow_dispatch` wrapper surface remains the GitHub-side transport and retained evidence-publication layer for the read-only wrapper rather than a separate current rule surface
+- The packet-level judgment is therefore explicit:
+  - this is not the next `DOC` absorption packet
+  - current semantic concentration now reads through `GC-COMPL-0001` and `GC-WF-0001`
+  - the thin gate, wrapper, and transport rows survive as bounded retained planner/orchestration evidence rather than as unresolved remainder or parallel current-rule candidates
+
+### P3-C1-S2 (Priority B packet written back to shared surfaces | v1)
+
+- The defended packet result is now written back only to existing shared surfaces that match the packet's real job:
+  - the `S0E` series standing view now stops presenting `S0E-5A`, `S0E-7D`, `S0E-7E`, `S0E-7F`, and `S0E-7G` as unresolved remainder rows
+  - the support-only migration working ledger now records the packet split explicitly so later cleanup review can distinguish current `GC` concentration from retained planner / wrapper / transport support
+- No new reader-facing migration-ledger row is added to the `DOC` surfaced projection because this packet does not widen the current `DOC` surfaced set.
+- No front-door mutation is warranted at this stage because the packet sharpens standing only: `GC-COMPL-0001` and `GC-WF-0001` already own the narrow current semantic concentration, while the retained root files still remain readable current-adjacent support surfaces and therefore are not yet cleanup-relocation candidates.
+
 ### P4 (Cleanup admission)
 
 - `P4-C1-S1`: fix the first cleanup-admission rule after current-adjacent packets are adjudicated
@@ -289,8 +338,8 @@
 
 ### P3 (Priority B packet)
 
-- [ ] `P3-C1-S1`: lifecycle/workflow packet classified
-- [ ] `P3-C1-S2`: lifecycle/workflow packet written back to shared surfaces
+- [x] `P3-C1-S1`: lifecycle/workflow packet classified
+- [x] `P3-C1-S2`: lifecycle/workflow packet written back to shared surfaces
 
 ### P4 (Cleanup admission)
 
@@ -303,7 +352,8 @@
 - `P0` is now complete: the lane boundary and the first two admitted priority packets are fixed.
 - `P1` is now complete: one reusable packet-priority test and one cleanup-admission gate now distinguish `priority A`, `priority B`, `non-write defer`, and real cleanup admission.
 - `P2` is now complete: the PR-body completeness packet is adjudicated as `GC current registry` current-home concentration plus one retained-evidence bridge row, and the shared standing surfaces no longer treat that packet as unresolved `DOC` remainder.
-- The immediate next step is `P3`: classify the `S0E-5A` plus `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G` lifecycle-and-workflow packet by current-home and retained-only boundaries.
+- `P3` is now complete: the lifecycle/workflow packet is adjudicated as `GC-COMPL-0001` plus `GC-WF-0001` current-home concentration with retained planner / thin-gate / wrapper / transport rows, and the shared `S0E` standing surfaces no longer treat that packet as unresolved remainder.
+- The immediate next step is `P4`: fix the first cleanup-admission rule and admit one first safe cleanup subset or explicit non-write defer result after both priority packets have been adjudicated.
 
 ## Evidence (reserved)
 
@@ -350,8 +400,26 @@
   - `S0F-1I` now reads as retained convergence evidence rather than as an unresolved current-home candidate
   - the packet now resolves as one completed non-`DOC` adjudication rather than as the next `DOC` widening candidate
 
+### P3-C1-S1S2 (Lifecycle/workflow packet adjudicated and written back to shared standing surfaces | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5C/P3-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5C-priority-packet-decomposition-and-cleanup-admission.md`
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the second priority packet should stop reading as one unresolved old-`S0` lifecycle/workflow remainder once the current semantic homes and retained support surfaces are narrow enough to distinguish
+  - later cleanup review should be able to distinguish active `GC` concentration from retained planner, wrapper, and transport support rather than reopening `DOC` widening questions
+- observed:
+  - `S0E-5A` now reads as retained lifecycle-audit planner evidence whose stable semantic completeness meaning concentrates in `GC-COMPL-0001`
+  - `S0E-7D` now reads as the sole non-`DOC` current-rule concentration row for the workflow-failure taxonomy in `GC-WF-0001`
+  - `S0E-7E`, `S0E-7F`, and `S0E-7G` now read as retained orchestration, wrapper, and transport support rather than as unresolved current-home candidates
+  - the packet now resolves as one completed non-`DOC` adjudication rather than as the next `DOC` widening candidate
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5C` as the bounded follow-up for priority-first decomposition of unresolved old-`S0` packets before any broader cleanup lane opens.
 - 2026-04-09: completed `S0F-5C/P1` by fixing the reusable packet-priority criteria and the cleanup-admission gate before any packet write-back or cleanup execution begins.
 - 2026-04-09: completed `S0F-5C/P2` by adjudicating the `S0F-1H` / `S0F-1I` / `S0F-1J` packet as non-`DOC` current-home concentration plus retained convergence evidence, and by writing that result back to the shared `S0F` standing surfaces.
+- 2026-04-09: completed `S0F-5C/P3` by adjudicating the `S0E-5A` plus `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G` packet as narrow `GC` current-home concentration plus retained planner / wrapper / transport support, and by writing that result back to the shared `S0E` standing surfaces.

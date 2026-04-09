@@ -42,7 +42,7 @@
 | `S0E-4D` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
 | `S0E-4E` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
 | `S0E-4F` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0E-5A` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
+| `S0E-5A` | `S0E` | `no` | `retained-evidence` | `GC current registry` | `GC-COMPL-0001` plus `scripts/issues/plan_lifecycle_pre_gate.py` | `retained planner shell` | `lifecycle completeness semantics now concentrate in GC-COMPL-0001 while the old row remains the bounded lifecycle-audit and pre-gate planner shell for current guarded flows` |
 | `S0E-5B` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
 | `S0E-5C` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
 | `S0E-5D` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
@@ -56,10 +56,10 @@
 | `S0E-7A` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
 | `S0E-7B` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
 | `S0E-7C` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0E-7D` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0E-7E` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0E-7F` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0E-7G` | `S0E` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
+| `S0E-7D` | `S0E` | `no` | `non-doc` | `GC current registry` | `GC-WF-0001` | `source-owner contract` | `workflow-failure taxonomy and handling semantics now concentrate in GC-WF-0001 rather than in DOC or in the later wrapper surfaces` |
+| `S0E-7E` | `S0E` | `no` | `retained-evidence` | `GC current registry` | `GC-WF-0001` plus `scripts/issues/plan_publish_verify_remediation_gate.py` | `retained orchestration shell` | `the thin gate remains a bounded orchestration surface that reuses the current WF contract and existing family adapters rather than becoming a parallel current rule record` |
+| `S0E-7F` | `S0E` | `no` | `retained-evidence` | `GC current registry` | `GC-WF-0001` plus `scripts/issues/plan_publish_verify_remediation_gate_read_only_wrapper.py` | `retained wrapper evidence` | `the read-only wrapper adoption remains a secondary-enforcement wrapper path that replays the thin gate without owning a separate current contract body` |
+| `S0E-7G` | `S0E` | `no` | `retained-evidence` | `GC current registry` | `GC-WF-0001` plus `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml` | `retained transport evidence` | `the workflow_dispatch wrapper surface remains the GitHub-side transport and retained artifact-publication layer rather than a separate current rule surface` |
 
 ## Reader Routing
 
@@ -76,6 +76,7 @@
 - Use `view-old-s0-absorption-coverage-overview-v1.md` when the question is still aggregate and series-level only.
 - Use `view-old-s0-migration-ledger-v1.md` when the question is `which rows are already admitted into the surfaced set across all series?`
 - This second `S0E` surface proves the same row contract can carry surfaced `contract` rows, surfaced `view` rows, and unresolved remainder together without becoming a support-only working ledger.
+- Rows outside the current `DOC` surfaced set may still resolve as `non-doc` or `retained-evidence` when their current meaning already concentrates in narrow `GC` records or in bounded retained planner / wrapper / transport support surfaces.
 
 ## Source Refs
 
@@ -83,6 +84,7 @@
 - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
 - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
 - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+- `docs/logs/log-S0F-5C-priority-packet-decomposition-and-cleanup-admission.md`
 - `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
 - `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
 - `docs/logs/log-S0E-3A-roadmap-milestone-log-bridge.md`
