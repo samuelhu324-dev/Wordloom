@@ -54,6 +54,7 @@
   **phase_log_34**: `docs/logs/log-S0F-3M-gc-iss-0001-root-stub-relocation-pilot.md`
   **phase_log_35**: `docs/logs/log-S0F-4H-active-gc-current-registry-family-mapping-and-rehoming.md`
   **phase_log_36**: `docs/logs/log-S0F-4I-issue-governance-doc-promotion-extension-and-gc-demotion-packet.md`
+  **phase_log_37**: `docs/logs/log-S0F-5B-old-s0-migration-ledger-view-and-support-only-inventory-model.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -337,6 +338,10 @@
 - `S0F-4I/P2` is now complete: the bounded replacement `DOC` packet is landed as five family-owned issue-governance current bodies, the `DOC` contract index and front door now expose those new current reading surfaces explicitly, and the next step is defining the matching `GC` demotion and current-reader transition packet.
 - `S0F-4I/P3` is now complete: the old issue-governance `GC-*` rows are demoted to legacy redirect standing, the narrow current registry no longer exposes them as current rows, and the current-reader transition now points issue-governance meaning to the family-owned `DOC` packet first while preserving the old `GC` root paths for lineage.
 - `S0F-4I/P4` is now complete and `S0F-4I` is now stable: the six-outlet close-out review resolves to justified `no-op` for `contract`, `runbook`, `view`, `index/front-door`, and `disposition/placement`, while retained ownership stays in the source log for the execution ledger, evidence, packet-shape rationale, and lineage bridge notes.
+- `S0F-5B` is now opened as the bounded follow-up for the old-`S0` migration backlog-surface problem: the next job is to define one continuously revisable support-only inventory plus one reader-facing migration view, so later old-`S0` migration work no longer needs to improvise whether the shared ledger should live in logs, views, or ad hoc notes.
+- `S0F-5B/P1` is now complete: the repo now has one explicit ownership split among source logs, a support-only migration working ledger, and a reader-facing migration view, so later old-`S0` backlog work no longer needs to conflate execution narrative, mutable row state, and human-readable projection.
+- `S0F-5B/P2` is now complete: the repo now has one shared working-ledger row contract with fixed standing values and row semantics, materialized in a support-only migration inventory for later old-`S0` row updates.
+- `S0F-5B/P3` is now complete: the repo now has one bounded reader-facing old-`S0` migration ledger view with explicit summary fields and omission boundaries, so readers can see current migration shape without replaying the mutable working ledger.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
