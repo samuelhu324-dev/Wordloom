@@ -84,6 +84,31 @@
   - status: `active`
   - current role: fourth active family-owned `DOC` contract body for family front-door transition and `GC-*` demotion model
   - retained source-owner traceability: `docs/logs/log-S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model.md`
+- `DOC-ICR-0001`:
+  - file: `docs/governance/contract/DOC-ICR-0001-issue-creation-metadata-english-body.md`
+  - status: `active`
+  - current role: family-owned `DOC` contract body for issue creation metadata, deterministic create-time governance, and English-only scaffold boundary
+  - retained source-owner traceability: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
+- `DOC-ICL-0001`:
+  - file: `docs/governance/contract/DOC-ICL-0001-issue-conclusion-post-merge-linkage.md`
+  - status: `active`
+  - current role: family-owned `DOC` contract body for post-merge issue conclusion and exact delivery-PR linkage governance
+  - retained source-owner traceability: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
+- `DOC-ICT-0001`:
+  - file: `docs/governance/contract/DOC-ICT-0001-issue-context-sentence-count-main-vs-child.md`
+  - status: `active`
+  - current role: family-owned `DOC` contract body for source-log-derived issue Context sentence-count and shape governance
+  - retained source-owner traceability: `docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md`
+- `DOC-IID-0001`:
+  - file: `docs/governance/contract/DOC-IID-0001-parent-sidebar-ordering-ownership.md`
+  - status: `active`
+  - current role: family-owned `DOC` contract body for source-log-owned parent sidebar ordering governance
+  - retained source-owner traceability: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
+- `DOC-IID-0002`:
+  - file: `docs/governance/contract/DOC-IID-0002-issue-title-keyword-controlled-vocabulary.md`
+  - status: `active`
+  - current role: family-owned `DOC` contract body for controlled issue-title keyword vocabulary governance
+  - retained source-owner traceability: `docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md`
 
 ## Promotion Path
 
@@ -93,12 +118,13 @@
   - `S0F-4B` -> `DOC-SLC-0001`
   - `S0F-3I` -> `DOC-TAX-0001`
   - `S0F-4C` -> `DOC-FDT-0001`
-- The next admitted extension set is now fixed under `S0F-4I/P1` as:
+- The next admitted extension set is now landed under `S0F-4I/P2` as:
   - issue creation -> `DOC-ICR-0001`
   - issue conclusion -> `DOC-ICL-0001`
   - issue context -> `DOC-ICT-0001`
   - issue identity -> `DOC-IID-0001` and `DOC-IID-0002`
 - `DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`, and `DOC-FDT-0001` are now landed and active under this first mapping set.
+- `DOC-ICR-0001`, `DOC-ICL-0001`, `DOC-ICT-0001`, `DOC-IID-0001`, and `DOC-IID-0002` are now also landed as active issue-governance family-owned current contract bodies.
 - If later mapping extensions are admitted, their source-owner logs remain the current primary sources until those later promotions are executed.
 
 ## Landing Rule
@@ -113,12 +139,13 @@
 ## Reader Notes
 
 - This directory no longer starts empty: `DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`, and `DOC-FDT-0001` are now landed family-owned `DOC` contract records.
-- This directory now acts as the active landed contract surface for the first mapped `DOC` quartet.
+- This directory now acts as the active landed contract surface for the first mapped `DOC` quartet plus the issue-governance extension packet.
 - `DOC-DRB-0001` has now completed stable close-out review and is the first active family-owned `DOC` contract under this landing surface.
 - `DOC-SLC-0001` has now completed stable close-out review and is the second active family-owned `DOC` contract under this landing surface.
 - `DOC-TAX-0001` has now completed stable close-out review and is the third active family-owned `DOC` contract under this landing surface.
 - `DOC-FDT-0001` has now completed stable close-out review and is the fourth active family-owned `DOC` contract under this landing surface.
-- The first mapped `DOC` promotion set is now fully landed as active family-owned current contract bodies.
+- `DOC-ICR-0001`, `DOC-ICL-0001`, `DOC-ICT-0001`, `DOC-IID-0001`, and `DOC-IID-0002` are now landed as the bounded issue-governance extension packet under `S0F-4I`.
+- The first mapped `DOC` promotion set and the issue-governance extension packet are now landed as active family-owned current contract bodies.
 - The retained source-owner logs for `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` remain lineage and traceability surfaces for those rule sets rather than the strongest current reader entry.
 - Later `DOC` mapping extensions, if admitted, may still begin in source-owner logs until their own promotion lanes complete.
 - The first promoted `DOC` contracts should use the admitted area dictionary above rather than reusing `GC-*` prefixes.

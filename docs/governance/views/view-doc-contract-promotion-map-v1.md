@@ -31,11 +31,21 @@
 | `S0F-4I` issue-context cluster (`GC-ICT-0001`, `S0E-6C`, `S0F-1B`) | `DOC-ICT-0001` | source-log-derived issue Context sentence-count and shape governance |
 | `S0F-4I` issue-identity cluster (`GC-IID-0001`, `GC-IID-0002`, `S0F-1G`) | `DOC-IID-0001` and `DOC-IID-0002` | parent sidebar ordering ownership and controlled issue-title vocabulary under one shared issue-identity landing unit |
 
+## Executed Extension Result
+
+- `S0F-4I/P2` now lands the bounded issue-governance replacement packet as real family-owned current `DOC` contract bodies:
+  - `DOC-ICR-0001`
+  - `DOC-ICL-0001`
+  - `DOC-ICT-0001`
+  - `DOC-IID-0001`
+  - `DOC-IID-0002`
+- The packet keeps one bounded execution shape with four landing units while preserving two distinct records inside the shared `IID` unit.
+
 ## Reader Notes
 
 - This remains a promotion map first: it owns deterministic source-owner-to-contract mapping, not the full directory-inventory job or the family front-door job.
 - The first mapping set above is now fully executed: `DOC-DRB-0001`, `DOC-SLC-0001`, `DOC-TAX-0001`, and `DOC-FDT-0001` are all landed as active family-owned current contracts.
-- The next admitted extension set is now fixed under `S0F-4I/P1`, but those targets are not yet landed; the admitted extension only fixes the next reusable naming and mapping boundary.
+- The next admitted extension set is now landed under `S0F-4I/P2` as a bounded issue-governance replacement packet.
 - For later mapping extensions that are not yet executed, the source-owner log remains the current primary source until the corresponding promoted file exists.
 - The map therefore remains meaningful after the first quartet completed because it still fixes naming, area ownership, and future extension semantics deterministically.
 

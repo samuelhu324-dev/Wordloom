@@ -198,6 +198,27 @@
 - P2-C1-S1: draft the bounded family-owned `DOC` replacement packet
 - P2-C1-S2: align required `DOC` contract index or front-door writes for that packet
 
+### P2-C1-S1 (Bounded DOC replacement packet drafted | v1)
+
+- The bounded replacement `DOC` packet is now landed on disk as five family-owned current contract bodies:
+  - `DOC-ICR-0001`
+  - `DOC-ICL-0001`
+  - `DOC-ICT-0001`
+  - `DOC-IID-0001`
+  - `DOC-IID-0002`
+- The packet keeps the execution shape proved in `S0F-4H`:
+  - four landing units at packet level
+  - five target records at file level because the shared issue-identity unit still owns two distinct current rule bodies
+- `P2` only lands the replacement `DOC` reading surface.
+- It does not yet demote, stub, or retarget the old current `GC-*` rows.
+
+### P2-C1-S2 (DOC index and front-door alignment fixed | v1)
+
+- The `DOC` contract index now lists the five new issue-governance family-owned current bodies.
+- The `DOC` promotion map now records the issue-governance extension packet as landed rather than merely admitted.
+- The `DOC` current front door now exposes the new issue-governance current reading surfaces explicitly.
+- Under the family-front-door transition rule, this makes the replacement `DOC` packet readable now while leaving the corresponding `GC-*` rows in place for the later demotion and reader-transition step.
+
 ### P3 (GC demotion and transition packet)
 
 - P3-C1-S1: define the matching `GC` demotion or redirect treatment for the replaced current rows
@@ -221,8 +242,8 @@
 
 ### P2 (Replacement DOC packet)
 
-- [ ] `P2-C1-S1`: bounded DOC replacement packet drafted
-- [ ] `P2-C1-S2`: DOC index or front-door alignment fixed
+- [x] `P2-C1-S1`: bounded DOC replacement packet drafted
+- [x] `P2-C1-S2`: DOC index or front-door alignment fixed
 
 ### P3 (GC demotion and transition packet)
 
@@ -240,7 +261,8 @@
 - `P0` is now complete: the bounded execution target and immediate sequence are fixed.
 - `P1` is now complete: the next `DOC` mapping extension is admitted and the target naming boundary is fixed as `DOC-ICR-0001`, `DOC-ICL-0001`, `DOC-ICT-0001`, `DOC-IID-0001`, and `DOC-IID-0002`.
 - The four-unit execution shape remains intact even though the issue-identity unit preserves two target records.
-- The immediate next step is `P2`: draft the bounded replacement `DOC` packet and align the required `DOC` contract index or front-door writes.
+- `P2` is now complete: the five replacement `DOC` contract bodies are landed and the `DOC` contract index, promotion map, and family front door now expose the issue-governance extension packet explicitly.
+- The immediate next step is `P3`: define the matching `GC` demotion and current-reader transition packet for the old current `GC-*` rows.
 
 ## Evidence (reserved)
 
@@ -280,7 +302,31 @@
   - the target naming boundary is fixed as `DOC-ICR-0001`, `DOC-ICL-0001`, `DOC-ICT-0001`, `DOC-IID-0001`, and `DOC-IID-0002`
   - the issue-identity landing unit stays shared at execution level while preserving two distinct target records for the two already-separated identity rule bodies
 
+### P2-C1-S1S2 (Replacement DOC packet landed and reader surfaces aligned | 2026-04-09)
+
+- headSha: `<pending commit for S0F-4I/P2-C1-S1S2>`
+- artifacts:
+  - `docs/logs/support-only/s0f-4i-doc-issue-governance-replacement-packet.json`
+  - `docs/governance/contract/DOC-ICR-0001-issue-creation-metadata-english-body.md`
+  - `docs/governance/contract/DOC-ICL-0001-issue-conclusion-post-merge-linkage.md`
+  - `docs/governance/contract/DOC-ICT-0001-issue-context-sentence-count-main-vs-child.md`
+  - `docs/governance/contract/DOC-IID-0001-parent-sidebar-ordering-ownership.md`
+  - `docs/governance/contract/DOC-IID-0002-issue-title-keyword-controlled-vocabulary.md`
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-doc-current-front-door-v1.md`
+  - `docs/governance/views/view-doc-contract-promotion-map-v1.md`
+  - `docs/logs/log-S0F-4I-issue-governance-doc-promotion-extension-and-gc-demotion-packet.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the bounded issue-governance replacement packet exists as family-owned `DOC` current bodies before any `GC` demotion step
+  - `DOC` reader surfaces are aligned enough that family-first reading can start from the replacement packet
+- observed:
+  - the replacement packet is now landed as five family-owned `DOC` current bodies across the four-unit execution shape
+  - the `DOC` contract index and front door now expose those new current bodies explicitly
+  - the old current `GC-*` rows are intentionally still untouched at this stage, leaving demotion and current-reader transition to `P3`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-4I` as the direct execution follow-up after `S0F-4H`, dedicated to the bounded four-unit issue-governance `DOC` promotion-extension packet and matching `GC` demotion plan.
 - 2026-04-09: completed `P1` by admitting the next `DOC` mapping extension for the issue-governance packet and fixing the target naming boundary for the five replacement `DOC` records.
+- 2026-04-09: completed `P2` by landing the bounded replacement `DOC` packet, publishing five family-owned issue-governance current bodies, and aligning the `DOC` contract index, promotion map, and family front door before `GC` demotion begins.
