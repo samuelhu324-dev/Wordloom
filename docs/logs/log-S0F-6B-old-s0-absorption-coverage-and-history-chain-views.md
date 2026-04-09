@@ -100,7 +100,7 @@
 
 - `contract`: no-op; this slice does not directly create or revise current `DOC` contract bodies
 - `runbook`: no-op; this slice fixes reader-facing historical navigation rather than operator procedure
-- `view`: expected to land as layered old-`S0` absorption coverage and history-chain views after the view split is fixed explicitly
+- `view`: landed first as `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`; later bounded follow-up views may add series drill-down and contract-history-chain reading
 - `index/front-door`: no-op for now; broader navigation changes should occur only if later reader routing proves they are warranted
 - `disposition/placement`: no-op for now; mutable review standing remains owned by the support-only migration inventory
 - `log-retained core`: keep this source log for the layered-view contract, standing vocabulary, reader-boundary rationale, and stop conditions
@@ -215,6 +215,34 @@
 - `P2-C1-S1`: define the minimum field set for old-`S0` total and series-level coverage reading
 - `P2-C1-S2`: land the first bounded coverage overview surface
 
+### P2-C1-S1 (Coverage-overview field set fixed | v1)
+
+- The minimum field set for the first bounded old-`S0` coverage-overview surface is now fixed as:
+  - `series`
+  - `in-scope old logs`
+  - `currently surfaced`
+  - `current-contract`
+  - `current-view`
+  - `remaining outside surfaced set`
+- The first aggregate overview must also show repo-level totals for the same measures.
+- The first coverage-overview population boundary is now fixed as:
+  - top-level root `docs/logs/log-S0*.md` source logs under `S0B` through `S0F`
+  - excluding parent spines such as `S0E-docs-management-v5` and `S0F-docs-management-v6`
+  - excluding the current absorption-tracking lanes `S0F-5B`, `S0F-6A`, and `S0F-6B`
+- `remaining outside surfaced set` is intentionally narrower than `unreviewed`:
+  - it means `not currently admitted into the surfaced old-S0 -> DOC set`
+  - it does not by itself decide whether the remainder is unreviewed, retained-only, non-`DOC`, or later-history material
+
+### P2-C1-S2 (First bounded coverage overview landed | v1)
+
+- The first bounded aggregate coverage-overview surface now exists at `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`.
+- This first view answers:
+  - how many old-`S0` logs are currently in the root review-scope population
+  - how many are already absorbed into the current surfaced `DOC` set
+  - how that surfaced absorption distributes by series
+- This first view intentionally stops at aggregate coverage and series distribution.
+- It does not yet try to answer per-log standing or current-surface historical chains; those remain sequenced into `P3` and `P4`.
+
 ### P3 (Series drill-down)
 
 - `P3-C1-S1`: define the per-series and per-log standing field set
@@ -244,8 +272,8 @@
 
 ### P2 (Coverage overview)
 
-- [ ] `P2-C1-S1`: coverage-overview field set fixed
-- [ ] `P2-C1-S2`: first bounded coverage overview landed
+- [x] `P2-C1-S1`: coverage-overview field set fixed
+- [x] `P2-C1-S2`: first bounded coverage overview landed
 
 ### P3 (Series drill-down)
 
@@ -267,7 +295,8 @@
 - `S0F-6B` is now opened as the bounded follow-up for old-`S0` absorption coverage and history-chain `view` layering.
 - `P0` is now complete: the problem is fixed as one reader-facing `view` layering gap above the current surfaced migration set, not as immediate contract mutation or ad hoc row widening.
 - `P1` is now complete: the layered `view` split and the minimum reader-facing standing vocabulary are now explicit enough to reuse.
-- The next step is `P2`: define the minimum field set for one bounded coverage-overview surface before landing the first aggregate old-`S0` coverage view.
+- `P2` is now complete: the minimum field set for one bounded aggregate coverage-overview surface is fixed, and the first aggregate old-`S0` absorption coverage view is now landed.
+- The next step is `P3`: define the per-series and per-log standing field set before landing the first bounded series drill-down surface.
 
 ## Evidence (reserved)
 
@@ -298,7 +327,23 @@
   - the minimum reader-facing standing vocabulary is now fixed as `current-contract`, `current-view`, `retained-evidence`, `history-lineage`, `retired-lineage`, `no-op`, `non-doc`, and `unreviewed`
   - later view landing work can now define fields and concrete files without reopening these boundary questions first
 
+### P2-C1-S1S2 (Coverage-overview field set fixed and first aggregate view landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-6B/P2-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-6B-old-s0-absorption-coverage-and-history-chain-views.md`
+  - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - readers should be able to see one bounded aggregate answer for how much old-`S0` is in scope and how much of that scope is already absorbed into the current surfaced `DOC` set
+  - the aggregate answer should distribute by series without pretending to answer per-log standing already
+- observed:
+  - the minimum field set for aggregate old-`S0` coverage reading is now fixed as `series`, `in-scope old logs`, `currently surfaced`, `current-contract`, `current-view`, and `remaining outside surfaced set`
+  - the first aggregate old-`S0` absorption coverage view is now landed and shows both repo-level totals and per-series distribution across `S0B` through `S0F`
+  - the first aggregate view now answers coverage and distribution while explicitly holding per-log standing and current-surface historical chains for later phases
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-6B` as the bounded follow-up for old-`S0` absorption coverage, per-series standing, and contract-history-chain `view` layering.
 - 2026-04-09: completed `P1` by fixing the layered `view` split and the minimum reader-facing standing vocabulary for old-`S0` per-log reading.
+- 2026-04-09: completed `P2` by fixing the aggregate coverage-overview field set and landing the first bounded old-`S0` absorption coverage overview view.
