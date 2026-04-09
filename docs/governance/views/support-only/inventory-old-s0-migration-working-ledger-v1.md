@@ -60,7 +60,8 @@
   - first `DOC` source-owner quartet promoted under `S0F-4E`
   - first issue-governance source-owner packet promoted under `S0F-4I`
 - `S0F-5B/P4-C2` now admits the second bounded seed set as the first supporting source-owner packet already absorbed by those executed issue-governance `DOC` contracts.
-- Wider old-`S0` population still remains a later bounded follow-up after these first two defended seed packets prove the shared ledger shape on both retained-source and supporting-source rows.
+- `S0F-5B/P4-C3` now admits the third bounded seed set as the first source-owner packet already absorbed by the current `DOC` history reader surface.
+- Wider old-`S0` population still remains a later bounded follow-up after these first three defended seed packets prove the shared ledger shape across retained-source, supporting-contract, and supporting-view rows.
 
 ## Working Rows
 
@@ -77,6 +78,9 @@
 | `S0F-1A` | `done` | `DOC` | `contract` | `update` | `DOC-ICR-0001` | `` | `none (executed)` | `supporting source-owner row; fail-closed entrypoint boundary is already concentrated into the issue-creation DOC contract rather than remaining a separate retained-source target` |
 | `S0F-1B` | `done` | `DOC` | `contract` | `update` | `DOC-ICT-0001` | `` | `none (executed)` | `supporting source-owner row; authoring-path context boundary is already concentrated into the issue-context DOC contract` |
 | `S0F-1D` | `done` | `DOC` | `contract` | `merge` | `DOC-ICR-0001` and `DOC-ICL-0001` | `` | `none (executed)` | `supporting source-owner row; lifecycle completeness semantics are already absorbed across issue-creation and issue-conclusion DOC contracts rather than retained as one separate DOC target` |
+| `S0F-4D` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting history row; the DOC contract home and legacy-GC triage milestone are already concentrated into the DOC history reader surface rather than retained as a current front-door row` |
+| `S0F-4E` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting history row; the first DOC promotion event is already concentrated into the DOC history reader surface` |
+| `S0F-4F` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting history row; reader-surface consolidation is already concentrated into the DOC history reader surface rather than retained as a separate migration target` |
 
 ## Source Refs
 

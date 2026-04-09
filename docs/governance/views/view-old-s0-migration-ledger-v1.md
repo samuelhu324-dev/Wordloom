@@ -37,6 +37,9 @@
 - Current state after `S0F-5B/P4-C2`:
   - the second bounded seed set is now admitted as the first supporting source-owner packet already absorbed by the executed issue-governance `DOC` contracts
   - the migration ledger now distinguishes retained source-owner rows from supporting absorbed rows without reopening the ledger contract itself
+- Current state after `S0F-5B/P4-C3`:
+  - the third bounded seed set is now admitted as the first source-owner packet already absorbed by the current `DOC` history reader surface
+  - the migration ledger now distinguishes supporting rows absorbed by `contract` targets from supporting rows absorbed by `view` targets
 
 ## Current Migration Rows
 
@@ -53,6 +56,9 @@
 | `S0F-1A` | `done` | `DOC` | `contract` | `DOC-ICR-0001` | `none (executed)` |
 | `S0F-1B` | `done` | `DOC` | `contract` | `DOC-ICT-0001` | `none (executed)` |
 | `S0F-1D` | `done` | `DOC` | `contract` | `DOC-ICR-0001` and `DOC-ICL-0001` | `none (executed)` |
+| `S0F-4D` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
+| `S0F-4E` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
+| `S0F-4F` | `done` | `DOC` | `view` | `view-doc-history-and-lineage-v1` | `none (executed)` |
 
 ## Reader Notes
 
