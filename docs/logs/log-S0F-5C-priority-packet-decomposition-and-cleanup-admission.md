@@ -5,7 +5,7 @@
 **id**: `S0F-5C`
 **kind**: `log`
 **title**: `priority-packet decomposition and cleanup admission v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Records, Migration, Cleanup, Decomposition, epic/s0, sub/5c`
 **links**: ``
@@ -60,6 +60,7 @@
 - `P1` is now complete: one reusable packet-priority test and one cleanup-admission gate are now fixed, so later packet work no longer needs to improvise whether a row should be decomposed first, deferred as mixed-standing, or admitted into a real cleanup lane.
 - `P2` is now complete: the `S0F-1H` / `S0F-1I` / `S0F-1J` packet is no longer treated as one unresolved `DOC` candidate remainder, and its defended result is now fixed as `GC current registry` current-home concentration plus one retained convergence-evidence row rather than one next `DOC` surfaced packet.
 - `P3` is now complete: the `S0E-5A` plus `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G` lifecycle-and-workflow packet is no longer treated as one unresolved `DOC`-adjacent remainder, and its defended result is now fixed as narrow `GC current registry` concentration in `GC-COMPL-0001` and `GC-WF-0001` plus retained planner / thin-gate / wrapper / transport rows rather than one next `DOC` surfaced packet.
+- `P4` is now complete: the first post-adjudication cleanup-admission rule is now fixed, the first safe cleanup-candidate subset is now admitted as the retained workflow-support trio `S0E-7E` / `S0E-7F` / `S0E-7G`, and the remaining post-priority current-adjacent roots are now split explicitly into `already relocated / out of scope` versus defended `non-write defer` rather than being left as one generic future cleanup question.
 
 **Default choices (phase defaults / v1)**:
 
@@ -319,6 +320,45 @@
 - `P4-C1-S1`: fix the first cleanup-admission rule after current-adjacent packets are adjudicated
 - `P4-C1-S2`: admit one first safe cleanup-candidate subset or explicit non-write defer result
 
+### P4-C1-S1 (First cleanup-admission rule fixed after packet adjudication | v1)
+
+- The first post-adjudication cleanup-admission rule is now fixed as a second screen applied only after packet-level current-home outcomes are already defended.
+- A row may now enter a real cleanup-candidate subset only when all of the following are true:
+  - its current semantic meaning already concentrates outside the root file in one defended current home or one defended retained-only standing
+  - the root file no longer serves as a current source-owner rule anchor, a current planner shell still consumed by guarded flows, or a stable operator path
+  - the row fits one already-defended whole-file support-only location model without inventing a new relocation shape
+  - the remaining write set is bounded to discoverability-preserving rewrites such as support-only index updates, local reference rewrites, and an explicit cleanup manifest
+- A row must now close as `non-write defer` rather than entering a cleanup subset when any of the following remain true:
+  - the root file still acts as the retained source-owner anchor behind one active current `GC` record
+  - the root file still acts as one readable current-adjacent planner shell whose logic is reused directly by current guarded flows
+  - exact-path discoverability or chronology still depends on the root file and no already-defended stub or relocation package applies cleanly
+- The resulting first post-priority cleanup screen therefore splits the adjudicated packet rows as follows:
+  - `already relocated / out of scope for root cleanup re-entry`:
+    - `S0F-1I`, because its retained body already lives under `docs/logs/support-only/s0/` and `S0F-5C` does not need to reopen that executed root-stub package
+  - `defended non-write defer`:
+    - `S0F-1H` and `S0F-1J`, because both remain non-`DOC` source-owner traceability anchors behind active `GC-PRR-0001` and `GC-PRG-0001`
+    - `S0E-5A`, because the root file still remains the bounded lifecycle-audit and pre-gate planner shell reused by current guarded flows even though semantics now concentrate in `GC-COMPL-0001`
+    - `S0E-7D`, because the root file remains the stable workflow-failure source-owner contract behind `GC-WF-0001` rather than one support-only helper note
+
+### P4-C1-S2 (First safe cleanup subset admitted and remaining mixed roots deferred | v1)
+
+- The first safe cleanup-candidate subset is now admitted as:
+  - `S0E-7E`
+  - `S0E-7F`
+  - `S0E-7G`
+- This subset is admitted only as the next safe cleanup-execution candidate, not as an execution round inside `S0F-5C` itself.
+- The subset is now defended as cleanup-admissible because all three rows already satisfy the new screen:
+  - current semantic meaning already concentrates in `GC-WF-0001` plus the current code or workflow surfaces rather than in the old root logs
+  - each row already stands as retained orchestration, wrapper, or transport evidence instead of as a current source-owner rule anchor
+  - the existing whole-file `docs/logs/support-only/s0/` model is already sufficient for later relocation, so no new support-only file model needs to be invented
+  - the remaining work is bounded to one future cleanup manifest covering support-only target paths, reference rewrites, and discoverability notes
+- The subset is intentionally narrower than the full lifecycle/workflow packet:
+  - `S0E-5A` stays deferred because it still acts as a live planner shell
+  - `S0E-7D` stays deferred because it still acts as the source-owner traceability anchor behind the active `WF` record
+- The defended first cleanup result for this slice is therefore two-part:
+  - admit `S0E-7E` / `S0E-7F` / `S0E-7G` as the first safe support-only cleanup-candidate subset for a later bounded execution lane
+  - close `S0F-1H` / `S0F-1J` / `S0E-5A` / `S0E-7D` as explicit `non-write defer` roots rather than as hidden future cleanup assumptions
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -343,8 +383,8 @@
 
 ### P4 (Cleanup admission)
 
-- [ ] `P4-C1-S1`: cleanup-admission rule fixed
-- [ ] `P4-C1-S2`: first cleanup candidate subset or non-write defer admitted
+- [x] `P4-C1-S1`: cleanup-admission rule fixed
+- [x] `P4-C1-S2`: first cleanup candidate subset or non-write defer admitted
 
 ## Current Status (recommended)
 
@@ -353,7 +393,8 @@
 - `P1` is now complete: one reusable packet-priority test and one cleanup-admission gate now distinguish `priority A`, `priority B`, `non-write defer`, and real cleanup admission.
 - `P2` is now complete: the PR-body completeness packet is adjudicated as `GC current registry` current-home concentration plus one retained-evidence bridge row, and the shared standing surfaces no longer treat that packet as unresolved `DOC` remainder.
 - `P3` is now complete: the lifecycle/workflow packet is adjudicated as `GC-COMPL-0001` plus `GC-WF-0001` current-home concentration with retained planner / thin-gate / wrapper / transport rows, and the shared `S0E` standing surfaces no longer treat that packet as unresolved remainder.
-- The immediate next step is `P4`: fix the first cleanup-admission rule and admit one first safe cleanup subset or explicit non-write defer result after both priority packets have been adjudicated.
+- `P4` is now complete: the first cleanup-admission rule is fixed, `S0E-7E` / `S0E-7F` / `S0E-7G` are now admitted as the first safe support-only cleanup-candidate subset, and `S0F-1H` / `S0F-1J` / `S0E-5A` / `S0E-7D` now close as explicit `non-write defer` roots.
+- `S0F-5C` is now stable: the packet-priority model, the first two adjudicated packets, and the first post-adjudication cleanup screen are now all explicit enough that a later cleanup-execution lane can start without reopening this prioritization rationale.
 
 ## Evidence (reserved)
 
@@ -417,9 +458,25 @@
   - `S0E-7E`, `S0E-7F`, and `S0E-7G` now read as retained orchestration, wrapper, and transport support rather than as unresolved current-home candidates
   - the packet now resolves as one completed non-`DOC` adjudication rather than as the next `DOC` widening candidate
 
+### P4-C1-S1S2 (First cleanup-admission rule fixed and first safe subset admitted | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5C/P4-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5C-priority-packet-decomposition-and-cleanup-admission.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - once both priority packets are adjudicated, later cleanup work should be able to distinguish one first safe support-only subset from roots that still require defended non-write defer
+  - later cleanup execution should not need to reopen whether retained orchestration and wrapper rows are cleaner candidates than source-owner or planner-shell roots
+- observed:
+  - `S0E-7E`, `S0E-7F`, and `S0E-7G` now form the first admitted safe support-only cleanup-candidate subset under the existing whole-file `docs/logs/support-only/s0/` model
+  - `S0F-1H`, `S0F-1J`, `S0E-5A`, and `S0E-7D` now close as explicit `non-write defer` roots because source-owner or planner-shell reader dependence still survives at the root files
+  - `S0F-1I` is now explicitly outside this re-entry question because its support-only relocation package was already executed earlier
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5C` as the bounded follow-up for priority-first decomposition of unresolved old-`S0` packets before any broader cleanup lane opens.
 - 2026-04-09: completed `S0F-5C/P1` by fixing the reusable packet-priority criteria and the cleanup-admission gate before any packet write-back or cleanup execution begins.
 - 2026-04-09: completed `S0F-5C/P2` by adjudicating the `S0F-1H` / `S0F-1I` / `S0F-1J` packet as non-`DOC` current-home concentration plus retained convergence evidence, and by writing that result back to the shared `S0F` standing surfaces.
 - 2026-04-09: completed `S0F-5C/P3` by adjudicating the `S0E-5A` plus `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G` packet as narrow `GC` current-home concentration plus retained planner / wrapper / transport support, and by writing that result back to the shared `S0E` standing surfaces.
+- 2026-04-09: completed `S0F-5C/P4` by fixing the first post-adjudication cleanup screen, admitting `S0E-7E` / `S0E-7F` / `S0E-7G` as the first safe support-only cleanup subset, and closing the remaining current-adjacent roots as explicit non-write defer results.

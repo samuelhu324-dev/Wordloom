@@ -69,6 +69,7 @@
 - Wider old-`S0` population still remains a later bounded follow-up, but it is now explicitly outside the current `DOC` surfaced coverage set until one later lane creates a new defended current-surface concentration point.
 - `S0F-5C/P2` now resolves the first explicit non-`DOC` current-adjacent packet outside that surfaced boundary: `S0F-1H`, `S0F-1I`, and `S0F-1J` no longer sit in generic unresolved remainder, but they also do not widen the current `DOC` surfaced set.
 - `S0F-5C/P3` now resolves the second explicit non-`DOC` current-adjacent packet outside that surfaced boundary: `S0E-5A`, `S0E-7D`, `S0E-7E`, `S0E-7F`, and `S0E-7G` no longer sit in generic unresolved remainder, but they also do not widen the current `DOC` surfaced set.
+- `S0F-5C/P4` now fixes the first post-adjudication cleanup screen for those resolved non-`DOC` packets: `S0E-7E`, `S0E-7F`, and `S0E-7G` are now admitted as the first safe support-only cleanup-candidate subset under the existing `docs/logs/support-only/s0/` model, while `S0F-1H`, `S0F-1J`, `S0E-5A`, and `S0E-7D` are now explicit non-write defer roots because source-owner or planner-shell dependence still survives at their root files.
 
 ## Working Rows
 
