@@ -100,7 +100,7 @@
 
 - `contract`: no-op; this slice does not directly create or revise current `DOC` contract bodies
 - `runbook`: no-op; this slice fixes reader-facing historical navigation rather than operator procedure
-- `view`: landed first as `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`; later bounded follow-up views may add series drill-down and contract-history-chain reading
+- `view`: landed as `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`, `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`, and now `docs/governance/views/view-old-s0-contract-history-chain-doc-drb-0001-v1.md`; later bounded follow-up views may widen series coverage and current-surface history-chain coverage
 - `index/front-door`: no-op for now; broader navigation changes should occur only if later reader routing proves they are warranted
 - `disposition/placement`: no-op for now; mutable review standing remains owned by the support-only migration inventory
 - `log-retained core`: keep this source log for the layered-view contract, standing vocabulary, reader-boundary rationale, and stop conditions
@@ -287,6 +287,52 @@
 - `P4-C1-S1`: define the current-surface-to-history-chain field set
 - `P4-C1-S2`: land the first bounded contract-history-chain reading surface
 
+### P4-C1-S1 (Current-surface-to-history-chain field set fixed | v1)
+
+- The minimum field set for the first bounded contract-history-chain surface is now fixed as:
+  - `current DOC surface`
+  - `current outlet`
+  - `history step`
+  - `source surface`
+  - `current standing now`
+  - `relationship to current surface`
+  - `why it matters now`
+  - `deep chronology home`
+- Field intent is now fixed as:
+  - `current DOC surface`:
+    - keeps the view current-surface-first rather than source-log-first
+    - names the exact active `DOC` contract or current reader surface whose history is being traced
+  - `current outlet`:
+    - answers whether the current surface being traced is a `contract` or one reader-facing `view`
+    - prevents the chain from silently mixing current contract history with current view history
+  - `history step`:
+    - gives one short bounded chain role such as `current rule`, `primary source-owner origin`, `promotion-home decision`, `promotion event`, `reader consolidation`, `history publication gate`, or `structural prerequisite`
+  - `source surface`:
+    - names the old-`S0` log or current `DOC` surface that occupies that chain step
+  - `current standing now`:
+    - uses the fixed reader-facing standing vocabulary from `P1`
+    - makes it explicit whether the source now reads as `current-contract`, `current-view`, `retained-evidence`, or another defended standing
+  - `relationship to current surface`:
+    - states how that row connects to the named current surface rather than leaving readers to infer the role from chronology alone
+  - `why it matters now`:
+    - keeps one concise explanation of the present-day consequence of that predecessor or milestone
+  - `deep chronology home`:
+    - points readers to the retained source-owner log or current reader surface that should be opened for fuller chronology after the bounded chain has oriented them
+- The first bounded contract-history-chain surface must stay current-surface-first and compressed:
+  - include the direct source-owner and promotion chain first
+  - include only the strongest supporting prerequisite or lineage rows needed to explain the current surface coherently
+  - do not replay every intermediate edit or whole-family inventory row
+
+### P4-C1-S2 (First bounded contract-history-chain surface landed | v1)
+
+- The first bounded contract-history-chain surface now exists at `docs/governance/views/view-old-s0-contract-history-chain-doc-drb-0001-v1.md`.
+- `DOC-DRB-0001` is used as the first pilot because it is the clearest current-surface-first case in the current `DOC` set:
+  - it is the first promoted current `DOC` contract body
+  - its retained source-owner origin is explicit at `S0F-4A`
+  - its surrounding promotion-home, promotion-event, reader-consolidation, and history-publication nodes are already separately surfaced in the current `DOC` history layer
+- This first bounded surface proves that one reader can start from one active current `DOC` contract, read backward through the direct source-owner and promotion chain, and then widen only as far as the strongest prerequisite and lineage milestones actually needed for comprehension.
+- This first surface intentionally does not yet widen to the rest of the active `DOC` quartet or the issue-governance extension packet; later `P4` follow-up, if needed, should add additional current-surface pilots rather than turning the first chain into one giant family table.
+
 ### P5 (Reader routing and close-out)
 
 - `P5-C1-S1`: fix reader routing among coverage, drill-down, and history-chain views
@@ -316,8 +362,8 @@
 
 ### P4 (Contract-history chain)
 
-- [ ] `P4-C1-S1`: contract-history-chain field set fixed
-- [ ] `P4-C1-S2`: first bounded contract-history-chain surface landed
+- [x] `P4-C1-S1`: contract-history-chain field set fixed
+- [x] `P4-C1-S2`: first bounded contract-history-chain surface landed
 
 ### P5 (Reader routing and close-out)
 
@@ -331,7 +377,8 @@
 - `P1` is now complete: the layered `view` split and the minimum reader-facing standing vocabulary are now explicit enough to reuse.
 - `P2` is now complete: the minimum field set for one bounded aggregate coverage-overview surface is fixed, and the first aggregate old-`S0` absorption coverage view is now landed.
 - `P3` is now complete: the per-series and per-log standing field set is fixed, and the first bounded `S0B` series drill-down surface is now landed.
-- The next step is `P4`: define the current-surface-to-history-chain field set before landing the first bounded contract-history-chain reading surface.
+- `P4` is now complete: the current-surface-to-history-chain field set is fixed, and the first bounded `DOC-DRB-0001` contract-history-chain surface is now landed.
+- The next step is `P5`: fix reader routing among the coverage overview, series drill-down, and contract-history-chain views before close-out review.
 
 ## Evidence (reserved)
 
@@ -392,9 +439,25 @@
   - the first bounded `S0B` drill-down surface is now landed and shows one surfaced `current-view` row plus one row still outside the surfaced set as explicit `unreviewed`
   - later series drill-down work can now widen by series without reopening row-shape or standing-display questions first
 
+### P4-C1-S1S2 (Contract-history-chain field set fixed and first bounded DOC-DRB-0001 surface landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-6B/P4-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-6B-old-s0-absorption-coverage-and-history-chain-views.md`
+  - `docs/governance/views/view-old-s0-contract-history-chain-doc-drb-0001-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - later contract-history-chain surfaces should inherit one fixed current-surface-first row contract rather than improvising one new chain shape per current `DOC` surface
+  - the first bounded history-chain pilot should prove that readers can start from one current `DOC` contract and trace back through direct origin, promotion, consolidation, and strongest prerequisite context without replaying the whole family history view first
+- observed:
+  - the minimum current-surface-to-history-chain field set is now fixed as `current DOC surface`, `current outlet`, `history step`, `source surface`, `current standing now`, `relationship to current surface`, `why it matters now`, and `deep chronology home`
+  - the first bounded `DOC-DRB-0001` history-chain surface is now landed and compresses direct source-owner origin, promotion-home, promotion-event, reader-consolidation, history-publication, and prerequisite context into one current-surface-first chain
+  - later history-chain work can now widen by additional current `DOC` surfaces without reopening whether the chain should be source-log-first, promotion-map-first, or whole-family-history-first
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-6B` as the bounded follow-up for old-`S0` absorption coverage, per-series standing, and contract-history-chain `view` layering.
 - 2026-04-09: completed `P1` by fixing the layered `view` split and the minimum reader-facing standing vocabulary for old-`S0` per-log reading.
 - 2026-04-09: completed `P2` by fixing the aggregate coverage-overview field set and landing the first bounded old-`S0` absorption coverage overview view.
 - 2026-04-09: completed `P3` by fixing the per-series/per-log field set and landing the first bounded `S0B` series drill-down surface.
+- 2026-04-09: completed `P4` by fixing the current-surface-to-history-chain field set and landing the first bounded `DOC-DRB-0001` contract-history-chain surface.
