@@ -227,6 +227,23 @@
 - `P3-C1-S1`: classify `S0E-4A`, `S0E-4B`, `S0E-4C`, `S0E-4D`, `S0E-4E`, and `S0E-4F`
 - `P3-C1-S2`: write back the defended packet result to the shared surfaces
 
+### P3-C1-S1 (PR/linkage packet classified | v1)
+
+- `S0E-4A`, `S0E-4B`, `S0E-4C`, `S0E-4D`, and `S0E-4F` are now fixed as `retained-evidence`, while `S0E-4E` is now fixed as `history-lineage`.
+- The defended packet boundary is now explicit:
+  - `S0E-4A` through `S0E-4D` remain bounded PR automation, relationship, and lifecycle orchestration evidence whose active meaning now reads through the thin operator runbook and live planning/apply tooling rather than through one current `DOC` first-open home
+  - `S0E-4E` remains historically relevant because it defines the attribution problem boundary that later reads through the resolver and `S0E-7B` implementation surfaces
+  - `S0E-4F` remains bounded PR-body cleanup evidence whose active effect now reads through the current body-generation and metadata-link boundary surfaces rather than through the source log itself
+- This packet also does not widen the current `DOC` surfaced set because the current on-disk `DOC` front door, `DOC` history view, and `DOC` promotion-map view still do not surface these PR/linkage rows as first-open current reading homes.
+
+### P3-C1-S2 (PR/linkage packet write-back landed | v1)
+
+- The bounded shared-surface write-back set for the PR/linkage packet is now fixed as:
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+- `S0E-4A` through `S0E-4F` now stop reading as generic unresolved remainder inside the `S0E` series view.
+- The support-only working ledger now records the same defended result: retained PR/lifecycle evidence plus attribution lineage outside the current `DOC` surfaced set.
+
 ### P4 (Lifecycle/log-stability packet)
 
 - `P4-C1-S1`: classify `S0E-5B`, `S0E-5C`, `S0E-5D`, `S0E-5E`, and `S0E-6B`
@@ -261,8 +278,8 @@
 
 ### P3 (PR/linkage packet)
 
-- [ ] `P3-C1-S1`: PR/linkage packet classified
-- [ ] `P3-C1-S2`: PR/linkage packet write-back landed
+- [x] `P3-C1-S1`: PR/linkage packet classified
+- [x] `P3-C1-S2`: PR/linkage packet write-back landed
 
 ### P4 (Lifecycle/log-stability packet)
 
@@ -285,7 +302,8 @@
 - The lane now owns the still-`unreviewed` rows inside the `S0E` standing surface rather than the already-settled `DOC`, `non-doc`, and retained-support rows.
 - `P1` is now complete: the remaining `S0E` backlog is now split into four bounded packets with one defended review order.
 - `P2` is now complete: the issue/preflight packet no longer sits as generic unresolved remainder and now reads as retained issue-creation, batch-planning, and live-label-preflight evidence rooted in current runbook and script surfaces.
-- The immediate next step is now `P3`: classify the PR/linkage packet (`S0E-4A` through `S0E-4F`) and write back the defended result.
+- `P3` is now complete: the PR/linkage packet no longer sits as generic unresolved remainder and now reads as retained PR/lifecycle evidence plus attribution lineage rooted in current runbook, planner, and resolver surfaces.
+- The immediate next step is now `P4`: classify the lifecycle/log-stability packet (`S0E-5B`, `S0E-5C`, `S0E-5D`, `S0E-5E`, `S0E-6B`) and write back the defended result.
 - This log should currently be read as the source owner for the unresolved `S0E` standing backlog rather than as a promotion or cleanup-execution lane.
 
 ## Evidence (reserved)
@@ -334,6 +352,21 @@
   - `S0E-2A`, `S0E-2B`, `S0E-2C`, and `S0E-3B` now read as retained issue-creation, batch-planning, and live-label-preflight evidence rooted in current runbook and script surfaces
   - the `S0E` standing view and support-only working ledger now carry the same defended result without adding one new current `DOC` absorption row
 
+### P3-C1-S1S2 (PR/linkage packet classified as retained evidence and lineage | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5F/P3-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/logs/log-S0F-5F-remaining-s0e-standing-adjudication-and-packeted-review.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the PR/linkage packet should stop reading as one generic unresolved bucket inside `S0E`
+  - the packet should receive defended current-home results without forcing one new `DOC` surface that the current front door and promotion map do not yet expose
+- observed:
+  - `S0E-4A`, `S0E-4B`, `S0E-4C`, `S0E-4D`, and `S0E-4F` now read as retained PR/lifecycle evidence, while `S0E-4E` now reads as attribution lineage into the later resolver and `S0E-7B` implementation surfaces
+  - the `S0E` standing view and support-only working ledger now carry the same defended result without adding one new current `DOC` absorption row
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5F` as the bounded remaining-`S0E` standing-adjudication and packeted-review lane after `S0F-5E`.
@@ -341,3 +374,4 @@
 - 2026-04-09: fixed the immediate next step as packet-order design first, then bounded review of issue/preflight, PR/linkage, lifecycle/log-stability, and authoring/rendering/workflow-follow-up groups.
 - 2026-04-09: completed `P1` by fixing the exact unresolved `S0E` packet inventory and the defended packet review order.
 - 2026-04-09: completed `P2` by classifying `S0E-2A`, `S0E-2B`, `S0E-2C`, and `S0E-3B` as retained issue-creation, batch-planning, and live-label-preflight evidence and writing that result back to the `S0E` standing view and support-only working ledger.
+- 2026-04-09: completed `P3` by classifying `S0E-4A` through `S0E-4F` as retained PR/lifecycle evidence plus attribution lineage and writing that result back to the `S0E` standing view and support-only working ledger.
