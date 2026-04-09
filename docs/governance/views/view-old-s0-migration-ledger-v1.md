@@ -69,6 +69,28 @@
   - remaining old-`S0` backlog, if any, is outside the current `DOC` surfaced coverage set until a later lane widens one current `DOC` surface or publishes a new one
 - Read this view as the current migration answer to `which old S0 surfaces are already absorbed into DOC, and through which current outlet do they now read?`
 
+## Completion Summary
+
+- Use this section when the question is not only `what rows are admitted now?` but also `how complete is current DOC absorption coverage on the surfaced set?`
+- `contract` absorption completed on the current surfaced set:
+  - `11` rows now read through current `DOC` contracts
+  - this completed set currently consists of:
+    - the first promoted `DOC` quartet: `S0F-4A`, `S0F-4B`, `S0F-3I`, `S0F-4C`
+    - the first issue-governance contract packet: `S0E-2D`, `S0E-2E`, `S0E-6C`, `S0F-1G`
+    - the first supporting contract-absorbed packet: `S0F-1A`, `S0F-1B`, `S0F-1D`
+- `view` absorption completed on the current surfaced set:
+  - `10` rows now read through current `DOC` reader-facing views
+  - `view-doc-history-and-lineage-v1` currently carries `9` rows across four defended history subtypes:
+    - pre-`DOC` structural prerequisites: `S0B-3A`, `S0C-1A`, `S0D-1A`
+    - earlier lineage milestones: `S0E-3A`, `S0E-6A`
+    - post-contract landing and reader-consolidation milestones: `S0F-4D`, `S0F-4E`, `S0F-4F`
+    - history-publication gate: `S0F-4G`
+  - `view-doc-contract-promotion-map-v1` currently carries `1` row: `S0F-4I`
+- Remaining backlog now splits into three rough classes rather than one undifferentiated `not yet admitted` bucket:
+  - old-`S0` rows not yet concentrated by any current `DOC` surface
+  - rows that may later remain retained, no-op, or non-`DOC` rather than becoming current `DOC` absorption rows
+  - rows that would require one later widening of a current `DOC` surface or one newly published `DOC` reader surface before this view should admit them
+
 ## Grouped DOC Reading
 
 - Use this section when the question is not `what are all the rows?` but `which DOC reading surface should I open first?`

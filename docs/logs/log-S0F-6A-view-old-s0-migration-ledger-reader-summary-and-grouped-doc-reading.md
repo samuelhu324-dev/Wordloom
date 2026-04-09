@@ -232,6 +232,26 @@
 - This block does not replace the grouped classes.
 - It exists so a reader can route from intent first, then use the grouped classes and row table only if more detail is needed.
 
+### P4-C2-S1 (Completion-summary contract fixed | v1)
+
+- The migration view may now carry one compact completion summary near the `DOC Absorption Snapshot`.
+- This summary should answer three bounded reader questions directly:
+  - `how far has current DOC contract absorption completed on the currently surfaced set?`
+  - `how far has current DOC view absorption completed on the currently surfaced set?`
+  - `what rough backlog classes remain outside the current surfaced set?`
+- The completion summary stays reader-facing:
+  - it summarizes the already-admitted row set
+  - it does not replace the canonical row table
+  - it does not claim whole-repo migration completion beyond the current `DOC` surfaced set
+
+### P4-C2-S2 (Completion summary landed | v1)
+
+- `view-old-s0-migration-ledger-v1.md` now carries one completion summary that answers current `contract` absorption, current `view` absorption, and the rough remaining backlog classes directly.
+- This summary is intentionally framed as `current DOC surfaced coverage`, not as whole-repo old-`S0` migration completion.
+- Readers can now see, in one place, both:
+  - where current `DOC` absorption is already complete on the surfaced set
+  - and why some remaining backlog is still outside this view until one later lane creates a new current-surface concentration point
+
 ## P5 (Publish close-out review)
 
 ### P5-C1-S1 (Six-outlet close-out review completed | v1)
@@ -280,6 +300,8 @@
 
 - [x] `P4-C1-S1`: decision-block contract fixed
 - [x] `P4-C1-S2`: decision block landed
+- [x] `P4-C2-S1`: completion-summary contract fixed
+- [x] `P4-C2-S2`: completion summary landed
 
 ### P5 (Publish close-out review)
 
@@ -293,10 +315,10 @@
 - `P1` is now complete: the grouped reader-summary contract and first group boundary are explicit enough to reuse.
 - `P2` is now complete: the first grouped `DOC` reading summary is landed in the migration view.
 - `P3` is now complete: each grouped reading class now carries one bounded reader-path note and one fixed handoff order, so the migration view can route readers directly instead of only grouping rows.
-- `P4` is now complete: the migration view now also carries one question-first decision block, so readers can route by intent before choosing a grouped reading class.
+- `P4` is now complete: the migration view now also carries one question-first decision block plus one completion summary, so readers can route by intent and also see current `contract` versus `view` absorption completion on the surfaced set before choosing a grouped reading class.
 - `P5` is now complete: the six-outlet publish close-out review is explicit, the released result is fixed as one `view` enhancement, and all other outlets are justified `no-op`.
 - `S0F-6A` is now `stable`.
-- The next step is no longer whether grouped reading belongs in the view; it is whether a later bounded lane should add more question classes, publish a broader front-door export, or return to migration-row widening itself.
+- The next step is no longer whether grouped reading belongs in the view; it is whether a later bounded lane should add more question classes, refine the surfaced completion summary further, publish a broader front-door export, or return to migration-row widening itself.
 
 ## Evidence (reserved)
 
@@ -321,6 +343,21 @@
   - the publish close-out review now fixes `view` as the only landed outlet and records justified `no-op` for the other five outlets
   - the canonical row table remains intact under the grouped reader summary
 
+### P4-C2-S1S2 (Surfaced completion summary landed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-6A/P4-C2-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-6A-view-old-s0-migration-ledger-reader-summary-and-grouped-doc-reading.md`
+  - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the migration view should answer not only `which surface should I open first?` but also `how complete is current DOC absorption on the surfaced set?`
+  - the answer should separate current `contract` absorption, current `view` absorption, and rough remaining backlog classes without pretending the whole old-`S0` repo-wide migration is finished
+- observed:
+  - the migration view now states the completed `contract`-absorbed set, the completed `view`-absorbed set, and the rough remaining backlog classes explicitly
+  - the summary stays bounded to the current surfaced set and does not replace the canonical row table or support-only ledger
+  - readers can now distinguish `current surfaced coverage complete for v1` from `whole old-S0 migration complete`, which the view still does not claim
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-6A` as the bounded follow-up for migration-view reader summary enhancement rather than further migration-row widening.
@@ -329,3 +366,4 @@
 - 2026-04-09: completed `P3` by fixing per-group reader-path notes and handoff order so the grouped summary now routes readers to the right next surface directly.
 - 2026-04-09: completed `P4` by landing one question-first decision block so readers can route by intent before using the grouped classes or canonical row table.
 - 2026-04-09: completed `P5` by fixing the six-outlet publish close-out review and holding `S0F-6A` as one released `view` enhancement lane.
+- 2026-04-09: completed `P4-C2` by landing one surfaced completion summary that states current `contract` absorption, current `view` absorption, and the rough remaining backlog classes directly inside the migration view.
