@@ -35,6 +35,7 @@
 ## Reader Notes
 
 - This first detail surface is intentionally narrow and converged.
+- Start here when the question is `for this specific bounded item, what is its current state and what should I open next?`
 - It does not try to show incomplete, blocked, replayable, or manual states yet because the first admitted population is the current `S0F` live child set that already converged through the real lifecycle path.
 - The detail view still adds value over the aggregate overview because it shows where each item now reads first:
   - `S0F-1A` -> `DOC-ICR-0001`
@@ -44,6 +45,7 @@
   - `S0F-1G` -> `DOC-IID-0001` + `DOC-IID-0002`
   - `S0F-1H` -> `GC-PRR-0001`
   - `S0F-1J` -> `GC-PRG-0001`
+  - If the question is only `how does the bounded set distribute overall?`, go back to `view-outlet-and-lifecycle-observability-overview-v1.md`.
 - When the reader question is about present-day rule meaning, open the named `current reading home` first.
 - When the reader question is about historical chronology or live execution evidence, open the retained source log after the current home has oriented the rule boundary.
 

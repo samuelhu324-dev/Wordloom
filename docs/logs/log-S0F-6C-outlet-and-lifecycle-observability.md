@@ -5,7 +5,7 @@
 **id**: `S0F-6C`
 **kind**: `log`
 **title**: `outlet and lifecycle observability v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Records, Views, Workflow, Lifecycle, Observability, epic/s0, sub/6c`
 **links**: ``
@@ -56,6 +56,7 @@
 - `P1` is now complete: the observability lane now has one explicit two-layer reader split and one minimum reader-facing vocabulary for lifecycle stage, standing, outlet result, stop reason, and next owner.
 - `P2` is now complete: the first bounded overview field set is fixed, and one aggregate observability surface now publishes the current `S0F` live child-set distribution for lifecycle stage, standing, and dominant current outlet.
 - `P3` is now complete: the first per-item detail field set and bounded population rule are fixed, and one item-by-item observability surface now shows current lifecycle stage, outlet result, stop reason, and next-open routing for that same `S0F` live child-set population.
+- `P4` is now complete: reader routing is explicit across current contracts, overview, detail, and retained source logs, the six-outlet close-out review is now answered, and `S0F-6C` is now stable with no further required export tail inside this lane.
 
 **Default choices (phase defaults / v1)**:
 
@@ -105,9 +106,9 @@
 
 - `contract`: no-op for now; existing lifecycle and workflow contracts remain the current rule owners unless `S0F-6C` later proves a contract gap rather than a visibility gap
 - `runbook`: no-op for now; this slice starts from reader observability rather than operator procedure
-- `view`: landed as `docs/governance/views/view-outlet-and-lifecycle-observability-overview-v1.md` and `docs/governance/views/view-outlet-and-lifecycle-observability-detail-s0f-live-child-set-v1.md`; broader routing or front-door mutation remains sequenced into later `P4`
-- `index/front-door`: no-op for now; broader front-door mutation should wait until the first observability surfaces prove stable reader value
-- `disposition/placement`: no-op for now; mutable support-only placement and cleanup standing remain outside this reader-facing lane
+- `view`: landed as `docs/governance/views/view-outlet-and-lifecycle-observability-overview-v1.md` and `docs/governance/views/view-outlet-and-lifecycle-observability-detail-s0f-live-child-set-v1.md`; the defended minimal publish set is now complete for this bounded lane
+- `index/front-door`: no-op; broader front-door mutation is not warranted for the current bounded observability population
+- `disposition/placement`: no-op; mutable support-only placement and cleanup standing remain outside this reader-facing lane
 - `log-retained core`: keep this source log for the observability contract, field boundaries, routing rationale, and close-out decision
 
 ## Definitions (optional)
@@ -367,10 +368,37 @@
 - `P3-C1-S1`: define the per-item detail field set and bounded population rule
 - `P3-C1-S2`: land the first bounded detail observability surface or defended equivalent
 
-### P4 (Routing and close-out)
+## P4 (Routing and close-out | v1)
 
-- `P4-C1-S1`: fix reader routing among current contracts, observability overview, observability detail, and retained logs
-- `P4-C1-S2`: complete stable close-out review for the observability lane
+### P4-C1-S1 (Reader routing fixed | v1)
+
+- The observability lane now has one explicit first-open routing split:
+  - start at `view-outlet-and-lifecycle-observability-overview-v1.md` when the question is `what does the current bounded population look like in aggregate?`
+  - start at `view-outlet-and-lifecycle-observability-detail-s0f-live-child-set-v1.md` when the question is `for this specific item, where does it stand now and what should I open next?`
+  - start at the named current contract when the question is `what is the current rule meaning for this item's current home?`
+  - start at the retained source-owner log only when the question is `what is the chronology, execution evidence, or historical bridge behind this current state?`
+- The routing rule is intentionally reader-job-specific:
+  - overview is for distribution and population shape
+  - detail is for per-item current state and next-open routing
+  - current contracts are for present-day rule meaning
+  - retained logs are for chronology, evidence, and deep historical context
+- Broader current front-door mutation is still not required in this first stable cut because:
+  - the first observability population remains owner-bounded and narrow
+  - the two new views already answer distinct reader questions without creating ambiguity about where current rule meaning lives
+  - adding one broader index or front-door entry now would widen navigation scope before the observability population itself has been defended beyond the current `S0F` live child set
+
+### P4-C1-S2 (Stable close-out review completed | v1)
+
+- The outlet and lifecycle observability lane is now execution-complete for this bounded first publish set.
+- `P4` does not open one further routing-expansion or front-door-expansion tail before close-out.
+- The stable close-out answer across the six outlets is now fixed as:
+  - `contract`: no-op because this lane did not define or materially change current lifecycle or workflow rules; it only made them easier to observe
+  - `runbook`: no-op because no new repeatable operator procedure was introduced; existing runbooks remain secondary operator paths behind current rule surfaces where needed
+  - `view`: complete because the defended minimal publish set is now landed as one overview surface plus one bounded detail surface with explicit first-open routing
+  - `index/front-door`: no-op because current navigation does not yet need one broader front-door mutation for this still-bounded observability population
+  - `disposition/placement`: no-op because no new placement or support-only disposition change is warranted for the landed observability views
+  - `log-retained core`: keep because this source log remains the right owner for the observability contract, bounded population rationale, routing rules, close-out judgment, and evidence ledger
+- This means `S0F-6C` closes as `stable retained-log close-out`, not as one more front-door or disposition package.
 
 ## Execution Checklist (unchecked)
 
@@ -396,8 +424,8 @@
 
 ### P4 (Routing and close-out)
 
-- [ ] `P4-C1-S1`: reader routing fixed
-- [ ] `P4-C1-S2`: stable close-out review completed
+- [x] `P4-C1-S1`: reader routing fixed
+- [x] `P4-C1-S2`: stable close-out review completed
 
 ## Current Status (recommended)
 
@@ -406,8 +434,9 @@
 - `P1` is now complete: the observability split is explicit across `overview` and `detail`, and the minimum reader-facing vocabulary is now fixed across `lifecycle stage`, `lifecycle standing`, `outlet result`, `stop reason`, and `next owner`.
 - `P2` is now complete: the first bounded overview field set is fixed, and the first aggregate observability surface is now landed for the current `S0F` live child-set population.
 - `P3` is now complete: the first per-item detail field set and bounded population rule are fixed, and the first bounded detail observability surface is now landed for the same current `S0F` live child-set population.
-- `P4` remains open.
-- The next implementation step is to fix reader routing between current contracts, overview, detail, and retained source logs, then complete stable close-out review.
+- `P4` is now complete: reader routing between current contracts, overview, detail, and retained source logs is now explicit, and the stable close-out review is now answered across the six outlets.
+- `S0F-6C` is now `stable`.
+- No further implementation tail is required inside this lane before any later bounded widening of the observability population.
 
 ## Evidence (reserved)
 
@@ -468,9 +497,26 @@
   - the first detail surface is now landed for `S0F-1A`, `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-1G`, `S0F-1H`, and `S0F-1J`
   - each current bounded item now reads as `concluded` and `complete`, while the detail surface still differentiates their current reading homes across `DOC-ICR`, `DOC-ICT`, `GC-REMED`, `GC-COMPL`, `DOC-IID`, `GC-PRR`, and `GC-PRG`
 
+### P4-C1-S1S2 (Reader routing fixed and stable close-out review completed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-6C/P4-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-6C-outlet-and-lifecycle-observability.md`
+  - `docs/governance/views/view-outlet-and-lifecycle-observability-overview-v1.md`
+  - `docs/governance/views/view-outlet-and-lifecycle-observability-detail-s0f-live-child-set-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - readers should be able to choose the right current observability surface without replaying contracts, logs, and both views blindly
+  - the lane should close with one explicit six-outlet answer and no hidden requirement for broader front-door mutation
+- observed:
+  - first-open routing is now explicit across overview, detail, current contracts, and retained source-owner logs
+  - the stable close-out review now resolves to `view` complete plus justified `no-op` for `contract`, `runbook`, `index/front-door`, and `disposition/placement`
+  - `S0F-6C` is now ready to close as `stable` with no further required implementation tail inside the current bounded population
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-6C` as the bounded follow-up for outlet and lifecycle observability after concluding that `S0F-6B` itself was already complete within its own historical absorption boundary.
 - 2026-04-09: completed `P1` by fixing the two-layer observability split and the minimum reader-facing vocabulary for lifecycle stage, lifecycle standing, outlet result, stop reason, and next owner.
 - 2026-04-09: completed `P2` by fixing the first overview field set and landing the first bounded aggregate observability surface for the current `S0F` live child-set population.
 - 2026-04-09: completed `P3` by fixing the first detail field set and landing the first bounded per-item observability surface for that same current `S0F` live child-set population.
+- 2026-04-09: completed `P4` by fixing first-open routing and answering the six-outlet stable close-out review, so `S0F-6C` now closes as `stable`.

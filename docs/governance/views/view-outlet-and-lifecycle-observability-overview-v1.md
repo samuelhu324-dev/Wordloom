@@ -68,12 +68,14 @@
 ## Reader Notes
 
 - This first overview is intentionally aggregate-first and owner-bounded.
+- Start here when the question is `what does the current admitted observability population look like in aggregate?`
 - It does not replace current contracts for lifecycle meaning:
   - use `COMPL` for stage-owned completeness semantics
   - use `WF` for publish-verify-remediation handling semantics
+- If the question becomes `for this specific item, where should I read next?`, move from this overview to `view-outlet-and-lifecycle-observability-detail-s0f-live-child-set-v1.md`.
 - It also does not replace retained source logs for deep chronology, exact mutation evidence, or support-only execution ledgers for mutable operator state.
 - The first admitted set is intentionally skewed toward completed current `S0F` live children, so the overview presently shows a converged `concluded / complete / contract-dominant` profile rather than a mixed backlog profile.
-- A later `S0F-6C/P3` or follow-up widening phase should add per-item detail before widening this overview population beyond the current `S0F` live child set.
+- Any later widening phase should defend a broader observability population explicitly before this overview grows beyond the current `S0F` live child set.
 
 ## Source Refs
 
