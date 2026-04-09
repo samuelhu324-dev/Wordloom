@@ -32,9 +32,9 @@
 | `S0F-1C` | `S0F` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
 | `S0F-1D` | `S0F` | `yes` | `current-contract` | `DOC` | `DOC-ICR-0001` and `DOC-ICL-0001` | `supporting source-owner contract` | `already admitted into the surfaced set as lifecycle completeness semantics already absorbed across issue-creation and issue-conclusion contracts` |
 | `S0F-1G` | `S0F` | `yes` | `current-contract` | `DOC` | `DOC-IID-0001` and `DOC-IID-0002` | `source-owner contract` | `already admitted into the surfaced set as the issue-identity source-owner row now concentrated across the DOC-IID contract pair` |
-| `S0F-1H` | `S0F` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0F-1I` | `S0F` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
-| `S0F-1J` | `S0F` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
+| `S0F-1H` | `S0F` | `no` | `non-doc` | `GC current registry` | `GC-PRR-0001` | `non-DOC current-registry source-owner row` | `currently outside the DOC surfaced set because current rule meaning now concentrates in the narrow GC reviewer-classification record; the reviewer-owned runbook remains the stable operator path rather than a second current contract` |
+| `S0F-1I` | `S0F` | `no` | `retained-evidence` | `GC current registry` | `GC-PRG-0001` + `run-S0F-1H-pr-body-completeness-review.md` | `retained convergence evidence` | `the support-only retained body now survives mainly as convergence evidence and bridge context; current gate semantics read through GC-PRG-0001 and stable operator procedure reads through the reviewer-owned runbook` |
+| `S0F-1J` | `S0F` | `no` | `non-doc` | `GC current registry` | `GC-PRG-0001` | `non-DOC current-registry source-owner row` | `currently outside the DOC surfaced set because current gate meaning now concentrates in the narrow GC standard-check record; repo task and workflow-dispatch surfaces remain enforcement packaging rather than a second current rule family` |
 | `S0F-1K` | `S0F` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
 | `S0F-2A` | `S0F` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
 | `S0F-2B` | `S0F` | `no` | `unreviewed` | `unresolved` | `not yet fixed` | `unresolved` | `currently outside the surfaced set; later review must decide whether this row becomes DOC-related history, retained evidence, non-DOC, or another bounded outcome` |
@@ -77,6 +77,7 @@
 - Use `view-old-s0-absorption-coverage-overview-v1.md` when the question is still aggregate and series-level only.
 - Use `view-old-s0-migration-ledger-v1.md` when the question is `which rows are already admitted into the surfaced set across all series?`
 - This third `S0F` surface proves the same row contract can carry the current highest-density mixed series without becoming a support-only working ledger.
+- The `S0F-1H` / `S0F-1I` / `S0F-1J` packet now shows that `outside the DOC surfaced set` does not automatically mean `unreviewed`: a row may now resolve as `non-doc` or `retained-evidence` once its current home is defended elsewhere.
 
 ## Source Refs
 
@@ -97,3 +98,4 @@
 - `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
 - `docs/logs/log-S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate.md`
 - `docs/logs/log-S0F-4I-issue-governance-doc-promotion-extension-and-gc-demotion-packet.md`
+- `docs/logs/log-S0F-5C-priority-packet-decomposition-and-cleanup-admission.md`

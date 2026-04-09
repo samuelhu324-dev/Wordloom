@@ -67,6 +67,7 @@
 - `S0F-5B/P4-C7` now admits the seventh bounded seed set as the fourth source-owner packet already absorbed by the current `DOC` history reader surface.
 - `S0F-5B/P4-C8` now fixes the current on-disk `DOC` surfaced coverage boundary for v1: no further defended packet is currently visible on the existing `DOC` front door, `DOC` history view, or `DOC` promotion-map view without first widening one of those surfaces or publishing a new current `DOC` reader surface.
 - Wider old-`S0` population still remains a later bounded follow-up, but it is now explicitly outside the current `DOC` surfaced coverage set until one later lane creates a new defended current-surface concentration point.
+- `S0F-5C/P2` now resolves the first explicit non-`DOC` current-adjacent packet outside that surfaced boundary: `S0F-1H`, `S0F-1I`, and `S0F-1J` no longer sit in generic unresolved remainder, but they also do not widen the current `DOC` surfaced set.
 
 ## Working Rows
 
@@ -83,6 +84,9 @@
 | `S0F-1A` | `done` | `DOC` | `contract` | `update` | `DOC-ICR-0001` | `` | `none (executed)` | `supporting source-owner row; fail-closed entrypoint boundary is already concentrated into the issue-creation DOC contract rather than remaining a separate retained-source target` |
 | `S0F-1B` | `done` | `DOC` | `contract` | `update` | `DOC-ICT-0001` | `` | `none (executed)` | `supporting source-owner row; authoring-path context boundary is already concentrated into the issue-context DOC contract` |
 | `S0F-1D` | `done` | `DOC` | `contract` | `merge` | `DOC-ICR-0001` and `DOC-ICL-0001` | `` | `none (executed)` | `supporting source-owner row; lifecycle completeness semantics are already absorbed across issue-creation and issue-conclusion DOC contracts rather than retained as one separate DOC target` |
+| `S0F-1H` | `done` | `GC current registry` | `contract` | `update` | `GC-PRR-0001` | `` | `none (executed)` | `first priority packet row resolved outside the DOC surfaced set; reviewer-classification meaning now reads through the narrow current GC record while the runbook remains the stable operator path` |
+| `S0F-1I` | `done` | `GC current registry` | `disposition/placement` | `retain` | `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md` | `` | `none (executed)` | `first priority packet retained-evidence row; the support-only convergence ledger remains as bounded historical proof while current gate semantics and operator procedure already read elsewhere` |
+| `S0F-1J` | `done` | `GC current registry` | `contract` | `update` | `GC-PRG-0001` | `` | `none (executed)` | `first priority packet row resolved outside the DOC surfaced set; standard-check gate meaning now reads through the narrow current GC record while repo task and workflow-dispatch surfaces remain packaging and enforcement surfaces` |
 | `S0F-4D` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting history row; the DOC contract home and legacy-GC triage milestone are already concentrated into the DOC history reader surface rather than retained as a current front-door row` |
 | `S0F-4E` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting history row; the first DOC promotion event is already concentrated into the DOC history reader surface` |
 | `S0F-4F` | `done` | `DOC` | `view` | `merge` | `view-doc-history-and-lineage-v1` | `` | `none (executed)` | `supporting history row; reader-surface consolidation is already concentrated into the DOC history reader surface rather than retained as a separate migration target` |
@@ -100,3 +104,4 @@
 - `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
 - `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
 - `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
+- `docs/logs/log-S0F-5C-priority-packet-decomposition-and-cleanup-admission.md`

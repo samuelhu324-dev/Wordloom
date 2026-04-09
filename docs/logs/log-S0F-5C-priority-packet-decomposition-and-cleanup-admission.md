@@ -58,6 +58,7 @@
   - `priority B`: the `S0E-5A` plus `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G` lifecycle-and-workflow packet
 - The first cleanup question for this slice is intentionally deferred behind those packet decompositions: old logs should be considered for cleanup admission only after the current-adjacent packets above have either landed into defended current homes or been explicitly classified as retained-only / `no-op` / `non-doc`.
 - `P1` is now complete: one reusable packet-priority test and one cleanup-admission gate are now fixed, so later packet work no longer needs to improvise whether a row should be decomposed first, deferred as mixed-standing, or admitted into a real cleanup lane.
+- `P2` is now complete: the `S0F-1H` / `S0F-1I` / `S0F-1J` packet is no longer treated as one unresolved `DOC` candidate remainder, and its defended result is now fixed as `GC current registry` current-home concentration plus one retained convergence-evidence row rather than one next `DOC` surfaced packet.
 
 **Default choices (phase defaults / v1)**:
 
@@ -98,15 +99,15 @@
 ## Exported Sections / Outlet Ownership
 
 - This slice starts as a source-log-first prioritization and packet-boundary lane.
-- No outlet export is assumed at scaffold time; later phases may justify updates to the support-only migration inventory, reader-facing views, or cleanup standing only after packet outcomes are defended.
+- No new outlet family is exported by default here; later phases may justify updates to the support-only migration inventory, reader-facing views, or cleanup standing only after packet outcomes are defended.
 
 **Outlet ownership**:
 
 - `contract`: no-op for now; `S0F-5C` starts by classifying packet destinations rather than drafting new current rule bodies
 - `runbook`: no-op for now; this slice starts as decomposition and cleanup-admission triage rather than repeatable operator procedure
-- `view`: no-op for now; later phases may update existing migration or standing views after packet outcomes are explicit
+- `view`: existing shared standing view updates are now allowed when one packet result is defended strongly enough to replace `unreviewed` with a bounded reader-facing standing
 - `index/front-door`: no-op for now; no broader navigation mutation is warranted before packet decomposition is complete
-- `disposition/placement`: sequenced for later decision only if packet review proves one stable cleanup or retained-only standing worth writing back
+- `disposition/placement`: existing support-only inventory or retained-placement updates are now allowed when packet review proves one stable retained-only or non-write-defer standing worth writing back
 - `log-retained core`: keep this source log for priority model, packet boundaries, cleanup-admission gate, and evidence ledger
 
 ## Definitions (optional)
@@ -221,6 +222,44 @@
 - `P2-C1-S1`: classify the `S0F-1H` / `S0F-1I` / `S0F-1J` packet by current-home and retained-only boundaries
 - `P2-C1-S2`: write back the defended packet result to the appropriate shared surfaces without over-widening the lane
 
+### P2-C1-S1 (PR-body completeness packet classified | v1)
+
+- The `S0F-1H` / `S0F-1I` / `S0F-1J` packet is now fixed as one coherent PR-body completeness packet rather than three independent unresolved `S0F` rows.
+- The packet stays current-adjacent because it already shapes:
+  - reviewer classification semantics
+  - the stable operator runbook
+  - formatting-only convergence history
+  - packaged local-task and workflow-dispatch gate usage
+  - the completed live lifecycle packaging proof
+- The defended packet split is now:
+  - `S0F-1H`:
+    - current family outcome: `GC current registry`
+    - current-home outcome: `GC-PRR-0001`
+    - standing outcome inside old-`S0` review: `non-doc`
+    - reason: the row no longer reads first through `DOC`; current rule meaning now concentrates in the active reviewer-classification record, while the reviewer-owned runbook remains the stable operator path rather than a second current contract
+  - `S0F-1I`:
+    - current family outcome: `GC current registry` with retained support-only evidence
+    - current-home outcome: `GC-PRG-0001` plus the reviewer-owned runbook as the enduring operator path
+    - standing outcome inside old-`S0` review: `retained-evidence`
+    - reason: the formatting-only convergence lane is no longer the stable current source for gate semantics or operator procedure; it now survives mainly as bounded convergence evidence and historical bridge context
+  - `S0F-1J`:
+    - current family outcome: `GC current registry`
+    - current-home outcome: `GC-PRG-0001`
+    - standing outcome inside old-`S0` review: `non-doc`
+    - reason: the packet's current gate meaning now concentrates in the active standard-check governance record, while repo task and workflow-dispatch packaging remain enforcement surfaces and retained execution proof rather than a separate new family-owned current rule surface
+- The packet-level judgment is therefore explicit:
+  - this is not the next `DOC` absorption packet
+  - this is one resolved non-`DOC` current-adjacent packet with one retained-evidence middle row
+  - later cleanup should not treat the packet as one open `DOC` widening candidate anymore
+
+### P2-C1-S2 (Priority A packet written back to shared surfaces | v1)
+
+- The defended packet result is now written back only to existing shared surfaces that match the packet's real job:
+  - the `S0F` series standing view now stops presenting `S0F-1H`, `S0F-1I`, and `S0F-1J` as unresolved remainder rows
+  - the support-only migration working ledger now records the packet outcome explicitly so later cleanup review can distinguish finished non-`DOC` adjudication from still-open remainder
+- No new reader-facing migration ledger row is added to the `DOC` surfaced projection because this packet does not widen the current `DOC` surfaced set.
+- No broader front-door mutation is warranted at this stage because the packet result sharpens standing, not family navigation.
+
 ### P3 (Priority B packet)
 
 - `P3-C1-S1`: classify the `S0E-5A` / `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G` packet by current-home and retained-only boundaries
@@ -245,8 +284,8 @@
 
 ### P2 (Priority A packet)
 
-- [ ] `P2-C1-S1`: PR-body completeness packet classified
-- [ ] `P2-C1-S2`: PR-body completeness packet written back to shared surfaces
+- [x] `P2-C1-S1`: PR-body completeness packet classified
+- [x] `P2-C1-S2`: PR-body completeness packet written back to shared surfaces
 
 ### P3 (Priority B packet)
 
@@ -263,7 +302,8 @@
 - `S0F-5C` is now opened as the bounded follow-up for priority-first decomposition of unresolved old-`S0` packets.
 - `P0` is now complete: the lane boundary and the first two admitted priority packets are fixed.
 - `P1` is now complete: one reusable packet-priority test and one cleanup-admission gate now distinguish `priority A`, `priority B`, `non-write defer`, and real cleanup admission.
-- The immediate next step is `P2`: classify the `S0F-1H` / `S0F-1I` / `S0F-1J` PR-body completeness packet into defended current-home and retained-only boundaries.
+- `P2` is now complete: the PR-body completeness packet is adjudicated as `GC current registry` current-home concentration plus one retained-evidence bridge row, and the shared standing surfaces no longer treat that packet as unresolved `DOC` remainder.
+- The immediate next step is `P3`: classify the `S0E-5A` plus `S0E-7D` / `S0E-7E` / `S0E-7F` / `S0E-7G` lifecycle-and-workflow packet by current-home and retained-only boundaries.
 
 ## Evidence (reserved)
 
@@ -294,7 +334,24 @@
   - `priority B` is now fixed around the lifecycle/workflow packet because its current reading value is strong but still mixes current-rule and wrapper-history separation
   - cleanup admission is now explicitly gated behind packet adjudication plus mixed-standing clearance, with defended `non-write defer` required when only upstream ownership blockers remain
 
+### P2-C1-S1S2 (PR-body completeness packet adjudicated and written back to shared standing surfaces | 2026-04-09)
+
+- headSha: `<pending commit for S0F-5C/P2-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5C-priority-packet-decomposition-and-cleanup-admission.md`
+  - `docs/governance/views/view-old-s0-series-s0f-standing-v1.md`
+  - `docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the first priority packet should stop reading as unresolved old-`S0` remainder once its current homes are already defensible outside the `DOC` surfaced set
+  - later cleanup review should be able to distinguish active non-`DOC` current-home concentration from true unresolved backlog
+- observed:
+  - `S0F-1H` and `S0F-1J` now read as non-`DOC` current-adjacent rows whose current rule meaning concentrates in `GC-PRR-0001` and `GC-PRG-0001`
+  - `S0F-1I` now reads as retained convergence evidence rather than as an unresolved current-home candidate
+  - the packet now resolves as one completed non-`DOC` adjudication rather than as the next `DOC` widening candidate
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-5C` as the bounded follow-up for priority-first decomposition of unresolved old-`S0` packets before any broader cleanup lane opens.
 - 2026-04-09: completed `S0F-5C/P1` by fixing the reusable packet-priority criteria and the cleanup-admission gate before any packet write-back or cleanup execution begins.
+- 2026-04-09: completed `S0F-5C/P2` by adjudicating the `S0F-1H` / `S0F-1I` / `S0F-1J` packet as non-`DOC` current-home concentration plus retained convergence evidence, and by writing that result back to the shared `S0F` standing surfaces.
