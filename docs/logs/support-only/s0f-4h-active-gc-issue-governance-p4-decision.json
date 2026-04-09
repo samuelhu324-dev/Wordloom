@@ -1,0 +1,49 @@
+{
+  "id": "s0f-4h-p4-active-gc-issue-governance-decision",
+  "created_at": "2026-04-09",
+  "phase": "S0F-4H/P4-C1-S1",
+  "decision": {
+    "status": "hold-bounded-applicability-result",
+    "execute_real_promotion_packet_now": false,
+    "mark_slice_stable": true,
+    "why": [
+      "P1 through P3 already establish a defended result: the active issue-governance GC subset aligns to DOC and can move as one bounded four-unit DOC-target packet.",
+      "Immediate execution would require a new DOC mapping extension beyond the first admitted DOC quartet, including new DOC area admission and explicit source-owner-to-contract mapping for the issue-governance units.",
+      "The current lane fixed mapping, rule, and applicability. It did not yet open or execute the concrete DOC promotion-extension packet that would create replacement family-owned current bodies and corresponding GC demotion writes."
+    ]
+  },
+  "rejected_options": [
+    {
+      "option": "execute-four-unit-doc-packet-now",
+      "status": "rejected-for-this-slice",
+      "reason": "This would widen S0F-4H from a mapping-and-applicability lane into a full DOC promotion-extension execution lane without first admitting the next DOC mapping extension explicitly."
+    },
+    {
+      "option": "narrower-single-record-pilot",
+      "status": "rejected",
+      "reason": "P3 already proved the subset should be handled as one bounded packet with four area-level units; reducing back to a single-record pilot would discard the packet-shape result without a new blocking signal."
+    },
+    {
+      "option": "doc-ops-family-split",
+      "status": "rejected",
+      "reason": "No OPS-aligned subcluster was found anywhere in the bounded issue-governance current subset."
+    }
+  ],
+  "next_lane": {
+    "kind": "future DOC promotion-extension execution lane",
+    "goal": "Admit the next DOC mapping extension for issue-governance and execute the four-unit replacement packet plus matching GC demotion plan.",
+    "required_inputs": [
+      "Explicit DOC area-code admission for the issue-governance landing units or other defended DOC naming choices.",
+      "One source-owner-to-DOC mapping extension covering issue creation, issue conclusion, issue context, and issue identity.",
+      "One coordinated GC demotion and current-reader transition plan so docs/governance/INDEX.md does not lose clarity during the move."
+    ]
+  },
+  "source_refs": [
+    "docs/logs/support-only/s0f-4h-active-gc-issue-governance-family-mapping-inventory.json",
+    "docs/logs/support-only/s0f-4h-active-gc-issue-governance-rehoming-rule.json",
+    "docs/logs/support-only/s0f-4h-active-gc-issue-governance-p3-applicability.json",
+    "docs/governance/contract/INDEX.md",
+    "docs/governance/views/view-doc-contract-promotion-map-v1.md",
+    "docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md"
+  ]
+}

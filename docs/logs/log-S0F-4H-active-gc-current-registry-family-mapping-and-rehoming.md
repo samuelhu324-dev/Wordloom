@@ -5,7 +5,7 @@
 **id**: `S0F-4H`
 **kind**: `log`
 **title**: `active GC current registry family mapping and re-homing v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, Taxonomy, Family, Mapping, Rehoming, epic/s0, sub/4h`
 **links**: ``
@@ -244,6 +244,19 @@
 
 - P4-C1-S1: choose among real promotion packet, narrower pilot, or defended no-op
 
+### P4-C1-S1 (Next execution boundary decided | v1)
+
+- The decision is now `hold the bounded applicability result` rather than execute the four-unit `DOC` packet inside `S0F-4H`.
+- Why the lane stops here:
+  - `S0F-4H` has already answered the mapping question it opened to solve
+  - the repo now has an explicit `DOC` target-family answer, an explicit keep-versus-promote rule, and an explicit packet shape
+  - executing the actual four-unit `DOC` packet would require a new promotion-extension lane that admits the next `DOC` mapping set rather than widening this mapping lane into extraction-and-landing work
+- The rejected alternatives are now explicit:
+  - do not execute the full four-unit promotion packet inside `S0F-4H`
+  - do not fall back to a narrower single-record pilot
+  - do not split the subset across `DOC` and `OPS`
+- The defended next boundary is now: open one later `DOC` promotion-extension execution lane for issue-governance if the repo wants to convert this applicability result into real family-owned current bodies and corresponding `GC` demotion writes.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -268,7 +281,7 @@
 
 ### P4 (Next-lane decision)
 
-- [ ] `P4-C1-S1`: next execution boundary decided
+- [x] `P4-C1-S1`: next execution boundary decided
 
 ## Current Status (recommended)
 
@@ -280,7 +293,9 @@
 - No family split is currently justified inside the five-record issue-governance subset.
 - `P3` is now complete: one bounded `DOC`-target packet is applicable for the full subset, but only as a four-unit packet rather than as one monolithic replacement contract.
 - The issue-governance subset does not need a `DOC/OPS` split and does not need per-record fragmentation beyond the existing area-level grouping.
-- The immediate next step is `P4`: decide whether to execute that four-unit `DOC` promotion packet next or hold the result as a defended applicability decision.
+- `P4` is now complete: the result is held as a defended applicability boundary rather than executed immediately.
+- `S0F-4H` is now stable: this slice answered the mapping, rule, applicability, and execution-boundary questions for the active issue-governance `GC-*` subset.
+- The next real execution, if desired, is a separate `DOC` promotion-extension lane rather than more work inside this slice.
 
 ## Evidence (reserved)
 
@@ -361,9 +376,29 @@
   - `GC-IID-0001` and `GC-IID-0002` remain one shared issue-identity landing unit because they already share the same source-owner cluster and governance area
   - no `DOC/OPS` split and no deeper per-record fragmentation is currently required before the next decision point
 
+### P4-C1-S1 (Next execution boundary held after applicability proof | 2026-04-09)
+
+- headSha: `<pending commit for S0F-4H/P4-C1-S1>`
+- artifacts:
+  - `docs/logs/support-only/s0f-4h-active-gc-issue-governance-p4-decision.json`
+  - `docs/logs/support-only/s0f-4h-active-gc-issue-governance-p3-applicability.json`
+  - `docs/logs/log-S0F-4H-active-gc-current-registry-family-mapping-and-rehoming.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/contract/INDEX.md`
+  - `docs/governance/views/view-doc-contract-promotion-map-v1.md`
+  - `docs/logs/log-S0F-4E-first-doc-promoted-contract-body-from-s0f-4a.md`
+- expected:
+  - the repo has one explicit answer for whether the four-unit `DOC` packet should execute immediately or stop as a defended applicability result
+  - the next execution boundary is explicit if the result is held
+- observed:
+  - `S0F-4H` holds the four-unit `DOC` packet as the defended next executable shape instead of executing it inside this slice
+  - the reason is not doubt about family mapping, but the missing promotion-extension setup for the next `DOC` mapping set and matching `GC` demotion writes
+  - the next real execution, if chosen later, should open a dedicated `DOC` promotion-extension lane for issue-governance rather than widening this slice
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-4H` as the bounded active current `GC-*` family-mapping and re-homing lane after `S0F-3M` stabilized the first verified legacy cleanup pilot.
 - 2026-04-09: completed `P1` by fixing the active issue-governance subset inventory and recording a first-pass `DOC` ownership mapping hypothesis for all five current records.
 - 2026-04-09: completed `P2` by fixing the keep-versus-promote rule, confirming that no `DOC/OPS` family split is currently needed, and carrying the five-record subset forward as one `DOC`-target promotion candidate for `P3` applicability testing.
 - 2026-04-09: completed `P3` by proving that the five-record issue-governance subset can move as one bounded `DOC` packet, but only in the form of four area-level landing units rather than one omnibus replacement contract.
+- 2026-04-09: completed `P4` by holding that four-unit `DOC` packet as the defended next execution shape and marking this slice stable instead of widening it into a full promotion-extension execution lane.
