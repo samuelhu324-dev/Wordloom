@@ -53,6 +53,10 @@
   - how one current `DOC` surface evolved through older source-owner logs rather than existing as a static current body only
 - This slice does not reopen current `DOC` contract text first.
 - It fixes the next missing reader layer as one bounded `view` problem: coverage overview, series drill-down, and contract-history-chain reading.
+- This same slice now reopens in `C2` to execute the second bounded contract-history-chain pilot instead of opening one more near-duplicate follow-up slice:
+  - current `DOC` surface: `DOC-SLC-0001`
+  - second bounded history-chain target: `docs/governance/views/view-old-s0-contract-history-chain-doc-slc-0001-v1.md`
+- The second bounded contract-history-chain pilot is now complete and remains inside the already-stabilized `S0F-6B` row contract and routing model.
 
 **Default choices (phase defaults / v1)**:
 
@@ -100,7 +104,7 @@
 
 - `contract`: no-op; this slice does not directly create or revise current `DOC` contract bodies
 - `runbook`: no-op; this slice fixes reader-facing historical navigation rather than operator procedure
-- `view`: landed as `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`, `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`, and now `docs/governance/views/view-old-s0-contract-history-chain-doc-drb-0001-v1.md`; later bounded follow-up views may widen series coverage and current-surface history-chain coverage
+- `view`: landed as `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`, `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`, `docs/governance/views/view-old-s0-contract-history-chain-doc-drb-0001-v1.md`, and now `docs/governance/views/view-old-s0-contract-history-chain-doc-slc-0001-v1.md`; later bounded follow-up views may widen series coverage and current-surface history-chain coverage
 - `index/front-door`: no-op for now; broader navigation changes should occur only if later reader routing proves they are warranted
 - `disposition/placement`: no-op for now; mutable review standing remains owned by the support-only migration inventory
 - `log-retained core`: keep this source log for the layered-view contract, standing vocabulary, reader-boundary rationale, and stop conditions
@@ -333,6 +337,26 @@
 - This first bounded surface proves that one reader can start from one active current `DOC` contract, read backward through the direct source-owner and promotion chain, and then widen only as far as the strongest prerequisite and lineage milestones actually needed for comprehension.
 - This first surface intentionally does not yet widen to the rest of the active `DOC` quartet or the issue-governance extension packet; later `P4` follow-up, if needed, should add additional current-surface pilots rather than turning the first chain into one giant family table.
 
+### P4-C2-S1 (Second bounded contract-history-chain pilot admitted inside the same slice | v1)
+
+- `S0F-6B` is now explicitly reopened in `C2` rather than in a new slice.
+- The second active current-surface history-chain pilot is now fixed as:
+  - current `DOC` surface: `DOC-SLC-0001`
+  - retained source-owner origin: `S0F-4B`
+  - bounded second chain target: `docs/governance/views/view-old-s0-contract-history-chain-doc-slc-0001-v1.md`
+- Rationale:
+  - `DOC-SLC-0001` is the cleanest second pilot because it shares the same promotion-home, promotion-event, reader-consolidation, and history-publication chain shape as `DOC-DRB-0001` while carrying a different current-rule concentration under `S0F-4B`
+  - this makes it the strongest immediate test that `P4-C1` fixed one reusable current-surface-first row contract rather than one contract-specific one-off surface
+
+### P4-C2-S2 (Second bounded contract-history-chain surface landed | v1)
+
+- The second bounded contract-history-chain surface now exists at `docs/governance/views/view-old-s0-contract-history-chain-doc-slc-0001-v1.md`.
+- This second surface proves that the same bounded chain model can be replayed on a second active `DOC` contract without reopening row shape, routing logic, or whole-family history design.
+- The second surface intentionally remains current-contract-first and bounded:
+  - it reuses the defended prerequisite and lineage packet already surfaced by the `DOC` family history view
+  - it changes only the direct source-owner and current-rule concentration from `S0F-4A` / `DOC-DRB-0001` to `S0F-4B` / `DOC-SLC-0001`
+  - it still does not widen to a whole quartet matrix inside one view
+
 ### P5 (Reader routing and close-out)
 
 - `P5-C1-S1`: fix reader routing among coverage, drill-down, and history-chain views
@@ -393,6 +417,8 @@
 
 - [x] `P4-C1-S1`: contract-history-chain field set fixed
 - [x] `P4-C1-S2`: first bounded contract-history-chain surface landed
+- [x] `P4-C2-S1`: second bounded contract-history-chain pilot admitted inside the same slice
+- [x] `P4-C2-S2`: second bounded contract-history-chain surface landed
 
 ### P5 (Reader routing and close-out)
 
@@ -407,6 +433,7 @@
 - `P2` is now complete: the minimum field set for one bounded aggregate coverage-overview surface is fixed, and the first aggregate old-`S0` absorption coverage view is now landed.
 - `P3` is now complete: the per-series and per-log standing field set is fixed, and the first bounded `S0B` series drill-down surface is now landed.
 - `P4` is now complete: the current-surface-to-history-chain field set is fixed, and the first bounded `DOC-DRB-0001` contract-history-chain surface is now landed.
+- `S0F-6B` is now reopened in `C2` rather than in a new slice: the second bounded current-surface history-chain pilot is fixed as `DOC-SLC-0001` and is now landed under the already-stable `P4` row contract.
 - `P5` is now complete: reader routing among the coverage overview, series drill-down, and contract-history-chain layers is now explicit, and the stable close-out review is now answered across the six outlets.
 - `S0F-6B` is now `stable`.
 - No further implementation tail is required inside this lane before later widening by additional series drill-down views or additional current-surface history-chain pilots.
@@ -502,6 +529,21 @@
   - the stable close-out review now resolves to justified `no-op` for `contract`, `runbook`, `index/front-door`, and `disposition/placement`, with the defended minimal publish set retained under `view`
   - `S0F-6B` is now ready to close as `stable`
 
+### P4-C2-S1S2 (Second bounded DOC-SLC-0001 history-chain pilot landed inside the stable row contract | 2026-04-09)
+
+- headSha: `<pending commit for S0F-6B/P4-C2-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-6B-old-s0-absorption-coverage-and-history-chain-views.md`
+  - `docs/governance/views/view-old-s0-contract-history-chain-doc-slc-0001-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the lane should be able to widen by a second current-surface pilot without reopening `P4-C1` field design, `P5` routing design, or a brand-new slice
+  - the second pilot should prove that the same current-surface-first chain model also works for the source-log compatibility rule set under `DOC-SLC-0001`
+- observed:
+  - `S0F-6B` is now explicitly reopened in `C2` rather than in a new slice, and the second pilot is fixed as `DOC-SLC-0001`
+  - the second bounded history-chain surface is now landed for `DOC-SLC-0001`, reusing the same promotion-home, promotion-event, consolidation, publication, and prerequisite packet while swapping in `S0F-4B` as the direct source-owner origin
+  - later history-chain widening can now continue by additional current-surface pilots without weakening the defended stable close-out already fixed for the lane
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-6B` as the bounded follow-up for old-`S0` absorption coverage, per-series standing, and contract-history-chain `view` layering.
@@ -510,3 +552,4 @@
 - 2026-04-09: completed `P3` by fixing the per-series/per-log field set and landing the first bounded `S0B` series drill-down surface.
 - 2026-04-09: completed `P4` by fixing the current-surface-to-history-chain field set and landing the first bounded `DOC-DRB-0001` contract-history-chain surface.
 - 2026-04-09: completed `P5` by fixing reader routing among the layered views, answering the six-outlet stable close-out review, and marking `S0F-6B` stable.
+- 2026-04-09: reopened `S0F-6B` in `C2` so the second bounded current-surface history-chain pilot (`DOC-SLC-0001`) could land inside the same stable row contract instead of opening a near-duplicate follow-up slice.
