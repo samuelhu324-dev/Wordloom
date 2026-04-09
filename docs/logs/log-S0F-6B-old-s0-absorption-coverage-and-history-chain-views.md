@@ -69,6 +69,10 @@
   - current series boundary: `S0E`
   - second bounded series drill-down target: `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
 - The second bounded series drill-down pilot is now complete and remains inside the already-stabilized `S0F-6B` row contract and routing model.
+- This same slice now reopens in `P3-C3` to execute the third bounded series drill-down pilot instead of opening one more near-duplicate follow-up slice:
+  - current series boundary: `S0F`
+  - third bounded series drill-down target: `docs/governance/views/view-old-s0-series-s0f-standing-v1.md`
+- The third bounded series drill-down pilot is now complete and remains inside the already-stabilized `S0F-6B` row contract and routing model.
 
 **Default choices (phase defaults / v1)**:
 
@@ -116,7 +120,7 @@
 
 - `contract`: no-op; this slice does not directly create or revise current `DOC` contract bodies
 - `runbook`: no-op; this slice fixes reader-facing historical navigation rather than operator procedure
-- `view`: landed as `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`, `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`, `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`, `docs/governance/views/view-old-s0-contract-history-chain-doc-drb-0001-v1.md`, `docs/governance/views/view-old-s0-contract-history-chain-doc-slc-0001-v1.md`, `docs/governance/views/view-old-s0-contract-history-chain-doc-tax-0001-v1.md`, and `docs/governance/views/view-old-s0-contract-history-chain-doc-fdt-0001-v1.md`; later bounded follow-up views may widen series coverage and current-surface history-chain coverage
+- `view`: landed as `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`, `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`, `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`, `docs/governance/views/view-old-s0-series-s0f-standing-v1.md`, `docs/governance/views/view-old-s0-contract-history-chain-doc-drb-0001-v1.md`, `docs/governance/views/view-old-s0-contract-history-chain-doc-slc-0001-v1.md`, `docs/governance/views/view-old-s0-contract-history-chain-doc-tax-0001-v1.md`, and `docs/governance/views/view-old-s0-contract-history-chain-doc-fdt-0001-v1.md`; later bounded follow-up views may widen series coverage and current-surface history-chain coverage
 - `index/front-door`: no-op for now; broader navigation changes should occur only if later reader routing proves they are warranted
 - `disposition/placement`: no-op for now; mutable review standing remains owned by the support-only migration inventory
 - `log-retained core`: keep this source log for the layered-view contract, standing vocabulary, reader-boundary rationale, and stop conditions
@@ -317,6 +321,25 @@
   - it shows `current-contract`, `current-view`, and `unreviewed` rows side by side inside one real series
   - it still does not turn the series drill-down surface into a support-only blocker ledger or a whole-repo mixed table
 
+### P3-C3-S1 (Third bounded series drill-down pilot admitted inside the same slice | v1)
+
+- `S0F-6B` is now explicitly reopened in `P3-C3` rather than in a new slice.
+- The third bounded series drill-down pilot is now fixed as:
+  - current series boundary: `S0F`
+  - bounded third drill-down target: `docs/governance/views/view-old-s0-series-s0f-standing-v1.md`
+- Rationale:
+  - `S0F` is the strongest third pilot because it is the current review-scope series with the highest mixed density: promoted `DOC` source-owner contracts, supporting `DOC` history and promotion-map rows, and a large unresolved remainder all coexist inside one bounded table
+  - this makes it the cleanest stress test that `P3-C1` fixed one reusable per-series standing contract for high-density mixed series rather than only for lighter pilot sets
+
+### P3-C3-S2 (Third bounded series drill-down surface landed | v1)
+
+- The third bounded series drill-down surface now exists at `docs/governance/views/view-old-s0-series-s0f-standing-v1.md`.
+- This third surface proves that the same bounded drill-down model can carry the current highest-density mixed series without reopening row shape, routing logic, or support-only inventory boundaries.
+- The third surface intentionally remains reader-facing and bounded:
+  - it reuses the defended field set already fixed in `P3-C1`
+  - it shows surfaced `current-contract` rows, surfaced `current-view` rows, and unresolved remainder together inside one real series
+  - it still does not turn the series drill-down surface into a support-only blocker ledger or a whole-repo mixed table
+
 ### P4 (Contract-history chain)
 
 - `P4-C1-S1`: define the current-surface-to-history-chain field set
@@ -485,6 +508,8 @@
 - [x] `P3-C1-S2`: first bounded series drill-down surface landed
 - [x] `P3-C2-S1`: second bounded series drill-down pilot admitted inside the same slice
 - [x] `P3-C2-S2`: second bounded series drill-down surface landed
+- [x] `P3-C3-S1`: third bounded series drill-down pilot admitted inside the same slice
+- [x] `P3-C3-S2`: third bounded series drill-down surface landed
 
 ### P4 (Contract-history chain)
 
@@ -510,6 +535,7 @@
 - `P2` is now complete: the minimum field set for one bounded aggregate coverage-overview surface is fixed, and the first aggregate old-`S0` absorption coverage view is now landed.
 - `P3` is now complete: the per-series and per-log standing field set is fixed, and the first bounded `S0B` series drill-down surface is now landed.
 - `S0F-6B` is now reopened in `P3-C2` rather than in a new slice: the second bounded series drill-down pilot is fixed as `S0E` and is now landed under the already-stable `P3` row contract.
+- `S0F-6B` is now reopened in `P3-C3` rather than in a new slice: the third bounded series drill-down pilot is fixed as `S0F` and is now landed under the already-stable `P3` row contract.
 - `P4` is now complete: the current-surface-to-history-chain field set is fixed, and the first bounded `DOC-DRB-0001` contract-history-chain surface is now landed.
 - `S0F-6B` is now reopened in `C2` rather than in a new slice: the second bounded current-surface history-chain pilot is fixed as `DOC-SLC-0001` and is now landed under the already-stable `P4` row contract.
 - `S0F-6B` is now reopened in `C3` rather than in a new slice: the third bounded current-surface history-chain pilot is fixed as `DOC-TAX-0001` and is now landed under the already-stable `P4` row contract.
@@ -590,6 +616,21 @@
 - observed:
   - `S0F-6B` is now explicitly reopened in `P3-C2` rather than in a new slice, and the second series pilot is fixed as `S0E`
   - the second bounded series drill-down surface is now landed for `S0E`, carrying the three `DOC` contract rows, the two `DOC` history-view rows, and the remaining unresolved series rows under the same defended row contract
+  - later series drill-down widening can now continue by additional series pilots without weakening the defended stable close-out already fixed for the lane
+
+### P3-C3-S1S2 (Third bounded S0F surface landed inside the stable row contract | 2026-04-09)
+
+- headSha: `<pending commit for S0F-6B/P3-C3-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-6B-old-s0-absorption-coverage-and-history-chain-views.md`
+  - `docs/governance/views/view-old-s0-series-s0f-standing-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the lane should be able to widen by a third series drill-down pilot without reopening `P3-C1` field design, `P5` routing design, or a brand-new slice
+  - the third pilot should prove that the same per-series standing model also works for the current highest-density mixed series where surfaced `contract` rows, surfaced `view` rows, and unresolved remainder coexist
+- observed:
+  - `S0F-6B` is now explicitly reopened in `P3-C3` rather than in a new slice, and the third series pilot is fixed as `S0F`
+  - the third bounded series drill-down surface is now landed for `S0F`, carrying the eight surfaced `DOC` contract rows, the five surfaced `DOC` view rows, and the remaining unresolved series rows under the same defended row contract
   - later series drill-down widening can now continue by additional series pilots without weakening the defended stable close-out already fixed for the lane
 
 ### P4-C1-S1S2 (Contract-history-chain field set fixed and first bounded DOC-DRB-0001 surface landed | 2026-04-09)
@@ -681,3 +722,4 @@
 - 2026-04-09: reopened `S0F-6B` in `C3` so the third bounded current-surface history-chain pilot (`DOC-TAX-0001`) could land inside the same stable row contract instead of opening a near-duplicate follow-up slice.
 - 2026-04-09: reopened `S0F-6B` in `C4` so the fourth bounded current-surface history-chain pilot (`DOC-FDT-0001`) could land inside the same stable row contract instead of opening a near-duplicate follow-up slice.
 - 2026-04-09: reopened `S0F-6B` in `P3-C2` so the second bounded series drill-down pilot (`S0E`) could land inside the same stable row contract instead of opening a near-duplicate follow-up slice.
+- 2026-04-09: reopened `S0F-6B` in `P3-C3` so the third bounded series drill-down pilot (`S0F`) could land inside the same stable row contract instead of opening a near-duplicate follow-up slice.
