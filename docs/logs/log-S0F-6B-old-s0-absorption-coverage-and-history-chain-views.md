@@ -5,7 +5,7 @@
 **id**: `S0F-6B`
 **kind**: `log`
 **title**: `old-S0 absorption coverage and history-chain views v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Records, Views, History, Lineage, Inventory, epic/s0, sub/6b`
 **links**: ``
@@ -338,6 +338,35 @@
 - `P5-C1-S1`: fix reader routing among coverage, drill-down, and history-chain views
 - `P5-C1-S2`: complete stable close-out review for the layered `view` lane
 
+### P5-C1-S1 (Reader routing among layered views fixed | v1)
+
+- The three landed reader-facing surfaces now have one explicit first-open split:
+  - `coverage overview` answers aggregate scope and series distribution first
+  - `series drill-down` answers per-log standing inside one series first
+  - `contract-history chain` answers current-surface-first evolution for one current `DOC` surface first
+- The routing rule is now:
+  - if the reader asks `how much is absorbed overall?`, start at `view-old-s0-absorption-coverage-overview-v1.md`
+  - if the reader asks `inside one series, what is the standing of each log?`, start at the matching series drill-down view such as `view-old-s0-series-s0b-standing-v1.md`
+  - if the reader asks `how did one current DOC surface emerge?`, start at the matching contract-history-chain view such as `view-old-s0-contract-history-chain-doc-drb-0001-v1.md`
+  - if the reader asks `which exact old-S0 rows are already admitted into the surfaced DOC set?`, start at `view-old-s0-migration-ledger-v1.md`
+- This routing is intentionally view-layer-specific:
+  - aggregate totals should not be reconstructed from one series drill-down
+  - per-log standing should not be reconstructed from one current-surface chain
+  - one current-surface chain should not be stretched into a whole-family or whole-backlog answer
+
+### P5-C1-S2 (Six-outlet stable close-out review fixed | v1)
+
+- The layered old-`S0` absorption view lane is now execution-complete in this slice.
+- `P5` does not open one further expansion tail before close-out.
+- It fixes the stable close-out answer across the six outlets as follows:
+  - `contract`: no-op because this lane only adds reader-facing historical and standing views; current `DOC` contract bodies remain unchanged here
+  - `runbook`: no-op because no reusable operator procedure was introduced beyond the slice-local reading contract
+  - `view`: complete because the defended minimal publish set is now landed as one coverage overview, one bounded series drill-down surface, and one bounded contract-history-chain surface with explicit routing among them
+  - `index/front-door`: no-op because the current minimal publish set does not require broader directory-entry mutation to remain readable
+  - `disposition/placement`: no-op because mutable review and placement standing remain owned by the support-only migration inventory rather than by this reader-facing lane
+  - `log-retained core`: keep, because this source log remains the right owner for the layered-view contract, standing vocabulary, routing rationale, close-out boundary, and evidence
+- This means `S0F-6B` closes as `stable retained-log close-out`, not as another widening or routing-expansion lane.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -367,8 +396,8 @@
 
 ### P5 (Reader routing and close-out)
 
-- [ ] `P5-C1-S1`: reader routing fixed among layered views
-- [ ] `P5-C1-S2`: stable close-out review completed
+- [x] `P5-C1-S1`: reader routing fixed among layered views
+- [x] `P5-C1-S2`: stable close-out review completed
 
 ## Current Status (recommended)
 
@@ -378,7 +407,9 @@
 - `P2` is now complete: the minimum field set for one bounded aggregate coverage-overview surface is fixed, and the first aggregate old-`S0` absorption coverage view is now landed.
 - `P3` is now complete: the per-series and per-log standing field set is fixed, and the first bounded `S0B` series drill-down surface is now landed.
 - `P4` is now complete: the current-surface-to-history-chain field set is fixed, and the first bounded `DOC-DRB-0001` contract-history-chain surface is now landed.
-- The next step is `P5`: fix reader routing among the coverage overview, series drill-down, and contract-history-chain views before close-out review.
+- `P5` is now complete: reader routing among the coverage overview, series drill-down, and contract-history-chain layers is now explicit, and the stable close-out review is now answered across the six outlets.
+- `S0F-6B` is now `stable`.
+- No further implementation tail is required inside this lane before later widening by additional series drill-down views or additional current-surface history-chain pilots.
 
 ## Evidence (reserved)
 
@@ -454,6 +485,23 @@
   - the first bounded `DOC-DRB-0001` history-chain surface is now landed and compresses direct source-owner origin, promotion-home, promotion-event, reader-consolidation, history-publication, and prerequisite context into one current-surface-first chain
   - later history-chain work can now widen by additional current `DOC` surfaces without reopening whether the chain should be source-log-first, promotion-map-first, or whole-family-history-first
 
+### P5-C1-S1S2 (Reader routing fixed and stable close-out review completed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-6B/P5-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-6B-old-s0-absorption-coverage-and-history-chain-views.md`
+  - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
+  - `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`
+  - `docs/governance/views/view-old-s0-contract-history-chain-doc-drb-0001-v1.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - readers should be able to choose the right layered old-`S0` view without replaying the whole migration ledger or inferring which question belongs to which surface
+  - the lane should close with one explicit six-outlet answer and no hidden requirement for one more export tail
+- observed:
+  - the three landed layered views now carry one explicit first-open routing split across aggregate coverage, per-series standing, and current-surface history-chain reading
+  - the stable close-out review now resolves to justified `no-op` for `contract`, `runbook`, `index/front-door`, and `disposition/placement`, with the defended minimal publish set retained under `view`
+  - `S0F-6B` is now ready to close as `stable`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-6B` as the bounded follow-up for old-`S0` absorption coverage, per-series standing, and contract-history-chain `view` layering.
@@ -461,3 +509,4 @@
 - 2026-04-09: completed `P2` by fixing the aggregate coverage-overview field set and landing the first bounded old-`S0` absorption coverage overview view.
 - 2026-04-09: completed `P3` by fixing the per-series/per-log field set and landing the first bounded `S0B` series drill-down surface.
 - 2026-04-09: completed `P4` by fixing the current-surface-to-history-chain field set and landing the first bounded `DOC-DRB-0001` contract-history-chain surface.
+- 2026-04-09: completed `P5` by fixing reader routing among the layered views, answering the six-outlet stable close-out review, and marking `S0F-6B` stable.

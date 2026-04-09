@@ -45,6 +45,16 @@
 - Open `S0F-4A` first for deep chronology on direct origin, then use `S0F-4D`, `S0F-4E`, `S0F-4F`, and `S0F-4G` for the exact promotion and publication sequence.
 - Open `S0B-3A`, `S0C-1A`, `S0D-1A`, `S0E-3A`, and `S0E-6A` only when you need the earlier prerequisite rationale rather than the direct promotion chain.
 
+## Reader Routing
+
+| question | open first | why |
+| --- | --- | --- |
+| `how did DOC-DRB-0001 emerge specifically?` | `view-old-s0-contract-history-chain-doc-drb-0001-v1.md` | this surface is the bounded current-surface-first chain for that one active contract |
+| `what is true now for document role boundaries?` | `docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md` | current rule meaning still belongs in the active contract body |
+| `what is the wider DOC family history?` | `view-doc-history-and-lineage-v1.md` | family-wide lineage is broader than this one contract chain |
+| `what is the standing of one old log or one series row?` | `view-old-s0-series-s0b-standing-v1.md` or the later matching series drill-down view | per-log standing belongs in the series drill-down layer, not in this current-surface chain |
+| `how much of old S0 is absorbed overall?` | `view-old-s0-absorption-coverage-overview-v1.md` | aggregate coverage belongs in the overview layer |
+
 ## Reader Notes
 
 - This first chain is intentionally current-contract-first, not family-first.

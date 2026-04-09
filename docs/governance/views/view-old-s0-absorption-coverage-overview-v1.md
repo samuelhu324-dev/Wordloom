@@ -43,6 +43,15 @@
 | `S0E` | `33` | `5` | `3` | `2` | `28` |
 | `S0F` | `34` | `13` | `8` | `5` | `21` |
 
+## Reader Routing
+
+| question | open first | why |
+| --- | --- | --- |
+| `how much of old S0 has been absorbed so far?` | `view-old-s0-absorption-coverage-overview-v1.md` | aggregate totals and series distribution live here |
+| `inside one series, what is the standing of each old log?` | `view-old-s0-series-s0b-standing-v1.md` or the later matching series drill-down view | per-log standing is a series-bounded question, not an aggregate one |
+| `how did one current DOC surface emerge from older logs?` | `view-old-s0-contract-history-chain-doc-drb-0001-v1.md` or the later matching current-surface chain view | current-surface-first historical reading belongs in the contract-history chain layer |
+| `which exact rows are already in the surfaced DOC set across all series?` | `view-old-s0-migration-ledger-v1.md` | the migration ledger remains the canonical admitted-row projection |
+
 ## Reader Notes
 
 - Read this view first when the question is `how much of old S0 has been absorbed so far, and how is that distributed by series?`
