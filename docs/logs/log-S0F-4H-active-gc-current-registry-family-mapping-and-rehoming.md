@@ -47,7 +47,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-09`
-**updated**: `2026-04-10`
+**updated**: `2026-04-09`
 
 ---
 
@@ -192,6 +192,27 @@
 - P2-C1-S1: define when an active current `GC-*` record should stay current in place versus promote into a family-owned current surface
 - P2-C1-S2: define stop reasons if one mixed subset cannot move as one packet
 
+### P2-C1-S1 (Keep-versus-promote rule fixed | v1)
+
+- Keep an active current `GC-*` record in the narrow registry when current-reader clarity still depends on `docs/governance/INDEX.md` and no replacement family-owned current reading surface is explicit yet.
+- Promote an active current `GC-*` record or bounded subset into a family-owned current surface only when all of the following are true:
+  - the subset shares one dominant target family under the seven-family model
+  - the rule text reads as stable family-owned current meaning rather than as narrow-registry-only admission metadata
+  - the target family already has an explicit landing model for current bodies and front-door reading
+  - the old `GC-*` rows can demote to lineage or redirect standing without making current readers guess where current meaning moved
+- Under this rule, the issue-governance current subset now qualifies as a `DOC`-target promotion candidate, but not yet as an executed promotion packet.
+- `P2` therefore fixes the rule as `candidate for DOC promotion, keep current in GC until the replacement packet is explicit`.
+
+### P2-C1-S2 (Split rule and stop reasons fixed | v1)
+
+- Split before promotion only when one bounded subset fails any of these tests:
+  - not all records point to the same target family
+  - one part still needs narrow-registry-first current reading while another part is already family-owned
+  - one shared promotion packet would blur materially different source-of-truth, landing, or enforcement semantics
+- No `DOC` versus `OPS` split is currently justified inside this bounded issue-governance subset.
+- The current stop reason is narrower: `P2` does not yet prove the exact replacement `DOC` landing shape for the five-record cluster, so promotion must remain gated until `P3` tests packet applicability.
+- The next execution question is therefore not `whether to split by family`, but `whether one bounded DOC-target packet can carry the subset cleanly`.
+
 ### P3 (Applicability test)
 
 - P3-C1-S1: test whether the issue-governance current set can re-home as one bounded packet or must split further
@@ -215,8 +236,8 @@
 
 ### P2 (Re-homing rule)
 
-- [ ] `P2-C1-S1`: keep-versus-promote rule fixed
-- [ ] `P2-C1-S2`: stop reasons or split rule fixed if needed
+- [x] `P2-C1-S1`: keep-versus-promote rule fixed
+- [x] `P2-C1-S2`: stop reasons or split rule fixed if needed
 
 ### P3 (Applicability test)
 
@@ -233,7 +254,9 @@
 - The repo now has one explicit source log for deciding whether the current issue-governance `GC-*` subset should stay in the narrow registry or re-home into `DOC` or `OPS` family-owned current surfaces.
 - `P0` is now complete: the slice boundary and sequencing are fixed.
 - `P1` is now complete: the active issue-governance subset is explicit and the first-pass likely target-family result is `DOC`, not `OPS`.
-- The immediate next step is `P2`: define the keep-versus-promote-versus-split rule before any real re-homing packet is attempted.
+- `P2` is now complete: the decision rule is fixed as `DOC-target promotion candidate, but keep current in GC until one explicit replacement packet is proved`.
+- No family split is currently justified inside the five-record issue-governance subset.
+- The immediate next step is `P3`: test whether one bounded `DOC`-target packet can actually carry this subset without weakening current-reader clarity.
 
 ## Evidence (reserved)
 
@@ -255,7 +278,7 @@
 - observed:
   - `S0F-4H` is now opened with a current-owner mapping boundary, fixed P1-P4 sequence, and explicit non-goal of reopening the verified legacy `GC-ISS-0001` cleanup pilot
 
-### P1-C1-S1S2 (Active issue-governance current subset inventoried and first-pass family mapping fixed | 2026-04-10)
+### P1-C1-S1S2 (Active issue-governance current subset inventoried and first-pass family mapping fixed | 2026-04-09)
 
 - headSha: `<pending commit for S0F-4H/P1-C1-S1S2>`
 - artifacts:
@@ -274,7 +297,28 @@
   - the first-pass likely target-family result is `DOC` across the full subset because the governing semantics are docs/GitHub lifecycle shape, writeback, naming, and identity rather than release/runtime operations
   - `P1` stops short of deciding whether the full subset should promote together or split under a later execution rule
 
+### P2-C1-S1S2 (Keep-versus-promote rule and split boundary fixed | 2026-04-09)
+
+- headSha: `<pending commit for S0F-4H/P2-C1-S1S2>`
+- artifacts:
+  - `docs/logs/support-only/s0f-4h-active-gc-issue-governance-rehoming-rule.json`
+  - `docs/logs/support-only/s0f-4h-active-gc-issue-governance-family-mapping-inventory.json`
+  - `docs/logs/log-S0F-4H-active-gc-current-registry-family-mapping-and-rehoming.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/contract/DOC-FDT-0001-family-front-door-transition-and-gc-demotion-model.md`
+  - `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
+  - `docs/governance/views/view-doc-contract-promotion-map-v1.md`
+  - `docs/governance/views/view-iss-split-package-v1.md`
+- expected:
+  - the repo has one explicit rule for when active current `GC-*` rows stay in the narrow registry versus promote into a family-owned current surface
+  - the repo has one explicit split rule if the issue-governance subset cannot move as one bounded packet
+- observed:
+  - the issue-governance subset is now judged as one `DOC`-target promotion candidate cluster rather than as a `DOC/OPS` mixed-family packet
+  - the keep-versus-promote rule is now explicit: keep in `GC` until a replacement family-owned current packet is explicit, then allow demotion of the old `GC-*` rows to lineage-safe standing
+  - no family split is currently justified, but actual promotion remains gated on `P3` applicability testing for one bounded `DOC`-target packet
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-09: opened `S0F-4H` as the bounded active current `GC-*` family-mapping and re-homing lane after `S0F-3M` stabilized the first verified legacy cleanup pilot.
-- 2026-04-10: completed `P1` by fixing the active issue-governance subset inventory and recording a first-pass `DOC` ownership mapping hypothesis for all five current records.
+- 2026-04-09: completed `P1` by fixing the active issue-governance subset inventory and recording a first-pass `DOC` ownership mapping hypothesis for all five current records.
+- 2026-04-09: completed `P2` by fixing the keep-versus-promote rule, confirming that no `DOC/OPS` family split is currently needed, and carrying the five-record subset forward as one `DOC`-target promotion candidate for `P3` applicability testing.

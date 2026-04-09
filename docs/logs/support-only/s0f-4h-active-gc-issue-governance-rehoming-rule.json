@@ -1,0 +1,61 @@
+{
+  "id": "s0f-4h-p2-active-gc-issue-governance-rehoming-rule",
+  "created_at": "2026-04-09",
+  "phase": "S0F-4H/P2-C1-S1S2",
+  "bounded_subset": [
+    "GC-ICR-0001",
+    "GC-ICL-0001",
+    "GC-ICT-0001",
+    "GC-IID-0001",
+    "GC-IID-0002"
+  ],
+  "p1_mapping_result": {
+    "dominant_target_family": "DOC",
+    "ops_subcluster_detected": false,
+    "mixed_family_split_required_now": false
+  },
+  "decision_rule": {
+    "keep_current_in_gc_when": [
+      "The record is still a current narrow-registry row and no replacement family-owned current reading surface is explicit yet.",
+      "The subset does not share one stable target family or still mixes materially different primary source-of-truth ownership models.",
+      "Moving the current reading surface would weaken front-door clarity because docs/governance/INDEX.md remains the only clear first landing for the governed rule set.",
+      "The only available move would be a mechanical rename without a stable family-owned contract landing rule."
+    ],
+    "promote_into_family_owned_surface_when": [
+      "The bounded subset shares one dominant target family under the seven-family model.",
+      "The governed semantics read as stable current family-owned contract meaning rather than as narrow-registry-only admission metadata.",
+      "A family-owned landing model exists for the target family, including file placement, naming discipline, and front-door reading behavior.",
+      "The old GC rows can demote to lineage-safe registry or redirect standing without making current readers guess where to read first."
+    ],
+    "split_before_promotion_when": [
+      "Different records in the bounded subset point to different target families.",
+      "One part of the subset still belongs to narrow-registry current reading while another part is ready for family-owned current reading.",
+      "The subset needs materially different source-owner traces, landing rules, or enforcement semantics such that one promotion packet would blur current ownership."
+    ]
+  },
+  "current_rule_result": {
+    "status": "doc-target-promotion-candidate",
+    "keep_now": true,
+    "promote_now": false,
+    "split_now": false,
+    "why": [
+      "All five records align to DOC strongly enough to treat them as one DOC-target candidate cluster rather than a DOC-versus-OPS mixed packet.",
+      "The subset should stay in the GC narrow registry for now because P2 fixes the rule only; it does not yet prove the exact bounded promotion packet shape.",
+      "The next question is applicability: whether this DOC-target cluster can re-home as one bounded packet without weakening current-reader clarity."
+    ]
+  },
+  "p3_entry_conditions": [
+    "Test whether one bounded DOC-target promotion packet can carry the full issue-governance subset without splitting by target family.",
+    "Record whether one new DOC area or a small DOC packet is needed before any current-reader transition out of the GC narrow registry.",
+    "Keep the GC current rows in place until the replacement DOC reading surface is explicit."
+  ],
+  "source_refs": [
+    "docs/governance/contract/DOC-FDT-0001-family-front-door-transition-and-gc-demotion-model.md",
+    "docs/governance/views/view-gc-triage-and-retention-rule-v1.md",
+    "docs/governance/views/view-doc-contract-promotion-map-v1.md",
+    "docs/governance/views/view-iss-split-package-v1.md",
+    "docs/governance/INDEX.md",
+    "docs/governance/contract/INDEX.md",
+    "docs/logs/support-only/s0f-4h-active-gc-issue-governance-family-mapping-inventory.json"
+  ]
+}
