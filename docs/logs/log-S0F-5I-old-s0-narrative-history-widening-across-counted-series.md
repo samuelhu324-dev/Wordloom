@@ -329,7 +329,7 @@
 
 ### P4-C1-S1S2 (Aggregate narrative front door fixed across packet set | 2026-04-10)
 
-- headSha: `<pending commit for S0F-5I/P4-C1-S1S2>`
+- headSha: `2eca41fec`
 - artifacts:
   - `docs/governance/views/view-old-s0-narrative-history-routing-v1.md`
   - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
