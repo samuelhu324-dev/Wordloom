@@ -294,7 +294,7 @@
 
 ### P3-C1-S2S3 (First `LOGS` and `LIFECYCLE` child candidates drafted | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7C/P3-C1-S2S3>`
+- headSha: `9aa445955`
 - artifacts:
   - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
   - `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0001-legacy-taxonomy-cutover-and-stub-preservation.md`
