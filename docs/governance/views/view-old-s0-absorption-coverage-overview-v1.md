@@ -13,6 +13,7 @@
   - excluding the current absorption-tracking lanes `S0F-5B`, `S0F-6A`, and `S0F-6B`
 - This boundary is intentionally narrower than every historical file that ever existed under `S0`.
 - It is the first bounded reader-facing review scope for aggregate coverage, not a claim that every support-only or relocated historical artifact is counted here.
+- It also intentionally excludes the supplemental `issue-only reconstructed ancestry` branch for early `S0A` / `S0B` anchors that are reader-relevant but not yet part of the counted root-log scope.
 
 ## Coverage Model
 
@@ -49,6 +50,8 @@
 | --- | --- | --- |
 | `how much of old S0 has been absorbed so far?` | `view-old-s0-absorption-coverage-overview-v1.md` | aggregate totals and series distribution live here |
 | `what is the full old-S0 remainder after the current surfaced DOC set?` | `view-old-s0-remaining-history-line-routing-v1.md` | the remainder-routing view is now the first-open surface for the non-surfaced old-`S0` line |
+| `what earlier S0A or issue-only S0B ancestry exists outside the counted root-log overview?` | `view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md` | the supplemental reconstruction-routing view makes that exclusion boundary explicit |
+| `which exact early S0A / S0B supplemental anchors are currently known, and what evidence do they have?` | `view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md` | the supplemental detail view expands the excluded ancestry branch into exact known anchors and gaps |
 | `which remaining old-S0 rows should now be screened manually for possible contract or view concentration?` | `view-old-s0-remaining-history-line-manual-screening-v1.md` | the manual-screening view is now the first-open surface for human challenge of the non-surfaced remainder buckets |
 | `inside one series, what is the standing of each old log?` | `view-old-s0-series-s0b-standing-v1.md` or the later matching series drill-down view | per-log standing is a series-bounded question, not an aggregate one |
 | `how did one current DOC surface emerge from older logs?` | `view-old-s0-contract-history-chain-doc-drb-0001-v1.md` or the later matching current-surface chain view | current-surface-first historical reading belongs in the contract-history chain layer |
@@ -61,14 +64,18 @@
 - Use `view-old-s0-remaining-history-line-routing-v1.md` when the question is `what still remains outside the surfaced set, and how should I route into that remainder?`
 - Use later `series drill-down` surfaces when the question becomes `what is the standing of each individual old log inside one series?`
 - Use later `contract-history chain` surfaces when the question becomes `how did one current DOC surface emerge from older logs?`
+- Use `view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md` when the question is about historically relevant early `S0A` / `S0B` anchors that are not yet counted in this overview.
 - `remaining outside surfaced set` does not mean only `unreviewed`:
   - some of that remainder may later become `retained-evidence`, `history-lineage`, `retired-lineage`, `no-op`, or `non-doc`
   - this first aggregate overview does not decide those finer standings yet
+- The totals in this view remain correct for the current counted root-log review scope even though the repo now separately acknowledges some supplemental early ancestry outside that scope.
 
 ## Source Refs
 
 - `docs/logs/log-S0F-6B-old-s0-absorption-coverage-and-history-chain-views.md`
 - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
+- `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md`
+- `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md`
 - `docs/governance/views/view-doc-current-front-door-v1.md`
 - `docs/governance/views/view-doc-history-and-lineage-v1.md`
 - `docs/governance/views/view-doc-contract-promotion-map-v1.md`

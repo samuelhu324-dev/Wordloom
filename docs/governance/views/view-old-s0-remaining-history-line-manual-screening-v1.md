@@ -32,6 +32,7 @@
 ## First-Pass Summary
 
 - Remaining-line population screened here: `63` rows.
+- The screened `63`-row population here still excludes the supplemental early `S0A` / `S0B` issue-only reconstructed ancestry branch, because that branch is outside the counted root-log remainder rather than inside it.
 - `candidate current-contract`: `0`
 - `candidate current-view`: `0`
 - `retain as history`: `29`
@@ -152,12 +153,14 @@
 - This first-pass screening view is intentionally conservative and human-first.
 - Empty `candidate current-contract` and `candidate current-view` buckets do not mean the remainder line has no later candidates.
 - They mean the current lane has now widened the reading surface enough that the next promotion or outlet-adjustment judgment should be made manually rather than through one automatic filter.
+- They also do not mean the repo has no earlier ancestry outside the counted remainder; that separate question now routes through `view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md`.
 
 ## Source Refs
 
 - `docs/logs/log-S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening.md`
 - `docs/governance/views/view-old-s0-remaining-history-line-routing-v1.md`
 - `docs/governance/views/view-old-s0-remaining-history-line-detail-v1.md`
+- `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md`
 - `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`
 - `docs/governance/views/view-old-s0-series-s0c-standing-v1.md`
 - `docs/governance/views/view-old-s0-series-s0d-standing-v1.md`

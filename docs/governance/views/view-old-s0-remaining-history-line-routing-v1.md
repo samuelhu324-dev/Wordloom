@@ -14,6 +14,7 @@
   - already-adjudicated but still non-surfaced rows: `45`
   - still-unresolved rows: `18`
 - This view intentionally excludes the `21` rows already surfaced into current `DOC` contracts or current `DOC` views.
+- This view also intentionally excludes the supplemental early `S0A` / `S0B` issue-only reconstructed ancestry branch, because that branch is outside the counted root-log review scope rather than inside this counted `63`-row remainder.
 
 ## Routing Model
 
@@ -52,6 +53,8 @@
 | --- | --- | --- |
 | `what is the full old-S0 remainder after the current surfaced DOC set?` | `view-old-s0-remaining-history-line-routing-v1.md` | this surface is the bounded first-open answer for the full non-surfaced remainder |
 | `which remaining rows are already adjudicated versus still unresolved?` | `view-old-s0-remaining-history-line-routing-v1.md` | this surface fixes that split explicitly before later detail and manual screening views |
+| `what earlier ancestry sits outside this counted 63-row remainder because it survives only as legacy or issue-only evidence?` | `view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md` | the supplemental reconstruction-routing view handles ancestry outside the counted remainder scope |
+| `which exact early anchors are in that supplemental ancestry branch right now?` | `view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md` | the supplemental detail view expands the excluded ancestry branch without altering the counted remainder |
 | `which exact remaining rows are already adjudicated and how do they read now?` | `view-old-s0-remaining-history-line-detail-v1.md` | the widened detail surface now expands the retained-history population and the unresolved `S0F` subset without collapsing them back into the working ledger |
 | `which remaining rows should I now screen manually for possible contract or view concentration?` | `view-old-s0-remaining-history-line-manual-screening-v1.md` | the manual-screening surface now separates unresolved rows, retained-history rows, lineage rows, and external-current-home rows without auto-admitting a new contract set |
 | `inside one series, what is the standing of the remaining rows?` | `view-old-s0-series-s0b-standing-v1.md` or the later matching series drill-down view | the series drill-down layer remains the bounded per-log standing answer |
@@ -67,12 +70,15 @@
   - it does not replace the later manual screening packet
 - Use `view-old-s0-remaining-history-line-detail-v1.md` when the question moves from `how big is the remainder?` to `which exact rows are in that remaining line, and how do they currently read?`
 - Use `view-old-s0-remaining-history-line-manual-screening-v1.md` when the question becomes `which rows should a human now challenge as possible contract/view candidates or outlet-adjustment follow-ups?`
+- Use `view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md` when the question is about early ancestry that is not part of this counted remainder in the first place.
 - The support-only working ledger remains useful for mutable row notes, but not as the first-open reader surface for understanding the current remaining line.
 
 ## Source Refs
 
 - `docs/logs/log-S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening.md`
 - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
+- `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md`
+- `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md`
 - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
 - `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`
 - `docs/governance/views/view-old-s0-series-s0c-standing-v1.md`

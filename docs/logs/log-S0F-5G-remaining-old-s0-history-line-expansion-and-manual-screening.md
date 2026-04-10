@@ -57,6 +57,7 @@
   - do not auto-admit new `DOC` contracts just because a row looks structurally important
   - first widen the reader-facing history/view layer so one human reviewer can inspect the full remaining old-`S0` line more safely
   - then use that widened surface to decide which rows should stay as retained history, which should become explicit current reader surfaces, and which six-outlet assignments need manual adjustment
+  - keep any earlier `S0A` / `S0B` ancestry that currently survives only through legacy carry-forward files or issue-only evidence on a separate supplemental branch until one later explicit reconstruction packet decides whether it should affect counted scope or outlet placement
 
 **Default choices (phase defaults / v1)**:
 
@@ -73,6 +74,8 @@
   - filtering candidate contracts too early from partial source-log archaeology
   - undercounting source-log and template contracts that are still real governance surfaces but not yet published as family-owned `DOC` bodies
   - conflating `current contract`, `retained history`, `lineage`, `manual review candidate`, and `non-DOC` rows inside one support-only working ledger that is not meant to be a reader-facing review surface
+- The current counted root-log overview also leaves one separate early-ancestry gap: some `S0A` and `S0B` history is known to matter, but it is not represented as the same root-log population used by the current `84` / `63` old-`S0` views.
+- If that gap stays implicit, readers may mistake the counted root-log overview for the whole ancestry picture instead of the current bounded review scope.
 
 ## PR Summary Inputs (optional)
 
@@ -119,6 +122,8 @@
 - Do not treat the support-only working ledger as the final human review surface.
 - Do not assume every structurally important source-log or template rule should become one family-owned `DOC` current contract.
 - Do not widen this lane into support-only relocation execution or whole-repo cleanup movement.
+- Do not fabricate fake backdated source logs for issue-only ancestry that never existed in that shape locally.
+- Do not silently merge reconstructed issue-only ancestry into the counted old-`S0` totals until one later explicit reconstruction packet defends that scope change.
 
 ## Scope
 
@@ -127,6 +132,7 @@
 - `P2`: land one widened history/view routing surface for the remaining old-`S0` population so readers can see the still-unconcentrated line without replaying the working ledger alone
 - `P3`: expand the series and/or chain surfaces needed so the remaining `S0F` backlog and the already-adjudicated non-surfaced rows become human-reviewable as one explicit history line
 - `P4`: publish one manual screening view or equivalent reader-facing packet that separates `candidate current contract`, `retain as history`, `lineage only`, `non-DOC`, and `needs six-outlet adjustment`
+- `P4` supplemental branch: publish one reader-facing routing surface for early `S0A` / `S0B` legacy-or-issue-only ancestry that currently sits outside the counted root-log review scope
 - `P5`: determine whether any bounded first write-back subset should follow immediately, or whether the lane should stop at human-screening publication and wait for manual review feedback
 - `P6`: fix the next owner after manual screening, including whether later follow-up should be contract-admission-first, six-outlet-adjustment-first, or no-op on most rows
 
@@ -135,6 +141,7 @@
 - One reader can inspect the remaining old-`S0` history line without relying on the support-only working ledger as the only global review surface.
 - The repo has one explicit manual screening surface for later human review of contract candidacy and six-outlet adjustments.
 - The lane leaves later contract-admission decisions more visible and less auto-filtered than the current partial history/view layer allows.
+- The repo also has one explicit supplemental routing surface for historically relevant early ancestry that is currently outside the counted root-log review scope because it survives only as legacy or issue-only evidence.
 
 ## Stability (what stable means)
 
@@ -274,6 +281,37 @@
   - only after that decide whether any row should move into one bounded later contract-admission or six-outlet-adjustment follow-up
 - Under this rule, `needs six-outlet adjustment` remains a later human consequence, not one auto-filled first-pass bucket.
 
+### P4-C1-S3 (Supplemental reconstructed ancestry branch attached | v1)
+
+- The lane now also publishes `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md` as one supplemental reader-facing route.
+- That surface exists for ancestry that is historically relevant to old-`S0` reading but is not part of the current counted root-log review scope.
+- The first attached anchor set is now fixed as:
+  - legacy `S0A` carry-forward anchor at `legacy/from_structured_docs/from-logs/v2-logs/log-S0A-dlq-replay-platform.md`
+  - legacy `S0B` parent decision anchor at `legacy/from_structured_docs/from-adrs/adr-S0B-docs-management-v2.md`
+  - missing-log `S0B-1A` issue-only ancestry placeholder, which remains intentionally unresolved until its GitHub issue evidence is materialized or summarized into one later bounded reconstruction packet
+- This branch intentionally does not mutate the counted `84` / `63` overview totals yet.
+- Its job is to make the current exclusion boundary explicit so the reader-facing old-`S0` view set does not falsely imply complete ancestry coverage.
+
+### P4-C2 (Supplemental reconstructed ancestry detail packet)
+
+- `P4-C2-S1`: publish one detail view for the current `S0A` / `S0B` supplemental anchor set so readers can inspect exact evidence state rather than only the existence of the branch
+- `P4-C2-S2`: wire the old-`S0` reader set so questions about exact supplemental anchors open the detail view rather than stopping at boundary-only routing
+
+### P4-C2-S1 (Supplemental reconstructed ancestry detail view published | v1)
+
+- The supplemental detail surface now exists at `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md`.
+- It expands the current early-ancestry branch row by row across:
+  - `S0A` legacy carry-forward anchor
+  - `S0B` parent legacy decision anchor
+  - `S0B-1A` issue-only missing-log placeholder
+- The detail packet intentionally uses `provisional reconstructed standing` instead of pretending that the missing issue-only evidence has already been reconstructed.
+
+### P4-C2-S2 (Supplemental exact-anchor routing wired | v1)
+
+- The old-`S0` reader set now routes exact `S0A` / `S0B` supplemental-anchor questions into the new detail surface.
+- The routing view remains the first-open exclusion-boundary answer.
+- The detail view now becomes the first-open answer when the reader needs to inspect exact local evidence and exact unresolved gaps inside that supplemental branch.
+
 ### P5 (Post-screening consequence)
 
 - `P5-C1-S1`: determine whether any bounded first write-back subset is immediately safe after the screening surface lands
@@ -310,6 +348,9 @@
 
 - [x] `P4-C1-S1`: manual screening packet published
 - [x] `P4-C1-S2`: human-review sequence fixed
+- [x] `P4-C1-S3`: supplemental reconstructed ancestry branch attached
+- [x] `P4-C2-S1`: supplemental reconstructed ancestry detail view published
+- [x] `P4-C2-S2`: supplemental exact-anchor routing wired
 
 ### P5 (Post-screening consequence)
 
@@ -329,6 +370,8 @@
 - `P2` is now complete: the repo now has one reader-facing remainder-routing surface for the full `63`-row non-surfaced old-`S0` line, and aggregate coverage routing now points readers there before they fall back to the support-only working ledger.
 - `P3` is now complete: the repo now has one widened detail/history-line surface for the full remaining `63`-row non-surfaced old-`S0` line, with the already-adjudicated retained-history population and the unresolved `18`-row `S0F` subset exposed together in one reader-facing view.
 - `P4` is now complete: the repo now has one explicit manual-screening view for the full remaining `63`-row non-surfaced old-`S0` line, and the first-pass screen intentionally leaves both candidate buckets empty so later contract admission or outlet change stays human-guided.
+- `P4-C1-S3` is now complete: the old-`S0` reader set now also exposes one supplemental reconstruction-routing view for early `S0A` / `S0B` legacy-or-issue-only ancestry, kept explicitly outside the counted `84` / `63` overview until a later bounded reconstruction packet decides whether any scope change is warranted.
+- `P4-C2` is now complete: the supplemental branch no longer stops at boundary-only routing, and readers can now inspect the exact `S0A` / `S0B` anchor set, current local evidence, and remaining `S0B-1A` unresolved gap through one detail surface.
 - The immediate next step is now `P5`: decide whether the lane should stop at screening publication and wait for your manual review, or whether one bounded first write-back subset is already safe enough to open next.
 
 ## Evidence (reserved)
@@ -407,6 +450,38 @@
   - `view-old-s0-remaining-history-line-manual-screening-v1.md` now separates the full remaining line into explicit human-review buckets while leaving both candidate buckets empty in the automatic first pass
   - the aggregate, routing, and detail layers now all route manual-screening questions into that new surface instead of forcing readers back into the support-only ledger
 
+### P4-C1-S3 (Supplemental reconstructed ancestry routing attached | 2026-04-10)
+
+- headSha: `<pending local changes for S0F-5G/P4-C1-S3>`
+- artifacts:
+  - `docs/logs/log-S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening.md`
+  - `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md`
+  - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
+  - `docs/governance/views/view-old-s0-remaining-history-line-routing-v1.md`
+  - `docs/governance/views/view-old-s0-remaining-history-line-manual-screening-v1.md`
+- expected:
+  - the reader-facing old-`S0` view set should acknowledge earlier `S0A` / `S0B` ancestry that currently sits outside the counted root-log review scope
+  - that acknowledgement should not silently change the counted `84` / `63` overview totals before one later explicit reconstruction packet exists
+- observed:
+  - one supplemental reconstruction-routing view now exposes the known early `S0A` and `S0B` anchors plus the unresolved `S0B-1A` issue-only placeholder
+  - the aggregate overview and counted-remainder routing surfaces now point readers to that supplemental branch when the question is about excluded early ancestry rather than counted old-`S0` rows
+
+### P4-C2-S1S2 (Supplemental reconstructed ancestry detail packet published and wired | 2026-04-10)
+
+- headSha: `<pending local changes for S0F-5G/P4-C2-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md`
+  - `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md`
+  - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
+  - `docs/governance/views/view-old-s0-remaining-history-line-routing-v1.md`
+  - `docs/logs/log-S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening.md`
+- expected:
+  - readers should be able to inspect each known supplemental `S0A` / `S0B` anchor with current evidence state and current unresolved gaps instead of stopping at a boundary-only routing note
+  - the detail surface should stay evidence-first and should not fabricate a stronger `S0B-1A` standing than the current local evidence can defend
+- observed:
+  - one supplemental detail view now separates `S0A` as supplemental direct history, the `S0B` ADR as lineage-support anchor, and `S0B-1A` as unresolved issue-only placeholder
+  - the overview and routing layers now point exact-anchor questions into that detail surface while keeping the counted `84` / `63` overview totals unchanged
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5G` as the bounded remaining old-`S0` history-line expansion and manual-screening lane after `S0F-5F` completed the remaining `S0E` standing adjudication.
@@ -414,3 +489,5 @@
 - 2026-04-10: completed `P2` by landing the first remainder-routing view for the full non-surfaced old-`S0` line and wiring aggregate coverage routing to that new surface.
 - 2026-04-10: completed `P3` by widening the full remaining old-`S0` detail/history line into one reader-facing surface and by routing the unresolved `S0F` subset back into that wider remainder line.
 - 2026-04-10: completed `P4` by publishing the first human-reviewable screening view for the remaining old-`S0` line and by fixing the conservative manual-first review sequence on top of the widened routing and detail surfaces.
+- 2026-04-10: attached the `P4` supplemental reconstruction branch so the reader-facing old-`S0` view set now acknowledges early `S0A` / `S0B` ancestry outside the counted root-log scope without silently changing the `84` / `63` overview totals.
+- 2026-04-10: expanded the supplemental reconstruction branch into one exact-anchor detail surface so readers can now inspect the current `S0A` / `S0B` evidence set and the still-unresolved `S0B-1A` gap directly.
