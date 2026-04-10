@@ -67,6 +67,7 @@
 | question | open first | why |
 | --- | --- | --- |
 | `inside S0F, what is the standing of each old log now?` | `view-old-s0-series-s0f-standing-v1.md` | this surface is the bounded per-log standing answer for the `S0F` series |
+| `how should I read the full remaining non-surfaced old-S0 line after seeing the S0F unresolved subset?` | `view-old-s0-remaining-history-line-detail-v1.md` | the widened detail surface now places the unresolved `S0F` subset beside the already-adjudicated retained-history population across all remaining series |
 | `how much of old S0 is surfaced by series overall?` | `view-old-s0-absorption-coverage-overview-v1.md` | aggregate counts and distribution are not repeated here |
 | `which admitted rows exist across all series?` | `view-old-s0-migration-ledger-v1.md` | cross-series admitted-row projection stays in the migration ledger |
 | `how did one current DOC surface emerge from this history?` | `view-old-s0-contract-history-chain-doc-drb-0001-v1.md` or the later matching chain view | current-surface-first evolution reading belongs in the history-chain layer, not in the series standing table |
@@ -78,6 +79,7 @@
 - Use `view-old-s0-migration-ledger-v1.md` when the question is `which rows are already admitted into the surfaced set across all series?`
 - This third `S0F` surface proves the same row contract can carry the current highest-density mixed series without becoming a support-only working ledger.
 - The `S0F-1H` / `S0F-1I` / `S0F-1J` packet now shows that `outside the DOC surfaced set` does not automatically mean `unreviewed`: a row may now resolve as `non-doc` or `retained-evidence` once its current home is defended elsewhere.
+- Use `view-old-s0-remaining-history-line-detail-v1.md` when the question broadens from `what is S0F standing now?` to `how does the unresolved S0F subset sit inside the wider remaining old-S0 history line?`
 
 ## Source Refs
 

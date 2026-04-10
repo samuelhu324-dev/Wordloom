@@ -229,6 +229,25 @@
 - `P3-C1-S1`: expand the remaining `S0F` series and adjacent retained-history line into explicit reader-facing history routing
 - `P3-C1-S2`: widen the already-adjudicated retained-history population enough that manual review no longer depends on row-by-row archaeology
 
+### P3-C1-S1 (Remaining `S0F` history line expanded | v1)
+
+- The unresolved `18`-row `S0F` subset is now widened into the same reader-facing detail surface as the already-adjudicated retained-history population.
+- This keeps the remaining `S0F` backlog visible as one explicit `standing-first unresolved` packet instead of leaving it implicit inside one series drill-down only.
+- `view-old-s0-series-s0f-standing-v1.md` now routes readers to the widened detail surface when the question broadens from `S0F` only to the full remaining old-`S0` line.
+
+### P3-C1-S2 (Adjudicated retained-history line widened for manual review | v1)
+
+- The widened detail surface now exists at `docs/governance/views/view-old-s0-remaining-history-line-detail-v1.md`.
+- The landed detail split is now explicit across four bounded remainder-line routes:
+  - `retain-direct-history`
+  - `lineage-only`
+  - `external-current-home`
+  - `standing-first unresolved`
+- This widened detail layer is intentionally still pre-screening:
+  - it exposes the exact remaining `63` rows in one readable history line
+  - it separates already-adjudicated rows from unresolved rows
+  - it does not yet convert those rows into contract-admission candidates automatically
+
 ### P4 (Manual screening packet)
 
 - `P4-C1-S1`: publish one manual screening view or equivalent packet for candidate current-contract, retained-history, lineage-only, non-DOC, and outlet-adjustment rows
@@ -263,8 +282,8 @@
 
 ### P3 (Remaining old-`S0` history-line expansion)
 
-- [ ] `P3-C1-S1`: remaining `S0F` history line expanded
-- [ ] `P3-C1-S2`: adjudicated retained-history line widened for manual review
+- [x] `P3-C1-S1`: remaining `S0F` history line expanded
+- [x] `P3-C1-S2`: adjudicated retained-history line widened for manual review
 
 ### P4 (Manual screening packet)
 
@@ -287,7 +306,8 @@
 - `P0` is now complete: the lane is fixed as history/view-first and manual-screening-first rather than as another auto-admission lane.
 - `P1` is now complete: the remaining non-surfaced old-`S0` history line is now fixed as one explicit `63`-row remainder split into `45` already-adjudicated rows plus `18` still-unresolved `S0F` rows, and the later manual screening surface now has one defended six-class routing model.
 - `P2` is now complete: the repo now has one reader-facing remainder-routing surface for the full `63`-row non-surfaced old-`S0` line, and aggregate coverage routing now points readers there before they fall back to the support-only working ledger.
-- The immediate next step is now `P3`: widen that routing answer into one readable detail/history line for the remaining `63` rows, with separate entry for the unresolved `18`-row `S0F` subset.
+- `P3` is now complete: the repo now has one widened detail/history-line surface for the full remaining `63`-row non-surfaced old-`S0` line, with the already-adjudicated retained-history population and the unresolved `18`-row `S0F` subset exposed together in one reader-facing view.
+- The immediate next step is now `P4`: publish one manual screening view on top of that widened detail layer, separating candidate current-contract/current-view rows from retained-history, lineage-only, non-DOC, and still-unresolved rows.
 
 ## Evidence (reserved)
 
@@ -332,8 +352,25 @@
   - `view-old-s0-remaining-history-line-routing-v1.md` now exposes the full `63`-row remainder split and the current first-open routing by series
   - `view-old-s0-absorption-coverage-overview-v1.md` now routes the non-surfaced-remainder question into that new reader-facing surface
 
+### P3-C1-S1S2 (Remaining old-`S0` detail/history line widened | 2026-04-10)
+
+- headSha: `<pending commit for S0F-5G/P3-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-remaining-history-line-detail-v1.md`
+  - `docs/governance/views/view-old-s0-remaining-history-line-routing-v1.md`
+  - `docs/governance/views/view-old-s0-series-s0f-standing-v1.md`
+  - `docs/logs/log-S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - readers should gain one detailed remaining-line view that exposes the already-adjudicated history rows and the unresolved `S0F` subset together
+  - the unresolved `S0F` remainder should stop reading as one series-only blind spot once the reader broadens back out to the full remaining line
+- observed:
+  - `view-old-s0-remaining-history-line-detail-v1.md` now widens the remaining line across direct retained history, lineage-only, external-current-home, and standing-first unresolved routes
+  - the routing view and the `S0F` series standing view now point readers into that widened detail surface when the question broadens beyond one series or beyond counts alone
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5G` as the bounded remaining old-`S0` history-line expansion and manual-screening lane after `S0F-5F` completed the remaining `S0E` standing adjudication.
 - 2026-04-10: completed `P1` by fixing the full remaining old-`S0` non-surfaced population and the minimum routing classes for later manual screening.
 - 2026-04-10: completed `P2` by landing the first remainder-routing view for the full non-surfaced old-`S0` line and wiring aggregate coverage routing to that new surface.
+- 2026-04-10: completed `P3` by widening the full remaining old-`S0` detail/history line into one reader-facing surface and by routing the unresolved `S0F` subset back into that wider remainder line.

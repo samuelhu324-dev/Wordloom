@@ -52,6 +52,7 @@
 | --- | --- | --- |
 | `what is the full old-S0 remainder after the current surfaced DOC set?` | `view-old-s0-remaining-history-line-routing-v1.md` | this surface is the bounded first-open answer for the full non-surfaced remainder |
 | `which remaining rows are already adjudicated versus still unresolved?` | `view-old-s0-remaining-history-line-routing-v1.md` | this surface fixes that split explicitly before later detail and manual screening views |
+| `which exact remaining rows are already adjudicated and how do they read now?` | `view-old-s0-remaining-history-line-detail-v1.md` | the widened detail surface now expands the retained-history population and the unresolved `S0F` subset without collapsing them back into the working ledger |
 | `inside one series, what is the standing of the remaining rows?` | `view-old-s0-series-s0b-standing-v1.md` or the later matching series drill-down view | the series drill-down layer remains the bounded per-log standing answer |
 | `which rows are already in the surfaced DOC set instead of this remainder line?` | `view-old-s0-migration-ledger-v1.md` | the migration ledger remains the canonical surfaced-row projection |
 | `how much of old S0 is surfaced versus still outside the surfaced set?` | `view-old-s0-absorption-coverage-overview-v1.md` | the aggregate overview remains the count-first entrypoint |
@@ -62,7 +63,8 @@
 - This surface intentionally stops at routing and population shape:
   - it shows the current remainder split
   - it points readers at the existing series surfaces
-  - it does not yet replace the later widened detail/history line or the later manual screening packet
+  - it does not replace the later manual screening packet
+- Use `view-old-s0-remaining-history-line-detail-v1.md` when the question moves from `how big is the remainder?` to `which exact rows are in that remaining line, and how do they currently read?`
 - The support-only working ledger remains useful for mutable row notes, but not as the first-open reader surface for understanding the current remaining line.
 
 ## Source Refs
