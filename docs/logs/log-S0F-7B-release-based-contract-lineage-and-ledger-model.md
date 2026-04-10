@@ -330,7 +330,7 @@
 - The lane now fixes the first sample target as `S0A-2A` and positions support-only ledgers as the owner of source-routing decisions.
 - `P1` is now complete: the repo now has one explicit family-versus-release model, one hard rule that material meaning change creates a new release, and one stable reading for `0001`, `0002`, and later numbers inside the same family.
 - `P2` is now complete: the repo now treats lineage as release-to-release semantics, allows supersede to point to multiple earlier releases, and separates release lineage from source-routing.
-- `P3` is now complete in workspace: the support-only ledger model now uses source-owned naming, explicit consumption tracking, and one sample `S0B-2A` ledger regenerated under that revised model.
+- `P3` is now complete: the support-only ledger model now uses source-owned naming, explicit consumption tracking, and one sample `S0B-2A` ledger regenerated under that revised model.
 - `P4` is now complete: the canonical template now carries release metadata, cumulative source carry-forward, and one recommended body shape that keeps both release delta and current state readable.
 - The next execution step is user review of the revised `S0B-2A` ledger model before later release-sample generation resumes.
 
@@ -378,7 +378,7 @@
 
 ### P3-C1-S1S2S3 + P3-C2-S1S2S3 (Ledger model revised and sample regenerated | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7B/P3-C1-S1S2S3+P3-C2-S1S2S3>`
+- headSha: `1d053ddbd`
 - artifacts:
   - `docs/logs/_template-support-only-contract-release-ledger.md`
   - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
