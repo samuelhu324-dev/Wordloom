@@ -228,6 +228,8 @@
 - `P3-C3-S3`: update template-backed indices and standing notes for the new parent/child packet
 - `P3-C4-S1`: generate one broader workflow-layer contract from `S0A/2A`
 - `P3-C4-S2`: update indices and standing notes so the workflow-layer contract and the narrower GitHub-issues packet can be read together
+- `P3-C5-S1`: generate one labs-layer contract from `S0B/1A` under `workflow/labs`
+- `P3-C5-S2`: update indices and standing notes so the labs-layer contract can be judged alongside the broader workflow contract and narrower GitHub-issues packet
 
 ### P3-C1-S1 (Initial broad foundational batch drafted for review | withdrawn)
 
@@ -292,6 +294,24 @@
   - the narrower GitHub-issues parent-and-child packet from `S0A-1A`
 - Under this result, readers can now judge the broader workflow contract separately from the later GitHub-issues mechanism contract packet rather than forcing both into one document.
 
+### P3-C5-S1 (Labs-layer contract generated from `S0B/1A` | v1)
+
+- A narrower labs-layer contract now exists under the canonical root:
+  - `DOC-WORKFLOW-LABS-001`: tools labs and snapshots
+- This contract is intentionally placed at `workflow/labs` beneath the broader `WORKFLOW` layer.
+- It owns the historical labs/snapshots governance boundary around:
+  - snapshot classes such as golden fixtures, diff snapshots, and ad-hoc dumps
+  - minimal retained evidence sets
+  - safe-to-purge cleanup after conclusions become replayable and verifiable
+
+### P3-C5-S2 (Labs-layer draft now reads alongside workflow and GitHub-issues layers | v1)
+
+- The canonical contracts index now exposes three layers together:
+  - the broader `DOC-WORKFLOW-0001` workflow-layer draft
+  - the narrower `DOC-WORKFLOW-LABS-001` labs-layer draft
+  - the GitHub-issues parent-and-child packet from `S0A-1A`
+- Under this result, readers can now judge the labs/snapshots contract separately instead of forcing it either into the broader workflow contract or into the GitHub-issues packet.
+
 ### P3-C3 (Next parent-and-child generation packet | planned)
 
 - The next generation packet after this definition update should stop using one mixed preview contract for `S0A-1A`.
@@ -332,6 +352,8 @@
 - [x] `P3-C3-S3`: update template-backed indices and standing notes for the new parent/child packet
 - [x] `P3-C4-S1`: generate one broader workflow-layer contract from `S0A/2A`
 - [x] `P3-C4-S2`: update indices and standing notes so the workflow-layer contract and the narrower GitHub-issues packet can be read together
+- [x] `P3-C5-S1`: generate one labs-layer contract from `S0B/1A` under `workflow/labs`
+- [x] `P3-C5-S2`: update indices and standing notes so the labs-layer contract can be judged alongside the broader workflow contract and narrower GitHub-issues packet
 
 ## Current Status
 
@@ -340,8 +362,8 @@
 - `P1` is now complete: the repo now has one explicit contract-versus-evidence rule and one structured lineage-verb model for chronology-first rebuild.
 - `P1` is now extended and complete through `C2`: the repo now also has one explicit long-path canonical naming grammar plus one parent/child contract split rule for later generation.
 - `P2` is now complete: the first foundational rebuild packet is fixed as `S0A + S0B`, and the follow-on chronology-first rebuild order is fixed as `S0C -> S0D -> S0E -> S0F`.
-- `P3` now has both: one broader workflow-layer draft from `S0A/2A`, and one narrower GitHub-issues parent-and-child packet from `S0A-1A`.
-- The immediate next step is user review of how these two layers should relate before any commit/push or later chronology-first population continues.
+- `P3` now has three readable layers in workspace: one broader workflow-layer draft from `S0A/2A`, one narrower labs-layer draft from `S0B/1A`, and one GitHub-issues parent-and-child packet from `S0A-1A`.
+- The immediate next step is user review of how these three layers should relate before any commit/push or later chronology-first population continues.
 
 ## Evidence (reserved)
 
@@ -407,7 +429,7 @@
 
 ### P3-C4-S1S2 (Workflow-layer contract generated from `S0A/2A` | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7A/P3-C4-S1S2>`
+- headSha: `3caadb115`
 - artifacts:
   - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
   - `docs/governance/contracts/INDEX.md`
@@ -419,6 +441,21 @@
 - observed:
   - the repo now has one `DOC-WORKFLOW-0001` draft that captures the broader structured-doc refinement pipeline at the `WORKFLOW` layer
   - the canonical index now exposes that broader workflow-layer draft alongside the narrower GitHub-issues contract packet
+
+### P3-C5-S1S2 (Labs-layer contract generated from `S0B/1A` | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7A/P3-C5-S1S2>`
+- artifacts:
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-001-tools-labs-and-snapshots.md`
+  - `docs/governance/contracts/INDEX.md`
+  - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should gain one narrower labs-layer contract from `S0B/1A` without collapsing it into either the broader workflow contract or the narrower GitHub-issues packet
+  - that draft should stay explicit about issue-only sourcing because no local `S0B/1A` source log exists in the workspace
+- observed:
+  - the repo now has one `DOC-WORKFLOW-LABS-001` draft that captures labs/snapshots governance at the `workflow/labs` layer
+  - the canonical index now exposes that labs-layer draft alongside the broader workflow contract and narrower GitHub-issues packet
 
 ### P2-C1-S1S2 (Foundational rebuild packet and chronology-first order fixed | 2026-04-10)
 
@@ -458,4 +495,5 @@
 - 2026-04-10: the first broad four-contract `P3` draft was rejected in review and withdrawn from workspace.
 - 2026-04-10: opened `P3-C2` as a narrower correction and published one replacement issue-first preview contract sourced from `S0A-1A` only.
 - 2026-04-10: completed `P3-C3` by replacing the temporary mixed preview with one parent contract plus title/tag child contracts under the long-path naming grammar.
-- 2026-04-10: opened `P3-C4` in workspace and generated one broader `DOC-WORKFLOW-0001` workflow-layer draft from issue `S0A/2A`.
+- 2026-04-10: completed `P3-C4` by generating one broader `DOC-WORKFLOW-0001` workflow-layer contract from issue `S0A/2A`.
+- 2026-04-10: opened `P3-C5` in workspace and generated one narrower `DOC-WORKFLOW-LABS-001` labs-layer draft from issue `S0B/1A`.
