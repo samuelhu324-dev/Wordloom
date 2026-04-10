@@ -161,6 +161,38 @@
 - `P2-C1-S2`: redefine `split_from / split_into` and `absorbed_from / absorbed_into` as contract-layer lineage only, not source-routing markers
 - `P2-C1-S3`: define when one later release acts as merge, split-child, split-parent, absorption, or simple revision
 
+### P2-C1-S1 (Supersede semantics redefined at release level | v1)
+
+- `supersedes` and `superseded_by` now operate at the `release` level rather than the abstract family level.
+- Under this rule, one later release may supersede:
+  - one earlier release in the same family
+  - multiple earlier releases across one or more families when the later release becomes the clearer combined effective state
+- This means `supersedes` is no longer limited to one-to-one replacement; it now means `these earlier release states are no longer the best effective reading because this later release replaces them as the defended reader surface`.
+- `superseded_by` remains the reverse reading of the same release-level relationship.
+
+### P2-C1-S2 (Split and absorb limited to contract-layer lineage | v1)
+
+- `split_from / split_into` and `absorbed_from / absorbed_into` now describe contract-to-contract release lineage only.
+- Do not use these fields to describe how one issue, log, or support-only source was routed into later contract work.
+- Under this rule:
+  - if one earlier release decomposes into narrower later releases, use `split_into` on the earlier release and `split_from` on the later releases
+  - if one later release carries forward rule meaning from one earlier release without cleanly replacing its entire boundary, use `absorbed_from / absorbed_into`
+  - if one later release gains new meaning from source material that was never itself one contract release, record that in the support-only ledger and in later source-carry-forward metadata, not in lineage
+- This keeps lineage about `release history` and keeps the ledger about `source routing`.
+
+### P2-C1-S3 (Release action semantics fixed | v1)
+
+- A later release now reads as one of these action shapes when explaining its relationship to earlier releases:
+  - `simple revision`: one later release supersedes one earlier release in the same family because the effective rule meaning changed materially
+  - `merge`: one later release supersedes multiple earlier releases because one combined reader surface is now the clearer effective state
+  - `split-parent`: one earlier release splits into multiple narrower later releases and remains readable as the broader historical state
+  - `split-child`: one later release is one narrower child produced from an earlier broader release
+  - `absorption`: one later release carries forward part of an earlier release's meaning without cleanly replacing its whole prior boundary
+- Under this rule, the action shape explains `how this release relates to earlier releases`, while the support-only ledger separately explains `which source slices were routed here`.
+- When one later release both absorbs new non-contract source material and supersedes one or more earlier releases, write both facts separately:
+  - lineage describes the release-to-release relationship
+  - ledger plus cumulative sources describe the source-material carry-forward
+
 ### P3 (Support-only ledger model)
 
 - `P3-C1-S1`: define the support-only ledger purpose and required routing columns
@@ -194,9 +226,9 @@
 
 ### P2 (Release-based lineage semantics)
 
-- [ ] `P2-C1-S1`: redefine `supersedes / superseded_by` as release-level successor links that may refer to multiple earlier releases
-- [ ] `P2-C1-S2`: redefine `split_from / split_into` and `absorbed_from / absorbed_into` as contract-layer lineage only, not source-routing markers
-- [ ] `P2-C1-S3`: define when one later release acts as merge, split-child, split-parent, absorption, or simple revision
+- [x] `P2-C1-S1`: redefine `supersedes / superseded_by` as release-level successor links that may refer to multiple earlier releases
+- [x] `P2-C1-S2`: redefine `split_from / split_into` and `absorbed_from / absorbed_into` as contract-layer lineage only, not source-routing markers
+- [x] `P2-C1-S3`: define when one later release acts as merge, split-child, split-parent, absorption, or simple revision
 
 ### P3 (Support-only ledger model)
 
@@ -221,7 +253,8 @@
 - `S0F-7B` is now opened as the release-based follow-on lane after `S0F-7A`.
 - The lane now fixes the first sample target as `S0A-2A` and positions support-only ledgers as the owner of source-routing decisions.
 - `P1` is now complete: the repo now has one explicit family-versus-release model, one hard rule that material meaning change creates a new release, and one stable reading for `0001`, `0002`, and later numbers inside the same family.
-- The next execution step is to define release-based lineage semantics in `P2`, then revise the template in `P4`, before generating the first sample ledger or release.
+- `P2` is now complete in workspace: the repo now treats lineage as release-to-release semantics, allows supersede to point to multiple earlier releases, and separates release lineage from source-routing.
+- The next execution step is to revise the template in `P4`, then generate the first sample ledger and release packet for `S0A-2A`.
 
 ## Evidence (reserved)
 
@@ -252,8 +285,22 @@
   - the repo now reads one contract family as the stable semantic lane and one contract release as the bounded effective state inside that family
   - material meaning change now defaults to one new release instead of one in-place rewrite, and release numbering now reads as family-local chronology
 
+### P2-C1-S1S2S3 (Release-based lineage semantics fixed | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7B/P2-C1-S1S2S3>`
+- artifacts:
+  - `docs/logs/log-S0F-7B-release-based-contract-lineage-and-ledger-model.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should redefine lineage so release-to-release semantics stay separate from source-routing semantics
+  - readers should be able to distinguish simple revision, merge, split, and absorption cases without using the ledger as a substitute for contract lineage
+- observed:
+  - supersede relationships now read at the release level and may point to multiple earlier releases when one later release becomes the clearer effective state
+  - split and absorb now stay contract-layer only, while logs/issues/support-only routing is explicitly assigned to the ledger rather than to lineage
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-7B` as the release-based follow-on lane after `S0F-7A`.
 - 2026-04-10: fixed the first sample target as `S0A-2A` and fixed support-only ledgers as the owner of source-routing for later contract-release extraction work.
 - 2026-04-10: completed `P1` by fixing stable family identity versus incrementing release identity, by making material meaning change default to one new release, and by redefining `0001`, `0002`, and later numbers as chronology inside one family.
+- 2026-04-10: completed `P2` by redefining lineage as release-level semantics, by allowing supersede to point to multiple earlier releases, and by separating contract lineage from source-routing ledger work.
