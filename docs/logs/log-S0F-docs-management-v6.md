@@ -63,6 +63,7 @@
   **phase_log_43**: `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
   **phase_log_44**: `docs/logs/log-S0F-5F-remaining-s0e-standing-adjudication-and-packeted-review.md`
   **phase_log_45**: `docs/logs/log-S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening.md`
+  **phase_log_46**: `docs/logs/log-S0F-5H-old-s0-narrative-history-view-pilot.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -403,6 +404,7 @@
 - `S0F-5G/P4` is now complete: the repo now has one explicit manual-screening view for the full remaining `63`-row non-surfaced old-`S0` line, and the first-pass screen intentionally keeps both candidate buckets empty so later contract admission or outlet adjustment stays human-guided.
 - `S0F-5G/P4-C1-S3` is now complete: the old-`S0` reader set now also exposes one supplemental reconstruction-routing view for early `S0A` / `S0B` legacy-or-issue-only ancestry, kept explicitly outside the counted `84` / `63` overview until a later bounded reconstruction packet decides whether any scope change is warranted.
 - `S0F-5G/P4-C2-S1S2` is now complete: the supplemental reconstruction branch now has one exact-anchor detail surface for `S0A`, `S0B`, and the unresolved `S0B-1A` placeholder, and the overview/routing layers now send exact ancestry questions there instead of stopping at boundary-only routing.
+- `S0F-5H` is now opened as the next reader-surface follow-up after `S0F-5G`: the new lane will pilot one narrative-history view layer so readers can see why old-`S0` logs existed, what problems they addressed, and what results they left behind without replaying many logs or relying on ad hoc AI compression.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
