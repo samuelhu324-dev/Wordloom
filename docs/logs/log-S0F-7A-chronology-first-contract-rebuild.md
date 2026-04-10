@@ -245,7 +245,7 @@
 
 ### P2-C1-S1S2 (Foundational rebuild packet and chronology-first order fixed | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7A/P2-C1-S1S2>`
+- headSha: `60359741c`
 - artifacts:
   - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
   - `docs/governance/contracts/INDEX.md`
