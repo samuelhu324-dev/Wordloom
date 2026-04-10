@@ -126,6 +126,9 @@
 
 - `P1-C1-S1`: define what qualifies as a chronology-first contract versus evidence-only history
 - `P1-C1-S2`: define the lineage verbs and structured fields needed for split, absorbed, superseded, and retired cases
+- `P1-C2-S1`: define long-path canonical contract naming grammar
+- `P1-C2-S2`: define parent versus child contract roles
+- `P1-C2-S3`: define the later template rollout boundary for parent and child contract generation
 
 ### P1-C1-S1 (Contract versus evidence rule fixed | v1)
 
@@ -151,6 +154,43 @@
 - The contract template also now distinguishes:
   - `source_refs`: the smallest decisive sources that justify the contract state itself
   - `supporting_evidence_refs`: additional retained evidence that helps readers verify chronology without turning every evidence row into a contract
+
+### P1-C2-S1 (Long-path canonical contract naming grammar fixed | v1)
+
+- Canonical rebuilt contract ids should now keep the `DOC-...-<sequence>` shape, but the middle path must stay human-readable rather than collapse into short opaque abbreviations.
+- The naming grammar is now fixed as:
+  - `DOC-<DOMAIN>-<SUBDOMAIN>-...-<CATEGORY>-<NNNN>-<summary>`
+- Under this rule:
+  - `DOC` marks canonical chronology-first contract records
+  - the middle path expresses the governance classification path directly, such as `WORKFLOW-GITHUB-ISSUES-TITLE`
+  - `<NNNN>` is the fixed-width sequence number for that exact contract category path
+  - `<summary>` remains a reader-facing short explanation and does not carry identity by itself
+- The purpose of this grammar is to preserve machine-stable ids while keeping the contract type legible to human readers at first glance.
+
+### P1-C2-S2 (Parent versus child contract roles fixed | v1)
+
+- A `parent contract` now owns mechanism introduction, `why`, and boundary:
+  - why this mechanism was introduced
+  - what larger workflow or governance boundary it established
+  - what later narrower rule contracts should inherit from it
+- A `child contract` now owns one independently judgeable rule body beneath that parent, such as:
+  - title grammar
+  - tag grammar
+  - another later narrow rule that can be reviewed or superseded without rewriting the parent introduction contract
+- Under this rule, one source issue may justify one parent contract plus multiple child contracts when the source mixes mechanism introduction with multiple narrower rule bodies.
+- This split exists so readers do not have to choose between one unreadably broad contract and many tiny contracts that lose the introduction boundary.
+
+### P1-C2-S3 (Template rollout boundary for parent and child generation fixed | v1)
+
+- `P1` now fixes the definition only; it does not yet generate the new parent or child contract bodies themselves.
+- The later population work should therefore add explicit template content for:
+  - one parent-contract draft shape centered on `why and boundary`
+  - one child-contract draft shape centered on one independently judgeable rule body
+- Under this boundary, the next content-generation phase should create:
+  - one parent contract for the GitHub issue mechanism introduction under the workflow/GitHub/issues path
+  - one child contract for title rules
+  - one child contract for tag rules
+- This later generation work belongs to a new `P3` cycle after the naming and split model is accepted.
 
 ### P2 (First rebuild packet)
 
@@ -179,8 +219,44 @@
 
 ### P3 (First foundational contracts)
 
-- `P3-C1-S1`: publish the first chronology-first foundational contracts from `S0A + S0B`
-- `P3-C1-S2`: link those contracts to the retained legacy/reference surfaces without re-promoting the legacy trees to canonical status
+- `P3-C1-S1`: initial broad foundational batch draft from `S0A + S0B` for review
+- `P3-C1-S2`: withdraw that batch if it fails the issue-first readability standard
+- `P3-C2-S1`: publish one replacement issue-first preview contract from `S0A-1A`
+- `P3-C2-S2`: keep source ownership explicit as GitHub issue only when no local source log exists
+- `P3-C3-S1`: generate one parent contract for GitHub issue mechanism introduction under the new long-path naming grammar
+- `P3-C3-S2`: generate one title child contract and one tag child contract beneath that parent
+- `P3-C3-S3`: update template-backed indices and standing notes for the new parent/child packet
+
+### P3-C1-S1 (Initial broad foundational batch drafted for review | withdrawn)
+
+- An initial four-contract foundational batch was drafted in workspace from `S0A + S0B` as the first attempt at chronology-first population.
+- User review rejected that batch because it was too broad, partially outside the intended docs scope, and too abstract to satisfy the `look once and know the problem` standard.
+
+### P3-C1-S2 (Rejected broad batch withdrawn from workspace | v1)
+
+- The rejected four-contract draft has now been removed from `docs/governance/contracts/`.
+- Under this correction, `P3` no longer treats broad foundational synthesis as acceptable by default.
+
+### P3-C2-S1 (Replacement issue-first preview contract published from `S0A-1A` | v1)
+
+- The canonical contracts root now carries one replacement preview contract only:
+  - `S0A-1A`: GitHub issue breakdown, title, and tag governance
+- This preview is intentionally narrower and more literal than the withdrawn batch: the contract title itself should tell the reader what problem the source issue solved.
+
+### P3-C2-S2 (Issue-only source boundary made explicit | v1)
+
+- The `S0A-1A` preview contract now states explicitly that its source is the GitHub issue only.
+- No local `S0A-1A` source log is currently present in the workspace, so the replacement contract must not pretend to be log-sourced.
+- The canonical contracts index now exposes this one preview contract directly and records that the earlier broad batch was rejected.
+
+### P3-C3 (Next parent-and-child generation packet | planned)
+
+- The next generation packet after this definition update should stop using one mixed preview contract for `S0A-1A`.
+- Instead it should produce:
+  - one parent contract for workflow/GitHub/issues mechanism introduction
+  - one child contract for issue-title rules
+  - one child contract for issue-tag rules
+- That packet should also add the corresponding parent/child template-backed notes to the canonical contract root so later issue-based rebuild work can reuse the same pattern.
 
 ## Execution Checklist (unchecked)
 
@@ -193,6 +269,9 @@
 
 - [x] `P1-C1-S1`: contract versus evidence rule fixed
 - [x] `P1-C1-S2`: lineage verbs and structured fields fixed
+- [x] `P1-C2-S1`: long-path canonical contract naming grammar fixed
+- [x] `P1-C2-S2`: parent versus child contract roles fixed
+- [x] `P1-C2-S3`: template rollout boundary for parent and child generation fixed
 
 ### P2 (First rebuild packet)
 
@@ -201,16 +280,23 @@
 
 ### P3 (First foundational contracts)
 
-- [ ] `P3-C1-S1`: first foundational contracts published
-- [ ] `P3-C1-S2`: legacy/reference linkage fixed
+- [x] `P3-C1-S1`: initial broad foundational batch drafted for review
+- [x] `P3-C1-S2`: rejected broad batch withdrawn from workspace
+- [x] `P3-C2-S1`: replacement issue-first preview contract published from `S0A-1A`
+- [x] `P3-C2-S2`: issue-only source boundary made explicit
+- [ ] `P3-C3-S1`: generate one parent contract for GitHub issue mechanism introduction under the new long-path naming grammar
+- [ ] `P3-C3-S2`: generate one title child contract and one tag child contract beneath that parent
+- [ ] `P3-C3-S3`: update template-backed indices and standing notes for the new parent/child packet
 
 ## Current Status
 
 - `S0F-7A` is now opened as the chronology-first contract rebuild reset lane.
 - `P0` is now complete: canonical versus legacy contract roots are explicit, and the immediate next step is to define the chronology-first record model before any foundational contracts are generated.
 - `P1` is now complete: the repo now has one explicit contract-versus-evidence rule and one structured lineage-verb model for chronology-first rebuild.
+- `P1` is now extended and complete through `C2`: the repo now also has one explicit long-path canonical naming grammar plus one parent/child contract split rule for later generation.
 - `P2` is now complete: the first foundational rebuild packet is fixed as `S0A + S0B`, and the follow-on chronology-first rebuild order is fixed as `S0C -> S0D -> S0E -> S0F`.
-- The immediate next step is `P3`: publish the first foundational chronology-first contracts from `S0A + S0B` under the new canonical template and lineage model.
+- `P3` is now in revised preview state: the earlier four-contract foundational draft has been withdrawn after review, and the repo now keeps one replacement issue-first preview contract sourced from `S0A-1A` only.
+- The immediate next step is now `P3-C3`: replace the temporary mixed `S0A-1A` preview with one parent contract plus title/tag child contracts generated under the new naming grammar.
 
 ## Evidence (reserved)
 
@@ -243,6 +329,21 @@
   - chronology-first contracts are now defined as rule-owning or boundary-owning states, while validation, migration, wrapper, and transport rows stay as evidence-only or lineage-support history
   - the canonical template now distinguishes decisive source refs from supporting evidence and carries separate lineage fields for supersede, split, absorb, and retire relationships
 
+### P1-C2-S1S2S3 (Naming grammar and parent-child split model fixed | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7A/P1-C2-S1S2S3>`
+- artifacts:
+  - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/governance/contracts/INDEX.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should define a human-readable long-path canonical naming grammar before later chronology-first contract generation continues
+  - the repo should define how one source may split into one parent introduction contract plus narrower child rule contracts
+- observed:
+  - canonical contract naming now uses one long-path `DOC-<DOMAIN>-...-<CATEGORY>-<NNNN>-<summary>` grammar instead of opaque short abbreviations
+  - parent contracts now own mechanism introduction and boundary, while child contracts own independently judgeable narrow rule bodies such as title or tag rules
+
 ### P2-C1-S1S2 (Foundational rebuild packet and chronology-first order fixed | 2026-04-10)
 
 - headSha: `60359741c`
@@ -257,9 +358,26 @@
   - the first foundational packet is now fixed as `S0A + S0B`, because it carries the earliest still-defensible decision line that later old-`S0` work depends on
   - the follow-on chronology-first rebuild order is now fixed as `S0C -> S0D -> S0E -> S0F`, so later contract generation can proceed from early structure into later automation and concentration states
 
+### P3-C2-S1S2 (Replacement issue-first preview contract landed | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7A/P3-C2-S1S2>`
+- artifacts:
+  - `docs/governance/contracts/S0A-1A-github-issue-breakdown-title-and-tag-governance.md`
+  - `docs/governance/contracts/INDEX.md`
+  - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+- expected:
+  - the repo should keep one replacement issue-first preview contract after the earlier broad batch is withdrawn
+  - that contract should make its problem readable at a glance without pretending to have a local source log
+- observed:
+  - the repo now keeps one `S0A-1A` preview contract that states issue breakdown, title encoding, and tag naming governance directly in the contract body
+  - the replacement draft keeps its issue-only source boundary explicit because no local `S0A-1A` log exists in the workspace
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-7A` as the reset lane for chronology-first contract rebuild.
 - 2026-04-10: fixed the canonical versus legacy contract roots and the immediate rebuild sequence before any new foundational contracts are generated.
 - 2026-04-10: completed `P1` by fixing the chronology-first contract-versus-evidence rule and by defining the lineage verbs plus structured template fields needed for supersede, split, absorb, and retire cases.
+- 2026-04-10: extended `P1` with one new `C2` cycle that fixes long-path canonical naming grammar, parent-versus-child contract roles, and the later template rollout boundary for parent/child generation.
 - 2026-04-10: completed `P2` by fixing the first foundational rebuild packet as `S0A + S0B` and by fixing the follow-on chronology-first rebuild order as `S0C -> S0D -> S0E -> S0F`.
+- 2026-04-10: the first broad four-contract `P3` draft was rejected in review and withdrawn from workspace.
+- 2026-04-10: opened `P3-C2` as a narrower correction and published one replacement issue-first preview contract sourced from `S0A-1A` only.

@@ -40,11 +40,19 @@ contract_record:
 ## Guidance
 
 - Keep `contract_id` semantic and stable; do not encode slice IDs, run IDs, or implementation filenames into it.
+- Canonical chronology-first `contract_id` values should use one long-path grammar rather than opaque short abbreviations:
+  - `DOC-<DOMAIN>-<SUBDOMAIN>-...-<CATEGORY>-<NNNN>`
+  - Example family shapes: `DOC-WORKFLOW-GITHUB-ISSUES-0001`, `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001`, `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001`
+- The category path inside `contract_id` should stay human-readable enough that readers can understand the contract family without opening a separate glossary.
+- Keep the file title or filename summary readable, but treat `contract_id` as the stable identity rather than the path or summary slug.
 - Use this template only when the record is the clearest owner of one governance rule or boundary state in chronology-first rebuild.
 - Do not use this template for rows that are only validation evidence, migration mechanics, wrapper transport, or chronology support without primary rule ownership.
 - `summary` should describe the effective rule meaning at this contract state, not the full change history.
 - `source_refs` should stay minimal and point only to the decisive sources that justify the contract state itself.
 - `supporting_evidence_refs` may capture retained evidence that helps verify chronology without promoting every evidence row into a contract.
+- Use `notes` or a nearby prose section to make the human-readable distinction explicit when a contract is functioning as either:
+  - one `parent contract` that owns mechanism introduction, `why`, and boundary
+  - one `child contract` that owns one independently judgeable narrow rule body beneath that parent
 - Use `supersedes` / `superseded_by` only for one-to-one successor replacement.
 - Use `split_from` / `split_into` when one broader contract decomposes into narrower children.
 - Use `absorbed_from` / `absorbed_into` when rule meaning is carried forward into another contract without a pure one-to-one replacement.
