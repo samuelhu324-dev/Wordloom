@@ -54,7 +54,8 @@ contract_record:
   - one `parent contract` that owns mechanism introduction, `why`, and boundary
   - one `child contract` that owns one independently judgeable narrow rule body beneath that parent
 - Use `supersedes` / `superseded_by` only for one-to-one successor replacement.
-- Use `split_from` / `split_into` when one broader contract decomposes into narrower children.
+- Use `split_from` / `split_into` only when one broader contract decomposes into narrower children that each own one independently judgeable part of the earlier broader rule body.
+- A split parent may later read as an earlier broader state while its children become the narrower current readers; split does not require many children, only a real decomposition boundary.
 - Use `absorbed_from` / `absorbed_into` when rule meaning is carried forward into another contract without a pure one-to-one replacement.
 - Use `retires` / `retired_by` when a contract state ends explicitly without one clean direct successor.
 - `notes` may clarify operator context, but should never override structured fields.

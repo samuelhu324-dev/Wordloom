@@ -129,6 +129,8 @@
 - `P1-C2-S1`: define long-path canonical contract naming grammar
 - `P1-C2-S2`: define parent versus child contract roles
 - `P1-C2-S3`: define the later template rollout boundary for parent and child contract generation
+- `P1-C3-S1`: define when `split_from / split_into` should be used
+- `P1-C3-S2`: define when split should not be used and another lineage verb is required
 
 ### P1-C1-S1 (Contract versus evidence rule fixed | v1)
 
@@ -191,6 +193,19 @@
   - one child contract for title rules
   - one child contract for tag rules
 - This later generation work belongs to a new `P3` cycle after the naming and split model is accepted.
+
+### P1-C3-S1 (Split usage rule fixed | v1)
+
+- Use `split_into` on an earlier contract only when that earlier contract already carries more than one independently judgeable rule body and later history chooses to separate those rule bodies into narrower successor contracts.
+- Use `split_from` on each narrower successor contract only when that successor is one of those separated rule bodies from the earlier broader contract.
+- Under this rule, split does not require many children; one broader contract may split into only two narrower contracts and still count as a valid split relationship.
+- A split parent may remain historically readable as the earlier broader state even after children exist, but its job changes from `single mixed owner` to `earlier broader owner that later decomposed`.
+
+### P1-C3-S2 (Non-split boundary fixed | v1)
+
+- Do not use split when one newer contract simply replaces one older contract as the clearer whole-rule owner; that is `supersedes / superseded_by`.
+- Do not use split when one newer contract only absorbs part of an earlier contract's meaning without a clean decomposition boundary; that is `absorbed_from / absorbed_into`.
+- Under this rule, split is specifically for `one broader rule body became multiple narrower rule bodies`, not for every parent/child directory shape or every later related contract.
 
 ### P2 (First rebuild packet)
 
@@ -335,6 +350,8 @@
 - [x] `P1-C2-S1`: long-path canonical contract naming grammar fixed
 - [x] `P1-C2-S2`: parent versus child contract roles fixed
 - [x] `P1-C2-S3`: template rollout boundary for parent and child generation fixed
+- [x] `P1-C3-S1`: split usage rule fixed
+- [x] `P1-C3-S2`: non-split boundary fixed
 
 ### P2 (First rebuild packet)
 
@@ -360,10 +377,10 @@
 - `S0F-7A` is now opened as the chronology-first contract rebuild reset lane.
 - `P0` is now complete: canonical versus legacy contract roots are explicit, and the immediate next step is to define the chronology-first record model before any foundational contracts are generated.
 - `P1` is now complete: the repo now has one explicit contract-versus-evidence rule and one structured lineage-verb model for chronology-first rebuild.
-- `P1` is now extended and complete through `C2`: the repo now also has one explicit long-path canonical naming grammar plus one parent/child contract split rule for later generation.
+- `P1` is now extended and complete through `C3`: the repo now also has one explicit long-path canonical naming grammar, one parent/child contract split rule, and one precise split-versus-non-split boundary for later lineage decisions.
 - `P2` is now complete: the first foundational rebuild packet is fixed as `S0A + S0B`, and the follow-on chronology-first rebuild order is fixed as `S0C -> S0D -> S0E -> S0F`.
 - `P3` now has three readable layers in workspace: one broader workflow-layer draft from `S0A/2A`, one narrower labs-layer draft from `S0B/1A`, and one GitHub-issues parent-and-child packet from `S0A-1A`.
-- The immediate next step is user review of how these three layers should relate before any commit/push or later chronology-first population continues.
+- The immediate next step is user review of how these three layers should relate before any later chronology-first population continues.
 
 ## Evidence (reserved)
 
@@ -411,6 +428,19 @@
   - canonical contract naming now uses one long-path `DOC-<DOMAIN>-...-<CATEGORY>-<NNNN>-<summary>` grammar instead of opaque short abbreviations
   - parent contracts now own mechanism introduction and boundary, while child contracts own independently judgeable narrow rule bodies such as title or tag rules
 
+### P1-C3-S1S2 (Split usage boundary fixed | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7A/P1-C3-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should define when split lineage is appropriate and when another lineage verb should be used instead
+- observed:
+  - split is now explicitly limited to cases where one broader rule body decomposes into narrower rule bodies
+  - split is now explicitly separated from one-to-one supersession and from partial absorption
+
 ### P3-C3-S1S2S3 (First parent-and-child packet generated from `S0A-1A` | 2026-04-10)
 
 - headSha: `8cd8d26ea`
@@ -444,7 +474,7 @@
 
 ### P3-C5-S1S2 (Labs-layer contract generated from `S0B/1A` | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7A/P3-C5-S1S2>`
+- headSha: `32be9142e`
 - artifacts:
   - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-001-tools-labs-and-snapshots.md`
   - `docs/governance/contracts/INDEX.md`
@@ -496,4 +526,5 @@
 - 2026-04-10: opened `P3-C2` as a narrower correction and published one replacement issue-first preview contract sourced from `S0A-1A` only.
 - 2026-04-10: completed `P3-C3` by replacing the temporary mixed preview with one parent contract plus title/tag child contracts under the long-path naming grammar.
 - 2026-04-10: completed `P3-C4` by generating one broader `DOC-WORKFLOW-0001` workflow-layer contract from issue `S0A/2A`.
-- 2026-04-10: opened `P3-C5` in workspace and generated one narrower `DOC-WORKFLOW-LABS-001` labs-layer draft from issue `S0B/1A`.
+- 2026-04-10: completed `P3-C5` by generating one narrower `DOC-WORKFLOW-LABS-001` labs-layer draft from issue `S0B/1A`.
+- 2026-04-10: extended `P1` with one new `C3` cycle that fixes when split lineage should and should not be used.
