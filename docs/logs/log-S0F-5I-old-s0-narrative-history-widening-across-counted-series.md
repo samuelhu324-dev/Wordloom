@@ -368,7 +368,7 @@
 
 ### P4-C2-S1S2 (Later `S0F` narrative work moved out of the current widening lane | 2026-04-10)
 
-- headSha: `<pending commit for S0F-5I/P4-C2-S1S2>`
+- headSha: `802b1d43c`
 - artifacts:
   - `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
