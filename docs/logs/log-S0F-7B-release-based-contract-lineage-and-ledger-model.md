@@ -358,7 +358,7 @@
 - `P2` is now extended and complete through `C2`: the repo now treats lineage as release-to-release semantics, separates family hierarchy from actual release split, and repairs the workflow/labs packet accordingly.
 - `P3` is now complete: the support-only ledger model now uses source-owned naming, explicit consumption tracking, and one sample `S0B-2A` ledger regenerated under that revised model.
 - `P4` is now complete: the canonical template now carries release metadata, cumulative source carry-forward, and one recommended body shape that keeps both release delta and current state readable.
-- `P5` now has one first active release sample in workspace: `DOC-WORKFLOW-LABS-0002` has been drafted from `DOC-WORKFLOW-LABS-0001` plus the consumed labs-only `S0B-2A` ledger slice.
+- `P5` now has one first active release sample: `DOC-WORKFLOW-LABS-0002` has been drafted from `DOC-WORKFLOW-LABS-0001` plus the consumed labs-only `S0B-2A` ledger slice.
 - The next execution step is user review of whether `DOC-WORKFLOW-LABS-0002` is the correct first accepted release sample before the repo returns to deferred families and to the earlier `S0A-2A` sample target.
 
 ## Evidence (reserved)
@@ -405,7 +405,7 @@
 
 ### P2-C2-S1S2 (Hierarchy-versus-split boundary repaired | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7B/P2-C2-S1S2>`
+- headSha: `5fa7675d6`
 - artifacts:
   - `docs/logs/log-S0F-7B-release-based-contract-lineage-and-ledger-model.md`
   - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
@@ -450,7 +450,7 @@
 
 ### P5-C2-S1S2 (First active labs-family sample drafted from `S0B-2A` | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7B/P5-C2-S1S2>`
+- headSha: `5fa7675d6`
 - artifacts:
   - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
   - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
