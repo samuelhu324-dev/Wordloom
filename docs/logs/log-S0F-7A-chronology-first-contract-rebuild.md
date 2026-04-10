@@ -195,7 +195,7 @@
 
 ### P0-C1-S1S2 (Chronology-first rebuild lane scaffold landed | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7A/P0-C1-S1S2>`
+- headSha: `2b8cfe235`
 - artifacts:
   - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
   - `docs/governance/contracts/INDEX.md`
@@ -209,7 +209,7 @@
 
 ### P1-C1-S1S2 (Chronology-first contract model and lineage verbs fixed | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7A/P1-C1-S1S2>`
+- headSha: `2b8cfe235`
 - artifacts:
   - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
   - `docs/governance/contracts/_template-contract-record.md`
