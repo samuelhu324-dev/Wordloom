@@ -162,6 +162,40 @@
 - `P1-C1-S1`: define the minimum reader-facing narrative fields for why / problem / result / inheritance
 - `P1-C1-S2`: define which source-owned blocks are allowed to feed those fields
 
+### P1-C1-S1 (Minimum narrative field model fixed | v1)
+
+- The minimum reader-facing field model for the pilot is now fixed as eight bounded fields:
+  - `source log`: the exact historical source under review
+  - `why it appeared`: the trigger, pressure, or emergence reason that justified opening the log
+  - `scoped problem`: the concrete boundary or problem the log tried to repair, separate from the trigger
+  - `decision / result`: the stabilized outcome, decision, or result the log left behind
+  - `what changed after it`: the later surface, inheritance path, or downstream consequence that absorbed or replaced the result
+  - `current historical role`: the present reader-facing role of the log in history reading, such as direct history, lineage support, structural prerequisite, retained evidence, or unresolved ancestry
+  - `current first-open home`: the current first-open surface for readers after the historical row is understood
+  - `reader note`: one compact note for ambiguity, exclusion, or bounded caution when needed
+- This field model intentionally separates historical narrative from standing classification:
+  - `why it appeared`, `scoped problem`, and `decision / result` explain why the log mattered at the time
+  - `current historical role` and `current first-open home` explain how readers should interpret it now
+- The pilot should not require every field to be equally long; short defended phrases are preferred over verbose restatement.
+
+### P1-C1-S2 (Allowed source-owned feed blocks fixed | v1)
+
+- The pilot may now derive the narrative field model only from bounded source-owned blocks or defended current reader surfaces.
+- Allowed primary source blocks are now fixed as:
+  - source-log or ADR `Decision / Outcome` and explicit decision text
+  - source-log or ADR `Background` / `Context`
+  - source-log `Problem Statement`
+  - source-log `Current Status` only when it records defended outcome or later inheritance rather than transient execution chatter
+  - stable retained decision bullets such as `stable`, `adopted`, `archived`, or defended implementation/consequence notes that clearly belong to the source body
+- Allowed secondary bridge surfaces are now fixed as:
+  - existing standing views, but only for `current historical role` and `current first-open home`
+  - existing supplemental ancestry views, but only for counted-scope status and defended ancestry gap wording
+- Disallowed feed sources are now fixed as:
+  - ad hoc AI-only compression that cannot be traced back to one bounded source-owned block
+  - support-only mutable ledgers as the sole source of why/problem/result wording
+  - speculative synthesis that upgrades one unresolved placeholder into a stronger historical result than the current source text can defend
+- Under this rule, `P3` should publish a narrative pilot surface that is compact, traceable, and repeatable rather than one prose-heavy retrospective essay.
+
 ### P2 (Pilot population selection)
 
 - `P2-C1-S1`: fix the first pilot population and why it is a valid narrative-history test
@@ -186,8 +220,8 @@
 
 ### P1 (Narrative field model)
 
-- [ ] `P1-C1-S1`: minimum reader-facing narrative fields fixed
-- [ ] `P1-C1-S2`: allowed source-owned feed blocks fixed
+- [x] `P1-C1-S1`: minimum reader-facing narrative fields fixed
+- [x] `P1-C1-S2`: allowed source-owned feed blocks fixed
 
 ### P2 (Pilot population selection)
 
@@ -208,8 +242,9 @@
 
 - `S0F-5H` is now opened as the bounded follow-up lane for old-`S0` narrative-history reading after `S0F-5G` widened standing/routing/manual-screening surfaces.
 - `P0` is now complete: the lane boundary is fixed and the immediate next step is to define the narrative field model rather than to improvise summary prose ad hoc.
+- `P1` is now complete: the minimum narrative field model and its allowed source-owned feed blocks are now fixed, so the pilot can extract `why / problem / result / inheritance` without drifting into ad hoc AI compression.
 - The preferred first pilot is now `S0A + S0B`, because that mixed set is small and already spans both counted mainline reading and supplemental ancestry reading.
-- The immediate next step is now `P1`: fix the narrative field model and its allowed source-owned feed blocks.
+- The immediate next step is now `P2`: fix the exact pilot population and its intentional non-pilot boundary.
 
 ## Evidence (reserved)
 
@@ -226,6 +261,19 @@
   - `S0F-5H` now fixes the reader-facing narrative-history-view boundary, pilot sequence, and preferred `S0A + S0B` first-population direction
   - the parent spine now carries the new lane as the next old-`S0` reader-surface follow-up after `S0F-5G`
 
+### P1-C1-S1S2 (Narrative field model and source-feed rules fixed | 2026-04-10)
+
+- headSha: `<pending local changes for S0F-5H/P1-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5H-old-s0-narrative-history-view-pilot.md`
+- expected:
+  - the pilot should have one stable narrative field model that can explain historical emergence and result without collapsing back into current standing tables
+  - the pilot should have explicit source-feed rules so later narrative rows remain traceable to defended source-owned blocks
+- observed:
+  - the minimum reader-facing field model is now fixed across `source log`, `why it appeared`, `scoped problem`, `decision / result`, `what changed after it`, `current historical role`, `current first-open home`, and `reader note`
+  - the pilot now also has explicit allowed primary and secondary source feeds, plus disallowed AI-only and speculative synthesis paths
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5H` as the bounded old-`S0` narrative-history-view pilot lane after `S0F-5G` landed standing, routing, screening, and supplemental ancestry reader surfaces.
+- 2026-04-10: completed `P1` by fixing the minimum narrative field model and explicit source-feed rules for the first old-`S0` narrative-history pilot.
