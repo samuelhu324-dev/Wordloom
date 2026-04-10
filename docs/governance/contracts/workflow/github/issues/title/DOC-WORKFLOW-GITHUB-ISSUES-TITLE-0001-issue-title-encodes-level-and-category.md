@@ -46,3 +46,4 @@ contract_record:
 
 - This child contract isolates title grammar so it can later be revised, superseded, or extended without rewriting the parent introduction contract.
 - It does not own tag naming rules; those live in the tag child contract.
+- In the current lineage model, this contract is one split child from `DOC-WORKFLOW-GITHUB-ISSUES-0001` alongside the tag contract.

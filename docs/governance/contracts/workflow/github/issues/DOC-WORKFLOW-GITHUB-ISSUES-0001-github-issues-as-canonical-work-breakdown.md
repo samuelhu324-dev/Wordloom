@@ -48,3 +48,4 @@ contract_record:
 
 - This is the parent contract in the first parent-and-child packet generated from issue-only source `S0A-1A`.
 - It is intentionally narrower than the earlier mixed preview because it keeps mechanism introduction separate from the narrower rule bodies.
+- In the current lineage model, this broader issue-mechanism contract splits into the title and tag child contracts beneath it.

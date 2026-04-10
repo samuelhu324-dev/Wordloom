@@ -25,7 +25,9 @@
 - The rebuild model now also distinguishes:
   - `parent contracts` for mechanism introduction, `why`, and boundary
   - `child contracts` for independently judgeable narrow rule bodies beneath that parent
-
+- Split lineage is now read narrowly:
+  - use it when one broader contract decomposes into narrower rule-owning children
+  - do not use it for one-to-one replacement or loose partial absorption
 ## Current Rebuild Order
 
 - First foundational packet: `S0A + S0B`

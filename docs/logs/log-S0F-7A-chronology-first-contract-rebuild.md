@@ -245,6 +245,8 @@
 - `P3-C4-S2`: update indices and standing notes so the workflow-layer contract and the narrower GitHub-issues packet can be read together
 - `P3-C5-S1`: generate one labs-layer contract from `S0B/1A` under `workflow/labs`
 - `P3-C5-S2`: update indices and standing notes so the labs-layer contract can be judged alongside the broader workflow contract and narrower GitHub-issues packet
+- `P3-C6-S1`: write the split lineage explicitly across `DOC-WORKFLOW-GITHUB-ISSUES-0001` and its title/tag children
+- `P3-C6-S2`: write the split lineage explicitly across `DOC-WORKFLOW-0001` and `DOC-WORKFLOW-LABS-001`
 
 ### P3-C1-S1 (Initial broad foundational batch drafted for review | withdrawn)
 
@@ -327,6 +329,19 @@
   - the GitHub-issues parent-and-child packet from `S0A-1A`
 - Under this result, readers can now judge the labs/snapshots contract separately instead of forcing it either into the broader workflow contract or into the GitHub-issues packet.
 
+### P3-C6-S1 (Issue packet split lineage made explicit | v1)
+
+- The GitHub-issues packet now states the split relationship explicitly in both structure and prose:
+  - `DOC-WORKFLOW-GITHUB-ISSUES-0001` is the broader parent that split into title and tag child contracts
+  - `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` and `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` now read as the narrower split children of that parent
+
+### P3-C6-S2 (Workflow and labs split lineage made explicit | v1)
+
+- The broader workflow contract and the narrower labs contract now state one explicit split relationship:
+  - `DOC-WORKFLOW-0001` splits into `DOC-WORKFLOW-LABS-001`
+  - `DOC-WORKFLOW-LABS-001` is one narrower split child beneath that broader workflow contract
+- Under this result, the broader workflow layer and the narrower labs layer no longer read as merely adjacent contracts; they now carry one explicit chronology-first lineage relationship.
+
 ### P3-C3 (Next parent-and-child generation packet | planned)
 
 - The next generation packet after this definition update should stop using one mixed preview contract for `S0A-1A`.
@@ -371,6 +386,8 @@
 - [x] `P3-C4-S2`: update indices and standing notes so the workflow-layer contract and the narrower GitHub-issues packet can be read together
 - [x] `P3-C5-S1`: generate one labs-layer contract from `S0B/1A` under `workflow/labs`
 - [x] `P3-C5-S2`: update indices and standing notes so the labs-layer contract can be judged alongside the broader workflow contract and narrower GitHub-issues packet
+- [x] `P3-C6-S1`: write the split lineage explicitly across `DOC-WORKFLOW-GITHUB-ISSUES-0001` and its title/tag children
+- [x] `P3-C6-S2`: write the split lineage explicitly across `DOC-WORKFLOW-0001` and `DOC-WORKFLOW-LABS-001`
 
 ## Current Status
 
@@ -379,8 +396,8 @@
 - `P1` is now complete: the repo now has one explicit contract-versus-evidence rule and one structured lineage-verb model for chronology-first rebuild.
 - `P1` is now extended and complete through `C3`: the repo now also has one explicit long-path canonical naming grammar, one parent/child contract split rule, and one precise split-versus-non-split boundary for later lineage decisions.
 - `P2` is now complete: the first foundational rebuild packet is fixed as `S0A + S0B`, and the follow-on chronology-first rebuild order is fixed as `S0C -> S0D -> S0E -> S0F`.
-- `P3` now has three readable layers in workspace: one broader workflow-layer draft from `S0A/2A`, one narrower labs-layer draft from `S0B/1A`, and one GitHub-issues parent-and-child packet from `S0A-1A`.
-- The immediate next step is user review of how these three layers should relate before any later chronology-first population continues.
+- `P3` now has explicit split lineage across both the GitHub-issues packet and the workflow-to-labs pair.
+- The immediate next step is user review of whether these split relationships should remain active-parent style or later be re-read as historical broader states after more children are introduced.
 
 ## Evidence (reserved)
 
@@ -430,7 +447,7 @@
 
 ### P1-C3-S1S2 (Split usage boundary fixed | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7A/P1-C3-S1S2>`
+- headSha: `69043ad68`
 - artifacts:
   - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
   - `docs/governance/contracts/_template-contract-record.md`
@@ -487,6 +504,23 @@
   - the repo now has one `DOC-WORKFLOW-LABS-001` draft that captures labs/snapshots governance at the `workflow/labs` layer
   - the canonical index now exposes that labs-layer draft alongside the broader workflow contract and narrower GitHub-issues packet
 
+### P3-C6-S1S2 (Split lineage written across active workflow packet | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7A/P3-C6-S1S2>`
+- artifacts:
+  - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-001-tools-labs-and-snapshots.md`
+  - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+  - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
+  - `docs/governance/contracts/workflow/github/issues/tags/DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-issue-tags-follow-role-based-naming.md`
+  - `docs/governance/contracts/INDEX.md`
+  - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+- expected:
+  - the repo should state the split lineage explicitly across the issue packet and the workflow-to-labs pair
+- observed:
+  - the issue packet now reads explicitly as one broader parent split into title and tag children
+  - the workflow-to-labs pair now reads explicitly as one broader workflow contract split into one narrower labs-layer child
+
 ### P2-C1-S1S2 (Foundational rebuild packet and chronology-first order fixed | 2026-04-10)
 
 - headSha: `60359741c`
@@ -528,3 +562,4 @@
 - 2026-04-10: completed `P3-C4` by generating one broader `DOC-WORKFLOW-0001` workflow-layer contract from issue `S0A/2A`.
 - 2026-04-10: completed `P3-C5` by generating one narrower `DOC-WORKFLOW-LABS-001` labs-layer draft from issue `S0B/1A`.
 - 2026-04-10: extended `P1` with one new `C3` cycle that fixes when split lineage should and should not be used.
+- 2026-04-10: opened `P3-C6` in workspace and wrote explicit split lineage across the issue packet and the workflow-to-labs pair.

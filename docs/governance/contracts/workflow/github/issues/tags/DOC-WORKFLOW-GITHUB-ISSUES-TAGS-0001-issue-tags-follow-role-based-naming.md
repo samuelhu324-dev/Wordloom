@@ -46,3 +46,4 @@ contract_record:
 
 - This child contract isolates tag naming so later tag taxonomy changes can happen without rewriting the parent mechanism contract or the title-rule contract.
 - It does not own issue title grammar; that lives in the title child contract.
+- In the current lineage model, this contract is one split child from `DOC-WORKFLOW-GITHUB-ISSUES-0001` alongside the title contract.

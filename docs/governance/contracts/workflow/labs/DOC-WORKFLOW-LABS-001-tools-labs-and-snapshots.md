@@ -19,7 +19,8 @@ contract_record:
   lineage:
     supersedes: []
     superseded_by: []
-    split_from: []
+    split_from:
+      - DOC-WORKFLOW-0001
     split_into: []
     absorbed_from: []
     absorbed_into: []
@@ -27,6 +28,7 @@ contract_record:
     retired_by: []
   notes:
     - This draft sits at the narrower `WORKFLOW-LABS` layer beneath the broader workflow pipeline contract.
+    - This narrower labs-layer draft now reads as one split child from `DOC-WORKFLOW-0001`.
     - The local repo currently has no S0B/1A source log, so this draft stays explicit about issue-only sourcing.
 ```
 
@@ -49,3 +51,4 @@ contract_record:
 
 - This draft is sourced from issue `S0B/1A`, not from a local source log.
 - It intentionally captures the labs/snapshots governance layer as its own contract rather than hiding it inside the broader `DOC-WORKFLOW-0001` contract.
+- In the current lineage model, this contract is the labs-layer split child of `DOC-WORKFLOW-0001`.
