@@ -160,6 +160,8 @@
 - `P2-C1-S1`: redefine `supersedes / superseded_by` as release-level successor links that may refer to multiple earlier releases
 - `P2-C1-S2`: redefine `split_from / split_into` and `absorbed_from / absorbed_into` as contract-layer lineage only, not source-routing markers
 - `P2-C1-S3`: define when one later release acts as merge, split-child, split-parent, absorption, or simple revision
+- `P2-C2-S1`: define that family hierarchy and parent-child naming do not themselves imply release split lineage
+- `P2-C2-S2`: repair current workflow/labs contracts where split was previously being used only to express hierarchy
 
 ### P2-C1-S1 (Supersede semantics redefined at release level | v1)
 
@@ -192,6 +194,24 @@
 - When one later release both absorbs new non-contract source material and supersedes one or more earlier releases, write both facts separately:
   - lineage describes the release-to-release relationship
   - ledger plus cumulative sources describe the source-material carry-forward
+
+### P2-C2-S1 (Family hierarchy separated from release split | v1)
+
+- `contract_family` path hierarchy and `parent/child` reading now describe taxonomy only; they do not by themselves imply that one release historically split from another release.
+- Under this rule:
+  - `DOC-WORKFLOW` may sit above `DOC-WORKFLOW-LABS` as a broader family path
+  - `DOC-WORKFLOW-LABS-0001` may therefore be a narrower family release beneath `DOC-WORKFLOW-0001`
+  - but that hierarchy alone does not justify `split_from / split_into`
+- Use `split` only when one earlier release actually contained a broader rule body that was later decomposed into narrower releases.
+
+### P2-C2-S2 (Current hierarchy-only split usage repaired | v1)
+
+- The active workflow/labs packet must now stop using `split` merely to express broader-family versus narrower-family placement.
+- Under this repair:
+  - `DOC-WORKFLOW-0001` no longer claims to split into `DOC-WORKFLOW-LABS-0001`
+  - `DOC-WORKFLOW-LABS-0001` no longer claims to split from `DOC-WORKFLOW-0001`
+  - both records instead describe the broader-vs-narrower family reading in prose only
+- This repair keeps real release lineage reserved for actual historical supersede, absorb, retire, or true split events.
 
 ### P3 (Support-only ledger model)
 
@@ -283,6 +303,8 @@
 - `P5-C1-S1`: create one first support-only ledger for `S0A-2A`
 - `P5-C1-S2`: create one new release sample that absorbs non-OPS material into the defended contract family
 - `P5-C1-S3`: validate that the resulting release reads as both `what changed` and `what the current state now is`
+- `P5-C2-S1`: redirect the first active release sample from `S0A-2A` to `S0B-2A` because the structured-log labs slice now offers the clearer first proof of the ledger-plus-release model
+- `P5-C2-S2`: draft `DOC-WORKFLOW-LABS-0002` as the first release sample and mark the consumed `S0B-2A` labs slice in the ledger
 
 ## Execution Checklist (unchecked)
 
@@ -302,6 +324,8 @@
 - [x] `P2-C1-S1`: redefine `supersedes / superseded_by` as release-level successor links that may refer to multiple earlier releases
 - [x] `P2-C1-S2`: redefine `split_from / split_into` and `absorbed_from / absorbed_into` as contract-layer lineage only, not source-routing markers
 - [x] `P2-C1-S3`: define when one later release acts as merge, split-child, split-parent, absorption, or simple revision
+- [x] `P2-C2-S1`: define that family hierarchy and parent-child naming do not themselves imply release split lineage
+- [x] `P2-C2-S2`: repair current workflow/labs contracts where split was previously being used only to express hierarchy
 
 ### P3 (Support-only ledger model)
 
@@ -323,16 +347,19 @@
 - [ ] `P5-C1-S1`: create one first support-only ledger for `S0A-2A`
 - [ ] `P5-C1-S2`: create one new release sample that absorbs non-OPS material into the defended contract family
 - [ ] `P5-C1-S3`: validate that the resulting release reads as both `what changed` and `what the current state now is`
+- [x] `P5-C2-S1`: redirect the first active release sample from `S0A-2A` to `S0B-2A`
+- [x] `P5-C2-S2`: draft `DOC-WORKFLOW-LABS-0002` as the first release sample and mark the consumed `S0B-2A` labs slice in the ledger
 
 ## Current Status
 
 - `S0F-7B` is now opened as the release-based follow-on lane after `S0F-7A`.
 - The lane now fixes the first sample target as `S0A-2A` and positions support-only ledgers as the owner of source-routing decisions.
 - `P1` is now complete: the repo now has one explicit family-versus-release model, one hard rule that material meaning change creates a new release, and one stable reading for `0001`, `0002`, and later numbers inside the same family.
-- `P2` is now complete: the repo now treats lineage as release-to-release semantics, allows supersede to point to multiple earlier releases, and separates release lineage from source-routing.
+- `P2` is now extended and complete through `C2`: the repo now treats lineage as release-to-release semantics, separates family hierarchy from actual release split, and repairs the workflow/labs packet accordingly.
 - `P3` is now complete: the support-only ledger model now uses source-owned naming, explicit consumption tracking, and one sample `S0B-2A` ledger regenerated under that revised model.
 - `P4` is now complete: the canonical template now carries release metadata, cumulative source carry-forward, and one recommended body shape that keeps both release delta and current state readable.
-- The next execution step is user review of the revised `S0B-2A` ledger model before later release-sample generation resumes.
+- `P5` now has one first active release sample in workspace: `DOC-WORKFLOW-LABS-0002` has been drafted from `DOC-WORKFLOW-LABS-0001` plus the consumed labs-only `S0B-2A` ledger slice.
+- The next execution step is user review of whether `DOC-WORKFLOW-LABS-0002` is the correct first accepted release sample before the repo returns to deferred families and to the earlier `S0A-2A` sample target.
 
 ## Evidence (reserved)
 
@@ -376,6 +403,22 @@
   - supersede relationships now read at the release level and may point to multiple earlier releases when one later release becomes the clearer effective state
   - split and absorb now stay contract-layer only, while logs/issues/support-only routing is explicitly assigned to the ledger rather than to lineage
 
+### P2-C2-S1S2 (Hierarchy-versus-split boundary repaired | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7B/P2-C2-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-7B-release-based-contract-lineage-and-ledger-model.md`
+  - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-001-tools-labs-and-snapshots.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should stop using split lineage when the only relationship is broader family hierarchy or parent-child naming
+  - current workflow/labs records should read hierarchy in prose without claiming an actual historical split event
+- observed:
+  - family hierarchy is now explicitly separated from release split semantics in `7B`
+  - the workflow/labs packet now drops hierarchy-only split lineage and keeps the broader-vs-narrower relationship as family-path reading only
+
 ### P3-C1-S1S2S3 + P3-C2-S1S2S3 (Ledger model revised and sample regenerated | 2026-04-10)
 
 - headSha: `1d053ddbd`
@@ -405,11 +448,28 @@
   - the canonical template now distinguishes `contract_family`, `contract_release`, `release_action`, direct `source_refs`, and `cumulative_source_refs`
   - the canonical template now recommends a body shape that keeps release delta and full current-state reading in the same release record
 
+### P5-C2-S1S2 (First active labs-family sample drafted from `S0B-2A` | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7B/P5-C2-S1S2>`
+- artifacts:
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  - `docs/logs/log-S0F-7B-release-based-contract-lineage-and-ledger-model.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should prove the ledger-plus-release model with one concrete later release that consumes only the defended labs slice from `S0B-2A`
+  - the ledger should say exactly which `S0B-2A` slice was consumed by that release and which slices remain deferred or support-only
+- observed:
+  - the first active release sample is now `DOC-WORKFLOW-LABS-0002`, drafted by merging `DOC-WORKFLOW-LABS-0001` with the labs-only `S0B-2A` snapshot-policy slice
+  - the `S0B-2A` ledger now marks that labs slice as consumed by `DOC-WORKFLOW-LABS-0002` while leaving scripts, OPS-candidate, and support-only slices unresolved or retained
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-7B` as the release-based follow-on lane after `S0F-7A`.
 - 2026-04-10: fixed the first sample target as `S0A-2A` and fixed support-only ledgers as the owner of source-routing for later contract-release extraction work.
 - 2026-04-10: completed `P1` by fixing stable family identity versus incrementing release identity, by making material meaning change default to one new release, and by redefining `0001`, `0002`, and later numbers as chronology inside one family.
 - 2026-04-10: completed `P2` by redefining lineage as release-level semantics, by allowing supersede to point to multiple earlier releases, and by separating contract lineage from source-routing ledger work.
+- 2026-04-10: extended `P2` with one new `C2` cycle that separates family hierarchy from actual release split and repairs the workflow/labs packet accordingly.
 - 2026-04-10: completed `P3` by redefining ledger naming around source identity, by adding consumption-tracking fields, and by regenerating the `S0B-2A` sample ledger under the revised model.
 - 2026-04-10: completed `P4` by revising the canonical template for release metadata, cumulative source carry-forward, and one body shape that keeps release delta plus current state readable together.
+- 2026-04-10: opened the first active release sample on `S0B-2A` by drafting `DOC-WORKFLOW-LABS-0002` and marking the consumed labs slice in the `S0B-2A` ledger.

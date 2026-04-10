@@ -19,15 +19,14 @@ contract_record:
     supersedes: []
     superseded_by: []
     split_from: []
-    split_into:
-      - DOC-WORKFLOW-LABS-001
+    split_into: []
     absorbed_from: []
     absorbed_into: []
     retires: []
     retired_by: []
   notes:
     - This contract is intentionally placed at the broader WORKFLOW layer rather than inside one narrower GitHub-issues subpath.
-    - This broader workflow contract now acts as the split parent for the narrower labs-layer contract.
+    - Narrower workflow families such as `DOC-WORKFLOW-LABS` may sit beneath this broader workflow family path, but that hierarchy is not itself a release split event.
     - The local repo currently has no S0A/2A source log, so this draft stays explicit about issue-only sourcing.
 ```
 
@@ -50,4 +49,4 @@ contract_record:
 
 - This is a workflow-layer contract preview sourced from issue `S0A/2A`, not from a local source log.
 - It intentionally captures the historical contract at the broader `WORKFLOW` layer without rewriting it to match later workflow replacements.
-- In the current lineage model, this broader workflow contract splits into `DOC-WORKFLOW-LABS-001` as one narrower child layer.
+- `DOC-WORKFLOW-LABS` now reads as one narrower family beneath the broader workflow path, not as a release split from this record.
