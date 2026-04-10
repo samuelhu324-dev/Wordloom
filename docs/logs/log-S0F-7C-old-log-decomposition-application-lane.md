@@ -175,6 +175,34 @@
 - `P2-C1-S2`: define how broad cross-kind content such as front matter may begin as one child-owned extraction and widen later only after repeated evidence proves the broader parent shape
 - `P2-C1-S3`: define how dual-use slices such as cutover should be handled, preferring narrower slice splitting first and reserving explicit multi-consumption refinement for cases that remain irreducibly shared
 
+### P2-C1-S1 (First `S0B-3A` child extraction targets fixed as `LOGS` and `LIFECYCLE` | v1)
+
+- The first `S0B-3A` child extraction targets are now fixed as two narrower workflow families rather than one mixed contract body:
+  - `DOC-WORKFLOW-LOGS-0001` for the logs-facing identity and intake body
+  - `DOC-WORKFLOW-LIFECYCLE-0001` for legacy, freeze, migrate-on-demand, stub, and lifecycle-boundary ownership
+- Under this rule, the `S0B-3A` source packet should no longer be judged as one monolithic contract candidate.
+- The default first-pass ownership split is now:
+  - `LOGS` owns unified indices as they appear in log-facing title and identity rules, along with the logs-facing front matter body and log identity mechanics
+  - `LIFECYCLE` owns legacy taxonomy, explicit `Legacy Refs`, freeze-versus-migrate boundaries, stub preservation, and lifecycle-oriented cutover semantics
+- This keeps the first extraction narrow while preserving room for one broader parent reading to emerge later from repeated sibling use.
+
+### P2-C1-S2 (Front matter fixed as child-first extraction with later widening path | v1)
+
+- Front matter is now fixed as `child-first extraction` rather than one already-generalized parent rule at the first `S0B-3A` pass.
+- Under this rule:
+  - the first emitted front-matter rule body should live in the logs-oriented child candidate because `S0B-3A` owns the earliest explicit operational wording in a logs-facing surface
+  - later parent or broader-family widening remains explicitly allowed if repeated evidence later shows that the same front-matter rule body truly spans logs, labs, runbooks, ADRs, and other document kinds as one stable generalized contract surface
+- This means `front matter` is not denied a broader future home; it is simply prevented from over-widening the first extraction beyond what the current packet can defend directly.
+
+### P2-C1-S3 (Cutover split into two same-source slices before any multi-consumption model | v1)
+
+- The `cutover` material is now fixed as two narrower same-source slices rather than one unresolved dual-use row.
+- The two first-pass slices are:
+  - `cutover as logs intake rule`: new structured log content must follow the new identifier, title, and logs-facing metadata discipline from the cutover boundary onward
+  - `cutover as lifecycle boundary`: legacy content remains frozen reference material by default, with migration-on-demand and stub preservation controlling how older material re-enters the active system
+- Under this rule, both slices still trace back to the same `S0B-3A` source packet, but the first ledger should record them separately so the repo can avoid hiding real dual-use semantics behind one ambiguous single row.
+- Explicit multi-consumption refinement remains reserved for later only if a still-narrower split cannot explain future shared usage cleanly.
+
 ### P3 (First `S0B-3A` decomposition outputs)
 
 - `P3-C1-S1`: create one `S0B-3A` support-only ledger because the source now clearly spans multiple destinations and deferred widening paths
@@ -199,7 +227,8 @@
 - The lane now fixes `S0B-3A` as the first bounded decomposition target.
 - The lane now also fixes one stronger application reading: extract narrow child bodies first, synthesize broader parent shape later, and backfill ledgers selectively when later overlap proves the missing routing record matters.
 - `P1-C1` is now complete in workspace: the source packet now fixes `S0B-3A` as the primary source body, issue `44` as sharpening support, and `S0B-2A` plus earlier docs-management context as bounded upstream background.
-- The next execution step is `P2`: turn that bounded packet into explicit extraction rules for `child-first extraction`, `later parent synthesis`, and `dual-use slice handling` before emitting the first `S0B-3A` ledger or child candidates.
+- `P2-C1` is now complete in workspace: the first extraction targets are fixed as `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001`, front matter is fixed as child-first extraction with later widening allowed, and cutover is split into two same-source slices before any later multi-consumption model is considered.
+- The next execution step is `P3`: emit the first `S0B-3A` ledger and the two child candidate bodies under the now-fixed `LOGS` and `LIFECYCLE` split.
 
 ## Evidence (reserved)
 
@@ -232,3 +261,18 @@
   - the local `S0B-3A` log is now fixed as the primary source body for the first decomposition pass
   - issue `44` is now fixed as direct sharpening support rather than replacement ownership
   - `S0B-2A` and earlier docs-management context are now treated as bounded background that may sharpen later extraction without automatically widening the first child releases
+
+### P2-C1-S1S2S3 (First `S0B-3A` extraction rules fixed | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7C/P2-C1-S1S2S3>`
+- artifacts:
+  - `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the first `S0B-3A` extraction pass should fix the child-family targets before any ledger or contract bodies are emitted
+  - front matter should stay narrow enough for the first extraction while preserving a later widening path
+  - cutover should be split into narrower same-source slices before the lane resorts to one explicit multi-consumption model
+- observed:
+  - the first child extraction targets are now fixed as `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001`
+  - front matter is now fixed as child-first extraction in the logs-oriented child with later parent or broader-family widening explicitly reserved
+  - cutover is now split into one logs-intake slice and one lifecycle-boundary slice, both still tied back to the same `S0B-3A` source packet
