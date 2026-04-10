@@ -229,7 +229,8 @@
 - `P1-C1` is now complete in workspace: the source packet now fixes `S0B-3A` as the primary source body, issue `44` as sharpening support, and `S0B-2A` plus earlier docs-management context as bounded upstream background.
 - `P2-C1` is now complete in workspace: the first extraction targets are fixed as `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001`, front matter is fixed as child-first extraction with later widening allowed, and cutover is split into two same-source slices before any later multi-consumption model is considered.
 - `P3-C1-S1` is now complete in workspace: the first `S0B-3A` ledger draft now exists and routes the source into `LOGS` and `LIFECYCLE`, with cutover already split into same-source sub-slices.
-- The next execution step is user review of the `S0B-3A` ledger draft before any `LOGS-0001` or `LIFECYCLE-0001` child candidate is drafted.
+- `P3-C1-S2S3` are now complete in workspace: the first `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` child candidates now exist as reviewed drafts aligned to the completed `S0B-3A` ledger.
+- The next execution step is commit/push for the reviewed `LOGS` and `LIFECYCLE` child candidates, then `P4` selective ledger backfill where earlier mixed packets now have routing ambiguity that blocks later reuse.
 
 ## Evidence (reserved)
 
@@ -290,3 +291,18 @@
 - observed:
   - the first `S0B-3A` ledger draft now exists under source-owned naming and routes the source into the two approved child-family candidates
   - cutover is now represented as two same-source rows in the ledger, one for logs intake and one for lifecycle boundary ownership
+
+### P3-C1-S2S3 (First `LOGS` and `LIFECYCLE` child candidates drafted | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7C/P3-C1-S2S3>`
+- artifacts:
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  - `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0001-legacy-taxonomy-cutover-and-stub-preservation.md`
+  - `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
+- expected:
+  - the first child contract drafts should match the fixed ledger split without silently recombining `LOGS` and `LIFECYCLE`
+  - `LOGS-0001` should stay narrow around log identity, log-facing front matter, and logs-intake cutover
+  - `LIFECYCLE-0001` should stay narrow around legacy taxonomy, lifecycle cutover, migration-on-demand, and stub preservation
+- observed:
+  - `DOC-WORKFLOW-LOGS-0001` now exists as one first draft child release for log identity, logs-facing front matter, and logs-intake cutover
+  - `DOC-WORKFLOW-LIFECYCLE-0001` now exists as one first draft child release for legacy taxonomy, lifecycle cutover, and stub preservation without collapsing those rules back into the logs child
