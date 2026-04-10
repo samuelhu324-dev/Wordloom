@@ -205,6 +205,35 @@
 - `P4-C1-S2`: define when later releases must carry cumulative source references forward rather than shrinking the visible history
 - `P4-C1-S3`: define how the effective body of one later release should contain both the new delta and the readable current state
 
+### P4-C1-S1 (Release metadata added to contract template | v1)
+
+- The canonical contract template now carries explicit release metadata:
+  - `contract_family`
+  - `contract_release`
+  - `contract_id` as `<contract_family>-<contract_release>`
+  - `release_action`
+  - `release_change_summary`
+- Under this rule, one template consumer should be able to distinguish `stable family identity` from `this specific release record` without inferring it from prose.
+
+### P4-C1-S2 (Cumulative source carry-forward fixed | v1)
+
+- The canonical contract template now distinguishes:
+  - `source_refs` for the direct decisive inputs of this release
+  - `cumulative_source_refs` for all source material still materially present in the release body of this family state
+- Under this rule, later releases must not silently drop earlier absorbed or carried-forward sources if those sources still materially shape the current rule meaning.
+
+### P4-C1-S3 (Release body shape fixed as delta plus current state | v1)
+
+- The canonical contract template now recommends one body shape where each later release explains both:
+  - what changed in this release
+  - what the current effective contract state now is
+- Under this rule, the body should not collapse into change-log-only prose or force readers to diff multiple releases just to reconstruct the current rule meaning.
+- The recommended section order is now:
+  - `Release Change`
+  - `Contract Statement`
+  - `Current Reading`
+  - `Reader Notes`
+
 ### P5 (First sample on `S0A-2A`)
 
 - `P5-C1-S1`: create one first support-only ledger for `S0A-2A`
@@ -238,9 +267,9 @@
 
 ### P4 (Template revision)
 
-- [ ] `P4-C1-S1`: revise the contract template to carry release metadata such as `contract_family`, `contract_release`, and one bounded release-change note
-- [ ] `P4-C1-S2`: define when later releases must carry cumulative source references forward rather than shrinking the visible history
-- [ ] `P4-C1-S3`: define how the effective body of one later release should contain both the new delta and the readable current state
+- [x] `P4-C1-S1`: revise the contract template to carry release metadata such as `contract_family`, `contract_release`, and one bounded release-change note
+- [x] `P4-C1-S2`: define when later releases must carry cumulative source references forward rather than shrinking the visible history
+- [x] `P4-C1-S3`: define how the effective body of one later release should contain both the new delta and the readable current state
 
 ### P5 (First sample on `S0A-2A`)
 
@@ -254,7 +283,8 @@
 - The lane now fixes the first sample target as `S0A-2A` and positions support-only ledgers as the owner of source-routing decisions.
 - `P1` is now complete: the repo now has one explicit family-versus-release model, one hard rule that material meaning change creates a new release, and one stable reading for `0001`, `0002`, and later numbers inside the same family.
 - `P2` is now complete: the repo now treats lineage as release-to-release semantics, allows supersede to point to multiple earlier releases, and separates release lineage from source-routing.
-- The next execution step is to revise the template in `P4`, then generate the first sample ledger and release packet for `S0A-2A`.
+- `P4` is now complete in workspace: the canonical template now carries release metadata, cumulative source carry-forward, and one recommended body shape that keeps both release delta and current state readable.
+- The next execution step is to run the first sample ledger and release packet for `S0A-2A` in `P5`.
 
 ## Evidence (reserved)
 
@@ -298,9 +328,24 @@
   - supersede relationships now read at the release level and may point to multiple earlier releases when one later release becomes the clearer effective state
   - split and absorb now stay contract-layer only, while logs/issues/support-only routing is explicitly assigned to the ledger rather than to lineage
 
+### P4-C1-S1S2S3 (Release-based contract template revised | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7B/P4-C1-S1S2S3>`
+- artifacts:
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/logs/log-S0F-7B-release-based-contract-lineage-and-ledger-model.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the canonical contract template should carry enough structure to distinguish family identity, release identity, release delta, and cumulative source carry-forward
+  - later release bodies should be able to read as both `what changed` and `what the current state now is`
+- observed:
+  - the canonical template now distinguishes `contract_family`, `contract_release`, `release_action`, direct `source_refs`, and `cumulative_source_refs`
+  - the canonical template now recommends a body shape that keeps release delta and full current-state reading in the same release record
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-7B` as the release-based follow-on lane after `S0F-7A`.
 - 2026-04-10: fixed the first sample target as `S0A-2A` and fixed support-only ledgers as the owner of source-routing for later contract-release extraction work.
 - 2026-04-10: completed `P1` by fixing stable family identity versus incrementing release identity, by making material meaning change default to one new release, and by redefining `0001`, `0002`, and later numbers as chronology inside one family.
 - 2026-04-10: completed `P2` by redefining lineage as release-level semantics, by allowing supersede to point to multiple earlier releases, and by separating contract lineage from source-routing ledger work.
+- 2026-04-10: completed `P4` by revising the canonical template for release metadata, cumulative source carry-forward, and one body shape that keeps release delta plus current state readable together.
