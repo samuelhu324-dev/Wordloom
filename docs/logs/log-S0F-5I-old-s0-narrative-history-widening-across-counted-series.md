@@ -208,6 +208,8 @@
 
 - `P4-C1-S1`: determine whether separate counted-series packets are sufficient
 - `P4-C1-S2`: determine whether one later aggregate narrative router is still needed
+- `P4-C2-S1`: determine whether the reviewed `S0F` subset should continue inside `S0F-5I`
+- `P4-C2-S2`: fix whether later `S0F` narrative work belongs in a new lane instead
 
 ### P4-C1-S1 (Separate packets are not sufficient as the only narrative front door | v1)
 
@@ -229,6 +231,22 @@
   - counted `S0E`
   - the explicit not-yet-published boundary for the reviewed `S0F` subset
 - Under this result, the current packet set is now reader-discoverable without forcing the coverage overview or the standing surfaces to act as an implicit packet index.
+
+### P4-C2-S1 (Reviewed `S0F` subset should not continue as a same-lane packet inside `S0F-5I` | v1)
+
+- The reviewed `S0F` subset should not continue as one more same-lane counted-series packet inside `S0F-5I`.
+- This decision is now defended because the current `S0F` reading surface still mixes three materially different states:
+  - already surfaced `DOC` rows
+  - already-adjudicated external-current-home or retained-history rows
+  - `18` still-unresolved standing-first rows
+- Under the `S0F-5I` lane contract, widening was allowed only where standing and current-home reading were already defended strongly enough for narrative explanation to describe history without reopening adjudication.
+- The current `S0F` population no longer meets that same-lane rollout condition as one bounded packet.
+
+### P4-C2-S2 (Later `S0F` narrative work should open as a new bounded lane, not as another `S0F-5I` packet | v1)
+
+- Any later `S0F` narrative follow-up should open as one new bounded lane rather than as another `C` that keeps `S0F-5I` silently alive.
+- That later lane should begin only after one narrower `S0F` subset is defended as packet-worthy without reopening unresolved standing inside the narrative slice itself.
+- Under this rule, `S0F-5I` remains the widening lane for the currently published packet set, while any future `S0F` narrative packet becomes a separate follow-up with its own boundary, ordering, and evidence ledger.
 
 ## Execution Checklist (unchecked)
 
@@ -256,6 +274,8 @@
 
 - [x] `P4-C1-S1`: separate-packet sufficiency decided
 - [x] `P4-C1-S2`: aggregate-router need decided
+- [x] `P4-C2-S1`: same-lane `S0F` continuation rejected
+- [x] `P4-C2-S2`: later `S0F` narrative work moved to future bounded lane
 
 ## Current Status
 
@@ -265,8 +285,9 @@
 - `P2` is now complete: the repo now has one first counted-series narrative-history packet for the combined `S0D + S0C` set, and that packet confirms the reused eight-field model remains sufficient before the lane widens into `S0E`.
 - `P3` is now complete: the repo now has the next counted-series narrative packet for `S0E`, and the affected `S0D` / `S0C` / `S0E` standing surfaces now route narrative questions into the counted packet views.
 - `P4` is now complete: separate packet views are not sufficient as the only narrative front door, and the repo now has one aggregate narrative router across the published packet set.
-- `S0F-5I` is now stable as the current old-`S0` counted-series narrative-history widening lane: the packet rollout boundary is explicit, the published packet set is reader-discoverable, and the reviewed `S0F` subset remains an explicit later follow-up rather than an implicit omission.
-- The immediate next step is now optional and bounded: open one later follow-up only if the reviewed `S0F` subset needs its own narrative packet or if the router later needs to absorb that packet explicitly.
+- `P4-C2` is now complete: the reviewed `S0F` subset should not continue as one more same-lane packet inside `S0F-5I`, and any later `S0F` narrative packet should open as one new bounded lane instead.
+- `S0F-5I` is now stable as the current old-`S0` counted-series narrative-history widening lane: the packet rollout boundary is explicit, the published packet set is reader-discoverable, and the reviewed `S0F` subset remains an explicit later follow-up that now requires its own lane rather than an implicit omission.
+- The immediate next step is now optional and bounded: open one later follow-up only if one narrower `S0F` subset can be defended as packet-worthy without reopening unresolved standing, or if the router later needs to absorb that future packet explicitly.
 
 ## Evidence (reserved)
 
@@ -345,6 +366,20 @@
   - separate packet views are now judged insufficient as the only narrative front door because the packet set spans multiple counted and supplemental boundaries
   - the repo now has one aggregate narrative router that routes readers across the published packet set while keeping the reviewed `S0F` subset as an explicit later follow-up boundary
 
+### P4-C2-S1S2 (Later `S0F` narrative work moved out of the current widening lane | 2026-04-10)
+
+- headSha: `<pending commit for S0F-5I/P4-C2-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/views/view-old-s0-narrative-history-routing-v1.md`
+- expected:
+  - the lane should answer whether the reviewed `S0F` subset is mature enough to continue as one more packet under the current widening lane
+  - if not, the repo should make the lane boundary explicit so later `S0F` narrative work opens as a separate bounded follow-up rather than as a silent `5I` extension
+- observed:
+  - the current `S0F` reader state still mixes surfaced rows, adjudicated external-current-home or retained-history rows, and `18` unresolved standing-first rows, so one same-lane `S0F` packet is not yet justified
+  - any later `S0F` narrative packet should now open as its own bounded lane after a narrower subset is defended without reopening unresolved standing
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5I` as the counted-series narrative-history widening follow-up after `S0F-5H` proved the first `S0A + S0B` pilot.
@@ -352,3 +387,4 @@
 - 2026-04-10: completed `P2` by publishing the first counted-series narrative-history packet for `S0D + S0C` and by confirming the reused eight-field model remains sufficient before widening into `S0E`.
 - 2026-04-10: completed `P3` by publishing the next counted-series narrative-history packet for `S0E` and by wiring narrative routes from the affected `S0D` / `S0C` / `S0E` standing surfaces into the packet views.
 - 2026-04-10: completed `P4` by deciding that separate packet views are not sufficient as the only narrative front door, publishing one aggregate narrative router across the packet set, and closing `S0F-5I` as stable for the current packet boundary.
+- 2026-04-10: completed `P4-C2` by deciding that the reviewed `S0F` subset should not continue as one more same-lane `S0F-5I` packet and that any later `S0F` narrative packet should instead open as one new bounded follow-up lane.

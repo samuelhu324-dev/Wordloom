@@ -39,6 +39,7 @@
 - Separate packet views are no longer sufficient as the only first-open narrative entry, because there is now more than one published packet and the packet set spans both supplemental and counted scope.
 - This router intentionally does not claim full narrative completeness for all old-`S0` rows.
 - The reviewed `S0F` subset remains an explicit later follow-up boundary rather than an implied missing row inside the current packet set.
+- Current `S0F` reading is still split across surfaced standing, adjudicated remainder reading, and `18` unresolved standing-first rows, so a later `S0F` narrative packet should open as its own bounded follow-up rather than as an extension silently implied by this router.
 
 ## Source Refs
 
