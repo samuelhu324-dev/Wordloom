@@ -21,6 +21,16 @@
   - absorbed relationships
   - retirement relationships
 
+## Current Rebuild Order
+
+- First foundational packet: `S0A + S0B`
+- Follow-on rebuild order: `S0C -> S0D -> S0E -> S0F`
+- This order is chronology-first rather than projection-first:
+  - `S0A + S0B` establishes the earliest decision spine
+  - `S0C` and `S0D` extend the structural and operator grammar that later automation depends on
+  - `S0E` then carries the first large mixed automation and lifecycle contract line
+  - `S0F` remains last because it is the latest and still the densest mixed series
+
 ## Read Now
 
 - Open `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md` for the rebuild boundary, order, and next steps.
@@ -33,4 +43,4 @@
 
 - This index intentionally does not treat the moved legacy trees as canonical.
 - Existing `view` surfaces may remain clearer than the current contract folders during the reset; that is the reason this rebuild lane exists.
-- The next intended population step is foundational rebuild from early `S0A + S0B`, not another late-stage current-first extraction packet.
+- The next intended population step is foundational contract generation from `S0A + S0B`, not another late-stage current-first extraction packet.

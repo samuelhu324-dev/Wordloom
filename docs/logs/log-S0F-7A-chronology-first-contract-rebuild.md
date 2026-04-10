@@ -157,6 +157,26 @@
 - `P2-C1-S1`: fix the first foundational packet as `S0A + S0B`
 - `P2-C1-S2`: define the follow-on rebuild order from `S0C -> S0D -> S0E -> S0F`
 
+### P2-C1-S1 (First foundational packet fixed as `S0A + S0B` | v1)
+
+- The first chronology-first rebuild packet is now fixed as `S0A + S0B`.
+- This first packet is defended because it contains the earliest still-defensible decision line that later old-`S0` history depends on:
+  - `S0A` carries the pre-counted platform pressure around replay, failure handling, and shared operator semantics
+  - the `S0B` parent ADR turns that pressure into one defended governance decision package
+  - `S0B-2A` and `S0B-3A` then act as the earliest counted execution-level children of that decision package
+- Under chronology-first rebuild, this packet must land first because later `S0C` / `S0D` / `S0E` / `S0F` work all assume the taxonomy, metadata, cutover, and operator-structure baseline that begins here.
+- The packet also keeps the explicit `S0B-1A` unresolved gap visible so the rebuilt chain does not fake full foundational completeness where local evidence is still missing.
+
+### P2-C1-S2 (Follow-on rebuild order fixed as `S0C -> S0D -> S0E -> S0F` | v1)
+
+- The follow-on chronology-first rebuild order is now fixed as `S0C -> S0D -> S0E -> S0F`.
+- This order is defended as the cleanest chronology-first build sequence after the foundational `S0A + S0B` packet:
+  - `S0C` should follow first because it stabilizes log grammar, CLI decomposition, scenario taxonomy, and commit-description discipline directly on top of the earlier docs-management and metadata baseline
+  - `S0D` should follow next because it packages the repo's supporting governance containers around logs, evidence, runbooks, UI evidence-lite, workflow packing, and roadmap/demo organization on top of the structure that `S0C` and earlier work already made legible
+  - `S0E` should follow third because it is the first large mixed automation and lifecycle series, and many of its rows refine or operationalize the earlier structure into issue, PR, lifecycle, and workflow semantics
+  - `S0F` stays last because it is both the latest chronology and the current densest mixed series, with several rows already reading as late-stage concentration while other rows remain unresolved
+- Under this rule, rebuild order is no longer driven by the earlier narrative-widening convenience order; it is now driven by chronology-first dependence and the need to establish the earliest contract spine before later concentration and replacement states are evaluated.
+
 ### P3 (First foundational contracts)
 
 - `P3-C1-S1`: publish the first chronology-first foundational contracts from `S0A + S0B`
@@ -176,8 +196,8 @@
 
 ### P2 (First rebuild packet)
 
-- [ ] `P2-C1-S1`: first foundational packet fixed
-- [ ] `P2-C1-S2`: follow-on rebuild order fixed
+- [x] `P2-C1-S1`: first foundational packet fixed
+- [x] `P2-C1-S2`: follow-on rebuild order fixed
 
 ### P3 (First foundational contracts)
 
@@ -189,7 +209,8 @@
 - `S0F-7A` is now opened as the chronology-first contract rebuild reset lane.
 - `P0` is now complete: canonical versus legacy contract roots are explicit, and the immediate next step is to define the chronology-first record model before any foundational contracts are generated.
 - `P1` is now complete: the repo now has one explicit contract-versus-evidence rule and one structured lineage-verb model for chronology-first rebuild.
-- The immediate next step is `P2`: fix the first foundational packet as `S0A + S0B` and define the follow-on rebuild order from `S0C -> S0D -> S0E -> S0F`.
+- `P2` is now complete: the first foundational rebuild packet is fixed as `S0A + S0B`, and the follow-on chronology-first rebuild order is fixed as `S0C -> S0D -> S0E -> S0F`.
+- The immediate next step is `P3`: publish the first foundational chronology-first contracts from `S0A + S0B` under the new canonical template and lineage model.
 
 ## Evidence (reserved)
 
@@ -222,8 +243,23 @@
   - chronology-first contracts are now defined as rule-owning or boundary-owning states, while validation, migration, wrapper, and transport rows stay as evidence-only or lineage-support history
   - the canonical template now distinguishes decisive source refs from supporting evidence and carries separate lineage fields for supersede, split, absorb, and retire relationships
 
+### P2-C1-S1S2 (Foundational rebuild packet and chronology-first order fixed | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7A/P2-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+  - `docs/governance/contracts/INDEX.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should fix the first foundational chronology-first packet before generating rebuilt contracts
+  - the rebuild order after that packet should follow defended chronology and dependency rather than the earlier packet-reading convenience order
+- observed:
+  - the first foundational packet is now fixed as `S0A + S0B`, because it carries the earliest still-defensible decision line that later old-`S0` work depends on
+  - the follow-on chronology-first rebuild order is now fixed as `S0C -> S0D -> S0E -> S0F`, so later contract generation can proceed from early structure into later automation and concentration states
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-7A` as the reset lane for chronology-first contract rebuild.
 - 2026-04-10: fixed the canonical versus legacy contract roots and the immediate rebuild sequence before any new foundational contracts are generated.
 - 2026-04-10: completed `P1` by fixing the chronology-first contract-versus-evidence rule and by defining the lineage verbs plus structured template fields needed for supersede, split, absorb, and retire cases.
+- 2026-04-10: completed `P2` by fixing the first foundational rebuild packet as `S0A + S0B` and by fixing the follow-on chronology-first rebuild order as `S0C -> S0D -> S0E -> S0F`.
