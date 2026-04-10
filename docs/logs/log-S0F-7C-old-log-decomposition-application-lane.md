@@ -280,7 +280,7 @@
 
 ### P3-C1-S1 (First `S0B-3A` routing ledger drafted | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7C/P3-C1-S1>`
+- headSha: `672ac2d16`
 - artifacts:
   - `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
   - `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
