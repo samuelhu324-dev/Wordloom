@@ -208,6 +208,22 @@
 - `P2-C1-S1`: land one widened history/view routing surface for the remaining old-`S0` line
 - `P2-C1-S2`: wire that surface into the existing old-`S0` reader routing set without collapsing it back into the working ledger
 
+### P2-C1-S1 (Widened history/view routing surface landed | v1)
+
+- The first widened remainder-routing surface now exists at `docs/governance/views/view-old-s0-remaining-history-line-routing-v1.md`.
+- This first widened surface intentionally answers one reader-facing question only:
+  - `what is the full remaining old-S0 line after the current surfaced DOC set, and how should I route into it?`
+- The landed surface now makes three points explicit without dropping readers into the support-only working ledger first:
+  - the remaining line is the full `63`-row non-surfaced remainder
+  - that remainder splits into `45` already-adjudicated rows plus `18` still-unresolved `S0F` rows
+  - current first-open routing differs by series because `S0B`/`S0C`/`S0D`/`S0E` now have only adjudicated remainder while `S0F` still mixes adjudicated and unresolved remainder
+
+### P2-C1-S2 (Widened routing wired into the old-`S0` reader set | v1)
+
+- The old-`S0` reader-routing set now explicitly includes the new remainder-routing surface.
+- `view-old-s0-absorption-coverage-overview-v1.md` now points readers to `view-old-s0-remaining-history-line-routing-v1.md` when the question is the non-surfaced remainder itself rather than the surfaced set or the aggregate counts.
+- This keeps the new routing answer reader-facing while leaving the support-only working ledger in its intended working-only role.
+
 ### P3 (Remaining old-`S0` history-line expansion)
 
 - `P3-C1-S1`: expand the remaining `S0F` series and adjacent retained-history line into explicit reader-facing history routing
@@ -242,8 +258,8 @@
 
 ### P2 (Widened history/view routing surface)
 
-- [ ] `P2-C1-S1`: widened history/view routing surface landed
-- [ ] `P2-C1-S2`: widened routing wired into the old-`S0` reader set
+- [x] `P2-C1-S1`: widened history/view routing surface landed
+- [x] `P2-C1-S2`: widened routing wired into the old-`S0` reader set
 
 ### P3 (Remaining old-`S0` history-line expansion)
 
@@ -270,7 +286,8 @@
 - `S0F-5G` is now opened as the bounded remaining old-`S0` history-line expansion lane after `S0F-5F` removed the last generic unresolved remainder from `S0E`.
 - `P0` is now complete: the lane is fixed as history/view-first and manual-screening-first rather than as another auto-admission lane.
 - `P1` is now complete: the remaining non-surfaced old-`S0` history line is now fixed as one explicit `63`-row remainder split into `45` already-adjudicated rows plus `18` still-unresolved `S0F` rows, and the later manual screening surface now has one defended six-class routing model.
-- The immediate next step is now `P2`: land one widened history/view routing surface for that full `63`-row remainder without collapsing the answer back into the support-only working ledger.
+- `P2` is now complete: the repo now has one reader-facing remainder-routing surface for the full `63`-row non-surfaced old-`S0` line, and aggregate coverage routing now points readers there before they fall back to the support-only working ledger.
+- The immediate next step is now `P3`: widen that routing answer into one readable detail/history line for the remaining `63` rows, with separate entry for the unresolved `18`-row `S0F` subset.
 
 ## Evidence (reserved)
 
@@ -300,7 +317,23 @@
   - the remaining old-`S0` line is now fixed as the full `63`-row non-surfaced remainder, split into `45` already-adjudicated rows plus `18` still-unresolved `S0F` rows
   - the later manual screening surface now has one defended six-class routing model that keeps unresolved rows separate from candidate current-contract/current-view, retained-history, lineage-only, and non-DOC rows
 
+### P2-C1-S1S2 (Remaining old-`S0` routing surface landed and wired | 2026-04-10)
+
+- headSha: `<pending commit for S0F-5G/P2-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-remaining-history-line-routing-v1.md`
+  - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
+  - `docs/logs/log-S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - readers should gain one first-open remainder-routing answer for the full non-surfaced old-`S0` line
+  - the aggregate coverage layer should now route non-surfaced questions to that new view rather than leaving readers to infer the remainder from counts alone
+- observed:
+  - `view-old-s0-remaining-history-line-routing-v1.md` now exposes the full `63`-row remainder split and the current first-open routing by series
+  - `view-old-s0-absorption-coverage-overview-v1.md` now routes the non-surfaced-remainder question into that new reader-facing surface
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5G` as the bounded remaining old-`S0` history-line expansion and manual-screening lane after `S0F-5F` completed the remaining `S0E` standing adjudication.
 - 2026-04-10: completed `P1` by fixing the full remaining old-`S0` non-surfaced population and the minimum routing classes for later manual screening.
+- 2026-04-10: completed `P2` by landing the first remainder-routing view for the full non-surfaced old-`S0` line and wiring aggregate coverage routing to that new surface.

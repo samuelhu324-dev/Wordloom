@@ -48,6 +48,7 @@
 | question | open first | why |
 | --- | --- | --- |
 | `how much of old S0 has been absorbed so far?` | `view-old-s0-absorption-coverage-overview-v1.md` | aggregate totals and series distribution live here |
+| `what is the full old-S0 remainder after the current surfaced DOC set?` | `view-old-s0-remaining-history-line-routing-v1.md` | the remainder-routing view is now the first-open surface for the non-surfaced old-`S0` line |
 | `inside one series, what is the standing of each old log?` | `view-old-s0-series-s0b-standing-v1.md` or the later matching series drill-down view | per-log standing is a series-bounded question, not an aggregate one |
 | `how did one current DOC surface emerge from older logs?` | `view-old-s0-contract-history-chain-doc-drb-0001-v1.md` or the later matching current-surface chain view | current-surface-first historical reading belongs in the contract-history chain layer |
 | `which exact rows are already in the surfaced DOC set across all series?` | `view-old-s0-migration-ledger-v1.md` | the migration ledger remains the canonical admitted-row projection |
@@ -56,6 +57,7 @@
 
 - Read this view first when the question is `how much of old S0 has been absorbed so far, and how is that distributed by series?`
 - Use `view-old-s0-migration-ledger-v1.md` when the question is `which exact old logs are already admitted into the current surfaced set?`
+- Use `view-old-s0-remaining-history-line-routing-v1.md` when the question is `what still remains outside the surfaced set, and how should I route into that remainder?`
 - Use later `series drill-down` surfaces when the question becomes `what is the standing of each individual old log inside one series?`
 - Use later `contract-history chain` surfaces when the question becomes `how did one current DOC surface emerge from older logs?`
 - `remaining outside surfaced set` does not mean only `unreviewed`:
