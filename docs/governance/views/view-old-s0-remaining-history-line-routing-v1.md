@@ -52,6 +52,7 @@
 | question | open first | why |
 | --- | --- | --- |
 | `what is the full old-S0 remainder after the current surfaced DOC set?` | `view-old-s0-remaining-history-line-routing-v1.md` | this surface is the bounded first-open answer for the full non-surfaced remainder |
+| `if I want to judge whether one old-S0 row can later enter contract or should remain history, where should I start?` | `view-old-s0-contract-judgment-front-door-v1.md` | the contract-judgment front door now decides whether you should read surfaced migration, narrative packet history, remaining manual screening, or unresolved standing first |
 | `which remaining rows are already adjudicated versus still unresolved?` | `view-old-s0-remaining-history-line-routing-v1.md` | this surface fixes that split explicitly before later detail and manual screening views |
 | `what earlier ancestry sits outside this counted 63-row remainder because it survives only as legacy or issue-only evidence?` | `view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md` | the supplemental reconstruction-routing view handles ancestry outside the counted remainder scope |
 | `which exact early anchors are in that supplemental ancestry branch right now?` | `view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md` | the supplemental detail view expands the excluded ancestry branch without altering the counted remainder |
