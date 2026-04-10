@@ -259,6 +259,29 @@
 - `P4-C1-S1`: determine whether the pilot should widen to the other series
 - `P4-C1-S2`: determine whether the field model needs revision before widening
 
+### P4-C1-S1 (Pilot judged strong enough for counted-series widening | v1)
+
+- The first `S0A + S0B` pilot is now judged strong enough to widen beyond the early packet.
+- The defended widening decision is now:
+  - keep the current eight-field narrative model unchanged for the next lane
+  - widen next into the counted old-`S0` series that already have standing surfaces and defended row outcomes
+  - treat the early `S0A / S0B` packet as the narrative pilot and the counted `S0C` / `S0D` / `S0E` / `S0F` population as the next rollout target
+- This decision is defended because the pilot has already proved the field model can carry:
+  - supplemental direct history
+  - supplemental lineage-support ancestry
+  - counted-series rows
+  - one explicit unresolved placeholder
+  without collapsing into a standing-only table or one prose-heavy retrospective.
+
+### P4-C1-S2 (No pre-widening field-model revision required | v1)
+
+- No pre-widening field-model revision is now required.
+- The current eight-field model is already explicit enough to separate:
+  - emergence pressure and scoped problem
+  - historical result and later inheritance
+  - current historical role and current first-open home
+- The immediate next owner is now fixed as new lane `S0F-5I`, which should widen the same narrative model across the counted old-`S0` series before any later aggregate narrative consolidation is reconsidered.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -283,8 +306,8 @@
 
 ### P4 (Post-pilot decision)
 
-- [ ] `P4-C1-S1`: widening decision fixed
-- [ ] `P4-C1-S2`: field-model revision decision fixed
+- [x] `P4-C1-S1`: widening decision fixed
+- [x] `P4-C1-S2`: field-model revision decision fixed
 
 ## Current Status
 
@@ -294,7 +317,9 @@
 - The preferred first pilot is now `S0A + S0B`, because that mixed set is small and already spans both counted mainline reading and supplemental ancestry reading.
 - `P2` is now complete: the first pilot population is fixed as the five-item mixed `S0A + S0B` set, and everything outside that bounded packet now stays intentionally outside the pilot.
 - `P3` is now complete: the repo now has one first reader-facing narrative-history pilot for the mixed `S0A + S0B` packet, and existing old-`S0` reader surfaces now route emergence/problem/result questions into it.
-- The immediate next step is now `P4`: decide whether this pilot is already strong enough to widen to `S0C` / `S0D` / `S0E` / `S0F`, or whether the field model still needs revision first.
+- `P4` is now complete: the pilot is judged strong enough to widen directly into counted `S0C` / `S0D` / `S0E` / `S0F`, and no pre-widening field-model revision is required.
+- The immediate next step is now `S0F-5I/P1`: fix the counted-series widening order and bounded rollout sequence for the next narrative-history lane.
+- `S0F-5H` is now stable: the narrative-history reader contract is explicit, the first bounded pilot surface exists, and the next widening owner is now fixed.
 
 ## Evidence (reserved)
 
@@ -352,9 +377,24 @@
   - the new pilot view now narrates the mixed `S0A + S0B` packet across direct history, parent decision, counted execution rows, and one unresolved placeholder
   - the overview, ancestry, and counted `S0B` surfaces now all route early-packet narrative questions to that pilot view directly
 
+### P4-C1-S1S2 (Pilot approved for counted-series widening with no field-model revision | 2026-04-10)
+
+- headSha: `<pending commit for S0F-5H/P4-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5H-old-s0-narrative-history-view-pilot.md`
+  - `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should have one explicit answer on whether the narrative pilot is already strong enough to widen or whether the field model must be revised first
+  - the pilot close-out should leave one next widening owner explicit enough that later counted-series rollout does not need to reopen the pilot-boundary decision
+- observed:
+  - the `S0A + S0B` pilot is now judged strong enough to widen directly into counted `S0C` / `S0D` / `S0E` / `S0F` under the same eight-field model
+  - no pre-widening field-model revision is required, and the next widening owner is now fixed as new lane `S0F-5I`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5H` as the bounded old-`S0` narrative-history-view pilot lane after `S0F-5G` landed standing, routing, screening, and supplemental ancestry reader surfaces.
 - 2026-04-10: completed `P1` by fixing the minimum narrative field model and explicit source-feed rules for the first old-`S0` narrative-history pilot.
 - 2026-04-10: completed `P2` by fixing the first five-item `S0A + S0B` pilot population and explicit non-pilot boundary for the first narrative-history view.
 - 2026-04-10: completed `P3` by publishing the first `S0A + S0B` narrative-history pilot view and wiring early old-`S0` narrative questions into it from the overview, ancestry, and counted `S0B` reader surfaces.
+- 2026-04-10: completed `P4` by deciding the pilot is strong enough to widen directly into counted `S0C` / `S0D` / `S0E` / `S0F`, with no pre-widening revision of the eight-field narrative model, and by fixing `S0F-5I` as the next widening owner.
