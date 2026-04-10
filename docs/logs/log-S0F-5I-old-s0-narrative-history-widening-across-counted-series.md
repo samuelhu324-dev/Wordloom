@@ -125,6 +125,34 @@
 - `P1-C1-S1`: fix the counted-series widening order
 - `P1-C1-S2`: fix the first bounded counted-series packet
 
+### P1-C1-S1 (Counted-series widening order fixed | v1)
+
+- The counted-series widening order is now fixed as:
+  - `S0D` first
+  - `S0C` second
+  - `S0E` third
+  - reviewed `S0F` subset last under this lane's current boundary
+- This widening order is defended as the lowest-risk reuse path for the `S0F-5H` narrative model:
+  - `S0D` is the smallest counted series with fully defended standing and mostly one retained-governance reading shape
+  - `S0C` is still fully defended, but it adds a slightly wider mix of retained evidence, retired lineage, and history-lineage without introducing unresolved rows
+  - `S0E` is the first large fully-defended mixed series and therefore the first real stress test for one narrative packet that must carry current-contract, current-view, retained-evidence, history-lineage, retired-lineage, and non-DOC outcomes together
+  - `S0F` remains last because the series still contains unresolved rows, so widening it first would blur the boundary between narrative rollout and standing adjudication
+- Under this rule, `S0F-5I` should widen from the cleanest defended series to the densest mixed defended series before it enters any counted packet that still depends on later standing decisions.
+
+### P1-C1-S2 (First bounded counted-series packet fixed | v1)
+
+- The first bounded counted-series narrative packet is now fixed as one combined `S0D + S0C` packet.
+- This first packet is defended because it gives the widening lane one compact but still meaningful rollout target:
+  - both series already have standing views and defended row outcomes
+  - both series are small enough to read in one pass without becoming a mega-table
+  - together they already prove the narrative model can move beyond the early `S0A + S0B` packet into counted rows that are not current-contract concentration points
+  - the pair also introduces multiple defended narrative shapes at once: retained-governance evidence, retired lineage, and history-lineage into current repo-local surfaces
+- The non-first-packet boundary is now fixed as:
+  - `S0E` stays outside the first counted packet because it is the first large mixed series and should enter only after the smaller defended packet proves readable
+  - unresolved `S0F` rows stay outside the first counted packet because `S0F-5I` is not the lane that reopens their standing outcomes
+  - reviewed `S0F` rows may enter only in a later bounded packet after `S0D + S0C` and `S0E` prove the counted-series rollout shape first
+- Under this rule, `P2` should publish one first counted-series narrative view centered on the combined `S0D + S0C` packet under the reused eight-field model.
+
 ### P2 (First counted-series narrative packet)
 
 - `P2-C1-S1`: publish the first counted-series narrative-history packet
@@ -149,8 +177,8 @@
 
 ### P1 (Counted-series widening order)
 
-- [ ] `P1-C1-S1`: counted-series widening order fixed
-- [ ] `P1-C1-S2`: first counted-series packet fixed
+- [x] `P1-C1-S1`: counted-series widening order fixed
+- [x] `P1-C1-S2`: first counted-series packet fixed
 
 ### P2 (First counted-series narrative packet)
 
@@ -171,7 +199,8 @@
 
 - `S0F-5I` is now opened as the next widening follow-up after `S0F-5H`.
 - `P0` is now complete: the counted-series narrative-widening boundary is fixed, and the immediate next step is to decide one bounded widening order rather than to reopen the pilot field model.
-- The immediate next step is now `P1`: fix the counted-series widening order and first bounded counted-series packet under the reused eight-field narrative model.
+- `P1` is now complete: the counted-series widening order is fixed as `S0D -> S0C -> S0E -> reviewed S0F subset`, and the first bounded rollout packet is fixed as one combined `S0D + S0C` narrative packet.
+- The immediate next step is now `P2`: publish the first counted-series narrative-history packet for the combined `S0D + S0C` set and confirm the reused eight-field model remains sufficient there.
 
 ## Evidence (reserved)
 
@@ -188,6 +217,20 @@
   - `S0F-5I` is now opened as the counted-series widening follow-up after `S0F-5H`
   - the immediate next step is now to decide one bounded widening order under the existing eight-field narrative model
 
+### P1-C1-S1S2 (Counted-series widening order and first packet fixed | 2026-04-10)
+
+- headSha: `<pending commit for S0F-5I/P1-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the widening lane should have one defended order that prefers already-defended series before denser or partially unresolved packets
+  - the first counted-series packet should be bounded enough to prove readability before the lane widens into the largest mixed series
+- observed:
+  - the counted-series widening order is now fixed as `S0D -> S0C -> S0E -> reviewed S0F subset`
+  - the first bounded counted-series narrative packet is now fixed as one combined `S0D + S0C` packet under the reused eight-field model
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5I` as the counted-series narrative-history widening follow-up after `S0F-5H` proved the first `S0A + S0B` pilot.
+- 2026-04-10: completed `P1` by fixing the counted-series widening order as `S0D -> S0C -> S0E -> reviewed S0F subset` and by fixing the first bounded counted-series rollout target as one combined `S0D + S0C` narrative packet.
