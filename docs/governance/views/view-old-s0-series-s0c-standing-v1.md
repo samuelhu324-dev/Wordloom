@@ -42,6 +42,7 @@
 | question | open first | why |
 | --- | --- | --- |
 | `inside S0C, what is the standing of each old log now?` | `view-old-s0-series-s0c-standing-v1.md` | this surface is the bounded per-log standing answer for the `S0C` series |
+| `why did the counted S0C packet exist, and what did it leave behind?` | `view-old-s0-narrative-history-packet-s0d-s0c-v1.md` | the counted narrative packet answers the change-story question that the standing table does not |
 | `how much of old S0 is surfaced by series overall?` | `view-old-s0-absorption-coverage-overview-v1.md` | aggregate counts and distribution are not repeated here |
 | `which admitted rows exist across all series?` | `view-old-s0-migration-ledger-v1.md` | cross-series admitted-row projection stays in the migration ledger |
 | `how did one current DOC surface emerge from this history?` | `view-old-s0-contract-history-chain-doc-drb-0001-v1.md` or the later matching chain view | current-surface-first evolution reading belongs in the history-chain layer, not in the series standing table |
@@ -51,6 +52,7 @@
 - Read this view when the question is `inside S0C, what is the standing of each old log now?`
 - Use `view-old-s0-absorption-coverage-overview-v1.md` when the question is still aggregate and series-level only.
 - Use `view-old-s0-migration-ledger-v1.md` when the question is `which rows are already admitted into the surfaced set across all series?`
+- Use `view-old-s0-narrative-history-packet-s0d-s0c-v1.md` when the question is no longer current standing but `why did these S0C rows exist and what did they leave behind?`
 - This fourth `S0C` surface closed the last missing small-series drill-down prerequisite before row-level review, and the bounded `P6` review now resolves the remaining eight rows without widening the current `DOC` surfaced set.
 - `S0C-1A` remains the only already surfaced row in the series.
 - `S0C-2A` now reads as retired legacy-suite lineage, `S0C-3A` through `S0C-4A-1A` now read as retained repo-local CLI/scenario governance evidence, and `S0C-5A` now reads as history-lineage for the current log-orchestration grammar rather than as one cleanup-admission candidate.

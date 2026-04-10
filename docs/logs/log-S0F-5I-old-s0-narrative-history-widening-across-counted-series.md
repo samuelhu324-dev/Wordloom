@@ -184,6 +184,26 @@
 - `P3-C1-S1`: continue counted-series rollout under the same field model
 - `P3-C1-S2`: wire narrative routing from the affected standing surfaces
 
+### P3-C1-S1 (Next counted-series narrative packet published for `S0E` | v1)
+
+- The next counted-series narrative-history packet now exists at `docs/governance/views/view-old-s0-narrative-history-packet-s0e-v1.md`.
+- It reuses the same eight-field narrative model across the full `S0E` series, which is the first large defended mixed counted packet after `S0D + S0C`.
+- This landed packet proves the model now carries, in one bounded series view:
+  - current-contract rows
+  - current-view lineage milestones
+  - retained-evidence rows
+  - history-lineage rows
+  - retired-lineage rows
+  - non-DOC current-home rows
+  without reopening standing results or collapsing into one count-first inventory.
+
+### P3-C1-S2 (Standing-surface narrative routing widened | v1)
+
+- The affected counted standing surfaces now route narrative-history questions into the published packet views.
+- `S0D` and `S0C` standing views now route readers to the existing combined `S0D + S0C` narrative packet when the question becomes `why did these rows exist and what did they leave behind?`
+- `S0E` standing view now routes readers to the new `S0E` narrative packet for the same narrative question.
+- Under this routing change, standing views remain the current-state answer, while packet views become the first-open answer for counted-series historical change-reading.
+
 ### P4 (Post-rollout boundary)
 
 - `P4-C1-S1`: determine whether separate counted-series packets are sufficient
@@ -208,8 +228,8 @@
 
 ### P3 (Counted-series rollout and routing)
 
-- [ ] `P3-C1-S1`: counted-series rollout continued
-- [ ] `P3-C1-S2`: standing-surface narrative routing widened
+- [x] `P3-C1-S1`: counted-series rollout continued
+- [x] `P3-C1-S2`: standing-surface narrative routing widened
 
 ### P4 (Post-rollout boundary)
 
@@ -222,7 +242,8 @@
 - `P0` is now complete: the counted-series narrative-widening boundary is fixed, and the immediate next step is to decide one bounded widening order rather than to reopen the pilot field model.
 - `P1` is now complete: the counted-series widening order is fixed as `S0D -> S0C -> S0E -> reviewed S0F subset`, and the first bounded rollout packet is fixed as one combined `S0D + S0C` narrative packet.
 - `P2` is now complete: the repo now has one first counted-series narrative-history packet for the combined `S0D + S0C` set, and that packet confirms the reused eight-field model remains sufficient before the lane widens into `S0E`.
-- The immediate next step is now `P3`: continue counted-series rollout into the next bounded packet and widen reader routing from the affected standing surfaces.
+- `P3` is now complete: the repo now has the next counted-series narrative packet for `S0E`, and the affected `S0D` / `S0C` / `S0E` standing surfaces now route narrative questions into the counted packet views.
+- The immediate next step is now `P4`: determine whether the counted-series packet set is already sufficient as separate packet views or whether one later aggregate narrative router is still needed.
 
 ## Evidence (reserved)
 
@@ -266,8 +287,26 @@
   - the repo now has one combined `S0D + S0C` narrative-history packet that explains why those rows appeared, what they fixed, and where their results later read now
   - the reused eight-field model remains sufficient on the first counted packet, so the next step stays with widening and routing rather than field-model redesign
 
+### P3-C1-S1S2 (Next counted-series packet published and standing routes widened | 2026-04-10)
+
+- headSha: `<pending commit for S0F-5I/P3-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-narrative-history-packet-s0e-v1.md`
+  - `docs/governance/views/view-old-s0-series-s0d-standing-v1.md`
+  - `docs/governance/views/view-old-s0-series-s0c-standing-v1.md`
+  - `docs/governance/views/view-old-s0-series-s0e-standing-v1.md`
+  - `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the widening lane should publish the next bounded counted-series packet after `S0D + S0C`
+  - the standing surfaces affected by counted narrative rollout should start routing change-story questions into the packet views instead of leaving them implicit in standing-only tables
+- observed:
+  - the repo now has one full `S0E` narrative-history packet, which proves the eight-field model also scales to the first large mixed counted series
+  - the counted `S0D` / `S0C` / `S0E` standing surfaces now route narrative questions into the published packet views directly
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5I` as the counted-series narrative-history widening follow-up after `S0F-5H` proved the first `S0A + S0B` pilot.
 - 2026-04-10: completed `P1` by fixing the counted-series widening order as `S0D -> S0C -> S0E -> reviewed S0F subset` and by fixing the first bounded counted-series rollout target as one combined `S0D + S0C` narrative packet.
 - 2026-04-10: completed `P2` by publishing the first counted-series narrative-history packet for `S0D + S0C` and by confirming the reused eight-field model remains sufficient before widening into `S0E`.
+- 2026-04-10: completed `P3` by publishing the next counted-series narrative-history packet for `S0E` and by wiring narrative routes from the affected `S0D` / `S0C` / `S0E` standing surfaces into the packet views.

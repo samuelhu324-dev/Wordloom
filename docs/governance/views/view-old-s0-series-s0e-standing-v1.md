@@ -66,6 +66,7 @@
 | question | open first | why |
 | --- | --- | --- |
 | `inside S0E, what is the standing of each old log now?` | `view-old-s0-series-s0e-standing-v1.md` | this surface is the bounded per-log standing answer for the `S0E` series |
+| `why did the counted S0E packet exist, and what did it leave behind?` | `view-old-s0-narrative-history-packet-s0e-v1.md` | the counted narrative packet answers the full-series change-story question for `S0E` |
 | `how much of old S0 is surfaced by series overall?` | `view-old-s0-absorption-coverage-overview-v1.md` | aggregate counts and distribution are not repeated here |
 | `which admitted rows exist across all series?` | `view-old-s0-migration-ledger-v1.md` | cross-series admitted-row projection stays in the migration ledger |
 | `how did one current DOC surface emerge from this history?` | `view-old-s0-contract-history-chain-doc-drb-0001-v1.md` or the later matching chain view | current-surface-first evolution reading belongs in the history-chain layer, not in the series standing table |
@@ -75,6 +76,7 @@
 - Read this view when the question is `inside S0E, what is the standing of each old log now?`
 - Use `view-old-s0-absorption-coverage-overview-v1.md` when the question is still aggregate and series-level only.
 - Use `view-old-s0-migration-ledger-v1.md` when the question is `which rows are already admitted into the surfaced set across all series?`
+- Use `view-old-s0-narrative-history-packet-s0e-v1.md` when the question is no longer current standing but `why did the S0E packet exist and what did it leave behind?`
 - This second `S0E` surface proves the same row contract can carry surfaced `contract` rows, surfaced `view` rows, and unresolved remainder together without becoming a support-only working ledger.
 - Rows outside the current `DOC` surfaced set may still resolve as `non-doc` or `retained-evidence` when their current meaning already concentrates in narrow `GC` records or in bounded retained planner / wrapper / transport support surfaces.
 - `S0E-7E`, `S0E-7F`, and `S0E-7G` now read through support-only retained bodies for direct history reading, while their preserved root stubs remain the exact-path landing surface for historical citations and machine-generated artifacts.
