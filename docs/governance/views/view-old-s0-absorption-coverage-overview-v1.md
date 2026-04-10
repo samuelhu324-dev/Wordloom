@@ -52,6 +52,7 @@
 | `what is the full old-S0 remainder after the current surfaced DOC set?` | `view-old-s0-remaining-history-line-routing-v1.md` | the remainder-routing view is now the first-open surface for the non-surfaced old-`S0` line |
 | `what earlier S0A or issue-only S0B ancestry exists outside the counted root-log overview?` | `view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md` | the supplemental reconstruction-routing view makes that exclusion boundary explicit |
 | `which exact early S0A / S0B supplemental anchors are currently known, and what evidence do they have?` | `view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md` | the supplemental detail view expands the excluded ancestry branch into exact known anchors and gaps |
+| `why did the early S0A + S0B packet exist, and what did it leave behind?` | `view-old-s0-narrative-history-pilot-s0a-s0b-v1.md` | the narrative pilot is the first reader-facing answer for emergence, problem, result, and inheritance across the early mixed packet |
 | `which remaining old-S0 rows should now be screened manually for possible contract or view concentration?` | `view-old-s0-remaining-history-line-manual-screening-v1.md` | the manual-screening view is now the first-open surface for human challenge of the non-surfaced remainder buckets |
 | `inside one series, what is the standing of each old log?` | `view-old-s0-series-s0b-standing-v1.md` or the later matching series drill-down view | per-log standing is a series-bounded question, not an aggregate one |
 | `how did one current DOC surface emerge from older logs?` | `view-old-s0-contract-history-chain-doc-drb-0001-v1.md` or the later matching current-surface chain view | current-surface-first historical reading belongs in the contract-history chain layer |
@@ -76,6 +77,7 @@
 - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
 - `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md`
 - `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md`
+- `docs/governance/views/view-old-s0-narrative-history-pilot-s0a-s0b-v1.md`
 - `docs/governance/views/view-doc-current-front-door-v1.md`
 - `docs/governance/views/view-doc-history-and-lineage-v1.md`
 - `docs/governance/views/view-doc-contract-promotion-map-v1.md`

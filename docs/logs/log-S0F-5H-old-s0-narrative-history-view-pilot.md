@@ -231,6 +231,29 @@
 - `P3-C1-S1`: publish one narrative-history pilot view for the bounded pilot population
 - `P3-C1-S2`: wire that pilot into the existing old-`S0` reader-routing set without confusing it with standing views
 
+### P3-C1-S1 (Pilot narrative-history view published | v1)
+
+- The first pilot narrative-history surface now exists at `docs/governance/views/view-old-s0-narrative-history-pilot-s0a-s0b-v1.md`.
+- It applies the `P1` narrative field model to the five-item `P2` population:
+  - `S0A` legacy carry-forward anchor
+  - `S0B` parent ADR anchor
+  - `S0B-2A`
+  - `S0B-3A`
+  - `S0B-1A` unresolved placeholder
+- The pilot proves one mixed narrative packet can carry:
+  - emergence pressure
+  - scoped problem
+  - decision or result
+  - later inheritance path
+  - unresolved historical gap
+  without collapsing back into a current-standing table.
+
+### P3-C1-S2 (Pilot routing wired into the old-`S0` reader set | v1)
+
+- The old-`S0` reader set now routes early-packet narrative questions into the pilot view.
+- The aggregate overview, supplemental ancestry routing/detail surfaces, and counted `S0B` standing surface now all point readers to the narrative pilot when the question is no longer `where does this row read now?` but `why did this packet exist and what did it leave behind?`
+- This keeps narrative history as a complementary reader layer rather than forcing readers to infer it from standing, counts, or ancestry-inventory views.
+
 ### P4 (Post-pilot decision)
 
 - `P4-C1-S1`: determine whether the pilot should widen to the other series
@@ -255,8 +278,8 @@
 
 ### P3 (Pilot narrative-history surface)
 
-- [ ] `P3-C1-S1`: pilot narrative-history view published
-- [ ] `P3-C1-S2`: pilot routing wired into the old-`S0` reader set
+- [x] `P3-C1-S1`: pilot narrative-history view published
+- [x] `P3-C1-S2`: pilot routing wired into the old-`S0` reader set
 
 ### P4 (Post-pilot decision)
 
@@ -270,7 +293,8 @@
 - `P1` is now complete: the minimum narrative field model and its allowed source-owned feed blocks are now fixed, so the pilot can extract `why / problem / result / inheritance` without drifting into ad hoc AI compression.
 - The preferred first pilot is now `S0A + S0B`, because that mixed set is small and already spans both counted mainline reading and supplemental ancestry reading.
 - `P2` is now complete: the first pilot population is fixed as the five-item mixed `S0A + S0B` set, and everything outside that bounded packet now stays intentionally outside the pilot.
-- The immediate next step is now `P3`: publish the first narrative-history pilot view and wire it into the old-`S0` reader set.
+- `P3` is now complete: the repo now has one first reader-facing narrative-history pilot for the mixed `S0A + S0B` packet, and existing old-`S0` reader surfaces now route emergence/problem/result questions into it.
+- The immediate next step is now `P4`: decide whether this pilot is already strong enough to widen to `S0C` / `S0D` / `S0E` / `S0F`, or whether the field model still needs revision first.
 
 ## Evidence (reserved)
 
@@ -311,8 +335,26 @@
   - the first pilot population is now fixed as `S0A`, `S0B` parent ADR, `S0B-2A`, `S0B-3A`, and the unresolved `S0B-1A` placeholder
   - all other old-`S0` series and any not-yet-materialized `S0B-1A` issue packet now remain intentionally outside the pilot until the first view proves the field model
 
+### P3-C1-S1S2 (Pilot narrative-history view published and wired | 2026-04-10)
+
+- headSha: `<pending local changes for S0F-5H/P3-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-narrative-history-pilot-s0a-s0b-v1.md`
+  - `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md`
+  - `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md`
+  - `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`
+  - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
+  - `docs/logs/log-S0F-5H-old-s0-narrative-history-view-pilot.md`
+- expected:
+  - the repo should gain one first narrative-history pilot that answers `why / problem / result / inheritance` across the bounded `S0A + S0B` packet
+  - the existing reader-routing set should point narrative questions to that pilot instead of leaving readers to infer them from standing-only or boundary-only views
+- observed:
+  - the new pilot view now narrates the mixed `S0A + S0B` packet across direct history, parent decision, counted execution rows, and one unresolved placeholder
+  - the overview, ancestry, and counted `S0B` surfaces now all route early-packet narrative questions to that pilot view directly
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5H` as the bounded old-`S0` narrative-history-view pilot lane after `S0F-5G` landed standing, routing, screening, and supplemental ancestry reader surfaces.
 - 2026-04-10: completed `P1` by fixing the minimum narrative field model and explicit source-feed rules for the first old-`S0` narrative-history pilot.
 - 2026-04-10: completed `P2` by fixing the first five-item `S0A + S0B` pilot population and explicit non-pilot boundary for the first narrative-history view.
+- 2026-04-10: completed `P3` by publishing the first `S0A + S0B` narrative-history pilot view and wiring early old-`S0` narrative questions into it from the overview, ancestry, and counted `S0B` reader surfaces.

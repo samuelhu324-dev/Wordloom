@@ -49,6 +49,7 @@
 | --- | --- | --- |
 | `which exact early S0A / S0B anchors exist outside counted scope, and what evidence do they currently have?` | `view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md` | this surface expands the supplemental anchor set row by row |
 | `which earlier anchors exist outside the counted 84-row old-S0 review scope at all?` | `view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md` | the routing view remains the first-open boundary surface |
+| `why did the early S0A + S0B packet exist, and what did that early packet change?` | `view-old-s0-narrative-history-pilot-s0a-s0b-v1.md` | the narrative-history pilot translates the same anchor set into emergence, problem, result, and inheritance reading |
 | `which counted S0B rows are already part of the current old-S0 review scope?` | `view-old-s0-series-s0b-standing-v1.md` | the counted `S0B` series standing remains separate from this supplemental ancestry layer |
 | `what is the counted old-S0 overview for the current root-log review scope?` | `view-old-s0-absorption-coverage-overview-v1.md` | the aggregate overview remains the counted-scope summary |
 
@@ -63,6 +64,7 @@
 
 - `docs/logs/log-S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening.md`
 - `docs/governance/views/view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md`
+- `docs/governance/views/view-old-s0-narrative-history-pilot-s0a-s0b-v1.md`
 - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
 - `docs/governance/views/view-old-s0-series-s0b-standing-v1.md`
 - `legacy/from_structured_docs/from-logs/v2-logs/log-S0A-dlq-replay-platform.md`

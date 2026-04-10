@@ -35,6 +35,7 @@
 | question | open first | why |
 | --- | --- | --- |
 | `inside S0B, what is the standing of each old log now?` | `view-old-s0-series-s0b-standing-v1.md` | this surface is the bounded per-log standing answer for the `S0B` series |
+| `why did the early S0A + S0B packet exist, and how did the S0B rows emerge from it?` | `view-old-s0-narrative-history-pilot-s0a-s0b-v1.md` | the narrative-history pilot explains emergence and result, which is different from current standing |
 | `how much of old S0 is surfaced by series overall?` | `view-old-s0-absorption-coverage-overview-v1.md` | aggregate counts and distribution are not repeated here |
 | `which admitted rows exist across all series?` | `view-old-s0-migration-ledger-v1.md` | cross-series admitted-row projection stays in the migration ledger |
 | `how did one current DOC surface emerge from this history?` | `view-old-s0-contract-history-chain-doc-drb-0001-v1.md` or the later matching chain view | current-surface-first evolution reading belongs in the history-chain layer, not in the series standing table |
@@ -52,6 +53,7 @@
 - `docs/logs/log-S0F-6B-old-s0-absorption-coverage-and-history-chain-views.md`
 - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
 - `docs/governance/views/view-old-s0-migration-ledger-v1.md`
+- `docs/governance/views/view-old-s0-narrative-history-pilot-s0a-s0b-v1.md`
 - `docs/logs/log-S0B-2A-scripts-snapshots-management.md`
 - `docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md`
 - `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
