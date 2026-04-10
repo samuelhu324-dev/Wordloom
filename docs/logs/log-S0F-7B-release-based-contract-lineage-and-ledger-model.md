@@ -253,7 +253,7 @@
 - `S0F-7B` is now opened as the release-based follow-on lane after `S0F-7A`.
 - The lane now fixes the first sample target as `S0A-2A` and positions support-only ledgers as the owner of source-routing decisions.
 - `P1` is now complete: the repo now has one explicit family-versus-release model, one hard rule that material meaning change creates a new release, and one stable reading for `0001`, `0002`, and later numbers inside the same family.
-- `P2` is now complete in workspace: the repo now treats lineage as release-to-release semantics, allows supersede to point to multiple earlier releases, and separates release lineage from source-routing.
+- `P2` is now complete: the repo now treats lineage as release-to-release semantics, allows supersede to point to multiple earlier releases, and separates release lineage from source-routing.
 - The next execution step is to revise the template in `P4`, then generate the first sample ledger and release packet for `S0A-2A`.
 
 ## Evidence (reserved)
@@ -287,7 +287,7 @@
 
 ### P2-C1-S1S2S3 (Release-based lineage semantics fixed | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7B/P2-C1-S1S2S3>`
+- headSha: `6467528f9`
 - artifacts:
   - `docs/logs/log-S0F-7B-release-based-contract-lineage-and-ledger-model.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
