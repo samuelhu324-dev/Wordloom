@@ -253,6 +253,27 @@
 - `P4-C1-S1`: publish one manual screening view or equivalent packet for candidate current-contract, retained-history, lineage-only, non-DOC, and outlet-adjustment rows
 - `P4-C1-S2`: fix the first human-review sequence for filtering that packet without auto-admitting a contract set
 
+### P4-C1-S1 (Manual screening packet published | v1)
+
+- The first manual-screening surface now exists at `docs/governance/views/view-old-s0-remaining-history-line-manual-screening-v1.md`.
+- The first-pass screen is intentionally conservative:
+  - `candidate current-contract`: none in the automatic first pass
+  - `candidate current-view`: none in the automatic first pass
+  - `retain as history`: `29` rows
+  - `lineage only`: `7` rows
+  - `non-DOC / external current-home`: `9` rows
+  - `standing-first unresolved`: `18` rows
+- This keeps the lane aligned with the human-review-first goal: the model now exposes the bucket structure without pretending to own the final admission filter.
+
+### P4-C1-S2 (Human-review sequence fixed | v1)
+
+- The first human-review order is now fixed as:
+  - first open `view-old-s0-remaining-history-line-routing-v1.md` for the full remainder shape
+  - then open `view-old-s0-remaining-history-line-detail-v1.md` for the widened row-by-row line
+  - then use `view-old-s0-remaining-history-line-manual-screening-v1.md` to challenge or refine the first-pass screening buckets
+  - only after that decide whether any row should move into one bounded later contract-admission or six-outlet-adjustment follow-up
+- Under this rule, `needs six-outlet adjustment` remains a later human consequence, not one auto-filled first-pass bucket.
+
 ### P5 (Post-screening consequence)
 
 - `P5-C1-S1`: determine whether any bounded first write-back subset is immediately safe after the screening surface lands
@@ -287,8 +308,8 @@
 
 ### P4 (Manual screening packet)
 
-- [ ] `P4-C1-S1`: manual screening packet published
-- [ ] `P4-C1-S2`: human-review sequence fixed
+- [x] `P4-C1-S1`: manual screening packet published
+- [x] `P4-C1-S2`: human-review sequence fixed
 
 ### P5 (Post-screening consequence)
 
@@ -307,7 +328,8 @@
 - `P1` is now complete: the remaining non-surfaced old-`S0` history line is now fixed as one explicit `63`-row remainder split into `45` already-adjudicated rows plus `18` still-unresolved `S0F` rows, and the later manual screening surface now has one defended six-class routing model.
 - `P2` is now complete: the repo now has one reader-facing remainder-routing surface for the full `63`-row non-surfaced old-`S0` line, and aggregate coverage routing now points readers there before they fall back to the support-only working ledger.
 - `P3` is now complete: the repo now has one widened detail/history-line surface for the full remaining `63`-row non-surfaced old-`S0` line, with the already-adjudicated retained-history population and the unresolved `18`-row `S0F` subset exposed together in one reader-facing view.
-- The immediate next step is now `P4`: publish one manual screening view on top of that widened detail layer, separating candidate current-contract/current-view rows from retained-history, lineage-only, non-DOC, and still-unresolved rows.
+- `P4` is now complete: the repo now has one explicit manual-screening view for the full remaining `63`-row non-surfaced old-`S0` line, and the first-pass screen intentionally leaves both candidate buckets empty so later contract admission or outlet change stays human-guided.
+- The immediate next step is now `P5`: decide whether the lane should stop at screening publication and wait for your manual review, or whether one bounded first write-back subset is already safe enough to open next.
 
 ## Evidence (reserved)
 
@@ -368,9 +390,27 @@
   - `view-old-s0-remaining-history-line-detail-v1.md` now widens the remaining line across direct retained history, lineage-only, external-current-home, and standing-first unresolved routes
   - the routing view and the `S0F` series standing view now point readers into that widened detail surface when the question broadens beyond one series or beyond counts alone
 
+### P4-C1-S1S2 (Manual screening packet published with human-first sequence | 2026-04-10)
+
+- headSha: `<pending commit for S0F-5G/P4-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-remaining-history-line-manual-screening-v1.md`
+  - `docs/governance/views/view-old-s0-remaining-history-line-routing-v1.md`
+  - `docs/governance/views/view-old-s0-remaining-history-line-detail-v1.md`
+  - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
+  - `docs/logs/log-S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - readers should gain one human-reviewable screening surface on top of the widened detail line
+  - the first pass should stay conservative enough that later contract admission remains a manual decision instead of a model-only filter
+- observed:
+  - `view-old-s0-remaining-history-line-manual-screening-v1.md` now separates the full remaining line into explicit human-review buckets while leaving both candidate buckets empty in the automatic first pass
+  - the aggregate, routing, and detail layers now all route manual-screening questions into that new surface instead of forcing readers back into the support-only ledger
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5G` as the bounded remaining old-`S0` history-line expansion and manual-screening lane after `S0F-5F` completed the remaining `S0E` standing adjudication.
 - 2026-04-10: completed `P1` by fixing the full remaining old-`S0` non-surfaced population and the minimum routing classes for later manual screening.
 - 2026-04-10: completed `P2` by landing the first remainder-routing view for the full non-surfaced old-`S0` line and wiring aggregate coverage routing to that new surface.
 - 2026-04-10: completed `P3` by widening the full remaining old-`S0` detail/history line into one reader-facing surface and by routing the unresolved `S0F` subset back into that wider remainder line.
+- 2026-04-10: completed `P4` by publishing the first human-reviewable screening view for the remaining old-`S0` line and by fixing the conservative manual-first review sequence on top of the widened routing and detail surfaces.

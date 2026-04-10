@@ -114,6 +114,7 @@
 | --- | --- | --- |
 | `which exact remaining rows are already adjudicated and how do they read now?` | `view-old-s0-remaining-history-line-detail-v1.md` | this is the widened detail answer for the already-adjudicated retained-history population and the unresolved `S0F` subset together |
 | `which remaining rows still lack standing and must stay outside manual screening?` | `view-old-s0-remaining-history-line-detail-v1.md` | the unresolved `18`-row `S0F` subset is explicit here rather than implied through counts only |
+| `which remaining rows should now enter manual screening for possible contract or view concentration?` | `view-old-s0-remaining-history-line-manual-screening-v1.md` | the manual-screening surface now sits on top of this widened detail layer and keeps first-pass candidate buckets explicit |
 | `what is the aggregate shape of the remaining line?` | `view-old-s0-remaining-history-line-routing-v1.md` | the routing view remains the count-first and series-first entrypoint |
 | `inside one series, what is the standing of each row now?` | `view-old-s0-series-s0b-standing-v1.md` or the later matching series drill-down view | the per-series standing surfaces remain the row-level standing source |
 
@@ -124,6 +125,7 @@
   - it widens the readable history line
   - it separates direct retained history, lineage-only, external current-home rows, and unresolved rows
   - it does not yet decide candidate current-contract or candidate current-view writes
+- Use `view-old-s0-remaining-history-line-manual-screening-v1.md` when the question changes from `how do these rows currently read?` to `which of these rows should I challenge manually for later concentration or outlet adjustment?`
 
 ## Source Refs
 
