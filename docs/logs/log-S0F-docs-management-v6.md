@@ -66,6 +66,8 @@
   **phase_log_46**: `docs/logs/log-S0F-5H-old-s0-narrative-history-view-pilot.md`
   **phase_log_47**: `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
   **phase_log_48**: `docs/logs/log-S0F-5J-old-s0-contract-judgment-front-door-view.md`
+  **phase_log_49**: `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -416,6 +418,8 @@
 - `S0F-5I/P4-C1-S1S2` is now complete: separate packet views are no longer treated as a sufficient front door by themselves, one aggregate old-`S0` narrative router is now published across the packet set, and `S0F-5I` now closes as stable for the current packet boundary.
 - `S0F-5I/P4-C2-S1S2` is now complete: the reviewed `S0F` subset is now explicitly kept out of same-lane `5I` packet continuation, and any later `S0F` narrative packet must open as one new bounded follow-up lane rather than as a silent extension of the current widening slice.
 - `S0F-5J/P0-P2-C1-S1S2` is now complete: the repo now has one old-`S0` contract-judgment front door that routes readers across surfaced migration, narrative packet reading, remaining-line manual screening, and unresolved-standing stop conditions without reopening outlet-management execution.
+- `S0F-7A/P0-C1-S1S2` is now complete: the repo now has one explicit chronology-first contract rebuild lane, the new `docs/governance/contracts/` root is now marked canonical for rebuilt contracts, and the moved `docs/governance/legacy/contract/` plus `docs/governance/legacy/contracts/` trees now read as retained legacy reference sets rather than as the contract chain to keep extending.
+- `S0F-7A/P1-C1-S1S2` is now complete: chronology-first contracts are now explicitly separated from evidence-only and lineage-support history, and the new canonical template now carries distinct structured lineage fields for supersede, split, absorb, and retire relationships.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
