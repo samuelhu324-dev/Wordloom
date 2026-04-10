@@ -205,7 +205,7 @@
 
 ### P0-C1-S1S2 (Application lane scaffolded and first target fixed | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7C/P0-C1-S1S2>`
+- headSha: `6268e6874`
 - artifacts:
   - `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
@@ -220,7 +220,7 @@
 
 ### P1-C1-S1S2S3 (Bounded `S0B-3A` source packet reconstructed | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7C/P1-C1-S1S2S3>`
+- headSha: `6268e6874`
 - artifacts:
   - `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
   - `docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md`
