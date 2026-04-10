@@ -62,6 +62,7 @@
   **phase_log_42**: `docs/logs/log-S0F-5D-first-admitted-workflow-support-cleanup-execution.md`
   **phase_log_43**: `docs/logs/log-S0F-5E-small-series-review-sequencing-and-standing-surface-completion.md`
   **phase_log_44**: `docs/logs/log-S0F-5F-remaining-s0e-standing-adjudication-and-packeted-review.md`
+  **phase_log_45**: `docs/logs/log-S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -79,7 +80,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-09`
+**updated**: `2026-04-10`
 
 ---
 
@@ -395,6 +396,8 @@
 - `S0F-5F/P3` is now complete: `S0E-4A` through `S0E-4F` now read as retained PR/lifecycle evidence plus attribution lineage rooted in current runbook, planner, and resolver surfaces, so the PR/linkage packet no longer contributes generic unresolved remainder.
 - `S0F-5F/P4` is now complete: `S0E-5B` through `S0E-6B` now read as retained gate/body evidence plus lineage into later body and log-gate surfaces, so the lifecycle/log-stability packet no longer contributes generic unresolved remainder.
 - `S0F-5F/P5` is now complete: the final remaining `S0E` packet now reads as non-DOC demo roots, retired lineage, retained rendering/audit evidence, and workflow lineage, so `S0E` no longer carries any generic unresolved remainder.
+- `S0F-5G` is now opened as the bounded follow-up for remaining old-`S0` history-line expansion after `S0F-5F`: the lane will expand the history/view layer across the still-unconcentrated old-`S0` population first, then hand one explicit manual screening surface back for human contract admission and six-outlet adjustment instead of auto-filtering new `DOC` candidates prematurely.
+- `S0F-5G/P1` is now complete: the remaining old-`S0` line is now fixed as the full `63`-row non-surfaced remainder split into `45` already-adjudicated rows plus `18` still-unresolved `S0F` rows, and the later manual screening surface now has one defended six-class routing model before any contract filtering begins.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.
