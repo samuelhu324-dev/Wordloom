@@ -158,6 +158,27 @@
 - `P2-C1-S1`: publish the first counted-series narrative-history packet
 - `P2-C1-S2`: confirm the reused field model is sufficient on that packet without pre-widening revision
 
+### P2-C1-S1 (First counted-series narrative packet published | v1)
+
+- The first counted-series narrative-history packet now exists at `docs/governance/views/view-old-s0-narrative-history-packet-s0d-s0c-v1.md`.
+- It applies the `S0F-5H` eight-field narrative model to the full combined `S0D + S0C` packet fixed in `P1`.
+- The landed packet proves the model can now narrate one bounded counted-series set containing:
+  - surfaced structural prerequisites
+  - retained governance evidence
+  - retired lineage
+  - history-lineage into later repo-local surfaces
+  without falling back to one standing-only table or one long prose essay.
+
+### P2-C1-S2 (Reused field model confirmed on the first counted packet | v1)
+
+- The reused eight-field narrative model is now confirmed as sufficient on the first counted-series packet.
+- No pre-`S0E` revision is required because the `S0D + S0C` packet already proves the model can carry:
+  - one combined multi-series packet rather than one single-series table
+  - both surfaced and non-surfaced counted rows
+  - multiple defended current roles and current first-open homes
+  - several different inheritance patterns into repo-local tooling, runbook, workflow, test, and log-orchestration surfaces
+- Under this result, the immediate next job is not field-model repair; it is to widen rollout and reader routing into the next counted packet.
+
 ### P3 (Counted-series rollout and routing)
 
 - `P3-C1-S1`: continue counted-series rollout under the same field model
@@ -182,8 +203,8 @@
 
 ### P2 (First counted-series narrative packet)
 
-- [ ] `P2-C1-S1`: first counted-series narrative packet published
-- [ ] `P2-C1-S2`: reused field model confirmed on the first packet
+- [x] `P2-C1-S1`: first counted-series narrative packet published
+- [x] `P2-C1-S2`: reused field model confirmed on the first packet
 
 ### P3 (Counted-series rollout and routing)
 
@@ -200,7 +221,8 @@
 - `S0F-5I` is now opened as the next widening follow-up after `S0F-5H`.
 - `P0` is now complete: the counted-series narrative-widening boundary is fixed, and the immediate next step is to decide one bounded widening order rather than to reopen the pilot field model.
 - `P1` is now complete: the counted-series widening order is fixed as `S0D -> S0C -> S0E -> reviewed S0F subset`, and the first bounded rollout packet is fixed as one combined `S0D + S0C` narrative packet.
-- The immediate next step is now `P2`: publish the first counted-series narrative-history packet for the combined `S0D + S0C` set and confirm the reused eight-field model remains sufficient there.
+- `P2` is now complete: the repo now has one first counted-series narrative-history packet for the combined `S0D + S0C` set, and that packet confirms the reused eight-field model remains sufficient before the lane widens into `S0E`.
+- The immediate next step is now `P3`: continue counted-series rollout into the next bounded packet and widen reader routing from the affected standing surfaces.
 
 ## Evidence (reserved)
 
@@ -230,7 +252,22 @@
   - the counted-series widening order is now fixed as `S0D -> S0C -> S0E -> reviewed S0F subset`
   - the first bounded counted-series narrative packet is now fixed as one combined `S0D + S0C` packet under the reused eight-field model
 
+### P2-C1-S1S2 (First counted-series narrative packet published and model confirmed | 2026-04-10)
+
+- headSha: `<pending commit for S0F-5I/P2-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-narrative-history-packet-s0d-s0c-v1.md`
+  - `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the lane should publish one first counted-series narrative packet that proves the pilot field model can scale beyond the early `S0A + S0B` set
+  - the first counted packet should be strong enough to answer whether the eight-field model needs revision before `S0E`
+- observed:
+  - the repo now has one combined `S0D + S0C` narrative-history packet that explains why those rows appeared, what they fixed, and where their results later read now
+  - the reused eight-field model remains sufficient on the first counted packet, so the next step stays with widening and routing rather than field-model redesign
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5I` as the counted-series narrative-history widening follow-up after `S0F-5H` proved the first `S0A + S0B` pilot.
 - 2026-04-10: completed `P1` by fixing the counted-series widening order as `S0D -> S0C -> S0E -> reviewed S0F subset` and by fixing the first bounded counted-series rollout target as one combined `S0D + S0C` narrative packet.
+- 2026-04-10: completed `P2` by publishing the first counted-series narrative-history packet for `S0D + S0C` and by confirming the reused eight-field model remains sufficient before widening into `S0E`.
