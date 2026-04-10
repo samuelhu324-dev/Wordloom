@@ -264,7 +264,7 @@
 
 ### P2-C1-S1S2S3 (First `S0B-3A` extraction rules fixed | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7C/P2-C1-S1S2S3>`
+- headSha: `302e587f9`
 - artifacts:
   - `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
