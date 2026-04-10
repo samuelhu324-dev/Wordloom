@@ -228,7 +228,8 @@
 - The lane now also fixes one stronger application reading: extract narrow child bodies first, synthesize broader parent shape later, and backfill ledgers selectively when later overlap proves the missing routing record matters.
 - `P1-C1` is now complete in workspace: the source packet now fixes `S0B-3A` as the primary source body, issue `44` as sharpening support, and `S0B-2A` plus earlier docs-management context as bounded upstream background.
 - `P2-C1` is now complete in workspace: the first extraction targets are fixed as `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001`, front matter is fixed as child-first extraction with later widening allowed, and cutover is split into two same-source slices before any later multi-consumption model is considered.
-- The next execution step is `P3`: emit the first `S0B-3A` ledger and the two child candidate bodies under the now-fixed `LOGS` and `LIFECYCLE` split.
+- `P3-C1-S1` is now complete in workspace: the first `S0B-3A` ledger draft now exists and routes the source into `LOGS` and `LIFECYCLE`, with cutover already split into same-source sub-slices.
+- The next execution step is user review of the `S0B-3A` ledger draft before any `LOGS-0001` or `LIFECYCLE-0001` child candidate is drafted.
 
 ## Evidence (reserved)
 
@@ -276,3 +277,16 @@
   - the first child extraction targets are now fixed as `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001`
   - front matter is now fixed as child-first extraction in the logs-oriented child with later parent or broader-family widening explicitly reserved
   - cutover is now split into one logs-intake slice and one lifecycle-boundary slice, both still tied back to the same `S0B-3A` source packet
+
+### P3-C1-S1 (First `S0B-3A` routing ledger drafted | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7C/P3-C1-S1>`
+- artifacts:
+  - `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
+  - `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
+- expected:
+  - the first concrete `S0B-3A` output should be one source-owned ledger that preserves the fixed `LOGS/LIFECYCLE` split before any child contract body is drafted
+  - the ledger should separate the two cutover meanings into same-source sub-slices rather than leave one ambiguous dual-use row
+- observed:
+  - the first `S0B-3A` ledger draft now exists under source-owned naming and routes the source into the two approved child-family candidates
+  - cutover is now represented as two same-source rows in the ledger, one for logs intake and one for lifecycle boundary ownership
