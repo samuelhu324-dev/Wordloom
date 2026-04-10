@@ -202,7 +202,7 @@
 
 ### P0-P2-C1-S1S2 (Contract-judgment front door scaffold and first view landed | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-5J/P0-P2-C1-S1S2>`
+- headSha: `2d0c7cfbd`
 - artifacts:
   - `docs/logs/log-S0F-5J-old-s0-contract-judgment-front-door-view.md`
   - `docs/governance/views/view-old-s0-contract-judgment-front-door-v1.md`
