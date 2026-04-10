@@ -226,6 +226,8 @@
 - `P3-C3-S1`: generate one parent contract for GitHub issue mechanism introduction under the new long-path naming grammar
 - `P3-C3-S2`: generate one title child contract and one tag child contract beneath that parent
 - `P3-C3-S3`: update template-backed indices and standing notes for the new parent/child packet
+- `P3-C4-S1`: generate one broader workflow-layer contract from `S0A/2A`
+- `P3-C4-S2`: update indices and standing notes so the workflow-layer contract and the narrower GitHub-issues packet can be read together
 
 ### P3-C1-S1 (Initial broad foundational batch drafted for review | withdrawn)
 
@@ -274,6 +276,22 @@
 - The temporary mixed `S0A-1A` preview contract file has now been removed from the canonical root in workspace.
 - Under this result, the first issue-first rebuild packet now reads as one parent mechanism contract plus two narrow child rule contracts instead of one mixed preview file.
 
+### P3-C4-S1 (Workflow-layer contract generated from `S0A/2A` | v1)
+
+- A broader workflow-layer contract now exists under the canonical root:
+  - `DOC-WORKFLOW-0001`: structured doc refinement pipeline
+- This contract is intentionally placed at the `WORKFLOW` layer rather than inside the narrower GitHub-issues subtree.
+- It owns the historical workflow boundary around:
+  - `log -> lab -> runbook -> adr`
+  - source-linking back to inputs and evidence rather than forward-looking `where next` navigation
+
+### P3-C4-S2 (Workflow-layer and GitHub-issues packet now read together | v1)
+
+- The canonical contracts index now exposes both:
+  - the broader `DOC-WORKFLOW-0001` workflow-layer draft
+  - the narrower GitHub-issues parent-and-child packet from `S0A-1A`
+- Under this result, readers can now judge the broader workflow contract separately from the later GitHub-issues mechanism contract packet rather than forcing both into one document.
+
 ### P3-C3 (Next parent-and-child generation packet | planned)
 
 - The next generation packet after this definition update should stop using one mixed preview contract for `S0A-1A`.
@@ -312,6 +330,8 @@
 - [x] `P3-C3-S1`: generate one parent contract for GitHub issue mechanism introduction under the new long-path naming grammar
 - [x] `P3-C3-S2`: generate one title child contract and one tag child contract beneath that parent
 - [x] `P3-C3-S3`: update template-backed indices and standing notes for the new parent/child packet
+- [x] `P3-C4-S1`: generate one broader workflow-layer contract from `S0A/2A`
+- [x] `P3-C4-S2`: update indices and standing notes so the workflow-layer contract and the narrower GitHub-issues packet can be read together
 
 ## Current Status
 
@@ -320,8 +340,8 @@
 - `P1` is now complete: the repo now has one explicit contract-versus-evidence rule and one structured lineage-verb model for chronology-first rebuild.
 - `P1` is now extended and complete through `C2`: the repo now also has one explicit long-path canonical naming grammar plus one parent/child contract split rule for later generation.
 - `P2` is now complete: the first foundational rebuild packet is fixed as `S0A + S0B`, and the follow-on chronology-first rebuild order is fixed as `S0C -> S0D -> S0E -> S0F`.
-- `P3` now has its first parent-and-child packet draft in workspace: the temporary mixed `S0A-1A` preview has been replaced by one parent GitHub-issues mechanism contract plus one title child contract and one tag child contract.
-- The immediate next step is user review of this first parent-and-child packet before any commit/push or later chronology-first population continues.
+- `P3` now has both: one broader workflow-layer draft from `S0A/2A`, and one narrower GitHub-issues parent-and-child packet from `S0A-1A`.
+- The immediate next step is user review of how these two layers should relate before any commit/push or later chronology-first population continues.
 
 ## Evidence (reserved)
 
@@ -371,7 +391,7 @@
 
 ### P3-C3-S1S2S3 (First parent-and-child packet generated from `S0A-1A` | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7A/P3-C3-S1S2S3>`
+- headSha: `8cd8d26ea`
 - artifacts:
   - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
   - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
@@ -383,7 +403,22 @@
   - the packet should keep issue-only sourcing explicit because no local `S0A-1A` log exists in the workspace
 - observed:
   - the repo now has one parent contract for introducing GitHub Issues as canonical workflow breakdown and two child contracts for title grammar and tag naming
-  - the earlier mixed preview file has been removed from the canonical root in workspace in favor of the new parent-and-child packet
+  - the earlier mixed preview file has been removed from the canonical root in favor of the new parent-and-child packet
+
+### P3-C4-S1S2 (Workflow-layer contract generated from `S0A/2A` | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7A/P3-C4-S1S2>`
+- artifacts:
+  - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
+  - `docs/governance/contracts/INDEX.md`
+  - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should gain one broader workflow-layer contract from `S0A/2A` without collapsing it into the narrower GitHub-issues packet
+  - that draft should stay explicit about issue-only sourcing because no local `S0A/2A` source log exists in the workspace
+- observed:
+  - the repo now has one `DOC-WORKFLOW-0001` draft that captures the broader structured-doc refinement pipeline at the `WORKFLOW` layer
+  - the canonical index now exposes that broader workflow-layer draft alongside the narrower GitHub-issues contract packet
 
 ### P2-C1-S1S2 (Foundational rebuild packet and chronology-first order fixed | 2026-04-10)
 
@@ -422,4 +457,5 @@
 - 2026-04-10: completed `P2` by fixing the first foundational rebuild packet as `S0A + S0B` and by fixing the follow-on chronology-first rebuild order as `S0C -> S0D -> S0E -> S0F`.
 - 2026-04-10: the first broad four-contract `P3` draft was rejected in review and withdrawn from workspace.
 - 2026-04-10: opened `P3-C2` as a narrower correction and published one replacement issue-first preview contract sourced from `S0A-1A` only.
-- 2026-04-10: completed `P3-C3` in workspace by replacing the temporary mixed preview with one parent contract plus title/tag child contracts under the long-path naming grammar.
+- 2026-04-10: completed `P3-C3` by replacing the temporary mixed preview with one parent contract plus title/tag child contracts under the long-path naming grammar.
+- 2026-04-10: opened `P3-C4` in workspace and generated one broader `DOC-WORKFLOW-0001` workflow-layer draft from issue `S0A/2A`.

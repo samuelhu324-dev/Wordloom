@@ -9,7 +9,7 @@
 
 - `docs/governance/contracts/` is now the canonical root for rebuilt contracts.
 - `docs/governance/legacy/contract/` and `docs/governance/legacy/contracts/` are retained legacy reference sets.
-- The chronology-first rebuild now keeps one first parent-and-child packet draft sourced from `S0A-1A`.
+- The chronology-first rebuild now keeps one workflow-layer draft sourced from `S0A/2A` plus one first parent-and-child packet sourced from `S0A-1A`.
 
 ## Current Rebuild Model
 
@@ -40,6 +40,8 @@
 
 - Open `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md` for the rebuild boundary, order, and next steps.
 - Use `docs/governance/contracts/_template-contract-record.md` as the temporary record template during the reset phase.
+- Open the workflow-layer draft when the question is `what broader structured-doc workflow contract existed before narrower GitHub issue rules were split out?`
+  - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
 - Open the current parent-and-child packet when the question is `can this issue-first source now read as one parent mechanism contract plus narrower child rule contracts?`
   - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
   - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
@@ -52,6 +54,7 @@
 
 | contract id | standing now | role in rebuild |
 | --- | --- | --- |
+| `DOC-WORKFLOW-0001` | `draft` | workflow-layer contract for the structured-doc refinement pipeline and source-linking boundary |
 | `DOC-WORKFLOW-GITHUB-ISSUES-0001` | `draft` | parent contract for introducing GitHub Issues as canonical workflow breakdown |
 | `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` | `draft` | child contract for issue-title hierarchy and category grammar |
 | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `draft` | child contract for role-based issue-tag naming classes |
@@ -60,5 +63,5 @@
 
 - This index intentionally does not treat the moved legacy trees as canonical.
 - Existing `view` surfaces may remain clearer than the current contract folders during the reset; that is the reason this rebuild lane exists.
-- The earlier mixed `S0A-1A` preview has now been replaced in workspace by one parent contract plus two child contracts under the long-path naming grammar.
-- The next intended step is user review of this first parent-and-child packet before later chronology-first population continues.
+- The earlier mixed `S0A-1A` preview has now been replaced by one parent contract plus two child contracts under the long-path naming grammar.
+- The next intended step is user review of the broader `DOC-WORKFLOW-0001` workflow-layer draft alongside the narrower GitHub-issues packet before later chronology-first population continues.
