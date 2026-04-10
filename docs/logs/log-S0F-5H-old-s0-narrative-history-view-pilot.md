@@ -201,6 +201,31 @@
 - `P2-C1-S1`: fix the first pilot population and why it is a valid narrative-history test
 - `P2-C1-S2`: fix what remains intentionally outside the pilot
 
+### P2-C1-S1 (First pilot population fixed | v1)
+
+- The first narrative-history pilot population is now fixed as one five-item mixed `S0A + S0B` set:
+  - `S0A` legacy carry-forward anchor
+  - `S0B` parent ADR anchor
+  - `S0B-2A`
+  - `S0B-3A`
+  - `S0B-1A` unresolved issue-only placeholder
+- This is now the defended first pilot because it combines all three reading states the narrative model needs to prove:
+  - supplemental direct history outside counted scope
+  - supplemental lineage-support ancestry outside counted scope
+  - counted-series rows already inside the main old-`S0` review scope
+  - one explicit unresolved placeholder that prevents the pilot from pretending historical completeness where evidence still does not exist
+- This makes the pilot small enough to read in one pass while still hard enough to prove that counted mainline and supplemental ancestry can coexist in one narrative surface without collapsing into standing-only tables.
+
+### P2-C1-S2 (Intentional non-pilot boundary fixed | v1)
+
+- Everything outside the five-item `S0A + S0B` set remains intentionally outside the first pilot.
+- The non-pilot boundary is now fixed as:
+  - all `S0C`, `S0D`, `S0E`, and `S0F` rows
+  - any future issue-only `S0B-1A` evidence packet that is not yet materialized locally
+  - any attempt to widen the pilot into counted-scope changes or current-contract admission consequences
+- Under this rule, `P3` should prove the narrative field model on one bounded mixed set first.
+- If the pilot succeeds, later widening can reuse the same field model on larger series without reopening the scaffold boundary.
+
 ### P3 (Pilot narrative-history surface)
 
 - `P3-C1-S1`: publish one narrative-history pilot view for the bounded pilot population
@@ -225,8 +250,8 @@
 
 ### P2 (Pilot population selection)
 
-- [ ] `P2-C1-S1`: first pilot population fixed
-- [ ] `P2-C1-S2`: non-pilot boundary fixed
+- [x] `P2-C1-S1`: first pilot population fixed
+- [x] `P2-C1-S2`: non-pilot boundary fixed
 
 ### P3 (Pilot narrative-history surface)
 
@@ -244,7 +269,8 @@
 - `P0` is now complete: the lane boundary is fixed and the immediate next step is to define the narrative field model rather than to improvise summary prose ad hoc.
 - `P1` is now complete: the minimum narrative field model and its allowed source-owned feed blocks are now fixed, so the pilot can extract `why / problem / result / inheritance` without drifting into ad hoc AI compression.
 - The preferred first pilot is now `S0A + S0B`, because that mixed set is small and already spans both counted mainline reading and supplemental ancestry reading.
-- The immediate next step is now `P2`: fix the exact pilot population and its intentional non-pilot boundary.
+- `P2` is now complete: the first pilot population is fixed as the five-item mixed `S0A + S0B` set, and everything outside that bounded packet now stays intentionally outside the pilot.
+- The immediate next step is now `P3`: publish the first narrative-history pilot view and wire it into the old-`S0` reader set.
 
 ## Evidence (reserved)
 
@@ -273,7 +299,20 @@
   - the minimum reader-facing field model is now fixed across `source log`, `why it appeared`, `scoped problem`, `decision / result`, `what changed after it`, `current historical role`, `current first-open home`, and `reader note`
   - the pilot now also has explicit allowed primary and secondary source feeds, plus disallowed AI-only and speculative synthesis paths
 
+### P2-C1-S1S2 (Pilot population and non-pilot boundary fixed | 2026-04-10)
+
+- headSha: `<pending local changes for S0F-5H/P2-C1-S1S2>`
+- artifacts:
+  - `docs/logs/log-S0F-5H-old-s0-narrative-history-view-pilot.md`
+- expected:
+  - the pilot should have one exact bounded population that is small enough to read but rich enough to prove counted mainline plus supplemental ancestry coexistence
+  - the pilot should also have an explicit non-pilot boundary so `P3` does not widen opportunistically while building the first view
+- observed:
+  - the first pilot population is now fixed as `S0A`, `S0B` parent ADR, `S0B-2A`, `S0B-3A`, and the unresolved `S0B-1A` placeholder
+  - all other old-`S0` series and any not-yet-materialized `S0B-1A` issue packet now remain intentionally outside the pilot until the first view proves the field model
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5H` as the bounded old-`S0` narrative-history-view pilot lane after `S0F-5G` landed standing, routing, screening, and supplemental ancestry reader surfaces.
 - 2026-04-10: completed `P1` by fixing the minimum narrative field model and explicit source-feed rules for the first old-`S0` narrative-history pilot.
+- 2026-04-10: completed `P2` by fixing the first five-item `S0A + S0B` pilot population and explicit non-pilot boundary for the first narrative-history view.
