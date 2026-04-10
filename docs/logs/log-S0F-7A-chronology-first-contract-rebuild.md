@@ -249,6 +249,31 @@
 - No local `S0A-1A` source log is currently present in the workspace, so the replacement contract must not pretend to be log-sourced.
 - The canonical contracts index now exposes this one preview contract directly and records that the earlier broad batch was rejected.
 
+### P3-C3-S1 (Parent contract generated under long-path naming grammar | v1)
+
+- The temporary mixed `S0A-1A` preview has now been replaced in workspace by one parent contract:
+  - `DOC-WORKFLOW-GITHUB-ISSUES-0001`: GitHub Issues as canonical work breakdown
+- This parent contract now owns mechanism introduction, `why`, and boundary only:
+  - why the workflow starts using GitHub Issues as the canonical breakdown unit
+  - what boundary GitHub Projects views do and do not replace
+  - what narrower child rules belong beneath that parent rather than inside it
+
+### P3-C3-S2 (Title and tag child contracts generated beneath the parent | v1)
+
+- The first child contract pair now exists beneath that parent contract:
+  - `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001`: issue title encodes level and category
+  - `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001`: issue tags follow role-based naming
+- Under this result:
+  - title grammar is no longer mixed into the parent mechanism contract
+  - tag naming grammar is no longer mixed into the title-rule contract
+  - all three contracts keep the source boundary explicit as GitHub issue only because no local `S0A-1A` log exists in the workspace
+
+### P3-C3-S3 (Indices and standing notes updated for the new parent-child packet | v1)
+
+- The canonical contracts index now exposes the new parent-and-child packet directly.
+- The temporary mixed `S0A-1A` preview contract file has now been removed from the canonical root in workspace.
+- Under this result, the first issue-first rebuild packet now reads as one parent mechanism contract plus two narrow child rule contracts instead of one mixed preview file.
+
 ### P3-C3 (Next parent-and-child generation packet | planned)
 
 - The next generation packet after this definition update should stop using one mixed preview contract for `S0A-1A`.
@@ -284,9 +309,9 @@
 - [x] `P3-C1-S2`: rejected broad batch withdrawn from workspace
 - [x] `P3-C2-S1`: replacement issue-first preview contract published from `S0A-1A`
 - [x] `P3-C2-S2`: issue-only source boundary made explicit
-- [ ] `P3-C3-S1`: generate one parent contract for GitHub issue mechanism introduction under the new long-path naming grammar
-- [ ] `P3-C3-S2`: generate one title child contract and one tag child contract beneath that parent
-- [ ] `P3-C3-S3`: update template-backed indices and standing notes for the new parent/child packet
+- [x] `P3-C3-S1`: generate one parent contract for GitHub issue mechanism introduction under the new long-path naming grammar
+- [x] `P3-C3-S2`: generate one title child contract and one tag child contract beneath that parent
+- [x] `P3-C3-S3`: update template-backed indices and standing notes for the new parent/child packet
 
 ## Current Status
 
@@ -295,8 +320,8 @@
 - `P1` is now complete: the repo now has one explicit contract-versus-evidence rule and one structured lineage-verb model for chronology-first rebuild.
 - `P1` is now extended and complete through `C2`: the repo now also has one explicit long-path canonical naming grammar plus one parent/child contract split rule for later generation.
 - `P2` is now complete: the first foundational rebuild packet is fixed as `S0A + S0B`, and the follow-on chronology-first rebuild order is fixed as `S0C -> S0D -> S0E -> S0F`.
-- `P3` is now in revised preview state: the earlier four-contract foundational draft has been withdrawn after review, and the repo now keeps one replacement issue-first preview contract sourced from `S0A-1A` only.
-- The immediate next step is now `P3-C3`: replace the temporary mixed `S0A-1A` preview with one parent contract plus title/tag child contracts generated under the new naming grammar.
+- `P3` now has its first parent-and-child packet draft in workspace: the temporary mixed `S0A-1A` preview has been replaced by one parent GitHub-issues mechanism contract plus one title child contract and one tag child contract.
+- The immediate next step is user review of this first parent-and-child packet before any commit/push or later chronology-first population continues.
 
 ## Evidence (reserved)
 
@@ -331,7 +356,7 @@
 
 ### P1-C2-S1S2S3 (Naming grammar and parent-child split model fixed | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7A/P1-C2-S1S2S3>`
+- headSha: `de5c003eb`
 - artifacts:
   - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
   - `docs/governance/contracts/_template-contract-record.md`
@@ -343,6 +368,22 @@
 - observed:
   - canonical contract naming now uses one long-path `DOC-<DOMAIN>-...-<CATEGORY>-<NNNN>-<summary>` grammar instead of opaque short abbreviations
   - parent contracts now own mechanism introduction and boundary, while child contracts own independently judgeable narrow rule bodies such as title or tag rules
+
+### P3-C3-S1S2S3 (First parent-and-child packet generated from `S0A-1A` | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7A/P3-C3-S1S2S3>`
+- artifacts:
+  - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+  - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
+  - `docs/governance/contracts/workflow/github/issues/tags/DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-issue-tags-follow-role-based-naming.md`
+  - `docs/governance/contracts/INDEX.md`
+  - `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+- expected:
+  - the repo should replace the temporary mixed `S0A-1A` preview with one parent contract plus two child rule contracts
+  - the packet should keep issue-only sourcing explicit because no local `S0A-1A` log exists in the workspace
+- observed:
+  - the repo now has one parent contract for introducing GitHub Issues as canonical workflow breakdown and two child contracts for title grammar and tag naming
+  - the earlier mixed preview file has been removed from the canonical root in workspace in favor of the new parent-and-child packet
 
 ### P2-C1-S1S2 (Foundational rebuild packet and chronology-first order fixed | 2026-04-10)
 
@@ -381,3 +422,4 @@
 - 2026-04-10: completed `P2` by fixing the first foundational rebuild packet as `S0A + S0B` and by fixing the follow-on chronology-first rebuild order as `S0C -> S0D -> S0E -> S0F`.
 - 2026-04-10: the first broad four-contract `P3` draft was rejected in review and withdrawn from workspace.
 - 2026-04-10: opened `P3-C2` as a narrower correction and published one replacement issue-first preview contract sourced from `S0A-1A` only.
+- 2026-04-10: completed `P3-C3` in workspace by replacing the temporary mixed preview with one parent contract plus title/tag child contracts under the long-path naming grammar.

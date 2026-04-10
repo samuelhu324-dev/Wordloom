@@ -9,7 +9,7 @@
 
 - `docs/governance/contracts/` is now the canonical root for rebuilt contracts.
 - `docs/governance/legacy/contract/` and `docs/governance/legacy/contracts/` are retained legacy reference sets.
-- The chronology-first rebuild now keeps one issue-first preview contract for `S0A-1A` after the earlier broad foundational batch was rejected in review.
+- The chronology-first rebuild now keeps one first parent-and-child packet draft sourced from `S0A-1A`.
 
 ## Current Rebuild Model
 
@@ -40,12 +40,10 @@
 
 - Open `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md` for the rebuild boundary, order, and next steps.
 - Use `docs/governance/contracts/_template-contract-record.md` as the temporary record template during the reset phase.
-- Open the current preview contract when the question is `can one issue-first contract make the problem readable at a glance?`
-  - `docs/governance/contracts/S0A-1A-github-issue-breakdown-title-and-tag-governance.md`
-- The next intended generation packet is now one parent-and-child rewrite rather than another one-file mixed preview:
-  - parent: workflow/GitHub/issues mechanism introduction
-  - child: issue-title rules
-  - child: issue-tag rules
+- Open the current parent-and-child packet when the question is `can this issue-first source now read as one parent mechanism contract plus narrower child rule contracts?`
+  - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+  - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
+  - `docs/governance/contracts/workflow/github/issues/tags/DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-issue-tags-follow-role-based-naming.md`
 - Use the moved legacy trees only as retained reference material while the new canonical chain is rebuilt:
   - `docs/governance/legacy/contract/`
   - `docs/governance/legacy/contracts/`
@@ -54,11 +52,13 @@
 
 | contract id | standing now | role in rebuild |
 | --- | --- | --- |
-| `S0A-1A` | `draft` | issue-first preview contract for issue breakdown, title encoding, and tag naming governance |
+| `DOC-WORKFLOW-GITHUB-ISSUES-0001` | `draft` | parent contract for introducing GitHub Issues as canonical workflow breakdown |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` | `draft` | child contract for issue-title hierarchy and category grammar |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `draft` | child contract for role-based issue-tag naming classes |
 
 ## Reader Notes
 
 - This index intentionally does not treat the moved legacy trees as canonical.
 - Existing `view` surfaces may remain clearer than the current contract folders during the reset; that is the reason this rebuild lane exists.
-- The current preview intentionally uses the issue identity directly because the earlier broad four-contract synthesis failed the user review standard.
-- The next intended step is not another mixed preview: it is to replace that preview with one parent contract and two child contracts under the new long-path naming grammar.
+- The earlier mixed `S0A-1A` preview has now been replaced in workspace by one parent contract plus two child contracts under the long-path naming grammar.
+- The next intended step is user review of this first parent-and-child packet before later chronology-first population continues.
