@@ -198,6 +198,50 @@
 - `P3-C1-S1`: define the support-only ledger purpose and required routing columns
 - `P3-C1-S2`: fix the ledger naming grammar as `ledger-<owner-lane-id>-<summary>.md`
 - `P3-C1-S3`: define how one ledger records `source section -> target family/release action -> retained-only/no-contract` decisions
+- `P3-C2-S1`: redefine ledger naming to follow source id plus source summary rather than owner lane id
+- `P3-C2-S2`: add consumption-resolution fields so later readers can tell what was applied, partially applied, deferred, or retained only
+- `P3-C2-S3`: regenerate the `S0B-2A` sample ledger under the revised naming and completion model
+
+### P3-C1-S1 (Ledger purpose and routing ownership fixed | v1)
+
+- The support-only ledger now owns `source routing and extraction accounting` for mixed logs, issues, and retained support-only bodies.
+- Under this rule, the ledger answers `where should this source slice go?`, while contract lineage answers `how do release records relate to one another?`.
+
+### P3-C1-S2 (Ledger naming grammar fixed | v1, superseded by `C2`) 
+
+- The earlier draft named ledgers by owner lane id.
+- That draft is now treated as a transitional naming attempt only and should be replaced by source-owned naming in `P3-C2`.
+
+### P3-C1-S3 (Routing table minimum shape fixed | v1)
+
+- One ledger row must at least state:
+  - the source slice
+  - the meaning owned in that slice
+  - the target family
+  - the target release action
+  - whether the slice stays retained-only or deferred
+- Under this rule, mixed source material can be split into multiple families without pretending every slice already has one contract release.
+
+### P3-C2-S1 (Ledger naming redefined by source id and source summary | v1)
+
+- One ledger should now be named by the source being routed, not by the lane performing the routing.
+- The new naming grammar is:
+  - `ledger-<source-id>-<source-summary>.md`
+- Under this rule, `S0B-2A` should produce one ledger named from `S0B-2A` and the source summary itself, so later readers can find the ledger from the source identity alone.
+
+### P3-C2-S2 (Consumption-tracking fields added to ledger model | v1)
+
+- The support-only ledger must now carry explicit consumption-tracking fields per source slice:
+  - `resolution status`
+  - `resolved by contract id`
+  - `consumed scope`
+  - `resolution notes`
+- Under this rule, later readers must be able to tell not only `where a slice was routed`, but also `whether it was actually consumed`, `which release consumed it`, and `what remained unconsumed`.
+
+### P3-C2-S3 (Sample ledger regenerated under revised model | v1)
+
+- The first `S0B-2A` sample ledger should now be regenerated under the new source-owned naming and consumption-tracking model.
+- Under this rule, the earlier lane-owned draft ledger should be deleted rather than left as a parallel competing naming pattern.
 
 ### P4 (Template revision)
 
@@ -261,9 +305,12 @@
 
 ### P3 (Support-only ledger model)
 
-- [ ] `P3-C1-S1`: define the support-only ledger purpose and required routing columns
-- [ ] `P3-C1-S2`: fix the ledger naming grammar as `ledger-<owner-lane-id>-<summary>.md`
-- [ ] `P3-C1-S3`: define how one ledger records `source section -> target family/release action -> retained-only/no-contract` decisions
+- [x] `P3-C1-S1`: define the support-only ledger purpose and required routing columns
+- [x] `P3-C1-S2`: fix the ledger naming grammar as `ledger-<owner-lane-id>-<summary>.md`
+- [x] `P3-C1-S3`: define how one ledger records `source section -> target family/release action -> retained-only/no-contract` decisions
+- [x] `P3-C2-S1`: redefine ledger naming to follow source id plus source summary rather than owner lane id
+- [x] `P3-C2-S2`: add consumption-resolution fields so later readers can tell what was applied, partially applied, deferred, or retained only
+- [x] `P3-C2-S3`: regenerate the `S0B-2A` sample ledger under the revised naming and completion model
 
 ### P4 (Template revision)
 
@@ -283,8 +330,9 @@
 - The lane now fixes the first sample target as `S0A-2A` and positions support-only ledgers as the owner of source-routing decisions.
 - `P1` is now complete: the repo now has one explicit family-versus-release model, one hard rule that material meaning change creates a new release, and one stable reading for `0001`, `0002`, and later numbers inside the same family.
 - `P2` is now complete: the repo now treats lineage as release-to-release semantics, allows supersede to point to multiple earlier releases, and separates release lineage from source-routing.
+- `P3` is now complete in workspace: the support-only ledger model now uses source-owned naming, explicit consumption tracking, and one sample `S0B-2A` ledger regenerated under that revised model.
 - `P4` is now complete: the canonical template now carries release metadata, cumulative source carry-forward, and one recommended body shape that keeps both release delta and current state readable.
-- The next execution step is to run the first sample ledger and release packet for `S0A-2A` in `P5`.
+- The next execution step is user review of the revised `S0B-2A` ledger model before later release-sample generation resumes.
 
 ## Evidence (reserved)
 
@@ -328,6 +376,21 @@
   - supersede relationships now read at the release level and may point to multiple earlier releases when one later release becomes the clearer effective state
   - split and absorb now stay contract-layer only, while logs/issues/support-only routing is explicitly assigned to the ledger rather than to lineage
 
+### P3-C1-S1S2S3 + P3-C2-S1S2S3 (Ledger model revised and sample regenerated | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7B/P3-C1-S1S2S3+P3-C2-S1S2S3>`
+- artifacts:
+  - `docs/logs/_template-support-only-contract-release-ledger.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/logs/log-S0F-7B-release-based-contract-lineage-and-ledger-model.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the ledger model should let later readers distinguish routed slices from actually consumed slices
+  - the sample ledger should follow source-owned naming rather than lane-owned naming
+- observed:
+  - the support-only ledger model now carries naming by source id plus source summary, along with explicit resolution fields for applied, partial, deferred, or retained-only outcomes
+  - the `S0B-2A` sample ledger now reads as one source-owned routing and consumption draft instead of one lane-owned routing note
+
 ### P4-C1-S1S2S3 (Release-based contract template revised | 2026-04-10)
 
 - headSha: `4314044c0`
@@ -348,4 +411,5 @@
 - 2026-04-10: fixed the first sample target as `S0A-2A` and fixed support-only ledgers as the owner of source-routing for later contract-release extraction work.
 - 2026-04-10: completed `P1` by fixing stable family identity versus incrementing release identity, by making material meaning change default to one new release, and by redefining `0001`, `0002`, and later numbers as chronology inside one family.
 - 2026-04-10: completed `P2` by redefining lineage as release-level semantics, by allowing supersede to point to multiple earlier releases, and by separating contract lineage from source-routing ledger work.
+- 2026-04-10: completed `P3` by redefining ledger naming around source identity, by adding consumption-tracking fields, and by regenerating the `S0B-2A` sample ledger under the revised model.
 - 2026-04-10: completed `P4` by revising the canonical template for release metadata, cumulative source carry-forward, and one body shape that keeps release delta plus current state readable together.
