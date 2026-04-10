@@ -209,6 +209,27 @@
 - `P4-C1-S1`: determine whether separate counted-series packets are sufficient
 - `P4-C1-S2`: determine whether one later aggregate narrative router is still needed
 
+### P4-C1-S1 (Separate packets are not sufficient as the only narrative front door | v1)
+
+- Separate packet views are no longer sufficient as the only narrative front door.
+- That decision is now defended because the repo currently has:
+  - one supplemental early packet
+  - one first counted packet for `S0D + S0C`
+  - one second counted packet for `S0E`
+  - one still-pending reviewed `S0F` subset
+- Without one aggregate narrative router, readers would still have to infer which packet to open from aggregate coverage, ancestry routing, or per-series standing views.
+- Under this rule, packet views remain the narrative bodies, but they should no longer be treated as self-discoverable from the wider old-`S0` reader set.
+
+### P4-C1-S2 (Aggregate narrative router required and published | v1)
+
+- One aggregate narrative router is now required and published at `docs/governance/views/view-old-s0-narrative-history-routing-v1.md`.
+- The router now gives one first-open narrative entry across:
+  - early supplemental `S0A + S0B`
+  - counted `S0D + S0C`
+  - counted `S0E`
+  - the explicit not-yet-published boundary for the reviewed `S0F` subset
+- Under this result, the current packet set is now reader-discoverable without forcing the coverage overview or the standing surfaces to act as an implicit packet index.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -233,8 +254,8 @@
 
 ### P4 (Post-rollout boundary)
 
-- [ ] `P4-C1-S1`: separate-packet sufficiency decided
-- [ ] `P4-C1-S2`: aggregate-router need decided
+- [x] `P4-C1-S1`: separate-packet sufficiency decided
+- [x] `P4-C1-S2`: aggregate-router need decided
 
 ## Current Status
 
@@ -243,7 +264,9 @@
 - `P1` is now complete: the counted-series widening order is fixed as `S0D -> S0C -> S0E -> reviewed S0F subset`, and the first bounded rollout packet is fixed as one combined `S0D + S0C` narrative packet.
 - `P2` is now complete: the repo now has one first counted-series narrative-history packet for the combined `S0D + S0C` set, and that packet confirms the reused eight-field model remains sufficient before the lane widens into `S0E`.
 - `P3` is now complete: the repo now has the next counted-series narrative packet for `S0E`, and the affected `S0D` / `S0C` / `S0E` standing surfaces now route narrative questions into the counted packet views.
-- The immediate next step is now `P4`: determine whether the counted-series packet set is already sufficient as separate packet views or whether one later aggregate narrative router is still needed.
+- `P4` is now complete: separate packet views are not sufficient as the only narrative front door, and the repo now has one aggregate narrative router across the published packet set.
+- `S0F-5I` is now stable as the current old-`S0` counted-series narrative-history widening lane: the packet rollout boundary is explicit, the published packet set is reader-discoverable, and the reviewed `S0F` subset remains an explicit later follow-up rather than an implicit omission.
+- The immediate next step is now optional and bounded: open one later follow-up only if the reviewed `S0F` subset needs its own narrative packet or if the router later needs to absorb that packet explicitly.
 
 ## Evidence (reserved)
 
@@ -304,9 +327,28 @@
   - the repo now has one full `S0E` narrative-history packet, which proves the eight-field model also scales to the first large mixed counted series
   - the counted `S0D` / `S0C` / `S0E` standing surfaces now route narrative questions into the published packet views directly
 
+### P4-C1-S1S2 (Aggregate narrative front door fixed across packet set | 2026-04-10)
+
+- headSha: `<pending commit for S0F-5I/P4-C1-S1S2>`
+- artifacts:
+  - `docs/governance/views/view-old-s0-narrative-history-routing-v1.md`
+  - `docs/governance/views/view-old-s0-absorption-coverage-overview-v1.md`
+  - `docs/governance/views/view-old-s0-narrative-history-pilot-s0a-s0b-v1.md`
+  - `docs/governance/views/view-old-s0-narrative-history-packet-s0d-s0c-v1.md`
+  - `docs/governance/views/view-old-s0-narrative-history-packet-s0e-v1.md`
+  - `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the lane should answer whether separate packet views are already sufficient as the only reader-facing front door
+  - if not, the repo should gain one aggregate router so readers can discover the packet set without inferring it from unrelated surfaces
+- observed:
+  - separate packet views are now judged insufficient as the only narrative front door because the packet set spans multiple counted and supplemental boundaries
+  - the repo now has one aggregate narrative router that routes readers across the published packet set while keeping the reviewed `S0F` subset as an explicit later follow-up boundary
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-10: opened `S0F-5I` as the counted-series narrative-history widening follow-up after `S0F-5H` proved the first `S0A + S0B` pilot.
 - 2026-04-10: completed `P1` by fixing the counted-series widening order as `S0D -> S0C -> S0E -> reviewed S0F subset` and by fixing the first bounded counted-series rollout target as one combined `S0D + S0C` narrative packet.
 - 2026-04-10: completed `P2` by publishing the first counted-series narrative-history packet for `S0D + S0C` and by confirming the reused eight-field model remains sufficient before widening into `S0E`.
 - 2026-04-10: completed `P3` by publishing the next counted-series narrative-history packet for `S0E` and by wiring narrative routes from the affected `S0D` / `S0C` / `S0E` standing surfaces into the packet views.
+- 2026-04-10: completed `P4` by deciding that separate packet views are not sufficient as the only narrative front door, publishing one aggregate narrative router across the packet set, and closing `S0F-5I` as stable for the current packet boundary.

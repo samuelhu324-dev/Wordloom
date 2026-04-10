@@ -49,6 +49,7 @@
 | question | open first | why |
 | --- | --- | --- |
 | `how much of old S0 has been absorbed so far?` | `view-old-s0-absorption-coverage-overview-v1.md` | aggregate totals and series distribution live here |
+| `where should I start if I want the old-S0 narrative packet set as a whole?` | `view-old-s0-narrative-history-routing-v1.md` | the aggregate narrative router is now the first-open entry across published packet views |
 | `what is the full old-S0 remainder after the current surfaced DOC set?` | `view-old-s0-remaining-history-line-routing-v1.md` | the remainder-routing view is now the first-open surface for the non-surfaced old-`S0` line |
 | `what earlier S0A or issue-only S0B ancestry exists outside the counted root-log overview?` | `view-old-s0-issue-only-reconstructed-ancestry-routing-v1.md` | the supplemental reconstruction-routing view makes that exclusion boundary explicit |
 | `which exact early S0A / S0B supplemental anchors are currently known, and what evidence do they have?` | `view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md` | the supplemental detail view expands the excluded ancestry branch into exact known anchors and gaps |

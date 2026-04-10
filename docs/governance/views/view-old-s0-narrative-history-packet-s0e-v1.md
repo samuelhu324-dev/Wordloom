@@ -106,6 +106,7 @@
 
 | question | open first | why |
 | --- | --- | --- |
+| `where should I start if I want the old-S0 narrative packet set as a whole?` | `view-old-s0-narrative-history-routing-v1.md` | the aggregate router is now the first-open entry across the published packet set |
 | `why did the counted S0E packet exist, and what did it leave behind?` | `view-old-s0-narrative-history-packet-s0e-v1.md` | this packet is the reader-facing narrative answer for the full `S0E` series |
 | `inside S0E, what is the standing of each old log now?` | `view-old-s0-series-s0e-standing-v1.md` | the series standing view remains the current-state answer for `S0E` |
 | `how much of old S0 is surfaced overall?` | `view-old-s0-absorption-coverage-overview-v1.md` | aggregate absorption remains a separate count-first question |

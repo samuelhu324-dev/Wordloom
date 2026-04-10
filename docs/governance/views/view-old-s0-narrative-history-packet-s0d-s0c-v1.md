@@ -70,6 +70,7 @@
 
 | question | open first | why |
 | --- | --- | --- |
+| `where should I start if I want the old-S0 narrative packet set as a whole?` | `view-old-s0-narrative-history-routing-v1.md` | the aggregate router is now the first-open entry across the published packet set |
 | `why did the counted S0D + S0C packet exist, and what did it leave behind?` | `view-old-s0-narrative-history-packet-s0d-s0c-v1.md` | this packet is the first counted-series narrative answer after the early `S0A + S0B` pilot |
 | `inside S0D, what is the standing of each old log now?` | `view-old-s0-series-s0d-standing-v1.md` | the series standing view remains the current-state answer for `S0D` |
 | `inside S0C, what is the standing of each old log now?` | `view-old-s0-series-s0c-standing-v1.md` | the series standing view remains the current-state answer for `S0C` |

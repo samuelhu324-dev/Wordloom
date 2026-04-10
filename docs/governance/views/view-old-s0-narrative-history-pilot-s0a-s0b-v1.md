@@ -52,6 +52,7 @@
 
 | question | open first | why |
 | --- | --- | --- |
+| `where should I start if I want the old-S0 narrative packet set as a whole?` | `view-old-s0-narrative-history-routing-v1.md` | the aggregate router is now the first-open entry across the published packet set |
 | `why did the early S0A + S0B packet exist, and what did it leave behind?` | `view-old-s0-narrative-history-pilot-s0a-s0b-v1.md` | this pilot is the first reader-facing answer to that narrative question |
 | `which exact early anchors exist outside counted scope?` | `view-old-s0-issue-only-reconstructed-ancestry-detail-v1.md` | the supplemental detail view remains the exact-anchor inventory |
 | `inside counted S0B, what is the current standing of each row?` | `view-old-s0-series-s0b-standing-v1.md` | the counted series standing view remains the current-state answer |
