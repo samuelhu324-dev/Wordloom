@@ -354,13 +354,13 @@
 - `P2-C1-S1` is now complete: the first screenshot-backed Projects SUP pilot now exists at a stable repo-local path and reads as one sharpen-the-draft supplement rather than as one routing-reversal packet.
 - `P2-C1-S2` is now complete: the first Projects SUP pilot is accepted as sharpening-only write-back, the parent ledger now sharpens `S0A-1A-R02`, and `PROJECTS-0001` now reflects status-board, table, and timeline readings without changing the underlying routing boundary.
 - `P2-C2-S1` is now complete: accepted SUP write-back is now fixed as amendment of the current resolved release by default, not as one automatic new contract release.
-- `P2-C3-S1` is now complete in workspace: the repo now has one explicit contract statement-table model for clause-level identity and carry-forward without collapsing contracts into ledgers.
-- `P2-C3-S2` is now complete in workspace: `LABS-0001` now acts as the first clause-table sample, and the `S0B-1A` parent ledger now exposes row ids so the contract can cite exact source-basis anchors.
-- `P2-C4-S1` is now complete in workspace: contract statement tables now explicitly distinguish one short `statement label` from the ledger-owned `source slice` field.
-- `P2-C4-S2` is now complete in workspace: `source basis` is now fixed as one-or-more stable anchors with a primary-first rule, and `LABS-0001` demonstrates the first multi-anchor sample row.
-- `P2-C5-S1` is now complete in workspace: `source basis` is now narrowed back to evidence-only anchors and no longer carries primary/supporting causal semantics.
-- `P2-C5-S2` is now complete in workspace: the repo now has one explicit `Statement Evolution Table` model for clause lineage, split, merge, replacement, and carry-forward events.
-- `P2-C5-S3` is now complete in workspace: `LABS-0001` now demonstrates the paired-table model by splitting the earlier cleanup sample into two narrower clauses and recording the split in a separate evolution table.
+- `P2-C3-S1` is now complete: the repo now has one explicit contract statement-table model for clause-level identity and carry-forward without collapsing contracts into ledgers.
+- `P2-C3-S2` is now complete: `LABS-0001` now acts as the first clause-table sample, and the `S0B-1A` parent ledger now exposes row ids so the contract can cite exact source-basis anchors.
+- `P2-C4-S1` is now complete: contract statement tables now explicitly distinguish one short `statement label` from the ledger-owned `source slice` field.
+- `P2-C4-S2` is now complete: `source basis` is now fixed as one-or-more stable anchors with a primary-first rule, and `LABS-0001` demonstrates the first multi-anchor sample row.
+- `P2-C5-S1` is now complete: `source basis` is now narrowed back to evidence-only anchors and no longer carries primary/supporting causal semantics.
+- `P2-C5-S2` is now complete: the repo now has one explicit `Statement Evolution Table` model for clause lineage, split, merge, replacement, and carry-forward events.
+- `P2-C5-S3` is now complete: `LABS-0001` now demonstrates the paired-table model by splitting the earlier cleanup sample into two narrower clauses and recording the split in a separate evolution table.
 - The next execution step is to reuse this same `7D` lane when earlier packets such as `S0A-2A` need later evidence admitted through one parent-ledger-first SUP write-back.
 
 ## Evidence (reserved)
@@ -468,7 +468,7 @@
 
 ### P2-C3-S1S2 (Contract statement-table model and LABS sample wired in workspace | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P2-C3-S1S2>`
+- headSha: `876c015c2`
 - artifacts:
   - `docs/governance/contracts/_template-contract-record.md`
   - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
@@ -483,7 +483,7 @@
 
 ### P2-C4-S1S2 (Statement labels and multi-anchor source basis fixed in workspace | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P2-C4-S1S2>`
+- headSha: `876c015c2`
 - artifacts:
   - `docs/governance/contracts/_template-contract-record.md`
   - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
@@ -497,7 +497,7 @@
 
 ### P2-C5-S1S2S3 (Evidence-only source basis and statement-evolution model fixed in workspace | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P2-C5-S1S2S3>`
+- headSha: `876c015c2`
 - artifacts:
   - `docs/governance/contracts/_template-contract-record.md`
   - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
