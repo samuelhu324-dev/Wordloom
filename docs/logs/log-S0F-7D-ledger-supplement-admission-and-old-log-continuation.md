@@ -229,7 +229,7 @@
 
 ### P0-C1-S1S2 (Supplement-ledger continuation lane scaffolded | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P0-C1-S1S2>`
+- headSha: `54d4f529e`
 - artifacts:
   - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
 - expected:
@@ -241,7 +241,7 @@
 
 ### P1-C1-S1S2S3 (Supplement-ledger model fixed and templated | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P1-C1-S1S2S3>`
+- headSha: `54d4f529e`
 - artifacts:
   - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
   - `docs/logs/_template-support-only-contract-release-ledger-supplement.md`
