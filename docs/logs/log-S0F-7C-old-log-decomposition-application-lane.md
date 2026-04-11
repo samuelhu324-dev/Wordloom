@@ -349,9 +349,9 @@
 - `P2-C1` is now complete in workspace: the first extraction targets are fixed as `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001`, front matter is fixed as child-first extraction with later widening allowed, and cutover is split into two same-source slices before any later multi-consumption model is considered.
 - `P3-C1-S1` is now complete in workspace: the first `S0B-3A` ledger draft now exists and routes the source into `LOGS` and `LIFECYCLE`, with cutover already split into same-source sub-slices.
 - `P3-C1-S2S3` are now complete in workspace: the first `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` child candidates now exist as reviewed drafts aligned to the completed `S0B-3A` ledger.
-- `P4-C1-S1S2S3` are now complete in workspace: the first selective-backfill ledgers for `S0A-1A`, `S0A-2A`, and `S0B-1A` now exist as review scaffolds before any rerouting verdict is made.
-- `P4-C2-S1S2S3` are now complete in workspace: `S0A-1A` now explicitly requires a Projects child, `S0A-2A` now stays parent-owned with bounded-background child mentions, and `S0B-1A` now confirms labs ownership with one evidence-only proof point.
-- `P5-C1-S1S2S3` are now complete in workspace: the first application packet is normalized enough for reuse, the carry-forward boundary between ledger and contract is explicit, and future supplement-driven continuation is now handed off to `S0F-7D`.
+- `P4-C1-S1S2S3` are now complete: the first selective-backfill ledgers for `S0A-1A`, `S0A-2A`, and `S0B-1A` now exist as review scaffolds before any rerouting verdict is made.
+- `P4-C2-S1S2S3` are now complete: `S0A-1A` now explicitly requires a Projects child, `S0A-2A` now stays parent-owned with bounded-background child mentions, and `S0B-1A` now confirms labs ownership with one evidence-only proof point.
+- `P5-C1-S1S2S3` are now complete: the first application packet is normalized enough for reuse, the carry-forward boundary between ledger and contract is explicit, and future supplement-driven continuation is now handed off to `S0F-7D`.
 - `S0F-7C` should now be read as the first defended application packet rather than as the default long-lived home for every later old-log continuation.
 - The next execution step is to keep `7C` as retained proof of first application and move supplement-ledger design plus future bounded old-log continuation into `S0F-7D`.
 
@@ -432,7 +432,7 @@
 
 ### P4-C1-S1S2S3 (First selective-backfill ledgers scaffolded | 2026-04-10)
 
-- headSha: `<workspace not committed yet for S0F-7C/P4-C1-S1S2S3>`
+- headSha: `860d5d45e`
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
   - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
@@ -447,7 +447,7 @@
 
 ### P4-C2-S1S2S3 (First selective-backfill verdicts applied in workspace | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7C/P4-C2-S1S2S3>`
+- headSha: `860d5d45e`
 - artifacts:
   - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
   - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
@@ -468,7 +468,7 @@
 
 ### P5-C1-S1S2S3 (First application packet normalized and continuation handed off | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7C/P5-C1-S1S2S3>`
+- headSha: `860d5d45e`
 - artifacts:
   - `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
