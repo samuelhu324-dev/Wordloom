@@ -270,8 +270,8 @@
 - The lane now fixes one immediate baseline: supplement evidence must attach to a parent source-owned ledger before it can affect contract meaning.
 - `P1-C1-S1S2S3` are now complete: supplement-ledger naming, minimum header, evidence row shape, and allowed verdict effects are now fixed, and the first reusable template is now ready for direct pilot work.
 - `P1-C2-S1S2S3` are now complete: stable row ids, supplement item ids, and screenshot or attachment ids are now fixed across the ledger layer, and the contract boundary is now explicit enough for real pilot intake.
-- `P1-C3-S1` is now complete in workspace: on-disk supplement-ledger naming now uses the shorter `SUP` prefix, and the reusable template plus first pilot file now follow that same artifact naming model.
-- `P2-C1-S1` is now complete in workspace: the first screenshot-backed Projects SUP pilot now exists at a stable repo-local path and reads as one sharpen-the-draft supplement rather than as one routing-reversal packet.
+- `P1-C3-S1` is now complete: on-disk supplement-ledger naming now uses the shorter `SUP` prefix, and the reusable template plus first pilot file now follow that same artifact naming model.
+- `P2-C1-S1` is now complete: the first screenshot-backed Projects SUP pilot now exists at a stable repo-local path and reads as one sharpen-the-draft supplement rather than as one routing-reversal packet.
 - The next execution step is `P2-C1-S2`: decide how much parent-ledger and `PROJECTS-0001` write-back should happen now that the first SUP pilot is reviewable.
 
 ## Evidence (reserved)
@@ -322,7 +322,7 @@
 
 ### P1-C3-S1 (SUP artifact naming normalized | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P1-C3-S1>`
+- headSha: `354e08ec0`
 - artifacts:
   - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
   - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
@@ -336,7 +336,7 @@
 
 ### P2-C1-S1 (First screenshot-backed Projects SUP pilot stabilized | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P2-C1-S1>`
+- headSha: `354e08ec0`
 - artifacts:
   - `docs/logs/support-only/ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags.md`
   - `docs/logs/support-only/S0A-1A-R02-SUP-01-SHOT-01-projects-status-board.png`
