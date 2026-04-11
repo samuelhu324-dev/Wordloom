@@ -370,7 +370,7 @@
 
 ### P2-C1-S2 (First Projects SUP write-back accepted | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P2-C1-S2>`
+- headSha: `e4989e235`
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
   - `docs/governance/contracts/workflow/github/projects/DOC-WORKFLOW-GITHUB-PROJECTS-0001-project-views-support-execution-priority.md`
@@ -385,7 +385,7 @@
 
 ### P2-C2-S1 (Current-release amendment rule fixed for SUP write-back | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P2-C2-S1>`
+- headSha: `e4989e235`
 - artifacts:
   - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
   - `docs/logs/log-S0F-docs-management-v6.md`
