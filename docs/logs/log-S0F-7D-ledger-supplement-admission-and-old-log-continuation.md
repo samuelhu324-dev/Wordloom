@@ -293,7 +293,7 @@
 
 ### P1-C2-S1S2S3 (Ledger-layer item and asset ids fixed | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P1-C2-S1S2S3>`
+- headSha: `5d7c70b84`
 - artifacts:
   - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
   - `docs/logs/_template-support-only-contract-release-ledger.md`
