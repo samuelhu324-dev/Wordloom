@@ -91,6 +91,10 @@ contract_record:
 - Use this section when the release needs clause-level identity and carry-forward tracking without turning the contract itself into a source-owned ledger.
 - Recommended statement-id naming:
   - `<contract_id>-ST-<nn>`
+- Statement ids are release-local:
+  - later releases should mint new statement ids under the later `contract_id`
+  - do not reuse earlier-release statement ids as the current ids for a later release
+  - carry-forward, amendment, split, merge, or replacement relationships should be recorded through the statement-evolution surface
 - Recommended columns:
   - `statement id`
   - `statement label`
@@ -129,6 +133,10 @@ contract_record:
   - `in-force`
   - `no-longer-in-force`
   - `pending-review`
+- Recommended ordering for the current `Contract Statement Table`:
+  - sort by `first effective release` ascending so clauses with older semantic origins appear earlier
+  - when `first effective release` is the same, sort `change action` as `carried-forward`, then `amended`, then `introduced`
+  - after that, keep one reader-friendly order inside each action bucket rather than forcing purely lexical id ordering
 - The contract statement table does not replace source routing or supplement admission:
   - the parent ledger still owns source slicing and routing verdicts
   - the supplement ledger still owns later evidence admission and write-back recommendations

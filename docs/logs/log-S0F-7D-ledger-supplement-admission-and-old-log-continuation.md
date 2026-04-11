@@ -304,6 +304,45 @@
   - the statement-evolution table records the split event and its reason
   - the sample no longer uses `primary/supporting` inside `source basis`
 
+### P2-C6-S1 (Later-release statement ids fixed as release-local rather than reused lineage ids | v1)
+
+- Statement ids in one later release should now be minted under that later release's `contract_id` rather than reusing earlier-release statement ids as the current ids.
+- Under this rule:
+  - a carried-forward or amended clause in `DOC-WORKFLOW-LABS-0002` should now be named as `DOC-WORKFLOW-LABS-0002-ST-<nn>`
+  - earlier ids such as `DOC-WORKFLOW-LABS-001-ST-06` remain historical lineage anchors only
+  - the continuity between releases should be recorded in the statement-evolution table, not by keeping the old statement id as the current id
+
+### P2-C6-S2 (S0B-2A ledger now exposes row ids for LABS-0002 clause anchoring | v1)
+
+- The `S0B-2A` routing ledger may now expose stable row ids so `LABS-0002` can cite exact later-release evidence anchors in its contract statement table.
+- Under this rule:
+  - the labs-only snapshot-policy slice should anchor as `S0B-2A-R03`
+  - unconsumed or deferred slices remain ledger-visible but do not need to appear in the labs contract unless the release actually consumes them
+
+### P2-C6-S3 (LABS-0002 sample now revised to the paired-table clause model | v1)
+
+- `DOC-WORKFLOW-LABS-0002` may now serve as the first later-release sample under the paired contract-clause model.
+- Under this rule:
+  - `LABS-0002` should carry one `Contract Statement Table` for current clause state
+  - `LABS-0002` should carry one `Statement Evolution Table` for carry-forward, amendment, and introduction relationships back to `LABS-0001`
+  - `source basis` in both tables should stay evidence-only and point to stable ledger rows such as `S0B-1A-R01` and `S0B-2A-R03`
+
+### P2-C7-S1 (Contract statement-table ordering fixed by semantic origin first | v1)
+
+- The current `Contract Statement Table` should now be ordered by semantic origin before current-release novelty.
+- Under this rule:
+  - clauses with smaller `first effective release` values should appear earlier
+  - when `first effective release` is the same, `carried-forward` clauses should appear first, `amended` clauses second, and `introduced` clauses third
+  - within the same bucket, one reader-friendly order should be kept rather than forcing pure lexical id order
+
+### P2-C7-S2 (LABS-0002 first-effective and last-changed semantics normalized | v1)
+
+- `LABS-0002` may now normalize clause timing fields so carried-forward and amended clauses preserve their earlier first-effective origin while only later-introduced clauses start at `0002`.
+- Under this rule:
+  - carried-forward clauses from `LABS-0001` should keep `first effective release: DOC-WORKFLOW-LABS-0001`
+  - amended clauses whose meaning first existed in `LABS-0001` should also keep `first effective release: DOC-WORKFLOW-LABS-0001` while updating `last changed release: DOC-WORKFLOW-LABS-0002`
+  - introduced clauses that first appear in the later release should keep both fields at `DOC-WORKFLOW-LABS-0002`
+
 ### P3 (Future continuation discipline)
 
 - `P3-C1-S1`: define when future work should prefer current logs or new bounded logs instead of old-log reopening
@@ -338,6 +377,11 @@
 - [x] `P2-C5-S1`: narrow `source basis` to evidence-only anchors
 - [x] `P2-C5-S2`: fix the statement-evolution table model
 - [x] `P2-C5-S3`: split the LABS cleanup sample across statement-state and statement-evolution tables
+- [x] `P2-C6-S1`: fix later-release statement ids as release-local
+- [x] `P2-C6-S2`: expose `S0B-2A` row ids for later-release clause anchoring
+- [x] `P2-C6-S3`: revise `LABS-0002` to the paired-table clause model
+- [x] `P2-C7-S1`: fix semantic-origin-first statement-table ordering
+- [x] `P2-C7-S2`: normalize `LABS-0002` first-effective and last-changed semantics
 
 ### P3 (Future continuation discipline)
 
@@ -361,6 +405,11 @@
 - `P2-C5-S1` is now complete: `source basis` is now narrowed back to evidence-only anchors and no longer carries primary/supporting causal semantics.
 - `P2-C5-S2` is now complete: the repo now has one explicit `Statement Evolution Table` model for clause lineage, split, merge, replacement, and carry-forward events.
 - `P2-C5-S3` is now complete: `LABS-0001` now demonstrates the paired-table model by splitting the earlier cleanup sample into two narrower clauses and recording the split in a separate evolution table.
+- `P2-C6-S1` is now complete in workspace: later-release statement ids are now fixed as release-local ids, with earlier-release statement ids retained only as lineage anchors.
+- `P2-C6-S2` is now complete in workspace: the `S0B-2A` ledger now exposes stable row ids so `LABS-0002` can cite exact later-release evidence anchors.
+- `P2-C6-S3` is now complete in workspace: `LABS-0002` now follows the paired-table clause model, with current clause state separated from clause lineage back to `LABS-0001`.
+- `P2-C7-S1` is now complete in workspace: current statement tables now sort by smaller `first effective release` first, then by `carried-forward`, `amended`, and `introduced` buckets.
+- `P2-C7-S2` is now complete in workspace: `LABS-0002` now preserves `0001` as the first-effective origin for carried-forward and amended clauses while keeping later introductions at `0002`.
 - The next execution step is to reuse this same `7D` lane when earlier packets such as `S0A-2A` need later evidence admitted through one parent-ledger-first SUP write-back.
 
 ## Evidence (reserved)
@@ -510,6 +559,37 @@
   - the contract template now distinguishes `Contract Statement Table` from `Statement Evolution Table`
   - `source basis` is now documented as evidence-only, while clause lineage moves to `change id`, `input statement ids`, and `output statement ids`
   - `LABS-0001` now demonstrates the paired-table model by splitting the cleanup sample into two narrower clauses and recording the split separately
+
+### P2-C6-S1S2S3 (Release-local statement ids and LABS-0002 paired-table model wired in workspace | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7D/P2-C6-S1S2S3>`
+- artifacts:
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - later-release statement ids should be clarified as release-local ids rather than reused earlier-release ids
+  - the `S0B-2A` ledger should expose stable row ids for `LABS-0002` clause anchoring
+  - the `LABS-0002` contract should be upgraded to the same paired-table clause model now used by `LABS-0001`
+- observed:
+  - the template now states that later releases mint their own `ST` ids and keep earlier statement ids only as lineage anchors
+  - the `S0B-2A` ledger now exposes stable row ids, including `S0B-2A-R03` for the labs snapshot-policy slice consumed by `LABS-0002`
+  - `LABS-0002` now carries both a `Contract Statement Table` and a `Statement Evolution Table`, with current `0002-ST-*` ids linked back to `001-ST-*` history through explicit evolution rows
+
+### P2-C7-S1S2 (Statement-table ordering and clause timing semantics normalized in workspace | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7D/P2-C7-S1S2>`
+- artifacts:
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - current statement tables should read older semantic origins first, then newer release-local introductions
+  - `LABS-0002` should preserve `0001` as the first-effective origin for carried-forward and amended clauses that began earlier
+- observed:
+  - the template now fixes semantic-origin-first ordering with `carried-forward`, `amended`, and `introduced` bucket order inside one release-origin group
+  - `LABS-0002` now orders carried-forward clauses first, amended clauses second, and introduced clauses third, while preserving `0001` as the first-effective origin for earlier clauses
 
 ## Numbering
 
