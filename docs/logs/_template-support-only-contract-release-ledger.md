@@ -31,12 +31,14 @@ support_only_contract_release_ledger:
 
 ## Routing Table Shape
 
-| source slice | meaning owned here | target family | target release action | contract lineage impact | retained-only action | resolution status | resolved by contract id | consumed scope | resolution notes | notes |
+| row id | source slice | meaning owned here | target family | target release action | contract lineage impact | retained-only action | resolution status | resolved by contract id | consumed scope | resolution notes | notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `<source heading or bounded paragraph set>` | `<what rule/boundary the slice carries>` | `<DOC-WORKFLOW-LABS>` | `<new-release|revise-release|new-family|no-contract>` | `<supersede|split|absorb|retire|none-source-only>` | `<keep-in-log|support-only|defer>` | `<draft|applied|partially-applied|deferred|retained-support-only|re-routed|rejected>` | `<DOC-WORKFLOW-LABS-0002|none>` | `<full|partial|none>` | `<how this slice was finally consumed or why it was not>` | `<why this routing is correct>` |
+| `<S0A-1A-R01>` | `<source heading or bounded paragraph set>` | `<what rule/boundary the slice carries>` | `<DOC-WORKFLOW-LABS>` | `<new-release|revise-release|new-family|no-contract>` | `<supersede|split|absorb|retire|none-source-only>` | `<keep-in-log|support-only|defer>` | `<draft|applied|partially-applied|deferred|retained-support-only|re-routed|rejected>` | `<DOC-WORKFLOW-LABS-0002|none>` | `<full|partial|none>` | `<how this slice was finally consumed or why it was not>` | `<why this routing is correct>` |
 
 ## Required Rules
 
+- `row id` is required for every routed slice and should stay stable even when the prose wording in `source slice` tightens later.
+- Name `row id` as `<source-id>-R<n>` with zero-padded sequence numbers inside one ledger.
 - `target family` names the stable semantic family, not one specific release number.
 - `target release action` states what the receiving contract work should do:
   - `new-family`
@@ -74,6 +76,8 @@ support_only_contract_release_ledger:
 
 - `new releases expected`:
   - list the release records that should exist after this ledger is applied
+- `row id map`:
+  - list any stable row ids whose prose labels were tightened after initial creation
 - `cumulative sources to carry forward`:
   - list the sources that later release metadata must keep visible
 - `deferred slices`:

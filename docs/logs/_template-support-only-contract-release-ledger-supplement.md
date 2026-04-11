@@ -29,15 +29,24 @@ support_only_contract_release_ledger_supplement:
   target_reading_goal: <what later reader should understand after this supplement is applied>
 ```
 
+## Asset and Item Id Rule
+
+- Every supplement row must carry one `supplement_item_id`.
+- Name it as `<parent-row-id>-SUP-<n>`.
+- Every attachment beneath one supplement row must carry one stable `attachment_id`.
+- Use `<supplement-item-id>-ATT-<n>` for generic assets and `<supplement-item-id>-SHOT-<n>` when the asset is specifically a screenshot.
+
 ## Evidence Table Shape
 
-| parent ledger slice | evidence ref | evidence type | verification status | effect on current verdict | proposed parent-ledger action | contract impact | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `<exact parent-ledger row label>` | `<code path|md path|issue|oral note|other evidence anchor>` | `<code|md|issue|log|oral|other>` | `<pending|verified|rejected>` | `<supports-existing|sharpens-existing|narrows-existing|revises-existing|conflicts-needs-review>` | `<no-change|add-supporting-evidence|rewrite-parent-row|split-parent-row|reopen-routing>` | `<none|rewrite-current-draft|open-new-release|defer-contract-change>` | `<why this evidence should or should not change the parent-ledger reading>` |
+| supplement item id | parent row id | evidence ref | evidence type | attachment ids | verification status | effect on current verdict | proposed parent-ledger action | contract impact | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<S0A-1A-R02-SUP-01>` | `<S0A-1A-R02>` | `<code path|md path|issue|oral note|other evidence anchor>` | `<code|md|issue|log|oral|screenshot|other>` | `<S0A-1A-R02-SUP-01-SHOT-01>` | `<pending|verified|rejected>` | `<supports-existing|sharpens-existing|narrows-existing|revises-existing|conflicts-needs-review>` | `<no-change|add-supporting-evidence|rewrite-parent-row|split-parent-row|reopen-routing>` | `<none|rewrite-current-draft|open-new-release|defer-contract-change>` | `<why this evidence should or should not change the parent-ledger reading>` |
 
 ## Required Rules
 
-- Every supplement row must point to one existing `parent ledger slice`; a supplement may not invent free-floating new slices.
+- Every supplement row must point to one existing `parent row id`; a supplement may not invent free-floating new slices.
+- `supplement_item_id` is required for every admitted evidence item.
+- `attachment ids` should stay empty when no attached asset is needed; when assets exist, each asset should receive one stable id rather than being referenced only by prose.
 - `verification status` records whether the evidence is merely proposed, verified enough for judgment, or rejected for this supplement round.
 - `effect on current verdict` states how the admitted evidence relates to the current parent-ledger judgment.
 - `proposed parent-ledger action` states what the parent ledger should do if that effect is accepted.
@@ -48,7 +57,7 @@ support_only_contract_release_ledger_supplement:
 - When the effect is `supports-existing` or `sharpens-existing`, prefer `add-supporting-evidence` or another minimal parent-ledger write-back.
 - When the effect is `narrows-existing` or `revises-existing`, prefer `rewrite-parent-row` or `split-parent-row` before any contract rewrite.
 - When the effect is `conflicts-needs-review`, prefer `reopen-routing`; do not write directly into contract release fields.
-- If a supplement row cannot be tied to one existing parent-ledger slice, open a new bounded source or continuation packet instead of forcing the evidence into this supplement.
+- If a supplement row cannot be tied to one existing parent row id, open a new bounded source or continuation packet instead of forcing the evidence into this supplement.
 
 ## Completion Rule
 
@@ -58,7 +67,9 @@ support_only_contract_release_ledger_supplement:
 ## Optional Rollup
 
 - `parent-ledger rows to update`:
-  - list the exact parent-ledger rows that should be rewritten or supplemented
+  - list the exact parent row ids that should be rewritten or supplemented
+- `attachment inventory`:
+  - list screenshot, transcript, export, or similar asset ids admitted in this round
 - `contract changes deferred until parent write-back`:
   - list any contract records that may need change only after the parent ledger is updated
 - `rejected evidence`:

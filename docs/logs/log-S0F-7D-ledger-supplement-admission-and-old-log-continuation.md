@@ -80,7 +80,10 @@
 ## Definitions (optional)
 
 - `parent ledger`: the existing source-owned support-only ledger that already records source slices and their routing verdicts.
+- `parent ledger row id`: the stable per-slice identifier inside one parent ledger, used as the anchor for later supplement evidence.
 - `supplement ledger`: a bounded evidence-admission ledger that attaches to one parent ledger and may strengthen, sharpen, or reopen one existing routing verdict.
+- `supplement item id`: the stable per-evidence identifier inside one supplement ledger, scoped beneath one parent-ledger row.
+- `attachment or shot id`: the stable per-asset identifier beneath one supplement item, used for screenshots, exports, transcripts, or similar attached evidence.
 - `admitted supplement evidence`: later evidence that is tied to one existing parent-ledger slice and has passed the required verification rule for this lane.
 - `continuation packet`: a later bounded old-log follow-up that reopens a source only because one explicit ledger gap or supplement-evidence need has been identified.
 
@@ -177,6 +180,33 @@
   - supplement evidence may not write directly into contract lineage or release fields first
   - any contract rewrite must happen only after the parent ledger has absorbed or rejected the supplement verdict
 
+### P1-C2-S1 (Parent-ledger row-id model fixed | v1)
+
+- Parent-ledger rows must now carry one stable `row_id` per routed slice.
+- The naming rule is now fixed as `<source-id>-R<n>`, using zero-padded sequence numbers inside one parent ledger.
+- Under this rule:
+  - `S0A-1A-R01` means the first stable routed slice inside the `S0A-1A` parent ledger
+  - row ids stay ledger-scoped rather than becoming contract ids
+  - wording in `source slice` may later tighten without breaking supplement references, because the stable anchor is the `row_id`
+
+### P1-C2-S2 (Supplement item-id and attachment-id model fixed | v1)
+
+- Supplement evidence items must now carry one stable `supplement_item_id` beneath one parent-ledger row.
+- The naming rule is now fixed as `<parent-row-id>-SUP-<n>`.
+- Attachments or screenshots beneath one supplement item must now carry one stable `attachment_id`, using `ATT` as the generic asset suffix and `SHOT` when the asset is specifically a screenshot.
+- Under this rule:
+  - `S0A-1A-R02-SUP-01` means the first supplement item attached to parent row `S0A-1A-R02`
+  - `S0A-1A-R02-SUP-01-SHOT-01` means the first screenshot asset beneath that supplement item
+  - attachment ids remain evidence-layer identifiers and do not become contract ids
+
+### P1-C2-S3 (ID boundary versus contract boundary fixed | v1)
+
+- `row_id`, `supplement_item_id`, and `attachment_id` are now fixed as ledger-layer and evidence-layer identifiers rather than contract identifiers.
+- Under this rule:
+  - contracts may cite these ids when needed for auditability or reader traceability
+  - contracts should not promote these ids into primary release identity fields
+  - the stable identity split is now: `ledger_id` for the file, `row_id` for the routed slice, `supplement_item_id` for the admitted evidence item, and `attachment_id` for attached assets such as screenshots
+
 ## Plan (draft)
 
 ### P1 (Supplement-ledger model)
@@ -184,6 +214,9 @@
 - `P1-C1-S1`: define supplement-ledger naming and parent-ledger attachment
 - `P1-C1-S2`: define the minimum supplement-ledger header and evidence row contract
 - `P1-C1-S3`: define allowed verdict effects such as `supports-existing`, `sharpens-existing`, `revises-existing`, and `reopen-routing`
+- `P1-C2-S1`: define stable row ids for parent-ledger slices
+- `P1-C2-S2`: define supplement item ids plus screenshot or attachment ids
+- `P1-C2-S3`: define the boundary between ledger-layer ids and contract-layer ids
 
 ### P2 (First pilot)
 
@@ -207,6 +240,9 @@
 - [x] `P1-C1-S1`: define supplement-ledger naming and attachment
 - [x] `P1-C1-S2`: define header and row contract
 - [x] `P1-C1-S3`: define allowed verdict effects
+- [x] `P1-C2-S1`: define stable row ids for parent-ledger slices
+- [x] `P1-C2-S2`: define supplement item ids plus screenshot or attachment ids
+- [x] `P1-C2-S3`: define the boundary between ledger-layer ids and contract-layer ids
 
 ### P2 (First pilot)
 
@@ -223,6 +259,7 @@
 - `S0F-7D` is now opened as the bounded continuation lane after `S0F-7C`.
 - The lane now fixes one immediate baseline: supplement evidence must attach to a parent source-owned ledger before it can affect contract meaning.
 - `P1-C1-S1S2S3` are now complete in workspace: supplement-ledger naming, minimum header, evidence row shape, and allowed verdict effects are now fixed, and the first reusable template is now ready for direct pilot work.
+- `P1-C2-S1S2S3` are now complete in workspace: stable row ids, supplement item ids, and screenshot or attachment ids are now fixed across the ledger layer, and the contract boundary is now explicit enough for real pilot intake.
 - The next execution step is `P2`: pilot the supplement-ledger model against the `S0A-1A` Projects slice and decide whether the first evidence batch only sharpens the current Projects child or reopens the parent-ledger row.
 
 ## Evidence (reserved)
@@ -253,6 +290,23 @@
   - supplement-ledger naming is now fixed as `ledger-supplement-<source-id>-<source-summary>.md` with mandatory parent-ledger attachment
   - one reusable template now exists for supplement-ledger work with explicit header and evidence-row fields
   - the lane now fixes a narrow verdict set and requires any later contract rewrite to happen only after the parent ledger absorbs or rejects the supplement result
+
+### P1-C2-S1S2S3 (Ledger-layer item and asset ids fixed | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7D/P1-C2-S1S2S3>`
+- artifacts:
+  - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
+  - `docs/logs/_template-support-only-contract-release-ledger.md`
+  - `docs/logs/_template-support-only-contract-release-ledger-supplement.md`
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+- expected:
+  - parent ledgers should gain one stable per-row id so supplement evidence can anchor to routed slices without depending on mutable prose labels
+  - supplement items and screenshot or attachment assets should gain stable ids at the evidence layer
+  - the repo should state clearly that these ids remain below the contract layer rather than becoming release identifiers
+- observed:
+  - parent ledger rows now have one stable `row_id` model
+  - supplement items plus screenshot or attachment assets now have one stable id model beneath the parent row
+  - the lane now keeps those ids ledger-scoped and evidence-scoped rather than promoting them into contract identity
 
 ## Numbering
 
