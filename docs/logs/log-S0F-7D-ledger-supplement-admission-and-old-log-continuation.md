@@ -232,6 +232,22 @@
 - `P2-C1-S1`: pilot the first supplement-ledger against `S0A-1A` Projects evidence
 - `P2-C1-S2`: decide whether the first pilot only sharpens the current Projects child or actually reopens its parent-ledger row
 
+### P2-C1-S2 (First Projects SUP write-back accepted as sharpening-only | v1)
+
+- The first Projects SUP pilot is now accepted as one sharpening-only write-back rather than one routing reversal.
+- Under this rule:
+  - parent row `S0A-1A-R02` should be sharpened through supporting-evidence write-back
+  - `DOC-WORKFLOW-GITHUB-PROJECTS-0001` should be widened to describe the now-evidenced status-board, table, and timeline readings
+  - no reroute or parent-row split is required from the current evidence batch
+
+### P2-C2-S1 (SUP write-back defaults to current-release amendment | v1)
+
+- When one supplement ledger sharpens or revises a parent-ledger row that is already resolved into one current contract release, the default write-back target remains that same current release.
+- Under this rule:
+  - supplement-ledger write-back does not create one new contract release merely because the current release text is being sharpened, widened, narrowed, or otherwise amended from admitted parent-ledger evidence
+  - a new contract release should be opened only when one genuinely new release event is occurring, such as one new bounded extraction from another source issue or log, one lineage-changing reroute, or one contract-family change that can no longer be defended as amendment of the current release text
+  - if the admitted supplement still depends on the same parent release ledger and does not cross that release boundary, the contract should be edited in place while expanding its release change summary, supporting evidence, and reader-visible wording as needed
+
 ### P3 (Future continuation discipline)
 
 - `P3-C1-S1`: define when future work should prefer current logs or new bounded logs instead of old-log reopening
@@ -257,7 +273,8 @@
 ### P2 (First pilot)
 
 - [x] `P2-C1-S1`: pilot the first supplement-ledger on `S0A-1A` Projects evidence
-- [ ] `P2-C1-S2`: decide whether the pilot sharpens or reopens the parent-ledger verdict
+- [x] `P2-C1-S2`: decide whether the pilot sharpens or reopens the parent-ledger verdict
+- [x] `P2-C2-S1`: fix the release-boundary rule for accepted SUP write-back
 
 ### P3 (Future continuation discipline)
 
@@ -272,7 +289,9 @@
 - `P1-C2-S1S2S3` are now complete: stable row ids, supplement item ids, and screenshot or attachment ids are now fixed across the ledger layer, and the contract boundary is now explicit enough for real pilot intake.
 - `P1-C3-S1` is now complete: on-disk supplement-ledger naming now uses the shorter `SUP` prefix, and the reusable template plus first pilot file now follow that same artifact naming model.
 - `P2-C1-S1` is now complete: the first screenshot-backed Projects SUP pilot now exists at a stable repo-local path and reads as one sharpen-the-draft supplement rather than as one routing-reversal packet.
-- The next execution step is `P2-C1-S2`: decide how much parent-ledger and `PROJECTS-0001` write-back should happen now that the first SUP pilot is reviewable.
+- `P2-C1-S2` is now complete: the first Projects SUP pilot is accepted as sharpening-only write-back, the parent ledger now sharpens `S0A-1A-R02`, and `PROJECTS-0001` now reflects status-board, table, and timeline readings without changing the underlying routing boundary.
+- `P2-C2-S1` is now complete: accepted SUP write-back is now fixed as amendment of the current resolved release by default, not as one automatic new contract release.
+- The next execution step is to reuse this same `7D` lane when earlier packets such as `S0A-2A` need later evidence admitted through one parent-ledger-first SUP write-back.
 
 ## Evidence (reserved)
 
@@ -348,6 +367,34 @@
 - observed:
   - the first Projects SUP pilot now cites stable repo-local screenshot paths and records the three screenshots as verified evidence items
   - the current reading still keeps `S0A-1A-R02 -> DOC-WORKFLOW-GITHUB-PROJECTS-0001` unchanged while preparing write-back that sharpens the parent row and widens the current Projects draft wording
+
+### P2-C1-S2 (First Projects SUP write-back accepted | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7D/P2-C1-S2>`
+- artifacts:
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/governance/contracts/workflow/github/projects/DOC-WORKFLOW-GITHUB-PROJECTS-0001-project-views-support-execution-priority.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags.md`
+- expected:
+  - the first SUP pilot should either reopen routing or be accepted as a sharpening-only write-back
+  - accepted write-back should sharpen the parent-ledger row and the current Projects draft without inventing a new routing boundary
+- observed:
+  - the current evidence batch is accepted as sharpening-only write-back rather than as a reroute or split
+  - parent row `S0A-1A-R02` now explicitly reads Projects as status-board, lookup, timeline, and bounded reprioritization support
+  - `PROJECTS-0001` now incorporates those three evidenced view classes while keeping GitHub Issues as the canonical hierarchy owner
+
+### P2-C2-S1 (Current-release amendment rule fixed for SUP write-back | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7D/P2-C2-S1>`
+- artifacts:
+  - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - accepted supplement-ledger write-back should clarify whether current-release text is amended in place or automatically promoted into one new contract release
+  - the lane should state that new release numbering is reserved for genuinely new release events rather than for every supporting-evidence amendment
+- observed:
+  - `7D` now fixes current-release amendment as the default write-back rule when admitted supplement evidence stays within the same parent-ledger and routing boundary
+  - the lane now reserves new contract-release numbering for genuinely new release events such as new bounded extraction, lineage-changing reroute, or family-level contract change
 
 ## Numbering
 
