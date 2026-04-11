@@ -75,7 +75,9 @@ contract_record:
 ## Recommended Body Shape
 
 - Keep the prose body readable as both `what changed in this release` and `what the current effective state now is`.
+- When one contract family is likely to evolve through repeated clause-level amendment, consider adding one `## Contract Statement Table` ahead of the readable prose body so each effective clause has one stable statement id and one explicit source-basis anchor.
 - Preferred section order:
+  - `## Contract Statement Table` (optional but recommended when clause-level traceability matters)
   - `## Release Change`
   - `## Contract Statement`
   - `## Current Reading`
@@ -83,6 +85,81 @@ contract_record:
 - `## Release Change` should summarize the material delta for this release, especially when `contract_release` is later than `0001`.
 - `## Contract Statement` should restate the current effective rule meaning in full; do not force readers to reconstruct the current state by diffing against earlier releases.
 - When one later release absorbs new non-contract source material, mention that source carry-forward in `## Release Change`, while keeping release-to-release relationships in `lineage` and source-routing details in the support-only ledger.
+
+## Optional Contract Statement Table
+
+- Use this section when the release needs clause-level identity and carry-forward tracking without turning the contract itself into a source-owned ledger.
+- Recommended statement-id naming:
+  - `<contract_id>-ST-<nn>`
+- Recommended columns:
+  - `statement id`
+  - `statement label`
+  - `clause status`
+  - `change action`
+  - `source basis`
+  - `first effective release`
+  - `last changed release`
+  - `effective status`
+  - `statement text`
+  - `notes`
+- `statement label` should be a short human-readable clause title for the current contract meaning; it is the contract-facing quick label, not a copy of the source-owned `source slice` field from the ledger.
+- `source basis` may contain one or more stable anchors when the clause truly depends on multiple upstream bases.
+- `source basis` should prefer stable ledger or supplement anchors such as:
+  - one `parent row id` such as `S0B-1A-R02`
+  - one `supplement item id` such as `S0A-1A-R02-SUP-01`
+  - one earlier `statement id` when the current clause is carried forward or amended from an earlier release
+- `source basis` is evidence-facing only:
+  - use stable ids rather than raw file paths
+  - reserve the field for directly decisive anchors rather than general supporting evidence
+  - do not use the field to encode statement lineage, split/merge causality, or release-to-release replacement logic
+  - when multiple anchors are needed, a plain semicolon-delimited shape such as `S0B-1A-R02; S0B-1A-R03` is recommended for Markdown tables
+- Recommended `clause status` values:
+  - `active`
+  - `superseded`
+  - `retired`
+  - `conflicted-review`
+- Recommended `change action` values:
+  - `introduced`
+  - `carried-forward`
+  - `amended`
+  - `replaced`
+  - `split`
+  - `merged`
+- Recommended `effective status` values:
+  - `in-force`
+  - `no-longer-in-force`
+  - `pending-review`
+- The contract statement table does not replace source routing or supplement admission:
+  - the parent ledger still owns source slicing and routing verdicts
+  - the supplement ledger still owns later evidence admission and write-back recommendations
+  - the contract statement table only tracks the effective clause state inside one contract release
+
+## Optional Statement Evolution Table
+
+- Use this section when statement-level split, merge, replacement, retirement, or carry-forward history needs to remain readable without overloading `source basis`.
+- Recommended change-id naming:
+  - `<contract_id>-CH-<nn>`
+- Recommended columns:
+  - `change id`
+  - `release id`
+  - `change action`
+  - `input statement ids`
+  - `output statement ids`
+  - `reason`
+  - `source basis`
+  - `notes`
+- Recommended `change action` values:
+  - `introduced`
+  - `amended`
+  - `replaced`
+  - `split`
+  - `merged`
+  - `retired`
+  - `carried-forward`
+- In this table:
+  - `input statement ids` and `output statement ids` carry statement lineage and causality
+  - `source basis` still carries only the decisive evidence anchors for the change event
+  - release-level lineage remains in contract frontmatter rather than moving into clause history tables
 
 ## Optional Legacy Redirect
 

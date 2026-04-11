@@ -23,12 +23,19 @@ support_only_contract_release_ledger:
 
 ## Routing And Consumption Table
 
-| source slice | meaning owned here | target family | target release action | contract lineage impact | retained-only action | resolution status | resolved by contract id | consumed scope | resolution notes | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `Snapshot asset classes` in issue `S0B-1A (#36)` | classify lab outputs into golden fixtures, diff snapshots, and ad-hoc dumps | `DOC-WORKFLOW-LABS` | `existing-family-review` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-LABS-001` | `full` | consumed by `DOC-WORKFLOW-LABS-001` as the first labs snapshot classification rule body | This slice is the clearest direct match to the first labs contract. |
-| `Minimal evidence retention` in issue `S0B-1A (#36)` | each lab keeps only the minimum evidence set needed to replay or verify the conclusion confidently | `DOC-WORKFLOW-LABS` | `existing-family-review` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-LABS-001` | `full` | consumed by `DOC-WORKFLOW-LABS-001` as the first explicit minimal-retention labs rule body | This slice also remains materially present in the labs family after later release work. |
-| `Safe-to-purge cleanup` in issue `S0B-1A (#36)` | once conclusions are codified into repeatable scripts and verifiable assertions, older diff or ad-hoc artifacts can be removed aggressively | `DOC-WORKFLOW-LABS` | `existing-family-review` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-LABS-001` | `full` | consumed by `DOC-WORKFLOW-LABS-001`; later lifecycle adjacency does not change the primary owner for this first issue-owned slice | This slice may later be reused by neighboring lifecycle reasoning, but that reuse does not reverse the original labs ownership. |
-| `Local proof point` in issue `S0B-1A (#36)` | one concrete cleanup example demonstrates the governance rule in practice | `none` | `no-contract-review` | `none-source-only` | `support-only` | `retained-support-only` | `none` | `none` | retained as evidence-only validating example rather than promoted rule ownership | This looks more like validating example than stable rule body. |
+| row id | source slice | meaning owned here | target family | target release action | contract lineage impact | retained-only action | resolution status | resolved by contract id | consumed scope | resolution notes | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0B-1A-R01` | `Snapshot asset classes` in issue `S0B-1A (#36)` | classify lab outputs into golden fixtures, diff snapshots, and ad-hoc dumps | `DOC-WORKFLOW-LABS` | `existing-family-review` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-LABS-001` | `full` | consumed by `DOC-WORKFLOW-LABS-001` as the first labs snapshot classification rule body | This slice is the clearest direct match to the first labs contract. |
+| `S0B-1A-R02` | `Minimal evidence retention` in issue `S0B-1A (#36)` | each lab keeps only the minimum evidence set needed to replay or verify the conclusion confidently | `DOC-WORKFLOW-LABS` | `existing-family-review` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-LABS-001` | `full` | consumed by `DOC-WORKFLOW-LABS-001` as the first explicit minimal-retention labs rule body | This slice also remains materially present in the labs family after later release work. |
+| `S0B-1A-R03` | `Safe-to-purge cleanup` in issue `S0B-1A (#36)` | once conclusions are codified into repeatable scripts and verifiable assertions, older diff or ad-hoc artifacts can be removed aggressively | `DOC-WORKFLOW-LABS` | `existing-family-review` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-LABS-001` | `full` | consumed by `DOC-WORKFLOW-LABS-001`; later lifecycle adjacency does not change the primary owner for this first issue-owned slice | This slice may later be reused by neighboring lifecycle reasoning, but that reuse does not reverse the original labs ownership. |
+| `S0B-1A-R04` | `Local proof point` in issue `S0B-1A (#36)` | one concrete cleanup example demonstrates the governance rule in practice | `none` | `no-contract-review` | `none-source-only` | `support-only` | `retained-support-only` | `none` | `none` | retained as evidence-only validating example rather than promoted rule ownership | This looks more like validating example than stable rule body. |
+
+## Row Id Map
+
+- `S0B-1A-R01`: Snapshot asset classes
+- `S0B-1A-R02`: Minimal evidence retention
+- `S0B-1A-R03`: Safe-to-purge cleanup
+- `S0B-1A-R04`: Local proof point
 
 ## New Releases Expected
 

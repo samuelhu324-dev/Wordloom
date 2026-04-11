@@ -248,6 +248,62 @@
   - a new contract release should be opened only when one genuinely new release event is occurring, such as one new bounded extraction from another source issue or log, one lineage-changing reroute, or one contract-family change that can no longer be defended as amendment of the current release text
   - if the admitted supplement still depends on the same parent release ledger and does not cross that release boundary, the contract should be edited in place while expanding its release change summary, supporting evidence, and reader-visible wording as needed
 
+### P2-C3-S1 (Contract statement-table model fixed without collapsing contract into ledger | v1)
+
+- A contract release may now carry one optional statement table so clause-level identity, replacement, and carry-forward can be tracked without forcing readers to reconstruct meaning from prose diffs alone.
+- Under this rule:
+  - statement ids should be named as `<contract_id>-ST-<nn>`
+  - the statement table should track clause status, change action, source basis, first effective release, last changed release, effective status, statement text, and notes
+  - the statement table does not replace source routing or supplement admission, because the parent ledger still owns routed slices and the supplement ledger still owns later evidence admission
+
+### P2-C3-S2 (LABS-0001 sample now demonstrates contract clause ids and ledger linkage | v1)
+
+- `DOC-WORKFLOW-LABS-001` may now serve as the first concrete sample for contract statement-table management.
+- Under this rule:
+  - the `S0B-1A` parent ledger should expose stable row ids so the labs contract can cite exact source basis anchors
+  - the labs contract may keep one readable prose statement while also exposing one clause-level table that points back to `S0B-1A-R01/R02/R03`
+  - this linkage remains one contract-facing clause registry, not one second routing table embedded inside the contract body
+
+### P2-C4-S1 (Contract statement labels fixed as contract-facing quick labels | v1)
+
+- Contract statement tables may now carry one `statement label` column so readers can see one short contract-facing title for each clause without confusing that title with the source-owned `source slice` field from the ledger.
+- Under this rule:
+  - `statement label` is the short human-readable identifier for the current contract clause
+  - `statement label` should stay contract-facing and concise rather than copying raw source-packet wording wholesale
+  - the full clause meaning still lives in `statement text`, while the ledger continues to own `source slice`
+
+### P2-C4-S2 (Source-basis multiplicity fixed with primary-first stable-anchor rule | v1)
+
+- Contract statement tables may now record more than one `source basis` anchor when one clause truly depends on multiple upstream bases.
+- Under this rule:
+  - `source basis` should use one or more stable ids rather than raw file paths
+  - additional anchors should be limited to directly decisive parent-row, supplement-item, or prior-statement ids rather than general supporting evidence
+  - this multiplicity rule is now superseded by `P2-C5-S1S2`, which separates evidence anchors from statement lineage and no longer treats basis order as the carrier of causal semantics
+
+### P2-C5-S1 (Source basis narrowed to evidence-only anchors | v1)
+
+- `source basis` now records only the directly decisive evidence anchors for one contract clause or clause-change event.
+- Under this rule:
+  - `source basis` may still hold one or more stable ids
+  - `source basis` should not carry primary/supporting causal logic, split history, merge history, or replacement lineage
+  - clause lineage should move to one separate statement-evolution surface instead of being implied through basis formatting
+
+### P2-C5-S2 (Statement-evolution table fixed as the clause-lineage surface | v1)
+
+- A contract release may now carry one optional `Statement Evolution Table` that records split, merge, replacement, retirement, amendment, and carry-forward events between statement ids.
+- Under this rule:
+  - statement evolution should use one stable `change id` named as `<contract_id>-CH-<nn>`
+  - `input statement ids` and `output statement ids` should carry the clause lineage and causal relationship
+  - `source basis` may still appear in the evolution table, but only as the decisive evidence anchors for the change event
+
+### P2-C5-S3 (LABS-0001 sample now demonstrates split handling across two contract tables | v1)
+
+- `DOC-WORKFLOW-LABS-001` may now serve as the first sample where one over-dense cleanup clause is decomposed into two narrower clauses while lineage is retained separately from evidence anchors.
+- Under this rule:
+  - the contract statement table now keeps the narrower current clauses
+  - the statement-evolution table records the split event and its reason
+  - the sample no longer uses `primary/supporting` inside `source basis`
+
 ### P3 (Future continuation discipline)
 
 - `P3-C1-S1`: define when future work should prefer current logs or new bounded logs instead of old-log reopening
@@ -275,6 +331,13 @@
 - [x] `P2-C1-S1`: pilot the first supplement-ledger on `S0A-1A` Projects evidence
 - [x] `P2-C1-S2`: decide whether the pilot sharpens or reopens the parent-ledger verdict
 - [x] `P2-C2-S1`: fix the release-boundary rule for accepted SUP write-back
+- [x] `P2-C3-S1`: fix the contract statement-table model
+- [x] `P2-C3-S2`: wire `LABS-0001` as the first clause-table sample linked back to its parent ledger
+- [x] `P2-C4-S1`: fix the contract-facing statement-label rule
+- [x] `P2-C4-S2`: fix the multi-anchor source-basis rule
+- [x] `P2-C5-S1`: narrow `source basis` to evidence-only anchors
+- [x] `P2-C5-S2`: fix the statement-evolution table model
+- [x] `P2-C5-S3`: split the LABS cleanup sample across statement-state and statement-evolution tables
 
 ### P3 (Future continuation discipline)
 
@@ -291,6 +354,13 @@
 - `P2-C1-S1` is now complete: the first screenshot-backed Projects SUP pilot now exists at a stable repo-local path and reads as one sharpen-the-draft supplement rather than as one routing-reversal packet.
 - `P2-C1-S2` is now complete: the first Projects SUP pilot is accepted as sharpening-only write-back, the parent ledger now sharpens `S0A-1A-R02`, and `PROJECTS-0001` now reflects status-board, table, and timeline readings without changing the underlying routing boundary.
 - `P2-C2-S1` is now complete: accepted SUP write-back is now fixed as amendment of the current resolved release by default, not as one automatic new contract release.
+- `P2-C3-S1` is now complete in workspace: the repo now has one explicit contract statement-table model for clause-level identity and carry-forward without collapsing contracts into ledgers.
+- `P2-C3-S2` is now complete in workspace: `LABS-0001` now acts as the first clause-table sample, and the `S0B-1A` parent ledger now exposes row ids so the contract can cite exact source-basis anchors.
+- `P2-C4-S1` is now complete in workspace: contract statement tables now explicitly distinguish one short `statement label` from the ledger-owned `source slice` field.
+- `P2-C4-S2` is now complete in workspace: `source basis` is now fixed as one-or-more stable anchors with a primary-first rule, and `LABS-0001` demonstrates the first multi-anchor sample row.
+- `P2-C5-S1` is now complete in workspace: `source basis` is now narrowed back to evidence-only anchors and no longer carries primary/supporting causal semantics.
+- `P2-C5-S2` is now complete in workspace: the repo now has one explicit `Statement Evolution Table` model for clause lineage, split, merge, replacement, and carry-forward events.
+- `P2-C5-S3` is now complete in workspace: `LABS-0001` now demonstrates the paired-table model by splitting the earlier cleanup sample into two narrower clauses and recording the split in a separate evolution table.
 - The next execution step is to reuse this same `7D` lane when earlier packets such as `S0A-2A` need later evidence admitted through one parent-ledger-first SUP write-back.
 
 ## Evidence (reserved)
@@ -395,6 +465,51 @@
 - observed:
   - `7D` now fixes current-release amendment as the default write-back rule when admitted supplement evidence stays within the same parent-ledger and routing boundary
   - the lane now reserves new contract-release numbering for genuinely new release events such as new bounded extraction, lineage-changing reroute, or family-level contract change
+
+### P2-C3-S1S2 (Contract statement-table model and LABS sample wired in workspace | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7D/P2-C3-S1S2>`
+- artifacts:
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
+  - `docs/logs/support-only/ledger-S0B-1A-tools-labs-and-snapshots.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should clarify how one contract can track clause-level identity and source-basis linkage without turning the contract itself into one second ledger
+  - one concrete sample should show how a contract statement table points back to parent-ledger row ids
+- observed:
+  - the contract template now documents one optional statement-table model with stable statement ids and explicit source-basis fields
+  - `LABS-0001` now demonstrates one clause-table registry, while the `S0B-1A` parent ledger now exposes stable row ids that those clauses can cite
+
+### P2-C4-S1S2 (Statement labels and multi-anchor source basis fixed in workspace | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7D/P2-C4-S1S2>`
+- artifacts:
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should distinguish contract-facing clause labels from ledger-owned source-slice labels
+  - the repo should clarify whether one contract clause may depend on more than one stable source-basis anchor and how that multiplicity should be written
+- observed:
+  - the contract template now recommends `statement label` as the short contract-facing clause title
+  - the template now permits one-or-more stable `source basis` anchors under a primary-first rule, and `LABS-0001` now demonstrates the first multi-anchor basis row
+
+### P2-C5-S1S2S3 (Evidence-only source basis and statement-evolution model fixed in workspace | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7D/P2-C5-S1S2S3>`
+- artifacts:
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should keep `source basis` as evidence-only anchors rather than overloading it with clause causality
+  - the repo should publish one second clause-management table for split, merge, replacement, and retirement history
+  - the labs sample should show one clause split handled across the two-table model
+- observed:
+  - the contract template now distinguishes `Contract Statement Table` from `Statement Evolution Table`
+  - `source basis` is now documented as evidence-only, while clause lineage moves to `change id`, `input statement ids`, and `output statement ids`
+  - `LABS-0001` now demonstrates the paired-table model by splitting the cleanup sample into two narrower clauses and recording the split separately
 
 ## Numbering
 
