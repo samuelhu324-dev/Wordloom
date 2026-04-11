@@ -18,7 +18,7 @@
   **reference_log_1**: `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
   **reference_log_2**: `docs/logs/_template-support-only-contract-release-ledger.md`
   **reference_log_3**: `docs/governance/contracts/_template-contract-record.md`
-  **reference_log_4**: `docs/logs/_template-support-only-contract-release-ledger-supplement.md`
+  **reference_log_4**: `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
 **issue_keyword**: `evidence`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/7`
@@ -131,7 +131,7 @@
 
 ### P1-C1-S1 (Supplement-ledger naming and parent-ledger attachment fixed | v1)
 
-- A supplement ledger must now be named as `ledger-supplement-<source-id>-<source-summary>.md`.
+- A supplement ledger must now be named as `ledger-SUP-<source-id>-<source-summary>.md`.
 - The `<source-id>` and `<source-summary>` must match the existing parent source-owned ledger rather than inventing one contract-first naming scheme.
 - Under this rule:
   - one supplement ledger always attaches to one parent ledger
@@ -207,6 +207,14 @@
   - contracts should not promote these ids into primary release identity fields
   - the stable identity split is now: `ledger_id` for the file, `row_id` for the routed slice, `supplement_item_id` for the admitted evidence item, and `attachment_id` for attached assets such as screenshots
 
+### P1-C3-S1 (On-disk supplement naming normalized to `SUP` | v1)
+
+- The on-disk artifact naming for supplement-ledger records is now normalized from `ledger-supplement-...` to `ledger-SUP-...`.
+- Under this rule:
+  - `SUP` is the on-disk abbreviation for supplement-ledger records
+  - the conceptual boundary still remains `supplement ledger`, but filenames and `supplement_id` values now use the shorter `SUP` prefix
+  - existing and future supplement-ledger references should prefer the `ledger-SUP-<source-id>-<source-summary>.md` shape
+
 ## Plan (draft)
 
 ### P1 (Supplement-ledger model)
@@ -217,6 +225,7 @@
 - `P1-C2-S1`: define stable row ids for parent-ledger slices
 - `P1-C2-S2`: define supplement item ids plus screenshot or attachment ids
 - `P1-C2-S3`: define the boundary between ledger-layer ids and contract-layer ids
+- `P1-C3-S1`: normalize on-disk supplement-ledger naming to the `SUP` prefix
 
 ### P2 (First pilot)
 
@@ -243,10 +252,11 @@
 - [x] `P1-C2-S1`: define stable row ids for parent-ledger slices
 - [x] `P1-C2-S2`: define supplement item ids plus screenshot or attachment ids
 - [x] `P1-C2-S3`: define the boundary between ledger-layer ids and contract-layer ids
+- [x] `P1-C3-S1`: normalize on-disk supplement-ledger naming to the `SUP` prefix
 
 ### P2 (First pilot)
 
-- [ ] `P2-C1-S1`: pilot the first supplement-ledger on `S0A-1A` Projects evidence
+- [x] `P2-C1-S1`: pilot the first supplement-ledger on `S0A-1A` Projects evidence
 - [ ] `P2-C1-S2`: decide whether the pilot sharpens or reopens the parent-ledger verdict
 
 ### P3 (Future continuation discipline)
@@ -258,9 +268,11 @@
 
 - `S0F-7D` is now opened as the bounded continuation lane after `S0F-7C`.
 - The lane now fixes one immediate baseline: supplement evidence must attach to a parent source-owned ledger before it can affect contract meaning.
-- `P1-C1-S1S2S3` are now complete in workspace: supplement-ledger naming, minimum header, evidence row shape, and allowed verdict effects are now fixed, and the first reusable template is now ready for direct pilot work.
-- `P1-C2-S1S2S3` are now complete in workspace: stable row ids, supplement item ids, and screenshot or attachment ids are now fixed across the ledger layer, and the contract boundary is now explicit enough for real pilot intake.
-- The next execution step is `P2`: pilot the supplement-ledger model against the `S0A-1A` Projects slice and decide whether the first evidence batch only sharpens the current Projects child or reopens the parent-ledger row.
+- `P1-C1-S1S2S3` are now complete: supplement-ledger naming, minimum header, evidence row shape, and allowed verdict effects are now fixed, and the first reusable template is now ready for direct pilot work.
+- `P1-C2-S1S2S3` are now complete: stable row ids, supplement item ids, and screenshot or attachment ids are now fixed across the ledger layer, and the contract boundary is now explicit enough for real pilot intake.
+- `P1-C3-S1` is now complete in workspace: on-disk supplement-ledger naming now uses the shorter `SUP` prefix, and the reusable template plus first pilot file now follow that same artifact naming model.
+- `P2-C1-S1` is now complete in workspace: the first screenshot-backed Projects SUP pilot now exists at a stable repo-local path and reads as one sharpen-the-draft supplement rather than as one routing-reversal packet.
+- The next execution step is `P2-C1-S2`: decide how much parent-ledger and `PROJECTS-0001` write-back should happen now that the first SUP pilot is reviewable.
 
 ## Evidence (reserved)
 
@@ -281,13 +293,13 @@
 - headSha: `54d4f529e`
 - artifacts:
   - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
-  - `docs/logs/_template-support-only-contract-release-ledger-supplement.md`
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
 - expected:
   - the repo should gain one explicit supplement-ledger naming and attachment rule that stays anchored to an existing parent source-owned ledger
   - the repo should gain one reusable supplement-ledger template with a fixed header and evidence-row contract
   - the repo should fix the allowed verdict effects and parent-ledger escalation rule before any real pilot starts
 - observed:
-  - supplement-ledger naming is now fixed as `ledger-supplement-<source-id>-<source-summary>.md` with mandatory parent-ledger attachment
+  - supplement-ledger naming is now fixed as `ledger-SUP-<source-id>-<source-summary>.md` with mandatory parent-ledger attachment
   - one reusable template now exists for supplement-ledger work with explicit header and evidence-row fields
   - the lane now fixes a narrow verdict set and requires any later contract rewrite to happen only after the parent ledger absorbs or rejects the supplement result
 
@@ -307,6 +319,35 @@
   - parent ledger rows now have one stable `row_id` model
   - supplement items plus screenshot or attachment assets now have one stable id model beneath the parent row
   - the lane now keeps those ids ledger-scoped and evidence-scoped rather than promoting them into contract identity
+
+### P1-C3-S1 (SUP artifact naming normalized | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7D/P1-C3-S1>`
+- artifacts:
+  - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags.md`
+- expected:
+  - the repo should normalize on-disk supplement-ledger naming to the shorter `SUP` prefix without changing the underlying conceptual boundary
+  - the reusable template and first pilot should use the same naming shape
+- observed:
+  - the on-disk supplement-ledger naming now uses the `ledger-SUP-...` prefix
+  - the reusable template and first pilot now match that same artifact naming rule
+
+### P2-C1-S1 (First screenshot-backed Projects SUP pilot stabilized | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7D/P2-C1-S1>`
+- artifacts:
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/S0A-1A-R02-SUP-01-SHOT-01-projects-status-board.png`
+  - `docs/logs/support-only/S0A-1A-R02-SUP-02-SHOT-01-projects-table-view.png`
+  - `docs/logs/support-only/S0A-1A-R02-SUP-03-SHOT-01-projects-timeline-view.png`
+- expected:
+  - the first Projects supplement should move from chat-only placeholder evidence to stable repo-local screenshot-backed evidence
+  - the pilot should remain a sharpening supplement rather than an outright routing reversal
+- observed:
+  - the first Projects SUP pilot now cites stable repo-local screenshot paths and records the three screenshots as verified evidence items
+  - the current reading still keeps `S0A-1A-R02 -> DOC-WORKFLOW-GITHUB-PROJECTS-0001` unchanged while preparing write-back that sharpens the parent row and widens the current Projects draft wording
 
 ## Numbering
 
