@@ -67,6 +67,8 @@
   **phase_log_47**: `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
   **phase_log_48**: `docs/logs/log-S0F-5J-old-s0-contract-judgment-front-door-view.md`
   **phase_log_49**: `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+  **phase_log_50**: `docs/logs/log-S0F-7B-release-based-contract-lineage-and-ledger-model.md`
+  **phase_log_51**: `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
 
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
@@ -440,6 +442,9 @@
 - `S0F-7C/P2-C1-S1S2S3` is now complete: the repo now fixes the first `S0B-3A` child targets as `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001`, keeps front matter narrow on first extraction with later widening reserved, and splits cutover into separate logs-intake and lifecycle-boundary slices.
 - `S0F-7C/P3-C1-S1` is now complete: the repo now has one draft `S0B-3A` source-owned ledger that routes the source into first-pass `LOGS` and `LIFECYCLE` child candidates before any child contract body is emitted.
 - `S0F-7C/P3-C1-S2S3` is now complete: the repo now has one reviewed first-pass `DOC-WORKFLOW-LOGS-0001` child and one reviewed first-pass `DOC-WORKFLOW-LIFECYCLE-0001` child aligned to the completed `S0B-3A` ledger.
+- `S0F-7C/P4-C1-S1S2S3` is now complete in workspace: the repo now has first selective-backfill ledgers for `S0A-1A`, `S0A-2A`, and `S0B-1A`, so those earlier mixed-source packets can be reviewed explicitly instead of being left as pre-ledger assumptions.
+- `S0F-7C/P4-C2-S1S2S3` is now complete in workspace: `S0A-1A` now has explicit `ISSUES/TITLE/TAGS/PROJECTS` packet ownership, `S0A-2A` now stays parent-owned with bounded-background child mentions, and `S0B-1A` now confirms labs ownership with one evidence-only proof point.
+- `S0F-7C/P5-C1-S1S2S3` is now complete in workspace: the first application packet is normalized enough for reuse, the carry-forward split between source-owned ledger routing and contract release meaning is now explicit, and future supplement-driven old-log continuation is now handed off to `S0F-7D` rather than repeatedly extending `7C`.
 - `S0F-4D/P1` is now complete: the repo now has one explicit `DOC` family-owned contract naming model, one first `DOC` area-code dictionary, and one reusable `DOC` contract template, so later extraction work no longer needs to improvise whether a promoted `DOC` contract still uses `GC-*` naming.
 - `S0F-4D/P3` is now complete: the repo now has one explicit source-owner `DOC` promotion map, so later extraction work can promote `S0F-4A`, `S0F-4B`, `S0F-3I`, and `S0F-4C` into deterministic `DOC-...` targets instead of inventing IDs ad hoc.
 - `S0F-3A/P2` is now complete: `previous_log` is fixed as direct queue lineage only, `reference_logs` are fixed as near-cause and near-contract references only, and oversized reference sets are now treated as a signal to concentrate contracts rather than as a reason to keep appending ancestry.

@@ -37,7 +37,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-10`
-**updated**: `2026-04-10`
+**updated**: `2026-04-11`
 
 ---
 
@@ -114,6 +114,19 @@
 - The resulting packet makes clear which `S0B-3A` slices were promoted, deferred, retained-only, or still awaiting another family.
 - The lane now distinguishes between `extract now as child`, `widen later into parent`, and `backfill ledger only where routing ambiguity now justifies the cost`.
 - Any rule gaps discovered during this pass are recorded as minimal application-driven refinements rather than one fresh abstract redesign.
+
+## Stability (what stable means)
+
+- This log can be marked `stable` when:
+  - `P0-P4` have produced one defended first application packet with explicit child extraction, one source-owned ledger, and one bounded selective-backfill verdict set;
+  - `P5` has fixed the reuse boundary clearly enough that later supplement-driven continuation no longer needs to reopen this same lane as the default home for additional old-log consumption.
+
+## Definitions (optional)
+
+- `child-first extraction`: extract the narrowest directly defensible rule body first instead of over-generalizing to one parent on the first source pass.
+- `parent synthesis`: allow a broader parent reading to emerge later only after repeated child evidence or cross-kind reuse makes that wider owner defensible.
+- `selective ledger backfill`: add missing source-owned ledgers only where later overlap or routing ambiguity has made the absence of that ledger operationally costly.
+- `supplement-ledger continuation`: attach later mixed evidence to an already-existing source-owned ledger instead of allowing new contract meaning to grow directly from arbitrary later sources.
 
 ## P0 (Application-lane boundary | v1)
 
@@ -215,11 +228,117 @@
 - `P4-C1-S2`: backfill ledgers only for those earlier mixed-source packets whose missing routing record now blocks later child extraction, parent synthesis, or overlap repair
 - `P4-C1-S3`: keep single-family, low-ambiguity packets out of compulsory backfill so ledger growth stays justified rather than mechanical
 
+### P4-C1-S1 (First selective-backfill targets fixed | v1)
+
+- The first selective-backfill review targets are now fixed as:
+  - `S0A-1A`
+  - `S0A-2A`
+  - `S0B-1A`
+- Under this rule, `P4` starts from earlier packets that already produced contracts but still originated from issue-only mixed sources before the repo had an explicit ledger model.
+
+### P4-C1-S2 (Backfill ledgers scaffolded before any rerouting verdict | v1)
+
+- The repo now scaffolds first-pass source-owned ledgers for the selected earlier packets before deciding whether any rerouting or ownership repair is needed.
+- Under this rule, selective backfill should remain inspectable and reversible:
+  - create the ledger first
+  - inspect whether existing contracts already consume the meaningful slices clearly enough
+  - only then decide whether any row needs re-routing, retained-support-only standing, or a later child-family promotion
+
+### P4-C1-S3 (Current selective-backfill review stays bounded | v1)
+
+- The current backfill review stays bounded to three earlier packets rather than widening immediately across all prior issue-only sources.
+- Under this rule:
+  - `S0A-1A` is reviewed because it already emitted a parent-plus-child packet from one mixed issue source
+  - `S0A-2A` is reviewed because the broad workflow parent may now hide narrower routable layer slices once newer children exist
+  - `S0B-1A` is reviewed because later labs and lifecycle growth may reveal whether the original issue-only labs packet had hidden routing ambiguity
+- This keeps `P4` selective rather than mechanical.
+
+### P4-C2-S1 (S0A-1A packet normalized through explicit Projects child | v1)
+
+- `S0A-1A` now reads as one complete issue-owned packet only when all four owned slices are explicit:
+  - GitHub Issues mechanism
+  - title grammar
+  - tag naming
+  - GitHub Projects execution-support usage
+- Under this rule, the previously implicit Projects slice should now emit one dedicated child contract rather than remain hidden inside the mechanism parent.
+
+### P4-C2-S2 (S0A-2A stays parent-owned while child evidence remains insufficient | v1)
+
+- `S0A-2A` now reads as one broad workflow parent packet whose narrower layer mentions remain bounded background unless stronger direct child evidence is found elsewhere.
+- Under this rule, selective backfill should make those narrower mentions explicit in the ledger without pretending this broad issue alone already owns the later child bodies.
+
+### P4-C2-S3 (S0B-1A confirmed as labs-owned with evidence-only proof point | v1)
+
+- `S0B-1A` now reads as one packet whose rule-bearing slices are already owned by the `LABS` family, while the local proof point remains evidence-only.
+- Under this rule, later lifecycle adjacency does not reverse the primary labs ownership of `safe-to-purge` or related retention semantics from this first issue-owned packet.
+
 ### P5 (Normalization and reuse)
 
 - `P5-C1-S1`: validate `status` versus `release_action` versus `lineage` across the emitted packet
 - `P5-C1-S2`: validate `source_refs` versus `cumulative_source_refs` so carry-forward stays explicit
 - `P5-C1-S3`: record future `parent promotion / wider family synthesis` notes explicitly whenever one child extraction is known to be narrower than the eventual generalized rule
+
+### P5-C1-S1 (First application packet normalized enough for reuse | v1)
+
+- The current `7C` packet is now treated as normalized enough for reuse because the first decomposition lane has one explicit `ledger -> child contract -> backfill verdict` chain instead of only abstract migration guidance.
+- Under this rule, later migration work should not need to reopen whether `7A + 7B` can work at all on one real old-source packet.
+
+### P5-C1-S2 (Carry-forward and release-state usage fixed across the current packet | v1)
+
+- The current packet now reads with one explicit carry-forward model:
+  - source routing stays in source-owned ledgers
+  - release-state meaning stays in contract records
+  - later supporting material should not bypass the source-owned ledger layer
+- Under this rule, `source_refs`, `cumulative_source_refs`, release metadata, and retained support-only routing now read as one coherent packet rather than one mix of chronology-first and release-first conventions.
+
+### P5-C1-S3 (Future old-log continuation shifts to `S0F-7D` | v1)
+
+- `S0F-7C` now remains the first defended application packet, but it should no longer be the default continuation lane for supplement-driven or newly reopened old-log extraction work.
+- Under this rule:
+  - future supplement-ledger design and reuse should open under `S0F-7D`
+  - future unresolved old-log extraction should prefer current logs or new bounded logs rather than repeatedly extending `7C`
+  - older packets should be re-opened under `7D` only when one existing source-owned ledger needs bounded supplemental evidence or one new bounded reconstruction packet is explicitly justified
+- This keeps `7C` as the first proof packet instead of allowing the lane to absorb every later old-log continuation and blur the packet boundary.
+
+## Execution Checklist (unchecked)
+
+### P0 (Application-lane boundary)
+
+- [x] `P0-C1-S1`: open the first post-`7B` application lane
+- [x] `P0-C1-S2`: fix `S0B-3A` as the first decomposition target
+
+### P1 (Bounded source reconstruction)
+
+- [x] `P1-C1-S1`: fix the local `S0B-3A` log as the primary source body
+- [x] `P1-C1-S2`: keep issue `44` as sharpening support only
+- [x] `P1-C1-S3`: classify upstream references as direct support versus bounded background
+
+### P2 (Application rules)
+
+- [x] `P2-C1-S1`: fix the first child extraction targets as `LOGS` and `LIFECYCLE`
+- [x] `P2-C1-S2`: keep front matter as child-first extraction with later widening reserved
+- [x] `P2-C1-S3`: split cutover into narrower same-source slices before any multi-consumption model
+
+### P3 (First decomposition outputs)
+
+- [x] `P3-C1-S1`: create the first `S0B-3A` source-owned ledger
+- [x] `P3-C1-S2`: create the first logs-oriented child candidate
+- [x] `P3-C1-S3`: create the first lifecycle-oriented child candidate
+
+### P4 (Selective ledger backfill)
+
+- [x] `P4-C1-S1`: fix the first selective-backfill targets
+- [x] `P4-C1-S2`: scaffold backfill ledgers before rerouting verdicts
+- [x] `P4-C1-S3`: keep the review bounded to the selected early packets
+- [x] `P4-C2-S1`: normalize `S0A-1A` through explicit Projects ownership
+- [x] `P4-C2-S2`: confirm `S0A-2A` as parent-owned with bounded-background child mentions
+- [x] `P4-C2-S3`: confirm `S0B-1A` as labs-owned with one evidence-only proof point
+
+### P5 (Normalization and reuse)
+
+- [x] `P5-C1-S1`: fix the first application packet as reusable baseline
+- [x] `P5-C1-S2`: make source carry-forward and release-state usage coherent across the packet
+- [x] `P5-C1-S3`: move future supplement-driven continuation to `S0F-7D`
 
 ## Current Status
 
@@ -230,7 +349,11 @@
 - `P2-C1` is now complete in workspace: the first extraction targets are fixed as `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001`, front matter is fixed as child-first extraction with later widening allowed, and cutover is split into two same-source slices before any later multi-consumption model is considered.
 - `P3-C1-S1` is now complete in workspace: the first `S0B-3A` ledger draft now exists and routes the source into `LOGS` and `LIFECYCLE`, with cutover already split into same-source sub-slices.
 - `P3-C1-S2S3` are now complete in workspace: the first `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` child candidates now exist as reviewed drafts aligned to the completed `S0B-3A` ledger.
-- The next execution step is commit/push for the reviewed `LOGS` and `LIFECYCLE` child candidates, then `P4` selective ledger backfill where earlier mixed packets now have routing ambiguity that blocks later reuse.
+- `P4-C1-S1S2S3` are now complete in workspace: the first selective-backfill ledgers for `S0A-1A`, `S0A-2A`, and `S0B-1A` now exist as review scaffolds before any rerouting verdict is made.
+- `P4-C2-S1S2S3` are now complete in workspace: `S0A-1A` now explicitly requires a Projects child, `S0A-2A` now stays parent-owned with bounded-background child mentions, and `S0B-1A` now confirms labs ownership with one evidence-only proof point.
+- `P5-C1-S1S2S3` are now complete in workspace: the first application packet is normalized enough for reuse, the carry-forward boundary between ledger and contract is explicit, and future supplement-driven continuation is now handed off to `S0F-7D`.
+- `S0F-7C` should now be read as the first defended application packet rather than as the default long-lived home for every later old-log continuation.
+- The next execution step is to keep `7C` as retained proof of first application and move supplement-ledger design plus future bounded old-log continuation into `S0F-7D`.
 
 ## Evidence (reserved)
 
@@ -306,3 +429,75 @@
 - observed:
   - `DOC-WORKFLOW-LOGS-0001` now exists as one first draft child release for log identity, logs-facing front matter, and logs-intake cutover
   - `DOC-WORKFLOW-LIFECYCLE-0001` now exists as one first draft child release for legacy taxonomy, lifecycle cutover, and stub preservation without collapsing those rules back into the logs child
+
+### P4-C1-S1S2S3 (First selective-backfill ledgers scaffolded | 2026-04-10)
+
+- headSha: `<workspace not committed yet for S0F-7C/P4-C1-S1S2S3>`
+- artifacts:
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-S0B-1A-tools-labs-and-snapshots.md`
+  - `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
+- expected:
+  - the first selective-backfill step should expose earlier mixed-source packets as explicit review ledgers before any rerouting verdict is made
+  - the bounded review should stay limited to the three user-selected issue packets rather than widening immediately across all historical sources
+- observed:
+  - first-pass backfill ledgers now exist for `S0A-1A`, `S0A-2A`, and `S0B-1A`
+  - the repo can now inspect whether those earlier packets truly need routing repair or whether their existing contracts already provide sufficient explicit ownership
+
+### P4-C2-S1S2S3 (First selective-backfill verdicts applied in workspace | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7C/P4-C2-S1S2S3>`
+- artifacts:
+  - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+  - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
+  - `docs/governance/contracts/workflow/github/issues/tags/DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-issue-tags-follow-role-based-naming.md`
+  - `docs/governance/contracts/workflow/github/projects/DOC-WORKFLOW-GITHUB-PROJECTS-0001-project-views-support-execution-priority.md`
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-S0B-1A-tools-labs-and-snapshots.md`
+  - `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
+- expected:
+  - `S0A-1A` should gain explicit Projects ownership and aligned issue-packet frontmatter without forcing a workflow-level reroute
+  - `S0A-2A` should confirm broad parent ownership while keeping child mentions bounded background pending stronger evidence
+  - `S0B-1A` should confirm labs ownership while keeping the local proof point evidence-only
+- observed:
+  - `S0A-1A` now reads as one four-part packet with explicit `ISSUES`, `TITLE`, `TAGS`, and `PROJECTS` ownership
+  - `S0A-2A` now confirms `DOC-WORKFLOW-0001` as the primary owner while leaving logs, labs, runbook, and ADR layers deferred as bounded background pending later archaeology
+  - `S0B-1A` now confirms `LABS-0001` as the primary owner for its rule-bearing slices while retaining the local proof point as evidence-only
+
+### P5-C1-S1S2S3 (First application packet normalized and continuation handed off | 2026-04-11)
+
+- headSha: `<workspace not committed yet for S0F-7C/P5-C1-S1S2S3>`
+- artifacts:
+  - `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+  - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+  - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
+  - `docs/governance/contracts/workflow/github/issues/tags/DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-issue-tags-follow-role-based-naming.md`
+  - `docs/governance/contracts/workflow/github/projects/DOC-WORKFLOW-GITHUB-PROJECTS-0001-project-views-support-execution-priority.md`
+- expected:
+  - the first application lane should read as one reusable packet rather than as one open-ended continuation bucket
+  - the ledger-versus-contract carry-forward boundary should now be explicit enough that later supplemental evidence no longer writes directly into contracts
+  - future supplement-driven or newly reopened old-log continuation should move to a new bounded lane rather than repeatedly extending `7C`
+- observed:
+  - the current packet now reads with one explicit split among source-owned ledgers, child contract releases, selective-backfill verdicts, and retained handoff notes
+  - release-state normalization is now visible in the `S0A-1A` packet family as well as in the first `S0B-3A` child releases
+  - future supplement-ledger design and additional old-log continuation are now handed off to `S0F-7D` so `7C` can remain the first defended application packet
+
+## Numbering
+
+- `S<n>`: Step.
+- `C<n>`: Cycle.
+
+**Commit / PR naming**:
+
+- `S0F-7C/P<phase>-C<cycle>-S<steps>: <summary>`, where `<steps>` can be a single step (`1`, meaning `...-S1`) or multiple consecutive steps grouped within the same phase / cycle.
+
+**Branch convention**:
+
+- `S0F-7C` changes should continue landing on the top-level `S0F-docs-management-v6` branch unless a later bounded follow-up explicitly opens a narrower child branch.
+
+**Commit discipline (recommended)**:
+
+- Once one bounded `P*-C*-S*` packet is review-complete, commit it promptly rather than continuing to append later old-log work to the same lane by default.

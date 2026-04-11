@@ -2,9 +2,13 @@
 
 ```yaml
 contract_record:
+  contract_family: DOC-WORKFLOW-GITHUB-ISSUES-TAGS
+  contract_release: 0001
   contract_id: DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001
   record_kind: chronology-first-contract
   status: draft
+  release_action: initial
+  release_change_summary: Establish the first issue-tag child release from S0A-1A by isolating role-based tag naming beneath the broader GitHub-Issues workflow packet.
   summary: Keep issue tags classed by naming role so readers can distinguish top-level work type, documentation hierarchy, and module or business scope without decoding mixed tag styles.
   governance_area: workflow GitHub issue tag naming governance
   applies_to: GitHub issue tag naming across top-level tags, hierarchy tags, and module or business-area tags for timeline queue work
@@ -14,7 +18,10 @@ contract_record:
   last_changed_by: GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
   source_refs:
     - GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
-  supporting_evidence_refs: []
+  cumulative_source_refs:
+    - GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
+  supporting_evidence_refs:
+    - docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md
   lineage:
     supersedes: []
     superseded_by: []

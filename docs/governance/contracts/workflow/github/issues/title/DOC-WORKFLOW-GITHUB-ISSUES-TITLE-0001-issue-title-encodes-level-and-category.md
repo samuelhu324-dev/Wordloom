@@ -2,9 +2,13 @@
 
 ```yaml
 contract_record:
+  contract_family: DOC-WORKFLOW-GITHUB-ISSUES-TITLE
+  contract_release: 0001
   contract_id: DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001
   record_kind: chronology-first-contract
   status: draft
+  release_action: initial
+  release_change_summary: Establish the first issue-title child release from S0A-1A by isolating title-level hierarchy and category grammar beneath the broader GitHub-Issues workflow packet.
   summary: Encode issue level and category directly in the issue title key so readers can identify hierarchy and scope at a glance without reconstructing structure from prose alone.
   governance_area: workflow GitHub issue title grammar governance
   applies_to: timeline queue issue titles, parent issue title keys, direct child issue title keys, and later sub-category title extensions
@@ -14,7 +18,10 @@ contract_record:
   last_changed_by: GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
   source_refs:
     - GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
-  supporting_evidence_refs: []
+  cumulative_source_refs:
+    - GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
+  supporting_evidence_refs:
+    - docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md
   lineage:
     supersedes: []
     superseded_by: []

@@ -2,9 +2,13 @@
 
 ```yaml
 contract_record:
+  contract_family: DOC-WORKFLOW-GITHUB-ISSUES
+  contract_release: 0001
   contract_id: DOC-WORKFLOW-GITHUB-ISSUES-0001
   record_kind: chronology-first-contract
   status: draft
+  release_action: initial
+  release_change_summary: Establish the first GitHub-Issues workflow release from S0A-1A by introducing Issues as the canonical work-breakdown unit while keeping title grammar, tag naming, and Projects usage reviewable as narrower sibling surfaces.
   summary: Introduce GitHub Issues as the canonical breakdown mechanism for timeline queue work, while treating GitHub Projects views as execution-time prioritization aids rather than replacements for issue hierarchy.
   governance_area: workflow GitHub issue mechanism governance
   applies_to: timeline queue planning, GitHub issue decomposition, issue hierarchy design, and operator reading of work breakdown state
@@ -14,7 +18,10 @@ contract_record:
   last_changed_by: GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
   source_refs:
     - GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
-  supporting_evidence_refs: []
+  cumulative_source_refs:
+    - GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
+  supporting_evidence_refs:
+    - docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md
   lineage:
     supersedes: []
     superseded_by: []
@@ -22,6 +29,7 @@ contract_record:
     split_into:
       - DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001
       - DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001
+      - DOC-WORKFLOW-GITHUB-PROJECTS-0001
     absorbed_from: []
     absorbed_into: []
     retires: []
