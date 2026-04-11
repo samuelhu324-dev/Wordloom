@@ -405,11 +405,11 @@
 - `P2-C5-S1` is now complete: `source basis` is now narrowed back to evidence-only anchors and no longer carries primary/supporting causal semantics.
 - `P2-C5-S2` is now complete: the repo now has one explicit `Statement Evolution Table` model for clause lineage, split, merge, replacement, and carry-forward events.
 - `P2-C5-S3` is now complete: `LABS-0001` now demonstrates the paired-table model by splitting the earlier cleanup sample into two narrower clauses and recording the split in a separate evolution table.
-- `P2-C6-S1` is now complete in workspace: later-release statement ids are now fixed as release-local ids, with earlier-release statement ids retained only as lineage anchors.
-- `P2-C6-S2` is now complete in workspace: the `S0B-2A` ledger now exposes stable row ids so `LABS-0002` can cite exact later-release evidence anchors.
-- `P2-C6-S3` is now complete in workspace: `LABS-0002` now follows the paired-table clause model, with current clause state separated from clause lineage back to `LABS-0001`.
-- `P2-C7-S1` is now complete in workspace: current statement tables now sort by smaller `first effective release` first, then by `carried-forward`, `amended`, and `introduced` buckets.
-- `P2-C7-S2` is now complete in workspace: `LABS-0002` now preserves `0001` as the first-effective origin for carried-forward and amended clauses while keeping later introductions at `0002`.
+- `P2-C6-S1` is now complete: later-release statement ids are now fixed as release-local ids, with earlier-release statement ids retained only as lineage anchors.
+- `P2-C6-S2` is now complete: the `S0B-2A` ledger now exposes stable row ids so `LABS-0002` can cite exact later-release evidence anchors.
+- `P2-C6-S3` is now complete: `LABS-0002` now follows the paired-table clause model, with current clause state separated from clause lineage back to `LABS-0001`.
+- `P2-C7-S1` is now complete: current statement tables now sort by smaller `first effective release` first, then by `carried-forward`, `amended`, and `introduced` buckets.
+- `P2-C7-S2` is now complete: `LABS-0002` now preserves `0001` as the first-effective origin for carried-forward and amended clauses while keeping later introductions at `0002`.
 - The next execution step is to reuse this same `7D` lane when earlier packets such as `S0A-2A` need later evidence admitted through one parent-ledger-first SUP write-back.
 
 ## Evidence (reserved)
@@ -562,7 +562,7 @@
 
 ### P2-C6-S1S2S3 (Release-local statement ids and LABS-0002 paired-table model wired in workspace | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P2-C6-S1S2S3>`
+- headSha: `a910e7a5d`
 - artifacts:
   - `docs/governance/contracts/_template-contract-record.md`
   - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
@@ -579,7 +579,7 @@
 
 ### P2-C7-S1S2 (Statement-table ordering and clause timing semantics normalized in workspace | 2026-04-11)
 
-- headSha: `<workspace not committed yet for S0F-7D/P2-C7-S1S2>`
+- headSha: `a910e7a5d`
 - artifacts:
   - `docs/governance/contracts/_template-contract-record.md`
   - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
