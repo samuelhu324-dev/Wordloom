@@ -448,7 +448,7 @@
 - `P2-C8-S1` is now complete: the `S0A-2A` selective-backfill ledger now exposes stable row ids so the runbook layer can receive later SUP evidence through an exact parent-row anchor.
 - `P2-C8-S2` is now complete: the first `S0A-2A` runbook-direct-evidence SUP round now uses `run-001` and `run-003` to argue that runbooks had already become durable operator-facing extraction rather than only broad issue-level background.
 - `P2-C8-S3` is now complete: parent row `S0A-2A-R04` no longer stays at `bounded-background` only, and the accepted write-back now records one explicit runbook child-candidate review state while still deferring actual `DOC-WORKFLOW-RUNBOOK` contract opening.
-- `P2-C8-S4` is now complete in workspace: the repo now has one first `DOC-WORKFLOW-RUNBOOK-0001` child draft, and parent row `S0A-2A-R04` now resolves to that dedicated runbook release rather than stopping at child-candidate review.
+- `P2-C8-S4` is now complete: the repo now has one first `DOC-WORKFLOW-RUNBOOK-0001` child draft, and parent row `S0A-2A-R04` now resolves to that dedicated runbook release rather than stopping at child-candidate review.
 - The next execution step is to reuse this same `7D` lane when earlier packets such as `S0A-2A` need later evidence admitted through one parent-ledger-first SUP write-back.
 
 ## Evidence (reserved)
@@ -664,8 +664,9 @@
   - `S0F-7D` now records that runbooks emerged because durable operator needs shifted toward rebuildability, replay, readiness, observability, runtime failure handling, and operator-safe verification after projection paths had succeeded
   - the parent-ledger write-back now sharpens the verdict materially without inventing a non-existent runbook contract
 
-### P2-C8-S4 (DOC-WORKFLOW-RUNBOOK-0001 child-opening packet drafted in workspace | 2026-04-12)
+### P2-C8-S4 (DOC-WORKFLOW-RUNBOOK-0001 child-opening packet drafted | 2026-04-12)
 
+- headSha: `7b73b1901`
 - artifacts:
   - `docs/governance/contracts/workflow/runbook/DOC-WORKFLOW-RUNBOOK-0001-projection-operator-rebuild-replay-and-failure-recovery.md`
   - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
