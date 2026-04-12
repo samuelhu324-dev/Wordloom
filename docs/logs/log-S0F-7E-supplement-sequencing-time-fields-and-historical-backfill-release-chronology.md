@@ -293,8 +293,9 @@
   - the parent ledger template now exposes `created_at`, `reviewed_at`, and `accepted_at` as the minimum artifact-lifecycle fields
   - the supplement-ledger template now exposes `created_at`, `reviewed_at`, `accepted_at`, `writeback_started_at`, and `writeback_completed_at` in addition to stable series and sequence fields
 
-### P2-C1-S1S2 (Contract chronology fields and statement-table time ranges fixed in workspace | 2026-04-12)
+### P2-C1-S1S2 (Contract chronology fields and statement-table time ranges fixed | 2026-04-12)
 
+- headSha: `4a472d92c`
 - artifacts:
   - `docs/governance/contracts/_template-contract-record.md`
   - `docs/governance/contracts/workflow/runbook/DOC-WORKFLOW-RUNBOOK-0001-projection-operator-rebuild-replay-and-failure-recovery.md`
