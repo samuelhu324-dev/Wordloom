@@ -253,8 +253,9 @@
   - `S0F-7E` now exists as the next chronology-focused follow-up lane after `S0F-7D`
   - the lane now fixes append-only family numbering and separated chronology layers as its opening boundary
 
-### P1-C1-S1S2 (Supplement sequencing and ledger lifecycle fields fixed in workspace | 2026-04-12)
+### P1-C1-S1S2 (Supplement sequencing and ledger lifecycle fields fixed | 2026-04-12)
 
+- headSha: `3dce87b5b`
 - artifacts:
   - `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
   - `docs/logs/_template-support-only-contract-release-ledger.md`
