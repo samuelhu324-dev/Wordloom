@@ -352,7 +352,7 @@
 
 ### P2-C8-S2 (S0A-2A runbook-direct-evidence SUP opened from the earliest projection SOPs | v1)
 
-- `ledger-SUP-S0A-2A-tools-workflow-log-lab-runbook-adr.md` may now serve as the first direct-evidence SUP round for the `S0A-2A` runbook layer.
+- `ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md` now serves as the first direct-evidence SUP round for the `S0A-2A` runbook layer.
 - Under this rule:
   - legacy runbooks `run-001-search-projection.md` and `run-003-chronicle-projection.md` now count as direct evidence that the runbook layer was already being extracted from successful projection work, failure-management labs, and long-lived operator verification needs
   - the current draft SUP judgment is that this evidence revises the earlier `bounded-background` reading for the runbook layer strongly enough to justify parent-row rewrite and later child-promotion review
@@ -635,7 +635,7 @@
 - headSha: `0611fb60b`
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
-  - `docs/logs/support-only/ledger-SUP-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md`
   - `legacy/from_structured_docs/from-runbook/run-001-search-projection.md`
   - `legacy/from_structured_docs/from-runbook/run-003-chronicle-projection.md`
   - `docs/logs/log-S0F-docs-management-v6.md`

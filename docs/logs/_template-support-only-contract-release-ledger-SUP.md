@@ -9,11 +9,14 @@
 ## Naming Rule
 
 - Name SUP ledgers as `ledger-SUP-<source-id>-<sequence>-<source-summary>.md`.
-- The `<source-id>` and `<source-summary>` must match the attached parent ledger.
+- The `<source-id>` must match the attached parent ledger.
+- The `<source-summary>` should summarize the supplement round itself and does not need to duplicate the parent-ledger summary when a narrower evidence packet name is clearer.
 - The `<sequence>` must be one append-only three-digit supplement round such as `001`, `002`, or `003` inside one stable supplement series.
 - Preferred example shapes:
   - `ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
   - `ledger-SUP-S0B-2A-002-tools-scripts-and-snapshots-management.md`
+
+- The stable parent binding is carried by `supplement_series_id` plus `parent_ledger_id`; readers should not rely on the filename summary alone to infer attachment.
 
 ## Minimal Header
 

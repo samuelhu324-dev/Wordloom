@@ -240,9 +240,9 @@
 - `P3-C1-S1`: define `historical-backfill` release action and the no-renumber rule
 - `P3-C1-S2`: define minimum lineage updates when a later-recorded earlier state is admitted into an existing family
 
-### P4 (Future chronology-reading rule)
+### P4 (Sequence-bearing supplement samples)
 
-- `P4-C1-S1`: define how future views should sort registry order, recorded order, and effective order separately
+- `P4-C1-S1`: land the first sequence-bearing `S0A-2A` supplement samples by rehoming the existing runbook SUP as `001` and opening a new labs-focused `002` round
 
 ## Execution Checklist (unchecked)
 
@@ -267,9 +267,9 @@
 - [x] `P3-C1-S1`: define `historical-backfill` release action and no-renumber handling
 - [x] `P3-C1-S2`: define minimum lineage updates for later-recorded earlier states
 
-### P4 (Future chronology-reading rule)
+### P4 (Sequence-bearing supplement samples)
 
-- [ ] `P4-C1-S1`: define chronology-view sorting across registry, recorded, and effective order
+- [x] `P4-C1-S1`: land the first sequence-bearing `S0A-2A` supplement samples
 
 ## Current Status
 
@@ -281,7 +281,8 @@
 - `P2-C1-S2` is now complete: the contract template now distinguishes clause-state ranges from change-event times, and `DOC-WORKFLOW-RUNBOOK-0001` now demonstrates the new statement-table chronology columns on one live draft.
 - `P3-C1-S1` is now complete: later-recorded earlier states may now enter one family through explicit `historical-backfill` release action without renumbering already-admitted releases.
 - `P3-C1-S2` is now complete: the repo now has one minimum lineage-update rule for later-recorded earlier states, so asynchronous backfill can proceed without forcing whole-family rewrites first.
-- The next step is to define the downstream chronology-reading rule before opening the next labs-oriented supplement round.
+- `P4-C1-S1` is now complete in workspace: the original runbook SUP round now reads as explicit `001`, and the repo now has one new `002` labs SUP round under the same `ledger-SUP-S0A-2A` series before any parent-row write-back starts.
+- The next step is to review the new `002` labs packet locally, then decide whether `S0A-2A-R03` should be rewritten before any `DOC-WORKFLOW-LABS` historical-backfill packet is opened.
 
 ## Evidence (reserved)
 
@@ -347,3 +348,22 @@
   - the contract template now includes `historical-backfill` as one explicit release action and states that append-only family numbering must remain unchanged
   - the template now fixes the minimum lineage update rule between one backfilled earlier state and its nearest later affected release
   - `S0F-7E` now records that asynchronous backfill may proceed through bounded lineage updates before any broader family cleanup is attempted
+
+### P4-C1-S1 (First sequence-bearing `S0A-2A` supplement samples landed in workspace | 2026-04-12)
+
+- artifacts:
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md`
+  - `docs/governance/contracts/workflow/runbook/DOC-WORKFLOW-RUNBOOK-0001-projection-operator-rebuild-replay-and-failure-recovery.md`
+  - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
+  - `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the first real `S0A-2A` runbook SUP round should stop using the unsuffixed legacy filename and read as one explicit `001` sequence-bearing sample under `ledger-SUP-S0A-2A`
+  - the repo should gain one new `002` labs SUP round sourced from `labs-004` and `labs-006`, attached only to `S0A-2A-R03`, without prematurely rewriting the parent ledger or opening `DOC-WORKFLOW-LABS`
+  - the naming template should no longer imply that a supplement-round filename summary must duplicate the parent-ledger summary when a narrower round-specific sample name is clearer
+- observed:
+  - the first runbook SUP round now lives at `ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md` with explicit series, sequence, and lifecycle fields
+  - the repo now has a new `ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md` file that admits `labs-004` and `labs-006` as defended evidence against `S0A-2A-R03`
+  - the template and dependent references now read the filename summary as supplement-round-specific while preserving stable parent attachment through `supplement_series_id` and `parent_ledger_id`

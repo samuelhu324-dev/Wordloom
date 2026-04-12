@@ -19,14 +19,14 @@ contract_record:
   effective_from: unknown
   effective_until: ongoing
   introduced_by: GitHub issue S0A-2A (#24) (issue-only source; no local log exists in workspace)
-  last_changed_by: docs/logs/support-only/ledger-SUP-S0A-2A-tools-workflow-log-lab-runbook-adr.md
+  last_changed_by: docs/logs/support-only/ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md
   source_refs:
     - docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md
-    - docs/logs/support-only/ledger-SUP-S0A-2A-tools-workflow-log-lab-runbook-adr.md
+    - docs/logs/support-only/ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md
   cumulative_source_refs:
     - GitHub issue S0A-2A (#24) (issue-only source; no local log exists in workspace)
     - docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md
-    - docs/logs/support-only/ledger-SUP-S0A-2A-tools-workflow-log-lab-runbook-adr.md
+    - docs/logs/support-only/ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md
   supporting_evidence_refs:
     - legacy/from_structured_docs/from-runbook/run-001-search-projection.md
     - legacy/from_structured_docs/from-runbook/run-003-chronicle-projection.md

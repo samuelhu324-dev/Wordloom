@@ -1,11 +1,18 @@
-# ledger-SUP-S0A-2A-tools-workflow-log-lab-runbook-adr
+# ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr
 
 ```yaml
 support_only_contract_release_ledger_supplement:
-  supplement_id: ledger-SUP-S0A-2A-tools-workflow-log-lab-runbook-adr
+  supplement_series_id: ledger-SUP-S0A-2A
+  supplement_sequence: 001
+  supplement_id: ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr
   supplement_kind: support-only-contract-release-ledger-supplement
-  status: draft
+  status: completed
   owner_lane: S0F-7D
+  created_at: 2026-04-12
+  reviewed_at: 2026-04-12
+  accepted_at: 2026-04-12
+  writeback_started_at: 2026-04-12
+  writeback_completed_at: 2026-04-12
   parent_ledger_id: ledger-S0A-2A-tools-workflow-log-lab-runbook-adr
   parent_source_id: S0A-2A
   parent_source_ref: GitHub issue S0A-2A (#24) (issue-only source; no local log exists in workspace)
@@ -16,8 +23,8 @@ support_only_contract_release_ledger_supplement:
 ## Decision Frame
 
 - This SUP ledger is attached only to parent row `S0A-2A-R04`.
-- The current parent-ledger judgment keeps the runbook layer as bounded background because the broad issue-level source was not treated as strong enough direct owner evidence by itself.
-- The current review question is narrower:
+- When this round opened, the parent-ledger judgment still kept the runbook layer as bounded background because the broad issue-level source was not treated as strong enough direct owner evidence by itself.
+- The review question for this completed round was narrower:
   - do the earliest long-lived projection SOPs merely support the existing background reading
   - or do they revise the current verdict enough that the runbook layer should now enter direct child-promotion review
 - This round is prioritized because broader roadmap/log skeleton reorganization is still under review, while earlier workflow-layer contract extraction can keep progressing through defended direct evidence packets.
@@ -41,7 +48,7 @@ support_only_contract_release_ledger_supplement:
 
 - The two runbooks do not overturn the broad workflow-pipeline reading already owned by `DOC-WORKFLOW-0001`.
 - They do revise the current runbook-layer verdict materially enough that `S0A-2A-R04` should no longer read as issue-only bounded background by default.
-- The current draft recommendation is therefore:
+- The resulting recommendation for this round was therefore:
   - keep the broad workflow parent contract unchanged for now
   - rewrite the parent runbook-layer row to acknowledge direct runbook evidence
   - then review whether a `DOC-WORKFLOW-RUNBOOK` child-opening packet should follow
@@ -49,4 +56,4 @@ support_only_contract_release_ledger_supplement:
 ## Reader Notes
 
 - These two legacy runbooks are treated here as direct evidence because they already convert projection success, failure-management labs, and runtime-verification learning into durable operator SOPs.
-- The current SUP round intentionally does not force immediate child-contract creation; it first asks the parent ledger to stop treating the runbook layer as background-only.
+- This `001` SUP round intentionally did not force immediate child-contract creation; it first asked the parent ledger to stop treating the runbook layer as background-only before `DOC-WORKFLOW-RUNBOOK-0001` was later opened.
