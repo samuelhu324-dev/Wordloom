@@ -343,6 +343,21 @@
   - amended clauses whose meaning first existed in `LABS-0001` should also keep `first effective release: DOC-WORKFLOW-LABS-0001` while updating `last changed release: DOC-WORKFLOW-LABS-0002`
   - introduced clauses that first appear in the later release should keep both fields at `DOC-WORKFLOW-LABS-0002`
 
+### P2-C8-S1 (S0A-2A selective-backfill ledger now exposes row ids for SUP anchoring | v1)
+
+- The `S0A-2A` selective-backfill ledger may now expose stable row ids so later direct evidence can attach to exact workflow-layer slices instead of relying on mutable prose labels alone.
+- Under this rule:
+  - the runbook layer should now anchor as `S0A-2A-R04`
+  - later SUP rows may now attach to exact `logs`, `labs`, `runbook`, or `ADR` slices without reopening the whole issue-level packet at once
+
+### P2-C8-S2 (S0A-2A runbook-direct-evidence SUP opened from the earliest projection SOPs | v1)
+
+- `ledger-SUP-S0A-2A-tools-workflow-log-lab-runbook-adr.md` may now serve as the first direct-evidence SUP round for the `S0A-2A` runbook layer.
+- Under this rule:
+  - legacy runbooks `run-001-search-projection.md` and `run-003-chronicle-projection.md` now count as direct evidence that the runbook layer was already being extracted from successful projection work, failure-management labs, and long-lived operator verification needs
+  - the current draft SUP judgment is that this evidence revises the earlier `bounded-background` reading for the runbook layer strongly enough to justify parent-row rewrite and later child-promotion review
+  - this round is prioritized because broader roadmap/log skeleton reorganization is still unresolved, while earlier workflow-layer contract extraction can keep advancing through defended direct-evidence packets
+
 ### P3 (Future continuation discipline)
 
 - `P3-C1-S1`: define when future work should prefer current logs or new bounded logs instead of old-log reopening
@@ -382,6 +397,8 @@
 - [x] `P2-C6-S3`: revise `LABS-0002` to the paired-table clause model
 - [x] `P2-C7-S1`: fix semantic-origin-first statement-table ordering
 - [x] `P2-C7-S2`: normalize `LABS-0002` first-effective and last-changed semantics
+- [x] `P2-C8-S1`: expose `S0A-2A` row ids for later SUP anchoring
+- [x] `P2-C8-S2`: open the first runbook-direct-evidence SUP round for `S0A-2A`
 
 ### P3 (Future continuation discipline)
 
@@ -410,6 +427,8 @@
 - `P2-C6-S3` is now complete: `LABS-0002` now follows the paired-table clause model, with current clause state separated from clause lineage back to `LABS-0001`.
 - `P2-C7-S1` is now complete: current statement tables now sort by smaller `first effective release` first, then by `carried-forward`, `amended`, and `introduced` buckets.
 - `P2-C7-S2` is now complete: `LABS-0002` now preserves `0001` as the first-effective origin for carried-forward and amended clauses while keeping later introductions at `0002`.
+- `P2-C8-S1` is now complete in workspace: the `S0A-2A` selective-backfill ledger now exposes stable row ids so the runbook layer can receive later SUP evidence through an exact parent-row anchor.
+- `P2-C8-S2` is now complete in workspace: the first `S0A-2A` runbook-direct-evidence SUP round now uses `run-001` and `run-003` to argue that runbooks had already become durable operator-facing extraction rather than only broad issue-level background.
 - The next execution step is to reuse this same `7D` lane when earlier packets such as `S0A-2A` need later evidence admitted through one parent-ledger-first SUP write-back.
 
 ## Evidence (reserved)
@@ -590,6 +609,24 @@
 - observed:
   - the template now fixes semantic-origin-first ordering with `carried-forward`, `amended`, and `introduced` bucket order inside one release-origin group
   - `LABS-0002` now orders carried-forward clauses first, amended clauses second, and introduced clauses third, while preserving `0001` as the first-effective origin for earlier clauses
+
+### P2-C8-S1S2 (S0A-2A runbook SUP round opened in workspace | 2026-04-12)
+
+- headSha: `<workspace not committed yet for S0F-7D/P2-C8-S1S2>`
+- artifacts:
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `legacy/from_structured_docs/from-runbook/run-001-search-projection.md`
+  - `legacy/from_structured_docs/from-runbook/run-003-chronicle-projection.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the `S0A-2A` parent ledger should gain stable row ids so the runbook slice can receive later direct-evidence SUP rows by exact anchor rather than by mutable prose label
+  - the repo should gain one first `S0A-2A` SUP ledger that tests whether direct runbook evidence is strong enough to revise the current `bounded-background` verdict for the runbook layer
+  - the lane should record why this direct-evidence extraction round is being prioritized ahead of broader roadmap/log skeleton reorganization
+- observed:
+  - the `S0A-2A` parent ledger now exposes row ids, including `S0A-2A-R04` for the runbook layer
+  - one new SUP ledger now attaches `run-001-search-projection.md` and `run-003-chronicle-projection.md` to that exact runbook-layer row as verified direct evidence
+  - the current draft SUP judgment is that the runbook layer should no longer be treated as issue-only bounded background by default, and this extraction round is now prioritized while broader roadmap/log restructuring remains unsettled
 
 ## Numbering
 
