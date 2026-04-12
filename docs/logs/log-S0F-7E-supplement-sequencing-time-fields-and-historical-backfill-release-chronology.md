@@ -243,6 +243,7 @@
 ### P4 (Sequence-bearing supplement samples)
 
 - `P4-C1-S1`: land the first sequence-bearing `S0A-2A` supplement samples by rehoming the existing runbook SUP as `001` and opening a new labs-focused `002` round
+- `P4-C1-S2`: write back the accepted `002` labs SUP judgment onto parent row `S0A-2A-R03` while still deferring any `DOC-WORKFLOW-LABS` historical-backfill release opening
 
 ## Execution Checklist (unchecked)
 
@@ -270,6 +271,7 @@
 ### P4 (Sequence-bearing supplement samples)
 
 - [x] `P4-C1-S1`: land the first sequence-bearing `S0A-2A` supplement samples
+- [x] `P4-C1-S2`: write back the accepted `002` labs SUP judgment onto parent row `S0A-2A-R03`
 
 ## Current Status
 
@@ -282,7 +284,8 @@
 - `P3-C1-S1` is now complete: later-recorded earlier states may now enter one family through explicit `historical-backfill` release action without renumbering already-admitted releases.
 - `P3-C1-S2` is now complete: the repo now has one minimum lineage-update rule for later-recorded earlier states, so asynchronous backfill can proceed without forcing whole-family rewrites first.
 - `P4-C1-S1` is now complete: the original runbook SUP round now reads as explicit `001`, and the repo now has one new `002` labs SUP round under the same `ledger-SUP-S0A-2A` series before any parent-row write-back starts.
-- The next step is to review the new `002` labs packet locally, then decide whether `S0A-2A-R03` should be rewritten before any `DOC-WORKFLOW-LABS` historical-backfill packet is opened.
+- `P4-C1-S2` is now complete in workspace: parent row `S0A-2A-R03` no longer stays at issue-only `bounded-background`, and the accepted `002` labs SUP write-back now records one explicit earlier-labs historical-review state under `DOC-WORKFLOW-LABS` while still deferring any actual historical-backfill release opening.
+- The next step is to decide whether that accepted historical-review state should open one dedicated `DOC-WORKFLOW-LABS` historical-backfill packet or remain a defended deferred review marker for now.
 
 ## Evidence (reserved)
 
@@ -368,3 +371,19 @@
   - the first runbook SUP round now lives at `ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md` with explicit series, sequence, and lifecycle fields
   - the repo now has a new `ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md` file that admits `labs-004` and `labs-006` as defended evidence against `S0A-2A-R03`
   - the template and dependent references now read the filename summary as supplement-round-specific while preserving stable parent attachment through `supplement_series_id` and `parent_ledger_id`
+
+### P4-C1-S2 (Accepted `002` labs SUP judgment written back onto `S0A-2A-R03` in workspace | 2026-04-12)
+
+- artifacts:
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the accepted `002` labs SUP round should update the parent ledger so `S0A-2A-R03` stops reading as issue-only `bounded-background`
+  - the parent row should now point at the existing `DOC-WORKFLOW-LABS` family through one explicit earlier-history review state without prematurely opening a historical-backfill release
+  - the `002` SUP ledger should now read as a completed supplement round whose lifecycle closed with parent-ledger write-back rather than with contract mutation
+- observed:
+  - `S0A-2A-R03` now reads as one explicit `DOC-WORKFLOW-LABS` historical-review state with `historical-backfill` reserved as the later release action if a dedicated earlier-history packet is opened
+  - the parent ledger now keeps logs and ADR as the remaining deferred slices while separating the labs layer from pure background treatment
+  - the `002` SUP ledger now records completed review, acceptance, and write-back lifecycle timestamps while still deferring contract-level action
