@@ -251,6 +251,11 @@
 - `P5-C1-S1`: define statement-table and statement-evolution ordering so `history-backfilled` clauses appear ahead of carried-forward, amended, and introduced rows inside one later current release
 - `P5-C1-S2`: widen `DOC-WORKFLOW-LABS-0002` into one local chronology sample by adding contract chronology fields plus the accepted `S0A-2A-R03` labs packet as `history-backfilled` clauses
 
+### P6 (UTC-second timestamps and time-audit fields)
+
+- `P6-C1-S1`: define canonical UTC second timestamps for artifact-lifecycle and recorded chronology fields, while allowing evidence-bound date precision for historical-effective time
+- `P6-C1-S2`: add parent-row and supplement-evidence time-audit surfaces so issue rows and SUP items can record source observed time, source recorded time, effective range, and defended precision
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Lane boundary)
@@ -284,6 +289,11 @@
 - [x] `P5-C1-S1`: define `history-backfilled` clause ordering inside one later current release
 - [x] `P5-C1-S2`: widen `DOC-WORKFLOW-LABS-0002` into one local chronology sample with `S0A-2A-R03` history-backfilled clauses and contract time fields
 
+### P6 (UTC-second timestamps and time-audit fields)
+
+- [x] `P6-C1-S1`: define canonical UTC-second timestamps and legacy precision handling
+- [x] `P6-C1-S2`: add time-audit surfaces for parent-ledger rows and supplement-evidence items
+
 ## Current Status
 
 - `S0F-7E` is now opened as the chronology follow-up after `S0F-7D`.
@@ -298,7 +308,9 @@
 - `P4-C1-S2` is now complete: parent row `S0A-2A-R03` no longer stays at issue-only `bounded-background`, and the accepted `002` labs SUP write-back now records one explicit earlier-labs historical-review state under `DOC-WORKFLOW-LABS` while still deferring any actual historical-backfill release opening.
 - `P5-C1-S1` is now complete: the contract template now defines `history-backfilled` as the first clause-order bucket when one later current release carries earlier-discovered history alongside carried-forward, amended, and introduced state.
 - `P5-C1-S2` is now complete: `DOC-WORKFLOW-LABS-0002` now acts as one local chronology sample that carries accepted `S0A-2A-R03` labs history through `history-backfilled` clauses and explicit contract chronology fields without changing the release id.
-- The next step is to review whether this current-release merge sample is acceptable, or whether the repo should instead open one dedicated `DOC-WORKFLOW-LABS` historical-backfill release after all.
+- `P6-C1-S1` is now complete in workspace: the repo now treats UTC second timestamps as the canonical shape for new artifact-lifecycle and recorded chronology fields, while still allowing legacy day-only values and evidence-bound date precision where stronger timestamps are not defended.
+- `P6-C1-S2` is now complete in workspace: the support-only ledger and SUP models now expose explicit time-audit surfaces for parent rows and evidence items, so source observed time, source recorded time, effective range, and precision no longer have to be hidden in prose.
+- The next step is to review whether these UTC-second and time-audit rules are sufficient, or whether the repo also needs one explicit optional local-time mirror convention in frontmatter.
 
 ## Evidence (reserved)
 
@@ -418,3 +430,22 @@
   - the contract template now defines `history-backfilled` as one statement-level action and gives it first ordering priority inside the current statement table when the first effective release is the same
   - `DOC-WORKFLOW-LABS-0002` now carries `recorded_at`, `reviewed_at`, `effective_from`, and `effective_until` plus the expanded chronology-bearing statement and evolution tables
   - the local `LABS-0002` sample now admits the accepted `S0A-2A-R03` labs packet through two `history-backfilled` clauses without renumbering the release or opening a separate backfill record yet
+
+### P6-C1-S1S2 (UTC-second timestamp rule and time-audit surfaces fixed in workspace | 2026-04-12)
+
+- artifacts:
+  - `docs/logs/_template-support-only-contract-release-ledger.md`
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md`
+  - `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - new artifact-lifecycle and recorded chronology writes should prefer one canonical UTC-second timestamp shape instead of bare local time
+  - historical-effective fields should keep only the precision the source actually proves rather than fabricating seconds everywhere
+  - parent ledgers and supplement ledgers should gain explicit time-audit surfaces so row-level and evidence-level chronology can be recorded without overloading the main routing tables
+- observed:
+  - the ledger, SUP, and contract templates now all document canonical UTC-second timestamps together with legacy day-only compatibility and evidence-bound historical precision
+  - the `S0A-2A` parent ledger now demonstrates one row-level chronology-audit surface, and the `002` SUP file now demonstrates one evidence-level time-audit surface for the accepted labs packet
+  - the current `002` time audit now shows one defended day-level date from `labs-004` and explicitly leaves `labs-006` as `unknown` until narrower chronology evidence is reconstructed

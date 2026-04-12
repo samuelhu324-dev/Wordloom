@@ -44,6 +44,13 @@ support_only_contract_release_ledger_supplement:
 
 - `DOC-WORKFLOW-LABS` candidate: if the parent-ledger rewrite is accepted, the labs layer should move from deferred background toward explicit historical review, with any later `historical-backfill` or other release-opening decision made only after the parent packet is accepted.
 
+## Evidence Time Audit
+
+| supplement item id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0A-2A-R03-SUP-01` | `2026-02-03` | `unknown` | `2026-02-03` | `unknown` | `day` | `legacy source currently proves only a local execution date, not a defended offset or second-level timestamp` | `labs-004` explicitly records multiple experiment sections as executed on `2026-02-03`, so the earlier labs packet has at least defended day-level timing even though second-level chronology is still absent. |
+| `S0A-2A-R03-SUP-02` | `unknown` | `unknown` | `unknown` | `unknown` | `unknown` | `legacy source currently exposes no defended execution timestamp in the retained packet` | `labs-006` is clearly earlier labs material, but the retained source still needs narrower time reconstruction before any stronger chronology claim is made. |
+
 ## Preliminary Reading
 
 - These two labs do not overturn the broad workflow-pipeline reading already owned by `DOC-WORKFLOW-0001`.

@@ -28,11 +28,11 @@ support_only_contract_release_ledger_supplement:
   supplement_kind: support-only-contract-release-ledger-supplement
   status: <draft|active|completed>
   owner_lane: <S0F-7D>
-  created_at: <YYYY-MM-DD|pending>
-  reviewed_at: <YYYY-MM-DD|pending>
-  accepted_at: <YYYY-MM-DD|pending>
-  writeback_started_at: <YYYY-MM-DD|pending>
-  writeback_completed_at: <YYYY-MM-DD|pending>
+  created_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  accepted_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  writeback_started_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  writeback_completed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   parent_ledger_id: <ledger-S0A-1A-source-summary>
   parent_source_id: <S0A-1A>
   parent_source_ref: <issue/log/support-only source already owned by the parent ledger>
@@ -44,6 +44,9 @@ support_only_contract_release_ledger_supplement:
 
 - `supplement_series_id` is the stable sequence family for repeated supplement rounds attached to one parent source.
 - `supplement_sequence` is the append-only round number inside that series; do not reuse or renumber older rounds once admitted.
+- New writes should use canonical UTC second timestamps such as `2026-04-12T15:18:05Z` for supplement-lifecycle fields.
+- Legacy day-only values may remain when older rounds do not yet have defended second-level audit timestamps.
+- Local-time display belongs in an optional mirror field or prose note only; the canonical stored timestamp should remain UTC when second-level precision is available.
 - `created_at` records when this supplement file was first created in the repo.
 - `reviewed_at` records when this supplement round first reached defended review state.
 - `accepted_at` records when the row-level verdicts are accepted for parent-ledger write-back.
@@ -63,6 +66,19 @@ support_only_contract_release_ledger_supplement:
 | supplement item id | parent row id | evidence ref | evidence type | attachment ids | verification status | effect on current verdict | proposed parent-ledger action | contract impact | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `<S0A-1A-R02-SUP-01>` | `<S0A-1A-R02>` | `<code path|md path|issue|oral note|other evidence anchor>` | `<code|md|issue|log|oral|screenshot|other>` | `<S0A-1A-R02-SUP-01-SHOT-01>` | `<pending|verified|rejected>` | `<supports-existing|sharpens-existing|narrows-existing|revises-existing|conflicts-needs-review>` | `<no-change|add-supporting-evidence|rewrite-parent-row|split-parent-row|reopen-routing>` | `<none|rewrite-current-draft|open-new-release|defer-contract-change>` | `<why this evidence should or should not change the parent-ledger reading>` |
+
+## Optional Evidence Time Audit
+
+Use this when one supplement row needs explicit audit of source execution time, source recording time, or historical-effective range.
+
+| supplement item id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `<S0A-1A-R02-SUP-01>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<second|day|month|year|unknown>` | `<optional source-local zone or offset note>` | `<why this evidence time audit matters>` |
+
+- `source observed at` is the best known time the evidence event, experiment, or source snapshot was executed or observed.
+- `source recorded at` is the best known time the evidence document itself was written or admitted.
+- `source effective from` and `source effective until` describe the best known historical-effective range for the rule signal carried by that evidence row.
+- `time precision` must remain evidence-bound; if the source proves only a day, keep `day` rather than inventing seconds.
 
 ## Required Rules
 

@@ -23,9 +23,9 @@ support_only_contract_release_ledger:
   ledger_kind: support-only-contract-release-ledger
   status: <draft|active|completed>
   owner_lane: <S0F-7B>
-  created_at: <YYYY-MM-DD|pending>
-  reviewed_at: <YYYY-MM-DD|pending>
-  accepted_at: <YYYY-MM-DD|pending>
+  created_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  accepted_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   source_id: <S0B-2A>
   source_ref: <issue/log/support-only source being split>
   source_scope: <what portion of the source this ledger covers>
@@ -34,10 +34,26 @@ support_only_contract_release_ledger:
 
 ## Lifecycle Field Rule
 
+- New writes should use canonical UTC second timestamps such as `2026-04-12T15:18:05Z` for artifact-lifecycle fields.
+- Legacy day-only values such as `2026-04-12` may remain when older records do not yet have defended second-level audit timestamps.
+- If a reader still needs local-time display, keep it as one display-only mirror or prose note; do not replace the canonical UTC value.
 - `created_at` records when this ledger file was first created in the repo.
 - `reviewed_at` records when the ledger routing was first reviewed tightly enough to count as one defended packet rather than one raw staging draft.
 - `accepted_at` records when the ledger is accepted as the current parent routing surface for later supplement or contract work.
 - These fields are artifact-lifecycle timestamps only; they do not claim to describe when the underlying historical rule first became effective.
+
+## Optional Row Chronology Audit
+
+Use this when one parent-ledger row also needs explicit time audit for source observation, source recording, or historical-effective range without overloading the main routing table.
+
+| row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `<S0A-1A-R01>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<second|day|month|year|unknown>` | `<optional source-local zone or offset note>` | `<why this row's time audit matters>` |
+
+- `source observed at` is the best known time the underlying source event or evidence was observed or executed.
+- `source recorded at` is the best known time that source material itself was written down, published, or admitted.
+- `source effective from` and `source effective until` describe the best known historical-effective range for the routed source slice.
+- `time precision` must reflect the strongest defended precision only; do not fabricate seconds when the source proves only a date.
 
 ## Routing Table Shape
 

@@ -48,6 +48,12 @@ support_only_contract_release_ledger:
 - later direct evidence for logs and ADR child ownership that does not rely on this broad workflow issue alone
 - later dedicated `DOC-WORKFLOW-LABS` historical-backfill packet after the accepted `002` labs SUP write-back
 
+## Row Chronology Audit
+
+| row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0A-2A-R03` | `unknown` | `unknown` | `unknown` | `ongoing` | `unknown` | `not yet reconstructed from the issue-only parent packet` | The parent row now records one defended earlier-labs review state, but the row-level chronology still depends on the more specific SUP evidence packet for any narrower time audit. |
+
 ## Reader Notes
 
 - This ledger now confirms that `S0A-2A` remains primarily parent-owned, while the runbook layer is now consumed by one dedicated child contract, the labs layer now sits in explicit historical review under the existing labs family, and the remaining narrower layers stay deferred pending stronger direct evidence.
