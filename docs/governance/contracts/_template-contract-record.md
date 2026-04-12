@@ -14,6 +14,10 @@ contract_record:
   applies_to: <targets governed by this contract>
   enforcement_surface: <workflow|script|runbook|adapter|manual>
   violation_semantics: <fail|warning|report-only|neutral>
+  recorded_at: <YYYY-MM-DD|unknown>
+  reviewed_at: <YYYY-MM-DD|pending>
+  effective_from: <YYYY-MM-DD|unknown>
+  effective_until: <YYYY-MM-DD|ongoing|unknown>
   introduced_by: <first source anchor>
   last_changed_by: <most recent source anchor>
   source_refs:
@@ -56,6 +60,10 @@ contract_record:
 - Use this template only when the record is the clearest owner of one governance rule or boundary state in chronology-first rebuild.
 - Do not use this template for rows that are only validation evidence, migration mechanics, wrapper transport, or chronology support without primary rule ownership.
 - `release_action` should state how this release relates to earlier releases, such as `initial`, `simple-revision`, `merge`, `split-child`, `split-parent`, or `absorption`.
+- `contract_release` remains append-only registry order inside one family; it should not be treated as guaranteed historical-effective order.
+- `recorded_at` should capture when this release record entered the repo as one defended contract record.
+- `reviewed_at` should capture when this release record passed its current defended review state; use `pending` when that review has not happened yet.
+- `effective_from` and `effective_until` should capture the best currently known historical-effective range for the rule state owned by this release.
 - `release_change_summary` should explain why this release exists; it is especially required when `contract_release` is later than `0001` or when lineage fields are non-empty.
 - `summary` should describe the effective rule meaning at this contract state, not the full change history.
 - `source_refs` should stay minimal and point only to the decisive sources that justify this release itself.
@@ -102,12 +110,19 @@ contract_record:
   - `change action`
   - `source basis`
   - `first effective release`
+  - `first effective at`
   - `last changed release`
+  - `last changed at`
+  - `effective from`
+  - `effective until`
   - `effective status`
   - `statement text`
   - `notes`
 - `statement label` should be a short human-readable clause title for the current contract meaning; it is the contract-facing quick label, not a copy of the source-owned `source slice` field from the ledger.
 - `source basis` may contain one or more stable anchors when the clause truly depends on multiple upstream bases.
+- `first effective at` should capture the best currently known historical time at which the clause first became effective, independent of the append-only registry release number.
+- `last changed at` should capture the best currently known historical time for the latest semantic change represented in this release's reading of the clause.
+- `effective from` and `effective until` should capture the active historical range for the clause as currently read in this release; use `ongoing` when the clause remains in force without a known end date.
 - `source basis` should prefer stable ledger or supplement anchors such as:
   - one `parent row id` such as `S0B-1A-R02`
   - one `supplement item id` such as `S0A-1A-R02-SUP-01`
@@ -135,6 +150,7 @@ contract_record:
   - `pending-review`
 - Recommended ordering for the current `Contract Statement Table`:
   - sort by `first effective release` ascending so clauses with older semantic origins appear earlier
+  - when `first effective release` is the same and reliable `first effective at` values exist, sort by `first effective at` ascending
   - when `first effective release` is the same, sort `change action` as `carried-forward`, then `amended`, then `introduced`
   - after that, keep one reader-friendly order inside each action bucket rather than forcing purely lexical id ordering
 - The contract statement table does not replace source routing or supplement admission:
@@ -153,6 +169,8 @@ contract_record:
   - `change action`
   - `input statement ids`
   - `output statement ids`
+  - `effective at`
+  - `recorded at`
   - `reason`
   - `source basis`
   - `notes`
@@ -166,6 +184,8 @@ contract_record:
   - `carried-forward`
 - In this table:
   - `input statement ids` and `output statement ids` carry statement lineage and causality
+  - `effective at` records when the change is believed to have become historically effective
+  - `recorded at` records when that change event was entered into the repo's chronology record
   - `source basis` still carries only the decisive evidence anchors for the change event
   - release-level lineage remains in contract frontmatter rather than moving into clause history tables
 

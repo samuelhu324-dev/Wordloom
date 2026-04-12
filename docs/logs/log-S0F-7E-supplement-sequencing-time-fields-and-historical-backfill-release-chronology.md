@@ -165,6 +165,27 @@
   - these fields record repository-side artifact lifecycle only and do not stand in for historical-effective rule time
   - historical-effective timing remains reserved for later contract chronology fields under `P2`
 
+## P2 (Contract chronology fields | v1)
+
+### P2-C1-S1 (Minimum contract chronology fields fixed | v1)
+
+- Contracts must now expose one minimum chronology field set that keeps append-only registry order distinct from recorded and historical-effective time.
+- Under this rule:
+  - `contract_release` remains the append-only registry order inside one family
+  - `recorded_at` records when the release entered the repo as one defended contract record
+  - `reviewed_at` records when the release reached its current defended review state
+  - `effective_from` and `effective_until` record the best currently known historical-effective range for the release state
+  - these chronology fields may use `unknown`, `pending`, or `ongoing` where the repo does not yet have a stronger time reconstruction
+
+### P2-C1-S2 (Statement-table chronology range fields fixed | v1)
+
+- Contract statement tables and statement-evolution tables must now distinguish clause-state ranges from change-event times when time-bound reading matters.
+- Under this rule:
+  - the `Contract Statement Table` should add `first effective at`, `last changed at`, `effective from`, and `effective until`
+  - the `Statement Evolution Table` should add `effective at` and `recorded at`
+  - `first effective release` and `last changed release` stay as release ids, while the new time columns carry best-known chronology separate from registry numbering
+  - time-bound clause reading may therefore represent later-recorded earlier states without forcing release renumbering
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -218,8 +239,8 @@
 
 ### P2 (Contract chronology fields)
 
-- [ ] `P2-C1-S1`: define minimum contract chronology fields for registry order, recorded order, and historical-effective order
-- [ ] `P2-C1-S2`: define statement-table chronology range fields when time-bound reading matters
+- [x] `P2-C1-S1`: define minimum contract chronology fields for registry order, recorded order, and historical-effective order
+- [x] `P2-C1-S2`: define statement-table chronology range fields when time-bound reading matters
 
 ### P3 (Historical-backfill release rule)
 
@@ -236,7 +257,9 @@
 - The lane boundary is now fixed: supplement sequencing, time-field separation, historical-backfill releases, and chronology-safe reader ordering should no longer remain implicit inside ad hoc contract or supplement edits.
 - `P1-C1-S1` is now complete: repeated supplement rounds now have one append-only sequence-bearing naming model under one stable supplement series id.
 - `P1-C1-S2` is now complete: parent ledgers and supplement ledgers now expose distinct minimum artifact-lifecycle fields without overloading them as historical-effective rule timestamps.
-- The next step is to define the minimum contract chronology fields before opening the next labs-oriented supplement round.
+- `P2-C1-S1` is now complete: contracts now separate append-only registry order from recorded and historical-effective time through one minimum chronology field set.
+- `P2-C1-S2` is now complete: the contract template now distinguishes clause-state ranges from change-event times, and `DOC-WORKFLOW-RUNBOOK-0001` now demonstrates the new statement-table chronology columns on one live draft.
+- The next step is to define the historical-backfill release rule before opening the next labs-oriented supplement round.
 
 ## Evidence (reserved)
 
@@ -269,3 +292,19 @@
   - supplement-ledger naming now distinguishes `supplement_series_id`, `supplement_sequence`, and one sequence-bearing on-disk file id
   - the parent ledger template now exposes `created_at`, `reviewed_at`, and `accepted_at` as the minimum artifact-lifecycle fields
   - the supplement-ledger template now exposes `created_at`, `reviewed_at`, `accepted_at`, `writeback_started_at`, and `writeback_completed_at` in addition to stable series and sequence fields
+
+### P2-C1-S1S2 (Contract chronology fields and statement-table time ranges fixed in workspace | 2026-04-12)
+
+- artifacts:
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/governance/contracts/workflow/runbook/DOC-WORKFLOW-RUNBOOK-0001-projection-operator-rebuild-replay-and-failure-recovery.md`
+  - `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - contracts should gain one minimum chronology field set that separates registry order from recorded and historical-effective time
+  - statement tables should gain chronology range fields without overloading release ids to act as time proxies
+  - the lane should prove the new contract chronology columns on one live draft before later historical-backfill work continues
+- observed:
+  - the contract template now exposes `recorded_at`, `reviewed_at`, `effective_from`, and `effective_until` as the minimum contract chronology fields
+  - the contract template now distinguishes clause-state range fields from change-event time fields across the two optional contract tables
+  - `DOC-WORKFLOW-RUNBOOK-0001` now demonstrates the new statement-table chronology columns while keeping unknown historical timing explicit rather than guessed
