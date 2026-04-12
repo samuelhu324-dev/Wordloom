@@ -366,6 +366,14 @@
   - the reason for runbook emergence is now recorded at phase level as well: once projection paths existed, the durable next need moved to rebuildability, replay, readiness, observability, runtime failure handling, and operator-safe verification rather than to further labs-only experimentation
   - actual child-contract opening remains deferred until one defended runbook packet is promoted, so the parent row now records stronger review status without pretending that a runbook contract already exists
 
+### P2-C8-S4 (DOC-WORKFLOW-RUNBOOK-0001 child-opening packet drafted from the accepted runbook packet | v1)
+
+- `DOC-WORKFLOW-RUNBOOK-0001` may now open as the first dedicated runbook-family child draft under the accepted `S0A-2A-R04` review outcome.
+- Under this rule:
+  - the first runbook child should stay narrow to projection operator rebuild, replay, readiness, observability, and failure-recovery governance rather than restating the whole broader workflow pipeline
+  - parent row `S0A-2A-R04` may now resolve to `DOC-WORKFLOW-RUNBOOK-0001`, while `DOC-WORKFLOW-0001` remains unchanged as the broader workflow-layer reader
+  - current sourcing remains explicit about issue-only origin plus later direct runbook evidence from `run-001` and `run-003`, so the child-opening packet does not overclaim broader repo-wide runbook semantics
+
 ### P3 (Future continuation discipline)
 
 - `P3-C1-S1`: define when future work should prefer current logs or new bounded logs instead of old-log reopening
@@ -408,6 +416,7 @@
 - [x] `P2-C8-S1`: expose `S0A-2A` row ids for later SUP anchoring
 - [x] `P2-C8-S2`: open the first runbook-direct-evidence SUP round for `S0A-2A`
 - [x] `P2-C8-S3`: write back the accepted runbook SUP judgment onto parent row `S0A-2A-R04`
+- [x] `P2-C8-S4`: draft the first `DOC-WORKFLOW-RUNBOOK-0001` child-opening packet from the accepted runbook evidence packet
 
 ### P3 (Future continuation discipline)
 
@@ -439,6 +448,7 @@
 - `P2-C8-S1` is now complete: the `S0A-2A` selective-backfill ledger now exposes stable row ids so the runbook layer can receive later SUP evidence through an exact parent-row anchor.
 - `P2-C8-S2` is now complete: the first `S0A-2A` runbook-direct-evidence SUP round now uses `run-001` and `run-003` to argue that runbooks had already become durable operator-facing extraction rather than only broad issue-level background.
 - `P2-C8-S3` is now complete: parent row `S0A-2A-R04` no longer stays at `bounded-background` only, and the accepted write-back now records one explicit runbook child-candidate review state while still deferring actual `DOC-WORKFLOW-RUNBOOK` contract opening.
+- `P2-C8-S4` is now complete in workspace: the repo now has one first `DOC-WORKFLOW-RUNBOOK-0001` child draft, and parent row `S0A-2A-R04` now resolves to that dedicated runbook release rather than stopping at child-candidate review.
 - The next execution step is to reuse this same `7D` lane when earlier packets such as `S0A-2A` need later evidence admitted through one parent-ledger-first SUP write-back.
 
 ## Evidence (reserved)
@@ -653,6 +663,22 @@
   - `S0A-2A-R04` now reads as explicit `DOC-WORKFLOW-RUNBOOK` child-candidate review while still keeping actual release opening deferred
   - `S0F-7D` now records that runbooks emerged because durable operator needs shifted toward rebuildability, replay, readiness, observability, runtime failure handling, and operator-safe verification after projection paths had succeeded
   - the parent-ledger write-back now sharpens the verdict materially without inventing a non-existent runbook contract
+
+### P2-C8-S4 (DOC-WORKFLOW-RUNBOOK-0001 child-opening packet drafted in workspace | 2026-04-12)
+
+- artifacts:
+  - `docs/governance/contracts/workflow/runbook/DOC-WORKFLOW-RUNBOOK-0001-projection-operator-rebuild-replay-and-failure-recovery.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should gain one first dedicated runbook-family child draft from the accepted `S0A-2A-R04` packet instead of stopping at child-candidate review only
+  - the draft should stay narrow to the earliest projection SOP pattern: rebuildability, replay, runtime verification, observability, and failure recovery
+  - parent row `S0A-2A-R04` should resolve to the new child draft without widening logs, labs, or ADR ownership from the same broad issue source
+- observed:
+  - `DOC-WORKFLOW-RUNBOOK-0001` now exists as the first dedicated runbook-family draft sourced from the accepted `S0A-2A` runbook packet plus the two earliest projection SOPs
+  - `S0A-2A-R04` now resolves to `DOC-WORKFLOW-RUNBOOK-0001` with full consumed scope while keeping the rest of the mixed `S0A-2A` packet unchanged
+  - `S0F-7D` now carries the child-opening step explicitly so this runbook extraction remains visible in the same supplement-ledger continuation lane
 
 ## Numbering
 
