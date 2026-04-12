@@ -308,8 +308,8 @@
 - `P4-C1-S2` is now complete: parent row `S0A-2A-R03` no longer stays at issue-only `bounded-background`, and the accepted `002` labs SUP write-back now records one explicit earlier-labs historical-review state under `DOC-WORKFLOW-LABS` while still deferring any actual historical-backfill release opening.
 - `P5-C1-S1` is now complete: the contract template now defines `history-backfilled` as the first clause-order bucket when one later current release carries earlier-discovered history alongside carried-forward, amended, and introduced state.
 - `P5-C1-S2` is now complete: `DOC-WORKFLOW-LABS-0002` now acts as one local chronology sample that carries accepted `S0A-2A-R03` labs history through `history-backfilled` clauses and explicit contract chronology fields without changing the release id.
-- `P6-C1-S1` is now complete in workspace: the repo now treats UTC second timestamps as the canonical shape for new artifact-lifecycle and recorded chronology fields, while still allowing legacy day-only values and evidence-bound date precision where stronger timestamps are not defended.
-- `P6-C1-S2` is now complete in workspace: the support-only ledger and SUP models now expose explicit time-audit surfaces for parent rows and evidence items, so source observed time, source recorded time, effective range, and precision no longer have to be hidden in prose.
+- `P6-C1-S1` is now complete: the repo now treats UTC second timestamps as the canonical shape for new artifact-lifecycle and recorded chronology fields, while still allowing legacy day-only values and evidence-bound date precision where stronger timestamps are not defended.
+- `P6-C1-S2` is now complete: the support-only ledger and SUP models now expose explicit time-audit surfaces for parent rows and evidence items, so source observed time, source recorded time, effective range, and precision no longer have to be hidden in prose.
 - The next step is to review whether these UTC-second and time-audit rules are sufficient, or whether the repo also needs one explicit optional local-time mirror convention in frontmatter.
 
 ## Evidence (reserved)
@@ -431,7 +431,9 @@
   - `DOC-WORKFLOW-LABS-0002` now carries `recorded_at`, `reviewed_at`, `effective_from`, and `effective_until` plus the expanded chronology-bearing statement and evolution tables
   - the local `LABS-0002` sample now admits the accepted `S0A-2A-R03` labs packet through two `history-backfilled` clauses without renumbering the release or opening a separate backfill record yet
 
-### P6-C1-S1S2 (UTC-second timestamp rule and time-audit surfaces fixed in workspace | 2026-04-12)
+### P6-C1-S1S2 (UTC-second timestamp rule and time-audit surfaces fixed | 2026-04-12)
+
+- headSha: `0346adfb3`
 
 - artifacts:
   - `docs/logs/_template-support-only-contract-release-ledger.md`
