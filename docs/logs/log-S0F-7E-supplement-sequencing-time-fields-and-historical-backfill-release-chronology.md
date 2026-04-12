@@ -186,6 +186,26 @@
   - `first effective release` and `last changed release` stay as release ids, while the new time columns carry best-known chronology separate from registry numbering
   - time-bound clause reading may therefore represent later-recorded earlier states without forcing release renumbering
 
+## P3 (Historical-backfill release rule | v1)
+
+### P3-C1-S1 (`historical-backfill` release action and no-renumber rule fixed | v1)
+
+- A later-recorded earlier historical state must now enter one family through a new append-only release record rather than by renumbering already-admitted releases.
+- Under this rule:
+  - `historical-backfill` is now one explicit `release_action` value
+  - the backfilled release receives the next available append-only `contract_release` id in that family
+  - `effective_from` may still be earlier than older registry releases such as `0001` or `0002`
+  - already-admitted later family releases must keep their current ids even when the backfilled state is historically earlier
+
+### P3-C1-S2 (Minimum lineage updates for later-recorded earlier states fixed | v1)
+
+- Historical-backfill releases must now update a minimum lineage set so readers can traverse the earlier state without forcing immediate full-family rewrites.
+- Under this rule:
+  - the backfilled release must name at least one nearest later relationship through `superseded_by`, `absorbed_into`, `split_into`, or `retired_by` unless it remains the current effective reader
+  - the nearest later affected release should eventually add the reciprocal back-link through `supersedes`, `absorbed_from`, `split_from`, or `retires`
+  - only directly affected later clause metadata or evolution rows should be rewritten; family renumbering remains forbidden
+  - this minimum lineage update is sufficient to admit the earlier state even when broader family cleanup must happen asynchronously later
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -244,8 +264,8 @@
 
 ### P3 (Historical-backfill release rule)
 
-- [ ] `P3-C1-S1`: define `historical-backfill` release action and no-renumber handling
-- [ ] `P3-C1-S2`: define minimum lineage updates for later-recorded earlier states
+- [x] `P3-C1-S1`: define `historical-backfill` release action and no-renumber handling
+- [x] `P3-C1-S2`: define minimum lineage updates for later-recorded earlier states
 
 ### P4 (Future chronology-reading rule)
 
@@ -259,7 +279,9 @@
 - `P1-C1-S2` is now complete: parent ledgers and supplement ledgers now expose distinct minimum artifact-lifecycle fields without overloading them as historical-effective rule timestamps.
 - `P2-C1-S1` is now complete: contracts now separate append-only registry order from recorded and historical-effective time through one minimum chronology field set.
 - `P2-C1-S2` is now complete: the contract template now distinguishes clause-state ranges from change-event times, and `DOC-WORKFLOW-RUNBOOK-0001` now demonstrates the new statement-table chronology columns on one live draft.
-- The next step is to define the historical-backfill release rule before opening the next labs-oriented supplement round.
+- `P3-C1-S1` is now complete: later-recorded earlier states may now enter one family through explicit `historical-backfill` release action without renumbering already-admitted releases.
+- `P3-C1-S2` is now complete: the repo now has one minimum lineage-update rule for later-recorded earlier states, so asynchronous backfill can proceed without forcing whole-family rewrites first.
+- The next step is to define the downstream chronology-reading rule before opening the next labs-oriented supplement round.
 
 ## Evidence (reserved)
 
@@ -309,3 +331,18 @@
   - the contract template now exposes `recorded_at`, `reviewed_at`, `effective_from`, and `effective_until` as the minimum contract chronology fields
   - the contract template now distinguishes clause-state range fields from change-event time fields across the two optional contract tables
   - `DOC-WORKFLOW-RUNBOOK-0001` now demonstrates the new statement-table chronology columns while keeping unknown historical timing explicit rather than guessed
+
+### P3-C1-S1S2 (Historical-backfill release action and minimum lineage updates fixed in workspace | 2026-04-12)
+
+- artifacts:
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the repo should gain one explicit `historical-backfill` release action so later-recorded earlier states can enter a family without renumbering existing releases
+  - the repo should define the minimum lineage updates required when one earlier historical state is admitted after newer family releases already exist
+  - asynchronous chronology cleanup should become legal through bounded reciprocal lineage updates rather than through mandatory whole-family rewrites
+- observed:
+  - the contract template now includes `historical-backfill` as one explicit release action and states that append-only family numbering must remain unchanged
+  - the template now fixes the minimum lineage update rule between one backfilled earlier state and its nearest later affected release
+  - `S0F-7E` now records that asynchronous backfill may proceed through bounded lineage updates before any broader family cleanup is attempted

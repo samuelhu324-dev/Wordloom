@@ -7,7 +7,7 @@ contract_record:
   contract_id: <contract_family-contract_release>
   record_kind: chronology-first-contract
   status: <draft|active|deprecated|superseded|retired>
-  release_action: <initial|simple-revision|merge|split-parent|split-child|absorption|consolidation>
+  release_action: <initial|simple-revision|merge|split-parent|split-child|absorption|consolidation|historical-backfill>
   release_change_summary: <why this release exists and what materially changed>
   summary: <effective contract meaning at this contract state>
   governance_area: <governed area>
@@ -59,11 +59,13 @@ contract_record:
 - Keep the file title or filename summary readable, but treat `contract_family` as the stable semantic identity and `contract_id` as one specific release record.
 - Use this template only when the record is the clearest owner of one governance rule or boundary state in chronology-first rebuild.
 - Do not use this template for rows that are only validation evidence, migration mechanics, wrapper transport, or chronology support without primary rule ownership.
-- `release_action` should state how this release relates to earlier releases, such as `initial`, `simple-revision`, `merge`, `split-child`, `split-parent`, or `absorption`.
+- `release_action` should state how this release relates to earlier releases, such as `initial`, `simple-revision`, `merge`, `split-child`, `split-parent`, `absorption`, or `historical-backfill`.
 - `contract_release` remains append-only registry order inside one family; it should not be treated as guaranteed historical-effective order.
 - `recorded_at` should capture when this release record entered the repo as one defended contract record.
 - `reviewed_at` should capture when this release record passed its current defended review state; use `pending` when that review has not happened yet.
 - `effective_from` and `effective_until` should capture the best currently known historical-effective range for the rule state owned by this release.
+- Use `historical-backfill` when a later-recorded release documents an earlier historical state discovered only after newer family releases already exist.
+- A `historical-backfill` release must not trigger renumbering of already-admitted later family releases; the earlier state enters the family by new append-only registry id plus explicit lineage.
 - `release_change_summary` should explain why this release exists; it is especially required when `contract_release` is later than `0001` or when lineage fields are non-empty.
 - `summary` should describe the effective rule meaning at this contract state, not the full change history.
 - `source_refs` should stay minimal and point only to the decisive sources that justify this release itself.
@@ -78,6 +80,10 @@ contract_record:
 - Use `absorbed_from` / `absorbed_into` when rule meaning is carried forward into another release without a pure whole-rule replacement.
 - Do not use lineage fields to describe how issue-only, log-only, or support-only source slices were routed; record that work in the support-only ledger.
 - Use `retires` / `retired_by` when a release state ends explicitly without one clean direct successor.
+- When a later-recorded earlier state is admitted through `historical-backfill`, update the minimum lineage set rather than rewriting every neighboring release body immediately:
+  - the backfilled release should name at least one nearest later relationship through `superseded_by`, `absorbed_into`, `split_into`, or `retired_by` unless it is still the current effective reader
+  - the nearest later affected release should eventually add the reciprocal back-link through `supersedes`, `absorbed_from`, `split_from`, or `retires`
+  - if the earlier state changes current clause history in one later release, update the later release's clause metadata or evolution rows, but do not renumber the family
 - `notes` may clarify operator context, but should never override structured fields.
 
 ## Recommended Body Shape
@@ -91,6 +97,7 @@ contract_record:
   - `## Current Reading`
   - `## Reader Notes`
 - `## Release Change` should summarize the material delta for this release, especially when `contract_release` is later than `0001`.
+- When `release_action` is `historical-backfill`, `## Release Change` should also explain why this earlier historical state is being recorded only now and which later release or releases already remained in effect before the backfill was added.
 - `## Contract Statement` should restate the current effective rule meaning in full; do not force readers to reconstruct the current state by diffing against earlier releases.
 - When one later release absorbs new non-contract source material, mention that source carry-forward in `## Release Change`, while keeping release-to-release relationships in `lineage` and source-routing details in the support-only ledger.
 
