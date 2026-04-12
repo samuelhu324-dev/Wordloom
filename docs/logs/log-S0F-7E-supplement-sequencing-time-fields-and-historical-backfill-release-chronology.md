@@ -110,7 +110,8 @@
 - `P1`: define supplement-series naming, append-only sequence numbering, and minimum lifecycle fields for parent ledgers and supplement ledgers
 - `P2`: define the minimum chronology fields for contracts, including registry order, recorded order, and historical-effective order
 - `P3`: define the historical-backfill release rule, including how later-discovered earlier states enter a family without renumbering existing releases
-- `P4`: define the downstream chronology-reading rule for future views, including how registry, recorded, and effective order should coexist without reader confusion
+- `P4`: land the first sequence-bearing supplement samples and parent-ledger write-back sample on `S0A-2A`
+- `P5`: define one current-release merge sample where earlier accepted history is carried as `history-backfilled` clauses inside `LABS-0002` together with the minimum contract chronology fields
 
 ## Success Criteria (DoD)
 
@@ -123,7 +124,7 @@
 
 - This log can be marked `stable` when:
   - `P0-P3` have fixed supplement sequencing, minimum chronology fields, and the historical-backfill rule;
-  - `P4` has either fixed the minimum downstream chronology-reading rule or explicitly deferred it into a narrower later follow-up.
+  - `P4-P5` have either fixed the minimum current sample model for supplement sequencing plus current-release historical merge, or explicitly deferred the remaining view-order question into a narrower later follow-up.
 
 ## P0 (Lane boundary | v1)
 
@@ -245,6 +246,11 @@
 - `P4-C1-S1`: land the first sequence-bearing `S0A-2A` supplement samples by rehoming the existing runbook SUP as `001` and opening a new labs-focused `002` round
 - `P4-C1-S2`: write back the accepted `002` labs SUP judgment onto parent row `S0A-2A-R03` while still deferring any `DOC-WORKFLOW-LABS` historical-backfill release opening
 
+### P5 (Current-release historical merge sample)
+
+- `P5-C1-S1`: define statement-table and statement-evolution ordering so `history-backfilled` clauses appear ahead of carried-forward, amended, and introduced rows inside one later current release
+- `P5-C1-S2`: widen `DOC-WORKFLOW-LABS-0002` into one local chronology sample by adding contract chronology fields plus the accepted `S0A-2A-R03` labs packet as `history-backfilled` clauses
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Lane boundary)
@@ -273,6 +279,11 @@
 - [x] `P4-C1-S1`: land the first sequence-bearing `S0A-2A` supplement samples
 - [x] `P4-C1-S2`: write back the accepted `002` labs SUP judgment onto parent row `S0A-2A-R03`
 
+### P5 (Current-release historical merge sample)
+
+- [x] `P5-C1-S1`: define `history-backfilled` clause ordering inside one later current release
+- [x] `P5-C1-S2`: widen `DOC-WORKFLOW-LABS-0002` into one local chronology sample with `S0A-2A-R03` history-backfilled clauses and contract time fields
+
 ## Current Status
 
 - `S0F-7E` is now opened as the chronology follow-up after `S0F-7D`.
@@ -285,7 +296,9 @@
 - `P3-C1-S2` is now complete: the repo now has one minimum lineage-update rule for later-recorded earlier states, so asynchronous backfill can proceed without forcing whole-family rewrites first.
 - `P4-C1-S1` is now complete: the original runbook SUP round now reads as explicit `001`, and the repo now has one new `002` labs SUP round under the same `ledger-SUP-S0A-2A` series before any parent-row write-back starts.
 - `P4-C1-S2` is now complete: parent row `S0A-2A-R03` no longer stays at issue-only `bounded-background`, and the accepted `002` labs SUP write-back now records one explicit earlier-labs historical-review state under `DOC-WORKFLOW-LABS` while still deferring any actual historical-backfill release opening.
-- The next step is to decide whether that accepted historical-review state should open one dedicated `DOC-WORKFLOW-LABS` historical-backfill packet or remain a defended deferred review marker for now.
+- `P5-C1-S1` is now complete in workspace: the contract template now defines `history-backfilled` as the first clause-order bucket when one later current release carries earlier-discovered history alongside carried-forward, amended, and introduced state.
+- `P5-C1-S2` is now complete in workspace: `DOC-WORKFLOW-LABS-0002` now acts as one local chronology sample that carries accepted `S0A-2A-R03` labs history through `history-backfilled` clauses and explicit contract chronology fields without changing the release id.
+- The next step is to review whether this current-release merge sample is acceptable, or whether the repo should instead open one dedicated `DOC-WORKFLOW-LABS` historical-backfill release after all.
 
 ## Evidence (reserved)
 
@@ -388,3 +401,19 @@
   - `S0A-2A-R03` now reads as one explicit `DOC-WORKFLOW-LABS` historical-review state with `historical-backfill` reserved as the later release action if a dedicated earlier-history packet is opened
   - the parent ledger now keeps logs and ADR as the remaining deferred slices while separating the labs layer from pure background treatment
   - the `002` SUP ledger now records completed review, acceptance, and write-back lifecycle timestamps while still deferring contract-level action
+
+### P5-C1-S1S2 (Current `LABS-0002` historical-merge sample fixed in workspace | 2026-04-12)
+
+- artifacts:
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  - `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - the contract template should define how one later current release may host earlier-discovered history through `history-backfilled` clause rows without changing the release id immediately
+  - `LABS-0002` should gain the minimum contract chronology fields and the newer time-bearing statement-table and evolution-table columns that earlier template work already introduced
+  - the local sample should show `S0A-2A-R03` merging into the current `LABS-0002` reader by placing `history-backfilled` rows ahead of carried-forward, amended, and introduced rows
+- observed:
+  - the contract template now defines `history-backfilled` as one statement-level action and gives it first ordering priority inside the current statement table when the first effective release is the same
+  - `DOC-WORKFLOW-LABS-0002` now carries `recorded_at`, `reviewed_at`, `effective_from`, and `effective_until` plus the expanded chronology-bearing statement and evolution tables
+  - the local `LABS-0002` sample now admits the accepted `S0A-2A-R03` labs packet through two `history-backfilled` clauses without renumbering the release or opening a separate backfill record yet

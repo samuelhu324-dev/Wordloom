@@ -60,6 +60,7 @@ contract_record:
 - Use this template only when the record is the clearest owner of one governance rule or boundary state in chronology-first rebuild.
 - Do not use this template for rows that are only validation evidence, migration mechanics, wrapper transport, or chronology support without primary rule ownership.
 - `release_action` should state how this release relates to earlier releases, such as `initial`, `simple-revision`, `merge`, `split-child`, `split-parent`, `absorption`, or `historical-backfill`.
+- When one later current release temporarily carries earlier-discovered history without opening a separate backfill release yet, keep `release_action` tied to the release-level relationship and mark the clause-level rows or change events as `history-backfilled` instead.
 - `contract_release` remains append-only registry order inside one family; it should not be treated as guaranteed historical-effective order.
 - `recorded_at` should capture when this release record entered the repo as one defended contract record.
 - `reviewed_at` should capture when this release record passed its current defended review state; use `pending` when that review has not happened yet.
@@ -145,6 +146,7 @@ contract_record:
   - `retired`
   - `conflicted-review`
 - Recommended `change action` values:
+  - `history-backfilled`
   - `introduced`
   - `carried-forward`
   - `amended`
@@ -158,7 +160,7 @@ contract_record:
 - Recommended ordering for the current `Contract Statement Table`:
   - sort by `first effective release` ascending so clauses with older semantic origins appear earlier
   - when `first effective release` is the same and reliable `first effective at` values exist, sort by `first effective at` ascending
-  - when `first effective release` is the same, sort `change action` as `carried-forward`, then `amended`, then `introduced`
+  - when `first effective release` is the same, sort `change action` as `history-backfilled`, then `carried-forward`, then `amended`, then `introduced`
   - after that, keep one reader-friendly order inside each action bucket rather than forcing purely lexical id ordering
 - The contract statement table does not replace source routing or supplement admission:
   - the parent ledger still owns source slicing and routing verdicts
@@ -182,6 +184,7 @@ contract_record:
   - `source basis`
   - `notes`
 - Recommended `change action` values:
+  - `history-backfilled`
   - `introduced`
   - `amended`
   - `replaced`
@@ -195,6 +198,7 @@ contract_record:
   - `recorded at` records when that change event was entered into the repo's chronology record
   - `source basis` still carries only the decisive evidence anchors for the change event
   - release-level lineage remains in contract frontmatter rather than moving into clause history tables
+- When one later release carries earlier-discovered clauses inside the current reader, show those change rows as `history-backfilled` ahead of same-release `carried-forward`, `amended`, or `introduced` rows so readers see the earlier-history admission first.
 
 ## Optional Legacy Redirect
 
