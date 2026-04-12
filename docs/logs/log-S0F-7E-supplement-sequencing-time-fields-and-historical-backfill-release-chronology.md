@@ -332,8 +332,9 @@
   - the contract template now distinguishes clause-state range fields from change-event time fields across the two optional contract tables
   - `DOC-WORKFLOW-RUNBOOK-0001` now demonstrates the new statement-table chronology columns while keeping unknown historical timing explicit rather than guessed
 
-### P3-C1-S1S2 (Historical-backfill release action and minimum lineage updates fixed in workspace | 2026-04-12)
+### P3-C1-S1S2 (Historical-backfill release action and minimum lineage updates fixed | 2026-04-12)
 
+- headSha: `1f20d4479`
 - artifacts:
   - `docs/governance/contracts/_template-contract-record.md`
   - `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
