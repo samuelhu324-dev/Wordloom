@@ -638,6 +638,22 @@
   - one new SUP ledger now attaches `run-001-search-projection.md` and `run-003-chronicle-projection.md` to that exact runbook-layer row as verified direct evidence
   - the current draft SUP judgment is that the runbook layer should no longer be treated as issue-only bounded background by default, and this extraction round is now prioritized while broader roadmap/log restructuring remains unsettled
 
+### P2-C8-S3 (S0A-2A runbook parent-row write-back accepted | 2026-04-12)
+
+- headSha: `b0ad217cd`
+- artifacts:
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
+  - `docs/logs/log-S0F-docs-management-v6.md`
+- expected:
+  - parent row `S0A-2A-R04` should stop reading as issue-only `bounded-background` once the accepted SUP evidence proves durable runbook extraction from the earliest projection SOPs
+  - the lane should record the runbook-emergence reason explicitly at phase level, not only inside the support-only SUP ledger
+  - the write-back should strengthen the runbook verdict without falsely claiming that a `DOC-WORKFLOW-RUNBOOK` contract has already been opened
+- observed:
+  - `S0A-2A-R04` now reads as explicit `DOC-WORKFLOW-RUNBOOK` child-candidate review while still keeping actual release opening deferred
+  - `S0F-7D` now records that runbooks emerged because durable operator needs shifted toward rebuildability, replay, readiness, observability, runtime failure handling, and operator-safe verification after projection paths had succeeded
+  - the parent-ledger write-back now sharpens the verdict materially without inventing a non-existent runbook contract
+
 ## Numbering
 
 - `S<n>`: Step.
