@@ -284,7 +284,7 @@
 - `P3-C1-S1` is now complete: later-recorded earlier states may now enter one family through explicit `historical-backfill` release action without renumbering already-admitted releases.
 - `P3-C1-S2` is now complete: the repo now has one minimum lineage-update rule for later-recorded earlier states, so asynchronous backfill can proceed without forcing whole-family rewrites first.
 - `P4-C1-S1` is now complete: the original runbook SUP round now reads as explicit `001`, and the repo now has one new `002` labs SUP round under the same `ledger-SUP-S0A-2A` series before any parent-row write-back starts.
-- `P4-C1-S2` is now complete in workspace: parent row `S0A-2A-R03` no longer stays at issue-only `bounded-background`, and the accepted `002` labs SUP write-back now records one explicit earlier-labs historical-review state under `DOC-WORKFLOW-LABS` while still deferring any actual historical-backfill release opening.
+- `P4-C1-S2` is now complete: parent row `S0A-2A-R03` no longer stays at issue-only `bounded-background`, and the accepted `002` labs SUP write-back now records one explicit earlier-labs historical-review state under `DOC-WORKFLOW-LABS` while still deferring any actual historical-backfill release opening.
 - The next step is to decide whether that accepted historical-review state should open one dedicated `DOC-WORKFLOW-LABS` historical-backfill packet or remain a defended deferred review marker for now.
 
 ## Evidence (reserved)
@@ -372,8 +372,9 @@
   - the repo now has a new `ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md` file that admits `labs-004` and `labs-006` as defended evidence against `S0A-2A-R03`
   - the template and dependent references now read the filename summary as supplement-round-specific while preserving stable parent attachment through `supplement_series_id` and `parent_ledger_id`
 
-### P4-C1-S2 (Accepted `002` labs SUP judgment written back onto `S0A-2A-R03` in workspace | 2026-04-12)
+### P4-C1-S2 (Accepted `002` labs SUP judgment written back onto `S0A-2A-R03` | 2026-04-12)
 
+- headSha: `4c4240e55`
 - artifacts:
   - `docs/logs/support-only/ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md`
   - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
