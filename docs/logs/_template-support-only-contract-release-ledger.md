@@ -23,11 +23,21 @@ support_only_contract_release_ledger:
   ledger_kind: support-only-contract-release-ledger
   status: <draft|active|completed>
   owner_lane: <S0F-7B>
+  created_at: <YYYY-MM-DD|pending>
+  reviewed_at: <YYYY-MM-DD|pending>
+  accepted_at: <YYYY-MM-DD|pending>
   source_id: <S0B-2A>
   source_ref: <issue/log/support-only source being split>
   source_scope: <what portion of the source this ledger covers>
   target_reading_goal: <what later reader should understand after this ledger is applied>
 ```
+
+## Lifecycle Field Rule
+
+- `created_at` records when this ledger file was first created in the repo.
+- `reviewed_at` records when the ledger routing was first reviewed tightly enough to count as one defended packet rather than one raw staging draft.
+- `accepted_at` records when the ledger is accepted as the current parent routing surface for later supplement or contract work.
+- These fields are artifact-lifecycle timestamps only; they do not claim to describe when the underlying historical rule first became effective.
 
 ## Routing Table Shape
 

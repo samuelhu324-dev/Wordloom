@@ -71,6 +71,7 @@
   **phase_log_51**: `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
   **phase_log_52**: `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
   **phase_log_53**: `docs/logs/log-S0F-8A-roadmap-intake-ledger-and-branch-admission-routing.md`
+  **phase_log_54**: `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
 
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
@@ -421,6 +422,8 @@
 - `S0F-5I/P3-C1-S1S2` is now complete: the next counted-series narrative packet is now published for `S0E`, and the affected `S0D` / `S0C` / `S0E` standing surfaces now route narrative questions into the packet views directly.
 - `S0F-8A` is now opened as the bounded follow-up after `S0F-7D`: the repo now separates `roadmap`, `roadmap-intake ledger`, and `child log` as three distinct surfaces, and the naming rule for the new intake ledger layer is fixed as `ledger-<source-log-id>-road-<road-id>-<summary>.md`.
 - `S0F-7D/P2-C8-S1S2S3S4` is now complete: the `S0A-2A` selective-backfill ledger now exposes exact row ids for later SUP anchoring, the first runbook-direct-evidence SUP round now attaches the earliest search and chronicle projection SOPs to the runbook layer, the accepted parent-row write-back records explicit runbook child-candidate review, and the first `DOC-WORKFLOW-RUNBOOK-0001` child draft now exists as the narrow runbook-family opening packet.
+- `S0F-7E` is now opened as the chronology follow-up after `S0F-7D`: the repo now has one dedicated lane for supplement sequence numbering, artifact-lifecycle versus historical-effective time separation, historical-backfill release rules, and future chronology-safe reader ordering.
+- `S0F-7E/P1-C1-S1S2` is now complete in workspace: repeated supplement rounds now use one sequence-bearing `SUP` naming model, and the parent-ledger plus supplement-ledger templates now expose minimum artifact-lifecycle timestamps without collapsing them into historical-effective rule time.
 - `S0F-5I/P4-C1-S1S2` is now complete: separate packet views are no longer treated as a sufficient front door by themselves, one aggregate old-`S0` narrative router is now published across the packet set, and `S0F-5I` now closes as stable for the current packet boundary.
 - `S0F-5I/P4-C2-S1S2` is now complete: the reviewed `S0F` subset is now explicitly kept out of same-lane `5I` packet continuation, and any later `S0F` narrative packet must open as one new bounded follow-up lane rather than as a silent extension of the current widening slice.
 - `S0F-5J/P0-P2-C1-S1S2` is now complete: the repo now has one old-`S0` contract-judgment front door that routes readers across surfaced migration, narrative packet reading, remaining-line manual screening, and unresolved-standing stop conditions without reopening outlet-management execution.

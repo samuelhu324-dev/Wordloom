@@ -8,26 +8,45 @@
 
 ## Naming Rule
 
-- Name SUP ledgers as `ledger-SUP-<source-id>-<source-summary>.md`.
+- Name SUP ledgers as `ledger-SUP-<source-id>-<sequence>-<source-summary>.md`.
 - The `<source-id>` and `<source-summary>` must match the attached parent ledger.
+- The `<sequence>` must be one append-only three-digit supplement round such as `001`, `002`, or `003` inside one stable supplement series.
 - Preferred example shapes:
-  - `ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags.md`
-  - `ledger-SUP-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
+  - `ledger-SUP-S0B-2A-002-tools-scripts-and-snapshots-management.md`
 
 ## Minimal Header
 
 ```yaml
 support_only_contract_release_ledger_supplement:
-  supplement_id: <ledger-SUP-S0A-1A-source-summary>
+  supplement_series_id: <ledger-SUP-S0A-1A>
+  supplement_sequence: <001>
+  supplement_id: <ledger-SUP-S0A-1A-001-source-summary>
   supplement_kind: support-only-contract-release-ledger-supplement
   status: <draft|active|completed>
   owner_lane: <S0F-7D>
+  created_at: <YYYY-MM-DD|pending>
+  reviewed_at: <YYYY-MM-DD|pending>
+  accepted_at: <YYYY-MM-DD|pending>
+  writeback_started_at: <YYYY-MM-DD|pending>
+  writeback_completed_at: <YYYY-MM-DD|pending>
   parent_ledger_id: <ledger-S0A-1A-source-summary>
   parent_source_id: <S0A-1A>
   parent_source_ref: <issue/log/support-only source already owned by the parent ledger>
   supplement_scope: <what later evidence this supplement is admitting>
   target_reading_goal: <what later reader should understand after this supplement is applied>
 ```
+
+## Lifecycle Field Rule
+
+- `supplement_series_id` is the stable sequence family for repeated supplement rounds attached to one parent source.
+- `supplement_sequence` is the append-only round number inside that series; do not reuse or renumber older rounds once admitted.
+- `created_at` records when this supplement file was first created in the repo.
+- `reviewed_at` records when this supplement round first reached defended review state.
+- `accepted_at` records when the row-level verdicts are accepted for parent-ledger write-back.
+- `writeback_started_at` records when the accepted parent-ledger or contract write-back begins.
+- `writeback_completed_at` records when that write-back is complete in the repo.
+- These fields are artifact-lifecycle timestamps only; historical-effective rule timing belongs in contract chronology fields, not here.
 
 ## Asset and Item Id Rule
 
