@@ -358,6 +358,14 @@
   - the current draft SUP judgment is that this evidence revises the earlier `bounded-background` reading for the runbook layer strongly enough to justify parent-row rewrite and later child-promotion review
   - this round is prioritized because broader roadmap/log skeleton reorganization is still unresolved, while earlier workflow-layer contract extraction can keep advancing through defended direct-evidence packets
 
+### P2-C8-S3 (S0A-2A runbook parent-row verdict rewritten from accepted SUP evidence | v1)
+
+- The `S0A-2A` parent ledger may now write back the accepted runbook SUP reading directly onto parent row `S0A-2A-R04`.
+- Under this rule:
+  - the runbook layer should no longer read as issue-only `bounded-background`; it now enters explicit `DOC-WORKFLOW-RUNBOOK` child-candidate review because the earliest projection SOPs already prove durable operator-facing extraction
+  - the reason for runbook emergence is now recorded at phase level as well: once projection paths existed, the durable next need moved to rebuildability, replay, readiness, observability, runtime failure handling, and operator-safe verification rather than to further labs-only experimentation
+  - actual child-contract opening remains deferred until one defended runbook packet is promoted, so the parent row now records stronger review status without pretending that a runbook contract already exists
+
 ### P3 (Future continuation discipline)
 
 - `P3-C1-S1`: define when future work should prefer current logs or new bounded logs instead of old-log reopening
@@ -399,6 +407,7 @@
 - [x] `P2-C7-S2`: normalize `LABS-0002` first-effective and last-changed semantics
 - [x] `P2-C8-S1`: expose `S0A-2A` row ids for later SUP anchoring
 - [x] `P2-C8-S2`: open the first runbook-direct-evidence SUP round for `S0A-2A`
+- [x] `P2-C8-S3`: write back the accepted runbook SUP judgment onto parent row `S0A-2A-R04`
 
 ### P3 (Future continuation discipline)
 
@@ -429,6 +438,7 @@
 - `P2-C7-S2` is now complete: `LABS-0002` now preserves `0001` as the first-effective origin for carried-forward and amended clauses while keeping later introductions at `0002`.
 - `P2-C8-S1` is now complete: the `S0A-2A` selective-backfill ledger now exposes stable row ids so the runbook layer can receive later SUP evidence through an exact parent-row anchor.
 - `P2-C8-S2` is now complete: the first `S0A-2A` runbook-direct-evidence SUP round now uses `run-001` and `run-003` to argue that runbooks had already become durable operator-facing extraction rather than only broad issue-level background.
+- `P2-C8-S3` is now complete: parent row `S0A-2A-R04` no longer stays at `bounded-background` only, and the accepted write-back now records one explicit runbook child-candidate review state while still deferring actual `DOC-WORKFLOW-RUNBOOK` contract opening.
 - The next execution step is to reuse this same `7D` lane when earlier packets such as `S0A-2A` need later evidence admitted through one parent-ledger-first SUP write-back.
 
 ## Evidence (reserved)
