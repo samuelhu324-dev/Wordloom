@@ -281,7 +281,7 @@
 - `P2-C1-S2` is now complete: the contract template now distinguishes clause-state ranges from change-event times, and `DOC-WORKFLOW-RUNBOOK-0001` now demonstrates the new statement-table chronology columns on one live draft.
 - `P3-C1-S1` is now complete: later-recorded earlier states may now enter one family through explicit `historical-backfill` release action without renumbering already-admitted releases.
 - `P3-C1-S2` is now complete: the repo now has one minimum lineage-update rule for later-recorded earlier states, so asynchronous backfill can proceed without forcing whole-family rewrites first.
-- `P4-C1-S1` is now complete in workspace: the original runbook SUP round now reads as explicit `001`, and the repo now has one new `002` labs SUP round under the same `ledger-SUP-S0A-2A` series before any parent-row write-back starts.
+- `P4-C1-S1` is now complete: the original runbook SUP round now reads as explicit `001`, and the repo now has one new `002` labs SUP round under the same `ledger-SUP-S0A-2A` series before any parent-row write-back starts.
 - The next step is to review the new `002` labs packet locally, then decide whether `S0A-2A-R03` should be rewritten before any `DOC-WORKFLOW-LABS` historical-backfill packet is opened.
 
 ## Evidence (reserved)
@@ -349,8 +349,9 @@
   - the template now fixes the minimum lineage update rule between one backfilled earlier state and its nearest later affected release
   - `S0F-7E` now records that asynchronous backfill may proceed through bounded lineage updates before any broader family cleanup is attempted
 
-### P4-C1-S1 (First sequence-bearing `S0A-2A` supplement samples landed in workspace | 2026-04-12)
+### P4-C1-S1 (First sequence-bearing `S0A-2A` supplement samples landed | 2026-04-12)
 
+- headSha: `c8f0e4486`
 - artifacts:
   - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
   - `docs/logs/support-only/ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md`
