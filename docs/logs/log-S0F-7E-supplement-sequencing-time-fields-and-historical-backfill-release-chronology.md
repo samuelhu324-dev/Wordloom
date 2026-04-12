@@ -296,8 +296,8 @@
 - `P3-C1-S2` is now complete: the repo now has one minimum lineage-update rule for later-recorded earlier states, so asynchronous backfill can proceed without forcing whole-family rewrites first.
 - `P4-C1-S1` is now complete: the original runbook SUP round now reads as explicit `001`, and the repo now has one new `002` labs SUP round under the same `ledger-SUP-S0A-2A` series before any parent-row write-back starts.
 - `P4-C1-S2` is now complete: parent row `S0A-2A-R03` no longer stays at issue-only `bounded-background`, and the accepted `002` labs SUP write-back now records one explicit earlier-labs historical-review state under `DOC-WORKFLOW-LABS` while still deferring any actual historical-backfill release opening.
-- `P5-C1-S1` is now complete in workspace: the contract template now defines `history-backfilled` as the first clause-order bucket when one later current release carries earlier-discovered history alongside carried-forward, amended, and introduced state.
-- `P5-C1-S2` is now complete in workspace: `DOC-WORKFLOW-LABS-0002` now acts as one local chronology sample that carries accepted `S0A-2A-R03` labs history through `history-backfilled` clauses and explicit contract chronology fields without changing the release id.
+- `P5-C1-S1` is now complete: the contract template now defines `history-backfilled` as the first clause-order bucket when one later current release carries earlier-discovered history alongside carried-forward, amended, and introduced state.
+- `P5-C1-S2` is now complete: `DOC-WORKFLOW-LABS-0002` now acts as one local chronology sample that carries accepted `S0A-2A-R03` labs history through `history-backfilled` clauses and explicit contract chronology fields without changing the release id.
 - The next step is to review whether this current-release merge sample is acceptable, or whether the repo should instead open one dedicated `DOC-WORKFLOW-LABS` historical-backfill release after all.
 
 ## Evidence (reserved)
@@ -402,8 +402,9 @@
   - the parent ledger now keeps logs and ADR as the remaining deferred slices while separating the labs layer from pure background treatment
   - the `002` SUP ledger now records completed review, acceptance, and write-back lifecycle timestamps while still deferring contract-level action
 
-### P5-C1-S1S2 (Current `LABS-0002` historical-merge sample fixed in workspace | 2026-04-12)
+### P5-C1-S1S2 (Current `LABS-0002` historical-merge sample fixed | 2026-04-12)
 
+- headSha: `0a9b344b4`
 - artifacts:
   - `docs/governance/contracts/_template-contract-record.md`
   - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
