@@ -427,8 +427,8 @@
 - `P2-C6-S3` is now complete: `LABS-0002` now follows the paired-table clause model, with current clause state separated from clause lineage back to `LABS-0001`.
 - `P2-C7-S1` is now complete: current statement tables now sort by smaller `first effective release` first, then by `carried-forward`, `amended`, and `introduced` buckets.
 - `P2-C7-S2` is now complete: `LABS-0002` now preserves `0001` as the first-effective origin for carried-forward and amended clauses while keeping later introductions at `0002`.
-- `P2-C8-S1` is now complete in workspace: the `S0A-2A` selective-backfill ledger now exposes stable row ids so the runbook layer can receive later SUP evidence through an exact parent-row anchor.
-- `P2-C8-S2` is now complete in workspace: the first `S0A-2A` runbook-direct-evidence SUP round now uses `run-001` and `run-003` to argue that runbooks had already become durable operator-facing extraction rather than only broad issue-level background.
+- `P2-C8-S1` is now complete: the `S0A-2A` selective-backfill ledger now exposes stable row ids so the runbook layer can receive later SUP evidence through an exact parent-row anchor.
+- `P2-C8-S2` is now complete: the first `S0A-2A` runbook-direct-evidence SUP round now uses `run-001` and `run-003` to argue that runbooks had already become durable operator-facing extraction rather than only broad issue-level background.
 - The next execution step is to reuse this same `7D` lane when earlier packets such as `S0A-2A` need later evidence admitted through one parent-ledger-first SUP write-back.
 
 ## Evidence (reserved)
@@ -612,7 +612,7 @@
 
 ### P2-C8-S1S2 (S0A-2A runbook SUP round opened in workspace | 2026-04-12)
 
-- headSha: `<workspace not committed yet for S0F-7D/P2-C8-S1S2>`
+- headSha: `0611fb60b`
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
   - `docs/logs/support-only/ledger-SUP-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
