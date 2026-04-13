@@ -22,7 +22,7 @@ contract_record:
     - GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
   supporting_evidence_refs:
     - docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md
-    - docs/logs/support-only/ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags.md
+    - docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md
   lineage:
     supersedes: []
     superseded_by: []

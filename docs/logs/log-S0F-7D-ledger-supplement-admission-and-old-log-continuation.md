@@ -504,7 +504,7 @@
 - artifacts:
   - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
   - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
-  - `docs/logs/support-only/ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
 - expected:
   - the repo should normalize on-disk supplement-ledger naming to the shorter `SUP` prefix without changing the underlying conceptual boundary
   - the reusable template and first pilot should use the same naming shape
@@ -516,7 +516,7 @@
 
 - headSha: `354e08ec0`
 - artifacts:
-  - `docs/logs/support-only/ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
   - `docs/logs/support-only/S0A-1A-R02-SUP-01-SHOT-01-projects-status-board.png`
   - `docs/logs/support-only/S0A-1A-R02-SUP-02-SHOT-01-projects-table-view.png`
   - `docs/logs/support-only/S0A-1A-R02-SUP-03-SHOT-01-projects-timeline-view.png`
@@ -533,7 +533,7 @@
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
   - `docs/governance/contracts/workflow/github/projects/DOC-WORKFLOW-GITHUB-PROJECTS-0001-project-views-support-execution-priority.md`
-  - `docs/logs/support-only/ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
 - expected:
   - the first SUP pilot should either reopen routing or be accepted as a sharpening-only write-back
   - accepted write-back should sharpen the parent-ledger row and the current Projects draft without inventing a new routing boundary

@@ -1,11 +1,18 @@
-# ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags
+# ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags
 
 ```yaml
 support_only_contract_release_ledger_supplement:
-  supplement_id: ledger-SUP-S0A-1A-tools-github-issues-projects-and-tags
+  supplement_series_id: ledger-SUP-S0A-1A
+  supplement_sequence: 001
+  supplement_id: ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags
   supplement_kind: support-only-contract-release-ledger-supplement
-  status: draft
+  status: completed
   owner_lane: S0F-7D
+  created_at: 2026-04-11
+  reviewed_at: 2026-04-11
+  accepted_at: 2026-04-11
+  writeback_started_at: 2026-04-11
+  writeback_completed_at: 2026-04-11
   parent_ledger_id: ledger-S0A-1A-tools-github-issues-projects-and-tags
   parent_source_id: S0A-1A
   parent_source_ref: GitHub issue S0A-1A (#23) (issue-only source; no local log exists in workspace)
@@ -37,6 +44,14 @@ support_only_contract_release_ledger_supplement:
 | `S0A-1A-R02-SUP-02-SHOT-01` | `S0A-1A-R02-SUP-02` | `screenshot` | `docs/logs/support-only/S0A-1A-R02-SUP-02-SHOT-01-projects-table-view.png` | `Title`, `Sub-issues progress`, `Status`, `Linked pull req...`, `Assignees` | Projects is used as one fast lookup and daily reading surface for issue identity, completion state, PR linkage, and assignment context | `S0A-1A-R02` | Stable repo-local screenshot path now exists. |
 | `S0A-1A-R02-SUP-03-SHOT-01` | `S0A-1A-R02-SUP-03` | `screenshot` | `docs/logs/support-only/S0A-1A-R02-SUP-03-SHOT-01-projects-timeline-view.png` | `Timeline`, `March 2026`, `April 2026`, item rows arranged against dates | Projects is used as one sequence and insertion-order reading surface, helping operators understand completion ordering and interruption timing | `S0A-1A-R02` | Stable repo-local screenshot path now exists. |
 
+## Evidence Time Audit
+
+| supplement item id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0A-1A-R02-SUP-01` | `2026-02-12` | `2026-02-12` | `unknown` | `unknown` | `day` | `screenshot archive currently preserves one day-level capture date only` | The status-board screenshot was captured on `2026-02-12`; that day currently acts as both the defended observation day and the screenshot recording day, but no second-level timestamp is retained. |
+| `S0A-1A-R02-SUP-02` | `2026-02-12` | `2026-02-12` | `unknown` | `unknown` | `day` | `screenshot archive currently preserves one day-level capture date only` | The table-view screenshot was captured on `2026-02-12`; that day currently acts as both the defended observation day and the screenshot recording day, but no second-level timestamp is retained. |
+| `S0A-1A-R02-SUP-03` | `2026-02-12` | `2026-02-12` | `unknown` | `unknown` | `day` | `screenshot archive currently preserves one day-level capture date only` | The timeline-view screenshot was captured on `2026-02-12`; that day currently acts as both the defended observation day and the screenshot recording day, but no second-level timestamp is retained. |
+
 ## Parent-Ledger Rows To Update
 
 - `S0A-1A-R02`: add screenshot-backed supporting evidence and sharpen the row notes so the Projects slice reads as concrete multi-view execution support rather than only generic reprioritization support.
@@ -59,5 +74,5 @@ support_only_contract_release_ledger_supplement:
 
 ## Reader Notes
 
-- This SUP ledger is now anchored to stable repo-local screenshot paths under the same directory as the ledger file.
+- This SUP-001 ledger is now anchored to stable repo-local screenshot paths under the same directory as the ledger file.
 - If later code, markdown, or process notes show that these views were treated as stable workflow surfaces rather than one temporary board arrangement, a later SUP item may escalate the contract impact further.

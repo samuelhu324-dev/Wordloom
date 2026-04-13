@@ -110,6 +110,7 @@
 - `P1`: define the minimum shared lifecycle-time frontmatter rule for logs and roadmaps plus compatibility handling for older `created` and `updated` fields
 - `P2`: test the rule on one minimum sample set consisting of the log template, the main-roadmap template, and the branch-roadmap template
 - `P3`: if the sample passes, decide whether one first live log sample and one first live roadmap sample should be migrated next
+- `P4`: apply the fixed timing rule to one existing ledger plus one existing supplement-ledger sample, including one first screenshot-time audit and one first sequence-bearing SUP rename
 
 ## Success Criteria (DoD)
 
@@ -156,6 +157,11 @@
 - `P3-C1-S1`: decide whether one live log sample should migrate next
 - `P3-C1-S2`: decide whether one live roadmap sample should migrate next
 
+### P4 (Ledger and SUP timing samples)
+
+- `P4-C1-S1`: add lifecycle fields to `ledger-S0A-1A` and normalize the first Projects SUP file as sequence `001`
+- `P4-C1-S2`: add screenshot-backed time audit for the three `2026-02-12` Projects screenshots without overclaiming second-level precision
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Lane boundary)
@@ -173,6 +179,11 @@
 - [x] `P2-C1-S1`: update the log template sample
 - [x] `P2-C1-S2`: update the main-roadmap and branch-roadmap template samples
 
+### P4 (Ledger and SUP timing samples)
+
+- [x] `P4-C1-S1`: add lifecycle fields to `ledger-S0A-1A` and normalize the first Projects SUP file as sequence `001`
+- [x] `P4-C1-S2`: add screenshot-backed time audit for the three `2026-02-12` Projects screenshots without overclaiming second-level precision
+
 ## Current Status (recommended)
 
 - `S0F-7F` is now opened as the bounded follow-up after `S0F-7E` for ordinary log and roadmap frontmatter lifecycle-time fields.
@@ -183,7 +194,9 @@
 - `P2-C1-S2` is now complete: the main-roadmap and branch-roadmap templates now use the same revised `created/updated/reviewed` contract.
 - `P3-C1-S1` is now complete: `log-S0F-7D` now carries one first live-log sample of the revised `created/updated/reviewed` contract.
 - `P3-C1-S2` is now complete: `road-001` now carries one first live-roadmap sample of the revised `created/updated/reviewed` contract.
-- The next step is to review whether this revised contract should replace the earlier `*_at` wording throughout `S0F-7F` and then decide whether any broader live-file migration is still needed.
+- `P4-C1-S1` is now complete in workspace: `ledger-S0A-1A` now carries explicit lifecycle fields, and the first Projects supplement sample now uses the sequence-bearing `SUP-001` filename plus the full supplement lifecycle header.
+- `P4-C1-S2` is now complete in workspace: the three Projects screenshots now carry one explicit day-precision evidence-time audit fixed at `2026-02-12` without inventing second-level timestamps.
+- The next step is to review whether this revised log/roadmap contract together with the first ledger/SUP timing sample is sufficient before any broader live-file migration continues.
 
 ## Evidence (reserved)
 
@@ -209,3 +222,20 @@
   - the log, main-roadmap, and branch-roadmap templates now expose `created`, `updated`, and optional `reviewed` only, while still allowing UTC-second or day-level values in those fields
   - `log-S0F-7D` now uses `reviewed: 2026-04-11`, aligned to its current `updated` value as the first live-log sample
   - `road-001` now uses `reviewed: 2026-03-29`, aligned to its current `updated` value as the first live-roadmap sample
+
+### P4-C1-S1S2 (First live ledger/SUP timing sample fixed in workspace | 2026-04-13)
+
+- artifacts:
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
+  - `docs/governance/contracts/workflow/github/projects/DOC-WORKFLOW-GITHUB-PROJECTS-0001-project-views-support-execution-priority.md`
+  - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
+  - `docs/logs/log-S0F-7F-log-and-roadmap-frontmatter-minimum-time-fields.md`
+- expected:
+  - the first existing ledger/SUP sample should expose lifecycle fields without confusing them with row-level or evidence-level historical time
+  - the first older unsequenced Projects SUP file should be normalized to one explicit `001` round under the newer append-only supplement naming rule
+  - the three Projects screenshots should record the defended day-level capture date `2026-02-12` without claiming second-level timestamps that the archive does not preserve
+- observed:
+  - `ledger-S0A-1A` now exposes `created_at`, `reviewed_at`, and `accepted_at`, while the Projects supplement sample now exposes sequence-bearing identity plus the full supplement lifecycle header
+  - the Projects SUP file now reads as `ledger-SUP-S0A-1A-001-...`, and all supporting references now point to the sequence-bearing filename
+  - the three screenshot evidence items now share one explicit day-precision time audit anchored at `2026-02-12`, with observation and recording both limited to defended day-level capture timing
