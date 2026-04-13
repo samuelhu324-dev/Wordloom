@@ -14,12 +14,19 @@ contract_record:
   applies_to: GitHub Projects views, execution-time reprioritization, ad hoc or priority insertion support, and operator reading of current queue state during delivery
   enforcement_surface: manual
   violation_semantics: warning
+  recorded_at: 2026-04-11
+  reviewed_at: pending
+  effective_from: unknown
+  effective_until: ongoing
   introduced_by: GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
-  last_changed_by: GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
+  last_changed_by: docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md
   source_refs:
     - GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
+    - docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md
   cumulative_source_refs:
     - GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
+    - docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md
+    - docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md
   supporting_evidence_refs:
     - docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md
     - docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md
@@ -38,6 +45,22 @@ contract_record:
     - Current supporting evidence now directly shows three common operator readings for this surface: status-board columns, fast table lookup, and timeline sequencing.
     - The local repo currently has no S0A-1A source log, so this draft stays explicit about issue-only sourcing.
 ```
+
+## Contract Statement Table
+
+| statement id | statement label | clause status | change action | source basis | first effective release | first effective at | last changed release | last changed at | effective from | effective until | effective status | statement text | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-WORKFLOW-GITHUB-PROJECTS-0001-ST-01` | `Status-board execution reading` | `active` | `introduced` | `S0A-1A-R02; S0A-1A-R02-SUP-01` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | GitHub Projects views may be used as one visible execution-status surface with operating states such as `Doing`, `Done`, `Backlog`, and `Blocked`. | Screenshot-backed sharpening now makes this concrete reading explicit inside the first release rather than leaving it as only generic execution support prose. |
+| `DOC-WORKFLOW-GITHUB-PROJECTS-0001-ST-02` | `Fast table lookup reading` | `active` | `introduced` | `S0A-1A-R02; S0A-1A-R02-SUP-02` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | GitHub Projects views may be used as one fast lookup surface for issue identity, progress, linked PR context, and assignee context during delivery. | This keeps the operator-facing discovery function visible as part of the contract rather than burying it in supporting prose only. |
+| `DOC-WORKFLOW-GITHUB-PROJECTS-0001-ST-03` | `Timeline sequencing reading` | `active` | `introduced` | `S0A-1A-R02; S0A-1A-R02-SUP-03` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | GitHub Projects views may be used as one timeline and sequence-awareness surface for order, insertion, and interruption reading across the current work stream. | The screenshot-backed Projects evidence now makes the sequencing view explicit as contract-facing meaning. |
+| `DOC-WORKFLOW-GITHUB-PROJECTS-0001-ST-04` | `Bounded reprioritization support` | `active` | `introduced` | `S0A-1A-R02` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | GitHub Projects views may support bounded reprioritization or ad hoc insertion while work is already in flight. | This clause remains directly owned by the issue packet even though the screenshots mainly sharpen the three concrete view classes. |
+| `DOC-WORKFLOW-GITHUB-PROJECTS-0001-ST-05` | `Issues hierarchy remains canonical` | `active` | `introduced` | `S0A-1A-R01; S0A-1A-R02` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | GitHub Projects remains one execution-support surface only; canonical work-breakdown and hierarchy ownership stays with GitHub Issues. | This keeps the Projects child contract structurally tied to the issue hierarchy boundary rather than drifting into hierarchy ownership. |
+
+## Statement Evolution Table
+
+| change id | release id | change action | input statement ids | output statement ids | effective at | recorded at | reason | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-WORKFLOW-GITHUB-PROJECTS-0001-CH-01` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `introduced` | `none` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001-ST-01; DOC-WORKFLOW-GITHUB-PROJECTS-0001-ST-02; DOC-WORKFLOW-GITHUB-PROJECTS-0001-ST-03; DOC-WORKFLOW-GITHUB-PROJECTS-0001-ST-04; DOC-WORKFLOW-GITHUB-PROJECTS-0001-ST-05` | `unknown` | `2026-04-11` | The first Projects child release now records the concrete execution-support meanings that selective backfill and the accepted screenshot supplement made readable without transferring hierarchy ownership away from GitHub Issues. | `S0A-1A-R02; S0A-1A-R02-SUP-01; S0A-1A-R02-SUP-02; S0A-1A-R02-SUP-03` | One initial release row is sufficient here because the current file still acts as the first family release rather than as a later amendment to an earlier release id. |
 
 ## Release Change
 
@@ -64,6 +87,7 @@ contract_record:
 
 - Read this release when the question is `how should GitHub Projects be used during execution without replacing the canonical issue hierarchy?`
 - It is especially the current reader when the question is about status-board reading, everyday lookup, or timeline sequencing inside the Projects surface.
+- Read the `S0A-1A` parent ledger or `SUP-001` packet when the question is `how did this Projects contract get sharpened and what evidence anchors currently defend those three view classes?`
 - Read `DOC-WORKFLOW-GITHUB-ISSUES-0001` first only when the reader still needs the broader mechanism-introduction boundary.
 
 ## Reader Notes

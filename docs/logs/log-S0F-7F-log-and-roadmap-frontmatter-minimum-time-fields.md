@@ -161,6 +161,7 @@
 
 - `P4-C1-S1`: add lifecycle fields to `ledger-S0A-1A` and normalize the first Projects SUP file as sequence `001`
 - `P4-C1-S2`: add screenshot-backed time audit for the three `2026-02-12` Projects screenshots without overclaiming second-level precision
+- `P4-C1-S3`: align `ledger-S0A-1A` and `PROJECTS-0001` to the more complete chronology-first structure already demonstrated by the `S0A-2A` plus `LABS-0002` sample set
 
 ## Execution Checklist (unchecked)
 
@@ -183,6 +184,7 @@
 
 - [x] `P4-C1-S1`: add lifecycle fields to `ledger-S0A-1A` and normalize the first Projects SUP file as sequence `001`
 - [x] `P4-C1-S2`: add screenshot-backed time audit for the three `2026-02-12` Projects screenshots without overclaiming second-level precision
+- [x] `P4-C1-S3`: align `ledger-S0A-1A` and `PROJECTS-0001` to the more complete chronology-first structure already demonstrated by the `S0A-2A` plus `LABS-0002` sample set
 
 ## Current Status (recommended)
 
@@ -196,6 +198,7 @@
 - `P3-C1-S2` is now complete: `road-001` now carries one first live-roadmap sample of the revised `created/updated/reviewed` contract.
 - `P4-C1-S1` is now complete: `ledger-S0A-1A` now carries explicit lifecycle fields, and the first Projects supplement sample now uses the sequence-bearing `SUP-001` filename plus the full supplement lifecycle header.
 - `P4-C1-S2` is now complete: the three Projects screenshots now carry one explicit day-precision evidence-time audit fixed at `2026-02-12` without inventing second-level timestamps.
+- `P4-C1-S3` is now complete in workspace: `ledger-S0A-1A` now also exposes one row-level chronology audit for `R02`, and `PROJECTS-0001` now carries the minimum chronology-first contract structure that was still missing relative to the more complete `LABS-0002` sample.
 - The next step is to review whether this revised log/roadmap contract together with the first ledger/SUP timing sample is sufficient before any broader live-file migration continues.
 
 ## Evidence (reserved)
@@ -223,9 +226,7 @@
   - `log-S0F-7D` now uses `reviewed: 2026-04-11`, aligned to its current `updated` value as the first live-log sample
   - `road-001` now uses `reviewed: 2026-03-29`, aligned to its current `updated` value as the first live-roadmap sample
 
-### P4-C1-S1S2 (First live ledger/SUP timing sample fixed | 2026-04-13)
-
-- headSha: `196ee6d17`
+### P4-C1-S1S2S3 (First live ledger/SUP timing sample and Projects-0001 structure alignment fixed in workspace | 2026-04-13)
 
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
@@ -237,7 +238,9 @@
   - the first existing ledger/SUP sample should expose lifecycle fields without confusing them with row-level or evidence-level historical time
   - the first older unsequenced Projects SUP file should be normalized to one explicit `001` round under the newer append-only supplement naming rule
   - the three Projects screenshots should record the defended day-level capture date `2026-02-12` without claiming second-level timestamps that the archive does not preserve
+  - the Projects trio should also close the structure gap against the more complete `S0A-2A` plus `LABS-0002` sample by adding one parent-row chronology audit and one minimum chronology-first contract statement/evolution surface
 - observed:
   - `ledger-S0A-1A` now exposes `created_at`, `reviewed_at`, and `accepted_at`, while the Projects supplement sample now exposes sequence-bearing identity plus the full supplement lifecycle header
   - the Projects SUP file now reads as `ledger-SUP-S0A-1A-001-...`, and all supporting references now point to the sequence-bearing filename
   - the three screenshot evidence items now share one explicit day-precision time audit anchored at `2026-02-12`, with observation and recording both limited to defended day-level capture timing
+  - `ledger-S0A-1A` now also exposes one optional row chronology audit for `S0A-1A-R02`, and `PROJECTS-0001` now carries `recorded_at/reviewed_at/effective_from/effective_until` plus one minimum contract statement table and one statement evolution table so the Projects trio now reads much closer to the `S0A-2A` plus `LABS-0002` structure level

@@ -49,6 +49,12 @@ support_only_contract_release_ledger:
 
 - whether later non-screenshot evidence should extend `DOC-WORKFLOW-GITHUB-PROJECTS-0001` beyond the now-evidenced status-board, table, and timeline views into a richer later operating-flow release
 
+## Row Chronology Audit
+
+| row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0A-1A-R02` | `2026-02-12` | `2026-02-12` | `unknown` | `unknown` | `day` | `current Projects evidence preserves only one defended screenshot-capture date` | The parent row now has one defended screenshot-backed chronology anchor through `SUP-001`, but the current evidence still proves only day-level observation and recording rather than a longer historical-effective range. |
+
 ## Reader Notes
 
 - This ledger now confirms that the earlier `S0A-1A` packet needed one explicit Projects child and explicit completed routing state, but not one workflow-level reroute.
