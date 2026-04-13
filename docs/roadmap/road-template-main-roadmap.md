@@ -13,10 +13,21 @@
   **reference_log_1**: `docs/logs/_template-log-parent-epic-spine.md`
   **reference_log_2**: `docs/logs/_template-log-phase-drills-evidence.md`
   **reference_log_3**: `docs/roadmap/road-template-branch-roadmap.md`
+**created_at**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown`
+**updated_at**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown`
+**reviewed_at**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|pending`
 **created**: `2026-03-29`
 **updated**: `2026-03-29`
 
 ---
+
+## Frontmatter Lifecycle-Time Rule
+
+- `created_at` and `updated_at` are the canonical artifact-lifecycle fields for roadmap frontmatter.
+- Prefer canonical UTC-second timestamps such as `2026-04-13T08:15:30Z` when exact repo-side lifecycle audit matters.
+- Legacy day-only values may remain when roadmap maintenance does not yet require second-level precision.
+- `reviewed_at` is optional and should be used only when a roadmap enters bounded review rather than ordinary iterative editing.
+- `created` and `updated` remain compatibility mirrors during migration and should track the day-level view of `created_at` and `updated_at`.
 
 ## Positioning
 
