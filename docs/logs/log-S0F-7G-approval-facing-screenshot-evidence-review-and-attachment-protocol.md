@@ -168,7 +168,7 @@
 
 ### P3 (Deferred provenance decision)
 
-- [ ] `P3-C1-S1`: decide whether actor-rich provenance or approval-role fields are actually required next
+- [x] `P3-C1-S1`: decide whether actor-rich provenance or approval-role fields are actually required next
 
 ## Current Status (recommended)
 
@@ -178,7 +178,8 @@
 - `P1-C1-S2` is now complete: the SUP protocol now defines one minimum `Attachment Review Table` with `review status`, `approval basis`, and `review note` as the approval-facing review surface.
 - `P2-C1-S1` is now complete: the SUP template now exposes the attachment-review protocol without disturbing the existing routing-focused evidence table.
 - `P2-C1-S2` is now complete: `ledger-SUP-S0A-1A-001` now proves the protocol on three live screenshot rows, each with one direct click-through link and one bounded approval-facing review record.
-- The next step is to decide whether these review-facing additions are already sufficient or whether a later lane should introduce actor-rich reviewer / approver provenance fields.
+- `P3-C1-S1` is now complete: actor-rich reviewer / approver provenance fields remain deferred because the narrower reviewability problem is now handled by the attachment-review protocol plus one table-external quick-review surface.
+- The next step is to judge whether this narrower screenshot-review protocol is now stable enough to retain as-is or whether a later separate lane should open specifically for provenance / authority actors.
 
 ## Evidence (reserved)
 
@@ -201,3 +202,16 @@
   - the SUP template now requires clickable markdown links for stable repo-local attachments and defines one dedicated `Attachment Review Table` for approval-facing review
   - `ledger-SUP-S0A-1A-001` now exposes direct click-through links for all three screenshot assets and records one bounded review row for each attachment
   - the live pilot proves that packet-level screenshot review can be made directly readable without changing the chronology model or introducing actor-rich provenance fields yet
+
+### P3-C1-S1 (Actor-rich provenance decision deferred; quick-review surface added | 2026-04-13)
+
+- artifacts:
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/log-S0F-7G-approval-facing-screenshot-evidence-review-and-attachment-protocol.md`
+- expected:
+  - the lane should decide whether actor-rich provenance fields are truly needed now or whether the narrower reviewability problem is already solved by better attachment access and review ergonomics
+  - if table-cell link rendering proves too weak, the packet should expose one table-external review surface rather than forcing a bigger provenance-field expansion
+- observed:
+  - the current attachment-review protocol is sufficient for the bounded screenshot-review problem, so actor-rich provenance fields remain deferred for now
+  - the SUP template and live pilot now also expose one `Attachment Quick Review` section with standalone links and inline previews, making the screenshots directly visible and easier to open from the packet outside the tables

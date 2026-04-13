@@ -52,6 +52,29 @@ support_only_contract_release_ledger_supplement:
 | `S0A-1A-R02-SUP-02-SHOT-01` | `S0A-1A-R02-SUP-02` | `[open asset](./S0A-1A-R02-SUP-02-SHOT-01-projects-table-view.png)` | `accepted-for-packet` | The visible table headers are sufficient to defend the claim that Projects is serving as one quick lookup surface for delivery-state reading. | Review checked the screenshot for issue-title, progress, status, PR-link, and assignee columns, and the captured UI is strong enough for the current packet claim without needing a broader governance inference. |
 | `S0A-1A-R02-SUP-03-SHOT-01` | `S0A-1A-R02-SUP-03` | `[open asset](./S0A-1A-R02-SUP-03-SHOT-01-projects-timeline-view.png)` | `accepted-for-packet` | The visible date-grid layout is sufficient to defend the claim that Projects is being used as one sequencing and interruption-reading surface. | Review checked the screenshot for the dated timeline layout and item placement across time, and the image is sufficient for the current sequence-awareness reading while still staying below canonical issue-hierarchy ownership. |
 
+## Attachment Quick Review
+
+### S0A-1A-R02-SUP-01-SHOT-01
+
+- Attachment: [S0A-1A-R02-SUP-01-SHOT-01](./S0A-1A-R02-SUP-01-SHOT-01-projects-status-board.png)
+- Review focus: confirm that the screenshot visibly supports the execution-status reading through explicit state columns and the WIP guard.
+
+![S0A-1A-R02-SUP-01-SHOT-01 preview](./S0A-1A-R02-SUP-01-SHOT-01-projects-status-board.png)
+
+### S0A-1A-R02-SUP-02-SHOT-01
+
+- Attachment: [S0A-1A-R02-SUP-02-SHOT-01](./S0A-1A-R02-SUP-02-SHOT-01-projects-table-view.png)
+- Review focus: confirm that the screenshot visibly supports the quick-lookup reading through title, progress, status, PR-link, and assignee columns.
+
+![S0A-1A-R02-SUP-02-SHOT-01 preview](./S0A-1A-R02-SUP-02-SHOT-01-projects-table-view.png)
+
+### S0A-1A-R02-SUP-03-SHOT-01
+
+- Attachment: [S0A-1A-R02-SUP-03-SHOT-01](./S0A-1A-R02-SUP-03-SHOT-01-projects-timeline-view.png)
+- Review focus: confirm that the screenshot visibly supports the sequence-awareness reading through the dated timeline layout and item placement across time.
+
+![S0A-1A-R02-SUP-03-SHOT-01 preview](./S0A-1A-R02-SUP-03-SHOT-01-projects-timeline-view.png)
+
 ## Evidence Time Audit
 
 | supplement item id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
@@ -84,4 +107,5 @@ support_only_contract_release_ledger_supplement:
 
 - This SUP-001 ledger is now anchored to stable repo-local screenshot paths under the same directory as the ledger file.
 - The attachment inventory and attachment review table now let reviewers open each screenshot directly from the packet and record one bounded approval-facing verdict without turning the main evidence table into an image gallery.
+- The `Attachment Quick Review` section now provides one table-external place to click and visually inspect each screenshot when table-cell link rendering is not sufficient in the active reader surface.
 - If later code, markdown, or process notes show that these views were treated as stable workflow surfaces rather than one temporary board arrangement, a later SUP item may escalate the contract impact further.
