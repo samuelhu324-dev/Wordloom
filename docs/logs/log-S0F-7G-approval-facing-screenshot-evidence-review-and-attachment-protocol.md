@@ -184,3 +184,20 @@
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths when the lane starts mutating templates or live supplement packets.
 - This section stays empty until the first template or pilot patch is actually landed.
+
+### P1-C1-S1S2 + P2-C1-S1S2 (Minimum screenshot-review protocol and first live packet pilot fixed | 2026-04-13)
+
+- headSha: `e4671f222`
+
+- artifacts:
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/log-S0F-7G-approval-facing-screenshot-evidence-review-and-attachment-protocol.md`
+- expected:
+  - screenshot-backed SUP packets should expose one direct click-through path to stable repo-local image assets instead of forcing reviewers to copy bare file paths manually
+  - approval-facing review should stay compact and packet-local, using one bounded review surface rather than turning the main evidence table into an embedded image gallery
+  - the first live packet should prove that screenshot evidence can carry `review status`, `approval basis`, and `review note` without reopening broader actor or provenance modeling
+- observed:
+  - the SUP template now requires clickable markdown links for stable repo-local attachments and defines one dedicated `Attachment Review Table` for approval-facing review
+  - `ledger-SUP-S0A-1A-001` now exposes direct click-through links for all three screenshot assets and records one bounded review row for each attachment
+  - the live pilot proves that packet-level screenshot review can be made directly readable without changing the chronology model or introducing actor-rich provenance fields yet
