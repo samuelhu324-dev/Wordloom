@@ -32,21 +32,18 @@
 **pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave the PR milestone empty
 **pr_base**: ``              # exact PR base branch, e.g. main; if blank, dry-run may report it missing but must not guess another base
 **pr_development_issue**: `` # exact issue number/url the PR should record in Metadata as Development issue; if blank, automation must leave that metadata row empty
-**created_at**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown`
-**updated_at**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown`
-**reviewed_at**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|pending`   # optional minimum review-state timestamp for logs that are actually reviewed as bounded governance packets
-**created**: `YYYY-MM-DD`
-**updated**: `YYYY-MM-DD`
+**created**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown`
+**updated**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown`
+**reviewed**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|pending`   # optional minimum review-state timestamp for logs that are actually reviewed as bounded governance packets
 
 ---
 
 ## Frontmatter Lifecycle-Time Rule
 
-- `created_at` and `updated_at` are the canonical artifact-lifecycle fields for this template.
+- `created`, `updated`, and optional `reviewed` are the minimum artifact-lifecycle fields for this template.
 - Prefer canonical UTC-second timestamps such as `2026-04-13T08:15:30Z` when exact repo-side lifecycle audit matters.
 - Legacy day-only values such as `2026-04-13` remain valid when finer precision is unnecessary or unavailable.
-- `reviewed_at` stays optional and should be used only when the log is actually reviewed as one bounded governance packet; do not force it onto every scratch draft.
-- `created` and `updated` remain compatibility mirrors during migration and should reflect the day-level view of `created_at` and `updated_at` rather than introducing a second conflicting clock.
+- `reviewed` should be used only when the log is actually reviewed as one bounded governance packet; do not force it onto every scratch draft.
 
 ## Decision / Outcome
 

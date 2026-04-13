@@ -51,18 +51,17 @@
 **Default choices (phase defaults / v1)**:
 
 - Treat log and roadmap frontmatter time as `artifact-lifecycle` time only, not as historical-effective rule time.
-- Keep the minimum shared contract narrow: `created_at`, `updated_at`, and later `reviewed_at` only where the document class actually needs review-state tracking.
-- Prefer canonical UTC-second timestamps for new writes when exact lifecycle audit matters, while allowing compatibility with legacy day-only `created` and `updated` during migration.
+- Keep the minimum shared contract narrow: `created`, `updated`, and later `reviewed` only where the document class actually needs review-state tracking.
+- Prefer canonical UTC-second timestamps for new writes in those existing fields when exact lifecycle audit matters, while allowing day-only values when only day-level history is defended.
 - Do not force every log or roadmap file to gain row-level or evidence-level time-audit tables; that stays reserved for ledgers, supplements, and other evidence-heavy packets.
 - Start with a minimum sample set before any wider migration rule is declared.
 
 ## Minimum Frontmatter Lifecycle-Time Rule
 
-- Ordinary `log` and `roadmap` frontmatter should now treat `created_at` and `updated_at` as the canonical minimum artifact-lifecycle fields.
-- `reviewed_at` is optional and should appear only when a log or roadmap is reviewed as one bounded governance packet rather than as an ordinary iterative draft.
-- New writes should prefer canonical UTC-second timestamps such as `2026-04-13T08:15:30Z` when exact lifecycle audit matters.
+- Ordinary `log` and `roadmap` frontmatter should now use `created`, `updated`, and optional `reviewed` as the minimum artifact-lifecycle fields.
+- New writes should prefer canonical UTC-second timestamps such as `2026-04-13T08:15:30Z` in those existing fields when exact lifecycle audit matters.
 - Legacy day-only values such as `2026-04-13` remain valid when second-level precision is unnecessary or unavailable.
-- Existing `created` and `updated` fields remain compatibility mirrors during migration and should reflect the day-level view of `created_at` and `updated_at` rather than introducing an independent second time model.
+- `reviewed` is optional and should appear only when a log or roadmap is reviewed as one bounded governance packet rather than as an ordinary iterative draft.
 - Evidence-time audit and historical-effective time remain out of scope for ordinary log and roadmap frontmatter.
 
 ## Problem Statement
@@ -178,31 +177,33 @@
 
 - `S0F-7F` is now opened as the bounded follow-up after `S0F-7E` for ordinary log and roadmap frontmatter lifecycle-time fields.
 - The minimum sample set is fixed as the log template plus the main-roadmap and branch-roadmap templates.
-- `P1-C1-S1` is now complete: the lane now defines `created_at` and `updated_at` as the canonical minimum lifecycle-time fields for ordinary logs and roadmaps, with `reviewed_at` kept optional.
-- `P1-C1-S2` is now complete: the lane now fixes `created` and `updated` as compatibility mirrors rather than as an independent competing time model.
-- `P2-C1-S1` is now complete: the phase-drills-evidence log template now carries the minimum lifecycle-time fields plus one explicit compatibility rule.
-- `P2-C1-S2` is now complete: the main-roadmap and branch-roadmap templates now carry the same minimum lifecycle-time fields plus the same compatibility rule.
-- The next step is to decide whether one first live log sample and one first live roadmap sample should migrate under the same compatibility model.
+- `P1-C1-S1` is now complete in workspace: the lane now defines `created`, `updated`, and optional `reviewed` as the minimum lifecycle-time fields for ordinary logs and roadmaps.
+- `P1-C1-S2` is now complete in workspace: the lane now allows future UTC-second writes in those existing fields instead of introducing a second pair of `*_at` field names.
+- `P2-C1-S1` is now complete in workspace: the phase-drills-evidence log template now uses the revised `created/updated/reviewed` contract.
+- `P2-C1-S2` is now complete in workspace: the main-roadmap and branch-roadmap templates now use the same revised `created/updated/reviewed` contract.
+- `P3-C1-S1` is now complete in workspace: `log-S0F-7D` now carries one first live-log sample of the revised `created/updated/reviewed` contract.
+- `P3-C1-S2` is now complete in workspace: `road-001` now carries one first live-roadmap sample of the revised `created/updated/reviewed` contract.
+- The next step is to review whether this revised contract should replace the earlier `*_at` wording throughout `S0F-7F` and then decide whether any broader live-file migration is still needed.
 
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths when the lane starts mutating templates.
 - This section stays empty until the first template-sample patch is actually landed.
 
-### P1-C1-S1S2 + P2-C1-S1S2 (Minimum frontmatter lifecycle-time rule and template samples fixed | 2026-04-13)
-
-- headSha: `408b18dc2`
+### P1-C1-S1S2 + P2-C1-S1S2 + P3-C1-S1S2 (Revised `created/updated/reviewed` contract and first live samples fixed in workspace | 2026-04-13)
 
 - artifacts:
   - `docs/logs/_template-log-phase-drills-evidence.md`
   - `docs/roadmap/road-template-main-roadmap.md`
   - `docs/roadmap/road-template-branch-roadmap.md`
   - `docs/logs/log-S0F-7F-log-and-roadmap-frontmatter-minimum-time-fields.md`
+  - `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
+  - `docs/roadmap/road-001-systems-platform-ops-roadmap.md`
 - expected:
-  - ordinary logs and roadmap templates should gain one minimum lifecycle-time rule without collapsing into evidence-audit or contract chronology semantics
-  - `created_at` and `updated_at` should become canonical while `created` and `updated` remain compatibility mirrors during migration
-  - the first bounded sample set should prove the rule on one log template and two roadmap templates before any live-file rewrite is attempted
+  - ordinary logs and roadmap templates should keep the existing `created` and `updated` field names, gain one optional `reviewed` field, and avoid a duplicated `*_at` naming layer
+  - future writes should still be allowed to use UTC-second values inside those existing fields when finer lifecycle audit is needed
+  - the first live samples should prove that one existing log and one existing roadmap can adopt `reviewed` without any wider chronology surface change
 - observed:
-  - the log, main-roadmap, and branch-roadmap templates now all expose `created_at`, `updated_at`, and optional `reviewed_at` ahead of the legacy day-only fields
-  - each sample template now documents UTC-second preference, legacy day-only compatibility, and the mirror role of `created` and `updated`
-  - `S0F-7F` now records `P1` and `P2` as complete in workspace and narrows the next step to one bounded live-file migration decision
+  - the log, main-roadmap, and branch-roadmap templates now expose `created`, `updated`, and optional `reviewed` only, while still allowing UTC-second or day-level values in those fields
+  - `log-S0F-7D` now uses `reviewed: 2026-04-11`, aligned to its current `updated` value as the first live-log sample
+  - `road-001` now uses `reviewed: 2026-03-29`, aligned to its current `updated` value as the first live-roadmap sample
