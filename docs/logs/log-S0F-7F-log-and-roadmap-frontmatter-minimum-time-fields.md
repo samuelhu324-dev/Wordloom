@@ -177,12 +177,12 @@
 
 - `S0F-7F` is now opened as the bounded follow-up after `S0F-7E` for ordinary log and roadmap frontmatter lifecycle-time fields.
 - The minimum sample set is fixed as the log template plus the main-roadmap and branch-roadmap templates.
-- `P1-C1-S1` is now complete in workspace: the lane now defines `created`, `updated`, and optional `reviewed` as the minimum lifecycle-time fields for ordinary logs and roadmaps.
-- `P1-C1-S2` is now complete in workspace: the lane now allows future UTC-second writes in those existing fields instead of introducing a second pair of `*_at` field names.
-- `P2-C1-S1` is now complete in workspace: the phase-drills-evidence log template now uses the revised `created/updated/reviewed` contract.
-- `P2-C1-S2` is now complete in workspace: the main-roadmap and branch-roadmap templates now use the same revised `created/updated/reviewed` contract.
-- `P3-C1-S1` is now complete in workspace: `log-S0F-7D` now carries one first live-log sample of the revised `created/updated/reviewed` contract.
-- `P3-C1-S2` is now complete in workspace: `road-001` now carries one first live-roadmap sample of the revised `created/updated/reviewed` contract.
+- `P1-C1-S1` is now complete: the lane now defines `created`, `updated`, and optional `reviewed` as the minimum lifecycle-time fields for ordinary logs and roadmaps.
+- `P1-C1-S2` is now complete: the lane now allows future UTC-second writes in those existing fields instead of introducing a second pair of `*_at` field names.
+- `P2-C1-S1` is now complete: the phase-drills-evidence log template now uses the revised `created/updated/reviewed` contract.
+- `P2-C1-S2` is now complete: the main-roadmap and branch-roadmap templates now use the same revised `created/updated/reviewed` contract.
+- `P3-C1-S1` is now complete: `log-S0F-7D` now carries one first live-log sample of the revised `created/updated/reviewed` contract.
+- `P3-C1-S2` is now complete: `road-001` now carries one first live-roadmap sample of the revised `created/updated/reviewed` contract.
 - The next step is to review whether this revised contract should replace the earlier `*_at` wording throughout `S0F-7F` and then decide whether any broader live-file migration is still needed.
 
 ## Evidence (reserved)
@@ -190,7 +190,9 @@
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths when the lane starts mutating templates.
 - This section stays empty until the first template-sample patch is actually landed.
 
-### P1-C1-S1S2 + P2-C1-S1S2 + P3-C1-S1S2 (Revised `created/updated/reviewed` contract and first live samples fixed in workspace | 2026-04-13)
+### P1-C1-S1S2 + P2-C1-S1S2 + P3-C1-S1S2 (Revised `created/updated/reviewed` contract and first live samples fixed | 2026-04-13)
+
+- headSha: `dc7a027f6`
 
 - artifacts:
   - `docs/logs/_template-log-phase-drills-evidence.md`
