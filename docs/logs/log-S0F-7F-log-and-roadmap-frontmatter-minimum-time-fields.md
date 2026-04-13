@@ -198,7 +198,7 @@
 - `P3-C1-S2` is now complete: `road-001` now carries one first live-roadmap sample of the revised `created/updated/reviewed` contract.
 - `P4-C1-S1` is now complete: `ledger-S0A-1A` now carries explicit lifecycle fields, and the first Projects supplement sample now uses the sequence-bearing `SUP-001` filename plus the full supplement lifecycle header.
 - `P4-C1-S2` is now complete: the three Projects screenshots now carry one explicit day-precision evidence-time audit fixed at `2026-02-12` without inventing second-level timestamps.
-- `P4-C1-S3` is now complete in workspace: `ledger-S0A-1A` now also exposes one row-level chronology audit for `R02`, and `PROJECTS-0001` now carries the minimum chronology-first contract structure that was still missing relative to the more complete `LABS-0002` sample.
+- `P4-C1-S3` is now complete: `ledger-S0A-1A` now also exposes one row-level chronology audit for `R02`, and `PROJECTS-0001` now carries the minimum chronology-first contract structure that was still missing relative to the more complete `LABS-0002` sample.
 - The next step is to review whether this revised log/roadmap contract together with the first ledger/SUP timing sample is sufficient before any broader live-file migration continues.
 
 ## Evidence (reserved)
@@ -226,7 +226,9 @@
   - `log-S0F-7D` now uses `reviewed: 2026-04-11`, aligned to its current `updated` value as the first live-log sample
   - `road-001` now uses `reviewed: 2026-03-29`, aligned to its current `updated` value as the first live-roadmap sample
 
-### P4-C1-S1S2S3 (First live ledger/SUP timing sample and Projects-0001 structure alignment fixed in workspace | 2026-04-13)
+### P4-C1-S1S2S3 (First live ledger/SUP timing sample and Projects-0001 structure alignment fixed | 2026-04-13)
+
+- headSha: `6b4eaf13e`
 
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
