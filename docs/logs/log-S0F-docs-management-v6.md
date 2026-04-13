@@ -72,6 +72,7 @@
   **phase_log_52**: `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
   **phase_log_53**: `docs/logs/log-S0F-8A-roadmap-intake-ledger-and-branch-admission-routing.md`
   **phase_log_54**: `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
+  **phase_log_55**: `docs/logs/log-S0F-7F-log-and-roadmap-frontmatter-minimum-time-fields.md`
 
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
@@ -90,7 +91,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-11`
+**updated**: `2026-04-13`
 
 ---
 
@@ -430,6 +431,8 @@
 - `S0F-7E/P4-C1-S2` is now complete: the accepted `002` labs SUP judgment is now written back onto `S0A-2A-R03`, so the labs layer now sits in explicit earlier-history review under `DOC-WORKFLOW-LABS` while any actual historical-backfill release remains deferred.
 - `S0F-7E/P5-C1-S1S2` is now complete: the contract template now gives `history-backfilled` clause rows first ordering priority inside one later current release, and the local `DOC-WORKFLOW-LABS-0002` sample now demonstrates that merged earlier-history reading together with the minimum contract chronology fields.
 - `S0F-7E/P6-C1-S1S2` is now complete: the repo now prefers canonical UTC-second timestamps for new artifact-lifecycle and recorded chronology fields, and the support-only ledger plus SUP models now expose explicit time-audit surfaces for parent rows and evidence items.
+- `S0F-7F` is now opened as the bounded follow-up after `S0F-7E`: the repo now has one dedicated lane for ordinary log and roadmap frontmatter lifecycle-time fields, kept separate from `S0F-7E` evidence-time audit and contract chronology surfaces.
+- `S0F-7F/P1-C1-S1S2+P2-C1-S1S2` is now complete: the repo now defines one minimum lifecycle-time frontmatter rule for ordinary logs and roadmaps, and the first bounded sample set has been landed on the phase-drills-evidence log template plus the main-roadmap and branch-roadmap templates.
 - `S0F-5I/P4-C1-S1S2` is now complete: separate packet views are no longer treated as a sufficient front door by themselves, one aggregate old-`S0` narrative router is now published across the packet set, and `S0F-5I` now closes as stable for the current packet boundary.
 - `S0F-5I/P4-C2-S1S2` is now complete: the reviewed `S0F` subset is now explicitly kept out of same-lane `5I` packet continuation, and any later `S0F` narrative packet must open as one new bounded follow-up lane rather than as a silent extension of the current widening slice.
 - `S0F-5J/P0-P2-C1-S1S2` is now complete: the repo now has one old-`S0` contract-judgment front door that routes readers across surfaced migration, narrative packet reading, remaining-line manual screening, and unresolved-standing stop conditions without reopening outlet-management execution.

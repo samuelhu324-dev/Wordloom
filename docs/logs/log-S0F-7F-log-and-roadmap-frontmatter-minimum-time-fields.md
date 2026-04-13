@@ -178,10 +178,10 @@
 
 - `S0F-7F` is now opened as the bounded follow-up after `S0F-7E` for ordinary log and roadmap frontmatter lifecycle-time fields.
 - The minimum sample set is fixed as the log template plus the main-roadmap and branch-roadmap templates.
-- `P1-C1-S1` is now complete in workspace: the lane now defines `created_at` and `updated_at` as the canonical minimum lifecycle-time fields for ordinary logs and roadmaps, with `reviewed_at` kept optional.
-- `P1-C1-S2` is now complete in workspace: the lane now fixes `created` and `updated` as compatibility mirrors rather than as an independent competing time model.
-- `P2-C1-S1` is now complete in workspace: the phase-drills-evidence log template now carries the minimum lifecycle-time fields plus one explicit compatibility rule.
-- `P2-C1-S2` is now complete in workspace: the main-roadmap and branch-roadmap templates now carry the same minimum lifecycle-time fields plus the same compatibility rule.
+- `P1-C1-S1` is now complete: the lane now defines `created_at` and `updated_at` as the canonical minimum lifecycle-time fields for ordinary logs and roadmaps, with `reviewed_at` kept optional.
+- `P1-C1-S2` is now complete: the lane now fixes `created` and `updated` as compatibility mirrors rather than as an independent competing time model.
+- `P2-C1-S1` is now complete: the phase-drills-evidence log template now carries the minimum lifecycle-time fields plus one explicit compatibility rule.
+- `P2-C1-S2` is now complete: the main-roadmap and branch-roadmap templates now carry the same minimum lifecycle-time fields plus the same compatibility rule.
 - The next step is to decide whether one first live log sample and one first live roadmap sample should migrate under the same compatibility model.
 
 ## Evidence (reserved)
@@ -189,7 +189,9 @@
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths when the lane starts mutating templates.
 - This section stays empty until the first template-sample patch is actually landed.
 
-### P1-C1-S1S2 + P2-C1-S1S2 (Minimum frontmatter lifecycle-time rule and template samples fixed in workspace | 2026-04-13)
+### P1-C1-S1S2 + P2-C1-S1S2 (Minimum frontmatter lifecycle-time rule and template samples fixed | 2026-04-13)
+
+- headSha: `408b18dc2`
 
 - artifacts:
   - `docs/logs/_template-log-phase-drills-evidence.md`
