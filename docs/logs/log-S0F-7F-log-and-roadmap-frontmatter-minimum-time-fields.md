@@ -194,8 +194,8 @@
 - `P2-C1-S2` is now complete: the main-roadmap and branch-roadmap templates now use the same revised `created/updated/reviewed` contract.
 - `P3-C1-S1` is now complete: `log-S0F-7D` now carries one first live-log sample of the revised `created/updated/reviewed` contract.
 - `P3-C1-S2` is now complete: `road-001` now carries one first live-roadmap sample of the revised `created/updated/reviewed` contract.
-- `P4-C1-S1` is now complete in workspace: `ledger-S0A-1A` now carries explicit lifecycle fields, and the first Projects supplement sample now uses the sequence-bearing `SUP-001` filename plus the full supplement lifecycle header.
-- `P4-C1-S2` is now complete in workspace: the three Projects screenshots now carry one explicit day-precision evidence-time audit fixed at `2026-02-12` without inventing second-level timestamps.
+- `P4-C1-S1` is now complete: `ledger-S0A-1A` now carries explicit lifecycle fields, and the first Projects supplement sample now uses the sequence-bearing `SUP-001` filename plus the full supplement lifecycle header.
+- `P4-C1-S2` is now complete: the three Projects screenshots now carry one explicit day-precision evidence-time audit fixed at `2026-02-12` without inventing second-level timestamps.
 - The next step is to review whether this revised log/roadmap contract together with the first ledger/SUP timing sample is sufficient before any broader live-file migration continues.
 
 ## Evidence (reserved)
@@ -223,7 +223,9 @@
   - `log-S0F-7D` now uses `reviewed: 2026-04-11`, aligned to its current `updated` value as the first live-log sample
   - `road-001` now uses `reviewed: 2026-03-29`, aligned to its current `updated` value as the first live-roadmap sample
 
-### P4-C1-S1S2 (First live ledger/SUP timing sample fixed in workspace | 2026-04-13)
+### P4-C1-S1S2 (First live ledger/SUP timing sample fixed | 2026-04-13)
+
+- headSha: `196ee6d17`
 
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
