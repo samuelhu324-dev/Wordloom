@@ -60,12 +60,30 @@ support_only_contract_release_ledger_supplement:
 - Name it as `<parent-row-id>-SUP-<n>`.
 - Every attachment beneath one SUP row must carry one stable `attachment_id`.
 - Use `<supplement-item-id>-ATT-<n>` for generic assets and `<supplement-item-id>-SHOT-<n>` when the asset is specifically a screenshot.
+- When a stable repo-local file exists, the attachment reference should be rendered as one clickable markdown link rather than as bare path prose only.
 
 ## Evidence Table Shape
 
 | supplement item id | parent row id | evidence ref | evidence type | attachment ids | verification status | effect on current verdict | proposed parent-ledger action | contract impact | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `<S0A-1A-R02-SUP-01>` | `<S0A-1A-R02>` | `<code path|md path|issue|oral note|other evidence anchor>` | `<code|md|issue|log|oral|screenshot|other>` | `<S0A-1A-R02-SUP-01-SHOT-01>` | `<pending|verified|rejected>` | `<supports-existing|sharpens-existing|narrows-existing|revises-existing|conflicts-needs-review>` | `<no-change|add-supporting-evidence|rewrite-parent-row|split-parent-row|reopen-routing>` | `<none|rewrite-current-draft|open-new-release|defer-contract-change>` | `<why this evidence should or should not change the parent-ledger reading>` |
+
+## Approval-Facing Attachment Review Rule
+
+- Keep the main `Evidence Table` focused on routing and verdict semantics; do not turn it into an image gallery.
+- When screenshot or other attached-file evidence materially supports the SUP verdict, add one `Attachment Review Table`.
+- The attachment ref in that review table should be one clickable markdown link whenever a stable repo-local asset exists.
+- `review status` records whether the attachment is merely listed, accepted as sufficient for this packet, still too weak, or rejected.
+- `approval basis` should stay short and claim-facing: it explains why the visible attachment is good enough to support the packet judgment.
+- `review note` should stay compact and reviewer-facing: record what was checked, what was visible, or why the evidence is still insufficient.
+
+## Attachment Review Table
+
+Use this when screenshot or other file-backed evidence needs direct reviewer access from the packet.
+
+| attachment id | supplement item id | click-through asset ref | review status | approval basis | review note |
+| --- | --- | --- | --- | --- | --- |
+| `<S0A-1A-R02-SUP-01-SHOT-01>` | `<S0A-1A-R02-SUP-01>` | `[open asset](./S0A-1A-R02-SUP-01-SHOT-01-projects-status-board.png)` | `<pending|accepted-for-packet|needs-better-evidence|rejected>` | `<why this attachment is good enough, or not good enough, for the current packet>` | `<what the reviewer checked or what remains missing>` |
 
 ## Optional Evidence Time Audit
 
@@ -85,6 +103,7 @@ Use this when one supplement row needs explicit audit of source execution time, 
 - Every SUP row must point to one existing `parent row id`; a SUP ledger may not invent free-floating new slices.
 - `supplement_item_id` is required for every admitted evidence item.
 - `attachment ids` should stay empty when no attached asset is needed; when assets exist, each asset should receive one stable id rather than being referenced only by prose.
+- Screenshot-backed verdicts should prefer one `Attachment Review Table` row per attachment whenever direct reviewer click-through matters.
 - `verification status` records whether the evidence is merely proposed, verified enough for judgment, or rejected for this SUP round.
 - `effect on current verdict` states how the admitted evidence relates to the current parent-ledger judgment.
 - `proposed parent-ledger action` states what the parent ledger should do if that effect is accepted.
