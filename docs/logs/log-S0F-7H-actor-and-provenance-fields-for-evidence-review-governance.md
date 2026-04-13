@@ -215,6 +215,8 @@
 
 ### P3-C1-S1S2 (First live actor/provenance pilot fixed in workspace | 2026-04-13)
 
+- headSha: `aa4bf42d8`
+
 - artifacts:
   - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
   - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
