@@ -199,6 +199,8 @@
 
 ### P1-C1-S1S2 + P2-C1-S1S2 (Minimum actor/provenance contract and incomplete-history rule fixed in workspace | 2026-04-13)
 
+- headSha: `92c223458`
+
 - artifacts:
   - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
   - `docs/logs/log-S0F-7H-actor-and-provenance-fields-for-evidence-review-governance.md`
