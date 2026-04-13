@@ -179,8 +179,8 @@
 
 ### P3 (First live packet pilot)
 
-- [ ] `P3-C1-S1`: patch the supplement-ledger template with the approved actor/provenance protocol
-- [ ] `P3-C1-S2`: apply the protocol to `ledger-SUP-S0A-1A-001` as the first live sample
+- [x] `P3-C1-S1`: patch the supplement-ledger template with the approved actor/provenance protocol
+- [x] `P3-C1-S2`: apply the protocol to `ledger-SUP-S0A-1A-001` as the first live sample
 
 ## Current Status (recommended)
 
@@ -190,7 +190,9 @@
 - `P1-C1-S2` is now complete: the lane now states that these fields record packet-level accountability only and do not yet establish a full permissions or org-authority model.
 - `P2-C1-S1` is now complete: the lane now defines `unknown`, `pending`, `role:<role-name>`, and `delegated:<role-name>` as the bounded representation grammar for incomplete actor history.
 - `P2-C1-S2` is now complete: the lane now permits partial actor/provenance rows when the packet stays useful and the missing detail is stated explicitly in one `provenance note`.
-- The next step is to patch the SUP template with the approved actor/provenance protocol and then prove it on `ledger-SUP-S0A-1A-001` as the first live sample.
+- `P3-C1-S1` is now complete in workspace: the SUP template now exposes the actor/provenance protocol as one dedicated accountability surface separate from attachment-review ergonomics.
+- `P3-C1-S2` is now complete in workspace: `ledger-SUP-S0A-1A-001` now proves the protocol on three live supplement items using defended partial actor values rather than invented named submitters.
+- The next step is to review whether this minimum packet-level accountability chain is already sufficient or whether a later lane should widen into stronger authority-role or org-level provenance modeling.
 
 ## Evidence (reserved)
 
@@ -210,3 +212,16 @@
 - observed:
   - the SUP template now defines one `Actor and Provenance Review Table` with the minimum packet-level accountability fields
   - the lane now records `unknown`, `pending`, `role:<role-name>`, and `delegated:<role-name>` as the approved grammar for incomplete actor history, plus one `provenance note` when the chain remains partial but still usable
+
+### P3-C1-S1S2 (First live actor/provenance pilot fixed in workspace | 2026-04-13)
+
+- artifacts:
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/log-S0F-7H-actor-and-provenance-fields-for-evidence-review-governance.md`
+- expected:
+  - the live pilot should prove that the minimum actor/provenance protocol can be applied without inventing named actors the historical packet cannot actually defend
+  - the sample should show one bounded accountability chain per supplement item while staying separate from the narrower screenshot-review ergonomics already solved in `7G`
+- observed:
+  - `ledger-SUP-S0A-1A-001` now exposes one `Actor and Provenance Review Table` for all three supplement items
+  - the pilot uses defended partial values such as `unknown` and `role:packet-reviewer` rather than fabricating historical named submitters, while still recording one explicit packet-level approval state and provenance note for each item

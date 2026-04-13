@@ -52,6 +52,14 @@ support_only_contract_release_ledger_supplement:
 | `S0A-1A-R02-SUP-02-SHOT-01` | `S0A-1A-R02-SUP-02` | `[open asset](./S0A-1A-R02-SUP-02-SHOT-01-projects-table-view.png)` | `accepted-for-packet` | The visible table headers are sufficient to defend the claim that Projects is serving as one quick lookup surface for delivery-state reading. | Review checked the screenshot for issue-title, progress, status, PR-link, and assignee columns, and the captured UI is strong enough for the current packet claim without needing a broader governance inference. |
 | `S0A-1A-R02-SUP-03-SHOT-01` | `S0A-1A-R02-SUP-03` | `[open asset](./S0A-1A-R02-SUP-03-SHOT-01-projects-timeline-view.png)` | `accepted-for-packet` | The visible date-grid layout is sufficient to defend the claim that Projects is being used as one sequencing and interruption-reading surface. | Review checked the screenshot for the dated timeline layout and item placement across time, and the image is sufficient for the current sequence-awareness reading while still staying below canonical issue-hierarchy ownership. |
 
+## Actor and Provenance Review Table
+
+| supplement item id | submitted by | evidence owner | verified by | verification method | approved by | approval state | approval basis | provenance note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0A-1A-R02-SUP-01` | `unknown` | `role:packet-maintainer` | `role:packet-reviewer` | `direct-screenshot-inspection` | `role:packet-reviewer` | `accepted-for-packet` | The current packet preserves enough screenshot evidence and review notes to defend the status-board claim at packet level. | The screenshot is preserved in-repo and the packet review chain is explicit, but the original named submitter is not defended by the surviving issue-only source history. |
+| `S0A-1A-R02-SUP-02` | `unknown` | `role:packet-maintainer` | `role:packet-reviewer` | `direct-screenshot-inspection` | `role:packet-reviewer` | `accepted-for-packet` | The current packet preserves enough screenshot evidence and review notes to defend the quick-lookup claim at packet level. | The screenshot is preserved in-repo and the packet review chain is explicit, but the original named submitter is not defended by the surviving issue-only source history. |
+| `S0A-1A-R02-SUP-03` | `unknown` | `role:packet-maintainer` | `role:packet-reviewer` | `direct-screenshot-inspection` | `role:packet-reviewer` | `accepted-for-packet` | The current packet preserves enough screenshot evidence and review notes to defend the sequence-awareness claim at packet level. | The screenshot is preserved in-repo and the packet review chain is explicit, but the original named submitter is not defended by the surviving issue-only source history. |
+
 ## Attachment Quick Review
 
 ### S0A-1A-R02-SUP-01-SHOT-01
@@ -108,4 +116,5 @@ support_only_contract_release_ledger_supplement:
 - This SUP-001 ledger is now anchored to stable repo-local screenshot paths under the same directory as the ledger file.
 - The attachment inventory and attachment review table now let reviewers open each screenshot directly from the packet and record one bounded approval-facing verdict without turning the main evidence table into an image gallery.
 - The `Attachment Quick Review` section now provides one table-external place to click and visually inspect each screenshot when table-cell link rendering is not sufficient in the active reader surface.
+- The `Actor and Provenance Review Table` now records one minimum packet-level accountability chain for each supplement item without inventing named actors that the surviving historical source cannot defend.
 - If later code, markdown, or process notes show that these views were treated as stable workflow surfaces rather than one temporary board arrangement, a later SUP item may escalate the contract impact further.
