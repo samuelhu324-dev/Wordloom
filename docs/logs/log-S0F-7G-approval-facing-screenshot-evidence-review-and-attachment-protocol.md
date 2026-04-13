@@ -60,6 +60,14 @@
 - Keep asset review separate from historical-effective time: screenshot visibility solves evidence readability, not chronology semantics.
 - Defer actor-rich provenance fields such as `submitted_by`, `verified_by`, and `approved_by` unless the attachment-review pilot proves that review usability alone is still insufficient.
 
+## Minimum Quick Review Contract
+
+- When one SUP packet contains screenshot-backed evidence that must be reviewed directly by a human, keep the routing verdict in `Evidence Table` and keep approval-facing judgment in `Attachment Review Table`.
+- Stable repo-local assets should be exposed as clickable markdown links, not as bare path prose only.
+- When the active reader surface makes table-cell links or markdown rendering too weak for practical review, the SUP packet may add one table-external `Attachment Quick Review` section with standalone attachment links and optional inline previews.
+- `Attachment Quick Review` is one review aid only; it does not replace `Evidence Table`, `Attachment Review Table`, or parent-ledger routing semantics.
+- This lane does not require actor-rich provenance fields; those belong to a later bounded follow-up if reviewability alone proves insufficient.
+
 ## Problem Statement
 
 - `S0F-7D` and `S0F-7F` now let the repo admit screenshot evidence through one parent-ledger plus SUP chain, but the current packet shape still assumes that attachment ids and file paths alone are enough for approval-facing review.
@@ -79,7 +87,7 @@
 
 **Outlet ownership**:
 
-- `contract`: no-op by default; contract packets should consume improved approved evidence, not become the first image-review surface
+- `contract`: the minimum quick-review contract remains written here in `S0F-7G`; do not emit a separate contract file from this lane yet
 - `runbook`: no-op by default
 - `view`: no-op by default; a future reviewer-facing evidence index may emerge later, but it is not assumed here
 - `index/front-door`: no-op by default
