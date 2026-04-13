@@ -205,6 +205,8 @@
 
 ### P3-C1-S1 (Actor-rich provenance decision deferred; quick-review surface added | 2026-04-13)
 
+- headSha: `f02c1c3eb`
+
 - artifacts:
   - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
   - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
