@@ -78,6 +78,31 @@ support_only_contract_release_ledger_supplement:
 - `approval basis` should stay short and claim-facing: it explains why the visible attachment is good enough to support the packet judgment.
 - `review note` should stay compact and reviewer-facing: record what was checked, what was visible, or why the evidence is still insufficient.
 
+## Actor and Provenance Field Rule
+
+- When packet-level evidence accountability matters, add one `Actor and Provenance Review Table` beneath the attachment-review surfaces.
+- Keep this field set minimal: `submitted by`, `evidence owner`, `verified by`, `verification method`, `approved by`, `approval state`, and `approval basis`.
+- These fields describe packet-level accountability only; they do not replace the routing verdict, the attachment review record, or any later permissions model.
+- Historical packets may use defended partial values such as `unknown`, `pending`, role-based labels, or delegated labels instead of inventing named actors.
+- Prefer one concise `provenance note` when the actor chain is incomplete but still bounded enough for the packet to remain useful.
+
+## Incomplete-History Representation Rule
+
+- Use `unknown` when the packet cannot currently defend the actor identity.
+- Use `pending` when the actor or state is expected to be filled later but is not yet resolved.
+- Use `role:<role-name>` when the packet can defend the responsible role but not the named person.
+- Use `delegated:<role-name>` when the packet can defend that authority was delegated to one role boundary without yet naming the final actor.
+- Do not fabricate named individuals or over-precise authority chains merely to fill the table.
+- A packet may remain partially specified when the evidence remains useful and the missing actor detail is stated explicitly in `provenance note`.
+
+## Actor and Provenance Review Table
+
+Use this when the packet needs explicit accountability for submission, verification, and approval.
+
+| supplement item id | submitted by | evidence owner | verified by | verification method | approved by | approval state | approval basis | provenance note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<S0A-1A-R02-SUP-01>` | `<unknown|pending|role:operator|delegated:review-lead|name>` | `<unknown|pending|role:workflow-owner|name>` | `<unknown|pending|role:reviewer|name>` | `<direct-screenshot-inspection|source-path-check|manual-replay|transcript-comparison|other>` | `<unknown|pending|role:approver|delegated:records-lead|name>` | `<pending|accepted-for-packet|needs-better-evidence|rejected>` | `<why this approval state is currently defended>` | `<why any actor fields remain partial or how the current provenance chain is bounded>` |
+
 ## Attachment Review Table
 
 Use this when screenshot or other file-backed evidence needs direct reviewer access from the packet.
@@ -120,6 +145,7 @@ Use this when one supplement row needs explicit audit of source execution time, 
 - `attachment ids` should stay empty when no attached asset is needed; when assets exist, each asset should receive one stable id rather than being referenced only by prose.
 - Screenshot-backed verdicts should prefer one `Attachment Review Table` row per attachment whenever direct reviewer click-through matters.
 - When table-cell links are not sufficiently reviewable in the active editor or preview surface, prefer adding one `Attachment Quick Review` section rather than overloading the main evidence tables.
+- When actor/provenance accountability matters, prefer one `Actor and Provenance Review Table` row per supplement item rather than scattering those fields across prose notes.
 - `verification status` records whether the evidence is merely proposed, verified enough for judgment, or rejected for this SUP round.
 - `effect on current verdict` states how the admitted evidence relates to the current parent-ledger judgment.
 - `proposed parent-ledger action` states what the parent ledger should do if that effect is accepted.

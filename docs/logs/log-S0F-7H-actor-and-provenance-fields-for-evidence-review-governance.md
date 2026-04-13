@@ -60,6 +60,13 @@
 - Avoid guessing real-world actors when the historical packet cannot yet defend them; `unknown`, `pending`, or bounded notes remain valid.
 - Keep role/authority escalation explicit and deferred until the minimum field set proves insufficient.
 
+## Minimum Actor / Provenance Contract
+
+- Supplement-ledger evidence review may add one minimal accountability surface using `submitted by`, `evidence owner`, `verified by`, `verification method`, `approved by`, `approval state`, and `approval basis`.
+- These fields describe packet-level submission, verification, and approval only; they do not by themselves establish a full permissions or org-authority model.
+- The packet may add one short `provenance note` when the current accountability chain is only partially defended.
+- This lane treats role-based or delegated values as valid intermediate states when the historical packet cannot yet defend one named actor.
+
 ## Problem Statement
 
 - `S0F-7G` solved the narrower screenshot-reviewability problem, but it intentionally deferred one next governance question: approval-facing packets still need a consistent way to name who submitted evidence, who verified it, how it was verified, who approved it, and what provenance chain currently supports that approval state.
@@ -162,13 +169,13 @@
 
 ### P1 (Minimum actor/provenance field contract)
 
-- [ ] `P1-C1-S1`: define the minimum actor/provenance field set for evidence-review packets
-- [ ] `P1-C1-S2`: define the semantics for each field without assuming a full org-role model
+- [x] `P1-C1-S1`: define the minimum actor/provenance field set for evidence-review packets
+- [x] `P1-C1-S2`: define the semantics for each field without assuming a full org-role model
 
 ### P2 (Incomplete-history representation rule)
 
-- [ ] `P2-C1-S1`: define how `unknown`, `pending`, role-based, or delegated values should be represented
-- [ ] `P2-C1-S2`: define when the packet may stay partial rather than fabricating actor certainty
+- [x] `P2-C1-S1`: define how `unknown`, `pending`, role-based, or delegated values should be represented
+- [x] `P2-C1-S2`: define when the packet may stay partial rather than fabricating actor certainty
 
 ### P3 (First live packet pilot)
 
@@ -179,9 +186,25 @@
 
 - `S0F-7H` is now opened as the bounded follow-up after `S0F-7G` for actor/provenance fields around evidence submission, verification, and approval.
 - The lane is intentionally scoped to supplement-ledger accountability first; it does not yet commit the repo to a broader org-role or permissions model.
-- The next step is to define the minimum actor/provenance field contract on the template surface first, then prove it on `ledger-SUP-S0A-1A-001` before widening further.
+- `P1-C1-S1` is now complete: the lane now defines the minimum actor/provenance field set for evidence-review packets as `submitted by`, `evidence owner`, `verified by`, `verification method`, `approved by`, `approval state`, and `approval basis`.
+- `P1-C1-S2` is now complete: the lane now states that these fields record packet-level accountability only and do not yet establish a full permissions or org-authority model.
+- `P2-C1-S1` is now complete: the lane now defines `unknown`, `pending`, `role:<role-name>`, and `delegated:<role-name>` as the bounded representation grammar for incomplete actor history.
+- `P2-C1-S2` is now complete: the lane now permits partial actor/provenance rows when the packet stays useful and the missing detail is stated explicitly in one `provenance note`.
+- The next step is to patch the SUP template with the approved actor/provenance protocol and then prove it on `ledger-SUP-S0A-1A-001` as the first live sample.
 
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths when the lane starts mutating templates or live supplement packets.
 - This section stays empty until the first template or pilot patch is actually landed.
+
+### P1-C1-S1S2 + P2-C1-S1S2 (Minimum actor/provenance contract and incomplete-history rule fixed in workspace | 2026-04-13)
+
+- artifacts:
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+  - `docs/logs/log-S0F-7H-actor-and-provenance-fields-for-evidence-review-governance.md`
+- expected:
+  - the repo should define one minimum actor/provenance field set for evidence-review packets without dragging in a full permissions or org-model rewrite
+  - the protocol should state how to represent incomplete actor history using explicit bounded values instead of fabricated named actors
+- observed:
+  - the SUP template now defines one `Actor and Provenance Review Table` with the minimum packet-level accountability fields
+  - the lane now records `unknown`, `pending`, `role:<role-name>`, and `delegated:<role-name>` as the approved grammar for incomplete actor history, plus one `provenance note` when the chain remains partial but still usable
