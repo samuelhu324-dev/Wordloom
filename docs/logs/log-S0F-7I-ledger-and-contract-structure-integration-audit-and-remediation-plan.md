@@ -327,6 +327,8 @@
 
 ### P3-C2-S1S2 (Batch A broad-parent and GitHub-Issues family repair fixed in workspace | 2026-04-14)
 
+- headSha: `4e1dc5921`
+
 - artifacts:
   - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
   - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
