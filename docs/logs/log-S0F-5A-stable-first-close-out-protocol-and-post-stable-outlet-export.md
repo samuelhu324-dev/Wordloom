@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Workflow, Closeout, Runbook, Contract, Views, epic/s0, sub/5a`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/437`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/447`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -19,15 +19,15 @@
   **reference_log_2**: `docs/logs/log-S0F-3H-recurring-governance-run-model-and-ledger-split.md`
   **reference_log_3**: `docs/logs/log-S0F-4B-source-log-compatibility-and-weak-structure-export-discipline.md`
   **reference_log_4**: `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `policy`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/5`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-08`
-**updated**: `2026-04-08`
+**updated**: `2026-04-14`
 
 ---
 
@@ -77,6 +77,25 @@
   - how should the repo avoid both extremes:
     - premature runbook or view proliferation during draft churn
     - never-exported mixed-role logs that remain overloaded after the slice is already stable
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-5A` fixes the stable-first close-out protocol that later export and promotion slices should read directly instead of rediscovering.
+
+**PR summary bullets**:
+
+- Define the stable-first gate for outlet export and keep draft slices concentrated until their boundary is stable.
+- Fix the mandatory close-out questionnaire and bounded post-stable export packaging rule.
+- Apply anti-proliferation gates so stable logs do not mechanically explode into contracts, runbooks, and views.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the stable-first close-out protocol lane.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
+- Previous log: `docs/logs/log-S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model.md`
 
 ## Scope
 

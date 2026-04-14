@@ -59,11 +59,11 @@
 
 - `58` main `S0F` logs are currently on disk under `docs/logs/log-S0F-*.md`.
 - Coverage counts currently stand at:
-  - `35` rows with `issue+pr-linked`
+  - `45` rows with `issue+pr-linked`
   - `1` row with `issue-only`
   - `0` rows with `pr-only`
-  - `22` rows with `missing-both`
-- Coverage now remains concentrated in `S0F-1*` plus the admitted `S0F-2*`, `S0F-3*`, `S0F-4*`, and `S0F-6*` packets; current historical series from `S0F-5*` and `S0F-7*` remain uncovered.
+  - `12` rows with `missing-both`
+- Coverage now remains concentrated in `S0F-1*` plus the admitted `S0F-2*`, `S0F-3*`, `S0F-4*`, `S0F-5*`, and `S0F-6*` packets; only uncovered remainder `S0F-1K` and the full `S0F-7*` packet still remain without issue/PR coverage among historical-reviewable rows.
 - `S0F-8A`, `S0F-8B`, and the `S0F` parent spine are counted separately as `active-meta-lane` rows and should not be used as the first historical automation packet.
 
 ## Series Summary
@@ -74,7 +74,7 @@
 | `2` | `2` | `2` | `0` | `0` | `0` | `historical-reviewable` | first admitted rollout packet is now fully concluded: `S0F-2A` => `#384 / PR #386`; `S0F-2B` => `#385 / PR #387` |
 | `3` | `13` | `13` | `0` | `0` | `0` | `historical-reviewable` | fourth admitted rollout packet is now fully concluded: `S0F-3A` => `#412 / PR #425`, `S0F-3B` => `#413 / PR #426`, `S0F-3C` => `#414 / PR #427`, `S0F-3D` => `#415 / PR #428`, `S0F-3E` => `#416 / PR #429`, `S0F-3F` => `#417 / PR #430`, `S0F-3G` => `#418 / PR #431`, `S0F-3H` => `#419 / PR #432`, `S0F-3I` => `#420 / PR #433`, `S0F-3J` => `#421 / PR #434`, `S0F-3K` => `#422 / PR #435`, `S0F-3L` => `#423 / PR #435`, `S0F-3M` => `#424 / PR #436` |
 | `4` | `9` | `9` | `0` | `0` | `0` | `historical-reviewable` | third admitted rollout packet is now fully concluded: `S0F-4A` => `#396 / PR #404`, `S0F-4B` => `#394 / PR #395`, `S0F-4C` => `#397 / PR #405`, `S0F-4D` => `#398 / PR #406`, `S0F-4E` => `#399 / PR #407`, `S0F-4F` => `#400 / PR #408`, `S0F-4G` => `#401 / PR #409`, `S0F-4H` => `#402 / PR #410`, `S0F-4I` => `#403 / PR #411` |
-| `5` | `10` | `0` | `0` | `0` | `10` | `historical-reviewable` | mixed migration/cleanup/history packet; defer until commit-readiness review |
+| `5` | `10` | `10` | `0` | `0` | `0` | `historical-reviewable` | fifth admitted rollout packet is now fully concluded: `S0F-5A` => `#437 / PR #447`, `S0F-5B` => `#438 / PR #448`, `S0F-5C` => `#439 / PR #449`, `S0F-5D` => `#440 / PR #450`, `S0F-5E` => `#441 / PR #451`, `S0F-5F` => `#442 / PR #452`, `S0F-5G` => `#443 / PR #453`, `S0F-5H` => `#444 / PR #454`, `S0F-5I` => `#445 / PR #456`, `S0F-5J` => `#446 / PR #455` |
 | `6` | `3` | `3` | `0` | `0` | `0` | `historical-reviewable` | second admitted rollout packet is now fully concluded: `S0F-6A` => `#388 / PR #391`; `S0F-6B` => `#389 / PR #392`; `S0F-6C` => `#390 / PR #393` |
 | `7` | `9` | `0` | `0` | `0` | `9` | `historical-reviewable` | chronology/provenance packet; likely later due recent active edits |
 | `8` | `2` | `0` | `0` | `0` | `2` | `active-meta-lane` | exclude from first historical rollout; they are current meta lanes |
@@ -89,6 +89,7 @@
 | `2` | `admitted-automated` | `S0F-2A, S0F-2B` | `2` | `present` | `present` | `historical-reviewable` | first admitted rollout packet now has live issue/PR coverage, concluded issue bodies, and passing post-conclusion lifecycle audits |
 | `3` | `admitted-automated` | `S0F-3A, S0F-3B, S0F-3C, S0F-3D, S0F-3E, S0F-3F, S0F-3G, S0F-3H, S0F-3I, S0F-3J, S0F-3K, S0F-3L, S0F-3M` | `13` | `present` | `present` | `historical-reviewable` | fourth admitted rollout packet now has live issue/PR coverage, merged PR evidence, concluded issue bodies, and explicit shared-PR handling for `S0F-3K/#422` and `S0F-3L/#423` via `PR #435` |
 | `4` | `admitted-automated` | `S0F-4A, S0F-4B, S0F-4C, S0F-4D, S0F-4E, S0F-4F, S0F-4G, S0F-4H, S0F-4I` | `9` | `present` | `present` | `historical-reviewable` | full `S0F-4*` packet now has live issue/PR coverage, merged PR evidence, concluded issue bodies, and passing post-conclusion lifecycle gates |
+| `5` | `admitted-automated` | `S0F-5A, S0F-5B, S0F-5C, S0F-5D, S0F-5E, S0F-5F, S0F-5G, S0F-5H, S0F-5I, S0F-5J` | `10` | `present` | `present` | `historical-reviewable` | fifth admitted rollout packet now has live issue/PR coverage, merged PR evidence, concluded issue bodies, and passing post-conclusion lifecycle gates |
 | `6` | `admitted-automated` | `S0F-6A, S0F-6B, S0F-6C` | `3` | `present` | `present` | `historical-reviewable` | second admitted rollout packet now has live issue/PR coverage, merged PRs, concluded issue bodies, and guarded post-conclusion refresh applied |
 
 ## Missing Coverage Rows By Series
@@ -96,7 +97,6 @@
 | series | row type | source rows | total rows | issue coverage | pr coverage | review bucket | next rollout note |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `1` | `missing-series` | `S0F-1K` | `1` | `missing` | `missing` | `historical-reviewable` | first uncovered remainder inside the otherwise covered baseline series |
-| `5` | `missing-series` | `S0F-5A, S0F-5B, S0F-5C, S0F-5D, S0F-5E, S0F-5F, S0F-5G, S0F-5H, S0F-5I, S0F-5J` | `10` | `missing` | `missing` | `historical-reviewable` | mixed migration/history packet; defer until commit extraction is checked carefully |
 | `7` | `missing-series` | `S0F-7A, S0F-7B, S0F-7C, S0F-7D, S0F-7E, S0F-7F, S0F-7G, S0F-7H, S0F-7I` | `9` | `missing` | `missing` | `historical-reviewable` | recent chronology/provenance work; likely later after commit-readiness review |
 | `8` | `active-meta-lane` | `S0F-8A, S0F-8B` | `2` | `missing` | `missing` | `active-meta-lane` | exclude from first historical rollout; these are current meta lanes |
 
