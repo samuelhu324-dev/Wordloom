@@ -289,6 +289,8 @@
 
 ### P1-C1-S1S2 + P2-C1-S1S2 (First-pass structure classification and repair-order proposal fixed | 2026-04-14)
 
+- headSha: `132150235`
+
 - artifacts:
   - `docs/logs/log-S0F-7I-ledger-and-contract-structure-integration-audit-and-remediation-plan.md`
 - expected:
