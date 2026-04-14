@@ -472,7 +472,7 @@
 
 ### P3-C8-S1S2S3S4 (Final uncovered historical remainder replay for `S0F-1K` | 2026-04-15)
 
-- headSha: `a5ece77be`
+- headSha: `a6435b8af`
 - artifacts: `docs/issues/lifecycle-gate-s0f-1k-decision.json`, `docs/issues/issue-relationship-s0f-1k-guarded-apply-result.json`, `docs/issues/pr-prep-s0f-1k-manifest-create-result.json`, `docs/issues/pr-prep-s0f-1k-manifest-post-apply-verify-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-1k-issue-conclusion-guarded-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-1k-issue-conclusion-s0f-1k-apply-result.json`, `docs/governance/views/support-only/inventory-s0f-issue-pr-automation-coverage-v1.md`
 - expected:
   - the final uncovered historical-reviewable `S0F` row should pass the same guarded issue, relationship, PR, merge, and issue-conclusion chain already proven on the admitted multi-item packets
