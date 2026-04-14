@@ -1,0 +1,58 @@
+{
+  "id": "S0F-3L",
+  "phase": "P3",
+  "generatedAt": "2026-04-09",
+  "question": "Can one root-stub model execute cleanly across both the preserved GC-ISS split set and GC-PRB-0001, or must the preserved subset split into a narrower pilot?",
+  "commonModel": {
+    "status": "partially-applicable",
+    "summary": "The same stub shape can describe both single-successor ISS records and the multi-successor PRB umbrella, but the current execution-readiness differs across the two families."
+  },
+  "applicability": {
+    "gc_iss_split_set": {
+      "status": "pilot-ready",
+      "members": [
+        "GC-ISS-0001",
+        "GC-ISS-0002",
+        "GC-ISS-0003",
+        "GC-ISS-0004",
+        "GC-ISS-0005"
+      ],
+      "reasons": [
+        "All five records share the same single-successor redirect shape established by the ISS split package.",
+        "All five records are already treated uniformly as preserved legacy redirects in the first cleanup boundary.",
+        "None of the five records carries a paired support-only backfill body that would need synchronized relocation judgment."
+      ],
+      "evidence": [
+        "docs/governance/views/view-iss-split-package-v1.md",
+        "docs/governance/views/view-gc-first-cleanup-boundary-v1.md",
+        "docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md"
+      ]
+    },
+    "gc_prb_0001": {
+      "status": "defer-for-now",
+      "members": [
+        "GC-PRB-0001"
+      ],
+      "reasons": [
+        "The umbrella redirects to two current successors rather than one, so its stub wording and reader expectations are more loaded than the ISS pattern.",
+        "GC-PRB-0001 remains the canonical deprecated sample in early registry-model surfaces, not just a routine split redirect.",
+        "The umbrella still sits beside an already-moved support-only backfill note, so execution judgment should consider the pair explicitly instead of piggybacking on the ISS pilot."
+      ],
+      "evidence": [
+        "docs/governance/views/view-prb-split-package-v1.md",
+        "docs/governance/views/support-only/view-prb-follow-up-family-sweep-v1.md",
+        "docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md",
+        "docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md"
+      ]
+    }
+  },
+  "p3Conclusion": {
+    "status": "split-required",
+    "nextRecommendedPilot": "GC-ISS-* as one narrower first pilot package; keep GC-PRB-0001 out of that first execution round.",
+    "stopReasonsForFullSubsetMove": [
+      "multi-successor umbrella handling not yet defended for PRB execution",
+      "canonical deprecated sample role still live on PRB in early registry-history surfaces",
+      "paired umbrella plus support-only-backfill relationship should be judged explicitly rather than folded into the ISS pilot"
+    ]
+  }
+}
