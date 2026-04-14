@@ -1,0 +1,53 @@
+{
+  "id": "s0f-4i-p3-gc-issue-governance-demotion-transition-packet",
+  "created_at": "2026-04-09",
+  "phase": "S0F-4I/P3-C1-S1S2",
+  "demoted_gc_rows": [
+    {
+      "record_id": "GC-ICR-0001",
+      "status": "deprecated",
+      "read_now": "DOC-ICR-0001"
+    },
+    {
+      "record_id": "GC-ICL-0001",
+      "status": "deprecated",
+      "read_now": "DOC-ICL-0001"
+    },
+    {
+      "record_id": "GC-ICT-0001",
+      "status": "deprecated",
+      "read_now": "DOC-ICT-0001"
+    },
+    {
+      "record_id": "GC-IID-0001",
+      "status": "deprecated",
+      "read_now": "DOC-IID-0001"
+    },
+    {
+      "record_id": "GC-IID-0002",
+      "status": "deprecated",
+      "read_now": "DOC-IID-0002"
+    }
+  ],
+  "registry_transition": {
+    "removed_from_current_gc_index": [
+      "GC-ICR-0001",
+      "GC-ICL-0001",
+      "GC-ICT-0001",
+      "GC-IID-0001",
+      "GC-IID-0002"
+    ],
+    "doc_front_door_is_current_reader_surface": true,
+    "gc_root_paths_remain_for_lineage": true
+  },
+  "aligned_views": [
+    "docs/governance/INDEX.md",
+    "docs/governance/views/view-gc-dual-reading-transition-v1.md",
+    "docs/governance/views/view-gc-triage-and-retention-rule-v1.md",
+    "docs/governance/views/view-contract-family-inventory-v1.md"
+  ],
+  "notes": [
+    "This packet completes the current-reader transition boundary without moving the old GC files to support-only.",
+    "The old GC root paths remain occupied as deterministic lineage-safe redirect surfaces."
+  ]
+}

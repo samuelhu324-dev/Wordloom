@@ -1,0 +1,39 @@
+{
+  "id": "s0f-4i-p2-doc-issue-governance-replacement-packet",
+  "created_at": "2026-04-09",
+  "phase": "S0F-4I/P2-C1-S1S2",
+  "packet_shape": {
+    "family": "DOC",
+    "landing_units": [
+      "issue creation",
+      "issue conclusion",
+      "issue context",
+      "issue identity"
+    ],
+    "target_records": [
+      "DOC-ICR-0001",
+      "DOC-ICL-0001",
+      "DOC-ICT-0001",
+      "DOC-IID-0001",
+      "DOC-IID-0002"
+    ]
+  },
+  "writes": {
+    "created_contracts": [
+      "docs/governance/contract/DOC-ICR-0001-issue-creation-metadata-english-body.md",
+      "docs/governance/contract/DOC-ICL-0001-issue-conclusion-post-merge-linkage.md",
+      "docs/governance/contract/DOC-ICT-0001-issue-context-sentence-count-main-vs-child.md",
+      "docs/governance/contract/DOC-IID-0001-parent-sidebar-ordering-ownership.md",
+      "docs/governance/contract/DOC-IID-0002-issue-title-keyword-controlled-vocabulary.md"
+    ],
+    "aligned_reader_surfaces": [
+      "docs/governance/contract/INDEX.md",
+      "docs/governance/views/view-doc-current-front-door-v1.md",
+      "docs/governance/views/view-doc-contract-promotion-map-v1.md"
+    ]
+  },
+  "notes": [
+    "This packet makes the replacement DOC reading surface explicit before any GC demotion or redirect writes are executed.",
+    "GC rows remain in place for now; matching demotion and current-reader transition work is deferred to S0F-4I/P3."
+  ]
+}
