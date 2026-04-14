@@ -1,0 +1,54 @@
+{
+  "id": "S0F-3M",
+  "phase": "P1",
+  "generatedAt": "2026-04-09",
+  "pilotRecord": {
+    "recordId": "GC-ISS-0001",
+    "rootPath": "docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md",
+    "futureSupportOnlyTarget": "docs/governance/contracts/support-only/GC-ISS-0001-issue-creation-metadata-english-body.md",
+    "currentSuccessor": "docs/governance/contracts/GC-ICR-0001-issue-creation-metadata-english-body.md"
+  },
+  "p1Conclusion": {
+    "status": "rewrite-set-fixed",
+    "summary": "The pre-existing reference surface for GC-ISS-0001 is almost entirely lineage, cleanup-boundary, or old-ID landing. Those references should stay on the root path through the future stub. No pre-existing reader surface is currently forced to retarget to the moved support-only body.",
+    "requiredP2Writes": [
+      "move the retained full body to docs/governance/contracts/support-only/GC-ISS-0001-issue-creation-metadata-english-body.md",
+      "replace the current root file with the planned stub",
+      "add the moved full body to docs/governance/contracts/support-only/INDEX.md"
+    ]
+  },
+  "keepRootPath": [
+    {
+      "path": "docs/governance/views/view-iss-split-package-v1.md",
+      "reason": "This view is a lineage and split-package surface. It should continue to land readers on the preserved old ID rather than bypassing the root stub."
+    },
+    {
+      "path": "docs/governance/views/view-gc-first-cleanup-boundary-v1.md",
+      "reason": "This view enumerates which legacy redirect files remain root-readable. It should continue to cite the root path as the preserved landing surface."
+    },
+    {
+      "path": "docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md",
+      "reason": "The cleanup ledger records the candidate as a preserved legacy redirect whose value is old-path landing and deterministic redirect. That evidence should keep citing the root path."
+    }
+  ],
+  "retargetToSupportOnly": [],
+  "nonPathEvidence": [
+    {
+      "path": "docs/governance/views/view-gc-triage-and-retention-rule-v1.md",
+      "reason": "Confirms that preserved old GC split records remain readable at the old root path because redirect value is still attached to that landing surface."
+    },
+    {
+      "path": "docs/governance/INDEX.md",
+      "reason": "Confirms the root-versus-support-only standing rule and shows that legacy redirects stay at root by default."
+    },
+    {
+      "path": "docs/governance/contracts/support-only/INDEX.md",
+      "reason": "Confirms the support-only index is the only required local navigation surface to add when the moved retained body is created in P2."
+    }
+  ],
+  "notes": [
+    "At P1 time, no pre-existing file path reference was found that clearly requires opening the moved full historical body instead of the preserved root landing surface.",
+    "This means the bounded direct-navigation rewrite set for pre-existing reader surfaces is currently empty.",
+    "If P2 creates new pilot-local links to the moved body for verification or support-only navigation, those links are additive pilot writes rather than retargets of an existing reader surface."
+  ]
+}
