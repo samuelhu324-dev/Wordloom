@@ -219,6 +219,24 @@
 - `P2-C1-S2`: review `S0F-2*` through `S0F-7*` for missing issue/PR coverage and bounded branch-commit extractability
 - `P2-C1-S3`: produce the first admitted per-series rollout order for later automation
 
+### P2-C1-S1 (Covered baseline extracted from `S0F-1*` | v1)
+
+- The first covered baseline is now fixed as `S0F-1*` rather than as one abstract coverage claim.
+- Under this baseline:
+  - `S0F-1A` through `S0F-1J` already expose linked issue/PR coverage except for the uncovered remainder `S0F-1K`
+  - the series shows what a covered early `S0F` packet looks like in practice
+  - later uncovered packets should be judged against this baseline rather than against a vague target state
+
+### P2-C1-S2 (First historical packet review favors `S0F-2*` over `S0F-6*` | v1)
+
+- The first bounded extractability review now favors `S0F-2*` as the first historical rollout candidate.
+- The defended basis is:
+  - `S0F-2A` has one clean opening commit centered on its own log, runbook, parent-spine writeback, and direct-patch ledger
+  - `S0F-2B` extends that packet through one core refinement commit plus two sample commits that remain centered on patch and ops-maintenance surfaces
+  - the adjacent `S0F-1J/P5` template-packaging commit is mixed and should be treated as a supporting dependency, not as the core extraction unit for the first packet
+  - `S0F-6*` remains a viable fallback series, but its history is denser and more layered across `6A`, `6B`, and `6C`, so it is a weaker first packet than `S0F-2*`
+- Under this rule, the next sequencing step should continue with `S0F-2A` and `S0F-2B` before any fallback shift to `S0F-6*`.
+
 ### P3 (Single-item automation rollout)
 
 - `P3-C1-S1`: fix the commit-readiness review rule for extracting one focused PR from the current `S0F` branch
@@ -247,8 +265,8 @@
 
 ### P2 (Per-series readiness review)
 
-- [ ] `P2-C1-S1`: extract the known-covered baseline from `S0F-1*`
-- [ ] `P2-C1-S2`: review `S0F-2*` through `S0F-7*` for missing coverage and branch-commit readiness
+- [x] `P2-C1-S1`: extract the known-covered baseline from `S0F-1*`
+- [x] `P2-C1-S2`: review `S0F-2*` through `S0F-7*` for missing coverage and branch-commit readiness
 - [ ] `P2-C1-S3`: produce the first admitted per-series rollout order
 
 ### P3 (Single-item automation rollout)
@@ -265,7 +283,8 @@
 
 - `S0F-8B` is now opened as the dedicated lane for `S0F` issue/PR automation coverage inventory and staged rollout.
 - `P1` is now complete: one support-only inventory exists, the current scan is materialized in JSON and markdown, and the repo now has its first explicit per-series coverage split.
-- The next immediate work is `P2`: use `S0F-1*` as the covered baseline, then decide whether `S0F-2*` or `S0F-6*` is the first fully uncovered historical packet to review for commit-readiness and later single-item automation.
+- `P2-C1-S1S2` is now complete: `S0F-1*` is fixed as the covered baseline, and `S0F-2*` is now favored over `S0F-6*` as the first historical packet for later single-item automation.
+- The next immediate work is `P2-C1-S3`: convert that review result into the first admitted rollout order, then begin `P3` preparation for `S0F-2A` and `S0F-2B`.
 
 ## Evidence (reserved)
 
@@ -284,8 +303,22 @@
   - coverage is currently concentrated in `S0F-1*`, while `S0F-2*` through `S0F-7*` remain fully uncovered in frontmatter
   - one support-only inventory now records the first series summary, covered baseline rows, and missing rows by series for later `P2`
 
+### P2-C1-S1S2 (First historical packet readiness review | 2026-04-14)
+
+- headSha: `b239623e1`
+- artifacts: `artifacts/_tmp_s0f_8b_p2_review_s0f2_vs_s0f6.json`, `docs/governance/views/support-only/inventory-s0f-issue-pr-automation-coverage-v1.md`
+- expected:
+  - the repo fixes one explicit covered baseline rather than comparing uncovered series against an implicit target
+  - the repo reviews the first realistic historical packet candidate and names one defended first choice
+  - the repo keeps a fallback comparator so later sequencing is not arbitrary
+- observed:
+  - `S0F-1*` is now fixed as the covered baseline, with `S0F-1K` as the only uncovered remainder inside that early series
+  - `S0F-2*` is now favored as the first historical packet because its commit chain remains bounded around the `2A/2B` lane and direct support surfaces
+  - `S0F-6*` remains a viable later fallback, but its history is denser and therefore weaker as the first automation packet
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-14: opened `S0F-8B` to inventory missing issue/PR automation coverage across existing `S0F` logs before any broader future `S0F` work takes priority.
 - 2026-04-14: completed `S0F-8B/P1-C1-S1S2S3` by materializing the first support-only automation-coverage inventory and machine-readable scan artifact for all on-disk main `S0F` logs.
+- 2026-04-14: completed `S0F-8B/P2-C1-S1S2` by fixing `S0F-1*` as the covered baseline and by favoring `S0F-2*` over `S0F-6*` as the first historical packet for later single-item automation.
 - 2026-04-14: admitted the same-day `road-002` draft/refinement packet as the first remembered precursor packet inside this lane so later `P*-C*-S*` commit and PR accounting can include the roadmap work explicitly.

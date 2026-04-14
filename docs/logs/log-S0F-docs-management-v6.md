@@ -689,6 +689,7 @@
 
 ## Recent changes（for traceability，可选）
 
+- 2026-04-14：`S0F-8B/P2-C1-S1S2` 已完成：`S0F-1*` 现已被固定为 covered baseline，而第一轮 historical packet readiness review 也已把 `S0F-2*` 明确排在 `S0F-6*` 之前，作为后续逐条 issue/PR automation 的第一候选系列。
 - 2026-04-14：`S0F-8B/P1-C1-S1S2S3` 已完成：repo 现已对全部 on-disk main `S0F` logs 形成第一份 formal issue/PR automation coverage inventory，support-only inventory 与 machine-readable scan artifact 都已落地，后续可以按数字系列进入 `P2` sequencing。
 - 2026-04-14：已新建 `S0F-8B`，把现有 `S0F` 历史 logs 的 GitHub issue/PR automation coverage、逐数字系列审查、以及后续逐条 full-auto rollout 固定为一条新的 bounded lane；该 lane 也明确吸收了同日 `road-002` draft/refinement 作为第一批 precursor accounting。
 - 2026-04-14：`road-002` 首版主线 roadmap 草稿现已实际落地，并已把 `S0F` 明确定位到 `M2`（docs governance、chronology-first contracts、ledger accountability）而不是后置的 asset-platform 阶段。

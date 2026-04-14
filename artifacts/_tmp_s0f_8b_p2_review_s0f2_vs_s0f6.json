@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-04-14T06:18:00Z",
+  "lane": "S0F-8B",
+  "review_unit": "P2-C1-S1S2",
+  "baseline_series": {
+    "series": "S0F-1*",
+    "issue_pr_linked": 8,
+    "issue_only": 0,
+    "missing_both": 1,
+    "interpretation": "covered baseline with one uncovered remainder at S0F-1K"
+  },
+  "candidate_review": {
+    "preferred_series": "S0F-2*",
+    "reason": "smallest fully uncovered historical packet with one short, bounded commit chain and direct supporting surfaces",
+    "relevant_commits": [
+      "07faa0660",
+      "44be1c070",
+      "9b61e1c46",
+      "9712f17e0"
+    ],
+    "adjacent_dependency_commit": "eec41d464",
+    "extractability_verdict": "admit-first-packet",
+    "notes": [
+      "S0F-2A is one clean opening commit centered on the log, runbook, parent-spine writeback, and direct-patch ledger.",
+      "S0F-2B extends that packet through one core refinement commit plus two sample commits that remain centered on patch and ops-maintenance surfaces.",
+      "The adjacent S0F-1J template-packaging commit is mixed and should be treated as a supporting dependency rather than as the core extraction unit for the first packet."
+    ]
+  },
+  "fallback_comparator": {
+    "series": "S0F-6*",
+    "reason_not_first": "bounded but much denser multi-commit view/history packet with many sequential slice commits across 6A, 6B, and 6C",
+    "comparison_conclusion": "keep as later candidate after S0F-2*"
+  },
+  "next_step": "Proceed to S0F-8B/P2-C1-S3 and then single-item automation preparation for S0F-2A and S0F-2B."
+}
