@@ -309,7 +309,8 @@
 - `P2-C1-S3` and `P3-C1-S1` are now complete: `S0F-2A` and `S0F-2B` are admitted as the first rollout packet, and their minimal extraction units are now fixed explicitly.
 - `P3-C1-S2S3` is now complete: `S0F-2A` and `S0F-2B` both have live issue/PR coverage, parent sidebar relationships, and passing PR post-apply verification results.
 - `P3-C1-S4` is now complete: `S0F-2A` and `S0F-2B` both now have concluded issue bodies with exact merged-PR DoD refs and passing post-conclusion lifecycle audits.
-- The next immediate work is to open the next admitted historical packet for full-auto, with `S0F-6*` still retained as the compact fallback comparator if the next larger series packet proves too mixed.
+- The next immediate work is now to evaluate the next larger uncovered historical packet after `S0F-6*`, because the compact fallback comparator has now been executed end to end.
+- `S0F-6*` is now complete as the second admitted historical packet: `S0F-6A`, `S0F-6B`, and `S0F-6C` all have live issue/PR coverage, parent sidebar relationships, merged PRs, and concluded issue bodies.
 
 ## Evidence (reserved)
 
@@ -381,6 +382,20 @@
   - `S0F-2A/#384` and `S0F-2B/#385` were both refreshed through targeted issue-conclusion remediation with `context_mode = llm-generate`, while preserving the closed issue state in place
   - the post-conclusion lifecycle audits for both `S0F-2A` and `S0F-2B` now pass with exact merged PR evidence sets `#386` and `#387`
 
+### P3-C2-S1S2S3S4 (Second live issue/PR/conclusion replay for `S0F-6*` | 2026-04-14)
+
+- headSha: `850a32766`
+- artifacts: `docs/issues/lifecycle-gate-s0f-6a-decision.json`, `docs/issues/lifecycle-gate-s0f-6b-decision.json`, `docs/issues/lifecycle-gate-s0f-6c-decision.json`, `docs/issues/issue-relationship-s0f-6a-guarded-apply-result.json`, `docs/issues/issue-relationship-s0f-6b-guarded-apply-result.json`, `docs/issues/issue-relationship-s0f-6c-guarded-apply-result.json`, `docs/issues/pr-prep-s0f-6a-manifest-create-result.json`, `docs/issues/pr-prep-s0f-6b-manifest-create-result.json`, `docs/issues/pr-prep-s0f-6c-manifest-create-result.json`, `docs/issues/pr-prep-s0f-6a-manifest-post-apply-verify-result.json`, `docs/issues/pr-prep-s0f-6b-manifest-post-apply-verify-result.json`, `docs/issues/pr-prep-s0f-6c-manifest-post-apply-verify-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-6a-issue-conclusion-guarded-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-6b-issue-conclusion-guarded-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-6c-issue-conclusion-guarded-apply-result.json`
+- expected:
+  - the compact fallback comparator should prove whether a denser multi-item historical packet can still pass the same guarded single-item issue, relationship, PR, and conclusion chain without widening the contract surface
+  - each `S0F-6*` log should reach live issue coverage, targeted parent relationship attachment, live PR coverage, merged PR evidence, and concluded issue-body refresh
+  - any branch extraction conflict should remain explicit in the PR create results rather than being hidden as a silent packet rewrite
+- observed:
+  - `S0F-6A`, `S0F-6B`, and `S0F-6C` first required frontmatter normalization for live issue creation, including `issue_keyword = records`, `roadmap_milestone = M2`, and contraction of unsupported scope label `sub/6`
+  - the three items now have live issue/PR coverage as `S0F-6A/#388/PR #391`, `S0F-6B/#389/PR #392`, and `S0F-6C/#390/PR #393`
+  - all three items initially stopped at lifecycle pre-gate because the GitHub sidebar parent relationship was missing, and all three were then repaired through targeted relationship remediation against parent issue `#363`
+  - all three PR create results recorded cherry-pick fallback against current `main`, all three passed post-apply PR verification, all three PRs were merged, and all three child issues were refreshed in place through guarded issue-conclusion remediation after auto-close
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-14: opened `S0F-8B` to inventory missing issue/PR automation coverage across existing `S0F` logs before any broader future `S0F` work takes priority.
@@ -389,4 +404,5 @@
 - 2026-04-14: completed `S0F-8B/P2-C1-S3+P3-C1-S1` by admitting `S0F-2A` then `S0F-2B` as the first rollout packet and by fixing their minimal PR extraction units explicitly.
 - 2026-04-14: completed `S0F-8B/P3-C1-S2S3` by creating live issues `#384/#385`, attaching both items under parent issue `#363`, creating draft PRs `#386/#387`, and recording the cherry-pick fallback plus passing post-apply verification results.
 - 2026-04-14: completed `S0F-8B/P3-C1-S4` by refreshing `S0F-2A/#384` and `S0F-2B/#385` into concluded issue bodies with exact merged PR refs and passing post-conclusion lifecycle audits.
+- 2026-04-14: completed `S0F-8B/P3-C2-S1S2S3S4` by running the second admitted historical packet `S0F-6A -> S0F-6B -> S0F-6C` end to end: live issues `#388/#389/#390`, parent relationship repair under `#363`, merged PRs `#391/#392/#393`, and guarded post-merge issue-conclusion refresh for all three children.
 - 2026-04-14: admitted the same-day `road-002` draft/refinement packet as the first remembered precursor packet inside this lane so later `P*-C*-S*` commit and PR accounting can include the roadmap work explicitly.
