@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Cleanup, Legacy, Registry, epic/s0, sub/3g`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/418`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/431`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -18,15 +18,15 @@
   **reference_log_1**: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
   **reference_log_2**: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
   **reference_log_3**: `docs/governance/INDEX.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `policy`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/3`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -35,7 +35,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-06`
-**updated**: `2026-04-07`
+**updated**: `2026-04-14`
 
 ---
 
@@ -58,6 +58,26 @@
 - If uncertainty remains about references, ownership, or later audit value, classify the file as `defer cleanup` rather than deleting it.
 - Generated, scratch, and reproducible helper outputs may be removed earlier than legacy contract, lineage, or sweep history files.
 - `INDEX.md`, active current contracts, and the stable source-owner logs for admitted semantics are out of scope for destructive cleanup unless a later bounded round proves otherwise.
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-3G` defines the staged cleanup model and executes the first defended support-only move rounds.
+
+**PR summary bullets**:
+
+- Define the staged governance-file cleanup model with explicit keep, move, delete, and defer classes.
+- Execute bounded support-only relocations while preserving current-state readability and redirect value.
+- Recheck mixed-standing lifecycle surfaces and keep defended non-write results explicit instead of forcing cleanup.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the staged cleanup package.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+- Previous log: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+- Front door: `docs/governance/INDEX.md`
 
 ## Scope
 
