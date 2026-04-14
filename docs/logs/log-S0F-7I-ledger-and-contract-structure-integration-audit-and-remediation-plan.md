@@ -280,8 +280,8 @@
 - `P1-C1-S2` is now complete: the selected parent ledgers and SUP ledgers are now classified against the current lifecycle, sequence, chronology, and review-surface baseline.
 - `P2-C1-S1` is now complete: the first-pass findings are now grouped into `already-complete-enough`, `partially-aligned`, and `old-shape-needs-repair`.
 - `P2-C1-S2` is now complete: the lane now records one proposed repair order for user review before any actual remediation batch starts.
-- `P3-C1-S1` is now complete in workspace: the first approved repair batch now upgrades the Batch B ledgers with current lifecycle-header structure, and `S0B-3A` now also exposes stable row ids aligned to the current parent-ledger template.
-- `P3-C1-S2` is now complete in workspace: the repaired ledgers now give the later contract batch a cleaner bridge surface for chronology, routing, and row-level source references.
+- `P3-C1-S1` is now complete: the first approved repair batch now upgrades the Batch B ledgers with current lifecycle-header structure, and `S0B-3A` now also exposes stable row ids aligned to the current parent-ledger template.
+- `P3-C1-S2` is now complete: the repaired ledgers now give the later contract batch a cleaner bridge surface for chronology, routing, and row-level source references.
 - The next step is to reassess the contract batch against the newly repaired ledger bridge and then start Batch A with the broad workflow parent and GitHub-Issues family files.
 
 ## Evidence (reserved)
@@ -303,6 +303,8 @@
   - the broadest first-pass repair pressure currently sits on the early workflow parent/child contracts and the older `S0B` parent ledgers, while newer `S0A-1A`, `PROJECTS-0001`, `RUNBOOK-0001`, and `LABS-0002` surfaces are already materially close to the active baseline
 
 ### P3-C1-S1S2 (Batch B ledger repair and contract-bridge readiness fixed in workspace | 2026-04-14)
+
+- headSha: `094acac97`
 
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
