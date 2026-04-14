@@ -20,7 +20,7 @@
   **reference_log_3**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **reference_log_4**: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
   **reference_log_5**: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
-  **reference_log_6**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  **reference_log_6**: `docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`

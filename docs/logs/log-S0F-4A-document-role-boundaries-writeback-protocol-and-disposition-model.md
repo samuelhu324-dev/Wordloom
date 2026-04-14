@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Workflow, Contract, Runbook, Views, Cleanup, Naming, Lifecycle, epic/s0, sub/4a`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/396`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/404`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -20,15 +20,15 @@
   **reference_log_3**: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
   **reference_log_4**: `docs/governance/INDEX.md`
   **reference_log_5**: `docs/governance/views/view-contract-sweep-workflow-v1.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `policy`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/4`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -37,7 +37,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-07`
-**updated**: `2026-04-07`
+**updated**: `2026-04-14`
 
 ---
 
@@ -80,6 +80,28 @@
 - `P4`: define disposition and placement rules, including future external-storage planning boundary
 - `P5`: later pilot one or two bounded families against this model rather than attempting repo-wide retroactive rewrite immediately
 - `P6`: open one bounded retained-content rewrite lane for the strongest mixed-role deferred log before returning to `S0F-3G` cleanup disposition work
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-4A` defines the document-role and write-back contract that downstream `4*` slices read directly.
+- `PR Summary Inputs` remains an automation-facing source block and must not be replaced by outlet prose.
+- The generated PR summary should stay at the contract level and avoid re-listing the full execution checklist.
+
+**PR summary bullets**:
+
+- Define one six-outlet document-role model that separates stable current rule, procedure, reader surface, source-log ledger, and disposition work.
+- Fix one deterministic close-out write-back order so future slices can export stable material out of logs without ad hoc judgment.
+- Prove the model on a bounded retained-content rewrite lane before returning to broader cleanup and relocation work.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for any PR that publishes the `S0F-4A` role-boundary contract.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
+- Parent log: `docs/logs/log-S0F-docs-management-v6.md`
+- Previous log: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
 
 ## Current Status
 

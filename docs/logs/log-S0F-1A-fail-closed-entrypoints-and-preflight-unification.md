@@ -10,16 +10,16 @@
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Automation, Drills, Evidence, epic/s0, sub/1a`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/364`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/365`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
-  **previous_log**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  **previous_log**: `docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **reference_log_1**: `docs/logs/log-S0E-2B-real-github-issue-creation-automation.md`
   **reference_log_2**: `docs/logs/log-S0E-4A-github-pr-automation-contract.md`
   **reference_log_3**: `docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md`
   **reference_log_4**: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
-  **reference_log_5**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  **reference_log_5**: `docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
@@ -35,7 +35,7 @@
 **pr_projects**: ``
 **pr_milestone**: ``
 **pr_base**: `main`
-**pr_development_issue**: ``
+**pr_development_issue**: `#364`
 **created**: `2026-04-04`
 **updated**: `2026-04-04`
 
@@ -315,3 +315,5 @@
 - 2026-04-04: completed `P2` by hardening `scripts/issues/create_pr_from_plan.py` so live PR publish now requires a matching successful front-half preflight artifact, then retained one `S0F-1A` stop sample that proves preview generation does not imply publish eligibility.
 - 2026-04-04: completed `P3` by hardening raw issue-conclusion, issue-relationship, and PR body rewrite mutation paths behind one internal-only guard, then retaining one inventory artifact plus one raw-block sample per family to prove guarded wrapper convergence.
 - 2026-04-04: completed `P4` by fixing one explicit local-primary versus GitHub-secondary boundary artifact and tightening both GitHub workflow summaries/manifests so `workflow_dispatch` and mirror verification remain secondary enforcement only.
+- 2026-04-04: corrected the lifecycle contract so create-time issue bodies keep an empty-but-present `Context` section while the first substantive `Context` prose is generated only during issue conclusion.
+- 2026-04-04: completed the corrected `S0F-1A` full-auto rerun end-to-end with live parent issue `#363`, live child issue `#364`, merged PR `#365`, and guarded post-merge issue conclusion that now allows targeted conclusion-owned remediation instead of self-blocking at `stop-for-remediation`.

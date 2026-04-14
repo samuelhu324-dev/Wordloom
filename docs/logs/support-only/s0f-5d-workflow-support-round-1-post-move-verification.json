@@ -1,0 +1,71 @@
+{
+  "id": "S0F-5D",
+  "phase": "P3",
+  "generatedAt": "2026-04-09",
+  "cleanupRound": "workflow-support-round-1",
+  "verification": {
+    "rootStubLanding": {
+      "status": "pass",
+      "paths": [
+        "docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md",
+        "docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
+        "docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md"
+      ],
+      "checks": [
+        "each old root path remains occupied by a stub with moved_from, moved_to, moved_at, cleanup_log, and cleanup_manifest fields",
+        "the old exact paths still land cleanly for historical readers instead of 404ing after support-only relocation",
+        "each stub states that the retained body moved and that the root path should not be edited"
+      ]
+    },
+    "movedRetainedBodies": {
+      "status": "pass",
+      "paths": [
+        "docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md",
+        "docs/logs/support-only/s0/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md",
+        "docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md"
+      ],
+      "checks": [
+        "the retained workflow-support bodies are readable under docs/logs/support-only/s0/",
+        "self-links and adjacent workflow-support references now prefer the moved support-only bodies",
+        "the moved retained bodies remain historical proof and do not replace GC-WF-0001 as the current rule surface"
+      ]
+    },
+    "supportOnlyNavigation": {
+      "status": "pass",
+      "paths": [
+        "docs/logs/support-only/INDEX.md",
+        "docs/logs/log-S0E-docs-management-v5.md",
+        "docs/logs/log-S0F-docs-management-v6.md",
+        "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+        "docs/logs/log-S0F-1C-guarded-multi-item-live-mutation-remediation.md",
+        "docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md",
+        "docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md",
+        "docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md",
+        "docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md",
+        "docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md",
+        "docs/governance/views/support-only/view-wf-family-sweep-v1.md"
+      ],
+      "checks": [
+        "the support-only index lists S0E-7E, S0E-7F, and S0E-7G explicitly",
+        "the bounded direct-navigation surfaces now point to the moved support-only bodies instead of the old root paths",
+        "no unexpected old-root citation remains inside the planned direct-navigation set after the S0F-1G catch-up rewrite"
+      ]
+    },
+    "standingWriteback": {
+      "status": "pass",
+      "paths": [
+        "docs/governance/views/view-old-s0-series-s0e-standing-v1.md",
+        "docs/governance/views/support-only/inventory-old-s0-migration-working-ledger-v1.md"
+      ],
+      "checks": [
+        "the S0E standing rows now describe the support-only retained-body reading home explicitly",
+        "the working ledger target surfaces now point at the moved support-only bodies for S0E-7E, S0E-7F, and S0E-7G",
+        "the exact-path root stubs remain an intentional landing surface for preserved historical readers rather than an execution miss"
+      ]
+    }
+  },
+  "p3Conclusion": {
+    "status": "verified",
+    "summary": "The first admitted workflow-support cleanup subset now verifies cleanly: root stubs preserve exact-path landing, the moved retained bodies are readable under support-only, the planned direct-navigation set now points to the moved bodies, and the standing/working-ledger surfaces reflect the landed support-only reading home without widening into mass historical rewrites."
+  }
+}

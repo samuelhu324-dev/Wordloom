@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Contract, Registry, Sweep, Audit, epic/s0, sub/3f`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/417`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/430`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -27,15 +27,15 @@
   **reference_log_10**: `docs/governance/views/support-only/view-attr-admission-package-v1.md`
   **reference_log_11**: `docs/governance/views/support-only/view-prb-follow-up-family-sweep-v1.md`
   **reference_log_12**: `docs/governance/views/support-only/view-issue-automation-follow-up-family-sweep-v1.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `workflow`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/3`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -44,7 +44,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-06`
-**updated**: `2026-04-06`
+**updated**: `2026-04-14`
 
 ---
 
@@ -67,6 +67,26 @@
 - Old contracts are not deleted merely because a later sweep reclassifies them.
 - `INDEX.md` remains current-state-only; sweep history, lineage, and packaging details belong in slice logs, legacy files, and views.
 - A sweep may end with `no new current contract` for some or all rows; the workflow exists to prevent forced admission, not to guarantee growth.
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-3F` fixes the reusable sweep workflow that later bounded family packets should follow instead of inventing new admission mechanics.
+
+**PR summary bullets**:
+
+- Define the reusable contract-sweep worksheet, decision table, and allowed-action matrix.
+- Pilot bounded family sweeps that separate current contracts from support-only or legacy history.
+- Reuse the workflow to close bounded `REMED`, `WF`, and `ATTR` lanes without ad hoc front-door mutation.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the contract-sweep workflow package.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md`
+- Previous log: `docs/logs/log-S0F-3E-governance-registry-lineage-and-legacy-handling.md`
+- Workflow view: `docs/governance/views/view-contract-sweep-workflow-v1.md`
 
 ## Scope
 
