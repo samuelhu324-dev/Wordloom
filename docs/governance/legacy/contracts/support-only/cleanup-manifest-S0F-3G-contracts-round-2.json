@@ -1,0 +1,33 @@
+{
+  "round_id": "S0F-3G-contracts-round-2",
+  "bounded_candidate_set": [
+    "docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md",
+    "docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md"
+  ],
+  "defaults": {
+    "support_only_root": "docs/governance/contracts/support-only/",
+    "directory_index": "docs/governance/contracts/support-only/INDEX.md"
+  },
+  "items": [
+    {
+      "candidate_path": "docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md",
+      "candidate_class": "legacy redirect contract",
+      "proposed_cleanup_outcome": "keep legacy",
+      "status": "retained"
+    },
+    {
+      "candidate_path": "docs/governance/contracts/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md",
+      "candidate_class": "support-only contract backtrace",
+      "proposed_cleanup_outcome": "move to support-only location",
+      "target_path": "docs/governance/contracts/support-only/GC-PRB-0001-backfill-historical-drift-fail-on-findings.md",
+      "required_reference_updates": [
+        "docs/governance/INDEX.md",
+        "docs/governance/views/support-only/view-prb-follow-up-family-sweep-v1.md",
+        "docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md",
+        "docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md",
+        "docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md"
+      ],
+      "status": "executed"
+    }
+  ]
+}
