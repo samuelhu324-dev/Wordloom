@@ -36,9 +36,9 @@
   **phase_log_24**: `docs/logs/log-S0E-6F-issue-body-metadata-links-boundary-follow-up.md`
   **phase_log_25**: `docs/logs/log-S0E-4F-pr-body-metadata-links-redundancy-follow-up.md`
   **phase_log_26**: `docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
-  **phase_log_27**: `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
-  **phase_log_28**: `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
-  **phase_log_29**: `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  **phase_log_27**: `docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  **phase_log_28**: `docs/logs/support-only/s0/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  **phase_log_29**: `docs/logs/support-only/s0/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
   **phase_log_30**: `docs/logs/log-S0E-3B-github-label-inventory-and-live-preflight.md`
   **phase_log_31**: `docs/logs/log-S0E-5E-parent-issue-dod-child-log-ordering-and-gate.md`
   **phase_log_7**: `docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md`
@@ -141,7 +141,7 @@
 - `S0E-7D`（Phase 7D）：publish / verify / remediation / failure semantics
   - 详见：`docs/logs/log-S0E-7D-publish-verify-remediation-and-failure-semantics.md`
 - `S0E-7E`（Phase 7E）：publish-verify-remediation gate thin orchestration entrypoint
-  - 详见：`docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - 详见：`docs/logs/support-only/s0/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -445,6 +445,8 @@
 
 ## Recent changes（for traceability，可选）
 
+- 2026-04-14：`road-002` 首版主线 roadmap 草稿现已实际落地，并把 `S0E` 作为 `M1` 的既有完成面正式吸收到 projection-runtime / evidence-governance 主线中。
+- 2026-04-14：`road-002` 第二轮修订已明确把 `S0E + S0F` 之后的下一类工作分拆为 `M3` governance control plane 与 `M4` tenant access control plane，避免把 ownership 语义与 authorization / billing 语义混写在同一 lane 里。
 - 2026-04-03：已完成 `S0E` parent issue `#248` 的 bounded refresh/remediation：缺失的 `#342/#339/#340` child relationships 已补齐，live parent body 已按 source-log-owned child ledger、完整 `Roadmap` link 与新的 parent `Context` 回写，随后 bounded replay audit 已重新回到 `pass`。
 - 2026-03-28：首次创建 `S0E` spine，用于承接 docs-management v5 中的 issue scaffold / taxonomy / structured mapping 主题。
 - 2026-03-28：新增 `S0E-2C`，把 batch issue creation / parent-child linking / milestone-backfill tooling 从 `S0E-2B` 中拆出为独立 follow-up slice。
