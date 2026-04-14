@@ -76,6 +76,7 @@
   **phase_log_56**: `docs/logs/log-S0F-7G-approval-facing-screenshot-evidence-review-and-attachment-protocol.md`
   **phase_log_57**: `docs/logs/log-S0F-7H-actor-and-provenance-fields-for-evidence-review-governance.md`
   **phase_log_58**: `docs/logs/log-S0F-7I-ledger-and-contract-structure-integration-audit-and-remediation-plan.md`
+  **phase_log_59**: `docs/logs/log-S0F-8B-s0f-issue-pr-automation-inventory-and-per-series-rollout.md`
 
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
@@ -85,7 +86,7 @@
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -94,7 +95,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-04`
-**updated**: `2026-04-13`
+**updated**: `2026-04-14`
 
 ---
 
@@ -688,6 +689,10 @@
 
 ## Recent changes（for traceability，可选）
 
+- 2026-04-14：`S0F-8B/P1-C1-S1S2S3` 已完成：repo 现已对全部 on-disk main `S0F` logs 形成第一份 formal issue/PR automation coverage inventory，support-only inventory 与 machine-readable scan artifact 都已落地，后续可以按数字系列进入 `P2` sequencing。
+- 2026-04-14：已新建 `S0F-8B`，把现有 `S0F` 历史 logs 的 GitHub issue/PR automation coverage、逐数字系列审查、以及后续逐条 full-auto rollout 固定为一条新的 bounded lane；该 lane 也明确吸收了同日 `road-002` draft/refinement 作为第一批 precursor accounting。
+- 2026-04-14：`road-002` 首版主线 roadmap 草稿现已实际落地，并已把 `S0F` 明确定位到 `M2`（docs governance、chronology-first contracts、ledger accountability）而不是后置的 asset-platform 阶段。
+- 2026-04-14：`road-002` 的第二轮修订已把后续 `M3` 明确压实为 `DOC`-first governance-control lane opening，而不是立刻把 ownership/approval/handoff 抽离成脱离 docs 管理面的独立系统线。
 - 2026-04-04：初始化 `S0F`，把 docs-management v6 的问题定义为 fail-closed entrypoints、preflight/gate unification、以及 optional GitHub Actions secondary enforcement 的新 spine。
 - 2026-04-04：`S0F-1A/P0-P1` 已完成第一轮收口；真实 issue creation 现在会在 inferred keyword 路径上 fail-closed，并保留同源 draft-generation evidence 供后续 review 使用。
 - 2026-04-04：`S0F-1A/P2` 已完成；真实 `create_pr_from_plan.py` 现在把 front-half preflight result 视为 live publish 的硬前置，且已用一个 occupied-branch stop 样本证明 preview planning 不再等于 publish 资格。
