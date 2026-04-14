@@ -32,10 +32,18 @@
 **pr_milestone**: ``         # exact GitHub milestone name for the PR; if blank, automation must leave the PR milestone empty
 **pr_base**: ``              # exact PR base branch, e.g. main; if blank, dry-run may report it missing but must not guess another base
 **pr_development_issue**: `` # exact issue number/url the PR should record in Metadata as Development issue; if blank, automation must leave that metadata row empty
-**created**: `YYYY-MM-DD`
-**updated**: `YYYY-MM-DD`
+**created**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown`
+**updated**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown`
+**reviewed**: `YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|pending`   # optional minimum review-state timestamp for logs that are actually reviewed as bounded governance packets
 
 ---
+
+## Frontmatter Lifecycle-Time Rule
+
+- `created`, `updated`, and optional `reviewed` are the minimum artifact-lifecycle fields for this template.
+- Prefer canonical UTC-second timestamps such as `2026-04-13T08:15:30Z` when exact repo-side lifecycle audit matters.
+- Legacy day-only values such as `2026-04-13` remain valid when finer precision is unnecessary or unavailable.
+- `reviewed` should be used only when the log is actually reviewed as one bounded governance packet; do not force it onto every scratch draft.
 
 ## Decision / Outcome
 
@@ -47,6 +55,7 @@
 **Default choices (phase defaults / v1)** (optional, but recommended):
 
 - <For example: dev/test first; avoid production-grade complexity; do not commit generated artifacts; required evidence JSON fields>
+- draft 阶段默认继续把 source log 当作集中面；如果问题边界、规则、过程、reader summary 或 front-door 影响仍在变化，不要过早把 weak-structure 内容拆到多个 outlets。
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
 - Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
@@ -81,6 +90,23 @@
 - Generated PR body should keep `Evidence Footer` as the only optional section; development issue identity stays in `Metadata`.
 - `Evidence Footer` rows must be copied only from `Evidence Footer Source` and must keep the same line shape.
 
+## Exported Sections / Outlet Ownership
+
+- Use this block only to split weak-structure content out of the source log after outlet ownership is explicit.
+- Do not use outlet export to delete the source-log minimum core: `Decision / Outcome`, `PR Summary Inputs` when this log is an automation source, `Execution Checklist`, `Current Status`, and `Evidence` must remain readable here.
+- Strong-structure sections stay owned by the source log unless a later contract explicitly authorizes a different automation reader model.
+- Once the slice reaches stable close-out review, answer `contract / runbook / view / index/front-door / disposition/placement / log-retained core` explicitly; justified `no-op` is valid, but skipping the outlet decision is not.
+- Do not export `runbook` or `view` mechanically; only export them when they have a stable reusable role beyond shortening one finished log.
+
+**Outlet ownership**:
+
+- `contract`: <stable rule text that should leave this log>
+- `runbook`: <stable repeatable operator procedure that should leave this log>
+- `view`: <reader-facing family or status summary that should leave this log>
+- `index/front-door`: <navigation or entrypoint mutations that should leave this log>
+- `disposition/placement`: <support-only / legacy / cleanup standing that should leave this log>
+- `log-retained core`: <what must remain here as source-log strong structure plus bridge notes>
+
 ## Definitions (optional)
 
 - <3-10 key terms so readers do not need to infer meaning>
@@ -106,6 +132,7 @@
 - This log can be marked `stable` when:
   - <The P0-Pn contract, entry scripts, and drills have all been exercised successfully>
   - The Evidence section includes traceable `headSha` values plus artifact paths (or CI run URLs)
+- `stable` is the normal gate for close-out review, not a command to emit every outlet; explicit `no-op` answers remain valid when `contract`, `runbook`, `view`, or `index/front-door` export is not warranted.
 
 ## P0 (Contract | v1)
 
@@ -176,6 +203,12 @@
 
 - [ ] `P1-C1-S1`: ...
 - [ ] `P1-C1-S2`: ...
+
+## Current Status (recommended)
+
+- <One-line overall state for this source log>
+- <What is already stable, what still remains open, and whether automation should still read this log as an active source>
+- If the log is already stable or entering stable review, state whether the next step is a bounded `Pn+1` export package, direct log retention, or deferred export because target outlet identity is still not stable.
 
 ## Evidence (reserved)
 
