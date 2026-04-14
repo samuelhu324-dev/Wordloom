@@ -9,6 +9,9 @@
 - S5: Security & Governance
 - S6: Evidence & Drills
 
+- `S0-S6` is the system-level map used by this index; it is not the first-level contract taxonomy.
+- Contract-family classification should be treated as a separate axis from these levels, so one contract family may affect more than one `S` level and one `S` level may contain more than one contract family.
+
 ### S0: Knowledge System
 
 - Docs-centered management
@@ -79,6 +82,12 @@
   7) traceability by headSHA, run ID, scenario ID, and artifact lineage
 
 # what they might contain
+
+## Support-only historical logs
+
+- `docs/logs/` root remains the current-log and parent-spine surface.
+- Fully support-only historical logs that no longer need root placement may be relocated under `docs/logs/support-only/` when `S0F-3G` or a later bounded cleanup slice proves discoverability and rewrite safety.
+- `docs/logs/support-only/INDEX.md` is the directory entrypoint for relocated support-only logs; mixed-standing or still-reader-facing logs stay at the root until a later bounded round proves they are safe to move.
 
 ## S0-related
 

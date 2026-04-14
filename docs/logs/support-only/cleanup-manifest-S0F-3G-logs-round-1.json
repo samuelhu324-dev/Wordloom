@@ -1,0 +1,51 @@
+{
+  "round_id": "S0F-3G-logs-round-1",
+  "bounded_candidate_set": [
+    "docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md",
+    "docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md",
+    "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md"
+  ],
+  "defaults": {
+    "support_only_root": "docs/logs/support-only/",
+    "scope_bucket": "docs/logs/support-only/s0/",
+    "directory_index": "docs/logs/support-only/INDEX.md"
+  },
+  "items": [
+    {
+      "candidate_path": "docs/logs/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md",
+      "candidate_class": "support-only log",
+      "proposed_cleanup_outcome": "move to support-only location",
+      "target_path": "docs/logs/support-only/s0/log-S0F-1E-completeness-classification-buckets-and-audit-output-taxonomy.md",
+      "required_reference_updates": [
+        "docs/logs/log-S0F-docs-management-v6.md",
+        "docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md",
+        "docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md",
+        "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
+        "docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md",
+        "docs/governance/views/support-only/view-s0f-1-family-sweep-v1.md"
+      ],
+      "status": "executed"
+    },
+    {
+      "candidate_path": "docs/logs/log-S0F-1F-bucketed-audit-output-materialization.md",
+      "candidate_class": "support-only log",
+      "proposed_cleanup_outcome": "move to support-only location",
+      "target_path": "docs/logs/support-only/s0/log-S0F-1F-bucketed-audit-output-materialization.md",
+      "required_reference_updates": [
+        "docs/logs/log-S0F-docs-management-v6.md",
+        "docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md",
+        "docs/logs/log-S0F-1H-pr-body-completeness-reviewer.md",
+        "docs/logs/log-S0F-3F-governance-contract-sweep-workflow.md",
+        "docs/governance/views/support-only/view-s0f-1-family-sweep-v1.md"
+      ],
+      "status": "executed"
+    },
+    {
+      "candidate_path": "docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md",
+      "candidate_class": "mixed-standing log",
+      "proposed_cleanup_outcome": "defer cleanup",
+      "reason": "The file mixes support-only P1-P3 repair history with later current-adjacent gate packaging and downstream traceability, so whole-file relocation would currently over-collapse meaning.",
+      "status": "deferred"
+    }
+  ]
+}
