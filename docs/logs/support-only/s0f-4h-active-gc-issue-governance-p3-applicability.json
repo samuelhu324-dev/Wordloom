@@ -1,0 +1,98 @@
+{
+  "id": "s0f-4h-p3-active-gc-issue-governance-doc-packet-applicability",
+  "created_at": "2026-04-09",
+  "phase": "S0F-4H/P3-C1-S1S2",
+  "bounded_subset": [
+    "GC-ICR-0001",
+    "GC-ICL-0001",
+    "GC-ICT-0001",
+    "GC-IID-0001",
+    "GC-IID-0002"
+  ],
+  "question": "Can the active issue-governance GC current subset re-home as one bounded DOC-target packet without weakening current-reader clarity?",
+  "applicability_result": {
+    "bounded_doc_packet_applicable": true,
+    "single_monolithic_contract_applicable": false,
+    "family_split_required": false,
+    "reason": [
+      "All five records align to DOC rather than OPS, so one family-level packet is defensible.",
+      "The current DOC landing model already supports stable family-owned current bodies under docs/governance/contract/.",
+      "The subset still contains four distinct governance areas and at least four source-owner traces, so collapsing them into one single DOC contract would blur current rule ownership."
+    ]
+  },
+  "recommended_packet_shape": {
+    "packet_kind": "bounded DOC promotion packet",
+    "packet_family": "DOC",
+    "packet_units": [
+      {
+        "unit": "issue-creation",
+        "source_gc_records": [
+          "GC-ICR-0001"
+        ],
+        "shared_source_owner_cluster": [
+          "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+          "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+          "docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md"
+        ]
+      },
+      {
+        "unit": "issue-conclusion",
+        "source_gc_records": [
+          "GC-ICL-0001"
+        ],
+        "shared_source_owner_cluster": [
+          "docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md",
+          "docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md"
+        ]
+      },
+      {
+        "unit": "issue-context",
+        "source_gc_records": [
+          "GC-ICT-0001"
+        ],
+        "shared_source_owner_cluster": [
+          "docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md",
+          "docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md"
+        ]
+      },
+      {
+        "unit": "issue-identity",
+        "source_gc_records": [
+          "GC-IID-0001",
+          "GC-IID-0002"
+        ],
+        "shared_source_owner_cluster": [
+          "docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md"
+        ]
+      }
+    ]
+  },
+  "stop_reasons": {
+    "why_not_single_contract": [
+      "ICR, ICL, ICT, and IID already behave as distinct current governance areas under the narrow GC registry.",
+      "The DOC landing model expects stable area-owned current rule bodies rather than one coarse omnibus contract.",
+      "A single replacement body would make current ownership less clear than the existing split-package semantics."
+    ],
+    "why_not_doc_ops_split": [
+      "No record in the bounded subset reads as deploy, verify, rollback, release, or runtime operator governance.",
+      "The full subset remains inside one docs/GitHub lifecycle governance cluster."
+    ]
+  },
+  "p4_decision_inputs": {
+    "next_safe_boundary": "one bounded DOC-target promotion packet with four area-level landing units",
+    "requires_explicit_replacement_surface": true,
+    "requires_gc_demotion_plan": true
+  },
+  "source_refs": [
+    "docs/governance/contract/_template-doc-contract-record.md",
+    "docs/governance/contract/DOC-DRB-0001-document-role-boundaries-writeback-and-disposition.md",
+    "docs/governance/contracts/GC-ICR-0001-issue-creation-metadata-english-body.md",
+    "docs/governance/contracts/GC-ICL-0001-issue-conclusion-post-merge-linkage.md",
+    "docs/governance/contracts/GC-ICT-0001-issue-context-sentence-count-main-vs-child.md",
+    "docs/governance/contracts/GC-IID-0001-parent-sidebar-ordering-ownership.md",
+    "docs/governance/contracts/GC-IID-0002-issue-title-keyword-controlled-vocabulary.md",
+    "docs/governance/contract/INDEX.md",
+    "docs/governance/views/view-iss-split-package-v1.md",
+    "docs/logs/support-only/s0f-4h-active-gc-issue-governance-rehoming-rule.json"
+  ]
+}
