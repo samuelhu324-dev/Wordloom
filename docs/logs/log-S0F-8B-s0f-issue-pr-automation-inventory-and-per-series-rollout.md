@@ -237,6 +237,26 @@
   - `S0F-6*` remains a viable fallback series, but its history is denser and more layered across `6A`, `6B`, and `6C`, so it is a weaker first packet than `S0F-2*`
 - Under this rule, the next sequencing step should continue with `S0F-2A` and `S0F-2B` before any fallback shift to `S0F-6*`.
 
+### P2-C1-S3 (First admitted rollout order fixed | v1)
+
+- The first admitted rollout order is now fixed as:
+  - rollout unit `1` = `S0F-2A`
+  - rollout unit `2` = `S0F-2B`
+  - fallback next-series comparator = `S0F-6*`
+- Under this rule:
+  - `S0F-2*` is no longer only a likely first packet; it is the admitted first packet
+  - `S0F-2A` and `S0F-2B` should be handled as two sequential single-item automation targets rather than one merged issue/PR action
+  - wider uncovered series remain deferred until the first `S0F-2*` rollout proves the path
+
+### P3-C1-S1 (Commit-readiness review rule fixed for `S0F-2A` and `S0F-2B` | v1)
+
+- The first commit-readiness rule is now fixed as `focused unit first, supporting dependency noted separately`.
+- Applied to the admitted first packet:
+  - `S0F-2A` should use one focused PR extraction unit: commit `07faa0660`
+  - `S0F-2B` should use one focused three-commit extraction unit: `44be1c070`, `9b61e1c46`, and `9712f17e0`
+  - adjacent template-packaging commit `eec41d464` should remain noted as a supporting dependency only and should not be treated as the core extraction unit for `S0F-2B`
+- Under this rule, later issue/PR automation should not guess packet boundaries from branch proximity alone; the packet must already be named and defended in this lane first.
+
 ### P3 (Single-item automation rollout)
 
 - `P3-C1-S1`: fix the commit-readiness review rule for extracting one focused PR from the current `S0F` branch
@@ -267,13 +287,13 @@
 
 - [x] `P2-C1-S1`: extract the known-covered baseline from `S0F-1*`
 - [x] `P2-C1-S2`: review `S0F-2*` through `S0F-7*` for missing coverage and branch-commit readiness
-- [ ] `P2-C1-S3`: produce the first admitted per-series rollout order
+- [x] `P2-C1-S3`: produce the first admitted per-series rollout order
 
 ### P3 (Single-item automation rollout)
 
-- [ ] `P3-C1-S1`: fix the commit-readiness review rule for focused PR extraction
-- [ ] `P3-C1-S2`: run guarded single-item issue automation for the first admitted uncovered logs
-- [ ] `P3-C1-S3`: run guarded single-item PR automation after issue coverage is in place
+- [x] `P3-C1-S1`: fix the commit-readiness review rule for focused PR extraction
+- [x] `P3-C1-S2`: run guarded single-item issue automation for the first admitted uncovered logs
+- [x] `P3-C1-S3`: run guarded single-item PR automation after issue coverage is in place
 
 ### P4 (Optional orchestration follow-up)
 
@@ -284,7 +304,9 @@
 - `S0F-8B` is now opened as the dedicated lane for `S0F` issue/PR automation coverage inventory and staged rollout.
 - `P1` is now complete: one support-only inventory exists, the current scan is materialized in JSON and markdown, and the repo now has its first explicit per-series coverage split.
 - `P2-C1-S1S2` is now complete: `S0F-1*` is fixed as the covered baseline, and `S0F-2*` is now favored over `S0F-6*` as the first historical packet for later single-item automation.
-- The next immediate work is `P2-C1-S3`: convert that review result into the first admitted rollout order, then begin `P3` preparation for `S0F-2A` and `S0F-2B`.
+- `P2-C1-S3` and `P3-C1-S1` are now complete: `S0F-2A` and `S0F-2B` are admitted as the first rollout packet, and their minimal extraction units are now fixed explicitly.
+- `P3-C1-S2S3` is now complete: `S0F-2A` and `S0F-2B` both have live issue/PR coverage, parent sidebar relationships, and passing PR post-apply verification results.
+- The next immediate work is `P4-C1-S1`: decide whether the first live `S0F-2*` replay is enough as-is or whether one thin wrapper/reporter should be opened for later historical packets.
 
 ## Evidence (reserved)
 
@@ -316,9 +338,38 @@
   - `S0F-2*` is now favored as the first historical packet because its commit chain remains bounded around the `2A/2B` lane and direct support surfaces
   - `S0F-6*` remains a viable later fallback, but its history is denser and therefore weaker as the first automation packet
 
+### P2-C1-S3+P3-C1-S1 (First admitted rollout order and extraction-boundary review | 2026-04-14)
+
+- headSha: `27b95084b`
+- artifacts: `artifacts/_tmp_s0f_8b_p3_commit_readiness_s0f2.json`, `docs/governance/views/support-only/inventory-s0f-issue-pr-automation-coverage-v1.md`
+- expected:
+  - the repo converts the preferred first packet into one admitted rollout order rather than leaving it as a likely candidate only
+  - the repo fixes one explicit PR extraction unit per admitted first-packet log
+  - the repo separates core extraction commits from adjacent supporting dependency commits
+- observed:
+  - `S0F-2A` and `S0F-2B` are now fixed as rollout units `1` and `2` inside the first admitted packet
+  - `S0F-2A` now has one defended single-commit extraction unit at `07faa0660`
+  - `S0F-2B` now has one defended three-commit extraction unit at `44be1c070`, `9b61e1c46`, and `9712f17e0`, while `eec41d464` remains documented as supporting dependency only
+
+### P3-C1-S2S3 (First live single-item issue/PR automation replay for `S0F-2*` | 2026-04-14)
+
+- headSha: `27b95084b`
+- artifacts: `artifacts/_tmp_s0f_8b_p3_full_auto_s0f2.json`, `docs/issues/lifecycle-gate-s0f-2a-decision.json`, `docs/issues/lifecycle-gate-s0f-2b-decision.json`, `docs/issues/issue-relationship-s0f-2a-guarded-apply-result.json`, `docs/issues/issue-relationship-s0f-2b-guarded-apply-result.json`, `docs/issues/pr-prep-s0f-2a-manifest-create-result.json`, `docs/issues/pr-prep-s0f-2b-manifest-create-result.json`, `docs/issues/pr-prep-s0f-2a-manifest-post-apply-verify-result.json`, `docs/issues/pr-prep-s0f-2b-manifest-post-apply-verify-result.json`
+- expected:
+  - the first admitted historical packet replays as two sequential single-item live issue/PR automation actions
+  - each admitted log reaches live GitHub issue coverage, parent sidebar linkage, live PR coverage, and post-apply PR contract verification
+  - any create-time branch extraction conflict is surfaced explicitly rather than hidden as a silent packet rewrite
+- observed:
+  - `S0F-2A` now has live issue `#384` and draft PR `#386`, while `S0F-2B` now has live issue `#385` and draft PR `#387`
+  - both issues initially stopped at lifecycle pre-gate because the GitHub sidebar parent relationship was missing, and both were then repaired through targeted relationship remediation against parent issue `#363`
+  - both PRs were created from the defended extraction units and finished with `post_apply_verify_status = pass`
+  - both PR branches needed explicit cherry-pick fallback because the original packet conflicted against current `main`, and the create results now record that fallback rather than pretending the packet cherry-picked cleanly
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-14: opened `S0F-8B` to inventory missing issue/PR automation coverage across existing `S0F` logs before any broader future `S0F` work takes priority.
 - 2026-04-14: completed `S0F-8B/P1-C1-S1S2S3` by materializing the first support-only automation-coverage inventory and machine-readable scan artifact for all on-disk main `S0F` logs.
 - 2026-04-14: completed `S0F-8B/P2-C1-S1S2` by fixing `S0F-1*` as the covered baseline and by favoring `S0F-2*` over `S0F-6*` as the first historical packet for later single-item automation.
+- 2026-04-14: completed `S0F-8B/P2-C1-S3+P3-C1-S1` by admitting `S0F-2A` then `S0F-2B` as the first rollout packet and by fixing their minimal PR extraction units explicitly.
+- 2026-04-14: completed `S0F-8B/P3-C1-S2S3` by creating live issues `#384/#385`, attaching both items under parent issue `#363`, creating draft PRs `#386/#387`, and recording the cherry-pick fallback plus passing post-apply verification results.
 - 2026-04-14: admitted the same-day `road-002` draft/refinement packet as the first remembered precursor packet inside this lane so later `P*-C*-S*` commit and PR accounting can include the roadmap work explicitly.

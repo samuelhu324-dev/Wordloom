@@ -1,0 +1,42 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-s0f-2a-manifest-plan.json",
+  "preflight_result_path": "docs/issues/pr-prep-s0f-2a-manifest-front-half-preflight-result.json",
+  "item_index": 0,
+  "requested_id": "S0F-2A",
+  "source_log_path": "docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0f-2a",
+  "base_branch": "main",
+  "merge_base": "c92ea29fd74a826796dca32d10439488717ee9a7",
+  "selected_commit_count": 1,
+  "selected_commits": [
+    "07faa0660f11f34740cd29cf878907ab4618490d"
+  ],
+  "pr_title": "S0F-2A/P0-P3: maintenance lanes and direct patch ledger v1",
+  "draft": true,
+  "preflight_decision": "allow-front-half-preflight",
+  "preflight_allowed": true,
+  "pr_number": 386,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/386",
+  "body_path": "docs/issues/pr-prep-s0f-2a-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/2",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#384",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-s0f-2a-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-s0f-2a-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 07faa066; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 07faa0660... S0F-2A/P0-P3-C1-S1: institutionalize maintenance lanes and patch ledger"
+  ]
+}

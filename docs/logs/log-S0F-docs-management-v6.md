@@ -689,6 +689,8 @@
 
 ## Recent changes（for traceability，可选）
 
+- 2026-04-14：`S0F-8B/P3-C1-S2S3` 已完成：`S0F-2A` 与 `S0F-2B` 现已完成 live issue/PR automation，分别落地 `#384/#386` 与 `#385/#387`，且 parent issue sidebar relationship 与 PR post-apply verify 也已完成。
+- 2026-04-14：`S0F-8B/P2-C1-S3+P3-C1-S1` 已完成：`S0F-2A` 与 `S0F-2B` 现已被固定为第一 admitted rollout packet，且最小 PR extraction unit 也已明确写死，后续可直接进入逐条 issue automation 准备。
 - 2026-04-14：`S0F-8B/P2-C1-S1S2` 已完成：`S0F-1*` 现已被固定为 covered baseline，而第一轮 historical packet readiness review 也已把 `S0F-2*` 明确排在 `S0F-6*` 之前，作为后续逐条 issue/PR automation 的第一候选系列。
 - 2026-04-14：`S0F-8B/P1-C1-S1S2S3` 已完成：repo 现已对全部 on-disk main `S0F` logs 形成第一份 formal issue/PR automation coverage inventory，support-only inventory 与 machine-readable scan artifact 都已落地，后续可以按数字系列进入 `P2` sequencing。
 - 2026-04-14：已新建 `S0F-8B`，把现有 `S0F` 历史 logs 的 GitHub issue/PR automation coverage、逐数字系列审查、以及后续逐条 full-auto rollout 固定为一条新的 bounded lane；该 lane 也明确吸收了同日 `road-002` draft/refinement 作为第一批 precursor accounting。
