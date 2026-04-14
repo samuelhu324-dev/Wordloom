@@ -1,0 +1,87 @@
+{
+  "id": "s0f-4i-p1-doc-issue-governance-mapping-extension",
+  "created_at": "2026-04-09",
+  "phase": "S0F-4I/P1-C1-S1S2",
+  "decision": {
+    "status": "admit-next-doc-mapping-extension",
+    "reuse_existing_area_codes": true,
+    "reason": [
+      "ICR, ICL, ICT, and IID already name stable governance areas whose semantics remain the same under DOC family ownership.",
+      "Reusing these area codes preserves reader continuity while changing family ownership from narrow GC registry to family-owned DOC current bodies.",
+      "The DOC contract index explicitly allows reused area codes when the semantics are actually the same rather than mechanically borrowed."
+    ]
+  },
+  "mapping_extension": [
+    {
+      "landing_unit": "issue creation",
+      "doc_area": "ICR",
+      "target_records": [
+        "DOC-ICR-0001"
+      ],
+      "target_file": "docs/governance/contract/DOC-ICR-0001-issue-creation-metadata-english-body.md",
+      "source_cluster": [
+        "docs/governance/contracts/GC-ICR-0001-issue-creation-metadata-english-body.md",
+        "docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md",
+        "docs/logs/log-S0F-1A-fail-closed-entrypoints-and-preflight-unification.md",
+        "docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md"
+      ]
+    },
+    {
+      "landing_unit": "issue conclusion",
+      "doc_area": "ICL",
+      "target_records": [
+        "DOC-ICL-0001"
+      ],
+      "target_file": "docs/governance/contract/DOC-ICL-0001-issue-conclusion-post-merge-linkage.md",
+      "source_cluster": [
+        "docs/governance/contracts/GC-ICL-0001-issue-conclusion-post-merge-linkage.md",
+        "docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md",
+        "docs/logs/log-S0F-1D-creation-pr-conclusion-completeness-audit.md"
+      ]
+    },
+    {
+      "landing_unit": "issue context",
+      "doc_area": "ICT",
+      "target_records": [
+        "DOC-ICT-0001"
+      ],
+      "target_file": "docs/governance/contract/DOC-ICT-0001-issue-context-sentence-count-main-vs-child.md",
+      "source_cluster": [
+        "docs/governance/contracts/GC-ICT-0001-issue-context-sentence-count-main-vs-child.md",
+        "docs/logs/log-S0E-6C-issue-context-sentence-contract-and-gate.md",
+        "docs/logs/log-S0F-1B-llm-authored-issue-context-generation.md"
+      ]
+    },
+    {
+      "landing_unit": "issue identity",
+      "doc_area": "IID",
+      "target_records": [
+        "DOC-IID-0001",
+        "DOC-IID-0002"
+      ],
+      "target_files": [
+        "docs/governance/contract/DOC-IID-0001-parent-sidebar-ordering-ownership.md",
+        "docs/governance/contract/DOC-IID-0002-issue-title-keyword-controlled-vocabulary.md"
+      ],
+      "source_cluster": [
+        "docs/governance/contracts/GC-IID-0001-parent-sidebar-ordering-ownership.md",
+        "docs/governance/contracts/GC-IID-0002-issue-title-keyword-controlled-vocabulary.md",
+        "docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md"
+      ],
+      "notes": [
+        "IID remains one shared landing unit for execution sequencing, but it preserves two target records because sidebar ordering and title-keyword vocabulary are already distinct current rule surfaces."
+      ]
+    }
+  ],
+  "source_refs": [
+    "docs/governance/contract/INDEX.md",
+    "docs/governance/views/view-doc-contract-promotion-map-v1.md",
+    "docs/governance/contract/DOC-TAX-0001-governance-contract-taxonomy-and-placement-model.md",
+    "docs/governance/contracts/GC-ICR-0001-issue-creation-metadata-english-body.md",
+    "docs/governance/contracts/GC-ICL-0001-issue-conclusion-post-merge-linkage.md",
+    "docs/governance/contracts/GC-ICT-0001-issue-context-sentence-count-main-vs-child.md",
+    "docs/governance/contracts/GC-IID-0001-parent-sidebar-ordering-ownership.md",
+    "docs/governance/contracts/GC-IID-0002-issue-title-keyword-controlled-vocabulary.md",
+    "docs/logs/log-S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance.md"
+  ]
+}
