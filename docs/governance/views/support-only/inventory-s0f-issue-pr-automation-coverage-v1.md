@@ -59,18 +59,18 @@
 
 - `58` main `S0F` logs are currently on disk under `docs/logs/log-S0F-*.md`.
 - Coverage counts currently stand at:
-  - `54` rows with `issue+pr-linked`
+  - `55` rows with `issue+pr-linked`
   - `1` row with `issue-only`
   - `0` rows with `pr-only`
-  - `3` rows with `missing-both`
-- Coverage now remains concentrated in `S0F-1*` plus the admitted `S0F-2*`, `S0F-3*`, `S0F-4*`, `S0F-5*`, `S0F-6*`, and `S0F-7*` packets; only uncovered remainder `S0F-1K` still remains without issue/PR coverage among historical-reviewable rows.
+  - `2` rows with `missing-both`
+- Coverage now spans all historical-reviewable `S0F` rows: `S0F-1*` is fully linked, and the admitted `S0F-2*`, `S0F-3*`, `S0F-4*`, `S0F-5*`, `S0F-6*`, and `S0F-7*` packets all remain fully concluded with issue/PR coverage.
 - `S0F-8A`, `S0F-8B`, and the `S0F` parent spine are counted separately as `active-meta-lane` rows and should not be used as the first historical automation packet.
 
 ## Series Summary
 
 | series | total rows | issue+pr-linked | issue-only | pr-only | missing-both | review bucket | next rollout note |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `1` | `9` | `8` | `0` | `0` | `1` | `historical-reviewable` | use as covered baseline first; only `S0F-1K` remains uncovered |
+| `1` | `9` | `9` | `0` | `0` | `0` | `historical-reviewable` | baseline series is now fully concluded: `S0F-1K` => `#475 / PR #476` completes the last uncovered historical remainder |
 | `2` | `2` | `2` | `0` | `0` | `0` | `historical-reviewable` | first admitted rollout packet is now fully concluded: `S0F-2A` => `#384 / PR #386`; `S0F-2B` => `#385 / PR #387` |
 | `3` | `13` | `13` | `0` | `0` | `0` | `historical-reviewable` | fourth admitted rollout packet is now fully concluded: `S0F-3A` => `#412 / PR #425`, `S0F-3B` => `#413 / PR #426`, `S0F-3C` => `#414 / PR #427`, `S0F-3D` => `#415 / PR #428`, `S0F-3E` => `#416 / PR #429`, `S0F-3F` => `#417 / PR #430`, `S0F-3G` => `#418 / PR #431`, `S0F-3H` => `#419 / PR #432`, `S0F-3I` => `#420 / PR #433`, `S0F-3J` => `#421 / PR #434`, `S0F-3K` => `#422 / PR #435`, `S0F-3L` => `#423 / PR #435`, `S0F-3M` => `#424 / PR #436` |
 | `4` | `9` | `9` | `0` | `0` | `0` | `historical-reviewable` | third admitted rollout packet is now fully concluded: `S0F-4A` => `#396 / PR #404`, `S0F-4B` => `#394 / PR #395`, `S0F-4C` => `#397 / PR #405`, `S0F-4D` => `#398 / PR #406`, `S0F-4E` => `#399 / PR #407`, `S0F-4F` => `#400 / PR #408`, `S0F-4G` => `#401 / PR #409`, `S0F-4H` => `#402 / PR #410`, `S0F-4I` => `#403 / PR #411` |
@@ -85,7 +85,7 @@
 | series | row type | source rows | total rows | issue coverage | pr coverage | review bucket | next rollout note |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `parent` | `issue-only` | `S0F-docs-management-v6` | `1` | `present` | `missing` | `active-meta-lane` | keep outside first historical rollout; parent spine issue already exists |
-| `1` | `baseline-covered` | `S0F-1A, S0F-1B, S0F-1C, S0F-1D, S0F-1G, S0F-1H, S0F-1I, S0F-1J` | `8` | `present` | `present` | `historical-reviewable` | use as comparison baseline for later per-series rollout packets |
+| `1` | `baseline-covered` | `S0F-1A, S0F-1B, S0F-1C, S0F-1D, S0F-1G, S0F-1H, S0F-1I, S0F-1J, S0F-1K` | `9` | `present` | `present` | `historical-reviewable` | baseline series is now fully concluded and can remain the comparison anchor for later audits |
 | `2` | `admitted-automated` | `S0F-2A, S0F-2B` | `2` | `present` | `present` | `historical-reviewable` | first admitted rollout packet now has live issue/PR coverage, concluded issue bodies, and passing post-conclusion lifecycle audits |
 | `3` | `admitted-automated` | `S0F-3A, S0F-3B, S0F-3C, S0F-3D, S0F-3E, S0F-3F, S0F-3G, S0F-3H, S0F-3I, S0F-3J, S0F-3K, S0F-3L, S0F-3M` | `13` | `present` | `present` | `historical-reviewable` | fourth admitted rollout packet now has live issue/PR coverage, merged PR evidence, concluded issue bodies, and explicit shared-PR handling for `S0F-3K/#422` and `S0F-3L/#423` via `PR #435` |
 | `4` | `admitted-automated` | `S0F-4A, S0F-4B, S0F-4C, S0F-4D, S0F-4E, S0F-4F, S0F-4G, S0F-4H, S0F-4I` | `9` | `present` | `present` | `historical-reviewable` | full `S0F-4*` packet now has live issue/PR coverage, merged PR evidence, concluded issue bodies, and passing post-conclusion lifecycle gates |
@@ -97,7 +97,6 @@
 
 | series | row type | source rows | total rows | issue coverage | pr coverage | review bucket | next rollout note |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `1` | `missing-series` | `S0F-1K` | `1` | `missing` | `missing` | `historical-reviewable` | first uncovered remainder inside the otherwise covered baseline series |
 | `8` | `active-meta-lane` | `S0F-8A, S0F-8B` | `2` | `missing` | `missing` | `active-meta-lane` | exclude from first historical rollout; these are current meta lanes |
 
 ## Source Refs

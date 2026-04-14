@@ -313,7 +313,9 @@
 - `S0F-4*` is now complete as the third admitted historical packet: `S0F-4A`, `S0F-4B`, `S0F-4C`, `S0F-4D`, `S0F-4E`, `S0F-4F`, `S0F-4G`, `S0F-4H`, and `S0F-4I` all now have live issue/PR coverage, parent sidebar relationships, merged PR evidence, concluded issue bodies, and passing post-conclusion lifecycle gates.
 - `S0F-3*` is now complete as the fourth admitted historical packet: `S0F-3A` through `S0F-3M` all now have live issue/PR coverage, merged PR evidence, concluded issue bodies, and explicit handling for the `S0F-3K -> PR #435` shared-evidence case.
 - `S0F-5*` is now complete as the fifth admitted historical packet: `S0F-5A` through `S0F-5J` all now have live issue/PR coverage, merged PR evidence, concluded issue bodies, and passing post-conclusion lifecycle gates.
-- The next immediate work is now to return to the final uncovered historical-reviewable remainder `S0F-1K`, because the full `S0F-7*` packet has now completed issue creation, PR replay, merge, conclusion refresh, and passing post-conclusion lifecycle validation.
+- `S0F-7*` is now complete as the sixth admitted historical packet: `S0F-7A` through `S0F-7I` all now have live issue/PR coverage, merged PR evidence, concluded issue bodies, and passing post-conclusion lifecycle gates.
+- `S0F-1K` is now complete as the final uncovered historical-reviewable remainder: live issue `#475`, merged PR `#476`, guarded conclusion refresh, and passing post-conclusion lifecycle validation now close the last historical gap inside the `S0F-1*` baseline.
+- The next immediate work is now optional orchestration follow-up only: no historical-reviewable `S0F` rows remain uncovered in the support-only inventory, so any further work in this lane is about packaging or reporting rather than backlog replay.
 
 ## Evidence (reserved)
 
@@ -468,6 +470,19 @@
   - `S0F-7A/#457/PR #466`, `S0F-7B/#458/PR #467`, `S0F-7C/#459/PR #468`, `S0F-7D/#460/PR #469`, `S0F-7E/#461/PR #470`, `S0F-7F/#462/PR #471`, `S0F-7G/#463/PR #472`, `S0F-7H/#464/PR #473`, and `S0F-7I/#465/PR #474` now all have live issue/PR coverage and concluded issue bodies under the same packet replay
   - all items first stopped at lifecycle pre-gate because the GitHub sidebar parent relationship was missing, all were repaired through targeted relationship remediation against parent issue `#363`, and all nine items now pass post-conclusion lifecycle validation; `S0F-7A` required one guarded conclusion retry after a transient LLM Context generation `503`
 
+### P3-C8-S1S2S3S4 (Final uncovered historical remainder replay for `S0F-1K` | 2026-04-15)
+
+- headSha: `a5ece77be`
+- artifacts: `docs/issues/lifecycle-gate-s0f-1k-decision.json`, `docs/issues/issue-relationship-s0f-1k-guarded-apply-result.json`, `docs/issues/pr-prep-s0f-1k-manifest-create-result.json`, `docs/issues/pr-prep-s0f-1k-manifest-post-apply-verify-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-1k-issue-conclusion-guarded-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-1k-issue-conclusion-s0f-1k-apply-result.json`, `docs/governance/views/support-only/inventory-s0f-issue-pr-automation-coverage-v1.md`
+- expected:
+  - the final uncovered historical-reviewable `S0F` row should pass the same guarded issue, relationship, PR, merge, and issue-conclusion chain already proven on the admitted multi-item packets
+  - the `S0F-1*` baseline should stop carrying an uncovered remainder once `S0F-1K` reaches live issue/PR coverage and passing post-conclusion lifecycle validation
+  - any last local source-log drift should remain explicit and be repaired inside the same bounded slice rather than being hidden by manual GitHub edits
+- observed:
+  - `S0F-1K` first required the same live metadata normalization pattern seen in earlier historical replays: removal of unsupported scope label `sub/1`, normalization of `roadmap_milestone` to `M2`, replacement of unsupported live keyword `governance` with admitted keyword `migration`, and reshaping of `PR Summary Inputs` into the canonical parseable bullet format
+  - `S0F-1K/#475/PR #476` now has live issue/PR coverage with targeted parent relationship repair under `#363`, passing post-apply PR verification, merged PR evidence, and guarded post-merge issue-conclusion refresh
+  - the post-conclusion lifecycle audit for `S0F-1K` now passes, so no historical-reviewable `S0F` rows remain uncovered in the support-only inventory
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-14: opened `S0F-8B` to inventory missing issue/PR automation coverage across existing `S0F` logs before any broader future `S0F` work takes priority.
@@ -482,4 +497,5 @@
 - 2026-04-14: completed `S0F-8B/P3-C4-S1S2S3S4` by finishing the rest of the `S0F-4*` packet end to end: live issues `#396/#397/#398/#399/#400/#401/#402/#403`, merged PRs `#404/#405/#406/#407/#408/#409/#410/#411`, targeted parent relationship repair under `#363`, one local `PR Summary Inputs` repair for `4A`, and guarded post-merge issue-conclusion refresh for all eight remaining items.
 - 2026-04-14: completed `S0F-8B/P3-C6-S1S2S3S4` by finishing the full `S0F-5*` packet end to end: live issues `#437/#438/#439/#440/#441/#442/#443/#444/#445/#446`, merged PRs `#447/#448/#449/#450/#451/#452/#453/#454/#456/#455`, targeted parent relationship repair under `#363`, local `PR Summary Inputs` repair for `5A`, `5I`, and `5J`, and guarded post-merge issue-conclusion refresh for all ten items.
 - 2026-04-15: completed `S0F-8B/P3-C7-S1S2S3S4` by finishing the full `S0F-7*` packet end to end: live issues `#457/#458/#459/#460/#461/#462/#463/#464/#465`, merged PRs `#466/#467/#468/#469/#470/#471/#472/#473/#474`, targeted parent relationship repair under `#363`, packet-wide `PR Summary Inputs` repair, explicit frozen PR-prep commit attribution for `7G/7H/7I`, and guarded post-merge issue-conclusion refresh for all nine items.
+- 2026-04-15: completed `S0F-8B/P3-C8-S1S2S3S4` by finishing the final uncovered historical remainder `S0F-1K` end to end: live issue `#475`, merged PR `#476`, targeted parent relationship repair under `#363`, local create-time metadata normalization plus `PR Summary Inputs` repair, and guarded post-merge issue-conclusion refresh with passing post-conclusion lifecycle validation.
 - 2026-04-14: admitted the same-day `road-002` draft/refinement packet as the first remembered precursor packet inside this lane so later `P*-C*-S*` commit and PR accounting can include the roadmap work explicitly.
