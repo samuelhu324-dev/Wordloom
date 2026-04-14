@@ -180,6 +180,8 @@
 - `P3-C1-S2`: validate and write back the first approved remediation batch
 - `P3-C2-S1`: repair the second approved batch of contracts or ledgers
 - `P3-C2-S2`: validate and write back the second approved remediation batch
+- `P3-C3-S1`: repair the third approved batch of contracts or ledgers
+- `P3-C3-S2`: validate and write back the third approved remediation batch
 
 ## Execution Checklist (unchecked)
 
@@ -205,6 +207,8 @@
 - [x] `P3-C1-S2`: validate and write back the first approved remediation batch
 - [x] `P3-C2-S1`: repair the second approved batch of contracts or ledgers
 - [x] `P3-C2-S2`: validate and write back the second approved remediation batch
+- [x] `P3-C3-S1`: repair the third approved batch of contracts or ledgers
+- [x] `P3-C3-S2`: validate and write back the third approved remediation batch
 
 ## Verified First-Pass Classification
 
@@ -288,7 +292,9 @@
 - `P3-C1-S2` is now complete: the repaired ledgers now give the later contract batch a cleaner bridge surface for chronology, routing, and row-level source references.
 - `P3-C2-S1` is now complete in workspace: the second approved repair batch now upgrades the broad workflow parent and GitHub-Issues family files to the current chronology-first contract structure without reopening their owned meaning.
 - `P3-C2-S2` is now complete in workspace: the repaired contract files now expose defended release chronology, clause ids, and stable source-basis anchors aligned to the repaired `S0A-2A` and `S0A-1A` ledger bridge.
-- The next step is to decide whether `Batch C` is still needed for bounded polish on the partially-aligned `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` files.
+- `P3-C3-S1` is now complete in workspace: the third approved repair batch now upgrades the remaining partially-aligned workflow child contracts to the current chronology-first contract structure, and confirms that `ledger-SUP-S0A-2A-001` needs no additional review-surface changes for its evidence type.
+- `P3-C3-S2` is now complete in workspace: the remaining partial files now expose defended release chronology, clause ids, and stable source-basis anchors, closing the originally planned integration-repair batch set.
+- The next step is optional only: either stop here with the planned `S0F-7I` batch set complete, or open a new bounded follow-up later if the repo wants deeper family-level historical backfill beyond the current first-pass repair scope.
 
 ## Evidence (reserved)
 
@@ -341,3 +347,18 @@
 - observed:
   - `DOC-WORKFLOW-0001`, `DOC-WORKFLOW-GITHUB-ISSUES-0001`, `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001`, and `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` now expose release chronology fields, contract statement tables, and statement-evolution tables aligned to the current contract template
   - the repaired contract clauses now point back to stable ledger row ids from `S0A-2A` and `S0A-1A`, making the parent boundary and child-rule ownership easier to audit before any optional `Batch C` polish begins
+
+### P3-C3-S1S2 (Batch C bounded polish and closure review fixed in workspace | 2026-04-14)
+
+- artifacts:
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  - `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0001-legacy-taxonomy-cutover-and-stub-preservation.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/log-S0F-7I-ledger-and-contract-structure-integration-audit-and-remediation-plan.md`
+- expected:
+  - the third approved repair batch should bring the remaining partially-aligned workflow child contracts up to the same chronology-first structure already used in the stronger repaired files
+  - the remaining SUP candidate should be explicitly re-checked so the lane closes with either one final bounded edit or one defended no-change decision
+- observed:
+  - `DOC-WORKFLOW-LOGS-0001`, `DOC-WORKFLOW-LIFECYCLE-0001`, and `DOC-WORKFLOW-LABS-0001` now expose defended release chronology fields, contract statement tables, and statement-evolution tables aligned to the current contract template
+  - `ledger-SUP-S0A-2A-001` was re-checked and retained without mutation because its direct-markdown evidence type does not require the newer attachment-review or actor/provenance surfaces introduced for screenshot-backed or approval-facing packets
