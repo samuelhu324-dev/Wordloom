@@ -178,6 +178,8 @@
 
 - `P3-C1-S1`: repair the first approved batch of contracts or ledgers
 - `P3-C1-S2`: validate and write back the first approved remediation batch
+- `P3-C2-S1`: repair the second approved batch of contracts or ledgers
+- `P3-C2-S2`: validate and write back the second approved remediation batch
 
 ## Execution Checklist (unchecked)
 
@@ -201,6 +203,8 @@
 
 - [x] `P3-C1-S1`: repair the first approved batch of contracts or ledgers
 - [x] `P3-C1-S2`: validate and write back the first approved remediation batch
+- [x] `P3-C2-S1`: repair the second approved batch of contracts or ledgers
+- [x] `P3-C2-S2`: validate and write back the second approved remediation batch
 
 ## Verified First-Pass Classification
 
@@ -282,7 +286,9 @@
 - `P2-C1-S2` is now complete: the lane now records one proposed repair order for user review before any actual remediation batch starts.
 - `P3-C1-S1` is now complete: the first approved repair batch now upgrades the Batch B ledgers with current lifecycle-header structure, and `S0B-3A` now also exposes stable row ids aligned to the current parent-ledger template.
 - `P3-C1-S2` is now complete: the repaired ledgers now give the later contract batch a cleaner bridge surface for chronology, routing, and row-level source references.
-- The next step is to reassess the contract batch against the newly repaired ledger bridge and then start Batch A with the broad workflow parent and GitHub-Issues family files.
+- `P3-C2-S1` is now complete in workspace: the second approved repair batch now upgrades the broad workflow parent and GitHub-Issues family files to the current chronology-first contract structure without reopening their owned meaning.
+- `P3-C2-S2` is now complete in workspace: the repaired contract files now expose defended release chronology, clause ids, and stable source-basis anchors aligned to the repaired `S0A-2A` and `S0A-1A` ledger bridge.
+- The next step is to decide whether `Batch C` is still needed for bounded polish on the partially-aligned `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` files.
 
 ## Evidence (reserved)
 
@@ -318,3 +324,18 @@
 - observed:
   - `ledger-S0A-2A`, `ledger-S0B-1A`, `ledger-S0B-2A`, and `ledger-S0B-3A` now expose current lifecycle headers using defended repo-side dates or explicit `pending` acceptance where current parent acceptance is not yet defended
   - `ledger-S0B-3A` now also exposes stable `row id` values and a row-id map, bringing its routing table materially closer to the active parent-ledger template before later contract repair begins
+
+### P3-C2-S1S2 (Batch A broad-parent and GitHub-Issues family repair fixed in workspace | 2026-04-14)
+
+- artifacts:
+  - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
+  - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+  - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
+  - `docs/governance/contracts/workflow/github/issues/tags/DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-issue-tags-follow-role-based-naming.md`
+  - `docs/logs/log-S0F-7I-ledger-and-contract-structure-integration-audit-and-remediation-plan.md`
+- expected:
+  - the second approved repair batch should align the oldest workflow parent and GitHub-Issues family files to the current chronology-first contract structure without changing their owned rule meaning
+  - the repaired contracts should expose defended release chronology fields, explicit clause ids, and stable source-basis anchors that match the now-repaired ledger bridge
+- observed:
+  - `DOC-WORKFLOW-0001`, `DOC-WORKFLOW-GITHUB-ISSUES-0001`, `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001`, and `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` now expose release chronology fields, contract statement tables, and statement-evolution tables aligned to the current contract template
+  - the repaired contract clauses now point back to stable ledger row ids from `S0A-2A` and `S0A-1A`, making the parent boundary and child-rule ownership easier to audit before any optional `Batch C` polish begins
