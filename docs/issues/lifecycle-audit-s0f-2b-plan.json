@@ -5,8 +5,10 @@
   "selection_input": "manifest",
   "operation": "plan-lifecycle-audit",
   "total_items": 1,
-  "planned_items": 1,
-  "warnings": [],
+  "planned_items": 0,
+  "warnings": [
+    "S0F-2B: blocked"
+  ],
   "items": [
     {
       "requested_id": "S0F-2B",
@@ -14,17 +16,24 @@
       "issue_number": 385,
       "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/385",
       "issue_title": "S0F-2B: policy/family patch and ops maintenance model",
-      "issue_state": "OPEN",
-      "lifecycle_stage": "issue-created",
+      "issue_state": "CLOSED",
+      "lifecycle_stage": "concluded",
       "expected_parent_issue_number": 363,
       "actual_parent_issue_number": 363,
       "source_log_issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/385",
-      "source_log_pr_url": null,
-      "merged_pr_count": 0,
-      "merged_prs": [],
-      "planned_action": "pass-audit",
+      "source_log_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/387",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 387,
+          "title": "S0F-2B/P0-P5: family patch and ops maintenance model v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/387",
+          "merged_at": "2026-04-14T10:10:51Z"
+        }
+      ],
+      "planned_action": "block-mutation",
       "applied_action": null,
-      "status": "pass",
+      "status": "blocked",
       "checks": [
         {
           "name": "source-log-issue-writeback",
@@ -73,13 +82,13 @@
         },
         {
           "name": "exact-id-merged-pr-evidence",
-          "status": "skipped",
-          "details": "no merged PR evidence is required for the current issue-created stage"
+          "status": "pass",
+          "details": "found 1 exact-ID merged PR(s)"
         },
         {
           "name": "final-dod-pr-refs",
-          "status": "skipped",
-          "details": "no final DoD PR refs are required before merged PR evidence exists"
+          "status": "fail",
+          "details": "DoD PR refs [] do not match expected ['#387']"
         },
         {
           "name": "link-categories",
@@ -93,25 +102,39 @@
         },
         {
           "name": "context-sentence-shape",
-          "status": "pass",
-          "details": "open issue keeps the required Context section structurally present while substantive Context prose is deferred to conclusion"
+          "status": "fail",
+          "details": "Context must contain exactly 4 English bullet sentences; found 0: []"
         },
         {
           "name": "closed-body-shape",
-          "status": "skipped",
-          "details": "closed-body shape is not required while the issue remains open"
+          "status": "fail",
+          "details": "concluded issue does not satisfy the prose-first Context gate within line range (4, 4)"
         },
         {
           "name": "source-log-pr-link",
-          "status": "skipped",
-          "details": "source log links.pr is blank"
+          "status": "pass",
+          "details": "source log links.pr is represented in the exact-ID merged PR evidence set"
         }
       ],
       "warnings": [],
-      "primary_bucket": null,
-      "bucket_set": [],
-      "bucket_source_checks": {},
-      "bucket_stage": null,
+      "primary_bucket": "conclusion-dod-gap",
+      "bucket_set": [
+        "conclusion-dod-gap",
+        "conclusion-context-gap",
+        "conclusion-body-shape-gap"
+      ],
+      "bucket_source_checks": {
+        "conclusion-dod-gap": [
+          "final-dod-pr-refs"
+        ],
+        "conclusion-context-gap": [
+          "context-sentence-shape"
+        ],
+        "conclusion-body-shape-gap": [
+          "closed-body-shape"
+        ]
+      },
+      "bucket_stage": "conclusion",
       "reason": null
     }
   ]

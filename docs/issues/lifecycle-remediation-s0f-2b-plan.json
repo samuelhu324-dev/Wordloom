@@ -21,10 +21,10 @@
       "applied_action": null,
       "steps": [
         {
-          "action_kind": "attach-parent-relationship",
+          "action_kind": "plan-issue-conclusion-refresh",
           "status": "planned",
-          "details": "Prepare a child-of relationship attach from the expected parent issue to the audited child issue.",
-          "downstream_manifest_path": "docs/issues/lifecycle-remediation-s0f-2b-relationship-manifest.json"
+          "details": "Prepare an issue-conclusion plan so the final body and close state can be regenerated from exact-ID merged PR evidence.",
+          "downstream_manifest_path": "docs/issues/lifecycle-remediation-s0f-2b-issue-conclusion-manifest.json"
         }
       ],
       "warnings": [],

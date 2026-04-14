@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-2A",
+      "source_log_path": "docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md",
+      "issue_number": 384,
+      "merged_pr_overrides": [
+        "#386"
+      ],
+      "reason": "Lifecycle remediation for S0F-2A"
+    }
+  ]
+}

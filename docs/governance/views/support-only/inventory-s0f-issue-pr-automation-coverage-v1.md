@@ -71,7 +71,7 @@
 | series | total rows | issue+pr-linked | issue-only | pr-only | missing-both | review bucket | next rollout note |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `1` | `9` | `8` | `0` | `0` | `1` | `historical-reviewable` | use as covered baseline first; only `S0F-1K` remains uncovered |
-| `2` | `2` | `2` | `0` | `0` | `0` | `historical-reviewable` | first admitted rollout packet is now live: `S0F-2A` => `#384 / PR #386`; `S0F-2B` => `#385 / PR #387` |
+| `2` | `2` | `2` | `0` | `0` | `0` | `historical-reviewable` | first admitted rollout packet is now fully concluded: `S0F-2A` => `#384 / PR #386`; `S0F-2B` => `#385 / PR #387` |
 | `3` | `13` | `0` | `0` | `0` | `13` | `historical-reviewable` | dense governance packet; likely needs subdivision after `P2` starts |
 | `4` | `9` | `0` | `0` | `0` | `9` | `historical-reviewable` | coherent docs-governance packet; candidate after first `S0F-2*` rollout |
 | `5` | `10` | `0` | `0` | `0` | `10` | `historical-reviewable` | mixed migration/cleanup/history packet; defer until commit-readiness review |
@@ -86,7 +86,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `parent` | `issue-only` | `S0F-docs-management-v6` | `1` | `present` | `missing` | `active-meta-lane` | keep outside first historical rollout; parent spine issue already exists |
 | `1` | `baseline-covered` | `S0F-1A, S0F-1B, S0F-1C, S0F-1D, S0F-1G, S0F-1H, S0F-1I, S0F-1J` | `8` | `present` | `present` | `historical-reviewable` | use as comparison baseline for later per-series rollout packets |
-| `2` | `admitted-automated` | `S0F-2A, S0F-2B` | `2` | `present` | `present` | `historical-reviewable` | first admitted rollout packet now has live issue/PR coverage and verified PR-create outputs |
+| `2` | `admitted-automated` | `S0F-2A, S0F-2B` | `2` | `present` | `present` | `historical-reviewable` | first admitted rollout packet now has live issue/PR coverage, concluded issue bodies, and passing post-conclusion lifecycle audits |
 
 ## Missing Coverage Rows By Series
 
@@ -107,3 +107,4 @@
 - `artifacts/_tmp_s0f_8b_p2_review_s0f2_vs_s0f6.json`
 - `artifacts/_tmp_s0f_8b_p3_commit_readiness_s0f2.json`
 - `artifacts/_tmp_s0f_8b_p3_full_auto_s0f2.json`
+- `artifacts/_tmp_s0f_8b_p3_issue_conclusion_s0f2.json`

@@ -689,6 +689,7 @@
 
 ## Recent changes（for traceability，可选）
 
+- 2026-04-14：`S0F-8B/P3-C1-S4` 已完成：`S0F-2A/#384` 与 `S0F-2B/#385` 均已通过 guarded issue-conclusion 刷新为合格 concluded bodies，DoD 现已分别准确引用 merged PR `#386/#387`，post-conclusion lifecycle audit 也已通过。
 - 2026-04-14：`S0F-8B/P3-C1-S2S3` 已完成：`S0F-2A` 与 `S0F-2B` 现已完成 live issue/PR automation，分别落地 `#384/#386` 与 `#385/#387`，且 parent issue sidebar relationship 与 PR post-apply verify 也已完成。
 - 2026-04-14：`S0F-8B/P2-C1-S3+P3-C1-S1` 已完成：`S0F-2A` 与 `S0F-2B` 现已被固定为第一 admitted rollout packet，且最小 PR extraction unit 也已明确写死，后续可直接进入逐条 issue automation 准备。
 - 2026-04-14：`S0F-8B/P2-C1-S1S2` 已完成：`S0F-1*` 现已被固定为 covered baseline，而第一轮 historical packet readiness review 也已把 `S0F-2*` 明确排在 `S0F-6*` 之前，作为后续逐条 issue/PR automation 的第一候选系列。

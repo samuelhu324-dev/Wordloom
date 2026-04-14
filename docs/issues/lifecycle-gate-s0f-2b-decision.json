@@ -5,10 +5,10 @@
   "operation": "plan-lifecycle-pre-gate",
   "manifest_path": "docs/issues/lifecycle-audit-s0f-2b-manifest.json",
   "audit_plan_path": "docs/issues/lifecycle-audit-s0f-2b-plan.json",
-  "remediation_plan_path": null,
-  "decision": "allow-apply",
-  "apply_allowed": true,
-  "decision_reason": "All audited items passed, so the requested mutation is structurally allowed to continue.",
+  "remediation_plan_path": "docs/issues/lifecycle-remediation-s0f-2b-plan.json",
+  "decision": "stop-for-remediation",
+  "apply_allowed": false,
+  "decision_reason": "At least one audit item is warning or blocked, so mutation must stop and emit remediation planning artifacts.",
   "policy": {
     "warning_behavior": "stop-and-plan-remediation",
     "blocked_behavior": "stop-and-plan-remediation",
@@ -16,26 +16,28 @@
     "error_behavior": "hard-fail-before-mutation"
   },
   "summary": {
-    "pass_count": 1,
+    "pass_count": 0,
     "warning_count": 0,
-    "blocked_count": 0,
+    "blocked_count": 1,
     "reconciliation_count": 0,
     "error_count": 0
   },
-  "warnings": [],
+  "warnings": [
+    "S0F-2B: stop-for-remediation"
+  ],
   "items": [
     {
       "requested_id": "S0F-2B",
       "source_log_path": "docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md",
       "issue_number": 385,
       "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/385",
-      "audit_status": "pass",
-      "gate_status": "allow-apply",
-      "apply_allowed": true,
-      "remediation_status": null,
-      "remediation_step_count": 0,
-      "remediation_plan_path": null,
-      "reason": "Audit passed; no pre-gate remediation is required."
+      "audit_status": "blocked",
+      "gate_status": "stop-for-remediation",
+      "apply_allowed": false,
+      "remediation_status": "planned",
+      "remediation_step_count": 1,
+      "remediation_plan_path": "docs/issues/lifecycle-remediation-s0f-2b-plan.json",
+      "reason": "Audit produced warning or blocked findings; the pre-gate policy requires remediation planning before mutation."
     }
   ]
 }
