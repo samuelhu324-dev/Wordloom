@@ -309,9 +309,9 @@
 - `P2-C1-S3` and `P3-C1-S1` are now complete: `S0F-2A` and `S0F-2B` are admitted as the first rollout packet, and their minimal extraction units are now fixed explicitly.
 - `P3-C1-S2S3` is now complete: `S0F-2A` and `S0F-2B` both have live issue/PR coverage, parent sidebar relationships, and passing PR post-apply verification results.
 - `P3-C1-S4` is now complete: `S0F-2A` and `S0F-2B` both now have concluded issue bodies with exact merged-PR DoD refs and passing post-conclusion lifecycle audits.
-- The next immediate work is now to continue the newly opened `S0F-4*` packet after proving that its first bounded subpacket `S0F-4B` can pass the same full-auto path.
 - `S0F-6*` is now complete as the second admitted historical packet: `S0F-6A`, `S0F-6B`, and `S0F-6C` all have live issue/PR coverage, parent sidebar relationships, merged PRs, and concluded issue bodies.
-- `S0F-4*` is no longer a fully unopened candidate only: `S0F-4B` now serves as the first admitted `S0F-4*` subpacket, while `4A` and `4C-4I` remain pending bounded commit-readiness review.
+- `S0F-4*` is now complete as the third admitted historical packet: `S0F-4A`, `S0F-4B`, `S0F-4C`, `S0F-4D`, `S0F-4E`, `S0F-4F`, `S0F-4G`, `S0F-4H`, and `S0F-4I` all now have live issue/PR coverage, parent sidebar relationships, merged PR evidence, concluded issue bodies, and passing post-conclusion lifecycle gates.
+- The next immediate work is now to return to the remaining uncovered historical packets, with `S0F-3*`, `S0F-5*`, and `S0F-7*` still missing issue/PR coverage after the full `S0F-4*` replay.
 
 ## Evidence (reserved)
 
@@ -410,6 +410,20 @@
   - `S0F-4B` first required the same live metadata normalization pattern seen in earlier packets: unsupported scope label `sub/4` was contracted away and `roadmap_milestone` was normalized to `M2`
   - `S0F-4B` now has live issue `#394`, merged PR `#395`, targeted parent relationship repair under `#363`, passing post-apply PR verification, and a closed issue body refreshed through guarded issue conclusion with generated Context
 
+### P3-C4-S1S2S3S4 (Full `S0F-4*` packet replay for `S0F-4A` and `S0F-4C` through `S0F-4I` | 2026-04-14)
+
+- headSha: `cc194e4e65`
+- artifacts: `docs/issues/pr-prep-s0f-4a-manifest-create-result.json`, `docs/issues/pr-prep-s0f-4c-manifest-create-result.json`, `docs/issues/pr-prep-s0f-4d-manifest-create-result.json`, `docs/issues/pr-prep-s0f-4e-manifest-create-result.json`, `docs/issues/pr-prep-s0f-4f-manifest-create-result.json`, `docs/issues/pr-prep-s0f-4g-manifest-create-result.json`, `docs/issues/pr-prep-s0f-4h-manifest-create-result.json`, `docs/issues/pr-prep-s0f-4i-manifest-create-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-4a-issue-conclusion-s0f-4a-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-4c-issue-conclusion-s0f-4c-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-4d-issue-conclusion-s0f-4d-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-4e-issue-conclusion-s0f-4e-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-4f-issue-conclusion-s0f-4f-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-4g-issue-conclusion-s0f-4g-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-4h-issue-conclusion-s0f-4h-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-4i-issue-conclusion-s0f-4i-apply-result.json`, `docs/governance/views/support-only/inventory-s0f-issue-pr-automation-coverage-v1.md`
+- expected:
+  - after `S0F-4B`, the remaining `S0F-4*` items should prove that the full docs-governance packet can pass the same guarded single-item issue, relationship, PR, merge, and conclusion chain without opening a new orchestration surface
+  - each remaining `S0F-4*` log should reach live issue coverage, targeted parent relationship attachment, live PR coverage, merged PR evidence, and concluded issue-body refresh
+  - any local contract gap discovered during the replay should remain explicit and be repaired in the same bounded slice rather than being hidden inside the batch
+- observed:
+  - `S0F-4A` first needed the same live metadata normalization as the rest of the packet and one local `PR Summary Inputs` repair before PR create preflight could pass with non-placeholder summary bullets
+  - `S0F-4A/#396/PR #404`, `S0F-4C/#397/PR #405`, `S0F-4D/#398/PR #406`, `S0F-4E/#399/PR #407`, `S0F-4F/#400/PR #408`, `S0F-4G/#401/PR #409`, `S0F-4H/#402/PR #410`, and `S0F-4I/#403/PR #411` now all have live issue/PR coverage and merged PR evidence under the same packet replay
+  - all eight items first stopped at lifecycle pre-gate because the GitHub sidebar parent relationship was missing, and all eight were repaired through targeted relationship remediation against parent issue `#363`
+  - five conclusion manifests (`4C`, `4D`, `4E`, `4H`, and `4I`) needed explicit `merged_pr_overrides` write-back before exact merged-PR evidence could be matched deterministically after auto-close, and all eight items now pass post-conclusion lifecycle validation
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-14: opened `S0F-8B` to inventory missing issue/PR automation coverage across existing `S0F` logs before any broader future `S0F` work takes priority.
@@ -420,4 +434,5 @@
 - 2026-04-14: completed `S0F-8B/P3-C1-S4` by refreshing `S0F-2A/#384` and `S0F-2B/#385` into concluded issue bodies with exact merged PR refs and passing post-conclusion lifecycle audits.
 - 2026-04-14: completed `S0F-8B/P3-C2-S1S2S3S4` by running the second admitted historical packet `S0F-6A -> S0F-6B -> S0F-6C` end to end: live issues `#388/#389/#390`, parent relationship repair under `#363`, merged PRs `#391/#392/#393`, and guarded post-merge issue-conclusion refresh for all three children.
 - 2026-04-14: completed `S0F-8B/P3-C3-S1S2S3S4` by opening `S0F-4*` through its first bounded subpacket `S0F-4B`, creating live issue `#394`, merging PR `#395`, and refreshing the closed issue body through guarded post-merge conclusion with generated Context.
+- 2026-04-14: completed `S0F-8B/P3-C4-S1S2S3S4` by finishing the rest of the `S0F-4*` packet end to end: live issues `#396/#397/#398/#399/#400/#401/#402/#403`, merged PRs `#404/#405/#406/#407/#408/#409/#410/#411`, targeted parent relationship repair under `#363`, one local `PR Summary Inputs` repair for `4A`, and guarded post-merge issue-conclusion refresh for all eight remaining items.
 - 2026-04-14: admitted the same-day `road-002` draft/refinement packet as the first remembered precursor packet inside this lane so later `P*-C*-S*` commit and PR accounting can include the roadmap work explicitly.
