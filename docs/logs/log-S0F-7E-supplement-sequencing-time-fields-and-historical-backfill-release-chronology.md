@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Ledger, Records, Evidence, epic/s0, sub/7e`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/461`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/470`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -22,13 +22,13 @@
   **reference_log_5**: `docs/logs/_template-log-phase-drills-evidence.md`
 **issue_keyword**: `records`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/7`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -37,9 +37,28 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-12`
-**updated**: `2026-04-12`
+**updated**: `2026-04-14`
 
 ---
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-7E` is expected to fix sequencing and lifecycle-time fields for supplement chronology and historical backfill.
+
+**PR summary bullets**:
+
+- Add stable sequencing and lifecycle-time fields to supplement chronology.
+- Fix historical backfill release ordering so later write-backs can be audited consistently.
+- Reuse the evidence template for bounded chronology drills instead of ad hoc timing notes.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the supplement sequencing and chronology lane.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
+- Previous log: `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
 
 ## Decision / Outcome
 

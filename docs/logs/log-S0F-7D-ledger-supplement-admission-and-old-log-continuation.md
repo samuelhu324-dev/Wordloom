@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Ledger, Evidence, Migration, epic/s0, sub/7d`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/460`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/469`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -21,13 +21,13 @@
   **reference_log_4**: `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
 **issue_keyword**: `evidence`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/7`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -36,10 +36,29 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-11`
-**updated**: `2026-04-11`
+**updated**: `2026-04-14`
 **reviewed**: `2026-04-11`
 
 ---
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-7D` is expected to define the supplement-ledger admission model for continuing old-log evidence.
+
+**PR summary bullets**:
+
+- Define supplement admission rules for old-log continuation and evidence carry-forward.
+- Stabilize SUP naming, asset ids, and clause management inside the support ledger model.
+- Connect accepted supplement write-back to later contract and runbook continuation packets.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the ledger supplement admission lane.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
+- Previous log: `docs/logs/log-S0F-7C-old-log-decomposition-application-lane.md`
 
 ## Decision / Outcome
 
