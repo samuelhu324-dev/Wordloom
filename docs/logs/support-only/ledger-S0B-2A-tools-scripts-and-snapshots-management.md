@@ -6,6 +6,9 @@ support_only_contract_release_ledger:
   ledger_kind: support-only-contract-release-ledger
   status: draft
   owner_lane: S0F-7B
+  created_at: 2026-04-10
+  reviewed_at: 2026-04-11
+  accepted_at: pending
   source_id: S0B-2A
   source_ref: docs/logs/log-S0B-2A-scripts-snapshots-management.md
   source_scope: mixed source covering scripts taxonomy, stable entrypoint, snapshot policy, cutover, and stub routing

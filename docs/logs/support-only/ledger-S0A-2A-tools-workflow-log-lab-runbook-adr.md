@@ -6,6 +6,9 @@ support_only_contract_release_ledger:
   ledger_kind: support-only-contract-release-ledger
   status: draft
   owner_lane: S0F-7C
+  created_at: 2026-04-11
+  reviewed_at: 2026-04-12
+  accepted_at: pending
   source_id: S0A-2A
   source_ref: GitHub issue S0A-2A (#24) (issue-only source; no local log exists in workspace)
   source_scope: mixed issue-only source covering the workflow refinement pipeline, the logs layer, the labs layer, the runbook layer, and the ADR layer
