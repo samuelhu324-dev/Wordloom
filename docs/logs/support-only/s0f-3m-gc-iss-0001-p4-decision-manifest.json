@@ -1,0 +1,58 @@
+{
+  "id": "S0F-3M",
+  "phase": "P4",
+  "generatedAt": "2026-04-09",
+  "decision": {
+    "status": "hold-verified-pilot",
+    "summary": "Do not widen the GC-ISS-0001 pilot to the rest of GC-ISS-* immediately. Keep the representative pilot as a defended verified result and defer broader expansion until a concrete cleanup-value trigger appears.",
+    "recommendedNextAction": "Hold the result as one verified pilot and leave GC-ISS-0002 through GC-ISS-0005 unchanged for now.",
+    "widenNow": "rejected-for-now",
+    "stopEntirely": "rejected",
+    "futureReopenTrigger": [
+      "the contracts root becomes noisy enough that additional ISS redirect relocation produces clear navigation value",
+      "a later bounded cleanup round needs one more ISS record moved for consistency or directory reduction",
+      "a concrete reader surface starts needing the moved retained bodies rather than simple root-stub landing"
+    ]
+  },
+  "whyHold": [
+    "The pilot already proved the root-stub model in practice, so widening is no longer needed to defend feasibility.",
+    "The remaining GC-ISS records still behave as legacy redirects with low current-reader pain; moving them now would produce churn more than new reader value.",
+    "Current active issue-governance contracts already read through GC-ICR-0001, GC-ICL-0001, GC-ICT-0001, GC-IID-0001, and GC-IID-0002 rather than through the old GC-ISS root files.",
+    "The DOC family is a different current family for doc-first control-plane contracts and is not the semantic owner for these issue-governance records."
+  ],
+  "familyBoundary": {
+    "docFamily": {
+      "status": "current-for-doc-first-only",
+      "evidence": [
+        "docs/governance/views/view-doc-current-front-door-v1.md",
+        "docs/governance/contract/INDEX.md"
+      ],
+      "summary": "DOC currently owns doc-first contracts such as role boundaries, source-log compatibility, taxonomy, placement, and family-front-door transition."
+    },
+    "gcCurrentRegistry": {
+      "status": "still-current-for-issue-governance",
+      "evidence": [
+        "docs/governance/INDEX.md",
+        "docs/governance/views/view-gc-triage-and-retention-rule-v1.md"
+      ],
+      "summary": "GC narrow-registry records such as GC-ICR-0001, GC-ICL-0001, GC-ICT-0001, GC-IID-0001, and GC-IID-0002 remain active current governance contracts."
+    }
+  },
+  "remainingISSDisposition": {
+    "status": "hold-at-root-for-now",
+    "members": [
+      "GC-ISS-0002",
+      "GC-ISS-0003",
+      "GC-ISS-0004",
+      "GC-ISS-0005"
+    ],
+    "reason": "They are structurally eligible for the same root-stub model, but immediate expansion is not justified until there is concrete cleanup or navigation value beyond what the verified pilot already proved."
+  },
+  "prbDisposition": {
+    "status": "still-deferred",
+    "members": [
+      "GC-PRB-0001"
+    ],
+    "reason": "PRB remains outside the ISS pilot lane because its umbrella and sample obligations still require a separate judgment."
+  }
+}

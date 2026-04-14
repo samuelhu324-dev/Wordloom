@@ -1,0 +1,48 @@
+{
+  "id": "S0F-3M",
+  "phase": "P3",
+  "generatedAt": "2026-04-09",
+  "pilotRecord": "GC-ISS-0001",
+  "verification": {
+    "rootStubLanding": {
+      "status": "pass",
+      "path": "docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md",
+      "checks": [
+        "stub preserves record_id, contract_id, moved_from, moved_to, and moved_at",
+        "stub points readers to current successor GC-ICR-0001",
+        "stub points readers to the moved support-only retained body",
+        "stub explicitly states that the root path remains occupied for old-ID landing and should not be edited"
+      ]
+    },
+    "movedRetainedBody": {
+      "status": "pass",
+      "path": "docs/governance/contracts/support-only/GC-ISS-0001-issue-creation-metadata-english-body.md",
+      "checks": [
+        "retained historical contract body is readable under the support-only surface",
+        "historical legacy redirect sections and traceability content remain intact after the move",
+        "support-only copy does not replace the current successor contract as the current rule surface"
+      ]
+    },
+    "supportOnlyNavigation": {
+      "status": "pass",
+      "path": "docs/governance/contracts/support-only/INDEX.md",
+      "checks": [
+        "support-only index lists GC-ISS-0001 explicitly",
+        "support-only index remains the local navigation surface for moved retained bodies"
+      ]
+    },
+    "zeroRetargetExecution": {
+      "status": "pass",
+      "checks": [
+        "view-iss-split-package-v1.md still cites the root GC-ISS-0001 path",
+        "view-gc-first-cleanup-boundary-v1.md still cites the root GC-ISS-0001 path",
+        "log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md still cites the root GC-ISS-0001 path",
+        "no pre-existing reader surface was found that had been retargeted to the moved support-only body during execution"
+      ]
+    }
+  },
+  "p3Conclusion": {
+    "status": "verified",
+    "summary": "The representative GC-ISS-0001 pilot verifies cleanly: root-stub landing works, the moved retained body is readable under support-only, the local support-only index exposes it, and the zero-retarget execution result did not regress the current lineage or cleanup reader surfaces."
+  }
+}
