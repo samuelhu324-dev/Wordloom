@@ -309,8 +309,9 @@
 - `P2-C1-S3` and `P3-C1-S1` are now complete: `S0F-2A` and `S0F-2B` are admitted as the first rollout packet, and their minimal extraction units are now fixed explicitly.
 - `P3-C1-S2S3` is now complete: `S0F-2A` and `S0F-2B` both have live issue/PR coverage, parent sidebar relationships, and passing PR post-apply verification results.
 - `P3-C1-S4` is now complete: `S0F-2A` and `S0F-2B` both now have concluded issue bodies with exact merged-PR DoD refs and passing post-conclusion lifecycle audits.
-- The next immediate work is now to evaluate the next larger uncovered historical packet after `S0F-6*`, because the compact fallback comparator has now been executed end to end.
+- The next immediate work is now to continue the newly opened `S0F-4*` packet after proving that its first bounded subpacket `S0F-4B` can pass the same full-auto path.
 - `S0F-6*` is now complete as the second admitted historical packet: `S0F-6A`, `S0F-6B`, and `S0F-6C` all have live issue/PR coverage, parent sidebar relationships, merged PRs, and concluded issue bodies.
+- `S0F-4*` is no longer a fully unopened candidate only: `S0F-4B` now serves as the first admitted `S0F-4*` subpacket, while `4A` and `4C-4I` remain pending bounded commit-readiness review.
 
 ## Evidence (reserved)
 
@@ -396,6 +397,19 @@
   - all three items initially stopped at lifecycle pre-gate because the GitHub sidebar parent relationship was missing, and all three were then repaired through targeted relationship remediation against parent issue `#363`
   - all three PR create results recorded cherry-pick fallback against current `main`, all three passed post-apply PR verification, all three PRs were merged, and all three child issues were refreshed in place through guarded issue-conclusion remediation after auto-close
 
+### P3-C3-S1S2S3S4 (First admitted `S0F-4*` subpacket replay for `S0F-4B` | 2026-04-14)
+
+- headSha: `c24457e1f`
+- artifacts: `docs/issues/lifecycle-gate-s0f-4b-decision.json`, `docs/issues/issue-relationship-s0f-4b-guarded-apply-result.json`, `docs/issues/pr-prep-s0f-4b-manifest-create-result.json`, `docs/issues/pr-prep-s0f-4b-manifest-post-apply-verify-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-4b-issue-conclusion-guarded-apply-result.json`, `docs/issues/issue-conclusion-lifecycle-remediation-s0f-4b-issue-conclusion-s0f-4b-apply-result.json`
+- expected:
+  - after `S0F-6*`, the next step should prove whether the coherent `S0F-4*` docs-governance packet can be entered through one smallest clean subpacket rather than as one nine-item batch
+  - the first admitted `S0F-4*` subpacket should expose the same guarded live issue, relationship, PR, merge, and issue-conclusion chain already proven on `S0F-2*` and `S0F-6*`
+  - any live-create metadata drift or branch extraction conflict should remain explicit rather than silently normalized
+- observed:
+  - commit-readiness review selected `S0F-4B` as the first bounded `S0F-4*` subpacket because it is a single-commit packet at `0069612b6` and is materially narrower than the neighboring multi-step `4C+` lanes
+  - `S0F-4B` first required the same live metadata normalization pattern seen in earlier packets: unsupported scope label `sub/4` was contracted away and `roadmap_milestone` was normalized to `M2`
+  - `S0F-4B` now has live issue `#394`, merged PR `#395`, targeted parent relationship repair under `#363`, passing post-apply PR verification, and a closed issue body refreshed through guarded issue conclusion with generated Context
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-14: opened `S0F-8B` to inventory missing issue/PR automation coverage across existing `S0F` logs before any broader future `S0F` work takes priority.
@@ -405,4 +419,5 @@
 - 2026-04-14: completed `S0F-8B/P3-C1-S2S3` by creating live issues `#384/#385`, attaching both items under parent issue `#363`, creating draft PRs `#386/#387`, and recording the cherry-pick fallback plus passing post-apply verification results.
 - 2026-04-14: completed `S0F-8B/P3-C1-S4` by refreshing `S0F-2A/#384` and `S0F-2B/#385` into concluded issue bodies with exact merged PR refs and passing post-conclusion lifecycle audits.
 - 2026-04-14: completed `S0F-8B/P3-C2-S1S2S3S4` by running the second admitted historical packet `S0F-6A -> S0F-6B -> S0F-6C` end to end: live issues `#388/#389/#390`, parent relationship repair under `#363`, merged PRs `#391/#392/#393`, and guarded post-merge issue-conclusion refresh for all three children.
+- 2026-04-14: completed `S0F-8B/P3-C3-S1S2S3S4` by opening `S0F-4*` through its first bounded subpacket `S0F-4B`, creating live issue `#394`, merging PR `#395`, and refreshing the closed issue body through guarded post-merge conclusion with generated Context.
 - 2026-04-14: admitted the same-day `road-002` draft/refinement packet as the first remembered precursor packet inside this lane so later `P*-C*-S*` commit and PR accounting can include the roadmap work explicitly.
