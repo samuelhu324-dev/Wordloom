@@ -75,6 +75,7 @@
   **phase_log_55**: `docs/logs/log-S0F-7F-log-and-roadmap-frontmatter-minimum-time-fields.md`
   **phase_log_56**: `docs/logs/log-S0F-7G-approval-facing-screenshot-evidence-review-and-attachment-protocol.md`
   **phase_log_57**: `docs/logs/log-S0F-7H-actor-and-provenance-fields-for-evidence-review-governance.md`
+  **phase_log_58**: `docs/logs/log-S0F-7I-ledger-and-contract-structure-integration-audit-and-remediation-plan.md`
 
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
@@ -441,6 +442,8 @@
 - `S0F-7G/P3-C1-S1` is now complete: the repo now explicitly defers actor-rich provenance fields for this lane, and the live screenshot-review pilot adds one table-external quick-review surface so reviewers can open and visually inspect the attachments even when table-cell link rendering is weak.
 - `S0F-7H` is now opened as the bounded follow-up after `S0F-7G`: the repo now has one dedicated lane for actor/provenance fields around evidence submission, verification, and approval, kept separate from the narrower screenshot-review ergonomics solved in `7G`.
 - `S0F-7H/P1-C1-S1S2+P2-C1-S1S2` is now complete: the repo now defines one minimum actor/provenance field contract for evidence-review packets, fixes the bounded grammar for incomplete historical actor values, and keeps this accountability protocol separate from both screenshot-review ergonomics and any later full permissions model.
+- `S0F-7I` is now opened as the bounded follow-up after `S0F-7H`: the repo now has one dedicated lane for first-pass structure integration audit across selected ledgers and chronology-first contracts, so older or partial records can be classified before any new repair batch starts.
+- `S0F-7I/P1-C1-S1S2+P2-C1-S1S2` is now complete: the repo now has one explicit first-pass classification across the selected workflow contracts and support-only ledgers, together with one proposed repair order that keeps actual remediation blocked until user review confirms the batch sequence.
 - `S0F-5I/P4-C1-S1S2` is now complete: separate packet views are no longer treated as a sufficient front door by themselves, one aggregate old-`S0` narrative router is now published across the packet set, and `S0F-5I` now closes as stable for the current packet boundary.
 - `S0F-5I/P4-C2-S1S2` is now complete: the reviewed `S0F` subset is now explicitly kept out of same-lane `5I` packet continuation, and any later `S0F` narrative packet must open as one new bounded follow-up lane rather than as a silent extension of the current widening slice.
 - `S0F-5J/P0-P2-C1-S1S2` is now complete: the repo now has one old-`S0` contract-judgment front door that routes readers across surfaced migration, narrative packet reading, remaining-line manual screening, and unresolved-standing stop conditions without reopening outlet-management execution.
