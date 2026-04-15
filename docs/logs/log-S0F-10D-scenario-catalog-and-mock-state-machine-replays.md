@@ -249,6 +249,77 @@
 - `P1-C1-S1`: fix one minimum scenario catalog that covers representative local simulations such as trial upgrade, renewal failure, cancellation then expiry, refund narrowing, and admin correction
 - `P1-C1-S2`: map each scenario to trigger sequence, lifecycle transition, and entitlement outcome without rewriting role or entitlement boundaries
 
+### P1 Minimum Scenario-Catalog Decision (v1)
+
+- `P1` is now fixed as one minimum scenario-catalog packet rather than as one full billing test harness design.
+- The stable vocabulary from `P0` remains authoritative for scenario naming, replay units, input shape, and invariant boundaries.
+- The first representative scenario set is now fixed as:
+  - `trial_upgrade_success`
+  - `active_renewal_failure`
+  - `cancellation_then_expiry`
+  - `refund_narrowing`
+  - `admin_state_repair`
+- The first outcome set is now fixed as:
+  - `activate-current-plan-bundle`
+  - `narrow-current-plan-bundle`
+  - `suspend-current-plan-bundle`
+  - `expire-current-plan-bundle`
+  - `repair-current-plan-bundle`
+- The `P1` success rule in this packet is:
+  - one reader should be able to answer which realistic situations must be replayed first without guessing missing scenario families
+  - one reader should be able to answer how each scenario reuses `10C` trigger semantics to reach a resulting lifecycle standing
+  - the packet should keep `S0F-10A`, `S0F-10B`, and `S0F-10C` semantics stable while widening only the local replay surface
+
+#### P1 Scenario Catalog Table (v1)
+
+| scenario entry | realistic situation covered | why it belongs in the first catalog | excluded from scope |
+| --- | --- | --- | --- |
+| `trial_upgrade_success` | one tenant upgrades from trial into an active paid standing | It proves the most basic positive path from restricted trial behavior to active entitlement. | provider checkout transport, payment method UX |
+| `active_renewal_failure` | one active subscription fails renewal and degrades into impaired standing | It proves that capability narrowing or suspension follows lifecycle degradation rather than role mutation. | retry cadence, collections workflow |
+| `cancellation_then_expiry` | one active subscription requests cancellation and later reaches end-of-term expiry | It proves delayed closure across more than one lifecycle step. | customer messaging, notice delivery |
+| `refund_narrowing` | one active paid standing is narrowed after one bounded refund reversal path | It proves bounded rollback without reopening full refund-accounting semantics. | invoice reversal bookkeeping, settlement detail |
+| `admin_state_repair` | one incorrect lifecycle record is corrected back to the intended standing | It proves bounded repair semantics without bypassing the model. | operator UI implementation, audit storage format |
+
+#### P1 Scenario-to-State-Machine Matrix (v1)
+
+| scenario entry | starting `subscription_state` | trigger sequence | resulting `subscription_state` | transition standing | notes |
+| --- | --- | --- | --- | --- | --- |
+| `trial_upgrade_success` | `trialing` | `upgrade_success` | `active` | `allow` | Successful upgrade widens lifecycle standing through the normal positive trigger path. |
+| `active_renewal_failure` | `active` | `renewal_failed` | `past_due` | `allow` | Failed renewal degrades lifecycle standing without touching collaboration roles. |
+| `cancellation_then_expiry` | `active` | `cancellation_requested`, then end-of-term lapse | `canceled`, then `expired` | `allow` | This scenario needs two ordered transitions to show deferred closure. |
+| `refund_narrowing` | `active` | `refund_applied` | `canceled` or bounded degraded standing | `allow-bounded` | Refund-backed narrowing is allowed only through a bounded rollback path already compatible with `10C`. |
+| `admin_state_repair` | any incorrect state | `admin_correction` | corrected state | `allow-bounded` | Administrative repair exists only to restore intended lifecycle reality. |
+
+#### P1 Scenario-to-Outcome Matrix (v1)
+
+| scenario entry | resulting entitlement effect | invariant checks emphasized | notes |
+| --- | --- | --- | --- |
+| `trial_upgrade_success` | `activate-current-plan-bundle` | `roles_unchanged`, `book_acl_unchanged`, `trigger_chain_vocab_reused` | Activation should widen entitlement-shaped capabilities while leaving ordinary standing intact. |
+| `active_renewal_failure` | `suspend-current-plan-bundle` or `narrow-current-plan-bundle` | `roles_unchanged`, `system_admin_override_unchanged` | Degradation should impair effective capabilities without changing role semantics. |
+| `cancellation_then_expiry` | `narrow-current-plan-bundle`, then `expire-current-plan-bundle` | `roles_unchanged`, `system_admin_override_unchanged`, `book_acl_unchanged` | Cancellation and expiry must close paid capability in phases rather than via direct role removal. |
+| `refund_narrowing` | `narrow-current-plan-bundle` | `roles_unchanged`, `trigger_chain_vocab_reused` | Refund handling may contract entitlement, but only within bounded replay semantics. |
+| `admin_state_repair` | `repair-current-plan-bundle` | `roles_unchanged`, `system_admin_override_unchanged`, `trigger_chain_vocab_reused` | Repair restores the bundle that should have matched corrected standing. |
+
+#### P1 Scenario Mapping Notes (v1)
+
+- The scenario replay surface now maps as follows:
+  - one named scenario selects one initial lifecycle standing and one bounded trigger sequence
+  - the trigger sequence reuses `10C` to produce one resulting `subscription_state`
+  - the resulting lifecycle standing produces one entitlement effect that remains inside the `10B` boundary
+  - the replay then checks invariant preservation to prove the scenario stayed inside the intended model
+- The minimum mapping back to earlier packets is now fixed as:
+  - `trial_upgrade_success` proves the simplest positive widening path after a narrower trial standing
+  - `active_renewal_failure` proves capability impairment under lifecycle degradation rather than access-role mutation
+  - `cancellation_then_expiry` proves that end-of-term closure can be simulated as one ordered multi-step scenario
+  - `refund_narrowing` proves bounded rollback semantics without importing accounting or settlement realism
+  - `admin_state_repair` proves that explicit correction restores consistency rather than bypassing model boundaries
+- This packet still does not decide provider callback trust, checkout implementation, invoice detail, or tax detail.
+- This packet still does not mutate:
+  - `viewer / editor / owner` standing from `S0F-10A`
+  - the role-only vs entitlement-shaped action split from `S0F-10B`
+  - the `payment_event -> subscription_state -> entitlement` semantics from `S0F-10C`
+  - bounded `system_admin` override semantics
+
 ### P2 (Replay drills and invariant checks)
 
 - `P2-C1-S1`: define replay drills that run representative scenarios through the mock state machine and verify expected entitlement outcomes
@@ -269,8 +340,8 @@
 
 ### P1 (Scenario catalog and transition matrix)
 
-- [ ] `P1-C1-S1`: fix the first representative realistic scenario catalog
-- [ ] `P1-C1-S2`: map scenario inputs to lifecycle and entitlement outcomes
+- [x] `P1-C1-S1`: fix the first representative realistic scenario catalog
+- [x] `P1-C1-S2`: map scenario inputs to lifecycle and entitlement outcomes
 
 ### P2 (Replay drills and invariant checks)
 
@@ -285,8 +356,9 @@
 ## Current Status (recommended)
 
 - `S0F-10D` now has a stable `P0` contract for scenario-catalog vocabulary, replay invariants, and provider-adapter defer rules on top of the stable trigger-chain baseline in `S0F-10C`.
-- The lane remains a `draft` source log because the concrete scenario matrix, replay drills, and later handoff rules still remain open.
-- The next step should be `P1`, where the first representative realistic scenario catalog and transition matrix should be fixed; automation should still read this log as the active source for this packet.
+- `P1` is now complete: the lane now fixes one first representative realistic scenario catalog, one scenario-to-state-machine matrix, and one scenario-to-outcome matrix that preserve the `10A/10B/10C` baselines.
+- The lane remains a `draft` source log because replay drills and later provider-handoff rules still remain open.
+- The next step should be `P2`, where the first replayable mock-state-machine drills and invariant checks should be fixed; automation should still read this log as the active source for this packet.
 
 ## Evidence (reserved)
 
@@ -305,7 +377,19 @@
 - observed:
   - Added explicit `P0` contract decisions, vocabulary and invariant tables, checklist completion, and updated packet status for the next `P1` scenario-matrix phase.
 
+### P1-C1-S1S2 (First realistic scenario catalog and mapping fixed | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
+- expected:
+  - `P1` fixes one first representative catalog of realistic local lifecycle simulations.
+  - `P1` maps each scenario to bounded trigger sequence, resulting lifecycle standing, and resulting entitlement effect.
+  - `P1` keeps role, entitlement-boundary, and trigger-chain semantics unchanged while widening only the replay surface.
+- observed:
+  - Added the first scenario catalog table, scenario-to-state-machine matrix, scenario-to-outcome matrix, completed `P1` checklist items, and updated packet status for the next `P2` drill phase.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: Opened `S0F-10D` as the next `M4` scenario-catalog and mock-state-machine replay packet after `S0F-10C` stabilized the trigger-chain boundary.
 - 2026-04-15: Completed `S0F-10D/P0` by fixing scenario vocabulary, replay invariant boundaries, and explicit provider-adapter defer rules.
+- 2026-04-15: Completed `S0F-10D/P1` by fixing the first realistic scenario catalog and mapping it to lifecycle and entitlement outcomes.
