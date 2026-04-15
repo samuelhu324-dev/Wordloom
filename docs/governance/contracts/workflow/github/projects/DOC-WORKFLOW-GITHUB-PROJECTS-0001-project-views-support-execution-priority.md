@@ -14,6 +14,11 @@ contract_record:
   applies_to: GitHub Projects views, execution-time reprioritization, ad hoc or priority insertion support, and operator reading of current queue state during delivery
   enforcement_surface: manual
   violation_semantics: warning
+  owner_team: docs-governance
+  current_steward: role:workflow-contract-maintainer
+  approval_state: draft-review-pending
+  reviewed_by: pending
+  approved_by: pending
   recorded_at: 2026-04-11
   reviewed_at: pending
   effective_from: unknown
@@ -44,7 +49,21 @@ contract_record:
     - This child contract owns GitHub Projects as execution-support surface only; it does not replace the canonical GitHub Issues hierarchy.
     - Current supporting evidence now directly shows three common operator readings for this surface: status-board columns, fast table lookup, and timeline sequencing.
     - The local repo currently has no S0A-1A source log, so this draft stays explicit about issue-only sourcing.
+    - Current-state governance now reads through owner_team/current_steward/approval_state/reviewed_by/approved_by, while source and supplement history remain event metadata rather than current ownership markers.
 ```
+
+## Current Governance State
+
+- The current effective governance state of this contract is carried in frontmatter through `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
+- Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this release family; they should not be read as current ownership or current approval identity.
+- This contract therefore acts as the current-state governance surface for the Projects child, while the parent ledger and `SUP-001` preserve the route and evidence-history chain that led here.
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-WORKFLOW-GITHUB-PROJECTS-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `unknown` | `family-introduced` | `2026-04-11` | `GitHub issue S0A-1A (#23)` | The issue-only source introduced the Projects slice, but it does not defend a named current steward or approver for the current contract state. |
+| `DOC-WORKFLOW-GITHUB-PROJECTS-0001-GOV-02` | `current-draft-sharpened` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `role:packet-reviewer` | `statement-surface-sharpened` | `2026-04-11` | `ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md` | The accepted screenshot supplement sharpened the current draft wording for status-board, lookup, and timeline readings without changing current ownership semantics. |
 
 ## Contract Statement Table
 
@@ -94,4 +113,5 @@ contract_record:
 
 - This draft exists because the source issue explicitly described Projects usage even though the earlier packet did not emit one dedicated Projects contract.
 - The first accepted `SUP` pilot now sharpens this draft with screenshot-backed evidence for status-board, table, and timeline views, but does not change the primary routing boundary.
+- Under `S0F-9A/P1`, this contract now carries current-state governance metadata directly, while the parent ledger and supplement remain the event/history surfaces that explain how the current reading was reached.
 - More detailed Projects operating flow may still need later archaeology from non-screenshot evidence if the repo wants one richer later release.

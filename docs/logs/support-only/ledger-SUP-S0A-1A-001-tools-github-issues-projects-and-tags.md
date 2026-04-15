@@ -60,6 +60,12 @@ support_only_contract_release_ledger_supplement:
 | `S0A-1A-R02-SUP-02` | `unknown` | `role:packet-maintainer` | `role:packet-reviewer` | `direct-screenshot-inspection` | `role:packet-reviewer` | `accepted-for-packet` | The current packet preserves enough screenshot evidence and review notes to defend the quick-lookup claim at packet level. | The screenshot is preserved in-repo and the packet review chain is explicit, but the original named submitter is not defended by the surviving issue-only source history. |
 | `S0A-1A-R02-SUP-03` | `unknown` | `role:packet-maintainer` | `role:packet-reviewer` | `direct-screenshot-inspection` | `role:packet-reviewer` | `accepted-for-packet` | The current packet preserves enough screenshot evidence and review notes to defend the sequence-awareness claim at packet level. | The screenshot is preserved in-repo and the packet review chain is explicit, but the original named submitter is not defended by the surviving issue-only source history. |
 
+## Governance Position Note
+
+- The `Actor and Provenance Review Table` in this supplement is a packet-level event and accountability surface.
+- These rows defend who maintained, reviewed, verified, and accepted this screenshot-backed packet; they do not replace the current-state governance reading for the parent ledger or the Projects child contract.
+- Under `S0F-9A/P1`, current ownership, stewardship, and approval reading now belongs on the parent-ledger and child-contract surfaces, while this supplement remains the historical evidence chain for packet-level review and write-back.
+
 ## Attachment Quick Review
 
 ### S0A-1A-R02-SUP-01-SHOT-01
@@ -117,4 +123,5 @@ support_only_contract_release_ledger_supplement:
 - The attachment inventory and attachment review table now let reviewers open each screenshot directly from the packet and record one bounded approval-facing verdict without turning the main evidence table into an image gallery.
 - The `Attachment Quick Review` section now provides one table-external place to click and visually inspect each screenshot when table-cell link rendering is not sufficient in the active reader surface.
 - The `Actor and Provenance Review Table` now records one minimum packet-level accountability chain for each supplement item without inventing named actors that the surviving historical source cannot defend.
+- This supplement should now be read as the event/accountability companion to the current-state governance blocks on the parent ledger and Projects child contract, not as the canonical home for current ownership or stewardship.
 - If later code, markdown, or process notes show that these views were treated as stable workflow surfaces rather than one temporary board arrangement, a later SUP item may escalate the contract impact further.
