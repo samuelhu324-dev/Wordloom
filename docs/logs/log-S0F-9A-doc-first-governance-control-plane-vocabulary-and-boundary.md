@@ -279,7 +279,7 @@
 
 ### P3-C1-S1S2 (Bounded current-state and history reader surfaces published for `S0A-1A` sample family | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `843011a52`
 - artifacts:
   - `docs/governance/views/support-only/view-s0a-1a-governance-current-state-v1.md`
   - `docs/governance/views/support-only/view-s0a-1a-governance-history-and-contribution-v1.md`
