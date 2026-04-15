@@ -27,7 +27,7 @@
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 **roadmap_milestone**: `M4`
 **roadmap_phase**: `M4-P0`
-**roadmap_bridge_refs**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md#M4:-Book-first-access-control-minimum-closure-on-the-current-SoT`
+**roadmap_bridge_refs**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md#M4:-Book-first-access-control-minimum-closure-on-the-current-SoT, docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md#M4:-Book-first-access-control-minimum-closure-on-the-current-SoT, docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md#M4:-Book-first-access-control-minimum-closure-on-the-current-SoT`
 **pr_labels**: ``
 **pr_projects**: ``
 **pr_milestone**: ``
@@ -166,10 +166,86 @@
 - `P1-C1-S1`: fix one minimum `book` action set such as `read_book`, `edit_book`, `share_book`, `delete_book`, `transfer_book_owner`, and `manage_book_members`
 - `P1-C1-S2`: map those actions onto the current SoT without reopening `block` as an independent ACL object
 
+### P1 Minimum Action Matrix Decision (v1)
+
+- `P1` is now fixed as one minimum action packet around `book` rather than as one full tenant-plan-entitlement system.
+- The first independent authorization object remains `book`.
+- The minimum ordinary collaboration roles are now fixed as:
+  - `viewer`
+  - `editor`
+  - `owner`
+- The minimum platform/system role is now fixed as:
+  - `system_admin`
+- The first minimum action set is now fixed as:
+  - `read_book`
+  - `edit_book`
+  - `share_book`
+  - `delete_book`
+  - `transfer_book_owner`
+  - `manage_book_members`
+- The `P1` success rule in this packet is:
+  - one reader should be able to answer ordinary collaboration rights from one small role matrix rather than from prose-only interpretation
+  - `block` should remain inherited content structure and must not require its own ACL row
+  - `system_admin` should be legible as platform override rather than as one stronger ordinary collaborator
+
+#### P1 Role And Action Matrix (v1)
+
+| role | read_book | edit_book | share_book | delete_book | transfer_book_owner | manage_book_members | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `viewer` | `allow` | `deny` | `deny` | `deny` | `deny` | `deny` | Viewers can read one shared book but cannot mutate content or permissions. |
+| `editor` | `allow` | `allow` | `deny` | `deny` | `deny` | `deny` | Editors may change book content but cannot change sharing, ownership, or membership standing. |
+| `owner` | `allow` | `allow` | `allow` | `allow` | `allow` | `allow` | Owners are the ordinary collaboration authority surface for book lifecycle and membership control. |
+| `system_admin` | `bounded-override-only` | `bounded-override-only` | `bounded-override-only` | `bounded-override-only` | `bounded-override-only` | `bounded-override-only` | System admin is not a normal collaboration role and should act only through explicit platform override paths. |
+
+#### P1 SoT Mapping Notes (v1)
+
+- `tenant` remains the broader identity and containment surface for later widening, but it is not the first independent authorization object in this packet.
+- `membership` remains the bounded relation that allows one user to appear inside the tenant and later receive book-level standing.
+- `library` and `bookshelf` remain organization or navigation surfaces in this packet rather than first-class ACL containers.
+- `book` is the first independent authorization object.
+- `block` inherits `book` standing and should be interpreted as follows in v1:
+  - if one user may `read_book`, that user may read the blocks inside that book
+  - if one user may `edit_book`, that user may edit the blocks inside that book
+  - block movement, export filtering, and block-specific sharing remain deferred until a later widening packet explicitly proves that those problems need an independent policy surface
+
 ### P2 (Drill / Replay)
 
 - `P2-C1-S1`: prove one owner-to-editor share flow where the editor can edit but cannot re-share or transfer owner standing
 - `P2-C1-S2`: prove one bounded system-admin override that does not turn system admin into a normal collaboration role
+
+### P2 Drill Decision (v1)
+
+- `P2` now stays on the same `book`-first packet and proves one replayable minimum flow instead of widening into plan or billing realism.
+- The first ordinary collaboration drill is now fixed as:
+  - owner creates or holds one book
+  - owner grants `editor` standing to one second user
+  - editor can read and edit but cannot re-share, delete, transfer owner, or manage members
+  - owner revokes the editor standing cleanly
+- The first platform override drill is now fixed as:
+  - one `system_admin` may perform a bounded break-glass recovery action when normal owner control is unavailable or must be corrected
+  - that recovery action should be legible as platform override rather than as ordinary collaboration standing
+- The `P2` success rule in this packet is:
+  - one reader should be able to replay one owner/editor/share-revoke flow without guessing hidden role semantics
+  - one reader should be able to explain what `system_admin` may do without treating system admin as a default owner or editor
+  - the lane should still avoid `plan / entitlement / mock billing` dependence
+
+#### P2 Replay Drill A (Owner / Editor / Revoke)
+
+| drill step | actor | intended action | expected result | why it matters |
+| --- | --- | --- | --- | --- |
+| `A1` | `owner` | grant `editor` standing on one book to one second user | `allow` | The lane must prove ordinary collaboration can be delegated without changing book ownership. |
+| `A2` | `editor` | read and edit that book | `allow` | Editors need one clear productive role in the first closure. |
+| `A3` | `editor` | re-share the book, delete the book, transfer owner, or manage members | `deny` | The lane must prove content-edit rights do not silently become authority over collaboration or lifecycle control. |
+| `A4` | `owner` | revoke the editor standing | `allow` | The lane must prove ordinary collaboration rights remain revocable by the current owner. |
+
+#### P2 Replay Drill B (System-Admin Override Boundary)
+
+| drill step | actor | intended action | expected result | why it matters |
+| --- | --- | --- | --- | --- |
+| `B1` | `system_admin` | inspect book standing for support or recovery purposes | `allow-via-override` | The platform needs one bounded support path that is not confused with ordinary collaboration. |
+| `B2` | `system_admin` | repair or reset book access when ownership is stuck, orphaned, or administratively invalid | `allow-via-override` | The lane must prove one platform-side recovery seam exists. |
+| `B3` | `system_admin` | remain as long-lived ordinary collaborator on the book by default | `deny` | System admin should not become a disguised owner or editor role. |
+| `B4` | `system_admin` | bypass the entire role model for everyday use | `deny` | The override seam must stay bounded or the first lane loses all role separation value. |
 
 ### P3 (Widening decision)
 
@@ -186,21 +262,59 @@
 
 ### P1 (Implementation mapping and minimum action matrix)
 
-- [ ] `P1-C1-S1`: fix one minimum `book` action set
-- [ ] `P1-C1-S2`: map the action set onto the current SoT without block-level ACL
+- [x] `P1-C1-S1`: fix one minimum `book` action set
+- [x] `P1-C1-S2`: map the action set onto the current SoT without block-level ACL
+
+### P2 (Drill / Replay)
+
+- [x] `P2-C1-S1`: prove one owner-to-editor share flow where the editor can edit but cannot re-share or transfer owner standing
+- [x] `P2-C1-S2`: prove one bounded system-admin override that does not turn system admin into a normal collaboration role
 
 ## Current Status (recommended)
 
 - `S0F-10A` is now opened as the first real `M4` child log under `road-002`.
-- The lane is still in contract-first opening state: the minimum role vocabulary, book-first boundary, and deferred commercial layer are now named, but the first SoT-side action matrix and replay drill still remain open.
+- `P0` is now complete: the lane explicitly fixes the minimum principal vocabulary, the book-first authorization boundary, and the deferred commercial layer instead of leaving those choices only in roadmap prose.
+- `P1` is now complete: the lane now carries one concrete first role-and-action matrix for `viewer`, `editor`, `owner`, and `system_admin`, plus one explicit SoT mapping that keeps `block` under inherited `book` standing.
+- `P2` is now complete: the lane now carries one replayable owner/editor/share-revoke flow and one bounded system-admin override flow, so ordinary collaboration and platform override are no longer only implied design intent.
+- `P3` remains open: the next decision is whether `plan / entitlement / mock billing` should stay deferred, partially enter the lane, or open as a second-stage packet after the book-first minimum closure is stable.
 - Automation should still read this log as an active source packet rather than as a stable policy artifact.
 
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths when the lane begins making real bounded changes.
-- This section intentionally remains empty at scaffold time.
+- This section intentionally begins as a policy-evidence ledger because the first packet is fixing contract and replay semantics rather than shipping code paths.
+
+### P1-C1-S1S2 (Minimum book role and action matrix fixed for the first closure | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
+- expected:
+  - the lane should name one minimum ordinary collaboration matrix instead of leaving role semantics only in roadmap prose
+  - the packet should keep `book` as the first independent authorization object and keep `block` under inherited standing
+  - the packet should distinguish ordinary user roles from system-admin override without requiring plan or billing realism
+- observed:
+  - the lane now fixes one first role matrix for `viewer`, `editor`, `owner`, and `system_admin`, with ordinary collaboration rights and platform override separated explicitly
+  - the SoT mapping now states that `tenant`, `membership`, `library`, and `bookshelf` remain broader context surfaces while `book` is the first independent authorization object
+  - the packet now explicitly states that `block` inherits `book` standing for both read and edit interpretation in v1 and does not open block-level ACL
+
+### P2-C1-S1S2 (Replayable owner/editor and system-admin boundary drills fixed for the first closure | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
+- expected:
+  - the lane should prove one ordinary collaboration share-revoke flow that can be replayed without guessing hidden semantics
+  - the lane should prove one bounded system-admin override seam without turning system admin into a disguised ordinary collaborator
+  - the drills should still avoid dependence on `plan / entitlement / mock billing`
+- observed:
+  - the lane now fixes one owner-to-editor flow where editors can read and edit but cannot re-share, delete, transfer owner, or manage members
+  - the lane now fixes one bounded system-admin override seam for inspection and recovery without default long-lived collaboration standing
+  - the first packet therefore now answers both ordinary collaboration and platform override questions at minimum-closure level while still deferring commercial widening
 
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-10A` as the first real `M4` child log so the access-control lane no longer remains only as roadmap prose and draft notes.
 - 2026-04-15: fixed the opening lane around book-first minimum closure, user/admin role separation, and explicit block inheritance, while keeping `plan / entitlement / mock billing` as later widening decisions rather than first-packet obligations.
+- 2026-04-15: completed `P1-C1-S1S2` by fixing the first minimum role-and-action matrix around `book`, plus the first SoT mapping that keeps `block` under inherited standing.
+- 2026-04-15: completed `P2-C1-S1S2` by fixing one replayable owner/editor/share-revoke flow and one bounded system-admin override flow for the same minimum closure packet.

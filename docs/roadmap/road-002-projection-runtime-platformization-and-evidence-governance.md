@@ -258,9 +258,9 @@
 - `M4-P0`:
   - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
 - `M4-P1`:
-  - `unmapped`
+  - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
 - `M4-P2`:
-  - `unmapped`
+  - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
 - `M4-P3`:
   - `unmapped`
 
@@ -321,3 +321,4 @@
 - 2026-04-15: opened `S0F-9A` as the first real `M3` child log, moved `M3-P0` from borrowed precursor context into one explicit `DOC`-first vocabulary-and-boundary packet, and retained `S0F-7G/7H/7I` as opening precursors rather than as the bridge ledger itself.
 - 2026-04-15: landed `DOC-CONTROL-PLANE-0001` as the first reusable `M3-P0` contract, and used two bounded `S0F-9A` sample rounds to justify the shared current-state vocabulary, event-history placement rule, and `M3` versus `M4` boundary.
 - 2026-04-15: revised `M4` into a book-first minimum-closure opening, mapped `M4-P0` to `S0F-10A`, and made explicit that the first authorization lane should separate ordinary user roles from system-admin override while keeping `block` under inherited `book` standing.
+- 2026-04-15: completed the first `S0F-10A` minimum closure packet through `M4-P1` and `M4-P2` by fixing a first `book` action matrix plus one replayable owner/editor/share-revoke and system-admin override drill, while still deferring `plan / entitlement / mock billing` to later widening.
