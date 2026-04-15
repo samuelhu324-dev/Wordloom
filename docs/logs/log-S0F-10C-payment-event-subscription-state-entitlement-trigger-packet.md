@@ -243,6 +243,67 @@
 - `P1-C1-S1`: fix one minimum trigger matrix that maps representative `payment_event` values to resulting `subscription_state` transitions
 - `P1-C1-S2`: map those transitions to entitlement activation, narrowing, suspension, or expiry without rewriting role or entitlement boundaries
 
+### P1 Minimum Trigger-Matrix Decision (v1)
+
+- `P1` is now fixed as one minimum transition-mapping packet rather than as one full billing engine design.
+- The stable vocabulary from `P0` remains authoritative for trigger input, lifecycle standing, and entitlement outcome.
+- The first representative trigger set is now fixed as:
+  - `upgrade_success`
+  - `renewal_failed`
+  - `cancellation_requested`
+  - `refund_applied`
+  - `admin_correction`
+- The first entitlement outcome set is now fixed as:
+  - `activate-current-plan-bundle`
+  - `narrow-current-plan-bundle`
+  - `suspend-current-plan-bundle`
+  - `expire-current-plan-bundle`
+  - `repair-current-plan-bundle`
+- The `P1` success rule in this packet is:
+  - one reader should be able to answer which lifecycle transition each representative trigger is allowed to request
+  - one reader should be able to answer how the resulting entitlement snapshot changes after that transition
+  - the packet should keep `S0F-10A` and `S0F-10B` semantics stable while widening only the state-transition model
+
+#### P1 Trigger-to-State Matrix (v1)
+
+| trigger input | from state | to state | transition standing | notes |
+| --- | --- | --- | --- | --- |
+| `upgrade_success` | `trialing` | `active` | `allow` | Successful upgrade or activation moves the subscription into the normal active lifecycle. |
+| `renewal_failed` | `active` | `past_due` | `allow` | Failed renewal degrades lifecycle standing without changing role semantics. |
+| `cancellation_requested` | `active` | `canceled` | `allow` | Cancellation records intent to end the commercial relationship. |
+| `refund_applied` | `active` | `canceled` | `allow-bounded` | Refund-backed reversal may end active standing through a bounded corrective path. |
+| `admin_correction` | any incorrect state | corrected state | `allow-bounded` | Administrative correction exists only to restore consistency with intended lifecycle reality. |
+| end-of-term lapse | `past_due` or `canceled` | `expired` | `allow` | Expiry closes the lifecycle after non-recovery or cancellation reaches its end point. |
+
+#### P1 State-to-Entitlement Matrix (v1)
+
+| resulting `subscription_state` | resulting entitlement effect | notes |
+| --- | --- | --- |
+| `trialing` | `narrow-current-plan-bundle` | Trialing keeps the package on a deliberately narrower effective bundle. |
+| `active` | `activate-current-plan-bundle` | Active standing enables the normal effective bundle for the current plan. |
+| `past_due` | `suspend-current-plan-bundle` or `narrow-current-plan-bundle` | Past-due standing impairs capability outcome without mutating role semantics. |
+| `canceled` | `narrow-current-plan-bundle` pending expiry | Cancellation narrows or preserves bounded access until end-of-term handling completes. |
+| `expired` | `expire-current-plan-bundle` | Expired standing closes effective entitlement outcome for the current plan bundle. |
+| corrected state via `admin_correction` | `repair-current-plan-bundle` | Correction restores the effective bundle that should have been active for the corrected lifecycle standing. |
+
+#### P1 Transition Mapping Notes (v1)
+
+- The trigger chain now maps as follows:
+  - trigger inputs change lifecycle standing
+  - lifecycle standing changes effective entitlement outcome
+  - entitlement outcome then constrains the entitlement-shaped capabilities already defined in `S0F-10B`
+- The minimum mapping back to `S0F-10B` is now fixed as:
+  - `activate-current-plan-bundle` means the plan's normal capability bundle becomes effective again
+  - `narrow-current-plan-bundle` means the plan's entitlement-shaped capabilities contract to the narrower allowed set
+  - `suspend-current-plan-bundle` means entitlement-shaped capabilities are temporarily unavailable even though ordinary collaboration standing still exists
+  - `expire-current-plan-bundle` means the entitlement-shaped capability bundle is no longer effective until a later reactivation trigger occurs
+  - `repair-current-plan-bundle` means the bundle is corrected to match the lifecycle state that should have been in force
+- This packet still does not decide provider transport or webhook trust detail.
+- This packet still does not mutate:
+  - `viewer / editor / owner` standing from `S0F-10A`
+  - the role-only vs entitlement-shaped action split from `S0F-10B`
+  - `system_admin` override semantics
+
 ### P2 (Drill / Replay)
 
 - `P2-C1-S1`: prove one replay where a bounded trigger changes `subscription_state` and therefore changes effective entitlement outcome
@@ -263,8 +324,8 @@
 
 ### P1 (Transition mapping and trigger matrix)
 
-- [ ] `P1-C1-S1`: fix one minimum trigger matrix for representative payment or lifecycle events
-- [ ] `P1-C1-S2`: map those transitions to entitlement outcomes without mutating role standing
+- [x] `P1-C1-S1`: fix one minimum trigger matrix for representative payment or lifecycle events
+- [x] `P1-C1-S2`: map those transitions to entitlement outcomes without mutating role standing
 
 ### P2 (Drill / Replay)
 
@@ -280,7 +341,8 @@
 
 - `S0F-10C` is now scaffolded as the intended next `M4` trigger packet after the stable entitlement-boundary closure in `S0F-10B`.
 - `P0` is now complete: the lane now fixes one minimum vocabulary for `payment_event`, `subscription_state`, and `entitlement_snapshot`, plus one explicit allowed-transition boundary that keeps role and entitlement baselines outside the trigger chain.
-- The lane is still `draft`: it now has a concrete trigger-chain contract packet, but it does not yet define the first full transition matrix or replay drill.
+- `P1` is now complete: the lane now fixes one first trigger-to-state matrix, one state-to-entitlement matrix, and one transition mapping that keeps role and entitlement boundaries stable while explaining lifecycle-driven capability change.
+- The lane is still `draft`: it now has concrete contract and transition-mapping packets, but it does not yet prove the first replayable trigger drill.
 - `roadmap_milestone` is already fixed to `M4`, but `roadmap_phase` remains blank on purpose because the current `road-002` `M4-P0..P3` bridge is already occupied by `S0F-10A` and `S0F-10C` should not guess a new roadmap slot before that follow-up widening is made explicit.
 - Automation should still read this log as an opening source scaffold rather than as a stable policy artifact.
 
@@ -303,8 +365,23 @@
   - the lane now fixes one allowed transition boundary where trigger inputs may change lifecycle standing and lifecycle standing may change effective entitlement outcome without mutating role or override semantics
   - the lane now explicitly defers provider realism while allowing later provider-shaped work only as a source of trusted trigger inputs rather than as a replacement for trigger-chain semantics
 
+### P1-C1-S1S2 (Minimum trigger matrix and entitlement outcome mapping fixed | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
+- expected:
+  - the lane should stop leaving the first trigger-to-state and state-to-entitlement mapping implicit after `P0`
+  - the packet should name one bounded representative trigger matrix without reopening role or entitlement boundaries
+  - the packet should explain how lifecycle transitions affect effective entitlement outcomes while preserving `S0F-10A` and `S0F-10B`
+- observed:
+  - `S0F-10C` now fixes one representative trigger matrix for upgrade, renewal failure, cancellation, refund-backed correction, admin correction, and end-of-term lapse
+  - the lane now fixes one resulting state-to-entitlement mapping that distinguishes activation, narrowing, suspension, expiry, and repair of the current plan bundle
+  - the transition notes now state explicitly that lifecycle-driven capability change constrains the entitlement-shaped capabilities from `S0F-10B` without mutating role standing or `system_admin` override semantics
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-10C` as the next intended `M4` trigger packet so payment and lifecycle triggers can be modeled separately from the already-stable entitlement boundary in `S0F-10B`.
 - 2026-04-15: fixed the opening default that `S0F-10A` remains the role baseline and `S0F-10B` remains the entitlement baseline while `S0F-10C` handles only trigger-chain semantics for later entitlement-state change.
 - 2026-04-15: completed `P0-C1-S1S2S3` by fixing the minimum trigger-chain vocabulary, the allowed transition boundary from external input to lifecycle standing to entitlement outcome, and the explicit defer rule for provider realism.
+- 2026-04-15: completed `P1-C1-S1S2` by fixing the first representative trigger matrix, the first state-to-entitlement outcome mapping, and the first transition notes that preserve the `10A/10B` baselines.
