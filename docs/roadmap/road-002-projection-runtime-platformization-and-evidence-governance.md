@@ -262,7 +262,7 @@
 - `M4-P2`:
   - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
 - `M4-P3`:
-  - `unmapped`
+  - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
 
 **Plan (P0-P3)**
 
@@ -278,10 +278,21 @@
 - `M4-P2-A`: one bounded role-flow drill covering share, edit, revoke, owner transfer boundary, and system-admin override on the same `book` surface.
 - `M4-P3-A`: one bounded widening decision on whether `plan / entitlement / mock billing` should remain deferred, be partially introduced, or open as a second-stage packet after the minimum closure is stable.
 
+**Current first packet**
+
+- `S0F-10A` now acts as the stable minimum-closure source packet for `M4-P0` through `M4-P3`.
+- That packet fixes the first `book`-first role boundary, the first replayable share/revoke and override drills, and the first widening decision that keeps `plan / entitlement` deferred while splitting `mock billing` to a later packet.
+
 **Exit signals**
 
 - `M4` should be considered first-generation ready when a reader can answer who may read, edit, share, and administer one `book`, what a system admin may override, and why `block` still inherits `book` standing rather than carrying its own ACL.
 - `M4` should not be treated as mature merely because a permission matrix exists; at least one owner/editor/share-revoke flow and one bounded system-admin override case should be replayable through the same model.
+
+**Recent Changes**
+
+- 2026-04-15: opened `S0F-10A` as the first real `M4` child log and fixed `M4-P0` as a book-first minimum access packet rather than a billing-first design exercise.
+- 2026-04-15: completed `S0F-10A/P1-C1-S1S2` and `P2-C1-S1S2`, so `M4-P1` and `M4-P2` now bridge to the first role matrix and replay drills on the same packet.
+- 2026-04-15: completed `S0F-10A/P3-C1-S1S2`, so `M4-P3` now bridges to an explicit widening decision that keeps `plan / entitlement` deferred and splits `mock billing` into later work.
 
 ### M5: Asset platform activation after governance and access baselines exist
 

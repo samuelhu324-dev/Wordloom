@@ -5,7 +5,7 @@
 **id**: `S0F-10A`
 **kind**: `log`
 **title**: `book-first access control minimum closure and role boundary v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Control, Policy, Drills, Evidence, epic/s0, sub/10a`
 **links**: ``
@@ -252,6 +252,38 @@
 - `P3-C1-S1`: decide whether `plan / entitlement` should remain deferred or partially enter the lane after the book-first closure is stable
 - `P3-C1-S2`: decide whether mock billing deserves its own later packet instead of staying embedded in the same opening lane
 
+### P3 Widening Decision (v1)
+
+- `P3` is now fixed as a boundary decision rather than as the start of a second hidden implementation stream inside `S0F-10A`.
+- The minimum closure fixed by `P0-P2` is now considered stable enough to stand on its own without introducing commercial realism.
+- `plan` and `entitlement` remain deferred from this lane's core rules in the following sense:
+  - they are valid later extension concepts
+  - they must not rewrite the `book`-first authorization boundary already fixed here
+  - they must not turn `system_admin` into a commercial-plan alias or broaden `book_role` semantics by accident
+- `mock billing` is now explicitly kept out of `S0F-10A` and should open only as its own later packet once the repo can defend why subscription state changes must alter entitlement state.
+- The `P3` success rule in this packet is:
+  - one reader should be able to explain which access questions are already answered by `S0F-10A`
+  - one reader should be able to explain which commercial or entitlement questions are intentionally not answered here
+  - later widening should have to prove a new need instead of silently accreting into the minimum closure lane
+
+#### P3 Deferred-vs-Later-Packet Decision Table (v1)
+
+| topic | decision in `S0F-10A` | reason |
+| --- | --- | --- |
+| `book` collaboration rights | `keep-in-lane` | The lane already fixes the minimum ordinary collaboration and override boundary around one `book`. |
+| `plan` | `defer` | Commercial packaging is not required to explain who may read, edit, share, revoke, or recover one book. |
+| `entitlement` | `defer` | A later entitlement model may widen resource-action control, but it should layer on top of the current `book`-first closure rather than replace it. |
+| `mock billing` | `split-to-later-packet` | Billing state changes are an external trigger surface and would add product-policy complexity that this minimum access packet does not need. |
+| block-level gating or monetized export/copy rules | `defer` | Those questions should only enter after a later packet proves that book-level standing is insufficient. |
+
+#### P3 Later-Packet Entry Conditions (v1)
+
+- A later widening packet may open only when at least one of these conditions becomes concrete:
+  - the product must gate actions that cannot be defended by `viewer / editor / owner / system_admin` alone
+  - subscription or trial state must change effective access outcomes in a way the current lane cannot express cleanly
+  - one resource beyond `book` requires an independent authorization or entitlement surface backed by concrete drills rather than speculation
+- Until one of those conditions is real, later work should treat `S0F-10A` as the stable minimum access baseline and should not reopen this lane just to host speculative commerce design.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -270,14 +302,20 @@
 - [x] `P2-C1-S1`: prove one owner-to-editor share flow where the editor can edit but cannot re-share or transfer owner standing
 - [x] `P2-C1-S2`: prove one bounded system-admin override that does not turn system admin into a normal collaboration role
 
+## P3 (Widening decision)
+
+- [x] `P3-C1-S1`: decide whether `plan / entitlement` should remain deferred or partially enter the lane after the book-first closure is stable
+- [x] `P3-C1-S2`: decide whether mock billing deserves its own later packet instead of staying embedded in the same opening lane
+
 ## Current Status (recommended)
 
 - `S0F-10A` is now opened as the first real `M4` child log under `road-002`.
 - `P0` is now complete: the lane explicitly fixes the minimum principal vocabulary, the book-first authorization boundary, and the deferred commercial layer instead of leaving those choices only in roadmap prose.
 - `P1` is now complete: the lane now carries one concrete first role-and-action matrix for `viewer`, `editor`, `owner`, and `system_admin`, plus one explicit SoT mapping that keeps `block` under inherited `book` standing.
 - `P2` is now complete: the lane now carries one replayable owner/editor/share-revoke flow and one bounded system-admin override flow, so ordinary collaboration and platform override are no longer only implied design intent.
-- `P3` remains open: the next decision is whether `plan / entitlement / mock billing` should stay deferred, partially enter the lane, or open as a second-stage packet after the book-first minimum closure is stable.
-- Automation should still read this log as an active source packet rather than as a stable policy artifact.
+- `P3` is now complete: `plan` and `entitlement` remain deferred from this minimum closure lane, while `mock billing` is explicitly split to a later packet instead of being embedded into `S0F-10A`.
+- `S0F-10A` now stands as the stable minimum access baseline for `M4-P0` through `M4-P3`: later widening must layer on top of this packet instead of quietly rewriting it.
+- Automation may now read this log as the stable minimum-closure source packet for the first `M4` lane, while treating later entitlement or billing work as separate widening work rather than as unfinished content inside this packet.
 
 ## Evidence (reserved)
 
@@ -312,9 +350,25 @@
   - the lane now fixes one bounded system-admin override seam for inspection and recovery without default long-lived collaboration standing
   - the first packet therefore now answers both ordinary collaboration and platform override questions at minimum-closure level while still deferring commercial widening
 
+### P3-C1-S1S2 (Commercial widening explicitly deferred and split beyond the minimum closure packet | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
+  - `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+- expected:
+  - the lane should stop leaving `plan / entitlement / mock billing` as an open ambiguity after the minimum closure is already fixed
+  - the packet should decide whether commercial widening belongs inside `S0F-10A` or in a later dedicated packet
+  - the result should preserve the `book`-first role boundary rather than diluting it with speculative plan design
+- observed:
+  - `S0F-10A` now explicitly keeps `plan` and `entitlement` deferred from the minimum closure packet and states that later widening must layer on top of the current access baseline
+  - `mock billing` is now explicitly split to a later packet instead of being embedded into the opening `book`-first lane
+  - the first `M4` lane can now be treated as a stable minimum closure rather than as a partially finished commercial-access hybrid
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-10A` as the first real `M4` child log so the access-control lane no longer remains only as roadmap prose and draft notes.
 - 2026-04-15: fixed the opening lane around book-first minimum closure, user/admin role separation, and explicit block inheritance, while keeping `plan / entitlement / mock billing` as later widening decisions rather than first-packet obligations.
 - 2026-04-15: completed `P1-C1-S1S2` by fixing the first minimum role-and-action matrix around `book`, plus the first SoT mapping that keeps `block` under inherited standing.
 - 2026-04-15: completed `P2-C1-S1S2` by fixing one replayable owner/editor/share-revoke flow and one bounded system-admin override flow for the same minimum closure packet.
+- 2026-04-15: completed `P3-C1-S1S2` by explicitly deferring `plan / entitlement`, splitting `mock billing` to a later packet, and declaring `S0F-10A` the stable minimum access baseline for the first `M4` lane.
