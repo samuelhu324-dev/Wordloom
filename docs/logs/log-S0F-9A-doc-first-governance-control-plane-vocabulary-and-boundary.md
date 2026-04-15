@@ -262,7 +262,7 @@
 
 ### P0-C1-S1S2S3 (Shared control-plane contract landed for vocabulary, placement, and boundary | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `212d4deac`
 - artifacts:
   - `docs/governance/contracts/control-plane/DOC-GOVERNANCE-CONTROL-PLANE-0001-current-state-event-history-and-authorization-boundary.md`
 - expected:
