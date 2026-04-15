@@ -292,6 +292,40 @@
 - `P2-C1-S1`: prove one bounded entitlement drill where role standing remains valid but one later capability is gated differently by plan or entitlement state
 - `P2-C1-S2`: prove one replay where entitlement change does not accidentally mutate ordinary collaboration roles or platform override semantics
 
+### P2 Drill Decision (v1)
+
+- `P2` now stays on the same widening packet and proves one replayable capability split instead of widening into billing realism.
+- The first bounded entitlement drill is now fixed as:
+  - one user with valid ordinary standing on one book attempts one entitlement-shaped capability
+  - the outcome differs across `trial`, `standard`, and `vip` without changing the user's underlying book role
+  - the denied case remains a capability denial rather than a collaboration-rights denial
+- The first role-integrity drill is now fixed as:
+  - one user's `plan` or `subscription_state` changes
+  - the capability outcome changes accordingly
+  - ordinary collaboration rights and `system_admin` override semantics do not change as a side effect
+- The `P2` success rule in this packet is:
+  - one reader should be able to replay one entitlement-sensitive capability case without guessing whether role or plan caused the outcome
+  - one reader should be able to explain that entitlement change is not allowed to mutate owner/editor/viewer/system-admin standing
+  - the lane should still avoid payment-provider or invoice realism
+
+#### P2 Replay Drill A (Same role standing, different capability outcome)
+
+| drill step | actor | precondition | intended action | expected result | why it matters |
+| --- | --- | --- | --- | --- | --- |
+| `A1` | `editor` on one book under `trial` | valid `edit_book` standing already granted by owner | attempt `copy_block_cross_book` from the current book into another already-accessible book | `deny-via-entitlement` | The lane must show that denial can happen even when ordinary collaboration standing is valid. |
+| `A2` | same `editor` moved to `standard` with standing unchanged | same valid `edit_book` standing and same target books | attempt `copy_block_cross_book` again | `allow` | The lane must show that capability widening can occur without changing the underlying role. |
+| `A3` | same `editor` still under `standard` | valid `edit_book` standing unchanged | attempt `share_book` on that same book | `deny-via-role` | The lane must show that plan upgrade does not elevate collaboration authority. |
+| `A4` | same `editor` moved to `vip` with standing unchanged | same valid `edit_book` standing | attempt `create_template_from_book` | `allow` | The lane must show that higher packaging can widen reuse semantics while leaving the role boundary intact. |
+
+#### P2 Replay Drill B (Entitlement change does not mutate role or override semantics)
+
+| drill step | actor | precondition | intended action | expected result | why it matters |
+| --- | --- | --- | --- | --- | --- |
+| `B1` | `viewer` under `vip` | valid `read_book` standing only | attempt `edit_book` | `deny-via-role` | High plan level must not convert a viewer into an editor. |
+| `B2` | `owner` under `trialing` then `past_due` | valid owner standing already exists | attempt `manage_book_members` before and after the subscription-state change | `allow` both times | Subscription-state movement must not silently revoke ordinary collaboration authority in this lane. |
+| `B3` | `editor` whose entitlement bundle narrows | standing unchanged, one capability removed | attempt `export_book` after downgrade | `deny-via-entitlement` | Capability narrowing should be legible as entitlement change rather than role loss. |
+| `B4` | `system_admin` | platform override path already exists from `S0F-10A` | inspect or recover book access during the same plan-state scenarios | `allow-via-override` | Platform override must stay outside paid-plan semantics and survive entitlement changes unchanged. |
+
 ### P3 (Billing handoff decision)
 
 - `P3-C1-S1`: decide whether `mock billing` is now required as a trigger surface for entitlement change or should remain deferred beyond this lane
@@ -312,8 +346,8 @@
 
 ### P2 (Drill / Replay)
 
-- [ ] `P2-C1-S1`: prove one bounded entitlement drill where role standing and later capability policy remain distinct
-- [ ] `P2-C1-S2`: prove one replay where entitlement change does not mutate role or system-admin semantics
+- [x] `P2-C1-S1`: prove one bounded entitlement drill where role standing and later capability policy remain distinct
+- [x] `P2-C1-S2`: prove one replay where entitlement change does not mutate role or system-admin semantics
 
 ### P3 (Billing handoff decision)
 
@@ -325,7 +359,8 @@
 - `S0F-10B` is now scaffolded as the intended next `M4` widening packet after the stable minimum closure in `S0F-10A`.
 - `P0` is now complete: the lane now fixes one minimum vocabulary for `plan`, `entitlement`, and `subscription_state`, plus one explicit layering rule that keeps `S0F-10A` as the role-first access baseline.
 - `P1` is now complete: the lane now fixes one first action split between role-only and entitlement-shaped questions, plus one minimum plan-to-capability matrix and one SoT mapping that keeps `block` under inherited standing.
-- The lane is still `draft`: it now has a concrete contract and action-split packet, but it does not yet prove the first replayable entitlement drill or any billing handoff decision.
+- `P2` is now complete: the lane now carries one replayable capability drill where the same role standing produces different outcomes under different plan/entitlement states, plus one integrity drill that proves entitlement change does not mutate role or `system_admin` semantics.
+- The lane is still `draft`: it now has concrete contract, action-split, and replay-drill packets, but it does not yet decide whether `mock billing` is required as a later trigger surface.
 - `roadmap_milestone` is already fixed to `M4`, but `roadmap_phase` remains blank on purpose because the current `road-002` `M4-P0..P3` bridge is already fully occupied by `S0F-10A`; this scaffold should not guess a new roadmap slot before that widening is made explicit.
 - Automation should still read this log as an opening source scaffold rather than as a stable policy artifact.
 
@@ -362,9 +397,24 @@
   - the lane now fixes one minimum plan-to-capability matrix for `trial`, `standard`, and `vip` without turning plan into a role alias
   - the SoT mapping now states that entitlement widening applies to reuse, output, or scale behavior on top of valid standing while `block` remains inherited content structure rather than an independent ACL object
 
+### P2-C1-S1S2 (Replayable entitlement drills fixed without mutating role standing | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
+- expected:
+  - the lane should prove one replay where entitlement-sensitive capability outcomes differ while ordinary role standing stays the same
+  - the lane should prove one replay where plan or entitlement changes do not mutate `viewer / editor / owner / system_admin` semantics
+  - the drills should remain independent from payment-provider or invoice realism
+- observed:
+  - `S0F-10B` now fixes one replay where the same editor standing yields different `copy_block_cross_book` and `create_template_from_book` outcomes under `trial`, `standard`, and `vip`
+  - the lane now fixes one integrity drill showing that plan or subscription-state changes do not upgrade viewers into editors, do not remove owner collaboration authority in this lane, and do not change `system_admin` override behavior
+  - the widening packet can now answer both capability variance and role-integrity questions without introducing billing implementation detail
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-10B` as the next intended `M4` widening packet so `plan / entitlement` can be modeled as a bounded second-stage lane instead of being pushed back into `S0F-10A`.
 - 2026-04-15: fixed the opening default that `S0F-10A` remains the stable access baseline while `S0F-10B` handles the next boundary between role-shaped access and later entitlement-shaped capability policy.
 - 2026-04-15: completed `P0-C1-S1S2S3` by fixing the minimum `plan / entitlement / subscription_state` vocabulary, the role-first layering rule over `S0F-10A`, and the explicit defer rule for billing realism.
 - 2026-04-15: completed `P1-C1-S1S2` by fixing the first role-only versus entitlement-shaped action split, the first minimum plan-to-capability matrix, and the first SoT mapping for those second-stage capability questions.
+- 2026-04-15: completed `P2-C1-S1S2` by fixing one replayable entitlement-sensitive capability drill and one role-integrity drill without widening into billing implementation.
