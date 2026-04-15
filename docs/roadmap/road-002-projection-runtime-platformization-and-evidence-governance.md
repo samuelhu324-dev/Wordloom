@@ -228,6 +228,7 @@
 **Current first packet**
 
 - `S0F-9A` is now the first real `M3` child log and should be treated as the active vocabulary-and-boundary source packet for `M3-P0-A`.
+- `DOC-GOVERNANCE-CONTROL-PLANE-0001` now acts as the first landed reusable contract for that packet's shared current-state vocabulary, event-history placement rule, and authorization boundary.
 
 **Exit signals**
 
@@ -311,3 +312,4 @@
 - 2026-04-14: created the first `road-002` mainline draft to absorb the existing `S0E` and `S0F` progress, while reserving the next major backbone slots for governance control plane, tenant access control, and later asset-platform admission.
 - 2026-04-14: refined `M3` and `M4` into lane-opening shape, fixed the first `DOC`-first stance for governance-control rollout, and made explicit that access control remains a separate second control plane rather than a hidden extension of ownership semantics.
 - 2026-04-15: opened `S0F-9A` as the first real `M3` child log, moved `M3-P0` from borrowed precursor context into one explicit `DOC`-first vocabulary-and-boundary packet, and retained `S0F-7G/7H/7I` as opening precursors rather than as the bridge ledger itself.
+- 2026-04-15: landed `DOC-GOVERNANCE-CONTROL-PLANE-0001` as the first reusable `M3-P0` contract, and used two bounded `S0F-9A` sample rounds to justify the shared current-state vocabulary, event-history placement rule, and `M3` versus `M4` boundary.

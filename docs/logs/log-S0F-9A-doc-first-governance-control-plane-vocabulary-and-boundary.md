@@ -86,6 +86,7 @@
 - This slice starts as one `log-retained core + contract-first governance vocabulary` lane.
 - The expected first landing is a stable vocabulary-and-boundary contract for current-state governance fields, plus one bounded application packet later in `M3-P1-A`.
 - This lane now exports two bounded `support-only` reader surfaces for the chosen `S0A-1A` sample family: one current-state view and one history/contribution view.
+- The stable vocabulary-and-boundary contract is now landed at `docs/governance/contracts/control-plane/DOC-GOVERNANCE-CONTROL-PLANE-0001-current-state-event-history-and-authorization-boundary.md`.
 
 **Outlet ownership**:
 
@@ -100,6 +101,7 @@
 
 - `owner_team`: the durable team-level responsibility anchor for the governed surface.
 - `current_steward`: the current named or role-based maintainer accountable for day-to-day state and bounded updates.
+- `approval_state`: the current stage of acceptance for the governed surface; this field describes current effective standing rather than historical review chronology.
 - `approved_by`: the actor or role that accepted the current effective state.
 - `reviewed_by`: the actor or role that reviewed the current packet or state without necessarily carrying final approval authority.
 - `verified_by`: the actor or role that verified evidence or implementation claims closely enough to support packet-level judgment.
@@ -223,9 +225,9 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: fix the minimum governance-control vocabulary
-- [ ] `P0-C1-S2`: fix the current-state versus event-history placement rule
-- [ ] `P0-C1-S3`: fix the boundary against authorization and product-access semantics
+- [x] `P0-C1-S1`: fix the minimum governance-control vocabulary
+- [x] `P0-C1-S2`: fix the current-state versus event-history placement rule
+- [x] `P0-C1-S3`: fix the boundary against authorization and product-access semantics
 
 ### P1 (First DOC-surface application packet)
 
@@ -245,6 +247,7 @@
 ## Current Status (recommended)
 
 - `S0F-9A` is now opened as the first real `M3` child log under `road-002`.
+- `P0` is now complete: the shared DOC-first control-plane contract is now landed as `DOC-GOVERNANCE-CONTROL-PLANE-0001`, so the minimum vocabulary, placement rule, and authorization boundary no longer live only as source-log prose.
 - `P1` is now complete on one bounded sample family: `S0A-1A` parent ledger + `SUP-001` + `DOC-WORKFLOW-GITHUB-PROJECTS-0001`.
 - The first application now makes one practical split explicit: current effective governance state is carried on the parent-ledger and child-contract reading surfaces, while packet-level actor/provenance and write-back chain stay in the supplement as event/history evidence.
 - `P2` is now also complete on the same family: the Projects child now carries an explicit delegated stewardship state under the same durable `owner_team`, and the sample now separates reviewer, verifier, and approver roles instead of collapsing them into one packet reviewer.
@@ -256,6 +259,20 @@
 
 - Artifacts are the source of truth for evidence; this log records the head SHA, key parameters, and artifact paths when the lane begins making real bounded changes.
 - This section intentionally remains empty at scaffold time.
+
+### P0-C1-S1S2S3 (Shared control-plane contract landed for vocabulary, placement, and boundary | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/governance/contracts/control-plane/DOC-GOVERNANCE-CONTROL-PLANE-0001-current-state-event-history-and-authorization-boundary.md`
+- expected:
+  - the lane should own one reusable DOC-first control-plane contract instead of leaving the vocabulary and boundary only in `S0F-9A` prose
+  - the contract should fix current-state field ownership, event-history placement, and the boundary against authorization or product-access semantics
+  - the contract should be justified by at least the two bounded sample rounds already landed under `P3`
+- observed:
+  - the new control-plane contract now owns `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, `approved_by`, packet-level `verified_by`, and the contribution or handoff event boundary as reusable vocabulary
+  - the current-state versus event-history split is now explicit as contract-owned rule text rather than only as sample-local interpretation
+  - the contract explicitly keeps tenant, entitlement, billing, and broader product-access semantics out of scope, preserving the `M3` versus `M4` boundary
 
 ### P1-C1-S1S2 (First governance-control field split applied to `S0A-1A` sample family | 2026-04-15)
 
@@ -325,6 +342,7 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-9A` as the first real `M3` child log so the governance-control lane no longer depends only on `S0F-7G/7H/7I` precursor material.
+- 2026-04-15: completed `P0-C1-S1S2S3` by landing `DOC-GOVERNANCE-CONTROL-PLANE-0001` as the reusable DOC-first control-plane contract for vocabulary, placement, and authorization boundary semantics.
 - 2026-04-15: completed `P1-C1-S1S2` by selecting the `S0A-1A` sample family and applying the first current-state versus event-history split across the parent ledger, supplement, and Projects child contract.
 - 2026-04-15: completed `P2-C1-S1S2` on the same `S0A-1A` sample family by proving one delegated stewardship state and one clean reviewer/verifier/approver separation case.
 - 2026-04-15: completed `P3-C1-S1S2` on the same `S0A-1A` sample family by publishing one bounded current-state view and one bounded history/contribution view as `support-only` reader surfaces.
