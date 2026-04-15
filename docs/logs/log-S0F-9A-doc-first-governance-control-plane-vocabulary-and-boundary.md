@@ -440,7 +440,7 @@
 
 ### P5-C1-S1S2 (Bounded current-state and history reader surfaces published for `S0A-2A/R03` labs slice | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `339c15186`
 - artifacts:
   - `docs/governance/views/support-only/view-s0a-2a-labs-governance-current-state-v1.md`
   - `docs/governance/views/support-only/view-s0a-2a-labs-governance-history-and-contribution-v1.md`
