@@ -525,7 +525,7 @@
 
 ### P5-C2-S1S2 (Bounded current-state and history reader surfaces published for `S0B-3A` no-supplement family | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `191a8916d`
 - artifacts:
   - `docs/governance/views/support-only/view-s0b-3a-governance-current-state-v1.md`
   - `docs/governance/views/support-only/view-s0b-3a-governance-history-and-contribution-v1.md`
@@ -540,7 +540,7 @@
 
 ### P4-C3-S1S2 (Screenshot-exposed contract and ledger backlog backfilled to the control-plane rule | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `191a8916d`
 - artifacts:
   - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
   - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
