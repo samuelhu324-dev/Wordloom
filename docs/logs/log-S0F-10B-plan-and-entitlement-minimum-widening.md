@@ -350,7 +350,7 @@
 
 ### P1-C1-S1S2 (Minimum action split and entitlement surface mapping fixed | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `95ad4c2fc`
 - artifacts:
   - `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
 - expected:
