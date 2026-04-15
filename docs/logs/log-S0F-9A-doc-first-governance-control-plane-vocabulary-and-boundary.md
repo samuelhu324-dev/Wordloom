@@ -475,7 +475,7 @@
 
 ### P4-C2-S1S2 (Scoped control-plane backfill applied to `S0B-3A` no-supplement family | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `9a3c0dcb6`
 - artifacts:
   - `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
   - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
