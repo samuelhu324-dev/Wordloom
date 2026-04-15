@@ -291,7 +291,7 @@
 
 ### P0-C1-S1S2S3 (Minimum trigger-chain vocabulary and allowed transition boundary fixed | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `cebd89c52`
 - artifacts:
   - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
 - expected:
