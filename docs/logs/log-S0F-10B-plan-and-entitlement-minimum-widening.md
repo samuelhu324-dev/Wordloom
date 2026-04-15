@@ -231,6 +231,62 @@
 - `P1-C1-S1`: decide one minimum set of capability questions that stay role-only versus those that should widen into entitlement semantics
 - `P1-C1-S2`: map those capability questions onto the current SoT without rewriting the `book`-first baseline or reopening block-level ACL
 
+### P1 Minimum Action-Split Decision (v1)
+
+- `P1` is now fixed as one minimum action-split packet rather than as one full subscription engine design.
+- The stable `S0F-10A` role matrix remains authoritative for ordinary collaboration on one book.
+- The first entitlement-shaped capability set is now fixed as:
+  - `copy_block_cross_book`
+  - `export_book`
+  - `create_template_from_book`
+  - `bulk_book_operations`
+- The minimum packaging split in this packet is now fixed as:
+  - `trial`: entry package with the narrowest capability surface
+  - `standard`: mid-tier package with ordinary cross-book and bounded export capability
+  - `vip`: widened package with advanced reuse and bulk capability
+- The `P1` success rule in this packet is:
+  - one reader should be able to answer which actions are still fully governed by role standing
+  - one reader should be able to answer which actions become entitlement-shaped only after valid role standing already exists
+  - the packet should widen capability policy without reopening `block` as an independently authorized object
+
+#### P1 Role-Only vs Entitlement-Shaped Matrix (v1)
+
+| action or capability question | role-only or entitlement-shaped | first gate | second gate | notes |
+| --- | --- | --- | --- | --- |
+| `read_book` | `role-only` | `S0F-10A` role matrix | `none` | Reading one book remains ordinary collaboration standing. |
+| `edit_book` | `role-only` | `S0F-10A` role matrix | `none` | Editing one book remains ordinary collaboration standing. |
+| `share_book` | `role-only` | `S0F-10A` role matrix | `none` | Sharing authority must not be sold as a plan upgrade. |
+| `delete_book` | `role-only` | `S0F-10A` role matrix | `none` | Book lifecycle authority remains owner-scoped rather than plan-scoped. |
+| `transfer_book_owner` | `role-only` | `S0F-10A` role matrix | `none` | Ownership transfer remains outside entitlement policy. |
+| `manage_book_members` | `role-only` | `S0F-10A` role matrix | `none` | Membership control remains ordinary collaboration authority. |
+| `copy_block_cross_book` | `entitlement-shaped` | valid `read_book` or `edit_book` standing | entitlement check | Cross-book reuse is a capability widening on top of valid book standing. |
+| `export_book` | `entitlement-shaped` | valid `read_book` standing | entitlement check | Export is a packaging-sensitive capability, not a role grant. |
+| `create_template_from_book` | `entitlement-shaped` | valid `read_book` standing | entitlement check | Template extraction widens reuse semantics without changing ordinary collaboration authority. |
+| `bulk_book_operations` | `entitlement-shaped` | valid standing on target books | entitlement check | Bulk behavior widens scale and convenience rather than collaboration authority. |
+
+#### P1 Minimum Plan-to-Capability Matrix (v1)
+
+| plan | `copy_block_cross_book` | `export_book` | `create_template_from_book` | `bulk_book_operations` | notes |
+| --- | --- | --- | --- | --- | --- |
+| `trial` | `deny` | `deny` | `deny` | `deny` | Trial stays focused on core collaboration without advanced reuse or scale features. |
+| `standard` | `allow` | `allow-limited` | `deny` | `deny` | Standard widens into ordinary cross-book reuse and bounded export. |
+| `vip` | `allow` | `allow-expanded` | `allow` | `allow` | VIP widens into advanced reuse and bulk convenience capability. |
+
+#### P1 SoT Mapping Notes (v1)
+
+- `tenant` remains the broader commercial containment surface where later `plan` attachment may live, but `tenant` does not replace the `book`-first authorization boundary.
+- `membership` remains the relation that lets one user participate inside the tenant and then receive ordinary collaboration standing on books.
+- `book` remains the first independently authorized object.
+- The first entitlement-shaped capability mapping is now fixed as follows:
+  - `copy_block_cross_book` operates on blocks as content payload moving between books, but the permission question is modeled as cross-book reuse capability rather than as independent block ACL
+  - `export_book` operates on a book output surface and stays entitlement-shaped because it concerns output packaging rather than collaboration authority
+  - `create_template_from_book` derives one reusable asset from an existing book and remains entitlement-shaped because it widens reuse semantics, not ordinary standing
+  - `bulk_book_operations` applies across one set of already-accessible books and remains entitlement-shaped because it widens scale semantics, not ownership or membership authority
+- `block` therefore remains inherited content structure in this packet:
+  - one user still needs valid `read_book` or `edit_book` standing before any entitlement-shaped capability can even be evaluated
+  - this packet does not introduce block-level share, deny, or override rules
+  - entitlement widening applies to reuse, output, or scale behavior on top of valid standing rather than to independent block authorization
+
 ### P2 (Drill / Replay)
 
 - `P2-C1-S1`: prove one bounded entitlement drill where role standing remains valid but one later capability is gated differently by plan or entitlement state
@@ -251,8 +307,8 @@
 
 ### P1 (Action split and entitlement surface mapping)
 
-- [ ] `P1-C1-S1`: decide one minimum capability split between role-only and entitlement-shaped questions
-- [ ] `P1-C1-S2`: map that split onto the current SoT without reopening block-level ACL
+- [x] `P1-C1-S1`: decide one minimum capability split between role-only and entitlement-shaped questions
+- [x] `P1-C1-S2`: map that split onto the current SoT without reopening block-level ACL
 
 ### P2 (Drill / Replay)
 
@@ -268,7 +324,8 @@
 
 - `S0F-10B` is now scaffolded as the intended next `M4` widening packet after the stable minimum closure in `S0F-10A`.
 - `P0` is now complete: the lane now fixes one minimum vocabulary for `plan`, `entitlement`, and `subscription_state`, plus one explicit layering rule that keeps `S0F-10A` as the role-first access baseline.
-- The lane is still `draft`: it now has a concrete contract packet, but it does not yet prove the first replayable entitlement split or any billing handoff decision.
+- `P1` is now complete: the lane now fixes one first action split between role-only and entitlement-shaped questions, plus one minimum plan-to-capability matrix and one SoT mapping that keeps `block` under inherited standing.
+- The lane is still `draft`: it now has a concrete contract and action-split packet, but it does not yet prove the first replayable entitlement drill or any billing handoff decision.
 - `roadmap_milestone` is already fixed to `M4`, but `roadmap_phase` remains blank on purpose because the current `road-002` `M4-P0..P3` bridge is already fully occupied by `S0F-10A`; this scaffold should not guess a new roadmap slot before that widening is made explicit.
 - Automation should still read this log as an opening source scaffold rather than as a stable policy artifact.
 
@@ -291,8 +348,23 @@
   - the lane now fixes one role-first layering rule that keeps ordinary collaboration authority in `S0F-10A` and reserves entitlement for later capability questions such as export, cross-book copy, template creation, or bulk operations
   - the lane now explicitly defers billing realism while allowing later billing-shaped work only as a trigger surface for entitlement-state change
 
+### P1-C1-S1S2 (Minimum action split and entitlement surface mapping fixed | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
+- expected:
+  - the lane should stop leaving the first role-vs-entitlement split implicit after `P0`
+  - the packet should name one bounded entitlement-shaped capability set without reopening `block` as an independently authorized object
+  - the packet should map those capability questions onto the current SoT in a way that preserves `S0F-10A` as the first gate
+- observed:
+  - `S0F-10B` now fixes one action split where ordinary collaboration stays role-only while cross-book copy, export, template creation, and bulk operations become the first entitlement-shaped candidates
+  - the lane now fixes one minimum plan-to-capability matrix for `trial`, `standard`, and `vip` without turning plan into a role alias
+  - the SoT mapping now states that entitlement widening applies to reuse, output, or scale behavior on top of valid standing while `block` remains inherited content structure rather than an independent ACL object
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-10B` as the next intended `M4` widening packet so `plan / entitlement` can be modeled as a bounded second-stage lane instead of being pushed back into `S0F-10A`.
 - 2026-04-15: fixed the opening default that `S0F-10A` remains the stable access baseline while `S0F-10B` handles the next boundary between role-shaped access and later entitlement-shaped capability policy.
 - 2026-04-15: completed `P0-C1-S1S2S3` by fixing the minimum `plan / entitlement / subscription_state` vocabulary, the role-first layering rule over `S0F-10A`, and the explicit defer rule for billing realism.
+- 2026-04-15: completed `P1-C1-S1S2` by fixing the first role-only versus entitlement-shaped action split, the first minimum plan-to-capability matrix, and the first SoT mapping for those second-stage capability questions.
