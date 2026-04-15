@@ -251,7 +251,7 @@
 
 ### P2-C1-S1S2 (Delegated stewardship and governance-role separation proved on `S0A-1A` sample family | 2026-04-15)
 
-- headSha: `pending-commit`
+- headSha: `2f2f89b36`
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
   - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
