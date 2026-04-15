@@ -417,7 +417,7 @@
 
 ### P2-C1-S1S2 (Replayable trigger drills fixed without mutating role or override semantics | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `e68ced29b`
 - artifacts:
   - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
 - expected:
