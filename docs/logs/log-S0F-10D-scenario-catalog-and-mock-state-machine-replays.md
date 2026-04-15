@@ -296,7 +296,7 @@
 
 ### P0-C1-S1S2S3 (Scenario contract boundary and defer rules | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `1195dd544`
 - artifacts: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
 - expected:
   - `P0` fixes one minimum vocabulary for realistic scenario entries, replay units, mock-state-machine inputs, and replay invariants.
