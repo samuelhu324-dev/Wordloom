@@ -143,15 +143,95 @@
 - Fix one minimum vocabulary for scenario entries, replay units, and mock-state-machine input shape.
 - Keep scenario naming, trigger sequence, lifecycle transition, and entitlement outcome as distinct fields.
 
+### P0 Minimum Scenario Vocabulary Decision (v1)
+
+- `P0` is now fixed as one vocabulary-and-boundary packet for realistic local simulations that follow the already-stable role, entitlement, and trigger-chain baselines.
+- The minimum terms in this packet are now fixed as:
+  - `scenario_catalog_entry`
+  - `replay_unit`
+  - `mock_state_machine_input`
+  - `replay_invariant`
+- The semantic boundary for those terms is now fixed as follows:
+  - `scenario_catalog_entry` means one named realistic situation such as trial upgrade, renewal failure, cancellation then expiry, refund handling, or administrative correction
+  - `replay_unit` means one bounded testable scenario record that includes initial standing, trigger sequence, expected lifecycle transition, and expected entitlement outcome
+  - `mock_state_machine_input` means one local input shape that reuses stable `payment_event`, `subscription_state`, and plan context rather than inventing alternative billing concepts
+  - `replay_invariant` means one rule that must remain true while the scenario is replayed, especially preserved role semantics and preserved platform override boundaries
+- The minimum illustrative values in this packet are now fixed as:
+  - `scenario_catalog_entry`: `trial_upgrade_success`, `active_renewal_failure`, `cancellation_then_expiry`, `refund_narrowing`, `admin_state_repair`
+  - `mock_state_machine_input` fields: `starting_plan`, `starting_subscription_state`, `trigger_sequence`, `expected_subscription_state`, `expected_entitlement_outcome`
+  - `replay_invariant`: `roles_unchanged`, `system_admin_override_unchanged`, `book_acl_unchanged`, `trigger_chain_vocab_reused`
+- The `P0-C1-S1` success rule in this packet is:
+  - one reader should be able to distinguish scenario naming from replay execution input
+  - one reader should be able to explain why `10D` reuses `10C` trigger semantics instead of replacing them
+  - one reader should be able to explain why scenario realism here still does not require provider realism
+
+#### P0 Scenario Vocabulary Table (v1)
+
+| term | fixed meaning in `S0F-10D` | not allowed to mean |
+| --- | --- | --- |
+| `scenario_catalog_entry` | one named realistic lifecycle situation that should be replayable locally | one provider-specific callback payload or one implementation-specific test fixture |
+| `replay_unit` | one bounded scenario record with inputs, transitions, expected outcomes, and invariants | one full billing engine, full UI flow, or production orchestration |
+| `mock_state_machine_input` | one local input shape built from stable plan and trigger-chain terms | a replacement for `payment_event`, `subscription_state`, or entitlement semantics |
+| `replay_invariant` | one rule that must remain true across scenario replay | one entitlement outcome or one mutable scenario step |
+
 ### P0-C1-S2 (Replay invariant boundary)
 
 - Fix the rules each replay must preserve, especially the `10A/10B/10C` baselines.
 - Keep role standing and bounded platform override outside simulated commercial lifecycle changes.
 
+### P0 Replay Invariant Boundary Decision (v1)
+
+- `S0F-10D` now fixes the following replay order for this lane:
+  - first choose one `scenario_catalog_entry`
+  - then construct one `replay_unit` from stable plan context, stable starting lifecycle standing, and one bounded trigger sequence
+  - then run the local mock-state-machine transition using `10C` vocabulary only
+  - then verify expected entitlement outcome together with preserved invariants
+- The first invariant boundary in this packet is now fixed as:
+  - scenario replay may change lifecycle standing and effective entitlement outcome through the existing `10C` trigger chain
+  - scenario replay may not change collaboration role standing from `10A`
+  - scenario replay may not redefine entitlement meaning from `10B`
+  - scenario replay may not bypass bounded `system_admin` override semantics
+- The minimum replay-family rules in this packet are now fixed as:
+  - `trial_upgrade_success` should demonstrate widened entitlement through `trialing -> active`
+  - `active_renewal_failure` should demonstrate narrowed or suspended entitlement through `active -> past_due`
+  - `cancellation_then_expiry` should demonstrate deferred expiry through `active -> canceled -> expired`
+  - `refund_narrowing` should demonstrate bounded entitlement rollback without role mutation
+  - `admin_state_repair` should demonstrate explicit correction that restores model consistency rather than bypassing it
+- The `P0-C1-S2` success rule in this packet is:
+  - one reader should be able to explain which scenario fields are allowed to vary and which invariants must remain fixed
+  - one reader should be able to explain that realistic simulation still stops at lifecycle and entitlement change rather than mutating membership or ownership
+  - one reader should be able to explain that `10D` is a replay surface on top of `10C`, not a second trigger model
+
+#### P0 Replay Invariant Table (v1)
+
+| replay surface | allowed to change during replay | must remain unchanged | boundary reason |
+| --- | --- | --- | --- |
+| lifecycle standing | `subscription_state` according to bounded trigger sequence | role standing and membership semantics | Scenario realism is about commercial state change, not collaboration authority mutation. |
+| entitlement outcome | effective capability bundle for the current plan and lifecycle standing | entitlement meaning defined in `10B` | Replay may exercise entitlement outcomes but may not redefine capability categories. |
+| trigger sequence | representative `payment_event` ordering per scenario | trigger vocabulary defined in `10C` | Scenario replay must reuse the stable trigger-chain contract instead of inventing a new model. |
+| administrative repair | bounded corrective transition to restore consistency | `system_admin` override boundary and ordinary role semantics | Correction is allowed only to repair lifecycle consistency, not to bypass governance or access rules. |
+
 ### P0-C1-S3 (Deferred provider adapters | v1)
 
 - Real provider adapters, webhook trust, checkout orchestration, invoice detail, and tax logic remain deferred at packet open.
 - The opening scenario packet should stay coherent even if those external systems are left unmodeled.
+
+### P0 Provider-Adapter Defer Decision (v1)
+
+- Real provider-adapter work remains deferred after `P0` and does not enter this scenario contract packet as an implementation obligation.
+- The following surfaces are explicitly out of scope in this packet:
+  - provider webhook schemas or signature-verification realism
+  - checkout session creation or UI flow
+  - invoice, tax, settlement, or accounting detail
+  - live retry timing, provider idempotency, or asynchronous delivery guarantees
+- A later provider-shaped packet is allowed only under the following rule:
+  - it may explain how real external signals are translated into trusted `payment_event` inputs for the replay surface
+  - it may not redefine the scenario vocabulary, replay invariants, or trigger semantics already fixed here and in `S0F-10C`
+  - it should act as an upstream trigger source for the mock-state-machine contract rather than folding scenario replay back into provider detail
+- The `P0-C1-S3` success rule in this packet is:
+  - one reader should be able to explain why `10D` can model realistic product situations without live provider callbacks
+  - one reader should be able to explain what later provider work is still allowed to add
+  - later realism should have to open or extend one separate bounded packet instead of silently broadening this scenario lane
 
 ## Numbering
 
@@ -183,9 +263,9 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: fix the minimum scenario-catalog vocabulary
-- [ ] `P0-C1-S2`: fix replay invariants and preserved boundaries
-- [ ] `P0-C1-S3`: defer provider-adapter realism explicitly
+- [x] `P0-C1-S1`: fix the minimum scenario-catalog vocabulary
+- [x] `P0-C1-S2`: fix replay invariants and preserved boundaries
+- [x] `P0-C1-S3`: defer provider-adapter realism explicitly
 
 ### P1 (Scenario catalog and transition matrix)
 
@@ -204,9 +284,9 @@
 
 ## Current Status (recommended)
 
-- `S0F-10D` is now opened as the next bounded packet after the stable trigger-chain baseline in `S0F-10C`.
-- The lane is still a `draft` source log: the boundary and phase plan are now explicit, but the concrete scenario catalog, replay drills, and later handoff rules still remain open.
-- The next step should be `P0`, followed by one first scenario matrix in `P1`; automation should still read this log as the active source for this packet.
+- `S0F-10D` now has a stable `P0` contract for scenario-catalog vocabulary, replay invariants, and provider-adapter defer rules on top of the stable trigger-chain baseline in `S0F-10C`.
+- The lane remains a `draft` source log because the concrete scenario matrix, replay drills, and later handoff rules still remain open.
+- The next step should be `P1`, where the first representative realistic scenario catalog and transition matrix should be fixed; automation should still read this log as the active source for this packet.
 
 ## Evidence (reserved)
 
@@ -214,6 +294,18 @@
 - This section is the human-facing ledger and should remain separate from `Evidence Footer Source`.
 - Prefer one stable ledger shape per unit: heading with `P*-C*-S*` and date, then `headSha`, `artifacts`, `expected`, and `observed`.
 
+### P0-C1-S1S2S3 (Scenario contract boundary and defer rules | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
+- expected:
+  - `P0` fixes one minimum vocabulary for realistic scenario entries, replay units, mock-state-machine inputs, and replay invariants.
+  - `P0` fixes preserved-boundary rules proving that scenario replay does not rewrite `10A/10B/10C` semantics.
+  - `P0` defers provider-adapter realism explicitly into a later bounded packet.
+- observed:
+  - Added explicit `P0` contract decisions, vocabulary and invariant tables, checklist completion, and updated packet status for the next `P1` scenario-matrix phase.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: Opened `S0F-10D` as the next `M4` scenario-catalog and mock-state-machine replay packet after `S0F-10C` stabilized the trigger-chain boundary.
+- 2026-04-15: Completed `S0F-10D/P0` by fixing scenario vocabulary, replay invariant boundaries, and explicit provider-adapter defer rules.
