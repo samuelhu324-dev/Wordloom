@@ -5,7 +5,7 @@
 **id**: `S0F-10B`
 **kind**: `log`
 **title**: `plan and entitlement minimum widening boundary after book-first access closure v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Entitlement, Policy, Drills, Evidence, epic/s0, sub/10b`
 **links**: ``
@@ -331,6 +331,41 @@
 - `P3-C1-S1`: decide whether `mock billing` is now required as a trigger surface for entitlement change or should remain deferred beyond this lane
 - `P3-C1-S2`: decide whether any billing-shaped work belongs in a separate later packet instead of inside `S0F-10B`
 
+### P3 Billing Handoff Decision (v1)
+
+- `P3` is now fixed as a close-out boundary decision rather than as the start of an embedded billing implementation stream.
+- `S0F-10B` now explicitly concludes that `mock billing` is not required to make the first entitlement widening packet coherent or replayable.
+- The minimum closure delivered by `P0-P2` is now sufficient to stand on its own because:
+  - the vocabulary for `plan`, `entitlement`, and `subscription_state` is explicit
+  - the first role-only versus entitlement-shaped action split is explicit
+  - the first replayable entitlement drills already prove capability variance and role-integrity boundaries without payment realism
+- Billing-shaped work is now explicitly split to a later packet under the following rule:
+  - a later packet may model `payment_event`, billing transitions, or subscription triggers only if it needs to explain how `subscription_state` changes over time
+  - that later packet must treat billing as a trigger surface for entitlement activation, suspension, upgrade, or expiry
+  - that later packet must not redefine the role baseline from `S0F-10A` or the entitlement boundary fixed in `S0F-10B`
+- The `P3` success rule in this packet is:
+  - one reader should be able to explain why `10B` can close without simulating checkout or invoicing
+  - one reader should be able to explain what future billing work is still allowed to do
+  - later work should have to open a new bounded packet instead of silently attaching billing semantics to this lane
+
+#### P3 Keep-vs-Split Decision Table (v1)
+
+| topic | decision in `S0F-10B` | reason |
+| --- | --- | --- |
+| `plan` vocabulary | `keep-in-lane` | This packet needs packaging semantics to explain capability bundles. |
+| `entitlement` boundary | `keep-in-lane` | This packet needs executable capability semantics to explain widening on top of role standing. |
+| `subscription_state` vocabulary | `keep-in-lane` | This packet needs lifecycle vocabulary to explain active vs narrowed capability state. |
+| `mock billing` implementation | `split-to-later-packet` | Billing is not required to prove the first entitlement boundary or replay the current drills. |
+| `payment_event` or checkout realism | `split-to-later-packet` | Provider-style triggers belong to a later external-trigger packet, not to the minimum widening closure. |
+
+#### P3 Later-Packet Entry Conditions (v1)
+
+- A later billing-shaped packet may open only when at least one of these conditions becomes concrete:
+  - one real replay requires showing how `subscription_state` changes from `trialing` to `active`, `past_due`, or `expired`
+  - one entitlement change cannot be defended clearly without naming an external trigger such as upgrade, renewal failure, or cancellation
+  - one downstream implementation packet needs a bounded `payment_event -> subscription_state -> entitlement` chain rather than a vocabulary-only contract
+- Until one of those conditions is real, later work should treat `S0F-10B` as the stable entitlement-boundary baseline and should not reopen this lane just to host speculative billing realism.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -351,8 +386,8 @@
 
 ### P3 (Billing handoff decision)
 
-- [ ] `P3-C1-S1`: decide whether `mock billing` is required as a trigger surface for entitlement change
-- [ ] `P3-C1-S2`: decide whether billing-shaped work belongs in a separate later packet
+- [x] `P3-C1-S1`: decide whether `mock billing` is required as a trigger surface for entitlement change
+- [x] `P3-C1-S2`: decide whether billing-shaped work belongs in a separate later packet
 
 ## Current Status (recommended)
 
@@ -360,9 +395,10 @@
 - `P0` is now complete: the lane now fixes one minimum vocabulary for `plan`, `entitlement`, and `subscription_state`, plus one explicit layering rule that keeps `S0F-10A` as the role-first access baseline.
 - `P1` is now complete: the lane now fixes one first action split between role-only and entitlement-shaped questions, plus one minimum plan-to-capability matrix and one SoT mapping that keeps `block` under inherited standing.
 - `P2` is now complete: the lane now carries one replayable capability drill where the same role standing produces different outcomes under different plan/entitlement states, plus one integrity drill that proves entitlement change does not mutate role or `system_admin` semantics.
-- The lane is still `draft`: it now has concrete contract, action-split, and replay-drill packets, but it does not yet decide whether `mock billing` is required as a later trigger surface.
+- `P3` is now complete: the lane now explicitly splits `mock billing` and `payment_event` realism into a later dedicated packet instead of embedding them into the minimum entitlement widening closure.
+- `S0F-10B` now stands as the stable minimum entitlement-boundary baseline after `S0F-10A`: later work may widen from it, but should not reopen it just to host speculative billing detail.
 - `roadmap_milestone` is already fixed to `M4`, but `roadmap_phase` remains blank on purpose because the current `road-002` `M4-P0..P3` bridge is already fully occupied by `S0F-10A`; this scaffold should not guess a new roadmap slot before that widening is made explicit.
-- Automation should still read this log as an opening source scaffold rather than as a stable policy artifact.
+- Automation may now read this log as the stable minimum entitlement-widening source packet and treat billing-shaped follow-up as separate later work.
 
 ## Evidence (reserved)
 
@@ -411,6 +447,20 @@
   - the lane now fixes one integrity drill showing that plan or subscription-state changes do not upgrade viewers into editors, do not remove owner collaboration authority in this lane, and do not change `system_admin` override behavior
   - the widening packet can now answer both capability variance and role-integrity questions without introducing billing implementation detail
 
+### P3-C1-S1S2 (Billing realism split beyond the minimum entitlement-widening closure | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
+- expected:
+  - the lane should stop leaving `mock billing` as an unresolved ambiguity after the entitlement boundary is already explicit and replayable
+  - the packet should decide whether billing-shaped work belongs inside `S0F-10B` or in a later dedicated packet
+  - the result should preserve the role baseline from `S0F-10A` and the entitlement boundary fixed in `S0F-10B`
+- observed:
+  - `S0F-10B` now explicitly concludes that billing realism is not required for the first entitlement-boundary closure
+  - the lane now splits `mock billing`, `payment_event`, and checkout-style trigger modeling to a later dedicated packet
+  - the first widening packet can now be treated as a stable minimum closure rather than as a partially finished billing-and-entitlement hybrid
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-10B` as the next intended `M4` widening packet so `plan / entitlement` can be modeled as a bounded second-stage lane instead of being pushed back into `S0F-10A`.
@@ -418,3 +468,4 @@
 - 2026-04-15: completed `P0-C1-S1S2S3` by fixing the minimum `plan / entitlement / subscription_state` vocabulary, the role-first layering rule over `S0F-10A`, and the explicit defer rule for billing realism.
 - 2026-04-15: completed `P1-C1-S1S2` by fixing the first role-only versus entitlement-shaped action split, the first minimum plan-to-capability matrix, and the first SoT mapping for those second-stage capability questions.
 - 2026-04-15: completed `P2-C1-S1S2` by fixing one replayable entitlement-sensitive capability drill and one role-integrity drill without widening into billing implementation.
+- 2026-04-15: completed `P3-C1-S1S2` by explicitly splitting `mock billing` and `payment_event` realism to a later dedicated packet and marking `S0F-10B` as the stable minimum entitlement-boundary closure.
