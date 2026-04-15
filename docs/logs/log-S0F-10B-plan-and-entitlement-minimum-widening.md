@@ -279,7 +279,7 @@
 
 ### P0-C1-S1S2S3 (Minimum plan-entitlement vocabulary and role-first layering fixed | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `1cd5ccfa5`
 - artifacts:
   - `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
 - expected:
