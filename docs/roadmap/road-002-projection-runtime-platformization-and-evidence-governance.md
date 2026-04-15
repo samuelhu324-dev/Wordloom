@@ -14,7 +14,7 @@
   **reference_log_2**: `docs/logs/log-S0F-docs-management-v6.md`
   **reference_log_3**: `docs/roadmap/_draft/road-S2-.md`
 **created**: `2026-04-14`
-**updated**: `2026-04-14`
+**updated**: `2026-04-15`
 **reviewed**: `pending`
 
 ---
@@ -199,15 +199,17 @@
 **Bridge Ledger (child logs only)**
 
 - `M3-P0`:
-  - `docs/logs/log-S0F-7G-approval-facing-screenshot-evidence-review-and-attachment-protocol.md`
-  - `docs/logs/log-S0F-7H-actor-and-provenance-fields-for-evidence-review-governance.md`
-  - `docs/logs/log-S0F-7I-ledger-and-contract-structure-integration-audit-and-remediation-plan.md`
+  - `docs/logs/log-S0F-9A-doc-first-governance-control-plane-vocabulary-and-boundary.md`
 - `M3-P1`:
   - `unmapped`
 - `M3-P2`:
   - `unmapped`
 - `M3-P3`:
   - `unmapped`
+
+**Opening precursors**
+
+- `S0F-7G`, `S0F-7H`, and `S0F-7I` remain the immediate precursor packet for `M3-P0`: they fixed screenshot-review readability, minimum packet-level actor/provenance accountability, and structure-integration audit boundaries before the first explicit `M3` child log was opened.
 
 **Plan (P0-P3)**
 
@@ -222,6 +224,10 @@
 - `M3-P1-A`: one bounded `DOC` packet that applies those fields to `log -> ledger -> contract`, with frontmatter for current state and table/event surfaces for historical changes.
 - `M3-P2-A`: one bounded handoff drill that proves leaving-person replacement, delegated stewardship, and retrospective provenance correction on representative docs-family samples.
 - `M3-P3-A`: one bounded reader surface that answers three separate questions cleanly: who owns this now, who approved this current state, and who contributed materially over time.
+
+**Current first packet**
+
+- `S0F-9A` is now the first real `M3` child log and should be treated as the active vocabulary-and-boundary source packet for `M3-P0-A`.
 
 **Exit signals**
 
@@ -304,3 +310,4 @@
 
 - 2026-04-14: created the first `road-002` mainline draft to absorb the existing `S0E` and `S0F` progress, while reserving the next major backbone slots for governance control plane, tenant access control, and later asset-platform admission.
 - 2026-04-14: refined `M3` and `M4` into lane-opening shape, fixed the first `DOC`-first stance for governance-control rollout, and made explicit that access control remains a separate second control plane rather than a hidden extension of ownership semantics.
+- 2026-04-15: opened `S0F-9A` as the first real `M3` child log, moved `M3-P0` from borrowed precursor context into one explicit `DOC`-first vocabulary-and-boundary packet, and retained `S0F-7G/7H/7I` as opening precursors rather than as the bridge ledger itself.
