@@ -399,7 +399,7 @@
 
 ### P2-C1-S1S2 (Replayable entitlement drills fixed without mutating role standing | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `08be554c4`
 - artifacts:
   - `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
 - expected:
