@@ -386,7 +386,7 @@
 
 ### P4-C1-S1 (First scoped backfill family selected for post-sample control-plane reuse | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `99d0b8229`
 - artifacts:
   - `docs/logs/log-S0F-9A-doc-first-governance-control-plane-vocabulary-and-boundary.md`
 - expected:
@@ -399,7 +399,7 @@
 
 ### P4-C1-S2 (Scoped control-plane backfill applied to `S0A-2A/R03` labs slice | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `99d0b8229`
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
   - `docs/logs/support-only/ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md`
