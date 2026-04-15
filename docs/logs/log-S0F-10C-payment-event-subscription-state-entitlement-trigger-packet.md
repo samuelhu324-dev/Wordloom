@@ -5,7 +5,7 @@
 **id**: `S0F-10C`
 **kind**: `log`
 **title**: `payment-event to subscription-state and entitlement trigger packet boundary v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Billing, Entitlement, Policy, Drills, Evidence, epic/s0, sub/10c`
 **links**: ``
@@ -349,6 +349,41 @@
 - `P3-C1-S1`: decide whether real provider-style detail is still unnecessary after the first trigger drills
 - `P3-C1-S2`: decide whether checkout, invoice, and tax surfaces belong in separate later packets rather than inside `S0F-10C`
 
+### P3 Provider Handoff Decision (v1)
+
+- `P3` is now fixed as a close-out boundary decision rather than as the start of an embedded provider integration stream.
+- `S0F-10C` now explicitly concludes that provider-style realism is not required to make the first trigger packet coherent or replayable.
+- The minimum closure delivered by `P0-P2` is now sufficient to stand on its own because:
+  - the trigger-chain vocabulary for `payment_event`, `subscription_state`, and `entitlement_snapshot` is explicit
+  - the first representative trigger matrix and state-to-entitlement mapping are explicit
+  - the first replayable trigger drills already prove lifecycle-driven entitlement change and role-integrity boundaries without provider callbacks or checkout realism
+- Provider-shaped work is now explicitly split to a later packet under the following rule:
+  - a later packet may model provider webhooks, checkout completion, invoice issue, or tax-bearing payment events only if it needs to explain how one trusted trigger input is produced or verified
+  - that later packet must treat provider realism as the source of a bounded `payment_event`, not as a replacement for `subscription_state` or `entitlement_snapshot`
+  - that later packet must not redefine the role baseline from `S0F-10A`, the entitlement boundary from `S0F-10B`, or the trigger-chain semantics fixed in `S0F-10C`
+- The `P3` success rule in this packet is:
+  - one reader should be able to explain why `10C` can close without implementing provider callbacks, checkout, invoice, or tax flows
+  - one reader should be able to explain what future provider work is still allowed to do
+  - later realism should have to open a new bounded packet instead of silently attaching itself to this lane
+
+#### P3 Keep-vs-Split Decision Table (v1)
+
+| topic | decision in `S0F-10C` | reason |
+| --- | --- | --- |
+| `payment_event` vocabulary | `keep-in-lane` | This packet needs explicit trigger-input semantics to explain the lifecycle chain. |
+| `subscription_state` transition model | `keep-in-lane` | This packet needs lifecycle standing semantics to explain entitlement change over time. |
+| `entitlement_snapshot` outcome mapping | `keep-in-lane` | This packet needs effective capability outcome semantics to close the trigger chain. |
+| provider webhook or API realism | `split-to-later-packet` | Provider transport is not required to prove the first trigger boundary or replay the current drills. |
+| checkout, invoice, and tax detail | `split-to-later-packet` | Those surfaces belong to later external-system packets, not to the minimum trigger closure. |
+
+#### P3 Later-Packet Entry Conditions (v1)
+
+- A later provider-shaped packet may open only when at least one of these conditions becomes concrete:
+  - one replay requires proving how a provider callback or checkout success becomes a trusted `payment_event`
+  - one downstream implementation packet needs a bounded source-of-truth rule for invoice, refund, or tax-bearing trigger generation
+  - one integration packet needs a concrete `provider event -> payment_event -> subscription_state -> entitlement_snapshot` chain rather than the abstract trigger model fixed here
+- Until one of those conditions is real, later work should treat `S0F-10C` as the stable trigger-chain baseline and should not reopen this lane just to host speculative provider detail.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -369,8 +404,8 @@
 
 ### P3 (Provider realism defer decision)
 
-- [ ] `P3-C1-S1`: decide whether real provider-style detail is still unnecessary after the first trigger drills
-- [ ] `P3-C1-S2`: decide whether checkout, invoice, and tax surfaces belong in separate later packets
+- [x] `P3-C1-S1`: decide whether real provider-style detail is still unnecessary after the first trigger drills
+- [x] `P3-C1-S2`: decide whether checkout, invoice, and tax surfaces belong in separate later packets
 
 ## Current Status (recommended)
 
@@ -378,9 +413,10 @@
 - `P0` is now complete: the lane now fixes one minimum vocabulary for `payment_event`, `subscription_state`, and `entitlement_snapshot`, plus one explicit allowed-transition boundary that keeps role and entitlement baselines outside the trigger chain.
 - `P1` is now complete: the lane now fixes one first trigger-to-state matrix, one state-to-entitlement matrix, and one transition mapping that keeps role and entitlement boundaries stable while explaining lifecycle-driven capability change.
 - `P2` is now complete: the lane now carries one replayable trigger drill where lifecycle standing changes effective entitlement outcome, plus one integrity drill that proves role and `system_admin` semantics remain unchanged through cancellation, expiry, and correction paths.
-- The lane is still `draft`: it now has concrete contract, transition-mapping, and replay-drill packets, but it does not yet decide whether provider realism should stay deferred after those drills.
+- `P3` is now complete: the lane now explicitly splits provider callback, checkout, invoice, and tax realism into later dedicated packets instead of embedding them into the minimum trigger-chain closure.
+- `S0F-10C` now stands as the stable minimum trigger-chain baseline after `S0F-10B`: later work may widen from it, but should not reopen it just to host provider integration detail.
 - `roadmap_milestone` is already fixed to `M4`, but `roadmap_phase` remains blank on purpose because the current `road-002` `M4-P0..P3` bridge is already occupied by `S0F-10A` and `S0F-10C` should not guess a new roadmap slot before that follow-up widening is made explicit.
-- Automation should still read this log as an opening source scaffold rather than as a stable policy artifact.
+- Automation may now read this log as the stable minimum trigger-chain source packet and treat provider-shaped follow-up as separate later work.
 
 ## Evidence (reserved)
 
@@ -429,6 +465,20 @@
   - the lane now fixes one integrity drill showing that cancellation, expiry, and administrative correction change lifecycle or entitlement results without rewriting ordinary collaboration roles or platform override behavior
   - the trigger packet can now answer both state-driven capability change and role-integrity questions without introducing provider implementation detail
 
+### P3-C1-S1S2 (Provider realism split beyond the minimum trigger-chain closure | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
+- expected:
+  - the lane should stop leaving provider realism as an unresolved ambiguity after the trigger chain is already explicit and replayable
+  - the packet should decide whether provider-style detail belongs inside `S0F-10C` or in a later dedicated packet
+  - the result should preserve the `10A` role baseline, the `10B` entitlement boundary, and the `10C` trigger-chain semantics
+- observed:
+  - `S0F-10C` now explicitly concludes that provider realism is not required for the first trigger-chain closure
+  - the lane now splits webhook, checkout, invoice, and tax-bearing integration detail to later dedicated packets
+  - the first trigger packet can now be treated as a stable minimum closure rather than as a partially finished provider-and-trigger hybrid
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-10C` as the next intended `M4` trigger packet so payment and lifecycle triggers can be modeled separately from the already-stable entitlement boundary in `S0F-10B`.
@@ -436,3 +486,4 @@
 - 2026-04-15: completed `P0-C1-S1S2S3` by fixing the minimum trigger-chain vocabulary, the allowed transition boundary from external input to lifecycle standing to entitlement outcome, and the explicit defer rule for provider realism.
 - 2026-04-15: completed `P1-C1-S1S2` by fixing the first representative trigger matrix, the first state-to-entitlement outcome mapping, and the first transition notes that preserve the `10A/10B` baselines.
 - 2026-04-15: completed `P2-C1-S1S2` by fixing one replayable trigger drill for lifecycle-driven entitlement change and one integrity drill that preserves role and `system_admin` semantics.
+- 2026-04-15: completed `P3-C1-S1S2` by explicitly splitting provider callback, checkout, invoice, and tax realism to later dedicated packets and marking `S0F-10C` as the stable minimum trigger-chain closure.
