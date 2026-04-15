@@ -121,6 +121,7 @@
 - `P1`: apply the first minimal governance block to one bounded `log -> ledger -> contract` packet in docs/governance
 - `P2`: prove handoff, steward replacement, approver separation, and verifier accountability on representative docs-family samples
 - `P3`: define the first reader-facing current-state versus history surfaces without turning views into false sources of governance truth
+- `P4`: choose and stage the first scoped backfill packet on one already-formed `parent ledger + supplement + child` family so `DOC-CONTROL-PLANE-0001` is reused without widening into repo-wide retrofit
 
 ## Success Criteria (DoD)
 
@@ -221,6 +222,32 @@
 - `P3-C1-S1`: define one current-state reader surface answering who owns and approves the current state
 - `P3-C1-S2`: define one history surface answering who contributed and when stewardship changed
 
+### P4 (Scoped backfill continuation)
+
+- `P4-C1-S1`: choose one already-formed `parent ledger + supplement + child` family as the first scoped control-plane backfill target
+- `P4-C1-S2`: define the minimal backfill boundary so current-state governance, packet-level accountability, and event-history placement stay separated cleanly on that family
+
+### P4 Backfill Decision (v1)
+
+- The first scoped backfill family is now proposed as the `S0A-2A/R03` labs slice:
+  - parent ledger: `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - supplement: `docs/logs/support-only/ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md`
+  - child contract: `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+- This family is preferred because it already satisfies the lowest-cost reuse shape for `DOC-CONTROL-PLANE-0001`:
+  - one broad parent ledger already exists and already carries current-state plus event-history surfaces at the family level
+  - one accepted supplement already exists for the exact `R03` labs slice, but it still stops at evidence-only packet review and has not yet been aligned to the newer packet-level actor/provenance governance shape proved on `SUP-001` and `SUP-002`
+  - one child contract already exists for the receiving family, but it still reads as a chronology-first contract without the explicit current-governance-state and governance-event surfaces now expected by the control-plane rule
+- This family is also the strongest next reuse test because it combines two harder conditions in one bounded packet:
+  - the child contract is a later release (`DOC-WORKFLOW-LABS-0002`) that already carries `history-backfilled`, `carried-forward`, and `amended` clause states
+  - the parent family (`S0A-2A`) has already proved the `R04` runbook slice, so `R03` labs gives one adjacent same-parent backfill packet rather than one unrelated new family jump
+- The current deferral against broader alternatives is:
+  - `S0B-3A` is not the first choice because it has a strong parent-ledger plus child split, but it does not yet have a supplement surface and therefore cannot prove the full `parent ledger + supplement + child` control-plane reuse lane at the same cost
+  - `S0B-1A` is not the first choice because it already routes cleanly through the labs family but does not currently give one stronger supplement-backed packet for packet-level accountability separation
+- The `P4` success rule in this sample is:
+  - the parent ledger should remain the broad current-state routing surface for the `S0A-2A` packet while sharpening `R03` as one defended labs-governance slice
+  - the supplement should become the packet-level accountability and provenance surface for the `R03` labs evidence packet rather than staying only as a pre-writeback evidence note
+  - the child contract should become the narrow current-governance surface for the active `DOC-WORKFLOW-LABS-0002` reader without collapsing clause history, source chronology, and current steward or approval state into the same metadata layer
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -244,6 +271,11 @@
 - [x] `P3-C1-S1`: define one current-state reader surface
 - [x] `P3-C1-S2`: define one history/contribution reader surface
 
+### P4 (Scoped backfill continuation)
+
+- [x] `P4-C1-S1`: choose the first already-formed `parent ledger + supplement + child` backfill family
+- [x] `P4-C1-S2`: apply the minimal control-plane backfill boundary to the chosen family without widening into repo-wide retrofit
+
 ## Current Status (recommended)
 
 - `S0F-9A` is now opened as the first real `M3` child log under `road-002`.
@@ -254,6 +286,7 @@
 - `P3` is now complete on the same family: two bounded `support-only` reader surfaces now summarize the sample without turning views into false governance sources of truth.
 - The current-state reader surface answers `who owns, stewards, reviews, and approves now?`, while the history/contribution surface answers `what contribution, evidence-sharpening, delegation, and role-separation events explain the current state?`
 - A second `P3` sample round is now also landed on the `S0A-2A/R04` runbook slice, proving that the same current-state/history split can be replicated on a markdown-evidence-backed broad-parent to narrow-child extraction packet.
+- `P4` is now complete for its first scoped backfill round: the adjacent `S0A-2A/R03` labs slice now reuses the control-plane rule across one same-parent packet with a parent ledger, an accepted supplement, and an active child contract.
 
 ## Evidence (reserved)
 
@@ -351,6 +384,35 @@
   - the second bounded current-state view now concentrates the broad-parent plus narrow-child reading without pretending the supplement is a current governance surface
   - the second bounded history/contribution view now concentrates the issue-only introduction, direct runbook evidence review, delegated stewardship, and governance-role separation chain for the same slice
 
+### P4-C1-S1 (First scoped backfill family selected for post-sample control-plane reuse | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/log-S0F-9A-doc-first-governance-control-plane-vocabulary-and-boundary.md`
+- expected:
+  - the lane should name one next backfill packet that reuses `DOC-CONTROL-PLANE-0001` on an already-formed `parent ledger + supplement + child` family rather than widening immediately into repo-wide mutation
+  - the selected family should be able to prove not only parent and child current-state placement but also supplement-side packet accountability separation at low cost
+- observed:
+  - `S0A-2A/R03` is now selected as the first scoped backfill candidate because `ledger-S0A-2A`, `ledger-SUP-S0A-2A-002`, and `DOC-WORKFLOW-LABS-0002` already form the needed triad while still lacking the newer control-plane alignment on the labs slice
+  - the labs child is a stronger next test than a fresh family jump because it must preserve current-state governance while coexisting with `history-backfilled`, `carried-forward`, and `amended` clause states in the same release reader
+  - `S0B-3A` and `S0B-1A` remain valid later candidates, but they are deferred because they would either miss the supplement surface entirely or prove less about repeated same-parent packet reuse
+
+### P4-C1-S2 (Scoped control-plane backfill applied to `S0A-2A/R03` labs slice | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+- expected:
+  - the `R03` labs slice should reuse `DOC-CONTROL-PLANE-0001` without widening into repo-wide retrofit
+  - the parent ledger should remain the broad current-state routing surface, the supplement should become the packet-level accountability surface, and the labs child contract should become the narrow current-governance surface
+  - the backfill should preserve the labs contract's mixed clause-history states instead of flattening clause lineage into current-governance metadata
+- observed:
+  - the `S0A-2A` parent ledger now records the labs child as one explicit current-state governance surface for the `R03` slice, and the labs routing row now resolves through `DOC-WORKFLOW-LABS-0002` as explicit historical review rather than unresolved bounded background
+  - `ledger-SUP-S0A-2A-002` now carries an `Actor and Provenance Review Table` plus a governance-position note, so review, evidence verification, and final approval are separated as packet-level accountability rather than mixed into current ownership
+  - `DOC-WORKFLOW-LABS-0002` now carries explicit frontmatter current-governance fields plus a governance-event table, while statement chronology and clause evolution remain in the existing release tables instead of being collapsed into current-state metadata
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-9A` as the first real `M3` child log so the governance-control lane no longer depends only on `S0F-7G/7H/7I` precursor material.
@@ -360,3 +422,5 @@
 - 2026-04-15: completed `P2-C1-S1S2` on the same `S0A-1A` sample family by proving one delegated stewardship state and one clean reviewer/verifier/approver separation case.
 - 2026-04-15: completed `P3-C1-S1S2` on the same `S0A-1A` sample family by publishing one bounded current-state view and one bounded history/contribution view as `support-only` reader surfaces.
 - 2026-04-15: completed `P3-C2-S1S2` on the `S0A-2A/R04` runbook slice by publishing a second bounded current-state view and a second bounded history/contribution view around a markdown-evidence-backed broad-parent to narrow-child sample.
+- 2026-04-15: opened `P4` as the first scoped backfill continuation lane and selected the `S0A-2A/R03` labs slice (`ledger` + `SUP-002` + `DOC-WORKFLOW-LABS-0002`) as the next low-cost control-plane reuse target.
+- 2026-04-15: completed `P4-C1-S2` by backfilling the `S0A-2A/R03` labs slice so the parent ledger, `SUP-002`, and `DOC-WORKFLOW-LABS-0002` now separate current-state governance, packet accountability, and event-history surfaces cleanly.
