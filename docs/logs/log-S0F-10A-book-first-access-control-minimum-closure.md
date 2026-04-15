@@ -286,7 +286,7 @@
 
 ### P1-C1-S1S2 (Minimum book role and action matrix fixed for the first closure | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `c4990a149`
 - artifacts:
   - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
 - expected:
@@ -300,7 +300,7 @@
 
 ### P2-C1-S1S2 (Replayable owner/editor and system-admin boundary drills fixed for the first closure | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `c4990a149`
 - artifacts:
   - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
 - expected:
