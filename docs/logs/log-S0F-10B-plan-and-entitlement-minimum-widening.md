@@ -449,7 +449,7 @@
 
 ### P3-C1-S1S2 (Billing realism split beyond the minimum entitlement-widening closure | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `afe855860`
 - artifacts:
   - `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
 - expected:
