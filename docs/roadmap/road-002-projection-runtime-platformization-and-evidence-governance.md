@@ -235,22 +235,28 @@
 - `M3` should be considered first-generation ready when readers can identify current ownership and approval without consulting prose history, and when stewardship handoff no longer requires ad hoc note-writing.
 - `M3` should not be treated as mature merely because extra fields exist; the fields must support at least one real handoff, one approval separation case, and one contribution-vs-ownership distinction that survives replay.
 
-### M4: Tenant access control plane and mock billing closure on the current SoT
+### M4: Book-first access control minimum closure on the current SoT
 
 **Goal**
 
-- Build the first simple but real access-control closure on the existing SoT (`library -> bookshelf -> book -> block`) using tenant, membership, role, plan, and entitlement semantics, then prove that mock billing can drive entitlement changes without needing real payment integration first.
+- Build the first simple but real access-control closure on the existing SoT by treating `book` as the first independent authorization container, keeping `block` as inherited content-only structure, and proving a minimum role-separated user/admin model before any larger entitlement or mock-billing design is allowed to widen the lane.
 
 **Opening stance**
 
 - `M4` should open only after `M3` has fixed the governance vocabulary enough that authorization is not asked to carry ownership semantics.
 - The first `M4` lane should stay on the current SoT rather than inventing a new platform surface, because the point is to prove permissions on resources the repo already understands.
-- The first closure should be entitlement-driven and simulation-friendly: no real payment provider, no tax/invoice realism, and no enterprise policy sprawl before the base model is defendable.
+- The first independent authorization surface should be `book`, not `block`.
+- `block` should remain an editor/content unit that inherits the enclosing `book` standing rather than opening block-level ACL in v1.
+- The first closure should stay minimum and policy-first:
+  - separate ordinary user roles from platform/system admin roles
+  - do not freeze a complex commercial plan matrix yet
+  - keep `plan` and later `entitlement` as reserved extension concepts rather than as the first lane's main complexity driver
+- No real payment provider, tax/invoice realism, or enterprise policy sprawl should enter the opening lane.
 
 **Bridge Ledger (child logs only)**
 
 - `M4-P0`:
-  - `unmapped`
+  - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
 - `M4-P1`:
   - `unmapped`
 - `M4-P2`:
@@ -260,22 +266,22 @@
 
 **Plan (P0-P3)**
 
-- `P0` Contract: fix the minimum model for `tenant`, `membership`, `tenant role`, `system role`, `plan`, and `entitlement`, and make explicit that commercial plan state is not the same thing as privileged system role.
-- `P1` Implementation: map that model onto current SoT resources and actions such as `read_library`, `edit_book`, `copy_block`, `export_book`, `share_book`, `manage_membership`, and `manage_billing`, including inheritance and bounded per-resource overrides.
-- `P2` Drill: prove a mock entitlement engine and mock billing state machine with `trialing`, `active`, `past_due`, `canceled`, and `expired`, so that plan changes can open or close capabilities such as cross-book block copy or export.
-- `P3` Drill: connect the access plane back to the governance plane in bounded ways, such as who is allowed to approve content, transfer ownership, or perform higher-risk cross-resource operations.
+- `P0` Contract: fix the minimum access model for `user`, `membership`, `book role`, `system role`, `book` as the first independent authorization object, and `block` as inherited content structure; make explicit that product/admin privilege is not the same thing as future commercial plan state.
+- `P1` Implementation: map that model onto the current SoT through a minimum `book` action set such as `read_book`, `edit_book`, `share_book`, `delete_book`, `transfer_book_owner`, and `manage_book_members`, while keeping `block` under inherited `book` standing.
+- `P2` Drill: prove one minimum replayable role flow such as owner grants editor, editor edits but cannot re-share, owner revokes access, and system admin can perform bounded platform override without becoming a normal collaboration role.
+- `P3` Drill: decide whether future `plan / entitlement / mock billing` should be introduced as a second-stage widening after the book-first closure is stable, instead of forcing that commercial layer into the opening packet.
 
 **First lane packet (intended)**
 
-- `M4-P0-A`: one bounded access-model contract that fixes `tenant`, `member`, `tenant_role`, `system_role`, `plan`, `entitlement`, and `subscription_state` as separate concepts.
-- `M4-P1-A`: one bounded resource-action matrix for `library -> bookshelf -> book -> block`, with explicit inheritance, override limits, and denial defaults.
-- `M4-P2-A`: one bounded mock-billing loop that emits `payment_event`, updates `subscription`, and regenerates an `entitlement_snapshot` without any real processor integration.
-- `M4-P3-A`: one bounded high-risk-operation packet covering ownership transfer, privileged export, and cross-resource copy so that governance and authorization meet at clearly named seams.
+- `M4-P0-A`: one bounded access-model contract that fixes `user`, `membership`, `book_role`, and `system_role` as separate concepts, while reserving `plan` and `entitlement` for later widening.
+- `M4-P1-A`: one bounded resource-action matrix centered on `book` as the first independent authorization container, with `block` inheriting `book` standing and no block-level ACL in v1.
+- `M4-P2-A`: one bounded role-flow drill covering share, edit, revoke, owner transfer boundary, and system-admin override on the same `book` surface.
+- `M4-P3-A`: one bounded widening decision on whether `plan / entitlement / mock billing` should remain deferred, be partially introduced, or open as a second-stage packet after the minimum closure is stable.
 
 **Exit signals**
 
-- `M4` should be considered first-generation ready when a reader can answer what a user may do because of role, what a tenant may do because of plan, and what the system may do because of internal privilege, without those categories bleeding into each other.
-- `M4` should not be treated as mature merely because a permission matrix exists; at least one plan downgrade, one trial expiry, and one owner-to-manager delegation case should be replayable through the same model.
+- `M4` should be considered first-generation ready when a reader can answer who may read, edit, share, and administer one `book`, what a system admin may override, and why `block` still inherits `book` standing rather than carrying its own ACL.
+- `M4` should not be treated as mature merely because a permission matrix exists; at least one owner/editor/share-revoke flow and one bounded system-admin override case should be replayable through the same model.
 
 ### M5: Asset platform activation after governance and access baselines exist
 
@@ -306,6 +312,7 @@
 - `docs/logs/log-S0E-docs-management-v5.md` currently provides the clearest already-realized surface for semi-automated docs/GitHub lifecycle control.
 - `docs/logs/log-S0F-docs-management-v6.md` currently provides the clearest already-realized surface for docs governance, chronology-first contracts, and approval/provenance precursors.
 - `docs/roadmap/_draft/road-S2-.md` currently holds the strongest draft material for the future governance-control-plane and access-control-plane framing, especially around ownership, handoff, tenant/plan/entitlement, and mock billing closure.
+- `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md` now opens the first `M4-P0` child lane around book-first minimum closure, user/admin role separation, and block inheritance.
 
 ## Recent Changes (optional)
 
@@ -313,3 +320,4 @@
 - 2026-04-14: refined `M3` and `M4` into lane-opening shape, fixed the first `DOC`-first stance for governance-control rollout, and made explicit that access control remains a separate second control plane rather than a hidden extension of ownership semantics.
 - 2026-04-15: opened `S0F-9A` as the first real `M3` child log, moved `M3-P0` from borrowed precursor context into one explicit `DOC`-first vocabulary-and-boundary packet, and retained `S0F-7G/7H/7I` as opening precursors rather than as the bridge ledger itself.
 - 2026-04-15: landed `DOC-CONTROL-PLANE-0001` as the first reusable `M3-P0` contract, and used two bounded `S0F-9A` sample rounds to justify the shared current-state vocabulary, event-history placement rule, and `M3` versus `M4` boundary.
+- 2026-04-15: revised `M4` into a book-first minimum-closure opening, mapped `M4-P0` to `S0F-10A`, and made explicit that the first authorization lane should separate ordinary user roles from system-admin override while keeping `block` under inherited `book` standing.
