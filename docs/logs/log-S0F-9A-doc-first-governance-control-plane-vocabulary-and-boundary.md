@@ -85,13 +85,13 @@
 
 - This slice starts as one `log-retained core + contract-first governance vocabulary` lane.
 - The expected first landing is a stable vocabulary-and-boundary contract for current-state governance fields, plus one bounded application packet later in `M3-P1-A`.
-- This opening scaffold should not export runbook, view, or index/front-door surfaces yet because the first task is still to stabilize vocabulary and field placement.
+- This lane now exports two bounded `support-only` reader surfaces for the chosen `S0A-1A` sample family: one current-state view and one history/contribution view.
 
 **Outlet ownership**:
 
 - `contract`: define the minimum governance-control vocabulary and field-placement rules for current state versus event history
 - `runbook`: no-op at packet open; repeatable operator procedure should wait until field placement survives a real application packet
-- `view`: no-op at packet open; reader-facing summaries should wait until there is at least one real current-state sample and one real handoff sample
+- `view`: publish one bounded current-state reader surface and one bounded history/contribution reader surface after the first sample family proves current-state placement and governance movement cleanly
 - `index/front-door`: no-op at packet open
 - `disposition/placement`: no-op at packet open; no relocation or cleanup decision is needed yet
 - `log-retained core`: lane boundary, field semantics, phase plan, execution checklist, and later evidence ledger remain here
@@ -192,6 +192,17 @@
   - `reviewed_by`, `verified_by`, and `approved_by` must point to distinguishable governance roles rather than collapsing back into one actor value
   - the delegation and separation should be explicit in current-state blocks and in event/accountability surfaces at the same time
 
+### P3 Reader Surface Decision (v1)
+
+- `P3` now stays on the same bounded `S0A-1A` family so the first reader-facing surfaces summarize a sample that already proved both current-state placement and governance movement.
+- The first two reader surfaces are intentionally published as `support-only` views rather than family-wide front doors:
+  - `docs/governance/views/support-only/view-s0a-1a-governance-current-state-v1.md`
+  - `docs/governance/views/support-only/view-s0a-1a-governance-history-and-contribution-v1.md`
+- The `P3` success rule in this sample is:
+  - the current-state view must answer `who owns, stewards, reviews, and approves now?`
+  - the history/contribution view must answer `what contribution, evidence-sharpening, delegation, and separation events explain the current state?`
+  - both views must remain reader surfaces only, with truth still anchored in the parent ledger, supplement, and child contract
+
 ### P3 (Reader-facing surface)
 
 - `P3-C1-S1`: define one current-state reader surface answering who owns and approves the current state
@@ -217,8 +228,8 @@
 
 ### P3 (Reader-facing surface)
 
-- [ ] `P3-C1-S1`: define one current-state reader surface
-- [ ] `P3-C1-S2`: define one history/contribution reader surface
+- [x] `P3-C1-S1`: define one current-state reader surface
+- [x] `P3-C1-S2`: define one history/contribution reader surface
 
 ## Current Status (recommended)
 
@@ -226,7 +237,8 @@
 - `P1` is now complete on one bounded sample family: `S0A-1A` parent ledger + `SUP-001` + `DOC-WORKFLOW-GITHUB-PROJECTS-0001`.
 - The first application now makes one practical split explicit: current effective governance state is carried on the parent-ledger and child-contract reading surfaces, while packet-level actor/provenance and write-back chain stay in the supplement as event/history evidence.
 - `P2` is now also complete on the same family: the Projects child now carries an explicit delegated stewardship state under the same durable `owner_team`, and the sample now separates reviewer, verifier, and approver roles instead of collapsing them into one packet reviewer.
-- The next step is `P3`: define one reader-facing current-state view and one history/contribution view that read across the same family without turning those views into false governance sources of truth.
+- `P3` is now complete on the same family: two bounded `support-only` reader surfaces now summarize the sample without turning views into false governance sources of truth.
+- The current-state reader surface answers `who owns, stewards, reviews, and approves now?`, while the history/contribution surface answers `what contribution, evidence-sharpening, delegation, and role-separation events explain the current state?`
 
 ## Evidence (reserved)
 
@@ -265,8 +277,24 @@
   - the supplement now separates evidence verification from packet review and approval, so `verified_by`, `reviewed_by`, and `approved_by` no longer collapse into one actor value
   - the parent ledger and child contract now preserve both the current-state reading and the event trail that explains why the delegated and separated governance state is currently defended
 
+### P3-C1-S1S2 (Bounded current-state and history reader surfaces published for `S0A-1A` sample family | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/governance/views/support-only/view-s0a-1a-governance-current-state-v1.md`
+  - `docs/governance/views/support-only/view-s0a-1a-governance-history-and-contribution-v1.md`
+- expected:
+  - the current-state reader surface should answer current owner, steward, reviewer, and approver questions without replaying the full sample family
+  - the history/contribution reader surface should answer which events introduced, sharpened, delegated, and separated the current state
+  - neither view should become a false source of governance truth; underlying truth should remain in the ledger, supplement, and child contract
+- observed:
+  - the first bounded current-state view now concentrates present-tense governance reading across the parent ledger, child contract, and supplement boundary
+  - the first bounded history/contribution view now concentrates the issue-only introduction, routing write-back, screenshot sharpening, delegated stewardship, and role-separation chain for the same family
+  - both views are explicitly published as `support-only` reader surfaces, which keeps this first `P3` step narrow and prevents accidental promotion into a family-wide front door
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-9A` as the first real `M3` child log so the governance-control lane no longer depends only on `S0F-7G/7H/7I` precursor material.
 - 2026-04-15: completed `P1-C1-S1S2` by selecting the `S0A-1A` sample family and applying the first current-state versus event-history split across the parent ledger, supplement, and Projects child contract.
 - 2026-04-15: completed `P2-C1-S1S2` on the same `S0A-1A` sample family by proving one delegated stewardship state and one clean reviewer/verifier/approver separation case.
+- 2026-04-15: completed `P3-C1-S1S2` on the same `S0A-1A` sample family by publishing one bounded current-state view and one bounded history/contribution view as `support-only` reader surfaces.
