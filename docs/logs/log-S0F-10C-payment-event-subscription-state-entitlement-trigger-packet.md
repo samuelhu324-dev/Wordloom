@@ -309,6 +309,41 @@
 - `P2-C1-S1`: prove one replay where a bounded trigger changes `subscription_state` and therefore changes effective entitlement outcome
 - `P2-C1-S2`: prove one replay where the same trigger does not mutate role standing or platform override semantics
 
+### P2 Drill Decision (v1)
+
+- `P2` now stays on the same trigger packet and proves one replayable state-transition chain instead of widening into provider realism.
+- The first trigger drill is now fixed as:
+  - one bounded external trigger arrives
+  - `subscription_state` changes according to the transition table
+  - the resulting `entitlement_snapshot` changes accordingly
+  - the observed outcome is explained as lifecycle-driven capability change rather than as role mutation
+- The first integrity drill is now fixed as:
+  - one lifecycle degradation or correction occurs
+  - the effective entitlement bundle changes or is repaired
+  - `viewer / editor / owner / system_admin` semantics remain unchanged throughout the replay
+- The `P2` success rule in this packet is:
+  - one reader should be able to replay one full `payment_event -> subscription_state -> entitlement_snapshot` chain without guessing hidden billing logic
+  - one reader should be able to explain that lifecycle change constrains entitlement-shaped capabilities but does not rewrite role or override semantics
+  - the lane should still avoid provider webhook, checkout, invoice, or tax realism
+
+#### P2 Replay Drill A (Upgrade and renewal failure change entitlement through lifecycle standing)
+
+| drill step | actor or trigger source | precondition | intended transition or action | expected result | why it matters |
+| --- | --- | --- | --- | --- | --- |
+| `A1` | bounded external trigger `upgrade_success` | one user currently holds valid ordinary standing and the subscription is `trialing` | apply `upgrade_success` | `trialing -> active` and `activate-current-plan-bundle` | The lane must show that successful upgrade changes lifecycle standing first and entitlement outcome second. |
+| `A2` | same user after activation | same role standing unchanged | attempt one entitlement-shaped capability such as `copy_block_cross_book` or `export_book` under the now-active plan bundle | `allow` according to the active bundle | The lane must show that the newly effective entitlement bundle widens capability without changing role semantics. |
+| `A3` | bounded external trigger `renewal_failed` | subscription currently `active` | apply `renewal_failed` | `active -> past_due` and `suspend-current-plan-bundle` or `narrow-current-plan-bundle` | The lane must show that failure degrades entitlement through lifecycle standing rather than through direct role mutation. |
+| `A4` | same user after degradation | same role standing unchanged | attempt the same entitlement-shaped capability again | `deny-via-entitlement` or narrower result | The lane must show that capability contraction follows lifecycle impairment while ordinary collaboration standing remains intact. |
+
+#### P2 Replay Drill B (Cancellation, expiry, and correction do not mutate role or override semantics)
+
+| drill step | actor or trigger source | precondition | intended transition or action | expected result | why it matters |
+| --- | --- | --- | --- | --- | --- |
+| `B1` | bounded external trigger `cancellation_requested` | subscription currently `active`; user still has valid ordinary standing on one book | apply `cancellation_requested` | `active -> canceled` and narrowed pending-expiry entitlement bundle | The lane must show that cancellation affects lifecycle and entitlement but not collaboration role assignment. |
+| `B2` | end-of-term lapse | subscription currently `canceled` or `past_due` | move to `expired` | `expire-current-plan-bundle` | The lane must show the clean terminal state for entitlement without rewriting owner/editor/viewer semantics. |
+| `B3` | bounded `admin_correction` | lifecycle state was recorded incorrectly | repair to the corrected lifecycle state and repair the bundle | `repair-current-plan-bundle` | Administrative correction should restore consistency rather than bypass the model. |
+| `B4` | `system_admin` override path | same lifecycle scenarios as above | inspect or recover book access through override path | `allow-via-override` with no paid-plan dependency | The lane must show that platform override remains outside lifecycle-trigger semantics. |
+
 ### P3 (Provider realism defer decision)
 
 - `P3-C1-S1`: decide whether real provider-style detail is still unnecessary after the first trigger drills
@@ -329,8 +364,8 @@
 
 ### P2 (Drill / Replay)
 
-- [ ] `P2-C1-S1`: prove one replay where a trigger changes entitlement outcome through `subscription_state`
-- [ ] `P2-C1-S2`: prove one replay where the same trigger leaves role and override semantics unchanged
+- [x] `P2-C1-S1`: prove one replay where a trigger changes entitlement outcome through `subscription_state`
+- [x] `P2-C1-S2`: prove one replay where the same trigger leaves role and override semantics unchanged
 
 ### P3 (Provider realism defer decision)
 
@@ -342,7 +377,8 @@
 - `S0F-10C` is now scaffolded as the intended next `M4` trigger packet after the stable entitlement-boundary closure in `S0F-10B`.
 - `P0` is now complete: the lane now fixes one minimum vocabulary for `payment_event`, `subscription_state`, and `entitlement_snapshot`, plus one explicit allowed-transition boundary that keeps role and entitlement baselines outside the trigger chain.
 - `P1` is now complete: the lane now fixes one first trigger-to-state matrix, one state-to-entitlement matrix, and one transition mapping that keeps role and entitlement boundaries stable while explaining lifecycle-driven capability change.
-- The lane is still `draft`: it now has concrete contract and transition-mapping packets, but it does not yet prove the first replayable trigger drill.
+- `P2` is now complete: the lane now carries one replayable trigger drill where lifecycle standing changes effective entitlement outcome, plus one integrity drill that proves role and `system_admin` semantics remain unchanged through cancellation, expiry, and correction paths.
+- The lane is still `draft`: it now has concrete contract, transition-mapping, and replay-drill packets, but it does not yet decide whether provider realism should stay deferred after those drills.
 - `roadmap_milestone` is already fixed to `M4`, but `roadmap_phase` remains blank on purpose because the current `road-002` `M4-P0..P3` bridge is already occupied by `S0F-10A` and `S0F-10C` should not guess a new roadmap slot before that follow-up widening is made explicit.
 - Automation should still read this log as an opening source scaffold rather than as a stable policy artifact.
 
@@ -379,9 +415,24 @@
   - the lane now fixes one resulting state-to-entitlement mapping that distinguishes activation, narrowing, suspension, expiry, and repair of the current plan bundle
   - the transition notes now state explicitly that lifecycle-driven capability change constrains the entitlement-shaped capabilities from `S0F-10B` without mutating role standing or `system_admin` override semantics
 
+### P2-C1-S1S2 (Replayable trigger drills fixed without mutating role or override semantics | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
+- expected:
+  - the lane should prove one replay where a trigger changes lifecycle standing and therefore changes effective entitlement outcome
+  - the lane should prove one replay where lifecycle degradation, expiry, or correction do not rewrite `viewer / editor / owner / system_admin` semantics
+  - the drills should remain independent from provider, checkout, invoice, or tax realism
+- observed:
+  - `S0F-10C` now fixes one replay where `upgrade_success` activates the current plan bundle and `renewal_failed` later narrows or suspends that same bundle through `subscription_state` change
+  - the lane now fixes one integrity drill showing that cancellation, expiry, and administrative correction change lifecycle or entitlement results without rewriting ordinary collaboration roles or platform override behavior
+  - the trigger packet can now answer both state-driven capability change and role-integrity questions without introducing provider implementation detail
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-10C` as the next intended `M4` trigger packet so payment and lifecycle triggers can be modeled separately from the already-stable entitlement boundary in `S0F-10B`.
 - 2026-04-15: fixed the opening default that `S0F-10A` remains the role baseline and `S0F-10B` remains the entitlement baseline while `S0F-10C` handles only trigger-chain semantics for later entitlement-state change.
 - 2026-04-15: completed `P0-C1-S1S2S3` by fixing the minimum trigger-chain vocabulary, the allowed transition boundary from external input to lifecycle standing to entitlement outcome, and the explicit defer rule for provider realism.
 - 2026-04-15: completed `P1-C1-S1S2` by fixing the first representative trigger matrix, the first state-to-entitlement outcome mapping, and the first transition notes that preserve the `10A/10B` baselines.
+- 2026-04-15: completed `P2-C1-S1S2` by fixing one replayable trigger drill for lifecycle-driven entitlement change and one integrity drill that preserves role and `system_admin` semantics.
