@@ -267,6 +267,20 @@
   - the history/contribution view must answer `what contribution, direct evidence, delegation, and role-separation events explain the current labs state?`
   - both views must remain reader surfaces only, with truth still anchored in the parent ledger, supplement, and child contract
 
+### P4 Backfill Decision (v2)
+
+- The second scoped backfill family is now fixed as the `S0B-3A` split family:
+  - parent ledger: `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
+  - child contract: `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  - child contract: `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0001-legacy-taxonomy-cutover-and-stub-preservation.md`
+- This cycle is chosen specifically because it tests the next harder reuse condition after `S0A-2A/R03`:
+  - the family already has a defended parent ledger and two applied child contracts
+  - the family currently has no supplement packet, so the current-state and event-history split must survive on parent-ledger plus child-contract surfaces only
+- The `P4-C2` success rule in this sample is:
+  - the parent ledger should carry current routing state and family-level governance events for the mixed source
+  - each child contract should carry its own narrow current-governance state and contract-local governance events
+  - the cycle should prove that review-versus-approval separation and delegated stewardship can still be made explicit without inventing a supplement surface that does not exist
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -300,6 +314,11 @@
 - [x] `P5-C1-S1`: publish one bounded current-state reader surface for the `S0A-2A/R03` labs slice
 - [x] `P5-C1-S2`: publish one bounded history/contribution reader surface for the same labs slice
 
+### P4 (Scoped backfill continuation)
+
+- [x] `P4-C2-S1`: choose one no-supplement family as the next scoped control-plane backfill target
+- [x] `P4-C2-S2`: apply the minimal control-plane backfill boundary to that no-supplement family without inventing a supplement surface
+
 ## Current Status (recommended)
 
 - `S0F-9A` is now opened as the first real `M3` child log under `road-002`.
@@ -311,6 +330,7 @@
 - The current-state reader surface answers `who owns, stewards, reviews, and approves now?`, while the history/contribution surface answers `what contribution, evidence-sharpening, delegation, and role-separation events explain the current state?`
 - A second `P3` sample round is now also landed on the `S0A-2A/R04` runbook slice, proving that the same current-state/history split can be replicated on a markdown-evidence-backed broad-parent to narrow-child extraction packet.
 - `P4` is now complete for its first scoped backfill round: the adjacent `S0A-2A/R03` labs slice now reuses the control-plane rule across one same-parent packet with a parent ledger, an accepted supplement, and an active child contract.
+- `P4` is now also complete for a second cycle on `S0B-3A`: the parent ledger plus `LOGS-0001` and `LIFECYCLE-0001` now reuse the control-plane rule even though the family has no supplement packet.
 - `P5` is now complete for the same labs slice: two bounded `support-only` reader surfaces now summarize the post-backfill current state and history chain without turning views into false governance sources.
 
 ## Evidence (reserved)
@@ -453,6 +473,22 @@
   - the bounded labs history/contribution view now concentrates the issue-only introduction, accepted labs evidence review, delegated stewardship, and governance-role separation chain for the same slice
   - both views are explicitly published as `support-only` reader surfaces, which keeps the post-backfill reader step narrow and prevents accidental promotion into a family-wide front door
 
+### P4-C2-S1S2 (Scoped control-plane backfill applied to `S0B-3A` no-supplement family | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  - `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0001-legacy-taxonomy-cutover-and-stub-preservation.md`
+- expected:
+  - `S0B-3A` should prove that the control-plane rule can be reused on one family that has no supplement packet
+  - the parent ledger should remain the mixed-family current-state and event-history surface, while the logs and lifecycle child contracts become the narrow current-governance surfaces for their own child bodies
+  - the cycle should preserve the no-supplement standing explicitly rather than silently recreating packet-accountability semantics on the wrong surface
+- observed:
+  - the `S0B-3A` parent ledger now carries explicit current governance state for the mixed family plus one governance-event table that records introduction, routing write-back, delegated stewardship, and review-versus-approval separation without relying on a supplement
+  - `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` now each carry explicit frontmatter current-governance fields plus contract-local governance-event tables
+  - the family now proves that delegated stewardship and review-versus-approval separation can be fixed cleanly on parent-plus-child governance surfaces alone, while still making explicit that no supplement packet currently exists
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-9A` as the first real `M3` child log so the governance-control lane no longer depends only on `S0F-7G/7H/7I` precursor material.
@@ -465,3 +501,4 @@
 - 2026-04-15: opened `P4` as the first scoped backfill continuation lane and selected the `S0A-2A/R03` labs slice (`ledger` + `SUP-002` + `DOC-WORKFLOW-LABS-0002`) as the next low-cost control-plane reuse target.
 - 2026-04-15: completed `P4-C1-S2` by backfilling the `S0A-2A/R03` labs slice so the parent ledger, `SUP-002`, and `DOC-WORKFLOW-LABS-0002` now separate current-state governance, packet accountability, and event-history surfaces cleanly.
 - 2026-04-15: completed `P5-C1-S1S2` on the `S0A-2A/R03` labs slice by publishing one bounded current-state view and one bounded history/contribution view as post-backfill reader surfaces.
+- 2026-04-15: completed `P4-C2-S1S2` on the `S0B-3A` no-supplement family by backfilling the parent ledger plus `LOGS-0001` and `LIFECYCLE-0001` so current-state governance and governance-event surfaces no longer depend on a supplement packet.

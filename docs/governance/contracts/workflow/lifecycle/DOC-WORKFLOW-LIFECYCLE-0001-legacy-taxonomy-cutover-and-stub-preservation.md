@@ -10,6 +10,11 @@ contract_record:
   release_action: initial
   release_change_summary: Establish the first lifecycle-oriented child release from S0B-3A by extracting legacy taxonomy, freeze-versus-migrate boundaries, lifecycle cutover, and stub preservation into one dedicated workflow family.
   summary: Govern documentation lifecycle boundaries through explicit legacy taxonomy, default freeze of older material, migration-on-demand, lifecycle cutover, and stub preservation so older content can remain findable without staying active by default.
+  owner_team: docs-governance
+  current_steward: delegated:workflow-lifecycle-contract-maintainer
+  approval_state: reviewed-awaiting-approval
+  reviewed_by: role:workflow-reviewer
+  approved_by: role:docs-governance-approver
   governance_area: workflow documentation lifecycle and legacy management governance
   applies_to: legacy document classification, Legacy Refs handling, freeze-versus-migrate boundaries, lifecycle cutover, and stub preservation across moved workflow materials
   enforcement_surface: manual
@@ -44,6 +49,21 @@ contract_record:
     - The contract intentionally keeps the lifecycle side of cutover separate from the logs-intake side, which is routed to DOC-WORKFLOW-LOGS-0001 through the same-source ledger split.
     - The older S0B-2A mixed source is retained as supporting evidence because its legacy and cutover pressure may later be re-routed into this family, but this first release is still owned directly by S0B-3A.
 ```
+
+## Current Governance State
+
+- The current effective governance state of this contract is carried in frontmatter through `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
+- Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this release family; they should not be read as current ownership or approval identity.
+- This contract therefore acts as the narrow current-state governance surface for the active `DOC-WORKFLOW-LIFECYCLE-0001` reader, while the parent ledger preserves the mixed-family route and governance-event chain that led here.
+- The current steward is intentionally delegated rather than implicitly identical to the owner team, which keeps day-to-day lifecycle contract maintenance distinct from durable family ownership.
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-WORKFLOW-LIFECYCLE-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `family-introduced` | `2026-04-10` | `docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md` | The original lifecycle-facing source introduced the child release, but it does not defend a named current steward or approver for the current contract state. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-GOV-02` | `delegated-stewardship-event` | `DOC-WORKFLOW-LIFECYCLE-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 second-cycle round` | Stewardship for the current lifecycle contract reader is now explicitly delegated to the narrower lifecycle contract maintainer role while final approval remains with the broader docs-governance approver role. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-GOV-03` | `review-approval-separation-event` | `DOC-WORKFLOW-LIFECYCLE-0001` | `role:workflow-reviewer; role:docs-governance-approver` | `reviewed-awaiting-approval-state-fixed` | `2026-04-15` | `S0F-9A/P4 second-cycle round` | The current contract state now records review and approval as distinct governance actions instead of leaving both roles implicit or collapsed into one reviewer identity. |
 
 ## Contract Statement Table
 
