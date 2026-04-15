@@ -467,7 +467,7 @@
 
 ### P3-C1-S1S2 (Provider realism split beyond the minimum trigger-chain closure | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `d62ec6e4a`
 - artifacts:
   - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
 - expected:
