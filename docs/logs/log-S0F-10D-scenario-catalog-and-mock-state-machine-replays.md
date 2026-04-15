@@ -379,7 +379,7 @@
 
 ### P1-C1-S1S2 (First realistic scenario catalog and mapping fixed | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `9925d9d52`
 - artifacts: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
 - expected:
   - `P1` fixes one first representative catalog of realistic local lifecycle simulations.
