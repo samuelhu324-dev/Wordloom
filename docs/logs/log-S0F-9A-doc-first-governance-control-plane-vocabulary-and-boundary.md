@@ -276,7 +276,7 @@
 
 ### P0-C2-S1 (Control-plane contract rename synced after dropping redundant `GOVERNANCE` token | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `30ec7e769`
 - artifacts:
   - `docs/governance/contracts/control-plane/DOC-CONTROL-PLANE-0001-current-state-event-history-and-authorization-boundary.md`
 - expected:
