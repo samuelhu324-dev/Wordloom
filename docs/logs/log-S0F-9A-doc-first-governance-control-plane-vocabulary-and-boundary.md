@@ -306,7 +306,7 @@
 
 ### P3-C2-S1S2 (Second bounded reader-surface round published for `S0A-2A/R04` runbook slice | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `4967efc4d`
 - artifacts:
   - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
   - `docs/logs/support-only/ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md`
