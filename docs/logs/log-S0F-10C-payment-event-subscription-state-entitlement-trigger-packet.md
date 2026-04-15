@@ -367,7 +367,7 @@
 
 ### P1-C1-S1S2 (Minimum trigger matrix and entitlement outcome mapping fixed | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `5b48cbec7`
 - artifacts:
   - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
 - expected:
