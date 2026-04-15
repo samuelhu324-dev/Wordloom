@@ -52,7 +52,7 @@
   - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
   - `docs/governance/contracts/workflow/github/issues/tags/DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-issue-tags-follow-role-based-naming.md`
 - Open the DOC-first governance-control contract when the question is `what shared control-plane rule now fixes owner, steward, approval, verification, contribution, and handoff semantics before M4 begins?`
-  - `docs/governance/contracts/control-plane/DOC-GOVERNANCE-CONTROL-PLANE-0001-current-state-event-history-and-authorization-boundary.md`
+  - `docs/governance/contracts/control-plane/DOC-CONTROL-PLANE-0001-current-state-event-history-and-authorization-boundary.md`
 - Use the moved legacy trees only as retained reference material while the new canonical chain is rebuilt:
   - `docs/governance/legacy/contract/`
   - `docs/governance/legacy/contracts/`
@@ -66,7 +66,7 @@
 | `DOC-WORKFLOW-GITHUB-ISSUES-0001` | `draft` | parent contract for introducing GitHub Issues as canonical workflow breakdown |
 | `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` | `draft` | child contract for issue-title hierarchy and category grammar |
 | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `draft` | child contract for role-based issue-tag naming classes |
-| `DOC-GOVERNANCE-CONTROL-PLANE-0001` | `draft` | DOC-first control-plane contract for current-state fields, event-history placement, and the boundary against authorization semantics |
+| `DOC-CONTROL-PLANE-0001` | `draft` | DOC-first control-plane contract for current-state fields, event-history placement, and the boundary against authorization semantics |
 
 ## Reader Notes
 
