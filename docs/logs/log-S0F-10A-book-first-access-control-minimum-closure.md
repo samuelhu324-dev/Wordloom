@@ -352,7 +352,7 @@
 
 ### P3-C1-S1S2 (Commercial widening explicitly deferred and split beyond the minimum closure packet | 2026-04-15)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `4c3c84104`
 - artifacts:
   - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
   - `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
