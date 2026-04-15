@@ -24,6 +24,16 @@ support_only_contract_release_ledger:
   - defer any actual child promotion until stronger direct evidence is found in later archaeology rather than treating this broad issue as sufficient child ownership by itself
 - The purpose of this scaffold is to make `S0A-2A` reviewable under the newer selective-ledger rule rather than leaving the old single-contract extraction as an unquestioned endpoint.
 
+## Current Governance State
+
+| governed surface | owner team | current steward | approval state | reviewed by | approved by | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `ledger-S0A-2A-tools-workflow-log-lab-runbook-adr` | `docs-governance` | `role:workflow-ledger-maintainer` | `parent-review-pending-final-acceptance` | `role:workflow-reviewer` | `role:docs-governance-approver` | This parent ledger remains the current routing surface for the broad `S0A-2A` packet even though final parent acceptance is still pending because narrower slices remain mixed. |
+| `DOC-WORKFLOW-RUNBOOK-0001` | `docs-governance` | `delegated:workflow-runbook-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The runbook child is the narrow current-state governance surface for the `R04` slice while durable ownership remains with `docs-governance`. |
+
+- This block records current effective governance state for the parent ledger and the runbook child only.
+- Detailed evidence verification, direct-markdown review, and packet write-back history remain in `ledger-SUP-S0A-2A-001` rather than being flattened into current-state ownership metadata.
+
 ## Routing And Consumption Table
 
 | row id | source slice | meaning owned here | target family | target release action | contract lineage impact | retained-only action | resolution status | resolved by contract id | consumed scope | resolution notes | notes |
@@ -57,6 +67,16 @@ support_only_contract_release_ledger:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `S0A-2A-R03` | `unknown` | `unknown` | `unknown` | `ongoing` | `unknown` | `not yet reconstructed from the issue-only parent packet` | The parent row now records one defended earlier-labs review state, but the row-level chronology still depends on the more specific SUP evidence packet for any narrower time audit. |
 
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0A-2A-GOV-01` | `contribution-event` | `S0A-2A mixed source` | `unknown` | `none-current-state` | `2026-04-11` | `GitHub issue S0A-2A (#24)` | The original issue-only packet remains the defended contribution source, but it does not by itself prove the current steward or approval chain for the runbook slice. |
+| `S0A-2A-GOV-02` | `evidence-sharpening-event` | `S0A-2A-R04 runbook layer` | `role:packet-reviewer` | `runbook-direct-evidence-review-fixed` | `2026-04-12` | `ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md` | The accepted runbook SUP round fixed the `R04` slice as a direct-evidence review surface instead of leaving it as bounded background only. |
+| `S0A-2A-GOV-03` | `delegated-stewardship-event` | `DOC-WORKFLOW-RUNBOOK-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P3 second-sample round` | The runbook child now records one explicit delegated steward under the same durable owner team so day-to-day maintenance does not collapse back into undeclared team-wide ownership. |
+| `S0A-2A-GOV-04` | `governance-role-separation-event` | `S0A-2A/R04 sample slice` | `role:workflow-reviewer; role:evidence-verifier; role:docs-governance-approver` | `review-verify-approve-separated` | `2026-04-15` | `S0F-9A/P3 second-sample round` | The second sample slice now treats runbook review, evidence verification, and final approval as distinct governance roles instead of one overloaded reviewer identity. |
+
 ## Reader Notes
 
 - This ledger now confirms that `S0A-2A` remains primarily parent-owned, while the runbook layer is now consumed by one dedicated child contract, the labs layer now sits in explicit historical review under the existing labs family, and the remaining narrower layers stay deferred pending stronger direct evidence.
+- Under `S0F-9A/P3` second-sample work, this parent ledger now also acts as the current-state governance surface for the broad `S0A-2A` packet while keeping the runbook slice narrow enough to read through one dedicated child contract.

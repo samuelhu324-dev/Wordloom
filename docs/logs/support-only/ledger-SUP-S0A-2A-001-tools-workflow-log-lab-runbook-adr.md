@@ -36,6 +36,19 @@ support_only_contract_release_ledger_supplement:
 | `S0A-2A-R04-SUP-01` | `S0A-2A-R04` | `legacy/from_structured_docs/from-runbook/run-001-search-projection.md` | `md` | `none` | `verified` | `revises-existing` | `rewrite-parent-row` | `open-new-release` | This SOP shows that once the search projection path had succeeded, the next durable operator question became whether projection failure, replay, rebuild, readiness, and runtime guardrails could be operated safely rather than only experimented with in labs. The file carries long-lived operator guidance across startup, migration, rebuild, metrics, failure handling, replay, and regression checks, so the runbook layer is no longer only a broad issue-level background mention. |
 | `S0A-2A-R04-SUP-02` | `S0A-2A-R04` | `legacy/from_structured_docs/from-runbook/run-003-chronicle-projection.md` | `md` | `none` | `verified` | `revises-existing` | `rewrite-parent-row` | `open-new-release` | This SOP shows the same long-lived operator extraction pattern for the chronicle projection path: once the projection path existed, the durable need moved to rebuildability, daemon runtime checks, replay, observability, and failure handling, with explicit operator steps and acceptance language. Together with `run-001`, it demonstrates that runbooks were already being extracted from experimental labs content into reusable operator-facing workflow guidance. |
 
+## Actor and Provenance Review Table
+
+| supplement item id | submitted by | evidence owner | reviewed by | verified by | verification method | approved by | approval state | approval basis | provenance note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0A-2A-R04-SUP-01` | `unknown` | `role:packet-maintainer` | `role:workflow-reviewer` | `role:evidence-verifier` | `direct-markdown-inspection` | `role:docs-governance-approver` | `accepted-for-packet` | The retained runbook preserves enough durable operator detail to defend the runbook-layer extraction at packet level. | The repo preserves the source markdown path and the packet review chain explicitly, but the original named submitter is not defended by surviving issue-only history. |
+| `S0A-2A-R04-SUP-02` | `unknown` | `role:packet-maintainer` | `role:workflow-reviewer` | `role:evidence-verifier` | `direct-markdown-inspection` | `role:docs-governance-approver` | `accepted-for-packet` | The retained runbook preserves enough durable operator detail to defend the chronicle projection runbook extraction at packet level. | The repo preserves the source markdown path and the packet review chain explicitly, but the original named submitter is not defended by surviving issue-only history. |
+
+## Governance Position Note
+
+- The `Actor and Provenance Review Table` in this supplement is a packet-level event and accountability surface.
+- These rows defend who maintained, reviewed, verified, and accepted the runbook-direct-evidence packet; they do not replace the current-state governance reading for the parent ledger or the runbook child contract.
+- Under `S0F-9A/P3` second-sample work, current ownership, stewardship, and approval reading belongs on the parent-ledger and child-contract surfaces, while this supplement remains the historical evidence chain for direct-markdown review and write-back.
+
 ## Parent-Ledger Rows To Update
 
 - `S0A-2A-R04`: revise the runbook-layer row from `bounded-background` only into one explicit direct-evidence review surface, because the earliest projection SOPs now prove durable operator-facing runbook extraction beyond the broad issue summary alone.
@@ -57,3 +70,4 @@ support_only_contract_release_ledger_supplement:
 
 - These two legacy runbooks are treated here as direct evidence because they already convert projection success, failure-management labs, and runtime-verification learning into durable operator SOPs.
 - This `001` SUP round intentionally did not force immediate child-contract creation; it first asked the parent ledger to stop treating the runbook layer as background-only before `DOC-WORKFLOW-RUNBOOK-0001` was later opened.
+- This supplement now also acts as the packet-level proof that review, evidence verification, and final approval can be separated cleanly on a markdown-evidence-backed sample without turning the supplement into the current governance surface.

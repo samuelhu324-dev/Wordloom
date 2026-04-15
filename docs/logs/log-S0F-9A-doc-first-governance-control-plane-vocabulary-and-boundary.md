@@ -203,6 +203,17 @@
   - the history/contribution view must answer `what contribution, evidence-sharpening, delegation, and separation events explain the current state?`
   - both views must remain reader surfaces only, with truth still anchored in the parent ledger, supplement, and child contract
 
+### P3 Reader Surface Decision (v2)
+
+- The second `P3` round now fixes a new bounded sample as `S0A-2A` parent ledger (`R04` runbook slice) + `ledger-SUP-S0A-2A-001` + `DOC-WORKFLOW-RUNBOOK-0001`.
+- This second sample is chosen because it provides a clean contrast against the first round:
+  - `S0A-1A` was screenshot-backed and child-narrow from the start
+  - `S0A-2A/R04` is markdown-evidence-backed and proves broad-parent to narrow-child extraction without reopening the whole family
+- The second-round `P3` success rule in this sample is:
+  - the current-state view must still answer `who owns, stewards, reviews, and approves now?`
+  - the history/contribution view must still answer `what contribution, direct evidence, delegation, and separation events explain the current state?`
+  - the parent ledger may remain broad, but the reader surfaces must stay narrowly anchored to the `R04` runbook slice so the second sample does not widen into full `S0A-2A` family archaeology
+
 ### P3 (Reader-facing surface)
 
 - `P3-C1-S1`: define one current-state reader surface answering who owns and approves the current state
@@ -239,6 +250,7 @@
 - `P2` is now also complete on the same family: the Projects child now carries an explicit delegated stewardship state under the same durable `owner_team`, and the sample now separates reviewer, verifier, and approver roles instead of collapsing them into one packet reviewer.
 - `P3` is now complete on the same family: two bounded `support-only` reader surfaces now summarize the sample without turning views into false governance sources of truth.
 - The current-state reader surface answers `who owns, stewards, reviews, and approves now?`, while the history/contribution surface answers `what contribution, evidence-sharpening, delegation, and role-separation events explain the current state?`
+- A second `P3` sample round is now also landed on the `S0A-2A/R04` runbook slice, proving that the same current-state/history split can be replicated on a markdown-evidence-backed broad-parent to narrow-child extraction packet.
 
 ## Evidence (reserved)
 
@@ -292,9 +304,28 @@
   - the first bounded history/contribution view now concentrates the issue-only introduction, routing write-back, screenshot sharpening, delegated stewardship, and role-separation chain for the same family
   - both views are explicitly published as `support-only` reader surfaces, which keeps this first `P3` step narrow and prevents accidental promotion into a family-wide front door
 
+### P3-C2-S1S2 (Second bounded reader-surface round published for `S0A-2A/R04` runbook slice | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-001-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/governance/contracts/workflow/runbook/DOC-WORKFLOW-RUNBOOK-0001-projection-operator-rebuild-replay-and-failure-recovery.md`
+  - `docs/governance/views/support-only/view-s0a-2a-runbook-governance-current-state-v1.md`
+  - `docs/governance/views/support-only/view-s0a-2a-runbook-governance-history-and-contribution-v1.md`
+- expected:
+  - the second sample should prove that the same current-state versus history split can survive a broad-parent to narrow-child extraction packet
+  - the current-state reader surface should answer current owner, steward, reviewer, and approver questions for the `R04` runbook slice without replaying the full `S0A-2A` family
+  - the history/contribution reader surface should answer which contribution, direct-evidence review, delegation, and separation events explain the current runbook state
+- observed:
+  - the `S0A-2A` parent ledger and `RUNBOOK-0001` child now carry explicit current-state governance reading for the narrow `R04` slice while the supplement now records packet-level markdown review accountability instead of current ownership
+  - the second bounded current-state view now concentrates the broad-parent plus narrow-child reading without pretending the supplement is a current governance surface
+  - the second bounded history/contribution view now concentrates the issue-only introduction, direct runbook evidence review, delegated stewardship, and governance-role separation chain for the same slice
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-9A` as the first real `M3` child log so the governance-control lane no longer depends only on `S0F-7G/7H/7I` precursor material.
 - 2026-04-15: completed `P1-C1-S1S2` by selecting the `S0A-1A` sample family and applying the first current-state versus event-history split across the parent ledger, supplement, and Projects child contract.
 - 2026-04-15: completed `P2-C1-S1S2` on the same `S0A-1A` sample family by proving one delegated stewardship state and one clean reviewer/verifier/approver separation case.
 - 2026-04-15: completed `P3-C1-S1S2` on the same `S0A-1A` sample family by publishing one bounded current-state view and one bounded history/contribution view as `support-only` reader surfaces.
+- 2026-04-15: completed `P3-C2-S1S2` on the `S0A-2A/R04` runbook slice by publishing a second bounded current-state view and a second bounded history/contribution view around a markdown-evidence-backed broad-parent to narrow-child sample.
