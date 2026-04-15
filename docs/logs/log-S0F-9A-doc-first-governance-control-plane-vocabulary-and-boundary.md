@@ -183,6 +183,15 @@
 - `P2-C1-S1`: prove one steward replacement or delegated stewardship case
 - `P2-C1-S2`: prove that approver, reviewer, and verifier can be separated without ambiguity on the chosen docs-family sample
 
+### P2 Drill Decision (v1)
+
+- The same `S0A-1A` sample family remains the `P2` drill surface so the lane can prove governance movement without introducing a second family too early.
+- The bounded drill now uses one delegated stewardship case on `DOC-WORKFLOW-GITHUB-PROJECTS-0001` and one role-separation case across the same family.
+- The `P2` success rule in this sample is:
+  - current stewardship may be delegated without changing the durable `owner_team`
+  - `reviewed_by`, `verified_by`, and `approved_by` must point to distinguishable governance roles rather than collapsing back into one actor value
+  - the delegation and separation should be explicit in current-state blocks and in event/accountability surfaces at the same time
+
 ### P3 (Reader-facing surface)
 
 - `P3-C1-S1`: define one current-state reader surface answering who owns and approves the current state
@@ -203,8 +212,8 @@
 
 ### P2 (Handoff and separation drill)
 
-- [ ] `P2-C1-S1`: prove one steward replacement or delegated stewardship case
-- [ ] `P2-C1-S2`: prove one clean approver versus reviewer versus verifier separation case
+- [x] `P2-C1-S1`: prove one steward replacement or delegated stewardship case
+- [x] `P2-C1-S2`: prove one clean approver versus reviewer versus verifier separation case
 
 ### P3 (Reader-facing surface)
 
@@ -216,7 +225,8 @@
 - `S0F-9A` is now opened as the first real `M3` child log under `road-002`.
 - `P1` is now complete on one bounded sample family: `S0A-1A` parent ledger + `SUP-001` + `DOC-WORKFLOW-GITHUB-PROJECTS-0001`.
 - The first application now makes one practical split explicit: current effective governance state is carried on the parent-ledger and child-contract reading surfaces, while packet-level actor/provenance and write-back chain stay in the supplement as event/history evidence.
-- The next step is to push `P2` on the same family by proving one real steward replacement or delegated stewardship case plus one clean approver/reviewer/verifier separation case.
+- `P2` is now also complete on the same family: the Projects child now carries an explicit delegated stewardship state under the same durable `owner_team`, and the sample now separates reviewer, verifier, and approver roles instead of collapsing them into one packet reviewer.
+- The next step is `P3`: define one reader-facing current-state view and one history/contribution view that read across the same family without turning those views into false governance sources of truth.
 
 ## Evidence (reserved)
 
@@ -239,7 +249,24 @@
   - the parent ledger and the Projects child contract now carry explicit current-state governance blocks, while the supplement now states its actor/provenance table as event/accountability evidence rather than current ownership
   - the lane still avoids tenant/access/billing semantics and therefore remains inside the intended `M3` boundary
 
+### P2-C1-S1S2 (Delegated stewardship and governance-role separation proved on `S0A-1A` sample family | 2026-04-15)
+
+- headSha: `pending-commit`
+- artifacts:
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
+  - `docs/governance/contracts/workflow/github/projects/DOC-WORKFLOW-GITHUB-PROJECTS-0001-project-views-support-execution-priority.md`
+- expected:
+  - the sample family should prove one delegated stewardship case without changing the durable owner team
+  - the sample family should prove that reviewer, verifier, and approver can be read as distinct governance roles
+  - the proof should remain local to the chosen family rather than forcing broader repo-wide field expansion
+- observed:
+  - the Projects child now carries one explicit delegated stewardship state while the owner team remains `docs-governance`
+  - the supplement now separates evidence verification from packet review and approval, so `verified_by`, `reviewed_by`, and `approved_by` no longer collapse into one actor value
+  - the parent ledger and child contract now preserve both the current-state reading and the event trail that explains why the delegated and separated governance state is currently defended
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-9A` as the first real `M3` child log so the governance-control lane no longer depends only on `S0F-7G/7H/7I` precursor material.
 - 2026-04-15: completed `P1-C1-S1S2` by selecting the `S0A-1A` sample family and applying the first current-state versus event-history split across the parent ledger, supplement, and Projects child contract.
+- 2026-04-15: completed `P2-C1-S1S2` on the same `S0A-1A` sample family by proving one delegated stewardship state and one clean reviewer/verifier/approver separation case.
