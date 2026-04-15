@@ -25,6 +25,16 @@ support_only_contract_release_ledger:
   - keep cutover, stub, and legacy-routing mechanics as support-only unless a narrower future family is later justified
 - This ledger is now both a routing draft and a future consumption tracker; later review should be able to say exactly which slices were consumed and which were not.
 
+## Current Governance State
+
+| governed surface | owner team | current steward | approval state | reviewed by | approved by | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `ledger-S0B-2A-tools-scripts-and-snapshots-management` | `docs-governance` | `role:workflow-ledger-maintainer` | `parent-review-pending-final-acceptance` | `role:workflow-reviewer` | `role:docs-governance-approver` | This mixed-source ledger remains the current routing surface for how `S0B-2A` is interpreted, including which slices are applied, deferred, or support-only. |
+| `DOC-WORKFLOW-LABS-0002` | `docs-governance` | `delegated:workflow-labs-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The labs child is the current-state governance surface for the consumed `R03` labs sub-slice while durable ownership remains with `docs-governance`. |
+
+- This block records current effective governance state for the parent ledger and the one child contract that this mixed source currently resolves into.
+- Deferred scripts-governance and OPS-evidence candidates remain routing outcomes rather than current governed contract surfaces until separate families are actually opened.
+
 ## Routing And Consumption Table
 
 | row id | source slice | meaning owned here | target family | target release action | contract lineage impact | retained-only action | resolution status | resolved by contract id | consumed scope | resolution notes | notes |
@@ -56,6 +66,15 @@ support_only_contract_release_ledger:
   - retention or archival guidance for labs outputs
   - clearer evidence-package semantics
 - The drafted release still does not absorb the scripts taxonomy, stable CLI entrypoint, or cutover/stub slices into `LABS-0002`.
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0B-2A-GOV-01` | `contribution-event` | `S0B-2A mixed source` | `unknown` | `none-current-state` | `2026-04-10` | `docs/logs/log-S0B-2A-scripts-snapshots-management.md` | The source log remains the defended contribution source, but it does not by itself prove the current steward or approval chain for the mixed-source routing state. |
+| `S0B-2A-GOV-02` | `routing-writeback-event` | `ledger-S0B-2A-tools-scripts-and-snapshots-management` | `role:packet-reviewer` | `current-routing-state-fixed` | `2026-04-10` | `S0B-2A-R01` through `S0B-2A-R06` | The parent ledger fixed that only the labs sub-slice currently resolves into an active child contract while scripts, OPS evidence, and cutover/stub remain deferred or support-only. |
+| `S0B-2A-GOV-03` | `delegated-stewardship-event` | `DOC-WORKFLOW-LABS-0002` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 scoped backfill round` | The consumed labs child now records one explicit delegated steward under the same durable owner team so day-to-day maintenance does not collapse back into undeclared team-wide ownership. |
+| `S0B-2A-GOV-04` | `governance-role-separation-event` | `S0B-2A current routing state` | `role:workflow-reviewer; role:docs-governance-approver` | `review-approve-separated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The mixed-source routing ledger now records review and approval as distinct governance acts even though only one child contract is currently resolved from this packet. |
 
 ## New Releases Expected
 
@@ -89,3 +108,4 @@ support_only_contract_release_ledger:
 - The purpose of this revised draft is to let the user review two things separately:
   - whether the slice-to-family split is right
   - whether the consumption-tracking fields are sufficient to tell later what `LABS-0002` actually consumed and what remained unresolved
+- Under `S0F-9A/P4` third-cycle work, this ledger now also acts as the current-state governance surface for the mixed `S0B-2A` packet while `DOC-WORKFLOW-LABS-0002` remains the only active child governance surface currently resolved from it.

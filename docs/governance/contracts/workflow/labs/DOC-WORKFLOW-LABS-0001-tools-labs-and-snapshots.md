@@ -14,6 +14,11 @@ contract_record:
   applies_to: lab snapshot folders, retained lab evidence sets, golden fixtures, diff snapshots, ad-hoc dumps, and lab cleanup decisions
   enforcement_surface: manual
   violation_semantics: warning
+  owner_team: docs-governance
+  current_steward: delegated:workflow-labs-contract-maintainer
+  approval_state: superseded-historical-release
+  reviewed_by: role:workflow-reviewer
+  approved_by: role:docs-governance-approver
   recorded_at: 2026-04-11
   reviewed_at: pending
   effective_from: unknown
@@ -40,7 +45,24 @@ contract_record:
     - This draft sits at the narrower `WORKFLOW-LABS` family layer beneath the broader workflow path.
     - That broader-vs-narrower family reading is taxonomy only; this record no longer claims a split lineage from `DOC-WORKFLOW-0001`.
     - The local repo currently has no S0B/1A source log, so this draft stays explicit about issue-only sourcing.
+    - Current-state governance now reads through owner_team/current_steward/approval_state/reviewed_by/approved_by, while later family current state moves through `DOC-WORKFLOW-LABS-0002` and the parent ledgers remain the routing and event-history surfaces that explain the transition.
 ```
+
+## Current Governance State
+
+- The current governed state of this release file is carried in frontmatter through `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
+- In this file, `approval_state: superseded-historical-release` means the first `DOC-WORKFLOW-LABS-0001` release remains a governed historical release, but the current family reader has moved to `DOC-WORKFLOW-LABS-0002`.
+- Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this release family; they should not be read as current ownership or approval identity.
+- This contract therefore remains the governed current-state surface for the historical `0001` release artifact, while `DOC-WORKFLOW-LABS-0002` carries the later family current-state reader and the parent ledgers preserve the routing and event-history chain.
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-WORKFLOW-LABS-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-LABS-0001` | `unknown` | `family-introduced` | `2026-04-11` | `GitHub issue S0B/1A (#36)` | The issue-only source introduced the first labs-family release, but it does not by itself prove the current steward or approval chain for the retained release artifact. |
+| `DOC-WORKFLOW-LABS-0001-GOV-02` | `routing-writeback-event` | `DOC-WORKFLOW-LABS-0001` | `role:packet-reviewer` | `historical-release-state-fixed` | `2026-04-11` | `ledger-S0B-1A-tools-labs-and-snapshots.md` | The parent ledger fixed that `DOC-WORKFLOW-LABS-0001` remains the first accepted labs release for the original packet even though later family current state moved to `DOC-WORKFLOW-LABS-0002`. |
+| `DOC-WORKFLOW-LABS-0001-GOV-03` | `superseded-release-event` | `DOC-WORKFLOW-LABS-0001` | `role:packet-reviewer` | `superseded-historical-release` | `2026-04-10` | `DOC-WORKFLOW-LABS-0002` | The first labs release is now explicitly retained as a governed historical release because `DOC-WORKFLOW-LABS-0002` superseded it as the current family reader. |
+| `DOC-WORKFLOW-LABS-0001-GOV-04` | `review-approval-separation-event` | `DOC-WORKFLOW-LABS-0001` | `role:workflow-reviewer; role:docs-governance-approver` | `historical-release-governance-separated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The retained historical release now records review and approval as distinct governance acts rather than leaving the historical file unguided by the current control-plane rule. |
 
 ## Contract Statement Table
 

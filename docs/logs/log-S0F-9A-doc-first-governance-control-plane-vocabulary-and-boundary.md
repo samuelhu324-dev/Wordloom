@@ -267,6 +267,20 @@
   - the history/contribution view must answer `what contribution, direct evidence, delegation, and role-separation events explain the current labs state?`
   - both views must remain reader surfaces only, with truth still anchored in the parent ledger, supplement, and child contract
 
+### P5 Reader Surface Decision (v2)
+
+- `P5` now also opens a second cycle on the `S0B-3A` no-supplement family after `P4-C2` backfill.
+- The next two reader surfaces are intentionally published as `support-only` views rather than family-wide front doors:
+  - `docs/governance/views/support-only/view-s0b-3a-governance-current-state-v1.md`
+  - `docs/governance/views/support-only/view-s0b-3a-governance-history-and-contribution-v1.md`
+- This second cycle is preferred because it closes the `P4-C2` loop immediately:
+  - `P4-C2` already separated parent-ledger family state from child-contract current-governance state without inventing a supplement packet
+  - `P5-C2` can therefore answer the reader questions for the same family without reopening any source contract or ledger mutation
+- The `P5-C2` success rule in this sample is:
+  - the current-state view must answer `who owns, stewards, reviews, and approves now?` for the no-supplement family across parent plus child contracts
+  - the history/contribution view must answer `what contribution, routing write-back, delegation, and role-separation events explain the current family state?`
+  - both views must remain reader surfaces only, with truth still anchored in the parent ledger and child contracts
+
 ### P4 Backfill Decision (v2)
 
 - The second scoped backfill family is now fixed as the `S0B-3A` split family:
@@ -280,6 +294,20 @@
   - the parent ledger should carry current routing state and family-level governance events for the mixed source
   - each child contract should carry its own narrow current-governance state and contract-local governance events
   - the cycle should prove that review-versus-approval separation and delegated stewardship can still be made explicit without inventing a supplement surface that does not exist
+
+### P4 Backfill Decision (v3)
+
+- `P4` now opens a third cycle to finish the screenshot-exposed backlog that still sat outside the `S0F-9A` control-plane rule after the first two cycles.
+- The targeted backlog is intentionally limited to already-exposed contracts and their corresponding ledgers rather than opening any new reader-view work:
+  - `S0A-1A` GitHub-Issues parent plus title and tag child contracts, with parent-ledger write-back
+  - `S0A-2A` broad workflow parent contract, with parent-ledger write-back
+  - `S0B-1A` first labs release and parent ledger
+  - `S0B-2A` mixed routing ledger as the parent governance surface for the already-consumed labs child
+- This third cycle is preferred because it closes the exact gap the user pointed out: screenshot-visible contracts and ledgers should not remain half-inside and half-outside the same control-plane rule once they are already treated as representative docs-governance surfaces.
+- The `P4-C3` success rule in this cycle is:
+  - every targeted contract should explicitly separate current governance state from chronology/source metadata using the same frontmatter and governance-event structure already proved in earlier cycles
+  - every corresponding parent ledger should explicitly record those contract surfaces in current-state and event-history terms rather than stopping at routing-only language
+  - no new reader views should be opened in this cycle
 
 ## Execution Checklist (unchecked)
 
@@ -313,11 +341,15 @@
 
 - [x] `P5-C1-S1`: publish one bounded current-state reader surface for the `S0A-2A/R03` labs slice
 - [x] `P5-C1-S2`: publish one bounded history/contribution reader surface for the same labs slice
+- [x] `P5-C2-S1`: publish one bounded current-state reader surface for the `S0B-3A` no-supplement family
+- [x] `P5-C2-S2`: publish one bounded history/contribution reader surface for the same no-supplement family
 
 ### P4 (Scoped backfill continuation)
 
 - [x] `P4-C2-S1`: choose one no-supplement family as the next scoped control-plane backfill target
 - [x] `P4-C2-S2`: apply the minimal control-plane backfill boundary to that no-supplement family without inventing a supplement surface
+- [x] `P4-C3-S1`: backfill the remaining screenshot-exposed contracts that still lacked current governance state and governance-event surfaces
+- [x] `P4-C3-S2`: write the same backfill through their corresponding ledgers so parent routing surfaces no longer stop short of the newly aligned contracts
 
 ## Current Status (recommended)
 
@@ -331,7 +363,9 @@
 - A second `P3` sample round is now also landed on the `S0A-2A/R04` runbook slice, proving that the same current-state/history split can be replicated on a markdown-evidence-backed broad-parent to narrow-child extraction packet.
 - `P4` is now complete for its first scoped backfill round: the adjacent `S0A-2A/R03` labs slice now reuses the control-plane rule across one same-parent packet with a parent ledger, an accepted supplement, and an active child contract.
 - `P4` is now also complete for a second cycle on `S0B-3A`: the parent ledger plus `LOGS-0001` and `LIFECYCLE-0001` now reuse the control-plane rule even though the family has no supplement packet.
+- `P4` is now also complete for a third cycle on the remaining screenshot-exposed backlog: the missing GitHub-Issues parent/title/tag contracts, the broad workflow parent contract, the first labs release, and the `S0B-1A/S0B-2A` parent ledgers now all reuse the same current-state versus event-history control-plane rule.
 - `P5` is now complete for the same labs slice: two bounded `support-only` reader surfaces now summarize the post-backfill current state and history chain without turning views into false governance sources.
+- `P5` is now also complete for the `S0B-3A` no-supplement family: two bounded `support-only` reader surfaces now summarize the family's current state and history chain without inventing a supplement-based front door.
 
 ## Evidence (reserved)
 
@@ -489,6 +523,43 @@
   - `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` now each carry explicit frontmatter current-governance fields plus contract-local governance-event tables
   - the family now proves that delegated stewardship and review-versus-approval separation can be fixed cleanly on parent-plus-child governance surfaces alone, while still making explicit that no supplement packet currently exists
 
+### P5-C2-S1S2 (Bounded current-state and history reader surfaces published for `S0B-3A` no-supplement family | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/governance/views/support-only/view-s0b-3a-governance-current-state-v1.md`
+  - `docs/governance/views/support-only/view-s0b-3a-governance-history-and-contribution-v1.md`
+- expected:
+  - the `S0B-3A` current-state reader surface should answer current owner, steward, reviewer, and approver questions without replaying the full parent ledger plus both child contracts manually
+  - the `S0B-3A` history/contribution reader surface should answer which contribution, routing, delegation, and review-versus-approval separation events explain the current family state
+  - neither view should become a false governance source; underlying truth should remain in the parent ledger and the two child contracts
+- observed:
+  - the bounded `S0B-3A` current-state view now concentrates the mixed-family parent reading plus the two child contract readings while making explicit that no supplement packet currently exists
+  - the bounded `S0B-3A` history/contribution view now concentrates the mixed-source introduction, routing write-back, delegated stewardship, and no-supplement role-separation chain for the same family
+  - both views are explicitly published as `support-only` reader surfaces, which keeps the no-supplement reader step narrow and prevents accidental promotion into a family-wide front door
+
+### P4-C3-S1S2 (Screenshot-exposed contract and ledger backlog backfilled to the control-plane rule | 2026-04-15)
+
+- headSha: `working-tree-uncommitted`
+- artifacts:
+  - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
+  - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+  - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
+  - `docs/governance/contracts/workflow/github/issues/tags/DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-issue-tags-follow-role-based-naming.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-S0B-1A-tools-labs-and-snapshots.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+- expected:
+  - every screenshot-exposed contract still missing current governance state and governance-event surfaces should now reuse the same control-plane vocabulary as the earlier samples
+  - every corresponding ledger should now explicitly carry those contract surfaces as current-state and event-history governance entries rather than stopping at routing-only wording
+  - this cycle should close the targeted backlog without opening any new reader-view work
+- observed:
+  - the GitHub-Issues parent plus title and tag children now carry explicit owner/steward/review/approval current-state fields and contract-local governance-event tables, and the `S0A-1A` parent ledger now records them as active governed surfaces instead of only the Projects child
+  - the broad workflow parent `DOC-WORKFLOW-0001` now carries the same current-state and event-history split, and the `S0A-2A` parent ledger now records it alongside the already-aligned labs and runbook children
+  - the first labs release `DOC-WORKFLOW-LABS-0001` plus the `S0B-1A` and `S0B-2A` parent ledgers now also carry explicit governance surfaces, with `LABS-0001` clearly marked as a governed historical release while `LABS-0002` remains the current family reader
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: opened `S0F-9A` as the first real `M3` child log so the governance-control lane no longer depends only on `S0F-7G/7H/7I` precursor material.
@@ -502,3 +573,5 @@
 - 2026-04-15: completed `P4-C1-S2` by backfilling the `S0A-2A/R03` labs slice so the parent ledger, `SUP-002`, and `DOC-WORKFLOW-LABS-0002` now separate current-state governance, packet accountability, and event-history surfaces cleanly.
 - 2026-04-15: completed `P5-C1-S1S2` on the `S0A-2A/R03` labs slice by publishing one bounded current-state view and one bounded history/contribution view as post-backfill reader surfaces.
 - 2026-04-15: completed `P4-C2-S1S2` on the `S0B-3A` no-supplement family by backfilling the parent ledger plus `LOGS-0001` and `LIFECYCLE-0001` so current-state governance and governance-event surfaces no longer depend on a supplement packet.
+- 2026-04-15: completed `P5-C2-S1S2` on the `S0B-3A` no-supplement family by publishing one bounded current-state view and one bounded history/contribution view as post-backfill reader surfaces.
+- 2026-04-15: completed `P4-C3-S1S2` on the remaining screenshot-exposed backlog by backfilling the missing GitHub-Issues parent/title/tag contracts, the broad workflow parent contract, the first labs release, and the `S0B-1A/S0B-2A` parent ledgers so they now reuse the same control-plane rule as the earlier samples.
