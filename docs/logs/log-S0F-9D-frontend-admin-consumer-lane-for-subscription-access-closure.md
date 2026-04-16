@@ -89,7 +89,7 @@
 
 **Evidence Footer Source**:
 
-- `P2-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9d_p2_frontend_consumer_verify.json`
+- `P3-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9d_p3_frontend_handoff.json`
 
 ## Exported Sections / Outlet Ownership
 
@@ -250,6 +250,22 @@
 - `P3-C1-S1`: decide which frontend/admin behaviors are stable enough for later replay or wider product UI work to consume directly
 - `P3-C1-S2`: define the explicit handoff rule for the next lane so replay/provider or wider UI work does not reopen first-loop consumer discovery
 
+### P3 Stable Frontend/Admin Behavior Decision (v1)
+
+- `P3` now fixes the first downstream-consumable frontend/admin behaviors in this lane as:
+  - `LibraryAccessWidget` mounted inside the existing library detail page for one library-scoped access snapshot consumer
+  - `/admin/subscriptions` as the first admin routing entrypoint into subscription inspection
+  - `/admin/subscriptions/[libraryId]` as the first stable admin detail view for current state, history, and bounded mock-billing controls
+  - query invalidation and re-read of access-context, admin state, and history after bounded payment-event mutation
+- These behaviors are stable enough for later wider UI or replay-facing work to compose directly, but they are not permission to introduce a second frontend lifecycle state machine.
+
+### P3 Next-Lane Handoff Rule Decision (v1)
+
+- The next lane must consume the current frontend/admin entrypoints and backend endpoints rather than rediscovering the first consumer loop.
+- If later work needs replay UI, provider realism, checkout, webhook handling, or correction-specific behavior, it must open a follow-up lane and treat `S0F-9D` as the upstream consumer-contract source.
+- Later lanes may widen presentation, scenario proof, and operator affordances, but must keep `plan_code`, `subscription_state`, `entitlements`, and event-driven lifecycle truth in the backend.
+- The focused backend contract for this handoff is now validated by the passing `subscription_access` application/router test slice; live browser evidence is still recommended before marking this packet `stable`.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -270,16 +286,17 @@
 
 ### P3 (Close-out / handoff)
 
-- [ ] `P3-C1-S1`: define stable frontend/admin behaviors for downstream consumption
-- [ ] `P3-C1-S2`: define the next-lane handoff rule without reopening first-loop consumer discovery
+- [x] `P3-C1-S1`: define stable frontend/admin behaviors for downstream consumption
+- [x] `P3-C1-S2`: define the next-lane handoff rule without reopening first-loop consumer discovery
 
 ## Current Status (recommended)
 
 - `S0F-9D` is now opened as the first frontend/admin consumer lane after `S0F-9C` stabilized the backend `subscription_access` slice.
 - `P0` is now complete: the stable backend consumption boundary, browser responsibility limit, and frontend evidence contract are fixed.
 - `P1-P2` are now complete: the first access-context consumer widget, admin subscription pages, and bounded mock-billing interaction surface are wired against the stable backend endpoints from `9C`.
-- The lane remains in `draft` because `P3` handoff rules are still pending, but the first consumer loop is now alive enough that later replay/provider or wider UI work can consume one concrete frontend entrypoint instead of rediscovering it.
-- The next step is `P3`, which should freeze the downstream handoff boundary for replay/provider realism or wider product-surface work without reopening first-loop discovery.
+- `P3` is now complete: downstream-consumable frontend/admin behaviors and the next-lane handoff rule are fixed.
+- The lane remains in `draft` rather than `stable` because the first live UI-visible lifecycle chain has not yet been recorded as browser/runtime evidence, even though the focused backend contract tests now pass.
+- The immediate next step is local runtime verification: start the stack, open the admin subscription UI, and record one real `read -> event -> re-read` lifecycle chain if this packet needs to graduate to `stable`.
 
 ## Evidence (reserved)
 
@@ -309,9 +326,22 @@
   - mounted `LibraryAccessWidget` inside the existing library detail page and added `/admin/subscriptions` plus `/admin/subscriptions/[libraryId]` as the first admin entrypoints for subscription inspection and event emission.
   - validated the touched frontend slice with diagnostics only; no TypeScript/JSX errors remained in the new consumer files or the patched library detail page.
 
+### P3-C1-S1S2 (Frontend handoff boundary fixed | 2026-04-16)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9d_p3_frontend_handoff.json`
+- expected:
+  - `P3` freezes which frontend/admin behaviors are now stable enough for later replay/provider or wider UI lanes to consume directly.
+  - `P3` defines the explicit handoff rule so downstream work widens this slice without reopening first-loop frontend consumer discovery.
+- observed:
+  - fixed the first stable frontend/admin handoff boundary around `LibraryAccessWidget`, the admin subscription entrypoints, and backend-truth re-read after bounded event mutation.
+  - recorded a focused backend verification result showing the `subscription_access` application/router test slice passes against the same endpoint set consumed by this lane.
+  - left the packet in `draft` pending one live browser/runtime evidence record for a UI-visible lifecycle chain.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-16: Opened `S0F-9D` as the first frontend/admin execution lane that consumes the stable backend slice from `S0F-9C`.
 - 2026-04-16: Fixed `S0F-9D` as consumer-first scope only, explicitly deferring replay, provider realism, and wider UI work until the first frontend/admin loop exists.
 - 2026-04-16: Completed `P0` by fixing the frontend consumer boundary, the browser responsibility limit, and the first consumer-contract evidence artifact.
 - 2026-04-16: Completed `P1-P2` by landing the first access-context/library widget/admin subscription consumer surfaces and recording diagnostics-backed frontend verification evidence.
+- 2026-04-16: Completed `P3` by freezing the downstream-consumable frontend/admin behaviors, defining the next-lane handoff rule, and recording focused backend verification for the stable endpoint set.
