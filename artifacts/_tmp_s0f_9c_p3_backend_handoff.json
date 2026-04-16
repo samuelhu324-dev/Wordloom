@@ -1,0 +1,34 @@
+{
+  "logId": "S0F-9C",
+  "phaseRange": "P3",
+  "stableBackendBehaviors": {
+    "moduleRoot": "backend/api/app/modules/subscription_access",
+    "sharedAggregate": "backend/api/app/shared/access_context.py",
+    "stableEndpoints": [
+      "GET /api/v1/access-context/me",
+      "GET /api/v1/admin/subscriptions/{libraryId}",
+      "POST /api/v1/admin/subscriptions/{libraryId}/events",
+      "GET /api/v1/admin/subscriptions/{libraryId}/history"
+    ],
+    "stableUseCases": [
+      "GetAccessContextUseCase",
+      "GetSubscriptionStateUseCase",
+      "ApplyPaymentEventUseCase",
+      "GetSubscriptionHistoryUseCase"
+    ]
+  },
+  "deferredFromBackendSlice": [
+    "POST /api/v1/admin/subscriptions/{libraryId}/corrections",
+    "POST /api/v1/admin/scenario-replays/{scenarioName}",
+    "provider webhooks and checkout realism",
+    "frontend/admin UI surfaces"
+  ],
+  "frontendAdminHandoffRule": [
+    "frontend/admin lanes must consume backend responses from the stable endpoints instead of recomputing entitlement logic in the browser",
+    "frontend/admin lanes may emit bounded local events only through POST /api/v1/admin/subscriptions/{libraryId}/events",
+    "downstream lanes must not bypass ApplyPaymentEventUseCase or mutate subscription state directly from UI code",
+    "if downstream work needs correction or replay behavior, it must open a follow-up lane instead of reopening backend boundary discovery in S0F-9C"
+  ],
+  "nextLaneRecommendation": "Open a frontend/admin execution lane that consumes the stable backend slice and lands access-context, admin subscriptions, and mock-billing UI surfaces.",
+  "passFail": "PASS"
+}
