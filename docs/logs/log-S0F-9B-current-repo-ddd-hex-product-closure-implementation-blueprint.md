@@ -21,29 +21,117 @@
   **reference_log_4**: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
   **reference_log_5**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 **issue_keyword**: `runtime`
+**status**: `stable`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/9b`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
+
+### P2 Verification Decision (v1)
+
+- `P2` is now fixed as one local-first verification packet rather than one vague promise that the future implementation should be tested somehow.
+- The first verification loop in this packet is now fixed as one bounded `trial -> active -> past_due` chain driven through the first generated admin and user surfaces.
+- The second verification loop in this packet is now fixed as one bounded closure-and-repair chain that maps the first `10D` replay set to concrete API and UI observation points.
+- The `P2` success rule in this packet is:
+  - one reader should be able to explain how the first implementation slice is verified end to end after code generation
+  - one reader should be able to explain which backend/API/frontend surface proves which boundary
+  - one reader should be able to explain how the verification loop still preserves `10A/10B/10C/10D` semantics without requiring provider realism
+
+#### P2 Verification Loop A (Admin/user/mock-billing minimum loop | v1)
+
+| loop step | concrete surface | precondition | expected result | why it matters |
+| --- | --- | --- | --- | --- |
+| `A1` | `GET /api/v1/access-context/me` via `LibraryAccessWidget.tsx` | one user is attached to one library with valid ordinary standing and one narrower trial lifecycle standing | response shows current role standing, `trialing` lifecycle, and narrower entitlement result | The first user-facing read must show that collaboration role and commercial entitlement are already separated. |
+| `A2` | `GET /api/v1/admin/subscriptions/{libraryId}` via `admin/subscriptions/[libraryId]` | same library context is visible to an admin/operator surface | admin surface shows current plan, subscription state, and entitlement snapshot | The first admin read must make the computed state inspectable before any mutation occurs. |
+| `A3` | `POST /api/v1/admin/subscriptions/{libraryId}/events` via `MockBillingPanel.tsx` with `upgrade_success` | current subscription state is `trialing` | lifecycle becomes `active`, entitlement widens, and a new payment-event/history row is visible | This step proves the positive local event path without provider realism. |
+| `A4` | `GET /api/v1/access-context/me` and `LibraryAccessWidget.tsx` refresh | the `upgrade_success` event has already been applied | gated actions such as `copy_block_cross_book` or `export_book` are widened according to the active bundle | The same user-facing surface must reflect entitlement widening without changing ordinary collaboration role. |
+| `A5` | `POST /api/v1/admin/subscriptions/{libraryId}/events` with `renewal_failed`, then re-read user/admin surfaces | current subscription state is `active` | lifecycle becomes `past_due`, entitlement narrows or suspends, role standing remains unchanged | This step proves the negative local event path and the non-mutation of collaboration standing. |
+
+#### P2 Verification Loop B (Scenario replay mapping to concrete surfaces | v1)
+
+| scenario from `10D` | backend/API verification point | frontend/admin verification point | invariant to check | why it matters |
+| --- | --- | --- | --- | --- |
+| `trial_upgrade_success` | `POST /api/v1/admin/subscriptions/{libraryId}/events` then `GET /api/v1/access-context/me` | `MockBillingPanel.tsx` then `LibraryAccessWidget.tsx` | `roles_unchanged`, `trigger_chain_vocab_reused` | Proves the first widening path from local event to visible user capability change. |
+| `active_renewal_failure` | `POST /api/v1/admin/subscriptions/{libraryId}/events` then `GET /api/v1/access-context/me` and history read | admin subscription page plus user widget refresh | `roles_unchanged`, `system_admin_override_unchanged` | Proves narrowed/suspended capability under lifecycle degradation without role mutation. |
+| `cancellation_then_expiry` | `POST /events` followed later by history/state reads | admin subscription page timeline or status panel | `roles_unchanged`, `book_acl_unchanged` | Proves phased capability closure without access-control collapse. |
+| `refund_narrowing` | bounded refund event path plus history read | admin page plus replay/debug surface | `roles_unchanged`, `trigger_chain_vocab_reused` | Proves bounded rollback without importing accounting realism. |
+| `admin_state_repair` | `POST /api/v1/admin/subscriptions/{libraryId}/corrections` or equivalent correction path | admin surface plus replay/debug panel | `roles_unchanged`, `system_admin_override_unchanged` | Proves explicit correction restores intended lifecycle standing without bypassing the model. |
+
+#### P2 Verification Notes (v1)
+
+- The first implementation verification boundary is now fixed as:
+  - user-facing reads prove entitlement result visibility
+  - admin-facing reads prove inspectability of computed commercial state
+  - bounded admin event mutations prove lifecycle transitions without provider realism
+  - replay/debug reads prove scenario explanation and invariant checks
+- The first mandatory invariants across the verification set are now fixed as:
+  - collaboration role standing remains sourced from existing auth/membership infrastructure
+  - `system_admin` override semantics remain outside ordinary commercial lifecycle rules
+  - scenario and trigger vocabulary remain aligned with `10C/10D` rather than drifting into ad hoc UI-only language
+- This packet still does not require:
+  - provider webhook simulation
+  - checkout-session UI
+  - invoice/tax/settlement surfaces
+
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 **roadmap_milestone**: `M4`
+
+### P3 Provider-Defer Decision (v1)
+
+- `P3` is now fixed as one close-out handoff decision rather than one invitation to mix implementation planning with provider integration work.
+- `S0F-9B` now explicitly concludes that the implementation blueprint for the first code-bearing closure does not require a provider-adapter lane to be embedded inside this packet.
+- The minimum closure delivered by `P0-P2` is now sufficient to stand on its own because:
+  - the backend/infra/API/frontend landing shape is explicit
+  - the first staged file-generation order is explicit
+  - the first local verification and replay mapping is explicit
+- Later provider-shaped work is now explicitly split to a new packet under the following rule:
+  - a later packet may model provider callbacks, checkout completion, refund transport, or signature verification only when the local-first loop is already implemented and one real boundary cannot be explained without trusted upstream signal handling
+  - that later packet must treat provider realism as the source of bounded `payment_event` inputs for the already-defined `subscription_access` module
+  - that later packet must not redefine the role baseline from `10A`, the entitlement boundary from `10B`, the trigger-chain contract from `10C`, the scenario-replay contract from `10D`, or the implementation-blueprint contract fixed here
+- The `P3` success rule in this packet is:
+  - one reader should be able to explain why `9B` can close without generating provider adapter code
+  - one reader should be able to explain what future provider work is still allowed to add
+  - one reader should be able to explain that the next step after `9B` is a code-bearing implementation lane, not another blueprint-only packet inside the same scope
+
+#### P3 Keep-vs-Split Decision Table (v1)
+
+| topic | decision in `S0F-9B` | reason |
+| --- | --- | --- |
+| backend module landing shape | `keep-in-lane` | This packet must make the repo-path implementation target explicit before code begins. |
+| infra/API/frontend generation order | `keep-in-lane` | This packet must define the first code-generation sequence and dependency chain. |
+| local verification and replay mapping | `keep-in-lane` | This packet must explain how the first generated code slice will be judged coherent. |
+| provider callback or checkout realism | `split-to-later-packet` | Provider transport is not required to build or verify the first local product-closure loop. |
+| invoice, tax, settlement, retry, or webhook signature logic | `split-to-later-packet` | Those surfaces belong to a later provider/integration packet after the first closure is alive. |
+
+#### P3 Later-Packet Entry Conditions (v1)
+
+- A later provider-adapter packet may open only when at least one of these conditions becomes concrete:
+  - the first local loop is implemented and one real boundary now depends on proving how external provider signals become trusted `payment_event` inputs
+  - one downstream code-bearing packet needs webhook verification, checkout success mapping, or refund transport semantics that cannot be represented as bounded local admin events anymore
+  - one integration packet needs one concrete `provider signal -> payment_event -> subscription_state -> entitlement -> user/admin surface` chain instead of the local-first simulation fixed here
+- Until one of those conditions is real, later work should treat `S0F-9B` as the stable implementation blueprint and should open a new lane for code execution rather than reopening this blueprint just to host speculative provider detail.
 **roadmap_phase**: `M4-P1`
 **roadmap_bridge_refs**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md#M4-P1`
 **pr_labels**: ``
 **pr_projects**: ``
+- [x] `P2-C1-S1`: fix the first admin/user/mock-billing validation loop
+- [x] `P2-C1-S2`: map the first scenario replay set to concrete verification points
 **pr_milestone**: ``
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-16`
+- [x] `P3-C1-S1`: define later provider-adapter permissions and limits
+- [x] `P3-C1-S2`: define later-packet entry conditions
 **updated**: `2026-04-16`
 **reviewed**: `pending`
 
 ---
 
-## Frontmatter Lifecycle-Time Rule
-
+- `P2` is now complete: the lane now fixes one first admin/user/mock-billing verification loop plus one concrete mapping from the `10D` scenario set into backend/API/frontend verification points.
+- `P3` is now complete: the lane now explicitly splits provider realism into a later dedicated packet and marks this implementation-blueprint packet as the stable close-out for pre-code planning.
+- `S0F-9B` now stands as the stable implementation blueprint for the first code-bearing `M4` closure on the current repo architecture. The next step should be one new code-execution lane rather than another blueprint phase inside `S0F-9B`.
 - `created`, `updated`, and optional `reviewed` are the minimum artifact-lifecycle fields for this blueprint packet.
 - Day-level precision is acceptable while this lane is still deciding concrete repo landing shape rather than running implementation drills.
 - If this lane later becomes the active source log for implementation work, subsequent updates should preserve deterministic roadmap bridge, issue, and PR fields rather than inferring them from downstream code changes.
