@@ -1,0 +1,45 @@
+{
+  "logId": "S0F-9C",
+  "phaseRange": "P0-P2",
+  "headSha": "b02ccf1c4",
+  "implementedModulePaths": [
+    "backend/api/app/modules/subscription_access/__init__.py",
+    "backend/api/app/modules/subscription_access/domain/__init__.py",
+    "backend/api/app/modules/subscription_access/domain/event_types.py",
+    "backend/api/app/modules/subscription_access/domain/models.py",
+    "backend/api/app/modules/subscription_access/domain/services.py",
+    "backend/api/app/modules/subscription_access/domain/value_objects.py",
+    "backend/api/app/modules/subscription_access/application/__init__.py",
+    "backend/api/app/modules/subscription_access/application/use_cases.py",
+    "backend/api/app/modules/subscription_access/exceptions.py",
+    "backend/api/app/modules/subscription_access/repository.py",
+    "backend/api/app/modules/subscription_access/schemas.py",
+    "backend/api/app/modules/subscription_access/routers/subscription_access_router.py",
+    "backend/api/app/shared/access_context.py"
+  ],
+  "implementedInfraPaths": [
+    "backend/infra/database/models/plan_catalog_models.py",
+    "backend/infra/database/models/subscription_models.py",
+    "backend/infra/database/models/payment_event_models.py",
+    "backend/infra/database/models/entitlement_snapshot_models.py",
+    "backend/infra/storage/plan_catalog_repository_impl.py",
+    "backend/infra/storage/subscription_repository_impl.py",
+    "backend/infra/storage/payment_event_repository_impl.py",
+    "backend/infra/storage/entitlement_snapshot_repository_impl.py"
+  ],
+  "implementedEndpoints": [
+    "GET /api/v1/access-context/me",
+    "GET /api/v1/admin/subscriptions/{libraryId}",
+    "POST /api/v1/admin/subscriptions/{libraryId}/events",
+    "GET /api/v1/admin/subscriptions/{libraryId}/history"
+  ],
+  "implementedUseCases": [
+    "GetAccessContextUseCase",
+    "GetSubscriptionStateUseCase",
+    "ApplyPaymentEventUseCase",
+    "GetSubscriptionHistoryUseCase"
+  ],
+  "verificationScenario": "Focused backend slice validation for read path, bounded event application, and history exposure using subscription_access application and router tests.",
+  "verificationCommand": "c:/python314/python.exe -m pytest api/app/tests/test_subscription_access/test_application_layer.py api/app/tests/test_subscription_access/test_router.py",
+  "passFail": "PASS"
+}

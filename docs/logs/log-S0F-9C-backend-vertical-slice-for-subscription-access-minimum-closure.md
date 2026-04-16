@@ -299,7 +299,7 @@
 
 ### P0-C1-S1S2S3 (Backend execution contract fixed | 2026-04-16)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `b02ccf1c4`
 - artifacts: `artifacts/_tmp_s0f_9c_p0_p2_backend_slice.json`
 - expected:
   - `P0` fixes the backend execution root, first endpoint set, backend-first sequencing, and evidence contract.
@@ -309,7 +309,7 @@
 
 ### P1-C1-S1S2 (First backend slice implemented | 2026-04-16)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `b02ccf1c4`
 - artifacts: `artifacts/_tmp_s0f_9c_p0_p2_backend_slice.json`
 - expected:
   - land backend module code, shared access-context aggregation, infra models, repository implementations, and router/module exports.
@@ -318,7 +318,7 @@
 
 ### P2-C1-S1S2 (Backend read/write slice verified | 2026-04-16)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `b02ccf1c4`
 - artifacts: `artifacts/_tmp_s0f_9c_p0_p2_backend_slice.json`
 - expected:
   - verify first backend read paths plus bounded event application and history read.
