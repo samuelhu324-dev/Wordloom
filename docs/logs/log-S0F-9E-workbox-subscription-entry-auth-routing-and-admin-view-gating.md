@@ -335,7 +335,7 @@
 
 ### P1-C1-S1S2 (Workbox entry and auth shell landed | 2026-04-16)
 
-- headSha: `pending-backfill`
+- headSha: `2657aecf8`
 - artifacts: `artifacts/_tmp_s0f_9e_p1_workbox_auth_impl.json`
 - expected:
   - one authenticated user route exists for `Workbox > My Subscription`
