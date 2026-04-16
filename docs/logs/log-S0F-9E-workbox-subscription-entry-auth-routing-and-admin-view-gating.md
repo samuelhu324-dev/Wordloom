@@ -357,7 +357,7 @@
 
 ### P2-C1-S1S2 (Role-aware gating drill passed | 2026-04-16)
 
-- headSha: `pending-backfill`
+- headSha: `9392a6765`
 - artifacts: `artifacts/_tmp_s0f_9e_p2_role_gating_verify.json`
 - expected:
   - anonymous access to protected Workbox routes fails closed into the shared login shell
