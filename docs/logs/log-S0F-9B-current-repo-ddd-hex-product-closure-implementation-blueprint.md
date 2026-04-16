@@ -295,6 +295,98 @@
 - `P1-C1-S1`: fix the first backend module/file tree for the commercial-access closure on the current repo architecture
 - `P1-C1-S2`: fix the first infra and API path set, including persistence models, repositories, routers, and schemas
 
+### P1 Repo-Path Generation Decision (v1)
+
+- `P1` is now fixed as one staged file-generation plan rather than one abstract statement that the module should exist someday.
+- The first implementation unit in this packet is now fixed as one minimal vertical slice that can return one aggregated access-context response before it tries to support the full admin and replay surface.
+- The first generation order in this packet is now fixed as:
+  - `Stage 1`: backend domain and repository ports for `subscription_access`
+  - `Stage 2`: infrastructure models and repository implementations for `plan_catalog`, `subscription`, `payment_event`, and `entitlement_snapshot`
+  - `Stage 3`: `GET /api/v1/access-context/me` plus the first `AccessContext` aggregation path
+  - `Stage 4`: admin event endpoints for bounded local event emission and history reads
+  - `Stage 5`: scenario replay endpoint and frontend debug/admin surfaces
+- The `P1` success rule in this packet is:
+  - one reader should be able to answer which files must exist before the first backend request can succeed
+  - one reader should be able to answer which files are allowed to remain placeholders until later stages
+  - one reader should be able to explain why the generation order starts from the user-facing access read instead of from provider realism
+
+#### P1 Backend File-Tree Stage Table (v1)
+
+| stage | repo paths to create first | fixed purpose | allowed placeholder standing |
+| --- | --- | --- | --- |
+| `Stage 1A` | `backend/api/app/modules/subscription_access/__init__.py`, `exceptions.py`, `repository.py`, `schemas.py` | establish module shell, public exports, ports, and DTO boundaries | exceptions and some DTOs may remain minimal while routes are not yet wired |
+| `Stage 1B` | `backend/api/app/modules/subscription_access/domain/__init__.py`, `models.py`, `value_objects.py`, `event_types.py`, `services.py` | establish domain concepts and pure business rules | richer value objects may stay thin if their semantics are already fixed in `10B/10C/10D` |
+| `Stage 1C` | `backend/api/app/modules/subscription_access/application/__init__.py`, `use_cases.py` | establish orchestration layer for access context, event application, and replay | replay-specific use cases may initially return `not_implemented` while access read is wired first |
+| `Stage 1D` | `backend/api/app/shared/access_context.py` | define the first aggregate that combines `AuthContext` with commercial entitlement outcome | fields not required by the first `GET /me` read may remain deferred |
+
+### P1 Infra And API Generation Decision (v1)
+
+- The first infrastructure generation order in this packet is now fixed as:
+  - `backend/infra/database/models/plan_catalog_models.py`
+  - `backend/infra/database/models/subscription_models.py`
+  - `backend/infra/database/models/payment_event_models.py`
+  - `backend/infra/database/models/entitlement_snapshot_models.py`
+  - update `backend/infra/database/models/__init__.py`
+  - `backend/infra/storage/plan_catalog_repository_impl.py`
+  - `backend/infra/storage/subscription_repository_impl.py`
+  - `backend/infra/storage/payment_event_repository_impl.py`
+  - `backend/infra/storage/entitlement_snapshot_repository_impl.py`
+- The first API implementation order in this packet is now fixed as:
+  - `GET /api/v1/access-context/me`
+  - `GET /api/v1/admin/subscriptions/{libraryId}`
+  - `POST /api/v1/admin/subscriptions/{libraryId}/events`
+  - `GET /api/v1/admin/subscriptions/{libraryId}/history`
+  - `POST /api/v1/admin/subscriptions/{libraryId}/corrections`
+  - `POST /api/v1/admin/scenario-replays/{scenarioName}`
+- The first frontend generation order in this packet is now fixed as:
+  - `frontend/src/features/subscription-access/ui/AccessContextPanel.tsx`
+  - `frontend/src/widgets/library/LibraryAccessWidget.tsx`
+  - `frontend/src/features/subscription-access/ui/MockBillingPanel.tsx`
+  - `frontend/src/app/admin/subscriptions/page.tsx`
+  - `frontend/src/app/admin/subscriptions/[libraryId]/page.tsx`
+  - `frontend/src/features/subscription-access/ui/ScenarioReplayPanel.tsx`
+  - `frontend/src/app/admin/scenario-replays/page.tsx`
+- The first UI wiring rule in this packet is now fixed as:
+  - the user-facing widget should read only the aggregated access context and render gated actions
+  - the first admin subscription page should prioritize inspect-and-emit behavior over polished billing UX
+  - the scenario replay page may start as one operator/debug surface rather than one end-user product page
+- The `P1-C1-S2` success rule in this packet is:
+  - one reader should be able to answer which persistence and API files must be generated in which order
+  - one reader should be able to answer which frontend pages can be created after the first backend read path is alive
+  - one reader should be able to explain why the first generated surface is one read path plus bounded admin mutation rather than one full checkout simulation
+
+#### P1 API And Frontend Sequence Table (v1)
+
+| generation unit | concrete path or surface | dependency | first expected behavior |
+| --- | --- | --- | --- |
+| `API-1` | `GET /api/v1/access-context/me` | `AccessContext` aggregation + subscription/entitlement reads | return current role standing plus commercial entitlement result for one user/library context |
+| `API-2` | `GET /api/v1/admin/subscriptions/{libraryId}` | subscription + entitlement persistence | inspect current plan, lifecycle standing, and entitlement snapshot |
+| `API-3` | `POST /api/v1/admin/subscriptions/{libraryId}/events` | payment-event persistence + apply-event use case | emit one bounded local event such as `upgrade_success` or `renewal_failed` |
+| `UI-1` | `frontend/src/widgets/library/LibraryAccessWidget.tsx` | `API-1` | render gated actions and visibility state from backend-derived access context |
+| `UI-2` | `frontend/src/app/admin/subscriptions/[libraryId]/page.tsx` + `MockBillingPanel.tsx` | `API-2` + `API-3` | inspect one tenant/library subscription state and emit bounded events |
+| `UI-3` | `frontend/src/app/admin/scenario-replays/page.tsx` + `ScenarioReplayPanel.tsx` | replay endpoint | show step-by-step replay results and invariant checks for the first `10D` scenario set |
+
+#### P1 Generation Notes (v1)
+
+- The first code-bearing slice in this packet should stay intentionally narrow:
+  - do not generate provider adapter code
+  - do not generate checkout-session UI
+  - do not generate invoice/tax models
+  - do not widen role semantics beyond the existing membership/auth source of truth
+- The first generated DTO set should stay minimal:
+  - one user-facing `AccessContextRead`
+  - one admin-facing `SubscriptionStateRead`
+  - one `ApplyPaymentEventRequest`
+  - one `SubscriptionHistoryRead`
+  - one `ScenarioReplayResultRead`
+- The first generated use-case set should stay minimal:
+  - `GetAccessContextUseCase`
+  - `GetSubscriptionStateUseCase`
+  - `ApplyPaymentEventUseCase`
+  - `GetSubscriptionHistoryUseCase`
+  - `RunScenarioReplayUseCase`
+- The first generation path should remain compatible with later widening from `P2` and `P3` instead of pretending the first code slice is the final runtime architecture.
+
 ### P2 (Local verification and replay plan)
 
 - `P2-C1-S1`: fix the first admin/user/mock-billing validation loop against the current SoT
@@ -315,8 +407,8 @@
 
 ### P1 (Repo-path and code-generation plan)
 
-- [ ] `P1-C1-S1`: fix the first backend module/file tree
-- [ ] `P1-C1-S2`: fix the first infra and API path set
+- [x] `P1-C1-S1`: fix the first backend module/file tree
+- [x] `P1-C1-S2`: fix the first infra and API path set
 
 ### P2 (Local verification and replay plan)
 
@@ -332,8 +424,9 @@
 
 - `S0F-9B` is now opened as one implementation-blueprint packet after the `M4` boundary stack in `10A/10B/10C/10D` has been stabilized.
 - `P0` is now complete: the lane now fixes one first backend module family, one first infra landing shape, one first API and frontend validation-surface set, and one first evidence contract for the local product closure.
-- The lane remains a `draft` source log because the concrete code-generation file tree expansion in `P1`, the verification mapping in `P2`, and the later provider-handoff boundary in `P3` still remain open.
-- The next step should be `P1`, where the first repo-path file-generation plan should be fixed in more detailed sequence; automation should still read this log as the active source for this packet.
+- `P1` is now complete: the lane now fixes the first staged file-generation order for backend, infra, API, and frontend surfaces, plus one minimal-first sequence anchored on `GET /api/v1/access-context/me`.
+- The lane remains a `draft` source log because the local validation mapping in `P2` and the later provider-handoff boundary in `P3` still remain open.
+- The next step should be `P2`, where the first admin/user/mock-billing verification loop and `10D` replay mapping should be fixed against the concrete API and frontend surfaces chosen here; automation should still read this log as the active source for this packet.
 
 ## Evidence (reserved)
 
@@ -352,7 +445,19 @@
 - observed:
   - Added one explicit backend module decision, one infra and frontend landing decision, one implementation evidence contract decision, completed the `P0` checklist, and updated packet status for the next `P1` repo-path planning phase.
 
+### P1-C1-S1S2 (Repo-path generation sequence fixed | 2026-04-16)
+
+- headSha: `working-tree-uncommitted`
+- artifacts: `docs/logs/log-S0F-9B-current-repo-ddd-hex-product-closure-implementation-blueprint.md`
+- expected:
+  - `P1` fixes one concrete staged file-generation order for backend module, infra, API, and frontend surfaces.
+  - `P1` states which paths should be generated first and which may remain placeholders in early stages.
+  - `P1` anchors the first implementation slice on one minimal access-context read before wider admin and replay surfaces.
+- observed:
+  - Added one repo-path generation decision, one infra/API/frontend generation decision, completed the `P1` checklist, and updated packet status for the next `P2` verification-mapping phase.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-16: Opened `S0F-9B` as one bounded implementation-blueprint packet for the current repo's mixed `DDD/HEX + modular-monolith` product-closure work after the `M4` boundary stack stabilized.
 - 2026-04-16: Completed `S0F-9B/P0` by fixing the first backend module, infra path, API surface, frontend validation-surface, and implementation evidence contract for the local product-closure loop.
+- 2026-04-16: Completed `S0F-9B/P1` by fixing the first staged repo-path generation sequence for backend, infra, API, and frontend implementation work.
