@@ -5,7 +5,7 @@
 **id**: `S0F-9C`
 **kind**: `log`
 **title**: `backend vertical slice for subscription_access minimum closure + drills/evidence + v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Billing, Backend, Runtime, Drills, Evidence, epic/s0, sub/9c`
 **links**: ``
@@ -90,6 +90,7 @@
 **Evidence Footer Source**:
 
 - `P2-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9c_p0_p2_backend_slice.json`
+- `P3-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9c_p3_backend_handoff.json`
 
 ## Exported Sections / Outlet Ownership
 
@@ -260,6 +261,29 @@
 - `P3-C1-S1`: decide which backend behaviors are stable enough for the next frontend/admin lane to consume directly
 - `P3-C1-S2`: define the explicit handoff rule for the next lane so frontend/admin work does not reopen backend boundary discovery
 
+### P3 Backend Handoff Decision (v1)
+
+- `P3` is now complete.
+- The stable backend behaviors that downstream lanes may now consume directly are fixed as:
+  - `GET /api/v1/access-context/me`
+  - `GET /api/v1/admin/subscriptions/{libraryId}`
+  - `POST /api/v1/admin/subscriptions/{libraryId}/events`
+  - `GET /api/v1/admin/subscriptions/{libraryId}/history`
+  - `GetAccessContextUseCase`, `GetSubscriptionStateUseCase`, `ApplyPaymentEventUseCase`, and `GetSubscriptionHistoryUseCase`
+  - the shared `AccessContext` aggregate plus the `subscription_access` domain/application/repository boundary already landed in this packet
+- The deferred surfaces after `9C` are now fixed as:
+  - correction endpoint behavior
+  - scenario replay endpoint behavior
+  - provider callback / checkout realism
+  - frontend/admin UI surfaces
+- The downstream handoff rule is now fixed as:
+  - later frontend/admin lanes must consume the stable backend responses instead of recomputing entitlement logic in the browser
+  - later frontend/admin lanes may emit bounded local lifecycle events only through `POST /api/v1/admin/subscriptions/{libraryId}/events`
+  - downstream lanes must not mutate `subscription_state` directly from UI code or bypass the backend use-case layer
+  - if downstream work genuinely needs correction or replay semantics, it should open a follow-up lane instead of reopening backend boundary discovery inside `S0F-9C`
+- The next-lane recommendation is now fixed as:
+  - open one frontend/admin execution lane that consumes the stable backend slice and lands access-context, admin subscriptions, and mock-billing UI surfaces
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -280,8 +304,8 @@
 
 ### P3 (Handoff / close-out)
 
-- [ ] `P3-C1-S1`: define stable backend behaviors for downstream consumption
-- [ ] `P3-C1-S2`: define the frontend/admin handoff rule without reopening backend discovery
+- [x] `P3-C1-S1`: define stable backend behaviors for downstream consumption
+- [x] `P3-C1-S2`: define the frontend/admin handoff rule without reopening backend discovery
 
 ## Current Status (recommended)
 
@@ -289,7 +313,9 @@
 - `P0` is now complete: the backend slice boundary, endpoint set, sequencing rule, and evidence contract are fixed.
 - `P1` is now complete: the first backend `subscription_access` slice is implemented across module code, infra models, repository implementations, shared access aggregation, and router registration.
 - `P2` is now complete: focused application and router tests passed for the first backend read/write slice.
-- The next step is `P3`, which should freeze the stable backend handoff boundary for the later frontend/admin lane.
+- `P3` is now complete: the stable backend contract and the frontend/admin handoff rule are fixed.
+- `S0F-9C` is now `stable` as the first backend vertical slice for `subscription_access`.
+- The next step is one new frontend/admin execution lane that consumes this stable backend slice instead of reopening backend discovery.
 
 ## Evidence (reserved)
 
@@ -326,8 +352,22 @@
 - observed:
   - `c:/python314/python.exe -m pytest api/app/tests/test_subscription_access/test_application_layer.py api/app/tests/test_subscription_access/test_router.py` passed with `6 passed`.
 
+### P3-C1-S1S2 (Stable backend handoff fixed | 2026-04-16)
+
+- headSha: `working-tree-uncommitted`
+- artifacts: `artifacts/_tmp_s0f_9c_p3_backend_handoff.json`
+- expected:
+  - freeze which backend behaviors are stable enough for downstream frontend/admin work to consume directly.
+  - define which surfaces remain deferred after the backend slice.
+  - define one explicit handoff rule so later lanes do not reopen backend boundary discovery.
+- observed:
+  - fixed the stable endpoint/use-case/backend-boundary set for downstream consumption.
+  - fixed the deferred-surface list for correction, replay, provider realism, and frontend/admin UI work.
+  - fixed the next-lane rule that later frontend/admin work must consume backend contracts rather than re-owning entitlement logic.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-16: Opened `S0F-9C` as the first backend vertical-slice execution lane after `S0F-9B` stabilized the current-repo implementation blueprint.
 - 2026-04-16: Fixed `S0F-9C` as backend-first scope only, explicitly deferring frontend/admin UI work until a stable backend slice exists.
 - 2026-04-16: Completed `P0-P2` by implementing the first backend `subscription_access` slice, wiring the first backend read/write endpoints, and recording focused evidence for the slice.
+- 2026-04-16: Completed `P3` by freezing the stable backend handoff boundary, the deferred-surface list, and the next-lane rule for frontend/admin execution.
