@@ -540,7 +540,7 @@
 
 ### P2-C1-S1S2 (Local verification loop and replay mapping fixed | 2026-04-16)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `372452dab`
 - artifacts: `docs/logs/log-S0F-9B-current-repo-ddd-hex-product-closure-implementation-blueprint.md`
 - expected:
   - `P2` fixes one first admin/user/mock-billing verification loop for the generated implementation slice.
@@ -551,7 +551,7 @@
 
 ### P3-C1-S1S2 (Provider realism split beyond the implementation-blueprint closure | 2026-04-16)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `372452dab`
 - artifacts: `docs/logs/log-S0F-9B-current-repo-ddd-hex-product-closure-implementation-blueprint.md`
 - expected:
   - `P3` stops leaving provider realism as an unresolved ambiguity after the implementation blueprint and verification plan are already explicit.
