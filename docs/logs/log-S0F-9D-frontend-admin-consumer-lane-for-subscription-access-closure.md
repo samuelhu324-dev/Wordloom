@@ -299,7 +299,7 @@
 
 ### P1-C1-S1S2 + P2-C1-S1S2 (Frontend consumer surfaces wired and verified | 2026-04-16)
 
-- headSha: `pending-backfill`
+- headSha: `e8874b3b5`
 - artifacts: `artifacts/_tmp_s0f_9d_p2_frontend_consumer_verify.json`
 - expected:
   - `P1` lands one thin but real frontend/admin consumer surface spanning access-context display, library widget mounting, admin subscription state/history inspection, and bounded mock-billing controls.
