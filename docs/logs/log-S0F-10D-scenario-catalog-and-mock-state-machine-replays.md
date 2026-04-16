@@ -5,7 +5,7 @@
 **id**: `S0F-10D`
 **kind**: `log`
 **title**: `scenario-catalog and mock-state-machine replay packet boundary v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Billing, Entitlement, Scenarios, Drills, Evidence, epic/s0, sub/10d`
 **links**: ``
@@ -366,6 +366,41 @@
 - `P3-C1-S1`: define what later provider-adapter work is allowed to add without changing the scenario contract
 - `P3-C1-S2`: define entry conditions for a later provider-realism packet if local scenario replay proves insufficient
 
+### P3 Provider-Handoff Decision (v1)
+
+- `P3` is now fixed as one close-out boundary decision rather than as the start of an embedded provider integration stream.
+- `S0F-10D` now explicitly concludes that provider-adapter realism is not required to make the first scenario catalog and replay packet coherent or replayable.
+- The minimum closure delivered by `P0-P2` is now sufficient to stand on its own because:
+  - the scenario vocabulary, replay-unit input shape, and invariant boundaries are explicit
+  - the first representative scenario catalog and scenario mapping tables are explicit
+  - the first replayable scenario drills already prove lifecycle-driven entitlement change and invariant preservation without provider callbacks or checkout realism
+- Provider-shaped work is now explicitly split to a later packet under the following rule:
+  - a later packet may model webhook trust, checkout success, invoice issuance, refund transport, or provider callback verification only if it needs to explain how a trusted upstream signal becomes one bounded replay input
+  - that later packet must treat provider realism as the source of bounded `payment_event` inputs for the replay surface, not as a replacement for the `10D` scenario catalog or the `10C` trigger chain
+  - that later packet must not redefine the role baseline from `S0F-10A`, the entitlement boundary from `S0F-10B`, the trigger-chain semantics from `S0F-10C`, or the scenario and invariant contract fixed in `S0F-10D`
+- The `P3` success rule in this packet is:
+  - one reader should be able to explain why `10D` can close without implementing provider callbacks, checkout, invoice, or tax flows
+  - one reader should be able to explain what future provider work is still allowed to do
+  - later realism should have to open one separate bounded packet instead of silently broadening this scenario lane
+
+#### P3 Keep-vs-Split Decision Table (v1)
+
+| topic | decision in `S0F-10D` | reason |
+| --- | --- | --- |
+| scenario catalog vocabulary | `keep-in-lane` | This packet needs explicit scenario naming and replay input semantics to explain realistic local simulations. |
+| replay invariant rules | `keep-in-lane` | This packet needs explicit invariant checks to prove role and override boundaries survive scenario replay. |
+| replay drill definitions | `keep-in-lane` | This packet needs replay steps to show how scenario semantics are actually exercised. |
+| provider webhook or checkout realism | `split-to-later-packet` | Provider transport is not required to prove the first scenario packet or replay the current drills. |
+| invoice, tax, settlement, or retry detail | `split-to-later-packet` | Those surfaces belong to later external-system packets, not to the minimum scenario replay closure. |
+
+#### P3 Later-Packet Entry Conditions (v1)
+
+- A later provider-shaped packet may open only when at least one of these conditions becomes concrete:
+  - one replay requires proving how a real provider callback, checkout success, or refund notice becomes one trusted `payment_event` input for the mock-state-machine surface
+  - one downstream implementation packet needs one bounded source-of-truth rule for provider-originated retry, invoice, refund, or tax-bearing signals
+  - one integration packet needs one concrete `provider signal -> payment_event -> subscription_state -> entitlement outcome -> scenario replay` chain rather than the abstract local model fixed here
+- Until one of those conditions is real, later work should treat `S0F-10D` as the stable scenario-replay baseline and should not reopen this lane just to host speculative provider detail.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -386,16 +421,17 @@
 
 ### P3 (Provider-adapter handoff)
 
-- [ ] `P3-C1-S1`: define later provider-adapter permissions and limits
-- [ ] `P3-C1-S2`: define later-packet entry conditions
+- [x] `P3-C1-S1`: define later provider-adapter permissions and limits
+- [x] `P3-C1-S2`: define later-packet entry conditions
 
 ## Current Status (recommended)
 
 - `S0F-10D` now has a stable `P0` contract for scenario-catalog vocabulary, replay invariants, and provider-adapter defer rules on top of the stable trigger-chain baseline in `S0F-10C`.
 - `P1` is now complete: the lane now fixes one first representative realistic scenario catalog, one scenario-to-state-machine matrix, and one scenario-to-outcome matrix that preserve the `10A/10B/10C` baselines.
 - `P2` is now complete: the lane now carries one widening-and-degradation replay drill plus one closure-and-repair replay drill that together prove entitlement change and invariant preservation across the first scenario set.
-- The lane remains a `draft` source log because the later provider-handoff boundary in `P3` still remains open.
-- The next step should be `P3`, where later provider-adapter permissions and later-packet entry conditions should be fixed; automation should still read this log as the active source for this packet.
+- `P3` is now complete: the lane now explicitly splits provider callback, checkout, invoice, tax, and retry realism into later dedicated packets instead of embedding them into the minimum scenario-replay closure.
+- `S0F-10D` now stands as the stable minimum scenario-catalog and mock-state-machine replay baseline after `S0F-10C`: later work may widen from it, but should not reopen it just to host provider integration detail.
+- Automation may now read this log as the stable scenario-replay source packet and treat provider-shaped follow-up as separate later work.
 
 ## Evidence (reserved)
 
@@ -436,9 +472,23 @@
 - observed:
   - Added one widening-and-degradation replay drill, one closure-and-repair replay drill, completed `P2` checklist items, and updated packet status for the next `P3` provider-handoff phase.
 
+### P3-C1-S1S2 (Provider realism split beyond the minimum scenario-replay closure | 2026-04-16)
+
+- headSha: `working-tree-uncommitted`
+- artifacts: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
+- expected:
+  - `P3` stops leaving provider realism as an unresolved ambiguity after the scenario catalog and replay drills are already explicit and replayable.
+  - `P3` decides whether provider-style detail belongs inside `S0F-10D` or in one later dedicated packet.
+  - the result preserves the `10A` role baseline, the `10B` entitlement boundary, the `10C` trigger-chain semantics, and the `10D` replay contract.
+- observed:
+  - `S0F-10D` now explicitly concludes that provider realism is not required for the first scenario-replay closure.
+  - the lane now splits webhook, checkout, invoice, tax, retry, and settlement-style integration detail to later dedicated packets.
+  - the first scenario packet can now be treated as a stable minimum closure rather than as a partially finished provider-and-replay hybrid.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: Opened `S0F-10D` as the next `M4` scenario-catalog and mock-state-machine replay packet after `S0F-10C` stabilized the trigger-chain boundary.
 - 2026-04-15: Completed `S0F-10D/P0` by fixing scenario vocabulary, replay invariant boundaries, and explicit provider-adapter defer rules.
 - 2026-04-15: Completed `S0F-10D/P1` by fixing the first realistic scenario catalog and mapping it to lifecycle and entitlement outcomes.
 - 2026-04-16: Completed `S0F-10D/P2` by fixing the first replayable scenario drills and invariant checks on top of the `P1` catalog.
+- 2026-04-16: Completed `S0F-10D/P3` by explicitly splitting provider callback, checkout, invoice, tax, retry, and settlement realism into later dedicated packets and marking `S0F-10D` as the stable minimum scenario-replay closure.
