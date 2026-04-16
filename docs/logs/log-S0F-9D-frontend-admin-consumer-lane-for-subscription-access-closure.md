@@ -5,7 +5,7 @@
 **id**: `S0F-9D`
 **kind**: `log`
 **title**: `frontend-admin consumer lane for subscription_access closure + drills/evidence + v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Billing, Frontend, Admin, Runtime, Drills, Evidence, epic/s0, sub/9d`
 **links**: ``
@@ -89,7 +89,7 @@
 
 **Evidence Footer Source**:
 
-- `P3-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9d_p3_frontend_handoff.json`
+- `P3-C2-S1S2` | artifact: `artifacts/_tmp_s0f_9d_p3_live_ui_verify.json`
 
 ## Exported Sections / Outlet Ownership
 
@@ -295,8 +295,9 @@
 - `P0` is now complete: the stable backend consumption boundary, browser responsibility limit, and frontend evidence contract are fixed.
 - `P1-P2` are now complete: the first access-context consumer widget, admin subscription pages, and bounded mock-billing interaction surface are wired against the stable backend endpoints from `9C`.
 - `P3` is now complete: downstream-consumable frontend/admin behaviors and the next-lane handoff rule are fixed.
-- The lane remains in `draft` rather than `stable` because the first live UI-visible lifecycle chain has not yet been recorded as browser/runtime evidence, even though the focused backend contract tests now pass.
-- The immediate next step is local runtime verification: start the stack, open the admin subscription UI, and record one real `read -> event -> re-read` lifecycle chain if this packet needs to graduate to `stable`.
+- The lane is now `stable`: the first live UI-visible lifecycle chain has been recorded through the local admin subscription UI and library detail view.
+- The recorded live loop now proves backend-derived re-render across `past_due -> active` transitions plus durable history append for bounded admin/mock-billing events.
+- The next step is not to reopen `9D`, but to open a follow-up lane for actual admin/user role-separated UI management on top of this stable consumer baseline.
 
 ## Evidence (reserved)
 
@@ -336,7 +337,19 @@
 - observed:
   - fixed the first stable frontend/admin handoff boundary around `LibraryAccessWidget`, the admin subscription entrypoints, and backend-truth re-read after bounded event mutation.
   - recorded a focused backend verification result showing the `subscription_access` application/router test slice passes against the same endpoint set consumed by this lane.
-  - left the packet in `draft` pending one live browser/runtime evidence record for a UI-visible lifecycle chain.
+  - left the packet ready for one final live browser/runtime evidence record for a UI-visible lifecycle chain.
+
+### P3-C2-S1S2 (Live UI lifecycle chain verified | 2026-04-16)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9d_p3_live_ui_verify.json`
+- expected:
+  - the first local admin/user/mock-billing UI loop proves that access-context, admin subscription state, and event history all re-render from backend truth rather than frontend-local lifecycle logic.
+  - the packet can graduate to `stable` once at least one real UI-visible lifecycle chain and durable event history append are confirmed.
+- observed:
+  - live UI validation confirmed `past_due` and `active` standing changes in the user-facing access snapshot and the admin subscription state for library `9c3c003c-a6c8-4af5-9e4c-64594b0c38aa`.
+  - event history appended multiple bounded events, including `upgrade_success`, `renewal_failed`, and `admin_correction`, with stable subscription identity rather than replacing prior records.
+  - the library detail page consumed the same backend-derived access snapshot, proving the first frontend/admin consumer loop is now stable enough for downstream role-separated UI work to build on.
 
 ## Recent changes (for traceability, optional)
 
@@ -345,3 +358,4 @@
 - 2026-04-16: Completed `P0` by fixing the frontend consumer boundary, the browser responsibility limit, and the first consumer-contract evidence artifact.
 - 2026-04-16: Completed `P1-P2` by landing the first access-context/library widget/admin subscription consumer surfaces and recording diagnostics-backed frontend verification evidence.
 - 2026-04-16: Completed `P3` by freezing the downstream-consumable frontend/admin behaviors, defining the next-lane handoff rule, and recording focused backend verification for the stable endpoint set.
+- 2026-04-16: Recorded the first live browser/runtime lifecycle chain for `S0F-9D`, so the packet now qualifies as `stable` and can hand off to actual admin/user role-separated management work.
