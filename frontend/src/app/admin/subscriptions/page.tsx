@@ -41,10 +41,10 @@ export default function AdminSubscriptionsPage() {
         />
 
         <section className={styles.hero}>
-          <h1>Subscription admin consumer lane</h1>
+          <h1>Subscription Console</h1>
           <p>
             Open a library-scoped admin view, inspect current backend subscription standing, and run
-            the bounded mock-billing loop without recreating lifecycle rules in the browser.
+            the bounded mock-billing loop without exposing tenant-wide history or mutation controls to ordinary users.
           </p>
         </section>
 

@@ -89,11 +89,11 @@
 
 - Log: `docs/logs/log-S0F-9E-workbox-subscription-entry-auth-routing-and-admin-view-gating.md`
 - Runbook: ``
-- Evidence artifact: `artifacts/_tmp_s0f_9e_p0_entry_and_route_contract.json`
+- Evidence artifact: `artifacts/_tmp_s0f_9e_p1_workbox_auth_impl.json`
 
 **Evidence Footer Source**:
 
-- `P0-C1-S1S2S3` | artifact: `artifacts/_tmp_s0f_9e_p0_entry_and_route_contract.json`
+- `P1-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9e_p1_workbox_auth_impl.json`
 
 ## Exported Sections / Outlet Ownership
 
@@ -213,6 +213,39 @@
 - The first artifact path in this packet is fixed as `artifacts/_tmp_s0f_9e_p0_entry_and_route_contract.json`.
 - The artifact now records Workbox entry split, admin-only view family, protected-route cases, and role-scenario expectations in one auditable packet.
 
+## P1 (Implementation | v1)
+
+### P1-C1-S1 (Workbox entry relocation and role-aware surfaces)
+
+- `P1` must land one authenticated user route for `Workbox > My Subscription` and preserve one tenant-admin route for `Workbox > Subscription Console`.
+- `WorkboxMenu` must become role-aware so ordinary users do not see tenant-admin navigation entries.
+- Existing admin-only Workbox entries such as `Libraries`, `Basement`, `Chronicle`, and `Tags` remain admin/owner only in this packet.
+
+### P1 Workbox Entry Implementation Decision (v1)
+
+- `P1` now lands `frontend/src/app/workbox/subscription/page.tsx` as the first user-facing Workbox route for subscription visibility.
+- `WorkboxMenu` now renders role-aware entries:
+  - authenticated users see `My Subscription`
+  - `admin/owner` additionally see `Subscription Console` and the pre-existing admin workbox routes
+- The home-page Workbox quick link now targets `/workbox/subscription` rather than an admin-only route.
+
+### P1-C1-S2 (Minimum auth shell and protected-route implementation)
+
+- `P1` must land one shared login route and one shared registration route without splitting authentication into separate admin and user entry pages.
+- The opening protected-route shell must gate authenticated internal pages and keep admin routes restricted to `admin/owner`.
+- This packet may use a local-first browser session to validate entry and gating behavior before provider realism exists.
+
+### P1 Auth Shell Implementation Decision (v1)
+
+- `P1` now lands one local-first auth shell through:
+  - `frontend/src/app/login/page.tsx`
+  - `frontend/src/app/register/page.tsx`
+  - `frontend/src/shared/auth/AuthContext.tsx`
+  - `frontend/src/shared/auth/ProtectedRoute.tsx`
+- `frontend/src/app/providers.tsx` now mounts the auth provider so header, Workbox menu, and protected routes share one session source.
+- `frontend/src/app/admin/layout.tsx` now requires `admin/owner`, while `frontend/src/app/workbox/layout.tsx` now requires any authenticated session.
+- `frontend/src/shared/layouts/header.tsx` now exposes login/register when signed out and session badge plus sign-out when signed in.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -262,8 +295,8 @@
 
 ### P1 (Workbox entry and auth shell)
 
-- [ ] `P1-C1-S1`: implement Workbox subscription relocation and role-aware entry surfaces
-- [ ] `P1-C1-S2`: implement the minimum login, registration, and protected-route shell
+- [x] `P1-C1-S1`: implement Workbox subscription relocation and role-aware entry surfaces
+- [x] `P1-C1-S2`: implement the minimum login, registration, and protected-route shell
 
 ### P2 (Role-aware gating drill / verify)
 
@@ -278,8 +311,9 @@
 ## Current Status (recommended)
 
 - `S0F-9E/P0` is now complete: the Workbox entry split, shared auth-shell assumption, and first admin-only view family are fixed in one contract artifact.
-- The upstream backend and frontend/admin subscription-access slice remains stable enough to support this lane, so the next step is now `P1` implementation rather than more contract expansion.
-- Automation should continue to treat this log as the active source for the first Workbox-entry and auth-routing closure until the packet stabilizes through `P1/P2`.
+- `S0F-9E/P1` is now complete: the lane now has one local-first login/register shell, one authenticated `My Subscription` route, and one admin-gated `Subscription Console` path.
+- The upstream backend and frontend/admin subscription-access slice remains stable enough to support this lane, so the next step is now `P2` role-aware gating verification rather than more implementation widening.
+- Automation should continue to treat this log as the active source for the first Workbox-entry and auth-routing closure until the packet stabilizes through `P2`.
 
 ## Evidence (reserved)
 
@@ -299,7 +333,23 @@
   - the first shared login/registration and fail-closed route assumptions are now recorded in one contract packet
   - the first admin-only view family is now fixed before `P1` implementation
 
+### P1-C1-S1S2 (Workbox entry and auth shell landed | 2026-04-16)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9e_p1_workbox_auth_impl.json`
+- expected:
+  - one authenticated user route exists for `Workbox > My Subscription`
+  - one shared login and registration shell exists before deeper auth/provider work
+  - admin routes and admin-only menu entries are gated to `admin/owner`
+- observed:
+  - `/workbox/subscription` now exists as the first user-facing Workbox subscription route
+  - `/login` and `/register` now exist with one local-first session model
+  - admin layout now requires `admin/owner`, and workbox layout now requires any authenticated session
+  - `WorkboxMenu` and header now derive visible entrypoints from the shared auth session
+  - focused diagnostics on touched files passed, while repo-wide `npm run type-check` still reports unrelated pre-existing errors outside the `9E` touch set
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-16: opened `S0F-9E` as the first focused lane for Workbox subscription entry, login/registration/protected-route closure, and admin-only view gating on top of the stable `9D` slice.
 - 2026-04-16: completed `S0F-9E/P0-C1-S1S2S3` by fixing the first Workbox entry split, auth-shell assumptions, admin-only view family, and contract artifact for later `P1` implementation.
+- 2026-04-16: completed `S0F-9E/P1-C1-S1S2` by landing the first local-first auth shell, authenticated Workbox subscription route, and admin-gated subscription console entry.

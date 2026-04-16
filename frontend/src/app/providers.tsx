@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from '@/shared/auth';
 import { ThemeProvider } from '@/shared/providers';
 import { I18nProvider } from '@/i18n/I18nContext';
 
@@ -22,9 +23,11 @@ const queryClient = new QueryClient({
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <I18nProvider>
-      <ThemeProvider>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider>
+          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </I18nProvider>
   );
 }
