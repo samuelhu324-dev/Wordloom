@@ -341,7 +341,7 @@
 
 ### P3-C2-S1S2 (Live UI lifecycle chain verified | 2026-04-16)
 
-- headSha: `pending-backfill`
+- headSha: `43e06a8fd`
 - artifacts: `artifacts/_tmp_s0f_9d_p3_live_ui_verify.json`
 - expected:
   - the first local admin/user/mock-billing UI loop proves that access-context, admin subscription state, and event history all re-render from backend truth rather than frontend-local lifecycle logic.
