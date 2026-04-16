@@ -474,7 +474,7 @@
 
 ### P3-C1-S1S2 (Provider realism split beyond the minimum scenario-replay closure | 2026-04-16)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `feca7b08f`
 - artifacts: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
 - expected:
   - `P3` stops leaving provider realism as an unresolved ambiguity after the scenario catalog and replay drills are already explicit and replayable.
