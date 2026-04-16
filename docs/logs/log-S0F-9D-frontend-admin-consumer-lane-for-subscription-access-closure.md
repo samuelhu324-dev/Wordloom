@@ -89,7 +89,7 @@
 
 **Evidence Footer Source**:
 
-- `P0-C1-S1S2S3` | artifact: `artifacts/_tmp_s0f_9d_p0_frontend_consumer_contract.json`
+- `P2-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9d_p2_frontend_consumer_verify.json`
 
 ## Exported Sections / Outlet Ownership
 
@@ -260,13 +260,13 @@
 
 ### P1 (Frontend/admin implementation)
 
-- [ ] `P1-C1-S1`: create the first access-context and library widget consumer surfaces
-- [ ] `P1-C1-S2`: create the first admin subscription page and mock-billing interaction surface
+- [x] `P1-C1-S1`: create the first access-context and library widget consumer surfaces
+- [x] `P1-C1-S2`: create the first admin subscription page and mock-billing interaction surface
 
 ### P2 (Frontend/admin drill / verify)
 
-- [ ] `P2-C1-S1`: verify the first access-context read and gated rendering path
-- [ ] `P2-C1-S2`: verify bounded event emission plus admin/user re-render for the first lifecycle chain
+- [x] `P2-C1-S1`: verify the first access-context read and gated rendering path
+- [x] `P2-C1-S2`: verify bounded event emission plus admin/user re-render for the first lifecycle chain
 
 ### P3 (Close-out / handoff)
 
@@ -277,9 +277,9 @@
 
 - `S0F-9D` is now opened as the first frontend/admin consumer lane after `S0F-9C` stabilized the backend `subscription_access` slice.
 - `P0` is now complete: the stable backend consumption boundary, browser responsibility limit, and frontend evidence contract are fixed.
-- The lane is still in `draft`: no frontend/admin implementation files or UI verification have been landed yet.
-- The next step is `P1`, which should land the first access-context and admin subscription consumer surfaces against the stable backend contract.
-- After `P0`, this log should remain the active source for frontend/admin execution until the first consumer loop is verified and ready to hand off to later replay/provider or wider UI lanes.
+- `P1-P2` are now complete: the first access-context consumer widget, admin subscription pages, and bounded mock-billing interaction surface are wired against the stable backend endpoints from `9C`.
+- The lane remains in `draft` because `P3` handoff rules are still pending, but the first consumer loop is now alive enough that later replay/provider or wider UI work can consume one concrete frontend entrypoint instead of rediscovering it.
+- The next step is `P3`, which should freeze the downstream handoff boundary for replay/provider realism or wider product-surface work without reopening first-loop discovery.
 
 ## Evidence (reserved)
 
@@ -297,8 +297,21 @@
 - observed:
   - fixed the first frontend/admin consumer paths, the stable backend endpoint set, the browser responsibility limit, and the first consumer-contract artifact.
 
+### P1-C1-S1S2 + P2-C1-S1S2 (Frontend consumer surfaces wired and verified | 2026-04-16)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9d_p2_frontend_consumer_verify.json`
+- expected:
+  - `P1` lands one thin but real frontend/admin consumer surface spanning access-context display, library widget mounting, admin subscription state/history inspection, and bounded mock-billing controls.
+  - `P2` proves the first frontend/admin verification shape by showing that the browser re-reads backend truth after bounded event emission instead of owning a competing lifecycle state machine.
+- observed:
+  - added a thin `subscription-access` frontend consumer slice with API hooks, `AccessContextPanel`, and `MockBillingPanel` bound only to the stable backend endpoints from `9C`.
+  - mounted `LibraryAccessWidget` inside the existing library detail page and added `/admin/subscriptions` plus `/admin/subscriptions/[libraryId]` as the first admin entrypoints for subscription inspection and event emission.
+  - validated the touched frontend slice with diagnostics only; no TypeScript/JSX errors remained in the new consumer files or the patched library detail page.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-16: Opened `S0F-9D` as the first frontend/admin execution lane that consumes the stable backend slice from `S0F-9C`.
 - 2026-04-16: Fixed `S0F-9D` as consumer-first scope only, explicitly deferring replay, provider realism, and wider UI work until the first frontend/admin loop exists.
 - 2026-04-16: Completed `P0` by fixing the frontend consumer boundary, the browser responsibility limit, and the first consumer-contract evidence artifact.
+- 2026-04-16: Completed `P1-P2` by landing the first access-context/library widget/admin subscription consumer surfaces and recording diagnostics-backed frontend verification evidence.

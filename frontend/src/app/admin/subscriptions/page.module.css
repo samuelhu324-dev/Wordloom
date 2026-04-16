@@ -1,0 +1,46 @@
+.page {
+  min-height: 100vh;
+  background: var(--color-bg-app);
+  padding: var(--spacing-2xl) 0 var(--spacing-3xl);
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-2xl);
+  display: grid;
+  gap: var(--spacing-xl);
+}
+
+.hero {
+  display: grid;
+  gap: 12px;
+}
+
+.hero h1 {
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.hero p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.card {
+  display: grid;
+  gap: 16px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.hint {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
