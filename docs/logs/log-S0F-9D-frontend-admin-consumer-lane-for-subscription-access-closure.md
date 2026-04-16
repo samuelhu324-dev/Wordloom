@@ -328,7 +328,7 @@
 
 ### P3-C1-S1S2 (Frontend handoff boundary fixed | 2026-04-16)
 
-- headSha: `pending-backfill`
+- headSha: `a49a1c557`
 - artifacts: `artifacts/_tmp_s0f_9d_p3_frontend_handoff.json`
 - expected:
   - `P3` freezes which frontend/admin behaviors are now stable enough for later replay/provider or wider UI lanes to consume directly.
