@@ -289,7 +289,7 @@
 
 ### P0-C1-S1S2S3 (Entry and route contract fixed | 2026-04-16)
 
-- headSha: `pending-backfill`
+- headSha: `06cac16c4`
 - artifacts: `artifacts/_tmp_s0f_9e_p0_entry_and_route_contract.json`
 - expected:
   - one contract artifact fixes the first Workbox entry split before implementation starts
