@@ -4,25 +4,30 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useI18n } from '@/i18n/useI18n';
 import type { MessageKey } from '@/i18n/I18nContext';
+import { AuthRole, useAuth } from '@/shared/auth';
 import styles from './WorkboxMenu.module.css';
 
 type MenuItem = {
   href: string;
   key: string;
-  labelKey: MessageKey;
+  label?: string;
+  labelKey?: MessageKey;
+  roles?: AuthRole[];
 };
 
 const MENU_ITEMS: MenuItem[] = [
-  { href: '/admin/libraries', labelKey: 'nav.libraries', key: 'libraries' },
-  { href: '/admin/basement', labelKey: 'nav.basement', key: 'basement' },
-  { href: '/admin/chronicle', labelKey: 'nav.chronicle', key: 'chronicle' },
-  { href: '/admin/tags', labelKey: 'nav.tags', key: 'tags' },
+  { href: '/workbox/subscription', label: 'My Subscription', key: 'my-subscription', roles: ['member', 'admin', 'owner'] },
+  { href: '/admin/subscriptions', label: 'Subscription Console', key: 'subscription-console', roles: ['admin', 'owner'] },
+  { href: '/admin/libraries', labelKey: 'nav.libraries', key: 'libraries', roles: ['admin', 'owner'] },
+  { href: '/admin/basement', labelKey: 'nav.basement', key: 'basement', roles: ['admin', 'owner'] },
+  { href: '/admin/chronicle', labelKey: 'nav.chronicle', key: 'chronicle', roles: ['admin', 'owner'] },
+  { href: '/admin/tags', labelKey: 'nav.tags', key: 'tags', roles: ['admin', 'owner'] },
 ];
 
 export const WorkboxMenu: React.FC = () => {
+  const { hydrated, session } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
-  const hoverTimerRef = useRef<number | null>(null);
   const pathname = usePathname();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -32,18 +37,14 @@ export const WorkboxMenu: React.FC = () => {
     setMounted(true);
   }, []);
 
-  // Avoid hydration mismatch when language is resolved from client storage.
-  const workboxLabel = mounted ? t('nav.workbox') : 'Workbox';
+  const handleMouseEnter = () => setOpen(true);
 
-  // Hover logic with delays
-  const handleMouseEnter = () => {
-    if (hoverTimerRef.current) window.clearTimeout(hoverTimerRef.current);
-    hoverTimerRef.current = window.setTimeout(() => setOpen(true), 120);
-  };
+  const handleMouseLeave = () => setOpen(false);
 
-  const handleMouseLeave = () => {
-    if (hoverTimerRef.current) window.clearTimeout(hoverTimerRef.current);
-    hoverTimerRef.current = window.setTimeout(() => setOpen(false), 200);
+  const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      setOpen(false);
+    }
   };
 
   // Keyboard: Esc to close
@@ -56,14 +57,6 @@ export const WorkboxMenu: React.FC = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [open]);
-
-  // Focus first item when opening via keyboard
-  useEffect(() => {
-    if (open) {
-      const firstItem = menuRef.current?.querySelector('[data-menuitem]') as HTMLElement | null;
-      firstItem?.focus();
-    }
   }, [open]);
 
   // Arrow navigation inside menu
@@ -83,11 +76,21 @@ export const WorkboxMenu: React.FC = () => {
     }
   };
 
+  // Avoid hydration mismatch when language is resolved from client storage.
+  const workboxLabel = mounted ? t('nav.workbox') : 'Workbox';
+  const visibleItems = MENU_ITEMS.filter((item) => session && (!item.roles || item.roles.includes(session.role)));
+
+  if (!hydrated || !session || visibleItems.length === 0) {
+    return null;
+  }
+
   return (
     <div
       className={styles.container}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onFocus={handleMouseEnter}
+      onBlur={handleBlur}
     >
       <button
         ref={buttonRef}
@@ -98,6 +101,7 @@ export const WorkboxMenu: React.FC = () => {
         className={styles.trigger}
         onClick={() => setOpen(o => !o)}
         onKeyDown={handleKeyDown}
+        data-testid="workbox-trigger"
       >
         {workboxLabel} <span className={styles.caret} aria-hidden="true">▾</span>
       </button>
@@ -107,10 +111,11 @@ export const WorkboxMenu: React.FC = () => {
           role="menu"
           aria-label={workboxLabel}
           className={styles.panel}
+          data-testid="workbox-menu"
         >
           <div className={styles.activeBar} />
           <ul className={styles.list}>
-            {MENU_ITEMS.map(item => {
+            {visibleItems.map(item => {
               const active = pathname?.startsWith(item.href);
               return (
                 <li key={item.key} className={active ? styles.active : undefined}>
@@ -122,7 +127,7 @@ export const WorkboxMenu: React.FC = () => {
                     onClick={() => setOpen(false)}
                     className={styles.menuItem}
                   >
-                    {t(item.labelKey)}
+                    {item.labelKey ? t(item.labelKey) : item.label}
                   </Link>
                 </li>
               );

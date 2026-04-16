@@ -280,6 +280,12 @@
 - `P2-C1-S1`: verify user-facing `My Subscription` visibility without admin-only history or mutation controls
 - `P2-C1-S2`: verify tenant-admin menu visibility and admin-route access while non-admin users remain blocked or redirected
 
+## P2 (Role-aware gating drill / verify)
+
+- `P2` validates the first user/admin split against executable browser behavior instead of contract-only expectation.
+- The drill should prove that anonymous access fails closed into the shared login shell, that ordinary users remain on `My Subscription`, and that tenant-admin standing is required for the first admin-only subscription surfaces.
+- `P2` also acts as the first stability check for the new header and Workbox entry surfaces, so a runtime regression discovered here still belongs to `9E` and should be fixed before `P3` handoff.
+
 ### P3 (Close-out / handoff)
 
 - `P3-C1-S1`: define which product-entry and gating behaviors are now stable enough for later lanes to consume directly
@@ -300,8 +306,8 @@
 
 ### P2 (Role-aware gating drill / verify)
 
-- [ ] `P2-C1-S1`: verify ordinary-user visibility is limited to `My Subscription`
-- [ ] `P2-C1-S2`: verify tenant-admin access and non-admin blocking for the first admin-only views
+- [x] `P2-C1-S1`: verify ordinary-user visibility is limited to `My Subscription`
+- [x] `P2-C1-S2`: verify tenant-admin access and non-admin blocking for the first admin-only views
 
 ### P3 (Close-out / handoff)
 
@@ -311,9 +317,10 @@
 ## Current Status (recommended)
 
 - `S0F-9E/P0` is now complete: the Workbox entry split, shared auth-shell assumption, and first admin-only view family are fixed in one contract artifact.
-- `S0F-9E/P1` is now complete: the lane now has one local-first login/register shell, one authenticated `My Subscription` route, and one admin-gated `Subscription Console` path.
-- The upstream backend and frontend/admin subscription-access slice remains stable enough to support this lane, so the next step is now `P2` role-aware gating verification rather than more implementation widening.
-- Automation should continue to treat this log as the active source for the first Workbox-entry and auth-routing closure until the packet stabilizes through `P2`.
+- `S0F-9E/P1` and `P2` are now complete: the lane now has one local-first login/register shell, one authenticated `My Subscription` route, one admin-gated `Subscription Console` path, and one executable browser drill covering anonymous, member, and admin standing.
+- `P2` also fixed one runtime regression in `WorkboxMenu`, where hook ordering changed across hydration/session states and could crash the first Workbox entry surface.
+- The upstream backend and frontend/admin subscription-access slice remains stable enough to support this lane, so the next step is now `P3` close-out and handoff rather than more gating implementation widening.
+- Automation should continue to treat this log as the active source for the first Workbox-entry and auth-routing closure until the packet stabilizes through `P3`.
 
 ## Evidence (reserved)
 
@@ -348,8 +355,22 @@
   - `WorkboxMenu` and header now derive visible entrypoints from the shared auth session
   - focused diagnostics on touched files passed, while repo-wide `npm run type-check` still reports unrelated pre-existing errors outside the `9E` touch set
 
+### P2-C1-S1S2 (Role-aware gating drill passed | 2026-04-16)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9e_p2_role_gating_verify.json`
+- expected:
+  - anonymous access to protected Workbox routes fails closed into the shared login shell
+  - member standing is limited to `My Subscription` and cannot retain admin-only subscription surfaces
+  - admin standing can reach the first `Subscription Console` surface without widening auth/provider realism
+- observed:
+  - `frontend/tests/e2e/subscription-gating.spec.ts` passed three focused Chromium scenarios covering anonymous redirect, member-only surface gating, and admin route access
+  - the drill verifies the stable visible entry surfaces through header landing, page-level admin entry visibility, and redirect behavior on `/admin/subscriptions`
+  - the drill exposed and then validated the fix for a `WorkboxMenu` hook-order regression that could crash the first Workbox entry surface under hydration/session transition
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-16: opened `S0F-9E` as the first focused lane for Workbox subscription entry, login/registration/protected-route closure, and admin-only view gating on top of the stable `9D` slice.
 - 2026-04-16: completed `S0F-9E/P0-C1-S1S2S3` by fixing the first Workbox entry split, auth-shell assumptions, admin-only view family, and contract artifact for later `P1` implementation.
 - 2026-04-16: completed `S0F-9E/P1-C1-S1S2` by landing the first local-first auth shell, authenticated Workbox subscription route, and admin-gated subscription console entry.
+- 2026-04-16: completed `S0F-9E/P2-C1-S1S2` by adding one focused Playwright drill for anonymous/member/admin gating, installing local Chromium to execute it, and fixing a `WorkboxMenu` hook-order regression uncovered during verification.
