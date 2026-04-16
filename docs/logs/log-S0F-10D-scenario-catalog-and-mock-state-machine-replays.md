@@ -325,6 +325,42 @@
 - `P2-C1-S1`: define replay drills that run representative scenarios through the mock state machine and verify expected entitlement outcomes
 - `P2-C1-S2`: verify invariants that role standing, platform override, and ownership semantics remain unchanged across the scenario set
 
+### P2 Drill Decision (v1)
+
+- `P2` now stays on the same scenario packet and proves replayability through named scenario drills rather than widening into provider realism or implementation detail.
+- The first replay drill family is now fixed as:
+  - start from one explicit scenario entry already fixed in `P1`
+  - replay one bounded trigger sequence through the local mock state machine
+  - observe resulting lifecycle standing and entitlement outcome
+  - check that required invariants remain unchanged throughout the replay
+- The first scenario drill set in this packet is now fixed as:
+  - one widening-and-degradation replay using `trial_upgrade_success` and `active_renewal_failure`
+  - one closure-and-repair replay using `cancellation_then_expiry`, `refund_narrowing`, and `admin_state_repair`
+- The `P2` success rule in this packet is:
+  - one reader should be able to replay one full positive-to-negative lifecycle chain without guessing hidden billing logic
+  - one reader should be able to replay one closure-or-repair chain without confusing entitlement change with role mutation
+  - the lane should still avoid provider webhook, checkout, invoice, or tax realism
+
+#### P2 Replay Drill A (Upgrade success and renewal failure replay through the local state machine)
+
+| drill step | actor or trigger source | precondition | intended transition or action | expected result | why it matters |
+| --- | --- | --- | --- | --- | --- |
+| `A1` | scenario selector `trial_upgrade_success` | one tenant is on `starting_plan = trial`, `subscription_state = trialing`, and one user holds valid ordinary standing such as `editor` on one book | load the `trial_upgrade_success` replay unit into the local mock state machine | replay unit is ready with stable `10C` trigger vocabulary and stable invariants | The drill must start from one explicit scenario entry rather than one ad hoc imaginary case. |
+| `A2` | bounded trigger `upgrade_success` | same role standing unchanged; current entitlement bundle is still trial-shaped | apply `upgrade_success` | `trialing -> active` and `activate-current-plan-bundle` | The drill must show that activation is produced by lifecycle transition first and entitlement effect second. |
+| `A3` | same user after activation | same role standing and same book ACL unchanged | attempt one entitlement-shaped capability such as `copy_block_cross_book` or `export_book` under the active bundle | `allow-via-entitlement` according to the now-active plan bundle | The drill must show widened capability without mutating collaboration role semantics. |
+| `A4` | scenario selector `active_renewal_failure` | subscription is now `active`; ordinary standing and ownership semantics remain unchanged | load the `active_renewal_failure` replay unit and apply `renewal_failed` | `active -> past_due` and `suspend-current-plan-bundle` or `narrow-current-plan-bundle` | The drill must show lifecycle degradation as the direct source of entitlement contraction. |
+| `A5` | same user after degradation | same role standing unchanged; same entitlement-shaped capability is attempted again | replay the same capability check under the degraded standing | `deny-via-entitlement` or narrower behavior, while role standing still remains valid | The drill must show that entitlement impairment does not rewrite book collaboration standing. |
+
+#### P2 Replay Drill B (Cancellation, refund narrowing, expiry, and repair preserve invariants)
+
+| drill step | actor or trigger source | precondition | intended transition or action | expected result | why it matters |
+| --- | --- | --- | --- | --- | --- |
+| `B1` | scenario selector `cancellation_then_expiry` | one subscription is currently `active`; one user still has valid ordinary standing on one book | load the `cancellation_then_expiry` replay unit and apply `cancellation_requested` | `active -> canceled` and `narrow-current-plan-bundle` pending expiry | The drill must show that cancellation changes lifecycle and entitlement but not collaboration role assignment. |
+| `B2` | end-of-term lapse | subscription currently `canceled` and not recovered | advance the replay to its terminal lifecycle step | `canceled -> expired` and `expire-current-plan-bundle` | The drill must show clean capability closure without rewriting owner, editor, or viewer standing. |
+| `B3` | scenario selector `refund_narrowing` | one active paid standing is still represented inside the mock-state-machine input | load the `refund_narrowing` replay unit and apply `refund_applied` through the bounded rollback path | bounded degraded standing and `narrow-current-plan-bundle` | The drill must show that refund-backed contraction stays inside the replay contract rather than importing accounting semantics. |
+| `B4` | scenario selector `admin_state_repair` | one lifecycle state was previously recorded incorrectly | load the `admin_state_repair` replay unit and apply `admin_correction` | corrected lifecycle standing and `repair-current-plan-bundle` | Administrative repair should restore model consistency rather than bypassing the model. |
+| `B5` | invariant checker and `system_admin` override path | same lifecycle scenarios as above have already been replayed | verify `roles_unchanged`, `book_acl_unchanged`, `trigger_chain_vocab_reused`, and inspect one override path | invariants remain true and `allow-via-override` does not depend on paid lifecycle state | The drill must prove that platform override stays outside subscription-trigger semantics and that scenario replay does not leak into access-role mutation. |
+
 ### P3 (Provider-adapter handoff)
 
 - `P3-C1-S1`: define what later provider-adapter work is allowed to add without changing the scenario contract
@@ -345,8 +381,8 @@
 
 ### P2 (Replay drills and invariant checks)
 
-- [ ] `P2-C1-S1`: define replayable mock-state-machine drills
-- [ ] `P2-C1-S2`: verify invariant preservation across the drill set
+- [x] `P2-C1-S1`: define replayable mock-state-machine drills
+- [x] `P2-C1-S2`: verify invariant preservation across the drill set
 
 ### P3 (Provider-adapter handoff)
 
@@ -357,8 +393,9 @@
 
 - `S0F-10D` now has a stable `P0` contract for scenario-catalog vocabulary, replay invariants, and provider-adapter defer rules on top of the stable trigger-chain baseline in `S0F-10C`.
 - `P1` is now complete: the lane now fixes one first representative realistic scenario catalog, one scenario-to-state-machine matrix, and one scenario-to-outcome matrix that preserve the `10A/10B/10C` baselines.
-- The lane remains a `draft` source log because replay drills and later provider-handoff rules still remain open.
-- The next step should be `P2`, where the first replayable mock-state-machine drills and invariant checks should be fixed; automation should still read this log as the active source for this packet.
+- `P2` is now complete: the lane now carries one widening-and-degradation replay drill plus one closure-and-repair replay drill that together prove entitlement change and invariant preservation across the first scenario set.
+- The lane remains a `draft` source log because the later provider-handoff boundary in `P3` still remains open.
+- The next step should be `P3`, where later provider-adapter permissions and later-packet entry conditions should be fixed; automation should still read this log as the active source for this packet.
 
 ## Evidence (reserved)
 
@@ -388,8 +425,20 @@
 - observed:
   - Added the first scenario catalog table, scenario-to-state-machine matrix, scenario-to-outcome matrix, completed `P1` checklist items, and updated packet status for the next `P2` drill phase.
 
+### P2-C1-S1S2 (Replayable scenario drills and invariant checks fixed | 2026-04-16)
+
+- headSha: `working-tree-uncommitted`
+- artifacts: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
+- expected:
+  - `P2` fixes replayable drill steps for the first representative scenario set.
+  - `P2` proves that lifecycle and entitlement results can be replayed locally without provider realism.
+  - `P2` proves that role standing, book ACL standing, and bounded override semantics remain unchanged across the replay set.
+- observed:
+  - Added one widening-and-degradation replay drill, one closure-and-repair replay drill, completed `P2` checklist items, and updated packet status for the next `P3` provider-handoff phase.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-15: Opened `S0F-10D` as the next `M4` scenario-catalog and mock-state-machine replay packet after `S0F-10C` stabilized the trigger-chain boundary.
 - 2026-04-15: Completed `S0F-10D/P0` by fixing scenario vocabulary, replay invariant boundaries, and explicit provider-adapter defer rules.
 - 2026-04-15: Completed `S0F-10D/P1` by fixing the first realistic scenario catalog and mapping it to lifecycle and entitlement outcomes.
+- 2026-04-16: Completed `S0F-10D/P2` by fixing the first replayable scenario drills and invariant checks on top of the `P1` catalog.
