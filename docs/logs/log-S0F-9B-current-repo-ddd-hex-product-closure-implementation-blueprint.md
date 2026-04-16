@@ -447,7 +447,7 @@
 
 ### P1-C1-S1S2 (Repo-path generation sequence fixed | 2026-04-16)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `01611ec0f`
 - artifacts: `docs/logs/log-S0F-9B-current-repo-ddd-hex-product-closure-implementation-blueprint.md`
 - expected:
   - `P1` fixes one concrete staged file-generation order for backend module, infra, API, and frontend surfaces.
