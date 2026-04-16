@@ -289,7 +289,7 @@
 
 ### P0-C1-S1S2S3 (Frontend consumer contract fixed | 2026-04-16)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `f48f49052`
 - artifacts: `artifacts/_tmp_s0f_9d_p0_frontend_consumer_contract.json`
 - expected:
   - `P0` fixes the stable backend consumption boundary, the browser responsibility limit, and the first frontend/admin evidence contract.
