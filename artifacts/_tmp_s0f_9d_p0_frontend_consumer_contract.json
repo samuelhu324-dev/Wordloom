@@ -1,0 +1,26 @@
+{
+  "logId": "S0F-9D",
+  "phaseRange": "P0",
+  "consumedBackendEndpoints": [
+    "GET /api/v1/access-context/me",
+    "GET /api/v1/admin/subscriptions/{libraryId}",
+    "POST /api/v1/admin/subscriptions/{libraryId}/events",
+    "GET /api/v1/admin/subscriptions/{libraryId}/history"
+  ],
+  "implementedFrontendPaths": [
+    "frontend/src/features/subscription-access/ui/AccessContextPanel.tsx",
+    "frontend/src/widgets/library/LibraryAccessWidget.tsx",
+    "frontend/src/features/subscription-access/ui/MockBillingPanel.tsx",
+    "frontend/src/app/admin/subscriptions/page.tsx",
+    "frontend/src/app/admin/subscriptions/[libraryId]/page.tsx"
+  ],
+  "uiVerificationScenario": "Frontend/admin consumer contract for one focused loop: read access context, render user/admin state, emit bounded backend event, then re-read and re-render updated backend responses.",
+  "uiVerificationCommand": "pending-implementation",
+  "browserResponsibilityLimit": [
+    "render backend-derived role, plan, subscription_state, entitlement, and history data",
+    "derive display-only grouping, badges, and CTA visibility from backend responses",
+    "must not recompute entitlement or own lifecycle transition rules",
+    "must not mutate subscription_state directly outside backend event endpoints"
+  ],
+  "passFail": "PASS"
+}
