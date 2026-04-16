@@ -427,7 +427,7 @@
 
 ### P2-C1-S1S2 (Replayable scenario drills and invariant checks fixed | 2026-04-16)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `8513007c3`
 - artifacts: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
 - expected:
   - `P2` fixes replayable drill steps for the first representative scenario set.
