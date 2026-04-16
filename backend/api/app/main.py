@@ -179,6 +179,12 @@ if _infra_available:
         logger.warning(f"Bookshelf router not available: {e}")
 
     try:
+        from api.app.modules.subscription_access.routers.subscription_access_router import router as subscription_access_router
+        _routers.append((subscription_access_router, "/api/v1", ["subscription-access"]))
+    except ImportError as e:
+        logger.warning(f"Subscription access router not available: {e}")
+
+    try:
         from api.app.modules.book.routers.book_router import router as book_router
         _routers.append((book_router, "/api/v1/books", ["Books"]))
     except ImportError as e:
