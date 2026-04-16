@@ -354,7 +354,7 @@
 
 ### P3-C1-S1S2 (Stable backend handoff fixed | 2026-04-16)
 
-- headSha: `working-tree-uncommitted`
+- headSha: `3cfc8b8a0`
 - artifacts: `artifacts/_tmp_s0f_9c_p3_backend_handoff.json`
 - expected:
   - freeze which backend behaviors are stable enough for downstream frontend/admin work to consume directly.
