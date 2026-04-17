@@ -403,7 +403,7 @@
 
 ### P3-C1-S1S2 (Permission-loop verification passed | 2026-04-17)
 
-- headSha: `pending-backfill`
+- headSha: `29e5544c7`
 - artifacts: `artifacts/_tmp_s0f_9g_p3_permission_loop_verify.json`
 - expected:
   - backend tests prove tenant-admin allow/deny behavior for subscription-admin and membership-management reads under explicit tenant scope
