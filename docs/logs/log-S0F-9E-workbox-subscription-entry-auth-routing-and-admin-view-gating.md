@@ -5,7 +5,7 @@
 **id**: `S0F-9E`
 **kind**: `log`
 **title**: `workbox subscription entry, auth routing, and admin-view gating minimum closure + drills/evidence + v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Auth, Frontend, Admin, Runtime, Drills, Evidence, epic/s0, sub/9e`
 **links**: ``
@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-16`
-**updated**: `2026-04-16`
+**updated**: `2026-04-17`
 **reviewed**: `pending`
 
 ---
@@ -89,11 +89,11 @@
 
 - Log: `docs/logs/log-S0F-9E-workbox-subscription-entry-auth-routing-and-admin-view-gating.md`
 - Runbook: ``
-- Evidence artifact: `artifacts/_tmp_s0f_9e_p1_workbox_auth_impl.json`
+- Evidence artifact: `artifacts/_tmp_s0f_9e_p3_stable_handoff.json`
 
 **Evidence Footer Source**:
 
-- `P1-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9e_p1_workbox_auth_impl.json`
+- `P3-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9e_p3_stable_handoff.json`
 
 ## Exported Sections / Outlet Ownership
 
@@ -291,6 +291,37 @@
 - `P3-C1-S1`: define which product-entry and gating behaviors are now stable enough for later lanes to consume directly
 - `P3-C1-S2`: define the handoff boundary into later tenant analytics, richer auth/provider realism, or multi-tenant data-ownership work
 
+## P3 (Close-out / handoff)
+
+- `P3` freezes the first stable product-entry contract for this lane so later packets can consume it directly instead of inferring behavior from implementation details.
+- The stable v1 contract now includes the visible Workbox entry split, the shared login/register shell, fail-closed protected-route behavior, and the first admin-only subscription-surface rule.
+- Later packets may widen provider realism, tenant identity, analytics, or storage-boundary design, but they should not reopen this packet's visible entry model unless one new lane explicitly replaces the current contract.
+
+### P3 Stable Entry and Gating Decision (v1)
+
+- The stable entry contract in `9E` is now fixed as:
+  - `Workbox > My Subscription` remains the ordinary-user entry surface
+  - `Workbox > Subscription Console` remains the tenant-admin entry surface
+  - header/session landing continues to route `member` toward `/workbox/subscription` and `admin/owner` toward `/admin/subscriptions`
+- The stable auth-shell contract in `9E` is now fixed as one shared `/login` page plus one shared `/register` page for this first closure.
+- The stable fail-closed rule in `9E` is now fixed as:
+  - anonymous users are redirected away from protected Workbox/admin routes into the shared login shell
+  - non-admin users do not render the first admin-only subscription route outputs
+  - ordinary users do not retain admin-only history or mutation entry surfaces in this packet
+
+### P3 Handoff Boundary Decision (v1)
+
+- Later lanes may consume the visible entry and gating contract from `9E` directly while widening any of the following in separate packets:
+  - richer auth/provider realism or backend session authority
+  - tenant identity, membership, and explicit current-tenant-context design
+  - shared relational storage versus object-storage boundary closure
+  - tenant analytics, richer drill-down, or later support/platform-admin tooling
+- Later lanes should not reopen these `9E` decisions as incidental follow-up work:
+  - moving the primary subscription/access entry back out of `Workbox`
+  - splitting authentication into separate admin and user login surfaces
+  - re-exposing admin-only history or mutation controls to ordinary users
+  - loosening fail-closed menu and route gating without one explicit replacement packet
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -311,16 +342,17 @@
 
 ### P3 (Close-out / handoff)
 
-- [ ] `P3-C1-S1`: freeze the first stable entry and gating behaviors
-- [ ] `P3-C1-S2`: define the downstream handoff rule without reopening v1 entry design
+- [x] `P3-C1-S1`: freeze the first stable entry and gating behaviors
+- [x] `P3-C1-S2`: define the downstream handoff rule without reopening v1 entry design
 
 ## Current Status (recommended)
 
 - `S0F-9E/P0` is now complete: the Workbox entry split, shared auth-shell assumption, and first admin-only view family are fixed in one contract artifact.
-- `S0F-9E/P1` and `P2` are now complete: the lane now has one local-first login/register shell, one authenticated `My Subscription` route, one admin-gated `Subscription Console` path, and one executable browser drill covering anonymous, member, and admin standing.
+- `S0F-9E/P1`, `P2`, and `P3` are now complete: the lane now has one local-first login/register shell, one authenticated `My Subscription` route, one admin-gated `Subscription Console` path, one executable browser drill covering anonymous/member/admin standing, and one explicit stable handoff rule for later widening.
 - `P2` also fixed one runtime regression in `WorkboxMenu`, where hook ordering changed across hydration/session states and could crash the first Workbox entry surface.
-- The upstream backend and frontend/admin subscription-access slice remains stable enough to support this lane, so the next step is now `P3` close-out and handoff rather than more gating implementation widening.
-- Automation should continue to treat this log as the active source for the first Workbox-entry and auth-routing closure until the packet stabilizes through `P3`.
+- `S0F-9E` is now stable as the first Workbox-entry and auth-routing closure on top of the `9D` subscription-access slice.
+- The upstream backend and frontend/admin subscription-access slice remains stable enough to support downstream widening, so the next step now moves out of `9E` and into one later tenant-boundary, richer-auth, or analytics-oriented packet rather than more v1 entry rework.
+- Automation should now treat this log as the stable source for the first Workbox-entry and auth-routing closure unless one future lane explicitly supersedes the v1 contract.
 
 ## Evidence (reserved)
 
@@ -368,9 +400,22 @@
   - the drill verifies the stable visible entry surfaces through header landing, page-level admin entry visibility, and redirect behavior on `/admin/subscriptions`
   - the drill exposed and then validated the fix for a `WorkboxMenu` hook-order regression that could crash the first Workbox entry surface under hydration/session transition
 
+### P3-C1-S1S2 (Stable handoff boundary fixed | 2026-04-17)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9e_p3_stable_handoff.json`
+- expected:
+  - the first Workbox-entry and auth-routing packet is explicit about which visible behaviors are now stable
+  - later tenant/auth/storage lanes can consume the stable contract without reopening v1 entry placement or admin/user auth split by accident
+- observed:
+  - `S0F-9E` now freezes `Workbox > My Subscription`, `Workbox > Subscription Console`, header/session landing, one shared login/register shell, and fail-closed admin gating as stable v1 behavior
+  - `S0F-9E` now defines one explicit handoff rule that leaves provider realism, tenant identity, tenant analytics, and storage-boundary widening to later packets without reopening the visible entry model
+  - the lane status now moves from `draft` to `stable` because the first entry, gating, and handoff contract is explicit and backed by prior focused drill evidence
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-16: opened `S0F-9E` as the first focused lane for Workbox subscription entry, login/registration/protected-route closure, and admin-only view gating on top of the stable `9D` slice.
 - 2026-04-16: completed `S0F-9E/P0-C1-S1S2S3` by fixing the first Workbox entry split, auth-shell assumptions, admin-only view family, and contract artifact for later `P1` implementation.
 - 2026-04-16: completed `S0F-9E/P1-C1-S1S2` by landing the first local-first auth shell, authenticated Workbox subscription route, and admin-gated subscription console entry.
 - 2026-04-16: completed `S0F-9E/P2-C1-S1S2` by adding one focused Playwright drill for anonymous/member/admin gating, installing local Chromium to execute it, and fixing a `WorkboxMenu` hook-order regression uncovered during verification.
+- 2026-04-17: completed `S0F-9E/P3-C1-S1S2` by freezing the first stable Workbox-entry/auth-routing contract and defining the downstream handoff boundary so later tenant/auth/storage widening does not reopen v1 entry design.
