@@ -402,7 +402,7 @@
 
 ### P3-C1-S1S2 (Stable handoff boundary fixed | 2026-04-17)
 
-- headSha: `pending-backfill`
+- headSha: `b4e7fd41b`
 - artifacts: `artifacts/_tmp_s0f_9e_p3_stable_handoff.json`
 - expected:
   - the first Workbox-entry and auth-routing packet is explicit about which visible behaviors are now stable
