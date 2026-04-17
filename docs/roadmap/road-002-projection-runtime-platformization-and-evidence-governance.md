@@ -14,7 +14,7 @@
   **reference_log_2**: `docs/logs/log-S0F-docs-management-v6.md`
   **reference_log_3**: `docs/roadmap/_draft/road-S2-.md`
 **created**: `2026-04-14`
-**updated**: `2026-04-15`
+**updated**: `2026-04-16`
 **reviewed**: `pending`
 
 ---
@@ -235,11 +235,13 @@
 - `M3` should be considered first-generation ready when readers can identify current ownership and approval without consulting prose history, and when stewardship handoff no longer requires ad hoc note-writing.
 - `M3` should not be treated as mature merely because extra fields exist; the fields must support at least one real handoff, one approval separation case, and one contribution-vs-ownership distinction that survives replay.
 
-### M4: Book-first access control minimum closure on the current SoT
+### M4: Book-first access control and staged product closure on the current SoT
 
 **Goal**
 
 - Build the first simple but real access-control closure on the existing SoT by treating `book` as the first independent authorization container, keeping `block` as inherited content-only structure, and proving a minimum role-separated user/admin model before any larger entitlement or mock-billing design is allowed to widen the lane.
+- After that minimum closure is stable, widen the same milestone in bounded packets for `plan / entitlement`, `payment_event -> subscription_state -> entitlement` semantics, and replayable scenario simulation, so the roadmap can support one real admin/user/mock-billing product loop rather than stopping at domain vocabulary only.
+- The intended implementation target is still one module family inside the current backend modular monolith, plus thin frontend/admin validation surfaces, not one separate payment microservice.
 
 **Opening stance**
 
@@ -252,24 +254,35 @@
   - do not freeze a complex commercial plan matrix yet
   - keep `plan` and later `entitlement` as reserved extension concepts rather than as the first lane's main complexity driver
 - No real payment provider, tax/invoice realism, or enterprise policy sprawl should enter the opening lane.
+- The widening after the minimum closure should still follow the repo's current mixed `DDD/HEX + modular-monolith` structure rather than inventing a second architectural style just for billing/access:
+  - domain and application logic should live under one bounded backend module family in `backend/api/app/modules/...`
+  - persistence models should continue to land under `backend/infra/database/models/...`
+  - repository implementations should continue to land under `backend/infra/storage/...`
+  - frontend validation surfaces should remain thin and should primarily exercise the backend state model instead of duplicating policy logic in the browser
 
 **Bridge Ledger (child logs only)**
 
 - `M4-P0`:
   - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
+  - `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
+  - `docs/logs/log-S0F-9F-tenant-identity-data-ownership-and-current-tenant-context.md`
 - `M4-P1`:
   - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
+  - `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
+  - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
 - `M4-P2`:
   - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
+  - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
+  - `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
 - `M4-P3`:
-  - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
+  - `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
 
 **Plan (P0-P3)**
 
-- `P0` Contract: fix the minimum access model for `user`, `membership`, `book role`, `system role`, `book` as the first independent authorization object, and `block` as inherited content structure; make explicit that product/admin privilege is not the same thing as future commercial plan state.
-- `P1` Implementation: map that model onto the current SoT through a minimum `book` action set such as `read_book`, `edit_book`, `share_book`, `delete_book`, `transfer_book_owner`, and `manage_book_members`, while keeping `block` under inherited `book` standing.
-- `P2` Drill: prove one minimum replayable role flow such as owner grants editor, editor edits but cannot re-share, owner revokes access, and system admin can perform bounded platform override without becoming a normal collaboration role.
-- `P3` Drill: decide whether future `plan / entitlement / mock billing` should be introduced as a second-stage widening after the book-first closure is stable, instead of forcing that commercial layer into the opening packet.
+- `P0` Contract: fix the minimum access model for `user`, `membership`, `book role`, `system role`, `book` as the first independent authorization object, and `block` as inherited content structure; then widen the same contract into `plan`, `entitlement`, `subscription_state`, and scenario replay without collapsing those concepts back into role semantics.
+- `P1` Implementation: map that model onto the current SoT through a minimum `book` action set such as `read_book`, `edit_book`, `share_book`, `delete_book`, `transfer_book_owner`, and `manage_book_members`, while keeping `block` under inherited `book` standing; then land the first backend module and admin/user/mock-billing surfaces that can compute and expose `entitlement_snapshot`.
+- `P2` Drill: prove one minimum replayable role flow such as owner grants editor, editor edits but cannot re-share, owner revokes access, and system admin can perform bounded platform override without becoming a normal collaboration role; then prove one scenario-driven replay where lifecycle standing changes effective entitlement without mutating role or override semantics.
+- `P3` Drill: decide whether later provider realism should stay outside the first closure, and define the handoff rule by which one future provider-adapter packet may translate real external signals into trusted replay inputs without reopening the already-stable role, entitlement, or scenario contracts.
 
 **First lane packet (intended)**
 
@@ -283,16 +296,83 @@
 - `S0F-10A` now acts as the stable minimum-closure source packet for `M4-P0` through `M4-P3`.
 - That packet fixes the first `book`-first role boundary, the first replayable share/revoke and override drills, and the first widening decision that keeps `plan / entitlement` deferred while splitting `mock billing` to a later packet.
 
+**Current widening packets**
+
+- `S0F-10B` now acts as the stable entitlement-boundary widening packet for `M4`, fixing `plan / entitlement / subscription_state` as separate concepts rather than hidden extensions of ordinary collaboration role.
+- `S0F-10C` now acts as the stable trigger-chain widening packet for `M4`, fixing `payment_event -> subscription_state -> entitlement outcome` semantics without introducing provider realism.
+- `S0F-10D` now acts as the stable scenario-replay widening packet for `M4`, fixing the first realistic replay catalog and mock-state-machine drill surface on top of `10A/10B/10C`.
+
+**Immediate next closure after the current widening stack**
+
+- The next `M4` lane should not widen payment realism first; it should close the first real tenant-facing product entry surface on top of the already-stable access and subscription slices.
+- That next lane should treat `Workbox` as the stable control-plane entry rather than continuing to scatter access or subscription surfaces across `library` or `bookshelf` content pages.
+- The next lane should explicitly separate `user-facing account/subscription visibility` from `tenant-admin governance visibility` while preserving one shared backend access-context contract.
+- The next lane should also fix the first minimum auth-entry assumptions so protected pages are no longer treated as direct-click surfaces without login or role-aware routing.
+
+**Immediate next packet candidates (intended)**
+
+- `M4-P1-B`: one bounded `tenant-admin vs user workbox entry` packet that moves subscription and access surfaces under `Workbox`, keeps `user` on a light `My Subscription` view, and restricts `event history`, mutation controls, and broader tenant governance views to `tenant admin` only.
+- `M4-P1-C`: one bounded `login / registration / routed entry` packet that defines one shared login surface, one minimum registration flow, post-login role-aware landing rules, and fail-closed route gating for unauthenticated or non-admin users.
+- `M4-P0-B`: one bounded `tenant identity and data ownership` packet that fixes `tenant`, `membership`, `current tenant context`, and `tenant_id` as the primary ownership boundary for product data rather than treating database count as the first multi-tenant design lever.
+- `M4-P0-C`: one bounded `shared relational storage vs object storage boundary` packet that keeps the first implementation on shared relational storage with strong tenant scoping, while reserving object storage for files, exports, and larger asset/blob lifecycles rather than for core subscription or membership truth.
+
+**Implementation shape on the current repo architecture**
+
+- The backend should continue the repo's current mixed `DDD/HEX + modular-monolith` pattern rather than splitting this capability into a separate runtime prematurely.
+- The intended backend landing shape is one bounded module family for the commercial-access closure, tentatively `subscription_access` or equivalent, with this structure:
+  - `backend/api/app/modules/<module>/domain`: `Plan`, `Subscription`, `PaymentEvent`, `EntitlementSnapshot`, and related policy/value objects
+  - `backend/api/app/modules/<module>/application`: use cases such as `ApplyPaymentEvent`, `ComputeEntitlementSnapshot`, `GetAccessContext`, `RunScenarioReplay`
+  - `backend/api/app/modules/<module>/routers`: admin and user-facing HTTP entrypoints
+  - `backend/api/app/modules/<module>/schemas`: request/response DTOs for access context, admin events, and replay results
+  - `backend/api/app/modules/<module>/repository`: repository interfaces or ports needed by the domain/application layer
+- The intended infrastructure landing shape should stay parallel to the existing repo patterns:
+  - `backend/infra/database/models`: tables/models for `plan_catalog`, `subscription`, `payment_event`, and `entitlement_snapshot` or their equivalent persistence shapes
+  - `backend/infra/storage`: repository implementations for the new module ports
+  - existing auth/membership infrastructure should remain the source of collaboration role standing and should not be rewritten into the new commercial-access module
+- The intended aggregation rule is:
+  - current `AuthContext` or its successor continues to answer identity, tenant/library selection, and ordinary role standing
+  - the new module computes commercial lifecycle and entitlement outcome
+  - one higher-level access-context surface combines both for frontend/API consumers
+- The intended multi-tenant data-ownership rule is:
+  - `tenant` or equivalent workspace/library container remains the first data-ownership boundary for business records
+  - `membership` remains the join that grants one user a role inside one tenant rather than turning account identity into implicit global authority
+  - one user may later belong to multiple tenants, so `current tenant context` should be explicit in routing, session, and query boundaries
+  - the default early-stage storage stance should remain `shared database + shared schema + explicit tenant_id scoping`, not `one database per simulated tenant`
+  - per-tenant databases should remain a later enterprise or compliance widening only if isolation, residency, backup, or scale pressure justifies the operational cost
+- The intended storage-boundary rule is:
+  - relational storage remains the source of truth for identity, membership, subscription, entitlement, library, bookshelf, and book metadata
+  - object storage should later hold files, uploads, exports, covers, and other blob-like assets, but should not replace relational multi-tenant truth
+- The intended frontend validation surfaces for the first product closure are:
+  - one `user` workspace/access view that shows current role, plan, subscription standing, entitlement snapshot, and gated actions
+  - one `admin` subscription console that can inspect tenant state and apply bounded admin/payment events
+  - one mock billing panel that emits controlled local events such as `upgrade_success`, `renewal_failed`, `cancellation_requested`, `refund_applied`, and `admin_correction`
+  - one scenario replay console or equivalent debug view that runs the first bounded `10D` drills end to end and returns step-by-step results plus invariant checks
+- The intended frontend validation surfaces for the next tenant-facing entry closure are:
+  - one `Workbox > My Subscription` user view that shows only the current user's standing, plan, and gated capabilities without exposing admin event history or mutation controls
+  - one `Workbox > Subscription Console` tenant-admin view that shows tenant-wide state, drill-down capability, and bounded admin-only operational surfaces
+  - one minimum auth shell with login, registration, protected-route gating, and role-aware menu visibility so admin-only views stop depending on direct local navigation
+- The first validation loop should remain local-first and should prove:
+  - user-facing capability widening after successful activation
+  - capability narrowing or suspension after lifecycle degradation
+  - preserved collaboration role and override semantics throughout the commercial-state change
+
 **Exit signals**
 
 - `M4` should be considered first-generation ready when a reader can answer who may read, edit, share, and administer one `book`, what a system admin may override, and why `block` still inherits `book` standing rather than carrying its own ACL.
 - `M4` should not be treated as mature merely because a permission matrix exists; at least one owner/editor/share-revoke flow and one bounded system-admin override case should be replayable through the same model.
+- `M4` should be considered product-closure-ready only when one admin/user/mock-billing loop can run against the current SoT and show `payment_event -> subscription_state -> entitlement outcome` changes without mutating collaboration-role standing.
+- `M4` should still avoid real provider integration until one later packet can justify why local event simulation is no longer sufficient.
 
 **Recent Changes**
 
 - 2026-04-15: opened `S0F-10A` as the first real `M4` child log and fixed `M4-P0` as a book-first minimum access packet rather than a billing-first design exercise.
 - 2026-04-15: completed `S0F-10A/P1-C1-S1S2` and `P2-C1-S1S2`, so `M4-P1` and `M4-P2` now bridge to the first role matrix and replay drills on the same packet.
 - 2026-04-15: completed `S0F-10A/P3-C1-S1S2`, so `M4-P3` now bridges to an explicit widening decision that keeps `plan / entitlement` deferred and splits `mock billing` into later work.
+- 2026-04-15: completed `S0F-10B`, `S0F-10C`, and `S0F-10D`, so `M4` now has stable widening packets for entitlement boundary, trigger-chain semantics, and scenario replay rather than only one minimum role packet.
+- 2026-04-16: extended the `M4` roadmap body from domain-only boundary language into one concrete product-closure blueprint, aligning the next implementation surface with the repo's current mixed `DDD/HEX + modular-monolith` structure and with one admin/user/mock-billing validation loop.
+- 2026-04-16: stabilized the first backend and frontend/admin subscription-access validation slices, proving one local admin/user/mock-billing loop before the next product-entry and tenant-boundary packets are opened.
+- 2026-04-16: added the next `M4` roadmap intent for `tenant admin vs user Workbox entry`, `login / registration / routed entry`, and `tenant data ownership / shared relational storage boundary`, so the next lane can close real SaaS entry and tenant-scoping gaps rather than widening payment realism prematurely.
+- 2026-04-17: opened `S0F-9F` as the first explicit `M4-P0-B` child lane for tenant identity, data ownership, and current-tenant context, so the next runtime slice can widen tenant scoping before auth-provider realism or tenant analytics.
 
 ### M5: Asset platform activation after governance and access baselines exist
 
@@ -324,6 +404,7 @@
 - `docs/logs/log-S0F-docs-management-v6.md` currently provides the clearest already-realized surface for docs governance, chronology-first contracts, and approval/provenance precursors.
 - `docs/roadmap/_draft/road-S2-.md` currently holds the strongest draft material for the future governance-control-plane and access-control-plane framing, especially around ownership, handoff, tenant/plan/entitlement, and mock billing closure.
 - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md` now opens the first `M4-P0` child lane around book-first minimum closure, user/admin role separation, and block inheritance.
+- `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`, `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`, and `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md` now complete the first `M4` widening stack for entitlement boundary, trigger semantics, and scenario replay.
 
 ## Recent Changes (optional)
 
@@ -333,3 +414,4 @@
 - 2026-04-15: landed `DOC-CONTROL-PLANE-0001` as the first reusable `M3-P0` contract, and used two bounded `S0F-9A` sample rounds to justify the shared current-state vocabulary, event-history placement rule, and `M3` versus `M4` boundary.
 - 2026-04-15: revised `M4` into a book-first minimum-closure opening, mapped `M4-P0` to `S0F-10A`, and made explicit that the first authorization lane should separate ordinary user roles from system-admin override while keeping `block` under inherited `book` standing.
 - 2026-04-15: completed the first `S0F-10A` minimum closure packet through `M4-P1` and `M4-P2` by fixing a first `book` action matrix plus one replayable owner/editor/share-revoke and system-admin override drill, while still deferring `plan / entitlement / mock billing` to later widening.
+- 2026-04-16: recorded the next `M4` follow-up shape directly in the mainline roadmap, separating `tenant admin vs user entry and login design` from `tenant data ownership and storage-boundary design` so the next lane can target product entry and multi-tenant scope cleanly.
