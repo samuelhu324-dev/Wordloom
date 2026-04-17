@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { MockBillingPanel, useSubscriptionHistory, useSubscriptionState } from '@/features/subscription-access';
+import { MockBillingPanel, TenantMembershipPanel, useSubscriptionHistory, useSubscriptionState } from '@/features/subscription-access';
 import { useAuth } from '@/shared/auth';
 import { LibraryAccessWidget } from '@/widgets/library';
 import { Breadcrumb, Button, Card, CardContent, CardHeader, Spinner } from '@/shared/ui';
@@ -96,6 +96,8 @@ export default function AdminSubscriptionDetailPage() {
 
           <div className={styles.stack}>
             <MockBillingPanel libraryId={libraryId} />
+
+            <TenantMembershipPanel libraryId={libraryId} />
 
             <Card className={styles.summaryCard}>
               <CardHeader>

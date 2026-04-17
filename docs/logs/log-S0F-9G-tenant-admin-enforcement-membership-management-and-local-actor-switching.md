@@ -251,6 +251,34 @@
 - `P2-C1-S1`: land one local actor-switching or seed-console surface for bounded member/admin/owner simulation
 - `P2-C1-S2`: wire the first reproducible admin/user demo flow so tenant-context and role changes stop depending on manual storage edits
 
+## P1 (Backend enforcement and membership slice)
+
+- `P1` lands the first code-bearing permission-closure slice for this packet without widening into real provider auth, invite lifecycle, or support tooling.
+- The implementation goal in this packet is to make the current admin/user split enforceable at the backend and usable from one minimum tenant-admin management surface on the existing admin detail page.
+- `P1` remains intentionally narrow: it adds one shared tenant-admin policy to subscription-admin routes and one tenant-scoped membership-management slice that consumes the current backend contract rather than opening a separate governance console.
+
+### P1 Backend Enforcement Decision (v1)
+
+- `P1` now lands the first reusable backend tenant-admin policy surface by reusing one shared `admin/owner` assertion for subscription-admin routes.
+- The first backend enforcement rule in this packet is now fixed as:
+  - `/admin/subscriptions/{libraryId}` denies `member` at the backend
+  - `/admin/subscriptions/{libraryId}/history` denies `member` at the backend
+  - `/admin/subscriptions/{libraryId}/events` denies `member` at the backend
+- The first validation rule in this packet is now fixed as one focused backend router test proving `member -> 403` and `admin -> PASS` on the same route family.
+
+### P1 Membership Surface Decision (v1)
+
+- `P1` now lands the first tenant-scoped membership-management slice through:
+  - `GET /libraries/{libraryId}/memberships`
+  - existing bounded `grant/update` membership write path
+  - existing bounded `revoke` membership write path
+- The first frontend management surface in this packet is now fixed as one `TenantMembershipPanel` rendered inside `/admin/subscriptions/[libraryId]`.
+- The opening UI rule in this packet is now fixed as:
+  - list current tenant memberships
+  - allow bounded grant/update by `user_id + role`
+  - allow bounded revoke for one current tenant member
+  - keep all actions on the same explicit current tenant context already fixed in `9F`
+
 ### P3 (Drill / Verify)
 
 - `P3-C1-S1`: verify backend admin routes deny ordinary members and accept tenant admins under explicit tenant scope
@@ -266,8 +294,8 @@
 
 ### P1 (Backend enforcement and membership slice)
 
-- [ ] `P1-C1-S1`: implement one shared backend tenant-admin policy for subscription-admin routes
-- [ ] `P1-C1-S2`: implement one minimum tenant-scoped membership-management surface
+- [x] `P1-C1-S1`: implement one shared backend tenant-admin policy for subscription-admin routes
+- [x] `P1-C1-S2`: implement one minimum tenant-scoped membership-management surface
 
 ### P2 (Local actor-switching support)
 
@@ -283,8 +311,8 @@
 
 - `S0F-9G` is now opened as the next active source log after `S0F-9F`.
 - `9E` already fixed the first user/admin entry split and local auth shell, while `9F` fixed explicit current tenant context; this new lane exists because the first runtime loop still lacks backend admin-route enforcement, a minimum tenant membership-management surface, and a reproducible local actor-switching flow.
-- `S0F-9G/P0` is now complete: the packet now has one explicit contract for backend admin enforcement, minimum tenant-scoped membership operations, and bounded local actor-switching.
-- The next step is now `P1` implementation work rather than more contract widening, because the packet has a stable enough authority and drillability boundary to land code.
+- `S0F-9G/P0` and `P1` are now complete: the packet now has one explicit contract plus one first code-bearing slice for backend admin enforcement and tenant-scoped membership management.
+- The next step is now `P2` local actor-switching work rather than more backend or membership widening, because the packet still lacks one reproducible member/admin/owner demo flow that avoids manual storage edits.
 
 ## Evidence (reserved)
 
@@ -304,7 +332,21 @@
   - `P0` now fixes explicit backend admin-route expectations, tenant-scoped membership surface actions, local actor-switching cases, and tenant-scope assumptions in one auditable contract artifact
   - `9G` now acts as the active source packet for turning the current UI split into one enforceable admin/user runtime loop
 
+### P1-C1-S1S2 (Admin enforcement and membership slice landed | 2026-04-17)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9g_p1_admin_enforcement_membership_slice.json`
+- expected:
+  - admin subscription routes fail closed for ordinary members at the backend
+  - one tenant-admin view can list, grant/update, and revoke tenant memberships inside the selected tenant
+  - the existing admin detail route remains compatible with explicit current tenant context after the new management surface lands
+- observed:
+  - `subscription_access` admin routes now reuse one shared tenant-admin policy helper, and focused backend router tests passed (`4 passed`)
+  - `GET /libraries/{library_id}/memberships` now exists as the first tenant-scoped membership list read path, backed by the current library membership repository
+  - `/admin/subscriptions/[libraryId]` now renders `TenantMembershipPanel` for list/grant/revoke actions against the selected tenant, and the focused Playwright tenant-context drill still passed (`2 passed`)
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-17: opened `S0F-9G` as the next runtime permission-closure lane after `S0F-9F`, targeting backend tenant-admin enforcement, minimum tenant membership management, and bounded local actor-switching rather than widening auth-provider realism or payment-provider complexity.
 - 2026-04-17: completed `S0F-9G/P0-C1-S1S2S3` by fixing the first backend admin-enforcement boundary, minimum membership-management contract, and local actor-switching contract in one evidence-backed packet.
+- 2026-04-17: completed `S0F-9G/P1-C1-S1S2` by landing shared backend tenant-admin enforcement on subscription-admin routes and the first tenant-scoped membership-management surface on the admin subscription detail page.

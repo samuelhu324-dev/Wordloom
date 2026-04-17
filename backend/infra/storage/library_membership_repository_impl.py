@@ -29,6 +29,14 @@ class SQLAlchemyLibraryMembershipRepository:
         )
         return result.scalar_one_or_none()
 
+    async def list_by_library(self, *, library_id: UUID) -> list[LibraryMembershipModel]:
+        result = await self.session.execute(
+            select(LibraryMembershipModel)
+            .where(LibraryMembershipModel.library_id == library_id)
+            .order_by(LibraryMembershipModel.created_at.asc(), LibraryMembershipModel.user_id.asc())
+        )
+        return list(result.scalars().all())
+
     async def grant_role(self, *, library_id: UUID, user_id: UUID, role: str) -> UUID:
         normalized = str(role).strip().lower()
         if normalized not in {"owner", "admin", "member"}:

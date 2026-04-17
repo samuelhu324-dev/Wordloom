@@ -33,6 +33,21 @@ export type SubscriptionHistoryDto = {
   items: PaymentEventDto[];
 };
 
+export type LibraryMembershipDto = {
+  id: string;
+  library_id: string;
+  user_id: string;
+  role: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type LibraryMembershipListDto = {
+  items: LibraryMembershipDto[];
+};
+
+export type MembershipRole = 'owner' | 'admin' | 'member';
+
 const withLibraryHeader = (libraryId?: string) => (
   libraryId
     ? {
@@ -74,4 +89,27 @@ export async function applyPaymentEvent(
     withLibraryHeader(libraryId)
   );
   return response.data;
+}
+
+export async function getLibraryMemberships(libraryId: string): Promise<LibraryMembershipListDto> {
+  const response = await api.get<LibraryMembershipListDto>(
+    `/libraries/${libraryId}/memberships`,
+    withLibraryHeader(libraryId)
+  );
+  return response.data;
+}
+
+export async function grantLibraryMembership(
+  libraryId: string,
+  payload: { userId: string; role: MembershipRole }
+): Promise<void> {
+  await api.post(
+    `/libraries/${libraryId}/memberships`,
+    { user_id: payload.userId, role: payload.role },
+    withLibraryHeader(libraryId)
+  );
+}
+
+export async function revokeLibraryMembership(libraryId: string, userId: string): Promise<void> {
+  await api.delete(`/libraries/${libraryId}/memberships/${userId}`, withLibraryHeader(libraryId));
 }
