@@ -5,7 +5,7 @@
 **id**: `S0F-9G`
 **kind**: `log`
 **title**: `tenant-admin enforcement, membership management, and local actor-switching minimum closure + drills/evidence + v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Auth, Membership, Runtime, Drills, Evidence, epic/s0, sub/9g`
 **links**: ``
@@ -94,6 +94,7 @@
 **Evidence Footer Source**:
 
 - `P0-C1-S1S2S3` | artifact: ``
+- `P3-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9g_p3_permission_loop_verify.json`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` as the only optional section; development issue identity stays in `Metadata`.
@@ -284,6 +285,21 @@
 - `P3-C1-S1`: verify backend admin routes deny ordinary members and accept tenant admins under explicit tenant scope
 - `P3-C1-S2`: verify membership-management and actor-switching flows preserve tenant scoping and expected admin/user views
 
+## P3 (Drill / Verify)
+
+- `P3` closes the first permission-loop packet by proving the new backend enforcement, membership-management surface, and local actor-switching flow behave coherently on the same tenant-scoped model.
+- The drill goal in this packet is not to add new capability; it is to prove the slice is now stable enough to act as one reusable local-first admin/user closure rather than three loosely related features.
+- `P3` also acts as the stable close-out gate for `9G`, so a passing packet here should move the log from active draft to stable packet status.
+
+### P3 Permission-Loop Verification Decision (v1)
+
+- `P3` now fixes the first close-out verification surface in this lane as one combined backend-plus-frontend drill set.
+- The first close-out rule in this packet is now fixed as:
+  - backend tests must prove both subscription-admin enforcement and tenant membership list allow/deny behavior
+  - frontend drills must prove membership-management visibility and actor-switching route/menu behavior on the same local-first session model
+  - the current tenant context must survive actor changes rather than resetting into hidden implicit state
+- `P3` now treats `9G` as stable when those focused drills pass together, because the packet then has contract, implementation, and end-to-end evidence for one bounded permission loop.
+
 ## P2 (Local actor-switching support)
 
 - `P2` lands the first reproducible local actor-switching flow for this packet without widening into production impersonation or support tooling.
@@ -332,16 +348,14 @@
 
 ### P3 (Drill / Verify)
 
-- [ ] `P3-C1-S1`: verify backend admin enforcement and tenant-scoped deny/allow behavior
-- [ ] `P3-C1-S2`: verify membership-management and actor-switching flows preserve expected admin/user views
+- [x] `P3-C1-S1`: verify backend admin enforcement and tenant-scoped deny/allow behavior
+- [x] `P3-C1-S2`: verify membership-management and actor-switching flows preserve expected admin/user views
 
 ## Current Status (recommended)
 
-- `S0F-9G` is now opened as the next active source log after `S0F-9F`.
-- `9E` already fixed the first user/admin entry split and local auth shell, while `9F` fixed explicit current tenant context; this new lane exists because the first runtime loop still lacks backend admin-route enforcement, a minimum tenant membership-management surface, and a reproducible local actor-switching flow.
-- `S0F-9G/P0` and `P1` are now complete: the packet now has one explicit contract plus one first code-bearing slice for backend admin enforcement and tenant-scoped membership management.
-- `S0F-9G/P2` is now complete: the packet now has one shared local actor-switching flow that rewrites local session state explicitly, preserves tenant context, and redirects into role-aware landing behavior.
-- The next step is now `P3` drill and close-out work rather than more implementation widening, because the packet now has contract, backend enforcement, membership slice, and bounded actor-switching support.
+- `S0F-9G` is now stable: the packet has contract, backend enforcement, tenant-scoped membership management, bounded local actor switching, and focused close-out drills on the same tenant-scoped model.
+- `9G` now acts as the stable source packet for the first enforceable local-first tenant-admin/user permission loop under the current `M4-P1` product-entry stack.
+- The next step is no longer inside `9G`; the downstream choice should now be one later auth/provider realism or invite/identity-flow packet rather than reopening this first permission-loop boundary.
 
 ## Evidence (reserved)
 
@@ -387,9 +401,23 @@
   - the switcher preserves current tenant scope by reusing the explicit current tenant context as the next session library scope
   - `npm run test:e2e -- tests/e2e/local-actor-switching.spec.ts` passed (`1 passed`) while proving admin -> member -> admin switching without manual storage edits
 
+### P3-C1-S1S2 (Permission-loop verification passed | 2026-04-17)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9g_p3_permission_loop_verify.json`
+- expected:
+  - backend tests prove tenant-admin allow/deny behavior for subscription-admin and membership-management reads under explicit tenant scope
+  - frontend drills prove membership-management visibility and actor-switching route/menu behavior on the same local-first session model
+  - the packet can now be judged as one stable permission loop rather than separate partial slices
+- observed:
+  - `c:/python314/python.exe -m pytest api/app/tests/test_library_router/test_membership_router.py api/app/tests/test_subscription_access/test_router.py -q` passed (`6 passed`)
+  - `npm run test:e2e -- tests/e2e/local-actor-switching.spec.ts` passed (`1 passed`) while proving admin-only membership-management view visibility, actor switching, and preserved tenant scope
+  - `S0F-9G` now satisfies its own stable close-out rule and moves from active draft to stable packet status
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-17: opened `S0F-9G` as the next runtime permission-closure lane after `S0F-9F`, targeting backend tenant-admin enforcement, minimum tenant membership management, and bounded local actor-switching rather than widening auth-provider realism or payment-provider complexity.
 - 2026-04-17: completed `S0F-9G/P0-C1-S1S2S3` by fixing the first backend admin-enforcement boundary, minimum membership-management contract, and local actor-switching contract in one evidence-backed packet.
 - 2026-04-17: completed `S0F-9G/P1-C1-S1S2` by landing shared backend tenant-admin enforcement on subscription-admin routes and the first tenant-scoped membership-management surface on the admin subscription detail page.
 - 2026-04-17: completed `S0F-9G/P2-C1-S1S2` by landing one shared local actor-switching surface in the header and proving a reproducible admin/member demo flow without manual storage edits.
+- 2026-04-17: completed `S0F-9G/P3-C1-S1S2` and marked the packet stable after focused backend and frontend drills proved the first tenant-admin/user permission loop end to end.

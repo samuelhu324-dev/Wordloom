@@ -375,6 +375,7 @@
 - 2026-04-16: added the next `M4` roadmap intent for `tenant admin vs user Workbox entry`, `login / registration / routed entry`, and `tenant data ownership / shared relational storage boundary`, so the next lane can close real SaaS entry and tenant-scoping gaps rather than widening payment realism prematurely.
 - 2026-04-17: opened `S0F-9F` as the first explicit `M4-P0-B` child lane for tenant identity, data ownership, and current-tenant context, so the next runtime slice can widen tenant scoping before auth-provider realism or tenant analytics.
 - 2026-04-17: opened `S0F-9G` as the next explicit `M4-P1` child lane for backend tenant-admin enforcement, minimum tenant membership management, and local actor-switching, so the current admin/user product-entry split can widen into one stronger permission loop without payment-provider realism.
+- 2026-04-17: completed `S0F-9G` through `P3`, so `M4-P1` now has one stable child packet for backend tenant-admin enforcement, tenant-scoped membership management, and bounded local actor switching on top of the current Workbox/auth entry stack.
 
 ### M5: Asset platform activation after governance and access baselines exist
 

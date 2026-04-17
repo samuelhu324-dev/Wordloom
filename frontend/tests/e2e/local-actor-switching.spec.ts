@@ -35,6 +35,7 @@ test.describe('Local actor switching', () => {
 
     await expect(page.getByRole('heading', { name: 'Subscription detail' })).toBeVisible();
     await expect(page.getByTestId('local-actor-switcher')).toBeVisible();
+    await expect(page.getByText('Tenant membership management')).toBeVisible();
 
     await page.getByLabel('Local actor role').selectOption('member');
     await page.getByRole('button', { name: 'Switch' }).click();
@@ -43,6 +44,7 @@ test.describe('Local actor switching', () => {
     await expect(page.getByRole('heading', { name: 'My Subscription' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Open Subscription Console' })).toHaveCount(0);
     await expect(page.getByRole('link', { name: 'member-user · member' })).toHaveAttribute('href', '/workbox/subscription');
+    await expect(page.getByText('Tenant membership management')).toHaveCount(0);
 
     await page.getByLabel('Local actor role').selectOption('admin');
     await page.getByRole('button', { name: 'Switch' }).click();
@@ -50,6 +52,9 @@ test.describe('Local actor switching', () => {
     await expect(page).toHaveURL(/\/admin\/subscriptions/);
     await expect(page.getByRole('heading', { name: 'Subscription Console' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'admin-user · admin' })).toHaveAttribute('href', '/admin/subscriptions');
+
+    await page.goto(`/admin/subscriptions/${LIBRARY_ID}`);
+    await expect(page.getByText('Tenant membership management')).toBeVisible();
 
     const storage = await page.evaluate(() => ({
       authSession: JSON.parse(window.localStorage.getItem('wl_auth_session') || 'null'),
