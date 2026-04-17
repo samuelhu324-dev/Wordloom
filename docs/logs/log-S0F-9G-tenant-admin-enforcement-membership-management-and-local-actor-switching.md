@@ -294,7 +294,7 @@
 
 ### P0-C1-S1S2S3 (Permission-loop contract fixed | 2026-04-17)
 
-- headSha: `pending-backfill`
+- headSha: `55773b233`
 - artifacts: `artifacts/_tmp_s0f_9g_p0_permission_loop_contract.json`
 - expected:
   - one reader can identify which subscription-admin routes require `admin/owner` and which user-facing surface remains readable to authenticated actors
