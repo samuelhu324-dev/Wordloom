@@ -327,7 +327,7 @@
 
 ### P1-C1-S1S2 (Explicit current-tenant runtime landed | 2026-04-17)
 
-- headSha: `pending-backfill`
+- headSha: `07b918eb6`
 - artifacts: `artifacts/_tmp_s0f_9f_p1_current_tenant_runtime_impl.json`
 - expected:
   - one explicit current-tenant runtime surface exists for auth/session consumers and tenant-facing entry pages
