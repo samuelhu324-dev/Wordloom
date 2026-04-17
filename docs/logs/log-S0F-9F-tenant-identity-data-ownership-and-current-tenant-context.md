@@ -286,7 +286,7 @@
 
 ### P0-C1-S1S2S3 (Tenant-boundary contract fixed | 2026-04-17)
 
-- headSha: `pending-backfill`
+- headSha: `2114d5839`
 - artifacts: `artifacts/_tmp_s0f_9f_p0_tenant_boundary_contract.json`
 - expected:
   - one contract artifact fixes tenant vocabulary, membership semantics, current-tenant-context behavior, and storage defaults before implementation starts
