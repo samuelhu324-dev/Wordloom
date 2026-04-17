@@ -358,7 +358,7 @@
 
 ### P2-C1-S1S2 (Tenant-context drill passed | 2026-04-17)
 
-- headSha: `pending-backfill`
+- headSha: `5686bb6a5`
 - artifacts: `artifacts/_tmp_s0f_9f_p2_tenant_context_verify.json`
 - expected:
   - explicit current tenant context remains the preferred runtime scope even when legacy active-library storage is stale
