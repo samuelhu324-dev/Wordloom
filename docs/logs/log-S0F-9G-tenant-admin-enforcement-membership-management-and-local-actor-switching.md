@@ -284,6 +284,34 @@
 - `P3-C1-S1`: verify backend admin routes deny ordinary members and accept tenant admins under explicit tenant scope
 - `P3-C1-S2`: verify membership-management and actor-switching flows preserve tenant scoping and expected admin/user views
 
+## P2 (Local actor-switching support)
+
+- `P2` lands the first reproducible local actor-switching flow for this packet without widening into production impersonation or support tooling.
+- The implementation goal in this packet is to remove manual browser-storage edits from member/admin/owner drills while preserving the explicit tenant-context contract already fixed in `9F`.
+- `P2` remains intentionally bounded: one shared header control is enough for the first demo loop as long as it rewrites session state explicitly, preserves tenant scope, and routes into the correct role-aware landing surface.
+
+### P2 Local Actor-Switching Decision (v1)
+
+- `P2` now lands one shared `LocalActorSwitcher` surface in the header for authenticated sessions.
+- The first switching rule in this packet is now fixed as:
+  - select one bounded local actor profile (`member`, `admin`, `owner`)
+  - rewrite the local-first session explicitly through the shared auth shell
+  - preserve the current tenant context as the switched session's tenant scope
+  - redirect immediately to the role-appropriate landing path after the switch
+- The first non-goal in this packet is now fixed as:
+  - no support-style cross-tenant impersonation
+  - no hidden session mutation without a visible operator action
+  - no separate one-off actor switcher page
+
+### P2 Reproducible Demo-Flow Decision (v1)
+
+- `P2` now fixes the first reproducible admin/user demo flow in this lane as one shared navigation-level control rather than page-local debug code.
+- The first demo flow in this packet is now:
+  - start from one authenticated actor under one explicit tenant context
+  - switch actor from the shared header
+  - allow protected-route logic and menu visibility to recompute from the new role
+  - land on the new role's default route without hand-editing storage
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -299,8 +327,8 @@
 
 ### P2 (Local actor-switching support)
 
-- [ ] `P2-C1-S1`: implement one local actor-switching or seed-console surface
-- [ ] `P2-C1-S2`: wire one reproducible admin/user demo flow without manual storage edits
+- [x] `P2-C1-S1`: implement one local actor-switching or seed-console surface
+- [x] `P2-C1-S2`: wire one reproducible admin/user demo flow without manual storage edits
 
 ### P3 (Drill / Verify)
 
@@ -312,7 +340,8 @@
 - `S0F-9G` is now opened as the next active source log after `S0F-9F`.
 - `9E` already fixed the first user/admin entry split and local auth shell, while `9F` fixed explicit current tenant context; this new lane exists because the first runtime loop still lacks backend admin-route enforcement, a minimum tenant membership-management surface, and a reproducible local actor-switching flow.
 - `S0F-9G/P0` and `P1` are now complete: the packet now has one explicit contract plus one first code-bearing slice for backend admin enforcement and tenant-scoped membership management.
-- The next step is now `P2` local actor-switching work rather than more backend or membership widening, because the packet still lacks one reproducible member/admin/owner demo flow that avoids manual storage edits.
+- `S0F-9G/P2` is now complete: the packet now has one shared local actor-switching flow that rewrites local session state explicitly, preserves tenant context, and redirects into role-aware landing behavior.
+- The next step is now `P3` drill and close-out work rather than more implementation widening, because the packet now has contract, backend enforcement, membership slice, and bounded actor-switching support.
 
 ## Evidence (reserved)
 
@@ -345,8 +374,22 @@
   - `GET /libraries/{library_id}/memberships` now exists as the first tenant-scoped membership list read path, backed by the current library membership repository
   - `/admin/subscriptions/[libraryId]` now renders `TenantMembershipPanel` for list/grant/revoke actions against the selected tenant, and the focused Playwright tenant-context drill still passed (`2 passed`)
 
+### P2-C1-S1S2 (Local actor-switching landed | 2026-04-17)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9g_p2_local_actor_switching.json`
+- expected:
+  - one local operator can switch between bounded `member/admin/owner` actors without hand-editing browser storage
+  - the switched session preserves current tenant scope and recomputes route/menu visibility from the new role
+  - the switched actor lands on the correct role-aware entry surface automatically
+- observed:
+  - `LocalActorSwitcher` now exists in the shared header and rewrites the local-first auth session through the shared auth shell
+  - the switcher preserves current tenant scope by reusing the explicit current tenant context as the next session library scope
+  - `npm run test:e2e -- tests/e2e/local-actor-switching.spec.ts` passed (`1 passed`) while proving admin -> member -> admin switching without manual storage edits
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-17: opened `S0F-9G` as the next runtime permission-closure lane after `S0F-9F`, targeting backend tenant-admin enforcement, minimum tenant membership management, and bounded local actor-switching rather than widening auth-provider realism or payment-provider complexity.
 - 2026-04-17: completed `S0F-9G/P0-C1-S1S2S3` by fixing the first backend admin-enforcement boundary, minimum membership-management contract, and local actor-switching contract in one evidence-backed packet.
 - 2026-04-17: completed `S0F-9G/P1-C1-S1S2` by landing shared backend tenant-admin enforcement on subscription-admin routes and the first tenant-scoped membership-management surface on the admin subscription detail page.
+- 2026-04-17: completed `S0F-9G/P2-C1-S1S2` by landing one shared local actor-switching surface in the header and proving a reproducible admin/member demo flow without manual storage edits.

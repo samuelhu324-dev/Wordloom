@@ -78,6 +78,10 @@
   background: var(--color-surface-hover);
 }
 
+.actorSwitcher {
+  flex-shrink: 0;
+}
+
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
@@ -99,6 +103,10 @@
   .authLinks {
     width: 100%;
     justify-content: center;
+  }
+
+  .actorSwitcher {
+    width: 100%;
   }
 
 }

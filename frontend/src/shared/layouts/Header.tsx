@@ -7,6 +7,7 @@ import { buildLandingPath, useAuth } from '@/shared/auth';
 import { WorkboxMenu } from './WorkboxMenu';
 import { ThemeMenu } from './ThemeMenu';
 import { LanguageMenu } from './LanguageMenu';
+import { LocalActorSwitcher } from './LocalActorSwitcher';
 import styles from './Header.module.css';
 
 export const Header: React.FC = () => {
@@ -31,6 +32,7 @@ export const Header: React.FC = () => {
           <WorkboxMenu />
           {hydrated && session ? (
             <>
+              <LocalActorSwitcher className={styles.actorSwitcher} />
               <Link href={buildLandingPath(session)} className={styles.sessionBadge}>
                 {session.displayName} · {session.role}
               </Link>
