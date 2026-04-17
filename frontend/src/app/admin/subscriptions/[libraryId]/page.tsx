@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { MockBillingPanel, useSubscriptionHistory, useSubscriptionState } from '@/features/subscription-access';
+import { useAuth } from '@/shared/auth';
 import { LibraryAccessWidget } from '@/widgets/library';
 import { Breadcrumb, Button, Card, CardContent, CardHeader, Spinner } from '@/shared/ui';
 import styles from './page.module.css';
@@ -12,6 +13,7 @@ const formatLabel = (value: string) => value.replace(/_/g, ' ');
 export default function AdminSubscriptionDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { setCurrentTenantContext } = useAuth();
   const libraryId = (params.libraryId as string) || '';
   const stateQuery = useSubscriptionState(libraryId);
   const historyQuery = useSubscriptionHistory(libraryId);
@@ -20,10 +22,8 @@ export default function AdminSubscriptionDetailPage() {
     if (!libraryId) {
       return;
     }
-    try {
-      localStorage.setItem('wl_active_library_id', libraryId);
-    } catch {}
-  }, [libraryId]);
+    setCurrentTenantContext(libraryId, 'route');
+  }, [libraryId, setCurrentTenantContext]);
 
   return (
     <main className={styles.page}>

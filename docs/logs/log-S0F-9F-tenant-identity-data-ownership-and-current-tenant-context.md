@@ -239,6 +239,34 @@
 - `P1-C1-S1`: land the first tenant identity and membership surface in the current runtime vocabulary
 - `P1-C1-S2`: land the first explicit current-tenant-context handling in routing, session, and query boundaries
 
+## P1 (Tenant-boundary implementation slice)
+
+- `P1` lands the first thin runtime surface for the tenant-boundary contract without widening into full auth-provider realism or deep multi-tenant backend redesign.
+- The implementation goal in this packet is to stop treating active tenant/library scope as incidental local page state and instead expose one shared explicit runtime surface that later routes and queries can consume directly.
+- `P1` remains intentionally thin: it may use the current `libraryId` as the v1 tenant-context carrier, but it must make that carrier explicit in auth/runtime behavior rather than hidden in ad hoc localStorage writes.
+
+### P1 Tenant Runtime Surface Decision (v1)
+
+- `P1` now lands the first explicit tenant runtime surface in the shared auth layer through:
+  - `currentTenantContext`
+  - `currentTenantId`
+  - `setCurrentTenantContext(...)`
+  - `clearCurrentTenantContext()`
+- The first compatibility rule in this packet is now fixed as:
+  - explicit tenant context persists through one dedicated storage shape
+  - legacy `wl_active_library_id` remains as compatibility storage during the transition
+  - the current runtime still uses `libraryId` as the v1 tenant-context carrier until a later packet widens the domain model further
+
+### P1 Current-Tenant Handling Decision (v1)
+
+- `P1` now fixes the first explicit current-tenant handling rule across three runtime surfaces:
+  - shared auth/session state owns the explicit current tenant context
+  - tenant-facing entry pages mutate current tenant context through shared runtime state instead of direct localStorage writes
+  - the API client derives request scope from explicit current tenant context before falling back to legacy active-library storage
+- The first route-binding rule in this packet is now fixed as:
+  - `/admin/subscriptions/[libraryId]` binds current tenant context from the route
+  - admin and user subscription entry pages reuse the same shared runtime surface for current tenant selection
+
 ### P2 (Tenant-context drill / verify)
 
 - `P2-C1-S1`: verify tenant-scoped data resolves only under explicit current-tenant context
@@ -259,8 +287,8 @@
 
 ### P1 (Tenant-boundary implementation slice)
 
-- [ ] `P1-C1-S1`: implement the first tenant identity and membership surface in the current runtime slice
-- [ ] `P1-C1-S2`: implement the first explicit current-tenant-context handling across routing/session/query boundaries
+- [x] `P1-C1-S1`: implement the first tenant identity and membership surface in the current runtime slice
+- [x] `P1-C1-S2`: implement the first explicit current-tenant-context handling across routing/session/query boundaries
 
 ### P2 (Tenant-context drill / verify)
 
@@ -275,8 +303,9 @@
 ## Current Status (recommended)
 
 - `S0F-9F/P0` is now complete: the first tenant identity vocabulary, membership semantics, explicit current-tenant-context rule, and shared-relational storage stance are fixed in one contract artifact.
-- `S0F-9E` remains the stable source for product entry and first auth-routing behavior, while `S0F-9F` now acts as the active draft source for tenant-boundary implementation and drills.
-- The next step is now `P1` implementation rather than more contract expansion, because the packet has enough explicit tenant vocabulary and current-context rules to drive one narrow runtime slice.
+- `S0F-9F/P1` is now complete: the frontend runtime now exposes one explicit current-tenant surface, and the user/admin subscription entry pages plus API request scope now consume that shared surface instead of direct page-local localStorage mutation.
+- `S0F-9E` remains the stable source for product entry and first auth-routing behavior, while `S0F-9F` now acts as the active draft source for tenant-boundary drills and later close-out.
+- The next step is now `P2` drill work rather than more implementation widening, because the packet has one narrow runtime slice and should now prove tenant-context behavior explicitly.
 
 ## Evidence (reserved)
 
@@ -296,7 +325,22 @@
   - the first routing/session/query rule now requires explicit current tenant context instead of hidden incidental state
   - the first storage stance is now fixed as shared relational truth plus explicit tenant scoping, with object storage and per-tenant databases deferred
 
+### P1-C1-S1S2 (Explicit current-tenant runtime landed | 2026-04-17)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9f_p1_current_tenant_runtime_impl.json`
+- expected:
+  - one explicit current-tenant runtime surface exists for auth/session consumers and tenant-facing entry pages
+  - request scoping prefers explicit tenant context instead of relying only on implicit active-library localStorage
+  - the existing subscription entry and admin gating behavior remains intact after the runtime-surface change
+- observed:
+  - `AuthContext` now exposes `currentTenantContext`, `currentTenantId`, and explicit mutators for tenant-bound runtime state
+  - user/admin subscription entry pages and the admin subscription detail route now read or bind tenant context through the shared runtime surface
+  - the shared API client now prefers explicit tenant context storage and emits both `X-Library-Id` and `X-Tenant-Id` when it resolves scoped requests
+  - `npm run test:e2e -- tests/e2e/subscription-gating.spec.ts` passed (`3 passed`) after the runtime-surface change
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-17: opened `S0F-9F` as the next tenant-boundary lane after `S0F-9E`, targeting tenant identity, data ownership, and explicit current-tenant context rather than widening auth-provider realism or tenant analytics first.
 - 2026-04-17: completed `S0F-9F/P0-C1-S1S2S3` by fixing the first tenant-boundary contract, explicit current-tenant-context rule, and shared-relational ownership stance in one auditable artifact.
+- 2026-04-17: completed `S0F-9F/P1-C1-S1S2` by landing the first explicit current-tenant runtime surface in shared auth state, binding tenant context from subscription entry routes, and validating that the existing subscription gating drill still passes.

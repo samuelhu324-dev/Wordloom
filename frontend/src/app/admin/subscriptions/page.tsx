@@ -3,30 +3,25 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AccessContextPanel } from '@/features/subscription-access';
+import { useAuth } from '@/shared/auth';
 import { Breadcrumb, Button, Card, CardContent, CardHeader, Input } from '@/shared/ui';
 import styles from './page.module.css';
 
 export default function AdminSubscriptionsPage() {
   const router = useRouter();
+  const { currentTenantId, setCurrentTenantContext } = useAuth();
   const [libraryId, setLibraryId] = useState('');
-  const [activeLibraryId, setActiveLibraryId] = useState('');
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('wl_active_library_id') || '';
-      setLibraryId(stored);
-      setActiveLibraryId(stored);
-    } catch {}
-  }, []);
+    setLibraryId(currentTenantId);
+  }, [currentTenantId]);
 
   const handleOpen = () => {
     const trimmed = libraryId.trim();
     if (!trimmed) {
       return;
     }
-    try {
-      localStorage.setItem('wl_active_library_id', trimmed);
-    } catch {}
+    setCurrentTenantContext(trimmed, 'manual');
     router.push(`/admin/subscriptions/${trimmed}`);
   };
 
@@ -64,12 +59,12 @@ export default function AdminSubscriptionsPage() {
               <Button onClick={handleOpen}>Open admin subscription page</Button>
             </div>
             <div className={styles.hint}>
-              Active library from local storage: {activeLibraryId || 'not set'}
+              Current tenant context: {currentTenantId || 'not set'}
             </div>
           </CardContent>
         </Card>
 
-        {activeLibraryId && <AccessContextPanel libraryId={activeLibraryId} />}
+        {currentTenantId && <AccessContextPanel libraryId={currentTenantId} />}
       </div>
     </main>
   );

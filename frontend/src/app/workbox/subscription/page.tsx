@@ -7,24 +7,20 @@ import { Breadcrumb, Button, Card, CardContent, CardHeader, Input } from '@/shar
 import styles from './page.module.css';
 
 export default function MySubscriptionPage() {
-  const { session, isAdmin } = useAuth();
+  const { session, isAdmin, currentTenantId, setCurrentTenantContext } = useAuth();
   const [libraryId, setLibraryId] = useState('');
 
   useEffect(() => {
-    if (!session) {
-      return;
-    }
-    setLibraryId(session.libraryId);
-  }, [session]);
+    const nextTenantId = currentTenantId || session?.libraryId || '';
+    setLibraryId(nextTenantId);
+  }, [currentTenantId, session]);
 
   const handleSaveLibrary = () => {
     const trimmed = libraryId.trim();
     if (!trimmed) {
       return;
     }
-    try {
-      localStorage.setItem('wl_active_library_id', trimmed);
-    } catch {}
+    setCurrentTenantContext(trimmed, 'manual');
   };
 
   return (
@@ -64,7 +60,7 @@ export default function MySubscriptionPage() {
               label="Library ID"
               value={libraryId}
               onChange={(event) => setLibraryId(event.target.value)}
-              helperText="This local-first auth shell uses the stored library ID to scope access-context requests."
+              helperText="This local-first auth shell uses an explicit current tenant context to scope access-context requests."
               fullWidth
             />
             <div className={styles.actions}>
