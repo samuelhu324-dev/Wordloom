@@ -376,7 +376,7 @@
 
 ### P2-C1-S1S2 (Local actor-switching landed | 2026-04-17)
 
-- headSha: `pending-backfill`
+- headSha: `7f85e72c3`
 - artifacts: `artifacts/_tmp_s0f_9g_p2_local_actor_switching.json`
 - expected:
   - one local operator can switch between bounded `member/admin/owner` actors without hand-editing browser storage
