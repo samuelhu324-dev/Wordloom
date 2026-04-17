@@ -272,6 +272,22 @@
 - `P2-C1-S1`: verify tenant-scoped data resolves only under explicit current-tenant context
 - `P2-C1-S2`: verify implicit or stale tenant selection does not retain cross-tenant access behavior
 
+## P2 (Tenant-context drill / verify)
+
+- `P2` validates the new tenant runtime surface through executable browser behavior instead of relying on contract-only interpretation.
+- The drill should prove that explicit current tenant context is preferred over stale compatibility storage and that route-bound tenant detail pages correct stale context rather than preserving it.
+- `P2` also acts as the first stability check for the `9F` runtime slice, so any failure here belongs to this packet before close-out handoff begins.
+
+### P2 Tenant-Context Drill Decision (v1)
+
+- `P2` now fixes the first explicit tenant-context verification surface in this lane as one focused Playwright drill.
+- The first two scenarios in this packet are now fixed as:
+  - explicit `currentTenantContext` remains the preferred runtime scope even when legacy `wl_active_library_id` is stale
+  - route-bound `/admin/subscriptions/[libraryId]` overwrites stale tenant runtime state and compatibility storage with the route-bound value
+- The `P2` success rule in this packet is:
+  - one reader can show that the runtime prefers explicit tenant context over compatibility fallback
+  - one reader can show that stale tenant context does not survive route-bound correction on tenant detail pages
+
 ### P3 (Close-out / handoff)
 
 - `P3-C1-S1`: freeze the first stable tenant-boundary and current-context behaviors
@@ -292,8 +308,8 @@
 
 ### P2 (Tenant-context drill / verify)
 
-- [ ] `P2-C1-S1`: verify tenant-scoped access behavior under explicit current-tenant context
-- [ ] `P2-C1-S2`: verify implicit or stale tenant context does not preserve cross-tenant behavior
+- [x] `P2-C1-S1`: verify tenant-scoped access behavior under explicit current-tenant context
+- [x] `P2-C1-S2`: verify implicit or stale tenant context does not preserve cross-tenant behavior
 
 ### P3 (Close-out / handoff)
 
@@ -305,7 +321,8 @@
 - `S0F-9F/P0` is now complete: the first tenant identity vocabulary, membership semantics, explicit current-tenant-context rule, and shared-relational storage stance are fixed in one contract artifact.
 - `S0F-9F/P1` is now complete: the frontend runtime now exposes one explicit current-tenant surface, and the user/admin subscription entry pages plus API request scope now consume that shared surface instead of direct page-local localStorage mutation.
 - `S0F-9E` remains the stable source for product entry and first auth-routing behavior, while `S0F-9F` now acts as the active draft source for tenant-boundary drills and later close-out.
-- The next step is now `P2` drill work rather than more implementation widening, because the packet has one narrow runtime slice and should now prove tenant-context behavior explicitly.
+- `S0F-9F/P2` is now complete: the focused browser drill proves explicit tenant-context precedence and route-bound correction behavior on the current runtime slice.
+- The next step is now `P3` close-out and handoff rather than more tenant-context implementation widening, because the packet now has contract, runtime slice, and executable drill evidence.
 
 ## Evidence (reserved)
 
@@ -339,8 +356,21 @@
   - the shared API client now prefers explicit tenant context storage and emits both `X-Library-Id` and `X-Tenant-Id` when it resolves scoped requests
   - `npm run test:e2e -- tests/e2e/subscription-gating.spec.ts` passed (`3 passed`) after the runtime-surface change
 
+### P2-C1-S1S2 (Tenant-context drill passed | 2026-04-17)
+
+- headSha: `pending-backfill`
+- artifacts: `artifacts/_tmp_s0f_9f_p2_tenant_context_verify.json`
+- expected:
+  - explicit current tenant context remains the preferred runtime scope even when legacy active-library storage is stale
+  - route-bound tenant detail pages correct stale tenant runtime state instead of preserving cross-tenant behavior
+- observed:
+  - `frontend/tests/e2e/tenant-context.spec.ts` passed two focused Chromium scenarios covering explicit tenant-context precedence and route-bound correction of stale compatibility storage
+  - the drill verifies that `/admin/subscriptions` renders the explicit tenant runtime value instead of the stale fallback value
+  - the drill verifies that `/admin/subscriptions/[libraryId]` rewrites both `wl_current_tenant_context` and `wl_active_library_id` to the route-bound tenant value
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-17: opened `S0F-9F` as the next tenant-boundary lane after `S0F-9E`, targeting tenant identity, data ownership, and explicit current-tenant context rather than widening auth-provider realism or tenant analytics first.
 - 2026-04-17: completed `S0F-9F/P0-C1-S1S2S3` by fixing the first tenant-boundary contract, explicit current-tenant-context rule, and shared-relational ownership stance in one auditable artifact.
 - 2026-04-17: completed `S0F-9F/P1-C1-S1S2` by landing the first explicit current-tenant runtime surface in shared auth state, binding tenant context from subscription entry routes, and validating that the existing subscription gating drill still passes.
+- 2026-04-17: completed `S0F-9F/P2-C1-S1S2` by adding one focused Playwright drill for explicit tenant-context precedence and route-bound correction of stale compatibility storage.
