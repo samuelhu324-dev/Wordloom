@@ -334,7 +334,7 @@
 
 ### P1-C1-S1S2 (Admin enforcement and membership slice landed | 2026-04-17)
 
-- headSha: `pending-backfill`
+- headSha: `a14dd8cb5`
 - artifacts: `artifacts/_tmp_s0f_9g_p1_admin_enforcement_membership_slice.json`
 - expected:
   - admin subscription routes fail closed for ordinary members at the backend
