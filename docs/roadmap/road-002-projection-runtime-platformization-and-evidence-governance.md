@@ -380,6 +380,7 @@
 - 2026-04-19: opened `S0F-9H` as the next explicit `M4-P1-C` child lane for shared auth/provider realism, invite/onboarding, membership admission, and routed entry, so the current Workbox/auth stack can widen beyond local-first role fabrication without opening support tooling first.
 - 2026-04-19: completed `S0F-9H/P1-C1-S1S2`, so `M4-P1-C` now has the first code-bearing child slice for identity-first auth entry, explicit local-first membership admission, and pending-to-admitted standing on the current Workbox/auth stack.
 - 2026-04-19: completed `S0F-9H/P2-C1-S1S2`, so `M4-P1-C` now has tenant-aware routed entry with safe-`next` preservation and tenant-scoped admin landing on the current Workbox/auth stack.
+- 2026-04-19: completed `S0F-9H/P3-C1-S1S2` and marked `S0F-9H` stable, so `M4-P1-C` now has the first stable local-first identity-to-membership-to-entry closure before any later provider-adapter widening.
 
 ### M5: Asset platform activation after governance and access baselines exist
 

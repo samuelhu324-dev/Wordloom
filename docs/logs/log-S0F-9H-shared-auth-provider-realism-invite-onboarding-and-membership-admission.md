@@ -5,7 +5,7 @@
 **id**: `S0F-9H`
 **kind**: `log`
 **title**: `shared auth/provider realism, invite/onboarding, and membership-admission minimum closure + drills/evidence + v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Auth, Identity, Onboarding, Runtime, Drills, Evidence, epic/s0, sub/9h`
 **links**: ``
@@ -96,6 +96,7 @@
 - `P0-C1-S1S2S3` | artifact: `artifacts/_tmp_s0f_9h_p0_auth_entry_membership_admission_contract.json`
 - `P1-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9h_p1_auth_entry_and_admission_slice.json`
 - `P2-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9h_p2_routed_entry_and_tenant_landing.json`
+- `P3-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9h_p3_identity_membership_entry_verify.json`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` as the only optional section; development issue identity stays in `Metadata`.
@@ -263,6 +264,27 @@
 - `P3-C1-S1`: verify identity-to-membership closure under the new auth-entry and admission assumptions
 - `P3-C1-S2`: verify routed-entry behavior and define handoff into later provider adapters or richer identity realism
 
+## P3 (Drill / Verify)
+
+- `P3` closes this packet by proving the current auth entry, explicit admission, tenant context, and routed-entry behavior now act as one reusable identity-to-membership-to-entry loop instead of separate partial slices.
+- The drill goal in this packet is not to widen identity realism again; it is to prove that one local-first closure is now stable enough for later provider-facing widening to consume rather than reopen.
+- `P3` also acts as the stable close-out gate for `9H`, so a passing packet here should move the log from active draft to stable packet status.
+
+### P3 Identity-To-Membership Closure Decision (v1)
+
+- `P3` now fixes the first close-out verification surface in this lane as one combined frontend drill set.
+- The first close-out rule in this packet is now fixed as:
+  - one registration-based member journey must prove identity entry, explicit admission claim, admitted member landing, and admin-route deny fallback on the same tenant-scoped model
+  - one login-based admin journey must still prove pending admission, preserved safe `next`, and tenant-scoped admin landing after admission
+  - the existing tenant-context and local actor-switching drills must still pass on the same runtime model so the packet can be judged as one coherent closure rather than isolated page behavior
+
+### P3 Handoff Decision (v1)
+
+- `P3` now fixes the downstream handoff rule in this lane as:
+  - later provider-adapter work may replace local-first identity proof and admission proof with trusted external signals, but must preserve the `identity != admitted standing` boundary already fixed here
+  - later richer invite or provider realism may widen admission truth sources, but must keep explicit tenant-scoped routed entry and fail-closed behavior when admitted scope is absent or incompatible
+  - later widening should treat `9H` as the stable source for the first local-first identity-to-membership-to-entry contract rather than reopening manual role fabrication or hidden fallback tenant authority
+
 ## P1 (Auth entry and admission slice)
 
 - `P1` lands the first code-bearing identity-entry slice for this packet without widening into real provider SDK orchestration, external invite delivery, or enterprise identity sprawl.
@@ -339,14 +361,14 @@
 
 ### P3 (Drill / Verify)
 
-- [ ] `P3-C1-S1`: verify identity-to-membership closure under the new auth-entry assumptions
-- [ ] `P3-C1-S2`: verify routed-entry behavior and handoff into later identity realism
+- [x] `P3-C1-S1`: verify identity-to-membership closure under the new auth-entry assumptions
+- [x] `P3-C1-S2`: verify routed-entry behavior and handoff into later identity realism
 
 ## Current Status (recommended)
 
-- `S0F-9H/P2` is now landed: the packet now has one unified routed-entry rule on top of the already-landed shared auth-entry and explicit local-first admission slice.
-- `9H/P2` now fixes the first tenant-aware landing closure in this lane: pending identities keep safe `next` intent through onboarding, admitted admins land directly on tenant-scoped admin detail, and member/admin fallback routing stays role-compatible.
-- The next step is now `P3` drill/verify closure rather than more landing-surface widening, because the packet now has the first explicit identity-to-membership-to-entry path with tenant-aware routing behavior in place.
+- `S0F-9H` is now stable: the packet has contract, auth-entry implementation, explicit admission, tenant-aware routed entry, and focused close-out drills on the same tenant-scoped model.
+- `9H` now acts as the stable source packet for the first local-first identity-to-membership-to-entry closure under the current `M4-P1-C` product-entry stack.
+- The next step is no longer inside `9H`; the downstream choice should now be one later provider-adapter, richer invite/admission realism, or broader multi-tenant identity packet rather than reopening this first closure.
 
 ## Evidence (reserved)
 
@@ -396,9 +418,24 @@
   - admitted `admin/owner` now land on `/admin/subscriptions/{libraryId}` while admitted `member` remains on `/workbox/subscription`
   - focused Playwright drills now prove admin-target intent survives onboarding and that tenant-scoped admin landing is the default for admitted admin actors
 
+### P3-C1-S1S2 (Identity-to-membership-to-entry verification passed | 2026-04-19)
+
+- `headSha`: `pending-backfill`
+- `artifacts`:
+  - `artifacts/_tmp_s0f_9h_p3_identity_membership_entry_verify.json`
+- `expected`:
+  - focused drills prove a full identity-to-membership-to-entry loop on the same tenant-scoped model rather than only isolated entry or routing fragments
+  - both member and admin journeys prove admitted standing and routed entry remain explicit, tenant-aware, and role-compatible
+  - the packet can now be judged as one stable local-first closure and handed off to later provider-adapter or richer admission work without reopening the v1 boundary
+- `observed`:
+  - `npx playwright test tests/e2e/identity-closure.spec.ts tests/e2e/auth-admission.spec.ts tests/e2e/tenant-context.spec.ts tests/e2e/subscription-gating.spec.ts tests/e2e/local-actor-switching.spec.ts` passed (`8 passed`)
+  - the new identity-closure drill now proves registration-based member closure from identity entry through explicit admission into tenant-scoped member landing and admin-route deny fallback
+  - `S0F-9H` now satisfies its own stable close-out rule and moves from active draft to stable packet status
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-19: opened `S0F-9H` as the next auth-entry and onboarding lane after stable close-out of `S0F-9G`, targeting shared auth/provider realism, membership admission, and routed entry rather than support tooling or payment-provider realism.
 - 2026-04-19: completed `S0F-9H/P0-C1-S1S2S3` by fixing the first shared auth-entry realism boundary, explicit membership-admission contract, and tenant-aware routed-entry contract in one evidence-backed packet.
 - 2026-04-19: completed `S0F-9H/P1-C1-S1S2` by removing free role fabrication from login/register, landing the first explicit local-first admission page, and proving the updated auth/admission flow together with existing gating and tenant-context drills.
 - 2026-04-19: completed `S0F-9H/P2-C1-S1S2` by unifying routed-entry resolution, preserving safe `next` intent through onboarding, and landing tenant-scoped admin defaults on the current Workbox/auth stack.
+- 2026-04-19: completed `S0F-9H/P3-C1-S1S2` and marked the packet stable after focused frontend drills proved the first local-first identity-to-membership-to-entry closure end to end.
