@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contract, Taxonomy, epic/s0, sub/4d`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/398`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/406`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -30,13 +30,13 @@
   **reference_log_13**: `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
 **issue_keyword**: `taxonomy`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/4`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -45,7 +45,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-08`
-**updated**: `2026-04-08`
+**updated**: `2026-04-14`
 
 ---
 

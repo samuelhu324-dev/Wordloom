@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Records, Roadmap, epic/s0, sub/7f`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/462`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/471`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -22,13 +22,13 @@
   **reference_log_5**: `docs/roadmap/road-template-structured-roadmap.md`
 **issue_keyword**: `records`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/7`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -37,9 +37,28 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-13`
-**updated**: `2026-04-13`
+**updated**: `2026-04-14`
 
 ---
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-7F` is expected to standardize minimum lifecycle-time fields across logs and roadmaps.
+
+**PR summary bullets**:
+
+- Define the minimum frontmatter lifecycle-time fields for logs and roadmap artifacts.
+- Land UTC-second and reviewed-state samples where chronology audit actually needs them.
+- Keep the time contract minimal enough for routine docs work while still supporting governance replay.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the frontmatter minimum-time-fields lane.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-7F-log-and-roadmap-frontmatter-minimum-time-fields.md`
+- Previous log: `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
 
 ## Decision / Outcome
 

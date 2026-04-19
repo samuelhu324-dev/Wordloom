@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-04-14T06:31:22Z",
+  "head_sha": "27b95084b",
+  "series_packet": "S0F-2*",
+  "rollout_order": [
+    "S0F-2A",
+    "S0F-2B"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-2A",
+      "issue_number": 384,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/384",
+      "pr_number": 386,
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/386",
+      "selected_commits": [
+        "07faa0660f11f34740cd29cf878907ab4618490d"
+      ],
+      "relationship_apply_result_path": "docs/issues/issue-relationship-lifecycle-remediation-s0f-2a-relationship-manifest-parent-363-child-384-apply-result.json",
+      "pr_create_result_path": "docs/issues/pr-prep-s0f-2a-manifest-create-result.json",
+      "post_apply_verify_result_path": "docs/issues/pr-prep-s0f-2a-manifest-post-apply-verify-result.json",
+      "warnings": [
+        "cherry-pick fallback used after conflict at 07faa066; prepared branch rebuilt from the source-head snapshot of selected paths"
+      ]
+    },
+    {
+      "requested_id": "S0F-2B",
+      "issue_number": 385,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/385",
+      "pr_number": 387,
+      "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/387",
+      "selected_commits": [
+        "44be1c070344ca7e334de501d907eb49162ba41f",
+        "9b61e1c46cc3cf16ca969f6f979f4ef5794550cb",
+        "9712f17e05666d306565a1abce235d184e028567"
+      ],
+      "relationship_apply_result_path": "docs/issues/issue-relationship-lifecycle-remediation-s0f-2b-relationship-manifest-parent-363-child-385-apply-result.json",
+      "pr_create_result_path": "docs/issues/pr-prep-s0f-2b-manifest-create-result.json",
+      "post_apply_verify_result_path": "docs/issues/pr-prep-s0f-2b-manifest-post-apply-verify-result.json",
+      "warnings": [
+        "cherry-pick fallback used after conflict at 44be1c07; prepared branch rebuilt from the source-head snapshot of selected paths"
+      ]
+    }
+  ]
+}

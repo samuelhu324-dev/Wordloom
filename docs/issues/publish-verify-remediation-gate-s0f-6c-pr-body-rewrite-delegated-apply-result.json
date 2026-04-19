@@ -1,0 +1,26 @@
+{
+  "mode": "publish-verify-remediation-gate-apply",
+  "result": "ok",
+  "operation_family": "pr-body-rewrite",
+  "selection_input_kind": "manifest",
+  "selection_input_path": "docs/issues/lifecycle-audit-s0f-6c-manifest.json",
+  "family_input_kind": "result",
+  "family_input_path": "docs/issues/pr-prep-s0f-6c-manifest-create-result.json",
+  "normalized_decision": "allow-apply",
+  "apply_allowed": true,
+  "delegated_adapter_path": "scripts/issues/apply_pr_body_scope_with_pre_gate.py",
+  "delegated_apply_requested": true,
+  "delegated_apply_executed": true,
+  "delegated_action": "applied-after-pre-gate",
+  "decision_reason": "The thin gate delegated PR body rewrite into the existing guarded adapter after the lifecycle gate allowed continuation.",
+  "stopped_before_stage": null,
+  "downstream_artifacts": {
+    "audit_plan_path": null,
+    "gate_decision_path": "docs/issues/lifecycle-gate-s0f-6c-decision.json",
+    "remediation_plan_path": null,
+    "family_plan_path": null,
+    "family_result_path": "docs/issues/pr-prep-s0f-6c-manifest-rewrite-apply-result.json",
+    "delegated_result_path": "docs/issues/pr-prep-s0f-6c-manifest-guarded-pr-body-rewrite-result.json"
+  },
+  "warnings": []
+}

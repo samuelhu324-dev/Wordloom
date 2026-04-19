@@ -1,0 +1,45 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-remediation-s0f-2a-issue-conclusion-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0F-2A: merged PR set supplied by explicit override",
+    "S0F-2A: preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence",
+    "S0F-2A: existing Context section did not satisfy the prose-first Context gate for line range (4, 4); preview replaces it with an LLM-authored conclusion Context block",
+    "S0F-2A: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-2A",
+      "source_log_path": "docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md",
+      "issue_number": 384,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/384",
+      "issue_title": "S0F-2A: policy/maintenance lanes and direct patch ledger",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-lifecycle-remediation-s0f-2a-issue-conclusion-s0f-2a-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 386,
+          "title": "S0F-2A/P0-P3: maintenance lanes and direct patch ledger v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/386",
+          "merged_at": "2026-04-14T10:11:09Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "merged PR set supplied by explicit override",
+        "preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence",
+        "existing Context section did not satisfy the prose-first Context gate for line range (4, 4); preview replaces it with an LLM-authored conclusion Context block",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Lifecycle remediation for S0F-2A"
+    }
+  ]
+}

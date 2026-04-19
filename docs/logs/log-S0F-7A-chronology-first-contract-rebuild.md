@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contracts, History, Lineage, Reader, epic/s0, sub/7a`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/457`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/466`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -23,13 +23,13 @@
   **reference_log_6**: `docs/governance/legacy/contracts/_template-contract-record.md`
 **issue_keyword**: `migration`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/7`
+  **issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+  **roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -38,7 +38,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-10`
-**updated**: `2026-04-10`
+  **updated**: `2026-04-14`
 
 ---
 
@@ -67,6 +67,25 @@
   - later `DOC` and `GC` contract bodies appear without a full chronology-first ancestor chain
   - lineage verbs such as `superseded`, `split into`, `absorbed into`, and `retired` cannot carry the full explanatory burden because the chain starts too late
 - If later contract work continues on top of that current-first base, the repo will keep strengthening projections while the canonical contract spine remains incomplete.
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-7A` is expected to reset the canonical contract rebuild order before later chronology-first contract generation starts.
+
+**PR summary bullets**:
+
+- Reset old-`S0` contract rebuild onto a chronology-first canonical track.
+- Separate canonical rebuilt contracts from retained legacy current-first trees.
+- Fix the first rebuild order as `S0A + S0B` forward instead of deriving contracts backward from the latest state.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the chronology-first contract rebuild lane.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
+- Previous log: `docs/logs/log-S0F-5J-old-s0-contract-judgment-front-door-view.md`
 
 ## Exported Sections / Outlet Ownership
 

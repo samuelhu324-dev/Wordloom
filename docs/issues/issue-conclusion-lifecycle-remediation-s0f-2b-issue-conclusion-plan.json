@@ -1,0 +1,45 @@
+{
+  "mode": "issue-conclusion-dry-run",
+  "result": "ok",
+  "manifest_path": "docs/issues/lifecycle-remediation-s0f-2b-issue-conclusion-manifest.json",
+  "selection_input": "manifest",
+  "operation": "plan-issue-conclusion",
+  "total_items": 1,
+  "planned_items": 1,
+  "warnings": [
+    "S0F-2B: merged PR set supplied by explicit override",
+    "S0F-2B: preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence",
+    "S0F-2B: existing Context section did not satisfy the prose-first Context gate for line range (4, 4); preview replaces it with an LLM-authored conclusion Context block",
+    "S0F-2B: existing issue DoD is still blank create-time scaffold"
+  ],
+  "items": [
+    {
+      "requested_id": "S0F-2B",
+      "source_log_path": "docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md",
+      "issue_number": 385,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/385",
+      "issue_title": "S0F-2B: policy/family patch and ops maintenance model",
+      "issue_state": "CLOSED",
+      "preview_body_path": "docs/issues/issue-conclusion-lifecycle-remediation-s0f-2b-issue-conclusion-s0f-2b-body.md",
+      "merged_pr_count": 1,
+      "merged_prs": [
+        {
+          "number": 387,
+          "title": "S0F-2B/P0-P5: family patch and ops maintenance model v1",
+          "url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/387",
+          "merged_at": "2026-04-14T10:10:51Z"
+        }
+      ],
+      "planned_action": "plan-issue-conclusion",
+      "applied_action": null,
+      "status": "planned",
+      "warnings": [
+        "merged PR set supplied by explicit override",
+        "preview uses an LLM-authored conclusion Context block generated from the source log and exact merged-PR evidence",
+        "existing Context section did not satisfy the prose-first Context gate for line range (4, 4); preview replaces it with an LLM-authored conclusion Context block",
+        "existing issue DoD is still blank create-time scaffold"
+      ],
+      "reason": "Lifecycle remediation for S0F-2B"
+    }
+  ]
+}

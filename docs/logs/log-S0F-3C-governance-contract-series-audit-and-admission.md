@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Contract, Audit, Admission, epic/s0, sub/3c`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/414`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/427`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -18,15 +18,15 @@
   **reference_log_1**: `docs/logs/log-S0E-docs-management-v5.md`
   **reference_log_2**: `docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
   **reference_log_3**: `docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `policy`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/3`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -35,7 +35,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-06`
-**updated**: `2026-04-06`
+**updated**: `2026-04-14`
 
 ---
 
@@ -60,6 +60,26 @@
 - `S0F-3C` is an admission boundary, not a bulk-write exercise. It decides what belongs in the registry before more records are created.
 - If two logs describe the same governance rule at different layers, prefer the more stable semantic owner and treat the other as packaging, evidence, or implementation.
 - Uncertain surfaces must remain explicit in the adjudication queue until resolved. They should not be silently admitted and should not be silently discarded.
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-3C` fixes the admission baseline that later registry landing work should cite rather than rediscover.
+
+**PR summary bullets**:
+
+- Audit the bounded `S0E` and `S0F-1*` source families before admitting more governance records.
+- Separate active-admission candidates from packaging, implementation, and evidence-only residue.
+- Fix the first admission shortlist and bounded first landing batch under `ISS`, `PRA`, and `COMPL`.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the whole-series audit-and-admission package.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
+- Previous log: `docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md`
+- Front door: `docs/governance/INDEX.md`
 
 ## Scope
 

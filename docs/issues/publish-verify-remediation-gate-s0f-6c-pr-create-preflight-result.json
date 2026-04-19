@@ -1,0 +1,26 @@
+{
+  "mode": "publish-verify-remediation-gate-dry-run",
+  "result": "ok",
+  "operation_family": "pr-create-preflight",
+  "selection_input_kind": "manifest",
+  "selection_input_path": "docs/issues/lifecycle-audit-s0f-6c-manifest.json",
+  "family_input_kind": "manifest",
+  "family_input_path": "docs/issues/pr-prep-s0f-6c-manifest.json",
+  "normalized_decision": "allow-apply",
+  "apply_allowed": true,
+  "delegated_adapter_path": "scripts/issues/plan_pr_create_preflight_with_gate.py",
+  "delegated_apply_requested": false,
+  "delegated_apply_executed": false,
+  "delegated_action": "planned-only",
+  "decision_reason": "The reused lifecycle gate plus create-specific front-half preflight both passed, so the next create stage may continue.",
+  "stopped_before_stage": "S4-local-branch-materialization",
+  "downstream_artifacts": {
+    "audit_plan_path": null,
+    "gate_decision_path": "docs/issues/lifecycle-gate-s0f-6c-decision.json",
+    "remediation_plan_path": null,
+    "family_plan_path": "docs/issues/pr-prep-s0f-6c-manifest-plan.json",
+    "family_result_path": "docs/issues/pr-prep-s0f-6c-manifest-front-half-preflight-result.json",
+    "delegated_result_path": null
+  },
+  "warnings": []
+}

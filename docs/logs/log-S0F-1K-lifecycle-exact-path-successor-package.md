@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Cleanup, Lifecycle, Ledger, epic/s0, sub/1k`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/475`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/476`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -20,15 +20,15 @@
   **reference_log_3**: `docs/logs/log-S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model.md`
   **reference_log_4**: `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
   **reference_log_5**: `docs/logs/support-only/s0f-1k-lifecycle-exact-path-successor-manifest.json`
-**issue_keyword**: `governance`
+**issue_keyword**: `migration`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/1`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -37,7 +37,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-07`
-**updated**: `2026-04-07`
+**updated**: `2026-04-15`
 
 ---
 
@@ -203,6 +203,23 @@
   - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
 
 ## Validation
+
+## PR Summary Inputs (optional)
+
+**PR summary bullets**:
+
+- Keep `S0F-1I` as the exact-path historical root anchor for retained lifecycle readers while `S0F-1K` carries the successor-planning ledger.
+- Define and then execute the stub-backed relocation model that moves the retained `S0F-1I` body to support-only without rewriting the six historical readers.
+- Verify post-move that the retained lifecycle and PR-prep readers still resolve acceptably through the executed root stub.
+
+**PR checklist source**:
+
+- Default source: reuse this log's phase execution and validation sections for the exact-path successor package lane.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
+- Previous log: `docs/logs/support-only/s0/log-S0F-1I-formatting-only-pr-body-convergence.md`
 
 - the package is narrower than reopening `S0F-3G`
 - the reader-facing lineage is now clearer than the provisional `run-1` naming form

@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-04-14T06:24:00Z",
+  "lane": "S0F-8B",
+  "units": [
+    {
+      "log_id": "S0F-2A",
+      "rollout_order": 1,
+      "status": "admitted-first-rollout-packet",
+      "pr_extraction_unit": {
+        "mode": "single-commit",
+        "commits": [
+          "07faa0660"
+        ],
+        "exclude_commits": [],
+        "justification": "The opening S0F-2A commit stays tightly centered on the 2A log, 2A runbook, S0F parent writeback, and direct-patch ledger."
+      }
+    },
+    {
+      "log_id": "S0F-2B",
+      "rollout_order": 2,
+      "status": "admitted-first-rollout-packet",
+      "pr_extraction_unit": {
+        "mode": "three-commit-packet",
+        "commits": [
+          "44be1c070",
+          "9b61e1c46",
+          "9712f17e0"
+        ],
+        "exclude_commits": [
+          "eec41d464"
+        ],
+        "supporting_dependency_only": [
+          "eec41d464"
+        ],
+        "justification": "The 2B packet remains centered on the 2B log, 2B runbook, refined templates, and the first ops-maintenance/family-patch sample surfaces, while the adjacent template-packaging commit is mixed and should not be treated as the core extraction unit."
+      }
+    }
+  ],
+  "fallback_series": "S0F-6*",
+  "next_step": "Use the admitted S0F-2A and S0F-2B units as the first single-item issue-automation candidates after human review."
+}

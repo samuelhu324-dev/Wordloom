@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Records, Views, History, Migration, Review, FrontDoor, epic/s0, sub/5j`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/446`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/455`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -23,13 +23,13 @@
   **reference_log_6**: `docs/governance/views/view-old-s0-remaining-history-line-manual-screening-v1.md`
 **issue_keyword**: `migration`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/5`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -38,9 +38,28 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-10`
-**updated**: `2026-04-10`
+**updated**: `2026-04-14`
 
 ---
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-5J` is expected to publish the first old-`S0` contract-judgment front door rather than reopen outlet management or auto-land contracts.
+
+**PR summary bullets**:
+
+- Publish the first old-`S0` contract-judgment front door across narrative, surfaced, remaining, and unresolved states.
+- Separate judgment routing from auto-admission so readers can tell what is already current, what remains history, and what is still too unresolved.
+- Expose the existing narrative router, migration ledger, and manual-screening stack through one stable first-open review path.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the contract-judgment front-door lane.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-5J-old-s0-contract-judgment-front-door-view.md`
+- Previous log: `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
 
 ## Decision / Outcome
 
