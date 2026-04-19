@@ -7,7 +7,7 @@ import { useI18n } from '@/i18n/useI18n';
 import styles from './page.module.css';
 
 const quickLinks = [
-  { href: '/admin/libraries', label: 'Open Workbox', variant: 'primary' as const },
+  { href: '/workbox/subscription', label: 'Open Workbox', variant: 'primary' as const },
   { href: '/test', label: 'Open Test Route', variant: 'secondary' as const },
   { href: '/login', label: 'Open Login', variant: 'secondary' as const },
 ];
