@@ -11,6 +11,8 @@ import React, {
 
 export type AuthRole = 'member' | 'admin' | 'owner';
 
+export type AdmissionStatus = 'pending' | 'admitted';
+
 export type TenantContextSource = 'session' | 'route' | 'manual' | 'legacy';
 
 export type AuthSession = {
@@ -19,6 +21,8 @@ export type AuthSession = {
   role: AuthRole;
   libraryId: string;
   token: string;
+  admissionStatus: AdmissionStatus;
+  admissionSource: 'code' | 'dev-bypass';
 };
 
 export type CurrentTenantContext = {
@@ -30,8 +34,16 @@ export type CurrentTenantContext = {
 type AuthInput = {
   email: string;
   displayName: string;
-  role: AuthRole;
   libraryId: string;
+  role?: AuthRole;
+  admissionCode?: string;
+  admissionSource?: 'code' | 'dev-bypass';
+};
+
+type AdmissionRecord = {
+  code: string;
+  role: AuthRole;
+  libraryId?: string;
 };
 
 type AuthContextValue = {
@@ -40,9 +52,11 @@ type AuthContextValue = {
   currentTenantContext: CurrentTenantContext | null;
   currentTenantId: string;
   isAuthenticated: boolean;
+  isAdmitted: boolean;
   isAdmin: boolean;
   signIn: (input: AuthInput) => AuthSession;
   register: (input: AuthInput) => AuthSession;
+  claimAdmission: (code: string) => AuthSession | null;
   signOut: () => void;
   hasRole: (roles: AuthRole[]) => boolean;
   setCurrentTenantContext: (tenantId: string, source?: TenantContextSource) => CurrentTenantContext | null;
@@ -54,10 +68,19 @@ const AUTH_TOKEN_STORAGE_KEY = 'wl_token';
 const CURRENT_TENANT_CONTEXT_STORAGE_KEY = 'wl_current_tenant_context';
 const ACTIVE_LIBRARY_STORAGE_KEY = 'wl_active_library_id';
 
+const LOCAL_ADMISSION_RECORDS: AdmissionRecord[] = [
+  { code: 'MEMBER-DEMO', role: 'member' },
+  { code: 'ADMIN-DEMO', role: 'admin' },
+  { code: 'OWNER-DEMO', role: 'owner' },
+];
+
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 const isRole = (value: unknown): value is AuthRole =>
   value === 'member' || value === 'admin' || value === 'owner';
+
+const isAdmissionStatus = (value: unknown): value is AdmissionStatus =>
+  value === 'pending' || value === 'admitted';
 
 const isTenantContextSource = (value: unknown): value is TenantContextSource =>
   value === 'session' || value === 'route' || value === 'manual' || value === 'legacy';
@@ -73,6 +96,8 @@ const normalizeSession = (value: unknown): AuthSession | null => {
     typeof candidate.displayName !== 'string' ||
     typeof candidate.libraryId !== 'string' ||
     typeof candidate.token !== 'string' ||
+    !isAdmissionStatus(candidate.admissionStatus) ||
+    (candidate.admissionSource !== 'code' && candidate.admissionSource !== 'dev-bypass') ||
     !isRole(candidate.role)
   ) {
     return null;
@@ -84,6 +109,8 @@ const normalizeSession = (value: unknown): AuthSession | null => {
     role: candidate.role,
     libraryId: candidate.libraryId,
     token: candidate.token,
+    admissionStatus: candidate.admissionStatus,
+    admissionSource: candidate.admissionSource,
   };
 };
 
@@ -202,10 +229,47 @@ const createToken = (role: AuthRole) => {
   return `wl-dev-${role}-${suffix}`;
 };
 
+const resolveAdmissionRecord = (code: string, libraryId: string): AdmissionRecord | null => {
+  const normalizedCode = code.trim().toUpperCase();
+  const normalizedLibraryId = libraryId.trim();
+  if (!normalizedCode || !normalizedLibraryId) {
+    return null;
+  }
+
+  return (
+    LOCAL_ADMISSION_RECORDS.find(
+      (record) =>
+        record.code === normalizedCode && (!record.libraryId || record.libraryId === normalizedLibraryId)
+    ) || null
+  );
+};
+
+const createSession = (input: AuthInput): AuthSession => {
+  const normalizedLibraryId = input.libraryId.trim();
+  const explicitBypass = input.admissionSource === 'dev-bypass' && input.role;
+  const admissionRecord = explicitBypass
+    ? null
+    : resolveAdmissionRecord(input.admissionCode || '', normalizedLibraryId);
+  const role = explicitBypass ? input.role : admissionRecord?.role || 'member';
+  const admissionStatus: AdmissionStatus = explicitBypass || admissionRecord ? 'admitted' : 'pending';
+
+  return {
+    email: input.email.trim(),
+    displayName: input.displayName.trim(),
+    role,
+    libraryId: normalizedLibraryId,
+    token: createToken(role),
+    admissionStatus,
+    admissionSource: explicitBypass ? 'dev-bypass' : 'code',
+  };
+};
+
 export const buildLandingPath = (session: Pick<AuthSession, 'role' | 'libraryId'>) =>
-  session.role === 'admin' || session.role === 'owner'
-    ? '/admin/subscriptions'
-    : '/workbox/subscription';
+  'admissionStatus' in session && session.admissionStatus === 'pending'
+    ? '/onboarding/admission'
+    : session.role === 'admin' || session.role === 'owner'
+      ? '/admin/subscriptions'
+      : '/workbox/subscription';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<AuthSession | null>(null);
@@ -229,20 +293,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const writeSession = useCallback((input: AuthInput) => {
-    const nextSession: AuthSession = {
-      email: input.email.trim(),
-      displayName: input.displayName.trim(),
-      role: input.role,
-      libraryId: input.libraryId.trim(),
-      token: createToken(input.role),
-    };
+    const nextSession = createSession(input);
     persistSession(nextSession);
-    const nextTenantContext = createTenantContext(nextSession.libraryId, 'session');
+    const nextTenantContext =
+      nextSession.admissionStatus === 'admitted'
+        ? createTenantContext(nextSession.libraryId, 'session')
+        : null;
     persistTenantContext(nextTenantContext);
     setSession(nextSession);
     setCurrentTenantContextState(nextTenantContext);
     return nextSession;
   }, []);
+
+  const claimAdmission = useCallback(
+    (code: string) => {
+      if (!session) {
+        return null;
+      }
+
+      const admissionRecord = resolveAdmissionRecord(code, session.libraryId);
+      if (!admissionRecord) {
+        return null;
+      }
+
+      const nextSession: AuthSession = {
+        ...session,
+        role: admissionRecord.role,
+        token: createToken(admissionRecord.role),
+        admissionStatus: 'admitted',
+        admissionSource: 'code',
+      };
+
+      persistSession(nextSession);
+      const nextTenantContext = createTenantContext(nextSession.libraryId, 'session');
+      persistTenantContext(nextTenantContext);
+      setSession(nextSession);
+      setCurrentTenantContextState(nextTenantContext);
+      return nextSession;
+    },
+    [session]
+  );
 
   const setCurrentTenantContext = useCallback(
     (tenantId: string, source: TenantContextSource = 'manual') => {
@@ -292,15 +382,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       currentTenantContext,
       currentTenantId: currentTenantContext?.tenantId || session?.libraryId || '',
       isAuthenticated: !!session,
-      isAdmin: !!session && (session.role === 'admin' || session.role === 'owner'),
+      isAdmitted: !!session && session.admissionStatus === 'admitted',
+      isAdmin:
+        !!session &&
+        session.admissionStatus === 'admitted' &&
+        (session.role === 'admin' || session.role === 'owner'),
       signIn: writeSession,
       register: writeSession,
+      claimAdmission,
       signOut,
       hasRole,
       setCurrentTenantContext,
       clearCurrentTenantContext,
     }),
-    [clearCurrentTenantContext, currentTenantContext, hasRole, hydrated, session, setCurrentTenantContext, signOut, writeSession]
+    [
+      claimAdmission,
+      clearCurrentTenantContext,
+      currentTenantContext,
+      hasRole,
+      hydrated,
+      session,
+      setCurrentTenantContext,
+      signOut,
+      writeSession,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

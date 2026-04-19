@@ -94,6 +94,7 @@
 **Evidence Footer Source**:
 
 - `P0-C1-S1S2S3` | artifact: `artifacts/_tmp_s0f_9h_p0_auth_entry_membership_admission_contract.json`
+- `P1-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9h_p1_auth_entry_and_admission_slice.json`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` as the only optional section; development issue identity stays in `Metadata`.
@@ -261,6 +262,34 @@
 - `P3-C1-S1`: verify identity-to-membership closure under the new auth-entry and admission assumptions
 - `P3-C1-S2`: verify routed-entry behavior and define handoff into later provider adapters or richer identity realism
 
+## P1 (Auth entry and admission slice)
+
+- `P1` lands the first code-bearing identity-entry slice for this packet without widening into real provider SDK orchestration, external invite delivery, or enterprise identity sprawl.
+- The implementation goal in this packet is to stop treating login/register role selection as product truth, while still keeping one local-first path that can authenticate identity, pause on pending admission, and derive standing only after explicit admission claim.
+- `P1` remains intentionally bounded: one shared auth shell update, one local-first admission page, one derived-standing rule in auth runtime, and one preserved dev-only bypass for `LocalActorSwitcher` are enough for the first slice.
+
+### P1 Shared Auth-Entry Slice Decision (v1)
+
+- `P1` now lands the first bounded shared auth-entry update through:
+  - removing free role selection from `/login` and `/register`
+  - keeping `email`, `displayName`, and `libraryId` as the user-entered identity plus tenant-target fields
+  - deriving post-login standing from admission truth or explicit dev bypass rather than from the auth form itself
+- The first auth-runtime rule in this packet is now fixed as:
+  - ordinary auth entry creates either `pending` or `admitted` session state
+  - `pending` sessions remain authenticated identities but must not reach protected member/admin surfaces yet
+  - `LocalActorSwitcher` may still use one explicit `dev-bypass` path so drill tooling remains available without becoming the product contract
+
+### P1 Membership-Admission Slice Decision (v1)
+
+- `P1` now lands the first explicit local-first membership-admission surface through:
+  - one `/onboarding/admission` page for pending identities
+  - one bounded local admission-code claim flow
+  - one derived-standing update in `AuthContext` that turns claimed admission into admitted tenant role
+- The first admission rule in this packet is now fixed as:
+  - pending identities land on onboarding instead of silently inheriting standing
+  - admitted standing is derived from claimed local admission code for the selected tenant target
+  - admitted identities then reuse the stable `9E/9F/9G` role-aware landing surfaces without reopening the permission loop
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -271,8 +300,8 @@
 
 ### P1 (Auth entry and admission slice)
 
-- [ ] `P1-C1-S1`: implement one bounded shared auth-entry update
-- [ ] `P1-C1-S2`: implement one explicit membership-admission slice
+- [x] `P1-C1-S1`: implement one bounded shared auth-entry update
+- [x] `P1-C1-S2`: implement one explicit membership-admission slice
 
 ### P2 (Routed entry and tenant-aware landing)
 
@@ -286,9 +315,9 @@
 
 ## Current Status (recommended)
 
-- `S0F-9H/P0` is now fixed: the packet has an explicit v1 contract for shared auth-entry realism, membership admission, and routed entry on top of the stable `9E/9F/9G` stack.
-- `9E` fixed the first shared auth shell, `9F` fixed explicit current tenant context, and `9G` fixed the first stable tenant-admin/user permission loop; `9H/P0` now adds the missing rule that identity proof, admitted standing, and post-login landing must stay separate concepts.
-- The next step is now `P1` implementation rather than more contract expansion, because the packet now has enough boundary agreement to start narrowing login/register away from free role fabrication and toward explicit admission-backed standing.
+- `S0F-9H/P1` is now landed: the packet has one bounded shared auth-entry update plus one explicit local-first membership-admission slice on top of the stable `9E/9F/9G` stack.
+- `9H/P1` now fixes the first runtime split between authenticated identity and admitted standing: pending identities stop at onboarding, admitted identities derive role from explicit admission, and dev-only actor switching remains visible as bypass tooling rather than product truth.
+- The next step is now `P2` routed-entry tightening rather than more auth-entry widening, because the packet already has the first explicit admission surface and now needs to harden post-login tenant-aware landing behavior for admitted actors.
 
 ## Evidence (reserved)
 
@@ -310,7 +339,22 @@
   - `P0` now fixes one bounded invite/admission-first standing model instead of role fabrication during login/register
   - `P0` now fixes one post-login landing rule that binds explicit tenant context before role-aware entry
 
+### P1-C1-S1S2 (Auth-entry and admission slice landed | 2026-04-19)
+
+- `headSha`: `pending-backfill`
+- `artifacts`:
+  - `artifacts/_tmp_s0f_9h_p1_auth_entry_and_admission_slice.json`
+- `expected`:
+  - login/register stop acting as free role-fabrication surfaces
+  - pending identities must stop on onboarding before protected member/admin routes
+  - claimed local admission must derive admitted tenant role and preserve the stable `9F/9G` runtime model
+- `observed`:
+  - shared auth shell now creates `pending` or `admitted` session state instead of treating form role as standing truth
+  - onboarding now provides one explicit local-first admission claim path for pending identities
+  - focused Playwright drills now prove the new admission flow plus existing subscription gating, tenant context, and local actor switching on the updated session model
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-19: opened `S0F-9H` as the next auth-entry and onboarding lane after stable close-out of `S0F-9G`, targeting shared auth/provider realism, membership admission, and routed entry rather than support tooling or payment-provider realism.
 - 2026-04-19: completed `S0F-9H/P0-C1-S1S2S3` by fixing the first shared auth-entry realism boundary, explicit membership-admission contract, and tenant-aware routed-entry contract in one evidence-backed packet.
+- 2026-04-19: completed `S0F-9H/P1-C1-S1S2` by removing free role fabrication from login/register, landing the first explicit local-first admission page, and proving the updated auth/admission flow together with existing gating and tenant-context drills.

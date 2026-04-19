@@ -12,6 +12,8 @@ function adminSession() {
     role: 'admin' as const,
     libraryId: SESSION_LIBRARY_ID,
     token: 'wl-dev-admin-tenant-context',
+    admissionStatus: 'admitted' as const,
+    admissionSource: 'code' as const,
   };
 }
 

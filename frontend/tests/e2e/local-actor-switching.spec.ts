@@ -9,6 +9,8 @@ function session(role: 'member' | 'admin') {
     role,
     libraryId: LIBRARY_ID,
     token: `wl-dev-${role}-local-switch`,
+    admissionStatus: 'admitted' as const,
+    admissionSource: 'code' as const,
   };
 }
 

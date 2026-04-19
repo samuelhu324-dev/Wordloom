@@ -11,6 +11,8 @@ function session(role: SessionRole) {
     role,
     libraryId: LIBRARY_ID,
     token: `wl-dev-${role}-playwright`,
+    admissionStatus: 'admitted' as const,
+    admissionSource: 'code' as const,
   };
 }
 

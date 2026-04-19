@@ -3,11 +3,9 @@
 import React, { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { AuthRole, buildLandingPath, useAuth } from '@/shared/auth';
+import { buildLandingPath, useAuth } from '@/shared/auth';
 import { Button, Card, CardContent, CardHeader, Input } from '@/shared/ui';
 import styles from '../login/page.module.css';
-
-const roleOptions: AuthRole[] = ['member', 'admin', 'owner'];
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -15,7 +13,6 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [libraryId, setLibraryId] = useState('');
-  const [role, setRole] = useState<AuthRole>('member');
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -23,7 +20,6 @@ export default function RegisterPage() {
       email,
       displayName,
       libraryId,
-      role,
     });
     router.replace(buildLandingPath(nextSession));
   };
@@ -36,25 +32,15 @@ export default function RegisterPage() {
             <p className={styles.eyebrow}>Shared auth shell</p>
             <h1>Create a local-first account</h1>
             <p>
-              Registration in `9E/P1` creates a browser-local session only. It exists to validate the
-              first role-aware entry and protected-route flow before real auth-provider work begins.
+              Registration now creates identity first and leaves tenant standing to an explicit
+              admission step, so role truth no longer starts from form selection alone.
             </p>
           </CardHeader>
           <CardContent>
             <form className={styles.form} onSubmit={handleSubmit}>
               <Input label="Display name" value={displayName} onChange={(event) => setDisplayName(event.target.value)} required fullWidth />
               <Input label="Email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required fullWidth />
-              <Input label="Library ID" value={libraryId} onChange={(event) => setLibraryId(event.target.value)} required fullWidth helperText="A first library scope is required so access-context requests know which tenant/library to target." />
-              <label className={styles.selectWrapper}>
-                <span className={styles.selectLabel}>Starting role</span>
-                <select value={role} onChange={(event) => setRole(event.target.value as AuthRole)} className={styles.select}>
-                  {roleOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <Input label="Tenant target" value={libraryId} onChange={(event) => setLibraryId(event.target.value)} required fullWidth helperText="A first tenant target is still required so onboarding knows which tenant admission to claim." />
               <div className={styles.actions}>
                 <Button type="submit">Register</Button>
                 <Link href="/login" className={styles.inlineLink}>
@@ -62,6 +48,7 @@ export default function RegisterPage() {
                 </Link>
               </div>
             </form>
+            <p className={styles.helperText}>After registration, claim one local admission code on the onboarding page to derive member/admin/owner standing.</p>
           </CardContent>
         </Card>
       </section>

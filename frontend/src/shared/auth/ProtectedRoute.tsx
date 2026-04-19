@@ -13,7 +13,7 @@ type ProtectedRouteProps = {
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { hydrated, isAuthenticated, session, hasRole } = useAuth();
+  const { hydrated, isAuthenticated, isAdmitted, session, hasRole } = useAuth();
 
   useEffect(() => {
     if (!hydrated) {
@@ -26,12 +26,17 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
       return;
     }
 
+    if (!isAdmitted && session) {
+      router.replace('/onboarding/admission');
+      return;
+    }
+
     if (allowedRoles && !hasRole(allowedRoles) && session) {
       router.replace(buildLandingPath(session));
     }
-  }, [allowedRoles, hasRole, hydrated, isAuthenticated, pathname, router, session]);
+  }, [allowedRoles, hasRole, hydrated, isAdmitted, isAuthenticated, pathname, router, session]);
 
-  if (!hydrated || !isAuthenticated || (allowedRoles && !hasRole(allowedRoles))) {
+  if (!hydrated || !isAuthenticated || !isAdmitted || (allowedRoles && !hasRole(allowedRoles))) {
     return (
       <div style={{ minHeight: '50vh', display: 'grid', placeItems: 'center' }}>
         <Spinner />

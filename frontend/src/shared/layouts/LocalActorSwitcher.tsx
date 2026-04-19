@@ -47,6 +47,7 @@ export function LocalActorSwitcher({ className = '' }: LocalActorSwitcherProps) 
       displayName: profile.displayName,
       role: selectedRole,
       libraryId: targetTenantId,
+      admissionSource: 'dev-bypass',
     });
 
     router.replace(buildLandingPath(nextSession));
