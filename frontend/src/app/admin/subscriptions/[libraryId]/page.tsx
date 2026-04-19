@@ -1,10 +1,16 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { useLibraries } from '@/features/library';
 import { useParams, useRouter } from 'next/navigation';
-import { MockBillingPanel, TenantMembershipPanel, useSubscriptionHistory, useSubscriptionState } from '@/features/subscription-access';
+import {
+  AccessContextPanel,
+  MockBillingPanel,
+  TenantMembershipPanel,
+  useSubscriptionHistory,
+  useSubscriptionState,
+} from '@/features/subscription-access';
 import { useAuth } from '@/shared/auth';
-import { LibraryAccessWidget } from '@/widgets/library';
 import { Breadcrumb, Button, Card, CardContent, CardHeader, Spinner } from '@/shared/ui';
 import styles from './page.module.css';
 
@@ -13,17 +19,33 @@ const formatLabel = (value: string) => value.replace(/_/g, ' ');
 export default function AdminSubscriptionDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const librariesQuery = useLibraries({});
   const { setCurrentTenantContext } = useAuth();
   const libraryId = (params.libraryId as string) || '';
-  const stateQuery = useSubscriptionState(libraryId);
-  const historyQuery = useSubscriptionHistory(libraryId);
+  const availableLibraries = librariesQuery.data || [];
+  const suggestedLibrary = availableLibraries[0];
+  const effectiveLibraryId =
+    availableLibraries.length > 0
+      ? availableLibraries.some((library) => library.id === libraryId)
+        ? libraryId
+        : suggestedLibrary?.id || ''
+      : libraryId;
+  const stateQuery = useSubscriptionState(effectiveLibraryId);
+  const historyQuery = useSubscriptionHistory(effectiveLibraryId);
 
   useEffect(() => {
-    if (!libraryId) {
+    if (!effectiveLibraryId) {
       return;
     }
-    setCurrentTenantContext(libraryId, 'route');
-  }, [libraryId, setCurrentTenantContext]);
+
+    if (libraryId && effectiveLibraryId !== libraryId) {
+      setCurrentTenantContext(effectiveLibraryId, 'route');
+      router.replace(`/admin/subscriptions/${effectiveLibraryId}`);
+      return;
+    }
+
+    setCurrentTenantContext(effectiveLibraryId, 'route');
+  }, [effectiveLibraryId, libraryId, router, setCurrentTenantContext]);
 
   return (
     <main className={styles.page}>
@@ -56,7 +78,7 @@ export default function AdminSubscriptionDetailPage() {
 
         <section className={styles.grid}>
           <div className={styles.stack}>
-            <LibraryAccessWidget libraryId={libraryId} />
+            <AccessContextPanel libraryId={effectiveLibraryId} />
 
             <Card className={styles.summaryCard}>
               <CardHeader>
@@ -95,9 +117,9 @@ export default function AdminSubscriptionDetailPage() {
           </div>
 
           <div className={styles.stack}>
-            <MockBillingPanel libraryId={libraryId} />
+            <MockBillingPanel libraryId={effectiveLibraryId} />
 
-            <TenantMembershipPanel libraryId={libraryId} />
+            <TenantMembershipPanel libraryId={effectiveLibraryId} />
 
             <Card className={styles.summaryCard}>
               <CardHeader>

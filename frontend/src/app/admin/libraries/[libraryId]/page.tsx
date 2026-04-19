@@ -5,7 +5,6 @@ import { useParams, useRouter, notFound } from 'next/navigation'
 import type { AxiosError } from 'axios'
 import { Spinner, Breadcrumb, Button } from '@/shared/ui'
 import { showToast } from '@/shared/ui/toast'
-import { LibraryAccessWidget } from '@/widgets/library'
 import {
   useLibrary,
   useLibraryThemeColor,
@@ -361,10 +360,6 @@ export default function LibraryDetailPage() {
           <span className={styles.progressLabel}>{limitMessage}</span>
         </div>
       )}
-
-      <section className={styles.accessWidgetSection}>
-        <LibraryAccessWidget libraryId={libraryId} />
-      </section>
 
       <BookshelfDashboardBoard
         libraryId={libraryId}

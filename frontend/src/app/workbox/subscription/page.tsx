@@ -53,6 +53,38 @@ export default function MySubscriptionPage() {
 
         <Card>
           <CardHeader>
+            <strong>What this page is for</strong>
+          </CardHeader>
+          <CardContent className={styles.cardStack}>
+            <div className={styles.roleGrid}>
+              <div className={styles.roleItem}>
+                <span className={styles.roleLabel}>Audience</span>
+                <strong>Member, admin, owner</strong>
+              </div>
+              <div className={styles.roleItem}>
+                <span className={styles.roleLabel}>Current role</span>
+                <strong>{session?.role || 'anonymous'}</strong>
+              </div>
+              <div className={styles.roleItem}>
+                <span className={styles.roleLabel}>Surface type</span>
+                <strong>Shared subscription view</strong>
+              </div>
+            </div>
+            <p className={styles.roleHint}>
+              This page is the shared subscription surface for every admitted user. It shows backend-derived
+              access context, but it does not expose tenant membership management, event history, or mock-billing actions.
+            </p>
+            {isAdmin ? (
+              <p className={styles.roleHint}>
+                You are currently viewing the shared user-facing surface as an admin. Use Subscription Console only when
+                you need tenant-scoped admin controls.
+              </p>
+            ) : null}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <strong>Current library scope</strong>
           </CardHeader>
           <CardContent className={styles.cardStack}>

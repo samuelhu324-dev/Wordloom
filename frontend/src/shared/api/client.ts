@@ -149,7 +149,11 @@ apiClient.interceptors.request.use(
 
     // 添加 JWT Token
     const token = typeof window !== 'undefined' ? localStorage.getItem('wl_token') : null;
-    if (token) {
+    const shouldSendBearerToken =
+      !!token &&
+      !token.startsWith('wl-dev-') &&
+      token.split('.').length === 3;
+    if (shouldSendBearerToken) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 

@@ -368,6 +368,7 @@
 
 - `S0F-9H` is now stable: the packet has contract, auth-entry implementation, explicit admission, tenant-aware routed entry, and focused close-out drills on the same tenant-scoped model.
 - `9H` now acts as the stable source packet for the first local-first identity-to-membership-to-entry closure under the current `M4-P1-C` product-entry stack.
+- Post-stable follow-up work on the same day tightened the shared/admin subscription surfaces, replaced stale demo-tenant assumptions with live library selection where needed, and removed a fake-Bearer regression that could incorrectly bounce admitted local-first sessions back to `/login`.
 - The next step is no longer inside `9H`; the downstream choice should now be one later provider-adapter, richer invite/admission realism, or broader multi-tenant identity packet rather than reopening this first closure.
 
 ## Evidence (reserved)
@@ -439,3 +440,5 @@
 - 2026-04-19: completed `S0F-9H/P1-C1-S1S2` by removing free role fabrication from login/register, landing the first explicit local-first admission page, and proving the updated auth/admission flow together with existing gating and tenant-context drills.
 - 2026-04-19: completed `S0F-9H/P2-C1-S1S2` by unifying routed-entry resolution, preserving safe `next` intent through onboarding, and landing tenant-scoped admin defaults on the current Workbox/auth stack.
 - 2026-04-19: completed `S0F-9H/P3-C1-S1S2` and marked the packet stable after focused frontend drills proved the first local-first identity-to-membership-to-entry closure end to end.
+- 2026-04-19: landed a `9H` follow-up that clarified `My Subscription` as the shared user-facing surface and `Subscription Console` as the admin-only entry surface, moved backend access snapshot ownership to subscription detail rather than library detail, healed stale invalid tenant targeting toward live backend libraries, and stopped local demo tokens from being sent as fake Bearer credentials that could trigger incorrect `/login` redirects.
+- 2026-04-19: reran focused frontend verification after the follow-up: `npx playwright test tests/e2e/auth-admission.spec.ts tests/e2e/identity-closure.spec.ts` passed (`2 passed`), and `npx playwright test tests/e2e/subscription-gating.spec.ts` passed (`3 passed`).

@@ -1,20 +1,29 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useLibraries } from '@/features/library';
 import { useRouter } from 'next/navigation';
-import { AccessContextPanel } from '@/features/subscription-access';
 import { useAuth } from '@/shared/auth';
 import { Breadcrumb, Button, Card, CardContent, CardHeader, Input } from '@/shared/ui';
 import styles from './page.module.css';
 
 export default function AdminSubscriptionsPage() {
   const router = useRouter();
+  const librariesQuery = useLibraries({});
   const { currentTenantId, setCurrentTenantContext } = useAuth();
   const [libraryId, setLibraryId] = useState('');
+  const availableLibraries = librariesQuery.data || [];
+  const suggestedLibrary = availableLibraries[0];
+  const resolvedCurrentTenantId =
+    currentTenantId && availableLibraries.some((library) => library.id === currentTenantId)
+      ? currentTenantId
+      : suggestedLibrary?.id || '';
 
   useEffect(() => {
-    setLibraryId(currentTenantId);
-  }, [currentTenantId]);
+    if (resolvedCurrentTenantId) {
+      setLibraryId(resolvedCurrentTenantId);
+    }
+  }, [resolvedCurrentTenantId]);
 
   const handleOpen = () => {
     const trimmed = libraryId.trim();
@@ -45,6 +54,32 @@ export default function AdminSubscriptionsPage() {
 
         <Card className={styles.card}>
           <CardHeader>
+            <strong>What makes this admin-only</strong>
+          </CardHeader>
+          <CardContent className={styles.card}>
+            <div className={styles.roleGrid}>
+              <div className={styles.roleItem}>
+                <span className={styles.roleLabel}>Audience</span>
+                <strong>Admin, owner only</strong>
+              </div>
+              <div className={styles.roleItem}>
+                <span className={styles.roleLabel}>Blocked for members</span>
+                <strong>Redirected back to My Subscription</strong>
+              </div>
+              <div className={styles.roleItem}>
+                <span className={styles.roleLabel}>Admin tools</span>
+                <strong>Membership, billing, event history</strong>
+              </div>
+            </div>
+            <p className={styles.explainer}>
+              This landing page is intentionally not the shared subscription view. It is the admin entry point that lets you
+              choose a library and then open the tenant-scoped detail surface with operational controls.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className={styles.card}>
+          <CardHeader>
             <strong>Choose a library</strong>
           </CardHeader>
           <CardContent className={styles.card}>
@@ -64,7 +99,20 @@ export default function AdminSubscriptionsPage() {
           </CardContent>
         </Card>
 
-        {currentTenantId && <AccessContextPanel libraryId={currentTenantId} />}
+        <Card className={styles.card}>
+          <CardHeader>
+            <strong>Admin detail surface</strong>
+          </CardHeader>
+          <CardContent className={styles.card}>
+            <p className={styles.explainer}>
+              After you open a library, the admin detail page adds the backend access snapshot plus the admin-only controls:
+              mock billing, tenant membership management, and applied event history.
+            </p>
+            <div className={styles.hint}>
+              Suggested library: {resolvedCurrentTenantId || 'waiting for library list'}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </main>
   );

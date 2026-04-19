@@ -27,36 +27,91 @@ const MENU_ITEMS: MenuItem[] = [
 export const WorkboxMenu: React.FC = () => {
   const { hydrated, session } = useAuth();
   const [mounted, setMounted] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [openReason, setOpenReason] = useState<'hover' | 'manual' | null>(null);
   const pathname = usePathname();
+  const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const hoverTimerRef = useRef<number | null>(null);
   const { t } = useI18n();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleMouseEnter = () => setOpen(true);
+  const open = openReason !== null;
 
-  const handleMouseLeave = () => setOpen(false);
+  const clearHoverTimer = () => {
+    if (hoverTimerRef.current) {
+      window.clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+  };
+
+  const handleMouseEnter = () => {
+    clearHoverTimer();
+    if (openReason !== 'manual') {
+      hoverTimerRef.current = window.setTimeout(() => setOpenReason('hover'), 120);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    clearHoverTimer();
+    if (openReason === 'hover') {
+      hoverTimerRef.current = window.setTimeout(() => setOpenReason(null), 200);
+    }
+  };
 
   const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-      setOpen(false);
+      clearHoverTimer();
+      setOpenReason(null);
     }
   };
+
+  const handleToggle = () => {
+    clearHoverTimer();
+    setOpenReason((current) => (current === 'manual' ? null : 'manual'));
+  };
+
+  useEffect(() => {
+    return () => clearHoverTimer();
+  }, []);
 
   // Keyboard: Esc to close
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && open) {
-        setOpen(false);
+        setOpenReason(null);
         buttonRef.current?.focus();
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent | PointerEvent) => {
+      if (containerRef.current?.contains(event.target as Node)) {
+        return;
+      }
+
+      setOpenReason(null);
+    };
+
+    window.addEventListener('pointerdown', handlePointerDown);
+    return () => window.removeEventListener('pointerdown', handlePointerDown);
+  }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      const firstItem = menuRef.current?.querySelector('[data-menuitem]') as HTMLElement | null;
+      firstItem?.focus();
+    }
   }, [open]);
 
   // Arrow navigation inside menu
@@ -86,6 +141,7 @@ export const WorkboxMenu: React.FC = () => {
 
   return (
     <div
+      ref={containerRef}
       className={styles.container}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -99,7 +155,7 @@ export const WorkboxMenu: React.FC = () => {
         aria-expanded={open}
         aria-label={workboxLabel}
         className={styles.trigger}
-        onClick={() => setOpen(o => !o)}
+        onClick={handleToggle}
         onKeyDown={handleKeyDown}
         data-testid="workbox-trigger"
       >
@@ -124,7 +180,7 @@ export const WorkboxMenu: React.FC = () => {
                     role="menuitem"
                     tabIndex={-1}
                     data-menuitem
-                    onClick={() => setOpen(false)}
+                    onClick={() => setOpenReason(null)}
                     className={styles.menuItem}
                   >
                     {item.labelKey ? t(item.labelKey) : item.label}

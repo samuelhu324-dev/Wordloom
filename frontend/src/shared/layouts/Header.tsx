@@ -12,12 +12,23 @@ import styles from './Header.module.css';
 
 export const Header: React.FC = () => {
   const { t } = useI18n();
-  const { hydrated, session, signOut } = useAuth();
+  const { hydrated, session, currentTenantId, signOut } = useAuth();
 
   const handleSignOut = () => {
     signOut();
     window.location.href = '/';
   };
+
+  const sessionLandingPath =
+    session && currentTenantId
+      ? buildLandingPath({
+          role: session.role,
+          libraryId: currentTenantId,
+          admissionStatus: session.admissionStatus,
+        })
+      : session
+        ? buildLandingPath(session)
+        : '/';
 
   return (
     <header className={styles.header}>
@@ -33,7 +44,7 @@ export const Header: React.FC = () => {
           {hydrated && session ? (
             <>
               <LocalActorSwitcher className={styles.actorSwitcher} />
-              <Link href={buildLandingPath(session)} className={styles.sessionBadge}>
+              <Link href={sessionLandingPath} className={styles.sessionBadge}>
                 {session.displayName} · {session.role}
               </Link>
               <Button variant="secondary" size="sm" onClick={handleSignOut}>
