@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Cleanup, Redirect, GC, epic/s0, sub/3l`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/423`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/435`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -24,15 +24,15 @@
   **reference_log_7**: `docs/governance/contracts/support-only/INDEX.md`
   **reference_log_8**: `docs/governance/contracts/GC-ISS-0001-issue-creation-metadata-english-body.md`
   **reference_log_9**: `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `policy`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/3`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -41,7 +41,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-09`
-**updated**: `2026-04-09`
+**updated**: `2026-04-14`
 
 ---
 

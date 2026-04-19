@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Runbook, Cleanup, Ledger, Template, epic/s0, sub/3h`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/419`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/432`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -21,15 +21,15 @@
   **reference_log_4**: `docs/logs/_template-log-structured-extraction-clean-lane.md`
   **reference_log_5**: `docs/logs/_template-log-structured-extraction-mixed-role-lane.md`
   **reference_log_6**: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `workflow`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/3`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -38,7 +38,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-07`
-**updated**: `2026-04-07`
+**updated**: `2026-04-14`
 
 ---
 
@@ -63,6 +63,26 @@
 - Use `role first, disposition second` when splitting old structured logs: first decide where stable rule or procedure belongs, then decide whether the retained source log is `keep current`, `keep legacy`, `support-only`, or `defer cleanup`.
 - A template is a reusable migration workflow, not a new filename convention or a requirement that every outlet always exist.
 - `S0F-3F` and `S0F-3G` remain valid historical control slices, but future recurring execution should prefer smaller child ledgers, manifests, and runbook-driven packets.
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-3H` fixes the recurring governance operating model that later replay packets should follow instead of reopening origin slices.
+
+**PR summary bullets**:
+
+- Separate recurring governance method from per-run ledger, manifest, and evidence ownership.
+- Publish the reusable packet and runbook split for repeated governance execution packages.
+- Pilot the model on `S0F-1K` so later recurring runs stop stretching the original control slices.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the recurring-governance run-model package.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-3H-recurring-governance-run-model-and-ledger-split.md`
+- Previous log: `docs/logs/log-S0F-3G-governance-cleanup-staging-and-phased-file-cleanup.md`
+- Pilot package: `docs/logs/log-S0F-1K-lifecycle-exact-path-successor-package.md`
 
 ## Scope
 

@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Maintenance, Contract, epic/s0, sub/2b`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/385`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/387`
   **runbook**: `docs/runbook/run-S0F-2B-family-patch-and-ops-maintenance-model.md`
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -19,7 +19,7 @@
   **reference_log_2**: `docs/logs/log-S0F-2A-maintenance-lanes-and-direct-patch-ledger.md`
   **reference_log_3**: `docs/logs/maintenance/_template-log-maintenance-sweep.md`
   **reference_log_4**: `docs/logs/patch/_template-log-patch-note.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `policy`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/2`
 **issue_module_labels**: ``
@@ -27,7 +27,7 @@
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-05`
-**updated**: `2026-04-05`
+**updated**: `2026-04-14`
 
 ---
 

@@ -1,0 +1,30 @@
+{
+  "generated_at": "2026-04-14T10:35:00Z",
+  "head_sha": "c5ca74367",
+  "series_packet": "S0F-2*",
+  "phase": "P3-C1-S4",
+  "items": [
+    {
+      "requested_id": "S0F-2A",
+      "issue_number": 384,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/384",
+      "merged_pr_number": 386,
+      "merged_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/386",
+      "guarded_apply_result_path": "docs/issues/issue-conclusion-lifecycle-remediation-s0f-2a-issue-conclusion-guarded-apply-result.json",
+      "apply_result_path": "docs/issues/issue-conclusion-lifecycle-remediation-s0f-2a-issue-conclusion-s0f-2a-apply-result.json",
+      "post_conclusion_audit_path": "docs/issues/lifecycle-audit-s0f-2a-plan.json",
+      "final_status": "pass"
+    },
+    {
+      "requested_id": "S0F-2B",
+      "issue_number": 385,
+      "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/385",
+      "merged_pr_number": 387,
+      "merged_pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/387",
+      "guarded_apply_result_path": "docs/issues/issue-conclusion-lifecycle-remediation-s0f-2b-issue-conclusion-guarded-apply-result.json",
+      "apply_result_path": "docs/issues/issue-conclusion-lifecycle-remediation-s0f-2b-issue-conclusion-s0f-2b-apply-result.json",
+      "post_conclusion_audit_path": "docs/issues/lifecycle-audit-s0f-2b-plan.json",
+      "final_status": "pass"
+    }
+  ]
+}

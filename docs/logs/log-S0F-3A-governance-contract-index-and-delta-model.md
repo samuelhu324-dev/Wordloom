@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Contract, Index, epic/s0, sub/3a`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/412`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/425`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -18,15 +18,15 @@
   **reference_log_1**: `docs/logs/log-S0F-1J-pr-body-completeness-task-and-ci-gate.md`
   **reference_log_2**: `docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md`
   **reference_log_3**: `docs/logs/patch/log-S0F-P1-s0f-pr-body-completeness-standard-check-dispatch-failure-triage.md`
-**issue_keyword**: `governance`
+  **issue_keyword**: `policy`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/3`
+  **issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+  **roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -35,7 +35,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-06`
-**updated**: `2026-04-06`
+**updated**: `2026-04-14`
 
 ---
 

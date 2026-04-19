@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Contract, Index, Naming, epic/s0, sub/3b`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/413`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/426`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -18,15 +18,15 @@
   **reference_log_1**: `docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
   **reference_log_2**: `docs/governance/INDEX.md`
   **reference_log_3**: `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `policy`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/3`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -35,7 +35,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-06`
-**updated**: `2026-04-06`
+**updated**: `2026-04-14`
 
 ---
 
@@ -66,6 +66,26 @@
 - Refinement and supersede are not interchangeable:
   - refinement keeps the earlier contract semantically current unless the record body says otherwise
   - supersede replaces the earlier contract for the overlapping governed scope and must be visible in both index and record relationships
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-3B` fixes the front-door registry and naming model that later governance-record landing slices consume directly.
+
+**PR summary bullets**:
+
+- Define one front-door governance registry plus abbreviation glossary for active current contracts.
+- Introduce the dual identifier model and short `GC-<AREA>-<NNNN>-<summary>.md` naming rule.
+- Tighten area-code admission, required index fields, and deterministic registry sorting.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the registry-and-naming publish package.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-3B-governance-contract-registry-and-naming-model.md`
+- Previous log: `docs/logs/log-S0F-3A-governance-contract-index-and-delta-model.md`
+- Front door: `docs/governance/INDEX.md`
 
 ## Scope
 

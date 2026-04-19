@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Cleanup, GC, epic/s0, sub/3j`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/421`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/434`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -24,15 +24,15 @@
   **reference_log_7**: `docs/governance/contracts/support-only/INDEX.md`
   **reference_log_8**: `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
   **reference_log_9**: `docs/logs/log-S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `policy`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/3`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -41,7 +41,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-08`
-**updated**: `2026-04-08`
+**updated**: `2026-04-14`
 
 ---
 
@@ -90,10 +90,6 @@
 - Previous log: `docs/logs/log-S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet.md`
 - GC triage rule: `docs/governance/views/view-gc-triage-and-retention-rule-v1.md`
 - First cleanup boundary: `docs/governance/views/view-gc-first-cleanup-boundary-v1.md`
-
-**Evidence Footer Source**:
-
-- `P0-C1-S1S2S3` | artifact: `docs/logs/log-S0F-3J-old-gc-cleanup-candidate-selection-after-doc-reader-stabilization.md`
 
 ## Exported Sections / Outlet Ownership
 

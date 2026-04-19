@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "mode": "issue-conclusion-dry-run",
+  "defaults": {
+    "repo": "samuelhu324-dev/wordloom-v3"
+  },
+  "items": [
+    {
+      "requested_id": "S0F-2B",
+      "source_log_path": "docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md",
+      "issue_number": 385,
+      "merged_pr_overrides": [
+        "#387"
+      ],
+      "reason": "Lifecycle remediation for S0F-2B"
+    }
+  ]
+}

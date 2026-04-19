@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Contracts, History, Lineage, Ledger, Reader, epic/s0, sub/7b`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/458`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/467`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -20,13 +20,13 @@
   **reference_log_3**: `docs/logs/_template-support-only-contract-release-ledger.md`
 **issue_keyword**: `migration`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/7`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -35,9 +35,28 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-10`
-**updated**: `2026-04-10`
+**updated**: `2026-04-14`
 
 ---
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-7B` is expected to define the release-based lineage and ledger model that later chronology-first contracts will reuse.
+
+**PR summary bullets**:
+
+- Define release-based contract lineage instead of treating every contract state as one isolated rewrite.
+- Connect chronology-first contracts to one ledger model that records release movement and retained standing together.
+- Stabilize how later rebuild packets explain contract state changes across releases.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the release-based contract lineage lane.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-7B-release-based-contract-lineage-and-ledger-model.md`
+- Previous log: `docs/logs/log-S0F-7A-chronology-first-contract-rebuild.md`
 
 ## Decision / Outcome
 

@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Workflow, Governance, Contract, Registry, Admission, epic/s0, sub/3d`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/415`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/428`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -18,15 +18,15 @@
   **reference_log_1**: `docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
   **reference_log_2**: `docs/governance/INDEX.md`
   **reference_log_3**: `docs/governance/contracts/GC-PRB-0001-historical-drift-fail-on-findings.md`
-**issue_keyword**: `governance`
+**issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/3`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -35,7 +35,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-06`
-**updated**: `2026-04-06`
+**updated**: `2026-04-14`
 
 ---
 
@@ -56,6 +56,26 @@
 - Keep record relationships simple in the first pass: independent records first, then later refinement or supersede only if a later slice proves a true overlap.
 - Prefer the stable semantic owner of each rule, while still listing later packaging or enforcement slices as traceability sources where they materially clarify the current active meaning.
 - Use the front-door `INDEX` as the only current-state registry surface; do not create one parallel list inside the slice log.
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-3D` executes the first real multi-area governance-contract landing batch.
+
+**PR summary bullets**:
+
+- Execute the first bounded registry landing batch under `ISS`, `PRA`, and `COMPL`.
+- Publish the first admitted current records while keeping the broader shortlist staged behind this batch.
+- Update the front-door governance index to the first multi-area active registry state.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the first landing-batch publish package.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-3D-first-governance-contract-landing-batch.md`
+- Previous log: `docs/logs/log-S0F-3C-governance-contract-series-audit-and-admission.md`
+- Front door: `docs/governance/INDEX.md`
 
 ## Scope
 

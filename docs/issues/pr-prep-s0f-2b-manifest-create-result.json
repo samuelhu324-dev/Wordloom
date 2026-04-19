@@ -1,0 +1,44 @@
+{
+  "mode": "pr-create",
+  "result": "ok",
+  "plan_path": "docs/issues/pr-prep-s0f-2b-manifest-plan.json",
+  "preflight_result_path": "docs/issues/pr-prep-s0f-2b-manifest-front-half-preflight-result.json",
+  "item_index": 0,
+  "requested_id": "S0F-2B",
+  "source_log_path": "docs/logs/log-S0F-2B-family-patch-and-ops-maintenance-model.md",
+  "repository": "samuelhu324-dev/wordloom-v3",
+  "prepared_branch": "pr-prep/s0f-2b",
+  "base_branch": "main",
+  "merge_base": "c92ea29fd74a826796dca32d10439488717ee9a7",
+  "selected_commit_count": 3,
+  "selected_commits": [
+    "44be1c070344ca7e334de501d907eb49162ba41f",
+    "9b61e1c46cc3cf16ca969f6f979f4ef5794550cb",
+    "9712f17e05666d306565a1abce235d184e028567"
+  ],
+  "pr_title": "S0F-2B/P0-P5: family patch and ops maintenance model v1",
+  "draft": true,
+  "preflight_decision": "allow-front-half-preflight",
+  "preflight_allowed": true,
+  "pr_number": 387,
+  "pr_url": "https://github.com/samuelhu324-dev/wordloom-v3/pull/387",
+  "body_path": "docs/issues/pr-prep-s0f-2b-manifest-create-body.md",
+  "labels_applied": [
+    "EVOLUTION",
+    "s0/knowledge system",
+    "sub/2",
+    "drills"
+  ],
+  "projects_applied": [],
+  "milestone_applied": null,
+  "development_issue": "#385",
+  "post_apply_verify_status": "pass",
+  "post_apply_verify_result_path": "docs/issues/pr-prep-s0f-2b-manifest-post-apply-verify-result.json",
+  "post_apply_verify_live_body_path": "docs/issues/pr-prep-s0f-2b-manifest-post-apply-live-body.md",
+  "warnings": [
+    "pr_projects left blank; PR project assignment intentionally skipped",
+    "pr_milestone left blank; PR milestone assignment intentionally skipped",
+    "cherry-pick fallback used after conflict at 44be1c07; prepared branch rebuilt from the source-head snapshot of selected paths",
+    "original cherry-pick error: error: could not apply 44be1c070... S0F-2B/P0-P3-C1-S1: refine patch and maintenance operating model"
+  ]
+}

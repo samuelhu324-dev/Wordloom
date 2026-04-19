@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Governance, Records, Views, History, Narrative, Reader, epic/s0, sub/5i`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/445`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/456`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -23,13 +23,13 @@
   **reference_log_6**: `docs/governance/views/view-old-s0-series-s0f-standing-v1.md`
 **issue_keyword**: `migration`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/5`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
-**roadmap_milestone**: `M5`
+**roadmap_milestone**: `M2`
 **roadmap_phase**: ``
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
@@ -38,7 +38,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-10`
-**updated**: `2026-04-10`
+**updated**: `2026-04-14`
 
 ---
 
@@ -66,6 +66,25 @@
   - what result or decision did it leave behind?
   - what later surface inherited that result?
 - Without the counted-series widening lane, the narrative pilot remains locally convincing but not yet reusable at the scale where most old-`S0` history reading still happens.
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-5I` is expected to widen the proven narrative-history field model across counted old-`S0` series in bounded packets rather than to reopen standing judgment.
+
+**PR summary bullets**:
+
+- Fix the counted-series widening order after the `S0A + S0B` narrative pilot.
+- Publish the first bounded counted-series narrative packet on the reused field model.
+- Continue widening and reader routing without collapsing rollout into one mega-view.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the counted-series narrative widening lane.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-5I-old-s0-narrative-history-widening-across-counted-series.md`
+- Previous log: `docs/logs/log-S0F-5H-old-s0-narrative-history-view-pilot.md`
 
 ## Exported Sections / Outlet Ownership
 
