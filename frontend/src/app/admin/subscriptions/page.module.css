@@ -1,0 +1,74 @@
+.page {
+  min-height: 100vh;
+  background: var(--color-bg-app);
+  padding: var(--spacing-2xl) 0 var(--spacing-3xl);
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-2xl);
+  display: grid;
+  gap: var(--spacing-xl);
+}
+
+.hero {
+  display: grid;
+  gap: 12px;
+}
+
+.hero h1 {
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.hero p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.card {
+  display: grid;
+  gap: 16px;
+}
+
+.roleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.roleItem {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-subtle);
+}
+
+.roleLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+
+.explainer {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.hint {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}

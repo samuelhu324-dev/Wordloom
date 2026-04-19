@@ -16,6 +16,7 @@ type AxiosRequestMeta = {
 };
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const CURRENT_TENANT_CONTEXT_STORAGE_KEY = 'wl_current_tenant_context';
 const ACTIVE_LIBRARY_STORAGE_KEY = 'wl_active_library_id';
 
 const normalizeBaseOrigin = (input?: string | null): string => {
@@ -81,6 +82,17 @@ const readActiveLibraryId = (): string | null => {
     return null;
   }
   try {
+    const rawTenantContext = localStorage.getItem(CURRENT_TENANT_CONTEXT_STORAGE_KEY);
+    if (rawTenantContext) {
+      const parsed = JSON.parse(rawTenantContext) as
+        | { tenantId?: unknown; libraryId?: unknown }
+        | null;
+      const explicitTenantId = readLibraryIdFromValue(parsed?.tenantId ?? parsed?.libraryId);
+      if (explicitTenantId) {
+        return explicitTenantId;
+      }
+    }
+
     const stored = localStorage.getItem(ACTIVE_LIBRARY_STORAGE_KEY);
     return readLibraryIdFromValue(stored);
   } catch {
@@ -137,7 +149,11 @@ apiClient.interceptors.request.use(
 
     // 添加 JWT Token
     const token = typeof window !== 'undefined' ? localStorage.getItem('wl_token') : null;
-    if (token) {
+    const shouldSendBearerToken =
+      !!token &&
+      !token.startsWith('wl-dev-') &&
+      token.split('.').length === 3;
+    if (shouldSendBearerToken) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
@@ -146,6 +162,7 @@ apiClient.interceptors.request.use(
       const derivedLibraryId = extractLibraryIdFromConfig(config) ?? readActiveLibraryId();
       if (derivedLibraryId) {
         headers['X-Library-Id'] = derivedLibraryId;
+        headers['X-Tenant-Id'] = derivedLibraryId;
       }
     }
 
