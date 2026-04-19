@@ -298,7 +298,7 @@
 
 ### P0-C1-S1S2S3 (Auth-entry and membership-admission contract fixed | 2026-04-19)
 
-- `headSha`: `pending-backfill`
+- `headSha`: `ca0d8eca8`
 - `artifacts`:
   - `artifacts/_tmp_s0f_9h_p0_auth_entry_membership_admission_contract.json`
 - `expected`:
