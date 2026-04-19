@@ -341,7 +341,7 @@
 
 ### P1-C1-S1S2 (Auth-entry and admission slice landed | 2026-04-19)
 
-- `headSha`: `pending-backfill`
+- `headSha`: `1938713f9`
 - `artifacts`:
   - `artifacts/_tmp_s0f_9h_p1_auth_entry_and_admission_slice.json`
 - `expected`:
