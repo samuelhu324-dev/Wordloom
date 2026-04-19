@@ -20,7 +20,7 @@ REASON_NOT_ADMIN = "not_admin"
 REASON_TENANT_MISMATCH = "tenant_mismatch"
 
 
-def assert_actor_can_manage_memberships(*, ctx: AuthContext, requested_library_id: UUID) -> None:
+def assert_actor_is_tenant_admin(*, ctx: AuthContext, requested_library_id: UUID) -> None:
     if requested_library_id != ctx.tenant_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -40,7 +40,12 @@ def assert_actor_can_manage_memberships(*, ctx: AuthContext, requested_library_i
     )
 
 
+def assert_actor_can_manage_memberships(*, ctx: AuthContext, requested_library_id: UUID) -> None:
+    assert_actor_is_tenant_admin(ctx=ctx, requested_library_id=requested_library_id)
+
+
 __all__ = [
+    "assert_actor_is_tenant_admin",
     "assert_actor_can_manage_memberships",
     "REASON_NOT_MEMBER",
     "REASON_NOT_ADMIN",

@@ -108,6 +108,19 @@ class GrantMembershipRequest(BaseModel):
     user_id: UUID
     role: str
 
+
+class LibraryMembershipResponse(BaseModel):
+    id: UUID
+    library_id: UUID
+    user_id: UUID
+    role: str
+    created_at: str
+    updated_at: str
+
+
+class LibraryMembershipListResponse(BaseModel):
+    items: list[LibraryMembershipResponse]
+
 _BACKEND_ROOT = FilePath(__file__).resolve().parents[5]
 _STORAGE_ROOT = FilePath(os.getenv("WORDLOOM_STORAGE_ROOT", _BACKEND_ROOT / "storage"))
 _library_cover_storage = StorageManager(LocalStorageStrategy(str(_STORAGE_ROOT)))
@@ -808,6 +821,37 @@ async def health_check() -> dict:
 # =========================================================================
 # Membership Management (RBAC-lite v1)
 # =========================================================================
+
+
+@router.get(
+    "/{library_id}/memberships",
+    response_model=LibraryMembershipListResponse,
+    summary="List library memberships",
+)
+async def list_memberships(
+    library_id: UUID = FastAPIPath(...),
+    ctx: AuthContext = Depends(get_auth_context),
+    db: AsyncSession = Depends(get_db),
+) -> LibraryMembershipListResponse:
+    from api.app.policy.library_membership_policy import assert_actor_can_manage_memberships
+    from infra.storage.library_membership_repository_impl import SQLAlchemyLibraryMembershipRepository
+
+    assert_actor_can_manage_memberships(ctx=ctx, requested_library_id=library_id)
+    membership_repo = SQLAlchemyLibraryMembershipRepository(db)
+    items = await membership_repo.list_by_library(library_id=library_id)
+    return LibraryMembershipListResponse(
+        items=[
+            LibraryMembershipResponse(
+                id=item.id,
+                library_id=item.library_id,
+                user_id=item.user_id,
+                role=item.role,
+                created_at=item.created_at.isoformat(),
+                updated_at=item.updated_at.isoformat(),
+            )
+            for item in items
+        ]
+    )
 
 
 @router.post(

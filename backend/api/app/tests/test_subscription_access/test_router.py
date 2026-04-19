@@ -57,6 +57,18 @@ async def _fake_auth_context() -> AuthContext:
     )
 
 
+def _make_fake_auth_context(*, tenant_id, roles):
+    async def _fake_auth() -> AuthContext:
+        return AuthContext(
+            user_id=uuid4(),
+            tenant_id=tenant_id,
+            roles=roles,
+            request_id="req-test",
+        )
+
+    return _fake_auth
+
+
 def test_subscription_access_router_registers_expected_paths() -> None:
     app = FastAPI()
     app.include_router(router, prefix="/api/v1")
@@ -110,10 +122,13 @@ def test_access_context_endpoint_returns_backend_payload(monkeypatch) -> None:
 def test_apply_event_endpoint_returns_updated_state(monkeypatch) -> None:
     app = FastAPI()
     app.include_router(router, prefix="/api/v1")
-    app.dependency_overrides[get_auth_context] = _fake_auth_context
     app.dependency_overrides[get_db] = _fake_db
 
     library_id = uuid4()
+    app.dependency_overrides[get_auth_context] = _make_fake_auth_context(
+        tenant_id=library_id,
+        roles=("admin", "member"),
+    )
     payload = SimpleNamespace(
         library_id=library_id,
         plan_code="standard",
@@ -144,3 +159,37 @@ def test_apply_event_endpoint_returns_updated_state(monkeypatch) -> None:
     assert response.status_code == 200
     assert response.json()["subscription_state"] == "active"
     assert "copy_block_cross_book" in response.json()["entitlements"]
+
+
+def test_member_cannot_read_admin_subscription_state(monkeypatch) -> None:
+    app = FastAPI()
+    app.include_router(router, prefix="/api/v1")
+    app.dependency_overrides[get_db] = _fake_db
+
+    library_id = uuid4()
+    app.dependency_overrides[get_auth_context] = _make_fake_auth_context(
+        tenant_id=library_id,
+        roles=("member",),
+    )
+
+    def _fake_build_use_cases(_session):
+        return (
+            _FakeAccessUseCase(None),
+            _FakeStateUseCase(None),
+            _FakeApplyUseCase(None),
+            _FakeHistoryUseCase([]),
+        )
+
+    monkeypatch.setattr(
+        "api.app.modules.subscription_access.routers.subscription_access_router._build_use_cases",
+        _fake_build_use_cases,
+    )
+
+    client = TestClient(app)
+    response = client.get(
+        f"/api/v1/admin/subscriptions/{library_id}",
+        headers={"X-Library-Id": str(library_id)},
+    )
+
+    assert response.status_code == 403
+    assert response.json()["detail"]["reason"] == "not_admin"
