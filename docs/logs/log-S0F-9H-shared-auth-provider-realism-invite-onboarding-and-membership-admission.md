@@ -420,7 +420,7 @@
 
 ### P3-C1-S1S2 (Identity-to-membership-to-entry verification passed | 2026-04-19)
 
-- `headSha`: `pending-backfill`
+- `headSha`: `2cad0e297`
 - `artifacts`:
   - `artifacts/_tmp_s0f_9h_p3_identity_membership_entry_verify.json`
 - `expected`:
