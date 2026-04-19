@@ -33,6 +33,10 @@ from .chronicle_models import ChronicleEventModel
 from .chronicle_entries_models import ChronicleEntryModel
 from .chronicle_dedupe_models import ChronicleEventDedupeStateModel
 from .maturity_models import MaturitySnapshotModel
+from .plan_catalog_models import PlanCatalogModel
+from .subscription_models import SubscriptionModel
+from .payment_event_models import PaymentEventModel
+from .entitlement_snapshot_models import EntitlementSnapshotModel
 
 __all__ = [
     # Base
@@ -63,5 +67,10 @@ __all__ = [
     "ChronicleEventDedupeStateModel",
     # Maturity
     "MaturitySnapshotModel",
+    # Subscription access
+    "PlanCatalogModel",
+    "SubscriptionModel",
+    "PaymentEventModel",
+    "EntitlementSnapshotModel",
 ]
 
