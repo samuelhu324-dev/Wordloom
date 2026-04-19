@@ -27,7 +27,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
     }
 
     if (!isAdmitted && session) {
-      router.replace('/onboarding/admission');
+      router.replace(buildLandingPath(session, pathname));
       return;
     }
 

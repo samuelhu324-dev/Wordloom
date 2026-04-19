@@ -25,6 +25,47 @@ export type AuthSession = {
   admissionSource: 'code' | 'dev-bypass';
 };
 
+const DEFAULT_MEMBER_LANDING_PATH = '/workbox/subscription';
+
+const normalizeNextPath = (nextPath?: string | null) => {
+  if (!nextPath) {
+    return null;
+  }
+
+  if (!nextPath.startsWith('/') || nextPath.startsWith('//')) {
+    return null;
+  }
+
+  if (
+    nextPath.startsWith('/login') ||
+    nextPath.startsWith('/register') ||
+    nextPath.startsWith('/onboarding/admission')
+  ) {
+    return null;
+  }
+
+  return nextPath;
+};
+
+const canAccessNextPath = (
+  session: Pick<AuthSession, 'role' | 'admissionStatus'>,
+  nextPath: string
+) => {
+  if (session.admissionStatus !== 'admitted') {
+    return false;
+  }
+
+  if (nextPath.startsWith('/workbox/subscription')) {
+    return true;
+  }
+
+  if (nextPath.startsWith('/admin/subscriptions')) {
+    return session.role === 'admin' || session.role === 'owner';
+  }
+
+  return false;
+};
+
 export type CurrentTenantContext = {
   tenantId: string;
   source: TenantContextSource;
@@ -264,12 +305,28 @@ const createSession = (input: AuthInput): AuthSession => {
   };
 };
 
-export const buildLandingPath = (session: Pick<AuthSession, 'role' | 'libraryId'>) =>
-  'admissionStatus' in session && session.admissionStatus === 'pending'
-    ? '/onboarding/admission'
-    : session.role === 'admin' || session.role === 'owner'
-      ? '/admin/subscriptions'
-      : '/workbox/subscription';
+export const buildLandingPath = (
+  session: Pick<AuthSession, 'role' | 'libraryId' | 'admissionStatus'>,
+  nextPath?: string | null
+) => {
+  const normalizedNextPath = normalizeNextPath(nextPath);
+
+  if (session.admissionStatus === 'pending') {
+    return normalizedNextPath
+      ? `/onboarding/admission?next=${encodeURIComponent(normalizedNextPath)}`
+      : '/onboarding/admission';
+  }
+
+  if (normalizedNextPath && canAccessNextPath(session, normalizedNextPath)) {
+    return normalizedNextPath;
+  }
+
+  if (session.role === 'admin' || session.role === 'owner') {
+    return `/admin/subscriptions/${session.libraryId}`;
+  }
+
+  return DEFAULT_MEMBER_LANDING_PATH;
+};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<AuthSession | null>(null);

@@ -51,12 +51,11 @@ test.describe('Subscription gating', () => {
     await page.goto('/workbox/subscription');
 
     await expect(page.getByRole('heading', { name: 'My Subscription' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'admin-user · admin' })).toHaveAttribute('href', '/admin/subscriptions');
+    await expect(page.getByRole('link', { name: 'admin-user · admin' })).toHaveAttribute('href', `/admin/subscriptions/${LIBRARY_ID}`);
     await expect(page.getByRole('button', { name: 'Open Subscription Console' })).toBeVisible();
 
-    await page.goto('/admin/subscriptions');
-    await expect(page).toHaveURL(/\/admin\/subscriptions/);
-    await expect(page.getByRole('heading', { name: 'Subscription Console' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Open admin subscription page' })).toBeVisible();
+    await page.getByRole('link', { name: 'admin-user · admin' }).click();
+    await expect(page).toHaveURL(new RegExp(`/admin/subscriptions/${LIBRARY_ID}$`));
+    await expect(page.getByRole('heading', { name: 'Subscription detail' })).toBeVisible();
   });
 });

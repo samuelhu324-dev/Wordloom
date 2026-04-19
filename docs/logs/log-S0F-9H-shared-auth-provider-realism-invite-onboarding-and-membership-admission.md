@@ -95,6 +95,7 @@
 
 - `P0-C1-S1S2S3` | artifact: `artifacts/_tmp_s0f_9h_p0_auth_entry_membership_admission_contract.json`
 - `P1-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9h_p1_auth_entry_and_admission_slice.json`
+- `P2-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9h_p2_routed_entry_and_tenant_landing.json`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
 - Generated PR body should keep `Evidence Footer` as the only optional section; development issue identity stays in `Metadata`.
@@ -290,6 +291,34 @@
   - admitted standing is derived from claimed local admission code for the selected tenant target
   - admitted identities then reuse the stable `9E/9F/9G` role-aware landing surfaces without reopening the permission loop
 
+## P2 (Routed entry and tenant-aware landing)
+
+- `P2` lands the first unified routed-entry rule for this packet, so shared auth entry, pending-onboarding redirects, admission completion, and dev-only actor switching all resolve through the same tenant-aware landing decision.
+- The implementation goal in this packet is to stop treating post-login routing as one role-only shortcut and instead bind the first admitted tenant explicitly into the landing path when the actor has one admitted tenant.
+- `P2` remains intentionally bounded: one shared landing resolver, one preserved safe-`next` rule through onboarding, one tenant-scoped admin default, and one focused drill set are enough for this slice.
+
+### P2 Routed-Entry Decision (v1)
+
+- `P2` now lands the first routed-entry tightening through:
+  - one shared landing resolver in auth runtime that accepts optional `next` intent
+  - one safe-`next` rule that rejects auth-loop paths and role-incompatible targets
+  - one tenant-scoped default admin landing that uses the admitted tenant target directly
+- The first routed-entry rule in this packet is now fixed as:
+  - pending identities preserve safe intended destination by redirecting to `/onboarding/admission?next=...`
+  - admitted `member` defaults to `/workbox/subscription`
+  - admitted `admin/owner` defaults to `/admin/subscriptions/{libraryId}` so the first admitted tenant is bound into the route instead of relying on later manual selection
+
+### P2 Tenant-Aware Landing Verification Decision (v1)
+
+- `P2` now verifies tenant-aware landing through focused Playwright coverage for:
+  - pending identity entry with preserved admin-target intent through onboarding
+  - admitted admin landing on tenant-scoped subscription detail rather than generic admin console
+  - local actor switching back into an admitted admin actor with the same tenant-scoped default route
+- The first verification rule in this packet is now fixed as:
+  - routed entry must preserve safe `next` intent across pending admission
+  - routed entry must reject role-incompatible targets and fall back to admitted-role landing
+  - tenant context must be observable from landing behavior rather than only from hidden storage fallback
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -305,8 +334,8 @@
 
 ### P2 (Routed entry and tenant-aware landing)
 
-- [ ] `P2-C1-S1`: implement one role-aware and tenant-aware routed-entry rule
-- [ ] `P2-C1-S2`: verify admitted actors land on the correct tenant-scoped entry
+- [x] `P2-C1-S1`: implement one role-aware and tenant-aware routed-entry rule
+- [x] `P2-C1-S2`: verify admitted actors land on the correct tenant-scoped entry
 
 ### P3 (Drill / Verify)
 
@@ -315,9 +344,9 @@
 
 ## Current Status (recommended)
 
-- `S0F-9H/P1` is now landed: the packet has one bounded shared auth-entry update plus one explicit local-first membership-admission slice on top of the stable `9E/9F/9G` stack.
-- `9H/P1` now fixes the first runtime split between authenticated identity and admitted standing: pending identities stop at onboarding, admitted identities derive role from explicit admission, and dev-only actor switching remains visible as bypass tooling rather than product truth.
-- The next step is now `P2` routed-entry tightening rather than more auth-entry widening, because the packet already has the first explicit admission surface and now needs to harden post-login tenant-aware landing behavior for admitted actors.
+- `S0F-9H/P2` is now landed: the packet now has one unified routed-entry rule on top of the already-landed shared auth-entry and explicit local-first admission slice.
+- `9H/P2` now fixes the first tenant-aware landing closure in this lane: pending identities keep safe `next` intent through onboarding, admitted admins land directly on tenant-scoped admin detail, and member/admin fallback routing stays role-compatible.
+- The next step is now `P3` drill/verify closure rather than more landing-surface widening, because the packet now has the first explicit identity-to-membership-to-entry path with tenant-aware routing behavior in place.
 
 ## Evidence (reserved)
 
@@ -353,8 +382,23 @@
   - onboarding now provides one explicit local-first admission claim path for pending identities
   - focused Playwright drills now prove the new admission flow plus existing subscription gating, tenant context, and local actor switching on the updated session model
 
+### P2-C1-S1S2 (Routed-entry and tenant-aware landing landed | 2026-04-19)
+
+- `headSha`: `pending-backfill`
+- `artifacts`:
+  - `artifacts/_tmp_s0f_9h_p2_routed_entry_and_tenant_landing.json`
+- `expected`:
+  - pending identities preserve safe intended destination through onboarding instead of dropping route intent
+  - admitted actors land on role-compatible, tenant-aware entry surfaces without hidden fallback authority
+  - admitted admins default to a tenant-scoped admin route rather than a generic console landing
+- `observed`:
+  - shared landing resolution now accepts safe `next` intent across login, register, onboarding, protected-route redirects, and dev-only actor switching
+  - admitted `admin/owner` now land on `/admin/subscriptions/{libraryId}` while admitted `member` remains on `/workbox/subscription`
+  - focused Playwright drills now prove admin-target intent survives onboarding and that tenant-scoped admin landing is the default for admitted admin actors
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-19: opened `S0F-9H` as the next auth-entry and onboarding lane after stable close-out of `S0F-9G`, targeting shared auth/provider realism, membership admission, and routed entry rather than support tooling or payment-provider realism.
 - 2026-04-19: completed `S0F-9H/P0-C1-S1S2S3` by fixing the first shared auth-entry realism boundary, explicit membership-admission contract, and tenant-aware routed-entry contract in one evidence-backed packet.
 - 2026-04-19: completed `S0F-9H/P1-C1-S1S2` by removing free role fabrication from login/register, landing the first explicit local-first admission page, and proving the updated auth/admission flow together with existing gating and tenant-context drills.
+- 2026-04-19: completed `S0F-9H/P2-C1-S1S2` by unifying routed-entry resolution, preserving safe `next` intent through onboarding, and landing tenant-scoped admin defaults on the current Workbox/auth stack.

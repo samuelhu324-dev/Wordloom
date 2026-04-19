@@ -51,9 +51,9 @@ test.describe('Local actor switching', () => {
     await page.getByLabel('Local actor role').selectOption('admin');
     await page.getByRole('button', { name: 'Switch' }).click();
 
-    await expect(page).toHaveURL(/\/admin\/subscriptions/);
-    await expect(page.getByRole('heading', { name: 'Subscription Console' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'admin-user · admin' })).toHaveAttribute('href', '/admin/subscriptions');
+    await expect(page).toHaveURL(new RegExp(`/admin/subscriptions/${LIBRARY_ID}$`));
+    await expect(page.getByRole('heading', { name: 'Subscription detail' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'admin-user · admin' })).toHaveAttribute('href', `/admin/subscriptions/${LIBRARY_ID}`);
 
     await page.goto(`/admin/subscriptions/${LIBRARY_ID}`);
     await expect(page.getByText('Tenant membership management')).toBeVisible();

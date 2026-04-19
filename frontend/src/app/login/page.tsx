@@ -24,7 +24,7 @@ export default function LoginPage() {
       displayName,
       libraryId,
     });
-    router.replace(nextPath || buildLandingPath(nextSession));
+    router.replace(buildLandingPath(nextSession, nextPath));
   };
 
   return (

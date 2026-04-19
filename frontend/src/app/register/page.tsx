@@ -1,18 +1,21 @@
 'use client';
 
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { buildLandingPath, useAuth } from '@/shared/auth';
 import { Button, Card, CardContent, CardHeader, Input } from '@/shared/ui';
 import styles from '../login/page.module.css';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { register } = useAuth();
   const [email, setEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [libraryId, setLibraryId] = useState('');
+
+  const nextPath = useMemo(() => searchParams.get('next'), [searchParams]);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -21,7 +24,7 @@ export default function RegisterPage() {
       displayName,
       libraryId,
     });
-    router.replace(buildLandingPath(nextSession));
+    router.replace(buildLandingPath(nextSession, nextPath));
   };
 
   return (

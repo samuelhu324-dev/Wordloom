@@ -2,7 +2,7 @@
 
 import React, { FormEvent, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { buildLandingPath, useAuth } from '@/shared/auth';
 import { Button, Card, CardContent, CardHeader, Input } from '@/shared/ui';
 import styles from '../../login/page.module.css';
@@ -11,11 +11,13 @@ const sampleCodes = ['MEMBER-DEMO', 'ADMIN-DEMO', 'OWNER-DEMO'];
 
 export default function AdmissionOnboardingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { hydrated, isAuthenticated, session, claimAdmission } = useAuth();
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
 
   const canSubmit = useMemo(() => !!code.trim(), [code]);
+  const nextPath = useMemo(() => searchParams.get('next'), [searchParams]);
 
   useEffect(() => {
     if (!hydrated) {
@@ -28,9 +30,9 @@ export default function AdmissionOnboardingPage() {
     }
 
     if (session.admissionStatus === 'admitted') {
-      router.replace(buildLandingPath(session));
+      router.replace(buildLandingPath(session, nextPath));
     }
-  }, [hydrated, isAuthenticated, router, session]);
+  }, [hydrated, isAuthenticated, nextPath, router, session]);
 
   if (!hydrated) {
     return null;
@@ -49,7 +51,7 @@ export default function AdmissionOnboardingPage() {
     }
 
     setError('');
-    router.replace(buildLandingPath(nextSession));
+    router.replace(buildLandingPath(nextSession, nextPath));
   };
 
   return (
