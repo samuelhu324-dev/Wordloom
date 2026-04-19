@@ -14,6 +14,11 @@ contract_record:
   applies_to: structured logs, labs, runbooks, adrs, source-linking semantics, and workflow handoff boundaries across documentation refinement
   enforcement_surface: manual
   violation_semantics: warning
+  owner_team: docs-governance
+  current_steward: delegated:workflow-parent-contract-maintainer
+  approval_state: reviewed-awaiting-approval
+  reviewed_by: role:workflow-reviewer
+  approved_by: role:docs-governance-approver
   recorded_at: 2026-04-10
   reviewed_at: pending
   effective_from: unknown
@@ -39,7 +44,24 @@ contract_record:
     - This contract is intentionally placed at the broader WORKFLOW layer rather than inside one narrower GitHub-issues subpath.
     - Narrower workflow families such as `DOC-WORKFLOW-LABS` may sit beneath this broader workflow family path, but that hierarchy is not itself a release split event.
     - The local repo currently has no S0A/2A source log, so this draft stays explicit about issue-only sourcing.
+    - Current-state governance now reads through owner_team/current_steward/approval_state/reviewed_by/approved_by, while the parent ledger remains the routing and event-history surface that explains how this broad workflow boundary is still carried.
 ```
+
+## Current Governance State
+
+- The current effective governance state of this contract is carried in frontmatter through `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
+- Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this release family; they should not be read as current ownership or approval identity.
+- This contract therefore acts as the broad workflow current-state governance surface for the `S0A-2A-R01` pipeline boundary, while the parent ledger preserves the routing and event-history chain that explains how narrower child families now sit beneath it.
+- The current steward is intentionally delegated rather than implicitly identical to the owner team, which keeps day-to-day workflow-parent maintenance distinct from durable family ownership.
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-WORKFLOW-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-0001` | `unknown` | `family-introduced` | `2026-04-10` | `GitHub issue S0A-2A (#24)` | The issue-only source introduced the broad workflow boundary, but it does not by itself prove the current steward or approval chain for the current contract state. |
+| `DOC-WORKFLOW-0001-GOV-02` | `routing-writeback-event` | `DOC-WORKFLOW-0001` | `role:packet-reviewer` | `broad-parent-routing-fixed` | `2026-04-11` | `ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md` | The selective backfill ledger fixed that `DOC-WORKFLOW-0001` remains the broad workflow parent while narrower logs, labs, and runbook slices can be read through dedicated child surfaces. |
+| `DOC-WORKFLOW-0001-GOV-03` | `delegated-stewardship-event` | `DOC-WORKFLOW-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | Stewardship for the current broad workflow parent is now explicitly delegated to a narrower parent-contract maintainer role while durable ownership remains with `docs-governance`. |
+| `DOC-WORKFLOW-0001-GOV-04` | `review-approval-separation-event` | `DOC-WORKFLOW-0001` | `role:workflow-reviewer; role:docs-governance-approver` | `reviewed-awaiting-approval-state-fixed` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The current contract state now records review and approval as distinct governance actions instead of leaving both roles implicit in one broad parent surface. |
 
 ## Contract Statement Table
 

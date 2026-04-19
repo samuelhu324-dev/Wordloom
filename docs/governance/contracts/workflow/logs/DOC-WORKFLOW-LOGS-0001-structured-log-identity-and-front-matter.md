@@ -10,6 +10,11 @@ contract_record:
   release_action: initial
   release_change_summary: Establish the first logs-oriented child release from S0B-3A by extracting the narrow workflow rule for stable structured log identity, log-facing front matter, and cutover-based intake discipline.
   summary: Govern structured logs through stable workflow identifiers, logs-facing front matter, and one cutover rule that requires new log content to enter the managed system under the new identifier and metadata discipline.
+  owner_team: docs-governance
+  current_steward: delegated:workflow-logs-contract-maintainer
+  approval_state: reviewed-awaiting-approval
+  reviewed_by: role:workflow-reviewer
+  approved_by: role:docs-governance-approver
   governance_area: workflow structured log identity and front matter governance
   applies_to: structured log ids, log titles, log-facing front matter fields, index-facing log identity, and new structured log intake after the cutover boundary
   enforcement_surface: manual
@@ -42,6 +47,21 @@ contract_record:
     - The broader DOC-WORKFLOW family path remains taxonomy only; this record does not claim split lineage from DOC-WORKFLOW-0001.
     - Front matter is intentionally kept narrow here on first extraction, while later parent or sibling-spanning widening remains explicitly reserved if repeated evidence justifies it.
 ```
+
+## Current Governance State
+
+- The current effective governance state of this contract is carried in frontmatter through `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
+- Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this release family; they should not be read as current ownership or approval identity.
+- This contract therefore acts as the narrow current-state governance surface for the active `DOC-WORKFLOW-LOGS-0001` reader, while the parent ledger preserves the mixed-family route and governance-event chain that led here.
+- The current steward is intentionally delegated rather than implicitly identical to the owner team, which keeps day-to-day logs contract maintenance distinct from durable family ownership.
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-WORKFLOW-LOGS-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-LOGS-0001` | `unknown` | `family-introduced` | `2026-04-10` | `docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md` | The original logs-facing source introduced the child release, but it does not defend a named current steward or approver for the current contract state. |
+| `DOC-WORKFLOW-LOGS-0001-GOV-02` | `delegated-stewardship-event` | `DOC-WORKFLOW-LOGS-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 second-cycle round` | Stewardship for the current logs contract reader is now explicitly delegated to the narrower logs contract maintainer role while final approval remains with the broader docs-governance approver role. |
+| `DOC-WORKFLOW-LOGS-0001-GOV-03` | `review-approval-separation-event` | `DOC-WORKFLOW-LOGS-0001` | `role:workflow-reviewer; role:docs-governance-approver` | `reviewed-awaiting-approval-state-fixed` | `2026-04-15` | `S0F-9A/P4 second-cycle round` | The current contract state now records review and approval as distinct governance actions instead of leaving both roles implicit or collapsed into one reviewer identity. |
 
 ## Contract Statement Table
 

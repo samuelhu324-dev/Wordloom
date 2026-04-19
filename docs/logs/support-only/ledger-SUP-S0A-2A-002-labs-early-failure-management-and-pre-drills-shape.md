@@ -36,13 +36,26 @@ support_only_contract_release_ledger_supplement:
 | `S0A-2A-R03-SUP-01` | `S0A-2A-R03` | `legacy/from_structured_docs/from-labs/labs-004-worker-failure-management-v1-v4.md` | `md` | `none` | `verified` | `revises-existing` | `rewrite-parent-row` | `defer-contract-change` | This labs packet is explicitly framed as a hand-controlled experiment set that should be run before later runbook codification. It captures stuck recovery, retry convergence, replay, failed-state auditability, and daemon runtime engineering as executable lab work rather than as broad issue prose, so the labs layer is no longer supported only by the mixed issue summary. |
 | `S0A-2A-R03-SUP-02` | `S0A-2A-R03` | `legacy/from_structured_docs/from-labs/labs-006-search-projection-search-index-to-elastic.md` | `md` | `none` | `verified` | `revises-existing` | `rewrite-parent-row` | `defer-contract-change` | This labs packet closes the search projection loop around `search_index -> elastic`, explicitly reuses earlier labs rounds including `labs-004`, and states that the result should later settle into runbook material. It therefore preserves a distinct earlier labs-shaped layer before the later runbook extraction and strengthens the case for a defended labs-specific write-back on `S0A-2A-R03`. |
 
+## Actor and Provenance Review Table
+
+| supplement item id | submitted by | evidence owner | reviewed by | verified by | verification method | approved by | approval state | approval basis | provenance note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0A-2A-R03-SUP-01` | `unknown` | `role:packet-maintainer` | `role:workflow-reviewer` | `role:evidence-verifier` | `direct-markdown-inspection` | `role:docs-governance-approver` | `accepted-for-packet` | The retained labs packet preserves enough bounded experimental detail to defend the earlier failure-management labs reading at packet level. | The repo preserves the source markdown path and the packet review chain explicitly, but the original named submitter is not defended by surviving issue-only history. |
+| `S0A-2A-R03-SUP-02` | `unknown` | `role:packet-maintainer` | `role:workflow-reviewer` | `role:evidence-verifier` | `direct-markdown-inspection` | `role:docs-governance-approver` | `accepted-for-packet` | The retained labs packet preserves enough bounded projection-closure detail to defend the earlier labs-to-runbook boundary at packet level. | The repo preserves the source markdown path and the packet review chain explicitly, but the original named submitter is not defended by surviving issue-only history. |
+
+## Governance Position Note
+
+- The `Actor and Provenance Review Table` in this supplement is a packet-level event and accountability surface.
+- These rows defend who maintained, reviewed, verified, and accepted the labs-direct-evidence packet; they do not replace the current-state governance reading for the parent ledger or the labs child contract.
+- Under `S0F-9A/P4` scoped backfill work, current ownership, stewardship, and approval reading belongs on the parent-ledger and child-contract surfaces, while this supplement remains the historical evidence chain for direct-markdown review and write-back.
+
 ## Parent-Ledger Rows To Update
 
 - `S0A-2A-R03`: revise the labs-layer row from `bounded-background` only into one explicit direct-evidence review surface, because the early failure-management and search projection lab packets now show durable experimental ownership beyond the broad issue summary alone.
 
 ## Contract Changes Deferred Until Parent Write-Back
 
-- `DOC-WORKFLOW-LABS` candidate: if the parent-ledger rewrite is accepted, the labs layer should move from deferred background toward explicit historical review, with any later `historical-backfill` or other release-opening decision made only after the parent packet is accepted.
+- `DOC-WORKFLOW-LABS` candidate: if the parent-ledger rewrite is accepted, the labs layer should move from deferred background toward explicit historical review, with the active `DOC-WORKFLOW-LABS-0002` reader carrying the current labs-governance surface while this supplement remains the packet-level accountability chain.
 
 ## Evidence Time Audit
 
@@ -64,4 +77,4 @@ support_only_contract_release_ledger_supplement:
 
 - `labs-004` is treated here as direct evidence because it explicitly says the experiments should precede later runbook stabilization rather than being read as already-final SOPs.
 - `labs-006` is treated here as direct evidence because it closes the search projection lab loop while still pointing forward to later runbook codification, which keeps the labs-versus-runbook boundary readable.
-- This `002` SUP round now stops after parent-ledger write-back and does not yet write into `DOC-WORKFLOW-LABS`.
+- This `002` SUP round now also proves that review, evidence verification, and final approval can be separated cleanly on a markdown-evidence-backed labs sample without turning the supplement into the current governance surface.

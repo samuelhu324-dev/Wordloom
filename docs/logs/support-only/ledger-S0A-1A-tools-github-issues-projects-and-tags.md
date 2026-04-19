@@ -25,6 +25,19 @@ support_only_contract_release_ledger:
   - promote GitHub Projects into one first dedicated child contract rather than leaving it implicit beside the issue packet
 - The purpose of this scaffold is to make the mixed-source question reviewable rather than assumed solved because contracts already exist.
 
+## Current Governance State
+
+| governed surface | owner team | current steward | approval state | reviewed by | approved by | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `ledger-S0A-1A-tools-github-issues-projects-and-tags` | `docs-governance` | `role:workflow-ledger-maintainer` | `accepted-current-state` | `role:workflow-reviewer` | `role:docs-governance-approver` | This parent ledger is the current routing surface for the mixed `S0A-1A` packet and should carry current governance state rather than packet-history rows. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-0001` | `docs-governance` | `delegated:workflow-github-issues-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The GitHub-Issues parent remains the current mechanism boundary for canonical breakdown while day-to-day stewardship is now delegated for the narrower parent contract lane. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` | `docs-governance` | `delegated:workflow-issue-title-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The title child is the narrow current-state governance surface for issue-key grammar while durable ownership remains with `docs-governance`. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `docs-governance` | `delegated:workflow-issue-tags-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The tag child is the narrow current-state governance surface for tag-role grammar while durable ownership remains with `docs-governance`. |
+| `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `docs-governance` | `delegated:workflow-projects-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The Projects child remains under the durable docs-governance owner team, but its day-to-day stewardship is now delegated for the narrower Projects contract lane while final approval stays separate. |
+
+- This block records current effective governance state only.
+- Historical source intake, selective backfill, screenshot acceptance, and later write-back history stay in row notes, supplements, and explicit event/history surfaces rather than being flattened into current ownership metadata.
+
 ## Routing And Consumption Table
 
 | row id | source slice | meaning owned here | target family | target release action | contract lineage impact | retained-only action | resolution status | resolved by contract id | consumed scope | resolution notes | notes |
@@ -55,7 +68,19 @@ support_only_contract_release_ledger:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `S0A-1A-R02` | `2026-02-12` | `2026-02-12` | `unknown` | `unknown` | `day` | `current Projects evidence preserves only one defended screenshot-capture date` | The parent row now has one defended screenshot-backed chronology anchor through `SUP-001`, but the current evidence still proves only day-level observation and recording rather than a longer historical-effective range. |
 
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0A-1A-GOV-01` | `contribution-event` | `S0A-1A mixed source` | `unknown` | `none-current-state` | `2026-04-11` | `GitHub issue S0A-1A (#23)` | The original issue-only packet remains the defended contribution/introduction source, but it does not by itself prove the current steward or approver chain. |
+| `S0A-1A-GOV-02` | `routing-writeback-event` | `ledger-S0A-1A-tools-github-issues-projects-and-tags` | `role:packet-reviewer` | `current-routing-state-fixed` | `2026-04-11` | `S0A-1A-R01` through `S0A-1A-R04` | The selective backfill ledger fixed the current routing state for the mixed packet without turning row-level source history into current ownership metadata. |
+| `S0A-1A-GOV-03` | `evidence-sharpening-event` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `role:packet-reviewer` | `current-draft-sharpened` | `2026-04-11` | `ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md` | The accepted screenshot supplement sharpened the current draft reading of the Projects child while remaining packet-history evidence rather than current ownership state. |
+| `S0A-1A-GOV-04` | `delegated-stewardship-event` | `DOC-WORKFLOW-GITHUB-ISSUES-0001; DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001; DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001; DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The `S0A-1A` family now records explicit delegated stewards for the GitHub-Issues parent, the title child, the tag child, and the Projects child instead of leaving day-to-day ownership implicit. |
+| `S0A-1A-GOV-05` | `governance-role-separation-event` | `S0A-1A sample family` | `role:workflow-reviewer; role:evidence-verifier; role:docs-governance-approver` | `review-verify-approve-separated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The sample family now treats current review, evidence verification, and final approval as distinct governance roles across all routed children rather than only on the Projects child. |
+
 ## Reader Notes
 
 - This ledger now confirms that the earlier `S0A-1A` packet needed one explicit Projects child and explicit completed routing state, but not one workflow-level reroute.
 - The `S0A-1A-R02` row is now also sharpened by the accepted `SUP-001` pilot, which adds stable screenshot-backed evidence without changing the existing routing outcome.
+- Under `S0F-9A/P1`, this parent ledger now acts as the current-state governance surface for the mixed packet, while the supplement remains the event/accountability surface for screenshot review and packet-level provenance rows.
+- Under `S0F-9A/P4` third-cycle work, this parent ledger now also records the current governance state for the GitHub-Issues parent plus the title and tag children rather than leaving only the Projects child aligned to the control-plane rule.

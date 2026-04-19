@@ -14,6 +14,11 @@ contract_record:
   applies_to: timeline queue issue titles, parent issue title keys, direct child issue title keys, and later sub-category title extensions
   enforcement_surface: manual
   violation_semantics: warning
+  owner_team: docs-governance
+  current_steward: delegated:workflow-issue-title-contract-maintainer
+  approval_state: reviewed-awaiting-approval
+  reviewed_by: role:workflow-reviewer
+  approved_by: role:docs-governance-approver
   recorded_at: 2026-04-10
   reviewed_at: pending
   effective_from: unknown
@@ -39,7 +44,24 @@ contract_record:
   notes:
     - This child contract owns only the title-rule body beneath the parent GitHub-issues mechanism contract.
     - The local repo currently has no S0A-1A source log, so this draft stays explicit about issue-only sourcing.
+    - Current-state governance now reads through owner_team/current_steward/approval_state/reviewed_by/approved_by, while the parent ledger remains the routing and event-history surface that explains how this title child stays active.
 ```
+
+## Current Governance State
+
+- The current effective governance state of this contract is carried in frontmatter through `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
+- Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this release family; they should not be read as current ownership or approval identity.
+- This contract therefore acts as the current-state governance surface for the issue-title child, while the `S0A-1A` parent ledger preserves the mixed-source routing and event-history chain that led here.
+- The current steward is intentionally delegated rather than implicitly identical to the owner team, which keeps day-to-day title-grammar maintenance distinct from durable family ownership.
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` | `unknown` | `family-introduced` | `2026-04-10` | `GitHub issue S0A-1A (#23)` | The issue-only source introduced the title-grammar child, but it does not by itself prove the current steward or approval chain for the current contract state. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-GOV-02` | `routing-writeback-event` | `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` | `role:packet-reviewer` | `current-child-routing-fixed` | `2026-04-11` | `ledger-S0A-1A-tools-github-issues-projects-and-tags.md` | The parent ledger fixed that title grammar is a dedicated child surface rather than remaining implicit in the broader GitHub-Issues mechanism body. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-GOV-03` | `delegated-stewardship-event` | `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | Stewardship for the current title child is now explicitly delegated to a narrower title-grammar maintainer role while durable ownership remains with `docs-governance`. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-GOV-04` | `review-approval-separation-event` | `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` | `role:workflow-reviewer; role:docs-governance-approver` | `reviewed-awaiting-approval-state-fixed` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The current contract state now records review and approval as distinct governance actions instead of leaving both roles implicit on the title child surface. |
 
 ## Contract Statement Table
 
