@@ -271,6 +271,7 @@
   - `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
   - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
   - `docs/logs/log-S0F-9G-tenant-admin-enforcement-membership-management-and-local-actor-switching.md`
+  - `docs/logs/log-S0F-9H-shared-auth-provider-realism-invite-onboarding-and-membership-admission.md`
 - `M4-P2`:
   - `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
   - `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
@@ -376,6 +377,7 @@
 - 2026-04-17: opened `S0F-9F` as the first explicit `M4-P0-B` child lane for tenant identity, data ownership, and current-tenant context, so the next runtime slice can widen tenant scoping before auth-provider realism or tenant analytics.
 - 2026-04-17: opened `S0F-9G` as the next explicit `M4-P1` child lane for backend tenant-admin enforcement, minimum tenant membership management, and local actor-switching, so the current admin/user product-entry split can widen into one stronger permission loop without payment-provider realism.
 - 2026-04-17: completed `S0F-9G` through `P3`, so `M4-P1` now has one stable child packet for backend tenant-admin enforcement, tenant-scoped membership management, and bounded local actor switching on top of the current Workbox/auth entry stack.
+- 2026-04-19: opened `S0F-9H` as the next explicit `M4-P1-C` child lane for shared auth/provider realism, invite/onboarding, membership admission, and routed entry, so the current Workbox/auth stack can widen beyond local-first role fabrication without opening support tooling first.
 
 ### M5: Asset platform activation after governance and access baselines exist
 
