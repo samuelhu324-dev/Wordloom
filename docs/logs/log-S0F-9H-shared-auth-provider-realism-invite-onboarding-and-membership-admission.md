@@ -384,7 +384,7 @@
 
 ### P2-C1-S1S2 (Routed-entry and tenant-aware landing landed | 2026-04-19)
 
-- `headSha`: `pending-backfill`
+- `headSha`: `0ecd5ee02`
 - `artifacts`:
   - `artifacts/_tmp_s0f_9h_p2_routed_entry_and_tenant_landing.json`
 - `expected`:
