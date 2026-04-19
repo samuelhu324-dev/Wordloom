@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.app.config.security import get_auth_context
+from api.app.policy.library_membership_policy import assert_actor_is_tenant_admin
 from api.app.modules.subscription_access.application.use_cases import (
     ApplyPaymentEventUseCase,
     GetAccessContextUseCase,
@@ -65,9 +66,10 @@ async def get_access_context(
 @router.get("/admin/subscriptions/{library_id}", response_model=SubscriptionStateResponse)
 async def get_subscription_state(
     library_id: UUID,
-    _: AuthContext = Depends(get_auth_context),
+    auth_context: AuthContext = Depends(get_auth_context),
     session: AsyncSession = Depends(get_db),
 ) -> SubscriptionStateResponse:
+    assert_actor_is_tenant_admin(ctx=auth_context, requested_library_id=library_id)
     _, state_uc, _, _ = _build_use_cases(session)
     try:
         result = await state_uc.execute(library_id)
@@ -80,9 +82,10 @@ async def get_subscription_state(
 async def apply_payment_event(
     library_id: UUID,
     request: ApplyPaymentEventRequest,
-    _: AuthContext = Depends(get_auth_context),
+    auth_context: AuthContext = Depends(get_auth_context),
     session: AsyncSession = Depends(get_db),
 ) -> SubscriptionStateResponse:
+    assert_actor_is_tenant_admin(ctx=auth_context, requested_library_id=library_id)
     _, _, apply_uc, _ = _build_use_cases(session)
     try:
         event_type = PaymentEventType(request.event_type)
@@ -97,9 +100,10 @@ async def apply_payment_event(
 @router.get("/admin/subscriptions/{library_id}/history", response_model=SubscriptionHistoryResponse)
 async def get_subscription_history(
     library_id: UUID,
-    _: AuthContext = Depends(get_auth_context),
+    auth_context: AuthContext = Depends(get_auth_context),
     session: AsyncSession = Depends(get_db),
 ) -> SubscriptionHistoryResponse:
+    assert_actor_is_tenant_admin(ctx=auth_context, requested_library_id=library_id)
     _, _, _, history_uc = _build_use_cases(session)
     items = await history_uc.execute(library_id)
     return SubscriptionHistoryResponse(

@@ -1,0 +1,110 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.description {
+  margin: 0;
+  color: rgba(15, 23, 42, 0.74);
+  line-height: 1.5;
+}
+
+.formRow {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.selectWrapper {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.selectLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(15, 23, 42, 0.75);
+}
+
+.select {
+  min-height: 2.75rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  background: #fff;
+  color: #0f172a;
+}
+
+.error {
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.85rem;
+  background: rgba(127, 29, 29, 0.08);
+  color: #7f1d1d;
+}
+
+.empty {
+  padding: 0.9rem;
+  border-radius: 0.85rem;
+  background: rgba(148, 163, 184, 0.12);
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.item {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.9rem;
+  border-radius: 0.95rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.itemMain {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(14, 116, 144, 0.12);
+  color: #155e75;
+}
+
+.roleBadge[data-role='owner'] {
+  background: rgba(161, 98, 7, 0.14);
+  color: #92400e;
+}
+
+.roleBadge[data-role='admin'] {
+  background: rgba(30, 64, 175, 0.12);
+  color: #1d4ed8;
+}
+
+.roleBadge[data-role='member'] {
+  background: rgba(15, 23, 42, 0.08);
+  color: #334155;
+}
+
+.meta {
+  color: rgba(15, 23, 42, 0.62);
+  font-size: 0.88rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
