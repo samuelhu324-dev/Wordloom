@@ -1,0 +1,33 @@
+{
+  "logId": "S0F-9D",
+  "phaseRange": "P1-P2",
+  "implementedFrontendPaths": [
+    "frontend/src/features/subscription-access/model/api.ts",
+    "frontend/src/features/subscription-access/model/hooks.ts",
+    "frontend/src/features/subscription-access/ui/AccessContextPanel.tsx",
+    "frontend/src/features/subscription-access/ui/MockBillingPanel.tsx",
+    "frontend/src/widgets/library/LibraryAccessWidget.tsx",
+    "frontend/src/app/admin/subscriptions/page.tsx",
+    "frontend/src/app/admin/subscriptions/[libraryId]/page.tsx",
+    "frontend/src/app/admin/libraries/[libraryId]/page.tsx"
+  ],
+  "consumedBackendEndpoints": [
+    "GET /api/v1/access-context/me",
+    "GET /api/v1/admin/subscriptions/{libraryId}",
+    "POST /api/v1/admin/subscriptions/{libraryId}/events",
+    "GET /api/v1/admin/subscriptions/{libraryId}/history"
+  ],
+  "uiVerificationScenario": [
+    "Render backend-derived access context in a library-scoped widget and admin entry page.",
+    "Render backend-derived admin subscription state and history in /admin/subscriptions/[libraryId].",
+    "Emit upgrade_success, renewal_failed, and admin_correction only through the backend event endpoint.",
+    "Invalidate and re-read access-context, admin-state, and admin-history queries after each bounded event."
+  ],
+  "uiVerificationCommand": "get_errors(frontend subscription-access slice + touched admin/library pages)",
+  "passFail": "PASS",
+  "observed": [
+    "No diagnostics remained in the touched subscription-access frontend slice.",
+    "The library detail page now mounts LibraryAccessWidget instead of leaving access visibility implicit.",
+    "The admin detail page couples access snapshot, admin state/history, and bounded mock billing without introducing a second lifecycle state machine in the browser."
+  ]
+}

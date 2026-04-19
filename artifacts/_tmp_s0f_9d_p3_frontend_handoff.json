@@ -1,0 +1,34 @@
+{
+  "logId": "S0F-9D",
+  "phaseRange": "P3",
+  "stableFrontendBehaviors": [
+    "Library detail pages may mount LibraryAccessWidget to render backend-derived access context for a chosen library.",
+    "Admin consumers may use /admin/subscriptions and /admin/subscriptions/{libraryId} as the first stable subscription inspection entrypoints.",
+    "Frontend code may re-read and re-render access context, admin subscription state, and history after bounded payment-event mutations.",
+    "Mock billing interactions are stable only as thin consumers of POST /api/v1/admin/subscriptions/{libraryId}/events and must not own lifecycle transitions locally."
+  ],
+  "downstreamHandoffRule": [
+    "Replay, provider realism, checkout, webhook, and correction flows must open a follow-up lane instead of widening S0F-9D in place.",
+    "Downstream frontend work may compose the current panels and pages, but must continue treating backend responses as the source of truth for plan_code, subscription_state, and entitlements.",
+    "No downstream UI code may mutate subscription_state directly or bypass ApplyPaymentEventUseCase through ad hoc client-side state machines.",
+    "If a later lane needs live UI-visible lifecycle proof, it should record browser/runtime evidence against the existing endpoints and entrypoints rather than redesigning the first consumer loop."
+  ],
+  "focusedBackendValidation": {
+    "command": "c:/python314/python.exe -m pytest api/app/tests/test_subscription_access/test_application_layer.py api/app/tests/test_subscription_access/test_router.py",
+    "result": "PASS",
+    "coverage": [
+      "stable endpoint registration",
+      "access-context payload shape",
+      "bounded payment-event mutation path",
+      "subscription history read path",
+      "application-layer state/snapshot update chain"
+    ]
+  },
+  "localUiVerificationRecommendation": [
+    "Start the local backend and frontend stack.",
+    "Open /admin/subscriptions, select a real library UUID, and verify access-context plus admin state render successfully.",
+    "Emit upgrade_success and renewal_failed from the mock billing panel and confirm the admin state/history panels re-read backend truth.",
+    "Record the first live UI-visible lifecycle chain in a follow-up evidence artifact if the lane needs to be marked stable."
+  ],
+  "passFail": "PASS"
+}

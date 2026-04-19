@@ -1,0 +1,26 @@
+{
+  "logId": "S0F-9D",
+  "phaseRange": "P3-live-ui",
+  "uiEntryPoints": [
+    "http://localhost:30002/admin/subscriptions",
+    "http://localhost:30002/admin/subscriptions/9c3c003c-a6c8-4af5-9e4c-64594b0c38aa",
+    "http://localhost:30002/admin/libraries/9c3c003c-a6c8-4af5-9e4c-64594b0c38aa"
+  ],
+  "libraryId": "9c3c003c-a6c8-4af5-9e4c-64594b0c38aa",
+  "observedLifecycleChain": [
+    "access-context and admin subscription state rendered successfully for the target library after the missing migration was added",
+    "renewal_failed narrowed the standing to past_due while keeping entitlement visibility backend-derived",
+    "upgrade_success widened the standing back to active and the user-facing access snapshot re-rendered from backend truth",
+    "applied event history appended upgrade_success, renewal_failed, upgrade_success, and admin_correction events instead of overwriting the ledger"
+  ],
+  "uiVerificationEvidence": {
+    "source": "user-supplied live UI screenshots",
+    "confirmedFields": [
+      "user-facing badge transitions between past_due and active",
+      "admin subscription state stays consistent with access-context standing",
+      "history appends bounded events with timestamps and the same subscription id",
+      "library detail view reuses LibraryAccessWidget and shows the active backend-derived snapshot"
+    ]
+  },
+  "passFail": "PASS"
+}

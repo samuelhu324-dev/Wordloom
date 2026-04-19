@@ -1,0 +1,41 @@
+.panel {
+  display: grid;
+  gap: 16px;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.resultBox {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--color-bg-secondary);
+}
+
+.resultLabel {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.resultValue {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.error {
+  color: var(--color-danger-strong, #991b1b);
+}
