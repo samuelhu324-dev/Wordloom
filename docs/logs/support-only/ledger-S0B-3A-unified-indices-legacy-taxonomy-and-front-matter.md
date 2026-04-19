@@ -24,6 +24,17 @@ support_only_contract_release_ledger:
   - keep later parent synthesis explicitly open rather than pretending the first child extraction already owns the final generalized workflow parent shape
 - This ledger now acts as a completed first routing-and-consumption record for the initial `S0B-3A` split into `LOGS` and `LIFECYCLE`.
 
+## Current Governance State
+
+| governed surface | owner team | current steward | approval state | reviewed by | approved by | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter` | `docs-governance` | `role:workflow-ledger-maintainer` | `accepted-current-state` | `role:workflow-reviewer` | `role:docs-governance-approver` | This parent ledger remains the current routing surface for the mixed `S0B-3A` packet and now also acts as the current-state governance surface for the family because no dedicated supplement packet has been opened. |
+| `DOC-WORKFLOW-LOGS-0001` | `docs-governance` | `delegated:workflow-logs-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The logs child is the narrow current-state governance surface for the logs-facing `R01/R02/R04` slices while durable ownership remains with `docs-governance`. |
+| `DOC-WORKFLOW-LIFECYCLE-0001` | `docs-governance` | `delegated:workflow-lifecycle-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The lifecycle child is the narrow current-state governance surface for the legacy-taxonomy and lifecycle-boundary `R03/R05/R06` slices while durable ownership remains with `docs-governance`. |
+
+- This block records current effective governance state for the parent ledger and the two child contracts.
+- Because this family currently has no accepted supplement packet, packet-level accountability is not split into a separate evidence surface here; current routing state and family-level governance events therefore stay on the parent ledger until a later supplement exists.
+
 ## Routing And Consumption Table
 
 | row id | source slice | meaning owned here | target family | target release action | contract lineage impact | retained-only action | resolution status | resolved by contract id | consumed scope | resolution notes | notes |
@@ -53,6 +64,16 @@ support_only_contract_release_ledger:
 - The cutover wording is intentionally represented as two separate same-source rows:
   - one logs-intake rule
   - one lifecycle-boundary rule
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0B-3A-GOV-01` | `contribution-event` | `S0B-3A mixed source` | `unknown` | `none-current-state` | `2026-04-10` | `docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md` | The original mixed source remains the defended contribution source, but it does not by itself prove the current steward or approval chain for the narrower logs and lifecycle children. |
+| `S0B-3A-GOV-02` | `routing-writeback-event` | `ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter` | `role:packet-reviewer` | `current-routing-state-fixed` | `2026-04-10` | `S0B-3A-R01` through `S0B-3A-R06` | The completed parent ledger fixed the current routing state for the mixed packet without turning row-level source history into current ownership metadata. |
+| `S0B-3A-GOV-03` | `delegated-stewardship-event` | `DOC-WORKFLOW-LOGS-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 second-cycle round` | The logs child now records one explicit delegated steward under the same durable owner team so day-to-day maintenance does not collapse back into undeclared team-wide ownership. |
+| `S0B-3A-GOV-04` | `delegated-stewardship-event` | `DOC-WORKFLOW-LIFECYCLE-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 second-cycle round` | The lifecycle child now records one explicit delegated steward under the same durable owner team so day-to-day maintenance does not collapse back into undeclared team-wide ownership. |
+| `S0B-3A-GOV-05` | `governance-role-separation-event` | `S0B-3A sample family without supplement` | `role:workflow-reviewer; role:docs-governance-approver` | `review-approve-separated-without-supplement` | `2026-04-15` | `S0F-9A/P4 second-cycle round` | This family now proves that current review and final approval can still be separated on parent and child governance surfaces even when no supplement packet exists yet. |
 
 ## New Releases Expected
 
@@ -89,3 +110,4 @@ support_only_contract_release_ledger:
   - whether `LOGS` owns the correct narrow first-pass body
   - whether `LIFECYCLE` owns the correct narrow first-pass body
   - whether the two cutover rows are split at the right boundary
+- Under `S0F-9A/P4` second-cycle work, this parent ledger now also acts as the current-state governance surface for the mixed `S0B-3A` family while no dedicated supplement packet exists.

@@ -10,6 +10,11 @@ contract_record:
   release_action: simple-revision
   release_change_summary: Keep the later S0B-2A snapshot-package revision as the current release while also admitting the accepted S0A-2A-R03 labs packet as history-backfilled earlier-labs clauses inside the same current reader.
   summary: Govern workflow labs as replayable evidence packages, including earlier pre-runbook failure-management and projection-closure labs plus later snapshot-root, run-folder, and retention-package rules.
+  owner_team: docs-governance
+  current_steward: delegated:workflow-labs-contract-maintainer
+  approval_state: reviewed-awaiting-approval
+  reviewed_by: role:workflow-reviewer
+  approved_by: role:docs-governance-approver
   governance_area: workflow labs historical evidence, snapshot governance, and evidence-package governance
   applies_to: earlier executable labs that precede runbook codification, labs snapshot roots, run-id evidence folders, retained lab evidence sets, golden fixtures, diff snapshots, ad-hoc dumps, and lab cleanup decisions
   enforcement_surface: manual
@@ -51,6 +56,22 @@ contract_record:
     - The broader `DOC-WORKFLOW` family path remains taxonomy only; this release does not claim one split lineage from `DOC-WORKFLOW-0001`.
     - The local repo still has no direct S0B/1A source log, so the family continues to carry issue-only sourcing from that first release alongside the later S0B-2A log source.
 ```
+
+## Current Governance State
+
+- The current effective governance state of this contract is carried in frontmatter through `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
+- Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this release family; they should not be read as current ownership or approval identity.
+- This contract therefore acts as the narrow current-state governance surface for the active `DOC-WORKFLOW-LABS-0002` release reader, while the parent ledger and `SUP-002` preserve the route and evidence-history chain that led here.
+- The current steward is intentionally delegated rather than implicitly identical to the owner team, which keeps day-to-day labs contract maintenance distinct from durable family ownership.
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-WORKFLOW-LABS-0002-GOV-01` | `contribution-event` | `DOC-WORKFLOW-LABS family` | `unknown` | `none-current-state` | `2026-04-10` | `GitHub issue S0B/1A (#36); docs/logs/log-S0B-2A-scripts-snapshots-management.md` | The earlier issue-only labs packet and the later S0B-2A log remain the defended contribution sources for the current family reader, but they do not by themselves prove the current steward or approver chain. |
+| `DOC-WORKFLOW-LABS-0002-GOV-02` | `evidence-sharpening-event` | `DOC-WORKFLOW-LABS-0002` | `role:packet-reviewer` | `labs-direct-evidence-review-fixed` | `2026-04-12` | `ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md` | The accepted labs SUP round fixed the earlier-labs slice as a defended historical-review surface inside the active `0002` reader without changing durable owner-team identity. |
+| `DOC-WORKFLOW-LABS-0002-GOV-03` | `delegated-stewardship-event` | `DOC-WORKFLOW-LABS-0002` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 scoped backfill round` | Stewardship for the current labs contract reader is now explicitly delegated to the narrower labs contract maintainer role while final approval remains with the broader docs-governance approver role. |
+| `DOC-WORKFLOW-LABS-0002-GOV-04` | `review-approval-separation-event` | `DOC-WORKFLOW-LABS-0002` | `role:workflow-reviewer; role:docs-governance-approver` | `reviewed-awaiting-approval-state-fixed` | `2026-04-15` | `S0F-9A/P4 scoped backfill round` | The current contract state now records review and approval as distinct governance actions instead of leaving both roles implicit or collapsed into one reviewer identity. |
 
 ## Contract Statement Table
 
