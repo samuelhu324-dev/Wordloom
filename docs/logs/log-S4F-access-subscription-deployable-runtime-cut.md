@@ -17,7 +17,7 @@
   **reference_log_1**: `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
   **reference_log_2**: `docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
   **phase_log_1**: `docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md`
-  **phase_log_2**: ``
+  **phase_log_2**: `docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
   **phase_log_3**: ``
   **phase_log_4**: ``
   **phase_log_5**: ``
@@ -77,7 +77,7 @@
 **PR links**:
 
 - Parent log: `docs/logs/log-S4F-access-subscription-deployable-runtime-cut.md`
-- Child log source(s): `docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md`
+- Child log source(s): `docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md` ; `docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
 - Evidence artifact: `artifacts/_tmp_s4f1a_p2_run_24652525475/labs-evidence-verify_access_subscription_deployable_cut-24652525475-1-verify_access_subscription_deployable_cut/summary.json`
 
 ## Background（背景）
@@ -118,6 +118,8 @@
 
 - `S4F-1A`（Phase 1）：backend-only access/subscription deployable cut
   - 详见：`docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md`
+- `S4F-2A`（Phase 2）：cloud-target operator evidence packet
+  - 详见：`docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -128,8 +130,8 @@
 
 ## Current Status（进展摘要）
 
-- `S4F` now has one completed first packet in `S4F-1A`: backend-only access/subscription deployable cut, runnable access-aware drills, and a recorded next-lane decision.
-- The next `S4F` lane should not reopen the parent spine or jump directly to frontend cloud hosting; it should package one operator-facing cloud-target evidence run where the reused `S4D` release path and the `S4F` access-aware verify overlay pass together.
+- `S4F` now has one completed first packet in `S4F-1A` and one newly opened follow-up packet in `S4F-2A`.
+- `S4F-2A` is the next execution lane: capture one operator-facing cloud-target evidence run where the reused `S4D` release path and the `S4F` access-aware verify overlay pass together.
 
 ## Notes（落地原则，可选）
 
@@ -163,3 +165,4 @@
 
 - 2026-04-20：首次创建 `S4F`，作为 `road-002-01/M1` 的新 `S4` 顶层 spine，并把第一条 execution lane 固定到 `S4F-1A`。
 - 2026-04-20：`S4F-1A` completed `P0-P3`, so the parent spine now has its first executed and evidenced child packet plus one explicit next-lane decision: prioritize cloud-path operator evidence before frontend cloud closure.
+- 2026-04-20：opened `S4F-2A` as the next child packet, dedicated to one cloud-target operator evidence run on the reused `S4D` release substrate.
