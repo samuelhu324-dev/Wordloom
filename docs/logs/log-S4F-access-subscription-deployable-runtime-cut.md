@@ -18,7 +18,7 @@
   **reference_log_2**: `docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
   **phase_log_1**: `docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md`
   **phase_log_2**: `docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
-  **phase_log_3**: ``
+  **phase_log_3**: `docs/logs/log-S4F-2B-release-path-dependency-trust-hardening.md`
   **phase_log_4**: ``
   **phase_log_5**: ``
   **phase_log_6**: ``
@@ -120,6 +120,8 @@
   - 详见：`docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md`
 - `S4F-2A`（Phase 2）：cloud-target operator evidence packet
   - 详见：`docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
+- `S4F-2B`（Phase 2 follow-up）：release-path dependency trust hardening
+  - 详见：`docs/logs/log-S4F-2B-release-path-dependency-trust-hardening.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -130,11 +132,11 @@
 
 ## Current Status（进展摘要）
 
-- `S4F` now has one completed first packet in `S4F-1A` and one newly opened follow-up packet in `S4F-2A`.
+- `S4F` now has one completed first packet in `S4F-1A`, one completed cloud-target evidence packet in `S4F-2A`, and one newly opened trust-hardening follow-up packet in `S4F-2B`.
 - `S4F-2A/P1` is now landed: the reused `S4D` release path can optionally run the `S4F` access-aware verify overlay and write the combined result back into the retained artifact bundle.
 - `S4F-2A/P2` is now complete. The lane progressed through three distinct failure classes on the same operator path before closing green: target reachability (`24655583207`), post-change runtime verify (`24654777721`), and access-overlay script parsing (`24661990707`), then finished with a full PASS evidence bundle in run `24662387235` on head `07c99aa0f571cf04ba97ef25b4d52cf52d9f64e7`.
 - `S4F-2A/P2` also now includes the operator-side observation fallback and API-path diagnosis: the queued Windows fallback run `24654777721` can be read cleanly via one-shot `gh run view` / `gh api`, and the earlier `gh run watch` failure has been narrowed to an intermittent local polling-path timeout rather than a repo-side workflow lookup failure.
-- The next execution lane is now a realism-hardening follow-up rather than more proof-of-life repetition: remove dependence on drifting operator public `/32` RDS ingress by moving the release/verify path to a stable trusted network position and replacing ad hoc operator-IP allowlists with durable trust wiring.
+- `S4F-2B` is the next execution lane: remove dependence on drifting operator public `/32` RDS ingress by moving the release/verify path to a stable trusted network position and replacing ad hoc operator-IP allowlists with durable trust wiring.
 
 ## Notes（落地原则，可选）
 
@@ -177,3 +179,4 @@
 - 2026-04-20：recorded that the new `S4F-2A/P2` blocker is no longer target reachability on the local path but post-change verify readiness: the candidate deploy passed, yet the expected `wordloom-api-cloud-dev` container was not alive by verify time and guest-side evidence showed a host-port binding conflict during failed container startup.
 - 2026-04-20：restored RDS reachability for the current operator egress path, isolated and fixed the access-overlay JSON parsing defect in `cloud_release_access_verify.sh`, and closed `S4F-2A/P2` with one full PASS cloud-target evidence run (`24662387235`).
 - 2026-04-20：recorded the next-lane decision from `S4F-2A/P3`: `road-002-01/M1` now has sufficient backend deployment-facing evidence, and the remaining hardening work should move to a separate lane that removes drifting operator public-IP / RDS allowlist dependence.
+- 2026-04-20：opened `S4F-2B` as that follow-up lane and scaffolded it as the source log for release-path dependency trust hardening.
