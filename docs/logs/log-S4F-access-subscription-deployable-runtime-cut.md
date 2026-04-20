@@ -138,7 +138,7 @@
 - `S4F-2A/P1` is now landed: the reused `S4D` release path can optionally run the `S4F` access-aware verify overlay and write the combined result back into the retained artifact bundle.
 - `S4F-2A/P2` is now complete. The lane progressed through three distinct failure classes on the same operator path before closing green: target reachability (`24655583207`), post-change runtime verify (`24654777721`), and access-overlay script parsing (`24661990707`), then finished with a full PASS evidence bundle in run `24662387235` on head `07c99aa0f571cf04ba97ef25b4d52cf52d9f64e7`.
 - `S4F-2A/P2` also now includes the operator-side observation fallback and API-path diagnosis: the queued Windows fallback run `24654777721` can be read cleanly via one-shot `gh run view` / `gh api`, and the earlier `gh run watch` failure has been narrowed to an intermittent local polling-path timeout rather than a repo-side workflow lookup failure.
-- `S4F-2B` has now produced one hardened stable-runner evidence run, and `S4F-2C/P0-P2` are now fixed: the current slice now has one retained cloud-target member/admin drill bundle proving request-level dev actor identity plus persistence-backed tenant standing on the deployed path, and the next execution lane is `S4F-2C/P3` close-out / remaining realism-gap decision.
+- `S4F-2B` has now produced one hardened stable-runner evidence run, and `S4F-2C/P0-P3` are now fixed: the current slice now has one retained cloud-target member/admin drill bundle proving request-level dev actor identity plus persistence-backed tenant standing on the deployed path, and the next execution lane should leave `M2` and move to `road-002-01/M3-P0` cloud-backed asset-platform readiness contract work.
 
 ## Notes（落地原则，可选）
 
@@ -186,3 +186,4 @@
 - 2026-04-20：completed `S4F-2C/P0-C1-S1S2S3`, fixing the first deployed credibility boundary and narrowing the next implementation target to backend-validated identity plus persistence-backed admission/membership truth.
 - 2026-04-20：completed `S4F-2C/P1-C1-S1S2`, landing a stable dev actor identity bridge from frontend session state into backend auth-context fallback so membership-backed tenant standing can resolve per actor instead of per process.
 - 2026-04-20：completed `S4F-2C/P2-C1-S1S2`, retaining one stable-runner cloud-target PASS run (`24668611462`) whose access overlay proved member/admin standing through the new request-level dev identity bridge and persistence-backed tenant membership truth.
+- 2026-04-20：completed `S4F-2C/P3-C1-S1`, deciding that no immediate second `M2` child packet is required and that the next branch-road execution lane should move to `M3/P0` asset-platform readiness contract work.

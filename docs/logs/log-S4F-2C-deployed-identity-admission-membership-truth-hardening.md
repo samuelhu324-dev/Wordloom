@@ -264,6 +264,18 @@
 
 - P3-C1-S1: record what realism gap remains transitional after this packet and whether another bounded child packet is required
 
+### P3 Remaining Gap Decision (v1)
+
+- `P3-C1-S1` now fixes the remaining realism gap as a bounded decision rather than another generic “keep hardening” placeholder:
+  - this packet has already reached the first `road-002-01/M2` credibility threshold required for the deployed access/subscription slice, because one cloud-target member flow and one cloud-target admin flow now read standing through backend-validated identity plus persistence-backed membership truth;
+  - the deployed slice is still explicitly transitional in one narrow sense: browser-local shared auth session materialization and local-first admission-code UX remain on the identity-entry path (`frontend/src/shared/auth/AuthContext.tsx`, `frontend/src/app/onboarding/admission/page.tsx`), even though they are no longer the final authority for the retained passing drills;
+  - provider integration and broader auth-platform realism remain deferred by branch-road rule, not by accident, and therefore should not be reopened inside this packet;
+  - asset/object handling has not yet opened a cloud-backed packet, so the next meaningful branch-road work is no longer another access-truth drill but the first `M3/P0` contract that states the cloud boundary for blob/object handling versus relational metadata truth.
+- The `P3` decision in this packet is therefore:
+  - do **not** open another `M2` child packet immediately from `S4F-2C`;
+  - treat the current access/subscription slice as the first credible deployed truth proof, while still describing the auth-entry layer as transitional;
+  - route the next execution lane to `road-002-01/M3-P0`: define the first cloud-backed asset-platform entry contract.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -284,7 +296,7 @@
 
 ### P3 (Close-out / next-lane decision)
 
-- [ ] `P3-C1-S1`: remaining transitional realism gap recorded explicitly
+- [x] `P3-C1-S1`: remaining transitional realism gap recorded explicitly
 
 ## Current Status (recommended)
 
@@ -294,7 +306,8 @@
 - The first bounded truth shift is also now fixed: `S4F-2C` should tighten backend-validated identity plus persistence-backed admission/membership truth first, while leaving local actor switching explicitly outside the authority path for the eventual passing drills.
 - `P1` is now fixed: dev/demo requests no longer need to collapse to one shared backend fallback actor before membership resolution, because the frontend can bridge one stable actor identity per session into the backend auth-context seam.
 - `P2` is now fixed: one stable-runner cloud-target run retained both a member and an admin drill through the new request-level dev identity bridge, and the retained overlay evidence now records the backend/database truth sources explicitly.
-- The next step is `P3`: record the remaining transitional realism gap after this first deployed truth proof and decide whether another bounded child packet is required.
+- `P3` is now fixed: the first credible deployed truth threshold for the access/subscription slice is satisfied, the remaining auth-entry layer is explicitly marked transitional, and this packet does not justify another immediate `M2` child.
+- The next step is no longer another access-truth drill; it is `road-002-01/M3-P0`, i.e. the first cloud-backed asset-platform readiness contract.
 
 ## Evidence (reserved)
 
@@ -377,9 +390,26 @@
   - `api/app/tests/test_subscription_access/test_router.py`
   - `api/app/tests/test_library_router/test_membership_router.py`
 
+### P3-C1-S1 (Remaining transitional realism gap fixed | 2026-04-20)
+
+- headSha: `eb76bb256`
+- artifacts:
+  - `docs/logs/log-S4F-2C-deployed-identity-admission-membership-truth-hardening.md`
+  - `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
+  - `frontend/src/shared/auth/AuthContext.tsx`
+  - `frontend/src/app/onboarding/admission/page.tsx`
+- expected:
+  - `P3` should decide whether the remaining realism gap is large enough to require another bounded `M2` child packet, or whether the branch road should advance to the next milestone.
+- observed:
+  - the first deployed credibility threshold named by `road-002-01` is now satisfied for access/membership/lifecycle truth, because the retained member/admin drills no longer depend on browser-local standing as final authority;
+  - the remaining transitional gap is narrower than a full second `M2` packet: identity entry and admission UX still start from browser-local/shared-auth scaffolding, but that scaffolding is now outside the final authority path for the passing deployed drills;
+  - provider realism remains intentionally deferred by the branch-road AWS v1 cut rule;
+  - the next meaningful execution lane is therefore `M3/P0` cloud-backed asset-platform readiness contract work, not another immediate `S4F-2C` follow-up drill packet.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-20: opened `S4F-2C` as the next child lane after `S4F-2B`, shifting the `S4F` family focus from deployability/trust hardening to deployed identity/admission/membership truth hardening under `road-002-01/M2`.
 - 2026-04-20: completed `S4F-2C/P0-C1-S1S2S3` by fixing the first deployed credibility boundary on the current cloud slice, choosing backend-validated identity plus persistence-backed admission/membership truth as the next authority shift, and tightening the realism evidence contract around explicit truth sources.
 - 2026-04-20: completed `S4F-2C/P1-C1-S1S2` by bridging stable dev actor identity from frontend session state into backend auth-context fallback so membership-backed tenant standing can resolve per actor instead of per process.
 - 2026-04-20: completed `S4F-2C/P2-C1-S1S2` by rerouting the stable-runner access overlay through the new request-level dev identity bridge and retaining one full PASS cloud-target member/admin drill bundle in run `24668611462`.
+- 2026-04-20: completed `S4F-2C/P3-C1-S1`, deciding that the first `M2` credible-threshold proof is sufficient and the next execution lane should move to `M3/P0` cloud-backed asset-platform readiness contract work rather than another immediate `M2` child.
