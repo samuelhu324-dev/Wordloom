@@ -102,19 +102,10 @@ if [[ "$create_code" != "201" ]]; then
   exit 1
 fi
 
-library_id="$($docker_cmd exec -i "$CONTAINER_NAME" python - <<'PY' < "$create_body"
-from __future__ import annotations
-
-import json
-import sys
-
-payload = json.load(sys.stdin)
-library_id = str(payload.get("id") or "")
+library_id="$(cat "$create_body" | $docker_cmd exec -i "$CONTAINER_NAME" python -c "import json, sys; payload = json.load(sys.stdin); library_id = str(payload.get('id') or '');
 if not library_id:
-    raise SystemExit("create_library_missing_id")
-print(library_id)
-PY
-)"
+    raise SystemExit('create_library_missing_id')
+print(library_id)")"
 
 member_user_id="$(cat /proc/sys/kernel/random/uuid)"
 admin_user_id="$(cat /proc/sys/kernel/random/uuid)"
@@ -205,25 +196,9 @@ print(json.dumps({
 }))
 PY
 
-member_token="$($docker_cmd exec -i "$CONTAINER_NAME" python - <<'PY' < "$seed_tokens_json"
-from __future__ import annotations
+member_token="$(cat "$seed_tokens_json" | $docker_cmd exec -i "$CONTAINER_NAME" python -c "import json, sys; print(json.load(sys.stdin)['member_token'])")"
 
-import json
-import sys
-
-print(json.load(sys.stdin)["member_token"])
-PY
-)"
-
-admin_token="$($docker_cmd exec -i "$CONTAINER_NAME" python - <<'PY' < "$seed_tokens_json"
-from __future__ import annotations
-
-import json
-import sys
-
-print(json.load(sys.stdin)["admin_token"])
-PY
-)"
+admin_token="$(cat "$seed_tokens_json" | $docker_cmd exec -i "$CONTAINER_NAME" python -c "import json, sys; print(json.load(sys.stdin)['admin_token'])")"
 
 member_status="$(curl -sS -o "$member_body" -w '%{http_code}' -H "Authorization: Bearer $member_token" -H "X-Library-Id: $library_id" "$API_BASE_URL/access-context/me")"
 admin_status="$(curl -sS -o "$admin_body" -w '%{http_code}' -H "Authorization: Bearer $admin_token" -H "X-Library-Id: $library_id" "$API_BASE_URL/admin/subscriptions/$library_id")"
@@ -355,15 +330,7 @@ echo "[cloud_release_access_verify] ACCESS_VERIFY_RESULT_JSON_BEGIN"
 printf '%s\n' "$result_json"
 echo "[cloud_release_access_verify] ACCESS_VERIFY_RESULT_JSON_END"
 
-if "$docker_cmd" exec -i "$CONTAINER_NAME" python - <<'PY' <<< "$result_json"
-from __future__ import annotations
-
-import json
-import sys
-
-payload = json.load(sys.stdin)
-raise SystemExit(0 if payload.get("ok") else 1)
-PY
+if printf '%s\n' "$result_json" | "$docker_cmd" exec -i "$CONTAINER_NAME" python -c "import json, sys; payload = json.load(sys.stdin); raise SystemExit(0 if payload.get('ok') else 1)"
 then
   echo "[cloud_release_access_verify] ACCESS_VERIFY_RESULT=PASS"
   exit 0
