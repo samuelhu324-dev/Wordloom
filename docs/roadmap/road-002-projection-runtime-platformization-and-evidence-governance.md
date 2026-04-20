@@ -62,11 +62,12 @@
 
 ## Branch Road Register
 
-- No focused branch road is opened yet.
+- Opened branch road:
+  - `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
 - Likely future branch-road candidates:
   - one branch for cross-repo governance control plane rollout after the first `log -> ledger -> contract` rules are accepted;
-  - one branch for tenant / entitlement / billing simulation once the first SoT-side access model needs concentrated design detail;
-  - one branch for asset-platform admission if media/object handling becomes detailed enough to flood the mainline body.
+  - one later branch for deeper provider-issued identity or payment realism if the first deployable-cut branch proves too broad for the parent `M4` body;
+  - one later branch for asset-platform admission beyond the first cloud-backed readiness cut if media/object handling becomes detailed enough to flood the mainline body.
 
 ## Milestone overview (M1-M5)
 
@@ -423,3 +424,4 @@
 - 2026-04-15: revised `M4` into a book-first minimum-closure opening, mapped `M4-P0` to `S0F-10A`, and made explicit that the first authorization lane should separate ordinary user roles from system-admin override while keeping `block` under inherited `book` standing.
 - 2026-04-15: completed the first `S0F-10A` minimum closure packet through `M4-P1` and `M4-P2` by fixing a first `book` action matrix plus one replayable owner/editor/share-revoke and system-admin override drill, while still deferring `plan / entitlement / mock billing` to later widening.
 - 2026-04-16: recorded the next `M4` follow-up shape directly in the mainline roadmap, separating `tenant admin vs user entry and login design` from `tenant data ownership and storage-boundary design` so the next lane can target product entry and multi-tenant scope cleanly.
+- 2026-04-19: opened `road-002-01` as the first focused branch road under `road-002`, concentrating the deployable AWS runtime cut, the credibility threshold for the current local-first auth/access simulation, and the first cloud-backed readiness gate for later `Asset Platform` work.

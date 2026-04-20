@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Billing, Frontend, Admin, Runtime, Drills, Evidence, epic/s0, sub/9d`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/483`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/496`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -22,7 +22,7 @@
   **reference_log_5**: `docs/logs/log-S0F-9C-backend-vertical-slice-for-subscription-access-minimum-closure.md`
 **issue_keyword**: `runtime`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/9d`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
@@ -89,7 +89,7 @@
 
 **Evidence Footer Source**:
 
-- `P3-C2-S1S2` | artifact: `artifacts/_tmp_s0f_9d_p3_live_ui_verify.json`
+- `P3-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9d_p3_live_ui_verify.json`
 
 ## Exported Sections / Outlet Ownership
 
@@ -339,7 +339,7 @@
   - recorded a focused backend verification result showing the `subscription_access` application/router test slice passes against the same endpoint set consumed by this lane.
   - left the packet ready for one final live browser/runtime evidence record for a UI-visible lifecycle chain.
 
-### P3-C2-S1S2 (Live UI lifecycle chain verified | 2026-04-16)
+### P3-C1-S1S2 (Live UI lifecycle chain verified | 2026-04-16)
 
 - headSha: `43e06a8fd`
 - artifacts: `artifacts/_tmp_s0f_9d_p3_live_ui_verify.json`

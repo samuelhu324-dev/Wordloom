@@ -59,7 +59,7 @@ def _coerce_path(value: str, repo_root: Path) -> Path:
 
 def _load_manifest(path: Path) -> dict:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"Failed to parse relationship manifest JSON: {exc}") from exc
 

@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, GitHub, Automation, Drills, Evidence, epic/s0, sub/8b`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/480`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/493`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -23,7 +23,7 @@
   **reference_log_6**: `docs/governance/views/support-only/inventory-s0f-issue-pr-automation-coverage-v1.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/8`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
@@ -101,6 +101,25 @@
 - Do not mix already-reviewable historical `S0F` slices with future not-yet-started slices when defining the first rollout order.
 - Do not let PR extraction guess a bounded change packet when the `S0F` branch history is still mixed; the branch must be auditable enough to yield a focused review.
 - Keep `road-002` alignment explicit: automation coverage should target the new mainline milestone language rather than stale implicit planning.
+
+## PR Summary Inputs (optional)
+
+- Use this block because `S0F-8B` is expected to drive one automation-focused PR that packages the coverage inventory, per-series rollout order, and first single-item replay boundary in one reviewable packet.
+
+**PR summary bullets**:
+
+- Open one dedicated `S0F` automation-coverage lane and materialize the first support-only inventory for issue/PR linkage gaps across historical `S0F` logs.
+- Fix the first defended rollout order by admitting `S0F-2A` and `S0F-2B` as the opening single-item packet and recording the commit-readiness rule for focused PR extraction.
+- Prove the lane can progress from inventory into guarded single-item issue, PR, and conclusion replay without reopening multi-item batch mutation.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the generated PR checklist block.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0F-8B-s0f-issue-pr-automation-inventory-and-per-series-rollout.md`
+- Previous log: `docs/logs/log-S0F-8A-roadmap-intake-ledger-and-branch-admission-routing.md`
 
 ## Scope
 
