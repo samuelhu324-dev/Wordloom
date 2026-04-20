@@ -17,8 +17,9 @@ runbook_record:
   entry_surface: script
   evidence_surface: run-ledger
   ledger_binding:
-    parent_run_ledger: docs/runbook/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md
-    supplementary_ledger_series: ledger-run-SUP-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline
+    parent_run_ledger: docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md
+    supplementary_ledger_series: docs/runbook/support-only/ledger-run-SUP-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md
+    patch_ledger_series: docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md
     minimum_evidence_files:
       - docs/issues/*.json
       - docs/issues/*plan.json
@@ -114,8 +115,14 @@ runbook_record:
 ### 4.1 Parent ledger
 
 - Canonical parent ledger:
-  - `docs/runbook/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
 - Each admitted execution round for this first runbook release should be appended under that ledger's run/evidence tables until a later log proves that a new ledger sequence is warranted.
+
+### 4.1A Support-only supplement and patch ledgers
+
+- Canonical supplement ledgers and patch ledgers for this runbook family should also live under `docs/runbook/support-only/`.
+- The first reserved patch-ledger name for this runbook release is:
+  - `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
 
 ### 4.2 Run and evidence ids
 
@@ -124,16 +131,19 @@ runbook_record:
 - Stable evidence-item shape beneath one run row:
   - `RUN-001-E01`, `RUN-001-E02`, ...
 - If screenshots, transcripts, or exported review artifacts are needed later, attach them through SUP ledgers using the `RUN-001-SUP-01-ATT-01` style.
+- If a bounded repair packet is needed without changing the runbook release, attach it through a PATCH ledger under the same support-only root.
 
 ### 4.3 Admission and write-back rule
 
 - A run may enter the parent ledger only when the requested stage emitted at least one durable JSON or Markdown artifact under `docs/issues/` or another explicit retained path.
 - If later evidence only sharpens or corrects one admitted run verdict, open a SUP ledger instead of rewriting the original run row invisibly.
+- If a bounded repair packet is needed for scripts, manifests, docs, or retained evidence while the runbook release stays unchanged, open a PATCH ledger instead of treating that repair as an unstructured patch note.
 - Downstream write-back should stay explicit:
   - source-log `Evidence` for packet-level conclusion
   - parent run ledger for repeated execution accounting
   - SUP ledger for later evidence refinement
-  - maintenance or patch lanes only for bounded local fixes that do not reopen runbook semantics
+  - PATCH ledger for runbook-bound bounded repairs that do not justify a release bump
+  - maintenance or family patch lanes only when the repair is intentionally outside run-ledger accounting
 
 ## 5) Evidence Bundle
 

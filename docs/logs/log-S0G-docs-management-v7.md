@@ -19,6 +19,7 @@
   **reference_log_3**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **phase_log_1**: `docs/logs/log-S0G-1A-workspace-backfill-branch-road-registration-and-full-auto-close-out.md`
   **phase_log_2**: `docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md`
+  **phase_log_3**: `docs/logs/log-S0G-2B-support-only-ledger-placement-and-patch-ledger-bridge.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -36,7 +37,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-20`
-**updated**: `2026-04-20`
+**updated**: `2026-04-21`
 
 ---
 
@@ -122,6 +123,8 @@
   - 详见：`docs/logs/log-S0G-1A-workspace-backfill-branch-road-registration-and-full-auto-close-out.md`
 - `S0G-2A`（Phase 2）：runbook ledger-aware operator surface and execution accounting
   - 详见：`docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md`
+- `S0G-2B`（Phase 2B）：support-only ledger placement and patch-ledger bridge
+  - 详见：`docs/logs/log-S0G-2B-support-only-ledger-placement-and-patch-ledger-bridge.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -133,8 +136,8 @@
 ## Current Status（进展摘要）
 
 - `S0G` remains `stable` as the docs-management v7 successor spine, but it is no longer only a one-child retrospective close-out anchor.
-- `S0G-1A` records the initial workspace backfill and lifecycle materialization packet, while `S0G-2A` opens the next bounded design-and-template lane for ledger-aware runbook surfaces.
-- The next concrete work under this spine should move through `S0G-2A` and then into the first real `WORKFLOW-GITHUB-001` pilot packet rather than reopening the original `S0G-1A` close-out body.
+- `S0G-1A` records the initial workspace backfill and lifecycle materialization packet, while `S0G-2A` and `S0G-2B` now fix the ledger-aware runbook surface, support-only ledger placement, and patch-ledger bridge contract.
+- The next concrete work under this spine should now move into the first real `WORKFLOW-GITHUB-001` pilot packet under those fixed rules rather than widening placement policy again or reopening the original `S0G-1A` close-out body.
 
 ## Evidence（可选，聚合型记账）
 

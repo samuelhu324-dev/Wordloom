@@ -22,8 +22,9 @@ runbook_record:
   entry_surface: <workflow|script|task|dispatch|manual>
   evidence_surface: <summary.json|result.json|run-ledger|other>
   ledger_binding:
-    parent_run_ledger: <docs/runbook/ledger-run-001-WORKFLOW-GITHUB-001-summary.md>
-    supplementary_ledger_series: <ledger-run-SUP-001-WORKFLOW-GITHUB-001-summary>
+    parent_run_ledger: <docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-summary.md>
+    supplementary_ledger_series: <docs/runbook/support-only/ledger-run-SUP-001-WORKFLOW-GITHUB-001-summary.md>
+    patch_ledger_series: <docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-001-summary.md>
     minimum_evidence_files:
       - <summary.json>
       - <result.json>
@@ -110,6 +111,7 @@ runbook_record:
 ### 4.1 Parent ledger
 
 - Name the canonical run ledger file for this runbook family.
+- All ledger-class files should live under `docs/runbook/support-only/`.
 - State whether each execution appends one new run row or opens a new ledger file.
 
 ### 4.2 Run and evidence ids
@@ -122,6 +124,7 @@ runbook_record:
 
 - State the minimum evidence files required before a run may be admitted into the parent run ledger.
 - State when a later evidence packet should open a SUP ledger instead of rewriting the original run row directly.
+- State when a bounded repair packet should open a `PATCH` ledger instead of using a general SUP ledger.
 - State where downstream write-back should land: parent ledger, SUP ledger, source log `Evidence`, maintenance log, or another explicit surface.
 
 ## 5) Evidence Bundle

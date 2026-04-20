@@ -83,7 +83,7 @@
 
 - Log: `docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md`
 - Runbook: `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
-- Evidence artifact: `docs/runbook/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+- Evidence artifact: `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
 
 **Evidence Footer Source**:
 
@@ -203,8 +203,8 @@
 
 - `S0G-2A` is now scaffolded as the source log for the runbook-ledger-aware rebuild lane.
 - The naming rule, template surfaces, and first pilot family are explicit enough to stop treating runbooks as log-first summaries only.
-- `P2` is now fixed: the first real sample family surfaces exist at `run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md` and `ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`.
-- `P3` is also now fixed as a next-lane decision: after this scaffold, the work should move into the first real batch of admitted `WORKFLOW-GITHUB-001` full-auto sample runs, not another template-only round.
+- `P2` is now fixed: the first real sample family surfaces exist at `run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md` and `support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`.
+- `P3` was initially fixed as a direct move to real full-auto samples, but the next bounded contract follow-up is now `S0G-2B`: support-only ledger placement and patch-ledger bridge hardening before the first live sample batch.
 
 ## Evidence (reserved)
 
@@ -236,7 +236,7 @@
 - headSha: `WORKTREE`
 - artifacts:
   - `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
-  - `docs/runbook/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
 - expected:
   - the first pilot family should move from template-only naming into one real runbook release plus one bound parent run ledger.
 - observed:
@@ -249,11 +249,11 @@
 - artifacts:
   - `docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md`
   - `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
-  - `docs/runbook/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
 - expected:
   - after the first sample family surfaces exist, the lane should state whether another template round is needed or whether execution should move to real sample runs.
 - observed:
-  - the next bounded step is no longer template design; it is one real batch of `WORKFLOW-GITHUB-001` full-auto samples that can update `RUN-001` with actual issue/PR/conclusion artifacts and verdicts.
+  - the next bounded step after `S0G-2A` is now `S0G-2B`, which will harden support-only ledger placement and the patch-ledger bridge before the first real full-auto sample batch updates `RUN-001`.
 
 ## Recent changes (for traceability, optional)
 
