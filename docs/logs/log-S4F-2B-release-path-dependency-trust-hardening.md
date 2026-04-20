@@ -16,6 +16,7 @@
   **parent_log**: `docs/logs/log-S4F-access-subscription-deployable-runtime-cut.md`
   **previous_log**: `docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
   **reference_log_1**: `docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
+  **reference_log_2**: `docs/logs/log-S4D-4C-408-timeout-eradication.md`
 **issue_keyword**: `runtime`
 **issue_top_labels**: ``
 **issue_scope_labels**: ``
@@ -84,6 +85,13 @@
 - Runbook: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
 - Evidence artifact: ``
 
+**Implementation anchor(s)**:
+
+- `infra/terraform/aws/runner-host/main.tf`
+- `infra/terraform/aws/runner-host/terraform.tfvars`
+- `docs/runbook/run-S4D-cloud-stable-runner-cutover.md`
+- `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml`
+
 **Evidence Footer Source**:
 
 - `P2-C1-S1` | artifact: ``
@@ -113,6 +121,7 @@
 - Do not change more of the `S4D` release workflow than needed to eliminate the operator-IP dependency.
 - Do not leave the outcome at prose-only recommendation; the lane must end with one explicit target trust shape plus evidence.
 - Do not accept another solution that still depends on recurring manual `/32` edits as the default operating mode.
+- Reuse the already-landed `S4D-4C` stable-runner host/module and cutover assets unless a concrete defect proves they are insufficient for `S4F-2B`.
 
 ## Scope
 
@@ -211,8 +220,8 @@
 
 ### P1 (Implementation / infra wiring)
 
-- [ ] `P1-C1-S1`: one durable trust model chosen and recorded
-- [ ] `P1-C1-S2`: minimal trust-path wiring landed
+- [x] `P1-C1-S1`: one durable trust model chosen and recorded
+- [x] `P1-C1-S2`: minimal trust-path wiring landed
 
 ### P2 (Drill / Verify)
 
@@ -228,7 +237,9 @@
 - `S4F-2B` is newly opened as the follow-up lane to `S4F-2A/P3`.
 - The problem is already well enough bounded to start: the backend release path is proven, and the remaining fragility is the dependency trust model around RDS ingress and operator network identity.
 - `P0` is now fixed: the lane will treat the stable self-hosted cloud runner path as the default release origin and will move RDS trust to one durable fixed-identity path instead of recurring operator public `/32` edits.
-- The next step is `P1`, not more option comparison: bind the current stable runner path to one concrete trust anchor and land the minimal network/security-group wiring needed for a real evidence rerun.
+- `P1` is now also fixed at the implementation-anchor level: the trust anchor is the existing stable runner host module plus the cloud-dev basic security group (`sg-027e05455509e0730`, `wlv3-cloud-dev-sg-basic`), which the cloud-dev DB security group (`sg-0873e947b9947639d`, `wlv3-cloud-dev-sg-db`) can trust without per-operator public-IP churn.
+- The repo-side implementation surface is already present and aligned: `infra/terraform/aws/runner-host/` provisions the host, `scripts/ops/cloud_stable_runner_bootstrap.sh` and `scripts/ops/cloud_stable_runner_probe.sh` bootstrap/probe it, and `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml` is the corresponding release entry.
+- The next step is `P2`: run one real cloud-target evidence sample from that trust anchor and prove `operatorIpAllowlistMutationRequired=false` for the release path itself.
 
 ## Evidence (reserved)
 
@@ -260,7 +271,25 @@
   - The chosen default trust model is the stable self-hosted cloud runner path plus one durable fixed-identity RDS trust path, with operator public `/32` ingress demoted to break-glass/debug-only status.
   - The evidence contract now requires explicit recording of release origin and whether any operator-IP allowlist mutation was still required.
 
+### P1-C1-S1S2 (Stable-runner trust anchor mapped to concrete cloud-dev wiring | 2026-04-20)
+
+- headSha: `960c10e9c`
+- artifacts:
+  - `infra/terraform/aws/runner-host/main.tf`
+  - `infra/terraform/aws/runner-host/terraform.tfvars`
+  - `docs/runbook/run-S4D-cloud-stable-runner-cutover.md`
+  - `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml`
+- expected:
+  - `S4F-2B/P1` should identify one concrete trust anchor already present in the repo or explicitly prove that a new one must be created.
+  - The chosen implementation anchor should show how `S4F-2A`'s operator-origin dependency changes under the hardened path.
+- observed:
+  - `infra/terraform/aws/runner-host/main.tf` explicitly requires attaching the runner host to the cloud-dev basic security group so the DB SG can trust the host by SG instead of public IP.
+  - The committed `infra/terraform/aws/runner-host/terraform.tfvars` currently attaches `sg-027e05455509e0730`, and AWS readback confirms this is `wlv3-cloud-dev-sg-basic`.
+  - AWS readback also confirms the cloud-dev DB SG is `sg-0873e947b9947639d` / `wlv3-cloud-dev-sg-db`, so the trust anchor is now recorded as `stable-runner host attached to cloud-dev basic SG -> DB SG trust path`.
+  - The exact contract delta from `S4F-2A` is: operator workstation and temporary Windows runner are no longer the routine dependency origin for RDS reachability; they remain only as bootstrap/debug or bridge surfaces while the preferred release origin becomes the stable Linux runner path.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-20: opened `S4F-2B` as the direct follow-up lane to `S4F-2A/P3`, dedicated to removing operator public `/32` RDS allowlist dependence from the reused `S4D` release path.
 - 2026-04-20: completed `P0-C1-S1S2S3` by fixing the dependency boundary, choosing the stable-runner-based trust model as the default lane target, and tightening the evidence contract around release origin and allowlist-mutation requirements.
+- 2026-04-20: completed `P1-C1-S1S2` by mapping `S4F-2B` onto the already-landed `S4D-4C` stable-runner assets, confirming the concrete trust anchor (`wlv3-cloud-dev-sg-basic` -> `wlv3-cloud-dev-sg-db`), and recording the exact release-origin delta from `S4F-2A`.
