@@ -132,9 +132,9 @@
 
 - `S4F` now has one completed first packet in `S4F-1A` and one newly opened follow-up packet in `S4F-2A`.
 - `S4F-2A/P1` is now landed: the reused `S4D` release path can optionally run the `S4F` access-aware verify overlay and write the combined result back into the retained artifact bundle.
-- `S4F-2A/P2` has now produced its first real stable-runner sample, but it is currently blocked at target reachability: run `24655583207` failed preflight on `49.196.191.226:22022` before deploy/verify/access overlay execution began.
+- `S4F-2A/P2` has now produced a second real fallback sample after local VM SSH recovery and Windows runner re-registration: run `24654777721` passed preflight and deploy on `127.0.0.1:22022`, then failed at post-change verify before the `S4F` access-aware overlay began.
 - `S4F-2A/P2` also now includes the operator-side observation fallback and API-path diagnosis: the queued Windows fallback run `24654777721` can be read cleanly via one-shot `gh run view` / `gh api`, and the earlier `gh run watch` failure has been narrowed to an intermittent local polling-path timeout rather than a repo-side workflow lookup failure.
-- The next execution lane is therefore unchanged but sharper: restore the cloud-target SSH path and rerun the same operator workflow to obtain the first end-to-end passing evidence sample.
+- The next execution lane is therefore sharper again: the SSH/reachability blocker has been retired on the local path, and the remaining `P2` blocker is now application/container verification readiness on the deployed candidate, specifically keeping `wordloom-api-cloud-dev` alive and reachable on the expected host port so the access overlay can run.
 
 ## Notes（落地原则，可选）
 
@@ -173,3 +173,5 @@
 - 2026-04-20：recorded the first real `S4F-2A/P2` stable-runner attempt (`24655583207`), which retained artifacts successfully but failed preflight on target SSH reachability before deploy/verify/access overlay execution.
 - 2026-04-20：fixed the post-run summary renderer indentation in both cloud release dispatch workflows so reruns report the retained `summary.json` outcome cleanly.
 - 2026-04-20：added `S4F-2A/P2` fallback run-status evidence and operator-to-GitHub API diagnostics, confirming that `gh run watch` was the unstable observation path while one-shot API reads remained healthy.
+- 2026-04-20：recovered the local operator path by resetting the VM, restoring guest SSH on `127.0.0.1:22022`, re-registering the deleted Windows self-hosted runner, and turning fallback run `24654777721` into a real deploy/verify sample.
+- 2026-04-20：recorded that the new `S4F-2A/P2` blocker is no longer target reachability on the local path but post-change verify readiness: the candidate deploy passed, yet the expected `wordloom-api-cloud-dev` container was not alive by verify time and guest-side evidence showed a host-port binding conflict during failed container startup.

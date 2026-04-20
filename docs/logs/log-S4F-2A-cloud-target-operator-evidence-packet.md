@@ -219,10 +219,10 @@
 ## Current Status (recommended)
 
 - `S4F-2A` now has `P0` and `P1` in place: the access-aware verify overlay is wired onto the reused `S4D` cloud release path, and the combined evidence JSON contract is write-backed into the retained artifact bundle.
-- `P2` has now produced its first real operator-facing run attempt, but the retained evidence shows a preflight reachability blocker before deploy/verify began: stable-runner run `24655583207` failed at `targetReachabilityGate=FAIL` with `ssh: connect to host 49.196.191.226 port 22022: Connection timed out`.
+- `P2` has now produced two real operator-facing run samples. The first stable-runner sample (`24655583207`) failed at preflight reachability. The second Windows self-hosted sample (`24654777721`) proved that the recovered local path can pass preflight and deploy, but still fails at post-change verify before the `S4F` access overlay begins.
 - The GitHub Actions observation path is now also pinned down for `P2`: `gh run watch` timed out while polling the jobs endpoint from this operator machine, but one-shot `gh run view` and `gh api` queries succeeded against the same runs and endpoint, so the evidence points to an intermittent local-to-GitHub API polling-path timeout rather than a bad run id, bad token, or bad workflow reference.
 - The queued Windows fallback run remains useful evidence rather than a mystery failure: run `24654777721` is still `queued`, and one-shot queries show its only job `cloud-runtime-release` has not started because no matching Windows self-hosted runner has picked it up.
-- The immediate next step remains narrow: restore the target SSH path, then rerun the same workflow command so the generic `S4D` release and the `S4F` access overlay can execute end to end.
+- The target SSH path is no longer the immediate blocker. The current next step is narrower: fix the deployed-container survival / host-port conflict so post-change verify can see a live `wordloom-api-cloud-dev` container and reach `127.0.0.1:30021/api/v1`.
 
 ## Evidence (reserved)
 
@@ -254,6 +254,38 @@
   - `Invoke-WebRequest https://api.github.com/rate_limit` returned `200 OK`
   - `Test-NetConnection api.github.com -Port 443` returned `TcpTestSucceeded=True`
   - working conclusion: the screenshot failure was a local polling-path timeout during `gh run watch`, not an authentication failure and not proof that the run state was unavailable from GitHub.
+- Second real `P2` sample retained after SSH and runner recovery:
+  - run id: `24654777721`
+  - workflow: `s4d-cloud-release-dispatch`
+  - target host kind: `Ubuntu Server VM via SSH (wordloom@127.0.0.1:22022)`
+  - head sha / remote head sha: `68d0af1b2f7f6b8c2d0d7981670ee40303342d30` / `68d0af1b2f7f6b8c2d0d7981670ee40303342d30`
+  - result: `FAIL`
+  - preflight / deploy / verify / access overlay: `PASS` / `PASS` / `FAIL` / `NOT_RUN`
+  - gate results:
+    - `identityAuthGate=PASS`
+    - `targetReachabilityGate=PASS`
+    - `dependencyConnectivityGate=PASS`
+    - `releaseContractGate=PASS`
+    - `deployExecutionGate=PASS`
+    - `postChangeVerifyGate=FAIL`
+    - `accessAwareVerifyGate=NOT_RUN`
+  - retained artifact dir: `artifacts/_tmp_s4d4b_cloud_release_dispatch/24654777721-1`
+  - retained files:
+    - `preflight.log`
+    - `deploy.log`
+    - `verify.log`
+    - `operator_guidance.txt`
+    - `summary.json`
+  - verify failure excerpt:
+    - `container not found: wordloom-api-cloud-dev`
+    - `health_ok FAIL (000)`
+    - `read_smoke_ok FAIL (code=000)`
+  - guest-side root-cause probe after the run:
+    - fallback Windows runner `wordloom-s4d-temp-win` had to be re-registered because its server-side registration had been deleted
+    - guest SSH on `127.0.0.1:22022` was restored by resetting the local VM and confirming `systemctl is-active ssh = active`
+    - deploy had briefly hung on removing the old container; after manual `docker rm -f wordloom-api-cloud-dev`, the workflow continued
+    - the failed deploy container state captured `created|128|failed to bind host port for 0.0.0.0:30033 ... address already in use|wordloom-backend:cloud-dev`
+  - operator guidance outcome: candidate appeared deployed enough for deploy PASS, but post-change verify failed; inspect probe target / API reachability / container survival before the next deploy attempt.
 
 ## Recent changes (for traceability, optional)
 
@@ -263,3 +295,5 @@
 - 2026-04-20: fixed the workflow summary renderer indentation in both cloud release dispatch workflows so future reruns surface the real `summary.json` outcome without a secondary post-run script failure.
 - 2026-04-20: added `P2` run-observation fallback evidence showing that one-shot `gh run view` / `gh api` calls can read both relevant workflow runs even though `gh run watch` timed out from the operator machine.
 - 2026-04-20: added `P2` operator-to-GitHub API path diagnostics showing healthy auth, DNS, HTTP, and TCP baseline checks, narrowing the screenshot failure to an intermittent polling-path timeout rather than a repo-side workflow error.
+- 2026-04-20: recovered the local Ubuntu VM SSH path on `127.0.0.1:22022`, re-registered and relaunched the Windows self-hosted runner `wordloom-s4d-temp-win`, and thereby turned fallback run `24654777721` from `queued` into a real deploy/verify sample.
+- 2026-04-20: recorded the second real `P2` sample (`24654777721`), which proved `preflight=PASS` and `deploy=PASS` on the local operator path but failed `postChangeVerifyGate` before the `S4F` access-aware overlay began, with guest-side evidence pointing to container survival / host-port-conflict problems.
