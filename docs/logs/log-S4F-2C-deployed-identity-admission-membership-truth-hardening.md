@@ -253,6 +253,13 @@
 - P2-C1-S1: capture one deployed member flow whose key state changes come from backend/database-backed truth
 - P2-C1-S2: capture one deployed admin flow whose key state changes come from backend/database-backed truth and retain the artifact paths/results here
 
+### P2 Deployed Drill Decision (v1)
+
+- `P2` now fixes one bounded deployed evidence path on the already-hardened stable-runner release substrate instead of inventing a separate drill harness:
+  - reuse `s4d-cloud-release-dispatch-stable-runner.yml` plus `scripts/ops/cloud_release_workflow.sh --access-verify-overlay` as the operator path;
+  - tighten `scripts/ops/cloud_release_access_verify.sh` so the deployed member/admin probes no longer rely on JWTs minted inside the container, but instead use the same explicit dev actor ids that `P1` bridged into backend auth fallback;
+  - retain the resulting `summary.json`, `verify.log`, and `access_verify_result.json` as the first cloud-target proof that actor identity and standing are accepted per request from backend/database-backed truth.
+
 ### P3 (Close-out / next-lane decision)
 
 - P3-C1-S1: record what realism gap remains transitional after this packet and whether another bounded child packet is required
@@ -272,8 +279,8 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: deployed member flow retained against backend/database-backed truth
-- [ ] `P2-C1-S2`: deployed admin flow retained against backend/database-backed truth
+- [x] `P2-C1-S1`: deployed member flow retained against backend/database-backed truth
+- [x] `P2-C1-S2`: deployed admin flow retained against backend/database-backed truth
 
 ### P3 (Close-out / next-lane decision)
 
@@ -286,7 +293,8 @@
 - `P0` is now fixed: the first controlling credibility gap is no longer generic “demo-ness” but the specific fact that the currently deployed actor identity, admission standing, and role truth still originate in frontend-local session/admission machinery while the backend auth actor remains intentionally minimal.
 - The first bounded truth shift is also now fixed: `S4F-2C` should tighten backend-validated identity plus persistence-backed admission/membership truth first, while leaving local actor switching explicitly outside the authority path for the eventual passing drills.
 - `P1` is now fixed: dev/demo requests no longer need to collapse to one shared backend fallback actor before membership resolution, because the frontend can bridge one stable actor identity per session into the backend auth-context seam.
-- The next step is `P2`: retain one deployed member flow and one deployed admin flow whose passing path reads backend/database-backed tenant standing for the bridged actor identity.
+- `P2` is now fixed: one stable-runner cloud-target run retained both a member and an admin drill through the new request-level dev identity bridge, and the retained overlay evidence now records the backend/database truth sources explicitly.
+- The next step is `P3`: record the remaining transitional realism gap after this first deployed truth proof and decide whether another bounded child packet is required.
 
 ## Evidence (reserved)
 
@@ -342,8 +350,36 @@
   - backend auth fallback now reads that explicit actor id before membership lookup, so tenant standing can resolve per actor from `library_memberships` (or the existing owner fallback);
   - focused validation passed for the new seam in `backend/api/app/tests/test_security/test_auth_context_dev_identity_bridge.py`.
 
+### P2-C1-S1S2 (Deployed member/admin truth drills retained on stable runner | 2026-04-20)
+
+- headSha: `f4e94ad1f`
+- run:
+  - `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/24668611462`
+- artifacts:
+  - `artifacts/_tmp_s4f2c_p2_run_24668611462/s4d-cloud-release-stable-runner-24668611462-1/summary.json`
+  - `artifacts/_tmp_s4f2c_p2_run_24668611462/s4d-cloud-release-stable-runner-24668611462-1/verify.log`
+  - `artifacts/_tmp_s4f2c_p2_run_24668611462/s4d-cloud-release-stable-runner-24668611462-1/access_verify_result.json`
+- expected:
+  - the passing deployed member flow should read `access-context/me` as the fixed member actor through the new request-level dev identity bridge, and should fail admin subscription access with `not_admin`;
+  - the passing deployed admin flow should read admin subscription state, list tenant memberships, mutate lifecycle state, and re-read the updated state through the same backend/database-backed truth path.
+- observed:
+  - stable-runner release run `24668611462` completed with `deploy=PASS`, `verify=PASS`, `accessVerifyResult=PASS`, and `result=PASS`;
+  - the retained `s4f-2c.access-verify.v1` payload fixes `identityTruthSource=backend-validated.dev-header`, `admissionTruthSource=persistence-backed.library_memberships`, `membershipTruthSource=persistence-backed.library_memberships`, and `lifecycleTruthSource=backend.subscription_access`;
+  - the member drill passed with `memberReadStatus=200`, `memberRoles=["member"]`, and `memberAdminDenyStatus=403` / `memberAdminDenyReason="not_admin"` for the fixed demo member actor `11111111-1111-4111-8111-111111111111`;
+  - the admin drill passed with `adminReadStatus=200`, `adminMembershipsStatus=200`, and `adminMembershipRoles` showing the retained member/admin rows for the fixed demo actors, plus `lifecycleMutationStatus=200` and `rerenderedStateStatus=200` after the upgrade event.
+
+### P2-C1-S1S2 (Retry note | 2026-04-20)
+
+- first retry run `24668271445` failed before access verify due one local startup regression introduced while wiring request-aware dev fallback: FastAPI rejected `get_current_user_id(request: Optional[Request] = None)` as a dependency field type on router startup.
+- the fix was to keep `get_current_user_id()` signature startup-safe for existing `Depends(get_current_user_id)` call sites and move request-aware header fallback into a separate helper consumed only by `get_auth_context()`.
+- focused validation then passed locally across:
+  - `api/app/tests/test_security/test_auth_context_dev_identity_bridge.py`
+  - `api/app/tests/test_subscription_access/test_router.py`
+  - `api/app/tests/test_library_router/test_membership_router.py`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-20: opened `S4F-2C` as the next child lane after `S4F-2B`, shifting the `S4F` family focus from deployability/trust hardening to deployed identity/admission/membership truth hardening under `road-002-01/M2`.
 - 2026-04-20: completed `S4F-2C/P0-C1-S1S2S3` by fixing the first deployed credibility boundary on the current cloud slice, choosing backend-validated identity plus persistence-backed admission/membership truth as the next authority shift, and tightening the realism evidence contract around explicit truth sources.
 - 2026-04-20: completed `S4F-2C/P1-C1-S1S2` by bridging stable dev actor identity from frontend session state into backend auth-context fallback so membership-backed tenant standing can resolve per actor instead of per process.
+- 2026-04-20: completed `S4F-2C/P2-C1-S1S2` by rerouting the stable-runner access overlay through the new request-level dev identity bridge and retaining one full PASS cloud-target member/admin drill bundle in run `24668611462`.
