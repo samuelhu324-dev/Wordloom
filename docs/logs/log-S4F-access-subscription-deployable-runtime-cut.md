@@ -78,7 +78,7 @@
 
 - Parent log: `docs/logs/log-S4F-access-subscription-deployable-runtime-cut.md`
 - Child log source(s): `docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md`
-- Evidence artifact: ``
+- Evidence artifact: `artifacts/_tmp_s4f1a_p2_run_24652525475/labs-evidence-verify_access_subscription_deployable_cut-24652525475-1-verify_access_subscription_deployable_cut/summary.json`
 
 ## Background（背景）
 
@@ -124,13 +124,12 @@
 - [x] `P0`：`S4F` parent/spine created for the first `road-002-01/M1` runtime packet
 - [x] `P1`：first child packet fixed as `S4F-1A`
 - [x] `P2`：default reuse boundary from `S4D` fixed
-- [ ] `P3`：first concrete deployable packet executed and evidenced
+- [x] `P3`：first concrete deployable packet executed and evidenced
 
 ## Current Status（进展摘要）
 
-- `S4F` is newly opened as a draft spine.
-- The first concrete work is delegated immediately to `S4F-1A`.
-- The current next step is not further parent-spine drafting; it is to fix the exact backend-only deployable cut and access-aware verify contract in `S4F-1A`.
+- `S4F` now has one completed first packet in `S4F-1A`: backend-only access/subscription deployable cut, runnable access-aware drills, and a recorded next-lane decision.
+- The next `S4F` lane should not reopen the parent spine or jump directly to frontend cloud hosting; it should package one operator-facing cloud-target evidence run where the reused `S4D` release path and the `S4F` access-aware verify overlay pass together.
 
 ## Notes（落地原则，可选）
 
@@ -163,3 +162,4 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-04-20：首次创建 `S4F`，作为 `road-002-01/M1` 的新 `S4` 顶层 spine，并把第一条 execution lane 固定到 `S4F-1A`。
+- 2026-04-20：`S4F-1A` completed `P0-P3`, so the parent spine now has its first executed and evidenced child packet plus one explicit next-lane decision: prioritize cloud-path operator evidence before frontend cloud closure.

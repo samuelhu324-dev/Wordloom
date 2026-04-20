@@ -270,6 +270,22 @@ curl -sS "$API_BASE_URL/admin/subscriptions/$VERIFY_LIBRARY_ID/history" \
 - The first lifecycle probe is intentionally fixed as one single-step `upgrade_success` promotion. `renewal_failed` or longer chains can be added later in `P2` evidence if one deployed sample proves they are worth widening.
 - `P1` does not require a separate feature script yet. The minimum acceptable implementation for this packet is that the three HTTP probes above can be run deterministically against one deployed backend cut and written back into the `S4D` evidence bundle as `memberReadResult`, `adminReadResult`, `lifecycleMutationResult`, and `rerenderedStateResult`.
 
+## P3 (Close-out / next-lane decision | v1)
+
+### P3-C1-S1 (Decide whether backend-only proof is sufficient | v1)
+
+- Decision: `backend-only proof is sufficient for S4F-1A v1`; do not open frontend cloud closure as the immediate next lane.
+- Why this packet can stop at backend-only:
+  - the current branch-road `M1` goal is a deployable runtime slice, not a full product-hosting closure;
+  - `S4F-1A` already proved the runtime-critical member/admin/lifecycle contract on a real API + Postgres process instead of browser-local state only;
+  - the packet's narrow purpose was to validate access/subscription runtime truth and release-path reuse, not to prove UI residency.
+- The remaining highest-value gap is not frontend hosting; it is operator-facing cloud-target evidence on the reused `S4D` substrate.
+- Therefore the next recommended lane is:
+  - keep the frontend/UI cloud closure deferred;
+  - reuse the same access-aware verify overlay on top of one real `S4D` cloud-target release run;
+  - record one operator-facing release evidence sample where generic `S4D` deploy/verify and `S4F` access-aware probes pass in the same bundle.
+- Only after that cloud-target runtime sample exists should the branch consider a separate packet for frontend cloud closure, broader product-entry residency, or later `Asset Platform` readiness work.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -323,12 +339,12 @@ curl -sS "$API_BASE_URL/admin/subscriptions/$VERIFY_LIBRARY_ID/history" \
 
 ### P3 (Close-out / next-lane decision)
 
-- [ ] `P3-C1-S1`: next-lane decision recorded
+- [x] `P3-C1-S1`: next-lane decision recorded
 
 ## Current Status (recommended)
 
-- `S4F-1A/P2` now has one executable access/subscription drill runner plus one green runtime evidence sample on GitHub-hosted CI: member read, admin read, lifecycle mutation, and deterministic re-read all passed against the same real API + Postgres slice.
-- The packet still reuses the `S4D` deploy contract for operator-facing cloud release, but the first runnable probe harness is now fixed and proven independently from the local Windows/WSL Docker surface.
+- `S4F-1A/P0-P3` is now complete: the packet fixes the backend-only deployable-cut boundary, reuses the stable `S4D` release path, proves the member/admin/lifecycle contract on runnable infrastructure, and records the next-lane decision.
+- The immediate next step is not frontend cloud closure. The immediate next step is one cloud-target `S4D + S4F` combined evidence sample that proves the same access-aware verify overlay on the operator-facing runtime path.
 
 ## Evidence (reserved)
 
@@ -349,3 +365,4 @@ curl -sS "$API_BASE_URL/admin/subscriptions/$VERIFY_LIBRARY_ID/history" \
 - 2026-04-20: first created `S4F-1A` as the backend-only access/subscription deployable-cut packet under `road-002-01/M1-P3`.
 - 2026-04-20: completed `P1-C1-S1S2` by binding the packet to the stable `S4D` operator workflow and fixing the first three deployed access-aware verify probes.
 - 2026-04-20: completed `P2-C1-S1S2` by adding the first runnable access/subscription drill harness, dispatching `drill-labs-scenario`, and capturing one green member/admin/lifecycle evidence sample at head `1ad8dc57cdb343a5014c0d5dd1d2e211d8601b7b`.
+- 2026-04-20: completed `P3-C1-S1` by deciding that backend-only runtime proof is sufficient for `S4F-1A` v1 and that the next lane should target cloud-path operator evidence before any frontend cloud closure.
