@@ -82,11 +82,11 @@
 
 - Log: `docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
 - Runbook: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
-- Evidence artifact: ``
+- Evidence artifact: `artifacts/_tmp_s4d4b_cloud_release_dispatch/24662387235-1/summary.json`
 
 **Evidence Footer Source**:
 
-- `P2-C1-S1` | artifact: ``
+- `P2-C1-S1` | artifact: `artifacts/_tmp_s4d4b_cloud_release_dispatch/24662387235-1/summary.json`
 
 ## Definitions (optional)
 
@@ -209,20 +209,19 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: cloud-target operator evidence run captured
+- [x] `P2-C1-S1`: cloud-target operator evidence run captured
 - [x] `P2-C1-S2`: evidence artifact, run-state fallback query, and operator/API path diagnostics recorded
 
 ### P3 (Close-out / next-lane decision)
 
-- [ ] `P3-C1-S1`: branch-road `M1` sufficiency decision recorded
+- [x] `P3-C1-S1`: branch-road `M1` sufficiency decision recorded
 
 ## Current Status (recommended)
 
-- `S4F-2A` now has `P0` and `P1` in place: the access-aware verify overlay is wired onto the reused `S4D` cloud release path, and the combined evidence JSON contract is write-backed into the retained artifact bundle.
-- `P2` has now produced two real operator-facing run samples. The first stable-runner sample (`24655583207`) failed at preflight reachability. The second Windows self-hosted sample (`24654777721`) proved that the recovered local path can pass preflight and deploy, but still fails at post-change verify before the `S4F` access overlay begins.
+- `S4F-2A` is now end-to-end evidenced on the reused `S4D` path. Real run `24662387235` on head `07c99aa0f571cf04ba97ef25b4d52cf52d9f64e7` passed preflight, deploy, generic verify, and the `S4F` access-aware overlay, producing one complete operator-facing cloud-target evidence bundle.
+- `P2` produced four meaningful samples on the way to closure: stable-runner preflight failure (`24655583207`), local-path deploy/verify failure (`24654777721`), local-path verify-pass/access-script failure (`24661990707`), and the final clean PASS run (`24662387235`). Together they separate environment reachability, runtime readiness, and overlay-script defects instead of collapsing them into one opaque failure.
 - The GitHub Actions observation path is now also pinned down for `P2`: `gh run watch` timed out while polling the jobs endpoint from this operator machine, but one-shot `gh run view` and `gh api` queries succeeded against the same runs and endpoint, so the evidence points to an intermittent local-to-GitHub API polling-path timeout rather than a bad run id, bad token, or bad workflow reference.
-- The queued Windows fallback run remains useful evidence rather than a mystery failure: run `24654777721` is still `queued`, and one-shot queries show its only job `cloud-runtime-release` has not started because no matching Windows self-hosted runner has picked it up.
-- The target SSH path is no longer the immediate blocker. The current next step is narrower: fix the deployed-container survival / host-port conflict so post-change verify can see a live `wordloom-api-cloud-dev` container and reach `127.0.0.1:30021/api/v1`.
+- The packet's next-lane decision is now explicit: `road-002-01/M1` has sufficient backend deployment-facing evidence for the access/subscription slice, while the remaining realism-tightening work should move to a separate lane that removes dependence on drifting operator public `/32` RDS allowlists.
 
 ## Evidence (reserved)
 
@@ -286,6 +285,61 @@
     - deploy had briefly hung on removing the old container; after manual `docker rm -f wordloom-api-cloud-dev`, the workflow continued
     - the failed deploy container state captured `created|128|failed to bind host port for 0.0.0.0:30033 ... address already in use|wordloom-backend:cloud-dev`
   - operator guidance outcome: candidate appeared deployed enough for deploy PASS, but post-change verify failed; inspect probe target / API reachability / container survival before the next deploy attempt.
+- Third real `P2` sample retained after RDS ingress restoration:
+  - run id: `24661990707`
+  - workflow: `s4d-cloud-release-dispatch`
+  - target host kind: `Ubuntu Server VM via SSH (wordloom@127.0.0.1:22022)`
+  - head sha / remote head sha: `96049c9c540b21112e843b89dd9ba361f8657228` / `96049c9c540b21112e843b89dd9ba361f8657228`
+  - result: `FAIL`
+  - preflight / deploy / verify / access overlay: `PASS` / `PASS` / `PASS` / `NOT_RUN`
+  - retained artifact dir: `artifacts/_tmp_s4d4b_cloud_release_dispatch/24661990707-1`
+  - retained files:
+    - `preflight.log`
+    - `deploy.log`
+    - `verify.log`
+    - `operator_guidance.txt`
+    - `summary.json`
+  - verify failure excerpt:
+    - `CLOUD_RELEASE_VERIFY_RESULT=PASS`
+    - `Traceback (most recent call last):`
+    - `NameError: name 'null' is not defined`
+  - root cause: `scripts/ops/cloud_release_access_verify.sh` mixed Python heredoc script input with later stdin redirection from JSON files, so Python executed JSON payload text instead of the intended script.
+- Final `P2` success sample retained on the same local operator path:
+  - run id: `24662387235`
+  - workflow: `s4d-cloud-release-dispatch`
+  - target host kind: `Ubuntu Server VM via SSH (wordloom@127.0.0.1:22022)`
+  - head sha / remote head sha: `07c99aa0f571cf04ba97ef25b4d52cf52d9f64e7` / `07c99aa0f571cf04ba97ef25b4d52cf52d9f64e7`
+  - result: `PASS`
+  - preflight / deploy / verify / access overlay: `PASS` / `PASS` / `PASS` / `PASS`
+  - gate results:
+    - `identityAuthGate=PASS`
+    - `targetReachabilityGate=PASS`
+    - `dependencyConnectivityGate=PASS`
+    - `releaseContractGate=PASS`
+    - `deployExecutionGate=PASS`
+    - `postChangeVerifyGate=PASS`
+    - `accessAwareVerifyGate=PASS`
+  - retained artifact dir: `artifacts/_tmp_s4d4b_cloud_release_dispatch/24662387235-1`
+  - retained files:
+    - `preflight.log`
+    - `deploy.log`
+    - `verify.log`
+    - `access_verify_result.json`
+    - `operator_guidance.txt`
+    - `summary.json`
+  - access-aware overlay observed values:
+    - `memberReadResult=true`
+    - `adminReadResult=true`
+    - `lifecycleMutationResult=true`
+    - `rerenderedStateResult=true`
+
+## P3 (Close-out / next-lane decision)
+
+### P3-C1-S1 (M1 sufficiency and realism-tightening follow-up | 2026-04-20)
+
+- `road-002-01/M1` now has sufficient backend deployment-facing evidence for the access/subscription slice because one retained operator-facing cloud-target run proves the reused `S4D` release path plus the `S4F` access-aware overlay on the actual target host.
+- The next lane should not repeat `S4F-2A`; it should remove the remaining operator-environment fragility by eliminating dependence on drifting operator public `/32` RDS ingress rules.
+- Default follow-up direction: move release/verify execution onto a stable VPC-positioned runner or equivalent trusted network position, then replace per-operator `/32` allowlists with a durable SG-to-SG or otherwise fixed-trust path.
 
 ## Recent changes (for traceability, optional)
 
@@ -297,3 +351,6 @@
 - 2026-04-20: added `P2` operator-to-GitHub API path diagnostics showing healthy auth, DNS, HTTP, and TCP baseline checks, narrowing the screenshot failure to an intermittent polling-path timeout rather than a repo-side workflow error.
 - 2026-04-20: recovered the local Ubuntu VM SSH path on `127.0.0.1:22022`, re-registered and relaunched the Windows self-hosted runner `wordloom-s4d-temp-win`, and thereby turned fallback run `24654777721` from `queued` into a real deploy/verify sample.
 - 2026-04-20: recorded the second real `P2` sample (`24654777721`), which proved `preflight=PASS` and `deploy=PASS` on the local operator path but failed `postChangeVerifyGate` before the `S4F` access-aware overlay began, with guest-side evidence pointing to container survival / host-port-conflict problems.
+- 2026-04-20: restored DB reachability by confirming the current operator egress `/32` in the RDS security group, then captured run `24661990707`, which proved generic verify had recovered and isolated a local script bug in `cloud_release_access_verify.sh` (`NameError: null`).
+- 2026-04-20: fixed `cloud_release_access_verify.sh` by piping JSON payloads into Python instead of overriding heredoc script stdin, manually revalidated the overlay on the guest path, and then captured the first full PASS bundle in run `24662387235`.
+- 2026-04-20: recorded the close-out decision that `M1` now has sufficient backend deployment-facing evidence and that the remaining public-IP-drift / RDS-trust hardening belongs in a separate follow-up lane.

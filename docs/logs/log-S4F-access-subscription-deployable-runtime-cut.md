@@ -132,9 +132,9 @@
 
 - `S4F` now has one completed first packet in `S4F-1A` and one newly opened follow-up packet in `S4F-2A`.
 - `S4F-2A/P1` is now landed: the reused `S4D` release path can optionally run the `S4F` access-aware verify overlay and write the combined result back into the retained artifact bundle.
-- `S4F-2A/P2` has now produced a second real fallback sample after local VM SSH recovery and Windows runner re-registration: run `24654777721` passed preflight and deploy on `127.0.0.1:22022`, then failed at post-change verify before the `S4F` access-aware overlay began.
+- `S4F-2A/P2` is now complete. The lane progressed through three distinct failure classes on the same operator path before closing green: target reachability (`24655583207`), post-change runtime verify (`24654777721`), and access-overlay script parsing (`24661990707`), then finished with a full PASS evidence bundle in run `24662387235` on head `07c99aa0f571cf04ba97ef25b4d52cf52d9f64e7`.
 - `S4F-2A/P2` also now includes the operator-side observation fallback and API-path diagnosis: the queued Windows fallback run `24654777721` can be read cleanly via one-shot `gh run view` / `gh api`, and the earlier `gh run watch` failure has been narrowed to an intermittent local polling-path timeout rather than a repo-side workflow lookup failure.
-- The next execution lane is therefore sharper again: the SSH/reachability blocker has been retired on the local path, and the remaining `P2` blocker is now application/container verification readiness on the deployed candidate, specifically keeping `wordloom-api-cloud-dev` alive and reachable on the expected host port so the access overlay can run.
+- The next execution lane is now a realism-hardening follow-up rather than more proof-of-life repetition: remove dependence on drifting operator public `/32` RDS ingress by moving the release/verify path to a stable trusted network position and replacing ad hoc operator-IP allowlists with durable trust wiring.
 
 ## Notes（落地原则，可选）
 
@@ -175,3 +175,5 @@
 - 2026-04-20：added `S4F-2A/P2` fallback run-status evidence and operator-to-GitHub API diagnostics, confirming that `gh run watch` was the unstable observation path while one-shot API reads remained healthy.
 - 2026-04-20：recovered the local operator path by resetting the VM, restoring guest SSH on `127.0.0.1:22022`, re-registering the deleted Windows self-hosted runner, and turning fallback run `24654777721` into a real deploy/verify sample.
 - 2026-04-20：recorded that the new `S4F-2A/P2` blocker is no longer target reachability on the local path but post-change verify readiness: the candidate deploy passed, yet the expected `wordloom-api-cloud-dev` container was not alive by verify time and guest-side evidence showed a host-port binding conflict during failed container startup.
+- 2026-04-20：restored RDS reachability for the current operator egress path, isolated and fixed the access-overlay JSON parsing defect in `cloud_release_access_verify.sh`, and closed `S4F-2A/P2` with one full PASS cloud-target evidence run (`24662387235`).
+- 2026-04-20：recorded the next-lane decision from `S4F-2A/P3`: `road-002-01/M1` now has sufficient backend deployment-facing evidence, and the remaining hardening work should move to a separate lane that removes drifting operator public-IP / RDS allowlist dependence.
