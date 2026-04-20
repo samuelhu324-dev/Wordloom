@@ -225,8 +225,8 @@
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: hardened cloud-target evidence run captured without fresh operator `/32` maintenance
-- [ ] `P2-C1-S2`: artifact path and trust-model results recorded
+- [x] `P2-C1-S1`: hardened cloud-target evidence run captured without fresh operator `/32` maintenance
+- [x] `P2-C1-S2`: artifact path and trust-model results recorded
 
 ### P3 (Close-out / export decision)
 
@@ -239,7 +239,10 @@
 - `P0` is now fixed: the lane will treat the stable self-hosted cloud runner path as the default release origin and will move RDS trust to one durable fixed-identity path instead of recurring operator public `/32` edits.
 - `P1` is now also fixed at the implementation-anchor level: the trust anchor is the existing stable runner host module plus the cloud-dev basic security group (`sg-027e05455509e0730`, `wlv3-cloud-dev-sg-basic`), which the cloud-dev DB security group (`sg-0873e947b9947639d`, `wlv3-cloud-dev-sg-db`) can trust without per-operator public-IP churn.
 - The repo-side implementation surface is already present and aligned: `infra/terraform/aws/runner-host/` provisions the host, `scripts/ops/cloud_stable_runner_bootstrap.sh` and `scripts/ops/cloud_stable_runner_probe.sh` bootstrap/probe it, and `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml` is the corresponding release entry.
-- The next step is `P2`: run one real cloud-target evidence sample from that trust anchor and prove `operatorIpAllowlistMutationRequired=false` for the release path itself.
+- `P2` is now fixed with one real retained run: workflow run `24664326210` completed `PASS` on the stable Linux runner path, and the retained `summary.json` shows all release, verify, and access-aware gates green.
+- The evidence now supports the lane claim that the release path itself no longer needed a fresh operator public `/32` in the RDS allowlist; the durable dependency trust anchor was the stable runner host attached to `wlv3-cloud-dev-sg-basic` reaching `wlv3-cloud-dev-sg-db` by fixed identity.
+- One bootstrap caveat remains explicit: the operator did add the current public `/32` to the runner SSH security group so the reverse tunnel to the local-only target could be established, but that mutation was outside the RDS trust path and therefore does not reopen the `S4F-2B` dependency boundary that this lane was created to remove.
+- The next step is `P3`: answer outlet/export placement now that the trust rule and one real hardened sample are both retained.
 
 ## Evidence (reserved)
 
@@ -288,8 +291,30 @@
   - AWS readback also confirms the cloud-dev DB SG is `sg-0873e947b9947639d` / `wlv3-cloud-dev-sg-db`, so the trust anchor is now recorded as `stable-runner host attached to cloud-dev basic SG -> DB SG trust path`.
   - The exact contract delta from `S4F-2A` is: operator workstation and temporary Windows runner are no longer the routine dependency origin for RDS reachability; they remain only as bootstrap/debug or bridge surfaces while the preferred release origin becomes the stable Linux runner path.
 
+### P2-C1-S1S2 (Stable-runner hardened cloud-target evidence run retained | 2026-04-20)
+
+- headSha: `5f68f8a9c68fdcfa9f31eb2ba36266db96454bce`
+- runUrl: `https://github.com/samuelhu324-dev/wordloom-v3/actions/runs/24664326210`
+- artifacts:
+  - `artifacts/_tmp_s4f2b_run_24664326210/s4d-cloud-release-stable-runner-24664326210-1/summary.json`
+  - `artifacts/_tmp_s4f2b_run_24664326210/s4d-cloud-release-stable-runner-24664326210-1/preflight.log`
+  - `artifacts/_tmp_s4f2b_run_24664326210/s4d-cloud-release-stable-runner-24664326210-1/deploy.log`
+  - `artifacts/_tmp_s4f2b_run_24664326210/s4d-cloud-release-stable-runner-24664326210-1/verify.log`
+  - `artifacts/_tmp_s4f2b_run_24664326210/s4d-cloud-release-stable-runner-24664326210-1/access_verify_result.json`
+- expected:
+  - `S4F-2B/P2` should retain one real run proving the hardened release path can complete deploy, generic verify, and the `S4F` access overlay without adding a fresh operator public `/32` to RDS ingress.
+  - The retained evidence should identify the release origin, trust path kind, and whether any operator-IP mutation was still required.
+- observed:
+  - Workflow run `24664326210` on `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml` completed `success`; `Run cloud release workflow` itself also completed `success`.
+  - The retained `summary.json` reports `preflightResult=PASS`, `deployResult=PASS`, `verifyResult=PASS`, `accessVerifyResult=PASS`, `result=PASS`, and all relevant gates green through `accessAwareVerifyGate=PASS`.
+  - `workflowCommandSummary` shows the release origin as the stable Linux self-hosted runner path driving `cloud_release_workflow.sh` against `ssh_host=127.0.0.1`, `ssh_port=22022`, `ssh_user=wordloom`, with the target still being the local-only cloud VM reached through the reverse tunnel.
+  - The dependency trust model exercised by the passing run is `stable self-hosted Linux runner attached to wlv3-cloud-dev-sg-basic -> SG-based reachability to wlv3-cloud-dev-sg-db`; no fresh operator public `/32` was added to the RDS allowlist for this run.
+  - `releaseOriginKind=stable_self_hosted_linux_runner`, `targetHostKind=local_only_cloud_target_via_reverse_tunnel`, `trustModel=stable_runner_fixed_identity_plus_sg_bound_rds_trust`, `rdsTrustPathKind=sg_to_sg_via_wlv3_cloud_dev_sg_basic_to_wlv3_cloud_dev_sg_db`, `operatorIpAllowlistMutationRequired=false`, `operatorIpAllowlistMutationKind=none_for_rds_allowlist`.
+  - A separate bootstrap detail remains relevant but out of scope for the brittle boundary removed by this lane: the operator temporarily added `49.196.191.226/32` to the runner SSH security group so the reverse tunnel to the local-only target could be established. That was a runner-SSH ingress bootstrap action, not an RDS allowlist mutation.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-20: opened `S4F-2B` as the direct follow-up lane to `S4F-2A/P3`, dedicated to removing operator public `/32` RDS allowlist dependence from the reused `S4D` release path.
 - 2026-04-20: completed `P0-C1-S1S2S3` by fixing the dependency boundary, choosing the stable-runner-based trust model as the default lane target, and tightening the evidence contract around release origin and allowlist-mutation requirements.
 - 2026-04-20: completed `P1-C1-S1S2` by mapping `S4F-2B` onto the already-landed `S4D-4C` stable-runner assets, confirming the concrete trust anchor (`wlv3-cloud-dev-sg-basic` -> `wlv3-cloud-dev-sg-db`), and recording the exact release-origin delta from `S4F-2A`.
+- 2026-04-20: completed `P2-C1-S1S2` with stable-runner workflow run `24664326210`, retaining one real passing cloud-target evidence sample that no longer required a fresh operator public `/32` in the RDS allowlist.
