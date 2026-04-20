@@ -132,6 +132,16 @@ def _parse_tenant_id(request: Request) -> UUID:
         ) from exc
 
 
+def _extract_dev_user_id(request: Request) -> Optional[UUID]:
+    raw = (request.headers.get("X-Dev-User-Id") or "").strip()
+    if not raw:
+        return None
+    try:
+        return UUID(raw)
+    except Exception:  # noqa: BLE001
+        return None
+
+
 async def get_auth_context(
     request: Request,
     db: AsyncSession = Depends(get_db),
@@ -167,7 +177,7 @@ async def get_auth_context(
             ) from exc
         token_roles = _parse_roles(payload)
     else:
-        user_id = await get_current_user_id()
+        user_id = await get_current_user_id(request)
         token_roles = tuple()
 
     tenant_id = _parse_tenant_id(request)
@@ -290,7 +300,7 @@ async def get_auth_context_strict(
     return ctx
 
 
-async def get_current_user_id() -> UUID:
+async def get_current_user_id(request: Optional[Request] = None) -> UUID:
     """开发环境当前用户 ID 依赖。
 
     之前写死为固定 UUID 导致：数据库里已有的库都是另外的 user_id → /libraries 按用户过滤结果为空。
@@ -304,6 +314,11 @@ async def get_current_user_id() -> UUID:
     3. 保留后续 TODO（JWT 解析）。
     """
     import os
+    if request is not None:
+        dev_user_id = _extract_dev_user_id(request)
+        if dev_user_id is not None:
+            return dev_user_id
+
     override = os.getenv("DEV_USER_ID")
     if override:
         try:

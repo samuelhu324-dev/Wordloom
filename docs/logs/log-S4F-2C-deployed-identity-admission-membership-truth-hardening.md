@@ -229,6 +229,25 @@
 - P1-C1-S1: identify the narrowest deployed identity/admission/membership slice that still relies on local-first truth and record the exact authority shift required
 - P1-C1-S2: land the minimal backend/database-backed changes needed so one member flow and one admin flow can no longer be explained as browser-local-only behavior
 
+### P1 Authority Shift Decision (v1)
+
+- `P1-C1-S1` is now fixed as one request-identity bridge rather than a generic auth rewrite:
+  - keep the current frontend local session/admission scaffolding temporarily in place for drill ergonomics;
+  - stop allowing no-token dev/demo requests to collapse to one shared backend fallback actor;
+  - move the backend-facing actor identity for the known demo sessions onto one explicit request-level actor id that the existing auth-context seam can use before membership lookup.
+- The bounded authority shift chosen here is:
+  - `frontend/src/shared/auth/AuthContext.tsx` owns a stable `userId` for the current demo actor session instead of only storing role/display state;
+  - `frontend/src/shared/api/client.ts` bridges that actor identity into dev requests with `X-Dev-User-Id` while continuing to send `X-Library-Id` / `X-Tenant-Id` for tenant targeting;
+  - `backend/api/app/config/security.py` accepts that explicit dev actor id only on the existing no-token fallback path, then continues into persistence-backed tenant membership resolution rather than one process-wide fallback actor.
+
+### P1 Implementation Decision (v1)
+
+- `P1-C1-S2` now lands the smallest code path that makes backend/database-backed standing reachable from the deployed frontend slice:
+  - known demo actors (`member@wordloom.dev`, `admin@wordloom.dev`, `owner@wordloom.dev`) now map to stable actor UUIDs inside `AuthSession`;
+  - dev-session API requests now carry `X-Dev-User-Id` when no real bearer token is present;
+  - backend auth fallback now resolves the current actor from that header before running the already-existing membership repository lookup and owner fallback;
+  - a focused backend test proves that the final returned roles come from membership-backed truth for the bridged actor identity.
+
 ### P2 (Drill / Verify)
 
 - P2-C1-S1: capture one deployed member flow whose key state changes come from backend/database-backed truth
@@ -248,8 +267,8 @@
 
 ### P1 (Implementation)
 
-- [ ] `P1-C1-S1`: one bounded deployed authority shift chosen and recorded
-- [ ] `P1-C1-S2`: minimal backend/database-backed truth changes landed
+- [x] `P1-C1-S1`: one bounded deployed authority shift chosen and recorded
+- [x] `P1-C1-S2`: minimal backend/database-backed truth changes landed
 
 ### P2 (Drill / Verify)
 
@@ -266,7 +285,8 @@
 - The deployable runtime path is already proven and the release-path dependency trust is already hardened enough to stop treating RDS ingress drift as the controlling blocker.
 - `P0` is now fixed: the first controlling credibility gap is no longer generic “demo-ness” but the specific fact that the currently deployed actor identity, admission standing, and role truth still originate in frontend-local session/admission machinery while the backend auth actor remains intentionally minimal.
 - The first bounded truth shift is also now fixed: `S4F-2C` should tighten backend-validated identity plus persistence-backed admission/membership truth first, while leaving local actor switching explicitly outside the authority path for the eventual passing drills.
-- The next step is `P1`: choose the narrowest implementation slice that moves one member flow and one admin flow onto backend/database-backed actor-standing truth without reopening the release/runtime family.
+- `P1` is now fixed: dev/demo requests no longer need to collapse to one shared backend fallback actor before membership resolution, because the frontend can bridge one stable actor identity per session into the backend auth-context seam.
+- The next step is `P2`: retain one deployed member flow and one deployed admin flow whose passing path reads backend/database-backed tenant standing for the bridged actor identity.
 
 ## Evidence (reserved)
 
@@ -305,7 +325,25 @@
   - The backend seam for the next tightening step is already visible but intentionally thin: request actor/auth context is minimal and does not yet authoritatively resolve tenant membership/standing from persistence-backed truth.
   - `P0` now fixes the first truth shift as `backend-validated identity + persistence-backed admission/membership truth`, while lifecycle/entitlement semantics can continue to reuse the already-stable backend subscription/access surface.
 
+### P1-C1-S1S2 (Stable dev actor identity bridge landed | 2026-04-20)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `frontend/src/shared/auth/AuthContext.tsx`
+  - `frontend/src/shared/api/client.ts`
+  - `backend/api/app/config/security.py`
+  - `backend/api/app/tests/test_security/test_auth_context_dev_identity_bridge.py`
+- expected:
+  - a dev/demo browser session should be able to identify one concrete actor to the backend without requiring a real JWT issuer yet;
+  - backend roles for that request should resolve from persistence-backed membership truth for that actor rather than from one shared `DEV_USER_ID` fallback.
+- observed:
+  - frontend auth sessions now retain a stable `userId`, with fixed actor ids for the known demo users used by the local actor switcher and admission drills;
+  - the API client now sends `X-Dev-User-Id` on dev-session requests when no bearer token is available;
+  - backend auth fallback now reads that explicit actor id before membership lookup, so tenant standing can resolve per actor from `library_memberships` (or the existing owner fallback);
+  - focused validation passed for the new seam in `backend/api/app/tests/test_security/test_auth_context_dev_identity_bridge.py`.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-20: opened `S4F-2C` as the next child lane after `S4F-2B`, shifting the `S4F` family focus from deployability/trust hardening to deployed identity/admission/membership truth hardening under `road-002-01/M2`.
 - 2026-04-20: completed `S4F-2C/P0-C1-S1S2S3` by fixing the first deployed credibility boundary on the current cloud slice, choosing backend-validated identity plus persistence-backed admission/membership truth as the next authority shift, and tightening the realism evidence contract around explicit truth sources.
+- 2026-04-20: completed `S4F-2C/P1-C1-S1S2` by bridging stable dev actor identity from frontend session state into backend auth-context fallback so membership-backed tenant standing can resolve per actor instead of per process.
