@@ -198,14 +198,14 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: combined cloud-target evidence boundary fixed
-- [ ] `P0-C1-S2`: verify overlay contract fixed for the real operator path
-- [ ] `P0-C1-S3`: combined evidence JSON contract fixed
+- [x] `P0-C1-S1`: combined cloud-target evidence boundary fixed
+- [x] `P0-C1-S2`: verify overlay contract fixed for the real operator path
+- [x] `P0-C1-S3`: combined evidence JSON contract fixed
 
 ### P1 (Implementation / packaging)
 
-- [ ] `P1-C1-S1`: operator-facing verify tuple and artifact write-back shape fixed
-- [ ] `P1-C1-S2`: overlay wiring landed on the reused `S4D` path
+- [x] `P1-C1-S1`: operator-facing verify tuple and artifact write-back shape fixed
+- [x] `P1-C1-S2`: overlay wiring landed on the reused `S4D` path
 
 ### P2 (Drill / Verify)
 
@@ -218,8 +218,8 @@
 
 ## Current Status (recommended)
 
-- `S4F-2A` is newly opened as the next packet after `S4F-1A`.
-- The packet is not yet wired or executed; its current purpose is to define the deployment-facing operator evidence boundary so the next implementation round can land on one concrete cloud-target path.
+- `S4F-2A` now has `P0` and `P1` in place: the access-aware verify overlay is wired onto the reused `S4D` cloud release path, and the combined evidence JSON contract is write-backed into the retained artifact bundle.
+- The next round is `P2`: run one real cloud-target operator evidence sample and record the retained artifact path plus probe results here.
 
 ## Evidence (reserved)
 
@@ -228,3 +228,4 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-04-20: first created `S4F-2A` as the next `S4F` child packet to capture one operator-facing cloud-target evidence run after `S4F-1A` completed the backend-only runtime cut and next-lane decision.
+- 2026-04-20: completed `P1-C1-S1S2` by adding `scripts/ops/cloud_release_access_verify.sh`, extending `scripts/ops/cloud_release_workflow.sh` and `scripts/ops/cloud_release_workflow_helpers.sh`, and exposing the optional overlay through `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml`.

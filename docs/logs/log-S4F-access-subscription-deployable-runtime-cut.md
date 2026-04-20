@@ -131,7 +131,8 @@
 ## Current Status（进展摘要）
 
 - `S4F` now has one completed first packet in `S4F-1A` and one newly opened follow-up packet in `S4F-2A`.
-- `S4F-2A` is the next execution lane: capture one operator-facing cloud-target evidence run where the reused `S4D` release path and the `S4F` access-aware verify overlay pass together.
+- `S4F-2A/P1` is now landed: the reused `S4D` release path can optionally run the `S4F` access-aware verify overlay and write the combined result back into the retained artifact bundle.
+- The next execution lane is now concrete `P2`: capture one operator-facing cloud-target evidence run where that combined path passes end to end.
 
 ## Notes（落地原则，可选）
 
@@ -166,3 +167,4 @@
 - 2026-04-20：首次创建 `S4F`，作为 `road-002-01/M1` 的新 `S4` 顶层 spine，并把第一条 execution lane 固定到 `S4F-1A`。
 - 2026-04-20：`S4F-1A` completed `P0-P3`, so the parent spine now has its first executed and evidenced child packet plus one explicit next-lane decision: prioritize cloud-path operator evidence before frontend cloud closure.
 - 2026-04-20：opened `S4F-2A` as the next child packet, dedicated to one cloud-target operator evidence run on the reused `S4D` release substrate.
+- 2026-04-20：completed `S4F-2A/P1-C1-S1S2`, wiring the access-aware verify overlay into the reused `S4D` cloud release workflow and summary artifact contract.
