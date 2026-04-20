@@ -74,8 +74,8 @@ def _parse_args() -> argparse.Namespace:
         "--context-mode",
         dest="context_mode",
         choices=["preserve-existing", "llm-generate"],
-        default="preserve-existing",
-        help="How to handle Context during conclusion planning: preserve-existing keeps the live block, while llm-generate rewrites it from the source log",
+        default="llm-generate",
+        help="How to handle Context during conclusion planning: llm-generate rewrites Context from the source log and merged PR evidence, while preserve-existing keeps the live block",
     )
     return parser.parse_args()
 
@@ -89,7 +89,7 @@ def _coerce_path(value: str, repo_root: Path) -> Path:
 
 def _load_manifest(path: Path) -> dict:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"Failed to parse issue-conclusion manifest JSON: {exc}") from exc
 
@@ -428,7 +428,7 @@ def _build_item(
     context_section_lines = _extract_section_lines(body, "Context")
     context_line_bounds = issue_body_context_line_bounds(source_log_text)
     context_ok, _, _ = validate_issue_context_lines(context_section_lines, context_line_bounds, source_log_text)
-    context_mode = str(item.get("context_mode") or defaults.get("context_mode") or cli_context_mode or "preserve-existing")
+    context_mode = str(item.get("context_mode") or defaults.get("context_mode") or cli_context_mode or "llm-generate")
     if context_mode not in {"preserve-existing", "llm-generate"}:
         raise SystemExit(f"Unsupported issue-conclusion context_mode: {context_mode}")
     if context_mode == "llm-generate":

@@ -54,7 +54,7 @@ def _repo_rel(path: Path) -> str:
 
 def _load_plan(path: Path) -> dict:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"Failed to parse issue-conclusion plan JSON: {exc}") from exc
 

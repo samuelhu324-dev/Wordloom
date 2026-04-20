@@ -104,7 +104,7 @@ def _coerce_path(value: str, repo_root: Path) -> Path:
 
 def _load_manifest(path: Path) -> dict:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"Failed to parse lifecycle-audit manifest JSON: {exc}") from exc
 
@@ -803,7 +803,7 @@ def _build_item(item: dict, defaults: dict, repo_root: Path, repo: str) -> Lifec
             else:
                 checks.append(_build_check("context-sentence-shape", "warning", f"open issue Context prose is present but not yet conclusion-grade: {context_details}: {invalid_context_lines or '[]'}"))
         else:
-            checks.append(_build_check("context-sentence-shape", "pass", "open issue keeps the required Context section structurally present while substantive Context prose is deferred to conclusion"))
+            checks.append(_build_check("context-sentence-shape", "fail", "open issue Context is blank; per-item full-auto now requires natural-language Context before the issue is considered lifecycle-clean"))
 
     if issue_state == "CLOSED":
         if context_valid:

@@ -145,7 +145,7 @@ def _build_draft_args(item: dict, args: argparse.Namespace) -> SimpleNamespace:
         repo=item.get("repo") or args.repo,
         check_live_labels=bool(check_live_labels),
         fail_on_missing_live_labels=bool(fail_on_missing_live_labels),
-        context_mode=item.get("context_mode") or "scaffold",
+        context_mode=item.get("context_mode") or "llm-generate",
         create_issue=False,
     )
 

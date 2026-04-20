@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Auth, Membership, Runtime, Drills, Evidence, epic/s0, sub/9g`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/486`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/497`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -21,7 +21,7 @@
   **reference_log_4**: `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
 **issue_keyword**: `runtime`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/9g`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
@@ -89,11 +89,11 @@
 
 - Log: `docs/logs/log-S0F-9G-tenant-admin-enforcement-membership-management-and-local-actor-switching.md`
 - Runbook: ``
-- Evidence artifact: ``
+- Evidence artifact: `artifacts/_tmp_s0f_9g_p0_permission_loop_contract.json`
 
 **Evidence Footer Source**:
 
-- `P0-C1-S1S2S3` | artifact: ``
+- `P0-C1-S1S2S3` | artifact: `artifacts/_tmp_s0f_9g_p0_permission_loop_contract.json`
 - `P3-C1-S1S2` | artifact: `artifacts/_tmp_s0f_9g_p3_permission_loop_verify.json`
 
 - Keep footer rows low-cardinality: prefer one representative artifact per relevant unit instead of replaying the full artifact inventory.
