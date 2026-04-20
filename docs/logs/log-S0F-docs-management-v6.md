@@ -77,6 +77,18 @@
   **phase_log_57**: `docs/logs/log-S0F-7H-actor-and-provenance-fields-for-evidence-review-governance.md`
   **phase_log_58**: `docs/logs/log-S0F-7I-ledger-and-contract-structure-integration-audit-and-remediation-plan.md`
   **phase_log_59**: `docs/logs/log-S0F-8B-s0f-issue-pr-automation-inventory-and-per-series-rollout.md`
+  **phase_log_60**: `docs/logs/log-S0F-9A-doc-first-governance-control-plane-vocabulary-and-boundary.md`
+  **phase_log_61**: `docs/logs/log-S0F-9B-current-repo-ddd-hex-product-closure-implementation-blueprint.md`
+  **phase_log_62**: `docs/logs/log-S0F-9C-backend-vertical-slice-for-subscription-access-minimum-closure.md`
+  **phase_log_63**: `docs/logs/log-S0F-9D-frontend-admin-consumer-lane-for-subscription-access-closure.md`
+  **phase_log_64**: `docs/logs/log-S0F-9E-workbox-subscription-entry-auth-routing-and-admin-view-gating.md`
+  **phase_log_65**: `docs/logs/log-S0F-9F-tenant-identity-data-ownership-and-current-tenant-context.md`
+  **phase_log_66**: `docs/logs/log-S0F-9G-tenant-admin-enforcement-membership-management-and-local-actor-switching.md`
+  **phase_log_67**: `docs/logs/log-S0F-9H-shared-auth-provider-realism-invite-onboarding-and-membership-admission.md`
+  **phase_log_68**: `docs/logs/log-S0F-10A-book-first-access-control-minimum-closure.md`
+  **phase_log_69**: `docs/logs/log-S0F-10B-plan-and-entitlement-minimum-widening.md`
+  **phase_log_70**: `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
+  **phase_log_71**: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
 
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`

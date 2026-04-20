@@ -81,14 +81,14 @@ def _coerce_path(value: str, repo_root: Path) -> Path:
 
 def _load_plan(path: Path) -> dict:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"Failed to parse PR-prep plan JSON: {exc}") from exc
 
 
 def _load_preflight_result(path: Path) -> dict:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"Failed to parse PR create front-half preflight JSON: {exc}") from exc
 

@@ -1,7 +1,7 @@
 {
-  "mode": "create-issue",
+  "mode": "draft-generation",
   "result": "ok",
-  "context_mode": "single-generate",
+  "context_mode": "llm-generate",
   "log_path": "docs/logs/log-S0F-docs-management-v6.md",
   "draft_path": "docs/issues/issue-S0F-parent-live.md",
   "title": "S0F-docs-management-v6: automation/docs management v6",
@@ -19,23 +19,17 @@
   ],
   "milestone": "road-002: projection runtime platformization and evidence governance",
   "parent_issue": null,
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/0`\n- Projects: `wordloom Board`\n- Milestone: `road-002: projection runtime platformization and evidence governance`\n\n## Context\n\n- S0F-docs-management-v6 carries the automation work for docs management v6.\n- The concrete scope here is fail-closed docs/GitHub lifecycle entrypoints.\n- It keeps the parent record aligned so downstream child slices can extend S0F-docs-management-v6 without reopening the spine contract.\n- This issue keeps the working ledger for the docs management v6 path while delivery is still being tracked.\n- It stays as the issue-side ledger entry for the evolving docs management v6 path.\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0F-docs-management-v6.md`\n- Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`\n",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/0`\n- Projects: `wordloom Board`\n- Milestone: `road-002: projection runtime platformization and evidence governance`\n\n## Context\n\n- The issue centers on improving the management of documentation and GitHub lifecycle entry points with a fail-closed approach in version 6.\n- It introduces stricter controls to ensure that documentation and workflow actions do not proceed if essential conditions are not met.\n- This approach aims to prevent incomplete automation states that could cause inconsistent repository behavior.\n- The intended behavior is to maintain a robust and predictable document management system integrated tightly with GitHub workflows.\n- So far, the work outlines the goals and scope but has not yet been merged or delivered through pull requests.\n\n## Definition of Done (DoD)\n\n- #364\n- #366\n- #367\n- #368\n- #369\n- #370\n- #376\n- #378\n- #380\n- #382\n- #384\n- #385\n- #412\n- #413\n- #414\n- #415\n- #416\n- #417\n- #418\n- #475\n- #396\n- #419\n- #394\n- #420\n- #397\n- #398\n- #437\n- #399\n- #400\n- #421\n- #401\n- #422\n- #423\n- #424\n- #402\n- #403\n- #438\n- #388\n- #389\n- #390\n- #439\n- #440\n- #441\n- #442\n- #443\n- #444\n- #445\n- #446\n- #457\n- #458\n- #459\n- #460\n- #461\n- #462\n- #463\n- #464\n- #465\n- #480\n- #477\n- #487\n- #488\n- #489\n- #490\n- #481\n- #482\n- #483\n- #484\n- #485\n- #486\n- #478\n\n## Links\n\n- Log: `docs/logs/log-S0F-docs-management-v6.md`\n- Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`\n",
   "warnings": [
     "module labels left blank",
-    "live label preflight passed against samuelhu324-dev/wordloom-v3",
-    "Context was single-generated from the source log; review it manually before create/apply",
-    "Definition of Done (DoD) remains intentionally blank pending operator input",
-    "source log write-back not performed; update links.issue in a later tracked docs change"
+    "Context section was generated from the source log using the canonical single-item issue Context authoring path",
+    "Definition of Done (DoD) was populated from the known child issue ledger because this is a top-level parent issue"
   ],
-  "live_label_check_enabled": true,
-  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
-  "matched_live_labels": [
-    "EVOLUTION",
-    "s0/knowledge system",
-    "sub/0"
-  ],
+  "live_label_check_enabled": false,
+  "live_label_check_repo": null,
+  "matched_live_labels": [],
   "missing_live_labels": [],
-  "issue_number": 363,
-  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/363",
-  "created_at": "2026-04-04T09:14:38.391401+00:00"
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
 }

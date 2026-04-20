@@ -89,9 +89,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--context-mode",
         dest="context_mode",
-        choices=["scaffold"],
-        default="scaffold",
-        help="How to fill the Context section at create time: scaffold keeps the section structurally present but empty",
+        choices=["llm-generate", "scaffold"],
+        default="llm-generate",
+        help="How to fill the Context section at create time: llm-generate writes natural-language Context from the source log, while scaffold keeps the section structurally present but empty",
     )
     parser.add_argument(
         "--repo",
@@ -563,7 +563,7 @@ def _live_label_preflight(repo: str, labels: list[str]) -> tuple[list[str], list
 
 
 def _fetch_existing_milestones(repo: str) -> set[str]:
-    cmd = _run_command(["gh", "api", f"repos/{repo}/milestones", "--paginate"])
+    cmd = _run_command(["gh", "api", f"repos/{repo}/milestones?state=all", "--paginate"])
     if cmd.returncode != 0:
         raise SystemExit(f"Failed to list milestones for {repo}: {cmd.stderr.strip()}")
     try:
@@ -663,8 +663,13 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
     all_labels = _dedupe(top_labels + scope_labels + function_labels + module_labels)
     _validate_labels(all_labels, args.strict_label_check)
 
-    context_mode = str(getattr(args, "context_mode", "scaffold") or "scaffold")
-    context_lines = _default_context_scaffold_lines()
+    context_mode = str(getattr(args, "context_mode", "llm-generate") or "llm-generate")
+    if context_mode == "llm-generate":
+        from issue_context_llm import generate_issue_context_lines_with_llm
+
+        context_lines = generate_issue_context_lines_with_llm(_load_text(log_path))
+    else:
+        context_lines = _default_context_scaffold_lines()
 
     live_label_check_enabled = bool(args.check_live_labels or args.create_issue)
     live_label_check_repo: str | None = None
@@ -703,7 +708,10 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
             )
         else:
             warnings.append(f"live label preflight passed against {live_label_check_repo}")
-    warnings.append("Context section was left intentionally empty at create time; generate or author substantive Context text during issue conclusion")
+    if context_mode == "llm-generate":
+        warnings.append("Context section was generated from the source log using the canonical single-item issue Context authoring path")
+    else:
+        warnings.append("Context section was left intentionally empty at create time; generate or author substantive Context text during issue conclusion")
 
     rel_log_path = _repo_rel(log_path)
     link_lines = _build_links(fields, rel_log_path)

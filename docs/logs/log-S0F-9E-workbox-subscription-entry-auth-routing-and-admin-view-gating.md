@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Auth, Frontend, Admin, Runtime, Drills, Evidence, epic/s0, sub/9e`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/484`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/498`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -21,7 +21,7 @@
   **reference_log_4**: `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
 **issue_keyword**: `runtime`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/9e`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``

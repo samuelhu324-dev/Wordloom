@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Tenancy, Auth, Runtime, Drills, Evidence, epic/s0, sub/9f`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/485`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/499`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -21,7 +21,7 @@
   **reference_log_4**: `docs/logs/log-S0F-10C-payment-event-subscription-state-entitlement-trigger-packet.md`
 **issue_keyword**: `runtime`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/9f`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``

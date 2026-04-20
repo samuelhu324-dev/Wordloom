@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from datetime import datetime
+import json
 import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from gen_issue_draft import _parse_fields, _parse_sections
+from gen_issue_draft import _derive_repo_slug, _parse_fields, _parse_sections, _require_gh_auth, _require_gh_cli, _run_command
 
 
 PR_REQUIRED_SECTIONS = ["Metadata", "Summary", "Execution Checklist", "Links"]
@@ -587,9 +588,32 @@ def _repo_relative_or_absolute(path: Path, repo_root: Path) -> str:
         return path.as_posix()
 
 
+def _fetch_issue_completion_state(repo: str, short_ref: str) -> tuple[str | None, str | None]:
+    cmd = _run_command([
+        "gh",
+        "issue",
+        "view",
+        short_ref,
+        "--repo",
+        repo,
+        "--json",
+        "state,stateReason",
+    ])
+    if cmd.returncode != 0:
+        raise SystemExit(f"Failed to view issue {short_ref} in {repo}: {cmd.stderr.strip()}")
+    try:
+        data = json.loads(cmd.stdout)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Failed to parse issue state JSON for {short_ref}: {exc}") from exc
+    return str(data.get("state") or "") or None, str(data.get("stateReason") or "") or None
+
+
 def ordered_parent_child_issue_refs(repo_root: Path, fields: dict[str, str]) -> list[str]:
     refs: list[tuple[str, int, str]] = []
     seen: set[str] = set()
+    repo = _derive_repo_slug(None)
+    _require_gh_cli()
+    _require_gh_auth()
     for phase_index, phase_log_path in enumerate(extract_phase_log_paths(fields)):
         resolved = _resolve_repo_path(repo_root, phase_log_path)
         if not resolved.is_file():
@@ -612,6 +636,10 @@ def ordered_parent_child_issue_refs(repo_root: Path, fields: dict[str, str]) -> 
             raise SystemExit(
                 f"Parent child-ledger ordering requires child log created metadata in YYYY-MM-DD format: {child_log} ({short_ref})"
             ) from exc
+
+        issue_state, issue_state_reason = _fetch_issue_completion_state(repo, short_ref)
+        if issue_state != "CLOSED" or issue_state_reason != "COMPLETED":
+            continue
 
         seen.add(short_ref)
         refs.append((created_raw, phase_index, short_ref))

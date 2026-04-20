@@ -111,7 +111,7 @@ def _audit_plan_slug(audit_plan_path: Path) -> str:
 
 def _load_json(path: Path, error_label: str) -> dict:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"Failed to parse {error_label} JSON: {exc}") from exc
 

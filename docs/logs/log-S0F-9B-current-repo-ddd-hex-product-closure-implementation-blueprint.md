@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Access, Billing, Architecture, Runtime, Drills, Evidence, epic/s0, sub/9b`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/481`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/494`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0F-docs-management-v6.md`
@@ -22,7 +22,7 @@
   **reference_log_5**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
 **issue_keyword**: `runtime`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/9b`
+**issue_scope_labels**: `s0/knowledge system`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``

@@ -47,7 +47,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--apply-result-path", dest="apply_result_path", help="Override output path for the underlying issue-conclusion apply result")
     parser.add_argument("--body-path", dest="body_path", help="Override output path for the applied issue body markdown")
     parser.add_argument("--guarded-result-path", dest="guarded_result_path", help="Override output path for the guarded apply result")
-    parser.add_argument("--context-mode", dest="context_mode", choices=["preserve-existing", "llm-generate"], default="preserve-existing", help="How to handle Context during conclusion planning when delegating behind the guard")
+    parser.add_argument("--context-mode", dest="context_mode", choices=["preserve-existing", "llm-generate"], default="llm-generate", help="How to handle Context during conclusion planning when delegating behind the guard")
     parser.add_argument("--leave-open", dest="leave_open", action="store_true", help="Update the issue body but do not close an open issue")
     return parser.parse_args()
 
@@ -61,7 +61,7 @@ def _coerce_path(value: str, repo_root: Path) -> Path:
 
 def _load_json(path: Path, error_label: str) -> dict:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"Failed to parse {error_label} JSON: {exc}") from exc
 
