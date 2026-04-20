@@ -282,23 +282,23 @@ jobs:
           else:
               summary_lines.append("No gateResults found in summary.json.")
 
-            access_keys = [
+          access_keys = [
               "accessVerifyResult",
               "memberReadResult",
               "adminReadResult",
               "lifecycleMutationResult",
               "rerenderedStateResult",
-            ]
-            if any(key in data for key in access_keys):
+          ]
+          if any(key in data for key in access_keys):
               summary_lines.extend([
-                "",
-                "### Access Verify Overlay",
-                "",
-                "| Field | Value |",
-                "| --- | --- |",
+                  "",
+                  "### Access Verify Overlay",
+                  "",
+                  "| Field | Value |",
+                  "| --- | --- |",
               ])
               for key in access_keys:
-                summary_lines.append(f"| {key} | {data.get(key, 'unknown')} |")
+                  summary_lines.append(f"| {key} | {data.get(key, 'unknown')} |")
 
           artifacts = data.get("artifacts") or {}
           summary_lines.extend([

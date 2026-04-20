@@ -219,13 +219,32 @@
 ## Current Status (recommended)
 
 - `S4F-2A` now has `P0` and `P1` in place: the access-aware verify overlay is wired onto the reused `S4D` cloud release path, and the combined evidence JSON contract is write-backed into the retained artifact bundle.
-- The next round is `P2`: run one real cloud-target operator evidence sample and record the retained artifact path plus probe results here.
+- `P2` has now produced its first real operator-facing run attempt, but the retained evidence shows a preflight reachability blocker before deploy/verify began: stable-runner run `24655583207` failed at `targetReachabilityGate=FAIL` with `ssh: connect to host 49.196.191.226 port 22022: Connection timed out`.
+- The immediate next step remains narrow: restore the target SSH path, then rerun the same workflow command so the generic `S4D` release and the `S4F` access overlay can execute end to end.
 
 ## Evidence (reserved)
 
-- Artifacts are the source of truth for evidence; this log will record the head SHA, operator run metadata, and retained artifact paths once the first cloud-target run exists.
+- Artifacts are the source of truth for evidence. The first real `P2` attempt is now retained as a failing preflight sample:
+- run id: `24655583207`
+- head sha: `68d0af1b2f7f6b8c2d0d7981670ee40303342d30`
+- workflow: `s4d-cloud-release-dispatch-stable-runner`
+- result: `FAIL`
+- failure class: `evidence_capture_failure`
+- terminal stage / gate: `evidence` / `evidence_capture`
+- preflight result: `FAIL`
+- target reachability gate: `FAIL`
+- deploy / verify / access overlay: `NOT_RUN` / `NOT_RUN` / `NOT_RUN`
+- retained artifact dir: `artifacts/_tmp_s4f2a_p2_run_24655583207`
+- retained files:
+  - `summary.json`
+  - `preflight.log`
+  - `operator_guidance.txt`
+- preflight failure excerpt: `ssh: connect to host 49.196.191.226 port 22022: Connection timed out`
+- operator guidance outcome: stop at preflight, fix target reachability, then rerun the same workflow command.
 
 ## Recent changes (for traceability, optional)
 
 - 2026-04-20: first created `S4F-2A` as the next `S4F` child packet to capture one operator-facing cloud-target evidence run after `S4F-1A` completed the backend-only runtime cut and next-lane decision.
 - 2026-04-20: completed `P1-C1-S1S2` by adding `scripts/ops/cloud_release_access_verify.sh`, extending `scripts/ops/cloud_release_workflow.sh` and `scripts/ops/cloud_release_workflow_helpers.sh`, and exposing the optional overlay through `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml`.
+- 2026-04-20: attempted the first real `P2` stable-runner execution (`24655583207`) with `--access-verify-overlay`; the run reached retained artifacts but failed preflight on target SSH reachability before deploy or verify started.
+- 2026-04-20: fixed the workflow summary renderer indentation in both cloud release dispatch workflows so future reruns surface the real `summary.json` outcome without a secondary post-run script failure.

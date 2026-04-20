@@ -132,7 +132,8 @@
 
 - `S4F` now has one completed first packet in `S4F-1A` and one newly opened follow-up packet in `S4F-2A`.
 - `S4F-2A/P1` is now landed: the reused `S4D` release path can optionally run the `S4F` access-aware verify overlay and write the combined result back into the retained artifact bundle.
-- The next execution lane is now concrete `P2`: capture one operator-facing cloud-target evidence run where that combined path passes end to end.
+- `S4F-2A/P2` has now produced its first real stable-runner sample, but it is currently blocked at target reachability: run `24655583207` failed preflight on `49.196.191.226:22022` before deploy/verify/access overlay execution began.
+- The next execution lane is therefore unchanged but sharper: restore the cloud-target SSH path and rerun the same operator workflow to obtain the first end-to-end passing evidence sample.
 
 ## Notes（落地原则，可选）
 
@@ -168,3 +169,5 @@
 - 2026-04-20：`S4F-1A` completed `P0-P3`, so the parent spine now has its first executed and evidenced child packet plus one explicit next-lane decision: prioritize cloud-path operator evidence before frontend cloud closure.
 - 2026-04-20：opened `S4F-2A` as the next child packet, dedicated to one cloud-target operator evidence run on the reused `S4D` release substrate.
 - 2026-04-20：completed `S4F-2A/P1-C1-S1S2`, wiring the access-aware verify overlay into the reused `S4D` cloud release workflow and summary artifact contract.
+- 2026-04-20：recorded the first real `S4F-2A/P2` stable-runner attempt (`24655583207`), which retained artifacts successfully but failed preflight on target SSH reachability before deploy/verify/access overlay execution.
+- 2026-04-20：fixed the post-run summary renderer indentation in both cloud release dispatch workflows so reruns report the retained `summary.json` outcome cleanly.
