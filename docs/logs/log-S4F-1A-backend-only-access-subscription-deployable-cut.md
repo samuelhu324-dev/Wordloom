@@ -83,11 +83,11 @@
 
 - Log: `docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md`
 - Runbook: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
-- Evidence artifact: ``
+- Evidence artifact: `artifacts/_tmp_s4f1a_p2_run_24652525475/labs-evidence-verify_access_subscription_deployable_cut-24652525475-1-verify_access_subscription_deployable_cut/summary.json`
 
 **Evidence Footer Source**:
 
-- `P1-C1-S1S2` | artifact: ``
+- `P2-C1-S1S2` | artifact: `artifacts/_tmp_s4f1a_p2_run_24652525475/labs-evidence-verify_access_subscription_deployable_cut-24652525475-1-verify_access_subscription_deployable_cut/summary.json`
 
 ## Definitions (optional)
 
@@ -318,8 +318,8 @@ curl -sS "$API_BASE_URL/admin/subscriptions/$VERIFY_LIBRARY_ID/history" \
 
 ### P2 (Drill / Verify)
 
-- [ ] `P2-C1-S1`: deployed member read proved
-- [ ] `P2-C1-S2`: deployed admin read + lifecycle re-read proved
+- [x] `P2-C1-S1`: deployed member read proved
+- [x] `P2-C1-S2`: deployed admin read + lifecycle re-read proved
 
 ### P3 (Close-out / next-lane decision)
 
@@ -327,14 +327,25 @@ curl -sS "$API_BASE_URL/admin/subscriptions/$VERIFY_LIBRARY_ID/history" \
 
 ## Current Status (recommended)
 
-- `S4F-1A/P1` is now fixed at the contract level: the packet reuses the stable `S4D` workflow and now carries one explicit deployed verify tuple plus three concrete feature probes.
-- The next step is `P2`: run the deployed member read, admin read, and lifecycle re-read against one real `VERIFY_LIBRARY_ID`, then write the resulting evidence bundle back into this log.
+- `S4F-1A/P2` now has one executable access/subscription drill runner plus one green runtime evidence sample on GitHub-hosted CI: member read, admin read, lifecycle mutation, and deterministic re-read all passed against the same real API + Postgres slice.
+- The packet still reuses the `S4D` deploy contract for operator-facing cloud release, but the first runnable probe harness is now fixed and proven independently from the local Windows/WSL Docker surface.
 
 ## Evidence (reserved)
 
-- Artifacts are the source of truth for evidence; this log records the head SHA, deploy parameters, and deployed member/admin verify artifacts once they exist.
+- Artifacts are the source of truth for evidence; this log records the head SHA, runtime parameters, and the member/admin/lifecycle probe results for the first runnable `S4F-1A` sample.
+- 2026-04-20 | GitHub Actions `drill-labs-scenario` | run id `24652525475`
+  - workflow scenario: `verify/access_subscription/deployable_cut`
+  - head SHA: `1ad8dc57cdb343a5014c0d5dd1d2e211d8601b7b`
+  - runtime shape: GitHub-hosted Ubuntu runner + migrated `wordloom_test` Postgres on `localhost:5435` + API on `http://127.0.0.1:30011`
+  - evidence artifact: `artifacts/_tmp_s4f1a_p2_run_24652525475/labs-evidence-verify_access_subscription_deployable_cut-24652525475-1-verify_access_subscription_deployable_cut/summary.json`
+  - probe target library: `66b766de-6c54-432c-9d75-634360712b47`
+  - member read: `200`, roles=`member`, plan=`trial`, state=`trialing`, entitlements include `read_library`
+  - admin read: `200`, library_id matched, plan=`trial`, state=`trialing`, entitlements include `read_library`
+  - lifecycle mutation: `upgrade_success` returned `200` and promoted `subscription_state` to `active`
+  - deterministic re-read/history: re-read returned `active`; history returned one `upgrade_success` item
 
 ## Recent changes (for traceability, optional)
 
 - 2026-04-20: first created `S4F-1A` as the backend-only access/subscription deployable-cut packet under `road-002-01/M1-P3`.
 - 2026-04-20: completed `P1-C1-S1S2` by binding the packet to the stable `S4D` operator workflow and fixing the first three deployed access-aware verify probes.
+- 2026-04-20: completed `P2-C1-S1S2` by adding the first runnable access/subscription drill harness, dispatching `drill-labs-scenario`, and capturing one green member/admin/lifecycle evidence sample at head `1ad8dc57cdb343a5014c0d5dd1d2e211d8601b7b`.
