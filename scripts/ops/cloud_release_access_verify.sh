@@ -86,11 +86,12 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 
 create_body="$TMP_DIR/create_library.json"
 member_body="$TMP_DIR/member_read.json"
+member_admin_deny_body="$TMP_DIR/member_admin_deny.json"
 admin_body="$TMP_DIR/admin_read.json"
+admin_memberships_body="$TMP_DIR/admin_memberships.json"
 lifecycle_body="$TMP_DIR/lifecycle.json"
 rerender_body="$TMP_DIR/rerender.json"
 history_body="$TMP_DIR/history.json"
-seed_tokens_json="$TMP_DIR/seed_tokens.json"
 
 library_name="s4f2a-${RUN_ID:0:16}"
 create_code="$(curl -sS -o "$create_body" -w '%{http_code}' -H 'Content-Type: application/json' -X POST -d "{\"name\":\"${library_name}\",\"description\":\"S4F-2A cloud target access verify\"}" "$API_BASE_URL/libraries")"
@@ -107,18 +108,14 @@ if not library_id:
     raise SystemExit('create_library_missing_id')
 print(library_id)")"
 
-member_user_id="$(cat /proc/sys/kernel/random/uuid)"
-admin_user_id="$(cat /proc/sys/kernel/random/uuid)"
+member_user_id="11111111-1111-4111-8111-111111111111"
+admin_user_id="22222222-2222-4222-8222-222222222222"
 
-"$docker_cmd" exec -i -e LIBRARY_ID="$library_id" -e MEMBER_USER_ID="$member_user_id" -e ADMIN_USER_ID="$admin_user_id" "$CONTAINER_NAME" python - <<'PY' > "$seed_tokens_json"
+"$docker_cmd" exec -i -e LIBRARY_ID="$library_id" -e MEMBER_USER_ID="$member_user_id" -e ADMIN_USER_ID="$admin_user_id" "$CONTAINER_NAME" python - <<'PY'
 from __future__ import annotations
 
-import json
 import os
 import uuid
-from datetime import datetime, timedelta, timezone
-
-import jwt
 from sqlalchemy import create_engine, text
 
 
@@ -136,11 +133,6 @@ def convert_to_psycopg(url: str) -> str:
     return url
 
 
-def make_token(user_id: str, secret_key: str, algorithm: str) -> str:
-    payload = {"user_id": user_id, "exp": datetime.now(timezone.utc) + timedelta(minutes=30)}
-    return jwt.encode(payload, secret_key, algorithm=algorithm)
-
-
 database_url = (os.getenv("DATABASE_URL") or "").strip()
 if not database_url:
     raise SystemExit("DATABASE_URL missing")
@@ -148,8 +140,6 @@ if not database_url:
 library_id = str(uuid.UUID(os.environ["LIBRARY_ID"]))
 member_user_id = str(uuid.UUID(os.environ["MEMBER_USER_ID"]))
 admin_user_id = str(uuid.UUID(os.environ["ADMIN_USER_ID"]))
-secret_key = (os.getenv("WORDLOOM_JWT_SECRET_KEY") or os.getenv("SECRET_KEY") or "dev-secret-key-change-in-production").strip()
-algorithm = (os.getenv("WORDLOOM_JWT_ALG") or os.getenv("ALGORITHM") or "HS256").strip()
 
 engine = create_engine(convert_to_psycopg(database_url), future=True)
 try:
@@ -189,34 +179,33 @@ try:
         )
 finally:
     engine.dispose()
-
-print(json.dumps({
-    "member_token": make_token(member_user_id, secret_key, algorithm),
-    "admin_token": make_token(admin_user_id, secret_key, algorithm),
-}))
 PY
 
-member_token="$(cat "$seed_tokens_json" | $docker_cmd exec -i "$CONTAINER_NAME" python -c "import json, sys; print(json.load(sys.stdin)['member_token'])")"
-
-admin_token="$(cat "$seed_tokens_json" | $docker_cmd exec -i "$CONTAINER_NAME" python -c "import json, sys; print(json.load(sys.stdin)['admin_token'])")"
-
-member_status="$(curl -sS -o "$member_body" -w '%{http_code}' -H "Authorization: Bearer $member_token" -H "X-Library-Id: $library_id" "$API_BASE_URL/access-context/me")"
-admin_status="$(curl -sS -o "$admin_body" -w '%{http_code}' -H "Authorization: Bearer $admin_token" -H "X-Library-Id: $library_id" "$API_BASE_URL/admin/subscriptions/$library_id")"
-lifecycle_status="$(curl -sS -o "$lifecycle_body" -w '%{http_code}' -H 'Content-Type: application/json' -H "Authorization: Bearer $admin_token" -H "X-Library-Id: $library_id" -X POST -d '{"event_type":"upgrade_success"}' "$API_BASE_URL/admin/subscriptions/$library_id/events")"
-rerender_status="$(curl -sS -o "$rerender_body" -w '%{http_code}' -H "Authorization: Bearer $admin_token" -H "X-Library-Id: $library_id" "$API_BASE_URL/admin/subscriptions/$library_id")"
-history_status="$(curl -sS -o "$history_body" -w '%{http_code}' -H "Authorization: Bearer $admin_token" -H "X-Library-Id: $library_id" "$API_BASE_URL/admin/subscriptions/$library_id/history")"
+member_status="$(curl -sS -o "$member_body" -w '%{http_code}' -H "X-Dev-User-Id: $member_user_id" -H "X-Library-Id: $library_id" "$API_BASE_URL/access-context/me")"
+member_admin_deny_status="$(curl -sS -o "$member_admin_deny_body" -w '%{http_code}' -H "X-Dev-User-Id: $member_user_id" -H "X-Library-Id: $library_id" "$API_BASE_URL/admin/subscriptions/$library_id")"
+admin_status="$(curl -sS -o "$admin_body" -w '%{http_code}' -H "X-Dev-User-Id: $admin_user_id" -H "X-Library-Id: $library_id" "$API_BASE_URL/admin/subscriptions/$library_id")"
+admin_memberships_status="$(curl -sS -o "$admin_memberships_body" -w '%{http_code}' -H "X-Dev-User-Id: $admin_user_id" -H "X-Library-Id: $library_id" "$API_BASE_URL/libraries/$library_id/memberships")"
+lifecycle_status="$(curl -sS -o "$lifecycle_body" -w '%{http_code}' -H 'Content-Type: application/json' -H "X-Dev-User-Id: $admin_user_id" -H "X-Library-Id: $library_id" -X POST -d '{"event_type":"upgrade_success"}' "$API_BASE_URL/admin/subscriptions/$library_id/events")"
+rerender_status="$(curl -sS -o "$rerender_body" -w '%{http_code}' -H "X-Dev-User-Id: $admin_user_id" -H "X-Library-Id: $library_id" "$API_BASE_URL/admin/subscriptions/$library_id")"
+history_status="$(curl -sS -o "$history_body" -w '%{http_code}' -H "X-Dev-User-Id: $admin_user_id" -H "X-Library-Id: $library_id" "$API_BASE_URL/admin/subscriptions/$library_id/history")"
 
 result_json="$($docker_cmd exec -i \
   -e RUN_ID="$RUN_ID" \
   -e API_BASE_URL="$API_BASE_URL" \
   -e LIBRARY_ID="$library_id" \
+    -e MEMBER_USER_ID="$member_user_id" \
+    -e ADMIN_USER_ID="$admin_user_id" \
   -e MEMBER_STATUS="$member_status" \
+    -e MEMBER_ADMIN_DENY_STATUS="$member_admin_deny_status" \
   -e ADMIN_STATUS="$admin_status" \
+    -e ADMIN_MEMBERSHIPS_STATUS="$admin_memberships_status" \
   -e LIFECYCLE_STATUS="$lifecycle_status" \
   -e RERENDER_STATUS="$rerender_status" \
   -e HISTORY_STATUS="$history_status" \
   -e MEMBER_BODY_B64="$(base64 -w0 < "$member_body")" \
+    -e MEMBER_ADMIN_DENY_BODY_B64="$(base64 -w0 < "$member_admin_deny_body")" \
   -e ADMIN_BODY_B64="$(base64 -w0 < "$admin_body")" \
+    -e ADMIN_MEMBERSHIPS_BODY_B64="$(base64 -w0 < "$admin_memberships_body")" \
   -e LIFECYCLE_BODY_B64="$(base64 -w0 < "$lifecycle_body")" \
   -e RERENDER_BODY_B64="$(base64 -w0 < "$rerender_body")" \
   -e HISTORY_BODY_B64="$(base64 -w0 < "$history_body")" \
@@ -255,20 +244,28 @@ def normalize_history_items(value: object) -> list[dict]:
 
 
 member_body = decode_payload("MEMBER_BODY_B64")
+member_admin_deny_body = decode_payload("MEMBER_ADMIN_DENY_BODY_B64")
 admin_body = decode_payload("ADMIN_BODY_B64")
+admin_memberships_body = decode_payload("ADMIN_MEMBERSHIPS_BODY_B64")
 lifecycle_body = decode_payload("LIFECYCLE_BODY_B64")
 rerender_body = decode_payload("RERENDER_BODY_B64")
 history_body = decode_payload("HISTORY_BODY_B64")
 history_items = normalize_history_items(history_body)
+membership_items = normalize_history_items(admin_memberships_body)
 library_id = os.environ["LIBRARY_ID"]
+member_user_id = os.environ["MEMBER_USER_ID"]
+admin_user_id = os.environ["ADMIN_USER_ID"]
 
 member_ok = (
     os.environ["MEMBER_STATUS"] == "200"
+    and str(member_body.get("user_id")) == member_user_id
     and str(member_body.get("tenant_id")) == library_id
-    and "member" in normalize_roles(member_body.get("roles"))
+    and normalize_roles(member_body.get("roles")) == ["member"]
     and bool(member_body.get("plan_code"))
     and bool(member_body.get("subscription_state"))
     and "read_library" in list(member_body.get("entitlements") or [])
+    and os.environ["MEMBER_ADMIN_DENY_STATUS"] == "403"
+    and member_admin_deny_body.get("detail", {}).get("reason") == "not_admin"
 )
 admin_ok = (
     os.environ["ADMIN_STATUS"] == "200"
@@ -276,6 +273,9 @@ admin_ok = (
     and bool(admin_body.get("plan_code"))
     and bool(admin_body.get("subscription_state"))
     and "read_library" in list(admin_body.get("entitlements") or [])
+    and os.environ["ADMIN_MEMBERSHIPS_STATUS"] == "200"
+    and any(item.get("user_id") == member_user_id and item.get("role") == "member" for item in membership_items)
+    and any(item.get("user_id") == admin_user_id and item.get("role") == "admin" for item in membership_items)
 )
 lifecycle_ok = (
     os.environ["LIFECYCLE_STATUS"] == "200"
@@ -291,13 +291,17 @@ rerender_ok = (
 passed = int(member_ok) + int(admin_ok) + int(lifecycle_ok) + int(rerender_ok)
 
 print(json.dumps({
-    "schema_version": "s4f-2a.access-verify.v1",
+    "schema_version": "s4f-2c.access-verify.v1",
     "run_id": os.environ["RUN_ID"],
     "ok": bool(member_ok and admin_ok and lifecycle_ok and rerender_ok),
     "meta": {
         "finished_at": datetime.now(timezone.utc).isoformat(),
         "api_base_url": os.environ["API_BASE_URL"],
         "library_id": library_id,
+        "identityTruthSource": "backend-validated.dev-header",
+        "admissionTruthSource": "persistence-backed.library_memberships",
+        "membershipTruthSource": "persistence-backed.library_memberships",
+        "lifecycleTruthSource": "backend.subscription_access",
     },
     "checks": {
         "memberReadResult": member_ok,
@@ -306,11 +310,21 @@ print(json.dumps({
         "rerenderedStateResult": rerender_ok,
     },
     "observed": {
+        "memberUserId": member_user_id,
+        "adminUserId": admin_user_id,
         "memberReadStatus": int(os.environ["MEMBER_STATUS"]),
+        "memberAdminDenyStatus": int(os.environ["MEMBER_ADMIN_DENY_STATUS"]),
         "adminReadStatus": int(os.environ["ADMIN_STATUS"]),
+        "adminMembershipsStatus": int(os.environ["ADMIN_MEMBERSHIPS_STATUS"]),
         "lifecycleMutationStatus": int(os.environ["LIFECYCLE_STATUS"]),
         "rerenderedStateStatus": int(os.environ["RERENDER_STATUS"]),
         "historyStatus": int(os.environ["HISTORY_STATUS"]),
+        "memberRoles": normalize_roles(member_body.get("roles")),
+        "memberAdminDenyReason": member_admin_deny_body.get("detail", {}).get("reason"),
+        "adminEntitlements": list(admin_body.get("entitlements") or []),
+        "adminMembershipRoles": {
+            item.get("user_id"): item.get("role") for item in membership_items if item.get("user_id") in {member_user_id, admin_user_id}
+        },
     },
     "summary": {
         "total": 4,
