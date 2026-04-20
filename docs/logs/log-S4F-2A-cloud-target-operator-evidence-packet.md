@@ -210,7 +210,7 @@
 ### P2 (Drill / Verify)
 
 - [ ] `P2-C1-S1`: cloud-target operator evidence run captured
-- [ ] `P2-C1-S2`: evidence artifact and probe outputs recorded
+- [x] `P2-C1-S2`: evidence artifact, run-state fallback query, and operator/API path diagnostics recorded
 
 ### P3 (Close-out / next-lane decision)
 
@@ -220,6 +220,8 @@
 
 - `S4F-2A` now has `P0` and `P1` in place: the access-aware verify overlay is wired onto the reused `S4D` cloud release path, and the combined evidence JSON contract is write-backed into the retained artifact bundle.
 - `P2` has now produced its first real operator-facing run attempt, but the retained evidence shows a preflight reachability blocker before deploy/verify began: stable-runner run `24655583207` failed at `targetReachabilityGate=FAIL` with `ssh: connect to host 49.196.191.226 port 22022: Connection timed out`.
+- The GitHub Actions observation path is now also pinned down for `P2`: `gh run watch` timed out while polling the jobs endpoint from this operator machine, but one-shot `gh run view` and `gh api` queries succeeded against the same runs and endpoint, so the evidence points to an intermittent local-to-GitHub API polling-path timeout rather than a bad run id, bad token, or bad workflow reference.
+- The queued Windows fallback run remains useful evidence rather than a mystery failure: run `24654777721` is still `queued`, and one-shot queries show its only job `cloud-runtime-release` has not started because no matching Windows self-hosted runner has picked it up.
 - The immediate next step remains narrow: restore the target SSH path, then rerun the same workflow command so the generic `S4D` release and the `S4F` access overlay can execute end to end.
 
 ## Evidence (reserved)
@@ -241,6 +243,17 @@
   - `operator_guidance.txt`
 - preflight failure excerpt: `ssh: connect to host 49.196.191.226 port 22022: Connection timed out`
 - operator guidance outcome: stop at preflight, fix target reachability, then rerun the same workflow command.
+- GitHub Actions status fallback evidence recorded during `P2`:
+  - `gh run view 24654777721 --json ...` returned `status=queued`, `conclusion=null`, workflow `s4d-cloud-release-dispatch`, head sha `68d0af1b2f7f6b8c2d0d7981670ee40303342d30`
+  - `gh api repos/samuelhu324-dev/wordloom-v3/actions/runs/24654777721/jobs ...` returned one queued job: `cloud-runtime-release` (`72085514477`)
+  - `gh run view 24655583207 --json ...` returned `status=completed`, `conclusion=failure`, workflow `s4d-cloud-release-dispatch-stable-runner`, with the known failed steps `Write run summary` and `Enforce workflow result` from the pre-fix run
+- Operator-to-GitHub API path diagnosis recorded during `P2`:
+  - `gh auth status` remained healthy for `samuelhu324-dev`; token scopes included `repo` and `workflow`
+  - proxy environment variables were empty: `HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY`, `NO_PROXY`
+  - DNS resolution for `api.github.com` succeeded (`A 4.237.22.34`, `AAAA 2405:dc00:0:3::4ed:1622`)
+  - `Invoke-WebRequest https://api.github.com/rate_limit` returned `200 OK`
+  - `Test-NetConnection api.github.com -Port 443` returned `TcpTestSucceeded=True`
+  - working conclusion: the screenshot failure was a local polling-path timeout during `gh run watch`, not an authentication failure and not proof that the run state was unavailable from GitHub.
 
 ## Recent changes (for traceability, optional)
 
@@ -248,3 +261,5 @@
 - 2026-04-20: completed `P1-C1-S1S2` by adding `scripts/ops/cloud_release_access_verify.sh`, extending `scripts/ops/cloud_release_workflow.sh` and `scripts/ops/cloud_release_workflow_helpers.sh`, and exposing the optional overlay through `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml`.
 - 2026-04-20: attempted the first real `P2` stable-runner execution (`24655583207`) with `--access-verify-overlay`; the run reached retained artifacts but failed preflight on target SSH reachability before deploy or verify started.
 - 2026-04-20: fixed the workflow summary renderer indentation in both cloud release dispatch workflows so future reruns surface the real `summary.json` outcome without a secondary post-run script failure.
+- 2026-04-20: added `P2` run-observation fallback evidence showing that one-shot `gh run view` / `gh api` calls can read both relevant workflow runs even though `gh run watch` timed out from the operator machine.
+- 2026-04-20: added `P2` operator-to-GitHub API path diagnostics showing healthy auth, DNS, HTTP, and TCP baseline checks, narrowing the screenshot failure to an intermittent polling-path timeout rather than a repo-side workflow error.
