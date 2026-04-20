@@ -5,7 +5,7 @@
 **id**: `S4F-1A`
 **kind**: `log`
 **title**: `backend-only access / subscription deployable cut (S4D workflow reuse, access-aware verify, and drills/evidence) v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, AccessControl, Verification, Drills, Evidence, epic/s4, sub/1a`
 **links**: ``

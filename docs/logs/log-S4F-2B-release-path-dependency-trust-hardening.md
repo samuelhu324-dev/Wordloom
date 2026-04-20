@@ -5,7 +5,7 @@
 **id**: `S4F-2B`
 **kind**: `log`
 **title**: `release-path dependency trust hardening (remove operator public /32 RDS allowlist dependence) v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, NetworkTrust, ReleaseOperations, Drills, Evidence, epic/s4, sub/2b`
 **links**: ``
@@ -60,7 +60,6 @@
 - The default implementation target for this lane is: GitHub Actions stable self-hosted runner in a stable trusted network position, with the RDS trust path attached to that fixed runner/compute identity rather than to a drifting operator public `/32`.
 - SG-to-SG trust, or another equivalently durable fixed-identity trust rule, is the preferred RDS-side realization of that target; operator public `/32` ingress is demoted to break-glass/debug-only status.
 - Do not widen this packet into production HA, frontend hosting, or general infra modernization.
-- draft 阶段默认继续把 source log 当作集中面；如果问题边界、规则、过程、reader summary 或 front-door 影响仍在变化，不要过早把 weak-structure 内容拆到多个 outlets。
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
 - Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
@@ -96,19 +95,6 @@
 
 - `P2-C1-S1` | artifact: ``
 
-## Exported Sections / Outlet Ownership
-
-- `S4F-2B` is opening as a new active source log. Outlet ownership is stated now, but export should wait until the trust model is actually chosen and exercised.
-
-**Outlet ownership**:
-
-- `contract`: likely candidate after the lane stabilizes; the durable trust rule for cloud release/RDS dependency wiring may need to leave this log.
-- `runbook`: likely candidate after the lane stabilizes; if the hardened operator path changes the required release steps, update or extract the stable procedure.
-- `view`: no-op for now; reader-facing family summary can remain in the parent `S4F` spine until the new lane settles.
-- `index/front-door`: no-op for now; no new front-door navigation is justified at scaffold time.
-- `disposition/placement`: no-op for now; this is an active runtime lane, not support-only standing.
-- `log-retained core`: keep the decision, active trust-model options, checklist, current status, and evidence ledger here.
-
 ## Definitions (optional)
 
 - `operator public /32 dependence`: any release/verify path that succeeds only when the operator's current public egress IP is manually present in the RDS ingress allowlist.
@@ -128,7 +114,7 @@
 - `P0`: contract (dependency boundary, candidate trust models, success/evidence contract)
 - `P1`: implementation / infra wiring (apply one chosen durable trust path with minimal release-path drift)
 - `P2`: drill / verify (capture one real operator-facing cloud-target run on the hardened trust path)
-- `P3`: close-out / export decision (decide what leaves the log as contract/runbook and what remains retained core)
+- `P3`: close-out / next-lane decision (decide whether another trust-hardening child packet is still required)
 
 ## Success Criteria (DoD)
 
@@ -137,7 +123,7 @@
 - The hardened path still reuses the `S4D` release family unless a narrow, justified contract change is recorded.
 - At least one real retained run proves release and verify can reach required dependencies without adding a fresh operator public `/32` to RDS ingress.
 - The retained evidence names the trust position used by the successful run.
-- The log leaves one explicit close-out decision on whether the new trust rule belongs in contract, runbook, both, or log-retained core only.
+- The log leaves one explicit close-out decision on whether another trust-hardening child packet is still required after the hardened path is retained.
 
 ## Stability (what stable means)
 
@@ -145,7 +131,7 @@
   - the dependency/trust contract is explicit;
   - one hardened trust path is implemented or otherwise fixed as the default decision;
   - one real evidence sample proves the path without fresh operator-IP allowlist maintenance;
-  - the outlet decisions for `contract / runbook / view / index/front-door / disposition/placement / log-retained core` are answered explicitly.
+  - the next-lane decision is explicit and no unresolved trust-boundary work remains inside this packet.
 
 ## P0 (Contract | v1)
 
@@ -206,9 +192,9 @@
 - P2-C1-S1: capture one real cloud-target operator evidence run on the hardened trust path without fresh operator `/32` maintenance
 - P2-C1-S2: record the resulting artifact path, trust-model details, and dependency results in this log
 
-### P3 (Close-out / export decision)
+### P3 (Close-out / next-lane decision)
 
-- P3-C1-S1: answer the outlet decisions and record whether the durable trust rule should leave this log as contract/runbook text
+- P3-C1-S1: record whether the hardened trust path is sufficient to close this packet and what the next branch-road lane should be
 
 ## Execution Checklist (unchecked)
 
@@ -228,21 +214,20 @@
 - [x] `P2-C1-S1`: hardened cloud-target evidence run captured without fresh operator `/32` maintenance
 - [x] `P2-C1-S2`: artifact path and trust-model results recorded
 
-### P3 (Close-out / export decision)
+### P3 (Close-out / next-lane decision)
 
-- [ ] `P3-C1-S1`: outlet decisions recorded explicitly
+- [x] `P3-C1-S1`: hardened trust-path close-out decision recorded
 
 ## Current Status (recommended)
 
-- `S4F-2B` is newly opened as the follow-up lane to `S4F-2A/P3`.
-- The problem is already well enough bounded to start: the backend release path is proven, and the remaining fragility is the dependency trust model around RDS ingress and operator network identity.
+- `S4F-2B/P0-P3` is now complete and this child log can close as `stable`.
 - `P0` is now fixed: the lane will treat the stable self-hosted cloud runner path as the default release origin and will move RDS trust to one durable fixed-identity path instead of recurring operator public `/32` edits.
 - `P1` is now also fixed at the implementation-anchor level: the trust anchor is the existing stable runner host module plus the cloud-dev basic security group (`sg-027e05455509e0730`, `wlv3-cloud-dev-sg-basic`), which the cloud-dev DB security group (`sg-0873e947b9947639d`, `wlv3-cloud-dev-sg-db`) can trust without per-operator public-IP churn.
 - The repo-side implementation surface is already present and aligned: `infra/terraform/aws/runner-host/` provisions the host, `scripts/ops/cloud_stable_runner_bootstrap.sh` and `scripts/ops/cloud_stable_runner_probe.sh` bootstrap/probe it, and `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml` is the corresponding release entry.
 - `P2` is now fixed with one real retained run: workflow run `24664326210` completed `PASS` on the stable Linux runner path, and the retained `summary.json` shows all release, verify, and access-aware gates green.
 - The evidence now supports the lane claim that the release path itself no longer needed a fresh operator public `/32` in the RDS allowlist; the durable dependency trust anchor was the stable runner host attached to `wlv3-cloud-dev-sg-basic` reaching `wlv3-cloud-dev-sg-db` by fixed identity.
 - One bootstrap caveat remains explicit: the operator did add the current public `/32` to the runner SSH security group so the reverse tunnel to the local-only target could be established, but that mutation was outside the RDS trust path and therefore does not reopen the `S4F-2B` dependency boundary that this lane was created to remove.
-- The next step is `P3`: answer outlet/export placement now that the trust rule and one real hardened sample are both retained.
+- `P3` is now fixed: the trust-boundary hardening objective for this child packet is complete, no further `M1` trust child is required from `S4F-2B`, and the branch-road should advance to `S4F-2C` for `M2` credibility hardening.
 
 ## Evidence (reserved)
 
@@ -312,9 +297,24 @@
   - `releaseOriginKind=stable_self_hosted_linux_runner`, `targetHostKind=local_only_cloud_target_via_reverse_tunnel`, `trustModel=stable_runner_fixed_identity_plus_sg_bound_rds_trust`, `rdsTrustPathKind=sg_to_sg_via_wlv3_cloud_dev_sg_basic_to_wlv3_cloud_dev_sg_db`, `operatorIpAllowlistMutationRequired=false`, `operatorIpAllowlistMutationKind=none_for_rds_allowlist`.
   - A separate bootstrap detail remains relevant but out of scope for the brittle boundary removed by this lane: the operator temporarily added `49.196.191.226/32` to the runner SSH security group so the reverse tunnel to the local-only target could be established. That was a runner-SSH ingress bootstrap action, not an RDS allowlist mutation.
 
+### P3-C1-S1 (Hardened trust-path close-out decision fixed | 2026-04-20)
+
+- headSha: `5f68f8a9c68fdcfa9f31eb2ba36266db96454bce`
+- artifacts:
+  - `docs/logs/log-S4F-2B-release-path-dependency-trust-hardening.md`
+  - `artifacts/_tmp_s4f2b_run_24664326210/s4d-cloud-release-stable-runner-24664326210-1/summary.json`
+  - `docs/logs/log-S4F-2C-deployed-identity-admission-membership-truth-hardening.md`
+- expected:
+  - `P3` should decide whether the retained stable-runner trust proof is sufficient to close the dependency-hardening packet, or whether another bounded trust child is still required before the branch can advance.
+- observed:
+  - the hardened release-origin and RDS trust-path contract are now explicit, and one real stable-runner evidence sample proves that cloud-target release/verify no longer depended on adding a fresh operator public `/32` to the DB allowlist;
+  - the remaining bootstrap caveat is limited to runner SSH ingress for reverse-tunnel setup and does not reopen the packet's dependency boundary, because it is outside the RDS trust path this lane was created to harden;
+  - the next controlling realism gap therefore moves away from dependency trust and into deployed identity/admission/membership authority, which is already opened as `S4F-2C` under `road-002-01/M2`.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-20: opened `S4F-2B` as the direct follow-up lane to `S4F-2A/P3`, dedicated to removing operator public `/32` RDS allowlist dependence from the reused `S4D` release path.
 - 2026-04-20: completed `P0-C1-S1S2S3` by fixing the dependency boundary, choosing the stable-runner-based trust model as the default lane target, and tightening the evidence contract around release origin and allowlist-mutation requirements.
 - 2026-04-20: completed `P1-C1-S1S2` by mapping `S4F-2B` onto the already-landed `S4D-4C` stable-runner assets, confirming the concrete trust anchor (`wlv3-cloud-dev-sg-basic` -> `wlv3-cloud-dev-sg-db`), and recording the exact release-origin delta from `S4F-2A`.
 - 2026-04-20: completed `P2-C1-S1S2` with stable-runner workflow run `24664326210`, retaining one real passing cloud-target evidence sample that no longer required a fresh operator public `/32` in the RDS allowlist.
+- 2026-04-20: completed `P3-C1-S1`, closing `S4F-2B` as `stable` because the hardened trust boundary is explicit, the retained evidence is sufficient, and the next branch-road lane had already shifted to `S4F-2C` for `M2` credibility hardening.

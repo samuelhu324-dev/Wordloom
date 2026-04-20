@@ -134,7 +134,7 @@
 
 ## Current Status（进展摘要）
 
-- `S4F` now has one completed first packet in `S4F-1A`, one completed cloud-target evidence packet in `S4F-2A`, one completed trust-hardening follow-up packet in `S4F-2B`, and one newly opened realism-hardening follow-up packet in `S4F-2C`.
+- `S4F` now has one completed first packet in `S4F-1A`, one completed cloud-target evidence packet in `S4F-2A`, one completed trust-hardening follow-up packet in `S4F-2B`, and one completed realism-hardening follow-up packet in `S4F-2C`.
 - `S4F-2A/P1` is now landed: the reused `S4D` release path can optionally run the `S4F` access-aware verify overlay and write the combined result back into the retained artifact bundle.
 - `S4F-2A/P2` is now complete. The lane progressed through three distinct failure classes on the same operator path before closing green: target reachability (`24655583207`), post-change runtime verify (`24654777721`), and access-overlay script parsing (`24661990707`), then finished with a full PASS evidence bundle in run `24662387235` on head `07c99aa0f571cf04ba97ef25b4d52cf52d9f64e7`.
 - `S4F-2A/P2` also now includes the operator-side observation fallback and API-path diagnosis: the queued Windows fallback run `24654777721` can be read cleanly via one-shot `gh run view` / `gh api`, and the earlier `gh run watch` failure has been narrowed to an intermittent local polling-path timeout rather than a repo-side workflow lookup failure.

@@ -5,7 +5,7 @@
 **id**: `S4F-2A`
 **kind**: `log`
 **title**: `cloud-target operator evidence packet (S4D release path reuse + S4F access-aware verify overlay) v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, AccessControl, Verification, ReleaseOperations, Drills, Evidence, epic/s4, sub/2a`
 **links**: ``

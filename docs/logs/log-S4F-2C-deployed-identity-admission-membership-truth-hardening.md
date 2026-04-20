@@ -5,7 +5,7 @@
 **id**: `S4F-2C`
 **kind**: `log`
 **title**: `deployed identity/admission/membership truth hardening v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, AccessControl, Auth, CloudRuntime, CredibleSimulation, Drills, Evidence, epic/s4, sub/2c`
 **links**: ``
@@ -63,7 +63,6 @@
 - Treat the current problem as a credibility/truth-boundary issue, not as a packaging or RDS-connectivity issue.
 - Prioritize backend-issued or backend-validated identity/session truth, persistence-backed admission and membership truth, and backend-enforced lifecycle/entitlement truth before any broader provider integration work.
 - Keep provider integration, enterprise SSO sprawl, frontend hosting, and asset-platform work out of this packet.
-- draft 阶段默认继续把 source log 当作集中面；如果问题边界、规则、过程、reader summary 或 front-door 影响仍在变化，不要过早把 weak-structure 内容拆到多个 outlets。
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
 - Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
@@ -91,19 +90,6 @@
 **Evidence Footer Source**:
 
 - `P1-C1-S1` | artifact: ``
-
-## Exported Sections / Outlet Ownership
-
-- `S4F-2C` opens as an active source log; export should wait until one explicit truth boundary and one deployed evidence sample are retained.
-
-**Outlet ownership**:
-
-- `contract`: likely candidate after the lane stabilizes; the credibility rule for deployed identity/admission/membership truth may need to leave this log.
-- `runbook`: likely no-op for now; the operator procedure should continue to reuse the existing `S4D` runtime release workflow unless this packet changes repeatable steps.
-- `view`: no-op for now; reader-facing family summary can remain in the parent `S4F` spine while this lane is active.
-- `index/front-door`: no-op for now; no front-door mutation is justified at scaffold time.
-- `disposition/placement`: no-op for now; this is an active runtime lane, not support-only standing.
-- `log-retained core`: keep the decision, credibility boundary, checklist, current status, and evidence ledger here.
 
 ## Definitions (optional)
 
@@ -300,7 +286,7 @@
 
 ## Current Status (recommended)
 
-- `S4F-2C` is newly opened as the next `road-002-01/M2` lane after `S4F-2B`.
+- `S4F-2C/P0-P3` is now complete and this child log can close as `stable`.
 - The deployable runtime path is already proven and the release-path dependency trust is already hardened enough to stop treating RDS ingress drift as the controlling blocker.
 - `P0` is now fixed: the first controlling credibility gap is no longer generic “demo-ness” but the specific fact that the currently deployed actor identity, admission standing, and role truth still originate in frontend-local session/admission machinery while the backend auth actor remains intentionally minimal.
 - The first bounded truth shift is also now fixed: `S4F-2C` should tighten backend-validated identity plus persistence-backed admission/membership truth first, while leaving local actor switching explicitly outside the authority path for the eventual passing drills.
