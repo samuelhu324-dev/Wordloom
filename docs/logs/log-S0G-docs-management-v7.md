@@ -21,6 +21,7 @@
   **phase_log_2**: `docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md`
   **phase_log_3**: `docs/logs/log-S0G-2B-support-only-ledger-placement-and-patch-ledger-bridge.md`
   **phase_log_4**: `docs/logs/log-S0G-3A-runbook-release-issue-concentration-and-ledger-naming-governance.md`
+  **phase_log_5**: `docs/logs/log-S0G-3B-carrier-branch-cleanup-and-mainline-extraction-governance.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -128,6 +129,8 @@
   - 详见：`docs/logs/log-S0G-2B-support-only-ledger-placement-and-patch-ledger-bridge.md`
 - `S0G-3A`（Phase 3）：runbook release issue concentration and ledger naming governance
   - 详见：`docs/logs/log-S0G-3A-runbook-release-issue-concentration-and-ledger-naming-governance.md`
+- `S0G-3B`（Phase 3B）：carrier branch cleanup and mainline extraction governance
+  - 详见：`docs/logs/log-S0G-3B-carrier-branch-cleanup-and-mainline-extraction-governance.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -141,7 +144,8 @@
 - `S0G` remains `stable` as the docs-management v7 successor spine, but it is no longer only a one-child retrospective close-out anchor.
 - `S0G-1A` records the initial workspace backfill and lifecycle materialization packet, while `S0G-2A` and `S0G-2B` now fix the ledger-aware runbook surface, support-only ledger placement, and patch-ledger bridge contract.
 - `S0G-3A` now fixes the next missing governance layer: release-issue concentration, object-first commit/PR naming, legacy runbook placement, and clean-branch discipline for later runbook-family packets.
-- The next concrete work under this spine should now classify the current mixed workspace into `runbook-family commit/push now` vs `still evolution-log lane` before opening the next naming-driven commit burst.
+- `S0G-3B` now reopens the transition problem more concretely: before treating `main` as the default clean base again, the repo must inventory the current `S0G` carrier, separate patch-equivalent noise from true branch-only packets, and extract any still-meaningful bounded packet content.
+- The next concrete work under this spine should now inventory and extract unresolved non-main packets from `S0G` rather than continue opening new bounded work directly on the historical carrier branch.
 
 ## Evidence（可选，聚合型记账）
 
