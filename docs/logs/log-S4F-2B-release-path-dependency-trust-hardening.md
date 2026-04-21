@@ -91,10 +91,6 @@
 - `docs/runbook/run-S4D-cloud-stable-runner-cutover.md`
 - `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml`
 
-**Evidence Footer Source**:
-
-- `P2-C1-S1` | artifact: ``
-
 ## Definitions (optional)
 
 - `operator public /32 dependence`: any release/verify path that succeeds only when the operator's current public egress IP is manually present in the RDS ingress allowlist.
