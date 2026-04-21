@@ -52,6 +52,7 @@
 
 - Parent run ledgers, SUP ledgers, and PATCH ledgers should all live under `docs/runbook/support-only/`.
 - Root `docs/runbook/` remains for family-level runbooks only; it is not the canonical home for ledger-class packets.
+- When an older runbook still has broad historical readers, move its retained full body under `docs/runbook/legacy/` and keep the old root path occupied by a stub instead of deleting the path outright.
 - PATCH ledgers are support-only supplement-class packets for bounded repair work that stays inside one defended runbook release.
 - PATCH ledgers may carry screenshots, transcripts, and approval-facing attachments the same way SUP ledgers do.
 - PATCH ledgers must record explicit ownership, review, verification, approval, and lifecycle-time fields.
@@ -130,7 +131,8 @@
 - `S0G-2B` has now fixed the canonical ledger home as `docs/runbook/support-only/`.
 - The new patch-ledger bridge is explicit: patch packets that belong to one stable runbook release should use `ledger-run-PATCH-*` support-only files, not unstructured log-first notes.
 - `WORKFLOW-GITHUB-001` is now rebound to support-only ledger surfaces, and the first reserved patch-ledger name exists.
-- The next concrete step is now clear again: start the first real `WORKFLOW-GITHUB-001` full-auto sample batch and update admitted run accounting under the support-only parent ledger.
+- Older non-current runbooks are now being rehomed under `docs/runbook/legacy/`, while root-path stubs are preserved so broad historical references do not break at move time.
+- The first real `WORKFLOW-GITHUB-001` full-auto sample batch has now executed and updated admitted run accounting under `RUN-001`, with `PATCH-001` bound back to the same parent run row.
 
 ## Evidence
 
@@ -173,20 +175,25 @@
 - expected:
   - the first canonical patch-ledger name should exist before live samples begin so future bounded repairs have one defended landing surface.
 - observed:
-  - the reserved `PATCH-001` surface now exists in draft form and is ready to bind to the first bounded repair packet under `WORKFLOW-GITHUB-001` if a live sample exposes one.
+  - the reserved `PATCH-001` surface was opened before live samples began and is now the bound repair surface for the first admitted `WORKFLOW-GITHUB-001` run.
 
 ### P3-C1-S1 (next lane fixed back to real full-auto samples after bridge hardening | 2026-04-21)
 
 - headSha: `WORKTREE`
 - artifacts:
   - `docs/logs/log-S0G-2B-support-only-ledger-placement-and-patch-ledger-bridge.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
 - expected:
   - once support-only placement and patch-ledger bridge rules are fixed, the next step should return to real sample execution rather than keep widening policy.
 - observed:
-  - the next bounded step is now explicitly the first real `WORKFLOW-GITHUB-001` full-auto sample batch.
+  - the next bounded step did return to the first real `WORKFLOW-GITHUB-001` full-auto sample batch, and that batch is now admitted under `RUN-001` with the bounded repair packet bound under `PATCH-001`.
 
 ## Recent changes
 
 - 2026-04-21: fixed `docs/runbook/support-only/` as the canonical home for ledger-class packets.
 - 2026-04-21: published the new support-only `PATCH` ledger template and reserved the first `ledger-run-PATCH-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md` surface.
 - 2026-04-21: rebound `WORKFLOW-GITHUB-001` to support-only parent, supplement, and patch ledger paths before the first live sample batch.
+- 2026-04-21: rehomed older runbooks under `docs/runbook/legacy/` and preserved root-path stubs so historical citations can still land on the old exact paths.
+- 2026-04-21: admitted the first real four-sample `WORKFLOW-GITHUB-001` run under `RUN-001` after issue creation, PR creation, human merge, and guarded issue-conclusion refresh.
+- 2026-04-21: bound `PATCH-001` back to `RUN-001` because the first admitted run consumed the milestone-skip and multi-item preview-body repairs.
