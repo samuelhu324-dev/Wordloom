@@ -5,7 +5,7 @@
 **id**: `S0G-3C`
 **kind**: `log`
 **title**: `workflow github issues strong-structure and ledger-bridge governance v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Workflow, Automation, Evidence, epic/s0, sub/3c`
 **links**: ``
@@ -44,8 +44,8 @@
 ## Frontmatter Lifecycle-Time Rule
 
 - `created`, `updated`, and optional `reviewed` are the minimum artifact-lifecycle fields for this packet.
-- Day-level precision is acceptable while the runbook-family identity and stage-granularity contract are still being fixed.
-- `reviewed` should remain `pending` until the repo agrees on workflow profiles, batch identity rules, and the strong-structure bridge between parent run ledgers, SUP ledgers, and PATCH ledgers.
+- Day-level precision is acceptable while the runbook-family identity and stage-granularity contract is being fixed and then closed.
+- Once the repo agrees on workflow profiles, batch identity rules, and the strong-structure bridge between parent run ledgers, SUP ledgers, and PATCH ledgers, `reviewed` should be set to the close-out review date.
 
 ## Decision / Outcome
 
@@ -140,11 +140,11 @@
 
 ## Stability (what stable means)
 
-- This log can be marked `stable` when:
+- This log is now `stable` because:
   - the family identity rule is explicit;
   - the workflow-profile and stage taxonomy are explicit;
   - the batch/target/stage accounting grains are explicit;
-  - the `SUP` / `PATCH` bridge rules are explicit enough to drive the first strong-structure template rewrite.
+  - the `SUP` / `PATCH` bridge rules are explicit enough to drive and complete the first strong-structure template rewrite sequence.
 
 ## P0 (Contract | v1)
 
@@ -319,14 +319,14 @@
 
 ## Current Status (recommended)
 
-- `S0G-3C` is now the bounded discussion surface for the strong-structure gap in the current GitHub Issues automation family.
+- `S0G-3C` is now stable as the bounded governance surface for the strong-structure gap in the current GitHub Issues automation family.
 - The immediate problem is no longer only packet extraction or branch cleanup; it is that the current runbook/ledger shape is too weakly structured for a multi-stage, multi-target workflow family.
 - The current contract direction is now narrower and more concrete: the defended family token is `WORKFLOW-GITHUB-ISSUES`, the child-issue PR stage is `PR_MERGED`, target-stage rows now have a minimum required field set, and `SUP/PATCH` may dual-bind when one follow-up changes both admitted reading and repair implementation.
 - The bridge-key shape is now fixed to stable structural ids plus semantic refs, and one optional attempt layer is reserved for later replay-heavy stages without forcing it into the first rewrite.
 - The first rewrite packet is now executed for the first two steps in that order: the runbook identity has narrowed to the defended GitHub Issues family at contract level, and the parent ledger now exposes batch, target, and target-stage grains for `RUN-001`.
 - The `SUP` template is now rewritten to bind later evidence through `run_row_id`, `target_row_id`, and `target_stage_row_id`, while leaving the optional attempt layer available only when replay density truly needs it.
 - The `PATCH` template is now rewritten to bind bounded repair packets through the same run/target/stage structural keys, while still keeping `PATCH` distinct from `SUP` at the effect layer.
-- The structural rewrite sequence is now executed through `P3-C1-S4`, so the next decision surface is no longer template shape; it is whether the repo should mark this governance lane stable and then decide on physical rename or successor-release handling.
+- The structural rewrite sequence is now executed through `P3-C1-S4`, so this lane no longer owns template-shape work; the next decision surface moves to `S0G-3D`, which will decide physical rename versus successor-release handling for the current defended family identity.
 
 ## Evidence (reserved)
 
@@ -432,3 +432,4 @@
 - 2026-04-21: executed the first rewrite packet under `S0G-3C` by narrowing the runbook family contract to `WORKFLOW-GITHUB-ISSUES` and reshaping `RUN-001` around batch, target, and target-stage tables before any `SUP/PATCH` template rewrite.
 - 2026-04-21: upgraded the `SUP` template under `S0G-3C` so later admitted-reading follow-up now binds explicitly to run, target, and target-stage structural keys instead of only to a run row.
 - 2026-04-21: upgraded the `PATCH` template under `S0G-3C` so bounded repair packets now bind explicitly to the same run, target, and target-stage structural keys while still deferring rename or successor-release decisions.
+- 2026-04-21: closed `S0G-3C` as `stable` and handed the remaining file-identity decision surface to `S0G-3D` for physical rename versus successor-release governance.
