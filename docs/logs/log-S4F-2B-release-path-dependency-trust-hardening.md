@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, NetworkTrust, ReleaseOperations, Drills, Evidence, epic/s4, sub/2b`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/509`
-  **pr**: ``
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/513`
   **runbook**: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4F-access-subscription-deployable-runtime-cut.md`
@@ -21,7 +21,7 @@
 **issue_top_labels**: ``
 **issue_scope_labels**: ``
 **issue_module_labels**: ``
-**issue_milestone**: ``
+**issue_milestone**: `road-002-01: deployable runtime slice and cloud backed asset readiness`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
@@ -30,7 +30,7 @@
 **roadmap_bridge_refs**: ``
 **pr_labels**: ``
 **pr_projects**: ``
-**pr_milestone**: ``
+**pr_milestone**: `road-002-01: deployable runtime slice and cloud backed asset readiness`
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-20`
