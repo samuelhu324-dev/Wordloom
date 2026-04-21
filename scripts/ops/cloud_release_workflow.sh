@@ -28,6 +28,7 @@ ROLLBACK_ON_VERIFY_FAIL="0"
 ARTIFACT_DIR=""
 ROLLBACK_TRIGGER="manual_only"
 SIMULATE_EVIDENCE_FAILURE=""
+ACCESS_VERIFY_OVERLAY="0"
 
 IDENTITY_AUTH_GATE="NOT_RUN"
 TARGET_REACHABILITY_GATE="NOT_RUN"
@@ -35,7 +36,14 @@ DEPENDENCY_CONNECTIVITY_GATE="NOT_RUN"
 RELEASE_CONTRACT_GATE="NOT_RUN"
 DEPLOY_EXECUTION_GATE="NOT_RUN"
 POST_CHANGE_VERIFY_GATE="NOT_RUN"
+ACCESS_AWARE_VERIFY_GATE="NOT_RUN"
 ROLLBACK_READINESS_GATE="NOT_RUN"
+
+ACCESS_VERIFY_RESULT="NOT_RUN"
+MEMBER_READ_RESULT_JSON="null"
+ADMIN_READ_RESULT_JSON="null"
+LIFECYCLE_MUTATION_RESULT_JSON="null"
+RERENDERED_STATE_RESULT_JSON="null"
 
 usage() {
   cat <<'EOF'
@@ -57,6 +65,7 @@ Usage:
     [--api-port <port>] \
     [--verify-max-wait-seconds <n>] \
     [--verify-poll-interval-seconds <n>] \
+    [--access-verify-overlay] \
     [--rollback-on-verify-fail] \
     [--simulate-evidence-failure <operator-guidance-missing>] \
     [--artifact-dir <path>]
@@ -80,6 +89,7 @@ Examples:
     --expected-head-sha <sha> \
     --env-file /etc/wordloom/.env.cloud.dev \
     --known-good-image-tag wordloom-backend:cloud-dev-known-good-20260325-pass \
+    --access-verify-overlay \
     --rollback-on-verify-fail
 EOF
 }
@@ -155,6 +165,10 @@ while [[ $# -gt 0 ]]; do
       ROLLBACK_ON_VERIFY_FAIL="1"
       shift
       ;;
+    --access-verify-overlay)
+      ACCESS_VERIFY_OVERLAY="1"
+      shift
+      ;;
     --simulate-evidence-failure)
       SIMULATE_EVIDENCE_FAILURE="$2"
       shift 2
@@ -228,6 +242,7 @@ VERIFY_LOG="$ARTIFACT_DIR/verify.log"
 ROLLBACK_LOG="$ARTIFACT_DIR/rollback.log"
 SUMMARY_JSON="$ARTIFACT_DIR/summary.json"
 OPERATOR_GUIDANCE_TXT="$ARTIFACT_DIR/operator_guidance.txt"
+ACCESS_VERIFY_RESULT_JSON="$ARTIFACT_DIR/access_verify_result.json"
 
 TARGET_HOST_KIND="Ubuntu Server VM via SSH (${SSH_USER}@${SSH_HOST}:${SSH_PORT})"
 WORKFLOW_COMMAND_BASE="bash scripts/ops/cloud_release_workflow.sh --ssh-host ${SSH_HOST} --ssh-port ${SSH_PORT} --ssh-user ${SSH_USER} --remote-repo-dir ${REMOTE_REPO_DIR} --remote-branch ${REMOTE_BRANCH} --expected-head-sha ${EXPECTED_HEAD_SHA} --env-file ${ENV_FILE} --image-tag ${IMAGE_TAG} --container-name ${CONTAINER_NAME} --host-port ${HOST_PORT}"
@@ -240,6 +255,9 @@ if [[ -n "$KNOWN_GOOD_IMAGE_TAG" ]]; then
 fi
 if [[ "$ROLLBACK_ON_VERIFY_FAIL" == "1" ]]; then
   WORKFLOW_COMMAND_SUMMARY+=" --rollback-on-verify-fail"
+fi
+if [[ "$ACCESS_VERIFY_OVERLAY" == "1" ]]; then
+  WORKFLOW_COMMAND_SUMMARY+=" --access-verify-overlay"
 fi
 ROLLBACK_WORKFLOW_COMMAND+=" --rollback-on-verify-fail"
 
@@ -333,10 +351,20 @@ else
   exit 1
 fi
 
-if run_remote_step "$VERIFY_LOG" "bash scripts/ops/cloud_release_verify.sh --env-file \"$ENV_FILE\" --container-name \"$CONTAINER_NAME\" --api-host \"$VERIFY_API_HOST\" --api-port \"$VERIFY_API_PORT\" --max-wait-seconds \"$VERIFY_MAX_WAIT_SECONDS\" --poll-interval-seconds \"$VERIFY_POLL_INTERVAL_SECONDS\""; then
+VERIFY_REMOTE_COMMAND="bash scripts/ops/cloud_release_verify.sh --env-file \"$ENV_FILE\" --container-name \"$CONTAINER_NAME\" --api-host \"$VERIFY_API_HOST\" --api-port \"$VERIFY_API_PORT\" --max-wait-seconds \"$VERIFY_MAX_WAIT_SECONDS\" --poll-interval-seconds \"$VERIFY_POLL_INTERVAL_SECONDS\""
+if [[ "$ACCESS_VERIFY_OVERLAY" == "1" ]]; then
+  VERIFY_REMOTE_COMMAND+=" && bash scripts/ops/cloud_release_access_verify.sh --env-file \"$ENV_FILE\" --container-name \"$CONTAINER_NAME\" --api-host \"$VERIFY_API_HOST\" --api-port \"$VERIFY_API_PORT\" --run-id \"$TIMESTAMP_UTC\""
+fi
+
+if run_remote_step "$VERIFY_LOG" "$VERIFY_REMOTE_COMMAND"; then
   VERIFY_RESULT="PASS"
   DEPENDENCY_CONNECTIVITY_GATE="PASS"
   POST_CHANGE_VERIFY_GATE="PASS"
+  if [[ "$ACCESS_VERIFY_OVERLAY" == "1" ]]; then
+    extract_access_verify_result_from_log "$VERIFY_LOG" "$ACCESS_VERIFY_RESULT_JSON"
+    load_access_verify_result_fields "$ACCESS_VERIFY_RESULT_JSON"
+    ACCESS_AWARE_VERIFY_GATE="PASS"
+  fi
   FINAL_RESULT="PASS"
   TERMINAL_STAGE="verify"
   OPERATOR_ACTION="release_complete"
@@ -357,6 +385,14 @@ OPERATOR_ACTION="decide_manual_rollback_or_fix_forward"
 POST_CHANGE_VERIFY_GATE="FAIL"
 if [[ "$FAILURE_CLASS" == "verify_failure" ]]; then
   DEPENDENCY_CONNECTIVITY_GATE="PASS"
+fi
+if [[ "$FAILURE_CLASS" == "access_aware_verify_failure" ]]; then
+  DEPENDENCY_CONNECTIVITY_GATE="PASS"
+  POST_CHANGE_VERIFY_GATE="PASS"
+  extract_access_verify_result_from_log "$VERIFY_LOG" "$ACCESS_VERIFY_RESULT_JSON" || true
+  if [[ -f "$ACCESS_VERIFY_RESULT_JSON" ]]; then
+    load_access_verify_result_fields "$ACCESS_VERIFY_RESULT_JSON"
+  fi
 fi
 mark_failure_gate "$FAILURE_CLASS"
 

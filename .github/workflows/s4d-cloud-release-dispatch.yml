@@ -81,6 +81,11 @@ on:
         required: true
         type: string
         default: "3"
+      access_verify_overlay:
+        description: "Run the S4F access-aware verify overlay after generic S4D verify passes."
+        required: true
+        type: boolean
+        default: false
       rollback_on_verify_fail:
         description: "Automatically attempt rollback when verify fails and a known-good image tag is supplied."
         required: true
@@ -118,6 +123,7 @@ jobs:
       S4D_API_PORT: ${{ github.event_name == 'workflow_dispatch' && inputs.api_port || '30021' }}
       S4D_VERIFY_MAX_WAIT_SECONDS: ${{ github.event_name == 'workflow_dispatch' && inputs.verify_max_wait_seconds || '180' }}
       S4D_VERIFY_POLL_INTERVAL_SECONDS: ${{ github.event_name == 'workflow_dispatch' && inputs.verify_poll_interval_seconds || '3' }}
+      S4D_ACCESS_VERIFY_OVERLAY: ${{ github.event_name == 'workflow_dispatch' && inputs.access_verify_overlay || 'false' }}
       S4D_ROLLBACK_ON_VERIFY_FAIL: ${{ github.event_name == 'workflow_dispatch' && inputs.rollback_on_verify_fail || 'false' }}
     defaults:
       run:
@@ -266,6 +272,10 @@ jobs:
             cmd+=(--rollback-on-verify-fail)
           fi
 
+          if [ "$S4D_ACCESS_VERIFY_OVERLAY" = "true" ]; then
+            cmd+=(--access-verify-overlay)
+          fi
+
           printf '### Dispatch command (sanitized)\n\n' >> "$GITHUB_STEP_SUMMARY"
           printf '\`\`\`bash\n%s\n\`\`\`\n\n' "${cmd[*]//${S4D_SSH_IDENTITY_FILE}/***REDACTED***}" >> "$GITHUB_STEP_SUMMARY"
 
@@ -353,6 +363,24 @@ jobs:
                   summary_lines.append(f"| {key} | {value} |")
           else:
               summary_lines.append("No gateResults found in summary.json.")
+
+          access_keys = [
+              "accessVerifyResult",
+              "memberReadResult",
+              "adminReadResult",
+              "lifecycleMutationResult",
+              "rerenderedStateResult",
+          ]
+          if any(key in data for key in access_keys):
+              summary_lines.extend([
+                  "",
+                  "### Access Verify Overlay",
+                  "",
+                  "| Field | Value |",
+                  "| --- | --- |",
+              ])
+              for key in access_keys:
+                  summary_lines.append(f"| {key} | {data.get(key, 'unknown')} |")
 
           artifacts = data.get("artifacts") or {}
           summary_lines.extend([
