@@ -26,7 +26,7 @@
 **issue_top_labels**: ``
 **issue_scope_labels**: ``
 **issue_module_labels**: ``
-**issue_milestone**: ``
+**issue_milestone**: `road-002-01: deployable runtime slice and cloud backed asset readiness`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
