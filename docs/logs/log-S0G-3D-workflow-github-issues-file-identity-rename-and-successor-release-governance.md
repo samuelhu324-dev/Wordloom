@@ -56,6 +56,7 @@
 - This lane must decide between at least two defended execution shapes:
   - physical rename of the current runbook and bound ledger series while preserving compatibility routing;
   - successor-release opening under a new file identity, with the current `001` release retained as the previous compatibility-era file.
+- The current default decision for this lane is now narrower: prefer physical rename in place for the current `001` family unless later evidence proves that the rename would implicitly change runbook semantics, split the admitted `RUN-001` accounting surface, or make compatibility routing materially more complex than opening one explicit successor release.
 - The decision must also define how compatibility readers land during transition: alias stub, retained legacy path, lineage-only redirect, or another explicit defended routing rule.
 - This lane must treat runbook, parent-ledger, `SUP`, and `PATCH` surfaces as one file-identity family decision, not as unrelated rename choices made file by file.
 
@@ -63,6 +64,7 @@
 
 - Treat `WORKFLOW-GITHUB-ISSUES` as already fixed at contract level; `S0G-3D` does not reopen whether the narrower family token is correct.
 - Prefer the smallest execution shape that makes file identity, lineage, and reader landing explicit without breaking the defended support-only ledger structure.
+- Prefer rename-in-place when the current release meaning, admitted run accounting, and patch lineage remain the same and only the compatibility-era file identity is wrong.
 - Do not physically rename current files until the repo explicitly decides whether rename-in-place or successor-release is the defended route.
 - If a successor release is opened, it must explain what becomes of the current `run-WORKFLOW-GITHUB-001-...` identity and whether the current `001` remains active, becomes legacy, or is superseded immediately.
 - If a physical rename is chosen, the lane must also define what happens to the old exact paths so historical links and reader entry points do not silently break.
@@ -168,6 +170,35 @@
 
 - P1-C1-S1: compare physical rename versus successor-release as the two primary execution shapes
 
+## P1 (Decision shapes | v1)
+
+### P1-C1-S1 (Physical rename versus successor-release comparison fixed | v1)
+
+- **Physical rename in place** should mean:
+  - keep the current defended release lineage at `001`;
+  - move the canonical runbook and bound ledger-series filenames so they encode `WORKFLOW-GITHUB-ISSUES-001` directly;
+  - write explicit compatibility landing at the old paths rather than pretending the old exact filenames remain canonical.
+- **Successor release** should mean:
+  - open one new canonical file identity as the next release-lineage node;
+  - leave the current `run-WORKFLOW-GITHUB-001-...` and bound ledger files as a previous compatibility-era release surface;
+  - write explicit lineage from the current file set to the new canonical release.
+- **Comparison result for the current repo state**:
+  - physical rename is the preferred shape;
+  - successor release is not the preferred default for the current repo state.
+- **Reason physical rename is preferred now**:
+  - the current change surface is file identity, not workflow semantics;
+  - `RUN-001` is already admitted under the narrowed family reading, so opening a successor release now would split identity from one already-active accounting surface without first proving a semantic change;
+  - `PATCH-001` is already bound to the current active release and run row, so a successor-release default would create extra lineage/write-back work before the repo has even tested whether compatibility routing can be kept simple;
+  - the current runbook frontmatter already states `file_identity_status: legacy-filename-pending-rename`, which reads like a rename debt on the current release, not evidence that a new release meaning is already required.
+- **Successor release should remain reserved for later use when one of these is true**:
+  - the rename would also change defended runbook semantics;
+  - the repo decides that `WORKFLOW-GITHUB-ISSUES-001` should start with a new admitted run sequence rather than continue the current `RUN-001` lineage;
+  - compatibility landing at the old exact paths cannot be kept reviewable with a bounded stub/redirect rule.
+- **Family-level movement rule under the preferred shape**:
+  - if physical rename is executed, the runbook, parent ledger, `SUP`, and `PATCH` surfaces should move together as one family-level packet;
+  - the live templates should then be updated in the same identity-implementation lane so newly opened files match the chosen canonical naming surface;
+  - already-admitted artifacts should be rewritten only after the compatibility and lineage rule is explicit, not piecemeal during the comparison phase.
+
 ### P2 (Compatibility and lineage)
 
 - P2-C1-S1: fix old-path landing and lineage/write-back rules for the chosen identity action
@@ -185,7 +216,7 @@
 
 ### P1 (Decision shapes)
 
-- [ ] `P1-C1-S1`: physical rename versus successor-release comparison fixed
+- [x] `P1-C1-S1`: physical rename versus successor-release comparison fixed
 
 ### P2 (Compatibility and lineage)
 
@@ -199,7 +230,8 @@
 
 - `S0G-3D` is now the active discussion surface for the remaining file-identity decision after `S0G-3C` closed the strong-structure contract.
 - The current runbook family no longer needs template-shape debate first; it needs one explicit decision on whether the current compatibility-era filename should be renamed in place or replaced by a successor release identity.
-- The next useful work in this lane is to compare those two execution shapes at the family level and then fix one compatibility and lineage rule before any file move or successor-release packet is executed.
+- `P1` is now fixed: for the current repo state, physical rename in place is the preferred execution shape, while successor release remains a reserved fallback only if rename would implicitly alter release meaning or make compatibility routing too complex.
+- The next useful work in this lane is now `P2`: fix one compatibility landing and lineage/write-back rule so the eventual identity-implementation packet can move the whole family together without splitting runbook and ledgers apart.
 
 ## Evidence (reserved)
 
@@ -216,6 +248,23 @@
 - observed:
   - the current runbook still records `file_identity_status: legacy-filename-pending-rename` while `S0G-3C` explicitly closes the narrower family identity as `WORKFLOW-GITHUB-ISSUES`.
 
+### P1-C1-S1 (physical rename is preferred over successor release for the current `001` family state | 2026-04-21)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/_template-run-ledger-SUP.md`
+  - `docs/runbook/support-only/_template-run-ledger-PATCH.md`
+- expected:
+  - the chosen identity action should minimize lineage churn while keeping the active runbook plus run-ledger family internally consistent.
+- observed:
+  - the current runbook and live ledgers still retain compatibility-era filenames, but their defended family reading is already narrowed to `WORKFLOW-GITHUB-ISSUES` and the active run/patch surfaces remain attached to the same `001` release.
+  - the newer `SUP` and `PATCH` templates already assume `WORKFLOW-GITHUB-ISSUES-001` as the target canonical naming surface, which makes physical rename of the live family a better fit than opening a new release meaning before compatibility routing has even been fixed.
+  - opening a successor release at this point would create extra lineage work across the active runbook, `RUN-001`, and `PATCH-001` even though the currently proven mismatch is file identity rather than release semantics.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-21: opened `S0G-3D` as the next bounded governance lane after `S0G-3C` so the repo can decide physical rename versus successor-release handling for the current GitHub Issues workflow family.
+- 2026-04-21: fixed `P1` for `S0G-3D` by preferring physical rename in place for the current `001` family, while keeping successor release reserved as a fallback if compatibility or lineage constraints prove rename insufficient.
