@@ -16,6 +16,7 @@ export type AdmissionStatus = 'pending' | 'admitted';
 export type TenantContextSource = 'session' | 'route' | 'manual' | 'legacy';
 
 export type AuthSession = {
+  userId: string;
   email: string;
   displayName: string;
   role: AuthRole;
@@ -73,6 +74,7 @@ export type CurrentTenantContext = {
 };
 
 type AuthInput = {
+  userId?: string;
   email: string;
   displayName: string;
   libraryId: string;
@@ -108,6 +110,13 @@ const AUTH_SESSION_STORAGE_KEY = 'wl_auth_session';
 const AUTH_TOKEN_STORAGE_KEY = 'wl_token';
 const CURRENT_TENANT_CONTEXT_STORAGE_KEY = 'wl_current_tenant_context';
 const ACTIVE_LIBRARY_STORAGE_KEY = 'wl_active_library_id';
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const DEV_ACTOR_IDS: Record<string, string> = {
+  'member@wordloom.dev': '11111111-1111-4111-8111-111111111111',
+  'admin@wordloom.dev': '22222222-2222-4222-8222-222222222222',
+  'owner@wordloom.dev': '33333333-3333-4333-8333-333333333333',
+};
 
 const LOCAL_ADMISSION_RECORDS: AdmissionRecord[] = [
   { code: 'MEMBER-DEMO', role: 'member' },
@@ -126,6 +135,25 @@ const isAdmissionStatus = (value: unknown): value is AdmissionStatus =>
 const isTenantContextSource = (value: unknown): value is TenantContextSource =>
   value === 'session' || value === 'route' || value === 'manual' || value === 'legacy';
 
+const isUuidLike = (value: unknown): value is string =>
+  typeof value === 'string' && UUID_PATTERN.test(value.trim());
+
+const createFallbackUserId = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return '00000000-0000-4000-8000-000000000000';
+};
+
+const resolveSessionUserId = (input: Pick<AuthInput, 'userId' | 'email'>) => {
+  if (isUuidLike(input.userId)) {
+    return input.userId.trim();
+  }
+
+  const normalizedEmail = input.email.trim().toLowerCase();
+  return DEV_ACTOR_IDS[normalizedEmail] || createFallbackUserId();
+};
+
 const normalizeSession = (value: unknown): AuthSession | null => {
   if (!value || typeof value !== 'object') {
     return null;
@@ -133,6 +161,7 @@ const normalizeSession = (value: unknown): AuthSession | null => {
 
   const candidate = value as Partial<AuthSession>;
   if (
+    !isUuidLike(candidate.userId) ||
     typeof candidate.email !== 'string' ||
     typeof candidate.displayName !== 'string' ||
     typeof candidate.libraryId !== 'string' ||
@@ -145,6 +174,7 @@ const normalizeSession = (value: unknown): AuthSession | null => {
   }
 
   return {
+    userId: candidate.userId,
     email: candidate.email,
     displayName: candidate.displayName,
     role: candidate.role,
@@ -295,6 +325,7 @@ const createSession = (input: AuthInput): AuthSession => {
   const admissionStatus: AdmissionStatus = explicitBypass || admissionRecord ? 'admitted' : 'pending';
 
   return {
+    userId: resolveSessionUserId(input),
     email: input.email.trim(),
     displayName: input.displayName.trim(),
     role,
