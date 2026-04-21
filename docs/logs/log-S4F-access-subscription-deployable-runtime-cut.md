@@ -17,9 +17,9 @@
   **reference_log_1**: `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
   **reference_log_2**: `docs/logs/log-S4D-4A-cloud-runtime-semi-automated-release-workflow.md`
   **phase_log_1**: `docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md`
-  **phase_log_2**: ``
-  **phase_log_3**: ``
-  **phase_log_4**: ``
+  **phase_log_2**: `docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
+  **phase_log_3**: `docs/logs/log-S4F-2B-release-path-dependency-trust-hardening.md`
+  **phase_log_4**: `docs/logs/log-S4F-2C-deployed-identity-admission-membership-truth-hardening.md`
   **phase_log_5**: ``
   **phase_log_6**: ``
 **issue_keyword**: `platform`
@@ -118,6 +118,12 @@
 
 - `S4F-1A`（Phase 1）：backend-only access/subscription deployable cut
   - 详见：`docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md`
+- `S4F-2A`（Phase 2）：cloud-target operator evidence packet
+  - 详见：`docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
+- `S4F-2B`（Phase 2 follow-up）：release-path dependency trust hardening
+  - 详见：`docs/logs/log-S4F-2B-release-path-dependency-trust-hardening.md`
+- `S4F-2C`（Phase 2 follow-up）：deployed identity/admission/membership truth hardening
+  - 详见：`docs/logs/log-S4F-2C-deployed-identity-admission-membership-truth-hardening.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -128,8 +134,11 @@
 
 ## Current Status（进展摘要）
 
-- `S4F` now has one completed first packet in `S4F-1A`: backend-only access/subscription deployable cut, runnable access-aware drills, and a recorded next-lane decision.
-- The next `S4F` lane should not reopen the parent spine or jump directly to frontend cloud hosting; it should package one operator-facing cloud-target evidence run where the reused `S4D` release path and the `S4F` access-aware verify overlay pass together.
+- `S4F` now has one completed first packet in `S4F-1A`, one completed cloud-target evidence packet in `S4F-2A`, one completed trust-hardening follow-up packet in `S4F-2B`, and one completed realism-hardening follow-up packet in `S4F-2C`.
+- `S4F-2A/P1` is now landed: the reused `S4D` release path can optionally run the `S4F` access-aware verify overlay and write the combined result back into the retained artifact bundle.
+- `S4F-2A/P2` is now complete. The lane progressed through three distinct failure classes on the same operator path before closing green: target reachability (`24655583207`), post-change runtime verify (`24654777721`), and access-overlay script parsing (`24661990707`), then finished with a full PASS evidence bundle in run `24662387235` on head `07c99aa0f571cf04ba97ef25b4d52cf52d9f64e7`.
+- `S4F-2A/P2` also now includes the operator-side observation fallback and API-path diagnosis: the queued Windows fallback run `24654777721` can be read cleanly via one-shot `gh run view` / `gh api`, and the earlier `gh run watch` failure has been narrowed to an intermittent local polling-path timeout rather than a repo-side workflow lookup failure.
+- `S4F-2B` has now produced one hardened stable-runner evidence run, and `S4F-2C/P0-P3` are now fixed: the current slice now has one retained cloud-target member/admin drill bundle proving request-level dev actor identity plus persistence-backed tenant standing on the deployed path, and the next execution lane should leave `M2` and move to `road-002-01/M3-P0` cloud-backed asset-platform readiness contract work.
 
 ## Notes（落地原则，可选）
 
@@ -163,3 +172,18 @@
 
 - 2026-04-20：首次创建 `S4F`，作为 `road-002-01/M1` 的新 `S4` 顶层 spine，并把第一条 execution lane 固定到 `S4F-1A`。
 - 2026-04-20：`S4F-1A` completed `P0-P3`, so the parent spine now has its first executed and evidenced child packet plus one explicit next-lane decision: prioritize cloud-path operator evidence before frontend cloud closure.
+- 2026-04-20：opened `S4F-2A` as the next child packet, dedicated to one cloud-target operator evidence run on the reused `S4D` release substrate.
+- 2026-04-20：completed `S4F-2A/P1-C1-S1S2`, wiring the access-aware verify overlay into the reused `S4D` cloud release workflow and summary artifact contract.
+- 2026-04-20：recorded the first real `S4F-2A/P2` stable-runner attempt (`24655583207`), which retained artifacts successfully but failed preflight on target SSH reachability before deploy/verify/access overlay execution.
+- 2026-04-20：fixed the post-run summary renderer indentation in both cloud release dispatch workflows so reruns report the retained `summary.json` outcome cleanly.
+- 2026-04-20：added `S4F-2A/P2` fallback run-status evidence and operator-to-GitHub API diagnostics, confirming that `gh run watch` was the unstable observation path while one-shot API reads remained healthy.
+- 2026-04-20：recovered the local operator path by resetting the VM, restoring guest SSH on `127.0.0.1:22022`, re-registering the deleted Windows self-hosted runner, and turning fallback run `24654777721` into a real deploy/verify sample.
+- 2026-04-20：recorded that the new `S4F-2A/P2` blocker is no longer target reachability on the local path but post-change verify readiness: the candidate deploy passed, yet the expected `wordloom-api-cloud-dev` container was not alive by verify time and guest-side evidence showed a host-port binding conflict during failed container startup.
+- 2026-04-20：restored RDS reachability for the current operator egress path, isolated and fixed the access-overlay JSON parsing defect in `cloud_release_access_verify.sh`, and closed `S4F-2A/P2` with one full PASS cloud-target evidence run (`24662387235`).
+- 2026-04-20：recorded the next-lane decision from `S4F-2A/P3`: `road-002-01/M1` now has sufficient backend deployment-facing evidence, and the remaining hardening work should move to a separate lane that removes drifting operator public-IP / RDS allowlist dependence.
+- 2026-04-20：opened `S4F-2B` as that follow-up lane and scaffolded it as the source log for release-path dependency trust hardening.
+- 2026-04-20：opened `S4F-2C` as the next follow-up lane after `S4F-2B`, dedicated to `road-002-01/M2` credibility hardening for deployed identity/admission/membership truth.
+- 2026-04-20：completed `S4F-2C/P0-C1-S1S2S3`, fixing the first deployed credibility boundary and narrowing the next implementation target to backend-validated identity plus persistence-backed admission/membership truth.
+- 2026-04-20：completed `S4F-2C/P1-C1-S1S2`, landing a stable dev actor identity bridge from frontend session state into backend auth-context fallback so membership-backed tenant standing can resolve per actor instead of per process.
+- 2026-04-20：completed `S4F-2C/P2-C1-S1S2`, retaining one stable-runner cloud-target PASS run (`24668611462`) whose access overlay proved member/admin standing through the new request-level dev identity bridge and persistence-backed tenant membership truth.
+- 2026-04-20：completed `S4F-2C/P3-C1-S1`, deciding that no immediate second `M2` child packet is required and that the next branch-road execution lane should move to `M3/P0` asset-platform readiness contract work.
