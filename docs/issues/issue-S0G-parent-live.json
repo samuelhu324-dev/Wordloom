@@ -1,5 +1,5 @@
 {
-  "mode": "create-issue",
+  "mode": "draft-generation",
   "result": "ok",
   "context_mode": "scaffold",
   "log_path": "docs/logs/log-S0G-docs-management-v7.md",
@@ -21,24 +21,17 @@
   ],
   "milestone": "road-002: projection runtime platformization and evidence governance",
   "parent_issue": null,
-  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/0`, `drills`\n- Projects: `wordloom Board`\n- Milestone: `road-002: projection runtime platformization and evidence governance`\n\n## Context\n\n\n## Definition of Done (DoD)\n\n\n## Links\n\n- Log: `docs/logs/log-S0G-docs-management-v7.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`\n",
+  "body_markdown": "## Metadata\n\n- Labels: `EVOLUTION`, `s0/knowledge system`, `sub/0`, `drills`\n- Projects: `wordloom Board`\n- Milestone: `road-002: projection runtime platformization and evidence governance`\n\n## Context\n\n\n## Definition of Done (DoD)\n\n- #505\n\n## Links\n\n- Log: `docs/logs/log-S0G-docs-management-v7.md`\n- Runbook: `docs/runbook/run-S0E-log-to-issue-creation.md`\n- Roadmap: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`\n",
   "warnings": [
     "module labels left blank",
-    "live label preflight passed against samuelhu324-dev/wordloom-v3",
     "Context section was left intentionally empty at create time; generate or author substantive Context text during issue conclusion",
-    "Definition of Done (DoD) remains intentionally blank pending operator input",
-    "source log write-back not performed; update links.issue in a later tracked docs change"
+    "Definition of Done (DoD) was populated from the known child issue ledger because this is a top-level parent issue"
   ],
-  "live_label_check_enabled": true,
-  "live_label_check_repo": "samuelhu324-dev/wordloom-v3",
-  "matched_live_labels": [
-    "EVOLUTION",
-    "s0/knowledge system",
-    "sub/0",
-    "drills"
-  ],
+  "live_label_check_enabled": false,
+  "live_label_check_repo": null,
+  "matched_live_labels": [],
   "missing_live_labels": [],
-  "issue_number": 504,
-  "issue_url": "https://github.com/samuelhu324-dev/wordloom-v3/issues/504",
-  "created_at": "2026-04-20T03:14:14.397050+00:00"
+  "issue_number": null,
+  "issue_url": null,
+  "created_at": null
 }
