@@ -406,6 +406,37 @@ def _derive_milestone(fields: dict[str, str], milestone_override: str | None) ->
     return None, warnings
 
 
+def _resolve_live_milestone_title(
+    milestone: str | None,
+    fields: dict[str, str],
+    live_milestones: set[str],
+) -> tuple[str | None, list[str]]:
+    warnings: list[str] = []
+    if not milestone:
+        return None, warnings
+    if milestone in live_milestones:
+        return milestone, warnings
+
+    roadmap_path = fields.get("roadmap_path", "").strip()
+    if roadmap_path:
+        roadmap_stem = Path(roadmap_path).stem
+        matching_titles = sorted(
+            title for title in live_milestones
+            if title == roadmap_stem or title.startswith(f"{roadmap_stem}:")
+        )
+        if len(matching_titles) == 1:
+            warnings.append(
+                "issue_milestone resolved to live GitHub milestone title from roadmap_path stem"
+            )
+            return matching_titles[0], warnings
+        if len(matching_titles) > 1:
+            warnings.append(
+                "multiple live GitHub milestones matched roadmap_path stem; keeping unresolved issue_milestone"
+            )
+
+    return milestone, warnings
+
+
 def _normalize_issue_reference(value: str | None) -> str | None:
     if not value:
         return None
