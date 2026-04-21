@@ -312,6 +312,9 @@
 ### P3 (Rewrite sequence)
 
 - [x] `P3-C1-S1`: post-contract rewrite sequence fixed
+- [x] `P3-C1-S2`: first rewrite packet executed for runbook identity and parent-ledger table shape
+- [x] `P3-C1-S3`: `SUP` template upgraded to run/target/stage bridge shape
+- [ ] `P3-C1-S4`: `PATCH` template upgrade pending
 
 ## Current Status (recommended)
 
@@ -320,7 +323,8 @@
 - The current contract direction is now narrower and more concrete: the defended family token is `WORKFLOW-GITHUB-ISSUES`, the child-issue PR stage is `PR_MERGED`, target-stage rows now have a minimum required field set, and `SUP/PATCH` may dual-bind when one follow-up changes both admitted reading and repair implementation.
 - The bridge-key shape is now fixed to stable structural ids plus semantic refs, and one optional attempt layer is reserved for later replay-heavy stages without forcing it into the first rewrite.
 - The first rewrite packet is now executed for the first two steps in that order: the runbook identity has narrowed to the defended GitHub Issues family at contract level, and the parent ledger now exposes batch, target, and target-stage grains for `RUN-001`.
-- The next execution step after this rewrite packet should now continue with `SUP` template upgrade first, then `PATCH` template upgrade, and only after those two rewrites decide whether a physical rename or successor-release decision is actually warranted.
+- The `SUP` template is now rewritten to bind later evidence through `run_row_id`, `target_row_id`, and `target_stage_row_id`, while leaving the optional attempt layer available only when replay density truly needs it.
+- The next execution step after this rewrite packet should now continue with `PATCH` template upgrade next, and only after that rewrite decide whether a physical rename or successor-release decision is actually warranted.
 
 ## Evidence (reserved)
 
@@ -393,7 +397,21 @@
   - the runbook now defends the narrower `WORKFLOW-GITHUB-ISSUES` family at contract level while retaining the existing file identity for compatibility.
   - the parent ledger now exposes one batch row, four target rows, and explicit target-stage rows for `CREATION`, `PR_PENDING`, `PR_MERGED`, and `CONCLUSION`, including the retained milestone-skip and blank-parent metadata gaps at creation stage.
 
+### P3-C1-S3 (SUP template rewritten to attach later evidence at run, target, and target-stage grains | 2026-04-21)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `docs/runbook/support-only/_template-run-ledger-SUP.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+- expected:
+  - the next rewrite step after the parent-ledger rewrite should let `SUP` follow the same structural keys and parent-ledger action vocabulary rather than remain a run-only supplement surface.
+- observed:
+  - the `SUP` template now requires attachment through `parent_run_row_id`, `parent_target_row_id`, and `parent_target_stage_row_id` for stage-specific follow-up.
+  - the template now keeps semantic identity adjacent in `target_ref_key` and `target_ref_path` rather than embedding it into the structural ids.
+  - the template now supports finer parent-ledger actions such as `rewrite-target-row` and `rewrite-target-stage-row`, which makes later stage-level refill and admitted-reading follow-up reviewable without reopening the whole run row.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-21: opened `S0G-3C` to govern workflow-family identity narrowing, child-vs-parent workflow profiles, batch/target/stage accounting granularity, and strong-structure bridge rules across `Run Ledger`, `SUP`, and `PATCH`.
 - 2026-04-21: executed the first rewrite packet under `S0G-3C` by narrowing the runbook family contract to `WORKFLOW-GITHUB-ISSUES` and reshaping `RUN-001` around batch, target, and target-stage tables before any `SUP/PATCH` template rewrite.
+- 2026-04-21: upgraded the `SUP` template under `S0G-3C` so later admitted-reading follow-up now binds explicitly to run, target, and target-stage structural keys instead of only to a run row.
