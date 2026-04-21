@@ -52,6 +52,11 @@ classify_failure() {
     return 0
   fi
 
+  if [[ "$stage" == "verify" ]] && grep -q 'ACCESS_VERIFY_RESULT=FAIL' <<<"$content"; then
+    printf 'access_aware_verify_failure\n'
+    return 0
+  fi
+
   if [[ "$stage" != "preflight" ]] && grep -qiE 'OperationalError|could not connect|connection unexpectedly|temporary failure in name resolution|name or service not known|server closed the connection unexpectedly|timeout expired|network is unreachable' <<<"$content"; then
     printf 'dependency_connectivity_failure\n'
     return 0
@@ -111,6 +116,9 @@ terminal_gate_for_failure_class() {
     verify_failure)
       printf 'post_change_verify_gate\n'
       ;;
+    access_aware_verify_failure)
+      printf 'access_aware_verify_gate\n'
+      ;;
     rollback_recovery)
       printf 'rollback_readiness_gate\n'
       ;;
@@ -150,6 +158,9 @@ mark_failure_gate() {
     verify_failure)
       POST_CHANGE_VERIFY_GATE="FAIL"
       ;;
+    access_aware_verify_failure)
+      ACCESS_AWARE_VERIFY_GATE="FAIL"
+      ;;
     rollback_failure)
       ROLLBACK_READINESS_GATE="FAIL"
       ;;
@@ -183,7 +194,87 @@ evidence_complete_json() {
     complete="false"
   fi
 
+  if [[ "${ACCESS_VERIFY_OVERLAY:-0}" == "1" && ! -f "${ACCESS_VERIFY_RESULT_JSON:-}" ]]; then
+    complete="false"
+  fi
+
   printf '%s' "$complete"
+}
+
+extract_access_verify_result_from_log() {
+  local log_file="$1"
+  local output_path="$2"
+
+  python - "$log_file" "$output_path" <<'PY'
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+log_path = Path(sys.argv[1])
+output_path = Path(sys.argv[2])
+begin = "[cloud_release_access_verify] ACCESS_VERIFY_RESULT_JSON_BEGIN"
+end = "[cloud_release_access_verify] ACCESS_VERIFY_RESULT_JSON_END"
+
+lines = log_path.read_text(encoding="utf-8").splitlines()
+capturing = False
+payload_lines: list[str] = []
+for line in lines:
+    if line.strip() == begin:
+        capturing = True
+        payload_lines.clear()
+        continue
+    if line.strip() == end:
+        if not payload_lines:
+            raise SystemExit(2)
+        output_path.write_text("\n".join(payload_lines) + "\n", encoding="utf-8")
+        raise SystemExit(0)
+    if capturing:
+        payload_lines.append(line)
+
+raise SystemExit(2)
+PY
+}
+
+load_access_verify_result_fields() {
+  local result_json_path="$1"
+
+  while IFS='=' read -r key value; do
+    case "$key" in
+      access_verify_result)
+        ACCESS_VERIFY_RESULT="$value"
+        ;;
+      member_read_result)
+        MEMBER_READ_RESULT_JSON="$value"
+        ;;
+      admin_read_result)
+        ADMIN_READ_RESULT_JSON="$value"
+        ;;
+      lifecycle_mutation_result)
+        LIFECYCLE_MUTATION_RESULT_JSON="$value"
+        ;;
+      rerendered_state_result)
+        RERENDERED_STATE_RESULT_JSON="$value"
+        ;;
+    esac
+  done < <(
+    python - "$result_json_path" <<'PY'
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+checks = payload.get("checks") or {}
+ok = bool(payload.get("ok"))
+print(f"access_verify_result={'PASS' if ok else 'FAIL'}")
+print(f"member_read_result={json.dumps(checks.get('memberReadResult'))}")
+print(f"admin_read_result={json.dumps(checks.get('adminReadResult'))}")
+print(f"lifecycle_mutation_result={json.dumps(checks.get('lifecycleMutationResult'))}")
+print(f"rerendered_state_result={json.dumps(checks.get('rerenderedStateResult'))}")
+PY
+  )
 }
 
 promote_evidence_failure_if_incomplete() {
@@ -233,6 +324,11 @@ write_summary_json() {
   "knownGoodImageTag": "$(json_escape "$KNOWN_GOOD_IMAGE_TAG")",
   "deployResult": "$(json_escape "$deploy_result")",
   "verifyResult": "$(json_escape "$verify_result")",
+  "accessVerifyResult": "$(json_escape "${ACCESS_VERIFY_RESULT:-NOT_RUN}")",
+  "memberReadResult": ${MEMBER_READ_RESULT_JSON:-null},
+  "adminReadResult": ${ADMIN_READ_RESULT_JSON:-null},
+  "lifecycleMutationResult": ${LIFECYCLE_MUTATION_RESULT_JSON:-null},
+  "rerenderedStateResult": ${RERENDERED_STATE_RESULT_JSON:-null},
   "rollbackResult": "$(json_escape "$rollback_result")",
   "preflightResult": "$(json_escape "$preflight_result")",
   "rollbackTrigger": "$(json_escape "$ROLLBACK_TRIGGER")",
@@ -247,6 +343,7 @@ write_summary_json() {
     "releaseContractGate": "$(json_escape "$RELEASE_CONTRACT_GATE")",
     "deployExecutionGate": "$(json_escape "$DEPLOY_EXECUTION_GATE")",
     "postChangeVerifyGate": "$(json_escape "$POST_CHANGE_VERIFY_GATE")",
+    "accessAwareVerifyGate": "$(json_escape "${ACCESS_AWARE_VERIFY_GATE:-NOT_RUN}")",
     "rollbackReadinessGate": "$(json_escape "$ROLLBACK_READINESS_GATE")"
   },
   "evidenceComplete": $evidence_complete,
@@ -254,6 +351,7 @@ write_summary_json() {
     "preflightLog": "$(json_escape "$(artifact_relpath "$PREFLIGHT_LOG")")",
     "deployLog": "$(json_escape "$(artifact_relpath "$DEPLOY_LOG")")",
     "verifyLog": "$(json_escape "$(artifact_relpath "$VERIFY_LOG")")",
+    "accessVerifyResultJson": "$(json_escape "$(artifact_relpath "${ACCESS_VERIFY_RESULT_JSON:-$ARTIFACT_DIR/access_verify_result.json}")")",
     "rollbackLog": "$(json_escape "$(artifact_relpath "$ROLLBACK_LOG")")",
     "operatorGuidance": "$(json_escape "$(artifact_relpath "$OPERATOR_GUIDANCE_TXT")")",
     "summaryJson": "$(json_escape "$(artifact_relpath "$SUMMARY_JSON")")"

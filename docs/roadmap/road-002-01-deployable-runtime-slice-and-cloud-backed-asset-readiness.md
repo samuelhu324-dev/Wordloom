@@ -94,7 +94,7 @@
 - `M1-P2`:
   - `docs/logs/log-S0F-10D-scenario-catalog-and-mock-state-machine-replays.md`
 - `M1-P3`:
-  - `unmapped`
+  - `docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
 
 **Parent alignment**
 
@@ -226,3 +226,4 @@
 
 - 2026-04-19: opened `road-002-01` as the first focused branch road under `road-002`, concentrating one deployable AWS runtime cut, one credible-simulation threshold, and one explicit readiness gate for cloud-backed `Asset Platform` work.
 - 2026-04-19: fixed the branch scope so it reuses already-stable `M4` child logs rather than pretending the whole parent mainline must finish before AWS packaging can begin.
+- 2026-04-20: opened `S4F-2A` and backfilled `M1-P3` from `unmapped` to one concrete child packet for cloud-target operator evidence on top of the reused `S4D` release path.
