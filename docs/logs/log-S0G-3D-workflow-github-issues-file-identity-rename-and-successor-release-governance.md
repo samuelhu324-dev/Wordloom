@@ -11,14 +11,14 @@
 **links**: ``
   **issue**: ``
   **pr**: ``
-  **runbook**: `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  **runbook**: `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0G-docs-management-v7.md`
   **previous_log**: `docs/logs/log-S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance.md`
   **reference_log_1**: `docs/logs/log-S0G-3A-runbook-release-issue-concentration-and-ledger-naming-governance.md`
   **reference_log_2**: `docs/logs/log-S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance.md`
-  **reference_log_3**: `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
-  **reference_log_4**: `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  **reference_log_3**: `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+  **reference_log_4**: `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
 **issue_keyword**: `workflow`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3d`
@@ -87,8 +87,8 @@
 **PR links**:
 
 - Log: `docs/logs/log-S0G-3D-workflow-github-issues-file-identity-rename-and-successor-release-governance.md`
-- Runbook: `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
-- Evidence artifact: `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+- Runbook: `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+- Evidence artifact: `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
 
 **Evidence Footer Source**:
 
@@ -115,6 +115,7 @@
 - `P1`: compare physical rename versus successor-release execution shapes
 - `P2`: compatibility landing and lineage/write-back rule
 - `P3`: next execution packet rule after the decision is fixed
+- `P4`: execute the preferred physical-rename packet with stub-backed compatibility landing
 
 ## Success Criteria (DoD)
 
@@ -130,7 +131,8 @@
   - the physical-rename vs successor-release rule is explicit;
   - the compatibility landing rule is explicit;
   - the lineage/write-back rule is explicit;
-  - the next bounded execution packet is fixed explicitly.
+  - the next bounded execution packet is fixed explicitly;
+  - the bounded rename packet is executed with old exact paths retained as compatibility stubs.
 
 ## P0 (Contract | v1)
 
@@ -272,6 +274,18 @@
   - run `S4F` parent issue `CREATION` through the defended full-auto path first, because parent issue content cannot be filled coherently while the parent issue itself is still missing;
   - only after that, open the first `SUP + parent-ledger` writeback experiment for the four `S4F` child issues so the new fields can be tested against both child and parent lifecycle surfaces under the renamed canonical identity.
 
+## P4 (Execution | v1)
+
+### P4-C1-S1 (Same-release family rename packet executed | v1)
+
+- The live runbook body now lives at `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`.
+- The live parent-ledger body now lives at `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`.
+- The live patch-ledger body now lives at `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`.
+- The older exact runbook, parent-ledger, and patch-ledger paths remain occupied by slim compatibility stubs that point forward to the new canonical files.
+- The active release identity remains `001`, the active admitted run row remains `RUN-001`, and the existing target-row, target-stage-row, and patch-item ids remain unchanged.
+- The older root parent-ledger template now teaches `WORKFLOW-GITHUB-ISSUES-001` as the canonical naming example.
+- The direct navigation surfaces in the owning `S0G-*` logs now point to the canonical runbook and ledger paths, while historical pre-rename references remain intact where they describe earlier decision state.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -291,6 +305,10 @@
 
 - [x] `P3-C1-S1`: next identity-implementation packet fixed explicitly
 
+### P4 (Execution)
+
+- [x] `P4-C1-S1`: same-release family rename packet executed with compatibility stubs
+
 ## Current Status (recommended)
 
 - `S0G-3D` is now the active discussion surface for the remaining file-identity decision after `S0G-3C` closed the strong-structure contract.
@@ -298,7 +316,8 @@
 - `P1` is now fixed: for the current repo state, physical rename in place is the preferred execution shape, while successor release remains a reserved fallback only if rename would implicitly alter release meaning or make compatibility routing too complex.
 - `P2` is now fixed: the old exact runbook and live-ledger paths should remain occupied by compatibility stubs, while the renamed `WORKFLOW-GITHUB-ISSUES-001` files become the new full-body authorities for the same active `001` release.
 - `P3` is now fixed: the next execution packet should rename the live runbook family together, update template/examples and source-log refs in the same round, and leave the old exact paths in place as compatibility landings.
-- After that rename packet lands, the first live validation packet should begin with `S4F` parent issue `CREATION` under `parent-issue-light-lifecycle`, then use `SUP + parent-ledger` writeback to test the newly defended fields against the four `S4F` child issues.
+- `P4` is now executed: the canonical live family path is `WORKFLOW-GITHUB-ISSUES-001`, and the older exact paths are now compatibility stubs rather than full-body authorities.
+- The next live work is no longer another source-log decision packet; it is the runbook-driven validation round that starts with `S4F` parent issue `CREATION` under `parent-issue-light-lifecycle`, then uses `SUP + parent-ledger` writeback to test the newly defended fields against the four `S4F` child issues.
 
 ## Evidence (reserved)
 
@@ -364,9 +383,29 @@
   - the current templates already partially point toward the renamed naming surface, so leaving template/example updates outside that packet would preserve mismatched teaching surfaces after the canonical rename lands.
   - because `S0G-3C` already fixed `parent-issue-light-lifecycle` as a defended profile, the first post-rename validation should include `S4F` parent issue `CREATION` before child `SUP` writeback, otherwise parent issue fill has no stable live landing surface.
 
+### P4-C1-S1 (same-release family rename packet executed with stub-backed landing | 2026-04-21)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/_template-run-ledger.md`
+- expected:
+  - the preferred rename path should move the full bodies to canonical `WORKFLOW-GITHUB-ISSUES-001` files, preserve the same active `001`/`RUN-001` lineage, and keep the old exact paths occupied as compatibility stubs.
+- observed:
+  - the runbook, parent ledger, and patch ledger full bodies now live at canonical `WORKFLOW-GITHUB-ISSUES-001` paths.
+  - the older exact paths remain present as slim compatibility stubs that point to the new canonical files instead of failing closed or remaining silent authorities.
+  - the old root parent-ledger template no longer teaches the compatibility-era family token as the preferred naming example.
+  - direct source-log navigation surfaces now point to the canonical runbook and ledger files, while the next live validation step remains `S4F` parent issue `CREATION` before child `SUP + parent-ledger` writeback.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-21: opened `S0G-3D` as the next bounded governance lane after `S0G-3C` so the repo can decide physical rename versus successor-release handling for the current GitHub Issues workflow family.
 - 2026-04-21: fixed `P1` for `S0G-3D` by preferring physical rename in place for the current `001` family, while keeping successor release reserved as a fallback if compatibility or lineage constraints prove rename insufficient.
 - 2026-04-21: fixed `P2` for `S0G-3D` by requiring old exact paths to remain as compatibility stubs while the renamed `WORKFLOW-GITHUB-ISSUES-001` family becomes the new full-body authority for the same active `001` release.
 - 2026-04-21: fixed `P3` for `S0G-3D` by defining one bounded identity-implementation packet first, followed by `S4F` parent issue creation and then the first child `SUP + parent-ledger` writeback experiment under the renamed family.
+- 2026-04-21: executed `P4` for `S0G-3D` by moving the live runbook, parent ledger, and patch ledger bodies to canonical `WORKFLOW-GITHUB-ISSUES-001` paths, leaving the old exact paths as compatibility stubs, and rewriting the direct navigation surfaces that should now point at the canonical family.

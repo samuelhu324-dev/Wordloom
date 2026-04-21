@@ -10,20 +10,20 @@ This ledger owns run-level accounting; it does not replace the runbook, the raw 
 - `<run-sequence>` is the append-only run number inside one runbook family.
 - `<RUNBOOK-FAMILY>-<RUNBOOK-RELEASE>-<summary>` must match the bound runbook suffix exactly.
 - Preferred example shape:
-  - `ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
 
 ## Minimal Header
 
 ```yaml
 runbook_run_ledger:
-  run_ledger_id: <ledger-run-001-WORKFLOW-GITHUB-001-summary>
+  run_ledger_id: <ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-summary>
   ledger_kind: runbook-run-ledger
   status: <draft|active|completed>
   owner_lane: <S0G-2A>
-  runbook_family: <WORKFLOW-GITHUB>
+  runbook_family: <WORKFLOW-GITHUB-ISSUES>
   runbook_release: <001>
-  runbook_id: <run-WORKFLOW-GITHUB-001-summary>
-  runbook_ref: <docs/runbook/run-WORKFLOW-GITHUB-001-summary.md>
+  runbook_id: <run-WORKFLOW-GITHUB-ISSUES-001-summary>
+  runbook_ref: <docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-summary.md>
   run_sequence: <001>
   governance_area: <workflow|ops-runtime|evidence-pipeline|other>
   functional_domain: <GitHub lifecycle automation>

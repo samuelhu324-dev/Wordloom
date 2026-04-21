@@ -52,7 +52,7 @@
 
 - `S0G-2A` opens the next `S0G` lane after the retrospective branch close-out packet: rebuild the runbook surface so it is no longer only a log-first thin summary, but a ledger-aware thin operator surface with repeatable execution accounting.
 - The lane will treat current raw artifacts (`json`, `result`, `log`, screenshot, workflow output) as insufficient by themselves for long-term audit unless one dedicated run-ledger surface records their admission, review, approval, and downstream consumption.
-- The first sample family for this lane is the GitHub lifecycle automation path `creation -> pr -> conclusion`, which should ultimately read as one contract-like runbook family such as `run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`.
+- The first sample family for this lane is the GitHub lifecycle automation path `creation -> pr -> conclusion`, which should ultimately read as one contract-like runbook family such as `run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`.
 
 **Default choices (phase defaults / v1)**:
 
@@ -82,14 +82,14 @@
 **PR links**:
 
 - Log: `docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md`
-- Runbook: `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
-- Evidence artifact: `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+- Runbook: `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+- Evidence artifact: `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
 
 **Evidence Footer Source**:
 
 - `P1-C1-S1` | artifact: `docs/runbook/_template-runbook.md`
 - `P1-C1-S2` | artifact: `docs/runbook/_template-run-ledger.md`
-- `P2-C1-S1` | artifact: `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+- `P2-C1-S1` | artifact: `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
 
 ## Definitions (optional)
 
