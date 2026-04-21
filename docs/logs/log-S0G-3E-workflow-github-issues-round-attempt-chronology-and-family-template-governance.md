@@ -568,6 +568,8 @@
 
 - P3-C1-S1: backfill `RUN-001` chronology rounds and stage attempts from `ledger`, `SUP`, and `PATCH` packets
 - P3-C1-S2: verify that one reader can answer time order, stage scope, packet attribution, and current status without prose-only reconstruction
+- P3-C1-S3: create the family-specific template quartet and wire live runbook authority to it
+- P3-C1-S4: rewrite live `RUN-001` family surfaces as one bounded chronology-first packet
 
 ## Execution Checklist (unchecked)
 
@@ -593,8 +595,10 @@
 
 ### P3 (Backfill / verify)
 
-- [ ] `P3-C1-S1`: backfill `RUN-001` chronology rounds and stage attempts
-- [ ] `P3-C1-S2`: verify that the new reader model answers time order, stage scope, packet attribution, and current status directly
+- [x] `P3-C1-S1`: backfill `RUN-001` chronology rounds and stage attempts
+- [x] `P3-C1-S2`: verify that the new reader model answers time order, stage scope, packet attribution, and current status directly
+- [x] `P3-C1-S3`: create the family-specific template quartet and wire live runbook authority to it
+- [x] `P3-C1-S4`: rewrite live `RUN-001` family surfaces as one bounded chronology-first packet
 
 ## Current Status (recommended)
 
@@ -603,8 +607,9 @@
 - `P0` is now fixed at the contract level: execution-round admission, current-vs-history split, and packet attribution are explicit enough to drive the parent-ledger redesign.
 - `P1` is now fixed at the parent-ledger model level: the chronology table, current target table, stage-attempt table, top-level run summary, and surface order are explicit enough to drive template migration.
 - `P2` is now fixed at the template-governance level: the family-specific quartet names, ownership boundaries, migration order, compatibility boundary, and first live write-back scope are explicit enough to drive one bounded implementation packet.
-- The next step is `P3`: execute the bounded family packet that creates the `WORKFLOW-GITHUB-ISSUES` template quartet and rewrites the live `RUN-001` family surfaces against the fixed `P0`/`P1`/`P2` contract.
-- No further live backfill should land outside that bounded `P3` packet, because template authority and live write-back scope are now coupled explicitly.
+- `P3` is now executed as one bounded family packet: the `WORKFLOW-GITHUB-ISSUES` template quartet exists, the live runbook points to that quartet, the parent ledger now separates current state from chronology history, and the active `SUP` / `PATCH` packets are aligned to the new read model.
+- The immediate next step is no longer another contract phase inside `S0G-3E`; it is follow-up cleanup or adoption work, such as moving future packet creation onto the family-specific templates and deciding whether any compatibility-era template/example surfaces should be thinned further.
+- No further live backfill should bypass the family-specific quartet, because template authority and live write-back scope are now fixed together.
 
 ## Evidence (reserved)
 
@@ -614,6 +619,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-21: Executed `P3` bounded implementation for `S0G-3E`, creating the `WORKFLOW-GITHUB-ISSUES` family-specific template quartet, wiring live runbook template authority, rewriting `RUN-001` into current/history surfaces, and aligning active `SUP` / `PATCH` packet notes with the chronology-first model.
 - 2026-04-21: Completed `P2` template-governance contract for `S0G-3E`, fixing the `WORKFLOW-GITHUB-ISSUES` family-specific quartet names, generic-versus-family authority split, migration order, compatibility boundary, and first live write-back scope.
 - 2026-04-21: Completed `P1` parent-ledger redesign contract for `S0G-3E`, fixing `Current Run Status Summary`, `Execution Round Table`, `Current Target Status Table`, `Target Stage Attempt Table`, and the surface-order migration rule.
 - 2026-04-21: Completed `P0` contract fixation for `S0G-3E`, including explicit `execution_round_id` admission rules, current-vs-history table split, packet attribution fields, and a defended `RUN-001` chronology example.

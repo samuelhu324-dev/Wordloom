@@ -14,6 +14,7 @@ runbook_run_ledger_supplement:
   parent_target_row_id: multiple
   parent_target_stage_row_id: multiple-conclusion-stages
   parent_target_stage_attempt_id: not-used
+  source_round_id: RUN-001-R03
   target_ref_key: S4F-followup-pr-and-milestone-convergence
   target_ref_path: artifacts/_tmp_s4f_followup_issue_conclusion_plan.json
   created_at: 2026-04-21
@@ -35,10 +36,10 @@ runbook_run_ledger_supplement:
 
 | supplement item id | parent run row id | target row id | target stage row id | target stage attempt id | evidence ref | evidence type | attachment ids | verification status | effect on current verdict | proposed parent-ledger action | downstream impact | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `RUN-001-SUP-05` | `RUN-001` | `RUN-001-T01` | `RUN-001-T01-STG-CONCLUSION` | `not-used` | `artifacts/_tmp_s4f_followup_issue_conclusion_plan.json` | `json` | `RUN-001-SUP-05-ATT-01`, `RUN-001-SUP-05-ATT-02` | `verified` | `sharpens-existing` | `append-supplement-ref` | `none` | Final live body for `S4F-1A` issue `#507` now records milestone `road-002-01: deployable runtime slice and cloud backed asset readiness` and DoD bullets `#511`, `#521`. |
-| `RUN-001-SUP-06` | `RUN-001` | `RUN-001-T02` | `RUN-001-T02-STG-CONCLUSION` | `not-used` | `artifacts/_tmp_s4f_followup_issue_conclusion_plan.json` | `json` | `RUN-001-SUP-06-ATT-01`, `RUN-001-SUP-06-ATT-02` | `verified` | `sharpens-existing` | `append-supplement-ref` | `none` | Final live body for `S4F-2A` issue `#508` now records milestone `road-002-01: deployable runtime slice and cloud backed asset readiness` and DoD bullets `#512`, `#522`. |
-| `RUN-001-SUP-07` | `RUN-001` | `RUN-001-T03` | `RUN-001-T03-STG-CONCLUSION` | `not-used` | `artifacts/_tmp_s4f_followup_issue_conclusion_plan.json` | `json` | `RUN-001-SUP-07-ATT-01`, `RUN-001-SUP-07-ATT-02` | `verified` | `sharpens-existing` | `append-supplement-ref` | `none` | Final live body for `S4F-2B` issue `#509` now records milestone `road-002-01: deployable runtime slice and cloud backed asset readiness` and DoD bullets `#513`, `#523`. |
-| `RUN-001-SUP-08` | `RUN-001` | `RUN-001-T04` | `RUN-001-T04-STG-CONCLUSION` | `not-used` | `artifacts/_tmp_s4f_followup_issue_conclusion_plan.json` | `json` | `RUN-001-SUP-08-ATT-01`, `RUN-001-SUP-08-ATT-02` | `verified` | `sharpens-existing` | `append-supplement-ref` | `none` | Final live body for `S4F-2C` issue `#510` now records milestone `road-002-01: deployable runtime slice and cloud backed asset readiness` and DoD bullets `#514`, `#524`. |
+| `RUN-001-SUP-05` | `RUN-001` | `RUN-001-T01` | `RUN-001-T01-STG-CONCLUSION` | `not-used` | `artifacts/_tmp_s4f_followup_issue_conclusion_plan.json` | `json` | `RUN-001-SUP-05-ATT-01`, `RUN-001-SUP-05-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final live body for `S4F-1A` issue `#507` now records milestone `road-002-01: deployable runtime slice and cloud backed asset readiness` and DoD bullets `#511`, `#521`. |
+| `RUN-001-SUP-06` | `RUN-001` | `RUN-001-T02` | `RUN-001-T02-STG-CONCLUSION` | `not-used` | `artifacts/_tmp_s4f_followup_issue_conclusion_plan.json` | `json` | `RUN-001-SUP-06-ATT-01`, `RUN-001-SUP-06-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final live body for `S4F-2A` issue `#508` now records milestone `road-002-01: deployable runtime slice and cloud backed asset readiness` and DoD bullets `#512`, `#522`. |
+| `RUN-001-SUP-07` | `RUN-001` | `RUN-001-T03` | `RUN-001-T03-STG-CONCLUSION` | `not-used` | `artifacts/_tmp_s4f_followup_issue_conclusion_plan.json` | `json` | `RUN-001-SUP-07-ATT-01`, `RUN-001-SUP-07-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final live body for `S4F-2B` issue `#509` now records milestone `road-002-01: deployable runtime slice and cloud backed asset readiness` and DoD bullets `#513`, `#523`. |
+| `RUN-001-SUP-08` | `RUN-001` | `RUN-001-T04` | `RUN-001-T04-STG-CONCLUSION` | `not-used` | `artifacts/_tmp_s4f_followup_issue_conclusion_plan.json` | `json` | `RUN-001-SUP-08-ATT-01`, `RUN-001-SUP-08-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final live body for `S4F-2C` issue `#510` now records milestone `road-002-01: deployable runtime slice and cloud backed asset readiness` and DoD bullets `#514`, `#524`. |
 
 ## Attachment Review Table
 
@@ -67,3 +68,4 @@ runbook_run_ledger_supplement:
 - This supplement closes the later S4F follow-up gap left after the original child lifecycle pass and the earlier parent-writeback supplement.
 - The current defended reading for the four child conclusion stages is now the final live GitHub body state, not the earlier single-PR conclusion snapshot.
 - Parent issue `#518` now also carries the intended `road-002-01` milestone in both the sidebar milestone field and the body Metadata row, so the S4F family is aligned on one milestone surface.
+- The parent ledger should now present this packet as chronology round `RUN-001-R03`, updating current target status and appending one later conclusion-stage attempt for each child target.

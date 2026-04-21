@@ -14,6 +14,7 @@ runbook_run_ledger_supplement:
   parent_target_row_id: multiple
   parent_target_stage_row_id: multiple-creation-stages
   parent_target_stage_attempt_id: not-used
+  source_round_id: RUN-001-R02
   target_ref_key: S4F-child-parent-writeback-set
   target_ref_path: docs/issues/lifecycle-audit-s4f-parent-writeback-manifest.json
   created_at: 2026-04-21
@@ -35,10 +36,10 @@ runbook_run_ledger_supplement:
 
 | supplement item id | parent run row id | target row id | target stage row id | target stage attempt id | evidence ref | evidence type | attachment ids | verification status | effect on current verdict | proposed parent-ledger action | downstream impact | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `RUN-001-SUP-01` | `RUN-001` | `RUN-001-T01` | `RUN-001-T01-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-01-ATT-01`, `RUN-001-SUP-01-ATT-02` | `verified` | `sharpens-existing` | `rewrite-target-stage-row` | `none` | Final lifecycle audit now passes for `S4F-1A`: child issue `#507` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
-| `RUN-001-SUP-02` | `RUN-001` | `RUN-001-T02` | `RUN-001-T02-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-02-ATT-01`, `RUN-001-SUP-02-ATT-02` | `verified` | `sharpens-existing` | `rewrite-target-stage-row` | `none` | Final lifecycle audit now passes for `S4F-2A`: child issue `#508` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
-| `RUN-001-SUP-03` | `RUN-001` | `RUN-001-T03` | `RUN-001-T03-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-03-ATT-01`, `RUN-001-SUP-03-ATT-02` | `verified` | `sharpens-existing` | `rewrite-target-stage-row` | `none` | Final lifecycle audit now passes for `S4F-2B`: child issue `#509` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
-| `RUN-001-SUP-04` | `RUN-001` | `RUN-001-T04` | `RUN-001-T04-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-04-ATT-01`, `RUN-001-SUP-04-ATT-02` | `verified` | `sharpens-existing` | `rewrite-target-stage-row` | `none` | Final lifecycle audit now passes for `S4F-2C`: child issue `#510` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
+| `RUN-001-SUP-01` | `RUN-001` | `RUN-001-T01` | `RUN-001-T01-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-01-ATT-01`, `RUN-001-SUP-01-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final lifecycle audit now passes for `S4F-1A`: child issue `#507` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
+| `RUN-001-SUP-02` | `RUN-001` | `RUN-001-T02` | `RUN-001-T02-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-02-ATT-01`, `RUN-001-SUP-02-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final lifecycle audit now passes for `S4F-2A`: child issue `#508` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
+| `RUN-001-SUP-03` | `RUN-001` | `RUN-001-T03` | `RUN-001-T03-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-03-ATT-01`, `RUN-001-SUP-03-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final lifecycle audit now passes for `S4F-2B`: child issue `#509` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
+| `RUN-001-SUP-04` | `RUN-001` | `RUN-001-T04` | `RUN-001-T04-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-04-ATT-01`, `RUN-001-SUP-04-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final lifecycle audit now passes for `S4F-2C`: child issue `#510` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
 
 ## Attachment Review Table
 
@@ -66,4 +67,4 @@ runbook_run_ledger_supplement:
 
 - This supplement closes the parent metadata follow-up that was intentionally left open when the four child issues were first created before the top-level S4F parent issue existed.
 - The historical creation-time JSON artifacts remain valid as admission evidence for the original gap, but they are no longer the current verdict for the four child creation stages.
-- The parent ledger should now present `RUN-001` as a closed four-target batch whose child-parent relationship state and child Metadata both converge on parent issue `#518`.
+- The parent ledger should now present this packet as chronology round `RUN-001-R02`, updating current target status and appending one later creation-stage attempt for each child target.

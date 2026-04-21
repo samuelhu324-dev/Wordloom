@@ -58,5 +58,6 @@ runbook_run_patch_ledger:
 
 - Patch ledgers for `WORKFLOW-GITHUB-ISSUES-001` should remain under `docs/runbook/support-only/`.
 - `PATCH-001` is now attached to parent run row `RUN-001`; later bounded repairs for this release should preserve that binding unless a new admitted run row becomes the true trigger.
+- `PATCH-001` remains repair-first under the chronology-first ledger model: it is evidence and repair attribution for `RUN-001`, not an execution round by itself.
 - If a future repair is admitted under `PATCH-001`, keep the implementation diff and the patch/accounting write-back in the same patch-scoped commit packet unless a later source log explicitly reclassifies the work as a release bump or a different lane.
 - If a future bounded repair changes runbook semantics materially, do not continue under this patch series; open a new source log and a new runbook release instead.

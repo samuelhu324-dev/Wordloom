@@ -57,4 +57,5 @@ runbook_run_patch_ledger:
 
 - `PATCH-002` records the second bounded repair packet attached to `RUN-001` after the later S4F follow-up work exposed new workflow gaps.
 - The admitted repair surface for this packet is limited to milestone-title normalization and follow-up PR-prep commit/title selection.
+- `PATCH-002` remains repair-first under the chronology-first ledger model: it supports the defended `RUN-001` reading but does not become a separate execution round unless a later SUP packet explicitly admits one changed chronology reading because of this repair.
 - No runbook release bump is justified by this packet; the fixes remain bounded to the same defended release used by `RUN-001`.

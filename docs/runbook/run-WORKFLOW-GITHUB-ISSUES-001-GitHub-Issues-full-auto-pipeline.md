@@ -10,8 +10,8 @@ runbook_record:
   record_kind: ledger-aware-runbook
   status: active
   release_action: identity-and-structure-rewrite
-  release_change_summary: First strong-structure rewrite for the GitHub Issues lifecycle family, narrowing family identity and reshaping parent run accounting around batch, target, and target-stage grains.
-  summary: Use one stable operator surface for GitHub Issues lifecycle automation with two defended workflow profiles: child issue full lifecycle and parent issue light lifecycle, both bound to explicit run-ledger accounting.
+  release_change_summary: First chronology-first rewrite for the GitHub Issues lifecycle family, narrowing family identity, fixing family-specific template authority, and reshaping parent run accounting around execution rounds, current target state, and target-stage attempts.
+  summary: Use one stable operator surface for GitHub Issues lifecycle automation with two defended workflow profiles, one family-specific template quartet, and one chronology-first parent ledger that separates current state from history.
   governance_area: workflow
   applies_to: GitHub Issues lifecycle automation for source logs under docs/logs/, including child issue creation/PR/merge/conclusion and parent issue creation/conclusion.
   entry_surface: script
@@ -26,9 +26,11 @@ runbook_record:
       - docs/issues/*plan.json
       - docs/issues/*apply-result.json
     minimum_admitted_fields:
+      - execution_round_id
       - run_row_id
       - target_row_id
       - target_stage_row_id
+      - target_stage_attempt_id
       - stage_name
       - stage_status
       - blocking_reason_class
@@ -36,12 +38,17 @@ runbook_record:
       - applied_action
       - status
       - warnings
+  template_authority:
+    family_runbook_template: docs/runbook/_template-runbook-WORKFLOW-GITHUB-ISSUES.md
+    family_parent_ledger_template: docs/runbook/support-only/_template-run-ledger-WORKFLOW-GITHUB-ISSUES.md
+    family_supplement_template: docs/runbook/support-only/_template-run-ledger-SUP-WORKFLOW-GITHUB-ISSUES.md
+    family_patch_template: docs/runbook/support-only/_template-run-ledger-PATCH-WORKFLOW-GITHUB-ISSUES.md
   recorded_at: 2026-04-20
   reviewed_at: pending
   effective_from: 2026-04-20
   effective_until: ongoing
   introduced_by: docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md#P2-C1-S1
-  last_changed_by: docs/logs/log-S0G-3D-workflow-github-issues-file-identity-rename-and-successor-release-governance.md#P4-C1-S1
+  last_changed_by: docs/logs/log-S0G-3E-workflow-github-issues-round-attempt-chronology-and-family-template-governance.md#P3-C1-S1
   source_refs:
     - docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md
     - docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md
@@ -58,6 +65,7 @@ runbook_record:
   supporting_evidence_refs:
     - docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md
     - docs/logs/log-S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance.md
+    - docs/logs/log-S0G-3E-workflow-github-issues-round-attempt-chronology-and-family-template-governance.md
   lineage:
     supersedes:
       - docs/runbook/legacy/run-S0E-log-to-issue-creation.md
@@ -71,7 +79,8 @@ runbook_record:
   notes:
     - This release now uses the canonical `WORKFLOW-GITHUB-ISSUES-001` file identity for the same active `001` release.
     - The older `run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md` path remains occupied as a compatibility stub.
-    - This release now assumes strong-structure parent-run accounting at batch, target, and target-stage grains.
+    - This release now assumes chronology-first parent-run accounting across `Current Run Status Summary`, `Execution Round Table`, `Current Target Status Table`, and `Target Stage Attempt Table`.
+    - Newly opened `WORKFLOW-GITHUB-ISSUES` artifacts should use the family-specific quartet templates rather than the generic skeleton templates.
 ```
 
 ---
@@ -138,7 +147,7 @@ runbook_record:
 
 - Canonical parent ledger:
   - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
-- Each admitted bounded batch for this first runbook release should be recorded under that ledger's batch, target, and target-stage tables.
+- Each admitted bounded batch for this first runbook release should be recorded under that ledger's current/history split surfaces: current run summary, execution rounds, current target status, and target-stage attempts.
 - Later completion passes or evidence sharpening for the same bounded batch should normally stay under the same `run_row_id` and attach through `SUP`, not force a new run-ledger sequence.
 
 ### 4.1A Support-only supplement and patch ledgers
@@ -151,6 +160,8 @@ runbook_record:
 
 - Stable run-row shape:
   - `RUN-001`, `RUN-002`, ...
+- Stable execution-round shape beneath one run row:
+  - `RUN-001-R01`, `RUN-001-R02`, ...
 - Stable target-row shape beneath one run row:
   - `RUN-001-T01`, `RUN-001-T02`, ...
 - Stable target-stage-row shape beneath one target row:
@@ -162,6 +173,7 @@ runbook_record:
   - `target_ref_key`: `S4F-2A`
   - `target_ref_path`: `<source-log-or-artifact-path>`
 - Optional replay-heavy attempt shape, reserved but not required in the first rewrite:
+- Stable target-stage-attempt shape beneath one target-stage row:
   - `RUN-001-T01-STG-CREATION-A01`
 - Stable evidence-item shape beneath one run row:
   - `RUN-001-E01`, `RUN-001-E02`, ...
@@ -172,6 +184,7 @@ runbook_record:
 
 - A run may enter the parent ledger only when the requested stage emitted at least one durable JSON or Markdown artifact under `docs/issues/` or another explicit retained path.
 - If later evidence only sharpens or corrects one admitted run verdict, open a SUP ledger instead of rewriting the original run row invisibly.
+- If later evidence sharpens one admitted stage, the parent ledger should update the current target reading and append a stage-attempt row rather than duplicating the stable target or stage row.
 - If a bounded repair packet is needed for scripts, manifests, docs, or retained evidence while the runbook release stays unchanged, open a PATCH ledger instead of treating that repair as an unstructured patch note.
 - If one follow-up both changes the workflow implementation and changes how an admitted run, target, or stage should now be read, record both surfaces explicitly: `PATCH` for the repair packet and `SUP` for the parent-ledger follow-up.
 - Downstream write-back should stay explicit:
@@ -258,5 +271,6 @@ python scripts/issues/apply_issue_conclusion.py <plan-path> --item-index 0
 ## Thinness Rules
 
 - Keep this runbook as one family-level operator surface only.
+- Do not duplicate `Execution Round Table` or `Target Stage Attempt Table` history inside the runbook body.
 - Do not copy recurring run rows into the runbook.
 - Do not use this runbook to replace the bound run ledger or the source logs.
