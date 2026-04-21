@@ -238,6 +238,40 @@
 
 - P3-C1-S1: fix the next bounded implementation packet for the actual rename or successor-release work
 
+## P3 (Next execution packet | v1)
+
+### P3-C1-S1 (Identity-implementation packet fixed explicitly | v1)
+
+- The next bounded execution packet after `S0G-3D` should implement the preferred physical-rename path as one family-level packet rather than a series of partial moves.
+- **The packet should include these live full-body surfaces together**:
+  - the current runbook body at `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`;
+  - the current parent-ledger body at `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`;
+  - the current patch-ledger body at `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`.
+- **The packet should also include these canonical template/example surfaces together**:
+  - `docs/runbook/support-only/_template-run-ledger-SUP.md`;
+  - `docs/runbook/support-only/_template-run-ledger-PATCH.md`;
+  - the older parent-ledger template surface at `docs/runbook/_template-run-ledger.md`, which should stop teaching the compatibility-era family token once the canonical rename packet lands.
+- **The packet should leave these old exact paths occupied as compatibility landings rather than deleting them**:
+  - the old runbook exact path;
+  - the old parent-ledger exact path;
+  - the old patch-ledger exact path.
+- **The packet should update these write-back/reference surfaces in the same round**:
+  - runbook frontmatter refs and ledger bindings;
+  - parent-ledger and patch-ledger self-ids and bound refs;
+  - template examples and minimal header examples;
+  - the owning `S0G-*` source-log references that name the canonical runbook/ledger objects directly.
+- **The packet should not yet do these later actions**:
+  - first live `SUP` writeback for the `S4F` child set;
+  - broader carrier extraction work from `S0G-3B`;
+  - any successor-release opening.
+- **Immediate post-rename validation sequence**:
+  - first, verify that old exact paths still land on explicit compatibility stubs and new canonical paths carry the full bodies;
+  - second, verify that the runbook/parent-ledger/patch-ledger family still reads as one unchanged active `001` release with stable `RUN-001` accounting ids;
+  - third, prepare the first live validation packet under the renamed family using `parent-issue-light-lifecycle` before child-stage refill experiments widen further.
+- **First live validation packet after the rename should follow this order**:
+  - run `S4F` parent issue `CREATION` through the defended full-auto path first, because parent issue content cannot be filled coherently while the parent issue itself is still missing;
+  - only after that, open the first `SUP + parent-ledger` writeback experiment for the four `S4F` child issues so the new fields can be tested against both child and parent lifecycle surfaces under the renamed canonical identity.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -255,7 +289,7 @@
 
 ### P3 (Next execution packet)
 
-- [ ] `P3-C1-S1`: next identity-implementation packet fixed explicitly
+- [x] `P3-C1-S1`: next identity-implementation packet fixed explicitly
 
 ## Current Status (recommended)
 
@@ -263,7 +297,8 @@
 - The current runbook family no longer needs template-shape debate first; it needs one explicit decision on whether the current compatibility-era filename should be renamed in place or replaced by a successor release identity.
 - `P1` is now fixed: for the current repo state, physical rename in place is the preferred execution shape, while successor release remains a reserved fallback only if rename would implicitly alter release meaning or make compatibility routing too complex.
 - `P2` is now fixed: the old exact runbook and live-ledger paths should remain occupied by compatibility stubs, while the renamed `WORKFLOW-GITHUB-ISSUES-001` files become the new full-body authorities for the same active `001` release.
-- The next useful work in this lane is now `P3`: fix one bounded identity-implementation packet that renames the live family together, updates template/examples and source-log refs, and leaves the old exact paths in place as compatibility landings.
+- `P3` is now fixed: the next execution packet should rename the live runbook family together, update template/examples and source-log refs in the same round, and leave the old exact paths in place as compatibility landings.
+- After that rename packet lands, the first live validation packet should begin with `S4F` parent issue `CREATION` under `parent-issue-light-lifecycle`, then use `SUP + parent-ledger` writeback to test the newly defended fields against the four `S4F` child issues.
 
 ## Evidence (reserved)
 
@@ -312,8 +347,26 @@
   - `S0G-3A` already fixes that object identity and file placement should be explicit rather than left mixed by inertia, which supports moving the full bodies to new canonical names while keeping old exact paths as landing surfaces only.
   - the live runbook, parent ledger, and patch ledger all still point at the same active `001` release and admitted `RUN-001` accounting surface, so keeping release identity stable while repairing only file identity is the narrower write-back rule.
 
+### P3-C1-S1 (next execution packet should rename the live family first, then validate parent creation before child SUP writeback | 2026-04-21)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/_template-run-ledger.md`
+  - `docs/runbook/support-only/_template-run-ledger-SUP.md`
+  - `docs/runbook/support-only/_template-run-ledger-PATCH.md`
+- expected:
+  - the next packet should be specific enough that the repo can execute file-identity repair without mixing it with later lifecycle experiments, while still leaving one explicit first validation sequence after rename.
+- observed:
+  - the live runbook, parent ledger, and patch ledger still share the compatibility-era file identity and therefore need one family-level rename packet.
+  - the current templates already partially point toward the renamed naming surface, so leaving template/example updates outside that packet would preserve mismatched teaching surfaces after the canonical rename lands.
+  - because `S0G-3C` already fixed `parent-issue-light-lifecycle` as a defended profile, the first post-rename validation should include `S4F` parent issue `CREATION` before child `SUP` writeback, otherwise parent issue fill has no stable live landing surface.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-21: opened `S0G-3D` as the next bounded governance lane after `S0G-3C` so the repo can decide physical rename versus successor-release handling for the current GitHub Issues workflow family.
 - 2026-04-21: fixed `P1` for `S0G-3D` by preferring physical rename in place for the current `001` family, while keeping successor release reserved as a fallback if compatibility or lineage constraints prove rename insufficient.
 - 2026-04-21: fixed `P2` for `S0G-3D` by requiring old exact paths to remain as compatibility stubs while the renamed `WORKFLOW-GITHUB-ISSUES-001` family becomes the new full-body authority for the same active `001` release.
+- 2026-04-21: fixed `P3` for `S0G-3D` by defining one bounded identity-implementation packet first, followed by `S4F` parent issue creation and then the first child `SUP + parent-ledger` writeback experiment under the renamed family.
