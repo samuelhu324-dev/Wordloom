@@ -132,6 +132,23 @@ def _parse_tenant_id(request: Request) -> UUID:
         ) from exc
 
 
+def _extract_dev_user_id(request: Request) -> Optional[UUID]:
+    raw = (request.headers.get("X-Dev-User-Id") or "").strip()
+    if not raw:
+        return None
+    try:
+        return UUID(raw)
+    except Exception:  # noqa: BLE001
+        return None
+
+
+async def _resolve_dev_fallback_user_id(request: Request) -> UUID:
+    dev_user_id = _extract_dev_user_id(request)
+    if dev_user_id is not None:
+        return dev_user_id
+    return await get_current_user_id()
+
+
 async def get_auth_context(
     request: Request,
     db: AsyncSession = Depends(get_db),
@@ -167,7 +184,7 @@ async def get_auth_context(
             ) from exc
         token_roles = _parse_roles(payload)
     else:
-        user_id = await get_current_user_id()
+        user_id = await _resolve_dev_fallback_user_id(request)
         token_roles = tuple()
 
     tenant_id = _parse_tenant_id(request)

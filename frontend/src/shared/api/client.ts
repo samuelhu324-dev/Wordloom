@@ -16,6 +16,7 @@ type AxiosRequestMeta = {
 };
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const AUTH_SESSION_STORAGE_KEY = 'wl_auth_session';
 const CURRENT_TENANT_CONTEXT_STORAGE_KEY = 'wl_current_tenant_context';
 const ACTIVE_LIBRARY_STORAGE_KEY = 'wl_active_library_id';
 
@@ -100,6 +101,24 @@ const readActiveLibraryId = (): string | null => {
   }
 };
 
+const readDevUserIdFromSession = (): string | null => {
+  if (!isBrowser) {
+    return null;
+  }
+
+  try {
+    const raw = localStorage.getItem(AUTH_SESSION_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as { userId?: unknown } | null;
+    return isUuidLike(parsed?.userId) ? parsed.userId.trim() : null;
+  } catch {
+    return null;
+  }
+};
+
 const isBrowser = typeof window !== 'undefined';
 const envBaseOrigin = normalizeBaseOrigin(process.env.NEXT_PUBLIC_API_BASE?.trim() || '');
 const DEFAULT_SERVER_BASE = normalizeBaseOrigin(
@@ -155,6 +174,11 @@ apiClient.interceptors.request.use(
       token.split('.').length === 3;
     if (shouldSendBearerToken) {
       config.headers.Authorization = `Bearer ${token}`;
+    } else if (process.env.NODE_ENV !== 'production') {
+      const devUserId = readDevUserIdFromSession();
+      if (devUserId) {
+        headers['X-Dev-User-Id'] = devUserId;
+      }
     }
 
     const existingTenantHeader = headers['X-Library-Id'] || headers['x-library-id'] || headers['X-Tenant-Id'] || headers['x-tenant-id'];
