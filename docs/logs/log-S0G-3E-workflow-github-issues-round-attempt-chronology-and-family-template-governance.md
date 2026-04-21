@@ -418,11 +418,35 @@
 - The current template filenames are too generic for a workflow family that already carries local structural deltas.
 - For this family, append the family token as a suffix to the template filename.
 - Preferred canonical names:
-  - `docs/runbook/_template-run-WORKFLOW-GITHUB-ISSUES.md`
+  - `docs/runbook/_template-runbook-WORKFLOW-GITHUB-ISSUES.md`
   - `docs/runbook/support-only/_template-run-ledger-WORKFLOW-GITHUB-ISSUES.md`
   - `docs/runbook/support-only/_template-run-ledger-SUP-WORKFLOW-GITHUB-ISSUES.md`
   - `docs/runbook/support-only/_template-run-ledger-PATCH-WORKFLOW-GITHUB-ISSUES.md`
 - If the repo still wants generic templates later, keep them as separate generic skeletons rather than pretending the family-specific deltas do not exist.
+- The runbook template must use the existing repo naming grammar. The canonical family-specific runbook template is therefore `_template-runbook-WORKFLOW-GITHUB-ISSUES.md`, not a newly invented `_template-run-...` stem.
+- The defended quartet ownership split is:
+  - `docs/runbook/_template-runbook.md`: generic skeleton only
+  - `docs/runbook/support-only/_template-run-ledger.md`: generic parent-ledger skeleton only
+  - `docs/runbook/support-only/_template-run-ledger-SUP.md`: generic SUP skeleton only
+  - `docs/runbook/support-only/_template-run-ledger-PATCH.md`: generic PATCH skeleton only
+  - `docs/runbook/_template-runbook-WORKFLOW-GITHUB-ISSUES.md`: family-specific runbook authority for this workflow family
+  - `docs/runbook/support-only/_template-run-ledger-WORKFLOW-GITHUB-ISSUES.md`: family-specific parent-ledger authority
+  - `docs/runbook/support-only/_template-run-ledger-SUP-WORKFLOW-GITHUB-ISSUES.md`: family-specific SUP authority
+  - `docs/runbook/support-only/_template-run-ledger-PATCH-WORKFLOW-GITHUB-ISSUES.md`: family-specific PATCH authority
+- Generic skeletons may remain in the repo, but the active `WORKFLOW-GITHUB-ISSUES` family should stop deriving live structure from those generic files once the family-specific quartet is created.
+- The family-specific quartet is justified because the current family already has defended deltas in all four surfaces:
+  - long-path family naming narrowed to `WORKFLOW-GITHUB-ISSUES`
+  - chronology-first `Execution Round` and `Target Stage Attempt` requirements
+  - strong-structure run/target/stage/attempt bridge keys
+  - explicit `SUP` and `PATCH` dual-surface write-back behavior
+- The first defended template-ownership mapping is:
+
+| surface role | generic skeleton retained? | family-specific authority required? | canonical family-specific path |
+| --- | --- | --- | --- |
+| runbook | `yes` | `yes` | `docs/runbook/_template-runbook-WORKFLOW-GITHUB-ISSUES.md` |
+| parent ledger | `yes` | `yes` | `docs/runbook/support-only/_template-run-ledger-WORKFLOW-GITHUB-ISSUES.md` |
+| SUP ledger | `yes` | `yes` | `docs/runbook/support-only/_template-run-ledger-SUP-WORKFLOW-GITHUB-ISSUES.md` |
+| PATCH ledger | `yes` | `yes` | `docs/runbook/support-only/_template-run-ledger-PATCH-WORKFLOW-GITHUB-ISSUES.md` |
 
 ### P2-C1-S2 (Template migration order | v1)
 
@@ -432,6 +456,30 @@
   - update the live runbook family to reference those templates;
   - backfill the current live parent ledger and bound `SUP` / `PATCH` files.
 - Do not rename template files first and then discover that the structure still changes underneath them.
+- The defended migration sequence is fixed as:
+  - preserve the current generic skeleton templates in place;
+  - create the family-specific quartet under the canonical names above;
+  - copy only the reusable generic baseline into each family-specific template, then apply the `WORKFLOW-GITHUB-ISSUES` deltas from `P0` and `P1`;
+  - update template examples, naming examples, and ledger-binding examples so they reference `WORKFLOW-GITHUB-ISSUES-001` rather than the compatibility-era family token;
+  - update the active live runbook body and live `RUN-001` family packet surfaces only after the family-specific quartet is internally consistent.
+- The repo should not physically rename the generic skeleton templates into family-specific templates. They serve different roles after this lane:
+  - generic skeletons remain cross-family starting points;
+  - family-specific templates become the authoritative source for this one workflow family.
+- The defended migration dependency rule is:
+  - the family-specific runbook template must land with the family-specific parent-ledger template in the same bounded packet;
+  - the family-specific SUP and PATCH templates must land in that same packet or immediately adjacent packet only if review explicitly needs a split;
+  - do not ship one isolated template first, because the quartet shares one ledger-binding and chronology contract.
+- The first migration check must verify that all four family-specific templates encode the same structural vocabulary:
+  - `WORKFLOW-GITHUB-ISSUES` family token
+  - `RUN-001` / `target_row_id` / `target_stage_row_id` / optional `attempt id` grammar
+  - `execution round` terminology
+  - `current` versus `history` table split in the parent-ledger surface
+- The defended template rewrite sequence inside that bounded packet is:
+  - family-specific runbook template
+  - family-specific parent-ledger template
+  - family-specific SUP template
+  - family-specific PATCH template
+  - live example references that depend on those templates
 
 ### P2-C1-S3 (Live write-back scope rule | v1)
 
@@ -442,6 +490,36 @@
   - the `PATCH` template;
   - the currently admitted `RUN-001` family packet surfaces that depend on those templates.
 - The write-back should be treated as one bounded family packet, not as scattered template-only edits.
+- The defended live write-back scope for the first post-template packet is:
+  - active runbook body: `run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+  - active parent ledger: `ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+  - active `SUP` packet surfaces currently admitted under that family
+  - active `PATCH` packet surfaces currently admitted under that family
+  - any exact-path template examples or header snippets that would otherwise keep teaching the old structure
+- The first post-template packet should not reopen compatibility-era `WORKFLOW-GITHUB-001` bodies except where an exact-path stub, lineage note, or bounded compatibility landing is still required by the earlier identity-governance lane.
+- The defended live write-back order is:
+  - rewrite the live runbook binding first so readers know the authoritative family surface;
+  - rewrite the parent ledger next using the new current/history model;
+  - rewrite the admitted `SUP` and `PATCH` files so they bind cleanly to the new parent-ledger structure;
+  - only then update downstream examples, summaries, and reference notes that quote those live files.
+- The first bounded packet must be reviewable as one family migration unit. It should let a reviewer answer all of these without cross-packet reconstruction:
+  - which template files are now authoritative for `WORKFLOW-GITHUB-ISSUES`?
+  - which live files were rewritten because of that template change?
+  - which compatibility-era files, if any, remain as stubs or lineage landings only?
+- The defended no-split rule is:
+  - do not land template creation in one commit and live family write-back in a distant later commit without an explicit bounded successor packet;
+  - if review needs a split, the second packet must be the immediate successor and must reference the first packet as the template-authority source.
+
+### P2-C1-S4 (Template authority and compatibility rule | v1)
+
+- After `P2` lands, the repo should treat the family-specific quartet as the only authoritative template source for newly opened `WORKFLOW-GITHUB-ISSUES` artifacts.
+- Generic templates remain available for other families and as reduced skeletons, but they should stop being cited as the decisive source for `WORKFLOW-GITHUB-ISSUES` examples, docs, or future packet generation.
+- Compatibility-era live files under `WORKFLOW-GITHUB-001` remain governed by the earlier identity lane; `P2` does not itself decide whether they are deleted, stubbed, or retained long-term.
+- `P2` is considered fixed when one reviewer can answer all of these directly from the repo structure:
+  - what are the canonical template paths for the `WORKFLOW-GITHUB-ISSUES` family?
+  - which generic templates remain as generic skeletons only?
+  - what is the exact migration order from template authority to live file rewrite?
+  - what is the bounded scope of the first post-template live write-back packet?
 
 ## Numbering
 
@@ -484,6 +562,7 @@
 - P2-C1-S1: fix canonical template names for the `WORKFLOW-GITHUB-ISSUES` family
 - P2-C1-S2: rewrite the live template quartet around chronology-first structure
 - P2-C1-S3: define the first bounded write-back packet for runbook + templates + live `RUN-001` family surfaces
+- P2-C1-S4: fix template authority and compatibility boundaries after family-specific migration
 
 ### P3 (Backfill and verify)
 
@@ -507,9 +586,10 @@
 
 ### P2 (Template family migration)
 
-- [ ] `P2-C1-S1`: rename the live template quartet with `WORKFLOW-GITHUB-ISSUES` suffixes
-- [ ] `P2-C1-S2`: rewrite the family-specific template quartet around chronology-first structure
-- [ ] `P2-C1-S3`: define the first bounded live write-back packet for runbook + templates + `RUN-001` family surfaces
+- [x] `P2-C1-S1`: rename the live template quartet with `WORKFLOW-GITHUB-ISSUES` suffixes
+- [x] `P2-C1-S2`: rewrite the family-specific template quartet around chronology-first structure
+- [x] `P2-C1-S3`: define the first bounded live write-back packet for runbook + templates + `RUN-001` family surfaces
+- [x] `P2-C1-S4`: fix template authority and compatibility boundaries after family-specific migration
 
 ### P3 (Backfill / verify)
 
@@ -522,8 +602,9 @@
 - The missing execution-round / stage-attempt layer is now the primary reader and template gap for the `WORKFLOW-GITHUB-ISSUES` family.
 - `P0` is now fixed at the contract level: execution-round admission, current-vs-history split, and packet attribution are explicit enough to drive the parent-ledger redesign.
 - `P1` is now fixed at the parent-ledger model level: the chronology table, current target table, stage-attempt table, top-level run summary, and surface order are explicit enough to drive template migration.
-- The next step is `P2`: translate the fixed `P0` and `P1` contracts into a family-specific template quartet and explicit migration order before any live `RUN-001` rewrite lands.
-- No live runbook/template/ledger backfill should land until `P2` fixes the family-specific template ownership and migration path against this `P0` and `P1` model.
+- `P2` is now fixed at the template-governance level: the family-specific quartet names, ownership boundaries, migration order, compatibility boundary, and first live write-back scope are explicit enough to drive one bounded implementation packet.
+- The next step is `P3`: execute the bounded family packet that creates the `WORKFLOW-GITHUB-ISSUES` template quartet and rewrites the live `RUN-001` family surfaces against the fixed `P0`/`P1`/`P2` contract.
+- No further live backfill should land outside that bounded `P3` packet, because template authority and live write-back scope are now coupled explicitly.
 
 ## Evidence (reserved)
 
@@ -533,6 +614,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-21: Completed `P2` template-governance contract for `S0G-3E`, fixing the `WORKFLOW-GITHUB-ISSUES` family-specific quartet names, generic-versus-family authority split, migration order, compatibility boundary, and first live write-back scope.
 - 2026-04-21: Completed `P1` parent-ledger redesign contract for `S0G-3E`, fixing `Current Run Status Summary`, `Execution Round Table`, `Current Target Status Table`, `Target Stage Attempt Table`, and the surface-order migration rule.
 - 2026-04-21: Completed `P0` contract fixation for `S0G-3E`, including explicit `execution_round_id` admission rules, current-vs-history table split, packet attribution fields, and a defended `RUN-001` chronology example.
 - 2026-04-21: Opened `S0G-3E` to formalize chronology-first run accounting and family-specific template governance for `WORKFLOW-GITHUB-ISSUES` after reader confusion in the active `RUN-001` ledger exposed the missing round/attempt layer.
