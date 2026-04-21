@@ -55,6 +55,8 @@
 - `S0G-docs-management-v7` should now be treated as a historical carrier and extraction source, not as the long-term default branch for new bounded packets.
 - During the transition period, new packet work should be opened from fresh short-lived extraction branches off `main`, then populated only by the minimum cherry-picked bounded packet required for that PR.
 - The first cleanup priority is not generic history beautification; it is to classify `S0G` branch history into patch-equivalent noise, already-merged-but-non-identical history, and truly unresolved packet content that still needs its own PR or explicit discard decision.
+- The first current-tail inventory is now fixed for the newest meaningful packet families near the carrier head: `S0G-2B`, `S0G-3A`, `RUN-LEDGER-PATCH-001`, the post-merge `S4F` write-back/accounting tail, and `S0G-3B` itself.
+- The current recommended extraction order is dependency-first rather than recency-first: extract `S0G-2B` first, then `S0G-3A`, then `RUN-LEDGER-PATCH-001`; keep the `S4F` write-back/accounting tail attached to `RUN-LEDGER-PATCH-001` unless later evidence shows residual packet content outside that patch packet; extract `S0G-3B` after the first tail extractions are no longer changing the rule.
 
 **Default choices (phase defaults / v1)**:
 
@@ -148,6 +150,60 @@
 - That means the immediate next action is not more feature work on `S0G`; it is bounded packet inventory and extraction planning.
 - The first inventory focus should be the still-meaningful packet families nearest the current tail, such as post-merge `S4F` write-back/accounting lineage, runbook-family governance packets, and any residual branch-only packet that the user still wants on `main`.
 
+## P1 (Inventory | v1)
+
+### P1-C1-S1 (Current-tail packet inventory | 2026-04-21)
+
+- `S0G-2B`
+  - status: `still unresolved and needs extraction`
+  - reason: the carrier still holds both the broad runbook legacy/root-stub relocation commit and the follow-up support-only patch-ledger contract fix, and both remain on the branch-only side of the classifier.
+  - recommendation: treat `S0G-2B` as the first extraction candidate because later governance and packet placement rules already depend on this support-only/legacy placement decision.
+- `S0G-3A`
+  - status: `still unresolved and needs extraction`
+  - reason: the release-issue concentration and object-first naming write-back is still branch-only and touches only a narrow governance surface plus the parent issue draft artifacts.
+  - recommendation: extract immediately after `S0G-2B`; it is a small governance packet and should land before more fresh packet branching depends on it.
+- `RUN-LEDGER-PATCH-001`
+  - status: `still unresolved and needs extraction`
+  - reason: the packet remains branch-only and owns one bounded workflow-family patch set: `S4F` close-out write-back, patch-ledger accounting updates, and the two guarded script fixes.
+  - recommendation: extract after `S0G-2B` and `S0G-3A`; keep it as one object-first packet rather than splitting scripts, accounting, and close-out into separate PRs.
+- `S4F` post-merge write-back/accounting tail
+  - status: `represented by a later unresolved packet`
+  - reason: the newest `S4F-2A/2B/2C` live-link and footer-cleanup commits touch the same `S4F` log surfaces that were later rewritten again by `RUN-LEDGER-PATCH-001`.
+  - recommendation: do not open a separate `S4F` extraction packet first; move this tail with `RUN-LEDGER-PATCH-001` unless a later residual-diff check proves meaningful `S4F` content still exists outside that packet.
+- `S0G-3B`
+  - status: `still unresolved and needs extraction`
+  - reason: this governance packet exists only on the carrier and now owns the transition rule itself.
+  - recommendation: keep using `S0G-3B` as the inventory/control surface while current-tail extraction is being fixed, then extract it as a narrow source-log packet once the first extraction order no longer needs daily rewrites.
+
+### P1-C1-S2 (Recommended first extraction order | 2026-04-21)
+
+- `1. S0G-2B`
+  - foundation packet for support-only ledger placement, patch-ledger bridge contract, and root-stub legacy relocation.
+- `2. S0G-3A`
+  - small governance write-back packet that should land before the repo relies on object-first release/ledger naming as the steady rule.
+- `3. RUN-LEDGER-PATCH-001`
+  - bounded workflow-family packet that already absorbs the actionable `S4F` close-out tail and the two guarded script repairs.
+- `4. S0G-3B`
+  - transition-governance packet that should be extracted after the first three packets stop changing the operator rule.
+
+### P1-C1-S3 (Carrier-only set for now | 2026-04-21)
+
+- Leave older patch-equivalent `S4F-1A` history on the carrier for now when the classifier already marks it as `=`.
+- Leave older pre-tail historical `S0F` residue untouched until the current-tail bounded packets are exhausted; the repo should not widen this cleanup round into a full historical archaeology pass.
+
+## P2 (Extraction order | v1)
+
+### P2-C1-S1 (Current-tail extraction sequencing rule | v1)
+
+- Extract dependency-bearing governance and placement packets before family-specific workflow patch packets.
+- When a later packet rewrites the same file surfaces as an earlier post-merge write-back tail, prefer extracting the later owning packet rather than reopening the smaller intermediate write-back commits as a separate lane.
+- Keep one packet per extraction branch; do not combine `S0G-2B`, `S0G-3A`, and `RUN-LEDGER-PATCH-001` into one cleanup PR merely because they all live on the same carrier.
+
+### P2-C1-S2 (Current-tail leave-behind rule | v1)
+
+- Leave patch-equivalent rows and pre-tail historical residue on the carrier until the current-tail unresolved set has either landed on `main` or been explicitly discarded.
+- Do not spend extraction effort on the intermediate `S4F` write-back/accounting commits while the later `RUN-LEDGER-PATCH-001` packet already owns the same close-out surfaces.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -172,16 +228,6 @@
 
 ## Plan (draft)
 
-### P1 (Inventory)
-
-- P1-C1-S1: classify current `S0G` branch history into patch-equivalent noise vs true branch-only history
-- P1-C1-S2: identify which branch-only tails still represent meaningful packets the user may want on `main`
-
-### P2 (Extraction order)
-
-- P2-C1-S1: define extraction order for current-tail `S4F`, runbook/governance, and any remaining branch-only packet families
-- P2-C1-S2: define what should be left behind as carrier-only historical context
-
 ### P3 (Steady state)
 
 - P3-C1-S1: return future new work to fresh `main`-based short branches after unresolved packet extraction is complete
@@ -190,25 +236,26 @@
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: carrier history classification rule fixed
-- [ ] `P0-C1-S2`: mainline trust restoration rule fixed
-- [ ] `P0-C1-S3`: current S0G transition baseline recorded
+- [x] `P0-C1-S1`: carrier history classification rule fixed
+- [x] `P0-C1-S2`: mainline trust restoration rule fixed
+- [x] `P0-C1-S3`: current S0G transition baseline recorded
 
 ### P1 (Inventory)
 
-- [ ] `P1-C1-S1`: current carrier history classified
-- [ ] `P1-C1-S2`: unresolved packet candidates listed
+- [x] `P1-C1-S1`: current carrier history classified
+- [x] `P1-C1-S2`: unresolved packet candidates listed
 
 ### P2 (Extraction order)
 
-- [ ] `P2-C1-S1`: extraction order fixed for current-tail packets
-- [ ] `P2-C1-S2`: carrier-only historical set declared
+- [x] `P2-C1-S1`: extraction order fixed for current-tail packets
+- [x] `P2-C1-S2`: carrier-only historical set declared
 
 ## Current Status (recommended)
 
 - `S0G-3B` is now the active discussion surface for transitioning away from `S0G-docs-management-v7` as a working branch without losing still-unmerged packet content.
 - The immediate problem is not only duplicate-looking history: `git log --cherry --left-right origin/main...S0G-docs-management-v7` already shows a very large branch-only set, so `S0G` must be treated as a real carrier inventory problem rather than a cosmetic history cleanup task.
-- Until that inventory and extraction order is explicit, `main` should be treated as the clean extraction base, but not yet as proof that every desired packet already exists there.
+- The first current-tail inventory is now explicit: `S0G-2B`, `S0G-3A`, and `RUN-LEDGER-PATCH-001` are still unresolved extraction candidates; the intermediate `S4F` write-back/accounting tail should move with `RUN-LEDGER-PATCH-001`; `S0G-3B` itself should extract after the first tail packets stabilize.
+- Until those first extraction candidates are handled, `main` should be treated as the clean extraction base, but not yet as proof that every desired packet already exists there.
 
 ## Evidence (reserved)
 
@@ -235,6 +282,44 @@
   - the recent tail should still show bounded packet candidates near the carrier head, even if older historical rows also exist.
 - observed:
   - the current tail includes recent `S0G-2B`, `S0G-3A`, `RUN-LEDGER-PATCH-001`, and post-merge `S4F` write-back rows, which confirms that extraction planning should start from the newest bounded packets rather than from the oldest historical carrier residue.
+
+### P1-C1-S1 (current-tail packet inventory fixed to actionable categories | 2026-04-21)
+
+- headSha: `975b25a4d`
+- artifacts:
+  - `git log --cherry --left-right --oneline origin/main...S0G-docs-management-v7 | Select-String 'S0G-2B|S0G-3A|S0G-3B|RUN-LEDGER-PATCH-001|S4F'`
+  - `git show --stat --summary --name-only 3ae6b7c63`
+  - `git show --stat --summary --name-only 7dc6cad50`
+  - `git show --stat --summary --name-only 19f503173`
+  - `git show --stat --summary --name-only 975b25a4d`
+  - `git show --stat --summary --name-only 7b6c7f70d`
+  - `git show --stat --summary --name-only 50110222e`
+  - `git show --stat --summary --name-only 8a80ad2dc`
+  - `git show --stat --summary --name-only a0e006693`
+  - `git show --stat --summary --name-only 2e7ca7cda`
+  - `git show --stat --summary --name-only 2516578c9`
+- expected:
+  - the current-tail packet candidates should separate into three useful categories: direct extraction candidates, tail commits already absorbed by a later unresolved packet, and older carrier-only history that can be left untouched for now.
+- observed:
+  - `S0G-2B`, `S0G-3A`, `RUN-LEDGER-PATCH-001`, and `S0G-3B` remain direct extraction candidates.
+  - the intermediate `S4F-2A/2B/2C` write-back/accounting tail touches the same `S4F` log files later rewritten by `RUN-LEDGER-PATCH-001`, so it should move with that later packet rather than open its own extraction lane first.
+
+### P2-C1-S1 (current-tail extraction order fixed to dependency-first sequence | 2026-04-21)
+
+- headSha: `975b25a4d`
+- artifacts:
+  - `git show --stat --summary --name-only 3ae6b7c63`
+  - `git show --stat --summary --name-only 7dc6cad50`
+  - `git show --stat --summary --name-only 19f503173`
+  - `git show --stat --summary --name-only 7b6c7f70d`
+  - `git show --stat --summary --name-only 975b25a4d`
+- expected:
+  - the first extraction order should prefer the packet whose rules and placement model are prerequisites for the later packets, instead of blindly following commit time.
+- observed:
+  - `S0G-2B` owns the support-only/legacy placement and patch-ledger bridge model, so it should land before later governance or workflow-family patch extraction relies on that placement.
+  - `S0G-3A` is the next narrow governance write-back and should land before more steady-state object-first packet handling relies on it.
+  - `RUN-LEDGER-PATCH-001` should follow as one bounded workflow-family packet that already absorbs the actionable `S4F` close-out tail.
+  - `S0G-3B` should remain the live inventory/control surface until the first extraction sequence stops changing.
 
 ## Recent changes (for traceability, optional)
 
