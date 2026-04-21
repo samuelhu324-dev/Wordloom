@@ -67,6 +67,7 @@ runbook_run_patch_ledger:
 - When the patch is triggered by one run outcome, it should also point to one explicit `parent run row id`; use `pending` only when the repair is being fixed before the first admitted run exists.
 - Every patch item must record one verification surface and one approval state.
 - Patch ledgers may carry screenshots, transcripts, and rich attachments the same way SUP ledgers do.
+- If a bounded repair is admitted under one patch ledger, the implementation changes, the patch ledger write-back, and any directly dependent sample/accounting write-back should ship in the same bounded patch commit packet rather than being split into a later standalone script or docs commit.
 
 ## Completion Rule
 
