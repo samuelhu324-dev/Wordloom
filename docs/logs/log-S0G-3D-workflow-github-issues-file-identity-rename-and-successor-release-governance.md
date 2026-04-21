@@ -57,7 +57,7 @@
   - physical rename of the current runbook and bound ledger series while preserving compatibility routing;
   - successor-release opening under a new file identity, with the current `001` release retained as the previous compatibility-era file.
 - The current default decision for this lane is now narrower: prefer physical rename in place for the current `001` family unless later evidence proves that the rename would implicitly change runbook semantics, split the admitted `RUN-001` accounting surface, or make compatibility routing materially more complex than opening one explicit successor release.
-- The decision must also define how compatibility readers land during transition: alias stub, retained legacy path, lineage-only redirect, or another explicit defended routing rule.
+- The decision must also define how compatibility readers land during transition: old exact paths should stay occupied by explicit compatibility stubs that point to the new canonical family paths instead of disappearing or silently remaining canonical by inertia.
 - This lane must treat runbook, parent-ledger, `SUP`, and `PATCH` surfaces as one file-identity family decision, not as unrelated rename choices made file by file.
 
 **Default choices (phase defaults / v1)**:
@@ -68,6 +68,7 @@
 - Do not physically rename current files until the repo explicitly decides whether rename-in-place or successor-release is the defended route.
 - If a successor release is opened, it must explain what becomes of the current `run-WORKFLOW-GITHUB-001-...` identity and whether the current `001` remains active, becomes legacy, or is superseded immediately.
 - If a physical rename is chosen, the lane must also define what happens to the old exact paths so historical links and reader entry points do not silently break.
+- If a physical rename is chosen, execute compatibility landing, lineage/write-back, and family-level path updates in one bounded packet rather than renaming the runbook and ledgers in separate rounds.
 
 ## PR Summary Inputs (optional)
 
@@ -203,6 +204,36 @@
 
 - P2-C1-S1: fix old-path landing and lineage/write-back rules for the chosen identity action
 
+## P2 (Compatibility and lineage | v1)
+
+### P2-C1-S1 (Compatibility landing and lineage/write-back rule fixed | v1)
+
+- **Compatibility landing rule under the preferred physical-rename shape**:
+  - the old exact runbook path should remain occupied by a slim compatibility stub rather than being deleted outright;
+  - the old exact parent-ledger and patch-ledger paths should also remain occupied by slim compatibility stubs under `docs/runbook/support-only/` rather than disappearing;
+  - each compatibility stub should do three things only:
+    - state that the old file identity is no longer canonical;
+    - point to the new canonical `WORKFLOW-GITHUB-ISSUES-001` path;
+    - preserve enough historical landing context that existing citations and reader entry points do not fail closed on missing files.
+- **Canonical-body placement rule under the preferred shape**:
+  - the full operator body should move to the renamed runbook file;
+  - the full admitted accounting body for `RUN-001` should move to the renamed parent-ledger file;
+  - the full bounded-repair body for `PATCH-001` should move to the renamed patch-ledger file;
+  - future `SUP` live files should open directly on the renamed canonical naming surface rather than creating one more live packet on the compatibility-era name.
+- **Lineage/write-back rule under the preferred shape**:
+  - keep `runbook_release: 001` unchanged during the rename packet;
+  - keep `run_sequence: 001`, `RUN-001`, target-row ids, target-stage-row ids, and patch item ids unchanged during the rename packet;
+  - treat the rename as file-identity repair for the same active release rather than as a fresh release event;
+  - write the renamed canonical files as the new full-body authorities, and write the old files as compatibility stubs that point forward to those authorities;
+  - update source-log references, runbook refs, ledger refs, and template examples in the same identity-implementation packet so the repo stops generating new packets against the compatibility-era paths.
+- **Why this landing rule is preferred now**:
+  - it matches the existing `S0G-2B` rule that old reader-facing paths should stay occupied by a stub instead of being deleted outright;
+  - it avoids splitting the already-admitted `RUN-001` and `PATCH-001` surfaces into separate lineage eras before a semantic change has been proven;
+  - it lets the repo preserve stable bridge keys while correcting the family token mismatch at the file-identity layer only.
+- **Removal/deprecation rule for old exact paths**:
+  - the old compatibility stubs should remain until at least one later bounded family packet proves the new canonical paths are the normal reader and writer landing surfaces;
+  - do not remove the old exact paths in the same packet that first performs the rename.
+
 ### P3 (Next execution packet)
 
 - P3-C1-S1: fix the next bounded implementation packet for the actual rename or successor-release work
@@ -220,7 +251,7 @@
 
 ### P2 (Compatibility and lineage)
 
-- [ ] `P2-C1-S1`: compatibility landing and lineage rule fixed
+- [x] `P2-C1-S1`: compatibility landing and lineage rule fixed
 
 ### P3 (Next execution packet)
 
@@ -231,7 +262,8 @@
 - `S0G-3D` is now the active discussion surface for the remaining file-identity decision after `S0G-3C` closed the strong-structure contract.
 - The current runbook family no longer needs template-shape debate first; it needs one explicit decision on whether the current compatibility-era filename should be renamed in place or replaced by a successor release identity.
 - `P1` is now fixed: for the current repo state, physical rename in place is the preferred execution shape, while successor release remains a reserved fallback only if rename would implicitly alter release meaning or make compatibility routing too complex.
-- The next useful work in this lane is now `P2`: fix one compatibility landing and lineage/write-back rule so the eventual identity-implementation packet can move the whole family together without splitting runbook and ledgers apart.
+- `P2` is now fixed: the old exact runbook and live-ledger paths should remain occupied by compatibility stubs, while the renamed `WORKFLOW-GITHUB-ISSUES-001` files become the new full-body authorities for the same active `001` release.
+- The next useful work in this lane is now `P3`: fix one bounded identity-implementation packet that renames the live family together, updates template/examples and source-log refs, and leaves the old exact paths in place as compatibility landings.
 
 ## Evidence (reserved)
 
@@ -264,7 +296,24 @@
   - the newer `SUP` and `PATCH` templates already assume `WORKFLOW-GITHUB-ISSUES-001` as the target canonical naming surface, which makes physical rename of the live family a better fit than opening a new release meaning before compatibility routing has even been fixed.
   - opening a successor release at this point would create extra lineage work across the active runbook, `RUN-001`, and `PATCH-001` even though the currently proven mismatch is file identity rather than release semantics.
 
+### P2-C1-S1 (compatibility landing should preserve old exact paths as stubs while `001` stays the same release | 2026-04-21)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `docs/logs/log-S0G-2B-support-only-ledger-placement-and-patch-ledger-bridge.md`
+  - `docs/logs/log-S0G-3A-runbook-release-issue-concentration-and-ledger-naming-governance.md`
+  - `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+- expected:
+  - the preferred rename path should preserve reader landing and historical references while avoiding a fake new release event for the already-admitted `001` family.
+- observed:
+  - `S0G-2B` already fixes the general rule that older reader-facing paths should remain occupied by a stub instead of being deleted outright when compatibility still matters.
+  - `S0G-3A` already fixes that object identity and file placement should be explicit rather than left mixed by inertia, which supports moving the full bodies to new canonical names while keeping old exact paths as landing surfaces only.
+  - the live runbook, parent ledger, and patch ledger all still point at the same active `001` release and admitted `RUN-001` accounting surface, so keeping release identity stable while repairing only file identity is the narrower write-back rule.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-21: opened `S0G-3D` as the next bounded governance lane after `S0G-3C` so the repo can decide physical rename versus successor-release handling for the current GitHub Issues workflow family.
 - 2026-04-21: fixed `P1` for `S0G-3D` by preferring physical rename in place for the current `001` family, while keeping successor release reserved as a fallback if compatibility or lineage constraints prove rename insufficient.
+- 2026-04-21: fixed `P2` for `S0G-3D` by requiring old exact paths to remain as compatibility stubs while the renamed `WORKFLOW-GITHUB-ISSUES-001` family becomes the new full-body authority for the same active `001` release.
