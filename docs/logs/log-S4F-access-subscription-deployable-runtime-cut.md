@@ -9,7 +9,7 @@
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, AccessControl, ReleaseOperations, epic/s4, epic/s4f`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/518`
   **pr**: ``
   **adr**: ``
   **runbook**: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
