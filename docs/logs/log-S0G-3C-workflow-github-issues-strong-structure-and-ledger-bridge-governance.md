@@ -59,6 +59,9 @@
 - Run sequence identity should mean one bounded admitted batch, not merely one button press. Later retries, refill rounds, completion passes, and evidence sharpening for the same bounded batch should normally attach through `SUP`, while `ledger-run-002` should open only when a genuinely new related batch begins.
 - The child-issue workflow profile is now fixed to use `PR_MERGED` rather than a review-only or mixed PR stage name, because the defended lifecycle state here should distinguish pre-merge work from merged-state admission clearly.
 - `SUP` and `PATCH` now follow an effect-based dual-surface rule instead of a forced single bucket: admitted-reading follow-up belongs in `SUP`, repair diffs belong in `PATCH`, and one follow-up packet may require both surfaces at once.
+- The bridge-key shape is now fixed to use sequence-only structural ids plus separate semantic refs: `run_row_id` such as `RUN-001`, `target_row_id` such as `RUN-001-T01`, and `target_stage_row_id` such as `RUN-001-T01-STG-CREATION`; reader-facing target identity such as `S4F-2A` should remain in separate semantic reference fields rather than inside the structural key itself.
+- A reserved attempt layer is now explicitly allowed for later replay-heavy stages: `target_stage_attempt_id` such as `RUN-001-T01-STG-CREATION-A01` may be introduced when one stage needs multiple defended attempts, but templates do not need to require that layer until replay density proves it necessary.
+- The rewrite order is now fixed: first narrow the runbook identity and family contract, then reshape the parent run-ledger tables around batch/target/stage grains, then upgrade `SUP`, then upgrade `PATCH`, and only after those steps decide whether a physical rename or successor release is necessary.
 
 **Default choices (phase defaults / v1)**:
 
@@ -71,6 +74,7 @@
 - `SUP` default boundary: later evidence, refill work, stage completion, and verdict sharpening for an already-open bounded batch.
 - `PATCH` default boundary: bounded repair work that unblocks or corrects the workflow while the runbook release stays unchanged.
 - If one change both repairs the workflow and changes the admitted reading of a previously opened batch, use both surfaces explicitly: `PATCH` for the repair packet, `SUP` for the later batch-level or stage-level write-back.
+- Structural bridge keys should stay sequence-only and machine-stable; semantic target identity should stay in dedicated reference fields.
 - Do not silently treat child-issue and parent-issue flows as the same just because both use GitHub issues.
 - Do not open `ledger-run-002` only because a second pass was needed on the same bounded issue set.
 
@@ -105,6 +109,7 @@
 - **workflow profile**: one defended lifecycle shape for a specific target kind, such as `child issue full lifecycle` or `parent issue light lifecycle`.
 - **target grain**: one stable accounting row for a single operated object inside a bounded run, for example one child issue log or one parent issue log.
 - **target-stage grain**: one stable accounting row for a single stage under one target, such as `CREATION`, `PR_PENDING`, `PR_REVIEWED_OR_MERGED`, or `CONCLUSION`.
+- **target-stage attempt**: one optional later replay row beneath a stable target-stage row, used only when one defended stage needs multiple attempts recorded explicitly.
 - **batch identity**: the rule that one run-row sequence represents one bounded admitted issue set, not merely one operator invocation.
 - **strong-structure bridge**: the stable key model that lets `Run Ledger`, `SUP`, and `PATCH` refer to the same run, target, and target-stage without prose-only matching.
 
@@ -229,7 +234,34 @@
   - one `run_row_id`
   - one `target_row_id`
   - one `target_stage_row_id`
+- Fixed key shape:
+  - `run_row_id`: `RUN-001`
+  - `target_row_id`: `RUN-001-T01`
+  - `target_stage_row_id`: `RUN-001-T01-STG-CREATION`
+- Semantic identity should stay adjacent rather than embedded:
+  - `target_ref_key`: `S4F-2A`
+  - `target_ref_path`: `<source-log-or-artifact-path>`
 - Later template rewrites should not rely on prose-only matching such as file names or comments to decide which run or stage a `SUP` or `PATCH` entry belongs to.
+
+### P2-C1-S5 (Attempt-layer reservation rule | fixed target)
+
+- Reserve one optional attempt layer under a target-stage row for later replay-heavy cases.
+- Preferred shape:
+  - `target_stage_attempt_id`: `RUN-001-T01-STG-CREATION-A01`
+- Do not require the attempt layer in the first parent-ledger rewrite unless one stage truly needs multiple defended attempts recorded separately.
+- Keep the first rewrite focused on stable run/target/stage rows, but preserve this reserved layer so later replays do not force a key redesign.
+
+## P3 (Rewrite sequence | v1)
+
+### P3-C1-S1 (Post-contract rewrite sequence fixed | v1)
+
+- Rewrite order for this family should be:
+  - first, runbook identity and family contract;
+  - second, parent run-ledger table shape;
+  - third, `SUP` template upgrade;
+  - fourth, `PATCH` template upgrade;
+  - fifth, only then decide whether to execute a physical rename or successor release.
+- Do not rewrite `SUP` or `PATCH` templates first while the parent ledger still lacks the final bridge-key and table-shape contract.
 
 ## Numbering
 
@@ -253,9 +285,7 @@
 
 ## Plan (draft)
 
-### P3 (Next-lane rewrite rule)
-
-- P3-C1-S1: fix the next rewrite sequence for `WORKFLOW-GITHUB-ISSUES` runbook identity, parent run-ledger table shape, and `SUP/PATCH` template upgrades after the contract is stable
+- The next bounded execution packet after `S0G-3C` should follow the fixed rewrite sequence rather than reopening contract questions during template work.
 
 ## Execution Checklist (unchecked)
 
@@ -276,21 +306,20 @@
 - [x] `P2-C1-S1`: SUP boundary rule fixed
 - [x] `P2-C1-S2`: PATCH boundary rule fixed
 - [x] `P2-C1-S3`: dual-surface effect rule fixed
-- [ ] `P2-C1-S4`: bridge key rule fixed
+- [x] `P2-C1-S4`: bridge key rule fixed
+- [x] `P2-C1-S5`: attempt-layer reservation rule fixed
 
-### P3 (Next-lane rewrite rule)
+### P3 (Rewrite sequence)
 
-- [ ] `P3-C1-S1`: post-contract rewrite sequence fixed
+- [x] `P3-C1-S1`: post-contract rewrite sequence fixed
 
 ## Current Status (recommended)
 
 - `S0G-3C` is now the bounded discussion surface for the strong-structure gap in the current GitHub Issues automation family.
 - The immediate problem is no longer only packet extraction or branch cleanup; it is that the current runbook/ledger shape is too weakly structured for a multi-stage, multi-target workflow family.
 - The current contract direction is now narrower and more concrete: the defended family token is `WORKFLOW-GITHUB-ISSUES`, the child-issue PR stage is `PR_MERGED`, target-stage rows now have a minimum required field set, and `SUP/PATCH` may dual-bind when one follow-up changes both admitted reading and repair implementation.
-- The next discussion step should now finish the remaining bridge-key and rewrite-sequencing questions before any rewrite execution starts:
-  - the exact `run_row_id / target_row_id / target_stage_row_id` bridge-key shape;
-  - whether any additional actor/review fields must be mandatory beyond the current minimum;
-  - the rewrite sequence for runbook identity, parent ledger table shape, and `SUP/PATCH` template upgrades.
+- The bridge-key shape is now fixed to stable structural ids plus semantic refs, and one optional attempt layer is reserved for later replay-heavy stages without forcing it into the first rewrite.
+- The next execution step after this contract lane should now follow the fixed rewrite order: runbook identity first, parent ledger table shape second, `SUP` template third, `PATCH` template fourth, and only then any rename or successor-release decision.
 
 ## Evidence (reserved)
 
@@ -328,6 +357,28 @@
   - the current family should be able to express later admitted-reading follow-up and bounded repair follow-up without collapsing both effects into one fake bucket.
 - observed:
   - the current runbook already separates `SUP` from `PATCH`, and this lane now fixes the stronger reading rule: admitted-reading follow-up goes to `SUP`, repair diff goes to `PATCH`, and one real follow-up may require both surfaces simultaneously.
+
+### P2-C1-S4 (bridge-key shape fixed to sequence-only structural ids plus semantic refs | 2026-04-21)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `docs/logs/log-S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance.md`
+- expected:
+  - the bridge-key contract should keep structural ids machine-stable while preserving human-readable target identity in separate reference fields.
+- observed:
+  - `run_row_id`, `target_row_id`, and `target_stage_row_id` are now fixed to `RUN-001`, `RUN-001-T01`, and `RUN-001-T01-STG-CREATION` style keys, while semantic identity such as `S4F-2A` is retained separately as `target_ref_key` and related reference fields.
+
+### P3-C1-S1 (rewrite sequence fixed so templates follow the parent ledger contract, not the reverse | 2026-04-21)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `docs/logs/log-S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance.md`
+  - `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+- expected:
+  - the first rewrite round should follow one stable sequence so `SUP/PATCH` templates are not rewritten against a still-moving parent-ledger shape.
+- observed:
+  - this lane now fixes the rewrite order explicitly: runbook identity, parent ledger table shape, `SUP`, `PATCH`, and only then any rename or successor-release decision.
 
 ## Recent changes (for traceability, optional)
 
