@@ -244,6 +244,28 @@
   - `round completed at`
   - `round verdict`
   - `notes`
+- This table is the canonical chronology carrier for the parent ledger. It answers when one admitted round happened, what scope it touched, and which packet opened that round.
+- `Execution Round Table` should not repeat one row per target or one row per stage. Its grain is one chronology round only.
+- The defended minimum row contract is:
+  - `execution round id`: stable chronology key such as `RUN-001-R03`
+  - `run row id`: stable bounded-run key such as `RUN-001`
+  - `round sequence`: ordinal inside the run, such as `03`
+  - `entry packet id`: packet that admitted the round, such as `SUP-002`
+  - `entry packet kind`: `ledger`, `SUP`, or `PATCH`
+  - `target scope`: concise set summary such as `T01-T04 + parent`
+  - `stage scope attempted`: concise stage set such as `CONCLUSION`
+  - `round started at` and `round completed at`: best defended timing for that chronology round
+  - `round verdict`: `completed`, `partial`, `blocked`, `superseded`, or later family-approved equivalent
+  - `notes`: bounded explanation only when the other columns are insufficient
+- A later repair packet may be listed in notes or evidence, but it should not become an execution-round row unless that repair changed the admitted chronology reading.
+- The first defended example shape for the current family is:
+
+| execution round id | run row id | round sequence | entry packet id | entry packet kind | target scope | stage scope attempted | round verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `RUN-001-R01` | `RUN-001` | `01` | `RUN-001` | `ledger` | `T01-T04 + parent` | `CREATION, PR_PENDING, PR_MERGED, CONCLUSION` | `completed_with_follow_up` |
+| `RUN-001-R02` | `RUN-001` | `02` | `SUP-001` | `SUP` | `T01-T04 + parent` | `CREATION` | `completed` |
+| `RUN-001-R03` | `RUN-001` | `03` | `SUP-002` | `SUP` | `T01-T04` | `CONCLUSION` | `completed` |
+- Under the defended redesign, the old `Batch Run Table` should either be removed or reduced to a very short current summary surface. It should not remain as a second implicit chronology table.
 
 ### P1-C1-S2 (Current Target Status Table and Target Stage Attempt Table | v1)
 
@@ -268,6 +290,66 @@
   - `blocking reason`
   - `supersedes attempt id`
   - `current?`
+- `Current Target Status Table` answers one question only: what is the latest defended reading for each target right now?
+- `Target Stage Attempt Table` answers the complementary history question: how did each target-stage reach that current reading over time?
+- The defended current-target row contract is:
+  - one row per `target_row_id`
+  - no duplicate target rows to represent chronology
+  - `current_status` should summarize the target as a whole, not one isolated stage
+  - `latest_updated_in_round` and `latest_updated_from_packet` must point to the chronology source of the current reading
+- The defended stage-attempt row contract is:
+  - one row per admitted attempt beneath one stable `target_stage_row_id`
+  - `attempt id` shape: `RUN-001-T01-STG-CONCLUSION-A02`
+  - `attempt ordinal` is local to one stable stage row and resets for each different stage row
+  - `current?` marks whether this attempt is the currently defended attempt for that stable stage row
+  - `supersedes attempt id` expresses direct replacement lineage when one later attempt sharpens or replaces an earlier attempt
+- Minimum current-target fields should be expanded to:
+  - `target row id`
+  - `target ref key`
+  - `target kind`
+  - `workflow profile`
+  - `first_seen_in_round`
+  - `first_seen_from_packet`
+  - `current_status`
+  - `current_stage_completion`
+  - `latest_updated_in_round`
+  - `latest_updated_from_packet`
+  - `latest_updated_at`
+  - `notes`
+- Minimum stage-attempt fields should be expanded to:
+  - `attempt id`
+  - `target row id`
+  - `stage row id`
+  - `stage name`
+  - `round id`
+  - `source packet id`
+  - `source packet kind`
+  - `attempt ordinal`
+  - `started at`
+  - `completed at`
+  - `status`
+  - `blocking reason`
+  - `supersedes attempt id`
+  - `current?`
+  - `notes`
+- The first defended current-target example for the active family is:
+
+| target row id | target ref key | current_status | current_stage_completion | latest_updated_in_round | latest_updated_from_packet |
+| --- | --- | --- | --- | --- | --- |
+| `RUN-001-T01` | `S4F-2A` | `converged` | `CREATION, PR_PENDING, PR_MERGED, CONCLUSION` | `RUN-001-R03` | `SUP-002` |
+| `RUN-001-T02` | `S4F-2B` | `converged` | `CREATION, PR_PENDING, PR_MERGED, CONCLUSION` | `RUN-001-R03` | `SUP-002` |
+
+- The first defended stage-attempt example for the active family is:
+
+| attempt id | stage row id | round id | source packet id | attempt ordinal | status | supersedes attempt id | current? |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `RUN-001-T01-STG-CONCLUSION-A01` | `RUN-001-T01-STG-CONCLUSION` | `RUN-001-R01` | `RUN-001` | `01` | `partial` | `` | `no` |
+| `RUN-001-T01-STG-CONCLUSION-A02` | `RUN-001-T01-STG-CONCLUSION` | `RUN-001-R03` | `SUP-002` | `02` | `completed` | `RUN-001-T01-STG-CONCLUSION-A01` | `yes` |
+
+- Old-to-new mapping is fixed as:
+  - old `Target Table` current meaning moves to `Current Target Status Table`
+  - old `Target Stage Table` chronology meaning moves to `Target Stage Attempt Table`
+  - any target-stage facts that are only current-state summaries should be rolled up into `current_stage_completion` or the top-level run summary rather than duplicated in both places
 
 ### P1-C1-S3 (Current Run Status Summary | v1)
 
@@ -279,6 +361,55 @@
   - target convergence count
   - latest chronology round
 - The goal is to let one reader answer “is this run operationally done, partially done, or still open?” without reading all downstream tables first.
+- This summary is a `current` surface, not a history log. It should present only the latest defended reading for the bounded run.
+- The defended minimum fields are:
+  - `run row id`
+  - `operational convergence`
+  - `accounting status`
+  - `approval status`
+  - `target convergence count`
+  - `target partial count`
+  - `target blocked count`
+  - `latest chronology round`
+  - `latest updated from packet`
+  - `reader verdict`
+  - `notes`
+- `operational convergence` answers whether the operated GitHub issue family has reached the claimed lifecycle state.
+- `accounting status` answers whether parent ledger, `SUP`, `PATCH`, evidence rows, and current/history write-back are structurally caught up enough for defended reading.
+- `approval status` remains the governance decision state and must not be used as a substitute for operational completion.
+- `reader verdict` is the one-line answer for readers who do not want to reconstruct the run from all downstream tables, for example `operationally converged; accounting backfill in progress` or `operationally and accountingly converged`.
+- The first defended example shape for the active family is:
+
+| run row id | operational convergence | accounting status | approval status | target convergence count | latest chronology round | latest updated from packet | reader verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `RUN-001` | `converged` | `converged_with_follow_up_packets` | `pending` | `4/4` | `RUN-001-R03` | `SUP-002` | `operationally converged; chronology-first parent-ledger redesign still pending` |
+
+- Placement rule is fixed as:
+  - place `Current Run Status Summary` near the top of the parent ledger, ahead of chronology/history tables
+  - place `Execution Round Table` next, because it is the shortest path from current state to defended chronology
+  - place `Current Target Status Table` after that
+  - place `Target Stage Attempt Table` after current target status
+  - keep evidence/support tables later in the file
+
+### P1-C1-S4 (Parent-ledger surface order and migration rule | v1)
+
+- The defended parent-ledger surface order is:
+  - `Current Run Status Summary`
+  - `Execution Round Table`
+  - `Current Target Status Table`
+  - `Target Stage Attempt Table`
+  - evidence/support tables
+- Migration from the current parent ledger should follow this order:
+  - rewrite the top-level run summary first so readers stop depending on the old batch table for current state
+  - rewrite chronology into `Execution Round Table`
+  - roll the old target table into `Current Target Status Table`
+  - convert replay/sharpened stage history into `Target Stage Attempt Table`
+  - only after those four surfaces are stable should the repo rewrite template examples and live family templates
+- `P1` is considered fixed when one reader can answer all of these without prose reconstruction:
+  - what is the current defended run state?
+  - what chronology rounds happened and in what order?
+  - what is the current defended state of each target?
+  - which stage attempt is current, and which attempt did it supersede?
 
 ## P2 (Family-specific template naming and migration | v1)
 
@@ -346,6 +477,7 @@
 - P1-C1-S1: replace ambiguous batch summary with `Execution Round Table`
 - P1-C1-S2: split target current state from stage-attempt chronology
 - P1-C1-S3: add one top-level current run summary surface
+- P1-C1-S4: fix parent-ledger surface order and migration sequence for live rewrite
 
 ### P2 (Template family migration)
 
@@ -368,9 +500,10 @@
 
 ### P1 (Ledger redesign)
 
-- [ ] `P1-C1-S1`: replace ambiguous batch summary with `Execution Round Table`
-- [ ] `P1-C1-S2`: add `Current Target Status Table` and `Target Stage Attempt Table`
-- [ ] `P1-C1-S3`: add `Current Run Status Summary`
+- [x] `P1-C1-S1`: replace ambiguous batch summary with `Execution Round Table`
+- [x] `P1-C1-S2`: add `Current Target Status Table` and `Target Stage Attempt Table`
+- [x] `P1-C1-S3`: add `Current Run Status Summary`
+- [x] `P1-C1-S4`: fix parent-ledger surface order and migration sequence for live rewrite
 
 ### P2 (Template family migration)
 
@@ -388,8 +521,9 @@
 - `S0G-3E` is now opened as the chronology-and-template-governance successor to `S0G-3D`.
 - The missing execution-round / stage-attempt layer is now the primary reader and template gap for the `WORKFLOW-GITHUB-ISSUES` family.
 - `P0` is now fixed at the contract level: execution-round admission, current-vs-history split, and packet attribution are explicit enough to drive the parent-ledger redesign.
-- The next step is `P1`: translate the fixed `P0` contract into concrete `Execution Round`, `Current Target Status`, `Target Stage Attempt`, and top-level run-summary surfaces before any template rename or live backfill lands.
-- No live runbook/template/ledger backfill should land until `P1` fixes the parent-ledger table responsibilities against this `P0` contract.
+- `P1` is now fixed at the parent-ledger model level: the chronology table, current target table, stage-attempt table, top-level run summary, and surface order are explicit enough to drive template migration.
+- The next step is `P2`: translate the fixed `P0` and `P1` contracts into a family-specific template quartet and explicit migration order before any live `RUN-001` rewrite lands.
+- No live runbook/template/ledger backfill should land until `P2` fixes the family-specific template ownership and migration path against this `P0` and `P1` model.
 
 ## Evidence (reserved)
 
@@ -399,5 +533,6 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-21: Completed `P1` parent-ledger redesign contract for `S0G-3E`, fixing `Current Run Status Summary`, `Execution Round Table`, `Current Target Status Table`, `Target Stage Attempt Table`, and the surface-order migration rule.
 - 2026-04-21: Completed `P0` contract fixation for `S0G-3E`, including explicit `execution_round_id` admission rules, current-vs-history table split, packet attribution fields, and a defended `RUN-001` chronology example.
 - 2026-04-21: Opened `S0G-3E` to formalize chronology-first run accounting and family-specific template governance for `WORKFLOW-GITHUB-ISSUES` after reader confusion in the active `RUN-001` ledger exposed the missing round/attempt layer.
