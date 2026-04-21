@@ -88,6 +88,26 @@ def _coerce_path(value: str, repo_root: Path) -> Path:
     return (repo_root / path).resolve()
 
 
+def _normalize_explicit_commit_shas(value: object) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        raw_items = [part.strip() for part in value.split(",")]
+    elif isinstance(value, list):
+        raw_items = [str(part).strip() for part in value]
+    else:
+        raise SystemExit("selected_commit_shas must be a string or array")
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in raw_items:
+        if not item:
+            continue
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
+
+
 def _load_manifest(path: Path) -> dict:
     try:
         return json.loads(path.read_text(encoding="utf-8-sig"))
@@ -231,21 +251,21 @@ def _build_pr_title(
     selected_commits: list[CommitSelection],
     checklist_phase_numbers: list[int],
 ) -> tuple[str, str, list[str]]:
+    parsed = [_parse_commit_subject(item.subject) for item in selected_commits]
+    parsed_infos = [item for item in parsed if item is not None]
+
+    if len(parsed_infos) == 1 and len(selected_commits) == 1:
+        return selected_commits[0].subject, "units", [str(parsed_infos[0]["unit"])]
+
     if len(checklist_phase_numbers) > 1:
         phase_refs = [f"P{value}" for value in checklist_phase_numbers]
         return f"{requested_id}/{_compress_phase_numbers(checklist_phase_numbers)}: {log_title}", "phases", phase_refs
-
-    parsed = [_parse_commit_subject(item.subject) for item in selected_commits]
-    parsed_infos = [item for item in parsed if item is not None]
 
     if len(parsed_infos) == len(selected_commits) and len(parsed_infos) > 1:
         phases = [int(item["phase"]) for item in parsed_infos]
         if len(set(phases)) > 1:
             phase_refs = [f"P{value}" for value in sorted(set(phases))]
             return f"{requested_id}/{_compress_phase_numbers(phases)}: {log_title}", "phases", phase_refs
-
-    if len(parsed_infos) == 1 and len(selected_commits) == 1:
-        return selected_commits[0].subject, "units", [str(parsed_infos[0]["unit"])]
 
     if parsed_infos:
         units = "+".join(str(item["unit"]) for item in parsed_infos)
@@ -615,15 +635,43 @@ def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: 
         )
 
     merge_base, branch_commits = _collect_branch_commits(base_branch, head_ref)
+    explicit_selected_shas = _normalize_explicit_commit_shas(
+        item.get("selected_commit_shas") or defaults.get("selected_commit_shas")
+    )
     selected_commits: list[CommitSelection] = []
-    for commit in branch_commits:
-        if commit.matched_id == requested_id:
+    if explicit_selected_shas:
+        branch_commits_by_sha = {commit.sha: commit for commit in branch_commits}
+        missing_shas = [sha for sha in explicit_selected_shas if sha not in branch_commits_by_sha]
+        if missing_shas:
+            raise SystemExit(
+                "selected_commit_shas must refer to branch-exclusive commits reachable from the chosen head/base boundary: "
+                + ", ".join(missing_shas)
+            )
+        for sha in explicit_selected_shas:
+            commit = branch_commits_by_sha[sha]
+            if commit.matched_id != requested_id:
+                raise SystemExit(
+                    f"selected_commit_shas item {sha} does not match requested ID prefix {requested_id}: {commit.subject}"
+                )
             commit.status = "selected"
-            commit.reason = "commit subject matches requested ID prefix"
+            commit.reason = "commit SHA selected explicitly by manifest"
             selected_commits.append(commit)
-        else:
+        selected_sha_set = set(explicit_selected_shas)
+        for commit in branch_commits:
+            if commit.sha in selected_sha_set:
+                continue
             commit.status = "skipped"
-            commit.reason = "commit subject does not match requested ID prefix"
+            commit.reason = "commit SHA not included in explicit manifest selection"
+        warnings.append("selected commits narrowed by explicit selected_commit_shas manifest input")
+    else:
+        for commit in branch_commits:
+            if commit.matched_id == requested_id:
+                commit.status = "selected"
+                commit.reason = "commit subject matches requested ID prefix"
+                selected_commits.append(commit)
+            else:
+                commit.status = "skipped"
+                commit.reason = "commit subject does not match requested ID prefix"
 
     if not selected_commits:
         warnings.append("no branch-exclusive commits matched the requested ID prefix")
