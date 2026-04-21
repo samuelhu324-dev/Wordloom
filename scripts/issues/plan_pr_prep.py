@@ -553,11 +553,12 @@ def _collect_branch_commits(base_branch: str, head_ref: str) -> tuple[str, list[
     return merge_base, items
 
 
-def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_path: Path) -> PrPrepPlanItem:
+def _build_plan_item(item: dict, defaults: dict, repo_root: Path, preview_dir: Path, preview_stem: str) -> PrPrepPlanItem:
     warnings: list[str] = []
     requested_id = (item.get("requested_id") or defaults.get("requested_id") or "").strip()
     if not requested_id:
         raise SystemExit("PR-prep manifest item missing requested_id")
+    preview_path = preview_dir / f"{preview_stem}-{requested_id.lower()}-body.md"
 
     source_log_value = item.get("source_log_path") or defaults.get("source_log_path")
     if not source_log_value:
@@ -731,8 +732,9 @@ def plan_pr_prep(args: argparse.Namespace) -> PrPrepPlanResult:
     plan_path = _coerce_path(args.plan_path, repo_root) if args.plan_path else default_plan_path
     plan_path.parent.mkdir(parents=True, exist_ok=True)
 
-    preview_path = plan_path.with_name(f"{manifest_slug}-body.md")
-    plan_items = [_build_plan_item(item, defaults, repo_root, preview_path) for item in items]
+    preview_dir = plan_path.parent
+    preview_stem = manifest_slug
+    plan_items = [_build_plan_item(item, defaults, repo_root, preview_dir, preview_stem) for item in items]
     top_warnings: list[str] = []
     for item in plan_items:
         for warning in item.warnings:
