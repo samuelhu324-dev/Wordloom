@@ -9,8 +9,8 @@
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, NetworkTrust, ReleaseOperations, Drills, Evidence, epic/s4, sub/2b`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/509`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/513`
   **runbook**: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4F-access-subscription-deployable-runtime-cut.md`
@@ -90,10 +90,6 @@
 - `infra/terraform/aws/runner-host/terraform.tfvars`
 - `docs/runbook/run-S4D-cloud-stable-runner-cutover.md`
 - `.github/workflows/s4d-cloud-release-dispatch-stable-runner.yml`
-
-**Evidence Footer Source**:
-
-- `P2-C1-S1` | artifact: ``
 
 ## Definitions (optional)
 

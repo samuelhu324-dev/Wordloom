@@ -9,8 +9,8 @@
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, CloudRuntime, AccessControl, Verification, Drills, Evidence, epic/s4, sub/1a`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/507`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/511`
   **runbook**: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4F-access-subscription-deployable-runtime-cut.md`

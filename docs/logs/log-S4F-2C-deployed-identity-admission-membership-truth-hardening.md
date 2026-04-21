@@ -9,8 +9,8 @@
 **scope**: `S4`
 **tags**: `EVOLUTION, AccessControl, Auth, CloudRuntime, CredibleSimulation, Drills, Evidence, epic/s4, sub/2c`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/510`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/514`
   **runbook**: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4F-access-subscription-deployable-runtime-cut.md`
@@ -86,10 +86,6 @@
 - Log: `docs/logs/log-S4F-2C-deployed-identity-admission-membership-truth-hardening.md`
 - Runbook: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
 - Evidence artifact: ``
-
-**Evidence Footer Source**:
-
-- `P1-C1-S1` | artifact: ``
 
 ## Definitions (optional)
 
