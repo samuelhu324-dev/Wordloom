@@ -87,10 +87,6 @@
 - Runbook: `docs/runbook/run-S4D-cloud-runtime-release-operations.md`
 - Evidence artifact: ``
 
-**Evidence Footer Source**:
-
-- `P1-C1-S1` | artifact: ``
-
 ## Definitions (optional)
 
 - `backend-issued or backend-validated identity truth`: deployed identity/session state that the backend issues or verifies, rather than the browser unilaterally asserting standing.
