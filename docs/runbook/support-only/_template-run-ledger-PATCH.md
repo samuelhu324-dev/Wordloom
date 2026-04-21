@@ -9,20 +9,20 @@ This patch ledger is a support-only, supplement-class surface: it owns patch-lev
 - `ledger-run-PATCH-<patch-sequence>` is the fixed prefix and records the append-only patch round for one stable runbook release.
 - `<RUNBOOK-FAMILY>-<RUNBOOK-RELEASE>-<summary>` must match the bound runbook suffix exactly.
 - Preferred example shape:
-  - `ledger-run-PATCH-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+  - `ledger-run-PATCH-001-WORKFLOW-FAMILY-001-operator-surface.md`
 
 ## Minimal Header
 
 ```yaml
 runbook_run_patch_ledger:
-  patch_ledger_id: <ledger-run-PATCH-001-WORKFLOW-GITHUB-ISSUES-001-summary>
+  patch_ledger_id: <ledger-run-PATCH-001-RUNBOOK-FAMILY-001-summary>
   patch_kind: runbook-run-ledger-patch
   status: <draft|active|completed>
   owner_lane: <S0G-3C>
-  parent_runbook_id: <run-WORKFLOW-GITHUB-ISSUES-001-summary>
-  parent_runbook_ref: <docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-summary.md>
-  parent_run_ledger_id: <ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-summary>
-  parent_run_ledger_ref: <docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-summary.md>
+  parent_runbook_id: <run-RUNBOOK-FAMILY-001-summary>
+  parent_runbook_ref: <docs/runbook/run-RUNBOOK-FAMILY-001-summary.md>
+  parent_run_ledger_id: <ledger-run-001-RUNBOOK-FAMILY-001-summary>
+  parent_run_ledger_ref: <docs/runbook/support-only/ledger-run-001-RUNBOOK-FAMILY-001-summary.md>
   parent_run_row_id: <RUN-001|pending|not-yet-bound>
   parent_target_row_id: <RUN-001-T01|pending|not-applicable>
   parent_target_stage_row_id: <RUN-001-T01-STG-CREATION|pending|not-applicable>

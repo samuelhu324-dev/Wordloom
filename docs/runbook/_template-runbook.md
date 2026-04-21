@@ -9,9 +9,9 @@ Do not replay full phase history inside the runbook; link back to logs, contract
 
 ```yaml
 runbook_record:
-  runbook_family: <WORKFLOW-GITHUB>
+  runbook_family: <RUNBOOK-FAMILY>
   runbook_release: <001>
-  runbook_id: <run-WORKFLOW-GITHUB-001-summary>
+  runbook_id: <run-RUNBOOK-FAMILY-001-summary>
   record_kind: ledger-aware-runbook
   status: <draft|active|deprecated|superseded|retired>
   release_action: <initial|simple-revision|merge|split-parent|split-child|absorption|consolidation|historical-backfill>
@@ -22,9 +22,9 @@ runbook_record:
   entry_surface: <workflow|script|task|dispatch|manual>
   evidence_surface: <summary.json|result.json|run-ledger|other>
   ledger_binding:
-    parent_run_ledger: <docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-summary.md>
-    supplementary_ledger_series: <docs/runbook/support-only/ledger-run-SUP-001-WORKFLOW-GITHUB-001-summary.md>
-    patch_ledger_series: <docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-001-summary.md>
+    parent_run_ledger: <docs/runbook/support-only/ledger-run-001-RUNBOOK-FAMILY-001-summary.md>
+    supplementary_ledger_series: <docs/runbook/support-only/ledger-run-SUP-001-RUNBOOK-FAMILY-001-summary.md>
+    patch_ledger_series: <docs/runbook/support-only/ledger-run-PATCH-001-RUNBOOK-FAMILY-001-summary.md>
     minimum_evidence_files:
       - <summary.json>
       - <result.json>
@@ -72,7 +72,7 @@ runbook_record:
 - `<RUNBOOK-FAMILY>` should follow contract-like long-path grammar and remain stable across revisions.
 - `<RELEASE>` is append-only inside one stable runbook family.
 - Preferred example shape:
-  - `run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `run-WORKFLOW-FAMILY-001-operator-surface.md`
 
 ## Lifecycle Field Rule
 

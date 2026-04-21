@@ -8,20 +8,20 @@ This SUP file owns later evidence admission and review for one existing run, tar
 - Name SUP ledgers as `ledger-run-SUP-<sequence>-<RUNBOOK-FAMILY>-<RUNBOOK-RELEASE>-<summary>.md`.
 - `<sequence>` is the append-only supplement round for the bound runbook release.
 - Preferred example shape:
-  - `ledger-run-SUP-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+  - `ledger-run-SUP-001-WORKFLOW-FAMILY-001-operator-surface.md`
 
 ## Minimal Header
 
 ```yaml
 runbook_run_ledger_supplement:
-  supplement_series_id: <ledger-run-SUP-WORKFLOW-GITHUB-ISSUES-001-summary>
+  supplement_series_id: <ledger-run-SUP-RUNBOOK-FAMILY-001-summary>
   supplement_sequence: <001>
-  supplement_id: <ledger-run-SUP-001-WORKFLOW-GITHUB-ISSUES-001-summary>
+  supplement_id: <ledger-run-SUP-001-RUNBOOK-FAMILY-001-summary>
   supplement_kind: runbook-run-ledger-supplement
   status: <draft|active|completed>
   owner_lane: <S0G-3C>
-  parent_run_ledger_id: <ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-summary>
-  parent_runbook_id: <run-WORKFLOW-GITHUB-ISSUES-001-summary>
+  parent_run_ledger_id: <ledger-run-001-RUNBOOK-FAMILY-001-summary>
+  parent_runbook_id: <run-RUNBOOK-FAMILY-001-summary>
   parent_run_row_id: <RUN-001>
   parent_target_row_id: <RUN-001-T01>
   parent_target_stage_row_id: <RUN-001-T01-STG-CREATION>

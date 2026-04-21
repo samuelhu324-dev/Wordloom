@@ -18,9 +18,10 @@
   **reference_log_1**: `docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md`
   **reference_log_2**: `docs/logs/log-S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance.md`
   **reference_log_3**: `docs/logs/log-S0G-3D-workflow-github-issues-file-identity-rename-and-successor-release-governance.md`
-  **reference_log_4**: `docs/runbook/support-only/_template-run-ledger.md`
-  **reference_log_5**: `docs/runbook/support-only/_template-run-ledger-SUP.md`
-  **reference_log_6**: `docs/runbook/support-only/_template-run-ledger-PATCH.md`
+  **reference_log_4**: `docs/runbook/_template-runbook-WORKFLOW-GITHUB-ISSUES.md`
+  **reference_log_5**: `docs/runbook/support-only/_template-run-ledger-WORKFLOW-GITHUB-ISSUES.md`
+  **reference_log_6**: `docs/runbook/support-only/_template-run-ledger-SUP-WORKFLOW-GITHUB-ISSUES.md`
+  **reference_log_7**: `docs/runbook/support-only/_template-run-ledger-PATCH-WORKFLOW-GITHUB-ISSUES.md`
 **issue_keyword**: `workflow`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3e`
@@ -100,9 +101,10 @@
 **Evidence Footer Source**:
 
 - `P0-C1-S1` | artifact: `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
-- `P0-C1-S2` | artifact: `docs/runbook/support-only/_template-run-ledger.md`
-- `P1-C1-S1` | artifact: `docs/runbook/support-only/_template-run-ledger-SUP.md`
-- `P1-C1-S2` | artifact: `docs/runbook/support-only/_template-run-ledger-PATCH.md`
+- `P0-C1-S2` | artifact: `docs/runbook/support-only/_template-run-ledger-WORKFLOW-GITHUB-ISSUES.md`
+- `P1-C1-S1` | artifact: `docs/runbook/support-only/_template-run-ledger-SUP-WORKFLOW-GITHUB-ISSUES.md`
+- `P1-C1-S2` | artifact: `docs/runbook/support-only/_template-run-ledger-PATCH-WORKFLOW-GITHUB-ISSUES.md`
+- `P2-C1-S1` | artifact: `docs/runbook/_template-runbook-WORKFLOW-GITHUB-ISSUES.md`
 
 ## Definitions (optional)
 
@@ -608,7 +610,7 @@
 - `P1` is now fixed at the parent-ledger model level: the chronology table, current target table, stage-attempt table, top-level run summary, and surface order are explicit enough to drive template migration.
 - `P2` is now fixed at the template-governance level: the family-specific quartet names, ownership boundaries, migration order, compatibility boundary, and first live write-back scope are explicit enough to drive one bounded implementation packet.
 - `P3` is now executed as one bounded family packet: the `WORKFLOW-GITHUB-ISSUES` template quartet exists, the live runbook points to that quartet, the parent ledger now separates current state from chronology history, and the active `SUP` / `PATCH` packets are aligned to the new read model.
-- The immediate next step is no longer another contract phase inside `S0G-3E`; it is follow-up cleanup or adoption work, such as moving future packet creation onto the family-specific templates and deciding whether any compatibility-era template/example surfaces should be thinned further.
+- The immediate next step is no longer another contract phase inside `S0G-3E`; it is follow-up cleanup or adoption work, such as moving future packet creation onto the family-specific templates and thinning any remaining generic-template teaching surfaces that still point this family back to the generic skeletons.
 - No further live backfill should bypass the family-specific quartet, because template authority and live write-back scope are now fixed together.
 
 ## Evidence (reserved)
@@ -619,6 +621,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-21: Executed the first post-`P3` adoption cleanup for `S0G-3E`, switching this governance log's decisive template references to the `WORKFLOW-GITHUB-ISSUES` quartet and removing family-specific teaching examples from the generic runbook and ledger skeletons.
 - 2026-04-21: Executed `P3` bounded implementation for `S0G-3E`, creating the `WORKFLOW-GITHUB-ISSUES` family-specific template quartet, wiring live runbook template authority, rewriting `RUN-001` into current/history surfaces, and aligning active `SUP` / `PATCH` packet notes with the chronology-first model.
 - 2026-04-21: Completed `P2` template-governance contract for `S0G-3E`, fixing the `WORKFLOW-GITHUB-ISSUES` family-specific quartet names, generic-versus-family authority split, migration order, compatibility boundary, and first live write-back scope.
 - 2026-04-21: Completed `P1` parent-ledger redesign contract for `S0G-3E`, fixing `Current Run Status Summary`, `Execution Round Table`, `Current Target Status Table`, `Target Stage Attempt Table`, and the surface-order migration rule.
