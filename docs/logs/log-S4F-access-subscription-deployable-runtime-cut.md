@@ -77,7 +77,7 @@
 **PR links**:
 
 - Parent log: `docs/logs/log-S4F-access-subscription-deployable-runtime-cut.md`
-- Child log source(s): `docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md` ; `docs/logs/log-S4F-2A-cloud-target-operator-evidence-packet.md`
+- Child log source(s): `docs/logs/log-S4F-1A-backend-only-access-subscription-deployable-cut.md`
 - Evidence artifact: `artifacts/_tmp_s4f1a_p2_run_24652525475/labs-evidence-verify_access_subscription_deployable_cut-24652525475-1-verify_access_subscription_deployable_cut/summary.json`
 
 ## Background（背景）

@@ -153,6 +153,26 @@ scenarios:
       - runtime:db_only
       - s2c:s2c2a
 
+  - id: verify/access_subscription/deployable_cut
+    aliases:
+      - s4f1a_access_subscription_deployable_cut
+    cli: >-
+      python scripts/drills/s4f1a_p2c1s1_access_subscription_runner.py
+      --env-file "$ENV_FILE"
+      --run-id "$RUN_ID"
+      --outdir "docs/labs/_snapshot/auto/S4F-1A/access_subscription_deployable_cut/$RUN_ID"
+    requires:
+      db: true
+      es: false
+      jaeger: false
+      worker: false
+    defaults: {}
+    tags:
+      - intent:verify
+      - pipeline:access_subscription
+      - runtime:db_api
+      - s4f:s4f1a
+
   - id: verify/chronicle/rebuild_entries_smoke
     aliases:
       - s2c3a_rebuild_chronicle_entries_smoke
