@@ -257,10 +257,6 @@ def _build_pr_title(
     if len(parsed_infos) == 1 and len(selected_commits) == 1:
         return selected_commits[0].subject, "units", [str(parsed_infos[0]["unit"])]
 
-    if len(checklist_phase_numbers) > 1:
-        phase_refs = [f"P{value}" for value in checklist_phase_numbers]
-        return f"{requested_id}/{_compress_phase_numbers(checklist_phase_numbers)}: {log_title}", "phases", phase_refs
-
     if len(parsed_infos) == len(selected_commits) and len(parsed_infos) > 1:
         phases = [int(item["phase"]) for item in parsed_infos]
         if len(set(phases)) > 1:
@@ -272,6 +268,10 @@ def _build_pr_title(
         summaries = _dedupe([str(item["summary"]) for item in parsed_infos])
         summary_text = "; ".join(summaries) if summaries else log_title
         return f"{requested_id}/{units}: {summary_text}", "units", _dedupe([str(item["unit"]) for item in parsed_infos])
+
+    if len(checklist_phase_numbers) > 1:
+        phase_refs = [f"P{value}" for value in checklist_phase_numbers]
+        return f"{requested_id}/{_compress_phase_numbers(checklist_phase_numbers)}: {log_title}", "phases", phase_refs
 
     return f"{requested_id}: {log_title}", "all", []
 
