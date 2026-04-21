@@ -319,7 +319,8 @@
 - The immediate problem is no longer only packet extraction or branch cleanup; it is that the current runbook/ledger shape is too weakly structured for a multi-stage, multi-target workflow family.
 - The current contract direction is now narrower and more concrete: the defended family token is `WORKFLOW-GITHUB-ISSUES`, the child-issue PR stage is `PR_MERGED`, target-stage rows now have a minimum required field set, and `SUP/PATCH` may dual-bind when one follow-up changes both admitted reading and repair implementation.
 - The bridge-key shape is now fixed to stable structural ids plus semantic refs, and one optional attempt layer is reserved for later replay-heavy stages without forcing it into the first rewrite.
-- The next execution step after this contract lane should now follow the fixed rewrite order: runbook identity first, parent ledger table shape second, `SUP` template third, `PATCH` template fourth, and only then any rename or successor-release decision.
+- The first rewrite packet is now executed for the first two steps in that order: the runbook identity has narrowed to the defended GitHub Issues family at contract level, and the parent ledger now exposes batch, target, and target-stage grains for `RUN-001`.
+- The next execution step after this rewrite packet should now continue with `SUP` template upgrade first, then `PATCH` template upgrade, and only after those two rewrites decide whether a physical rename or successor-release decision is actually warranted.
 
 ## Evidence (reserved)
 
@@ -380,6 +381,19 @@
 - observed:
   - this lane now fixes the rewrite order explicitly: runbook identity, parent ledger table shape, `SUP`, `PATCH`, and only then any rename or successor-release decision.
 
+### P3-C1-S2 (first rewrite packet executed for runbook identity and parent-ledger table shape | 2026-04-21)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+- expected:
+  - the first rewrite packet should apply the already-fixed family identity narrowing and rewrite the parent ledger around batch, target, and target-stage grains before any `SUP/PATCH` template rewrite begins.
+- observed:
+  - the runbook now defends the narrower `WORKFLOW-GITHUB-ISSUES` family at contract level while retaining the existing file identity for compatibility.
+  - the parent ledger now exposes one batch row, four target rows, and explicit target-stage rows for `CREATION`, `PR_PENDING`, `PR_MERGED`, and `CONCLUSION`, including the retained milestone-skip and blank-parent metadata gaps at creation stage.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-21: opened `S0G-3C` to govern workflow-family identity narrowing, child-vs-parent workflow profiles, batch/target/stage accounting granularity, and strong-structure bridge rules across `Run Ledger`, `SUP`, and `PATCH`.
+- 2026-04-21: executed the first rewrite packet under `S0G-3C` by narrowing the runbook family contract to `WORKFLOW-GITHUB-ISSUES` and reshaping `RUN-001` around batch, target, and target-stage tables before any `SUP/PATCH` template rewrite.
