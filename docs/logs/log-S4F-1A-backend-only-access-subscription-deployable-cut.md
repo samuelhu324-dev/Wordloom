@@ -23,7 +23,7 @@
 **issue_top_labels**: ``
 **issue_scope_labels**: ``
 **issue_module_labels**: ``
-**issue_milestone**: ``
+**issue_milestone**: `road-002-01: deployable runtime slice and cloud backed asset readiness`
 **issue_parent**: ``
 **issue_projects**: ``
 **roadmap_path**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
@@ -32,7 +32,7 @@
 **roadmap_bridge_refs**: ``
 **pr_labels**: `drills`
 **pr_projects**: ``
-**pr_milestone**: ``
+**pr_milestone**: `road-002-01: deployable runtime slice and cloud backed asset readiness`
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-20`
