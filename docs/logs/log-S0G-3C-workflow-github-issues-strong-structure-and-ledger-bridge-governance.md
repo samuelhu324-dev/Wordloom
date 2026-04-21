@@ -21,7 +21,7 @@
   **reference_log_4**: `docs/runbook/support-only/_template-run-ledger-SUP.md`
 **issue_keyword**: `workflow`
 **issue_top_labels**: `EVOLUTION`
-**issue_scope_labels**: `s0/knowledge system, sub/3`
+**issue_scope_labels**: `s0/knowledge system, sub/3c`
 **issue_module_labels**: ``
 **issue_milestone**: `road-002: projection runtime platformization and evidence governance`
 **issue_parent**: ``
@@ -37,7 +37,7 @@
 **pr_development_issue**: ``
 **created**: `2026-04-21`
 **updated**: `2026-04-21`
-**reviewed**: `pending`
+**reviewed**: `2026-04-21`
 
 ---
 
@@ -103,12 +103,13 @@
 - `P0-C1-S1` | artifact: `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
 - `P0-C1-S2` | artifact: `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
 - `P1-C1-S1` | artifact: `docs/runbook/support-only/_template-run-ledger-SUP.md`
+- `P2-C1-S2` | artifact: `docs/runbook/support-only/_template-run-ledger-PATCH.md`
 
 ## Definitions (optional)
 
 - **workflow profile**: one defended lifecycle shape for a specific target kind, such as `child issue full lifecycle` or `parent issue light lifecycle`.
 - **target grain**: one stable accounting row for a single operated object inside a bounded run, for example one child issue log or one parent issue log.
-- **target-stage grain**: one stable accounting row for a single stage under one target, such as `CREATION`, `PR_PENDING`, `PR_REVIEWED_OR_MERGED`, or `CONCLUSION`.
+- **target-stage grain**: one stable accounting row for a single stage under one target, such as `CREATION`, `PR_PENDING`, `PR_MERGED`, or `CONCLUSION`.
 - **target-stage attempt**: one optional later replay row beneath a stable target-stage row, used only when one defended stage needs multiple attempts recorded explicitly.
 - **batch identity**: the rule that one run-row sequence represents one bounded admitted issue set, not merely one operator invocation.
 - **strong-structure bridge**: the stable key model that lets `Run Ledger`, `SUP`, and `PATCH` refer to the same run, target, and target-stage without prose-only matching.
@@ -314,7 +315,7 @@
 - [x] `P3-C1-S1`: post-contract rewrite sequence fixed
 - [x] `P3-C1-S2`: first rewrite packet executed for runbook identity and parent-ledger table shape
 - [x] `P3-C1-S3`: `SUP` template upgraded to run/target/stage bridge shape
-- [ ] `P3-C1-S4`: `PATCH` template upgrade pending
+- [x] `P3-C1-S4`: `PATCH` template upgraded to run/target/stage bridge shape
 
 ## Current Status (recommended)
 
@@ -324,7 +325,8 @@
 - The bridge-key shape is now fixed to stable structural ids plus semantic refs, and one optional attempt layer is reserved for later replay-heavy stages without forcing it into the first rewrite.
 - The first rewrite packet is now executed for the first two steps in that order: the runbook identity has narrowed to the defended GitHub Issues family at contract level, and the parent ledger now exposes batch, target, and target-stage grains for `RUN-001`.
 - The `SUP` template is now rewritten to bind later evidence through `run_row_id`, `target_row_id`, and `target_stage_row_id`, while leaving the optional attempt layer available only when replay density truly needs it.
-- The next execution step after this rewrite packet should now continue with `PATCH` template upgrade next, and only after that rewrite decide whether a physical rename or successor-release decision is actually warranted.
+- The `PATCH` template is now rewritten to bind bounded repair packets through the same run/target/stage structural keys, while still keeping `PATCH` distinct from `SUP` at the effect layer.
+- The structural rewrite sequence is now executed through `P3-C1-S4`, so the next decision surface is no longer template shape; it is whether the repo should mark this governance lane stable and then decide on physical rename or successor-release handling.
 
 ## Evidence (reserved)
 
@@ -410,8 +412,23 @@
   - the template now keeps semantic identity adjacent in `target_ref_key` and `target_ref_path` rather than embedding it into the structural ids.
   - the template now supports finer parent-ledger actions such as `rewrite-target-row` and `rewrite-target-stage-row`, which makes later stage-level refill and admitted-reading follow-up reviewable without reopening the whole run row.
 
+### P3-C1-S4 (PATCH template rewritten to attach bounded repair packets at run, target, and target-stage grains | 2026-04-21)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `docs/runbook/support-only/_template-run-ledger-PATCH.md`
+  - `docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
+  - `docs/runbook/support-only/_template-run-ledger-SUP.md`
+- expected:
+  - the final structural rewrite step should let `PATCH` use the same stable bridge keys and finer parent-ledger action vocabulary as the parent ledger and `SUP`, while preserving the effect-level distinction between repair packets and admitted-reading follow-up.
+- observed:
+  - the `PATCH` template now requires explicit structural attachment through `parent_run_row_id`, `parent_target_row_id`, and `parent_target_stage_row_id`, with the optional attempt layer still reserved rather than forced.
+  - the template now keeps semantic identity adjacent in `target_ref_key` and `target_ref_path` rather than embedding target meaning into the structural ids.
+  - the template now supports finer parent-ledger actions such as `rewrite-target-row`, `rewrite-target-stage-row`, and `open-sup-ledger`, which keeps bounded repair work reviewable without collapsing repair and admitted-reading effects into one surface.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-21: opened `S0G-3C` to govern workflow-family identity narrowing, child-vs-parent workflow profiles, batch/target/stage accounting granularity, and strong-structure bridge rules across `Run Ledger`, `SUP`, and `PATCH`.
 - 2026-04-21: executed the first rewrite packet under `S0G-3C` by narrowing the runbook family contract to `WORKFLOW-GITHUB-ISSUES` and reshaping `RUN-001` around batch, target, and target-stage tables before any `SUP/PATCH` template rewrite.
 - 2026-04-21: upgraded the `SUP` template under `S0G-3C` so later admitted-reading follow-up now binds explicitly to run, target, and target-stage structural keys instead of only to a run row.
+- 2026-04-21: upgraded the `PATCH` template under `S0G-3C` so bounded repair packets now bind explicitly to the same run, target, and target-stage structural keys while still deferring rename or successor-release decisions.
