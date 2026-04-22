@@ -27,6 +27,18 @@ runbook_run_patch_ledger:
   target_reading_goal: <what later readers should understand>
 ```
 
+## Patch Packet Summary
+
+| patch ledger id | patch sequence | parent run row id | repair scope | packet verdict | current release effect | admitted chronology effect | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `<PATCH-001>` | `<001>` | `<RUN-001>` | `<issue draft milestone override and PR-prep preview-path repair>` | `<completed>` | `<no-release-bump>` | `<no-direct-chronology-change>` | `<optional>` |
+
+## Repair Delta Table
+
+| patch item id | target artifact or path | repair class | prior defect reading | new defended repair reading | effect on admitted chronology | requires paired SUP? | paired SUP ref | parent-ledger writeback | primary evidence ref | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<PATCH-001-I01>` | `<script path>` | `<script-fix>` | `<operator flow failed closed or mis-shaped bounded repair surface>` | `<bounded repair now completes with defended guardrails retained>` | `<no-direct-chronology-change>` | `<no>` | `<not-required>` | `<append-patch-ref>` | `<artifact path>` | `<optional>` |
+
 ## Patch Change Table
 
 | patch item id | parent run row id | target row id | target stage row id | target stage attempt id | target artifact or path | change class | verification status | effect on current runbook release | proposed parent-ledger action | downstream impact | notes |
@@ -38,3 +50,5 @@ runbook_run_patch_ledger:
 - PATCH remains repair-first. It should not become an execution round by itself unless the parent ledger explicitly admits a changed chronology reading because of that repair.
 - If a repair changes the admitted reading of one run, target, or stage, pair the PATCH packet with the corresponding SUP write-back.
 - Keep the same stable structural ids already used by the parent ledger.
+- `Repair Delta Table` should explain whether a repair changes admitted chronology directly, only enables a later `SUP`, or stays purely local to the repair packet.
+- Keep `Patch Change Table` focused on implementation/evidence review and approval support rather than carrying the full before/after repair explanation by itself.

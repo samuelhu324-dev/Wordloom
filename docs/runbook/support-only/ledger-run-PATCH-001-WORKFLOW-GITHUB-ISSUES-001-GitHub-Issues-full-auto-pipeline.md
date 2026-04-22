@@ -5,7 +5,7 @@ runbook_run_patch_ledger:
   patch_ledger_id: ledger-run-PATCH-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline
   patch_kind: runbook-run-ledger-patch
   status: active
-  owner_lane: S0G-2B
+  owner_lane: S0G-3E
   parent_runbook_id: run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline
   parent_runbook_ref: docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md
   parent_run_ledger_id: ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline
@@ -29,6 +29,20 @@ runbook_run_patch_ledger:
 - The patch ledger is now bound to `RUN-001`, because the first admitted live sample run exposed bounded repairs that were fixed without changing the defended runbook release.
 - Future bounded repairs for this same release should still land here rather than in an unstructured log-first patch note.
 - For this packet, the admitted script repairs, the patch ledger write-back, and the dependent S4F/run-accounting updates should be committed together as one bounded patch packet; they should not be split into a later standalone script-only commit.
+
+## Patch Packet Summary
+
+| patch ledger id | patch sequence | parent run row id | repair scope | packet verdict | current release effect | admitted chronology effect | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `PATCH-001` | `001` | `RUN-001` | `patch-ledger bridge + issue draft milestone override + PR-prep preview-path repair` | `completed` | `no-release-bump` | `no-direct-chronology-change` | This packet repaired bounded workflow surfaces exposed by the first admitted batch, but the admitted chronology remained on `RUN-001-R01`; later chronology sharpening was carried by `SUP-001` and `SUP-002`, not by this patch packet itself. |
+
+## Repair Delta Table
+
+| patch item id | target artifact or path | repair class | prior defect reading | new defended repair reading | effect on admitted chronology | requires paired SUP? | paired SUP ref | parent-ledger writeback | primary evidence ref | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `PATCH-001-I01` | `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md` | `mixed-bounded-repair` | `support-only patch surface and run binding were still contract-fragile for the first admitted batch` | `patch packet now binds cleanly to RUN-001 without changing admitted run chronology` | `no-direct-chronology-change` | `no` | `not-required` | `append-patch-ref` | `docs/logs/log-S0G-2B-support-only-ledger-placement-and-patch-ledger-bridge.md` | This row fixes repair-surface placement and binding discipline, not a target-stage reading. |
+| `PATCH-001-I02` | `scripts/issues/gen_issue_draft.py` | `operator-override-gap-repair` | `live create failed closed when roadmap-derived milestone shorthand did not exist in the target repo milestone catalog` | `explicit milestone-skip override now preserves bounded create-mode admission for historical samples` | `no-direct-chronology-change` | `no` | `not-required` | `append-patch-ref` | `docs/issues/issue-S4F-1A-backend-only-access-subscription-deployable-cut.json` | This repair allowed the original batch to complete without itself creating a later chronology round. |
+| `PATCH-001-I03` | `scripts/issues/plan_pr_prep.py` | `multi-item-preview-body-repair` | `multi-item PR-prep reused one preview path and mis-bound earlier items to the wrong sample body` | `per-item preview bodies now preserve correct sample-local preflight validation` | `no-direct-chronology-change` | `no` | `not-required` | `append-patch-ref` | `artifacts/_tmp_s4f_2a_front_half_preflight_result.json` | This repair is bounded to PR-prep artifact correctness and does not change admitted target-stage chronology by itself. |
 
 ## Patch Change Table
 
@@ -59,5 +73,6 @@ runbook_run_patch_ledger:
 - Patch ledgers for `WORKFLOW-GITHUB-ISSUES-001` should remain under `docs/runbook/support-only/`.
 - `PATCH-001` is now attached to parent run row `RUN-001`; later bounded repairs for this release should preserve that binding unless a new admitted run row becomes the true trigger.
 - `PATCH-001` remains repair-first under the chronology-first ledger model: it is evidence and repair attribution for `RUN-001`, not an execution round by itself.
+- `Patch Packet Summary` tells the reader that this repair packet never became its own chronology round, while `Repair Delta Table` tells the reader which defects were repaired and why no paired `SUP` was required for those individual rows.
 - If a future repair is admitted under `PATCH-001`, keep the implementation diff and the patch/accounting write-back in the same patch-scoped commit packet unless a later source log explicitly reclassifies the work as a release bump or a different lane.
 - If a future bounded repair changes runbook semantics materially, do not continue under this patch series; open a new source log and a new runbook release instead.

@@ -634,11 +634,69 @@
   - `Evidence Table`: proof, attachments, verification status, and retained evidence references
 - If one `SUP` packet only appends evidence and does not change current stage reading, `Stage Delta Table` may still exist with explicit `no-current-state-change` rows rather than disappearing entirely.
 
+## P5 (PATCH delta-first repair model and parent-ledger crosswalk | v1)
+
+### P5-C1-S1 (PATCH packet-summary and repair-delta rule | v1)
+
+- A `PATCH` ledger for this family should remain repair-first, but it should still expose a reader-facing delta model rather than a flat mixed repair list.
+- Every `PATCH` packet should expose one short `Patch Packet Summary` surface near the top of the file.
+- The grain of `Patch Packet Summary` is one patch packet.
+- Minimum fields should include:
+  - `patch ledger id`
+  - `patch sequence`
+  - `parent run row id`
+  - `repair scope`
+  - `packet verdict`
+  - `current release effect`
+  - `admitted chronology effect`
+  - `notes`
+- Every `PATCH` packet should also expose one `Repair Delta Table`.
+- The grain of `Repair Delta Table` is one bounded repair item admitted by that patch packet.
+- Minimum fields should include:
+  - `patch item id`
+  - `target artifact or path`
+  - `repair class`
+  - `prior defect reading`
+  - `new defended repair reading`
+  - `effect on admitted chronology`
+  - `requires paired SUP?`
+  - `paired SUP ref`
+  - `parent-ledger writeback`
+  - `primary evidence ref`
+  - `notes`
+- The defended meaning split is:
+  - `Patch Packet Summary`: packet-level repair scope and whether chronology changed at all
+  - `Repair Delta Table`: one repair item's before/after defect reading and whether a later `SUP` must carry any changed admitted chronology
+  - `Patch Change Table`: retained implementation/evidence support and approval review
+
+### P5-C1-S2 (Parent-ledger supplement delta crosswalk rule | v1)
+
+- The parent ledger should provide one reader-facing bridge from chronology and current state into the relevant `SUP` delta rows.
+- For this family, the parent ledger should expose one `Supplement Delta Crosswalk Table` after the stage-attempt surface and before late evidence/support sections.
+- The grain of `Supplement Delta Crosswalk Table` is one parent-ledger stage attempt that was admitted by a `SUP` packet.
+- Minimum fields should include:
+  - `round id`
+  - `target row id`
+  - `stage row id`
+  - `current attempt id`
+  - `source supplement ref`
+  - `source supplement item id`
+  - `delta focus`
+  - `reader use`
+- This crosswalk exists so a reader can move in one hop from parent-ledger chronology to the exact `SUP` packet row that explains the local before/after delta.
+- The parent ledger does not need to duplicate full `SUP` delta content if the crosswalk provides stable packet refs plus exact `supplement item id` values.
+
 ### P4 (SUP delta-first follow-up)
 
 - P4-C1-S1: fix the `SUP` packet contract so each supplement exposes packet-level chronology and per-stage before/after delta
 - P4-C1-S2: rewrite the family-specific `SUP` template around `Packet Round Summary`, `Stage Delta Table`, and narrowed evidence support
 - P4-C1-S3: backfill live `SUP-001` and `SUP-002` so readers can see round sequence, attempt lineage, and parent-ledger writeback directly from the packet
+
+### P5 (PATCH delta-first and parent-ledger crosswalk)
+
+- P5-C1-S1: fix the `PATCH` packet contract so each repair packet exposes packet-level repair scope and per-item defect delta
+- P5-C1-S2: rewrite the family-specific `PATCH` template and live `PATCH-001` / `PATCH-002` around `Patch Packet Summary` and `Repair Delta Table`
+- P5-C1-S3: add one `Supplement Delta Crosswalk Table` to the live parent ledger so readers can jump from stage attempts to exact `SUP` delta rows
 
 ## Execution Checklist (unchecked)
 
@@ -675,6 +733,12 @@
 - [x] `P4-C1-S2`: rewrite the family-specific `SUP` template around `Packet Round Summary`, `Stage Delta Table`, and narrowed evidence support
 - [x] `P4-C1-S3`: backfill live `SUP-001` and `SUP-002` so readers can see round sequence, attempt lineage, and parent-ledger writeback directly from the packet
 
+### P5 (PATCH delta-first and parent-ledger crosswalk)
+
+- [x] `P5-C1-S1`: fix the `PATCH` packet contract so each repair packet exposes packet-level repair scope and per-item defect delta
+- [x] `P5-C1-S2`: rewrite the family-specific `PATCH` template and live `PATCH-001` / `PATCH-002` around `Patch Packet Summary` and `Repair Delta Table`
+- [x] `P5-C1-S3`: add one `Supplement Delta Crosswalk Table` to the live parent ledger so readers can jump from stage attempts to exact `SUP` delta rows
+
 ## Current Status (recommended)
 
 - `S0G-3E` is now opened as the chronology-and-template-governance successor to `S0G-3D`.
@@ -684,7 +748,8 @@
 - `P2` is now fixed at the template-governance level: the family-specific quartet names, ownership boundaries, migration order, compatibility boundary, and first live write-back scope are explicit enough to drive one bounded implementation packet.
 - `P3` is now executed as one bounded family packet: the `WORKFLOW-GITHUB-ISSUES` template quartet exists, the live runbook points to that quartet, the parent ledger now separates current state from chronology history, and the active `SUP` / `PATCH` packets are aligned to the new read model.
 - `P4` is now fixed as the first post-`P3` follow-up under `S0G-3E`: `SUP` packets for this family now expose packet-level chronology plus per-stage delta, the family-specific `SUP` template teaches that structure, and live `SUP-001` / `SUP-002` now explain round-versus-attempt semantics locally instead of forcing readers back to the parent ledger.
-- The immediate next step is no longer to reinterpret `SUP` packets; it is optional downstream adoption work, such as mirroring the same delta-first discipline into any future family-specific `PATCH` packet that changes admitted chronology, or adding cross-links from the parent ledger into the new `SUP` delta rows.
+- `P5` is now fixed as the second post-`P3` follow-up under `S0G-3E`: `PATCH` packets for this family now expose packet-level repair scope plus per-item defect delta, and the live parent ledger now provides a dedicated crosswalk from stage attempts into exact `SUP` delta rows.
+- The immediate next step is no longer to reinterpret `PATCH` packets or reconstruct `SUP` links manually; it is optional downstream adoption work, such as mirroring the same crosswalk discipline into any future parent-ledger `PATCH`-paired chronology row or adding explicit cross-links from `Execution Round Table` notes into the new crosswalk rows.
 - No further live backfill should bypass the family-specific quartet, because template authority and live write-back scope are now fixed together.
 
 ## Evidence (reserved)
@@ -695,6 +760,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-22: Executed `P5` PATCH-delta and parent-ledger crosswalk follow-up under `S0G-3E`, fixing the `PATCH` contract, rewriting the family-specific and live `PATCH` ledgers around `Patch Packet Summary` and `Repair Delta Table`, and adding a `Supplement Delta Crosswalk Table` to `RUN-001` so readers can jump from parent stage attempts to exact `SUP` delta rows.
 - 2026-04-22: Executed `P4` delta-first SUP follow-up under `S0G-3E`, fixing the `SUP` contract, rewriting the family-specific `SUP` template around `Packet Round Summary` and `Stage Delta Table`, and backfilling live `SUP-001` / `SUP-002` so round sequence and stage-attempt lineage are explicit inside each packet.
 - 2026-04-21: Executed the first post-`P3` adoption cleanup for `S0G-3E`, switching this governance log's decisive template references to the `WORKFLOW-GITHUB-ISSUES` quartet and removing family-specific teaching examples from the generic runbook and ledger skeletons.
 - 2026-04-21: Executed `P3` bounded implementation for `S0G-3E`, creating the `WORKFLOW-GITHUB-ISSUES` family-specific template quartet, wiring live runbook template authority, rewriting `RUN-001` into current/history surfaces, and aligning active `SUP` / `PATCH` packet notes with the chronology-first model.

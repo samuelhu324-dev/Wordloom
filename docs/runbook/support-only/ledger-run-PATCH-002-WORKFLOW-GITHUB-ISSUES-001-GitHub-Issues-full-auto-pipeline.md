@@ -5,7 +5,7 @@ runbook_run_patch_ledger:
   patch_ledger_id: ledger-run-PATCH-002-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline
   patch_kind: runbook-run-ledger-patch
   status: active
-  owner_lane: S0G-2B
+  owner_lane: S0G-3E
   parent_runbook_id: run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline
   parent_runbook_ref: docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md
   parent_run_ledger_id: ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline
@@ -28,6 +28,20 @@ runbook_run_patch_ledger:
 - This patch packet is still bound to `RUN-001`, because the repair surface was exposed only while closing the same first admitted S4F sample batch.
 - The repaired behavior remains bounded: live milestone-title resolution for issue draft generation and explicit commit-scope selection/title shaping for follow-up PR prep.
 - The patch does not change the defended runbook release; it only repairs local workflow automation surfaces needed to complete the already admitted run packet cleanly.
+
+## Patch Packet Summary
+
+| patch ledger id | patch sequence | parent run row id | repair scope | packet verdict | current release effect | admitted chronology effect | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `PATCH-002` | `002` | `RUN-001` | `milestone-title normalization + explicit follow-up PR selection/title shaping` | `completed` | `no-release-bump` | `indirectly-enabled-later-sup` | This packet stayed repair-first, but its repaired planning and milestone-resolution surfaces were part of the bounded path that later allowed `SUP-002` to admit the final conclusion-stage sharpening cleanly. |
+
+## Repair Delta Table
+
+| patch item id | target artifact or path | repair class | prior defect reading | new defended repair reading | effect on admitted chronology | requires paired SUP? | paired SUP ref | parent-ledger writeback | primary evidence ref | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `PATCH-002-I01` | `scripts/issues/gen_issue_draft.py` | `milestone-title-resolution-repair` | `roadmap shorthand values did not resolve to the live GitHub milestone title catalog during follow-up convergence` | `issue draft generation now resolves to the defended live milestone title without relaxing source-log precedence` | `indirectly-enables-later-sup` | `yes` | `docs/runbook/support-only/ledger-run-SUP-002-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md` | `append-patch-ref` | `artifacts/_tmp_s4f_1a_issue_draft_validation.json` | This repair supported the later milestone-converged reading that `SUP-002` admitted, but the chronology change itself still landed through `SUP-002`. |
+| `PATCH-002-I02` | `scripts/issues/plan_pr_prep.py` | `explicit-follow-up-selection-repair` | `follow-up PR prep defaulted to all exact-ID commits on the branch and could not slice the remaining follow-up units precisely` | `PR-prep now accepts explicit selected commit scope for bounded follow-up packets` | `indirectly-enables-later-sup` | `yes` | `docs/runbook/support-only/ledger-run-SUP-002-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md` | `append-patch-ref` | `artifacts/_tmp_s4f_followup_pr_plan.json` | This repair enabled the bounded follow-up PR packet that fed the later conclusion-stage sharpening admitted by `SUP-002`. |
+| `PATCH-002-I03` | `scripts/issues/plan_pr_prep.py` | `explicit-follow-up-title-scope-repair` | `narrowed follow-up PR plans still collapsed back to broad checklist-phase titles instead of selected P4-unit scope` | `follow-up PR titles now remain scoped to the actual selected repair units being merged` | `indirectly-enables-later-sup` | `yes` | `docs/runbook/support-only/ledger-run-SUP-002-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md` | `append-patch-ref` | `artifacts/_tmp_s4f_followup_pr_plan.json` | This repair stayed repair-first but was part of the bounded path to the final defended follow-up convergence packet. |
 
 ## Patch Change Table
 
@@ -58,4 +72,5 @@ runbook_run_patch_ledger:
 - `PATCH-002` records the second bounded repair packet attached to `RUN-001` after the later S4F follow-up work exposed new workflow gaps.
 - The admitted repair surface for this packet is limited to milestone-title normalization and follow-up PR-prep commit/title selection.
 - `PATCH-002` remains repair-first under the chronology-first ledger model: it supports the defended `RUN-001` reading but does not become a separate execution round unless a later SUP packet explicitly admits one changed chronology reading because of this repair.
+- `Patch Packet Summary` tells the reader that this packet indirectly enabled later chronology sharpening without becoming a chronology round itself, while `Repair Delta Table` points to `SUP-002` where that later admitted reading actually landed.
 - No runbook release bump is justified by this packet; the fixes remain bounded to the same defended release used by `RUN-001`.
