@@ -244,6 +244,8 @@
 - `P5-C1-S1`: classify remaining contracts as `Current Boundary Map`, `Current Reader Shape`, `no change`, or `defer until a new family opens`
 - `P5-C1-S2`: classify remaining ledgers as `note/rollup candidate`, `no change`, or `defer with future family opening`
 - `P5-C1-S3`: produce one prioritized execution list so later normalization can run in bounded groups rather than one repo-wide sweep
+- `P5-C2-S1`: execute Batch A by adding one explicit parent-boundary surface to `DOC-WORKFLOW-GITHUB-ISSUES-0001`
+- `P5-C2-S2`: decide whether Batch A alone is sufficient or whether `S0A-1A` also needs one later bounded ledger note batch
 
 ## Execution Checklist (unchecked)
 
@@ -280,6 +282,8 @@
 - [x] `P5-C1-S1`: classify remaining contracts by reader-surface need
 - [x] `P5-C1-S2`: classify remaining ledgers by note/rollup or no-change standing
 - [x] `P5-C1-S3`: produce one prioritized execution list for later normalization batches
+- [x] `P5-C2-S1`: execute Batch A on `DOC-WORKFLOW-GITHUB-ISSUES-0001`
+- [x] `P5-C2-S2`: record whether ledger follow-up is still needed after Batch A
 
 ## Current Status (recommended)
 
@@ -290,8 +294,9 @@
 - `P3` is now complete: the parent-ledger and SUP templates do not need new routing columns; they only need one explicit note-level rule that downstream reader shape should be explained through optional rollups rather than through widened core tables.
 - `P4` is now complete: the repo now has one full `SUP -> parent ledger -> child contract -> parent contract` ADR sample chain on `S0A-2A-R05`.
 - `P5` is now complete as assessment-only work: the repo-wide scan finds one clear remaining parent-contract `Current Boundary Map` candidate, no new clear `Current Reader Shape` candidate beyond `LABS-0002`, and only bounded ledger-instance note/rollup candidates rather than one broad ledger rewrite need.
-- The active work is no longer deciding whether to assess the remaining repo surfaces; that assessment is now recorded.
-- The next concrete execution step is user selection of one bounded normalization batch from the prioritized candidate list below rather than one repo-wide rewrite.
+- `P5-C2` is now complete: `DOC-WORKFLOW-GITHUB-ISSUES-0001` now carries one explicit parent-boundary map, and the result does not yet force a same-commit ledger rewrite on `S0A-1A`.
+- The active work is no longer deciding whether Batch A should be tried; that first normalization batch is now executed.
+- The next concrete execution step is user review of whether the new GitHub-Issues parent surface is clear enough on its own or whether Batch B should now add one bounded ledger handoff note.
 
 ## P5 Assessment Verdict (recommended)
 
@@ -323,6 +328,7 @@
 ## P5 Prioritized Execution List (recommended)
 
 - Batch A: add one `Current Boundary Map` to `DOC-WORKFLOW-GITHUB-ISSUES-0001` and align its current-reading text to explicit parent-versus-child ownership.
+- Batch A status: completed.
 - Batch B: if Batch A lands, add only one bounded parent-ledger note or rollup clarification to `ledger-S0A-1A-tools-github-issues-projects-and-tags` if the contract change shows the current handoff still reads too implicitly.
 - Batch C: open a fresh assessment lane for `DOC-WORKFLOW-SCRIPTS` and `DOC-OPS-RUNBOOK-EVIDENCE` only if the user wants to convert the currently deferred `S0B-2A` slices into real families rather than leaving them deferred.
 - Batch D: revisit `ledger-S0B-3A` and `ledger-S0B-2A` only after Batch C or another new-family opening proves that a real downstream handoff note is missing at the instance level.
@@ -420,6 +426,20 @@
   - current ledgers mostly remain sufficient as current-state routing surfaces, with only bounded note/rollup candidates worth revisiting if the matching contract batch opens
   - later `S0B-2A` deferred slices still depend on new-family decisions rather than on one global ledger rewrite
 
+### P5-C2-S1S2 (batch a executed on github-issues parent | 2026-04-22)
+
+- headSha: ``
+- artifacts: `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+- expected:
+  - add one explicit `Current Boundary Map` to the remaining high-priority parent-contract candidate
+  - make Projects, title, and tag child standing readable without relying on statement notes alone
+  - decide whether that contract-only change already resolves the reader ambiguity or whether a same-cycle ledger note is immediately required
+- observed:
+  - `DOC-WORKFLOW-GITHUB-ISSUES-0001` now exposes one explicit boundary map across mechanism, Projects, title, and tag clauses
+  - the parent contract now distinguishes one `shared-reader` Projects boundary from delegated title and tag boundaries
+  - current-reading and reader-note text now direct readers to the boundary map rather than to prose-only inference
+  - no immediate `S0A-1A` ledger rewrite was required to make the contract-level handoff readable in this first batch
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-22: opened `S0G-4A` to separate the contract reader-model question from the later `ADR` sample application and to make the `SUP -> LEDGER -> child contract -> parent contract` evaluation order explicit.
@@ -429,3 +449,4 @@
 - 2026-04-22: completed `P4` by running the first ADR sample chain end to end: `SUP-003`, parent-ledger write-back, `DOC-WORKFLOW-ADR-0001`, and parent-contract ADR boundary bridge.
 - 2026-04-22: completed `P0-C2` by writing the verified reader-model rule back into the reusable contract template instead of leaving it only in sample files.
 - 2026-04-22: completed `P5` assessment by classifying remaining contracts and ledgers into one clear parent-boundary candidate, one no-new-reader-shape verdict, and a bounded deferred-new-family group.
+- 2026-04-22: completed `P5-C2` by executing Batch A on `DOC-WORKFLOW-GITHUB-ISSUES-0001` and confirming that the first remaining parent-boundary gap can be closed at contract level before any ledger-instance follow-up is forced.
