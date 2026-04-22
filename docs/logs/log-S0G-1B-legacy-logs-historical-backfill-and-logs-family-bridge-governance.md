@@ -238,6 +238,10 @@
 
 - `P5-C1-S1`: add the reciprocal `supersedes` lineage back-link on `DOC-WORKFLOW-LOGS-0001`
 
+### P6 (Parent boundary write-back)
+
+- `P6-C1-S1`: write the delegated-summary logs boundary back into `DOC-WORKFLOW-0001`
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -271,6 +275,10 @@
 
 - [x] `P5-C1-S1`: add the reciprocal `supersedes` lineage back-link on `DOC-WORKFLOW-LOGS-0001`
 
+### P6 (Parent boundary write-back)
+
+- [x] `P6-C1-S1`: write the delegated-summary logs boundary back into `DOC-WORKFLOW-0001`
+
 ## Current Status (recommended)
 
 - `S0G-1B` is now opened as the bounded lane for legacy structured-log history, retired historical-release semantics, and the unresolved `S0A-2A-R02` logs-layer adjudication path.
@@ -278,6 +286,7 @@
 - `DOC-WORKFLOW-LEGACY-LOGS-0001` is now emitted as the first historical-only legacy logs draft, and `S0A-2A-R02` no longer remains deferred background only.
 - `DOC-WORKFLOW-LOGS-0001` now carries the reciprocal bridge note back to `DOC-WORKFLOW-LEGACY-LOGS-0001` without implying clause absorption.
 - `DOC-WORKFLOW-LOGS-0001` now also carries the reciprocal frontmatter lineage back-link through `supersedes: [DOC-WORKFLOW-LEGACY-LOGS-0001]`, which makes the reader-replacement relationship explicit on both sides.
+- `DOC-WORKFLOW-0001` now also reads the logs clause as a delegated summary rather than as a still-parent-owned isolated clause, and it bridges that broad workflow boundary through `ledger-S0A-2A` into the historical and current narrower logs readers.
 - The SUP template and `SUP-004` are now aligned to the richer packet shape used by live repo samples, so the logs-side evidence packet no longer sits at a thinner minimum-only shape.
 - The immediate next step is no longer bridge definition; it is reviewer audit of whether the bridge wording and non-absorption boundary are explicit enough.
 
@@ -350,9 +359,27 @@
   - `DOC-WORKFLOW-LOGS-0001` now records the reciprocal `supersedes: DOC-WORKFLOW-LEGACY-LOGS-0001`
   - the pair now reads as one explicit reader-replacement relation on both sides without implying clause absorption
 
+### P6-C1-S1 (workflow parent logs boundary delegated-summary write-back | 2026-04-22)
+
+- headSha: ``
+- artifacts:
+  - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/governance/contracts/workflow/legacy logs/DOC-WORKFLOW-LEGACY-LOGS-0001-earliest-structured-logs-capability-thesis-and-numbered-rule-blocks.md`
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  - `docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
+- expected:
+  - stop reading `WORKFLOW-0001/ST-03` as a still-parent-owned isolated logs clause
+  - align the parent contract boundary map with the accepted `S0A-2A` logs write-back and the narrower historical/current logs readers
+- observed:
+  - `WORKFLOW-0001/BND-03` now reads as `delegated-summary`
+  - the parent now keeps only the broad workflow-layer logs boundary
+  - the reader path is now explicit: `ledger-S0A-2A` for routing, `DOC-WORKFLOW-LEGACY-LOGS-0001` for the earlier historical reader, and `DOC-WORKFLOW-LOGS-0001` for the current logs-facing rule body
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-22: opened `S0G-1B` so the earliest legacy structured-log shape can be judged as a distinct historical problem instead of being silently forced into the current `DOC-WORKFLOW-LOGS` family.
 - 2026-04-22: emitted `DOC-WORKFLOW-LEGACY-LOGS-0001` as the first historical-only legacy logs draft and wrote back `S0A-2A-R02` from deferred background to explicit historical review.
 - 2026-04-22: landed the reciprocal bridge on `DOC-WORKFLOW-LOGS-0001`, updated the SUP template to the richer live-sample house style, and normalized `SUP-004` to that richer markdown-evidence packet shape.
 - 2026-04-22: completed the reciprocal frontmatter lineage pair so `LEGACY-LOGS-0001` and `LOGS-0001` now both expose the same reader-replacement relationship structurally.
+- 2026-04-22: wrote the logs delegated-summary boundary back into `DOC-WORKFLOW-0001` so the broad parent contract now bridges cleanly into the accepted `S0A-2A` logs routing and the narrower logs readers.
