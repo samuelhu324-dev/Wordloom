@@ -252,7 +252,7 @@
 
 ### P4 (Next sample gate)
 
-- [ ] `P4-C1-S1`: open or defer the `S0A-2A ADR` sample after the experiment verdict
+- [x] `P4-C1-S1`: open or defer the `S0A-2A ADR` sample after the experiment verdict
 
 ## Current Status (recommended)
 
@@ -260,8 +260,9 @@
 - `P1` is now complete: `DOC-WORKFLOW-0001` has one bounded `Current Boundary Map` experiment so the parent current-reading split is no longer left to statement notes alone.
 - `P2` is now complete: `DOC-WORKFLOW-LABS-0002` does not need a parent-style boundary map; the bounded ambiguity was resolved by clarifying the current reader shape and reaffirming that chronology stays in `Statement Evolution Table`.
 - `P3` is now complete: the parent-ledger and SUP templates do not need new routing columns; they only need one explicit note-level rule that downstream reader shape should be explained through optional rollups rather than through widened core tables.
-- The active work is still not the `ADR` sample itself; the next task is to decide whether this template rule is now stable enough to write back into the contract template and then open the `S0A-2A ADR` sample lane.
-- The next concrete execution step is `P4`: either open the bounded `ADR` sample or explicitly defer it if one more template write-back packet is still required first.
+- `P4` is now complete: the repo now has one full `SUP -> parent ledger -> child contract -> parent contract` ADR sample chain on `S0A-2A-R05`.
+- The active work is no longer opening the sample itself; the next task is to review whether the `S0G-4A` rule set is now stable enough to write back into the contract template or close the lane as one defended sample packet.
+- The next concrete execution step is user review of the ADR sample effect, followed by either contract-template write-back or close-out of the lane without reopening the same sample question.
 
 ## Evidence (reserved)
 
@@ -314,9 +315,25 @@
   - no new SUP evidence-table column was needed
   - both templates now direct downstream reader-shape clarification into optional rollups or reader notes rather than widened core tables
 
+### P4-C1-S1 (adr sample chain executed | 2026-04-22)
+
+- headSha: ``
+- artifacts: `docs/logs/support-only/ledger-SUP-S0A-2A-003-adr-decision-summaries-and-boundary-shape.md`; `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`; `docs/governance/contracts/workflow/adr/DOC-WORKFLOW-ADR-0001-decision-summary-boundary-and-evidence-links.md`; `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
+- expected:
+  - open one ADR-direct-evidence SUP for `S0A-2A-R05`
+  - rewrite the parent ledger row from deferred background to an applied ADR child outcome
+  - open one first ADR child contract
+  - bridge the broad parent ADR boundary back to that new narrow child reader without widening the ledgers into contract-reader tables
+- observed:
+  - `ledger-SUP-S0A-2A-003` now carries the ADR-direct-evidence packet for `R05`
+  - the parent ledger now resolves `R05` to `DOC-WORKFLOW-ADR-0001`
+  - `DOC-WORKFLOW-ADR-0001` now acts as the narrow current-state governance surface for the ADR slice
+  - `DOC-WORKFLOW-0001` now reads the ADR clause as `delegated-summary` through the new child rather than as broad parent background only
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-22: opened `S0G-4A` to separate the contract reader-model question from the later `ADR` sample application and to make the `SUP -> LEDGER -> child contract -> parent contract` evaluation order explicit.
 - 2026-04-22: completed `P1` by adding a bounded `Current Boundary Map` experiment to `WORKFLOW-0001` and writing the first explicit parent-owned versus delegated-summary reading split into the parent contract surface.
 - 2026-04-22: completed `P2` by deciding that `LABS-0002` should keep chronology clarification inside one narrow current reader instead of receiving a second parent-style boundary map.
 - 2026-04-22: completed `P3` by deciding that parent-ledger and SUP templates need note-level downstream-reading guidance, not new structural columns.
+- 2026-04-22: completed `P4` by running the first ADR sample chain end to end: `SUP-003`, parent-ledger write-back, `DOC-WORKFLOW-ADR-0001`, and parent-contract ADR boundary bridge.

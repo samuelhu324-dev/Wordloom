@@ -32,9 +32,10 @@ support_only_contract_release_ledger:
 | `DOC-WORKFLOW-0001` | `docs-governance` | `delegated:workflow-parent-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The broad workflow parent remains the current governance surface for the `R01` refinement-pipeline boundary while day-to-day stewardship is now delegated for the narrower parent contract lane. |
 | `DOC-WORKFLOW-LABS-0002` | `docs-governance` | `delegated:workflow-labs-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The labs child is now the narrow current-state governance surface for the `R03` slice while durable ownership remains with `docs-governance`. |
 | `DOC-WORKFLOW-RUNBOOK-0001` | `docs-governance` | `delegated:workflow-runbook-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The runbook child is the narrow current-state governance surface for the `R04` slice while durable ownership remains with `docs-governance`. |
+| `DOC-WORKFLOW-ADR-0001` | `docs-governance` | `delegated:workflow-adr-contract-maintainer` | `reviewed-awaiting-approval` | `role:workflow-reviewer` | `role:docs-governance-approver` | The ADR child is now the narrow current-state governance surface for the `R05` slice while durable ownership remains with `docs-governance`. |
 
-- This block records current effective governance state for the parent ledger plus the narrow labs and runbook children only.
-- Detailed evidence verification, direct-markdown review, and packet write-back history remain in `ledger-SUP-S0A-2A-001` and `ledger-SUP-S0A-2A-002` rather than being flattened into current-state ownership metadata.
+- This block records current effective governance state for the parent ledger plus the narrow labs, runbook, and ADR children only.
+- Detailed evidence verification, direct-markdown review, and packet write-back history remain in `ledger-SUP-S0A-2A-001`, `ledger-SUP-S0A-2A-002`, and `ledger-SUP-S0A-2A-003` rather than being flattened into current-state ownership metadata.
 
 ## Routing And Consumption Table
 
@@ -44,7 +45,7 @@ support_only_contract_release_ledger:
 | `S0A-2A-R02` | `Logs layer` in issue `S0A-2A (#24)` | logs convert raw material into structured plans with status, what, how, and links | `DOC-WORKFLOW-LOGS` candidate | `bounded-background` | `none-source-only` | `defer` | `deferred` | `none` | `none` | keep this slice as bounded background only; later child promotion requires stronger direct evidence than this broad issue currently provides | This slice now matters because a logs child exists, but the current issue is not treated as sufficient direct owner for that child body. |
 | `S0A-2A-R03` | `Labs layer` in issue `S0A-2A (#24)` | labs are the most granular executable and backfill layer for proof and validation | `DOC-WORKFLOW-LABS` | `historical-backfill` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-LABS-0002` | `historical-review` | accepted `002` labs SUP evidence now records one explicit historical-review state for earlier labs material under the existing `DOC-WORKFLOW-LABS` family, and `DOC-WORKFLOW-LABS-0002` now acts as the narrow current-governance surface for that active release reader while the supplement remains the packet-level accountability chain | This issue now anchors one earlier labs-specific evidence packet without claiming direct ownership of the later snapshot-governance releases already present in the labs family. |
 | `S0A-2A-R04` | `Runbook layer` in issue `S0A-2A (#24)` | runbooks distill invariants from labs into operator-facing troubleshooting and recovery guidance | `DOC-WORKFLOW-RUNBOOK` | `new-family` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-RUNBOOK-0001` | `full` | consumed by the first dedicated runbook child contract, which now isolates projection operator rebuild, replay, readiness, observability, and failure-recovery governance from the broader workflow packet | The first runbook child stays narrow to the earliest projection SOP packet and does not reopen logs, labs, or ADR routing. |
-| `S0A-2A-R05` | `ADR layer` in issue `S0A-2A (#24)` | ADRs summarize context, decision, alternatives, and consequences without carrying full execution detail | `DOC-WORKFLOW-ADR` candidate | `bounded-background` | `none-source-only` | `defer` | `deferred` | `none` | `none` | keep this slice as bounded background only until stronger direct evidence is found in later archaeology | This slice also remains child-eligible later, but not from this source alone. |
+| `S0A-2A-R05` | `ADR layer` in issue `S0A-2A (#24)` | ADRs summarize context, decision, alternatives, and consequences without carrying full execution detail | `DOC-WORKFLOW-ADR` | `new-family` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-ADR-0001` | `full` | consumed by the first dedicated ADR child contract, which now isolates decision-summary governance and evidence-link boundaries from the broader workflow packet | The first ADR child stays narrow to durable decision-summary shape and does not reopen the logs, labs, or runbook routing already fixed elsewhere in the same parent family. |
 
 ## Row Id Map
 
@@ -57,10 +58,11 @@ support_only_contract_release_ledger:
 ## New Releases Expected
 
 - `DOC-WORKFLOW-RUNBOOK-0001`
+- `DOC-WORKFLOW-ADR-0001`
 
 ## Deferred Slices
 
-- later direct evidence for logs and ADR child ownership that does not rely on this broad workflow issue alone
+- later direct evidence for logs child ownership that does not rely on this broad workflow issue alone
 - later dedicated `DOC-WORKFLOW-LABS` historical-backfill packet after the accepted `002` labs SUP write-back
 
 ## Row Chronology Audit
@@ -80,8 +82,11 @@ support_only_contract_release_ledger:
 | `S0A-2A-GOV-05` | `delegated-stewardship-event` | `DOC-WORKFLOW-LABS-0002` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 scoped backfill round` | The labs child now records one explicit delegated steward under the same durable owner team so day-to-day maintenance does not collapse back into undeclared team-wide ownership. |
 | `S0A-2A-GOV-06` | `delegated-stewardship-event` | `DOC-WORKFLOW-RUNBOOK-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P3 second-sample round` | The runbook child now records one explicit delegated steward under the same durable owner team so day-to-day maintenance does not collapse back into undeclared team-wide ownership. |
 | `S0A-2A-GOV-07` | `governance-role-separation-event` | `S0A-2A broad parent plus active sample slices` | `role:workflow-reviewer; role:evidence-verifier; role:docs-governance-approver` | `review-verify-approve-separated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The broad workflow parent plus the earlier labs and runbook sample slices now treat review, evidence verification, and final approval as distinct governance roles instead of one overloaded reviewer identity. |
+| `S0A-2A-GOV-08` | `evidence-sharpening-event` | `S0A-2A-R05 adr layer` | `role:packet-reviewer` | `adr-direct-evidence-review-fixed` | `2026-04-22` | `ledger-SUP-S0A-2A-003-adr-decision-summaries-and-boundary-shape.md` | The accepted ADR SUP round fixed the `R05` slice as a direct-evidence review surface instead of leaving it as bounded background only. |
+| `S0A-2A-GOV-09` | `delegated-stewardship-event` | `DOC-WORKFLOW-ADR-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-22` | `S0G-4A/P4 adr sample round` | The ADR child now records one explicit delegated steward under the same durable owner team so day-to-day maintenance does not collapse back into undeclared team-wide ownership. |
+| `S0A-2A-GOV-10` | `review-approval-separation-event` | `DOC-WORKFLOW-ADR-0001` | `role:workflow-reviewer; role:docs-governance-approver` | `reviewed-awaiting-approval-state-fixed` | `2026-04-22` | `S0G-4A/P4 adr sample round` | The ADR child now records review and approval as distinct governance actions instead of leaving both roles implicit or collapsed into one reviewer identity. |
 
 ## Reader Notes
 
-- This ledger now confirms that `S0A-2A` remains primarily parent-owned, while the labs layer now sits in explicit historical review under `DOC-WORKFLOW-LABS-0002`, the runbook layer is consumed by one dedicated child contract, and the remaining narrower layers stay deferred pending stronger direct evidence.
-- Under `S0F-9A/P4`, this parent ledger now also acts as the current-state governance surface for the broad `S0A-2A` packet while keeping the `R01` workflow parent, the `R03` labs slice, and the `R04` runbook slice narrow enough to read through dedicated contract surfaces.
+- This ledger now confirms that `S0A-2A` remains primarily parent-owned, while the labs layer now sits in explicit historical review under `DOC-WORKFLOW-LABS-0002`, the runbook layer is consumed by one dedicated child contract, the ADR layer is now consumed by one dedicated child contract, and only the remaining logs slice stays deferred pending stronger direct evidence.
+- Under `S0F-9A/P4` plus `S0G-4A/P4`, this parent ledger now also acts as the current-state governance surface for the broad `S0A-2A` packet while keeping the `R01` workflow parent, the `R03` labs slice, the `R04` runbook slice, and the `R05` ADR slice narrow enough to read through dedicated contract surfaces.
