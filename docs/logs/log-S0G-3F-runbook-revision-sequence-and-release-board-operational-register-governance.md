@@ -104,6 +104,7 @@
 - `P0-C1-S2` | artifact: `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
 - `P0-C1-S3` | artifact: `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
 - `P1-C1-S1` | artifact: `docs/issues/_template-runbook-release-operational-register-issue.md`
+- `P2-C1-S1` | artifact: `docs/issues/_template-runbook-release-operational-register-issue.md`
 
 ## Definitions (optional)
 
@@ -281,6 +282,32 @@
 - P2-C1-S1: fix active versus retained release states
 - P2-C1-S2: fix how branch-only, PR-open, and merged-to-main states should appear in the release register
 
+## P2 (Operating-state rule | v1)
+
+### P2-C1-S1 (Board-state meaning for active versus retained releases | v1)
+
+- `Drafting`, `Active`, and `Retained` are now fixed as issue-level board states for the release-board operational register.
+- `Drafting` means the release issue exists, but the release register is still being materially assembled, corrected, or backfilled enough that readers should not yet assume the issue is the defended live operating surface.
+- `Active` means the release issue is now the defended live operational register for that stable runbook-family release, even when the newest artifact revision is still only on a branch or in an open PR.
+- `Retained` means the issue remains worth keeping as a reader-facing retained record, but it is no longer the live operational register for ongoing revisions.
+- Do not use board-state changes to imply file renames, stable artifact identity changes, or automatic revision increments.
+- If the board UI still exposes only a weaker state pair such as `Active` and `Done`, treat that UI as a temporary presentation layer and preserve the defended semantic distinction in the issue body itself.
+
+### P2-C1-S2 (Mainline-state display rule inside the release register | v1)
+
+- `branch-only`, `pr-open`, and `merged-to-main` are now fixed as artifact-level mainline states rather than issue-level board states.
+- Use them in:
+  - `Definition of Done (DoD)` rows as each artifact's `current standing`
+  - `Revision Register` rows as each stable artifact's current standing
+  - the `Mainline State` section as the release-level rollup of the newest effective revision set
+- Read them as follows:
+  - `branch-only`: the newest defended revision exists only on the working branch and has not yet been published through a PR
+  - `pr-open`: the newest defended revision is published in an open PR but is not yet merged to `main`
+  - `merged-to-main`: the newest defended revision is now available on `main`
+- A release issue may remain `Active` while some rows still read `branch-only` or `pr-open`.
+- A retained release may still show `merged-to-main` on all rows, but that does not by itself force the board state to become `Retained`; retention depends on whether the issue is still the live operating register.
+- Do not collapse issue-level board state and artifact-level mainline state into one shared field name or one shared meaning.
+
 ### P3 (First live write-back)
 
 - P3-C1-S1: choose one active runbook-family release as the first board-register sample
@@ -302,8 +329,8 @@
 
 ### P2 (Operating-state rule)
 
-- [ ] `P2-C1-S1`: fix active versus retained release states
-- [ ] `P2-C1-S2`: fix how branch-only, PR-open, and merged-to-main states should appear in the release register
+- [x] `P2-C1-S1`: fix active versus retained release states
+- [x] `P2-C1-S2`: fix how branch-only, PR-open, and merged-to-main states should appear in the release register
 
 ### P3 (First live write-back)
 
@@ -316,7 +343,8 @@
 - The repo now has one explicit contract for separating stable artifact identity, revision sequence, and commit/PR packet identity.
 - The repo also now has one explicit rule that the release board should act as an operational register for active runbook-family releases rather than as a replacement for source logs or git history.
 - `P1` is now fixed: the minimum release-board issue-body template exists in-repo, and DoD rows now have one defended minimal field set for artifact identity, revision, standing, and PR linkage.
-- The next step under this lane is `P2`: fix operating-state rules for active versus retained releases and then test the template on one live release issue sample.
+- `P2` is now fixed: issue-level board states and artifact-level mainline states are explicitly separated, and the template now teaches that separation directly.
+- The next step under this lane is `P3`: choose one active runbook-family release as the first live board-register sample and write back the template against that live issue.
 
 ## Evidence (reserved)
 
@@ -326,5 +354,6 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-22: Executed `P2` for `S0G-3F`, fixing the board-state meaning of `Drafting`, `Active`, and `Retained`, and separating those issue-level states from artifact-level `branch-only`, `pr-open`, and `merged-to-main` display in the live issue template.
 - 2026-04-22: Executed `P1` for `S0G-3F`, publishing the first repo-local release-board issue-body template and fixing the minimum DoD row linkage rule for artifact identity, revision, standing, and PR refs.
 - 2026-04-22: Opened `S0G-3F` to fix revision-sequence grammar and release-board operational-register rules after the repo proved that stable runbook-family object identity and repeated updates were still easy to confuse in commit history and board tracking.
