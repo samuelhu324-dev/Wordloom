@@ -131,9 +131,20 @@ contract_record:
 - `DOC-WORKFLOW-LABS-0002-ST-10`: Once conclusions are codified into repeatable scripts and verifiable assertions, historical diff/ad-hoc artifacts should become safe to purge rather than remain indefinitely.
 - `DOC-WORKFLOW-LABS-0002-ST-11`: Retention decisions should preserve replay and audit value, not file volume for its own sake.
 
+## Current Reader Shape
+
+- This file is one narrow current labs-family reader, not a broad parent contract with child-boundary delegation decisions like `DOC-WORKFLOW-0001`.
+- Read the current clause set here in three layers:
+  - `history-backfilled`: earlier pre-runbook labs history admitted into the current reader from `S0A-2A-R03`
+  - `carried-forward` and `amended`: earlier labs-family rule bodies from `DOC-WORKFLOW-LABS-0001` that remain materially present in the current release
+  - `introduced`: new evidence-package clauses added by the labs-specific `S0B-2A` slice
+- Under this reader model, the contract does not need one parent-style `Current Boundary Map` because the problem here is not `who owns the narrow body now`; it is `which current clauses came from earlier history versus later family revision`.
+- That chronology is therefore intentionally kept in `Statement Evolution Table` and reinforced in `Current Reading` and `Reader Notes`, rather than duplicated through one second boundary-ownership table.
+
 ## Current Reading
 
 - Read this release when the question is `what is the current integrated labs-family reader once earlier pre-runbook labs history and later snapshot-package governance are both kept visible in one release?`
+- Read `Current Reader Shape` first when the question is `why are history-backfilled, carried-forward, amended, and introduced clauses all visible together in one current reader, and how should that mix be interpreted?`
 - Read `DOC-WORKFLOW-LABS-0001` only when the reader needs the narrower earlier release before the `S0B-2A` snapshot-policy slice was absorbed into the labs family.
 - Read the `S0B-2A` ledger draft when the question is `which parts of S0B-2A entered this release and which parts remained deferred or support-only?`
 - Read the accepted `S0A-2A` labs supplement packet when the question is `which earlier labs history was backfilled into the current release reader and why was it not left only as runbook prehistory?`
@@ -143,5 +154,6 @@ contract_record:
 - This draft is the first release-style sample under the `family + release` model; it is not committed as the accepted next state yet.
 - It intentionally fuses the earlier labs-family contract with only the labs-specific `S0B-2A` slice that strengthens snapshot and evidence-package governance.
 - It now also demonstrates one second pattern under `S0F-7E`: a current later release may temporarily host `history-backfilled` clause rows from an earlier accepted ledger packet before the repo decides whether a dedicated historical-backfill release is still necessary.
+- The mixed current clause set here is deliberate: the release is meant to be one integrated current labs reader, not one parent/child boundary map, so chronology stays in the evolution table rather than in a second ownership table.
 - It does not yet claim to resolve the future `workflow/scripts governance` family question or the possible OPS-side evidence family question tracked in the ledger.
 - The statement ids in this file are intentionally release-local `0002-ST-*` ids; earlier `0001-ST-*` ids remain history anchors in the statement-evolution table rather than being reused as the current ids.

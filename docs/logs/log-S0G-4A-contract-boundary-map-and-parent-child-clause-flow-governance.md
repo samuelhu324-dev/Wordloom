@@ -242,8 +242,8 @@
 
 ### P2 (LABS current-reader experiment)
 
-- [ ] `P2-C1-S1`: test `DOC-WORKFLOW-LABS-0002` against the new rule
-- [ ] `P2-C1-S2`: apply only the minimum reader clarification if the experiment shows a real ambiguity
+- [x] `P2-C1-S1`: test `DOC-WORKFLOW-LABS-0002` against the new rule
+- [x] `P2-C1-S2`: apply only the minimum reader clarification if the experiment shows a real ambiguity
 
 ### P3 (Ledger and SUP impact verdict)
 
@@ -258,8 +258,9 @@
 
 - `S0G-4A` is now opened as a draft template-and-experiment lane.
 - `P1` is now complete: `DOC-WORKFLOW-0001` has one bounded `Current Boundary Map` experiment so the parent current-reading split is no longer left to statement notes alone.
-- The active work is still not the `ADR` sample itself; the next task is to test whether `DOC-WORKFLOW-LABS-0002` needs the same reader aid or whether its current statement/evolution separation is already sufficient.
-- The next concrete execution step is `P2`: test the reader model on `DOC-WORKFLOW-LABS-0002`, then judge whether ledger / SUP templates need any bounded downstream clarification.
+- `P2` is now complete: `DOC-WORKFLOW-LABS-0002` does not need a parent-style boundary map; the bounded ambiguity was resolved by clarifying the current reader shape and reaffirming that chronology stays in `Statement Evolution Table`.
+- The active work is still not the `ADR` sample itself; the next task is to decide whether the current parent-ledger and SUP templates already hand off enough downstream reading context or need one bounded note-level addition.
+- The next concrete execution step is `P3`: evaluate parent-ledger and SUP template impact after the two contract experiments.
 
 ## Evidence (reserved)
 
@@ -289,7 +290,19 @@
   - `Current Boundary Map` added to `WORKFLOW-0001`
   - current-reading and reader-note text now state explicitly that labs and runbook are narrower current readers while logs and ADR remain broad parent readings in this packet
 
+### P2-C1-S1S2 (labs current-reader experiment | 2026-04-22)
+
+- headSha: ``
+- artifacts: `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+- expected:
+  - decide whether `LABS-0002` needs the same parent-style boundary map used in `WORKFLOW-0001`
+  - if not, add only the minimum reader clarification needed to explain why `history-backfilled`, `carried-forward`, `amended`, and `introduced` clauses coexist in one current reader
+- observed:
+  - `LABS-0002` judged to be a narrow current reader rather than a parent-boundary surface
+  - one `Current Reader Shape` section now explains that the mixed clause set should be read as chronology inside one current reader, not as unresolved ownership routing
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-22: opened `S0G-4A` to separate the contract reader-model question from the later `ADR` sample application and to make the `SUP -> LEDGER -> child contract -> parent contract` evaluation order explicit.
 - 2026-04-22: completed `P1` by adding a bounded `Current Boundary Map` experiment to `WORKFLOW-0001` and writing the first explicit parent-owned versus delegated-summary reading split into the parent contract surface.
+- 2026-04-22: completed `P2` by deciding that `LABS-0002` should keep chronology clarification inside one narrow current reader instead of receiving a second parent-style boundary map.
