@@ -145,6 +145,7 @@
 - `P2`: experiment on `DOC-WORKFLOW-LABS-0002`, including whether `history-backfilled` clause rows and carried-forward clauses still read clearly without a parent-only boundary map
 - `P3`: decide whether parent-ledger and SUP templates need any bounded follow-up fields or notes after the two experiments
 - `P4`: only if `P0-P3` stabilize, open the next fresh `S0A-2A ADR` sample lane
+- `P5`: assess remaining contracts and ledgers against the now-written-back reader-model rule before any repo-wide normalization batch opens
 
 ## Success Criteria (DoD)
 
@@ -238,6 +239,12 @@
 
 - `P4-C1-S1`: open or explicitly defer the `S0A-2A ADR` sample only after `P0-P3` are stable enough to avoid reopening the same reader-model question
 
+### P5 (Repo-wide assessment gate)
+
+- `P5-C1-S1`: classify remaining contracts as `Current Boundary Map`, `Current Reader Shape`, `no change`, or `defer until a new family opens`
+- `P5-C1-S2`: classify remaining ledgers as `note/rollup candidate`, `no change`, or `defer with future family opening`
+- `P5-C1-S3`: produce one prioritized execution list so later normalization can run in bounded groups rather than one repo-wide sweep
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract rule)
@@ -268,6 +275,12 @@
 
 - [x] `P4-C1-S1`: open or defer the `S0A-2A ADR` sample after the experiment verdict
 
+### P5 (Repo-wide assessment gate)
+
+- [x] `P5-C1-S1`: classify remaining contracts by reader-surface need
+- [x] `P5-C1-S2`: classify remaining ledgers by note/rollup or no-change standing
+- [x] `P5-C1-S3`: produce one prioritized execution list for later normalization batches
+
 ## Current Status (recommended)
 
 - `S0G-4A` is now opened as a draft template-and-experiment lane.
@@ -276,8 +289,43 @@
 - `P2` is now complete: `DOC-WORKFLOW-LABS-0002` does not need a parent-style boundary map; the bounded ambiguity was resolved by clarifying the current reader shape and reaffirming that chronology stays in `Statement Evolution Table`.
 - `P3` is now complete: the parent-ledger and SUP templates do not need new routing columns; they only need one explicit note-level rule that downstream reader shape should be explained through optional rollups rather than through widened core tables.
 - `P4` is now complete: the repo now has one full `SUP -> parent ledger -> child contract -> parent contract` ADR sample chain on `S0A-2A-R05`.
-- The active work is no longer deciding whether template write-back is needed; that template write-back is now landed.
-- The next concrete execution step is to decide whether `S0G-4A` should stop at the verified sample-and-template rule set or open one new assessment cycle for wider repo-wide contract and ledger normalization.
+- `P5` is now complete as assessment-only work: the repo-wide scan finds one clear remaining parent-contract `Current Boundary Map` candidate, no new clear `Current Reader Shape` candidate beyond `LABS-0002`, and only bounded ledger-instance note/rollup candidates rather than one broad ledger rewrite need.
+- The active work is no longer deciding whether to assess the remaining repo surfaces; that assessment is now recorded.
+- The next concrete execution step is user selection of one bounded normalization batch from the prioritized candidate list below rather than one repo-wide rewrite.
+
+## P5 Assessment Verdict (recommended)
+
+- `Current Boundary Map` high-priority candidate:
+  - `DOC-WORKFLOW-GITHUB-ISSUES-0001`
+- `Current Reader Shape` high-priority candidate:
+  - none currently stronger than the already-updated `DOC-WORKFLOW-LABS-0002`
+- `no change` contract group for now:
+  - `DOC-WORKFLOW-GITHUB-PROJECTS-0001`
+  - `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001`
+  - `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001`
+  - `DOC-WORKFLOW-RUNBOOK-0001`
+  - `DOC-WORKFLOW-ADR-0001`
+  - `DOC-WORKFLOW-LOGS-0001`
+  - `DOC-WORKFLOW-LIFECYCLE-0001`
+  - `DOC-WORKFLOW-LABS-0001`
+  - `DOC-CONTROL-PLANE-0001`
+- `defer until new family opens` contract group:
+  - no existing file yet for `DOC-WORKFLOW-SCRIPTS`
+  - no existing file yet for `DOC-OPS-RUNBOOK-EVIDENCE`
+- ledger-instance note or rollup candidates only when the matching contract batch opens:
+  - `ledger-S0A-1A-tools-github-issues-projects-and-tags`
+  - `ledger-S0B-2A-tools-scripts-and-snapshots-management`
+  - `ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter`
+- ledger-instance `no change` for now:
+  - `ledger-S0A-2A-tools-workflow-log-lab-runbook-adr`
+  - already-aligned supplement packets used in the earlier `P3/P4` sample chain
+
+## P5 Prioritized Execution List (recommended)
+
+- Batch A: add one `Current Boundary Map` to `DOC-WORKFLOW-GITHUB-ISSUES-0001` and align its current-reading text to explicit parent-versus-child ownership.
+- Batch B: if Batch A lands, add only one bounded parent-ledger note or rollup clarification to `ledger-S0A-1A-tools-github-issues-projects-and-tags` if the contract change shows the current handoff still reads too implicitly.
+- Batch C: open a fresh assessment lane for `DOC-WORKFLOW-SCRIPTS` and `DOC-OPS-RUNBOOK-EVIDENCE` only if the user wants to convert the currently deferred `S0B-2A` slices into real families rather than leaving them deferred.
+- Batch D: revisit `ledger-S0B-3A` and `ledger-S0B-2A` only after Batch C or another new-family opening proves that a real downstream handoff note is missing at the instance level.
 
 ## Evidence (reserved)
 
@@ -358,6 +406,20 @@
   - `DOC-WORKFLOW-ADR-0001` now acts as the narrow current-state governance surface for the ADR slice
   - `DOC-WORKFLOW-0001` now reads the ADR clause as `delegated-summary` through the new child rather than as broad parent background only
 
+### P5-C1-S1S3 (remaining-contract and ledger assessment recorded | 2026-04-22)
+
+- headSha: ``
+- artifacts: `docs/logs/log-S0G-4A-contract-boundary-map-and-parent-child-clause-flow-governance.md`
+- expected:
+  - classify remaining contracts by reader-surface need after the template write-back
+  - classify remaining ledgers by note/rollup need versus no-change standing
+  - produce one bounded execution order for later normalization batches
+- observed:
+  - only `DOC-WORKFLOW-GITHUB-ISSUES-0001` stands out as one clear remaining `Current Boundary Map` candidate
+  - no new contract shows the same narrow-reader ambiguity that justified `Current Reader Shape` on `DOC-WORKFLOW-LABS-0002`
+  - current ledgers mostly remain sufficient as current-state routing surfaces, with only bounded note/rollup candidates worth revisiting if the matching contract batch opens
+  - later `S0B-2A` deferred slices still depend on new-family decisions rather than on one global ledger rewrite
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-22: opened `S0G-4A` to separate the contract reader-model question from the later `ADR` sample application and to make the `SUP -> LEDGER -> child contract -> parent contract` evaluation order explicit.
@@ -366,3 +428,4 @@
 - 2026-04-22: completed `P3` by deciding that parent-ledger and SUP templates need note-level downstream-reading guidance, not new structural columns.
 - 2026-04-22: completed `P4` by running the first ADR sample chain end to end: `SUP-003`, parent-ledger write-back, `DOC-WORKFLOW-ADR-0001`, and parent-contract ADR boundary bridge.
 - 2026-04-22: completed `P0-C2` by writing the verified reader-model rule back into the reusable contract template instead of leaving it only in sample files.
+- 2026-04-22: completed `P5` assessment by classifying remaining contracts and ledgers into one clear parent-boundary candidate, one no-new-reader-shape verdict, and a bounded deferred-new-family group.
