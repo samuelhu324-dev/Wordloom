@@ -573,6 +573,73 @@
 - P3-C1-S3: create the family-specific template quartet and wire live runbook authority to it
 - P3-C1-S4: rewrite live `RUN-001` family surfaces as one bounded chronology-first packet
 
+## P4 (SUP delta-first supplement model | v1)
+
+### P4-C1-S1 (SUP packet-round summary rule | v1)
+
+- A `SUP` ledger for this family must do more than admit evidence; it must also explain one defended round-level delta against the parent ledger.
+- Every `SUP` packet should expose one short `Packet Round Summary` surface near the top of the file.
+- The grain of `Packet Round Summary` is one supplement packet, not one target and not one evidence attachment.
+- Minimum fields should include:
+  - `supplement id`
+  - `source_round_id`
+  - `round sequence`
+  - `parent run row id`
+  - `target scope`
+  - `stage scope`
+  - `packet verdict`
+  - `current-state effect`
+  - `notes`
+- This surface exists so a reader can answer all of these without opening the parent ledger first:
+  - which chronology round is this packet part of?
+  - which targets and stages did it touch?
+  - did it sharpen current state, reopen state, or merely append evidence?
+
+### P4-C1-S2 (SUP stage-delta table rule | v1)
+
+- The existing `Evidence Table` in a `SUP` ledger is not sufficient by itself for this family because it admits proof but does not fully explain the before-and-after effect on one stage reading.
+- A `SUP` ledger for this family should therefore expose one dedicated `Stage Delta Table` in addition to evidence admission.
+- The grain of `Stage Delta Table` is one target-stage change admitted by this `SUP` packet.
+- Minimum fields should include:
+  - `supplement item id`
+  - `target row id`
+  - `target stage row id`
+  - `source_round_id`
+  - `prior_attempt_id`
+  - `new_attempt_id`
+  - `new_attempt_ordinal`
+  - `prior_stage_status`
+  - `new_stage_status`
+  - `prior_blocking_reason`
+  - `new_blocking_reason`
+  - `effect_on_current_target_status`
+  - `parent_ledger_writeback`
+  - `primary_evidence_ref`
+  - `notes`
+- `Stage Delta Table` should answer the questions that the parent ledger answers globally but that a `SUP` packet must answer locally for its own round:
+  - was this the second or third admitted attempt for this stage?
+  - what did the prior defended stage reading say?
+  - what is the newly admitted stage reading?
+  - what exact parent-ledger change should follow from this packet?
+- `new_attempt_ordinal` is local to the stable `target_stage_row_id`; it is not the same as `round sequence`.
+- A stage should reach ordinal `03` only if that same stage row is admitted again in a third distinct round. The existence of `RUN-001-R03` alone does not force every stage to reach `A03`.
+
+### P4-C1-S3 (SUP evidence-table boundary rule | v1)
+
+- `Evidence Table` should remain in the `SUP` ledger, but its role should be narrowed to evidence admission, attachment review, and verification support.
+- `Evidence Table` should stop carrying the full burden of explaining ledger delta by itself.
+- The defended role split is:
+  - `Packet Round Summary`: packet-level chronology and scope
+  - `Stage Delta Table`: target-stage before/after delta and parent-ledger effect
+  - `Evidence Table`: proof, attachments, verification status, and retained evidence references
+- If one `SUP` packet only appends evidence and does not change current stage reading, `Stage Delta Table` may still exist with explicit `no-current-state-change` rows rather than disappearing entirely.
+
+### P4 (SUP delta-first follow-up)
+
+- P4-C1-S1: fix the `SUP` packet contract so each supplement exposes packet-level chronology and per-stage before/after delta
+- P4-C1-S2: rewrite the family-specific `SUP` template around `Packet Round Summary`, `Stage Delta Table`, and narrowed evidence support
+- P4-C1-S3: backfill live `SUP-001` and `SUP-002` so readers can see round sequence, attempt lineage, and parent-ledger writeback directly from the packet
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -602,6 +669,12 @@
 - [x] `P3-C1-S3`: create the family-specific template quartet and wire live runbook authority to it
 - [x] `P3-C1-S4`: rewrite live `RUN-001` family surfaces as one bounded chronology-first packet
 
+### P4 (SUP delta-first follow-up)
+
+- [x] `P4-C1-S1`: fix the `SUP` packet contract so each supplement exposes packet-level chronology and per-stage before/after delta
+- [x] `P4-C1-S2`: rewrite the family-specific `SUP` template around `Packet Round Summary`, `Stage Delta Table`, and narrowed evidence support
+- [x] `P4-C1-S3`: backfill live `SUP-001` and `SUP-002` so readers can see round sequence, attempt lineage, and parent-ledger writeback directly from the packet
+
 ## Current Status (recommended)
 
 - `S0G-3E` is now opened as the chronology-and-template-governance successor to `S0G-3D`.
@@ -610,7 +683,8 @@
 - `P1` is now fixed at the parent-ledger model level: the chronology table, current target table, stage-attempt table, top-level run summary, and surface order are explicit enough to drive template migration.
 - `P2` is now fixed at the template-governance level: the family-specific quartet names, ownership boundaries, migration order, compatibility boundary, and first live write-back scope are explicit enough to drive one bounded implementation packet.
 - `P3` is now executed as one bounded family packet: the `WORKFLOW-GITHUB-ISSUES` template quartet exists, the live runbook points to that quartet, the parent ledger now separates current state from chronology history, and the active `SUP` / `PATCH` packets are aligned to the new read model.
-- The immediate next step is no longer another contract phase inside `S0G-3E`; it is follow-up cleanup or adoption work, such as moving future packet creation onto the family-specific templates and thinning any remaining generic-template teaching surfaces that still point this family back to the generic skeletons.
+- `P4` is now fixed as the first post-`P3` follow-up under `S0G-3E`: `SUP` packets for this family now expose packet-level chronology plus per-stage delta, the family-specific `SUP` template teaches that structure, and live `SUP-001` / `SUP-002` now explain round-versus-attempt semantics locally instead of forcing readers back to the parent ledger.
+- The immediate next step is no longer to reinterpret `SUP` packets; it is optional downstream adoption work, such as mirroring the same delta-first discipline into any future family-specific `PATCH` packet that changes admitted chronology, or adding cross-links from the parent ledger into the new `SUP` delta rows.
 - No further live backfill should bypass the family-specific quartet, because template authority and live write-back scope are now fixed together.
 
 ## Evidence (reserved)
@@ -621,6 +695,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-22: Executed `P4` delta-first SUP follow-up under `S0G-3E`, fixing the `SUP` contract, rewriting the family-specific `SUP` template around `Packet Round Summary` and `Stage Delta Table`, and backfilling live `SUP-001` / `SUP-002` so round sequence and stage-attempt lineage are explicit inside each packet.
 - 2026-04-21: Executed the first post-`P3` adoption cleanup for `S0G-3E`, switching this governance log's decisive template references to the `WORKFLOW-GITHUB-ISSUES` quartet and removing family-specific teaching examples from the generic runbook and ledger skeletons.
 - 2026-04-21: Executed `P3` bounded implementation for `S0G-3E`, creating the `WORKFLOW-GITHUB-ISSUES` family-specific template quartet, wiring live runbook template authority, rewriting `RUN-001` into current/history surfaces, and aligning active `SUP` / `PATCH` packet notes with the chronology-first model.
 - 2026-04-21: Completed `P2` template-governance contract for `S0G-3E`, fixing the `WORKFLOW-GITHUB-ISSUES` family-specific quartet names, generic-versus-family authority split, migration order, compatibility boundary, and first live write-back scope.

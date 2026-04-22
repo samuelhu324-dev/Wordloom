@@ -7,7 +7,7 @@ runbook_run_ledger_supplement:
   supplement_id: ledger-run-SUP-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline
   supplement_kind: runbook-run-ledger-supplement
   status: completed
-  owner_lane: S0G-3C
+  owner_lane: S0G-3E
   parent_run_ledger_id: ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline
   parent_runbook_id: run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline
   parent_run_row_id: RUN-001
@@ -32,14 +32,29 @@ runbook_run_ledger_supplement:
 - The defended follow-up chain for each child target is the same: parent log write-back, direct relationship attach, closed-issue body metadata refresh, and final lifecycle audit pass.
 - The parent ledger should therefore stop presenting these four creation stages as open follow-up and instead point readers to this supplement for the later convergence evidence.
 
+## Packet Round Summary
+
+| supplement id | source round id | round sequence | parent run row id | target scope | stage scope | packet verdict | current-state effect | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SUP-001` | `RUN-001-R02` | `02` | `RUN-001` | `T01-T04` | `CREATION` | `completed` | `sharpens-current-creation-reading` | This packet closes the original missing-parent metadata gap for all four child targets, but it does not by itself reopen or replay `PR_PENDING`, `PR_MERGED`, or `CONCLUSION`. |
+
+## Stage Delta Table
+
+| supplement item id | target row id | target stage row id | source round id | prior attempt id | new attempt id | new attempt ordinal | prior stage status | new stage status | prior blocking reason | new blocking reason | effect on current target status | parent-ledger writeback | primary evidence ref | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RUN-001-SUP-01` | `RUN-001-T01` | `RUN-001-T01-STG-CREATION` | `RUN-001-R02` | `RUN-001-T01-STG-CREATION-A01` | `RUN-001-T01-STG-CREATION-A02` | `02` | `pass` | `pass_after_recovery` | `metadata_gap_milestone_skipped_and_parent_missing` | `resolved_by_sup_parent_writeback` | `creation-gap-closed; target-remains-open-to-later-conclusion-sharpening` | `rewrite-current-target-and-append-stage-attempt` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `S4F-1A` now has child-parent relationship convergence and refreshed Metadata without changing the earlier PR-stage readings. |
+| `RUN-001-SUP-02` | `RUN-001-T02` | `RUN-001-T02-STG-CREATION` | `RUN-001-R02` | `RUN-001-T02-STG-CREATION-A01` | `RUN-001-T02-STG-CREATION-A02` | `02` | `pass` | `pass_after_recovery` | `metadata_gap_milestone_skipped_and_parent_missing` | `resolved_by_sup_parent_writeback` | `creation-gap-closed; target-still-carries-earlier-conclusion-recovery-shape` | `rewrite-current-target-and-append-stage-attempt` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `S4F-2A` closes the creation-gap here, while later conclusion sharpening remains outside this packet. |
+| `RUN-001-SUP-03` | `RUN-001-T03` | `RUN-001-T03-STG-CREATION` | `RUN-001-R02` | `RUN-001-T03-STG-CREATION-A01` | `RUN-001-T03-STG-CREATION-A02` | `02` | `pass` | `pass_after_recovery` | `metadata_gap_milestone_skipped_and_parent_missing` | `resolved_by_sup_parent_writeback` | `creation-gap-closed; target-remains-open-to-later-conclusion-sharpening` | `rewrite-current-target-and-append-stage-attempt` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `S4F-2B` now has relationship and Metadata convergence for the creation stage. |
+| `RUN-001-SUP-04` | `RUN-001-T04` | `RUN-001-T04-STG-CREATION` | `RUN-001-R02` | `RUN-001-T04-STG-CREATION-A01` | `RUN-001-T04-STG-CREATION-A02` | `02` | `pass` | `pass_after_recovery` | `metadata_gap_milestone_skipped_and_parent_missing` | `resolved_by_sup_parent_writeback` | `creation-gap-closed; target-still-carries-earlier-conclusion-recovery-shape` | `rewrite-current-target-and-append-stage-attempt` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `S4F-2C` closes the creation-gap here, while later conclusion sharpening remains outside this packet. |
+
 ## Evidence Table
 
-| supplement item id | parent run row id | target row id | target stage row id | target stage attempt id | evidence ref | evidence type | attachment ids | verification status | effect on current verdict | proposed parent-ledger action | downstream impact | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `RUN-001-SUP-01` | `RUN-001` | `RUN-001-T01` | `RUN-001-T01-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-01-ATT-01`, `RUN-001-SUP-01-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final lifecycle audit now passes for `S4F-1A`: child issue `#507` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
-| `RUN-001-SUP-02` | `RUN-001` | `RUN-001-T02` | `RUN-001-T02-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-02-ATT-01`, `RUN-001-SUP-02-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final lifecycle audit now passes for `S4F-2A`: child issue `#508` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
-| `RUN-001-SUP-03` | `RUN-001` | `RUN-001-T03` | `RUN-001-T03-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-03-ATT-01`, `RUN-001-SUP-03-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final lifecycle audit now passes for `S4F-2B`: child issue `#509` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
-| `RUN-001-SUP-04` | `RUN-001` | `RUN-001-T04` | `RUN-001-T04-STG-CREATION` | `not-used` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-04-ATT-01`, `RUN-001-SUP-04-ATT-02` | `verified` | `sharpens-existing` | `rewrite-current-target-and-append-stage-attempt` | `none` | Final lifecycle audit now passes for `S4F-2C`: child issue `#510` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
+| supplement item id | target row id | target stage row id | evidence ref | evidence type | attachment ids | verification status | admitted fields | used by | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RUN-001-SUP-01` | `RUN-001-T01` | `RUN-001-T01-STG-CREATION` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-01-ATT-01`, `RUN-001-SUP-01-ATT-02` | `verified` | `requested_id, actual_parent_issue_number, body-parent-metadata, sidebar-parent-relationship` | `Stage Delta Table` | Final lifecycle audit now passes for `S4F-1A`: child issue `#507` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
+| `RUN-001-SUP-02` | `RUN-001-T02` | `RUN-001-T02-STG-CREATION` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-02-ATT-01`, `RUN-001-SUP-02-ATT-02` | `verified` | `requested_id, actual_parent_issue_number, body-parent-metadata, sidebar-parent-relationship` | `Stage Delta Table` | Final lifecycle audit now passes for `S4F-2A`: child issue `#508` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
+| `RUN-001-SUP-03` | `RUN-001-T03` | `RUN-001-T03-STG-CREATION` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-03-ATT-01`, `RUN-001-SUP-03-ATT-02` | `verified` | `requested_id, actual_parent_issue_number, body-parent-metadata, sidebar-parent-relationship` | `Stage Delta Table` | Final lifecycle audit now passes for `S4F-2B`: child issue `#509` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
+| `RUN-001-SUP-04` | `RUN-001-T04` | `RUN-001-T04-STG-CREATION` | `docs/issues/lifecycle-audit-s4f-parent-writeback-final-plan.json` | `json` | `RUN-001-SUP-04-ATT-01`, `RUN-001-SUP-04-ATT-02` | `verified` | `requested_id, actual_parent_issue_number, body-parent-metadata, sidebar-parent-relationship` | `Stage Delta Table` | Final lifecycle audit now passes for `S4F-2C`: child issue `#510` is attached to parent `#518` and Metadata records `Parent issue: #518`. |
 
 ## Attachment Review Table
 
@@ -68,3 +83,4 @@ runbook_run_ledger_supplement:
 - This supplement closes the parent metadata follow-up that was intentionally left open when the four child issues were first created before the top-level S4F parent issue existed.
 - The historical creation-time JSON artifacts remain valid as admission evidence for the original gap, but they are no longer the current verdict for the four child creation stages.
 - The parent ledger should now present this packet as chronology round `RUN-001-R02`, updating current target status and appending one later creation-stage attempt for each child target.
+- `Packet Round Summary` tells the reader that this packet is the second run-level chronology round, while `Stage Delta Table` tells the reader that each affected creation stage is only on its second admitted attempt, not its third.
