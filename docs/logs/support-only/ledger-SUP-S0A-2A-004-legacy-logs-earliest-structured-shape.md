@@ -43,6 +43,13 @@ support_only_contract_release_ledger_supplement:
 | `S0A-2A-R02-SUP-01` | `unknown` | `role:packet-maintainer` | `role:workflow-reviewer` | `role:evidence-verifier` | `direct-markdown-inspection` | `role:docs-governance-approver` | `accepted-for-packet` | The retained legacy log preserves enough bounded structural detail to defend an earlier logs-reader shape at packet level. | The repo preserves the source markdown path and the packet review chain explicitly, but the original named submitter is not defended by surviving issue-only history. |
 | `S0A-2A-R02-SUP-02` | `unknown` | `role:packet-maintainer` | `role:workflow-reviewer` | `role:evidence-verifier` | `direct-markdown-inspection` | `role:docs-governance-approver` | `accepted-for-packet` | The retained legacy log preserves enough repeated structural detail to defend a historical-only logs-family release plus a current-family bridge without clause carry-forward. | The repo preserves the source markdown path and the packet review chain explicitly, but the original named submitter is not defended by surviving issue-only history. |
 
+## Evidence Time Audit
+
+| supplement item id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0A-2A-R02-SUP-01` | `unknown` | `unknown` | `unknown` | `unknown` | `unknown` | `the retained source currently proves the earlier logs reader shape, but this packet does not yet defend one stable execution timestamp for the original log beyond that structural reading` | The earlier `DLQ + replay` legacy log is strong enough for reader-shape adjudication, but the packet still does not reconstruct a defended historical-effective timestamp range from the surviving markdown alone. |
+| `S0A-2A-R02-SUP-02` | `unknown` | `unknown` | `unknown` | `unknown` | `unknown` | `the retained source currently proves the earlier logs reader shape, but this packet does not yet defend one stable execution timestamp for the original log beyond that structural reading` | The earlier runtime-hardening legacy log strengthens the repeated-shape claim, but the packet still preserves chronology conservatively until narrower timing evidence is reconstructed. |
+
 ## Governance Position Note
 
 - The `Actor and Provenance Review Table` in this supplement is a packet-level event and accountability surface.
@@ -58,6 +65,12 @@ support_only_contract_release_ledger_supplement:
 - `DOC-WORKFLOW-LEGACY-LOGS-0001`: if the parent-ledger rewrite is accepted, the earlier logs layer should remain recorded as one historical-only legacy release whose packet-level evidence chain is now `SUP-004 -> parent ledger -> child contract`.
 - `DOC-WORKFLOW-LOGS-0001`: if the parent-ledger rewrite is accepted, the current logs-family reader should add one explicit bridge note pointing back to `DOC-WORKFLOW-LEGACY-LOGS-0001` as predecessor context without implying clause absorption.
 
+## Downstream Reading Note
+
+- Broad parent summary unchanged: `S0A-2A` still remains primarily parent-owned at packet level.
+- Narrow current reader clarified: the logs slice now has one explicit earlier historical reader at `DOC-WORKFLOW-LEGACY-LOGS-0001` and one later current reader at `DOC-WORKFLOW-LOGS-0001`.
+- Child-opening is no longer deferred for the historical side, but current-family absorption remains explicitly deferred because the later reader does not inherit the earlier clause body.
+
 ## Preliminary Reading
 
 - The two retained legacy logs do not overturn the later current logs-family reading already owned by `DOC-WORKFLOW-LOGS-0001`.
@@ -72,4 +85,5 @@ support_only_contract_release_ledger_supplement:
 
 - `log-S0A-dlq-replay-platform.md` is treated here as direct evidence because it keeps the logs layer at one capability-thesis plus numbered operational-rule-block reader shape rather than at identity or front-matter governance.
 - `log-S0B-graceful-termination+heathz-readyz+alert-threshold.md` is treated here as direct evidence because it repeats the same earlier structured-reader shape while still leaving the later current logs-family identity/front-matter rule body untouched.
+- This packet now also carries its own evidence-time audit so later row-level chronology does not have to be inferred from the parent ledger alone.
 - This `004` SUP round now restores the full `SUP -> parent ledger -> child contract -> parent contract` chain for the `S0A-2A` logs slice.

@@ -229,6 +229,11 @@
 - `P3-C1-S1`: define the minimum bridge note required on `DOC-WORKFLOW-LOGS-0001`
 - `P3-C1-S2`: define the minimum `S0A-2A-R02` write-back once the direct legacy evidence is admitted
 
+### P4 (SUP packet normalization and template alignment)
+
+- `P4-C1-S1`: align the SUP template to the richer packet shape now used in live samples
+- `P4-C1-S2`: normalize `ledger-SUP-S0A-2A-004` so it matches the richer markdown-evidence SUP house style
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -250,15 +255,22 @@
 
 ### P3 (Bridge and ledger adjudication)
 
-- [ ] `P3-C1-S1`: define the minimum bridge note on `DOC-WORKFLOW-LOGS-0001`
+- [x] `P3-C1-S1`: define the minimum bridge note on `DOC-WORKFLOW-LOGS-0001`
 - [x] `P3-C1-S2`: define the minimum `S0A-2A-R02` write-back
+
+### P4 (SUP packet normalization and template alignment)
+
+- [x] `P4-C1-S1`: align the SUP template to the richer packet shape used by live samples
+- [x] `P4-C1-S2`: normalize `ledger-SUP-S0A-2A-004` to the richer markdown-evidence SUP shape
 
 ## Current Status (recommended)
 
 - `S0G-1B` is now opened as the bounded lane for legacy structured-log history, retired historical-release semantics, and the unresolved `S0A-2A-R02` logs-layer adjudication path.
 - The repo already has enough evidence to say that the two earliest legacy structured logs are not the same rule body as the current `DOC-WORKFLOW-LOGS-0001` release.
 - `DOC-WORKFLOW-LEGACY-LOGS-0001` is now emitted as the first historical-only legacy logs draft, and `S0A-2A-R02` no longer remains deferred background only.
-- The immediate next step is `P3-C1-S1`: add the reciprocal bridge note on `DOC-WORKFLOW-LOGS-0001` so the later current-family reader points back to the historical-only legacy release without implying clause absorption.
+- `DOC-WORKFLOW-LOGS-0001` now carries the reciprocal bridge note back to `DOC-WORKFLOW-LEGACY-LOGS-0001` without implying clause absorption.
+- The SUP template and `SUP-004` are now aligned to the richer packet shape used by live repo samples, so the logs-side evidence packet no longer sits at a thinner minimum-only shape.
+- The immediate next step is no longer bridge definition; it is reviewer audit of whether the bridge wording and non-absorption boundary are explicit enough.
 
 ## Evidence (reserved)
 
@@ -298,7 +310,25 @@
   - the draft now records retired `history-backfilled` rows for the earlier capability-thesis and numbered-rule-block reader shape
   - `S0A-2A-R02` now reads as one explicit historical-review slice under `DOC-WORKFLOW-LEGACY-LOGS-0001` rather than as deferred background only
 
+### P3-C1-S1 + P4-C1-S1S2 (bridge landed and SUP shape aligned | 2026-04-22)
+
+- headSha: ``
+- artifacts:
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-004-legacy-logs-earliest-structured-shape.md`
+  - `docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
+- expected:
+  - land the reciprocal bridge note on the current logs-family contract
+  - align the SUP template to the richer live-sample packet shape
+  - normalize `SUP-004` so it no longer reads as a thin minimum-only packet
+- observed:
+  - `DOC-WORKFLOW-LOGS-0001` now points back to `DOC-WORKFLOW-LEGACY-LOGS-0001` as predecessor context only
+  - the SUP template now explicitly records the richer packet shape and the `reviewed by` accountability field already used in live samples
+  - `SUP-004` now includes a row-level evidence-time audit plus a downstream-reading note and therefore matches the richer markdown-evidence house style more closely
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-22: opened `S0G-1B` so the earliest legacy structured-log shape can be judged as a distinct historical problem instead of being silently forced into the current `DOC-WORKFLOW-LOGS` family.
 - 2026-04-22: emitted `DOC-WORKFLOW-LEGACY-LOGS-0001` as the first historical-only legacy logs draft and wrote back `S0A-2A-R02` from deferred background to explicit historical review.
+- 2026-04-22: landed the reciprocal bridge on `DOC-WORKFLOW-LOGS-0001`, updated the SUP template to the richer live-sample house style, and normalized `SUP-004` to that richer markdown-evidence packet shape.
