@@ -69,10 +69,24 @@ contract_record:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `DOC-WORKFLOW-0001-ST-01` | `One-way refinement pipeline` | `active` | `introduced` | `S0A-2A-R01` | `DOC-WORKFLOW-0001` | `unknown` | `DOC-WORKFLOW-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Structured documentation should move through one one-way refinement pipeline from log to lab to runbook to ADR. | Broad workflow boundary clause retained as the primary owner for the S0A-2A parent packet. |
 | `DOC-WORKFLOW-0001-ST-02` | `Back-link to source evidence` | `active` | `introduced` | `S0A-2A-R01` | `DOC-WORKFLOW-0001` | `unknown` | `DOC-WORKFLOW-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Links in that pipeline should point back to source artifacts and evidence rather than forward to a guessed next step. | The back-link rule is kept explicit so later child contracts do not have to restate the parent navigation principle. |
-| `DOC-WORKFLOW-0001-ST-03` | `Logs plan layer` | `active` | `introduced` | `S0A-2A-R01` | `DOC-WORKFLOW-0001` | `unknown` | `DOC-WORKFLOW-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Logs should convert raw materials into one structured plan layer covering status, what, how, and links. | This release keeps the broad workflow reading even though later child families may own narrower logs-specific rule bodies. |
-| `DOC-WORKFLOW-0001-ST-04` | `Labs proof layer` | `active` | `introduced` | `S0A-2A-R01` | `DOC-WORKFLOW-0001` | `unknown` | `DOC-WORKFLOW-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Labs should act as the most granular execution and proof layer through repeatable checks plus result backfills. | The contract keeps the broad refinement role without claiming direct ownership of later labs-family historical backfill work. |
-| `DOC-WORKFLOW-0001-ST-05` | `Runbook operational layer` | `active` | `introduced` | `S0A-2A-R01` | `DOC-WORKFLOW-0001` | `unknown` | `DOC-WORKFLOW-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Runbooks should distill the operational invariants learned from labs into one operator-facing troubleshooting and recovery guide. | This parent clause remains the broad boundary even though `DOC-WORKFLOW-RUNBOOK-0001` now owns one narrower runbook packet. |
-| `DOC-WORKFLOW-0001-ST-06` | `ADR decision layer` | `active` | `introduced` | `S0A-2A-R01` | `DOC-WORKFLOW-0001` | `unknown` | `DOC-WORKFLOW-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | ADRs should summarize the decision layer of the chain through context, decision, alternatives considered, and consequences rather than embedding the full lab execution narrative. | The ADR layer remains broad background at this parent level until stronger direct child evidence is admitted. |
+| `DOC-WORKFLOW-0001-ST-03` | `Logs plan layer` | `active` | `introduced` | `S0A-2A-R01` | `DOC-WORKFLOW-0001` | `unknown` | `DOC-WORKFLOW-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Logs should convert raw materials into one structured plan layer covering status, what, how, and links. | This clause remains a broad parent workflow reading; the file does not ask readers to infer one child-opening decision from this issue packet alone. |
+| `DOC-WORKFLOW-0001-ST-04` | `Labs proof layer` | `active` | `introduced` | `S0A-2A-R01` | `DOC-WORKFLOW-0001` | `unknown` | `DOC-WORKFLOW-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Labs should act as the most granular execution and proof layer through repeatable checks plus result backfills. | This clause remains on the parent as a broad workflow-layer summary while the narrower current labs reader now lives in `DOC-WORKFLOW-LABS-0002`. |
+| `DOC-WORKFLOW-0001-ST-05` | `Runbook operational layer` | `active` | `introduced` | `S0A-2A-R01` | `DOC-WORKFLOW-0001` | `unknown` | `DOC-WORKFLOW-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Runbooks should distill the operational invariants learned from labs into one operator-facing troubleshooting and recovery guide. | This clause remains on the parent as a broad workflow-layer summary while `DOC-WORKFLOW-RUNBOOK-0001` owns the current narrower runbook body. |
+| `DOC-WORKFLOW-0001-ST-06` | `ADR decision layer` | `active` | `introduced` | `S0A-2A-R01` | `DOC-WORKFLOW-0001` | `unknown` | `DOC-WORKFLOW-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | ADRs should summarize the decision layer of the chain through context, decision, alternatives considered, and consequences rather than embedding the full lab execution narrative. | This clause remains a broad parent workflow reading until one narrower ADR child is opened from stronger direct evidence. |
+
+## Current Boundary Map
+
+| boundary id | broad clause | current reading mode | current narrow owner | parent keeps | notes |
+| --- | --- | --- | --- | --- | --- |
+| `DOC-WORKFLOW-0001-BND-01` | `DOC-WORKFLOW-0001-ST-01` | `parent-owned` | `none` | one broad workflow-layer rule for the refinement path itself | The pipeline rule is still owned directly by the parent; no narrower child currently replaces this boundary. |
+| `DOC-WORKFLOW-0001-BND-02` | `DOC-WORKFLOW-0001-ST-02` | `parent-owned` | `none` | one broad navigation rule for linking back to source evidence | The back-link rule remains parent-owned so narrower children do not each restate the same navigation boundary. |
+| `DOC-WORKFLOW-0001-BND-03` | `DOC-WORKFLOW-0001-ST-03` | `parent-owned` | `none` | one broad workflow reading of the logs layer | A narrower logs family exists elsewhere in the workflow domain, but this source packet does not itself ask readers to treat the logs clause here as delegated to that later family. |
+| `DOC-WORKFLOW-0001-BND-04` | `DOC-WORKFLOW-0001-ST-04` | `delegated-summary` | `DOC-WORKFLOW-LABS-0002` | one broad workflow reading of what the labs layer is for | The parent keeps only the broad workflow-layer labs boundary; the current narrower labs rule body should be read through `DOC-WORKFLOW-LABS-0002`. |
+| `DOC-WORKFLOW-0001-BND-05` | `DOC-WORKFLOW-0001-ST-05` | `delegated-summary` | `DOC-WORKFLOW-RUNBOOK-0001` | one broad workflow reading of what the runbook layer is for | The parent keeps only the broad workflow-layer runbook boundary; the current narrower runbook body should be read through `DOC-WORKFLOW-RUNBOOK-0001`. |
+| `DOC-WORKFLOW-0001-BND-06` | `DOC-WORKFLOW-0001-ST-06` | `parent-owned` | `none` | one broad workflow reading of the ADR layer | The current parent keeps the ADR layer as a broad boundary only because this packet has not yet opened one narrower ADR child from direct evidence. |
+
+- The `Current Boundary Map` is a reader-facing summary of the current boundary only.
+- It does not replace release lineage in frontmatter, statement-flow history in `Statement Evolution Table`, or source routing in support-only ledgers.
 
 ## Statement Evolution Table
 
@@ -104,11 +118,13 @@ contract_record:
 ## Current Reading
 
 - Read this contract when the question is `what workflow-layer rule originally governed how structured docs should refine from raw material into stable decisions?`
-- This contract owns the workflow-layer boundary only; narrower mechanism-specific contracts may sit beneath the same broader workflow domain later.
+- Read `Current Boundary Map` when the question becomes `which broad workflow clauses are still owned here, and which are now only summarized here while narrower current readers sit elsewhere?`
+- This contract owns the workflow-layer boundary only; narrower mechanism-specific contracts may sit beneath the same broader workflow domain later without requiring readers to infer the current ownership split from notes alone.
 
 ## Reader Notes
 
 - This is a workflow-layer contract preview sourced from issue `S0A/2A`, not from a local source log.
 - It intentionally captures the historical contract at the broader `WORKFLOW` layer without rewriting it to match later workflow replacements.
-- `DOC-WORKFLOW-LABS` now reads as one narrower family beneath the broader workflow path, not as a release split from this record.
+- `DOC-WORKFLOW-LABS-0002` and `DOC-WORKFLOW-RUNBOOK-0001` are now read here as narrower current readers for their respective layer bodies, while this parent keeps the broad workflow summary only.
+- The logs and ADR clauses remain broad parent readings in this file; readers should not infer a delegated child-opening decision from this packet alone.
 - The file now uses the current chronology-first clause registry model, but it still remains the same first broad release rather than a new later family state.
