@@ -36,7 +36,8 @@ contract_record:
     - docs/governance/contracts/workflow/legacy logs/DOC-WORKFLOW-LEGACY-LOGS-0001-earliest-structured-logs-capability-thesis-and-numbered-rule-blocks.md
     - docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md
   lineage:
-    supersedes: []
+    supersedes:
+      - DOC-WORKFLOW-LEGACY-LOGS-0001
     superseded_by: []
     split_from: []
     split_into: []
@@ -48,7 +49,7 @@ contract_record:
     - This draft is the first narrow logs-oriented extraction from the mixed S0B-3A source packet rather than one already-generalized workflow parent release.
     - The broader DOC-WORKFLOW family path remains taxonomy only; this record does not claim split lineage from DOC-WORKFLOW-0001.
     - Front matter is intentionally kept narrow here on first extraction, while later parent or sibling-spanning widening remains explicitly reserved if repeated evidence justifies it.
-    - DOC-WORKFLOW-LEGACY-LOGS-0001 is now retained as predecessor context for the earliest historical structured-log reader shape, but this current logs-family reader does not absorb that earlier clause body.
+    - DOC-WORKFLOW-LEGACY-LOGS-0001 is now retained as predecessor context for the earliest historical structured-log reader shape, and this current logs-family reader now records the reciprocal `supersedes` back-link without claiming that the earlier clause body was absorbed here.
 ```
 
 ## Legacy Reader Bridge

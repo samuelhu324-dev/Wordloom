@@ -234,6 +234,10 @@
 - `P4-C1-S1`: align the SUP template to the richer packet shape now used in live samples
 - `P4-C1-S2`: normalize `ledger-SUP-S0A-2A-004` so it matches the richer markdown-evidence SUP house style
 
+### P5 (Reciprocal lineage completion)
+
+- `P5-C1-S1`: add the reciprocal `supersedes` lineage back-link on `DOC-WORKFLOW-LOGS-0001`
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -263,12 +267,17 @@
 - [x] `P4-C1-S1`: align the SUP template to the richer packet shape used by live samples
 - [x] `P4-C1-S2`: normalize `ledger-SUP-S0A-2A-004` to the richer markdown-evidence SUP shape
 
+### P5 (Reciprocal lineage completion)
+
+- [x] `P5-C1-S1`: add the reciprocal `supersedes` lineage back-link on `DOC-WORKFLOW-LOGS-0001`
+
 ## Current Status (recommended)
 
 - `S0G-1B` is now opened as the bounded lane for legacy structured-log history, retired historical-release semantics, and the unresolved `S0A-2A-R02` logs-layer adjudication path.
 - The repo already has enough evidence to say that the two earliest legacy structured logs are not the same rule body as the current `DOC-WORKFLOW-LOGS-0001` release.
 - `DOC-WORKFLOW-LEGACY-LOGS-0001` is now emitted as the first historical-only legacy logs draft, and `S0A-2A-R02` no longer remains deferred background only.
 - `DOC-WORKFLOW-LOGS-0001` now carries the reciprocal bridge note back to `DOC-WORKFLOW-LEGACY-LOGS-0001` without implying clause absorption.
+- `DOC-WORKFLOW-LOGS-0001` now also carries the reciprocal frontmatter lineage back-link through `supersedes: [DOC-WORKFLOW-LEGACY-LOGS-0001]`, which makes the reader-replacement relationship explicit on both sides.
 - The SUP template and `SUP-004` are now aligned to the richer packet shape used by live repo samples, so the logs-side evidence packet no longer sits at a thinner minimum-only shape.
 - The immediate next step is no longer bridge definition; it is reviewer audit of whether the bridge wording and non-absorption boundary are explicit enough.
 
@@ -327,8 +336,23 @@
   - the SUP template now explicitly records the richer packet shape and the `reviewed by` accountability field already used in live samples
   - `SUP-004` now includes a row-level evidence-time audit plus a downstream-reading note and therefore matches the richer markdown-evidence house style more closely
 
+### P5-C1-S1 (reciprocal lineage back-link completed | 2026-04-22)
+
+- headSha: ``
+- artifacts:
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  - `docs/governance/contracts/workflow/legacy logs/DOC-WORKFLOW-LEGACY-LOGS-0001-earliest-structured-logs-capability-thesis-and-numbered-rule-blocks.md`
+  - `docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
+- expected:
+  - complete the reciprocal reader-replacement lineage so the later current reader no longer relies only on prose bridge wording
+- observed:
+  - `DOC-WORKFLOW-LEGACY-LOGS-0001` still records `superseded_by: DOC-WORKFLOW-LOGS-0001`
+  - `DOC-WORKFLOW-LOGS-0001` now records the reciprocal `supersedes: DOC-WORKFLOW-LEGACY-LOGS-0001`
+  - the pair now reads as one explicit reader-replacement relation on both sides without implying clause absorption
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-22: opened `S0G-1B` so the earliest legacy structured-log shape can be judged as a distinct historical problem instead of being silently forced into the current `DOC-WORKFLOW-LOGS` family.
 - 2026-04-22: emitted `DOC-WORKFLOW-LEGACY-LOGS-0001` as the first historical-only legacy logs draft and wrote back `S0A-2A-R02` from deferred background to explicit historical review.
 - 2026-04-22: landed the reciprocal bridge on `DOC-WORKFLOW-LOGS-0001`, updated the SUP template to the richer live-sample house style, and normalized `SUP-004` to that richer markdown-evidence packet shape.
+- 2026-04-22: completed the reciprocal frontmatter lineage pair so `LEGACY-LOGS-0001` and `LOGS-0001` now both expose the same reader-replacement relationship structurally.
