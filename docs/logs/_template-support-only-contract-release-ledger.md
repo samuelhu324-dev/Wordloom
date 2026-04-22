@@ -84,6 +84,8 @@ Use this when one parent-ledger row also needs explicit time audit for source ob
 - `resolved by contract id` should name the later release that consumed the slice when consumption actually happened.
 - `consumed scope` states whether the slice was consumed fully, partially, or not at all.
 - If one later release absorbs new non-contract source material, record that fact here and carry the source forward in the later release metadata; do not fabricate `absorbed_from` links to sources that were never contracts.
+- Use the core routing columns to answer `what happened to this source slice`; do not add extra routing columns only to preview downstream contract-reader shape.
+- If later readers still need one concise explanation of whether the consumed slice now reads through a broad parent summary, a narrow current reader, or a still-deferred background state, prefer one short rollup or reader note rather than widening the routing table itself.
 
 ## Completion Rule
 
@@ -110,3 +112,6 @@ Use this when one parent-ledger row also needs explicit time audit for source ob
   - list source slices that still need judgment later
 - `unconsumed slices`:
   - list source slices that were intentionally not promoted into a release
+- `current reader handoff`:
+  - use this optional rollup when resolved rows now land in materially different downstream reader shapes, for example `broad parent summary`, `narrow current reader`, or `bounded background only`
+  - keep this rollup short and reader-facing; it clarifies where the current reading lives after routing, but it does not replace the routing table, contract lineage, or contract-local current-reading sections

@@ -247,8 +247,8 @@
 
 ### P3 (Ledger and SUP impact verdict)
 
-- [ ] `P3-C1-S1`: review parent-ledger template impact
-- [ ] `P3-C1-S2`: review SUP template impact
+- [x] `P3-C1-S1`: review parent-ledger template impact
+- [x] `P3-C1-S2`: review SUP template impact
 
 ### P4 (Next sample gate)
 
@@ -259,8 +259,9 @@
 - `S0G-4A` is now opened as a draft template-and-experiment lane.
 - `P1` is now complete: `DOC-WORKFLOW-0001` has one bounded `Current Boundary Map` experiment so the parent current-reading split is no longer left to statement notes alone.
 - `P2` is now complete: `DOC-WORKFLOW-LABS-0002` does not need a parent-style boundary map; the bounded ambiguity was resolved by clarifying the current reader shape and reaffirming that chronology stays in `Statement Evolution Table`.
-- The active work is still not the `ADR` sample itself; the next task is to decide whether the current parent-ledger and SUP templates already hand off enough downstream reading context or need one bounded note-level addition.
-- The next concrete execution step is `P3`: evaluate parent-ledger and SUP template impact after the two contract experiments.
+- `P3` is now complete: the parent-ledger and SUP templates do not need new routing columns; they only need one explicit note-level rule that downstream reader shape should be explained through optional rollups rather than through widened core tables.
+- The active work is still not the `ADR` sample itself; the next task is to decide whether this template rule is now stable enough to write back into the contract template and then open the `S0A-2A ADR` sample lane.
+- The next concrete execution step is `P4`: either open the bounded `ADR` sample or explicitly defer it if one more template write-back packet is still required first.
 
 ## Evidence (reserved)
 
@@ -301,8 +302,21 @@
   - `LABS-0002` judged to be a narrow current reader rather than a parent-boundary surface
   - one `Current Reader Shape` section now explains that the mixed clause set should be read as chronology inside one current reader, not as unresolved ownership routing
 
+### P3-C1-S1S2 (ledger and sup template impact verdict | 2026-04-22)
+
+- headSha: ``
+- artifacts: `docs/logs/_template-support-only-contract-release-ledger.md`; `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+- expected:
+  - decide whether the two contract experiments require new parent-ledger or SUP table columns
+  - if not, land only the minimum template guidance needed to explain downstream reader shape after write-back
+- observed:
+  - no new parent-ledger routing column was needed
+  - no new SUP evidence-table column was needed
+  - both templates now direct downstream reader-shape clarification into optional rollups or reader notes rather than widened core tables
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-22: opened `S0G-4A` to separate the contract reader-model question from the later `ADR` sample application and to make the `SUP -> LEDGER -> child contract -> parent contract` evaluation order explicit.
 - 2026-04-22: completed `P1` by adding a bounded `Current Boundary Map` experiment to `WORKFLOW-0001` and writing the first explicit parent-owned versus delegated-summary reading split into the parent contract surface.
 - 2026-04-22: completed `P2` by deciding that `LABS-0002` should keep chronology clarification inside one narrow current reader instead of receiving a second parent-style boundary map.
+- 2026-04-22: completed `P3` by deciding that parent-ledger and SUP templates need note-level downstream-reading guidance, not new structural columns.

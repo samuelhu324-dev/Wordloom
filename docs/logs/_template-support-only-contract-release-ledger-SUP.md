@@ -150,6 +150,8 @@ Use this when one supplement row needs explicit audit of source execution time, 
 - `effect on current verdict` states how the admitted evidence relates to the current parent-ledger judgment.
 - `proposed parent-ledger action` states what the parent ledger should do if that effect is accepted.
 - `contract impact` is downstream-only guidance; it may not be applied before the parent ledger is updated or explicitly left unchanged.
+- Keep `contract impact` narrow: it states what kind of downstream contract action may follow, not the full current-reader explanation after write-back.
+- If reviewers also need one concise note about whether the accepted evidence is expected to sharpen a broad parent summary, clarify one narrow current reader, or leave the downstream reader unchanged, prefer one optional rollup or reader note instead of adding a new evidence-table column.
 
 ## Escalation Rule
 
@@ -173,3 +175,6 @@ Use this when one supplement row needs explicit audit of source execution time, 
   - list any contract records that may need change only after the parent ledger is updated
 - `rejected evidence`:
   - list proposed evidence rows that were intentionally not admitted in this round
+- `downstream reading note`:
+  - use this optional rollup when accepted evidence changes how a later reader should interpret the routed slice after parent-ledger write-back, for example `broad parent summary unchanged`, `narrow current reader clarified`, or `child-opening still deferred`
+  - keep this note short and post-write-back facing; it complements `contract impact` but does not replace the evidence verdict, the proposed parent-ledger action, or later contract-local reading sections
