@@ -32,6 +32,7 @@ contract_record:
     - legacy/from_structured_docs/from-logs/v2-logs/log-S0A-dlq-replay-platform.md
     - legacy/from_structured_docs/from-logs/v2-logs/log-S0B-graceful-termination+heathz-readyz+alert-threshold.md
   supporting_evidence_refs:
+    - docs/logs/support-only/ledger-SUP-S0A-2A-004-legacy-logs-earliest-structured-shape.md
     - docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md
     - docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md
   lineage:
@@ -47,7 +48,7 @@ contract_record:
   notes:
     - This file is a historical-only legacy-family release candidate rather than an earlier revision of DOC-WORKFLOW-LOGS.
     - The later DOC-WORKFLOW-LOGS-0001 reader replaces this historical reader as the current logs-facing contract surface, but no earlier clause body is carried forward into that later family by default.
-    - The decisive workflow packet write-back target for this historical release is S0A-2A-R02, which now stops reading as deferred background only.
+    - The decisive workflow packet write-back target for this historical release is S0A-2A-R02, which is now defended through accepted `SUP-004` rather than direct source-path write-back alone.
 ```
 
 ## Legacy Redirect
@@ -65,14 +66,14 @@ contract_record:
 - The governed state of this file is carried in frontmatter through `status`, `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
 - In this file, `status: retired` plus `approval_state: superseded-historical-release` means the earlier legacy logs release remains a governed historical release artifact, but the current logs-family reader has moved to `DOC-WORKFLOW-LOGS-0001`.
 - Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this historical family and should not be read as current ownership or current approval identity.
-- This contract therefore acts as the governed historical-release surface for the earliest structured-log shape, while `DOC-WORKFLOW-LOGS-0001` carries the later current logs-family reader and the parent ledger preserves the source-routing chain that led here.
+- This contract therefore acts as the governed historical-release surface for the earliest structured-log shape, while `DOC-WORKFLOW-LOGS-0001` carries the later current logs-family reader and the accepted `SUP-004 -> parent ledger` write-back chain preserves how this historical reader entered the governed path.
 
 ## Governance Event Table
 
 | event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `DOC-WORKFLOW-LEGACY-LOGS-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-LEGACY-LOGS-0001` | `unknown` | `historical-legacy-shape-admitted` | `2026-04-22` | `legacy/from_structured_docs/from-logs/v2-logs/log-S0A-dlq-replay-platform.md; legacy/from_structured_docs/from-logs/v2-logs/log-S0B-graceful-termination+heathz-readyz+alert-threshold.md` | The two earliest legacy structured logs now jointly defend one earlier structured-log reader shape that is materially different from the later DOC-WORKFLOW-LOGS family. |
-| `DOC-WORKFLOW-LEGACY-LOGS-0001-GOV-02` | `routing-writeback-event` | `DOC-WORKFLOW-LEGACY-LOGS-0001` | `role:packet-reviewer` | `historical-release-state-fixed` | `2026-04-22` | `ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md` | The parent ledger now fixes that the S0A-2A logs slice may be read through this historical-only legacy release rather than staying at deferred bounded background only. |
+| `DOC-WORKFLOW-LEGACY-LOGS-0001-GOV-02` | `routing-writeback-event` | `DOC-WORKFLOW-LEGACY-LOGS-0001` | `role:packet-reviewer` | `historical-release-state-fixed` | `2026-04-22` | `ledger-SUP-S0A-2A-004-legacy-logs-earliest-structured-shape.md; ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md` | The accepted logs SUP plus the parent ledger now fix that the S0A-2A logs slice may be read through this historical-only legacy release rather than staying at deferred bounded background only. |
 | `DOC-WORKFLOW-LEGACY-LOGS-0001-GOV-03` | `superseded-release-event` | `DOC-WORKFLOW-LEGACY-LOGS-0001` | `role:packet-reviewer` | `superseded-historical-release` | `2026-04-22` | `DOC-WORKFLOW-LOGS-0001` | The later current DOC-WORKFLOW-LOGS reader now supersedes this historical reader as the active logs-family contract surface without implying clause absorption. |
 
 ## Contract Statement Table
@@ -114,10 +115,12 @@ contract_record:
 
 - Read this release when the question is `what was the earliest defended structured-log shape before the later DOC-WORKFLOW-LOGS family existed?`
 - Read `DOC-WORKFLOW-LOGS-0001` when the question becomes `what is the current narrow workflow rule for structured log identity, front matter, and cutover intake?`
+- Read the accepted `SUP-004` packet first when the question is `what direct evidence packet justified opening this historical-only legacy release?`
 - Read the `S0A-2A` parent ledger when the question is `how does this earlier legacy logs release affect the logs-layer routing verdict for that mixed source packet?`
 
 ## Reader Notes
 
 - This file is intentionally a historical-only legacy family release and not a predecessor revision inside `DOC-WORKFLOW-LOGS`.
 - The later `DOC-WORKFLOW-LOGS-0001` reader supersedes this file as the current logs-family contract surface, but the relationship is one reader replacement, not one clause carry-forward chain.
+- The accepted packet path for this reader is now explicit: `ledger-SUP-S0A-2A-004 -> ledger-S0A-2A -> DOC-WORKFLOW-LEGACY-LOGS-0001 -> DOC-WORKFLOW-LOGS-0001`.
 - The file uses `history-backfilled` retired rows because the lane is preserving one earlier structured reader shape without pretending the repo has reconstructed the same-time clause authoring chronology in finer detail.
