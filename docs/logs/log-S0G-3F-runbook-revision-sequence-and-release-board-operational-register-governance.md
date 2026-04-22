@@ -20,6 +20,7 @@
   **reference_log_3**: `docs/logs/log-S0G-3E-workflow-github-issues-round-attempt-chronology-and-family-template-governance.md`
   **reference_log_4**: `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
   **reference_log_5**: `docs/logs/_template-log-phase-drills-evidence.md`
+  **reference_log_6**: `docs/issues/_template-runbook-release-operational-register-issue.md`
 **issue_keyword**: `workflow`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3f`
@@ -102,6 +103,7 @@
 - `P0-C1-S1` | artifact: `docs/logs/log-S0G-3A-runbook-release-issue-concentration-and-ledger-naming-governance.md`
 - `P0-C1-S2` | artifact: `docs/runbook/support-only/ledger-run-PATCH-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
 - `P0-C1-S3` | artifact: `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+- `P1-C1-S1` | artifact: `docs/issues/_template-runbook-release-operational-register-issue.md`
 
 ## Definitions (optional)
 
@@ -236,8 +238,43 @@
 
 ### P1 (Board template / issue-body rule)
 
-- P1-C1-S1: define the minimum release-board issue body shape for active runbook-family releases
+- P1-C1-S1: publish one minimum release-board issue-body template for active runbook-family releases
 - P1-C1-S2: define how DoD rows should point to PRs and current standing without recreating source-log hierarchy
+
+## P1 (Board template / issue-body rule | v1)
+
+### P1-C1-S1 (Minimum release-board issue-body template | v1)
+
+- The minimum release-board issue-body template is now fixed at:
+  - `Context`
+  - `Definition of Done (DoD)`
+  - `Canonical Artifacts`
+  - `Revision Register`
+  - `Mainline State`
+  - `Open Follow-ups`
+- The first defended repo-local template path is:
+  - `docs/issues/_template-runbook-release-operational-register-issue.md`
+- This template is a copy-paste aid for live GitHub issue bodies. It does not replace the source log, parent ledger, or git history.
+
+### P1-C1-S2 (DoD row linkage rule | v1)
+
+- `Definition of Done (DoD)` should group rows by artifact class:
+  - `Release`
+  - `Ledger`
+  - `Supplement Ledger (SUP)`
+  - `Patch`
+- Each DoD row should carry at least:
+  - artifact path or short artifact label
+  - stable artifact identity
+  - current revision
+  - current standing
+  - relevant PR refs
+- `current standing` is now fixed to the same reader-facing vocabulary used by `Mainline State`:
+  - `branch-only`
+  - `pr-open`
+  - `merged-to-main`
+- DoD rows should not try to explain the full source-log reasoning, chronology, or contract semantics again.
+- If one PR updates multiple artifacts in the same release family, record that PR in each affected DoD row rather than splitting the release into multiple board issues.
 
 ### P2 (Operating-state rule)
 
@@ -260,8 +297,8 @@
 
 ### P1 (Board template / issue-body rule)
 
-- [ ] `P1-C1-S1`: define the minimum release-board issue body shape for active runbook-family releases
-- [ ] `P1-C1-S2`: define how DoD rows should point to PRs and current standing without recreating source-log hierarchy
+- [x] `P1-C1-S1`: publish one minimum release-board issue-body template for active runbook-family releases
+- [x] `P1-C1-S2`: define how DoD rows should point to PRs and current standing without recreating source-log hierarchy
 
 ### P2 (Operating-state rule)
 
@@ -278,7 +315,8 @@
 - `S0G-3F` is now opened as the next bounded runbook-governance follow-up under `S0G`.
 - The repo now has one explicit contract for separating stable artifact identity, revision sequence, and commit/PR packet identity.
 - The repo also now has one explicit rule that the release board should act as an operational register for active runbook-family releases rather than as a replacement for source logs or git history.
-- The next step under this lane is to publish one minimum release-board issue-body rule and then test it on one live release issue sample.
+- `P1` is now fixed: the minimum release-board issue-body template exists in-repo, and DoD rows now have one defended minimal field set for artifact identity, revision, standing, and PR linkage.
+- The next step under this lane is `P2`: fix operating-state rules for active versus retained releases and then test the template on one live release issue sample.
 
 ## Evidence (reserved)
 
@@ -288,4 +326,5 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-22: Executed `P1` for `S0G-3F`, publishing the first repo-local release-board issue-body template and fixing the minimum DoD row linkage rule for artifact identity, revision, standing, and PR refs.
 - 2026-04-22: Opened `S0G-3F` to fix revision-sequence grammar and release-board operational-register rules after the repo proved that stable runbook-family object identity and repeated updates were still easy to confuse in commit history and board tracking.
