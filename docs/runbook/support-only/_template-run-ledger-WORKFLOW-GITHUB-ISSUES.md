@@ -34,15 +34,15 @@ runbook_run_ledger:
 
 ## Execution Round Table
 
-| execution round id | run row id | round sequence | entry packet id | entry packet kind | target scope | stage scope attempted | round started at | round completed at | round verdict | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<RUN-001-R01>` | `<RUN-001>` | `<01>` | `<RUN-001>` | `<ledger>` | `<T01-T04 + parent>` | `<CREATION, PR_PENDING, PR_MERGED, CONCLUSION>` | `<YYYY-MM-DD>` | `<YYYY-MM-DD>` | `<completed_with_follow_up>` | `<optional>` |
+| execution round id | run row id | round sequence | entry packet id | entry packet kind | target scope | stage scope attempted | round started at | round completed at | round verdict | delta entry ref | crosswalk ref | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RUN-001-R01>` | `<RUN-001>` | `<01>` | `<RUN-001>` | `<ledger>` | `<T01-T04 + parent>` | `<CREATION, PR_PENDING, PR_MERGED, CONCLUSION>` | `<YYYY-MM-DD>` | `<YYYY-MM-DD>` | `<completed_with_follow_up>` | `<not-applicable>` | `<not-applicable>` | `<optional>` |
 
 ## Current Target Status Table
 
-| target row id | run row id | target ref key | target kind | workflow profile | first_seen_in_round | first_seen_from_packet | current_status | current_stage_completion | latest_updated_in_round | latest_updated_from_packet | latest_updated_at | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<RUN-001-T01>` | `<RUN-001>` | `<S4F-2A>` | `<child-issue-log>` | `<child-issue-full-lifecycle>` | `<RUN-001-R01>` | `<RUN-001>` | `<converged>` | `<CREATION, PR_PENDING, PR_MERGED, CONCLUSION>` | `<RUN-001-R03>` | `<SUP-002>` | `<YYYY-MM-DD>` | `<optional>` |
+| target row id | run row id | target ref key | target kind | workflow profile | first_seen_in_round | first_seen_from_packet | current_status | current_stage_completion | latest_updated_in_round | latest_updated_from_packet | latest delta ref | latest delta focus | latest_updated_at | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RUN-001-T01>` | `<RUN-001>` | `<S4F-2A>` | `<child-issue-log>` | `<child-issue-full-lifecycle>` | `<RUN-001-R01>` | `<RUN-001>` | `<converged>` | `<CREATION, PR_PENDING, PR_MERGED, CONCLUSION>` | `<RUN-001-R03>` | `<SUP-002>` | `<SUP-002 / RUN-001-SUP-05>` | `<conclusion dual-PR DoD convergence>` | `<YYYY-MM-DD>` | `<optional>` |
 
 ## Target Stage Attempt Table
 

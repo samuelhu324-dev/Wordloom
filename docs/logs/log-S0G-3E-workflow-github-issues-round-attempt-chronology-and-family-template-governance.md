@@ -686,6 +686,38 @@
 - This crosswalk exists so a reader can move in one hop from parent-ledger chronology to the exact `SUP` packet row that explains the local before/after delta.
 - The parent ledger does not need to duplicate full `SUP` delta content if the crosswalk provides stable packet refs plus exact `supplement item id` values.
 
+## P6 (Parent-ledger short cross-reference exposure | v1)
+
+### P6-C1-S1 (Execution-round delta entry rule | v1)
+
+- The parent ledger should expose one short delta-entry hint directly inside `Execution Round Table` for every non-initial round admitted by a `SUP` packet.
+- The goal is not to duplicate `SUP` delta content; the goal is to expose the shortest first-hop pointer before a reader reaches the later crosswalk section.
+- `Execution Round Table` should therefore add lightweight reader fields for:
+  - `delta entry ref`
+  - `crosswalk ref`
+- `delta entry ref` should identify the `SUP` packet and the bounded item-id span that explains the round-level delta, for example `SUP-001 / RUN-001-SUP-01..04`.
+- `crosswalk ref` should point to the stable parent-ledger bridge surface that expands those target-stage pointers.
+- Initial ledger-owned rounds such as `RUN-001-R01` may use `not-applicable` when no later packet-local delta surface exists.
+
+### P6-C1-S2 (Current-target latest-delta exposure rule | v1)
+
+- The parent ledger should also expose one short latest-delta hint directly inside `Current Target Status Table`.
+- `Current Target Status Table` should therefore add lightweight reader fields for:
+  - `latest delta ref`
+  - `latest delta focus`
+- `latest delta ref` should identify the exact `SUP` packet row that most recently shaped the current defended target reading, for example `SUP-002 / RUN-001-SUP-05`.
+- `latest delta focus` should summarize why that delta row matters, for example `conclusion dual-PR DoD convergence`.
+- These fields are reader-first summary hints only. They should not replace `latest_updated_in_round`, `latest_updated_from_packet`, or the detailed `Supplement Delta Crosswalk Table`.
+
+### P6-C1-S3 (Template and live-writeback scope rule | v1)
+
+- This follow-up should modify the family-specific parent-ledger template and the live parent ledger only.
+- It should not force a `SUP` template rewrite, because the `SUP` packet already carries stable `supplement item id` and delta tables that the parent ledger can reference directly.
+- The defended write-back order is:
+  - fix the contract in `S0G-3E`
+  - rewrite the family-specific parent-ledger template to teach the short cross-reference fields
+  - backfill the live `RUN-001` ledger so readers can see delta entry points without first scrolling to the crosswalk section
+
 ### P4 (SUP delta-first follow-up)
 
 - P4-C1-S1: fix the `SUP` packet contract so each supplement exposes packet-level chronology and per-stage before/after delta
@@ -697,6 +729,12 @@
 - P5-C1-S1: fix the `PATCH` packet contract so each repair packet exposes packet-level repair scope and per-item defect delta
 - P5-C1-S2: rewrite the family-specific `PATCH` template and live `PATCH-001` / `PATCH-002` around `Patch Packet Summary` and `Repair Delta Table`
 - P5-C1-S3: add one `Supplement Delta Crosswalk Table` to the live parent ledger so readers can jump from stage attempts to exact `SUP` delta rows
+
+### P6 (Parent-ledger short cross-reference exposure)
+
+- P6-C1-S1: add lightweight delta-entry and crosswalk reference fields to the parent-ledger execution-round surface
+- P6-C1-S2: add lightweight latest-delta reference fields to the parent-ledger current-target surface
+- P6-C1-S3: rewrite the family-specific parent-ledger template and live `RUN-001` without reopening the `SUP` template
 
 ## Execution Checklist (unchecked)
 
@@ -739,6 +777,12 @@
 - [x] `P5-C1-S2`: rewrite the family-specific `PATCH` template and live `PATCH-001` / `PATCH-002` around `Patch Packet Summary` and `Repair Delta Table`
 - [x] `P5-C1-S3`: add one `Supplement Delta Crosswalk Table` to the live parent ledger so readers can jump from stage attempts to exact `SUP` delta rows
 
+### P6 (Parent-ledger short cross-reference exposure)
+
+- [x] `P6-C1-S1`: add lightweight delta-entry and crosswalk reference fields to the parent-ledger execution-round surface
+- [x] `P6-C1-S2`: add lightweight latest-delta reference fields to the parent-ledger current-target surface
+- [x] `P6-C1-S3`: rewrite the family-specific parent-ledger template and live `RUN-001` without reopening the `SUP` template
+
 ## Current Status (recommended)
 
 - `S0G-3E` is now opened as the chronology-and-template-governance successor to `S0G-3D`.
@@ -749,7 +793,8 @@
 - `P3` is now executed as one bounded family packet: the `WORKFLOW-GITHUB-ISSUES` template quartet exists, the live runbook points to that quartet, the parent ledger now separates current state from chronology history, and the active `SUP` / `PATCH` packets are aligned to the new read model.
 - `P4` is now fixed as the first post-`P3` follow-up under `S0G-3E`: `SUP` packets for this family now expose packet-level chronology plus per-stage delta, the family-specific `SUP` template teaches that structure, and live `SUP-001` / `SUP-002` now explain round-versus-attempt semantics locally instead of forcing readers back to the parent ledger.
 - `P5` is now fixed as the second post-`P3` follow-up under `S0G-3E`: `PATCH` packets for this family now expose packet-level repair scope plus per-item defect delta, and the live parent ledger now provides a dedicated crosswalk from stage attempts into exact `SUP` delta rows.
-- The immediate next step is no longer to reinterpret `PATCH` packets or reconstruct `SUP` links manually; it is optional downstream adoption work, such as mirroring the same crosswalk discipline into any future parent-ledger `PATCH`-paired chronology row or adding explicit cross-links from `Execution Round Table` notes into the new crosswalk rows.
+- `P6` is now fixed as the third post-`P3` follow-up under `S0G-3E`: the parent ledger now exposes short delta-entry hints directly in `Execution Round Table` and `Current Target Status Table`, so readers do not have to scroll to the crosswalk section before finding the correct `SUP` delta landing.
+- The immediate next step is no longer to reconstruct delta entry points by hand; it is optional downstream adoption work, such as mirroring the same short-reference discipline into future non-`RUN-001` parent ledgers or adding exact cross-links into any later `PATCH`-paired chronology row that does admit a changed reading.
 - No further live backfill should bypass the family-specific quartet, because template authority and live write-back scope are now fixed together.
 
 ## Evidence (reserved)
@@ -760,6 +805,7 @@
 
 ## Recent changes (for traceability, optional)
 
+- 2026-04-22: Executed `P6` parent-ledger short cross-reference follow-up under `S0G-3E`, fixing the lightweight delta-entry contract, rewriting the family-specific parent-ledger template, and backfilling live `RUN-001` so execution-round and current-target surfaces expose direct `SUP` delta entry hints before the later crosswalk section.
 - 2026-04-22: Executed `P5` PATCH-delta and parent-ledger crosswalk follow-up under `S0G-3E`, fixing the `PATCH` contract, rewriting the family-specific and live `PATCH` ledgers around `Patch Packet Summary` and `Repair Delta Table`, and adding a `Supplement Delta Crosswalk Table` to `RUN-001` so readers can jump from parent stage attempts to exact `SUP` delta rows.
 - 2026-04-22: Executed `P4` delta-first SUP follow-up under `S0G-3E`, fixing the `SUP` contract, rewriting the family-specific `SUP` template around `Packet Round Summary` and `Stage Delta Table`, and backfilling live `SUP-001` / `SUP-002` so round sequence and stage-attempt lineage are explicit inside each packet.
 - 2026-04-21: Executed the first post-`P3` adoption cleanup for `S0G-3E`, switching this governance log's decisive template references to the `WORKFLOW-GITHUB-ISSUES` quartet and removing family-specific teaching examples from the generic runbook and ledger skeletons.
