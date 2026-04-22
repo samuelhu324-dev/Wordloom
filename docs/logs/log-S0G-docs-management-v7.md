@@ -26,6 +26,7 @@
   **phase_log_7**: `docs/logs/log-S0G-3D-workflow-github-issues-file-identity-rename-and-successor-release-governance.md`
   **phase_log_8**: `docs/logs/log-S0G-3E-workflow-github-issues-round-attempt-chronology-and-family-template-governance.md`
   **phase_log_9**: `docs/logs/log-S0G-4A-contract-boundary-map-and-parent-child-clause-flow-governance.md`
+  **phase_log_10**: `docs/logs/log-S0G-3F-runbook-revision-sequence-and-release-board-operational-register-governance.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -43,7 +44,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-20`
-**updated**: `2026-04-21`
+**updated**: `2026-04-22`
 
 ---
 
@@ -155,7 +156,8 @@
 - `S0G-3B` now reopens the transition problem more concretely: before treating `main` as the default clean base again, the repo must inventory the current `S0G` carrier, separate patch-equivalent noise from true branch-only packets, and extract any still-meaningful bounded packet content.
 - `S0G-3C` is now stable and closes the strong-structure contract: the narrower `WORKFLOW-GITHUB-ISSUES` family identity, child-vs-parent workflow profiles, and the run/target/stage bridge across `Run Ledger`, `SUP`, and `PATCH` are now explicit.
 - `S0G-3D` now opens the remaining identity-materialization decision: decide whether the current compatibility-era filename should be physically renamed in place or whether a successor-release identity should be opened with explicit lineage and compatibility routing.
-- The next concrete work under this spine should now resolve the `S0G-3D` decision surface first, then execute the chosen physical rename or successor-release packet under the tightened structure.
+- `S0G-3F` now opens the next bounded release-governance follow-up: fix revision-sequence grammar and define the release board as a lightweight operational register for active runbook-family releases.
+- The next concrete work under this spine should now publish one minimum release-board issue-body rule under `S0G-3F`, then test it on one live release issue sample while leaving the broader `S0G-3D` and `S0G-4A` lanes available for their own bounded follow-up packets.
 
 ## Evidence（可选，聚合型记账）
 
