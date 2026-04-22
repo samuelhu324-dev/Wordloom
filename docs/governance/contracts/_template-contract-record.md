@@ -95,8 +95,13 @@ contract_record:
 
 - Keep the prose body readable as both `what changed in this release` and `what the current effective state now is`.
 - When one contract family is likely to evolve through repeated clause-level amendment, consider adding one `## Contract Statement Table` ahead of the readable prose body so each effective clause has one stable statement id and one explicit source-basis anchor.
+- When the current reader problem is `which broad parent clauses are still owned here versus only summarized here while narrower child readers now exist`, consider adding one parent-only `## Current Boundary Map` after the statement table.
+- When the current reader problem is instead `why earlier-history rows and later-family rows coexist in one narrow current reader`, prefer one brief `## Current Reader Shape` explanation rather than a parent-style boundary map.
 - Preferred section order:
   - `## Contract Statement Table` (optional but recommended when clause-level traceability matters)
+  - `## Current Boundary Map` (optional; parent-reader surface only)
+  - `## Current Reader Shape` (optional; narrow current-reader explanation only)
+  - `## Statement Evolution Table` (optional but recommended when clause-flow history matters)
   - `## Release Change`
   - `## Contract Statement`
   - `## Current Reading`
@@ -131,6 +136,9 @@ contract_record:
   - `statement text`
   - `notes`
 - `statement label` should be a short human-readable clause title for the current contract meaning; it is the contract-facing quick label, not a copy of the source-owned `source slice` field from the ledger.
+- `statement label` names the clause's current meaning only:
+  - do not encode parent/child routing, split history, absorbed history, return flow, or other lineage inside the label
+  - keep chronology in `Statement Evolution Table` and current boundary standing in a separate reader-facing section when needed
 - `source basis` may contain one or more stable anchors when the clause truly depends on multiple upstream bases.
 - `first effective at` should capture the best currently known historical time at which the clause first became effective, independent of the append-only registry release number.
 - `last changed at` should capture the best currently known historical time for the latest semantic change represented in this release's reading of the clause.
@@ -170,6 +178,39 @@ contract_record:
   - the parent ledger still owns source slicing and routing verdicts
   - the supplement ledger still owns later evidence admission and write-back recommendations
   - the contract statement table only tracks the effective clause state inside one contract release
+
+## Optional Current Boundary Map
+
+- Use this section only on a broader parent contract when the current reader still needs help answering `which clauses are still owned here, and which now read only as delegated-summary or other boundary standings beneath narrower child readers?`
+- Treat `Current Boundary Map` as parent-facing and reader-facing only:
+  - it explains current boundary standing
+  - it does not replace release lineage in frontmatter
+  - it does not replace clause chronology in `Statement Evolution Table`
+  - it does not replace source routing in parent ledgers or supplements
+- Recommended columns:
+  - `boundary id`
+  - `broad clause`
+  - `current reading mode`
+  - `current narrow owner`
+  - `parent keeps`
+  - `notes`
+- Recommended `current reading mode` values include:
+  - `parent-owned`
+  - `delegated-summary`
+  - `child-owned`
+  - `shared-reader`
+  - `backfilled-history-only`
+  - `no-child-relation`
+- If the contract is not acting as a broader parent boundary, do not add this section just to restate chronology or mixed clause origins.
+
+## Optional Current Reader Shape
+
+- Use this section on a narrow current reader when the main ambiguity is not parent/child ownership but how one current release integrates earlier-admitted history, carried-forward family clauses, amendments, or newly introduced clauses.
+- This section should explain the current reader shape in brief prose rather than introducing a second ownership table.
+- Prefer this section when readers need help answering questions such as:
+  - why `history-backfilled`, `carried-forward`, `amended`, and `introduced` rows coexist in one current reader
+  - how to interpret mixed clause origins without confusing them with current ownership routing
+- Keep the chronology itself in `Statement Evolution Table`; `Current Reader Shape` is only the reader-facing explanation of how to read that mixed current clause set.
 
 ## Optional Statement Evolution Table
 

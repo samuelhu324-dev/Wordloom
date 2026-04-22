@@ -188,6 +188,17 @@
   - `SUP -> parent ledger -> child contract -> parent contract`
 - Under this rule, `P3` must answer whether the new contract-reader model remains contract-local or whether parent ledgers / SUP ledgers need one bounded addition to preserve handoff clarity.
 
+### P0-C2-S1 (Write verified reader-model rule back into the contract template)
+
+- The contract template should explicitly distinguish two different optional reader-facing aids:
+  - `Current Boundary Map` for broader parent contracts that need one current ownership or delegation summary across child readers
+  - `Current Reader Shape` for narrow current readers that need one explanation of mixed clause origins inside the same current release
+
+### P0-C2-S2 (Write section-order and statement-label limits back into the contract template)
+
+- The contract template should explicitly say that `statement label` names current clause meaning only and must not carry lineage or routing semantics.
+- The recommended body order should place any optional boundary or reader-shape surface ahead of `Statement Evolution Table`, `Release Change`, and the readable current statement so readers see the current reading rule before scanning chronology details.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -196,6 +207,7 @@
 **Commit / PR naming**:
 
 - `S0G-4A/P0-C1-S1S4: fix clause-flow and boundary-map evaluation rule`
+- `S0G-4A/P0-C2-S1S2: write verified reader model back into contract template`
 - `S0G-4A/P1-C1-S1: apply parent-boundary experiment to workflow-0001`
 - `S0G-4A/P2-C1-S1: test labs-0002 backfill reading against new rule`
 - `S0G-4A/P3-C1-S1: decide ledger and sup template impact`
@@ -234,6 +246,8 @@
 - [x] `P0-C1-S2`: fix statement-flow history placement
 - [x] `P0-C1-S3`: fix the parent-reader gap and evaluation rule
 - [x] `P0-C1-S4`: fix the full write-path evaluation order
+- [x] `P0-C2-S1`: write verified reader-model rule back into the contract template
+- [x] `P0-C2-S2`: write section-order and statement-label limits back into the contract template
 
 ### P1 (WORKFLOW parent experiment)
 
@@ -257,12 +271,13 @@
 ## Current Status (recommended)
 
 - `S0G-4A` is now opened as a draft template-and-experiment lane.
+- `P0-C2` is now complete: the contract template now explicitly distinguishes `Current Boundary Map` from `Current Reader Shape` and writes the verified statement-label and section-order limits back into the reusable template.
 - `P1` is now complete: `DOC-WORKFLOW-0001` has one bounded `Current Boundary Map` experiment so the parent current-reading split is no longer left to statement notes alone.
 - `P2` is now complete: `DOC-WORKFLOW-LABS-0002` does not need a parent-style boundary map; the bounded ambiguity was resolved by clarifying the current reader shape and reaffirming that chronology stays in `Statement Evolution Table`.
 - `P3` is now complete: the parent-ledger and SUP templates do not need new routing columns; they only need one explicit note-level rule that downstream reader shape should be explained through optional rollups rather than through widened core tables.
 - `P4` is now complete: the repo now has one full `SUP -> parent ledger -> child contract -> parent contract` ADR sample chain on `S0A-2A-R05`.
-- The active work is no longer opening the sample itself; the next task is to review whether the `S0G-4A` rule set is now stable enough to write back into the contract template or close the lane as one defended sample packet.
-- The next concrete execution step is user review of the ADR sample effect, followed by either contract-template write-back or close-out of the lane without reopening the same sample question.
+- The active work is no longer deciding whether template write-back is needed; that template write-back is now landed.
+- The next concrete execution step is to decide whether `S0G-4A` should stop at the verified sample-and-template rule set or open one new assessment cycle for wider repo-wide contract and ledger normalization.
 
 ## Evidence (reserved)
 
@@ -280,6 +295,19 @@
 - observed:
   - scaffold opened
   - execution order recorded in the source log
+
+### P0-C2-S1S2 (contract template write-back landed | 2026-04-22)
+
+- headSha: ``
+- artifacts: `docs/governance/contracts/_template-contract-record.md`
+- expected:
+  - write the verified reader-model rule back into the reusable contract template
+  - distinguish when to use `Current Boundary Map` versus `Current Reader Shape`
+  - tighten the template wording so `statement label` remains current-meaning-only and section order exposes the reader surface before chronology detail
+- observed:
+  - the contract template now distinguishes parent-boundary versus narrow-current-reader surfaces explicitly
+  - the template now recommends `Current Boundary Map` and `Current Reader Shape` at the right insertion points
+  - the statement-label rule and body-order rule are now written back into the reusable template rather than living only in sample contracts and the source log
 
 ### P1-C1-S1S2 (workflow parent boundary-map experiment | 2026-04-22)
 
@@ -337,3 +365,4 @@
 - 2026-04-22: completed `P2` by deciding that `LABS-0002` should keep chronology clarification inside one narrow current reader instead of receiving a second parent-style boundary map.
 - 2026-04-22: completed `P3` by deciding that parent-ledger and SUP templates need note-level downstream-reading guidance, not new structural columns.
 - 2026-04-22: completed `P4` by running the first ADR sample chain end to end: `SUP-003`, parent-ledger write-back, `DOC-WORKFLOW-ADR-0001`, and parent-contract ADR boundary bridge.
+- 2026-04-22: completed `P0-C2` by writing the verified reader-model rule back into the reusable contract template instead of leaving it only in sample files.
