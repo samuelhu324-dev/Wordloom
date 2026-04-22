@@ -12,7 +12,7 @@ support_only_contract_release_ledger:
   source_id: S0A-1A
   source_ref: GitHub issue S0A-1A (#23) (issue-only source; no local log exists in workspace)
   source_scope: mixed issue-only source covering GitHub Issues as canonical work breakdown, GitHub Projects as execution-time support, issue title grammar, and issue tag naming
-  target_reading_goal: show whether the earlier issue-only S0A-1A packet already has sufficient routing recorded through existing contracts or now needs explicit selective ledger backfill for its mixed source boundaries
+  target_reading_goal: show whether the earlier issue-only S0A-1A packet now has sufficient current routing and downstream handoff recorded through the parent ledger plus the GitHub-Issues parent boundary map for its mixed source boundaries
 ```
 
 ## Decision Frame
@@ -47,6 +47,17 @@ support_only_contract_release_ledger:
 | `S0A-1A-R03` | `Title name` in issue `S0A-1A (#23)` | issue title key exposes level and category directly in the title itself | `DOC-WORKFLOW-GITHUB-ISSUES-TITLE` | `existing-family-review` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` | `full` | consumed by the title child contract, whose frontmatter is now aligned to the release-style template | This slice remains the clearest direct match to the title child contract. |
 | `S0A-1A-R04` | `Tag name` in issue `S0A-1A (#23)` | classify issue tags by naming role across top-level, hierarchy, and module/business labels | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS` | `existing-family-review` | `none-source-only` | `keep-in-issue` | `applied` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `full` | consumed by the tag child contract, whose frontmatter is now aligned to the release-style template | This slice remains the clearest direct match to the tag child contract. |
 
+## Downstream Reading Handoff
+
+- This parent ledger remains the current routing surface for the mixed `S0A-1A` packet; it tells readers which source slices resolve to which current contracts, but it does not restate the full parent-versus-child ownership split inside those contracts.
+- Read `DOC-WORKFLOW-GITHUB-ISSUES-0001` and its `Current Boundary Map` when the question is `which meaning still stays on the GitHub-Issues parent, and which now reads through Projects, title, or tag child surfaces?`
+- Use that handoff as follows:
+  - `S0A-1A-R01`: read the GitHub-Issues parent for the broad mechanism-introduction rule.
+  - `S0A-1A-R02`: read the GitHub-Issues parent for the broad hierarchy boundary, then read `DOC-WORKFLOW-GITHUB-PROJECTS-0001` for the current execution-support body.
+  - `S0A-1A-R03`: read `DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001` for the current title-rule body.
+  - `S0A-1A-R04`: read `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` for the current tag-rule body.
+- `ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md` remains attached only to `S0A-1A-R02`; it sharpens Projects evidence but does not change the parent-ledger routing verdict or the GitHub-Issues parent boundary standing.
+
 ## Row Id Map
 
 - `S0A-1A-R01`: GitHub Issues as canonical breakdown
@@ -77,6 +88,7 @@ support_only_contract_release_ledger:
 | `S0A-1A-GOV-03` | `evidence-sharpening-event` | `DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `role:packet-reviewer` | `current-draft-sharpened` | `2026-04-11` | `ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md` | The accepted screenshot supplement sharpened the current draft reading of the Projects child while remaining packet-history evidence rather than current ownership state. |
 | `S0A-1A-GOV-04` | `delegated-stewardship-event` | `DOC-WORKFLOW-GITHUB-ISSUES-0001; DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001; DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001; DOC-WORKFLOW-GITHUB-PROJECTS-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The `S0A-1A` family now records explicit delegated stewards for the GitHub-Issues parent, the title child, the tag child, and the Projects child instead of leaving day-to-day ownership implicit. |
 | `S0A-1A-GOV-05` | `governance-role-separation-event` | `S0A-1A sample family` | `role:workflow-reviewer; role:evidence-verifier; role:docs-governance-approver` | `review-verify-approve-separated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The sample family now treats current review, evidence verification, and final approval as distinct governance roles across all routed children rather than only on the Projects child. |
+| `S0A-1A-GOV-06` | `downstream-handoff-clarified` | `ledger-S0A-1A-tools-github-issues-projects-and-tags` | `role:packet-reviewer` | `current-reader-handoff-fixed` | `2026-04-22` | `S0G-4A/P5 Batch B` | The parent ledger now states explicitly that current packet routing remains here while parent-versus-child boundary reading should be taken from `DOC-WORKFLOW-GITHUB-ISSUES-0001` and the matching child contracts. |
 
 ## Reader Notes
 
@@ -84,3 +96,4 @@ support_only_contract_release_ledger:
 - The `S0A-1A-R02` row is now also sharpened by the accepted `SUP-001` pilot, which adds stable screenshot-backed evidence without changing the existing routing outcome.
 - Under `S0F-9A/P1`, this parent ledger now acts as the current-state governance surface for the mixed packet, while the supplement remains the event/accountability surface for screenshot review and packet-level provenance rows.
 - Under `S0F-9A/P4` third-cycle work, this parent ledger now also records the current governance state for the GitHub-Issues parent plus the title and tag children rather than leaving only the Projects child aligned to the control-plane rule.
+- Under `S0G-4A/P5` Batch B, this ledger now also gives one explicit downstream-reading handoff so readers know that routing still lives here, while the current parent-versus-child boundary now reads through `DOC-WORKFLOW-GITHUB-ISSUES-0001` and its narrower child contracts.
