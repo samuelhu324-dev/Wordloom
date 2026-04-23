@@ -24,6 +24,7 @@
   **reference_log_7**: `docs/logs/log-S0F-7D-ledger-supplement-admission-and-old-log-continuation.md`
   **reference_log_8**: `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
   **reference_log_9**: `docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
+  **reference_log_10**: `docs/governance/contracts/_template-contract-release-transition-register.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/4b`
@@ -100,6 +101,7 @@
 - `P0-C1-S1` | artifact: `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
 - `P0-C1-S2` | artifact: `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
 - `P0-C1-S3` | artifact: `docs/logs/_template-log-phase-drills-evidence.md`
+- `P1-C1-S1` | artifact: `docs/governance/contracts/_template-contract-release-transition-register.md`
 
 ## Exported Sections / Outlet Ownership
 
@@ -213,6 +215,40 @@
 - `P1-C1-S1`: define the minimum file contract for `register-<family-id>` surfaces
 - `P1-C1-S2`: define allowed release-state values and the minimum release row shape
 
+### P1-C1-S1 (Fix the minimum file contract for family transition registers)
+
+- A family-level transition register should be named `register-<contract_family>.md` and should live in the same family directory as the releases it governs.
+- Under this rule, the transition register remains one family-owned reader surface rather than one root-level generic index or one per-release board.
+- The minimum register body should include:
+  - one minimal header for register identity and lifecycle
+  - `Current Family State`
+  - `Release State Table`
+  - optional `Transition Window Table`
+  - `Reader Routing`
+  - `Usage Rules`
+
+### P1-C1-S2 (Fix allowed release-state values and row shape)
+
+- The allowed family-level `release state` values are now fixed as:
+  - `current-primary`
+  - `fallback-only`
+  - `coexistence-window`
+  - `historical-retained`
+  - `lineage-only`
+  - `retired`
+- The minimum release row shape should now be:
+  - `contract id`
+  - `release state`
+  - `semantic standing`
+  - `transition role`
+  - `valid from`
+  - `valid until`
+  - `first open now`
+  - `replaced by`
+  - `transition note`
+  - `evidence refs`
+- Under this rule, the stable row anchor remains `contract id`; statement ids, ledger row ids, and supplement item ids remain outside the minimum register row contract.
+
 ### P2 (Change classification matrix)
 
 - `P2-C1-S1`: define the four-way change matrix for evidence, routing, semantic-release, and family-boundary changes
@@ -233,8 +269,8 @@
 
 ### P1 (Transition register model)
 
-- [ ] `P1-C1-S1`: define the minimum file contract for `register-<family-id>` surfaces
-- [ ] `P1-C1-S2`: define allowed release-state values and the minimum release row shape
+- [x] `P1-C1-S1`: define the minimum file contract for `register-<family-id>` surfaces
+- [x] `P1-C1-S2`: define allowed release-state values and the minimum release row shape
 
 ### P2 (Change classification matrix)
 
@@ -250,7 +286,8 @@
 
 - `S0G-4B` is now opened as the bounded lane for `DOC` contract release coexistence, family-level transition-state reading, and source-log writeback-chain declaration.
 - The repo now has enough evidence to say that current contract bodies alone are no longer the right place to carry all family-level version-state answers.
-- The immediate next step is not one more contract rewrite; it is one bounded rule set for the transition register, change classification, and required processing chain.
+- The first transition-register template contract is now written at `docs/governance/contracts/_template-contract-release-transition-register.md`, which fixes the file boundary, allowed release-state values, and minimum row shape for later family samples.
+- The immediate next step is no longer `what is a transition register`; it is one bounded change-classification rule plus one required processing-chain declaration.
 
 ## Evidence (reserved)
 
@@ -275,6 +312,22 @@
   - the LABS family is fixed as the first sample because `0001` and `0002` already demonstrate real coexistence and transition-state pressure
   - the source-log processing declaration gap is now explicit as one first-class problem rather than one operator-memory problem
 
+### P1-C1-S1S2 (transition-register template contract written | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/governance/contracts/_template-contract-release-transition-register.md`
+  - `docs/logs/log-S0G-4B-doc-contract-release-transition-register-and-writeback-chain-governance.md`
+- expected:
+  - write one minimum reusable file contract for `register-<family-id>` surfaces
+  - fix the allowed family-level release-state values
+  - keep the register release-level only rather than turning it into a second clause registry
+- observed:
+  - the new template now fixes the naming rule as `register-<contract_family>.md` in the same family directory as the governed releases
+  - the release-state values are now fixed as `current-primary`, `fallback-only`, `coexistence-window`, `historical-retained`, `lineage-only`, and `retired`
+  - the minimum row shape now uses `contract id` as the stable row anchor and keeps statement ids plus ledger/supplement row ids outside the minimum register contract
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-4B` so `DOC` contract release coexistence, family-level transition-state reading, and writeback-chain declaration can be fixed as one bounded governance lane rather than as scattered follow-up notes.
+- 2026-04-23: wrote the first family-level transition-register template so later `DOC` families can expose release coexistence and transition-window state without overloading release-local contract bodies.
