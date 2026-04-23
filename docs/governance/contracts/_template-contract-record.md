@@ -68,10 +68,12 @@ contract_record:
 - Treat `recorded_at` and `reviewed_at` as artifact/chronology fields, not as substitutes for the contract's semantic-effective window.
 - Unless stronger evidence proves an earlier or later start, a first release should default `effective_from` to the decisive source log's `created` time.
 - Unless one defended successor, replacement, retirement, or explicit end-state is known, `effective_until` should default to `ongoing`.
+- If one parent ledger or SUP packet later records acceptance or write-back chronology for the same source slice, treat that later ledger chronology as evidence-routing timing only unless it also defends a different source-side effective start.
 - New artifact-lifecycle and recorded-chronology values should prefer canonical UTC second timestamps such as `2026-04-12T15:18:05Z`.
 - Legacy day-only values may remain where older records do not yet have defended second-level audit timestamps.
 - Historical-effective fields may legitimately stay at date precision when the source proves only the date; do not fabricate seconds to force format symmetry.
 - When the source proves only lifecycle dates and no narrower effective event, reuse that defended date precision for `effective_from` rather than inventing a finer timestamp.
+- If a later correction is needed, update the source-side or ledger/SUP evidence first and then revise the contract from that defended upstream change rather than patching `effective_from` in isolation.
 - If a local-time display is needed for operators or reviewers, keep it as a mirror field or prose note rather than replacing the canonical UTC value.
 - Use `historical-backfill` when a later-recorded release documents an earlier historical state discovered only after newer family releases already exist.
 - A `historical-backfill` release must not trigger renumbering of already-admitted later family releases; the earlier state enters the family by new append-only registry id plus explicit lineage.

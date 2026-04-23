@@ -61,7 +61,8 @@
   - whether `S0B-2A-R01` and `S0B-2A-R02` belong in one shared `DOC-WORKFLOW-SCRIPTS` family;
   - whether that family should open now as `DOC-WORKFLOW-SCRIPTS-0001`;
   - how the parent ledger should move those rows from `deferred` to explicit consumption or partial-consumption state;
-  - whether the first release needs only contract emission or also one bounded register or bridge write-back.
+  - whether the first release needs only contract emission or also one bounded register or bridge write-back;
+  - how source-recorded time, ledger write-back time, and contract effective time should stay distinguishable if this lane later demonstrates time semantics on the same packet.
 
 **Default choices (phase defaults / v1)**:
 
@@ -127,6 +128,7 @@
 - Do not treat a new family opening as automatic proof that a transition register must also exist immediately.
 - Do not mutate `DOC-WORKFLOW-LABS-0002` first and only later decide whether scripts deserved their own family.
 - Do not leave `S0B-2A-R01` and `S0B-2A-R02` as permanently deferred if this lane actually emits the scripts family; the parent ledger must record explicit consumption.
+- Do not treat parent-ledger write-back time as the same thing as the scripts rule's semantic effective time; any later time demonstration on this packet must still derive contract-effective dates from defended source evidence first.
 
 ## Optional Required Processing Chain
 
@@ -241,6 +243,14 @@
 - The explicit verdict is `no-bridge-impact` because opening `DOC-WORKFLOW-SCRIPTS-0001` does not materially change the first-open reader path of any current parent or sibling contract surface.
 - A later register or bridge write-back should open only if one later scripts release creates real coexistence standing or if another current reader surface needs an explicit scripts-family routing note.
 
+### P3-C1-S3 (Three-layer time-chain recording rule fixed | v1)
+
+- If this lane later demonstrates time semantics on the same `R01/R02 -> DOC-WORKFLOW-SCRIPTS-0001` packet, the recording order must remain `source log -> parent ledger or SUP if needed -> contract`.
+- `S0B-2A` remains the decisive source-side time anchor for `R01/R02` unless stronger later evidence first reopens the row through one parent-ledger correction or SUP packet.
+- Parent-ledger chronology should record routing and write-back timing only; it must not overwrite the contract's semantic `effective_from`.
+- `DOC-WORKFLOW-SCRIPTS-0001` should derive `effective_from` from the strongest defended source-side time anchor, while `recorded_at` continues to record when the release itself entered repo chronology.
+- If stronger later evidence changes the defended source-side anchor, the correction path should land upstream first and only then revise the contract.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -306,6 +316,7 @@
 - `P2` now emits `DOC-WORKFLOW-SCRIPTS-0001` as the first scripts-family release on that narrow `R01 + R02` scope.
 - `P3` now writes the parent-ledger consumption update: `R01/R02` are applied through `DOC-WORKFLOW-SCRIPTS-0001`, while `R04` remains deferred and `R05/R06` remain support-only.
 - The explicit family-level verdict is `no-register-change` and `no-bridge-impact` for now, because the scripts family has only one release and does not yet alter any existing first-open reader path elsewhere.
+- `P3` now also fixes one time-chain rule for later sample work on this same packet: source-recorded time stays source-side, ledger time stays routing/write-back side, and contract effective time must be derived from defended source evidence rather than from the later write-back timestamp.
 
 ## Evidence (reserved)
 
@@ -378,6 +389,23 @@
   - `R01` and `R02` are now applied with `consumed scope: full` through `DOC-WORKFLOW-SCRIPTS-0001`
   - the parent ledger now records two active child governance surfaces from `S0B-2A`: labs and scripts
   - the explicit current verdict is `no-register-change` and `no-bridge-impact` because the scripts family has only one release and does not yet change any other current first-open reader path
+
+### P3-C1-S3 (time-chain recording rule fixed for the scripts packet | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
+  - `docs/logs/log-S0B-2A-scripts-snapshots-management.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/governance/contracts/workflow/scripts/DOC-WORKFLOW-SCRIPTS-0001-taxonomy-and-stable-entrypoint-governance.md`
+- expected:
+  - fix one explicit rule for how time evidence should travel if this same scripts packet later receives one bounded sample demonstration
+  - prevent parent-ledger write-back timing from being misread as the contract semantic start date
+  - keep any stronger later correction on the `source -> ledger/SUP -> contract` path rather than as one contract-only patch
+- observed:
+  - the lane now states that `S0B-2A` is the decisive default source-side time anchor for `R01/R02`
+  - the lane now states that parent-ledger time is routing/write-back chronology only
+  - the lane now states that contract `effective_from` must be derived from defended source evidence first and corrected upstream before any later contract revision
 
 ## Recent changes (for traceability, optional)
 

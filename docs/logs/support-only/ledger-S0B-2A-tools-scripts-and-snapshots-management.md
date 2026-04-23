@@ -56,6 +56,13 @@ support_only_contract_release_ledger:
 - `S0B-2A-R05`: Legacy taxonomy + cutover
 - `S0B-2A-R06`: Stub policy
 
+## Row Chronology Audit
+
+| row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0B-2A-R01` | `unknown` | `2026-02-13` | `2026-02-13` | `ongoing` | `day` | `` | The taxonomy rule is currently read from the original `S0B-2A` source date; the later 2026-04-23 ledger write-back does not replace this source-side effective start. |
+| `S0B-2A-R02` | `unknown` | `2026-02-13` | `2026-02-13` | `ongoing` | `day` | `` | The stable-entrypoint rule follows the same source-side chronology as `R01`, because the scripts-family sample now reads both rows as one shared rule body admitted later into contract form. |
+
 ## First-Sample Outcome
 
 - The first active release sample from this ledger is now one later release in the `DOC-WORKFLOW-LABS` family:
@@ -76,7 +83,7 @@ support_only_contract_release_ledger:
 | `S0B-2A-GOV-02` | `routing-writeback-event` | `ledger-S0B-2A-tools-scripts-and-snapshots-management` | `role:packet-reviewer` | `current-routing-state-fixed` | `2026-04-10` | `S0B-2A-R01` through `S0B-2A-R06` | The parent ledger fixed that only the labs sub-slice currently resolves into an active child contract while scripts, OPS evidence, and cutover/stub remain deferred or support-only. |
 | `S0B-2A-GOV-03` | `delegated-stewardship-event` | `DOC-WORKFLOW-LABS-0002` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 scoped backfill round` | The consumed labs child now records one explicit delegated steward under the same durable owner team so day-to-day maintenance does not collapse back into undeclared team-wide ownership. |
 | `S0B-2A-GOV-04` | `governance-role-separation-event` | `S0B-2A current routing state` | `role:workflow-reviewer; role:docs-governance-approver` | `review-approve-separated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The mixed-source routing ledger now records review and approval as distinct governance acts even though only one child contract is currently resolved from this packet. |
-| `S0B-2A-GOV-05` | `routing-writeback-event` | `ledger-S0B-2A-tools-scripts-and-snapshots-management` | `role:packet-reviewer` | `scripts-family-consumption-fixed` | `2026-04-23` | `DOC-WORKFLOW-SCRIPTS-0001; docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md` | The parent ledger now records that `R01` and `R02` are no longer deferred candidates; they are consumed together by the first scripts-family release. |
+| `S0B-2A-GOV-05` | `routing-writeback-event` | `ledger-S0B-2A-tools-scripts-and-snapshots-management` | `role:packet-reviewer` | `scripts-family-consumption-fixed` | `2026-04-23` | `DOC-WORKFLOW-SCRIPTS-0001; docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md` | The parent ledger now records that `R01` and `R02` are no longer deferred candidates; they are consumed together by the first scripts-family release, but this 2026-04-23 write-back date remains routing chronology rather than the semantic start date of the underlying rules. |
 
 ## New Releases Expected
 

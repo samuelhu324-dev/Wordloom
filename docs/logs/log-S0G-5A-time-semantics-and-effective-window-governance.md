@@ -232,7 +232,7 @@
 
 ### P3 (Sample demonstration)
 
-- [ ] `P3-C1-S1`: optionally demonstrate the new default rule on one live sample without opening a repo-wide backfill sweep
+- [x] `P3-C1-S1`: optionally demonstrate the new default rule on one live sample without opening a repo-wide backfill sweep
 
 ## Current Status (recommended)
 
@@ -240,7 +240,9 @@
 - The model is now fixed at template level for logs and contracts: logs keep artifact lifecycle time, and contracts now own the default semantic effective-time derivation rule.
 - `P2` now fixes the bounded template decision: support-only ledgers do not gain default `resolution valid from/until` routing-table columns now, because the existing chronology-audit shape remains sufficient unless one later lane proves otherwise.
 - `P2` also fixes the register-side rule: transition-register `valid from/until` and transition-window dates remain coexistence-standing fields only and must not be derived mechanically from contract `effective_from/effective_until`.
-- The next concrete step is `P3`: optionally test this rule set on one live sample such as `S0B-2A / S0G-1C / DOC-WORKFLOW-SCRIPTS-0001` without turning it into a repo-wide backfill sweep.
+- `P3` now demonstrates the rule set on `S0B-2A / S0G-1C / DOC-WORKFLOW-SCRIPTS-0001`: source-side rule time stays at `2026-02-13`, parent-ledger write-back stays at `2026-04-23`, and contract effective time now reads `2026-02-13 -> ongoing`.
+- The sample deliberately does not open one SUP packet because no stronger later evidence changed the defended source-side anchor; the lane is only applying the default derivation rule to an existing source-owned packet.
+- The next concrete step is now close-out review of whether this sample is sufficient and whether any further live demonstrations are still needed before the lane can be marked stable.
 
 ## Evidence (reserved)
 
@@ -298,8 +300,27 @@
   - the register template now states that coexistence `valid from/until` dates are register-standing fields and must not be copied mechanically from contract effective-time fields
   - the register template now states that single-release families and non-active historical retention should not open transition-window rows or invented window dates
 
+### P3-C1-S1 (time semantics demonstrated on the scripts sample | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/governance/contracts/workflow/scripts/DOC-WORKFLOW-SCRIPTS-0001-taxonomy-and-stable-entrypoint-governance.md`
+  - `docs/logs/log-S0B-2A-scripts-snapshots-management.md`
+- expected:
+  - test the default derivation rule on one live packet without one repo-wide backfill sweep
+  - show that source-side time, parent-ledger write-back time, and contract effective time remain distinguishable on the same packet
+  - record whether one SUP packet is required for this sample or not
+- observed:
+  - the sample now anchors `DOC-WORKFLOW-SCRIPTS-0001 effective_from` to the decisive source log `S0B-2A` created date `2026-02-13`
+  - the parent ledger now records `R01` and `R02` source-side chronology separately from the later 2026-04-23 routing write-back event
+  - no SUP packet was needed because the sample did not introduce stronger later evidence; it only applied the defended default derivation rule to an existing source-owned packet
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-5A` so time semantics can be fixed as one bounded governance lane before the repo is forced into ad hoc timestamp growth across logs, contracts, ledgers, and transition registers.
 - 2026-04-23: completed `P1` by writing the three-layer time distinction into the log template and the default effective-time derivation rule into the contract template, while keeping ledger/register time fields deferred for a later bounded decision.
 - 2026-04-23: completed `P2` by deciding that support-only ledgers should not gain default routing-validity columns now, while transition registers should carry stronger coexistence-date guidance without inheriting contract effective-time dates mechanically.
+- 2026-04-23: completed `P3` on the scripts sample by proving that the same packet can keep source-side chronology, parent-ledger write-back chronology, and contract effective time aligned without opening a new SUP round.

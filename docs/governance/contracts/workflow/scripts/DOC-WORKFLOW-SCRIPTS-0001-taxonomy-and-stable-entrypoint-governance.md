@@ -21,7 +21,7 @@ contract_record:
   violation_semantics: warning
   recorded_at: 2026-04-23
   reviewed_at: pending
-  effective_from: unknown
+  effective_from: 2026-02-13
   effective_until: ongoing
   introduced_by: docs/logs/log-S0B-2A-scripts-snapshots-management.md
   last_changed_by: docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md
@@ -48,6 +48,7 @@ contract_record:
     - The release explicitly excludes the labs-only snapshot-package slice already read through `DOC-WORKFLOW-LABS-0002`.
     - The release also excludes the deferred OPS-side snapshot-root candidate and the support-only cutover/stub slices from the first scripts-family body.
     - This release opens the family without assuming that a family transition register or bridge write-back is already required on day one.
+    - `effective_from` is anchored to the decisive source log `S0B-2A` created date rather than to the later 2026-04-23 family-opening write-back date.
 ```
 
 ## Current Governance State
@@ -60,30 +61,31 @@ contract_record:
 
 | event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-SCRIPTS-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-SCRIPTS family` | `unknown` | `family-candidate-contributed` | `2026-04-10` | `docs/logs/log-S0B-2A-scripts-snapshots-management.md` | The mixed `S0B-2A` source introduced the scripts taxonomy and stable entrypoint rule body, but it did not by itself resolve whether those rows should open one separate family. |
+| `DOC-WORKFLOW-SCRIPTS-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-SCRIPTS family` | `unknown` | `family-candidate-contributed` | `2026-02-13` | `docs/logs/log-S0B-2A-scripts-snapshots-management.md` | The mixed `S0B-2A` source introduced the scripts taxonomy and stable entrypoint rule body on 2026-02-13, but it did not by itself resolve whether those rows should open one separate family. |
 | `DOC-WORKFLOW-SCRIPTS-0001-GOV-02` | `family-opening-verdict-event` | `DOC-WORKFLOW-SCRIPTS-0001` | `role:packet-reviewer` | `initial-release-opened` | `2026-04-23` | `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md` | `S0G-1C` fixed that `R01` and `R02` should travel together and now justifies opening the first scripts-family release on that narrow scope. |
 
 ## Contract Statement Table
 
 | statement id | statement label | clause status | change action | source basis | first effective release | first effective at | last changed release | last changed at | effective from | effective until | effective status | statement text | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-SCRIPTS-0001-ST-01` | `Lifecycle-and-risk script classes` | `active` | `introduced` | `S0B-2A-R01` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Workflow-facing scripts should be classified by lifecycle and risk rather than by author memory or ad hoc filenames. | This clause fixes the scripts-family taxonomy boundary as the first family-owned rule. |
-| `DOC-WORKFLOW-SCRIPTS-0001-ST-02` | `Named script partitions` | `active` | `introduced` | `S0B-2A-R01` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | The governed scripts taxonomy should distinguish at least `ops`, `labs`, `migrations`, `dev`, and `legacy` as reader-facing partitions with different lifecycle and risk expectations. | This preserves the classification vocabulary without importing the separate cutover policy as contract scope. |
-| `DOC-WORKFLOW-SCRIPTS-0001-ST-03` | `Governed placement over filename memory` | `active` | `introduced` | `S0B-2A-R01` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | New workflow-facing scripts should be placed into one governed partition in that taxonomy instead of relying on personal memory of loose filenames or ad hoc directories. | This keeps the first release focused on stable placement semantics rather than on migration timing. |
-| `DOC-WORKFLOW-SCRIPTS-0001-ST-04` | `Stable scripts entrypoint` | `active` | `introduced` | `S0B-2A-R02` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Workflow-facing scripts should expose one stable entrypoint through `backend/scripts/cli.py` rather than making readers remember individual script filenames as the primary invocation surface. | This clause is the first family-owned reader contract for invocation stability. |
-| `DOC-WORKFLOW-SCRIPTS-0001-ST-05` | `Shared parameter and safety contract` | `active` | `introduced` | `S0B-2A-R02` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | The stable entrypoint should carry one consistent parameter contract and reader-visible safety posture, including safe defaults where operator-facing script classes require them. | This keeps invocation safety in the scripts family without reclassifying the deferred OPS evidence boundary. |
-| `DOC-WORKFLOW-SCRIPTS-0001-ST-06` | `Bounded legacy reuse through the stable reader` | `active` | `introduced` | `S0B-2A-R02` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `DOC-WORKFLOW-SCRIPTS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | The stable entrypoint may reuse legacy implementations when necessary, but legacy code should remain behind the stable reader surface rather than acting as the governing public entrypoint itself. | This clause preserves the reuse boundary without importing the separate stub-preservation packet. |
+| `DOC-WORKFLOW-SCRIPTS-0001-ST-01` | `Lifecycle-and-risk script classes` | `active` | `introduced` | `S0B-2A-R01` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `2026-02-13` | `ongoing` | `in-force` | Workflow-facing scripts should be classified by lifecycle and risk rather than by author memory or ad hoc filenames. | This clause fixes the scripts-family taxonomy boundary as the first family-owned rule. |
+| `DOC-WORKFLOW-SCRIPTS-0001-ST-02` | `Named script partitions` | `active` | `introduced` | `S0B-2A-R01` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `2026-02-13` | `ongoing` | `in-force` | The governed scripts taxonomy should distinguish at least `ops`, `labs`, `migrations`, `dev`, and `legacy` as reader-facing partitions with different lifecycle and risk expectations. | This preserves the classification vocabulary without importing the separate cutover policy as contract scope. |
+| `DOC-WORKFLOW-SCRIPTS-0001-ST-03` | `Governed placement over filename memory` | `active` | `introduced` | `S0B-2A-R01` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `2026-02-13` | `ongoing` | `in-force` | New workflow-facing scripts should be placed into one governed partition in that taxonomy instead of relying on personal memory of loose filenames or ad hoc directories. | This keeps the first release focused on stable placement semantics rather than on migration timing. |
+| `DOC-WORKFLOW-SCRIPTS-0001-ST-04` | `Stable scripts entrypoint` | `active` | `introduced` | `S0B-2A-R02` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `2026-02-13` | `ongoing` | `in-force` | Workflow-facing scripts should expose one stable entrypoint through `backend/scripts/cli.py` rather than making readers remember individual script filenames as the primary invocation surface. | This clause is the first family-owned reader contract for invocation stability. |
+| `DOC-WORKFLOW-SCRIPTS-0001-ST-05` | `Shared parameter and safety contract` | `active` | `introduced` | `S0B-2A-R02` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `2026-02-13` | `ongoing` | `in-force` | The stable entrypoint should carry one consistent parameter contract and reader-visible safety posture, including safe defaults where operator-facing script classes require them. | This keeps invocation safety in the scripts family without reclassifying the deferred OPS evidence boundary. |
+| `DOC-WORKFLOW-SCRIPTS-0001-ST-06` | `Bounded legacy reuse through the stable reader` | `active` | `introduced` | `S0B-2A-R02` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `DOC-WORKFLOW-SCRIPTS-0001` | `2026-02-13` | `2026-02-13` | `ongoing` | `in-force` | The stable entrypoint may reuse legacy implementations when necessary, but legacy code should remain behind the stable reader surface rather than acting as the governing public entrypoint itself. | This clause preserves the reuse boundary without importing the separate stub-preservation packet. |
 
 ## Statement Evolution Table
 
 | change id | release id | change action | input statement ids | output statement ids | effective at | recorded at | reason | source basis | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-SCRIPTS-0001-CH-01` | `DOC-WORKFLOW-SCRIPTS-0001` | `introduced` | `none` | `DOC-WORKFLOW-SCRIPTS-0001-ST-01; DOC-WORKFLOW-SCRIPTS-0001-ST-02; DOC-WORKFLOW-SCRIPTS-0001-ST-03; DOC-WORKFLOW-SCRIPTS-0001-ST-04; DOC-WORKFLOW-SCRIPTS-0001-ST-05; DOC-WORKFLOW-SCRIPTS-0001-ST-06` | `unknown` | `2026-04-23` | The first scripts-family release is opened because `S0G-1C` fixed that `R01` and `R02` together form one narrow, independently judgeable scripts-governance reader. | `S0B-2A-R01; S0B-2A-R02` | The initial release keeps the rule body narrow and leaves labs snapshot, OPS evidence, cutover, and stub support outside the family-opening packet. |
+| `DOC-WORKFLOW-SCRIPTS-0001-CH-01` | `DOC-WORKFLOW-SCRIPTS-0001` | `introduced` | `none` | `DOC-WORKFLOW-SCRIPTS-0001-ST-01; DOC-WORKFLOW-SCRIPTS-0001-ST-02; DOC-WORKFLOW-SCRIPTS-0001-ST-03; DOC-WORKFLOW-SCRIPTS-0001-ST-04; DOC-WORKFLOW-SCRIPTS-0001-ST-05; DOC-WORKFLOW-SCRIPTS-0001-ST-06` | `2026-02-13` | `2026-04-23` | The first scripts-family release is opened because `S0G-1C` fixed that `R01` and `R02` together form one narrow, independently judgeable scripts-governance reader. | `S0B-2A-R01; S0B-2A-R02` | The initial release keeps the rule body narrow and leaves labs snapshot, OPS evidence, cutover, and stub support outside the family-opening packet. |
 
 ## Release Change
 
 - This release opens the `DOC-WORKFLOW-SCRIPTS` family as one narrow current reader for scripts taxonomy and stable entrypoint governance.
 - The release exists because the deferred `S0B-2A` scripts-governance candidate can now be defended as one shared family-opening body rather than two unresolved rows.
+- The rule body's semantic start is read from the decisive `S0B-2A` source date `2026-02-13`, while the release record itself entered repo chronology later on `2026-04-23`.
 - Relative to the mixed-source parent ledger, this release fixes three points:
   - workflow-facing scripts should be read through one explicit lifecycle-and-risk taxonomy
   - readers should invoke that taxonomy through one stable CLI/router surface rather than through remembered filenames
@@ -121,5 +123,6 @@ contract_record:
 ## Reader Notes
 
 - This initial release is intentionally narrow: it proves the scripts family can exist without first solving every adjacent lifecycle, snapshot, or link-preservation concern in the same packet.
+- This sample now also shows one explicit three-layer split: source-side rule recording at `2026-02-13`, parent-ledger consumption write-back at `2026-04-23`, and contract effective range `2026-02-13 -> ongoing`.
 - The file does not yet claim that a family transition register is needed; that verdict remains a separate write-back question for the lane.
 - The file also does not yet claim that any bridge note is required on another current reader surface; that remains a separate follow-up decision rather than an assumed consequence of opening the family.

@@ -56,6 +56,7 @@ Use this when one parent-ledger row also needs explicit time audit for source ob
 - `source recorded at` is the best known time that source material itself was written down, published, or admitted.
 - `source effective from` and `source effective until` describe the best known historical-effective range for the routed source slice.
 - `time precision` must reflect the strongest defended precision only; do not fabricate seconds when the source proves only a date.
+- If one later release also records `recorded_at` or one parent-ledger governance event records write-back timing, keep those later chronology fields separate from this row-level source chronology rather than copying them back into `source effective from`.
 
 ## Routing Table Shape
 
@@ -86,6 +87,7 @@ Use this when one parent-ledger row also needs explicit time audit for source ob
 - `resolved by contract id` should name the later release that consumed the slice when consumption actually happened.
 - `consumed scope` states whether the slice was consumed fully, partially, or not at all.
 - `resolution status` and `resolution notes` are the default surfaces for the current routing verdict; do not widen the main routing table with standing-window dates unless one later bounded packet proves the register/log surfaces are insufficient.
+- If reviewers need to explain `when the source existed` versus `when the ledger write-back happened`, prefer one row chronology audit, governance event row, or short note rather than overloading `resolution notes` to stand in for contract effective time.
 - If one later release absorbs new non-contract source material, record that fact here and carry the source forward in the later release metadata; do not fabricate `absorbed_from` links to sources that were never contracts.
 - Use the core routing columns to answer `what happened to this source slice`; do not add extra routing columns only to preview downstream contract-reader shape.
 - If later readers still need one concise explanation of whether the consumed slice now reads through a broad parent summary, a narrow current reader, or a still-deferred background state, prefer one short rollup or reader note rather than widening the routing table itself.
