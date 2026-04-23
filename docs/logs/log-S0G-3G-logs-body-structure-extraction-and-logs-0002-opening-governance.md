@@ -19,7 +19,7 @@
   **reference_log_2**: `docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
   **reference_log_3**: `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
   **reference_log_4**: `docs/logs/_template-log-phase-drills-evidence.md`
-  **reference_log_5**: `docs/logs/support-only/ledger-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+  **reference_log_5**: `docs/logs/support-only/ledger-S0C-1A-log-extensions.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -53,14 +53,14 @@
 **Decision**:
 
 - `S0G-3G` opens the bounded lane for extracting repeated log body-structure rules from structured logs and deciding whether those rules justify `DOC-WORKFLOW-LOGS-0002` as the next release in the same `DOC-WORKFLOW-LOGS` family.
-- This lane uses `log -> parent ledger (or + SUP if later evidence sharpening becomes necessary) -> contract release -> conditional register writeback` as the operating chain: source logs remain the extraction surface, one dedicated support-only ledger records cross-sample rule rows, and contract mutation is deferred until repeated evidence makes the next release defensible.
+- This lane uses `log -> source-owned support-only ledger (or + SUP if later evidence sharpening becomes necessary) -> contract release -> conditional register writeback` as the operating chain: source logs remain the extraction surface, each extracted source gets its own ledger named after the source id, and contract mutation is deferred until repeated evidence makes the next release defensible.
 - Later log samples should enter this lane as new `C` items by default; do not open a new sibling source log every time one more sample is added unless the new sample clearly opens a materially different source-log extraction problem.
 
 **Default choices (phase defaults / v1)**:
 
 - `DOC-WORKFLOW-LOGS-0001` stays the first narrow release for now: stable identifier, log-facing front matter, and cutover intake remain its current defended scope unless repeated evidence proves that the next family release should carry those rules forward and add explicit body-structure governance.
 - The first concrete sample under this lane is `S0C-1A`, because it states a reusable `Decision / Outcome` block and `single top-level status field` rule clearly enough to test whether body-structure ownership is becoming stable across modern logs.
-- New samples should first write one row into the `S0G-3G` parent ledger before any contract text is drafted or revised.
+- New samples should first open or update one source-owned ledger named after the extracted source id before any contract text is drafted or revised.
 - A sample that shows only local stylistic preference should remain ledger evidence and should not trigger contract mutation by itself.
 - Do not use the old `six outlets` model as the extraction driver for this lane; borrow only its ownership-separation discipline where useful, and do any later close-out/export review only after the release boundary is fixed.
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
@@ -85,18 +85,18 @@
 
 - Log: `docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
 - Runbook: ``
-- Evidence artifact: `docs/logs/support-only/ledger-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+- Evidence artifact: `docs/logs/support-only/ledger-S0C-1A-log-extensions.md`
 
 **Evidence Footer Source**:
 
 - `P1-C1-S1` | artifact: `docs/logs/log-S0C-1A-log-extensions.md`
-- `P2-C1-S1` | artifact: `docs/logs/support-only/ledger-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+- `P2-C1-S1` | artifact: `docs/logs/support-only/ledger-S0C-1A-log-extensions.md`
 
 ## Definitions
 
 - **body-structure rule**: one reusable rule about how a structured log organizes its reader-facing body, such as mandatory conclusion blocks, section ordering, or status ownership.
 - **sample cycle**: one bounded pass that extracts rules from one additional source log and writes the result into the parent ledger.
-- **parent ledger**: the support-only cross-sample matrix that records extracted rule rows, repeatability verdicts, and contract impact decisions for this lane.
+- **source-owned ledger**: the support-only ledger named after the extracted source id that records routed slices, chronology audit, and later consumption tracking for one source sample.
 - **contract release decision**: the explicit verdict on whether repeated ledger evidence is strong enough to open `DOC-WORKFLOW-LOGS-0002` as the next same-family release or whether the evidence should remain below contract level.
 
 ## Constraints
@@ -112,7 +112,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `source extraction` | `required` | `S0G-3G` | `Has one bounded source log been selected tightly enough for rule extraction?` | `sample-specific extraction note or retained source anchor` | `Entry step for each new cycle` |
 | `SUP` | `not-required` | `n/a` | `Is this lane sharpening one already-admitted row with later evidence only?` | `explicit no-SUP verdict` | `Default path is direct extraction plus parent ledger write-back` |
-| `parent ledger` | `required` | `ledger-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md` | `Does the extracted sample add or sharpen one candidate body-structure rule row?` | `ledger row added or updated` | `This is the mandatory accumulation layer before contract mutation` |
+| `parent ledger` | `required` | `source-owned support-only ledger for the extracted sample` | `Does the extracted sample add or sharpen one candidate body-structure rule row?` | `ledger rows added or updated in the sample-owned ledger` | `This is the mandatory accumulation layer before contract mutation` |
 | `contract impact decision` | `required` | `S0G-3G` | `Does the cross-sample evidence justify no-op, `LOGS-0001` note-only reconciliation, or opening `LOGS-0002` as the next same-family release?` | `explicit classified verdict in log plus ledger` | `Boundary gate before downstream mutation` |
 | `contract mutation` | `conditional` | `DOC-WORKFLOW-LOGS-*` | `Has repeated evidence made one next-release boundary defensible?` | `new release draft or explicit no-contract-mutation verdict` | `Default remains no mutation until repeated evidence exists` |
 | `transition register update` | `conditional` | `register-DOC-WORKFLOW-LOGS.md or n/a` | `Would opening `LOGS-0002` change which release is first-open now or how `LOGS-0001` remains reader-relevant?` | `register row or explicit no-register-change verdict` | `Needed when family-level release standing changes between `0001` and `0002`` |
@@ -128,7 +128,7 @@
 ## Success Criteria (DoD)
 
 - The lane states one explicit rule for when a new sample stays inside `S0G-3G` as a new cycle instead of opening a sibling log.
-- The parent ledger exists and is the mandatory accumulation surface for extracted sample rules.
+- A source-owned ledger exists for each extracted sample and is the mandatory accumulation surface for extracted sample rules.
 - `S0C-1A` is fixed as the first concrete sample under this lane.
 - The lane records one explicit boundary test for `LOGS-0001` versus next-release `LOGS-0002`.
 - The lane records one explicit downstream decision path: `no-op`, `LOGS-0001` note-only reconciliation, or `LOGS-0002` opening.
@@ -162,6 +162,7 @@
   - the repeatability verdict
   - the contract impact verdict for `LOGS-0001` vs `LOGS-0002`
   - the next write-back target
+  - and that row set should live in a support-only ledger named after the extracted source id rather than the control-lane id
 
 ## Numbering
 
@@ -185,7 +186,7 @@
 ### P1 (Sample extraction cycles)
 
 - `P1-C1-S1`: extract the first candidate body-structure rule set from `S0C-1A`
-- `P1-C1-S2`: write the corresponding row(s) into the `S0G-3G` parent ledger
+- `P1-C1-S2`: write the corresponding row(s) into the `S0C-1A` source-owned ledger
 - `P1-C2-S1`: reserve the next cycle for one additional post-cutover log sample without opening a sibling source log by default
 
 ### P2 (Boundary test)
@@ -224,7 +225,7 @@
 ## Current Status
 
 - `S0G-3G` is now scaffolded as the bounded source-log lane for testing whether repeated modern log body-structure evidence warrants `LOGS-0002` as the next release in the same `DOC-WORKFLOW-LOGS` family.
-- `S0C-1A` is now fixed as the first extracted sample: its candidate rule set has been split into conclusion-block, minimum-field, top-level-status, current-effective-body, and supporting-evidence rows inside the dedicated parent ledger.
+- `S0C-1A` is now fixed as the first extracted sample: its candidate rule set has been split into conclusion-block, minimum-field, top-level-status, current-effective-body, and supporting-evidence rows inside the source-owned ledger `ledger-S0C-1A-log-extensions.md`.
 - No `LOGS-0002` contract mutation is warranted yet because every extracted row is still first-sample evidence only.
 - The next concrete step is `P1-C2-S1`: admit one more post-cutover corroborating sample so `P2-C1` can classify which rows are true next-release clauses versus support-only evidence.
 
@@ -237,20 +238,20 @@
 - headSha: `WORKTREE`
 - artifacts:
   - `docs/logs/log-S0C-1A-log-extensions.md`
-  - `docs/logs/support-only/ledger-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+  - `docs/logs/support-only/ledger-S0C-1A-log-extensions.md`
 - expected:
   - the lane should start from one concrete modern log sample rather than from abstract body-structure discussion only
   - the ledger landing surface should be fixed before any contract drafting starts
 - observed:
   - `S0C-1A` is now the first admitted sample target for this lane
-  - the dedicated `S0G-3G` support-only ledger path is now fixed as the accumulation surface for extracted rule rows
+  - the source-owned `S0C-1A` support-only ledger path is now fixed as the accumulation surface for extracted rule rows
 
 ### P1-C1-S1S2 (S0C-1A extracted into explicit candidate rows | 2026-04-23)
 
 - headSha: `WORKTREE`
 - artifacts:
   - `docs/logs/log-S0C-1A-log-extensions.md`
-  - `docs/logs/support-only/ledger-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+  - `docs/logs/support-only/ledger-S0C-1A-log-extensions.md`
 - expected:
   - the first sample should stop reading as one vague `LOGS-0002` candidate and instead resolve into specific candidate rule rows
   - the ledger should distinguish likely contract clauses from evidence/support-only pattern material
