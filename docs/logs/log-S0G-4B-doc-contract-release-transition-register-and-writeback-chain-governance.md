@@ -202,7 +202,7 @@
 - `S0G-4B/P0-C1-S1S3: open transition-register and writeback-chain governance lane`
 - `S0G-4B/P1-C1-S1: define DOC family transition-register minimum contract`
 - `S0G-4B/P1-C3-S1S3: refine release-ordering and optional statement-transition overlay rule`
-- `S0G-4B/P2-C1-S1: define change-classification matrix for DOC contract mutations`
+- `S0G-4B/P2-C1-S1S2: define change-classification matrix and release-opening rule`
 - `S0G-4B/P3-C1-S1: define required processing-chain declaration for source logs`
 - `S0G-4B/P4-C1-S1: write verified model back into templates and open LABS sample`
 
@@ -281,6 +281,43 @@
 - `P2-C1-S1`: define the four-way change matrix for evidence, routing, semantic-release, and family-boundary changes
 - `P2-C1-S2`: define the release-opening rule and the non-release rule
 
+### P2-C1-S1 (Define the four-way change matrix)
+
+- Every packet that may touch `DOC` contracts must first be classified as exactly one primary change class before any contract mutation is chosen.
+- The four primary classes are now fixed as:
+  - `evidence-only sharpening`
+  - `routing rewrite`
+  - `semantic-release change`
+  - `family-boundary change`
+
+| change class | what changed | primary owner surface | new release required | transition register update | family action | examples |
+| --- | --- | --- | --- | --- | --- | --- |
+| `evidence-only sharpening` | Evidence becomes stronger, clearer, or more reviewable, but the defended current semantic meaning and routing verdict stay the same. | `SUP` first, then parent ledger note or evidence write-back | `no` | `no`, unless a previously defended release coexistence claim itself changes | `none` | screenshot or markdown evidence sharpens one accepted parent-ledger row; chronology precision improves; one current contract note gains better supporting evidence without changing meaning |
+| `routing rewrite` | The source slice is now understood to route differently, but the underlying rule meaning still does not require one new effective contract state. | `SUP` plus parent ledger rewrite | `no`, unless the routing correction changes the current defended semantic reader | `yes` only if the routing rewrite changes which existing release is first-open, fallback, or historical-retained | `none` | split one parent-ledger row into two narrower rows; reclassify one slice from `no-contract` to `revise-release`; move one explanation from broad parent summary to narrow current reader without changing clause meaning |
+| `semantic-release change` | The effective owned rule meaning changes materially inside one existing family, or one later readable release is needed to express the new current state. | release contract in the existing family, with ledger write-back if source-owned material triggered it | `yes` | `yes`, because release standing inside the family must now be updated | `same family` | clause meaning amended; governed boundary materially expands or shrinks inside the same family; a later release absorbs new rule-bearing source content strongly enough that readers should treat it as a new effective state |
+| `family-boundary change` | The work no longer fits only as one later state inside the current family because the semantic lane itself splits, merges, absorbs across families, or must be re-owned. | family-level contract decision plus ledger write-back and lineage repair | `yes` for the affected destination release or releases | `yes` for every affected family register | `new family`, `split family`, `merge family`, or `absorb across families` | one broad family decomposes into narrower families; one earlier family is absorbed into another family's current reader; one packet proves the rule belongs in a different stable semantic family rather than as one later release of the old family |
+
+### P2-C1-S2 (Define the release-opening rule and the non-release rule)
+
+- `meaning changed => new release` remains the default rule inside one stable family.
+- `better evidence alone => no new release` remains the default non-release rule.
+- A packet must open one new release when at least one of these is true:
+  - the effective clause meaning materially changes
+  - the governed boundary materially expands, shrinks, or is redrawn inside the same family
+  - new source-owned content is absorbed strongly enough that the later reader should count as one new effective state rather than one clarified note on the old release
+  - more than one earlier release state is consolidated into one later current reader inside the same family
+- A packet must not open one new release when all of the following stay true:
+  - the defended effective meaning is unchanged
+  - the current family boundary is unchanged
+  - the packet only improves evidence quality, chronology precision, routing accounting, or reader notes
+- A packet must escalate from `routing rewrite` to `semantic-release change` when a routing correction stops being only about source placement and starts changing which contract clauses are defended as current meaning.
+- A packet must escalate from `semantic-release change` to `family-boundary change` when the correct answer is no longer `later release in the same family`, but instead `new family`, `split family`, `merge family`, or `cross-family absorption`.
+- `transition register update` follows family-level reader standing, not release creation by itself:
+  - if a new release is opened and it changes which release is `current-primary`, `fallback-only`, `coexistence-window`, or `historical-retained`, update the family register
+  - if a routing rewrite changes family-level reader standing without minting a new release, update the family register anyway
+  - if evidence sharpening changes neither release meaning nor family-level standing, do not update the register
+- `SUP` and parent-ledger write-back still happen before this rule is applied when the packet originates from later evidence against one existing source-owned row.
+
 ### P3 (Required processing chain)
 
 - `P3-C1-S1`: define the mandatory processing-chain declaration shape for source logs
@@ -305,8 +342,8 @@
 
 ### P2 (Change classification matrix)
 
-- [ ] `P2-C1-S1`: define the four-way change matrix for evidence, routing, semantic-release, and family-boundary changes
-- [ ] `P2-C1-S2`: define the release-opening rule and the non-release rule
+- [x] `P2-C1-S1`: define the four-way change matrix for evidence, routing, semantic-release, and family-boundary changes
+- [x] `P2-C1-S2`: define the release-opening rule and the non-release rule
 
 ### P3 (Required processing chain)
 
@@ -320,7 +357,8 @@
 - The first transition-register template contract is now written at `docs/governance/contracts/_template-contract-release-transition-register.md`, which fixes the file boundary, allowed release-state values, and minimum row shape for later family samples.
 - The first concrete family sample is now also written at `docs/governance/contracts/workflow/labs/register-DOC-WORKFLOW-LABS.md`, which proves the model on the existing `0001/0002` labs-family coexistence case without mutating the release-local contract bodies.
 - The transition-register model now also distinguishes `release-level coexistence` from optional `statement-level rollout overlay`, and the release rows are now ordered latest-first for reader-first use.
-- The immediate next step is now one bounded change-classification rule plus one required processing-chain declaration.
+- The change-classification model is now explicit enough to distinguish `evidence-only sharpening`, `routing rewrite`, `semantic-release change`, and `family-boundary change`, including when a new release is required and when a family register must be updated.
+- The immediate next step is now one required processing-chain declaration for source logs.
 
 ## Evidence (reserved)
 
@@ -393,9 +431,27 @@
   - the template now allows one optional `Statement Transition Table` with rollout states such as `primary`, `dual-read`, `dual-write`, `fallback-read`, and `historical-carried`
   - the LABS sample now states explicitly that no statement-transition rows are currently open because mixed `change action` values do not yet prove one live statement-level rollout divergence
 
+### P2-C1-S1S2 (change-classification matrix and release-opening rule written | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-4B-doc-contract-release-transition-register-and-writeback-chain-governance.md`
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/logs/_template-support-only-contract-release-ledger.md`
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+- expected:
+  - define one four-way packet classification that separates evidence sharpening, routing rewrite, semantic release mutation, and family-boundary mutation
+  - fix when one packet must open a new release versus staying as a non-release write-back
+  - keep release-opening logic aligned with existing ledger and SUP ownership rather than allowing direct contract mutation from raw later evidence
+- observed:
+  - the lane now classifies contract-impacting packets into `evidence-only sharpening`, `routing rewrite`, `semantic-release change`, and `family-boundary change`
+  - the lane now states explicitly that `meaning changed => new release`, while evidence-only sharpening and pure routing rewrites remain non-release cases unless they change defended semantic reader standing
+  - the lane now states explicitly when `transition register update` is required even without minting one new release
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-4B` so `DOC` contract release coexistence, family-level transition-state reading, and writeback-chain declaration can be fixed as one bounded governance lane rather than as scattered follow-up notes.
 - 2026-04-23: wrote the first family-level transition-register template so later `DOC` families can expose release coexistence and transition-window state without overloading release-local contract bodies.
 - 2026-04-23: opened the first real family sample at `register-DOC-WORKFLOW-LABS.md`, which now demonstrates how the template reads one current-primary release plus one historical-retained earlier release without reopening the release-local clause registries.
 - 2026-04-23: refined the transition-register model so release rows now read latest-first and statement-level rollout differences may be expressed through one optional overlay instead of overloading the release-state table.
+- 2026-04-23: defined the `P2` change-classification matrix so the repo can now distinguish evidence sharpening, routing rewrite, semantic-release mutation, and family-boundary mutation before choosing whether to mint one new release or only write back through ledger and register surfaces.
