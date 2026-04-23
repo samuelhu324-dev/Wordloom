@@ -25,6 +25,7 @@
   **reference_log_8**: `docs/logs/log-S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology.md`
   **reference_log_9**: `docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
   **reference_log_10**: `docs/governance/contracts/_template-contract-release-transition-register.md`
+  **reference_log_11**: `docs/governance/contracts/workflow/labs/register-DOC-WORKFLOW-LABS.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/4b`
@@ -102,6 +103,7 @@
 - `P0-C1-S2` | artifact: `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
 - `P0-C1-S3` | artifact: `docs/logs/_template-log-phase-drills-evidence.md`
 - `P1-C1-S1` | artifact: `docs/governance/contracts/_template-contract-release-transition-register.md`
+- `P1-C2-S1` | artifact: `docs/governance/contracts/workflow/labs/register-DOC-WORKFLOW-LABS.md`
 
 ## Exported Sections / Outlet Ownership
 
@@ -214,6 +216,7 @@
 
 - `P1-C1-S1`: define the minimum file contract for `register-<family-id>` surfaces
 - `P1-C1-S2`: define allowed release-state values and the minimum release row shape
+- `P1-C2-S1`: open the first `DOC-WORKFLOW-LABS` transition-register sample under the new file contract
 
 ### P1-C1-S1 (Fix the minimum file contract for family transition registers)
 
@@ -249,6 +252,14 @@
   - `evidence refs`
 - Under this rule, the stable row anchor remains `contract id`; statement ids, ledger row ids, and supplement item ids remain outside the minimum register row contract.
 
+### P1-C2-S1 (Open the first LABS-family transition-register sample)
+
+- The first sample should now be `register-DOC-WORKFLOW-LABS.md` in the same family directory as `DOC-WORKFLOW-LABS-0001` and `DOC-WORKFLOW-LABS-0002`.
+- Under this rule, the sample must prove three things at once:
+  - `0002` is the current-primary family reader
+  - `0001` remains one historical-retained family release rather than one active fallback
+  - the family can record one closed transition-window row without turning the register into one second clause or routing ledger
+
 ### P2 (Change classification matrix)
 
 - `P2-C1-S1`: define the four-way change matrix for evidence, routing, semantic-release, and family-boundary changes
@@ -271,6 +282,7 @@
 
 - [x] `P1-C1-S1`: define the minimum file contract for `register-<family-id>` surfaces
 - [x] `P1-C1-S2`: define allowed release-state values and the minimum release row shape
+- [x] `P1-C2-S1`: open the first `DOC-WORKFLOW-LABS` transition-register sample under the new file contract
 
 ### P2 (Change classification matrix)
 
@@ -287,7 +299,8 @@
 - `S0G-4B` is now opened as the bounded lane for `DOC` contract release coexistence, family-level transition-state reading, and source-log writeback-chain declaration.
 - The repo now has enough evidence to say that current contract bodies alone are no longer the right place to carry all family-level version-state answers.
 - The first transition-register template contract is now written at `docs/governance/contracts/_template-contract-release-transition-register.md`, which fixes the file boundary, allowed release-state values, and minimum row shape for later family samples.
-- The immediate next step is no longer `what is a transition register`; it is one bounded change-classification rule plus one required processing-chain declaration.
+- The first concrete family sample is now also written at `docs/governance/contracts/workflow/labs/register-DOC-WORKFLOW-LABS.md`, which proves the model on the existing `0001/0002` labs-family coexistence case without mutating the release-local contract bodies.
+- The immediate next step is now one bounded change-classification rule plus one required processing-chain declaration.
 
 ## Evidence (reserved)
 
@@ -327,7 +340,25 @@
   - the release-state values are now fixed as `current-primary`, `fallback-only`, `coexistence-window`, `historical-retained`, `lineage-only`, and `retired`
   - the minimum row shape now uses `contract id` as the stable row anchor and keeps statement ids plus ledger/supplement row ids outside the minimum register contract
 
+### P1-C2-S1 (LABS-family transition-register sample opened | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/governance/contracts/workflow/labs/register-DOC-WORKFLOW-LABS.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  - `docs/logs/log-S0G-4B-doc-contract-release-transition-register-and-writeback-chain-governance.md`
+- expected:
+  - prove the template on one real family with more than one reader-relevant release
+  - keep the sample release-level only instead of copying the clause registry or source-routing chain
+  - show whether the labs family currently has one open transition window or only one retained historical release plus one current-primary release
+- observed:
+  - the sample now records `DOC-WORKFLOW-LABS-0002` as `current-primary`
+  - the sample now records `DOC-WORKFLOW-LABS-0001` as `historical-retained`
+  - the sample records the `0001 -> 0002` transition as one closed window rather than as one still-open coexistence or fallback state
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-4B` so `DOC` contract release coexistence, family-level transition-state reading, and writeback-chain declaration can be fixed as one bounded governance lane rather than as scattered follow-up notes.
 - 2026-04-23: wrote the first family-level transition-register template so later `DOC` families can expose release coexistence and transition-window state without overloading release-local contract bodies.
+- 2026-04-23: opened the first real family sample at `register-DOC-WORKFLOW-LABS.md`, which now demonstrates how the template reads one current-primary release plus one historical-retained earlier release without reopening the release-local clause registries.
