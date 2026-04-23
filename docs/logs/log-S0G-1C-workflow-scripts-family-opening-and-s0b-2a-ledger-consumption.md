@@ -56,6 +56,7 @@
 - `S0G-1C` opens as the bounded follow-up for the deferred scripts-governance candidate in `S0B-2A`.
 - This lane treats the problem as `family opening + first release scope + ledger consumption write-back` rather than as one immediate broad scripts cleanup sweep.
 - `P1` now fixes the first-release scope answer: `S0B-2A-R01` and `S0B-2A-R02` should be consumed together if the family opens as `DOC-WORKFLOW-SCRIPTS-0001`.
+- `P2` now fixes the family-opening verdict as positive and emits `DOC-WORKFLOW-SCRIPTS-0001` as the first narrow scripts-family release.
 - The immediate deliverable is one defended answer for:
   - whether `S0B-2A-R01` and `S0B-2A-R02` belong in one shared `DOC-WORKFLOW-SCRIPTS` family;
   - whether that family should open now as `DOC-WORKFLOW-SCRIPTS-0001`;
@@ -206,6 +207,20 @@
 - `R06` remains support-only because stub preservation protects old links after relocation, but does not by itself define how workflow scripts are classified or invoked.
 - Under this rule, the first scripts release should stay narrow enough to answer `what is the stable scripts-governance reader?` without re-importing already-consumed labs evidence or adjacent migration-support mechanics.
 
+## P2 (Family opening | v1)
+
+### P2-C1-S1 (DOC-WORKFLOW-SCRIPTS-0001 emitted | v1)
+
+- The family-opening verdict is now positive: `S0B-2A-R01` and `S0B-2A-R02` are sufficient to open `DOC-WORKFLOW-SCRIPTS-0001` as one defended narrow family release.
+- The emitted release lives at `docs/governance/contracts/workflow/scripts/DOC-WORKFLOW-SCRIPTS-0001-taxonomy-and-stable-entrypoint-governance.md`.
+- The release owns the minimum current scripts-governance reader needed to make the family real:
+  - lifecycle-and-risk taxonomy for workflow-facing scripts
+  - stable reader entrypoint through `backend/scripts/cli.py`
+  - shared parameter and safety contract
+  - bounded legacy reuse behind the stable entrypoint
+- The release intentionally does not consume `R03` through `R06`; those rows remain outside the family-opening packet exactly as fixed in `P1`.
+- Under this rule, `P3` now becomes a pure write-back phase: the family already exists, so the remaining work is parent-ledger consumption plus explicit no-register or bridge verdict unless later evidence says otherwise.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -257,7 +272,7 @@
 
 ### P2 (Family opening)
 
-- [ ] `P2-C1-S1`: emit `DOC-WORKFLOW-SCRIPTS-0001` or record explicit non-opening verdict
+- [x] `P2-C1-S1`: emit `DOC-WORKFLOW-SCRIPTS-0001` or record explicit non-opening verdict
 
 ### P3 (Ledger and bridge write-back)
 
@@ -268,7 +283,8 @@
 
 - `S0G-1C` is now opened as the bounded scripts-family follow-up for the deferred `S0B-2A` rows.
 - `P1` now fixes the first-release scope: `R01` and `R02` travel together as the minimum `DOC-WORKFLOW-SCRIPTS-0001` rule body, while `R03` through `R06` remain outside the first release for different reasons.
-- The next concrete step is `P2`: either emit `DOC-WORKFLOW-SCRIPTS-0001` on that narrow scope or record the explicit non-opening verdict if the repo cannot defend the family opening yet.
+- `P2` now emits `DOC-WORKFLOW-SCRIPTS-0001` as the first scripts-family release on that narrow `R01 + R02` scope.
+- The next concrete step is `P3`: write the parent-ledger consumption update and make the register/bridge verdict explicit.
 
 ## Evidence (reserved)
 
@@ -309,7 +325,25 @@
   - `R03` remains with `DOC-WORKFLOW-LABS-0002` and is explicitly excluded from the scripts family opening
   - `R04` remains a deferred OPS-side candidate, while `R05` and `R06` remain support-only outside the first scripts release
 
+### P2-C1-S1 (DOC-WORKFLOW-SCRIPTS-0001 emitted | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/governance/contracts/workflow/scripts/DOC-WORKFLOW-SCRIPTS-0001-taxonomy-and-stable-entrypoint-governance.md`
+  - `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
+  - `docs/logs/log-S0B-2A-scripts-snapshots-management.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+- expected:
+  - open the first `DOC-WORKFLOW-SCRIPTS` release if `R01` and `R02` can stand as one narrow current reader
+  - keep the emitted release scoped to taxonomy and stable entrypoint only
+  - leave ledger-consumption and register/bridge write-back for `P3`
+- observed:
+  - `DOC-WORKFLOW-SCRIPTS-0001` is emitted as the first scripts-family release
+  - the release owns taxonomy, placement, stable entrypoint, parameter-and-safety contract, and bounded legacy reuse through the stable reader
+  - `R03` through `R06` remain outside the emitted release, so the family opens without reabsorbing labs snapshot, OPS evidence, or support-only migration/link-preservation material
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-1C` so the deferred `DOC-WORKFLOW-SCRIPTS` candidate from `S0B-2A` can be judged as one bounded family-opening lane instead of remaining one indefinite ledger note.
 - 2026-04-23: fixed the `P1` first-release scope so `DOC-WORKFLOW-SCRIPTS-0001` can now be judged on one narrow `R01 + R02` body without reabsorbing `R03-R06`.
+- 2026-04-23: emitted `DOC-WORKFLOW-SCRIPTS-0001` as the first narrow scripts-family release so `P3` can focus only on parent-ledger consumption and explicit register/bridge write-back verdicts.
