@@ -33,14 +33,22 @@ contract_release_transition_register:
 
 | contract id | release state | semantic standing | transition role | valid from | valid until | first open now | replaced by | transition note | evidence refs |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-LABS-0001` | `historical-retained` | `superseded-historical-release` | `earlier labs-family release retained for historical reading and clause ancestry` | `2026-04-10` | `ongoing` | `no` | `DOC-WORKFLOW-LABS-0002` | Read this release when the reader needs the earlier narrower labs/snapshots rule set before the later evidence-package framing and later admitted earlier-history clauses visible in `0002`. | `DOC-WORKFLOW-LABS-0001`; `DOC-WORKFLOW-LABS-0001-GOV-03`; `DOC-WORKFLOW-LABS-0002` |
 | `DOC-WORKFLOW-LABS-0002` | `current-primary` | `current-release-reader` | `primary current labs-family reader` | `2026-04-10` | `ongoing` | `yes` | `none` | Read this release first for the integrated current labs-family meaning: carried-forward `0001` clauses, amended evidence-package framing, introduced package-shape rules, and admitted earlier-history labs clauses. | `DOC-WORKFLOW-LABS-0002`; `DOC-WORKFLOW-LABS-0002 Current Reader Shape`; `ledger-SUP-S0A-2A-002-labs-early-failure-management-and-pre-drills-shape.md` |
+| `DOC-WORKFLOW-LABS-0001` | `historical-retained` | `superseded-historical-release` | `earlier labs-family release retained for historical reading and clause ancestry` | `2026-04-10` | `ongoing` | `no` | `DOC-WORKFLOW-LABS-0002` | Read this release when the reader needs the earlier narrower labs/snapshots rule set before the later evidence-package framing and later admitted earlier-history clauses visible in `0002`. | `DOC-WORKFLOW-LABS-0001`; `DOC-WORKFLOW-LABS-0001-GOV-03`; `DOC-WORKFLOW-LABS-0002` |
 
 ## Transition Window Table
 
 | window id | from release | to release | window state | opened at | target close at | closed at | reason | close condition | evidence refs | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `DOC-WORKFLOW-LABS-TW-01` | `DOC-WORKFLOW-LABS-0001` | `DOC-WORKFLOW-LABS-0002` | `closed` | `2026-04-10` | `2026-04-10` | `2026-04-10` | The family needed one explicit reader transition from the first labs/snapshots release to the later evidence-package release once the `S0B-2A` labs slice was admitted into the family current reader. | `DOC-WORKFLOW-LABS-0002` became the first-open release and `DOC-WORKFLOW-LABS-0001` was reclassified as one retained historical release rather than one active fallback or coexistence reader. | `DOC-WORKFLOW-LABS-0001-GOV-03`; `DOC-WORKFLOW-LABS-0002 lineages.supersedes`; `ledger-S0B-1A-tools-labs-and-snapshots.md`; `log-S0G-4B-doc-contract-release-transition-register-and-writeback-chain-governance.md` | This is a historical transition-window record, not one still-open release overlap. |
+
+## Statement Transition Table
+
+- No statement-transition rows are currently opened for this sample.
+- Reason:
+  - `DOC-WORKFLOW-LABS-0002` contains mixed `history-backfilled`, `carried-forward`, `amended`, and `introduced` clauses, but the current sample does not yet defend one live statement-level `dual-write`, `dual-read`, `fallback-read`, or `shadow-only` rollout state.
+  - Under this rule, the mixed statement chronology remains in `DOC-WORKFLOW-LABS-0002` through `Current Reader Shape` plus `Statement Evolution Table`, while this family register remains release-level only for now.
+  - If one later labs-family packet proves that specific statements are transitioning at different rollout speeds, this section should convert from one note into one bounded statement-transition table rather than overloading the release-state rows above.
 
 ## Reader Routing
 

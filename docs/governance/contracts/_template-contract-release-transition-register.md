@@ -22,6 +22,8 @@ Use this template for one family-level transition register that tracks how multi
   - which release a reader should open first now
   - whether one transition window is open between releases
   - what evidence or closure condition is still required before one older release leaves that active coexistence state
+- This register may also answer one narrower question when release-level state alone is not enough:
+  - whether specific statements inside the current family releases are currently `primary`, `dual-write`, `dual-read`, `fallback-read`, `shadow-only`, `historical-carried`, or `retired`
 - This register should not answer:
   - full clause meaning for any one release
   - full statement lineage or statement-level history
@@ -80,8 +82,8 @@ Use these values consistently in `release state`.
 
 | contract id | release state | semantic standing | transition role | valid from | valid until | first open now | replaced by | transition note | evidence refs |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<DOC-WORKFLOW-LABS-0001>` | `<historical-retained>` | `<superseded-historical-release>` | `<earlier release retained for family archaeology>` | `<YYYY-MM-DD|unknown>` | `<ongoing|YYYY-MM-DD|unknown>` | `<no>` | `<DOC-WORKFLOW-LABS-0002>` | `<why this release still matters, if at all>` | `<contract/local log/register refs>` |
 | `<DOC-WORKFLOW-LABS-0002>` | `<current-primary>` | `<current-release>` | `<primary current reader>` | `<YYYY-MM-DD|unknown>` | `<ongoing|unknown>` | `<yes>` | `<none>` | `<why this is the current first-open release>` | `<contract/local log/register refs>` |
+| `<DOC-WORKFLOW-LABS-0001>` | `<historical-retained>` | `<superseded-historical-release>` | `<earlier release retained for family archaeology>` | `<YYYY-MM-DD|unknown>` | `<ongoing|YYYY-MM-DD|unknown>` | `<no>` | `<DOC-WORKFLOW-LABS-0002>` | `<why this release still matters, if at all>` | `<contract/local log/register refs>` |
 
 ## Release State Field Rule
 
@@ -93,6 +95,45 @@ Use these values consistently in `release state`.
 - `first open now` should stay `yes` for only one `current-primary` row at a time.
 - `replaced by` should name the newer release if one later release is already the current first-open reader.
 - `evidence refs` should stay low-cardinality and point to the release contract, this register, and any directly relevant bounded log or ledger note.
+- Order the table for reader-first use, not historical-first archaeology:
+  - put the newest first-open or `current-primary` release first
+  - then list any `fallback-only` or `coexistence-window` releases
+  - then list `historical-retained`, `lineage-only`, and `retired` releases
+
+## Optional Statement Transition Table
+
+Use this section only when release-level coexistence is no longer enough to describe current reader behavior because different statements inside the same family are transitioning at different speeds.
+
+| statement anchor | current host release | rollout state | previous statement anchors | next target state | valid from | target close at | closed at | reader path now | evidence refs | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<DOC-WORKFLOW-LABS-0002-ST-01>` | `<DOC-WORKFLOW-LABS-0002>` | `<primary>` | `<DOC-WORKFLOW-LABS-0001-ST-01>` | `<primary>` | `<YYYY-MM-DD|unknown>` | `<n/a|YYYY-MM-DD|pending>` | `<n/a|YYYY-MM-DD|pending>` | `<read this statement through DOC-WORKFLOW-LABS-0002>` | `<contract/register/log refs>` | `<short bounded note>` |
+
+## Statement Transition Values
+
+Use these values consistently in `rollout state`.
+
+- `primary`:
+  - this statement now reads fully through its current host release
+- `dual-read`:
+  - readers still need to interpret old and new statement surfaces together for one bounded overlap period
+- `dual-write`:
+  - the statement meaning is currently being maintained in more than one active write-facing surface for one bounded overlap period
+- `shadow-only`:
+  - the statement is present only for shadow comparison or readiness checking, not as one defended primary reader path
+- `fallback-read`:
+  - the older statement remains intentionally readable as one bounded fallback path while a newer statement is already the primary reader
+- `historical-carried`:
+  - the statement remains visible for historical or carried-forward context but is not in one active dual-read or fallback rollout state
+- `retired`:
+  - the statement no longer participates in active rollout or reader coexistence
+
+## Statement Transition Rule
+
+- Open this section only when statement-level rollout differences are materially real for the family; do not add it merely because the release contains mixed `change action` values such as `history-backfilled`, `carried-forward`, `amended`, or `introduced`.
+- `change action` still answers `how the statement entered the current release`; it does not by itself answer the statement's current rollout state.
+- Keep the stable row anchor as `statement anchor`, typically one release-local statement id.
+- Do not restate full statement text here; the semantic meaning still belongs in the release-local contract.
+- If no statement-level rollout divergence is currently defended, omit the table entirely or replace it with one short note that no statement-transition rows are currently open.
 
 ## Transition Window Table
 

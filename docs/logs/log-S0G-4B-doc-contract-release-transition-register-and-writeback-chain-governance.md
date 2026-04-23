@@ -201,6 +201,7 @@
 
 - `S0G-4B/P0-C1-S1S3: open transition-register and writeback-chain governance lane`
 - `S0G-4B/P1-C1-S1: define DOC family transition-register minimum contract`
+- `S0G-4B/P1-C3-S1S3: refine release-ordering and optional statement-transition overlay rule`
 - `S0G-4B/P2-C1-S1: define change-classification matrix for DOC contract mutations`
 - `S0G-4B/P3-C1-S1: define required processing-chain declaration for source logs`
 - `S0G-4B/P4-C1-S1: write verified model back into templates and open LABS sample`
@@ -217,6 +218,21 @@
 - `P1-C1-S1`: define the minimum file contract for `register-<family-id>` surfaces
 - `P1-C1-S2`: define allowed release-state values and the minimum release row shape
 - `P1-C2-S1`: open the first `DOC-WORKFLOW-LABS` transition-register sample under the new file contract
+
+### P1-C3-S1 (Fix release-row ordering as latest-first)
+
+- The `Release State Table` should now be ordered for reader-first use, not historical-first chronology.
+- Under this rule, the newest `current-primary` release should appear first, followed by any `fallback-only` or `coexistence-window` releases, with `historical-retained`, `lineage-only`, and `retired` rows after them.
+
+### P1-C3-S2 (Add one optional statement-transition overlay)
+
+- The family-level transition register may now add one optional `Statement Transition Table` when release-level coexistence no longer explains the actual rollout state because specific statements are transitioning at different speeds.
+- Under this rule, statement-level rollout state must stay separate from statement `change action` inside the release-local contract.
+
+### P1-C3-S3 (Keep the LABS sample at release-level only for now)
+
+- The `LABS` sample should add only one explicit note for statement-transition handling rather than inventing statement rollout rows that the current evidence does not yet defend.
+- Under this rule, the sample proves the model boundary: one family can acknowledge the need for statement-level overlay without forcing premature rollout-state rows.
 
 ### P1-C1-S1 (Fix the minimum file contract for family transition registers)
 
@@ -283,6 +299,9 @@
 - [x] `P1-C1-S1`: define the minimum file contract for `register-<family-id>` surfaces
 - [x] `P1-C1-S2`: define allowed release-state values and the minimum release row shape
 - [x] `P1-C2-S1`: open the first `DOC-WORKFLOW-LABS` transition-register sample under the new file contract
+- [x] `P1-C3-S1`: fix release-row ordering as latest-first
+- [x] `P1-C3-S2`: add one optional statement-transition overlay
+- [x] `P1-C3-S3`: keep the LABS sample at release-level only for now
 
 ### P2 (Change classification matrix)
 
@@ -300,6 +319,7 @@
 - The repo now has enough evidence to say that current contract bodies alone are no longer the right place to carry all family-level version-state answers.
 - The first transition-register template contract is now written at `docs/governance/contracts/_template-contract-release-transition-register.md`, which fixes the file boundary, allowed release-state values, and minimum row shape for later family samples.
 - The first concrete family sample is now also written at `docs/governance/contracts/workflow/labs/register-DOC-WORKFLOW-LABS.md`, which proves the model on the existing `0001/0002` labs-family coexistence case without mutating the release-local contract bodies.
+- The transition-register model now also distinguishes `release-level coexistence` from optional `statement-level rollout overlay`, and the release rows are now ordered latest-first for reader-first use.
 - The immediate next step is now one bounded change-classification rule plus one required processing-chain declaration.
 
 ## Evidence (reserved)
@@ -357,8 +377,25 @@
   - the sample now records `DOC-WORKFLOW-LABS-0001` as `historical-retained`
   - the sample records the `0001 -> 0002` transition as one closed window rather than as one still-open coexistence or fallback state
 
+### P1-C3-S1S3 (latest-first ordering and statement-transition overlay rule written | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/governance/contracts/_template-contract-release-transition-register.md`
+  - `docs/governance/contracts/workflow/labs/register-DOC-WORKFLOW-LABS.md`
+  - `docs/logs/log-S0G-4B-doc-contract-release-transition-register-and-writeback-chain-governance.md`
+- expected:
+  - refine the release-state table to read newest-first for current readers
+  - add one optional statement-transition overlay so release-level coexistence and statement-level rollout do not get collapsed into one table
+  - keep the LABS sample light by adding only a note instead of unsupported statement rollout rows
+- observed:
+  - the release-state table contract is now explicitly latest-first
+  - the template now allows one optional `Statement Transition Table` with rollout states such as `primary`, `dual-read`, `dual-write`, `fallback-read`, and `historical-carried`
+  - the LABS sample now states explicitly that no statement-transition rows are currently open because mixed `change action` values do not yet prove one live statement-level rollout divergence
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-4B` so `DOC` contract release coexistence, family-level transition-state reading, and writeback-chain declaration can be fixed as one bounded governance lane rather than as scattered follow-up notes.
 - 2026-04-23: wrote the first family-level transition-register template so later `DOC` families can expose release coexistence and transition-window state without overloading release-local contract bodies.
 - 2026-04-23: opened the first real family sample at `register-DOC-WORKFLOW-LABS.md`, which now demonstrates how the template reads one current-primary release plus one historical-retained earlier release without reopening the release-local clause registries.
+- 2026-04-23: refined the transition-register model so release rows now read latest-first and statement-level rollout differences may be expressed through one optional overlay instead of overloading the release-state table.
