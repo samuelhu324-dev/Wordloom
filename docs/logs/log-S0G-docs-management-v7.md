@@ -30,6 +30,7 @@
   **phase_log_11**: `docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
   **phase_log_12**: `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
   **phase_log_13**: `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  **phase_log_14**: `docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -47,7 +48,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-20`
-**updated**: `2026-04-22`
+**updated**: `2026-04-23`
 
 ---
 
@@ -143,6 +144,8 @@
   - 详见：`docs/logs/log-S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance.md`
 - `S0G-3D`（Phase 3D）：WORKFLOW-GITHUB-ISSUES file-identity rename and successor-release governance
   - 详见：`docs/logs/log-S0G-3D-workflow-github-issues-file-identity-rename-and-successor-release-governance.md`
+- `S0G-3G`（Phase 3G）：logs body-structure extraction and LOGS-0002 opening governance
+  - 详见：`docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
 - `S0G-1B`（Phase 1B）：legacy logs historical backfill and logs-family bridge governance
   - 详见：`docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
 
@@ -165,7 +168,8 @@
 - `S0G-1C` now opens the scripts-governance follow-up on the `S0B-2A` side: decide whether the deferred scripts taxonomy and stable entrypoint rows should open one dedicated `DOC-WORKFLOW-SCRIPTS-0001` family release, how that first release should stay narrow, and how the parent ledger should record the resulting consumption explicitly.
 - `S0G-5A` now opens the time-semantics follow-up on the template side: separate artifact lifecycle time from semantic effective time and routing-validity time, fix the default derivation rule before a wider backfill sweep, and defer transition-window dates until real release coexistence exists.
 - `S0G-3F` now opens the next bounded release-governance follow-up: fix revision-sequence grammar and define the release board as a lightweight operational register for active runbook-family releases.
-- The next concrete work under this spine should now publish one minimum release-board issue-body rule under `S0G-3F`, then test it on one live release issue sample while leaving the broader `S0G-3D` and `S0G-4A` lanes available for their own bounded follow-up packets.
+- `S0G-3G` now opens the next logs-governance follow-up: accumulate repeated modern log body-structure evidence through one dedicated parent ledger and decide whether that evidence warrants `DOC-WORKFLOW-LOGS-0002` as the next release in the same family rather than widening `LOGS-0001` by drift.
+- The next concrete work under this spine should now execute `S0G-3G/P1-C1-S1S2` on `S0C-1A`, then decide whether a second corroborating sample should enter as `P1-C2` before any `LOGS-0002` contract packet is opened.
 
 ## Evidence（可选，聚合型记账）
 
