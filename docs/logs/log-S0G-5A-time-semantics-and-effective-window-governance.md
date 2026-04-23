@@ -239,6 +239,11 @@
 - `P8-C1-S1`: backfill `DOC-WORKFLOW-LABS-0001` from the defended `S0B-1A` issue-source chronology now that the parent ledger explicitly carries those row-level anchors
 - `P8-C1-S2`: backfill `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` from the defended `S0B-3A` source-log chronology now that the mixed-family parent ledger explicitly carries those row-level anchors
 
+### P9 (Selective final pair review)
+
+- `P9-C1-S1`: finish the defensible `DOC-WORKFLOW-LABS-0002` time backfill by writing the available `S0B-1A`, `S0B-2A`, and accepted `S0A-2A-R03` chronology into frontmatter, clause rows, and evolution rows without inventing a unified earlier start for `ST-13`
+- `P9-C1-S2`: confirm whether `DOC-WORKFLOW-LEGACY-LOGS-0001` is still chronology-blocked after `SUP-004`; if the parent row and supplement still preserve `unknown`, do not fabricate dates and keep the file deferred
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -286,6 +291,11 @@
 - [x] `P8-C1-S1`: backfill `DOC-WORKFLOW-LABS-0001` from the defended `S0B-1A` issue-source chronology now that the parent ledger explicitly carries those row-level anchors
 - [x] `P8-C1-S2`: backfill `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` from the defended `S0B-3A` source-log chronology now that the mixed-family parent ledger explicitly carries those row-level anchors
 
+### P9 (Selective final pair review)
+
+- [x] `P9-C1-S1`: finish the defensible `DOC-WORKFLOW-LABS-0002` time backfill by writing the available `S0B-1A`, `S0B-2A`, and accepted `S0A-2A-R03` chronology into frontmatter, clause rows, and evolution rows without inventing a unified earlier start for `ST-13`
+- [x] `P9-C1-S2`: confirm whether `DOC-WORKFLOW-LEGACY-LOGS-0001` is still chronology-blocked after `SUP-004`; if the parent row and supplement still preserve `unknown`, do not fabricate dates and keep the file deferred
+
 ## Current Status (recommended)
 
 - `S0G-5A` is now opened as the bounded time-semantics follow-up under the `S0G` spine.
@@ -305,7 +315,9 @@
 - This blocker-removal step does not yet claim full contract backfill for `DOC-WORKFLOW-LABS-0001`, `DOC-WORKFLOW-LOGS-0001`, or `DOC-WORKFLOW-LIFECYCLE-0001`; it only converts those families from `missing row chronology` into `ready for bounded contract-side dating`.
 - `P8` now executes that newly unblocked contract-side backfill: `DOC-WORKFLOW-LABS-0001` is anchored to the `S0B-1A` issue creation time `2026-02-08T09:14:31Z`, while `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` are anchored to the defended `S0B-3A` source-log date `2026-02-12`.
 - The contracts now distinguish semantic start from later repo record creation consistently across all three families, so the former blocker set is no longer stranded at `effective_from: unknown` after the parent-ledger repair.
-- The next concrete step is no longer these three contracts; it is to reassess the remaining `effective_from: unknown` set and choose the next bounded batch based on whichever families are now upstream-ready without reopening blanket backfill behavior.
+- `P9` now removes the remaining defensible labs gap: `DOC-WORKFLOW-LABS-0002` is anchored to `2026-02-13` for the later `S0B-2A` release state while preserving earlier clause-level dates such as `2026-02-03` for `ST-12` and earlier `0001` dates for carried-forward snapshot rules.
+- The same review also confirms one hard boundary: `DOC-WORKFLOW-LEGACY-LOGS-0001` is still chronology-blocked because both `S0A-2A-R02` and accepted `SUP-004` explicitly preserve its time surface as `unknown`, so this lane still must not invent one historical-effective date there.
+- The next concrete step is therefore smaller than the previous candidate pair: the remaining frontmatter-level `effective_from: unknown` set is now only `DOC-WORKFLOW-LEGACY-LOGS-0001`, and advancing it requires new upstream chronology evidence rather than another contract-side sweep.
 
 ## Evidence (reserved)
 
@@ -474,18 +486,36 @@
   - `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` now anchor their first release and clause timings to the defended `S0B-3A` source-log date `2026-02-12`
   - all three contracts now distinguish semantic start from later repo recording time explicitly in both frontmatter and release-change narrative instead of leaving their first release chronology unknown
 
+### P9-C1-S1S2 (LABS-0002 finished; LEGACY-LOGS-0001 remains blocked | 2026-04-23)
+
+- headSha: `pending-post-commit`
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  - `docs/governance/contracts/workflow/legacy logs/DOC-WORKFLOW-LEGACY-LOGS-0001-earliest-structured-logs-capability-thesis-and-numbered-rule-blocks.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-004-legacy-logs-earliest-structured-shape.md`
+- expected:
+  - finish the remaining defensible time backfill inside `DOC-WORKFLOW-LABS-0002` by writing already-proved dates into the later release frontmatter plus clause/evolution rows
+  - preserve `ST-13` and `DOC-WORKFLOW-LEGACY-LOGS-0001` as chronology-incomplete if upstream evidence still does not defend stronger timing
+  - end the lane with one explicit statement about whether any contract-side unknowns remain because of missing upstream chronology rather than missed writeback work
+- observed:
+  - `DOC-WORKFLOW-LABS-0002` now anchors its release-level semantic start and all `S0B-2A`-derived rows to `2026-02-13`, while carried-forward `0001` rows now read `2026-02-08T09:14:31Z` and `ST-12` keeps the earlier defended `2026-02-03` labs date
+  - `ST-13` remains partially unresolved on purpose: the accepted `SUP-002` packet still does not defend a timestamp for the projection-closure labs slice, so only its `last changed at` writeback date is recorded
+  - `DOC-WORKFLOW-LEGACY-LOGS-0001` remains untouched because `S0A-2A-R02` and accepted `SUP-004` still preserve chronology as `unknown`, which keeps that file outside defensible contract-side dating for now
+
 ## Backfill Assessment (working)
 
 ### Contract bucket
 
 - `ready-now after sample precedent exists`: `DOC-WORKFLOW-SCRIPTS-0001` is already backfilled and acts as the positive-control sample.
-- `next review after completed batches`: the remaining `effective_from: unknown` set still needs review, but `DOC-WORKFLOW-LABS-0001`, `DOC-WORKFLOW-LOGS-0001`, and `DOC-WORKFLOW-LIFECYCLE-0001` have now been removed from the blocked queue by the completed `P8` batch.
+- `next review after completed batches`: `DOC-WORKFLOW-LABS-0002` has now joined the backfilled set, and the remaining frontmatter-level `effective_from: unknown` candidate is `DOC-WORKFLOW-LEGACY-LOGS-0001` only.
 - `do not blanket backfill by file count alone`: family registers and templates are not the current contract-evidence bottleneck; live release contracts are.
 
 ### Ledger and SUP bucket
 
 - `already-sufficient carrying surfaces`: `S0A-1A`, `S0A-2A`, and `S0B-2A` already expose `Row Chronology Audit`, `Evidence Time Audit`, or governance-event chronology surfaces that can carry bounded backfill work.
-- `needs upstream chronology first`: keep this bucket only for families that still lack defended row-level source chronology; `S0B-1A` and `S0B-3A` are no longer in it after `P7` plus `P8`.
+- `needs upstream chronology first`: keep this bucket only for families that still lack defended row-level source chronology or still preserve explicit chronology-deferred verdicts; the current concrete holdout is `DOC-WORKFLOW-LEGACY-LOGS-0001` via `S0A-2A-R02` plus accepted `SUP-004`.
 - `SUP is selective, not universal`: open or extend SUP only when later evidence is the actual decisive time anchor or when accepted parent rows must be sharpened; do not open SUP by default for every family.
 
 ### Source-log bucket
@@ -504,3 +534,4 @@
 - 2026-04-23: completed `P6` second execution batch on `S0A-2A`, anchoring the workflow parent, runbook child, and ADR child to the source issue creation time while only partially backfilling the mixed labs current reader where a defended `2026-02-03` clause-level anchor already exists.
 - 2026-04-23: completed `P7` upstream chronology repair on `S0B-1A` and `S0B-3A`, adding explicit parent-ledger row chronology so the blocked labs, logs, and lifecycle families can move into bounded contract-side time backfill next.
 - 2026-04-23: completed `P8` contract-side backfill on `DOC-WORKFLOW-LABS-0001`, `DOC-WORKFLOW-LOGS-0001`, and `DOC-WORKFLOW-LIFECYCLE-0001`, anchoring each first release to the newly defended `S0B-1A` or `S0B-3A` source chronology rather than leaving those families at `effective_from: unknown`.
+- 2026-04-23: completed `P9` selective final-pair review by finishing the defensible `DOC-WORKFLOW-LABS-0002` backfill while explicitly confirming that `DOC-WORKFLOW-LEGACY-LOGS-0001` remains chronology-blocked until new upstream time evidence exists.
