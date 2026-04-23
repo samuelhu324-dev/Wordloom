@@ -50,6 +50,15 @@ support_only_contract_release_ledger:
 - `S0B-1A-R03`: Safe-to-purge cleanup
 - `S0B-1A-R04`: Local proof point
 
+## Row Chronology Audit
+
+| row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0B-1A-R01` | `unknown` | `2026-02-08T09:14:31Z` | `2026-02-08T09:14:31Z` | `ongoing` | `second` | `source issue preserves UTC-second creation time` | The snapshot-asset-classes row is anchored directly to the source issue creation time because the issue body itself already states the test-asset classification rule. |
+| `S0B-1A-R02` | `unknown` | `2026-02-08T09:14:31Z` | `2026-02-08T09:14:31Z` | `ongoing` | `second` | `source issue preserves UTC-second creation time` | The minimal-retention row is anchored directly to the source issue creation time because the issue body itself already states the retained-evidence boundary. |
+| `S0B-1A-R03` | `unknown` | `2026-02-08T09:14:31Z` | `2026-02-08T09:14:31Z` | `ongoing` | `second` | `source issue preserves UTC-second creation time` | The safe-to-purge row is anchored directly to the source issue creation time because the issue body itself already states the cleanup rule boundary. |
+| `S0B-1A-R04` | `unknown` | `2026-02-08T09:14:31Z` | `2026-02-08T09:14:31Z` | `ongoing` | `second` | `source issue preserves UTC-second creation time for the validating example packet` | The local proof-point row remains support-only, but its source-side chronology is still anchored to the issue creation time so the example no longer sits outside the parent-ledger time model. |
+
 ## Governance Event Table
 
 | event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
@@ -71,3 +80,4 @@ support_only_contract_release_ledger:
 
 - This ledger now confirms that `S0B-1A` is already sufficiently routed by the labs family, with only the local proof point remaining evidence-only.
 - Under `S0F-9A/P4` third-cycle work, this ledger now also records current governance state for the parent packet plus the retained `DOC-WORKFLOW-LABS-0001` historical release rather than leaving the first labs extraction outside the control-plane rule.
+- The row chronology audit now makes the issue-source time surface explicit, so `S0B-1A` no longer blocks bounded contract-side date backfill merely because its parent ledger previously had no defended row-level source chronology section.

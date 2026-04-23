@@ -65,6 +65,17 @@ support_only_contract_release_ledger:
   - one logs-intake rule
   - one lifecycle-boundary rule
 
+## Row Chronology Audit
+
+| row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `S0B-3A-R01` | `unknown` | `2026-02-12` | `2026-02-12` | `ongoing` | `day` | `source log currently preserves defended day-level creation only` | The unified-indices row is anchored to the source log creation date because the log itself already states the first logs-facing identifier and index-entry rule. |
+| `S0B-3A-R02` | `unknown` | `2026-02-12` | `2026-02-12` | `ongoing` | `day` | `source log currently preserves defended day-level creation only` | The front-matter row is anchored to the source log creation date because the log itself already states the first logs-facing metadata rule. |
+| `S0B-3A-R03` | `unknown` | `2026-02-12` | `2026-02-12` | `ongoing` | `day` | `source log currently preserves defended day-level creation only` | The legacy-taxonomy row is anchored to the source log creation date because the log itself already states the lifecycle-facing legacy-management rule. |
+| `S0B-3A-R04` | `unknown` | `2026-02-12` | `2026-02-12` | `ongoing` | `day` | `source log currently preserves defended day-level creation only` | The logs-intake cutover row is anchored to the source log creation date because the mixed cutover rule is first preserved there before later same-source splitting. |
+| `S0B-3A-R05` | `unknown` | `2026-02-12` | `2026-02-12` | `ongoing` | `day` | `source log currently preserves defended day-level creation only` | The lifecycle-boundary cutover row is anchored to the source log creation date because the same source log first states the freeze-versus-migrate boundary. |
+| `S0B-3A-R06` | `unknown` | `2026-02-12` | `2026-02-12` | `ongoing` | `day` | `source log currently preserves defended day-level creation only` | The stub-preservation row is anchored to the source log creation date because the same source log first states the continuity rule for moved entry points. |
+
 ## Governance Event Table
 
 | event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
@@ -111,3 +122,4 @@ support_only_contract_release_ledger:
   - whether `LIFECYCLE` owns the correct narrow first-pass body
   - whether the two cutover rows are split at the right boundary
 - Under `S0F-9A/P4` second-cycle work, this parent ledger now also acts as the current-state governance surface for the mixed `S0B-3A` family while no dedicated supplement packet exists.
+- The row chronology audit now makes the source-log time surface explicit, so `S0B-3A` no longer blocks bounded contract-side date backfill merely because its mixed-source ledger previously had no defended row-level chronology section.

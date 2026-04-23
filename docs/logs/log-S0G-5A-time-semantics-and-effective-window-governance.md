@@ -229,6 +229,11 @@
 - `P6-C1-S1`: backfill the `S0A-2A` workflow parent plus child contracts whose semantic start is already defended by source issue chronology
 - `P6-C1-S2`: sharpen the `S0A-2A` parent ledger chronology audit and only apply clause-level timing where accepted SUP evidence already proves it
 
+### P7 (Upstream chronology repair)
+
+- `P7-C1-S1`: repair the `S0B-1A` and `S0B-3A` parent ledgers so blocked families gain explicit row-level source chronology before any contract-side date backfill
+- `P7-C1-S2`: distinguish source-owned chronology repair from later contract execution so the repo does not treat blocker removal as the same thing as full family time backfill
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -266,6 +271,11 @@
 - [x] `P6-C1-S1`: backfill the `S0A-2A` workflow parent plus child contracts whose semantic start is already defended by source issue chronology
 - [x] `P6-C1-S2`: sharpen the `S0A-2A` parent ledger chronology audit and only apply clause-level timing where accepted SUP evidence already proves it
 
+### P7 (Upstream chronology repair)
+
+- [x] `P7-C1-S1`: repair the `S0B-1A` and `S0B-3A` parent ledgers so blocked families gain explicit row-level source chronology before any contract-side date backfill
+- [x] `P7-C1-S2`: distinguish source-owned chronology repair from later contract execution so the repo does not treat blocker removal as the same thing as full family time backfill
+
 ## Current Status (recommended)
 
 - `S0G-5A` is now opened as the bounded time-semantics follow-up under the `S0G` spine.
@@ -281,7 +291,9 @@
 - The `S0A-1A` parent ledger now distinguishes the issue-created source anchor `2026-02-06` from the later screenshot-sharpening observation day `2026-02-12`, so the Projects child can keep one earlier semantic start without pretending the screenshots were the original rule birth.
 - `P6` now executes the second upstream-ready batch on `S0A-2A`: the workflow parent, runbook child, and ADR child now read their semantic start from the defended source issue creation time `2026-02-06T06:03:03Z`.
 - The `S0A-2A` parent ledger now distinguishes issue-source chronology from later SUP sharpening, while the labs family is only partially backfilled: `DOC-WORKFLOW-LABS-0002-ST-12` now reads the defended `2026-02-03` labs date, but the broader `0002` release and `ST-13` remain chronology-incomplete.
-- The next concrete step is still not blanket continuation: after `S0A-2A`, the repo should either take the next upstream-ready batch with defended row-level timing or pause where only mixed-family or chronology-incomplete surfaces remain.
+- `P7` now repairs the two upstream-blocked parent ledgers: `S0B-1A` gains explicit issue-source chronology for its labs packet rows, and `S0B-3A` gains explicit source-log chronology for its logs/lifecycle split rows.
+- This blocker-removal step does not yet claim full contract backfill for `DOC-WORKFLOW-LABS-0001`, `DOC-WORKFLOW-LOGS-0001`, or `DOC-WORKFLOW-LIFECYCLE-0001`; it only converts those families from `missing row chronology` into `ready for bounded contract-side dating`.
+- The next concrete step is now narrower and higher-value: execute the newly unblocked contract-side backfill on `DOC-WORKFLOW-LABS-0001`, `DOC-WORKFLOW-LOGS-0001`, and `DOC-WORKFLOW-LIFECYCLE-0001` rather than reopening more upstream packets first.
 
 ## Evidence (reserved)
 
@@ -417,6 +429,22 @@
   - the `S0A-2A` parent ledger now records `R01`, `R04`, and `R05` against that issue-source anchor while keeping `R02` deferred and `R03` tied to narrower SUP-proved labs timing
   - `DOC-WORKFLOW-LABS-0002` is only partially time-backfilled: `ST-12` now reads the defended `2026-02-03` labs date, while `ST-13`, the broader release frontmatter, and the logs-side legacy release remain unchanged because current upstream chronology is still incomplete there
 
+### P7-C1-S1S2 (S0B-1A and S0B-3A upstream chronology repaired | 2026-04-23)
+
+- headSha: `pending-post-commit`
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/support-only/ledger-S0B-1A-tools-labs-and-snapshots.md`
+  - `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
+- expected:
+  - repair the two parent ledgers that were still blocking bounded contract-side time backfill because no explicit row chronology audit existed yet
+  - anchor `S0B-1A` to defended issue-source chronology and `S0B-3A` to defended source-log chronology without inventing SUP packets that the families do not actually need
+  - convert these families from `upstream-first` to `ready for bounded contract-side backfill`
+- observed:
+  - `S0B-1A` now records the issue creation time `2026-02-08T09:14:31Z` as the defended source-side anchor for its labs-owned rows and retained support-only example row
+  - `S0B-3A` now records the source log date `2026-02-12` across the logs-facing and lifecycle-facing split rows with explicit day-level precision rather than leaving row chronology implicit
+  - the repair stays upstream-only: no contract release dates are invented yet, but the former blocker families now have parent-ledger chronology surfaces strong enough to support the next bounded contract-side pass
+
 ## Backfill Assessment (working)
 
 ### Contract bucket
@@ -445,3 +473,4 @@
 - 2026-04-23: completed `P4` scope assessment by deciding that contract-side time backfill is still materially needed across live release records, but ledger/SUP/log supplementation should remain selective and upstream-first rather than blanket.
 - 2026-04-23: completed `P5` first execution batch on `S0A-1A`, using the defended issue creation date as the upstream semantic start for the GitHub family contracts while keeping the later Projects screenshots as sharpening evidence only.
 - 2026-04-23: completed `P6` second execution batch on `S0A-2A`, anchoring the workflow parent, runbook child, and ADR child to the source issue creation time while only partially backfilling the mixed labs current reader where a defended `2026-02-03` clause-level anchor already exists.
+- 2026-04-23: completed `P7` upstream chronology repair on `S0B-1A` and `S0B-3A`, adding explicit parent-ledger row chronology so the blocked labs, logs, and lifecycle families can move into bounded contract-side time backfill next.
