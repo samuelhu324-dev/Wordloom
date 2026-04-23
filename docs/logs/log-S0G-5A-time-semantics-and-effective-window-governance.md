@@ -143,6 +143,7 @@
 - `P2`: decide whether ledger and register templates need bounded additions now
 - `P3`: optionally demonstrate the rule on one live sample such as `S0B-2A / S0G-1C / DOC-WORKFLOW-SCRIPTS-0001`
 - `P4`: assess which live contracts and corresponding ledger/SUP/log surfaces actually need timeline-evidence backfill next
+- `P5`: execute the first upstream-ready time-evidence backfill batch on `S0A-1A`
 
 ## Success Criteria (DoD)
 
@@ -218,6 +219,11 @@
 - `P4-C1-S1`: classify live contracts into `ready-now`, `upstream-first`, and `defer-no-new-time-evidence-yet` buckets
 - `P4-C1-S2`: classify corresponding parent ledgers, SUP packets, and source logs into `already-sufficient`, `needs-upstream-chronology`, and `no-blanket-backfill` buckets
 
+### P5 (First execution batch)
+
+- `P5-C1-S1`: backfill the `S0A-1A` GitHub family contracts from defended upstream chronology
+- `P5-C1-S2`: write the `S0A-1A` source-side and screenshot-sharpening distinction back into the parent ledger without opening a new SUP round
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -245,6 +251,11 @@
 - [x] `P4-C1-S1`: classify live contracts into `ready-now`, `upstream-first`, and `defer-no-new-time-evidence-yet` buckets
 - [x] `P4-C1-S2`: classify corresponding parent ledgers, SUP packets, and source logs into `already-sufficient`, `needs-upstream-chronology`, and `no-blanket-backfill` buckets
 
+### P5 (First execution batch)
+
+- [x] `P5-C1-S1`: backfill the `S0A-1A` GitHub family contracts from defended upstream chronology
+- [x] `P5-C1-S2`: write the `S0A-1A` source-side and screenshot-sharpening distinction back into the parent ledger without opening a new SUP round
+
 ## Current Status (recommended)
 
 - `S0G-5A` is now opened as the bounded time-semantics follow-up under the `S0G` spine.
@@ -256,7 +267,9 @@
 - `P4` now fixes the repo-level assessment boundary: the next work is not blanket close-out, but one selective backfill program across live contracts whose upstream source-side chronology is either already sufficient or still missing.
 - Current assessment: live contract files under `docs/governance/contracts` still show at least 12 release records with `effective_from: unknown`, so contract-side supplementation is still materially needed beyond the `SCRIPTS-0001` sample.
 - Current assessment: ledger/SUP/log supplementation is selective rather than global; some parent ledgers and SUP packets already expose chronology-audit surfaces, while some still lack defended row-level source chronology and must be repaired upstream before corresponding contracts can be backfilled safely.
-- The next concrete step is one bounded backfill execution plan, ordered by `upstream-ready families first` rather than by contract-folder breadth.
+- `P5` now executes the first upstream-ready batch on `S0A-1A`: the GitHub-Issues parent, Projects child, title child, and tag child now read their semantic start from the defended issue source date `2026-02-06` rather than leaving `effective_from` unknown.
+- The `S0A-1A` parent ledger now distinguishes the issue-created source anchor `2026-02-06` from the later screenshot-sharpening observation day `2026-02-12`, so the Projects child can keep one earlier semantic start without pretending the screenshots were the original rule birth.
+- The next concrete step is `S0A-2A`: it is the next upstream-ready batch because its parent ledger plus accepted SUP packets already carry chronology surfaces that can drive bounded contract backfill without first reopening `S0B-1A` or `S0B-3A`.
 
 ## Evidence (reserved)
 
@@ -354,6 +367,25 @@
   - some upstream packets remain chronology-incomplete at row level, including `S0B-1A` and `S0B-3A`, so their corresponding contract families should not receive contract-only date backfills before one upstream chronology repair lands first
   - source logs as a class do not need blanket backfill: when a decisive source already has defended `created` or another defended chronology anchor, logs may remain unchanged; additional log work is needed only where the decisive anchor is still missing or stays trapped in issue-only or screenshot-only evidence
 
+### P5-C1-S1S2 (S0A-1A upstream-ready backfill batch executed | 2026-04-23)
+
+- headSha: `pending-post-commit`
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+  - `docs/governance/contracts/workflow/github/projects/DOC-WORKFLOW-GITHUB-PROJECTS-0001-project-views-support-execution-priority.md`
+  - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
+  - `docs/governance/contracts/workflow/github/issues/tags/DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-issue-tags-follow-role-based-naming.md`
+- expected:
+  - execute the first bounded backfill batch on one family whose parent ledger and SUP surfaces are already chronology-capable
+  - replace `effective_from: unknown` on the `S0A-1A` GitHub family contracts with one defended upstream source anchor when the source issue already preserves it
+  - distinguish the Projects screenshot-sharpening date from the earlier issue-created source date without opening one new SUP round
+- observed:
+  - the `S0A-1A` GitHub family contracts now anchor their first-release semantic start to the source issue creation date `2026-02-06`
+  - the Projects child now keeps the same earlier semantic start while using `2026-02-12` only as the later sharpening date for screenshot-backed readings
+  - the parent ledger now records `2026-02-06` as the issue-source record/effective anchor for all four rows, while preserving `2026-02-12` only as the later screenshot observation date for `R02`
+
 ## Backfill Assessment (working)
 
 ### Contract bucket
@@ -380,3 +412,4 @@
 - 2026-04-23: completed `P2` by deciding that support-only ledgers should not gain default routing-validity columns now, while transition registers should carry stronger coexistence-date guidance without inheriting contract effective-time dates mechanically.
 - 2026-04-23: completed `P3` on the scripts sample by proving that the same packet can keep source-side chronology, parent-ledger write-back chronology, and contract effective time aligned without opening a new SUP round.
 - 2026-04-23: completed `P4` scope assessment by deciding that contract-side time backfill is still materially needed across live release records, but ledger/SUP/log supplementation should remain selective and upstream-first rather than blanket.
+- 2026-04-23: completed `P5` first execution batch on `S0A-1A`, using the defended issue creation date as the upstream semantic start for the GitHub family contracts while keeping the later Projects screenshots as sharpening evidence only.

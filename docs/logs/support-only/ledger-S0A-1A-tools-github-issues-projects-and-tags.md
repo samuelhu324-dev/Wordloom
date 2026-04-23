@@ -77,7 +77,10 @@ support_only_contract_release_ledger:
 
 | row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `S0A-1A-R02` | `2026-02-12` | `2026-02-12` | `unknown` | `unknown` | `day` | `current Projects evidence preserves only one defended screenshot-capture date` | The parent row now has one defended screenshot-backed chronology anchor through `SUP-001`, but the current evidence still proves only day-level observation and recording rather than a longer historical-effective range. |
+| `S0A-1A-R01` | `unknown` | `2026-02-06` | `2026-02-06` | `ongoing` | `second` | `source issue preserves UTC-second creation time` | The GitHub-Issues mechanism row is anchored directly to the source issue creation time because no narrower later evidence proves a different semantic start. |
+| `S0A-1A-R02` | `2026-02-12` | `2026-02-06` | `2026-02-06` | `ongoing` | `mixed` | `issue source preserves UTC-second creation time; accepted screenshots preserve day-level observation only` | The Projects row now distinguishes the earlier issue-created source anchor from the later 2026-02-12 screenshot-sharpening day; the screenshots sharpen the reading but do not replace the row's original semantic start. |
+| `S0A-1A-R03` | `unknown` | `2026-02-06` | `2026-02-06` | `ongoing` | `second` | `source issue preserves UTC-second creation time` | The title-grammar row is anchored directly to the source issue creation time because the issue body itself already defends the title-rule surface. |
+| `S0A-1A-R04` | `unknown` | `2026-02-06` | `2026-02-06` | `ongoing` | `second` | `source issue preserves UTC-second creation time` | The tag-naming row is anchored directly to the source issue creation time because the issue body itself already defends the tag-rule surface. |
 
 ## Governance Event Table
 
@@ -94,6 +97,7 @@ support_only_contract_release_ledger:
 
 - This ledger now confirms that the earlier `S0A-1A` packet needed one explicit Projects child and explicit completed routing state, but not one workflow-level reroute.
 - The `S0A-1A-R02` row is now also sharpened by the accepted `SUP-001` pilot, which adds stable screenshot-backed evidence without changing the existing routing outcome.
+- The row chronology audit now also distinguishes the issue-created source anchor `2026-02-06T06:01:40Z` from the later screenshot observation day `2026-02-12` so downstream contracts can backfill semantic-effective dates without treating SUP evidence timing as original rule birth time.
 - Under `S0F-9A/P1`, this parent ledger now acts as the current-state governance surface for the mixed packet, while the supplement remains the event/accountability surface for screenshot review and packet-level provenance rows.
 - Under `S0F-9A/P4` third-cycle work, this parent ledger now also records the current governance state for the GitHub-Issues parent plus the title and tag children rather than leaving only the Projects child aligned to the control-plane rule.
 - Under `S0G-4A/P5` Batch B, this ledger now also gives one explicit downstream-reading handoff so readers know that routing still lives here, while the current parent-versus-child boundary now reads through `DOC-WORKFLOW-GITHUB-ISSUES-0001` and its narrower child contracts.

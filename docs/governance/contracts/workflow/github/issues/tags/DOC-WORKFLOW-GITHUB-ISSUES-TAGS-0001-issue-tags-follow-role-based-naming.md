@@ -21,7 +21,7 @@ contract_record:
   approved_by: role:docs-governance-approver
   recorded_at: 2026-04-10
   reviewed_at: pending
-  effective_from: unknown
+  effective_from: 2026-02-06T06:01:40Z
   effective_until: ongoing
   introduced_by: GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
   last_changed_by: GitHub issue S0A-1A (issue-only source; no local log exists in workspace)
@@ -45,6 +45,7 @@ contract_record:
     - This child contract owns only the tag-rule body beneath the parent GitHub-issues mechanism contract.
     - The local repo currently has no S0A-1A source log, so this draft stays explicit about issue-only sourcing.
     - Current-state governance now reads through owner_team/current_steward/approval_state/reviewed_by/approved_by, while the parent ledger remains the routing and event-history surface that explains how this tag child stays active.
+    - `effective_from` is anchored to the source issue creation time `2026-02-06T06:01:40Z` because the issue body itself already defends the tag-rule surface.
 ```
 
 ## Current Governance State
@@ -58,7 +59,7 @@ contract_record:
 
 | event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `unknown` | `family-introduced` | `2026-04-10` | `GitHub issue S0A-1A (#23)` | The issue-only source introduced the tag-naming child, but it does not by itself prove the current steward or approval chain for the current contract state. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `unknown` | `family-introduced` | `2026-02-06T06:01:40Z` | `GitHub issue S0A-1A (#23)` | The issue-only source introduced the tag-naming child on the issue creation date, but it does not by itself prove the current steward or approval chain for the current contract state. |
 | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-GOV-02` | `routing-writeback-event` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `role:packet-reviewer` | `current-child-routing-fixed` | `2026-04-11` | `ledger-S0A-1A-tools-github-issues-projects-and-tags.md` | The parent ledger fixed that tag naming is a dedicated child surface rather than remaining implicit in the broader GitHub-Issues mechanism body. |
 | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-GOV-03` | `delegated-stewardship-event` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | Stewardship for the current tag child is now explicitly delegated to a narrower tag-taxonomy maintainer role while durable ownership remains with `docs-governance`. |
 | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-GOV-04` | `review-approval-separation-event` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `role:workflow-reviewer; role:docs-governance-approver` | `reviewed-awaiting-approval-state-fixed` | `2026-04-15` | `S0F-9A/P4 third-cycle round` | The current contract state now records review and approval as distinct governance actions instead of leaving both roles implicit on the tag child surface. |
@@ -67,21 +68,22 @@ contract_record:
 
 | statement id | statement label | clause status | change action | source basis | first effective release | first effective at | last changed release | last changed at | effective from | effective until | effective status | statement text | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-01` | `Role-based tag classes` | `active` | `introduced` | `S0A-1A-R04` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `unknown` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Issue tags must stay classed by naming role rather than collapse into one mixed style. | Parent clause for the tag grammar child. |
-| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-02` | `Top-level tags use all caps` | `active` | `introduced` | `S0A-1A-R04` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `unknown` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Use `ALL CAPS` for top-level tags such as `EVOLUTION`, `BUG`, or `FEATURE`. | First explicit top-level naming clause. |
-| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-03` | `Hierarchy tags use lowercase` | `active` | `introduced` | `S0A-1A-R04` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `unknown` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Use lowercase for documentation-hierarchy tags such as `p/0`, `p/1`, or `sub/1`. | Keeps hierarchy signaling distinct from work-type and module labels. |
-| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-04` | `Module tags use capitalized case` | `active` | `introduced` | `S0A-1A-R04` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `unknown` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Use Capitalized case for module or business-area tags such as `Docs`, `Search`, or `Chronicle`. | Keeps module and business-scope labels visibly separate from hierarchy tags. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-01` | `Role-based tag classes` | `active` | `introduced` | `S0A-1A-R04` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `2026-02-06T06:01:40Z` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `2026-02-06T06:01:40Z` | `2026-02-06T06:01:40Z` | `ongoing` | `in-force` | Issue tags must stay classed by naming role rather than collapse into one mixed style. | Parent clause for the tag grammar child. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-02` | `Top-level tags use all caps` | `active` | `introduced` | `S0A-1A-R04` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `2026-02-06T06:01:40Z` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `2026-02-06T06:01:40Z` | `2026-02-06T06:01:40Z` | `ongoing` | `in-force` | Use `ALL CAPS` for top-level tags such as `EVOLUTION`, `BUG`, or `FEATURE`. | First explicit top-level naming clause. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-03` | `Hierarchy tags use lowercase` | `active` | `introduced` | `S0A-1A-R04` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `2026-02-06T06:01:40Z` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `2026-02-06T06:01:40Z` | `2026-02-06T06:01:40Z` | `ongoing` | `in-force` | Use lowercase for documentation-hierarchy tags such as `p/0`, `p/1`, or `sub/1`. | Keeps hierarchy signaling distinct from work-type and module labels. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-04` | `Module tags use capitalized case` | `active` | `introduced` | `S0A-1A-R04` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `2026-02-06T06:01:40Z` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `2026-02-06T06:01:40Z` | `2026-02-06T06:01:40Z` | `ongoing` | `in-force` | Use Capitalized case for module or business-area tags such as `Docs`, `Search`, or `Chronicle`. | Keeps module and business-scope labels visibly separate from hierarchy tags. |
 
 ## Statement Evolution Table
 
 | change id | release id | change action | input statement ids | output statement ids | effective at | recorded at | reason | source basis | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-CH-01` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `introduced` | `none` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-01; DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-02; DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-03; DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-04` | `unknown` | `2026-04-10` | The first tag child release is being aligned to the current chronology-first clause model so tag-role semantics remain reviewable through stable clause ids and one explicit source-basis anchor. | `S0A-1A-R04` | The release meaning is unchanged; this is a structure repair only. |
+| `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-CH-01` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001` | `introduced` | `none` | `DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-01; DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-02; DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-03; DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-ST-04` | `2026-02-06T06:01:40Z` | `2026-04-10` | The first tag child release is being aligned to the current chronology-first clause model so tag-role semantics remain reviewable through stable clause ids and one explicit source-basis anchor. | `S0A-1A-R04` | The release meaning is unchanged; this is a structure repair only. |
 
 ## Release Change
 
 - This release remains the first tag-naming child extracted from `S0A-1A`.
 - The current repair aligns the file to the current chronology-first contract shape by adding chronology fields, clause ids, and explicit source-basis anchors.
+- The semantic start of this release is now anchored to the source issue creation time `2026-02-06T06:01:40Z`, while the release record itself entered repo chronology later on `2026-04-10`.
 - The owned meaning remains unchanged:
   - issue tags stay classed by naming role
   - top-level tags use all caps
