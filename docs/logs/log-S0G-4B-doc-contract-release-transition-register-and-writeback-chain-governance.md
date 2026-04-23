@@ -203,7 +203,7 @@
 - `S0G-4B/P1-C1-S1: define DOC family transition-register minimum contract`
 - `S0G-4B/P1-C3-S1S3: refine release-ordering and optional statement-transition overlay rule`
 - `S0G-4B/P2-C1-S1S2: define change-classification matrix and release-opening rule`
-- `S0G-4B/P3-C1-S1: define required processing-chain declaration for source logs`
+- `S0G-4B/P3-C1-S1S2: define required processing-chain declaration for source logs`
 - `S0G-4B/P4-C1-S1: write verified model back into templates and open LABS sample`
 
 **Branch convention**:
@@ -323,6 +323,56 @@
 - `P3-C1-S1`: define the mandatory processing-chain declaration shape for source logs
 - `P3-C1-S2`: define which chain states require transition-register updates
 
+### P3-C1-S1 (Define the mandatory processing-chain declaration shape for source logs)
+
+- Every source log that may emit, revise, or reopen `DOC` contract work must declare one `Required Processing Chain` before execution.
+- The declaration should stay packet-facing and source-log-facing:
+  - it does not replace the parent ledger
+  - it does not replace the SUP packet
+  - it does not replace the later contract or register write-back itself
+- The minimum declaration contract is now one ordered chain table plus one short decision note.
+
+| chain step | required state | primary owner surface | trigger question | completion evidence | notes |
+| --- | --- | --- | --- | --- | --- |
+| `source extraction` | `required` | source log | Has the bounded packet and source slice been identified tightly enough to route? | stable source-log scope plus bounded artifacts or source anchors | This is the entry step for every packet in scope. |
+| `SUP` | `required|conditional|not-required|already-satisfied` | supplement ledger when later evidence is being admitted against one existing parent row | Is this packet primarily later evidence against one already-routed source slice? | accepted SUP row or explicit no-SUP rule in the source log | `SUP` is not a prose reminder; if the packet is later evidence against an existing row, the declaration must say so explicitly. |
+| `parent ledger` | `required|conditional|not-required|already-satisfied` | parent support-only ledger | Does the packet change or sharpen one source-owned routing verdict? | parent-ledger row written back or explicit no-parent-ledger justification | Contract mutation should not bypass this step when the packet is source-owned routing work. |
+| `contract impact decision` | `required` | source log, after SUP and parent-ledger write-back when those exist | Is the packet `evidence-only sharpening`, `routing rewrite`, `semantic-release change`, or `family-boundary change`? | explicit classified verdict in the log | This is the decision gate between routing work and downstream contract-family mutation. |
+| `contract mutation` | `required|conditional|not-required|already-satisfied` | release contract or family-level contract decision | Does the packet change defended rule meaning or family boundary standing? | new release, revised contract note, or explicit no-contract-mutation verdict | `meaning changed => new release` remains the default within one stable family. |
+| `transition register update` | `required|conditional|not-required|already-satisfied` | family transition register | Did family-level reader standing change, with or without one new release? | register row or explicit no-register-change verdict | This step follows family reader standing rather than release creation alone. |
+| `bridged contract reconciliation` | `required|conditional|not-required|already-satisfied` | any affected parent or bridged contract surfaces | Do other current readers now need boundary, redirect, or reconciliation notes so the family still reads coherently? | reconciled parent/bridge note or explicit no-bridge-impact verdict | Use this when the packet changes how readers should traverse broad parent and narrow current surfaces together. |
+
+### P3-C1-S1 Field Rule
+
+- `required state` must be declared before execution for every chain step.
+- Allowed `required state` values are now fixed as:
+  - `required`
+  - `conditional`
+  - `not-required`
+  - `already-satisfied`
+- `primary owner surface` names where that step is actually executed; it is not a guess about later readers.
+- `trigger question` should stay short and binary enough that a reviewer can tell why the step was or was not entered.
+- `completion evidence` should point to one concrete later artifact or one explicit no-op verdict, not one vague promise that the step will be remembered later.
+- The source log may add one short decision note beneath the table for packet-specific nuance, but the table is the minimum contract surface.
+
+### P3-C1-S2 (Define which chain states require transition-register updates)
+
+- `transition register update` is `required` whenever any chain result changes family-level reader standing.
+- The step is `conditional` whenever the packet may still prove no family-level standing change after contract impact decision.
+- The step is `not-required` only when the packet is already bounded as one case that cannot change family-level reader standing.
+- The step may be `already-satisfied` only when one accepted earlier packet already completed the needed family-register write-back for the same defended standing and the current packet is merely referencing that settled state.
+- The following chain outcomes require a `transition register update`:
+  - one new release becomes `current-primary`
+  - one older release becomes `fallback-only`, `coexistence-window`, `historical-retained`, `lineage-only`, or `retired`
+  - one routing rewrite changes which existing release should be opened first now
+  - one family-boundary decision changes which family owns the current reader or how releases remain reader-relevant across families
+- The following chain outcomes do not require a `transition register update` by themselves:
+  - evidence-only sharpening with unchanged family reader standing
+  - parent-ledger wording cleanup with unchanged routing verdict and unchanged current reader
+  - contract-local clarification that does not change release coexistence or family reader order
+- When the packet is classified as `semantic-release change` or `family-boundary change`, the source log should default `transition register update` to at least `conditional` before execution; it should not remain silently omitted.
+- When the packet is classified as `routing rewrite`, the source log must answer explicitly whether that routing rewrite changes family-level reader standing; if yes, register update becomes `required`, and if no, the log must say why the register remains unchanged.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -347,8 +397,9 @@
 
 ### P3 (Required processing chain)
 
-- [ ] `P3-C1-S1`: define the mandatory processing-chain declaration shape for source logs
-- [ ] `P3-C1-S2`: define which chain states require transition-register updates
+- [x] `P3-C1-S1`: define the mandatory processing-chain declaration shape for source logs
+- [x] `P3-C1-S2`: define which chain states require transition-register updates
+
 
 ## Current Status (recommended)
 
@@ -358,7 +409,8 @@
 - The first concrete family sample is now also written at `docs/governance/contracts/workflow/labs/register-DOC-WORKFLOW-LABS.md`, which proves the model on the existing `0001/0002` labs-family coexistence case without mutating the release-local contract bodies.
 - The transition-register model now also distinguishes `release-level coexistence` from optional `statement-level rollout overlay`, and the release rows are now ordered latest-first for reader-first use.
 - The change-classification model is now explicit enough to distinguish `evidence-only sharpening`, `routing rewrite`, `semantic-release change`, and `family-boundary change`, including when a new release is required and when a family register must be updated.
-- The immediate next step is now one required processing-chain declaration for source logs.
+- The required processing-chain model is now explicit enough that a source log can declare, before execution, whether `SUP`, `parent ledger`, `contract impact decision`, `contract mutation`, `transition register update`, and `bridged contract reconciliation` are required, conditional, or already satisfied.
+- The immediate next step is now `P4`: decide whether to write this verified chain declaration back into the source-log template and any adjacent template surfaces.
 
 ## Evidence (reserved)
 
@@ -448,6 +500,23 @@
   - the lane now states explicitly that `meaning changed => new release`, while evidence-only sharpening and pure routing rewrites remain non-release cases unless they change defended semantic reader standing
   - the lane now states explicitly when `transition register update` is required even without minting one new release
 
+### P3-C1-S1S2 (required processing-chain declaration written | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-4B-doc-contract-release-transition-register-and-writeback-chain-governance.md`
+  - `docs/logs/_template-log-phase-drills-evidence.md`
+  - `docs/logs/_template-support-only-contract-release-ledger.md`
+  - `docs/logs/_template-support-only-contract-release-ledger-SUP.md`
+- expected:
+  - define one minimum declaration shape that source logs can use before execution to state whether each write-back step is required
+  - keep the declaration source-log-facing rather than collapsing the parent ledger, SUP packet, contract mutation, and register update into one overloaded status line
+  - state exactly which chain outcomes force transition-register update
+- observed:
+  - the lane now defines one ordered `Required Processing Chain` table with fixed `required state` values of `required`, `conditional`, `not-required`, and `already-satisfied`
+  - the lane now states explicitly that `SUP` and parent-ledger write-back must be declared rather than remembered implicitly when the packet is source-owned later-evidence work
+  - the lane now states exactly which chain outcomes force family-register update, including routing rewrites that change first-open reader standing even without minting a new release
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-4B` so `DOC` contract release coexistence, family-level transition-state reading, and writeback-chain declaration can be fixed as one bounded governance lane rather than as scattered follow-up notes.
@@ -455,3 +524,4 @@
 - 2026-04-23: opened the first real family sample at `register-DOC-WORKFLOW-LABS.md`, which now demonstrates how the template reads one current-primary release plus one historical-retained earlier release without reopening the release-local clause registries.
 - 2026-04-23: refined the transition-register model so release rows now read latest-first and statement-level rollout differences may be expressed through one optional overlay instead of overloading the release-state table.
 - 2026-04-23: defined the `P2` change-classification matrix so the repo can now distinguish evidence sharpening, routing rewrite, semantic-release mutation, and family-boundary mutation before choosing whether to mint one new release or only write back through ledger and register surfaces.
+- 2026-04-23: defined the `P3` required processing-chain declaration so source logs can now declare, before execution, whether `SUP`, `parent ledger`, `contract impact decision`, `contract mutation`, `transition register update`, and `bridged contract reconciliation` must run for the packet.
