@@ -110,6 +110,8 @@ contract_record:
 - When `release_action` is `historical-backfill`, `## Release Change` should also explain why this earlier historical state is being recorded only now and which later release or releases already remained in effect before the backfill was added.
 - `## Contract Statement` should restate the current effective rule meaning in full; do not force readers to reconstruct the current state by diffing against earlier releases.
 - When one later release absorbs new non-contract source material, mention that source carry-forward in `## Release Change`, while keeping release-to-release relationships in `lineage` and source-routing details in the support-only ledger.
+- When one release change also changes which release is `current-primary`, `fallback-only`, `coexistence-window`, `historical-retained`, `lineage-only`, or `retired`, record that family-level standing through the family transition register rather than overloading the release body itself.
+- If the source log declared `transition register update` as `required` or `conditional`, the release write-back should preserve that answer explicitly instead of silently assuming the release file alone explains current family coexistence.
 
 ## Optional Contract Statement Table
 

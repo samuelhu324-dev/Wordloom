@@ -174,3 +174,14 @@ Use this section when one bounded coexistence or cutover window is still open or
 - Update this register when release coexistence or transition-window standing changes, even if no new contract release is minted.
 - Do not open one new register per release; one stable family should normally keep one stable register file.
 - When the family has only one clearly current release and no meaningful coexistence, this register may remain absent until the first real coexistence problem exists.
+
+## Writeback Trigger Rule
+
+- A source log that may affect family reader standing should declare `transition register update` explicitly in its `Required Processing Chain` before execution.
+- Update this register when any of the following becomes true:
+  - one new release becomes `current-primary`
+  - one older release is reclassified as `fallback-only`, `coexistence-window`, `historical-retained`, `lineage-only`, or `retired`
+  - one routing rewrite changes which existing release should be opened first now
+  - one family-boundary decision changes which family owns the current reader or how reader-relevant releases coexist across families
+- Do not update this register for evidence-only sharpening, chronology cleanup, or contract-local wording clarification when family-level reader standing is unchanged.
+- If the source log classified the packet as `routing rewrite`, it should still answer explicitly whether family-level standing changed; do not treat routing-only packets as automatic no-op here.

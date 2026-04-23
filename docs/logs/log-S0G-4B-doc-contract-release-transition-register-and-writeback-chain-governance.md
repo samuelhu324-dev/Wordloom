@@ -104,6 +104,7 @@
 - `P0-C1-S3` | artifact: `docs/logs/_template-log-phase-drills-evidence.md`
 - `P1-C1-S1` | artifact: `docs/governance/contracts/_template-contract-release-transition-register.md`
 - `P1-C2-S1` | artifact: `docs/governance/contracts/workflow/labs/register-DOC-WORKFLOW-LABS.md`
+- `P4-C1-S1` | artifact: `docs/logs/_template-log-phase-drills-evidence.md`
 
 ## Exported Sections / Outlet Ownership
 
@@ -204,7 +205,7 @@
 - `S0G-4B/P1-C3-S1S3: refine release-ordering and optional statement-transition overlay rule`
 - `S0G-4B/P2-C1-S1S2: define change-classification matrix and release-opening rule`
 - `S0G-4B/P3-C1-S1S2: define required processing-chain declaration for source logs`
-- `S0G-4B/P4-C1-S1: write verified model back into templates and open LABS sample`
+- `S0G-4B/P4-C1-S1: write verified model back into templates`
 
 **Branch convention**:
 
@@ -323,6 +324,15 @@
 - `P3-C1-S1`: define the mandatory processing-chain declaration shape for source logs
 - `P3-C1-S2`: define which chain states require transition-register updates
 
+### P4-C1-S1 (Write the verified model back into templates)
+
+- The verified model should now be written back into reusable templates rather than remaining only in this lane log.
+- The minimum `P4` template write-back set is now:
+  - source-log template gets one reusable `Required Processing Chain` declaration section
+  - contract release template gets one explicit family-register handoff rule
+  - transition-register template gets one explicit writeback-trigger rule tied to source-log declaration and reader-standing change
+- Under this rule, `P4` does not need to reopen the LABS sample unless the template write-back itself exposes one missing model boundary.
+
 ### P3-C1-S1 (Define the mandatory processing-chain declaration shape for source logs)
 
 - Every source log that may emit, revise, or reopen `DOC` contract work must declare one `Required Processing Chain` before execution.
@@ -400,6 +410,10 @@
 - [x] `P3-C1-S1`: define the mandatory processing-chain declaration shape for source logs
 - [x] `P3-C1-S2`: define which chain states require transition-register updates
 
+### P4 (Template write-back)
+
+- [x] `P4-C1-S1`: write the verified model back into templates
+
 
 ## Current Status (recommended)
 
@@ -410,7 +424,8 @@
 - The transition-register model now also distinguishes `release-level coexistence` from optional `statement-level rollout overlay`, and the release rows are now ordered latest-first for reader-first use.
 - The change-classification model is now explicit enough to distinguish `evidence-only sharpening`, `routing rewrite`, `semantic-release change`, and `family-boundary change`, including when a new release is required and when a family register must be updated.
 - The required processing-chain model is now explicit enough that a source log can declare, before execution, whether `SUP`, `parent ledger`, `contract impact decision`, `contract mutation`, `transition register update`, and `bridged contract reconciliation` are required, conditional, or already satisfied.
-- The immediate next step is now `P4`: decide whether to write this verified chain declaration back into the source-log template and any adjacent template surfaces.
+- The verified model is now written back into the source-log template, the contract release template, and the transition-register template, so later lanes can reuse the rule set without reopening `S0G-4B` first.
+- The immediate next step is now stable-review judgment or one bounded follow-up only if template usage exposes a still-missing execution case.
 
 ## Evidence (reserved)
 
@@ -517,6 +532,23 @@
   - the lane now states explicitly that `SUP` and parent-ledger write-back must be declared rather than remembered implicitly when the packet is source-owned later-evidence work
   - the lane now states exactly which chain outcomes force family-register update, including routing rewrites that change first-open reader standing even without minting a new release
 
+### P4-C1-S1 (verified model written back into templates | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/_template-log-phase-drills-evidence.md`
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/governance/contracts/_template-contract-release-transition-register.md`
+  - `docs/logs/log-S0G-4B-doc-contract-release-transition-register-and-writeback-chain-governance.md`
+- expected:
+  - write the required processing-chain declaration back into the reusable source-log template
+  - add the minimum contract/register handoff rules needed so release bodies and family registers no longer silently compete for the same reader-standing explanation
+  - keep the write-back bounded to template rules rather than reopening sample content
+- observed:
+  - the source-log template now includes one reusable `Optional Required Processing Chain` section with the ordered chain-step table and fixed `required state` values
+  - the contract release template now states explicitly that family-level standing belongs in the transition register when release changes affect current/fallback/historical coexistence
+  - the transition-register template now states explicitly which source-log outcomes should trigger register write-back
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-4B` so `DOC` contract release coexistence, family-level transition-state reading, and writeback-chain declaration can be fixed as one bounded governance lane rather than as scattered follow-up notes.
@@ -525,3 +557,4 @@
 - 2026-04-23: refined the transition-register model so release rows now read latest-first and statement-level rollout differences may be expressed through one optional overlay instead of overloading the release-state table.
 - 2026-04-23: defined the `P2` change-classification matrix so the repo can now distinguish evidence sharpening, routing rewrite, semantic-release mutation, and family-boundary mutation before choosing whether to mint one new release or only write back through ledger and register surfaces.
 - 2026-04-23: defined the `P3` required processing-chain declaration so source logs can now declare, before execution, whether `SUP`, `parent ledger`, `contract impact decision`, `contract mutation`, `transition register update`, and `bridged contract reconciliation` must run for the packet.
+- 2026-04-23: wrote the verified `P1-P3` model back into reusable templates so later logs and contracts can declare processing-chain state and family-register handoff without reopening this lane first.

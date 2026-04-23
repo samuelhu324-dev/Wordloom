@@ -115,6 +115,31 @@
 
 - <For example: dumps are not committed to git; least privilege; low-cardinality reasons; machine-verifiable evidence>
 
+## Optional Required Processing Chain
+
+Use this section when the source log may emit, revise, reopen, or reconcile contract work and reviewers need one explicit pre-execution declaration of which write-back steps must run.
+
+| chain step | required state | primary owner surface | trigger question | completion evidence | notes |
+| --- | --- | --- | --- | --- | --- |
+| `source extraction` | `<required>` | `<source log>` | `<has the bounded packet and source slice been identified tightly enough to route?>` | `<bounded scope plus source anchors or artifacts>` | `<entry step for the packet>` |
+| `SUP` | `<required|conditional|not-required|already-satisfied>` | `<supplement ledger or n/a>` | `<is this packet later evidence against one existing source-owned row?>` | `<accepted SUP row or explicit no-SUP verdict>` | `<why SUP is or is not entered>` |
+| `parent ledger` | `<required|conditional|not-required|already-satisfied>` | `<parent support-only ledger or n/a>` | `<does the packet change one source-owned routing verdict?>` | `<parent-ledger write-back or explicit no-parent-ledger verdict>` | `<why routing ownership does or does not apply>` |
+| `contract impact decision` | `<required>` | `<source log>` | `<is the packet evidence-only sharpening, routing rewrite, semantic-release change, or family-boundary change?>` | `<explicit classified verdict>` | `<decision gate before downstream mutation>` |
+| `contract mutation` | `<required|conditional|not-required|already-satisfied>` | `<release contract or family-level contract decision>` | `<does the packet change defended rule meaning or family boundary standing?>` | `<new release, revised note, or explicit no-contract-mutation verdict>` | `<meaning changed normally implies new release>` |
+| `transition register update` | `<required|conditional|not-required|already-satisfied>` | `<family transition register or n/a>` | `<did family-level reader standing change, with or without one new release?>` | `<register row or explicit no-register-change verdict>` | `<reader-standing change, not release creation alone, is the trigger>` |
+| `bridged contract reconciliation` | `<required|conditional|not-required|already-satisfied>` | `<affected parent or bridged contract surfaces>` | `<do other current readers now need reconciliation or redirect notes?>` | `<reconciled bridge note or explicit no-bridge-impact verdict>` | `<keep broad parent and narrow current readers coherent>` |
+
+- Use the section only when contract-facing write-back steps are materially in scope; do not force it into logs that have no contract or reader-surface consequences.
+- `required state` must be declared before execution and should stay one of:
+  - `required`
+  - `conditional`
+  - `not-required`
+  - `already-satisfied`
+- `contract impact decision` should remain mandatory whenever the log may affect contract or family reader standing.
+- If the packet is later evidence against one existing source-owned row, the source log must answer explicitly whether `SUP` and `parent ledger` are required rather than leaving that path implicit.
+- If the packet may change family-level reader standing, `transition register update` should default to at least `conditional` before execution.
+- A short packet-specific decision note may follow the table, but the table is the minimum reusable declaration surface.
+
 ## Scope
 
 - `P0`: contract (default decisions, naming/fields, evidence contract)
