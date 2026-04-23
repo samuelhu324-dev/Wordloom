@@ -92,6 +92,8 @@ Use these values consistently in `release state`.
 - `semantic standing` is the release-local semantic standing already defended by the release contract, such as `current-release`, `superseded-historical-release`, or another defended local standing phrase.
 - `transition role` is a short reader-facing explanation of why this release still matters now.
 - `valid from` and `valid until` are the best defended dates or timestamps for the release's current coexistence standing inside this register, not necessarily the release's full historical-effective range.
+- Do not derive `valid from` or `valid until` mechanically from the release contract `effective_from` or `effective_until`; register validity belongs to reader/coexistence standing, not to the release's whole semantic lifespan.
+- When the current standing is defended but the start or end point is not, keep `unknown` or `ongoing` rather than fabricating a more precise coexistence date.
 - `first open now` should stay `yes` for only one `current-primary` row at a time.
 - `replaced by` should name the newer release if one later release is already the current first-open reader.
 - `evidence refs` should stay low-cardinality and point to the release contract, this register, and any directly relevant bounded log or ledger note.
@@ -147,6 +149,8 @@ Use this section when one bounded coexistence or cutover window is still open or
 
 - Open a transition-window row only when readers still need one explicit family-level explanation for why more than one release remains concurrently relevant.
 - Do not open a transition-window row merely because one earlier release still exists on disk.
+- Do not open a transition-window row for one single-release family or for one historical-retained release that has no active fallback/coexistence duty now.
+- If coexistence is real but the open or close timing is not yet defended, keep `opened at`, `target close at`, or `closed at` as `unknown` or `pending` rather than inventing dates from release chronology alone.
 - `window state` should stay one of:
   - `open`
   - `closed`

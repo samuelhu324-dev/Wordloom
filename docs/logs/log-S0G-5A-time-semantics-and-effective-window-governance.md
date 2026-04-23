@@ -227,8 +227,8 @@
 
 ### P2 (Ledger/register scope decision)
 
-- [ ] `P2-C1-S1`: decide whether support-only ledgers need `resolution valid from/until`
-- [ ] `P2-C1-S2`: decide whether transition-register templates need stronger window-date guidance now or only later
+- [x] `P2-C1-S1`: decide whether support-only ledgers need `resolution valid from/until`
+- [x] `P2-C1-S2`: decide whether transition-register templates need stronger window-date guidance now or only later
 
 ### P3 (Sample demonstration)
 
@@ -238,8 +238,9 @@
 
 - `S0G-5A` is now opened as the bounded time-semantics follow-up under the `S0G` spine.
 - The model is now fixed at template level for logs and contracts: logs keep artifact lifecycle time, and contracts now own the default semantic effective-time derivation rule.
-- Ledger routing-validity fields and transition-register window dates remain intentionally undecided at template level until `P2` resolves whether either surface needs bounded additions now.
-- The next concrete step is `P2`: decide whether support-only ledgers need `resolution valid from/until` and whether register templates need stronger window-date guidance now or only later.
+- `P2` now fixes the bounded template decision: support-only ledgers do not gain default `resolution valid from/until` routing-table columns now, because the existing chronology-audit shape remains sufficient unless one later lane proves otherwise.
+- `P2` also fixes the register-side rule: transition-register `valid from/until` and transition-window dates remain coexistence-standing fields only and must not be derived mechanically from contract `effective_from/effective_until`.
+- The next concrete step is `P3`: optionally test this rule set on one live sample such as `S0B-2A / S0G-1C / DOC-WORKFLOW-SCRIPTS-0001` without turning it into a repo-wide backfill sweep.
 
 ## Evidence (reserved)
 
@@ -280,7 +281,25 @@
   - the contract template now states that first releases default `effective_from` to the decisive source log `created` time unless stronger evidence exists
   - the contract template now states that `effective_until` defaults to `ongoing` until one defended successor, replacement, retirement, or explicit end-state exists
 
+### P2-C1-S1S2 (ledger/register time-field decision fixed | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/_template-support-only-contract-release-ledger.md`
+  - `docs/governance/contracts/_template-contract-release-transition-register.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+- expected:
+  - decide whether support-only ledgers need default `resolution valid from/until` routing-table fields now
+  - decide whether transition-register templates need stronger window-date guidance now or only later
+  - keep the decision bounded so `P2` does not trigger one repo-wide sample backfill sweep
+- observed:
+  - the parent-ledger template now states that the optional chronology-audit surface is sufficient by default and that core routing rows should not gain default `resolution valid from/until` columns now
+  - the register template now states that coexistence `valid from/until` dates are register-standing fields and must not be copied mechanically from contract effective-time fields
+  - the register template now states that single-release families and non-active historical retention should not open transition-window rows or invented window dates
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-5A` so time semantics can be fixed as one bounded governance lane before the repo is forced into ad hoc timestamp growth across logs, contracts, ledgers, and transition registers.
 - 2026-04-23: completed `P1` by writing the three-layer time distinction into the log template and the default effective-time derivation rule into the contract template, while keeping ledger/register time fields deferred for a later bounded decision.
+- 2026-04-23: completed `P2` by deciding that support-only ledgers should not gain default routing-validity columns now, while transition registers should carry stronger coexistence-date guidance without inheriting contract effective-time dates mechanically.

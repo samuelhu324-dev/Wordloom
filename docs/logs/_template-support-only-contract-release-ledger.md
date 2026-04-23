@@ -46,6 +46,8 @@ support_only_contract_release_ledger:
 
 Use this when one parent-ledger row also needs explicit time audit for source observation, source recording, or historical-effective range without overloading the main routing table.
 
+- This optional audit is sufficient for parent-ledger time work by default; do not add `resolution valid from` or `resolution valid until` columns to the core routing table unless one later bounded lane proves that reader-facing routing validity cannot be explained any other way.
+
 | row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `<S0A-1A-R01>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<second|day|month|year|unknown>` | `<optional source-local zone or offset note>` | `<why this row's time audit matters>` |
@@ -83,6 +85,7 @@ Use this when one parent-ledger row also needs explicit time audit for source ob
   - `rejected`
 - `resolved by contract id` should name the later release that consumed the slice when consumption actually happened.
 - `consumed scope` states whether the slice was consumed fully, partially, or not at all.
+- `resolution status` and `resolution notes` are the default surfaces for the current routing verdict; do not widen the main routing table with standing-window dates unless one later bounded packet proves the register/log surfaces are insufficient.
 - If one later release absorbs new non-contract source material, record that fact here and carry the source forward in the later release metadata; do not fabricate `absorbed_from` links to sources that were never contracts.
 - Use the core routing columns to answer `what happened to this source slice`; do not add extra routing columns only to preview downstream contract-reader shape.
 - If later readers still need one concise explanation of whether the consumed slice now reads through a broad parent summary, a narrow current reader, or a still-deferred background state, prefer one short rollup or reader note rather than widening the routing table itself.
