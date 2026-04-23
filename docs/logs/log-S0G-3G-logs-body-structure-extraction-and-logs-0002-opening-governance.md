@@ -209,6 +209,7 @@
 
 - [x] `P1-C1-S1`: first concrete sample fixed as `S0C-1A`
 - [x] `P1-C1-S2`: parent-ledger landing surface fixed
+- [x] `P1-C1-S1S2`: `S0C-1A` extracted into explicit candidate rule rows in the parent ledger
 - [ ] `P1-C2-S1`: next sample cycle admitted after `S0C-1A`
 
 ### P2 (Boundary test)
@@ -223,8 +224,9 @@
 ## Current Status
 
 - `S0G-3G` is now scaffolded as the bounded source-log lane for testing whether repeated modern log body-structure evidence warrants `LOGS-0002` as the next release in the same `DOC-WORKFLOW-LOGS` family.
-- `S0C-1A` is fixed as the first sample, and future samples should enter this same lane as new cycles unless the rule family itself changes.
-- The next concrete step is `P1-C1-S1S2`: extract the first candidate rule set from `S0C-1A` and write the corresponding row(s) into the dedicated parent ledger.
+- `S0C-1A` is now fixed as the first extracted sample: its candidate rule set has been split into conclusion-block, minimum-field, top-level-status, current-effective-body, and supporting-evidence rows inside the dedicated parent ledger.
+- No `LOGS-0002` contract mutation is warranted yet because every extracted row is still first-sample evidence only.
+- The next concrete step is `P1-C2-S1`: admit one more post-cutover corroborating sample so `P2-C1` can classify which rows are true next-release clauses versus support-only evidence.
 
 ## Evidence (reserved)
 
@@ -243,7 +245,22 @@
   - `S0C-1A` is now the first admitted sample target for this lane
   - the dedicated `S0G-3G` support-only ledger path is now fixed as the accumulation surface for extracted rule rows
 
+### P1-C1-S1S2 (S0C-1A extracted into explicit candidate rows | 2026-04-23)
+
+- headSha: `WORKTREE`
+- artifacts:
+  - `docs/logs/log-S0C-1A-log-extensions.md`
+  - `docs/logs/support-only/ledger-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+- expected:
+  - the first sample should stop reading as one vague `LOGS-0002` candidate and instead resolve into specific candidate rule rows
+  - the ledger should distinguish likely contract clauses from evidence/support-only pattern material
+- observed:
+  - `S0C-1A` now yields four primary candidate rows: top-level conclusion block, minimum conclusion fields, top-level status ownership, and current-effective body discipline
+  - the sample's applied examples and copyable template snippet are now recorded as supporting evidence rather than primary contract meaning
+  - all extracted rows remain `first-sample-only`, so `LOGS-0002` still requires corroborating samples before release opening is justified
+
 ## Recent changes
 
 - 2026-04-23: opened `S0G-3G` as the bounded lane for cross-sample log body-structure extraction and candidate `LOGS-0002` same-family release opening.
 - 2026-04-23: fixed `S0C-1A` as the first sample and fixed one dedicated parent-ledger landing surface for later sample rows.
+- 2026-04-23: completed `P1-C1-S1S2` by extracting `S0C-1A` into explicit candidate rule rows and separating likely `LOGS-0002` clauses from support-only pattern evidence.
