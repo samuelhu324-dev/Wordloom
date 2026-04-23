@@ -40,6 +40,8 @@
 **created**: `2026-04-23`
 **updated**: `2026-04-23`
 **reviewed**: `pending`
+**source_reader_model**: `mixed-source-v1`
+**extraction_surface_version**: `extractable-rules-v1`
 
 ---
 
@@ -48,6 +50,9 @@
 - `created`, `updated`, and optional `reviewed` are the minimum artifact-lifecycle fields for this packet.
 - Day-level precision is acceptable while this lane is still fixing scripts-family boundary, first-release scope, and parent-ledger consumption shape.
 - `reviewed` should remain `pending` until the repo fixes whether `S0B-2A-R01` and `S0B-2A-R02` should open one shared `DOC-WORKFLOW-SCRIPTS` family and whether the resulting first release needs any family-register or bridge write-back.
+- `source_reader_model` and `extraction_surface_version` version how this lane should be read and extracted as a source packet; they do not replace contract release ids such as `DOC-WORKFLOW-SCRIPTS-0001`.
+- Keep `source_reader_model` at `mixed-source-v1` while this lane remains one narrative packet plus one explicit extraction surface.
+- Keep `extraction_surface_version` at `extractable-rules-v1` while downstream contract candidates are exposed through the in-log extraction table below.
 
 ## Decision / Outcome
 
@@ -74,6 +79,32 @@
 - `P1` fixes the first-release boundary as `scripts taxonomy + stable entrypoint`, while excluding labs snapshot-package semantics, OPS-side snapshot-root distinction, cutover mechanics, and stub-preservation support from `0001`.
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
+
+## Extractable Rule Surface
+
+- This lane is already strong enough to expose one explicit extraction surface for downstream contract and disposition review.
+- The table below normalizes the current packet into rule candidates and keeps shared rationale out of the candidate text.
+
+| packet id | source anchor | extraction class | candidate text | downstream owner | split status | shared reason group | evidence refs | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `R01` | `P0-C1-S1`; `P1-C1-S1` | `contract-candidate` | `S0B-2A-R01` and `S0B-2A-R02` together justify one shared `DOC-WORKFLOW-SCRIPTS` family with one first release rather than two separately deferred mini-families. | `contract` | `ready` | `RG-01` | `S0B-2A-R01`; `S0B-2A-R02`; `DOC-WORKFLOW-SCRIPTS-0001` | This is the family-opening normalization of the packet. |
+| `R02` | `P1-C1-S1`; `P1-C1-S2`; `P2-C1-S1` | `contract-candidate` | `DOC-WORKFLOW-SCRIPTS-0001` should keep a narrow first-release rule body: scripts taxonomy plus stable entrypoint semantics, while excluding `R03` through `R06`. | `contract` | `ready` | `RG-01` | `DOC-WORKFLOW-SCRIPTS-0001`; `ledger-S0B-2A-tools-scripts-and-snapshots-management` | This is the current-release boundary that the lane emits. |
+| `R03` | `P3-C1-S1`; `P3-C1-S2` | `support-only` | Parent-ledger consumption plus explicit `no-register-change` and `no-bridge-impact` verdicts should be recorded as write-back state, not promoted into release-local contract meaning. | `support-only` | `ready` | `none` | `ledger-S0B-2A-tools-scripts-and-snapshots-management` | This remains routing/write-back meaning rather than contract meaning. |
+
+### Shared Reason Groups
+
+| reason group | applies to packet ids | reason summary | source refs | notes |
+| --- | --- | --- | --- | --- |
+| `RG-01` | `R01; R02` | The packet exists to answer one reader question cleanly: scripts-governance identity and stable invocation should open together as one narrow current reader rather than remain scattered across one mixed source. | `P0-C1-S1`; `P1-C1-S1`; `P2-C1-S1` | The shared why stays here instead of being repeated in every downstream contract clause. |
+
+## Source Reader Model / Versioning
+
+| field | value | notes |
+| --- | --- | --- |
+| current source reader model | `mixed-source-v1` | Narrative lane plus explicit extraction surface for downstream mutation decisions. |
+| extraction surface version | `extractable-rules-v1` | Uses the standard packet table for contract-candidate and support-only separation. |
+| compatibility expectation | `forward-readable` | Later readers can still consume this lane without reopening the family-opening decision model. |
+| migration note | `Earlier S0G lanes may remain narrative-only; use explicit bridge notes when extracting from older packets instead of silently assuming this table existed there.` | The new source shape applies forward, not retroactively. |
 
 ## PR Summary Inputs (optional)
 
