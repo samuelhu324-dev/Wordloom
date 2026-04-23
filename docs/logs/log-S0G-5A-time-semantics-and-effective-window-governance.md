@@ -224,6 +224,11 @@
 - `P5-C1-S1`: backfill the `S0A-1A` GitHub family contracts from defended upstream chronology
 - `P5-C1-S2`: write the `S0A-1A` source-side and screenshot-sharpening distinction back into the parent ledger without opening a new SUP round
 
+### P6 (Second execution batch)
+
+- `P6-C1-S1`: backfill the `S0A-2A` workflow parent plus child contracts whose semantic start is already defended by source issue chronology
+- `P6-C1-S2`: sharpen the `S0A-2A` parent ledger chronology audit and only apply clause-level timing where accepted SUP evidence already proves it
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -256,6 +261,11 @@
 - [x] `P5-C1-S1`: backfill the `S0A-1A` GitHub family contracts from defended upstream chronology
 - [x] `P5-C1-S2`: write the `S0A-1A` source-side and screenshot-sharpening distinction back into the parent ledger without opening a new SUP round
 
+### P6 (Second execution batch)
+
+- [x] `P6-C1-S1`: backfill the `S0A-2A` workflow parent plus child contracts whose semantic start is already defended by source issue chronology
+- [x] `P6-C1-S2`: sharpen the `S0A-2A` parent ledger chronology audit and only apply clause-level timing where accepted SUP evidence already proves it
+
 ## Current Status (recommended)
 
 - `S0G-5A` is now opened as the bounded time-semantics follow-up under the `S0G` spine.
@@ -269,7 +279,9 @@
 - Current assessment: ledger/SUP/log supplementation is selective rather than global; some parent ledgers and SUP packets already expose chronology-audit surfaces, while some still lack defended row-level source chronology and must be repaired upstream before corresponding contracts can be backfilled safely.
 - `P5` now executes the first upstream-ready batch on `S0A-1A`: the GitHub-Issues parent, Projects child, title child, and tag child now read their semantic start from the defended issue source date `2026-02-06` rather than leaving `effective_from` unknown.
 - The `S0A-1A` parent ledger now distinguishes the issue-created source anchor `2026-02-06` from the later screenshot-sharpening observation day `2026-02-12`, so the Projects child can keep one earlier semantic start without pretending the screenshots were the original rule birth.
-- The next concrete step is `S0A-2A`: it is the next upstream-ready batch because its parent ledger plus accepted SUP packets already carry chronology surfaces that can drive bounded contract backfill without first reopening `S0B-1A` or `S0B-3A`.
+- `P6` now executes the second upstream-ready batch on `S0A-2A`: the workflow parent, runbook child, and ADR child now read their semantic start from the defended source issue creation time `2026-02-06T06:03:03Z`.
+- The `S0A-2A` parent ledger now distinguishes issue-source chronology from later SUP sharpening, while the labs family is only partially backfilled: `DOC-WORKFLOW-LABS-0002-ST-12` now reads the defended `2026-02-03` labs date, but the broader `0002` release and `ST-13` remain chronology-incomplete.
+- The next concrete step is still not blanket continuation: after `S0A-2A`, the repo should either take the next upstream-ready batch with defended row-level timing or pause where only mixed-family or chronology-incomplete surfaces remain.
 
 ## Evidence (reserved)
 
@@ -386,6 +398,25 @@
   - the Projects child now keeps the same earlier semantic start while using `2026-02-12` only as the later sharpening date for screenshot-backed readings
   - the parent ledger now records `2026-02-06` as the issue-source record/effective anchor for all four rows, while preserving `2026-02-12` only as the later screenshot observation date for `R02`
 
+### P6-C1-S1S2 (S0A-2A upstream-ready backfill batch executed | 2026-04-23)
+
+- headSha: `pending-post-commit`
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  - `docs/governance/contracts/workflow/runbook/DOC-WORKFLOW-RUNBOOK-0001-projection-operator-rebuild-replay-and-failure-recovery.md`
+  - `docs/governance/contracts/workflow/adr/DOC-WORKFLOW-ADR-0001-decision-summary-boundary-and-evidence-links.md`
+- expected:
+  - execute the next bounded backfill batch on one family whose parent ledger and accepted SUP packets already expose enough chronology to support selective contract repair
+  - anchor the broad workflow parent plus directly defended child contracts to the source issue creation time when the issue itself already preserves that semantic boundary
+  - keep mixed-family and chronology-incomplete surfaces partial rather than inventing one blanket family start date
+- observed:
+  - `DOC-WORKFLOW-0001`, `DOC-WORKFLOW-RUNBOOK-0001`, and `DOC-WORKFLOW-ADR-0001` now anchor their first-release semantic start to the source issue creation time `2026-02-06T06:03:03Z`
+  - the `S0A-2A` parent ledger now records `R01`, `R04`, and `R05` against that issue-source anchor while keeping `R02` deferred and `R03` tied to narrower SUP-proved labs timing
+  - `DOC-WORKFLOW-LABS-0002` is only partially time-backfilled: `ST-12` now reads the defended `2026-02-03` labs date, while `ST-13`, the broader release frontmatter, and the logs-side legacy release remain unchanged because current upstream chronology is still incomplete there
+
 ## Backfill Assessment (working)
 
 ### Contract bucket
@@ -413,3 +444,4 @@
 - 2026-04-23: completed `P3` on the scripts sample by proving that the same packet can keep source-side chronology, parent-ledger write-back chronology, and contract effective time aligned without opening a new SUP round.
 - 2026-04-23: completed `P4` scope assessment by deciding that contract-side time backfill is still materially needed across live release records, but ledger/SUP/log supplementation should remain selective and upstream-first rather than blanket.
 - 2026-04-23: completed `P5` first execution batch on `S0A-1A`, using the defended issue creation date as the upstream semantic start for the GitHub family contracts while keeping the later Projects screenshots as sharpening evidence only.
+- 2026-04-23: completed `P6` second execution batch on `S0A-2A`, anchoring the workflow parent, runbook child, and ADR child to the source issue creation time while only partially backfilling the mixed labs current reader where a defended `2026-02-03` clause-level anchor already exists.

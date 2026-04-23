@@ -21,7 +21,7 @@ contract_record:
   approved_by: role:docs-governance-approver
   recorded_at: 2026-04-22
   reviewed_at: pending
-  effective_from: unknown
+  effective_from: 2026-02-06T06:03:03Z
   effective_until: ongoing
   introduced_by: GitHub issue S0A-2A (#24) (issue-only source; no local log exists in workspace)
   last_changed_by: docs/logs/support-only/ledger-SUP-S0A-2A-003-adr-decision-summaries-and-boundary-shape.md
@@ -49,6 +49,7 @@ contract_record:
     - The local repo currently has no S0A-2A source log, so this draft stays explicit about issue-only origin plus later direct-evidence supplementation.
     - The decisive child-opening packet is justified by the accepted ADR SUP row on S0A-2A-R05 rather than by the broad issue packet alone.
     - Current-state governance now reads through owner_team/current_steward/approval_state/reviewed_by/approved_by, while the parent ledger and supplement remain the event and evidence chain that explain how this state was reached.
+    - `effective_from` is anchored to the source issue creation time `2026-02-06T06:03:03Z`; the later accepted SUP packet sharpens the child-opening justification but does not replace the earlier issue-level semantic anchor for the ADR layer.
 ```
 
 ## Current Governance State
@@ -62,7 +63,7 @@ contract_record:
 
 | event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-ADR-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-ADR-0001` | `unknown` | `family-introduced` | `2026-04-22` | `GitHub issue S0A-2A (#24)` | The issue-only source introduced the ADR slice, but it does not by itself defend a named current steward or approver for the current contract state. |
+| `DOC-WORKFLOW-ADR-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-ADR-0001` | `unknown` | `family-introduced` | `2026-02-06T06:03:03Z` | `GitHub issue S0A-2A (#24)` | The issue-only source introduced the ADR slice on the issue creation date, but it does not by itself defend a named current steward or approver for the current contract state. |
 | `DOC-WORKFLOW-ADR-0001-GOV-02` | `current-draft-sharpened` | `DOC-WORKFLOW-ADR-0001` | `role:packet-reviewer` | `statement-surface-sharpened` | `2026-04-22` | `ledger-SUP-S0A-2A-003-adr-decision-summaries-and-boundary-shape.md` | The accepted ADR SUP round sharpened the child-opening reading from broad background into direct decision-summary governance without changing durable owner-team identity. |
 | `DOC-WORKFLOW-ADR-0001-GOV-03` | `delegated-stewardship-event` | `DOC-WORKFLOW-ADR-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-22` | `S0G-4A/P4 adr sample round` | Stewardship for the current ADR child is now explicitly delegated to the narrower ADR contract maintainer role while final approval remains with the broader docs-governance approver role. |
 | `DOC-WORKFLOW-ADR-0001-GOV-04` | `review-approval-separation-event` | `DOC-WORKFLOW-ADR-0001` | `role:workflow-reviewer; role:docs-governance-approver` | `reviewed-awaiting-approval-state-fixed` | `2026-04-22` | `S0G-4A/P4 adr sample round` | The current contract state now records review and approval as distinct governance actions instead of leaving both roles implicit or collapsed into one reviewer identity. |
@@ -71,14 +72,15 @@ contract_record:
 
 | statement id | statement label | clause status | change action | source basis | first effective release | first effective at | last changed release | last changed at | effective from | effective until | effective status | statement text | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-ADR-0001-ST-01` | `ADRs as durable decision summaries` | `active` | `introduced` | `S0A-2A-R05` | `DOC-WORKFLOW-ADR-0001` | `unknown` | `DOC-WORKFLOW-ADR-0001` | `2026-04-22` | `unknown` | `ongoing` | `in-force` | ADRs should convert already-stabilized workflow learning into durable decision summaries rather than leaving the decision layer only in broad issue text, labs, or runbooks. | Opening clause for the ADR family itself. |
-| `DOC-WORKFLOW-ADR-0001-ST-02` | `Canonical decision skeleton` | `active` | `introduced` | `S0A-2A-R05-SUP-01; S0A-2A-R05-SUP-02` | `DOC-WORKFLOW-ADR-0001` | `unknown` | `DOC-WORKFLOW-ADR-0001` | `2026-04-22` | `unknown` | `ongoing` | `in-force` | ADRs should preserve at least the decision-summary skeleton of `Context`, `Decision`, `Alternatives considered`, and `Consequences` so the reader can recover the durable decision without replaying the whole implementation history. | Both retained ADRs use the same durable skeleton. |
-| `DOC-WORKFLOW-ADR-0001-ST-03` | `Link back to source evidence` | `active` | `introduced` | `S0A-2A-R05-SUP-01; S0A-2A-R05-SUP-02` | `DOC-WORKFLOW-ADR-0001` | `unknown` | `DOC-WORKFLOW-ADR-0001` | `2026-04-22` | `unknown` | `ongoing` | `in-force` | ADRs should link back to the labs, runbooks, or other source evidence that justify the decision rather than absorbing the full execution narrative into the ADR body itself. | This keeps ADRs decision-facing while preserving traceability. |
-| `DOC-WORKFLOW-ADR-0001-ST-04` | `Cross-surface boundary` | `active` | `introduced` | `S0A-2A-R05-SUP-01; S0A-2A-R05-SUP-02` | `DOC-WORKFLOW-ADR-0001` | `unknown` | `DOC-WORKFLOW-ADR-0001` | `2026-04-22` | `unknown` | `ongoing` | `in-force` | ADRs may summarize reusable architecture or workflow decisions across projections, but they should still leave operator steps to runbooks and experimentation detail to labs. | This clause keeps ADR ownership on decision meaning rather than SOP or drill detail. |
+| `DOC-WORKFLOW-ADR-0001-ST-01` | `ADRs as durable decision summaries` | `active` | `introduced` | `S0A-2A-R05` | `DOC-WORKFLOW-ADR-0001` | `2026-02-06T06:03:03Z` | `DOC-WORKFLOW-ADR-0001` | `2026-04-22` | `2026-02-06T06:03:03Z` | `ongoing` | `in-force` | ADRs should convert already-stabilized workflow learning into durable decision summaries rather than leaving the decision layer only in broad issue text, labs, or runbooks. | Opening clause for the ADR family itself. |
+| `DOC-WORKFLOW-ADR-0001-ST-02` | `Canonical decision skeleton` | `active` | `introduced` | `S0A-2A-R05-SUP-01; S0A-2A-R05-SUP-02` | `DOC-WORKFLOW-ADR-0001` | `2026-02-06T06:03:03Z` | `DOC-WORKFLOW-ADR-0001` | `2026-04-22` | `2026-02-06T06:03:03Z` | `ongoing` | `in-force` | ADRs should preserve at least the decision-summary skeleton of `Context`, `Decision`, `Alternatives considered`, and `Consequences` so the reader can recover the durable decision without replaying the whole implementation history. | Both retained ADRs use the same durable skeleton. |
+| `DOC-WORKFLOW-ADR-0001-ST-03` | `Link back to source evidence` | `active` | `introduced` | `S0A-2A-R05-SUP-01; S0A-2A-R05-SUP-02` | `DOC-WORKFLOW-ADR-0001` | `2026-02-06T06:03:03Z` | `DOC-WORKFLOW-ADR-0001` | `2026-04-22` | `2026-02-06T06:03:03Z` | `ongoing` | `in-force` | ADRs should link back to the labs, runbooks, or other source evidence that justify the decision rather than absorbing the full execution narrative into the ADR body itself. | This keeps ADRs decision-facing while preserving traceability. |
+| `DOC-WORKFLOW-ADR-0001-ST-04` | `Cross-surface boundary` | `active` | `introduced` | `S0A-2A-R05-SUP-01; S0A-2A-R05-SUP-02` | `DOC-WORKFLOW-ADR-0001` | `2026-02-06T06:03:03Z` | `DOC-WORKFLOW-ADR-0001` | `2026-04-22` | `2026-02-06T06:03:03Z` | `ongoing` | `in-force` | ADRs may summarize reusable architecture or workflow decisions across projections, but they should still leave operator steps to runbooks and experimentation detail to labs. | This clause keeps ADR ownership on decision meaning rather than SOP or drill detail. |
 
 ## Release Change
 
 - This release opens the first dedicated `DOC-WORKFLOW-ADR` family from the accepted `S0A-2A-R05` ADR child-candidate review.
+- The semantic start of this release is now anchored to the source issue creation time `2026-02-06T06:03:03Z`, while the later accepted SUP round on `2026-04-22` sharpens the child-opening evidence path inside the same release.
 - The decisive evidence is the retained ADR pair:
   - `adr-001-chronicle-projection-chronicle-events-to-entries.md`
   - `adr-002-evolution-worker-to-daemon.md`
