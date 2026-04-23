@@ -142,6 +142,7 @@
 - `P1`: write back the default rule into the log and contract templates
 - `P2`: decide whether ledger and register templates need bounded additions now
 - `P3`: optionally demonstrate the rule on one live sample such as `S0B-2A / S0G-1C / DOC-WORKFLOW-SCRIPTS-0001`
+- `P4`: assess which live contracts and corresponding ledger/SUP/log surfaces actually need timeline-evidence backfill next
 
 ## Success Criteria (DoD)
 
@@ -212,6 +213,11 @@
 
 - `P3-C1-S1`: optionally demonstrate the new default rule on one live sample without opening a repo-wide backfill sweep
 
+### P4 (Backfill assessment)
+
+- `P4-C1-S1`: classify live contracts into `ready-now`, `upstream-first`, and `defer-no-new-time-evidence-yet` buckets
+- `P4-C1-S2`: classify corresponding parent ledgers, SUP packets, and source logs into `already-sufficient`, `needs-upstream-chronology`, and `no-blanket-backfill` buckets
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -234,6 +240,11 @@
 
 - [x] `P3-C1-S1`: optionally demonstrate the new default rule on one live sample without opening a repo-wide backfill sweep
 
+### P4 (Backfill assessment)
+
+- [x] `P4-C1-S1`: classify live contracts into `ready-now`, `upstream-first`, and `defer-no-new-time-evidence-yet` buckets
+- [x] `P4-C1-S2`: classify corresponding parent ledgers, SUP packets, and source logs into `already-sufficient`, `needs-upstream-chronology`, and `no-blanket-backfill` buckets
+
 ## Current Status (recommended)
 
 - `S0G-5A` is now opened as the bounded time-semantics follow-up under the `S0G` spine.
@@ -242,7 +253,10 @@
 - `P2` also fixes the register-side rule: transition-register `valid from/until` and transition-window dates remain coexistence-standing fields only and must not be derived mechanically from contract `effective_from/effective_until`.
 - `P3` now demonstrates the rule set on `S0B-2A / S0G-1C / DOC-WORKFLOW-SCRIPTS-0001`: source-side rule time stays at `2026-02-13`, parent-ledger write-back stays at `2026-04-23`, and contract effective time now reads `2026-02-13 -> ongoing`.
 - The sample deliberately does not open one SUP packet because no stronger later evidence changed the defended source-side anchor; the lane is only applying the default derivation rule to an existing source-owned packet.
-- The next concrete step is now close-out review of whether this sample is sufficient and whether any further live demonstrations are still needed before the lane can be marked stable.
+- `P4` now fixes the repo-level assessment boundary: the next work is not blanket close-out, but one selective backfill program across live contracts whose upstream source-side chronology is either already sufficient or still missing.
+- Current assessment: live contract files under `docs/governance/contracts` still show at least 12 release records with `effective_from: unknown`, so contract-side supplementation is still materially needed beyond the `SCRIPTS-0001` sample.
+- Current assessment: ledger/SUP/log supplementation is selective rather than global; some parent ledgers and SUP packets already expose chronology-audit surfaces, while some still lack defended row-level source chronology and must be repaired upstream before corresponding contracts can be backfilled safely.
+- The next concrete step is one bounded backfill execution plan, ordered by `upstream-ready families first` rather than by contract-folder breadth.
 
 ## Evidence (reserved)
 
@@ -318,9 +332,51 @@
   - the parent ledger now records `R01` and `R02` source-side chronology separately from the later 2026-04-23 routing write-back event
   - no SUP packet was needed because the sample did not introduce stronger later evidence; it only applied the defended default derivation rule to an existing source-owned packet
 
+### P4-C1-S1S2 (repo backfill scope assessed | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/governance/contracts/`
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-S0B-1A-tools-labs-and-snapshots.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
+- expected:
+  - decide whether live contract files in `docs/governance/contracts` still materially need timeline-evidence supplementation
+  - decide whether corresponding parent ledgers, SUP packets, and source logs also need supplementation or are already sufficient
+  - produce one bounded execution order for later backfill without starting a blanket repo-wide rewrite
+- observed:
+  - at least 12 live release contracts under `docs/governance/contracts` still carry `effective_from: unknown`, and many clause-level `first effective at` / `effective from` cells remain `unknown`, so contract-side backfill is still materially required beyond the `SCRIPTS-0001` sample
+  - parent ledgers and SUP packets already provide reusable chronology surfaces in several families, including `S0A-1A`, `S0A-2A`, and `S0B-2A`, so those families do not need new template invention before bounded backfill begins
+  - some upstream packets remain chronology-incomplete at row level, including `S0B-1A` and `S0B-3A`, so their corresponding contract families should not receive contract-only date backfills before one upstream chronology repair lands first
+  - source logs as a class do not need blanket backfill: when a decisive source already has defended `created` or another defended chronology anchor, logs may remain unchanged; additional log work is needed only where the decisive anchor is still missing or stays trapped in issue-only or screenshot-only evidence
+
+## Backfill Assessment (working)
+
+### Contract bucket
+
+- `ready-now after sample precedent exists`: `DOC-WORKFLOW-SCRIPTS-0001` is already backfilled and acts as the positive-control sample.
+- `upstream-first before contract backfill`: the `DOC-WORKFLOW-GITHUB-*`, `DOC-WORKFLOW-*`, `DOC-WORKFLOW-LABS-*`, `DOC-WORKFLOW-LOGS-*`, `DOC-WORKFLOW-LIFECYCLE-*`, `DOC-WORKFLOW-RUNBOOK-*`, `DOC-WORKFLOW-ADR-*`, and `DOC-WORKFLOW-LEGACY-LOGS-*` families still need review because their release records remain `effective_from: unknown` and many clause-level times remain `unknown`.
+- `do not blanket backfill by file count alone`: family registers and templates are not the current contract-evidence bottleneck; live release contracts are.
+
+### Ledger and SUP bucket
+
+- `already-sufficient carrying surfaces`: `S0A-1A`, `S0A-2A`, and `S0B-2A` already expose `Row Chronology Audit`, `Evidence Time Audit`, or governance-event chronology surfaces that can carry bounded backfill work.
+- `needs upstream chronology first`: `S0B-1A` and `S0B-3A` currently show routing and governance chronology but do not yet expose defended row-level source chronology tables, so upstream supplementation is still needed before corresponding contract dates can be backfilled defensibly.
+- `SUP is selective, not universal`: open or extend SUP only when later evidence is the actual decisive time anchor or when accepted parent rows must be sharpened; do not open SUP by default for every family.
+
+### Source-log bucket
+
+- `no blanket backfill`: source logs already own `artifact lifecycle time`, and many decisive packets already expose one defended `created` anchor.
+- `needs supplementation only when anchor is missing`: if the decisive source-side time is still absent, issue-only, or preserved only in screenshot evidence, repair that source-side anchor first through the parent ledger or SUP path before touching the contract.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-5A` so time semantics can be fixed as one bounded governance lane before the repo is forced into ad hoc timestamp growth across logs, contracts, ledgers, and transition registers.
 - 2026-04-23: completed `P1` by writing the three-layer time distinction into the log template and the default effective-time derivation rule into the contract template, while keeping ledger/register time fields deferred for a later bounded decision.
 - 2026-04-23: completed `P2` by deciding that support-only ledgers should not gain default routing-validity columns now, while transition registers should carry stronger coexistence-date guidance without inheriting contract effective-time dates mechanically.
 - 2026-04-23: completed `P3` on the scripts sample by proving that the same packet can keep source-side chronology, parent-ledger write-back chronology, and contract effective time aligned without opening a new SUP round.
+- 2026-04-23: completed `P4` scope assessment by deciding that contract-side time backfill is still materially needed across live release records, but ledger/SUP/log supplementation should remain selective and upstream-first rather than blanket.
