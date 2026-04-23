@@ -221,6 +221,26 @@
 - The release intentionally does not consume `R03` through `R06`; those rows remain outside the family-opening packet exactly as fixed in `P1`.
 - Under this rule, `P3` now becomes a pure write-back phase: the family already exists, so the remaining work is parent-ledger consumption plus explicit no-register or bridge verdict unless later evidence says otherwise.
 
+## P3 (Ledger and bridge/register write-back | v1)
+
+### P3-C1-S1 (Parent-ledger consumption write-back completed | v1)
+
+- The parent ledger now rewrites `S0B-2A-R01` and `S0B-2A-R02` from `deferred` to `applied` with `consumed scope: full`.
+- Both rows now resolve through `DOC-WORKFLOW-SCRIPTS-0001`, so the mixed-source packet no longer carries an unresolved scripts-family candidate.
+- Under this rule, the ledger now reflects one defended split of the original mixed packet:
+  - `R01/R02` -> `DOC-WORKFLOW-SCRIPTS-0001`
+  - `R03` -> `DOC-WORKFLOW-LABS-0002`
+  - `R04` stays deferred
+  - `R05/R06` stay support-only
+
+### P3-C1-S2 (No-register-change and no-bridge-impact verdict fixed | v1)
+
+- No family transition register is opened for `DOC-WORKFLOW-SCRIPTS` at this time.
+- The explicit verdict is `no-register-change` because the family currently has only one release, no coexistence window, no fallback reader, and no statement-level rollout divergence.
+- No bridged contract reconciliation write-back is opened at this time.
+- The explicit verdict is `no-bridge-impact` because opening `DOC-WORKFLOW-SCRIPTS-0001` does not materially change the first-open reader path of any current parent or sibling contract surface.
+- A later register or bridge write-back should open only if one later scripts release creates real coexistence standing or if another current reader surface needs an explicit scripts-family routing note.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -276,15 +296,16 @@
 
 ### P3 (Ledger and bridge write-back)
 
-- [ ] `P3-C1-S1`: write the `S0B-2A-R01/R02` parent-ledger consumption update
-- [ ] `P3-C1-S2`: decide whether the new scripts family also needs one bounded register or bridge write-back
+- [x] `P3-C1-S1`: write the `S0B-2A-R01/R02` parent-ledger consumption update
+- [x] `P3-C1-S2`: decide whether the new scripts family also needs one bounded register or bridge write-back
 
 ## Current Status (recommended)
 
 - `S0G-1C` is now opened as the bounded scripts-family follow-up for the deferred `S0B-2A` rows.
 - `P1` now fixes the first-release scope: `R01` and `R02` travel together as the minimum `DOC-WORKFLOW-SCRIPTS-0001` rule body, while `R03` through `R06` remain outside the first release for different reasons.
 - `P2` now emits `DOC-WORKFLOW-SCRIPTS-0001` as the first scripts-family release on that narrow `R01 + R02` scope.
-- The next concrete step is `P3`: write the parent-ledger consumption update and make the register/bridge verdict explicit.
+- `P3` now writes the parent-ledger consumption update: `R01/R02` are applied through `DOC-WORKFLOW-SCRIPTS-0001`, while `R04` remains deferred and `R05/R06` remain support-only.
+- The explicit family-level verdict is `no-register-change` and `no-bridge-impact` for now, because the scripts family has only one release and does not yet alter any existing first-open reader path elsewhere.
 
 ## Evidence (reserved)
 
@@ -342,8 +363,25 @@
   - the release owns taxonomy, placement, stable entrypoint, parameter-and-safety contract, and bounded legacy reuse through the stable reader
   - `R03` through `R06` remain outside the emitted release, so the family opens without reabsorbing labs snapshot, OPS evidence, or support-only migration/link-preservation material
 
+### P3-C1-S1S2 (parent-ledger write-back and no-register/no-bridge verdict fixed | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
+  - `docs/governance/contracts/workflow/scripts/DOC-WORKFLOW-SCRIPTS-0001-taxonomy-and-stable-entrypoint-governance.md`
+- expected:
+  - rewrite `R01/R02` from deferred family candidates into explicit consumed rows
+  - make the scripts family's current register/bridge answer explicit
+  - leave no unresolved ambiguity about whether the first scripts release still needs one immediate family-level coexistence surface
+- observed:
+  - `R01` and `R02` are now applied with `consumed scope: full` through `DOC-WORKFLOW-SCRIPTS-0001`
+  - the parent ledger now records two active child governance surfaces from `S0B-2A`: labs and scripts
+  - the explicit current verdict is `no-register-change` and `no-bridge-impact` because the scripts family has only one release and does not yet change any other current first-open reader path
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-1C` so the deferred `DOC-WORKFLOW-SCRIPTS` candidate from `S0B-2A` can be judged as one bounded family-opening lane instead of remaining one indefinite ledger note.
 - 2026-04-23: fixed the `P1` first-release scope so `DOC-WORKFLOW-SCRIPTS-0001` can now be judged on one narrow `R01 + R02` body without reabsorbing `R03-R06`.
 - 2026-04-23: emitted `DOC-WORKFLOW-SCRIPTS-0001` as the first narrow scripts-family release so `P3` can focus only on parent-ledger consumption and explicit register/bridge write-back verdicts.
+- 2026-04-23: rewrote the parent ledger so `R01/R02` are explicitly consumed by `DOC-WORKFLOW-SCRIPTS-0001` and fixed the current verdict as `no-register-change` plus `no-bridge-impact`.
