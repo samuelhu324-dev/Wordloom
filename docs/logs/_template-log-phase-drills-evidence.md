@@ -41,8 +41,11 @@
 ## Frontmatter Lifecycle-Time Rule
 
 - `created`, `updated`, and optional `reviewed` are the minimum artifact-lifecycle fields for this template.
+- These frontmatter fields own `artifact lifecycle time` only; they should not be overloaded to answer `semantic effective time` or `reader/routing validity time` for downstream contracts or ledgers.
 - Prefer canonical UTC-second timestamps such as `2026-04-13T08:15:30Z` when exact repo-side lifecycle audit matters.
 - Legacy day-only values such as `2026-04-13` remain valid when finer precision is unnecessary or unavailable.
+- If a later packet needs contract-effective dates, keep that rule on the contract surface rather than widening log frontmatter with duplicate semantic-effective fields by default.
+- If a later packet needs ledger-validity dates, treat those as routing/verdict fields on the ledger surface rather than as new log-lifecycle timestamps.
 - `reviewed` should be used only when the log is actually reviewed as one bounded governance packet; do not force it onto every scratch draft.
 
 ## Decision / Outcome

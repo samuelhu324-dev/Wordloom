@@ -29,6 +29,7 @@
   **phase_log_10**: `docs/logs/log-S0G-3F-runbook-revision-sequence-and-release-board-operational-register-governance.md`
   **phase_log_11**: `docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
   **phase_log_12**: `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
+  **phase_log_13**: `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -162,6 +163,7 @@
 - `S0G-3D` now opens the remaining identity-materialization decision: decide whether the current compatibility-era filename should be physically renamed in place or whether a successor-release identity should be opened with explicit lineage and compatibility routing.
 - `S0G-1B` now opens the next historical follow-up on the logs side: decide whether the earliest pre-`LOGS-0001` structured-log shape should open as one separate legacy family release, how that historical-only release should bridge into the current logs family, and how the `S0A-2A` logs-layer row should stop remaining deferred once that evidence is admitted.
 - `S0G-1C` now opens the scripts-governance follow-up on the `S0B-2A` side: decide whether the deferred scripts taxonomy and stable entrypoint rows should open one dedicated `DOC-WORKFLOW-SCRIPTS-0001` family release, how that first release should stay narrow, and how the parent ledger should record the resulting consumption explicitly.
+- `S0G-5A` now opens the time-semantics follow-up on the template side: separate artifact lifecycle time from semantic effective time and routing-validity time, fix the default derivation rule before a wider backfill sweep, and defer transition-window dates until real release coexistence exists.
 - `S0G-3F` now opens the next bounded release-governance follow-up: fix revision-sequence grammar and define the release board as a lightweight operational register for active runbook-family releases.
 - The next concrete work under this spine should now publish one minimum release-board issue-body rule under `S0G-3F`, then test it on one live release issue sample while leaving the broader `S0G-3D` and `S0G-4A` lanes available for their own bounded follow-up packets.
 
