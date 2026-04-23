@@ -55,6 +55,7 @@
 
 - `S0G-1C` opens as the bounded follow-up for the deferred scripts-governance candidate in `S0B-2A`.
 - This lane treats the problem as `family opening + first release scope + ledger consumption write-back` rather than as one immediate broad scripts cleanup sweep.
+- `P1` now fixes the first-release scope answer: `S0B-2A-R01` and `S0B-2A-R02` should be consumed together if the family opens as `DOC-WORKFLOW-SCRIPTS-0001`.
 - The immediate deliverable is one defended answer for:
   - whether `S0B-2A-R01` and `S0B-2A-R02` belong in one shared `DOC-WORKFLOW-SCRIPTS` family;
   - whether that family should open now as `DOC-WORKFLOW-SCRIPTS-0001`;
@@ -68,6 +69,7 @@
 - Keep `S0B-2A-R04` deferred as one possible OPS-owned family candidate unless this lane finds direct evidence that it belongs in the scripts family instead.
 - Keep `S0B-2A-R05` and `S0B-2A-R06` as support-only unless the lane finds a stronger reason to promote them beyond routing support.
 - Default first-release target is `DOC-WORKFLOW-SCRIPTS-0001`, not one transition register; a family register should open only if coexistence or reader-standing pressure becomes materially real.
+- `P1` fixes the first-release boundary as `scripts taxonomy + stable entrypoint`, while excluding labs snapshot-package semantics, OPS-side snapshot-root distinction, cutover mechanics, and stub-preservation support from `0001`.
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
 
@@ -181,6 +183,29 @@
 - If the scripts family opens, the parent ledger must rewrite `R01` and `R02` from `deferred` to one explicit consumed state.
 - Under this rule, the lane may not emit `DOC-WORKFLOW-SCRIPTS-0001` while leaving the source rows as unresolved candidates.
 
+## P1 (First-release scope | v1)
+
+### P1-C1-S1 (R01 and R02 must travel together in 0001 | v1)
+
+- `S0B-2A-R01` and `S0B-2A-R02` should be consumed together in `DOC-WORKFLOW-SCRIPTS-0001` if the family-opening verdict is positive.
+- `R01` owns the scripts-governance taxonomy boundary: scripts are classified by lifecycle and risk rather than by author memory or ad hoc filenames.
+- `R02` owns the stable reader and execution contract for that taxonomy: one consistent entrypoint, parameter contract, default safety posture, and permitted legacy reuse boundary.
+- The two rows therefore answer the same current reader question from adjacent sides:
+  - `where should workflow scripts live?`
+  - `how should readers invoke them safely and consistently once they are there?`
+- Opening `0001` with only `R01` would leave the family with naming and placement rules but no stable invocation surface.
+- Opening `0001` with only `R02` would leave the family with one entrypoint but no defended scripts classification boundary.
+- Under this rule, the first scripts-family release should treat `taxonomy + stable entrypoint` as one shared minimum rule body rather than as two separately deferred mini-families.
+
+### P1-C1-S2 (First-release exclusions fixed | v1)
+
+- `DOC-WORKFLOW-SCRIPTS-0001` should explicitly exclude `S0B-2A-R03`, `S0B-2A-R04`, `S0B-2A-R05`, and `S0B-2A-R06`.
+- `R03` is already consumed as the labs-only snapshot-package slice in `DOC-WORKFLOW-LABS-0002`; it should not be reabsorbed through the scripts family.
+- `R04` remains one possible `DOC-OPS-RUNBOOK-EVIDENCE` candidate because it governs the semantic split between `docs/runbook/_snapshot/` and `docs/labs/_snapshot/`, which is narrower operator-evidence routing rather than baseline scripts-family identity.
+- `R05` remains support-only because cutover timing and frozen-legacy migration rules explain how the repo moved, but do not by themselves define the stable scripts-family rule body.
+- `R06` remains support-only because stub preservation protects old links after relocation, but does not by itself define how workflow scripts are classified or invoked.
+- Under this rule, the first scripts release should stay narrow enough to answer `what is the stable scripts-governance reader?` without re-importing already-consumed labs evidence or adjacent migration-support mechanics.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -227,8 +252,8 @@
 
 ### P1 (First-release scope)
 
-- [ ] `P1-C1-S1`: define whether `R01` and `R02` are consumed together in `DOC-WORKFLOW-SCRIPTS-0001`
-- [ ] `P1-C1-S2`: define what remains explicitly outside the first scripts release
+- [x] `P1-C1-S1`: define whether `R01` and `R02` are consumed together in `DOC-WORKFLOW-SCRIPTS-0001`
+- [x] `P1-C1-S2`: define what remains explicitly outside the first scripts release
 
 ### P2 (Family opening)
 
@@ -242,8 +267,8 @@
 ## Current Status (recommended)
 
 - `S0G-1C` is now opened as the bounded scripts-family follow-up for the deferred `S0B-2A` rows.
-- The lane is still at scaffold stage: the family-opening verdict, first-release scope, and ledger-consumption write-back are not yet executed.
-- The next concrete step is to decide whether `R01` and `R02` really belong in one first scripts-family release and then either emit `DOC-WORKFLOW-SCRIPTS-0001` or record the explicit non-opening verdict.
+- `P1` now fixes the first-release scope: `R01` and `R02` travel together as the minimum `DOC-WORKFLOW-SCRIPTS-0001` rule body, while `R03` through `R06` remain outside the first release for different reasons.
+- The next concrete step is `P2`: either emit `DOC-WORKFLOW-SCRIPTS-0001` on that narrow scope or record the explicit non-opening verdict if the repo cannot defend the family opening yet.
 
 ## Evidence (reserved)
 
@@ -267,6 +292,24 @@
   - `R01` and `R02` are fixed as the only positive family-opening candidates in scope
   - the scaffold now makes explicit that `DOC-WORKFLOW-SCRIPTS-0001` may not be emitted without parent-ledger write-back and an explicit verdict on register/bridge impact
 
+### P1-C1-S1S2 (first-release scope fixed for DOC-WORKFLOW-SCRIPTS-0001 | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/logs/log-S0B-2A-scripts-snapshots-management.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+- expected:
+  - decide whether `R01` and `R02` belong in one first scripts-family release
+  - define which neighboring `S0B-2A` rows remain outside `DOC-WORKFLOW-SCRIPTS-0001`
+  - leave `P2` with one narrow, defended first-release body rather than one broad mixed-source packet
+- observed:
+  - `R01` and `R02` are fixed as one shared first-release rule body because taxonomy and stable entrypoint answer the same scripts-governance reader problem from complementary sides
+  - `R03` remains with `DOC-WORKFLOW-LABS-0002` and is explicitly excluded from the scripts family opening
+  - `R04` remains a deferred OPS-side candidate, while `R05` and `R06` remain support-only outside the first scripts release
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-1C` so the deferred `DOC-WORKFLOW-SCRIPTS` candidate from `S0B-2A` can be judged as one bounded family-opening lane instead of remaining one indefinite ledger note.
+- 2026-04-23: fixed the `P1` first-release scope so `DOC-WORKFLOW-SCRIPTS-0001` can now be judged on one narrow `R01 + R02` body without reabsorbing `R03-R06`.
