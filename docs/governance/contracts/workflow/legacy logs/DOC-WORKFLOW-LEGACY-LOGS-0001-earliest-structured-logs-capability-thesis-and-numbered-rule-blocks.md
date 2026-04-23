@@ -49,6 +49,7 @@ contract_record:
     - This file is a historical-only legacy-family release candidate rather than an earlier revision of DOC-WORKFLOW-LOGS.
     - The later DOC-WORKFLOW-LOGS-0001 reader replaces this historical reader as the current logs-facing contract surface, but no earlier clause body is carried forward into that later family by default.
     - The decisive workflow packet write-back target for this historical release is S0A-2A-R02, which is now defended through accepted `SUP-004` rather than direct source-path write-back alone.
+    - `effective_from` and `effective_until` remain `unknown` on purpose because the retained legacy logs plus accepted `SUP-004` defend reader shape and packet provenance, but still do not defend one stable historical execution timestamp for the earliest logs reader.
 ```
 
 ## Legacy Redirect
@@ -67,6 +68,12 @@ contract_record:
 - In this file, `status: retired` plus `approval_state: superseded-historical-release` means the earlier legacy logs release remains a governed historical release artifact, but the current logs-family reader has moved to `DOC-WORKFLOW-LOGS-0001`.
 - Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this historical family and should not be read as current ownership or current approval identity.
 - This contract therefore acts as the governed historical-release surface for the earliest structured-log shape, while `DOC-WORKFLOW-LOGS-0001` carries the later current logs-family reader and the accepted `SUP-004 -> parent ledger` write-back chain preserves how this historical reader entered the governed path.
+
+## Chronology Status
+
+- This release is currently `chronology-deferred`, not partially backfilled.
+- The retained legacy logs defend the earlier reader shape strongly enough to justify a historical-only contract, but they still do not preserve one defended date for when that reader first became effective.
+- Accepted `SUP-004` and the `S0A-2A` parent ledger keep the same boundary: reader-shape adjudication is accepted, chronology reconstruction is still unresolved, so `effective_from` and `effective_until` stay `unknown` rather than being guessed from later repo recording dates.
 
 ## Governance Event Table
 
@@ -97,6 +104,7 @@ contract_record:
 
 - This release records the earliest defended structured-log shape as one historical-only legacy family release.
 - It is recorded as a later `historical-backfill` release because the repo discovered that the two earliest structured logs are materially different from the later `DOC-WORKFLOW-LOGS-0001` family and should not be stretched into that family by default.
+- This release is intentionally kept `chronology-deferred`: the repo can now defend what the earlier reader looked like, but it still cannot defend when that earlier reader first became effective or when it ceased to be in force.
 - This release is intentionally kept as one retired historical reader:
   - it preserves the earliest capability-thesis and numbered-rule-block shape
   - it preserves the lightweight `Status` and `links` header style
@@ -124,3 +132,4 @@ contract_record:
 - The later `DOC-WORKFLOW-LOGS-0001` reader supersedes this file as the current logs-family contract surface, but the relationship is one reader replacement, not one clause carry-forward chain.
 - The accepted packet path for this reader is now explicit: `ledger-SUP-S0A-2A-004 -> ledger-S0A-2A -> DOC-WORKFLOW-LEGACY-LOGS-0001 -> DOC-WORKFLOW-LOGS-0001`.
 - The file uses `history-backfilled` retired rows because the lane is preserving one earlier structured reader shape without pretending the repo has reconstructed the same-time clause authoring chronology in finer detail.
+- The unresolved chronology is explicit, not accidental: until new upstream time evidence appears, this file should remain `chronology-deferred` rather than receiving inferred dates from later recording or review events.
