@@ -23,6 +23,11 @@ support_only_contract_release_ledger:
   - keep examples, template snippets, and operational illustrations as support-only evidence unless later corroboration proves they belong in contract meaning
   - defer any actual `LOGS-0002` release opening until at least one more post-cutover sample corroborates the current candidate rows
 - The purpose of this ledger is to make the `S0C-1A` extraction reviewable now rather than leaving it as one vague `LOGS-0002` candidate blob inside the control log.
+- After the first-sample boundary test, the current provisional split is:
+  - `R01`, `R02`, and `R04` as the provisional `LOGS-0002` candidate bucket
+  - `R03` as one provisional `LOGS-0001` boundary-amendment bucket
+  - `R05` as support-only
+- The explicit current contract impact verdict for this first sample is `no-contract-mutation-for-now` until one second post-cutover sample corroborates the provisional buckets.
 
 ## Current Governance State
 
@@ -39,9 +44,9 @@ support_only_contract_release_ledger:
 | row id | source slice | meaning owned here | target family | target release action | contract lineage impact | retained-only action | resolution status | resolved by contract id | consumed scope | resolution notes | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `S0C-1A-R01` | `Decision / Outcome` section in [log-S0C-1A-log-extensions.md](d:/Project/wordloom-v3/docs/logs/log-S0C-1A-log-extensions.md) | structured logs should expose one top-level conclusion surface so readers can identify the current decision state quickly | `DOC-WORKFLOW-LOGS` | `new-release` | `none-source-only` | `keep-in-log` | `draft` | `none` | `none` | candidate next-release clause for `DOC-WORKFLOW-LOGS-0002`; still waiting for corroborating sample evidence | This is the strongest rule-bearing slice in the source and is the most likely direct clause candidate for a later `0002` release. |
-| `S0C-1A-R02` | `Decision / Outcome` minimum fields in [log-S0C-1A-log-extensions.md](d:/Project/wordloom-v3/docs/logs/log-S0C-1A-log-extensions.md) | the top-level conclusion surface should keep a stable minimum field set: Decision, Drivers, Non-goals, and Success criteria | `DOC-WORKFLOW-LOGS` | `new-release` | `none-source-only` | `keep-in-log` | `draft` | `none` | `none` | candidate supporting child clause or clause detail for `DOC-WORKFLOW-LOGS-0002`; still waiting for corroborating sample evidence | This slice may later become either its own narrow clause or a structured detail note beneath the broader conclusion-block rule. |
-| `S0C-1A-R03` | `status` ownership rule in [log-S0C-1A-log-extensions.md](d:/Project/wordloom-v3/docs/logs/log-S0C-1A-log-extensions.md) | top-level front matter should own log state instead of repeated per-section draft/stable/archived timelines in the body | `DOC-WORKFLOW-LOGS` | `new-release` | `none-source-only` | `keep-in-log` | `draft` | `none` | `none` | candidate next-release amendment or boundary clarification for `DOC-WORKFLOW-LOGS-0002`; still waiting for corroborating sample evidence | This row most clearly touches the current `LOGS-0001` front-matter/body boundary and may later resolve as amendment rather than wholly new clause. |
-| `S0C-1A-R04` | `current effective content only` rule in [log-S0C-1A-log-extensions.md](d:/Project/wordloom-v3/docs/logs/log-S0C-1A-log-extensions.md) | the body should preserve current effective content, while historical drift should normally leave through git history, legacy, or stub paths rather than remain as multi-timeline prose | `DOC-WORKFLOW-LOGS` | `new-release` | `none-source-only` | `keep-in-log` | `draft` | `none` | `none` | candidate next-release clause for `DOC-WORKFLOW-LOGS-0002`; still waiting for corroborating sample evidence | This is the clearest long-lived maintenance discipline in the sample and may later interact with lifecycle/legacy routing contracts. |
+| `S0C-1A-R02` | `Decision / Outcome` minimum fields in [log-S0C-1A-log-extensions.md](d:/Project/wordloom-v3/docs/logs/log-S0C-1A-log-extensions.md) | the top-level conclusion surface should keep a stable minimum field set: Decision, Drivers, Non-goals, and Success criteria | `DOC-WORKFLOW-LOGS` | `new-release` | `none-source-only` | `keep-in-log` | `draft` | `none` | `none` | provisional `LOGS-0002` child-clause bucket; still waiting for corroborating sample evidence | This slice may later become either its own narrow clause or a structured detail note beneath the broader conclusion-block rule. |
+| `S0C-1A-R03` | `status` ownership rule in [log-S0C-1A-log-extensions.md](d:/Project/wordloom-v3/docs/logs/log-S0C-1A-log-extensions.md) | top-level front matter should own log state instead of repeated per-section draft/stable/archived timelines in the body | `DOC-WORKFLOW-LOGS` | `note-only-reconciliation-or-later-release` | `none-source-only` | `keep-in-log` | `draft` | `none` | `none` | provisional `LOGS-0001` boundary-amendment bucket; still waiting for corroborating sample evidence before any mutation path is chosen | This row most clearly touches the current `LOGS-0001` front-matter/body boundary and is therefore not being treated as one automatic `LOGS-0002` clause. |
+| `S0C-1A-R04` | `current effective content only` rule in [log-S0C-1A-log-extensions.md](d:/Project/wordloom-v3/docs/logs/log-S0C-1A-log-extensions.md) | the body should preserve current effective content, while historical drift should normally leave through git history, legacy, or stub paths rather than remain as multi-timeline prose | `DOC-WORKFLOW-LOGS` | `new-release` | `none-source-only` | `keep-in-log` | `draft` | `none` | `none` | provisional `LOGS-0002` clause bucket; still waiting for corroborating sample evidence | This is the clearest long-lived maintenance discipline in the sample and may later interact with lifecycle/legacy routing contracts. |
 | `S0C-1A-R05` | `Applied` and `Example` support sections in [log-S0C-1A-log-extensions.md](d:/Project/wordloom-v3/docs/logs/log-S0C-1A-log-extensions.md) | examples and copyable template snippets validate usability but do not yet read as primary contract meaning | `none` | `no-contract` | `none-source-only` | `support-only` | `retained-support-only` | `none` | `none` | retained as support-only evidence unless later corroborating samples prove template-level language belongs in release-local contract text | These sections are useful for operator adoption and evidence, but they are not the clearest current owner of stable governance meaning. |
 
 ## Row Id Map
@@ -59,7 +64,7 @@ support_only_contract_release_ledger:
 
 ## Deferred Slices
 
-- whether `S0C-1A-R03` should resolve as one amended logs-family boundary note or as one new explicit `LOGS-0002` clause
+- whether `S0C-1A-R03` should resolve as one `LOGS-0001` note-only reconciliation, one later `LOGS-0002` boundary clause, or one other release-level amendment path after corroborating evidence exists
 - whether example/template language should remain support-only permanently or later contribute to release-local wording after corroborating samples exist
 - whether opening `DOC-WORKFLOW-LOGS-0002` would require `register-DOC-WORKFLOW-LOGS.md` because `0001` remains reader-relevant after the new release opens
 
@@ -85,9 +90,11 @@ support_only_contract_release_ledger:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `S0C-1A-GOV-01` | `contribution-event` | `S0C-1A source log` | `unknown` | `none-current-state` | `2026-04-23` | `docs/logs/log-S0C-1A-log-extensions.md` | The original source log remains the defended contribution source, but it does not by itself prove the current steward or approval chain for later logs-family release work. |
 | `S0C-1A-GOV-02` | `routing-writeback-event` | `ledger-S0C-1A-log-extensions` | `role:packet-reviewer` | `current-routing-draft-fixed` | `2026-04-23` | `S0C-1A-R01` through `S0C-1A-R05` | The source-owned ledger now fixes the current extraction draft, separating likely `LOGS-0002` candidate rows from support-only evidence. |
+| `S0C-1A-GOV-03` | `boundary-test-event` | `ledger-S0C-1A-log-extensions` | `role:packet-reviewer` | `first-sample-provisional-buckets-fixed` | `2026-04-24` | `S0G-3G/P2-C1-S1S2` | The first-sample boundary test now distinguishes provisional `LOGS-0002` rows, one provisional `LOGS-0001` boundary-amendment row, and support-only evidence without opening downstream mutation yet. |
 
 ## Reader Notes
 
 - This ledger now confirms that `S0C-1A` should be read as one source-owned extraction packet rather than as one lane-owned aggregate ledger.
-- The current routing draft points `R01` through `R04` toward possible `DOC-WORKFLOW-LOGS-0002` consumption, but none of those rows is resolved yet because corroborating modern samples are still missing.
+- The current first-sample split now points `R01`, `R02`, and `R04` toward a provisional `DOC-WORKFLOW-LOGS-0002` bucket, while `R03` is held as one provisional `LOGS-0001` boundary-amendment question rather than one automatic `0002` clause.
+- None of the non-support rows is resolved yet because corroborating modern samples are still missing and the explicit current verdict is `no-contract-mutation-for-now`.
 - `R05` remains support-only on purpose: examples and template snippets currently validate the rule set more strongly than they express primary release-local contract meaning.

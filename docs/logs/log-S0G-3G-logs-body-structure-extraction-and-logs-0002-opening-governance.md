@@ -37,7 +37,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-23`
-**updated**: `2026-04-23`
+**updated**: `2026-04-24`
 **reviewed**: `pending`
 
 ---
@@ -55,6 +55,7 @@
 - `S0G-3G` opens the bounded lane for extracting repeated log body-structure rules from structured logs and deciding whether those rules justify `DOC-WORKFLOW-LOGS-0002` as the next release in the same `DOC-WORKFLOW-LOGS` family.
 - This lane uses `log -> source-owned support-only ledger (or + SUP if later evidence sharpening becomes necessary) -> contract release -> conditional register writeback` as the operating chain: source logs remain the extraction surface, each extracted source gets its own ledger named after the source id, and contract mutation is deferred until repeated evidence makes the next release defensible.
 - Later log samples should enter this lane as new `C` items by default; do not open a new sibling source log every time one more sample is added unless the new sample clearly opens a materially different source-log extraction problem.
+- `P2-C1` is now completed for the first sample only: `S0C-1A` is clustered into provisional `candidate LOGS-0002 clauses`, `candidate LOGS-0001 boundary amendments`, and `support-only` material, with the explicit current verdict `no-contract-mutation-for-now` until corroborating evidence exists.
 
 **Default choices (phase defaults / v1)**:
 
@@ -194,6 +195,27 @@
 - `P2-C1-S1`: cluster the admitted sample rows into provisional rule buckets
 - `P2-C1-S2`: decide whether the current evidence supports `no-op`, `LOGS-0001` note-only reconciliation, or `LOGS-0002` as the next same-family release
 
+### P2-C1-S1 (S0C-1A provisional rule buckets fixed | v1)
+
+- The first admitted sample now yields one explicit provisional split rather than one undifferentiated `LOGS-0002` candidate blob.
+- Provisional `candidate LOGS-0002 clause` bucket:
+  - `S0C-1A-R01`: top-level `Decision / Outcome` conclusion surface
+  - `S0C-1A-R02`: minimum conclusion fields
+  - `S0C-1A-R04`: current-effective body-content discipline
+- Provisional `candidate LOGS-0001 boundary amendment` bucket:
+  - `S0C-1A-R03`: top-level frontmatter `status` ownership versus per-section lifecycle repetition in the body
+- Provisional `support-only` bucket:
+  - `S0C-1A-R05`: applied examples and copyable template snippets
+- This split is intentionally provisional because it is still based on one sample only.
+
+### P2-C1-S2 (First-sample contract impact verdict fixed explicitly | v1)
+
+- The current explicit verdict is `no-contract-mutation-for-now`.
+- `LOGS-0001` should not be patched immediately from `S0C-1A`, because the body-structure material is still first-sample evidence rather than repeated family evidence.
+- `LOGS-0002` should not be scaffolded yet, because the current candidate rows have not been corroborated by one second post-cutover sample.
+- `LOGS-0001 note-only reconciliation` is also deferred for now: the boundary interaction is now understood, but the repo does not yet need one live note-only patch on `0001` before the second sample clarifies which rows are truly stable family meaning.
+- Under this rule, `S0C-1A` is now a completed first-sample packet: extraction plus provisional clustering plus explicit no-mutation verdict are fixed, and the next lane action returns to sample selection rather than reopening this sample's boundary test.
+
 ### P3 (Downstream write-back)
 
 - `P3-C1-S1`: if the boundary test passes, scaffold the downstream `LOGS-0002` release-opening packet and any required bridge notes
@@ -215,8 +237,8 @@
 
 ### P2 (Boundary test)
 
-- [ ] `P2-C1-S1`: admitted sample rows clustered into provisional rule buckets
-- [ ] `P2-C1-S2`: contract impact verdict fixed explicitly
+- [x] `P2-C1-S1`: admitted sample rows clustered into provisional rule buckets
+- [x] `P2-C1-S2`: contract impact verdict fixed explicitly
 
 ### P3 (Downstream write-back)
 
@@ -226,8 +248,9 @@
 
 - `S0G-3G` is now scaffolded as the bounded source-log lane for testing whether repeated modern log body-structure evidence warrants `LOGS-0002` as the next release in the same `DOC-WORKFLOW-LOGS` family.
 - `S0C-1A` is now fixed as the first extracted sample: its candidate rule set has been split into conclusion-block, minimum-field, top-level-status, current-effective-body, and supporting-evidence rows inside the source-owned ledger `ledger-S0C-1A-log-extensions.md`.
-- No `LOGS-0002` contract mutation is warranted yet because every extracted row is still first-sample evidence only.
-- The next concrete step is `P1-C2-S1`: admit one more post-cutover corroborating sample so `P2-C1` can classify which rows are true next-release clauses versus support-only evidence.
+- `P2-C1` is now fixed for that first sample: `R01`, `R02`, and `R04` sit in the provisional `LOGS-0002` bucket, `R03` sits in the provisional `LOGS-0001 boundary amendment` bucket, and `R05` remains support-only.
+- No `LOGS-0002` contract mutation is warranted yet because every non-support row is still first-sample evidence only, so the explicit current verdict is `no-contract-mutation-for-now`.
+- The next concrete step is now back to `P1-C2-S1`: choose one more post-cutover corroborating sample so the current provisional buckets can either harden into repeatable release meaning or collapse back into source-local preference.
 
 ## Evidence (reserved)
 
@@ -260,8 +283,26 @@
   - the sample's applied examples and copyable template snippet are now recorded as supporting evidence rather than primary contract meaning
   - all extracted rows remain `first-sample-only`, so `LOGS-0002` still requires corroborating samples before release opening is justified
 
+### P2-C1-S1S2 (S0C-1A provisional split and no-mutation verdict fixed | 2026-04-24)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+  - `docs/logs/support-only/ledger-S0C-1A-log-extensions.md`
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+- expected:
+  - cluster the first sample rows into explicit provisional buckets instead of leaving them as one generic `LOGS-0002` candidate set
+  - record whether the current evidence supports immediate `LOGS-0001` reconciliation, immediate `LOGS-0002`, or neither
+  - close the first-sample packet without pretending that corroboration already exists
+- observed:
+  - `R01`, `R02`, and `R04` are now recorded as the provisional `LOGS-0002` candidate bucket
+  - `R03` is now recorded as the provisional `LOGS-0001` boundary-amendment bucket because it most directly touches frontmatter/body ownership already governed in `0001`
+  - `R05` remains support-only
+  - the explicit current contract impact verdict is `no-contract-mutation-for-now`, so this first sample is now fully classified without opening `LOGS-0002` yet
+
 ## Recent changes
 
 - 2026-04-23: opened `S0G-3G` as the bounded lane for cross-sample log body-structure extraction and candidate `LOGS-0002` same-family release opening.
 - 2026-04-23: fixed `S0C-1A` as the first sample and fixed one dedicated parent-ledger landing surface for later sample rows.
 - 2026-04-23: completed `P1-C1-S1S2` by extracting `S0C-1A` into explicit candidate rule rows and separating likely `LOGS-0002` clauses from support-only pattern evidence.
+- 2026-04-24: completed `P2-C1-S1S2` for the first sample by classifying the `S0C-1A` rows into provisional `LOGS-0002`, provisional `LOGS-0001` boundary-amendment, and support-only buckets, and by fixing the explicit current verdict as `no-contract-mutation-for-now`.
