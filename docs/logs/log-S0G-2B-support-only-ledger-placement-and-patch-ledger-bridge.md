@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Workflow, Automation, Evidence, epic/s0, sub/2b`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/532`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/533`
   **runbook**: `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0G-docs-management-v7.md`
@@ -71,6 +71,20 @@
 - `P1`: patch-ledger bridge contract and template surface
 - `P2`: `WORKFLOW-GITHUB-001` binding rewrite plus first reserved PATCH ledger surface
 - `P3`: next-lane decision after support-only and patch bridge hardening
+
+## PR Summary Inputs (optional)
+
+- This packet fixes ledger placement and patch-ledger binding rules that later full-auto runs depend on, so the PR summary should stay focused on support-only routing, patch-ledger structure, and the return to real sample execution.
+
+**PR summary bullets**:
+
+- Fix support-only as the canonical home for parent, SUP, and PATCH run ledgers.
+- Rebind `WORKFLOW-GITHUB-001` to structured support-only patch-ledger surfaces instead of log-first patch notes.
+- Lock the next lane back to real full-auto sample execution once the bridge and placement rules are fixed.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the generated PR checklist block.
 
 ## Success Criteria (DoD)
 
