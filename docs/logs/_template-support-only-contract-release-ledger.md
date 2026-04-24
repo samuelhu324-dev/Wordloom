@@ -10,6 +10,8 @@
 
 - Name ledgers as `ledger-<source-id>-<source-summary>.md`.
 - The `<source-id>` should match the source log or issue identifier being routed.
+- When one control log or lane evaluates several extracted source logs, do not name the ledger after the control lane id.
+- In that case, open one ledger per extracted source and keep the source id in the filename, for example `ledger-S0C-1A-log-extensions.md` rather than `ledger-S0G-3G-...`.
 - The `<source-summary>` should reuse the source summary itself, normalized to filename shape rather than inventing a second naming scheme.
 - Preferred example shapes:
   - `ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
@@ -32,6 +34,22 @@ support_only_contract_release_ledger:
   target_reading_goal: <what later reader should understand after this ledger is applied>
 ```
 
+## Recommended Decision Frame
+
+- Add one short `Decision Frame` section near the top.
+- This section should explain:
+  - whether the ledger is a first routing draft, selective backfill scaffold, or completed routing record
+  - what the current default routing verdict is
+  - what the ledger is trying to make reviewable now
+
+## Recommended Current Governance State
+
+- Add one `Current Governance State` section whenever the parent ledger already coexists with one or more current contract surfaces.
+- This section should record current owner/steward/review/approval state for:
+  - the ledger itself
+  - any already-relevant child or parent contracts that the routing table resolves into now
+- Keep this section current-state only; do not replay packet history or contribution chronology here.
+
 ## Lifecycle Field Rule
 
 - New writes should use canonical UTC second timestamps such as `2026-04-12T15:18:05Z` for artifact-lifecycle fields.
@@ -42,9 +60,12 @@ support_only_contract_release_ledger:
 - `accepted_at` records when the ledger is accepted as the current parent routing surface for later supplement or contract work.
 - These fields are artifact-lifecycle timestamps only; they do not claim to describe when the underlying historical rule first became effective.
 
-## Optional Row Chronology Audit
+## Row Chronology Audit
 
-Use this when one parent-ledger row also needs explicit time audit for source observation, source recording, or historical-effective range without overloading the main routing table.
+Every support-only contract-release ledger should include one row chronology audit.
+
+- This audit is the default and required surface for parent-ledger time work; do not add `resolution valid from` or `resolution valid until` columns to the core routing table unless one later bounded lane proves that reader-facing routing validity cannot be explained any other way.
+- Even when every value is currently `unknown`, keep the section present so later chronology repair has one stable landing surface.
 
 | row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -54,8 +75,9 @@ Use this when one parent-ledger row also needs explicit time audit for source ob
 - `source recorded at` is the best known time that source material itself was written down, published, or admitted.
 - `source effective from` and `source effective until` describe the best known historical-effective range for the routed source slice.
 - `time precision` must reflect the strongest defended precision only; do not fabricate seconds when the source proves only a date.
+- If one later release also records `recorded_at` or one parent-ledger governance event records write-back timing, keep those later chronology fields separate from this row-level source chronology rather than copying them back into `source effective from`.
 
-## Routing Table Shape
+## Routing And Consumption Table
 
 | row id | source slice | meaning owned here | target family | target release action | contract lineage impact | retained-only action | resolution status | resolved by contract id | consumed scope | resolution notes | notes |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -83,7 +105,37 @@ Use this when one parent-ledger row also needs explicit time audit for source ob
   - `rejected`
 - `resolved by contract id` should name the later release that consumed the slice when consumption actually happened.
 - `consumed scope` states whether the slice was consumed fully, partially, or not at all.
+- `resolution status` and `resolution notes` are the default surfaces for the current routing verdict; do not widen the main routing table with standing-window dates unless one later bounded packet proves the register/log surfaces are insufficient.
+- If reviewers need to explain `when the source existed` versus `when the ledger write-back happened`, prefer one row chronology audit, governance event row, or short note rather than overloading `resolution notes` to stand in for contract effective time.
 - If one later release absorbs new non-contract source material, record that fact here and carry the source forward in the later release metadata; do not fabricate `absorbed_from` links to sources that were never contracts.
+- Use the core routing columns to answer `what happened to this source slice`; do not add extra routing columns only to preview downstream contract-reader shape.
+- If later readers still need one concise explanation of whether the consumed slice now reads through a broad parent summary, a narrow current reader, or a still-deferred background state, prefer one short rollup or reader note rather than widening the routing table itself.
+
+## Recommended Governance Event Table
+
+- Add one `Governance Event Table` whenever the ledger already carries current governance state or later routing-writeback history that readers should not confuse with source chronology.
+- Recommended columns:
+  - `event id`
+  - `event kind`
+  - `affected surface`
+  - `actor value`
+  - `effective state impact`
+  - `recorded at`
+  - `source basis`
+  - `notes`
+- Typical event kinds include:
+  - `contribution-event`
+  - `routing-writeback-event`
+  - `evidence-sharpening-event`
+  - `delegated-stewardship-event`
+  - `review-approval-separation-event`
+  - `current-reader-handoff-fixed`
+
+## Recommended Reader Notes
+
+- Add `Reader Notes` near the end of the file.
+- Use this section to explain the current reading path briefly once routing, chronology, and governance state are all present.
+- Keep this section short and reader-facing; do not replay the whole routing table in prose.
 
 ## Completion Rule
 
@@ -110,3 +162,20 @@ Use this when one parent-ledger row also needs explicit time audit for source ob
   - list source slices that still need judgment later
 - `unconsumed slices`:
   - list source slices that were intentionally not promoted into a release
+- `current reader handoff`:
+  - use this optional rollup when resolved rows now land in materially different downstream reader shapes, for example `broad parent summary`, `narrow current reader`, or `bounded background only`
+  - keep this rollup short and reader-facing; it clarifies where the current reading lives after routing, but it does not replace the routing table, contract lineage, or contract-local current-reading sections
+
+## Minimum Practical Shape
+
+For current repo usage, a parent ledger is usually under-specified if it contains only header plus routing table.
+
+- The practical minimum expected shape is:
+  - YAML header
+  - `Decision Frame`
+  - `Current Governance State` when current child/parent surfaces already exist
+  - `Routing And Consumption Table`
+  - `Row Chronology Audit`
+  - `Governance Event Table`
+  - at least one short rollup or `Reader Notes`
+- If one generated ledger is missing these sections, it will usually be too thin to support later chronology repair, current-state reading, or controlled contract release work.

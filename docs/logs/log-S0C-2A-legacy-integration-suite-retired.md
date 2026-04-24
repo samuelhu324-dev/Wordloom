@@ -1,29 +1,66 @@
-# Log-S0C-2A: legacy integration suite retired（测试退役治理）
+# log-S0C-2A (Phase 2A: legacy integration suite retired and current-test protection rewrite)
 
 ---
 
 **id**: `S0C-2A`
-**kind**: `log`               # log | lab | runbook | adr | note
-**title**: `testing/legacy integration suite retired`
-**status**: `stable`          # draft | stable | archived
+**kind**: `log`
+**title**: `testing legacy integration suite retired and current-test protection rewrite v1`
+**status**: `stable`
 **scope**: `S0C`
-**tags**: `EVOLOTION, Docs, lab, sub/1`
+**tags**: `EVOLUTION, Testing, Drills, Evidence, epic/s0c, sub/2a`
 **links**: ``
-  **issue**: `null`
-  **pr**: `null`
+  **issue**: ``
+  **pr**: ``
   **adr**: `docs/adr/adr-S2B-legacy-integration-suite-retired.md`
-  **runbook**: `null`
+  **runbook**: ``
+  **parent_log**: ``
+  **previous_log**: ``
+  **reference_log_1**: `docs/logs/log-S2B-1A-failure-contract-v1.md`
+**issue_keyword**: `evidence`
+**issue_top_labels**: ``
+**issue_scope_labels**: ``
+**issue_module_labels**: ``
+**issue_milestone**: ``
+**issue_parent**: ``
+**issue_projects**: ``
+**roadmap_path**: ``
+**roadmap_milestone**: ``
+**roadmap_phase**: ``
+**roadmap_bridge_refs**: ``
+**pr_labels**: `drills`
+**pr_projects**: ``
+**pr_milestone**: ``
+**pr_base**: ``
+**pr_development_issue**: ``
 **created**: `2026-02-17`
-**updated**: `2026-02-17`
+**updated**: `2026-04-24`
+**reviewed**: `pending`
+**source_reader_model**: `mixed-source-v1`
+**extraction_surface_version**: `extractable-rules-v1`
 
 ---
 
-## Decision / Outcome（结论区）
+## Frontmatter Lifecycle-Time Rule
 
-- 将 `backend/api/app/tests/test_library/test_integration_round_trip.py` 标记为 **module-level skip**，作为“已退役的 legacy integration suite”，不再作为当前系统的质量门禁。
-- 将 `backend/api/app/tests/test_integration_four_modules.py` 标记为 **module-level skip**，作为“已退役的 legacy integration narrative suite”，不再作为当前系统的质量门禁。
-- 退役理由明确写入：该套件依赖 `modules.*` 旧导入路径与已不存在的 legacy domain API（如 `Block.create_text` 等），其失败不代表当前系统回归。
-- 用“面向当前系统的测试”作为替代保护网：应用层 use case 测试（ports + repo + 异常映射）、关键仓储/基础设施合约测试、必要的 domain 不变量测试。
+- `created`, `updated`, and optional `reviewed` are artifact-lifecycle fields only.
+- This source log records when the retirement packet was authored and later refit; it does not claim to define semantic-effective dates for any later contract or ledger route.
+- Any later family-routing or release-effective dates should remain on downstream ledger or contract surfaces rather than being widened into this log frontmatter.
+
+## Decision / Outcome
+
+**Decision**:
+
+- Retire the legacy integration suites `backend/api/app/tests/test_library/test_integration_round_trip.py` and `backend/api/app/tests/test_integration_four_modules.py` by module-level skip instead of forcing the current system to stay compatible with obsolete `modules.*` paths and removed legacy domain APIs.
+- Treat the retirement as a current-system protection decision: the active quality gate should move to tests that exercise current use-case, repository, exception-mapping, and domain-invariant behavior rather than preserving obsolete integration narratives as hard gates.
+- Keep the retirement reason explicit and auditable through the paired ADR/log references and through one reproducible pytest result that proves coverage moved rather than disappeared.
+
+**Default choices (phase defaults / v1)**:
+
+- When one test suite fails only because it encodes obsolete layout or removed APIs, prefer explicit retirement plus current replacement coverage over compatibility shims that distort the current architecture.
+- Strong source structure alone is not enough to make this log one `DOC-WORKFLOW-LOGS` sample: downstream routing still depends on whether the extracted rows express reusable log-body meaning rather than testing-lifecycle or repo-test governance.
+- If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
+- If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
+- Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
 
 **验证结果（当次证据）**：
 
@@ -72,14 +109,100 @@
   - 必须能指出当前系统对应的测试覆盖位置（文件/目录级即可）；
   - 需要一次可复现的通过结果（pytest 输出）作为证据。
 
+## Extractable Rule Surface
+
+| packet id | source anchor | extraction class | candidate text | downstream owner | split status | shared reason group | evidence refs | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `R01` | `Decision / Outcome` bullet 1-3 | `contract-candidate` | Legacy test suites that depend on deprecated module layout or removed APIs should be retired by explicit module-level skip instead of being force-fixed into the current system. | `contract` | `needs-corroboration` | `RG-01` | `docs/adr/adr-S2B-legacy-integration-suite-retired.md` | Stable candidate, but it is not a logs-family body-structure rule. |
+| `R02` | `What/How to do -> 1) 退役规则：skip 而不是“硬修到绿”` | `contract-candidate` | Retirement-by-skip should carry one explicit skip message that states the retirement reason and links to the governing ADR/log packet. | `contract` | `needs-corroboration` | `RG-01` | `docs/adr/adr-S2B-legacy-integration-suite-retired.md` | This is a narrow operational rule candidate for future test-lifecycle governance. |
+| `R03` | `Decision / Outcome` bullet 4; `What/How to do -> 2) 替代保护网` | `contract-candidate` | Retiring one obsolete suite must be paired with current-system replacement coverage at the application, repository, or still-live domain-invariant layers. | `contract` | `needs-corroboration` | `RG-02` | `api/app/tests/test_book/test_application_layer.py`; `api/app/tests/test_block/test_repository.py` | Stable rule candidate for test-governance routing, but not a logs-body clause. |
+| `R04` | `What/How to do -> 3) 证据链要求（DoD）`; `验证结果（当次证据）` | `support-only` | Retirement should keep one reproducible proof that replacement coverage passed after the obsolete suites were removed from the active gate. | `support-only` | `not-for-extraction` | `RG-02` | `api/app/tests/test_library`; `pytest -q` | Evidence requirement is valuable, but the concrete pass counts are support-only rather than primary contract text. |
+
+### Shared Reason Groups
+
+| reason group | applies to packet ids | reason summary | source refs | notes |
+| --- | --- | --- | --- | --- |
+| `RG-01` | `R01; R02` | Obsolete integration narratives create false negatives and incentivize compatibility shims that distort the current architecture. | `Problem / Malfunction`; `What/How to do -> 1)` | Shared rationale for explicit retirement and explicit retirement messaging. |
+| `RG-02` | `R03; R04` | Retirement is only defensible when current-system behavior remains protected through replacement tests and one reproducible evidence trail. | `Decision / Outcome`; `What/How to do -> 2)`; `What/How to do -> 3)` | Shared rationale for replacement coverage and retained evidence. |
+
+## Source Reader Model / Versioning
+
+| field | value | notes |
+| --- | --- | --- |
+| current source reader model | `mixed-source-v1` | Decision plus bounded extraction table over one mixed testing-governance packet. |
+| extraction surface version | `extractable-rules-v1` | This refit exposes stable retirement and replacement-coverage candidates explicitly. |
+| compatibility expectation | `forward-readable` | Older readers can still use the narrative body, while later extractors should prefer the extraction table. |
+| migration note | `2026-04-24 refit adds explicit extraction rows without changing the original retirement outcome.` | Source-reader update only; not a release-semantic change. |
+
+## Optional Required Processing Chain
+
+| chain step | required state | primary owner surface | trigger question | completion evidence | notes |
+| --- | --- | --- | --- | --- | --- |
+| `source extraction` | `required` | `S0C-2A` | `Has the retirement packet been normalized into reusable rule candidates rather than left as mixed narrative only?` | `Extractable Rule Surface rows R01-R04` | Required for later routing review. |
+| `SUP` | `not-required` | `n/a` | `Is later evidence needed only to sharpen one already-routed row?` | `explicit no-SUP verdict` | Current packet already carries enough direct evidence for first-pass routing. |
+| `parent ledger` | `required` | `source-owned support-only ledger for S0C-2A` | `Does the packet need an explicit routing verdict against S0G-3G and possible downstream families?` | `ledger-S0C-2A-legacy-integration-suite-retired.md` | Required to separate extraction from downstream family choice. |
+| `contract impact decision` | `required` | `S0C-2A` | `Is this packet a logs-family sample, a family-mismatch sample, or a future non-logs contract candidate?` | `explicit classified verdict` | Boundary gate for this refit. |
+| `contract mutation` | `conditional` | `future family contract or n/a` | `Does this packet change defended current contract meaning now?` | `explicit admitted-or-no-op verdict` | This packet is now admitted into `DOC-WORKFLOW-LIFECYCLE-0002`, while still leaving `DOC-WORKFLOW-LOGS` unchanged. |
+| `transition register update` | `conditional` | `affected family register or n/a` | `Did any family-level current-reader standing change?` | `explicit register update or no-register-change verdict` | This packet now changes lifecycle-family release standing, but not logs-family standing. |
+| `bridged contract reconciliation` | `not-required` | `n/a` | `Do current readers need redirect or bridge notes because of this packet?` | `explicit no-bridge-impact verdict` | No current bridge write-back is needed in this round. |
+
+## Exported Sections / Outlet Ownership
+
+**Outlet ownership**:
+
+- `contract`: potential future landing for a narrower test-retirement or test-lifecycle family if corroborating source packets appear.
+- `runbook`: no-op for now; this packet states policy and evidence more than repeatable operator procedure.
+- `view`: no-op for now; no reader-facing summary surface is needed yet.
+- `index/front-door`: no-op for now.
+- `disposition/placement`: this source remains the retained historical proof of why the legacy suites were removed from the active gate.
+- `log-retained core`: the retirement decision, replacement-coverage rule, and bounded evidence summary remain readable here.
+
+## Definitions
+
+- **legacy integration suite**: a test packet that still encodes obsolete layout, import paths, or removed APIs and therefore no longer measures current-system behavior faithfully.
+- **replacement coverage**: current-system tests that protect the behavior still worth gating after the obsolete suite is retired.
+- **false negative**: a failure produced by outdated assumptions rather than by a regression in the current system.
+
+## Constraints
+
+- Do not treat obsolete integration narratives as required active gates once their assumptions no longer match the current system.
+- Do not retire a failing suite without naming the replacement-coverage surface.
+- Do not treat this packet as a logs-family body-structure source merely because it now has a well-structured extraction table.
+
+## Current Status
+
+- `S0C-2A` now reads as one explicit retirement-governance packet: obsolete suites were removed from the active gate, replacement coverage was named, and the local evidence trail was preserved.
+- Under the current extraction model, the packet yields reusable retirement and replacement-coverage candidates, but those candidates still do not map to `DOC-WORKFLOW-LOGS-0002` clause ownership.
+- The packet therefore remains a useful structured sample and a useful negative control for `S0G-3G` on the logs side, while its reusable retirement rows are now admitted into `DOC-WORKFLOW-LIFECYCLE-0002` as one later integrated lifecycle release.
+
+## Evidence
+
+### Retirement And Replacement Coverage (2026-02-17)
+
+- headSha: ``
+- artifacts:
+  - `docs/adr/adr-S2B-legacy-integration-suite-retired.md`
+  - `backend/api/app/tests/test_library/test_integration_round_trip.py`
+  - `backend/api/app/tests/test_integration_four_modules.py`
+  - `api/app/tests/test_book/test_application_layer.py`
+  - `api/app/tests/test_block/test_repository.py`
+- expected:
+  - obsolete integration narratives should stop blocking current delivery once the repo has clearer current-system protection
+  - replacement coverage should be identifiable and one reproducible pytest result should remain attached to the retirement packet
+- observed:
+  - both legacy integration suites were retired through module-level skip rather than compatibility repair
+  - current-system protection was redirected to current application-layer and repository-focused tests
+  - the packet retained one reproducible pytest result for the local library scope and one whole-suite result
+
 ## Next
 
-- 将“legacy suite 退役治理”沉淀为一个小型规范（何时 skip、skip message 模板、替代测试清单）。
-- 继续推进全量 `pytest -q` 从“可运行”到“可维护地全绿”（逐个收敛剩余失败点，避免再被历史测试拖垮）。
+- If a second or third source packet expresses the same retirement-by-skip and replacement-coverage rules, decide whether `DOC-WORKFLOW-LIFECYCLE-0002` should remain integrated, be amended, or split into one narrower test-retirement lifecycle release.
+- Keep this source as retained proof, keep `DOC-WORKFLOW-LOGS` unchanged, and treat concrete pytest outputs as support-only unless a later evidence model explicitly promotes them.
 
 ## References
 
 - `docs/adr/adr-S2B-legacy-integration-suite-retired.md`
-- `backend/api/app/tests/test_library/test_integration_round_trip.py`（已 module-level skip）
-- `backend/api/app/tests/test_integration_four_modules.py`（已 module-level skip）
-- `docs/logs/log-S2B-1A-failure-contract-v1.md`（结构模板与“稳定契约优先”思路）
+- `backend/api/app/tests/test_library/test_integration_round_trip.py`
+- `backend/api/app/tests/test_integration_four_modules.py`
+- `docs/logs/log-S2B-1A-failure-contract-v1.md`
+

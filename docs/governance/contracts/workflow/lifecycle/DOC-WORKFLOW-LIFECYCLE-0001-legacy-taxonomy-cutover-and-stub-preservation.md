@@ -21,7 +21,7 @@ contract_record:
   violation_semantics: warning
   recorded_at: 2026-04-10
   reviewed_at: pending
-  effective_from: unknown
+  effective_from: 2026-02-12
   effective_until: ongoing
   introduced_by: docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md
   last_changed_by: docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md
@@ -34,9 +34,11 @@ contract_record:
   supporting_evidence_refs:
     - docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md
     - docs/logs/log-S0B-2A-scripts-snapshots-management.md
+    - docs/governance/contracts/workflow/lifecycle/register-DOC-WORKFLOW-LIFECYCLE.md
   lineage:
     supersedes: []
-    superseded_by: []
+    superseded_by:
+      - DOC-WORKFLOW-LIFECYCLE-0002
     split_from: []
     split_into: []
     absorbed_from: []
@@ -48,20 +50,22 @@ contract_record:
     - The broader DOC-WORKFLOW family path remains taxonomy only; this record does not claim split lineage from DOC-WORKFLOW-0001.
     - The contract intentionally keeps the lifecycle side of cutover separate from the logs-intake side, which is routed to DOC-WORKFLOW-LOGS-0001 through the same-source ledger split.
     - The older S0B-2A mixed source is retained as supporting evidence because its legacy and cutover pressure may later be re-routed into this family, but this first release is still owned directly by S0B-3A.
+    - This release now remains as the earlier narrower lifecycle-family reader after DOC-WORKFLOW-LIFECYCLE-0002 opens as the integrated current release.
+    - `effective_from` is anchored to the source log creation date `2026-02-12` because the repaired `S0B-3A` parent ledger now defends that day-level source chronology for the lifecycle-facing legacy-taxonomy, cutover-boundary, and stub-preservation rows.
 ```
 
 ## Current Governance State
 
 - The current effective governance state of this contract is carried in frontmatter through `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
 - Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this release family; they should not be read as current ownership or approval identity.
-- This contract therefore acts as the narrow current-state governance surface for the active `DOC-WORKFLOW-LIFECYCLE-0001` reader, while the parent ledger preserves the mixed-family route and governance-event chain that led here.
+- This contract now acts as the earlier narrower lifecycle-family release retained for historical reading after DOC-WORKFLOW-LIFECYCLE-0002 becomes the active first-open reader, while the parent ledger preserves the mixed-family route and governance-event chain that led here.
 - The current steward is intentionally delegated rather than implicitly identical to the owner team, which keeps day-to-day lifecycle contract maintenance distinct from durable family ownership.
 
 ## Governance Event Table
 
 | event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-LIFECYCLE-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `family-introduced` | `2026-04-10` | `docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md` | The original lifecycle-facing source introduced the child release, but it does not defend a named current steward or approver for the current contract state. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-GOV-01` | `contribution-event` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `family-introduced` | `2026-02-12` | `docs/logs/log-S0B-3A-unified-indices-legacy taxonomy -front matter.md` | The original lifecycle-facing source introduced the child release on the source log creation date, but it does not defend a named current steward or approver for the current contract state. |
 | `DOC-WORKFLOW-LIFECYCLE-0001-GOV-02` | `delegated-stewardship-event` | `DOC-WORKFLOW-LIFECYCLE-0001` | `role:docs-governance-approver` | `current-steward-delegated` | `2026-04-15` | `S0F-9A/P4 second-cycle round` | Stewardship for the current lifecycle contract reader is now explicitly delegated to the narrower lifecycle contract maintainer role while final approval remains with the broader docs-governance approver role. |
 | `DOC-WORKFLOW-LIFECYCLE-0001-GOV-03` | `review-approval-separation-event` | `DOC-WORKFLOW-LIFECYCLE-0001` | `role:workflow-reviewer; role:docs-governance-approver` | `reviewed-awaiting-approval-state-fixed` | `2026-04-15` | `S0F-9A/P4 second-cycle round` | The current contract state now records review and approval as distinct governance actions instead of leaving both roles implicit or collapsed into one reviewer identity. |
 
@@ -69,24 +73,26 @@ contract_record:
 
 | statement id | statement label | clause status | change action | source basis | first effective release | first effective at | last changed release | last changed at | effective from | effective until | effective status | statement text | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-LIFECYCLE-0001-ST-01` | `Do not delete legacy by default` | `active` | `introduced` | `S0B-3A-R03` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Legacy workflow material should not be deleted by default merely because the managed system becomes clearer later. | First lifecycle clause anchored to the legacy-taxonomy row. |
-| `DOC-WORKFLOW-LIFECYCLE-0001-ST-02` | `Classify reference and freeze older material` | `active` | `introduced` | `S0B-3A-R03` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Older material should first be handled through explicit classification, reference, and freeze so readers can still locate it without mistaking it for the active body. | Keeps the first lifecycle management step explicit rather than implied through examples only. |
-| `DOC-WORKFLOW-LIFECYCLE-0001-ST-03` | `Legacy refs keep continuity` | `active` | `introduced` | `S0B-3A-R03` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | `Legacy Refs` or equivalent explicit pointer surfaces should be used when older materials remain historically useful but are no longer the active managed location. | Pointer-surface clause kept separate for clearer reader auditing. |
-| `DOC-WORKFLOW-LIFECYCLE-0001-ST-04` | `Frozen reference is default standing` | `active` | `introduced` | `S0B-3A-R03` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | The default standing of older material is frozen reference, not continued active expansion. | The default-standing clause is split out because it governs lifecycle stance rather than navigation alone. |
-| `DOC-WORKFLOW-LIFECYCLE-0001-ST-05` | `Migration on demand only` | `active` | `introduced` | `S0B-3A-R05` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Older material should re-enter the active managed system only through migration-on-demand, such as when the older slice is still high-use, high-risk, or blocking later delivery. | This clause owns the lifecycle-boundary half of cutover rather than the logs-intake half. |
-| `DOC-WORKFLOW-LIFECYCLE-0001-ST-06` | `Lifecycle cutover boundary` | `active` | `introduced` | `S0B-3A-R05` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | Lifecycle cutover should make the boundary explicit: from the cutover point onward new material enters the new managed system, while older material remains reference-first unless deliberately migrated. | Keeps lifecycle cutover explicit without repeating logs-intake semantics. |
-| `DOC-WORKFLOW-LIFECYCLE-0001-ST-07` | `Stub preservation keeps entry points readable` | `active` | `introduced` | `S0B-3A-R06` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | When active material moves, stub preservation should keep older entry points and old links readable enough that readers can still find the current location without treating the old file as the active body. | This clause isolates continuity-preservation from general legacy taxonomy. |
-| `DOC-WORKFLOW-LIFECYCLE-0001-ST-08` | `Logs intake stays elsewhere` | `active` | `introduced` | `S0B-3A-R04; S0B-3A-R05; S0B-3A-R06` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `DOC-WORKFLOW-LIFECYCLE-0001` | `unknown` | `unknown` | `ongoing` | `in-force` | This contract governs lifecycle and continuity boundaries only; it does not own the logs-facing title and front matter intake rules that route new structured log content into the managed system. | Boundary clause keeps intake semantics routed to `DOC-WORKFLOW-LOGS-0001`. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-ST-01` | `Do not delete legacy by default` | `active` | `introduced` | `S0B-3A-R03` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `2026-02-12` | `ongoing` | `in-force` | Legacy workflow material should not be deleted by default merely because the managed system becomes clearer later. | First lifecycle clause anchored to the legacy-taxonomy row. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-ST-02` | `Classify reference and freeze older material` | `active` | `introduced` | `S0B-3A-R03` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `2026-02-12` | `ongoing` | `in-force` | Older material should first be handled through explicit classification, reference, and freeze so readers can still locate it without mistaking it for the active body. | Keeps the first lifecycle management step explicit rather than implied through examples only. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-ST-03` | `Legacy refs keep continuity` | `active` | `introduced` | `S0B-3A-R03` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `2026-02-12` | `ongoing` | `in-force` | `Legacy Refs` or equivalent explicit pointer surfaces should be used when older materials remain historically useful but are no longer the active managed location. | Pointer-surface clause kept separate for clearer reader auditing. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-ST-04` | `Frozen reference is default standing` | `active` | `introduced` | `S0B-3A-R03` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `2026-02-12` | `ongoing` | `in-force` | The default standing of older material is frozen reference, not continued active expansion. | The default-standing clause is split out because it governs lifecycle stance rather than navigation alone. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-ST-05` | `Migration on demand only` | `active` | `introduced` | `S0B-3A-R05` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `2026-02-12` | `ongoing` | `in-force` | Older material should re-enter the active managed system only through migration-on-demand, such as when the older slice is still high-use, high-risk, or blocking later delivery. | This clause owns the lifecycle-boundary half of cutover rather than the logs-intake half. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-ST-06` | `Lifecycle cutover boundary` | `active` | `introduced` | `S0B-3A-R05` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `2026-02-12` | `ongoing` | `in-force` | Lifecycle cutover should make the boundary explicit: from the cutover point onward new material enters the new managed system, while older material remains reference-first unless deliberately migrated. | Keeps lifecycle cutover explicit without repeating logs-intake semantics. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-ST-07` | `Stub preservation keeps entry points readable` | `active` | `introduced` | `S0B-3A-R06` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `2026-02-12` | `ongoing` | `in-force` | When active material moves, stub preservation should keep older entry points and old links readable enough that readers can still find the current location without treating the old file as the active body. | This clause isolates continuity-preservation from general legacy taxonomy. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-ST-08` | `Logs intake stays elsewhere` | `active` | `introduced` | `S0B-3A-R04; S0B-3A-R05; S0B-3A-R06` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `DOC-WORKFLOW-LIFECYCLE-0001` | `2026-02-12` | `2026-02-12` | `ongoing` | `in-force` | This contract governs lifecycle and continuity boundaries only; it does not own the logs-facing title and front matter intake rules that route new structured log content into the managed system. | Boundary clause keeps intake semantics routed to `DOC-WORKFLOW-LOGS-0001`. |
 
 ## Statement Evolution Table
 
 | change id | release id | change action | input statement ids | output statement ids | effective at | recorded at | reason | source basis | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-WORKFLOW-LIFECYCLE-0001-CH-01` | `DOC-WORKFLOW-LIFECYCLE-0001` | `introduced` | `none` | `DOC-WORKFLOW-LIFECYCLE-0001-ST-01; DOC-WORKFLOW-LIFECYCLE-0001-ST-02; DOC-WORKFLOW-LIFECYCLE-0001-ST-03; DOC-WORKFLOW-LIFECYCLE-0001-ST-04; DOC-WORKFLOW-LIFECYCLE-0001-ST-05; DOC-WORKFLOW-LIFECYCLE-0001-ST-06; DOC-WORKFLOW-LIFECYCLE-0001-ST-07; DOC-WORKFLOW-LIFECYCLE-0001-ST-08` | `unknown` | `2026-04-10` | The first lifecycle child release is being aligned to the current chronology-first clause model so legacy-taxonomy, cutover, and stub-preservation ownership remain reviewable against the repaired S0B-3A ledger. | `S0B-3A-R03; S0B-3A-R04; S0B-3A-R05; S0B-3A-R06` | The release meaning is unchanged; the repair only makes chronology and clause identity explicit. |
+| `DOC-WORKFLOW-LIFECYCLE-0001-CH-01` | `DOC-WORKFLOW-LIFECYCLE-0001` | `introduced` | `none` | `DOC-WORKFLOW-LIFECYCLE-0001-ST-01; DOC-WORKFLOW-LIFECYCLE-0001-ST-02; DOC-WORKFLOW-LIFECYCLE-0001-ST-03; DOC-WORKFLOW-LIFECYCLE-0001-ST-04; DOC-WORKFLOW-LIFECYCLE-0001-ST-05; DOC-WORKFLOW-LIFECYCLE-0001-ST-06; DOC-WORKFLOW-LIFECYCLE-0001-ST-07; DOC-WORKFLOW-LIFECYCLE-0001-ST-08` | `2026-02-12` | `2026-04-10` | The first lifecycle child release is being aligned to the current chronology-first clause model so legacy-taxonomy, cutover, and stub-preservation ownership remain reviewable against the repaired S0B-3A ledger. | `S0B-3A-R03; S0B-3A-R04; S0B-3A-R05; S0B-3A-R06` | The release meaning is unchanged; the repair only makes chronology and clause identity explicit. |
 
 ## Release Change
 
 - This release establishes the first lifecycle-oriented child family extracted from `S0B-3A`.
+- The semantic start of this release is now anchored to the source log creation date `2026-02-12`, while the release record itself entered repo chronology later on `2026-04-10`.
+- This release is now the earlier narrower lifecycle-family release after DOC-WORKFLOW-LIFECYCLE-0002 broadens the family current reader with explicit S0C-2A retirement and replacement-coverage clauses.
 - The release isolates the lifecycle body that had been mixed with log identity and front matter inside the broader source packet:
   - explicit legacy taxonomy and `Legacy Refs` handling
   - default freeze of older material rather than immediate rewrite or deletion
@@ -111,12 +117,13 @@ contract_record:
 
 ## Current Reading
 
-- Read this release when the question is `what is the first narrow workflow rule for classifying legacy material, freezing it by default, migrating it on demand, and preserving continuity through cutover and stubs?`
+- Read this release when the question is `what was the first narrow workflow rule set for classifying legacy material, freezing it by default, migrating it on demand, and preserving continuity through cutover and stubs before the later integrated lifecycle reader opened?`
+- Read `register-DOC-WORKFLOW-LIFECYCLE.md` when the question is `why is this release historical-retained now and which lifecycle-family release should be opened first?`
 - Read the `S0B-3A` ledger when the question is `which parts of S0B-3A entered this lifecycle family and which parts were routed elsewhere?`
 - Read `S0B-2A` only when you need the earlier nearby pressure that later may justify extending lifecycle governance beyond this first child release.
 
 ## Reader Notes
 
 - This draft is intentionally the first narrow lifecycle extraction, not the final wider owner of every later historical view, observability migration, or archaeology flow that may eventually reuse similar lifecycle logic.
-- If later sources prove that lifecycle governance spans additional workflow kinds strongly enough, that widening should happen through a later release or broader family synthesis rather than by retroactively pretending this first release was already fully general.
+- That widening now begins through DOC-WORKFLOW-LIFECYCLE-0002, which keeps this file as one earlier narrower release rather than retroactively pretending this first release was already fully general.
 - The file now uses the current chronology-first clause registry model while preserving the same first child release meaning.
