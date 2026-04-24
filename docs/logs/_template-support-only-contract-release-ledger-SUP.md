@@ -78,10 +78,25 @@ support_only_contract_release_ledger_supplement:
 - `approval basis` should stay short and claim-facing: it explains why the visible attachment is good enough to support the packet judgment.
 - `review note` should stay compact and reviewer-facing: record what was checked, what was visible, or why the evidence is still insufficient.
 
+## Recommended Rich Packet Shape
+
+- The minimum valid SUP packet may stop at header plus `Decision Frame`, `Evidence Table`, one accountability surface, and the write-back rollups.
+- Prefer a richer packet shape when reviewers are expected to audit the packet directly rather than only trust the resulting write-back.
+- For screenshot-backed packets, the default richer shape should usually include:
+  - `Attachment Inventory`
+  - `Attachment Review Table`
+  - optional `Attachment Quick Review`
+  - optional `Evidence Time Audit`
+- For markdown- or log-backed packets with no separate attachments, the default richer shape should usually include:
+  - `Actor and Provenance Review Table`
+  - `Evidence Time Audit`
+  - one explicit downstream-reading or contract-deferred rollup
+- Use the richer shape whenever the packet is expected to act as a first-class reviewer surface in later archaeology, not only as a minimal pass-through packet.
+
 ## Actor and Provenance Field Rule
 
 - When packet-level evidence accountability matters, add one `Actor and Provenance Review Table` beneath the attachment-review surfaces.
-- Keep this field set minimal: `submitted by`, `evidence owner`, `verified by`, `verification method`, `approved by`, `approval state`, and `approval basis`.
+- Keep this field set minimal: `submitted by`, `evidence owner`, `reviewed by`, `verified by`, `verification method`, `approved by`, `approval state`, and `approval basis`.
 - These fields describe packet-level accountability only; they do not replace the routing verdict, the attachment review record, or any later permissions model.
 - Historical packets may use defended partial values such as `unknown`, `pending`, role-based labels, or delegated labels instead of inventing named actors.
 - Prefer one concise `provenance note` when the actor chain is incomplete but still bounded enough for the packet to remain useful.
@@ -99,9 +114,9 @@ support_only_contract_release_ledger_supplement:
 
 Use this when the packet needs explicit accountability for submission, verification, and approval.
 
-| supplement item id | submitted by | evidence owner | verified by | verification method | approved by | approval state | approval basis | provenance note |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<S0A-1A-R02-SUP-01>` | `<unknown|pending|role:operator|delegated:review-lead|name>` | `<unknown|pending|role:workflow-owner|name>` | `<unknown|pending|role:reviewer|name>` | `<direct-screenshot-inspection|source-path-check|manual-replay|transcript-comparison|other>` | `<unknown|pending|role:approver|delegated:records-lead|name>` | `<pending|accepted-for-packet|needs-better-evidence|rejected>` | `<why this approval state is currently defended>` | `<why any actor fields remain partial or how the current provenance chain is bounded>` |
+| supplement item id | submitted by | evidence owner | reviewed by | verified by | verification method | approved by | approval state | approval basis | provenance note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<S0A-1A-R02-SUP-01>` | `<unknown|pending|role:operator|delegated:review-lead|name>` | `<unknown|pending|role:workflow-owner|name>` | `<unknown|pending|role:reviewer|name>` | `<unknown|pending|role:evidence-verifier|name>` | `<direct-screenshot-inspection|direct-markdown-inspection|source-path-check|manual-replay|transcript-comparison|other>` | `<unknown|pending|role:approver|delegated:records-lead|name>` | `<pending|accepted-for-packet|needs-better-evidence|rejected>` | `<why this approval state is currently defended>` | `<why any actor fields remain partial or how the current provenance chain is bounded>` |
 
 ## Attachment Review Table
 
@@ -137,6 +152,7 @@ Use this when one supplement row needs explicit audit of source execution time, 
 - `source recorded at` is the best known time the evidence document itself was written or admitted.
 - `source effective from` and `source effective until` describe the best known historical-effective range for the rule signal carried by that evidence row.
 - `time precision` must remain evidence-bound; if the source proves only a day, keep `day` rather than inventing seconds.
+- Prefer this section for markdown-evidence packets whenever the parent-ledger row chronology will later depend on the SUP packet rather than on the issue-only parent source alone.
 
 ## Required Rules
 
@@ -150,6 +166,8 @@ Use this when one supplement row needs explicit audit of source execution time, 
 - `effect on current verdict` states how the admitted evidence relates to the current parent-ledger judgment.
 - `proposed parent-ledger action` states what the parent ledger should do if that effect is accepted.
 - `contract impact` is downstream-only guidance; it may not be applied before the parent ledger is updated or explicitly left unchanged.
+- Keep `contract impact` narrow: it states what kind of downstream contract action may follow, not the full current-reader explanation after write-back.
+- If reviewers also need one concise note about whether the accepted evidence is expected to sharpen a broad parent summary, clarify one narrow current reader, or leave the downstream reader unchanged, prefer one optional rollup or reader note instead of adding a new evidence-table column.
 
 ## Escalation Rule
 
@@ -169,7 +187,20 @@ Use this when one supplement row needs explicit audit of source execution time, 
   - list the exact parent row ids that should be rewritten or supplemented
 - `attachment inventory`:
   - list screenshot, transcript, export, or similar asset ids admitted in this round
+- `attachment review table`:
+  - use when stable repo-local assets or attached files are part of the approval-facing evidence surface
+- `attachment quick review`:
+  - use when direct reviewer click-through or inline preview materially improves the review surface
 - `contract changes deferred until parent write-back`:
   - list any contract records that may need change only after the parent ledger is updated
 - `rejected evidence`:
   - list proposed evidence rows that were intentionally not admitted in this round
+- `downstream reading note`:
+  - use this optional rollup when accepted evidence changes how a later reader should interpret the routed slice after parent-ledger write-back, for example `broad parent summary unchanged`, `narrow current reader clarified`, or `child-opening still deferred`
+  - keep this note short and post-write-back facing; it complements `contract impact` but does not replace the evidence verdict, the proposed parent-ledger action, or later contract-local reading sections
+
+## House Style Note
+
+- The repo now treats the richer packet shape as the preferred default when one SUP file is expected to survive as a reusable reviewer surface.
+- Do not read the optional sections above as discouraged; they are optional only because not every evidence type needs every review surface.
+- If a current bounded sample already demonstrates a richer and cleaner packet shape for the same evidence class, prefer matching that sample rather than collapsing back to the minimum valid packet.
