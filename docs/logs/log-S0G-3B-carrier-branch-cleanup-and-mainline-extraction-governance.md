@@ -1,4 +1,4 @@
-# log-S0G-3B (Phase 3B: carrier branch cleanup and mainline extraction governance)
+﻿# log-S0G-3B (Phase 3B: carrier branch cleanup and mainline extraction governance)
 
 ---
 
@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, Workflow, Automation, Evidence, epic/s0, sub/3b`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/536`
-  **pr**: ``
+  **pr**: "https://github.com/samuelhu324-dev/wordloom-v3/pull/537"
   **runbook**: `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0G-docs-management-v7.md`
@@ -324,3 +324,4 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-04-21: opened `S0G-3B` to govern the transition from `S0G` as a mixed historical carrier toward extraction-first cleanup and later fresh `main`-based packet branches.
+
