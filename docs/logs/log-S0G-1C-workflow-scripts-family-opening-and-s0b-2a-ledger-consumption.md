@@ -21,6 +21,9 @@
   **reference_log_4**: `docs/logs/_template-log-phase-drills-evidence.md`
   **reference_log_5**: `docs/governance/contracts/_template-contract-release-transition-register.md`
   **reference_log_6**: `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  **reference_log_7**: `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  **reference_log_8**: `docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+  **reference_log_9**: `docs/logs/log-S0C-1A-log-extensions.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/1`
@@ -38,7 +41,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-23`
-**updated**: `2026-04-23`
+**updated**: `2026-04-24`
 **reviewed**: `pending`
 **source_reader_model**: `mixed-source-v1`
 **extraction_surface_version**: `extractable-rules-v1`
@@ -77,6 +80,7 @@
 - Keep `S0B-2A-R05` and `S0B-2A-R06` as support-only unless the lane finds a stronger reason to promote them beyond routing support.
 - Default first-release target is `DOC-WORKFLOW-SCRIPTS-0001`, not one transition register; a family register should open only if coexistence or reader-standing pressure becomes materially real.
 - `P1` fixes the first-release boundary as `scripts taxonomy + stable entrypoint`, while excluding labs snapshot-package semantics, OPS-side snapshot-root distinction, cutover mechanics, and stub-preservation support from `0001`.
+- `P4` may host cross-family reference assessments for the new source-extraction model when the repo needs one explicit sample of how later same-family releases should match against an earlier `0001` release before scaffolding the downstream packet itself.
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
 
@@ -179,6 +183,7 @@
 - `P1`: define the first-release scope for `DOC-WORKFLOW-SCRIPTS-0001`
 - `P2`: emit the first release or record the explicit non-opening verdict
 - `P3`: write the parent-ledger consumption update and any required bridge/register follow-up
+- `P4`: record bounded reference assessments for how the new extraction model should interact with existing `0001` releases before a later same-family `0002` packet is scaffolded elsewhere
 
 ## Success Criteria (DoD)
 
@@ -187,6 +192,7 @@
 - If the verdict is positive, `DOC-WORKFLOW-SCRIPTS-0001` is scoped narrowly enough that it does not absorb unrelated labs, OPS-evidence, lifecycle, or stub-routing material.
 - If the verdict is negative, the lane records exactly why the candidate remains deferred instead of leaving the old ledger notes as the only explanation.
 - The lane records whether the first scripts release needs only contract emission or also one bounded register/bridge write-back.
+- When the repo uses this lane as a reference sample for the new extraction model, the assessment must distinguish `carried-forward`, `amended`, `introduced`, and `support-only` interactions explicitly instead of treating the later `0002` packet as one opaque replacement of the earlier `0001` release.
 
 ## Stability (what stable means)
 
@@ -318,6 +324,10 @@
 - `P3-C1-S1`: write the `S0B-2A-R01/R02` parent-ledger consumption update
 - `P3-C1-S2`: decide whether the new scripts family also needs one bounded register or bridge write-back
 
+### P4 (Cross-family reference assessment)
+
+- `P4-C1-S1`: evaluate how one later `LOGS-0002` packet should match against `LOGS-0001` before downstream scaffolding begins
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -340,6 +350,10 @@
 - [x] `P3-C1-S1`: write the `S0B-2A-R01/R02` parent-ledger consumption update
 - [x] `P3-C1-S2`: decide whether the new scripts family also needs one bounded register or bridge write-back
 
+### P4 (Cross-family reference assessment)
+
+- [x] `P4-C1-S1`: evaluate how one later `LOGS-0002` packet should match against `LOGS-0001` before downstream scaffolding begins
+
 ## Current Status (recommended)
 
 - `S0G-1C` is now opened as the bounded scripts-family follow-up for the deferred `S0B-2A` rows.
@@ -348,6 +362,7 @@
 - `P3` now writes the parent-ledger consumption update: `R01/R02` are applied through `DOC-WORKFLOW-SCRIPTS-0001`, while `R04` remains deferred and `R05/R06` remain support-only.
 - The explicit family-level verdict is `no-register-change` and `no-bridge-impact` for now, because the scripts family has only one release and does not yet alter any existing first-open reader path elsewhere.
 - `P3` now also fixes one time-chain rule for later sample work on this same packet: source-recorded time stays source-side, ledger time stays routing/write-back side, and contract effective time must be derived from defended source evidence rather than from the later write-back timestamp.
+- `P4-C1-S1` now records one cross-family reference verdict for the new extraction model: if `LOGS-0002` is later scaffolded from `S0G-3G`, it should carry forward `LOGS-0001` identity and intake ownership, amend the frontmatter/body boundary, introduce explicit body-structure clauses from `S0C-1A`, and keep template/example material support-only.
 
 ## Evidence (reserved)
 
@@ -438,9 +453,29 @@
   - the lane now states that parent-ledger time is routing/write-back chronology only
   - the lane now states that contract `effective_from` must be derived from defended source evidence first and corrected upstream before any later contract revision
 
+### P4-C1-S1 (LOGS-0002 versus LOGS-0001 interaction assessed as reference sample | 2026-04-24)
+
+- headSha: ``
+- artifacts:
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  - `docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+  - `docs/logs/log-S0C-1A-log-extensions.md`
+  - `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
+- expected:
+  - decide how a later `LOGS-0002` packet should interact with the existing `LOGS-0001` release instead of treating `0002` as one opaque replacement
+  - classify the interaction into carried-forward, amended, introduced, and support-only buckets
+  - leave one explicit next step for downstream scaffolding under `S0G-3G`
+- observed:
+  - `LOGS-0001-ST-01`, `ST-02`, and `ST-05` are best read as `carried-forward` foundations: stable identifier, visible identity, and cutover intake still remain active family meaning if `LOGS-0002` opens later
+  - `LOGS-0001-ST-03`, `ST-04`, and `ST-06` are the primary `amended` interaction zone: `LOGS-0002` should keep frontmatter ownership but narrow it to lifecycle and navigability while clarifying that reader-facing body structure is now governed explicitly in the release body rather than left implicit
+  - `S0C-1A` candidate rows `R01` through `R04` are the likely `introduced` or release-localized body-structure clauses for a later `LOGS-0002`: top-level `Decision / Outcome`, minimum conclusion fields, top-level status ownership, and current-effective body-content discipline
+  - `S0C-1A-R05` remains `support-only`; applied examples and copyable templates should validate adoption but should not become primary `LOGS-0002` contract meaning
+  - the explicit next step is not immediate scaffolding in this lane; `S0G-3G` should first admit one second corroborating post-cutover sample so the later `LOGS-0002` opening packet can distinguish repeatable body-structure governance from one persuasive first sample
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-23: opened `S0G-1C` so the deferred `DOC-WORKFLOW-SCRIPTS` candidate from `S0B-2A` can be judged as one bounded family-opening lane instead of remaining one indefinite ledger note.
 - 2026-04-23: fixed the `P1` first-release scope so `DOC-WORKFLOW-SCRIPTS-0001` can now be judged on one narrow `R01 + R02` body without reabsorbing `R03-R06`.
 - 2026-04-23: emitted `DOC-WORKFLOW-SCRIPTS-0001` as the first narrow scripts-family release so `P3` can focus only on parent-ledger consumption and explicit register/bridge write-back verdicts.
 - 2026-04-23: rewrote the parent ledger so `R01/R02` are explicitly consumed by `DOC-WORKFLOW-SCRIPTS-0001` and fixed the current verdict as `no-register-change` plus `no-bridge-impact`.
+- 2026-04-24: recorded one reference assessment for how a later `LOGS-0002` packet should match against `LOGS-0001`: carry forward identifier/intake foundations, amend the frontmatter/body boundary, introduce explicit body-structure clauses from `S0C-1A`, and keep template/example material support-only until corroborated further.
