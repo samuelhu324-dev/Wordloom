@@ -65,9 +65,15 @@ contract_record:
 - `recorded_at` should capture when this release record entered the repo as one defended contract record.
 - `reviewed_at` should capture when this release record passed its current defended review state; use `pending` when that review has not happened yet.
 - `effective_from` and `effective_until` should capture the best currently known historical-effective range for the rule state owned by this release.
+- Treat `recorded_at` and `reviewed_at` as artifact/chronology fields, not as substitutes for the contract's semantic-effective window.
+- Unless stronger evidence proves an earlier or later start, a first release should default `effective_from` to the decisive source log's `created` time.
+- Unless one defended successor, replacement, retirement, or explicit end-state is known, `effective_until` should default to `ongoing`.
+- If one parent ledger or SUP packet later records acceptance or write-back chronology for the same source slice, treat that later ledger chronology as evidence-routing timing only unless it also defends a different source-side effective start.
 - New artifact-lifecycle and recorded-chronology values should prefer canonical UTC second timestamps such as `2026-04-12T15:18:05Z`.
 - Legacy day-only values may remain where older records do not yet have defended second-level audit timestamps.
 - Historical-effective fields may legitimately stay at date precision when the source proves only the date; do not fabricate seconds to force format symmetry.
+- When the source proves only lifecycle dates and no narrower effective event, reuse that defended date precision for `effective_from` rather than inventing a finer timestamp.
+- If a later correction is needed, update the source-side or ledger/SUP evidence first and then revise the contract from that defended upstream change rather than patching `effective_from` in isolation.
 - If a local-time display is needed for operators or reviewers, keep it as a mirror field or prose note rather than replacing the canonical UTC value.
 - Use `historical-backfill` when a later-recorded release documents an earlier historical state discovered only after newer family releases already exist.
 - A `historical-backfill` release must not trigger renumbering of already-admitted later family releases; the earlier state enters the family by new append-only registry id plus explicit lineage.
@@ -95,8 +101,13 @@ contract_record:
 
 - Keep the prose body readable as both `what changed in this release` and `what the current effective state now is`.
 - When one contract family is likely to evolve through repeated clause-level amendment, consider adding one `## Contract Statement Table` ahead of the readable prose body so each effective clause has one stable statement id and one explicit source-basis anchor.
+- When the current reader problem is `which broad parent clauses are still owned here versus only summarized here while narrower child readers now exist`, consider adding one parent-only `## Current Boundary Map` after the statement table.
+- When the current reader problem is instead `why earlier-history rows and later-family rows coexist in one narrow current reader`, prefer one brief `## Current Reader Shape` explanation rather than a parent-style boundary map.
 - Preferred section order:
   - `## Contract Statement Table` (optional but recommended when clause-level traceability matters)
+  - `## Current Boundary Map` (optional; parent-reader surface only)
+  - `## Current Reader Shape` (optional; narrow current-reader explanation only)
+  - `## Statement Evolution Table` (optional but recommended when clause-flow history matters)
   - `## Release Change`
   - `## Contract Statement`
   - `## Current Reading`
@@ -105,6 +116,8 @@ contract_record:
 - When `release_action` is `historical-backfill`, `## Release Change` should also explain why this earlier historical state is being recorded only now and which later release or releases already remained in effect before the backfill was added.
 - `## Contract Statement` should restate the current effective rule meaning in full; do not force readers to reconstruct the current state by diffing against earlier releases.
 - When one later release absorbs new non-contract source material, mention that source carry-forward in `## Release Change`, while keeping release-to-release relationships in `lineage` and source-routing details in the support-only ledger.
+- When one release change also changes which release is `current-primary`, `fallback-only`, `coexistence-window`, `historical-retained`, `lineage-only`, or `retired`, record that family-level standing through the family transition register rather than overloading the release body itself.
+- If the source log declared `transition register update` as `required` or `conditional`, the release write-back should preserve that answer explicitly instead of silently assuming the release file alone explains current family coexistence.
 
 ## Optional Contract Statement Table
 
@@ -131,6 +144,9 @@ contract_record:
   - `statement text`
   - `notes`
 - `statement label` should be a short human-readable clause title for the current contract meaning; it is the contract-facing quick label, not a copy of the source-owned `source slice` field from the ledger.
+- `statement label` names the clause's current meaning only:
+  - do not encode parent/child routing, split history, absorbed history, return flow, or other lineage inside the label
+  - keep chronology in `Statement Evolution Table` and current boundary standing in a separate reader-facing section when needed
 - `source basis` may contain one or more stable anchors when the clause truly depends on multiple upstream bases.
 - `first effective at` should capture the best currently known historical time at which the clause first became effective, independent of the append-only registry release number.
 - `last changed at` should capture the best currently known historical time for the latest semantic change represented in this release's reading of the clause.
@@ -170,6 +186,39 @@ contract_record:
   - the parent ledger still owns source slicing and routing verdicts
   - the supplement ledger still owns later evidence admission and write-back recommendations
   - the contract statement table only tracks the effective clause state inside one contract release
+
+## Optional Current Boundary Map
+
+- Use this section only on a broader parent contract when the current reader still needs help answering `which clauses are still owned here, and which now read only as delegated-summary or other boundary standings beneath narrower child readers?`
+- Treat `Current Boundary Map` as parent-facing and reader-facing only:
+  - it explains current boundary standing
+  - it does not replace release lineage in frontmatter
+  - it does not replace clause chronology in `Statement Evolution Table`
+  - it does not replace source routing in parent ledgers or supplements
+- Recommended columns:
+  - `boundary id`
+  - `broad clause`
+  - `current reading mode`
+  - `current narrow owner`
+  - `parent keeps`
+  - `notes`
+- Recommended `current reading mode` values include:
+  - `parent-owned`
+  - `delegated-summary`
+  - `child-owned`
+  - `shared-reader`
+  - `backfilled-history-only`
+  - `no-child-relation`
+- If the contract is not acting as a broader parent boundary, do not add this section just to restate chronology or mixed clause origins.
+
+## Optional Current Reader Shape
+
+- Use this section on a narrow current reader when the main ambiguity is not parent/child ownership but how one current release integrates earlier-admitted history, carried-forward family clauses, amendments, or newly introduced clauses.
+- This section should explain the current reader shape in brief prose rather than introducing a second ownership table.
+- Prefer this section when readers need help answering questions such as:
+  - why `history-backfilled`, `carried-forward`, `amended`, and `introduced` rows coexist in one current reader
+  - how to interpret mixed clause origins without confusing them with current ownership routing
+- Keep the chronology itself in `Statement Evolution Table`; `Current Reader Shape` is only the reader-facing explanation of how to read that mixed current clause set.
 
 ## Optional Statement Evolution Table
 
