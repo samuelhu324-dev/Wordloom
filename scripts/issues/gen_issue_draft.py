@@ -384,8 +384,6 @@ def _derive_issue_projects(fields: dict[str, str], log_rel_path: str) -> list[st
     explicit = _split_csv(fields.get("issue_projects"))
     if explicit:
         return explicit
-    if log_rel_path.startswith("docs/logs/"):
-        return [DEFAULT_WORKSPACE_PROJECT]
     return []
 
 
