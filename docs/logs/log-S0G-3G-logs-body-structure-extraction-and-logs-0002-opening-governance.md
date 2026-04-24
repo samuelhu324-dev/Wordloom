@@ -68,6 +68,7 @@
 - `P1-C2-S1` now admits `S0C-2A` as one negative-control sample after the `0002` opening: it is structured enough to extract cleanly, but its retirement and replacement-coverage rules do not contribute reusable logs body-structure meaning, so the verdict is `no logs-family impact now`.
 - `P3-C2-S1` now fixes the downstream non-logs verdict as positive: `S0C-2A` still has no logs-family impact, but its reusable retirement rows are strong enough to open `DOC-WORKFLOW-LIFECYCLE-0002` as one later integrated lifecycle release, with `DOC-WORKFLOW-LIFECYCLE-0001` retained as the earlier narrower release.
 - `P0-C2-S1` now fixes one repo-level chronology aid for later sample admission review: `docs/logs/INDEX.md` now includes one `Historical Appearance View` sorted mechanically by `frontmatter.created`, with same-day tie-break by root log file name and one explicit note for which packets already have current-template source-owned ledgers.
+- `P0-C2-S2` now repairs file-level coverage for that chronology aid: the same `Historical Appearance View` now lists each root `docs/logs/log-*.md` file by file stem plus governing id, and exact-path retained stubs now recover chronology from their `old_id + moved_to` targets so the root-log inventory remains file-complete.
 
 **Default choices (phase defaults / v1)**:
 
@@ -189,6 +190,13 @@
 - The view also marks which packets already have current-template `support_only_contract_release_ledger` extraction surfaces under `docs/logs/support-only/`.
 - Older six-outlet-era exports do not count in that annotation; only the current source-owned ledger model is shown there.
 
+### P0-C2-S2 (Root-log file completeness and stub fallback fixed | v1)
+
+- The `Historical Appearance View` now lists root log files by root file stem plus governing id in parentheses, rather than showing ids only.
+- This keeps same-day duplicate ids file-distinguishable and prevents multiple root files from collapsing into one visible table token.
+- If one root path is now an exact-path retained stub and no longer carries its original `created`, the view must recover chronology from the stub's `old_id + moved_to` target instead of silently dropping that root file from the chronology aid.
+- The result remains mechanical and non-lineage-defining, but it is now file-complete for the current root `docs/logs/log-*.md` inventory.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -280,6 +288,7 @@
 - [x] `P0-C1-S2`: multi-sample lane rule fixed
 - [x] `P0-C1-S3`: evidence contract fixed
 - [x] `P0-C2-S1`: repo chronology aid for sample ordering and current-template ledger annotation fixed
+- [x] `P0-C2-S2`: root-log file completeness and stub fallback fixed in the chronology aid
 
 ### P1 (Sample extraction cycles)
 
@@ -307,6 +316,7 @@
 - `S0C-2A` is now admitted as the second sample cycle and still resolves as one negative-control packet for the logs family: its extracted rules are about test retirement and replacement coverage rather than reader-facing log body structure, so the lane records `no logs-family impact now` explicitly for `DOC-WORKFLOW-LOGS`.
 - `P3-C2-S1` is now also completed: the same packet is routed onward into `DOC-WORKFLOW-LIFECYCLE-0002`, `DOC-WORKFLOW-LIFECYCLE-0001` is retained as the earlier narrower release, and the lifecycle family register now records that standing explicitly.
 - `P0-C2-S1` is now completed: `docs/logs/INDEX.md` carries one explicit `Historical Appearance View`, so later sample review can use one mechanical chronology aid without pretending that aid is the unique contract-family lineage truth.
+- `P0-C2-S2` is now completed: that same chronology aid is now file-complete for the current root log inventory, including exact-path retained stubs that need chronology backfilled from their retained moved bodies.
 - The next concrete step is optional post-opening sampling to decide whether the current logs-family or lifecycle-family `0002` releases should later be sharpened, amended, superseded, or split, ideally from one stronger repeated source set rather than from another single adjacent packet.
 
 ## Evidence (reserved)
@@ -343,6 +353,24 @@
   - `INDEX.md` now carries one `Historical Appearance View` sorted by `frontmatter.created`, with same-day tie-break by root log file name
   - the view now marks which dated packets already have current-template `support_only_contract_release_ledger` extraction surfaces
   - the annotation is bounded to the current ledger model and does not count older six-outlet-era export packets
+
+### P0-C2-S2 (Historical appearance view repaired to file-complete root-log coverage | 2026-04-24)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/INDEX.md`
+  - `docs/logs/log-S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint.md`
+  - `docs/logs/log-S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption.md`
+  - `docs/logs/log-S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface.md`
+  - `docs/logs/log-S0F-1I-formatting-only-pr-body-convergence.md`
+- expected:
+  - stop collapsing same-day root files merely because multiple files share one id or because one root path is now a retained stub
+  - keep the chronology aid mechanical while making it file-complete for current root `docs/logs/log-*.md`
+  - preserve the existing current-template ledger annotation rule without reopening six-outlet-era exports
+- observed:
+  - `INDEX.md` now lists each root log by file stem plus governing id in parentheses, so same-day duplicate ids stay file-distinguishable
+  - exact-path retained stubs now remain in the chronology aid by recovering their original chronology from the stub `old_id + moved_to` target
+  - the chronology aid now renders one visible row item for each current root `docs/logs/log-*.md` file instead of collapsing file coverage below the root inventory count
 
 ### P1-C1-S1S2 (S0C-1A extracted into explicit candidate rows | 2026-04-23)
 
@@ -436,3 +464,4 @@
 - 2026-04-24: completed `P1-C2-S1` by admitting `S0C-2A` as one structured negative-control sample, extracting it into a source-owned ledger, and recording the explicit verdict `no logs-family impact now`.
 - 2026-04-24: completed `P3-C2-S1` by routing the reusable `S0C-2A` rows into `DOC-WORKFLOW-LIFECYCLE-0002`, reclassifying `DOC-WORKFLOW-LIFECYCLE-0001` as the earlier narrower release, and creating `register-DOC-WORKFLOW-LIFECYCLE.md`.
 - 2026-04-24: completed `P0-C2-S1` by adding one mechanical `Historical Appearance View` to `docs/logs/INDEX.md` and annotating which packets already have current-template source-owned ledgers.
+- 2026-04-24: completed `P0-C2-S2` by revising that same `Historical Appearance View` to show each root log file explicitly and to backfill chronology for exact-path retained stubs from their moved retained bodies.

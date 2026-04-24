@@ -298,68 +298,70 @@
 - Mechanical sort rule:
   - primary key: `frontmatter.created` ascending
   - tie-breaker inside the same day: root log file name ascending
+- Each row item now lists the root log file stem plus the governing id in parentheses, so same-day duplicate ids remain file-distinguishable.
+- If one root path is now an exact-path retained stub and no longer carries its original `created`, the view backfills chronology from the stub's `old_id + moved_to` target so the root-path inventory still stays file-complete.
 - `current-template ledger note` marks only the current `support_only_contract_release_ledger` extraction model under `docs/logs/support-only/`; older six-outlet-era exports do not count here.
 
 | created | historical appearance rows | current-template ledger note |
 | --- | --- | --- |
-| 2026-02-12 | `S0B-3A` | `S0B-3A` -> `ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter` |
-| 2026-02-13 | `S0B-2A`, `S3A-2A-2B` | `S0B-2A` -> `ledger-S0B-2A-tools-scripts-and-snapshots-management` |
-| 2026-02-14 | `S3A-2A-3B`, `S3A-2A-4B`, `S3A-2A-4B` | none |
-| 2026-02-15 | `S0C-1A`, `S2B-1A-1A`, `S2B-1A`, `S2B-projection-table-merge` | `S0C-1A` -> `ledger-S0C-1A-log-extensions` |
-| 2026-02-17 | `S0C-2A`, `S2B-1A-2A` | `S0C-2A` -> `ledger-S0C-2A-legacy-integration-suite-retired` |
-| 2026-02-18 | `S2B-2A-1A`, `S2B-2A-2A`, `S2B-2A` | none |
-| 2026-02-20 | `S0C-3A-1A`, `S0C-3A` | none |
-| 2026-02-21 | `S0C-3A-2A` | none |
-| 2026-02-22 | `S0C-3A-3A`, `S0C-4A` | none |
-| 2026-02-23 | `S0C-4A-1A`, `S0C-5A`, `S2B-3A` | none |
-| 2026-02-24 | `S2B-4A` | none |
-| 2026-02-26 | `S2B-5A`, `S2B-5A` | none |
-| 2026-02-27 | `S2B-6A` | none |
-| 2026-02-28 | `S2C-1A`, `S2C-projection-framework-platformization` | none |
-| 2026-03-01 | `S2C-2A`, `S2C-3A`, `S2C-4A`, `S2C-5A`, `S2C-6A` | none |
-| 2026-03-02 | `S5A-1A`, `S5A-2A`, `S5A-security-governance` | none |
-| 2026-03-03 | `S5A-3A`, `S5A-3B` | none |
-| 2026-03-04 | `S6A-1A`, `S6A-evidence-drills-spine` | none |
-| 2026-03-05 | `S6A-2A`, `S6A-3A`, `S6A-4A` | none |
-| 2026-03-06 | `S0D-1A`, `S5B-1A`, `S5B-security-governance-hard-gates` | none |
-| 2026-03-07 | `S0D-2A`, `S5B-2A`, `S5B-3A` | none |
-| 2026-03-08 | `S2D-1A`, `S2D-projection-onboarding-hard-gates`, `S5B-4A` | none |
-| 2026-03-09 | `S2D-3A` | none |
-| 2026-03-10 | `S2D-1B`, `S2D-2A` | none |
-| 2026-03-11 | `S2D-1C`, `S2D-1D` | none |
-| 2026-03-13 | `S0D-3A`, `S0D-4A` | none |
-| 2026-03-14 | `S0D-5A` | none |
-| 2026-03-20 | `S4A-1A`, `S4A-systems-platform-operations-runtime-foundation` | none |
-| 2026-03-21 | `S0D-6A`, `S4A-2A`, `S4A-3A`, `S4A-4A`, `S4A-5A`, `S4B-1A`, `S4B-2A`, `S4B` | none |
-| 2026-03-22 | `S0E-1A`, `S0E-1B`, `S4C-1A`, `S4C-2A`, `S4C-3A`, `S4C` | none |
-| 2026-03-23 | `S4D-1A`, `S4D` | none |
-| 2026-03-24 | `S4D-2A`, `S4D-3A` | none |
-| 2026-03-25 | `S4D-4A`, `S4D-4B` | none |
-| 2026-03-26 | `S4D-4C` | none |
-| 2026-03-27 | `S4E-1A`, `S4E-2A`, `S4E-3A`, `S4E-4A`, `S4E-5A`, `S4E-5B`, `S4E` | none |
-| 2026-03-28 | `S0E-2A`, `S0E-2B`, `S0E-2C`, `S0E-docs-management-v5` | none |
-| 2026-03-29 | `S0E-2D`, `S0E-2E`, `S0E-3A`, `S0E-4A`, `S0E-4B` | none |
-| 2026-03-30 | `S0E-4C`, `S0E-4D`, `S0E-5A`, `S0E-5B`, `S0E-5C` | none |
-| 2026-03-31 | `S0E-4E`, `S0E-5D`, `S0E-6A`, `S0E-6B`, `S0E-7A` | none |
-| 2026-04-01 | `S0E-6C`, `S0E-6D`, `S0E-6E`, `S0E-7B`, `S0E-7C` | none |
-| 2026-04-02 | `S0E-4F`, `S0E-6F`, `S0E-7D` | none |
-| 2026-04-03 | `S0E-3B`, `S0E-5E` | none |
-| 2026-04-04 | `S0F-1A`, `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-docs-management-v6`, `S6B-1A`, `S6B-1B`, `S6B-1C`, `S6B-evidence-drills-taxonomy` | none |
-| 2026-04-05 | `S0F-1G`, `S0F-1H`, `S0F-1J`, `S0F-2A`, `S0F-2B` | none |
-| 2026-04-06 | `S0F-3A`, `S0F-3B`, `S0F-3C`, `S0F-3D`, `S0F-3E`, `S0F-3F`, `S0F-3G` | none |
-| 2026-04-07 | `S0F-1K`, `S0F-3H`, `S0F-4A`, `S0F-4B` | none |
-| 2026-04-08 | `S0F-3I`, `S0F-3J`, `S0F-4C`, `S0F-4D`, `S0F-4E`, `S0F-4F`, `S0F-4G`, `S0F-5A` | none |
-| 2026-04-09 | `S0F-3K`, `S0F-3L`, `S0F-3M`, `S0F-4H`, `S0F-4I`, `S0F-5B`, `S0F-5C`, `S0F-5D`, `S0F-5E`, `S0F-5F`, `S0F-6A`, `S0F-6B`, `S0F-6C` | none |
-| 2026-04-10 | `S0F-5G`, `S0F-5H`, `S0F-5I`, `S0F-5J`, `S0F-7A`, `S0F-7B`, `S0F-7C` | none |
-| 2026-04-11 | `S0F-7D`, `S0F-8A` | none |
-| 2026-04-12 | `S0F-7E` | none |
-| 2026-04-13 | `S0F-7F`, `S0F-7G`, `S0F-7H` | none |
-| 2026-04-14 | `S0F-7I`, `S0F-8B` | none |
-| 2026-04-15 | `S0F-10A`, `S0F-10B`, `S0F-10C`, `S0F-10D`, `S0F-9A` | none |
-| 2026-04-16 | `S0F-9B`, `S0F-9C`, `S0F-9D`, `S0F-9E` | none |
-| 2026-04-17 | `S0F-9F`, `S0F-9G` | none |
-| 2026-04-19 | `S0F-9H` | none |
-| 2026-04-20 | `S0G-1A`, `S0G-2A`, `S0G-docs-management-v7`, `S4F-1A`, `S4F-2A`, `S4F-2B`, `S4F-2C`, `S4F` | none |
-| 2026-04-21 | `S0G-2B`, `S0G-3A`, `S0G-3B`, `S0G-3C`, `S0G-3D`, `S0G-3E` | none |
-| 2026-04-22 | `S0G-1B`, `S0G-3F`, `S0G-4A` | none |
-| 2026-04-23 | `S0G-1C`, `S0G-3G`, `S0G-4B`, `S0G-5A` | none |
+| 2026-02-12 | S0B-3A-unified-indices-legacy taxonomy -front matter (S0B-3A) | S0B-3A -> ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter |
+| 2026-02-13 | S0B-2A-scripts-snapshots-management (S0B-2A), S3A-2A-2B-daemon-ready-worker-migration (S3A-2A-2B) | S0B-2A -> ledger-S0B-2A-tools-scripts-and-snapshots-management |
+| 2026-02-14 | S3A-2A-3B-automated-failure-drills (S3A-2A-3B), S3A-2A-4B-1A-git-actions (S3A-2A-4B), S3A-2A-4B-failure-drills-&-gitactions-&-dashboard (S3A-2A-4B) | none |
+| 2026-02-15 | S0C-1A-log-extensions (S0C-1A), S2B-1A-1A-chronicle-concurrent-handling (S2B-1A-1A), S2B-1A-failure-contract-v1 (S2B-1A), S2B-projection-table-merge (S2B-projection-table-merge) | S0C-1A -> ledger-S0C-1A-log-extensions |
+| 2026-02-17 | S0C-2A-legacy-integration-suite-retired (S0C-2A), S2B-1A-2A-search-concurrent-handling (S2B-1A-2A) | S0C-2A -> ledger-S0C-2A-legacy-integration-suite-retired |
+| 2026-02-18 | S2B-2A-1A-shadow-verify-write-gate (S2B-2A-1A), S2B-2A-2A-dual-run-cutover-closure (S2B-2A-2A), S2B-2A-failure-contract-v2 (S2B-2A) | none |
+| 2026-02-20 | S0C-3A-1A-double-parallel (S0C-3A-1A), S0C-3A-cli-breakdown (S0C-3A) | none |
+| 2026-02-21 | S0C-3A-2A-artifacts-contract-packing (S0C-3A-2A) | none |
+| 2026-02-22 | S0C-3A-3A-dispatch-only-argparse-extraction (S0C-3A-3A), S0C-4A-scenarios-taxonomy (S0C-4A) | none |
+| 2026-02-23 | S0C-4A-1A-catalog-driven-suites-&-guardrails (S0C-4A-1A), S0C-5A-Git-commit+push-descriptions (S0C-5A), S2B-3A-unified-consumer-framework (S2B-3A) | none |
+| 2026-02-24 | S2B-4A-table-merge-migration (S2B-4A) | none |
+| 2026-02-26 | S2B-5A-table-merge-migration (S2B-5A), S2B-5A-table-merge-migration-v2 (S2B-5A) | none |
+| 2026-02-27 | S2B-6A-unified-outbox-table-merge (S2B-6A) | none |
+| 2026-02-28 | S2C-1A-projection-spec-registry-harness (S2C-1A), S2C-projection-framework-platformization (S2C-projection-framework-platformization) | none |
+| 2026-03-01 | S2C-2A-projection-writer-template (S2C-2A), S2C-3A-projection-rebuild-backfill-template (S2C-3A), S2C-4A-projection-drills-template (S2C-4A), S2C-5A-projection-backfill-template (S2C-5A), S2C-6A-search-harness-migration (S2C-6A) | none |
+| 2026-03-02 | S5A-1A-authcontext-policy-audit (S5A-1A), S5A-2A-library-membership-roles-policy-audit (S5A-2A), S5A-security-governance (S5A-security-governance) | none |
+| 2026-03-03 | S5A-3A-backup-sanitization (S5A-3A), S5A-3B-object-storage-backup (S5A-3B) | none |
+| 2026-03-04 | S6A-1A-stable-entry-contract (S6A-1A), S6A-evidence-drills-spine (S6A-evidence-drills-spine) | none |
+| 2026-03-05 | S6A-2A-unify-supply-creation (S6A-2A), S6A-3A-failure-taxonomy-hard-interface (S6A-3A), S6A-4A-hard-gate-evidence-json (S6A-4A) | none |
+| 2026-03-06 | S0D-1A-log-entries-orchestration (S0D-1A), S5B-1A-policy-audit-hard-gate-drills (S5B-1A), S5B-security-governance-hard-gates (S5B-security-governance-hard-gates) | none |
+| 2026-03-07 | S0D-2A-drills-evidence-automation (S0D-2A), S5B-2A-policy-entrypoint-consolidation (S5B-2A), S5B-3A-audit-coverage-operator-workflow (S5B-3A) | none |
+| 2026-03-08 | S2D-1A-projection-onboarding-contract-and-sample (S2D-1A), S2D-projection-onboarding-hard-gates (S2D-projection-onboarding-hard-gates), S5B-4A-search-query-authorization-drills (S5B-4A) | none |
+| 2026-03-09 | S2D-3A-projection-onboarding-hard-gate-entrypoint+CI (S2D-3A) | none |
+| 2026-03-10 | S2D-1B-projection-onboarding-skeleton-second-sample (S2D-1B), S2D-2A-onboarding-coverage-and-catalog-rules (S2D-2A) | none |
+| 2026-03-11 | S2D-1C-projection-onboarding-skeleton-third-sample (S2D-1C), S2D-1D-projection-onboarding-skeleton-fourth-sample (S2D-1D) | none |
+| 2026-03-13 | S0D-3A-runbook-stub (S0D-3A), S0D-4A-UI-layered-fix-notes (S0D-4A) | none |
+| 2026-03-14 | S0D-5A-drills-evidence-packing-unification (S0D-5A) | none |
+| 2026-03-20 | S4A-1A-ops-scripting-baseline (S4A-1A), S4A-systems-platform-operations-runtime-foundation (S4A-systems-platform-operations-runtime-foundation) | none |
+| 2026-03-21 | S0D-6A-structured-roadmap-and-demo (S0D-6A), S4A-2A-deploy-verify-rollback-runtime-path (S4A-2A), S4A-3A-backup-recovery-operator-path (S4A-3A), S4A-4A-hybrid-runtime-awareness (S4A-4A), S4A-5A-operational-visibility-and-post-change-verification (S4A-5A), S4B-1A-infra-as-code-and-runtime-packaging-baseline (S4B-1A), S4B-2A-infra-as-code-devtest-db-terraform-skeleton (S4B-2A), S4B-infra-as-code-and-runtime-packaging (S4B) | none |
+| 2026-03-22 | S0E-1A-structured-cv-generator (S0E-1A), S0E-1B-md-to-docx-minimal-sample (S0E-1B), S4C-1A-cloud-devtest-terraform-bootstrap (S4C-1A), S4C-2A-cloud-devtest-db-and-storage (S4C-2A), S4C-3A-cloud-devtest-wordloom-integration (S4C-3A), S4C-cloud-services-and-terraform-epic (S4C) | none |
+| 2026-03-23 | S4D-1A-cloud-runtime-release-path (S4D-1A), S4D-cloud-runtime-deploy-verify-rollback (S4D) | none |
+| 2026-03-24 | S4D-2A-post-change-verification-and-operational-checks (S4D-2A), S4D-3A-cloud-runtime-rollback-sample (S4D-3A) | none |
+| 2026-03-25 | S4D-4A-cloud-runtime-semi-automated-release-workflow (S4D-4A), S4D-4B-github-actions-release-dispatch (S4D-4B) | none |
+| 2026-03-26 | S4D-4C-408-timeout-eradication (S4D-4C) | none |
+| 2026-03-27 | S4E-1A-release-trigger-policy-and-governance-boundary (S4E-1A), S4E-2A-environment-promotion-and-release-records (S4E-2A), S4E-3A-approval-hierarchy-and-rollback-authority (S4E-3A), S4E-4A-enforcement-auditability-and-environment-approver-policy (S4E-4A), S4E-5A-higher-environment-governance-and-blocking-upgrades (S4E-5A), S4E-5B-execution-layer-enforcement-and-controlled-exceptions (S4E-5B), S4E-release-operating-model-and-governance (S4E) | none |
+| 2026-03-28 | S0E-2A-semi-automated-git-issue-creation (S0E-2A), S0E-2B-real-github-issue-creation-automation (S0E-2B), S0E-2C-batch-issue-creation-and-backfill-tooling (S0E-2C), S0E-docs-management-v5 (S0E-docs-management-v5) | none |
+| 2026-03-29 | S0E-2D-issue-creation-metadata-and-english-body-contract (S0E-2D), S0E-2E-issue-conclusion-and-development-linkage-contract (S0E-2E), S0E-3A-roadmap-milestone-log-bridge (S0E-3A), S0E-4A-github-pr-automation-contract (S0E-4A), S0E-4B-pr-title-label-and-body-follow-up (S0E-4B) | none |
+| 2026-03-30 | S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up (S0E-4C), S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up (S0E-4D), S0E-5A-lifecycle-audit-gate-and-dry-run-planner (S0E-5A), S0E-5B-guarded-lifecycle-apply-expansion (S0E-5B), S0E-5C-guarded-pr-create-decomposition (S0E-5C) | none |
+| 2026-03-31 | S0E-4E-pr-event-source-log-attribution-contract (S0E-4E), S0E-5D-body-contract-and-gate-shape-normalization (S0E-5D), S0E-6A-log-structure-normalization-and-dual-track-evidence-contract (S0E-6A), S0E-6B-log-stability-and-gate-strategy (S0E-6B), S0E-7A-github-actions-secondary-enforcement (S0E-7A) | none |
+| 2026-04-01 | S0E-6C-issue-context-sentence-contract-and-gate (S0E-6C), S0E-6D-natural-issue-context-rendering-and-weak-gate (S0E-6D), S0E-6E-single-item-context-authoring-and-batch-preserve-boundary (S0E-6E), S0E-7B-attribution-handoff-implementation-and-auto-mirroring-integration (S0E-7B), S0E-7C-historical-log-review-sampling-and-mirror-follow-up (S0E-7C) | none |
+| 2026-04-02 | S0E-4F-pr-body-metadata-links-redundancy-follow-up (S0E-4F), S0E-6F-issue-body-metadata-links-boundary-follow-up (S0E-6F), S0E-7D-publish-verify-remediation-and-failure-semantics (S0E-7D), S0E-7E-publish-verify-remediation-gate-thin-orchestration-entrypoint (S0E-7E), S0E-7F-publish-verify-remediation-gate-read-only-wrapper-adoption (S0E-7F), S0E-7G-publish-verify-remediation-gate-workflow-dispatch-wrapper-surface (S0E-7G) | none |
+| 2026-04-03 | S0E-3B-github-label-inventory-and-live-preflight (S0E-3B), S0E-5E-parent-issue-dod-child-log-ordering-and-gate (S0E-5E) | none |
+| 2026-04-04 | S0F-1A-fail-closed-entrypoints-and-preflight-unification (S0F-1A), S0F-1B-llm-authored-issue-context-generation (S0F-1B), S0F-1C-guarded-multi-item-live-mutation-remediation (S0F-1C), S0F-1D-creation-pr-conclusion-completeness-audit (S0F-1D), S0F-docs-management-v6 (S0F-docs-management-v6), S6B-1A-evidence-surface-inventory-ledger (S6B-1A), S6B-1B-evidence-naming-baseline (S6B-1B), S6B-1C-tracked-retained-summary-coexistence-migration (S6B-1C), S6B-evidence-drills-taxonomy (S6B-evidence-drills-taxonomy) | none |
+| 2026-04-05 | S0F-1G-parent-issue-sidebar-ordering-and-title-keyword-governance (S0F-1G), S0F-1H-pr-body-completeness-reviewer (S0F-1H), S0F-1I-formatting-only-pr-body-convergence (S0F-1I), S0F-1J-pr-body-completeness-task-and-ci-gate (S0F-1J), S0F-2A-maintenance-lanes-and-direct-patch-ledger (S0F-2A), S0F-2B-family-patch-and-ops-maintenance-model (S0F-2B) | none |
+| 2026-04-06 | S0F-3A-governance-contract-index-and-delta-model (S0F-3A), S0F-3B-governance-contract-registry-and-naming-model (S0F-3B), S0F-3C-governance-contract-series-audit-and-admission (S0F-3C), S0F-3D-first-governance-contract-landing-batch (S0F-3D), S0F-3E-governance-registry-lineage-and-legacy-handling (S0F-3E), S0F-3F-governance-contract-sweep-workflow (S0F-3F), S0F-3G-governance-cleanup-staging-and-phased-file-cleanup (S0F-3G) | none |
+| 2026-04-07 | S0F-1K-lifecycle-exact-path-successor-package (S0F-1K), S0F-3H-recurring-governance-run-model-and-ledger-split (S0F-3H), S0F-4A-document-role-boundaries-writeback-protocol-and-disposition-model (S0F-4A), S0F-4B-source-log-compatibility-and-weak-structure-export-discipline (S0F-4B) | none |
+| 2026-04-08 | S0F-3I-governance-contract-taxonomy-and-placement-model (S0F-3I), S0F-3J-old-gc-cleanup-candidate-selection-after-doc-reader-stabilization (S0F-3J), S0F-4C-doc-and-ops-front-door-transition-and-gc-demotion-model (S0F-4C), S0F-4D-doc-current-contract-surface-and-legacy-gc-triage-model (S0F-4D), S0F-4E-first-doc-promoted-contract-body-from-s0f-4a (S0F-4E), S0F-4F-doc-reader-surface-consolidation-after-first-promotion-quartet (S0F-4F), S0F-4G-doc-history-surface-and-extraction-before-cleanup-gate (S0F-4G), S0F-5A-stable-first-close-out-protocol-and-post-stable-outlet-export (S0F-5A) | none |
+| 2026-04-09 | S0F-3K-history-aware-old-gc-cleanup-recheck-after-doc-history-publication (S0F-3K), S0F-3L-old-gc-root-redirect-replacement-and-stub-model (S0F-3L), S0F-3M-gc-iss-0001-root-stub-relocation-pilot (S0F-3M), S0F-4H-active-gc-current-registry-family-mapping-and-rehoming (S0F-4H), S0F-4I-issue-governance-doc-promotion-extension-and-gc-demotion-packet (S0F-4I), S0F-5B-old-s0-migration-ledger-view-and-support-only-inventory-model (S0F-5B), S0F-5C-priority-packet-decomposition-and-cleanup-admission (S0F-5C), S0F-5D-first-admitted-workflow-support-cleanup-execution (S0F-5D), S0F-5E-small-series-review-sequencing-and-standing-surface-completion (S0F-5E), S0F-5F-remaining-s0e-standing-adjudication-and-packeted-review (S0F-5F), S0F-6A-view-old-s0-migration-ledger-reader-summary-and-grouped-doc-reading (S0F-6A), S0F-6B-old-s0-absorption-coverage-and-history-chain-views (S0F-6B), S0F-6C-outlet-and-lifecycle-observability (S0F-6C) | none |
+| 2026-04-10 | S0F-5G-remaining-old-s0-history-line-expansion-and-manual-screening (S0F-5G), S0F-5H-old-s0-narrative-history-view-pilot (S0F-5H), S0F-5I-old-s0-narrative-history-widening-across-counted-series (S0F-5I), S0F-5J-old-s0-contract-judgment-front-door-view (S0F-5J), S0F-7A-chronology-first-contract-rebuild (S0F-7A), S0F-7B-release-based-contract-lineage-and-ledger-model (S0F-7B), S0F-7C-old-log-decomposition-application-lane (S0F-7C) | none |
+| 2026-04-11 | S0F-7D-ledger-supplement-admission-and-old-log-continuation (S0F-7D), S0F-8A-roadmap-intake-ledger-and-branch-admission-routing (S0F-8A) | none |
+| 2026-04-12 | S0F-7E-supplement-sequencing-time-fields-and-historical-backfill-release-chronology (S0F-7E) | none |
+| 2026-04-13 | S0F-7F-log-and-roadmap-frontmatter-minimum-time-fields (S0F-7F), S0F-7G-approval-facing-screenshot-evidence-review-and-attachment-protocol (S0F-7G), S0F-7H-actor-and-provenance-fields-for-evidence-review-governance (S0F-7H) | none |
+| 2026-04-14 | S0F-7I-ledger-and-contract-structure-integration-audit-and-remediation-plan (S0F-7I), S0F-8B-s0f-issue-pr-automation-inventory-and-per-series-rollout (S0F-8B) | none |
+| 2026-04-15 | S0F-10A-book-first-access-control-minimum-closure (S0F-10A), S0F-10B-plan-and-entitlement-minimum-widening (S0F-10B), S0F-10C-payment-event-subscription-state-entitlement-trigger-packet (S0F-10C), S0F-10D-scenario-catalog-and-mock-state-machine-replays (S0F-10D), S0F-9A-doc-first-governance-control-plane-vocabulary-and-boundary (S0F-9A) | none |
+| 2026-04-16 | S0F-9B-current-repo-ddd-hex-product-closure-implementation-blueprint (S0F-9B), S0F-9C-backend-vertical-slice-for-subscription-access-minimum-closure (S0F-9C), S0F-9D-frontend-admin-consumer-lane-for-subscription-access-closure (S0F-9D), S0F-9E-workbox-subscription-entry-auth-routing-and-admin-view-gating (S0F-9E) | none |
+| 2026-04-17 | S0F-9F-tenant-identity-data-ownership-and-current-tenant-context (S0F-9F), S0F-9G-tenant-admin-enforcement-membership-management-and-local-actor-switching (S0F-9G) | none |
+| 2026-04-19 | S0F-9H-shared-auth-provider-realism-invite-onboarding-and-membership-admission (S0F-9H) | none |
+| 2026-04-20 | S0G-1A-workspace-backfill-branch-road-registration-and-full-auto-close-out (S0G-1A), S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting (S0G-2A), S0G-docs-management-v7 (S0G-docs-management-v7), S4F-1A-backend-only-access-subscription-deployable-cut (S4F-1A), S4F-2A-cloud-target-operator-evidence-packet (S4F-2A), S4F-2B-release-path-dependency-trust-hardening (S4F-2B), S4F-2C-deployed-identity-admission-membership-truth-hardening (S4F-2C), S4F-access-subscription-deployable-runtime-cut (S4F) | none |
+| 2026-04-21 | S0G-2B-support-only-ledger-placement-and-patch-ledger-bridge (S0G-2B), S0G-3A-runbook-release-issue-concentration-and-ledger-naming-governance (S0G-3A), S0G-3B-carrier-branch-cleanup-and-mainline-extraction-governance (S0G-3B), S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance (S0G-3C), S0G-3D-workflow-github-issues-file-identity-rename-and-successor-release-governance (S0G-3D), S0G-3E-workflow-github-issues-round-attempt-chronology-and-family-template-governance (S0G-3E) | none |
+| 2026-04-22 | S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance (S0G-1B), S0G-3F-runbook-revision-sequence-and-release-board-operational-register-governance (S0G-3F), S0G-4A-contract-boundary-map-and-parent-child-clause-flow-governance (S0G-4A) | none |
+| 2026-04-23 | S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption (S0G-1C), S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance (S0G-3G), S0G-4B-doc-contract-release-transition-register-and-writeback-chain-governance (S0G-4B), S0G-5A-time-semantics-and-effective-window-governance (S0G-5A) | none |
