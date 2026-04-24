@@ -291,3 +291,75 @@
   - docs/logs/log-S5A-2A-library-membership-roles-policy-audit.md
   - docs/logs/log-S5A-3A-backup-sanitization.md
   - docs/logs/log-S5A-3B-object-storage-backup.md
+
+# Historical Appearance View
+
+- This view is one chronology aid for `docs/logs/log-*.md`, not one unique lineage or family-history truth surface.
+- Mechanical sort rule:
+  - primary key: `frontmatter.created` ascending
+  - tie-breaker inside the same day: root log file name ascending
+- `current-template ledger note` marks only the current `support_only_contract_release_ledger` extraction model under `docs/logs/support-only/`; older six-outlet-era exports do not count here.
+
+| created | historical appearance rows | current-template ledger note |
+| --- | --- | --- |
+| 2026-02-12 | `S0B-3A` | `S0B-3A` -> `ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter` |
+| 2026-02-13 | `S0B-2A`, `S3A-2A-2B` | `S0B-2A` -> `ledger-S0B-2A-tools-scripts-and-snapshots-management` |
+| 2026-02-14 | `S3A-2A-3B`, `S3A-2A-4B`, `S3A-2A-4B` | none |
+| 2026-02-15 | `S0C-1A`, `S2B-1A-1A`, `S2B-1A`, `S2B-projection-table-merge` | `S0C-1A` -> `ledger-S0C-1A-log-extensions` |
+| 2026-02-17 | `S0C-2A`, `S2B-1A-2A` | `S0C-2A` -> `ledger-S0C-2A-legacy-integration-suite-retired` |
+| 2026-02-18 | `S2B-2A-1A`, `S2B-2A-2A`, `S2B-2A` | none |
+| 2026-02-20 | `S0C-3A-1A`, `S0C-3A` | none |
+| 2026-02-21 | `S0C-3A-2A` | none |
+| 2026-02-22 | `S0C-3A-3A`, `S0C-4A` | none |
+| 2026-02-23 | `S0C-4A-1A`, `S0C-5A`, `S2B-3A` | none |
+| 2026-02-24 | `S2B-4A` | none |
+| 2026-02-26 | `S2B-5A`, `S2B-5A` | none |
+| 2026-02-27 | `S2B-6A` | none |
+| 2026-02-28 | `S2C-1A`, `S2C-projection-framework-platformization` | none |
+| 2026-03-01 | `S2C-2A`, `S2C-3A`, `S2C-4A`, `S2C-5A`, `S2C-6A` | none |
+| 2026-03-02 | `S5A-1A`, `S5A-2A`, `S5A-security-governance` | none |
+| 2026-03-03 | `S5A-3A`, `S5A-3B` | none |
+| 2026-03-04 | `S6A-1A`, `S6A-evidence-drills-spine` | none |
+| 2026-03-05 | `S6A-2A`, `S6A-3A`, `S6A-4A` | none |
+| 2026-03-06 | `S0D-1A`, `S5B-1A`, `S5B-security-governance-hard-gates` | none |
+| 2026-03-07 | `S0D-2A`, `S5B-2A`, `S5B-3A` | none |
+| 2026-03-08 | `S2D-1A`, `S2D-projection-onboarding-hard-gates`, `S5B-4A` | none |
+| 2026-03-09 | `S2D-3A` | none |
+| 2026-03-10 | `S2D-1B`, `S2D-2A` | none |
+| 2026-03-11 | `S2D-1C`, `S2D-1D` | none |
+| 2026-03-13 | `S0D-3A`, `S0D-4A` | none |
+| 2026-03-14 | `S0D-5A` | none |
+| 2026-03-20 | `S4A-1A`, `S4A-systems-platform-operations-runtime-foundation` | none |
+| 2026-03-21 | `S0D-6A`, `S4A-2A`, `S4A-3A`, `S4A-4A`, `S4A-5A`, `S4B-1A`, `S4B-2A`, `S4B` | none |
+| 2026-03-22 | `S0E-1A`, `S0E-1B`, `S4C-1A`, `S4C-2A`, `S4C-3A`, `S4C` | none |
+| 2026-03-23 | `S4D-1A`, `S4D` | none |
+| 2026-03-24 | `S4D-2A`, `S4D-3A` | none |
+| 2026-03-25 | `S4D-4A`, `S4D-4B` | none |
+| 2026-03-26 | `S4D-4C` | none |
+| 2026-03-27 | `S4E-1A`, `S4E-2A`, `S4E-3A`, `S4E-4A`, `S4E-5A`, `S4E-5B`, `S4E` | none |
+| 2026-03-28 | `S0E-2A`, `S0E-2B`, `S0E-2C`, `S0E-docs-management-v5` | none |
+| 2026-03-29 | `S0E-2D`, `S0E-2E`, `S0E-3A`, `S0E-4A`, `S0E-4B` | none |
+| 2026-03-30 | `S0E-4C`, `S0E-4D`, `S0E-5A`, `S0E-5B`, `S0E-5C` | none |
+| 2026-03-31 | `S0E-4E`, `S0E-5D`, `S0E-6A`, `S0E-6B`, `S0E-7A` | none |
+| 2026-04-01 | `S0E-6C`, `S0E-6D`, `S0E-6E`, `S0E-7B`, `S0E-7C` | none |
+| 2026-04-02 | `S0E-4F`, `S0E-6F`, `S0E-7D` | none |
+| 2026-04-03 | `S0E-3B`, `S0E-5E` | none |
+| 2026-04-04 | `S0F-1A`, `S0F-1B`, `S0F-1C`, `S0F-1D`, `S0F-docs-management-v6`, `S6B-1A`, `S6B-1B`, `S6B-1C`, `S6B-evidence-drills-taxonomy` | none |
+| 2026-04-05 | `S0F-1G`, `S0F-1H`, `S0F-1J`, `S0F-2A`, `S0F-2B` | none |
+| 2026-04-06 | `S0F-3A`, `S0F-3B`, `S0F-3C`, `S0F-3D`, `S0F-3E`, `S0F-3F`, `S0F-3G` | none |
+| 2026-04-07 | `S0F-1K`, `S0F-3H`, `S0F-4A`, `S0F-4B` | none |
+| 2026-04-08 | `S0F-3I`, `S0F-3J`, `S0F-4C`, `S0F-4D`, `S0F-4E`, `S0F-4F`, `S0F-4G`, `S0F-5A` | none |
+| 2026-04-09 | `S0F-3K`, `S0F-3L`, `S0F-3M`, `S0F-4H`, `S0F-4I`, `S0F-5B`, `S0F-5C`, `S0F-5D`, `S0F-5E`, `S0F-5F`, `S0F-6A`, `S0F-6B`, `S0F-6C` | none |
+| 2026-04-10 | `S0F-5G`, `S0F-5H`, `S0F-5I`, `S0F-5J`, `S0F-7A`, `S0F-7B`, `S0F-7C` | none |
+| 2026-04-11 | `S0F-7D`, `S0F-8A` | none |
+| 2026-04-12 | `S0F-7E` | none |
+| 2026-04-13 | `S0F-7F`, `S0F-7G`, `S0F-7H` | none |
+| 2026-04-14 | `S0F-7I`, `S0F-8B` | none |
+| 2026-04-15 | `S0F-10A`, `S0F-10B`, `S0F-10C`, `S0F-10D`, `S0F-9A` | none |
+| 2026-04-16 | `S0F-9B`, `S0F-9C`, `S0F-9D`, `S0F-9E` | none |
+| 2026-04-17 | `S0F-9F`, `S0F-9G` | none |
+| 2026-04-19 | `S0F-9H` | none |
+| 2026-04-20 | `S0G-1A`, `S0G-2A`, `S0G-docs-management-v7`, `S4F-1A`, `S4F-2A`, `S4F-2B`, `S4F-2C`, `S4F` | none |
+| 2026-04-21 | `S0G-2B`, `S0G-3A`, `S0G-3B`, `S0G-3C`, `S0G-3D`, `S0G-3E` | none |
+| 2026-04-22 | `S0G-1B`, `S0G-3F`, `S0G-4A` | none |
+| 2026-04-23 | `S0G-1C`, `S0G-3G`, `S0G-4B`, `S0G-5A` | none |

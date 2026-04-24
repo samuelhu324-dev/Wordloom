@@ -27,6 +27,7 @@
   **reference_log_10**: `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0001-legacy-taxonomy-cutover-and-stub-preservation.md`
   **reference_log_11**: `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0002-continuity-test-retirement-and-replacement-coverage.md`
   **reference_log_12**: `docs/governance/contracts/workflow/lifecycle/register-DOC-WORKFLOW-LIFECYCLE.md`
+  **reference_log_13**: `docs/logs/INDEX.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -66,6 +67,7 @@
 - `P3-C1-S1` now fixes the direct-opening verdict as positive and emits `DOC-WORKFLOW-LOGS-0002` plus `register-DOC-WORKFLOW-LOGS.md`, so the family now has one explicit current-primary release and one historical-retained earlier release.
 - `P1-C2-S1` now admits `S0C-2A` as one negative-control sample after the `0002` opening: it is structured enough to extract cleanly, but its retirement and replacement-coverage rules do not contribute reusable logs body-structure meaning, so the verdict is `no logs-family impact now`.
 - `P3-C2-S1` now fixes the downstream non-logs verdict as positive: `S0C-2A` still has no logs-family impact, but its reusable retirement rows are strong enough to open `DOC-WORKFLOW-LIFECYCLE-0002` as one later integrated lifecycle release, with `DOC-WORKFLOW-LIFECYCLE-0001` retained as the earlier narrower release.
+- `P0-C2-S1` now fixes one repo-level chronology aid for later sample admission review: `docs/logs/INDEX.md` now includes one `Historical Appearance View` sorted mechanically by `frontmatter.created`, with same-day tie-break by root log file name and one explicit note for which packets already have current-template source-owned ledgers.
 
 **Default choices (phase defaults / v1)**:
 
@@ -75,6 +77,7 @@
 - A sample that shows only local stylistic preference should remain ledger evidence and should not trigger contract mutation by itself.
 - A well-structured sample may still remain out of family if its extracted rows govern some other boundary, such as testing retirement, lifecycle, or repo-local operator practice rather than reader-facing structured-log body shape.
 - An out-of-family sample that does not mutate `DOC-WORKFLOW-LOGS` may still trigger one downstream non-logs release if the packet yields current-reader-worthy clauses strong enough for another existing family.
+- Repo-level chronology aids may be maintained when they sharpen sample-selection reading, but those aids must stay explicitly mechanical and must not be presented as one unique lineage truth.
 - Do not use the old `six outlets` model as the extraction driver for this lane; borrow only its ownership-separation discipline where useful, and do any later close-out/export review only after the release boundary is fixed.
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
@@ -177,6 +180,15 @@
   - the next write-back target
   - and that row set should live in a support-only ledger named after the extracted source id rather than the control-lane id
 
+### P0-C2-S1 (Repo chronology aid for sample ordering fixed | v1)
+
+- `docs/logs/INDEX.md` now includes one bounded `Historical Appearance View` for `docs/logs/log-*.md`.
+- The view is explicitly mechanical rather than lineage-defining:
+  - primary sort key: `frontmatter.created`
+  - same-day tie-breaker: root log file name ascending
+- The view also marks which packets already have current-template `support_only_contract_release_ledger` extraction surfaces under `docs/logs/support-only/`.
+- Older six-outlet-era exports do not count in that annotation; only the current source-owned ledger model is shown there.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -267,6 +279,7 @@
 - [x] `P0-C1-S1`: `LOGS-0001` versus next-release `LOGS-0002` boundary fixed
 - [x] `P0-C1-S2`: multi-sample lane rule fixed
 - [x] `P0-C1-S3`: evidence contract fixed
+- [x] `P0-C2-S1`: repo chronology aid for sample ordering and current-template ledger annotation fixed
 
 ### P1 (Sample extraction cycles)
 
@@ -293,6 +306,7 @@
 - `P3-C1-S1` is now completed: `DOC-WORKFLOW-LOGS-0002` is emitted as the current-primary logs-family release, `DOC-WORKFLOW-LOGS-0001` is retained as the earlier narrower release, and the family register now records that standing explicitly.
 - `S0C-2A` is now admitted as the second sample cycle and still resolves as one negative-control packet for the logs family: its extracted rules are about test retirement and replacement coverage rather than reader-facing log body structure, so the lane records `no logs-family impact now` explicitly for `DOC-WORKFLOW-LOGS`.
 - `P3-C2-S1` is now also completed: the same packet is routed onward into `DOC-WORKFLOW-LIFECYCLE-0002`, `DOC-WORKFLOW-LIFECYCLE-0001` is retained as the earlier narrower release, and the lifecycle family register now records that standing explicitly.
+- `P0-C2-S1` is now completed: `docs/logs/INDEX.md` carries one explicit `Historical Appearance View`, so later sample review can use one mechanical chronology aid without pretending that aid is the unique contract-family lineage truth.
 - The next concrete step is optional post-opening sampling to decide whether the current logs-family or lifecycle-family `0002` releases should later be sharpened, amended, superseded, or split, ideally from one stronger repeated source set rather than from another single adjacent packet.
 
 ## Evidence (reserved)
@@ -311,6 +325,24 @@
 - observed:
   - `S0C-1A` is now the first admitted sample target for this lane
   - the source-owned `S0C-1A` support-only ledger path is now fixed as the accumulation surface for extracted rule rows
+
+### P0-C2-S1 (Historical appearance view and ledger annotation added to INDEX | 2026-04-24)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/INDEX.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
+  - `docs/logs/support-only/ledger-S0C-1A-log-extensions.md`
+  - `docs/logs/support-only/ledger-S0C-2A-legacy-integration-suite-retired.md`
+- expected:
+  - add one repo-level chronology aid for `docs/logs/log-*.md` without claiming one unique lineage truth
+  - keep the sort rule mechanical and reviewable
+  - annotate only current-template source-owned ledgers, not older six-outlet-era exports
+- observed:
+  - `INDEX.md` now carries one `Historical Appearance View` sorted by `frontmatter.created`, with same-day tie-break by root log file name
+  - the view now marks which dated packets already have current-template `support_only_contract_release_ledger` extraction surfaces
+  - the annotation is bounded to the current ledger model and does not count older six-outlet-era export packets
 
 ### P1-C1-S1S2 (S0C-1A extracted into explicit candidate rows | 2026-04-23)
 
@@ -403,3 +435,4 @@
 - 2026-04-24: completed `P3-C1-S1` by opening `DOC-WORKFLOW-LOGS-0002` directly from `S0C-1A`, writing the reciprocal `LOGS-0001` supersession note, and creating `register-DOC-WORKFLOW-LOGS.md` so the family now has one explicit current-primary reader.
 - 2026-04-24: completed `P1-C2-S1` by admitting `S0C-2A` as one structured negative-control sample, extracting it into a source-owned ledger, and recording the explicit verdict `no logs-family impact now`.
 - 2026-04-24: completed `P3-C2-S1` by routing the reusable `S0C-2A` rows into `DOC-WORKFLOW-LIFECYCLE-0002`, reclassifying `DOC-WORKFLOW-LIFECYCLE-0001` as the earlier narrower release, and creating `register-DOC-WORKFLOW-LIFECYCLE.md`.
+- 2026-04-24: completed `P0-C2-S1` by adding one mechanical `Historical Appearance View` to `docs/logs/INDEX.md` and annotating which packets already have current-template source-owned ledgers.
