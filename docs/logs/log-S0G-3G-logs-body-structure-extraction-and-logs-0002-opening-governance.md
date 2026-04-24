@@ -69,6 +69,7 @@
 - `P3-C2-S1` now fixes the downstream non-logs verdict as positive: `S0C-2A` still has no logs-family impact, but its reusable retirement rows are strong enough to open `DOC-WORKFLOW-LIFECYCLE-0002` as one later integrated lifecycle release, with `DOC-WORKFLOW-LIFECYCLE-0001` retained as the earlier narrower release.
 - `P0-C2-S1` now fixes one repo-level chronology aid for later sample admission review: `docs/logs/INDEX.md` now includes one `Historical Appearance View` sorted mechanically by `frontmatter.created`, with same-day tie-break by root log file name and one explicit note for which packets already have current-template source-owned ledgers.
 - `P0-C2-S2` now repairs file-level coverage for that chronology aid: the same `Historical Appearance View` now lists each root `docs/logs/log-*.md` file by file stem plus governing id, and exact-path retained stubs now recover chronology from their `old_id + moved_to` targets so the root-log inventory remains file-complete.
+- `P0-C2-S3` now repairs readability for that same chronology aid: each root log item is rendered on its own visual line inside the table cell and the log stem is wrapped in backticks, so readers can scan dense same-day groups without losing the file-complete view.
 
 **Default choices (phase defaults / v1)**:
 
@@ -197,6 +198,13 @@
 - If one root path is now an exact-path retained stub and no longer carries its original `created`, the view must recover chronology from the stub's `old_id + moved_to` target instead of silently dropping that root file from the chronology aid.
 - The result remains mechanical and non-lineage-defining, but it is now file-complete for the current root `docs/logs/log-*.md` inventory.
 
+### P0-C2-S3 (Chronology-aid readability formatting fixed | v1)
+
+- The `Historical Appearance View` keeps the same mechanical chronology contract, but its cell rendering is now optimized for reading rather than compressed comma lists.
+- Each root log item now occupies its own visual line inside the table cell.
+- The log stem portion is wrapped in backticks so the file-like identity remains visually separable from the parenthesized governing id.
+- The change is presentation-only: no chronology sort rule, file-count rule, stub fallback rule, or current-template ledger-annotation rule changes here.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -289,6 +297,7 @@
 - [x] `P0-C1-S3`: evidence contract fixed
 - [x] `P0-C2-S1`: repo chronology aid for sample ordering and current-template ledger annotation fixed
 - [x] `P0-C2-S2`: root-log file completeness and stub fallback fixed in the chronology aid
+- [x] `P0-C2-S3`: chronology-aid readability formatting fixed
 
 ### P1 (Sample extraction cycles)
 
@@ -317,6 +326,7 @@
 - `P3-C2-S1` is now also completed: the same packet is routed onward into `DOC-WORKFLOW-LIFECYCLE-0002`, `DOC-WORKFLOW-LIFECYCLE-0001` is retained as the earlier narrower release, and the lifecycle family register now records that standing explicitly.
 - `P0-C2-S1` is now completed: `docs/logs/INDEX.md` carries one explicit `Historical Appearance View`, so later sample review can use one mechanical chronology aid without pretending that aid is the unique contract-family lineage truth.
 - `P0-C2-S2` is now completed: that same chronology aid is now file-complete for the current root log inventory, including exact-path retained stubs that need chronology backfilled from their retained moved bodies.
+- `P0-C2-S3` is now completed: that same chronology aid now renders dense same-day groups as one-item-per-line cells with code-styled log stems, so readers can scan the file-complete view without decoding long comma chains.
 - The next concrete step is optional post-opening sampling to decide whether the current logs-family or lifecycle-family `0002` releases should later be sharpened, amended, superseded, or split, ideally from one stronger repeated source set rather than from another single adjacent packet.
 
 ## Evidence (reserved)
@@ -371,6 +381,20 @@
   - `INDEX.md` now lists each root log by file stem plus governing id in parentheses, so same-day duplicate ids stay file-distinguishable
   - exact-path retained stubs now remain in the chronology aid by recovering their original chronology from the stub `old_id + moved_to` target
   - the chronology aid now renders one visible row item for each current root `docs/logs/log-*.md` file instead of collapsing file coverage below the root inventory count
+
+### P0-C2-S3 (Historical appearance view reformatted for readable per-log scanning | 2026-04-24)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/INDEX.md`
+- expected:
+  - preserve the already-fixed file-complete chronology inventory
+  - make dense same-day rows readable without forcing readers to parse one long comma-delimited line
+  - visually separate the log-like file stem from the governing id inside each item
+- observed:
+  - each root log item now renders on its own visual line inside the table cell
+  - the log stem is now wrapped in backticks, while the governing id stays adjacent in parentheses
+  - the chronology aid remains mechanically identical in ordering and file coverage; only the table presentation changed here
 
 ### P1-C1-S1S2 (S0C-1A extracted into explicit candidate rows | 2026-04-23)
 
@@ -465,3 +489,4 @@
 - 2026-04-24: completed `P3-C2-S1` by routing the reusable `S0C-2A` rows into `DOC-WORKFLOW-LIFECYCLE-0002`, reclassifying `DOC-WORKFLOW-LIFECYCLE-0001` as the earlier narrower release, and creating `register-DOC-WORKFLOW-LIFECYCLE.md`.
 - 2026-04-24: completed `P0-C2-S1` by adding one mechanical `Historical Appearance View` to `docs/logs/INDEX.md` and annotating which packets already have current-template source-owned ledgers.
 - 2026-04-24: completed `P0-C2-S2` by revising that same `Historical Appearance View` to show each root log file explicitly and to backfill chronology for exact-path retained stubs from their moved retained bodies.
+- 2026-04-24: completed `P0-C2-S3` by reformatting that same `Historical Appearance View` so each log renders on its own visual line and the log stem is code-styled for faster scanning.
