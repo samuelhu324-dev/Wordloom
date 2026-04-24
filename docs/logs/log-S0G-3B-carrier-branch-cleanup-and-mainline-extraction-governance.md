@@ -10,7 +10,7 @@
 **tags**: `EVOLUTION, Docs, Workflow, Automation, Evidence, epic/s0, sub/3b`
 **links**: ``
   **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/536`
-  **pr**: "https://github.com/samuelhu324-dev/wordloom-v3/pull/537"
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/537`
   **runbook**: `docs/runbook/run-WORKFLOW-GITHUB-001-GitHub-Issues-full-auto-pipeline.md`
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0G-docs-management-v7.md`
