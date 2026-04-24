@@ -34,9 +34,11 @@ contract_record:
   supporting_evidence_refs:
     - docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md
     - docs/logs/log-S0B-2A-scripts-snapshots-management.md
+    - docs/governance/contracts/workflow/lifecycle/register-DOC-WORKFLOW-LIFECYCLE.md
   lineage:
     supersedes: []
-    superseded_by: []
+    superseded_by:
+      - DOC-WORKFLOW-LIFECYCLE-0002
     split_from: []
     split_into: []
     absorbed_from: []
@@ -48,6 +50,7 @@ contract_record:
     - The broader DOC-WORKFLOW family path remains taxonomy only; this record does not claim split lineage from DOC-WORKFLOW-0001.
     - The contract intentionally keeps the lifecycle side of cutover separate from the logs-intake side, which is routed to DOC-WORKFLOW-LOGS-0001 through the same-source ledger split.
     - The older S0B-2A mixed source is retained as supporting evidence because its legacy and cutover pressure may later be re-routed into this family, but this first release is still owned directly by S0B-3A.
+    - This release now remains as the earlier narrower lifecycle-family reader after DOC-WORKFLOW-LIFECYCLE-0002 opens as the integrated current release.
     - `effective_from` is anchored to the source log creation date `2026-02-12` because the repaired `S0B-3A` parent ledger now defends that day-level source chronology for the lifecycle-facing legacy-taxonomy, cutover-boundary, and stub-preservation rows.
 ```
 
@@ -55,7 +58,7 @@ contract_record:
 
 - The current effective governance state of this contract is carried in frontmatter through `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
 - Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this release family; they should not be read as current ownership or approval identity.
-- This contract therefore acts as the narrow current-state governance surface for the active `DOC-WORKFLOW-LIFECYCLE-0001` reader, while the parent ledger preserves the mixed-family route and governance-event chain that led here.
+- This contract now acts as the earlier narrower lifecycle-family release retained for historical reading after DOC-WORKFLOW-LIFECYCLE-0002 becomes the active first-open reader, while the parent ledger preserves the mixed-family route and governance-event chain that led here.
 - The current steward is intentionally delegated rather than implicitly identical to the owner team, which keeps day-to-day lifecycle contract maintenance distinct from durable family ownership.
 
 ## Governance Event Table
@@ -89,6 +92,7 @@ contract_record:
 
 - This release establishes the first lifecycle-oriented child family extracted from `S0B-3A`.
 - The semantic start of this release is now anchored to the source log creation date `2026-02-12`, while the release record itself entered repo chronology later on `2026-04-10`.
+- This release is now the earlier narrower lifecycle-family release after DOC-WORKFLOW-LIFECYCLE-0002 broadens the family current reader with explicit S0C-2A retirement and replacement-coverage clauses.
 - The release isolates the lifecycle body that had been mixed with log identity and front matter inside the broader source packet:
   - explicit legacy taxonomy and `Legacy Refs` handling
   - default freeze of older material rather than immediate rewrite or deletion
@@ -113,12 +117,13 @@ contract_record:
 
 ## Current Reading
 
-- Read this release when the question is `what is the first narrow workflow rule for classifying legacy material, freezing it by default, migrating it on demand, and preserving continuity through cutover and stubs?`
+- Read this release when the question is `what was the first narrow workflow rule set for classifying legacy material, freezing it by default, migrating it on demand, and preserving continuity through cutover and stubs before the later integrated lifecycle reader opened?`
+- Read `register-DOC-WORKFLOW-LIFECYCLE.md` when the question is `why is this release historical-retained now and which lifecycle-family release should be opened first?`
 - Read the `S0B-3A` ledger when the question is `which parts of S0B-3A entered this lifecycle family and which parts were routed elsewhere?`
 - Read `S0B-2A` only when you need the earlier nearby pressure that later may justify extending lifecycle governance beyond this first child release.
 
 ## Reader Notes
 
 - This draft is intentionally the first narrow lifecycle extraction, not the final wider owner of every later historical view, observability migration, or archaeology flow that may eventually reuse similar lifecycle logic.
-- If later sources prove that lifecycle governance spans additional workflow kinds strongly enough, that widening should happen through a later release or broader family synthesis rather than by retroactively pretending this first release was already fully general.
+- That widening now begins through DOC-WORKFLOW-LIFECYCLE-0002, which keeps this file as one earlier narrower release rather than retroactively pretending this first release was already fully general.
 - The file now uses the current chronology-first clause registry model while preserving the same first child release meaning.

@@ -142,8 +142,8 @@
 | `SUP` | `not-required` | `n/a` | `Is later evidence needed only to sharpen one already-routed row?` | `explicit no-SUP verdict` | Current packet already carries enough direct evidence for first-pass routing. |
 | `parent ledger` | `required` | `source-owned support-only ledger for S0C-2A` | `Does the packet need an explicit routing verdict against S0G-3G and possible downstream families?` | `ledger-S0C-2A-legacy-integration-suite-retired.md` | Required to separate extraction from downstream family choice. |
 | `contract impact decision` | `required` | `S0C-2A` | `Is this packet a logs-family sample, a family-mismatch sample, or a future non-logs contract candidate?` | `explicit classified verdict` | Boundary gate for this refit. |
-| `contract mutation` | `conditional` | `future family contract or n/a` | `Does this packet change defended current contract meaning now?` | `explicit no-contract-mutation verdict` | Current default is no downstream mutation. |
-| `transition register update` | `not-required` | `n/a` | `Did any family-level current-reader standing change?` | `explicit no-register-change verdict` | No standing change is justified by this packet alone. |
+| `contract mutation` | `conditional` | `future family contract or n/a` | `Does this packet change defended current contract meaning now?` | `explicit admitted-or-no-op verdict` | This packet is now admitted into `DOC-WORKFLOW-LIFECYCLE-0002`, while still leaving `DOC-WORKFLOW-LOGS` unchanged. |
+| `transition register update` | `conditional` | `affected family register or n/a` | `Did any family-level current-reader standing change?` | `explicit register update or no-register-change verdict` | This packet now changes lifecycle-family release standing, but not logs-family standing. |
 | `bridged contract reconciliation` | `not-required` | `n/a` | `Do current readers need redirect or bridge notes because of this packet?` | `explicit no-bridge-impact verdict` | No current bridge write-back is needed in this round. |
 
 ## Exported Sections / Outlet Ownership
@@ -172,8 +172,8 @@
 ## Current Status
 
 - `S0C-2A` now reads as one explicit retirement-governance packet: obsolete suites were removed from the active gate, replacement coverage was named, and the local evidence trail was preserved.
-- Under the current extraction model, the packet yields reusable retirement and replacement-coverage candidates, but those candidates do not map to `DOC-WORKFLOW-LOGS-0002` clause ownership.
-- The packet is therefore a useful structured sample and a useful negative control for `S0G-3G`, but not a defended trigger for logs-family mutation.
+- Under the current extraction model, the packet yields reusable retirement and replacement-coverage candidates, but those candidates still do not map to `DOC-WORKFLOW-LOGS-0002` clause ownership.
+- The packet therefore remains a useful structured sample and a useful negative control for `S0G-3G` on the logs side, while its reusable retirement rows are now admitted into `DOC-WORKFLOW-LIFECYCLE-0002` as one later integrated lifecycle release.
 
 ## Evidence
 
@@ -196,8 +196,8 @@
 
 ## Next
 
-- If a second or third source packet expresses the same retirement-by-skip and replacement-coverage rules, open a dedicated non-logs family or later lifecycle-style test-governance lane from those corroborated packets.
-- Until then, keep this source as retained proof and do not widen `DOC-WORKFLOW-LOGS` or `DOC-WORKFLOW-LIFECYCLE` from this packet alone.
+- If a second or third source packet expresses the same retirement-by-skip and replacement-coverage rules, decide whether `DOC-WORKFLOW-LIFECYCLE-0002` should remain integrated, be amended, or split into one narrower test-retirement lifecycle release.
+- Keep this source as retained proof, keep `DOC-WORKFLOW-LOGS` unchanged, and treat concrete pytest outputs as support-only unless a later evidence model explicitly promotes them.
 
 ## References
 

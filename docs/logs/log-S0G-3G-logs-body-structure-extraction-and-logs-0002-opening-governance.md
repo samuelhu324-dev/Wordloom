@@ -24,6 +24,9 @@
   **reference_log_7**: `docs/governance/contracts/workflow/logs/register-DOC-WORKFLOW-LOGS.md`
   **reference_log_8**: `docs/logs/log-S0C-2A-legacy-integration-suite-retired.md`
   **reference_log_9**: `docs/logs/support-only/ledger-S0C-2A-legacy-integration-suite-retired.md`
+  **reference_log_10**: `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0001-legacy-taxonomy-cutover-and-stub-preservation.md`
+  **reference_log_11**: `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0002-continuity-test-retirement-and-replacement-coverage.md`
+  **reference_log_12**: `docs/governance/contracts/workflow/lifecycle/register-DOC-WORKFLOW-LIFECYCLE.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -62,6 +65,7 @@
 - `P2-C1` is now completed for the first sample only: `S0C-1A` is clustered into provisional `candidate LOGS-0002 clauses`, `candidate LOGS-0001 boundary amendments`, and `support-only` material, with the explicit current verdict `no-contract-mutation-for-now` until corroborating evidence exists.
 - `P3-C1-S1` now fixes the direct-opening verdict as positive and emits `DOC-WORKFLOW-LOGS-0002` plus `register-DOC-WORKFLOW-LOGS.md`, so the family now has one explicit current-primary release and one historical-retained earlier release.
 - `P1-C2-S1` now admits `S0C-2A` as one negative-control sample after the `0002` opening: it is structured enough to extract cleanly, but its retirement and replacement-coverage rules do not contribute reusable logs body-structure meaning, so the verdict is `no logs-family impact now`.
+- `P3-C2-S1` now fixes the downstream non-logs verdict as positive: `S0C-2A` still has no logs-family impact, but its reusable retirement rows are strong enough to open `DOC-WORKFLOW-LIFECYCLE-0002` as one later integrated lifecycle release, with `DOC-WORKFLOW-LIFECYCLE-0001` retained as the earlier narrower release.
 
 **Default choices (phase defaults / v1)**:
 
@@ -70,6 +74,7 @@
 - New samples should first open or update one source-owned ledger named after the extracted source id before any contract text is drafted or revised.
 - A sample that shows only local stylistic preference should remain ledger evidence and should not trigger contract mutation by itself.
 - A well-structured sample may still remain out of family if its extracted rows govern some other boundary, such as testing retirement, lifecycle, or repo-local operator practice rather than reader-facing structured-log body shape.
+- An out-of-family sample that does not mutate `DOC-WORKFLOW-LOGS` may still trigger one downstream non-logs release if the packet yields current-reader-worthy clauses strong enough for another existing family.
 - Do not use the old `six outlets` model as the extraction driver for this lane; borrow only its ownership-separation discipline where useful, and do any later close-out/export review only after the release boundary is fixed.
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
@@ -122,16 +127,16 @@
 | `SUP` | `not-required` | `n/a` | `Is this lane sharpening one already-admitted row with later evidence only?` | `explicit no-SUP verdict` | `Default path is direct extraction plus parent ledger write-back` |
 | `parent ledger` | `required` | `source-owned support-only ledger for the extracted sample` | `Does the extracted sample add or sharpen one candidate body-structure rule row?` | `ledger rows added or updated in the sample-owned ledger` | `This is the mandatory accumulation layer before contract mutation` |
 | `contract impact decision` | `required` | `S0G-3G` | `Does the cross-sample evidence justify no-op, `LOGS-0001` note-only reconciliation, or opening `LOGS-0002` as the next same-family release?` | `explicit classified verdict in log plus ledger` | `Boundary gate before downstream mutation` |
-| `contract mutation` | `conditional` | `DOC-WORKFLOW-LOGS-*` | `Has repeated evidence made one next-release boundary defensible?` | `new release draft or explicit no-contract-mutation verdict` | `Default remains no mutation until repeated evidence exists` |
-| `transition register update` | `conditional` | `register-DOC-WORKFLOW-LOGS.md or n/a` | `Would opening `LOGS-0002` change which release is first-open now or how `LOGS-0001` remains reader-relevant?` | `register row or explicit no-register-change verdict` | `Needed when family-level release standing changes between `0001` and `0002`` |
-| `bridged contract reconciliation` | `conditional` | `affected LOGS family contracts` | `Do current logs-family readers need redirect or release-bridge notes after the decision?` | `bridge note or explicit no-bridge-impact verdict` | `Keep `LOGS-0001` and any later `LOGS-0002` coherent` |
+| `contract mutation` | `conditional` | `DOC-WORKFLOW-LOGS-*`, downstream non-logs family, or `n/a` | `Has the reviewed packet made one same-family logs release or one downstream non-logs release boundary defensible?` | `new release draft or explicit no-contract-mutation verdict` | `Default remains no mutation until one defended family-level reader change exists` |
+| `transition register update` | `conditional` | `register-DOC-WORKFLOW-LOGS.md`, one downstream family register, or `n/a` | `Would the decision change which release is first-open now or how an earlier release remains reader-relevant in the affected family?` | `register row or explicit no-register-change verdict` | `Needed whenever family-level release standing changes in either the logs family or one downstream family` |
+| `bridged contract reconciliation` | `conditional` | `affected family contracts` | `Do current readers need redirect or release-bridge notes after the decision?` | `bridge note or explicit no-bridge-impact verdict` | `Keep the affected family releases coherent without forcing all downstream routing back into the logs family` |
 
 ## Scope
 
 - `P0`: contract boundary for `LOGS-0001` versus next-release `LOGS-0002`, plus the multi-sample lane rule
 - `P1`: sample-by-sample extraction cycles from source logs into the dedicated parent ledger
 - `P2`: cross-sample clustering, repeatability verdicts, and family-boundary testing
-- `P3`: contract opening decision and first downstream write-back only if justified
+- `P3`: contract opening decision and first downstream write-back only if justified, including one defended non-logs family write-back when the sample is out of family for logs but current-reader-worthy elsewhere
 
 ## Success Criteria (DoD)
 
@@ -203,7 +208,15 @@
 - The sample is useful because it now exposes a clean extraction surface and therefore tests the lane's family boundary, not just the source-log formatting discipline.
 - Extracted rows from `S0C-2A` govern legacy-suite retirement, explicit skip messaging, replacement coverage, and retained pytest evidence.
 - The explicit verdict is `no logs-family impact now`: none of those rows amend `DOC-WORKFLOW-LOGS-0002`, reopen `DOC-WORKFLOW-LOGS-0001`, or change `register-DOC-WORKFLOW-LOGS.md`.
-- The sample therefore remains one negative-control packet: it proves that `well-structured source` is necessary for extraction but not sufficient for logs-family admission.
+- The sample therefore remains one negative-control packet for the logs family: it proves that `well-structured source` is necessary for extraction but not sufficient for logs-family admission.
+
+### P3-C2-S1 (S0C-2A routed into the later integrated lifecycle release | v1)
+
+- `S0C-2A` remains out of the logs family, but its reusable retirement and replacement-coverage rows are now admitted into `DOC-WORKFLOW-LIFECYCLE-0002` as one later integrated lifecycle release.
+- `DOC-WORKFLOW-LIFECYCLE-0002` carries forward the earlier continuity, freeze, migration, cutover, and stub-preservation clauses from `DOC-WORKFLOW-LIFECYCLE-0001`, amends the family boundary clause, and introduces explicit retirement, traceability, and replacement-coverage clauses from `S0C-2A`.
+- `register-DOC-WORKFLOW-LIFECYCLE.md` now records that `DOC-WORKFLOW-LIFECYCLE-0002` is current-primary and `DOC-WORKFLOW-LIFECYCLE-0001` remains historical-retained as the earlier narrower release.
+- `S0C-2A-R04` remains retained support-only evidence; reproducible pytest counts are not admitted into primary lifecycle contract text.
+- Later split is allowed if repeated evidence makes test-retirement lifecycle independently judgeable from the broader integrated lifecycle reader.
 
 ### P2 (Boundary test)
 
@@ -234,6 +247,7 @@
 ### P3 (Downstream write-back)
 
 - `P3-C1-S1`: if the boundary test passes, scaffold the downstream `LOGS-0002` release-opening packet and any required bridge notes
+- `P3-C2-S1`: if one out-of-family packet is still current-reader-worthy elsewhere, scaffold the downstream non-logs release-opening packet and any required family register notes
 
 ### P3-C1-S1 (DOC-WORKFLOW-LOGS-0002 and family register emitted | v1)
 
@@ -269,6 +283,7 @@
 ### P3 (Downstream write-back)
 
 - [x] `P3-C1-S1`: downstream `LOGS-0002` opening packet scaffolded and family register write-back completed
+- [x] `P3-C2-S1`: downstream lifecycle release-opening packet scaffolded and family register write-back completed for `S0C-2A`
 
 ## Current Status
 
@@ -276,8 +291,9 @@
 - `S0C-1A` is now fixed as the first extracted sample: its candidate rule set has been split into conclusion-block, minimum-field, top-level-status, current-effective-body, and supporting-evidence rows inside the source-owned ledger `ledger-S0C-1A-log-extensions.md`.
 - `P2-C1` is now fixed for that first sample: `R01`, `R02`, and `R04` sit in the provisional `LOGS-0002` bucket, `R03` sits in the provisional `LOGS-0001 boundary amendment` bucket, and `R05` remains support-only.
 - `P3-C1-S1` is now completed: `DOC-WORKFLOW-LOGS-0002` is emitted as the current-primary logs-family release, `DOC-WORKFLOW-LOGS-0001` is retained as the earlier narrower release, and the family register now records that standing explicitly.
-- `S0C-2A` is now admitted as the second sample cycle, but it resolves as one negative-control packet: its extracted rules are about test retirement and replacement coverage rather than reader-facing log body structure, so the lane now records `no logs-family impact now` explicitly.
-- The next concrete step is no longer mandatory corroboration before any release exists; it is now optional post-opening sampling to decide whether the current `0002` release should later be sharpened, amended, or superseded by one later logs-family release, ideally from one stronger in-family structured-log source rather than from another adjacent but out-of-family packet.
+- `S0C-2A` is now admitted as the second sample cycle and still resolves as one negative-control packet for the logs family: its extracted rules are about test retirement and replacement coverage rather than reader-facing log body structure, so the lane records `no logs-family impact now` explicitly for `DOC-WORKFLOW-LOGS`.
+- `P3-C2-S1` is now also completed: the same packet is routed onward into `DOC-WORKFLOW-LIFECYCLE-0002`, `DOC-WORKFLOW-LIFECYCLE-0001` is retained as the earlier narrower release, and the lifecycle family register now records that standing explicitly.
+- The next concrete step is optional post-opening sampling to decide whether the current logs-family or lifecycle-family `0002` releases should later be sharpened, amended, superseded, or split, ideally from one stronger repeated source set rather than from another single adjacent packet.
 
 ## Evidence (reserved)
 
@@ -361,6 +377,23 @@
   - those rows are useful governance candidates, but none of them contribute reusable `DOC-WORKFLOW-LOGS` body-shape meaning
   - the explicit verdict is `no logs-family impact now`: no `LOGS-0002` amendment, no `LOGS-0001` reconciliation, and no family-register update are required from this sample
 
+### P3-C2-S1 (S0C-2A routed into DOC-WORKFLOW-LIFECYCLE-0002 | 2026-04-24)
+
+- headSha: ``
+- artifacts:
+  - `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0002-continuity-test-retirement-and-replacement-coverage.md`
+  - `docs/governance/contracts/workflow/lifecycle/register-DOC-WORKFLOW-LIFECYCLE.md`
+  - `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0001-legacy-taxonomy-cutover-and-stub-preservation.md`
+  - `docs/logs/support-only/ledger-S0C-2A-legacy-integration-suite-retired.md`
+- expected:
+  - keep the explicit `no logs-family impact now` verdict intact
+  - avoid leaving the reusable `S0C-2A` rows indefinitely below contract level
+  - open one later integrated lifecycle release rather than one broad parent stub
+- observed:
+  - `DOC-WORKFLOW-LIFECYCLE-0002` is now emitted as the current lifecycle-family release
+  - `DOC-WORKFLOW-LIFECYCLE-0001` now remains the earlier narrower lifecycle release and the family register records that standing explicitly
+  - `S0C-2A-R01` through `R03` are now resolved through the lifecycle-family opening verdict, while `R04` remains retained support-only evidence
+
 ## Recent changes
 
 - 2026-04-23: opened `S0G-3G` as the bounded lane for cross-sample log body-structure extraction and candidate `LOGS-0002` same-family release opening.
@@ -369,3 +402,4 @@
 - 2026-04-24: completed `P2-C1-S1S2` for the first sample by classifying the `S0C-1A` rows into provisional `LOGS-0002`, provisional `LOGS-0001` boundary-amendment, and support-only buckets, and by fixing the explicit current verdict as `no-contract-mutation-for-now`.
 - 2026-04-24: completed `P3-C1-S1` by opening `DOC-WORKFLOW-LOGS-0002` directly from `S0C-1A`, writing the reciprocal `LOGS-0001` supersession note, and creating `register-DOC-WORKFLOW-LOGS.md` so the family now has one explicit current-primary reader.
 - 2026-04-24: completed `P1-C2-S1` by admitting `S0C-2A` as one structured negative-control sample, extracting it into a source-owned ledger, and recording the explicit verdict `no logs-family impact now`.
+- 2026-04-24: completed `P3-C2-S1` by routing the reusable `S0C-2A` rows into `DOC-WORKFLOW-LIFECYCLE-0002`, reclassifying `DOC-WORKFLOW-LIFECYCLE-0001` as the earlier narrower release, and creating `register-DOC-WORKFLOW-LIFECYCLE.md`.
