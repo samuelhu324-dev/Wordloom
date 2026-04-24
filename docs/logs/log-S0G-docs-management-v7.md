@@ -18,6 +18,19 @@
   **reference_log_2**: `docs/logs/log-S0F-8B-s0f-issue-pr-automation-inventory-and-per-series-rollout.md`
   **reference_log_3**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **phase_log_1**: `docs/logs/log-S0G-1A-workspace-backfill-branch-road-registration-and-full-auto-close-out.md`
+  **phase_log_2**: `docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md`
+  **phase_log_3**: `docs/logs/log-S0G-2B-support-only-ledger-placement-and-patch-ledger-bridge.md`
+  **phase_log_4**: `docs/logs/log-S0G-3A-runbook-release-issue-concentration-and-ledger-naming-governance.md`
+  **phase_log_5**: `docs/logs/log-S0G-3B-carrier-branch-cleanup-and-mainline-extraction-governance.md`
+  **phase_log_6**: `docs/logs/log-S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance.md`
+  **phase_log_7**: `docs/logs/log-S0G-3D-workflow-github-issues-file-identity-rename-and-successor-release-governance.md`
+  **phase_log_8**: `docs/logs/log-S0G-3E-workflow-github-issues-round-attempt-chronology-and-family-template-governance.md`
+  **phase_log_9**: `docs/logs/log-S0G-4A-contract-boundary-map-and-parent-child-clause-flow-governance.md`
+  **phase_log_10**: `docs/logs/log-S0G-3F-runbook-revision-sequence-and-release-board-operational-register-governance.md`
+  **phase_log_11**: `docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
+  **phase_log_12**: `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
+  **phase_log_13**: `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  **phase_log_14**: `docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -35,7 +48,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-20`
-**updated**: `2026-04-20`
+**updated**: `2026-04-23`
 
 ---
 
@@ -119,6 +132,22 @@
 
 - `S0G-1A`（Phase 1）：workspace backfill, branch-road registration, and full-auto close-out
   - 详见：`docs/logs/log-S0G-1A-workspace-backfill-branch-road-registration-and-full-auto-close-out.md`
+- `S0G-2A`（Phase 2）：runbook ledger-aware operator surface and execution accounting
+  - 详见：`docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md`
+- `S0G-2B`（Phase 2B）：support-only ledger placement and patch-ledger bridge
+  - 详见：`docs/logs/log-S0G-2B-support-only-ledger-placement-and-patch-ledger-bridge.md`
+- `S0G-3A`（Phase 3）：runbook release issue concentration and ledger naming governance
+  - 详见：`docs/logs/log-S0G-3A-runbook-release-issue-concentration-and-ledger-naming-governance.md`
+- `S0G-3B`（Phase 3B）：carrier branch cleanup and mainline extraction governance
+  - 详见：`docs/logs/log-S0G-3B-carrier-branch-cleanup-and-mainline-extraction-governance.md`
+- `S0G-3C`（Phase 3C）：WORKFLOW-GITHUB-ISSUES strong-structure and ledger-bridge governance
+  - 详见：`docs/logs/log-S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance.md`
+- `S0G-3D`（Phase 3D）：WORKFLOW-GITHUB-ISSUES file-identity rename and successor-release governance
+  - 详见：`docs/logs/log-S0G-3D-workflow-github-issues-file-identity-rename-and-successor-release-governance.md`
+- `S0G-3G`（Phase 3G）：logs body-structure extraction and LOGS-0002 opening governance
+  - 详见：`docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+- `S0G-1B`（Phase 1B）：legacy logs historical backfill and logs-family bridge governance
+  - 详见：`docs/logs/log-S0G-1B-legacy-logs-historical-backfill-and-logs-family-bridge-governance.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -129,9 +158,18 @@
 
 ## Current Status（进展摘要）
 
-- `S0G` opens already in `stable` state because it is a backfill spine for work that is already materially complete in the workspace.
-- The immediate operational follow-through is not design work; it is GitHub lifecycle materialization: create the parent issue, run the child issue / PR / conclusion flow, and leave the old mixed branch behind.
-- Future follow-up should happen in later `S0G-*` children only if new uncaptured workspace packets appear; this spine itself should remain a one-child close-out anchor unless the scope genuinely widens again.
+- `S0G` remains `stable` as the docs-management v7 successor spine, but it is no longer only a one-child retrospective close-out anchor.
+- `S0G-1A` records the initial workspace backfill and lifecycle materialization packet, while `S0G-2A` and `S0G-2B` now fix the ledger-aware runbook surface, support-only ledger placement, and patch-ledger bridge contract.
+- `S0G-3A` now fixes the next missing governance layer: release-issue concentration, object-first commit/PR naming, legacy runbook placement, and clean-branch discipline for later runbook-family packets.
+- `S0G-3B` now reopens the transition problem more concretely: before treating `main` as the default clean base again, the repo must inventory the current `S0G` carrier, separate patch-equivalent noise from true branch-only packets, and extract any still-meaningful bounded packet content.
+- `S0G-3C` is now stable and closes the strong-structure contract: the narrower `WORKFLOW-GITHUB-ISSUES` family identity, child-vs-parent workflow profiles, and the run/target/stage bridge across `Run Ledger`, `SUP`, and `PATCH` are now explicit.
+- `S0G-3D` now opens the remaining identity-materialization decision: decide whether the current compatibility-era filename should be physically renamed in place or whether a successor-release identity should be opened with explicit lineage and compatibility routing.
+- `S0G-1B` now opens the next historical follow-up on the logs side: decide whether the earliest pre-`LOGS-0001` structured-log shape should open as one separate legacy family release, how that historical-only release should bridge into the current logs family, and how the `S0A-2A` logs-layer row should stop remaining deferred once that evidence is admitted.
+- `S0G-1C` now opens the scripts-governance follow-up on the `S0B-2A` side: decide whether the deferred scripts taxonomy and stable entrypoint rows should open one dedicated `DOC-WORKFLOW-SCRIPTS-0001` family release, how that first release should stay narrow, and how the parent ledger should record the resulting consumption explicitly.
+- `S0G-5A` now opens the time-semantics follow-up on the template side: separate artifact lifecycle time from semantic effective time and routing-validity time, fix the default derivation rule before a wider backfill sweep, and defer transition-window dates until real release coexistence exists.
+- `S0G-3F` now opens the next bounded release-governance follow-up: fix revision-sequence grammar and define the release board as a lightweight operational register for active runbook-family releases.
+- `S0G-3G` now opens the next logs-governance follow-up: accumulate repeated modern log body-structure evidence through one dedicated parent ledger and decide whether that evidence warrants `DOC-WORKFLOW-LOGS-0002` as the next release in the same family rather than widening `LOGS-0001` by drift.
+- The next concrete work under this spine should now execute `S0G-3G/P1-C1-S1S2` on `S0C-1A`, then decide whether a second corroborating sample should enter as `P1-C2` before any `LOGS-0002` contract packet is opened.
 
 ## Evidence（可选，聚合型记账）
 
