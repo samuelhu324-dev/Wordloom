@@ -38,7 +38,8 @@ contract_record:
   lineage:
     supersedes:
       - DOC-WORKFLOW-LEGACY-LOGS-0001
-    superseded_by: []
+    superseded_by:
+      - DOC-WORKFLOW-LOGS-0002
     split_from: []
     split_into: []
     absorbed_from: []
@@ -58,17 +59,19 @@ contract_record:
 - Earlier historical reader:
   - `DOC-WORKFLOW-LEGACY-LOGS-0001`
 - Current reader standing:
-  - `DOC-WORKFLOW-LOGS-0001` remains the active logs-family contract surface
+  - `DOC-WORKFLOW-LOGS-0002` is now the current-primary logs-family contract surface
+  - `DOC-WORKFLOW-LOGS-0001` remains historical-retained for the earlier narrower reader shape
 - Bridge rule:
   - read `DOC-WORKFLOW-LEGACY-LOGS-0001` for the earliest historical structured-log reader shape
-  - read `DOC-WORKFLOW-LOGS-0001` for the current logs-facing rule on identity, front matter, and cutover intake
+  - read `DOC-WORKFLOW-LOGS-0001` for the earlier logs-facing rule on identity, front matter, and cutover intake before body-structure governance became explicit in the family current reader
+  - read `DOC-WORKFLOW-LOGS-0002` first for the current integrated logs-family reader
   - do not read this bridge as `absorbed_from`, clause carry-forward, or family renumbering
 
 ## Current Governance State
 
 - The current effective governance state of this contract is carried in frontmatter through `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by`.
 - Older fields such as `introduced_by`, `last_changed_by`, `source_refs`, and `cumulative_source_refs` remain chronology/source metadata for this release family; they should not be read as current ownership or approval identity.
-- This contract therefore acts as the narrow current-state governance surface for the active `DOC-WORKFLOW-LOGS-0001` reader, while the parent ledger preserves the mixed-family route and governance-event chain that led here.
+- This contract now acts as the earlier retained logs-family release for the narrower `identity + front matter + cutover intake` reader, while `DOC-WORKFLOW-LOGS-0002` is the current-primary reader.
 - The current steward is intentionally delegated rather than implicitly identical to the owner team, which keeps day-to-day logs contract maintenance distinct from durable family ownership.
 - The earlier historical reader for the earliest structured-log shape is now preserved separately at `DOC-WORKFLOW-LEGACY-LOGS-0001`; this file remains current without claiming that the earlier clause body was absorbed here.
 
@@ -107,6 +110,7 @@ contract_record:
   - logs-facing front matter as the mechanically managed metadata surface for logs
   - the logs-intake half of cutover, which requires new structured log content to enter the managed system under the new identifier and metadata discipline
 - This release intentionally does not absorb legacy taxonomy, stub preservation, or lifecycle-boundary cutover semantics; those remain reserved for `DOC-WORKFLOW-LIFECYCLE-0001`.
+- This release is now superseded as the first-open logs-family reader by `DOC-WORKFLOW-LOGS-0002`, but it remains retained for the earlier narrower reader shape before body-structure governance was admitted into the family.
 
 ## Contract Statement
 
@@ -128,7 +132,8 @@ contract_record:
 
 ## Current Reading
 
-- Read this release when the question is `what is the first narrow workflow rule for structured log identity, log-facing front matter, and post-cutover logs intake?`
+- Read this release when the question is `what was the first narrow workflow rule for structured log identity, log-facing front matter, and post-cutover logs intake before body-structure governance was made explicit?`
+- Read `DOC-WORKFLOW-LOGS-0002` first when the question is `what is the current integrated logs-family reader now?`
 - Read `DOC-WORKFLOW-LEGACY-LOGS-0001` first when the question is `what was the earlier historical structured-log reader shape before this current logs-family rule existed?`
 - Read the `S0B-3A` ledger when the question is `which parts of S0B-3A entered this logs family and which parts were routed elsewhere?`
 - Read the broader workflow family only when the question is about the higher-level workflow path rather than this specific logs-facing rule body.
@@ -139,3 +144,4 @@ contract_record:
 - It is the first candidate owner of the earliest explicit logs-facing wording, not the final owner of every later cross-kind reuse of the same concepts.
 - Its new bridge to `DOC-WORKFLOW-LEGACY-LOGS-0001` is historical-reader context only, not clause carry-forward.
 - The file now uses the current chronology-first clause registry model while preserving the same first child release meaning.
+- It now remains on disk as one historical-retained release because `DOC-WORKFLOW-LOGS-0002` carries forward its identity and intake foundations while widening the current reader to explicit body structure.

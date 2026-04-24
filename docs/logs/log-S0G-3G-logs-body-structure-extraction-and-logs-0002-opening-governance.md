@@ -20,6 +20,8 @@
   **reference_log_3**: `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
   **reference_log_4**: `docs/logs/_template-log-phase-drills-evidence.md`
   **reference_log_5**: `docs/logs/support-only/ledger-S0C-1A-log-extensions.md`
+  **reference_log_6**: `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0002-body-structure-and-reader-facing-log-shape.md`
+  **reference_log_7**: `docs/governance/contracts/workflow/logs/register-DOC-WORKFLOW-LOGS.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -56,10 +58,11 @@
 - This lane uses `log -> source-owned support-only ledger (or + SUP if later evidence sharpening becomes necessary) -> contract release -> conditional register writeback` as the operating chain: source logs remain the extraction surface, each extracted source gets its own ledger named after the source id, and contract mutation is deferred until repeated evidence makes the next release defensible.
 - Later log samples should enter this lane as new `C` items by default; do not open a new sibling source log every time one more sample is added unless the new sample clearly opens a materially different source-log extraction problem.
 - `P2-C1` is now completed for the first sample only: `S0C-1A` is clustered into provisional `candidate LOGS-0002 clauses`, `candidate LOGS-0001 boundary amendments`, and `support-only` material, with the explicit current verdict `no-contract-mutation-for-now` until corroborating evidence exists.
+- `P3-C1-S1` now fixes the direct-opening verdict as positive and emits `DOC-WORKFLOW-LOGS-0002` plus `register-DOC-WORKFLOW-LOGS.md`, so the family now has one explicit current-primary release and one historical-retained earlier release.
 
 **Default choices (phase defaults / v1)**:
 
-- `DOC-WORKFLOW-LOGS-0001` stays the first narrow release for now: stable identifier, log-facing front matter, and cutover intake remain its current defended scope unless repeated evidence proves that the next family release should carry those rules forward and add explicit body-structure governance.
+- `DOC-WORKFLOW-LOGS-0002` is now the current logs-family release: it carries forward stable identifier and cutover-intake meaning from `0001`, amends the frontmatter/body boundary, and introduces explicit body-structure governance from `S0C-1A`.
 - The first concrete sample under this lane is `S0C-1A`, because it states a reusable `Decision / Outcome` block and `single top-level status field` rule clearly enough to test whether body-structure ownership is becoming stable across modern logs.
 - New samples should first open or update one source-owned ledger named after the extracted source id before any contract text is drafted or revised.
 - A sample that shows only local stylistic preference should remain ledger evidence and should not trigger contract mutation by itself.
@@ -103,7 +106,7 @@
 ## Constraints
 
 - Do not widen `DOC-WORKFLOW-LOGS-0001` simply because one sample looks persuasive.
-- Do not treat `Decision / Outcome` as automatically contract-worthy unless more than one modern sample supports it as a stable governed rule.
+- Do not treat `Decision / Outcome` as automatically contract-worthy without one explicit lane verdict that direct family opening is preferable to waiting for additional corroborating samples.
 - Do not skip the parent-ledger write-back when a new sample is reviewed.
 - Do not split this lane into sibling logs for every new sample unless the source-log extraction problem itself changes materially.
 
@@ -220,6 +223,17 @@
 
 - `P3-C1-S1`: if the boundary test passes, scaffold the downstream `LOGS-0002` release-opening packet and any required bridge notes
 
+### P3-C1-S1 (DOC-WORKFLOW-LOGS-0002 and family register emitted | v1)
+
+- The direct-opening verdict is now positive: `S0C-1A` is sufficient to open `DOC-WORKFLOW-LOGS-0002` as the next same-family release.
+- The emitted release lives at `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0002-body-structure-and-reader-facing-log-shape.md`.
+- The release keeps the active logs-family reader coherent in three layers:
+  - `carried-forward`: stable identifier, visible identity, and cutover intake remain active family meaning from `0001`
+  - `amended`: frontmatter/body boundary clauses are restated so top-level status ownership becomes explicit
+  - `introduced`: conclusion-block and current-effective-body clauses are admitted from `S0C-1A`
+- The family transition register now also opens at `docs/governance/contracts/workflow/logs/register-DOC-WORKFLOW-LOGS.md` because `0002` becomes the current-primary reader while `0001` remains historical-retained.
+- `S0C-1A-R05` remains support-only; template snippets and applied examples are not admitted into primary release-local contract meaning in this opening round.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -242,15 +256,15 @@
 
 ### P3 (Downstream write-back)
 
-- [ ] `P3-C1-S1`: downstream `LOGS-0002` opening packet scaffolded only if justified
+- [x] `P3-C1-S1`: downstream `LOGS-0002` opening packet scaffolded and family register write-back completed
 
 ## Current Status
 
 - `S0G-3G` is now scaffolded as the bounded source-log lane for testing whether repeated modern log body-structure evidence warrants `LOGS-0002` as the next release in the same `DOC-WORKFLOW-LOGS` family.
 - `S0C-1A` is now fixed as the first extracted sample: its candidate rule set has been split into conclusion-block, minimum-field, top-level-status, current-effective-body, and supporting-evidence rows inside the source-owned ledger `ledger-S0C-1A-log-extensions.md`.
 - `P2-C1` is now fixed for that first sample: `R01`, `R02`, and `R04` sit in the provisional `LOGS-0002` bucket, `R03` sits in the provisional `LOGS-0001 boundary amendment` bucket, and `R05` remains support-only.
-- No `LOGS-0002` contract mutation is warranted yet because every non-support row is still first-sample evidence only, so the explicit current verdict is `no-contract-mutation-for-now`.
-- The next concrete step is now back to `P1-C2-S1`: choose one more post-cutover corroborating sample so the current provisional buckets can either harden into repeatable release meaning or collapse back into source-local preference.
+- `P3-C1-S1` is now completed: `DOC-WORKFLOW-LOGS-0002` is emitted as the current-primary logs-family release, `DOC-WORKFLOW-LOGS-0001` is retained as the earlier narrower release, and the family register now records that standing explicitly.
+- The next concrete step is no longer mandatory corroboration before any release exists; it is now optional post-opening sampling to decide whether the current `0002` release should later be sharpened, amended, or superseded by one later logs-family release.
 
 ## Evidence (reserved)
 
@@ -300,9 +314,28 @@
   - `R05` remains support-only
   - the explicit current contract impact verdict is `no-contract-mutation-for-now`, so this first sample is now fully classified without opening `LOGS-0002` yet
 
+### P3-C1-S1 (LOGS-0002 opened directly from the first body-structure sample | 2026-04-24)
+
+- headSha: ``
+- artifacts:
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0002-body-structure-and-reader-facing-log-shape.md`
+  - `docs/governance/contracts/workflow/logs/register-DOC-WORKFLOW-LOGS.md`
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  - `docs/logs/support-only/ledger-S0C-1A-log-extensions.md`
+- expected:
+  - open `LOGS-0002` directly instead of waiting for one second corroborating sample
+  - keep `0001` readable as an earlier narrower release rather than silently replacing it
+  - write the family-standing change back explicitly instead of leaving it implicit across release-local notes only
+- observed:
+  - `DOC-WORKFLOW-LOGS-0002` is now emitted as the current logs-family release
+  - `LOGS-0001` now records reciprocal supersession and remains historical-retained rather than current-primary
+  - `register-DOC-WORKFLOW-LOGS.md` now fixes that `0002` is first-open now and `0001` remains one retained earlier release
+  - `S0C-1A-R01` through `R04` are now resolved through the direct-opening verdict, while `R05` remains support-only
+
 ## Recent changes
 
 - 2026-04-23: opened `S0G-3G` as the bounded lane for cross-sample log body-structure extraction and candidate `LOGS-0002` same-family release opening.
 - 2026-04-23: fixed `S0C-1A` as the first sample and fixed one dedicated parent-ledger landing surface for later sample rows.
 - 2026-04-23: completed `P1-C1-S1S2` by extracting `S0C-1A` into explicit candidate rule rows and separating likely `LOGS-0002` clauses from support-only pattern evidence.
 - 2026-04-24: completed `P2-C1-S1S2` for the first sample by classifying the `S0C-1A` rows into provisional `LOGS-0002`, provisional `LOGS-0001` boundary-amendment, and support-only buckets, and by fixing the explicit current verdict as `no-contract-mutation-for-now`.
+- 2026-04-24: completed `P3-C1-S1` by opening `DOC-WORKFLOW-LOGS-0002` directly from `S0C-1A`, writing the reciprocal `LOGS-0001` supersession note, and creating `register-DOC-WORKFLOW-LOGS.md` so the family now has one explicit current-primary reader.
