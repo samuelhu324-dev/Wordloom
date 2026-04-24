@@ -22,6 +22,8 @@
   **reference_log_5**: `docs/logs/support-only/ledger-S0C-1A-log-extensions.md`
   **reference_log_6**: `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0002-body-structure-and-reader-facing-log-shape.md`
   **reference_log_7**: `docs/governance/contracts/workflow/logs/register-DOC-WORKFLOW-LOGS.md`
+  **reference_log_8**: `docs/logs/log-S0C-2A-legacy-integration-suite-retired.md`
+  **reference_log_9**: `docs/logs/support-only/ledger-S0C-2A-legacy-integration-suite-retired.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -59,6 +61,7 @@
 - Later log samples should enter this lane as new `C` items by default; do not open a new sibling source log every time one more sample is added unless the new sample clearly opens a materially different source-log extraction problem.
 - `P2-C1` is now completed for the first sample only: `S0C-1A` is clustered into provisional `candidate LOGS-0002 clauses`, `candidate LOGS-0001 boundary amendments`, and `support-only` material, with the explicit current verdict `no-contract-mutation-for-now` until corroborating evidence exists.
 - `P3-C1-S1` now fixes the direct-opening verdict as positive and emits `DOC-WORKFLOW-LOGS-0002` plus `register-DOC-WORKFLOW-LOGS.md`, so the family now has one explicit current-primary release and one historical-retained earlier release.
+- `P1-C2-S1` now admits `S0C-2A` as one negative-control sample after the `0002` opening: it is structured enough to extract cleanly, but its retirement and replacement-coverage rules do not contribute reusable logs body-structure meaning, so the verdict is `no logs-family impact now`.
 
 **Default choices (phase defaults / v1)**:
 
@@ -66,6 +69,7 @@
 - The first concrete sample under this lane is `S0C-1A`, because it states a reusable `Decision / Outcome` block and `single top-level status field` rule clearly enough to test whether body-structure ownership is becoming stable across modern logs.
 - New samples should first open or update one source-owned ledger named after the extracted source id before any contract text is drafted or revised.
 - A sample that shows only local stylistic preference should remain ledger evidence and should not trigger contract mutation by itself.
+- A well-structured sample may still remain out of family if its extracted rows govern some other boundary, such as testing retirement, lifecycle, or repo-local operator practice rather than reader-facing structured-log body shape.
 - Do not use the old `six outlets` model as the extraction driver for this lane; borrow only its ownership-separation discipline where useful, and do any later close-out/export review only after the release boundary is fixed.
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
@@ -193,6 +197,14 @@
 - `P1-C1-S2`: write the corresponding row(s) into the `S0C-1A` source-owned ledger
 - `P1-C2-S1`: reserve the next cycle for one additional post-cutover log sample without opening a sibling source log by default
 
+### P1-C2-S1 (S0C-2A admitted as one structured negative-control sample | v1)
+
+- `S0C-2A` is now admitted as the second sample cycle under `S0G-3G`, but only as one boundary-check sample after `DOC-WORKFLOW-LOGS-0002` already exists.
+- The sample is useful because it now exposes a clean extraction surface and therefore tests the lane's family boundary, not just the source-log formatting discipline.
+- Extracted rows from `S0C-2A` govern legacy-suite retirement, explicit skip messaging, replacement coverage, and retained pytest evidence.
+- The explicit verdict is `no logs-family impact now`: none of those rows amend `DOC-WORKFLOW-LOGS-0002`, reopen `DOC-WORKFLOW-LOGS-0001`, or change `register-DOC-WORKFLOW-LOGS.md`.
+- The sample therefore remains one negative-control packet: it proves that `well-structured source` is necessary for extraction but not sufficient for logs-family admission.
+
 ### P2 (Boundary test)
 
 - `P2-C1-S1`: cluster the admitted sample rows into provisional rule buckets
@@ -247,7 +259,7 @@
 - [x] `P1-C1-S1`: first concrete sample fixed as `S0C-1A`
 - [x] `P1-C1-S2`: parent-ledger landing surface fixed
 - [x] `P1-C1-S1S2`: `S0C-1A` extracted into explicit candidate rule rows in the parent ledger
-- [ ] `P1-C2-S1`: next sample cycle admitted after `S0C-1A`
+- [x] `P1-C2-S1`: next sample cycle admitted after `S0C-1A`
 
 ### P2 (Boundary test)
 
@@ -264,7 +276,8 @@
 - `S0C-1A` is now fixed as the first extracted sample: its candidate rule set has been split into conclusion-block, minimum-field, top-level-status, current-effective-body, and supporting-evidence rows inside the source-owned ledger `ledger-S0C-1A-log-extensions.md`.
 - `P2-C1` is now fixed for that first sample: `R01`, `R02`, and `R04` sit in the provisional `LOGS-0002` bucket, `R03` sits in the provisional `LOGS-0001 boundary amendment` bucket, and `R05` remains support-only.
 - `P3-C1-S1` is now completed: `DOC-WORKFLOW-LOGS-0002` is emitted as the current-primary logs-family release, `DOC-WORKFLOW-LOGS-0001` is retained as the earlier narrower release, and the family register now records that standing explicitly.
-- The next concrete step is no longer mandatory corroboration before any release exists; it is now optional post-opening sampling to decide whether the current `0002` release should later be sharpened, amended, or superseded by one later logs-family release.
+- `S0C-2A` is now admitted as the second sample cycle, but it resolves as one negative-control packet: its extracted rules are about test retirement and replacement coverage rather than reader-facing log body structure, so the lane now records `no logs-family impact now` explicitly.
+- The next concrete step is no longer mandatory corroboration before any release exists; it is now optional post-opening sampling to decide whether the current `0002` release should later be sharpened, amended, or superseded by one later logs-family release, ideally from one stronger in-family structured-log source rather than from another adjacent but out-of-family packet.
 
 ## Evidence (reserved)
 
@@ -332,6 +345,22 @@
   - `register-DOC-WORKFLOW-LOGS.md` now fixes that `0002` is first-open now and `0001` remains one retained earlier release
   - `S0C-1A-R01` through `R04` are now resolved through the direct-opening verdict, while `R05` remains support-only
 
+### P1-C2-S1 (S0C-2A admitted as a structured negative-control sample | 2026-04-24)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0C-2A-legacy-integration-suite-retired.md`
+  - `docs/logs/support-only/ledger-S0C-2A-legacy-integration-suite-retired.md`
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0002-body-structure-and-reader-facing-log-shape.md`
+  - `docs/governance/contracts/workflow/logs/register-DOC-WORKFLOW-LOGS.md`
+- expected:
+  - test whether one later structured source should still be rejected by the lane when its extracted rows do not govern reader-facing log body structure
+  - record the routing result explicitly instead of leaving the second sample as one unclassified adjacent source
+- observed:
+  - `S0C-2A` now exposes explicit retirement, skip-message, replacement-coverage, and support-evidence rows under the current source template
+  - those rows are useful governance candidates, but none of them contribute reusable `DOC-WORKFLOW-LOGS` body-shape meaning
+  - the explicit verdict is `no logs-family impact now`: no `LOGS-0002` amendment, no `LOGS-0001` reconciliation, and no family-register update are required from this sample
+
 ## Recent changes
 
 - 2026-04-23: opened `S0G-3G` as the bounded lane for cross-sample log body-structure extraction and candidate `LOGS-0002` same-family release opening.
@@ -339,3 +368,4 @@
 - 2026-04-23: completed `P1-C1-S1S2` by extracting `S0C-1A` into explicit candidate rule rows and separating likely `LOGS-0002` clauses from support-only pattern evidence.
 - 2026-04-24: completed `P2-C1-S1S2` for the first sample by classifying the `S0C-1A` rows into provisional `LOGS-0002`, provisional `LOGS-0001` boundary-amendment, and support-only buckets, and by fixing the explicit current verdict as `no-contract-mutation-for-now`.
 - 2026-04-24: completed `P3-C1-S1` by opening `DOC-WORKFLOW-LOGS-0002` directly from `S0C-1A`, writing the reciprocal `LOGS-0001` supersession note, and creating `register-DOC-WORKFLOW-LOGS.md` so the family now has one explicit current-primary reader.
+- 2026-04-24: completed `P1-C2-S1` by admitting `S0C-2A` as one structured negative-control sample, extracting it into a source-owned ledger, and recording the explicit verdict `no logs-family impact now`.
