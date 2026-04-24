@@ -1,0 +1,567 @@
+# log-S0G-5A (Phase 5A: time semantics and effective-window governance)
+
+---
+
+**id**: `S0G-5A`
+**kind**: `log`
+**title**: `time semantics and effective-window governance v1`
+**status**: `draft`
+**scope**: `S0`
+**tags**: `EVOLUTION, Docs, Workflow, Contract, Records, Evidence, epic/s0, sub/5a`
+**links**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/552`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/553`
+  **runbook**: ``
+  **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+  **parent_log**: `docs/logs/log-S0G-docs-management-v7.md`
+  **previous_log**: `docs/logs/log-S0G-4B-doc-contract-release-transition-register-and-writeback-chain-governance.md`
+  **reference_log_1**: `docs/logs/_template-log-phase-drills-evidence.md`
+  **reference_log_2**: `docs/governance/contracts/_template-contract-record.md`
+  **reference_log_3**: `docs/governance/contracts/_template-contract-release-transition-register.md`
+  **reference_log_4**: `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
+  **reference_log_5**: `docs/governance/contracts/workflow/scripts/DOC-WORKFLOW-SCRIPTS-0001-taxonomy-and-stable-entrypoint-governance.md`
+  **reference_log_6**: `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+**issue_keyword**: `contract`
+**issue_top_labels**: `EVOLUTION`
+**issue_scope_labels**: `s0/knowledge system, sub/5a`
+**issue_module_labels**: ``
+**issue_milestone**: `road-002: projection runtime platformization and evidence governance`
+**issue_parent**: ``
+**issue_projects**: ``
+**roadmap_path**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
+**roadmap_milestone**: ``
+**roadmap_phase**: ``
+**roadmap_bridge_refs**: ``
+**pr_labels**: `drills`
+**pr_projects**: ``
+**pr_milestone**: ``
+**pr_base**: `main`
+**pr_development_issue**: ``
+**created**: `2026-04-23`
+**updated**: `2026-04-23`
+**reviewed**: `pending`
+
+---
+
+## Frontmatter Lifecycle-Time Rule
+
+- `created`, `updated`, and optional `reviewed` remain the minimum artifact-lifecycle fields for this packet.
+- Day-level precision is acceptable while the repo is still fixing the default time semantics model rather than landing one final second-level audit schema everywhere.
+- `reviewed` should remain `pending` until the repo fixes one defended answer for `artifact lifecycle time`, `semantic effective time`, and `reader/routing validity time` across logs, contracts, and ledgers.
+
+## Decision / Outcome
+
+**Decision**:
+
+- `S0G-5A` opens as the bounded follow-up for time semantics before business packets force a more complex coexistence model.
+- This lane treats the problem as `time-semantics governance + default derivation rules + template writeback planning`, not as one immediate repo-wide timestamp retrofit sweep.
+- The immediate deliverable is one defended default answer for:
+  - which time fields are only `artifact lifecycle time`;
+  - which fields should carry `semantic effective time` for contracts;
+  - whether ledgers should track one narrower `routing validity` window rather than pretending to own rule-birth time;
+  - when a family transition register should begin carrying explicit `window` dates at all.
+
+**Default choices (phase defaults / v1)**:
+
+- Keep source logs narrow: log frontmatter should continue to own `artifact lifecycle time`, not every downstream semantic-effective field.
+- Default `semantic effective time` for a first contract release to the source log's `created` time unless stronger evidence proves an earlier or later start.
+- Default `semantic effective until` to `ongoing` until one later defended successor or explicit replacement surface makes the end date real.
+- Do not ask support-only ledgers to own `rule birth time`; if ledger time fields are later added, they should default to `routing verdict validity` only.
+- Do not open family transition-window dates until a family actually has more than one reader-relevant release or a real fallback/coexistence period.
+- If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
+- If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
+
+## PR Summary Inputs (optional)
+
+- This packet is expected to drive template clarification before any wider backfill, so review should focus on time semantics and derivation defaults rather than on bulk retroactive edits.
+
+**PR summary bullets**:
+
+- Define one low-complexity time-semantics model that separates artifact lifecycle, contract effective time, and ledger routing-validity time.
+- Fix one default derivation rule so first releases and replacements can be dated without inventing precision the repo does not actually have.
+- Decide whether ledger and register templates need bounded additions now or should wait until a real multi-release coexistence case appears.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist for the generated PR checklist block.
+
+**PR links**:
+
+- Log: `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+- Runbook: ``
+- Evidence artifact: ``
+
+**Evidence Footer Source**:
+
+- `P0-C1-S1` | artifact: `docs/logs/_template-log-phase-drills-evidence.md`
+- `P0-C1-S2` | artifact: `docs/governance/contracts/_template-contract-record.md`
+
+## Exported Sections / Outlet Ownership
+
+- This slice starts as one `contract-governance rule + template-clarification + log-retained core` lane.
+- The expected first landing is one defended default time-semantics rule set for logs and contracts; any ledger/register template change should leave this log only if the experiments prove it is necessary.
+
+**Outlet ownership**:
+
+- `contract`: expected landing surface for contract-level effective-time defaults and any note-level clarification on how first-release dates are derived
+- `runbook`: no-op by default
+- `view`: no-op by default; a reader-facing time summary should wait until the repo has enough families for a comparative view to matter
+- `index/front-door`: no-op by default
+- `disposition/placement`: possible later landing only if old support-only time assumptions must be explicitly deprecated or reclassified
+- `log-retained core`: time-model reasoning, derivation rules, and sample application notes remain here
+
+## Definitions (optional)
+
+- **artifact lifecycle time**: when a file or packet was created, updated, or reviewed inside the repo as an artifact.
+- **semantic effective time**: when the defended rule meaning owned by a contract should be read as starting or ending in force.
+- **reader/routing validity time**: when one ledger or reader-surface verdict became the current routing interpretation, independent of when the underlying rule first existed.
+- **transition window**: one bounded family-level overlap period where more than one release remains concurrently reader-relevant.
+
+## Constraints
+
+- Do not collapse artifact-lifecycle timestamps and semantic-effective timestamps into one overloaded field.
+- Do not ask the repo to fabricate second-level historical timestamps where only day-level evidence exists.
+- Do not retrofit every existing contract and ledger before the default derivation rule is stable.
+- Do not introduce transition-window fields into single-release families just because the register template can support them.
+
+## Optional Required Processing Chain
+
+| chain step | required state | primary owner surface | trigger question | completion evidence | notes |
+| --- | --- | --- | --- | --- | --- |
+| `source extraction` | `required` | `source log` | `has the repo named the distinct time layers tightly enough to stop mixing them?` | `explicit three-layer model in this log` | `entry step for the lane` |
+| `SUP` | `not-required` | `n/a` | `is this lane later evidence against one accepted source-owned row?` | `explicit no-SUP verdict in this log` | `default is no SUP because this lane fixes template-level defaults first` |
+| `parent ledger` | `conditional` | `support-only ledger template or sample ledger` | `does the repo need a new ledger-specific validity field after the default model is fixed?` | `template note or explicit no-ledger-field verdict` | `ledger time should stay routing-validity only if added` |
+| `contract impact decision` | `required` | `source log` | `does the lane require contract-template clarification for effective_from/effective_until defaults?` | `explicit classified verdict` | `main decision gate` |
+| `contract mutation` | `required` | `contract template or sample contract` | `should the contract template own the default effective-time derivation rule?` | `template writeback or explicit no-contract-mutation verdict` | `default expectation is yes for contract templates` |
+| `transition register update` | `conditional` | `transition-register template or n/a` | `does the repo need window-date guidance now or only when real coexistence appears?` | `template note or explicit defer-register-window verdict` | `single-release families should not force register dates early` |
+| `bridged contract reconciliation` | `conditional` | `affected sample logs/contracts` | `does one sample family need a demonstration backfill after the default rule is fixed?` | `sample writeback or explicit no-sample-reconciliation verdict` | `use only if one concrete sample improves clarity materially` |
+
+## Scope
+
+- `P0`: fix the three-layer time-semantics model and default derivation language
+- `P1`: write back the default rule into the log and contract templates
+- `P2`: decide whether ledger and register templates need bounded additions now
+- `P3`: optionally demonstrate the rule on one live sample such as `S0B-2A / S0G-1C / DOC-WORKFLOW-SCRIPTS-0001`
+- `P4`: assess which live contracts and corresponding ledger/SUP/log surfaces actually need timeline-evidence backfill next
+- `P5`: execute the first upstream-ready time-evidence backfill batch on `S0A-1A`
+
+## Success Criteria (DoD)
+
+- The repo has one explicit distinction between artifact lifecycle time, semantic effective time, and routing-validity time.
+- The contract template has one defended default rule for deriving `effective_from` and `effective_until` without forcing fabricated precision.
+- The log template remains narrow and does not grow a second layer of semantic-effective fields by default.
+- The lane records whether ledgers should receive bounded `resolution valid from/until` fields now or later.
+- The lane records whether transition-window dates should remain deferred until a real multi-release coexistence case appears.
+
+## Stability (what stable means)
+
+- This log can be marked `stable` when:
+  - the three-layer time model is explicit;
+  - the default contract derivation rule is explicit;
+  - the repo knows whether ledger/register template changes are needed now or deferred.
+- `stable` for this lane does not require a full repo-wide backfill; it requires the default time semantics and next writeback surfaces to be clear.
+
+## P0 (Contract | v1)
+
+### P0-C1-S1 (Three-layer time semantics fixed | v1)
+
+- The lane must separate `artifact lifecycle time`, `semantic effective time`, and `reader/routing validity time` into distinct meanings.
+- Under this rule, logs, contracts, and ledgers should stop pretending one timestamp can answer all three questions.
+
+### P0-C1-S2 (Default derivation rule fixed | v1)
+
+- Unless stronger evidence exists, a first contract release should default `effective_from` to the source log's `created` time.
+- Unless a later defended successor exists, `effective_until` should remain `ongoing`.
+
+### P0-C1-S3 (Complex window deferral fixed | v1)
+
+- Transition-window dates should remain deferred until a family actually has multi-release coexistence or fallback behavior.
+- Under this rule, single-release families should not open register-window timestamps just to look complete.
+
+## Numbering
+
+- `S<n>`: Step.
+- `C<n>`: Cycle.
+
+**Commit / PR naming**:
+
+- `S0G-5A/P0-C1-S1S3: scaffold time semantics governance lane`
+- `S0G-5A/P1-C1-S1S2: write default time semantics into log and contract templates`
+- `S0G-5A/P2-C1-S1S2: decide ledger and register template time fields`
+- `S0G-5A/P3-C1-S1: demonstrate time semantics on one live sample`
+
+**Branch convention**:
+
+- This slice should stay on `S0G-docs-management-v7` while it remains a bounded docs-management follow-up under the current `S0G` spine.
+
+**Commit discipline (recommended)**:
+
+- Keep model definition, template writeback, template-expansion decision, and sample demonstration separated when practical so later archaeology can see exactly when the repo fixed the default time rule.
+
+## Plan (draft)
+
+### P1 (Template writeback)
+
+- `P1-C1-S1`: write the three-layer time rule into the log template without widening log frontmatter
+- `P1-C1-S2`: write the default `effective_from/effective_until` rule into the contract template
+
+### P2 (Ledger/register scope decision)
+
+- `P2-C1-S1`: decide whether support-only ledgers need `resolution valid from/until`
+- `P2-C1-S2`: decide whether transition-register templates need stronger window-date guidance now or only later
+
+### P3 (Sample demonstration)
+
+- `P3-C1-S1`: optionally demonstrate the new default rule on one live sample without opening a repo-wide backfill sweep
+
+### P4 (Backfill assessment)
+
+- `P4-C1-S1`: classify live contracts into `ready-now`, `upstream-first`, and `defer-no-new-time-evidence-yet` buckets
+- `P4-C1-S2`: classify corresponding parent ledgers, SUP packets, and source logs into `already-sufficient`, `needs-upstream-chronology`, and `no-blanket-backfill` buckets
+
+### P5 (First execution batch)
+
+- `P5-C1-S1`: backfill the `S0A-1A` GitHub family contracts from defended upstream chronology
+- `P5-C1-S2`: write the `S0A-1A` source-side and screenshot-sharpening distinction back into the parent ledger without opening a new SUP round
+
+### P6 (Second execution batch)
+
+- `P6-C1-S1`: backfill the `S0A-2A` workflow parent plus child contracts whose semantic start is already defended by source issue chronology
+- `P6-C1-S2`: sharpen the `S0A-2A` parent ledger chronology audit and only apply clause-level timing where accepted SUP evidence already proves it
+
+### P7 (Upstream chronology repair)
+
+- `P7-C1-S1`: repair the `S0B-1A` and `S0B-3A` parent ledgers so blocked families gain explicit row-level source chronology before any contract-side date backfill
+- `P7-C1-S2`: distinguish source-owned chronology repair from later contract execution so the repo does not treat blocker removal as the same thing as full family time backfill
+
+### P8 (Third execution batch)
+
+- `P8-C1-S1`: backfill `DOC-WORKFLOW-LABS-0001` from the defended `S0B-1A` issue-source chronology now that the parent ledger explicitly carries those row-level anchors
+- `P8-C1-S2`: backfill `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` from the defended `S0B-3A` source-log chronology now that the mixed-family parent ledger explicitly carries those row-level anchors
+
+### P9 (Selective final pair review)
+
+- `P9-C1-S1`: finish the defensible `DOC-WORKFLOW-LABS-0002` time backfill by writing the available `S0B-1A`, `S0B-2A`, and accepted `S0A-2A-R03` chronology into frontmatter, clause rows, and evolution rows without inventing a unified earlier start for `ST-13`
+- `P9-C1-S2`: confirm whether `DOC-WORKFLOW-LEGACY-LOGS-0001` is still chronology-blocked after `SUP-004`; if the parent row and supplement still preserve `unknown`, do not fabricate dates and keep the file deferred
+
+### P10 (Blocked holdout repair)
+
+- `P10-C1-S1`: verify from the retained legacy logs, accepted `SUP-004`, and `S0A-2A-R02` that `DOC-WORKFLOW-LEGACY-LOGS-0001` still lacks one defended historical-effective timestamp
+- `P10-C1-S2`: repair the holdout by marking it explicitly `chronology-deferred` under `S0G-5A` rather than leaving the remaining `unknown` fields looking like missed writeback work
+
+## Execution Checklist (unchecked)
+
+### P0 (Contract)
+
+- [x] `P0-C1-S1`: three-layer time semantics fixed
+- [x] `P0-C1-S2`: default derivation rule fixed
+- [x] `P0-C1-S3`: complex window deferral fixed
+
+### P1 (Template writeback)
+
+- [x] `P1-C1-S1`: write the three-layer time rule into the log template without widening log frontmatter
+- [x] `P1-C1-S2`: write the default `effective_from/effective_until` rule into the contract template
+
+### P2 (Ledger/register scope decision)
+
+- [x] `P2-C1-S1`: decide whether support-only ledgers need `resolution valid from/until`
+- [x] `P2-C1-S2`: decide whether transition-register templates need stronger window-date guidance now or only later
+
+### P3 (Sample demonstration)
+
+- [x] `P3-C1-S1`: optionally demonstrate the new default rule on one live sample without opening a repo-wide backfill sweep
+
+### P4 (Backfill assessment)
+
+- [x] `P4-C1-S1`: classify live contracts into `ready-now`, `upstream-first`, and `defer-no-new-time-evidence-yet` buckets
+- [x] `P4-C1-S2`: classify corresponding parent ledgers, SUP packets, and source logs into `already-sufficient`, `needs-upstream-chronology`, and `no-blanket-backfill` buckets
+
+### P5 (First execution batch)
+
+- [x] `P5-C1-S1`: backfill the `S0A-1A` GitHub family contracts from defended upstream chronology
+- [x] `P5-C1-S2`: write the `S0A-1A` source-side and screenshot-sharpening distinction back into the parent ledger without opening a new SUP round
+
+### P6 (Second execution batch)
+
+- [x] `P6-C1-S1`: backfill the `S0A-2A` workflow parent plus child contracts whose semantic start is already defended by source issue chronology
+- [x] `P6-C1-S2`: sharpen the `S0A-2A` parent ledger chronology audit and only apply clause-level timing where accepted SUP evidence already proves it
+
+### P7 (Upstream chronology repair)
+
+- [x] `P7-C1-S1`: repair the `S0B-1A` and `S0B-3A` parent ledgers so blocked families gain explicit row-level source chronology before any contract-side date backfill
+- [x] `P7-C1-S2`: distinguish source-owned chronology repair from later contract execution so the repo does not treat blocker removal as the same thing as full family time backfill
+
+### P8 (Third execution batch)
+
+- [x] `P8-C1-S1`: backfill `DOC-WORKFLOW-LABS-0001` from the defended `S0B-1A` issue-source chronology now that the parent ledger explicitly carries those row-level anchors
+- [x] `P8-C1-S2`: backfill `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` from the defended `S0B-3A` source-log chronology now that the mixed-family parent ledger explicitly carries those row-level anchors
+
+### P9 (Selective final pair review)
+
+- [x] `P9-C1-S1`: finish the defensible `DOC-WORKFLOW-LABS-0002` time backfill by writing the available `S0B-1A`, `S0B-2A`, and accepted `S0A-2A-R03` chronology into frontmatter, clause rows, and evolution rows without inventing a unified earlier start for `ST-13`
+- [x] `P9-C1-S2`: confirm whether `DOC-WORKFLOW-LEGACY-LOGS-0001` is still chronology-blocked after `SUP-004`; if the parent row and supplement still preserve `unknown`, do not fabricate dates and keep the file deferred
+
+### P10 (Blocked holdout repair)
+
+- [x] `P10-C1-S1`: verify from the retained legacy logs, accepted `SUP-004`, and `S0A-2A-R02` that `DOC-WORKFLOW-LEGACY-LOGS-0001` still lacks one defended historical-effective timestamp
+- [x] `P10-C1-S2`: repair the holdout by marking it explicitly `chronology-deferred` under `S0G-5A` rather than leaving the remaining `unknown` fields looking like missed writeback work
+
+## Current Status (recommended)
+
+- `S0G-5A` is now opened as the bounded time-semantics follow-up under the `S0G` spine.
+- The model is now fixed at template level for logs and contracts: logs keep artifact lifecycle time, and contracts now own the default semantic effective-time derivation rule.
+- `P2` now fixes the bounded template decision: support-only ledgers do not gain default `resolution valid from/until` routing-table columns now, because the existing chronology-audit shape remains sufficient unless one later lane proves otherwise.
+- `P2` also fixes the register-side rule: transition-register `valid from/until` and transition-window dates remain coexistence-standing fields only and must not be derived mechanically from contract `effective_from/effective_until`.
+- `P3` now demonstrates the rule set on `S0B-2A / S0G-1C / DOC-WORKFLOW-SCRIPTS-0001`: source-side rule time stays at `2026-02-13`, parent-ledger write-back stays at `2026-04-23`, and contract effective time now reads `2026-02-13 -> ongoing`.
+- The sample deliberately does not open one SUP packet because no stronger later evidence changed the defended source-side anchor; the lane is only applying the default derivation rule to an existing source-owned packet.
+- `P4` now fixes the repo-level assessment boundary: the next work is not blanket close-out, but one selective backfill program across live contracts whose upstream source-side chronology is either already sufficient or still missing.
+- Current assessment: live contract files under `docs/governance/contracts` still show at least 12 release records with `effective_from: unknown`, so contract-side supplementation is still materially needed beyond the `SCRIPTS-0001` sample.
+- Current assessment: ledger/SUP/log supplementation is selective rather than global; some parent ledgers and SUP packets already expose chronology-audit surfaces, while some still lack defended row-level source chronology and must be repaired upstream before corresponding contracts can be backfilled safely.
+- `P5` now executes the first upstream-ready batch on `S0A-1A`: the GitHub-Issues parent, Projects child, title child, and tag child now read their semantic start from the defended issue source date `2026-02-06` rather than leaving `effective_from` unknown.
+- The `S0A-1A` parent ledger now distinguishes the issue-created source anchor `2026-02-06` from the later screenshot-sharpening observation day `2026-02-12`, so the Projects child can keep one earlier semantic start without pretending the screenshots were the original rule birth.
+- `P6` now executes the second upstream-ready batch on `S0A-2A`: the workflow parent, runbook child, and ADR child now read their semantic start from the defended source issue creation time `2026-02-06T06:03:03Z`.
+- The `S0A-2A` parent ledger now distinguishes issue-source chronology from later SUP sharpening, while the labs family is only partially backfilled: `DOC-WORKFLOW-LABS-0002-ST-12` now reads the defended `2026-02-03` labs date, but the broader `0002` release and `ST-13` remain chronology-incomplete.
+- `P7` now repairs the two upstream-blocked parent ledgers: `S0B-1A` gains explicit issue-source chronology for its labs packet rows, and `S0B-3A` gains explicit source-log chronology for its logs/lifecycle split rows.
+- This blocker-removal step does not yet claim full contract backfill for `DOC-WORKFLOW-LABS-0001`, `DOC-WORKFLOW-LOGS-0001`, or `DOC-WORKFLOW-LIFECYCLE-0001`; it only converts those families from `missing row chronology` into `ready for bounded contract-side dating`.
+- `P8` now executes that newly unblocked contract-side backfill: `DOC-WORKFLOW-LABS-0001` is anchored to the `S0B-1A` issue creation time `2026-02-08T09:14:31Z`, while `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` are anchored to the defended `S0B-3A` source-log date `2026-02-12`.
+- The contracts now distinguish semantic start from later repo record creation consistently across all three families, so the former blocker set is no longer stranded at `effective_from: unknown` after the parent-ledger repair.
+- `P9` now removes the remaining defensible labs gap: `DOC-WORKFLOW-LABS-0002` is anchored to `2026-02-13` for the later `S0B-2A` release state while preserving earlier clause-level dates such as `2026-02-03` for `ST-12` and earlier `0001` dates for carried-forward snapshot rules.
+- The same review also confirms one hard boundary: `DOC-WORKFLOW-LEGACY-LOGS-0001` is still chronology-blocked because both `S0A-2A-R02` and accepted `SUP-004` explicitly preserve its time surface as `unknown`, so this lane still must not invent one historical-effective date there.
+- `P10` now turns that holdout into an explicit governance state instead of an ambiguous leftover: `DOC-WORKFLOW-LEGACY-LOGS-0001` is now documented as `chronology-deferred`, meaning the unknown fields are intentional and evidence-bound rather than missed backfill.
+- The next concrete step is therefore no longer another contract edit in this family; it is either new upstream chronology reconstruction for the legacy logs sources or lane close-out with the defer state retained.
+
+## Evidence (reserved)
+
+- Artifacts are the source of truth for evidence; this log records the head SHA, source anchors, and any later template or sample outputs.
+- This section is the human-facing ledger and should remain separate from `Evidence Footer Source`.
+- Prefer one stable ledger shape per unit: heading with `P*-C*-S*` and date, then `headSha`, `artifacts`, `expected`, and `observed`.
+
+### P0-C1-S1S3 (time-semantics governance lane scaffolded | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/_template-log-phase-drills-evidence.md`
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/governance/contracts/workflow/scripts/DOC-WORKFLOW-SCRIPTS-0001-taxonomy-and-stable-entrypoint-governance.md`
+- expected:
+  - open one bounded lane for time semantics before business packets require more complex coexistence handling
+  - fix the default three-layer model and low-complexity derivation rule
+  - leave template writeback and sample retrofit as later bounded steps
+- observed:
+  - the lane is opened
+  - logs are fixed at `artifact lifecycle time` only
+  - contracts are fixed as the default owner of `semantic effective time`, while ledger/register time fields remain explicitly deferred decisions
+
+### P1-C1-S1S2 (time semantics written back into templates | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/_template-log-phase-drills-evidence.md`
+  - `docs/governance/contracts/_template-contract-record.md`
+- expected:
+  - write the three-layer time rule into the log template without widening log frontmatter
+  - write the default contract `effective_from/effective_until` derivation rule into the contract template
+  - leave ledger/register template decisions explicitly deferred to the next bounded phase
+- observed:
+  - the log template now states that `created`, `updated`, and `reviewed` own artifact lifecycle time only
+  - the contract template now states that first releases default `effective_from` to the decisive source log `created` time unless stronger evidence exists
+  - the contract template now states that `effective_until` defaults to `ongoing` until one defended successor, replacement, retirement, or explicit end-state exists
+
+### P2-C1-S1S2 (ledger/register time-field decision fixed | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/_template-support-only-contract-release-ledger.md`
+  - `docs/governance/contracts/_template-contract-release-transition-register.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+- expected:
+  - decide whether support-only ledgers need default `resolution valid from/until` routing-table fields now
+  - decide whether transition-register templates need stronger window-date guidance now or only later
+  - keep the decision bounded so `P2` does not trigger one repo-wide sample backfill sweep
+- observed:
+  - the parent-ledger template now states that the optional chronology-audit surface is sufficient by default and that core routing rows should not gain default `resolution valid from/until` columns now
+  - the register template now states that coexistence `valid from/until` dates are register-standing fields and must not be copied mechanically from contract effective-time fields
+  - the register template now states that single-release families and non-active historical retention should not open transition-window rows or invented window dates
+
+### P3-C1-S1 (time semantics demonstrated on the scripts sample | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/governance/contracts/workflow/scripts/DOC-WORKFLOW-SCRIPTS-0001-taxonomy-and-stable-entrypoint-governance.md`
+  - `docs/logs/log-S0B-2A-scripts-snapshots-management.md`
+- expected:
+  - test the default derivation rule on one live packet without one repo-wide backfill sweep
+  - show that source-side time, parent-ledger write-back time, and contract effective time remain distinguishable on the same packet
+  - record whether one SUP packet is required for this sample or not
+- observed:
+  - the sample now anchors `DOC-WORKFLOW-SCRIPTS-0001 effective_from` to the decisive source log `S0B-2A` created date `2026-02-13`
+  - the parent ledger now records `R01` and `R02` source-side chronology separately from the later 2026-04-23 routing write-back event
+  - no SUP packet was needed because the sample did not introduce stronger later evidence; it only applied the defended default derivation rule to an existing source-owned packet
+
+### P4-C1-S1S2 (repo backfill scope assessed | 2026-04-23)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/governance/contracts/`
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-1A-001-tools-github-issues-projects-and-tags.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-S0B-1A-tools-labs-and-snapshots.md`
+  - `docs/logs/support-only/ledger-S0B-2A-tools-scripts-and-snapshots-management.md`
+  - `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
+- expected:
+  - decide whether live contract files in `docs/governance/contracts` still materially need timeline-evidence supplementation
+  - decide whether corresponding parent ledgers, SUP packets, and source logs also need supplementation or are already sufficient
+  - produce one bounded execution order for later backfill without starting a blanket repo-wide rewrite
+- observed:
+  - at least 12 live release contracts under `docs/governance/contracts` still carry `effective_from: unknown`, and many clause-level `first effective at` / `effective from` cells remain `unknown`, so contract-side backfill is still materially required beyond the `SCRIPTS-0001` sample
+  - parent ledgers and SUP packets already provide reusable chronology surfaces in several families, including `S0A-1A`, `S0A-2A`, and `S0B-2A`, so those families do not need new template invention before bounded backfill begins
+  - some upstream packets remain chronology-incomplete at row level, including `S0B-1A` and `S0B-3A`, so their corresponding contract families should not receive contract-only date backfills before one upstream chronology repair lands first
+  - source logs as a class do not need blanket backfill: when a decisive source already has defended `created` or another defended chronology anchor, logs may remain unchanged; additional log work is needed only where the decisive anchor is still missing or stays trapped in issue-only or screenshot-only evidence
+
+### P5-C1-S1S2 (S0A-1A upstream-ready backfill batch executed | 2026-04-23)
+
+- headSha: `pending-post-commit`
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/support-only/ledger-S0A-1A-tools-github-issues-projects-and-tags.md`
+  - `docs/governance/contracts/workflow/github/issues/DOC-WORKFLOW-GITHUB-ISSUES-0001-github-issues-as-canonical-work-breakdown.md`
+  - `docs/governance/contracts/workflow/github/projects/DOC-WORKFLOW-GITHUB-PROJECTS-0001-project-views-support-execution-priority.md`
+  - `docs/governance/contracts/workflow/github/issues/title/DOC-WORKFLOW-GITHUB-ISSUES-TITLE-0001-issue-title-encodes-level-and-category.md`
+  - `docs/governance/contracts/workflow/github/issues/tags/DOC-WORKFLOW-GITHUB-ISSUES-TAGS-0001-issue-tags-follow-role-based-naming.md`
+- expected:
+  - execute the first bounded backfill batch on one family whose parent ledger and SUP surfaces are already chronology-capable
+  - replace `effective_from: unknown` on the `S0A-1A` GitHub family contracts with one defended upstream source anchor when the source issue already preserves it
+  - distinguish the Projects screenshot-sharpening date from the earlier issue-created source date without opening one new SUP round
+- observed:
+  - the `S0A-1A` GitHub family contracts now anchor their first-release semantic start to the source issue creation date `2026-02-06`
+  - the Projects child now keeps the same earlier semantic start while using `2026-02-12` only as the later sharpening date for screenshot-backed readings
+  - the parent ledger now records `2026-02-06` as the issue-source record/effective anchor for all four rows, while preserving `2026-02-12` only as the later screenshot observation date for `R02`
+
+### P6-C1-S1S2 (S0A-2A upstream-ready backfill batch executed | 2026-04-23)
+
+- headSha: `pending-post-commit`
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/governance/contracts/workflow/DOC-WORKFLOW-0001-structured-doc-refinement-pipeline.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  - `docs/governance/contracts/workflow/runbook/DOC-WORKFLOW-RUNBOOK-0001-projection-operator-rebuild-replay-and-failure-recovery.md`
+  - `docs/governance/contracts/workflow/adr/DOC-WORKFLOW-ADR-0001-decision-summary-boundary-and-evidence-links.md`
+- expected:
+  - execute the next bounded backfill batch on one family whose parent ledger and accepted SUP packets already expose enough chronology to support selective contract repair
+  - anchor the broad workflow parent plus directly defended child contracts to the source issue creation time when the issue itself already preserves that semantic boundary
+  - keep mixed-family and chronology-incomplete surfaces partial rather than inventing one blanket family start date
+- observed:
+  - `DOC-WORKFLOW-0001`, `DOC-WORKFLOW-RUNBOOK-0001`, and `DOC-WORKFLOW-ADR-0001` now anchor their first-release semantic start to the source issue creation time `2026-02-06T06:03:03Z`
+  - the `S0A-2A` parent ledger now records `R01`, `R04`, and `R05` against that issue-source anchor while keeping `R02` deferred and `R03` tied to narrower SUP-proved labs timing
+  - `DOC-WORKFLOW-LABS-0002` is only partially time-backfilled: `ST-12` now reads the defended `2026-02-03` labs date, while `ST-13`, the broader release frontmatter, and the logs-side legacy release remain unchanged because current upstream chronology is still incomplete there
+
+### P7-C1-S1S2 (S0B-1A and S0B-3A upstream chronology repaired | 2026-04-23)
+
+- headSha: `pending-post-commit`
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/logs/support-only/ledger-S0B-1A-tools-labs-and-snapshots.md`
+  - `docs/logs/support-only/ledger-S0B-3A-unified-indices-legacy-taxonomy-and-front-matter.md`
+- expected:
+  - repair the two parent ledgers that were still blocking bounded contract-side time backfill because no explicit row chronology audit existed yet
+  - anchor `S0B-1A` to defended issue-source chronology and `S0B-3A` to defended source-log chronology without inventing SUP packets that the families do not actually need
+  - convert these families from `upstream-first` to `ready for bounded contract-side backfill`
+- observed:
+  - `S0B-1A` now records the issue creation time `2026-02-08T09:14:31Z` as the defended source-side anchor for its labs-owned rows and retained support-only example row
+  - `S0B-3A` now records the source log date `2026-02-12` across the logs-facing and lifecycle-facing split rows with explicit day-level precision rather than leaving row chronology implicit
+  - the repair stays upstream-only: no contract release dates are invented yet, but the former blocker families now have parent-ledger chronology surfaces strong enough to support the next bounded contract-side pass
+
+### P8-C1-S1S2 (S0B-1A and S0B-3A contract-side backfill executed | 2026-04-23)
+
+- headSha: `pending-post-commit`
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0001-tools-labs-and-snapshots.md`
+  - `docs/governance/contracts/workflow/logs/DOC-WORKFLOW-LOGS-0001-structured-log-identity-and-front-matter.md`
+  - `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0001-legacy-taxonomy-cutover-and-stub-preservation.md`
+- expected:
+  - write the repaired `S0B-1A` and `S0B-3A` parent-ledger chronology back into the corresponding contracts without inventing stronger precision than the sources actually defend
+  - eliminate `effective_from: unknown` plus matching clause-level semantic-start cells on the first labs, logs, and lifecycle releases
+  - keep the batch bounded to these newly unblocked contracts rather than reopening more upstream packets first
+- observed:
+  - `DOC-WORKFLOW-LABS-0001` now anchors its first release and clause timings to the `S0B-1A` issue creation time `2026-02-08T09:14:31Z`
+  - `DOC-WORKFLOW-LOGS-0001` and `DOC-WORKFLOW-LIFECYCLE-0001` now anchor their first release and clause timings to the defended `S0B-3A` source-log date `2026-02-12`
+  - all three contracts now distinguish semantic start from later repo recording time explicitly in both frontmatter and release-change narrative instead of leaving their first release chronology unknown
+
+### P9-C1-S1S2 (LABS-0002 finished; LEGACY-LOGS-0001 remains blocked | 2026-04-23)
+
+- headSha: `pending-post-commit`
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/governance/contracts/workflow/labs/DOC-WORKFLOW-LABS-0002-labs-snapshot-evidence-package-governance.md`
+  - `docs/governance/contracts/workflow/legacy logs/DOC-WORKFLOW-LEGACY-LOGS-0001-earliest-structured-logs-capability-thesis-and-numbered-rule-blocks.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-004-legacy-logs-earliest-structured-shape.md`
+- expected:
+  - finish the remaining defensible time backfill inside `DOC-WORKFLOW-LABS-0002` by writing already-proved dates into the later release frontmatter plus clause/evolution rows
+  - preserve `ST-13` and `DOC-WORKFLOW-LEGACY-LOGS-0001` as chronology-incomplete if upstream evidence still does not defend stronger timing
+  - end the lane with one explicit statement about whether any contract-side unknowns remain because of missing upstream chronology rather than missed writeback work
+- observed:
+  - `DOC-WORKFLOW-LABS-0002` now anchors its release-level semantic start and all `S0B-2A`-derived rows to `2026-02-13`, while carried-forward `0001` rows now read `2026-02-08T09:14:31Z` and `ST-12` keeps the earlier defended `2026-02-03` labs date
+  - `ST-13` remains partially unresolved on purpose: the accepted `SUP-002` packet still does not defend a timestamp for the projection-closure labs slice, so only its `last changed at` writeback date is recorded
+  - `DOC-WORKFLOW-LEGACY-LOGS-0001` remains untouched because `S0A-2A-R02` and accepted `SUP-004` still preserve chronology as `unknown`, which keeps that file outside defensible contract-side dating for now
+
+### P10-C1-S1S2 (LEGACY-LOGS-0001 repaired as chronology-deferred | 2026-04-23)
+
+- artifacts:
+  - `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
+  - `docs/governance/contracts/workflow/legacy logs/DOC-WORKFLOW-LEGACY-LOGS-0001-earliest-structured-logs-capability-thesis-and-numbered-rule-blocks.md`
+  - `legacy/from_structured_docs/from-logs/v2-logs/log-S0A-dlq-replay-platform.md`
+  - `legacy/from_structured_docs/from-logs/v2-logs/log-S0B-graceful-termination+heathz-readyz+alert-threshold.md`
+  - `docs/logs/support-only/ledger-SUP-S0A-2A-004-legacy-logs-earliest-structured-shape.md`
+  - `docs/logs/support-only/ledger-S0A-2A-tools-workflow-log-lab-runbook-adr.md`
+- expected:
+  - prove whether the final holdout really lacks defended timing rather than assuming the remaining `unknown` fields are an editing omission
+  - if timing is still absent, convert that ambiguity into one explicit chronology-deferred state on both the contract and the governing lane log
+  - keep the repair bounded to clarity and evidence discipline rather than inventing new timestamps from later review events
+- observed:
+  - the retained legacy logs still expose reader shape but no defended date anchors usable for contract semantic timing
+  - accepted `SUP-004` and parent row `S0A-2A-R02` still preserve chronology as `unknown`, so the holdout cannot move into contract-side dating yet
+  - `DOC-WORKFLOW-LEGACY-LOGS-0001` now states that its `unknown` time fields are intentional chronology deferral, and `S0G-5A` now records that state explicitly as the lane outcome for the remaining holdout
+
+## Backfill Assessment (working)
+
+### Contract bucket
+
+- `ready-now after sample precedent exists`: `DOC-WORKFLOW-SCRIPTS-0001` is already backfilled and acts as the positive-control sample.
+- `next review after completed batches`: `DOC-WORKFLOW-LABS-0002` has now joined the backfilled set, and the only remaining frontmatter-level `effective_from: unknown` candidate is `DOC-WORKFLOW-LEGACY-LOGS-0001`, which is now explicitly marked `chronology-deferred` rather than silently unresolved.
+- `do not blanket backfill by file count alone`: family registers and templates are not the current contract-evidence bottleneck; live release contracts are.
+
+### Ledger and SUP bucket
+
+- `already-sufficient carrying surfaces`: `S0A-1A`, `S0A-2A`, and `S0B-2A` already expose `Row Chronology Audit`, `Evidence Time Audit`, or governance-event chronology surfaces that can carry bounded backfill work.
+- `needs upstream chronology first`: the current concrete holdout remains `DOC-WORKFLOW-LEGACY-LOGS-0001` via `S0A-2A-R02` plus accepted `SUP-004`; this is now an explicit chronology-deferred state, not an unreviewed backlog item.
+- `SUP is selective, not universal`: open or extend SUP only when later evidence is the actual decisive time anchor or when accepted parent rows must be sharpened; do not open SUP by default for every family.
+
+### Source-log bucket
+
+- `no blanket backfill`: source logs already own `artifact lifecycle time`, and many decisive packets already expose one defended `created` anchor.
+- `needs supplementation only when anchor is missing`: if the decisive source-side time is still absent, issue-only, or preserved only in screenshot evidence, repair that source-side anchor first through the parent ledger or SUP path before touching the contract.
+
+## Recent changes (for traceability, optional)
+
+- 2026-04-23: opened `S0G-5A` so time semantics can be fixed as one bounded governance lane before the repo is forced into ad hoc timestamp growth across logs, contracts, ledgers, and transition registers.
+- 2026-04-23: completed `P1` by writing the three-layer time distinction into the log template and the default effective-time derivation rule into the contract template, while keeping ledger/register time fields deferred for a later bounded decision.
+- 2026-04-23: completed `P2` by deciding that support-only ledgers should not gain default routing-validity columns now, while transition registers should carry stronger coexistence-date guidance without inheriting contract effective-time dates mechanically.
+- 2026-04-23: completed `P3` on the scripts sample by proving that the same packet can keep source-side chronology, parent-ledger write-back chronology, and contract effective time aligned without opening a new SUP round.
+- 2026-04-23: completed `P4` scope assessment by deciding that contract-side time backfill is still materially needed across live release records, but ledger/SUP/log supplementation should remain selective and upstream-first rather than blanket.
+- 2026-04-23: completed `P5` first execution batch on `S0A-1A`, using the defended issue creation date as the upstream semantic start for the GitHub family contracts while keeping the later Projects screenshots as sharpening evidence only.
+- 2026-04-23: completed `P6` second execution batch on `S0A-2A`, anchoring the workflow parent, runbook child, and ADR child to the source issue creation time while only partially backfilling the mixed labs current reader where a defended `2026-02-03` clause-level anchor already exists.
+- 2026-04-23: completed `P7` upstream chronology repair on `S0B-1A` and `S0B-3A`, adding explicit parent-ledger row chronology so the blocked labs, logs, and lifecycle families can move into bounded contract-side time backfill next.
+- 2026-04-23: completed `P8` contract-side backfill on `DOC-WORKFLOW-LABS-0001`, `DOC-WORKFLOW-LOGS-0001`, and `DOC-WORKFLOW-LIFECYCLE-0001`, anchoring each first release to the newly defended `S0B-1A` or `S0B-3A` source chronology rather than leaving those families at `effective_from: unknown`.
+- 2026-04-23: completed `P9` selective final-pair review by finishing the defensible `DOC-WORKFLOW-LABS-0002` backfill while explicitly confirming that `DOC-WORKFLOW-LEGACY-LOGS-0001` remains chronology-blocked until new upstream time evidence exists.
+- 2026-04-23: completed `P10` blocked-holdout repair by marking `DOC-WORKFLOW-LEGACY-LOGS-0001` explicitly as `chronology-deferred`, so the final remaining `unknown` time fields now read as an evidence-bound decision rather than a missed contract writeback.
