@@ -28,6 +28,11 @@
   **reference_log_11**: `docs/governance/contracts/workflow/lifecycle/DOC-WORKFLOW-LIFECYCLE-0002-continuity-test-retirement-and-replacement-coverage.md`
   **reference_log_12**: `docs/governance/contracts/workflow/lifecycle/register-DOC-WORKFLOW-LIFECYCLE.md`
   **reference_log_13**: `docs/logs/INDEX.md`
+  **reference_log_14**: `docs/logs/support-only/ledger-S3A-1A-third-leg-tracing-with-jaegar.md`
+  **reference_log_15**: `legacy/from_structured_docs/from-logs/v2-logs/log-S2A-observability-tracing.md`
+  **reference_log_16**: `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  **reference_log_17**: `legacy/from_structured_docs/from-adrs/adr-S3A-observability-v2.md`
+  **reference_log_18**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
 **issue_keyword**: `contract`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/3`
@@ -67,6 +72,8 @@
 - `P3-C1-S1` now fixes the direct-opening verdict as positive and emits `DOC-WORKFLOW-LOGS-0002` plus `register-DOC-WORKFLOW-LOGS.md`, so the family now has one explicit current-primary release and one historical-retained earlier release.
 - `P1-C2-S1` now admits `S0C-2A` as one negative-control sample after the `0002` opening: it is structured enough to extract cleanly, but its retirement and replacement-coverage rules do not contribute reusable logs body-structure meaning, so the verdict is `no logs-family impact now`.
 - `P3-C2-S1` now fixes the downstream non-logs verdict as positive: `S0C-2A` still has no logs-family impact, but its reusable retirement rows are strong enough to open `DOC-WORKFLOW-LIFECYCLE-0002` as one later integrated lifecycle release, with `DOC-WORKFLOW-LIFECYCLE-0001` retained as the earlier narrower release.
+- `P1-C3-S1` now admits one third sample packet with incomplete modern source-log provenance: `S3A-1A/#33` plus child issues `#34/#35` are treated as one issue-only mixed-source archaeology sample under the same lane, with one parent ledger opened directly instead of fabricating missing structured source logs.
+- `P2-C3-S1` now fixes the first split draft for that mixed packet: the current parent row set keeps `#33` as the tracing-boundary row, keeps `#34/#35` as labs or manual-drill child rows, keeps the legacy `run-S3A` and `adr-S3A` surfaces visible as separate downstream rows, and explicitly defers any SUP admission or contract mutation until later evidence sharpening is reviewed.
 - `P0-C2-S1` now fixes one repo-level chronology aid for later sample admission review: `docs/logs/INDEX.md` now includes one `Historical Appearance View` sorted mechanically by `frontmatter.created`, with same-day tie-break by root log file name and one explicit note for which packets already have current-template source-owned ledgers.
 - `P0-C2-S2` now repairs file-level coverage for that chronology aid: the same `Historical Appearance View` now lists each root `docs/logs/log-*.md` file by file stem plus governing id, and exact-path retained stubs now recover chronology from their `old_id + moved_to` targets so the root-log inventory remains file-complete.
 - `P0-C2-S3` now repairs readability for that same chronology aid: each root log item is rendered on its own visual line inside the table cell and the log stem is wrapped in backticks, so readers can scan dense same-day groups without losing the file-complete view.
@@ -79,6 +86,7 @@
 - A sample that shows only local stylistic preference should remain ledger evidence and should not trigger contract mutation by itself.
 - A well-structured sample may still remain out of family if its extracted rows govern some other boundary, such as testing retirement, lifecycle, or repo-local operator practice rather than reader-facing structured-log body shape.
 - An out-of-family sample that does not mutate `DOC-WORKFLOW-LOGS` may still trigger one downstream non-logs release if the packet yields current-reader-worthy clauses strong enough for another existing family.
+- An issue-only or screenshot-backed archaeology sample may still enter this lane when the repo preserves enough mixed-source evidence to open one source-owned parent ledger without inventing missing structured logs; in that case, keep the first draft on the parent ledger and defer SUP packets until the row split is reviewable.
 - Repo-level chronology aids may be maintained when they sharpen sample-selection reading, but those aids must stay explicitly mechanical and must not be presented as one unique lineage truth.
 - Do not use the old `six outlets` model as the extraction driver for this lane; borrow only its ownership-separation discipline where useful, and do any later close-out/export review only after the release boundary is fixed.
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
@@ -238,6 +246,18 @@
 - The explicit verdict is `no logs-family impact now`: none of those rows amend `DOC-WORKFLOW-LOGS-0002`, reopen `DOC-WORKFLOW-LOGS-0001`, or change `register-DOC-WORKFLOW-LOGS.md`.
 - The sample therefore remains one negative-control packet for the logs family: it proves that `well-structured source` is necessary for extraction but not sufficient for logs-family admission.
 
+### P1-C3-S1 (S3A-1A archaeology packet admitted as one issue-only mixed-source sample set | v1)
+
+- `S3A-1A/#33` plus child issues `#34/#35` are now admitted under `S0G-3G` as one third sample packet with incomplete modern source-log provenance.
+- The sample is intentionally treated as `issue-only mixed source`, not as three missing structured source logs that should be recreated retroactively.
+- The first admitted source-owned surface for this packet is `docs/logs/support-only/ledger-S3A-1A-third-leg-tracing-with-jaegar.md`.
+- The current direct evidence available at admission time is intentionally mixed:
+  - issue hierarchy and titles from preserved GitHub screenshots
+  - legacy tracing body from `legacy/from_structured_docs/from-logs/v2-logs/log-S2A-observability-tracing.md`
+  - one legacy runbook surface at `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  - one legacy ADR surface at `legacy/from_structured_docs/from-adrs/adr-S3A-observability-v2.md`
+- This admission therefore tests a different boundary than `S0C-1A` and `S0C-2A`: whether the lane can keep missing-log archaeology review explicit without pretending that absent source logs ever existed locally.
+
 ### P3-C2-S1 (S0C-2A routed into the later integrated lifecycle release | v1)
 
 - `S0C-2A` remains out of the logs family, but its reusable retirement and replacement-coverage rows are now admitted into `DOC-WORKFLOW-LIFECYCLE-0002` as one later integrated lifecycle release.
@@ -272,6 +292,22 @@
 - `LOGS-0001 note-only reconciliation` is also deferred for now: the boundary interaction is now understood, but the repo does not yet need one live note-only patch on `0001` before the second sample clarifies which rows are truly stable family meaning.
 - Under this rule, `S0C-1A` is now a completed first-sample packet: extraction plus provisional clustering plus explicit no-mutation verdict are fixed, and the next lane action returns to sample selection rather than reopening this sample's boundary test.
 
+### P2-C3-S1 (S3A-1A split draft fixed with SUP and contract changes deferred | v1)
+
+- The current first-pass split for `S3A-1A` is now fixed on the parent ledger rather than in free prose only.
+- The row draft keeps five bounded slices reviewable:
+  - `R01`: the parent `#33` tracing-boundary question, carried as the issue-only packet root
+  - `R02`: child issue `#34` as one labs or manual-drill slice around Jaeger electrification
+  - `R03`: child issue `#35` as one labs or manual-drill slice around new Jaeger spans and worker-side trace visibility
+  - `R04`: the later `run-S3A` operator surface as distinct runbook meaning rather than as a replacement for the issue-only parent
+  - `R05`: the later `adr-S3A` decision-summary surface as distinct ADR meaning rather than as a replacement for the issue-only parent
+- The current routing verdict is intentionally draft-only:
+  - do not open any `DOC-WORKFLOW-*` release from this packet yet
+  - do not admit screenshot evidence directly into contracts
+  - do not fabricate replacement source logs for `#33/#34/#35`
+  - do keep the parent ledger as the reviewable current draft so later SUP rounds can sharpen the exact rows they affect
+- Under this rule, `S3A-1A` is now admitted and split, but not yet promoted or sharpened; the next action after review is later evidence-specific SUP work rather than immediate contract mutation.
+
 ### P3 (Downstream write-back)
 
 - `P3-C1-S1`: if the boundary test passes, scaffold the downstream `LOGS-0002` release-opening packet and any required bridge notes
@@ -305,11 +341,13 @@
 - [x] `P1-C1-S2`: parent-ledger landing surface fixed
 - [x] `P1-C1-S1S2`: `S0C-1A` extracted into explicit candidate rule rows in the parent ledger
 - [x] `P1-C2-S1`: next sample cycle admitted after `S0C-1A`
+- [x] `P1-C3-S1`: `S3A-1A/#33/#34/#35` admitted as one issue-only mixed-source archaeology sample set
 
 ### P2 (Boundary test)
 
 - [x] `P2-C1-S1`: admitted sample rows clustered into provisional rule buckets
 - [x] `P2-C1-S2`: contract impact verdict fixed explicitly
+- [x] `P2-C3-S1`: `S3A-1A` split draft fixed with SUP and contract mutation deferred
 
 ### P3 (Downstream write-back)
 
@@ -324,6 +362,9 @@
 - `P3-C1-S1` is now completed: `DOC-WORKFLOW-LOGS-0002` is emitted as the current-primary logs-family release, `DOC-WORKFLOW-LOGS-0001` is retained as the earlier narrower release, and the family register now records that standing explicitly.
 - `S0C-2A` is now admitted as the second sample cycle and still resolves as one negative-control packet for the logs family: its extracted rules are about test retirement and replacement coverage rather than reader-facing log body structure, so the lane records `no logs-family impact now` explicitly for `DOC-WORKFLOW-LOGS`.
 - `P3-C2-S1` is now also completed: the same packet is routed onward into `DOC-WORKFLOW-LIFECYCLE-0002`, `DOC-WORKFLOW-LIFECYCLE-0001` is retained as the earlier narrower release, and the lifecycle family register now records that standing explicitly.
+- `S3A-1A/#33/#34/#35` is now admitted as the third sample packet under the same lane, but only as one issue-only mixed-source archaeology set rather than as reconstructed source logs.
+- The parent ledger `ledger-S3A-1A-third-leg-tracing-with-jaegar.md` now carries the first row split for that packet: parent tracing boundary, two child labs/manual-drill slices, and separate later runbook/ADR rows backed by retained legacy markdown.
+- The current `S3A-1A` verdict is intentionally pre-SUP and pre-contract: the row split is now reviewable, but screenshot-backed and direct-markdown sharpening rounds still remain future follow-up work.
 - `P0-C2-S1` is now completed: `docs/logs/INDEX.md` carries one explicit `Historical Appearance View`, so later sample review can use one mechanical chronology aid without pretending that aid is the unique contract-family lineage truth.
 - `P0-C2-S2` is now completed: that same chronology aid is now file-complete for the current root log inventory, including exact-path retained stubs that need chronology backfilled from their retained moved bodies.
 - `P0-C2-S3` is now completed: that same chronology aid now renders dense same-day groups as one-item-per-line cells with code-styled log stems, so readers can scan the file-complete view without decoding long comma chains.
@@ -478,6 +519,38 @@
   - `DOC-WORKFLOW-LIFECYCLE-0001` now remains the earlier narrower lifecycle release and the family register records that standing explicitly
   - `S0C-2A-R01` through `R03` are now resolved through the lifecycle-family opening verdict, while `R04` remains retained support-only evidence
 
+### P1-C3-S1 (S3A-1A issue-only archaeology sample admitted and parent ledger opened | 2026-04-24)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/support-only/ledger-S3A-1A-third-leg-tracing-with-jaegar.md`
+  - `legacy/from_structured_docs/from-logs/v2-logs/log-S2A-observability-tracing.md`
+  - `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  - `legacy/from_structured_docs/from-adrs/adr-S3A-observability-v2.md`
+- expected:
+  - admit the `#33/#34/#35` packet without fabricating missing structured source logs
+  - keep one source-owned parent ledger as the first reviewable landing surface for the mixed packet
+  - make later screenshot and markdown sharpening optional follow-up rather than a prerequisite for opening the parent ledger
+- observed:
+  - `S3A-1A/#33/#34/#35` is now represented as one issue-only mixed-source packet under `S0G-3G`
+  - one new source-owned parent ledger now exists for the packet
+  - the initial evidence base is explicitly mixed across issue hierarchy, legacy tracing markdown, legacy runbook, and legacy ADR surfaces
+
+### P2-C3-S1 (S3A-1A split draft fixed before any SUP or contract mutation | 2026-04-24)
+
+- headSha: ``
+- artifacts:
+  - `docs/logs/support-only/ledger-S3A-1A-third-leg-tracing-with-jaegar.md`
+  - `docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+- expected:
+  - split the mixed archaeology packet into reviewable parent, child-labs/manual-drill, runbook, and ADR rows
+  - keep the current verdict draft-only instead of forcing a premature child release or SUP round
+  - make clear that later screenshot and direct-markdown sharpening will attach to existing parent rows rather than replace the parent ledger
+- observed:
+  - the parent ledger now keeps five explicit draft rows rather than one undifferentiated `observability` blob
+  - child issues `#34/#35` remain distinct rows under the same parent packet instead of becoming invented child logs
+  - current standing remains `draft` across all rows, with SUP and contract work deferred intentionally
+
 ## Recent changes
 
 - 2026-04-23: opened `S0G-3G` as the bounded lane for cross-sample log body-structure extraction and candidate `LOGS-0002` same-family release opening.
@@ -487,6 +560,8 @@
 - 2026-04-24: completed `P3-C1-S1` by opening `DOC-WORKFLOW-LOGS-0002` directly from `S0C-1A`, writing the reciprocal `LOGS-0001` supersession note, and creating `register-DOC-WORKFLOW-LOGS.md` so the family now has one explicit current-primary reader.
 - 2026-04-24: completed `P1-C2-S1` by admitting `S0C-2A` as one structured negative-control sample, extracting it into a source-owned ledger, and recording the explicit verdict `no logs-family impact now`.
 - 2026-04-24: completed `P3-C2-S1` by routing the reusable `S0C-2A` rows into `DOC-WORKFLOW-LIFECYCLE-0002`, reclassifying `DOC-WORKFLOW-LIFECYCLE-0001` as the earlier narrower release, and creating `register-DOC-WORKFLOW-LIFECYCLE.md`.
+- 2026-04-24: completed `P1-C3-S1` by admitting `S3A-1A/#33/#34/#35` as one issue-only mixed-source archaeology sample set and opening `ledger-S3A-1A-third-leg-tracing-with-jaegar.md` as the parent review surface.
+- 2026-04-24: completed `P2-C3-S1` by fixing the first `S3A-1A` row split on that parent ledger and deferring all SUP and contract mutation work until later evidence sharpening rounds are reviewed.
 - 2026-04-24: completed `P0-C2-S1` by adding one mechanical `Historical Appearance View` to `docs/logs/INDEX.md` and annotating which packets already have current-template source-owned ledgers.
 - 2026-04-24: completed `P0-C2-S2` by revising that same `Historical Appearance View` to show each root log file explicitly and to backfill chronology for exact-path retained stubs from their moved retained bodies.
 - 2026-04-24: completed `P0-C2-S3` by reformatting that same `Historical Appearance View` so each log renders on its own visual line and the log stem is code-styled for faster scanning.
