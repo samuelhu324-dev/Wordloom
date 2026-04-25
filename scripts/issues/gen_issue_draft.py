@@ -73,7 +73,11 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--output-path", dest="output_path", help="Override output markdown path")
     parser.add_argument("--result-path", dest="result_path", help="Override structured result JSON path")
     parser.add_argument("--parent-issue", dest="parent_issue", help="Override parent issue URL/number")
-    parser.add_argument("--milestone-override", dest="milestone_override", help="Override milestone")
+    parser.add_argument(
+        "--milestone-override",
+        dest="milestone_override",
+        help="Override milestone; use none|blank|skip to suppress milestone application explicitly",
+    )
     parser.add_argument(
         "--module-label-override",
         dest="module_label_overrides",
@@ -380,14 +384,16 @@ def _derive_issue_projects(fields: dict[str, str], log_rel_path: str) -> list[st
     explicit = _split_csv(fields.get("issue_projects"))
     if explicit:
         return explicit
-    if log_rel_path.startswith("docs/logs/"):
-        return [DEFAULT_WORKSPACE_PROJECT]
     return []
 
 
 def _derive_milestone(fields: dict[str, str], milestone_override: str | None) -> tuple[str | None, list[str]]:
     warnings: list[str] = []
     if milestone_override:
+        normalized_override = milestone_override.strip().lower()
+        if normalized_override in {"none", "blank", "skip"}:
+            warnings.append("issue_milestone explicitly skipped by milestone override")
+            return None, warnings
         return milestone_override, warnings
 
     explicit = fields.get("issue_milestone", "").strip()
