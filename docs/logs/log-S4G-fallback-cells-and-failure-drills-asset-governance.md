@@ -1,0 +1,184 @@
+# log-S4G（fallback cells and failure-drills asset governance）
+
+---
+
+**id**: `S4G`
+**kind**: `log`
+**title**: `fallback cells and failure-drills asset governance v1`
+**status**: `draft`
+**scope**: `S4`
+**tags**: `EVOLUTION, OpsRuntime, FailureDrills, Fallback, AssetPlatform, epic/s4, epic/s4g`
+**links**: ``
+  **issue**: ``
+  **pr**: ``
+  **adr**: ``
+  **runbook**: `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
+  **reference_log_1**: `docs/logs/log-S4A-systems-platform-operations-runtime-foundation.md`
+  **reference_log_2**: `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
+  **phase_log_1**: `docs/logs/log-S4G-1A-s4-history-extraction-and-code-first-fallback-cells-assessment.md`
+  **phase_log_2**: ``
+  **phase_log_3**: ``
+  **phase_log_4**: ``
+  **phase_log_5**: ``
+  **phase_log_6**: ``
+**issue_keyword**: `platform`
+**issue_top_labels**: ``
+**issue_scope_labels**: ``
+**issue_module_labels**: ``
+**issue_milestone**: ``
+**issue_parent**: ``
+**issue_projects**: ``
+**roadmap_path**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
+**roadmap_milestone**: `M1`
+**roadmap_phase**: ``
+**roadmap_bridge_refs**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md#M1-P0, docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md#M1-P1`
+**pr_labels**: ``
+**pr_projects**: ``
+**pr_milestone**: ``
+**pr_base**: `main`
+**pr_development_issue**: ``
+**created**: `2026-04-25`
+**updated**: `2026-04-25`
+
+---
+
+## Decision / Outcome（结论区）
+
+**Decision**:
+
+- Open `S4G` as the next top-level `S4 Ops Runtime` spine for fallback cells and failure-drills asset governance.
+- Treat `failure drills` as the first evidence-rich sample for a runtime-owned lane, while `S6` remains the proof surface rather than the primary owner of fallback boundaries.
+
+**Default choices（默认基线 / v1）**:
+
+- Prefer `code boundary + stable entrypoint + replayable evidence bundle + runbook binding` as the default reading frame for this spine.
+- Keep the lane narrow: start with remaining `S4` historical source packets that can materially influence runtime fallback or asset-readiness decisions.
+- Do not reopen all history at once and do not promote weak historical prose into new runtime governance by guesswork.
+- draft 阶段默认继续把 source log 当作集中面；在问题边界、稳定规则、稳定过程、reader summary 或 front-door 影响仍在变化时，不要过早把 weak-structure 内容分流到多个 outlets。
+- 若 `issue_*` 字段为空，automation 必须保守留空并要求人工确认，而不是猜测 title keyword、labels 或 milestone。
+- 若 `pr_*` 字段为空，PR automation 必须保守留空并显式报告缺口，而不是复制 issue metadata 或猜测 base / milestone / development issue。
+- roadmap 与 logs 的机械桥接必须通过 `roadmap_path + roadmap_milestone + roadmap_phase` 明确声明；roadmap 内的正式 bridge ledger 默认只计入 child logs，而不是 parent/spine prose。
+
+## PR Summary Inputs（可选）
+
+- This parent log currently fixes the owner shift and first lane only; later PR descriptions should normally come from concrete child packets.
+
+**PR summary bullets**:
+
+- Open `S4G` as the new runtime-owned spine for fallback cells and failure-drills asset governance.
+- Record the rule that `failure drills` are the first proving sample, while `S6` remains evidence-first rather than owner-first.
+- Route the first concrete lane into `S4G-1A`.
+
+**PR checklist source**:
+
+- Default source: reuse the execution checklist from `docs/logs/log-S4G-1A-s4-history-extraction-and-code-first-fallback-cells-assessment.md` once a concrete packet is admitted.
+
+**PR links**:
+
+- Parent log: `docs/logs/log-S4G-fallback-cells-and-failure-drills-asset-governance.md`
+- Child log source(s): `docs/logs/log-S4G-1A-s4-history-extraction-and-code-first-fallback-cells-assessment.md`
+- Evidence artifact: ``
+
+## Exported Sections / Outlet Ownership（可选）
+
+- No outlet export is justified yet; this spine is still fixing owner, scope, and first-lane boundary.
+
+**Outlet ownership**:
+
+- `contract`: no-op for now; the immediate task is owner shift and lane opening, not a new released reader contract.
+- `runbook`: no-op for now; a reusable operator procedure should wait for one admitted packet.
+- `view`: no-op for now.
+- `index/front-door`: no-op for now.
+- `disposition/placement`: no-op for now.
+- `log-retained core`: keep the owner shift, default choices, roadmap bridge, and first-lane routing here.
+
+**Non-goals（不做什么）**:
+
+- Do not treat `S4G` as a broad asset-platform implementation spine yet.
+- Do not absorb all `S3` or `S6` work under `S4G`.
+- Do not force immediate code mutation before the first packet has been extracted and assessed.
+
+## Background（背景）
+
+- The repo already has stronger runtime and evidence surfaces than it has code-first fallback governance surfaces.
+- `S4A` and `S4D` provide runtime language and deploy/verify/rollback discipline; `S6` and failure-drill logs provide proof discipline.
+- What is still missing is one explicit `S4` owner lane that can turn retained runtime history into future code-first fallback governance instead of leaving it as docs-only recoverability.
+
+## Constraints（约束）
+
+- Keep the first lane bounded to source extraction, runtime assessment, and governance routing.
+- Prefer packets with existing runbook, evidence bundle, or stable entrypoint value.
+- Preserve the distinction between owner layer and evidence layer.
+
+## Scope（本 log 范围）
+
+- 本 log 负责：
+  - define `S4G` as the top-level runtime-owned spine for fallback cells and failure-drills asset governance;
+  - record the first-lane routing into `S4G-1A`;
+  - anchor the work back into `road-002-01`.
+- 本 log 不负责：
+  - packet-level extraction rows;
+  - immediate implementation of fallback cells;
+  - asset-class-specific cloud object rules.
+
+## Success Criteria（DoD）
+
+- 结构层面：
+  - readers can see why `S4G` exists and how it differs from docs-only history handling;
+  - `S4G-1A` is explicitly fixed as the first child lane.
+- 工程层面：
+  - one explicit owner split is recorded: `S4` runtime governance, `S6` evidence proving;
+  - the first lane is narrow enough to accept one user-selected packet.
+- 证据层面：
+  - later child packets can reuse current runtime/evidence discipline instead of inventing a new proof model.
+
+## Phases（切片）
+
+- `S4G-1A`（Phase 1）：S4 history extraction and code-first fallback cells assessment
+  - 详见：`docs/logs/log-S4G-1A-s4-history-extraction-and-code-first-fallback-cells-assessment.md`
+
+## Execution Checklist（当前骨架里程碑汇总）
+
+- [x] `P0`：owner shift fixed
+- [x] `P1`：first child lane fixed as `S4G-1A`
+- [ ] `P2`：first bounded `S4` packet admitted
+- [ ] `P3`：first runtime assessment verdict recorded
+
+## Current Status（进展摘要）
+
+- `S4G` is opened, but no packet has been admitted yet.
+- The next step is intentionally narrow: start `S4G-1A` on the first user-selected `S4` historical packet.
+- The main risk is over-expansion back into repo-wide archaeology.
+
+## Notes（落地原则，可选）
+
+- `S4` owns the runtime consequence; `S6` proves it.
+- Prefer samples that already expose runtime entrypoints, drills, or retained evidence.
+
+## Stability（stable 口径）
+
+- 本 log 标记为 `stable` 表示：
+  - the owner shift is accepted;
+  - the first lane is explicit;
+  - at least one child packet has been admitted and routed.
+
+## Numbering & Commit Naming（编号与提交命名）
+
+- 编号约定：`P<n>` 表示 Phase，`C<n>` 表示 Cycle，`S<n>` 表示 Step。
+- Commit / PR 命名：
+  - 基础形式：`S4G/P<phase>-C<cycle>-S<steps>: <summary>`；
+  - phase-specific 变更使用对应 child 前缀，例如：`S4G-1A/...`。
+
+**Branch 约定（建议）**:
+
+- `S4G` 相关实现与文档当前优先落在 `S4G-fallback-cells-and-failure-drills-asset-governance` 分支。
+
+**Commit 纪律（建议）**:
+
+- 每完成一个有明确边界的 `P*-C*-S*` 单元，应尽量及时 `commit/push`；
+- packet-specific 变更优先使用对应 child log 前缀。
+
+## Recent changes（for traceability，可选）
+
+- 2026-04-25：首次创建 `S4G`，把 fallback cells 与 failure-drills asset governance 固定为新的 `S4` 顶层 runtime spine。
