@@ -9,8 +9,8 @@
 **scope**: `S0`
 **tags**: `EVOLUTION, Docs, Workflow, Contract, Records, Evidence, epic/s0, sub/5a`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/552`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/553`
   **runbook**: ``
   **roadmap**: `docs/roadmap/road-002-projection-runtime-platformization-and-evidence-governance.md`
   **parent_log**: `docs/logs/log-S0G-docs-management-v7.md`
