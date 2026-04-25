@@ -19,6 +19,7 @@
   **reference_log_2**: `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
   **reference_log_3**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
   **reference_log_4**: `docs/logs/log-S6A-evidence-drills-spine.md`
+  **reference_log_5**: `docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md`
 **issue_keyword**: `runtime`
 **issue_top_labels**: ``
 **issue_scope_labels**: ``
@@ -236,13 +237,13 @@
 
 ### P1 (Source extraction / packet admission)
 
-- [ ] `P1-C1-S1`: first bounded `S4` packet selected
-- [ ] `P1-C1-S2`: extraction rows written
+- [x] `P1-C1-S1`: first bounded `S4` packet selected
+- [x] `P1-C1-S2`: extraction rows written
 
 ### P2 (Assessment / routing verdict)
 
 - [ ] `P2-C1-S1`: first packet classified explicitly
-- [ ] `P2-C1-S2`: SUP / ledger / retention decision fixed
+- [x] `P2-C1-S2`: SUP / ledger / retention decision fixed
 
 ### P3 (Next-step decision)
 
@@ -250,14 +251,23 @@
 
 ## Current Status (recommended)
 
-- `S4G-1A` is opened and its contract is fixed, but no first packet has been selected yet.
-- The lane is ready to admit the first user-chosen `S4` historical packet.
-- Until that packet is selected, this file should be read as an active source log with stable lane rules but no execution evidence yet.
+- `S4G-1A` now uses `S3A-2A` as the first admitted mixed historical packet because it still preserves one runtime-adjacent failure-drills and operator-path chain even though its old `logs/labs` boundary was blurred.
+- The current extraction surface for that packet is `docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md`, which consolidates the surviving issue-only child set plus retained log, lab, and runbook evidence into one parent ledger.
+- The current packet-routing verdict is `ledger required + no-SUP-for-now`: the row split is reviewable from surviving issue text and repo-local evidence, but no downstream `DOC-WORKFLOW-*` mutation is justified yet.
+- The next lane question is narrower than packet selection: decide which one row or adjacent row cluster becomes the first explicit `lineage-only`, `runbook-sharpening`, `contract-sharpening`, or `code-first fallback candidate` verdict.
 
 ## Evidence (reserved)
 
 - Artifacts are the source of truth for evidence; this log will record head SHA, admitted packet refs, and later assessment artifacts.
-- No admitted packet has been executed in this lane yet.
+- Current admitted packet refs:
+  - `GitHub issue S3A-2A (#37)` plus child issues `#38/#39/#40/#41/#45/#46/#47/#48/#49/#51`
+  - `docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md`
+  - `docs/logs/log-S3A-2A-2B-daemon-ready-worker-migration.md`
+  - `docs/logs/log-S3A-2A-3B-automated-failure-drills.md`
+  - `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
+  - `docs/logs/log-S3A-2A-4B-1A-git-actions.md`
+  - `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`
+  - `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
 
 ## Recent changes (for traceability, optional)
 
