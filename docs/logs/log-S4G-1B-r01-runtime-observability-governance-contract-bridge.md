@@ -119,7 +119,7 @@
 
 **Outlet ownership**:
 
-- `contract`: later landing should open one observability family release under `docs/governance/contracts/observability/`; working family name candidate: `DOC-OBS-RUNTIME-OBSERVABILITY-GOVERNANCE` and first release candidate: `0001`.
+- `contract`: current landing is `docs/governance/contracts/runtime/observability/DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`.
 - `runbook`: later landing should either narrow `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md` or open one explicit runtime-observability operator bridge once the entrypoint is defended.
 - `view`: no-op for now.
 - `index/front-door`: no-op for now.
@@ -268,6 +268,30 @@
   - it proves a narrower `rate_limit` retry family on the same worker surface rather than the broader deterministic failure-handling boundary;
   - its injection model still depends on scenario knobs such as `EVERY_N` or `RATIO`, so it is less stable as the very first reader-facing proof anchor.
 
+## P3 (Downstream release decision | v1)
+
+### P3-C1-S1 (First contract release decision recorded | v1)
+
+- Decision:
+  - open `DOC-RUNTIME-OBSERVABILITY-0001` now.
+- Current release file:
+  - `docs/governance/contracts/runtime/observability/DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
+- Why the release is justified now:
+  - the packet already has one falsifiable semantic claim;
+  - the packet already has one bounded worker owner surface and stable entrypoint;
+  - the packet already has one defended proof path with explicit run, verify, and evidence-bundle shape;
+  - the remaining gaps are hardening gaps, not identity gaps.
+
+### P3-C1-S2 (Runbook bridge decision recorded | v1)
+
+- Decision:
+  - do not open one separate runbook bridge packet yet.
+- Current runbook standing:
+  - keep `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md` as the current operator reader for the shared drill family.
+- Why no separate runbook bridge packet opens now:
+  - the current missing pieces are not operator-entry uncertainty but narrower fallback/switch-window semantics;
+  - those semantics should be opened only when one runtime-owned cutover or coexistence procedure is actually ready to be stated.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -299,7 +323,7 @@
 
 ### P3 (Downstream release decision)
 
-- P3-C1-S1: decide whether to open `DOC-OBS-RUNTIME-OBSERVABILITY-GOVERNANCE-0001`
+- P3-C1-S1: decide whether to open `DOC-RUNTIME-OBSERVABILITY-0001`
 - P3-C1-S2: decide whether one paired runbook bridge packet is required now or later
 
 ## Execution Checklist (unchecked)
@@ -322,15 +346,15 @@
 
 ### P3 (Downstream release decision)
 
-- [ ] `P3-C1-S1`: first contract release decision recorded
-- [ ] `P3-C1-S2`: runbook bridge decision recorded
+- [x] `P3-C1-S1`: first contract release decision recorded
+- [x] `P3-C1-S2`: runbook bridge decision recorded
 
 ## Current Status (recommended)
 
 - `S4G-1B` is opened as the first narrow child packet for `S3A-2A-R01`.
 - The weak semantic claim is fixed, and `P1` now narrows the first live code bridge to the `search outbox -> Elasticsearch` worker surface via `backend/scripts/search_outbox_worker.py`.
 - `P2` now selects `es_write_block_4xx` as the first defended proof path for that same runtime reader, while `es_429_inject` remains the next adjacent retry-path proof candidate.
-- The remaining unknown is no longer whether proof exists; it is whether the current proof plus boundary are strong enough to open the first released observability contract record.
+- `P3` now opens `DOC-RUNTIME-OBSERVABILITY-0001` as the first draft released reader for this chain, while leaving runbook bridge work deferred until narrower fallback or switch semantics are actually ready.
 
 ## Evidence (reserved)
 
@@ -352,9 +376,12 @@
   - `backend/scripts/cli_app/scenarios/es_429_inject.py`
   - `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`
   - `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+- Current release anchor:
+  - `docs/governance/contracts/runtime/observability/DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
 
 ## Recent changes (for traceability, optional)
 
 - 2026-04-26: opened `S4G-1B` as the first narrow child packet for `S3A-2A-R01`, fixing the weak contract claim and first bridge field set before any released observability contract mutation.
 - 2026-04-26: completed `P1` by selecting the search outbox projection worker as the first bounded runtime surface and `backend/scripts/search_outbox_worker.py` as the first candidate entrypoint for `R01`.
 - 2026-04-26: completed `P2` by selecting `es_write_block_4xx` as the first defended proof path for `R01` and treating `es_429_inject` as the next adjacent retry-path proof candidate.
+- 2026-04-26: completed `P3` by opening `DOC-RUNTIME-OBSERVABILITY-0001` and explicitly deferring a separate runbook bridge packet.

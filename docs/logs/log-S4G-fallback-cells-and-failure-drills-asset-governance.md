@@ -151,7 +151,8 @@
 
 - `S4G` is opened, and the first admitted packet has been narrowed from parent routing into `S4G-1B` as one explicit `R01` child packet.
 - `S4G-1B` has now fixed the first defended runtime boundary, candidate entrypoint, and first defended proof path for the observability chain.
-- The next step is intentionally narrow: decide whether the current boundary plus `es_write_block_4xx` proof are strong enough to open the first released observability contract record.
+- `S4G-1B` has now also opened `DOC-RUNTIME-OBSERVABILITY-0001` as the first draft released reader for that same chain.
+- The next step is intentionally narrow: decide whether one later runtime-owned runbook bridge packet is needed for fallback, switch, shadow/dual-run, or coexistence-window semantics.
 - The main risk is over-expansion back into repo-wide archaeology.
 
 ## Notes（落地原则，可选）
@@ -188,3 +189,4 @@
 - 2026-04-26：登记 `S4G-1B` 作为第一个 `R01` 窄包 child，用于把 runtime observability governance 从 parent ledger row 缩到 contract-bridge scaffold。
 - 2026-04-26：`S4G-1B/P1` 选定 `search outbox -> Elasticsearch` worker surface 作为第一条 `R01` code bridge，并把 `backend/scripts/search_outbox_worker.py` 固定为候选 entrypoint。
 - 2026-04-26：`S4G-1B/P2` 选定 `es_write_block_4xx` 作为第一条 defended proof path，并把 `es_429_inject` 保留为相邻 retry-path proof 候选。
+- 2026-04-26：`S4G-1B/P3` 打开 `DOC-RUNTIME-OBSERVABILITY-0001`，并明确把 runbook bridge 单独拆包延后到更窄的 fallback/switch 语义时再处理。
