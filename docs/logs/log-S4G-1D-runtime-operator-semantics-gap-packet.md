@@ -232,6 +232,45 @@
 - P3-C1-S1: decide whether current contract and retained runbook should now gain short `read next` bridge notes
 - P3-C1-S2: decide whether any one gap is already strong enough to open a narrower follow-up packet
 
+## P1 (Source extraction for missing operator semantics | v1)
+
+### P1-C1-S1 (Missing operator semantics extracted | v1)
+
+- The current source slice for `S4G-1D/P1` is:
+  - `S3A-2A-R01-D06`
+  - `S3A-2A-R13`
+  - `DOC-RUNTIME-OBSERVABILITY-0001-ST-05`
+  - `backend/scripts/search_outbox_worker.py`
+  - `backend/scripts/cli_app/scenarios/_failure_drill_shared.py`
+- The current extraction question is not `does a worker entrypoint exist?`; that question is already answered.
+- The current extraction question is `which operator semantics are still missing even though the worker entrypoint, switches, and drill path already exist?`
+
+| gap id | source basis | current positive anchor | normalized missing sentence | primary downstream owner | escalation rule | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `G01` | `S3A-2A-R01-D06`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-05`; `backend/scripts/search_outbox_worker.py` | `search_outbox_worker.py` already exposes `SEARCH_OUTBOX_WORKER_ENABLED=0` as a real disable switch. | The admitted runtime chain still lacks a defended `fallback mode` rule that says when disable or degraded operation is permitted, how operators recognize that state, and what post-switch obligations apply. | `runbook bridge` | If later evidence shows the disable semantics are an enforced runtime invariant rather than an operator procedure, escalate into a code-coupled or code-level contract packet. | The code proves a switch exists; it does not yet prove operator policy for using it. |
+| `G02` | `S3A-2A-R01-D06`; `backend/scripts/search_outbox_worker.py`; `backend/scripts/cli_app/scenarios/_failure_drill_shared.py` | The worker entrypoint already exposes `SEARCH_OUTBOX_RUNNER`; the drill helper already uses `search_outbox_worker@v1`; the helper also forces worker enablement during drills. | The admitted runtime chain still lacks a defended `switch surface` procedure that says who may change worker mode or enablement, what preconditions must hold, how reversal is confirmed, and which evidence proves the switch took effect. | `runbook bridge` | Keep one later `Code Bridge Table` row in the contract profile to surface the switch boundary, but keep the operator procedure itself in the runbook lane. | This gap is code-adjacent, but its missing content is still operator-facing. |
+| `G03` | `S3A-2A-R01-D06`; `S3A-2A-R13`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-05` | The retained runbook already standardizes `run -> verify -> export -> clean` as a stable drill-operations path. | The admitted runtime chain still lacks a defended `coexistence-window` rule that says whether legacy versus harness mode, shadow or dual-run, or staged cutover are valid, and if so what the start, retirement, and rollback conditions are. | `runbook bridge` | If no coexistence is valid, later packets should close this gap explicitly instead of leaving it permanently implicit. | The current runbook proves drill operation, not parallel-runtime policy. |
+| `G04` | `S4G-1C P2-C1-S2`; current reading blocks in contract and runbook surfaces | The ledger chain and current contract already let readers find the parent packet, attached ledger, active contract, and retained runbook. | Current readers still lack one short `read next` handoff that points to the bounded gap packet when the question is `what is still missing before a narrower runtime-owned runbook bridge can open?` | `contract bridge note` and `runbook bridge note` | Do not duplicate the gap inventory inside current readers; add only short routing notes after this packet is accepted. | This is a reader-routing gap, not an operator-procedure gap. |
+
+### P1-C1-S2 (Gap classes normalized and owner mapping fixed | v1)
+
+- `fallback-mode gap`:
+  - normalized missing meaning: when and how the worker may be disabled or degraded
+  - primary downstream owner: `runbook bridge`
+  - possible escalation: code-level contract only if disable semantics become enforced runtime invariants
+- `switch-surface gap`:
+  - normalized missing meaning: who changes the worker mode or enablement surface, by what steps, and how reversal is proven
+  - primary downstream owner: `runbook bridge`
+  - secondary reader surface later: `Code Bridge Table` on the active contract profile
+- `coexistence-window gap`:
+  - normalized missing meaning: whether parallel or staged mode is allowed and under what retirement boundary
+  - primary downstream owner: `runbook bridge`
+  - possible closure path: explicit `no coexistence` verdict if that is the defended answer
+- `reader-routing gap`:
+  - normalized missing meaning: where current readers should point when the question is about still-missing operator semantics
+  - primary downstream owner: short `contract bridge note` plus short `runbook bridge note`
+  - non-goal: do not reopen ledger semantics or duplicate the gap inventory across current readers
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -242,8 +281,8 @@
 
 ### P1 (Source extraction for missing operator semantics)
 
-- [ ] `P1-C1-S1`: missing operator semantics extracted
-- [ ] `P1-C1-S2`: gap classes normalized
+- [x] `P1-C1-S1`: missing operator semantics extracted
+- [x] `P1-C1-S2`: gap classes normalized
 
 ### P2 (Gap classification and no-fabrication verdict)
 
@@ -258,9 +297,10 @@
 ## Current Status (recommended)
 
 - `S4G-1D` is opened as the first explicit `gap packet` beneath the `S4G-1C` verdict.
+- `P1` now extracts four explicit gap rows with concrete missing sentences and downstream-owner mapping.
 - The packet now fixes the missing semantics as bounded gaps instead of leaving them as diffuse `runbook later` wording.
 - No current contract or runbook mutation has happened yet.
-- The next step is intentionally narrow: extract the missing semantics into explicit gap rows and decide whether current readers should now gain short `read next` bridge notes.
+- The next step is intentionally narrow: classify which of these gaps remain strictly operator-facing in `P2`, and decide whether current readers should now gain short `read next` bridge notes.
 
 ## Evidence (reserved)
 
@@ -275,8 +315,23 @@
   - `backend/scripts/search_outbox_worker_impl.py`
   - `backend/scripts/cli_app/scenarios/_failure_drill_shared.py`
 
+### P1-C1-S1S2 (Explicit gap extraction and owner mapping | 2026-04-26)
+
+- headSha: `8f9e77802`
+- artifacts: `none`
+- expected:
+  - convert the gap taxonomy into explicit gap rows
+  - write one concrete missing sentence for each gap
+  - answer each gap's primary downstream owner without mutating current contract or runbook readers yet
+- observed:
+  - `G01` fallback-mode gap is extracted from the real disable switch but remains owned by future runbook procedure rather than current contract text
+  - `G02` switch-surface gap is extracted from real worker switches and drill-facing entry ids but still lacks defended operator procedure
+  - `G03` coexistence-window gap remains unresolved because the current runbook proves drill operations, not parallel-runtime policy
+  - `G04` reader-routing gap is now explicit and points to later short bridge notes rather than duplicated semantics
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-26: opened `S4G-1D` as the bounded operator-semantics gap packet required by the `S4G-1C` verdict.
 - 2026-04-26: fixed the first gap taxonomy for the admitted runtime chain: fallback mode, switch surface, coexistence window, and reader routing.
 - 2026-04-26: fixed the rule that later bridge notes should route readers here rather than duplicating the gap inventory inside current contract or runbook readers.
+- 2026-04-26: extracted the first explicit gap rows, tied each gap to concrete source anchors, and recorded the primary downstream owner for each gap class without mutating current readers yet.
