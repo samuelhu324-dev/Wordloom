@@ -17,7 +17,7 @@
   **reference_log_1**: `docs/logs/log-S4A-systems-platform-operations-runtime-foundation.md`
   **reference_log_2**: `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
   **phase_log_1**: `docs/logs/log-S4G-1A-s4-history-extraction-and-code-first-fallback-cells-assessment.md`
-  **phase_log_2**: ``
+  **phase_log_2**: `docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md`
   **phase_log_3**: ``
   **phase_log_4**: ``
   **phase_log_5**: ``
@@ -137,6 +137,8 @@
 
 - `S4G-1A`（Phase 1）：S4 history extraction and code-first fallback cells assessment
   - 详见：`docs/logs/log-S4G-1A-s4-history-extraction-and-code-first-fallback-cells-assessment.md`
+- `S4G-1B`（Phase 2）：R01 runtime observability governance contract bridge
+  - 详见：`docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -147,8 +149,8 @@
 
 ## Current Status（进展摘要）
 
-- `S4G` is opened, but no packet has been admitted yet.
-- The next step is intentionally narrow: start `S4G-1A` on the first user-selected `S4` historical packet.
+- `S4G` is opened, and the first admitted packet has been narrowed from parent routing into `S4G-1B` as one explicit `R01` child packet.
+- The next step is intentionally narrow: use `S4G-1B` to find the first defended runtime boundary, entrypoint, and drill-proof bridge for the observability chain.
 - The main risk is over-expansion back into repo-wide archaeology.
 
 ## Notes（落地原则，可选）
@@ -182,3 +184,4 @@
 ## Recent changes（for traceability，可选）
 
 - 2026-04-25：首次创建 `S4G`，把 fallback cells 与 failure-drills asset governance 固定为新的 `S4` 顶层 runtime spine。
+- 2026-04-26：登记 `S4G-1B` 作为第一个 `R01` 窄包 child，用于把 runtime observability governance 从 parent ledger row 缩到 contract-bridge scaffold。

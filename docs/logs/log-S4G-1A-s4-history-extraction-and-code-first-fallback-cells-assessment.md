@@ -20,6 +20,7 @@
   **reference_log_3**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
   **reference_log_4**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_5**: `docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md`
+  **reference_log_6**: `docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md`
 **issue_keyword**: `runtime`
 **issue_top_labels**: ``
 **issue_scope_labels**: ``
@@ -254,7 +255,8 @@
 - `S4G-1A` now uses `S3A-2A` as the first admitted mixed historical packet because it still preserves one runtime-adjacent failure-drills and operator-path chain even though its old `logs/labs` boundary was blurred.
 - The current extraction surface for that packet is `docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md`, which consolidates the surviving issue-only child set plus retained log, lab, and runbook evidence into one parent ledger.
 - The current packet-routing verdict is `ledger required + no-SUP-for-now`: the row split is reviewable from surviving issue text and repo-local evidence, but no downstream `DOC-WORKFLOW-*` mutation is justified yet.
-- The next lane question is narrower than packet selection: decide which one row or adjacent row cluster becomes the first explicit `lineage-only`, `runbook-sharpening`, `contract-sharpening`, or `code-first fallback candidate` verdict.
+- `S3A-2A-R01` is now narrowed into `S4G-1B` as the first contract-bridge child packet, fixing the weak observability contract claim and first boundary-field scaffold before any released contract mutation.
+- The next lane question is now narrower than child selection: decide whether `S4G-1B` remains a bridge scaffold, becomes `contract-sharpening`, or becomes the first explicit `code-first fallback candidate` verdict.
 
 ## Evidence (reserved)
 
@@ -272,3 +274,4 @@
 ## Recent changes (for traceability, optional)
 
 - 2026-04-25: opened `S4G-1A` as the first child lane under `S4G`, fixing the four-way assessment model and the rule that the first admitted packet should be failure-drills-adjacent when possible.
+- 2026-04-26: opened `S4G-1B` as the first narrow child packet for `S3A-2A-R01`, fixing a weak runtime observability contract claim plus boundary, proof, and runbook bridge scaffolding.
