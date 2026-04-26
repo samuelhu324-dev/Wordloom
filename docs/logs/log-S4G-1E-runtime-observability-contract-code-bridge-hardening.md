@@ -284,6 +284,34 @@
 - P2-C1-S1: decide whether `OBSERVABILITY-0001` should now gain `Code Bridge Table` and `Contract Coverage`
 - P2-C1-S2: decide whether the shared log template should now gain `Code Bridge Delta` structure
 
+## P2 (Hardening verdict | v1)
+
+### P2-C1-S1 (Contract hardening verdict recorded | v1)
+
+- Verdict:
+  - `yes`: `DOC-RUNTIME-OBSERVABILITY-0001` should now gain one `Code Bridge Table` and one `Contract Coverage` table.
+- Why this verdict holds now:
+  - `P1` already extracted one bounded current-state bridge-field set supported by `D02` through `D05`.
+  - the proposed positive bridge fields stay inside current defended meaning rather than inventing operator procedure.
+  - `fallback mode semantics`, `switch procedure/reversal proof`, and `coexistence-window` standing are already separated into `code-anchor-only` or `not-owned-here`, so the contract mutation can remain honest.
+- Mutation boundary for `P3`:
+  - add one `Code Bridge Table` row for the current worker chain.
+  - add one `Contract Coverage` table that preserves the `defended-now / code-anchor-only / not-owned-here` split.
+  - do not promote `ST-05` operator-boundary content into current positive contract clauses.
+
+### P2-C1-S2 (Template hardening verdict recorded | v1)
+
+- Verdict:
+  - `yes`: the shared log template should now gain one reusable `Code Bridge Delta` structure.
+- Why this verdict holds now:
+  - the lane now has a concrete distinction between `gap inventory`, `current code-bridge fields`, and `downstream contract/template mutation`.
+  - `Code Bridge Delta` now has a bounded role: record what changed in one contract-facing bridge and which downstream actions that change triggers.
+  - this structure is not a replacement for `Gap Closure / Write-Back` or `Optional Required Processing Chain`; it is the missing structured change ledger for contract-facing code-bridge work.
+- Template boundary for `P3`:
+  - keep `Code Bridge Delta` scoped to bridge-field or bridge-row changes and their downstream impact.
+  - do not turn it into a general execution checklist, gap table, or evidence ledger.
+  - allow it to declare whether `write-back`, `backfill`, `reader reconciliation`, or `template follow-on` is required because of the bridge change.
+
 ### P3 (Downstream hardening / reconciliation)
 
 - P3-C1-S1: mutate the current contract profile or record explicit no-op retention
@@ -304,8 +332,8 @@
 
 ### P2 (Hardening verdict)
 
-- [ ] `P2-C1-S1`: contract hardening verdict recorded
-- [ ] `P2-C1-S2`: template hardening verdict recorded
+- [x] `P2-C1-S1`: contract hardening verdict recorded
+- [x] `P2-C1-S2`: template hardening verdict recorded
 
 ### P3 (Downstream hardening / reconciliation)
 
@@ -317,7 +345,8 @@
 - `S4G-1E` is now opened as the bounded contract-facing hardening packet after `S4G-1D`.
 - The packet fixes what this lane is allowed to do: harden current contract reader surfaces around code attachment and coverage, while leaving unresolved operator semantics outside the contract.
 - `P1` now extracts one defendable current-state bridge-field set from `D02` through `D05` and classifies the nearby semantics into `defended-now`, `code-anchor-only`, and `not-owned-here`.
-- The next step is intentionally narrow: decide in `P2` whether that extracted field set is strong enough to mutate `OBSERVABILITY-0001` now and whether the shared template should gain `Code Bridge Delta` structure in the same round.
+- `P2` now records `yes` for both downstream actions: `OBSERVABILITY-0001` should gain `Code Bridge Table + Contract Coverage`, and the shared template should gain one bounded `Code Bridge Delta` structure.
+- The next step is intentionally narrow: execute `P3` by mutating the active contract and the shared template without widening the semantics boundary set in `P1` and `P2`.
 
 ## Evidence (reserved)
 
@@ -356,7 +385,21 @@
   - `fallback mode semantics` and `switch procedure/reversal proof` are now explicitly classified as `code-anchor-only` rather than being left ambiguous
   - `coexistence window` remains `not-owned-here` because the current release and code anchors do not yet defend it as a contract clause
 
+### P2-C1-S1S2 (Contract and template hardening verdicts fixed | 2026-04-26)
+
+- headSha: `68ee6f514`
+- artifacts: `none`
+- expected:
+  - decide whether `OBSERVABILITY-0001` should now gain `Code Bridge Table` and `Contract Coverage`
+  - decide whether the shared log template should now gain one bounded `Code Bridge Delta` structure
+  - keep unresolved operator semantics outside the positive contract mutation set
+- observed:
+  - current `P1` extraction is now judged strong enough to support one bounded contract mutation on `OBSERVABILITY-0001`
+  - the shared template is now judged ready for one bounded `Code Bridge Delta` structure rather than continued `no-op retention`
+  - `fallback mode`, `switch procedure`, and `coexistence-window` semantics remain excluded from the positive contract mutation scope for `P3`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-26: opened `S4G-1E` as the bounded contract-facing hardening packet for `DOC-RUNTIME-OBSERVABILITY-0001` and fixed the first coverage-class model for code-coupled contract hardening.
 - 2026-04-26: extracted the first current-state code-bridge field set for `OBSERVABILITY-0001` and classified nearby semantics into `defended-now`, `code-anchor-only`, and `not-owned-here`.
+- 2026-04-26: recorded the `P2` verdict that both downstream hardening actions should now proceed: mutate `OBSERVABILITY-0001` with `Code Bridge Table + Contract Coverage`, and add a bounded `Code Bridge Delta` structure to the shared log template.
