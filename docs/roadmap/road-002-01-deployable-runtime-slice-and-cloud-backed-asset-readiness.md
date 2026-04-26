@@ -60,6 +60,7 @@
 - `road-002-01 M1-P2 <- docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md`
 - `road-002-01 M1-P3 <- docs/logs/log-S4G-1C-runtime-runbook-bridge-gate-and-code-coupled-contract-reader-surfaces.md`
 - `road-002-01 M1-P4 <- docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md`
+- `road-002-01 M1-P5 <- docs/logs/log-S4G-1E-runtime-observability-contract-code-bridge-hardening.md`
 - `road-002-01 M2-P0 <- docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
 - `road-002-01 M2-P1 <- docs/logs/log-S6A-evidence-drills-spine.md`
 - `road-002-01 M3-P0 <- unmapped`
@@ -90,14 +91,17 @@
   - `docs/logs/log-S4G-1C-runtime-runbook-bridge-gate-and-code-coupled-contract-reader-surfaces.md`
 - `M1-P4`:
   - `docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md`
+- `M1-P5`:
+  - `docs/logs/log-S4G-1E-runtime-observability-contract-code-bridge-hardening.md`
 
-**Plan (P0-P4)**
+**Plan (P0-P5)**
 
 - `P0` Contract: fix the owner split and first-lane boundary.
 - `P1` Implementation: admit the first bounded `S4` historical packet and assess it under the new lane.
 - `P2` Drill: decide whether the packet stays lineage-only or becomes one code-first fallback candidate.
 - `P3` Drill: record the next-step decision for either another packet or a first downstream promotion.
 - `P4` Drill: open one bounded operator-semantics gap packet when the admitted runtime chain still lacks defended fallback, switch, or coexistence procedure.
+- `P5` Contract: harden the active runtime observability contract with current code-bridge and coverage surfaces only where current meaning is already defendable.
 
 ### M2: Re-anchor failure drills on deployable runtime and evidence discipline
 
@@ -161,3 +165,4 @@
 - 2026-04-26: mapped `S4G-1B` into `M1-P2` as the first narrow `R01` contract-bridge packet beneath the admitted `S3A-2A` parent packet.
 - 2026-04-26: mapped `S4G-1C` into `M1-P3` as the decision scaffold for deferred `D06` runbook-boundary work and code-coupled contract reader-surface hardening.
 - 2026-04-26: mapped `S4G-1D` into `M1-P4` as the bounded gap packet for unresolved operator semantics and later bridge-note routing.
+- 2026-04-26: mapped `S4G-1E` into `M1-P5` as the bounded contract-facing hardening packet for `OBSERVABILITY-0001` code-bridge and coverage surfaces.
