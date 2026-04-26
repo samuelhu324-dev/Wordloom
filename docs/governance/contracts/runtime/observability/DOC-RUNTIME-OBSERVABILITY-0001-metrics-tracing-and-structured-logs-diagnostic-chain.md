@@ -96,6 +96,7 @@ contract_record:
 - Read `docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md` when the question is `which parent row splits and absorbed rows does this contract actually consume?`
 - Read [docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md](d:/Project/wordloom-v3/docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md) when the question is `how was this contract staged, bounded, and proven before release?`
 - Read [docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md](d:/Project/wordloom-v3/docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md) when the question is `what operator steps currently exist around the same drill family?`
+- Read [docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md](d:/Project/wordloom-v3/docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md) when the question is `what operator semantics are still missing before a narrower runtime-owned runbook bridge can open?`
 
 ## Reader Notes
 

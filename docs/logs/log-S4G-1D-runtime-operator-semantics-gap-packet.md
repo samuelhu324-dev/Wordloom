@@ -63,6 +63,8 @@
 - Missing operator semantics should be normalized into bounded gap classes rather than left as prose-only unease.
 - A later `runbook bridge` may open only after the corresponding gap classes are either resolved or intentionally ruled out for the admitted runtime chain.
 - Contract or runbook bridge notes should be short `read next` surfaces; the missing semantics themselves stay owned here until one downstream outlet is actually ready.
+- When one gap later closes, record the closure in this packet first, then write the resolved meaning back to the downstream owner surface, and only then reconcile current readers with short routing notes.
+- Ledger-facing write-back for gap closure should stay routing/accounting-only: record which deferred meaning is still retained here versus which surface now owns it, but do not turn the ledger into a code-bridge presentation table.
 - `domain`-level or `code`-level contracts should not be opened from this packet unless one gap is shown to be an executable boundary invariant rather than an operator-facing missing procedure.
 - draft 阶段默认继续把 source log 当作集中面；如果 gap taxonomy、reader handoff、或 downstream owner 仍在变化，不要过早把 weak-structure 内容拆到多个 outlets。
 - If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
@@ -144,6 +146,32 @@
 - Do not collapse the gap packet into current contract or runbook prose before one downstream owner is ready.
 - Do not treat code-adjacent anchors as proof that operator semantics already exist.
 - Do not open a domain or code-level contract from this packet unless one gap clearly becomes an executable invariant.
+
+## Gap Closure / Write-Back
+
+- Gap closure should proceed in this order:
+  - close or refine the gap in this packet first;
+  - write the resolved meaning back to the real downstream owner surface;
+  - reconcile current readers with short `read next` or successor notes;
+  - update ledger-facing routing only when ownership or deferred-standing changed.
+- Reopen should follow the same chain in reverse reading order:
+  - record the reopen here first;
+  - update the affected downstream surface;
+  - then repair current reader routing so readers are not left on stale successor notes.
+- This packet is allowed to act as the current retained gap surface until one downstream owner is explicit; that does not mean the packet itself becomes the permanent owner of the resolved semantics.
+
+| gap id | current status | closure target | current write-back standing | reopen proof expectation | notes |
+| --- | --- | --- | --- | --- | --- |
+| `G01` | `open` | `future runbook bridge or explicit no-fallback verdict` | `retained in S4G-1D; no current reader mutation yet` | `show which runtime or operator fact invalidated the prior closure` | `fallback-mode gap` |
+| `G02` | `open` | `future runbook bridge plus later contract code-bridge row if needed` | `retained in S4G-1D; code-boundary anchors already exist but procedure does not` | `show which switch/evidence expectation changed` | `switch-surface gap` |
+| `G03` | `open` | `future runbook bridge or explicit no-coexistence verdict` | `retained in S4G-1D; no current reader mutation yet` | `show which coexistence or retirement assumption failed` | `coexistence-window gap` |
+| `G04` | `open-now-routed` | `short contract bridge note plus short runbook bridge note` | `reader-routing write-back is justified now` | `show that the current route became stale or misleading` | `reader-routing gap` |
+
+| write-back target | target kind | when required | current verdict | notes |
+| --- | --- | --- | --- | --- |
+| `DOC-RUNTIME-OBSERVABILITY-0001` | `current contract reader` | `required when current readers need a stable route to unresolved operator semantics` | `required now for short read-next note` | `Do not duplicate the gap inventory.` |
+| `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md` | `retained operator reader` | `required when current operators need a stable route to unresolved operator semantics` | `required now for short read-next note` | `Keep existing operator path intact.` |
+| `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption` and parent ledger chain | `routing/accounting surface` | `required only when deferred ownership or resolved standing changes materially` | `not-required-now` | `No source-owned routing verdict changes in this phase.` |
 
 ## Optional Required Processing Chain
 
@@ -231,6 +259,30 @@
 
 - P3-C1-S1: decide whether current contract and retained runbook should now gain short `read next` bridge notes
 - P3-C1-S2: decide whether any one gap is already strong enough to open a narrower follow-up packet
+
+## P3 (Downstream routing | v1)
+
+### P3-C1-S1 (Bridge-note routing verdict recorded | v1)
+
+- Verdict:
+  - add short `read next` bridge notes now to the current contract reader and the retained runbook reader.
+- Why this is justified now:
+  - `G04` is no longer speculative; the retained gap reader now exists and is stable enough to route to.
+  - the bridge note is narrow routing only and does not pretend the missing operator semantics are already resolved.
+- Write-back standing for this phase:
+  - `DOC-RUNTIME-OBSERVABILITY-0001` gets one short current-reading handoff to `S4G-1D`.
+  - the retained runbook gets one short note-boundary handoff to `S4G-1D`.
+  - no ledger write-back is required in this phase because downstream ownership did not yet move out of the retained gap packet.
+
+### P3-C1-S2 (Next bounded follow-up decided | v1)
+
+- Verdict:
+  - no single gap is yet strong enough to open a narrower follow-up packet beyond `S4G-1D`.
+- Why no narrower follow-up opens yet:
+  - `G01`, `G02`, and `G03` still close as one operator-semantics cluster rather than as three fully separable packets.
+  - `G04` is a routing gap and is satisfied by the short bridge-note write-back rather than by opening another packet.
+- Retention standing:
+  - `G01`, `G02`, and `G03` remain retained in `S4G-1D` until one reusable runbook procedure or explicit no-coexistence/fallback verdict becomes defendable.
 
 ## P1 (Source extraction for missing operator semantics | v1)
 
@@ -325,8 +377,8 @@
 
 ### P3 (Downstream routing)
 
-- [ ] `P3-C1-S1`: bridge-note routing verdict recorded
-- [ ] `P3-C1-S2`: next bounded follow-up decided
+- [x] `P3-C1-S1`: bridge-note routing verdict recorded
+- [x] `P3-C1-S2`: next bounded follow-up decided
 
 ## Current Status (recommended)
 
@@ -334,8 +386,8 @@
 - `P1` now extracts four explicit gap rows with concrete missing sentences and downstream-owner mapping.
 - `P2` now classifies `G01` through `G03` as operator-facing gaps, `G04` as a reader-routing gap, and records that no gap should graduate into a code-contract packet yet.
 - The packet now fixes the missing semantics as bounded gaps instead of leaving them as diffuse `runbook later` wording.
-- No current contract or runbook mutation has happened yet.
-- The next step is intentionally narrow: execute `P3` by deciding whether to add the short `read next` bridge notes now and whether any one gap is already strong enough to open a narrower follow-up packet.
+- `P3` now decides to add short `read next` bridge notes to the current contract and retained runbook, while keeping `G01` through `G03` retained here because no narrower follow-up packet is justified yet.
+- The next step is intentionally narrow: if one of `G01` through `G03` closes, record closure here first and then write the resolved meaning back to the real downstream owner surface.
 
 ## Evidence (reserved)
 
@@ -378,6 +430,19 @@
   - no gap should graduate into a code-level or domain-level contract packet yet
   - current readers should later gain short `read next` notes, but the actual mutations remain deferred to `P3`
 
+### P3-C1-S1S2 (Bridge-note routing and retained-gap verdict | 2026-04-26)
+
+- headSha: `87ba3fecb`
+- artifacts: `none`
+- expected:
+  - decide whether to add current-reader bridge notes now
+  - decide whether any one gap is already strong enough to open a narrower follow-up packet
+  - record the current write-back standing for contract, runbook, and ledger surfaces
+- observed:
+  - the contract and retained runbook now qualify for short `read next` bridge notes to `S4G-1D`
+  - no single operator gap is yet strong enough to justify a narrower child packet
+  - ledger write-back remains `not-required-now` because no deferred ownership changed in this phase
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-26: opened `S4G-1D` as the bounded operator-semantics gap packet required by the `S4G-1C` verdict.
@@ -385,3 +450,4 @@
 - 2026-04-26: fixed the rule that later bridge notes should route readers here rather than duplicating the gap inventory inside current contract or runbook readers.
 - 2026-04-26: extracted the first explicit gap rows, tied each gap to concrete source anchors, and recorded the primary downstream owner for each gap class without mutating current readers yet.
 - 2026-04-26: classified the four gaps into operator-facing versus reader-routing follow-up, confirmed that none should yet graduate into code-contract work, and recorded the `yes later, not inline now` verdict for current-reader bridge notes.
+- 2026-04-26: added the gap closure and write-back semantics for this packet, then executed `P3` by deciding on short current-reader bridge-note write-back while keeping `G01` through `G03` retained here.

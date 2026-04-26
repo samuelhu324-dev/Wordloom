@@ -169,6 +169,26 @@
 
 - <For example: dumps are not committed to git; least privilege; low-cardinality reasons; machine-verifiable evidence>
 
+## Gap Closure / Write-Back (optional, recommended when a source log temporarily acts as a gap packet)
+
+- Use this section when the source log is explicitly retaining unresolved semantics that should later close into `contract`, `runbook`, or another downstream owner surface.
+- Close or refine the gap in the source log first, then write the resolved meaning back to the real downstream owner surface, and only then reconcile current readers with short routing notes.
+- Reopen should be recorded here first, then reflected on the affected downstream owner surface, and finally on current-reader routing notes.
+- Ledger-facing write-back should stay routing/accounting-only unless the ledger itself truly owns the changed standing; do not turn a ledger into a code-bridge presentation table just because the source log tracks code-adjacent gaps.
+- A source log may temporarily act as a retained `gap packet`, but that does not make it the permanent owner of resolved semantics.
+
+| gap id | current status | closure target | current write-back standing | reopen proof expectation | notes |
+| --- | --- | --- | --- | --- | --- |
+| `G01` | `open|partially-closed|closed|reopened|retired` | `<future owner surface>` | `<retained here|write-back required now|write-back already done>` | `<what future change would justify reopen>` | `<bounded gap note>` |
+
+| write-back target | target kind | when required | current verdict | notes |
+| --- | --- | --- | --- | --- |
+| `<surface>` | `<contract reader|runbook reader|ledger routing|code-contract surface>` | `<required when...>` | `<required-now|conditional|not-required-now|already-satisfied>` | `<short write-back note>` |
+
+| gap change id | gap id | change action | recorded at | reason | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `GC-01` | `G01` | `opened|refined|partially-closed|closed|reopened|rerouted` | `YYYY-MM-DD` | `<why this changed>` | `<source refs>` | `<bounded evolution note>` |
+
 ## Optional Required Processing Chain
 
 Use this section when the source log may emit, revise, reopen, or reconcile contract work and reviewers need one explicit pre-execution declaration of which write-back steps must run.
