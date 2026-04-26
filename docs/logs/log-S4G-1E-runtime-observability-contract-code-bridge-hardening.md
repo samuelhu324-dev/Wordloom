@@ -232,6 +232,53 @@
 - P1-C1-S1: extract the current `OBSERVABILITY-0001` code-bridge fields already defended by `D02` through `D05`
 - P1-C1-S2: classify candidate semantics into `defended-now`, `code-anchor-only`, and `not-owned-here`
 
+## P1 (Source extraction for contract-facing hardening | v1)
+
+### P1-C1-S1 (Current code-bridge fields extracted | v1)
+
+- The current defendable bridge-field extraction for `OBSERVABILITY-0001` is:
+
+| field id | bridge field | extracted current value | source basis | current coverage class | notes |
+| --- | --- | --- | --- | --- | --- |
+| `CBF-01` | `bridgeId` | `DOC-RUNTIME-OBSERVABILITY-0001-CB-01` | `S4G-1C P0-C1-S2`; `DOC-RUNTIME-OBSERVABILITY-0001` | `defended-now` | Proposed stable row id for the first current-state code-bridge row. |
+| `CBF-02` | `ownedStatementIds` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-02; DOC-RUNTIME-OBSERVABILITY-0001-ST-03; DOC-RUNTIME-OBSERVABILITY-0001-ST-04` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-02..ST-04`; `S3A-2A-R01-D02..D05` | `defended-now` | `ST-05` remains a boundary statement and is not a code-bridge-owned positive field. |
+| `CBF-03` | `appliedToSurface` | `search outbox projection worker diagnostics` | `S3A-2A-R01-D01`; `S3A-2A-R01-D02`; contract `applies_to` | `defended-now` | This is the current runtime-facing surface the contract actually binds. |
+| `CBF-04` | `runtimeBoundary` | `search outbox projection worker for projection=search_index_to_elastic` | `S3A-2A-R01-D02`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-02` | `defended-now` | Current bounded owner surface. |
+| `CBF-05` | `entrypointRef` | `backend/scripts/search_outbox_worker.py` | `S3A-2A-R01-D03`; contract `entrypoint_ref`; worker source file | `defended-now` | Stable current entrypoint. |
+| `CBF-06` | `drillFacingEntryId` | `search_outbox_worker@v1` | `S3A-2A-R01-D03`; `_failure_drill_shared.py` | `defended-now` | This is the stable drill-facing bridge identifier already used in defended drill surfaces. |
+| `CBF-07` | `switchSurface` | `SEARCH_OUTBOX_WORKER_ENABLED; SEARCH_OUTBOX_RUNNER` | `S3A-2A-R01-D03`; worker source file | `defended-now` | The existence and bounded names of the switches are defendable even though their operator procedure is not. |
+| `CBF-08` | `reasonForAttachment` | `Current contract meaning is bounded to one defended worker chain, one stable entrypoint, one minimum signal set, and one defended proof path rather than to repo-wide observability in the abstract.` | `DOC-RUNTIME-OBSERVABILITY-0001` release summary; `S3A-2A-R01-D02..D05` | `defended-now` | This is the reader-facing attachment reason for the bridge row. |
+| `CBF-09` | `recordedAt` | `2026-04-26` | contract `recorded_at` | `defended-now` | Current contract record time. |
+| `CBF-10` | `effectiveFrom` | `2026-04-26` | contract `effective_from` | `defended-now` | First current release date for the bridge row. |
+| `CBF-11` | `effectiveUntil` | `ongoing` | contract `effective_until` | `defended-now` | No replacement yet recorded. |
+| `CBF-12` | `replacementRule` | `Keep this bridge row current until a later release changes the bounded owner surface, stable entrypoint, switch-surface naming, or defended proof path strongly enough that one replacement row or evolution table is required.` | `S4G-1C P0-C1-S2`; `DOC-RUNTIME-OBSERVABILITY-0001` change model | `defended-now` | This is the narrowest current replacement rule supported by existing sources. |
+| `CBF-13` | `evidenceRefs` | `backend/scripts/search_outbox_worker.py; backend/scripts/search_outbox_worker_impl.py; backend/scripts/cli_app/scenarios/_failure_drill_shared.py; backend/scripts/cli_app/scenarios/es_write_block_4xx.py` | contract `supporting_evidence_refs`; `D03`; `D05` | `defended-now` | Bridge evidence stays aligned to current code and defended proof surfaces. |
+
+- Extraction boundary for this step:
+  - `D02` through `D05` support one current-state `Code Bridge Table` row now.
+  - `D06` does not add a positive bridge field; it fixes the exclusion boundary for what must stay outside this current row.
+
+### P1-C1-S2 (Coverage classes applied | v1)
+
+- Coverage classification for the current contract-facing candidate semantics is:
+
+| semantic area | current basis | coverage class | why this class holds now | current owner / later owner | notes |
+| --- | --- | --- | --- | --- | --- |
+| `bounded owner surface` | `D02`; `ST-02` | `defended-now` | Current release meaning already fixes the worker surface and projection boundary. | `OBSERVABILITY-0001` contract | Positive contract meaning already exists. |
+| `stable entrypoint` | `D03`; contract `entrypoint_ref`; worker source file | `defended-now` | The contract and current code agree on the stable entrypoint path. | `OBSERVABILITY-0001` contract | This is a direct bridge field. |
+| `drill-facing entry id` | `D03`; `_failure_drill_shared.py` | `defended-now` | The drill-facing id is already part of the defended current bridge around the same worker chain. | `OBSERVABILITY-0001` contract | Useful for a contract-facing bridge row even though the current contract body has not yet tabulated it. |
+| `switch surface names` | `D03`; worker source file | `defended-now` | The repo and attached ledger already defend the existence and naming of the current bounded switches. | `OBSERVABILITY-0001` contract | Names are defendable; procedure is not. |
+| `minimum shared pivots and signals` | `D04`; `ST-03` | `defended-now` | The release already owns this minimum diagnostic signal set. | `OBSERVABILITY-0001` contract | Positive contract meaning already exists. |
+| `defended proof path` | `D05`; `ST-04`; `es_write_block_4xx` scenario | `defended-now` | Current release already binds the first proof path and its evidence bundle expectations. | `OBSERVABILITY-0001` contract | Positive contract meaning already exists. |
+| `fallback mode semantics` | `ST-05`; `G01`; `SEARCH_OUTBOX_WORKER_ENABLED` exists in code | `code-anchor-only` | A disable switch exists, but the contract does not yet defend when disable/degraded mode is permitted or how that state is governed. | `S4G-1D` retained gap; possible later runbook or code contract | Presence of the switch is not full semantic ownership. |
+| `switch procedure and reversal proof` | `ST-05`; `G02`; `SEARCH_OUTBOX_RUNNER` and worker enablement switches exist in code | `code-anchor-only` | Code exposes the knobs, but current release does not defend who may change them, by what preconditions, or how reversal is proven. | `S4G-1D` retained gap; possible later runbook | Keep the code anchor visible without inventing procedure. |
+| `coexistence window / shadow-dual-run / staged cutover` | `ST-05`; `G03` | `not-owned-here` | No current contract clause or live code anchor yet defends these semantics as part of the release. | `S4G-1D` retained gap; possible later runbook verdict | This is beyond current contract ownership. |
+
+- P1 classification verdict:
+  - `defended-now` covers the current code attachment and proof semantics already defended by `D02` through `D05`.
+  - `code-anchor-only` is appropriate where the code exposes a real boundary or switch but the contract does not yet defend the surrounding operator meaning.
+  - `not-owned-here` is appropriate where neither current release meaning nor current code attachment yields a defendable contract clause.
+
 ### P2 (Hardening verdict)
 
 - P2-C1-S1: decide whether `OBSERVABILITY-0001` should now gain `Code Bridge Table` and `Contract Coverage`
@@ -252,8 +299,8 @@
 
 ### P1 (Source extraction for contract-facing hardening)
 
-- [ ] `P1-C1-S1`: current code-bridge fields extracted
-- [ ] `P1-C1-S2`: coverage classes applied
+- [x] `P1-C1-S1`: current code-bridge fields extracted
+- [x] `P1-C1-S2`: coverage classes applied
 
 ### P2 (Hardening verdict)
 
@@ -269,7 +316,8 @@
 
 - `S4G-1E` is now opened as the bounded contract-facing hardening packet after `S4G-1D`.
 - The packet fixes what this lane is allowed to do: harden current contract reader surfaces around code attachment and coverage, while leaving unresolved operator semantics outside the contract.
-- The next step is intentionally narrow: extract the currently defendable code-bridge fields from `OBSERVABILITY-0001` and decide whether the shared template needs a reusable `Code Bridge Delta` structure.
+- `P1` now extracts one defendable current-state bridge-field set from `D02` through `D05` and classifies the nearby semantics into `defended-now`, `code-anchor-only`, and `not-owned-here`.
+- The next step is intentionally narrow: decide in `P2` whether that extracted field set is strong enough to mutate `OBSERVABILITY-0001` now and whether the shared template should gain `Code Bridge Delta` structure in the same round.
 
 ## Evidence (reserved)
 
@@ -295,6 +343,20 @@
   - the packet explicitly separates `defended-now`, `code-anchor-only`, and `not-owned-here`
   - current operator gaps remain owned by `S4G-1D` rather than being silently promoted into contract meaning
 
+### P1-C1-S1S2 (Current code-bridge fields and coverage extracted | 2026-04-26)
+
+- headSha: `416926d1c`
+- artifacts: `none`
+- expected:
+  - extract the current contract-facing bridge fields already defended by `D02` through `D05`
+  - classify nearby semantics into `defended-now`, `code-anchor-only`, and `not-owned-here`
+  - keep `D06` as the exclusion boundary rather than as a positive bridge field
+- observed:
+  - one current bridge-field set is now explicit for owner surface, runtime boundary, entrypoint, drill-facing entry id, switch names, attachment reason, timing, replacement rule, and evidence refs
+  - `fallback mode semantics` and `switch procedure/reversal proof` are now explicitly classified as `code-anchor-only` rather than being left ambiguous
+  - `coexistence window` remains `not-owned-here` because the current release and code anchors do not yet defend it as a contract clause
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-26: opened `S4G-1E` as the bounded contract-facing hardening packet for `DOC-RUNTIME-OBSERVABILITY-0001` and fixed the first coverage-class model for code-coupled contract hardening.
+- 2026-04-26: extracted the first current-state code-bridge field set for `OBSERVABILITY-0001` and classified nearby semantics into `defended-now`, `code-anchor-only`, and `not-owned-here`.
