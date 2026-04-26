@@ -271,6 +271,40 @@
   - primary downstream owner: short `contract bridge note` plus short `runbook bridge note`
   - non-goal: do not reopen ledger semantics or duplicate the gap inventory across current readers
 
+## P2 (Gap classification and no-fabrication verdict | v1)
+
+### P2-C1-S1 (Operator-gap versus code-contract follow-up classified | v1)
+
+- Classification verdict for the current four gaps is:
+
+| gap id | classification verdict | why this classification holds now | later follow-up owner | notes |
+| --- | --- | --- | --- | --- |
+| `G01` | `operator-facing gap` | The missing content is operator policy for when disable or degraded mode is permitted and how that state is recognized after the real switch is used. | `runbook bridge` | Escalate only if later evidence proves the disable semantics are enforced runtime invariants rather than operator procedure. |
+| `G02` | `operator-facing gap with code-adjacent bridge fields` | The code already exposes runner and enablement surfaces, but the missing content is still the operator procedure for changing them, proving the change, and reversing it. | `runbook bridge`, with later `Code Bridge Table` support on the contract profile | This gap is not yet a code-contract packet because the missing semantics are not executable invariants yet. |
+| `G03` | `operator-facing gap` | The missing content is policy about coexistence, shadow/dual-run, staged cutover, retirement, and rollback standing rather than code attachment itself. | `runbook bridge` | Later follow-up may explicitly close this gap with a `no coexistence` verdict if that is the defended answer. |
+| `G04` | `reader-routing gap` | The missing content is a short current-reader handoff, not runtime procedure and not executable invariant. | `contract bridge note` plus `runbook bridge note` | This gap should never expand into a large semantic duplicate inside current readers. |
+
+- Current no-escalation verdict:
+  - none of `G01` through `G04` should graduate into a code-level or domain-level contract packet yet.
+- Why no gap graduates yet:
+  - the repo already proves entrypoint, switches, and drill-facing attachment;
+  - the missing content remains operator policy or reader routing, not executable invariant or adapter boundary behavior.
+
+### P2-C1-S2 (No-fabrication rule written for current readers | v1)
+
+- Current-reader verdict:
+  - current readers should eventually gain short `read next` bridge notes to `S4G-1D`, but this phase should not yet mutate those readers directly.
+- Why the verdict is `yes later, not inline now`:
+  - `G04` is now explicit enough that current readers need a stable route to the gap packet;
+  - however, `P2` still belongs to classification and anti-fabrication work, so the actual reader mutations should remain one separate `P3` action.
+- No-fabrication rule for current readers:
+  - do not add fallback-mode, switch-surface, coexistence-window, or unresolved routing semantics directly into `DOC-RUNTIME-OBSERVABILITY-0001` or the retained runbook while the downstream owner is still this gap packet.
+  - if a current reader needs help, add only one short routing note that points to `S4G-1D`; do not duplicate the gap inventory or invent missing procedure.
+- Current bounded routing answer:
+  - `DOC-RUNTIME-OBSERVABILITY-0001` should remain the active semantic reader.
+  - `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md` should remain the retained operator-path reader.
+  - `S4G-1D` is now the retained gap reader for still-missing operator semantics.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -286,8 +320,8 @@
 
 ### P2 (Gap classification and no-fabrication verdict)
 
-- [ ] `P2-C1-S1`: operator-gap versus code-contract follow-up classified
-- [ ] `P2-C1-S2`: no-fabrication rule written for current readers
+- [x] `P2-C1-S1`: operator-gap versus code-contract follow-up classified
+- [x] `P2-C1-S2`: no-fabrication rule written for current readers
 
 ### P3 (Downstream routing)
 
@@ -298,9 +332,10 @@
 
 - `S4G-1D` is opened as the first explicit `gap packet` beneath the `S4G-1C` verdict.
 - `P1` now extracts four explicit gap rows with concrete missing sentences and downstream-owner mapping.
+- `P2` now classifies `G01` through `G03` as operator-facing gaps, `G04` as a reader-routing gap, and records that no gap should graduate into a code-contract packet yet.
 - The packet now fixes the missing semantics as bounded gaps instead of leaving them as diffuse `runbook later` wording.
 - No current contract or runbook mutation has happened yet.
-- The next step is intentionally narrow: classify which of these gaps remain strictly operator-facing in `P2`, and decide whether current readers should now gain short `read next` bridge notes.
+- The next step is intentionally narrow: execute `P3` by deciding whether to add the short `read next` bridge notes now and whether any one gap is already strong enough to open a narrower follow-up packet.
 
 ## Evidence (reserved)
 
@@ -329,9 +364,24 @@
   - `G03` coexistence-window gap remains unresolved because the current runbook proves drill operations, not parallel-runtime policy
   - `G04` reader-routing gap is now explicit and points to later short bridge notes rather than duplicated semantics
 
+### P2-C1-S1S2 (Gap classification and no-fabrication verdict | 2026-04-26)
+
+- headSha: `d0c5c508e`
+- artifacts: `none`
+- expected:
+  - classify which gaps are operator-facing versus reader-routing
+  - decide whether any gap should already graduate into code-contract follow-up
+  - record whether current readers need short routing notes without mutating them yet
+- observed:
+  - `G01`, `G02`, and `G03` remain operator-facing gaps even though `G02` is code-adjacent
+  - `G04` is confirmed as a reader-routing gap only
+  - no gap should graduate into a code-level or domain-level contract packet yet
+  - current readers should later gain short `read next` notes, but the actual mutations remain deferred to `P3`
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-26: opened `S4G-1D` as the bounded operator-semantics gap packet required by the `S4G-1C` verdict.
 - 2026-04-26: fixed the first gap taxonomy for the admitted runtime chain: fallback mode, switch surface, coexistence window, and reader routing.
 - 2026-04-26: fixed the rule that later bridge notes should route readers here rather than duplicating the gap inventory inside current contract or runbook readers.
 - 2026-04-26: extracted the first explicit gap rows, tied each gap to concrete source anchors, and recorded the primary downstream owner for each gap class without mutating current readers yet.
+- 2026-04-26: classified the four gaps into operator-facing versus reader-routing follow-up, confirmed that none should yet graduate into code-contract work, and recorded the `yes later, not inline now` verdict for current-reader bridge notes.
