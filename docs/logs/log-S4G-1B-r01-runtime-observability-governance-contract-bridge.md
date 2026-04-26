@@ -228,14 +228,45 @@
   - `runtimeBoundary`: `search_index_to_elastic worker process`
   - `candidateEntrypoint`: `backend/scripts/search_outbox_worker.py`
   - `sharedPivots`: `trace_id/traceparent`, `claim_batch_id`, `outbox event id`, and worker metric labels such as `projection` and `op`
-  - `requiredSignals`: `outbox_* metrics`, worker tracing spans, and worker structured logs`
-  - `versioningNote`: `search_outbox_worker@v1` remains the stable drill-facing entry id from the failure-drill helper layer`
+  - `requiredSignals`: `outbox_* metrics`, worker tracing spans, and worker structured logs
+  - `versioningNote`: `search_outbox_worker@v1` remains the stable drill-facing entry id from the failure-drill helper layer
 - Why this entrypoint is selected first:
   - it is the stable worker entrypoint explicitly preserved for Procfiles, historical docs, and drill helpers;
   - it exposes a bounded switch surface already (`SEARCH_OUTBOX_WORKER_ENABLED`, `SEARCH_OUTBOX_RUNNER`);
   - the implementation under `backend/scripts/search_outbox_worker_impl.py` already binds all three `R01` signal classes.
 - Non-selected nearby candidate:
   - `backend/scripts/cli.py labs run <scenario>` is kept as the drill harness entry, but not as the semantic owner entrypoint for this contract.
+
+## P2 (Drill / proof binding | v1)
+
+### P2-C1-S1 (Current drill attachment decided | v1)
+
+- The current defended proof-path candidate for `R01` is `es_write_block_4xx`.
+- Current `drillProofRef` value:
+  - `backend/scripts/cli.py labs run es_write_block_4xx`
+  - `backend/scripts/cli.py labs verify es_write_block_4xx`
+  - `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`
+  - `backend/scripts/cli_app/scenarios/es_write_block_4xx.py`
+- Why this drill is selected as the primary proof path:
+  - it targets the same `search_outbox_worker@v1` entrypoint chosen in `P1`;
+  - it is deterministic because the controller forces Elasticsearch write-block state instead of depending on probabilistic rate limiting;
+  - its verify step already asserts before/after metric deltas, DB reason families, and supply-row checks against the same worker surface;
+  - the labs docs already publish `run -> verify -> export -> clean` commands for this scenario.
+- Secondary adjacent proof row kept for follow-up, not first proof:
+  - `es_429_inject` remains useful because it proves retry and rate-limit behavior on the same worker surface, but it is treated as the second proof candidate rather than the first defended proof path.
+
+### P2-C1-S2 (Minimum proof semantics fixed | v1)
+
+- The current minimum proof semantics for `R01` are:
+  - one drill must start the stable worker entry `search_outbox_worker@v1`;
+  - one verify step must show that metrics on the same projection surface move in the expected direction before/after the trigger;
+  - one evidence bundle must retain worker-start evidence, metrics snapshots, result JSON, and worker logs on that same run;
+  - tracing remains required as part of the governed chain, but absence of exported traces is currently treated as a proof gap note rather than a full block on this first proof-path decision.
+- Current proof verdict:
+  - `proof path exists now through es_write_block_4xx; tracing export completeness may still require later hardening, but no longer blocks the first defended proof-path selection`
+- Why `es_429_inject` is not selected first:
+  - it proves a narrower `rate_limit` retry family on the same worker surface rather than the broader deterministic failure-handling boundary;
+  - its injection model still depends on scenario knobs such as `EVERY_N` or `RATIO`, so it is less stable as the very first reader-facing proof anchor.
 
 ## Numbering
 
@@ -263,8 +294,8 @@
 
 ### P2 (Drill / proof binding)
 
-- P2-C1-S1: identify whether current drills already prove the chain or only adjacent rows do
-- P2-C1-S2: fix one minimum proof or explicit proof-gap statement
+- P2-C1-S1: decide which current drill becomes the first defended proof path for `R01`
+- P2-C1-S2: fix one minimum proof semantics statement and any remaining trace-gap note
 
 ### P3 (Downstream release decision)
 
@@ -286,8 +317,8 @@
 
 ### P2 (Drill / proof binding)
 
-- [ ] `P2-C1-S1`: current drill attachment or gap decided
-- [ ] `P2-C1-S2`: minimum proof or explicit no-proof-yet statement fixed
+- [x] `P2-C1-S1`: current drill attachment or gap decided
+- [x] `P2-C1-S2`: minimum proof or explicit no-proof-yet statement fixed
 
 ### P3 (Downstream release decision)
 
@@ -298,7 +329,8 @@
 
 - `S4G-1B` is opened as the first narrow child packet for `S3A-2A-R01`.
 - The weak semantic claim is fixed, and `P1` now narrows the first live code bridge to the `search outbox -> Elasticsearch` worker surface via `backend/scripts/search_outbox_worker.py`.
-- The current unknown is no longer the first boundary or entrypoint; it is which existing drill or gate should become the defended proof path for that same runtime reader.
+- `P2` now selects `es_write_block_4xx` as the first defended proof path for that same runtime reader, while `es_429_inject` remains the next adjacent retry-path proof candidate.
+- The remaining unknown is no longer whether proof exists; it is whether the current proof plus boundary are strong enough to open the first released observability contract record.
 
 ## Evidence (reserved)
 
@@ -315,8 +347,14 @@
   - `backend/infra/observability/outbox_metrics.py`
   - `backend/infra/observability/tracing.py`
   - `backend/scripts/cli_app/scenarios/_failure_drill_shared.py`
+- Current proof anchors:
+  - `backend/scripts/cli_app/scenarios/es_write_block_4xx.py`
+  - `backend/scripts/cli_app/scenarios/es_429_inject.py`
+  - `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`
+  - `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
 
 ## Recent changes (for traceability, optional)
 
 - 2026-04-26: opened `S4G-1B` as the first narrow child packet for `S3A-2A-R01`, fixing the weak contract claim and first bridge field set before any released observability contract mutation.
 - 2026-04-26: completed `P1` by selecting the search outbox projection worker as the first bounded runtime surface and `backend/scripts/search_outbox_worker.py` as the first candidate entrypoint for `R01`.
+- 2026-04-26: completed `P2` by selecting `es_write_block_4xx` as the first defended proof path for `R01` and treating `es_429_inject` as the next adjacent retry-path proof candidate.
