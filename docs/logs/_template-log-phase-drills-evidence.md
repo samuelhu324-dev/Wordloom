@@ -189,6 +189,17 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | `GC-01` | `G01` | `opened|refined|partially-closed|closed|reopened|rerouted` | `YYYY-MM-DD` | `<why this changed>` | `<source refs>` | `<bounded evolution note>` |
 
+## Code Bridge Delta (optional, recommended when a source log records contract-facing bridge changes)
+
+- Use this section when the packet changes one contract-facing code bridge, adds one new bridge row, or records a bounded decision to defer one bridge field while still accounting for downstream impact.
+- Keep the subject narrow: this table records `what changed in the bridge` and `what downstream actions that bridge change triggers`.
+- Do not use this section as a replacement for `Gap Closure / Write-Back`, `Optional Required Processing Chain`, or `Evidence`.
+- `write-back required` and `backfill required` here should answer only whether the bridge change creates those downstream obligations; execution details still belong in the processing chain or evidence ledger.
+
+| delta id | bridge id | changed field or row | change action | new standing | downstream impact | write-back required | backfill required | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `CBD-01` | `CB-01` | `entrypointRef` | `added|revised|replaced|deferred|left-unsupported` | `<current standing after this packet>` | `<contract mutation|reader reconciliation|template follow-on|none>` | `<required-now|conditional|not-required-now|already-satisfied>` | `<required-now|conditional|not-required-now|already-satisfied>` | `<source refs>` | `<bounded bridge-change note>` |
+
 ## Optional Required Processing Chain
 
 Use this section when the source log may emit, revise, reopen, or reconcile contract work and reviewers need one explicit pre-execution declaration of which write-back steps must run.

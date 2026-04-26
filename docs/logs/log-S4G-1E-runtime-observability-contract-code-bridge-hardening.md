@@ -317,6 +317,29 @@
 - P3-C1-S1: mutate the current contract profile or record explicit no-op retention
 - P3-C1-S2: mutate the shared template or record explicit no-op retention
 
+## P3 (Downstream hardening / reconciliation | v1)
+
+### P3-C1-S1 (Contract mutation recorded | v1)
+
+- Verdict:
+  - mutate `DOC-RUNTIME-OBSERVABILITY-0001` now.
+- Executed mutation:
+  - added one `Code Bridge Table` row for the current worker chain.
+  - added one `Contract Coverage` table that preserves the `defended-now / code-anchor-only / not-owned-here` split fixed in `P1`.
+  - updated `Release Change` so the new reader-facing contract surfaces are part of current release reading.
+- Boundary preserved:
+  - `fallback mode`, `switch procedure`, and `coexistence-window` semantics remain outside positive current contract clauses.
+
+### P3-C1-S2 (Template mutation recorded | v1)
+
+- Verdict:
+  - mutate the shared log template now.
+- Executed mutation:
+  - added one reusable `Code Bridge Delta` section to the shared template.
+  - kept that section bounded to bridge-change accounting plus downstream impact standing.
+- Boundary preserved:
+  - the new section does not replace `Gap Closure / Write-Back`, `Optional Required Processing Chain`, or `Evidence`.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -337,8 +360,8 @@
 
 ### P3 (Downstream hardening / reconciliation)
 
-- [ ] `P3-C1-S1`: contract mutation or no-op retention recorded
-- [ ] `P3-C1-S2`: template mutation or no-op retention recorded
+- [x] `P3-C1-S1`: contract mutation or no-op retention recorded
+- [x] `P3-C1-S2`: template mutation or no-op retention recorded
 
 ## Current Status (recommended)
 
@@ -346,7 +369,8 @@
 - The packet fixes what this lane is allowed to do: harden current contract reader surfaces around code attachment and coverage, while leaving unresolved operator semantics outside the contract.
 - `P1` now extracts one defendable current-state bridge-field set from `D02` through `D05` and classifies the nearby semantics into `defended-now`, `code-anchor-only`, and `not-owned-here`.
 - `P2` now records `yes` for both downstream actions: `OBSERVABILITY-0001` should gain `Code Bridge Table + Contract Coverage`, and the shared template should gain one bounded `Code Bridge Delta` structure.
-- The next step is intentionally narrow: execute `P3` by mutating the active contract and the shared template without widening the semantics boundary set in `P1` and `P2`.
+- `P3` now executes both downstream mutations: the active contract exposes `Code Bridge Table + Contract Coverage`, and the shared template exposes one bounded `Code Bridge Delta` structure.
+- The next step is intentionally narrow: review whether these new structures are sufficient as-is or whether one follow-up packet is needed only for table-shape refinement rather than for semantics expansion.
 
 ## Evidence (reserved)
 
@@ -398,8 +422,22 @@
   - the shared template is now judged ready for one bounded `Code Bridge Delta` structure rather than continued `no-op retention`
   - `fallback mode`, `switch procedure`, and `coexistence-window` semantics remain excluded from the positive contract mutation scope for `P3`
 
+### P3-C1-S1S2 (Contract and template hardening executed | 2026-04-26)
+
+- headSha: `f050b5f05`
+- artifacts: `none`
+- expected:
+  - mutate `DOC-RUNTIME-OBSERVABILITY-0001` with one `Code Bridge Table` and one `Contract Coverage` table
+  - mutate the shared template with one bounded `Code Bridge Delta` structure
+  - preserve the `P1/P2` boundary that unresolved operator semantics remain outside positive current contract clauses
+- observed:
+  - the active contract now exposes one explicit current-state bridge row plus one coverage table that distinguishes defended contract meaning from code-anchor-only and out-of-scope semantics
+  - the shared template now exposes one reusable `Code Bridge Delta` section scoped to bridge changes and downstream impact
+  - the mutation did not promote `fallback mode`, `switch procedure`, or `coexistence-window` semantics into the contract body
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-26: opened `S4G-1E` as the bounded contract-facing hardening packet for `DOC-RUNTIME-OBSERVABILITY-0001` and fixed the first coverage-class model for code-coupled contract hardening.
 - 2026-04-26: extracted the first current-state code-bridge field set for `OBSERVABILITY-0001` and classified nearby semantics into `defended-now`, `code-anchor-only`, and `not-owned-here`.
 - 2026-04-26: recorded the `P2` verdict that both downstream hardening actions should now proceed: mutate `OBSERVABILITY-0001` with `Code Bridge Table + Contract Coverage`, and add a bounded `Code Bridge Delta` structure to the shared log template.
+- 2026-04-26: executed both `P3` mutations by adding `Code Bridge Table + Contract Coverage` to `OBSERVABILITY-0001` and adding a bounded `Code Bridge Delta` structure to the shared log template.
