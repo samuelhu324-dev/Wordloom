@@ -58,6 +58,7 @@
 - `road-002-01 M1-P0 <- docs/logs/log-S4G-fallback-cells-and-failure-drills-asset-governance.md`
 - `road-002-01 M1-P1 <- docs/logs/log-S4G-1A-s4-history-extraction-and-code-first-fallback-cells-assessment.md`
 - `road-002-01 M1-P2 <- docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md`
+- `road-002-01 M1-P3 <- docs/logs/log-S4G-1C-runtime-runbook-bridge-gate-and-code-coupled-contract-reader-surfaces.md`
 - `road-002-01 M2-P0 <- docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
 - `road-002-01 M2-P1 <- docs/logs/log-S6A-evidence-drills-spine.md`
 - `road-002-01 M3-P0 <- unmapped`
@@ -85,7 +86,7 @@
 - `M1-P2`:
   - `docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md`
 - `M1-P3`:
-  - `unmapped`
+  - `docs/logs/log-S4G-1C-runtime-runbook-bridge-gate-and-code-coupled-contract-reader-surfaces.md`
 
 **Plan (P0-P3)**
 
@@ -154,3 +155,4 @@
 - 2026-04-25: opened `road-002-01` on `main`-based branch state as a bounded detour for `S4-first` fallback governance and future asset readiness.
 - 2026-04-25: fixed the new lane choice: `failure drills` serve as the first evidence-rich sample, while `S4` owns the runtime consequence and `S6` remains the proof surface.
 - 2026-04-26: mapped `S4G-1B` into `M1-P2` as the first narrow `R01` contract-bridge packet beneath the admitted `S3A-2A` parent packet.
+- 2026-04-26: mapped `S4G-1C` into `M1-P3` as the decision scaffold for deferred `D06` runbook-boundary work and code-coupled contract reader-surface hardening.

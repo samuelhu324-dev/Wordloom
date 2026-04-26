@@ -18,7 +18,7 @@
   **reference_log_2**: `docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
   **phase_log_1**: `docs/logs/log-S4G-1A-s4-history-extraction-and-code-first-fallback-cells-assessment.md`
   **phase_log_2**: `docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md`
-  **phase_log_3**: ``
+  **phase_log_3**: `docs/logs/log-S4G-1C-runtime-runbook-bridge-gate-and-code-coupled-contract-reader-surfaces.md`
   **phase_log_4**: ``
   **phase_log_5**: ``
   **phase_log_6**: ``
@@ -39,7 +39,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-25`
-**updated**: `2026-04-25`
+**updated**: `2026-04-26`
 
 ---
 
@@ -139,6 +139,8 @@
   - 详见：`docs/logs/log-S4G-1A-s4-history-extraction-and-code-first-fallback-cells-assessment.md`
 - `S4G-1B`（Phase 2）：R01 runtime observability governance contract bridge
   - 详见：`docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md`
+- `S4G-1C`（Phase 3）：runtime runbook bridge gate and code-coupled contract reader surfaces
+  - 详见：`docs/logs/log-S4G-1C-runtime-runbook-bridge-gate-and-code-coupled-contract-reader-surfaces.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -152,7 +154,8 @@
 - `S4G` is opened, and the first admitted packet has been narrowed from parent routing into `S4G-1B` as one explicit `R01` child packet.
 - `S4G-1B` has now fixed the first defended runtime boundary, candidate entrypoint, and first defended proof path for the observability chain.
 - `S4G-1B` has now also opened `DOC-RUNTIME-OBSERVABILITY-0001` as the first draft released reader for that same chain.
-- The next step is intentionally narrow: decide whether one later runtime-owned runbook bridge packet is needed for fallback, switch, shadow/dual-run, or coexistence-window semantics.
+- `S4G-1C` is now opened as the next decision scaffold for whether the deferred operator boundary becomes a runtime-owned runbook bridge, a narrower gap packet, or a deliberate no-op.
+- The next step is intentionally narrow: extract `D06`, `R13`, current contract `ST-05`, and nearby code-boundary anchors into one bounded verdict slice.
 - The main risk is over-expansion back into repo-wide archaeology.
 
 ## Notes（落地原则，可选）
@@ -190,3 +193,4 @@
 - 2026-04-26：`S4G-1B/P1` 选定 `search outbox -> Elasticsearch` worker surface 作为第一条 `R01` code bridge，并把 `backend/scripts/search_outbox_worker.py` 固定为候选 entrypoint。
 - 2026-04-26：`S4G-1B/P2` 选定 `es_write_block_4xx` 作为第一条 defended proof path，并把 `es_429_inject` 保留为相邻 retry-path proof 候选。
 - 2026-04-26：`S4G-1B/P3` 打开 `DOC-RUNTIME-OBSERVABILITY-0001`，并明确把 runbook bridge 单独拆包延后到更窄的 fallback/switch 语义时再处理。
+- 2026-04-26：登记 `S4G-1C` 作为第一个 `D06` runbook-boundary 决策包，用来固定 `runbook bridge / gap packet / no new packet now` 的产出判据，以及 code-coupled contract 的最小 reader surfaces 与 doc/code contract 分层规则。
