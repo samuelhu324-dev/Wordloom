@@ -150,7 +150,7 @@
 ## Current Status（进展摘要）
 
 - `S4G` is opened, and the first admitted packet has been narrowed from parent routing into `S4G-1B` as one explicit `R01` child packet.
-- The next step is intentionally narrow: use `S4G-1B` to find the first defended runtime boundary, entrypoint, and drill-proof bridge for the observability chain.
+- `S4G-1B` has now fixed the first defended runtime boundary and candidate entrypoint; the next step is intentionally narrow: decide which existing drill or gate becomes the defended proof path for that same observability chain.
 - The main risk is over-expansion back into repo-wide archaeology.
 
 ## Notes（落地原则，可选）
@@ -185,3 +185,4 @@
 
 - 2026-04-25：首次创建 `S4G`，把 fallback cells 与 failure-drills asset governance 固定为新的 `S4` 顶层 runtime spine。
 - 2026-04-26：登记 `S4G-1B` 作为第一个 `R01` 窄包 child，用于把 runtime observability governance 从 parent ledger row 缩到 contract-bridge scaffold。
+- 2026-04-26：`S4G-1B/P1` 选定 `search outbox -> Elasticsearch` worker surface 作为第一条 `R01` code bridge，并把 `backend/scripts/search_outbox_worker.py` 固定为候选 entrypoint。

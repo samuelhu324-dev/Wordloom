@@ -205,6 +205,38 @@
 - The contract does not need to own all operator steps, but it must name the proof obligation.
 - Step-by-step fallback, switch, shadow, or dual-run procedure should later land in runbook once the entrypoint is defended.
 
+## P1 (Boundary discovery / entrypoint narrowing | v1)
+
+### P1-C1-S1 (First bounded runtime surface identified | v1)
+
+- The first bounded runtime surface for `R01` is the `Search Outbox -> Elasticsearch` projection worker surface.
+- Current `appliedToSurface` value:
+  - `search outbox projection worker for projection=search_index_to_elastic`
+- Current `runtimeBoundary` value:
+  - `one long-running worker process claims outbox rows, projects them into Elasticsearch, and emits low-cardinality outbox metrics, tracing spans, and structured logs during claim/process/fail paths`
+- Why this surface is selected first:
+  - it is narrower than the API-wide observability surface;
+  - it is already treated as a stable operational worker path in `S3A-2A-2B` and `S6A-1A`;
+  - it is the same runtime surface later drills and runbook flows already target.
+
+### P1-C1-S2 (Candidate entrypoint identified | v1)
+
+- The first candidate entrypoint for `R01` is:
+  - `backend/scripts/search_outbox_worker.py`
+- Current bridge-field write-back:
+  - `appliedToSurface`: `search outbox projection worker`
+  - `runtimeBoundary`: `search_index_to_elastic worker process`
+  - `candidateEntrypoint`: `backend/scripts/search_outbox_worker.py`
+  - `sharedPivots`: `trace_id/traceparent`, `claim_batch_id`, `outbox event id`, and worker metric labels such as `projection` and `op`
+  - `requiredSignals`: `outbox_* metrics`, worker tracing spans, and worker structured logs`
+  - `versioningNote`: `search_outbox_worker@v1` remains the stable drill-facing entry id from the failure-drill helper layer`
+- Why this entrypoint is selected first:
+  - it is the stable worker entrypoint explicitly preserved for Procfiles, historical docs, and drill helpers;
+  - it exposes a bounded switch surface already (`SEARCH_OUTBOX_WORKER_ENABLED`, `SEARCH_OUTBOX_RUNNER`);
+  - the implementation under `backend/scripts/search_outbox_worker_impl.py` already binds all three `R01` signal classes.
+- Non-selected nearby candidate:
+  - `backend/scripts/cli.py labs run <scenario>` is kept as the drill harness entry, but not as the semantic owner entrypoint for this contract.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -249,8 +281,8 @@
 
 ### P1 (Boundary discovery / entrypoint narrowing)
 
-- [ ] `P1-C1-S1`: first bounded runtime surface identified
-- [ ] `P1-C1-S2`: candidate entrypoint identified
+- [x] `P1-C1-S1`: first bounded runtime surface identified
+- [x] `P1-C1-S2`: candidate entrypoint identified
 
 ### P2 (Drill / proof binding)
 
@@ -265,8 +297,8 @@
 ## Current Status (recommended)
 
 - `S4G-1B` is opened as the first narrow child packet for `S3A-2A-R01`.
-- The weak semantic claim is fixed, but the bridge-to-code boundary is still unresolved.
-- The current unknown is not the existence of observability history; it is which current entrypoint, pivots, and proof path still defend that history as a live runtime reader.
+- The weak semantic claim is fixed, and `P1` now narrows the first live code bridge to the `search outbox -> Elasticsearch` worker surface via `backend/scripts/search_outbox_worker.py`.
+- The current unknown is no longer the first boundary or entrypoint; it is which existing drill or gate should become the defended proof path for that same runtime reader.
 
 ## Evidence (reserved)
 
@@ -277,7 +309,14 @@
   - `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
   - `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
   - `docs/logs/log-S6A-1A-stable-entry-contract.md`
+- Current boundary anchors:
+  - `backend/scripts/search_outbox_worker.py`
+  - `backend/scripts/search_outbox_worker_impl.py`
+  - `backend/infra/observability/outbox_metrics.py`
+  - `backend/infra/observability/tracing.py`
+  - `backend/scripts/cli_app/scenarios/_failure_drill_shared.py`
 
 ## Recent changes (for traceability, optional)
 
 - 2026-04-26: opened `S4G-1B` as the first narrow child packet for `S3A-2A-R01`, fixing the weak contract claim and first bridge field set before any released observability contract mutation.
+- 2026-04-26: completed `P1` by selecting the search outbox projection worker as the first bounded runtime surface and `backend/scripts/search_outbox_worker.py` as the first candidate entrypoint for `R01`.
