@@ -12,6 +12,7 @@
   **issue**: ``
   **pr**: ``
   **runbook**: `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  **attached_ledger**: `docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4G-1A-s4-history-extraction-and-code-first-fallback-cells-assessment.md`
   **previous_log**: `docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md`
@@ -55,6 +56,7 @@
 
 - Open `S4G-1B` as the first narrow child-opening packet under `S4G-1A` for `S3A-2A-R01`.
 - Treat `R01` as a doc-level `runtime observability governance` contract-opening candidate, but keep `code boundary`, `entrypoint`, `drill proof`, and `runbook bridge` explicit in the same scaffold before any released contract mutation.
+- Keep `S4G-1B` as the decision and evolution surface only once row split or absorption begins; any durable derived-row accounting beneath `S3A-2A-R01` should move into one attached parent-ledger row-flow ledger instead of staying only in this log.
 
 **Default choices (phase defaults / v1)**:
 
@@ -69,13 +71,13 @@
 
 ## Extractable Rule Surface (recommended)
 
-| packet id | source anchor | extraction class | candidate text | downstream owner | split status | shared reason group | evidence refs | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `R01` | `Decision / Outcome` | `contract-candidate` | One admitted runtime handling chain should remain diagnosable through `metrics -> tracing -> structured logs` via shared pivots and auditable evidence. | `contract` | `ready` | `RG-01` | `S3A-2A-R01` | This is the minimum falsifiable contract claim for the row. |
-| `R02` | `Default choices` bullets 2-4 | `contract-candidate` | Before release mutation, the lane must name one bounded runtime surface, one candidate entrypoint, and one minimum bridge field set for the contract to attach to code. | `contract` | `ready` | `RG-01` | `S3A-2A-R01`; `docs/logs/log-S6A-1A-stable-entry-contract.md` | This row fixes the missing applied-to-surface bridge. |
-| `R03` | `Default choices` bullets 4-5 | `contract-candidate` | A current observability contract must declare whether one deterministic drill or gate proves the chain, or explicitly record that proof is still missing. | `contract` | `ready` | `RG-02` | `S3A-2A-R03`; `S3A-2A-R04`; `S3A-2A-R08`; `S3A-2A-R10` | Drill binding belongs in the contract as proof semantics, while step-by-step execution can remain in runbook later. |
-| `R04` | `Default choices` bullet 5 | `runbook-candidate` | Once the entrypoint is defended, one runbook surface should own fallback, switch, shadow or dual-run, and coexistence-window instructions for that same chain. | `runbook` | `ready` | `RG-02` | `S3A-2A-R13` | Runbook is downstream from the contract bridge, not a substitute for it. |
-| `R05` | `Constraints` | `support-only` | Until one entrypoint and minimum proof path are named, this packet remains a scaffold-only bridge and must not be overstated as an active runtime release. | `support-only` | `ready` | `none` | `S4G-1A` | Anti-fabrication guard for the first narrow packet. |
+| packet id | source anchor | extraction class | candidate text | downstream owner | split status | shared reason group | evidence refs | accounting status | final handoff | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `R01` | `Decision / Outcome` | `contract-candidate` | One admitted runtime handling chain should remain diagnosable through `metrics -> tracing -> structured logs` via shared pivots and auditable evidence. | `contract` | `ready` | `RG-01` | `S3A-2A-R01` | `repeated-to-attached-ledger` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D01` | This is the minimum falsifiable contract claim for the row, but durable accounting now lives in the attached ledger. |
+| `R02` | `Default choices` bullets 2-4 | `contract-candidate` | Before release mutation, the lane must name one bounded runtime surface, one candidate entrypoint, and one minimum bridge field set for the contract to attach to code. | `contract` | `ready` | `RG-01` | `S3A-2A-R01`; `docs/logs/log-S6A-1A-stable-entry-contract.md` | `repeated-to-attached-ledger` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D02; S3A-2A-R01-D03; S3A-2A-R01-D04` | This row fixes the missing applied-to-surface bridge, but no longer acts as the durable downstream source by itself. |
+| `R03` | `Default choices` bullets 4-5 | `contract-candidate` | A current observability contract must declare whether one deterministic drill or gate proves the chain, or explicitly record that proof is still missing. | `contract` | `ready` | `RG-02` | `S3A-2A-R03`; `S3A-2A-R04`; `S3A-2A-R08`; `S3A-2A-R10` | `repeated-to-attached-ledger` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D05` | Drill binding belongs in the contract as proof semantics, while durable split or absorption accounting now lives in the attached ledger. |
+| `R04` | `Default choices` bullet 5 | `runbook-candidate` | Once the entrypoint is defended, one runbook surface should own fallback, switch, shadow or dual-run, and coexistence-window instructions for that same chain. | `runbook` | `ready` | `RG-02` | `S3A-2A-R13` | `repeated-to-attached-ledger` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D06` | Runbook is downstream from the contract bridge, not a substitute for it. |
+| `R05` | `Constraints` | `support-only` | Until one entrypoint and minimum proof path are named, this packet remains a scaffold-only bridge and must not be overstated as an active runtime release. | `support-only` | `ready` | `none` | `S4G-1A` | `retained-in-s4g-1b` | `S4G-1B constraints only` | Anti-fabrication guard for the first narrow packet. |
 
 ### Shared Reason Groups (optional, recommended when multiple rows share one rationale)
 
@@ -292,6 +294,31 @@
   - the current missing pieces are not operator-entry uncertainty but narrower fallback/switch-window semantics;
   - those semantics should be opened only when one runtime-owned cutover or coexistence procedure is actually ready to be stated.
 
+### P3-C2-S1 (Attached row-flow ledger model fixed | v1)
+
+- Decision:
+  - when one parent-ledger row must split into multiple derived rows before downstream release mutation is reviewable, the durable accounting should move into one attached row-flow ledger rather than remain only in `S4G-1B`.
+- Current attached ledger for this packet:
+  - `docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md`
+- Consequence:
+  - `S4G-1B` now keeps preliminary extraction rows and decision lineage, but not the final source-of-truth split or absorption accounting.
+
+### P3-C2-S2 (Parent-ledger handoff fixed | v1)
+
+- Decision:
+  - `S3A-2A-R01` remains the packet root in the parent ledger, but current downstream reading is now written back through the attached row-flow ledger.
+- Parent-ledger effect:
+  - `S3A-2A-R01` is now `partially-applied` with `partial` consumption and explicit handoff to the attached ledger.
+- Reason:
+  - the parent row should not collapse into one shared-reason footnote or disappear behind this control log.
+
+### P3-C2-S3 (Contract source repair fixed | v1)
+
+- Decision:
+  - `DOC-RUNTIME-OBSERVABILITY-0001` should now cite the attached row-flow ledger as its direct source basis, with `S4G-1B` retained as decision lineage rather than primary release provenance.
+- Consequence:
+  - contract source rows now read through `S3A-2A-R01-D01` through `S3A-2A-R01-D06`.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -325,6 +352,9 @@
 
 - P3-C1-S1: decide whether to open `DOC-RUNTIME-OBSERVABILITY-0001`
 - P3-C1-S2: decide whether one paired runbook bridge packet is required now or later
+- P3-C2-S1: define when row split or absorption accounting must move into one attached row-flow ledger
+- P3-C2-S2: write the parent-ledger handoff back for `S3A-2A-R01`
+- P3-C2-S3: repair contract source basis to consume attached-ledger derived rows
 
 ## Execution Checklist (unchecked)
 
@@ -348,6 +378,9 @@
 
 - [x] `P3-C1-S1`: first contract release decision recorded
 - [x] `P3-C1-S2`: runbook bridge decision recorded
+- [x] `P3-C2-S1`: attached row-flow ledger model fixed
+- [x] `P3-C2-S2`: parent-ledger handoff fixed
+- [x] `P3-C2-S3`: contract source repair fixed
 
 ## Current Status (recommended)
 
@@ -355,6 +388,7 @@
 - The weak semantic claim is fixed, and `P1` now narrows the first live code bridge to the `search outbox -> Elasticsearch` worker surface via `backend/scripts/search_outbox_worker.py`.
 - `P2` now selects `es_write_block_4xx` as the first defended proof path for that same runtime reader, while `es_429_inject` remains the next adjacent retry-path proof candidate.
 - `P3` now opens `DOC-RUNTIME-OBSERVABILITY-0001` as the first draft released reader for this chain, while leaving runbook bridge work deferred until narrower fallback or switch semantics are actually ready.
+- `P3-C2` now moves derived-row accounting out of `S4G-1B` and into `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption`, rewrites the parent-ledger handoff, and repairs the contract so it no longer reads like one log-owned source export.
 
 ## Evidence (reserved)
 
@@ -378,6 +412,8 @@
   - `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
 - Current release anchor:
   - `docs/governance/contracts/runtime/observability/DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
+- Current attached-ledger anchor:
+  - `docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md`
 
 ## Recent changes (for traceability, optional)
 
@@ -385,3 +421,4 @@
 - 2026-04-26: completed `P1` by selecting the search outbox projection worker as the first bounded runtime surface and `backend/scripts/search_outbox_worker.py` as the first candidate entrypoint for `R01`.
 - 2026-04-26: completed `P2` by selecting `es_write_block_4xx` as the first defended proof path for `R01` and treating `es_429_inject` as the next adjacent retry-path proof candidate.
 - 2026-04-26: completed `P3` by opening `DOC-RUNTIME-OBSERVABILITY-0001` and explicitly deferring a separate runbook bridge packet.
+- 2026-04-26: completed `P3-C2` by opening one attached row-flow ledger for `S3A-2A-R01`, writing the parent-ledger handoff back, and repairing the contract so its direct source basis now comes from ledger-owned derived rows rather than from this control log.

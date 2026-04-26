@@ -12,17 +12,21 @@ contract_record:
   summary: One admitted runtime handling chain should remain diagnosable through metrics, tracing, and structured logs via shared pivots and auditable evidence, with the current bounded owner surface fixed to the search outbox projection worker and the current defended proof path fixed to es_write_block_4xx.
   governance_area: runtime observability for bounded worker handling chains
   applies_to: the search outbox projection worker surface, its stable entrypoint, its minimum shared-pivot signal set, and its first defended drill-backed diagnostic proof path
+  entrypoint_ref: backend/scripts/search_outbox_worker.py
+  parent_ledger_ref: docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md
+  attached_row_flow_ledger_ref: docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
   enforcement_surface: script
   violation_semantics: warning
   recorded_at: 2026-04-26
   reviewed_at: pending
   effective_from: 2026-04-26
   effective_until: ongoing
-  introduced_by: docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md
-  last_changed_by: docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md
+  introduced_by: docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
+  last_changed_by: docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
   source_refs:
-    - docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md
+    - docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
   cumulative_source_refs:
+    - docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
     - docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md
     - docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md
     - docs/logs/log-S3A-2A-2B-daemon-ready-worker-migration.md
@@ -56,21 +60,21 @@ contract_record:
 
 | statement id | statement label | clause status | change action | source basis | first effective release | first effective at | last changed release | last changed at | effective from | effective until | effective status | statement text | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-RUNTIME-OBSERVABILITY-0001-ST-01` | `Diagnosable chain requirement` | `active` | `introduced` | `S4G-1B/P0-C1-S1; S3A-2A-R01` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | One admitted runtime handling chain should remain diagnosable through metrics, tracing, and structured logs via shared pivots and auditable evidence. | This is the narrow semantic core of the family. |
-| `DOC-RUNTIME-OBSERVABILITY-0001-ST-02` | `Bounded owner surface` | `active` | `introduced` | `S4G-1B/P1-C1-S1S2` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | The current bounded owner surface for this family is the search outbox projection worker for `projection=search_index_to_elastic`, with stable entrypoint `backend/scripts/search_outbox_worker.py`. | This clause prevents the family from floating above code with no bounded owner. |
-| `DOC-RUNTIME-OBSERVABILITY-0001-ST-03` | `Minimum shared pivots and signals` | `active` | `introduced` | `S4G-1B/P1-C1-S2` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | The current minimum shared pivots are `trace_id/traceparent`, `claim_batch_id`, `outbox event id`, and worker labels such as `projection` and `op`; the current minimum signals are `outbox_*` metrics, worker tracing spans, and worker structured logs. | Later releases may refine this field set, but should not weaken it silently. |
-| `DOC-RUNTIME-OBSERVABILITY-0001-ST-04` | `Defended proof path` | `active` | `introduced` | `S4G-1B/P2-C1-S1S2` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | The first defended proof path for this family is `es_write_block_4xx`, which must start `search_outbox_worker@v1`, verify expected before/after projection metrics and DB reason family movement, and retain worker-start, metrics, result, and worker-log evidence in one run-scoped bundle. | Tracing export completeness can still be hardened later without blocking this first release. |
-| `DOC-RUNTIME-OBSERVABILITY-0001-ST-05` | `Runbook boundary` | `active` | `introduced` | `S4G-1B/P0-C1-S3; S4G-1B/P3-C1-S2` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | This release does not own fallback, switch, shadow or dual-run, or coexistence-window operator steps; those remain downstream runbook concerns once a narrower runbook bridge packet is justified. | Keeps semantic contract and operator procedure distinct. |
+| `DOC-RUNTIME-OBSERVABILITY-0001-ST-01` | `Diagnosable chain requirement` | `active` | `introduced` | `S3A-2A-R01-D01` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | One admitted runtime handling chain should remain diagnosable through metrics, tracing, and structured logs via shared pivots and auditable evidence. | This is the narrow semantic core of the family. |
+| `DOC-RUNTIME-OBSERVABILITY-0001-ST-02` | `Bounded owner surface` | `active` | `introduced` | `S3A-2A-R01-D02; S3A-2A-R01-D03` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | The current bounded owner surface for this family is the search outbox projection worker for `projection=search_index_to_elastic`, with stable entrypoint `backend/scripts/search_outbox_worker.py`. | This clause prevents the family from floating above code with no bounded owner. |
+| `DOC-RUNTIME-OBSERVABILITY-0001-ST-03` | `Minimum shared pivots and signals` | `active` | `introduced` | `S3A-2A-R01-D04` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | The current minimum shared pivots are `trace_id/traceparent`, `claim_batch_id`, `outbox event id`, and worker labels such as `projection` and `op`; the current minimum signals are `outbox_*` metrics, worker tracing spans, and worker structured logs. | Later releases may refine this field set, but should not weaken it silently. |
+| `DOC-RUNTIME-OBSERVABILITY-0001-ST-04` | `Defended proof path` | `active` | `introduced` | `S3A-2A-R01-D05` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | The first defended proof path for this family is `es_write_block_4xx`, which must start `search_outbox_worker@v1`, verify expected before/after projection metrics and DB reason family movement, and retain worker-start, metrics, result, and worker-log evidence in one run-scoped bundle. | Tracing export completeness can still be hardened later without blocking this first release. |
+| `DOC-RUNTIME-OBSERVABILITY-0001-ST-05` | `Runbook boundary` | `active` | `introduced` | `S3A-2A-R01-D06` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | This release does not own fallback, switch, shadow or dual-run, or coexistence-window operator steps; those remain downstream runbook concerns once a narrower runbook bridge packet is justified. | Keeps semantic contract and operator procedure distinct. |
 
 ## Statement Evolution Table
 
 | change id | release id | change action | input statement ids | output statement ids | effective at | recorded at | reason | source basis | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-RUNTIME-OBSERVABILITY-0001-CH-01` | `DOC-RUNTIME-OBSERVABILITY-0001` | `introduced` | `none` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-01; DOC-RUNTIME-OBSERVABILITY-0001-ST-02; DOC-RUNTIME-OBSERVABILITY-0001-ST-03; DOC-RUNTIME-OBSERVABILITY-0001-ST-04; DOC-RUNTIME-OBSERVABILITY-0001-ST-05` | `2026-04-26` | `2026-04-26` | The family is now explicit because S4G-1B already fixed one weak semantic claim, one bounded worker surface, one stable entrypoint, and one defended proof path strongly enough to support a current draft reader. | `S4G-1B/P0-C1-S1S2S3; S4G-1B/P1-C1-S1S2; S4G-1B/P2-C1-S1S2; S4G-1B/P3-C1-S1S2` | The release is deliberately narrow and should not be read as a repo-wide observability umbrella. |
+| `DOC-RUNTIME-OBSERVABILITY-0001-CH-01` | `DOC-RUNTIME-OBSERVABILITY-0001` | `introduced` | `none` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-01; DOC-RUNTIME-OBSERVABILITY-0001-ST-02; DOC-RUNTIME-OBSERVABILITY-0001-ST-03; DOC-RUNTIME-OBSERVABILITY-0001-ST-04; DOC-RUNTIME-OBSERVABILITY-0001-ST-05` | `2026-04-26` | `2026-04-26` | The family is now explicit because the attached row-flow ledger already fixed one weak semantic claim, one bounded worker surface, one stable entrypoint, and one defended proof path strongly enough to support a current draft reader. | `S3A-2A-R01-D01; S3A-2A-R01-D02; S3A-2A-R01-D03; S3A-2A-R01-D04; S3A-2A-R01-D05; S3A-2A-R01-D06` | The release is deliberately narrow and should not be read as a repo-wide observability umbrella. |
 
 ## Release Change
 
-- This release opens the first runtime observability contract from `S4G-1B`.
+- This release opens the first runtime observability contract from `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption`.
 - The release fixes one current reader that was previously held only in the source log scaffold:
   - the minimum diagnostic chain requirement
   - the bounded owner surface and stable entrypoint
@@ -89,6 +93,7 @@ contract_record:
 ## Current Reading
 
 - Read this release when the question is `what is the current runtime observability rule for the first defended worker chain under S4G?`
+- Read `docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md` when the question is `which parent row splits and absorbed rows does this contract actually consume?`
 - Read [docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md](d:/Project/wordloom-v3/docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md) when the question is `how was this contract staged, bounded, and proven before release?`
 - Read [docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md](d:/Project/wordloom-v3/docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md) when the question is `what operator steps currently exist around the same drill family?`
 
