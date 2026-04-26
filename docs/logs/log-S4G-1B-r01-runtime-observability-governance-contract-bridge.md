@@ -69,31 +69,56 @@
 - If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
 - Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
 
-## Extractable Rule Surface (recommended)
+## P0-P2 Preliminary Extraction Surface (historical pre-handoff, recommended)
 
-| packet id | source anchor | extraction class | candidate text | downstream owner | split status | shared reason group | evidence refs | accounting status | final handoff | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `R01` | `Decision / Outcome` | `contract-candidate` | One admitted runtime handling chain should remain diagnosable through `metrics -> tracing -> structured logs` via shared pivots and auditable evidence. | `contract` | `ready` | `RG-01` | `S3A-2A-R01` | `repeated-to-attached-ledger` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D01` | This is the minimum falsifiable contract claim for the row, but durable accounting now lives in the attached ledger. |
-| `R02` | `Default choices` bullets 2-4 | `contract-candidate` | Before release mutation, the lane must name one bounded runtime surface, one candidate entrypoint, and one minimum bridge field set for the contract to attach to code. | `contract` | `ready` | `RG-01` | `S3A-2A-R01`; `docs/logs/log-S6A-1A-stable-entry-contract.md` | `repeated-to-attached-ledger` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D02; S3A-2A-R01-D03; S3A-2A-R01-D04` | This row fixes the missing applied-to-surface bridge, but no longer acts as the durable downstream source by itself. |
-| `R03` | `Default choices` bullets 4-5 | `contract-candidate` | A current observability contract must declare whether one deterministic drill or gate proves the chain, or explicitly record that proof is still missing. | `contract` | `ready` | `RG-02` | `S3A-2A-R03`; `S3A-2A-R04`; `S3A-2A-R08`; `S3A-2A-R10` | `repeated-to-attached-ledger` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D05` | Drill binding belongs in the contract as proof semantics, while durable split or absorption accounting now lives in the attached ledger. |
-| `R04` | `Default choices` bullet 5 | `runbook-candidate` | Once the entrypoint is defended, one runbook surface should own fallback, switch, shadow or dual-run, and coexistence-window instructions for that same chain. | `runbook` | `ready` | `RG-02` | `S3A-2A-R13` | `repeated-to-attached-ledger` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D06` | Runbook is downstream from the contract bridge, not a substitute for it. |
-| `R05` | `Constraints` | `support-only` | Until one entrypoint and minimum proof path are named, this packet remains a scaffold-only bridge and must not be overstated as an active runtime release. | `support-only` | `ready` | `none` | `S4G-1A` | `retained-in-s4g-1b` | `S4G-1B constraints only` | Anti-fabrication guard for the first narrow packet. |
+- This section now records the first extractable rows that `S4G-1B` produced during `P0` through `P2`.
+- These rows are no longer the current durable source-of-truth for split or absorption accounting.
+- Once `P3-C2` opened the attached row-flow ledger, the current downstream source basis moved there.
 
-### Shared Reason Groups (optional, recommended when multiple rows share one rationale)
+| record id | origin P-C-S | source anchor | extraction class | candidate text | downstream owner | pre-handoff status | current standing | handoff target | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `R01` | `P0-C1-S1` | `Decision / Outcome` | `contract-candidate` | One admitted runtime handling chain should remain diagnosable through `metrics -> tracing -> structured logs` via shared pivots and auditable evidence. | `contract` | `fixed` | `preliminary-only after P3-C2` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D01` | This row records the first semantic extraction only; durable accounting now lives in the attached ledger. |
+| `R02` | `P0-C1-S2; P1-C1-S1S2` | `Default choices` bullets 2-4 | `contract-candidate` | Before release mutation, the lane must name one bounded runtime surface, one candidate entrypoint, and one minimum bridge field set for the contract to attach to code. | `contract` | `fixed then sharpened` | `preliminary-only after P3-C2` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D02; S3A-2A-R01-D03; S3A-2A-R01-D04` | This row records the first bridge extraction only; it is no longer the durable downstream source by itself. |
+| `R03` | `P0-C1-S3; P2-C1-S1S2` | `Default choices` bullets 4-5` plus drill-binding outcome` | `contract-candidate` | A current observability contract must declare whether one deterministic drill or gate proves the chain, or explicitly record that proof is still missing. | `contract` | `fixed then sharpened` | `preliminary-only after P3-C2` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D05` | Drill binding is still the same idea, but the current consumed row now lives in the attached ledger. |
+| `R04` | `P0-C1-S3; P3-C1-S2` | `Default choices` bullet 5 | `runbook-candidate` | Once the entrypoint is defended, one runbook surface should own fallback, switch, shadow or dual-run, and coexistence-window instructions for that same chain. | `runbook` | `fixed then deferred` | `preliminary-only after P3-C2` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption -> S3A-2A-R01-D06` | Runbook remains downstream, but the current deferred row is no longer accounted for here. |
+| `R05` | `Constraints` | `Constraints` | `support-only` | Until one entrypoint and minimum proof path are named, this packet remains a scaffold-only bridge and must not be overstated as an active runtime release. | `support-only` | `fixed` | `still live in S4G-1B` | `S4G-1B constraints only` | This is the only row in this table that remains live in the log itself because it is a control-lane guard, not a split-derived downstream source. |
 
-| reason group | applies to packet ids | reason summary | source refs | notes |
+### Pre-Handoff Reason Groups (historical, optional)
+
+- These reason groups now describe why the original `P0` through `P2` extraction rows were grouped before row-flow handoff happened.
+- They are no longer the durable source basis for current contract or runbook consumption.
+
+| reason group | applies to record ids | reason summary | current standing | notes |
 | --- | --- | --- | --- | --- |
-| `RG-01` | `R01; R02` | `R01` is strong enough to open a contract candidate only if the semantic claim and code boundary are declared together. | `S3A-2A-R01`; `docs/logs/log-S6A-1A-stable-entry-contract.md` | Prevents semantics-only drift. |
-| `RG-02` | `R03; R04` | A contract without proof and fallback routing will remain auditable history rather than a current runtime reader. | `S3A-2A-R13`; `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md` | Keeps proof and operator surface explicit but separate. |
+| `RG-01` | `R01; R02` | `R01` was strong enough to open a contract candidate only if the semantic claim and code boundary were declared together. | `historical pre-handoff grouping only` | Current source-of-truth rows now live in `S3A-2A-R01-D01` through `D04`. |
+| `RG-02` | `R03; R04` | Proof and fallback routing had to stay explicit even before operator procedure was promoted into a later runbook packet. | `historical pre-handoff grouping only` | Current source-of-truth rows now live in `S3A-2A-R01-D05` and `D06`. |
+
+## P3-C2 Handoff And Source-Repair Surface (current, recommended)
+
+- This section records the current `S4G-1B` rows that were actually introduced by `P3-C2`.
+- Unlike `R01` through `R05`, these rows are not preliminary extraction rows from `P0` through `P2`; they are current control-lane records for handoff, parent write-back, and contract source repair.
+- These rows stay live in `S4G-1B` because they describe lane-owned decisions rather than ledger-owned derived meaning.
+
+| record id | origin P-C-S | source anchor | record class | current statement | owner surface | current standing | downstream effect | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `H01` | `P3-C2-S1` | `P3-C2-S1 (Attached row-flow ledger model fixed)` | `handoff-decision` | When one parent-ledger row must split into multiple derived rows before downstream release mutation is reviewable, durable accounting should move into one attached row-flow ledger rather than remain only in `S4G-1B`. | `S4G-1B` | `live current decision` | `opens ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption as the durable split-accounting surface` | This is the lane-level rule that explains why the old extraction rows stopped being the current source-of-truth. |
+| `H02` | `P3-C2-S2` | `P3-C2-S2 (Parent-ledger handoff fixed)` | `handoff-writeback-decision` | `S3A-2A-R01` must remain the packet root in the parent ledger, but its current downstream reading must now be written back through the attached row-flow ledger. | `S4G-1B` | `live current decision` | `rewrites parent-ledger R01 as partially applied with explicit attached-ledger handoff` | This row exists because the control lane owns the decision to hand the split back to the parent ledger, even though the parent ledger then becomes the durable routing surface. |
+| `H03` | `P3-C2-S3` | `P3-C2-S3 (Contract source repair fixed)` | `source-repair-decision` | `DOC-RUNTIME-OBSERVABILITY-0001` must cite the attached row-flow ledger as its direct source basis, with `S4G-1B` retained only as decision lineage. | `S4G-1B` | `live current decision` | `moves contract clause basis from S4G-1B prose to S3A-2A-R01-D01 through D06` | This row records the lane-owned provenance repair; the contract and attached ledger carry the resulting durable reader state. |
+
+### Handoff Reason Groups (current, optional)
+
+| reason group | applies to record ids | reason summary | current standing | notes |
+| --- | --- | --- | --- | --- |
+| `HG-01` | `H01; H02; H03` | Once row split or absorption begins, the control lane should keep only the decision and handoff rules, while durable source accounting returns to ledger-owned surfaces. | `live current grouping` | This reason group explains why `S4G-1B` now keeps both historical preliminary rows and current handoff rows at the same time. |
 
 ## Source Reader Model / Versioning (recommended for reusable log families)
 
 | field | value | notes |
 | --- | --- | --- |
 | current source reader model | `mixed-source-v1` | This packet reads one parent-ledger row plus nearby retained proof and runbook surfaces. |
-| extraction surface version | `extractable-rules-v1` | The scaffold exposes one explicit contract-bridge extraction surface. |
+| extraction surface version | `extractable-rules-v2` | The scaffold now distinguishes historical preliminary extraction rows from current handoff and source-repair rows after `P3-C2`. |
 | compatibility expectation | `forward-readable` | Later narrow `R01` packets can refine the same bridge shape. |
-| migration note | `If a later contract release opens, keep source routing here and move only stable semantics downstream.` | Captures the handoff rule. |
+| migration note | `If a later contract release opens, keep historical preliminary extraction here, move durable split accounting into the attached ledger, and keep only lane-owned handoff decisions in this log.` | Captures the handoff rule after `P3-C2`. |
 
 ## PR Summary Inputs (optional)
 
@@ -319,6 +344,20 @@
 - Consequence:
   - contract source rows now read through `S3A-2A-R01-D01` through `S3A-2A-R01-D06`.
 
+### P3-C3-S1 (Preliminary extraction rows re-scoped | v1)
+
+- Decision:
+  - once `P3-C2` handed row accounting to the attached ledger, the old `R01` through `R04` rows in `S4G-1B` should no longer read like current extractable rows.
+- Consequence:
+  - the extraction table is now explicitly marked as `historical pre-handoff` and each row records its origin `P-C-S` plus its current standing.
+
+### P3-C3-S2 (Historical reason groups downgraded | v1)
+
+- Decision:
+  - `RG-01` and `RG-02` should remain only as pre-handoff reasoning clusters rather than current source basis.
+- Consequence:
+  - readers can now distinguish original grouping logic from current ledger-owned derived-row accounting.
+
 ## Numbering
 
 - `S<n>`: Step.
@@ -355,6 +394,8 @@
 - P3-C2-S1: define when row split or absorption accounting must move into one attached row-flow ledger
 - P3-C2-S2: write the parent-ledger handoff back for `S3A-2A-R01`
 - P3-C2-S3: repair contract source basis to consume attached-ledger derived rows
+- P3-C3-S1: re-scope old extractable rows as historical pre-handoff records
+- P3-C3-S2: downgrade shared reason groups to historical pre-handoff reasoning only
 
 ## Execution Checklist (unchecked)
 
@@ -381,6 +422,8 @@
 - [x] `P3-C2-S1`: attached row-flow ledger model fixed
 - [x] `P3-C2-S2`: parent-ledger handoff fixed
 - [x] `P3-C2-S3`: contract source repair fixed
+- [x] `P3-C3-S1`: preliminary extraction rows re-scoped
+- [x] `P3-C3-S2`: historical reason groups downgraded
 
 ## Current Status (recommended)
 
@@ -389,6 +432,7 @@
 - `P2` now selects `es_write_block_4xx` as the first defended proof path for that same runtime reader, while `es_429_inject` remains the next adjacent retry-path proof candidate.
 - `P3` now opens `DOC-RUNTIME-OBSERVABILITY-0001` as the first draft released reader for this chain, while leaving runbook bridge work deferred until narrower fallback or switch semantics are actually ready.
 - `P3-C2` now moves derived-row accounting out of `S4G-1B` and into `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption`, rewrites the parent-ledger handoff, and repairs the contract so it no longer reads like one log-owned source export.
+- `P3-C3` now re-scopes the old extraction rows and reason groups as historical pre-handoff records only, so `S4G-1B` no longer presents them as if they were still the current durable extraction surface.
 
 ## Evidence (reserved)
 
@@ -422,3 +466,4 @@
 - 2026-04-26: completed `P2` by selecting `es_write_block_4xx` as the first defended proof path for `R01` and treating `es_429_inject` as the next adjacent retry-path proof candidate.
 - 2026-04-26: completed `P3` by opening `DOC-RUNTIME-OBSERVABILITY-0001` and explicitly deferring a separate runbook bridge packet.
 - 2026-04-26: completed `P3-C2` by opening one attached row-flow ledger for `S3A-2A-R01`, writing the parent-ledger handoff back, and repairing the contract so its direct source basis now comes from ledger-owned derived rows rather than from this control log.
+- 2026-04-26: completed `P3-C3` by re-scoping the old extraction rows and shared-reason groups as historical pre-handoff records after row-flow handoff was already completed.
