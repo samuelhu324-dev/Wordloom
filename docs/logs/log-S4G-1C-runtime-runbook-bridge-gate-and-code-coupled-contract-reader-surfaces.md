@@ -344,7 +344,8 @@
 - `P1` now extracts `D06`, `R13`, `DOC-RUNTIME-OBSERVABILITY-0001-ST-05`, the retained runbook path, and nearby code-boundary anchors into one bounded operator-boundary slice.
 - `P2` now records a first verdict: the next downstream opening should be a `gap packet`, not a `runbook bridge`, because the operator path is reusable for drills but still not specific enough for defended fallback or coexistence procedure.
 - The packet already fixes both the opening rules for later downstream work and the minimum reader surfaces a code-coupled contract must expose.
-- The next execution step is intentionally narrow: open the bounded `gap packet` that lists the missing operator semantics and wire short `read next` notes into the active contract and retained runbook.
+- `S4G-1D` now exists as that bounded `gap packet`.
+- The next execution step is intentionally narrow: extract the missing operator semantics into explicit gap rows and decide whether current readers should now gain short `read next` notes.
 
 
 ## Evidence (reserved)
@@ -380,3 +381,4 @@
 - 2026-04-26: fixed the three-way downstream verdict model: `runbook bridge`, `gap packet`, or `no new packet now`.
 - 2026-04-26: recorded the minimum required reader surfaces and doc-versus-code layering rules before any later downstream outlet opens.
 - 2026-04-26: extracted `D06`, `R13`, `ST-05`, the retained runbook path, and nearby worker code anchors; recorded the first verdict that the next downstream opening should be a bounded `gap packet` rather than a `runbook bridge`.
+- 2026-04-26: opened `S4G-1D` as the direct bounded follow-up packet for the verdict above, so the missing operator semantics can move out of decision prose and into one explicit retained gap surface.

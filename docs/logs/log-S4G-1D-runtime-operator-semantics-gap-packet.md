@@ -1,0 +1,282 @@
+# log-S4G-1D (Phase 4: runtime operator semantics gap packet)
+
+---
+
+**id**: `S4G-1D`
+**kind**: `log`
+**title**: `runtime operator semantics gap packet v1`
+**status**: `draft`
+**scope**: `S4`
+**tags**: `EVOLUTION, OpsRuntime, Observability, RunbookBridge, GapPacket, Evidence, epic/s4, sub/1d`
+**links**: ``
+  **issue**: ``
+  **pr**: ``
+  **runbook**: `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
+  **parent_log**: `docs/logs/log-S4G-1C-runtime-runbook-bridge-gate-and-code-coupled-contract-reader-surfaces.md`
+  **previous_log**: `docs/logs/log-S4G-1C-runtime-runbook-bridge-gate-and-code-coupled-contract-reader-surfaces.md`
+  **reference_log_1**: `docs/governance/contracts/runtime/observability/DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
+  **reference_log_2**: `docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md`
+  **reference_log_3**: `docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md`
+  **reference_log_4**: `docs/logs/log-S3A-2A-2B-daemon-ready-worker-migration.md`
+  **reference_log_5**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
+**issue_keyword**: `runtime`
+**issue_top_labels**: ``
+**issue_scope_labels**: ``
+**issue_module_labels**: ``
+**issue_milestone**: ``
+**issue_parent**: ``
+**issue_projects**: ``
+**roadmap_path**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
+**roadmap_milestone**: `M1`
+**roadmap_phase**: `M1-P4`
+**roadmap_bridge_refs**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md#M1-P4`
+**pr_labels**: ``
+**pr_projects**: ``
+**pr_milestone**: ``
+**pr_base**: `main`
+**pr_development_issue**: ``
+**created**: `2026-04-26`
+**updated**: `2026-04-26`
+**reviewed**: `pending`
+**source_reader_model**: `mixed-source-v1`
+**extraction_surface_version**: `extractable-rules-v1`
+
+---
+
+## Frontmatter Lifecycle-Time Rule
+
+- `created`, `updated`, and optional `reviewed` are the minimum artifact-lifecycle fields for this lane.
+- These lifecycle fields do not claim semantic-effective dates for the missing operator semantics listed here.
+- `reviewed` should remain `pending` until the gap set is explicit enough that later packets can either open a `runbook bridge` or close one missing field cluster without guesswork.
+
+## Decision / Outcome
+
+**Decision**:
+
+- Open `S4G-1D` as the bounded `gap packet` required by `S4G-1C`.
+- Treat this packet as the explicit inventory of still-missing operator semantics and reader-routing handoff needed before any narrower runtime-owned runbook bridge or code-coupled contract hardening can open safely.
+
+**Default choices (phase defaults / v1)**:
+
+- This packet should list only missing semantics that are already explicit from current sources; it must not fabricate final operator procedure.
+- Missing operator semantics should be normalized into bounded gap classes rather than left as prose-only unease.
+- A later `runbook bridge` may open only after the corresponding gap classes are either resolved or intentionally ruled out for the admitted runtime chain.
+- Contract or runbook bridge notes should be short `read next` surfaces; the missing semantics themselves stay owned here until one downstream outlet is actually ready.
+- `domain`-level or `code`-level contracts should not be opened from this packet unless one gap is shown to be an executable boundary invariant rather than an operator-facing missing procedure.
+- draft 阶段默认继续把 source log 当作集中面；如果 gap taxonomy、reader handoff、或 downstream owner 仍在变化，不要过早把 weak-structure 内容拆到多个 outlets。
+- If any `issue_*` field is blank, automation must leave it blank and ask for human confirmation instead of inferring a keyword, labels, or milestone.
+- If any `pr_*` field is blank, PR automation must leave that PR field blank and report it explicitly instead of copying issue metadata by guesswork.
+- Top-level issues/logs must leave `issue_parent` blank; roadmap bridging must stay explicit through `roadmap_path + roadmap_milestone + roadmap_phase`, not prose-only references.
+
+## Extractable Rule Surface (recommended)
+
+| packet id | source anchor | extraction class | candidate text | downstream owner | split status | shared reason group | evidence refs | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `R01` | `S4G-1C P2-C1-S1` | `contract-candidate` | The next downstream opening for the admitted runtime chain should remain a bounded `gap packet` until missing operator semantics are explicit enough to classify, rather than opening a premature `runbook bridge`. | `contract` | `ready` | `RG-01` | `S4G-1C`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-05` | Packet-opening rule carried forward from `S4G-1C`. |
+| `R02` | `D06 + ST-05` | `runbook-candidate` | The admitted runtime chain still lacks a defended `fallback mode` statement that says what degraded or disabled state is permitted and how that state should be recognized. | `runbook` | `ready` | `RG-02` | `S3A-2A-R01-D06`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-05`; `backend/scripts/search_outbox_worker.py` | Missing runtime-owned fallback semantics. |
+| `R03` | `D06 + worker anchors` | `runbook-candidate` | The admitted runtime chain still lacks a defended `switch surface` procedure that says which toggle or routing surface changes runtime behavior, who may change it, and how reversal is recognized. | `runbook` | `ready` | `RG-02` | `backend/scripts/search_outbox_worker.py`; `_failure_drill_shared.py`; `S3A-2A-R01-D06` | Missing switch/rollback procedure semantics. |
+| `R04` | `D06 + R13` | `runbook-candidate` | The admitted runtime chain still lacks a defended `shadow/dual-run or coexistence-window` rule that says whether parallel or staged operation is valid, and if so under what boundary and retirement conditions. | `runbook` | `ready` | `RG-02` | `S3A-2A-R13`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-05` | Missing coexistence-window semantics. |
+| `R05` | `S4G-1C P2-C1-S2` | `contract-candidate` | Once a bounded gap packet exists, current contract and retained runbook readers should each expose one short `read next` bridge note to that gap packet instead of duplicating the missing semantics in-place. | `contract` | `ready` | `RG-03` | `S4G-1C`; `DOC-RUNTIME-OBSERVABILITY-0001`; `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md` | Reader-routing rule for later reconciliation. |
+| `R06` | `S4G-1C P0-C1-S2S3` | `contract-candidate` | If one gap is later shown to be an executable boundary invariant rather than an operator-facing missing procedure, that gap should graduate into a code-coupled or code-level contract packet instead of staying in the runbook lane. | `contract` | `ready` | `RG-03` | `S4G-1C`; `backend/scripts/search_outbox_worker.py`; `backend/scripts/search_outbox_worker_impl.py` | Explicit separation between operator-gap and code-contract follow-up. |
+
+### Shared Reason Groups (optional, recommended when multiple rows share one rationale)
+
+| reason group | applies to packet ids | reason summary | source refs | notes |
+| --- | --- | --- | --- | --- |
+| `RG-01` | `R01` | The next downstream opening must remain a gap packet because current sources identify what is missing more clearly than they define final reusable operator procedure. | `S4G-1C`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-05` | Gate carried from the prior packet. |
+| `RG-02` | `R02; R03; R04` | The operator-facing missing semantics cluster around fallback state, switch surface, and coexistence/retirement standing, not around the existence of a worker entrypoint or drill harness. | `S3A-2A-R01-D06`; `S3A-2A-R13`; `backend/scripts/search_outbox_worker.py` | Normalizes the missing procedure families. |
+| `RG-03` | `R05; R06` | Reader handoff and code-contract graduation should stay explicit so downstream surfaces can evolve without duplicating or misplacing the missing semantics. | `S4G-1C`; `DOC-RUNTIME-OBSERVABILITY-0001`; `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md` | Separates routing work from semantic repair work. |
+
+## Source Reader Model / Versioning (recommended for reusable log families)
+
+| field | value | notes |
+| --- | --- | --- |
+| current source reader model | `mixed-source-v1` | This packet reads one prior verdict plus current contract, runbook, ledger, and code-anchor surfaces together. |
+| extraction surface version | `extractable-rules-v1` | The scaffold exposes gap classes and reader-routing rules as the extraction surface. |
+| compatibility expectation | `forward-readable` | Later operator-gap packets can extend the same shape without reopening `S4G-1C`. |
+| migration note | `Once one gap class is resolved into a stable outlet, keep the unresolved gaps here until their own downstream owner is explicit.` | Prevents partial export from erasing the remaining gap inventory. |
+
+## PR Summary Inputs (optional)
+
+- This packet opens the explicit `gap packet` that `S4G-1C` said should exist before a narrower runbook bridge or code-contract mutation.
+
+**PR summary bullets**:
+
+- Open `S4G-1D` as the bounded operator-semantics gap packet for the admitted runtime chain.
+- Normalize the still-missing semantics into explicit gap classes: fallback state, switch surface, coexistence-window, and reader-routing handoff.
+- Keep code-contract follow-up separate from operator-gap work unless one gap later proves to be an executable invariant.
+
+**PR checklist source**:
+
+- Default source: reuse this log's execution checklist.
+
+**PR links**:
+
+- Log: `docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md`
+- Runbook: `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+- Evidence artifact: ``
+
+## Exported Sections / Outlet Ownership
+
+- This packet intentionally retains the unresolved semantics rather than exporting them immediately.
+
+**Outlet ownership**:
+
+- `contract`: later landing should be a short `read next` bridge note from the active contract once the gap packet is accepted.
+- `runbook`: later landing should be one narrower runtime-owned runbook bridge only after one or more gap classes are resolved into reusable procedure.
+- `view`: no-op for now.
+- `index/front-door`: no-op for now.
+- `disposition/placement`: unresolved gaps remain retained here until their downstream owner is explicit.
+- `log-retained core`: keep the explicit gap inventory, processing chain, checklist, current status, and evidence ledger here.
+
+## Definitions (optional)
+
+- `gap packet`: one bounded packet that records what is still missing before a downstream contract or runbook surface can open safely.
+- `fallback mode`: the permitted degraded or disabled runtime state for the admitted chain and the cues that show that state is active.
+- `switch surface`: the config, entrypoint, or routing control that changes runtime behavior for the admitted chain.
+- `coexistence window`: the bounded period or standing under which multiple modes, paths, or entrypoints may remain valid together.
+- `read next bridge note`: one short current-reader note that points to the next bounded packet instead of embedding its whole contents.
+
+## Constraints
+
+- Do not fabricate missing operator procedure simply to shorten the gap list.
+- Do not collapse the gap packet into current contract or runbook prose before one downstream owner is ready.
+- Do not treat code-adjacent anchors as proof that operator semantics already exist.
+- Do not open a domain or code-level contract from this packet unless one gap clearly becomes an executable invariant.
+
+## Optional Required Processing Chain
+
+| chain step | required state | primary owner surface | trigger question | completion evidence | notes |
+| --- | --- | --- | --- | --- | --- |
+| `source extraction` | `required` | `S4G-1D` source log | `Have the missing operator semantics been normalized into explicit gap classes?` | `extractable rows R01-R06` | Entry step for this packet. |
+| `SUP` | `not-required` | `n/a` | `Is the packet blocked by missing source evidence rather than missing semantics?` | `explicit no-SUP verdict` | Current blocker is semantic absence, not source absence. |
+| `parent ledger` | `already-satisfied` | `ledger-S3A-2A-combo-observability-triage` plus attached row-flow ledger | `Is the deferred operator boundary already written back upstream?` | `D06 already deferred in the ledger chain` | This packet sharpens the gap, not the parent-row routing. |
+| `contract impact decision` | `required` | `S4G-1D` | `Which gap classes must remain open before a runbook bridge or code-contract mutation becomes justified?` | `explicit gap inventory and later-owner rule` | Main gate for the packet. |
+| `contract mutation` | `conditional` | `active contract or future code-contract packet` | `Does one gap already justify a short bridge note or code-contract graduation now?` | `bridge note or explicit no-contract-mutation verdict` | Usually a later step, not this scaffold. |
+| `transition register update` | `conditional` | `affected family register or n/a` | `Did the current reader standing change once the gap packet opened?` | `register row or explicit no-register-change verdict` | Only if reader standing changes. |
+| `bridged contract reconciliation` | `required` | `DOC-RUNTIME-OBSERVABILITY-0001` and retained runbook | `Should current readers gain a short read-next pointer to this gap packet?` | `explicit reconciliation verdict` | Keeps current readers coherent without duplicating the gap inventory. |
+
+## Scope
+
+- `P0`: contract (gap classes, later-owner rule, bridge-note rule)
+- `P1`: source extraction for missing operator semantics
+- `P2`: gap classification and no-fabrication verdict
+- `P3`: downstream routing for bridge notes and possible code-contract graduation
+
+## Success Criteria (DoD)
+
+- The packet enumerates the still-missing operator semantics as bounded gap classes.
+- The packet distinguishes operator-gap follow-up from possible code-contract follow-up.
+- The packet states when current contract and runbook readers should gain short bridge notes.
+- The packet keeps unresolved semantics in one retained surface rather than diffusing them across current readers.
+
+## Stability (what stable means)
+
+- This log can be marked `stable` when:
+  - the gap classes are explicit and reviewable;
+  - the later-owner rule for each gap class is explicit;
+  - the next follow-up is one bounded bridge-note or outlet-opening action rather than another broad classification loop.
+
+## P0 (Contract | v1)
+
+### P0-C1-S1 (Gap classes fixed | v1)
+
+- The current minimum gap classes for the admitted runtime chain are:
+  - `fallback-mode gap`
+  - `switch-surface gap`
+  - `coexistence-window gap`
+  - `reader-routing gap`
+
+### P0-C1-S2 (Later-owner rule fixed | v1)
+
+- `fallback-mode gap`, `switch-surface gap`, and `coexistence-window gap` stay in this gap packet until they become reusable operator procedure.
+- If one of those gaps later becomes an executable invariant or adapter/runtime boundary instead of an operator procedure, it should graduate into a code-coupled or code-level contract packet.
+
+### P0-C1-S3 (Bridge-note rule fixed | v1)
+
+- Once this gap packet is accepted, current contract and retained runbook readers should each add one short `read next` bridge note to this packet.
+- Those bridge notes should route readers here; they should not duplicate the gap inventory inside current readers.
+
+## Numbering
+
+- `S<n>`: Step.
+- `C<n>`: Cycle.
+
+**Commit / PR naming**:
+
+- `S4G-1D/P<phase>-C<cycle>-S<steps>: <summary>`
+
+**Branch convention**:
+
+- `S4G-1D` work should continue on `S4G-fallback-cells-and-failure-drills-asset-governance` unless a later packet justifies a narrower focused branch.
+
+**Commit discipline (recommended)**:
+
+- After each meaningful `P*-C*-S*` unit, commit/push promptly on the current `S4G` working branch.
+
+## Plan (draft)
+
+### P1 (Source extraction for missing operator semantics)
+
+- P1-C1-S1: extract the missing fallback, switch, and coexistence semantics from `D06`, `R13`, `ST-05`, and worker anchors
+- P1-C1-S2: normalize the missing semantics into explicit gap classes and non-goals
+
+### P2 (Gap classification and no-fabrication verdict)
+
+- P2-C1-S1: confirm which gaps remain operator-facing and which, if any, may later graduate into code-contract work
+- P2-C1-S2: state the no-fabrication rule for current contract and runbook readers
+
+### P3 (Downstream routing)
+
+- P3-C1-S1: decide whether current contract and retained runbook should now gain short `read next` bridge notes
+- P3-C1-S2: decide whether any one gap is already strong enough to open a narrower follow-up packet
+
+## Execution Checklist (unchecked)
+
+### P0 (Contract)
+
+- [x] `P0-C1-S1`: gap classes fixed
+- [x] `P0-C1-S2`: later-owner rule fixed
+- [x] `P0-C1-S3`: bridge-note rule fixed
+
+### P1 (Source extraction for missing operator semantics)
+
+- [ ] `P1-C1-S1`: missing operator semantics extracted
+- [ ] `P1-C1-S2`: gap classes normalized
+
+### P2 (Gap classification and no-fabrication verdict)
+
+- [ ] `P2-C1-S1`: operator-gap versus code-contract follow-up classified
+- [ ] `P2-C1-S2`: no-fabrication rule written for current readers
+
+### P3 (Downstream routing)
+
+- [ ] `P3-C1-S1`: bridge-note routing verdict recorded
+- [ ] `P3-C1-S2`: next bounded follow-up decided
+
+## Current Status (recommended)
+
+- `S4G-1D` is opened as the first explicit `gap packet` beneath the `S4G-1C` verdict.
+- The packet now fixes the missing semantics as bounded gaps instead of leaving them as diffuse `runbook later` wording.
+- No current contract or runbook mutation has happened yet.
+- The next step is intentionally narrow: extract the missing semantics into explicit gap rows and decide whether current readers should now gain short `read next` bridge notes.
+
+## Evidence (reserved)
+
+- Artifacts are the source of truth for evidence; this scaffold records the current gap-driving source anchors.
+- Current source anchors:
+  - `docs/logs/log-S4G-1C-runtime-runbook-bridge-gate-and-code-coupled-contract-reader-surfaces.md`
+  - `docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md`
+  - `docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md`
+  - `docs/governance/contracts/runtime/observability/DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
+  - `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  - `backend/scripts/search_outbox_worker.py`
+  - `backend/scripts/search_outbox_worker_impl.py`
+  - `backend/scripts/cli_app/scenarios/_failure_drill_shared.py`
+
+## Recent changes (for traceability, optional)
+
+- 2026-04-26: opened `S4G-1D` as the bounded operator-semantics gap packet required by the `S4G-1C` verdict.
+- 2026-04-26: fixed the first gap taxonomy for the admitted runtime chain: fallback mode, switch surface, coexistence window, and reader routing.
+- 2026-04-26: fixed the rule that later bridge notes should route readers here rather than duplicating the gap inventory inside current contract or runbook readers.
