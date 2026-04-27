@@ -5,7 +5,7 @@
 **id**: `S4G-1F`
 **kind**: `log`
 **title**: `search runtime-only field shapes gap packet v1`
-**status**: `draft`
+**status**: `stable`
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, Observability, RunbookBridge, GapPacket, Evidence, epic/s4, epic/s4g, sub/1f`
 **links**: ``
@@ -339,6 +339,48 @@
 - P3-C1-S1: record whether `run-RUNTIME-OBSERVABILITY-001` may open now, later, or not on the current evidence set.
 - P3-C1-S2: record the next bounded follow-up if the gate is not yet satisfied.
 
+## P3 (Runbook opening gate | v1)
+
+### P3-C1-S1 (Explicit opening-gate verdict recorded | v1)
+
+- The current gate question is not `does Search already have enough retained runtime material to draft a useful runbook?`; the retained material is already enough for a useful draft.
+- The current gate question is `can the future runbook claim runtime ownership without blurring unresolved field clusters into prose or weakly implied procedure?`
+
+| gate dimension | current verdict | why this verdict holds now | source basis | notes |
+| --- | --- | --- | --- | --- |
+| audited grammar ready? | `yes` | `S4G-2B` already hardened the contract/runbook grammar and the active contract already proves audited bridge/coverage structure. | `S4G-2B`; `DOC-RUNTIME-OBSERVABILITY-0001` | Grammar is no longer the blocker. |
+| field inventory explicit enough? | `yes` | `S4G-1F/P1` and `P2` now expose the Search runtime-only clusters and their future placement/ownership standing. | `S4G-1F` | Field inventory is no longer the blocker. |
+| runtime ownership defended enough to open runbook now? | `no` | `RFC-01` through `RFC-03` remain unresolved as current runbook-owned semantics; only their future shapes and likely closure modes are now explicit. | `S4G-1D`; `S4G-1F/P2`; retained runbook; code anchors | This is the active blocking dimension. |
+| retained-gap disclosure explicit enough? | `yes` | The packet now records which clusters are still retained gaps and which one is packet-owned gate logic. | `S4G-1F/P2` | Retention is explicit rather than hidden. |
+| may `run-RUNTIME-OBSERVABILITY-001` open now? | `no` | Opening now would force unresolved fallback/switch/coexistence semantics into weak prose or premature ownership claims. | `S4G-1C`; `S4G-1D`; `S4G-1F` | Keep the gate closed on current evidence. |
+
+- P3 opening-gate verdict:
+  - `run-RUNTIME-OBSERVABILITY-001` does **not** open on the current evidence set.
+  - The blocker is no longer grammar or field discovery; the blocker is unresolved runtime ownership for `RFC-01`, `RFC-02`, and `RFC-03`.
+  - The future runbook may open only after those clusters each close as one of: defended procedure, defended exclusion verdict, or explicit retained gap the runbook does not own.
+
+### P3-C1-S2 (Next bounded follow-up path recorded | v1)
+
+- The current follow-up question is not `what is the next broad runtime packet?`; it is `what is the smallest next packet that could actually change the opening-gate verdict?`
+
+| candidate next move | current verdict | why this is or is not the right next move | scope boundary | notes |
+| --- | --- | --- | --- | --- |
+| open `run-RUNTIME-OBSERVABILITY-001` directly | `reject-now` | The runbook would still need to guess or over-claim fallback/switch/coexistence ownership. | `too broad` | Not the next move. |
+| mutate `DOC-RUNTIME-OBSERVABILITY-0001` again | `reject-now` | The contract already holds the current audited bridge/coverage boundary; the unresolved work is runtime-owned, not contract-owned. | `wrong reader` | Not the next move. |
+| open one narrow successor gap packet for runtime ownership closure | `accept-next` | A successor packet can decide the smallest remaining ownership closures that matter to the gate without drafting full runbook prose. | `bounded runtime-only follow-up` | This is the recommended next move. |
+
+- Recommended next bounded follow-up:
+  - open one narrow successor packet after `S4G-1F` that closes runtime ownership rather than field inventory;
+  - make `RFC-02 switch surface` the first positive-procedure lane;
+  - decide `RFC-03 coexistence window` as an explicit exclusion verdict unless stronger evidence appears;
+  - decide whether `RFC-01 fallback mode` closes as allowed procedure or explicit exclusion, but do not leave it implicit.
+
+- P3 downstream routing verdict:
+  - `runbook`: no mutation now;
+  - `contract`: no mutation now;
+  - `index/front-door`: no additional write-back required for `S4G-1F` itself;
+  - `next packet`: required if the lane wants to reopen the gate later.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -359,8 +401,8 @@
 
 ### P3 (Runbook opening gate)
 
-- [ ] `P3-C1-S1`: record the runbook opening-gate verdict.
-- [ ] `P3-C1-S2`: record the next bounded follow-up path.
+- [x] `P3-C1-S1`: record the runbook opening-gate verdict.
+- [x] `P3-C1-S2`: record the next bounded follow-up path.
 
 ## Current Status
 
@@ -370,7 +412,9 @@
 - `P1` now also fixes the source-tier boundary: `S3A-2A/D06 + S4G-1D + active contract + retained runbook + code anchors` is the real opening-gate chain, while `ledger-S3A-1A` remains lineage-only background.
 - `P2` now fixes the first placement model for a future runtime runbook: `fallback mode` and `coexistence window` are coverage-first, `switch surface` is bridge-first, and `opening gate` is boundary-note-first.
 - `P2` now also fixes the first ownership model: `RFC-02` is the strongest future procedure candidate, `RFC-03` is the strongest future exclusion-verdict candidate, and `RFC-04` is already packet-owned for `P3` closure.
-- The next step is intentionally narrow: record the explicit opening-gate verdict for `run-RUNTIME-OBSERVABILITY-001` and decide the next bounded follow-up if the gate still stays closed.
+- `P3` now closes the gate explicitly: `run-RUNTIME-OBSERVABILITY-001` does not open on the current evidence set.
+- `P3` now also fixes the downstream path: the next justified move is one narrow successor packet for runtime ownership closure, not direct runbook drafting and not another contract mutation.
+- `S4G-1F` can now stand as a stable packet because field inventory, placement, ownership standing, and opening-gate verdict are all explicit.
 
 ## Evidence
 
@@ -415,8 +459,23 @@
   - `opening gate` is now classified as boundary-note-first and packet-owned for `P3` closure;
   - `RFC-02` is the strongest future procedure candidate while `RFC-03` is the strongest future exclusion-verdict candidate.
 
+### P3-C1-S1S2 (Opening-gate verdict and next bounded follow-up fixed | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts: `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
+- expected:
+  - record whether `run-RUNTIME-OBSERVABILITY-001` may open now;
+  - record the smallest next move that could change that verdict;
+  - avoid broadening back into runbook prose or contract mutation.
+- observed:
+  - the gate is now explicitly closed on the current evidence set;
+  - the blocking dimension is unresolved runtime ownership for `RFC-01` through `RFC-03`, not grammar or field inventory;
+  - direct runbook drafting and further contract mutation are both rejected as the next move;
+  - one narrow successor packet for runtime ownership closure is now the recommended follow-up path.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1F` as the bounded Search runtime-only field-shapes gap packet so the lane can decide field inventory and opening gate before any direct runtime runbook write-up.
 - 2026-04-27: completed `P1` by extracting the minimum Search runtime-only field clusters and by fixing which sources are primary opening-gate evidence versus lineage-only background.
 - 2026-04-27: completed `P2` by mapping each field cluster to future runbook surfaces and by classifying each cluster as future procedure, exclusion verdict, retained gap, or packet-owned gate.
+- 2026-04-27: completed `P3` by closing the runbook opening gate explicitly and by routing the lane to one narrow successor packet for runtime ownership closure instead of direct runbook drafting.
