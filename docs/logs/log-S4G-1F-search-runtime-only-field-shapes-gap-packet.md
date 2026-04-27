@@ -187,6 +187,7 @@
 - `P1`: source extraction for Search runtime-only field clusters
 - `P2`: classify field-to-surface placement and ownership standing
 - `P3`: record the runbook opening-gate verdict and downstream no-op or follow-up path
+- `P4`: semantic confirmation and landing for what may enter the Search runbook now versus what must remain future platform-grade ownership
 
 ## Success Criteria (DoD)
 
@@ -367,19 +368,57 @@
 | --- | --- | --- | --- | --- |
 | open `run-RUNTIME-OBSERVABILITY-001` directly | `reject-now` | The runbook would still need to guess or over-claim fallback/switch/coexistence ownership. | `too broad` | Not the next move. |
 | mutate `DOC-RUNTIME-OBSERVABILITY-0001` again | `reject-now` | The contract already holds the current audited bridge/coverage boundary; the unresolved work is runtime-owned, not contract-owned. | `wrong reader` | Not the next move. |
-| open one narrow successor gap packet for runtime ownership closure | `accept-next` | A successor packet can decide the smallest remaining ownership closures that matter to the gate without drafting full runbook prose. | `bounded runtime-only follow-up` | This is the recommended next move. |
+| continue on `S4G-1F` with one narrow semantic-confirmation unit | `accept-next` | The packet already owns the field inventory and gate; the smallest next move is to keep closure local and decide what current Search semantics may land now without inventing platform-grade fallback meaning. | `bounded in-packet follow-up` | This is the recommended next move. |
 
 - Recommended next bounded follow-up:
-  - open one narrow successor packet after `S4G-1F` that closes runtime ownership rather than field inventory;
-  - make `RFC-02 switch surface` the first positive-procedure lane;
-  - decide `RFC-03 coexistence window` as an explicit exclusion verdict unless stronger evidence appears;
-  - decide whether `RFC-01 fallback mode` closes as allowed procedure or explicit exclusion, but do not leave it implicit.
+  - continue on `S4G-1F` with one narrow `P4` unit that closes semantic-confirmation and landing rather than opening a new packet immediately;
+  - make `RFC-01 fallback mode` the first semantic-confirmation lane by fixing what the current fallback reality actually is;
+  - make `RFC-02 switch surface` the first operator-checkpoint lane rather than jumping directly to a full prod procedure;
+  - decide `RFC-03 coexistence window` as an explicit exclusion verdict unless stronger evidence appears.
 
 - P3 downstream routing verdict:
   - `runbook`: no mutation now;
   - `contract`: no mutation now;
   - `index/front-door`: no additional write-back required for `S4G-1F` itself;
-  - `next packet`: required if the lane wants to reopen the gate later.
+  - `next packet`: not required now while `S4G-1F` still remains the active semantic-confirmation packet.
+
+### P4 (Semantic confirmation and landing)
+
+- P4-C1-S1: split `RFC-01` / `RFC-02` / `RFC-03` into `standardize-now` semantics versus `future platform-grade ownership` semantics.
+- P4-C1-S2: record the first landing verdict for `fallback mode` and `switch surface` so later runbook text can stay honest.
+
+## P4 (Semantic confirmation and landing | v1)
+
+### P4-C1-S1 (Current runbook-standardizable semantics separated from future platform-grade ownership | v1)
+
+- The current confirmation question is not `can the repo already simulate mature platform fallback?`; the repo cannot defend that yet.
+- The current confirmation question is `which Search runtime meanings are already strong enough to standardize into a bounded runbook skeleton without pretending that a later asset/control platform already exists?`
+
+| field cluster id | standardize-now semantics for Search runbook | future platform-grade ownership semantics | current verdict | why this split holds now | notes |
+| --- | --- | --- | --- | --- | --- |
+| `RFC-01` | `worker-disabled / stop projection updates`; `stable disable switch exists`; `entering this state must be disclosed as current boundary rather than silent success` | `what alternate serving path exists`; `how long degraded state is allowed`; `who authorizes entry/exit`; `what reconciliation or catch-up is mandatory after recovery`; `any SLA/SLO meaning` | `split-now` | Code proves a real disable switch and immediate worker exit, but it does not prove an alternate mature fallback path or platform-grade governance for degraded service. | Current fallback reality is `stop this worker chain`, not `switch to a mature replacement path`. |
+| `RFC-02` | `bounded switch surfaces exist`; `SEARCH_OUTBOX_WORKER_ENABLED` and `SEARCH_OUTBOX_RUNNER` are real operator-touching knobs`; `runbook may require explicit checkpointing and evidence capture around their use` | `who may switch in prod`; `formal preconditions`; `rollback authority`; `cross-platform cutover semantics`; `production acceptance policy` | `split-now` | The code and drill surfaces already expose real knobs, so the runbook can standardize checkpoint/evidence expectations before it owns full prod switch policy. | This lane should land as `operator checkpoint`, not yet as complete production procedure. |
+| `RFC-03` | `no current positive coexistence claim`; `runbook must state that shadow/dual-run/coexistence is not currently owned` | `whether platform-backed dual-run or staged cutover exists`; `retirement window`; `parallel-mode policy`; `cross-surface reconciliation` | `split-now` | Current evidence is strong enough to forbid over-claiming but not strong enough to define a positive coexistence model. | Treat this as explicit exclusion/boundary language unless later evidence changes it. |
+
+- P4 semantic-confirmation verdict:
+  - the current Search runbook may standardize `bounded skeleton semantics` now;
+  - the current Search runbook may **not** claim mature alternate-path fallback, platform-grade cutover, or coexistence policy;
+  - therefore the immediate landing target is a `drill-first runtime skeleton` with explicit boundaries, not a full production fallback playbook.
+
+### P4-C1-S2 (First landing verdict for fallback mode and switch surface fixed | v1)
+
+- The current landing question is not `can we finish the whole Search runbook here?`; it is `what first semantic claims are safe enough that later runbook text can reuse them without lying?`
+
+| landing lane | landing-now verdict | should later runbook say now? | should later runbook not say yet? | notes |
+| --- | --- | --- | --- | --- |
+| `RFC-01 fallback mode` | `land as bounded disable-state semantics` | `Search runtime may be intentionally placed in a worker-disabled state via the defended switch surface`; `this stops projection updates on the current worker chain`; `entry/exit must be explicit and evidenced`; `this is not proof of a mature alternate-path fallback` | `system automatically falls back to another equivalent serving path`; `platform SLA-backed degraded mode already exists`; `recovery/reconciliation policy is already fully owned` | This is the first safe positive landing for fallback semantics. |
+| `RFC-02 switch surface` | `land as operator checkpoint semantics` | `the runbook should identify the real switch surfaces and require checkpoint/evidence capture around changes`; `the runbook may treat switch use as controlled operator action on the current worker chain` | `full prod authorization matrix is already settled`; `rollback proof is fully standardized for all environments`; `cross-platform cutover semantics already exist` | This is the first safe positive landing for switch semantics. |
+| `RFC-03 coexistence window` | `land as explicit not-owned-yet boundary` | `the runbook should state that coexistence / shadow / dual-run semantics are not currently owned on this Search lane` | `parallel or staged operation is already approved`; `dual-run is part of the current positive operating model` | Keep this negative/absence verdict explicit. |
+
+- P4 landing verdict:
+  - `RFC-01` is now sharp enough to land as `disable-state fallback semantics`, not as alternate-path fallback semantics;
+  - `RFC-02` is now sharp enough to land as `operator checkpoint semantics`, not as complete prod switch procedure;
+  - `RFC-03` is now sharp enough to land as an explicit `not-owned-yet` boundary.
 
 ## Execution Checklist (unchecked)
 
@@ -404,6 +443,11 @@
 - [x] `P3-C1-S1`: record the runbook opening-gate verdict.
 - [x] `P3-C1-S2`: record the next bounded follow-up path.
 
+### P4 (Semantic confirmation and landing)
+
+- [x] `P4-C1-S1`: split current Search semantics into `standardize-now` versus `future platform-grade ownership`.
+- [x] `P4-C1-S2`: record the first landing verdict for fallback mode and switch surface.
+
 ## Current Status
 
 - `S4G-1F` is now the bounded next packet for Search runtime-only field shapes after the audited grammar work in `S4G-2B`.
@@ -413,8 +457,10 @@
 - `P2` now fixes the first placement model for a future runtime runbook: `fallback mode` and `coexistence window` are coverage-first, `switch surface` is bridge-first, and `opening gate` is boundary-note-first.
 - `P2` now also fixes the first ownership model: `RFC-02` is the strongest future procedure candidate, `RFC-03` is the strongest future exclusion-verdict candidate, and `RFC-04` is already packet-owned for `P3` closure.
 - `P3` now closes the gate explicitly: `run-RUNTIME-OBSERVABILITY-001` does not open on the current evidence set.
-- `P3` now also fixes the downstream path: the next justified move is one narrow successor packet for runtime ownership closure, not direct runbook drafting and not another contract mutation.
-- `S4G-1F` can now stand as a stable packet because field inventory, placement, ownership standing, and opening-gate verdict are all explicit.
+- `P3` now also fixes the downstream path: the next justified move stays inside `S4G-1F` as one narrow semantic-confirmation unit, not direct runbook drafting and not another contract mutation.
+- `P4` now fixes the first semantic split between `what Search can standardize now` and `what must wait for later platform-grade ownership`.
+- `P4` now also lands the first safe meanings: `fallback mode` lands as `disable-state semantics`, `switch surface` lands as `operator checkpoint semantics`, and `coexistence window` remains an explicit `not-owned-yet` boundary.
+- `S4G-1F` can now stand as the active stable source packet for Search runbook semantic confirmation and landing.
 
 ## Evidence
 
@@ -471,7 +517,21 @@
   - the gate is now explicitly closed on the current evidence set;
   - the blocking dimension is unresolved runtime ownership for `RFC-01` through `RFC-03`, not grammar or field inventory;
   - direct runbook drafting and further contract mutation are both rejected as the next move;
-  - one narrow successor packet for runtime ownership closure is now the recommended follow-up path.
+  - one narrow in-packet semantic-confirmation unit is now the recommended follow-up path.
+
+### P4-C1-S1S2 (Semantic confirmation and first landing verdict fixed | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts: `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
+- expected:
+  - separate what the Search runbook may standardize now from what must remain future platform-grade ownership;
+  - sharpen the current fallback reality without inventing an alternate-path platform fallback;
+  - land the first safe semantic claims for later runbook text.
+- observed:
+  - `RFC-01` now lands as `worker-disabled / stop projection updates` semantics rather than alternate-path fallback semantics;
+  - `RFC-02` now lands as `operator checkpoint semantics` around real switch surfaces rather than full prod switch policy;
+  - `RFC-03` now lands as an explicit `not-owned-yet` coexistence boundary;
+  - `S4G-1F` now keeps semantic confirmation and landing local instead of forcing an immediate successor packet.
 
 ## Recent changes (for traceability, optional)
 
@@ -479,3 +539,4 @@
 - 2026-04-27: completed `P1` by extracting the minimum Search runtime-only field clusters and by fixing which sources are primary opening-gate evidence versus lineage-only background.
 - 2026-04-27: completed `P2` by mapping each field cluster to future runbook surfaces and by classifying each cluster as future procedure, exclusion verdict, retained gap, or packet-owned gate.
 - 2026-04-27: completed `P3` by closing the runbook opening gate explicitly and by routing the lane to one narrow successor packet for runtime ownership closure instead of direct runbook drafting.
+- 2026-04-27: completed `P4` by splitting current Search runbook-standardizable semantics from future platform-grade ownership and by landing the first safe meanings for fallback mode, switch surface, and coexistence boundary.
