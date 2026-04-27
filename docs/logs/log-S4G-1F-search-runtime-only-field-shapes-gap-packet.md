@@ -11,7 +11,7 @@
 **links**: ``
   **issue**: ``
   **pr**: ``
-  **runbook**: `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  **runbook**: `docs/runbook/run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4G-fallback-cells-and-failure-drills-asset-governance.md`
   **previous_log**: `docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md`
@@ -60,7 +60,7 @@
 
 **Default choices (phase defaults / v1)**:
 
-- Do not write `run-RUNTIME-OBSERVABILITY-001`正文 in this packet.
+- Do not write broad, platform-grade operator procedure prose in this packet; only bounded runbook skeleton surfaces may be opened after the gate is satisfied.
 - Output stable field clusters and surface placement, not procedure prose.
 - A future runtime runbook may open only when each currently missing runtime-only cluster closes as one of:
   - a defended procedure,
@@ -150,16 +150,16 @@
 
 | gap id | current status | closure target | current write-back standing | reopen proof expectation | notes |
 | --- | --- | --- | --- | --- | --- |
-| `G01` | `open` | `future runtime runbook or explicit exclusion verdict` | `retained here; no runbook mutation yet` | `show that fallback-state ownership changed or became defendable` | `fallback mode field cluster` |
-| `G02` | `open` | `future runtime runbook plus possible contract bridge note support` | `retained here; no runbook mutation yet` | `show that switch ownership or rollback proof changed materially` | `switch surface field cluster` |
-| `G03` | `open` | `future runtime runbook or explicit no-coexistence verdict` | `retained here; no runbook mutation yet` | `show that coexistence or retirement assumptions changed materially` | `coexistence window field cluster` |
-| `G04` | `open-now-routed` | `future runbook opening gate verdict` | `retained here; front-door registration required now` | `show that the current opening gate became misleading or incomplete` | `runbook opening gate` |
+| `G01` | `partially-closed` | `current runtime runbook plus later platform-grade follow-up when needed` | `write-back done to current runbook skeleton` | `show that fallback semantics changed beyond the current disable-state boundary` | `fallback mode field cluster` |
+| `G02` | `partially-closed` | `current runtime runbook plus later rollback/cutover follow-up when needed` | `write-back done to current runbook skeleton` | `show that switch ownership changed beyond checkpoint/evidence semantics` | `switch surface field cluster` |
+| `G03` | `closed` | `current runtime runbook boundary note and coverage echo` | `write-back done to current runbook skeleton` | `show that positive coexistence or staged cutover became defensible` | `coexistence window field cluster` |
+| `G04` | `closed` | `runbook opening gate verdict` | `write-back done to current runbook skeleton` | `show that the current bounded opening verdict became misleading or incomplete` | `runbook opening gate` |
 
 | write-back target | target kind | when required | current verdict | notes |
 | --- | --- | --- | --- | --- |
 | `docs/logs/log-S4G-fallback-cells-and-failure-drills-asset-governance.md` | `index/front-door` | `required when a new bounded S4G packet opens` | `required-now` | `Register S4G-1F in the spine.` |
 | `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md` | `index/front-door` | `required when the roadmap gains a new bounded runtime packet` | `required-now` | `Map S4G-1F as the deferred runtime-only field-shape packet.` |
-| `future run-RUNTIME-OBSERVABILITY-001` | `runbook reader` | `required only if the opening gate is later satisfied` | `not-required-now` | `This packet should not mutate a runtime runbook yet.` |
+| `docs/runbook/run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md` | `runbook reader` | `required when the opening gate is satisfied for a bounded skeleton` | `already-satisfied` | `This packet now writes back the confirmed bounded semantics into the first current runbook skeleton.` |
 | `DOC-RUNTIME-OBSERVABILITY-0001` | `contract reader` | `required only if current reader routing or ownership changes materially` | `not-required-now` | `Current contract boundary remains sufficient for now.` |
 
 | gap change id | gap id | change action | recorded at | reason | source basis | notes |
@@ -168,6 +168,10 @@
 | `GC-02` | `G02` | `opened` | `2026-04-27` | `Search switch-surface fields are code-adjacent but still not owned as defended operator procedure.` | `S4G-1D G02`; code anchors | `Open field-cluster retention instead of fake procedure.` |
 | `GC-03` | `G03` | `opened` | `2026-04-27` | `Search coexistence-window fields remain unresolved and may later close with a positive or negative verdict.` | `S4G-1D G03`; retained runbook | `Keep the gap explicit.` |
 | `GC-04` | `G04` | `opened` | `2026-04-27` | `The future runtime runbook needs an explicit opening gate rather than an informal readiness impression.` | `S4G-1C`; `S4G-1D`; `S4G-2B` | `This packet owns the gate inventory.` |
+| `GC-05` | `G01` | `partially-closed` | `2026-04-27` | `Current evidence now supports a bounded disable-state fallback statement plus explicit non-claim, so the first runbook skeleton may own that narrower meaning.` | `S4G-1F P4`; `S4G-1F P5`; `backend/scripts/search_outbox_worker.py` | `Write back the bounded fallback meaning; keep platform-grade replacement-path semantics out.` |
+| `GC-06` | `G02` | `partially-closed` | `2026-04-27` | `Current evidence now supports switch-surface checkpoint/evidence semantics strongly enough for a bounded runbook skeleton.` | `S4G-1F P4`; `S4G-1F P5`; `backend/scripts/search_outbox_worker.py` | `Write back bridge and coverage rows without claiming full prod cutover governance.` |
+| `GC-07` | `G03` | `closed` | `2026-04-27` | `Current evidence now supports an explicit not-owned-here coexistence boundary on the current runbook.` | `S4G-1F P4`; `S4G-1F P5` | `Close the current gap with a negative boundary verdict rather than positive procedure.` |
+| `GC-08` | `G04` | `closed` | `2026-04-27` | `The opening gate is now satisfied for a bounded drill-first runbook skeleton because RFC-01 through RFC-03 now each land as bounded positive or explicit exclusion statements.` | `S4G-1F P4`; `S4G-1F P5`; `S4G-1F P6` | `Current runbook opening is narrow and should not be over-read as platform-grade procedure.` |
 
 ## Optional Required Processing Chain
 
@@ -189,14 +193,16 @@
 - `P3`: record the runbook opening-gate verdict and downstream no-op or follow-up path
 - `P4`: semantic confirmation and landing for what may enter the Search runbook now versus what must remain future platform-grade ownership
 - `P5`: translate confirmed semantics into minimum future runbook statement shapes and landing surfaces
+- `P6`: land the first bounded Search runtime runbook skeleton and write back the confirmed semantics
 
 ## Success Criteria (DoD)
 
-- The packet explicitly decides to stay in `gap packet` mode rather than opening the runtime runbook directly.
+- The packet explicitly decides when to stay in `gap packet` mode and when a bounded runtime runbook skeleton may open.
 - The packet names the minimum Search runtime-only field clusters explicitly.
 - The packet records where those field clusters should later live on a runbook surface.
 - The packet records the future opening gate for `run-RUNTIME-OBSERVABILITY-001` explicitly.
 - The packet keeps contract-side audited grammar and runbook-side runtime-only semantics distinct.
+- If a current runbook opens, it lands only the bounded `RFC-01` / `RFC-02` / `RFC-03` meanings already confirmed in this packet.
 
 ## Stability (what stable means)
 
@@ -204,7 +210,7 @@
   - the runtime-only field clusters are explicit and reviewable;
   - the intended runbook surface placement is explicit;
   - the opening gate for `run-RUNTIME-OBSERVABILITY-001` is explicit;
-  - the next step is one bounded extraction or one bounded runbook-opening verdict rather than another broad semantics loop.
+  - the next step is either one bounded runbook landing unit or one later platform-grade follow-up rather than another broad semantics loop.
 
 ## P0 (Contract | v1)
 
@@ -459,6 +465,44 @@
   - `RFC-03` lands primarily on `Notes and Boundaries` with optional `not-owned-here` coverage echo;
   - later Search runbook drafting should reuse these landing surfaces rather than rediscovering ownership from prose.
 
+### P6 (Current runbook skeleton landing)
+
+- P6-C1-S1: open `run-RUNTIME-OBSERVABILITY-001` as the first bounded Search runtime runbook skeleton using only the semantics confirmed through `P1-P5`.
+- P6-C1-S2: record the runbook write-back and current gap-closure standing now that the bounded skeleton exists.
+
+## P6 (Current runbook skeleton landing | v1)
+
+### P6-C1-S1 (Bounded Search runtime runbook skeleton opened | v1)
+
+- The current landing question is not `can the full production runtime playbook open now?`; it cannot.
+- The current landing question is `can one narrow current runbook now open using only the semantics that S4G-1F has already defended enough to write back honestly?`
+
+| landing target | landing verdict | owned now | still not owned now | source basis | notes |
+| --- | --- | --- | --- | --- | --- |
+| `run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton` | `open-now-bounded` | `disable-state fallback checkpoints`; `switch-surface checkpoint/evidence semantics`; `es_write_block_4xx` drill-first path; `explicit coexistence non-ownership boundary` | `alternate-path fallback`; `platform-grade rollback governance`; `dual-run/shadow/staged cutover positive procedure` | `S4G-1F P4`; `S4G-1F P5`; `DOC-RUNTIME-OBSERVABILITY-0001`; `backend/scripts/search_outbox_worker.py` | `The opened runbook should stay a drill-first current skeleton, not a mature production cutover manual.` |
+
+- P6 runbook-opening verdict:
+  - the gate is now satisfied for a bounded current runbook skeleton;
+  - the gate is still not satisfied for a broad production runtime playbook;
+  - the new runbook must be read through the semantics already fixed in `P4` and `P5`, not through the older retained runbook alone.
+
+### P6-C1-S2 (Runbook write-back and current gap standing fixed | v1)
+
+- The current write-back question is not `did all runtime semantics close forever?`; they did not.
+- The current write-back question is `which current meanings are now safely owned by the runbook and which future meanings still remain deferred?`
+
+| write-back lane | current result | where it now lives | remaining future follow-up | notes |
+| --- | --- | --- | --- | --- |
+| `RFC-01 fallback mode` | `partially-written-back` | `runbook Scenario Registry / Coverage plus boundary note` | `platform-grade replacement-path fallback, recovery, and reconciliation policy` | `Current runbook owns disable-state checkpoint semantics only.` |
+| `RFC-02 switch surface` | `partially-written-back` | `runbook Code Bridge Table plus coverage/evidence expectations` | `full prod authority, rollback governance, and cross-platform cutover semantics` | `Current runbook owns checkpoint semantics only.` |
+| `RFC-03 coexistence window` | `written-back-as-exclusion` | `runbook boundary note plus optional coverage echo` | `positive coexistence semantics only if later evidence justifies reopen` | `Current runbook owns the negative boundary verdict.` |
+| `RFC-04 opening gate` | `closed-and-written-back` | `S4G-1F plus the opened runbook skeleton` | `reopen only if later semantics make the current opening misleading` | `The current gate decision is now embodied by the opened runbook.` |
+
+- P6 write-back verdict:
+  - `S4G-1F` remains the source packet for why the runbook is bounded this way;
+  - `run-RUNTIME-OBSERVABILITY-001` is now the current operator reader for the bounded semantics already confirmed;
+  - later platform-grade runtime work should reopen only the still-deferred meanings, not the now-owned bounded skeleton itself.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -492,6 +536,11 @@
 - [x] `P5-C1-S1`: translate `RFC-01` / `RFC-02` / `RFC-03` into minimum future runbook statement shapes.
 - [x] `P5-C1-S2`: map those statement shapes onto minimum future runbook landing surfaces.
 
+### P6 (Current runbook skeleton landing)
+
+- [x] `P6-C1-S1`: open the bounded `run-RUNTIME-OBSERVABILITY-001` skeleton using only confirmed semantics.
+- [x] `P6-C1-S2`: record the runbook write-back and current gap standing.
+
 ## Current Status
 
 - `S4G-1F` is now the bounded next packet for Search runtime-only field shapes after the audited grammar work in `S4G-2B`.
@@ -505,7 +554,8 @@
 - `P4` now fixes the first semantic split between `what Search can standardize now` and `what must wait for later platform-grade ownership`.
 - `P4` now also lands the first safe meanings: `fallback mode` lands as `disable-state semantics`, `switch surface` lands as `operator checkpoint semantics`, and `coexistence window` remains an explicit `not-owned-yet` boundary.
 - `P5` now fixes the first reusable statement shapes and landing surfaces for later Search runbook drafting, so future text no longer needs to guess where each confirmed meaning should live.
-- `S4G-1F` can now stand as the active stable source packet for Search runbook semantic confirmation, landing, and first future runbook-shape guidance.
+- `P6` now opens the first bounded `run-RUNTIME-OBSERVABILITY-001` skeleton and writes back the confirmed semantics into a current operator reader.
+- `S4G-1F` now stands as the active stable source packet for Search runbook semantic confirmation, landing, and current runbook-boundary governance.
 
 ## Evidence
 
@@ -592,6 +642,22 @@
   - `RFC-03` now has a minimum future statement shape of `explicit exclusion / not-owned-yet boundary` and lands primarily on `Notes and Boundaries` with optional coverage echo;
   - future Search runbook drafting now has one fixed minimum landing model instead of needing to infer structure from retained history.
 
+### P6-C1-S1S2 (Bounded runbook skeleton opened and written back | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts:
+  - `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
+  - `docs/runbook/run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+- expected:
+  - open the first bounded Search runtime runbook using only semantics already confirmed through `P1-P5`;
+  - keep platform-grade fallback, coexistence, and rollback meaning out of the new runbook;
+  - reconcile the packet's gap/write-back standing now that the runbook exists.
+- observed:
+  - `run-RUNTIME-OBSERVABILITY-001` now exists as a drill-first bounded skeleton for the current search outbox worker chain;
+  - the runbook owns disable-state fallback checkpoints, switch-surface checkpoint/evidence semantics, one defended drill path, and an explicit coexistence non-ownership boundary;
+  - the packet now records `G01/G02` as partially closed, `G03/G04` as closed, and the runbook write-back as complete for the current bounded meanings;
+  - broader platform-grade fallback, cutover, and rollback semantics remain deferred rather than being invented in the new runbook.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1F` as the bounded Search runtime-only field-shapes gap packet so the lane can decide field inventory and opening gate before any direct runtime runbook write-up.
@@ -600,3 +666,4 @@
 - 2026-04-27: completed `P3` by closing the runbook opening gate explicitly and by routing the lane to one narrow successor packet for runtime ownership closure instead of direct runbook drafting.
 - 2026-04-27: completed `P4` by splitting current Search runbook-standardizable semantics from future platform-grade ownership and by landing the first safe meanings for fallback mode, switch surface, and coexistence boundary.
 - 2026-04-27: completed `P5` by translating the confirmed Search semantics into minimum future runbook statement shapes and by fixing their landing surfaces for later `run-RUNTIME-OBSERVABILITY-001` drafting.
+- 2026-04-27: completed `P6` by opening the first bounded `run-RUNTIME-OBSERVABILITY-001` skeleton and by writing the confirmed Search semantics back to a current operator reader without claiming platform-grade fallback or coexistence procedure.
