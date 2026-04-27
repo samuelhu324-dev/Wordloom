@@ -430,6 +430,20 @@
 - P3-C1-S1: decide whether current `OBSERVABILITY-0001` / `run-RUNTIME-OBSERVABILITY-001` should widen, stay narrow, or route sibling lanes.
 - P3-C1-S2: record the next bounded packet or no-op path.
 
+### P3-C1-S1 (Runbook widens, contract stays narrow, sibling lanes remain deferred | v1)
+
+- `P3` does not apply one family-wide action to every downstream surface.
+- The current runbook should widen now because the remaining `current-family` scenarios are already same-chain worker scenarios with code, catalog, and labs corroboration strong enough for one bounded operator registry.
+- The current contract should stay narrow now because the present contract still defends one first proof path and one bounded diagnostic chain, not every extracted current-family scenario as positive contract meaning.
+- `support-only` scenarios remain retained in the object ledgers and source log.
+- `sibling-family` scenarios remain explicitly outside current ownership and should wait for a later sibling-lane packet rather than being silently absorbed here.
+
+### P3-C1-S2 (Next bounded path and no-op path recorded | v1)
+
+- The current runbook path is `apply-now`: widen `run-RUNTIME-OBSERVABILITY-001` by writing the remaining `current-family` worker-chain scenarios into the scenario registry.
+- The current contract path is `no-op-now`: keep the additional `current-family` scenarios admitted in the bound release ledger until a later proof-path-specific packet justifies contract widening.
+- The sibling-family path is `defer-next-packet`: keep the routing explicit in the release ledgers now, but do not fabricate a sibling reader before one bounded sibling packet opens.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -456,8 +470,8 @@
 
 ### P3 (Write-back decision)
 
-- [ ] `P3-C1-S1`: decide whether current readers widen, stay narrow, or split sibling lanes.
-- [ ] `P3-C1-S2`: record the next bounded packet or no-op path.
+- [x] `P3-C1-S1`: decide whether current readers widen, stay narrow, or split sibling lanes.
+- [x] `P3-C1-S2`: record the next bounded packet or no-op path.
 
 ## Current Status
 
@@ -471,7 +485,8 @@
 - The newly-opened object-ledger live files now separate artifact lifecycle time, source chronology time, and governance-event time so later write-back can be read as change history instead of only as current state.
 - The release-ledger live files now also carry explicit per-scenario routing registries, per-scenario chronology, and per-scenario route events, so one scenario can be audited independently of the family summary table.
 - The current runbook and current contract now carry backreference fields from reader rows back to release-ledger routing rows, so later split/write-back can be read in both directions instead of only from the ledger side.
-- The next step is intentionally narrow: use the new classification plus the remediated audit surfaces to decide whether current readers widen, stay narrow, or route sibling lanes without mixing those decisions together.
+- `P3` now resolves the downstream split: the runbook widens to the remaining current-family worker-chain scenarios, the contract stays narrow and keeps those scenarios release-ledger-only, and sibling-family scenarios remain deferred to a later sibling packet.
+- The next step is intentionally narrower than `P3`: review whether the new runbook widening is sufficient as-is, or whether one later proof-path-specific contract packet and one sibling-lane packet should open next.
 
 ## Evidence
 
@@ -602,6 +617,25 @@
   - the active runbook and contract reader files now expose release-ledger backreference columns so one current body row can be traced back to the routing row and routing event that justified it;
   - future `P3` write-back can now record scenario-level landing, retention, or sibling-lane routing without forcing reviewers to infer those moves from prose alone.
 
+### P3-C1-S1S2 (Write-back decisions recorded and current runbook widened | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts:
+  - `docs/runbook/run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+  - `docs/runbook/support-only/ledger-runbook-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+  - `docs/governance/contracts/runtime/observability/DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
+  - `docs/governance/contracts/support-only/ledger-DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
+  - `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md`
+- expected:
+  - stop leaving `current-family` scenarios in a generic `pending-p3` state;
+  - record which downstream owner actually widens now and which one deliberately does not;
+  - preserve explicit deferred routing for later sibling-family work without fabricating a sibling reader prematurely.
+- observed:
+  - the current runbook now widens to the remaining current-family worker-chain scenarios through explicit `SC-OBS-05` to `SC-OBS-12` rows;
+  - the runbook release ledger now records those rows as actual `written-into-runbook` routing outcomes rather than indefinite pending write-back;
+  - the current contract now explicitly stays narrow, and its release ledger records that the additional current-family scenarios remain release-ledger-only by deliberate no-contract-widening decision;
+  - sibling-family scenarios remain explicitly outside current ownership, but still await one later sibling packet instead of being forced into the current readers.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1G` as the bounded Search runtime scenario hard-extraction packet so the lane can re-extract the current scenario universe from code/labs before widening current readers by wording guesswork.
@@ -610,3 +644,4 @@
 - 2026-04-27: completed `P2` by classifying the extracted Search runtime scenarios into current-family, support-only, and sibling-family standing without widening the current readers yet.
 - 2026-04-27: backfilled full auditable-chain semantics and time-audit structure across the new release-ledger templates, run-ledger templates, and current `OBSERVABILITY-0001` object-ledger live files so later write-back can be read as change history rather than only as current state.
 - 2026-04-27: added per-scenario routing ids and reader backreferences across the current `OBSERVABILITY-0001` release-ledger and reader surfaces so later split/write-back can be audited from either direction.
+- 2026-04-27: completed `P3` by widening the current runbook to the remaining current-family worker-chain scenarios, recording an explicit no-contract-widening decision for the current contract, and preserving deferred sibling-lane routing without fabricating a sibling reader too early.

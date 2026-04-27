@@ -8,8 +8,8 @@ contract_record:
   record_kind: chronology-first-contract
   status: draft
   release_action: initial
-  release_change_summary: Establish the first runtime observability contract by fixing one current diagnostically complete worker chain, its stable entrypoint, its minimum shared-pivot signal set, and its first defended proof path under S4G-1B, while keeping later scenario routing auditable through the bound release-ledger family.
-  summary: One admitted runtime handling chain should remain diagnosable through metrics, tracing, and structured logs via shared pivots and auditable evidence, with the current bounded owner surface fixed to the search outbox projection worker and the current defended proof path fixed to es_write_block_4xx.
+  release_change_summary: Establish the first runtime observability contract by fixing one current diagnostically complete worker chain, its stable entrypoint, its minimum shared-pivot signal set, and its first defended proof path under S4G-1B, while S4G-1G/P3 keeps later current-family scenarios in bound release-ledger routing instead of widening positive contract meaning beyond the first defended proof path.
+  summary: One admitted runtime handling chain should remain diagnosable through metrics, tracing, and structured logs via shared pivots and auditable evidence, with the current bounded owner surface fixed to the search outbox projection worker and the current defended proof path fixed to es_write_block_4xx; additional current-family scenarios remain admitted only at the release-ledger layer for now.
   governance_area: runtime observability for bounded worker handling chains
   applies_to: the search outbox projection worker surface, its stable entrypoint, its minimum shared-pivot signal set, and its first defended drill-backed diagnostic proof path
   entrypoint_ref: backend/scripts/search_outbox_worker.py
@@ -32,7 +32,7 @@ contract_record:
   effective_from: 2026-04-26
   effective_until: ongoing
   introduced_by: docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
-  last_changed_by: docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P2-C2-S4
+  last_changed_by: docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P3-C1-S2
   source_refs:
     - docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md
     - docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
@@ -157,4 +157,5 @@ contract_record:
 
 - This family is `runtime` first and `observability` second: observability is the diagnostic subdomain owned under one runtime worker chain here.
 - The first release is draft because the proof path is defended, but trace-export completeness and a narrower runbook bridge may still be hardened later.
+- Additional current-family scenarios extracted in `S4G-1G` remain visible in the bound contract release ledger, but `P3` explicitly does not promote them into new positive contract clauses until a later proof-path-specific packet justifies that widening.
 - Later sibling families should stay under `DOC-RUNTIME-*` when runtime remains the governing owner surface.
