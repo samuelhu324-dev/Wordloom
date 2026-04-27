@@ -188,6 +188,7 @@
 - `P2`: classify field-to-surface placement and ownership standing
 - `P3`: record the runbook opening-gate verdict and downstream no-op or follow-up path
 - `P4`: semantic confirmation and landing for what may enter the Search runbook now versus what must remain future platform-grade ownership
+- `P5`: translate confirmed semantics into minimum future runbook statement shapes and landing surfaces
 
 ## Success Criteria (DoD)
 
@@ -420,6 +421,44 @@
   - `RFC-02` is now sharp enough to land as `operator checkpoint semantics`, not as complete prod switch procedure;
   - `RFC-03` is now sharp enough to land as an explicit `not-owned-yet` boundary.
 
+### P5 (Runbook statement shapes and landing surfaces)
+
+- P5-C1-S1: translate `RFC-01` / `RFC-02` / `RFC-03` into minimum future runbook statement shapes.
+- P5-C1-S2: map those statement shapes onto the minimum landing surfaces of the future Search runbook.
+
+## P5 (Runbook statement shapes and landing surfaces | v1)
+
+### P5-C1-S1 (Minimum future runbook statement shapes fixed | v1)
+
+- The current shape question is not `can we draft the whole Search runbook now?`; it is `what is the smallest reusable statement shape that later runbook text can adopt without re-opening semantic ambiguity?`
+
+| field cluster id | minimum future runbook statement shape | statement class | why this shape is the minimum safe shape now | should remain out of shape now | notes |
+| --- | --- | --- | --- | --- | --- |
+| `RFC-01` | `boundary + checkpoint` | `bounded positive statement plus explicit non-claim` | Current evidence is strong enough to say that a defended disable-state exists and that entering/leaving it must be explicit and evidenced; it is not strong enough to claim an alternate-path fallback model. | `alternate-path fallback`; `service-level degraded-mode promises`; `reconciliation policy as already-owned procedure` | The safe sentence family is: `this runbook owns explicit worker-disable checkpoints, not a mature replacement-path fallback`. |
+| `RFC-02` | `code-bound checkpoint + evidence expectation` | `bounded positive statement` | Current evidence is strong enough to identify real switch surfaces and require operator checkpoints/evidence around their use; it is not strong enough to encode full production authority and rollback policy. | `full prod authorization matrix`; `complete rollback governance`; `cross-platform cutover semantics` | The safe sentence family is: `this runbook names the switch surfaces and the required checkpoint/evidence around changes`. |
+| `RFC-03` | `explicit exclusion / not-owned-yet boundary` | `negative boundary statement` | Current evidence is strong enough to forbid positive coexistence claims and to keep reviewers from inferring them from retained material. | `approved dual-run`; `approved staged cutover`; `parallel-mode positive procedure` | The safe sentence family is: `this runbook does not currently own coexistence / shadow / dual-run semantics on this lane`. |
+
+- P5 statement-shape verdict:
+  - `RFC-01` should future-land as a bounded `boundary + checkpoint` statement, not as a fallback playbook paragraph;
+  - `RFC-02` should future-land as a `code-bound checkpoint + evidence expectation` statement, not as a full switch procedure section;
+  - `RFC-03` should future-land as an explicit `exclusion / not-owned-yet` statement so later reviewers cannot infer a positive coexistence model from retained runbook history.
+
+### P5-C1-S2 (Minimum landing surfaces for future Search runbook fixed | v1)
+
+- The current landing-surface question is not `which section could mention these semantics somewhere?`; it is `which minimum future runbook surface should own each safe statement shape so ownership stays visible and auditable?`
+
+| field cluster id | primary landing surface | supporting landing surface | minimum row / statement intent | why this landing is correct now | notes |
+| --- | --- | --- | --- | --- | --- |
+| `RFC-01` | `3.5 Scenario Registry / Coverage` | `8) Notes and Boundaries`; `5) Evidence Bundle` | one coverage row stating that worker-disable fallback semantics are owned only as explicit disable-state checkpoints with evidence obligations, not as alternate-path fallback semantics | This cluster is policy/coverage-first: the important thing is current ownership standing and explicit non-claim, not one extra code anchor. | Use `Evidence Bundle` to name proof expectations after disable/restore, but do not move the semantic boundary there. |
+| `RFC-02` | `3.3 Code Bridge Table` | `3.5 Scenario Registry / Coverage`; `5) Evidence Bundle` | one bridge row naming `SEARCH_OUTBOX_WORKER_ENABLED` / `SEARCH_OUTBOX_RUNNER`, plus one coverage row saying changes require explicit operator checkpointing and evidence capture | This cluster is code-adjacent first, but still needs coverage standing so the bridge row does not silently imply full procedure ownership. | Keep command text downstream; bridge/coverage rows should own the reusable meaning first. |
+| `RFC-03` | `8) Notes and Boundaries` | `3.5 Scenario Registry / Coverage` | one boundary note stating coexistence / shadow / dual-run semantics are not currently owned, optionally echoed by one coverage row with `not-owned-here` standing | This cluster is primarily a boundary/exclusion call right now; forcing it into positive scenario language would blur the current exclusion verdict. | If a later runbook opens positive coexistence semantics, this row/note becomes the replacement point. |
+
+- P5 landing-surface verdict:
+  - `RFC-01` lands primarily on `Scenario Registry / Coverage` with one explicit boundary-support note;
+  - `RFC-02` lands primarily on `Code Bridge Table` with coverage support and evidence expectations;
+  - `RFC-03` lands primarily on `Notes and Boundaries` with optional `not-owned-here` coverage echo;
+  - later Search runbook drafting should reuse these landing surfaces rather than rediscovering ownership from prose.
+
 ## Execution Checklist (unchecked)
 
 ### P0 (Contract)
@@ -448,6 +487,11 @@
 - [x] `P4-C1-S1`: split current Search semantics into `standardize-now` versus `future platform-grade ownership`.
 - [x] `P4-C1-S2`: record the first landing verdict for fallback mode and switch surface.
 
+### P5 (Runbook statement shapes and landing surfaces)
+
+- [x] `P5-C1-S1`: translate `RFC-01` / `RFC-02` / `RFC-03` into minimum future runbook statement shapes.
+- [x] `P5-C1-S2`: map those statement shapes onto minimum future runbook landing surfaces.
+
 ## Current Status
 
 - `S4G-1F` is now the bounded next packet for Search runtime-only field shapes after the audited grammar work in `S4G-2B`.
@@ -460,7 +504,8 @@
 - `P3` now also fixes the downstream path: the next justified move stays inside `S4G-1F` as one narrow semantic-confirmation unit, not direct runbook drafting and not another contract mutation.
 - `P4` now fixes the first semantic split between `what Search can standardize now` and `what must wait for later platform-grade ownership`.
 - `P4` now also lands the first safe meanings: `fallback mode` lands as `disable-state semantics`, `switch surface` lands as `operator checkpoint semantics`, and `coexistence window` remains an explicit `not-owned-yet` boundary.
-- `S4G-1F` can now stand as the active stable source packet for Search runbook semantic confirmation and landing.
+- `P5` now fixes the first reusable statement shapes and landing surfaces for later Search runbook drafting, so future text no longer needs to guess where each confirmed meaning should live.
+- `S4G-1F` can now stand as the active stable source packet for Search runbook semantic confirmation, landing, and first future runbook-shape guidance.
 
 ## Evidence
 
@@ -533,6 +578,20 @@
   - `RFC-03` now lands as an explicit `not-owned-yet` coexistence boundary;
   - `S4G-1F` now keeps semantic confirmation and landing local instead of forcing an immediate successor packet.
 
+### P5-C1-S1S2 (Runbook statement shapes and landing surfaces fixed | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts: `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
+- expected:
+  - translate the confirmed Search semantics into minimum reusable statement shapes for a later runbook;
+  - fix which future runbook surfaces should own those statements;
+  - prevent later drafting from rediscovering ownership through prose inference.
+- observed:
+  - `RFC-01` now has a minimum future statement shape of `boundary + checkpoint` and lands primarily on `Scenario Registry / Coverage`;
+  - `RFC-02` now has a minimum future statement shape of `code-bound checkpoint + evidence expectation` and lands primarily on `Code Bridge Table` with coverage support;
+  - `RFC-03` now has a minimum future statement shape of `explicit exclusion / not-owned-yet boundary` and lands primarily on `Notes and Boundaries` with optional coverage echo;
+  - future Search runbook drafting now has one fixed minimum landing model instead of needing to infer structure from retained history.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1F` as the bounded Search runtime-only field-shapes gap packet so the lane can decide field inventory and opening gate before any direct runtime runbook write-up.
@@ -540,3 +599,4 @@
 - 2026-04-27: completed `P2` by mapping each field cluster to future runbook surfaces and by classifying each cluster as future procedure, exclusion verdict, retained gap, or packet-owned gate.
 - 2026-04-27: completed `P3` by closing the runbook opening gate explicitly and by routing the lane to one narrow successor packet for runtime ownership closure instead of direct runbook drafting.
 - 2026-04-27: completed `P4` by splitting current Search runbook-standardizable semantics from future platform-grade ownership and by landing the first safe meanings for fallback mode, switch surface, and coexistence boundary.
+- 2026-04-27: completed `P5` by translating the confirmed Search semantics into minimum future runbook statement shapes and by fixing their landing surfaces for later `run-RUNTIME-OBSERVABILITY-001` drafting.
