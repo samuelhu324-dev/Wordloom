@@ -438,6 +438,12 @@
 - `support-only` scenarios remain retained in the object ledgers and source log.
 - `sibling-family` scenarios remain explicitly outside current ownership and should wait for a later sibling-lane packet rather than being silently absorbed here.
 
+### P3-C1-S3 (Sibling-family human reading clarified | v1)
+
+- The new ambiguity after `P3` was not machine routing but human reading: `sibling-family` was accurate, yet still too abstract to tell reviewers what kind of family these rows actually belong to.
+- The clarified reading is now explicit: the retained `shadow_*`, `rehearsal_search_read_switch_smoke`, `dual_run_*`, and `dual_write_*` scenarios should be read as migration or cutover-adjacent Search sibling-lane material rather than as extra runtime-observability coverage waiting to be widened.
+- Release-ledger and reader notes should therefore describe those rows as visible non-owned sibling routing, not as half-owned observability backlog.
+
 ### P3-C1-S2 (Next bounded path and no-op path recorded | v1)
 
 - The current runbook path is `apply-now`: widen `run-RUNTIME-OBSERVABILITY-001` by writing the remaining `current-family` worker-chain scenarios into the scenario registry.
@@ -472,6 +478,7 @@
 
 - [x] `P3-C1-S1`: decide whether current readers widen, stay narrow, or split sibling lanes.
 - [x] `P3-C1-S2`: record the next bounded packet or no-op path.
+- [x] `P3-C1-S3`: clarify that retained sibling-family rows are migration or cutover sibling-lane material rather than extra observability scope.
 
 ## Current Status
 
@@ -481,6 +488,7 @@
 - The extracted universe already appears wider than the current reader family and already falls into at least three visible bands: worker fault/recovery, Search verification/gate, and dual-run/dual-write adjacent scenarios.
 - The repo now also has explicit reader-object release-ledger landing surfaces for the current runbook and current contract, so later scenario-classification evidence no longer needs to stay trapped only inside the control log.
 - `P2` now makes family ownership explicit: worker-chain fault and recovery scenarios classify as `current-family`; supporting infra or cross-surface corroboration scenarios classify as `support-only`; search verification, read-switch, and dual-run or dual-write scenarios classify as `sibling-family`.
+- The retained `sibling-family` band should now be read more concretely as migration or cutover-adjacent Search sibling-lane material, not as extra observability coverage waiting inside the current readers.
 - The repo now also has the full auditable chain needed for later reader mutation: `SUP -> parent ledger -> reader` for meaning changes, `PATCH -> reader` for bounded repairs, and paired `SUP` whenever a patch also changes admitted meaning.
 - The newly-opened object-ledger live files now separate artifact lifecycle time, source chronology time, and governance-event time so later write-back can be read as change history instead of only as current state.
 - The release-ledger live files now also carry explicit per-scenario routing registries, per-scenario chronology, and per-scenario route events, so one scenario can be audited independently of the family summary table.

@@ -158,4 +158,5 @@ contract_record:
 - This family is `runtime` first and `observability` second: observability is the diagnostic subdomain owned under one runtime worker chain here.
 - The first release is draft because the proof path is defended, but trace-export completeness and a narrower runbook bridge may still be hardened later.
 - Additional current-family scenarios extracted in `S4G-1G` remain visible in the bound contract release ledger, but `P3` explicitly does not promote them into new positive contract clauses until a later proof-path-specific packet justifies that widening.
+- The `shadow_*`, `rehearsal_*`, `dual_run_*`, and `dual_write_*` rows visible in the bound release ledger should be read as migration or cutover sibling-lane material, not as latent observability contract clauses.
 - Later sibling families should stay under `DOC-RUNTIME-*` when runtime remains the governing owner surface.

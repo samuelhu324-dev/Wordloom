@@ -141,7 +141,7 @@ runbook_record:
   - explicit boundary language for worker-disabled fallback semantics and coexistence non-ownership
 - Out of scope:
   - alternate-path fallback or replacement serving paths
-  - dual-run, shadow-run, or staged coexistence procedures
+  - migration or cutover sibling-lane procedures such as search gate verification, read-switch rehearsal, dual-run, shadow-run, dual-write, or staged coexistence operations
   - production authorization matrix, rollback governance, or platform-grade recovery policy
   - parent run-ledger execution history beyond the reserved binding described below
 - Primary source materials:
@@ -316,8 +316,9 @@ runbook_record:
 - The runbook owns explicit disable-state checkpoints, switch-surface checkpoint/evidence expectations, one first defended proof path, and the admitted current-family worker-chain scenario registry.
 - The runbook does not currently own:
   - alternate-path fallback semantics
-  - shadow-run, dual-run, or staged coexistence semantics
+  - migration or cutover sibling-lane semantics such as search gate verification, read-switch rehearsal, shadow-run, dual-run, dual-write, or staged coexistence operations
   - production-grade rollback authority or cross-platform recovery governance
+- When the bound release ledger shows `shadow_*`, `rehearsal_*`, `dual_run_*`, or `dual_write_*` rows, read them as visible non-owned sibling-lane routing rather than as hidden extra runbook scope.
 - Read `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md` when the question is `why are these semantics bounded this way and what still remains future ownership?`
 - Read `docs/governance/contracts/runtime/observability/DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md` when the question is `what current contract meaning is already defended for the same worker chain?`
 - Read `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md` when the question is `what broader historical drill family still exists outside this narrower current-owned skeleton?`
