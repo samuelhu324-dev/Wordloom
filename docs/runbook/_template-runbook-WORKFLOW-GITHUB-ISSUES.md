@@ -113,18 +113,28 @@ runbook_record:
 - Preferred family tables inside the runbook body:
   - `Current Governance State`
   - `Stable Entrypoint Table`
+  - `Runbook Bridge Evolution Table`
   - `Workflow Profile / Stage Registry`
   - `Coverage / Boundary Table`
+  - `Runbook Coverage Evolution Table`
 
 ## Preferred Family Table Shapes
 
-| bridge id | surface kind | stable ref | operator meaning owned here | current standing | notes |
-| --- | --- | --- | --- | --- | --- |
-| `RB-01` | `script` | `scripts/issues/<tool>.py` | `<what bounded operator meaning the script surface owns>` | `<defended-now|code-anchor-only|not-owned-here>` | `<bridge note>` |
+| bridge id | surface kind | stable ref | operator meaning owned here | current standing | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-01` | `script` | `scripts/issues/<tool>.py` | `<what bounded operator meaning the script surface owns>` | `<defended-now|code-anchor-only|not-owned-here>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bridge note>` |
 
-| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SC-01` | `<review-hold|missing-metadata|merge-not-found>` | `<fail-closed|pause-and-resume|not-run>` | `<repair-source|resume-stage|stop>` | `<every-run|follow-up-only|lab-only>` | `<per-run|after-review|none>` | `<plan json|apply-result json|live github state>` | `<defended-now|partial-code-support|gap-owned>` | `<bounded scenario note>` |
+| bridge change id | affected bridge ids | change action | actor value | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-CH-01` | `RB-01` | `<introduced|amended|replaced|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bridge-evolution note>` |
+
+| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-01` | `<review-hold|missing-metadata|merge-not-found>` | `<fail-closed|pause-and-resume|not-run>` | `<repair-source|resume-stage|stop>` | `<every-run|follow-up-only|lab-only>` | `<per-run|after-review|none>` | `<plan json|apply-result json|live github state>` | `<defended-now|partial-code-support|gap-owned>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded scenario note>` |
+
+| coverage change id | affected coverage ids | change action | actor value | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-CH-01` | `SC-01` | `<introduced|amended|replaced|rerouted|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<coverage-evolution note>` |
 
 ## Thinness Rules
 

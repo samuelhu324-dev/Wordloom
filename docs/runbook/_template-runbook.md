@@ -97,6 +97,7 @@ runbook_record:
 - `recorded_at` records when this runbook release entered the repo as a defended operator surface.
 - `reviewed_at` records when this runbook release passed defended review; use `pending` when the review has not happened yet.
 - `effective_from` and `effective_until` describe the best currently known historical-effective range for this operator surface.
+- `recorded_at`, `reviewed_at`, `effective_from`, and `effective_until` are required fields in every runbook record; when a defended value is not known yet, keep the field present and use `unknown`, `pending`, or `ongoing` rather than omitting it.
 - New values should prefer canonical UTC second timestamps such as `2026-04-20T14:55:00Z`.
 - Legacy day-only values may remain where finer audit precision is not defended.
 
@@ -114,6 +115,7 @@ runbook_record:
 - `scenario_registry_ref` points to the table or file that enumerates admitted drills or failure classes for this runbook.
 - `fallback_surface_refs` list the operator-facing switches or bounded fallback surfaces that the runbook may name without implying that all procedures are already defended.
 - `coverage_table_required=yes` means the runbook body should include explicit `Coverage` or `Scenario Registry` tables rather than only prose bullets.
+- When a runbook opens `Code Bridge Table`, `Scenario Registry / Coverage`, or either evolution table, all time-window and event-time columns defined by the template are required; `unknown`, `pending`, and `ongoing` are valid values, omission is not.
 
 ## Current Governance State
 
@@ -153,20 +155,36 @@ runbook_record:
 - Use this section when the runbook must stay aligned to stable code or workflow entrypoints.
 - Keep this table current-reader-only: it records what executable surfaces the runbook is attached to now, not every historical implementation.
 
-| bridge id | surface kind | stable ref | operator meaning owned here | current standing | notes |
-| --- | --- | --- | --- | --- | --- |
-| `RB-01` | `<worker|workflow|task|script>` | `<path or entry id>` | `<what operator meaning this bridge defends>` | `<defended-now|code-anchor-only|not-owned-here>` | `<bounded bridge note>` |
+| bridge id | surface kind | stable ref | operator meaning owned here | current standing | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-01` | `<worker|workflow|task|script>` | `<path or entry id>` | `<what operator meaning this bridge defends>` | `<defended-now|code-anchor-only|not-owned-here>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded bridge note>` |
 
-### 3.4 Scenario Registry / Coverage
+### 3.4 Runbook Bridge Evolution Table
+
+- Use this section when bridge rows may be introduced, revised, narrowed, replaced, retired, or backfilled over time.
+
+| bridge change id | affected bridge ids | change action | actor value | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-CH-01` | `RB-01` | `<introduced|amended|replaced|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded bridge-evolution note>` |
+
+### 3.5 Scenario Registry / Coverage
 
 - Use this section when the runbook governs multiple admitted failure classes or drill scenarios.
 - A runbook should not imply full operator coverage only through narrative paragraphs; list the admitted scenarios explicitly.
 
-| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SC-01` | `<es_429|timeout|duplicate_delivery>` | `<retry|terminal-failed|draining>` | `<observe-only|manual-replay|fallback-switch|defer>` | `<periodic-drill|pre-change-drill|incident-only|lab-only>` | `<weekly|per-release|before-risky-change|after-incident|none>` | `<_result.json|metrics|logs|trace export>` | `<defended-now|partial-code-support|gap-owned|not-owned-here>` | `<bounded scenario note>` |
+| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-01` | `<es_429|timeout|duplicate_delivery>` | `<retry|terminal-failed|draining>` | `<observe-only|manual-replay|fallback-switch|defer>` | `<periodic-drill|pre-change-drill|incident-only|lab-only>` | `<weekly|per-release|before-risky-change|after-incident|none>` | `<_result.json|metrics|logs|trace export>` | `<defended-now|partial-code-support|gap-owned|not-owned-here>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded scenario note>` |
 
 - When `coverage class` is not `defended-now`, the runbook should link the owning gap packet, contract note, or deferred owner explicitly.
+
+### 3.6 Runbook Coverage Evolution Table
+
+- Use this section when scenario or coverage rows may be introduced, revised, rerouted, reopened, or retired over time.
+
+| coverage change id | affected coverage ids | change action | actor value | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-CH-01` | `SC-01` | `<introduced|amended|replaced|rerouted|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded coverage-evolution note>` |
 
 ## 4) Run Ledger Binding
 
