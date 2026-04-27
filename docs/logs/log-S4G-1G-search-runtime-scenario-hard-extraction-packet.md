@@ -72,7 +72,7 @@
 
 | packet id | source anchor | extraction class | candidate text | downstream owner | split status | shared reason group | evidence refs | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `R01` | `scenario registry mismatch` | `runbook-candidate` | The current Search runtime readers should not be treated as the full scenario universe until code and labs extraction explicitly classify which scenarios belong to the current family. | `runbook` | `ready` | `RG-01` | `S4G-1F`; `run-RUNTIME-OBSERVABILITY-001`; code scenarios; labs` | Opening rule for this packet. |
+| `R01` | `scenario registry mismatch` | `runbook-candidate` | The current Search runtime readers should not be treated as the full scenario universe until code and labs extraction explicitly classify which scenarios belong to the current family. | `runbook` | `ready` | `RG-01` | `S4G-1F`; `run-RUNTIME-OBSERVABILITY-001`; code scenarios; labs | Opening rule for this packet. |
 | `R02` | `backend/scripts/cli_app/scenarios` | `view-candidate` | Scenario inventory for Search runtime must be extracted first from concrete code-registered scenarios rather than from retained wording alone. | `view` | `ready` | `RG-01` | `backend/scripts/cli_app/scenarios/*.py` | Code-first extraction rule. |
 | `R03` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md` | `runbook-candidate` | A scenario should enter the current `RUNTIME-OBSERVABILITY` family only when code, labs, and current reader meaning align strongly enough to support one bounded current operator surface. | `runbook` | `needs-corroboration` | `RG-02` | `lab-S3A-2A-3A`; scenario code; current runbook/contract` | Family-admission rule, not automatic inclusion. |
 | `R04` | `dual-run / DLQ / replay evidence` | `view-candidate` | Search-adjacent scenarios that primarily express dual-write, cutover, replay, or DLQ semantics should be classified explicitly as sibling-family or support-only rather than being silently absorbed by the current observability family. | `view` | `ready` | `RG-02` | `lab-S2B-2A-2A`; shadow/dual-run scenarios` | Prevents family drift. |
@@ -240,6 +240,66 @@
 - P1-C1-S1: inventory Search runtime scenarios from `backend/scripts/cli_app/scenarios/`.
 - P1-C1-S2: corroborate those scenarios with labs docs, labs catalog, and retained evidence anchors.
 
+## P1 (Hard extraction | v1)
+
+### P1-C1-S1 (Search runtime scenarios inventoried from code | v1)
+
+- The current extraction question is not `which scenarios feel important from memory?`; it is `which concrete Search-adjacent scenarios are actually registered in code and therefore must be accounted for before any family boundary is trusted?`
+
+| scenario band | scenario name | concrete code anchor | current extraction note | why it is in the inventory now |
+| --- | --- | --- | --- | --- |
+| `worker fault / observability` | `es_429_inject` | `backend/scripts/cli_app/scenarios/es_429_inject.py` | `registered current Search fault scenario` | A concrete ES-side retry/failure scenario exists in code and must be counted even if current readers do not own it yet. |
+| `worker fault / observability` | `es_write_block_4xx` | `backend/scripts/cli_app/scenarios/es_write_block_4xx.py` | `registered current Search fault scenario` | This is the first admitted proof path already used by current readers. |
+| `worker fault / observability` | `es_down_connect` | `backend/scripts/cli_app/scenarios/es_down_connect.py` | `registered current Search fault scenario` | Search worker connectivity failure is explicitly implemented in code. |
+| `worker fault / observability` | `es_timeout` | `backend/scripts/cli_app/scenarios/es_timeout.py` | `registered current Search fault scenario` | Timeout behavior is explicitly implemented in code. |
+| `worker fault / observability` | `collector_down` | `backend/scripts/cli_app/scenarios/collector_down.py` | `registered current Search/obs-infra scenario` | Collector-down observability degradation is explicitly implemented in code. |
+| `worker fault / observability` | `es_bulk_partial` | `backend/scripts/cli_app/scenarios/es_bulk_partial.py` | `registered current Search fault scenario` | Partial-bulk result semantics are explicitly implemented in code. |
+| `worker concurrency / recovery` | `db_claim_contention` | `backend/scripts/cli_app/scenarios/db_claim_contention.py` | `registered current Search worker-contention scenario` | DB claim/owner mismatch contention is explicitly implemented in code. |
+| `worker concurrency / recovery` | `stuck_reclaim` | `backend/scripts/cli_app/scenarios/stuck_reclaim.py` | `registered current Search reclaim scenario` | Lease expiry / reclaim behavior is explicitly implemented in code. |
+| `worker idempotency` | `duplicate_delivery` | `backend/scripts/cli_app/scenarios/duplicate_delivery.py` | `registered current Search duplicate/noop scenario` | Duplicate delivery semantics are explicitly implemented in code. |
+| `worker rule-versioning` | `projection_version` | `backend/scripts/cli_app/scenarios/projection_version.py` | `registered current Search version-risk scenario` | Projection-version behavior is explicitly implemented in code. |
+| `search verification / gate` | `shadow_verify_search_index_write_gate` | `backend/scripts/cli_app/scenarios/shadow_verify_search_index_write_gate.py` | `registered Search-adjacent scenario with boundary pending` | Search write-gate semantics exist in code and may belong to another family. |
+| `search verification / gate` | `shadow_verify_search_index_paging_stability` | `backend/scripts/cli_app/scenarios/shadow_verify_search_index_paging_stability.py` | `registered Search-adjacent scenario with boundary pending` | Search paging-stability verification exists in code and must be counted before routing. |
+| `search verification / gate` | `shadow_verify_shared_keys` | `backend/scripts/cli_app/scenarios/shadow_verify_shared_keys.py` | `registered Search/obs-infra verification scenario with boundary pending` | Shared-key verification exists in code and may support either current family or a sibling gate family. |
+| `search rehearsal` | `rehearsal_search_read_switch_smoke` | `backend/scripts/cli_app/scenarios/rehearsal_search_read_switch_smoke.py` | `registered Search-adjacent rehearsal scenario with boundary pending` | Search read-switch rehearsal exists in code and must be distinguished from runtime observability proper. |
+| `dual-run / dual-write adjacent` | `shadow_verify_dual_run_readiness_gate` | `backend/scripts/cli_app/scenarios/shadow_verify_dual_run_readiness_gate.py` | `registered Search-adjacent scenario with likely sibling-family standing` | Dual-run readiness semantics clearly exist in code and must not be lost by narrow current readers. |
+| `dual-run / dual-write adjacent` | `shadow_verify_dual_run_stage1` | `backend/scripts/cli_app/scenarios/shadow_verify_dual_run_stage1.py` | `registered Search-adjacent scenario with likely sibling-family standing` | Stage-1 dual-run semantics clearly exist in code. |
+| `dual-run / dual-write adjacent` | `shadow_verify_dual_run_stage2` | `backend/scripts/cli_app/scenarios/shadow_verify_dual_run_stage2.py` | `registered Search-adjacent scenario with likely sibling-family standing` | Stage-2 dual-run semantics clearly exist in code. |
+| `dual-run / dual-write adjacent` | `shadow_verify_dual_run_window` | `backend/scripts/cli_app/scenarios/shadow_verify_dual_run_window.py` | `registered Search-adjacent scenario with likely sibling-family standing` | Sustained dual-run window semantics clearly exist in code. |
+| `dual-run / dual-write adjacent` | `shadow_verify_canary_dual_write` | `backend/scripts/cli_app/scenarios/shadow_verify_canary_dual_write.py` | `registered Search-adjacent scenario with likely sibling-family standing` | Canary dual-write semantics clearly exist in code. |
+| `dual-run / dual-write adjacent` | `shadow_verify_dual_write_sampling` | `backend/scripts/cli_app/scenarios/shadow_verify_dual_write_sampling.py` | `registered Search-adjacent scenario with likely sibling-family standing` | Dual-write sampling semantics clearly exist in code. |
+
+- P1 code-inventory verdict:
+  - the concrete Search scenario universe in code is already materially wider than the single `es_write_block_4xx` proof path owned by current readers;
+  - the inventory naturally divides into at least three extracted bands even before formal `P2` classification: worker fault/recovery, Search verification/gate, and dual-run/dual-write adjacent scenarios;
+  - current readers should therefore be treated as intentionally narrow, not as an implicit summary of all existing Search runtime scenarios.
+
+### P1-C1-S2 (Scenario inventory corroborated with labs docs, catalog, and retained evidence | v1)
+
+- The current corroboration question is not `does one scenario name appear somewhere in docs?`; it is `does code inventory line up with labs/catalog/evidence strongly enough that the scenario should count as real lane material rather than a stale implementation stub?`
+
+| scenario name | corroborating labs/catalog anchor | corroboration class | observed corroboration | notes |
+| --- | --- | --- | --- | --- |
+| `es_429_inject` | `docs/labs/scenarios/catalog.yml` | `catalog-backed` | catalog exposes full run/verify/export/clean commands for `fault/obs_infra/es_429_inject` | Present in catalog even if not highlighted in the current runbook skeleton. |
+| `es_write_block_4xx` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`; `docs/labs/scenarios/catalog.yml` | `lab-backed + catalog-backed` | labs doc records full buttonized flow and catalog exposes the same scenario family | Strongest currently admitted corroboration. |
+| `es_down_connect` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`; `docs/labs/scenarios/catalog.yml` | `lab-backed + catalog-backed` | labs doc records full run/verify/export/clean path and catalog exposes the same scenario | Current readers do not yet reflect it. |
+| `es_timeout` | `docs/labs/scenarios/catalog.yml` | `catalog-backed` | catalog exposes full command flow for the scenario | Code + catalog already prove it is not an accidental stub. |
+| `collector_down` | `docs/labs/scenarios/catalog.yml` | `catalog-backed` | catalog exposes full command flow for the scenario | Search-adjacent observability-infra case remains visible. |
+| `es_bulk_partial` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`; `docs/labs/scenarios/catalog.yml` | `lab-backed + catalog-backed` | labs doc records experiment D and catalog exposes the scenario | Current readers do not yet reflect partial-bulk semantics. |
+| `db_claim_contention` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`; `docs/labs/scenarios/catalog.yml` | `lab-backed + catalog-backed` | labs doc records experiment E plus retained snapshots/exports; catalog exposes full command flow | Strong corroboration for worker-contention semantics. |
+| `stuck_reclaim` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`; retained snapshots; `docs/labs/scenarios/catalog.yml` | `lab-backed + snapshot-backed + catalog-backed` | labs doc records experiment F, retained snapshots exist, and catalog exposes full command flow | Strong corroboration for reclaim semantics. |
+| `duplicate_delivery` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`; retained snapshots; `docs/labs/scenarios/catalog.yml` | `lab-backed + snapshot-backed + catalog-backed` | labs doc records experiment G, retained snapshots exist, and catalog exposes full command flow | Strong corroboration for idempotency/noop semantics. |
+| `projection_version` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md`; retained snapshots; `docs/labs/scenarios/catalog.yml` | `lab-backed + snapshot-backed + catalog-backed` | labs doc records experiment H, retained snapshots exist, and catalog exposes full command flow | Strong corroboration for version-risk semantics. |
+| `shadow_verify_search_index_write_gate` | `docs/labs/scenarios/catalog.yml`; `docs/labs/lab-S2B-2A-1A-shadow-verify-write-gate.md` | `catalog-backed + lab-backed` | Search write-gate scenario exists in catalog and dedicated labs docs | Strong candidate for later sibling-family handling. |
+| `shadow_verify_dual_run_readiness_gate` / `shadow_verify_dual_run_stage1` / `shadow_verify_dual_run_stage2` / `shadow_verify_dual_run_window` | `docs/labs/scenarios/catalog.yml` | `catalog-backed` | catalog explicitly groups these as readiness/dual_run Search scenarios | Sufficient corroboration to keep them in the extracted universe before routing. |
+| `shadow_verify_canary_dual_write` / `shadow_verify_dual_write_sampling` | `docs/labs/scenarios/catalog.yml`; `docs/labs/lab-S2B-2A-2A-dual-run-cutover-closure.md` | `catalog-backed + lab-backed` | catalog exposes the scenarios and labs doc explicitly records DLQ/replay evidence and dual-write sampling | Strong sign these belong to a sibling family rather than current observability. |
+| `rehearsal_search_read_switch_smoke` | `docs/labs/scenarios/catalog.yml` | `catalog-backed` | catalog exposes the rehearsal path under `pipeline:search` | Enough corroboration to keep it in inventory and classify later. |
+
+- P1 corroboration verdict:
+  - the worker-fault/recovery scenarios are not only present in code; they are also strongly corroborated by labs docs, retained snapshots, or the scenario catalog;
+  - a second band of Search-adjacent verification/rehearsal/dual-run scenarios is also concretely corroborated and therefore cannot be dismissed as wording noise;
+  - the main remaining problem is not scenario existence but scenario-family ownership, which is correctly deferred to `P2`.
+
 ### P2 (Family classification)
 
 - P2-C1-S1: classify each extracted scenario into current-family, support-only, or sibling-family.
@@ -260,8 +320,8 @@
 
 ### P1 (Hard extraction)
 
-- [ ] `P1-C1-S1`: inventory Search runtime scenarios from code.
-- [ ] `P1-C1-S2`: corroborate scenarios with labs docs, catalog, and retained evidence.
+- [x] `P1-C1-S1`: inventory Search runtime scenarios from code.
+- [x] `P1-C1-S2`: corroborate scenarios with labs docs, catalog, and retained evidence.
 
 ### P2 (Family classification)
 
@@ -277,7 +337,9 @@
 
 - `S4G-1G` is now the bounded Search runtime scenario hard-extraction packet after the first bounded `run-RUNTIME-OBSERVABILITY-001` skeleton exposed a likely mismatch between current readers and the broader scenario universe in code/labs.
 - The current lane hypothesis is that the repo already contains more Search-adjacent scenarios than the current `OBSERVABILITY-0001` / `run-RUNTIME-OBSERVABILITY-001` family presently owns.
-- The next step is intentionally narrow: extract those scenarios from code + labs first, then classify family ownership before widening any current reader.
+- `P1` now records a concrete Search scenario inventory from code and corroborates it with labs docs, labs catalog, and retained snapshots/evidence.
+- The extracted universe already appears wider than the current reader family and already falls into at least three visible bands: worker fault/recovery, Search verification/gate, and dual-run/dual-write adjacent scenarios.
+- The next step is intentionally narrow: classify family ownership for the extracted scenarios before widening any current reader.
 
 ## Evidence
 
@@ -291,6 +353,21 @@
   - `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
   - `docs/runbook/run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
 
+### P1-C1-S1S2 (Search runtime scenario inventory extracted and corroborated | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts: `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md`
+- expected:
+  - extract the Search runtime scenario universe from concrete code files;
+  - corroborate the extracted scenarios with labs docs, labs catalog, and retained evidence;
+  - stop treating the current runbook/contract family as an implicit summary of all existing Search scenarios.
+- observed:
+  - the code inventory now explicitly includes worker-fault/recovery scenarios such as `es_write_block_4xx`, `es_down_connect`, `es_bulk_partial`, `db_claim_contention`, `stuck_reclaim`, `duplicate_delivery`, and `projection_version`;
+  - the extracted universe also includes Search-adjacent verification, rehearsal, dual-run, and dual-write scenarios that current readers do not presently own;
+  - labs docs, catalog entries, and retained snapshots corroborate that these scenarios are real lane material rather than stale stubs;
+  - the remaining unresolved problem is family ownership, not scenario existence.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1G` as the bounded Search runtime scenario hard-extraction packet so the lane can re-extract the current scenario universe from code/labs before widening current readers by wording guesswork.
+- 2026-04-27: completed `P1` by inventorying concrete Search runtime scenarios from code and corroborating them with labs docs, labs catalog, and retained evidence before any family-boundary classification.
