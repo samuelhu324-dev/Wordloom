@@ -66,3 +66,25 @@ contract_release_ledger:
 | `CRL-01` | `role:s4g-packet-maintainer` | `role:contract-maintainer` | `pending` | `pending` | `direct-markdown-inspection` | `pending` | `pending` | `Current bounded contract release already landed through the source-ledger and S4G-2B write-back.` | `This ledger is newly opened as an object-level intake surface, not as a replacement for the original source route.` |
 | `CRL-02` | `role:s4g-packet-maintainer` | `role:contract-maintainer` | `pending` | `pending` | `source-path-check` | `pending` | `pending` | `The extracted scenario inventory is strong enough to admit into the object ledger, but not yet to widen the contract.` | `This row intentionally carries strong-structure evidence pending family classification.` |
 | `CRL-03` | `role:s4g-packet-maintainer` | `role:contract-maintainer` | `pending` | `pending` | `direct-markdown-inspection` | `pending` | `pending` | `Runbook corroboration remains visible without changing contract ownership.` | `This row preserves bridge archaeology only.` |
+
+## Row Chronology Audit
+
+| row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `CRL-01` | `unknown` | `unknown` | `unknown` | `ongoing` | `unknown` | `none` | `This row reflects the already-admitted contract release basis inherited from the earlier source-ledger route and contract history.` |
+| `CRL-02` | `unknown` | `2026-04-27` | `2026-04-27` | `ongoing` | `day` | `none` | `The extracted scenario inventory and classification were first admitted into this contract release-ledger row on the same day as S4G-1G/P1-P2.` |
+| `CRL-03` | `unknown` | `2026-04-27` | `2026-04-27` | `ongoing` | `day` | `none` | `The runbook-to-contract archaeology boundary note became explicit when the object-ledger family was opened.` |
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `CRL-E01` | `intake-admitted` | `CRL-01` | `role:s4g-packet-maintainer` | `current contract release basis remains explicitly bound to this release ledger` | `2026-04-27` | `CRL-01` | `The already-landed contract basis is made auditable at the release-ledger layer.` |
+| `CRL-E02` | `intake-admitted` | `CRL-02` | `role:s4g-packet-maintainer` | `classified scenario inventory is admitted without widening the contract body yet` | `2026-04-27` | `CRL-02` | `This event preserves staged write-back rather than forcing immediate contract mutation.` |
+| `CRL-E03` | `review-state-changed` | `CRL-03` | `role:s4g-packet-maintainer` | `runbook corroboration remains visible but non-authoritative for contract widening` | `2026-04-27` | `CRL-03` | `This event keeps cross-reader adjacency from becoming silent contract scope creep.` |
+
+## Reader Notes
+
+- Landed in the contract already: the bounded current worker-chain contract basis represented by `CRL-01`.
+- Admitted in the release ledger but not yet written into the contract body: the wider scenario classification inventory represented by `CRL-02`.
+- Still intentionally unchanged: the contract does not widen just because the sibling runbook exists, as preserved by `CRL-03`.

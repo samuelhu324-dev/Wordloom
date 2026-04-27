@@ -33,3 +33,24 @@ contract_release_ledger_supplement:
 | `CRL-02-SUP-01` | `CRL-02` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P1` | `md` | `verified` | `sharpens-existing` | `rewrite-parent-row` | `defer-contract-change` | `S4G-1G/P1 proves that the scenario universe is wider than the current contract family, but still does not classify ownership.` |
 | `CRL-02-SUP-02` | `CRL-02` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md` | `labs` | `verified` | `supports-existing` | `append-evidence` | `defer-contract-change` | `The labs drill family corroborates that several wider Search scenarios are real and repeatable even though current contract ownership remains narrow.` |
 | `CRL-02-SUP-03` | `CRL-02` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P2` | `md` | `verified` | `sharpens-existing` | `rewrite-parent-row` | `defer-contract-change` | `P2 now classifies same-chain worker scenarios as current-family, support scenarios as support-only, and gate or dual-run scenarios as sibling-family without widening the contract yet.` |
+
+## Actor and Provenance Review Table
+
+| supplement item id | submitted by | evidence owner | reviewed by | verified by | verification method | approved by | approval state | approval basis | provenance note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `CRL-02-SUP-01` | `role:s4g-packet-maintainer` | `role:contract-maintainer` | `pending` | `role:s4g-packet-maintainer` | `direct-markdown-inspection` | `pending` | `pending` | `P1 is already explicit enough to verify the wider scenario inventory, but contract write-back remains deferred.` | `This evidence originates in the bounded control packet rather than in the contract body.` |
+| `CRL-02-SUP-02` | `role:s4g-packet-maintainer` | `role:contract-maintainer` | `pending` | `role:s4g-packet-maintainer` | `source-path-check` | `pending` | `pending` | `The labs drill family corroborates the extracted scenario universe without widening contract ownership by itself.` | `This evidence is corroborating support, not a direct contract rewrite by itself.` |
+| `CRL-02-SUP-03` | `role:s4g-packet-maintainer` | `role:contract-maintainer` | `pending` | `role:s4g-packet-maintainer` | `direct-markdown-inspection` | `pending` | `pending` | `P2 makes ownership routing explicit enough for staged contract release-ledger write-back.` | `This evidence records classification, not direct contract widening.` |
+
+## Optional Evidence Time Audit
+
+| supplement item id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `CRL-02-SUP-01` | `unknown` | `2026-04-27` | `2026-04-27` | `ongoing` | `day` | `none` | `The inventory admission is tied to the P1 packet state recorded on this date.` |
+| `CRL-02-SUP-02` | `unknown` | `unknown` | `unknown` | `ongoing` | `unknown` | `none` | `The labs corroboration is older lane material whose stronger chronology was not re-established in this packet.` |
+| `CRL-02-SUP-03` | `unknown` | `2026-04-27` | `2026-04-27` | `ongoing` | `day` | `none` | `The family-classification admission is tied to the P2 packet state recorded on this date.` |
+
+## Write-Back Chain Note
+
+- This SUP does not write into the contract body directly.
+- Its auditable chain is `evidence -> this SUP -> parent row CRL-02 in the release ledger -> later contract mutation only if P3 says widening is justified`.

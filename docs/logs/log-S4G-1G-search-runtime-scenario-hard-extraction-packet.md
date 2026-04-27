@@ -373,6 +373,37 @@
   - `sibling-family`: `shadow_verify_search_index_write_gate`, `shadow_verify_search_index_paging_stability`, `rehearsal_search_read_switch_smoke`, `shadow_verify_dual_run_readiness_gate`, `shadow_verify_dual_run_stage1`, `shadow_verify_dual_run_stage2`, `shadow_verify_dual_run_window`, `shadow_verify_canary_dual_write`, `shadow_verify_dual_write_sampling`.
 - This step still does not widen the current readers; it only makes the ownership routing explicit enough for `P3`.
 
+### P2-C2-S1 (Full auditable ledger-chain semantics fixed before write-back | v1)
+
+- The current controlling question is not `can P3 start now that classification exists?`; it is `can later readers still explain exactly what changed, when it changed, and whether the change passed through SUP, parent ledger, or PATCH without reopening the whole lane?`
+- The answer is now fixed as one family-agnostic chain rule:
+  - when later evidence sharpens or revises an already admitted reading, the chain is `SUP -> parent ledger -> downstream reader`;
+  - when one bounded repair changes the already-bound reader object, the chain is `PATCH -> downstream reader`;
+  - when a bounded repair also changes admitted meaning, the repair must be paired with `SUP -> parent ledger` instead of hiding semantic change inside the patch packet alone.
+- This rule now applies across:
+  - source-owned ledger families;
+  - reader-object contract release-ledger families;
+  - reader-object runbook release-ledger families;
+  - run-ledger families.
+- Therefore `P3` remains blocked until each involved ledger family exposes enough chronology and event structure that a later reader can tell:
+  - what changed;
+  - what stayed unchanged;
+  - which packet caused the change;
+  - whether the change was only evidence admission, parent-ledger rewrite, or actual contract/runbook mutation.
+
+### P2-C2-S2 (Time-audit surfaces backfilled to keep change visibility explicit | v1)
+
+- A `完整可审计` chain requires three different time layers to stay separate:
+  - artifact lifecycle time: `created_at`, `reviewed_at`, `accepted_at`, `writeback_started_at`, `writeback_completed_at`;
+  - source chronology time: `source observed at`, `source recorded at`, `source effective from`, `source effective until`, `time precision`, `timezone note`;
+  - governance event time: explicit intake, review-state, and write-back events on the parent ledger.
+- The new remediation therefore backfills the currently-open object-ledger live files and the deficient templates so that later readers can audit:
+  - when evidence first became admissible;
+  - when the parent ledger state changed;
+  - when a contract or runbook body did not change even though the ledger did;
+  - and which fields still remain `unknown`, `pending`, or `ongoing` without false precision.
+- This means later write-back can now show not only `that` a row changed, but also `how`, `why`, and `through which surface` it changed.
+
 ### P3 (Write-back decision)
 
 - P3-C1-S1: decide whether current `OBSERVABILITY-0001` / `run-RUNTIME-OBSERVABILITY-001` should widen, stay narrow, or route sibling lanes.
@@ -397,6 +428,8 @@
 
 - [x] `P2-C1-S1`: classify each extracted scenario by family standing.
 - [x] `P2-C1-S2`: record the smallest defensible reason for each classification.
+- [x] `P2-C2-S1`: fix the family-agnostic auditable chain semantics before P3.
+- [x] `P2-C2-S2`: backfill the required time-audit surfaces on live object-ledger files and templates.
 
 ### P3 (Write-back decision)
 
@@ -411,7 +444,9 @@
 - The extracted universe already appears wider than the current reader family and already falls into at least three visible bands: worker fault/recovery, Search verification/gate, and dual-run/dual-write adjacent scenarios.
 - The repo now also has explicit reader-object release-ledger landing surfaces for the current runbook and current contract, so later scenario-classification evidence no longer needs to stay trapped only inside the control log.
 - `P2` now makes family ownership explicit: worker-chain fault and recovery scenarios classify as `current-family`; supporting infra or cross-surface corroboration scenarios classify as `support-only`; search verification, read-switch, and dual-run or dual-write scenarios classify as `sibling-family`.
-- The next step is intentionally narrow: use the new classification to decide whether current readers widen, stay narrow, or route sibling lanes without mixing those decisions together.
+- The repo now also has the full auditable chain needed for later reader mutation: `SUP -> parent ledger -> reader` for meaning changes, `PATCH -> reader` for bounded repairs, and paired `SUP` whenever a patch also changes admitted meaning.
+- The newly-opened object-ledger live files now separate artifact lifecycle time, source chronology time, and governance-event time so later write-back can be read as change history instead of only as current state.
+- The next step is intentionally narrow: use the new classification plus the remediated audit surfaces to decide whether current readers widen, stay narrow, or route sibling lanes without mixing those decisions together.
 
 ## Evidence
 
@@ -482,9 +517,44 @@
   - search verification, read-switch, dual-run, and dual-write scenarios now classify as `sibling-family`;
   - `P3` is now the remaining decision surface for whether the current contract or runbook widens at all.
 
+### P2-C2-S1S2 (Auditable chain semantics and time-audit remediation completed | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts:
+  - `docs/runbook/support-only/_template-runbook-release-ledger.md`
+  - `docs/runbook/support-only/_template-runbook-release-ledger-SUP.md`
+  - `docs/runbook/support-only/_template-runbook-release-ledger-PATCH.md`
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger.md`
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger-SUP.md`
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger-PATCH.md`
+  - `docs/runbook/_template-run-ledger.md`
+  - `docs/runbook/support-only/_template-run-ledger.md`
+  - `docs/runbook/_template-run-ledger-SUP.md`
+  - `docs/runbook/support-only/_template-run-ledger-SUP.md`
+  - `docs/runbook/support-only/_template-run-ledger-PATCH.md`
+  - `docs/runbook/support-only/_template-run-ledger-WORKFLOW-GITHUB-ISSUES.md`
+  - `docs/runbook/support-only/_template-run-ledger-SUP-WORKFLOW-GITHUB-ISSUES.md`
+  - `docs/runbook/support-only/_template-run-ledger-PATCH-WORKFLOW-GITHUB-ISSUES.md`
+  - `docs/runbook/support-only/ledger-runbook-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+  - `docs/runbook/support-only/ledger-runbook-SUP-001-RUNTIME-OBSERVABILITY-001-scenario-family-intake.md`
+  - `docs/runbook/support-only/ledger-runbook-PATCH-001-RUNTIME-OBSERVABILITY-001-release-ledger-bootstrap.md`
+  - `docs/governance/contracts/support-only/ledger-DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
+  - `docs/governance/contracts/support-only/ledger-SUP-001-DOC-RUNTIME-OBSERVABILITY-0001-scenario-family-intake.md`
+  - `docs/governance/contracts/support-only/ledger-PATCH-001-DOC-RUNTIME-OBSERVABILITY-0001-release-ledger-bootstrap.md`
+- expected:
+  - make the `SUP -> parent ledger -> reader` and `PATCH -> reader` workflow explicit across ledger families;
+  - preserve separate artifact lifecycle, source chronology, and governance-event time layers;
+  - let later readers tell what changed, what remained unchanged, and which surface carried the change.
+- observed:
+  - deficient release-ledger and run-ledger templates now expose chronology audit, evidence-time audit, patch-time audit, and write-back-chain rules instead of relying only on minimal headers;
+  - the current `OBSERVABILITY-0001` contract and runbook object-ledger files now carry row chronology audit, governance events, and reader notes showing what has and has not landed in reader bodies;
+  - the active `SUP` files now carry evidence-time audit so later readers can distinguish evidence admission time from later reader mutation time;
+  - the reserved `PATCH` files now carry bounded repair chronology placeholders without pretending that a real repair has already happened.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1G` as the bounded Search runtime scenario hard-extraction packet so the lane can re-extract the current scenario universe from code/labs before widening current readers by wording guesswork.
 - 2026-04-27: completed `P1` by inventorying concrete Search runtime scenarios from code and corroborating them with labs docs, labs catalog, and retained evidence before any family-boundary classification.
 - 2026-04-27: confirmed the new reader-object release-ledger layer and scaffolded the first contract/runbook release ledgers for `OBSERVABILITY-0001` so later phased write-back no longer needs to stay only in the control log.
 - 2026-04-27: completed `P2` by classifying the extracted Search runtime scenarios into current-family, support-only, and sibling-family standing without widening the current readers yet.
+- 2026-04-27: backfilled full auditable-chain semantics and time-audit structure across the new release-ledger templates, run-ledger templates, and current `OBSERVABILITY-0001` object-ledger live files so later write-back can be read as change history rather than only as current state.

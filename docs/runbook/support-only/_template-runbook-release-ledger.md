@@ -30,6 +30,44 @@ runbook_release_ledger:
   target_reading_goal: <what later readers should understand after this ledger is applied>
 ```
 
+## Lifecycle Field Rule
+
+- New writes should use canonical UTC second timestamps such as `2026-04-12T15:18:05Z` for artifact-lifecycle fields whenever the repo action time is actually known.
+- Legacy or bounded-precision values such as `2026-04-12` may remain when the defended evidence proves only the day.
+- `created_at`, `reviewed_at`, and `accepted_at` are artifact-lifecycle timestamps for this ledger file only; they are not substitutes for source execution or historical-effective time.
+- If the source chronology is weaker than the current repo action time, keep the weaker source precision in the chronology audit rather than copying the stronger artifact timestamp into source-facing fields.
+
+## Row Chronology Audit
+
+- Keep this section present whenever one row is expected to survive as a reusable intake or staged write-back surface.
+
+| row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RBL-01>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<second|day|month|year|unknown>` | `<optional source-local zone or offset note>` | `<why this row chronology matters>` |
+
+- `source observed at` is the best known time the underlying evidence event, code state, lab run, or reader-facing signal was observed.
+- `source recorded at` is the best known time that evidence was written down, exported, committed, or otherwise admitted as one usable source.
+- `source effective from` and `source effective until` describe the best known historical-effective range for the semantic signal carried by that intake row.
+- `time precision` must reflect the strongest defended precision only; do not fabricate seconds when the source proves only a date.
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RBL-E01>` | `<intake-admitted|ledger-writeback-started|ledger-writeback-completed|review-state-changed>` | `<RBL-01|this-ledger>` | `<role:runbook-maintainer|pending>` | `<row admitted for later runbook write-back>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>` | `<RBL-01|supporting source>` | `<why this governance event matters>` |
+
+## Write-Back Chain Rule
+
+- The full release-scoped chain is:
+  - `source or strong-structure evidence -> SUP (optional) -> runbook release ledger -> runbook body`
+- Use `SUP -> runbook release ledger -> runbook body` when later evidence sharpens, narrows, or reopens an already-admitted intake row.
+- Use `PATCH -> runbook body` for bounded repair on the runbook release object itself; if that repair also changes the admitted reading of one ledger row, pair it with a `SUP` or direct parent-ledger rewrite instead of hiding the semantic delta in the patch packet.
+- Readers should be able to tell what changed by comparing:
+  - the current intake row verdict,
+  - the row chronology audit,
+  - the governance event row,
+  - and any downstream runbook bridge or coverage evolution rows written later.
+
 ## Intake and Write-Back Table
 
 | row id | evidence anchor | evidence class | semantic area | intended landing surface | current verdict | affected bridge ids | affected coverage ids | notes |
@@ -49,6 +87,13 @@ runbook_release_ledger:
 - Do not use this ledger to replace `ledger-run-*` execution accounting when the evidence belongs to one concrete run.
 - `affected bridge ids` and `affected coverage ids` may stay `none` until a later write-back is explicit; do not invent ids only to fill the table.
 - Keep object-level evidence here first when the runbook body should not widen yet.
+
+## Reader Notes
+
+- Keep one short reader-facing note near the end of live files so later readers can tell:
+  - what currently landed in the runbook,
+  - what remains admitted only in the release ledger,
+  - and which changes still await explicit write-back.
 
 ## Completion Rule
 

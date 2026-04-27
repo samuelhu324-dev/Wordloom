@@ -66,3 +66,25 @@ runbook_release_ledger:
 | `RBL-01` | `role:s4g-packet-maintainer` | `role:runbook-maintainer` | `pending` | `pending` | `direct-markdown-inspection` | `pending` | `pending` | `Current bounded runbook release already landed through S4G-1F.` | `The release body exists, but this ledger is newly opened as its object-level intake surface.` |
 | `RBL-02` | `role:s4g-packet-maintainer` | `role:runbook-maintainer` | `pending` | `pending` | `source-path-check` | `pending` | `pending` | `The extracted scenarios are strong enough to admit into the object ledger, but not yet to widen the runbook.` | `This row intentionally holds code/labs extraction pending family classification.` |
 | `RBL-03` | `role:s4g-packet-maintainer` | `role:runbook-maintainer` | `pending` | `pending` | `direct-markdown-inspection` | `pending` | `pending` | `Run-level accounting boundary remains explicit.` | `This row is a boundary note, not a semantic widening claim.` |
+
+## Row Chronology Audit
+
+| row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `RBL-01` | `unknown` | `unknown` | `unknown` | `ongoing` | `unknown` | `none` | `This row reflects the already-admitted runbook release basis inherited from the earlier packet; source chronology remains attached to the earlier opening packet and runbook release history.` |
+| `RBL-02` | `unknown` | `2026-04-27` | `2026-04-27` | `ongoing` | `day` | `none` | `The extracted scenario inventory and classification were first admitted into this release-ledger row on the same day as S4G-1G/P1-P2.` |
+| `RBL-03` | `unknown` | `2026-04-27` | `2026-04-27` | `ongoing` | `day` | `none` | `The run-level accounting boundary note became explicit when the release-ledger family was first opened.` |
+
+## Governance Event Table
+
+| event id | event kind | affected surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `RBL-E01` | `intake-admitted` | `RBL-01` | `role:s4g-packet-maintainer` | `current runbook release basis remains explicitly bound to this release ledger` | `2026-04-27` | `RBL-01` | `The already-landed runbook basis is made auditable at the release-ledger layer.` |
+| `RBL-E02` | `intake-admitted` | `RBL-02` | `role:s4g-packet-maintainer` | `classified scenario inventory is admitted without widening the runbook body yet` | `2026-04-27` | `RBL-02` | `This event preserves the staged write-back state rather than forcing immediate reader mutation.` |
+| `RBL-E03` | `review-state-changed` | `RBL-03` | `role:s4g-packet-maintainer` | `run-ledger boundary is kept explicit` | `2026-04-27` | `RBL-03` | `This event prevents object and run scopes from being collapsed.` |
+
+## Reader Notes
+
+- Landed in the runbook already: the bounded current worker-chain skeleton represented by `RBL-01`.
+- Admitted in the release ledger but not yet written into the runbook body: the wider scenario classification inventory represented by `RBL-02`.
+- Still intentionally unchanged: the separation between release-ledger intake and future per-run execution accounting represented by `RBL-03`.

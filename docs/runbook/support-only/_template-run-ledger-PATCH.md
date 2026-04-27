@@ -84,6 +84,18 @@ runbook_run_patch_ledger:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `<PATCH-001-I01>` | `<RUN-001|pending|not-yet-bound>` | `<RUN-001-T01|pending|not-applicable>` | `<RUN-001-T01-STG-CREATION|pending|not-applicable>` | `<unknown|pending|role:operator|name>` | `<unknown|pending|role:runbook-maintainer|name>` | `<unknown|pending|role:workflow-reviewer|name>` | `<unknown|pending|role:evidence-verifier|name>` | `<direct-artifact-inspection|manual-replay|other>` | `<unknown|pending|role:approver|name>` | `<pending|accepted-for-patch|needs-better-evidence|rejected>` | `<why this approval state is defended>` | `<why any actor fields remain partial>` |
 
+## Optional Patch Time Audit
+
+| patch item id | run row id | target row id | target stage row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<PATCH-001-I01>` | `<RUN-001|pending|not-yet-bound>` | `<RUN-001-T01|pending|not-applicable>` | `<RUN-001-T01-STG-CREATION|pending|not-applicable>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<second|day|month|year|unknown>` | `<optional source-local zone note>` | `<why this patch time audit matters>` |
+
+## Write-Back Chain Rule
+
+- The repair chain is `repair evidence -> PATCH -> parent runbook object or parent run ledger reference -> downstream consumer`.
+- Use `open-sup-ledger` whenever the bounded repair also changes admitted chronology or verdict meaning.
+- Readers should be able to tell what changed by comparing the patch row, patch time audit, parent ledger row, and any downstream consumer updates.
+
 ## Bridge Rule
 
 - A patch ledger is supplement-class and support-only, but it is not the same as a general SUP ledger.

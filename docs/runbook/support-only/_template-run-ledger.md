@@ -69,6 +69,13 @@ runbook_run_ledger:
 | --- | --- | --- | --- | --- | --- | --- |
 | `<RUN-001>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<second|day|unknown>` | `<optional source-local zone note>` | `<why time audit matters for this run>` |
 
+## Run Write-Back Chain Rule
+
+- The auditable run-chain is `run evidence -> run ledger -> source log or contract/runbook consumer`.
+- Use a `SUP` packet when later evidence changes the admitted meaning of one run, target, or stage row.
+- Use a `PATCH` packet when one bounded repair changes the runbook-owned object under the same stable release; if that repair also changes the admitted reading, pair it with the corresponding `SUP` write-back.
+- Readers should be able to tell what changed by comparing the current run row, run-time audit, later SUP or PATCH packets, and any downstream consumer references.
+
 ## Required Rules
 
 - One run ledger file should describe one admitted run sequence for one stable runbook family.

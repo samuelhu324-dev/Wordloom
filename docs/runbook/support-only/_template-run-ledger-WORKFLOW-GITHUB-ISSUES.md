@@ -60,6 +60,13 @@ runbook_run_ledger:
 - Keep evidence extraction, actor/provenance review, and optional time audit after the four primary surfaces above.
 - Evidence/support tables must not be the only carrier of chronology.
 
+## Packet Write-Back Rule
+
+- The family-level chain is `execution evidence -> parent run ledger -> SUP or PATCH follow-up -> downstream consumer`.
+- Use `SUP` when later evidence changes the admitted meaning of one run, target, or stage row.
+- Use `PATCH` for bounded repair under the same release; if the repair also changes admitted chronology, pair it with a `SUP` write-back.
+- Readers should be able to explain what changed by comparing `latest_updated_from_packet`, the execution round row, the target-stage attempt row, and any bound SUP or PATCH packet.
+
 ## Required Rules
 
 - Keep one stable row per run, target, and stage slot.

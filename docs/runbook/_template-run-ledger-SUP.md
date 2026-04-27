@@ -54,6 +54,19 @@ runbook_run_ledger_supplement:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `<RUN-001-SUP-01>` | `<unknown|pending|role:operator|name>` | `<unknown|pending|role:runbook-maintainer|name>` | `<unknown|pending|role:workflow-reviewer|name>` | `<unknown|pending|role:evidence-verifier|name>` | `<direct-artifact-inspection|manual-replay|other>` | `<unknown|pending|role:approver|name>` | `<pending|accepted-for-packet|needs-better-evidence|rejected>` | `<why the approval state is defended>` | `<why any actor fields remain partial>` |
 
+## Optional Evidence Time Audit
+
+| supplement item id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RUN-001-SUP-01>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<second|day|month|year|unknown>` | `<optional source-local zone note>` | `<why this evidence time audit matters>` |
+
+## Write-Back Chain Rule
+
+- The run follow-up chain is `evidence -> SUP -> parent run ledger -> downstream consumer`.
+- `effect on current verdict` explains how the new evidence changes the already admitted reading.
+- `proposed parent-ledger action` explains whether the parent run row should stay unchanged, append evidence, or be rewritten.
+- `downstream impact` explains whether any source log, contract, or reader surface should move after the parent run ledger is updated.
+
 ## Required Rules
 
 - Every SUP row must point to one existing `parent run row id`.

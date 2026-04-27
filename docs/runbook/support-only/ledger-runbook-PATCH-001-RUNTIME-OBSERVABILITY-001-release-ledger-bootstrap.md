@@ -30,3 +30,20 @@ runbook_release_patch_ledger:
 | patch item id | parent row id | target artifact or path | change class | evidence refs | verification status | approval status | effect on current runbook release | proposed parent-ledger action | downstream impact | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `PATCH-001-I01` | `pending` | `docs/runbook/run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md` | `binding-fix` | `this file` | `pending` | `pending` | `no-release-bump` | `no-change` | `none` | `Reserved bootstrap row only; no bounded repair has been admitted yet.` |
+
+## Actor and Provenance Review Table
+
+| patch item id | submitted by | evidence owner | reviewed by | verified by | verification method | approved by | approval state | approval basis | provenance note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `PATCH-001-I01` | `role:s4g-packet-maintainer` | `role:runbook-maintainer` | `pending` | `pending` | `direct-markdown-inspection` | `pending` | `pending` | `This row is reserved only as a bounded repair surface and has not yet admitted a repair.` | `The row exists to keep bootstrap repairs explicit rather than implicit.` |
+
+## Optional Patch Time Audit
+
+| patch item id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `PATCH-001-I01` | `unknown` | `2026-04-27` | `unknown` | `ongoing` | `day` | `none` | `Only the bootstrap reservation date is currently defended; no repair chronology has been admitted yet.` |
+
+## Write-Back Chain Note
+
+- This PATCH remains empty by design until one bounded repair is actually admitted.
+- If a future repair also changes the admitted meaning of one release-ledger row, that repair must be paired with a SUP or parent-ledger rewrite rather than hidden only inside this patch packet.

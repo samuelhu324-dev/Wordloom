@@ -39,6 +39,12 @@ runbook_run_ledger_supplement:
 - `created_at`, `reviewed_at`, `accepted_at`, `writeback_started_at`, and `writeback_completed_at` are required header fields; keep them present even when the defended value is still `unknown` or `pending`.
 - `affected_bridge_ids` and `affected_coverage_ids` are optional reference lists for audited bridge/coverage write-back only; they must not replace the actual bridge or coverage semantics on the runbook or contract surfaces.
 
+## Evidence Time Audit
+
+| supplement item id | source round id | target row id | target stage row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RUN-001-SUP-01>` | `<RUN-001-R02>` | `<RUN-001-T01>` | `<RUN-001-T01-STG-CREATION>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<second|day|month|year|unknown>` | `<optional source-local zone note>` | `<why this evidence time audit matters>` |
+
 ## Packet Round Summary
 
 | supplement id | source round id | round sequence | parent run row id | target scope | stage scope | packet verdict | current-state effect | notes |
@@ -65,3 +71,9 @@ runbook_run_ledger_supplement:
 - `round sequence` is derived from `source_round_id` and is global inside one run.
 - `new_attempt_ordinal` is local to one stable `target_stage_row_id`; it should increase only when that same stage row is admitted again.
 - Keep `Evidence Table` focused on proof and verification. Use `Stage Delta Table` for before/after state and parent-ledger effect.
+
+## Write-Back Chain Rule
+
+- The family follow-up chain is `evidence -> family SUP -> parent run ledger -> downstream consumer`.
+- `Stage Delta Table` carries the defended before/after meaning; `Evidence Time Audit` carries when that meaning was observed, recorded, and historically effective.
+- If a bounded repair also exists, keep it in the paired PATCH packet instead of overloading the SUP row with repair semantics.
