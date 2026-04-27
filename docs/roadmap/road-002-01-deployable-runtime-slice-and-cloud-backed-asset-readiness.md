@@ -16,7 +16,7 @@
   **reference_log_3**: `docs/logs/log-S6A-evidence-drills-spine.md`
   **reference_log_4**: `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
 **created**: `2026-04-25`
-**updated**: `2026-04-25`
+**updated**: `2026-04-27`
 
 ---
 
@@ -61,6 +61,7 @@
 - `road-002-01 M1-P3 <- docs/logs/log-S4G-1C-runtime-runbook-bridge-gate-and-code-coupled-contract-reader-surfaces.md`
 - `road-002-01 M1-P4 <- docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md`
 - `road-002-01 M1-P5 <- docs/logs/log-S4G-1E-runtime-observability-contract-code-bridge-hardening.md`
+- `road-002-01 M2-P3 <- docs/logs/log-S4G-2A-search-failure-drills-runbook-bridge-and-template-hardening.md`
 - `road-002-01 M2-P0 <- docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
 - `road-002-01 M2-P1 <- docs/logs/log-S6A-evidence-drills-spine.md`
 - `road-002-01 M3-P0 <- unmapped`
@@ -118,14 +119,14 @@
 - `M2-P2`:
   - `docs/logs/log-S3A-2A-4B-failure-drills-&-gitactions-&-dashboard.md`
 - `M2-P3`:
-  - `unmapped`
+  - `docs/logs/log-S4G-2A-search-failure-drills-runbook-bridge-and-template-hardening.md`
 
 **Plan (P0-P3)**
 
 - `P0` Contract: declare which existing runtime/evidence surfaces remain authoritative for the first sample.
 - `P1` Implementation: reuse deploy/verify/rollback and drill-evidence discipline as the proving substrate.
 - `P2` Drill: reject any packet that cannot point back to one credible runtime or evidence surface.
-- `P3` Drill: open a narrower downstream packet only when a real fallback-governance sample exists.
+- `P3` Drill: open the first Search-specific failure-drills runbook candidate and the template hardening needed to make that child runbook maintainable as a code-coupled operator surface.
 
 ### M3: Decide the first cloud-backed asset readiness opening only after one real sample
 
@@ -166,3 +167,4 @@
 - 2026-04-26: mapped `S4G-1C` into `M1-P3` as the decision scaffold for deferred `D06` runbook-boundary work and code-coupled contract reader-surface hardening.
 - 2026-04-26: mapped `S4G-1D` into `M1-P4` as the bounded gap packet for unresolved operator semantics and later bridge-note routing.
 - 2026-04-26: mapped `S4G-1E` into `M1-P5` as the bounded contract-facing hardening packet for `OBSERVABILITY-0001` code-bridge and coverage surfaces.
+- 2026-04-27: mapped `S4G-2A` into `M2-P3` as the Search failure-drills runbook bridge and template-hardening packet beneath the shared failure-drills spine and deployable runtime substrate.

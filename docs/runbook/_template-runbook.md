@@ -21,6 +21,11 @@ runbook_record:
   applies_to: <what operator surface or family this runbook governs>
   entry_surface: <workflow|script|task|dispatch|manual>
   evidence_surface: <summary.json|result.json|run-ledger|other>
+  owner_team: <docs-governance|ops-runtime|delegated team>
+  current_steward: <role:runbook-maintainer|delegated:runbook-maintainer|other>
+  approval_state: <draft|review-pending|reviewed-awaiting-approval|approved|retired>
+  reviewed_by: <role:workflow-reviewer|pending|unknown>
+  approved_by: <role:docs-governance-approver|pending|unknown>
   ledger_binding:
     parent_run_ledger: <docs/runbook/support-only/ledger-run-001-RUNBOOK-FAMILY-001-summary.md>
     supplementary_ledger_series: <docs/runbook/support-only/ledger-run-SUP-001-RUNBOOK-FAMILY-001-summary.md>
@@ -31,6 +36,19 @@ runbook_record:
     minimum_admitted_fields:
       - <result>
       - <failureClass>
+  code_bridge_binding:
+    required: <yes|no|conditional>
+    stable_entry_refs:
+      - <backend/scripts/... or workflow/task id>
+    operator_surface_refs:
+      - <worker path|workflow file|task label>
+    scenario_registry_ref: <section or file that owns the scenario list>
+    fallback_surface_refs:
+      - <switch or operator surface ref>
+    evidence_contract_ref: <section or file that owns evidence-bundle rules>
+    minimum_supported_failure_classes:
+      - <es_429|timeout|deterministic_exception>
+    coverage_table_required: <yes|no>
   recorded_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
   reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   effective_from: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
@@ -82,6 +100,30 @@ runbook_record:
 - New values should prefer canonical UTC second timestamps such as `2026-04-20T14:55:00Z`.
 - Legacy day-only values may remain where finer audit precision is not defended.
 
+## Governance State Rule
+
+- `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by` are the current-state governance fields for the runbook surface itself.
+- Keep these fields on the runbook when the runbook is expected to survive as a maintained operator surface rather than only as a retained historical note.
+- Run-ledger `submitted by` / `evidence owner` / `verified by` fields remain execution-accounting surfaces; they do not replace the runbook's current governance state.
+
+## Code Bridge Binding Rule
+
+- Use `code_bridge_binding` whenever one runbook depends on stable code or workflow entrypoints and bounded failure/drill surfaces rather than on prose-only operator guidance.
+- `stable_entry_refs` identify the exact executable entrypoints the runbook claims to govern.
+- `operator_surface_refs` identify the broader executable surface, for example a worker shim, workflow file, or task.
+- `scenario_registry_ref` points to the table or file that enumerates admitted drills or failure classes for this runbook.
+- `fallback_surface_refs` list the operator-facing switches or bounded fallback surfaces that the runbook may name without implying that all procedures are already defended.
+- `coverage_table_required=yes` means the runbook body should include explicit `Coverage` or `Scenario Registry` tables rather than only prose bullets.
+
+## Current Governance State
+
+- Add this section when the runbook is a live operator surface rather than only a retained historical stub.
+- Preferred table shape:
+
+| governed surface | owner team | current steward | approval state | reviewed by | approved by | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `<runbook id>` | `<owner_team>` | `<current_steward>` | `<approval_state>` | `<reviewed_by>` | `<approved_by>` | `<bounded current-state note>` |
+
 ## 1) Purpose
 
 - State the operator goal in one paragraph or 2 to 4 bullets.
@@ -105,6 +147,26 @@ runbook_record:
 
 - Define what counts as `PASS`, `FAIL`, `PASS_AFTER_RECOVERY`, `NOT_RUN`, or equivalent states.
 - Point to the exact verdict files or fields that act as source of truth.
+
+### 3.3 Code Bridge Table
+
+- Use this section when the runbook must stay aligned to stable code or workflow entrypoints.
+- Keep this table current-reader-only: it records what executable surfaces the runbook is attached to now, not every historical implementation.
+
+| bridge id | surface kind | stable ref | operator meaning owned here | current standing | notes |
+| --- | --- | --- | --- | --- | --- |
+| `RB-01` | `<worker|workflow|task|script>` | `<path or entry id>` | `<what operator meaning this bridge defends>` | `<defended-now|code-anchor-only|not-owned-here>` | `<bounded bridge note>` |
+
+### 3.4 Scenario Registry / Coverage
+
+- Use this section when the runbook governs multiple admitted failure classes or drill scenarios.
+- A runbook should not imply full operator coverage only through narrative paragraphs; list the admitted scenarios explicitly.
+
+| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-01` | `<es_429|timeout|duplicate_delivery>` | `<retry|terminal-failed|draining>` | `<observe-only|manual-replay|fallback-switch|defer>` | `<periodic-drill|pre-change-drill|incident-only|lab-only>` | `<weekly|per-release|before-risky-change|after-incident|none>` | `<_result.json|metrics|logs|trace export>` | `<defended-now|partial-code-support|gap-owned|not-owned-here>` | `<bounded scenario note>` |
+
+- When `coverage class` is not `defended-now`, the runbook should link the owning gap packet, contract note, or deferred owner explicitly.
 
 ## 4) Run Ledger Binding
 
@@ -162,6 +224,13 @@ runbook_record:
 - State what this runbook deliberately does not try to be.
 - State when the operator should drop into linked logs, ledgers, labs, or contracts.
 - Record the next likely expansion point only if it changes operator expectations.
+
+## Boundary Note
+
+- Distinguish three cases explicitly when the runbook is code-coupled:
+  - `defended operator procedure`: the runbook may instruct operators to use it now.
+  - `code anchor only`: code exposes a switch or path, but operator procedure is not yet defended.
+  - `gap-owned semantics`: the runbook must route the reader elsewhere instead of inventing missing procedure.
 
 ## Thinness Rules
 
