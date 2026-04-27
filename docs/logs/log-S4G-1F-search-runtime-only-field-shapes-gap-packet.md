@@ -250,6 +250,48 @@
 - P1-C1-S1: extract the minimum Search runtime-only field clusters from `D06`, `S4G-1D`, retained legacy runbook, and current contract coverage.
 - P1-C1-S2: distinguish primary opening-gate sources from lineage-only background sources.
 
+## P1 (Source extraction for Search runtime-only field clusters | v1)
+
+### P1-C1-S1 (Minimum Search runtime-only field clusters extracted | v1)
+
+- The current extraction question is not `does Search already have a stable worker boundary or code bridge?`; that question is already answered by `DOC-RUNTIME-OBSERVABILITY-0001`.
+- The current extraction question is `which runtime-only fields would a future Search runbook need before it could own operator semantics honestly rather than only inheriting generic audited grammar?`
+- The current minimum source slice for this step is:
+  - `S3A-2A-R01-D06`
+  - `S4G-1D G01/G02/G03`
+  - `DOC-RUNTIME-OBSERVABILITY-0001-ST-05`
+  - `DOC-RUNTIME-OBSERVABILITY-0001-COV-07/COV-08/COV-09`
+  - `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
+  - `backend/scripts/search_outbox_worker.py`
+  - `backend/scripts/cli_app/scenarios/_failure_drill_shared.py`
+
+| field cluster id | source basis | current positive anchor | minimum runtime-only fields still missing | non-goal boundary | primary downstream owner | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `RFC-01` | `S3A-2A-R01-D06`; `S4G-1D G01`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-05`; `DOC-RUNTIME-OBSERVABILITY-0001-COV-07`; `backend/scripts/search_outbox_worker.py` | `SEARCH_OUTBOX_WORKER_ENABLED` already proves one real disable surface exists. | `allowed fallback states`; `trigger condition`; `recognition signal`; `exit condition`; `post-switch obligation`; `required evidence after entering fallback` | Do not write the actual fallback procedure or approval policy yet. | `future runtime runbook` | The missing content is not the existence of a switch, but the operator-owned field set that would describe when and how fallback standing is valid. |
+| `RFC-02` | `S3A-2A-R01-D06`; `S4G-1D G02`; `DOC-RUNTIME-OBSERVABILITY-0001-COV-08`; `backend/scripts/search_outbox_worker.py`; `_failure_drill_shared.py` | `SEARCH_OUTBOX_RUNNER`, `SEARCH_OUTBOX_WORKER_ENABLED`, and `search_outbox_worker@v1` already prove one bounded switch boundary and drill-facing anchor exist. | `switch authority class`; `target switch surface`; `precheck set`; `cutover verification`; `rollback proof`; `retained evidence refs`; `post-switch reconciliation note` | Do not write the actual switch/rollback procedure yet. | `future runtime runbook`, with later `Code Bridge Table` support on the contract side | This cluster is code-adjacent, but the missing fields remain operator-facing rather than executable invariants. |
+| `RFC-03` | `S3A-2A-R01-D06`; `S4G-1D G03`; `DOC-RUNTIME-OBSERVABILITY-0001-COV-09`; `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md` | The retained runbook already proves one stable `run -> verify -> export -> clean` operator path. | `coexistence allowed?`; `mode pair or excluded pair`; `start condition`; `end condition`; `retirement boundary`; `rollback boundary`; `explicit prohibition note` | Do not assume coexistence is allowed just because multiple historical surfaces exist. | `future runtime runbook` or explicit exclusion verdict | This cluster may later close with a defended `not-allowed` verdict instead of a positive procedure. |
+| `RFC-04` | `S4G-1C opening criteria`; `S4G-1D retention standing`; `S4G-2B runbook grammar` | The audited runbook grammar and the retained gap model already exist. | `cluster closure verdict`; `surface placement complete?`; `retained gap disclosure`; `runbook may open now?`; `next bounded follow-up` | Do not collapse the opening gate into a vague readiness impression. | `S4G-1F` current packet, then future runbook-opening verdict | This is the gate field cluster rather than a runtime operation field cluster. |
+
+- P1 extraction verdict for `S4G-1F`:
+  - Search already has enough contract-side audited grammar and code-boundary anchors.
+  - Search still lacks the runtime-only field sets that would let a runbook own fallback, switch, and coexistence semantics without over-claiming.
+  - Therefore the immediate job remains `field inventory first`, not `runbook prose first`.
+
+### P1-C1-S2 (Primary opening-gate sources distinguished from lineage-only background | v1)
+
+- The current source-tiering question is not `which files are historically interesting?`; it is `which files can actually decide whether Search runtime-only fields are explicit enough to support a future runbook opening?`
+
+| source tier | source surfaces | current role in `S4G-1F` | why this role holds now | notes |
+| --- | --- | --- | --- | --- |
+| `primary opening-gate sources` | `ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption`; `S4G-1D`; `DOC-RUNTIME-OBSERVABILITY-0001`; `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`; `backend/scripts/search_outbox_worker.py`; `_failure_drill_shared.py` | `decides field inventory and future runbook-opening gate` | These surfaces already fix the deferred runbook boundary, the active contract exclusion line, the real code anchors, and the strongest retained operator path. | These are the only sources that should directly drive `P2/P3` on this packet. |
+| `supporting gate context` | `ledger-S3A-2A-combo-observability-triage`; `ledger-SUP-S3A-2A-001-legacy-failure-drills-and-early-s4a-lineage` | `sharpens why D06 exists and why the retained runbook still matters` | These surfaces explain parent-row routing and legacy evidence sharpening, but they do not by themselves define the Search runbook field inventory. | Use them to defend provenance, not to invent fields. |
+| `lineage-only background` | `ledger-S3A-1A-third-leg-tracing-with-jaegar` | `historical tracing context only` | This packet is still draft archaeology and explicitly defers screenshot-backed SUP and contract mutation, so it cannot currently decide Search runtime-runbook opening. | Keep visible for lineage, but do not let it drive `run-RUNTIME-OBSERVABILITY-001` readiness. |
+
+- P1 source-tier verdict:
+  - `ledger-S3A-2A -> R01-D06 -> S4G-1D -> active contract + retained runbook + code anchors` is the real Search opening-gate chain.
+  - `ledger-S3A-1A` may remain in evidence for tracing lineage context, but it is not a defended opening-gate source for Search runtime-only field shapes.
+  - `S4G-1F` should therefore continue using the `S3A-2A/D06` chain as the primary basis for later field placement and runbook-opening decisions.
+
 ### P2 (Field placement and ownership)
 
 - P2-C1-S1: map each field cluster to future runbook surfaces.
@@ -270,8 +312,8 @@
 
 ### P1 (Source extraction for Search runtime-only field clusters)
 
-- [ ] `P1-C1-S1`: extract the minimum Search runtime-only field clusters.
-- [ ] `P1-C1-S2`: distinguish primary opening-gate sources from lineage-only background sources.
+- [x] `P1-C1-S1`: extract the minimum Search runtime-only field clusters.
+- [x] `P1-C1-S2`: distinguish primary opening-gate sources from lineage-only background sources.
 
 ### P2 (Field placement and ownership)
 
@@ -287,7 +329,9 @@
 
 - `S4G-1F` is now the bounded next packet for Search runtime-only field shapes after the audited grammar work in `S4G-2B`.
 - The packet already records the key negative verdict: do not write `run-RUNTIME-OBSERVABILITY-001` directly yet.
-- The next step is intentionally narrow: extract the field clusters and decide whether they later land as defended procedure, defended exclusion verdict, or retained gap.
+- `P1` now fixes four explicit field clusters: `fallback mode`, `switch surface`, `coexistence window`, and `opening gate`.
+- `P1` now also fixes the source-tier boundary: `S3A-2A/D06 + S4G-1D + active contract + retained runbook + code anchors` is the real opening-gate chain, while `ledger-S3A-1A` remains lineage-only background.
+- The next step is intentionally narrow: map those field clusters onto future runbook surfaces and classify each cluster as future procedure, future exclusion verdict, or retained gap.
 
 ## Evidence
 
@@ -304,6 +348,21 @@
   - `docs/logs/support-only/ledger-S3A-1A-third-leg-tracing-with-jaegar.md`
   - `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
 
+### P1-C1-S1S2 (Search runtime-only field clusters and source tiers extracted | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts: `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
+- expected:
+  - identify the minimum runtime-only field clusters still missing before a Search runtime runbook can open;
+  - separate opening-gate sources from lineage-only background;
+  - avoid writing operator procedure prose.
+- observed:
+  - four field clusters are now explicit: `fallback mode`, `switch surface`, `coexistence window`, and `opening gate`;
+  - the strongest opening-gate chain is `ledger-S3A-2A -> R01-D06 -> S4G-1D -> active contract + retained runbook + code anchors`;
+  - `ledger-S3A-1A` remains historical tracing context rather than a primary Search runbook-opening source;
+  - the packet still remains field-first and does not open `run-RUNTIME-OBSERVABILITY-001`.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1F` as the bounded Search runtime-only field-shapes gap packet so the lane can decide field inventory and opening gate before any direct runtime runbook write-up.
+- 2026-04-27: completed `P1` by extracting the minimum Search runtime-only field clusters and by fixing which sources are primary opening-gate evidence versus lineage-only background.
