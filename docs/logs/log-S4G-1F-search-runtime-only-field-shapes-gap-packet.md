@@ -297,6 +297,43 @@
 - P2-C1-S1: map each field cluster to future runbook surfaces.
 - P2-C1-S2: classify each field cluster as future positive procedure, future exclusion verdict, or retained gap.
 
+## P2 (Field placement and ownership | v1)
+
+### P2-C1-S1 (Field clusters mapped to future runbook surfaces | v1)
+
+- The current placement question is not `which section could mention these fields somewhere?`; it is `which future runbook surface should own each field cluster so the runbook stays thin, auditable, and does not hide runtime semantics inside prose-only notes?`
+
+| field cluster id | primary future runbook surface | secondary supporting surface | placement verdict | why this placement holds now | notes |
+| --- | --- | --- | --- | --- | --- |
+| `RFC-01` | `3.5 Scenario Registry / Coverage` | `3.3 Code Bridge Table`; `8) Notes and Boundaries`; `5) Evidence Bundle` | `coverage-first placement` | Fallback-state semantics are primarily about when a bounded scenario is admitted, what the default system behavior is, what operator action class is allowed, and whether current standing is `defended-now`, `gap-owned`, or `not-owned-here`. | Use `Code Bridge Table` only to point to real switch surfaces such as `SEARCH_OUTBOX_WORKER_ENABLED`; do not hide fallback semantics there. |
+| `RFC-02` | `3.3 Code Bridge Table` | `3.5 Scenario Registry / Coverage`; `6) Local or One-click Operation`; `5) Evidence Bundle` | `bridge-first placement` | Switch-surface semantics are anchored on a real executable surface, so the stable switch refs belong on the bridge row first; scenario coverage then records whether the procedure is defended, partial, or gap-owned. | The future command path may later reference the same switch boundary, but command text should remain downstream from defended ownership. |
+| `RFC-03` | `3.5 Scenario Registry / Coverage` | `8) Notes and Boundaries`; `3.2 Success and failure semantics` | `coverage-first placement` | Coexistence semantics are about policy standing and scenario/boundary coverage, not about one single executable entrypoint; therefore they should live on the coverage side first. | If the defended answer is `no coexistence`, that verdict should still be visible as a coverage row rather than buried in notes. |
+| `RFC-04` | `8) Notes and Boundaries` | `Current Governance State`; `3.5 Scenario Registry / Coverage` | `boundary-note-first placement` | The opening gate is a runbook-owned boundary declaration about what the runbook does and does not yet own, not one executable bridge row or one scenario by itself. | Coverage rows may cite unresolved clusters, but the gate itself should stay in the runbook boundary note. |
+
+- P2 placement verdict:
+  - `Scenario Registry / Coverage` is the primary future owner for `fallback mode` and `coexistence window` because those clusters are policy/coverage-first rather than entrypoint-first.
+  - `Code Bridge Table` is the primary future owner for `switch surface` because the runbook must bind that cluster to real executable surfaces before any procedure can be defended.
+  - `Notes and Boundaries` is the primary future owner for `opening gate` because the gate governs runbook ownership itself.
+  - `Evidence Bundle` remains supporting, not primary: it records how a defended field cluster is proven, not whether the cluster exists.
+
+### P2-C1-S2 (Ownership standing classified for each field cluster | v1)
+
+- The current ownership question is not `could a future runbook mention this cluster?`; it is `what kind of defended outcome is the cluster most likely to close as on current evidence?`
+
+| field cluster id | current ownership standing | likely closure shape | why this standing holds now | future owner surface | notes |
+| --- | --- | --- | --- | --- | --- |
+| `RFC-01` | `retained-gap leaning toward future exclusion-or-procedure` | `future positive procedure or defended exclusion verdict` | The code proves a real disable surface exists, but no current source yet defends when fallback is allowed, how long it may remain active, or which post-switch obligations are mandatory. | `future runtime runbook` | This cluster should not be promoted into current runbook ownership until the lane can defend either allowed fallback procedure or an explicit `not-allowed` verdict. |
+| `RFC-02` | `retained-gap with code-adjacent bridge support` | `future positive procedure` | Real switch anchors and drill-facing identifiers already exist, so the missing part is not field discovery but defended operator procedure and verification ownership. | `future runtime runbook`, supported by `Code Bridge Table` | This is the strongest candidate to become a future positive runbook procedure once operator authority and rollback proof are explicit. |
+| `RFC-03` | `retained-gap leaning toward exclusion verdict` | `future defended exclusion verdict or narrow procedure` | Current sources are strongest on proving one drill-operations path, not on proving parallel or staged runtime policy; the more likely immediate defended answer is still `not-allowed` or `not-supported` rather than a broad coexistence procedure. | `future runtime runbook` or explicit boundary verdict in successor packet | Keep this cluster conservative; do not imply coexistence just because multiple historical surfaces survived. |
+| `RFC-04` | `packet-owned gate` | `explicit opening verdict` | The gate is already a current packet responsibility because `S4G-1F` exists specifically to decide whether the runbook may open later. | `S4G-1F` now, then future runtime runbook boundary note | This cluster should close in `P3`, not be deferred to a later generic packet. |
+
+- P2 ownership verdict:
+  - none of `RFC-01` through `RFC-03` is currently owned by a runtime runbook;
+  - `RFC-02` is the strongest future `procedure` candidate;
+  - `RFC-03` is the strongest future `exclusion verdict` candidate;
+  - `RFC-01` still needs a later narrow verdict to decide between allowed fallback procedure and defended exclusion;
+  - `RFC-04` is already owned by `S4G-1F` and should close in `P3` as the explicit runbook-opening verdict.
+
 ### P3 (Runbook opening gate)
 
 - P3-C1-S1: record whether `run-RUNTIME-OBSERVABILITY-001` may open now, later, or not on the current evidence set.
@@ -317,8 +354,8 @@
 
 ### P2 (Field placement and ownership)
 
-- [ ] `P2-C1-S1`: map each field cluster to future runbook surfaces.
-- [ ] `P2-C1-S2`: classify each field cluster as procedure, exclusion verdict, or retained gap.
+- [x] `P2-C1-S1`: map each field cluster to future runbook surfaces.
+- [x] `P2-C1-S2`: classify each field cluster as procedure, exclusion verdict, or retained gap.
 
 ### P3 (Runbook opening gate)
 
@@ -331,7 +368,9 @@
 - The packet already records the key negative verdict: do not write `run-RUNTIME-OBSERVABILITY-001` directly yet.
 - `P1` now fixes four explicit field clusters: `fallback mode`, `switch surface`, `coexistence window`, and `opening gate`.
 - `P1` now also fixes the source-tier boundary: `S3A-2A/D06 + S4G-1D + active contract + retained runbook + code anchors` is the real opening-gate chain, while `ledger-S3A-1A` remains lineage-only background.
-- The next step is intentionally narrow: map those field clusters onto future runbook surfaces and classify each cluster as future procedure, future exclusion verdict, or retained gap.
+- `P2` now fixes the first placement model for a future runtime runbook: `fallback mode` and `coexistence window` are coverage-first, `switch surface` is bridge-first, and `opening gate` is boundary-note-first.
+- `P2` now also fixes the first ownership model: `RFC-02` is the strongest future procedure candidate, `RFC-03` is the strongest future exclusion-verdict candidate, and `RFC-04` is already packet-owned for `P3` closure.
+- The next step is intentionally narrow: record the explicit opening-gate verdict for `run-RUNTIME-OBSERVABILITY-001` and decide the next bounded follow-up if the gate still stays closed.
 
 ## Evidence
 
@@ -362,7 +401,22 @@
   - `ledger-S3A-1A` remains historical tracing context rather than a primary Search runbook-opening source;
   - the packet still remains field-first and does not open `run-RUNTIME-OBSERVABILITY-001`.
 
+### P2-C1-S1S2 (Field placement and ownership standing fixed | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts: `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
+- expected:
+  - map each Search runtime-only field cluster to a future runbook surface;
+  - classify each cluster as future procedure, exclusion verdict, or retained gap;
+  - keep the runbook thin and avoid procedure prose.
+- observed:
+  - `fallback mode` and `coexistence window` are now classified as coverage-first clusters;
+  - `switch surface` is now classified as bridge-first with later coverage support;
+  - `opening gate` is now classified as boundary-note-first and packet-owned for `P3` closure;
+  - `RFC-02` is the strongest future procedure candidate while `RFC-03` is the strongest future exclusion-verdict candidate.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1F` as the bounded Search runtime-only field-shapes gap packet so the lane can decide field inventory and opening gate before any direct runtime runbook write-up.
 - 2026-04-27: completed `P1` by extracting the minimum Search runtime-only field clusters and by fixing which sources are primary opening-gate evidence versus lineage-only background.
+- 2026-04-27: completed `P2` by mapping each field cluster to future runbook surfaces and by classifying each cluster as future procedure, exclusion verdict, retained gap, or packet-owned gate.
