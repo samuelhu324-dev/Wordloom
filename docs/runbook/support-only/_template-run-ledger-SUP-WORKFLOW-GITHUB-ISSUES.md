@@ -24,9 +24,20 @@ runbook_run_ledger_supplement:
   created_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   accepted_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  writeback_started_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  writeback_completed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  affected_bridge_ids:
+    - <RB-ISSUES-01|none>
+  affected_coverage_ids:
+    - <SC-ISSUES-01|none>
   supplement_scope: <what later evidence is admitted>
   target_reading_goal: <what later readers should understand>
 ```
+
+## Lifecycle Field Rule
+
+- `created_at`, `reviewed_at`, `accepted_at`, `writeback_started_at`, and `writeback_completed_at` are required header fields; keep them present even when the defended value is still `unknown` or `pending`.
+- `affected_bridge_ids` and `affected_coverage_ids` are optional reference lists for audited bridge/coverage write-back only; they must not replace the actual bridge or coverage semantics on the runbook or contract surfaces.
 
 ## Packet Round Summary
 

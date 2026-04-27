@@ -35,6 +35,10 @@ runbook_run_patch_ledger:
   accepted_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   writeback_started_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   writeback_completed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  affected_bridge_ids:
+    - <RB-01|none>
+  affected_coverage_ids:
+    - <SC-01|none>
   patch_scope: <what bounded repair this packet admits>
   patch_reason_class: <docs-fix|script-fix|manifest-fix|evidence-fix|mixed-bounded-repair>
   approval_boundary: <who must approve this patch before it may update ledgers, logs, or live artifacts>
@@ -84,6 +88,8 @@ runbook_run_patch_ledger:
 
 - A patch ledger is supplement-class and support-only, but it is not the same as a general SUP ledger.
 - Use a patch ledger when the repair is bounded, runbook-bound, and still within the same defended runbook release.
+- `created_at`, `reviewed_at`, `accepted_at`, `writeback_started_at`, and `writeback_completed_at` are required header fields; keep them present even when the defended value is still `unknown` or `pending`.
+- `affected_bridge_ids` and `affected_coverage_ids` are optional reference lists for audited bridge/coverage write-back only; they must not replace the actual bridge or coverage semantics on the runbook or contract surfaces.
 - Use a general SUP ledger when the primary need is later evidence refinement for one admitted run verdict rather than a bounded repair packet.
 - Keep PATCH bindings on the same structural keys already used by the parent ledger and any related SUP packet; do not fall back to prose-only matching once run/target/stage ids exist.
 - If the patch materially changes operator semantics, evidence admission rules, or ledger binding, stop and open a new source log plus a new runbook release instead of continuing under the same patch series.

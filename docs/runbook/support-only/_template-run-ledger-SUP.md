@@ -33,6 +33,10 @@ runbook_run_ledger_supplement:
   accepted_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   writeback_started_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   writeback_completed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  affected_bridge_ids:
+    - <RB-01|none>
+  affected_coverage_ids:
+    - <SC-01|none>
   supplement_scope: <what later evidence this packet is admitting>
   target_reading_goal: <what later readers should understand after this supplement is applied>
 ```
@@ -81,7 +85,9 @@ runbook_run_ledger_supplement:
 - Every SUP row must point to one existing `parent run row id`.
 - Every target-specific SUP row must point to one existing `parent target row id`.
 - Every stage-specific SUP row must point to one existing `parent target stage row id`.
+- `created_at`, `reviewed_at`, `accepted_at`, `writeback_started_at`, and `writeback_completed_at` are required header fields; keep them present even when the defended value is still `unknown` or `pending`.
 - SUP rows may strengthen or revise a prior verdict, but they may not invent a free-floating new run outside the parent ledger.
+- `affected_bridge_ids` and `affected_coverage_ids` are optional reference lists for audited bridge/coverage write-back only; they must not replace the actual bridge or coverage semantics on the runbook or contract surfaces.
 - Sequence ids in the SUP file must match the stable structural keys already present in the parent ledger; do not create ad hoc prose-only target names in place of those keys.
 - Write into contracts or source logs only after the parent run ledger is updated or explicitly left unchanged.
 

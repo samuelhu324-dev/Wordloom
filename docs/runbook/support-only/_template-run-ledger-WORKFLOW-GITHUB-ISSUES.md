@@ -26,6 +26,11 @@ runbook_run_ledger:
   target_reading_goal: <what later readers should understand>
 ```
 
+## Lifecycle Field Rule
+
+- `created_at`, `reviewed_at`, and `accepted_at` are required header fields; keep them present even when the defended value is still `unknown` or `pending`.
+- Round and attempt time columns in this template are required when their tables are present; unknown values are acceptable, omission is not.
+
 ## Current Run Status Summary
 
 | run row id | operational convergence | accounting status | approval status | target convergence count | target partial count | target blocked count | latest chronology round | latest updated from packet | reader verdict | notes |

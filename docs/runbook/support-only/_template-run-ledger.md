@@ -40,6 +40,7 @@ runbook_run_ledger:
 - `created_at` records when this run ledger file was created in the repo.
 - `reviewed_at` records when the run accounting and admitted evidence first reached defended review state.
 - `accepted_at` records when the ledger is accepted as the durable accounting surface for this run.
+- `created_at`, `reviewed_at`, and `accepted_at` are required header fields; keep them present even when the defended value is still `unknown` or `pending`.
 - These are artifact-lifecycle timestamps only; execution timing belongs in the run-time audit table.
 
 ## Run Ledger Table
@@ -60,7 +61,9 @@ runbook_run_ledger:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `<RUN-001>` | `<unknown|pending|role:operator|delegated:workflow-owner|name>` | `<unknown|pending|role:runbook-maintainer|name>` | `<unknown|pending|role:workflow-reviewer|name>` | `<unknown|pending|role:evidence-verifier|name>` | `<direct-artifact-inspection|manual-replay|transcript-comparison|other>` | `<unknown|pending|role:approver|name>` | `<pending|accepted-for-ledger|needs-better-evidence|rejected>` | `<why this approval state is currently defended>` | `<why any actor fields remain partial>` |
 
-## Optional Run Time Audit
+## Run Time Audit
+
+- This table is required in the template even when one or more values remain `unknown`.
 
 | run row id | run started at | run completed at | source recorded at | time precision | timezone note | notes |
 | --- | --- | --- | --- | --- | --- | --- |
