@@ -22,6 +22,11 @@ contract_record:
   approval_state: review-pending
   reviewed_by: pending
   approved_by: pending
+  release_ledger_binding:
+    parent_release_ledger: docs/governance/contracts/support-only/ledger-DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md
+    supplementary_ledger_series: docs/governance/contracts/support-only/ledger-SUP-001-DOC-RUNTIME-OBSERVABILITY-0001-scenario-family-intake.md
+    patch_ledger_series: docs/governance/contracts/support-only/ledger-PATCH-001-DOC-RUNTIME-OBSERVABILITY-0001-release-ledger-bootstrap.md
+    intended_use: release-scoped evidence intake and staged clause, bridge, or coverage write-back before widening current contract ownership
   recorded_at: 2026-04-26
   reviewed_at: pending
   effective_from: 2026-04-26
@@ -141,6 +146,7 @@ contract_record:
 
 - Read this release when the question is `what is the current runtime observability rule for the first defended worker chain under S4G?`
 - Read `docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md` when the question is `which parent row splits and absorbed rows does this contract actually consume?`
+- Read `docs/governance/contracts/support-only/ledger-DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md` when the question is `how should later code/labs/runbook evidence be admitted, deferred, or written back against this current contract release?`
 - Read [docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md](d:/Project/wordloom-v3/docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md) when the question is `how was this contract staged, bounded, and proven before release?`
 - Read [docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md](d:/Project/wordloom-v3/docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md) when the question is `what operator steps currently exist around the same drill family?`
 - Read [docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md](d:/Project/wordloom-v3/docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md) when the question is `what operator semantics are still missing before a narrower runtime-owned runbook bridge can open?`

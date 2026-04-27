@@ -26,6 +26,11 @@ runbook_record:
   approval_state: <draft|review-pending|reviewed-awaiting-approval|approved|retired>
   reviewed_by: <role:workflow-reviewer|pending|unknown>
   approved_by: <role:docs-governance-approver|pending|unknown>
+  release_ledger_binding:
+    parent_release_ledger: <docs/runbook/support-only/ledger-runbook-RUNBOOK-FAMILY-001-summary.md>
+    supplementary_ledger_series: <docs/runbook/support-only/ledger-runbook-SUP-001-RUNBOOK-FAMILY-001-summary.md>
+    patch_ledger_series: <docs/runbook/support-only/ledger-runbook-PATCH-001-RUNBOOK-FAMILY-001-summary.md>
+    intended_use: <release-scoped evidence intake and staged write-back before or alongside run-level accounting>
   ledger_binding:
     parent_run_ledger: <docs/runbook/support-only/ledger-run-001-RUNBOOK-FAMILY-001-summary.md>
     supplementary_ledger_series: <docs/runbook/support-only/ledger-run-SUP-001-RUNBOOK-FAMILY-001-summary.md>
@@ -106,6 +111,16 @@ runbook_record:
 - `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by` are the current-state governance fields for the runbook surface itself.
 - Keep these fields on the runbook when the runbook is expected to survive as a maintained operator surface rather than only as a retained historical note.
 - Run-ledger `submitted by` / `evidence owner` / `verified by` fields remain execution-accounting surfaces; they do not replace the runbook's current governance state.
+
+## Release Ledger Binding Rule
+
+- Use `release_ledger_binding` when one runbook release needs its own durable reader-first intake surface for staged evidence admission, scenario write-back, boundary notes, or later release-scoped supplements and patches.
+- `release_ledger_binding` does not replace `ledger_binding`:
+  - `release_ledger_binding` is for the runbook release object itself;
+  - `ledger_binding` remains for repeatable run execution accounting under that runbook.
+- Prefer `release_ledger_binding` when evidence is extracted from source logs, code, labs, or weak-structure channels before it can honestly be admitted into the runbook body.
+- Prefer `ledger_binding` when the evidence belongs to one concrete admitted run such as `RUN-001`.
+- When both layers exist, later run-level ledgers may cite the runbook release ledger, but should not replace it as the write-back surface for runbook-release meaning.
 
 ## Code Bridge Binding Rule
 

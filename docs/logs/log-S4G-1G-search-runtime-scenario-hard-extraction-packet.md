@@ -175,7 +175,7 @@
 ## Scope
 
 - `P0`: contract (packet opening, extraction contract, evidence contract)
-- `P1`: hard-extract the Search runtime scenario universe from code + labs + retained evidence
+- `P1`: hard-extract the Search runtime scenario universe from code + labs + retained evidence, then open the release-ledger landing surfaces needed for later staged write-back
 - `P2`: classify scenarios into current-family, support-only, and sibling-family buckets
 - `P3`: record downstream write-back decisions for current readers and later sibling lanes
 
@@ -300,6 +300,33 @@
   - a second band of Search-adjacent verification/rehearsal/dual-run scenarios is also concretely corroborated and therefore cannot be dismissed as wording noise;
   - the main remaining problem is not scenario existence but scenario-family ownership, which is correctly deferred to `P2`.
 
+### P1-C2-S1 (Reader-object-first ledger semantics confirmed | v1)
+
+- Current repo semantics now distinguish three different ledger layers for the same family:
+  - source-owned ledgers still own primary extraction and routing from source logs or other upstream mixed material;
+  - reader-object release ledgers own staged evidence admission and write-back for one existing contract or runbook release;
+  - run ledgers own one concrete execution history beneath one stable runbook release.
+- This distinction is required because `S4G-1G/P1` already extracts strong-structure scenario evidence from code and labs that should not be forced directly into the current contract or runbook body before family classification.
+- Therefore:
+  - source logs remain the first retained mixed-source surface;
+  - the new contract/runbook release ledgers become the first downstream landing surface for later phased write-back;
+  - current reader bodies remain intentionally narrow until `P2` classifies ownership.
+
+### P1-C2-S2 (OBSERVABILITY-0001 contract and runbook release ledgers scaffolded | v1)
+
+- New template family opened for runbook release ledgers:
+  - `docs/runbook/support-only/_template-runbook-release-ledger.md`
+  - `docs/runbook/support-only/_template-runbook-release-ledger-SUP.md`
+  - `docs/runbook/support-only/_template-runbook-release-ledger-PATCH.md`
+- New template family opened for contract release ledgers:
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger.md`
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger-SUP.md`
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger-PATCH.md`
+- Live `OBSERVABILITY-0001` scaffolds now exist for both current readers:
+  - runbook release ledger family under `docs/runbook/support-only/ledger-runbook-*`
+  - contract release ledger family under `docs/governance/contracts/support-only/ledger-*DOC-RUNTIME-OBSERVABILITY-0001*`
+- These new ledgers do not widen either reader yet; they only create the durable landing surfaces needed so later `P2/P3` work does not get trapped inside the control log.
+
 ### P2 (Family classification)
 
 - P2-C1-S1: classify each extracted scenario into current-family, support-only, or sibling-family.
@@ -322,6 +349,8 @@
 
 - [x] `P1-C1-S1`: inventory Search runtime scenarios from code.
 - [x] `P1-C1-S2`: corroborate scenarios with labs docs, catalog, and retained evidence.
+- [x] `P1-C2-S1`: confirm reader-object-first ledger semantics for contract and runbook releases.
+- [x] `P1-C2-S2`: scaffold OBSERVABILITY-0001 contract and runbook release ledgers plus templates.
 
 ### P2 (Family classification)
 
@@ -339,6 +368,7 @@
 - The current lane hypothesis is that the repo already contains more Search-adjacent scenarios than the current `OBSERVABILITY-0001` / `run-RUNTIME-OBSERVABILITY-001` family presently owns.
 - `P1` now records a concrete Search scenario inventory from code and corroborates it with labs docs, labs catalog, and retained snapshots/evidence.
 - The extracted universe already appears wider than the current reader family and already falls into at least three visible bands: worker fault/recovery, Search verification/gate, and dual-run/dual-write adjacent scenarios.
+- The repo now also has explicit reader-object release-ledger landing surfaces for the current runbook and current contract, so later scenario-classification evidence no longer needs to stay trapped only inside the control log.
 - The next step is intentionally narrow: classify family ownership for the extracted scenarios before widening any current reader.
 
 ## Evidence
@@ -352,6 +382,8 @@
   - `docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md`
   - `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
   - `docs/runbook/run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+  - `docs/runbook/support-only/ledger-runbook-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+  - `docs/governance/contracts/support-only/ledger-DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
 
 ### P1-C1-S1S2 (Search runtime scenario inventory extracted and corroborated | 2026-04-27)
 
@@ -367,7 +399,34 @@
   - labs docs, catalog entries, and retained snapshots corroborate that these scenarios are real lane material rather than stale stubs;
   - the remaining unresolved problem is family ownership, not scenario existence.
 
+### P1-C2-S1S2 (Reader-object release ledgers confirmed and scaffolded | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts:
+  - `docs/runbook/support-only/_template-runbook-release-ledger.md`
+  - `docs/runbook/support-only/_template-runbook-release-ledger-SUP.md`
+  - `docs/runbook/support-only/_template-runbook-release-ledger-PATCH.md`
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger.md`
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger-SUP.md`
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger-PATCH.md`
+  - `docs/runbook/support-only/ledger-runbook-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+  - `docs/runbook/support-only/ledger-runbook-SUP-001-RUNTIME-OBSERVABILITY-001-scenario-family-intake.md`
+  - `docs/runbook/support-only/ledger-runbook-PATCH-001-RUNTIME-OBSERVABILITY-001-release-ledger-bootstrap.md`
+  - `docs/governance/contracts/support-only/ledger-DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
+  - `docs/governance/contracts/support-only/ledger-SUP-001-DOC-RUNTIME-OBSERVABILITY-0001-scenario-family-intake.md`
+  - `docs/governance/contracts/support-only/ledger-PATCH-001-DOC-RUNTIME-OBSERVABILITY-0001-release-ledger-bootstrap.md`
+- expected:
+  - confirm the semantic distinction between source-owned ledgers, reader-object release ledgers, and run ledgers;
+  - create durable landing surfaces for later contract/runbook phased write-back;
+  - keep the current reader bodies narrow while later scenario classification remains unresolved.
+- observed:
+  - generic templates now exist for both runbook-release and contract-release ledger families;
+  - the current runbook and current contract now bind to explicit release-ledger families in frontmatter;
+  - live `OBSERVABILITY-0001` contract and runbook release ledgers, plus their first `SUP` and reserved `PATCH` surfaces, now exist as durable staging surfaces;
+  - `S4G-1G/P2` can now classify scenarios without forcing all intermediate evidence to remain trapped only in the control log.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1G` as the bounded Search runtime scenario hard-extraction packet so the lane can re-extract the current scenario universe from code/labs before widening current readers by wording guesswork.
 - 2026-04-27: completed `P1` by inventorying concrete Search runtime scenarios from code and corroborating them with labs docs, labs catalog, and retained evidence before any family-boundary classification.
+- 2026-04-27: confirmed the new reader-object release-ledger layer and scaffolded the first contract/runbook release ledgers for `OBSERVABILITY-0001` so later phased write-back no longer needs to stay only in the control log.

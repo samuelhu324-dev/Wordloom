@@ -22,6 +22,11 @@ runbook_record:
   reviewed_by: pending
   approved_by: pending
   file_identity_status: canonical-filename-active
+  release_ledger_binding:
+    parent_release_ledger: docs/runbook/support-only/ledger-runbook-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md
+    supplementary_ledger_series: docs/runbook/support-only/ledger-runbook-SUP-001-RUNTIME-OBSERVABILITY-001-scenario-family-intake.md
+    patch_ledger_series: docs/runbook/support-only/ledger-runbook-PATCH-001-RUNTIME-OBSERVABILITY-001-release-ledger-bootstrap.md
+    intended_use: release-scoped evidence intake and staged scenario or boundary write-back before widening the runbook body
   ledger_binding:
     parent_run_ledger: docs/runbook/support-only/ledger-run-001-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md
     supplementary_ledger_series: docs/runbook/support-only/ledger-run-SUP-001-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md
@@ -62,7 +67,10 @@ runbook_record:
     family_runbook_template: docs/runbook/_template-runbook.md
     family_parent_ledger_template: docs/runbook/support-only/_template-run-ledger.md
     family_supplement_template: docs/runbook/support-only/_template-run-ledger-SUP.md
-    family_patch_template: docs/runbook/support-only/_template-run-ledger-SUP.md
+    family_patch_template: docs/runbook/support-only/_template-run-ledger-PATCH.md
+    family_release_ledger_template: docs/runbook/support-only/_template-runbook-release-ledger.md
+    family_release_supplement_template: docs/runbook/support-only/_template-runbook-release-ledger-SUP.md
+    family_release_patch_template: docs/runbook/support-only/_template-runbook-release-ledger-PATCH.md
   recorded_at: 2026-04-27
   reviewed_at: pending
   effective_from: 2026-04-27
@@ -188,16 +196,23 @@ runbook_record:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `SC-OBS-CH-01` | `SC-OBS-01; SC-OBS-02; SC-OBS-03; SC-OBS-04` | `introduced` | `role:s4g-packet-maintainer` | `2026-04-27` | `2026-04-27` | `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md#P6-C1-S1` | `S4G-1F opened the first Search runtime runbook coverage rows using only bounded disable-state, switch-checkpoint, defended drill-path, and coexistence-boundary semantics.` |
 
-## 4) Run Ledger Binding
+## 4) Release and Run Ledger Binding
 
-### 4.1 Parent ledger
+### 4.1 Release ledger
+
+- Canonical release-scoped ledger for this runbook release:
+  - `docs/runbook/support-only/ledger-runbook-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+- This release ledger is where source-log extraction, code-first scenario intake, and later reader-object supplements or patches should land before the runbook body is widened.
+- Use the release-scoped `SUP` / `PATCH` series when the follow-up changes the runbook release object itself rather than one concrete admitted run.
+
+### 4.2 Parent run ledger
 
 - Reserved canonical parent ledger for this runbook family:
   - `docs/runbook/support-only/ledger-run-001-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
 - That parent ledger is not opened by this packet yet.
 - Until the first bounded execution packet opens the ledger, current execution evidence should remain in run-scoped artifact bundles plus source-log `Evidence` blocks.
 
-### 4.2 Run and evidence ids
+### 4.3 Run and evidence ids
 
 - Stable run-row shape:
   - `RUN-001`, `RUN-002`, ...
@@ -206,17 +221,19 @@ runbook_record:
 - Stable attachment shape for later supplements:
   - `RUN-001-SUP-01-ATT-01`
 
-### 4.3 Admission and write-back rule
+### 4.4 Admission and write-back rule
 
 - Minimum evidence before a future run may be admitted into the parent ledger:
   - `_result.json`
   - worker log
   - exported evidence bundle or equivalent logs/metrics export
+- If later evidence sharpens this runbook release without yet belonging to one admitted run, prefer the release-scoped `ledger-runbook-*` family first.
 - If later evidence only sharpens one previously admitted run, prefer a `SUP` ledger rather than rewriting the original run row.
 - If a bounded repair packet changes one admitted run without changing release identity, prefer a `PATCH` ledger.
 - Downstream write-back for the current packet lands in:
   - this runbook body for current operator meaning
   - `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md` for source-packet evidence and gate traceability
+  - `docs/runbook/support-only/ledger-runbook-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md` for release-scoped intake and staged write-back
 
 ## 5) Evidence Bundle
 

@@ -19,6 +19,11 @@ contract_record:
   approval_state: <draft|review-pending|reviewed-awaiting-approval|approved|retired>
   reviewed_by: <role:workflow-reviewer|pending|unknown>
   approved_by: <role:docs-governance-approver|pending|unknown>
+  release_ledger_binding:
+    parent_release_ledger: <docs/governance/contracts/support-only/ledger-DOC-DOMAIN-SUBDOMAIN-0001-summary.md>
+    supplementary_ledger_series: <docs/governance/contracts/support-only/ledger-SUP-001-DOC-DOMAIN-SUBDOMAIN-0001-summary.md>
+    patch_ledger_series: <docs/governance/contracts/support-only/ledger-PATCH-001-DOC-DOMAIN-SUBDOMAIN-0001-summary.md>
+    intended_use: <release-scoped evidence intake and staged clause/bridge/coverage write-back>
   recorded_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
   reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   effective_from: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
@@ -108,6 +113,15 @@ contract_record:
 - `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by` are the current-state governance fields for the contract surface itself.
 - Keep these fields on the contract whenever the contract is a live reader surface rather than only a retained historical note.
 - These fields are required in the record frontmatter; when the actor or state is not yet defended, keep the field present and use `pending` or `unknown` rather than dropping it.
+
+## Release Ledger Binding Rule
+
+- Use `release_ledger_binding` when one contract release needs its own durable release-first intake surface for evidence admission, clause routing, bridge/coverage write-back, or later supplements and patches that are centered on the contract object rather than on a source log.
+- `release_ledger_binding` complements source-owned ledgers instead of replacing them:
+  - source-owned ledgers still own source slicing and primary routing from logs/issues/support-only material;
+  - contract release ledgers own contract-object intake, staged write-back, and later release-bound refinements once material is already justified for this contract family.
+- Prefer a contract release ledger when new evidence is being extracted from code, labs, retained runbooks, or other strong-structure channels and the needed question is `how should this existing contract release absorb, defer, or reject it?`
+- Do not use `release_ledger_binding` to bypass a still-required source-owned routing ledger when the real unresolved problem is source slicing rather than contract write-back.
 
 ## Recommended Body Shape
 
