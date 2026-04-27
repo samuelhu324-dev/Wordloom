@@ -17,15 +17,22 @@ contract_record:
   attached_row_flow_ledger_ref: docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
   enforcement_surface: script
   violation_semantics: warning
+  owner_team: ops-runtime
+  current_steward: delegated:runtime-observability-contract-maintainer
+  approval_state: review-pending
+  reviewed_by: pending
+  approved_by: pending
   recorded_at: 2026-04-26
   reviewed_at: pending
   effective_from: 2026-04-26
   effective_until: ongoing
   introduced_by: docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
-  last_changed_by: docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
+  last_changed_by: docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md
   source_refs:
+    - docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md
     - docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
   cumulative_source_refs:
+    - docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md
     - docs/logs/support-only/ledger-S3A-2A-R01-runtime-observability-contract-split-and-consumption.md
     - docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md
     - docs/logs/support-only/ledger-S3A-2A-combo-observability-triage.md
@@ -41,6 +48,7 @@ contract_record:
     - backend/infra/observability/tracing.py
     - backend/scripts/cli_app/scenarios/es_write_block_4xx.py
     - docs/labs/lab-S3A-2A-3A-observability-failure-drills.md
+    - docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md
   lineage:
     supersedes: []
     superseded_by: []
@@ -56,15 +64,21 @@ contract_record:
     - Fallback, switch, shadow or dual-run, and coexistence-window operator instructions remain downstream runbook material and are not owned by this release yet.
 ```
 
+  ## Current Governance State
+
+  | governed surface | owner team | current steward | approval state | reviewed by | approved by | notes |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | `DOC-RUNTIME-OBSERVABILITY-0001` | `ops-runtime` | `delegated:runtime-observability-contract-maintainer` | `review-pending` | `pending` | `pending` | `S4G-2B backfills audited bridge/coverage windows without widening the contract beyond the current search outbox worker diagnostics chain.` |
+
 ## Contract Statement Table
 
-| statement id | statement label | clause status | change action | source basis | first effective release | first effective at | last changed release | last changed at | effective from | effective until | effective status | statement text | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-RUNTIME-OBSERVABILITY-0001-ST-01` | `Diagnosable chain requirement` | `active` | `introduced` | `S3A-2A-R01-D01` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | One admitted runtime handling chain should remain diagnosable through metrics, tracing, and structured logs via shared pivots and auditable evidence. | This is the narrow semantic core of the family. |
-| `DOC-RUNTIME-OBSERVABILITY-0001-ST-02` | `Bounded owner surface` | `active` | `introduced` | `S3A-2A-R01-D02; S3A-2A-R01-D03` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | The current bounded owner surface for this family is the search outbox projection worker for `projection=search_index_to_elastic`, with stable entrypoint `backend/scripts/search_outbox_worker.py`. | This clause prevents the family from floating above code with no bounded owner. |
-| `DOC-RUNTIME-OBSERVABILITY-0001-ST-03` | `Minimum shared pivots and signals` | `active` | `introduced` | `S3A-2A-R01-D04` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | The current minimum shared pivots are `trace_id/traceparent`, `claim_batch_id`, `outbox event id`, and worker labels such as `projection` and `op`; the current minimum signals are `outbox_*` metrics, worker tracing spans, and worker structured logs. | Later releases may refine this field set, but should not weaken it silently. |
-| `DOC-RUNTIME-OBSERVABILITY-0001-ST-04` | `Defended proof path` | `active` | `introduced` | `S3A-2A-R01-D05` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | The first defended proof path for this family is `es_write_block_4xx`, which must start `search_outbox_worker@v1`, verify expected before/after projection metrics and DB reason family movement, and retain worker-start, metrics, result, and worker-log evidence in one run-scoped bundle. | Tracing export completeness can still be hardened later without blocking this first release. |
-| `DOC-RUNTIME-OBSERVABILITY-0001-ST-05` | `Runbook boundary` | `active` | `introduced` | `S3A-2A-R01-D06` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | This release does not own fallback, switch, shadow or dual-run, or coexistence-window operator steps; those remain downstream runbook concerns once a narrower runbook bridge packet is justified. | Keeps semantic contract and operator procedure distinct. |
+  | statement id | statement label | clause status | change action | source basis | first effective release | first effective at | last changed release | last changed at | effective from | effective until | effective status | current code standing | bridge refs | statement text | notes |
+  | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+  | `DOC-RUNTIME-OBSERVABILITY-0001-ST-01` | `Diagnosable chain requirement` | `active` | `introduced` | `S3A-2A-R01-D01` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `2026-04-26` | `ongoing` | `in-force` | `contract-core` | `none` | One admitted runtime handling chain should remain diagnosable through metrics, tracing, and structured logs via shared pivots and auditable evidence. | This is the narrow semantic core of the family. |
+  | `DOC-RUNTIME-OBSERVABILITY-0001-ST-02` | `Bounded owner surface` | `active` | `introduced` | `S3A-2A-R01-D02; S3A-2A-R01-D03` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `bridged-now` | `DOC-RUNTIME-OBSERVABILITY-0001-CB-01` | The current bounded owner surface for this family is the search outbox projection worker for `projection=search_index_to_elastic`, with stable entrypoint `backend/scripts/search_outbox_worker.py`. | This clause prevents the family from floating above code with no bounded owner. |
+  | `DOC-RUNTIME-OBSERVABILITY-0001-ST-03` | `Minimum shared pivots and signals` | `active` | `introduced` | `S3A-2A-R01-D04` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `bridged-now` | `DOC-RUNTIME-OBSERVABILITY-0001-CB-01` | The current minimum shared pivots are `trace_id/traceparent`, `claim_batch_id`, `outbox event id`, and worker labels such as `projection` and `op`; the current minimum signals are `outbox_*` metrics, worker tracing spans, and worker structured logs. | Later releases may refine this field set, but should not weaken it silently. |
+  | `DOC-RUNTIME-OBSERVABILITY-0001-ST-04` | `Defended proof path` | `active` | `introduced` | `S3A-2A-R01-D05` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `bridged-now` | `DOC-RUNTIME-OBSERVABILITY-0001-CB-01` | The first defended proof path for this family is `es_write_block_4xx`, which must start `search_outbox_worker@v1`, verify expected before/after projection metrics and DB reason family movement, and retain worker-start, metrics, result, and worker-log evidence in one run-scoped bundle. | Tracing export completeness can still be hardened later without blocking this first release. |
+  | `DOC-RUNTIME-OBSERVABILITY-0001-ST-05` | `Runbook boundary` | `active` | `introduced` | `S3A-2A-R01-D06` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-26` | `DOC-RUNTIME-OBSERVABILITY-0001` | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `boundary-only` | `none` | This release does not own fallback, switch, shadow or dual-run, or coexistence-window operator steps; those remain downstream runbook concerns once a narrower runbook bridge packet is justified. | Keeps semantic contract and operator procedure distinct. |
 
 ## Statement Evolution Table
 
@@ -74,23 +88,35 @@ contract_record:
 
 ## Code Bridge Table
 
-| bridge id | owned statement ids | applied to surface | runtime boundary | entrypoint ref | drill-facing entry id | switch surface | reason for attachment | recorded at | effective from | effective until | replacement rule | evidence refs | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DOC-RUNTIME-OBSERVABILITY-0001-CB-01` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-02; DOC-RUNTIME-OBSERVABILITY-0001-ST-03; DOC-RUNTIME-OBSERVABILITY-0001-ST-04` | `search outbox projection worker diagnostics` | `search outbox projection worker for projection=search_index_to_elastic` | `backend/scripts/search_outbox_worker.py` | `search_outbox_worker@v1` | `SEARCH_OUTBOX_WORKER_ENABLED; SEARCH_OUTBOX_RUNNER` | `Current contract meaning is intentionally attached to one defended worker chain, one stable entrypoint, one minimum shared-signal set, and one defended proof path rather than to repo-wide observability in the abstract.` | `2026-04-26` | `2026-04-26` | `ongoing` | `Keep this row current until a later release changes the bounded owner surface, stable entrypoint, switch-surface naming, or defended proof path strongly enough that one replacement row or evolution table is required.` | `backend/scripts/search_outbox_worker.py; backend/scripts/search_outbox_worker_impl.py; backend/scripts/cli_app/scenarios/_failure_drill_shared.py; backend/scripts/cli_app/scenarios/es_write_block_4xx.py` | `This row records current code attachment only; it does not promote runbook-boundary semantics into positive contract meaning.` |
+| bridge id | owned statement ids | applied to surface | runtime boundary | entrypoint ref | drill-facing entry id | switch surface | reason for attachment | current standing | recorded at | effective from | effective until | effective status | replacement rule | evidence refs | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-RUNTIME-OBSERVABILITY-0001-CB-01` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-02; DOC-RUNTIME-OBSERVABILITY-0001-ST-03; DOC-RUNTIME-OBSERVABILITY-0001-ST-04` | `search outbox projection worker diagnostics` | `search outbox projection worker for projection=search_index_to_elastic` | `backend/scripts/search_outbox_worker.py` | `search_outbox_worker@v1` | `SEARCH_OUTBOX_WORKER_ENABLED; SEARCH_OUTBOX_RUNNER` | `Current contract meaning is intentionally attached to one defended worker chain, one stable entrypoint, one minimum shared-signal set, and one defended proof path rather than to repo-wide observability in the abstract.` | `defended-now` | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `Keep this row current until a later release changes the bounded owner surface, stable entrypoint, switch-surface naming, or defended proof path strongly enough that one replacement row or evolution table is required.` | `backend/scripts/search_outbox_worker.py; backend/scripts/search_outbox_worker_impl.py; backend/scripts/cli_app/scenarios/_failure_drill_shared.py; backend/scripts/cli_app/scenarios/es_write_block_4xx.py` | `This row records current code attachment only; it does not promote runbook-boundary semantics into positive contract meaning.` |
+
+## Code Bridge Evolution Table
+
+| bridge change id | affected bridge ids | change action | actor value | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-RUNTIME-OBSERVABILITY-0001-CB-CH-01` | `DOC-RUNTIME-OBSERVABILITY-0001-CB-01` | `history-backfilled` | `role:s4g-packet-maintainer` | `2026-04-26` | `2026-04-27` | `docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md` | `S4G-2B did not change the bounded bridge meaning; it backfilled explicit active-window and event-chronology fields onto the current bridge row.` |
 
 ## Contract Coverage Table
 
-| semantic area | current basis | coverage class | current standing | current owner / later owner | notes |
-| --- | --- | --- | --- | --- | --- |
-| `bounded owner surface` | `S3A-2A-R01-D02`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-02` | `defended-now` | `Current release already fixes the worker surface and projection boundary.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `Positive contract meaning.` |
-| `stable entrypoint` | `S3A-2A-R01-D03`; `contract_record.entrypoint_ref` | `defended-now` | `Current release and current code agree on the stable entrypoint path.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `Direct code-bridge field.` |
-| `drill-facing entry id` | `S3A-2A-R01-D03`; `_failure_drill_shared.py` | `defended-now` | `Current defended drill surfaces already use one stable bridge identifier for the same worker chain.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `Bridge-profile support field.` |
-| `switch surface names` | `S3A-2A-R01-D03`; `backend/scripts/search_outbox_worker.py` | `defended-now` | `The current bounded switch names are already defendable as part of the code attachment profile.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `Names only; not operator procedure.` |
-| `minimum shared pivots and signals` | `S3A-2A-R01-D04`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-03` | `defended-now` | `Current release already owns this minimum diagnostic signal set.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `Positive contract meaning.` |
-| `defended proof path` | `S3A-2A-R01-D05`; `DOC-RUNTIME-OBSERVABILITY-0001-ST-04` | `defended-now` | `Current release already binds the first proof path and its evidence bundle expectations.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `Positive contract meaning.` |
-| `fallback mode semantics` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-05`; `backend/scripts/search_outbox_worker.py` | `code-anchor-only` | `A disable switch exists, but current release does not defend when disable or degraded mode is permitted or how that state is governed.` | `S4G-1D` retained gap; possible later runbook or code contract | `Do not promote this into current positive clauses.` |
-| `switch procedure and reversal proof` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-05`; `backend/scripts/search_outbox_worker.py` | `code-anchor-only` | `Code exposes the knobs, but current release does not defend who may change them, by what preconditions, or how reversal is proven.` | `S4G-1D` retained gap; possible later runbook | `Keep code anchor visible without inventing procedure.` |
-| `coexistence window / shadow-dual-run / staged cutover` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-05`; `docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md` | `not-owned-here` | `Neither current release meaning nor current code attachment yields a defendable contract clause for this area.` | `S4G-1D` retained gap; possible later runbook verdict | `Outside current contract ownership.` |
+| coverage id | semantic area | current basis | coverage class | current standing | current owner / later owner | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-RUNTIME-OBSERVABILITY-0001-COV-01` | `bounded owner surface` | `S3A-2A-R01-D02; DOC-RUNTIME-OBSERVABILITY-0001-ST-02` | `defended-now` | `Current release already fixes the worker surface and projection boundary.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `Positive contract meaning.` |
+| `DOC-RUNTIME-OBSERVABILITY-0001-COV-02` | `stable entrypoint` | `S3A-2A-R01-D03; contract_record.entrypoint_ref` | `defended-now` | `Current release and current code agree on the stable entrypoint path.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `Direct code-bridge field.` |
+| `DOC-RUNTIME-OBSERVABILITY-0001-COV-03` | `drill-facing entry id` | `S3A-2A-R01-D03; _failure_drill_shared.py` | `defended-now` | `Current defended drill surfaces already use one stable bridge identifier for the same worker chain.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `Bridge-profile support field.` |
+| `DOC-RUNTIME-OBSERVABILITY-0001-COV-04` | `switch surface names` | `S3A-2A-R01-D03; backend/scripts/search_outbox_worker.py` | `defended-now` | `The current bounded switch names are already defendable as part of the code attachment profile.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `Names only; not operator procedure.` |
+| `DOC-RUNTIME-OBSERVABILITY-0001-COV-05` | `minimum shared pivots and signals` | `S3A-2A-R01-D04; DOC-RUNTIME-OBSERVABILITY-0001-ST-03` | `defended-now` | `Current release already owns this minimum diagnostic signal set.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `Positive contract meaning.` |
+| `DOC-RUNTIME-OBSERVABILITY-0001-COV-06` | `defended proof path` | `S3A-2A-R01-D05; DOC-RUNTIME-OBSERVABILITY-0001-ST-04` | `defended-now` | `Current release already binds the first proof path and its evidence bundle expectations.` | `DOC-RUNTIME-OBSERVABILITY-0001` contract | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `Positive contract meaning.` |
+| `DOC-RUNTIME-OBSERVABILITY-0001-COV-07` | `fallback mode semantics` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-05; backend/scripts/search_outbox_worker.py` | `code-anchor-only` | `A disable switch exists, but current release does not defend when disable or degraded mode is permitted or how that state is governed.` | `S4G-1D` retained gap; possible later runbook or code contract | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `Do not promote this into current positive clauses.` |
+| `DOC-RUNTIME-OBSERVABILITY-0001-COV-08` | `switch procedure and reversal proof` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-05; backend/scripts/search_outbox_worker.py` | `code-anchor-only` | `Code exposes the knobs, but current release does not defend who may change them, by what preconditions, or how reversal is proven.` | `S4G-1D` retained gap; possible later runbook | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `Keep code anchor visible without inventing procedure.` |
+| `DOC-RUNTIME-OBSERVABILITY-0001-COV-09` | `coexistence window / shadow-dual-run / staged cutover` | `DOC-RUNTIME-OBSERVABILITY-0001-ST-05; docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md` | `not-owned-here` | `Neither current release meaning nor current code attachment yields a defendable contract clause for this area.` | `S4G-1D` retained gap; possible later runbook verdict | `2026-04-27` | `2026-04-26` | `ongoing` | `in-force` | `Outside current contract ownership.` |
+
+## Coverage Evolution Table
+
+| coverage change id | affected coverage ids | change action | actor value | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `DOC-RUNTIME-OBSERVABILITY-0001-COV-CH-01` | `DOC-RUNTIME-OBSERVABILITY-0001-COV-01; DOC-RUNTIME-OBSERVABILITY-0001-COV-02; DOC-RUNTIME-OBSERVABILITY-0001-COV-03; DOC-RUNTIME-OBSERVABILITY-0001-COV-04; DOC-RUNTIME-OBSERVABILITY-0001-COV-05; DOC-RUNTIME-OBSERVABILITY-0001-COV-06; DOC-RUNTIME-OBSERVABILITY-0001-COV-07; DOC-RUNTIME-OBSERVABILITY-0001-COV-08; DOC-RUNTIME-OBSERVABILITY-0001-COV-09` | `history-backfilled` | `role:s4g-packet-maintainer` | `2026-04-26` | `2026-04-27` | `docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md` | `S4G-2B backfilled explicit row ids, active-window fields, and change-event chronology for the current contract coverage surface without widening contract ownership.` |
 
 ## Release Change
 
@@ -100,7 +126,7 @@ contract_record:
   - the bounded owner surface and stable entrypoint
   - the minimum shared pivots and signals
   - the first defended proof path
-- This release now also exposes one explicit current-state `Code Bridge Table` row and one `Contract Coverage` table so readers can distinguish defended contract meaning from code-anchor-only or out-of-scope semantics.
+- This release now also exposes one explicit current-state `Code Bridge Table` row, one `Code Bridge Evolution Table`, one `Contract Coverage` table, and one `Coverage Evolution Table` so readers can distinguish defended contract meaning from code-anchor-only or out-of-scope semantics while retaining row-level time windows and change chronology.
 - This release intentionally does not open a separate runbook bridge packet yet.
 
 ## Contract Statement
