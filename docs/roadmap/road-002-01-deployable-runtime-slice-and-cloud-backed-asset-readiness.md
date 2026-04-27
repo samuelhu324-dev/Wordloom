@@ -126,7 +126,7 @@
 - `P0` Contract: declare which existing runtime/evidence surfaces remain authoritative for the first sample.
 - `P1` Implementation: reuse deploy/verify/rollback and drill-evidence discipline as the proving substrate.
 - `P2` Drill: reject any packet that cannot point back to one credible runtime or evidence surface.
-- `P3` Drill: open the first Search-specific failure-drills runbook candidate and the template hardening needed to make that child runbook maintainable as a code-coupled operator surface.
+- `P3` Drill: prove the code-coupled runbook field model on the first Issues sample, then defer the Search-specific runtime child until any remaining runtime-only field shapes are explicit.
 
 ### M3: Decide the first cloud-backed asset readiness opening only after one real sample
 
@@ -167,4 +167,4 @@
 - 2026-04-26: mapped `S4G-1C` into `M1-P3` as the decision scaffold for deferred `D06` runbook-boundary work and code-coupled contract reader-surface hardening.
 - 2026-04-26: mapped `S4G-1D` into `M1-P4` as the bounded gap packet for unresolved operator semantics and later bridge-note routing.
 - 2026-04-26: mapped `S4G-1E` into `M1-P5` as the bounded contract-facing hardening packet for `OBSERVABILITY-0001` code-bridge and coverage surfaces.
-- 2026-04-27: mapped `S4G-2A` into `M2-P3` as the Search failure-drills runbook bridge and template-hardening packet beneath the shared failure-drills spine and deployable runtime substrate.
+- 2026-04-27: mapped `S4G-2A` into `M2-P3` as the Issues code-bridge first-sample and template-hardening packet, with Search deferred as the next runtime-owned sample after the field model stabilizes.

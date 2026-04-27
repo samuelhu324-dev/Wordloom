@@ -145,7 +145,7 @@
   - 详见：`docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md`
 - `S4G-1E`（Phase 5）：runtime observability contract code-bridge hardening
   - 详见：`docs/logs/log-S4G-1E-runtime-observability-contract-code-bridge-hardening.md`
-- `S4G-2A`（Phase 6）：search failure-drills runbook bridge and template hardening
+- `S4G-2A`（Phase 6）：issues code-bridge first sample and runbook template hardening
   - 详见：`docs/logs/log-S4G-2A-search-failure-drills-runbook-bridge-and-template-hardening.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
@@ -163,8 +163,8 @@
 - `S4G-1C` is now opened as the next decision scaffold for whether the deferred operator boundary becomes a runtime-owned runbook bridge, a narrower gap packet, or a deliberate no-op.
 - `S4G-1D` is now opened as the bounded operator-semantics gap packet beneath that `S4G-1C` verdict.
 - `S4G-1E` is now opened as the bounded contract-facing hardening packet for `OBSERVABILITY-0001`, focused on `Code Bridge Table`, `Contract Coverage`, and possible template-side `Code Bridge Delta` reuse.
-- `S4G-2A` is now opened as the next bounded packet for Search failure-drills runbook completion and the runbook-template field hardening needed to support code-coupled operator surfaces.
-- The next step is intentionally narrow: decide which Search failure scenarios are already defendable operator procedure, which remain code-anchor-only or gap-owned, and what the first Search child runbook should inherit after template write-back.
+- `S4G-2A` is now the bounded packet for the first Issues code-bridge sample plus the runbook-template field hardening needed to support code-coupled operator surfaces.
+- The next step is intentionally narrow: keep ISSUES-001 stable as the first sample, then decide what additional runtime-only field shapes Search still needs before a deferred Search child runbook opens.
 - The main risk is over-expansion back into repo-wide archaeology.
 
 ## Notes（落地原则，可选）
@@ -205,4 +205,4 @@
 - 2026-04-26：登记 `S4G-1C` 作为第一个 `D06` runbook-boundary 决策包，用来固定 `runbook bridge / gap packet / no new packet now` 的产出判据，以及 code-coupled contract 的最小 reader surfaces 与 doc/code contract 分层规则。
 - 2026-04-26：登记 `S4G-1D` 作为 `S4G-1C` verdict 之后的第一个 bounded gap packet，用来集中列出 admitted runtime chain 仍缺的 operator semantics，并为后续 contract/runbook bridge note 做路由准备。
 - 2026-04-26：登记 `S4G-1E` 作为 `S4G-1D` 之后的 bounded contract-facing hardening packet，用来收敛 `OBSERVABILITY-0001` 的 `Code Bridge Table`、`Contract Coverage`，以及 template 侧是否需要 `Code Bridge Delta` 结构。
-- 2026-04-27：登记 `S4G-2A` 作为 Search failure-drills runbook bridge and template hardening packet，用来把 Search child-opening 规则、shared-spine retention、Chronicle defer standing、以及 runbook-template `governance + code bridge + scenario coverage` 字段收束成一个正式包。
+- 2026-04-27：登记 `S4G-2A` 作为 Issues code-bridge first sample and runbook template hardening packet，用来先把 ISSUES family 的第一套 code-coupled sample 落在现有 runbook 上，同时保留 Search 作为后续 deferred runtime sample。
