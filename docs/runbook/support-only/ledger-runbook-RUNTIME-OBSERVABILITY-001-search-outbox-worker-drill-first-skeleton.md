@@ -31,8 +31,33 @@ runbook_release_ledger:
 | row id | evidence anchor | evidence class | semantic area | intended landing surface | current verdict | affected bridge ids | affected coverage ids | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `RBL-01` | `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md#P6-C1-S1` | `source-log` | `bounded current skeleton opening` | `runbook-body` | `applied-current-release` | `RB-OBS-01; RB-OBS-02; RB-OBS-03; RB-OBS-04` | `SC-OBS-01; SC-OBS-02; SC-OBS-03; SC-OBS-04` | `This row records the current defended runbook release basis that has already landed in the runbook body.` |
-| `RBL-02` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P1` | `mixed` | `scenario inventory wider than current family` | `scenario-registry; notes-and-boundaries; defer` | `pending-classification` | `none` | `none` | `The extracted Search scenario universe is materially wider than the current runbook family, but P2 classification must happen before write-back.` |
+| `RBL-02` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P1; #P2` | `mixed` | `scenario inventory wider than current family` | `scenario-registry; notes-and-boundaries; defer` | `classified-awaiting-write-back` | `none` | `none` | `P2 now classifies worker-chain scenarios as current-family, supporting corroboration scenarios as support-only, and search verification or dual-run scenarios as sibling-family; concrete write-back still waits for P3.` |
 | `RBL-03` | `docs/runbook/support-only/ledger-run-001-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md` | `runbook` | `run-level accounting boundary` | `defer` | `deferred` | `none` | `none` | `Per-run accounting remains reserved for future admitted runs; this ledger does not collapse object and run scopes.` |
+
+## Scenario Family Classification Table
+
+| scenario name | classified standing | smallest defensible reason | runbook release standing | intended next landing |
+| --- | --- | --- | --- | --- |
+| `es_429_inject` | `current-family` | `same search outbox worker diagnostic chain` | `not yet written into the runbook body` | `possible later scenario-registry widening in P3` |
+| `es_write_block_4xx` | `current-family` | `already admitted proof path on the current worker chain` | `already present in the runbook` | `no new write-back required` |
+| `es_down_connect` | `current-family` | `same search outbox worker diagnostic chain` | `not yet written into the runbook body` | `possible later scenario-registry widening in P3` |
+| `es_timeout` | `current-family` | `same search outbox worker diagnostic chain` | `not yet written into the runbook body` | `possible later scenario-registry widening in P3` |
+| `es_bulk_partial` | `current-family` | `same search outbox worker diagnostic chain` | `not yet written into the runbook body` | `possible later scenario-registry widening in P3` |
+| `db_claim_contention` | `current-family` | `same search outbox worker claim/recovery chain` | `not yet written into the runbook body` | `possible later scenario-registry widening in P3` |
+| `stuck_reclaim` | `current-family` | `same search outbox worker claim/recovery chain` | `not yet written into the runbook body` | `possible later scenario-registry widening in P3` |
+| `duplicate_delivery` | `current-family` | `same search outbox worker idempotency chain` | `not yet written into the runbook body` | `possible later scenario-registry widening in P3` |
+| `projection_version` | `current-family` | `same search outbox worker rule-version chain` | `not yet written into the runbook body` | `possible later scenario-registry widening in P3` |
+| `collector_down` | `support-only` | `supporting observability infra rather than the owned worker chain itself` | `retain outside the runbook body` | `stay in object ledger and source log` |
+| `shadow_verify_shared_keys` | `support-only` | `cross-surface corroboration aid rather than primary runbook-owned scenario` | `retain outside the runbook body` | `stay in object ledger and source log` |
+| `shadow_verify_search_index_write_gate` | `sibling-family` | `search gate semantics rather than current runtime observability ownership` | `do not land in this runbook release` | `route to sibling lane in P3` |
+| `shadow_verify_search_index_paging_stability` | `sibling-family` | `search verification semantics rather than current runtime observability ownership` | `do not land in this runbook release` | `route to sibling lane in P3` |
+| `rehearsal_search_read_switch_smoke` | `sibling-family` | `read-switch rehearsal semantics rather than current runtime observability ownership` | `do not land in this runbook release` | `route to sibling lane in P3` |
+| `shadow_verify_dual_run_readiness_gate` | `sibling-family` | `dual-run readiness semantics explicitly outside current narrow ownership` | `do not land in this runbook release` | `route to sibling lane in P3` |
+| `shadow_verify_dual_run_stage1` | `sibling-family` | `dual-run stage semantics explicitly outside current narrow ownership` | `do not land in this runbook release` | `route to sibling lane in P3` |
+| `shadow_verify_dual_run_stage2` | `sibling-family` | `dual-run stage semantics explicitly outside current narrow ownership` | `do not land in this runbook release` | `route to sibling lane in P3` |
+| `shadow_verify_dual_run_window` | `sibling-family` | `coexistence-window semantics explicitly outside current narrow ownership` | `do not land in this runbook release` | `route to sibling lane in P3` |
+| `shadow_verify_canary_dual_write` | `sibling-family` | `dual-write cutover semantics rather than current runtime observability ownership` | `do not land in this runbook release` | `route to sibling lane in P3` |
+| `shadow_verify_dual_write_sampling` | `sibling-family` | `dual-write evidence semantics rather than current runtime observability ownership` | `do not land in this runbook release` | `route to sibling lane in P3` |
 
 ## Actor and Provenance Review Table
 

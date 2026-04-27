@@ -332,6 +332,47 @@
 - P2-C1-S1: classify each extracted scenario into current-family, support-only, or sibling-family.
 - P2-C1-S2: record the smallest defensible reason for each classification.
 
+## P2 (Family classification | v1)
+
+### P2-C1-S1 (Extracted scenarios classified by family standing | v1)
+
+- The current classification question is not `should these scenarios already be written into the current readers?`; it is `which stable family should own the scenario semantics once the extracted universe is made explicit?`
+
+| scenario name | classified standing | current route summary | current write-back standing | notes |
+| --- | --- | --- | --- | --- |
+| `es_429_inject` | `current-family` | `same search outbox worker diagnostic chain` | `defer concrete widening to P3` | `ES-side retry and throttle behavior belongs to the current bounded runtime observability lane.` |
+| `es_write_block_4xx` | `current-family` | `already admitted proof path` | `already owned now` | `This remains the first defended current proof path.` |
+| `es_down_connect` | `current-family` | `same search outbox worker diagnostic chain` | `defer concrete widening to P3` | `Connectivity failure on the current worker chain belongs to the same bounded runtime lane.` |
+| `es_timeout` | `current-family` | `same search outbox worker diagnostic chain` | `defer concrete widening to P3` | `Timeout behavior on the current worker chain belongs to the same bounded runtime lane.` |
+| `es_bulk_partial` | `current-family` | `same search outbox worker diagnostic chain` | `defer concrete widening to P3` | `Partial-bulk result handling remains a runtime diagnostic scenario on the same worker surface.` |
+| `db_claim_contention` | `current-family` | `same search outbox worker claim/recovery chain` | `defer concrete widening to P3` | `Claim contention is part of the same bounded worker handling chain.` |
+| `stuck_reclaim` | `current-family` | `same search outbox worker claim/recovery chain` | `defer concrete widening to P3` | `Reclaim behavior remains part of the same bounded worker handling chain.` |
+| `duplicate_delivery` | `current-family` | `same search outbox worker idempotency chain` | `defer concrete widening to P3` | `Duplicate/noop handling remains part of the current worker diagnostic chain.` |
+| `projection_version` | `current-family` | `same search outbox worker rule-version chain` | `defer concrete widening to P3` | `Projection-version behavior remains part of the current worker diagnostic chain.` |
+| `collector_down` | `support-only` | `same lane corroboration but not the bounded worker chain itself` | `retain in object ledgers and source log` | `Collector availability matters to evidence confidence, but the scenario centers observability infrastructure rather than the current owned worker chain.` |
+| `shadow_verify_shared_keys` | `support-only` | `cross-surface corroboration aid rather than primary owned scenario` | `retain in object ledgers and source log` | `Shared-key verification helps corroborate other scenarios, but it does not by itself define the current runtime observability family.` |
+| `shadow_verify_search_index_write_gate` | `sibling-family` | `search verification / gate semantics` | `route to sibling lane in P3` | `Write-gate semantics are not the same as the current bounded worker diagnostic chain.` |
+| `shadow_verify_search_index_paging_stability` | `sibling-family` | `search verification / read-surface semantics` | `route to sibling lane in P3` | `Paging-stability verification belongs to a search behavior family, not the current worker observability family.` |
+| `rehearsal_search_read_switch_smoke` | `sibling-family` | `read-switch rehearsal semantics` | `route to sibling lane in P3` | `Read-switch rehearsal is cutover or switch-family behavior rather than current observability ownership.` |
+| `shadow_verify_dual_run_readiness_gate` | `sibling-family` | `dual-run readiness semantics` | `route to sibling lane in P3` | `Dual-run readiness is explicitly outside the current narrow reader family.` |
+| `shadow_verify_dual_run_stage1` | `sibling-family` | `dual-run stage semantics` | `route to sibling lane in P3` | `Stage-1 dual-run behavior belongs to a sibling family.` |
+| `shadow_verify_dual_run_stage2` | `sibling-family` | `dual-run stage semantics` | `route to sibling lane in P3` | `Stage-2 dual-run behavior belongs to a sibling family.` |
+| `shadow_verify_dual_run_window` | `sibling-family` | `coexistence-window semantics` | `route to sibling lane in P3` | `Sustained dual-run window semantics are explicitly outside current observability ownership.` |
+| `shadow_verify_canary_dual_write` | `sibling-family` | `dual-write cutover semantics` | `route to sibling lane in P3` | `Canary dual-write behavior belongs to a sibling cutover or dual-write family.` |
+| `shadow_verify_dual_write_sampling` | `sibling-family` | `dual-write evidence semantics` | `route to sibling lane in P3` | `Dual-write sampling belongs to a sibling cutover or dual-write family.` |
+
+### P2-C1-S2 (Smallest defensible reasons recorded | v1)
+
+- The current smallest defensible classification rule is:
+  - classify as `current-family` when the primary semantics stay on the current search outbox worker handling chain and test its diagnosability, recovery, or evidence-bearing behavior;
+  - classify as `support-only` when the scenario materially corroborates the lane but centers supporting infra or cross-surface evidence rather than the owned worker chain itself;
+  - classify as `sibling-family` when the scenario's primary semantics are search verification, read-switch, shadow, dual-run, dual-write, or coexistence-window behavior that the current readers explicitly do not own.
+- P2 classification verdict:
+  - `current-family`: `es_429_inject`, `es_write_block_4xx`, `es_down_connect`, `es_timeout`, `es_bulk_partial`, `db_claim_contention`, `stuck_reclaim`, `duplicate_delivery`, `projection_version`;
+  - `support-only`: `collector_down`, `shadow_verify_shared_keys`;
+  - `sibling-family`: `shadow_verify_search_index_write_gate`, `shadow_verify_search_index_paging_stability`, `rehearsal_search_read_switch_smoke`, `shadow_verify_dual_run_readiness_gate`, `shadow_verify_dual_run_stage1`, `shadow_verify_dual_run_stage2`, `shadow_verify_dual_run_window`, `shadow_verify_canary_dual_write`, `shadow_verify_dual_write_sampling`.
+- This step still does not widen the current readers; it only makes the ownership routing explicit enough for `P3`.
+
 ### P3 (Write-back decision)
 
 - P3-C1-S1: decide whether current `OBSERVABILITY-0001` / `run-RUNTIME-OBSERVABILITY-001` should widen, stay narrow, or route sibling lanes.
@@ -354,8 +395,8 @@
 
 ### P2 (Family classification)
 
-- [ ] `P2-C1-S1`: classify each extracted scenario by family standing.
-- [ ] `P2-C1-S2`: record the smallest defensible reason for each classification.
+- [x] `P2-C1-S1`: classify each extracted scenario by family standing.
+- [x] `P2-C1-S2`: record the smallest defensible reason for each classification.
 
 ### P3 (Write-back decision)
 
@@ -369,7 +410,8 @@
 - `P1` now records a concrete Search scenario inventory from code and corroborates it with labs docs, labs catalog, and retained snapshots/evidence.
 - The extracted universe already appears wider than the current reader family and already falls into at least three visible bands: worker fault/recovery, Search verification/gate, and dual-run/dual-write adjacent scenarios.
 - The repo now also has explicit reader-object release-ledger landing surfaces for the current runbook and current contract, so later scenario-classification evidence no longer needs to stay trapped only inside the control log.
-- The next step is intentionally narrow: classify family ownership for the extracted scenarios before widening any current reader.
+- `P2` now makes family ownership explicit: worker-chain fault and recovery scenarios classify as `current-family`; supporting infra or cross-surface corroboration scenarios classify as `support-only`; search verification, read-switch, and dual-run or dual-write scenarios classify as `sibling-family`.
+- The next step is intentionally narrow: use the new classification to decide whether current readers widen, stay narrow, or route sibling lanes without mixing those decisions together.
 
 ## Evidence
 
@@ -425,8 +467,24 @@
   - live `OBSERVABILITY-0001` contract and runbook release ledgers, plus their first `SUP` and reserved `PATCH` surfaces, now exist as durable staging surfaces;
   - `S4G-1G/P2` can now classify scenarios without forcing all intermediate evidence to remain trapped only in the control log.
 
+### P2-C1-S1S2 (Search runtime scenarios classified by family standing | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts:
+  - `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md`
+- expected:
+  - classify each extracted scenario into `current-family`, `support-only`, or `sibling-family`;
+  - state the smallest defensible reason for each classification;
+  - keep current reader mutation deferred until the later write-back decision.
+- observed:
+  - same-chain worker fault, recovery, idempotency, and version-risk scenarios now classify as `current-family`;
+  - `collector_down` and `shadow_verify_shared_keys` now classify as `support-only` because they corroborate the lane without defining the owned worker chain itself;
+  - search verification, read-switch, dual-run, and dual-write scenarios now classify as `sibling-family`;
+  - `P3` is now the remaining decision surface for whether the current contract or runbook widens at all.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1G` as the bounded Search runtime scenario hard-extraction packet so the lane can re-extract the current scenario universe from code/labs before widening current readers by wording guesswork.
 - 2026-04-27: completed `P1` by inventorying concrete Search runtime scenarios from code and corroborating them with labs docs, labs catalog, and retained evidence before any family-boundary classification.
 - 2026-04-27: confirmed the new reader-object release-ledger layer and scaffolded the first contract/runbook release ledgers for `OBSERVABILITY-0001` so later phased write-back no longer needs to stay only in the control log.
+- 2026-04-27: completed `P2` by classifying the extracted Search runtime scenarios into current-family, support-only, and sibling-family standing without widening the current readers yet.
