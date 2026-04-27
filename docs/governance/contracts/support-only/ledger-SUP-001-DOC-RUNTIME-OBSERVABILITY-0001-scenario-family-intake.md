@@ -11,6 +11,27 @@ contract_release_ledger_supplement:
   parent_release_ledger_id: ledger-DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain
   parent_contract_id: DOC-RUNTIME-OBSERVABILITY-0001
   parent_row_id: CRL-02
+  parent_scenario_row_ids:
+    - CRL-02-SC-01
+    - CRL-02-SC-02
+    - CRL-02-SC-03
+    - CRL-02-SC-04
+    - CRL-02-SC-05
+    - CRL-02-SC-06
+    - CRL-02-SC-07
+    - CRL-02-SC-08
+    - CRL-02-SC-09
+    - CRL-02-SC-10
+    - CRL-02-SC-11
+    - CRL-02-SC-12
+    - CRL-02-SC-13
+    - CRL-02-SC-14
+    - CRL-02-SC-15
+    - CRL-02-SC-16
+    - CRL-02-SC-17
+    - CRL-02-SC-18
+    - CRL-02-SC-19
+    - CRL-02-SC-20
   created_at: 2026-04-27
   reviewed_at: pending
   accepted_at: pending
@@ -28,11 +49,11 @@ contract_release_ledger_supplement:
 
 ## Evidence Table
 
-| supplement item id | parent row id | evidence ref | evidence type | verification status | effect on current verdict | proposed parent-ledger action | contract impact | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `CRL-02-SUP-01` | `CRL-02` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P1` | `md` | `verified` | `sharpens-existing` | `rewrite-parent-row` | `defer-contract-change` | `S4G-1G/P1 proves that the scenario universe is wider than the current contract family, but still does not classify ownership.` |
-| `CRL-02-SUP-02` | `CRL-02` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md` | `labs` | `verified` | `supports-existing` | `append-evidence` | `defer-contract-change` | `The labs drill family corroborates that several wider Search scenarios are real and repeatable even though current contract ownership remains narrow.` |
-| `CRL-02-SUP-03` | `CRL-02` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P2` | `md` | `verified` | `sharpens-existing` | `rewrite-parent-row` | `defer-contract-change` | `P2 now classifies same-chain worker scenarios as current-family, support scenarios as support-only, and gate or dual-run scenarios as sibling-family without widening the contract yet.` |
+| supplement item id | parent row id | parent scenario row ids | evidence ref | evidence type | verification status | effect on current verdict | proposed parent-ledger action | contract impact | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `CRL-02-SUP-01` | `CRL-02` | `CRL-02-SC-01; CRL-02-SC-02; CRL-02-SC-03; CRL-02-SC-04; CRL-02-SC-05; CRL-02-SC-06; CRL-02-SC-07; CRL-02-SC-08; CRL-02-SC-09; CRL-02-SC-12; CRL-02-SC-13; CRL-02-SC-14; CRL-02-SC-15; CRL-02-SC-16; CRL-02-SC-17; CRL-02-SC-18; CRL-02-SC-19; CRL-02-SC-20` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P1` | `md` | `verified` | `sharpens-existing` | `rewrite-parent-row` | `defer-contract-change` | `P1 proves that the scenario universe is wider than the current contract family before scenario ownership is classified.` |
+| `CRL-02-SUP-02` | `CRL-02` | `CRL-02-SC-01; CRL-02-SC-02; CRL-02-SC-03; CRL-02-SC-04; CRL-02-SC-05; CRL-02-SC-06; CRL-02-SC-07; CRL-02-SC-08; CRL-02-SC-09; CRL-02-SC-10; CRL-02-SC-11` | `docs/labs/lab-S3A-2A-3A-observability-failure-drills.md` | `labs` | `verified` | `supports-existing` | `append-evidence` | `defer-contract-change` | `The labs drill family corroborates that several wider Search scenarios are real and repeatable even though current contract ownership remains narrow.` |
+| `CRL-02-SUP-03` | `CRL-02` | `CRL-02-SC-01; CRL-02-SC-02; CRL-02-SC-03; CRL-02-SC-04; CRL-02-SC-05; CRL-02-SC-06; CRL-02-SC-07; CRL-02-SC-08; CRL-02-SC-09; CRL-02-SC-10; CRL-02-SC-11; CRL-02-SC-12; CRL-02-SC-13; CRL-02-SC-14; CRL-02-SC-15; CRL-02-SC-16; CRL-02-SC-17; CRL-02-SC-18; CRL-02-SC-19; CRL-02-SC-20` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P2` | `md` | `verified` | `sharpens-existing` | `rewrite-parent-row` | `defer-contract-change` | `P2 classifies current-family, support-only, and sibling-family standing without widening the contract yet.` |
 
 ## Actor and Provenance Review Table
 
@@ -54,3 +75,4 @@ contract_release_ledger_supplement:
 
 - This SUP does not write into the contract body directly.
 - Its auditable chain is `evidence -> this SUP -> parent row CRL-02 in the release ledger -> later contract mutation only if P3 says widening is justified`.
+- The new `parent_scenario_row_ids` binding means later readers can also tell which specific scenario rows were sharpened, corroborated, or classified by each SUP item.

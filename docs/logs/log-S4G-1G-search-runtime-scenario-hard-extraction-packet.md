@@ -404,6 +404,27 @@
   - and which fields still remain `unknown`, `pending`, or `ongoing` without false precision.
 - This means later write-back can now show not only `that` a row changed, but also `how`, `why`, and `through which surface` it changed.
 
+### P2-C2-S3 (Per-scenario routing ids and route events fixed on release ledgers | v1)
+
+- The next missing question after `SUP/PATCH/ledger chain is explicit` was: `can one reviewer trace a single scenario like es_timeout or shadow_verify_dual_run_stage1 without inferring from a family-wide table?`
+- The answer is now `yes` at the release-ledger layer:
+  - each classified scenario under the current runbook release ledger now has one stable `scenario row id`;
+  - each classified scenario under the current contract release ledger now has one stable `scenario row id`;
+  - each such row now records current owner surface, current routing status, intended destination kind/ref, and one last routing event id.
+- This means later `P3` no longer has to reinterpret the family classification table as a pseudo-ledger; it can update explicit per-scenario routing rows instead.
+
+### P2-C2-S4 (Reader backreferences added so runbook and contract can show ledger origin | v1)
+
+- Release-ledger audit alone is still insufficient if the downstream reader body cannot point back to the ledger row that justified it.
+- The current runbook and current contract therefore now expose backreference fields on their current scenario/coverage or statement surfaces:
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
+- These backreferences are not replacements for `source basis`; they are the reader-facing bridge that says `this current row came through that release-ledger path`.
+- As a result, later reviewers can answer both directions:
+  - `from ledger to reader`: where did this scenario eventually land?
+  - `from reader to ledger`: which ledger row and routing event justified this current reader row?
+
 ### P3 (Write-back decision)
 
 - P3-C1-S1: decide whether current `OBSERVABILITY-0001` / `run-RUNTIME-OBSERVABILITY-001` should widen, stay narrow, or route sibling lanes.
@@ -430,6 +451,8 @@
 - [x] `P2-C1-S2`: record the smallest defensible reason for each classification.
 - [x] `P2-C2-S1`: fix the family-agnostic auditable chain semantics before P3.
 - [x] `P2-C2-S2`: backfill the required time-audit surfaces on live object-ledger files and templates.
+- [x] `P2-C2-S3`: add per-scenario routing ids, routing chronology, and routing events on the release-ledger surfaces.
+- [x] `P2-C2-S4`: add reader-facing backreferences from contract/runbook rows back to the release-ledger routing surfaces.
 
 ### P3 (Write-back decision)
 
@@ -446,6 +469,8 @@
 - `P2` now makes family ownership explicit: worker-chain fault and recovery scenarios classify as `current-family`; supporting infra or cross-surface corroboration scenarios classify as `support-only`; search verification, read-switch, and dual-run or dual-write scenarios classify as `sibling-family`.
 - The repo now also has the full auditable chain needed for later reader mutation: `SUP -> parent ledger -> reader` for meaning changes, `PATCH -> reader` for bounded repairs, and paired `SUP` whenever a patch also changes admitted meaning.
 - The newly-opened object-ledger live files now separate artifact lifecycle time, source chronology time, and governance-event time so later write-back can be read as change history instead of only as current state.
+- The release-ledger live files now also carry explicit per-scenario routing registries, per-scenario chronology, and per-scenario route events, so one scenario can be audited independently of the family summary table.
+- The current runbook and current contract now carry backreference fields from reader rows back to release-ledger routing rows, so later split/write-back can be read in both directions instead of only from the ledger side.
 - The next step is intentionally narrow: use the new classification plus the remediated audit surfaces to decide whether current readers widen, stay narrow, or route sibling lanes without mixing those decisions together.
 
 ## Evidence
@@ -551,6 +576,32 @@
   - the active `SUP` files now carry evidence-time audit so later readers can distinguish evidence admission time from later reader mutation time;
   - the reserved `PATCH` files now carry bounded repair chronology placeholders without pretending that a real repair has already happened.
 
+### P2-C2-S3S4 (Per-scenario routing and reader backreferences completed | 2026-04-27)
+
+- headSha: `pending-commit`
+- artifacts:
+  - `docs/runbook/support-only/_template-runbook-release-ledger.md`
+  - `docs/runbook/support-only/_template-runbook-release-ledger-SUP.md`
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger.md`
+  - `docs/governance/contracts/support-only/_template-contract-release-ledger-SUP.md`
+  - `docs/runbook/_template-runbook.md`
+  - `docs/governance/contracts/_template-contract-record.md`
+  - `docs/runbook/support-only/ledger-runbook-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+  - `docs/runbook/support-only/ledger-runbook-SUP-001-RUNTIME-OBSERVABILITY-001-scenario-family-intake.md`
+  - `docs/runbook/run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+  - `docs/governance/contracts/support-only/ledger-DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
+  - `docs/governance/contracts/support-only/ledger-SUP-001-DOC-RUNTIME-OBSERVABILITY-0001-scenario-family-intake.md`
+  - `docs/governance/contracts/runtime/observability/DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md`
+- expected:
+  - stop treating one family-classification table as if it were enough to track downstream scenario split/write-back;
+  - give each scenario one stable routing id and one explicit routing event trail;
+  - let current runbook and contract rows point back to the release-ledger route that justified them.
+- observed:
+  - the runbook and contract release-ledger templates now require per-scenario routing registry, scenario routing chronology, and scenario routing event surfaces whenever one parent row carries many scenario outcomes;
+  - the active runbook and contract `SUP` files now bind evidence not only to the parent row but also to the concrete scenario rows they sharpen or classify;
+  - the active runbook and contract reader files now expose release-ledger backreference columns so one current body row can be traced back to the routing row and routing event that justified it;
+  - future `P3` write-back can now record scenario-level landing, retention, or sibling-lane routing without forcing reviewers to infer those moves from prose alone.
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-27: opened `S4G-1G` as the bounded Search runtime scenario hard-extraction packet so the lane can re-extract the current scenario universe from code/labs before widening current readers by wording guesswork.
@@ -558,3 +609,4 @@
 - 2026-04-27: confirmed the new reader-object release-ledger layer and scaffolded the first contract/runbook release ledgers for `OBSERVABILITY-0001` so later phased write-back no longer needs to stay only in the control log.
 - 2026-04-27: completed `P2` by classifying the extracted Search runtime scenarios into current-family, support-only, and sibling-family standing without widening the current readers yet.
 - 2026-04-27: backfilled full auditable-chain semantics and time-audit structure across the new release-ledger templates, run-ledger templates, and current `OBSERVABILITY-0001` object-ledger live files so later write-back can be read as change history rather than only as current state.
+- 2026-04-27: added per-scenario routing ids and reader backreferences across the current `OBSERVABILITY-0001` release-ledger and reader surfaces so later split/write-back can be audited from either direction.

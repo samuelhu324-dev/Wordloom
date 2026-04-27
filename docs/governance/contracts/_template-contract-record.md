@@ -166,6 +166,9 @@ contract_record:
   - `clause status`
   - `change action`
   - `source basis`
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
   - `first effective release`
   - `first effective at`
   - `last changed release`
@@ -182,6 +185,7 @@ contract_record:
   - do not encode parent/child routing, split history, absorbed history, return flow, or other lineage inside the label
   - keep chronology in `Statement Evolution Table` and current boundary standing in a separate reader-facing section when needed
 - `source basis` may contain one or more stable anchors when the clause truly depends on multiple upstream bases.
+- `source release row id`, `source scenario row ids`, and `source routing event ids` should be used when the current clause is justified through one release-ledger routing path and readers need to trace that path without reopening the parent ledger first.
 - `first effective at` should capture the best currently known historical time at which the clause first became effective, independent of the append-only registry release number.
 - `last changed at` should capture the best currently known historical time for the latest semantic change represented in this release's reading of the clause.
 - `effective from` and `effective until` should capture the active historical range for the clause as currently read in this release; use `ongoing` when the clause remains in force without a known end date.
@@ -299,6 +303,9 @@ contract_record:
   - `owned statement ids`
   - `applied to surface`
   - `stable ref`
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
   - `current standing`
   - `recorded at`
   - `effective from`
@@ -317,6 +324,9 @@ contract_record:
   - `affected bridge ids`
   - `change action`
   - `actor value`
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
   - `effective at`
   - `recorded at`
   - `source basis`
@@ -335,12 +345,16 @@ contract_record:
   - `coverage class`
   - `current standing`
   - `current owner / later owner`
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
   - `recorded at`
   - `effective from`
   - `effective until`
   - `effective status`
   - `notes`
 - Time-window fields are required whenever this table is present; unknown or ongoing values are allowed, omission is not.
+- Use the `source release row id`, `source scenario row ids`, and `source routing event ids` columns when the current coverage/boundary row is materially tied to one release-ledger routing decision.
 
 ## Optional Coverage Evolution Table
 
@@ -350,6 +364,9 @@ contract_record:
   - `affected coverage ids`
   - `change action`
   - `actor value`
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
   - `effective at`
   - `recorded at`
   - `source basis`

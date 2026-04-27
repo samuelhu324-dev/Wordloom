@@ -11,6 +11,27 @@ runbook_release_ledger_supplement:
   parent_release_ledger_id: ledger-runbook-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton
   parent_runbook_id: run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton
   parent_row_id: RBL-02
+  parent_scenario_row_ids:
+    - RBL-02-SC-01
+    - RBL-02-SC-02
+    - RBL-02-SC-03
+    - RBL-02-SC-04
+    - RBL-02-SC-05
+    - RBL-02-SC-06
+    - RBL-02-SC-07
+    - RBL-02-SC-08
+    - RBL-02-SC-09
+    - RBL-02-SC-10
+    - RBL-02-SC-11
+    - RBL-02-SC-12
+    - RBL-02-SC-13
+    - RBL-02-SC-14
+    - RBL-02-SC-15
+    - RBL-02-SC-16
+    - RBL-02-SC-17
+    - RBL-02-SC-18
+    - RBL-02-SC-19
+    - RBL-02-SC-20
   created_at: 2026-04-27
   reviewed_at: pending
   accepted_at: pending
@@ -26,11 +47,11 @@ runbook_release_ledger_supplement:
 
 ## Evidence Table
 
-| supplement item id | parent row id | evidence ref | evidence type | verification status | effect on current verdict | proposed parent-ledger action | downstream impact | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `RBL-02-SUP-01` | `RBL-02` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P1` | `md` | `verified` | `sharpens-existing` | `rewrite-parent-row` | `defer` | `S4G-1G/P1 proves the scenario inventory is wider than the current runbook family, but still does not classify ownership.` |
-| `RBL-02-SUP-02` | `RBL-02` | `docs/labs/scenarios/catalog.yml` | `labs` | `verified` | `supports-existing` | `append-evidence` | `defer` | `The labs catalog corroborates that the extracted Search-adjacent scenarios are real lane material.` |
-| `RBL-02-SUP-03` | `RBL-02` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P2` | `md` | `verified` | `sharpens-existing` | `rewrite-parent-row` | `defer` | `P2 now classifies same-chain worker scenarios as current-family, support scenarios as support-only, and gate or dual-run scenarios as sibling-family without widening the runbook yet.` |
+| supplement item id | parent row id | parent scenario row ids | evidence ref | evidence type | verification status | effect on current verdict | proposed parent-ledger action | downstream impact | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RBL-02-SUP-01` | `RBL-02` | `RBL-02-SC-01; RBL-02-SC-02; RBL-02-SC-03; RBL-02-SC-04; RBL-02-SC-05; RBL-02-SC-06; RBL-02-SC-07; RBL-02-SC-08; RBL-02-SC-09; RBL-02-SC-12; RBL-02-SC-13; RBL-02-SC-14; RBL-02-SC-15; RBL-02-SC-16; RBL-02-SC-17; RBL-02-SC-18; RBL-02-SC-19; RBL-02-SC-20` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P1` | `md` | `verified` | `sharpens-existing` | `rewrite-parent-row` | `defer` | `P1 proves the scenario inventory is wider than the current runbook family before scenario ownership is classified.` |
+| `RBL-02-SUP-02` | `RBL-02` | `RBL-02-SC-01; RBL-02-SC-02; RBL-02-SC-03; RBL-02-SC-04; RBL-02-SC-05; RBL-02-SC-06; RBL-02-SC-07; RBL-02-SC-08; RBL-02-SC-09; RBL-02-SC-10; RBL-02-SC-11` | `docs/labs/scenarios/catalog.yml` | `labs` | `verified` | `supports-existing` | `append-evidence` | `defer` | `The labs catalog corroborates that the extracted Search-adjacent scenarios are real lane material.` |
+| `RBL-02-SUP-03` | `RBL-02` | `RBL-02-SC-01; RBL-02-SC-02; RBL-02-SC-03; RBL-02-SC-04; RBL-02-SC-05; RBL-02-SC-06; RBL-02-SC-07; RBL-02-SC-08; RBL-02-SC-09; RBL-02-SC-10; RBL-02-SC-11; RBL-02-SC-12; RBL-02-SC-13; RBL-02-SC-14; RBL-02-SC-15; RBL-02-SC-16; RBL-02-SC-17; RBL-02-SC-18; RBL-02-SC-19; RBL-02-SC-20` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P2` | `md` | `verified` | `sharpens-existing` | `rewrite-parent-row` | `defer` | `P2 classifies current-family, support-only, and sibling-family standing without widening the runbook yet.` |
 
 ## Actor and Provenance Review Table
 
@@ -52,3 +73,4 @@ runbook_release_ledger_supplement:
 
 - This SUP does not write into the runbook body directly.
 - Its auditable chain is `evidence -> this SUP -> parent row RBL-02 in the release ledger -> later runbook mutation only if P3 says widening is justified`.
+- The new `parent_scenario_row_ids` binding means later readers can also tell which specific scenario rows were sharpened, corroborated, or classified by each SUP item.

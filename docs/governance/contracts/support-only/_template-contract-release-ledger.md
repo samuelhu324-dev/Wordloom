@@ -67,6 +67,26 @@ contract_release_ledger:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `<CRL-01>` | `<log/code/labs/runbook anchor>` | `<source-ledger|source-log|code|labs|runbook|mixed>` | `<clause intake|bridge intake|coverage note|boundary note|other>` | `<statement-table|code-bridge-table|coverage-table|release-change|defer>` | `<applied-current-release|pending-classification|deferred|rejected>` | `<DOC-...-ST-01|none>` | `<DOC-...-CB-01|none>` | `<DOC-...-COV-01|none>` | `<why this intake matters>` |
 
+## Scenario Routing Registry
+
+- Add this section whenever one parent intake row carries many scenario-level standing or routing outcomes that may later widen, stay deferred, or route into sibling contract families.
+
+| scenario row id | parent row id | scenario name | classified standing | current contract status | current owner surface | route status | destination kind | destination ref | last routing event id | source supplement item ids | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<CRL-02-SC-01>` | `<CRL-02>` | `<es_timeout>` | `<current-family|support-only|sibling-family>` | `<already-in-contract|release-ledger-only|not-owned-here>` | `<contract-body|release-ledger|source-log|sibling-lane>` | `<no-change-needed|awaiting-writeback|retained-here|routed-out|rejected>` | `<contract-body|release-ledger-only|source-log-only|sibling-ledger|pending-p3>` | `<DOC-...-COV-01|docs/...|pending>` | `<CRL-02-SC-E01>` | `<CRL-02-SUP-01; CRL-02-SUP-03|none>` | `<why this scenario is currently routed this way>` |
+
+## Scenario Routing Chronology Audit
+
+| scenario row id | first observed at | first recorded at | classified at | last routed at | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `<CRL-02-SC-01>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|pending|unknown>` | `<second|day|month|year|unknown>` | `<optional source-local zone or offset note>` | `<why this scenario chronology matters>` |
+
+## Scenario Routing Event Table
+
+| routing event id | scenario row id | change action | from surface | to surface | actor value | effective state impact | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<CRL-02-SC-E01>` | `<CRL-02-SC-01>` | `<classified-current-family|classified-support-only|classified-sibling-family|written-into-contract|rerouted-to-sibling|retained-in-ledger>` | `<release-ledger-intake>` | `<contract-body|release-ledger|source-log|sibling-lane|pending-p3>` | `<role:contract-maintainer|pending>` | `<what changed for this scenario>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>` | `<CRL-02; CRL-02-SUP-03>` | `<why this routing event matters>` |
+
 ## Actor and Provenance Review Table
 
 | row id | submitted by | evidence owner | reviewed by | verified by | verification method | approved by | approval state | approval basis | provenance note |
@@ -79,6 +99,8 @@ contract_release_ledger:
 - Source-owned ledgers still own source slicing and initial routing; do not bypass them when the unresolved question is still source structure.
 - Contract release ledgers are the correct landing surface when the new evidence comes from code, labs, retained runbooks, or other strong-structure channels and the target is an existing contract release.
 - Keep clause, bridge, and coverage mutation deferred in the contract body until the ledger verdict is explicit.
+- When a parent row carries many scenarios, each scenario should get one stable `scenario row id` before downstream contract write-back starts.
+- `destination ref` must become explicit once a scenario is actually written into a contract statement or coverage row, or routed into a sibling lane.
 
 ## Reader Notes
 

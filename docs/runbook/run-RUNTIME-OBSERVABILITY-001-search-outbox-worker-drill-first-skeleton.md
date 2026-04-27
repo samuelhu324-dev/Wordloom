@@ -10,7 +10,7 @@ runbook_record:
   record_kind: ledger-aware-runbook
   status: draft
   release_action: initial
-  release_change_summary: Open the first bounded Search runtime observability runbook skeleton from S4G-1F using only confirmed disable-state fallback, switch-surface checkpoint, and coexistence exclusion semantics.
+  release_change_summary: Open the first bounded Search runtime observability runbook skeleton from S4G-1F using only confirmed disable-state fallback, switch-surface checkpoint, and coexistence exclusion semantics, while keeping later scenario routing auditable through the bound release-ledger family.
   summary: Use one drill-first runbook skeleton for the search outbox projection worker that owns explicit worker-disable checkpoints, switch-surface checkpoint/evidence expectations, one defended drill path, and an explicit coexistence non-ownership boundary.
   governance_area: runtime observability operator surface for the search outbox projection worker
   applies_to: the search outbox projection worker chain for projection=search_index_to_elastic and the admitted es_write_block_4xx drill family
@@ -76,7 +76,7 @@ runbook_record:
   effective_from: 2026-04-27
   effective_until: ongoing
   introduced_by: docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md#P6-C1-S1
-  last_changed_by: docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md
+  last_changed_by: docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P2-C2-S2
   source_refs:
     - docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md
     - docs/governance/contracts/runtime/observability/DOC-RUNTIME-OBSERVABILITY-0001-metrics-tracing-and-structured-logs-diagnostic-chain.md
@@ -168,33 +168,36 @@ runbook_record:
 
 ### 3.3 Code Bridge Table
 
-| bridge id | surface kind | stable ref | operator meaning owned here | current standing | recorded at | effective from | effective until | effective status | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `RB-OBS-01` | `script` | `backend/scripts/search_outbox_worker.py` | `The current runtime observability lane is bound to one stable worker entrypoint for the search outbox projection worker.` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This row owns the bounded entrypoint only; it does not expand owner surface beyond the current worker chain.` |
-| `RB-OBS-02` | `env-switch` | `SEARCH_OUTBOX_WORKER_ENABLED` | `The runbook owns explicit worker-disable checkpoints and evidence expectations for entering or leaving the disable-state boundary.` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This is disable-state fallback semantics, not a claim that another equivalent serving path automatically takes over.` |
-| `RB-OBS-03` | `env-switch` | `SEARCH_OUTBOX_RUNNER` | `The runbook may name runner selection as a bounded operator checkpoint that requires explicit evidence capture when changed.` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This row does not own full production authorization or rollback governance.` |
-| `RB-OBS-04` | `scenario` | `backend/scripts/cli_app/scenarios/es_write_block_4xx.py; search_outbox_worker@v1` | `The admitted drill-first proof path for this release is the es_write_block_4xx scenario running against the current worker chain.` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This is the first defended evidence path for the runbook skeleton.` |
+| bridge id | surface kind | stable ref | operator meaning owned here | source release row id | source scenario row ids | source routing event ids | current standing | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-OBS-01` | `script` | `backend/scripts/search_outbox_worker.py` | `The current runtime observability lane is bound to one stable worker entrypoint for the search outbox projection worker.` | `RBL-01` | `none` | `none` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This row owns the bounded entrypoint only; it does not expand owner surface beyond the current worker chain.` |
+| `RB-OBS-02` | `env-switch` | `SEARCH_OUTBOX_WORKER_ENABLED` | `The runbook owns explicit worker-disable checkpoints and evidence expectations for entering or leaving the disable-state boundary.` | `RBL-01` | `none` | `none` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This is disable-state fallback semantics, not a claim that another equivalent serving path automatically takes over.` |
+| `RB-OBS-03` | `env-switch` | `SEARCH_OUTBOX_RUNNER` | `The runbook may name runner selection as a bounded operator checkpoint that requires explicit evidence capture when changed.` | `RBL-01` | `none` | `none` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This row does not own full production authorization or rollback governance.` |
+| `RB-OBS-04` | `scenario` | `backend/scripts/cli_app/scenarios/es_write_block_4xx.py; search_outbox_worker@v1` | `The admitted drill-first proof path for this release is the es_write_block_4xx scenario running against the current worker chain.` | `RBL-01` | `RBL-02-SC-02` | `RBL-02-SC-E02` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This is the first defended evidence path for the runbook skeleton, and the release-ledger classification later confirms that it remains the already-landed proof path.` |
 
 ### 3.4 Runbook Bridge Evolution Table
 
-| bridge change id | affected bridge ids | change action | actor value | effective at | recorded at | source basis | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `RB-OBS-CH-01` | `RB-OBS-01; RB-OBS-02; RB-OBS-03; RB-OBS-04` | `introduced` | `role:s4g-packet-maintainer` | `2026-04-27` | `2026-04-27` | `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md#P6-C1-S1` | `S4G-1F opened the first bounded Search runtime runbook skeleton using only the semantics confirmed through P1-P5.` |
+| bridge change id | affected bridge ids | change action | actor value | source release row id | source scenario row ids | source routing event ids | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-OBS-CH-01` | `RB-OBS-01; RB-OBS-02; RB-OBS-03; RB-OBS-04` | `introduced` | `role:s4g-packet-maintainer` | `RBL-01` | `none` | `none` | `2026-04-27` | `2026-04-27` | `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md#P6-C1-S1` | `S4G-1F opened the first bounded Search runtime runbook skeleton using only the semantics confirmed through P1-P5.` |
+| `RB-OBS-CH-02` | `RB-OBS-04` | `history-backfilled` | `role:s4g-packet-maintainer` | `RBL-01` | `RBL-02-SC-02` | `RBL-02-SC-E02` | `2026-04-27` | `2026-04-27` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P2-C1-S1` | `S4G-1G classification did not widen the runbook, but it backfilled explicit linkage between the existing bridge row and the release-ledger scenario routing record.` |
 
 ### 3.5 Scenario Registry / Coverage
 
-| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | recorded at | effective from | effective until | effective status | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SC-OBS-01` | `worker-disabled-boundary` | `projection updates stop on the current worker chain` | `bounded-disable-checkpoint` | `pre-change-drill` | `before-risky-change` | `_result.json; worker log; env capture showing enabled/disabled state` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This row owns explicit disable-state checkpoint semantics only; it does not imply an alternate-path fallback.` |
-| `SC-OBS-02` | `switch-surface-change` | `current worker behavior follows the selected enabled/runner state` | `checkpoint-and-evidence` | `pre-change-drill` | `before-risky-change` | `_result.json; worker log; explicit capture of switch values or command context` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This row owns bounded checkpoint semantics around the real switch surfaces, not full production cutover policy.` |
-| `SC-OBS-03` | `es_write_block_4xx` | `the current worker chain remains diagnosable through one admitted drill path` | `run-verify-export-clean` | `periodic-drill` | `per-release` | `_result.json; worker log; exported evidence bundle` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This is the first defended current drill path for the skeleton.` |
-| `SC-OBS-04` | `coexistence-not-owned` | `no current positive coexistence or dual-run claim is admitted` | `route-to-boundary-note` | `none` | `none` | `boundary note plus S4G-1F reference` | `not-owned-here` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `Reviewers should not infer shadow, dual-run, or staged cutover semantics from retained history.` |
+| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | source release row id | source scenario row ids | source routing event ids | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-OBS-01` | `worker-disabled-boundary` | `projection updates stop on the current worker chain` | `bounded-disable-checkpoint` | `pre-change-drill` | `before-risky-change` | `_result.json; worker log; env capture showing enabled/disabled state` | `defended-now` | `RBL-01` | `none` | `none` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This row owns explicit disable-state checkpoint semantics only; it does not imply an alternate-path fallback.` |
+| `SC-OBS-02` | `switch-surface-change` | `current worker behavior follows the selected enabled/runner state` | `checkpoint-and-evidence` | `pre-change-drill` | `before-risky-change` | `_result.json; worker log; explicit capture of switch values or command context` | `defended-now` | `RBL-01` | `none` | `none` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This row owns bounded checkpoint semantics around the real switch surfaces, not full production cutover policy.` |
+| `SC-OBS-03` | `es_write_block_4xx` | `the current worker chain remains diagnosable through one admitted drill path` | `run-verify-export-clean` | `periodic-drill` | `per-release` | `_result.json; worker log; exported evidence bundle` | `defended-now` | `RBL-01` | `RBL-02-SC-02` | `RBL-02-SC-E02` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `This is the first defended current drill path for the skeleton, and the release-ledger classification later confirms that it remains the already-landed proof path.` |
+| `SC-OBS-04` | `coexistence-not-owned` | `no current positive coexistence or dual-run claim is admitted` | `route-to-boundary-note` | `none` | `none` | `boundary note plus S4G-1F reference` | `not-owned-here` | `RBL-01` | `none` | `none` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `Reviewers should not infer shadow, dual-run, or staged cutover semantics from retained history.` |
 
 ### 3.6 Runbook Coverage Evolution Table
 
-| coverage change id | affected coverage ids | change action | actor value | effective at | recorded at | source basis | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `SC-OBS-CH-01` | `SC-OBS-01; SC-OBS-02; SC-OBS-03; SC-OBS-04` | `introduced` | `role:s4g-packet-maintainer` | `2026-04-27` | `2026-04-27` | `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md#P6-C1-S1` | `S4G-1F opened the first Search runtime runbook coverage rows using only bounded disable-state, switch-checkpoint, defended drill-path, and coexistence-boundary semantics.` |
+| coverage change id | affected coverage ids | change action | actor value | source release row id | source scenario row ids | source routing event ids | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-OBS-CH-01` | `SC-OBS-01; SC-OBS-02; SC-OBS-03; SC-OBS-04` | `introduced` | `role:s4g-packet-maintainer` | `RBL-01` | `none` | `none` | `2026-04-27` | `2026-04-27` | `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md#P6-C1-S1` | `S4G-1F opened the first Search runtime runbook coverage rows using only bounded disable-state, switch-checkpoint, defended drill-path, and coexistence-boundary semantics.` |
+
+| `SC-OBS-CH-02` | `SC-OBS-03` | `history-backfilled` | `role:s4g-packet-maintainer` | `RBL-01` | `RBL-02-SC-02` | `RBL-02-SC-E02` | `2026-04-27` | `2026-04-27` | `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md#P2-C1-S1` | `S4G-1G classification did not widen the runbook, but it backfilled explicit linkage between the existing proof-path row and the release-ledger scenario routing record.` |
 
 ## 4) Release and Run Ledger Binding
 
@@ -204,6 +207,7 @@ runbook_record:
   - `docs/runbook/support-only/ledger-runbook-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
 - This release ledger is where source-log extraction, code-first scenario intake, and later reader-object supplements or patches should land before the runbook body is widened.
 - Use the release-scoped `SUP` / `PATCH` series when the follow-up changes the runbook release object itself rather than one concrete admitted run.
+- Use the release-ledger `scenario row id` and `routing event id` surfaces when a later scenario is added, retained outside the runbook, or routed into a sibling lane; do not hide that movement only in prose.
 
 ### 4.2 Parent run ledger
 

@@ -22,6 +22,8 @@ runbook_release_ledger_supplement:
   parent_release_ledger_id: <ledger-runbook-RUNBOOK-FAMILY-001-summary>
   parent_runbook_id: <run-RUNBOOK-FAMILY-001-summary>
   parent_row_id: <RBL-01>
+  parent_scenario_row_ids:
+    - <RBL-01-SC-01|none>
   created_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   accepted_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
@@ -43,9 +45,9 @@ runbook_release_ledger_supplement:
 
 ## Evidence Table
 
-| supplement item id | parent row id | evidence ref | evidence type | verification status | effect on current verdict | proposed parent-ledger action | downstream impact | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<RBL-01-SUP-01>` | `<RBL-01>` | `<log/code/labs/runbook anchor>` | `<md|code|labs|artifact|mixed>` | `<pending|verified|rejected>` | `<supports-existing|sharpens-existing|narrows-existing|revises-existing|conflicts-needs-review>` | `<no-change|append-evidence|rewrite-parent-row|reopen-ledger-verdict>` | `<none|rewrite-runbook|rewrite-contract-bridge|defer>` | `<why this evidence matters>` |
+| supplement item id | parent row id | parent scenario row ids | evidence ref | evidence type | verification status | effect on current verdict | proposed parent-ledger action | downstream impact | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RBL-01-SUP-01>` | `<RBL-01>` | `<RBL-01-SC-01; RBL-01-SC-02|none>` | `<log/code/labs/runbook anchor>` | `<md|code|labs|artifact|mixed>` | `<pending|verified|rejected>` | `<supports-existing|sharpens-existing|narrows-existing|revises-existing|conflicts-needs-review>` | `<no-change|append-evidence|rewrite-parent-row|rewrite-scenario-route|reopen-ledger-verdict>` | `<none|rewrite-runbook|rewrite-contract-bridge|defer>` | `<why this evidence matters>` |
 
 ## Actor and Provenance Review Table
 
@@ -65,10 +67,12 @@ runbook_release_ledger_supplement:
 - `effect on current verdict` explains how the evidence changes the already-admitted row meaning.
 - `proposed parent-ledger action` explains what should move in the parent ledger before the runbook body changes.
 - `downstream impact` explains whether the runbook body should stay unchanged, be rewritten, or defer the change to another family.
+- `parent_scenario_row_ids` should be populated whenever the evidence sharpens, reroutes, or confirms one scenario-level standing beneath the parent row.
 
 ## Required Rules
 
 - Every SUP row must point to one existing `parent row id` in the parent runbook release ledger.
+- Scenario-specific SUP rows should also point to one or more existing `parent scenario row ids`.
 - Use this surface when the follow-up changes release-scoped meaning or admission standing, not when it only sharpens one admitted run.
 - Write into the runbook body only after the parent runbook release ledger is updated or explicitly left unchanged.
 

@@ -170,36 +170,37 @@ runbook_record:
 - Use this section when the runbook must stay aligned to stable code or workflow entrypoints.
 - Keep this table current-reader-only: it records what executable surfaces the runbook is attached to now, not every historical implementation.
 
-| bridge id | surface kind | stable ref | operator meaning owned here | current standing | recorded at | effective from | effective until | effective status | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `RB-01` | `<worker|workflow|task|script>` | `<path or entry id>` | `<what operator meaning this bridge defends>` | `<defended-now|code-anchor-only|not-owned-here>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded bridge note>` |
+| bridge id | surface kind | stable ref | operator meaning owned here | source release row id | source scenario row ids | source routing event ids | current standing | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-01` | `<worker|workflow|task|script>` | `<path or entry id>` | `<what operator meaning this bridge defends>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<defended-now|code-anchor-only|not-owned-here>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded bridge note>` |
 
 ### 3.4 Runbook Bridge Evolution Table
 
 - Use this section when bridge rows may be introduced, revised, narrowed, replaced, retired, or backfilled over time.
 
-| bridge change id | affected bridge ids | change action | actor value | effective at | recorded at | source basis | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `RB-CH-01` | `RB-01` | `<introduced|amended|replaced|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded bridge-evolution note>` |
+| bridge change id | affected bridge ids | change action | actor value | source release row id | source scenario row ids | source routing event ids | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-CH-01` | `RB-01` | `<introduced|amended|replaced|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded bridge-evolution note>` |
 
 ### 3.5 Scenario Registry / Coverage
 
 - Use this section when the runbook governs multiple admitted failure classes or drill scenarios.
 - A runbook should not imply full operator coverage only through narrative paragraphs; list the admitted scenarios explicitly.
 
-| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | recorded at | effective from | effective until | effective status | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SC-01` | `<es_429|timeout|duplicate_delivery>` | `<retry|terminal-failed|draining>` | `<observe-only|manual-replay|fallback-switch|defer>` | `<periodic-drill|pre-change-drill|incident-only|lab-only>` | `<weekly|per-release|before-risky-change|after-incident|none>` | `<_result.json|metrics|logs|trace export>` | `<defended-now|partial-code-support|gap-owned|not-owned-here>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded scenario note>` |
+| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | source release row id | source scenario row ids | source routing event ids | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-01` | `<es_429|timeout|duplicate_delivery>` | `<retry|terminal-failed|draining>` | `<observe-only|manual-replay|fallback-switch|defer>` | `<periodic-drill|pre-change-drill|incident-only|lab-only>` | `<weekly|per-release|before-risky-change|after-incident|none>` | `<_result.json|metrics|logs|trace export>` | `<defended-now|partial-code-support|gap-owned|not-owned-here>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded scenario note>` |
 
 - When `coverage class` is not `defended-now`, the runbook should link the owning gap packet, contract note, or deferred owner explicitly.
+- `source release row id`, `source scenario row ids`, and `source routing event ids` keep the runbook body auditable against the release-ledger intake that justified the current row.
 
 ### 3.6 Runbook Coverage Evolution Table
 
 - Use this section when scenario or coverage rows may be introduced, revised, rerouted, reopened, or retired over time.
 
-| coverage change id | affected coverage ids | change action | actor value | effective at | recorded at | source basis | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `SC-CH-01` | `SC-01` | `<introduced|amended|replaced|rerouted|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded coverage-evolution note>` |
+| coverage change id | affected coverage ids | change action | actor value | source release row id | source scenario row ids | source routing event ids | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-CH-01` | `SC-01` | `<introduced|amended|replaced|rerouted|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded coverage-evolution note>` |
 
 ## 4) Run Ledger Binding
 
