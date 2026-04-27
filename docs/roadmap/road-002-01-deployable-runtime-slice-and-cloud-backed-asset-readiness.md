@@ -51,6 +51,9 @@
   - the owner split: `S4` owns runtime fallback governance;
   - the sample choice: `failure drills` are the first evidence-rich proving lane;
   - the readiness gate: cloud-backed asset work should wait until at least one code-first fallback-governance sample exists.
+- This branch road also fixes one staging rule for the lane:
+  - standardized runtime/runbook skeleton work should start before any asset platform exists;
+  - platform-grade fallback realism, coexistence, and prod-hardening should not be claimed until a real asset/control platform exists strongly enough to own those semantics.
 - Child logs own the concrete extraction, classification, and evidence rows.
 
 ## Parent Contribution Ledger
@@ -64,6 +67,7 @@
 - `road-002-01 M2-P3 <- docs/logs/log-S4G-2A-search-failure-drills-runbook-bridge-and-template-hardening.md`
 - `road-002-01 M2-P3 <- docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md`
 - `road-002-01 M2-P4 <- docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
+- `road-002-01 M2-P5 <- docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md`
 - `road-002-01 M2-P0 <- docs/logs/log-S4D-cloud-runtime-deploy-verify-rollback.md`
 - `road-002-01 M2-P1 <- docs/logs/log-S6A-evidence-drills-spine.md`
 - `road-002-01 M3-P0 <- unmapped`
@@ -123,21 +127,34 @@
 - `M2-P3`:
   - `docs/logs/log-S4G-2A-search-failure-drills-runbook-bridge-and-template-hardening.md`
   - `docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md`
+- `M2-P4`:
   - `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
+- `M2-P5`:
+  - `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md`
 
-**Plan (P0-P4)**
+**Plan (P0-P5)**
 
 - `P0` Contract: declare which existing runtime/evidence surfaces remain authoritative for the first sample.
 - `P1` Implementation: reuse deploy/verify/rollback and drill-evidence discipline as the proving substrate.
 - `P2` Drill: reject any packet that cannot point back to one credible runtime or evidence surface.
 - `P3` Drill: prove the code-coupled runbook field model on the first Issues sample, then harden bridge/coverage time-window audit before any deferred runtime child opens.
-- `P4` Drill: extract Search runtime-only field shapes and runbook opening gate before any direct runtime runbook release opens.
+- `P4` Drill: keep `S4G-1F` as the active Search runtime packet until the lane finishes field-shape extraction, opening-gate verdict, and the next semantic-confirmation / evaluation / landing decisions for `run-RUNTIME-OBSERVABILITY-001`.
+- `P5` Drill: hard-extract the Search runtime scenario universe from code and labs, then classify which scenarios belong to the current observability family versus support-only or sibling-family lanes before widening current readers.
+
+**M2 operating rule (clarified 2026-04-27)**
+
+- The branch should not wait for a future asset platform before it standardizes the Search runtime/runbook skeleton.
+- The current acceptable target is a `standardized, bounded, drill-first runbook skeleton` for the existing Search runtime chain.
+- That skeleton may own stable entrypoints, evidence flow, operator checkpoints, and explicit `not-owned-yet` boundary notes.
+- That skeleton should not invent platform-grade fallback meaning that the current repo does not yet own.
+- Therefore `S4G-1F` remains the active source packet for confirming which Search semantics can now be owned, which should close as exclusion verdicts, and which should remain retained until a later platform-backed lane exists.
 
 ### M3: Decide the first cloud-backed asset readiness opening only after one real sample
 
 **Goal**
 
 - Prevent asset-platform work from opening on top of weak fallback or history-only reasoning.
+- Distinguish `start standardization now` from `claim prod-grade platform hardening later` so the lane does not block on infrastructure that does not yet exist.
 
 **Bridge Ledger (child logs only)**
 
@@ -153,9 +170,18 @@
 **Plan (P0-P3)**
 
 - `P0` Contract: define the minimum readiness gate for asset-facing work.
-- `P1` Implementation: require one code-first fallback-governance sample before opening the first asset-specific lane.
-- `P2` Drill: test whether the sample exposes a real metadata/blob, retention, or access-boundary need.
-- `P3` Drill: decide whether the first asset slice belongs in the modular monolith or needs an operationally distinct boundary.
+- `P1` Implementation: require one code-first fallback-governance sample before opening the first asset-specific lane, but do not require the asset platform before standardizing current runbook and drill structure.
+- `P2` Drill: once a real asset/control platform exists, test whether the current sample exposes a real metadata/blob, retention, access-boundary, or cross-platform cutover need.
+- `P3` Drill: once that platform exists strongly enough to own runtime semantics, decide whether the first asset slice belongs in the modular monolith or needs an operationally distinct boundary.
+
+**M3 readiness rule (clarified 2026-04-27)**
+
+- `asset platform present` is **not** the gate for beginning runbook standardization.
+- `asset platform present` **is** the likely gate for beginning realistic platform-grade fallback simulation, coexistence policy, and production hardening.
+- Before that platform exists, the lane should prefer:
+  - standardizing current runtime entrypoints and evidence flow;
+  - making current fallback boundaries explicit;
+  - refusing to invent alternate-path semantics that are not yet real.
 
 ## Runtime-First Readiness Gate
 
@@ -163,6 +189,9 @@
   - one explicit `S4` owner shift for fallback governance;
   - one admitted failure-drills-adjacent packet assessed under that runtime-owned lane;
   - one evidence-backed verdict on whether the packet is only lineage support or a genuine code-first fallback candidate.
+- This gate should be read narrowly:
+  - it blocks `asset readiness` claims, not current `runbook skeleton` standardization;
+  - it allows current Search runbook semantics to mature in `S4G-1F` so long as the lane keeps unresolved platform-grade fallback meaning out of positive claims.
 
 ## Recent Changes (optional)
 
@@ -175,3 +204,6 @@
 - 2026-04-27: mapped `S4G-2A` into `M2-P3` as the Issues code-bridge first-sample and template-hardening packet, with Search deferred as the next runtime-owned sample after the field model stabilizes.
 - 2026-04-27: mapped `S4G-2B` into `M2-P3` as the audited bridge/coverage time-window hardening packet beneath the same Issues-first-sample lane.
 - 2026-04-27: mapped `S4G-1F` into `M2-P4` as the bounded Search runtime-only field-shapes gap packet before any direct `run-RUNTIME-OBSERVABILITY-001` opening.
+- 2026-04-27: mapped `S4G-1G` into `M2-P5` as the bounded Search runtime scenario hard-extraction packet so current readers can be widened only after code/labs-first scenario classification.
+- 2026-04-27: clarified that `asset platform` is not the prerequisite for current runbook standardization; it is the likely prerequisite for later platform-grade fallback realism, coexistence, and prod-hardening.
+- 2026-04-27: clarified that `S4G-1F` remains the active Search packet for semantic confirmation, evaluation, and landing decisions rather than being forced immediately into a separate successor packet.

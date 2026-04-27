@@ -24,6 +24,7 @@
   **phase_log_6**: `docs/logs/log-S4G-1F-search-runtime-only-field-shapes-gap-packet.md`
   **phase_log_7**: `docs/logs/log-S4G-2A-search-failure-drills-runbook-bridge-and-template-hardening.md`
   **phase_log_8**: `docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md`
+  **phase_log_9**: `docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md`
 **issue_keyword**: `platform`
 **issue_top_labels**: ``
 **issue_scope_labels**: ``
@@ -153,6 +154,8 @@
   - 详见：`docs/logs/log-S4G-2A-search-failure-drills-runbook-bridge-and-template-hardening.md`
 - `S4G-2B`（Phase 8）：audited bridge coverage time-window template hardening
   - 详见：`docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md`
+- `S4G-1G`（Phase 9）：search runtime scenario hard extraction packet
+  - 详见：`docs/logs/log-S4G-1G-search-runtime-scenario-hard-extraction-packet.md`
 
 ## Execution Checklist（当前骨架里程碑汇总）
 
@@ -172,7 +175,8 @@
 - `S4G-1F` is now opened as the bounded Search runtime-only field-shapes gap packet before any direct `run-RUNTIME-OBSERVABILITY-001` write-up.
 - `S4G-2A` is now the bounded packet for the first Issues code-bridge sample plus the runbook-template field hardening needed to support code-coupled operator surfaces.
 - `S4G-2B` is now the bounded packet for audited bridge/coverage time-window governance across contract and runbook surfaces.
-- The next step is intentionally narrow: extract Search runtime-only field clusters and runbook-surface placement before deciding whether `run-RUNTIME-OBSERVABILITY-001` may open.
+- `S4G-1G` is now the bounded Search runtime scenario hard-extraction packet for re-extracting the scenario universe from code/labs before deciding whether current readers should widen or split sibling lanes.
+- The next step is intentionally narrow: inventory Search runtime scenarios from code and labs, then classify which belong to the current observability family versus support-only or sibling-family lanes.
 - The main risk is over-expansion back into repo-wide archaeology.
 
 ## Notes（落地原则，可选）
@@ -216,3 +220,4 @@
 - 2026-04-27：登记 `S4G-1F` 作为 Search runtime-only field-shapes gap packet，用来先提取未来 runtime runbook 仍缺的 field clusters 和 opening gate，而不是提前写 `run-RUNTIME-OBSERVABILITY-001` 正文。
 - 2026-04-27：登记 `S4G-2A` 作为 Issues code-bridge first sample and runbook template hardening packet，用来先把 ISSUES family 的第一套 code-coupled sample 落在现有 runbook 上，同时保留 Search 作为后续 deferred runtime sample。
 - 2026-04-27：登记 `S4G-2B` 作为 audited bridge coverage time-window template hardening packet，用来把 bridge / coverage / evolution 的时间窗口字段升级为必填内容，并把当前 contract/runbook sample 回写成 audited-capable 结构。
+- 2026-04-27：登记 `S4G-1G` 作为 Search runtime scenario hard extraction packet，用来从代码、labs 与保留证据里做 hard extraction，重新界定当前 `RUNTIME-OBSERVABILITY` family 的适用面，而不是继续只靠 wording refinement。
