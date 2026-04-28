@@ -242,7 +242,7 @@
 
 ### P2 (Pilot runbook)
 
-- [ ] `P2-C1-S1`: `run-RUNTIME-OBSERVABILITY-001...` restructured as the code-first pilot
+- [x] `P2-C1-S1`: `run-RUNTIME-OBSERVABILITY-001...` restructured as the code-first pilot
 
 ### P3 (Release split decision)
 
@@ -251,8 +251,8 @@
 ## Current Status (recommended)
 
 - `S0G-5C` now establishes the code-first runbook model and writes it into the primary runbook template plus the release-ledger template.
-- This round still does not claim that the pilot runbook has been rewritten.
-- The immediate next step is to execute `P2-C1-S1`, then use the rewritten model to classify the pilot as `same-release structure rewrite` versus `new release, sibling lane, or narrower title/file split`.
+- The pilot runbook now reads through `Current Operator Faces + Code Evidence Attachments + Scenario Registry + Operator Chronology + Release Decision Table` while preserving the currently admitted `001` reader surface.
+- The immediate next step is to execute `P3-C1-S1`, then use the explicit release gate now written into the pilot to classify `same-release retained 001` versus `new release, sibling lane, or narrower title/file split`.
 - No pilot split is executed by this packet. `001 -> 002` remains only one possible outlet if the pilot's reader-visible operator meaning truly widens.
 
 ## Evidence (reserved)
@@ -285,9 +285,23 @@
   - both templates were rewritten around the code-first model and kept the release ledger as the default first intake surface
   - the split decision remains deferred to the pilot execution round; no automatic `001 -> 002` move was made here
 
+### P2-C1-S1 (Pilot runbook rewrite | 2026-04-28)
+
+- headSha: `pending-next-commit`
+- artifacts:
+  - `docs/runbook/run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
+- expected:
+  - the pilot runbook is rewritten into the code-first model without silently changing its current release outlet
+  - current operator meaning, code evidence, admitted scenario registry, chronology, and release gate are separated cleanly
+  - the file states explicitly that `001 -> 002` is a gate to review, not an automatic rewrite action
+- observed:
+  - the pilot runbook now uses the code-first sections and keeps the currently admitted 001 semantics in place
+  - the release decision table records where a later release or sibling split would be required, but this packet does not execute that split
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-28: opened `S0G-5C` as the bounded runbook-governance follow-up to the contract-side `S0G-5B` work.
 - 2026-04-28: fixed the first execution question for the lane as `runbook template rewrite + release-ledger sufficiency + OBSERVABILITY-001/002 split decision` rather than broad runbook expansion.
 - 2026-04-28: rewrote the primary runbook template around current operator faces, code evidence attachments, scenario registry, operator chronology, and release decision rules.
 - 2026-04-28: enhanced the runbook release-ledger template so it stays the first code-first intake surface and records whether any extra support ledger is actually needed before writeback.
+- 2026-04-28: restructured `run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md` as the code-first pilot while keeping the current release outlet unchanged and deferring any split decision to explicit review.
