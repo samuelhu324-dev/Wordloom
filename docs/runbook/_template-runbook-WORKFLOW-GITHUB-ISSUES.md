@@ -19,6 +19,11 @@ runbook_record:
   applies_to: <GitHub Issues lifecycle automation surface>
   entry_surface: <script|task|manual>
   evidence_surface: run-ledger
+  owner_team: <docs-governance|workflow-automation>
+  current_steward: <role:runbook-maintainer|delegated:workflow-runbook-maintainer>
+  approval_state: <draft|review-pending|reviewed-awaiting-approval|approved>
+  reviewed_by: <role:workflow-reviewer|pending>
+  approved_by: <role:docs-governance-approver|pending>
   ledger_binding:
     parent_run_ledger: <docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-summary.md>
     supplementary_ledger_series: <docs/runbook/support-only/ledger-run-SUP-001-WORKFLOW-GITHUB-ISSUES-001-summary.md>
@@ -34,6 +39,21 @@ runbook_record:
       - <stage_name>
       - <stage_status>
       - <blocking_reason_class>
+  code_bridge_binding:
+    required: <yes|conditional>
+    stable_entry_refs:
+      - <scripts/issues/*.py>
+    operator_surface_refs:
+      - <workflow file or operator script surface>
+    scenario_registry_ref: <workflow profile table or section>
+    fallback_surface_refs:
+      - <review-hold|resume-after-review|fail-closed metadata checks>
+    evidence_contract_ref: <run ledger plus docs/issues artifact rules>
+    minimum_supported_failure_classes:
+      - <metadata-missing>
+      - <merge-state-missing>
+      - <review-hold>
+    coverage_table_required: <yes>
   template_authority:
     family_runbook_template: docs/runbook/_template-runbook-WORKFLOW-GITHUB-ISSUES.md
     family_parent_ledger_template: docs/runbook/support-only/_template-run-ledger-WORKFLOW-GITHUB-ISSUES.md
@@ -85,6 +105,36 @@ runbook_record:
   - optional attempt id `RUN-001-T01-STG-CREATION-A01`
 - Later evidence refinement belongs in `SUP`.
 - Bounded repair packets belong in `PATCH`.
+
+## Family-specific Governance and Bridge Rules
+
+- This family should keep current-state governance fields on the runbook because the runbook is the durable operator contract surface rather than only a retained note.
+- `code_bridge_binding` is still required for this family even though the surface is script-heavy rather than worker-heavy: the runbook must still defend stable entry scripts, fail-closed gates, review-hold or resume surfaces, and the artifact contract that operators rely on.
+- Preferred family tables inside the runbook body:
+  - `Current Governance State`
+  - `Stable Entrypoint Table`
+  - `Runbook Bridge Evolution Table`
+  - `Workflow Profile / Stage Registry`
+  - `Coverage / Boundary Table`
+  - `Runbook Coverage Evolution Table`
+
+## Preferred Family Table Shapes
+
+| bridge id | surface kind | stable ref | operator meaning owned here | current standing | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-01` | `script` | `scripts/issues/<tool>.py` | `<what bounded operator meaning the script surface owns>` | `<defended-now|code-anchor-only|not-owned-here>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bridge note>` |
+
+| bridge change id | affected bridge ids | change action | actor value | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-CH-01` | `RB-01` | `<introduced|amended|replaced|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bridge-evolution note>` |
+
+| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-01` | `<review-hold|missing-metadata|merge-not-found>` | `<fail-closed|pause-and-resume|not-run>` | `<repair-source|resume-stage|stop>` | `<every-run|follow-up-only|lab-only>` | `<per-run|after-review|none>` | `<plan json|apply-result json|live github state>` | `<defended-now|partial-code-support|gap-owned>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded scenario note>` |
+
+| coverage change id | affected coverage ids | change action | actor value | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-CH-01` | `SC-01` | `<introduced|amended|replaced|rerouted|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<coverage-evolution note>` |
 
 ## Thinness Rules
 

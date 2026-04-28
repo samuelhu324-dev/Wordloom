@@ -117,6 +117,7 @@ contract_record:
 
 - Read this contract when the question is `why did this workflow start using GitHub Issues as the canonical breakdown mechanism?`
 - Read `Current Boundary Map` when the question becomes `which clauses still belong to the GitHub-Issues parent, and which now read through the Projects, title, or tag child surfaces?`
+- Read `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md` and `docs/logs/log-S4G-2A-search-failure-drills-runbook-bridge-and-template-hardening.md` when the question becomes `what is the first defended code-coupled operator sample for GitHub Issues lifecycle automation?`
 - Then open the child contracts when the question becomes `how should GitHub Projects be used during execution?`, `how should issue titles be encoded?`, or `how should issue tags be named?`
 
 ## Reader Notes
@@ -126,3 +127,4 @@ contract_record:
 - In the current lineage model, this broader issue-mechanism contract keeps the mechanism boundary while the Projects, title, and tag surfaces now read as narrower current children beneath it.
 - The file now makes that parent-versus-child standing explicit through `Current Boundary Map` rather than leaving it only in statement notes.
 - The file now uses the current chronology-first clause registry model while preserving the same first-release mechanism boundary.
+- The current GitHub-Issues parent remains `manual` in enforcement surface and should not be read as the automation code-bridge contract for the lifecycle family; the first applied code-coupled sample currently reads through `run-WORKFLOW-GITHUB-ISSUES-001` under `S4G-2A`.

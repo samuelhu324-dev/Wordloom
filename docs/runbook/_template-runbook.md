@@ -21,6 +21,16 @@ runbook_record:
   applies_to: <what operator surface or family this runbook governs>
   entry_surface: <workflow|script|task|dispatch|manual>
   evidence_surface: <summary.json|result.json|run-ledger|other>
+  owner_team: <docs-governance|ops-runtime|delegated team>
+  current_steward: <role:runbook-maintainer|delegated:runbook-maintainer|other>
+  approval_state: <draft|review-pending|reviewed-awaiting-approval|approved|retired>
+  reviewed_by: <role:workflow-reviewer|pending|unknown>
+  approved_by: <role:docs-governance-approver|pending|unknown>
+  release_ledger_binding:
+    parent_release_ledger: <docs/runbook/support-only/ledger-runbook-RUNBOOK-FAMILY-001-summary.md>
+    supplementary_ledger_series: <docs/runbook/support-only/ledger-runbook-SUP-001-RUNBOOK-FAMILY-001-summary.md>
+    patch_ledger_series: <docs/runbook/support-only/ledger-runbook-PATCH-001-RUNBOOK-FAMILY-001-summary.md>
+    intended_use: <release-scoped evidence intake and staged write-back before or alongside run-level accounting>
   ledger_binding:
     parent_run_ledger: <docs/runbook/support-only/ledger-run-001-RUNBOOK-FAMILY-001-summary.md>
     supplementary_ledger_series: <docs/runbook/support-only/ledger-run-SUP-001-RUNBOOK-FAMILY-001-summary.md>
@@ -31,6 +41,19 @@ runbook_record:
     minimum_admitted_fields:
       - <result>
       - <failureClass>
+  code_bridge_binding:
+    required: <yes|no|conditional>
+    stable_entry_refs:
+      - <backend/scripts/... or workflow/task id>
+    operator_surface_refs:
+      - <worker path|workflow file|task label>
+    scenario_registry_ref: <section or file that owns the scenario list>
+    fallback_surface_refs:
+      - <switch or operator surface ref>
+    evidence_contract_ref: <section or file that owns evidence-bundle rules>
+    minimum_supported_failure_classes:
+      - <es_429|timeout|deterministic_exception>
+    coverage_table_required: <yes|no>
   recorded_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
   reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   effective_from: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
@@ -79,8 +102,44 @@ runbook_record:
 - `recorded_at` records when this runbook release entered the repo as a defended operator surface.
 - `reviewed_at` records when this runbook release passed defended review; use `pending` when the review has not happened yet.
 - `effective_from` and `effective_until` describe the best currently known historical-effective range for this operator surface.
+- `recorded_at`, `reviewed_at`, `effective_from`, and `effective_until` are required fields in every runbook record; when a defended value is not known yet, keep the field present and use `unknown`, `pending`, or `ongoing` rather than omitting it.
 - New values should prefer canonical UTC second timestamps such as `2026-04-20T14:55:00Z`.
 - Legacy day-only values may remain where finer audit precision is not defended.
+
+## Governance State Rule
+
+- `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by` are the current-state governance fields for the runbook surface itself.
+- Keep these fields on the runbook when the runbook is expected to survive as a maintained operator surface rather than only as a retained historical note.
+- Run-ledger `submitted by` / `evidence owner` / `verified by` fields remain execution-accounting surfaces; they do not replace the runbook's current governance state.
+
+## Release Ledger Binding Rule
+
+- Use `release_ledger_binding` when one runbook release needs its own durable reader-first intake surface for staged evidence admission, scenario write-back, boundary notes, or later release-scoped supplements and patches.
+- `release_ledger_binding` does not replace `ledger_binding`:
+  - `release_ledger_binding` is for the runbook release object itself;
+  - `ledger_binding` remains for repeatable run execution accounting under that runbook.
+- Prefer `release_ledger_binding` when evidence is extracted from source logs, code, labs, or weak-structure channels before it can honestly be admitted into the runbook body.
+- Prefer `ledger_binding` when the evidence belongs to one concrete admitted run such as `RUN-001`.
+- When both layers exist, later run-level ledgers may cite the runbook release ledger, but should not replace it as the write-back surface for runbook-release meaning.
+
+## Code Bridge Binding Rule
+
+- Use `code_bridge_binding` whenever one runbook depends on stable code or workflow entrypoints and bounded failure/drill surfaces rather than on prose-only operator guidance.
+- `stable_entry_refs` identify the exact executable entrypoints the runbook claims to govern.
+- `operator_surface_refs` identify the broader executable surface, for example a worker shim, workflow file, or task.
+- `scenario_registry_ref` points to the table or file that enumerates admitted drills or failure classes for this runbook.
+- `fallback_surface_refs` list the operator-facing switches or bounded fallback surfaces that the runbook may name without implying that all procedures are already defended.
+- `coverage_table_required=yes` means the runbook body should include explicit `Coverage` or `Scenario Registry` tables rather than only prose bullets.
+- When a runbook opens `Code Bridge Table`, `Scenario Registry / Coverage`, or either evolution table, all time-window and event-time columns defined by the template are required; `unknown`, `pending`, and `ongoing` are valid values, omission is not.
+
+## Current Governance State
+
+- Add this section when the runbook is a live operator surface rather than only a retained historical stub.
+- Preferred table shape:
+
+| governed surface | owner team | current steward | approval state | reviewed by | approved by | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `<runbook id>` | `<owner_team>` | `<current_steward>` | `<approval_state>` | `<reviewed_by>` | `<approved_by>` | `<bounded current-state note>` |
 
 ## 1) Purpose
 
@@ -105,6 +164,43 @@ runbook_record:
 
 - Define what counts as `PASS`, `FAIL`, `PASS_AFTER_RECOVERY`, `NOT_RUN`, or equivalent states.
 - Point to the exact verdict files or fields that act as source of truth.
+
+### 3.3 Code Bridge Table
+
+- Use this section when the runbook must stay aligned to stable code or workflow entrypoints.
+- Keep this table current-reader-only: it records what executable surfaces the runbook is attached to now, not every historical implementation.
+
+| bridge id | surface kind | stable ref | operator meaning owned here | source release row id | source scenario row ids | source routing event ids | current standing | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-01` | `<worker|workflow|task|script>` | `<path or entry id>` | `<what operator meaning this bridge defends>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<defended-now|code-anchor-only|not-owned-here>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded bridge note>` |
+
+### 3.4 Runbook Bridge Evolution Table
+
+- Use this section when bridge rows may be introduced, revised, narrowed, replaced, retired, or backfilled over time.
+
+| bridge change id | affected bridge ids | change action | actor value | source release row id | source scenario row ids | source routing event ids | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-CH-01` | `RB-01` | `<introduced|amended|replaced|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded bridge-evolution note>` |
+
+### 3.5 Scenario Registry / Coverage
+
+- Use this section when the runbook governs multiple admitted failure classes or drill scenarios.
+- A runbook should not imply full operator coverage only through narrative paragraphs; list the admitted scenarios explicitly.
+
+| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | source release row id | source scenario row ids | source routing event ids | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-01` | `<es_429|timeout|duplicate_delivery>` | `<retry|terminal-failed|draining>` | `<observe-only|manual-replay|fallback-switch|defer>` | `<periodic-drill|pre-change-drill|incident-only|lab-only>` | `<weekly|per-release|before-risky-change|after-incident|none>` | `<_result.json|metrics|logs|trace export>` | `<defended-now|partial-code-support|gap-owned|not-owned-here>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded scenario note>` |
+
+- When `coverage class` is not `defended-now`, the runbook should link the owning gap packet, contract note, or deferred owner explicitly.
+- `source release row id`, `source scenario row ids`, and `source routing event ids` keep the runbook body auditable against the release-ledger intake that justified the current row.
+
+### 3.6 Runbook Coverage Evolution Table
+
+- Use this section when scenario or coverage rows may be introduced, revised, rerouted, reopened, or retired over time.
+
+| coverage change id | affected coverage ids | change action | actor value | source release row id | source scenario row ids | source routing event ids | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-CH-01` | `SC-01` | `<introduced|amended|replaced|rerouted|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded coverage-evolution note>` |
 
 ## 4) Run Ledger Binding
 
@@ -162,6 +258,13 @@ runbook_record:
 - State what this runbook deliberately does not try to be.
 - State when the operator should drop into linked logs, ledgers, labs, or contracts.
 - Record the next likely expansion point only if it changes operator expectations.
+
+## Boundary Note
+
+- Distinguish three cases explicitly when the runbook is code-coupled:
+  - `defended operator procedure`: the runbook may instruct operators to use it now.
+  - `code anchor only`: code exposes a switch or path, but operator procedure is not yet defended.
+  - `gap-owned semantics`: the runbook must route the reader elsewhere instead of inventing missing procedure.
 
 ## Thinness Rules
 
