@@ -23,7 +23,7 @@ contract_record:
     parent_release_ledger: <docs/governance/contracts/support-only/ledger-DOC-DOMAIN-SUBDOMAIN-0001-summary.md>
     supplementary_ledger_series: <docs/governance/contracts/support-only/ledger-SUP-001-DOC-DOMAIN-SUBDOMAIN-0001-summary.md>
     patch_ledger_series: <docs/governance/contracts/support-only/ledger-PATCH-001-DOC-DOMAIN-SUBDOMAIN-0001-summary.md>
-    intended_use: <release-scoped evidence intake and staged clause/bridge/coverage write-back>
+    intended_use: <release-scoped evidence intake and staged face/evidence/chronology/release-decision write-back>
   recorded_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
   reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   effective_from: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
@@ -123,37 +123,200 @@ contract_record:
 - Prefer a contract release ledger when new evidence is being extracted from code, labs, retained runbooks, or other strong-structure channels and the needed question is `how should this existing contract release absorb, defer, or reject it?`
 - Do not use `release_ledger_binding` to bypass a still-required source-owned routing ledger when the real unresolved problem is source slicing rather than contract write-back.
 
+## Current Contract Model
+
+- Default to a three-surface reading model inside one release:
+  - `Current Contract Faces`: the current effective semantic view, organized by stable face ids rather than by release archaeology order
+  - `Code Evidence Attachments`: the bounded code, schema, config, test, or signal facts that support those faces without becoming the semantic table themselves
+  - `Semantic Chronology`: the append-only history of how each face became what it is now, ordered by semantic-effective chronology rather than by release registry order
+- Keep the contract body readable as `current semantic snapshot first, chronology second, write-back rules third`.
+- Treat source logs and ledgers as intake and audit surfaces; they should not replace the contract's current face table.
+- Prefer one fixed face vocabulary for the family rather than re-inventing clause groups every release.
+- Recommended reusable face set for code-oriented governance pilots:
+  - `owner-boundary`
+  - `stable-entrypoint`
+  - `application-bridge`
+  - `domain-invariants`
+  - `critical-data-shape`
+  - `persistence-continuity`
+  - `observability-minimum-set`
+  - `control-fallback-boundary`
+  - `verification-surface`
+- Face ids should stay stable across releases whenever the family is still the same family; later releases may change a face's current meaning without renaming the face itself.
+
+## Face Status Rule
+
+- `semantic_status` answers current ownership or boundary standing for the face inside this release.
+- Recommended values:
+  - `owned-now`
+  - `partially-owned`
+  - `boundary-only`
+  - `not-owned-here`
+- `semantic_strength` answers how strongly the current semantic text is defended.
+- Recommended values:
+  - `code-observed`
+  - `code-anchored`
+  - `evidence-supported`
+  - `defended-now`
+  - `historically-retained`
+  - `superseded`
+- Use `semantic_status` and `semantic_strength` together:
+  - a face may be `owned-now` but only `evidence-supported`
+  - a face may be `boundary-only` and only `code-anchored`
+  - a face should not be presented as a current defended promise unless the combination is strong enough for reader-facing contract ownership
+
 ## Recommended Body Shape
 
 - Keep the prose body readable as both `what changed in this release` and `what the current effective state now is`.
-- When one contract family is likely to evolve through repeated clause-level amendment, consider adding one `## Contract Statement Table` ahead of the readable prose body so each effective clause has one stable statement id and one explicit source-basis anchor.
-- When the current reader problem is `which broad parent clauses are still owned here versus only summarized here while narrower child readers now exist`, consider adding one parent-only `## Current Boundary Map` after the statement table.
-- When the current reader problem is instead `why earlier-history rows and later-family rows coexist in one narrow current reader`, prefer one brief `## Current Reader Shape` explanation rather than a parent-style boundary map.
-- Preferred section order:
+- Default section order for code-oriented contract releases:
   - `## Current Governance State` (recommended for live readers)
   - `## Governance Event Table` (recommended when current-state governance matters)
-  - `## Contract Statement Table` (optional but recommended when clause-level traceability matters)
-  - `## Code Bridge Table` (optional but recommended when contract meaning is code-coupled)
-  - `## Code Bridge Evolution Table` (optional but recommended when bridge rows may change over time)
-  - `## Contract Coverage Table` (optional but recommended when current coverage/boundary standing must stay explicit)
-  - `## Coverage Evolution Table` (optional but recommended when coverage rows may change over time)
-  - `## Current Boundary Map` (optional; parent-reader surface only)
-  - `## Current Reader Shape` (optional; narrow current-reader explanation only)
-  - `## Statement Evolution Table` (optional but recommended when clause-flow history matters)
-  - `## Release Change`
-  - `## Contract Statement`
+  - `## Current Contract Faces` (recommended default current-semantic table)
+  - `## Code Evidence Attachments` (recommended when current semantics depend on live code or verification anchors)
+  - `## Semantic Chronology` (recommended default history table)
+  - `## Current Gaps and Non-Ownership` (recommended when some faces stay boundary-only or not-owned-here)
+  - `## Release Decision Table` (recommended when same-release write-back versus new release should stay reviewable)
+  - `## Writeback Rules` (recommended for future mutation discipline)
+  - `## Contract Statement` (short readable current-release summary)
   - `## Current Reading`
   - `## Reader Notes`
+- Compatibility sections such as `Contract Statement Table`, `Code Bridge Table`, `Contract Coverage Table`, or their evolution tables may remain when older families still read through them, but new releases should prefer the face/evidence/chronology model as the primary structure.
 - `## Release Change` should summarize the material delta for this release, especially when `contract_release` is later than `0001`.
 - When `release_action` is `historical-backfill`, `## Release Change` should also explain why this earlier historical state is being recorded only now and which later release or releases already remained in effect before the backfill was added.
 - `## Contract Statement` should restate the current effective rule meaning in full; do not force readers to reconstruct the current state by diffing against earlier releases.
-- When one later release absorbs new non-contract source material, mention that source carry-forward in `## Release Change`, while keeping release-to-release relationships in `lineage` and source-routing details in the support-only ledger.
 - When one release change also changes which release is `current-primary`, `fallback-only`, `coexistence-window`, `historical-retained`, `lineage-only`, or `retired`, record that family-level standing through the family transition register rather than overloading the release body itself.
 - If the source log declared `transition register update` as `required` or `conditional`, the release write-back should preserve that answer explicitly instead of silently assuming the release file alone explains current family coexistence.
 
+## Optional Current Contract Faces
+
+- Use this section as the default current-semantic table for new code-oriented contract releases.
+- Recommended face-id naming:
+  - `<contract_id>-FACE-<nn>`
+- Face ids are release-local row ids; `face_name` should stay semantically stable enough that later releases can map to the same family face vocabulary.
+- Recommended columns:
+  - `face id`
+  - `face name`
+  - `semantic status`
+  - `semantic strength`
+  - `current semantic text`
+  - `code truth kind`
+  - `primary code refs`
+  - `supporting refs`
+  - `source basis`
+  - `effective from`
+  - `effective until`
+  - `recorded at`
+  - `last changed at`
+  - `actor`
+  - `change reason`
+  - `replacement rule`
+  - `notes`
+- `current semantic text` should be the current reader-facing semantic statement for that face, not the chronology of how it got there.
+- `code truth kind` should stay a short evidence-shape classifier such as `entrypoint`, `domain-flow`, `config-switch`, `schema-shape`, `signal-emission`, `verification-hook`, or `mixed`.
+- `primary code refs` should stay low-cardinality and point to the nearest decisive live anchors.
+- `supporting refs` may include ledgers, logs, labs, incidents, or retained runbooks that sharpen the current face without replacing code-first inference.
+- `source basis` should prefer stable upstream ids or bounded packet anchors rather than freeform prose.
+- `effective from`, `effective until`, `recorded at`, and `last changed at` are required columns whenever this table is present; use `unknown`, `pending`, or `ongoing` rather than omitting the field.
+
+## Optional Code Evidence Attachments
+
+- Use this section when the current release needs a separate fact table for code-near evidence rather than embedding all code attachment detail inside face rows.
+- Recommended evidence-id naming:
+  - `<contract_id>-EVD-<nn>`
+- Recommended columns:
+  - `evidence id`
+  - `face id`
+  - `evidence kind`
+  - `repo ref`
+  - `symbol or block`
+  - `observed semantic`
+  - `confidence`
+  - `observed at`
+  - `recorded at`
+  - `actor`
+  - `source packet or ledger`
+  - `notes`
+- `evidence kind` should stay one bounded fact shape such as `entrypoint`, `domain-flow`, `config-switch`, `schema-shape`, `signal-emission`, or `verification-hook`.
+- This table owns code facts, not current contract promises; current promises stay in `Current Contract Faces`.
+- One face may legitimately map to many evidence rows.
+
+## Optional Semantic Chronology
+
+- Use this section when the release needs append-only semantic history that is ordered by semantic-effective timing rather than by contract registry order.
+- Recommended chronology-id naming:
+  - `<contract_id>-CHR-<nn>`
+- Recommended columns:
+  - `chronology id`
+  - `face id`
+  - `change type`
+  - `semantic before`
+  - `semantic after`
+  - `effective from`
+  - `effective until`
+  - `observed at`
+  - `recorded at`
+  - `actor`
+  - `basis refs`
+  - `source release rows`
+  - `source scenario rows`
+  - `source routing event ids`
+  - `chronology order key`
+  - `notes`
+- Recommended `change type` values:
+  - `introduced`
+  - `clarified`
+  - `narrowed`
+  - `widened`
+  - `split`
+  - `superseded`
+  - `backfilled-audit`
+- `chronology order key` should be a stable sortable key such as `effective_from + observed_at + recorded_at + chronology_id`; it should not depend on release id alone.
+- This table is append-only for semantic history; do not overwrite earlier chronology rows just because the current face text changed.
+
+## Optional Release Decision Table
+
+- Use this section when the release or its supporting ledgers need an explicit same-release versus new-release decision gate.
+- Recommended columns:
+  - `face id`
+  - `current release semantic`
+  - `candidate semantic`
+  - `delta class`
+  - `reader visible change`
+  - `contract action`
+  - `decision basis`
+  - `notes`
+- Recommended `delta class` values:
+  - `evidence-only`
+  - `clarification-only`
+  - `semantic-change`
+  - `boundary-restructure`
+- Recommended `contract action` values:
+  - `no-release`
+  - `same-release-evidence-writeback`
+  - `new-release-required`
+  - `split-family-required`
+  - `move-to-runbook`
+  - `retain-in-chronology-only`
+- Use this table to decide whether a candidate change is reader-visible semantic delta, not just whether the repo diff is large.
+
+## Optional Writeback Rules
+
+- Use this section to state the family's future release gate in short reusable rules.
+- Recommended rule shape:
+  - what kind of face change must update `Current Contract Faces`
+  - what kind of change must append `Semantic Chronology`
+  - what kind of change may remain `Code Evidence` only
+  - what kind of change must open a new release or split the family
+- Recommended default rules:
+  - if any face's current semantic text changes in a reader-visible way, default to `new release required` unless the change is provably clarification-only
+  - evidence additions without reader-visible semantic change should update `Code Evidence Attachments` and, when useful, `Semantic Chronology`, but should not force a new release
+  - operator procedure should move to runbook when it does not belong to the contract's current owned faces
+  - family boundary change should prefer `split-family-required` or other lineage action instead of silent same-release widening
+
 ## Optional Contract Statement Table
 
-- Use this section when the release needs clause-level identity and carry-forward tracking without turning the contract itself into a source-owned ledger.
+- Use this section only as a compatibility surface when a family still materially reads through clause-first statement rows.
+- New code-oriented releases should prefer `Current Contract Faces` as the primary current-semantic surface and keep `Contract Statement Table` only when clause ids still remain externally important.
 - Recommended statement-id naming:
   - `<contract_id>-ST-<nn>`
 - Statement ids are release-local:

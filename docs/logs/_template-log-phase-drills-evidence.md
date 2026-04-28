@@ -200,6 +200,37 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `CBD-01` | `CB-01` | `entrypointRef` | `added|revised|replaced|deferred|left-unsupported` | `<current standing after this packet>` | `<contract mutation|reader reconciliation|template follow-on|none>` | `<required-now|conditional|not-required-now|already-satisfied>` | `<required-now|conditional|not-required-now|already-satisfied>` | `<source refs>` | `<bounded bridge-change note>` |
 
+## Semantic Delta Structure (optional, recommended when a source log may change current contract meaning)
+
+- Use this section when the packet is doing code-first or evidence-first semantic intake and reviewers need to see whether the candidate change is only evidence sharpening or an actual current-semantic delta.
+- This section is the packet-level staging area for face-oriented contract change review; it does not replace the downstream contract face table or chronology table.
+- Prefer one row per affected face or candidate face, not one giant mixed row that blends several semantic changes together.
+
+| delta id | face id or candidate face | current semantic | candidate semantic | delta class | reader visible change | primary evidence refs | downstream owner | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SD-01` | `owner-boundary` | `<current owned meaning or none>` | `<candidate owned meaning>` | `evidence-only|clarification-only|semantic-change|boundary-restructure` | `yes|no` | `<code/log/ledger refs>` | `<contract|runbook|view|log-retained>` | `<bounded semantic-delta note>` |
+
+- Recommended `delta class` values:
+  - `evidence-only`
+  - `clarification-only`
+  - `semantic-change`
+  - `boundary-restructure`
+- Use `reader visible change = yes` only when the packet would change what a current reader should conclude from the downstream contract or runbook surface.
+
+## Release Decision Table (optional, recommended when a source log may drive same-release writeback versus new release)
+
+- Use this section when the packet needs an explicit release gate rather than relying on prose judgment.
+- Keep the table face-oriented when the downstream contract is face-oriented; otherwise use the narrowest stable semantic unit that the downstream contract actually owns.
+
+| face id | current release semantic | candidate semantic | delta class | reader visible change | contract action | target release or outlet | decision basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `owner-boundary` | `<current release text>` | `<candidate text>` | `evidence-only|clarification-only|semantic-change|boundary-restructure` | `yes|no` | `no-release|same-release-evidence-writeback|new-release-required|split-family-required|move-to-runbook|retain-in-chronology-only` | `<DOC-...-0001|DOC-...-0002|runbook|chronology-only>` | `<why this action is justified>` | `<bounded release-decision note>` |
+
+- `same-release-evidence-writeback` is appropriate only when the packet sharpens evidence, timing, or routing for current semantics without changing reader-visible meaning.
+- `new-release-required` should be the default when current downstream semantic text must change materially.
+- `split-family-required` should be used when the packet changes ownership boundary more than current meaning inside one stable family.
+- `retain-in-chronology-only` is appropriate when the packet is historical sharpening that should not mutate the current semantic snapshot.
+
 ## Optional Required Processing Chain
 
 Use this section when the source log may emit, revise, reopen, or reconcile contract work and reviewers need one explicit pre-execution declaration of which write-back steps must run.

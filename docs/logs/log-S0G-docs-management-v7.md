@@ -31,6 +31,7 @@
   **phase_log_12**: `docs/logs/log-S0G-1C-workflow-scripts-family-opening-and-s0b-2a-ledger-consumption.md`
   **phase_log_13**: `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
   **phase_log_14**: `docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
+  **phase_log_15**: `docs/logs/log-S0G-5B-code-oriented-contract-faces-and-release-decision-governance.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -48,7 +49,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-20`
-**updated**: `2026-04-23`
+**updated**: `2026-04-28`
 
 ---
 
@@ -169,7 +170,13 @@
 - `S0G-5A` now opens the time-semantics follow-up on the template side: separate artifact lifecycle time from semantic effective time and routing-validity time, fix the default derivation rule before a wider backfill sweep, and defer transition-window dates until real release coexistence exists.
 - `S0G-3F` now opens the next bounded release-governance follow-up: fix revision-sequence grammar and define the release board as a lightweight operational register for active runbook-family releases.
 - `S0G-3G` now opens the next logs-governance follow-up: accumulate repeated modern log body-structure evidence through one dedicated parent ledger and decide whether that evidence warrants `DOC-WORKFLOW-LOGS-0002` as the next release in the same family rather than widening `LOGS-0001` by drift.
-- The next concrete work under this spine should now execute `S0G-3G/P1-C1-S1S2` on `S0C-1A`, then decide whether a second corroborating sample should enter as `P1-C2` before any `LOGS-0002` contract packet is opened.
+- `S0G-5B` now opens the next contract-governance follow-up: replace the mixed `statement/bridge/coverage` reading model with `Current Contract Faces + Code Evidence Attachments + Semantic Chronology + Release Decision Table`, pilot that shape on `DOC-RUNTIME-OBSERVABILITY-0001`, and add three new support-only ledger templates for face extraction, chronology sharpening, and contract writeback.
+- The next concrete work under this spine should now decide whether the next packet after `S0G-5B` is one `OBSERVABILITY-0002` release-opening packet, one family register/front-door follow-up, or one broader rollout of the same face-oriented model into adjacent contract families.
+
+## Phases（补充切片）
+
+- `S0G-5B`（Phase 5B）：code-oriented contract faces and release decision governance
+  - 详见：`docs/logs/log-S0G-5B-code-oriented-contract-faces-and-release-decision-governance.md`
 
 ## Evidence（可选，聚合型记账）
 
