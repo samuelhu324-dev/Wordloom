@@ -106,4 +106,5 @@
 ## 7) Notes and Boundaries
 
 - This runbook is the operator entry; the malfunction history and design rationale stay in the S3A logs and ADR.
+- For unresolved fallback, switch-surface, or coexistence-window semantics on the admitted runtime observability chain, read [docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md](d:/Project/wordloom-v3/docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md) rather than inferring those rules from this retained runbook.
 - The previous filename `run-S3A-observability-v2.md` is superseded so the runbook suffix now matches the parent log name `failure-drills-&-gitactions-&-dashboard`.

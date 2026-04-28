@@ -169,6 +169,37 @@
 
 - <For example: dumps are not committed to git; least privilege; low-cardinality reasons; machine-verifiable evidence>
 
+## Gap Closure / Write-Back (optional, recommended when a source log temporarily acts as a gap packet)
+
+- Use this section when the source log is explicitly retaining unresolved semantics that should later close into `contract`, `runbook`, or another downstream owner surface.
+- Close or refine the gap in the source log first, then write the resolved meaning back to the real downstream owner surface, and only then reconcile current readers with short routing notes.
+- Reopen should be recorded here first, then reflected on the affected downstream owner surface, and finally on current-reader routing notes.
+- Ledger-facing write-back should stay routing/accounting-only unless the ledger itself truly owns the changed standing; do not turn a ledger into a code-bridge presentation table just because the source log tracks code-adjacent gaps.
+- A source log may temporarily act as a retained `gap packet`, but that does not make it the permanent owner of resolved semantics.
+
+| gap id | current status | closure target | current write-back standing | reopen proof expectation | notes |
+| --- | --- | --- | --- | --- | --- |
+| `G01` | `open|partially-closed|closed|reopened|retired` | `<future owner surface>` | `<retained here|write-back required now|write-back already done>` | `<what future change would justify reopen>` | `<bounded gap note>` |
+
+| write-back target | target kind | when required | current verdict | notes |
+| --- | --- | --- | --- | --- |
+| `<surface>` | `<contract reader|runbook reader|ledger routing|code-contract surface>` | `<required when...>` | `<required-now|conditional|not-required-now|already-satisfied>` | `<short write-back note>` |
+
+| gap change id | gap id | change action | recorded at | reason | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `GC-01` | `G01` | `opened|refined|partially-closed|closed|reopened|rerouted` | `YYYY-MM-DD` | `<why this changed>` | `<source refs>` | `<bounded evolution note>` |
+
+## Code Bridge Delta (optional, recommended when a source log records contract-facing bridge changes)
+
+- Use this section when the packet changes one contract-facing code bridge, adds one new bridge row, or records a bounded decision to defer one bridge field while still accounting for downstream impact.
+- Keep the subject narrow: this table records `what changed in the bridge` and `what downstream actions that bridge change triggers`.
+- Do not use this section as a replacement for `Gap Closure / Write-Back`, `Optional Required Processing Chain`, or `Evidence`.
+- `write-back required` and `backfill required` here should answer only whether the bridge change creates those downstream obligations; execution details still belong in the processing chain or evidence ledger.
+
+| delta id | bridge id | changed field or row | change action | new standing | downstream impact | write-back required | backfill required | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `CBD-01` | `CB-01` | `entrypointRef` | `added|revised|replaced|deferred|left-unsupported` | `<current standing after this packet>` | `<contract mutation|reader reconciliation|template follow-on|none>` | `<required-now|conditional|not-required-now|already-satisfied>` | `<required-now|conditional|not-required-now|already-satisfied>` | `<source refs>` | `<bounded bridge-change note>` |
+
 ## Optional Required Processing Chain
 
 Use this section when the source log may emit, revise, reopen, or reconcile contract work and reviewers need one explicit pre-execution declaration of which write-back steps must run.
