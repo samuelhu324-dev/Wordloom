@@ -5,6 +5,15 @@
 - Use this ledger when one source issue, log, or retained support-only body is being split across multiple contract families, release actions, or retained-only destinations.
 - This ledger owns `source routing, extraction accounting, and later consumption tracking`.
 - Do not use contract lineage fields to replace this ledger; lineage stays contract-to-contract, while this ledger explains how mixed source material was mapped into later contract work.
+- If one parent row must first split into multiple derived rows before downstream release mutation is reviewable, keep that split accounting out of the control log and open one attached row-flow ledger beneath the source-owned ledger instead.
+
+## Attached Row-Flow Ledger Rule
+
+- Use one attached row-flow ledger when a single parent row is no longer reviewable as one undivided source slice because it must be split, absorbed with adjacent rows, or forwarded into multiple downstream outlets before the next write-back.
+- Name the attached ledger after the source-owned parent ledger and the parent row scope, not after the control log or lane that happened to perform the review.
+- The source-owned parent ledger remains the owner of the original row identity and current parent routing state.
+- The attached row-flow ledger owns only `derived-row accounting, split or absorption tracking, and parent write-back recommendation`.
+- Control logs may record why the split was chosen, but they should not replace the attached row-flow ledger as the durable accounting surface once split or absorption work begins.
 
 ## Naming Rule
 
