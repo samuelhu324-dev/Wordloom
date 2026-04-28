@@ -28,6 +28,10 @@ runbook_run_ledger_supplement:
   accepted_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   writeback_started_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   writeback_completed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  affected_bridge_ids:
+    - <RB-01|none>
+  affected_coverage_ids:
+    - <SC-01|none>
   supplement_scope: <what later evidence this packet is admitting>
   target_reading_goal: <what later readers should understand after this supplement is applied>
 ```
@@ -50,10 +54,25 @@ runbook_run_ledger_supplement:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `<RUN-001-SUP-01>` | `<unknown|pending|role:operator|name>` | `<unknown|pending|role:runbook-maintainer|name>` | `<unknown|pending|role:workflow-reviewer|name>` | `<unknown|pending|role:evidence-verifier|name>` | `<direct-artifact-inspection|manual-replay|other>` | `<unknown|pending|role:approver|name>` | `<pending|accepted-for-packet|needs-better-evidence|rejected>` | `<why the approval state is defended>` | `<why any actor fields remain partial>` |
 
+## Optional Evidence Time Audit
+
+| supplement item id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RUN-001-SUP-01>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<second|day|month|year|unknown>` | `<optional source-local zone note>` | `<why this evidence time audit matters>` |
+
+## Write-Back Chain Rule
+
+- The run follow-up chain is `evidence -> SUP -> parent run ledger -> downstream consumer`.
+- `effect on current verdict` explains how the new evidence changes the already admitted reading.
+- `proposed parent-ledger action` explains whether the parent run row should stay unchanged, append evidence, or be rewritten.
+- `downstream impact` explains whether any source log, contract, or reader surface should move after the parent run ledger is updated.
+
 ## Required Rules
 
 - Every SUP row must point to one existing `parent run row id`.
+- `created_at`, `reviewed_at`, `accepted_at`, `writeback_started_at`, and `writeback_completed_at` are required header fields; keep them present even when the defended value is still `unknown` or `pending`.
 - SUP rows may strengthen or revise a prior verdict, but they may not invent a free-floating new run outside the parent ledger.
+- `affected_bridge_ids` and `affected_coverage_ids` are optional reference lists for audited bridge/coverage write-back only; they must not replace the actual bridge or coverage semantics on the runbook or contract surfaces.
 - Write into contracts or source logs only after the parent run ledger is updated or explicitly left unchanged.
 
 ## Completion Rule

@@ -49,6 +49,7 @@ contract_release_transition_register:
 ## Lifecycle Field Rule
 
 - `created_at`, `reviewed_at`, and `accepted_at` are artifact-lifecycle fields for the register itself, not historical-effective timestamps for any release.
+- `created_at`, `reviewed_at`, and `accepted_at` are required header fields for the register; when a defended value is not known yet, keep the field present and use `unknown` or `pending` rather than omitting it.
 - New writes should prefer canonical UTC-second timestamps such as `2026-04-23T14:12:05Z`.
 - Legacy day-only values may remain when finer audit precision is unnecessary or unavailable.
 
@@ -92,6 +93,7 @@ Use these values consistently in `release state`.
 - `semantic standing` is the release-local semantic standing already defended by the release contract, such as `current-release`, `superseded-historical-release`, or another defended local standing phrase.
 - `transition role` is a short reader-facing explanation of why this release still matters now.
 - `valid from` and `valid until` are the best defended dates or timestamps for the release's current coexistence standing inside this register, not necessarily the release's full historical-effective range.
+- `valid from` and `valid until` are required columns in every `Release State Table` row; use `unknown` or `ongoing` when the defended coexistence window edge is not known yet.
 - Do not derive `valid from` or `valid until` mechanically from the release contract `effective_from` or `effective_until`; register validity belongs to reader/coexistence standing, not to the release's whole semantic lifespan.
 - When the current standing is defended but the start or end point is not, keep `unknown` or `ongoing` rather than fabricating a more precise coexistence date.
 - `first open now` should stay `yes` for only one `current-primary` row at a time.
@@ -151,6 +153,7 @@ Use this section when one bounded coexistence or cutover window is still open or
 - Do not open a transition-window row merely because one earlier release still exists on disk.
 - Do not open a transition-window row for one single-release family or for one historical-retained release that has no active fallback/coexistence duty now.
 - If coexistence is real but the open or close timing is not yet defended, keep `opened at`, `target close at`, or `closed at` as `unknown` or `pending` rather than inventing dates from release chronology alone.
+- `opened at`, `target close at`, and `closed at` are required columns whenever `Transition Window Table` is present; if the timing is not defended, keep the field and use `unknown`, `pending`, or `n/a`.
 - `window state` should stay one of:
   - `open`
   - `closed`

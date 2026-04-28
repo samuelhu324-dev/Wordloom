@@ -26,6 +26,11 @@ runbook_run_ledger:
   target_reading_goal: <what later readers should understand>
 ```
 
+## Lifecycle Field Rule
+
+- `created_at`, `reviewed_at`, and `accepted_at` are required header fields; keep them present even when the defended value is still `unknown` or `pending`.
+- Round and attempt time columns in this template are required when their tables are present; unknown values are acceptable, omission is not.
+
 ## Current Run Status Summary
 
 | run row id | operational convergence | accounting status | approval status | target convergence count | target partial count | target blocked count | latest chronology round | latest updated from packet | reader verdict | notes |
@@ -54,6 +59,13 @@ runbook_run_ledger:
 
 - Keep evidence extraction, actor/provenance review, and optional time audit after the four primary surfaces above.
 - Evidence/support tables must not be the only carrier of chronology.
+
+## Packet Write-Back Rule
+
+- The family-level chain is `execution evidence -> parent run ledger -> SUP or PATCH follow-up -> downstream consumer`.
+- Use `SUP` when later evidence changes the admitted meaning of one run, target, or stage row.
+- Use `PATCH` for bounded repair under the same release; if the repair also changes admitted chronology, pair it with a `SUP` write-back.
+- Readers should be able to explain what changed by comparing `latest_updated_from_packet`, the execution round row, the target-stage attempt row, and any bound SUP or PATCH packet.
 
 ## Required Rules
 
