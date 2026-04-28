@@ -426,13 +426,17 @@ def _resolve_live_milestone_title(
     roadmap_path = fields.get("roadmap_path", "").strip()
     if roadmap_path:
         roadmap_stem = Path(roadmap_path).stem
+        roadmap_id_match = re.match(r"^(road-\d+(?:-\d+)*)", roadmap_stem)
+        roadmap_id = roadmap_id_match.group(1) if roadmap_id_match else ""
         matching_titles = sorted(
             title for title in live_milestones
-            if title == roadmap_stem or title.startswith(f"{roadmap_stem}:")
+            if title == roadmap_stem
+            or title.startswith(f"{roadmap_stem}:")
+            or (roadmap_id and (title == roadmap_id or title.startswith(f"{roadmap_id}:")))
         )
         if len(matching_titles) == 1:
             warnings.append(
-                "issue_milestone resolved to live GitHub milestone title from roadmap_path stem"
+                "issue_milestone resolved to live GitHub milestone title from roadmap_path metadata"
             )
             return matching_titles[0], warnings
         if len(matching_titles) > 1:
@@ -723,6 +727,15 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
             )
 
     milestone, milestone_warnings = _derive_milestone(fields, args.milestone_override)
+    live_milestones: set[str] | None = None
+    if milestone and live_label_check_enabled and live_label_check_repo:
+        live_milestones = _fetch_existing_milestones(live_label_check_repo)
+        milestone, live_milestone_warnings = _resolve_live_milestone_title(
+            milestone,
+            fields,
+            live_milestones,
+        )
+        milestone_warnings.extend(live_milestone_warnings)
     parent_issue, show_parent_issue, parent_warnings = _resolve_parent_issue(repo_root, fields, args.parent_issue)
 
     warnings: list[str] = []
@@ -821,7 +834,7 @@ def generate_issue_draft(args: argparse.Namespace, *, emit_result: bool = True) 
         repo = live_label_check_repo or _derive_repo_slug(args.repo)
 
         if milestone:
-            milestones = _fetch_existing_milestones(repo)
+            milestones = live_milestones if live_milestones is not None else _fetch_existing_milestones(repo)
             if milestone not in milestones:
                 raise SystemExit(f"Milestone does not exist in {repo}: {milestone}")
 

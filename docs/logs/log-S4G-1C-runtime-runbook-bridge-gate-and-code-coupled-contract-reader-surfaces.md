@@ -9,8 +9,8 @@
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, Observability, RunbookBridge, ContractBridge, Evidence, epic/s4, sub/1c`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/564`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/565`
   **runbook**: `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4G-1B-r01-runtime-observability-governance-contract-bridge.md`
@@ -37,7 +37,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-26`
-**updated**: `2026-04-26`
+**updated**: `2026-04-28`
 **reviewed**: `pending`
 **source_reader_model**: `mixed-source-v1`
 **extraction_surface_version**: `extractable-rules-v1`
@@ -382,3 +382,4 @@
 - 2026-04-26: recorded the minimum required reader surfaces and doc-versus-code layering rules before any later downstream outlet opens.
 - 2026-04-26: extracted `D06`, `R13`, `ST-05`, the retained runbook path, and nearby worker code anchors; recorded the first verdict that the next downstream opening should be a bounded `gap packet` rather than a `runbook bridge`.
 - 2026-04-26: opened `S4G-1D` as the direct bounded follow-up packet for the verdict above, so the missing operator semantics can move out of decision prose and into one explicit retained gap surface.
+

@@ -9,7 +9,7 @@
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, FailureDrills, Fallback, AssetPlatform, epic/s4, epic/s4g`
 **links**: ``
-  **issue**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/559`
   **pr**: ``
   **adr**: ``
   **runbook**: `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
@@ -42,7 +42,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-25`
-**updated**: `2026-04-27`
+**updated**: `2026-04-28`
 
 ---
 

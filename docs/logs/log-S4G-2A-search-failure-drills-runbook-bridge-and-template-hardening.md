@@ -9,8 +9,8 @@
 **scope**: `S4`
 **tags**: `EVOLUTION, Workflow, GitHubIssues, Runbook, Template, epic/s4, epic/s4g, sub/2`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/572`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/573`
   **runbook**: `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4G-fallback-cells-and-failure-drills-asset-governance.md`
@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-27`
-**updated**: `2026-04-27`
+**updated**: `2026-04-28`
 **source_reader_model**: `mixed-source-v2`
 **extraction_surface_version**: `extractable-rules-v2`
 

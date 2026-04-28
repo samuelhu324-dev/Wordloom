@@ -9,8 +9,8 @@
 **scope**: `S4`
 **tags**: `EVOLUTION, Workflow, Contract, Runbook, Audit, epic/s4, epic/s4g, sub/2`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/574`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/575`
   **runbook**: `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4G-fallback-cells-and-failure-drills-asset-governance.md`
@@ -36,7 +36,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-27`
-**updated**: `2026-04-27`
+**updated**: `2026-04-28`
 **source_reader_model**: `mixed-source-v1`
 **extraction_surface_version**: `extractable-rules-v1`
 
@@ -90,6 +90,26 @@
 | extraction surface version | `extractable-rules-v1` | The extraction surface is the `Extractable Rule Surface` table in this packet. |
 | compatibility expectation | `forward-readable` | Later S4G packets may refine the reader shape without reopening this packet's extracted rules. |
 | migration note | `Later close-out packets should answer outlet ownership explicitly instead of collapsing that decision into this draft packet.` | This packet is still the source-side governance hardening surface. |
+
+## PR Summary Inputs
+
+- This packet hardens contract and runbook bridge or coverage templates so every admitted row carries explicit time-window fields and separates active-state rows from chronology rows.
+
+**PR summary bullets**:
+
+- Require explicit bridge and coverage time-window fields in the shared contract and runbook template surfaces, even when a value remains `unknown` or `ongoing`.
+- Split active-state row ownership from change-event chronology ownership so readers no longer overload one table with both meanings.
+- Backfill the observability contract sample, the GitHub Issues runbook sample, and the bounded ledger hooks to prove the audited template shape on live repo artifacts.
+
+**PR checklist source**:
+
+- Default source: reuse this packet's execution checklist.
+
+**PR links**:
+
+- Log: `docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md`
+- Runbook: `docs/runbook/run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md`
+- Evidence artifact: ``
 
 ## Exported Sections / Outlet Ownership
 

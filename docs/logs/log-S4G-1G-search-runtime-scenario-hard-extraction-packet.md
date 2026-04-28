@@ -9,8 +9,8 @@
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, Observability, FailureDrills, ScenarioExtraction, Evidence, epic/s4, epic/s4g, sub/1g`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/576`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/577`
   **runbook**: `docs/runbook/run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4G-fallback-cells-and-failure-drills-asset-governance.md`
@@ -37,7 +37,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-27`
-**updated**: `2026-04-27`
+**updated**: `2026-04-28`
 **reviewed**: `pending`
 **source_reader_model**: `mixed-source-v1`
 **extraction_surface_version**: `extractable-rules-v1`

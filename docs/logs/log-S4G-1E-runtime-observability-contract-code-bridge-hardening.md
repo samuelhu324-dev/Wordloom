@@ -9,8 +9,8 @@
 **scope**: `S4`
 **tags**: `EVOLUTION, OpsRuntime, Observability, ContractBridge, CodeBridge, Evidence, epic/s4, sub/1e`
 **links**: ``
-  **issue**: ``
-  **pr**: ``
+  **issue**: `https://github.com/samuelhu324-dev/wordloom-v3/issues/568`
+  **pr**: `https://github.com/samuelhu324-dev/wordloom-v3/pull/569`
   **runbook**: `docs/runbook/legacy/run-S3A-failure-drills-&-gitactions-&-dashboard.md`
   **roadmap**: `docs/roadmap/road-002-01-deployable-runtime-slice-and-cloud-backed-asset-readiness.md`
   **parent_log**: `docs/logs/log-S4G-1D-runtime-operator-semantics-gap-packet.md`
@@ -37,7 +37,7 @@
 **pr_base**: `main`
 **pr_development_issue**: ``
 **created**: `2026-04-26`
-**updated**: `2026-04-26`
+**updated**: `2026-04-28`
 **reviewed**: `pending`
 **source_reader_model**: `mixed-source-v1`
 **extraction_surface_version**: `extractable-rules-v1`
