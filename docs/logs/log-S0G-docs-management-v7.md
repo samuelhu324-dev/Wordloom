@@ -32,6 +32,7 @@
   **phase_log_13**: `docs/logs/log-S0G-5A-time-semantics-and-effective-window-governance.md`
   **phase_log_14**: `docs/logs/log-S0G-3G-logs-body-structure-extraction-and-logs-0002-opening-governance.md`
   **phase_log_15**: `docs/logs/log-S0G-5B-code-oriented-contract-faces-and-release-decision-governance.md`
+  **phase_log_16**: `docs/logs/log-S0G-5C-code-first-runbook-faces-and-release-decision-governance.md`
 **issue_keyword**: `automation`
 **issue_top_labels**: `EVOLUTION`
 **issue_scope_labels**: `s0/knowledge system, sub/0`
@@ -171,12 +172,15 @@
 - `S0G-3F` now opens the next bounded release-governance follow-up: fix revision-sequence grammar and define the release board as a lightweight operational register for active runbook-family releases.
 - `S0G-3G` now opens the next logs-governance follow-up: accumulate repeated modern log body-structure evidence through one dedicated parent ledger and decide whether that evidence warrants `DOC-WORKFLOW-LOGS-0002` as the next release in the same family rather than widening `LOGS-0001` by drift.
 - `S0G-5B` now opens the next contract-governance follow-up: replace the mixed `statement/bridge/coverage` reading model with `Current Contract Faces + Code Evidence Attachments + Semantic Chronology + Release Decision Table`, pilot that shape on `DOC-RUNTIME-OBSERVABILITY-0001`, and add three new support-only ledger templates for face extraction, chronology sharpening, and contract writeback.
-- The next concrete work under this spine should now decide whether the next packet after `S0G-5B` is one `OBSERVABILITY-0002` release-opening packet, one family register/front-door follow-up, or one broader rollout of the same face-oriented model into adjacent contract families.
+- `S0G-5C` now opens the matching runbook-governance follow-up: redesign the runbook model around code-first operator faces, decide whether the release-ledger chain is enough or needs new code-first support ledgers, and use `run-RUNTIME-OBSERVABILITY-001-search-outbox-worker-drill-first-skeleton` as the pilot for deciding whether the current widened scenario surface still belongs in `001` or should open `002`.
+- The next concrete work under this spine should now execute `S0G-5C/P1-C1-S1S2`, then decide whether the pilot runbook stays on `001` with structure-only rewrite or splits into `001` plus `002` for reader-visible scenario widening.
 
 ## Phases（补充切片）
 
 - `S0G-5B`（Phase 5B）：code-oriented contract faces and release decision governance
   - 详见：`docs/logs/log-S0G-5B-code-oriented-contract-faces-and-release-decision-governance.md`
+- `S0G-5C`（Phase 5C）：code-first runbook faces and release decision governance
+  - 详见：`docs/logs/log-S0G-5C-code-first-runbook-faces-and-release-decision-governance.md`
 
 ## Evidence（可选，聚合型记账）
 
