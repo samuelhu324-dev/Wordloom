@@ -16,6 +16,11 @@ runbook_record:
   applies_to: GitHub Issues lifecycle automation for source logs under docs/logs/, including child issue creation/PR/merge/conclusion and parent issue creation/conclusion.
   entry_surface: script
   evidence_surface: run-ledger
+  owner_team: docs-governance
+  current_steward: delegated:workflow-runbook-maintainer
+  approval_state: review-pending
+  reviewed_by: pending
+  approved_by: pending
   file_identity_status: canonical-filename-active
   ledger_binding:
     parent_run_ledger: docs/runbook/support-only/ledger-run-001-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline.md
@@ -38,6 +43,33 @@ runbook_record:
       - applied_action
       - status
       - warnings
+  code_bridge_binding:
+    required: yes
+    stable_entry_refs:
+      - scripts/issues/gen_issue_draft.py
+      - scripts/issues/plan_pr_prep.py
+      - scripts/issues/create_pr_from_plan.py
+      - scripts/issues/apply_issue_relationships_with_pre_gate.py
+      - scripts/issues/apply_issue_conclusion_with_pre_gate.py
+      - scripts/issues/check_pr_body_contract.py
+      - scripts/issues/verify_live_pr_body_contract.py
+    operator_surface_refs:
+      - .github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml
+      - .github/workflows/s0f-pr-body-completeness-standard-check-dispatch.yml
+    scenario_registry_ref: "## 3.5 Coverage and Boundary Table"
+    fallback_surface_refs:
+      - review-hold
+      - resume-after-review
+      - fail-closed preflight rejection
+      - milestone-skip override
+    evidence_contract_ref: "## 5) Evidence Bundle"
+    minimum_supported_failure_classes:
+      - missing-metadata
+      - preflight-rejected
+      - review-hold
+      - merge-state-missing
+      - pr-body-contract-fail
+    coverage_table_required: yes
   template_authority:
     family_runbook_template: docs/runbook/_template-runbook-WORKFLOW-GITHUB-ISSUES.md
     family_parent_ledger_template: docs/runbook/support-only/_template-run-ledger-WORKFLOW-GITHUB-ISSUES.md
@@ -48,14 +80,16 @@ runbook_record:
   effective_from: 2026-04-20
   effective_until: ongoing
   introduced_by: docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md#P2-C1-S1
-  last_changed_by: docs/logs/log-S0G-3E-workflow-github-issues-round-attempt-chronology-and-family-template-governance.md#P3-C1-S1
+  last_changed_by: docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md
   source_refs:
+    - docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md
     - docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md
     - docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md
     - docs/logs/log-S0E-4A-github-pr-automation-contract.md
     - docs/logs/log-S0E-4C-pr-summary-development-link-and-issue-relationship-follow-up.md
     - docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md
   cumulative_source_refs:
+    - docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md
     - docs/logs/log-S0E-2D-issue-creation-metadata-and-english-body-contract.md
     - docs/logs/log-S0E-2E-issue-conclusion-and-development-linkage-contract.md
     - docs/logs/log-S0E-4A-github-pr-automation-contract.md
@@ -63,6 +97,7 @@ runbook_record:
     - docs/logs/log-S0E-4D-review-hold-and-full-auto-lifecycle-orchestration-follow-up.md
     - docs/runbook/legacy/run-S0E-log-to-issue-creation.md
   supporting_evidence_refs:
+    - docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md
     - docs/logs/log-S0G-2A-runbook-ledger-aware-operator-surface-and-execution-accounting.md
     - docs/logs/log-S0G-3C-workflow-github-issues-strong-structure-and-ledger-bridge-governance.md
     - docs/logs/log-S0G-3E-workflow-github-issues-round-attempt-chronology-and-family-template-governance.md
@@ -84,6 +119,12 @@ runbook_record:
 ```
 
 ---
+
+## Current Governance State
+
+| governed surface | owner team | current steward | approval state | reviewed by | approved by | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `run-WORKFLOW-GITHUB-ISSUES-001-GitHub-Issues-full-auto-pipeline` | `docs-governance` | `delegated:workflow-runbook-maintainer` | `review-pending` | `pending` | `pending` | `This first code-bridge sample binds the runbook to script entrypoints, artifact contracts, and secondary-enforcement wrappers without promoting the wrappers into the primary mutation boundary.` |
 
 ## 1) Purpose
 
@@ -140,6 +181,41 @@ runbook_record:
 - `PASS_AFTER_REVIEW_RESUME` is valid when the initial run stopped in `review-hold` and a later explicit resume completed the downstream stage set.
 - A stage may still record `needs_follow_up=yes` even when the stage verdict is `PASS`, for example when creation succeeded under an explicit milestone-skip override or while a parent-issue field remained blank.
 - The source-of-truth verdict fields live in the emitted plan/apply JSON artifacts, not in prose-only console output.
+
+### 3.4 Code Bridge Table
+
+| bridge id | surface kind | stable ref | operator meaning owned here | current standing | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-ISSUES-01` | `script` | `scripts/issues/gen_issue_draft.py` | `Issue creation remains bound to explicit metadata parsing and fail-closed draft/create behavior.` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `Blank or missing fields must stay visible through warnings or stop behavior rather than being silently defaulted.` |
+| `RB-ISSUES-02` | `script` | `scripts/issues/plan_pr_prep.py; scripts/issues/create_pr_from_plan.py` | `PR preparation and publish remain bound to plan artifacts plus preflight validation before local branch materialization or publish.` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `create_pr_from_plan.py` rejects mismatched or non-allowed preflight results fail-closed.` |
+| `RB-ISSUES-03` | `script` | `scripts/issues/check_pr_body_contract.py; scripts/issues/verify_live_pr_body_contract.py` | `PR body structure is governed by contract validators that can fail the local or live check when required sections, link labels, or evidence footer lines drift.` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `These validators are part of the defended operator surface, not optional lint.` |
+| `RB-ISSUES-04` | `workflow` | `.github/workflows/s0e-publish-verify-remediation-gate-read-only-wrapper-dispatch.yml` | `GitHub Actions may replay the local publish gate as secondary enforcement and retained evidence.` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `The workflow is explicitly not the first publish authorization boundary.` |
+| `RB-ISSUES-05` | `workflow` | `.github/workflows/s0f-pr-body-completeness-standard-check-dispatch.yml` | `GitHub Actions may replay the PR body completeness check as secondary enforcement and retained evidence.` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `The workflow is explicitly not the primary review boundary.` |
+| `RB-ISSUES-06` | `mode` | `review-hold; resume-after-review; milestone-skip override` | `The runbook may name bounded operator modes and overrides that already appear in artifacts and scripts.` | `partial-code-support` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `The code supports these switches, but approval ownership and escalation policy remain narrower workflow-governance material rather than fully expanded here.` |
+
+### 3.4A Runbook Bridge Evolution Table
+
+| bridge change id | affected bridge ids | change action | actor value | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `RB-ISSUES-CH-01` | `RB-ISSUES-01; RB-ISSUES-02; RB-ISSUES-03; RB-ISSUES-04; RB-ISSUES-05; RB-ISSUES-06` | `history-backfilled` | `role:s4g-packet-maintainer` | `2026-04-27` | `2026-04-27` | `docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md` | `S4G-2B backfills active-window fields and explicit bridge-evolution chronology onto the first Issues code-bridge sample without widening the bounded operator meaning.` |
+
+### 3.5 Coverage and Boundary Table
+
+| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-ISSUES-01` | `missing-metadata` | `fail-closed` | `repair-source` | `every-run` | `per-run` | `issue draft json or plan/apply json with warnings/errors` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `The family should stop or warn explicitly when required source metadata is missing.` |
+| `SC-ISSUES-02` | `preflight-rejected` | `fail-closed` | `repair-source` | `every-run` | `per-run` | `front-half preflight result json` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `Publish cannot continue when gate_apply_allowed or preflight_allowed is false or the decision is not publish-eligible.` |
+| `SC-ISSUES-03` | `review-hold` | `pause-and-resume` | `resume-stage` | `follow-up-only` | `after-review` | `plan/apply json plus later resume evidence` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `PASS_AFTER_REVIEW_RESUME` is an admitted lifecycle verdict.` |
+| `SC-ISSUES-04` | `merge-state-missing` | `not-run` | `repair-source` | `follow-up-only` | `after-review` | `plan/apply json or conclusion result json` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `Post-merge stages should not claim success when merged PR selection is empty.` |
+| `SC-ISSUES-05` | `pr-body-contract-fail` | `fail-closed` | `repair-source` | `every-run` | `per-run` | `contract-check json or live-contract-check json` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `Required sections, allowed links, and evidence-footer shape are machine-validated.` |
+| `SC-ISSUES-06` | `workflow-wrapper-stop` | `secondary-enforcement stop` | `inspect-retained-artifact` | `follow-up-only` | `after-wrapper-run` | `wrapper result json, workflow summary, dispatch manifest` | `defended-now` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `GitHub Actions stop/error semantics are valid evidence surfaces but not the primary mutation decision.` |
+| `SC-ISSUES-07` | `override-required` | `bounded override path` | `explicit-override` | `incident-only` | `when-needed` | `apply-result json plus warning or notes` | `partial-code-support` | `2026-04-27` | `2026-04-27` | `ongoing` | `in-force` | `Milestone-skip and similar overrides exist, but the escalation policy remains narrower than the current sample.` |
+
+### 3.5A Runbook Coverage Evolution Table
+
+| coverage change id | affected coverage ids | change action | actor value | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-ISSUES-CH-01` | `SC-ISSUES-01; SC-ISSUES-02; SC-ISSUES-03; SC-ISSUES-04; SC-ISSUES-05; SC-ISSUES-06; SC-ISSUES-07` | `history-backfilled` | `role:s4g-packet-maintainer` | `2026-04-27` | `2026-04-27` | `docs/logs/log-S4G-2B-audited-bridge-coverage-time-window-template-hardening.md` | `S4G-2B backfills explicit active-window fields and change-event chronology onto the first Issues coverage sample while preserving the current family boundary.` |
 
 ## 4) Run Ledger Binding
 
@@ -267,6 +343,8 @@ python scripts/issues/apply_issue_conclusion.py <plan-path> --item-index 0
 - Repeated execution accounting belongs in the bound run ledger, not inside this runbook body.
 - Small local repairs to scripts, manifests, or docs may land through patch or maintenance lanes without forcing a new runbook release, as long as the runbook semantics themselves do not materially change.
 - File-identity repair for the current `001` release is now executed; any later successor-release decision remains out of scope for this runbook body.
+- The `s0e-*` and `s0f-*` GitHub Actions wrappers are secondary-enforcement and retained-evidence surfaces only; they should not be read as the first publish or review authorization boundary.
+- The broad GitHub-Issues mechanism parent contract remains manual and decomposition-oriented; this runbook is the first defended code-coupled sample for the Issues lifecycle automation family.
 
 ## Thinness Rules
 
