@@ -22,10 +22,27 @@ runbook_run_patch_ledger:
   created_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   accepted_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  writeback_started_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  writeback_completed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
+  affected_bridge_ids:
+    - <RB-ISSUES-01|none>
+  affected_coverage_ids:
+    - <SC-ISSUES-01|none>
   patch_scope: <what bounded repair is admitted>
   patch_reason_class: <docs-fix|script-fix|manifest-fix|evidence-fix|mixed-bounded-repair>
   target_reading_goal: <what later readers should understand>
 ```
+
+## Lifecycle Field Rule
+
+- `created_at`, `reviewed_at`, `accepted_at`, `writeback_started_at`, and `writeback_completed_at` are required header fields; keep them present even when the defended value is still `unknown` or `pending`.
+- `affected_bridge_ids` and `affected_coverage_ids` are optional reference lists for audited bridge/coverage write-back only; they must not replace the actual bridge or coverage semantics on the runbook or contract surfaces.
+
+## Patch Time Audit
+
+| patch item id | parent run row id | target row id | target stage row id | source observed at | source recorded at | source effective from | source effective until | time precision | timezone note | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<PATCH-001-I01>` | `<RUN-001>` | `<RUN-001-T01|not-applicable>` | `<RUN-001-T01-STG-CREATION|not-applicable>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<second|day|month|year|unknown>` | `<optional source-local zone note>` | `<why this patch time audit matters>` |
 
 ## Patch Packet Summary
 
@@ -52,3 +69,9 @@ runbook_run_patch_ledger:
 - Keep the same stable structural ids already used by the parent ledger.
 - `Repair Delta Table` should explain whether a repair changes admitted chronology directly, only enables a later `SUP`, or stays purely local to the repair packet.
 - Keep `Patch Change Table` focused on implementation/evidence review and approval support rather than carrying the full before/after repair explanation by itself.
+
+## Write-Back Chain Rule
+
+- The family repair chain is `repair evidence -> family PATCH -> parent runbook object or parent run ledger reference -> downstream consumer`.
+- `Repair Delta Table` explains semantic effect; `Patch Time Audit` explains when the repaired signal was observed, recorded, and effective.
+- If chronology meaning changes, the paired `SUP` packet owns the admitted-reading delta while the PATCH row keeps the bounded repair trace.

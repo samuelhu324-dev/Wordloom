@@ -14,6 +14,16 @@ contract_record:
   applies_to: <targets governed by this contract>
   enforcement_surface: <workflow|script|runbook|adapter|manual>
   violation_semantics: <fail|warning|report-only|neutral>
+  owner_team: <docs-governance|ops-runtime|delegated team>
+  current_steward: <role:contract-maintainer|delegated:contract-maintainer|other>
+  approval_state: <draft|review-pending|reviewed-awaiting-approval|approved|retired>
+  reviewed_by: <role:workflow-reviewer|pending|unknown>
+  approved_by: <role:docs-governance-approver|pending|unknown>
+  release_ledger_binding:
+    parent_release_ledger: <docs/governance/contracts/support-only/ledger-DOC-DOMAIN-SUBDOMAIN-0001-summary.md>
+    supplementary_ledger_series: <docs/governance/contracts/support-only/ledger-SUP-001-DOC-DOMAIN-SUBDOMAIN-0001-summary.md>
+    patch_ledger_series: <docs/governance/contracts/support-only/ledger-PATCH-001-DOC-DOMAIN-SUBDOMAIN-0001-summary.md>
+    intended_use: <release-scoped evidence intake and staged clause/bridge/coverage write-back>
   recorded_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
   reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   effective_from: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
@@ -65,6 +75,7 @@ contract_record:
 - `recorded_at` should capture when this release record entered the repo as one defended contract record.
 - `reviewed_at` should capture when this release record passed its current defended review state; use `pending` when that review has not happened yet.
 - `effective_from` and `effective_until` should capture the best currently known historical-effective range for the rule state owned by this release.
+- `recorded_at`, `reviewed_at`, `effective_from`, and `effective_until` are required fields in every contract record; when a defended value is not known yet, keep the field present and use `unknown`, `pending`, or `ongoing` rather than omitting it.
 - Treat `recorded_at` and `reviewed_at` as artifact/chronology fields, not as substitutes for the contract's semantic-effective window.
 - Unless stronger evidence proves an earlier or later start, a first release should default `effective_from` to the decisive source log's `created` time.
 - Unless one defended successor, replacement, retirement, or explicit end-state is known, `effective_until` should default to `ongoing`.
@@ -97,6 +108,21 @@ contract_record:
   - if the earlier state changes current clause history in one later release, update the later release's clause metadata or evolution rows, but do not renumber the family
 - `notes` may clarify operator context, but should never override structured fields.
 
+## Governance State Rule
+
+- `owner_team`, `current_steward`, `approval_state`, `reviewed_by`, and `approved_by` are the current-state governance fields for the contract surface itself.
+- Keep these fields on the contract whenever the contract is a live reader surface rather than only a retained historical note.
+- These fields are required in the record frontmatter; when the actor or state is not yet defended, keep the field present and use `pending` or `unknown` rather than dropping it.
+
+## Release Ledger Binding Rule
+
+- Use `release_ledger_binding` when one contract release needs its own durable release-first intake surface for evidence admission, clause routing, bridge/coverage write-back, or later supplements and patches that are centered on the contract object rather than on a source log.
+- `release_ledger_binding` complements source-owned ledgers instead of replacing them:
+  - source-owned ledgers still own source slicing and primary routing from logs/issues/support-only material;
+  - contract release ledgers own contract-object intake, staged write-back, and later release-bound refinements once material is already justified for this contract family.
+- Prefer a contract release ledger when new evidence is being extracted from code, labs, retained runbooks, or other strong-structure channels and the needed question is `how should this existing contract release absorb, defer, or reject it?`
+- Do not use `release_ledger_binding` to bypass a still-required source-owned routing ledger when the real unresolved problem is source slicing rather than contract write-back.
+
 ## Recommended Body Shape
 
 - Keep the prose body readable as both `what changed in this release` and `what the current effective state now is`.
@@ -104,7 +130,13 @@ contract_record:
 - When the current reader problem is `which broad parent clauses are still owned here versus only summarized here while narrower child readers now exist`, consider adding one parent-only `## Current Boundary Map` after the statement table.
 - When the current reader problem is instead `why earlier-history rows and later-family rows coexist in one narrow current reader`, prefer one brief `## Current Reader Shape` explanation rather than a parent-style boundary map.
 - Preferred section order:
+  - `## Current Governance State` (recommended for live readers)
+  - `## Governance Event Table` (recommended when current-state governance matters)
   - `## Contract Statement Table` (optional but recommended when clause-level traceability matters)
+  - `## Code Bridge Table` (optional but recommended when contract meaning is code-coupled)
+  - `## Code Bridge Evolution Table` (optional but recommended when bridge rows may change over time)
+  - `## Contract Coverage Table` (optional but recommended when current coverage/boundary standing must stay explicit)
+  - `## Coverage Evolution Table` (optional but recommended when coverage rows may change over time)
   - `## Current Boundary Map` (optional; parent-reader surface only)
   - `## Current Reader Shape` (optional; narrow current-reader explanation only)
   - `## Statement Evolution Table` (optional but recommended when clause-flow history matters)
@@ -134,6 +166,9 @@ contract_record:
   - `clause status`
   - `change action`
   - `source basis`
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
   - `first effective release`
   - `first effective at`
   - `last changed release`
@@ -141,6 +176,8 @@ contract_record:
   - `effective from`
   - `effective until`
   - `effective status`
+  - `current code standing`
+  - `bridge refs`
   - `statement text`
   - `notes`
 - `statement label` should be a short human-readable clause title for the current contract meaning; it is the contract-facing quick label, not a copy of the source-owned `source slice` field from the ledger.
@@ -148,9 +185,13 @@ contract_record:
   - do not encode parent/child routing, split history, absorbed history, return flow, or other lineage inside the label
   - keep chronology in `Statement Evolution Table` and current boundary standing in a separate reader-facing section when needed
 - `source basis` may contain one or more stable anchors when the clause truly depends on multiple upstream bases.
+- `source release row id`, `source scenario row ids`, and `source routing event ids` should be used when the current clause is justified through one release-ledger routing path and readers need to trace that path without reopening the parent ledger first.
 - `first effective at` should capture the best currently known historical time at which the clause first became effective, independent of the append-only registry release number.
 - `last changed at` should capture the best currently known historical time for the latest semantic change represented in this release's reading of the clause.
 - `effective from` and `effective until` should capture the active historical range for the clause as currently read in this release; use `ongoing` when the clause remains in force without a known end date.
+- `current code standing` should make the statement's current code relationship visible from the statement table itself, for example `bridged-now`, `indirect-bridge`, `code-anchor-only`, `contract-only`, or `boundary-only`.
+- `bridge refs` should point to the current bridge ids when the statement is directly represented in the contract's code-bridge surface.
+- The statement table's time fields are required columns whenever the table is present; if one defended timestamp or window edge is not known, keep the column and use `unknown` or `ongoing` explicitly.
 - `source basis` should prefer stable ledger or supplement anchors such as:
   - one `parent row id` such as `S0B-1A-R02`
   - one `supplement item id` such as `S0A-1A-R02-SUP-01`
@@ -252,6 +293,85 @@ contract_record:
   - `source basis` still carries only the decisive evidence anchors for the change event
   - release-level lineage remains in contract frontmatter rather than moving into clause history tables
 - When one later release carries earlier-discovered clauses inside the current reader, show those change rows as `history-backfilled` ahead of same-release `carried-forward`, `amended`, or `introduced` rows so readers see the earlier-history admission first.
+
+## Optional Code Bridge Table
+
+- Use this section when contract meaning depends on one bounded code or workflow attachment profile.
+- Treat this table as the current active bridge surface; bridge-event chronology should stay in `Code Bridge Evolution Table`.
+- Required columns:
+  - `bridge id`
+  - `owned statement ids`
+  - `applied to surface`
+  - `stable ref`
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
+  - `current standing`
+  - `recorded at`
+  - `effective from`
+  - `effective until`
+  - `effective status`
+  - `evidence refs`
+  - `notes`
+- Optional profile columns such as `runtime boundary`, `drill-facing entry id`, `switch surface`, or another bounded attachment field may be inserted between `stable ref` and `current standing` when the family needs them.
+- Time-window fields are required whenever this table is present; unknown or ongoing values are allowed, omission is not.
+
+## Optional Code Bridge Evolution Table
+
+- Use this section when bridge rows may be introduced, revised, narrowed, replaced, retired, or backfilled over time.
+- Recommended columns:
+  - `bridge change id`
+  - `affected bridge ids`
+  - `change action`
+  - `actor value`
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
+  - `effective at`
+  - `recorded at`
+  - `source basis`
+  - `notes`
+- `effective at` records when the bridge change is believed to have become historically effective.
+- `recorded at` records when the change event entered repo chronology.
+
+## Optional Contract Coverage Table
+
+- Use this section when the contract must distinguish defended current meaning from code-anchor-only, deferred, or not-owned-here surfaces.
+- Treat this table as the current active coverage/boundary surface; coverage-event chronology should stay in `Coverage Evolution Table`.
+- Required columns:
+  - `coverage id`
+  - `semantic area`
+  - `current basis`
+  - `coverage class`
+  - `current standing`
+  - `current owner / later owner`
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
+  - `recorded at`
+  - `effective from`
+  - `effective until`
+  - `effective status`
+  - `notes`
+- Time-window fields are required whenever this table is present; unknown or ongoing values are allowed, omission is not.
+- Use the `source release row id`, `source scenario row ids`, and `source routing event ids` columns when the current coverage/boundary row is materially tied to one release-ledger routing decision.
+
+## Optional Coverage Evolution Table
+
+- Use this section when coverage rows may be introduced, revised, narrowed, rerouted, reopened, or retired over time.
+- Recommended columns:
+  - `coverage change id`
+  - `affected coverage ids`
+  - `change action`
+  - `actor value`
+  - `source release row id`
+  - `source scenario row ids`
+  - `source routing event ids`
+  - `effective at`
+  - `recorded at`
+  - `source basis`
+  - `notes`
+- Keep active window ownership on the coverage rows themselves; use this evolution table for change-event chronology only.
 
 ## Optional Legacy Redirect
 
