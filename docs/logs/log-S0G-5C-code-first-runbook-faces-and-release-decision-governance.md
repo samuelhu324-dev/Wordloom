@@ -227,18 +227,18 @@
 
 - `P3-C1-S1`: decide whether the widened current scenario surface remains on `001` or belongs in `002`
 
-## Execution Checklist (unchecked)
+## Execution Checklist (checked where executed)
 
 ### P0 (Contract)
 
-- [ ] `P0-C1-S1`: code-first runbook model fixed
-- [ ] `P0-C1-S2`: runbook release decision rule fixed
-- [ ] `P0-C1-S3`: ledger sufficiency rule fixed
+- [x] `P0-C1-S1`: code-first runbook model fixed
+- [x] `P0-C1-S2`: runbook release decision rule fixed
+- [x] `P0-C1-S3`: ledger sufficiency rule fixed
 
 ### P1 (Template and intake chain)
 
-- [ ] `P1-C1-S1`: primary runbook template rewritten around current operator faces and release decisions
-- [ ] `P1-C1-S2`: runbook release-ledger template enhanced for code-first intake and release decisions
+- [x] `P1-C1-S1`: primary runbook template rewritten around current operator faces and release decisions
+- [x] `P1-C1-S2`: runbook release-ledger template enhanced for code-first intake and release decisions
 
 ### P2 (Pilot runbook)
 
@@ -250,9 +250,10 @@
 
 ## Current Status (recommended)
 
-- `S0G-5C` is now opened as the bounded planning lane for code-first runbook governance.
-- The packet does not yet claim that the runbook template, release-ledger template, or pilot runbook has been rewritten.
-- The immediate next step is to execute `P1-C1-S1S2`, then use the rewritten model to classify the pilot runbook as `001 structure-only rewrite` or `001/002 release split`.
+- `S0G-5C` now establishes the code-first runbook model and writes it into the primary runbook template plus the release-ledger template.
+- This round still does not claim that the pilot runbook has been rewritten.
+- The immediate next step is to execute `P2-C1-S1`, then use the rewritten model to classify the pilot as `same-release structure rewrite` versus `new release, sibling lane, or narrower title/file split`.
+- No pilot split is executed by this packet. `001 -> 002` remains only one possible outlet if the pilot's reader-visible operator meaning truly widens.
 
 ## Evidence (reserved)
 
@@ -270,7 +271,23 @@
 - observed:
   - packet opened; parent spine linked; execution work remains pending
 
+### P1-C1-S1S2 (Template chain writeback | 2026-04-28)
+
+- headSha: `pending-next-commit`
+- artifacts:
+  - `docs/runbook/_template-runbook.md`
+  - `docs/runbook/support-only/_template-runbook-release-ledger.md`
+- expected:
+  - the primary runbook template adopts `Current Operator Faces + Code Evidence Attachments + Scenario Registry + Operator Chronology + Release Decision Table`
+  - the release-ledger template becomes the defended first code-first intake surface and records whether any extra support ledger is actually needed
+  - the templates state explicitly that a semantic split may become `002`, a sibling lane, or a narrower file/title split rather than one automatic numeric bump
+- observed:
+  - both templates were rewritten around the code-first model and kept the release ledger as the default first intake surface
+  - the split decision remains deferred to the pilot execution round; no automatic `001 -> 002` move was made here
+
 ## Recent changes (for traceability, optional)
 
 - 2026-04-28: opened `S0G-5C` as the bounded runbook-governance follow-up to the contract-side `S0G-5B` work.
 - 2026-04-28: fixed the first execution question for the lane as `runbook template rewrite + release-ledger sufficiency + OBSERVABILITY-001/002 split decision` rather than broad runbook expansion.
+- 2026-04-28: rewrote the primary runbook template around current operator faces, code evidence attachments, scenario registry, operator chronology, and release decision rules.
+- 2026-04-28: enhanced the runbook release-ledger template so it stays the first code-first intake surface and records whether any extra support ledger is actually needed before writeback.

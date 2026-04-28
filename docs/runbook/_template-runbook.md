@@ -1,9 +1,12 @@
-# runbook-template-v2
+# runbook-template-v3
 
-Use this template when a workflow has become stable enough to deserve one durable operator surface,
-but still needs explicit ledger binding for repeated execution, evidence admission, and later audit.
-Keep the runbook thin: it owns the operator contract, the allowed entrypoints, and the run-ledger binding.
-Do not replay full phase history inside the runbook; link back to logs, contracts, and run ledgers instead.
+Use this template when one workflow or operator lane has become stable enough to deserve one durable
+current-reader runbook surface, but still needs explicit ledger binding for repeated execution,
+release-scoped evidence intake, and later audit.
+Keep the runbook thin: it owns the current operator meaning, the admitted scenario surface,
+the release decision gate, and the run-ledger binding.
+Do not replay full phase history inside the runbook; link back to logs, contracts, release ledgers,
+and run ledgers instead.
 
 ---
 
@@ -12,13 +15,14 @@ runbook_record:
   runbook_family: <RUNBOOK-FAMILY>
   runbook_release: <001>
   runbook_id: <run-RUNBOOK-FAMILY-001-summary>
-  record_kind: ledger-aware-runbook
+  record_kind: code-first-runbook
   status: <draft|active|deprecated|superseded|retired>
   release_action: <initial|simple-revision|merge|split-parent|split-child|absorption|consolidation|historical-backfill>
   release_change_summary: <why this runbook release exists and what materially changed>
   summary: <effective operator meaning at this runbook state>
   governance_area: <workflow|ops-runtime|evidence-pipeline|other>
   applies_to: <what operator surface or family this runbook governs>
+  operator_surface_summary: <what operators may currently rely on in this release>
   entry_surface: <workflow|script|task|dispatch|manual>
   evidence_surface: <summary.json|result.json|run-ledger|other>
   owner_team: <docs-governance|ops-runtime|delegated team>
@@ -41,19 +45,23 @@ runbook_record:
     minimum_admitted_fields:
       - <result>
       - <failureClass>
-  code_bridge_binding:
+  code_evidence_binding:
     required: <yes|no|conditional>
     stable_entry_refs:
       - <backend/scripts/... or workflow/task id>
     operator_surface_refs:
       - <worker path|workflow file|task label>
+    switch_checkpoint_refs:
+      - <switch or checkpoint surface ref>
+    disable_boundary_refs:
+      - <disabled state or stop-condition ref>
     scenario_registry_ref: <section or file that owns the scenario list>
-    fallback_surface_refs:
-      - <switch or operator surface ref>
     evidence_contract_ref: <section or file that owns evidence-bundle rules>
+    non_ownership_refs:
+      - <linked log, contract, or sibling runbook ref>
     minimum_supported_failure_classes:
       - <es_429|timeout|deterministic_exception>
-    coverage_table_required: <yes|no>
+    release_gate_required: <yes|no>
   recorded_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
   reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   effective_from: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>
@@ -94,6 +102,9 @@ runbook_record:
 - Name runbooks as `run-<RUNBOOK-FAMILY>-<RELEASE>-<summary>.md`.
 - `<RUNBOOK-FAMILY>` should follow contract-like long-path grammar and remain stable across revisions.
 - `<RELEASE>` is append-only inside one stable runbook family.
+- A new release number is only one possible split outcome. If the semantic split is really a title split,
+  sibling lane, or narrower family extraction, open the new file or folder shape that best matches reader meaning
+  instead of forcing a numeric bump mechanically.
 - Preferred example shape:
   - `run-WORKFLOW-FAMILY-001-operator-surface.md`
 
@@ -121,16 +132,20 @@ runbook_record:
 - Prefer `release_ledger_binding` when evidence is extracted from source logs, code, labs, or weak-structure channels before it can honestly be admitted into the runbook body.
 - Prefer `ledger_binding` when the evidence belongs to one concrete admitted run such as `RUN-001`.
 - When both layers exist, later run-level ledgers may cite the runbook release ledger, but should not replace it as the write-back surface for runbook-release meaning.
+- The release ledger is the first default intake surface for code-first runbooks. Add a dedicated extra support ledger only if the release ledger cannot keep operator-surface extraction, scenario routing, and write-back decisions separated cleanly.
 
-## Code Bridge Binding Rule
+## Code Evidence Binding Rule
 
-- Use `code_bridge_binding` whenever one runbook depends on stable code or workflow entrypoints and bounded failure/drill surfaces rather than on prose-only operator guidance.
+- Use `code_evidence_binding` whenever one runbook depends on stable code or workflow entrypoints, bounded switches, admitted drill scenarios, or explicit evidence contracts rather than on prose-only operator guidance.
 - `stable_entry_refs` identify the exact executable entrypoints the runbook claims to govern.
 - `operator_surface_refs` identify the broader executable surface, for example a worker shim, workflow file, or task.
+- `switch_checkpoint_refs` list bounded operator-facing switches, checkpoints, or recovery branches that the runbook may name without implying that every adjacent procedure is already defended.
+- `disable_boundary_refs` list the exact state boundaries that stop or narrow the runbook's positive operator claims.
 - `scenario_registry_ref` points to the table or file that enumerates admitted drills or failure classes for this runbook.
-- `fallback_surface_refs` list the operator-facing switches or bounded fallback surfaces that the runbook may name without implying that all procedures are already defended.
-- `coverage_table_required=yes` means the runbook body should include explicit `Coverage` or `Scenario Registry` tables rather than only prose bullets.
-- When a runbook opens `Code Bridge Table`, `Scenario Registry / Coverage`, or either evolution table, all time-window and event-time columns defined by the template are required; `unknown`, `pending`, and `ongoing` are valid values, omission is not.
+- `evidence_contract_ref` points to the section or file that owns required evidence-bundle rules.
+- `non_ownership_refs` point to nearby logs, contracts, or sibling runbooks that still own meaning not admitted here.
+- `release_gate_required=yes` means the runbook body should include an explicit release-decision table rather than inferring split decisions from prose.
+- When a runbook opens `Current Operator Faces`, `Code Evidence Attachments`, `Scenario Registry`, `Operator Chronology`, or `Release Decision Table`, all time-window and event-time columns defined by the template are required; `unknown`, `pending`, and `ongoing` are valid values, omission is not.
 
 ## Current Governance State
 
@@ -152,108 +167,113 @@ runbook_record:
 - State what is explicitly out of scope.
 - Link 3 to 7 deeper sources that still own history or contract detail.
 
-## 3) Workflow Contract
+## 3) Current Operator Faces
 
-### 3.1 Stable entrypoints
+- Use this section to describe the runbook's current operator meaning through stable faces rather than one mixed bridge-plus-coverage stack.
+- The runbook should open only faces it is willing to defend as current reader meaning.
+- Preferred face kinds:
+  - `stable-entrypoint`
+  - `switch-checkpoint-surface`
+  - `disable-state-boundary`
+  - `proof-path-recipe`
+  - `evidence-contract`
+  - `admitted-scenario-surface`
+  - `non-ownership-boundary`
 
-- Show the canonical entrypoint.
-- List the allowed knobs an operator may change.
-- State what the runbook does not permit an operator to improvise.
+| face id | face kind | current operator meaning | code evidence refs | admitted scenario ids | source release row id | current standing | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `OF-01` | `<stable-entrypoint>` | `<what operators may currently rely on here>` | `<CEA-01; CEA-03>` | `<SC-01; none>` | `<RBL-01|unknown>` | `<defended-now|narrowed-now|not-owned-here>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded face note>` |
 
-### 3.2 Success and failure semantics
+## 4) Code Evidence Attachments
 
-- Define what counts as `PASS`, `FAIL`, `PASS_AFTER_RECOVERY`, `NOT_RUN`, or equivalent states.
-- Point to the exact verdict files or fields that act as source of truth.
+- Use this section to attach executable anchors, evidence hooks, and bounded switch surfaces without automatically turning each code fact into a positive operator promise.
+- This table is current-reader-only: it records what evidence supports the current runbook now, not every historical implementation detail.
 
-### 3.3 Code Bridge Table
-
-- Use this section when the runbook must stay aligned to stable code or workflow entrypoints.
-- Keep this table current-reader-only: it records what executable surfaces the runbook is attached to now, not every historical implementation.
-
-| bridge id | surface kind | stable ref | operator meaning owned here | source release row id | source scenario row ids | source routing event ids | current standing | recorded at | effective from | effective until | effective status | notes |
+| evidence id | evidence kind | stable ref | supported face ids | operator meaning supported here | source release row id | source scenario row ids | current standing | recorded at | effective from | effective until | effective status | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `RB-01` | `<worker|workflow|task|script>` | `<path or entry id>` | `<what operator meaning this bridge defends>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<defended-now|code-anchor-only|not-owned-here>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded bridge note>` |
+| `CEA-01` | `<workflow|worker|task|script|metric|log-field|trace-hook>` | `<path or entry id>` | `<OF-01; OF-03>` | `<what this evidence supports without widening meaning>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<defended-now|code-anchor-only|pending-writeback>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded evidence note>` |
 
-### 3.4 Runbook Bridge Evolution Table
+## 5) Scenario Registry
 
-- Use this section when bridge rows may be introduced, revised, narrowed, replaced, retired, or backfilled over time.
-
-| bridge change id | affected bridge ids | change action | actor value | source release row id | source scenario row ids | source routing event ids | effective at | recorded at | source basis | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `RB-CH-01` | `RB-01` | `<introduced|amended|replaced|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded bridge-evolution note>` |
-
-### 3.5 Scenario Registry / Coverage
-
-- Use this section when the runbook governs multiple admitted failure classes or drill scenarios.
+- Use this section when the runbook governs multiple admitted failure classes, drill scenarios, or execution branches.
 - A runbook should not imply full operator coverage only through narrative paragraphs; list the admitted scenarios explicitly.
 
-| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | coverage class | source release row id | source scenario row ids | source routing event ids | recorded at | effective from | effective until | effective status | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SC-01` | `<es_429|timeout|duplicate_delivery>` | `<retry|terminal-failed|draining>` | `<observe-only|manual-replay|fallback-switch|defer>` | `<periodic-drill|pre-change-drill|incident-only|lab-only>` | `<weekly|per-release|before-risky-change|after-incident|none>` | `<_result.json|metrics|logs|trace export>` | `<defended-now|partial-code-support|gap-owned|not-owned-here>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded scenario note>` |
+| scenario id | failure class | default system behavior | operator action class | prod relevance | cadence class | evidence minimum | current owned meaning | source release row id | source scenario row ids | recorded at | effective from | effective until | effective status | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `SC-01` | `<es_429|timeout|duplicate_delivery>` | `<retry|terminal-failed|draining>` | `<observe-only|manual-replay|fallback-switch|defer>` | `<periodic-drill|pre-change-drill|incident-only|lab-only>` | `<weekly|per-release|before-risky-change|after-incident|none>` | `<_result.json|metrics|logs|trace export>` | `<defended-now|partial-code-support|gap-owned|not-owned-here>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<in-force|no-longer-in-force|pending-review>` | `<bounded scenario note>` |
 
-- When `coverage class` is not `defended-now`, the runbook should link the owning gap packet, contract note, or deferred owner explicitly.
-- `source release row id`, `source scenario row ids`, and `source routing event ids` keep the runbook body auditable against the release-ledger intake that justified the current row.
+- When `current owned meaning` is not `defended-now`, the runbook should link the owning gap packet, contract note, or deferred owner explicitly.
 
-### 3.6 Runbook Coverage Evolution Table
+## 6) Operator Chronology
 
-- Use this section when scenario or coverage rows may be introduced, revised, rerouted, reopened, or retired over time.
+- Use this section to record how current operator faces and admitted scenarios became what they are now.
+- Keep chronology append-only and event-shaped. Do not duplicate every code-evidence row here.
 
-| coverage change id | affected coverage ids | change action | actor value | source release row id | source scenario row ids | source routing event ids | effective at | recorded at | source basis | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SC-CH-01` | `SC-01` | `<introduced|amended|replaced|rerouted|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<RBL-02-SC-E01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded coverage-evolution note>` |
+| chronology id | affected surface ids | change action | actor value | source release row id | source scenario row ids | effective at | recorded at | source basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `OC-01` | `<OF-01; SC-01>` | `<introduced|amended|narrowed|rerouted|retired|history-backfilled>` | `<role:packet-reviewer|unknown>` | `<RBL-01|unknown>` | `<RBL-02-SC-01|none>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<source refs>` | `<bounded chronology note>` |
 
-## 4) Run Ledger Binding
+## 7) Release Decision Table
 
-### 4.1 Parent ledger
+- Use this section whenever the runbook needs to distinguish same-release write-back from new release, sibling lane, or deeper family split.
+- Numbering is only one release outlet. If the semantic change is better expressed as a new title, narrower family, or sibling file/folder, record that outlet explicitly instead of assuming `002`.
+
+| decision id | affected surface ids | current release semantic | candidate semantic | delta class | reader visible change | release action | target release or outlet | decision basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `RD-01` | `<OF-01; SC-01>` | `<what this release currently promises>` | `<candidate changed meaning>` | `<evidence-only|clarification-only|semantic-change|boundary-restructure>` | `<yes|no>` | `<same-release-evidence-writeback|new-release-required|split-family-required|move-to-sibling-lane|retain-in-chronology-only>` | `<run-...-002-*|new title/file/folder|sibling lane|same release>` | `<why this is or is not a new release>` | `<bounded decision note>` |
+
+## 8) Run Ledger Binding
+
+### 8.1 Parent ledger
 
 - Name the canonical run ledger file for this runbook family.
 - All ledger-class files should live under `docs/runbook/support-only/`.
 - State whether each execution appends one new run row or opens a new ledger file.
 
-### 4.2 Run and evidence ids
+### 8.2 Run and evidence ids
 
 - Name the stable run-row shape as `RUN-<nnn>` or another defended family-specific format.
 - Name the stable evidence-item shape as `E<nn>` or another defended format attached to one run row.
 - Name attachment ids explicitly when screenshots, exports, or transcript files need approval-facing review.
 
-### 4.3 Admission and write-back rule
+### 8.3 Admission and write-back rule
 
 - State the minimum evidence files required before a run may be admitted into the parent run ledger.
 - State when a later evidence packet should open a SUP ledger instead of rewriting the original run row directly.
 - State when a bounded repair packet should open a `PATCH` ledger instead of using a general SUP ledger.
 - State where downstream write-back should land: parent ledger, SUP ledger, source log `Evidence`, maintenance log, or another explicit surface.
 
-## 5) Evidence Bundle
+## 9) Evidence Bundle
 
-### 5.1 Output roots
+### 9.1 Output roots
 
 - List the snapshot, artifact, ledger, or workflow output roots.
 - Call out the minimum evidence files that must exist, for example `_result.json`, `_recipe.json`, `_logs/`, `_metrics/`.
 
-### 5.2 Admitted fields
+### 9.2 Admitted fields
 
 - List the minimum fields the ledger will extract from those evidence files.
 - Keep this section short and machine-facing.
 
-## 6) Local or One-click Operation
+## 10) Local or One-click Operation
 
-### 6.1 Prerequisites
+### 10.1 Prerequisites
 
 - List the minimum runtime, infra, env vars, permissions, and services.
 
-### 6.2 Commands
+### 10.2 Commands
 
 - Show the default local or one-click command path.
 - Prefer one canonical command sequence over many alternatives.
 - If there is a Windows-specific example, keep it aligned with repo usage.
 
-## 7) Troubleshooting
+## 11) Troubleshooting
 
 - List the 3 to 6 highest-value failure modes.
 - For each one, point to the first evidence file, ledger row, or command to inspect.
 - Prefer stable symptoms and actions over long explanations.
 
-## 8) Notes and Boundaries
+## 12) Notes and Boundaries
 
 - State what this runbook deliberately does not try to be.
 - State when the operator should drop into linked logs, ledgers, labs, or contracts.

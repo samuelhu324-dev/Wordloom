@@ -1,7 +1,8 @@
-# runbook-release-ledger-template-v1
+# runbook-release-ledger-template-v2
 
-Use this ledger when one stable runbook release needs a durable, release-first intake surface for evidence, scenario additions, boundary clarifications, and staged write-back.
+Use this ledger when one stable runbook release needs a durable, release-first intake surface for code evidence, operator-surface candidates, scenario additions, boundary clarifications, and staged write-back.
 This ledger is about the runbook release object itself; it does not replace source logs and it does not replace per-run accounting.
+Treat this ledger as the first default intake surface for code-first runbooks. Only open an extra dedicated support ledger if this ledger cannot keep extraction, routing, and write-back decisions separated cleanly.
 
 ## Naming Rule
 
@@ -15,13 +16,15 @@ This ledger is about the runbook release object itself; it does not replace sour
 ```yaml
 runbook_release_ledger:
   ledger_id: <ledger-runbook-RUNBOOK-FAMILY-001-summary>
-  ledger_kind: runbook-release-ledger
+  ledger_kind: code-first-runbook-release-ledger
   status: <draft|active|completed>
   owner_lane: <S4G-1G>
   runbook_family: <RUNBOOK-FAMILY>
   runbook_release: <001>
   runbook_id: <run-RUNBOOK-FAMILY-001-summary>
   runbook_ref: <docs/runbook/run-RUNBOOK-FAMILY-001-summary.md>
+  intake_model: <current-operator-faces-v1>
+  extra_support_ledger_verdict: <not-needed-now|needed-before-writeback|pending>
   created_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   reviewed_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
   accepted_at: <YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>
@@ -66,13 +69,29 @@ runbook_release_ledger:
   - the current intake row verdict,
   - the row chronology audit,
   - the governance event row,
-  - and any downstream runbook bridge or coverage evolution rows written later.
+  - and any downstream runbook chronology or release-decision rows written later.
 
-## Intake and Write-Back Table
+## Ledger Sufficiency Rule
 
-| row id | evidence anchor | evidence class | semantic area | intended landing surface | current verdict | affected bridge ids | affected coverage ids | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<RBL-01>` | `<log/contract/code/labs anchor>` | `<source-log|code|labs|runbook|contract|mixed>` | `<scenario inventory|boundary note|evidence contract|other>` | `<runbook-body|code-bridge-table|scenario-registry|notes-and-boundaries|defer>` | `<applied-current-release|pending-classification|deferred|rejected>` | `<RB-01; RB-02|none>` | `<SC-01; SC-02|none>` | `<why this intake matters>` |
+- Start with this ledger before inventing a new code-first support ledger.
+- Mark `extra support ledger verdict=needed-before-writeback` only when one intake row cannot be kept readable after separating:
+  - operator-surface candidates,
+  - code evidence attachments,
+  - scenario routing,
+  - and release decisions.
+- If the ledger remains sufficient after enhancement, keep extraction and write-back here and record `not-needed-now` explicitly.
+
+## Operator Surface Intake Table
+
+| row id | evidence anchor | evidence class | candidate face kind | candidate semantic | intended landing surface | current verdict | affected face ids | affected scenario ids | extra support ledger needed | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RBL-01>` | `<log/contract/code/labs anchor>` | `<source-log|code|labs|runbook|contract|mixed>` | `<stable-entrypoint|switch-checkpoint-surface|disable-state-boundary|proof-path-recipe|evidence-contract|admitted-scenario-surface|non-ownership-boundary>` | `<what this intake may add, narrow, or clarify>` | `<current-operator-faces|code-evidence-attachments|scenario-registry|operator-chronology|notes-and-boundaries|defer>` | `<applied-current-release|pending-classification|deferred|rejected>` | `<OF-01; OF-02|none>` | `<SC-01; SC-02|none>` | `<no|yes|pending>` | `<why this intake matters>` |
+
+## Code Evidence Attachment Table
+
+| evidence row id | parent row id | evidence kind | stable ref | supports face ids | current standing | intended landing surface | recorded at | effective from | effective until | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RBL-01-CEA-01>` | `<RBL-01>` | `<workflow|worker|task|script|metric|log-field|trace-hook>` | `<path or entry id>` | `<OF-01; OF-03>` | `<defended-now|code-anchor-only|pending-writeback>` | `<code-evidence-attachments|defer>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|ongoing|unknown>` | `<why this evidence row matters>` |
 
 ## Scenario Routing Registry
 
@@ -94,6 +113,15 @@ runbook_release_ledger:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `<RBL-02-SC-E01>` | `<RBL-02-SC-01>` | `<classified-current-family|classified-support-only|classified-sibling-family|written-into-runbook|rerouted-to-sibling|retained-in-ledger>` | `<release-ledger-intake>` | `<runbook-body|release-ledger|source-log|sibling-lane|pending-p3>` | `<role:runbook-maintainer|pending>` | `<what changed for this scenario>` | `<YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DD|unknown|pending>` | `<RBL-02; RBL-02-SUP-03>` | `<why this routing event matters>` |
 
+## Release Decision Table
+
+- Use this section whenever the intake may remain same-release write-back, open a later release, or route into a sibling lane.
+- Numbering is only one possible outlet. If the semantic split is really a new title, narrower family, or sibling file/folder, record that outlet explicitly instead of assuming `002`.
+
+| decision id | affected surface ids | current release semantic | candidate semantic | delta class | reader visible change | release action | target release or outlet | extra support ledger verdict | decision basis | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `<RBL-RD-01>` | `<OF-01; SC-01>` | `<what this release currently promises>` | `<candidate changed meaning>` | `<evidence-only|clarification-only|semantic-change|boundary-restructure>` | `<yes|no>` | `<same-release-evidence-writeback|new-release-required|split-family-required|move-to-sibling-lane|retain-in-ledger-only>` | `<run-...-002-*|new title/file/folder|sibling lane|same release>` | `<not-needed-now|needed-before-writeback|pending>` | `<why this is or is not a new release>` | `<bounded decision note>` |
+
 ## Actor and Provenance Review Table
 
 | row id | submitted by | evidence owner | reviewed by | verified by | verification method | approved by | approval state | approval basis | provenance note |
@@ -105,10 +133,11 @@ runbook_release_ledger:
 - Use this ledger when the question is `how should this runbook release absorb, defer, or reject new release-scoped evidence?`
 - Do not use this ledger to replace source-owned ledgers when the unresolved problem is still source slicing.
 - Do not use this ledger to replace `ledger-run-*` execution accounting when the evidence belongs to one concrete run.
-- `affected bridge ids` and `affected coverage ids` may stay `none` until a later write-back is explicit; do not invent ids only to fill the table.
+- `affected face ids` and `affected scenario ids` may stay `none` until a later write-back is explicit; do not invent ids only to fill the table.
 - Keep object-level evidence here first when the runbook body should not widen yet.
 - When a parent row carries many scenarios, each scenario should get one stable `scenario row id` before downstream write-back starts.
 - `destination ref` must become explicit once a scenario is actually written into a runbook body row or routed into a sibling lane.
+- If the ledger can hold operator-surface extraction, code evidence, scenario routing, and release decisions clearly, keep `extra support ledger verdict=not-needed-now` and do not multiply ledgers.
 
 ## Reader Notes
 
@@ -119,4 +148,4 @@ runbook_release_ledger:
 
 ## Completion Rule
 
-- A runbook release ledger may be marked `completed` only when every intake row has one explicit current verdict and one explicit intended landing surface.
+- A runbook release ledger may be marked `completed` only when every intake row has one explicit current verdict, one explicit intended landing surface, and one explicit extra-support-ledger verdict.
